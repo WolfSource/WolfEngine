@@ -1,4 +1,4 @@
-Wolf-Engine
+Wolf Engine
 ===========
 
 <p>
