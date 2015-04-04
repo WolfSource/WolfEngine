@@ -1,0 +1,2 @@
+Clone following git projects here:
+	1 - https://github.com/miloyip/rapidjson
