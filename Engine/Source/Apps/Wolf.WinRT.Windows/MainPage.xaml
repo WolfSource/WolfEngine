@@ -1,0 +1,30 @@
+﻿<Page
+    x:Class="Wolf_WinRT.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Wolf_WinRT"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <SwapChainPanel 
+        x:Name="swapChainPanel">
+        <Button 
+            VerticalAlignment="Top"
+            HorizontalAlignment="Right"
+            Content="X"
+            Foreground="Red"
+            Click="OnExitBtn">
+        </Button>
+    </SwapChainPanel>
+  <!--<Page.BottomAppBar>
+    <AppBar x:Name="bottomAppBar" Padding="10,0,10,0">
+            <Button 
+                Name="btn" 
+                Width="100" 
+                Height="30"
+                Content="Hello">
+            </Button>
+    </AppBar>
+  </Page.BottomAppBar>-->
+</Page>

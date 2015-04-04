@@ -1,0 +1,7 @@
+-------------------------------------------------------
+-----------------  Version 1.0.0.0 --------------------
+-------------------------------------------------------
+
+* Added game class for wolf
+* Added "01-Window.Win32" sample project to Samples - This sample shows how to create window in wolf
+* Added "02-Direct2DShapes.Win32" project sample to Samples - This sample shows how to draw 2D rectangle in wolf

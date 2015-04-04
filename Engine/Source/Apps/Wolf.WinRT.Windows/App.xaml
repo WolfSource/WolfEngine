@@ -1,0 +1,13 @@
+﻿<Application
+    x:Class="Wolf_WinRT.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Wolf_WinRT"
+    xmlns:localData="using:Shared">
+
+    <Application.Resources>
+
+      <x:String x:Key="AppName">Wolf_WinRT</x:String>
+
+    </Application.Resources>
+</Application>
