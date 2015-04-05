@@ -7,5 +7,5 @@ Wolf Engine
 This is the next generation of <a href="https://persianengine.codeplex.com/">Persian Game Engine</a> which is mainly focused on mobile platforms. The engine will be use on Microsoft WinRT platforms, Android and it will be adapted for a range of video game genres. You can use it under this <a href="https://github.com/PooyaEimandar/WolfEngine/blob/master/LICENSE">License</a>.
 </p>
 </p>
-Follow <a href="https://twitter.com/wolf_engine">@Wolf_Engine</a> on Twitter
-</p>
+<p>You can access to the latest binaries of stable version on <a href="https://wolfengine.codeplex.com/">CodePlex</a></p>
+<p>Follow <a href="https://twitter.com/wolf_engine">@Wolf_Engine</a> on Twitter</p>
