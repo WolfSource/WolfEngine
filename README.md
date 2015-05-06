@@ -9,6 +9,17 @@ You can use it under <a href="https://github.com/PooyaEimandar/WolfEngine/blob/m
 
 <p><strong>Projects using Wolf Engine</strong></p>
 <ul>
-<li><a href="http://en.alalam.ir">Alalam news network TV</a> is using Wolf Engine in their new Playout & CG editor toolkit. </li>
+<li><a href="http://en.alalam.ir">Alalam news network TV</a> is using Wolf Engine in their new <a href="https://www.youtube.com/watch?v=EZSdEjBvuGY">Playout & CG editor toolkit.</a> </li>
 </ul>
 <p><strong>Follow <a href="https://twitter.com/wolf_engine">@Wolf_Engine</a> on Twitter</strong>.</p>
+
+<p><strong>Whats new on Version 1.1.0.0</strong></p>
+<ul>
+<li><strong>Wolf.ffmpeg</strong> has been added. You can handle video and audio with this library</li>
+<li><strong>W_Window</strong> has been added. Create your window just with this class</li>
+<li><strong>W_ffmpeg</strong> supports <strong>QImage</strong> object,in order to build W_ffmpeg with this feature, use QT_DLL pre-processor</li>
+<li>New shapes (<strong>ellipse, line, simple rounded rectangle and geometry</strong>) have been added to "<strong>Wolf::Graphics::Direct2D::Shapes</strong>" namespace</li>
+<li>"<strong>03-Direct2DShapes.Win32</strong>" sample project has been added to Samples - This sample shows how to draw basic shapes with direct2D in Wolf</li>
+<li>"<strong>04-Text.Win32</strong>" sample project has been added to Samples - This sample shows how to draw text in Wolf</li>
+<li>"<strong>05-Geometry2D.Win32</strong>" sample project has been added to Samples - This sample shows how to draw 2D geometries in Wolf</li>
+</ul>
