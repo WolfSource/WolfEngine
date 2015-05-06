@@ -1,6 +1,6 @@
 /*
 	Project			 : Wolf Engine (http://WolfStudio.co). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @PooyaEimandar on twitter
+	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @Wolf_Engine on twitter
 	Name			 : Scene.h
 	Description		 : The main class of your game
 	Comment          :
@@ -12,7 +12,10 @@
 #include <W_Game.h>
 #include "W_GraphicsResource\W_SpriteBatch.h"
 #include "W_GraphicsResource\W_Fonts\W_SpriteFont.h"
-#include "W_GraphicsResource\W_Direct2D\W_Rectangle2D.h"
+#include "W_GraphicsResource\W_Direct2D\W_Rectangle.h"
+#include "W_GraphicsResource\W_Direct2D\W_Ellipse.h"
+#include "W_GraphicsResource\W_Geometries\W_Quad.h"
+#include "W_GraphicsResource\W_Direct2D\W_Geometry.h"
 
 class Scene sealed : public Wolf::Framework::W_Game
 {
@@ -31,10 +34,16 @@ public:
 	void Load() override;
 
 	//This is the place where allows the game to run logic such as updating the world, checking camera, collisions, physics, input, playing audio and etc.
-	void Update(Wolf::System::W_GameTime pGameTime) override;
+	void Update(const Wolf::System::W_GameTime& pGameTime) override;
 	
+	//Begin render on all graphics devices
+	void BeginRender() override;
+
 	//This is called when the game should draw itself.
-	void Render(Wolf::System::W_GameTime pGameTime) override;
+	void Render(const Wolf::System::W_GameTime& pGameTime) override;
+
+	//End render on all graphics devices
+	void EndRender() override;
 
 	//This is called when the window game should resized. pIndex is the index of window.
 	void OnWindowResize(UINT pIndex) override;
@@ -46,9 +55,15 @@ public:
 	ULONG Release() override;
 
 private:
-	std::unique_ptr<Wolf::Graphics::W_SpriteBatch> spriteBatch;
-	std::unique_ptr<Wolf::Graphics::Direct2D::W_Rectangle2D> rectangle2D;
-	float width;
-	float height;
+	std::unique_ptr<Wolf::Graphics::W_SpriteBatch>						spriteBatch;
+	std::unique_ptr<Wolf::Graphics::W_SpriteFont>						spriteFont;
+
+	std::unique_ptr<Wolf::Graphics::Direct2D::Shapes::W_Ellipse>		ellipse;
+	std::unique_ptr<Wolf::Graphics::Direct2D::Shapes::W_Rectangle>		rectangle;
+	
+	std::unique_ptr<Wolf::Graphics::Direct2D::Shapes::W_Geometry>		geoCloud0;
+	std::unique_ptr<Wolf::Graphics::Direct2D::Shapes::W_Geometry>		geoCloud1;
+	
+	std::unique_ptr<Wolf::Graphics::W_Quad>								quad;
 };
 

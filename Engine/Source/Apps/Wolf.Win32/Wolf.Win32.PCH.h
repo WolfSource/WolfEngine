@@ -1,8 +1,8 @@
 ﻿/*
-	Project			 : Wolf Engine. Copyright(c) http://PooyaEimandar.com . All rights reserved. https://github.com/PooyaEimandar/WolfEngine
-	Website			 : http://WolfStudio.co
-	Name             : Wolf.Win32.PCH.h
-	Description		 : Pre-Compiled header for System
+	Project			 : Wolf Engine (http://WolfStudio.co). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
+	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @Wolf_Engine on twitter
+	Name			 : Wolf.Win32.PCH.h
+	Description		 : The pre-compiled header 
 	Comment          :
 */
 

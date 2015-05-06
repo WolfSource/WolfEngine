@@ -99,7 +99,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Wolf.System\Wolf.System.Shared;$(SolutionDir)\Wolf.DirectX\Wolf.DirectX.Shared;$(SolutionDir)\ThirdParty\rapidjson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Wolf.System\Wolf.System.Shared\;$(SolutionDir)\Wolf.DirectX\Wolf.DirectX.Shared\;$(SolutionDir)\ThirdParty\rapidjson\include\;$(SolutionDir)\Wolf.Libraries\Wolf.ffmpeg\Wolf.ffmpeg.Shared\;$(SolutionDir)\ThirdParty\ffmpeg\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Wolf.Win32.PCH.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>__WIN32;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -127,6 +127,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Wolf.DirectX\Wolf.DirectX.Win32\Wolf.DirectX.Win32.vcxproj">
       <Project>{cd8ccaeb-8e19-4469-a01b-260f362b2a55}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Wolf.Libraries\Wolf.ffmpeg\Wolf.ffmpeg.Win32\Wolf.ffmpeg.Win32.vcxproj">
+      <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295929}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\Wolf.System\Wolf.System.Win32\Wolf.System.Win32.vcxproj">
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
