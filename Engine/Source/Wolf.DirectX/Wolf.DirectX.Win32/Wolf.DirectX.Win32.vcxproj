@@ -101,7 +101,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)\Wolf.System\Wolf.System.Shared;$(SolutionDir)\Wolf.DirectX\Wolf.DirectX.Shared;$(SolutionDir)\ThirdParty\rapidjson\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__WIN32;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;WIN32;__WIN32;UNICODE;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Wolf.DirectX.Shared.PCH.h</PrecompiledHeaderFile>
       <FunctionLevelLinking>

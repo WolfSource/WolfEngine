@@ -1,2 +1,3 @@
 Clone following git projects here:
 	1 - https://github.com/miloyip/rapidjson
+	2 - Zeranoe's FFmpeg Builds Home Page: <http://ffmpeg.zeranoe.com/builds/> Build Version:git-818e889 (2015-04-13)

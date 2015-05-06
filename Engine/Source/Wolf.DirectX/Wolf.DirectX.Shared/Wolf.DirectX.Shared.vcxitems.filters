@@ -20,7 +20,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Geometries\W_Quad.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_SpriteBatch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)W_Framework\W_Math.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Rectangle2D.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Ellipse.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Line.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Geometry.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\ISpriteBatchDrawable.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Rectangle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
@@ -39,6 +43,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Geometries\W_Mesh.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Geometries\W_Quad.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_SpriteBatch.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Rectangle2D.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Ellipse.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Line.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Geometry.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)W_GraphicsResource\W_Direct2D\W_Rectangle.cpp" />
   </ItemGroup>
 </Project>

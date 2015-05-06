@@ -4,8 +4,8 @@
 using namespace DirectX;
 using namespace Wolf::Framework;
 
-W_BaseCamera::W_BaseCamera() : aspectRatio(1.777f), position(0, 10, 15), nearPlane(0.01f), farPlane(1000.0f),
-up(0, 1, 0), lookAt(0, 1, 0), fieldOfView(70.0f)
+W_BaseCamera::W_BaseCamera() : aspectRatio(1.777f), nearPlane(0.01f), farPlane(1000.0f),
+position(0, 0, 1.0f), lookAt(0, 0, 0), up(0, 1, 0), fieldOfView(70.0f)
 {
 	UpdateProjection();
 }
@@ -13,11 +13,6 @@ up(0, 1, 0), lookAt(0, 1, 0), fieldOfView(70.0f)
 W_BaseCamera::~W_BaseCamera()
 {
 
-}
-
-void W_BaseCamera::SetAspectRatio(float pAspectRatio)
-{
-	this->aspectRatio = pAspectRatio;
 }
 
 void W_BaseCamera::UpdateView()
@@ -57,3 +52,17 @@ ULONG W_BaseCamera::Release()
 	
 	return W_Object::Release();
 }
+
+#pragma region Setters
+
+void W_BaseCamera::SetAspectRatio(float pValue)
+{
+	this->aspectRatio = pValue;
+}
+
+void W_BaseCamera::SetPosition(XMFLOAT3 pValue)
+{
+	this->position = pValue;
+}
+
+#pragma endregion

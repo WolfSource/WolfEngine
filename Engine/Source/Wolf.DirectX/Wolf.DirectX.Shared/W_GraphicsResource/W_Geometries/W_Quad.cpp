@@ -17,7 +17,7 @@ public:
 	{
 	}
 
-	HRESULT LoadMesh(_Inout_ W_Mesh* pMesh, bool pIsSprite)
+	HRESULT LoadMesh(_Inout_ W_Mesh* pMesh, bool pLoadDeafultTexture2D, std::wstring pTexture2DPath, bool pIsSprite)
 	{
 		const UINT verticesSize = 4;
 		const VertexPositionNormalTexture vertices[verticesSize] =
@@ -34,10 +34,10 @@ public:
 		pMesh->SetIsSprite(pIsSprite);
 		if (pIsSprite)
 		{
-			return pMesh->Load(L"Shaders\\SpriteVS.cso", L"Shaders\\SpritePS.cso", vertices, verticesSize, Indices, indicesSize);
+			return pMesh->Load(L"Shaders\\SpriteVS.cso", L"Shaders\\SpritePS.cso", pTexture2DPath, pLoadDeafultTexture2D, vertices, verticesSize, Indices, indicesSize);
 		}
 
-		return pMesh->Load(L"Shaders\\QuadVS.cso", L"Shaders\\QuadPS.cso", vertices, verticesSize, Indices, indicesSize);
+		return pMesh->Load(L"Shaders\\QuadVS.cso", L"Shaders\\QuadPS.cso", pTexture2DPath, pLoadDeafultTexture2D, vertices, verticesSize, Indices, indicesSize);
 	}
 	
 };
@@ -52,9 +52,9 @@ W_Quad::~W_Quad()
 	Release();
 }
 
-HRESULT W_Quad::Load(bool pIsSprite)
+HRESULT W_Quad::Load(bool pLoadDeafultTexture2D, std::wstring pTexture2DPath, bool pIsSprite)
 {		
-	return this->impl->LoadMesh((W_Mesh*)this, pIsSprite);
+	return this->impl->LoadMesh((W_Mesh*)this, pLoadDeafultTexture2D, pTexture2DPath, pIsSprite);
 }
 
 ULONG W_Quad::Release()

@@ -30,8 +30,8 @@ namespace Wolf
 		class W_Shader : public System::W_Object
 		{
 		public:
-			W_Shader(const std::shared_ptr<Graphics::W_GraphicsDevice>& gDevice);
-			virtual ~W_Shader();
+			API W_Shader(const std::shared_ptr<Graphics::W_GraphicsDevice>& gDevice);
+			API virtual ~W_Shader();
 
 			//Create vertex shader from binary file
 			virtual HRESULT CreateVertexShader(const void* bytes, SIZE_T Length, W_VertexDeclaration VDeclaration);
@@ -39,48 +39,7 @@ namespace Wolf
 			virtual HRESULT CreatePixelShader(const void* bytes, SIZE_T Length);
 
 			//Load a shader from file path
-			static HRESULT LoadShader(std::wstring path, W_ShaderType shaderType,
-				W_VertexDeclaration vDeclaration, _Inout_ W_Shader* shader)
-			{
-				std::unique_ptr<uint8_t[]> data;
-				size_t dataSize;
-				int fileState;
-
-				auto _path = System::IO::GetContentDirectory() + path;
-
-				auto hr = System::IO::ReadBinaryFile(_path, data, &dataSize, &fileState);
-				OnFailed(hr, "Could not read binary data", "Shader.h", false);
-				if (FAILED(hr)) return hr;
-
-				switch (shaderType)
-				{
-				case W_ShaderType::VertexShader:
-					hr = shader->CreateVertexShader(data.get(), dataSize, vDeclaration);
-					break;
-				case W_ShaderType::PixelShader:
-					hr = shader->CreatePixelShader(data.get(), dataSize);
-					break;
-				case W_ShaderType::HullShader:
-					//Not implemented
-					break;
-				case W_ShaderType::DomainShader:
-					//Not implemented
-					break;
-				case W_ShaderType::GeometryShader:
-					//Not implemented
-					break;
-				case W_ShaderType::ComputeShader:
-					//Not implemented
-					break;
-				default:
-					std::string msg = "Unknown shader type";
-					MessageBox(NULL, msg.c_str(), "Error", MB_OK);
-					OnFailed(S_FALSE, msg, "Shader.h", true);
-					msg.clear();
-				}
-
-				return hr;
-			}
+			static HRESULT LoadShader(std::wstring path, W_ShaderType shaderType, W_VertexDeclaration vDeclaration, _Inout_ W_Shader* shader);
 
 			//Apply shader, this must be called before drawing primitives
 			void Apply();

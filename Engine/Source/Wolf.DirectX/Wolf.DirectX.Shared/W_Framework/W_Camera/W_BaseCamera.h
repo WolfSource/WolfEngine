@@ -1,6 +1,6 @@
 /*
 	Project			 : Wolf Engine (http://WolfStudio.co). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @PooyaEimandar on twitter
+	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @Wolf_Engine on twitter
 	Name			 : W_BaseCamera.h
 	Description		 : The base class for camera
 	Comment          :
@@ -16,40 +16,45 @@ namespace Wolf
 	namespace Framework
 	{
 		//The base parameters of camera
-		class W_BaseCamera : System::W_Object
+		class W_BaseCamera : public System::W_Object
 		{
 		public:
-			W_BaseCamera();
-			virtual ~W_BaseCamera();
+			API W_BaseCamera();
+			API virtual ~W_BaseCamera();
 			
 			//Update the view matrix
-			void UpdateView();
+			API void UpdateView();
 			//Update the projection matrix
-			void UpdateProjection();
+			API void UpdateProjection();
 
 			//Release resources
-			virtual ULONG Release() override;
+			API virtual ULONG Release() override;
 
 #pragma region Getters
+
 			//Get field of view
-			float GetFieldOfView() const					{ return this->fieldOfView; }
+			API float GetFieldOfView() const					{ return this->fieldOfView; }
 			//Get aspect ratio of the camera
-			float GetAspectRatio() const					{ return this->aspectRatio; }
+			API float GetAspectRatio() const					{ return this->aspectRatio; }
 			//Get near plane of the camera
-			float GetNearPlane() const						{ return this->nearPlane; }
+			API float GetNearPlane() const						{ return this->nearPlane; }
 			//Get far plane of the camera
-			float GetFarPlane() const						{ return this->farPlane; }
+			API float GetFarPlane() const						{ return this->farPlane; }
 			//Get view matrix of the camera
-			DirectX::XMMATRIX GetView() const				{ return this->view; }
+			DirectX::XMMATRIX GetView() const					{ return this->view; }
 			//Get projection matrix of the camera
-			DirectX::XMMATRIX GetProjection() const			{ return this->projection; }
+			DirectX::XMMATRIX GetProjection() const				{ return this->projection; }
 			//Get position of the camera
-			DirectX::XMFLOAT3 GetPosition() const			{ return this->position; }
+			API DirectX::XMFLOAT3 GetPosition() const			{ return this->position; }
+
 #pragma region 
 
 #pragma region Setters
+
 			//Set aspect ratio of the camera
-			void SetAspectRatio(float pAspectRatio);
+			API void SetAspectRatio(float pAspectRatio);
+			API void SetPosition(DirectX::XMFLOAT3 pValue);
+
 #pragma endregion
 
 		protected:

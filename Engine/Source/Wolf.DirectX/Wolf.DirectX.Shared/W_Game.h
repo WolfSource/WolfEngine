@@ -1,6 +1,6 @@
 /*
 	Project			 : Wolf Engine (http://WolfStudio.co). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @PooyaEimandar on twitter
+	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @Wolf_Engine on twitter
 	Name			 : W_Game.h
 	Description		 : The main class of game
 	Comment          :
@@ -10,6 +10,7 @@
 
 #include "W_GraphicsDeviceManager.h"
 #include <W_GameTime.h>
+#include <W_Event.h>
 
 #ifdef __MAYA
 #include "GraphicsResource/Textures/RenderTarget2D.h"
@@ -28,11 +29,16 @@ namespace Wolf
 
 			//This will run the main loop cycle of the game 
 			API bool Run(std::map<int, std::vector<W_WindowInfo>> pOutputWindowsInfo);
+
+			//Release all resources
 			API ULONG Release() override;
+
+			Wolf::System::W_Event<int>											OnLoadCompleted;
 
 #pragma region Setters
 
-			void SetAppName(std::string pAppName)							{ this->appName = pAppName; }
+			void SetAppName(std::wstring pAppName)								{ this->appName = pAppName; }
+			void SetFixedTimeStep(bool pValue)									{ this->gameTime.SetFixedTimeStep(pValue); }
 
 #pragma endregion
 
@@ -46,13 +52,21 @@ namespace Wolf
 
 			//Load game assets
 			API	virtual void Load();
+
 			//Update the game logic
-			API virtual void Update(System::W_GameTime pGameTime);
+			API virtual void Update(const System::W_GameTime& pGameTime);
+
+			//Begin render on all graphics devices
+			API virtual void BeginRender();
+			
 			//Draw the components of the game
-			API virtual void Render(System::W_GameTime pGameTime);
+			API virtual void Render(const System::W_GameTime& pGameTime);
+
+			//End render on all graphics devices
+			API virtual void EndRender();
 
 		private:
-			std::string											appName;
+			std::wstring										appName;
 			Wolf::System::W_GameTime							gameTime;
 
 #ifdef __MAYA

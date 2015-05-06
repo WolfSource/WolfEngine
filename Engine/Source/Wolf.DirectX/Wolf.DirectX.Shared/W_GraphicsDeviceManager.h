@@ -1,6 +1,6 @@
 /*
 	Project			 : Wolf Engine (http://WolfStudio.co). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @PooyaEimandar on twitter
+	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @Wolf_Engine on twitter
 	Name			 : W_GraphicsDeviceManager.h
 	Description		 : The manager for graphics devices
 	Comment          :
@@ -23,16 +23,9 @@
 #include <dwrite_1.h>
 #include <dxgi1_2.h>
 #include <Wincodec.h> // for IWICImagingFactory2
+#include <W_Window.h>
 
 #define DEFAULT_DPI 96
-
-//Store the information of window
-struct W_WindowInfo
-{
-	HWND hWnd;
-	UINT width;
-	UINT height;
-};
 
 namespace Wolf
 {
@@ -53,7 +46,6 @@ namespace Wolf
 				this->hWnd = NULL;
 
 				COM_RELEASE(this->backBuffer);
-				COM_RELEASE(this->exportBuffer);
 				COM_RELEASE(this->depthStencilView);
 				COM_RELEASE(this->renderTargetView);
 				COM_RELEASE(this->swapChain);
@@ -71,7 +63,6 @@ namespace Wolf
 			CD3D11_VIEWPORT														viewPort;
 			Microsoft::WRL::ComPtr<IDXGISwapChain1>								swapChain;
 			Microsoft::WRL::ComPtr<ID3D11Texture2D>								backBuffer;
-			Microsoft::WRL::ComPtr<ID3D11Texture2D>								exportBuffer;
 			Microsoft::WRL::ComPtr<ID3D11RenderTargetView>						renderTargetView;
 			Microsoft::WRL::ComPtr<ID3D11DepthStencilView>						depthStencilView;
 		};
@@ -170,7 +161,7 @@ namespace Wolf
 			//Begin render on all graphics devices
 			API virtual void BeginRender();
 			//End render on all graphics devices
-			API virtual void EndRender(_In_ ID3D11Resource* resource);
+			API virtual void EndRender();
 			//Release all resources
 			API ULONG Release() override;
 
@@ -181,13 +172,14 @@ namespace Wolf
 			//Returns number of available graphics devices
 			const ULONG GetNumberOfGraphicsDevices() const						{ return this->graphicsDevices.size(); }
 			//Get deafult device window width
-			const UINT GetWindoWidth() const									{ return this->windowsInfo.size() == 0 || this->windowsInfo.at(0).size() == 0 ? 0 : this->windowsInfo.at(0).at(0).width; }
+			const UINT GetWindowWidth() const									{ return this->windowsInfo.size() == 0 || this->windowsInfo.at(0).size() == 0 ? 0 : this->windowsInfo.at(0).at(0).width; }
 			//Get deafult device window height
 			const UINT GetWindowHeight() const									{ return this->windowsInfo.size() == 0 || this->windowsInfo.at(0).size() == 0 ? 0 : this->windowsInfo.at(0).at(0).height; }
 
 #pragma endregion
 
 		protected:
+			float																backColor[4];
 			std::vector<std::shared_ptr<W_GraphicsDevice>>						graphicsDevices;
 
 		private:

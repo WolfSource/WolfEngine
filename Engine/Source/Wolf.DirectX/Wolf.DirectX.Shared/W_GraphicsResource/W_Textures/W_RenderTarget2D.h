@@ -1,6 +1,6 @@
 /*
 	Project			 : Wolf Engine (http://WolfStudio.co). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @PooyaEimandar on twitter
+	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @Wolf_Engine on twitter
 	Name			 : W_RenderTarget2D.h
 	Description		 : Create a 2D render target
 	Comment          :
@@ -35,11 +35,11 @@ namespace Wolf
 #pragma region Getters
 
 			//Get pointer to render target view
-			API ID3D11RenderTargetView*		GetRenderTargetView() const		{ return this->rtv.Get(); }
+			ID3D11RenderTargetView*		GetRenderTargetView() const		{ return this->rtv.Get(); }
 			//Get shader resource view of render target
-			API ID3D11ShaderResourceView*	GetSRV() const					{ return this->srv.Get(); }
+			ID3D11ShaderResourceView*	GetSRV() const					{ return this->srv.Get(); }
 			//Get direct 3d11 resource of render target
-			API ID3D11Resource*				GetResource();
+			API ID3D11Resource*			GetResource();
 
 #pragma endregion
 

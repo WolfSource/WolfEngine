@@ -33,6 +33,49 @@ HRESULT W_Shader::CreatePixelShader(const void* bytes, SIZE_T Length)
 	return hr;
 }
 
+HRESULT W_Shader::LoadShader(std::wstring path, W_ShaderType shaderType, W_VertexDeclaration vDeclaration, _Inout_ W_Shader* shader)
+{
+	std::unique_ptr<uint8_t[]> data;
+	size_t dataSize;
+	int fileState;
+
+	auto _path = Wolf::System::IO::GetContentDirectory() + path;
+
+	//ToDo://Check path before loading
+	auto hr = Wolf::System::IO::ReadBinaryFile(_path, data, &dataSize, &fileState);
+	OnFailed(hr, "Could not read binary data", "Shader.h", false);
+	if (FAILED(hr)) return hr;
+
+	switch (shaderType)
+	{
+	case W_ShaderType::VertexShader:
+		hr = shader->CreateVertexShader(data.get(), dataSize, vDeclaration);
+		break;
+	case W_ShaderType::PixelShader:
+		hr = shader->CreatePixelShader(data.get(), dataSize);
+		break;
+	case W_ShaderType::HullShader:
+		//Not implemented yet
+		break;
+	case W_ShaderType::DomainShader:
+		//Not implemented yet
+		break;
+	case W_ShaderType::GeometryShader:
+		//Not implemented yet
+		break;
+	case W_ShaderType::ComputeShader:
+		//Not implemented yet
+		break;
+	default:
+		std::wstring msg = L"Unknown shader type";
+		MessageBox(NULL, msg.c_str(), L"Error", MB_OK);
+		OnFailedW(S_FALSE, msg, "Shader.h", true);
+		msg.clear();
+	}
+
+	return hr;
+}
+
 void W_Shader::SetVertexShader(_In_ ID3D11VertexShader* VS)
 {
 	this->vShader = VS;
@@ -187,9 +230,9 @@ HRESULT W_Shader::ChooseInputLayout(W_VertexDeclaration vertexTypes, const void*
 	{
 		//Unknown vertex format
 		hr = S_FALSE;
-		std::string msg = "Unknown vertex format";
-		MessageBox(NULL, msg.c_str(), "Error", MB_OK);
-		OnFailed(hr, msg, this->Name, false);
+		std::wstring msg = L"Unknown vertex format";
+		MessageBox(NULL, msg.c_str(), L"Error", MB_OK);
+		OnFailedW(hr, msg, this->Name, false);
 	}
 	return hr;
 }

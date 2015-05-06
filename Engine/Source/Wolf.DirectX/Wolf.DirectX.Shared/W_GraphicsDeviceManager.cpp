@@ -22,6 +22,7 @@ const unsigned int bytesPerPixel = 4;
 W_GraphicsDeviceManager::W_GraphicsDeviceManager()
 {
 	this->Name = typeid(this).name();
+	this->backColor[0] = 0.149f; this->backColor[1] = 0.149f; this->backColor[2] = 0.149f; this->backColor[3] = 1.0f;
 }
 
 W_GraphicsDeviceManager::~W_GraphicsDeviceManager()
@@ -468,27 +469,6 @@ HRESULT W_GraphicsDeviceManager::CreateSwapChainForWindow(std::shared_ptr<W_Grap
 
 #pragma endregion
 
-#pragma region Create a read/write texture buffer for decklink
-
-			//Todo:Make it dynamic
-			D3D11_TEXTURE2D_DESC desc;
-			ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
-			desc.Height = 576; //Height of SD
-			desc.Width = 720; //Width of SD
-			desc.MipLevels = 1;
-			desc.ArraySize = 1;
-			desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-			desc.SampleDesc.Count = 1;
-			desc.SampleDesc.Quality = 0;
-			desc.Usage = D3D11_USAGE_STAGING;
-			desc.BindFlags = 0;
-			desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-			desc.MiscFlags = 0;
-
-			hr = device->CreateTexture2D(&desc, NULL, &pWindow.exportBuffer);
-			OnFailed(hr, "CreateTexture2D for reading from CPU", this->Name, true, true);
-
-#pragma endregion
 		}
 
 		device = nullptr;
@@ -508,8 +488,6 @@ HRESULT W_GraphicsDeviceManager::CreateSwapChainForWindow(std::shared_ptr<W_Grap
 
 void W_GraphicsDeviceManager::BeginRender()
 {
-	const float backColor[4] = { 0.149f, 0.149f, 0.149f, 1.0f };
-
 	for (size_t i = 0; i < this->graphicsDevices.size(); ++i)
 	{
 		auto gDevice = this->graphicsDevices.at(i);
@@ -525,7 +503,7 @@ void W_GraphicsDeviceManager::BeginRender()
 
 				context->RSSetViewports(1, &window.viewPort);
 				context->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView);
-				context->ClearRenderTargetView(_renderTargetView.Get(), backColor);
+				context->ClearRenderTargetView(_renderTargetView.Get(), this->backColor);
 				context->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 				_depthStencilView = nullptr;
@@ -536,7 +514,7 @@ void W_GraphicsDeviceManager::BeginRender()
 	}
 }
 
-void W_GraphicsDeviceManager::EndRender(_In_ ID3D11Resource* pResource)
+void W_GraphicsDeviceManager::EndRender()
 {
 	DXGI_PRESENT_PARAMETERS parameters;
 	ZeroMemory(&parameters, sizeof(DXGI_PRESENT_PARAMETERS));
@@ -566,51 +544,6 @@ void W_GraphicsDeviceManager::EndRender(_In_ ID3D11Resource* pResource)
 					OnFailed(hr, "Error on presenting at the process of end render", this->Name, false, true);
 				}
 
-				//We always send the output of first hWnd from the first device to the decklink
-				if (i == 0 && j == 0 && pResource != nullptr)
-				{
-#pragma region Read from texture resource
-
-					const size_t slicePitch = 1658880;//Width * Height * 4byte
-					const size_t rowPitch = 2880;//Width * 4
-					const size_t rowCount = 576;//Height
-
-					unique_ptr<uint8_t[]> pixels(new (std::nothrow) uint8_t[slicePitch]);
-					if (!pixels) { OnFailed(S_FALSE, "E_OUTOFMEMORY on creating pixels", this->Name, true, false); }
-
-					//Copy the the content of back buffer to Export Texture
-					D3D11_MAPPED_SUBRESOURCE mapsub;
-					ZeroMemory(&mapsub, sizeof(D3D11_MAPPED_SUBRESOURCE));
-
-					context->CopyResource(window.exportBuffer.Get(), pResource);
-					context->Map(window.exportBuffer.Get(), 0, D3D11_MAP_READ, 0, &mapsub);
-					{
-						auto data = reinterpret_cast<const uint8_t*>(mapsub.pData);
-						if (!data)
-						{
-							context->Unmap(window.exportBuffer.Get(), 0);
-							OnFailed(S_FALSE, "E_POINTER on getting mapped pixels", this->Name, false, true);
-							return;
-						}
-
-						uint8_t* pixelPtr = pixels.get();
-						size_t msize = std::min<size_t>(rowPitch, mapsub.RowPitch);
-						for (size_t h = 0; h < rowCount; ++h)
-						{
-							memcpy_s(pixelPtr, rowPitch, data, msize);
-							data += mapsub.RowPitch;
-							pixelPtr += rowPitch;
-						}
-
-						data = nullptr;
-						context->Unmap(window.exportBuffer.Get(), 0);
-					}
-
-#pragma endregion
-
-					//Test, write resource to DDS file
-					//DirectX::SaveDDSTextureToFile(context.Get(), pResource, L"C:\\Test\\A.dds");
-				}
 				context = nullptr;
 			}
 		}

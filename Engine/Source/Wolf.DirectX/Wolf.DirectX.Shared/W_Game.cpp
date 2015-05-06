@@ -25,17 +25,27 @@ void W_Game::Initialize(map<int, vector<W_WindowInfo>> pOutputWindowsInfo)
 
 void W_Game::Load()
 {
-
+	OnLoadCompleted(0);
 }
 
-void W_Game::Update(Wolf::System::W_GameTime pGameTime)
+void W_Game::Update(const Wolf::System::W_GameTime& pGameTime)
 {
 	
 }
 
-void W_Game::Render(Wolf::System::W_GameTime pGameTime)
+void W_Game::BeginRender()
+{
+	W_GraphicsDeviceManager::BeginRender();
+}
+
+void W_Game::Render(const Wolf::System::W_GameTime& pGameTime)
 {
 	
+}
+
+void W_Game::EndRender()
+{
+	W_GraphicsDeviceManager::EndRender();
 }
 
 bool W_Game::Run(map<int, vector<W_WindowInfo>> pOutputWindowsInfo)
@@ -50,9 +60,9 @@ bool W_Game::Run(map<int, vector<W_WindowInfo>> pOutputWindowsInfo)
 
 	this->gameTime.Tick([&]()
 	{
-		W_GraphicsDeviceManager::BeginRender();
+		BeginRender();
 		Render(this->gameTime);
-		W_GraphicsDeviceManager::EndRender(nullptr);
+		EndRender();
 	});
 
 	return true;

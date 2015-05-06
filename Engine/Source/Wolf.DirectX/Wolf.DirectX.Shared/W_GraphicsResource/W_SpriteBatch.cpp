@@ -10,9 +10,9 @@ using namespace Microsoft::WRL;
 using namespace D2D1;
 using namespace DirectX;
 using namespace Wolf::Graphics;
-using namespace Wolf::Graphics::Direct2D;
+using namespace Wolf::Graphics::Direct2D::Shapes;
 
-W_SpriteBatch::W_SpriteBatch(const std::shared_ptr<W_GraphicsDevice>& pGdevice) : gDevice(pGdevice), state(ENDED), text(L"WolfEngine")
+W_SpriteBatch::W_SpriteBatch(const std::shared_ptr<W_GraphicsDevice>& pGdevice) : gDevice(pGdevice), state(ENDED), text(L"")
 {
 	this->Name = typeid(this).name();
 
@@ -71,27 +71,44 @@ void W_SpriteBatch::Begin()
 	this->gDevice->context2D->BeginDraw();
 }
 
-HRESULT W_SpriteBatch::Draw(_In_ W_Rectangle2D* pRectangle2D)
+HRESULT W_SpriteBatch::Draw(_In_ Wolf::Graphics::Direct2D::ISpriteBatchDrawable* pSpriteBatchDrawableComp)
 {
 	if (this->state != STARTED) throw std::exception(MISSING_BEGIN_CALL);
 
-	if (pRectangle2D == nullptr) return S_FALSE;
+	if (pSpriteBatchDrawableComp == nullptr) return S_FALSE;
 
-	return pRectangle2D->Draw();
+	return pSpriteBatchDrawableComp->Draw();
 }
 
-HRESULT W_SpriteBatch::DrawString(std::wstring pText, _In_ XMFLOAT2* const pPosition, _In_ const W_SpriteFont* pSpriteFont)
+HRESULT W_SpriteBatch::DrawString(const std::wstring& pText, _In_ XMFLOAT2* const pPosition, _In_ const W_SpriteFont* pSpriteFont)
 {
-	return DrawString(text, pPosition, nullptr, pSpriteFont, Matrix3x2F::Identity());
+	std::wstring _text = pText;
+	auto hr = DrawString(_text, pPosition, nullptr, pSpriteFont, Matrix3x2F::Identity());
+	_text.clear();
+	return hr;
 }
 
-HRESULT W_SpriteBatch::DrawString(std::wstring pText, _In_ XMFLOAT2* const pPosition,
+HRESULT W_SpriteBatch::DrawString(std::wstring& pText, _In_ XMFLOAT2* const pPosition, _In_ const W_SpriteFont* pSpriteFont)
+{
+	return DrawString(pText, pPosition, nullptr, pSpriteFont, Matrix3x2F::Identity());
+}
+
+HRESULT W_SpriteBatch::DrawString(const std::wstring& pText, _In_ XMFLOAT2* const pPosition,
+	_In_ ID2D1SolidColorBrush* const pBrush, _In_ const W_SpriteFont* pSpriteFont, D2D1::Matrix3x2F pWorld)
+{
+	std::wstring _text = pText;
+	auto hr = DrawString(_text, pPosition, pBrush, pSpriteFont, pWorld);
+	_text.clear();
+	return hr;
+}
+
+HRESULT W_SpriteBatch::DrawString(std::wstring& pText, _In_ XMFLOAT2* const pPosition,
 	_In_ ID2D1SolidColorBrush* const pBrush, _In_ const W_SpriteFont* pSpriteFont, D2D1::Matrix3x2F pWorld)
 {
 	if (this->state != STARTED) throw std::exception(MISSING_BEGIN_CALL);
 
 	auto hr = S_FALSE;
-		
+	
 	if (this->text != pText)
 	{
 		this->text = pText;
@@ -110,6 +127,7 @@ HRESULT W_SpriteBatch::DrawString(std::wstring pText, _In_ XMFLOAT2* const pPosi
 	this->gDevice->context2D->SetTransform(&pWorld);
 	this->gDevice->context2D->DrawTextLayout(Point2F(pPosition->x, pPosition->y),
 		this->textLayout.Get(), _brush);
+
 	return hr;
 }
 
