@@ -11,12 +11,13 @@
 #include "Scene.h"
 
 using namespace std;
+using namespace DirectX;
 using namespace Wolf::Graphics;
-using namespace Wolf::Graphics::Direct2D;
+using namespace Wolf::Graphics::Direct2D::Shapes;
 
-Scene::Scene() : width(400), height(200)
+Scene::Scene()
 {
-	W_Game::SetAppName("02-Direct2DShapes.Win32");
+	W_Game::SetAppName(L"04-Text.Win32");
 }
 
 Scene::~Scene()
@@ -40,32 +41,35 @@ void Scene::Load()
 	this->spriteBatch = make_unique<W_SpriteBatch>(gDevice);
 	this->spriteBatch->Load();
 
-	//Load rectangle2D
-	this->rectangle2D = make_unique<W_Rectangle2D>(gDevice);
+	//Load sprite font style
+	W_SpriteFontStyle spriteFontStyle =
+	{
+		L"Times New Roman",
+		DWRITE_FONT_WEIGHT_DEMI_BOLD,
+		DWRITE_FONT_STYLE_ITALIC,
+		DWRITE_FONT_STRETCH_NORMAL,
+		DWRITE_TEXT_ALIGNMENT_LEADING,
+		DWRITE_PARAGRAPH_ALIGNMENT_NEAR,
+		32.0,
+		L"en-US"
+	};
+	this->spriteFont = make_unique<W_SpriteFont>(gDevice, spriteFontStyle);
+	this->spriteFont->Load();
 }
 
-static float step = 1;
-void Scene::Update(Wolf::System::W_GameTime pGameTime)
+void Scene::Update(const Wolf::System::W_GameTime& pGameTime)
 {
 	// TODO: Add your update logic here
-
-	this->rectangle2D->SetGeormetry(7, 7, width, height);
-	if (height == GetWindowHeight() - 7 || height == 7)
-	{
-		step *= -1;
-	}
-	width = width + step;
-	height = height + step;
-
 	W_Game::Update(pGameTime);
 }
 
-void Scene::Render(Wolf::System::W_GameTime pGameTime)
+void Scene::Render(const Wolf::System::W_GameTime& pGameTime)
 {
 	// TODO: Add your drawing code here
+	auto pos = XMFLOAT2(100, 100);
 	this->spriteBatch->Begin();
 	{
-		this->spriteBatch->Draw(this->rectangle2D.get());
+		this->spriteBatch->DrawString(L"Hello Wolf Engine", &pos, this->spriteFont.get());
 	}
 	this->spriteBatch->End();
 	W_Game::Render(pGameTime);
@@ -90,8 +94,8 @@ ULONG Scene::Release()
 	if (this->IsReleased()) return 0;
 
 	// TODO: Release your assets here
-	SMART_RELEASE(this->spriteBatch);
-	SMART_RELEASE(this->rectangle2D);
+	UNIQUE_RELEASE(this->spriteBatch);
+	UNIQUE_RELEASE(this->spriteFont);
 
 	return W_Game::Release();
 }

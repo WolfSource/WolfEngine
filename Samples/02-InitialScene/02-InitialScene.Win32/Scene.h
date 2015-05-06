@@ -3,15 +3,13 @@
 	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfStudio.co or tweet @PooyaEimandar on twitter
 	Name			 : Scene.h
 	Description		 : The main class of your game
-	Comment          : This sample shows how to draw 2D rectangle in wolf
+	Comment          : This sample shows how to create window in wolf
 */
 
 
 #pragma once
 
 #include <W_Game.h>
-#include "W_GraphicsResource\W_SpriteBatch.h"
-#include "W_GraphicsResource\W_Direct2D\W_Rectangle2D.h"
 
 class Scene sealed : public Wolf::Framework::W_Game
 {
@@ -30,10 +28,10 @@ public:
 	void Load() override;
 
 	//This is the place where allows the game to run logic such as updating the world, checking camera, collisions, physics, input, playing audio and etc.
-	void Update(Wolf::System::W_GameTime pGameTime) override;
+	void Update(const Wolf::System::W_GameTime& pGameTime) override;
 	
 	//This is called when the game should draw itself.
-	void Render(Wolf::System::W_GameTime pGameTime) override;
+	void Render(const Wolf::System::W_GameTime& pGameTime) override;
 
 	//This is called when the window game should resized.
 	void OnWindowResize(UINT pIndex) override;
@@ -43,11 +41,5 @@ public:
 
 	//Release will be called once per game and is the place to unload assets and release all resources
 	ULONG Release() override;
-
-private:
-	std::unique_ptr<Wolf::Graphics::W_SpriteBatch> spriteBatch;
-	std::unique_ptr<Wolf::Graphics::Direct2D::W_Rectangle2D> rectangle2D;
-	float width;
-	float height;
 };
 
