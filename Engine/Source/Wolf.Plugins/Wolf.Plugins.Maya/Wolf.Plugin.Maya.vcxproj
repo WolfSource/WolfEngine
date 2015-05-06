@@ -135,9 +135,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Wolf.DirectX\Wolf.DirectX.Maya\Wolf.DirectX.Maya.vcxproj">
-      <Project>{43e917b4-0088-4dda-bed7-bcc860dbad58}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\Wolf.System\Wolf.System.Win32\Wolf.System.Win32.vcxproj">
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
       <Private>false</Private>

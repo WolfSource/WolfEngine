@@ -27,12 +27,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)W_Logger.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)W_Object.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Wolf.System.Shared.PCH.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_TimeSpan.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)W_Logger.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Wolf.System.Shared.PCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)W_TimeSpan.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)W_Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectCapability Include="SourceItemsFromImports" />

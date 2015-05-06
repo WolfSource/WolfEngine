@@ -10,9 +10,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)W_GameTime.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)W_Event.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)W_Convert.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_TimeSpan.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Wolf.System.Shared.PCH.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)W_Logger.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)W_TimeSpan.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)W_Window.cpp" />
   </ItemGroup>
 </Project>

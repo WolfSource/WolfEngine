@@ -3,7 +3,7 @@
 
 using namespace Wolf::System;
 
-bool W_Logger::Initialize(std::string pAppName)
+bool W_Logger::Initialize(std::wstring pAppName)
 {
 	this->isReleased = false;
 
@@ -27,40 +27,43 @@ bool W_Logger::Initialize(std::string pAppName)
 
 #endif
 
-	std::string version = "\t\"Version\"          : \"" + std::to_string(WMajorVersion) + ":" + std::to_string(WMinorVersion) + ":" + std::to_string(WPatchVersion) + ":" + std::to_string(WDebugVersion) + "\",\r\n";
-	std::string createdTime = "\t\"Time\"             : \"" + GetTime() + "\",\r\n";
-	std::string appName = "\t\"Application Name\" : \"" + pAppName + "\",\r\n";
+	std::wstring version = L"\t\"Version\"          : \"" + std::to_wstring(WMajorVersion) + L":" + std::to_wstring(WMinorVersion) + 
+		L":" + std::to_wstring(WPatchVersion) + L":" + std::to_wstring(WDebugVersion) + L"\",\r\n";
+	std::wstring createdTime = L"\t\"Time\"             : \"" + GetTimeW() + L"\",\r\n";
+	std::wstring appName = L"\t\"Application Name\" : \"" + pAppName + L"\",\r\n";
 
 	logFile.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
 	logFile.open(logFilePath.c_str());
 
-	logFile << "{\r\n";
-	logFile << "\t\"Project\"          : \"Wolf Engine(http://WolfStudio.co). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\",\r\n";
-	logFile << "\t\"Info\"             : \"Please direct any bug to \"hello@WolfStudio.co\" or tweet \"@PooyaEimandar\" on twitter - source on https://github.com/PooyaEimandar/WolfEngine \",\r\n";
+	logFile << L"{\r\n";
+	logFile << L"\t\"Project\"          : \"Wolf Engine(http://WolfStudio.co). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\",\r\n";
+	logFile << L"\t\"Info\"             : \"Please direct any bug to \"hello@WolfStudio.co\" or tweet \"@Wolf_Engine\" on twitter - source on https://github.com/PooyaEimandar/WolfEngine \",\r\n";
 	logFile << version.c_str();
 	logFile << createdTime.c_str();
 	logFile << appName.c_str();
-	logFile << "\t\"Logs\":{\r\n";
+	logFile << L"\t\"Logs\":{\r\n";
 	logFile.flush();
 	return logFile.is_open();
 }
 
-void W_Logger::Write(std::wstring pMsg, std::string pState)
+void W_Logger::Write(std::string pMsg, const std::string pState)
 {
-	auto msg = std::string(pMsg.begin(), pMsg.end());
-	Write(msg, pState);
+	auto msg = std::wstring(pMsg.begin(), pMsg.end());
+	auto state = std::wstring(pState.begin(), pState.end());
+	Write(msg, state);
 	msg.clear();
+	state.clear();
 }
 
-void W_Logger::Write(std::string pMsg, std::string pState)
+void W_Logger::Write(std::wstring pMsg, const std::wstring pState)
 {
 	if (pMsg.empty())
 	{
-		pMsg = "[Wolf] : Info : \tNULL : " + GetTime();
+		pMsg = L"[Wolf] : Info : \tNULL : " + GetTimeW();
 	}
 	else
 	{
-		pMsg = "\"" + GetTime() + "\"" + ": {\"msg\":\"" + pMsg + "\",\"state\":\"" + pState + "\"},";
+		pMsg = L"\"" + GetTimeW() + L"\"" + L": {\"msg\":\"" + pMsg + L"\",\"state\":\"" + pState + L"\"},";
 	}
 #if defined(__MAYA)
 	switch (pState)
@@ -77,17 +80,37 @@ void W_Logger::Write(std::string pMsg, std::string pState)
 		break;
 	}
 #else
-	pMsg = "\t\t" + pMsg + "\r\n";
-	OutputDebugStringA(pMsg.c_str());
+	pMsg = L"\t\t" + pMsg + L"\r\n";
+	OutputDebugString(pMsg.c_str());
 #endif
 
 	logFile << pMsg.c_str();
 	logFile.flush();
 }
 
+void W_Logger::User(std::wstring pMsg)
+{
+	Write(pMsg, L"User");
+}
+
+void W_Logger::User(std::string pMsg)
+{
+	Write(pMsg, "User");
+}
+
+void W_Logger::Warning(std::wstring pMsg)
+{
+	Write(pMsg, L"Warning");
+}
+
 void W_Logger::Warning(std::string pMsg)
 {
 	Write(pMsg, "Warning");
+}
+
+void W_Logger::Error(std::wstring pMsg)
+{
+	Write(pMsg, L"Error");
 }
 
 void W_Logger::Error(std::string pMsg)
@@ -99,8 +122,8 @@ ULONG W_Logger::Release()
 {
 	if (this->isReleased) return 0;
 
-	Write("Wolf shut down");
-	logFile << "\r\n\t}\r\n}";
+	Write(L"Wolf shut down");
+	logFile << L"\r\n\t}\r\n}";
 	logFile.flush();
 	logFile.close();
 

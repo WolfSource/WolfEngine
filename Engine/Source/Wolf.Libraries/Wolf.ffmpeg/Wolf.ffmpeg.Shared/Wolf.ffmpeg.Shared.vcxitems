@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{B16A2F09-667B-4F05-ADC0-1FF300AEB3E5}</ItemsProjectGuid>
+    <ItemsRootNamespace>Wolf_DirectX</ItemsRootNamespace>
+    <ItemsProjectName>Wolf.ffmpeg.Shared</ItemsProjectName>
+    <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
+    <ItemsSccProjectName>SAK</ItemsSccProjectName>
+    <ItemsSccAuxPath>SAK</ItemsSccAuxPath>
+    <ItemsSccLocalPath>SAK</ItemsSccLocalPath>
+    <ItemsSccProvider>SAK</ItemsSccProvider>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)W_ffmpeg.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Wolf.ffmpeg.Shared.PCH.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)dllmain.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)W_ffmpeg.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Wolf.ffmpeg.Shared.PCH.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>Wolf.ffmpeg.Shared.PCH.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+</Project>
