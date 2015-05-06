@@ -13,7 +13,7 @@ You can use it under <a href="https://github.com/PooyaEimandar/WolfEngine/blob/m
 </ul>
 <p><strong>Follow <a href="https://twitter.com/wolf_engine">@Wolf_Engine</a> on Twitter</strong>.</p>
 
-<p><strong>Whats new on Version 1.1.0.0</strong></p>
+<p><strong>Whats new on this Version 1.1.0.0</strong></p>
 <ul>
 <li><strong>Wolf.ffmpeg</strong> has been added. You can handle video and audio with this library</li>
 <li><strong>W_Window</strong> has been added. Create your window just with this class</li>
