@@ -7,11 +7,12 @@ You can use it under <a href="https://github.com/PooyaEimandar/WolfEngine/blob/m
 
 <p><strong>The latest binaries of stable version is on the <a href="https://wolfengine.codeplex.com/">CodePlex</a>.</strong></p>
 
+<p><strong>Follow <a href="https://twitter.com/wolf_engine">@Wolf_Engine</a> on Twitter</strong>.</p>
+
 <p><strong>Projects using Wolf Engine</strong></p>
 <ul>
 <li><a href="http://en.alalam.ir">Alalam news network TV</a> is using Wolf Engine in their new <a href="https://www.youtube.com/watch?v=EZSdEjBvuGY">Playout & CG editor toolkit.</a> </li>
 </ul>
-<p><strong>Follow <a href="https://twitter.com/wolf_engine">@Wolf_Engine</a> on Twitter</strong>.</p>
 
 <p><strong>Whats new on this Version 1.1.0.0</strong></p>
 <ul>
