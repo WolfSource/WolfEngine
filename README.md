@@ -7,7 +7,7 @@ You can use it under <a href="https://github.com/PooyaEimandar/WolfEngine/blob/m
 
 <p><strong>The latest binaries of stable version is on the <a href="https://wolfengine.codeplex.com/">CodePlex</a>.</strong></p>
 
-<p><strong>Follow <a href="https://twitter.com/WolfSource">@WolfSource</a> on Twitter</strong>.</p>
+<p><strong>Follow <a href="https://twitter.com/Wolf_Source">@Wolf_Source</a> on Twitter</strong>.</p>
 
 <p><strong>Projects using Wolf Engine</strong></p>
 <ul>
