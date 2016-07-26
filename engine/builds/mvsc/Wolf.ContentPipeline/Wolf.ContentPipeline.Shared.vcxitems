@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{041793EB-464E-48BB-977C-A696274814D5}</ItemsProjectGuid>
+    <ItemsRootNamespace>Wolf_DirectX</ItemsRootNamespace>
+    <ItemsProjectName>Wolf.ContentPipeline.Shared</ItemsProjectName>
+    <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
+    <ItemsSccProjectName>SAK</ItemsSccProjectName>
+    <ItemsSccAuxPath>SAK</ItemsSccAuxPath>
+    <ItemsSccLocalPath>SAK</ItemsSccLocalPath>
+    <ItemsSccProvider>SAK</ItemsSccProvider>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_node.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_parser.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\dllmain.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_camera.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_content_manager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>w_cpipeline_pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_model.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_scene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_bone.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_node.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_obj.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_parser.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_extra.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_animation.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\collada\c_skin.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_camera.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_cpipeline_dll.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_model.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_scene.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_vertex_declaration.h" />
+  </ItemGroup>
+</Project>
