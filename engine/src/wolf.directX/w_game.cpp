@@ -21,9 +21,9 @@ w_game::~w_game()
 {
 }
 
-void w_game::initialize(map<int, vector<W_WindowInfo>> pOutputWindowsInfo)
+void w_game::initialize(map<int, vector<w_window_info>> pOutputWindowsInfo)
 {
-	logger.initialize(this->_appName);
+	logger.initialize(this->_app_name);
 	w_graphics_device_manager::initialize();
 	w_graphics_device_manager::initialize_output_windows(pOutputWindowsInfo);
 }
@@ -81,7 +81,8 @@ void w_game::end_render(const wolf::system::w_game_time& pGameTime)
 			{
 				_final_msg += _msgs.at(i) + L"\r\n";
 			}
-			this->sprite_batch->draw_string(_final_msg, D2D1::RectF(5, 5, get_window_width() / 2, get_window_height()));
+			this->sprite_batch->draw_string(_final_msg, 
+				D2D1::RectF(5, 5, static_cast<FLOAT>(get_window_width() / 2), static_cast<FLOAT>(get_window_height())));
 		}
 		this->sprite_batch->end();
 
@@ -103,7 +104,7 @@ HRESULT w_game::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pL
 	return S_FALSE;
 }
 
-bool w_game::run(map<int, vector<W_WindowInfo>> pOutputWindowsInfo)
+bool w_game::run(map<int, vector<w_window_info>> pOutputWindowsInfo)
 {
 	if (this->loadState == LoadState::NOTLOADED)
 	{
@@ -134,13 +135,13 @@ bool w_game::run(map<int, vector<W_WindowInfo>> pOutputWindowsInfo)
 
 	if (this->loadState != LoadState::LOADED) return true;
 
-	update(this->_gameTime);
+	update(this->_game_time);
 
-	this->_gameTime.tick([&]()
+	this->_game_time.tick([&]()
 	{
-		begin_render(this->_gameTime);
-		render(this->_gameTime);
-		end_render(this->_gameTime);
+		begin_render(this->_game_time);
+		render(this->_game_time);
+		end_render(this->_game_time);
 	});
 
 	return !this->exiting;

@@ -38,12 +38,8 @@
 #include <DirectXMath.h>
 
 //for directX graphics diagnostic debugging and capturing frame
-#if defined(_DEBUG) && defined(__DX_DIAGNOSTIC__)
-
 #include <DXGItype.h>
 #include <DXProgrammableCapture.h>
-
-#endif
 
 //C++AMP
 #include <amp.h>
@@ -62,7 +58,7 @@ namespace wolf
 	{
 		enum GPGPU_TYPE { CPP_AMP, OPENCL, NONE };
 		enum CPP_AMP_DEVICE_TYPE { DEFAULT, CPU, GPU, GPU_REF, GPU_WARP};
-
+		
 		//Output window which handles all direct 3d resources for output renderer
 		struct w_output_window
 		{
@@ -121,6 +117,13 @@ namespace wolf
 				if (this->_is_released) return 0;
 				this->_is_released = true;
 
+				for (size_t i = 0; i < this->output_windows.size(); ++i)
+				{
+					this->output_windows.at(i).release();
+				}
+				this->output_windows.clear();
+				this->dxgi_outputs_desc.clear();
+
 				auto _size = this->command_queue.size();
 				if (_size > 0)
 				{
@@ -135,21 +138,20 @@ namespace wolf
 					}
 					this->command_queue.clear();
 				}
+				
+				COMPTR_RELEASE(this->_opaque);
+				COMPTR_RELEASE(this->_alpha_blend);
+				COMPTR_RELEASE(this->_additive);
+				COMPTR_RELEASE(this->_non_pre_multiplied);
 
 				COMPTR_RELEASE(this->d2D_multithread);
+				COMPTR_RELEASE(this->write_factory);
 				COMPTR_RELEASE(this->image_factory);
 				COMPTR_RELEASE(this->factory_2D);
-				COMPTR_RELEASE(this->write_factory);
+				COMPTR_RELEASE(this->target_2D);
 				COMPTR_RELEASE(this->context_2D);
 				COMPTR_RELEASE(this->device_2D);
-
-				for (size_t i = 0; i < this->output_windows.size(); ++i)
-				{
-					this->output_windows.at(i).release();
-				}
-				this->output_windows.clear();
-				this->dxgi_outputs_desc.clear();
-
+				
 				COMPTR_RELEASE(this->context);
 				COMPTR_RELEASE(this->device);
 
@@ -183,10 +185,6 @@ namespace wolf
 
 			std::vector<ID3D11CommandList*>										command_queue;
 
-#ifdef _DEBUG
-			Microsoft::WRL::ComPtr<ID3D11Debug>									d3d_debug_layer;
-#endif
-
 			DX_EXP void create_blend_state(
 				BOOL pBlendEnable,
 				D3D11_BLEND pSrcBlend, D3D11_BLEND pDestBlend,
@@ -219,7 +217,7 @@ namespace wolf
 			//Initialize graphics devices
 			DX_EXP virtual void initialize();
 			//Initialize the output windows
-			DX_EXP virtual void initialize_output_windows(std::map<int, std::vector<W_WindowInfo>> pOutputWindowsInfo);
+			DX_EXP virtual void initialize_output_windows(std::map<int, std::vector<w_window_info>> pOutputWindowsInfo);
 			//Called when corresponding window resized
 			DX_EXP virtual void on_window_resized(UINT pIndex);
 			//Called when any graphics device lost
@@ -232,24 +230,23 @@ namespace wolf
 			DX_EXP ULONG release() override;
 
 			DX_EXP static std::vector<Microsoft::WRL::ComPtr<ID3D11SamplerState>>	samplers;
-			DX_EXP static std::unique_ptr<concurrency::accelerator_view>  cAmpAcc;
+			//Get pointer to the C++ AMP accelerator 
+			DX_EXP static concurrency::accelerator get_camp_accelerator(const CPP_AMP_DEVICE_TYPE pCppAMPDeviceType);
 
-#if defined(_DEBUG) && defined(__DX_DIAGNOSTIC__)
 			DX_EXP static Microsoft::WRL::ComPtr<IDXGraphicsAnalysis> graphics_diagnostic;
-#endif
 
 #pragma region Getters
 
 			//Get the main graphics device, this is first and the primary device.
-			std::shared_ptr<w_graphics_device> get_graphics_device() const		{ return this->_graphics_devices.size() > 0 ? this->_graphics_devices.at(0) : nullptr; }
+			std::shared_ptr<w_graphics_device> get_graphics_device() const		{ return this->graphics_devices.size() > 0 ? this->graphics_devices.at(0) : nullptr; }
 			//Returns number of available graphics devices
-			const ULONG get_number_of_graphics_devices() const					{ return static_cast<ULONG>(this->_graphics_devices.size()); }
+			const ULONG get_number_of_graphics_devices() const					{ return static_cast<ULONG>(this->graphics_devices.size()); }
 			//Get deafult window HWND
-			const HWND get_window_hWnd() const									{ return this->_windowsInfo.size() == 0 || this->_windowsInfo.at(0).size() == 0 ? NULL : this->_windowsInfo.at(0).at(0).hWnd; }
+			const HWND get_window_hWnd() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? NULL : this->_windows_info.at(0).at(0).hWnd; }
 			//Get deafult window width
-			const UINT get_window_width() const									{ return this->_windowsInfo.size() == 0 || this->_windowsInfo.at(0).size() == 0 ? 0 : this->_windowsInfo.at(0).at(0).width; }
+			const UINT get_window_width() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? 0 : this->_windows_info.at(0).at(0).width; }
 			//Get deafult window height
-			const UINT get_window_height() const								{ return this->_windowsInfo.size() == 0 || this->_windowsInfo.at(0).size() == 0 ? 0 : this->_windowsInfo.at(0).at(0).height; }
+			const UINT get_window_height() const								{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? 0 : this->_windows_info.at(0).at(0).height; }
 			//Get DPI
 			const DirectX::XMFLOAT2 get_dpi() const;
 			//Get pixels to inches
@@ -257,15 +254,9 @@ namespace wolf
 
 #pragma endregion
 
-#pragma region Setters
-
-			void Set_Cpp_AMP_Device_Type(CPP_AMP_DEVICE_TYPE pValue)			{ this->_cpp_AMP_Device_Type = pValue; }
-		
-#pragma endregion
-
 		protected:
-			float																_backColor[4];
-			std::vector<std::shared_ptr<w_graphics_device>>						_graphics_devices;
+			float																clear_color[4];
+			std::vector<std::shared_ptr<w_graphics_device>>						graphics_devices;
 
 		private:
 			typedef  system::w_object											_super;
@@ -275,8 +266,7 @@ namespace wolf
 			HRESULT _create_swapChain_for_window(std::shared_ptr<w_graphics_device> pGDevice, w_output_window& pOutputWindow);
 
 			bool																_use_warp_mode;
-			std::map<int, std::vector<W_WindowInfo>>							_windowsInfo;
-			CPP_AMP_DEVICE_TYPE													_cpp_AMP_Device_Type;
+			std::map<int, std::vector<w_window_info>>							_windows_info;
 
 #if defined (__DX12__)
 			Microsoft::WRL::ComPtr<IDXGIFactory4>								_dxgi_factory;

@@ -4,11 +4,11 @@
 std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> w_window::msg_proc_func = nullptr;
 
 w_window::w_window() :
-	_fullScreen(false), 
-	_screenWidth(800), 
-	_screenHeight(600), 
-	_screenPosX(0), 
-	_screenPosY(0),
+	_full_screen(false), 
+	_screen_width(800), 
+	_screen_height(600), 
+	_screen_posX(-1), 
+	_screen_posY(-1),
 	_close(false)
 {
 	set_fixed_timeStep(true);
@@ -34,8 +34,8 @@ void w_window::initialize()
 	this->_hInstance = NULL;
 	this->_hWnd = NULL;
 	this->_hdc = NULL;
-	this->_appName = L"Wolf Engine";
-	UnregisterClass(this->_appName, NULL);
+	this->_app_name = L"Wolf Engine";
+	UnregisterClass(this->_app_name, NULL);
 
 
 	// Get the instance of this application.
@@ -53,25 +53,23 @@ void w_window::initialize()
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	wc.lpszMenuName = NULL;
-	wc.lpszClassName = this->_appName;
+	wc.lpszClassName = this->_app_name;
 	wc.cbSize = sizeof(WNDCLASSEX);
 
 	// Register the window class.
 	RegisterClassEx(&wc);
 
-	// Determine the resolution of the clients desktop screen.
-	this->_screenWidth = GetSystemMetrics(SM_CXSCREEN);
-	this->_screenHeight = GetSystemMetrics(SM_CYSCREEN);
-
 	// Setup the screen
 	DEVMODE devMode;
 
-	if (this->_fullScreen)
+	if (this->_full_screen)
 	{
+		// Determine the resolution of the clients desktop screen and create full screen window
+
 		ZeroMemory(&devMode, sizeof(DEVMODE));
 		devMode.dmSize = sizeof(devMode);
-		devMode.dmPelsWidth = static_cast<unsigned long>(this->_screenWidth);
-		devMode.dmPelsHeight = static_cast<unsigned long>(this->_screenHeight);
+		devMode.dmPelsWidth = static_cast<unsigned long>(GetSystemMetrics(SM_CXSCREEN));
+		devMode.dmPelsHeight = static_cast<unsigned long>(GetSystemMetrics(SM_CYSCREEN));
 		devMode.dmBitsPerPel = 32;
 		devMode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
@@ -81,24 +79,24 @@ void w_window::initialize()
 	}
 	else
 	{
-		this->_screenWidth = 800;
-		this->_screenHeight = 600;
-
 		//Middle screen
-		this->_screenPosX = (GetSystemMetrics(SM_CXSCREEN) - this->_screenWidth) / 2;
-		this->_screenPosY = (GetSystemMetrics(SM_CYSCREEN) - this->_screenHeight) / 2;
+		if (this->_screen_posX == -1 || this->_screen_posY == -1)
+		{
+			this->_screen_posX = (GetSystemMetrics(SM_CXSCREEN) - this->_screen_width) / 2;
+			this->_screen_posY = (GetSystemMetrics(SM_CYSCREEN) - this->_screen_height) / 2;
+		}
 	}
 
 	// Create the window with the screen settings and get the handle to it.
 	this->_hWnd = CreateWindowEx(
 		WS_EX_APPWINDOW,
-		this->_appName,
-		this->_appName,
+		this->_app_name,
+		this->_app_name,
 		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
-		this->_screenPosX,
-		this->_screenPosY,
-		this->_screenWidth,
-		this->_screenHeight,
+		this->_screen_posX,
+		this->_screen_posY,
+		this->_screen_width,
+		this->_screen_height,
 		NULL,
 		NULL,
 		this->_hInstance,
@@ -156,8 +154,8 @@ ULONG w_window::release()
 	this->_hWnd = NULL;
 	this->_hdc = NULL;
 
-	UnregisterClass(this->_appName, NULL);
-	this->_appName = NULL;
+	UnregisterClass(this->_app_name, NULL);
+	this->_app_name = NULL;
 
 	return w_object::release();
 }
@@ -166,12 +164,28 @@ ULONG w_window::release()
 
 void w_window::set_fullScreen(bool pValue)
 {
-	this->_fullScreen = pValue;
+	this->_full_screen = pValue;
 }
 
 void w_window::set_fixed_timeStep(bool pValue)
 {
-	this->_gameTime.set_fixed_time_step(pValue);
+	this->_game_time.set_fixed_time_step(pValue);
+}
+
+void w_window::set_width(const int pValue)
+{
+	this->_screen_width = pValue;
+}
+
+void w_window::set_height(const int pValue)
+{
+	this->_screen_height = pValue;
+}
+
+void w_window::set_position(const int pX, const int pY)
+{
+	this->_screen_posX = pX;
+	this->_screen_posY = pY;
 }
 
 #pragma endregion
@@ -190,22 +204,22 @@ HWND w_window::get_HWND() const
 
 UINT w_window::get_width() const
 {
-	return this->_screenWidth;
+	return this->_screen_width;
 }
 
 UINT w_window::get_height() const
 {
-	return this->_screenHeight;
+	return this->_screen_height;
 }
 
 bool w_window::get_fixed_timeStep() const
 {
-	return this->_gameTime.get_fixed_timeStep();
+	return this->_game_time.get_fixed_timeStep();
 }
 
 bool w_window::get_fullScreen() const
 {
-	return this->_fullScreen;
+	return this->_full_screen;
 }
 
 #pragma endregion

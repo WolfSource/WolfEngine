@@ -37,11 +37,7 @@ HRESULT w_texture_2D::create_colorBar(_In_ ID3D11Device1* pDevice, UINT pWidth, 
 	}
 	else
 	{
-		if (pGPGPU_Type == GPGPU_TYPE::CPP_AMP)
-		{
-			assert(graphics::w_graphics_device_manager::cAmpAcc != nullptr, "C++AMP must be Initialized before using");
-		}
-		else if (pGPGPU_Type == GPGPU_TYPE::OPENCL)
+		if (pGPGPU_Type == GPGPU_TYPE::OPENCL)
 		{
 			assert(false, "OpenCL is not supported yet");
 		}
@@ -73,10 +69,10 @@ HRESULT w_texture_2D::create_colorBar(_In_ ID3D11Device1* pDevice, UINT pWidth, 
 		_create_shader_resource_view(pDevice, pFormat, _arraySize, _mipLevels);
 
 		//Fill texture with C++AMP 
-		auto _cAmpAcc = graphics::w_graphics_device_manager::cAmpAcc.get();
+		auto _cAmpAcc = w_graphics_device_manager::get_camp_accelerator(CPP_AMP_DEVICE_TYPE::DEFAULT);
 
 		// Create Amp textures
-		auto _amp_texture = make_texture<unorm4, 2>(*_cAmpAcc, this->_texture_2D.Get());
+		auto _amp_texture = make_texture<unorm4, 2>(_cAmpAcc.default_view, this->_texture_2D.Get());
 		texture_view<unorm4, 2> amp_texture_view(_amp_texture);
 
 		std::vector<unorm4> _colorData =
@@ -130,7 +126,7 @@ HRESULT w_texture_2D::create_colorBar(_In_ ID3D11Device1* pDevice, UINT pWidth, 
 
 			amp_texture_view.set(pIdx, array_color[_index]);
 		});
-
+		
 		return hr;
 	}
 }
@@ -192,11 +188,7 @@ HRESULT w_texture_2D::create(_In_ ID3D11Device1* pDevice, UINT pWidth, UINT pHei
 	}
 	else
 	{
-		if (pGPGPU_Type == GPGPU_TYPE::CPP_AMP)
-		{
-			assert(graphics::w_graphics_device_manager::cAmpAcc != nullptr, "C++AMP must be Initialized before using");
-		}
-		else if (pGPGPU_Type == GPGPU_TYPE::OPENCL)
+		if (pGPGPU_Type == GPGPU_TYPE::OPENCL)
 		{
 			assert(false, "OpenCL is not supported yet");
 		}
@@ -228,10 +220,10 @@ HRESULT w_texture_2D::create(_In_ ID3D11Device1* pDevice, UINT pWidth, UINT pHei
 		_create_shader_resource_view(pDevice, pFormat, _arraySize, _mipLevels);
 
 		//Fill texture with C++AMP 
-		auto _cAmpAcc = graphics::w_graphics_device_manager::cAmpAcc.get();
+		auto _cAmpAcc = w_graphics_device_manager::get_camp_accelerator(CPP_AMP_DEVICE_TYPE::DEFAULT);
 
 		// Create Amp textures
-		auto _amp_texture = make_texture<int, 2>(*_cAmpAcc, this->_texture_2D.Get());
+		auto _amp_texture = make_texture<int, 2>(_cAmpAcc.default_view, this->_texture_2D.Get());
 		auto _size = _amp_texture.extent.size();
 		
 		UINT r = static_cast<UINT>(pColor.r * 255);

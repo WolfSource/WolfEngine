@@ -63,7 +63,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	sWindow->initialize();
 
 	//run the main loop
-	map<int, vector<W_WindowInfo>> _windowsInfo = { { 0, { { sWindow->get_HWND(), sWindow->get_width(), sWindow->get_height() } } } };
+	map<int, vector<w_window_info>> _windowsInfo = { { 0, { { sWindow->get_HWND(), sWindow->get_width(), sWindow->get_height() } } } };
 	std::function<void(void)> _run_func = [&_windowsInfo]()->void
 	{
 		service.run();

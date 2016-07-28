@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{27F091C2-9317-45A2-8ECD-367C528AD739}</ProjectGuid>
+    <ProjectGuid>{BE50605A-745E-48A0-9948-D820AFF18729}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>_01_Window_DX11_1</RootNamespace>
-    <ProjectName>01-Window_DX11_1.Win32</ProjectName>
+    <RootNamespace>_02_Multiple_Windows_DX11_1.Win32</RootNamespace>
+    <ProjectName>02-Multiple_Windows_DX11_1.Win32</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -103,8 +103,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../engine/src/wolf.system;$(SolutionDir)/../../engine/src/wolf.directX;$(SolutionDir)/../../engine/dependencies/boost/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__WIN32;_UNICODE;UNICODE;__DX11_1__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../engine/src/wolf.system;$(SolutionDir)/../../engine/src/wolf.directX;$(SolutionDir)/../../engine/dependencies/boost/include;$(SolutionDir)../../engine/dependencies/TBB/tbb44_20160526oss/win/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_UNICODE;UNICODE;__DX11_1__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -116,20 +116,21 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../../engine/dependencies/boost/lib/x64/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Wolf.System.Win32.lib;Wolf.DirectX11_X.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../../engine/dependencies/boost/lib/x64/;$(SolutionDir)/../../engine/dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../engine/src/wolf.system;$(SolutionDir)/../../engine/src/wolf.directX;$(SolutionDir)/../../engine/dependencies/boost/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;__DX11_1__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../engine/src/wolf.system;$(SolutionDir)/../../engine/src/wolf.directX;$(SolutionDir)/../../engine/dependencies/boost/include;$(SolutionDir)../../engine/dependencies/TBB/tbb44_20160526oss/win/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_UNICODE;UNICODE;__DX11_1__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Wolf.System.Win32.lib;Wolf.DirectX11_X.Win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../../engine/dependencies/boost/lib/x64/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../../engine/dependencies/boost/lib/x64/;$(SolutionDir)/../../engine/dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AssemblyDebug>false</AssemblyDebug>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -139,8 +140,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

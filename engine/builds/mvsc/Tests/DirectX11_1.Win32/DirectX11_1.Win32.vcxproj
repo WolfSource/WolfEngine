@@ -129,6 +129,7 @@
     <Link>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:/Python/Python35/libs;</AdditionalLibraryDirectories>
+      <AssemblyDebug>false</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

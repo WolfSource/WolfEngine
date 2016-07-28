@@ -15,9 +15,30 @@
 #include "w_system_dll.h"
 #include "w_game_time.h"
 #include <functional>
+#include <vector>
+
+struct w_enumerate_monitors
+{
+	std::vector<RECT>   monitors;
+	RECT                combined;
+
+	static BOOL CALLBACK enumerate_monitors(HMONITOR pHMonitor, HDC pHDC, LPRECT pLRect, LPARAM pLParam)
+	{
+		auto _this = reinterpret_cast<w_enumerate_monitors*>(pLParam);
+		_this->monitors.push_back(*pLRect);
+		UnionRect(&_this->combined, &_this->combined, pLRect);
+		return TRUE;
+	}
+
+	w_enumerate_monitors()
+	{
+		SetRectEmpty(&this->combined);
+		EnumDisplayMonitors(0, 0, enumerate_monitors, (LPARAM)this);
+	}
+};
 
 //Store the information of window
-struct W_WindowInfo
+struct w_window_info
 {
 	HWND hWnd;
 	UINT width;
@@ -47,6 +68,12 @@ public:
 	SYS_EXP void set_fixed_timeStep(bool pValue);
 	//Set windows is fullscreen
 	SYS_EXP void set_fullScreen(bool pValue);
+	//Set window with
+	SYS_EXP void set_width(const int pValue);
+	//Set window height
+	SYS_EXP void set_height(const int pValue);
+	//Set position of window 
+	SYS_EXP void set_position(const int pX, const int pY);
 
 #pragma endregion
 
@@ -73,17 +100,17 @@ private:
 	typedef w_object _super;
 
 	bool						_close;
-	LPCWSTR						_appName;
+	LPCWSTR						_app_name;
 	HINSTANCE					_hInstance;
 	HWND						_hWnd;
 	HDC							_hdc;
-	int							_screenWidth;
-	int							_screenHeight;
-	int							_screenPosX;
-	int							_screenPosY;
-	bool						_fullScreen;
-	bool						_fixedTimeStep;
-	wolf::system::w_game_time	_gameTime;
+	int							_screen_width;
+	int							_screen_height;
+	int							_screen_posX;
+	int							_screen_posY;
+	bool						_full_screen;
+	bool						_fixed_time_step;
+	wolf::system::w_game_time	_game_time;
 };
 
 #endif

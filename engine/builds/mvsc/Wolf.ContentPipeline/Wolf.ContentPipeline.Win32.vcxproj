@@ -139,6 +139,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>No</GenerateDebugInformation>
+      <AssemblyDebug>false</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

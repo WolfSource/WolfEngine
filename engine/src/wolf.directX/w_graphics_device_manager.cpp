@@ -16,20 +16,23 @@ using namespace Microsoft::WRL;
 #define DEFAULT_HEIGHT 600
 const unsigned int bytesPerPixel = 4;
 
+static std::once_flag sOnceFlag;
 std::vector<Microsoft::WRL::ComPtr<ID3D11SamplerState>>	w_graphics_device_manager::samplers;
-std::unique_ptr<concurrency::accelerator_view>  w_graphics_device_manager::cAmpAcc;
 
-#if  defined(_DEBUG) && defined(__DX_DIAGNOSTIC__)
-	ComPtr<IDXGraphicsAnalysis> w_graphics_device_manager::graphics_diagnostic;
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D11Debug>									d3d_debug_layer;
 #endif
+
+ComPtr<IDXGraphicsAnalysis> w_graphics_device_manager::graphics_diagnostic;
 
 #pragma region w_graphics_device_manager
 
-w_graphics_device_manager::w_graphics_device_manager(bool pUse_Wrap_Mode) : _use_warp_mode(pUse_Wrap_Mode), _cpp_AMP_Device_Type(CPP_AMP_DEVICE_TYPE::GPU)
+w_graphics_device_manager::w_graphics_device_manager(bool pUse_Wrap_Mode) : _use_warp_mode(pUse_Wrap_Mode)
 {
 	_super::set_class_name(typeid(this).name());
-
-	this->_backColor[0] = 0.149f; this->_backColor[1] = 0.149f; this->_backColor[2] = 0.149f; this->_backColor[3] = 1.0f;
+	
+	//set corn_flower_blue for back color
+	this->clear_color[0] = 0.392f; this->clear_color[1] = 0.584f; this->clear_color[2] = 0.929f; this->clear_color[3] = 1.0f;
 
 	// Enable the D3D12 debug layer.
 #if defined(__DX12__)
@@ -44,6 +47,24 @@ w_graphics_device_manager::w_graphics_device_manager(bool pUse_Wrap_Mode) : _use
 
 #endif
 
+	std::call_once( sOnceFlag, []()
+	{	
+		logger.write(L"Following accelerators are avaiable on this machine:");
+		std::vector<concurrency::accelerator> accelerators = concurrency::accelerator::get_all();
+		for (auto it = accelerators.begin(); it != accelerators.end(); ++it)
+		{
+			if (!(*it).get_has_display())
+			{
+				logger.write(L"C++ AMP accelerator : " + (*it).description + L" without display");
+			}
+			else
+			{
+				logger.write(L"C++ AMP accelerator : " + (*it).description);
+			}
+		}
+		accelerators.clear();
+	});
+
 	//list all information of graphics devices
 	_enumerate_devices();
 }
@@ -56,7 +77,7 @@ w_graphics_device_manager::~w_graphics_device_manager()
 void w_graphics_device_manager::initialize()
 {
 	//If there is no assiociated graphics device
-	if (this->_graphics_devices.size() == 0)
+	if (this->graphics_devices.size() == 0)
 	{
 		V(S_FALSE, L"getting graphics device. No device available", this->name, 3, true, false);
 	}
@@ -73,54 +94,24 @@ void w_graphics_device_manager::initialize()
 		D3D11_TEXTURE_ADDRESS_WRAP
 	};
 	w_texture_2D::create_sampler(
-		this->_graphics_devices.at(0),
+		this->graphics_devices.at(0),
 		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
 		_AddressUVW);
 
 #pragma endregion
-
-#pragma region Cpp Amp
-
-	if (this->_cpp_AMP_Device_Type == CPP_AMP_DEVICE_TYPE::CPU)
-	{
-		//Create C++ Amp Accelerator from Windows CPU
-		auto _cpuAcc = concurrency::accelerator(concurrency::accelerator::cpu_accelerator);
-		cAmpAcc = std::make_unique<concurrency::accelerator_view>(_cpuAcc.default_view);
-	}
-	else if (this->_cpp_AMP_Device_Type == CPP_AMP_DEVICE_TYPE::GPU_REF)
-	{
-		//Create C++ Amp Accelerator from GPU reference
-		auto _refAcc = concurrency::accelerator(concurrency::accelerator::direct3d_ref);
-		cAmpAcc = std::make_unique<concurrency::accelerator_view>(_refAcc.default_view);
-	}
-	else if (this->_cpp_AMP_Device_Type == CPP_AMP_DEVICE_TYPE::GPU_WARP)
-	{
-		//Create C++ Amp Accelerator from Windows Advanced Rasterization Platform(WARP)
-		auto _warpAcc = concurrency::accelerator(concurrency::accelerator::direct3d_warp);
-		cAmpAcc = std::make_unique<concurrency::accelerator_view>(_warpAcc.default_view);
-	}
-	else if(this->_cpp_AMP_Device_Type == CPP_AMP_DEVICE_TYPE::GPU)
-	{
-		//Create C++ Amp Accelerator from first DirectX device
-		auto _d3dDevice = this->_graphics_devices.at(0)->device.Get();
-		cAmpAcc = std::make_unique<concurrency::accelerator_view>(concurrency::direct3d::create_accelerator_view(reinterpret_cast<IUnknown *>(_d3dDevice)));
-	}
-	else
-	{
-		//Default
-		auto _defaultAcc = concurrency::accelerator(concurrency::accelerator::default_accelerator);
-		cAmpAcc = std::make_unique<concurrency::accelerator_view>(_defaultAcc.default_view);
-	}
-
-	logger.write(L"C++ AMP created with following device : " + cAmpAcc->accelerator.description);
-
-#pragma endregion
-
-#if defined(_DEBUG) && defined(__DX_DIAGNOSTIC__)
+		
 	auto _hr = DXGIGetDebugInterface1(0, __uuidof(graphics_diagnostic), reinterpret_cast<void**>(graphics_diagnostic.GetAddressOf()));
+#ifdef _DEBUG
 	if (FAILED(_hr))
 	{
 		logger.error(L"Application could not use graphics diagnostic debug interface, capturing frame during running application might abort application");
+	}
+#else
+	if (SUCCEEDED(_hr))
+	{
+		logger.error(L"Application could not use graphics diagnostic debug under release mode, aborting application");
+		release();
+		exit(1);
 	}
 #endif
 }
@@ -175,9 +166,9 @@ void w_graphics_device_manager::_enumerate_devices()
 		logger.write(L"++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
 		/*
-		Acording to MSDN, starting with Windows 8, an adapter called the "Microsoft Basic Render Driver"
-		is always present.This adapter has a VendorId of 0x1414 and a DeviceID of 0x8c.
-		Wolf will skip it.
+			Acording to MSDN, starting with Windows 8, an adapter called the "Microsoft Basic Render Driver"
+			is always present.This adapter has a VendorId of 0x1414 and a DeviceID of 0x8c.
+			Wolf will skip it.
 		*/
 		if (_adapter_desc.DeviceId == 140)
 		{
@@ -203,7 +194,7 @@ void w_graphics_device_manager::_enumerate_devices()
 				_gDevice->dxgi_outputs_desc.push_back(_output_desc);
 			}
 
-			this->_graphics_devices.push_back(_gDevice);
+			this->graphics_devices.push_back(_gDevice);
 
 			COMPTR_RELEASE(_dxgi_output);
 		}
@@ -230,21 +221,23 @@ void w_graphics_device_manager::_create_device()
 #elif defined(__DX11_X__)
 
 	//now create a d3dDevice & d3dContext for default graphics adaptor 
-
-	//enable debug layer for directX 11.1
+	
+	//support BGRA
 	UINT _creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+	//enable debug layer for directX 11.1
 #ifdef _DEBUG
 	//For debugging
 	//_creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 	_creationFlags |= D3D11_CREATE_DEVICE_DEBUGGABLE;//Debugging shaders
+
 #endif
 
-	if (this->_graphics_devices.size() == 0)
+	if (this->graphics_devices.size() == 0)
 	{
 		V(S_FALSE, L"Unexpected error, no graphics device detected", this->name, 3, true, false);
 	}
 
-	auto _gDevice = this->_graphics_devices.at(0);
+	auto _gDevice = this->graphics_devices.at(0);
 
 	ComPtr<ID3D11Device> _device;
 	ComPtr<ID3D11DeviceContext> _context;
@@ -434,7 +427,7 @@ void w_graphics_device_manager::_create_device()
 #pragma endregion
 
 #ifdef _DEBUG
-	_gDevice->device.Get()->QueryInterface(__uuidof(ID3D11Debug), (void**) &_gDevice->d3d_debug_layer);
+	_gDevice->device.Get()->QueryInterface(__uuidof(ID3D11Debug), (void**) &d3d_debug_layer);
 #endif
 
 	COMPTR_RELEASE(_dxgiDevice);
@@ -447,29 +440,32 @@ void w_graphics_device_manager::on_device_lost()
 	logger.write(L"Device is going to reset");
 	
 	initialize();
-	initialize_output_windows(this->_windowsInfo);
+	initialize_output_windows(this->_windows_info);
 	
 	logger.write(L"Device reseted successfully");
 }
 
-void w_graphics_device_manager::initialize_output_windows(map<int, vector<W_WindowInfo>> pOutputWindowsInfo)
+void w_graphics_device_manager::initialize_output_windows(map<int, vector<w_window_info>> pOutputWindowsInfo)
 {
 	//We need to store it for the first time, in order to reseting device in the future
-	if (this->_windowsInfo.size() == 0)
+	if (this->_windows_info.size() == 0)
 	{
-		this->_windowsInfo = pOutputWindowsInfo;
+		this->_windows_info = pOutputWindowsInfo;
 	}
 
-	for (pair<int, vector<W_WindowInfo>> p : pOutputWindowsInfo)
+	for (pair<int, vector<w_window_info>> p : pOutputWindowsInfo)
 	{
+		//use each graphics device for each window, if we do not have sufficent devices, use the default device
+
+		size_t _index_of_gpu_device = p.first >= this->graphics_devices.size() ? 0 : p.first;
 		//Get graphics devices & hwnds
-		auto _gDevice = this->_graphics_devices.at(p.first);
+		auto _gDevice = this->graphics_devices.at(_index_of_gpu_device);
 		auto _windowInfo = p.second;
 
 		w_output_window _window;
 		for (size_t i = 0; i < _windowInfo.size(); ++i)
 		{
-			ZeroMemory(&_window, sizeof(w_output_window));
+			std::memset(&_window, 0, sizeof(_window));
 
 			auto wInfo = _windowInfo.at(i);
 			
@@ -489,9 +485,9 @@ void w_graphics_device_manager::initialize_output_windows(map<int, vector<W_Wind
 
 void w_graphics_device_manager::on_window_resized(UINT pIndex)
 {
-	if (pIndex >= this->_graphics_devices.size()) return;
+	if (pIndex >= this->graphics_devices.size()) return;
 
-	auto _gDevice = this->_graphics_devices.at(pIndex);
+	auto _gDevice = this->graphics_devices.at(pIndex);
 	auto _size = _gDevice->output_windows.size();
 	for (size_t j = 0; j < _size; ++j)
 	{
@@ -656,9 +652,9 @@ HRESULT w_graphics_device_manager::_create_swapChain_for_window(std::shared_ptr<
 void w_graphics_device_manager::begin_render()
 {
 	//In DX11.1 mode, we have only one graphics device
-	for (size_t i = 0; i < this->_graphics_devices.size(); ++i)
+	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 	{
-		auto _gDevice = this->_graphics_devices.at(i);
+		auto _gDevice = this->graphics_devices.at(i);
 
 		for (size_t j = 0; j < _gDevice->output_windows.size(); ++j)
 		{
@@ -670,7 +666,7 @@ void w_graphics_device_manager::begin_render()
 
 			_context->RSSetViewports(1, &_window.viewPort);
 			_context->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView);
-			_context->ClearRenderTargetView(_renderTargetView.Get(), this->_backColor);
+			_context->ClearRenderTargetView(_renderTargetView.Get(), this->clear_color);
 			_context->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 			_depthStencilView = nullptr;
@@ -684,9 +680,9 @@ void w_graphics_device_manager::end_render()
 	DXGI_PRESENT_PARAMETERS _parameters;
 	ZeroMemory(&_parameters, sizeof(DXGI_PRESENT_PARAMETERS));
 
-	for (size_t i = 0; i < this->_graphics_devices.size(); ++i)
+	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 	{
-		auto _gDevice = this->_graphics_devices.at(i);
+		auto _gDevice = this->graphics_devices.at(i);
 
 		for (size_t j = 0; j < _gDevice->output_windows.size(); ++j)
 		{
@@ -720,9 +716,13 @@ ULONG w_graphics_device_manager::release()
 {
 	if (_super::is_released()) return 0;
 
+	//release windows info
+	this->_windows_info.clear();
+
+	//release dxgi factory
 	COMPTR_RELEASE(this->_dxgi_factory);
 
-	//Release samplers
+	//release samplers
 	std::for_each(samplers.begin(), samplers.end(),
 		[](Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler)->void
 	{
@@ -730,25 +730,28 @@ ULONG w_graphics_device_manager::release()
 	});
 	samplers.clear();
 
-	while (this->_graphics_devices.size() > 0)
+	while (this->graphics_devices.size() > 0)
 	{
-		auto _gDevice = this->_graphics_devices.front();
+		auto _gDevice = this->graphics_devices.front();
 
-#ifdef _DEBUG
-		_gDevice->release();
-		if (_gDevice->d3d_debug_layer)
-		{
-			_gDevice->d3d_debug_layer->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-		}
-#endif
 		SHARED_RELEASE(_gDevice);
 
-		this->_graphics_devices.pop_back();
+#ifdef _DEBUG
+		if (d3d_debug_layer.Get() != nullptr)
+		{
+			//report live detail on visual studio output
+			d3d_debug_layer->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+		}
+#endif
+
+		this->graphics_devices.pop_back();
 	}
 
-#if defined(_DEBUG) && defined(__DX_DIAGNOSTIC__)
-	COMPTR_RELEASE(graphics_diagnostic)
+#if _DEBUG
+	COMPTR_RELEASE(d3d_debug_layer);
 #endif
+
+	COMPTR_RELEASE(graphics_diagnostic)
 
 	return _super::release();
 }
@@ -756,6 +759,38 @@ ULONG w_graphics_device_manager::release()
 #pragma endregion
 
 #pragma region Getters
+
+concurrency::accelerator w_graphics_device_manager::get_camp_accelerator(const CPP_AMP_DEVICE_TYPE pCppAMPDeviceType)
+{
+	if (pCppAMPDeviceType == CPP_AMP_DEVICE_TYPE::CPU)
+	{
+		//Create C++ Amp Accelerator from Windows CPU
+		return concurrency::accelerator(concurrency::accelerator::cpu_accelerator);
+	}
+	else if (pCppAMPDeviceType == CPP_AMP_DEVICE_TYPE::GPU_REF)
+	{
+		//Create C++ Amp Accelerator from GPU reference
+		return concurrency::accelerator(concurrency::accelerator::direct3d_ref);
+	}
+	else if (pCppAMPDeviceType == CPP_AMP_DEVICE_TYPE::GPU_WARP)
+	{
+		//Create C++ Amp Accelerator from Windows Advanced Rasterization Platform(WARP)
+		return concurrency::accelerator(concurrency::accelerator::direct3d_warp);
+	}
+	else
+	{
+		//Default
+		return concurrency::accelerator(concurrency::accelerator::default_accelerator);
+	}
+
+	//logger.write(L"C++ AMP created with following device : " + _cAmpAcc->accelerator.description);
+	//else if(pCppAMPDeviceType == CPP_AMP_DEVICE_TYPE::GPU)
+	//{
+	//	//Create C++ Amp Accelerator from first DirectX device
+	//	auto _d3dDevice = this->_graphics_devices.at(0)->device.Get();
+	//	return (concurrency::direct3d::create_accelerator_view(reinterpret_cast<IUnknown*>(_d3dDevice)));
+	//}
+}
 
 const DirectX::XMFLOAT2 w_graphics_device_manager::get_dpi() const
 {

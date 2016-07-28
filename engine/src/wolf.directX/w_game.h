@@ -31,17 +31,17 @@ namespace wolf
 			DX_EXP virtual ~w_game();
 
 			//This will run the main loop cycle of the game 
-			DX_EXP bool run(std::map<int, std::vector<W_WindowInfo>> pOutputWindowsInfo);
+			DX_EXP bool run(std::map<int, std::vector<w_window_info>> pOutputWindowsInfo);
 
 			//Release all resources
 			DX_EXP ULONG release() override;
 			
 #pragma region Setters
 
-			void set_app_name(std::wstring pAppName)								{ this->_appName = pAppName; }
-			void set_fixed_time_step(bool pValue)									{ this->_gameTime.set_fixed_time_step(pValue);}
-			void set_target_elapsed_ticks(UINT64 pValue)							{ this->_gameTime.set_target_elapsed_ticks(10000000 / pValue); }
-			void set_target_elapsed_seconds(double pValue)							{ this->_gameTime.set_target_elapsed_seconds(1.0 / pValue); }
+			void set_app_name(std::wstring pAppName)								{ this->_app_name = pAppName; }
+			void set_fixed_time_step(bool pValue)									{ this->_game_time.set_fixed_time_step(pValue);}
+			void set_target_elapsed_ticks(UINT64 pValue)							{ this->_game_time.set_target_elapsed_ticks(10000000 / pValue); }
+			void set_target_elapsed_seconds(double pValue)							{ this->_game_time.set_target_elapsed_seconds(1.0 / pValue); }
 
 #pragma endregion
 
@@ -54,10 +54,10 @@ namespace wolf
 		protected:
 
 			/*
-				Allows the game to perform any initialization and it needs to before starting to run.
+				Allows the game to perform any initialization before starting to run.
 				Note that Log file will be created inside this function
 			*/
-			DX_EXP virtual void initialize(std::map<int, std::vector<W_WindowInfo>> pOutputWindowsInfo) = 0;
+			DX_EXP virtual void initialize(std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
 
 			//Load game assets
 			DX_EXP	virtual void load() = 0;
@@ -74,7 +74,7 @@ namespace wolf
 			//End render on all graphics devices
 			DX_EXP virtual void end_render(const system::w_game_time& pGameTime);
 
-			//Handle input message procedure
+			//Handle window messages
 			DX_EXP virtual HRESULT on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam);
 
 			//SpriteBatch object for debugging 
@@ -84,8 +84,8 @@ namespace wolf
 		private:
 			typedef	 wolf::graphics::w_graphics_device_manager   _super;
 
-			std::wstring										_appName;
-			wolf::system::w_game_time							_gameTime;
+			std::wstring										_app_name;
+			wolf::system::w_game_time							_game_time;
 			static std::wstring									_content_directory_path;
 
 #ifdef __MAYA

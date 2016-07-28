@@ -62,9 +62,9 @@ scene::scene()
 	w_game::set_fixed_time_step(false);
 
 	ColorF color = ColorF::Navy;
-	this->_backColor[0] = color.r;
-	this->_backColor[1] = color.g;
-	this->_backColor[2] = color.b;
+	this->clear_color[0] = color.r;
+	this->clear_color[1] = color.g;
+	this->clear_color[2] = color.b;
 
 
 	//c = new wolf::system::network::w_tcp_client(service, "127.0.0.1", 10540); //192.168.120.110
@@ -154,7 +154,7 @@ void scene::_on_received(const boost::system::error_code& pErrorCode, const size
 	logger.write(_pReceivedMessage);
 }
 
-void scene::initialize(std::map<int, std::vector<W_WindowInfo>> pOutputWindowsInfo)
+void scene::initialize(std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
 {
 	// TODO: Add your pre-initialization logic here
 
@@ -520,7 +520,7 @@ void scene::render(const wolf::system::w_game_time& pGameTime)
 {
 	// TODO: Add your drawing code here
 
-	auto _gDevice = this->_graphics_devices.at(0);
+	auto _gDevice = this->graphics_devices.at(0);
 	
 	auto _v = camera->get_transform();
 	logger.write(std::to_wstring(_v.x) + L" " + std::to_wstring(_v.y) + L" " + std::to_wstring(_v.z));
