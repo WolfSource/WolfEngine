@@ -65,7 +65,7 @@ extensively tested and makes a great starting point for learning how to use Wolf
 href="https://guides.github.com/activities/forking/" target="_blank">fork
 and clone our repository</a></b>. To use Git from the command line, see the&nbsp;<a
 href="https://help.github.com/articles/set-up-git/" target="_blank">Setting up </a>&nbsp;and&nbsp;<a href="https://help.github.com/articles/fork-a-repo/" target="_blank">Fork a Repo</a>&nbsp;articles.</li>
-<li>If you'd prefer not to use Git, you can get the source with the Clone or press download button and select &quot;<b>Download ZIP</b>&quot;
+<li>If you'd prefer not to use Git, you can get the source with the clone or press download button and select &quot;<b>Download ZIP</b>&quot;
 button on the right, however downloading <a href="https://github.com/PooyaEimandar/Wolf.Engine/releases" target="_blank">latest and stable release one</a> is highly recommended. Based on which type of download you chose; the source compressed file might be one of following formats : &quot;<b>.zip</b>&quot; or &quot;<b>.7z</b>&quot;, so make sure use the right tool for decompressing it.</li>
 <li>Install&nbsp;<b>Visual Studio 2015</b>. All desktop editions of
 Visual Studio 2015 can be used, including&nbsp;<a href="http://www.visualstudio.com/products/visual-studio-community-vs" target="_blank">Visual Studio Community 2015</a>, which is free for small teams and individual developers. Be sure to include C++ support as part of the install, which is disabled by default and also select Windows 10 SDK Kits. Wolf Engine tested on Windows 8.1 and 10 and you need to setup the right Windows SDK kits for your Windows OS. This version of Wolf Engine test on &quot;<b>Windows 10 SDK build 10586.0.</b>&quot;</li>
@@ -80,7 +80,7 @@ from &quot;<b>\Wolf.Engine\samples\win</b>&quot; and build samples.</li>
 <!--Samples-->
 <h2><a id="user-content-samples" class="anchor" href="#samples" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Building & Running</h2>
 <p>
-I've provided a blog on wolfsource.io named <a href="http://wolfsource.io/gpunotes/" target="_blank">GPU Notes</a>, which contains some tutorials for those programmers out there who want to learn gpu programming or need to use WolfSource frameworks such as Wolf engine on their own projects.
+I've provided a blog on wolfsource.io named <a href="http://wolfsource.io/gpunotes/" target="_blank">GPU Notes</a>, which contains some tutorials for those programmers out there who want to learn gpu programming or need to use WolfSource frameworks such as Wolf Engine on their own projects.
 </p> 
 <p>
 Here are the screenshots of samples, you can read full information about these sample on GPU Notes, just click on image and you will be redirected to the specific page.
@@ -96,7 +96,7 @@ Your access to and use of Wolf Engine on GitHub is governed by the&nbsp;<a href=
 <h2><a id="user-content-issues" class="anchor" href="#issues" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Issues</h2>
 <p>
 Kindly report any issues or post your question
-about Wolf.Engine on <a href="https://github.com/PooyaEimandar/Wolf.Engine/issues" target="_blank">Issues page</a>. If you have any questions about samples or tutorials, kindly comments on related sample/tutorial page on <a href="http://wolfsource.io/gpunotes/wolfengine" target="_blank">wolfsource.io</a>
+about Wolf Engine on <a href="https://github.com/PooyaEimandar/Wolf.Engine/issues" target="_blank">Issues page</a>. If you have any questions about samples or tutorials, kindly comments on related sample/tutorial page on <a href="http://wolfsource.io/gpunotes/wolfengine" target="_blank">wolfsource.io</a>
 </p>
 
 <!--Additional Notes-->
