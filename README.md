@@ -29,7 +29,7 @@ execute python files directly using “<b>wolf::</b><b>system::w_python</b>” c
 <ul>
 <li>Used &quot;<b>localtime_s</b> instead of <b>deprectaed localtime</b>&quot; in &quot;<b>w_io.h</b>&quot;.</li>
 <li>Updated to &quot;<b>Blackmagic DeckLink SDK 10.6.4</b>&quot;.</li>
-<li>Improved performance of using buffers & textures by using &quot;<b>C++AMP </b>&quot;.</li>
+<li>Improved performance of buffers & textures by using &quot;<b>C++AMP </b>&quot;.</li>
 </ul>
 
 <h3>Buf Fixes</h3>
