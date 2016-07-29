@@ -83,5 +83,32 @@ from &quot;<b>\Wolf.Engine\samples\win</b>&quot; and build samples.</li>
 I've provided a blog on wolfsource.io named <a href="http://wolfsource.io/gpunotes/" target="_blank">GPU Notes</a>, which contains some tutorials for those programmers out there who want to learn gpu programming or need to use WolfSource frameworks such as Wolf engine on their own projects.
 </p> 
 <p>
-Here are the screenshots of samples, you can read full information about these sample on GPU Notes, just click on image and you will be redirected to the page
+Here are the screenshots of samples, you can read full information about these sample on GPU Notes, just click on image and you will be redirected to the specific page.
 </p>
+
+<!--Licensing-->
+<h2><a id="user-content-licensing" class="anchor" href="#licensing" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Licensing</h2>
+<p>
+Your access to and use of Wolf Engine on GitHub is governed by the&nbsp;<a href="https://github.com/PooyaEimandar/Wolf.Engine/blob/master/LICENSE" target="_blank">License Agreement</a>. If you don't agree to those terms, then you are not permitted to access or use Wolf Engine.
+</p>
+
+<!--Issues-->
+<h2><a id="user-content-issues" class="anchor" href="#issues" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Issues</h2>
+<p>
+Kindly report any issues or post your question
+about Wolf.Engine on <a href="https://github.com/PooyaEimandar/Wolf.Engine/issues" target="_blank">Issues page</a>. If you have any questions about samples or tutorials, kindly comments on related sample/tutorial page on <a href="http://wolfsource.io/gpunotes/wolfengine" target="_blank">wolfsource.io</a>
+</p>
+
+<!--Additional Notes-->
+<h2><a id="user-content-notes" class="anchor" href="#notes" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Additional Notes</h2>
+<p>
+I provided a dedicated blog for programming specially for gpu programming, make sure check out <a href="http://wolfsource.io/gpunotes/" target="_blank">GPU Notes</a> on wolfsource.io.
+</p>
+<p>
+Additionally, in case you are interested, I've written a book with the focus on DirectX 11.1 Game
+Programming, you can order it from <a href="http://www.packtpub.com/directx-11-1-game-programming/book" target="_blank">PackT Publishing</a>.
+</p>
+
+<!--Twitter-->
+<h2><a id="user-content-twitter" class="anchor" href="#twitter" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Twitter</h2>
+<a href="https://twitter.com/WolfSource_io">@WolfSource_io</a>
