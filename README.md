@@ -32,7 +32,7 @@ execute python files directly using “<b>wolf::</b><b>system::w_python</b>” c
 <li>Improved performance of buffers & textures by using &quot;<b>C++AMP </b>&quot;.</li>
 </ul>
 
-<h3>Buf Fixes</h3>
+<h3>Bug Fixes</h3>
 <ul>
 </ul>
 
