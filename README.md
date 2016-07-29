@@ -27,7 +27,7 @@ execute python files directly using “<b>wolf::</b><b>system::w_python</b>” c
 
 <h3>Improved</h3>
 <ul>
-<li>Used &quot;<b>localtime_s</b> instead of <b>deprectaed localtime</b>&quot; in w_io.h.</li>
+<li>Used &quot;<b>localtime_s</b> instead of <b>deprectaed localtime</b>&quot; in &quot;<b>w_io.h</b>&quot;.</li>
 <li>Updated to &quot;<b>Blackmagic</b><b>DeckLink SDK 10.6.4</b>&quot;.</li>
 </ul>
 
