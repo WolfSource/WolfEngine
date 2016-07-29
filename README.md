@@ -20,7 +20,7 @@ The Wolf used DirectX for rendering on Windows Win32 and Universal Windows Platf
 <li>Integrated with &quot;<b>ffmpeg</b><b>build &quot;git-78baa45 (2016-04-28)&quot;</b></li>
 <li>Integrated with &quot;<b>Python 3.5.1</b>&quot;. Now you can
 execute python files directly using “<b>wolf::</b><b>system::w_python</b>” class. please note that Python 3.5.1 x64 must be installed on your target machine.</li>
-<li>Load basic geometries from &quot;<span class=SpellE><b>collada</b><b>files</b>&quot;.</li>
+<li>Load basic geometries from &quot;<span class=SpellE><b>collada</b> files&quot;.</li>
 <li>&quot;<b>Async/Sync</b>&quot;send and received TCP client implemented.</li>
 <li>Graphics diagnostic debugging</b>&quot; implemented. Also Wolf prevents from debugging the release application.</li>
 </ul>
