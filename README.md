@@ -1,6 +1,6 @@
 Wolf Engine
 ===========
-<img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/WolfSource.jpg" width="256" height="256" alt="WolfSource"/>
+<img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg" width="256" height="256" alt="WolfSource"/>
 <p><b>Welcome to the Wolf Engine source code.</b></p> 
 <p>The&nbsp;<b>Wolf Engine</b>&nbsp;is the next
 generation of&nbsp;<a href="https://persianengine.codeplex.com/">Persian Game Engine</a>&nbsp;which is a
