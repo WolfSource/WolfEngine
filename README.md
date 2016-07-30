@@ -96,22 +96,28 @@ Here are the screenshots of samples, you can read full information about these s
 <table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/01-window/view.jpg" alt="01-window/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/01-window/view.jpg" alt="01_window/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: Window</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/02-multiple_windows/view.jpg" alt="02-multiple_windows/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/02-multiple_windows/view.jpg" alt="02_multiple_windows/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: Multiple Windows</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/03-scene/view.jpg" alt="03-scene/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/03-scene/view.jpg" alt="03_scene/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: Scene</p>
     </td>
   </tr>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/04-one_scene_multiple_windows/view.jpg" alt="04-one_scene_multiple_windows/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/04-one_scene_multiple_windows/view.jpg" alt="04_one_scene_multiple_windows/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: One Scene Multiple Windows</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/01-Initialize/05-multiple_scenes_multiple_windows/view.jpg" alt="05_multiple_scenes_multiple_windows/view.jpg" width="256" height="192"/>
+      <p><b>Win32</b>: Multiple Scenes Multiple Windows</p>
     </td>
   </tr>
 </table>
