@@ -41,7 +41,7 @@ void loop_window_1()
 int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
 {
 	//initialize logger, and log in to the output debug window of visual studio and Log folder beside the ".exe".
-	logger.initialize(L"Multiple_Windows_DX11_1.Win32");
+	logger.initialize(L"02_Multiple_Windows_DX11_1.Win32");
 
 	//log to output file
 	logger.write(L"Starting Wolf");

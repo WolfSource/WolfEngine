@@ -6,7 +6,7 @@ using namespace wolf::graphics;
 
 scene::scene()
 {
-	w_game::set_app_name(L"03-Scene_DX11_1.Win32");
+	w_game::set_app_name(L"03_Scene_DX11_1.Win32");
 }
 
 scene::~scene()

@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01-Window_DX11_1.Win32", "01-Initialize\01-window\01_Window_DX11_X.Win32.vcxproj", "{27F091C2-9317-45A2-8ECD-367C528AD739}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01_Window_DX11_X.Win32", "01-Initialize\01-window\01_Window_DX11_X.Win32.vcxproj", "{27F091C2-9317-45A2-8ECD-367C528AD739}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-Initialize", "01-Initialize", "{BA4C0D6E-E39D-4EDA-AB68-3E590DB03C2D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02-Multiple_Windows_DX11_1.Win32", "01-Initialize\02-multiple_windows\02_Multiple_Windows_DX11_X.Win32.vcxproj", "{BE50605A-745E-48A0-9948-D820AFF18729}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02_Multiple_Windows_DX11_X.Win32", "01-Initialize\02-multiple_windows\02_Multiple_Windows_DX11_X.Win32.vcxproj", "{BE50605A-745E-48A0-9948-D820AFF18729}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03-Scene_DX11_1.Win32", "01-Initialize\03-scene\03_Scene.DX11_X.Win32.vcxproj", "{E87D9471-FE58-40FE-AA2F-C66A457A1069}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03-Scene_DX11_X.Win32", "01-Initialize\03-scene\03_Scene.DX11_X.Win32.vcxproj", "{E87D9471-FE58-40FE-AA2F-C66A457A1069}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "04-One_Scene_Multiple_Windows_DX11_1.Win32", "01-Initialize\04-one_scene_multiple_windows\04-One_Scene_Multiple_Windows_DX11_1.Win32.vcxproj", "{B5C2D715-F54C-4832-96E8-4290608239C8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "04_One_Scene_Multiple_Windows_DX11_X.Win32", "01-Initialize\04-one_scene_multiple_windows\04_One_Scene_Multiple_Windows_DX11_X.Win32.vcxproj", "{B5C2D715-F54C-4832-96E8-4290608239C8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "05_Multiple_Scenes_Multiple_Windows_DX11_X.Win32", "01-Initialize\05-multiple_scenes_multiple_windows\05_Multiple_Scenes_Multiple_Windows_DX11_X.Win32.vcxproj", "{3F9B5DD3-C87B-4B80-995C-96C662715C83}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-GUI", "02-GUI", "{235D5693-823E-402C-83B9-0A94BE9D50AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +57,14 @@ Global
 		{B5C2D715-F54C-4832-96E8-4290608239C8}.Release|x64.Build.0 = Release|x64
 		{B5C2D715-F54C-4832-96E8-4290608239C8}.Release|x86.ActiveCfg = Release|Win32
 		{B5C2D715-F54C-4832-96E8-4290608239C8}.Release|x86.Build.0 = Release|Win32
+		{3F9B5DD3-C87B-4B80-995C-96C662715C83}.Debug|x64.ActiveCfg = Debug|x64
+		{3F9B5DD3-C87B-4B80-995C-96C662715C83}.Debug|x64.Build.0 = Debug|x64
+		{3F9B5DD3-C87B-4B80-995C-96C662715C83}.Debug|x86.ActiveCfg = Debug|Win32
+		{3F9B5DD3-C87B-4B80-995C-96C662715C83}.Debug|x86.Build.0 = Debug|Win32
+		{3F9B5DD3-C87B-4B80-995C-96C662715C83}.Release|x64.ActiveCfg = Release|x64
+		{3F9B5DD3-C87B-4B80-995C-96C662715C83}.Release|x64.Build.0 = Release|x64
+		{3F9B5DD3-C87B-4B80-995C-96C662715C83}.Release|x86.ActiveCfg = Release|Win32
+		{3F9B5DD3-C87B-4B80-995C-96C662715C83}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +74,6 @@ Global
 		{BE50605A-745E-48A0-9948-D820AFF18729} = {BA4C0D6E-E39D-4EDA-AB68-3E590DB03C2D}
 		{E87D9471-FE58-40FE-AA2F-C66A457A1069} = {BA4C0D6E-E39D-4EDA-AB68-3E590DB03C2D}
 		{B5C2D715-F54C-4832-96E8-4290608239C8} = {BA4C0D6E-E39D-4EDA-AB68-3E590DB03C2D}
+		{3F9B5DD3-C87B-4B80-995C-96C662715C83} = {BA4C0D6E-E39D-4EDA-AB68-3E590DB03C2D}
 	EndGlobalSection
 EndGlobal

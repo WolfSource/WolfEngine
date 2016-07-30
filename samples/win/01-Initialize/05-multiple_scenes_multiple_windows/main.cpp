@@ -8,15 +8,18 @@
 */
 
 #include "pch.h"
-#include "scene.h"
+#include "scene_0.h"
+#include "scene_1.h"
 
 using namespace std;
 
 static std::unique_ptr<w_window> sWindow_0;
 static std::unique_ptr<w_window> sWindow_1;
-static std::unique_ptr<scene> sScene;
+static std::unique_ptr<scene_0> sScene_0;
+static std::unique_ptr<scene_1> sScene_1;
 
-static std::map<int, std::vector<w_window_info>> sWindowsInfo;
+static std::map<int, std::vector<w_window_info>> sWindowsInfo_0;
+static std::map<int, std::vector<w_window_info>> sWindowsInfo_1;
 
 static void release()
 {
@@ -25,29 +28,25 @@ static void release()
 	UNIQUE_RELEASE(sWindow_1);
 
 	//release scenes
-	UNIQUE_RELEASE(sScene);
+	UNIQUE_RELEASE(sScene_0);
+	UNIQUE_RELEASE(sScene_1);
 }
 
-void loop_window()
+void loop_window_0()
 {
-	/* TODO: This is the main loop of window_0, write your code here */
-	sScene->run(sWindowsInfo);
+	sScene_0->run(sWindowsInfo_0);
+}
+
+void loop_window_1()
+{
+	sScene_1->run(sWindowsInfo_1);
 }
 
 //Entry point of program 
 int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
 {
-	/*
-		No need following code, the w_game class construction will be create an instance of logger
-
-		//initialize logger, and log in to the output debug window of visual studio and Log folder beside the ".exe".
-		logger.initialize(L"Multiple_Windows_DX11_1.Win32");
-
-		//log to output file
-		logger.write(L"Starting Wolf");
-	*/
-
-	sScene = make_unique<scene>();
+	sScene_0 = make_unique<scene_0>();
+	sScene_1 = make_unique<scene_1>();
 
 	//get information of monitor(s)
 	w_enumerate_monitors _monitors_info;
@@ -79,7 +78,10 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		break;
 		}
 
-		return sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
+		auto _hr = sScene_0->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
+		if (_hr == S_OK) return _hr;
+		
+		return sScene_1->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
 	};
 
 	//Initialize and run windows on seperated threads
@@ -100,6 +102,15 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		sWindow_0->set_height(600);
 		sWindow_0->set_position(_screen_pos_x, _screen_pos_y);
 		sWindow_0->initialize();
+
+		sWindowsInfo_0[0] =
+		{
+			{ sWindow_0->get_HWND(), sWindow_0->get_width(), sWindow_0->get_height() },
+		};
+
+		//run the main loop of window_1
+		std::function<void(void)> _f = std::bind(&loop_window_0);
+		sWindow_0->run(_f);
 	},
 		[&_monitors_info]()
 	{
@@ -118,32 +129,17 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		sWindow_1->set_height(480);
 		sWindow_1->set_position(_screen_pos_x, _screen_pos_y);
 		sWindow_1->initialize();
-	});
-	
 
-	//Create two window on first gpu device
-	sWindowsInfo[0] = 
-	{ 
-		{ sWindow_0->get_HWND(), sWindow_0->get_width(), sWindow_0->get_height() },
-		{ sWindow_1->get_HWND(), sWindow_1->get_width(), sWindow_1->get_height() },
-	};
-
-	//if you have two gpu, you can run each window on each gpu devices
-	/*	
-		sWindowsInfo[0] =
-		{
-			{ sWindow_0->get_HWND(), sWindow_0->get_width(), sWindow_0->get_height() },
-		};
-		sWindowsInfo[1] =
+		sWindowsInfo_1[0] =
 		{
 			{ sWindow_1->get_HWND(), sWindow_1->get_width(), sWindow_1->get_height() },
 		};
-	*/
-	
-	//run the main loop of window_0 or window_1
-	std::function<void(void)> _f = std::bind(&loop_window);
-	sWindow_0->run(_f);
 
+		//run the main loop of window_1
+		std::function<void(void)> _f = std::bind(&loop_window_1);
+		sWindow_1->run(_f);
+	});
+		
 	//release
 	release();
 
