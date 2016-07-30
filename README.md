@@ -19,7 +19,7 @@ The Wolf used DirectX for rendering on Windows Win32 and Universal Windows Platf
 <li>Function &quot;<b>w_time_</b><b>::</b><b>from_string</b>&quot;has been added.</li>
 <li>Integrated with &quot;<b>ffmpeg</b><b>build &quot;git-78baa45 (2016-04-28)&quot;</b></li>
 <li>Integrated with &quot;<b>Python 3.5.1</b>&quot;. Now you can
-execute python files directly using “<b>wolf::</b><b>system::w_python</b>” class. please note that Python 3.5.1 x64 must be installed on your target machine.</li>
+execute python files directly using “<b>wolf::</b><b>system::w_python</b>” class. please note that Python 3.5.1-amd64 must be installed on your target machine.</li>
 <li>Load basic geometries from &quot;<span class=SpellE><b>collada</b>&quot; files.</li>
 <li>&quot;<b>Async/Sync</b>&quot;send and received TCP client implemented.</li>
 <li>Graphics diagnostic debugging</b>&quot; implemented. Also Wolf prevents from debugging the release application.</li>
@@ -70,6 +70,9 @@ href="https://help.github.com/articles/set-up-git/">Setting up </a>&nbsp;and&nbs
 button on the right, however downloading <a href="https://github.com/PooyaEimandar/Wolf.Engine/releases">latest and stable release one</a> is highly recommended. Based on which type of download you chose; the source compressed file type might be one of the following formats : &quot;<b>.zip</b>&quot; or &quot;<b>.7z</b>&quot;, so make sure use the right tool for decompressing it.</li>
 <li>Install&nbsp;<b>Visual Studio 2015</b>. All desktop editions of
 Visual Studio 2015 can be used, including&nbsp;<a href="http://www.visualstudio.com/products/visual-studio-community-vs">Visual Studio Community 2015</a>, which is free for small teams and individual developers. Be sure to include C++ support as part of the install, which is disabled by default and also select Windows 10 SDK Kits. Wolf Engine tested on Windows 8.1 and 10 and you need to setup the right Windows SDK kits for your Windows OS. This version of Wolf Engine test on &quot;<b>Windows 10 SDK build 10586.0.</b>&quot;</li>
+<li>if you need to use &quot;<b>Wolf.Decklink</b>&quot;, you need to install &quot;<b>Blackmagic_Desktop_Video_Windows_10.6.4</b>&quot;</li>
+<li>if you need to use &quot;<b>blackmagic.decklink</b>&quot;, you need to install &quot;<b>Blackmagic_Desktop_Video_Windows_10.6.4</b>&quot;</li>
+<li>If you would like to use Python as scripting language, add &quot;<b>__PYTHON__</b>&quot; preprocessor before building Wolf. Make sure install <a href="https://www.python.org/ftp/python/3.5.1/python-3.5.1-amd64.exe">Python 3.5.1-amd64</a></li> &quot;<b>blackmagic.decklink</b>&quot;, you need to install &quot;<b>Blackmagic_Desktop_Video_Windows_10.6.4</b>&quot;</li>
 <li>Open <b>Wolf.Engine.DirectX11_X.sln</b> from &quot;<b>\Wolf.Engine</span>\engine\builds\</b>&quot;
 and make sure configuration manager is set to &quot;<b>Debug/x64</b>&quot; or &quot;<b>
 Release/x64</b>&quot;. note that Wolf Engine <b>will not build or run</b> on x86 platform</li>
