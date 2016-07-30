@@ -113,8 +113,6 @@ Here are the screenshots of samples, you can read full information about these s
       <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/04-one_scene_multiple_windows/view.jpg" alt="04_one_scene_multiple_windows/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: One Scene Multiple Windows</p>
     </td>
-  </tr>
-  <tr>
     <td>
       <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/01-Initialize/05-multiple_scenes_multiple_windows/view.jpg" alt="05_multiple_scenes_multiple_windows/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: Multiple Scenes Multiple Windows</p>
