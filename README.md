@@ -42,6 +42,7 @@ execute python files directly using “<b>wolf::</b><b>system::w_python</b>” c
 <ul>
 <li>&quot;<b>Wolf.Playout</b>&quot; is a playout automation software which is used by <a href="http://en.alalam.ir/">Alalam news
 network TV</a></li>
+<li><iframe width="560" height="315" src="https://www.youtube.com/embed/EZSdEjBvuGY" frameborder="0" allowfullscreen></iframe></li>
 <li>&quot;<b>Wolf.CG</b>&quot; is a true real time 3D graphics and character generator which can be integrate
 with any newsroom using python API.</li>
 </ul>
