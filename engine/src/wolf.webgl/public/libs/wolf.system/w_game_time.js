@@ -16,7 +16,7 @@ var wolf;
                 this._qpc_second_counter = 0;
                 this._fixed_time_step = false;
                 this._target_elapsed_ticks = w_game_time.TICKS_PER_SECOND / 60;
-                console.log("w_game_time");
+                this.reset_elapsed_time();
             }
             w_game_time.prototype.get_elapsed_ticks = function () { return this._elapsed_ticks; };
             ;
@@ -32,17 +32,18 @@ var wolf;
             w_game_time.ticks_to_seconds = function (pTicks) { return pTicks / w_game_time.TICKS_PER_SECOND; };
             w_game_time.seconds_to_ticks = function (pSeconds) { return pSeconds * w_game_time.TICKS_PER_SECOND; };
             w_game_time.prototype.reset_elapsed_time = function () {
-                this._qp_last_time = Date.now();
+                this._qp_last_time = Date.now() / 1000.0;
                 this._left_over_ticks = 0;
                 this._fps = 0;
                 this._frames_this_second = 0;
                 this._qpc_second_counter = 0;
             };
             w_game_time.prototype.tick = function (pUpdate) {
-                var _current_time = Date.now();
+                var _current_time = Date.now() / 1000.0;
                 var _time_delta = _current_time - this._qp_last_time;
                 this._qp_last_time = _current_time;
-                this._qpc_second_counter += (_time_delta / 1000.0);
+                this._qpc_second_counter += _time_delta;
+                _time_delta *= w_game_time.TICKS_PER_SECOND;
                 var _last_frame_count = this._frame_count;
                 if (this._fixed_time_step) {
                     if (Math.abs(_time_delta - this._target_elapsed_ticks) < w_game_time.TICKS_PER_SECOND / 4000) {
