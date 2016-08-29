@@ -1,0 +1,4 @@
+
+//subtree
+git subtree add --prefix=engine/dependencies/rapidxml-master/ --squash git@github.com:dwd/rapidxml.git master
+git subtree pull --prefix=engine/dependencies/rapidxml-master/ --squash git@github.com:dwd/rapidxml.git master
