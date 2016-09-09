@@ -1,0 +1,14 @@
+﻿{
+	"Project"          : "Wolf Engine(http://WolfSource.io). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.",
+	"Info"             : "contact@WolfSource.io
+	"Version"          : "0:2:0:3",
+	"Time"             : "10-Sep-2016 02:57:05AM",
+	"Application Name" : "02-Geometries_DX11_X.Win32",
+	"Logs":{
+		"10-Sep-2016 02:57:05AM": {"msg":"Device created with D3D_FEATURE_LEVEL_11_1 feature level onhardware device","state":"Info"},
+		"10-Sep-2016 02:57:05AM": {"msg":"Application could not use graphics diagnostic debug interface, capturing frame during running application might abort application","state":"Error"},
+		"10-Sep-2016 02:57:06AM": {"msg":"The windows just closed","state":"Info"},
+		"10-Sep-2016 02:57:06AM": {"msg":"Wolf shut down","state":"Info"},
+
+	}
+}
