@@ -9,32 +9,28 @@ Wolf Engine written in C++ and support Python as an embedded script language.
 The Wolf used DirectX for rendering on Windows Win32 and Universal Windows Platform, however I’m working on Vulkan, Apple Metal and webGL APIs for Android, OSX/IOS and HTML5 platforms.</p>
 
 <!--What's new-->
-<h2><a id="user-content-whatsnew" class="anchor" href="#whatsnew" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What’s new on version 0.2.0.0</h2>
+<h2><a id="user-content-whatsnew" class="anchor" href="#whatsnew" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What’s new on version 0.3.0.0</h2>
 <h3>New Features</h3>
 
 <ul>
-<li>Lightweight &quot;<b>GUI framework</b>&quot; added for DirectX
-11.X. (includes label, button (with icon), radioButton, checkBox, scrollBar, comboBox, slider, listBox(with icon), image.</li>
-<li>Integrated with &quot;<b>Intel TBB build tbb44_20160526oss</b>&quot;</li>
-<li>&quot;<b>Blend states</b>&quot; have been added.</li>
-<li>Function &quot;<b>w_time_</b><b>::</b><b>from_string</b>&quot;has been added.</li>
-<li>Integrated with &quot;<b>ffmpeg</b><b>build &quot;git-78baa45 (2016-04-28)&quot;</b></li>
-<li>Integrated with &quot;<b>Python 3.5.1</b>&quot;. Now you can
-execute python files directly using “<b>wolf::</b><b>system::w_python</b>” class. please note that Python 3.5.1-amd64 must be installed on your target machine.</li>
-<li>Load basic geometries from &quot;<span class=SpellE><b>collada</b>&quot; files.</li>
-<li>&quot;<b>Async/Sync</b>&quot;send and received TCP client implemented.</li>
-<li>Graphics diagnostic debugging</b>&quot; implemented. Also Wolf prevents from debugging the release application.</li>
+<li>"<b>w_tab</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
+<li>"<b>w_gui</b>&quot; static class has been added for loading xml files which contain user interface controls</li>
+<li>"<b>w_game_time class</b>" written in &quot;<b>typescript</b>" and has been tested for "<b>wolf.webGL</b>"</li>
+<li>Samples "<b>01-widget</b>" and "<b>02-gui from xml</b>" have been added to the following folder "<b>~\Wolf.engine\samples\win\02-GUI</b>".</li>
+<li id="new_feature">Samples "<b>01-shapes</b>" and "<b>02-geometries</b>" have been added to the following folder "<b>~\Wolf.engine\samples\win\03-Direct2D</b>".</li>
 </ul>
 
 <h3>Improved</h3>
 <ul>
-<li>Used &quot;<b>localtime_s</b> instead of <b>deprectaed localtime</b>&quot; in &quot;<b>w_io.h</b>&quot;.</li>
-<li>Updated to &quot;<b>Blackmagic DeckLink SDK 10.6.4</b>&quot;.</li>
-<li>Improved performance of buffers & textures by using &quot;<b>C++AMP </b>&quot;.</li>
+<li>A photoshop template file for creating customized flat and reounded UI controls has been added to "<b>~\Wolf.Engine\engine\dependencies\PSDs\GUI\</b>". 
+when you create your own customized theme, make sure replace it with the <b>.dds</b> file in to the following path "<b>~\Content\Textures\GUI\Controls.dds</b>". 
+Additionally, you can use visual studio for converting "<b>.png</b>" files to the "<b>.dds</b>" files. 
+</li>
 </ul>
 
 <h3>Bug Fixes</h3>
 <ul>
+<li>Memory leaks for "<b>SAFE_RELEASE</b>" and "<b>UNIQUE_RELEASE</b>" fixed</li>
 </ul>
 
 <!--Projects-->
@@ -71,29 +67,58 @@ Here are the screenshots of samples, you can read full information about these s
 </p>
 
 <!-- Screenshots -->
+<h2>01-Initialize</h2>
 <table>
   <tr>
     <td>
       <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/01-window/view.jpg" alt="01_window/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: Window</p>
+      <p><b>Win32</b>: 01-window</p>
     </td>
     <td>
       <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/02-multiple_windows/view.jpg" alt="02_multiple_windows/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: Multiple Windows</p>
+      <p><b>Win32</b>: 02-multiple_windows</p>
     </td>
     <td>
       <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/03-scene/view.jpg" alt="03_scene/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: Scene</p>
+      <p><b>Win32</b>: 03-scene</p>
     </td>
   </tr>
   <tr>
     <td>
       <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/04-one_scene_multiple_windows/view.jpg" alt="04_one_scene_multiple_windows/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: One Scene-Multiple Windows</p>
+      <p><b>Win32</b>: 04-one_scene_multiple_windows</p>
     </td>
     <td>
       <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/01-Initialize/05-multiple_scenes_multiple_windows/view.jpg" alt="05_multiple_scenes_multiple_windows/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: Multiple Scenes-Multiple Windows</p>
+      <p><b>Win32</b>: 05-multiple_scenes_multiple_windows</p>
+    </td>
+  </tr>
+</table>
+
+<h2>02-GUI</h2>
+<table>
+  <tr>
+    <td>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/02-GUI/01-widget/view.jpg" alt="01-widget/view.jpg" width="256" height="192"/>
+      <p><b>Win32</b>: 01-widget</p>
+    </td>
+    <td>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/02-GUI/02-gui%20from%20xml/view.jpg" alt="02-gui from xml/view.jpg" width="256" height="192"/>
+      <p><b>Win32</b>: 02-gui from xml</p>
+    </td>
+  </tr>
+</table>
+
+<h2>03-Direct2D</h2>
+<table>
+  <tr>
+    <td>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/03-Direct2D/01-shapes/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
+      <p><b>Win32</b>: 01-shapes</p>
+    </td>
+    <td>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/03-Direct2D/02-geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
+      <p><b>Win32</b>: 02-geometries</p>
     </td>
   </tr>
 </table>
