@@ -17,7 +17,7 @@ static std::once_flag onceRelease;
 
 w_ffmpeg::w_ffmpeg() : isMediaOpen(false), isReleased(false), avFormatCtx(nullptr), avPacket(nullptr), audioConvert(nullptr)
 {
-	this->name = L"ffmpeg";// setClassName(typeid(this).name());
+	this->name = "ffmpeg";// setClassName(typeid(this).name());
 
 	std::memset(&this->videoCodec, 0, sizeof(Codec));
 	std::memset(&this->audioCodec, 0, sizeof(Codec));
@@ -74,7 +74,7 @@ HRESULT w_ffmpeg::open_media(std::wstring pMediaPath, int64_t pSeekToFrame, bool
 
 	this->isMediaOpen = false;
 	{
-		this->fullPath = to_UTF8(pMediaPath).c_str();
+		this->fullPath = wolf::system::convert::to_utf8(pMediaPath).c_str();
 
 		//Output the message
 		std::wstring msg = L"Media from following path \"" + pMediaPath + L"\" is going to decode";

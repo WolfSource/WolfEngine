@@ -31,7 +31,7 @@ namespace wolf
 			T* load(std::wstring pAssetPath)
 			{
 				auto _file_exists = wolf::system::io::get_is_file(pAssetPath);
-				if (!std::get<0>(_file_exists))
+				if (_file_exists == boost::filesystem::perms::no_perms)
 				{
 					logger.error(L"File asset not available on following path : " + pAssetPath);
 					return nullptr;

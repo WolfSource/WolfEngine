@@ -38,30 +38,42 @@ namespace wolf
 
 #pragma region Getters
 
+					//Set fill geometry
+					DX_EXP bool get_fill_geometry() const						{ return this->_fill_geometry; }
+
 					//Set color of direct2d rectangle
-					DX_EXP D2D1::ColorF get_color() const;
+					DX_EXP w_color		get_color() const;
 					//Set border color of direct2d rectangle
-					DX_EXP D2D1::ColorF get_borderColor() const;
+					DX_EXP w_color		get_border_color() const;
 					//Get border color of direct2d rectangle
-					DX_EXP D2D1_POINT_2F get_startPoint() const;
+					DX_EXP D2D1_POINT_2F get_start_point() const;
 					//Get border color of direct2d rectangle
-					DX_EXP D2D1_POINT_2F get_stopPoint() const;
+					DX_EXP D2D1_POINT_2F get_stop_point() const;
 					//Get fill mode
-					DX_EXP D2D1_FILL_MODE get_fillMode() const;
+					DX_EXP D2D1_FILL_MODE get_fill_mode() const;
 					//Get figure begin mode
-					DX_EXP D2D1_FIGURE_BEGIN get_figureBegin() const;
+					DX_EXP D2D1_FIGURE_BEGIN get_figure_begin() const;
 					//Get figure end mode
-					DX_EXP D2D1_FIGURE_END get_figureEnd() const;
+					DX_EXP D2D1_FIGURE_END get_figure_end() const;
 
 #pragma endregion
 
 #pragma region Setters
 
+					//Set fill geometry style
+					DX_EXP HRESULT set_style(D2D1_STROKE_STYLE_PROPERTIES pStyle);
+
+					//Set fill geometry
+					DX_EXP void set_fill_geometry(_In_ const bool pValue)					{ this->_fill_geometry = pValue; }
+
+					//Set fill geometry
+					DX_EXP void set_stroke_width(_In_ const float pValue)					{ this->_stroke_width = pValue; }
+
 					//Set color of direct2d line
-					DX_EXP void set_color(D2D1::ColorF pColor);
+					DX_EXP void set_color(_In_ const w_color pColor);
 					
 					//Set border color of direct2d line
-					DX_EXP void set_borderColor(D2D1::ColorF pColor);
+					DX_EXP void set_border_color(_In_ const w_color pColor);
 					
 					//Begins the process of setting geometries. Begin must be called successfully before any of following methods "AddLines, AddBezier, AddArc" can be called.
 					DX_EXP void begin();
@@ -103,19 +115,22 @@ namespace wolf
 					SpriteState												_state;
 
 					std::shared_ptr<w_graphics_device>						_gDevice;
-					Microsoft::WRL::ComPtr<ID2D1PathGeometry>				_pathGeometry;
+					Microsoft::WRL::ComPtr<ID2D1PathGeometry>				_path_geometry;
+					bool													_fill_geometry;
 
-					float													_strokeWidth;
+					float													_stroke_width;
 
 					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_brush;
-					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_borderBrush;
+					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_border_brush;
+					Microsoft::WRL::ComPtr<ID2D1StrokeStyle>				_style;
 
 					Microsoft::WRL::ComPtr<ID2D1GeometrySink>				_sink;
 
 					D2D1_COLOR_F											_color;
-					D2D1_COLOR_F											_borderColor;
-					bool													_updateColor;
-					bool													_updateBorderColor;
+					D2D1_COLOR_F											_border_color;
+					bool													_update_color;
+					bool													_update_border_color;
+
 				};
 			}
 		}

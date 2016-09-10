@@ -7,7 +7,7 @@ w_control::w_control(_In_opt_ w_widget* pParent) :
 	parent_widget(pParent),
 	type(W_GUI_CONTROL_BUTTON), 
 	id(0), 
-	hotkey(0), 
+	hot_key(0), 
 	index(0), 
 	tag(nullptr), 
 	enabled(true),
@@ -18,10 +18,11 @@ w_control::w_control(_In_opt_ w_widget* pParent) :
 	x(0), 
 	y(0), 
 	width(0), 
-	height(0)
+	height(0),
+	z_order(0)
 {
 	_super::set_class_name(typeid(this).name());
-	ZeroMemory(&this->boundingBox, sizeof(this->boundingBox));
+	std::memset(&this->boundingBox, 0, sizeof(this->boundingBox));
 }
 
 w_control::~w_control()

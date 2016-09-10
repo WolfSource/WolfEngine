@@ -26,14 +26,16 @@ void w_game::initialize(map<int, vector<w_window_info>> pOutputWindowsInfo)
 	logger.initialize(this->_app_name);
 	w_graphics_device_manager::initialize();
 	w_graphics_device_manager::initialize_output_windows(pOutputWindowsInfo);
+
+	//initialize sprite batch
+	auto _gDevice = get_graphics_device();
+
+	this->sprite_batch = make_unique<w_sprite_batch>(_gDevice);
+	this->sprite_batch->load();
 }
 
 void w_game::load()
 {
-	auto _gDevice = get_graphics_device();
-	
-	this->sprite_batch = make_unique<w_sprite_batch>(_gDevice);
-	this->sprite_batch->load();
 }
 
 void w_game::update(const wolf::system::w_game_time& pGameTime)

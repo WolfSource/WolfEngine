@@ -45,6 +45,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -119,6 +120,8 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../engine/src/wolf.system;$(SolutionDir)/../../engine/src/wolf.directX;$(SolutionDir)/../../engine/dependencies/boost/include;$(SolutionDir)../../engine/dependencies/TBB/tbb44_20160526oss/win/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_UNICODE;UNICODE;__DX11_X__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../../engine/dependencies/boost/lib/x64/;$(SolutionDir)/../../engine/dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -130,6 +133,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="scene.cpp" />
   </ItemGroup>

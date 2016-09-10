@@ -89,7 +89,8 @@
 #include <w_IReleasable.h>
 #include <w_io.h>
 #include "w_directX_dll.h"
-#include "w_math.h"
+#include "w_directX_math_helper.h"
 #include "w_game.h"
+#include <w_color.h>
 
 #endif

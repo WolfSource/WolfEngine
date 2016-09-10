@@ -18,35 +18,7 @@ namespace wolf
 	{
 		class w_timer sealed
 		{
-		private:
-			LARGE_INTEGER _frequency, _currentTime, _startTime, _lastTime;
-			double _totalTime, _deltaTime;
-
-			void update()
-			{
-				if (!QueryPerformanceCounter(&this->_currentTime))
-				{
-					throw "QueryPerformanceCounter failed in GameTime.h";
-				}
-
-				this->_totalTime = static_cast<float>(
-					static_cast<double>(this->_currentTime.QuadPart - this->_startTime.QuadPart) / static_cast<double>(this->_frequency.QuadPart));
-
-				if (this->_lastTime.QuadPart == this->_startTime.QuadPart)
-				{
-					// If the timer was just reset, report a time delta equivalent to 60Hz frame time.
-					this->_deltaTime = 1.0f / 60.0f;
-				}
-				else
-				{
-					this->_deltaTime = static_cast<float>(
-						static_cast<double>(this->_currentTime.QuadPart - this->_lastTime.QuadPart) /
-						static_cast<double>(this->_frequency.QuadPart));
-				}
-
-				this->_lastTime = this->_currentTime;
-			}
-
+			friend class w_timer_callback;
 		public:
 			// Constructor of Timer
 			w_timer()
@@ -85,7 +57,7 @@ namespace wolf
 			{
 				return this->_totalTime * 1000;
 			};
-			
+
 			//Get elpased time in seconds
 			double getElapsedSeconds()
 			{
@@ -97,6 +69,35 @@ namespace wolf
 			{
 				return this->_deltaTime * 1000;
 			};
+
+		private:
+			LARGE_INTEGER _frequency, _currentTime, _startTime, _lastTime;
+			double _totalTime, _deltaTime;
+
+			void update()
+			{
+				if (!QueryPerformanceCounter(&this->_currentTime))
+				{
+					throw "QueryPerformanceCounter failed in GameTime.h";
+				}
+
+				this->_totalTime = static_cast<float>(
+					static_cast<double>(this->_currentTime.QuadPart - this->_startTime.QuadPart) / static_cast<double>(this->_frequency.QuadPart));
+
+				if (this->_lastTime.QuadPart == this->_startTime.QuadPart)
+				{
+					// If the timer was just reset, report a time delta equivalent to 60Hz frame time.
+					this->_deltaTime = 1.0f / 60.0f;
+				}
+				else
+				{
+					this->_deltaTime = static_cast<float>(
+						static_cast<double>(this->_currentTime.QuadPart - this->_lastTime.QuadPart) /
+						static_cast<double>(this->_frequency.QuadPart));
+				}
+
+				this->_lastTime = this->_currentTime;
+			}
 		};
 	}
 }

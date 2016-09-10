@@ -1,6 +1,6 @@
 #include "w_directX_pch.h"
 #include "w_label.h"
-#include "w_gui/w_widget.h"
+#include "w_widget.h"
 
 using namespace wolf::gui;
 
@@ -9,11 +9,11 @@ force_use_current_color_state(false),
 original_text_offset_x(0),
 original_text_offset_y(0),
 render_from_child(false),
-_label_color(W_COLOR::WHITE),
-_label_mouse_over_color(W_COLOR::BLACK),
-_label_pressed_color(W_COLOR::BLACK),
-_label_focused_color(W_COLOR::WHITE),
-_label_disabled_color(RGBA_TO_DWORD_COLOR(0, 200, 0, 200))
+_label_color(w_color::WHITE),
+_label_mouse_over_color(w_color::BLACK),
+_label_pressed_color(w_color::BLACK),
+_label_focused_color(w_color::BLACK),
+_label_disabled_color(RGBA_TO_HEX_COLOR(50, 50, 50, 150))
 {
 	_super::set_class_name(typeid(this).name());
 	_super::type = W_GUI_CONTROL_LABEL;
@@ -37,9 +37,9 @@ void w_label::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& p
 	if (_super::visible == false) return;
 
 	//position
-	POINT _xy;
-	_super::parent_widget->get_location(_xy);
-	auto _pos = DirectX::XMFLOAT2(float(_xy.x + _super::x +  this->text_offset_x), float(_xy.y + _super::y +  this->text_offset_y));
+	UINT _x, _y;
+	_super::parent_widget->get_position(_x, _y);
+	auto _pos = DirectX::XMFLOAT2(float(_x + _super::x +  this->text_offset_x), float(_y + _super::y +  this->text_offset_y));
 
 	//color
 	D2D1_COLOR_F _font_color;
@@ -64,7 +64,10 @@ void w_label::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& p
 
 		_element->font_color.color_states[W_GUI_STATE_NORMAL] = this->_label_color;
 		_element->font_color.color_states[W_GUI_STATE_MOUSEOVER] = this->_label_mouse_over_color;
+		_element->font_color.color_states[W_GUI_STATE_PRESSED] = this->_label_pressed_color;
+		_element->font_color.color_states[W_GUI_STATE_FOCUS] = this->_label_focused_color;
 		_element->font_color.color_states[W_GUI_STATE_DISABLED] = this->_label_disabled_color;
+		
 		//if this method, called by child, such as w_button or etc, so allow blend on mouse over
 		if (!this->render_from_child)
 		{
@@ -93,7 +96,7 @@ void w_label::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& p
 		V(_hr, L"Setting color of font", this->name, 2, false, true);
 	}
 
-	_super::parent_widget->draw_text(this->text, _pos, this->brush.Get(), false);
+	_super::parent_widget->draw_text(this->text, _pos, this->brush.Get());
 }
 
 _Use_decl_annotations_

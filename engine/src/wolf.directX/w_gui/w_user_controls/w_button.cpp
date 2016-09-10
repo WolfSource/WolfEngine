@@ -13,14 +13,15 @@ icon_scale_x(1.0f),
 icon_scale_y(1.0f),
 effect_min_value(0.0f),
 effect_max_value(1.0f),
-button_normal_color(W_COLOR::WHITE),
-button_pressed_color(RGBA_TO_DWORD_COLOR(255, 255, 255, 200)),
-button_mouse_over_color(RGBA_TO_DWORD_COLOR(255, 255, 255, 160)),
-button_focused_color(RGBA_TO_DWORD_COLOR(255, 255, 255, 30))
+button_normal_color(w_color::GRAY),
+button_pressed_color(RGBA_TO_HEX_COLOR(255, 255, 255, 200)),
+button_mouse_over_color(w_color::WHITE),
+button_focused_color(RGBA_TO_HEX_COLOR(255, 255, 255, 200)),
+button_disabled_color(RGBA_TO_HEX_COLOR(50, 50, 50, 150))
 {
 	_super::set_class_name(typeid(this).name());
 	_super::type = W_GUI_CONTROL_BUTTON;
-	_super::hotkey = 0;
+	_super::hot_key = 0;
 	_super::parent_widget = pParent;
 	//we are rendering label from button
 	_super::render_from_child = true;
@@ -97,7 +98,11 @@ bool w_button::handle_mouse(UINT pMsg, const POINT& pPoint, WPARAM pWParam, LPAR
 			{
 				// Pressed while inside the control
 				this->pressed = true;
-				SetCapture(w_widgets_resource_manager::get_HWND());
+				if (parent_widget)
+				{
+					auto _hwnd = parent_widget->get_hwnd();
+					SetCapture(_hwnd);
+				}
 
 				if (!this->has_focus)
 				{
@@ -136,9 +141,9 @@ bool w_button::handle_mouse(UINT pMsg, const POINT& pPoint, WPARAM pWParam, LPAR
 	return false;
 }
 
-void w_button::on_hotKey()
+void w_button::on_hot_key()
 {
-	if (_super::parent_widget->is_keyboard_input_enabled())
+	if (_super::parent_widget->get_is_keyboard_input_enabled())
 	{
 		_super::parent_widget->request_focus(this);
 	}
@@ -205,12 +210,14 @@ void w_button::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& 
 	_element->texture_color.color_states[W_GUI_STATE_MOUSEOVER] = this->button_mouse_over_color;
 	_element->texture_color.color_states[W_GUI_STATE_PRESSED] = this->button_pressed_color;
 	_element->texture_color.color_states[W_GUI_STATE_FOCUS] = this->button_focused_color;
+	_element->texture_color.color_states[W_GUI_STATE_DISABLED] = this->button_disabled_color;
 
 	//Set the colors of font
 	_element->font_color.color_states[W_GUI_STATE_NORMAL] = _super::_label_color;
 	_element->font_color.color_states[W_GUI_STATE_MOUSEOVER] = _super::_label_mouse_over_color;
 	_element->font_color.color_states[W_GUI_STATE_PRESSED] = _super::_label_pressed_color;
 	_element->font_color.color_states[W_GUI_STATE_FOCUS] = _super::_label_focused_color;
+	_element->font_color.color_states[W_GUI_STATE_DISABLED] = _super::_label_disabled_color;
 
 	float _blend_rate = (_control_state == W_GUI_STATE_PRESSED) ? 0.0f : 0.8f;
 
@@ -240,9 +247,9 @@ void w_button::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& 
 	//Draw icon
 	if (this->icon)
 	{
-		POINT _xy;
-		_super::parent_widget->get_location(_xy);
-		this->icon->set_location(
+		UINT _x, _y;
+		_super::parent_widget->get_position(_x, _y);
+		this->icon->set_position(
 			_super::x + this->icon_offset_x + _offsetX,
 			_super::y + this->icon_offset_y + _offsetY);
 		this->icon->set_scale(DirectX::XMFLOAT2(this->icon_scale_x, this->icon_scale_y));

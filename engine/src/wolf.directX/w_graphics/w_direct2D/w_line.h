@@ -35,25 +35,29 @@ namespace wolf
 
 #pragma region Getters
 
-					////Set color of direct2d rectangle
-					//DX_EXP D2D1::ColorF get_color() const;
-					////Set border color of direct2d rectangle
-					//DX_EXP D2D1::ColorF get_borderColor() const;
+					//Set color of direct2d rectangle
+					DX_EXP w_color			get_color() const;
+					//Set border color of direct2d rectangle
+					DX_EXP w_color			get_border_color() const;
 					//Get border color of direct2d rectangle
-					DX_EXP D2D1_POINT_2F get_startPoint() const;
+					DX_EXP D2D1_POINT_2F	get_start_point() const;
 					//Get border color of direct2d rectangle
-					DX_EXP D2D1_POINT_2F get_stopPoint() const;
+					DX_EXP D2D1_POINT_2F	get_stop_point() const;
+					//Get stroke width
+					DX_EXP float			get_stroke_width() const						{ return this->_stroke_width; }
 
 #pragma endregion
 
 #pragma region Setters
 
 					//Set color of direct2d line
-					DX_EXP void set_color(D2D1::ColorF pColor);
+					DX_EXP void				set_color(_In_ const w_color pColor);
 					//Set border color of direct2d line
-					DX_EXP void set_borderColor(D2D1::ColorF pColor);
+					DX_EXP void				set_border_color(_In_ const w_color pColor);
 					//Set geometry of line
-					DX_EXP void set_geormetry(D2D1_POINT_2F pStartPoint, D2D1_POINT_2F pStopPoint);
+					DX_EXP void				set_geormetry(_In_ const D2D1_POINT_2F pStartPoint, _In_ const D2D1_POINT_2F pStopPoint);
+					//Set stroke width
+					DX_EXP void				set_stroke_width(_In_ const float pValue)		{ this->_stroke_width = pValue; }
 
 #pragma endregion
 
@@ -62,17 +66,17 @@ namespace wolf
 
 					std::shared_ptr<w_graphics_device>						_gDevice;
 
-					D2D1_POINT_2F											_startPoint;
-					D2D1_POINT_2F											_stopPoint;
-					float													_strokeWidth;
+					D2D1_POINT_2F											_start_point;
+					D2D1_POINT_2F											_stop_point;
+					float													_stroke_width;
 
 					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_brush;
-					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_borderBrush;
+					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_border_brush;
 
 					D2D1_COLOR_F											_color;
-					D2D1_COLOR_F											_borderColor;
-					bool													_updateColor;
-					bool													_updateBorderColor;
+					D2D1_COLOR_F											_border_color;
+					bool													_update_color;
+					bool													_update_border_color;
 				};
 			}
 		}

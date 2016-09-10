@@ -12,8 +12,8 @@ w_font::w_font(_In_ ID3D11Device1* pDevice, _In_ ID3D11InputLayout* pInputLayout
 
 	// Init the D3D11 font
 	this->_font_texture = std::make_unique<wolf::graphics::w_texture_2D>();
-	auto _hr = wolf::graphics::w_texture_2D::load_texture_2D(pDevice, this->_font_texture.get(), L"Textures\\UI\\Font.dds");
-	V(_hr, L"creating font from file", _super::name, 3, true, true);
+	auto _hr = wolf::graphics::w_texture_2D::load_texture_2D(pDevice, this->_font_texture.get(), L"Textures\\GUI\\Font.dds");
+	V(_hr, L"loading GUI\\Font.dds asset", _super::name, 3, true, true);
 }
 
 w_font::~w_font()

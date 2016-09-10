@@ -30,21 +30,21 @@ namespace wolf
 			//Update view matrix of camera
 			void update_view();
 			//Update world matrix of camera
-			void update_world(DirectX::XMFLOAT3 MoveVector);
+			void update_world(_In_ DirectX::XMFLOAT3 MoveVector);
 			//Reset camera to default worldViewProjection 
 			void reset();
 			//void ProcessInput(float time);
 			//Update camera
-			void update(float time);
+			void update(_In_ float time);
 
 #pragma region Getters
 			//Get the angle(XY-Rotation) of the camera
-			DirectX::XMFLOAT2 get_angle() const			{ return this->_angle; }
+			DirectX::XMFLOAT2 get_angle() const					{ return this->_angle; }
 #pragma endregion
 
 #pragma region Getters
 			//Set the angle(XY-Rotation) of camera
-			void set_angle(DirectX::XMFLOAT2 pValue)		{ this->_angle = pValue; }
+			void set_angle(_In_ DirectX::XMFLOAT2 pValue)		{ this->_angle = pValue; }
 
 #pragma endregion
 

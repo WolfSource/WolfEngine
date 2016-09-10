@@ -30,7 +30,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		case WM_CREATE:
 		{
 			// Create an edit box
-			auto hEdit = CreateWindowEx(WS_EX_CLIENTEDGE,
+			/*auto hEdit = CreateWindowEx(WS_EX_CLIENTEDGE,
 				L"EDIT",
 				L"",
 				WS_CHILD | WS_VISIBLE |
@@ -51,7 +51,17 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 			SendMessage(hEdit,
 				WM_SETTEXT,
 				(WPARAM)hfDefault,
-				(LPARAM)L"Insert Text");
+				(LPARAM)L"Insert Text");*/
+		}
+		break;
+		//close window on KeyUp event of Escape button
+		case WM_KEYUP:
+		{
+			if (pWParam == VK_ESCAPE)
+			{
+				sWindow->close();
+				logger.write(L"The window just closed");
+			}
 		}
 		break;
 		}

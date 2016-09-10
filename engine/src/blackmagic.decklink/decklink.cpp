@@ -4,19 +4,19 @@
 
 #if defined (__1080p_50__)
 
-#define PREFERED_DISPLAY_MODE L"1080p50"
+#define PREFERED_DISPLAY_MODE "1080p50"
 
 #elif defined (__1080_25p__)
 
-#define PREFERED_DISPLAY_MODE L"1080p25"
+#define PREFERED_DISPLAY_MODE "1080p25"
 
 #elif defined (__PAL__)
 
-#define PREFERED_DISPLAY_MODE L"PAL"
+#define PREFERED_DISPLAY_MODE "PAL"
 
 #elif defined (__NTSC__)
 
-#define PREFERED_DISPLAY_MODE L"NTSC"
+#define PREFERED_DISPLAY_MODE "NTSC"
 
 #endif
 
@@ -41,15 +41,17 @@ using namespace wolf::system;
 static bool sInValidLicense = true;
 
 decklink::decklink() : 
-	isRunning(false), 
+	_is_running(false),
+	_support_input_format_detection(false),
 	_frame_flag(_BMDFrameFlags::bmdFrameFlagDefault),
-	audioSampleRate(bmdAudioSampleRate48kHz), 
-	_ideckLink(nullptr), 
-	output(nullptr), 
-	timeCode(nullptr), 
-	isReleased(false)
+	_audio_sample_rate(bmdAudioSampleRate48kHz),
+	_time_code(nullptr),
+	_deckLink_interface(nullptr),
+	_deckLink_input(nullptr),
+	_decklink_iterator(nullptr),
+	_decklink_output(nullptr)
 {
-	this->name = typeid(this).name();
+	_super::set_class_name(typeid(this).name());
 }
 
 decklink::~decklink()
@@ -59,53 +61,84 @@ decklink::~decklink()
 
 HRESULT decklink::initialize()
 {
-	this->deviceInfo.clear();
-
-	IDeckLinkIterator* _iterator = nullptr;
+	this->_device_info.clear();
 
 	auto _hr = CoInitialize(NULL);
-	V(_hr, "CoInitialize", this->name);
+	V(_hr, L"CoInitialize", this->name);
 
-	_hr = CoCreateInstance(CLSID_CDeckLinkIterator, NULL, CLSCTX_ALL, IID_IDeckLinkIterator, (void**)&_iterator);
+	_hr = CoCreateInstance(CLSID_CDeckLinkIterator, NULL, CLSCTX_ALL, IID_IDeckLinkIterator, (void**)&this->_decklink_iterator);
 	//On problem happens first release the iDLIterator then release this class and finally write log and close the app
 	if (_hr != S_OK)
 	{
-		string _msg = "BlackMagic DeckLink drivers not found";
-		_release_decklink_iterator(_iterator);
+		wstring _msg = L"BlackMagic DeckLink drivers not found";
 		free();
-		MessageBoxA(NULL, _msg.c_str(), "WPlayout", MB_OK);
+		MessageBox(NULL, _msg.c_str(), L"WPlayout", MB_OK);
 		V(_hr, _msg, this->name);
 		return S_FALSE;
 	}
 
-	_hr = _iterator->Next(&this->_ideckLink);
+	_hr = this->_decklink_iterator->Next(&this->_deckLink_interface);
 	if (_hr == S_FALSE)
 	{
-		_release_decklink_iterator(_iterator);
 		free();
 		return S_FALSE;
 	}
-	V(_hr, "BlackMagic DeckLink device is not installed", this->name, true);
+	V(_hr, L"BlackMagic DeckLink device is not installed", this->name, true);
 
-	_hr = this->_ideckLink->QueryInterface(IID_IDeckLinkOutput, (void**)&this->output);
+	this->_deckLink_interface->AddRef();
+	//get output interface of decklink
+	_hr = this->_deckLink_interface->QueryInterface(IID_IDeckLinkOutput, (void**)&this->_decklink_output);
 	if (_hr == S_FALSE)
 	{
-		_release_decklink_iterator(_iterator);
 		free();
 		return S_FALSE;
 	}
-	V(_hr, "getting output for DeckLink", this->name, true);
+	V(_hr, L"getting output for DeckLink", this->name, true);
+
+	//get decklink key for output
+	_hr = this->_decklink_output->QueryInterface(IID_IDeckLinkKeyer, (void**)&this->_decklink_keyer);
+	if (_hr == S_FALSE)
+	{
+		free();
+		return S_FALSE;
+	}
+	else if(_hr == E_NOINTERFACE)
+	{
+		V(_hr, L"no such interface for decklink keyer", this->name);
+	}
+	
+	//get input capture interface of decklink
+	_hr = this->_deckLink_interface->QueryInterface(IID_IDeckLinkInput, (void**)&this->_deckLink_input);
+	if (_hr == S_FALSE)
+	{
+		free();
+		return S_FALSE;
+	}
+	V(_hr, L"getting input capture for DeckLink", this->name, true);
+
+	_get_decklink_information();
+	_get_output_supported_display_modes();
+	//_get_input_supported_display_modes();
+
+	//initialize callback
+	//hr = this->output->SetScreenPreviewCallback(this);
+	_hr = this->_decklink_output->SetScheduledFrameCompletionCallback(this);
+	//hr = this->output->SetAudioCallback(this);
+
+	return _hr;
+}
+
+void decklink::_get_decklink_information()
+{
+	IDeckLinkAPIInformation* _decklink_api_information = nullptr;
+	IDeckLinkAttributes* _decklink_attributes = nullptr;
 
 	//Get the name of deckLink
 	BSTR _deckLinkModulName = nullptr;
-	_hr = this->_ideckLink->GetModelName(&_deckLinkModulName);
-	if (_hr == S_FALSE)  return _hr;
+	auto _hr = this->_deckLink_interface->GetModelName(&_deckLinkModulName);
+	V(_hr, L"getting decklink device name", this->name);
 
-#pragma region Get decklink informarion
-
-	IDeckLinkAPIInformation* _decklink_api_information = nullptr;
-	IDeckLinkAttributes* _decklink_attributes = nullptr;
-	_hr = _iterator->QueryInterface(IID_IDeckLinkAPIInformation, (void**)&_decklink_api_information);
+	_hr = this->_decklink_iterator->QueryInterface(IID_IDeckLinkAPIInformation, (void**)&_decklink_api_information);
 	if (_hr == S_OK)
 	{
 		LONGLONG		_deckLinkVersion;
@@ -119,36 +152,33 @@ HRESULT decklink::initialize()
 		_dlVerPoint = (_deckLinkVersion & 0x0000FF00) >> 8;
 
 		auto decklinkName = wstring(_deckLinkModulName);
-		
-		this->deviceInfo = L"Blackmagic decklink device : " + 
-			wstring(decklinkName.begin(), decklinkName.end()) + L"\r\n";
-		
-		this->deviceInfo += L"DeckLinkAPI version : " + 
-			std::to_wstring(_dlVerMajor) + L"," + std::to_wstring(_dlVerMinor) + L"," + std::to_wstring(_dlVerPoint);
+
+		this->_device_info = "Blackmagic decklink device : " + string(decklinkName.begin(), decklinkName.end()) + "\r\n";
+		this->_device_info += "DeckLinkAPI version : " + std::to_string(_dlVerMajor) + "," + std::to_string(_dlVerMinor) + "," + std::to_string(_dlVerPoint);
 
 		BSTR								_name = NULL;
 		BOOL								_supported;
 		LONGLONG							_value;
 
 		// Query the DeckLink for its attributes interface
-		_hr = this->_ideckLink->QueryInterface(IID_IDeckLinkAttributes, (void**)&_decklink_attributes);
+		_hr = this->_deckLink_interface->QueryInterface(IID_IDeckLinkAttributes, (void**)&_decklink_attributes);
 		if (_hr != S_OK)
 		{
-			V(_hr, "Could not obtain the IDeckLinkAttributes interface", this->name);
-			return S_FALSE;
+			V(_hr, L"Could not obtain the IDeckLinkAttributes interface", this->name);
+			return;
 		}
 
 		// List attributes and their value
 		_value = -1;
 		_hr = _decklink_attributes->GetInt(BMDDeckLinkPersistentID, &_value);
-		this->deviceInfo += L"\r\nDevice Persistent ID : ";
+		this->_device_info += "\r\nDevice Persistent ID : ";
 		if (_hr == S_OK)
 		{
-			this->deviceInfo += to_wstring(_value);
+			this->_device_info += to_string(_value);
 		}
 		else
 		{
-			this->deviceInfo += L"Not Supported on this device";
+			this->_device_info += "Not Supported on this device";
 		}
 
 #ifndef DEV
@@ -165,53 +195,106 @@ HRESULT decklink::initialize()
 #endif
 
 		_hr = _decklink_attributes->GetInt(BMDDeckLinkTopologicalID, &_value);
-		this->deviceInfo += L"\r\nDevice Topological ID : ";
+		this->_device_info += "\r\nDevice Topological ID : ";
 		if (_hr == S_OK)
 		{
-			this->deviceInfo += to_wstring(_value);
+			this->_device_info += to_string(_value);
 		}
 		else
 		{
-			this->deviceInfo += L"Not Supported on this device";
+			this->_device_info += "Not Supported on this device";
 		}
 
 		_hr = _decklink_attributes->GetInt(BMDDeckLinkNumberOfSubDevices, &_value);
 		if (_hr == S_OK)
 		{
-			this->deviceInfo += L"\r\nNumber of sub-devices : " + to_wstring(_value);
+			this->_device_info += "\r\nNumber of sub-devices : " + to_string(_value);
 			if (_value != 0)
 			{
 				_hr = _decklink_attributes->GetInt(BMDDeckLinkSubDeviceIndex, &_value);
-				this->deviceInfo += L"\r\nSub-devices index : ";
+				this->_device_info += "\r\nSub-devices index : ";
 				if (_hr == S_OK)
 				{
-					this->deviceInfo += to_wstring(_value);
+					this->_device_info += to_string(_value);
 				}
 				else
 				{
-					this->deviceInfo += L"Could not query the sub-device index attribute";
+					this->_device_info += "Could not query the sub-device index attribute";
 				}
 			}
 		}
 		else
 		{
-			this->deviceInfo += L"\r\nCould not query the number of sub-device attribute";
+			this->_device_info += "\r\nCould not query the number of sub-device attribute";
 		}
 
 		_hr = _decklink_attributes->GetInt(BMDDeckLinkMaximumAudioChannels, &_value);
-		this->deviceInfo += L"\r\nMaximum number of audio channels: ";
+		this->_device_info += "\r\nMaximum number of audio channels: ";
 		if (_hr == S_OK)
 		{
-			this->deviceInfo += to_wstring(_value);
+			this->_device_info += to_string(_value);
 		}
 		else
 		{
-			this->deviceInfo += L"Could not query the number of audio channels";
+			this->_device_info += "Could not query the number of audio channels";
 		}
+
+		BOOL _key_value = FALSE;
+		_hr = _decklink_attributes->GetFlag(BMDDeckLinkSupportsInternalKeying, &_key_value);
+		if (_hr == S_OK)
+		{
+			this->_device_info += _key_value == TRUE ? "Support internal keying" : "Does not support internal keying";
+		}
+		else
+		{
+			this->_device_info += "Could not get flag of internal keying";
+		}
+
+		_hr = _decklink_attributes->GetFlag(BMDDeckLinkSupportsExternalKeying, &_key_value);
+		if (_hr == S_OK)
+		{
+			this->_device_info += _key_value == TRUE ? "Support external keying" : "Does not support external keying";
+		}
+		else
+		{
+			this->_device_info += "Could not get flag of external keying";
+		}
+
+		_hr = _decklink_attributes->GetFlag(BMDDeckLinkSupportsHDKeying, &_key_value);
+		if (_hr == S_OK)
+		{
+			this->_device_info += _key_value == TRUE ? "Support HD keying" : "Does not support HD keying";
+		}
+		else
+		{
+			this->_device_info += "Could not get flag of HD keying";
+		}
+
+		//does support input format detection
+		_hr = _decklink_attributes->GetFlag(BMDDeckLinkSupportsInputFormatDetection, &_key_value);
+		if (_hr == S_OK)
+		{
+			if (_key_value == TRUE)
+			{
+				this->_support_input_format_detection = true;
+				this->_device_info += "Support input format detection";
+			}
+			else
+			{
+				this->_support_input_format_detection = false;
+				this->_device_info += "Does not support input format detection";
+			}
+		}
+		else
+		{
+			this->_device_info += "Could not get flag of input format detection";
+		}
+
 		_decklink_api_information->Release();
 
-		this->deviceInfo += L"\r\n";
-		logger.user(this->deviceInfo);
+		this->_device_info += "\r\n";
+
+		logger.user(this->_device_info);
 		//clear the decklinkName which defined as wstring
 		decklinkName.clear();
 	}
@@ -222,17 +305,9 @@ HRESULT decklink::initialize()
 
 	_decklink_api_information = nullptr;
 
-#pragma endregion
-
-	//Create callback
-	//hr = this->output->SetScreenPreviewCallback(this);
-	_hr = this->output->SetScheduledFrameCompletionCallback(this);
-	//hr = this->output->SetAudioCallback(this);
-
-	return _hr;
 }
 
-HRESULT decklink::start()
+void decklink::_get_output_supported_display_modes()
 {
 	IDeckLinkDisplayModeIterator* _decklink_display_mode_iter = nullptr;
 
@@ -240,31 +315,30 @@ HRESULT decklink::start()
 	_BMDPixelFormat _pixelFormat = bmdFormat8BitYUV;
 
 	//clear all display modes
-	this->displayModes.clear();
-	this->supportedDisplayModes.clear();
+	this->_output_display_modes.clear();
+	this->_supported_output_display_modes.clear();
 
+	string _display_modes_msg = "Supported output display modes : \r\n";
+	string _unsupported_display_modes_msg = "UnSupported output display modes : \r\n";
+	
 	HRESULT _hr = S_FALSE;
-	wstring _displayModesMsg = L"Supported display modes : \r\n";
-	wstring _unsupportedDisplayModesMsg = L"UnSupported display modes : \r\n";
-	logger.user(L"Deck link is going to start");
-
-	if (this->output->GetDisplayModeIterator(&_decklink_display_mode_iter) == S_OK)
+	if (this->_decklink_output->GetDisplayModeIterator(&_decklink_display_mode_iter) == S_OK)
 	{
 		IDeckLinkDisplayMode* _dLDisplayMode = nullptr;
 		while (_decklink_display_mode_iter->Next(&_dLDisplayMode) == S_OK)
 		{
-			BSTR					_modeName;
+			BSTR					_bstr_mode_name;
 			BMDDisplayModeSupport	_displayModeSupport;
 			BMDVideoOutputFlags		_videoOutputFlags = bmdVideoOutputDualStream3D;
 
 			//If could not get the name then continiue
-			if (_dLDisplayMode->GetName(&_modeName) != S_OK)
+			if (_dLDisplayMode->GetName(&_bstr_mode_name) != S_OK)
 			{
-				SysFreeString(_modeName);
+				SysFreeString(_bstr_mode_name);
 				continue;
 			}
 
-			_hr = this->output->DoesSupportVideoMode(
+			_hr = this->_decklink_output->DoesSupportVideoMode(
 				_dLDisplayMode->GetDisplayMode(),
 				_pixelFormat,
 				_videoOutputFlags,
@@ -272,24 +346,27 @@ HRESULT decklink::start()
 				NULL);
 
 			//Save the name
-			auto _wModeName = wstring(_modeName);
+			auto _w_mode_name = wstring(_bstr_mode_name);
+			auto _mode_name = std::string(_w_mode_name.begin(), _w_mode_name.end());
+
 			if (_displayModeSupport)
 			{
-				_unsupportedDisplayModesMsg.append(_wModeName).append(L" \r\n");
+				_unsupported_display_modes_msg.append(_mode_name).append(" \r\n");
 			}
 			else
 			{
-				this->supportedDisplayModes.push_back(_wModeName);
-				_displayModesMsg.append(_wModeName).append(L" \r\n");
+				this->_supported_output_display_modes.push_back(_mode_name);
+				_display_modes_msg.append(_mode_name).append(" \r\n");
 			}
 
 			//Save the name and the displayMode in the map
-			this->displayModes[_wModeName] = _dLDisplayMode;
+			this->_output_display_modes[_mode_name] = _dLDisplayMode;
 			_dLDisplayMode->AddRef();
 
 			//Free the strings
-			_wModeName.clear();
-			SysFreeString(_modeName);
+			_mode_name.clear();
+			_w_mode_name.clear();
+			SysFreeString(_bstr_mode_name);
 		}
 
 		_dLDisplayMode = nullptr;
@@ -304,42 +381,135 @@ HRESULT decklink::start()
 		MessageBox(NULL, _msg, _caption.c_str(), MB_OK);
 		_decklink_display_mode_iter->Release();
 		free();
-		V(S_FALSE, string(_caption.begin(), _caption.end()), this->name, true, false);
+		V(S_FALSE, wstring(_caption.begin(), _caption.end()), this->name, true, false);
 	}
 
 	//Log the display modes
-	logger.user(_displayModesMsg);
-	logger.user(_unsupportedDisplayModesMsg);
+	logger.user(_display_modes_msg);
+	logger.user(_unsupported_display_modes_msg);
 
 	//Todo : This must change from setting
-	if (displayModes.find(PREFERED_DISPLAY_MODE) == displayModes.end())
+	if (this->_output_display_modes.find(PREFERED_DISPLAY_MODE) == this->_output_display_modes.end())
 	{
-		logger.user(L"Display mode " + std::wstring(PREFERED_DISPLAY_MODE) + L" is not supported");
-		return S_FALSE;
+		logger.user("Display mode " + std::string(PREFERED_DISPLAY_MODE) + " is not supported");
+	}
+}
+
+void decklink::_get_input_supported_display_modes()
+{
+	IDeckLinkDisplayModeIterator* _decklink_display_mode_iter = nullptr;
+
+	_BMDPixelFormat _pixelFormat = bmdFormat8BitYUV;
+
+	//clear all display modes
+	this->_input_display_modes.clear();
+	this->_supported_input_display_modes.clear();
+
+	string _display_modes_msg = "Supported input display modes : \r\n";
+	string _unsupported_display_modes_msg = "UnSupported input display modes : \r\n";
+
+	HRESULT _hr = S_FALSE;
+	if (this->_deckLink_input->GetDisplayModeIterator(&_decklink_display_mode_iter) == S_OK)
+	{
+		IDeckLinkDisplayMode* _dLDisplayMode = nullptr;
+		while (_decklink_display_mode_iter->Next(&_dLDisplayMode) == S_OK)
+		{
+			BSTR					_bstr_mode_name;
+			BMDDisplayModeSupport	_displayModeSupport;
+			BMDVideoOutputFlags		_videoOutputFlags = bmdVideoOutputDualStream3D;
+
+			//If could not get the name then continiue
+			if (_dLDisplayMode->GetName(&_bstr_mode_name) != S_OK)
+			{
+				SysFreeString(_bstr_mode_name);
+				continue;
+			}
+
+			_hr = this->_decklink_output->DoesSupportVideoMode(
+				_dLDisplayMode->GetDisplayMode(),
+				_pixelFormat,
+				_videoOutputFlags,
+				&_displayModeSupport,
+				NULL);
+
+			//Save the name
+			auto _w_mode_name = wstring(_bstr_mode_name);
+			auto _mode_name = string(_w_mode_name.begin(), _w_mode_name.end());
+
+			if (_displayModeSupport)
+			{
+				_unsupported_display_modes_msg.append(_mode_name).append(" \r\n");
+			}
+			else
+			{
+				this->_supported_input_display_modes.push_back(_mode_name);
+				_display_modes_msg.append(_mode_name).append(" \r\n");
+			}
+
+			//Save the name and the displayMode in the map
+			this->_input_display_modes[_mode_name] = _dLDisplayMode;
+			_dLDisplayMode->AddRef();
+
+			//Free the strings
+			_mode_name.clear();
+			_w_mode_name.clear();
+			SysFreeString(_bstr_mode_name);
+		}
+
+		_dLDisplayMode = nullptr;
+		_decklink_display_mode_iter->Release();
+	}
+	else
+	{
+		//Show message box and exit the appilication
+		auto _msg = L"Couldn't find any display mode.";
+		wstring _caption = L"DeckLink error.";
+		logger.user(_msg);
+		MessageBox(NULL, _msg, _caption.c_str(), MB_OK);
+		_decklink_display_mode_iter->Release();
+		free();
+		V(S_FALSE, wstring(_caption.begin(), _caption.end()), this->name, true, false);
 	}
 
-	auto selectedDisplayMode = displayModes[PREFERED_DISPLAY_MODE];
-	this->width = selectedDisplayMode->GetWidth();
-	this->height = selectedDisplayMode->GetHeight();
-	this->bufferSize = this->width * this->height * 4;//4 = BGRA
+	//Log the display modes
+	logger.user(_display_modes_msg);
+	logger.user(_unsupported_display_modes_msg);
 
-	selectedDisplayMode->GetFrameRate(&frameDuration, &frameTimescale);
-	framesPerSecond = ((frameTimescale + (frameDuration - 1)) / frameDuration);
+	if (this->_input_display_modes.find(PREFERED_DISPLAY_MODE) == this->_input_display_modes.end())
+	{
+		logger.user("Display mode " + std::string(PREFERED_DISPLAY_MODE) + " is not supported");
+	}
+}
 
-	auto msg = std::wstring(L"Display mode FPS is " + std::to_wstring(framesPerSecond) + L", frame width is " + std::to_wstring(this->width) +
-		L", frame height is " + std::to_wstring(this->height));
+HRESULT decklink::start_output()
+{
+	logger.user(L"Decklink is going to start outputing");
+
+	auto selectedDisplayMode = this->_output_display_modes[PREFERED_DISPLAY_MODE];
+	this->_display_mode_width = selectedDisplayMode->GetWidth();
+	this->_display_mode_height = selectedDisplayMode->GetHeight();
+	this->_buffer_size = this->_display_mode_width * this->_display_mode_height * 4;//4 = BGRA
+
+	selectedDisplayMode->GetFrameRate(&this->_frame_duration, &this->_frame_time_scale);
+	this->_fps = (this->_frame_time_scale + (this->_frame_duration - 1)) / this->_frame_duration;
+
+	auto msg = std::wstring(L"Display mode FPS is " + std::to_wstring(this->_fps) + L", frame width is " + std::to_wstring(this->_display_mode_width) +
+		L", frame height is " + std::to_wstring(this->_display_mode_height));
 	logger.user(msg);
+	msg.clear();
 
-	if (this->timeCode)
+	if (this->_time_code)
 	{
-		delete this->timeCode;
+		delete this->_time_code;
 	}
-	this->timeCode = new time_code(framesPerSecond);
+	this->_time_code = new time_code(this->_fps);
 
-	this->totalAudioSecondsScheduled = 0;
-	this->totalFramesScheduled = 0;
+	this->_total_audio_seconds_scheduled = 0;
+	this->_total_frames_scheduled = 0;
 
 #pragma region Enable Video
+
+	//IDeckLinkAttributes::GetFlag using BMDDeckLinkSupportsInternalKeying or BMDDeckLinkSupportsExternalKeying to determine internal / external keying support
 
 	BMDVideoOutputFlags _videoOutputFlags;
 	auto _videoDisplayMode = selectedDisplayMode->GetDisplayMode();
@@ -347,31 +517,46 @@ HRESULT decklink::start()
 		_videoDisplayMode == bmdModeNTSC2398 ||
 		_videoDisplayMode == bmdModePAL)
 	{
-		this->timeCodeFormat = BMDTimecodeFormat::bmdTimecodeVITC;
+		this->_time_code_format = BMDTimecodeFormat::bmdTimecodeVITC;
 		_videoOutputFlags = BMDVideoOutputFlags::bmdVideoOutputVITC;
 	}
 	else
 	{
-		this->timeCodeFormat = BMDTimecodeFormat::bmdTimecodeRP188Any;
+		this->_time_code_format = BMDTimecodeFormat::bmdTimecodeRP188Any;
 		_videoOutputFlags = BMDVideoOutputFlags::bmdVideoOutputRP188;
 	}
 
-	if (this->output->EnableVideoOutput(_videoDisplayMode, _videoOutputFlags) != S_OK)
+	if (this->_decklink_output->EnableVideoOutput(_videoDisplayMode, _videoOutputFlags) != S_OK)
 	{
 		free();
 		return S_FALSE;
 	}
 
-	if (this->output->CreateVideoFrame(this->width, this->height, this->width * 4, bmdFormat8BitBGRA, this->_frame_flag, &this->videoFrame) != S_OK)
+	if (this->_decklink_output->CreateVideoFrame(
+		this->_display_mode_width, 
+		this->_display_mode_height, 
+		this->_display_mode_width * 4, 
+		bmdFormat8BitBGRA, 
+		this->_frame_flag, 
+		&this->_video_frame) != S_OK)
 	{
 		free();
 		return S_FALSE;
 	}
+
+	//enable alpha transparency
+	if (_decklink_keyer)
+	{
+		this->_decklink_keyer->Enable(TRUE);
+		this->_decklink_keyer->SetLevel(255);
+		this->_decklink_output->DisplayVideoFrameSync(this->_video_frame);
+	}
+
 	for (size_t i = 0; i < MAX_PREROLL; ++i)
 	{
-		auto _frame = (uint8_t*)scalable_malloc(this->bufferSize);
-		std::fill(&_frame[0], &_frame[0] + this->bufferSize, 0);
-		this->videoFramesQueue.push(_frame);
+		auto _frame = (uint8_t*)scalable_malloc(this->_buffer_size);
+		std::fill(&_frame[0], &_frame[0] + this->_buffer_size, 0);
+		this->_video_frames_queue.push(_frame);
 		_schedule_next_frame(true);
 	}
 
@@ -382,42 +567,63 @@ HRESULT decklink::start()
 	auto _audioChannelCount = 2;
 	auto _audioSampleDepth = 16; // bmdAudioSampleType16bitInteger
 	// Set the audio output mode, bmdAudioOutputStreamContinuous need for continusly fill buffer from my code, time step did not schedual
-	if (this->output->EnableAudioOutput(this->audioSampleRate, bmdAudioSampleType16bitInteger, _audioChannelCount, bmdAudioOutputStreamContinuous) != S_OK)//bmdAudioOutputStreamTimestamped
+	if (this->_decklink_output->EnableAudioOutput(this->_audio_sample_rate, bmdAudioSampleType16bitInteger, _audioChannelCount, bmdAudioOutputStreamContinuous) != S_OK)//bmdAudioOutputStreamTimestamped
 	{
 		free();
 		return S_FALSE;
 	}
 
-	this->audioSamplesPerFrame = ((audioSampleRate * frameDuration) / frameTimescale);
-	this->audioBufferSampleLength = (framesPerSecond * audioSampleRate * frameDuration) / frameTimescale;
+	this->_audio_samples_per_frame = (this->_audio_sample_rate * this->_frame_duration) / this->_frame_time_scale;
+	this->_audio_buffer_sample_length = (this->_fps * this->_audio_sample_rate * this->_frame_duration) / this->_frame_time_scale;
 
 #pragma endregion
 
-	if (this->output->BeginAudioPreroll() != S_OK)
+	if (this->_decklink_output->BeginAudioPreroll() != S_OK)
 	{
 		V(S_FALSE, "beginning pre-rolling audio frames in deckLink", this->name, true);
 	}
 
 	msg.clear();
 
-	this->output->StartScheduledPlayback(0, this->frameTimescale, 1.0);
+	this->_decklink_output->StartScheduledPlayback(0, this->_frame_time_scale, 1.0);
 
-	this->isRunning = true;
+	this->_is_running = true;
 
 	return S_OK;
 }
 
-HRESULT decklink::stop()
+HRESULT decklink::stop_output()
 {
-	if (!this->isRunning) return S_FALSE;
+	if (!this->_is_running) return S_FALSE;
 
-	this->output->StopScheduledPlayback(0, NULL, 0);
+	this->_decklink_output->StopScheduledPlayback(0, NULL, 0);
 
-	this->output->DisableVideoOutput();
-	this->output->DisableAudioOutput();
+	this->_decklink_output->DisableVideoOutput();
+	this->_decklink_output->DisableAudioOutput();
 
-	this->isRunning = false;
+	if (this->_decklink_keyer)
+	{
+		this->_decklink_keyer->Disable();
+	}
 
+	this->_is_running = false;
+
+	return S_OK;
+}
+
+HRESULT decklink::start_capturing()
+{
+	BMDVideoInputFlags	_video_input_flags = bmdVideoInputFlagDefault;
+	if (this->_support_input_format_detection)
+	{
+		_video_input_flags |= bmdVideoInputEnableFormatDetection;
+	}
+
+	return S_OK;
+}
+
+HRESULT decklink::stop_capturing()
+{
 	return S_OK;
 }
 
@@ -426,21 +632,21 @@ void decklink::_schedule_next_frame(bool pPreroll)
 	uint8_t* _frameOfQueue = nullptr;
 	auto _hr = false;
 
-	auto _size = this->videoFramesQueue.unsafe_size();
+	auto _size = this->_video_frames_queue.unsafe_size();
 	if (_size > 0)
 	{
-		_hr = this->videoFramesQueue.try_pop(_frameOfQueue);
+		_hr = this->_video_frames_queue.try_pop(_frameOfQueue);
 	}
 
 	if (_hr && _frameOfQueue)
 	{
 		uint8_t* _frame = nullptr;
-		this->videoFrame->GetBytes((void**)&_frame);
+		this->_video_frame->GetBytes((void**)&_frame);
 
 		if (_frame != nullptr)
 		{
 			//copy from queue to the video frame
-			std::copy(&_frameOfQueue[0], &_frameOfQueue[0] + this->bufferSize, &_frame[0]);
+			std::copy(&_frameOfQueue[0], &_frameOfQueue[0] + this->_buffer_size, &_frame[0]);
 		}
 
 		scalable_free(_frameOfQueue);
@@ -452,23 +658,27 @@ void decklink::_schedule_next_frame(bool pPreroll)
 		//std::fill(&_frame[0], &_frame[0] + this->bufferSize, 255);
 	}
 
-	this->videoFrame->SetTimecodeFromComponents(
-		this->timeCodeFormat,
-		this->timeCode->hours(),
-		this->timeCode->minutes(),
-		this->timeCode->seconds(),
-		this->timeCode->frames(),
+	this->_video_frame->SetTimecodeFromComponents(
+		this->_time_code_format,
+		this->_time_code->hours(),
+		this->_time_code->minutes(),
+		this->_time_code->seconds(),
+		this->_time_code->frames(),
 		bmdTimecodeFlagDefault);
 
-	if (output->ScheduleVideoFrame(this->videoFrame, (totalFramesScheduled * this->frameDuration), this->frameDuration, frameTimescale) == S_OK)
+	if (_decklink_output->ScheduleVideoFrame(
+		this->_video_frame, 
+		this->_total_frames_scheduled * this->_frame_duration,
+		this->_frame_duration,
+		this->_frame_time_scale) == S_OK)
 	{
-		this->totalFramesScheduled += 1;
+		this->_total_frames_scheduled += 1;
 	}
 	else
 	{
 		V(S_FALSE, "Sending video buffer to decklink", this->name);
 	}
-	timeCode->update();
+	this->_time_code->update();
 }
 
 #pragma region Interfaces Implementation
@@ -517,7 +727,7 @@ HRESULT	decklink::ScheduledFrameCompleted(IDeckLinkVideoFrame* completedFrame, B
 
 	if (pCompletionResult == bmdOutputFrameDisplayedLate || pCompletionResult == bmdOutputFrameDropped)
 	{
-		this->totalFramesScheduled += 2;
+		this->_total_frames_scheduled += 2;
 	}
 
 	_schedule_next_frame(false);
@@ -546,51 +756,64 @@ ULONG decklink::Release()
 
 void decklink::clear_video_queue()
 {
-	while (this->videoFramesQueue.unsafe_size() > 0)
+	while (this->_video_frames_queue.unsafe_size() > 0)
 	{
 		uint8_t* _frame = nullptr;
-		auto _hr = this->videoFramesQueue.try_pop(_frame);
+		auto _hr = this->_video_frames_queue.try_pop(_frame);
 		if (_hr && _frame)
 		{
 			scalable_free(_frame);
 		}
 	}
 
-	this->videoFramesQueue.clear();
-}
-
-void decklink::_release_decklink_iterator(IDeckLinkIterator* iDLIterator)
-{
-	if (iDLIterator != nullptr)
-	{
-		iDLIterator->Release();
-		iDLIterator = nullptr;
-	}
+	this->_video_frames_queue.clear();
 }
 
 void decklink::free()
 {
-	if (this->isReleased) return;
+	if (this->is_released()) return;
 
 	clear_video_queue();
 
-	if (this->output != nullptr)
-	{
-		this->output->DisableAudioOutput();
-		this->output->DisableVideoOutput();
+	this->_output_display_modes.clear();
+	this->_supported_output_display_modes.clear();
 
-		this->output->SetScreenPreviewCallback(NULL);
-		this->output->SetScheduledFrameCompletionCallback(NULL);
-		this->output->Release();
-		this->output = nullptr;
-	}
-	if (this->_ideckLink != nullptr)
+	this->_is_running = false;
+	if (this->_time_code)
 	{
-		this->_ideckLink->Release();
-		this->_ideckLink = nullptr;
+		delete this->_time_code;
+	}
+	if (this->_video_frame)
+	{
+		this->_video_frame->Release();
+		this->_video_frame = nullptr;
+	}
+	if (this->_decklink_iterator != nullptr)
+	{
+		this->_decklink_iterator->Release();
+		this->_decklink_iterator = nullptr;
+	}
+	if (this->_decklink_output != nullptr)
+	{
+		this->_decklink_output->DisableAudioOutput();
+		this->_decklink_output->DisableVideoOutput();
+
+		this->_decklink_output->SetScreenPreviewCallback(NULL);
+		this->_decklink_output->SetScheduledFrameCompletionCallback(NULL);
+		this->_decklink_output->Release();
+		this->_decklink_output = nullptr;
+	}
+	if (this->_deckLink_interface != nullptr)
+	{
+		this->_deckLink_interface->Release();
+		this->_deckLink_interface = nullptr;
+	}
+	if (this->_decklink_keyer)
+	{
+		this->_decklink_keyer->Release();
 	}
 
-	this->isReleased = true;
+	_super::release();
 }
 
 #pragma endregion
@@ -608,9 +831,9 @@ const bool decklink::get_is_valid_license() const
 
 void decklink::set_video_frame(uint8_t* pData)
 {
-	if (!this->isRunning) return;
+	if (!this->_is_running) return;
 
-	this->videoFramesQueue.push(pData);
+	this->_video_frames_queue.push(pData);
 }
 
 void decklink::set_audio_sample_frame(_In_ uint8_t* pSamples, _In_ const UINT pSamplesCount)
@@ -618,7 +841,7 @@ void decklink::set_audio_sample_frame(_In_ uint8_t* pSamples, _In_ const UINT pS
 	//BMDTimeValue _audioStreamTime = pPTS + off;// this->totalAudioSecondsScheduled * this->audioSampleRate * this->frameDuration / this->frameTimescale;
 
 	unsigned int _written = 0;
-	if (this->output->ScheduleAudioSamples(
+	if (this->_decklink_output->ScheduleAudioSamples(
 		pSamples,
 		pSamplesCount,
 		0,
@@ -629,7 +852,7 @@ void decklink::set_audio_sample_frame(_In_ uint8_t* pSamples, _In_ const UINT pS
 	}
 	if (_written != pSamplesCount)
 	{
-		this->output->FlushBufferedAudioSamples();
+		this->_decklink_output->FlushBufferedAudioSamples();
 	}
 }
 

@@ -2,7 +2,7 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : pch.h
+	Name			 : main.cpp
 	Description		 : This sample shows how to create a window in Wolf Engine
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
 */

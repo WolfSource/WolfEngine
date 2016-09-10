@@ -14,7 +14,7 @@ w_shader::~w_shader()
 	release();
 }
 
-HRESULT w_shader::create_vertex_shader(_In_ ID3D11Device1* pDevice, const void* pBytes, SIZE_T pLength, wolf::content_pipeline::w_vertex_declaration pVDeclaration)
+HRESULT w_shader::create_vertex_shader(_In_ ID3D11Device1* pDevice, const void* pBytes, size_t pLength, wolf::content_pipeline::w_vertex_declaration pVDeclaration)
 {
 	auto _hr = pDevice->CreateVertexShader(pBytes, pLength, nullptr, &this->_vertex_shader);
 	V(_hr, L"create vertex shader", this->name, 3, false);
@@ -25,15 +25,19 @@ HRESULT w_shader::create_vertex_shader(_In_ ID3D11Device1* pDevice, const void* 
 	return _hr;
 }
 
-HRESULT w_shader::create_pixel_shader(_In_ ID3D11Device1* pDevice, const void* bytes, SIZE_T Length)
+HRESULT w_shader::create_pixel_shader(_In_ ID3D11Device1* pDevice, const void* bytes, size_t Length, size_t& pIndexCreated)
 {
-	auto hr = pDevice->CreatePixelShader(bytes, Length, nullptr, &this->_pixel_shader);
+	ID3D11PixelShader* _ps;
+	auto hr = pDevice->CreatePixelShader(bytes, Length, nullptr, &_ps);
 	V(hr, L"create pixel shader", this->name, 3, false);
+
+	pIndexCreated = this->_pixel_shaders.size();
+	this->_pixel_shaders.push_back(_ps);
 
 	return hr;
 }
 
-HRESULT w_shader::load_shader(_In_ ID3D11Device1* pDevice, std::wstring pPath, w_shader_type pShaderType, wolf::content_pipeline::w_vertex_declaration pVDeclaration, _Inout_ w_shader* pShader)
+HRESULT w_shader::load_shader(_In_ ID3D11Device1* pDevice, std::wstring pPath, w_shader_type pShaderType, wolf::content_pipeline::w_vertex_declaration pVDeclaration, _Inout_ w_shader* pShader, _Out_ size_t* pPixelShaderCreatedIndex)
 {
 	auto _path = wolf::system::io::get_content_directory() + pPath;
 	if (pShader == nullptr)
@@ -44,11 +48,11 @@ HRESULT w_shader::load_shader(_In_ ID3D11Device1* pDevice, std::wstring pPath, w
 
 	std::unique_ptr<uint8_t[]> data;
 	size_t dataSize;
-	std::tuple<int, boost::filesystem::perms> fileState;
+	boost::filesystem::perms _file_permission_status;
 
 	//read binary compiled shader object
-	auto _hr = wolf::system::io::read_binary_file(_path, data, &dataSize, &fileState);
-	V(_hr, L"could not read binary data", L"Shader.h", 3, false);
+	auto _hr = wolf::system::io::read_binary_file(_path, data, &dataSize, _file_permission_status);
+	V(_hr, L"could not read binary data", "Shader.h", 3, false);
 	if (FAILED(_hr)) return _hr;
 
 	//create shader
@@ -58,8 +62,18 @@ HRESULT w_shader::load_shader(_In_ ID3D11Device1* pDevice, std::wstring pPath, w
 		_hr = pShader->create_vertex_shader(pDevice, data.get(), dataSize, pVDeclaration);
 		break;
 	case w_shader_type::PIXEL_SHADER:
-		_hr = pShader->create_pixel_shader(pDevice, data.get(), dataSize);
+	{
+		if (pPixelShaderCreatedIndex)
+		{
+			_hr = pShader->create_pixel_shader(pDevice, data.get(), dataSize, *pPixelShaderCreatedIndex);
+		}
+		else
+		{
+			size_t _pixel_shader_index = 0;
+			_hr = pShader->create_pixel_shader(pDevice, data.get(), dataSize, _pixel_shader_index);
+		}
 		break;
+	}
 	case w_shader_type::HULL_SHADER:
 		//Not implemented yet
 		break;
@@ -75,7 +89,7 @@ HRESULT w_shader::load_shader(_In_ ID3D11Device1* pDevice, std::wstring pPath, w
 	default:
 		std::wstring _msg = L"Unknown shader type";
 		MessageBox(NULL, _msg.c_str(), L"Error", MB_OK);
-		V(S_FALSE, _msg, L"Shader.h", 0, true);
+		V(S_FALSE, _msg, "Shader.h", 0, true);
 		_msg.clear();
 	}
 
@@ -87,9 +101,10 @@ void w_shader::set_vertex_shader(_In_ ID3D11VertexShader* pVS)
 	this->_vertex_shader = pVS;
 }
 
-void w_shader::set_pixel_shader(_In_ ID3D11PixelShader* pPS)
+void w_shader::set_pixel_shader(_In_ ID3D11PixelShader* pPS, size_t& pIndex)
 {
-	this->_pixel_shader = pPS;
+	pIndex = this->_pixel_shaders.size();
+	this->_pixel_shaders.push_back(pPS);
 }
 
 void w_shader::set_constant_buffer(_In_ ID3D11DeviceContext1* pContext, UINT startSlot, UINT numBuffer, _In_ ID3D11Buffer* CBuffer)
@@ -114,11 +129,14 @@ void w_shader::set_srv(_In_ ID3D11DeviceContext1* pContext, UINT StartSLot, UINT
 	}
 }
 
-void w_shader::apply(_In_ ID3D11DeviceContext1* pContext)
+void w_shader::apply(_In_ ID3D11DeviceContext1* pContext, size_t pPixelShaderIndex)
 {
 	pContext->IASetInputLayout(this->_input_layout.Get());
 	pContext->VSSetShader(this->_vertex_shader.Get(), nullptr, 0);
-	pContext->PSSetShader(this->_pixel_shader.Get(), nullptr, 0);
+	if (pPixelShaderIndex < this->_pixel_shaders.size())
+	{
+		pContext->PSSetShader(this->_pixel_shaders.at(pPixelShaderIndex), nullptr, 0);
+	}
 }
 
 HRESULT w_shader::_create_input_layout(_In_ ID3D11Device1* pDevice, const D3D11_INPUT_ELEMENT_DESC* pElementDesc, const UINT pElementDescLength,
@@ -138,58 +156,69 @@ HRESULT w_shader::_choose_input_layout(_In_ ID3D11Device1* pDevice, wolf::conten
 	HRESULT _hr = S_OK;
 	if (pVertexTypes == content_pipeline::POSITION)
 	{
-		D3D11_INPUT_ELEMENT_DESC _vertexDesc[] =
+		D3D11_INPUT_ELEMENT_DESC _layout [] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, 0								, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
-		_hr = _create_input_layout(pDevice, _vertexDesc, W_ARRAY_SIZE(_vertexDesc), pShaderData, pShaderDataLength);
+		_hr = _create_input_layout(pDevice, _layout, W_ARRAY_SIZE(_layout), pShaderData, pShaderDataLength);
 		V(_hr, L"Create Input Layout", this->name, 3, false, true);
 	}
 	else if (pVertexTypes == content_pipeline::POSITION_UV)
 	{
-		const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+		const D3D11_INPUT_ELEMENT_DESC _layout [] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, 0								, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT		, 0, D3D11_APPEND_ALIGNED_ELEMENT	, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
-		_hr = _create_input_layout(pDevice, vertexDesc, W_ARRAY_SIZE(vertexDesc), pShaderData, pShaderDataLength);
+		_hr = _create_input_layout(pDevice, _layout, W_ARRAY_SIZE(_layout), pShaderData, pShaderDataLength);
 		V(_hr, L"Create Input Layout", this->name, 3, false, true);
 	}
 	else if (pVertexTypes == content_pipeline::POSITION_COLOR)
 	{
-		const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+		const D3D11_INPUT_ELEMENT_DESC _layout [] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, 0								, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "COLOR"	, 0, DXGI_FORMAT_R32G32B32A32_FLOAT	, 0, D3D11_APPEND_ALIGNED_ELEMENT	, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
-		_hr = _create_input_layout(pDevice, vertexDesc, W_ARRAY_SIZE(vertexDesc), pShaderData, pShaderDataLength);
+		_hr = _create_input_layout(pDevice, _layout, W_ARRAY_SIZE(_layout), pShaderData, pShaderDataLength);
+		V(_hr, L"Create Input Layout", this->name, 3, false, true);
+	}
+	else if (pVertexTypes == content_pipeline::POSITION_COLOR_UV)
+	{
+		const D3D11_INPUT_ELEMENT_DESC _layout [] =
+		{
+			{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0							 , D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+		_hr = _create_input_layout(pDevice, _layout, W_ARRAY_SIZE(_layout), pShaderData, pShaderDataLength);
 		V(_hr, L"Create Input Layout", this->name, 3, false, true);
 	}
 	else if (pVertexTypes == content_pipeline::POSITION_NORMAL_COLOR)
 	{
-		const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+		const D3D11_INPUT_ELEMENT_DESC _layout [] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, 0								, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "NORMAL"	, 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, D3D11_APPEND_ALIGNED_ELEMENT	, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "COLOR"	, 0, DXGI_FORMAT_R32G32B32A32_FLOAT	, 0, D3D11_APPEND_ALIGNED_ELEMENT	, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
-		_hr = _create_input_layout(pDevice, vertexDesc, W_ARRAY_SIZE(vertexDesc), pShaderData, pShaderDataLength);
+		_hr = _create_input_layout(pDevice, _layout, W_ARRAY_SIZE(_layout), pShaderData, pShaderDataLength);
 		V(_hr, L"Create Input Layout", this->name, 3, false, true);
 	}
 	else if (pVertexTypes == content_pipeline::POSITION_NORMAL_UV)
 	{
-		const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+		const D3D11_INPUT_ELEMENT_DESC _layout [] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, 0								, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "NORMAL"	, 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, D3D11_APPEND_ALIGNED_ELEMENT	, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT		, 0, D3D11_APPEND_ALIGNED_ELEMENT	, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
-		_hr = _create_input_layout(pDevice, vertexDesc, W_ARRAY_SIZE(vertexDesc), pShaderData, pShaderDataLength);
+		_hr = _create_input_layout(pDevice, _layout, W_ARRAY_SIZE(_layout), pShaderData, pShaderDataLength);
 		V(_hr, L"Create Input Layout", this->name, 3, false, true);
 	}
 	else if (pVertexTypes == content_pipeline::POSITION_NORMAL_UV_TANGENT_BINORMAL)
 	{
-		const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+		const D3D11_INPUT_ELEMENT_DESC _layout [] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, 0								, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "NORMAL"	, 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, D3D11_APPEND_ALIGNED_ELEMENT	, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -197,7 +226,7 @@ HRESULT w_shader::_choose_input_layout(_In_ ID3D11Device1* pDevice, wolf::conten
 			{ "TANGENT"	, 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, D3D11_APPEND_ALIGNED_ELEMENT	, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT	, 0, D3D11_APPEND_ALIGNED_ELEMENT	, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
-		_hr = _create_input_layout(pDevice, vertexDesc, W_ARRAY_SIZE(vertexDesc), pShaderData, pShaderDataLength);
+		_hr = _create_input_layout(pDevice, _layout, W_ARRAY_SIZE(_layout), pShaderData, pShaderDataLength);
 		V(_hr, L"Create Input Layout", this->name, 3, false, true);
 	}
 	/*else if (pVertexTypes == Position_Normal_Tangent_Color_Texture)
@@ -224,13 +253,27 @@ HRESULT w_shader::_choose_input_layout(_In_ ID3D11Device1* pDevice, wolf::conten
 	return _hr;
 }
 
+void w_shader::release_pixel_shaders()
+{
+	for (size_t i = 0; i < this->_pixel_shaders.size(); ++i)
+	{
+		auto _ps = this->_pixel_shaders.at(i);
+		if (_ps)
+		{
+			_ps->Release();
+		}
+	}
+	this->_pixel_shaders.clear();
+}
+
 ULONG w_shader::release()
 {
 	if (_super::is_released()) return 0;
 	
 	COMPTR_RELEASE(this->_input_layout);
 	COMPTR_RELEASE(this->_vertex_shader);
-	COMPTR_RELEASE(this->_pixel_shader);
-	
+
+	release_pixel_shaders();
+
 	return _super::release();
 }

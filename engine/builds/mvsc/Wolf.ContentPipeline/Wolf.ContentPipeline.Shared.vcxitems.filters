@@ -46,6 +46,7 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_vertex_declaration.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_camera.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.content_pipeline\w_math.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Collada">

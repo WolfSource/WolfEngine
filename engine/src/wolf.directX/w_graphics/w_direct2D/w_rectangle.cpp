@@ -5,14 +5,19 @@ using namespace D2D1;
 using namespace wolf::graphics;
 using namespace wolf::graphics::direct2D::shapes;
 
-w_rectangle::w_rectangle(const std::shared_ptr<w_graphics_device>& pGDevice,
-	float pLeft, float pTop, float pWidth, float pHeight, float pRadiusX, float pRadiusY) : _gDevice(pGDevice), _strokeWidth(1.0f),
-	_updateColor(false), _updateBorderColor(false)
+w_rectangle::w_rectangle(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ float pLeft, _In_ float pTop, 
+	_In_ float pWidth, _In_ float pHeight, 
+	_In_ float pRadiusX, _In_ float pRadiusY) : 
+	_gDevice(pGDevice), 
+	_stroke_width(1.0f),
+	_update_color(false), 
+	_update_border_color(false)
 {
 	_super::set_class_name(typeid(this).name());
 
 	this->_color.r = 0.274f; this->_color.g = 0.274f; this->_color.b = 0.274f; this->_color.a = 1;
-	this->_borderColor.r = 1; this->_borderColor.g = 1; this->_borderColor.b = 1; this->_borderColor.a = 1;
+	this->_border_color.r = 1; this->_border_color.g = 1; this->_border_color.b = 1; this->_border_color.a = 1;
 
 	//Initialize rectangle
 	this->_rectangle.radiusX = pRadiusX;
@@ -31,7 +36,7 @@ w_rectangle::~w_rectangle()
 
 HRESULT w_rectangle::draw()
 {
-	if (this->_brush == nullptr || this->_updateColor)
+	if (this->_brush == nullptr || this->_update_color)
 	{
 		auto hr = this->_gDevice->context_2D->CreateSolidColorBrush(this->_color, &this->_brush);
 		if (FAILED(hr))
@@ -39,28 +44,28 @@ HRESULT w_rectangle::draw()
 			V(hr, L"Create solid color brush for background", this->name, false, true);
 			return hr;
 		}
-		this->_updateColor = false;
+		this->_update_color = false;
 	}
 
-	if (this->_borderBrush == nullptr || this->_updateBorderColor)
+	if (this->_border_brush == nullptr || this->_update_border_color)
 	{
-		auto hr = this->_gDevice->context_2D->CreateSolidColorBrush(this->_borderColor, &this->_borderBrush);
+		auto hr = this->_gDevice->context_2D->CreateSolidColorBrush(this->_border_color, &this->_border_brush);
 		if (FAILED(hr))
 		{
 			V(hr, L"Create solid color brush for border", this->name, false, true);
 			return hr;
 		}
-		this->_updateBorderColor = false;
+		this->_update_border_color = false;
 	}
 
 	if (this->_rectangle.radiusX == 0 && this->_rectangle.radiusY == 0)
 	{
-		this->_gDevice->context_2D->DrawRectangle(&this->_rectangle.rect, this->_borderBrush.Get(), this->_strokeWidth, 0);
+		this->_gDevice->context_2D->DrawRectangle(&this->_rectangle.rect, this->_border_brush.Get(), this->_stroke_width, 0);
 		this->_gDevice->context_2D->FillRectangle(&this->_rectangle.rect, this->_brush.Get());
 	}
 	else
 	{
-		this->_gDevice->context_2D->DrawRoundedRectangle(&this->_rectangle, this->_borderBrush.Get(), this->_strokeWidth, 0);
+		this->_gDevice->context_2D->DrawRoundedRectangle(&this->_rectangle, this->_border_brush.Get(), this->_stroke_width, 0);
 		this->_gDevice->context_2D->FillRoundedRectangle(&this->_rectangle, this->_brush.Get());
 	}
 
@@ -72,7 +77,7 @@ ULONG w_rectangle::release()
 	if (_super::is_released()) return 0;
 	
 	COMPTR_RELEASE(this->_brush);
-	COMPTR_RELEASE(this->_borderBrush);
+	COMPTR_RELEASE(this->_border_brush);
 
 	this->_gDevice = nullptr;
 
@@ -81,14 +86,22 @@ ULONG w_rectangle::release()
 
 #pragma region Getters
 
-ColorF w_rectangle::get_color() const
+w_color w_rectangle::get_color() const
 {
-	return ColorF(this->_color.r, this->_color.g, this->_color.b, this->_color.a);
+	return w_color(
+		this->_color.r * 255.000f,
+		this->_color.g * 255.000f,
+		this->_color.b * 255.000f,
+		this->_color.a * 255.000f);
 }
 
-ColorF w_rectangle::get_borderColor() const
+w_color w_rectangle::get_border_color() const
 {
-	return ColorF(this->_borderColor.r, this->_borderColor.g, this->_borderColor.b, this->_borderColor.a);
+	return w_color(
+		this->_border_color.r * 255.000f,
+		this->_border_color.g * 255.000f,
+		this->_border_color.b * 255.000f,
+		this->_border_color.a * 255.000f);
 }
 
 float w_rectangle::get_left() const
@@ -125,19 +138,29 @@ float w_rectangle::get_radiusY() const
 
 #pragma region Setters
 
-void w_rectangle::set_color(D2D1::ColorF pColor)
+void w_rectangle::set_color(_In_ const w_color pColor)
 {
-	this->_color.r = pColor.r; this->_color.g = pColor.g; this->_color.b = pColor.b; this->_color.a = pColor.a;
-	this->_updateColor = true;
+	this->_color.r = pColor.r / 255.000f;
+	this->_color.g = pColor.g / 255.000f;
+	this->_color.b = pColor.b / 255.000f;
+	this->_color.a = pColor.a / 255.000f;
+
+	this->_update_color = true;
 }
 
-void w_rectangle::set_borderColor(D2D1::ColorF pColor)
+void w_rectangle::set_border_color(_In_ const w_color pColor)
 {
-	this->_borderColor.r = pColor.r; this->_borderColor.g = pColor.g; this->_borderColor.b = pColor.b; this->_borderColor.a = pColor.a;
-	this->_updateBorderColor = true;
+	this->_border_color.r = pColor.r / 255.000f;
+	this->_border_color.g = pColor.g / 255.000f;
+	this->_border_color.b = pColor.b / 255.000f;
+	this->_border_color.a = pColor.a / 255.000f;
+
+	this->_update_border_color = true;
 }
 
-void w_rectangle::set_geormetry(float pLeft, float pTop, float pWidth, float pHeight, float pRadiusX, float pRadiusY)
+void w_rectangle::set_geormetry(_In_ float pLeft, _In_ float pTop, 
+	_In_ float pWidth, _In_ float pHeight, 
+	_In_ float pRadiusX, _In_ float pRadiusY)
 {
 	this->_rectangle.radiusX = pRadiusX;
 	this->_rectangle.radiusY = pRadiusY;

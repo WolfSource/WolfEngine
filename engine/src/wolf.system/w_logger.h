@@ -28,16 +28,6 @@
 #include <maya/MGlobal.h>
 #endif
 
-inline std::wstring to_UTF16(const std::string &pData)
-{
-	return std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(pData);
-}
-
-inline std::string to_UTF8(const std::wstring &pData)
-{
-	return std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(pData);
-}
-
 inline std::string get_date_time()
 {
 	char _szBuffer[80] = "DD-MM-YY HH:MM:SS";
@@ -126,13 +116,14 @@ extern SYS_EXP wolf::system::w_logger logger;
 	pCheckForLastDirectXError	= check last error of DirectX api
 */
 inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
-	std::wstring pTrace = L"Undefined trace", unsigned char pLogType = 0,
+	std::string pTraceClass = "Undefined trace", unsigned char pLogType = 0,
 	bool pTerminateAll = false, bool pCheckForLastDirectXError = false)
 {
 	using namespace std;
 
 	if (pHR == S_OK) return;
 
+	auto _wstr_trace = std::wstring(pTraceClass.begin(), pTraceClass.end());
 	wstring _errorMsg = L"";
 	if (pCheckForLastDirectXError)
 	{
@@ -160,17 +151,17 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 			_errorMsg += result;
 		}
 
-		_errorMsg += L"Trace info " + pTrace + L".";
+		_errorMsg += L"Trace info " + _wstr_trace + L".";
 	}
 	else
 	{
-		_errorMsg = L"Error on " + pMSG + L" with the following error info : " + L"Trace info " + pTrace + L".";
+		_errorMsg = L"Error on " + pMSG + L" with the following error info : " + L"Trace info " + _wstr_trace + L".";
 	}
 
 	switch (pLogType)
 	{
 	default:
-	case 0://SYSTEM
+	case 0: //SYSTEM
 		logger.write(_errorMsg);
 		break;
 	case 1: //USER
@@ -196,14 +187,12 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 	pCheckForLastDirectXError	= check last error of DirectX api
 */
 inline void V(HRESULT pHR, std::string pMSG = "Undefined Error",
-	std::string pTrace = "Undefined Trace", unsigned char pLogType = 0,
+	std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
 	bool pExitNow = false, bool pCheckForLastDirectXError = false)
 {
 	auto _msg = std::wstring(pMSG.begin(), pMSG.end());
-	auto _trace = std::wstring(pTrace.begin(), pTrace.end());
-	V(pHR, _msg, _trace, pLogType, pExitNow, pCheckForLastDirectXError);
+	V(pHR, _msg, pTraceClass, pLogType, pExitNow, pCheckForLastDirectXError);
 	_msg.clear();
-	_trace.clear();
 }
 
 inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...)

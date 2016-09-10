@@ -1,6 +1,6 @@
 #include "w_directX_pch.h"
 #include "w_image.h"
-#include "w_gui/w_widget.h"
+#include "w_widget.h"
 
 using namespace wolf::gui;
 
@@ -27,9 +27,9 @@ void w_image::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& p
 	}
 
 	//position
-	POINT _xy;
-	_super::parent_widget->get_location(_xy);
-	auto _position = DirectX::XMFLOAT2(float(_xy.x + _super::x + (_super::width / 2)), float(_xy.y + _super::y + (_super::height / 2)));
+	UINT _x, _y;
+	_super::parent_widget->get_position(_x, _y);
+	auto _position = DirectX::XMFLOAT2(float(_x + _super::x + (_super::width / 2)), float(_y + _super::y + (_super::height / 2)));
 	//Scale base on the position of image
 	auto _scale_center = _position;
 

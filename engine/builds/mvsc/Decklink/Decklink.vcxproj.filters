@@ -24,6 +24,9 @@
     <ClInclude Include="..\..\..\src\blackmagic.decklink\decklink.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\blackmagic.decklink\time_code.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\blackmagic.decklink\dllmain.cpp">

@@ -226,9 +226,10 @@ void w_graphics_device_manager::_create_device()
 	UINT _creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 	//enable debug layer for directX 11.1
 #ifdef _DEBUG
+
 	//For debugging
-	//_creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
-	_creationFlags |= D3D11_CREATE_DEVICE_DEBUGGABLE;//Debugging shaders
+	_creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	//_creationFlags |= D3D11_CREATE_DEVICE_DEBUGGABLE;//Debugging shaders
 
 #endif
 
@@ -760,36 +761,37 @@ ULONG w_graphics_device_manager::release()
 
 #pragma region Getters
 
-concurrency::accelerator w_graphics_device_manager::get_camp_accelerator(const CPP_AMP_DEVICE_TYPE pCppAMPDeviceType)
+concurrency::accelerator_view w_graphics_device_manager::get_camp_accelerator_view(const CPP_AMP_DEVICE_TYPE pCppAMPDeviceType, ID3D11Device1* pDevice)
 {
 	if (pCppAMPDeviceType == CPP_AMP_DEVICE_TYPE::CPU)
 	{
 		//Create C++ Amp Accelerator from Windows CPU
-		return concurrency::accelerator(concurrency::accelerator::cpu_accelerator);
+		auto _acc = concurrency::accelerator(concurrency::accelerator::cpu_accelerator);
+		return _acc.default_view;
 	}
 	else if (pCppAMPDeviceType == CPP_AMP_DEVICE_TYPE::GPU_REF)
 	{
 		//Create C++ Amp Accelerator from GPU reference
-		return concurrency::accelerator(concurrency::accelerator::direct3d_ref);
+		return concurrency::accelerator(concurrency::accelerator::direct3d_ref).default_view;
 	}
 	else if (pCppAMPDeviceType == CPP_AMP_DEVICE_TYPE::GPU_WARP)
 	{
 		//Create C++ Amp Accelerator from Windows Advanced Rasterization Platform(WARP)
-		return concurrency::accelerator(concurrency::accelerator::direct3d_warp);
+		return concurrency::accelerator(concurrency::accelerator::direct3d_warp).default_view;
+	}
+	else if (pCppAMPDeviceType == CPP_AMP_DEVICE_TYPE::GPU)
+	{
+		//logger.write(L"C++ AMP created with following device : " + _cAmpAcc->accelerator.description);
+
+		//Create C++ Amp Accelerator from first DirectX device
+		auto _acc_view = concurrency::direct3d::create_accelerator_view(reinterpret_cast<IUnknown*>(pDevice));
+		return _acc_view;
 	}
 	else
 	{
 		//Default
-		return concurrency::accelerator(concurrency::accelerator::default_accelerator);
+		return concurrency::accelerator(concurrency::accelerator::default_accelerator).default_view;
 	}
-
-	//logger.write(L"C++ AMP created with following device : " + _cAmpAcc->accelerator.description);
-	//else if(pCppAMPDeviceType == CPP_AMP_DEVICE_TYPE::GPU)
-	//{
-	//	//Create C++ Amp Accelerator from first DirectX device
-	//	auto _d3dDevice = this->_graphics_devices.at(0)->device.Get();
-	//	return (concurrency::direct3d::create_accelerator_view(reinterpret_cast<IUnknown*>(_d3dDevice)));
-	//}
 }
 
 const DirectX::XMFLOAT2 w_graphics_device_manager::get_dpi() const
@@ -806,7 +808,7 @@ const DirectX::XMFLOAT2 w_graphics_device_manager::get_dpi() const
 
 const DirectX::XMFLOAT2 w_graphics_device_manager::get_pixels_to_inches(float pX, float pY) const
 {
-	DirectX::XMFLOAT2 _inches;
+	DirectX::XMFLOAT2 _inches = DirectX::XMFLOAT2(0, 0);
 	auto _dpi = get_dpi();
 	if (_dpi.x != 0 && _dpi.y != 0)
 	{
@@ -841,7 +843,7 @@ void w_graphics_device::create_blend_state(
 	_blend_desc.RenderTarget[0].RenderTargetWriteMask = pRenderTargetWriteMask;
 
 	auto _hr = this->device->CreateBlendState1(&_blend_desc, pBlendstate);
-	V(_hr, L"creating blend state", L"w_graphics_device", 3, true, true);
+	V(_hr, L"creating blend state", "w_graphics_device", 3, true, true);
 }
 
 void w_graphics_device::create_depth_stencil_state(bool pEnable, bool pWriteEnable, _Out_ ID3D11DepthStencilState** pDepthStencilState)
@@ -862,7 +864,7 @@ void w_graphics_device::create_depth_stencil_state(bool pEnable, bool pWriteEnab
 	_depth_desc.BackFace = _depth_desc.FrontFace;
 
 	auto _hr = device->CreateDepthStencilState(&_depth_desc, pDepthStencilState);
-	V(_hr, L"creating depth state", L"w_graphics_device", 3, true, true);
+	V(_hr, L"creating depth state", "w_graphics_device", 3, true, true);
 }
 
 void w_graphics_device::create_rasterizer_state(D3D11_CULL_MODE pCullMode, D3D11_FILL_MODE pFillMode, _Out_ ID3D11RasterizerState** pRasterizerState)
@@ -875,7 +877,7 @@ void w_graphics_device::create_rasterizer_state(D3D11_CULL_MODE pCullMode, D3D11
 	_rasterizer_desc.DepthClipEnable = true;
 	_rasterizer_desc.MultisampleEnable = true;
 	auto _hr = this->device->CreateRasterizerState(&_rasterizer_desc, pRasterizerState);
-	V(_hr, L"creating rasterizer state", L"w_graphics_device", 3, true, true);
+	V(_hr, L"creating rasterizer state", "w_graphics_device", 3, true, true);
 }
 
 void w_graphics_device::create_sampler_state(D3D11_FILTER pFilter, D3D11_TEXTURE_ADDRESS_MODE pAddressMode, _Out_ ID3D11SamplerState** pSamplerState)
@@ -892,7 +894,7 @@ void w_graphics_device::create_sampler_state(D3D11_FILTER pFilter, D3D11_TEXTURE
 	_sampler_desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 
 	auto _hr = this->device->CreateSamplerState(&_sampler_desc, pSamplerState);
-	V(_hr, L"creating sampler state", L"w_graphics_device", 3, true, true);
+	V(_hr, L"creating sampler state", "w_graphics_device", 3, true, true);
 }
 
 void w_graphics_device::enable_alpha_blend(std::initializer_list<float> pBlendFactor, UINT pSampleMask)

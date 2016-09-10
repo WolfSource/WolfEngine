@@ -12,6 +12,7 @@
 
 #include "Isprite_batch_drawable.h"
 #include "w_graphics_device_manager.h"
+#include <w_color.h>
 
 namespace wolf
 {
@@ -36,23 +37,23 @@ namespace wolf
 #pragma region Getters
 
 					//Set color of direct2d ellipse
-					DX_EXP D2D1::ColorF get_color() const;
+					DX_EXP w_color			get_color() const;
 					//Set border color of direct2d ellipse
-					DX_EXP D2D1::ColorF get_borderColor() const;
+					DX_EXP w_color			get_border_color() const;
 					
-					DX_EXP D2D1_POINT_2F get_radius() const;
-					DX_EXP D2D1_POINT_2F get_center() const;
+					DX_EXP D2D1_POINT_2F	get_radius() const;
+					DX_EXP D2D1_POINT_2F	get_center() const;
 
 #pragma endregion
 
 #pragma region Setters
 
 					//Set color of direct2d ellipse
-					DX_EXP void set_color(D2D1::ColorF pColor);
+					DX_EXP void set_color(_In_ const w_color pColor);
 					//Set border color of direct2d ellipse
-					DX_EXP void set_borderColor(D2D1::ColorF pColor);
+					DX_EXP void set_border_color(_In_ const w_color pColor);
 					//Set geometry of ellipse
-					DX_EXP void set_geormetry(float pCenterX, float pCenterY, float pRadiusX, float pRadiusY);
+					DX_EXP void set_geormetry(_In_ const float pCenterX, _In_ const float pCenterY, _In_ const float pRadiusX, _In_ const float pRadiusY);
 
 #pragma endregion
 
@@ -61,15 +62,15 @@ namespace wolf
 					std::shared_ptr<w_graphics_device>						_gDevice;
 
 					D2D1_ELLIPSE											_ellipse;
-					float													_strokeWidth;
+					float													_stroke_width;
 
 					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_brush;
-					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_borderBrush;
+					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_border_brush;
 
 					D2D1_COLOR_F											_color;
-					D2D1_COLOR_F											_borderColor;
-					bool													_updateColor;
-					bool													_updateBorderColor;
+					D2D1_COLOR_F											_border_color;
+					bool													_update_color;
+					bool													_update_border_color;
 				};
 			}
 		}

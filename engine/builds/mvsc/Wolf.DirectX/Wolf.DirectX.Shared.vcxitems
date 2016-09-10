@@ -39,19 +39,21 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics\w_textures\ScreenGrab.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics\w_textures\w_render_target_2D.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics\w_textures\w_texture_2D.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_image.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_widget.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_widgets_resource_manager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_font.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_gui.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_image.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_tab.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_widget.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_widgets_resource_manager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_button.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_checkBox.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_comboBox.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_check_box.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_combo_box.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_control.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_element.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_label.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_listBox.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_radioButton.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_scrollBar.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_list_box.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_radio_button.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_scroll_bar.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_slider.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_renderable\w_renderable_model.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_renderable\w_renderable_scene.cpp" />
@@ -62,6 +64,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_framework\w_camera\w_first_person_camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_framework\w_monitor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_game.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics\w_direct2D\w_geometry_sink_callback_data.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics_device_manager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics\w_direct2D\Isprite_batch_drawable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics\w_direct2D\w_ellipse.h" />
@@ -79,23 +82,25 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics\w_textures\ScreenGrab.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics\w_textures\w_render_target_2D.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_graphics\w_textures\w_texture_2D.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_image.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_widget.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_widgets_resource_manager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_font.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_gui.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_image.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_tab.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_widget.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_widgets_resource_manager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_gui_state.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_texture_node.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_button.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_checkBox.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_comboBox.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_check_box.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_combo_box.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_control.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_element.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_label.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_listBox.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_radioButton.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_scrollBar.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_list_box.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_radio_button.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_scroll_bar.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_user_controls\w_slider.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_math.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_directX_math_helper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_renderable\w_renderable_model.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_renderable\w_renderable_scene.h" />
   </ItemGroup>
@@ -103,13 +108,28 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\shaders\gui\parameters.hlsli" />
     <None Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\shaders\model_commons.hlsli" />
     <None Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\shaders\parameters.hlsli">
       <FileType>Document</FileType>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\w_gui\w_shader_src.inc" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\shaders\gui\gui_ps.hlsl">
+      <ShaderType>Pixel</ShaderType>
+      <ShaderModel>4.0_level_9_1</ShaderModel>
+      <ObjectFileOutput>$(OutDir)/Content/Shaders/gui/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\shaders\gui\gui_ps_no_texture.hlsl">
+      <ShaderType>Pixel</ShaderType>
+      <ShaderModel>4.0_level_9_1</ShaderModel>
+      <ObjectFileOutput>$(OutDir)/Content/Shaders/gui/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\shaders\gui\gui_vs.hlsl">
+      <ShaderType>Vertex</ShaderType>
+      <ShaderModel>4.0_level_9_1</ShaderModel>
+      <ObjectFileOutput>$(OutDir)/Content/Shaders/gui/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.directX\shaders\model_ps.hlsl">
       <ShaderType>Pixel</ShaderType>
       <ShaderModel>5.0</ShaderModel>

@@ -9,19 +9,20 @@ _min(0),
 _max(100),
 _value(50),
 _pressed(false),
-_slider_main_color(RGBA_TO_DWORD_COLOR(255, 255, 255, 150)),
-_slider_main_mouse_over_color(W_COLOR::YELLOW),
-_slider_main_pressed_color(W_COLOR::WHITE),
-_slider_main_focused_color(W_COLOR::YELLOW),
-_slider_main_disabled_color(RGBA_TO_DWORD_COLOR(255, 255, 255, 70)),
-_slider_button_color(RGBA_TO_DWORD_COLOR(255, 255, 255, 150)),
-_slider_button_mouse_over_color(W_COLOR::YELLOW),
-_slider_button_pressed_color(W_COLOR::WHITE),
-_slider_button_focused_color(W_COLOR::YELLOW),
-_slider_button_disabled_color(RGBA_TO_DWORD_COLOR(255, 255, 255, 70))
+_slider_main_color(RGBA_TO_HEX_COLOR(255, 255, 255, 150)),
+_slider_main_mouse_over_color(w_color::YELLOW),
+_slider_main_pressed_color(w_color::WHITE),
+_slider_main_focused_color(w_color::YELLOW),
+_slider_main_disabled_color(RGBA_TO_HEX_COLOR(255, 255, 255, 70)),
+_slider_button_color(RGBA_TO_HEX_COLOR(255, 255, 255, 150)),
+_slider_button_mouse_over_color(w_color::YELLOW),
+_slider_button_pressed_color(w_color::WHITE),
+_slider_button_focused_color(w_color::YELLOW),
+_slider_button_disabled_color(RGBA_TO_HEX_COLOR(255, 255, 255, 70))
 {
 	_super::type = W_GUI_CONTROL_SLIDER;
 	_super::parent_widget = pParent;
+	
 }
 
 w_slider::~w_slider()
@@ -120,7 +121,11 @@ bool w_slider::handle_mouse(UINT pMsg, const POINT& pPoint, WPARAM pWParam, LPAR
 		{
 			// Pressed while inside the control
 			this->_pressed = true;
-			SetCapture(w_widgets_resource_manager::get_HWND());
+			if (this->parent_widget)
+			{
+				auto _hwnd = this->parent_widget->get_hwnd();
+				SetCapture(_hwnd);
+			}
 
 			this->_drag_x = pPoint.x;
 			//m_nDragY = pt.y;

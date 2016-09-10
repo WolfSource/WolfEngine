@@ -32,7 +32,7 @@ void w_first_person_camera::update_view()
 	//_super::update_view();
 }
 
-void w_first_person_camera::update_world(XMFLOAT3 MoveVector)
+void w_first_person_camera::update_world(_In_ XMFLOAT3 MoveVector)
 {
 	//auto vect = XMVector3Transform(XMLoadFloat3(&MoveVector), this->_rotationMatrix);
 
@@ -48,7 +48,7 @@ void w_first_person_camera::reset()
 	//update_view();
 }
 
-void w_first_person_camera::update(float time)
+void w_first_person_camera::update(_In_ float time)
 {
 	//this->_rotationMatrix = XMMatrixTranspose(XMMatrixRotationX(this->_angle.x) * XMMatrixRotationY(this->_angle.y));
 	//ProcessInput(time);

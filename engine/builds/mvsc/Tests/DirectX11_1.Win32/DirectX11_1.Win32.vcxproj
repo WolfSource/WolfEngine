@@ -105,7 +105,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.directX;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../src/blackmagic.decklink;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;$(SolutionDir)/../../dependencies/blackmagic/Blackmagic DeckLink SDK 10.6.4/Win/include;$(SolutionDir)/Decklink;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13;C:/Python/Python35/include;C:\Users\PooyaEimandar\Desktop\freetype-2.6.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.directX;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../src/blackmagic.decklink;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;$(SolutionDir)/../../dependencies/blackmagic/Blackmagic DeckLink SDK 10.6.4/Win/include;$(SolutionDir)/Decklink;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13;$(SolutionDir)/../../dependencies/lua/lua/include/;C:/Python/Python35/include;C:\Users\PooyaEimandar\Desktop\freetype-2.6.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>__PAL__;WIN32;_UNICODE;UNICODE;__DX11_X__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -118,17 +118,17 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:/Python/Python35/libs;C:\Users\PooyaEimandar\Desktop\freetype-2.6.5\objs\vc2010\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:\Users\PooyaEimandar\Desktop\freetype-2.6.5\objs\vc2010\x64;$(SolutionDir)/../../dependencies/lua/lua;C:/Python/Python35/libs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.directX;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../src/blackmagic.decklink;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;$(SolutionDir)/../../dependencies/blackmagic/Blackmagic DeckLink SDK 10.6.4/Win/include;$(SolutionDir)/Decklink;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13;C:/Python/Python35/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.directX;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../src/blackmagic.decklink;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;$(SolutionDir)/../../dependencies/blackmagic/Blackmagic DeckLink SDK 10.6.4/Win/include;$(SolutionDir)/Decklink;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13;$(SolutionDir)/../../dependencies/lua/lua/include/;C:/Python/Python35/include;C:\Users\PooyaEimandar\Desktop\freetype-2.6.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__PAL__;WIN32;_UNICODE;UNICODE;__DX11_X__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>No</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:/Python/Python35/libs;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:\Users\PooyaEimandar\Desktop\freetype-2.6.5\objs\vc2010\x64;$(SolutionDir)/../../dependencies/lua/lua;C:/Python/Python35/libs</AdditionalLibraryDirectories>
       <AssemblyDebug>false</AssemblyDebug>
     </Link>
   </ItemDefinitionGroup>

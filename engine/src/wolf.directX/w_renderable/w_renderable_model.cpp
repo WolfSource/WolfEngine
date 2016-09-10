@@ -60,7 +60,7 @@ HRESULT w_renderable_model::load()
 			_device, 
 			L"Shaders\\model_ps.cso", 
 			w_shader_type::PIXEL_SHADER, 
-			w_vertex_declaration::UNKNOWN, 
+			w_vertex_declaration::DONTCARE,
 			this->_shader);
 		if (_hr == S_FALSE)
 		{

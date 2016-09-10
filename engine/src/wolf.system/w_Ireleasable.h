@@ -12,16 +12,16 @@
 
 #include <windows.h>
 
-#define SAFE_DELETE(x)			{ if (x)			{ delete x; x = nullptr;		} }
-#define SAFE_DELETE_ARRAY(ar)   { if (ar)			{ delete[] ar; ar = nullptr;	} }
+#define SAFE_DELETE(x)			{ if (x) { delete x; x = nullptr;		} }
+#define SAFE_DELETE_ARRAY(ar)   { if (ar){ delete[] ar; ar = nullptr;	} }
 
-#define SAFE_DELETE_SHARED(x)	{ if (x != nullptr) { while(x.use_count() != 0) x.reset(); x = nullptr;} }
+#define SAFE_DELETE_SHARED(x)	{ if (x) { while(x.use_count() != 0) x.reset(); x = nullptr;} }
 
-#define UNIQUE_RELEASE(x)		{ if (x != nullptr) { x->release(); x.release();	} }
-#define SHARED_RELEASE(x)		{ if (x != nullptr) { x->release(); while(x.use_count() != 0) x.reset(); x = nullptr;} }
-#define SAFE_RELEASE(x)			{ if (x != nullptr) { x->release(); x = nullptr;	} }
-#define COM_RELEASE(x)			{ if (x != nullptr) { x->Release(); x = nullptr;	} }
-#define COMPTR_RELEASE(x)		{ if (x != nullptr) { auto _x = x.GetAddressOf(); (*_x)->Release();	(*_x) = nullptr; x = nullptr; } }
+#define UNIQUE_RELEASE(x)		{ if (x) { x->release(); x.reset(nullptr); } }
+#define SHARED_RELEASE(x)		{ if (x) { x->release(); while(x.use_count() != 0) x.reset(); x = nullptr;} }
+#define SAFE_RELEASE(x)			{ if (x) { x->release(); delete x;	} }
+#define COM_RELEASE(x)			{ if (x) { x->Release(); x = nullptr;	} }
+#define COMPTR_RELEASE(x)		{ if (x) { auto _x = x.GetAddressOf(); (*_x)->Release(); (*_x) = nullptr; x = nullptr; } }
 
 struct w_Ireleasable
 {

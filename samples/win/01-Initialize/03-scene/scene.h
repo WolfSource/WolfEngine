@@ -39,6 +39,9 @@ public:
 
 	//Release will be called once per game and is the place to unload assets and release all resources
 	ULONG release() override;
+
+private:
+	typedef wolf::framework::w_game														_super;
 };
 
 #endif

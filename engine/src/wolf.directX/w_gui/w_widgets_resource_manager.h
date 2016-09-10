@@ -18,8 +18,8 @@
 //Wolf
 #include "w_object.h"
 #include "w_font.h"
-#include "w_widget.h"
 #include "w_texture_node.h"
+#include "w_user_controls/w_widget.h"
 #include "w_graphics/w_shaders/w_shader.h"
 
 namespace wolf
@@ -36,32 +36,22 @@ namespace wolf
 		class w_widgets_resource_manager : public system::w_object
 		{
 		public:
-			DX_EXP w_widgets_resource_manager(HWND pHWND);
+			DX_EXP w_widgets_resource_manager();
 			DX_EXP ~w_widgets_resource_manager();
-
-			static HWND get_HWND();
 
 			// D3D11 specific
 			DX_EXP HRESULT on_device_created(_In_ ID3D11Device1* pDevice, _In_ ID3D11DeviceContext1* pContext);
-			DX_EXP HRESULT on_swapChain_resized(_In_ ID3D11Device1* pDevice, _In_ const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc);
+			DX_EXP HRESULT on_swapChain_resized(const UINT pWidth, const UINT pHeight);
+
 			void on_releasing_swapChain();
 			void on_destroy_device();
 			void store_D3D_state(_In_ ID3D11DeviceContext1* pContext);
 			void restore_D3D_state(_In_ ID3D11DeviceContext1* pContext);
 			void apply_render_UI(_In_ ID3D11DeviceContext1* pContext);
 			void apply_render_UI_Untex(_In_ ID3D11DeviceContext1* pContext);
+
 			void begin_sprites();
 			void end_sprites(_In_ ID3D11Device1* pDevice, _In_ ID3D11DeviceContext1* pContext);
-			void begin_text();
-			void draw_text(ID3D11Device1* pDevice,
-				ID3D11DeviceContext1* pContext,
-				LPCWSTR pText,
-				const RECT& pRectScreen,
-				DirectX::XMFLOAT4 pFontColor,
-				float pWidth,
-				float pHeight,
-				bool bCenter);
-			void end_text(ID3D11Device1* pDevice, ID3D11DeviceContext1* pContext);
 
 			bool register_widget(_In_ w_widget* pWidget);
 			void unregister_widget(_In_ w_widget* pWidget);
@@ -71,12 +61,7 @@ namespace wolf
 			int add_texture(_In_z_ LPCWSTR pFilename);
 			int add_texture(_In_z_ LPCWSTR pResourceName, _In_ HMODULE pHResourceModule);
 
-			// Shared between all dialogs
-
-			// Shaders
-			ID3D11VertexShader* m_pVSRenderUI11;
-			ID3D11PixelShader* m_pPSRenderUI11;
-			ID3D11PixelShader* m_pPSRenderUIUntex11;
+			HRESULT update_texture_cache(ID3D11Device1* pDevice, ID3D11DeviceContext1* pContext, UINT pIndex);
 
 			// States
 			ID3D11DepthStencilState* m_pDepthStencilStateUI11;
@@ -93,7 +78,6 @@ namespace wolf
 			UINT m_SampleMaskStored11;
 			ID3D11SamplerState* m_pSamplerStateStored11;
 
-			ID3D11InputLayout* m_pInputLayout11;
 			ID3D11Buffer* m_pVBScreenQuad11;
 
 			// Sprite workaround
@@ -108,9 +92,11 @@ namespace wolf
 
 #pragma region Getters
 
-			w_font_node* get_font_node(_In_ size_t iIndex) const					{ return this->font_cache[iIndex]; }
-			w_texture_node* get_texture_node(_In_ size_t iIndex) const				{ return this->texture_cache[iIndex]; }
-			ID3D11ShaderResourceView* get_font_srv() const							{ return this->_font->get_srv(); }
+			size_t						get_texture_cache_size() const						{ return this->texture_cache.size(); }
+			w_font_node*				get_font_node(_In_ size_t iIndex) const				{ return this->font_cache[iIndex]; }
+			w_texture_node*				get_texture_node(_In_ size_t iIndex) const			{ return this->texture_cache[iIndex]; }
+			ID3D11ShaderResourceView*	get_font_srv() const								{ return this->_font->get_srv(); }
+			ID3D11InputLayout*			get_input_layout() const							{ return this->_shader->get_input_layout(); }
 
 #pragma endregion
 
@@ -125,7 +111,10 @@ namespace wolf
 
 			typedef system::w_object _super;
 
-			std::unique_ptr<w_font> _font;
+			//font between all dialogs
+			std::unique_ptr<w_font>										_font;
+			//shader between all dialogs
+			std::unique_ptr<wolf::graphics::w_shader>					_shader;
 		};
 	}
 }

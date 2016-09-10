@@ -12,15 +12,15 @@
 
 #ifdef WIN32
 	
-	#pragma comment(lib, "Wolf.System.Win32.lib")
+#pragma comment(lib, "Wolf.System.Win32.lib")
 
-	#include <w_target_ver.h>
+#include <w_target_ver.h>
 
-	#ifndef WIN32_LEAN_AND_MEAN
-		#define WIN32_LEAN_AND_MEAN
-	#endif
+#ifndef WIN32_LEAN_AND_MEAN
+	#define WIN32_LEAN_AND_MEAN
+#endif
 
-	#include <Windows.h>
+#include <Windows.h>
 
 #endif
 

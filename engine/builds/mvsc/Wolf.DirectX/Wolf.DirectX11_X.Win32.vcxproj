@@ -108,7 +108,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDLL;WIN32;UNICODE;_UNICODE;__WOLF_DIRECTX__;__DX11_X__;_DEBUG;_WINDOWS;__DX_DIAGNOSTIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.directX;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.directX;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13/;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_directX_pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -145,7 +145,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_WINDLL;WIN32;UNICODE;_UNICODE;__WOLF_DIRECTX__;__DX11_X__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.directX;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.directX;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13/;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_directX_pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>

@@ -17,6 +17,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include "time_code.h"
 #include <tbb/scalable_allocator.h>
 #include <tbb/concurrent_vector.h>
 #include <tbb/concurrent_queue.h>
@@ -32,28 +33,37 @@
 #pragma comment(lib, "tbbmalloc.lib")
 #endif
 
-//Forward declaration
-class time_code;
-
 class decklink : public wolf::system::w_object, IDeckLinkVideoOutputCallback, IDeckLinkAudioOutputCallback, IDeckLinkScreenPreviewCallback
 {
 public:
-	DLL decklink();
-	DLL virtual ~decklink();
+	DCK_EXP decklink();
+	DCK_EXP virtual ~decklink();
 
-	DLL HRESULT initialize();
-	DLL HRESULT start();
-	DLL HRESULT stop();
+	//initialize decklink device card
+	DCK_EXP HRESULT initialize();
+	//start decklink device card
+	DCK_EXP HRESULT start_output();
+	//stop decklink device card
+	DCK_EXP HRESULT stop_output();
+	//start capturing from decklink input
+	DCK_EXP HRESULT start_capturing();
+	//stop capturing from decklink input
+	DCK_EXP HRESULT stop_capturing();
 
-	DLL void set_video_frame(uint8_t* pData);
-	DLL void set_audio_sample_frame(_In_ uint8_t* pSamples, const UINT pSamplesCount);
-	DLL void clear_video_queue();
+	//set video frame
+	DCK_EXP void set_video_frame(uint8_t* pData);
+	//set audio frame
+	DCK_EXP void set_audio_sample_frame(_In_ uint8_t* pSamples, const UINT pSamplesCount);
+	//clear queue of video frames
+	DCK_EXP void clear_video_queue();
 	//Use this method to release and free decklink device
-	DLL void free();
+	DCK_EXP void free();
 
-	//Implementation for IDeckLinkVideoOutputCallback
+	//Implemented for IDeckLinkVideoOutputCallback
 	virtual HRESULT STDMETHODCALLTYPE DrawFrame(IDeckLinkVideoFrame* pFrame);
+	//Implemented for IDeckLinkVideoOutputCallback
 	virtual HRESULT STDMETHODCALLTYPE ScheduledFrameCompleted(IDeckLinkVideoFrame* pCompletedFrame, BMDOutputFrameCompletionResult pResult);
+	//Implemented for IDeckLinkVideoOutputCallback
 	virtual HRESULT STDMETHODCALLTYPE ScheduledPlaybackHasStopped();
 
 	//Implementation for IDeckLinkAudioOutputCallback
@@ -66,106 +76,72 @@ public:
 
 #pragma region Getters
 
-	DLL const bool get_is_valid_license() const;
-	DLL std::vector<std::wstring> get_supported_display_modes() const			{ return this->supportedDisplayModes; }
-	DLL std::wstring get_decklink_device_info() const							{ return this->deviceInfo; }
-	DLL _BMDFrameFlags get_frame_flag() const									{ return this->_frame_flag; }
+	//get whether license is valid
+	DCK_EXP const bool get_is_valid_license() const;
+	//get supported display modes
+	DCK_EXP std::vector<std::string> get_supported_display_modes() const			{ return this->_supported_output_display_modes; }
+	//get decklink device information
+	DCK_EXP const char* get_decklink_device_info() const							{ return this->_device_info.c_str(); }
+	//get frame flag
+	DCK_EXP _BMDFrameFlags get_frame_flag() const									{ return this->_frame_flag; }
 
 #pragma endregion
 
 #pragma region Setters
 
-	DLL void set_frame_flag(_BMDFrameFlags pValue)								{ this->_frame_flag = pValue; }
+	//set frame flag
+	DCK_EXP void set_frame_flag(_BMDFrameFlags pValue)								{ this->_frame_flag = pValue; }
 
 #pragma endregion
 
 private:
-	void _schedule_next_frame(bool pPreroll);
-	void _release_decklink_iterator(IDeckLinkIterator* pIDeckLinkIterator);
+	typedef		wolf::system::w_object											_super;
 
-	IDeckLinkMutableVideoFrame*									videoFrame;
-	IDeckLinkMutableVideoFrame*									blackFrame;
+	//get decklink information
+	void		_get_decklink_information();
+	void		_get_output_supported_display_modes();
+	void		_get_input_supported_display_modes();
+	void		_schedule_next_frame(bool pPreroll);
 
-	bool														isReleased;
-	std::string													name;
-	bool														isRunning;
-	std::vector<uint8_t>										remained;
 
-	_BMDFrameFlags												_frame_flag;
-	time_code*													timeCode;
+	IDeckLinkMutableVideoFrame*													_video_frame;
+	bool																		_is_running;
+	bool																		_support_input_format_detection;
 
-	//DeckLink
-	uint32_t													width;
-	uint32_t													height;
-	uint32_t													framesPerSecond;
-	uint32_t													totalFramesScheduled;
-	uint32_t													totalAudioSecondsScheduled;
-	tbb::atomic<uint32_t>										audioSamplesPerFrame;
-	uint32_t													audioBufferSampleLength;
+	_BMDFrameFlags																_frame_flag;
+	time_code*																	_time_code;
 
-	IDeckLink*													_ideckLink;
+	uint32_t																	_display_mode_width;
+	uint32_t																	_display_mode_height;
 
-	tbb::concurrent_queue<uint8_t*>								videoFramesQueue;
-	//tbb::concurrent_queue<std::tuple<uint8_t*, UINT>>			audioSamplesQueue;
+	uint32_t																	_fps;
+	uint32_t																	_total_frames_scheduled;
+	uint32_t																	_total_audio_seconds_scheduled;
+	tbb::atomic<uint32_t>														_audio_samples_per_frame;
+	uint32_t																	_audio_buffer_sample_length;
 
-	IDeckLinkOutput*											output;
-	_BMDAudioSampleRate											audioSampleRate;
-	BMDTimeValue												frameDuration;
-	BMDTimeScale												frameTimescale;
-	std::map<std::wstring, IDeckLinkDisplayMode*>				displayModes;
-	std::vector<std::wstring>									supportedDisplayModes;
-	std::wstring												deviceInfo;
-	size_t														bufferSize;
-	BMDTimecodeFormat											timeCodeFormat;
+	IDeckLink*																	_deckLink_interface;
+	IDeckLinkInput*																_deckLink_input;
+	IDeckLinkOutput*															_decklink_output;
+	IDeckLinkIterator*															_decklink_iterator;
 
-};
+	tbb::concurrent_queue<uint8_t*>												_video_frames_queue;
 
-class time_code
-{
-public:
-	time_code(int f) : _fps(f), _frames(0), _seconds(0), _minutes(0), _hours(0) { }
-	void update()
-	{
-		if (this->_frames >= (unsigned)this->_fps - 1)
-		{
-			this->_frames = 0;
-			this->_seconds++;
-		}
-		else
-		{
-			this->_frames++;
-		}
+	IDeckLinkKeyer*																_decklink_keyer;
+	_BMDAudioSampleRate															_audio_sample_rate;
+	BMDTimeValue																_frame_duration;
+	BMDTimeScale																_frame_time_scale;
+	
+	std::map<std::string, IDeckLinkDisplayMode*>								_output_display_modes;
+	std::vector<std::string>													_supported_output_display_modes;
 
-		if (this->_seconds >= 60)
-		{
-			this->_seconds = 0;
-			this->_minutes++;
-		}
+	std::map<std::string, IDeckLinkDisplayMode*>								_input_display_modes;
+	std::vector<std::string>													_supported_input_display_modes;
 
-		if (this->_minutes >= 60)
-		{
-			this->_minutes = 0;
-			this->_hours++;
-		}
-		if (this->_hours >= 24)
-		{
-			this->_frames = 0;
-			this->_seconds = 0;
-			this->_minutes = 0;
-			this->_hours = 0;
-		}
-	}
-	int hours() { return this->_hours; }
-	int minutes() { return this->_minutes; }
-	int seconds() { return this->_seconds; }
-	int frames() { return this->_frames; }
+	std::string																	_device_info;
+	size_t																		_buffer_size;
+	BMDTimecodeFormat															_time_code_format;
 
-private:
-	int _fps;
-	unsigned long _frames;
-	int _seconds;
-	int _minutes;
-	int _hours;
 };
 
 #endif

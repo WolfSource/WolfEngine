@@ -28,14 +28,12 @@ namespace wolf
 			virtual ULONG release() override { return _internal_release(); }
 
 			void* tag;
-			std::wstring name;
+			std::string name;
 
 		protected:
 			void set_class_name(const char* pClassName)
 			{
-				auto _name = std::string(pClassName);
-				this->name = std::wstring(_name.begin(), _name.end());
-				_name.clear();
+				this->name = pClassName;
 			}
 
 			enum LoadState { NOTLOADED, LOADING, LOADED };
@@ -54,13 +52,12 @@ namespace wolf
 				this->tag = nullptr;
 
 #ifdef _DEBUG
-				auto msg = L"\t\t[WOLF DEBUG] : " + std::wstring(this->name.begin(), this->name.end()) + L" released\r\n";
-				OutputDebugStringW(msg.c_str());
-				msg.clear();
+				//OutputDebugStringA(this->name.c_str());
 #endif
+				this->name.clear();
+
 				return 1;
 			};
-			
 
 			bool _is_released;
 		};

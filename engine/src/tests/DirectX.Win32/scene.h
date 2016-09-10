@@ -19,20 +19,7 @@
 #include <w_graphics/w_textures/w_render_target_2D.h>
 #include <w_gui/w_widgets_resource_manager.h>
 #include <w_renderable/w_renderable_scene.h>
-
-class CppClass
-{
-public:
-	int a;
-	int getNum()
-	{
-		return a;
-	}
-	void setNum(int b)
-	{
-		a = b;
-	}
-};
+#include <w_gui/w_gui.h>
 
 class scene sealed : public wolf::framework::w_game
 {
@@ -73,6 +60,8 @@ public:
 	//Release will be called once per game and is the place to unload assets and release all resources
 	ULONG release() override;
 
+	//int sum(int pX, int pY);
+
 private:
 
 	void _on_connect(const boost::system::error_code& pErrorCode);
@@ -84,7 +73,7 @@ private:
 	//std::unique_ptr<Wolf::Graphics::Direct2D::Shapes::W_Ellipse>		ellipse;
 	//std::unique_ptr<Wolf::Graphics::Direct2D::Shapes::W_Rectangle>		rectangle;
 	//
-	//std::unique_ptr<Wolf::Graphics::Direct2D::Shapes::W_Geometry>		geoCloud0;
+	//std::unique_ptr<wolf::graphics::direct2D::shapes::w_geometry>		geoCloud0;
 	//std::unique_ptr<Wolf::Graphics::Direct2D::Shapes::W_Geometry>		geoCloud1;
 
 	//std::unique_ptr<Wolf::Graphics::W_Quad>								quad;
@@ -92,9 +81,10 @@ private:
 
 	//std::unique_ptr<Wolf::Graphics::W_Texture2D>						texture2D;
 
-	std::unique_ptr<wolf::gui::w_widgets_resource_manager>								_widget_resource_manager;
-	std::unique_ptr<wolf::gui::w_widget>												_widget;
+	wolf::gui::w_widget*												_widget;
 
+	std::unique_ptr<wolf::graphics::direct2D::shapes::w_geometry>		_curve;
+	POINT																_global_mouse_point;
 };
 
 #endif

@@ -43,7 +43,7 @@ void w_window::initialize()
 
 	// Setup the windows class with default settings.
 	WNDCLASSEX wc;
-	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS; //CS_DBLCLKS for double click
 	wc.lpfnWndProc = MsgProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;

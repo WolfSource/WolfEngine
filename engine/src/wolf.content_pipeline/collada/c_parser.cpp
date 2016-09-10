@@ -19,6 +19,8 @@ static c_xsi_extra					sXSI_Extra;
 static std::vector<unsigned short>	sXSI_Indices;
 static rapidxml::xml_node<>*		SGeometryLibraryNode;
 
+const char* c_parser::_trace_class_name = "w_collada_parser";
+
 HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)
 {
 	auto _hr = S_OK;
@@ -41,11 +43,11 @@ HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_
 	catch (...)
 	{
 		_hr = S_FALSE;
-		V(_hr, L"Could not parse collada file on following path : " + pFilePath, L"w_collada_parser", 3);
+		V(_hr, L"Could not parse collada file on following path : " + pFilePath, _trace_class_name, 3);
 	}
 
 	_hr = _process_xml_node(_doc.first_node());
-	V(_hr, L"processing xml node : " + pFilePath, L"w_collada_parser", 3);
+	V(_hr, L"processing xml node : " + pFilePath, _trace_class_name, 3);
 	
 	//create scene
 	_create_scene(pScene, pOptimizePoints, pInvertNormals);

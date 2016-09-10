@@ -228,7 +228,7 @@ namespace wolf
 			void _update_clock(Codec& pCodec);
 			void _update_time(double pclock);
 
-			std::wstring								name;
+			std::string									name;
 			bool										isReleased;
 
 			std::unique_ptr<AVFrame>					_av_Frame;

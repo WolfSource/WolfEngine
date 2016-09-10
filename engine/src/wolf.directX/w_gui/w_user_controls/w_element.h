@@ -31,7 +31,7 @@ namespace wolf
 
 		struct w_blend_color
 		{
-			void initialize(_In_ DWORD defaultColor, _In_ DWORD disabledColor = RGBA_TO_DWORD_COLOR(128, 128, 128, 200), _In_ DWORD hiddenColor = 0);
+			void initialize(_In_ DWORD defaultColor, _In_ DWORD disabledColor = RGBA_TO_HEX_COLOR(128, 128, 128, 200), _In_ DWORD hiddenColor = 0);
 			void blend(_In_ UINT pStateIndex, _In_ float pElapsedTime, _In_ float pRate = 0.7f);
 			void set_current(DWORD pColor);
 			// Control color states
@@ -42,8 +42,8 @@ namespace wolf
 		class w_element
 		{
 		public:
-			void set_texture(_In_ UINT texture, _In_ RECT* prcTexture, _In_ DWORD defaultTextureColor = RGBA_TO_DWORD_COLOR(255, 255, 255, 255));
-			void set_font(_In_ UINT font, _In_ DWORD defaultFontColor = RGBA_TO_DWORD_COLOR(255, 255, 255, 255), DWORD textFormat = DT_CENTER | DT_VCENTER);
+			void set_texture(_In_ UINT texture, _In_ RECT* prcTexture, _In_ DWORD defaultTextureColor = RGBA_TO_HEX_COLOR(255, 255, 255, 255));
+			void set_font(_In_ UINT font, _In_ DWORD defaultFontColor = RGBA_TO_HEX_COLOR(255, 255, 255, 255), DWORD textFormat = DT_CENTER | DT_VCENTER);
 			void refresh();
 
 			// Index of the texture for this Element 

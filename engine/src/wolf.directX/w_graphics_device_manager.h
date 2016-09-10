@@ -186,17 +186,17 @@ namespace wolf
 			std::vector<ID3D11CommandList*>										command_queue;
 
 			DX_EXP void create_blend_state(
-				BOOL pBlendEnable,
-				D3D11_BLEND pSrcBlend, D3D11_BLEND pDestBlend,
-				D3D11_BLEND pSrcBlendAlpha, D3D11_BLEND pDestBlendAlpha,
-				D3D11_BLEND_OP pBlendOp, D3D11_BLEND_OP pBlendOpAlpha,
-				UINT8 pRenderTargetWriteMask,
+				_In_ BOOL pBlendEnable,
+				_In_ D3D11_BLEND pSrcBlend, _In_ D3D11_BLEND pDestBlend,
+				_In_ D3D11_BLEND pSrcBlendAlpha, _In_ D3D11_BLEND pDestBlendAlpha,
+				_In_ D3D11_BLEND_OP pBlendOp, _In_ D3D11_BLEND_OP pBlendOpAlpha,
+				_In_ UINT8 pRenderTargetWriteMask,
 				_Out_ ID3D11BlendState1** pBlendstate);
 
-			DX_EXP void create_depth_stencil_state(bool pEnable, bool pWriteEnable, _Out_ ID3D11DepthStencilState** pDepthStencilState);
-			DX_EXP void create_rasterizer_state(D3D11_CULL_MODE pCullMode, D3D11_FILL_MODE pFillMode, _Out_ ID3D11RasterizerState** pRasterizerState);
-			DX_EXP void create_sampler_state(D3D11_FILTER pFilter, D3D11_TEXTURE_ADDRESS_MODE pAddressMode, _Out_ ID3D11SamplerState** pSamplerState);
-			DX_EXP void enable_alpha_blend(std::initializer_list<float> pBlendFactor = { 0.0f, 0.0f, 0.0f, 0.0f }, UINT pSampleMask = 0xFFFFFFFF);
+			DX_EXP void create_depth_stencil_state(_In_ bool pEnable, _In_ bool pWriteEnable, _Out_ ID3D11DepthStencilState** pDepthStencilState);
+			DX_EXP void create_rasterizer_state(_In_ D3D11_CULL_MODE pCullMode, _In_ D3D11_FILL_MODE pFillMode, _Out_ ID3D11RasterizerState** pRasterizerState);
+			DX_EXP void create_sampler_state(_In_ D3D11_FILTER pFilter, _In_ D3D11_TEXTURE_ADDRESS_MODE pAddressMode, _Out_ ID3D11SamplerState** pSamplerState);
+			DX_EXP void enable_alpha_blend(_In_ std::initializer_list<float> pBlendFactor = { 0.0f, 0.0f, 0.0f, 0.0f }, _In_ UINT pSampleMask = 0xFFFFFFFF);
 
 		private:
 			bool _is_released;
@@ -217,7 +217,7 @@ namespace wolf
 			//Initialize graphics devices
 			DX_EXP virtual void initialize();
 			//Initialize the output windows
-			DX_EXP virtual void initialize_output_windows(std::map<int, std::vector<w_window_info>> pOutputWindowsInfo);
+			DX_EXP virtual void initialize_output_windows(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo);
 			//Called when corresponding window resized
 			DX_EXP virtual void on_window_resized(UINT pIndex);
 			//Called when any graphics device lost
@@ -230,9 +230,9 @@ namespace wolf
 			DX_EXP ULONG release() override;
 
 			DX_EXP static std::vector<Microsoft::WRL::ComPtr<ID3D11SamplerState>>	samplers;
-			//Get pointer to the C++ AMP accelerator 
-			DX_EXP static concurrency::accelerator get_camp_accelerator(const CPP_AMP_DEVICE_TYPE pCppAMPDeviceType);
-
+			//Get a new C++ AMP accelerator view 
+			DX_EXP static concurrency::accelerator_view get_camp_accelerator_view(_In_ const CPP_AMP_DEVICE_TYPE pCppAMPDeviceType, _In_ ID3D11Device1* pDevice = nullptr);
+			
 			DX_EXP static Microsoft::WRL::ComPtr<IDXGraphicsAnalysis> graphics_diagnostic;
 
 #pragma region Getters
@@ -250,7 +250,7 @@ namespace wolf
 			//Get DPI
 			const DirectX::XMFLOAT2 get_dpi() const;
 			//Get pixels to inches
-			const DirectX::XMFLOAT2 get_pixels_to_inches(float pX, float pY) const;
+			const DirectX::XMFLOAT2 get_pixels_to_inches(_In_ float pX, _In_ float pY) const;
 
 #pragma endregion
 

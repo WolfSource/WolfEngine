@@ -105,6 +105,8 @@ void w_sprite_batch::resize_render_target(int pWidth, int pHeight)
 
 HRESULT w_sprite_batch::add_image_from_file(_In_z_ const wchar_t* pPath)
 {
+	if (!wolf::system::io::get_is_file(pPath)) return S_FALSE;
+
 	auto _path = std::wstring(pPath);
 
 	auto _exist = this->_WIC_format_converters.find(_path);

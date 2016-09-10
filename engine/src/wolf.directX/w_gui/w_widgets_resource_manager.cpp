@@ -1,18 +1,13 @@
 #include "w_directX_pch.h"
 #include "w_widgets_resource_manager.h"
-#include "w_shader_src.inc"
 #include "w_graphics/w_textures/DDSTextureLoader.h"
 #include <d3dcompiler.h>
 #include <w_graphics/w_textures/w_texture_2D.h>
 #include <w_graphics/w_textures/ScreenGrab.h>
 
 using namespace wolf::gui;
-static HWND sHWND;
 
-w_widgets_resource_manager::w_widgets_resource_manager(HWND pHWND) :
-	m_pVSRenderUI11(nullptr),
-	m_pPSRenderUI11(nullptr),
-	m_pPSRenderUIUntex11(nullptr),
+w_widgets_resource_manager::w_widgets_resource_manager() :
 	m_pDepthStencilStateUI11(nullptr),
 	m_pRasterizerStateUI11(nullptr),
 	m_pBlendStateUI11(nullptr),
@@ -21,13 +16,11 @@ w_widgets_resource_manager::w_widgets_resource_manager(HWND pHWND) :
 	m_pRasterizerStateStored11(nullptr),
 	m_pBlendStateStored11(nullptr),
 	m_pSamplerStateStored11(nullptr),
-	m_pInputLayout11(nullptr),
 	m_pVBScreenQuad11(nullptr),
 	m_pSpriteBuffer11(nullptr),
 	m_SpriteBufferBytes11(0)
 {
 	_super::set_class_name(typeid(this).name());
-	sHWND = pHWND;
 }
 
 w_widgets_resource_manager::~w_widgets_resource_manager()
@@ -48,63 +41,21 @@ w_widgets_resource_manager::~w_widgets_resource_manager()
 _Use_decl_annotations_
 HRESULT w_widgets_resource_manager::on_device_created(ID3D11Device1* pDevice, ID3D11DeviceContext1* pContext)
 {
-	// Compile Shaders
-	ID3DBlob* _VSBlob = nullptr;
-	ID3DBlob* _PSBlob = nullptr;
-	ID3DBlob* _PSUntexBlob = nullptr;
-
-	auto _hr = D3DCompile(sUI_effect_file,
-		sUI_effect_file_size,
-		"none",
-		nullptr,
-		nullptr,
-		"VS",
-		"vs_4_0_level_9_1",
-		D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY,
-		0,
-		&_VSBlob,
-		nullptr);
-	V(_hr, L"compile user interface shader(VS)", _super::name, 3, true, true);
-
-	_hr = D3DCompile(sUI_effect_file,
-		sUI_effect_file_size,
-		"none",
-		nullptr,
-		nullptr,
-		"PS",
-		"ps_4_0_level_9_1",
-		D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY,
-		0,
-		&_PSBlob,
-		nullptr);
-	V(_hr, L"compile user interface shader(PS)", _super::name, 3, true, true);
-
-	_hr = D3DCompile(sUI_effect_file,
-		sUI_effect_file_size,
-		"none",
-		nullptr,
-		nullptr,
-		"PSUntex",
-		"ps_4_0_level_9_1",
-		D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY,
-		0,
-		&_PSUntexBlob,
-		nullptr);
-	V(_hr, L"compile user interface shader(PSU)", _super::name, 3, true, true);
-
 	// Create Shaders
-	_hr = pDevice->CreateVertexShader(_VSBlob->GetBufferPointer(), _VSBlob->GetBufferSize(), nullptr, &m_pVSRenderUI11);
-	V(_hr, L"creating vertex shader(VS)", _super::name, 3, true, true);
+	this->_shader = std::make_unique<wolf::graphics::w_shader>();
+	auto _hr = _shader->load_shader(pDevice, L"Shaders/gui/gui_vs.cso", w_shader_type::VERTEX_SHADER, wolf::content_pipeline::w_vertex_declaration::POSITION_COLOR_UV, _shader.get());
+	V(_hr, L"creating vertex shader", _super::name, 3, true, true);
+	
+	size_t _pixel_shader_index = 0;
+	_hr = _shader->load_shader(pDevice, L"Shaders/gui/gui_ps.cso", w_shader_type::PIXEL_SHADER, wolf::content_pipeline::w_vertex_declaration::POSITION_COLOR_UV, _shader.get(), &_pixel_shader_index);
+	V(_hr, L"creating pixel shader", _super::name, 3, true, true);
 
-	_hr = pDevice->CreatePixelShader(_PSBlob->GetBufferPointer(), _PSBlob->GetBufferSize(), nullptr, &m_pPSRenderUI11);
-	V(_hr, L"creating pixel shader(PS)", _super::name, 3, true, true);
-
-	_hr = pDevice->CreatePixelShader(_PSUntexBlob->GetBufferPointer(), _PSUntexBlob->GetBufferSize(), nullptr, &m_pPSRenderUIUntex11);
-	V(_hr, L"creating pixel shader(_PSU)", _super::name, 3, true, true);
+	_hr = _shader->load_shader(pDevice, L"Shaders/gui/gui_ps_no_texture.cso", w_shader_type::PIXEL_SHADER, wolf::content_pipeline::w_vertex_declaration::POSITION_COLOR_UV, _shader.get(), &_pixel_shader_index);
+	V(_hr, L"creating pixel shader with no texture", _super::name, 3, true, true);
 
 	// States
 	D3D11_DEPTH_STENCIL_DESC _depth_stencil_desc;
-	ZeroMemory(&_depth_stencil_desc, sizeof(_depth_stencil_desc));
+	std::memset(&_depth_stencil_desc, 0, sizeof(_depth_stencil_desc));
 
 	_depth_stencil_desc.DepthEnable = FALSE;
 	_depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -128,7 +79,7 @@ HRESULT w_widgets_resource_manager::on_device_created(ID3D11Device1* pDevice, ID
 	V(_hr, L"creating rasterizer description", _super::name, 3, true, true);
 
 	D3D11_BLEND_DESC _blend_state_desc;
-	ZeroMemory(&_blend_state_desc, sizeof(_blend_state_desc));
+	std::memset(&_blend_state_desc, 0, sizeof(_blend_state_desc));
 
 	_blend_state_desc.RenderTarget[0].BlendEnable = TRUE;
 	_blend_state_desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
@@ -143,7 +94,8 @@ HRESULT w_widgets_resource_manager::on_device_created(ID3D11Device1* pDevice, ID
 	V(_hr, L"creating blend state description", _super::name, 3, true, true);
 
 	D3D11_SAMPLER_DESC _sampler_state_desc;
-	ZeroMemory(&_sampler_state_desc, sizeof(_sampler_state_desc));
+	std::memset(&_sampler_state_desc, 0, sizeof(_sampler_state_desc));
+
 	_sampler_state_desc.Filter = D3D11_FILTER_ANISOTROPIC;
 	_sampler_state_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	_sampler_state_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -160,29 +112,6 @@ HRESULT w_widgets_resource_manager::on_device_created(ID3D11Device1* pDevice, ID
 	_hr = pDevice->CreateSamplerState(&_sampler_state_desc, &m_pSamplerStateUI11);
 	V(_hr, L"creating sample state description", _super::name, 3, true, true);
 
-	// Create the texture objects in the cache arrays.
-	for (size_t i = 0; i < this->texture_cache.size(); i++)
-	{
-		_hr = create_texture(pDevice, pContext, static_cast<UINT>(i));
-		if (FAILED(_hr)) return _hr;
-	}
-
-	// Create input layout
-	const D3D11_INPUT_ELEMENT_DESC layout[] =
-	{
-		{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0							 , D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD",  0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-
-	_hr = pDevice->CreateInputLayout(layout, W_ARRAY_SIZE(layout), _VSBlob->GetBufferPointer(), _VSBlob->GetBufferSize(), &m_pInputLayout11);
-	V(_hr, L"creating input layout", _super::name, 3, true, true);
-
-	// Release the blobs
-	COM_RELEASE(_VSBlob);
-	COM_RELEASE(_PSBlob);
-	COM_RELEASE(_PSUntexBlob);
-
 	// Create a vertex buffer quad for rendering later
 	D3D11_BUFFER_DESC _buffer_desc;
 	_buffer_desc.ByteWidth = sizeof(w_gui_screen_vertex) * 4;
@@ -193,18 +122,16 @@ HRESULT w_widgets_resource_manager::on_device_created(ID3D11Device1* pDevice, ID
 	_hr = pDevice->CreateBuffer(&_buffer_desc, nullptr, &m_pVBScreenQuad11);
 	V(_hr, L"creating buffer", _super::name, 3, true, true);
 
-	this->_font = std::make_unique<w_font>(pDevice, m_pInputLayout11);
+	this->_font = std::make_unique<w_font>(pDevice, _shader->get_input_layout());
 
 	return S_OK;
 }
 
 _Use_decl_annotations_
-HRESULT w_widgets_resource_manager::on_swapChain_resized(_In_ ID3D11Device1* pDevice, _In_ const DXGI_SURFACE_DESC* pBackBufferSurfaceDesc)
+HRESULT w_widgets_resource_manager::on_swapChain_resized(const UINT pWidth, const UINT pHeight)
 {
-	W_UNUSED(pDevice);
-
-	this->backBuffer_width = pBackBufferSurfaceDesc->Width;
-	this->backBuffer_height = pBackBufferSurfaceDesc->Height;
+	this->backBuffer_width = pWidth;
+	this->backBuffer_height = pHeight;
 
 	return S_OK;
 }
@@ -218,20 +145,14 @@ void w_widgets_resource_manager::on_destroy_device()
 	// Release the resources but don't clear the cache, as these will need to be recreated if the device is recreated
 	for (auto it = this->texture_cache.begin(); it != this->texture_cache.end(); ++it)
 	{
-		COM_RELEASE((*it)->pTexResView11);
-		COM_RELEASE((*it)->texture2D);
+		COM_RELEASE((*it)->shader_resource_view);
+		COM_RELEASE((*it)->texture_2d);
 	}
 
 	//release D3D
 	COM_RELEASE(m_pVBScreenQuad11);
 	COM_RELEASE(m_pSpriteBuffer11);
 	m_SpriteBufferBytes11 = 0;
-	COM_RELEASE(m_pInputLayout11);
-
-	//release shaders
-	COM_RELEASE(m_pVSRenderUI11);
-	COM_RELEASE(m_pPSRenderUI11);
-	COM_RELEASE(m_pPSRenderUIUntex11);
 
 	//release states
 	COM_RELEASE(m_pDepthStencilStateUI11);
@@ -246,6 +167,7 @@ void w_widgets_resource_manager::on_destroy_device()
 
 	//release font texture
 	UNIQUE_RELEASE(this->_font);
+	UNIQUE_RELEASE(this->_shader);
 }
 
 void w_widgets_resource_manager::store_D3D_state(_In_ ID3D11DeviceContext1* pContext)
@@ -272,11 +194,12 @@ void w_widgets_resource_manager::restore_D3D_state(_In_ ID3D11DeviceContext1* pC
 void w_widgets_resource_manager::apply_render_UI(_In_ ID3D11DeviceContext1* pContext)
 {
 	// Shaders
-	pContext->VSSetShader(m_pVSRenderUI11, nullptr, 0);
+	pContext->VSSetShader(this->_shader->get_vertex_shader(), nullptr, 0);
 	pContext->HSSetShader(nullptr, nullptr, 0);
 	pContext->DSSetShader(nullptr, nullptr, 0);
-	pContext->GSSetShader(nullptr, nullptr, 0);
-	pContext->PSSetShader(m_pPSRenderUI11, nullptr, 0);
+	pContext->GSSetShader(nullptr, nullptr, 0); 
+	//Render gui with pixel shader
+	pContext->PSSetShader(this->_shader->get_pixel_shader(0), nullptr, 0);
 
 	// States
 	pContext->OMSetDepthStencilState(m_pDepthStencilStateUI11, 0);
@@ -289,11 +212,12 @@ void w_widgets_resource_manager::apply_render_UI(_In_ ID3D11DeviceContext1* pCon
 void w_widgets_resource_manager::apply_render_UI_Untex(_In_ ID3D11DeviceContext1* pContext)
 {
 	// Shaders
-	pContext->VSSetShader(m_pVSRenderUI11, nullptr, 0);
+	pContext->VSSetShader(this->_shader->get_vertex_shader(), nullptr, 0);
 	pContext->HSSetShader(nullptr, nullptr, 0);
 	pContext->DSSetShader(nullptr, nullptr, 0);
 	pContext->GSSetShader(nullptr, nullptr, 0);
-	pContext->PSSetShader(m_pPSRenderUIUntex11, nullptr, 0);
+	//Pixel shader untexture
+	pContext->PSSetShader(this->_shader->get_pixel_shader(1), nullptr, 0);
 
 	// States
 	pContext->OMSetDepthStencilState(m_pDepthStencilStateUI11, 0);
@@ -354,40 +278,11 @@ void w_widgets_resource_manager::end_sprites(ID3D11Device1* pDevice, ID3D11Devic
 	UINT Stride = sizeof(w_sprite_vertex);
 	UINT Offset = 0;
 	pContext->IASetVertexBuffers(0, 1, &m_pSpriteBuffer11, &Stride, &Offset);
-	pContext->IASetInputLayout(m_pInputLayout11);
+	pContext->IASetInputLayout(this->_shader->get_input_layout());
 	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pContext->Draw(static_cast<UINT>(m_SpriteVertices.size()), 0);
 
 	m_SpriteVertices.clear();
-}
-
-void w_widgets_resource_manager::begin_text()
-{
-	this->_font->begin_text();
-}
-
-void w_widgets_resource_manager::draw_text(ID3D11Device1* pDevice,
-	ID3D11DeviceContext1* pContext,
-	LPCWSTR pText,
-	const RECT& pRectScreen,
-	DirectX::XMFLOAT4 pFontColor,
-	float pWidth,
-	float pHeight,
-	bool bCenter)
-{
-	this->_font->draw_text(pDevice,
-		pContext,
-		pText,
-		pRectScreen,
-		pFontColor,
-		pWidth,
-		pHeight,
-		bCenter);
-}
-
-void w_widgets_resource_manager::end_text(ID3D11Device1* pDevice, ID3D11DeviceContext1* pContext)
-{
-	this->_font->end_text(pDevice, pContext);
 }
 
 bool w_widgets_resource_manager::register_widget(_In_ w_widget* pWidget)
@@ -497,8 +392,8 @@ int w_widgets_resource_manager::add_texture(_In_z_ LPCWSTR pFilename)
 		auto pTextureNode = this->texture_cache[i];
 		size_t nLen = 0;
 		nLen = wcsnlen(pFilename, MAX_PATH);
-		if (pTextureNode->fileSource &&  // Sources must match
-			_wcsnicmp(pTextureNode->strFilename, pFilename, nLen) == 0)
+		// Sources must match
+		if (pTextureNode->is_loaded_from_source &&  _wcsnicmp(pTextureNode->file_name, pFilename, nLen) == 0)
 		{
 			return static_cast<int>(i);
 		}
@@ -509,8 +404,8 @@ int w_widgets_resource_manager::add_texture(_In_z_ LPCWSTR pFilename)
 	if (!pNewTextureNode) return -1;
 
 	ZeroMemory(pNewTextureNode, sizeof(pNewTextureNode));
-	pNewTextureNode->fileSource = true;
-	wcscpy_s(pNewTextureNode->strFilename, MAX_PATH, pFilename);
+	pNewTextureNode->is_loaded_from_source = true;
+	wcscpy_s(pNewTextureNode->file_name, MAX_PATH, pFilename);
 
 	this->texture_cache.push_back(pNewTextureNode);
 
@@ -521,6 +416,20 @@ int w_widgets_resource_manager::add_texture(_In_z_ LPCWSTR pFilename)
 	return iTexture;
 }
 
+HRESULT w_widgets_resource_manager::update_texture_cache(ID3D11Device1* pDevice, ID3D11DeviceContext1* pContext, UINT pIndex)
+{
+	//we alredy have a texture in this slot
+	if (pIndex < this->texture_cache.size())
+	{
+		auto _texture_node = this->texture_cache.at(pIndex);
+		if (_texture_node != nullptr && _texture_node->texture_2d != nullptr && _texture_node->shader_resource_view != nullptr)
+		{
+			return S_OK;
+		}
+	}
+	return create_texture(pDevice, pContext, pIndex);
+}
+
 _Use_decl_annotations_
 int w_widgets_resource_manager::add_texture(LPCWSTR pResourceName, HMODULE pHResourceModule)
 {
@@ -528,41 +437,43 @@ int w_widgets_resource_manager::add_texture(LPCWSTR pResourceName, HMODULE pHRes
 	for (size_t i = 0; i < this->texture_cache.size(); i++)
 	{
 		auto pTextureNode = this->texture_cache[i];
-		if (!pTextureNode->fileSource &&// Sources must match
-			pTextureNode->hResourceModule == pHResourceModule) // Module handles must match
+		// Sources must match
+		if (!pTextureNode->is_loaded_from_source && pTextureNode->resource_module == pHResourceModule) // Module handles must match
 		{
 			if (IS_INTRESOURCE(pResourceName))
 			{
 				// Integer-based ID
-				if ((INT_PTR)pResourceName == pTextureNode->nResourceID) return static_cast<int>(i);
+				if ((INT_PTR)pResourceName == pTextureNode->resource_id) return static_cast<int>(i);
 			}
 			else
 			{
 				// String-based ID
 				size_t nLen = 0;
 				nLen = wcsnlen(pResourceName, MAX_PATH);
-				if (0 == _wcsnicmp(pTextureNode->strFilename, pResourceName, nLen)) return static_cast<int>(i);
+				if (0 == _wcsnicmp(pTextureNode->file_name, pResourceName, nLen)) return static_cast<int>(i);
 			}
 		}
 	}
 
 	// Add a new texture and try to create it
-	auto pNewTextureNode = new (std::nothrow) w_texture_node;
-	if (!pNewTextureNode) return -1;
+	auto _texture_node = (w_texture_node*)malloc(sizeof(w_texture_node));
+	if (!_texture_node) return -1;
 
-	ZeroMemory(pNewTextureNode, sizeof(pNewTextureNode));
-	pNewTextureNode->hResourceModule = pHResourceModule;
+	_texture_node->texture_2d = nullptr;
+	_texture_node->shader_resource_view = nullptr;
+	_texture_node->resource_module = pHResourceModule;
+
 	if (IS_INTRESOURCE(pResourceName))
 	{
-		pNewTextureNode->nResourceID = (int)(size_t)pResourceName;
+		_texture_node->resource_id = (int)(size_t)pResourceName;
 	}
 	else
 	{
-		pNewTextureNode->nResourceID = 0;
-		wcscpy_s(pNewTextureNode->strFilename, MAX_PATH, pResourceName);
+		_texture_node->resource_id = 0;
+		wcscpy_s(_texture_node->file_name, MAX_PATH, pResourceName);
 	}
 
-	this->texture_cache.push_back(pNewTextureNode);
+	this->texture_cache.push_back(_texture_node);
 
 	int iTexture = int(this->texture_cache.size()) - 1;
 
@@ -575,39 +486,31 @@ HRESULT w_widgets_resource_manager::create_texture(ID3D11Device1* pDevice, ID3D1
 {
 	HRESULT _hr = S_OK;
 
-	auto pTextureNode = this->texture_cache[iTexture];
+	auto _texture_node = this->texture_cache[iTexture];
 
 	wolf::graphics::w_texture_2D w_texture;
-	_hr = wolf::graphics::w_texture_2D::load_texture_2D(pDevice, &w_texture, L"Textures\\UI\\BaseControls.dds");
-	V(_hr, L"locading BaseControls asset", _super::name, 3, true, false);
+	_hr = wolf::graphics::w_texture_2D::load_texture_2D(pDevice, &w_texture, L"Textures\\GUI\\Controls.dds");
+	V(_hr, L"locading GUI\Controls.dds asset", _super::name, 3, true, false);
 
-	pTextureNode->texture2D = w_texture.get_texture_2D();
+	_texture_node->texture_2d = w_texture.get_texture_2D();
 	
 	// Store dimensions
 	D3D11_TEXTURE2D_DESC desc;
-	pTextureNode->texture2D->GetDesc(&desc);
-	pTextureNode->dwWidth = desc.Width;
-	pTextureNode->dwHeight = desc.Height;
-
+	_texture_node->texture_2d->GetDesc(&desc);
+	_texture_node->width = 256; //always use 256 for base controls
+	_texture_node->height = 256; //always use 256 for base controls
+	
 	// Create resource view
 	D3D11_SHADER_RESOURCE_VIEW_DESC _SRV_Desc;
 	_SRV_Desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	_SRV_Desc.Format = desc.Format;
 	_SRV_Desc.Texture2D.MipLevels = 1;
 	_SRV_Desc.Texture2D.MostDetailedMip = 0;
-	_hr = pDevice->CreateShaderResourceView(pTextureNode->texture2D, &_SRV_Desc, &pTextureNode->pTexResView11);
+	_hr = pDevice->CreateShaderResourceView(_texture_node->texture_2d, &_SRV_Desc, &_texture_node->shader_resource_view);
 	if (FAILED(_hr)) return _hr;
 
 	return _hr;
 }
 
-#pragma region statics
-
-HWND w_widgets_resource_manager::get_HWND()
-{
-	return sHWND;
-}
-
-#pragma endregion
 
 

@@ -25,6 +25,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_cpu.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_linear_allocator.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_logger.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_lua.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_memory.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_python.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_tcp_client.cpp" />
@@ -37,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_allocator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_color.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_convert.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_cpu.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_event.h" />
@@ -46,6 +48,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_Ireleasable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_linear_allocator.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_logger.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_lua.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_memory.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_object.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_process.h" />
@@ -57,6 +60,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_target_ver.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_task.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_timer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_timer_callback.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_time_span.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_window.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\src\wolf.system\w_xml.h" />

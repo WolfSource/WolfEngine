@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\blackmagic.decklink\blackmagic_decklink_dll.h" />
     <ClInclude Include="..\..\..\src\blackmagic.decklink\decklink.h" />
+    <ClInclude Include="..\..\..\src\blackmagic.decklink\time_code.h" />
     <ClInclude Include="DeckLinkAPI_h.h" />
   </ItemGroup>
   <ItemGroup>

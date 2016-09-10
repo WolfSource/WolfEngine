@@ -110,7 +110,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13/;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;$(SolutionDir)/../../dependencies/boost/include/;C:/Python/Python35/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13/;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../dependencies/lua/lua/include/;C:/Python/Python35/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDLL;WIN32;UNICODE;_UNICODE;__WOLF_SYSTEM__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
@@ -120,7 +120,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:/Python/Python35/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;$(SolutionDir)/../../dependencies/lua/lua;C:/Python/Python35/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -133,10 +133,10 @@
     <ClCompile>
       <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>_WINDLL;WIN32;UNICODE;_UNICODE;__WOLF_SYSTEM__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13/;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;$(SolutionDir)/../../dependencies/boost/include/;C:/Python/Python35/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13/;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include/;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../dependencies/lua/lua/include/;C:/Python/Python35/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:/Python/Python35/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;$(SolutionDir)/../../dependencies/lua/lua;C:/Python/Python35/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AssemblyDebug>false</AssemblyDebug>

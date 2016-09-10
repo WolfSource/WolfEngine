@@ -58,20 +58,24 @@ namespace wolf
 			virtual void on_focus_out()									{ this->has_focus = false; }
 			virtual void on_mouse_enter()								{ this->mouse_over = true; }
 			virtual void on_mouse_leave()								{ this->mouse_over = false; }
-			virtual void on_hotKey()									{ }
+			virtual void on_hot_key()									{ }
 
 			virtual bool contains_point(_In_ const POINT& pPoint)		{ return PtInRect(&this->boundingBox, pPoint) != 0; }
 
 
 #pragma region Getters
 
-			virtual bool get_visible() const							{ return this->visible; }
-			virtual bool get_enabled() const							{ return this->enabled; }
-			UINT get_type() const										{ return this->type; }
+			virtual bool	get_visible() const							{ return this->visible; }
+			virtual bool	get_enabled() const							{ return this->enabled; }
+			//get the position
+			void			get_position(int& pX, int& pY) const		{ pX = this->x; pY = this->y; }
+			UINT			get_type() const							{ return this->type; }
 			int get_ID() const											{ return this->id; }
-			UINT get_hotKey() const										{ return this->hotkey; }
+			//get hot key
+			UINT get_hot_key() const									{ return this->hot_key; }
 			void* get_tag() const										{ return this->tag; }
 			w_element* get_element(_In_ UINT pIndex) const				{ return this->elements[pIndex]; }
+			float get_z_order()											{ return this->z_order; }
 
 #pragma endregion
 			
@@ -80,10 +84,15 @@ namespace wolf
 			virtual void set_enabled(_In_ bool pEnabled)				{ this->enabled = pEnabled; }
 			virtual void set_visible(_In_ bool pVisible)				{ this->visible = pVisible; }
 			void set_ID(_In_ int pID)									{ this->id = pID; }
-			void set_location(_In_ int pX, _In_ int pY)					{ this->x = pX; this->y = pY; update_rects(); }
-			void set_size(int pWidth, int pHeight)						{ this->width = pWidth; this->height = pHeight; update_rects();}
-			void set_hotKey(_In_ UINT pHotkey)							{ this->hotkey = pHotkey; }
+			//set the position
+			void set_position(_In_ int pX, _In_ int pY)					{ this->x = pX; this->y = pY; update_rects(); }
+			void set_width(UINT pValue)									{ this->width = pValue; update_rects(); }
+			void set_height(UINT pValue)								{ this->height = pValue; update_rects(); }
+			void set_size(UINT pWidth, UINT pHeight)					{ this->width = pWidth; this->height = pHeight; update_rects();}
+			//set hot key
+			void set_hot_key(_In_ UINT pHotkey)							{ this->hot_key = pHotkey; }
 			void set_tag(_In_opt_ void* pUserData)						{ this->tag = pUserData; }
+			void set_z_order(_In_ float pValue)							{ this->z_order = pValue; }
 
 			HRESULT set_element(_In_ UINT pIndexElement, _In_ w_element* pElement);
 
@@ -97,8 +106,8 @@ namespace wolf
 			// Size, scale, and positioning members
 			int x;
 			int y;
-			int width;
-			int height;
+			UINT width;
+			UINT height;
 
 			// Parent container
 			w_widget* parent_widget;
@@ -109,12 +118,14 @@ namespace wolf
 		protected:
 			virtual void update_rects();
 
-			int id;// ID number                 
+			// ID number. Please do not use INT_MAX and INT_MIN, (-2147483648) and 2147483647 are reserved.  
+			int id;               
 			W_GUI_CONTROL_TYPE type;// Control type, set once in constructor    
-			UINT hotkey;// Virtual key code for this control's hotkey                
+			UINT hot_key;// Virtual key code for this control's hotkey                
 			bool enabled;// Enabled/disabled flag           
 			RECT boundingBox;// Rectangle defining the active region of the control
 			void* tag;// Data associated with this control that is set by user.     
+			float z_order;
 
 		private:
 			typedef system::w_object			_super;

@@ -23,11 +23,11 @@ namespace wolf
 		class w_monitor : public system::w_object
 		{
 		public:
-			DX_EXP w_monitor(const std::shared_ptr<graphics::w_graphics_device>& gDevice);
+			DX_EXP w_monitor(_In_ const std::shared_ptr<graphics::w_graphics_device>& gDevice);
 			DX_EXP virtual ~w_monitor();
 
 			//Print information of monitoring on the screen
-			DX_EXP void printf(_In_ graphics::w_sprite_batch* pSpriteBatch, const system::w_game_time& pGameTime, _In_ DirectX::XMFLOAT2* const pPosition);
+			DX_EXP void printf(_In_ graphics::w_sprite_batch* pSpriteBatch, _In_ const system::w_game_time& pGameTime, _In_ DirectX::XMFLOAT2* const pPosition);
 
 			//Release all resources
 			DX_EXP ULONG release() override;

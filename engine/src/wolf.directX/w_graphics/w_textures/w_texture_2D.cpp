@@ -26,14 +26,14 @@ HRESULT w_texture_2D::create_colorBar(_In_ ID3D11Device1* pDevice, UINT pWidth, 
 {
 	if (pGPGPU_Type == GPGPU_TYPE::NONE)
 	{
-	return _create_colorBar(
-		pDevice,
-		pWidth,
-		pHeight,
-		pUsage,
-		pCpuAccessFlags,
-		pFormat,
-		pBindFlags);
+		return _create_colorBar(
+			pDevice,
+			pWidth,
+			pHeight,
+			pUsage,
+			pCpuAccessFlags,
+			pFormat,
+			pBindFlags);
 	}
 	else
 	{
@@ -48,8 +48,8 @@ HRESULT w_texture_2D::create_colorBar(_In_ ID3D11Device1* pDevice, UINT pWidth, 
 
 		//Create texture2D description
 		D3D11_TEXTURE2D_DESC _desc;
-		ZeroMemory(&_desc, sizeof(D3D11_TEXTURE2D_DESC));
-
+		std::memset(&_desc, 0, sizeof(_desc));
+		
 		_desc.Height = pHeight;
 		_desc.Width = pWidth;
 		_desc.MipLevels = _mipLevels;
@@ -69,10 +69,10 @@ HRESULT w_texture_2D::create_colorBar(_In_ ID3D11Device1* pDevice, UINT pWidth, 
 		_create_shader_resource_view(pDevice, pFormat, _arraySize, _mipLevels);
 
 		//Fill texture with C++AMP 
-		auto _cAmpAcc = w_graphics_device_manager::get_camp_accelerator(CPP_AMP_DEVICE_TYPE::DEFAULT);
-
+		auto _amp_acc_view = w_graphics_device_manager::get_camp_accelerator_view(CPP_AMP_DEVICE_TYPE::GPU, pDevice);
+		
 		// Create Amp textures
-		auto _amp_texture = make_texture<unorm4, 2>(_cAmpAcc.default_view, this->_texture_2D.Get());
+		auto _amp_texture = make_texture<unorm4, 2>(_amp_acc_view, this->_texture_2D.Get());
 		texture_view<unorm4, 2> amp_texture_view(_amp_texture);
 
 		std::vector<unorm4> _colorData =
@@ -126,7 +126,7 @@ HRESULT w_texture_2D::create_colorBar(_In_ ID3D11Device1* pDevice, UINT pWidth, 
 
 			amp_texture_view.set(pIdx, array_color[_index]);
 		});
-		
+
 		return hr;
 	}
 }
@@ -220,10 +220,10 @@ HRESULT w_texture_2D::create(_In_ ID3D11Device1* pDevice, UINT pWidth, UINT pHei
 		_create_shader_resource_view(pDevice, pFormat, _arraySize, _mipLevels);
 
 		//Fill texture with C++AMP 
-		auto _cAmpAcc = w_graphics_device_manager::get_camp_accelerator(CPP_AMP_DEVICE_TYPE::DEFAULT);
+		auto _amp_acc_view = w_graphics_device_manager::get_camp_accelerator_view(CPP_AMP_DEVICE_TYPE::GPU, pDevice);
 
 		// Create Amp textures
-		auto _amp_texture = make_texture<int, 2>(_cAmpAcc.default_view, this->_texture_2D.Get());
+		auto _amp_texture = make_texture<int, 2>(_amp_acc_view, this->_texture_2D.Get());
 		auto _size = _amp_texture.extent.size();
 		
 		UINT r = static_cast<UINT>(pColor.r * 255);
@@ -429,26 +429,23 @@ HRESULT w_texture_2D::load_texture_2D(_In_ ID3D11Device1* pD3dDevice,
 
 	std::unique_ptr<uint8_t[]> data;
 	size_t dataSize;
-	std::tuple<int, boost::filesystem::perms> _file_state;
+	boost::filesystem::perms _file_permission_status;
 
 	auto _path = ( pIsAbsolutePath ? L"" : get_content_directory() ) + pPath;
-	auto hr = system::io::read_binary_file(_path, data, &dataSize, &_file_state);
+	auto hr = system::io::read_binary_file(_path, data, &dataSize, _file_permission_status);
 	
 	if (hr == S_FALSE)
 	{
 		wstring msg = L"";
-		//check state of file
-		switch (std::get<0>(_file_state))
+		if (_file_permission_status == boost::filesystem::perms::no_perms)
 		{
-		case -1:
-			msg = L"Could not find the texture : ";
-			break;
-		case -2:
-			msg = L"Texture is corrupted : ";
-			break;
+			msg = L"Could not find the texture file: ";
 		}
-
-		V(S_FALSE, msg + pPath, L"Texture2D", 2, false, false);
+		else
+		{
+			msg = L"Texture file is corrupted: ";
+		}
+		V(S_FALSE, msg + pPath, "Texture2D", 2, false, false);
 
 		return hr;
 	}
@@ -512,7 +509,7 @@ void w_texture_2D::create_sampler(const std::shared_ptr<w_graphics_device>& pGDe
 	ID3D11SamplerState* _sampler = nullptr;
 	{
 		auto hr = pGDevice->device->CreateSamplerState(&samplerDesc, &_sampler);
-		V(hr, L"Error on create sampler for texture2D", L"Texture2D", 2, false, true);
+		V(hr, L"Error on create sampler for texture2D", "Texture2D", 2, false, true);
 
 		w_graphics_device_manager::samplers.push_back(_sampler);
 	}

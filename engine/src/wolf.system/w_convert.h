@@ -10,8 +10,10 @@
 #ifndef __W_CONVERT_H__
 #define __W_CONVERT_H__
 
+#include <codecvt>
 #include <string.h>
 #include <iostream>
+#include <sstream>
 #include <AtlConv.h>
 
 namespace wolf
@@ -20,6 +22,44 @@ namespace wolf
 	{
 		namespace convert
 		{
+			inline int to_hex(const std::string& pStr)
+			{
+				std::stringstream _ss;
+				_ss << pStr;
+				int _hex;
+				_ss >> std::hex >> _hex;
+				_ss.clear();
+
+				return _hex;
+			}
+
+			// convert UTF-8 string to wstring
+			inline std::wstring from_utf8(const std::string& pStr)
+			{
+//#ifdef WIN32
+//				std::wstring _utf_8 = L"";
+//				auto _size = pStr.size();
+//				_utf_8.resize(_size);
+//
+//				//Convert to UTF-8
+//				MultiByteToWideChar(CP_UTF8, 0, pStr.c_str(), -1, &_utf_8[0], (int) _size);
+//				OutputDebugString(_utf_8.c_str());
+//
+//				return _utf_8;
+//#else
+
+				std::wstring_convert<std::codecvt_utf8<wchar_t>> _convert;
+				return _convert.from_bytes(pStr);
+//#endif
+			}
+
+			// convert wstring to UTF-8 string
+			inline std::string to_utf8(const std::wstring& pStr)
+			{
+				std::wstring_convert<std::codecvt_utf8<wchar_t>> _convert;
+				return _convert.to_bytes(pStr);
+			}
+
 			inline std::wstring chars_to_wstring(CHAR* value)
 			{
 				std::string str = value;

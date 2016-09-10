@@ -6,7 +6,7 @@ using namespace wolf::system;
 using namespace wolf::framework;
 using namespace wolf::graphics;
 
-w_monitor::w_monitor(const std::shared_ptr<w_graphics_device>& gDevice)
+w_monitor::w_monitor(_In_ const std::shared_ptr<w_graphics_device>& gDevice)
 {
 	_super::set_class_name(typeid(this).name());
 
@@ -30,7 +30,7 @@ w_monitor::~w_monitor()
 
 }
 
-void w_monitor::printf(_In_ w_sprite_batch* pSpriteBatch, const w_game_time& pGameTime, DirectX::XMFLOAT2* const pPosition)
+void w_monitor::printf(_In_ w_sprite_batch* pSpriteBatch, _In_ const w_game_time& pGameTime, _In_ DirectX::XMFLOAT2* const pPosition)
 {
 	this->cpuInfo->update();
 

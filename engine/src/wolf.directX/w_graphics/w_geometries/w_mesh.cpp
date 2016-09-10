@@ -109,7 +109,7 @@ HRESULT w_mesh::load(_In_ ID3D11Device1* pDevice, std::wstring pVertexShaderPath
 	_hr = w_shader::load_shader(pDevice, pVertexShaderPath, w_shader_type::VERTEX_SHADER, w_vertex_declaration::POSITION_NORMAL_UV, this->_shader.get());
 	V(_hr, L"loading vertex shader", this->name, 3, true, true);
 
-	_hr = w_shader::load_shader(pDevice, pPixelShaderPath, w_shader_type::PIXEL_SHADER, w_vertex_declaration::UNKNOWN, this->_shader.get());
+	_hr = w_shader::load_shader(pDevice, pPixelShaderPath, w_shader_type::PIXEL_SHADER, w_vertex_declaration::DONTCARE, this->_shader.get());
 	V(_hr, L"loading pixel shader", this->name, 3, true, true);
 
 	//Create world matrix

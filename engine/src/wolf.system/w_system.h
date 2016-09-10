@@ -13,7 +13,7 @@
 #define WOLF_MajorVersion 0// when you make incompatible API changes.
 #define WOLF_MinorVersion 2// when you add functionality in a backwards - compatible manner.
 #define WOLF_PatchVersion 0// bug fixes
-#define WOLF_DebugVersion 0// for debugging.
+#define WOLF_DebugVersion 3// for debugging.
 
 #ifndef W_UNUSED
 #define W_UNUSED(p) {(void)(p); } 

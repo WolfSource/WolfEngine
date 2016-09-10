@@ -11,7 +11,6 @@
 #define __W_TEXTURE_NODE_H__
 
 #include <Windows.h>
-//#include <d3d11_2.h>
 
 namespace wolf
 {
@@ -19,14 +18,22 @@ namespace wolf
 	{
 		struct w_texture_node
 		{
-			bool fileSource;  // True if this texture is loaded from a file. False if from resource.
-			HMODULE hResourceModule;
-			int nResourceID;   // Resource ID. If 0, string-based ID is used and stored in strFilename.
-			WCHAR strFilename[MAX_PATH];
-			DWORD dwWidth;
-			DWORD dwHeight;
-			ID3D11Texture2D* texture2D;
-			ID3D11ShaderResourceView* pTexResView11;
+			//True if this texture is loaded from a file. False if from resource.
+			bool						is_loaded_from_source; 
+			//resource hModule
+			HMODULE						resource_module;
+			//the ID of resource
+			int							resource_id;
+			//path of file, MAXPATH is 260 character
+			wchar_t						file_name[260];
+			//width of texture
+			unsigned long				width;
+			//height of texture
+			unsigned long				height;
+			//texture 2d
+			ID3D11Texture2D*			texture_2d;
+			//shader resource view of texture 2d
+			ID3D11ShaderResourceView*	shader_resource_view;
 		};
 	}
 }

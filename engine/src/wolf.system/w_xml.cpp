@@ -14,7 +14,7 @@ w_xml::~w_xml()
 {
 }
 
-void w_xml::save(_In_z_ std::wstring& p_path, bool p_UTF_8, w_xml_data& p_data)
+void w_xml::save(_In_z_ const char* p_path, bool p_UTF_8, w_xml_data& p_data)
 {
 	xml_document<wchar_t> _doc;
 	
@@ -79,4 +79,45 @@ void w_xml::_write_element(w_xml_data& pData, xml_document<wchar_t>& pDoc, _Inou
 	{
 		pDoc.append_node(_node);
 	}
+}
+
+const std::string w_xml::get_node_value(rapidxml::xml_node<>* pNode)
+{
+	if (pNode == nullptr) return "";
+	return pNode->value();
+}
+
+const std::wstring w_xml::get_node_value_utf_8(rapidxml::xml_node<>* pNode)
+{
+	if (pNode == nullptr) return L"";
+
+	return wolf::system::convert::from_utf8(pNode->value());
+}
+
+const std::string w_xml::get_node_attribute(rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute)
+{
+	if (pNode == nullptr) return "";
+
+	//read the value of attribute
+	auto _value = pNode->first_attribute(pAttribute);
+	if (_value)
+	{
+		return _value->value();
+	}
+
+	return "";
+}
+
+const std::wstring w_xml::get_node_attribute_utf_8(rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute)
+{
+	if (pNode == nullptr) return L"";
+
+	//read the value of attribute
+	auto _value = pNode->first_attribute(pAttribute);
+	if (_value)
+	{
+		return wolf::system::convert::from_utf8(_value->value());
+	}
+
+	return L"";
 }

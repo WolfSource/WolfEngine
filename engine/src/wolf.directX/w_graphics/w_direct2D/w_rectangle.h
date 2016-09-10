@@ -12,6 +12,7 @@
 
 #include "Isprite_batch_drawable.h"
 #include "w_graphics_device_manager.h"
+#include <w_color.h>
 
 namespace wolf
 {
@@ -24,8 +25,10 @@ namespace wolf
 				class w_rectangle : public system::w_object, public wolf::graphics::direct2D::Isprite_batch_drawable
 				{
 				public:
-					DX_EXP w_rectangle(const std::shared_ptr<w_graphics_device>& pGDevice,
-						float pLeft = 0, float pTop = 0, float pWidth = 400, float pHeight = 200, float pRadiusX = 10, float pRadiusY = 10);
+					DX_EXP w_rectangle(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+						_In_ float pLeft = 0, _In_ float pTop = 0,
+						_In_ float pWidth = 400, _In_ float pHeight = 200, 
+						_In_ float pRadiusX = 10, _In_ float pRadiusY = 10);
 					DX_EXP virtual ~w_rectangle();
 
 					//Draw direct2D rectangle
@@ -37,9 +40,9 @@ namespace wolf
 #pragma region Getters
 
 					//Set color of direct2d rectangle
-					DX_EXP D2D1::ColorF get_color() const;
+					DX_EXP w_color get_color() const;
 					//Set border color of direct2d rectangle
-					DX_EXP D2D1::ColorF get_borderColor() const;
+					DX_EXP w_color get_border_color() const;
 					
 					DX_EXP float get_radiusX() const;
 					DX_EXP float get_radiusY() const;
@@ -53,11 +56,13 @@ namespace wolf
 #pragma region Setters
 
 					//Set color of direct2d rectangle
-					DX_EXP void set_color(D2D1::ColorF pColor);
+					DX_EXP void set_color(_In_ const w_color pColor);
 					//Set border color of direct2d rectangle
-					DX_EXP void set_borderColor(D2D1::ColorF pColor);
+					DX_EXP void set_border_color(_In_ const w_color pColor);
 					//Set geometry of rectangle
-					DX_EXP void set_geormetry(float pLeft, float pTop, float pWidth, float pHeight, float pRadiusX, float pRadiusY);
+					DX_EXP void set_geormetry(_In_ float pLeft, _In_ float pTop, 
+						_In_ float pWidth, _In_ float pHeight, 
+						_In_ float pRadiusX, _In_ float pRadiusY);
 
 #pragma endregion
 
@@ -67,15 +72,15 @@ namespace wolf
 					std::shared_ptr<w_graphics_device>						_gDevice;
 
 					D2D1_ROUNDED_RECT										_rectangle;
-					float													_strokeWidth;
+					float													_stroke_width;
 
 					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_brush;
-					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_borderBrush;
+					Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>			_border_brush;
 
 					D2D1_COLOR_F											_color;
-					D2D1_COLOR_F											_borderColor;
-					bool													_updateColor;
-					bool													_updateBorderColor;
+					D2D1_COLOR_F											_border_color;
+					bool													_update_color;
+					bool													_update_border_color;
 				};
 			}
 		}

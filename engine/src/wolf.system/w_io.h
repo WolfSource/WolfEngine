@@ -30,16 +30,16 @@ namespace wolf
 	{
 		namespace io
 		{
-			//Return value : tuple <is_exists, if exists, the permission status>
-			inline std::tuple<bool, boost::filesystem::perms> get_is_file(const std::wstring& pPath)
+			//Return the permission status (boost::filesystem::perms). File not found is no_perms rather than perms_not_known
+			inline boost::filesystem::perms get_is_file(const std::wstring& pPath)
 			{
 				auto _exists = boost::filesystem::exists(pPath);
-				if (!_exists) return std::make_pair(false, boost::filesystem::perms::no_perms);
+				if (!_exists) return boost::filesystem::perms::no_perms;
 
 				auto _file_status = boost::filesystem::status(pPath);
 				auto _permission = _file_status.permissions();
 
-				return std::make_pair(true, _permission);
+				return _permission;
 			}
 
 			//Check whether a directory is exist or not
@@ -151,10 +151,10 @@ namespace wolf
 			//-1 means the file could not be found, 
 			//-2 means file is exist but could not open
 			inline HRESULT read_binary_file(_In_z_ std::wstring pFileName, _Inout_ std::unique_ptr<uint8_t[]>& pData,
-				_Out_ size_t* pDataSize, _Out_ std::tuple<int, boost::filesystem::perms>* pFileState)
+				_Out_ size_t* pDataSize, _Out_ boost::filesystem::perms& pFileState)
 			{
-				*pFileState = get_is_file(pFileName);
-				if (std::get<0>(*pFileState) != 1)
+				pFileState = get_is_file(pFileName);
+				if (pFileState == boost::filesystem::perms::no_perms)
 				{
 					return S_FALSE;
 				}
@@ -249,12 +249,11 @@ namespace wolf
 #endif // MAYA
 				auto _fullpath = _dir.append(pFilename.c_str());
 
-				auto _file_state = get_is_file(_fullpath);
-				auto _is_file_exists = std::get<0>(_file_state);
+				auto _file_permission_status = get_is_file(_fullpath);
 				//set the permission
-				std::get<1>(pFileState) = std::get<1>(_file_state);
+				std::get<1>(pFileState) = _file_permission_status;
 
-				if (!_is_file_exists)
+				if (_file_permission_status == boost::filesystem::perms::no_perms)
 				{
 					std::get<0>(pFileState) = -1;
 

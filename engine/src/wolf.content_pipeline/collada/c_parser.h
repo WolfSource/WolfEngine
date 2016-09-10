@@ -46,6 +46,8 @@ namespace wolf
 				static void			_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geometry& pGeometry);
 				static HRESULT		_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals);
 				static void			_clear_all_resources();
+
+				static const char*	_trace_class_name;
 			};
 		}
 	}

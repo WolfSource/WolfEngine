@@ -15,8 +15,9 @@
 #include <W_Memory.h>
 #include <W_XML.h>
 #include <W_Timer.h>
-#include <w_gui/w_user_controls/w_comboBox.h>
+#include <w_gui/w_user_controls/w_combo_box.h>
 #include <w_gui/w_user_controls/w_slider.h>
+#include <w_gui/w_user_controls/w_button.h>
 #include <w_xml.h>
 #include <decklink.h>
 #include <w_python.h>
@@ -26,8 +27,12 @@
 #include <w_camera.h>
 #include <w_tcp_client.h>
 
+#include <w_timer_callback.h>
+
 #include <decklink.h>
-static std::unique_ptr<decklink>	sDeckLink;
+//static std::unique_ptr<decklink>	sDeckLink;
+
+#include <w_lua.h>
 
 using namespace std;
 using namespace DirectX;
@@ -56,7 +61,22 @@ static wolf::content_pipeline::w_camera* camera;
 
 static wolf::system::network::w_tcp_client* c;
 
-scene::scene()
+static int sum(int pX, int pY)
+{
+	return pX + pY;
+}
+
+static int lua_bind_sum(lua_State* pLua)
+{
+
+	int _x = lua_tointeger(pLua, 1);
+	int _y = lua_tointeger(pLua, 2); // get function arguments
+	lua_pushnumber(pLua, sum(_x, _y));  // push the result of a call
+	return 1;// we're returning one result
+}
+
+scene::scene() : 
+	_widget(nullptr)
 {
 	w_game::set_app_name(L"Wolf.TestDX.Win32");
 	w_game::set_fixed_time_step(false);
@@ -65,8 +85,43 @@ scene::scene()
 	this->clear_color[0] = color.r;
 	this->clear_color[1] = color.g;
 	this->clear_color[2] = color.b;
+	
+	//int _x = -1;
+	//double _var1;
+	//std::wstring _var2;
+	//w_lua::load_file(L"C:\\Users\\PooyaEimandar\\Desktop\\test_lua\\x64\\Debug\\test.lua");
+	//w_lua::bind_to_cfunction(lua_bind_sum, "sum_cpp");
+	//w_lua::run();
+	//w_lua::set_global_variable("var1", 3.1);
+	//w_lua::set_global_variable("var2", L"سلام");
+	//w_lua::get_global_variable("var1", _var1);
+	//w_lua::get_global_variable("var2", _var2);
+
+	//w_lua::get_global_variable("x", _x);
+
+	//w_lua::prepare_function("update");
+	//w_lua::set_parameter_function(2);
+	//w_lua::set_parameter_function(9);
+
+	//int _y = 0;
+	//std::string _z = "";
+	//w_lua::execute_function(_x, _y, _z);
+
+	//logger.write(std::to_string(_x));
+	//logger.write(std::to_string(_y));
+	//logger.write(_z);
 
 
+	//std::function<int(int,int)> _func = std::bind(&sum, std::placeholders::_1, std::placeholders::_2);
+
+	//int c = _func(10, 20);
+	//logger.write(std::to_string(c));
+
+
+	//w_lua::release();
+
+	//logger.write(_var);
+	
 	//c = new wolf::system::network::w_tcp_client(service, "127.0.0.1", 10540); //192.168.120.110
 
 	//c->register_on_connect_callback(boost::bind(&scene::_on_connect, this, boost::asio::placeholders::error));
@@ -171,34 +226,50 @@ void scene::load()
 	w_game::load();
 
 	auto _gDevice = get_graphics_device();
+	auto _width = this->get_window_width();
+	auto _height = this->get_window_height();
 
 	auto _hwnd = _gDevice->output_windows[0].hWnd;
 
-	wolf::content_pipeline::w_content_manager _c;
-	auto _scene = _c.load<wolf::content_pipeline::w_scene>(L"H:\\Codes\\Poser\\Scene.dae");
-	sScene = new w_renderable_scene(_scene);
-	sScene->load(_gDevice);
-	sScene->get_first_or_default_camera(&camera);
+	//wolf::content_pipeline::w_content_manager _c;
+	//auto _scene = _c.load<wolf::content_pipeline::w_scene>(L"H:\\Codes\\Poser\\Scene.dae");
+	//sScene = new w_renderable_scene(_scene);
+	//sScene->load(_gDevice);
+	//sScene->get_first_or_default_camera(&camera);
 	
-	this->_widget_resource_manager = std::make_unique<wolf::gui::w_widgets_resource_manager>(_hwnd);
-	this->_widget = std::make_unique<wolf::gui::w_widget>(this->get_window_width(), this->get_window_height());
-	this->_widget->initialize(_gDevice, this->sprite_batch.get(), this->_widget_resource_manager.get());
+	
 
-	this->_widget_resource_manager->on_device_created(_gDevice->device.Get(), _gDevice->context.Get());
+	wolf::gui::w_gui::initialize(_gDevice, sprite_batch.get(), _width, _height);
+	wolf::gui::w_gui::load( _hwnd, L"H:\\Codes\\design.xml");
 
-	DXGI_SURFACE_DESC _dxgi_surface_desc;
-	_dxgi_surface_desc.Width = this->get_window_width();
-	_dxgi_surface_desc.Height = this->get_window_height();
-	_dxgi_surface_desc.Format = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
-	_dxgi_surface_desc.SampleDesc.Count = 1;
-	_dxgi_surface_desc.SampleDesc.Quality = 0;
+	wolf::gui::w_gui::get_widget("widget_1", &this->_widget);
+	if (this->_widget)
+	{
+		//auto _tab = reinterpret_cast<wolf::gui::w_tab*>(this->_widget->get_control(0x00000080));
+		//if (_tab)
+		//{
+		//	//_tab->set_call_back(on_gui_event);
+		//}
+		//wolf::gui::w_tab* _tab = nullptr;
+		//this->_widget->add_tab(0, 500, 100, 5, 5, 70, 20, POINT(8, 0), &_tab);
+		//if (_tab)
+		//{
+		//	_tab->add_tab(L"س");
+		//	_tab->add_tab(L"ل");
+		//	_tab->add_tab(L"ا");
+		//	_tab->add_tab(L"p");
+		//	_tab->add_tab(L"o");
+		//	_tab->add_tab(L"o");
+		//	_tab->add_tab(L"y");
+		//	_tab->add_tab(L"a");
 
-	this->_widget_resource_manager->on_swapChain_resized(_gDevice->device.Get(), &_dxgi_surface_desc);
+		//	this->_widget->set_call_back(on_gui_event);
+		//}
+	}
 
-	this->_widget->set_location(500, 10);
-	this->_widget->set_size(200, 300);
+	//auto _hr = wolf::gui::w_gui::create_widget(_gDevice, this->sprite_batch.get(), _hwnd, "widget_0", _width, _height, &this->_widget);
 	//this->_widget->set_background_colors(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-	this->_widget->set_callBack(on_gui_event);
+	//this->_widget->set_callBack(on_gui_event);
 
 
 	/*for (size_t i = 0; i < 1000; i++)
@@ -366,10 +437,29 @@ void scene::load()
 
 
 
-	//this->geoCloud0 = make_unique<W_Geometry>(gDevice);
-	//this->geoCloud0->SetColor(ColorF::LightGray);
-	//this->geoCloud0->SetBorderColor(ColorF::LightGray);
+	//this->_curve->set_color(ColorF::LightGray);
+	//this->_curve->set_fill_geometry(false);
 
+	////this->geoCloud0 = make_unique<W_Geometry>(gDevice);
+	////this->geoCloud0->SetColor(ColorF::LightGray);
+	////this->geoCloud0->SetBorderColor(ColorF::LightGray);
+
+	//std::array<D2D1_POINT_2F, 3> _array_points;
+	//_array_points[0] = D2D1::Point2F(100, 100);
+	//_array_points[1] = D2D1::Point2F(150, 50);
+	//_array_points[2] = D2D1::Point2F(200, 100);
+
+	//std::vector<std::array<D2D1_POINT_2F, 3>> _points;
+	//_points.push_back(_array_points);
+
+	//this->_curve->begin();
+	//{
+	//	this->_curve->add_beziers(D2D1::Point2F(100, 100), _points, 
+	//		D2D1_FILL_MODE::D2D1_FILL_MODE_WINDING,
+	//		D2D1_FIGURE_BEGIN::D2D1_FIGURE_BEGIN_FILLED,
+	//		D2D1_FIGURE_END::D2D1_FIGURE_END_OPEN);
+	//}
+	//this->_curve->end();
 	//this->geoCloud0->Begin();
 	//{
 	//	this->geoCloud0->AddArc(
@@ -450,7 +540,7 @@ void scene::load()
 
 	//wolf::gui::w_button* _w = nullptr;
 	//this->_widget->add_button(W_GUI_ID_BUTTON, L"OK", -300, 400, 64, 64, L"Textures\\Icons\\StopPressed.png", -10, -10, 10, 10, 1.0f, 1.0f, 0, false, &_w);
-
+//	_w->set_button_color(W_COLOR(255, 0, 0, 255));
 	//int x = 10;
 	//void* _pointer = &x;
 	//_w->set_tag(_pointer);
@@ -461,7 +551,7 @@ void scene::load()
 	//this->_widget->add_image(W_GUI_ID_BUTTON, L"Textures\\Icons\\StopPressed.png", -300, 400, 0, 1.0f, 1.0f, 32, 32);
 
 	//this->_widget->add_label(W_GUI_ID_LABEL, L"Label", -300, 500, 64, 10);
-	//this->_widget->add_checkBox(W_GUI_ID_CHECKBOX, L"Checkbox", -300, 550, 170, 22);
+	//this->_widget->add_check_box(W_GUI_ID_CHECKBOX, L"Checkbox", -300, 550, 170, 22);
 
 	//this->_widget->add_radioButton(W_GUI_ID_RADIOBUTTON_1, 0, L"RadioButton 1", -300, 0, 170, 22);
 	//this->_widget->add_radioButton(W_GUI_ID_RADIOBUTTON_2, 0, L"RadioButton 2", -300, 30, 170, 22);
@@ -492,9 +582,9 @@ void scene::load()
 
 	//_combo->set_comboBox_selected_color(W_COLOR(255, 0, 0, 255));
 
-	this->_widget->add_slider(W_GUI_ID_SLIDER_1, 50, 120, 250, 25, -100, 100);
-	this->_widget->add_slider(W_GUI_ID_SLIDER_2, 50, 150, 250, 25, -100, 100);
-	this->_widget->add_slider(W_GUI_ID_SLIDER_3, 50, 180, 250, 25, -100, 100);
+	//this->_widget->add_slider(W_GUI_ID_SLIDER_1, 50, 120, 250, 25, -100, 100);
+	//this->_widget->add_slider(W_GUI_ID_SLIDER_2, 50, 150, 250, 25, -100, 100);
+	//this->_widget->add_slider(W_GUI_ID_SLIDER_3, 50, 180, 250, 25, -100, 100);
 
 }
 
@@ -508,6 +598,7 @@ void scene::update(const wolf::system::w_game_time& pGameTime)
 	}
 	step++;
 	w_game::update(pGameTime);
+
 }
 
 void scene::begin_render(const wolf::system::w_game_time& pGameTime)
@@ -522,22 +613,58 @@ void scene::render(const wolf::system::w_game_time& pGameTime)
 
 	auto _gDevice = this->graphics_devices.at(0);
 	
-	auto _v = camera->get_transform();
-	logger.write(std::to_wstring(_v.x) + L" " + std::to_wstring(_v.y) + L" " + std::to_wstring(_v.z));
+//	auto _v = camera->get_transform();
+//	logger.write(std::to_wstring(_v.x) + L" " + std::to_wstring(_v.y) + L" " + std::to_wstring(_v.z));
 
-	camera->update_view();
-	camera->update_projection();
+//	camera->update_view();
+//	camera->update_projection();
 	//convert to XMMatrix
-	auto _view_projection = DirectX::XMMatrixFromGLMMatrix(camera->get_view_projection());
+//	auto _view_projection = DirectX::XMMatrixFromGLMMatrix(camera->get_view_projection());
 
-	if (sScene)
-	{
-		sScene->set_view_projection(_view_projection);
-		sScene->render(pGameTime);
-	}
+	//if (sScene)
+	//{
+	//	sScene->set_view_projection(_view_projection);
+	//	sScene->render(pGameTime);
+	//}
+	//float _dot_offset = -(fmodf(10 * pGameTime.get_total_seconds(), 2));
 
-	this->_widget->on_render(pGameTime.get_elapsed_seconds());
+	//UNIQUE_RELEASE(this->_curve);
+	//this->_curve.reset(new w_geometry(_gDevice));
+	//this->_curve->set_color(w_color::from_hex(w_color::LIGHT_GRAY));
+	//this->_curve->set_stroke_width(4);//3
+	//this->_curve->set_fill_geometry(false);
+	//this->_curve->set_style(StrokeStyleProperties(
+	//	D2D1_CAP_STYLE::D2D1_CAP_STYLE_ROUND,
+	//	D2D1_CAP_STYLE::D2D1_CAP_STYLE_ROUND,
+	//	D2D1_CAP_STYLE::D2D1_CAP_STYLE_ROUND,
+	//	D2D1_LINE_JOIN::D2D1_LINE_JOIN_ROUND,
+	//	10.0f,
+	//	D2D1_DASH_STYLE::D2D1_DASH_STYLE_DOT,//D2D1_DASH_STYLE_SOLID
+	//	_dot_offset));
 
+	//std::array<D2D1_POINT_2F, 3> _array_points;
+	//_array_points[0] = D2D1::Point2F(100, 100);
+	//_array_points[1] = D2D1::Point2F(150, 50);
+	//_array_points[2] = D2D1::Point2F(this->_global_mouse_point.x, this->_global_mouse_point.y);
+
+	//std::vector<std::array<D2D1_POINT_2F, 3>> _points;
+	//_points.push_back(_array_points);
+
+	//this->_curve->begin();
+	//{
+	//	this->_curve->add_beziers(D2D1::Point2F(100, 100), _points,
+	//		D2D1_FILL_MODE::D2D1_FILL_MODE_WINDING,
+	//		D2D1_FIGURE_BEGIN::D2D1_FIGURE_BEGIN_FILLED,
+	//		D2D1_FIGURE_END::D2D1_FIGURE_END_OPEN);
+	//}
+	//this->_curve->end();
+
+	//this->sprite_batch->begin();
+	//this->_curve->draw();
+	//this->sprite_batch->end();
+
+	wolf::gui::w_gui::render(pGameTime);
+	
 	w_game::render(pGameTime);
 }
 
@@ -570,6 +697,14 @@ HRESULT scene::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLP
 		{
 			return S_OK;
 		}
+	}
+
+	switch (pMessage)
+	{
+	case WM_MOUSEMOVE:
+		this->_global_mouse_point.x = short(LOWORD(pLParam));
+		this->_global_mouse_point.y = short(HIWORD(pLParam));
+		break;
 	}
 
 	//if not procced yet
@@ -608,7 +743,7 @@ ULONG scene::release()
 {
 	if (this->is_released()) return 0;
 	
-	sScene->release();
+//	sScene->release();
 
 	// TODO: Release your assets here
 	//UNIQUE_RELEASE(this->spriteFont);
@@ -627,5 +762,8 @@ ULONG scene::release()
 
 	//W_ffmpeg::ReleaseMF();
 
+	wolf::gui::w_gui::release();
+
 	return w_game::release();
 }
+

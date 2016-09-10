@@ -36,35 +36,35 @@ namespace wolf
 			DX_EXP int				get_text_offset_y() const										{ return this->text_offset_y; }
 			DX_EXP float			get_font_size(int pValue) const									{ return this->font_size; }
 
-			DX_EXP W_COLOR			get_label_color() const											{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_label_color); }
-			DX_EXP W_COLOR			get_label_mouse_over_color() const								{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_label_mouse_over_color); }
-			DX_EXP W_COLOR			get_label_pressed_color() const									{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_label_pressed_color); }
-			DX_EXP W_COLOR			get_label_focused_color() const									{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_label_focused_color); }
-			DX_EXP W_COLOR			get_label_disabled_color() const								{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_label_disabled_color); }
+			DX_EXP w_color			get_label_color() const											{ return w_color::from_hex(this->_label_color); }
+			DX_EXP w_color			get_label_mouse_over_color() const								{ return w_color::from_hex(this->_label_mouse_over_color); }
+			DX_EXP w_color			get_label_pressed_color() const									{ return w_color::from_hex(this->_label_pressed_color); }
+			DX_EXP w_color			get_label_focused_color() const									{ return w_color::from_hex(this->_label_focused_color); }
+			DX_EXP w_color			get_label_disabled_color() const								{ return w_color::from_hex(this->_label_disabled_color); }
 
-			DX_EXP W_COLOR			get_current_color_state() const									{ return this->current_color_state; }
-			DX_EXP bool			get_force_use_current_color_state(bool pValue) const			{ return this->force_use_current_color_state; }
+			DX_EXP w_color			get_current_color_state() const									{ return this->current_color_state; }
+			DX_EXP bool				get_force_use_current_color_state(bool pValue) const			{ return this->force_use_current_color_state; }
 
 #pragma endregion
 
 #pragma region Setter
 
 			DX_EXP HRESULT			set_text(_In_z_ std::wstring pText);
-			DX_EXP void			set_original_text_offset_x(int pX)								{ this->original_text_offset_x = pX; }
-			DX_EXP void			set_original_text_offset_y(int pY)								{ this->original_text_offset_y = pY; }
-			DX_EXP void			set_text_offset_x(int pX)										{ this->text_offset_x = pX; }
-			DX_EXP void			set_text_offset_y(int pY)										{ this->text_offset_y = pY; }
+			DX_EXP void				set_original_text_offset_x(int pX)								{ this->original_text_offset_x = pX; }
+			DX_EXP void				set_original_text_offset_y(int pY)								{ this->original_text_offset_y = pY; }
+			DX_EXP void				set_text_offset_x(int pX)										{ this->text_offset_x = pX; }
+			DX_EXP void				set_text_offset_y(int pY)										{ this->text_offset_y = pY; }
 
-			DX_EXP void			set_font_size(float pValue)										{ this->font_size = pValue; }
+			DX_EXP void				set_font_size(float pValue)										{ this->font_size = pValue; }
 
-			DX_EXP void			set_label_color(W_COLOR pColor)									{ this->_label_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			DX_EXP void			set_label_mouse_over_color(W_COLOR pColor)						{ this->_label_mouse_over_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			DX_EXP void			set_label_pressed_color(W_COLOR pColor)							{ this->_label_pressed_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			DX_EXP void			set_label_focused_color(W_COLOR pColor)							{ this->_label_focused_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			DX_EXP void			set_label_disabled_color(W_COLOR pColor)						{ this->_label_disabled_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			DX_EXP void				set_label_color(w_color pColor)									{ this->_label_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			DX_EXP void				set_label_mouse_over_color(w_color pColor)						{ this->_label_mouse_over_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			DX_EXP void				set_label_pressed_color(w_color pColor)							{ this->_label_pressed_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			DX_EXP void				set_label_focused_color(w_color pColor)							{ this->_label_focused_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			DX_EXP void				set_label_disabled_color(w_color pColor)						{ this->_label_disabled_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
 
-			DX_EXP void			set_current_color_state(W_COLOR pColor)							{ this->current_color_state = pColor; }
-			DX_EXP void			set_force_use_current_color_state(bool pValue)					{ this->force_use_current_color_state = pValue; }
+			DX_EXP void				set_current_color_state(w_color pColor)							{ this->current_color_state = pColor; }
+			DX_EXP void				set_force_use_current_color_state(bool pValue)					{ this->force_use_current_color_state = pValue; }
 
 #pragma endregion
 
@@ -80,7 +80,7 @@ namespace wolf
 			Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> brush;
 
 			bool	force_use_current_color_state;
-			W_COLOR current_color_state;
+			w_color current_color_state;
 
 			DWORD _label_color;
 			DWORD _label_mouse_over_color;

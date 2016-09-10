@@ -6,11 +6,13 @@ using namespace wolf::graphics;
 
 scene_1::scene_1()
 {
+	//set the name of this application. This name will be use in log file
 	w_game::set_app_name(L"05_Multiple_Scenes_Multiple_Windows_DX11_X.Win32");
 }
 
 scene_1::~scene_1()
 {
+	//release all resources
 	release();
 }
 
@@ -18,40 +20,41 @@ void scene_1::initialize(std::map<int, std::vector<w_window_info>> pOutputWindow
 {
 	// TODO: Add your pre-initialization logic here
 
-	w_game::initialize(pOutputWindowsInfo);
+	_super::initialize(pOutputWindowsInfo);
 }
 
 void scene_1::load()
 {
 	// TODO: load your game assets here
 
-	w_game::load();
+	_super::load();
 }
 
 void scene_1::update(const wolf::system::w_game_time& pGameTime)
 {
 	// TODO: add your update logic code here
 
-	w_game::update(pGameTime);
+	_super::update(pGameTime);
 }
 
 void scene_1::begin_render(const wolf::system::w_game_time& pGameTime)
 {
 	//change the clear color 
 	this->clear_color[0] = std::cos(pGameTime.get_total_seconds());
-	w_game::begin_render(pGameTime);
+	_super::begin_render(pGameTime);
 }
 
 void scene_1::render(const wolf::system::w_game_time& pGameTime)
 {
 	// TODO: add your drawing code here
-	w_game::render(pGameTime);
+
+	_super::render(pGameTime);
 }
 
 //End render on all graphics devices
 void scene_1::end_render(const wolf::system::w_game_time& pGameTime)
 {
-	w_game::end_render(pGameTime);
+	_super::end_render(pGameTime);
 }
 
 HRESULT scene_1::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam)
@@ -66,5 +69,5 @@ ULONG scene_1::release()
 
 	// TODO: release your assets here
 
-	return w_game::release();
+	return _super::release();
 }

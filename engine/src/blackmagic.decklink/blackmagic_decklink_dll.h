@@ -14,9 +14,9 @@
 #ifdef _WIN32
 
 	#ifdef __WOLF_DECKLINK__
-	#define DLL __declspec(dllexport)
+	#define DCK_EXP __declspec(dllexport)
 	#else
-	#define DLL __declspec(dllimport)
+	#define DCK_EXP __declspec(dllimport)
 	#endif
 
 #endif

@@ -6,7 +6,8 @@ namespace wolf {
         export class w_game_time {
 
             constructor() {
-                this.reset_elapsed_time();
+                // TODO: this is test
+                console.log("w_game_time");
             }
 
             // Get elapsed time since the previous Update call.
@@ -39,7 +40,7 @@ namespace wolf {
 
             //Reset elapsed time
             public reset_elapsed_time(): void {
-                this._qp_last_time = Date.now() / 1000.0; //to seconds
+                this._qp_last_time = Date.now();
                 this._left_over_ticks = 0;
                 this._fps = 0;
                 this._frames_this_second = 0;
@@ -48,13 +49,10 @@ namespace wolf {
 
             //Reset elapsed time
             public tick(pUpdate: TUpdate): void {
-                let _current_time = Date.now() / 1000.0;//to seconds
+                let _current_time = Date.now();
                 let _time_delta = _current_time - this._qp_last_time;
                 this._qp_last_time = _current_time;
-                this._qpc_second_counter += _time_delta;
-
-                //convert to tick format
-                _time_delta *= w_game_time.TICKS_PER_SECOND;
+                this._qpc_second_counter += (_time_delta / 1000.0);
 
                 let _last_frame_count = this._frame_count;
                 if (this._fixed_time_step) {
@@ -71,13 +69,13 @@ namespace wolf {
                     }
                     this._left_over_ticks += _time_delta;
 
-                     while (this._left_over_ticks >= this._target_elapsed_ticks) {
-                         this._elapsed_ticks = this._target_elapsed_ticks;
-                         this._total_ticks += this._target_elapsed_ticks;
-                         this._left_over_ticks -= this._target_elapsed_ticks;
-                         this._frame_count++;
+                    while (this._left_over_ticks >= this._target_elapsed_ticks) {
+                        this._elapsed_ticks = this._target_elapsed_ticks;
+                        this._total_ticks += this._target_elapsed_ticks;
+                        this._left_over_ticks -= this._target_elapsed_ticks;
+                        this._frame_count++;
 
-                         pUpdate();
+                        pUpdate();
                     }
                 }
                 else {

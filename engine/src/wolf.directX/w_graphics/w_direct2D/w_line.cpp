@@ -5,13 +5,13 @@ using namespace D2D1;
 using namespace wolf::graphics;
 using namespace wolf::graphics::direct2D::shapes;
 
-w_line::w_line(const std::shared_ptr<w_graphics_device>& pGDevice, D2D1_POINT_2F pStartPoint, D2D1_POINT_2F pStopPoint) : _gDevice(pGDevice), _startPoint(pStartPoint), _stopPoint(pStopPoint),
-_strokeWidth(1.0f), _updateColor(false), _updateBorderColor(false)
+w_line::w_line(const std::shared_ptr<w_graphics_device>& pGDevice, D2D1_POINT_2F pStartPoint, D2D1_POINT_2F pStopPoint) : _gDevice(pGDevice), _start_point(pStartPoint), _stop_point(pStopPoint),
+_stroke_width(1.0f), _update_color(false), _update_border_color(false)
 {
 	_super::set_class_name(typeid(this).name());
 
 	this->_color.r = 0.274f; this->_color.g = 0.274f; this->_color.b = 0.274f; this->_color.a = 1;
-	this->_borderColor.r = 1; this->_borderColor.g = 1; this->_borderColor.b = 1; this->_borderColor.a = 1;
+	this->_border_color.r = 1; this->_border_color.g = 1; this->_border_color.b = 1; this->_border_color.a = 1;
 }
 
 w_line::~w_line()
@@ -21,7 +21,7 @@ w_line::~w_line()
 
 HRESULT w_line::draw()
 {
-	if (this->_brush == nullptr || this->_updateColor)
+	if (this->_brush == nullptr || this->_update_color)
 	{
 		auto _hr = this->_gDevice->context_2D->CreateSolidColorBrush(this->_color, &this->_brush);
 		if (FAILED(_hr))
@@ -29,21 +29,21 @@ HRESULT w_line::draw()
 			V(_hr, L"Create solid color brush for background", this->name, false, true);
 			return _hr;
 		}
-		this->_updateColor = false;
+		this->_update_color = false;
 	}
 
-	if (this->_borderBrush == nullptr || this->_updateBorderColor)
+	if (this->_border_brush == nullptr || this->_update_border_color)
 	{
-		auto hr = this->_gDevice->context_2D->CreateSolidColorBrush(this->_borderColor, &this->_borderBrush);
+		auto hr = this->_gDevice->context_2D->CreateSolidColorBrush(this->_border_color, &this->_border_brush);
 		if (FAILED(hr))
 		{
 			V(hr, L"Create solid color brush for border", this->name, false, true);
 			return hr;
 		}
-		this->_updateBorderColor = false;
+		this->_update_border_color = false;
 	}
 
-	this->_gDevice->context_2D->DrawLine(this->_startPoint, this->_stopPoint, this->_borderBrush.Get(), this->_strokeWidth, 0);
+	this->_gDevice->context_2D->DrawLine(this->_start_point, this->_stop_point, this->_border_brush.Get(), this->_stroke_width, 0);
 
 	return S_OK;
 }
@@ -53,7 +53,7 @@ ULONG w_line::release()
 	if (_super::is_released()) return 0;
 	
 	COMPTR_RELEASE(this->_brush);
-	COMPTR_RELEASE(this->_borderBrush);
+	COMPTR_RELEASE(this->_border_brush);
 
 	this->_gDevice = nullptr;
 
@@ -62,36 +62,62 @@ ULONG w_line::release()
 
 #pragma region Getters
 
-D2D1_POINT_2F w_line::get_startPoint() const
+w_color w_line::get_color() const
 {
-	return this->_startPoint;
+	return w_color(
+		this->_color.r * 255.000f,
+		this->_color.g * 255.000f,
+		this->_color.b * 255.000f,
+		this->_color.a * 255.000f);
 }
 
-D2D1_POINT_2F w_line::get_stopPoint() const
+w_color w_line::get_border_color() const
 {
-	return this->_stopPoint;
+	return w_color(
+		this->_border_color.r * 255.000f,
+		this->_border_color.g * 255.000f,
+		this->_border_color.b * 255.000f,
+		this->_border_color.a * 255.000f);
+}
+
+D2D1_POINT_2F w_line::get_start_point() const
+{
+	return this->_start_point;
+}
+
+D2D1_POINT_2F w_line::get_stop_point() const
+{
+	return this->_stop_point;
 }
 
 #pragma endregion
 
 #pragma region Setters
 
-void w_line::set_color(D2D1::ColorF pColor)
+void w_line::set_color(_In_ const w_color pColor)
 {
-	this->_color.r = pColor.r; this->_color.g = pColor.g; this->_color.b = pColor.b; this->_color.a = pColor.a;
-	this->_updateColor = true;
+	this->_color.r = pColor.r / 255.000f; 
+	this->_color.g = pColor.g / 255.000f; 
+	this->_color.b = pColor.b / 255.000f; 
+	this->_color.a = pColor.a / 255.000f;
+	
+	this->_update_color = true;
 }
 
-void w_line::set_borderColor(D2D1::ColorF pColor)
+void w_line::set_border_color(_In_ const w_color pColor)
 {
-	this->_borderColor.r = pColor.r; this->_borderColor.g = pColor.g; this->_borderColor.b = pColor.b; this->_borderColor.a = pColor.a;
-	this->_updateBorderColor = true;
+	this->_border_color.r = pColor.r / 255.000f; 
+	this->_border_color.g = pColor.g / 255.000f; 
+	this->_border_color.b = pColor.b / 255.000f; 
+	this->_border_color.a = pColor.a / 255.000f;
+	
+	this->_update_border_color = true;
 }
 
-void w_line::set_geormetry(D2D1_POINT_2F pStartPoint, D2D1_POINT_2F pStopPoint)
+void w_line::set_geormetry(_In_ const D2D1_POINT_2F pStartPoint, _In_ const D2D1_POINT_2F pStopPoint)
 {
-	this->_startPoint = pStartPoint;
-	this->_stopPoint = pStopPoint;
+	this->_start_point = pStartPoint;
+	this->_stop_point = pStopPoint;
 }
 
 #pragma endregion

@@ -2,8 +2,8 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : pch.h
-	Description		 : This sample shows how to create one scene and render to multiple windows in Wolf Engine
+	Name			 : main.cpp
+	Description		 : This sample shows how to create multiple scenes and render them to multiple windows in Wolf Engine
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
 */
 
@@ -13,11 +13,15 @@
 
 using namespace std;
 
+//static windows declaration
 static std::unique_ptr<w_window> sWindow_0;
 static std::unique_ptr<w_window> sWindow_1;
+
+//static scene declaration
 static std::unique_ptr<scene_0> sScene_0;
 static std::unique_ptr<scene_1> sScene_1;
 
+//static windows information declaration
 static std::map<int, std::vector<w_window_info>> sWindowsInfo_0;
 static std::map<int, std::vector<w_window_info>> sWindowsInfo_1;
 
@@ -34,17 +38,20 @@ static void release()
 
 void loop_window_0()
 {
+	//run the first scene
 	sScene_0->run(sWindowsInfo_0);
 }
 
 void loop_window_1()
 {
+	//run the second scene
 	sScene_1->run(sWindowsInfo_1);
 }
 
 //Entry point of program 
 int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
 {
+	//create the scenes
 	sScene_0 = make_unique<scene_0>();
 	sScene_1 = make_unique<scene_1>();
 
@@ -78,9 +85,11 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		break;
 		}
 
+		//check the message procedure of first scene 
 		auto _hr = sScene_0->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
 		if (_hr == S_OK) return _hr;
 		
+		//now check the message procedure of second scene
 		return sScene_1->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
 	};
 

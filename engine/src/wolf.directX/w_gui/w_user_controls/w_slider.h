@@ -35,20 +35,20 @@ namespace wolf
 
 #pragma region Getters
 
-			int		get_value() const										{ return _value; }
-			void	get_range(_Out_ int& pMin, _Out_ int& pMax) const		{ pMin = _min; pMax = _max; }
+			int			get_value() const										{ return _value; }
+			void		get_range(_Out_ int& pMin, _Out_ int& pMax) const		{ pMin = _min; pMax = _max; }
 
-			W_COLOR	 get_main_color() const									{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_main_color); }
-			W_COLOR	 get_main_mouse_over_color() const						{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_main_mouse_over_color); }
-			W_COLOR	 get_main_pressed_color() const							{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_main_pressed_color); }
-			W_COLOR	 get_main_focused_color() const							{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_main_focused_color); }
-			W_COLOR	 get_main_disabled_color() const						{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_main_disabled_color); }
+			w_color		get_main_color() const									{ return w_color::from_hex(this->_slider_main_color); }
+			w_color		get_main_mouse_over_color() const						{ return w_color::from_hex(this->_slider_main_mouse_over_color); }
+			w_color		get_main_pressed_color() const							{ return w_color::from_hex(this->_slider_main_pressed_color); }
+			w_color		get_main_focused_color() const							{ return w_color::from_hex(this->_slider_main_focused_color); }
+			w_color		get_main_disabled_color() const							{ return w_color::from_hex(this->_slider_main_disabled_color); }
 
-			W_COLOR	 get_button_color() const								{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_button_color); }
-			W_COLOR	 get_button_mouse_over_color() const					{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_button_mouse_over_color); }
-			W_COLOR	 get_button_pressed_color() const						{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_button_pressed_color); }
-			W_COLOR	 get_button_focused_color() const						{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_button_focused_color); }
-			W_COLOR	 get_button_disabled_color() const						{ return DirectX::DWORD_COLOR_TO_W_COLOR(this->_slider_button_disabled_color); }
+			w_color		get_button_color() const								{ return w_color::from_hex(this->_slider_button_color); }
+			w_color		get_button_mouse_over_color() const						{ return w_color::from_hex(this->_slider_button_mouse_over_color); }
+			w_color		get_button_pressed_color() const						{ return w_color::from_hex(this->_slider_button_pressed_color); }
+			w_color		get_button_focused_color() const						{ return w_color::from_hex(this->_slider_button_focused_color); }
+			w_color		get_button_disabled_color() const						{ return w_color::from_hex(this->_slider_button_disabled_color); }
 
 #pragma endregion
 
@@ -57,17 +57,17 @@ namespace wolf
 			void set_value(int pValue)										{ set_value_internal(pValue, false); }
 			void set_range(_In_ int pMin, _In_ int pMax);
 			
-			void set_main_color(W_COLOR pColor)								{ this->_slider_main_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void set_main_mouse_over_color(W_COLOR pColor)					{ this->_slider_main_mouse_over_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void set_main_pressed_color(W_COLOR pColor)						{ this->_slider_main_pressed_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void set_main_focused_color(W_COLOR pColor)						{ this->_slider_main_focused_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void set_main_disabled_color(W_COLOR pColor)					{ this->_slider_main_disabled_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_main_color(w_color pColor)								{ this->_slider_main_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_main_mouse_over_color(w_color pColor)					{ this->_slider_main_mouse_over_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_main_pressed_color(w_color pColor)						{ this->_slider_main_pressed_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_main_focused_color(w_color pColor)						{ this->_slider_main_focused_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_main_disabled_color(w_color pColor)					{ this->_slider_main_disabled_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
 
-			void set_button_color(W_COLOR pColor)							{ this->_slider_button_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void set_button_mouse_over_color(W_COLOR pColor)				{ this->_slider_button_mouse_over_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void set_button_pressed_color(W_COLOR pColor)					{ this->_slider_button_pressed_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void set_button_focused_color(W_COLOR pColor)					{ this->_slider_button_focused_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void set_button_disabled_color(W_COLOR pColor)					{ this->_slider_button_disabled_color = RGBA_TO_DWORD_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_button_color(w_color pColor)							{ this->_slider_button_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_button_mouse_over_color(w_color pColor)				{ this->_slider_button_mouse_over_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_button_pressed_color(w_color pColor)					{ this->_slider_button_pressed_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_button_focused_color(w_color pColor)					{ this->_slider_button_focused_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			void set_button_disabled_color(w_color pColor)					{ this->_slider_button_disabled_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
 
 #pragma endregion
 

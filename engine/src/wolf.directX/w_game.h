@@ -31,23 +31,23 @@ namespace wolf
 			DX_EXP virtual ~w_game();
 
 			//This will run the main loop cycle of the game 
-			DX_EXP bool run(std::map<int, std::vector<w_window_info>> pOutputWindowsInfo);
+			DX_EXP bool run(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo);
 
 			//Release all resources
 			DX_EXP ULONG release() override;
 			
 #pragma region Setters
 
-			void set_app_name(std::wstring pAppName)								{ this->_app_name = pAppName; }
-			void set_fixed_time_step(bool pValue)									{ this->_game_time.set_fixed_time_step(pValue);}
-			void set_target_elapsed_ticks(UINT64 pValue)							{ this->_game_time.set_target_elapsed_ticks(10000000 / pValue); }
-			void set_target_elapsed_seconds(double pValue)							{ this->_game_time.set_target_elapsed_seconds(1.0 / pValue); }
+			void set_app_name(_In_ std::wstring pAppName)								{ this->_app_name = pAppName; }
+			void set_fixed_time_step(_In_ bool pValue)									{ this->_game_time.set_fixed_time_step(pValue);}
+			void set_target_elapsed_ticks(_In_ UINT64 pValue)							{ this->_game_time.set_target_elapsed_ticks(10000000 / pValue); }
+			void set_target_elapsed_seconds(_In_ double pValue)							{ this->_game_time.set_target_elapsed_seconds(1.0 / pValue); }
 
 #pragma endregion
 
 #pragma region Getters
 
-			DX_EXP static const std::wstring get_content_directory()						{ return _content_directory_path; }
+			DX_EXP static const std::wstring get_content_directory()					{ return _content_directory_path; }
 
 #pragma endregion
 
@@ -57,25 +57,25 @@ namespace wolf
 				Allows the game to perform any initialization before starting to run.
 				Note that Log file will be created inside this function
 			*/
-			DX_EXP virtual void initialize(std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
+			DX_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
 
 			//Load game assets
 			DX_EXP	virtual void load() = 0;
 
 			//Update the game logic
-			DX_EXP virtual void update(const system::w_game_time& pGameTime) = 0;
+			DX_EXP virtual void update(_In_ const system::w_game_time& pGameTime) = 0;
 
 			//Begin render on all graphics devices
-			DX_EXP virtual void begin_render(const system::w_game_time& pGameTime);
+			DX_EXP virtual void begin_render(_In_ const system::w_game_time& pGameTime);
 			
 			//Draw the components of the game, also when you call Game::Render(), it will execute all command queue
-			DX_EXP virtual void render(const system::w_game_time& pGameTime) = 0;
+			DX_EXP virtual void render(_In_ const system::w_game_time& pGameTime) = 0;
 
 			//End render on all graphics devices
-			DX_EXP virtual void end_render(const system::w_game_time& pGameTime);
+			DX_EXP virtual void end_render(_In_ const system::w_game_time& pGameTime);
 
 			//Handle window messages
-			DX_EXP virtual HRESULT on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam);
+			DX_EXP virtual HRESULT on_msg_proc(_In_ HWND pHWND, _In_ UINT pMessage, _In_ WPARAM pWParam, _In_ LPARAM pLParam);
 
 			//SpriteBatch object for debugging 
 			std::unique_ptr<wolf::graphics::w_sprite_batch>		sprite_batch;
