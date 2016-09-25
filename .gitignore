@@ -1,3 +1,7 @@
+# Prerequisites 
+*.c
+*.c++ 
+
 # Compiled Object files
 *.slo
 *.lo
