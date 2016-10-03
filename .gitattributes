@@ -1,19 +1,40 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+#sources
+*.c text
+*.cc text
+*.cxx text
+*.cpp text
+*.c++ text
+*.hpp text
+*.h text
+*.h++ text
+*.hh text
 
-*.rb linguist-language=c++
+# Compiled Object files
+*.slo binary
+*.lo binary
+*.o binary
+*.obj binary
 
-# Custom for Visual Studio
-*.cs     diff=csharp
 
-# Standard to msysgit
-*.doc	 diff=astextplain
-*.DOC	 diff=astextplain
-*.docx diff=astextplain
-*.DOCX diff=astextplain
-*.dot  diff=astextplain
-*.DOT  diff=astextplain
-*.pdf  diff=astextplain
-*.PDF	 diff=astextplain
-*.rtf	 diff=astextplain
-*.RTF	 diff=astextplain
+# Precompiled Headers
+*.gch binary
+*.pch binary
+
+
+# Compiled Dynamic libraries
+*.so binary
+*.dylib binary
+*.dll binary
+
+
+# Compiled Static libraries
+*.lai binary
+*.la binary
+*.a binary
+*.lib binary
+
+
+# Executables
+*.exe binary
+*.out binary
+*.app binary
