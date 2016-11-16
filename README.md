@@ -9,28 +9,47 @@ Wolf Engine written in C++ and support Python as an embedded script language.
 The Wolf used DirectX for rendering on <b>Windows Win32 and Universal Windows Platform</b>, however I’m working on <b>Vulkan render engine for Android/Ubuntu</b>, <b>Apple Metal render engine for OSX/IOS</b> and <ab>webGL for HTML5 platform</b></p>
 
 <!--What's new-->
-<h2><a id="user-content-whatsnew" class="anchor" href="#whatsnew" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What’s new on version 0.3.0.0</h2>
+<h2><a id="user-content-whatsnew" class="anchor" href="#whatsnew" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What’s new on version 0.5.0.0</h2>
 <h3>New Features</h3>
 
 <ul>
-<li>"<b>w_tab</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
-<li>"<b>w_gui</b>&quot; static class has been added for loading xml files which contain user interface controls</li>
-<li>"<b>w_game_time class</b>" written in &quot;<b>typescript</b>" and has been tested for "<b>wolf.webGL</b>"</li>
-<li>Samples "<b>01-widget</b>" and "<b>02-gui from xml</b>" have been added to the following folder "<b>~\Wolf.engine\samples\win\02-GUI</b>".</li>
-<li id="new_feature">Samples "<b>01-shapes</b>" and "<b>02-geometries</b>" have been added to the following folder "<b>~\Wolf.engine\samples\win\03-Direct2D</b>".</li>
+<li>"<b>w_line_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
+<li>"<b>w_rounded_rectangle_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
+<li>"<b>w_ellipse_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
+<li>"<b>w_list_widget</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X with support of both wolf::gui and gdi controls</li>
+<li>Reducing <b>texture</b> memory usage by 2 channel encoding</li>
+<li>New samples have been added. Check out:
+  <ul>
+    <li>Samples\03-Direct2D\03_Animated_Geometries_DX11_X.Win32</li>
+    <li>Samples\05-Buffers\01_Quad_DX11_X.Win32</li>
+    <li>Samples\05-Buffers\02_Textured_Quad.DX11_X.Win32</li>
+  </ul>
+</li>
+<li>"<b>Wolf.System</b>" has been ported to "<b>Android Nvidia Tegra Shield</b>"</li>
+<li>"<b>Wolf.System</b>" has been ported to "<b>Windows Universal</b>"</li>
 </ul>
 
 <h3>Improved</h3>
 <ul>
-<li>A photoshop template file for creating customized flat and reounded UI controls has been added to "<b>~\Wolf.Engine\engine\dependencies\PSDs\GUI\</b>". 
-when you create your own customized theme, make sure replace it with the <b>.dds</b> file in to the following path "<b>~\Content\Textures\GUI\Controls.dds</b>". 
-Additionally, you can use visual studio for converting "<b>.png</b>" files to the "<b>.dds</b>" files. 
+  <li>Drawing dynamic vertex buffers of gui improved</li>
+  <li>wolf::graphics::w_mesh is independent drawing class, which can use for drawing any geometry with any texture and effect</li>
+  <li>wolf::gui::w_image is render with w_texture_2d instead of slow direct2D image rendering system</li>
+  <li>ffmpeg allocating dynamic buffer for video and audio optimized in this version</li>
+  <li>Classes "<b>w_mesh and w_quad</b>" optimized. <b>w_quad<T></b> is a template class available for various constant buffers</li>
+  <li>Support multiple image formats with stb_image. Now wolf::graphics::w_texture::load_texture_2D_from_file function supports following formats:
+  <ul>
+    <li>dds</li>
+    <li>png</li>
+    <li>jpg</li>
+    <li>tga</li>
+    <li>psd</li>
+  </ul>
 </li>
 </ul>
 
 <h3>Bug Fixes</h3>
 <ul>
-<li>Memory leaks for "<b>SAFE_RELEASE</b>" and "<b>UNIQUE_RELEASE</b>" fixed</li>
+<li>Memory leaks for <b>wolf::gui::w_label</b> fixed</li>
 </ul>
 
 <!--Projects-->
@@ -71,25 +90,25 @@ Here are the screenshots of samples, you can read full information about these s
 <table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/01-window/view.jpg" alt="01_window/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/01-window/view.jpg" alt="01_window/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 01-window</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/02-multiple_windows/view.jpg" alt="02_multiple_windows/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/02-multiple_windows/view.jpg" alt="02_multiple_windows/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 02-multiple_windows</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/03-scene/view.jpg" alt="03_scene/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/03-scene/view.jpg" alt="03_scene/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 03-scene</p>
     </td>
   </tr>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.2.0.0/samples/win/01-Initialize/04-one_scene_multiple_windows/view.jpg" alt="04_one_scene_multiple_windows/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/04-one_scene_multiple_windows/view.jpg" alt="04_one_scene_multiple_windows/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 04-one_scene_multiple_windows</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/01-Initialize/05-multiple_scenes_multiple_windows/view.jpg" alt="05_multiple_scenes_multiple_windows/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/05-multiple_scenes_multiple_windows/view.jpg" alt="05_multiple_scenes_multiple_windows/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 05-multiple_scenes_multiple_windows</p>
     </td>
   </tr>
@@ -99,11 +118,11 @@ Here are the screenshots of samples, you can read full information about these s
 <table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/02-GUI/01-widget/view.jpg" alt="01-widget/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/02-GUI/01-widget/view.jpg" alt="01-widget/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 01-widget</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/02-GUI/02-gui%20from%20xml/view.jpg" alt="02-gui from xml/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/02-GUI/02-gui%20from%20xml/view.jpg" alt="02-gui from xml/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 02-gui from xml</p>
     </td>
   </tr>
@@ -113,12 +132,16 @@ Here are the screenshots of samples, you can read full information about these s
 <table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/03-Direct2D/01-shapes/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/win/03-Direct2D/01-shapes/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 01-shapes</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/samples/win/03-Direct2D/02-geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/win/03-Direct2D/02-geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 02-geometries</p>
+    </td>
+    <td>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/win/03-Direct2D/03-animated_geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
+      <p><b>Win32</b>: 03-animated_geometries</p>
     </td>
   </tr>
 </table>
