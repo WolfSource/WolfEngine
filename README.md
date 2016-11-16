@@ -17,7 +17,7 @@ The Wolf used DirectX for rendering on <b>Windows Win32 and Universal Windows Pl
 <li>"<b>w_rounded_rectangle_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
 <li>"<b>w_ellipse_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
 <li>"<b>w_list_widget</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X with support of both wolf::gui and gdi controls</li>
-<li>Reducing <b>texture</b> memory usage by 2 channel encoding</li>
+<li>Reducing texture memory usage by 2 channel encoding</li>
 <li>New samples have been added. Check out:
   <ul>
     <li>Samples\03-Direct2D\03_Animated_Geometries_DX11_X.Win32</li>
@@ -31,11 +31,11 @@ The Wolf used DirectX for rendering on <b>Windows Win32 and Universal Windows Pl
 
 <h3>Improved</h3>
 <ul>
-  <li>Drawing dynamic vertex buffers of gui improved</li>
-  <li>wolf::graphics::w_mesh is independent drawing class, which can use for drawing any geometry with any texture and effect</li>
-  <li>wolf::gui::w_image is render with w_texture_2d instead of slow direct2D image rendering system</li>
-  <li>ffmpeg allocating dynamic buffer for video and audio optimized in this version</li>
-  <li>Classes "<b>w_mesh and w_quad</b>" optimized. <b>w_quad<T></b> is a template class available for various constant buffers</li>
+  <li>Drawing dynamic vertex buffers of gui</li>
+  <li>"<b>wolf::graphics::w_mesh</b>" is an independent drawing class, which can use for drawing any geometry with any texture and effect</li>
+  <li>"<b>wolf::gui::w_image</b> renders itself using w_texture_2d class instead of direct2D image class</li>
+  <li>the allocating dynamic buffer part of ffmpeg optimized</li>
+  <li>Classes "<b>w_mesh and w_quad</b>" optimized. Now <b>w_quad</b> is a template class available for various constant buffers</li>
   <li>Support multiple image formats with stb_image. Now wolf::graphics::w_texture::load_texture_2D_from_file function supports following formats:
   <ul>
     <li>dds</li>
