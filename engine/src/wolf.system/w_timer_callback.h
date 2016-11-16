@@ -3,12 +3,16 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_timer.h
-	Description		 : A timer based on QueryPerformanceCounter
+	Description		 : A timer with callback
 	Comment          :
 */
 
 #ifndef __W_TIMER_CALLBACK_H__
 #define __W_TIMER_CALLBACK_H__
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
 
 #include "w_timer.h"
 #include <thread>
@@ -24,47 +28,32 @@ namespace wolf
 			~w_timer_callback() {};
 
 			template <class T>
-			void do_sync(int pIntervalMS, T&& pFunc)
+			void do_sync(int pIntervalMilliSeconds, T&& pFunc)
 			{
-				w_timer _timer;
-				_timer.start();
-				while (_timer.getTotalMilliSeconds() < pIntervalMS)
+				w_game_time _time;
+				while (_time.get_total_seconds() * 1000 < pIntervalMilliSeconds)
 				{
-					_timer.update();
+					_time.tick([]() {});
 				}
 				pFunc();
 			}
 
 			template <class T>
-			void do_async(int pIntervalMS, T&& pFunc)
+			void do_async(int pIntervalMilliSeconds, T&& pFunc)
 			{
-				std::thread  t([pIntervalMS, pFunc]()
+				std::thread  t([pIntervalMilliSeconds, pFunc]()
 				{
-					w_timer _timer;
-					_timer.start();
-					while (_timer.getTotalMilliSeconds() < pIntervalMS)
+					w_game_time _time;
+					while (_time.get_total_seconds() * 1000 < pIntervalMilliSeconds)
 					{
-						_timer.update();
+						_time.tick([]() {});
 					}
 					pFunc();
 				});
 				t.detach();
 			}
-
-			//if (async)
-			//{
-			//	std::thread([after, task]() {
-			//		std::this_thread::sleep_for(std::chrono::milliseconds(after));
-			//		task();
-			//	}).detach();
-			//}
-			//else
-			//{
-			//	std::this_thread::sleep_for(std::chrono::milliseconds(after));
-			//	task();
-			//}
 		};
 	}
 }
 
-#endif
+#endif //__W_TIMER_CALLBACK_H__

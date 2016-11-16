@@ -10,7 +10,28 @@
 #ifndef __W_TCP_CLIENT_H__
 #define __W_TCP_CLIENT_H__
 
-#include "w_system_dll.h"
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#if defined(__WIN32)
+
+#ifdef _DEBUG
+#pragma comment(lib, "libboost_system-vc140-mt-gd-1_61.lib")
+#else
+#pragma comment(lib, "libboost_system-vc140-mt-1_61.lib")
+#endif
+
+#include "w_target_ver.h"
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 
+#endif
+
+#endif
+
+#include "w_system_export.h"
+#include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/signals/signal1.hpp>
 #include <boost/signals/signal2.hpp>
@@ -29,30 +50,30 @@ namespace wolf
 			class w_tcp_client
 			{
 			public:
-				SYS_EXP w_tcp_client(boost::asio::io_service& pService, const char* pIpAddress = "127.0.0.1", unsigned short pPort = 1234);
-				SYS_EXP ~w_tcp_client();
+				WSYS_EXP w_tcp_client(boost::asio::io_service& pService, const char* pIpAddress = "127.0.0.1", unsigned short pPort = 1234);
+				WSYS_EXP ~w_tcp_client();
 
-				SYS_EXP bool connect();
-				SYS_EXP void async_connect();
+				WSYS_EXP bool connect();
+				WSYS_EXP void async_connect();
 
-				SYS_EXP size_t send(const std::string& pMsg);
-				SYS_EXP void async_send(const std::string& pMsg);
+				WSYS_EXP size_t send(const std::string& pMsg);
+				WSYS_EXP void async_send(const std::string& pMsg);
 
-				SYS_EXP size_t read(std::string& pBuffer);
-				SYS_EXP void async_read();
+				WSYS_EXP size_t read(std::string& pBuffer);
+				WSYS_EXP void async_read();
 
-				SYS_EXP void close();
-				SYS_EXP void close(boost::system::error_code& pErrorCode);
+				WSYS_EXP void close();
+				WSYS_EXP void close(boost::system::error_code& pErrorCode);
 
-				SYS_EXP void register_on_connect_callback(boost::function<void(const boost::system::error_code&)> pCallBack);
-				SYS_EXP void register_on_sent_callback(boost::function<void(const boost::system::error_code&, const size_t)> pCallBack);
-				SYS_EXP void register_on_received_callback(boost::function<void(const boost::system::error_code&, const size_t, std::string)> pCallBack);
-				SYS_EXP void unregister_all_callbacks();
+				WSYS_EXP void register_on_connect_callback(boost::function<void(const boost::system::error_code&)> pCallBack);
+				WSYS_EXP void register_on_sent_callback(boost::function<void(const boost::system::error_code&, const size_t)> pCallBack);
+				WSYS_EXP void register_on_received_callback(boost::function<void(const boost::system::error_code&, const size_t, std::string)> pCallBack);
+				WSYS_EXP void unregister_all_callbacks();
 
 #pragma region Getters
 
-				SYS_EXP const boost::system::error_code get_error_code() const				{ return this->_error_code; }
-				SYS_EXP const bool get_is_connected() const									{ return this->_is_connected; }
+				WSYS_EXP const boost::system::error_code get_error_code() const				{ return this->_error_code; }
+				WSYS_EXP const bool get_is_connected() const								{ return this->_is_connected; }
 
 #pragma endregion
 
@@ -78,4 +99,4 @@ namespace wolf
 	}
 }
 
-#endif
+#endif //__W_TCP_CLIENT_H__

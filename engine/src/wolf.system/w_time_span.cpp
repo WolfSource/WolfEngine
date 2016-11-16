@@ -1,7 +1,5 @@
 #include "w_system_pch.h"
 #include "w_time_span.h"
-#include <ctime>
-#include <exception>
 
 using namespace std;
 using namespace wolf::system;
@@ -53,23 +51,14 @@ w_time_span::w_time_span(int pHours, int pMinutes, int pSeconds)
 
 w_time_span::w_time_span(int pDays, int pHours, int pMinutes, int pSeconds, int pMilliseconds)
 {
-	INT64 totalMilliSeconds = (static_cast<INT64>(pDays) * 3600 * 24 + 
+	INT64 totalMilliSeconds = (static_cast<INT64>(pDays) * 3600 * 24 +
 		static_cast<INT64>(pHours) * 3600 + static_cast<INT64>(pMinutes) * 60 + pSeconds) * 1000 + pMilliseconds;
 
 	if (totalMilliSeconds > MaxMilliSeconds || totalMilliSeconds < MinMilliSeconds)
 	{
-		throw new std::exception("ArgumentOutOfRangeException: Overflow W_TimeSpan is too long");
+		throw "ArgumentOutOfRangeException: Overflow W_TimeSpan is too long";
 	}
 	this->_ticks = static_cast<INT64>(totalMilliSeconds) * TICKS_PER_MILLISECOND;
-
-	//Logger.Write(std::to_wstring(pDays).c_str());
-	//Logger.Write(std::to_wstring(pHours).c_str());
-	//Logger.Write(std::to_wstring(pMinutes).c_str());
-	//Logger.Write(std::to_wstring(pSeconds).c_str());
-	//Logger.Write(std::to_wstring(pMilliseconds).c_str());
-	//Logger.Write(std::to_wstring(totalMilliSeconds).c_str());
-	//Logger.Write(std::to_wstring(TicksPerMillisecond).c_str());
-	//Logger.Write(std::to_wstring(_ticks).c_str());
 }
 
 w_time_span::~w_time_span()
@@ -83,16 +72,16 @@ w_time_span w_time_span::add(w_time_span pTS)
 	// >> 63 gives the sign bit (either 64 1's or 64 0's).
 	if (((this->_ticks >> 63) == (pTS._ticks >> 63)) && ((this->_ticks >> 63) != (result >> 63)))
 	{
-		throw std::exception("OverflowException: TimeSpan is too Long");
+		throw "OverflowException: TimeSpan is too Long";
 	}
 	return w_time_span(result);
 }
 
 w_time_span w_time_span::duration()
 {
-	if (this->_ticks <= _I64_MIN || this->_ticks >= _I64_MAX)
+	if ((this->_ticks <= _I64_MIN || this->_ticks >= _I64_MAX))
 	{
-		throw std::exception("OverflowException: Overflow Duration");
+		throw "OverflowException: Overflow Duration";
 	}
 	return w_time_span(this->_ticks >= 0 ? this->_ticks : -this->_ticks);
 }
@@ -113,10 +102,10 @@ string w_time_span::to_string()
 
 wstring w_time_span::to_wstring()
 {
-	auto str = to_string();
-	auto wstr = std::wstring(str.begin(), str.end());
-	str.clear();
-	return wstr;
+	auto _str = this->to_string();
+	auto _wstr = std::wstring(_str.begin(), _str.end());
+	_str.clear();
+	return _wstr;
 }
 
 w_time_span w_time_span::zero()
@@ -127,9 +116,13 @@ w_time_span w_time_span::zero()
 w_time_span w_time_span::now()
 {
 	time_t t = time(0);   // get time now
-	struct tm * now = localtime(&t);
-
-	return w_time_span::w_time_span(now->tm_hour, now->tm_min, now->tm_sec);
+	struct tm* now = nullptr;
+#ifdef __ANDROID
+	now = localtime(&t);
+#else
+	localtime_s(now, &t);
+#endif
+	return w_time_span(now->tm_hour, now->tm_min, now->tm_sec);
 }
 
 w_time_span w_time_span::min_value()
@@ -226,7 +219,7 @@ w_time_span w_time_span::_interval(double pValue, int pScale)
 	double millis = tmp + (pValue >= 0 ? 0.5 : -0.5);
 	if ((millis > _I64_MAX / TICKS_PER_MILLISECOND) || (millis < _I64_MIN / TICKS_PER_MILLISECOND))
 	{
-		throw std::exception("Overflow TimeSpan too long");
+		throw "Overflow TimeSpan too long";
 	}
 	return w_time_span(static_cast<INT64>(millis) * TICKS_PER_MILLISECOND);
 }
@@ -235,10 +228,10 @@ INT64 w_time_span::_time_to_ticks(int pHour, int pMinute, int pSecond)
 {
 	// totalSeconds is bounded by 2^31 * 2^12 + 2^31 * 2^8 + 2^31,
 	// which is less than 2^44, meaning we won't overflow totalSeconds.
-	long totalSeconds = static_cast<INT64>(pHour)* 3600 + static_cast<INT64>(pMinute)* 60 + static_cast<INT64>(pSecond);
+	long totalSeconds = static_cast<INT64>(pHour) * 3600 + static_cast<INT64>(pMinute) * 60 + static_cast<INT64>(pSecond);
 	if (totalSeconds > MaxSeconds || totalSeconds < MinSeconds)
 	{
-		throw std::exception("ArgumentOutOfRangeException: Overflow TimeSpan too long");
+		throw "ArgumentOutOfRangeException: Overflow TimeSpan too long";
 	}
 	return totalSeconds * TICKS_PER_SECOND;
 }
@@ -303,4 +296,4 @@ double w_time_span::get_total_seconds() const
 	return static_cast<double>(this->_ticks) * SECONDS_PER_TICK;
 }
 
-#pragma endregion
+#pragma endregion                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
