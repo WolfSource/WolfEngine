@@ -132,16 +132,30 @@ Here are the screenshots of samples, you can read full information about these s
 <table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/win/03-Direct2D/01-shapes/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/03-Direct2D/01-shapes/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 01-shapes</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/win/03-Direct2D/02-geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/03-Direct2D/02-geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 02-geometries</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/win/03-Direct2D/03-animated_geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/03-Direct2D/03-animated_geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
       <p><b>Win32</b>: 03-animated_geometries</p>
+    </td>
+  </tr>
+</table>
+
+<h2>05-Buffers</h2>
+<table>
+  <tr>
+    <td>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/05-Buffers/01-quad/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
+      <p><b>Win32</b>: 01-quad</p>
+    </td>
+    <td>
+      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/05-Buffers/02-textured_quad/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
+      <p><b>Win32</b>: 02-textured_quad</p>
     </td>
   </tr>
 </table>
