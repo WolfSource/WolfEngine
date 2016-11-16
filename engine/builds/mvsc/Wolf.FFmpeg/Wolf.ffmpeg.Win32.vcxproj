@@ -29,14 +29,29 @@
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\wolf.ffmpeg\dllmain.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.ffmpeg\w_ffmpeg.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.ffmpeg\w_ffmpeg_pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\wolf.ffmpeg\w_ffmpeg.h" />
+    <ClInclude Include="..\..\..\src\wolf.ffmpeg\w_ffmpeg_dll.h" />
+    <ClInclude Include="..\..\..\src\wolf.ffmpeg\w_ffmpeg_pch.h" />
+    <ClInclude Include="..\..\..\src\wolf.ffmpeg\w_target_ver.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1C266BC7-AF7E-43E2-9CC9-4F6954295929}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>WolfffmpegWin32</RootNamespace>
+    <RootNamespace>Wolf_ffmpeg_Win32</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="Wolf.ffmpeg.Shared.vcxitems" Label="Shared" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -118,8 +133,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include;$(SolutionDir)/../../dependencies/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__PAL__;_WINDLL;WIN32;UNICODE;_UNICODE;__WOLF_FFMPEG__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/tbb/tbb2017_20160916oss/windows/include/;$(SolutionDir)/../../dependencies/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PAL__;_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_FFMPEG__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_ffmpeg_pch.h</PrecompiledHeaderFile>
       <FunctionLevelLinking>
@@ -132,18 +147,18 @@
     </Link>
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/ffmpeg/lib;$(SolutionDir)/../../dependencies/boost/lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20160916oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/ffmpeg/lib;$(SolutionDir)/../../dependencies/boost/lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include;$(SolutionDir)/../../dependencies/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__PAL__;_WINDLL;WIN32;UNICODE;_UNICODE;__WOLF_FFMPEG__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/tbb/tbb2017_20160916oss/windows/include/;$(SolutionDir)/../../dependencies/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PAL__;_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_FFMPEG__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_ffmpeg_pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/ffmpeg/lib;$(SolutionDir)/../../dependencies/boost/lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20160916oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/ffmpeg/lib;$(SolutionDir)/../../dependencies/boost/lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <AssemblyDebug>false</AssemblyDebug>
     </Link>

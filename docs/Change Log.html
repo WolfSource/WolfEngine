@@ -14,7 +14,7 @@
         #improved {
 	        color: blue
         }
-        #publish {
+        #reviewed {
 	        color: green
         }
     </style>
@@ -56,26 +56,67 @@
             </ul>
         </li>
         <li>
-            <strong>v 0.3.0.0</strong>
+            <strong>v 0.3.1.0</strong>
             <ul>
-                <li id="bugs_fixed"><b>wolf.system</b> memory leaks for SAFE_RELEASE and UNIQUE_RELEASE fixed</li>
-                <li id="new_feature"><b>w_tab</b> has been added to "<b>GUI framework</b>" for DirectX 11.X</li>
-                <li id="new_feature"><b>gui</b> static class has been added for loading xml files which contains user interface controls</li>
-                <li id="new_feature">w_game_time has been tested for wolf.webGL</li>
-                <li id="new_feature">Samples "<b>01-widget</b> and <b>02-gui from xml</b>" have been added to the following folder "~\Wolf.engine\samples\win\02-GUI".</li>
-                <li id="new_feature">Samples "<b>01-shapes</b> and <b>02-geometries</b>" have been added to the following folder "~\Wolf.engine\samples\win\03-Direct2D".</li>
-                <li id="improved">A photoshop template file for creating customized flat and reounded UI controls, has been added to "~\Wolf.Engine\engine\dependencies\PSDs\GUI\". 
-                when you create your own customized theme, make sure replace it with the .dds file in to the following path "~\Content\Textures\GUI\Controls.dds". 
-                Additionally, you can use visual studio for converting ".png" files to the ".dds" files. 
+                <li id="bugs_fixed">Memory leaks for SAFE_RELEASE and UNIQUE_RELEASE fixed</li>
+                <li id="new_feature">"<b>w_tab</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
+                <li id="new_feature">"<b>w_gui</b>&quot; static class has been added for loading xml files which contain user interface controls</li>
+                <li id="new_feature">"<b>w_game_time class</b>" written in &quot;<b>typescript</b>" and has been tested for "<b>wolf.webGL</b>"</li>
+                <li id="new_feature">Samples "<b>01-widget</b>" and "<b>02-gui from xml</b>" have been added to the following folder "<b>~\Wolf.engine\samples\win\02-GUI</b>".</li>
+                <li id="new_feature">Samples "<b>01-shapes</b>" and "<b>02-geometries</b>" have been added to the following folder "<b>~\Wolf.engine\samples\win\03-Direct2D</b>".</li>
+                <li id="improved">A photoshop template file for creating customized flat and reounded UI controls, has been added to "<b>~\Wolf.Engine\engine\dependencies\PSDs\GUI\</b>". 
+                when you create your own customized theme, make sure replace it with the <b>.dds</b> file in to the following path "<b>~\Content\Textures\GUI\Controls.dds</b>". 
+                Additionally, you can use visual studio for converting "<b>.png</b>" files to the "<b>.dds</b>" files. 
                 </li>
+            </ul>
+        </li>
+        <li>
+            <strong>v 0.4.2.0</strong>
+            <ul>
+                <li id="bugs_fixed">Addressing dependencies</li>
+                <li id="bugs_fixed">Memory leaks of wolf::gui::w_label fixed</li>
+                <li id="new_feature">"<b>w_line_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
+                <li id="new_feature">"<b>w_rounded_rectangle_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
+                <li id="new_feature">"<b>w_ellipse_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
+                <li id="new_feature">"<b>w_list_widget</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X with support of both wolf::gui and gdi controls</li>
+                <li id="new_feature">Reducing <b>texture</b> memory usage by 2 channel encoding</li>
+                <li id="new_feature">New samples have been added. Check out:
+                    <ul>
+                        <li>Samples\03-Direct2D\03_Animated_Geometries_DX11_X.Win32</li>
+                        <li>Samples\05-Buffers\01_Quad_DX11_X.Win32</li>
+                        <li>Samples\05-Buffers\02_Textured_Quad.DX11_X.Win32</li>
+                    </ul>
+                </li>
+                <li id="improved">Drawing dynamic vertex buffers of gui improved</li>
+                <li id="improved">wolf::graphics::w_mesh is independent drawing class, which can use for drawing any geometry with any texture and effect</li>
+                <li id="improved">wolf::gui::w_image is render with w_texture_2d instead of slow direct2D image rendering system</li>
+                <li id="improved">ffmpeg allocating dynamic buffer for video and audio optimized in this version</li>
+                <li id="improved">Classes "<b>w_mesh and w_quad</b>" optimized. <b>w_quad<T></b> is a template class available for various constant buffers</li>
+                <li id="improved">Support multiple image formats with stb_image. Now wolf::graphics::w_texture::load_texture_2D_from_file function supports following formats:
+                    <ul>
+                        <li>dds</li>
+                        <li>png</li>
+                        <li>jpg</li>
+                        <li>tga</li>
+                        <li>psd</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <strong>v 0.5.0.0</strong>
+            <ul>
+                <li id="new_feature">"<b>Wolf.System</b>" has been ported to "<b>Android NVidia Tegra Shield</b>"</li>
+                <li id="new_feature">"<b>Wolf.System</b>" has been ported to "<b>Windows Universal</b>"</li>
             </ul>
         </li>
     </ul>
     <hr />
     <h2>To Do for next versions</h2>
     <ul>
-        <li id="new_feature">AMD tootle</li>
         <li id="new_feature">Work on texture compression</li>
+        <li id="improved">Switch from C++Amp to ComputeShaders</li>
+
         <li id="new_feature">Turn on lights</li>
         <li id="improved">continue with c_parser::_get_nodes</li>
         <li id="improved">Pre-compiled headers</li>

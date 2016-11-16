@@ -11,7 +11,3 @@ git subtree pull --prefix=engine/dependencies/rapidxml-master/ --squash git@gith
 git fetch git@github.com:miloyip/rapidjson.git master
 git subtree add --prefix=engine/dependencies/rapidjson-master/ --squash git@github.com:miloyip/rapidjson.git master
 git subtree pull --prefix=engine/dependencies/rapidjson-master/ --squash git@github.com:miloyip/rapidjson.git master
-
-git fetch git@github.com:PooyaEimandar/amd-tootle.git master
-git subtree add --prefix=engine/dependencies/AMD/amd-tootle-master/ --squash git@github.com:PooyaEimandar/amd-tootle.git master
-git subtree pull --prefix=engine/dependencies/AMD/amd-tootle-master/ --squash git@github.com:PooyaEimandar/amd-tootle.git master

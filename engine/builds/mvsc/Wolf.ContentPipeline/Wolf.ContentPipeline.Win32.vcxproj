@@ -23,14 +23,50 @@
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_node.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_parser.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\dllmain.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_camera.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_content_manager.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">w_cpipeline_pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">w_cpipeline_pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">w_cpipeline_pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">w_cpipeline_pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_model.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_scene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_animation.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_extra.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_node.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_obj.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_parser.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_skin.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_camera.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_dll.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_math.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_model.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_scene.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_vertex_declaration.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1C266BC7-AF7E-43E2-9CC9-4F6954295928}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>WolfContentPipelineWin32</RootNamespace>
+    <RootNamespace>Wolf_ContentPipeline_Win32</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="Wolf.ContentPipeline.Shared.vcxitems" Label="Shared" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -112,32 +148,34 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;WIN32;UNICODE;_UNICODE;__WOLF_CONTENT_PIPELINE__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/tbb2017_20160916oss/windows/include/;$(SolutionDir)/../../dependencies/glm-master/;$(SolutionDir)/../../dependencies/rapidxml-master/1.13/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_CONTENT_PIPELINE__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_cpipeline_pch.h</PrecompiledHeaderFile>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20160916oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/include;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml-1.13/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;WIN32;__WIN32;UNICODE;_UNICODE;__WOLF_CONTENT_PIPELINE__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/tbb2017_20160916oss/windows/include/;$(SolutionDir)/../../dependencies/glm-master/;$(SolutionDir)/../../dependencies/rapidxml-master/1.13/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_CONTENT_PIPELINE__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_cpipeline_pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20160916oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <AssemblyDebug>false</AssemblyDebug>
     </Link>
