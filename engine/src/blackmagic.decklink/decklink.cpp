@@ -629,6 +629,8 @@ HRESULT decklink::stop_capturing()
 
 void decklink::_schedule_next_frame(bool pPreroll)
 {
+	if (!this->_is_running) return;
+	
 	uint8_t* _frameOfQueue = nullptr;
 	auto _hr = false;
 
