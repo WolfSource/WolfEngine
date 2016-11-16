@@ -31,7 +31,7 @@ w_slider::~w_slider()
 
 bool w_slider::contains_point(_In_ const POINT& pPoint)
 {
-	return PtInRect(&(_super::boundingBox), pPoint) || PtInRect(&this->_rectangle_button, pPoint);
+	return PtInRect(&(_super::bounding_box), pPoint) || PtInRect(&this->_rectangle_button, pPoint);
 }
 
 bool w_slider::can_have_focus()
@@ -43,18 +43,18 @@ void w_slider::update_rects()
 {
 	_super::update_rects();
 
-	this->_rectangle_button = _super::boundingBox;
+	this->_rectangle_button = _super::bounding_box;
 	this->_rectangle_button.right = this->_rectangle_button.left + (this->_rectangle_button.bottom - this->_rectangle_button.top);
 	OffsetRect(&this->_rectangle_button, -(this->_rectangle_button.right - this->_rectangle_button.left) / 2, 0);
 
-	this->_button_x = (int) ((this->_value - _min) * (float) (_super::boundingBox.right - _super::boundingBox.left) / (this->_max - this->_min));
+	this->_button_x = (int) ((this->_value - _min) * (float) (_super::bounding_box.right - _super::bounding_box.left) / (this->_max - this->_min));
 	OffsetRect(&this->_rectangle_button, this->_button_x, 0);
 }
 
 int w_slider::value_from_pos(_In_ int pX)
 {
-	float fValuePerPixel = (float) (this->_max - this->_min) / (_super::boundingBox.right - _super::boundingBox.left);
-	return (int) (0.5f + this->_min + fValuePerPixel * (pX - _super::boundingBox.left));
+	float fValuePerPixel = (float) (this->_max - this->_min) / (_super::bounding_box.right - _super::bounding_box.left);
+	return (int) (0.5f + this->_min + fValuePerPixel * (pX - _super::bounding_box.left));
 }
 
 _Use_decl_annotations_
@@ -141,7 +141,7 @@ bool w_slider::handle_mouse(UINT pMsg, const POINT& pPoint, WPARAM pWParam, LPAR
 			return true;
 		}
 
-		if (PtInRect(&(_super::boundingBox), pPoint))
+		if (PtInRect(&(_super::bounding_box), pPoint))
 		{
 			this->_drag_x = pPoint.x;
 			this->_drag_offset = 0;
@@ -276,7 +276,7 @@ void w_slider::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& 
 
 	// Blend current color
 	_element->texture_color.blend(_state, pElapsedTime, fBlendRate);
-	_super::parent_widget->draw_sprite(_element, &(_super::boundingBox), W_GUI_FAR_BUTTON_DEPTH);
+	_super::parent_widget->draw_sprite(_element, &(_super::bounding_box), W_GUI_FAR_BUTTON_DEPTH);
 
 	_element = this->elements[1];
 

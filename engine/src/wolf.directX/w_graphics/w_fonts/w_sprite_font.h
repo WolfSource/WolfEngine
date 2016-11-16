@@ -49,47 +49,55 @@ namespace wolf
 			DX_EXP virtual ~w_sprite_font();
 
 			//Load font style
-			DX_EXP HRESULT load(_In_ ID2D1DeviceContext* pContext, _In_ IDWriteFactory* pWriteFactory);
-			//Set color of font
-			DX_EXP HRESULT set_color(_In_ ID2D1DeviceContext* pContext, D2D1::ColorF color);
-
+			DX_EXP HRESULT load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
 			//Release all resources
 			DX_EXP virtual ULONG release() override;
 
 #pragma region Getters
 
 			//Get pointer to the font
-			DX_EXP IDWriteTextFormat*								get_font()  const							{ return this->_text_format.Get(); }
+			DX_EXP IDWriteTextFormat*							get_font()  const								{ return this->_text_format; }
 			//Get pointer to brush of the font
-			DX_EXP ID2D1SolidColorBrush*							get_brush() const							{ return this->_brush.Get(); }
+			DX_EXP ID2D1SolidColorBrush*						get_brush() const								{ return this->_brush; }
 			//Get the text layout 
-			DX_EXP IDWriteTextLayout*								get_text_layout()const						{ return this->_text_layout.Get(); }
+			DX_EXP IDWriteTextLayout*							get_text_layout()const							{ return this->_text_layout; }
 			//Get font height in pixel
-			DX_EXP float											get_font_size() const						{ return this->_fontStyle.SIZE; }
+			DX_EXP float										get_font_size() const							{ return this->_font_style.SIZE; }
 			//Get is right to left
-			DX_EXP const bool										get_right_to_left() const					{ return this->_right_to_left; }
+			DX_EXP const bool									get_right_to_left() const						{ return this->_right_to_left; }
 			//Get font height in pixel
-			DX_EXP DWRITE_FONT_METRICS								get_font_metrics() const;
-			
+			DX_EXP DWRITE_FONT_METRICS							get_font_metrics() const;
+			//Get font face
+			DX_EXP IDWriteFontFace*								get_font_face() const;
+			//get bounding box of text 
+			DX_EXP ID2D1PathGeometry1*							get_text_bounding_box(_In_z_ const wchar_t* pTextShouldBeCalculated, _Inout_ D2D1_RECT_F& pBoundingBox) const;
+
 #pragma endregion
 
 #pragma region Setters
 
 			//Set is right toleft
-			DX_EXP void											set_right_to_left(bool pValue)				{ this->_right_to_left = pValue; }
+			DX_EXP void											set_right_to_left(bool pValue)					{ this->_right_to_left = pValue; }
 			//Set the text layout 
-			void												set_text_layout(IDWriteTextLayout* pValue)	{ this->_text_layout.Attach(pValue); }
+			void												set_text_layout(_In_ IDWriteTextLayout* pValue) { COM_RELEASE(this->_text_layout); this->_text_layout = pValue; }
+			//Set color of font
+			DX_EXP HRESULT										set_color(_In_ ID2D1DeviceContext* pContext, D2D1::ColorF color);
 
 #pragma endregion
 
 		private:
 			typedef		system::w_object						_super;
 
+			HRESULT		create_font_face_and_metrics();
+
 			bool												_right_to_left;
-			w_sprite_font_style									_fontStyle;
-			Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>		_brush;
-			Microsoft::WRL::ComPtr<IDWriteTextFormat>			_text_format;
-			Microsoft::WRL::ComPtr<IDWriteTextLayout>			_text_layout;
+			w_sprite_font_style									_font_style;
+			IDWriteFontFace*									_font_face;
+			ID2D1SolidColorBrush*								_brush;
+			IDWriteTextFormat*									_text_format;
+			IDWriteTextLayout*									_text_layout;
+			DWRITE_FONT_METRICS									_font_metrics;
+			ID2D1PathGeometry1*									_path_geometry;
 			
 		};
 	}

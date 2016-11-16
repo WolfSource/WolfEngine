@@ -10,10 +10,20 @@
 #ifndef __W_GAME_TIME_H__
 #define __W_GAME_TIME_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
+#include "Winbase.h"
+#else
+#include "w_std.h"
+#endif
+
 #include <string>
 #include <typeinfo>
 #include <ctime>
-#include "Winbase.h"
+
 #include <exception>
 #include "w_logger.h"
 
@@ -25,62 +35,68 @@ namespace wolf
 		{
 		public:
 			w_game_time() :
-				_elapsedTicks(0),
-				_totalTicks(0),
-				_leftOverTicks(0),
-				_frameCount(0),
+				_elapsed_ticks(0),
+				_total_ticks(0),
+				_left_over_ticks(0),
+				_frame_count(0),
 				_fps(0),
-				_framesThisSecond(0),
-				_qpcSecondCounter(0),
-				_fixedTimeStep(false),
-				_targetElapsedTicks(TICKS_PER_SECOND / 60)
+				_frames_this_second(0),
+				_seconds_counter(0),
+				_fixed_time_step(false),
+				_target_elapsed_ticks(TICKS_PER_SECOND / 60)
 			{
 				this->_name = "game_time";
 
+#if defined(__WIN32) || defined(__UNIVERSAL)
 				//Get frequency
-				if (!QueryPerformanceFrequency(&this->_qpFrequency))
+				if (!QueryPerformanceFrequency(&this->_frequency))
 				{
 					V(S_FALSE, "query performance frequency (on constructor)", this->_name, 3, true, false);
 				}
 
 				//Get performance
-				if (!QueryPerformanceCounter(&this->_qpLastTime))
+				if (!QueryPerformanceCounter(&this->_last_time))
 				{
 					V(S_FALSE, "query performance frequency (on constructor)", this->_name, 3, true, false);
 				}
 
 				// Initialize max delta to 1/10 of a second.
-				this->_qpMaxDelta = this->_qpFrequency.QuadPart / 10;
+				this->_max_delta = this->_frequency.QuadPart / 10;
+#elif defined(__ANDROID)
+
+				reset_elapsed_time();
+				this->_max_delta = 313918;
+#endif
 			}
 
 #pragma region Getters
 
 			// Get elapsed time since the previous Update call. 
-			UINT64 get_elapsed_ticks() const									{ return this->_elapsedTicks; }
-			double get_elapsed_seconds() const									{ return ticks_to_seconds(this->_elapsedTicks); }
+			UINT64 get_elapsed_ticks() const									{ return this->_elapsed_ticks; }
+			double get_elapsed_seconds() const									{ return ticks_to_seconds(this->_elapsed_ticks); }
 
 			// Get total time since the start of the program.
-			UINT64 get_total_ticks() const										{ return this->_totalTicks; }
-			double get_total_seconds() const									{ return ticks_to_seconds(this->_totalTicks); }
+			UINT64 get_total_ticks() const										{ return this->_total_ticks; }
+			double get_total_seconds() const									{ return ticks_to_seconds(this->_total_ticks); }
 
 			// Get total number of updates since start of the program.
-			UINT32 get_frame_count() const										{ return this->_frameCount; }
+			UINT32 get_frame_count() const										{ return this->_frame_count; }
 
 			// Get the current framerate.
 			UINT32 get_frames_per_second() const								{ return this->_fps; }
 
-			bool get_fixed_timeStep() const										{ return this->_fixedTimeStep; }
+			bool get_fixed_timeStep() const										{ return this->_fixed_time_step; }
 
 #pragma endregion
 
 #pragma region Setters
 
 			// Set whether to use fixed or variable timestep mode.
-			void set_fixed_time_step(bool pValue)								{ this->_fixedTimeStep = pValue; }
+			void set_fixed_time_step(bool pValue)								{ this->_fixed_time_step = pValue; }
 
 			// Set how often to call Update when in fixed timestep mode.
-			void set_target_elapsed_ticks(UINT64 pValue)						{ this->_targetElapsedTicks = pValue; }
-			void set_target_elapsed_seconds(double pValue)						{ this->_targetElapsedTicks = seconds_to_ticks(pValue); }
+			void set_target_elapsed_ticks(UINT64 pValue)						{ this->_target_elapsed_ticks = pValue; }
+			void set_target_elapsed_seconds(double pValue)						{ this->_target_elapsed_ticks = seconds_to_ticks(pValue); }
 
 #pragma endregion
 
@@ -92,15 +108,12 @@ namespace wolf
 
 			void reset_elapsed_time()
 			{
-				if (!QueryPerformanceCounter(&this->_qpLastTime))
-				{
-					V(S_FALSE, "query performance frequency (reset elapsed time)", this->_name, 3, true, false);
-				}
+				this->_last_time = get_time();
 
-				this->_leftOverTicks = 0;
+				this->_left_over_ticks = 0;
 				this->_fps = 0;
-				this->_framesThisSecond = 0;
-				this->_qpcSecondCounter = 0;
+				this->_frames_this_second = 0;
+				this->_seconds_counter = 0;
 			}
 
 			// Update timer state, calling the specified Update function the appropriate number of times.
@@ -108,38 +121,39 @@ namespace wolf
 			void tick(const TUpdate& pUpdate)
 			{
 				// Query the current time.
-				LARGE_INTEGER _currentTime;
+				auto _current_time = get_time();
 
-				if (!QueryPerformanceCounter(&_currentTime))
-				{
-					V(S_FALSE, "query performance frequency (Tick)", this->_name, 3, true, false);
-				}
-
-				UINT64 _timeDelta = _currentTime.QuadPart - this->_qpLastTime.QuadPart;
-
-				this->_qpLastTime = _currentTime;
-				this->_qpcSecondCounter += _timeDelta;
+#if defined(__WIN32) || defined(__UNIVERSAL)
+				auto _time_delta = _current_time.QuadPart - this->_last_time.QuadPart;
+#elif __ANDROID
+				auto _time_delta = _current_time - this->_last_time;
+#endif
+				
+				this->_last_time = _current_time;
+				this->_seconds_counter += _time_delta;
 
 				// Clamp excessively large time deltas (e.g. after paused in the debugger).
-				if (_timeDelta > this->_qpMaxDelta)
+				if (_time_delta > this->_max_delta)
 				{
-					_timeDelta = this->_qpMaxDelta;
+					_time_delta = this->_max_delta;
 				}
 
 				// Convert QPC units into a canonical tick format. This cannot overflow due to the previous clamp.
-				_timeDelta *= TICKS_PER_SECOND;
-				if (this->_qpFrequency.QuadPart == 0)
+				_time_delta *= TICKS_PER_SECOND;
+#if defined(__WIN32) || defined(__UNIVERSAL)
+				if (this->_frequency.QuadPart == 0)
 				{
 					logger.write(L"Division by Zero for frequency of CPU");
 				}
 				else
 				{
-					_timeDelta /= this->_qpFrequency.QuadPart;
+					_time_delta /= this->_frequency.QuadPart;
 				}
+#endif
 
-				auto _lastFrameCount = this->_frameCount;
+				auto _last_frame_count = this->_frame_count;
 
-				if (this->_fixedTimeStep)
+				if (this->_fixed_time_step)
 				{
 					/*
 						If the app is running very close to the target elapsed time (within 1/4 of a millisecond) just clamp
@@ -150,19 +164,19 @@ namespace wolf
 						small deviations down to zero to leave things running smoothly.
 					*/
 
-					if (abs(static_cast<INT64>(_timeDelta - this->_targetElapsedTicks)) < TICKS_PER_SECOND / 4000)
+					if (std::abs(static_cast<INT64>(_time_delta - this->_target_elapsed_ticks)) < TICKS_PER_SECOND / 4000)
 					{
-						_timeDelta = this->_targetElapsedTicks;
+						_time_delta = this->_target_elapsed_ticks;
 					}
 
-					this->_leftOverTicks += _timeDelta;
+					this->_left_over_ticks += _time_delta;
 
-					while (this->_leftOverTicks >= this->_targetElapsedTicks)
+					while (this->_left_over_ticks >= this->_target_elapsed_ticks)
 					{
-						this->_elapsedTicks = this->_targetElapsedTicks;
-						this->_totalTicks += this->_targetElapsedTicks;
-						this->_leftOverTicks -= this->_targetElapsedTicks;
-						this->_frameCount++;
+						this->_elapsed_ticks = this->_target_elapsed_ticks;
+						this->_total_ticks += this->_target_elapsed_ticks;
+						this->_left_over_ticks -= this->_target_elapsed_ticks;
+						this->_frame_count++;
 
 						pUpdate();
 					}
@@ -170,60 +184,97 @@ namespace wolf
 				else
 				{
 					// Variable timestep update logic.
-					this->_elapsedTicks = _timeDelta;
-					this->_totalTicks += _timeDelta;
-					this->_leftOverTicks = 0;
-					this->_frameCount++;
+					this->_elapsed_ticks = _time_delta;
+					this->_total_ticks += _time_delta;
+					this->_left_over_ticks = 0;
+					this->_frame_count++;
 
 					pUpdate();
 				}
 
 				// Track the current framerate.
-				if (this->_frameCount != _lastFrameCount)
-				{
-					this->_framesThisSecond++;
-				}
+				this->_frames_this_second += (this->_frame_count - _last_frame_count);
+				
+#if defined(__WIN32) || defined(__UNIVERSAL)
+				const auto _one_sec = static_cast<UINT64>(this->_frequency.QuadPart);
+#elif defined(__ANDROID)
+				const auto _one_sec = 1;
+#endif
 
-				if (this->_qpcSecondCounter >= static_cast<UINT64>(this->_qpFrequency.QuadPart))
+				if (this->_seconds_counter >= _one_sec)
 				{
-					this->_fps = this->_framesThisSecond;
+					this->_fps = this->_frames_this_second;
 					
-					this->_framesThisSecond = 0;
-					if (this->_qpFrequency.QuadPart == 0)
+					this->_frames_this_second = 0;
+					
+#if defined(__WIN32) || defined(__UNIVERSAL)
+					if (_one_sec == 0)
 					{
 						logger.write(L"Division by Zero for frequency of CPU");
 					}
 					else
 					{
-						this->_qpcSecondCounter %= this->_qpFrequency.QuadPart;
+						this->_seconds_counter %= this->_frequency.QuadPart;
 					}
+
+#elif defined(__ANDROID)
+					this->_seconds_counter %= _one_sec;
+#endif
 				}
 			}
 
 		private:
 			std::string _name;
 
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
+			//get current time in second
+			LARGE_INTEGER get_time()
+			{
+				LARGE_INTEGER _time;
+				if (!QueryPerformanceCounter(&_time))
+				{
+					V(S_FALSE, "query performance on get_time method pf w_game_time", this->_name, 3, true, false);
+				}
+				return _time;
+			}
+#else
+			INT64 get_time()
+			{
+				struct timespec _now;
+				clock_gettime(CLOCK_MONOTONIC, &_now);
+				auto _nano_sconds = static_cast<INT64>(_now.tv_sec * 1000000000LL + _now.tv_nsec);
+				return  _nano_sconds / 1000000000LL;
+			}
+#endif
+				
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
 			// Source timing data uses Query Performance Counter units.
-			LARGE_INTEGER _qpFrequency;
-			LARGE_INTEGER _qpLastTime;
-			UINT64 _qpMaxDelta;
+			LARGE_INTEGER _frequency;
+			LARGE_INTEGER _last_time;
+
+#else
+			INT64	_last_time;
+#endif
+			UINT64 _max_delta;
 
 			// Derived timing data uses a canonical tick format.
-			UINT64 _elapsedTicks;
-			UINT64 _totalTicks;
-			UINT64 _leftOverTicks;
+			UINT64 _elapsed_ticks;
+			UINT64 _total_ticks;
+			UINT64 _left_over_ticks;
 
 			// Members for tracking the framerate.
-			UINT32 _frameCount;
+			UINT32 _frame_count;
 			UINT32 _fps;
-			UINT32 _framesThisSecond;
-			UINT64 _qpcSecondCounter;
+			UINT32 _frames_this_second;
+			UINT64 _seconds_counter;
 
 			// Members for configuring fixed timestep mode.
-			bool _fixedTimeStep;
-			UINT64 _targetElapsedTicks;
+			bool _fixed_time_step;
+			UINT64 _target_elapsed_ticks;
 		};
 	}
 }
 
-#endif
+#endif //__W_GAME_TIME_H__

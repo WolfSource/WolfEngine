@@ -24,11 +24,12 @@ namespace wolf
 			DONTCARE,
 			POSITION,
 			POSITION_COLOR,
-			POSITION_COLOR_UV,
 			POSITION_UV,
+			POSITION_COLOR_UV,
 			POSITION_NORMAL_COLOR,
 			POSITION_NORMAL_UV,
 			POSITION_NORMAL_UV_TANGENT_BINORMAL,
+			POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES
 		};
 
 		namespace vertex_declaration_structs
@@ -47,6 +48,13 @@ namespace wolf
 			struct vertex_position_uv
 			{
 				glm::vec3 position;
+				glm::vec2 uv;
+			};
+
+			struct vertex_color_uv
+			{
+				glm::vec3 position;
+				glm::vec4 color;
 				glm::vec2 uv;
 			};
 
@@ -73,7 +81,7 @@ namespace wolf
 				glm::vec3 binormal;
 			};
 
-			struct vertex_position_normal_uv_binormal_tangent_weight_indices
+			struct vertex_position_normal_uv_tangent_binormal_weight_indices
 			{
 				glm::vec3 position;
 				glm::vec3 normal;

@@ -5,7 +5,7 @@
 using namespace wolf::gui;
 
 w_check_box::w_check_box(_In_opt_ w_widget* pParent) : _super(pParent),
-_check_box_normal_color(w_color::WHITE),
+_check_box_color(w_color::WHITE),
 _check_box_pressed_color(RGBA_TO_HEX_COLOR(255, 255, 255, 200)),
 _check_box_mouse_over_color(w_color::YELLOW),
 _check_box_focused_color(w_color::YELLOW),
@@ -139,18 +139,18 @@ void w_check_box::set_checked_internal(bool pChecked, bool pFromInput)
 
 bool w_check_box::contains_point(_In_ const POINT& pPoint)
 {
-	return (PtInRect(&(_super::boundingBox), pPoint) || PtInRect(&this->rect_button, pPoint));
+	return (PtInRect(&(_super::bounding_box), pPoint) || PtInRect(&this->rect_button, pPoint));
 }
 
 void w_check_box::update_rects()
 {
 	w_button::update_rects();
 
-	this->rect_button = _super::boundingBox;
+	this->rect_button = _super::bounding_box;
 
 	this->rect_button.right = this->rect_button.left + /*height of rectangle*/(this->rect_button.bottom - this->rect_button.top);
 
-	this->rect_text = _super::boundingBox;
+	this->rect_text = _super::bounding_box;
 	this->rect_text.left += (int)(1.25f * /*width of rectangle*/(this->rect_button.right - this->rect_button.left));
 }
 
@@ -184,18 +184,18 @@ void w_check_box::render(const std::shared_ptr<wolf::graphics::w_graphics_device
 	float _blendRate = (_state == W_GUI_STATE_PRESSED) ? 0.0f : 0.8f;
 
 	//Set colors for box
-	_element->texture_color.color_states[W_GUI_STATE_NORMAL] = this->_check_box_normal_color;
+	_element->texture_color.color_states[W_GUI_STATE_NORMAL] = this->_check_box_color;
 	_element->texture_color.color_states[W_GUI_STATE_PRESSED] = this->_check_box_pressed_color;
 	_element->texture_color.color_states[W_GUI_STATE_MOUSEOVER] = this->_check_box_mouse_over_color;
 	_element->texture_color.color_states[W_GUI_STATE_FOCUS] = this->_check_box_focused_color;
 	_element->texture_color.color_states[W_GUI_STATE_DISABLED] = this->_check_box_disabled_color;
 
 	//Set colors for text
-	_element->font_color.color_states[W_GUI_STATE_NORMAL] = this->_label_color;
-	_element->font_color.color_states[W_GUI_STATE_PRESSED] = this->_label_pressed_color;
-	_element->font_color.color_states[W_GUI_STATE_MOUSEOVER] = this->_label_mouse_over_color;
-	_element->font_color.color_states[W_GUI_STATE_FOCUS] = this->_label_focused_color;
-	_element->font_color.color_states[W_GUI_STATE_DISABLED] = this->_label_disabled_color;
+	_element->font_color.color_states[W_GUI_STATE_NORMAL] = _super::label_color;
+	_element->font_color.color_states[W_GUI_STATE_PRESSED] = _super::label_pressed_color;
+	_element->font_color.color_states[W_GUI_STATE_MOUSEOVER] = _super::label_mouse_over_color;
+	_element->font_color.color_states[W_GUI_STATE_FOCUS] = _super::label_focused_color;
+	_element->font_color.color_states[W_GUI_STATE_DISABLED] = _super::label_disabled_color;
 
 	//Apply blend
 	_element->texture_color.blend(_state, pElapsedTime, _blendRate);

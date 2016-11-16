@@ -26,8 +26,8 @@ namespace wolf
 		class w_scroll_bar : public w_control
 		{
 		public:
-			w_scroll_bar(_In_opt_ w_widget* pParent = nullptr);
-			virtual ~w_scroll_bar();
+			DX_EXP w_scroll_bar(_In_opt_ w_widget* pParent = nullptr);
+			DX_EXP virtual ~w_scroll_bar();
 
 			virtual bool handle_keyboard(_In_ UINT pMsg, _In_ WPARAM pWParam, _In_ LPARAM pLParam) override;
 			virtual bool handle_mouse(_In_ UINT pMsg, _In_ const POINT& pPoint, _In_ WPARAM pWParam, _In_ LPARAM pLParam) override;
@@ -36,27 +36,26 @@ namespace wolf
 			virtual void render(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ float fElapsedTime) override;
 			virtual void update_rects() override;
 
-
 #pragma region Getters
 
-			int			get_track_pos() const								{ return this->position; }
-			int			get_page_size() const								{ return this->page_size; }
+			DX_EXP int			get_track_pos() const								{ return this->position; }
+			DX_EXP int			get_page_size() const								{ return this->page_size; }
 
-			w_color		get_scroll_color() const							{ return w_color::from_hex(this->_scroll_color); }
-			w_color		get_scroll_background_color() const					{ return w_color::from_hex(this->_scroll_background_color); }
-			w_color		get_scroll_disabled_color() const					{ return w_color::from_hex(this->_scroll_disabled_color); }
+			DX_EXP w_color		get_scroll_color() const							{ return w_color::from_hex(this->_scroll_color); }
+			DX_EXP w_color		get_scroll_background_color() const					{ return w_color::from_hex(this->_scroll_background_color); }
+			DX_EXP w_color		get_scroll_disabled_color() const					{ return w_color::from_hex(this->_scroll_disabled_color); }
 			
 #pragma endregion
 
 #pragma region Setters
 
-			void		set_track_range(_In_ int pStart, _In_ int pEnd);
-			void		set_track_pos(_In_ int pPosition);
-			void		set_page_size(_In_ int pPageSize);
+			DX_EXP void			set_track_range(_In_ int pStart, _In_ int pEnd);
+			DX_EXP void			set_track_pos(_In_ int pPosition);
+			DX_EXP void			set_page_size(_In_ int pPageSize);
 
-			void		set_scroll_color(w_color pColor)					{ this->_scroll_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void		set_scroll_background_color(w_color pColor)			{ this->_scroll_background_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
-			void		set_scroll_disabled_color(w_color pColor)			{ this->_scroll_disabled_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			DX_EXP void			set_scroll_color(w_color pColor)					{ this->_scroll_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			DX_EXP void			set_scroll_background_color(w_color pColor)			{ this->_scroll_background_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
+			DX_EXP void			set_scroll_disabled_color(w_color pColor)			{ this->_scroll_disabled_color = RGBA_TO_HEX_COLOR(pColor.r, pColor.g, pColor.b, pColor.a); }
 			
 #pragma endregion
 

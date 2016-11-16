@@ -16,7 +16,6 @@ w_widgets_resource_manager::w_widgets_resource_manager() :
 	m_pRasterizerStateStored11(nullptr),
 	m_pBlendStateStored11(nullptr),
 	m_pSamplerStateStored11(nullptr),
-	m_pVBScreenQuad11(nullptr),
 	m_pSpriteBuffer11(nullptr),
 	m_SpriteBufferBytes11(0)
 {
@@ -112,17 +111,7 @@ HRESULT w_widgets_resource_manager::on_device_created(ID3D11Device1* pDevice, ID
 	_hr = pDevice->CreateSamplerState(&_sampler_state_desc, &m_pSamplerStateUI11);
 	V(_hr, L"creating sample state description", _super::name, 3, true, true);
 
-	// Create a vertex buffer quad for rendering later
-	D3D11_BUFFER_DESC _buffer_desc;
-	_buffer_desc.ByteWidth = sizeof(w_gui_screen_vertex) * 4;
-	_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
-	_buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	_buffer_desc.MiscFlags = 0;
-	_hr = pDevice->CreateBuffer(&_buffer_desc, nullptr, &m_pVBScreenQuad11);
-	V(_hr, L"creating buffer", _super::name, 3, true, true);
-
-	this->_font = std::make_unique<w_font>(pDevice, _shader->get_input_layout());
+//	this->_font = std::make_unique<w_font>(pDevice, _shader->get_input_layout());
 
 	return S_OK;
 }
@@ -130,8 +119,8 @@ HRESULT w_widgets_resource_manager::on_device_created(ID3D11Device1* pDevice, ID
 _Use_decl_annotations_
 HRESULT w_widgets_resource_manager::on_swapChain_resized(const UINT pWidth, const UINT pHeight)
 {
-	this->backBuffer_width = pWidth;
-	this->backBuffer_height = pHeight;
+	this->back_buffer_width = pWidth;
+	this->back_buffer_height = pHeight;
 
 	return S_OK;
 }
@@ -149,8 +138,6 @@ void w_widgets_resource_manager::on_destroy_device()
 		COM_RELEASE((*it)->texture_2d);
 	}
 
-	//release D3D
-	COM_RELEASE(m_pVBScreenQuad11);
 	COM_RELEASE(m_pSpriteBuffer11);
 	m_SpriteBufferBytes11 = 0;
 
@@ -166,7 +153,6 @@ void w_widgets_resource_manager::on_destroy_device()
 	COM_RELEASE(m_pSamplerStateStored11);
 
 	//release font texture
-	UNIQUE_RELEASE(this->_font);
 	UNIQUE_RELEASE(this->_shader);
 }
 
@@ -236,7 +222,7 @@ _Use_decl_annotations_
 void w_widgets_resource_manager::end_sprites(ID3D11Device1* pDevice, ID3D11DeviceContext1* pContext)
 {
 	// ensure our buffer size can hold our sprites
-	UINT SpriteDataBytes = static_cast<UINT>(m_SpriteVertices.size() * sizeof(w_sprite_vertex));
+	UINT SpriteDataBytes = static_cast<UINT>(m_SpriteVertices.size() * sizeof(wolf::content_pipeline::vertex_declaration_structs::vertex_color_uv));
 	if (m_SpriteBufferBytes11 < SpriteDataBytes)
 	{
 		COM_RELEASE(m_pSpriteBuffer11);
@@ -275,7 +261,7 @@ void w_widgets_resource_manager::end_sprites(ID3D11Device1* pDevice, ID3D11Devic
 	}
 
 	// Draw
-	UINT Stride = sizeof(w_sprite_vertex);
+	UINT Stride = sizeof(wolf::content_pipeline::vertex_declaration_structs::vertex_color_uv);
 	UINT Offset = 0;
 	pContext->IASetVertexBuffers(0, 1, &m_pSpriteBuffer11, &Stride, &Offset);
 	pContext->IASetInputLayout(this->_shader->get_input_layout());
@@ -488,11 +474,11 @@ HRESULT w_widgets_resource_manager::create_texture(ID3D11Device1* pDevice, ID3D1
 
 	auto _texture_node = this->texture_cache[iTexture];
 
-	wolf::graphics::w_texture_2D w_texture;
-	_hr = wolf::graphics::w_texture_2D::load_texture_2D(pDevice, &w_texture, L"Textures\\GUI\\Controls.dds");
+	std::unique_ptr<wolf::graphics::w_texture_2D> _w_texture;
+	_hr = wolf::graphics::w_texture_2D::load_texture_2D_from_file(pDevice, _w_texture, L"Textures\\GUI\\Controls.dds");
 	V(_hr, L"locading GUI\Controls.dds asset", _super::name, 3, true, false);
 
-	_texture_node->texture_2d = w_texture.get_texture_2D();
+	_texture_node->texture_2d = _w_texture->get_texture_2D();
 	
 	// Store dimensions
 	D3D11_TEXTURE2D_DESC desc;

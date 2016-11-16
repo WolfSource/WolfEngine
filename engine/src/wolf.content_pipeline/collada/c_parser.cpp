@@ -3,6 +3,7 @@
 #include "w_model.h"
 #include "c_skin.h"
 
+
 using namespace std;
 using namespace wolf::system;
 using namespace wolf::content_pipeline;
@@ -21,7 +22,8 @@ static rapidxml::xml_node<>*		SGeometryLibraryNode;
 
 const char* c_parser::_trace_class_name = "w_collada_parser";
 
-HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)
+HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_ w_scene* pScene, 
+	bool pUseTootleFastOptimizeMethod, bool pOptimizePoints, bool pInvertNormals)
 {
 	auto _hr = S_OK;
 
@@ -50,7 +52,7 @@ HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_
 	V(_hr, L"processing xml node : " + pFilePath, _trace_class_name, 3);
 	
 	//create scene
-	_create_scene(pScene, pOptimizePoints, pInvertNormals);
+	_create_scene(pScene, pUseTootleFastOptimizeMethod, pOptimizePoints, pInvertNormals);
 
 	//clear all
 	_doc.clear();
@@ -68,9 +70,13 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	logger.write(_node_name);
 #endif
 
+	std::string _parent_node_name;
 	auto _parent = pXNode->parent();
-	auto _parent_node_name = _get_node_name(_parent);
-	if (_parent != nullptr && _parent_node_name == sSkipChildrenOfThisNode) return S_OK;
+	if (_parent)
+	{
+		_parent_node_name = _get_node_name(_parent);
+		if (_parent_node_name == sSkipChildrenOfThisNode) return S_OK;
+	}
 
 	if (_node_name == "collada")
 	{
@@ -79,14 +85,14 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 		auto _attr = pXNode->first_attribute("xmlns", 0Ui64, false);
 		if (_attr && 0 != std::strcmp(_attr->value(), "http://www.collada.org/2005/11/COLLADASchema"))
 		{
-			logger.error("Collada file does not have standard COLLADA header");
+			logger.error(L"Collada file does not have standard COLLADA header");
 			return S_FALSE;
 		}
 
 		_attr = pXNode->first_attribute("version", 0Ui64, false);
 		if (_attr && 0 != std::strcmp(_attr->value(), "1.4.1"))
 		{
-			logger.error("Collada file does not have standard COLLADA header");
+			logger.error(L"Collada file does not have standard COLLADA header");
 			return S_FALSE;
 		}
 #pragma endregion
@@ -196,7 +202,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 							if (_sid == "vertexIndices")
 							{
 								std::string _value = ___child->value();
-								wolf::system::convert::split_string_then_convert_to<USHORT>(_value, " ", sXSI_Indices);
+								wolf::system::convert::split_string_then_convert_to<unsigned short>(_value, " ", sXSI_Indices);
 							}
 						}
 					}
@@ -661,7 +667,7 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geome
 	pGeometry.triangles.push_back(_triangles);
 }
 
-HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)
+HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pUseTootleFastOptimizeMethod, bool pOptimizePoints, bool pInvertNormals)
 {
 	//The list of instanced geometries
 	std::vector<string> _instanced_geometries;

@@ -12,6 +12,10 @@
 #ifndef __W_PYTHON_H__
 #define __W_PYTHON_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifdef WIN32
 
 #ifdef _DEBUG
@@ -119,7 +123,7 @@ namespace wolf
 		private:
 			typedef w_object _super;
 
-			SYS_EXP const std::wstring  _fetch_error();
+			WSYS_EXP const std::wstring  _fetch_error();
 			
 			std::wstring _log;
 			boost::python::object _main_namespace;
@@ -127,6 +131,6 @@ namespace wolf
 	}
 }
 
-#endif
+#endif //__W_PYTHON_H__
 
 #endif//__PYTHON__

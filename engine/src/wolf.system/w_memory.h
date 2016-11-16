@@ -10,8 +10,12 @@
 #ifndef __W_MEMORY_H__
 #define __W_MEMORY_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#include "w_system_export.h"
 #include "w_linear_allocator.h"
-#include "w_system_dll.h"
 
 #define MAX_PTR_ALLOCS 2048
 
@@ -22,16 +26,16 @@ namespace wolf
 		class w_memory
 		{
 		public:
-			SYS_EXP w_memory();
-			SYS_EXP ~w_memory();
+			WSYS_EXP w_memory();
+			WSYS_EXP ~w_memory();
 
-			SYS_EXP bool	malloc(size_t pSize);
-			SYS_EXP bool	allocate(size_t pSize, uint8_t pAlignment);
-			SYS_EXP void*	read(size_t p_memory_address);
-			SYS_EXP void	write(size_t p_memory_address, void* pValue);
-			SYS_EXP size_t	get_address() const;
-			SYS_EXP void	clear();
-			SYS_EXP void	free();
+			WSYS_EXP bool	malloc(size_t pSize);
+			WSYS_EXP bool	allocate(size_t pSize, uint8_t pAlignment);
+			WSYS_EXP void*	read(size_t p_memory_address);
+			WSYS_EXP void	write(size_t p_memory_address, void* pValue);
+			WSYS_EXP size_t	get_address() const;
+			WSYS_EXP void	clear();
+			WSYS_EXP void	free();
 
 			// _1KB = 10424 B, make sure change size of MAX_PTR_ALLOCS
 			static const size_t _1KB() { return 1024; }
@@ -54,5 +58,5 @@ namespace wolf
 	}
 }
 
-#endif
+#endif //__W_MEMORY_H__
 

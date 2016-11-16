@@ -119,11 +119,11 @@ void w_ellipse::set_color(_In_ const w_color pColor)
 
 void w_ellipse::set_border_color(_In_ const w_color pColor)
 {
-	this->_border_color.r = pColor.r / 255.000f; 
-	this->_border_color.g = pColor.g / 255.000f; 
-	this->_border_color.b = pColor.b / 255.000f; 
+	this->_border_color.r = pColor.r / 255.000f;
+	this->_border_color.g = pColor.g / 255.000f;
+	this->_border_color.b = pColor.b / 255.000f;
 	this->_border_color.a = pColor.a / 255.000f;
-	
+
 	this->_update_border_color = true;
 }
 

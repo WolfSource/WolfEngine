@@ -1,6 +1,11 @@
 #include "w_system_pch.h"
 #include "w_xml.h"
 #include "rapidxml_print.hpp"
+#include <fstream>
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
+#include <w_convert.h>
+#endif
 
 using namespace wolf::system;
 using namespace rapidxml;
@@ -14,47 +19,50 @@ w_xml::~w_xml()
 {
 }
 
-void w_xml::save(_In_z_ const char* p_path, bool p_UTF_8, w_xml_data& p_data)
+HRESULT w_xml::save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ w_xml_data& pData)
 {
+	std::wofstream _file(pPath);
+	if (!_file) return S_FALSE;
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
+	if (pUTF_8)
+	{
+		_file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
+	}
+#endif
+
 	xml_document<wchar_t> _doc;
-	
+
 	//Add xml version & encoding
 	auto _node = _doc.allocate_node(node_declaration);
 	_node->append_attribute(_doc.allocate_attribute(L"version", L"1.0"));
 	_node->append_attribute(_doc.allocate_attribute(L"encoding", L"utf-8"));
 	_doc.append_node(_node);
 
-	_write_element(p_data, _doc, nullptr);
+	_write_element(pData, _doc, nullptr);
 	
+	//print xml to stream
 	std::wstring _xml_as_string;
 	rapidxml::print(std::back_inserter(_xml_as_string), _doc);
-
-	//Logger.Write(_xml_as_string);
-
-	_doc.clear();
-
-	std::wofstream _file(p_path);
-	if (p_UTF_8)
-	{
-		_file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
-	}
 	_file << _xml_as_string;
+
 	_file.flush();
 	_file.close();
+	
+	_doc.clear();
+
+	return S_OK;
 }
 
-void w_xml::_write_element(w_xml_data& pData, xml_document<wchar_t>& pDoc, _Inout_ xml_node<wchar_t>** pParentNode)
+void w_xml::_write_element(_In_ w_xml_data& pData, _In_ xml_document<wchar_t>& pDoc, _Inout_ xml_node<wchar_t>** pParentNode)
 {
 	auto _node = pDoc.allocate_node(node_element, pData.node.c_str());
 	auto _attributeSize = pData.attributes.size();
 	for (size_t i = 0; i < _attributeSize; ++i)
 	{
-		auto _tuple = pData.attributes.at(i);
-		auto _name = pDoc.allocate_string(std::get<0>(_tuple).c_str());
-		auto _value = pDoc.allocate_string(std::get<1>(_tuple).c_str());
-
-		//Logger.Write(_name);
-		//Logger.Write(_value);
+		auto _attr = pData.attributes.at(i);
+		auto _name = pDoc.allocate_string(_attr.name.c_str());
+		auto _value = pDoc.allocate_string(_attr.value.c_str());
 
 		auto _attribute = pDoc.allocate_attribute(_name, _value);
 		_node->append_attribute(_attribute);
@@ -81,20 +89,13 @@ void w_xml::_write_element(w_xml_data& pData, xml_document<wchar_t>& pDoc, _Inou
 	}
 }
 
-const std::string w_xml::get_node_value(rapidxml::xml_node<>* pNode)
+const std::string w_xml::get_node_value(_In_ rapidxml::xml_node<>* pNode)
 {
 	if (pNode == nullptr) return "";
 	return pNode->value();
 }
 
-const std::wstring w_xml::get_node_value_utf_8(rapidxml::xml_node<>* pNode)
-{
-	if (pNode == nullptr) return L"";
-
-	return wolf::system::convert::from_utf8(pNode->value());
-}
-
-const std::string w_xml::get_node_attribute(rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute)
+const std::string w_xml::get_node_attribute(_In_ rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute)
 {
 	if (pNode == nullptr) return "";
 
@@ -108,7 +109,16 @@ const std::string w_xml::get_node_attribute(rapidxml::xml_node<>* pNode, _In_z_ 
 	return "";
 }
 
-const std::wstring w_xml::get_node_attribute_utf_8(rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute)
+#if defined(__WIN32) || defined(__UNIVERSAL)
+
+const std::wstring w_xml::get_node_value_utf8(_In_ rapidxml::xml_node<>* pNode)
+{
+	if (pNode == nullptr) return L"";
+
+	return wolf::system::convert::from_utf8(pNode->value());
+}
+
+const std::wstring w_xml::get_node_attribute_utf8(_In_ rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute)
 {
 	if (pNode == nullptr) return L"";
 
@@ -121,3 +131,5 @@ const std::wstring w_xml::get_node_attribute_utf_8(rapidxml::xml_node<>* pNode, 
 
 	return L"";
 }
+
+#endif

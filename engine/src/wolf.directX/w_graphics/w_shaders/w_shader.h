@@ -49,6 +49,7 @@ namespace wolf
 			virtual ULONG release() override;
 
 #pragma region Getters
+
 			//Get the pixel shader
 			ID3D11PixelShader*	get_pixel_shader(size_t pIndex = 0) const	{ return (pIndex < this->_pixel_shaders.size()) ? this->_pixel_shaders.at(pIndex) : nullptr; }
 			//Get the pixel shader

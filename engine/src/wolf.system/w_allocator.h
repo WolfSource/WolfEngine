@@ -10,6 +10,10 @@
 #ifndef __W_ALLOCATOR_H__
 #define __W_ALLOCATOR_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #include <cstdint>
 #include <new>
 #include <assert.h>
@@ -234,4 +238,4 @@ namespace wolf
 	}
 }
 
-#endif
+#endif //__W_ALLOCATOR_H__

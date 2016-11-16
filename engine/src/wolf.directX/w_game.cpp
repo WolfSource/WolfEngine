@@ -14,7 +14,7 @@ w_game::w_game() :
 {
 	_super::set_class_name(typeid(this).name());
 	this->loadState = LoadState::NOTLOADED;
-	_content_directory_path = wolf::system::io::get_content_directory();
+	_content_directory_path = wolf::system::io::get_content_directoryW();
 }
 
 w_game::~w_game()
@@ -23,7 +23,7 @@ w_game::~w_game()
 
 void w_game::initialize(map<int, vector<w_window_info>> pOutputWindowsInfo)
 {
-	logger.initialize(this->_app_name);
+	logger.initialize(this->_app_name, wolf::system::io::get_current_directoryW());
 	w_graphics_device_manager::initialize();
 	w_graphics_device_manager::initialize_output_windows(pOutputWindowsInfo);
 
@@ -72,7 +72,7 @@ void w_game::end_render(const wolf::system::w_game_time& pGameTime)
 {
 #pragma region Show Printf on screen log messages
 
-	auto _msgs = logger.flushf();
+	auto _msgs = logger.get_buffer();
 	auto _size = _msgs.size();
 	if (_size != 0)
 	{
@@ -128,8 +128,8 @@ bool w_game::run(map<int, vector<w_window_info>> pOutputWindowsInfo)
 			load();
 			this->loadState = LoadState::LOADED;
 		});
-		std::chrono::milliseconds mSec(16);
-		f.wait_for(mSec);
+		std::chrono::milliseconds _milli_sec(16);
+		f.wait_for(_milli_sec);
 
 #endif
 
@@ -147,6 +147,11 @@ bool w_game::run(map<int, vector<w_window_info>> pOutputWindowsInfo)
 	});
 
 	return !this->exiting;
+}
+
+void w_game::exit(_In_ const int pExitCode)
+{
+	std::exit(pExitCode);
 }
 
 ULONG w_game::release()

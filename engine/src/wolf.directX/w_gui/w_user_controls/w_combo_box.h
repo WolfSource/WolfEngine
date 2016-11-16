@@ -32,8 +32,8 @@ namespace wolf
 		class w_combo_box : public w_button
 		{
 		public:
-			w_combo_box(_In_opt_ w_widget* pParent = nullptr);
-			virtual ~w_combo_box();
+			DX_EXP w_combo_box(_In_opt_ w_widget* pParent = nullptr);
+			DX_EXP virtual ~w_combo_box();
 
 			virtual HRESULT on_initialize(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice) override;
 

@@ -26,22 +26,29 @@ w_widget::w_widget(HWND pHwnd, int pParentWindowWidth, int pParentWindowHeight) 
 	_y(0),
 	_enabled(true),
 	_z_order(0),
-	_background_color_top_left(216, 238, 249, 255),
-	_background_color_top_right(216, 238, 249, 255),
-	_background_color_bottom_left(71, 188, 242, 255),
-	_background_color_bottom_right(71, 188, 242, 255),
+	_background_color_top_left(216, 238, 249, 200),
+	_background_color_top_right(216, 238, 249, 200),
+	_background_color_bottom_left(71, 188, 242, 200),
+	_background_color_bottom_right(71, 188, 242, 200),
+	_active_background_color_top_left(216, 238, 249, 255),
+	_active_background_color_top_right(216, 238, 249, 255),
+	_active_background_color_bottom_left(71, 188, 242, 255),
+	_active_background_color_bottom_right(71, 188, 242, 255),
 	_is_caption_enabled(true),
-	_caption_background_color(57, 57, 57, 255),
+	_caption_background_color(57, 57, 57, 200),
+	_caption_active_background_color(57, 57, 57, 255),
 	_caption_height(25),
 	_caption_margin_left(0),
 	_caption_margin_top(0),
 	_control_mouse_over(nullptr),
-	non_user_events(false),
-	keyboard_input(false),
-	mouse_input(true),
 	_is_mouse_over_widget(false),
 	_is_double_click(true),
 	_texture_cache_index(0),
+	_vertex_buffer(nullptr),
+	_brush(nullptr),
+	non_user_events(false),
+	keyboard_input(false),
+	mouse_input(true),
 	on_mouse_move_callback(nullptr),
 	on_mouse_enter_callback(nullptr),
 	on_mouse_leave_callback(nullptr)
@@ -81,7 +88,7 @@ void w_widget::initialize(const std::shared_ptr<wolf::graphics::w_graphics_devic
 	auto _hr = pWidgetResourceManager->update_texture_cache(pGDevice->device.Get(), pGDevice->context.Get(), _texture_cache_index);
 	V(_hr, L"could not update texture cahce of w_widgets_resource_manager", this->name, 3);
 	
-	initialize_default_elements();
+	_initialize();
 }
 
 void w_widget::initialize(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
@@ -107,7 +114,7 @@ void w_widget::initialize(const std::shared_ptr<wolf::graphics::w_graphics_devic
 	auto _hr = pWidgetResourceManager->update_texture_cache(pGDevice->device.Get(), pGDevice->context.Get(), this->_texture_cache_index);
 	V(_hr, L"could not update texture cahce of w_widgets_resource_manager", this->name, 3);
 
-	initialize_default_elements();
+	_initialize();
 }
 
 void w_widget::initialize(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
@@ -134,11 +141,343 @@ void w_widget::initialize(const std::shared_ptr<wolf::graphics::w_graphics_devic
 	auto _hr = pWidgetResourceManager->update_texture_cache(pGDevice->device.Get(), pGDevice->context.Get(), this->_texture_cache_index);
 	V(_hr, L"could not update texture cahce of w_widgets_resource_manager", this->name, 3);
 
-	initialize_default_elements();
+	_initialize();
 }
 
-HRESULT w_widget::on_render(_In_ float pElapsedTime)
+void w_widget::_initialize()
 {
+	// Create a vertex buffer quad for rendering later
+	D3D11_BUFFER_DESC _buffer_desc;
+	_buffer_desc.ByteWidth = 4 * sizeof(w_gui_screen_vertex);
+	_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	_buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	_buffer_desc.MiscFlags = 0;
+	auto _hr = this->_gDevice->device->CreateBuffer(&_buffer_desc, nullptr, &this->_vertex_buffer);
+	V(_hr, L"creating dynamic vertex buffer for w_widget", _super::name, 3, true, true);
+
+	this->_redraw = true;
+
+	set_font(0, L"Arial", 14, FW_NORMAL);
+
+	//create shared brush over controls of this widget
+	COM_RELEASE(this->_brush);
+
+	_hr = _gDevice->context_2D->CreateSolidColorBrush(
+		D2D1::ColorF(1, 1, 1, 1),
+		&this->_brush);
+	V(_hr, L"creating shared brush for widget", this->name, 2, true, true);
+
+
+	w_element Element;
+	RECT rcTexture;
+
+	//-------------------------------------
+	// Element for the caption
+	//-------------------------------------
+	this->_caption_element.set_font(0);
+	SetRect(&rcTexture, 142, 269, 243, 287);
+	this->_caption_element.set_texture(0, &rcTexture);
+	//this->caption_element.font_color.color_states[W_GUI_STATE_NORMAL] = ARGB_TO_DWORD_COLOR(255, 255, 255, 255);
+	this->_caption_element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
+	// Pre-blend as we don't need to transition the state
+	this->_caption_element.texture_color.blend(W_GUI_STATE_NORMAL, 10.0f);
+	this->_caption_element.font_color.blend(W_GUI_STATE_NORMAL, 10.0f);
+
+	//-------------------------------------
+	// CDXUTStatic
+	//-------------------------------------
+	Element.set_font(0);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_LABEL, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTButton - Button
+	//-------------------------------------
+	set_default_element(W_GUI_CONTROL_IMAGE, 0, &Element);
+	//-------------------------------------
+	// CDXUTButton - TAB
+	//-------------------------------------
+	set_default_element(W_GUI_CONTROL_TAB, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTButton - Button
+	//-------------------------------------
+	SetRect(&rcTexture, 0, 0, 136, 54);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = ARGB_TO_D3DCOLOR(255, 255, 255, 255);
+	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = ARGB_TO_D3DCOLOR(200, 255, 255, 255);
+	//Element.font_color.color_states[W_GUI_STATE_MOUSEOVER] = ARGB_TO_D3DCOLOR(255, 0, 0, 0);
+
+	//// Assign the Element
+	set_default_element(W_GUI_CONTROL_BUTTON, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTButton - Fill layer
+	//-------------------------------------
+	SetRect(&rcTexture, 136, 0, 252, 54);
+	Element.set_texture(0, &rcTexture, RGBA_TO_HEX_COLOR(255, 255, 255, 0));
+	//Element.texture_color.color_states[W_GUI_STATE_MOUSEOVER] = RGBA_TO_HEX_COLOR(255, 255, 255, 160);
+	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(0, 0, 0, 60);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 30);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_BUTTON, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTCheckBox - Box
+	//-------------------------------------
+	SetRect(&rcTexture, 0, 54, 27, 81);
+	Element.set_texture(0, &rcTexture);
+	//Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
+	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(255, 255, 255, 255);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_CHECKBOX, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTCheckBox - Check
+	//-------------------------------------
+	SetRect(&rcTexture, 27, 54, 54, 81);
+	Element.set_texture(0, &rcTexture);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_CHECKBOX, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTRadioButton - Box
+	//-------------------------------------
+	SetRect(&rcTexture, 54, 54, 81, 81);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
+	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(255, 255, 255, 255);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_RADIOBUTTON, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTRadioButton - Check
+	//-------------------------------------
+	SetRect(&rcTexture, 81, 54, 108, 81);
+	Element.set_texture(0, &rcTexture);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_RADIOBUTTON, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTComboBox - Main
+	//-------------------------------------
+	SetRect(&rcTexture, 7, 81, 247, 123);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(200, 200, 200, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(230, 230, 230, 170);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 70);
+	//Element.font_color.color_states[W_GUI_STATE_MOUSEOVER] = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
+	//Element.font_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
+	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_COMBOBOX, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTComboBox - Button
+	//-------------------------------------
+	SetRect(&rcTexture, 98, 189, 151, 238);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(150, 150, 150, 255);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(255, 255, 255, 70);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_COMBOBOX, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTComboBox - Dropdown
+	//-------------------------------------
+	SetRect(&rcTexture, 13, 123, 241, 160);
+	Element.set_texture(0, &rcTexture);
+	//Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_COMBOBOX, 2, &Element);
+
+	//-------------------------------------
+	// CDXUTComboBox - Selection
+	//-------------------------------------
+	SetRect(&rcTexture, 12, 163, 239, 183);
+	Element.set_texture(0, &rcTexture);
+	//Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_COMBOBOX, 3, &Element);
+
+	//-------------------------------------
+	// CDXUTSlider - Track
+	//-------------------------------------
+	SetRect(&rcTexture, 1, 187, 93, 228);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(255, 255, 255, 70);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SLIDER, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTSlider - Button
+	//-------------------------------------
+	SetRect(&rcTexture, 151, 193, 192, 234);
+	Element.set_texture(0, &rcTexture);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SLIDER, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTScrollBar - Track
+	//-------------------------------------
+	int nScrollBarStartX = 196;
+	int nScrollBarStartY = 191;
+	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 21, nScrollBarStartX + 22, nScrollBarStartY + 32);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SCROLLBAR, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTScrollBar - Up Arrow
+	//-------------------------------------
+	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 1, nScrollBarStartX + 22, nScrollBarStartY + 21);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
+
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SCROLLBAR, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTScrollBar - Down Arrow
+	//-------------------------------------
+	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 32, nScrollBarStartX + 22, nScrollBarStartY + 53);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SCROLLBAR, 2, &Element);
+
+	//-------------------------------------
+	// CDXUTScrollBar - Button
+	//-------------------------------------
+	SetRect(&rcTexture, 220, 192, 238, 234);
+	Element.set_texture(0, &rcTexture);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SCROLLBAR, 3, &Element);
+
+
+	//-------------------------------------
+	// CDXUTEditBox
+	//-------------------------------------
+	// Element assignment:
+	//   0 - text area
+	//   1 - top left border
+	//   2 - top border
+	//   3 - top right border
+	//   4 - left border
+	//   5 - right border
+	//   6 - lower left border
+	//   7 - lower border
+	//   8 - lower right border
+
+	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
+
+	// Assign the style
+	SetRect(&rcTexture, 14, 90, 241, 113);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 0, &Element);
+	SetRect(&rcTexture, 8, 82, 14, 90);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 1, &Element);
+	SetRect(&rcTexture, 14, 82, 241, 90);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 2, &Element);
+	SetRect(&rcTexture, 241, 82, 246, 90);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 3, &Element);
+	SetRect(&rcTexture, 8, 90, 14, 113);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 4, &Element);
+	SetRect(&rcTexture, 241, 90, 246, 113);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 5, &Element);
+	SetRect(&rcTexture, 8, 113, 14, 121);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 6, &Element);
+	SetRect(&rcTexture, 14, 113, 241, 121);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 7, &Element);
+	SetRect(&rcTexture, 241, 113, 246, 121);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 8, &Element);
+
+	//-------------------------------------
+	// w_list_box - main
+	//-------------------------------------
+	SetRect(&rcTexture, 13, 123, 241, 160);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_LISTBOX, 0, &Element);
+
+	//-------------------------------------
+	// w_list_box - selection
+	//-------------------------------------
+
+	SetRect(&rcTexture, 16, 166, 240, 183);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_LISTBOX, 1, &Element);
+
+
+	//-------------------------------------
+	// w_list_widget - main
+	//-------------------------------------
+	SetRect(&rcTexture, 13, 123, 241, 160);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_LISTWIDGET, 0, &Element);
+
+	//-------------------------------------
+	// w_list_widget - selection
+	//-------------------------------------
+
+	SetRect(&rcTexture, 16, 166, 240, 183);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_LISTWIDGET, 1, &Element);
+}
+
+HRESULT w_widget::render(_In_ const float pElapsedTime)
+{
+	if (this->is_released()) return S_FALSE;
+	
 	// See if the dialog needs to be refreshed
 	if (this->time_last_refresh < s_time_refresh)
 	{
@@ -155,7 +494,9 @@ HRESULT w_widget::on_render(_In_ float pElapsedTime)
 	//apply dragging
 	if (this->_is_dragging)
 	{
-		this->set_position(this->_global_mouse_point.x, this->_global_mouse_point.y);
+		this->_redraw = true;
+		this->_x = this->_global_mouse_point.x;
+		this->_y = this->_global_mouse_point.y;
 	}
 
 	auto _context = this->_gDevice->context.Get();
@@ -165,66 +506,73 @@ HRESULT w_widget::on_render(_In_ float pElapsedTime)
 	this->_widgets_resource_manager->store_D3D_state(_context);
 
 	//	_default_control_id(0xffff),
-	bool _background_is_visible = true;
-	
-	if (this->_background_color_top_left.a == 0 && this->_background_color_top_right.a == 0 &&
-		this->_background_color_bottom_left.a == 0 &&  this->_background_color_bottom_right.a == 0)
+	if (!this->_minimized)
 	{
-		_background_is_visible = false;
-	}
-
-	if (!this->_minimized && _background_is_visible)
-	{
-		// Convert the draw rectangle from screen coordinates to clip space coordinates.
-		float Left, Right, Top, Bottom;
-		Left = this->_x * 2.0f / this->_widgets_resource_manager->backBuffer_width - 1.0f;
-		Right = (this->_x + this->_width) * 2.0f / this->_widgets_resource_manager->backBuffer_width - 1.0f;
-		Top = 1.0f - this->_y * 2.0f / this->_widgets_resource_manager->backBuffer_height;
-		Bottom = 1.0f - (this->_y + this->_height) * 2.0f / this->_widgets_resource_manager->backBuffer_height;
-
-		w_gui_screen_vertex vertices[4] =
+		if (this->_redraw)
 		{
-			Left,  Top,    0.5f, DirectX::W_COLOR_TO_XMFLOAT4(this->_background_color_top_left), 0.0f, 0.0f,
-			Right, Top,    0.5f, DirectX::W_COLOR_TO_XMFLOAT4(this->_background_color_top_right), 1.0f, 0.0f,
-			Left,  Bottom, 0.5f, DirectX::W_COLOR_TO_XMFLOAT4(this->_background_color_bottom_left), 0.0f, 1.0f,
-			Right, Bottom, 0.5f, DirectX::W_COLOR_TO_XMFLOAT4(this->_background_color_bottom_right), 1.0f, 1.0f,
-		};
+			// Convert the draw rectangle from screen coordinates to clip space coordinates.
+			float Left, Right, Top, Bottom;
+			Left = this->_x * 2.0f / this->_widgets_resource_manager->back_buffer_width - 1.0f;
+			Right = (this->_x + this->_width) * 2.0f / this->_widgets_resource_manager->back_buffer_width - 1.0f;
+			Top = 1.0f - this->_y * 2.0f / this->_widgets_resource_manager->back_buffer_height;
+			Bottom = 1.0f - (this->_y + this->_height) * 2.0f / this->_widgets_resource_manager->back_buffer_height;
 
-		//DXUT_SCREEN_VERTEX_10 *pVB;
-		D3D11_MAPPED_SUBRESOURCE _mapped_data;
-		if (SUCCEEDED(_context->Map(this->_widgets_resource_manager->m_pVBScreenQuad11, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mapped_data)))
-		{
-			memcpy(_mapped_data.pData, vertices, sizeof(vertices));
-			_context->Unmap(this->_widgets_resource_manager->m_pVBScreenQuad11, 0);
+			w_color _top_left_color, _top_right_color, _bottom_left_color, _bottom_right_color;
+			if (this->_is_mouse_over_widget)
+			{
+				_top_left_color = this->_active_background_color_top_left;
+				_top_right_color = this->_active_background_color_top_right;
+				_bottom_left_color = this->_active_background_color_bottom_left;
+				_bottom_right_color = this->_active_background_color_bottom_right;
+			}
+			else
+			{
+				_top_left_color = this->_background_color_top_left;
+				_top_right_color = this->_background_color_top_right;
+				_bottom_left_color = this->_background_color_bottom_left;
+				_bottom_right_color = this->_background_color_bottom_right;
+			}
+
+			w_gui_screen_vertex _vertices[4] =
+			{
+				Left,  Top,    0.5f, DirectX::W_COLOR_TO_XMFLOAT4(_top_left_color)		, 0.0f, 0.0f,
+				Right, Top,    0.5f, DirectX::W_COLOR_TO_XMFLOAT4(_top_right_color)		, 1.0f, 0.0f,
+				Left,  Bottom, 0.5f, DirectX::W_COLOR_TO_XMFLOAT4(_bottom_left_color)	, 0.0f, 1.0f,
+				Right, Bottom, 0.5f, DirectX::W_COLOR_TO_XMFLOAT4(_bottom_right_color)	, 1.0f, 1.0f,
+			};
+
+			D3D11_MAPPED_SUBRESOURCE _mapped_resource;
+			if (SUCCEEDED(_context->Map(this->_vertex_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mapped_resource)))
+			{
+				memcpy(_mapped_resource.pData, _vertices, sizeof(_vertices));
+				_context->Unmap(this->_vertex_buffer, 0);
+			}
 		}
 
 		// Set the quad VB as current
 		UINT stride = sizeof(w_gui_screen_vertex);
 		UINT offset = 0;
-		_context->IASetVertexBuffers(0, 1, &this->_widgets_resource_manager->m_pVBScreenQuad11, &stride, &offset);
+		_context->IASetVertexBuffers(0, 1, &this->_vertex_buffer, &stride, &offset);
 		_context->IASetInputLayout(this->_widgets_resource_manager->get_input_layout());
 		_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 		// Setup for rendering
-		this->_widgets_resource_manager->apply_render_UI_Untex(_context);
+		apply_render_UI_Untex(_context);
 		_context->Draw(4, 0);
 	}
 
 	auto pTextureNode = get_texture(this->_texture_cache_index);
 	if (pTextureNode == nullptr || pTextureNode->shader_resource_view == nullptr) return S_FALSE;
 
-	_context->PSSetShaderResources(0, 1, &pTextureNode->shader_resource_view);
-
 	// Sort depth back to front
 	this->_widgets_resource_manager->begin_sprites();
-
-	this->_widgets_resource_manager->apply_render_UI(_context);
-
+	
 	// Render the caption if it's enabled.
 	if (this->_is_caption_enabled)
 	{
 		//set the color of background caption
-		this->_caption_element.texture_color.current_color_state = DirectX::W_COLOR_TO_XMFLOAT4(this->_caption_background_color);
+		this->_caption_element.texture_color.current_color_state = DirectX::W_COLOR_TO_XMFLOAT4(
+			this->_is_mouse_over_widget ? this->_caption_active_background_color : _caption_background_color);
 		//set the index of this widget's texture to element
 		this->_caption_element.index_texture = this->_texture_cache_index;
 
@@ -237,28 +585,79 @@ HRESULT w_widget::on_render(_In_ float pElapsedTime)
 		{
 			wcscat_s(_caption_extended_msg, 256, L"-Minimized");
 		}
-		draw_text(_caption_extended_msg, DirectX::XMFLOAT2((float)(this->_x + this->_caption_margin_left), (float)(this->_y + this->_caption_margin_top)), this->_brush.Get());
+		draw_text(_caption_extended_msg,
+			DirectX::XMFLOAT2(
+			(float) (this->_x + this->_caption_margin_left),
+				(float) (this->_y + this->_caption_margin_top)),
+			this->_brush);
 	}
 
 	// If the dialog is minimized, skip rendering its controls.
-	if (!this->_minimized)
+	if (this->_minimized)
+	{
+		//minimize all gdi controls
+		for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
+		{
+			if ((*it)->get_type() == W_GUI_CONTROL_TYPE::W_GUI_CONTROL_LISTWIDGET)
+			{
+				auto _list_widget = static_cast<w_list_widget*>(*it);
+				if (_list_widget)
+				{
+					_list_widget->hide_gdi_controls();
+				}
+			}
+		}
+	}
+	else
 	{
 		for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
 		{
 			// Focused control is drawn last
 			if (*it == s_pControlFocus) continue;
 
-			(*it)->render(this->_gDevice, pElapsedTime);
+			//make sure set srv for each element
+			apply_render_UI(_context);
+			{
+				_context->PSSetShaderResources(0, 1, &pTextureNode->shader_resource_view);
+				(*it)->render(this->_gDevice, pElapsedTime);
+			}
+			this->_widgets_resource_manager->restore_D3D_state(_context);
 		}
 
 		if (s_pControlFocus && s_pControlFocus->parent_widget == this)
 		{
-			s_pControlFocus->render(this->_gDevice, pElapsedTime);
+			apply_render_UI(_context);
+			{
+				_context->PSSetShaderResources(0, 1, &pTextureNode->shader_resource_view);
+				s_pControlFocus->render(this->_gDevice, pElapsedTime);
+			}
+			this->_widgets_resource_manager->restore_D3D_state(_context);
 		}
 	}
+		
+	this->_redraw = false;
 
-	this->_widgets_resource_manager->restore_D3D_state(_context);
-	
+	return S_OK;
+}
+
+void w_widget::apply_render_UI(_In_ ID3D11DeviceContext1* pContext)
+{
+	auto _context = this->_gDevice->context.Get();
+	this->_widgets_resource_manager->apply_render_UI(pContext);
+}
+
+void w_widget::apply_render_UI_Untex(_In_ ID3D11DeviceContext1* pContext)
+{
+	this->_widgets_resource_manager->apply_render_UI_Untex(pContext);
+}
+
+HRESULT w_widget::set_shader_resource()
+{
+	auto pTextureNode = get_texture(this->_texture_cache_index);
+	if (pTextureNode == nullptr || pTextureNode->shader_resource_view == nullptr) return S_FALSE;
+
+	auto _context = this->_gDevice->context.Get();
+	_context->PSSetShaderResources(0, 1, &pTextureNode->shader_resource_view);
 
 	return S_OK;
 }
@@ -285,7 +684,7 @@ void w_widget::remove_control(_In_ int pID)
 			{
 				this->_control_mouse_over = nullptr;
 			}
-			SAFE_DELETE((*it));
+			SAFE_RELEASE((*it));
 			this->_controls.erase(it);
 
 			return;
@@ -395,11 +794,9 @@ HRESULT w_widget::add_image(_In_ int pID,
 	_In_ int pX, _In_ int pY,
 	_In_z_ std::wstring pPath,
 	_In_ bool pRelativePath,
-	_In_ float pGuassianEffectValue,
 	_In_ float pScaleX, _In_ float pScaleY,
+	_In_ float pRotationX, _In_ float pRotationY,
 	_In_ int pWidth, _In_ int pHeight,
-	_In_ float pRotationAngle, _In_ int pSetRotationCenterX, _In_ int pSetRotationCenterY,
-	_In_ float pTranslationX, _In_ float pTranslationY,
 	_In_ bool pIsDefault,
 	_Out_opt_ w_image** pCreatedControl)
 {
@@ -419,14 +816,9 @@ HRESULT w_widget::add_image(_In_ int pID,
 	_control->set_path(_path.c_str());
 	_control->set_position(pX, pY);
 	_control->set_size(pWidth, pHeight);
-	_control->set_scale(DirectX::XMFLOAT2(pScaleX, pScaleY));
-	_control->set_rotation_angle(pRotationAngle);
-	_control->set_rotation_center(DirectX::XMFLOAT2((float) pSetRotationCenterX, (float) pSetRotationCenterY));
-	_control->set_translation(DirectX::XMFLOAT2(pTranslationX, pTranslationY));
+	_control->set_scale(pScaleX, pScaleY);
+	_control->set_rotation(pRotationX, pRotationY);
 	_control->is_default = pIsDefault;
-
-	//Add image to memory
-	add_image_to_resource_manager(_path.c_str());
 
 	auto _hr = add_control(_control);
 	if (FAILED(_hr))
@@ -438,8 +830,8 @@ HRESULT w_widget::add_image(_In_ int pID,
 
 HRESULT w_widget::add_button(_In_ int pID,
 	_In_z_ std::wstring pText,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_z_ std::wstring pIconPath,
 	_In_ bool pRelativePath,
 	_In_ int pTextOffsetX, _In_ int pTextOffsetY,
@@ -477,8 +869,8 @@ HRESULT w_widget::add_button(_In_ int pID,
 
 HRESULT w_widget::add_button(_In_ int pID,
 	_In_z_ std::wstring pText,
+	_In_ int pX, _In_ int pY,
 	_In_ UINT pWidth, _In_ UINT pHeight,
-	_In_ int pX, int pY,
 	_In_z_ std::wstring pIconPath,
 	_In_ bool pRelativePath,
 	_In_ int pTextOffsetX, int pTextOffsetY,
@@ -531,10 +923,7 @@ HRESULT w_widget::add_button(_In_ int pID,
 	if (!pIconPath.empty())
 	{
 		auto _icon_path = pRelativePath ? wolf::framework::w_game::get_content_directory() +  pIconPath : pIconPath;
-		auto _icon_path_str = _icon_path.c_str();
-		_control->set_icon_path(_icon_path_str);
-		//Add image to memory
-		this->_sprite_batch->add_image_from_file(_icon_path_str);
+		_control->set_icon_path(_icon_path.c_str());
 	}
 
 	auto hr = add_control(_control);
@@ -545,8 +934,8 @@ HRESULT w_widget::add_button(_In_ int pID,
 
 HRESULT w_widget::add_check_box(_In_ int pID,
 	_In_z_ std::wstring pText, 
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ bool pChecked,
 	_In_ int pTextOffsetX, _In_ int pTextOffsetY,
 	_In_ UINT pHotkey,
@@ -590,8 +979,8 @@ HRESULT w_widget::add_check_box(_In_ int pID,
 HRESULT w_widget::add_radio_button(_In_ int pID,
 	_In_ UINT pButtonGroup,
 	_In_z_ std::wstring pText,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ bool pChecked,
 	_In_ int pTextOffsetX, _In_ int pTextOffsetY,
 	_In_ UINT pHotkey,
@@ -633,8 +1022,8 @@ HRESULT w_widget::add_radio_button(_In_ int pID,
 }
 
 DX_EXP HRESULT w_widget::add_combo_box(_In_ int pID,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pTextOffsetX, _In_ int pTextOffsetY,
 	_In_ UINT pHotkey,
 	_In_ bool pIsDefault,
@@ -663,8 +1052,8 @@ DX_EXP HRESULT w_widget::add_combo_box(_In_ int pID,
 }
 
 HRESULT w_widget::add_combo_box(_In_ int pID,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pTextOffsetX, _In_ int pTextOffsetY,
 	_In_ UINT pHotkey,
 	_In_ bool pIsDefault,
@@ -721,8 +1110,8 @@ HRESULT w_widget::add_combo_box(_In_ int pID,
 }
 
 HRESULT w_widget::add_slider(_In_ int pID,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pMin, _In_ int pMax,
 	_In_ int pValue,
 	_In_ UINT pHotkey,
@@ -770,9 +1159,9 @@ HRESULT w_widget::add_slider(_In_ int pID,
 }
 
 HRESULT w_widget::add_list_box(_In_ int pID,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
-	_In_ DWORD pStyle,
+	_In_ UINT pWidth, _In_ UINT pHeight,
+	_In_ bool pMultiSelection,
 	_Out_opt_ w_list_box** pCreatedControl)
 {
 	auto _control = new (std::nothrow) w_list_box(this);
@@ -792,14 +1181,42 @@ HRESULT w_widget::add_list_box(_In_ int pID,
 
 	_control->set_size(pWidth, pHeight);
 	_control->set_position(pX, pY);
-	_control->set_style(pStyle);
+	_control->set_multi_selection(pMultiSelection);
+
+	return S_OK;
+}
+
+HRESULT w_widget::add_list_widget(_In_ int pID,
+	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
+	_In_ bool pMultiSelection,
+	_Out_opt_ w_list_widget** pCreatedControl)
+{
+	auto _control = new (std::nothrow) w_list_widget(this);
+
+	if (pCreatedControl)
+	{
+		*pCreatedControl = _control;
+	}
+
+	if (!_control) return E_OUTOFMEMORY;
+
+	// Set the ID and position
+	_control->set_ID(pID);
+
+	auto hr = add_control(_control);
+	if (FAILED(hr)) return hr;
+
+	_control->set_size(pWidth, pHeight);
+	_control->set_position(pX, pY);
+	_control->set_multi_selection(pMultiSelection);
 
 	return S_OK;
 }
 
 HRESULT w_widget::add_tab(_In_ int pID,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ UINT pTabButtonWidth, _In_ UINT pTabButtonHeight,
 	_In_ int pArrowButtonTextOffsetX, _In_ int pArrowButtonTextOffsetY,
 	_Out_opt_ w_tab** pCreatedControl)
@@ -823,6 +1240,111 @@ HRESULT w_widget::add_tab(_In_ int pID,
 	_control->set_button_size(pTabButtonWidth, pTabButtonHeight);
 	_control->set_button_text_offset(pArrowButtonTextOffsetX, pArrowButtonTextOffsetY);
 	_control->set_position(pX, pY);
+
+	return S_OK;
+}
+
+HRESULT w_widget::add_line_shape(_In_ int pID,
+	_In_ int pStartX, _In_ int pStartY,
+	_In_ int pStopX, _In_ int pStopY,
+	_In_ UINT pStrokeWidth,
+	_In_ bool pIsDefault,
+	_In_ w_color pColor,
+	_In_ w_color pDisabledColor,
+	_Out_opt_ w_line_shape** pCreatedControl)
+{
+	auto _control = new (std::nothrow) w_line_shape(this);
+
+	if (pCreatedControl)
+	{
+		*pCreatedControl = _control;
+	}
+
+	if (!_control) return E_OUTOFMEMORY;
+
+	// Set the ID and position
+	_control->set_ID(pID);
+	_control->set_color(pColor);
+	_control->set_stroke_width(pStrokeWidth);
+	_control->set_disabled_color(pDisabledColor);
+
+	auto hr = add_control(_control);
+	if (FAILED(hr)) return hr;
+
+	_control->set_geormetry((float) pStartX, (float) pStartY, (float) pStopX, (float) pStopY);
+
+	return S_OK;
+}
+
+HRESULT w_widget::add_rounded_rectangle_shape(_In_ int pID,
+	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
+	_In_ float pRadiusX, _In_ float pRadiusY,
+	_In_ float pStrokeWidth,
+	_In_ bool pIsDefault,
+	_In_ w_color pFillColor,
+	_In_ w_color pBorderColor,
+	_In_ w_color pMouseOverColor,
+	_In_ w_color pDisabledColor,
+	_Out_opt_ w_rounded_rectangle_shape** pCreatedControl )
+{
+	auto _control = new (std::nothrow) w_rounded_rectangle_shape(this);
+
+	if (pCreatedControl)
+	{
+		*pCreatedControl = _control;
+	}
+
+	if (!_control) return E_OUTOFMEMORY;
+
+	// Set the ID and position
+	_control->set_ID(pID);
+	_control->set_stroke_width(pStrokeWidth);
+	_control->set_fill_color(pFillColor);
+	_control->set_border_color(pBorderColor);
+	_control->set_mouse_over_color(pMouseOverColor);
+	_control->set_disabled_color(pDisabledColor);
+
+	auto hr = add_control(_control);
+	if (FAILED(hr)) return hr;
+
+	_control->set_geormetry((float)pX, (float) pY, (float) pWidth, (float) pHeight, pRadiusX, pRadiusY);
+
+	return S_OK;
+}
+
+HRESULT w_widget::add_ellipse_shape(_In_ int pID,
+	_In_ float pCenterX, _In_ float pCenterY,
+	_In_ float pRadiusX, _In_ float pRadiusY,
+	_In_ UINT pStrokeWidth,
+	_In_ bool pIsDefault,
+	_In_ w_color pFillColor,
+	_In_ w_color pBorderColor,
+	_In_ w_color pMouseOverColor,
+	_In_ w_color pDisabledColor,
+	_Out_opt_ w_ellipse_shape** pCreatedControl)
+{
+	auto _control = new (std::nothrow) w_ellipse_shape(this);
+
+	if (pCreatedControl)
+	{
+		*pCreatedControl = _control;
+	}
+
+	if (!_control) return E_OUTOFMEMORY;
+
+	// Set the ID and position
+	_control->set_ID(pID);
+	_control->set_stroke_width(pStrokeWidth);
+	_control->set_fill_color(pFillColor);
+	_control->set_border_color(pBorderColor);
+	_control->set_mouse_over_color(pMouseOverColor);
+	_control->set_disabled_color(pDisabledColor);
+
+	auto hr = add_control(_control);
+	if (FAILED(hr)) return hr;
+
+	_control->set_geormetry((float) pCenterX, (float) pCenterY, (float) pRadiusX, (float) pRadiusY);
 
 	return S_OK;
 }
@@ -1144,6 +1666,7 @@ void w_widget::on_mouse_move(_In_ const POINT& pPoint)
 		//rise the mouse enter
 		if (!_mouse_was_in)
 		{
+			this->_redraw = true;
 			if (on_mouse_enter_callback)
 			{
 				on_mouse_enter_callback(pPoint);
@@ -1154,6 +1677,7 @@ void w_widget::on_mouse_move(_In_ const POINT& pPoint)
 	//if mouse is not over widget
 	if (!_is_mouse_over_widget && _mouse_was_in)
 	{
+		this->_redraw = true;
 		if (on_mouse_leave_callback)
 		{
 			on_mouse_leave_callback(pPoint);
@@ -1168,12 +1692,14 @@ void w_widget::on_mouse_move(_In_ const POINT& pPoint)
 	// Handle mouse leaving the old control
 	if (this->_control_mouse_over)
 	{
+		this->_control_mouse_over->redraw = true;
 		this->_control_mouse_over->on_mouse_leave();
 	}
 	// Handle mouse entering the new control
 	this->_control_mouse_over = pControl;
 	if (pControl)
 	{
+		this->_control_mouse_over->redraw = true;
 		this->_control_mouse_over->on_mouse_enter();
 	}
 }
@@ -1249,13 +1775,6 @@ void w_widget::request_focus(_In_ w_control* pControl)
 	s_pControlFocus = pControl;
 }
 
-HRESULT w_widget::draw_rect(const RECT* pRect, DWORD pColor)
-{
-	W_UNUSED(pRect);
-	W_UNUSED(pColor);
-	return E_FAIL;
-}
-
 HRESULT w_widget::draw_sprite(w_element* pElement, const RECT* pRectDest, float pDepth)
 {
 	// No need to draw fully transparent layers
@@ -1274,8 +1793,8 @@ HRESULT w_widget::draw_sprite(w_element* pElement, const RECT* pRectDest, float 
 	auto _texture_node = get_texture(this->_texture_cache_index);
 	if (!_texture_node) return E_FAIL;
 
-	float fBBWidth = (float)this->_widgets_resource_manager->backBuffer_width;
-	float fBBHeight = (float)this->_widgets_resource_manager->backBuffer_height;
+	float fBBWidth = (float)this->_widgets_resource_manager->back_buffer_width;
+	float fBBHeight = (float)this->_widgets_resource_manager->back_buffer_height;
 	float fTexWidth = (float) _texture_node->width;
 	float fTexHeight = (float) _texture_node->height;
 
@@ -1295,38 +1814,62 @@ HRESULT w_widget::draw_sprite(w_element* pElement, const RECT* pRectDest, float 
 	float fTexBottom = _rectangle_texture.bottom / fTexHeight;
 
 	// Add 6 sprite vertices
-	w_sprite_vertex _sprite_vertex;
+	wolf::content_pipeline::vertex_declaration_structs::vertex_color_uv _sprite_vertex;
 
 	// tri1
-	_sprite_vertex.pos = DirectX::XMFLOAT3(fRectLeft, fRectTop, pDepth);
-	_sprite_vertex.tex = DirectX::XMFLOAT2(fTexLeft, fTexTop);
-	_sprite_vertex.color = pElement->texture_color.current_color_state;
+	_sprite_vertex.position = glm::vec3(fRectLeft, fRectTop, pDepth);
+	_sprite_vertex.uv = glm::vec2(fTexLeft, fTexTop);
+	_sprite_vertex.color.x = pElement->texture_color.current_color_state.x;
+	_sprite_vertex.color.y = pElement->texture_color.current_color_state.y;
+	_sprite_vertex.color.z = pElement->texture_color.current_color_state.z;
+	_sprite_vertex.color.w = pElement->texture_color.current_color_state.w;
+
 	this->_widgets_resource_manager->m_SpriteVertices.push_back(_sprite_vertex);
 
-	_sprite_vertex.pos = DirectX::XMFLOAT3(fRectRight, fRectTop, pDepth);
-	_sprite_vertex.tex = DirectX::XMFLOAT2(fTexRight, fTexTop);
-	_sprite_vertex.color = pElement->texture_color.current_color_state;
+	_sprite_vertex.position = glm::vec3(fRectRight, fRectTop, pDepth);
+	_sprite_vertex.uv = glm::vec2(fTexRight, fTexTop);
+	_sprite_vertex.color.x = pElement->texture_color.current_color_state.x;
+	_sprite_vertex.color.y = pElement->texture_color.current_color_state.y;
+	_sprite_vertex.color.z = pElement->texture_color.current_color_state.z;
+	_sprite_vertex.color.w = pElement->texture_color.current_color_state.w;
+
 	this->_widgets_resource_manager->m_SpriteVertices.push_back(_sprite_vertex);
 
-	_sprite_vertex.pos = DirectX::XMFLOAT3(fRectLeft, fRectBottom, pDepth);
-	_sprite_vertex.tex = DirectX::XMFLOAT2(fTexLeft, fTexBottom);
-	_sprite_vertex.color = pElement->texture_color.current_color_state;
+	_sprite_vertex.position = glm::vec3(fRectLeft, fRectBottom, pDepth);
+	_sprite_vertex.uv = glm::vec2(fTexLeft, fTexBottom);
+	_sprite_vertex.color.x = pElement->texture_color.current_color_state.x;
+	_sprite_vertex.color.y = pElement->texture_color.current_color_state.y;
+	_sprite_vertex.color.z = pElement->texture_color.current_color_state.z;
+	_sprite_vertex.color.w = pElement->texture_color.current_color_state.w;
+
 	this->_widgets_resource_manager->m_SpriteVertices.push_back(_sprite_vertex);
 
 	// tri2
-	_sprite_vertex.pos = DirectX::XMFLOAT3(fRectRight, fRectTop, pDepth);
-	_sprite_vertex.tex = DirectX::XMFLOAT2(fTexRight, fTexTop);
-	_sprite_vertex.color = pElement->texture_color.current_color_state;
+	_sprite_vertex.position = glm::vec3(fRectRight, fRectTop, pDepth);
+	_sprite_vertex.uv = glm::vec2(fTexRight, fTexTop);
+	_sprite_vertex.color.x = pElement->texture_color.current_color_state.x;
+	_sprite_vertex.color.y = pElement->texture_color.current_color_state.y;
+	_sprite_vertex.color.z = pElement->texture_color.current_color_state.z;
+	_sprite_vertex.color.w = pElement->texture_color.current_color_state.w;
+
 	this->_widgets_resource_manager->m_SpriteVertices.push_back(_sprite_vertex);
 
-	_sprite_vertex.pos = DirectX::XMFLOAT3(fRectRight, fRectBottom, pDepth);
-	_sprite_vertex.tex = DirectX::XMFLOAT2(fTexRight, fTexBottom);
-	_sprite_vertex.color = pElement->texture_color.current_color_state;
+	_sprite_vertex.position = glm::vec3(fRectRight, fRectBottom, pDepth);
+	_sprite_vertex.uv = glm::vec2(fTexRight, fTexBottom);
+	_sprite_vertex.color.x = pElement->texture_color.current_color_state.x;
+	_sprite_vertex.color.y = pElement->texture_color.current_color_state.y;
+	_sprite_vertex.color.z = pElement->texture_color.current_color_state.z;
+	_sprite_vertex.color.w = pElement->texture_color.current_color_state.w;
+
 	this->_widgets_resource_manager->m_SpriteVertices.push_back(_sprite_vertex);
 
-	_sprite_vertex.pos = DirectX::XMFLOAT3(fRectLeft, fRectBottom, pDepth);
-	_sprite_vertex.tex = DirectX::XMFLOAT2(fTexLeft, fTexBottom);
-	_sprite_vertex.color = pElement->texture_color.current_color_state;
+	_sprite_vertex.position = glm::vec3(fRectLeft, fRectBottom, pDepth);
+	_sprite_vertex.uv = glm::vec2(fTexLeft, fTexBottom);
+	_sprite_vertex.color.x = pElement->texture_color.current_color_state.x;
+	_sprite_vertex.color.y = pElement->texture_color.current_color_state.y;
+	_sprite_vertex.color.z = pElement->texture_color.current_color_state.z;
+	_sprite_vertex.color.w = pElement->texture_color.current_color_state.w;
+
 	this->_widgets_resource_manager->m_SpriteVertices.push_back(_sprite_vertex);
 
 	// Why are we drawing the sprite every time?  This is very inefficient, but the sprite workaround doesn't have support for sorting now, so we have to
@@ -1340,11 +1883,9 @@ HRESULT w_widget::draw_image(_In_z_ const wchar_t* pIconName,
 	const DirectX::XMFLOAT2 pPosition,
 	const DirectX::XMFLOAT2 pScale, const DirectX::XMFLOAT2 pScaleCenter,
 	const float pRotationAngle, const DirectX::XMFLOAT2 pRotationCenter,
-	const DirectX::XMFLOAT2 pTranslation,
-	D2D1_GAUSSIANBLUR_PROP pEffectParam, const float pEffectValue)
+	const DirectX::XMFLOAT2 pTranslation)
 {
 	this->_sprite_batch->begin();
-	this->_sprite_batch->set_gaussian_blur_value(pEffectParam, pEffectValue);
 	this->_sprite_batch->draw_image(pIconName, pPosition, pScale, pScaleCenter, pRotationAngle, pRotationCenter, pTranslation);
 	this->_sprite_batch->end();
 
@@ -1355,11 +1896,9 @@ HRESULT w_widget::draw_image(_In_z_ const wchar_t* pIconName,
 	const DirectX::XMFLOAT2 pPosition, const D2D1_RECT_F pRectangle,
 	const DirectX::XMFLOAT2 pScale, const DirectX::XMFLOAT2 pScaleCenter,
 	const float pRotationAngle, const DirectX::XMFLOAT2 pRotationCenter,
-	const DirectX::XMFLOAT2 pTranslation,
-	D2D1_GAUSSIANBLUR_PROP pEffectParam, const float pEffectValue)
+	const DirectX::XMFLOAT2 pTranslation)
 {
 	this->_sprite_batch->begin();
-	this->_sprite_batch->set_gaussian_blur_value(pEffectParam, pEffectValue);
 	this->_sprite_batch->draw_image(pIconName, pPosition, pRectangle, pScale, pScaleCenter, pRotationAngle, pRotationCenter, pTranslation);
 	this->_sprite_batch->end();
 
@@ -1372,6 +1911,18 @@ HRESULT w_widget::draw_text(_In_z_ std::wstring pText, DirectX::XMFLOAT2 pPositi
 	{
 		this->_sprite_batch->begin();
 		this->_sprite_batch->draw_string(pText, pPosition, pBrush);
+		this->_sprite_batch->end();
+	}
+
+	return S_OK;
+}
+
+HRESULT w_widget::draw_shape(_In_ wolf::graphics::direct2D::Isprite_batch_drawable* pShape)
+{
+	if (this->_sprite_batch != nullptr)
+	{
+		this->_sprite_batch->begin();
+		pShape->draw();
 		this->_sprite_batch->end();
 	}
 
@@ -1541,304 +2092,6 @@ bool w_widget::on_cycle_focus(_In_ bool pForward)
 	return false;
 }
 
-void w_widget::initialize_default_elements()
-{
-	set_font(0, L"Arial", 14, FW_NORMAL);
-
-	//create shared brush over controls of this widget
-	if (this->_brush != nullptr)
-	{
-		COMPTR_RELEASE(this->_brush);
-	}
-	auto _hr = _gDevice->context_2D->CreateSolidColorBrush(
-		D2D1::ColorF(1, 1, 1, 1),
-		this->_brush.GetAddressOf());
-	V(_hr, L"creating shared brush for widget", this->name, 2, true, true);
-
-
-	w_element Element;
-	RECT rcTexture;
-
-	//-------------------------------------
-	// Element for the caption
-	//-------------------------------------
-	this->_caption_element.set_font(0);
-	SetRect(&rcTexture, 142, 269, 243, 287);
-	this->_caption_element.set_texture(0, &rcTexture);
-	//this->caption_element.font_color.color_states[W_GUI_STATE_NORMAL] = ARGB_TO_DWORD_COLOR(255, 255, 255, 255);
-	this->_caption_element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
-	// Pre-blend as we don't need to transition the state
-	this->_caption_element.texture_color.blend(W_GUI_STATE_NORMAL, 10.0f);
-	this->_caption_element.font_color.blend(W_GUI_STATE_NORMAL, 10.0f);
-
-	//-------------------------------------
-	// CDXUTStatic
-	//-------------------------------------
-	Element.set_font(0);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_LABEL, 0, &Element);
-
-	//-------------------------------------
-	// CDXUTButton - Button
-	//-------------------------------------
-	set_default_element(W_GUI_CONTROL_IMAGE, 0, &Element);
-	//-------------------------------------
-	// CDXUTButton - TAB
-	//-------------------------------------
-	set_default_element(W_GUI_CONTROL_TAB, 0, &Element);
-
-	//-------------------------------------
-	// CDXUTButton - Button
-	//-------------------------------------
-	SetRect(&rcTexture, 0, 0, 136, 54);
-	Element.set_texture(0, &rcTexture);
-	Element.set_font(0);
-	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = ARGB_TO_D3DCOLOR(255, 255, 255, 255);
-	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = ARGB_TO_D3DCOLOR(200, 255, 255, 255);
-	//Element.font_color.color_states[W_GUI_STATE_MOUSEOVER] = ARGB_TO_D3DCOLOR(255, 0, 0, 0);
-
-	//// Assign the Element
-	set_default_element(W_GUI_CONTROL_BUTTON, 0, &Element);
-
-	//-------------------------------------
-	// CDXUTButton - Fill layer
-	//-------------------------------------
-	SetRect(&rcTexture, 136, 0, 252, 54);
-	Element.set_texture(0, &rcTexture, RGBA_TO_HEX_COLOR(255, 255, 255, 0));
-	//Element.texture_color.color_states[W_GUI_STATE_MOUSEOVER] = RGBA_TO_HEX_COLOR(255, 255, 255, 160);
-	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(0, 0, 0, 60);
-	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 30);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_BUTTON, 1, &Element);
-
-	//-------------------------------------
-	// CDXUTCheckBox - Box
-	//-------------------------------------
-	SetRect(&rcTexture, 0, 54, 27, 81);
-	Element.set_texture(0, &rcTexture);
-	//Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
-	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
-	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
-	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
-	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(255, 255, 255, 255);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_CHECKBOX, 0, &Element);
-
-	//-------------------------------------
-	// CDXUTCheckBox - Check
-	//-------------------------------------
-	SetRect(&rcTexture, 27, 54, 54, 81);
-	Element.set_texture(0, &rcTexture);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_CHECKBOX, 1, &Element);
-
-	//-------------------------------------
-	// CDXUTRadioButton - Box
-	//-------------------------------------
-	SetRect(&rcTexture, 54, 54, 81, 81);
-	Element.set_texture(0, &rcTexture);
-	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
-	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
-	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
-	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
-	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(255, 255, 255, 255);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_RADIOBUTTON, 0, &Element);
-
-	//-------------------------------------
-	// CDXUTRadioButton - Check
-	//-------------------------------------
-	SetRect(&rcTexture, 81, 54, 108, 81);
-	Element.set_texture(0, &rcTexture);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_RADIOBUTTON, 1, &Element);
-
-	//-------------------------------------
-	// CDXUTComboBox - Main
-	//-------------------------------------
-	SetRect(&rcTexture, 7, 81, 247, 123);
-	Element.set_texture(0, &rcTexture);
-	Element.set_font(0);
-	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(200, 200, 200, 150);
-	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(230, 230, 230, 170);
-	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 70);
-	//Element.font_color.color_states[W_GUI_STATE_MOUSEOVER] = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
-	//Element.font_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
-	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_COMBOBOX, 0, &Element);
-
-	//-------------------------------------
-	// CDXUTComboBox - Button
-	//-------------------------------------
-	SetRect(&rcTexture, 98, 189, 151, 238);
-	Element.set_texture(0, &rcTexture);
-	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
-	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(150, 150, 150, 255);
-	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
-	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(255, 255, 255, 70);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_COMBOBOX, 1, &Element);
-
-	//-------------------------------------
-	// CDXUTComboBox - Dropdown
-	//-------------------------------------
-	SetRect(&rcTexture, 13, 123, 241, 160);
-	Element.set_texture(0, &rcTexture);
-	//Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_COMBOBOX, 2, &Element);
-
-	//-------------------------------------
-	// CDXUTComboBox - Selection
-	//-------------------------------------
-	SetRect(&rcTexture, 12, 163, 239, 183);
-	Element.set_texture(0, &rcTexture);
-	//Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_COMBOBOX, 3, &Element);
-
-	//-------------------------------------
-	// CDXUTSlider - Track
-	//-------------------------------------
-	SetRect(&rcTexture, 1, 187, 93, 228);
-	Element.set_texture(0, &rcTexture);
-	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
-	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
-	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(255, 255, 255, 70);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_SLIDER, 0, &Element);
-
-	//-------------------------------------
-	// CDXUTSlider - Button
-	//-------------------------------------
-	SetRect(&rcTexture, 151, 193, 192, 234);
-	Element.set_texture(0, &rcTexture);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_SLIDER, 1, &Element);
-
-	//-------------------------------------
-	// CDXUTScrollBar - Track
-	//-------------------------------------
-	int nScrollBarStartX = 196;
-	int nScrollBarStartY = 191;
-	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 21, nScrollBarStartX + 22, nScrollBarStartY + 32);
-	Element.set_texture(0, &rcTexture);
-	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_SCROLLBAR, 0, &Element);
-
-	//-------------------------------------
-	// CDXUTScrollBar - Up Arrow
-	//-------------------------------------
-	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 1, nScrollBarStartX + 22, nScrollBarStartY + 21);
-	Element.set_texture(0, &rcTexture);
-	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
-
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_SCROLLBAR, 1, &Element);
-
-	//-------------------------------------
-	// CDXUTScrollBar - Down Arrow
-	//-------------------------------------
-	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 32, nScrollBarStartX + 22, nScrollBarStartY + 53);
-	Element.set_texture(0, &rcTexture);
-	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_SCROLLBAR, 2, &Element);
-
-	//-------------------------------------
-	// CDXUTScrollBar - Button
-	//-------------------------------------
-	SetRect(&rcTexture, 220, 192, 238, 234);
-	Element.set_texture(0, &rcTexture);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_SCROLLBAR, 3, &Element);
-
-
-	//-------------------------------------
-	// CDXUTEditBox
-	//-------------------------------------
-	// Element assignment:
-	//   0 - text area
-	//   1 - top left border
-	//   2 - top border
-	//   3 - top right border
-	//   4 - left border
-	//   5 - right border
-	//   6 - lower left border
-	//   7 - lower border
-	//   8 - lower right border
-
-	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
-
-	// Assign the style
-	SetRect(&rcTexture, 14, 90, 241, 113);
-	Element.set_texture(0, &rcTexture);
-	set_default_element(W_GUI_CONTROL_EDITBOX, 0, &Element);
-	SetRect(&rcTexture, 8, 82, 14, 90);
-	Element.set_texture(0, &rcTexture);
-	set_default_element(W_GUI_CONTROL_EDITBOX, 1, &Element);
-	SetRect(&rcTexture, 14, 82, 241, 90);
-	Element.set_texture(0, &rcTexture);
-	set_default_element(W_GUI_CONTROL_EDITBOX, 2, &Element);
-	SetRect(&rcTexture, 241, 82, 246, 90);
-	Element.set_texture(0, &rcTexture);
-	set_default_element(W_GUI_CONTROL_EDITBOX, 3, &Element);
-	SetRect(&rcTexture, 8, 90, 14, 113);
-	Element.set_texture(0, &rcTexture);
-	set_default_element(W_GUI_CONTROL_EDITBOX, 4, &Element);
-	SetRect(&rcTexture, 241, 90, 246, 113);
-	Element.set_texture(0, &rcTexture);
-	set_default_element(W_GUI_CONTROL_EDITBOX, 5, &Element);
-	SetRect(&rcTexture, 8, 113, 14, 121);
-	Element.set_texture(0, &rcTexture);
-	set_default_element(W_GUI_CONTROL_EDITBOX, 6, &Element);
-	SetRect(&rcTexture, 14, 113, 241, 121);
-	Element.set_texture(0, &rcTexture);
-	set_default_element(W_GUI_CONTROL_EDITBOX, 7, &Element);
-	SetRect(&rcTexture, 241, 113, 246, 121);
-	Element.set_texture(0, &rcTexture);
-	set_default_element(W_GUI_CONTROL_EDITBOX, 8, &Element);
-
-	//-------------------------------------
-	// CDXUTListBox - Main
-	//-------------------------------------
-	SetRect(&rcTexture, 13, 123, 241, 160);
-	Element.set_texture(0, &rcTexture);
-	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_LISTBOX, 0, &Element);
-
-	//-------------------------------------
-	// CDXUTListBox - Selection
-	//-------------------------------------
-
-	SetRect(&rcTexture, 16, 166, 240, 183);
-	Element.set_texture(0, &rcTexture);
-	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
-
-	// Assign the Element
-	set_default_element(W_GUI_CONTROL_LISTBOX, 1, &Element);
-}
-
 void w_widget::remove_call_back(_In_ W_CALLBACK_GUI_EVENT pCallback)
 {
 	// If this assert triggers, you need to call w_widget::Initialize() first.  This change
@@ -1866,7 +2119,8 @@ ULONG w_widget::release()
 	this->_fonts_indices.clear();
 	this->_textures_indices.clear();
 
-	COMPTR_RELEASE(this->_brush);
+	COM_RELEASE(this->_vertex_buffer);
+	COM_RELEASE(this->_brush);
 
 	for (auto it = this->_default_elements.begin(); it != this->_default_elements.end(); ++it)
 	{
@@ -2092,6 +2346,16 @@ w_element* w_widget::get_default_element(UINT pControlType, UINT pIndexElement) 
 	return nullptr;
 }
 
+UINT w_widget::get_background_buffer_width() const
+{
+	return this->_widgets_resource_manager->back_buffer_width;
+}
+
+UINT w_widget::get_background_buffer_height() const
+{
+	return this->_widgets_resource_manager->back_buffer_height;
+}
+
 #pragma endregion
 
 #pragma region Setters
@@ -2230,6 +2494,14 @@ void w_widget::set_background_colors(_In_ w_color pColorTopLeft, _In_ w_color pC
 	this->_background_color_top_right = pColorTopRight;
 	this->_background_color_bottom_left = pColorBottomLeft;
 	this->_background_color_bottom_right = pColorBottomRight;
+}
+
+void w_widget::set_active_background_colors(_In_ w_color pColorTopLeft, _In_ w_color pColorTopRight, _In_ w_color pColorBottomLeft, _In_ w_color pColorBottomRight)
+{
+	this->_active_background_color_top_left = pColorTopLeft;
+	this->_active_background_color_top_right = pColorTopRight;
+	this->_active_background_color_bottom_left = pColorBottomLeft;
+	this->_active_background_color_bottom_right = pColorBottomRight;
 }
 
 

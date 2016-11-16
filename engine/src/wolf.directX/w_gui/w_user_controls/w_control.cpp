@@ -19,10 +19,11 @@ w_control::w_control(_In_opt_ w_widget* pParent) :
 	y(0), 
 	width(0), 
 	height(0),
-	z_order(0)
+	z_order(0),
+	redraw(false)
 {
 	_super::set_class_name(typeid(this).name());
-	std::memset(&this->boundingBox, 0, sizeof(this->boundingBox));
+	std::memset(&this->bounding_box, 0, sizeof(this->bounding_box));
 }
 
 w_control::~w_control()
@@ -54,7 +55,7 @@ void w_control::refresh()
 
 void w_control::update_rects()
 {
-	SetRect(&this->boundingBox, this->x, this->y, this->x + this->width, this->y + this->height);
+	SetRect(&this->bounding_box, this->x, this->y, this->x + this->width, this->y + this->height);
 }
 
 void w_control::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ float pElapsedTime)

@@ -39,16 +39,16 @@ void w_scroll_bar::update_rects()
 
 	// Make the buttons square
 	SetRect(&this->up_button_rect,
-		_super::boundingBox.left, 
-		_super::boundingBox.top,
-		_super::boundingBox.right,
-		_super::boundingBox.top + /*RectWidth*/(_super::boundingBox.right - _super::boundingBox.left));
+		_super::bounding_box.left, 
+		_super::bounding_box.top,
+		_super::bounding_box.right,
+		_super::bounding_box.top + /*RectWidth*/(_super::bounding_box.right - _super::bounding_box.left));
 
 	SetRect(&this->down_button_rect, 
-		_super::boundingBox.left,
-		_super::boundingBox.bottom - /*RectWidth*/(_super::boundingBox.right - _super::boundingBox.left),
-		_super::boundingBox.right,
-		_super::boundingBox.bottom);
+		_super::bounding_box.left,
+		_super::bounding_box.bottom - /*RectWidth*/(_super::bounding_box.right - _super::bounding_box.left),
+		_super::bounding_box.right,
+		_super::bounding_box.bottom);
 
 	SetRect(&this->track_rect, 
 		this->up_button_rect.left, 

@@ -16,10 +16,14 @@ UINT														w_gui::_parent_width;
 UINT														w_gui::_parent_height;
 const char*													w_gui::_trace_class_name = "w_gui";
 
+#ifdef WIN32
+HWND														w_gui::_hwnd = NULL;
+#endif
+
 void w_gui::initialize(const std::shared_ptr<w_graphics_device>& pGDevice, w_sprite_batch* pSpriteBatch, UINT pWidth, UINT pHeight)
 {
-	w_gui::_is_released = false;
-
+	_is_released = false;
+	
 	_parent_width = pWidth;
 	_parent_height = pHeight;
 
@@ -38,9 +42,10 @@ void w_gui::initialize(const std::shared_ptr<w_graphics_device>& pGDevice, w_spr
 
 HRESULT w_gui::load(HWND pHwnd, const wchar_t* pGuiDesignPath)
 {
+	_hwnd = pHwnd;
+
 	//parse gui from xml file
-	auto _exists_perm = wolf::system::io::get_is_file(pGuiDesignPath);
-	if (_exists_perm == boost::filesystem::perms::no_perms)
+	if (wolf::system::io::get_is_file(pGuiDesignPath) == S_FALSE)
 	{
 		wchar_t _msg[1024];
 		wsprintf(_msg, L"load wolf.gui design file, file not found. %s", pGuiDesignPath);
@@ -121,6 +126,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 #pragma region create widget from xml
 
 		auto _name = wolf::system::w_xml::get_node_attribute(pNode, "Name");
+		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
 		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 		
 		auto _dragable = wolf::system::w_xml::get_node_attribute(pNode, "Dragable");
@@ -131,13 +137,17 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 		auto _minimized = wolf::system::w_xml::get_node_attribute(pNode, "Minimized");
 		std::transform(_minimized.begin(), _minimized.end(), _minimized.begin(), ::tolower);
-
-		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
-
+		
 		auto _background_color_top_left = wolf::system::w_xml::get_node_attribute(pNode, "BackgroundColorTopLeft");
 		auto _background_color_top_right = wolf::system::w_xml::get_node_attribute(pNode, "BackgroundColorTopRight");
 		auto _background_color_bottom_left = wolf::system::w_xml::get_node_attribute(pNode, "BackgroundColorBottomLeft");
 		auto _background_color_bottom_right = wolf::system::w_xml::get_node_attribute(pNode, "BackgroundColorBottomRight");
+
+		auto _active_background_color_top_left = wolf::system::w_xml::get_node_attribute(pNode, "ActiveBackgroundColorTopLeft");
+		auto _active_background_color_top_right = wolf::system::w_xml::get_node_attribute(pNode, "ActiveBackgroundColorTopRight");
+		auto _active_background_color_bottom_left = wolf::system::w_xml::get_node_attribute(pNode, "ActiveBackgroundColorBottomLeft");
+		auto _active_background_color_bottom_right = wolf::system::w_xml::get_node_attribute(pNode, "ActiveBackgroundColorBottomRight");
+
 
 		auto _z_order = wolf::system::w_xml::get_node_attribute(pNode, "ZOrder");
 
@@ -147,13 +157,13 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		auto _enable_caption = wolf::system::w_xml::get_node_attribute(pNode, "EnableCaption");
 		std::transform(_enable_caption.begin(), _enable_caption.end(), _enable_caption.begin(), ::tolower);
 
-		auto _caption = wolf::system::w_xml::get_node_attribute_utf_8(pNode, "Caption");
+		auto _caption = wolf::system::w_xml::get_node_attribute_utf8(pNode, "Caption");
 
 		auto _caption_background_color = wolf::system::w_xml::get_node_attribute(pNode, "CaptionBackgroundColor");
+		auto _caption_active_background_color = wolf::system::w_xml::get_node_attribute(pNode, "CaptionActiveBackgroundColor");
 		auto _caption_height = wolf::system::w_xml::get_node_attribute(pNode, "CaptionHeight");
-		auto _caption_margin_left = wolf::system::w_xml::get_node_attribute(pNode, "CaptionMarginLeft");
-		auto _caption_margin_top = wolf::system::w_xml::get_node_attribute(pNode, "CaptionMarginTop");
-
+		auto _caption_margin = wolf::system::w_xml::get_node_attribute(pNode, "CaptionMargin");
+		
 		auto _caption_font_name = wolf::system::w_xml::get_node_attribute(pNode, "CaptionFontName");
 		std::transform(_caption_font_name.begin(), _caption_font_name.end(), _caption_font_name.begin(), ::tolower);
 
@@ -166,6 +176,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 		glm::vec2 _size_values = std::atov2(_size.c_str());
 		glm::vec2 _position_values = std::atov2(_position.c_str());
+		glm::vec2 _caption_margin_values = std::atov2(_caption_margin.c_str());
 
 		_temp_parent_widget_ptr = nullptr;
 		//create widget
@@ -173,23 +184,28 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			pHwnd,
 			_name,
 			&_temp_parent_widget_ptr,
+			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
 			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			_dragable == "true" ? true : false,
 			_visisble == "true" ? true : false,
 			_minimized == "true" ? true : false,
-			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
 			w_color::from_string(_background_color_top_left.c_str()),
 			w_color::from_string(_background_color_top_right.c_str()),
 			w_color::from_string(_background_color_bottom_left.c_str()),
 			w_color::from_string(_background_color_bottom_right.c_str()),
+			w_color::from_string(_active_background_color_top_left.c_str()),
+			w_color::from_string(_active_background_color_top_right.c_str()),
+			w_color::from_string(_active_background_color_bottom_left.c_str()),
+			w_color::from_string(_active_background_color_bottom_right.c_str()),
 			static_cast<float>(atof(_z_order.c_str())),
-			_enable_caption == "true" ? true : false,
 			_enabled == "true" ? true : false,
+			_enable_caption == "true" ? true : false,
 			_caption,
 			w_color::from_string(_caption_background_color.c_str()),
+			w_color::from_string(_caption_active_background_color.c_str()),
 			static_cast<UINT>(std::atoi(_caption_height.c_str())),
-			std::atoi(_caption_margin_left.c_str()),
-			std::atoi(_caption_margin_top.c_str()),
+			(int)_caption_margin_values.x,
+			(int) _caption_margin_values.y,
 			_caption_font_name,
 			static_cast<UINT>(std::atoi(_caption_font_size.c_str())),
 			static_cast<UINT>(std::atoi(_caption_font_weight.c_str())),
@@ -238,19 +254,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		//read xml values
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
 		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
-		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
 
-		auto _path = wolf::system::w_xml::get_node_attribute_utf_8(pNode, "Path");
+		auto _path = wolf::system::w_xml::get_node_attribute_utf8(pNode, "Path");
 		auto _relative_path = wolf::system::w_xml::get_node_attribute(pNode, "RelativePath");
 		std::transform(_relative_path.begin(), _relative_path.end(), _relative_path.begin(), ::tolower);
 
-		auto _guassian_effect_value = wolf::system::w_xml::get_node_attribute(pNode, "GuassianEffectValue");
 		auto _scale = wolf::system::w_xml::get_node_attribute(pNode, "Scale");
-		
-		auto _rotation_angle = wolf::system::w_xml::get_node_attribute(pNode, "RotationAngle");
-		auto _rotation_center = wolf::system::w_xml::get_node_attribute(pNode, "RotationCenter");
-		
-		auto _translation = wolf::system::w_xml::get_node_attribute(pNode, "Translation");
+		auto _rotation = wolf::system::w_xml::get_node_attribute(pNode, "Rotation");		
+		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
 		
 		auto _is_default = wolf::system::w_xml::get_node_attribute(pNode, "IsDefault");
 		std::transform(_is_default.begin(), _is_default.end(), _is_default.begin(), ::tolower);
@@ -263,23 +274,19 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		glm::vec2 _size_values = std::atov2(_size.c_str());
 		glm::vec2 _position_values = std::atov2(_position.c_str());
 		glm::vec2 _scale_values = std::atov2(_scale.c_str());
-		glm::vec2 _rotation_center_values = std::atov2(_rotation_center.c_str());
-		glm::vec2 _translation_values = std::atov2(_translation.c_str());
+		glm::vec2 _rotation_values = std::atov2(_rotation.c_str());
 		
-		//create widget
+		//create image
 		auto _hr = add_image(wolf::system::convert::to_hex(_id),
 			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
 			_path,
 			_relative_path == "true" ? true : false,
-			(float) atof(_guassian_effect_value.c_str()),
 			_scale_values.x, _scale_values.y,
 			static_cast<UINT>(_size_values.x),
 			static_cast<UINT>(_size_values.y),
-			(float) atof(_rotation_angle.c_str()),
-			_rotation_center_values.x, _rotation_center_values.y,
-			_translation_values.x, _translation_values.y,
+			_rotation_values.x, _rotation_values.y,
 			_is_default == "true" ? true : false,
-			(float) atof(_z_order.c_str()),
+			static_cast<float>(atof(_z_order.c_str())),
 			_enabled == "true" ? true : false);
 
 		if (_hr == S_FALSE)
@@ -316,9 +323,9 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		//read xml values
 
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
-		auto _text = wolf::system::w_xml::get_node_attribute_utf_8(pNode, "Text");
-		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
+		auto _text = wolf::system::w_xml::get_node_attribute_utf8(pNode, "Text");
 		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 
 		auto _color = wolf::system::w_xml::get_node_attribute(pNode, "Color");
 		auto _mouse_over_color = wolf::system::w_xml::get_node_attribute(pNode, "MouseOverColor");
@@ -347,18 +354,18 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		glm::vec2 _size_values = std::atov2(_size.c_str());
 		glm::vec2 _position_value = std::atov2(_position.c_str());
 
-		//create widget
+		//create label
 		auto _hr = add_label(wolf::system::convert::to_hex(_id),
 			_text,
-			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			static_cast<UINT>(_position_value.x), static_cast<UINT>(_position_value.y),
+			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			w_color::from_string(_color.c_str()),
 			w_color::from_string(_mouse_over_color.c_str()),
 			w_color::from_string(_pressed_color.c_str()),
 			w_color::from_string(_focused_color.c_str()),
 			w_color::from_string(_disabled_color.c_str()),
 			_is_default == "true" ? true : false,
-			(float) atof(_z_order.c_str()),
+			static_cast<float>(atof(_z_order.c_str())),
 			_enabled == "true" ? true : false,
 			_font_name,
 			static_cast<UINT>(atoi(_font_size.c_str())),
@@ -401,11 +408,10 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 		//load xml value
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
-		auto _text = wolf::system::w_xml::get_node_attribute_utf_8(pNode, "Text");
-		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
+		auto _text = wolf::system::w_xml::get_node_attribute_utf8(pNode, "Text");
 		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
-
-		auto _icon_path = wolf::system::w_xml::get_node_attribute_utf_8(pNode, "IconPath");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
+		auto _icon_path = wolf::system::w_xml::get_node_attribute_utf8(pNode, "IconPath");
 
 		auto _relative_path = wolf::system::w_xml::get_node_attribute(pNode, "RelativePath");
 		std::transform(_relative_path.begin(), _relative_path.end(), _relative_path.begin(), ::tolower);
@@ -457,11 +463,11 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 		glm::vec2 _effect_values_values = std::atov2(_effect_values.c_str());
 
-		//create widget
+		//create button
 		auto _hr = add_button(wolf::system::convert::to_hex(_id),
 			_text,
-			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
+			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			_icon_path,
 			_relative_path == "true" ? true : false,
 			(int) _text_offset_values.x, (int) _text_offset_values.y,
@@ -480,7 +486,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			w_color::from_string(_text_focused_color.c_str()),
 			w_color::from_string(_text_disabled_color.c_str()),
 			_effect_values_values.x, _effect_values_values.y,
-			(float) atof(_z_order.c_str()),
+			static_cast<float>(atof(_z_order.c_str())),
 			_enabled == "true" ? true : false,
 			_font_name,
 			static_cast<UINT>(atoi(_font_size.c_str())),
@@ -523,9 +529,9 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 		//load xml value
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
-		auto _text = wolf::system::w_xml::get_node_attribute_utf_8(pNode, "Text");
-		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
+		auto _text = wolf::system::w_xml::get_node_attribute_utf8(pNode, "Text");
 		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 
 		auto _checked = wolf::system::w_xml::get_node_attribute(pNode, "Checked");
 		std::transform(_checked.begin(), _checked.end(), _checked.begin(), ::tolower);
@@ -567,11 +573,11 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		glm::vec2 _position_values = std::atov2(_position.c_str());
 		glm::vec2 _text_offset_values = std::atov2(_text_offset.c_str());
 
-		//create widget
+		//create check box
 		auto _hr = add_check_box(wolf::system::convert::to_hex(_id),
 			_text,
-			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
+			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			_checked == "true" ? true : false,
 			(int) _text_offset_values.x, (int) _text_offset_values.y,
 			static_cast<UINT>(atoi(_hot_key.c_str())),
@@ -586,7 +592,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			w_color::from_string(_text_pressed_color.c_str()),
 			w_color::from_string(_text_focused_color.c_str()),
 			w_color::from_string(_text_disabled_color.c_str()),
-			(float) atof(_z_order.c_str()),
+			static_cast<float>(atof(_z_order.c_str())),
 			_enabled == "true" ? true : false,
 			_font_name,
 			static_cast<UINT>(atoi(_font_size.c_str())),
@@ -630,9 +636,9 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		//load xml value
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
 		auto _button_group_id = wolf::system::w_xml::get_node_attribute(pNode, "ButtonGroup");
-		auto _text = wolf::system::w_xml::get_node_attribute_utf_8(pNode, "Text");
-		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
+		auto _text = wolf::system::w_xml::get_node_attribute_utf8(pNode, "Text");
 		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 
 		auto _checked = wolf::system::w_xml::get_node_attribute(pNode, "Checked");
 		std::transform(_checked.begin(), _checked.end(), _checked.begin(), ::tolower);
@@ -674,12 +680,12 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		glm::vec2 _position_values = std::atov2(_position.c_str());
 		glm::vec2 _text_offset_values = std::atov2(_text_offset.c_str());
 
-		//create widget
+		//create radio button
 		auto _hr = add_radio_button(wolf::system::convert::to_hex(_id),
 			static_cast<UINT>(atoi(_button_group_id.c_str())),
 			_text,
-			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
+			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			_checked == "true" ? true : false,
 			(int) _text_offset_values.x, (int) _text_offset_values.y,
 			static_cast<UINT>(atoi(_hot_key.c_str())),
@@ -694,7 +700,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			w_color::from_string(_text_pressed_color.c_str()),
 			w_color::from_string(_text_focused_color.c_str()),
 			w_color::from_string(_text_disabled_color.c_str()),
-			(float) atof(_z_order.c_str()),
+			static_cast<float>(atof(_z_order.c_str())),
 			_enabled == "true" ? true : false,
 			_font_name,
 			static_cast<UINT>(atoi(_font_size.c_str())),
@@ -737,8 +743,8 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 		//load xml value
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
-		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 		
 		auto _text_offset = wolf::system::w_xml::get_node_attribute(pNode, "TextOffset");
 		auto _item_height = wolf::system::w_xml::get_node_attribute(pNode, "ItemHeight");
@@ -810,10 +816,10 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			}
 		}
 
-		//create widget
+		//create combo box
 		auto _hr = add_combo_box(wolf::system::convert::to_hex(_id),
-			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
+			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			(int) _text_offset_values.x, (int) _text_offset_values.y,
 			static_cast<UINT>(atoi(_item_height.c_str())),
 			_item_margin_point,
@@ -835,7 +841,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			w_color::from_string(_text_color.c_str()),
 			w_color::from_string(_text_disabled_color.c_str()),
 			static_cast<UINT>(atoi(_drop_down_context_height.c_str())),
-			(float) atof(_z_order.c_str()),
+			static_cast<float>(atof(_z_order.c_str())),
 			_enabled == "true" ? true : false,
 			_font_name,
 			static_cast<UINT>(atoi(_font_size.c_str())),
@@ -879,8 +885,8 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 		//load xml value
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
-		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 
 		auto _range = wolf::system::w_xml::get_node_attribute(pNode, "Range");
 		auto _value = wolf::system::w_xml::get_node_attribute(pNode, "Value");
@@ -921,10 +927,10 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		glm::vec2 _position_values = std::atov2(_position.c_str());
 		glm::vec2 _range_values = std::atov2(_range.c_str());
 
-		//create widget
+		//create slider
 		auto _hr = add_slider(wolf::system::convert::to_hex(_id),
-			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
+			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			(int) _range_values.x, (int) _range_values.y,
 			static_cast<int>(atoi(_value.c_str())),
 			static_cast<UINT>(atoi(_hot_key.c_str())),
@@ -939,7 +945,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			w_color::from_string(_button_pressed_color.c_str()),
 			w_color::from_string(_button_focused_color.c_str()),
 			w_color::from_string(_button_disabled_color.c_str()),
-			(float) atof(_z_order.c_str()),
+			static_cast<float>(atof(_z_order.c_str())),
 			_enabled == "true" ? true : false,
 			_font_name,
 			static_cast<UINT>(atoi(_font_size.c_str())),
@@ -960,7 +966,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 	}
 	else if (_name == "listbox")
 	{
-#pragma region create listbox from xml
+#pragma region create list_box from xml
 
 		//check parent
 		auto _parent_node = pNode->parent();
@@ -982,16 +988,18 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 		//load xml value
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
-		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 
-		auto _style = wolf::system::w_xml::get_node_attribute(pNode, "Style");
+		auto _multi_selection = wolf::system::w_xml::get_node_attribute(pNode, "MultiSelection");
 		auto _border = wolf::system::w_xml::get_node_attribute(pNode, "Border");
 		auto _text_offset = wolf::system::w_xml::get_node_attribute(pNode, "TextOffset");
 		auto _icon_margin = wolf::system::w_xml::get_node_attribute(pNode, "IconMargin");
+		auto _icon_scale = wolf::system::w_xml::get_node_attribute(pNode, "IconScale");
 		auto _selected_margin = wolf::system::w_xml::get_node_attribute(pNode, "SelectedRectangleMargin");
 		auto _item_height = wolf::system::w_xml::get_node_attribute(pNode, "ItemHeight");
-
+		auto _icon_height_offset = wolf::system::w_xml::get_node_attribute(pNode, "IconHeightOffset");
+				
 		auto _text_color = wolf::system::w_xml::get_node_attribute(pNode, "TextColor");
 		auto _selected_text_color = wolf::system::w_xml::get_node_attribute(pNode, "SelectedTextColor");
 		auto _disabled_text_color = wolf::system::w_xml::get_node_attribute(pNode, "DisabledTextColor");
@@ -1000,6 +1008,10 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		auto _selected_color = wolf::system::w_xml::get_node_attribute(pNode, "SelectedColor");
 		auto _disabled_color = wolf::system::w_xml::get_node_attribute(pNode, "DisabledColor");
 
+		auto _scroll_color = wolf::system::w_xml::get_node_attribute(pNode, "ScrollColor");
+		auto _scroll_background_color = wolf::system::w_xml::get_node_attribute(pNode, "ScrollBackgroundColor");
+		auto _scroll_disabled_color = wolf::system::w_xml::get_node_attribute(pNode, "ScrollDisabledColor");
+		
 		auto _hot_key = wolf::system::w_xml::get_node_attribute(pNode, "Hotkey");
 
 		auto _is_default = wolf::system::w_xml::get_node_attribute(pNode, "IsDefault");
@@ -1025,6 +1037,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		glm::vec2 _border_values = std::atov2(_border.c_str());
 		glm::vec2 _text_offset_values = std::atov2(_text_offset.c_str());
 		glm::vec2 _icon_margin_values = std::atov2(_icon_margin.c_str());
+		glm::vec2 _icon_scale_values = std::atov2(_icon_scale.c_str());
 		glm::vec2 _selected_margin_values = std::atov2(_selected_margin.c_str());
 
 		//read tab items
@@ -1039,12 +1052,12 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 			if (_item_name == "listboxitem")
 			{
-				auto _text = wolf::system::w_xml::get_node_attribute_utf_8(_node, "Text");
-				auto _icon_path = wolf::system::w_xml::get_node_attribute_utf_8(_node, "IconPath");
-
+				auto _text = wolf::system::w_xml::get_node_attribute_utf8(_node, "Text");
+				auto _icon_path = wolf::system::w_xml::get_node_attribute_utf8(_node, "IconPath");
+				
 				auto _relative_path = wolf::system::w_xml::get_node_attribute(_node, "RelativePath");
 				std::transform(_relative_path.begin(), _relative_path.end(), _relative_path.begin(), ::tolower);
-
+			
 				auto _item = std::make_tuple(_text,
 					_icon_path,
 					_relative_path == "true" ? true : false);
@@ -1052,16 +1065,18 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			}
 		}
 
-		//create widget
+		//create list box
 		auto _hr = add_list_box(wolf::system::convert::to_hex(_id),
-			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
-			static_cast<int>(atoi(_style.c_str())),
+			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
+			_multi_selection == "true" ? true : false,
 			static_cast<int>(_border_values.x), static_cast<int>(_border_values.y),
 			static_cast<int>(_text_offset_values.x), static_cast<int>(_text_offset_values.y),
 			static_cast<int>(_icon_margin_values.x), static_cast<int>(_icon_margin_values.y),
+			_icon_scale_values.x, _icon_scale_values.y,
 			static_cast<int>(_selected_margin_values.x), static_cast<int>(_selected_margin_values.y),
 			atoi(_item_height.c_str()),
+			atoi(_icon_height_offset.c_str()),
 			static_cast<UINT>(atoi(_hot_key.c_str())),
 			_is_default == "true" ? true : false,
 			w_color::from_string(_text_color.c_str()),
@@ -1070,7 +1085,10 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			w_color::from_string(_color.c_str()),
 			w_color::from_string(_selected_color.c_str()),
 			w_color::from_string(_disabled_color.c_str()),
-			(float) atof(_z_order.c_str()),
+			w_color::from_string(_scroll_color.c_str()),
+			w_color::from_string(_scroll_background_color.c_str()),
+			w_color::from_string(_scroll_disabled_color.c_str()),
+			static_cast<float>(atof(_z_order.c_str())),
 			_enabled == "true" ? true : false,
 			_font_name,
 			static_cast<UINT>(atoi(_font_size.c_str())),
@@ -1085,6 +1103,89 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 		{
 			wchar_t _msg[2048];
 			wsprintf(_msg, L"creating listbox: %s from path: %s", _id, pGuiDesignPath);
+			V(S_FALSE, _msg, _trace_class_name, 3);
+		}
+
+#pragma endregion
+	}
+	else if (_name == "listwidget")
+	{
+#pragma region create list_widget from xml
+
+		//check parent
+		auto _parent_node = pNode->parent();
+		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
+		{
+			V(S_FALSE, L"loading a gui list_widget without parent. The list_widget must be child of a widget.", _trace_class_name, 2);
+			return;
+		}
+		else
+		{
+			auto _parent_node_name = std::string(_parent_node->name());
+			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
+			if (_parent_node_name != "widget")
+			{
+				V(S_FALSE, L"loading a gui list_widget with unsupported parent. The list_widget must be child of a widget.", _trace_class_name, 2);
+				return;
+			}
+		}
+
+		//load xml value
+		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
+		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
+
+		auto _multi_selection = wolf::system::w_xml::get_node_attribute(pNode, "MultiSelection");
+		auto _border = wolf::system::w_xml::get_node_attribute(pNode, "Border");
+		auto _selected_margin = wolf::system::w_xml::get_node_attribute(pNode, "SelectedRectangleMargin");
+		auto _item_height = wolf::system::w_xml::get_node_attribute(pNode, "ItemHeight");
+
+		auto _color = wolf::system::w_xml::get_node_attribute(pNode, "Color");
+		auto _selected_color = wolf::system::w_xml::get_node_attribute(pNode, "SelectedColor");
+		auto _disabled_color = wolf::system::w_xml::get_node_attribute(pNode, "DisabledColor");
+
+		auto _scroll_color = wolf::system::w_xml::get_node_attribute(pNode, "ScrollColor");
+		auto _scroll_background_color = wolf::system::w_xml::get_node_attribute(pNode, "ScrollBackgroundColor");
+		auto _scroll_disabled_color = wolf::system::w_xml::get_node_attribute(pNode, "ScrollDisabledColor");
+
+		auto _hot_key = wolf::system::w_xml::get_node_attribute(pNode, "Hotkey");
+
+		auto _is_default = wolf::system::w_xml::get_node_attribute(pNode, "IsDefault");
+		std::transform(_is_default.begin(), _is_default.end(), _is_default.begin(), ::tolower);
+
+		auto _z_order = wolf::system::w_xml::get_node_attribute(pNode, "ZOrder");
+
+		auto _enabled = wolf::system::w_xml::get_node_attribute(pNode, "Enabled");
+		std::transform(_enabled.begin(), _enabled.end(), _enabled.begin(), ::tolower);
+
+		glm::vec2 _size_values = std::atov2(_size.c_str());
+		glm::vec2 _position_values = std::atov2(_position.c_str());
+		glm::vec2 _border_values = std::atov2(_border.c_str());
+		glm::vec2 _selected_margin_values = std::atov2(_selected_margin.c_str());
+
+		//create list box
+		auto _hr = add_list_widget(wolf::system::convert::to_hex(_id),
+			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
+			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
+			_multi_selection == "true" ? true : false,
+			static_cast<int>(_border_values.x), static_cast<int>(_border_values.y),
+			static_cast<int>(_selected_margin_values.x), static_cast<int>(_selected_margin_values.y),
+			atoi(_item_height.c_str()),
+			static_cast<UINT>(atoi(_hot_key.c_str())),
+			_is_default == "true" ? true : false,
+			w_color::from_string(_color.c_str()),
+			w_color::from_string(_selected_color.c_str()),
+			w_color::from_string(_disabled_color.c_str()),
+			w_color::from_string(_scroll_color.c_str()),
+			w_color::from_string(_scroll_background_color.c_str()),
+			w_color::from_string(_scroll_disabled_color.c_str()),
+			static_cast<float>(atof(_z_order.c_str())),
+			_enabled == "true" ? true : false);
+
+		if (_hr == S_FALSE)
+		{
+			wchar_t _msg[2048];
+			wsprintf(_msg, L"creating list_widget: %s from path: %s", _id, pGuiDesignPath);
 			V(S_FALSE, _msg, _trace_class_name, 3);
 		}
 
@@ -1114,8 +1215,8 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 		//load xml value
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
-		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 
 		auto _tab_button_size = wolf::system::w_xml::get_node_attribute(pNode, "TabButtonSize");
 		auto _arrow_button_text_offset = wolf::system::w_xml::get_node_attribute(pNode, "ArrowButtonTextOffset");
@@ -1155,8 +1256,8 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 			if (_item_name == "tabitem")
 			{
-				auto _text = wolf::system::w_xml::get_node_attribute_utf_8(_node, "Text");
-				auto _icon_path = wolf::system::w_xml::get_node_attribute_utf_8(_node, "IconPath");
+				auto _text = wolf::system::w_xml::get_node_attribute_utf8(_node, "Text");
+				auto _icon_path = wolf::system::w_xml::get_node_attribute_utf8(_node, "IconPath");
 				
 				auto _relative_path = wolf::system::w_xml::get_node_attribute(_node, "RelativePath");
 				std::transform(_relative_path.begin(), _relative_path.end(), _relative_path.begin(), ::tolower);
@@ -1181,10 +1282,10 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			}
 		}
 
-		//create widget
+		//create tab
 		auto _hr = add_tab(wolf::system::convert::to_hex(_id),
-			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
+			static_cast<UINT>(_size_values.x), static_cast<UINT>(_size_values.y),
 			static_cast<UINT>(_tab_button_size_values.x), static_cast<UINT>(_tab_button_size_values.y),
 			static_cast<int>(_arrow_button_text_offset_values.x), static_cast<int>(_arrow_button_text_offset_values.y),
 			w_color::from_string(_button_color.c_str()),
@@ -1197,7 +1298,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 			w_color::from_string(_text_pressed_color.c_str()),
 			w_color::from_string(_text_focused_color.c_str()),
 			w_color::from_string(_text_disabled_color.c_str()),
-			std::atof(_z_order.c_str()),
+			static_cast<float>(std::atof(_z_order.c_str())),
 			_enabled == "true" ? true : false,
 			_items);
 
@@ -1210,27 +1311,228 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode, HWND pHwnd, co
 
 #pragma endregion
 	}
+	else if (_name == "line")
+	{
+#pragma region create line shape from xml
+
+		//check parent
+		auto _parent_node = pNode->parent();
+		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
+		{
+			V(S_FALSE, L"loading a gui line shape without parent. The line shape must be child of a widget.", _trace_class_name, 2);
+			return;
+		}
+		else
+		{
+			auto _parent_node_name = std::string(_parent_node->name());
+			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
+			if (_parent_node_name != "widget")
+			{
+				V(S_FALSE, L"loading a gui line shape with unsupported parent. The line shape must be child of a widget.", _trace_class_name, 2);
+				return;
+			}
+		}
+
+		//load xml value
+		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
+		auto _start_point = wolf::system::w_xml::get_node_attribute(pNode, "StartPoint");
+		auto _stop_point = wolf::system::w_xml::get_node_attribute(pNode, "StopPoint");
+
+		auto _stroke_width = wolf::system::w_xml::get_node_attribute(pNode, "StrokeWidth");
+
+		auto _is_default = wolf::system::w_xml::get_node_attribute(pNode, "IsDefault");
+		std::transform(_is_default.begin(), _is_default.end(), _is_default.begin(), ::tolower);
+		
+		auto _fill_color = wolf::system::w_xml::get_node_attribute(pNode, "Color");
+		auto _disabled_color = wolf::system::w_xml::get_node_attribute(pNode, "DisabledColor");
+
+		auto _z_order = wolf::system::w_xml::get_node_attribute(pNode, "ZOrder");
+
+		auto _enabled = wolf::system::w_xml::get_node_attribute(pNode, "Enabled");
+		std::transform(_enabled.begin(), _enabled.end(), _enabled.begin(), ::tolower);
+
+		glm::vec2 _start_point_values = std::atov2(_start_point.c_str());
+		glm::vec2 _stop_point_values = std::atov2(_stop_point.c_str());
+
+		//create line
+		auto _hr = add_line_shape(wolf::system::convert::to_hex(_id),
+			static_cast<int>(_start_point_values.x), static_cast<int>(_start_point_values.y),
+			static_cast<int>(_stop_point_values.x), static_cast<int>(_stop_point_values.y),
+			static_cast<UINT>(atoi(_stroke_width.c_str())),
+			_is_default == "true" ? true : false,
+			w_color::from_string(_fill_color.c_str()),
+			w_color::from_string(_disabled_color.c_str()),
+			static_cast<float>(std::atof(_z_order.c_str())),
+			_enabled == "true" ? true : false);
+
+		if (_hr == S_FALSE)
+		{
+			wchar_t _msg[2048];
+			wsprintf(_msg, L"creating line shape: %s from path: %s", _id, pGuiDesignPath);
+			V(S_FALSE, _msg, _trace_class_name, 3);
+		}
+
+#pragma endregion
+	}
+	else if (_name == "rectangle")
+	{
+#pragma region create rectangle shape from xml
+
+		//check parent
+		auto _parent_node = pNode->parent();
+		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
+		{
+			V(S_FALSE, L"loading a gui rectangle shape without parent. The rectangle shape must be child of a widget.", _trace_class_name, 2);
+			return;
+		}
+		else
+		{
+			auto _parent_node_name = std::string(_parent_node->name());
+			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
+			if (_parent_node_name != "widget")
+			{
+				V(S_FALSE, L"loading a gui rectangle shape with unsupported parent. The rectangle shape must be child of a widget.", _trace_class_name, 2);
+				return;
+			}
+		}
+
+		//load xml value
+		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
+		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
+		auto _radius = wolf::system::w_xml::get_node_attribute(pNode, "Radius");
+		auto _stroke_width = wolf::system::w_xml::get_node_attribute(pNode, "StrokeWidth");
+
+		auto _is_default = wolf::system::w_xml::get_node_attribute(pNode, "IsDefault");
+		std::transform(_is_default.begin(), _is_default.end(), _is_default.begin(), ::tolower);
+
+		auto _fill_color = wolf::system::w_xml::get_node_attribute(pNode, "FillColor");
+		auto _border_color = wolf::system::w_xml::get_node_attribute(pNode, "BorderColor");
+		auto _mouse_over_color = wolf::system::w_xml::get_node_attribute(pNode, "MouseOverColor");
+		auto _disabled_color = wolf::system::w_xml::get_node_attribute(pNode, "DisabledColor");
+
+		auto _z_order = wolf::system::w_xml::get_node_attribute(pNode, "ZOrder");
+
+		auto _enabled = wolf::system::w_xml::get_node_attribute(pNode, "Enabled");
+		std::transform(_enabled.begin(), _enabled.end(), _enabled.begin(), ::tolower);
+
+		glm::vec2 _position_values = std::atov2(_position.c_str());
+		glm::vec2 _size_values = std::atov2(_size.c_str());
+		glm::vec2 _radius_values = std::atov2(_radius.c_str());
+
+		//create rectangle
+		auto _hr = add_rounded_rectangle_shape(wolf::system::convert::to_hex(_id),
+			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
+			static_cast<int>(_size_values.x), static_cast<int>(_size_values.y),
+			static_cast<int>(_radius_values.x), static_cast<int>(_radius_values.y),
+			static_cast<UINT>(atoi(_stroke_width.c_str())),
+			_is_default == "true" ? true : false,
+			w_color::from_string(_fill_color.c_str()),
+			w_color::from_string(_border_color.c_str()),
+			w_color::from_string(_mouse_over_color.c_str()),
+			w_color::from_string(_disabled_color.c_str()),
+			static_cast<float>(std::atof(_z_order.c_str())),
+			_enabled == "true" ? true : false);
+
+		if (_hr == S_FALSE)
+		{
+			wchar_t _msg[2048];
+			wsprintf(_msg, L"creating rectangle shape: %s from path: %s", _id, pGuiDesignPath);
+			V(S_FALSE, _msg, _trace_class_name, 3);
+		}
+
+#pragma endregion
+	}
+	else if (_name == "ellipse")
+	{
+#pragma region create ellipse shape from xml
+
+		//check parent
+		auto _parent_node = pNode->parent();
+		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
+		{
+			V(S_FALSE, L"loading a gui ellipse shape without parent. The ellipse shape must be child of a widget.", _trace_class_name, 2);
+			return;
+		}
+		else
+		{
+			auto _parent_node_name = std::string(_parent_node->name());
+			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
+			if (_parent_node_name != "widget")
+			{
+				V(S_FALSE, L"loading a gui ellipse shape with unsupported parent. The ellipse shape must be child of a widget.", _trace_class_name, 2);
+				return;
+			}
+		}
+
+		//load xml value
+		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
+		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
+		auto _radius = wolf::system::w_xml::get_node_attribute(pNode, "Radius");
+		auto _stroke_width = wolf::system::w_xml::get_node_attribute(pNode, "StrokeWidth");
+
+		auto _is_default = wolf::system::w_xml::get_node_attribute(pNode, "IsDefault");
+		std::transform(_is_default.begin(), _is_default.end(), _is_default.begin(), ::tolower);
+
+		auto _fill_color = wolf::system::w_xml::get_node_attribute(pNode, "FillColor");
+		auto _border_color = wolf::system::w_xml::get_node_attribute(pNode, "BorderColor");
+		auto _mouse_over_color = wolf::system::w_xml::get_node_attribute(pNode, "MouseOverColor");
+		auto _disabled_color = wolf::system::w_xml::get_node_attribute(pNode, "DisabledColor");
+
+		auto _z_order = wolf::system::w_xml::get_node_attribute(pNode, "ZOrder");
+
+		auto _enabled = wolf::system::w_xml::get_node_attribute(pNode, "Enabled");
+		std::transform(_enabled.begin(), _enabled.end(), _enabled.begin(), ::tolower);
+
+		glm::vec2 _position_values = std::atov2(_position.c_str());
+		glm::vec2 _radius_values = std::atov2(_radius.c_str());
+
+		//create ellipse
+		auto _hr = add_ellipse_shape(wolf::system::convert::to_hex(_id),
+			static_cast<int>(_position_values.x), static_cast<int>(_position_values.y),
+			static_cast<int>(_radius_values.x), static_cast<int>(_radius_values.y),
+			static_cast<UINT>(atoi(_stroke_width.c_str())),
+			_is_default == "true" ? true : false,
+			w_color::from_string(_fill_color.c_str()),
+			w_color::from_string(_border_color.c_str()),
+			w_color::from_string(_mouse_over_color.c_str()),
+			w_color::from_string(_disabled_color.c_str()),
+			static_cast<float>(std::atof(_z_order.c_str())),
+			_enabled == "true" ? true : false);
+
+		if (_hr == S_FALSE)
+		{
+			wchar_t _msg[2048];
+			wsprintf(_msg, L"creating ellipse shape: %s from path: %s", _id, pGuiDesignPath);
+			V(S_FALSE, _msg, _trace_class_name, 3);
+		}
+
+#pragma endregion
+	}
 }
 
 HRESULT w_gui::add_widget(_In_ HWND pHwnd,
 	_In_ const std::string pWidgetName,
 	_Inout_ wolf::gui::w_widget** pWidget,
-	_In_ UINT pWidth,
-	_In_ UINT pHeight,
+	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ bool pDraggable,
 	_In_ bool pVisisble,
 	_In_ bool pMinimized,
-	_In_ int pX,
-	_In_ int pY,
 	_In_ w_color pBackgroundColorTopLeft,
 	_In_ w_color pBackgroundColorTopRight,
 	_In_ w_color pBackgroundColorBottomLeft,
 	_In_ w_color pBackgroundColorBottomRight,
+	_In_ w_color pActiveBackgroundColorTopLeft,
+	_In_ w_color pActiveBackgroundColorTopRight,
+	_In_ w_color pActiveBackgroundColorBottomLeft,
+	_In_ w_color pActiveBackgroundColorBottomRight,
 	_In_ float pZOrder,
 	_In_ bool pEnabled,
 	_In_ bool pEnableCaption,
 	_In_ const std::wstring pCaption,
 	_In_ w_color pCaptionBackgroundColor,
+	_In_ w_color pCaptionActiveBackgroundColor,
 	_In_ UINT pCaptionHeight,
 	_In_ int pCaptionMarginLeft,
 	_In_ int pCaptionMarginTop,
@@ -1259,12 +1561,23 @@ HRESULT w_gui::add_widget(_In_ HWND pHwnd,
 	_widget->set_visibility(pVisisble);
 	_widget->set_minimized(pMinimized);
 	_widget->set_position(pX, pY);
-	_widget->set_background_colors(pBackgroundColorTopLeft, pBackgroundColorTopRight, pBackgroundColorBottomLeft, pBackgroundColorBottomRight);
+
+	_widget->set_background_colors(pBackgroundColorTopLeft, 
+		pBackgroundColorTopRight, 
+		pBackgroundColorBottomLeft, 
+		pBackgroundColorBottomRight);
+
+	_widget->set_active_background_colors(pActiveBackgroundColorTopLeft, 
+		pActiveBackgroundColorTopRight, 
+		pActiveBackgroundColorBottomLeft, 
+		pActiveBackgroundColorBottomRight);
+
 	_widget->set_z_order(pZOrder);
 	_widget->set_enabled(pEnabled);
 	_widget->set_enable_caption(pEnableCaption);
 	_widget->set_caption(pCaption.c_str());
 	_widget->set_caption_background_color(pCaptionBackgroundColor);
+	_widget->set_caption_active_background_color(pCaptionActiveBackgroundColor);
 	_widget->set_caption_height(pCaptionHeight);
 	_widget->set_caption_margin_left(pCaptionMarginLeft);
 	_widget->set_caption_margin_top(pCaptionMarginTop);
@@ -1298,11 +1611,9 @@ HRESULT w_gui::add_image(_In_ int pID,
 	_In_ int pX, _In_ int pY,
 	_In_z_ std::wstring pPath,
 	_In_ bool pRelativePath,
-	_In_ float pGuassianEffectValue,
 	_In_ float pScaleX, _In_ float pScaleY,
+	_In_ float pRotationX, _In_ float pRotationY,
 	_In_ int pWidth, _In_ int pHeight,
-	_In_ float pRotationAngle, _In_ int pSetRotationCenterX, _In_ int pSetRotationCenterY,
-	_In_ float pTranslationX, _In_ float pTranslationY,
 	_In_ bool pIsDefault,
 	_In_ float pZOrder,
 	_In_ bool pEnabled)
@@ -1313,11 +1624,9 @@ HRESULT w_gui::add_image(_In_ int pID,
 		auto _hr = _temp_parent_widget_ptr->add_image(pID,
 			pX, pY,
 			pPath, pRelativePath,
-			pGuassianEffectValue, 
 			pScaleX, pScaleY,
+			pRotationX, pRotationY,
 			pWidth, pHeight,
-			pRotationAngle, pSetRotationCenterX, pSetRotationCenterY,
-			pTranslationX, pTranslationY,
 			pIsDefault,
 			&_control);
 		if (FAILED(_hr))
@@ -1340,10 +1649,8 @@ HRESULT w_gui::add_image(_In_ int pID,
 
 HRESULT w_gui::add_label(_In_ int pID,
 	_In_z_ std::wstring pText,
-	_In_ UINT pWidth,
-	_In_ UINT pHeight,
-	_In_ int pX,
-	_In_ int pY,
+	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ w_color pColor,
 	_In_ w_color pMouseOverColor,
 	_In_ w_color pPressedColor,
@@ -1394,8 +1701,8 @@ HRESULT w_gui::add_label(_In_ int pID,
 
 HRESULT w_gui::add_button(_In_ int pID,
 	_In_z_ std::wstring pText,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_z_ std::wstring pIconPath,
 	_In_ bool pRelativePath,
 	_In_ int pTextOffsetX, _In_ int pTextOffsetY,
@@ -1429,8 +1736,8 @@ HRESULT w_gui::add_button(_In_ int pID,
 		wolf::gui::w_button* _control = nullptr;
 		auto _hr = _temp_parent_widget_ptr->add_button(pID,
 			pText,
-			pWidth, pHeight,
 			pX, pY,
+			pWidth, pHeight,
 			pIconPath,
 			pRelativePath,
 			pTextOffsetX, pTextOffsetY,
@@ -1467,8 +1774,8 @@ HRESULT w_gui::add_button(_In_ int pID,
 
 HRESULT w_gui::add_check_box(_In_ int pID,
 	_In_z_ std::wstring pText,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ bool pChecked,
 	_In_ int pTextOffsetX,
 	_In_ int pTextOffsetY,
@@ -1499,8 +1806,8 @@ HRESULT w_gui::add_check_box(_In_ int pID,
 		wolf::gui::w_check_box* _control = nullptr;
 		auto _hr = _temp_parent_widget_ptr->add_check_box(pID,
 			pText,
-			pWidth, pHeight,
 			pX, pY,
+			pWidth, pHeight,
 			pChecked,
 			pTextOffsetX, pTextOffsetY,
 			pHotkey,
@@ -1537,8 +1844,8 @@ HRESULT w_gui::add_check_box(_In_ int pID,
 HRESULT w_gui::add_radio_button(int pID,
 	UINT pButtonGroup,
 	_In_z_ std::wstring pText,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ bool pChecked,
 	_In_ int pTextOffsetX, _In_ int pTextOffsetY,
 	_In_ UINT pHotkey,
@@ -1569,8 +1876,8 @@ HRESULT w_gui::add_radio_button(int pID,
 		auto _hr = _temp_parent_widget_ptr->add_radio_button(pID,
 			pButtonGroup,
 			pText,
-			pWidth, pHeight,
 			pX, pY,
+			pWidth, pHeight,
 			pChecked,
 			pTextOffsetX, pTextOffsetY,
 			pHotkey,
@@ -1605,8 +1912,8 @@ HRESULT w_gui::add_radio_button(int pID,
 }
 
 HRESULT w_gui::add_combo_box(_In_ int pID,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pTextOffsetX, _In_ int pTextOffsetY,
 	_In_ UINT pItemHeight,
 	_In_ POINT pItemMargin,
@@ -1643,8 +1950,8 @@ HRESULT w_gui::add_combo_box(_In_ int pID,
 	{
 		wolf::gui::w_combo_box* _control = nullptr;
 		auto _hr = _temp_parent_widget_ptr->add_combo_box(pID,
-			pWidth, pHeight,
 			pX, pY,
+			pWidth, pHeight,
 			pTextOffsetX, pTextOffsetY,
 			pHotkey,
 			pIsDefault,
@@ -1681,8 +1988,8 @@ HRESULT w_gui::add_combo_box(_In_ int pID,
 }
 
 HRESULT w_gui::add_slider(_In_ int pID,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pMin, _In_ int pMax,
 	_In_ int pValue,
 	_In_ UINT pHotkey,
@@ -1711,8 +2018,8 @@ HRESULT w_gui::add_slider(_In_ int pID,
 	{
 		wolf::gui::w_slider* _control = nullptr;
 		auto _hr = _temp_parent_widget_ptr->add_slider(pID,
-			pWidth, pHeight,
 			pX, pY,
+			pWidth, pHeight,
 			pMin, pMax,
 			pValue,
 			pHotkey,
@@ -1739,14 +2046,16 @@ HRESULT w_gui::add_slider(_In_ int pID,
 }
 
 HRESULT w_gui::add_list_box(_In_ int pID,
-	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pX, _In_ int pY,
-	_In_ DWORD pStyle,
+	_In_ UINT pWidth, _In_ UINT pHeight,
+	_In_ bool pMultiSelection,
 	_In_ int pBorderX, _In_ int pBorderY,
 	_In_ int pTextMarginX, _In_ int pTextMarginY,
 	_In_ int pIconMarginX, _In_ int pIconMarginY,
+	_In_ float pIconScaleX, _In_ float pIconScaleY,
 	_In_ int pSelectedRectangleMarginTop, _In_ int pSelectedRectangleMarginDown,
 	_In_ int pItemHeight,
+	_In_ int pIconHeightOffset,
 	_In_ UINT pHotkey,
 	_In_ bool pIsDefault,
 	_In_ w_color pTextColor,
@@ -1755,6 +2064,9 @@ HRESULT w_gui::add_list_box(_In_ int pID,
 	_In_ w_color pColor,
 	_In_ w_color pSelectedColor,
 	_In_ w_color pDisabledColor,
+	_In_ w_color pScrollColor,
+	_In_ w_color pScrollBackgroundColor,
+	_In_ w_color pScrollDisabledColor,
 	_In_ float pZOrder,
 	_In_ bool pEnabled,
 	_In_ const std::string pFontName,
@@ -1770,13 +2082,13 @@ HRESULT w_gui::add_list_box(_In_ int pID,
 	{
 		wolf::gui::w_list_box* _control = nullptr;
 		auto _hr = _temp_parent_widget_ptr->add_list_box(pID,
-			pWidth, pHeight,
 			pX, pY,
-			pStyle,
+			pWidth, pHeight,
+			pMultiSelection,
 			&_control);
 		if (FAILED(_hr))
 		{
-			auto _msg = std::string("creating listbox with id: ") + std::to_string(pID);
+			auto _msg = std::string("creating list_box with id: ") + std::to_string(pID);
 			V(_hr, _msg, _trace_class_name, 3);
 			return _hr;
 		}
@@ -1786,15 +2098,19 @@ HRESULT w_gui::add_list_box(_In_ int pID,
 			_control->set_border(pBorderX, pBorderY);
 			_control->set_text_margin(pTextMarginX, pTextMarginY);
 			_control->set_icon_margin(pIconMarginX, pIconMarginY);
+			_control->set_icon_scale(pIconScaleX, pIconScaleY);
 			_control->set_item_height(pItemHeight);
-			_control->set_item_selected_rectangle_margin_top(pSelectedRectangleMarginTop);
-			_control->set_item_selected_rectangle_margin_down(pSelectedRectangleMarginDown);
+			_control->set_icon_height_offset(pIconHeightOffset);
+			_control->set_item_selected_rectangle_margin(pSelectedRectangleMarginTop, pSelectedRectangleMarginDown);
 			_control->set_label_color(pTextColor);
 			_control->set_label_selected_color(pSelectedTextColor);
 			_control->set_label_disabled_color(pDisabledTextColor);
-			_control->set_listBox_color(pColor);
-			_control->set_listBox_selected_color(pSelectedColor);
-			_control->set_listBox_disabled_color(pDisabledColor);
+			_control->set_list_color(pColor);
+			_control->set_list_selected_color(pSelectedColor);
+			_control->set_list_disabled_color(pDisabledColor);
+			_control->set_scroll_color(pScrollColor);
+			_control->set_scroll_background_color(pScrollBackgroundColor);
+			_control->set_scroll_disabled_color(pScrollDisabledColor);
 			_control->set_z_order(pZOrder);
 			_control->set_enabled(pEnabled);
 
@@ -1812,9 +2128,62 @@ HRESULT w_gui::add_list_box(_In_ int pID,
 	return S_FALSE;
 }
 
-HRESULT w_gui::add_tab(_In_ int pID,
-	_In_ UINT pWidth, _In_ UINT pHeight,
+HRESULT w_gui::add_list_widget(_In_ int pID,
 	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
+	_In_ bool pMultiSelection,
+	_In_ int pBorderX, _In_ int pBorderY,
+	_In_ int pSelectedRectangleMarginTop, _In_ int pSelectedRectangleMarginDown,
+	_In_ int pItemHeight,
+	_In_ UINT pHotkey,
+	_In_ bool pIsDefault,
+	_In_ w_color pColor,
+	_In_ w_color pSelectedColor,
+	_In_ w_color pDisabledColor,
+	_In_ w_color pScrollColor,
+	_In_ w_color pScrollBackgroundColor,
+	_In_ w_color pScrollDisabledColor,
+	_In_ float pZOrder,
+	_In_ bool pEnabled)
+{
+	if (_temp_parent_widget_ptr)
+	{
+		wolf::gui::w_list_widget* _control = nullptr;
+		auto _hr = _temp_parent_widget_ptr->add_list_widget(pID,
+			pX, pY,
+			pWidth, pHeight,
+			pMultiSelection,
+			&_control);
+		if (FAILED(_hr))
+		{
+			auto _msg = std::string("creating list_widget with id: ") + std::to_string(pID);
+			V(_hr, _msg, _trace_class_name, 3);
+			return _hr;
+		}
+
+		if (_control)
+		{
+			_control->set_border(pBorderX, pBorderY);
+			_control->set_item_height(pItemHeight);
+			_control->set_item_selected_rectangle_margin(pSelectedRectangleMarginTop, pSelectedRectangleMarginDown);
+			_control->set_list_color(pColor);
+			_control->set_list_selected_color(pSelectedColor);
+			_control->set_list_disabled_color(pDisabledColor);
+			_control->set_scroll_color(pScrollColor);
+			_control->set_scroll_background_color(pScrollBackgroundColor);
+			_control->set_scroll_disabled_color(pScrollDisabledColor);
+			_control->set_z_order(pZOrder);
+			_control->set_enabled(pEnabled);
+		}
+
+		return _hr;
+	}
+	return S_FALSE;
+}
+
+HRESULT w_gui::add_tab(_In_ int pID,
+	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ UINT pTabButtonWidth, _In_ UINT pTabButtonHeight,
 	_In_ int ppArrowButtonTextOffsetX, _In_ int ppArrowButtonTextOffsetY,
 	_In_ w_color pButtonColor,
@@ -1835,8 +2204,8 @@ HRESULT w_gui::add_tab(_In_ int pID,
 	{
 		wolf::gui::w_tab* _control = nullptr;
 		auto _hr = _temp_parent_widget_ptr->add_tab(pID,
-			pWidth, pHeight,
 			pX, pY,
+			pWidth, pHeight,
 			pTabButtonWidth, pTabButtonHeight,
 			ppArrowButtonTextOffsetX, ppArrowButtonTextOffsetY,
 			&_control);
@@ -1886,15 +2255,148 @@ HRESULT w_gui::add_tab(_In_ int pID,
 	return S_FALSE;
 }
 
+HRESULT w_gui::add_line_shape(_In_ int pID,
+	_In_ int pStartX, _In_ int pStartY,
+	_In_ int pStopX, _In_ int pStopY,
+	_In_ UINT pStrokeWidth,
+	_In_ bool pIsDefault,
+	_In_ w_color pColor,
+	_In_ w_color pDisabledColor,
+	_In_ float pZOrder,
+	_In_ bool pEnabled)
+{
+	if (_temp_parent_widget_ptr)
+	{
+		wolf::gui::w_line_shape* _control = nullptr;
+		auto _hr = _temp_parent_widget_ptr->add_line_shape(pID,
+			pStartX, pStartY,
+			pStopX, pStopY,
+			pStrokeWidth,
+			pIsDefault,
+			pColor,
+			pDisabledColor,
+			&_control);
+		if (FAILED(_hr))
+		{
+			auto _msg = std::string("creating line shape control with id: ") + std::to_string(pID);
+			V(_hr, _msg, _trace_class_name, 3);
+			return _hr;
+		}
+
+		if (_control)
+		{
+			_control->set_z_order(pZOrder);
+			_control->set_enabled(pEnabled);
+		}
+
+		return _hr;
+	}
+	return S_FALSE;
+}
+
+HRESULT w_gui::add_rounded_rectangle_shape(_In_ int pID,
+	_In_ int pX, _In_ int pY,
+	_In_ UINT pWidth, _In_ UINT pHeight,
+	_In_ float pRadiusX, _In_ float pRadiusY,
+	_In_ float pStrokeWidth,
+	_In_ bool pIsDefault,
+	_In_ w_color pFillColor,
+	_In_ w_color pBorderColor,
+	_In_ w_color pMouseOverColor,
+	_In_ w_color pDisabledColor,
+	_In_ float pZOrder,
+	_In_ bool pEnabled)
+{
+	if (_temp_parent_widget_ptr)
+	{
+		wolf::gui::w_rounded_rectangle_shape* _control = nullptr;
+		auto _hr = _temp_parent_widget_ptr->add_rounded_rectangle_shape(pID,
+			pX, pY,
+			pWidth, pHeight,
+			pRadiusX, pRadiusY,
+			pStrokeWidth,
+			pIsDefault,
+			pFillColor,
+			pBorderColor,
+			pMouseOverColor,
+			pDisabledColor,
+			&_control);
+		if (FAILED(_hr))
+		{
+			auto _msg = std::string("creating rounded rectangle shape control with id: ") + std::to_string(pID);
+			V(_hr, _msg, _trace_class_name, 3);
+			return _hr;
+		}
+
+		if (_control)
+		{
+			_control->set_z_order(pZOrder);
+			_control->set_enabled(pEnabled);
+		}
+
+		return _hr;
+	}
+	return S_FALSE;
+}
+
+
+HRESULT w_gui::add_ellipse_shape(_In_ int pID,
+	_In_ float pCenterX, _In_ float pCenterY,
+	_In_ float pRadiusX, _In_ float pRadiusY,
+	_In_ UINT pStrokeWidth,
+	_In_ bool pIsDefault,
+	_In_ w_color pFillColor,
+	_In_ w_color pBorderColor,
+	_In_ w_color pMouseOverColor,
+	_In_ w_color pDisabledColor,
+	_In_ float pZOrder,
+	_In_ bool pEnabled)
+{
+	if (_temp_parent_widget_ptr)
+	{
+		wolf::gui::w_ellipse_shape* _control = nullptr;
+		auto _hr = _temp_parent_widget_ptr->add_ellipse_shape(pID,
+			pCenterX, pCenterY,
+			pRadiusX, pRadiusY,
+			pStrokeWidth,
+			pIsDefault,
+			pFillColor,
+			pBorderColor,
+			pMouseOverColor,
+			pDisabledColor,
+			&_control);
+		if (FAILED(_hr))
+		{
+			auto _msg = std::string("creating ellipse shape control with id: ") + std::to_string(pID);
+			V(_hr, _msg, _trace_class_name, 3);
+			return _hr;
+		}
+
+		if (_control)
+		{
+			_control->set_z_order(pZOrder);
+			_control->set_enabled(pEnabled);
+		}
+
+		return _hr;
+	}
+	return S_FALSE;
+}
+
 void w_gui::render(const wolf::system::w_game_time& pGameTime)
 {
+#ifdef WIN32
+	//if minimized
+	if (IsIconic(_hwnd)) return;
+#endif
+
 	auto _time = (float)pGameTime.get_elapsed_seconds();
 	std::for_each(_widgets.begin(), _widgets.end(), [&_time](const std::pair<const std::string, wolf::gui::w_widget*> pWidget)
 	{
 		auto _ptr = pWidget.second;
 		if (_ptr)
 		{
-			_ptr->on_render(_time);
+			_ptr->render(_time);
 		}
 	});
 }
@@ -1907,7 +2409,7 @@ void w_gui::render(const char* pWidgetName, const wolf::system::w_game_time& pGa
 		auto _ptr = _find->second;
 		if (_ptr)
 		{
-			_ptr->on_render((float)pGameTime.get_elapsed_seconds());
+			_ptr->render((float)pGameTime.get_elapsed_seconds());
 			return;
 		}
 	}

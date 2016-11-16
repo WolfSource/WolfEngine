@@ -10,7 +10,11 @@
 #ifndef __W_PROCESS_H__
 #define __W_PROCESS_H__
 
-#include "w_system_dll.h"
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#include "w_system_export.h"
 #include <Windows.h>
 #include <tlhelp32.h>//for checking process
 #include <psapi.h>//list all processes
@@ -102,4 +106,4 @@ namespace wolf
 	}
 }
 
-#endif
+#endif //__W_PROCESS_H__

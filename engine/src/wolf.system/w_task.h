@@ -10,14 +10,18 @@
 #ifndef __W_TASK_H__
 #define __W_TASK_H__
 
-#include <functional>
-//#include <tbb/task.h>
-
-#ifdef _WIN32
-#include <ppltasks.h>
-#else
-#include <future>
+#if _MSC_VER > 1000
+#pragma once
 #endif
+
+#include <functional>
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
+#include <ppltasks.h>
+#endif
+
+#include <future>
+#include "w_system_export.h"
 
 namespace wolf
 {
@@ -26,48 +30,67 @@ namespace wolf
 		class w_task
 		{
 		public:
-			static void execute(std::function<void(void)> pTaskWork)
-			{
-#ifdef _WIN32
-				auto _task = concurrency::create_task(pTaskWork);
-#else
-				std::async(std::launch::async, pTaskWork);
+#if defined(__WIN32) || defined(__UNIVERSAL)
+			WSYS_EXP static void execute_async_ppl(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack = nullptr);
 #endif
-			}
-		};
+			WSYS_EXP static void execute_async(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack = nullptr);
+			WSYS_EXP static void execute_deferred(_In_ const std::function<void(void)>& pTaskWork);
+			WSYS_EXP static std::future_status wait_for(_In_ const long long pMilliSeconds);
+			WSYS_EXP static void wait();
+			WSYS_EXP static void get();
 
+		private:
+			static std::future<void> _deferred;
+		};
 	}
 }
 
-//New version of TBB not work fine on AMD
-//namespace tbb
-//{
-//	class Task : public tbb::task
-//	{
-//	public:
-//		Task::Task(std::function<void(void)> pTaskWork)
-//		{
-//			this->_task_work = pTaskWork;
-//		}
-//		Task::Task(std::function<void(void)> pTaskWork, tbb::priority_t pPriority)
-//		{
-//			this->_task_work = pTaskWork;
-//			this->set_group_priority(pPriority);
-//		}
-//
-//		tbb::task* execute()
-//		{
-//			if (_task_work)
-//			{
-//				_task_work();
-//			}
-//
-//			return NULL;
-//		}
-//
-//	private:
-//		std::function<void(void)> _task_work;
-//	};
-//}
+#if defined(__WIN32) || defined(__UNIVERSAL)
 
-#endif
+#include <tbb/task.h>
+
+namespace tbb
+{
+	class Task : public tbb::task
+	{
+	public:
+		Task::Task(std::function<void(void)>& pTaskWork)
+		{
+			this->_task_work = pTaskWork;
+		}
+		Task::Task(std::function<void(void)>& pTaskWork, tbb::priority_t pPriority)
+		{
+			this->_task_work = pTaskWork;
+			this->set_group_priority(pPriority);
+		}
+		Task::Task(std::function<void(void)>& pTaskWork, std::function<void(void)>& pCallBack, tbb::priority_t pPriority)
+		{
+			this->_task_work = pTaskWork;
+			this->_call_back = pCallBack;
+			this->set_group_priority(pPriority);
+		}
+		
+		tbb::task* execute()
+		{
+			if (_task_work)
+			{
+				_task_work();
+			}
+
+			if (_call_back)
+			{
+				_call_back();
+			}
+
+			return NULL;
+		}
+
+	private:
+		std::function<void(void)> _task_work;
+		std::function<void(void)> _call_back;
+	};
+}
+
+#endif//__WIN32 || __UNIVERSAL
+
+#endif //__W_TASK_H__

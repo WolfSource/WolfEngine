@@ -5,50 +5,52 @@
 using namespace wolf::gui;
 
 w_list_box::w_list_box(_In_opt_ w_widget* pParent) : _super(pParent),
-scrollBar(pParent),
-_text_margin_x(0),
-_text_margin_y(0),
-_icon_margin_x(0),
-_icon_margin_y(0),
-_icon_scale(1, 1),
-style(0),
+scroll_bar(pParent),
+text_margin_x(0),
+text_margin_y(0),
+icon_margin_x(0),
+icon_margin_y(0),
+icon_scale(1, 1),
+icon_height_offset(0),
+multiselection(false),
 border(6),
 margin(5),
-_item_selected_rectangle_margin_top(0),
-_item_selected_rectangle_margin_down(0),
-scrollBar_Width(16),
+scroll_bar_width(16),
 selected_index(-1),
 selected_start(0),
 drag(false),
-_item_height(0),
-_listBox_label_color(w_color(0, 0, 0, 255)),
-_listBox_label_selected_color(w_color(255, 255, 255, 255)),
-_listBox_label_disabled_color(w_color(0, 0, 0, 155)),
-_listBox_color(w_color::WHITE),
-_listBox_disabled_color(RGBA_TO_HEX_COLOR(255, 255, 255, 155)), 
-_listBox_selected_color(1, 0, 0, 0.6f),
-_listBox_scroll_color(w_color(200, 200, 200, 255)),
-_listBox_scroll_background_color(w_color(255, 255, 255, 200)),
-_listBox_scroll_disabled_color(w_color(255, 255, 255, 70))
+item_height(0),
+list_box_text_color(w_color(0, 0, 0, 255)),
+list_box_text_selected_color(w_color(255, 255, 255, 255)),
+list_box_text_disabled_color(w_color(0, 0, 0, 155)),
+list_box_color(w_color::WHITE),
+list_box_disabled_color(RGBA_TO_HEX_COLOR(255, 255, 255, 155)), 
+list_box_selected_color(1, 0, 0, 0.6f),
+list_box_scroll_color(w_color(200, 200, 200, 255)),
+list_box_scroll_background_color(w_color(255, 255, 255, 200)),
+list_box_scroll_disabled_color(w_color(255, 255, 255, 70))
 {
 	_super::type = W_GUI_CONTROL_LISTBOX;
 	_super::parent_widget = pParent;
 
-	this->_label = new w_label(pParent);
-	this->_label->set_force_use_current_color_state(true);
+	this->label = new w_label(pParent);
+	this->label->set_force_use_current_color_state(true);
 }
 
 w_list_box::~w_list_box()
 {
-	SAFE_RELEASE(this->_label);
+	SAFE_RELEASE(this->label);
 	remove_all_items();
 }
 
 HRESULT w_list_box::on_initialize(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
 {
-	this->_label->set_element(0, _super::elements[0]);
+	this->_gDevice = pGDevice;
 
-	return _super::parent_widget->initialize_control(&this->scrollBar);
+	this->label->set_element(0, _super::elements[0]);
+	this->_initialized_scroll_size = false;
+
+	return _super::parent_widget->initialize_control(&this->scroll_bar);
 }
 
 bool w_list_box::can_have_focus()
@@ -60,103 +62,89 @@ void w_list_box::update_rects()
 {
 	_super::update_rects();
 
-	this->rectangle_selection = _super::boundingBox;
-	this->rectangle_selection.right -= this->scrollBar_Width;
+	this->rectangle_selection = _super::bounding_box;
+	this->rectangle_selection.right -= this->scroll_bar_width;
 
 	InflateRect(&this->rectangle_selection, -this->border, -this->border);
 	this->rectangle_text = this->rectangle_selection;
 	InflateRect(&this->rectangle_text, -this->margin, 0);
 
 	// Update the scrollbar's rects
-	this->scrollBar.set_position(_super::boundingBox.right - this->scrollBar_Width, _super::boundingBox.top);
-	this->scrollBar.set_size(this->scrollBar_Width, _super::height);
+	this->scroll_bar.set_position(_super::bounding_box.right - this->scroll_bar_width, _super::bounding_box.top);
+	this->scroll_bar.set_size(this->scroll_bar_width, _super::height);
 
-	auto pFontNode = _super::parent_widget->get_manager()->get_font_node(_super::elements[0]->index_font);
-	if (pFontNode && pFontNode->height)
+	auto _font_node = _super::parent_widget->get_manager()->get_font_node(_super::elements[0]->index_font);
+	if (_font_node && _font_node->height)
 	{
-		this->scrollBar.set_page_size((this->rectangle_text.bottom - this->rectangle_text.top) / pFontNode->height);
+		this->scroll_bar.set_page_size((this->rectangle_text.bottom - this->rectangle_text.top) / _font_node->height);
 
 		// The selected item may have been scrolled off the page.
 		// Ensure that it is in page again.
-		this->scrollBar.show_item(this->selected_index);
+		this->scroll_bar.show_item(this->selected_index);
+		_super::redraw = true;
 	}
 }
 
-_Use_decl_annotations_
-HRESULT w_list_box::add_item(_In_z_ const std::wstring& pText, _In_z_ const std::wstring& pIconPath, _In_ bool pRelateivePath, _In_opt_  void* pData)
+HRESULT w_list_box::add_item(_In_z_ const std::wstring& pText, _In_z_ const std::wstring& pIconPath, _In_ bool pRelateivePath,  _In_opt_  void* pData)
 {
-	auto pNewItem = new (std::nothrow) w_list_box_item();
-	if (!pNewItem) return E_OUTOFMEMORY;
+	auto _new_item = new (std::nothrow) w_list_box_item();
+	if (!_new_item) return E_OUTOFMEMORY;
 
 	auto _path = pRelateivePath ? wolf::framework::w_game::get_content_directory() + pIconPath : pIconPath;
 
-	pNewItem->text = pText;
-	pNewItem->icon_path = _path;
-	pNewItem->data = pData;
-	SetRect(&pNewItem->rectangle_active, 0, 0, 0, 0);
-	pNewItem->selected = false;
+	_new_item->text = pText;
+	_new_item->icon_path = _path;
+	_new_item->data = pData;
+	SetRect(&_new_item->rectangle_active, 0, 0, 0, 0);
+	_new_item->selected = false;
 
 	if (!pIconPath.empty())
 	{
-		auto _hr = _super::parent_widget->add_image_to_resource_manager(_path.c_str());
-		if (_hr == S_FALSE)
-		{
-			logger.write(L"Could not add image to resource manager from following path : " + std::wstring(_path));
-		}
-		else
-		{
-			auto _icon = new w_image(_super::parent_widget);
-			_icon->set_path(_path);
-			pNewItem->icon = _icon;
-		}
+		auto _icon = new w_image(_super::parent_widget);
+		_icon->set_path(_path);
+		_icon->set_scale(this->icon_scale.x, this->icon_scale.y);
+
+		_icon->set_position(_super::x + this->icon_margin_x, _super::y + this->icon_margin_y);
+
+		_icon->on_initialize(_gDevice);
+		_new_item->icon = _icon;
 	}
 
-	this->items.push_back(pNewItem);
-	this->scrollBar.set_track_range(0, (int) this->items.size());
+	this->items.push_back(_new_item);
+	this->scroll_bar.set_track_range(0, (int) this->items.size());
+	_super::redraw = true;
 
 	return S_OK;
 }
 
-_Use_decl_annotations_
 HRESULT w_list_box::insert_item(int pIndex, _In_z_ const std::wstring& pText, _In_z_ const std::wstring& pIconPath, _In_ bool pRelateivePath, _In_opt_ void* pData)
 {
-	auto pNewItem = new (std::nothrow) w_list_box_item;
-	if (!pNewItem) return E_OUTOFMEMORY;
+	auto _new_item = new (std::nothrow) w_list_box_item();
+	if (!_new_item) return E_OUTOFMEMORY;
 
 	auto _path = pRelateivePath ? wolf::framework::w_game::get_content_directory() + pIconPath : pIconPath;
 
-	pNewItem->text = pText;
-	pNewItem->icon_path = _path;
-	pNewItem->data = pData;
-	SetRect(&pNewItem->rectangle_active, 0, 0, 0, 0);
-	pNewItem->selected= false;
+	_new_item->text = pText;
+	_new_item->icon_path = _path;
+	_new_item->data = pData;
+	SetRect(&_new_item->rectangle_active, 0, 0, 0, 0);
+	_new_item->selected = false;
 
-
-	//first remove the resource of image
-	if (this->items[pIndex]->icon)
-	{
-		SAFE_RELEASE(this->items[pIndex]->icon);
-	}
-
-	//Add image
 	if (!pIconPath.empty())
 	{
-		auto _hr = _super::parent_widget->add_image_to_resource_manager(_path.c_str());
-		if (_hr == S_FALSE)
-		{
-			logger.write(L"Could not add image to resource manager from following path : " + _path);
-		}
-		else
-		{
-			auto _icon = new w_image(_super::parent_widget);
-			_icon->set_path(_path);
-			pNewItem->icon = _icon;
-		}
+		auto _icon = new w_image(_super::parent_widget);
+		_icon->set_path(_path);
+		_icon->set_scale(this->icon_scale.x, this->icon_scale.y);
+
+		_icon->set_position(_super::x + this->icon_margin_x, _super::y + this->icon_margin_y);
+
+		_icon->on_initialize(_gDevice);
+		_new_item->icon = _icon;
 	}
 
-
-	this->items[pIndex] = pNewItem;
-	this->scrollBar.set_track_range(0, (int) this->items.size());
+	this->items.insert(this->items.begin() + pIndex, _new_item);
+	this->scroll_bar.set_track_range(0, (int) this->items.size());
+	_super::redraw = true;
 
 	return S_OK;
 }
@@ -165,20 +153,21 @@ void w_list_box::remove_item(_In_ int pIndex)
 {
 	if (pIndex < 0 || pIndex >= (int) this->items.size()) return;
 
-	auto it = this->items.begin() + pIndex;
-	auto pItem = *it;
+	auto _iter = this->items.begin() + pIndex;
+	auto _item = *_iter;
 	
 	//release resource of icon
-	SAFE_RELEASE(pItem->icon);
+	SAFE_RELEASE(_item->icon);
 
-	delete pItem;
+	delete _item;
 
-	this->items.erase(it);
-	this->scrollBar.set_track_range(0, (int) this->items.size());
+	this->items.erase(_iter);
+	this->scroll_bar.set_track_range(0, (int) this->items.size());
 	if (this->selected_index >= (int) this->items.size())
 	{
 		this->selected_index = int(this->items.size()) - 1;
 	}
+	_super::redraw = true;
 	_super::parent_widget->send_event(W_EVENT_LISTBOX_SELECTION, true, this);
 }
 
@@ -197,37 +186,8 @@ void w_list_box::remove_all_items()
 	}
 
 	this->items.clear();
-	this->scrollBar.set_track_range(0, 1);
-}
-
-w_list_box_item* w_list_box::get_item(_In_ int nIndex) const
-{
-	if (nIndex < 0 || nIndex >= (int) this->items.size()) return nullptr;
-
-	return this->items[nIndex];
-}
-
-int w_list_box::get_selected_index(_In_ int pPreviousSelected) const
-{
-	if (pPreviousSelected < -1) return -1;
-
-	if (this->style & MULTISELECTION)
-	{
-		// Multiple selection enabled. Search for the next item with the selected flag.
-		for (int i = pPreviousSelected + 1; i < (int) this->items.size(); ++i)
-		{
-			auto pItem = this->items[i];
-
-			if (pItem->selected) return i;
-		}
-
-		return -1;
-	}
-	else
-	{
-		// Single selection
-		return this->selected_index;
-	}
+	this->scroll_bar.set_track_range(0, 1);
+	_super::redraw = true;
 }
 
 void w_list_box::select_item(_In_ int pNewIndex)
@@ -235,7 +195,7 @@ void w_list_box::select_item(_In_ int pNewIndex)
 	// If no item exists, do nothing.
 	if (this->items.size() == 0) return;
 
-	int nOldSelected = this->selected_index;
+	int _old_selected = this->selected_index;
 
 	// Adjust m_nSelected
 	this->selected_index = pNewIndex;
@@ -249,9 +209,9 @@ void w_list_box::select_item(_In_ int pNewIndex)
 	{
 		this->selected_index = int(this->items.size()) - 1;
 	}
-	if (nOldSelected != this->selected_index)
+	if (_old_selected != this->selected_index)
 	{
-		if (this->style & MULTISELECTION)
+		if (this->multiselection)
 		{
 			this->items[this->selected_index]->selected = true;
 		}
@@ -260,19 +220,23 @@ void w_list_box::select_item(_In_ int pNewIndex)
 		this->selected_start = this->selected_index;
 
 		// Adjust scroll bar
-		this->scrollBar.show_item(this->selected_index);
+		this->scroll_bar.show_item(this->selected_index);
+		_super::redraw = true;
 	}
 
 	_super::parent_widget->send_event(W_EVENT_LISTBOX_SELECTION, true, this);
 }
 
-_Use_decl_annotations_
 bool w_list_box::handle_keyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (!_super::enabled || !_super::visible) return false;
 
 	// Let the scroll bar have a chance to handle it first
-	if (this->scrollBar.handle_keyboard(uMsg, wParam, lParam)) return true;
+	if (this->scroll_bar.handle_keyboard(uMsg, wParam, lParam)) 
+	{
+		_super::redraw = true;
+		return true;
+	}
 
 	switch (uMsg)
 	{
@@ -289,7 +253,7 @@ bool w_list_box::handle_keyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			// If no item exists, do nothing.
 			if (this->items.size() == 0) return true;
 
-			int nOldSelected = this->selected_index;
+			int _old_selected = this->selected_index;
 
 			// Adjust m_nSelected
 			switch (wParam)
@@ -301,10 +265,10 @@ bool w_list_box::handle_keyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 				++this->selected_index;
 				break;
 			case VK_NEXT:
-				this->selected_index += this->scrollBar.get_page_size() - 1;
+				this->selected_index += this->scroll_bar.get_page_size() - 1;
 				break;
 			case VK_PRIOR:
-				this->selected_index -= this->scrollBar.get_page_size() - 1;
+				this->selected_index -= this->scroll_bar.get_page_size() - 1;
 				break;
 			case VK_HOME:
 				this->selected_index = 0;
@@ -323,9 +287,9 @@ bool w_list_box::handle_keyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				this->selected_index = int(this->items.size()) - 1;
 			}
-			if (nOldSelected != this->selected_index)
+			if (_old_selected != this->selected_index)
 			{
-				if (this->style & MULTISELECTION)
+				if (this->multiselection)
 				{
 					// Multiple selection
 
@@ -340,9 +304,9 @@ bool w_list_box::handle_keyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					{
 						// Select all items from m_nSelStart to
 						// m_nSelected
-						int nEnd = std::max(this->selected_start, this->selected_index);
+						int _end = std::max(this->selected_start, this->selected_index);
 
-						for (int n = std::min(this->selected_start, this->selected_index); n <= nEnd; ++n)
+						for (int n = std::min(this->selected_start, this->selected_index); n <= _end; ++n)
 						{
 							this->items[n]->selected = true;
 						}
@@ -356,10 +320,13 @@ bool w_list_box::handle_keyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 					}
 				}
 				else
+				{
 					this->selected_start = this->selected_index;
+				}
 
 				// Adjust scroll bar
-				this->scrollBar.show_item(this->selected_index);
+				this->scroll_bar.show_item(this->selected_index);
+				_super::redraw = true;
 
 				// Send notification
 				_super::parent_widget->send_event(W_EVENT_LISTBOX_SELECTION, true, this);
@@ -379,7 +346,6 @@ bool w_list_box::handle_keyboard(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return false;
 }
 
-_Use_decl_annotations_
 bool w_list_box::handle_mouse(UINT uMsg, const POINT& pt, WPARAM wParam, LPARAM lParam)
 {
 	if (!_super::enabled || !_super::visible) return false;
@@ -394,7 +360,11 @@ bool w_list_box::handle_mouse(UINT uMsg, const POINT& pt, WPARAM wParam, LPARAM 
 	}
 
 	// Let the scroll bar handle it first.
-	if (this->scrollBar.handle_mouse(uMsg, pt, wParam, lParam)) return true;
+	if (this->scroll_bar.handle_mouse(uMsg, pt, wParam, lParam))
+	{
+		_super::redraw = true;
+		return true;
+	}
 
 	switch (uMsg)
 	{
@@ -405,20 +375,20 @@ bool w_list_box::handle_mouse(UINT uMsg, const POINT& pt, WPARAM wParam, LPARAM 
 		{
 			// Compute the index of the clicked item
 
-			int nClicked;
-			if (this->_item_height)
+			int _index_clicked;
+			if (this->item_height)
 			{
-				nClicked = this->scrollBar.get_track_pos() + (pt.y - this->rectangle_text.top) / this->_item_height;
+				_index_clicked = this->scroll_bar.get_track_pos() + (pt.y - this->rectangle_text.top) / this->item_height;
 			}
 			else
 			{
-				nClicked = -1;
+				_index_clicked = -1;
 			}
 			// Only proceed if the click falls on top of an item.
 
-			if (nClicked >= this->scrollBar.get_track_pos() &&
-				nClicked < (int) this->items.size() &&
-				nClicked < this->scrollBar.get_track_pos() + this->scrollBar.get_page_size())
+			if (_index_clicked >= this->scroll_bar.get_track_pos() &&
+				_index_clicked < (int) this->items.size() &&
+				_index_clicked < this->scroll_bar.get_track_pos() + this->scroll_bar.get_page_size())
 			{
 				if (this->parent_widget)
 				{
@@ -436,22 +406,22 @@ bool w_list_box::handle_mouse(UINT uMsg, const POINT& pt, WPARAM wParam, LPARAM 
 					return true;
 				}
 
-				this->selected_index = nClicked;
+				this->selected_index = _index_clicked;
 				if (!(wParam & MK_SHIFT))
 				{
 					this->selected_start = this->selected_index;
 				}
 
 				// If this is a multi-selection listbox, update per-item selection data.
-				if (this->style & MULTISELECTION)
+				if (this->multiselection)
 				{
 					// Determine behavior based on the state of Shift and Ctrl
 
-					auto pSelItem = this->items[this->selected_index];
+					auto _selected_item = this->items[this->selected_index];
 					if ((wParam & (MK_SHIFT | MK_CONTROL)) == MK_CONTROL)
 					{
 						// Control click. Reverse the selection of this item.
-						pSelItem->selected = !pSelItem->selected;
+						_selected_item->selected = !_selected_item->selected;
 					}
 					else if ((wParam & (MK_SHIFT | MK_CONTROL)) == MK_SHIFT)
 					{
@@ -501,7 +471,7 @@ bool w_list_box::handle_mouse(UINT uMsg, const POINT& pt, WPARAM wParam, LPARAM 
 							pItem->selected = bLastSelected;
 						}
 
-						pSelItem->selected = true;
+						_selected_item->selected = true;
 
 						// Restore m_nSelected to the previous value
 						// This matches the Windows behavior
@@ -517,7 +487,7 @@ bool w_list_box::handle_mouse(UINT uMsg, const POINT& pt, WPARAM wParam, LPARAM 
 							pItem->selected = false;
 						}
 
-						pSelItem->selected = true;
+						_selected_item->selected = true;
 					}
 				}  // End of multi-selection case
 
@@ -561,38 +531,39 @@ bool w_list_box::handle_mouse(UINT uMsg, const POINT& pt, WPARAM wParam, LPARAM 
 		if (this->drag)
 		{
 			// Compute the index of the item below cursor
-
-			int nItem;
-			if (this->_item_height)
+			int _index_item;
+			if (this->item_height)
 			{
-				nItem = this->scrollBar.get_track_pos() + (pt.y - this->rectangle_text.top) / this->_item_height;
+				_index_item = this->scroll_bar.get_track_pos() + (pt.y - this->rectangle_text.top) / this->item_height;
 			}
 			else
 			{
-				nItem = -1;
+				_index_item = -1;
 			}
 
 			// Only proceed if the cursor is on top of an item.
 
-			if (nItem >= (int) this->scrollBar.get_track_pos() &&
-				nItem < (int) this->items.size() &&
-				nItem < this->scrollBar.get_track_pos() + this->scrollBar.get_page_size())
+			if (_index_item >= (int) this->scroll_bar.get_track_pos() &&
+				_index_item < (int) this->items.size() &&
+				_index_item < this->scroll_bar.get_track_pos() + this->scroll_bar.get_page_size())
 			{
-				this->selected_index = nItem;
+				this->selected_index = _index_item;
 				_super::parent_widget->send_event(W_EVENT_LISTBOX_SELECTION, true, this);
 			}
-			else if (nItem < (int) this->scrollBar.get_track_pos())
+			else if (_index_item < (int) this->scroll_bar.get_track_pos())
 			{
 				// User drags the mouse above window top
-				this->scrollBar.scroll(-1);
-				this->selected_index = this->scrollBar.get_track_pos();
+				this->scroll_bar.scroll(-1);
+				this->selected_index = this->scroll_bar.get_track_pos();
+				_super::redraw = true;
 				_super::parent_widget->send_event(W_EVENT_LISTBOX_SELECTION, true, this);
 			}
-			else if (nItem >= this->scrollBar.get_track_pos() + this->scrollBar.get_page_size())
+			else if (_index_item >= this->scroll_bar.get_track_pos() + this->scroll_bar.get_page_size())
 			{
 				// User drags the mouse below window bottom
-				this->scrollBar.scroll(1);
-				this->selected_index = std::min((int) this->items.size(), this->scrollBar.get_track_pos() + this->scrollBar.get_page_size()) - 1;
+				this->scroll_bar.scroll(1);
+				this->selected_index = std::min((int) this->items.size(), this->scroll_bar.get_track_pos() + this->scroll_bar.get_page_size()) - 1;
+				_super::redraw = true;
 				_super::parent_widget->send_event(W_EVENT_LISTBOX_SELECTION, true, this);
 			}
 		}
@@ -605,8 +576,10 @@ bool w_list_box::handle_mouse(UINT uMsg, const POINT& pt, WPARAM wParam, LPARAM 
 		{
 			uLines = 0;
 		}
-		int nScrollAmount = int((short) HIWORD(wParam)) / WHEEL_DELTA * uLines;
-		this->scrollBar.scroll(-nScrollAmount);
+		int _scroll_amount = int((short) HIWORD(wParam)) / WHEEL_DELTA * uLines;
+		this->scroll_bar.scroll(-_scroll_amount);
+		_super::redraw = true;
+
 		return true;
 	}
 	}
@@ -614,7 +587,6 @@ bool w_list_box::handle_mouse(UINT uMsg, const POINT& pt, WPARAM wParam, LPARAM 
 	return false;
 }
 
-_Use_decl_annotations_
 bool w_list_box::on_msg_proc(UINT pMsg, WPARAM pWParam, LPARAM pLParam)
 {
 	W_UNUSED(pWParam);
@@ -646,20 +618,20 @@ void w_list_box::render(const std::shared_ptr<wolf::graphics::w_graphics_device>
 
 	auto _element = _super::elements[0];
 
-	_element->texture_color.color_states[W_GUI_STATE_NORMAL] = this->_listBox_color;
-	_element->texture_color.color_states[W_GUI_STATE_DISABLED] = this->_listBox_disabled_color;
+	_element->texture_color.color_states[W_GUI_STATE_NORMAL] = this->list_box_color;
+	_element->texture_color.color_states[W_GUI_STATE_DISABLED] = this->list_box_disabled_color;
 
 	_element->texture_color.blend(W_GUI_STATE_NORMAL, pElapsedTime);
 	_element->font_color.blend(W_GUI_STATE_NORMAL, pElapsedTime);
 
 	auto _selected_element = _super::elements[1];
 
-	_selected_element->texture_color.current_color_state = this->_listBox_selected_color;
+	_selected_element->texture_color.current_color_state = this->list_box_selected_color;
 	//_selected_element->texture_color.blend(W_GUI_STATE_NORMAL, pElapsedTime);	
 	
-	_super::parent_widget->draw_sprite(_element, &(_super::boundingBox), W_GUI_FAR_BUTTON_DEPTH);
+	_super::parent_widget->draw_sprite(_element, &(_super::bounding_box), W_GUI_FAR_BUTTON_DEPTH);
 
-	std::vector<w_image*> _selected_icons;
+	std::vector<w_image*> _drawing_icons;
 	// Render the text
 	if (!this->items.empty())
 	{
@@ -669,28 +641,27 @@ void w_list_box::render(const std::shared_ptr<wolf::graphics::w_graphics_device>
 		_rectangle.bottom = _rectangle.top + _super::parent_widget->get_manager()->get_font_node(_element->index_font)->height;
 
 		// Update the line height formation
-		if (this->_item_height == 0)
+		if (this->item_height == 0)
 		{
-			this->_item_height = _rectangle.bottom - _rectangle.top;
+			this->item_height = _rectangle.bottom - _rectangle.top;
 		}
 
-		static bool bSBInit;
-		if (!bSBInit)
+		if (!this->_initialized_scroll_size)
 		{
 			// Update the page size of the scroll bar
-			if (this->_item_height)
+			if (this->item_height)
 			{
-				this->scrollBar.set_page_size((this->rectangle_text.bottom - this->rectangle_text.top) / this->_item_height);
+				this->scroll_bar.set_page_size((this->rectangle_text.bottom - this->rectangle_text.top) / this->item_height);
 			}
 			else
 			{
-				this->scrollBar.set_page_size((this->rectangle_text.bottom - this->rectangle_text.top));
+				this->scroll_bar.set_page_size((this->rectangle_text.bottom - this->rectangle_text.top));
 			}
-			bSBInit = true;
+			this->_initialized_scroll_size = true;
 		}
 
 		_rectangle.right = this->rectangle_text.right;
-		for (int i = this->scrollBar.get_track_pos(); i < (int) this->items.size(); ++i)
+		for (int j = 0, i = this->scroll_bar.get_track_pos(); i < (int) this->items.size(); ++i, j++)
 		{
 			if (_rectangle.bottom > this->rectangle_text.bottom) break;
 
@@ -698,83 +669,131 @@ void w_list_box::render(const std::shared_ptr<wolf::graphics::w_graphics_device>
 
 			// Determine if we need to render this item with the
 			// selected element.
-			bool bSelectedStyle = false;
+			bool _selected_style = false;
 
-			if (!(this->style & MULTISELECTION) && i == this->selected_index)
+			if (!this->multiselection && i == this->selected_index)
 			{
-				bSelectedStyle = true;
+				_selected_style = true;
 			}
-			else if (this->style & MULTISELECTION)
+			else if (this->multiselection)
 			{
 				if (this->drag && ((i >= this->selected_index && i < this->selected_start) || (i <= this->selected_index && i > this->selected_start)))
 				{
-					bSelectedStyle = this->items[this->selected_start]->selected;
+					_selected_style = this->items[this->selected_start]->selected;
 				}
 				else if (pItem->selected)
 				{
-					bSelectedStyle = true;
+					_selected_style = true;
 				}
 			}
 
 			//this->_label->set_label_disabled_color(this->_label_disabled_color);
-			if (bSelectedStyle)
+			if (_selected_style)
 			{
-				rcSel.top = _rectangle.top - _item_selected_rectangle_margin_top;
-				rcSel.bottom = _rectangle.bottom + _item_selected_rectangle_margin_down;
+				rcSel.top = _rectangle.top - item_selected_rectangle_margin[0];
+				rcSel.bottom = _rectangle.bottom + item_selected_rectangle_margin[1];
 
 				//Draw selected rectangle
 				_super::parent_widget->draw_sprite(_selected_element, &rcSel, W_GUI_NEAR_BUTTON_DEPTH);
 
-				this->_label->set_text(pItem->text);
-				this->_label->set_text_offset_x(_rectangle.left + this->_text_margin_x);
-				this->_label->set_text_offset_y(_rectangle.top + this->_text_margin_y);
+				this->label->set_text(pItem->text);
+				this->label->set_text_offset_x(_rectangle.left + this->text_margin_x);
+				this->label->set_text_offset_y(_rectangle.top + this->text_margin_y);
 
-				this->_label->set_current_color_state(this->_listBox_label_selected_color);
+				this->label->set_current_color_state(this->list_box_text_selected_color);
 
-				this->_label->render(pGDevice, pElapsedTime);
-
-				if (pItem->icon)
-				{
-					pItem->icon->set_position(_rectangle.left + this->_icon_margin_x, _rectangle.top + this->_icon_margin_y);
-					pItem->icon->set_scale(_icon_scale);
-					_selected_icons.push_back(pItem->icon);
-				}
+				this->label->render(pGDevice, pElapsedTime);
 			}
 			else
 			{
-				this->_label->set_text(pItem->text);
-				this->_label->set_text_offset_x(_rectangle.left + this->_text_margin_x);
-				this->_label->set_text_offset_y(_rectangle.top + this->_text_margin_y);
+				this->label->set_text(pItem->text);
+				this->label->set_text_offset_x(_rectangle.left + this->text_margin_x);
+				this->label->set_text_offset_y(_rectangle.top + this->text_margin_y);
 
-				this->_label->set_current_color_state(this->_listBox_label_color);
+				this->label->set_current_color_state(this->list_box_text_color);
 
-				this->_label->render(pGDevice, pElapsedTime);
-
-				//render icon
-				if (pItem->icon)
-				{
-					pItem->icon->set_position(_rectangle.left + this->_icon_margin_x, _rectangle.top + this->_icon_margin_y);
-					pItem->icon->set_scale(_icon_scale);
-					_selected_icons.push_back(pItem->icon);
-				}
+				this->label->render(pGDevice, pElapsedTime);
 			}
-			OffsetRect(&_rectangle, 0, this->_item_height);
+
+			if (pItem->icon)
+			{
+				pItem->icon->set_position(_rectangle.left + this->icon_margin_x, _rectangle.top + this->icon_margin_y + j * this->icon_height_offset);
+				pItem->icon->set_scale(this->icon_scale.x, this->icon_scale.y);
+				_drawing_icons.push_back(pItem->icon);
+			}
+
+			OffsetRect(&_rectangle, 0, this->item_height);
 		}
 	}
 
 	// Render the scroll bar
-	this->scrollBar.set_scroll_color(this->_listBox_scroll_color);
-	this->scrollBar.set_scroll_background_color(this->_listBox_scroll_background_color);
-	this->scrollBar.set_scroll_disabled_color(this->_listBox_scroll_disabled_color);
-	this->scrollBar.render(pGDevice, pElapsedTime);
+	this->scroll_bar.set_scroll_color(this->list_box_scroll_color);
+	this->scroll_bar.set_scroll_background_color(this->list_box_scroll_background_color);
+	this->scroll_bar.set_scroll_disabled_color(this->list_box_scroll_disabled_color);
+	this->scroll_bar.render(pGDevice, pElapsedTime);
 
 	//Render all selected icon
-	auto _size = _selected_icons.size();
+	auto _size = _drawing_icons.size();
 	if (_size)
 	{
 		for (size_t i = 0; i < _size; ++i)
 		{
-			_selected_icons.at(i)->render(pGDevice, pElapsedTime);
+			auto _image = _drawing_icons.at(i);
+			_image->redraw = this->redraw;
+			_image->render(pGDevice, pElapsedTime);
 		}
 	}
+	_drawing_icons.clear();
+
+	_super::redraw = false;
 }
+
+#pragma region Getters
+
+w_list_box_item* w_list_box::get_item(_In_ int nIndex) const
+{
+	if (nIndex < 0 || nIndex >= (int) this->items.size()) return nullptr;
+
+	return this->items[nIndex];
+}
+
+int w_list_box::get_selected_index(_In_ int pPreviousSelected) const
+{
+	if (pPreviousSelected < -1) return -1;
+
+	if (this->multiselection)
+	{
+		// Multiple selection enabled. Search for the next item with the selected flag.
+		for (int i = pPreviousSelected + 1; i < (int) this->items.size(); ++i)
+		{
+			auto pItem = this->items[i];
+
+			if (pItem->selected) return i;
+		}
+
+		return -1;
+	}
+	else
+	{
+		// Single selection
+		return this->selected_index;
+	}
+}
+
+void w_list_box::get_item_selected_rectangle_margin(_Inout_ int& pValueTop, _Inout_ int& pValueDown) const
+{
+	pValueTop = this->item_selected_rectangle_margin[0];
+	pValueDown = this->item_selected_rectangle_margin[1];
+}
+
+#pragma endregion
+
+#pragma region Setters
+
+void w_list_box::set_item_selected_rectangle_margin(_In_ const int pTop, _In_ const int pDown)
+{
+	this->item_selected_rectangle_margin[0] = pTop;
+	this->item_selected_rectangle_margin[1] = pDown;
+}
+
+#pragma endregion

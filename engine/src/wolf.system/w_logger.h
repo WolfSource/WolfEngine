@@ -10,19 +10,18 @@
 #ifndef __W_LOGGER_H__
 #define __W_LOGGER_H__
 
-#include "w_object.h"
-#include "w_system_dll.h"
-#include <typeinfo>
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#include "w_system_export.h"
 #include <ctime>
 #include <fstream>
 #include <iostream>
 #include <locale>
-#include <codecvt>
 #include <vector>
-
-#ifdef WIN32 
 #include "w_io.h"
-#endif
+#include <mutex>
 
 #if defined(__MAYA)
 #include <maya/MGlobal.h>
@@ -30,31 +29,23 @@
 
 inline std::string get_date_time()
 {
-	char _szBuffer[80] = "DD-MM-YY HH:MM:SS";
+	char _buffer[256] = "DD-MM-YY HH:MM:SS";
 	struct tm _time;
 	time_t _rawtime;
 	time(&_rawtime);
 
-	errno_t _err = localtime_s(&_time, &_rawtime);
-	if (_err)
-	{
-		std::string _msg = "Could not get the time from localtime_s";
-#if defined(MAYA)
-		MGlobal::displayError(_msg.c_str());
-#else
-		_msg += "\r\n";
-		OutputDebugStringA(_msg.c_str());
+#if defined(__WIN32) || defined(__UNIVERSAL)
+	localtime_s(&_time, &_rawtime);
+#elif defined(__ANDROID) 
+	_time = *localtime(&_rawtime);
 #endif
-	}
-	else
-	{
-		strftime(_szBuffer, sizeof(_szBuffer), "%d-%b-%Y %X%p", &_time);
-	}
 
-	return std::string(_szBuffer);
+	strftime(_buffer, sizeof(_buffer), "%d-%b-%Y %X%p", &_time);
+
+	return std::string(_buffer);
 }
 
-inline std::wstring get_date_time_w()
+inline std::wstring get_date_timeW()
 {
 	std::string _msg = get_date_time();
 	auto _wmsg = std::wstring(_msg.begin(), _msg.end());
@@ -71,41 +62,50 @@ namespace wolf
 		{
 		public:
 			//Initialize the logger and create a log file inside a Log folder into output directory
-			SYS_EXP bool initialize(std::wstring pAppName);
+#if defined(__WIN32)
+			WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath);
+#elif defined(__ANDROID)
+			WSYS_EXP bool initialize(_In_z_ const std::string pAppName, _In_z_ const std::string pLogPath);
+#elif defined(__UNIVERSAL)
+			WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName);
+#endif
 			//Print message in to the screen, this fuction will be store the messages into the buffer
-			SYS_EXP void printf(std::wstring pMsg);
+			WSYS_EXP void printf(_In_z_ const std::wstring pMsg);
 			//Clear screen and all messages
-			SYS_EXP void clearf();
-			//Print all messages in to the screen
-			SYS_EXP std::vector<std::wstring> flushf() const;
+			WSYS_EXP void clearf();
+			//flush the output stream
+			WSYS_EXP void flush();
+			//get the buffer of messages
+			WSYS_EXP std::vector<std::wstring> get_buffer();
 			//Write and output message
-			SYS_EXP void write(std::wstring pMsg, const std::wstring pState = L"Info");
+			WSYS_EXP void write(_In_z_ std::string pMsg, _In_z_ const std::string pState = "Info");
 			//Write and output message
-			SYS_EXP void write(std::string pMsg, const std::string pState = "Info");
+			WSYS_EXP void write(_In_z_ std::wstring pMsg, _In_z_ const std::wstring pState = L"Info");
 			//Write an output user message 
-			SYS_EXP void user(std::wstring pMsg);
+			WSYS_EXP void user(_In_z_ const std::wstring pMsg);
 			//Write an output user message 
-			SYS_EXP void user(std::string pMsg);
+			WSYS_EXP void user(_In_z_ const std::string pMsg);
 			//Write an output warning message 
-			SYS_EXP void warning(std::wstring pMsg);
+			WSYS_EXP void warning(_In_z_ const std::wstring pMsg);
 			//Write an output warning message 
-			SYS_EXP void warning(std::string pMsg);
+			WSYS_EXP void warning(_In_z_ const std::string pMsg);
 			//Write an output error message 
-			SYS_EXP void error(std::wstring pMsg);
+			WSYS_EXP void error(_In_z_ const std::wstring pMsg);
 			//Write an output error message 
-			SYS_EXP void error(std::string pMsg);
+			WSYS_EXP void error(_In_z_ const std::string pMsg);
 			//Release all resources and close the log file
-			SYS_EXP ULONG release();
+			WSYS_EXP ULONG release();
 
 		private:
-			bool _isReleased;
-			std::wofstream _logFile;
+			bool _is_released;
+			std::wofstream _log_file;
 			std::vector<std::wstring> _msgs;
+			std::mutex _mutex;
 		};
 	}
 }
 
-extern SYS_EXP wolf::system::w_logger logger;
+extern WSYS_EXP wolf::system::w_logger logger;
 
 /*
 	Validate HResult and write in to the log file
@@ -113,11 +113,11 @@ extern SYS_EXP wolf::system::w_logger logger;
 	pMSG						= the log message
 	pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
 	pExitNow					= abort appilcation
-	pCheckForLastDirectXError	= check last error of DirectX api
+	pCheckForLastDirectXError	= check last error of GPU API
 */
 inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 	std::string pTraceClass = "Undefined trace", unsigned char pLogType = 0,
-	bool pTerminateAll = false, bool pCheckForLastDirectXError = false)
+	bool pTerminateAll = false, bool pCheckForLastGPUError = false)
 {
 	using namespace std;
 
@@ -125,15 +125,24 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 
 	auto _wstr_trace = std::wstring(pTraceClass.begin(), pTraceClass.end());
 	wstring _errorMsg = L"";
-	if (pCheckForLastDirectXError)
+	if (pCheckForLastGPUError)
 	{
+
+#ifdef __ANDROID
+
+		//check for Vulkan error
+
+#elif defined(__WIN32) || defined(__UNIVERSAL) || defined(__MAYA)
+
 		auto _err = GetLastError();
 		auto  _errorMsg = L"Error on " + pMSG + L" with the following error info : ";
 		LPVOID _lpMsgBuf;
 		DWORD _bufLen = FormatMessage(
-#if defined(__MAYA) || defined(WIN32)
+
+#if defined(__WIN32) || defined(__MAYA)
 			FORMAT_MESSAGE_ALLOCATE_BUFFER |
-#endif
+#endif // defined(__MAYA) || defined(__WIN32)
+
 			FORMAT_MESSAGE_FROM_SYSTEM |
 			FORMAT_MESSAGE_IGNORE_INSERTS,
 			NULL,
@@ -145,13 +154,18 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 		{
 			auto _lpMsgStr = (LPCSTR)_lpMsgBuf;
 			wstring result(_lpMsgStr, _lpMsgStr + _bufLen);
-#if defined(__MAYA) || defined(WIN32)
+
+#if defined(__WIN32) || defined(__MAYA)
 			LocalFree(_lpMsgBuf);
-#endif
+#endif //defined(__MAYA) || defined(__WIN32)
+
 			_errorMsg += result;
 		}
 
 		_errorMsg += L"Trace info " + _wstr_trace + L".";
+
+#endif //__ANDROID
+
 	}
 	else
 	{
@@ -184,17 +198,18 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 	pMSG						= the log message
 	pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
 	pExitNow					= abort appilcation
-	pCheckForLastDirectXError	= check last error of DirectX api
+	pCheckForLastDirectXError	= check last error of GPU API
 */
 inline void V(HRESULT pHR, std::string pMSG = "Undefined Error",
 	std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
-	bool pExitNow = false, bool pCheckForLastDirectXError = false)
+	bool pExitNow = false, bool pCheckForLastGPUError = false)
 {
 	auto _msg = std::wstring(pMSG.begin(), pMSG.end());
-	V(pHR, _msg, pTraceClass, pLogType, pExitNow, pCheckForLastDirectXError);
+	V(pHR, _msg, pTraceClass, pLogType, pExitNow, pCheckForLastGPUError);
 	_msg.clear();
 }
 
+#if defined(__WIN32) || defined(__UNIVERSAL) || defined(__MAYA)
 inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...)
 {
 #ifdef _DEBUG
@@ -208,46 +223,6 @@ inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...)
 	UNREFERENCED_PARAMETER(format);
 #endif
 }
+#endif //defined(__WIN32) || defined(__UNIVERSAL) || defined(__MAYA)
 
-
-#ifdef __OPENCL__
-
-/*
-	Write in to the log file
-	pHR							= Status
-	pMSG						= the log message
-	pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
-	pExitNow					= abort appilcation
-	pCheckForLastDirectXError	= check last error of DirectX api
-*/
-inline void OnFailedCLW(int pOPENCL_STATUS, std::wstring pMSG = L"Undefined OpenCL Error",
-	std::wstring pTrace = L"Undefined Trace", byte pLogType = 0,
-	bool pExitNow = false)
-{
-	OnFailed(pOPENCL_STATUS != 0, pMSG, pTrace, pLogType, pExitNow, false);
-}
-
-/*
-	Write in to the log file
-	pHR							= Status
-	pMSG						= the log message
-	pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
-	pExitNow					= abort appilcation
-	pCheckForLastDirectXError	= check last error of DirectX api
-*/
-inline void OnFailedCLW(int pOPENCL_STATUS, std::string pMSG = "Undefined OpenCL Error",
-	std::string pTrace = "Undefined Trace", byte pLogType = 0,
-	bool pExitNow = false)
-{
-	auto _msg = std::wstring(pMSG.begin(), pMSG.end());
-	auto _trace = std::wstring(pTrace.begin(), pTrace.end());
-
-	OnFailed(pOPENCL_STATUS != 0, _msg, _trace, pLogType, pExitNow, false);
-
-	_msg.clear();
-	_trace.clear();
-}
-
-#endif
-
-#endif
+#endif //__W_LOGGER_H__

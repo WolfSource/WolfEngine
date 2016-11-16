@@ -6,6 +6,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <glm/gtc/constants.hpp>
 
 #ifndef RGBA_TO_HEX_COLOR
 #define RGBA_TO_HEX_COLOR(r,g,b,a) ((unsigned long)((((a)&0xff)<<24) | (((r)&0xff)<<16) | (((g)&0xff)<<8) | ((b)&0xff)))

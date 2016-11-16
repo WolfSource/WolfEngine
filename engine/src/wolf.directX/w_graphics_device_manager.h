@@ -71,7 +71,8 @@ namespace wolf
 				if (this->isReleased) return 0;
 				this->isReleased = true;
 
-				this->hWnd = NULL;
+				this->hwnd = NULL;
+				this->hInstance = NULL;
 
 				COMPTR_RELEASE(this->backBuffer);
 				COMPTR_RELEASE(this->depthStencilView);
@@ -83,7 +84,8 @@ namespace wolf
 
 			UINT																index;
 			bool																isReleased;
-			HWND																hWnd;
+			HWND																hwnd;
+			HINSTANCE															hInstance;
 			UINT																width;
 			UINT																height;
 			DWORD																pdwCookie;
@@ -242,7 +244,9 @@ namespace wolf
 			//Returns number of available graphics devices
 			const ULONG get_number_of_graphics_devices() const					{ return static_cast<ULONG>(this->graphics_devices.size()); }
 			//Get deafult window HWND
-			const HWND get_window_hWnd() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? NULL : this->_windows_info.at(0).at(0).hWnd; }
+			const HWND get_window_HWND() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? NULL : this->_windows_info.at(0).at(0).hwnd; }
+			//Get deafult window HINSTANCE
+			const HINSTANCE get_window_HINSTANCE() const						{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? NULL : this->_windows_info.at(0).at(0).hInstance; }
 			//Get deafult window width
 			const UINT get_window_width() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? 0 : this->_windows_info.at(0).at(0).width; }
 			//Get deafult window height

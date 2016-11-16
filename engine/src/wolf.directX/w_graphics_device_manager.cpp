@@ -229,7 +229,7 @@ void w_graphics_device_manager::_create_device()
 
 	//For debugging
 	_creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
-	//_creationFlags |= D3D11_CREATE_DEVICE_DEBUGGABLE;//Debugging shaders
+	//_creationFlags |= D3D11_CREATE_DEVICE_DEBUGGABLE;//Enable for Graphcis Debugging
 
 #endif
 
@@ -471,7 +471,8 @@ void w_graphics_device_manager::initialize_output_windows(map<int, vector<w_wind
 			auto wInfo = _windowInfo.at(i);
 			
 			_window.index = static_cast<int>(i);
-			_window.hWnd = wInfo.hWnd;
+			_window.hwnd = wInfo.hwnd;
+			_window.hInstance = wInfo.hInstance;
 			_window.width = wInfo.width;
 			_window.height = wInfo.height;
 			_window.aspectRatio = static_cast<float>(_window.width) / static_cast<float>(_window.height);
@@ -551,7 +552,7 @@ HRESULT w_graphics_device_manager::_create_swapChain_for_window(std::shared_ptr<
 
 		_hr = this->_dxgi_factory->CreateSwapChainForHwnd(
 			pGDevice->device.Get(),
-			pWindow.hWnd,
+			pWindow.hwnd,
 			&_swapChainDesc,
 			&_fullScreenDesc,
 			nullptr,

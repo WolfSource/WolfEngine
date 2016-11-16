@@ -9,16 +9,16 @@ force_use_current_color_state(false),
 original_text_offset_x(0),
 original_text_offset_y(0),
 render_from_child(false),
-_label_color(w_color::WHITE),
-_label_mouse_over_color(w_color::BLACK),
-_label_pressed_color(w_color::BLACK),
-_label_focused_color(w_color::BLACK),
-_label_disabled_color(RGBA_TO_HEX_COLOR(50, 50, 50, 150))
+label_color(w_color::WHITE),
+label_mouse_over_color(w_color::BLACK),
+label_pressed_color(w_color::BLACK),
+label_focused_color(w_color::BLACK),
+label_disabled_color(RGBA_TO_HEX_COLOR(50, 50, 50, 150))
 {
 	_super::set_class_name(typeid(this).name());
 	_super::type = W_GUI_CONTROL_LABEL;
 
-	ZeroMemory(&this->text, sizeof(this->text));
+	std::memset(&this->text, 0, sizeof(this->text));
 
 	for (auto it = _super::elements.begin(); it != _super::elements.end(); ++it)
 	{
@@ -37,7 +37,7 @@ void w_label::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& p
 	if (_super::visible == false) return;
 
 	//position
-	UINT _x, _y;
+	int _x, _y;
 	_super::parent_widget->get_position(_x, _y);
 	auto _pos = DirectX::XMFLOAT2(float(_x + _super::x +  this->text_offset_x), float(_y + _super::y +  this->text_offset_y));
 
@@ -62,11 +62,11 @@ void w_label::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& p
 		//blend color
 		auto _element = _super::elements[0];
 
-		_element->font_color.color_states[W_GUI_STATE_NORMAL] = this->_label_color;
-		_element->font_color.color_states[W_GUI_STATE_MOUSEOVER] = this->_label_mouse_over_color;
-		_element->font_color.color_states[W_GUI_STATE_PRESSED] = this->_label_pressed_color;
-		_element->font_color.color_states[W_GUI_STATE_FOCUS] = this->_label_focused_color;
-		_element->font_color.color_states[W_GUI_STATE_DISABLED] = this->_label_disabled_color;
+		_element->font_color.color_states[W_GUI_STATE_NORMAL] = this->label_color;
+		_element->font_color.color_states[W_GUI_STATE_MOUSEOVER] = this->label_mouse_over_color;
+		_element->font_color.color_states[W_GUI_STATE_PRESSED] = this->label_pressed_color;
+		_element->font_color.color_states[W_GUI_STATE_FOCUS] = this->label_focused_color;
+		_element->font_color.color_states[W_GUI_STATE_DISABLED] = this->label_disabled_color;
 		
 		//if this method, called by child, such as w_button or etc, so allow blend on mouse over
 		if (!this->render_from_child)
@@ -99,6 +99,16 @@ void w_label::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& p
 	_super::parent_widget->draw_text(this->text, _pos, this->brush.Get());
 }
 
+ULONG w_label::release()
+{
+	if (this->is_released()) return 0;
+	
+	text.clear();
+	COMPTR_RELEASE(this->brush);
+
+	return _super::release();
+}
+
 _Use_decl_annotations_
 HRESULT	w_label::get_text_copy(_Out_writes_(bufferCount) std::wstring pText, UINT pBufferCount) const
 {
@@ -117,7 +127,6 @@ HRESULT w_label::set_text(_In_z_ std::wstring pText)
 
 	return S_OK;
 }
-
 
 bool w_label::contains_point(_In_ const POINT& pPoint)
 {

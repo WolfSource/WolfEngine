@@ -11,20 +11,29 @@
 #ifndef __W_SYSTEM_PCH_H__
 #define __W_SYSTEM_PCH_H__
 
-#ifdef WIN32
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#define WOLF_MajorVersion 0// when you make incompatible API changes.
+#define WOLF_MinorVersion 5// when you add functionality in a backwards - compatible manner.
+#define WOLF_PatchVersion 0// bug fixes
+#define WOLF_DebugVersion 0// for debugging.
+
+#ifndef W_UNUSED
+#define W_UNUSED(p) {(void)(p); } 
+#endif
+
+#ifndef W_ARRAY_SIZE
+#define W_ARRAY_SIZE(ARR)	(sizeof(ARR) / sizeof(ARR[0]))
+#endif
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
 
 #ifdef _DEBUG
-
 	#pragma comment(lib, "tbbmalloc_debug.lib") 
-	#pragma comment(lib, "libboost_system-vc140-mt-gd-1_61.lib")
-	#pragma comment(lib, "libboost_filesystem-vc140-mt-gd-1_61.lib") 
-
 #else
-
 	#pragma comment(lib, "tbbmalloc.lib") 
-	#pragma comment(lib, "libboost_system-vc140-mt-1_61.lib")
-	#pragma comment(lib, "libboost_filesystem-vc140-mt-1_61.lib") 
-
 #endif
 
 #include "w_target_ver.h"
@@ -35,19 +44,28 @@
 
 #endif
 
-
 // C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
-#include <tchar.h>
+#include <cstdlib>
 
 #include <vector>
 #include <tuple>
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
+
+#include <tchar.h>
 #include <tbb/scalable_allocator.h>
+#include "w_logger.h"
 
-#include "w_system.h"
+#elif defined(__ANDROID)
 
-#include <boost/bind.hpp>
+//Java Native Interface library
+#include <jni.h>
+#include <android/asset_manager.h>
+#include "w_std.h"
 
 #endif
+
+#endif //__W_SYSTEM_PCH_H__

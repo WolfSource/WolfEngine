@@ -8,8 +8,8 @@ cbuffer QUAD_PARAMS : register(b1)
 {
 	float2			uv_scale;
 	float			opacity;
-	float			fade_value;
-	float			fade_smooth;
+	//float			fade_value;
+	//float			fade_smooth;
 	float3			padding_quad;
 };
 

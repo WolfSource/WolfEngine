@@ -10,11 +10,16 @@
 #ifndef __W_GLM_EXTENSION_H__
 #define __W_GLM_EXTENSION_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+
+#include "w_system_pch.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <string>
 #include "w_convert.h"
-#include "w_system.h"
 
 namespace glm
 {
@@ -74,7 +79,7 @@ namespace glm
 			std::atof(pResult[2].c_str()),
 			std::atof(pResult[3].c_str()));
 	}
-
+	
 	inline std::vector<glm::mat4x4> to_matrix_array(float pFloats[], int pArraySize = 16, int pRowSize = 4)
 	{
 		std::vector<glm::mat4x4> _mats;

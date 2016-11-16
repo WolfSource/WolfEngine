@@ -13,6 +13,7 @@
 
 #include "w_control.h"
 #include "w_graphics/w_sprite_batch.h"
+#include "w_graphics/w_geometries/w_mesh.h"
 
 namespace wolf
 {
@@ -21,43 +22,41 @@ namespace wolf
 		class w_image : public w_control
 		{
 		public:
-			w_image(_In_opt_ w_widget* pParent);
+			DX_EXP w_image(_In_opt_ w_widget* pParent);
+			DX_EXP ~w_image();
 
-			virtual void render(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ float pElapsedTime) override;
+			virtual HRESULT on_initialize(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice) override;
+			HRESULT create_or_update_vertex_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ bool pUpdate);
+			virtual void render(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ float pElapsedTime) override;
+			virtual ULONG release() override;
 
 #pragma region Getter
 
-			const wchar_t*		get_path() const													{ return this->_path.c_str(); }
-			DirectX::XMFLOAT2	get_scale() const													{ return this->_scale; }
-			float				get_rotation_angle() const											{ return this->_rotation_angle; }
-			DirectX::XMFLOAT2	get_rotation_center() const											{ return this->_rotation_center; }
-			DirectX::XMFLOAT2	get_translation() const												{ return this->_translation; }
-			float				get_guasian_effect_value() const									{ return this->_guasian_effect_value; }
+			DX_EXP const wchar_t*					get_path() const													{ return this->path.c_str(); }
+			DX_EXP float							get_scale_x() const													{ return this->scale.x; }
+			DX_EXP float							get_scale_y() const													{ return this->scale.y; }
+			DX_EXP float							get_rotation_x() const												{ return this->rotation.x; }
+			DX_EXP float							get_rotation_y() const												{ return this->rotation.y; }
 
 #pragma endregion
 
 #pragma region Setter
 
-			void				set_path(const std::wstring& pValue)								{ this->_path = pValue; }
-			void				set_scale(DirectX::XMFLOAT2 pValue)									{ this->_scale = pValue; }
-			void				set_rotation_angle(float pValue)									{ this->_rotation_angle = pValue; }
-			void				set_rotation_center(DirectX::XMFLOAT2 pValue)						{ this->_rotation_center = pValue; }
-			void				set_translation(DirectX::XMFLOAT2 pValue)							{ this->_translation = pValue; }
-			void				set_guasian_effect_value(float pValue)								{ this->_guasian_effect_value = pValue; }
+			DX_EXP HRESULT							set_path(_In_z_ const std::wstring& pValue);
+			DX_EXP void								set_scale(_In_ const float pX, _In_ const float pY)					{ this->scale.x = pX; this->scale.y = pY;}
+			DX_EXP void								set_rotation(_In_ const float pX, _In_ const float pY)				{ this->rotation.x = pX; this->rotation.y = pY;}
 
 #pragma endregion
 
 		protected:
-			std::wstring _path;
-			float _guasian_effect_value;
-			DirectX::XMFLOAT2 _scale;
-			float _rotation_angle;
-			DirectX::XMFLOAT2 _rotation_center;
-			DirectX::XMFLOAT2 _translation;
-			D2D1_RECT_F _crop;
+			std::wstring							path;
+			DirectX::XMFLOAT2						scale;
+			DirectX::XMFLOAT2						rotation;
 
 		private:
 			typedef w_control _super;
+			wolf::graphics::w_mesh*					_mesh;
+			ID3D11Device1*							_device;
 		};
 	}
 }

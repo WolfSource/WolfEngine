@@ -1,16 +1,19 @@
 #ifndef __W_LUA_H__
 #define __W_LUA_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifdef WIN32
 #pragma comment(lib, "libluajit.lib")
 
 #include <Windows.h>
 #endif
 
-#include "w_system_dll.h"
+#include "w_system_export.h"
 #include <lua.hpp>
 #include <string>
-
 
 namespace wolf
 {
@@ -19,22 +22,22 @@ namespace wolf
 		class w_lua
 		{
 		public:
-			SYS_EXP static HRESULT			load_file(const wchar_t* pPath);
-			SYS_EXP static HRESULT			run();
+			WSYS_EXP static HRESULT			load_file(const wchar_t* pPath);
+			WSYS_EXP static HRESULT			run();
 			/*
 				lua_CFunction		: the c function binder for lua
 				pLuaFunctionName	: how function will be named in Lua
 			*/
-			SYS_EXP static void				bind_to_cfunction(lua_CFunction pFunc, const char* pLuaFunctionName);
-			SYS_EXP static ULONG			release();
+			WSYS_EXP static void			bind_to_cfunction(lua_CFunction pFunc, const char* pLuaFunctionName);
+			WSYS_EXP static ULONG			release();
 
-			SYS_EXP	static void				prepare_function(const char* pFunctionName);
+			WSYS_EXP static void			prepare_function(const char* pFunctionName);
 			
 			//make sure call run and prepare_function before calling this function
 			template<typename T>
 			static void						set_parameter_function(const T pParam);
 
-			SYS_EXP	static void				execute_function();
+			WSYS_EXP static void			execute_function();
 
 			template<typename T>
 			static void						execute_function(T& pResult);
@@ -48,7 +51,7 @@ namespace wolf
 #pragma region Getters
 
 			//return the last error
-			SYS_EXP static const char*		get_last_error() 				{ return _last_error.c_str(); };
+			WSYS_EXP static const char*		get_last_error() 				{ return _last_error.c_str(); };
 
 			//get the global variable in lua script
 			template <typename T>
@@ -70,18 +73,18 @@ namespace wolf
 			*/
 
 			//validate lua result
-			SYS_EXP	static void				_VL(int pHR);
+			WSYS_EXP static void				_VL(int pHR);
 			//log the error for incompatible requsted type for lua variable
-			SYS_EXP static void				_incompatible_type_for_variable(const char* pVariableName, const char* pRequestedType, int pOriginalType);
+			WSYS_EXP static void				_incompatible_type_for_variable(const char* pVariableName, const char* pRequestedType, int pOriginalType);
 
 			//the lua state
-			SYS_EXP static lua_State*		_lua;
+			WSYS_EXP static lua_State*		_lua;
 			//the last error
-			SYS_EXP static std::string		_last_error;
+			WSYS_EXP static std::string		_last_error;
 			//name of lua function
-			SYS_EXP static std::string		_function_name;
+			WSYS_EXP static std::string		_function_name;
 			//number of input parameters for lua function
-			SYS_EXP static unsigned char	_function_number_input_parameters;
+			WSYS_EXP static unsigned char	_function_number_input_parameters;
 		};
 
 #pragma region Templates
@@ -518,4 +521,4 @@ namespace wolf
 	}
 }
 
-#endif
+#endif //__W_LUA_H__

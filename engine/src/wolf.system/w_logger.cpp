@@ -1,67 +1,184 @@
 #include "w_system_pch.h"
 #include "w_logger.h"
 
-using namespace wolf::system;
+#if defined(__WIN32)
 
-bool w_logger::initialize(std::wstring pAppName)
-{
-	this->_isReleased = false;
+#include <codecvt>
 
-	std::wstring logFilePath;
+#elif defined(__UNIVERSAL)
 
-#ifdef WIN32
+#include <codecvt>
+#include <ppltasks.h>
 
-	auto _directoryPath = io::get_current_directory();
-	auto _logDirectory = _directoryPath + L"Log\\";
+#elif defined(__ANDROID)
 
-	//if directory of log is not existed
-	if (!io::get_is_directory(_logDirectory))
-	{
-		//Create the directory of log inside the root directory
-		io::create_directory_w(_logDirectory.c_str());
-	}
-
-	logFilePath = _logDirectory + io::get_unique_name() + L".wLog";
-
-	//OutputDebugString(logFilePath.c_str());
+#include <android/log.h>
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "Wolf.Engine", __VA_ARGS__))
+#define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "Wolf.Engine", __VA_ARGS__))
+#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "Wolf.Engine", __VA_ARGS__))
 
 #endif
 
+using namespace wolf::system;
+
+#if defined(__WIN32) || defined(__ANDROID)
+
+#ifdef __WIN32
+
+bool w_logger::initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath)
+{
+	auto _log_directory = pLogPath + L"\\log\\";
+	auto _log_directory_cstr = _log_directory.c_str();
+
+	//if directory of log is not existed
+	if (S_FALSE == io::get_is_directoryW(_log_directory_cstr))
+	{
+		//Create the directory of log inside the root directory
+		io::create_directoryW(_log_directory_cstr);
+	}
+
+	auto _log_file_path = _log_directory + io::get_unique_nameW() + L".wLog";
+
+	std::wstring _created_time = L"\t\"Time\"             : \"" + get_date_timeW() + L"\",\r\n";
+	std::wstring _app_name = L"\t\"Application Name\" : \"" + pAppName + L"\",\r\n";
+
+	this->_log_file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
+	this->_log_file.open(_log_file_path.c_str());
+
+#elif defined(__ANDROID)
+
+bool w_logger::initialize(_In_z_ const std::string pAppName, _In_z_ const std::string pLogPath)
+{
+	auto _log_directory = pLogPath + "/log/";
+	auto _log_directory_cstr = _log_directory.c_str();
+
+	//if directory of log is not existed
+	if (!io::get_is_directory(_log_directory_cstr))
+	{
+		//Create the directory of log inside the root directory
+		io::create_directory(_log_directory_cstr);
+	}
+
+	auto _log_file_path = _log_directory + io::get_unique_name() + ".wLog";
+
+	std::string _created_time = "\t\"Time\"             : \"" + get_date_time() + "\",\r\n";
+	std::string _app_name = "\t\"Application Name\" : \"" + pAppName + "\",\r\n";
+
+	this->_log_file.open(_log_file_path.c_str());
+
+
+#endif
+
+	this->_is_released = false;
+
 	std::wstring _version = L"\t\"Version\"          : \"" + std::to_wstring(WOLF_MajorVersion) + L":" + std::to_wstring(WOLF_MinorVersion) +
 		L":" + std::to_wstring(WOLF_PatchVersion) + L":" + std::to_wstring(WOLF_DebugVersion) + L"\",\r\n";
-	std::wstring _createdTime = L"\t\"Time\"             : \"" + get_date_time_w() + L"\",\r\n";
-	std::wstring _appName = L"\t\"Application Name\" : \"" + pAppName + L"\",\r\n";
 
-	_logFile.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
-	_logFile.open(logFilePath.c_str());
+	this->_log_file << L"{\r\n";
+	this->_log_file << L"\t\"Project\"          : \"Wolf Engine(http://WolfSource.io). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\",\r\n";
+	this->_log_file << L"\t\"Info\"             : \"contact@WolfSource.io\r\n";
+	this->_log_file << _version.c_str();
+	this->_log_file << _created_time.c_str();
+	this->_log_file << _app_name.c_str();
+	this->_log_file << L"\t\"Logs\":{\r\n";
 
-	_logFile << L"{\r\n";
-	_logFile << L"\t\"Project\"          : \"Wolf Engine(http://WolfSource.io). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\",\r\n";
-	_logFile << L"\t\"Info\"             : \"contact@WolfSource.io\r\n";
-	_logFile << _version.c_str();
-	_logFile << _createdTime.c_str();
-	_logFile << _appName.c_str();
-	_logFile << L"\t\"Logs\":{\r\n";
-	_logFile.flush();
-	return _logFile.is_open();
+	//store all buffered logs
+	auto _buffer = this->get_buffer();
+	for (size_t i = 0; i < _buffer.size(); ++i)
+	{
+		this->_log_file << _buffer[i].c_str();
+	}
+
+	this->_log_file.flush();
+
+	return this->_log_file.is_open();
 }
+
+#elif defined(__UNIVERSAL)
+
+bool w_logger::initialize(_In_z_ const std::wstring pAppName)
+{
+	//if directory of log is not existed
+	auto _local_folder = Windows::Storage::ApplicationData::Current->LocalFolder;
+	auto _log_file_path = _local_folder->Path + ref new Platform::String(L"\\log\\") + ref new Platform::String((io::get_unique_nameW() + L".wLog").c_str());
+
+	auto _function = [this, _log_file_path, pAppName]() ->bool
+	{
+		this->_log_file.open(_log_file_path->Data());
+
+		std::wstring _created_time = L"\t\"Time\"             : \"" + get_date_timeW() + L"\",\r\n";
+		std::wstring _app_name = L"\t\"Application Name\" : \"" + pAppName + L"\",\r\n";
+
+
+		std::wstring _version = L"\t\"Version\"          : \"" + std::to_wstring(WOLF_MajorVersion) + L":" + std::to_wstring(WOLF_MinorVersion) +
+			L":" + std::to_wstring(WOLF_PatchVersion) + L":" + std::to_wstring(WOLF_DebugVersion) + L"\",\r\n";
+
+		this->_log_file << L"{\r\n";
+		this->_log_file << L"\t\"Project\"          : \"Wolf Engine(http://WolfSource.io). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\",\r\n";
+		this->_log_file << L"\t\"Info\"             : \"contact@WolfSource.io\r\n";
+		this->_log_file << _version.c_str();
+		this->_log_file << _created_time.c_str();
+		this->_log_file << _app_name.c_str();
+		this->_log_file << L"\t\"Logs\":{\r\n";
+
+		//store all buffered logs
+		auto _buffer = this->get_buffer();
+		for (size_t i = 0; i < _buffer.size(); ++i)
+		{
+			this->_log_file << _buffer[i].c_str();
+		}
+
+		this->_log_file.flush();
+
+		return this->_log_file.is_open();
+	};
+
+	wolf::system::io::get_directory_exists_async(_local_folder, "log").then([=](_In_ BOOL pExists)
+	{
+		if (!pExists)
+		{
+			wolf::system::io::create_directory_async(_local_folder, "log").then([=](Windows::Storage::StorageFolder^ pFolder)
+			{
+				_function();
+			});
+		}
+		else
+		{
+			_function();
+		}
+	});
+
+	this->_is_released = false;
+
+
+	return true;
+}
+
+#endif //defined(__WIN32) || defined(__ANDROID)
 
 void w_logger::printf(std::wstring pMsg)
 {
+	std::unique_lock<std::mutex> _lock(this->_mutex);
 	this->_msgs.push_back(pMsg + L"\r\n");
-}
-
-std::vector<std::wstring> w_logger::flushf() const
-{
-	return this->_msgs;
 }
 
 void w_logger::clearf()
 {
+	std::unique_lock<std::mutex> _lock(this->_mutex);
 	this->_msgs.clear();
 }
 
-void w_logger::write(std::string pMsg, const std::string pState)
+std::vector<std::wstring> w_logger::get_buffer()
+{
+	return this->_msgs;
+}
+
+void w_logger::flush()
+{
+	this->_log_file.flush();
+}
+
+void w_logger::write(_In_z_ std::string pMsg, _In_z_ const std::string pState)
 {
 	auto _msg = std::wstring(pMsg.begin(), pMsg.end());
 	auto _state = std::wstring(pState.begin(), pState.end());
@@ -70,77 +187,92 @@ void w_logger::write(std::string pMsg, const std::string pState)
 	_state.clear();
 }
 
-void w_logger::write(std::wstring pMsg, const std::wstring pState)
+void w_logger::write(_In_z_ std::wstring pMsg, _In_z_ const std::wstring pState)
 {
-	if (pMsg.empty())
+	pMsg = L"\t\t\"" + get_date_timeW() + L"\"" + L": {\"msg\":\"" + (pMsg.empty() ? L"NULL" : pMsg) + L"\",\"state\":\"" + pState + L"\"},\r\n";
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
+	OutputDebugString(pMsg.c_str());
+#elif defined(__ANDROID)
+	if (pState == L"Warning")
 	{
-		pMsg = L"[Wolf] : Info : \tNULL : " + get_date_time_w();
+		LOGW(std::string(pMsg.begin(), pMsg.end()).c_str());
+	}
+	else if (pState == L"Error")
+	{
+		LOGE(std::string(pMsg.begin(), pMsg.end()).c_str());
 	}
 	else
 	{
-		pMsg = L"\"" + get_date_time_w() + L"\"" + L": {\"msg\":\"" + pMsg + L"\",\"state\":\"" + pState + L"\"},";
+		LOGI(std::string(pMsg.begin(), pMsg.end()).c_str());
 	}
-#if defined(__MAYA)
+#elif defined(MAYA)
 	switch (pState)
 	{
 	default:
-	"Info":
-		MGlobal::displayInfo(Msg.c_str());
+		"Info" :
+			MGlobal::displayInfo(Msg.c_str());
 		break;
-	"Warning":
+		"Warning":
 		MGlobal::displayWarning(Msg.c_str());
 		break;
-	"Error":
+		"Error":
 		MGlobal::displayError(Msg.c_str());
 		break;
 	}
-#else
-	pMsg = L"\t\t" + pMsg + L"\r\n";
-	OutputDebugString(pMsg.c_str());
 #endif
 
-	this->_logFile << pMsg.c_str();
-	this->_logFile.flush();
+	if (this->_log_file.is_open())
+	{
+		this->_log_file << pMsg.c_str();
+		this->_log_file.flush();
+	}
+	else
+	{
+		//log file is not available yet, so store it in to the buffer
+		std::unique_lock<std::mutex> _lock(this->_mutex);
+		this->_msgs.push_back(pMsg);
+	}
 }
 
-void w_logger::user(std::wstring pMsg)
+void w_logger::user(_In_z_ std::wstring pMsg)
 {
 	write(pMsg, L"User");
 }
 
-void w_logger::user(std::string pMsg)
+void w_logger::user(_In_z_ std::string pMsg)
 {
 	write(pMsg, "User");
 }
 
-void w_logger::warning(std::wstring pMsg)
+void w_logger::warning(_In_z_ std::wstring pMsg)
 {
 	write(pMsg, L"Warning");
 }
 
-void w_logger::warning(std::string pMsg)
+void w_logger::warning(_In_z_ std::string pMsg)
 {
 	write(pMsg, "Warning");
 }
 
-void w_logger::error(std::wstring pMsg)
+void w_logger::error(_In_z_ std::wstring pMsg)
 {
 	write(pMsg, L"Error");
 }
 
-void w_logger::error(std::string pMsg)
+void w_logger::error(_In_z_ std::string pMsg)
 {
 	write(pMsg, "Error");
 }
 
 ULONG w_logger::release()
 {
-	if (this->_isReleased) return 0;
+	if (this->_is_released) return 0;
 
-	write(L"Wolf shut down");
-	this->_logFile << L"\r\n\t}\r\n}";
-	this->_logFile.flush();
-	this->_logFile.close();
+	write("Wolf shutting down");
+	this->_log_file << L"\r\n\t}\r\n}";
+	this->_log_file.flush();
+	this->_log_file.close();
 
 	return 1;
 }

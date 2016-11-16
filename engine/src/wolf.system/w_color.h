@@ -10,7 +10,12 @@
 #ifndef __W_COLOR_H__
 #define __W_COLOR_H__
 
-#include "w_system_dll.h"
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#include "w_system_export.h"
+#include <cstdlib>
 #include <string>
 #include <sstream>
 
@@ -87,6 +92,12 @@ struct w_color
 			((pValue >> 8) & 0xFF),//G
 			(pValue & 0xFF),//B
 			((pValue >> 24) & 0xFF));//A
+	}
+
+	//convert hex color to w_color
+	static unsigned int to_hex(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+	{
+		return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
 	}
 
 	enum COLORS_HEX
@@ -245,4 +256,4 @@ inline bool operator != (const w_color& lValue, const w_color& rValue)
 	return !(lValue == rValue);
 }
 
-#endif
+#endif // __W_COLOR_H__

@@ -10,7 +10,22 @@
 #ifndef __W_IRELEASABLE_H__
 #define __W_IRELEASABLE_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifdef __ANDROID
+
+#include "w_std.h"
+
+#elif defined(__WIN32) || defined(__UNIVERSAL)
+
 #include <windows.h>
+
+#define COM_RELEASE(x)			{ if (x) { x->Release(); x = nullptr;	} }
+#define COMPTR_RELEASE(x)		{ if (x) { auto _x = x.GetAddressOf(); (*_x)->Release(); (*_x) = nullptr; x = nullptr; } }
+
+#endif
 
 #define SAFE_DELETE(x)			{ if (x) { delete x; x = nullptr;		} }
 #define SAFE_DELETE_ARRAY(ar)   { if (ar){ delete[] ar; ar = nullptr;	} }
@@ -20,8 +35,6 @@
 #define UNIQUE_RELEASE(x)		{ if (x) { x->release(); x.reset(nullptr); } }
 #define SHARED_RELEASE(x)		{ if (x) { x->release(); while(x.use_count() != 0) x.reset(); x = nullptr;} }
 #define SAFE_RELEASE(x)			{ if (x) { x->release(); delete x;	} }
-#define COM_RELEASE(x)			{ if (x) { x->Release(); x = nullptr;	} }
-#define COMPTR_RELEASE(x)		{ if (x) { auto _x = x.GetAddressOf(); (*_x)->Release(); (*_x) = nullptr; x = nullptr; } }
 
 struct w_Ireleasable
 {
@@ -29,4 +42,4 @@ struct w_Ireleasable
 };
 
 
-#endif
+#endif //__W_IRELEASABLE_H__

@@ -17,7 +17,6 @@
 
 //Wolf
 #include "w_object.h"
-#include "w_font.h"
 #include "w_texture_node.h"
 #include "w_user_controls/w_widget.h"
 #include "w_graphics/w_shaders/w_shader.h"
@@ -26,6 +25,13 @@ namespace wolf
 {
 	namespace gui
 	{
+		struct w_font_node
+		{
+			WCHAR name[MAX_PATH];
+			LONG height;
+			LONG weight;
+		};
+
 		struct w_gui_screen_vertex
 		{
 			float x, y, z;
@@ -78,15 +84,13 @@ namespace wolf
 			UINT m_SampleMaskStored11;
 			ID3D11SamplerState* m_pSamplerStateStored11;
 
-			ID3D11Buffer* m_pVBScreenQuad11;
-
 			// Sprite workaround
 			ID3D11Buffer* m_pSpriteBuffer11;
 			UINT m_SpriteBufferBytes11;
-			std::vector<w_sprite_vertex> m_SpriteVertices;
+			std::vector<wolf::content_pipeline::vertex_declaration_structs::vertex_color_uv> m_SpriteVertices;
 
-			UINT backBuffer_width;
-			UINT backBuffer_height;
+			UINT back_buffer_width;
+			UINT back_buffer_height;
 
 			std::vector<w_widget*> widgets;            // Widgets registered
 
@@ -95,7 +99,6 @@ namespace wolf
 			size_t						get_texture_cache_size() const						{ return this->texture_cache.size(); }
 			w_font_node*				get_font_node(_In_ size_t iIndex) const				{ return this->font_cache[iIndex]; }
 			w_texture_node*				get_texture_node(_In_ size_t iIndex) const			{ return this->texture_cache[iIndex]; }
-			ID3D11ShaderResourceView*	get_font_srv() const								{ return this->_font->get_srv(); }
 			ID3D11InputLayout*			get_input_layout() const							{ return this->_shader->get_input_layout(); }
 
 #pragma endregion
@@ -107,12 +110,8 @@ namespace wolf
 			std::vector<w_font_node*> font_cache;         // Shared fonts
 
 		private:
-			//HRESULT create_texture_from_internal_array(ID3D11Device1* pDevice, ID3D11Texture2D** pTexture);
-
 			typedef system::w_object _super;
 
-			//font between all dialogs
-			std::unique_ptr<w_font>										_font;
 			//shader between all dialogs
 			std::unique_ptr<wolf::graphics::w_shader>					_shader;
 		};

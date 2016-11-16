@@ -10,6 +10,10 @@
 #ifndef __W_LINEAR_ALLOCATOR_H__
 #define __W_LINEAR_ALLOCATOR_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #include "w_allocator.h"
 
 namespace wolf
@@ -54,4 +58,4 @@ namespace wolf
 	}
 }
 
-#endif
+#endif //__W_LINEAR_ALLOCATOR_H__

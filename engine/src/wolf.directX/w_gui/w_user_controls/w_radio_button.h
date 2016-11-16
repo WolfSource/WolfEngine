@@ -21,7 +21,7 @@ namespace wolf
 		class w_radio_button : public w_check_box
 		{
 		public:
-			w_radio_button(_In_opt_ w_widget* pParent = nullptr);
+			DX_EXP w_radio_button(_In_opt_ w_widget* pParent = nullptr);
 
 			virtual bool handle_keyboard(_In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam) override;
 			virtual bool handle_mouse(_In_ UINT uMsg, _In_ const POINT& pt, _In_ WPARAM wParam, _In_ LPARAM lParam) override;
@@ -29,14 +29,14 @@ namespace wolf
 
 #pragma region Getters
 
-			UINT get_button_group() const												{ return this->button_group; }
+			DX_EXP UINT get_button_group() const												{ return this->button_group; }
 
 #pragma endregion
 
 #pragma region Setters
 
-			void set_checked(_In_ bool pChecked, _In_ bool pClearGroup = true)			{ set_checked_internal(pChecked, pClearGroup, false); }
-			void set_button_group(_In_ UINT pButtonGroup)								{ this->button_group = pButtonGroup; }
+			DX_EXP void set_checked(_In_ bool pChecked, _In_ bool pClearGroup = true)			{ set_checked_internal(pChecked, pClearGroup, false); }
+			DX_EXP void set_button_group(_In_ UINT pButtonGroup)								{ this->button_group = pButtonGroup; }
 
 #pragma endregion
 

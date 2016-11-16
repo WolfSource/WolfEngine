@@ -40,11 +40,11 @@ _combo_box_scroll_disabled_color(w_color(255, 255, 255, 70))
 	_item_margin.x = 45;
 	_item_margin.y = -5;
 
-	_super::_label_color = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
-	_super::_label_pressed_color = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
-	_super::_label_mouse_over_color = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
-	_super::_label_focused_color = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
-	_super::_label_disabled_color = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
+	_super::label_color = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
+	_super::label_pressed_color = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
+	_super::label_mouse_over_color = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
+	_super::label_focused_color = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
+	_super::label_disabled_color = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
 }
 
 w_combo_box::~w_combo_box()
@@ -74,10 +74,10 @@ void w_combo_box::update_rects()
 {
 	w_button::update_rects();
 
-	this->rectangle_button = _super::boundingBox;
+	this->rectangle_button = _super::bounding_box;
 	this->rectangle_button.left = this->rectangle_button.right - /*RectHeight*/(this->rectangle_button.bottom - this->rectangle_button.top);
 
-	this->rectangle_text = _super::boundingBox;
+	this->rectangle_text = _super::bounding_box;
 	this->rectangle_text.right = this->rectangle_button.left;
 
 	this->rectangle_drop_down = this->rectangle_text;
@@ -570,10 +570,10 @@ void w_combo_box::render(const std::shared_ptr<wolf::graphics::w_graphics_device
 	_element->texture_color.color_states[W_GUI_STATE_DISABLED] = this->_combo_box_main_disabled_color;
 
 	//Set colors of text
-	_element->font_color.color_states[W_GUI_STATE_MOUSEOVER] = _super::_label_mouse_over_color;
-	_element->font_color.color_states[W_GUI_STATE_PRESSED] = _super::_label_pressed_color;
-	_element->font_color.color_states[W_GUI_STATE_DISABLED] = _super::_label_disabled_color;
-	_element->font_color.color_states[W_GUI_STATE_FOCUS] = _super::_label_focused_color;
+	_element->font_color.color_states[W_GUI_STATE_MOUSEOVER] = _super::label_mouse_over_color;
+	_element->font_color.color_states[W_GUI_STATE_PRESSED] = _super::label_pressed_color;
+	_element->font_color.color_states[W_GUI_STATE_DISABLED] = _super::label_disabled_color;
+	_element->font_color.color_states[W_GUI_STATE_FOCUS] = _super::label_focused_color;
 
 	// Blend current color
 	_element->texture_color.blend(_state, pElapsedTime, fBlendRate);

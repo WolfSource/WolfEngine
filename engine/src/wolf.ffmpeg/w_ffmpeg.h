@@ -55,11 +55,19 @@ namespace wolf
 {
 	namespace framework
 	{
-		class w_video_frame_data
-		{
-		public:
-			std::array<int, VIDEO_FRAME_SIZE> data;
-		};
+		//class w_video_frame_data
+		//{
+		//public:
+		//	w_video_frame_data(int pWidth, int pHeight)
+		//	{
+		//		this->data = new int[pWidth * pHeight];
+		//		this->size = sizeof(this->data);
+		//		this->alignment = std::alignment_of<int>::value;
+		//	}
+		//	int*		data;
+		//	int			size;
+		//	int			alignment;
+		//};
 
 		class w_video_frame_down_sample_data
 		{

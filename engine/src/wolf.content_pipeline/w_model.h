@@ -28,7 +28,7 @@ namespace wolf
 	{
 		struct w_vertex_index
 		{
-			int					vertex_index;
+			unsigned short		vertex_index;
 			std::vector<float>	vertex;
 			std::vector<float>	texture;
 			std::vector<float>	normal;
@@ -77,14 +77,15 @@ namespace wolf
 
 		struct w_vertex_data
 		{
-			glm::vec4 position;
-			glm::vec3 normal;
-			glm::vec4 blend_weight;
-			glm::int4 blend_indices;
-			glm::vec2 uv;
-			glm::vec3 tangent;
-			glm::vec3 binormal;
-			glm::vec4 color;
+			glm::vec4		position;
+			glm::vec3		normal;
+			glm::vec4		blend_weight;
+			glm::int4		blend_indices;
+			glm::vec2		uv;
+			glm::vec3		tangent;
+			glm::vec3		binormal;
+			glm::vec4		color;
+			unsigned short	vertex_index;
 		};
 
 		class w_model : public wolf::system::w_object
@@ -100,6 +101,8 @@ namespace wolf
 			};
 			CP_EXP struct w_mesh
 			{
+				//posX, posY, posZ
+				std::vector<float>				just_vertices_pos;
 				std::vector<w_vertex_data>		vertices;
 				std::vector<unsigned short>		indices;
 				c_material*						material;

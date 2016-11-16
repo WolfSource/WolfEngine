@@ -31,7 +31,7 @@ namespace wolf
 			void load(_In_ ID3D11Device1* pDevice)
 			{
 				D3D11_BUFFER_DESC _bufferDesc;
-				ZeroMemory(&_bufferDesc, sizeof(D3D11_BUFFER_DESC));
+				std::memset(&_bufferDesc, 0, sizeof(D3D11_BUFFER_DESC));
 
 				_bufferDesc.ByteWidth = sizeof(T);
 				_bufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -45,7 +45,7 @@ namespace wolf
 			void set_data(_In_ ID3D11DeviceContext1* pContext, T& pValue)
 			{
 				D3D11_MAPPED_SUBRESOURCE _mappedResource;
-				ZeroMemory(&_mappedResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+				std::memset(&_mappedResource, 0, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
 				this->data = &pValue;
 				auto _hr = pContext->Map(_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedResource);

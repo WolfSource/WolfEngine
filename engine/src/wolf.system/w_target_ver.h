@@ -12,6 +12,10 @@
 #ifndef __W_TARGET_VER_H__
 #define __W_TARGET_VER_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #include <SDKDDKVer.h>
 
-#endif
+#endif //__W_TARGET_VER_H__

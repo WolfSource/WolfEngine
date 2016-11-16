@@ -6,7 +6,6 @@
 
 using namespace wolf::gui;
 
-static std::map<int, w_tab*> all_tabs;
 static void CALLBACK on_gui_event(UINT pEvent, int pControlID, wolf::gui::w_control* pControl, void* pUserContext);
 
 w_tab::w_tab(_In_opt_ w_widget* pParent) :
@@ -15,7 +14,7 @@ w_tab::w_tab(_In_opt_ w_widget* pParent) :
 	_first_time_initializing(true),
 	_pre_button(nullptr),
 	_nxt_button(nullptr),
-	button_normal_color(w_color::from_hex(w_color::GRAY)),
+	button_color(w_color::from_hex(w_color::GRAY)),
 	button_pressed_color(255, 255, 255, 200),
 	button_mouse_over_color(w_color::from_hex(w_color::WHITE)),
 	button_focused_color(255, 255, 255, 200),
@@ -28,16 +27,14 @@ w_tab::w_tab(_In_opt_ w_widget* pParent) :
 {
 	_super::set_class_name(typeid(this).name());
 	_super::type = W_GUI_CONTROL_TAB;
+
 	this->arrow_button_text_offset.x = 8;
 	this->arrow_button_text_offset.y = 5;
 }
 
 w_tab::~w_tab()
 {
-	this->_first_time_initializing = false;
-
-	all_tabs[this->id] = nullptr;
-	all_tabs.erase(this->id);
+	release();
 }
 
 HRESULT w_tab::on_initialize(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
@@ -45,12 +42,8 @@ HRESULT w_tab::on_initialize(const std::shared_ptr<wolf::graphics::w_graphics_de
 	W_UNUSED(pGDevice);
 	if (_super::parent_widget)
 	{
-		_super::parent_widget->set_call_back(on_gui_event);
+		_super::parent_widget->set_call_back(on_gui_event, this);
 	}
-
-	//store this tab for accessing on gui events
-	all_tabs[this->id] = this;
-
 	return S_OK;
 }
 
@@ -130,22 +123,22 @@ void w_tab::render(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>
 {
 	const auto _margin = this->width - TAB_MARGIN;
 	auto _size = this->buttons.size();
-	if (_size > 0)
-	{
-		int _x = 0, _y = 0;
-		this->buttons.at(_size - 1)->get_position(_x, _y);
-		auto _enable = _x >= _margin;
 
-		this->_nxt_button->set_visible(_enable);
-		this->_nxt_button->set_enabled(_enable);
+	if (_size == 0) return;
+	
+	int _x = 0, _y = 0;
+	this->buttons.at(_size - 1)->get_position(_x, _y);
+	auto _enable = _x >= _margin;
 
-		_x = 0; _y = 0;
-		this->buttons.at(0)->get_position(_x, _y);
-		_enable = _x <= _super::x;
+	this->_nxt_button->set_visible(_enable);
+	this->_nxt_button->set_enabled(_enable);
 
-		this->_pre_button->set_visible(_enable);
-		this->_pre_button->set_enabled(_enable);
-	}
+	_x = 0; _y = 0;
+	this->buttons.at(0)->get_position(_x, _y);
+	_enable = _x <= _super::x;
+
+	this->_pre_button->set_visible(_enable);
+	this->_pre_button->set_enabled(_enable);
 
 	//set colors
 	this->_pre_button->set_label_color(this->text_color);
@@ -154,7 +147,7 @@ void w_tab::render(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>
 	this->_pre_button->set_label_focused_color(this->text_focused_color);
 	this->_pre_button->set_label_disabled_color(this->text_disabled_color);
 
-	this->_pre_button->set_button_color(this->button_normal_color);
+	this->_pre_button->set_button_color(this->button_color);
 	this->_pre_button->set_button_pressed_color(this->button_pressed_color);
 	this->_pre_button->set_button_mouse_over_color(this->button_mouse_over_color);
 	this->_pre_button->set_button_focused_color(this->button_focused_color);
@@ -166,7 +159,7 @@ void w_tab::render(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>
 	this->_nxt_button->set_label_focused_color(this->text_focused_color);
 	this->_nxt_button->set_label_disabled_color(this->text_disabled_color);
 
-	this->_nxt_button->set_button_color(this->button_normal_color);
+	this->_nxt_button->set_button_color(this->button_color);
 	this->_nxt_button->set_button_pressed_color(this->button_pressed_color);
 	this->_nxt_button->set_button_mouse_over_color(this->button_mouse_over_color);
 	this->_nxt_button->set_button_focused_color(this->button_focused_color);
@@ -182,7 +175,7 @@ void w_tab::render(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>
 			pButton->set_label_focused_color(this->text_focused_color);
 			pButton->set_label_disabled_color(this->text_disabled_color);
 
-			pButton->set_button_color(this->button_normal_color);
+			pButton->set_button_color(this->button_color);
 			pButton->set_button_pressed_color(this->button_pressed_color);
 			pButton->set_button_mouse_over_color(this->button_mouse_over_color);
 			pButton->set_button_focused_color(this->button_focused_color);
@@ -229,7 +222,8 @@ void w_tab::add_tab_item(_In_z_ const std::wstring& pText,
 	_In_ int pIconOffsetX, _In_ int pIconOffsetY,
 	_In_ float pIconScaleX, _In_ float pIconScaleY,
 	_In_ UINT pHotkey,
-	_In_ bool pIsDefault)
+	_In_ bool pIsDefault,
+	_In_ void* pTag)
 {
 	if (this->_first_time_initializing)
 	{
@@ -248,7 +242,6 @@ void w_tab::add_tab_item(_In_z_ const std::wstring& pText,
 			0, 
 			false,
 			&this->_pre_button);
-		this->_pre_button->set_tag(&this->id);
 
 		//the second button is >>
 		_super::parent_widget->add_button(INT_MAX,
@@ -262,7 +255,6 @@ void w_tab::add_tab_item(_In_z_ const std::wstring& pText,
 			0,
 			false,
 			&this->_nxt_button);
-		this->_nxt_button->set_tag(&this->id);
 		
 		this->_first_time_initializing = false;
 	}
@@ -281,12 +273,12 @@ void w_tab::add_tab_item(_In_z_ const std::wstring& pText,
 		pHotkey,
 		pIsDefault,
 		&_tab_button);
-	_tab_button->set_tag(&this->id);
+	_tab_button->set_tag(pTag);
 
 	this->buttons.push_back(_tab_button);
 }
 
-void w_tab::move_right()
+void w_tab::select_next_tab()
 {
 	bool _got_first_button_from_hidden_ones = false;
 	const auto _last_x = _super::x + TAB_MARGIN + ((this->width - 2 * TAB_MARGIN) / static_cast<int>(this->button_width)) * static_cast<int>(this->button_width);
@@ -318,7 +310,7 @@ void w_tab::move_right()
 	}
 }
 
-void w_tab::move_left()
+void w_tab::select_previous_tab()
 {
 	bool _got_first_button_from_hidden_ones = false;
 	const auto _first_x = _super::x + TAB_MARGIN - this->button_width;
@@ -378,29 +370,36 @@ void w_tab::remove_all_tabs()
 	this->_first_time_initializing = true;
 }
 
+ULONG w_tab::release()
+{
+	if (this->is_released()) return 0;
+
+	if (_super::parent_widget)
+	{
+		_super::parent_widget->remove_call_back(on_gui_event);
+	}
+
+	return _super::release();
+}
+
 static void CALLBACK on_gui_event(UINT pEvent, int pControlID, wolf::gui::w_control* pControl, void* pUserContext)
 {
 	if (pControl)
 	{
-		auto _tag = (int*)pControl->get_tag();
-
-		if (_tag && all_tabs.size())
+		auto _tab = reinterpret_cast<w_tab*>(pUserContext);
+		if (_tab)
 		{
-			auto _tab = all_tabs[*_tag];
-			if (_tab)
+			if (pControlID == INT_MIN)
 			{
-				if (pControlID == INT_MIN)
-				{
-					_tab->move_left();
-				}
-				else if (pControlID == INT_MAX)
-				{
-					_tab->move_right();
-				}
-				else
-				{
-					_tab->set_selected_tab(pControl->get_ID() - _tab->get_ID() + 1);
-				}
+				_tab->select_previous_tab();
+			}
+			else if (pControlID == INT_MAX)
+			{
+				_tab->select_next_tab();
+			}
+			else
+			{
+				_tab->set_selected_tab(pControl->get_ID() - _tab->get_ID() + 1);
 			}
 		}
 	}

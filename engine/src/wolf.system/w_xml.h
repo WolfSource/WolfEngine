@@ -10,8 +10,13 @@
 #ifndef __W_XML_H__
 #define __W_XML_H__
 
-#include "w_system_dll.h"
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#include "w_system_export.h"
 #include <rapidxml.hpp>
+#include <vector>
 
 namespace wolf
 {
@@ -19,33 +24,41 @@ namespace wolf
 	{
 		struct w_xml_data
 		{
+			struct w_xml_data_attribute 
+			{
+				std::wstring name;
+				std::wstring value;
+			};
+
 			std::wstring node;
-			std::vector<std::tuple<std::wstring, std::wstring>> attributes;
+			std::vector<w_xml_data_attribute> attributes;
 			std::vector<w_xml_data> children;
 		};
 
 		class w_xml
 		{
 		public:
-			SYS_EXP w_xml();
-			SYS_EXP ~w_xml();
+			WSYS_EXP w_xml();
+			WSYS_EXP ~w_xml();
 
-			SYS_EXP void save(_In_z_ const char* pPath, bool pUTF_8, wolf::system::w_xml_data& pData);
-
+			//save xml
+			WSYS_EXP static HRESULT save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData);
 			//get xml node value
-			SYS_EXP static const std::string	get_node_value(rapidxml::xml_node<>* pNode);
-			//get xml node value as utf8
-			SYS_EXP static const std::wstring	get_node_value_utf_8(rapidxml::xml_node<>* pNode);
+			WSYS_EXP static const std::string	get_node_value(_In_ rapidxml::xml_node<>* pNode);
 			//get xml node attribute value
-			SYS_EXP static const std::string	get_node_attribute(rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute);
+			WSYS_EXP static const std::string	get_node_attribute(_In_ rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute);
+
+#ifdef WIN32
+			//get xml node value as utf8
+			WSYS_EXP static const std::wstring	get_node_value_utf8(_In_ rapidxml::xml_node<>* pNode);
 			//get xml node attribute value as utf8
-			SYS_EXP static const std::wstring	get_node_attribute_utf_8(rapidxml::xml_node<>* pNode, _In_z_ const char* pAttribute);
-			
+			WSYS_EXP static const std::wstring	get_node_attribute_utf8(_In_ rapidxml::xml_node<>* pNode, _In_z_ const char* pAttribute);
+#endif
 
 		private:
-			void _write_element(wolf::system::w_xml_data& pData, rapidxml::xml_document<wchar_t>& pDoc, _Inout_ rapidxml::xml_node<wchar_t>** pParentNode);
+			static void _write_element(_In_ wolf::system::w_xml_data& pData, _In_ rapidxml::xml_document<wchar_t>& pDoc, _Inout_ rapidxml::xml_node<wchar_t>** pParentNode);
 		};
 	}
 }
 
-#endif
+#endif //__W_XML_H__

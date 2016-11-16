@@ -39,7 +39,7 @@ HRESULT w_shader::create_pixel_shader(_In_ ID3D11Device1* pDevice, const void* b
 
 HRESULT w_shader::load_shader(_In_ ID3D11Device1* pDevice, std::wstring pPath, w_shader_type pShaderType, wolf::content_pipeline::w_vertex_declaration pVDeclaration, _Inout_ w_shader* pShader, _Out_ size_t* pPixelShaderCreatedIndex)
 {
-	auto _path = wolf::system::io::get_content_directory() + pPath;
+	auto _path = wolf::system::io::get_content_directoryW() + pPath;
 	if (pShader == nullptr)
 	{
 		logger.write(L"Shader is null when loading shader from following path: " + _path);
@@ -48,11 +48,11 @@ HRESULT w_shader::load_shader(_In_ ID3D11Device1* pDevice, std::wstring pPath, w
 
 	std::unique_ptr<uint8_t[]> data;
 	size_t dataSize;
-	boost::filesystem::perms _file_permission_status;
+	int _file_status = -1;
 
 	//read binary compiled shader object
-	auto _hr = wolf::system::io::read_binary_file(_path, data, &dataSize, _file_permission_status);
-	V(_hr, L"could not read binary data", "Shader.h", 3, false);
+	auto _hr = wolf::system::io::read_binary_file(_path.c_str(), data, &dataSize, _file_status);
+	V(_hr, L"could not read binary data " + (_file_status == -1) ? L"file not found" : L"file corrupted", "Shader.h", 3, false);
 	if (FAILED(_hr)) return _hr;
 
 	//create shader
@@ -119,13 +119,13 @@ void w_shader::set_input_layout(ID3D11InputLayout* pValue)
 	this->_input_layout = pValue;
 }
 
-void w_shader::set_srv(_In_ ID3D11DeviceContext1* pContext, UINT StartSLot, UINT NumViews, _In_ ID3D11ShaderResourceView* srv)
+void w_shader::set_srv(_In_ ID3D11DeviceContext1* pContext, UINT pStartSLot, UINT pNumViews, _In_ ID3D11ShaderResourceView* pSRV)
 {
 	if (w_graphics_device_manager::samplers.size() != 0)
 	{
 		auto _sampler = w_graphics_device_manager::samplers.at(0);
-		pContext->PSSetShaderResources(StartSLot, NumViews, &srv);
-		pContext->PSSetSamplers(StartSLot, NumViews, _sampler.GetAddressOf());
+		pContext->PSSetShaderResources(pStartSLot, pNumViews, &pSRV);
+		pContext->PSSetSamplers(pStartSLot, pNumViews, _sampler.GetAddressOf());
 	}
 }
 

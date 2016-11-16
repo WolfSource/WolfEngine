@@ -5,15 +5,20 @@
 	Name			 : w_event.h
 	Description		 : Base class for event
 	Comment          : Define event's callback :
-					   Event<int> e += [](int i) { cout<< i; };
-					   Call it like : e(100);
+					   w_event<int> e;
+					   e += [](int i) { cout<< i; };
+					   Call it like : 
+										e(100);
 */
 
 #ifndef __W_EVENT_H__
 #define __W_EVENT_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #include <vector>
-#include <functional>
 
 namespace wolf
 {
@@ -23,7 +28,7 @@ namespace wolf
 		class w_event
 		{
 		public:
-			typedef std::function<void(T)> Func;
+			typedef void(*func)(T);
 
 		public:
 			void call(T pArg)
@@ -39,17 +44,17 @@ namespace wolf
 				call(pArg);
 			}
 
-			w_event& operator += (Func pFunc)
+			w_event& operator += (func pFunc)
 			{
 				this->_handlers.push_back(pFunc);
 				return *this;
 			}
 
-			w_event& operator -= (Func pFunc)
+			w_event& operator -= (func pFunc)
 			{
 				for (auto i = this->_handlers.begin(); i != this->_handlers.end(); ++i)
 				{
-					if ((*i).target<void(T)>() == pFunc.target<void(T)>())
+					if (*i == pFunc)
 					{
 						this->_handlers.erase(i);
 						break;
@@ -59,9 +64,9 @@ namespace wolf
 			}
 
 		private:
-			std::vector<Func> _handlers;
+			std::vector<func> _handlers;
 		};
 	}
 }
 
-#endif
+#endif //__W_EVENT_H__

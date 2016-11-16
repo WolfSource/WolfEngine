@@ -43,6 +43,7 @@ namespace wolf
 					
 					DX_EXP D2D1_POINT_2F	get_radius() const;
 					DX_EXP D2D1_POINT_2F	get_center() const;
+					DX_EXP float			get_stroke_width() const				{ return this->_stroke_width; }
 
 #pragma endregion
 
@@ -54,7 +55,7 @@ namespace wolf
 					DX_EXP void set_border_color(_In_ const w_color pColor);
 					//Set geometry of ellipse
 					DX_EXP void set_geormetry(_In_ const float pCenterX, _In_ const float pCenterY, _In_ const float pRadiusX, _In_ const float pRadiusY);
-
+					DX_EXP void set_stroke_width(_In_ const float pValue)			{ this->_stroke_width = pValue; }
 #pragma endregion
 
 				private:

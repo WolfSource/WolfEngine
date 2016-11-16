@@ -15,7 +15,6 @@
 #include "glm/mat4x4.hpp"
 #include <glm_extention.h>
 #include "c_animation.h"
-#include <w_system.h>
 
 namespace wolf
 {

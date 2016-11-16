@@ -29,19 +29,15 @@ w_sprite_batch::~w_sprite_batch()
 
 void w_sprite_batch::load()
 {
-	//Create bitmap source effect from WIC converter
-	auto _hr = this->_gDevice->context_2D->CreateEffect(CLSID_D2D1BitmapSource, &this->_bitmap_source_effect);
-	V(_hr, L"creating 2D effect bitmap source effect", this->name, 2, false, true);
-
 	//Load sprite font style
 	this->_debug_sprite_font = std::make_unique<w_sprite_font>();
-	this->_debug_sprite_font->load(this->_gDevice->context_2D.Get(), this->_gDevice->write_factory.Get());
+	this->_debug_sprite_font->load(this->_gDevice);
 
 	//Create OffScreen texture
-	auto _mainWindow = this->_gDevice->MainWindow();
-	resize_render_target(_mainWindow->width, _mainWindow->height);
+	auto _main_window = this->_gDevice->MainWindow();
+	resize_render_target(_main_window->width, _main_window->height);
 
-	add_effect(CLSID_D2D1GaussianBlur);
+	add_effect(CLSID_D2D1BitmapSource);
 
 	auto _size = this->_WIC_format_converters.size();
 	if (_size)
@@ -158,7 +154,12 @@ void w_sprite_batch::add_effect(_In_ REFCLSID pEffectId)
 {
 	HRESULT _hr = S_FALSE;
 
-	if (pEffectId == CLSID_D2D1DirectionalBlur && this->_directional_blur_effect == nullptr)
+	if ( pEffectId == CLSID_D2D1BitmapSource && this->_directional_blur_effect == nullptr)
+	{
+		auto _hr = this->_gDevice->context_2D->CreateEffect(CLSID_D2D1BitmapSource, &this->_bitmap_source_effect);
+		V(_hr, L"creating bitmap source effect", this->name, 2, false, true);
+	}
+	else if (pEffectId == CLSID_D2D1DirectionalBlur && this->_directional_blur_effect == nullptr)
 	{
 		//Add directional blur
 		_hr = this->_gDevice->context_2D->CreateEffect(CLSID_D2D1DirectionalBlur, &this->_directional_blur_effect);
@@ -319,7 +320,7 @@ HRESULT w_sprite_batch::draw_image(_In_z_ const wchar_t* pImageName,
 
 	this->_gDevice->context_2D->SetTransform(Matrix3x2F::Scale(pScale.x, pScale.y, _center_scale) *
 		Matrix3x2F::Rotation(pRotationAngle, _center_rotation) * Matrix3x2F::Translation(pTranslation.x, pTranslation.y));
-	this->_gDevice->context_2D->DrawImage(this->_gaussian_blur_effect.Get(), D2D1::Point2F(pPosition.x, pPosition.y));
+	this->_gDevice->context_2D->DrawImage(this->_bitmap_source_effect.Get(), D2D1::Point2F(pPosition.x, pPosition.y));
 }
 
 
@@ -422,7 +423,7 @@ void w_sprite_batch::set_bitmap_effect_source(IWICFormatConverter* pWICFormatCon
 	auto _hr = this->_bitmap_source_effect->SetValue(D2D1_BITMAPSOURCE_PROP_WIC_BITMAP_SOURCE, pWICFormatConverter);
 	V(_hr, L"set bitmap source effect for following image path: ", this->name, 2, false, true);
 
-	this->_gaussian_blur_effect->SetInputEffect(0, this->_bitmap_source_effect.Get());
+	/*this->_gaussian_blur_effect->SetInputEffect(0, this->_bitmap_source_effect.Get());*/
 }
 
 void w_sprite_batch::set_gaussian_blur_value(D2D1_GAUSSIANBLUR_PROP pEffectProperty, float pValue)

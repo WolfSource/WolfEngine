@@ -10,7 +10,14 @@
 #ifndef __W_OBJECT_H__
 #define __W_OBJECT_H__
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#if defined(__WIN32) || defined(__UNIVERSAL)
 #include <string>
+#endif
+
 #include "w_Ireleasable.h"
 
 namespace wolf
@@ -27,6 +34,7 @@ namespace wolf
 			virtual bool is_released() { return this->_is_released; }
 			virtual ULONG release() override { return _internal_release(); }
 
+			//we are not releasing your tag
 			void* tag;
 			std::string name;
 
@@ -50,10 +58,6 @@ namespace wolf
 
 				this->_is_released = true;
 				this->tag = nullptr;
-
-#ifdef _DEBUG
-				//OutputDebugStringA(this->name.c_str());
-#endif
 				this->name.clear();
 
 				return 1;
@@ -64,4 +68,4 @@ namespace wolf
 	}
 }
 
-#endif
+#endif //__W_OBJECT_H__

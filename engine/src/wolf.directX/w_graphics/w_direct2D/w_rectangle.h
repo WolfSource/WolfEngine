@@ -44,25 +44,26 @@ namespace wolf
 					//Set border color of direct2d rectangle
 					DX_EXP w_color get_border_color() const;
 					
-					DX_EXP float get_radiusX() const;
-					DX_EXP float get_radiusY() const;
-					DX_EXP float get_left() const;
-					DX_EXP float get_top() const;
-					DX_EXP float get_width() const;
-					DX_EXP float get_height() const;
+					DX_EXP D2D1_POINT_2F	get_rectangle_corner_radius() const;
+					DX_EXP float			get_left() const;
+					DX_EXP float			get_top() const;
+					DX_EXP float			get_width() const;
+					DX_EXP float			get_height() const;
+					DX_EXP float			get_stroke_width() const									{ return this->_stroke_width; }
 
 #pragma endregion
 
 #pragma region Setters
 
 					//Set color of direct2d rectangle
-					DX_EXP void set_color(_In_ const w_color pColor);
+					DX_EXP void				set_color(_In_ const w_color pColor);
 					//Set border color of direct2d rectangle
-					DX_EXP void set_border_color(_In_ const w_color pColor);
+					DX_EXP void				set_border_color(_In_ const w_color pColor);
 					//Set geometry of rectangle
-					DX_EXP void set_geormetry(_In_ float pLeft, _In_ float pTop, 
+					DX_EXP void				set_geormetry(_In_ float pLeft, _In_ float pTop, 
 						_In_ float pWidth, _In_ float pHeight, 
 						_In_ float pRadiusX, _In_ float pRadiusY);
+					DX_EXP void			set_stroke_width(_In_ const float pValue)						{ this->_stroke_width = pValue; }
 
 #pragma endregion
 

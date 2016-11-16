@@ -54,9 +54,8 @@ namespace wolf
 					}
 				}
 
-				auto _msg = L"Asset not supported : " + pAssetPath;
-				logger.error(_msg);
-				throw std::runtime_error(std::string(_msg.begin(), _msg.end()));
+				logger.error(L"Asset not supported : " + pAssetPath);
+				return nullptr;
 			}
 
 		private:

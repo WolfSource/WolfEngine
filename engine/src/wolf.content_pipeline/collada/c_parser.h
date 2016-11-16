@@ -29,7 +29,8 @@ namespace wolf
 				c_parser() {}
 				virtual ~c_parser() {};
 
-				CP_EXP static HRESULT parse_collada_from_file(const std::wstring& pFilePath, _Inout_ wolf::content_pipeline::w_scene* pScene, bool pOptimizePoints = true, bool pInvertNormals = false);
+				CP_EXP static HRESULT parse_collada_from_file(const std::wstring& pFilePath, _Inout_ wolf::content_pipeline::w_scene* pScene,
+					bool pUseTootleFastOptimizeMethod = true, bool pOptimizePoints = true, bool pInvertNormals = false);
 
 			private:
 				static HRESULT		_process_xml_node(_In_ rapidxml::xml_node<>* pXNode);
@@ -44,7 +45,7 @@ namespace wolf
 				static void			_get_sources(_In_ rapidxml::xml_node<>* pXNode, std::string pID, std::string pName, _Inout_ c_geometry& pGeometry);
 				static void			_get_vertices(_In_ rapidxml::xml_node<>*, _Inout_ c_geometry& pGeometry);
 				static void			_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geometry& pGeometry);
-				static HRESULT		_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals);
+				static HRESULT		_create_scene(_Inout_ w_scene* pScene, bool pUseTootleFastOptimizeMethod, bool pOptimizePoints, bool pInvertNormals);
 				static void			_clear_all_resources();
 
 				static const char*	_trace_class_name;

@@ -188,6 +188,8 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 		auto _pos_source = pGeometry.sources[_pos_index];
 		auto _tex_source = _tex_index != -1 ? pGeometry.sources[_tex_index] : nullptr;
 		auto _nor_source = _nor_index != -1 ? pGeometry.sources[_nor_index] : nullptr;
+
+		std::vector<float> _just_vertices_pos;
 		std::vector<w_vertex_data> _vertices_data;
 		std::vector<unsigned short> _indices_data;
 		std::map<int, w_vertex_index> _vertices;
@@ -195,6 +197,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 		std::map<int, int> _dic1;
 		std::vector<std::vector<int>> _l1;
 
+		//read indices
 		for (int i = 0; i < _triangle->indices.size(); i += _ind)
 		{
 			auto _vertex_index = 0;
@@ -202,7 +205,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 			std::vector<float> _pos;
 			std::vector<float> _tex;
 			std::vector<float> _nor;
-			unsigned short _index = 0;
+			UINT _index = 0;
 
 			if (_pos_index != -1)
 			{
@@ -258,7 +261,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 								std::abs(_vertices[j].texture[1] - _tex[1]) < _epsilon)
 							{
 								_is_duplicate = true;
-								_index = static_cast<unsigned short>(j);
+								_index = static_cast<UINT>(j);
 							}
 							else
 							{
@@ -292,7 +295,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 						std::abs(_vertices[j].vertex[2] - _pos[2]) < _epsilon)
 					{
 						_is_duplicate = true;
-						_index = static_cast<unsigned short>(j);
+						_index = static_cast<UINT>(j);
 						break;
 					}
 
@@ -303,11 +306,11 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 
 			if (!_is_duplicate)
 			{
-				_indices_data.push_back(static_cast<unsigned short>(_vertices_size));
+				_indices_data.push_back(static_cast<UINT>(_vertices_size));
 				_vertices[_vertices_size].vertex.swap(_pos);
 				_vertices[_vertices_size].normal.swap(_nor);
 				_vertices[_vertices_size].texture.swap(_tex);
-				_vertices[_vertices_size].vertex_index = _vertex_index;
+				_vertices[_vertices_size].vertex_index = _vertex_index + 1;
 
 				_pos.clear();
 				_nor.clear();
@@ -337,13 +340,13 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 				//Not implemented yet
 			}
 			glm::vec4 _pos(_v.vertex[0], _v.vertex[1], _v.vertex[2], 1);
-			_min_vertex.x = std::min(_pos.x, _min_vertex.x);
-			_min_vertex.y = std::min(_pos.y, _min_vertex.y);
-			_min_vertex.z = std::min(_pos.z, _min_vertex.z);
+			_min_vertex.x = min(_pos.x, _min_vertex.x);
+			_min_vertex.y = min(_pos.y, _min_vertex.y);
+			_min_vertex.z = min(_pos.z, _min_vertex.z);
 
-			_max_vertex.x = std::max(_pos.x, _max_vertex.x);
-			_max_vertex.y = std::max(_pos.y, _max_vertex.y);
-			_max_vertex.z = std::max(_pos.z, _max_vertex.z);
+			_max_vertex.x = max(_pos.x, _max_vertex.x);
+			_max_vertex.y = max(_pos.y, _max_vertex.y);
+			_max_vertex.z = max(_pos.z, _max_vertex.z);
 
 			w_vertex_data _vertex_data;
 			_vertex_data.position = _pos;
@@ -351,6 +354,11 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 			_vertex_data.blend_weight = _bw;
 			_vertex_data.blend_indices = _bi;
 			_vertex_data.uv = _v.texture.size() > 0 ? glm::vec2(_v.texture[0], 1.0f - _v.texture[1]) : glm::vec2(0);
+			_vertex_data.vertex_index = _v.vertex_index;
+
+			_just_vertices_pos.push_back(_v.vertex[0]);
+			_just_vertices_pos.push_back(_v.vertex[1]);
+			_just_vertices_pos.push_back(_v.vertex[2]);
 
 			_vertices_data.push_back(_vertex_data);
 		}
@@ -393,10 +401,13 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 		}
 
 		auto _mesh = new w_mesh();
+		
+		_mesh->just_vertices_pos.swap(_just_vertices_pos);
 		_mesh->vertices.swap(_vertices_data);
 		_mesh->indices.swap(_indices_data);
 		_mesh->bounding_box.min = _min_vertex;
 		_mesh->bounding_box.max = _max_vertex;
+		
 		for (auto _material : pMaterials)
 		{
 			if (_material && _material->c_name == _triangle->material_name)
@@ -404,6 +415,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 				_mesh->material = _material;
 			}
 		}
+
 		_model->_meshes.push_back(_mesh);
 
 #pragma region free resources

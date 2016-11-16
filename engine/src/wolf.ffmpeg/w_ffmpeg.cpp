@@ -1066,7 +1066,7 @@ HRESULT w_ffmpeg::buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, U
 				NULL,
 				NULL);
 
-			const size_t _slicePitch = _des_width * _des_height  * 4;
+			const size_t _slice_pitch = _des_width * _des_height  * 4;
 
 			auto _hr = S_FALSE;
 			if (_down_sampling)
@@ -1097,7 +1097,7 @@ HRESULT w_ffmpeg::buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, U
 						{
 							//first clear memory
 							std::fill(_videoFrameData->data.begin(), _videoFrameData->data.end(), 0);
-							tbb::parallel_for<size_t>(0, _slicePitch, 4, [&](size_t i)
+							tbb::parallel_for<size_t>(0, _slice_pitch, 4, [&](size_t i)
 							{
 								_videoFrameData->data.at(i / 4) = (int) ((_frame[i + 3] & 0xFF) << 24) | ((_frame[i] & 0xFF) << 16) | ((_frame[i + 1] & 0xFF) << 8) | (_frame[i + 2] & 0xFF);//argb
 							});
@@ -1134,20 +1134,21 @@ HRESULT w_ffmpeg::buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, U
 				auto _frame = (uint8_t*) (this->_av_Frame->data[0]);
 				if (_frame)
 				{
-					_hr = pVideoMemory.allocate(sizeof(w_video_frame_data), std::alignment_of<w_video_frame_data>::value);
+					auto _size = width * height;
+					_hr = pVideoMemory.allocate(4 * _size, std::alignment_of<int>::value);
 					if (_hr)
 					{
 						auto _address = pVideoMemory.get_address() - 1;
 						auto _memory = pVideoMemory.read(_address);
 
-						auto _videoFrameData = static_cast<w_video_frame_data*>(_memory);
-						if (_videoFrameData)
+						auto _data = static_cast<int*>(_memory);
+						if (_data)
 						{
 							//first clear memory
-							std::fill(_videoFrameData->data.begin(), _videoFrameData->data.end(), 0);
-							tbb::parallel_for<size_t>(0, _slicePitch, 4, [&](size_t i)
+							std::fill(&_data[0], &_data[_size - 1], 0);
+							tbb::parallel_for<size_t>(0, _slice_pitch, 4, [&](size_t i)
 							{
-								_videoFrameData->data.at(i / 4) = (int) ((_frame[i + 3] & 0xFF) << 24) | ((_frame[i] & 0xFF) << 16) | ((_frame[i + 1] & 0xFF) << 8) | (_frame[i + 2] & 0xFF);//argb
+								_data[i / 4] = (int) ((_frame[i + 3] & 0xFF) << 24) | ((_frame[i] & 0xFF) << 16) | ((_frame[i + 1] & 0xFF) << 8) | (_frame[i + 2] & 0xFF);//argb
 							});
 						}
 						else
@@ -1355,35 +1356,41 @@ HRESULT w_ffmpeg::buffer_to_memory(wolf::system::w_memory& pVideoMemory, wolf::s
 
 			//copy data to the destination
 			auto _frame = (uint8_t*) (this->_av_Frame->data[0]);
-
-			auto _hr = pVideoMemory.allocate(sizeof(w_video_frame_data), std::alignment_of<w_video_frame_data>::value);
-			if (_hr)
+			if (_frame)
 			{
-				auto _address = pVideoMemory.get_address() - 1;
-				auto _memory = pVideoMemory.read(_address);
-
-				auto _videoFrameData = new (_memory) w_video_frame_data();
-				if (_videoFrameData)
+				auto _size = this->get_video_width() * this->get_video_height();
+				auto _hr = pVideoMemory.allocate(sizeof(int) * _size,
+					std::alignment_of<int>::value);
+				if (_hr)
 				{
-					std::fill(_videoFrameData->data.begin(), _videoFrameData->data.end(), 0);
-					tbb::parallel_for<size_t>(0, _slicePitch, 4, [&](size_t i)
+					auto _address = pVideoMemory.get_address() - 1;
+					auto _memory = pVideoMemory.read(_address);
+
+					auto _videoFrameData = static_cast<int*>(_memory);
+					if (_videoFrameData)
 					{
-						_videoFrameData->data.at(i / 4) = (int)(_frame[i + 2] / 255.0, _frame[i + 1] / 255.0, _frame[i] / 255.0, _frame[i + 3] / 255.0);//BGR
-					});
+						//first clear memory
+						std::memset(&_videoFrameData, 0, _size);
+						tbb::parallel_for<size_t>(0, _slicePitch, 4, [&](size_t i)
+						{
+							_videoFrameData[i / 4] = (int)((_frame[i + 3] & 0xFF) << 24) | ((_frame[i] & 0xFF) << 16) | ((_frame[i + 1] & 0xFF) << 8) | (_frame[i + 2] & 0xFF);//argb
+						});
+					}
+					else
+					{
+						logger.error(L"Could not cast allocated memory for video");
+						hr = S_FALSE;
+					}
+
 				}
 				else
 				{
-					logger.error("Could not cast allocated memory for video");
+					logger.error(L"Could not allocate memory for video");
 					hr = S_FALSE;
 				}
-			}
-			else
-			{
-				logger.error("Could not allocate memory for video");
-				hr = S_FALSE;
-			}
 
-			_frame = nullptr;
+				_frame = nullptr;
+			}
 
 			sws_freeContext(swsContext);
 

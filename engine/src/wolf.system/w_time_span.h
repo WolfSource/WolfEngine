@@ -4,15 +4,23 @@
 	Website			 : http://WolfSource.io
 	Name			 : w_time_span.h
 	Description		 : time span represents a duration of time, same as TimeSpan of .NetFrameWork
-	Comment			 :
+	Comment			 : 10/18/2016 : Optimized for Android	
 */
 
-#ifndef __W_TIMESPAN_H__
-#define __W_TIMESPAN_H__
+#ifndef __W_TIME_SPAN_H__
+#define __W_TIME_SPAN_H__
 
-#include "w_object.h"
-#include "w_system_dll.h"
-#include <limits>
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#include "w_system_export.h"
+#include <assert.h>
+#include <string>
+
+#ifdef __ANDROID
+#include "w_std.h"
+#endif
 
 namespace wolf
 {
@@ -21,70 +29,70 @@ namespace wolf
 		class w_time_span
 		{
 		public:
-			SYS_EXP w_time_span();
-			SYS_EXP w_time_span(INT64 pTicks);
-			SYS_EXP w_time_span(int pHours, int pMinutes, int pSeconds);
-			SYS_EXP w_time_span(int pDays, int pHours, int pMinutes, int pSeconds, int pMilliseconds = 0);
-			SYS_EXP ~w_time_span();
+			WSYS_EXP w_time_span();
+			WSYS_EXP w_time_span(INT64 pTicks);
+			WSYS_EXP w_time_span(int pHours, int pMinutes, int pSeconds);
+			WSYS_EXP w_time_span(int pDays, int pHours, int pMinutes, int pSeconds, int pMilliseconds = 0);
+			WSYS_EXP ~w_time_span();
 
 			//Add two timespans with each other
-			SYS_EXP w_time_span add(w_time_span pTS);
+			WSYS_EXP w_time_span add(w_time_span pTS);
 			//Return duration in timespan
-			SYS_EXP w_time_span duration();
+			WSYS_EXP w_time_span duration();
 			//Make timespan negative
-			SYS_EXP w_time_span negate();
+			WSYS_EXP w_time_span negate();
 			//Returns time in string
-			SYS_EXP std::string to_string();
+			WSYS_EXP std::string to_string();
 			//Returns time in wstring
-			SYS_EXP std::wstring to_wstring();
+			WSYS_EXP std::wstring to_wstring();
 
 			//Returns timespan with zero value
-			SYS_EXP static w_time_span zero();
+			WSYS_EXP static w_time_span zero();
 			//Create timespan from now
-			SYS_EXP static w_time_span now();
+			WSYS_EXP static w_time_span now();
 			//Returns timespan with minimum value
-			SYS_EXP static w_time_span min_value();
+			WSYS_EXP static w_time_span min_value();
 			//Returns timespan with maximum value
-			SYS_EXP static w_time_span max_value();
+			WSYS_EXP static w_time_span max_value();
 			//Create timeSpan from days
-			SYS_EXP static w_time_span from_days(double pValue);
+			WSYS_EXP static w_time_span from_days(double pValue);
 			//Create timeSpan from hours
-			SYS_EXP static w_time_span from_hours(double pValue);
+			WSYS_EXP static w_time_span from_hours(double pValue);
 			//Create timeSpan from milliSeconds
-			SYS_EXP static w_time_span from_milliseconds(double pValue);
+			WSYS_EXP static w_time_span from_milliseconds(double pValue);
 			//Create timeSpan from minutes
-			SYS_EXP static w_time_span from_minutes(double pValue);
+			WSYS_EXP static w_time_span from_minutes(double pValue);
 			//Create timespan from seconds
-			SYS_EXP static w_time_span from_seconds(double pValue);
+			WSYS_EXP static w_time_span from_seconds(double pValue);
 			//Create timespan from ticks
-			SYS_EXP static w_time_span from_ticks(INT64 pValue);
+			WSYS_EXP static w_time_span from_ticks(INT64 pValue);
 			//Create timespan from string in the format of "00:00:00:00:000"
-			SYS_EXP static w_time_span from_string(std::string pValue);
+			WSYS_EXP static w_time_span from_string(std::string pValue);
 
 #pragma region Getters
 
 			//Returns total ticks
-			SYS_EXP INT64 get_ticks() const;
+			WSYS_EXP INT64 get_ticks() const;
 			//Returns days
-			SYS_EXP int get_days() const;
+			WSYS_EXP int get_days() const;
 			//Returns hours
-			SYS_EXP int get_hours() const;
+			WSYS_EXP int get_hours() const;
 			//Returns milliseconds
-			SYS_EXP int get_milliseconds() const;
+			WSYS_EXP int get_milliseconds() const;
 			//Returns minutes
-			SYS_EXP int get_minutes() const;
+			WSYS_EXP int get_minutes() const;
 			//Returns seconds
-			SYS_EXP int get_seconds() const;
+			WSYS_EXP int get_seconds() const;
 			//Returns total days
-			SYS_EXP double get_total_days() const;
+			WSYS_EXP double get_total_days() const;
 			//Returns total hours
-			SYS_EXP double get_total_hours() const;
+			WSYS_EXP double get_total_hours() const;
 			//Returns total milliseconds
-			SYS_EXP double get_total_milliseconds() const;
+			WSYS_EXP double get_total_milliseconds() const;
 			//Returns total minutes
-			SYS_EXP double get_total_minutes() const;
+			WSYS_EXP double get_total_minutes() const;
 			//Returns total seconds
-			SYS_EXP double get_total_seconds() const;
+			WSYS_EXP double get_total_seconds() const;
 
 #pragma endregion
 
@@ -105,7 +113,7 @@ namespace wolf
 			return !(pLeft == pRight);
 		}
 
-		inline w_time_span& operator - (w_time_span& pLeft, w_time_span& pRight)
+		inline w_time_span operator - (w_time_span& pLeft, w_time_span& pRight)
 		{
 			auto t1 = pLeft.get_ticks();
 			auto t2 = pRight.get_ticks();
@@ -115,23 +123,23 @@ namespace wolf
 			// >> 63 gives the sign bit (either 64 1's or 64 0's).
 			if ((t1 >> 63 != t2 >> 63) && (t1 >> 63 != result >> 63))
 			{
-				throw std::exception("Overflow TimeSpan too long");
+				throw "Overflow TimeSpan too long";
 			}
 			return w_time_span(result);
 		}
 
-		inline w_time_span& operator -= (w_time_span& pLeft, w_time_span& pRight)
+		inline w_time_span operator -= (w_time_span& pLeft, w_time_span& pRight)
 		{
 			pLeft = pLeft - pRight;
 			return pLeft;
 		}
 
-		inline w_time_span& operator + (w_time_span& pLeft, w_time_span& pRight)
+		inline w_time_span operator + (w_time_span& pLeft, w_time_span& pRight)
 		{
 			return pLeft.add(pRight);
 		}
 
-		inline w_time_span& operator += (w_time_span& pLeft, w_time_span& pRight)
+		inline w_time_span operator += (w_time_span& pLeft, w_time_span& pRight)
 		{
 			pLeft = pLeft + pRight;
 			return pLeft;
@@ -159,4 +167,4 @@ namespace wolf
 	}
 }
 
-#endif
+#endif //__W_TIME_SPAN_H__

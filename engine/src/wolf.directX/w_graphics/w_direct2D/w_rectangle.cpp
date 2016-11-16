@@ -124,14 +124,13 @@ float w_rectangle::get_height() const
 	return this->_rectangle.rect.top - this->_rectangle.rect.bottom;
 }
 
-float w_rectangle::get_radiusX() const
+D2D1_POINT_2F w_rectangle::get_rectangle_corner_radius() const
 {
-	return this->_rectangle.radiusX;
-}
+	D2D1_POINT_2F _radius;
+	_radius.x = this->_rectangle.radiusX;
+	_radius.y = this->_rectangle.radiusY;
 
-float w_rectangle::get_radiusY() const
-{
-	return this->_rectangle.radiusY;
+	return _radius;
 }
 
 #pragma endregion
@@ -158,9 +157,9 @@ void w_rectangle::set_border_color(_In_ const w_color pColor)
 	this->_update_border_color = true;
 }
 
-void w_rectangle::set_geormetry(_In_ float pLeft, _In_ float pTop, 
-	_In_ float pWidth, _In_ float pHeight, 
-	_In_ float pRadiusX, _In_ float pRadiusY)
+void w_rectangle::set_geormetry(_In_ const float pLeft, _In_ const float pTop, 
+	_In_ float const pWidth, _In_ const float pHeight, 
+	_In_ float const pRadiusX, _In_ const float pRadiusY)
 {
 	this->_rectangle.radiusX = pRadiusX;
 	this->_rectangle.radiusY = pRadiusY;

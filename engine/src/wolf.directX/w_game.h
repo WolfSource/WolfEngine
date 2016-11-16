@@ -32,6 +32,7 @@ namespace wolf
 
 			//This will run the main loop cycle of the game 
 			DX_EXP bool run(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo);
+			DX_EXP void exit(_In_ const int pExitCode = 0);
 
 			//Release all resources
 			DX_EXP ULONG release() override;

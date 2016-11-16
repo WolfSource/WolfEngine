@@ -1,8 +1,10 @@
 #include "w_system_pch.h"
 
-BOOL APIENTRY DllMain(_In_ HMODULE hModule, _In_ DWORD ul_reason_for_call, _In_ LPVOID lpReserved)
+#if defined(__WIN32) || defined (__UNIVERSAL)
+
+BOOL APIENTRY DllMain(_In_ HMODULE pHModule, _In_ DWORD pULReasonForCall, _In_ LPVOID pLPReserved)
 {
-	switch (ul_reason_for_call)
+	switch (pULReasonForCall)
 	{
 	case DLL_PROCESS_ATTACH:
 	case DLL_THREAD_ATTACH:
@@ -12,3 +14,5 @@ BOOL APIENTRY DllMain(_In_ HMODULE hModule, _In_ DWORD ul_reason_for_call, _In_ 
 	}
 	return TRUE;
 }
+
+#endif
