@@ -1,4 +1,7 @@
 #include "w_system_pch.h"
+
+#ifdef __WIN32
+
 #include "w_memory.h"
 #include <memory>
 
@@ -88,3 +91,5 @@ void w_memory::free()
 	}
 	this->_isReleased = true;
 }
+
+#endif

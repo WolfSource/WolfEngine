@@ -31,6 +31,7 @@ struct w_color
 	{
 	}
 
+	//r(0-255),g(0-255),b(0-255),a(0-255)
 	w_color(unsigned char pR, unsigned char pG, unsigned char pB, unsigned char pA) :
 		r(pR),
 		g(pG),

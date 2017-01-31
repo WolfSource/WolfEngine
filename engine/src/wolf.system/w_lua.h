@@ -1,6 +1,8 @@
 #ifndef __W_LUA_H__
 #define __W_LUA_H__
 
+#ifdef __WIN32
+
 #if _MSC_VER > 1000
 #pragma once
 #endif
@@ -33,10 +35,6 @@ namespace wolf
 
 			WSYS_EXP static void			prepare_function(const char* pFunctionName);
 			
-			//make sure call run and prepare_function before calling this function
-			template<typename T>
-			static void						set_parameter_function(const T pParam);
-
 			WSYS_EXP static void			execute_function();
 
 			template<typename T>
@@ -53,6 +51,10 @@ namespace wolf
 			//return the last error
 			WSYS_EXP static const char*		get_last_error() 				{ return _last_error.c_str(); };
 
+			//make sure call run and prepare_function before calling this function
+			template<typename T>
+			static void						set_parameter_function(const T pParam);
+
 			//get the global variable in lua script
 			template <typename T>
 			static HRESULT					get_global_variable(const char* pVariableName, T& pValue);
@@ -64,6 +66,8 @@ namespace wolf
 			//set the global variable in lua script
 			template <typename T>
 			static HRESULT					set_global_variable(const char* pVariableName, const T pValue);
+			//set lua path
+			WSYS_EXP static HRESULT			set_lua_path(_In_z_ const char* pPath);
 
 #pragma endregion
 
@@ -78,13 +82,13 @@ namespace wolf
 			WSYS_EXP static void				_incompatible_type_for_variable(const char* pVariableName, const char* pRequestedType, int pOriginalType);
 
 			//the lua state
-			WSYS_EXP static lua_State*		_lua;
+			WSYS_EXP static lua_State*			_lua;
 			//the last error
-			WSYS_EXP static std::string		_last_error;
+			WSYS_EXP static std::string			_last_error;
 			//name of lua function
-			WSYS_EXP static std::string		_function_name;
+			WSYS_EXP static std::string			_function_name;
 			//number of input parameters for lua function
-			WSYS_EXP static unsigned char	_function_number_input_parameters;
+			WSYS_EXP static unsigned char		_function_number_input_parameters;
 		};
 
 #pragma region Templates
@@ -180,7 +184,7 @@ namespace wolf
 			if (lua_isnil(_lua, -1))
 			{
 				char _msg[256];
-				sprintf(_msg, "%s is null\n", pVariableName);
+				sprintf_s(_msg, 256, "%s is null\n", pVariableName);
 				_last_error = _msg;
 
 				return S_FALSE;
@@ -323,7 +327,7 @@ namespace wolf
 			if (lua_isnil(_lua, -1))
 			{
 				char _msg[256];
-				sprintf(_msg, "%s is null\n", pVariableName);
+				sprintf_s(_msg, 256, "%s is null\n", pVariableName);
 				_last_error = _msg;
 
 				return S_FALSE;
@@ -520,5 +524,7 @@ namespace wolf
 
 	}
 }
+
+#endif // __WIN32
 
 #endif //__W_LUA_H__

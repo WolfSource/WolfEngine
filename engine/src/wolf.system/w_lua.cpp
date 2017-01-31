@@ -1,6 +1,8 @@
 #include "w_system_pch.h"
 #include "w_lua.h"
 
+#ifdef __WIN32
+
 using namespace wolf::system;
 
 lua_State*		w_lua::_lua;
@@ -135,3 +137,19 @@ ULONG w_lua::release()
 
 	return 1;
 }
+
+HRESULT w_lua::set_lua_path(_In_z_ const char* pPath)
+{
+	lua_getglobal(_lua, "package");
+	lua_getfield(_lua, -1, "path"); // get field "path" from table at top of stack (-1)
+	std::string cur_path = lua_tostring(_lua, -1); // grab path string from top of stack
+	cur_path.append(";"); // do your path magic here
+	cur_path.append(pPath);
+	lua_pop(_lua, 1); // get rid of the string on the stack we just pushed on line 5
+	lua_pushstring(_lua, cur_path.c_str()); // push the new one
+	lua_setfield(_lua, -2, "path"); // set the field "path" in table at -2 with value at top of stack
+	lua_pop(_lua, 1); // get rid of package table from top of stack
+	return S_OK;
+}
+
+#endif

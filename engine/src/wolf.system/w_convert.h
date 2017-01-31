@@ -23,7 +23,7 @@
 #include <string.h>
 #include <sstream>
 
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__linux)
 
 #include "w_std.h"
 
@@ -43,6 +43,13 @@ namespace wolf
 				return _convert.from_bytes(pStr);
 			}
 
+			// convert UTF-16 string to wstring
+			inline std::wstring from_utf16(const std::string& pStr)
+			{
+				std::wstring_convert<std::codecvt_utf16<wchar_t>> _convert;
+				return _convert.from_bytes(pStr);
+			}
+			
 			// convert wstring to UTF-8 string
 			inline std::string to_utf8(const std::wstring& pStr)
 			{
@@ -50,16 +57,67 @@ namespace wolf
 				return _convert.to_bytes(pStr);
 			}
 
-
-			inline HRESULT chars_to_GUID(std::wstring value, GUID& GUID)
+			// convert wstring to UTF-16 string
+			inline std::string to_utf16(const std::wstring& pStr)
 			{
-				LPOLESTR guid = W2OLE((wchar_t*)value.c_str());
+				std::wstring_convert<std::codecvt_utf16<wchar_t>> _convert;
+				return _convert.to_bytes(pStr);
+			}
+
+			inline HRESULT chars_to_GUID(const std::wstring& pStr, GUID& pGUID)
+			{
+				LPOLESTR guid = W2OLE((wchar_t*)pStr.c_str());
 				auto hr = S_OK;
-				CLSIDFromString(guid, (LPCLSID)&GUID);
+				CLSIDFromString(guid, (LPCLSID)&pGUID);
 				return hr;
 			}
 
+			inline void ANSI_to_UNICODE(_In_z_ const std::string& pANSI, _In_z_ std::wstring& pResult, _In_ const int pSize = 1024)
+			{
+				LPSTR _str = const_cast<LPSTR>(pANSI.c_str());
+				auto _w = new WCHAR[pSize];
+				std::memset(_w, 0, pSize);
+
+				MultiByteToWideChar(CP_ACP, 0, &_str[0], -1, _w, pSize); // ANSI to UNICODE
+
+				pResult = _w;
+
+				delete[] _w;
+			}
+
+			//inline void ANSI_to_UTF8(_In_z_ const std::string& pANSI, _In_z_ std::wstring& pResult, _In_ const int pSize = 1024)
+			//{
+			//	LPSTR _str = const_cast<LPSTR>(pANSI.c_str());
+			//	auto _w = new WCHAR[pSize];
+			//	std::memset(_w, 0, pSize);
+
+			//	MultiByteToWideChar(CP_ACP, 0, &_str[0], -1, _w, pSize); // ANSI to UNICODE
+			//	WideCharToMultiByte(CP_UTF8, 0, _w, -1, &_str[0], pSize, 0, 0); // UNICODE to UTF-8
+
+			//	pResult = _w;
+
+			//	delete[] _w;
+			//}
+
 #endif //__WIN32 || __UNIVERSAL
+
+			inline bool has_wstring_end_with(_In_z_ std::wstring const& pStr, _In_z_ std::wstring const& pEnding)
+			{
+				if (pStr.length() >= pEnding.length())
+				{
+					return (0 == pStr.compare(pStr.length() - pEnding.length(), pEnding.length(), pEnding));
+				}
+				return false;
+			}
+
+			inline bool has_string_end_with(_In_z_ std::string const& pStr, _In_z_ std::string const& pEnding)
+			{
+				if (pStr.length() >= pEnding.length())
+				{
+					return (0 == pStr.compare(pStr.length() - pEnding.length(), pEnding.length(), pEnding));
+				}
+				return false;
+			}
 
 			inline int to_hex(const std::string& pStr)
 			{
