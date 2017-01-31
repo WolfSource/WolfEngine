@@ -11,8 +11,6 @@ static std::unique_ptr<scene> sScene;
 
 static void release()
 {
-
-
 	//release all textbox
 	for (size_t i = 0; i < sTextBoxesHandles.size(); i++)
 	{

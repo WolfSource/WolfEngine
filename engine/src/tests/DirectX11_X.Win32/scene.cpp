@@ -1,9 +1,9 @@
 ﻿/*
-	Project			 : Wolf Engine (http://WolfSource.io). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to contact@WolfSource.io or tweet @Wolf_Engine on twitter
-	Name			 : Scene.cpp
-	Description		 : This is simple test, you can remove this project, during build
-	Comment          :
+Project			 : Wolf Engine (http://WolfSource.io). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
+Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to contact@WolfSource.io or tweet @Wolf_Engine on twitter
+Name			 : Scene.cpp
+Description		 : This is simple test, you can remove this project, during build
+Comment          :
 */
 
 #include "pch.h"
@@ -12,13 +12,14 @@
 #include <w_ffmpeg.h>
 #include <future>
 #include <w_graphics\w_textures\ScreenGrab.h>
-#include <W_Memory.h>
-#include <W_XML.h>
-#include <W_Timer.h>
+#include <w_memory.h>
+#include <w_xml.h>
+#include <w_timer.h>
 #include <w_gui/w_user_controls/w_label.h>
 #include <w_gui/w_user_controls/w_combo_box.h>
 #include <w_gui/w_user_controls/w_slider.h>
 #include <w_gui/w_user_controls/w_button.h>
+#include <w_gui/w_user_controls/w_tree_list.h>
 #include <w_gui/w_user_controls/w_list_widget.h>
 #include <w_xml.h>
 #include <decklink.h>
@@ -36,6 +37,16 @@
 
 #include <w_lua.h>
 #include <w_task.h>
+
+#include <string>
+#include <locale>
+#include <codecvt>
+
+#pragma comment(lib, "freetype271MTd.lib")
+#include <ft2build.h>
+#include <freetype/freetype.h>
+FT_Library _freetype_lib;
+FT_Face _freetype_face;
 
 using namespace std;
 using namespace DirectX;
@@ -59,9 +70,7 @@ using namespace wolf::graphics::direct2D::shapes;
 #define W_GUI_ID_TAB_1						0x00000A
 
 static void CALLBACK on_gui_event(UINT pEvent, int pControlID, wolf::gui::w_control* pControl, void* pUserContext);
-
 static wolf::content_pipeline::w_camera* camera;
-
 static wolf::system::network::w_tcp_client* c;
 
 //static ID2D1PathGeometry1* sPathGeometry = nullptr;
@@ -77,14 +86,13 @@ static int sum(int pX, int pY)
 
 static int lua_bind_sum(lua_State* pLua)
 {
-
 	int _x = lua_tointeger(pLua, 1);
 	int _y = lua_tointeger(pLua, 2); // get function arguments
 	lua_pushnumber(pLua, sum(_x, _y));  // push the result of a call
 	return 1;// we're returning one result
 }
 
-scene::scene() : 
+scene::scene() :
 	_widget(nullptr)
 {
 	w_game::set_app_name(L"Wolf.TestDX.Win32");
@@ -94,69 +102,11 @@ scene::scene() :
 	this->clear_color[0] = color.r;
 	this->clear_color[1] = color.g;
 	this->clear_color[2] = color.b;
-	
-	wolf::system::w_task::execute_async_ppl([&]()-> void
-	{
-		logger.write("Async_ppl");
-
-	}, []()
-	{
-		logger.write("Done_ppl");
-	});
-
-	wolf::system::w_task::execute_async([&]()-> void
-	{
-		logger.write("Async");
-		logger.write("Async");
-		logger.write("Async");
-
-	}, []()
-	{
-		logger.write("Async");
-
-		logger.write("Done");
-	});
-
-	
-	auto _sta = wolf::system::w_task::wait_for(1000);
-	switch (_sta)
-	{
-	case std::future_status::ready:
-		logger.write("ready");
-		break;
-	case std::future_status::timeout:
-		logger.write("timeout");
-		break;
-	case std::future_status::deferred:
-		logger.write("deferred");
-		break;
-	default:
-		break;
-	}
 
 
-	wolf::system::w_task::execute_deferred([]()-> void
-	{
-		logger.write("Start");
-		Sleep(1000);
-	});
-	_sta = wolf::system::w_task::wait_for(1000);
-	switch (_sta)
-	{
-	case std::future_status::ready:
-		logger.write("ready");
-		break;
-	case std::future_status::timeout:
-		logger.write("timeout");
-		break;
-	case std::future_status::deferred:
-		logger.write("deferred");
-		break;
-	default:
-		break;
-	}
 
-	logger.error("Errr");
+
+
 
 	//int _x = -1;
 	//double _var1;
@@ -193,7 +143,7 @@ scene::scene() :
 	//w_lua::release();
 
 	//logger.write(_var);
-	
+
 	//c = new wolf::system::network::w_tcp_client(service, "127.0.0.1", 10540); //192.168.120.110
 
 	//c->register_on_connect_callback(boost::bind(&scene::_on_connect, this, boost::asio::placeholders::error));
@@ -232,7 +182,7 @@ scene::scene() :
 	//c->close();
 	//delete c;
 	//_scene->load();
-	
+
 	//auto _t = w_time_span::from_string("01:10:20:33:456");
 	//boost::filesystem::path p("E:\\B.dds");
 	//logger.write(p.extension().c_str());
@@ -240,7 +190,7 @@ scene::scene() :
 	//sDeckLink = std::make_unique<decklink>();
 	/*auto _d = new decklink();
 	_d->initialize();
-*/
+	*/
 	//wolf::system::w_python _p;
 	////p.register_class_methods("CppClass", boost::python::class_<CppClass>("CppClass").
 	////	def("getNum", &CppClass::getNum).
@@ -255,6 +205,9 @@ scene::scene() :
 	//logger.write(std::to_string(_r));
 
 	//_p.release();	
+
+
+
 }
 
 scene::~scene()
@@ -293,7 +246,10 @@ void scene::initialize(std::map<int, std::vector<w_window_info>> pOutputWindowsI
 
 static w_timer timer;
 static w_renderable_scene* sScene;
+static wolf::gui::w_tree_list* _tree_list = nullptr;
 static wolf::gui::w_list_widget* _list_widget = nullptr;
+
+static std::vector<wolf::graphics::w_quad<>*> _text_quads;
 void scene::load()
 {
 	w_game::load();
@@ -304,75 +260,280 @@ void scene::load()
 
 	auto _hwnd = _gDevice->output_windows[0].hwnd;
 
+
+	auto _error = FT_Init_FreeType(&_freetype_lib);
+	if (_error)
+	{
+		logger.write("Free type error");
+	}
+	_error = FT_New_Face(_freetype_lib, "E:\\SourceCode\\CG\\Wolf.CG\\docs\\RFP\\AlAlam Resources\\AlAlamB.ttf", 0, &_freetype_face);
+	if (_error == FT_Err_Unknown_File_Format)
+	{
+		logger.write("FT_Err_Unknown_File_Format");
+	}
+	else if (_error)
+	{
+		logger.write("error FT_New_Face");
+	}
+
+
+	_error = FT_Set_Char_Size(_freetype_face, 0, 1024 * 1024, 300, 300);
+	if (_error)
+	{
+		logger.write("error FT_Set_Char_Size");
+	}
+
+	_error = FT_Set_Pixel_Sizes(_freetype_face, 0, 1024);
+	if (_error)
+	{
+		logger.write("error FT_Set_Pixel_Sizes");
+	}
+
+	_error = FT_Select_Charmap(_freetype_face, ft_encoding_unicode);
+	if (_error)
+	{
+		logger.write("error FT_Select_Charmap");
+	}
+
+	FT_GlyphSlot _glyph = _freetype_face->glyph;
+
+	//(LC_ALL, "fa-IR");
+	std::wstring _text = L"بآ";
+
+	auto _lenght = _text.size();
+	auto _char_codes = new FT_ULong(_lenght);
+	for (size_t i = 0; i < _lenght; i++)
+	{
+		auto _typed_char_code = (FT_ULong)_text[i];
+		_char_codes[i] = _typed_char_code;
+
+		if (_typed_char_code == 0x0622)//آ
+		{
+			if (i == 0)
+			{
+				_char_codes[i] = 0xFE82;
+			}
+			else
+			{
+				auto _pr_char_code = _char_codes[i - 1];
+				logger.write(std::to_string(_pr_char_code));
+				if (_pr_char_code == 0xFB58 ||
+					_pr_char_code == 0xFB59 ||
+					_pr_char_code == 0xFB6C ||
+					_pr_char_code == 0xFB6D ||
+					_pr_char_code == 0xFB7C ||
+					_pr_char_code == 0xFB7D ||
+					_pr_char_code == 0xFB90 ||
+					_pr_char_code == 0xFB91 ||
+					_pr_char_code == 0xFB94 ||
+					_pr_char_code == 0xFB95 ||
+					_pr_char_code == 0xFBFE ||
+					_pr_char_code == 0xFBFF ||
+					_pr_char_code == 0xFE91 ||
+					_pr_char_code == 0xFE92 ||
+					_pr_char_code == 0xFE97 ||
+					_pr_char_code == 0xFE98 ||
+					_pr_char_code == 0xFE9B ||
+					_pr_char_code == 0xFE9C ||
+					_pr_char_code == 0xFE9F ||
+					_pr_char_code == 0xFEA0 ||
+					_pr_char_code == 0xFEA3 ||
+					_pr_char_code == 0xFEA4 ||
+					_pr_char_code == 0xFEA7 ||
+					_pr_char_code == 0xFEA8 ||
+					_pr_char_code == 0xFEA9 ||
+					_pr_char_code == 0xFEAA ||
+					_pr_char_code == 0xFEAC ||
+					_pr_char_code == 0xFEB3 ||
+					_pr_char_code == 0xFEB4 ||
+					_pr_char_code == 0xFEB7 ||
+					_pr_char_code == 0xFEB8 ||
+					_pr_char_code == 0xFEBB ||
+					_pr_char_code == 0xFEBC ||
+					_pr_char_code == 0xFEBF ||
+					_pr_char_code == 0xFEC0 ||
+					_pr_char_code == 0xFEC2 ||
+					_pr_char_code == 0xFEC3 ||
+					_pr_char_code == 0xFEC4 ||
+					_pr_char_code == 0xFEC6 ||
+					_pr_char_code == 0xFEC7 ||
+					_pr_char_code == 0xFEC8 ||
+					_pr_char_code == 0xFECB ||
+					_pr_char_code == 0xFECC ||
+					_pr_char_code == 0xFECF ||
+					_pr_char_code == 0xFED0 ||
+					_pr_char_code == 0xFED3 ||
+					_pr_char_code == 0xFED4 ||
+					_pr_char_code == 0xFED7 ||
+					_pr_char_code == 0xFED8 ||
+					_pr_char_code == 0xFEDB ||
+					_pr_char_code == 0xFEDC ||
+					_pr_char_code == 0xFEDF ||
+					_pr_char_code == 0xFEE0 ||
+					_pr_char_code == 0xFEE4 ||
+					_pr_char_code == 0xFEE7 ||
+					_pr_char_code == 0xFEE8 ||
+					_pr_char_code == 0xFEF3)
+				{
+					_char_codes[i] = 0xFE82;
+				}
+			}
+		}
+		else if (_typed_char_code == 0x0628)//ب
+		{
+			if (i == 0)
+			{
+				_char_codes[i] = 0xFE91;
+			}
+		}
+	
+		_error = FT_Load_Char(_freetype_face, _char_codes[i], FT_LOAD_RENDER);
+		if (_error) continue;
+
+		/*auto _d = new uint8_t[_slot->bitmap.width * _slot->bitmap.rows * 4];
+		for (size_t i = 0, j = 0; i < _slot->bitmap.width * _slot->bitmap.rows; i++, j += 4)
+		{
+		_d[j] = _slot->bitmap.buffer[i];
+		_d[j + 1] = 0;
+		_d[j + 2] = 0;
+		_d[j + 3] = 255;
+		}*/
+
+
+		auto __width = _glyph->bitmap.width;
+		auto __height = _glyph->bitmap.rows;
+		if (__width == 0 || __height == 0)
+		{
+			continue;
+		}
+
+		D3D11_SUBRESOURCE_DATA _init_data;
+		std::memset(&_init_data, 0, sizeof(_init_data));
+		_init_data.pSysMem = (void*)_glyph->bitmap.buffer;
+		_init_data.SysMemPitch = static_cast<UINT>(__width);// *4);
+		_init_data.SysMemSlicePitch = static_cast<UINT>(__width * __height);// *4);
+
+
+		//wolf::graphics::w_texture_2D _t;
+		//_t.create(_gDevice->device.Get(),
+		//	static_cast<UINT>(_width),
+		//	static_cast<UINT>(_height),
+		//	D3D11_USAGE_DYNAMIC,
+		//	D3D11_CPU_ACCESS_WRITE,
+		//	DXGI_FORMAT_R8_UNORM,
+		//	D3D11_BIND_SHADER_RESOURCE,
+		//	&_init_data);
+
+		//auto _desc = _t.get_description();
+
+		auto _text_quad = new wolf::graphics::w_quad<>();
+		_text_quad->load(_gDevice->device.Get());
+		_text_quad->create_texture_2D(_gDevice->device.Get(),
+			__width,
+			__height,
+			D3D11_USAGE_DEFAULT,
+			D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE,
+			DXGI_FORMAT::DXGI_FORMAT_R8_UNORM,
+			D3D11_BIND_SHADER_RESOURCE,
+			&_init_data);
+
+		_text_quad->set_scale((float)__width / 1024.0f, (float)__height / 1024.0f, 1.0f);
+
+		_text_quads.push_back(_text_quad);
+		//SaveDDSTextureToFile(_gDevice->context.Get(), _t.get_resource(), L"C:\\P\\A.dds");
+	}
+
+
 	//wolf::content_pipeline::w_content_manager _c;
 	//auto _scene = _c.load<wolf::content_pipeline::w_scene>(L"H:\\Codes\\Poser\\Cube.dae");
 	//sScene = new w_renderable_scene(_scene);
 	//sScene->load(_gDevice);
 	//sScene->get_first_or_default_camera(&camera);
-	
-	//wolf::gui::w_gui::initialize(_gDevice, sprite_batch.get(), _width, _height);
-	//auto _gui_path = wolf::system::io::get_content_directoryW() + L"GUI\\test-02.xml";
-	//wolf::gui::w_gui::load( _hwnd, _gui_path.c_str());
+
+	camera = new wolf::content_pipeline::w_camera();
+	camera->set_aspect_ratio(static_cast<float>(this->get_window_width() / this->get_window_height()));
+	camera->set_transform(0, 0, 2.0f);
+	camera->update_view();
+	camera->update_projection();
+
+	wolf::gui::w_gui::initialize(_gDevice, sprite_batch.get(), _width, _height);
+	auto _gui_path = wolf::system::io::get_content_directoryW() + L"GUI\\test-02.xml";
+	wolf::gui::w_gui::load(_hwnd, _gui_path.c_str());
 
 	wolf::gui::w_gui::get_widget("widget_2", &this->_widget);
 	if (this->_widget)
 	{
+		std::vector<int> _v;
+		this->_widget->get_all_controls_id(_v);
+		logger.write(std::to_string(_v.size()));
 		using namespace wolf::gui;
 
-		this->_widget->add_list_widget(100, 5, 5, 390, 550, false, &_list_widget);
-		if (_list_widget)
+		//this->_widget->add_list_widget(100, 5, 5, 390, 550, false, &_list_widget);
+		//if (_list_widget)
+		//{
+		//	_list_widget->set_item_height(190);
+		//	_list_widget->set_item_selected_rectangle_margin(4, 170);
+		//	
+		//	auto _list_widget_id = _list_widget->get_ID();
+		//	for (size_t i = 0; i < 20; i++)
+		//	{
+		//		_list_widget_id += 1;
+		//		auto _item = new w_list_widget_item();
+		//		if (i < 10)
+		//		{
+		//			int _x = 100, _y = 25;
+
+		//			auto _check_box = new wolf::gui::w_check_box(this->_widget);
+		//			_check_box->set_ID(_list_widget_id);
+		//			_check_box->set_text(L"AAAAA");
+		//			_check_box->set_checked(true);
+		//			_check_box->set_size(150,30);
+		//			_check_box->set_text_offset_x(-27);
+		//			_check_box->set_text_offset_y(10);
+		//			_check_box->set_enabled(true);
+		//			_check_box->set_visible(true);
+
+		//			_item->gpu_controls.push_back(std::make_tuple(_check_box, _x, _y));
+
+		//			//_x = 50;
+
+		//			auto _label = new w_label(this->_widget);
+		//			_label->set_ID(_list_widget_id);
+		//			_label->set_text(L"Hello");
+		//			_label->set_size(100, 20);
+		//			_label->set_label_color(w_color(0, 0, 0, 255));
+		//			_label->set_enabled(true);
+		//			_label->set_visible(true);
+
+		//			_item->gpu_controls.push_back(std::make_tuple(_label, _x, _y));
+
+		//			_x = 100;
+		//			_list_widget_id += 1;
+		//			auto _button = new w_button(this->_widget);
+		//			_button->set_ID(_list_widget_id);
+		//			_button->set_text(L"Button");
+		//			_button->set_size(100, 25);
+		//			_button->set_enabled(true);
+		//			_button->set_visible(true);
+
+		//			_item->gpu_controls.push_back(std::make_tuple(_button, _x, _y));
+		//		}
+
+		//	//	_item->gdi_controls.push_back(sTextBoxesHandles[i]);
+		//		_list_widget->add_item(_item);
+		//	}
+		//}
+
+		this->_widget->add_tree_list(100, 300, 100, 390, 550, false, &_tree_list);
+		if (_tree_list)
 		{
-			_list_widget->set_item_height(190);
-			_list_widget->set_item_selected_rectangle_margin(4, 170);
-			
-			auto _list_widget_id = _list_widget->get_ID();
-			for (size_t i = 0; i < 20; i++)
-			{
-				_list_widget_id += 1;
-				auto _item = new w_list_widget_item();
-				if (i < 10)
-				{
-					int _x = 100, _y = 25;
+			auto _list_box_id = _tree_list->get_ID();
+			_tree_list->add_item(L"Family", { L"Pooya", L"Ray" });// ,
+																  //L"C:\\Users\\Pooya's MAC\\Desktop\\CG\\Wolf.Engine\\bin\\x64\\Release\\Win32\\Content\\Textures\\WolfEngine.dds",
+																  //true);
 
-					auto _check_box = new wolf::gui::w_check_box(this->_widget);
-					_check_box->set_ID(_list_widget_id);
-					_check_box->set_text(L"AAAAA");
-					_check_box->set_checked(true);
-					_check_box->set_size(150,30);
-					_check_box->set_text_offset_x(-27);
-					_check_box->set_text_offset_y(10);
-					_check_box->set_enabled(true);
-					_check_box->set_visible(true);
 
-					_item->gpu_controls.push_back(std::make_tuple(_check_box, _x, _y));
-
-					//_x = 50;
-
-					auto _label = new w_label(this->_widget);
-					_label->set_ID(_list_widget_id);
-					_label->set_text(L"Hello");
-					_label->set_size(100, 20);
-					_label->set_label_color(w_color(0, 0, 0, 255));
-					_label->set_enabled(true);
-					_label->set_visible(true);
-
-					_item->gpu_controls.push_back(std::make_tuple(_label, _x, _y));
-
-					_x = 100;
-					_list_widget_id += 1;
-					auto _button = new w_button(this->_widget);
-					_button->set_ID(_list_widget_id);
-					_button->set_text(L"Button");
-					_button->set_size(100, 25);
-					_button->set_enabled(true);
-					_button->set_visible(true);
-
-					_item->gpu_controls.push_back(std::make_tuple(_button, _x, _y));
-				}
-
-				_item->gdi_controls.push_back(sTextBoxesHandles[i]);
-				_list_widget->add_item(_item);
-			}
+			_tree_list->add_item(L"Family", { L"Pooya", L"Ray" });
 		}
 		//this->_widget->add_line_shape(0, 600, 100, 680, 130, 10, false, w_color(0,255,0,255), w_color(0, 0, 0, 255));
 		//this->_widget->add_rounded_rectangle_shape(0, 20, 20, 100, 150, 20, 20, 10);
@@ -399,8 +560,6 @@ void scene::load()
 		//	this->_widget->set_call_back(on_gui_event);
 		//}
 	}
-
-
 
 	// Create path geometry
 
@@ -479,10 +638,10 @@ void scene::load()
 	//_geometry_sink->Close();
 
 
-//	auto _texture = std::make_unique<wolf::graphics::w_texture_2D>();
-//	wolf::graphics::w_texture_2D::load_texture_2D_from_file(_gDevice->device.Get(), _texture, L"c:\\wolfsource.png", true, false);
+	//	auto _texture = std::make_unique<wolf::graphics::w_texture_2D>();
+	//	wolf::graphics::w_texture_2D::load_texture_2D_from_file(_gDevice->device.Get(), _texture, L"c:\\wolfsource.png", true, false);
 
-//	SaveDDSTextureToFile(_gDevice->context.Get(), _texture->get_resource(), L"d:\\A.dds");
+	//	SaveDDSTextureToFile(_gDevice->context.Get(), _texture->get_resource(), L"d:\\A.dds");
 
 	//auto _hr = wolf::gui::w_gui::create_widget(_gDevice, this->sprite_batch.get(), _hwnd, "widget_0", _width, _height, &this->_widget);
 	//this->_widget->set_background_colors(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
@@ -491,61 +650,61 @@ void scene::load()
 
 	/*for (size_t i = 0; i < 1000; i++)
 	{
-		w_texture_2D t0;
-		timer.start();
-		{
-			t0.create(
-				_gDevice->device.Get(),
-				1920,
-				1080,
-				ColorF::Red,
-				D3D11_USAGE_DEFAULT,
-				D3D11_CPU_ACCESS_WRITE,
-				DXGI_FORMAT_R8G8B8A8_UNORM,
-				D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE,
-				GPGPU_TYPE::CPP_AMP);
-		}
-		timer.stop();
+	w_texture_2D t0;
+	timer.start();
+	{
+	t0.create(
+	_gDevice->device.Get(),
+	1920,
+	1080,
+	ColorF::Red,
+	D3D11_USAGE_DEFAULT,
+	D3D11_CPU_ACCESS_WRITE,
+	DXGI_FORMAT_R8G8B8A8_UNORM,
+	D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE,
+	GPGPU_TYPE::CPP_AMP);
+	}
+	timer.stop();
 
-		logger.write("C++ amp : " + std::to_string(timer.getTotalMilliSeconds()));
+	logger.write("C++ amp : " + std::to_string(timer.getTotalMilliSeconds()));
 
-		DirectX::SaveDDSTextureToFile(_gDevice->context.Get(), t0.get_resource(), L"D:\\t0.dds");
+	DirectX::SaveDDSTextureToFile(_gDevice->context.Get(), t0.get_resource(), L"D:\\t0.dds");
 
-		w_texture_2D t1;
+	w_texture_2D t1;
 
 
-		t1.create(
-			_gDevice->device.Get(),
-			1920,
-			1080,
-			ColorF::Green,
-			D3D11_USAGE_DYNAMIC,
-			D3D11_CPU_ACCESS_WRITE,
-			DXGI_FORMAT_R8G8B8A8_UNORM,
-			D3D11_BIND_SHADER_RESOURCE,
-			GPGPU_TYPE::NONE);
+	t1.create(
+	_gDevice->device.Get(),
+	1920,
+	1080,
+	ColorF::Green,
+	D3D11_USAGE_DYNAMIC,
+	D3D11_CPU_ACCESS_WRITE,
+	DXGI_FORMAT_R8G8B8A8_UNORM,
+	D3D11_BIND_SHADER_RESOURCE,
+	GPGPU_TYPE::NONE);
 
-		timer.start();
-		{
-			D3D11_MAPPED_SUBRESOURCE _mapsub;
-			ZeroMemory(&_mapsub, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	timer.start();
+	{
+	D3D11_MAPPED_SUBRESOURCE _mapsub;
+	ZeroMemory(&_mapsub, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
-			auto _texture_resource = t1.get_resource();
+	auto _texture_resource = t1.get_resource();
 
-			auto _hr = _gDevice->context->Map(_texture_resource, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mapsub);
-			auto _data = reinterpret_cast<uint8_t*>(_mapsub.pData);
-			_gDevice->context->Unmap(_texture_resource, 0);
+	auto _hr = _gDevice->context->Map(_texture_resource, 0, D3D11_MAP_WRITE_DISCARD, 0, &_mapsub);
+	auto _data = reinterpret_cast<uint8_t*>(_mapsub.pData);
+	_gDevice->context->Unmap(_texture_resource, 0);
 
-			_data = nullptr;
+	_data = nullptr;
 
-		}
-		timer.stop();
+	}
+	timer.stop();
 
-		logger.write("C++: " + std::to_string(timer.getElapsedMilliSeconds()));
+	logger.write("C++: " + std::to_string(timer.getElapsedMilliSeconds()));
 
-		DirectX::SaveDDSTextureToFile(_gDevice->context.Get(), t1.get_resource(), L"D:\\t1.dds");
+	DirectX::SaveDDSTextureToFile(_gDevice->context.Get(), t1.get_resource(), L"D:\\t1.dds");
 
-		logger.write("done");
+	logger.write("done");
 	}*/
 	//w_texture_2D t2;
 
@@ -631,18 +790,18 @@ void scene::load()
 
 	for (size_t i = 0; i < 1; i++)
 	{
-		auto f = new w_ffmpeg();
+	auto f = new w_ffmpeg();
 
-		auto _hr = f->open_media(str);
-		for (size_t i = 0; i < size; i++)
-		{
-			b.clear();
-			f->buffer_video_to_memory(b);
-		}
+	auto _hr = f->open_media(str);
+	for (size_t i = 0; i < size; i++)
+	{
+	b.clear();
+	f->buffer_video_to_memory(b);
+	}
 
-		f->release();
+	f->release();
 
-		delete f;
+	delete f;
 	}
 	w_ffmpeg::release_MF();
 
@@ -757,7 +916,7 @@ void scene::load()
 
 	//wolf::gui::w_button* _w = nullptr;
 	//this->_widget->add_button(W_GUI_ID_BUTTON, L"OK", -300, 400, 64, 64, L"Textures\\Icons\\StopPressed.png", -10, -10, 10, 10, 1.0f, 1.0f, 0, false, &_w);
-//	_w->set_button_color(W_COLOR(255, 0, 0, 255));
+	//	_w->set_button_color(W_COLOR(255, 0, 0, 255));
 	//int x = 10;
 	//void* _pointer = &x;
 	//_w->set_tag(_pointer);
@@ -765,7 +924,7 @@ void scene::load()
 	//auto _tag = _w->get_tag();
 	//logger.write(std::to_wstring(*(int*)_tag));
 
-	//this->_widget->add_image(W_GUI_ID_BUTTON, L"Textures\\Icons\\StopPressed.png", -300, 400, 0, 1.0f, 1.0f, 32, 32);
+	//this->_widget->add_image(W_GUI_ID_BUTTON, 0, 0, L"Textures\\Icons\\StopPressed.png");
 
 	//this->_widget->add_label(W_GUI_ID_LABEL, L"Label", -300, 500, 64, 10);
 	//this->_widget->add_check_box(W_GUI_ID_CHECKBOX, L"Checkbox", -300, 550, 170, 22);
@@ -811,9 +970,9 @@ void scene::update(const wolf::system::w_game_time& pGameTime)
 	// TODO: Add your update logic here
 	if (step == 10)
 	{
-//		_list_widget->remove_item(1);
+		//		_list_widget->remove_item(1);
 		//_widget->release();
-//		c->async_send("-r>10>11>Program-CG#EOF#\r\n");
+		//		c->async_send("-r>10>11>Program-CG#EOF#\r\n");
 	}
 	step++;
 	w_game::update(pGameTime);
@@ -885,7 +1044,14 @@ void scene::render(const wolf::system::w_game_time& pGameTime)
 	//this->_curve->draw();
 	//this->sprite_batch->end();
 
-	wolf::gui::w_gui::render(pGameTime);
+	for (size_t i = 0; i < _text_quads.size(); i++)
+	{
+		_text_quads[i]->set_view_projection(camera->get_view_projection());
+		_text_quads[i]->set_position(DirectX::XMFLOAT3(1 - i * 0.64f, 0, 0));
+		_text_quads[i]->render(_gDevice->context.Get());
+	}
+
+	//wolf::gui::w_gui::render(pGameTime);
 
 
 	//this->sprite_batch->begin();
@@ -934,7 +1100,7 @@ void scene::render(const wolf::system::w_game_time& pGameTime)
 	//sprite_batch->draw_string(sText, _rect, sBrush, sDrawFont);
 
 	//this->sprite_batch->end();
-	
+
 	w_game::render(pGameTime);
 }
 
@@ -989,21 +1155,21 @@ static void CALLBACK on_gui_event(UINT pEvent, int pControlID, wolf::gui::w_cont
 	{
 		auto _slider = (wolf::gui::w_slider*)pControl;
 		auto _pos = camera->get_transform();
-		camera->set_transform((float) _slider->get_value(), _pos.y, _pos.z);
+		camera->set_transform((float)_slider->get_value(), _pos.y, _pos.z);
 		break;
 	}
 	case W_GUI_ID_SLIDER_2:
 	{
 		auto _slider = (wolf::gui::w_slider*)pControl;
 		auto _pos = camera->get_transform();
-		camera->set_transform(_pos.x, (float) _slider->get_value(), _pos.z);
+		camera->set_transform(_pos.x, (float)_slider->get_value(), _pos.z);
 		break;
 	}
 	case W_GUI_ID_SLIDER_3:
 	{
 		auto _slider = (wolf::gui::w_slider*)pControl;
 		auto _pos = camera->get_transform();
-		camera->set_transform(_pos.x, _pos.y, (float) _slider->get_value());
+		camera->set_transform(_pos.x, _pos.y, (float)_slider->get_value());
 		break;
 	}
 	}
@@ -1012,7 +1178,7 @@ static void CALLBACK on_gui_event(UINT pEvent, int pControlID, wolf::gui::w_cont
 ULONG scene::release()
 {
 	if (this->is_released()) return 0;
-	
+
 	if (sScene)
 	{
 		sScene->release();
