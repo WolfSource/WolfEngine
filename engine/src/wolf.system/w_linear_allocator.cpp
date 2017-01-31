@@ -1,4 +1,7 @@
 #include "w_system_pch.h"
+
+#ifdef __WIN32
+
 #include "w_linear_allocator.h"
 #include <string>
 
@@ -57,3 +60,5 @@ void w_linear_allocator::clear()
 	this->_used_memory = 0;
 	this->_current_pos = _start;
 }
+
+#endif // __WIN32

@@ -1,6 +1,8 @@
 #include "w_system_pch.h"
 #include "w_cpu.h"
 
+#ifdef __WIN32
+
 using namespace wolf::system;
 
 w_cpu::w_cpu()
@@ -74,3 +76,5 @@ ULONG w_cpu::release()
 
 	return w_object::release();
 }
+
+#endif

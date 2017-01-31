@@ -36,7 +36,7 @@ inline std::string get_date_time()
 
 #if defined(__WIN32) || defined(__UNIVERSAL)
 	localtime_s(&_time, &_rawtime);
-#elif defined(__ANDROID) 
+#elif defined(__ANDROID) || defined(__linux)
 	_time = *localtime(&_rawtime);
 #endif
 
@@ -62,14 +62,14 @@ namespace wolf
 		{
 		public:
 			//Initialize the logger and create a log file inside a Log folder into output directory
-#if defined(__WIN32)
+#if defined(__WIN32) 
 			WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath);
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__linux)
 			WSYS_EXP bool initialize(_In_z_ const std::string pAppName, _In_z_ const std::string pLogPath);
 #elif defined(__UNIVERSAL)
 			WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName);
 #endif
-			//Print message in to the screen, this fuction will be store the messages into the buffer
+			//Print message in to the screen, this function will be store the messages into the buffer
 			WSYS_EXP void printf(_In_z_ const std::wstring pMsg);
 			//Clear screen and all messages
 			WSYS_EXP void clearf();
@@ -128,7 +128,7 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 	if (pCheckForLastGPUError)
 	{
 
-#ifdef __ANDROID
+#if defined(__ANDROID) || defined(__linux)
 
 		//check for Vulkan error
 
@@ -164,7 +164,7 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 
 		_errorMsg += L"Trace info " + _wstr_trace + L".";
 
-#endif //__ANDROID
+#endif // __ANDROID || __linux
 
 	}
 	else

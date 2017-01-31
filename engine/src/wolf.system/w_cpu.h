@@ -10,12 +10,14 @@
 #ifndef __W_CPU_H__
 #define __W_CPU_H__
 
+#ifdef __WIN32
+
 #if _MSC_VER > 1000
 #pragma once
 #endif
 
 #include <pdh.h>
-#include "W_Object.h"
+#include "w_object.h"
 #include "w_system_export.h"
 
 #pragma comment(lib, "pdh.lib")
@@ -50,5 +52,6 @@ namespace wolf
 	}
 }
 
-#endif //__W_CPU_H__
+#endif // __WIN32
 
+#endif //  __W_CPU_H__

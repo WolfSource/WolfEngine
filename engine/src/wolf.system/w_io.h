@@ -27,6 +27,10 @@
 #include <wrl/client.h>
 #include <ppltasks.h>
 
+#elif defined(__ANDROID) || defined(__linux)
+
+#include  "w_std.h"
+
 #endif //__WIN32
 
 #include <memory>
@@ -179,8 +183,9 @@ namespace wolf
 			inline HRESULT get_is_directory(_In_z_ const char* pPath)
 			{
 				DWORD _file_attr = GetFileAttributesA(pPath);
+
 				if (_file_attr == INVALID_FILE_ATTRIBUTES) return INVALID_FILE_ATTRIBUTES;
-				if (_file_attr & FILE_ATTRIBUTE_DIRECTORY) return S_OK;
+				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return S_OK;
 				return S_FALSE;
 			}
 
@@ -195,7 +200,7 @@ namespace wolf
 			{
 				DWORD _file_attr = GetFileAttributesW(pPath);
 				if (_file_attr == INVALID_FILE_ATTRIBUTES) return INVALID_FILE_ATTRIBUTES;
-				if (_file_attr & FILE_ATTRIBUTE_DIRECTORY) return S_OK;
+				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return S_OK;
 				return S_FALSE;
 			}
 
@@ -295,7 +300,7 @@ namespace wolf
 
 #endif //__WIN32
 
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__linux)
 
 			//check whether a file does exist or not
 			inline HRESULT get_is_file(_In_z_ const char* pPath)
@@ -351,6 +356,7 @@ namespace wolf
 
 				return _hr;
 			}
+                        
 #endif
 			 
 			//Get a unique name - format: mm-dd-year-hour-min-sec
@@ -397,8 +403,7 @@ namespace wolf
 					|| (pPath.size() == 2 && pPath[0] == __FS_PERIOD && pPath[1] == __FS_PERIOD)	// only ..
 					? "" : pPath.substr(_index));
 			}
-
-
+			
 			// pick off .extension in filename, including dot
 			inline std::wstring get_file_extentionW(_In_z_ std::wstring pPath)
 			{

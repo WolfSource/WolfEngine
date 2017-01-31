@@ -14,7 +14,7 @@
 #pragma once
 #endif
 
-#ifdef __ANDROID
+#if defined (__ANDROID) || defined(__linux)
 
 #include "w_std.h"
 
@@ -28,9 +28,9 @@
 #endif
 
 #define SAFE_DELETE(x)			{ if (x) { delete x; x = nullptr;		} }
-#define SAFE_DELETE_ARRAY(ar)   { if (ar){ delete[] ar; ar = nullptr;	} }
+#define SAFE_DELETE_ARRAY(ar)           { if (ar){ delete[] ar; ar = nullptr;	} }
 
-#define SAFE_DELETE_SHARED(x)	{ if (x) { while(x.use_count() != 0) x.reset(); x = nullptr;} }
+#define SAFE_DELETE_SHARED(x)           { if (x) { while(x.use_count() != 0) x.reset(); x = nullptr;} }
 
 #define UNIQUE_RELEASE(x)		{ if (x) { x->release(); x.reset(nullptr); } }
 #define SHARED_RELEASE(x)		{ if (x) { x->release(); while(x.use_count() != 0) x.reset(); x = nullptr;} }

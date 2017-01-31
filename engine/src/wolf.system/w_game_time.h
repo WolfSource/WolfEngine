@@ -62,7 +62,7 @@ namespace wolf
 
 				// Initialize max delta to 1/10 of a second.
 				this->_max_delta = this->_frequency.QuadPart / 10;
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__linux)
 
 				reset_elapsed_time();
 				this->_max_delta = 313918;
@@ -125,7 +125,7 @@ namespace wolf
 
 #if defined(__WIN32) || defined(__UNIVERSAL)
 				auto _time_delta = _current_time.QuadPart - this->_last_time.QuadPart;
-#elif __ANDROID
+#elif defined(__ANDROID) || defined(__linux)
 				auto _time_delta = _current_time - this->_last_time;
 #endif
 				
@@ -197,7 +197,7 @@ namespace wolf
 				
 #if defined(__WIN32) || defined(__UNIVERSAL)
 				const auto _one_sec = static_cast<UINT64>(this->_frequency.QuadPart);
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__linux)
 				const auto _one_sec = 1;
 #endif
 
@@ -217,7 +217,7 @@ namespace wolf
 						this->_seconds_counter %= this->_frequency.QuadPart;
 					}
 
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__linux)
 					this->_seconds_counter %= _one_sec;
 #endif
 				}

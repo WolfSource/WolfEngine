@@ -10,6 +10,10 @@
 #include <codecvt>
 #include <ppltasks.h>
 
+#elif defined(__linux)
+
+#include <iostream>
+
 #elif defined(__ANDROID)
 
 #include <android/log.h>
@@ -21,17 +25,17 @@
 
 using namespace wolf::system;
 
-#if defined(__WIN32) || defined(__ANDROID)
+#if defined(__WIN32) || defined(__ANDROID) || defined(__linux)
 
 #ifdef __WIN32
 
 bool w_logger::initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath)
 {
-	auto _log_directory = pLogPath + L"\\log\\";
+	auto _log_directory = pLogPath + L"\\Log\\";
 	auto _log_directory_cstr = _log_directory.c_str();
 
 	//if directory of log is not existed
-	if (S_FALSE == io::get_is_directoryW(_log_directory_cstr))
+	if (S_OK != io::get_is_directoryW(_log_directory_cstr))
 	{
 		//Create the directory of log inside the root directory
 		io::create_directoryW(_log_directory_cstr);
@@ -45,11 +49,11 @@ bool w_logger::initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::
 	this->_log_file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
 	this->_log_file.open(_log_file_path.c_str());
 
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__linux)
 
 bool w_logger::initialize(_In_z_ const std::string pAppName, _In_z_ const std::string pLogPath)
 {
-	auto _log_directory = pLogPath + "/log/";
+	auto _log_directory = pLogPath + "/Log/";
 	auto _log_directory_cstr = _log_directory.c_str();
 
 	//if directory of log is not existed
@@ -71,8 +75,8 @@ bool w_logger::initialize(_In_z_ const std::string pAppName, _In_z_ const std::s
 
 	this->_is_released = false;
 
-	std::wstring _version = L"\t\"Version\"          : \"" + std::to_wstring(WOLF_MajorVersion) + L":" + std::to_wstring(WOLF_MinorVersion) +
-		L":" + std::to_wstring(WOLF_PatchVersion) + L":" + std::to_wstring(WOLF_DebugVersion) + L"\",\r\n";
+	std::wstring _version = L"\t\"Version\"          : \"" + std::to_wstring(WOLF_MAJOR_VERSION) + L":" + std::to_wstring(WOLF_MINOR_VERSION) +
+		L":" + std::to_wstring(WOLF_PATCH_VERSION) + L":" + std::to_wstring(WOLF_DEBUG_VERSION) + L"\",\r\n";
 
 	this->_log_file << L"{\r\n";
 	this->_log_file << L"\t\"Project\"          : \"Wolf Engine(http://WolfSource.io). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\",\r\n";
@@ -193,6 +197,8 @@ void w_logger::write(_In_z_ std::wstring pMsg, _In_z_ const std::wstring pState)
 
 #if defined(__WIN32) || defined(__UNIVERSAL)
 	OutputDebugString(pMsg.c_str());
+#elif defined(__linux)
+        std::cout << std::string(pMsg.begin(), pMsg.end()).c_str();
 #elif defined(__ANDROID)
 	if (pState == L"Warning")
 	{
@@ -277,10 +283,16 @@ ULONG w_logger::release()
 	return 1;
 }
 
-//Declration of extern logger as shared 
-#pragma data_seg (".shared")
-wolf::system::w_logger logger;
-#pragma data_seg ()
+//Declaration of extern logger as shared 
 
+#ifdef __WIN32
+#pragma data_seg (".shared")
+#endif
+
+wolf::system::w_logger logger;
+
+#ifdef __WIN32
+#pragma data_seg ()
 #pragma comment(linker,"/SECTION:.shared,RWS")
+#endif
 
