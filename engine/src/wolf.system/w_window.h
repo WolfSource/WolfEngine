@@ -73,9 +73,9 @@ public:
 	//Set class name of window 
 	WSYS_EXP void set_class_name(_In_ LPWSTR pValue);
 	//Set time step value of game time 
-	WSYS_EXP void set_fixed_timeStep(bool pValue);
+	WSYS_EXP void set_fixed_time_step(bool pValue);
 	//Set windows is fullscreen
-	WSYS_EXP void set_fullScreen(bool pValue);
+	WSYS_EXP void set_full_screen(bool pValue);
 	//Set window with
 	WSYS_EXP void set_width(const int pValue);
 	//Set window height
@@ -100,9 +100,9 @@ public:
 	//Get absolute height of window
 	WSYS_EXP UINT get_height() const;
 	//Get fixed time step of game time
-	WSYS_EXP bool get_fixed_timeStep() const;
+	WSYS_EXP bool get_fixed_time_step() const;
 	//Get windows is fullscreen
-	WSYS_EXP bool get_fullScreen() const;
+	WSYS_EXP bool get_full_screen() const;
 
 #pragma endregion
 

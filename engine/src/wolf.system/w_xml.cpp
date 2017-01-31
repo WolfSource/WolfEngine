@@ -1,6 +1,6 @@
 #include "w_system_pch.h"
 #include "w_xml.h"
-#include "rapidxml_print.hpp"
+#include <rapidxml_print.hpp>
 #include <fstream>
 
 #if defined(__WIN32) || defined(__UNIVERSAL)
@@ -19,8 +19,14 @@ w_xml::~w_xml()
 {
 }
 
-HRESULT w_xml::save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ w_xml_data& pData)
+#ifdef WIN32
+HRESULT w_xml::save(_In_z_ const wchar_t* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment)
 {
+#else
+HRESULT w_xml::save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment)
+{	
+#endif
+	
 	std::wofstream _file(pPath);
 	if (!_file) return S_FALSE;
 
@@ -44,6 +50,8 @@ HRESULT w_xml::save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ w_xml_data&
 	//print xml to stream
 	std::wstring _xml_as_string;
 	rapidxml::print(std::back_inserter(_xml_as_string), _doc);
+
+	_file << pPreComment;
 	_file << _xml_as_string;
 
 	_file.flush();

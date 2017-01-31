@@ -41,8 +41,12 @@ namespace wolf
 			WSYS_EXP w_xml();
 			WSYS_EXP ~w_xml();
 
+#ifdef WIN32
 			//save xml
-			WSYS_EXP static HRESULT save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData);
+			WSYS_EXP static HRESULT save(_In_z_ const wchar_t* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"<!---->");
+#else
+			WSYS_EXP static HRESULT save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"<!---->");
+#endif
 			//get xml node value
 			WSYS_EXP static const std::string	get_node_value(_In_ rapidxml::xml_node<>* pNode);
 			//get xml node attribute value

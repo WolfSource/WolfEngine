@@ -14,7 +14,7 @@ w_window::w_window() :
 	_hInstance(NULL),
 	_hwnd(NULL)
 {
-	set_fixed_timeStep(true);
+	set_fixed_time_step(true);
 }
 
 w_window::~w_window()
@@ -72,22 +72,21 @@ void w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMs
 	RegisterClassEx(&wc);
 
 	// Setup the screen
-	DEVMODE devMode;
+	DEVMODE dev_mode;
 
 	if (this->_full_screen)
 	{
 		// Determine the resolution of the clients desktop screen and create full screen window
-		std::memset(&devMode, 0, sizeof(devMode));
+		std::memset(&dev_mode, 0, sizeof(dev_mode));
 
-		devMode.dmSize = sizeof(devMode);
-		devMode.dmPelsWidth = static_cast<unsigned long>(GetSystemMetrics(SM_CXSCREEN));
-		devMode.dmPelsHeight = static_cast<unsigned long>(GetSystemMetrics(SM_CYSCREEN));
-		devMode.dmBitsPerPel = 32;
-		devMode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+		dev_mode.dmSize = sizeof(dev_mode);
+		dev_mode.dmPelsWidth = static_cast<unsigned long>(GetSystemMetrics(SM_CXSCREEN));
+		dev_mode.dmPelsHeight = static_cast<unsigned long>(GetSystemMetrics(SM_CYSCREEN));
+		dev_mode.dmBitsPerPel = 32;
+		dev_mode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 		//Setup full screen mode
-		ChangeDisplaySettings(&devMode, CDS_FULLSCREEN);
-
+		ChangeDisplaySettings(&dev_mode, CDS_FULLSCREEN);
 	}
 	else
 	{
@@ -223,12 +222,12 @@ void w_window::set_class_name(_In_ LPWSTR pValue)
 	this->_class_name = pValue;
 }
 
-void w_window::set_fullScreen(bool pValue)
+void w_window::set_full_screen(bool pValue)
 {
 	this->_full_screen = pValue;
 }
 
-void w_window::set_fixed_timeStep(bool pValue)
+void w_window::set_fixed_time_step(bool pValue)
 {
 	this->_game_time.set_fixed_time_step(pValue);
 }
@@ -283,12 +282,12 @@ UINT w_window::get_height() const
 	return this->_screen_height;
 }
 
-bool w_window::get_fixed_timeStep() const
+bool w_window::get_fixed_time_step() const
 {
 	return this->_game_time.get_fixed_timeStep();
 }
 
-bool w_window::get_fullScreen() const
+bool w_window::get_full_screen() const
 {
 	return this->_full_screen;
 }
