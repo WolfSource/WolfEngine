@@ -84,7 +84,10 @@ from DLL
 
 -------------------------------------------------------						-------------------------------------------------------
 eglGetPlatformDisplayEXT does not generate display device					make sure copy libGLESv2.dll, libEGL.dll & d3dcompiler_47.dll in bin folder
-in Angle project                                                            
+in Angle project             
+
+-------------------------------------------------------						-------------------------------------------------------
+Error	MSB6006	"fxc.exe" exited with code 1.								check all *.hlsl codes and shader type in Properties->HLSL Compiler->General in your project                                             
 
 
 

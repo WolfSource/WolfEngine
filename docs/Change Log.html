@@ -80,18 +80,18 @@
                 <li id="new_feature">"<b>w_ellipse_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
                 <li id="new_feature">"<b>w_list_widget</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X with support of both wolf::gui and gdi controls</li>
                 <li id="new_feature">Reducing <b>texture</b> memory usage by 2 channel encoding</li>
-                <li id="new_feature">New samples have been added. Check out:
+                <li id="new_feature">New samples have been added. Check it out:
                     <ul>
                         <li>Samples\03-Direct2D\03_Animated_Geometries_DX11_X.Win32</li>
                         <li>Samples\05-Buffers\01_Quad_DX11_X.Win32</li>
                         <li>Samples\05-Buffers\02_Textured_Quad.DX11_X.Win32</li>
                     </ul>
                 </li>
-                <li id="improved">Drawing dynamic vertex buffers of gui improved</li>
+                <li id="improved">Drawing dynamic vertex buffers of gui</li>
                 <li id="improved">wolf::graphics::w_mesh is independent drawing class, which can use for drawing any geometry with any texture and effect</li>
-                <li id="improved">wolf::gui::w_image is render with w_texture_2d instead of slow direct2D image rendering system</li>
-                <li id="improved">ffmpeg allocating dynamic buffer for video and audio optimized in this version</li>
-                <li id="improved">Classes "<b>w_mesh and w_quad</b>" optimized. <b>w_quad<T></b> is a template class available for various constant buffers</li>
+                <li id="improved">wolf::gui::w_image renders itself using w_texture_2d class instead of direct2D image class</li>
+                <li id="improved">the allocating dynamic buffer part of ffmpeg optimized</li>
+                <li id="improved">Classes "<b>w_mesh and w_quad</b>" optimized. Now <b>w_quad<T></b> is a template class available for various constant buffers</li>
                 <li id="improved">Support multiple image formats with stb_image. Now wolf::graphics::w_texture::load_texture_2D_from_file function supports following formats:
                     <ul>
                         <li>dds</li>
@@ -111,10 +111,33 @@
 				<li id="bugs_fixed">Bugs fixed</li>		
             </ul>
         </li>
+        <li>
+            <strong>v 0.6.5.0</strong>
+            <ul>
+                <li id="bugs_fixed">listbox scroll bugs fixed</li>
+                <li id="bugs_fixed">list widget scroll bugs fixed</li>
+                <li id="bugs_fixed">w_image bug fixed</li>
+                <li id="bugs_fixed">logger bug fixed</li>
+                <li id="bugs_fixed">w_texture could not load image with unicode path, the bug fixed</li>
+                <li id="improved">w_list_box inherietd from w_list_widget for better performance</li>
+                <li id="new_feature">"<b>wolf::gui::w_color_quad</b>" has been added</li>
+                <li id="new_feature">"<b>wolf::gui::w_tree_list</b>" has been added to gui</li>
+                <li id="new_feature">New samples have been added. Check it out:
+                    <ul>
+                        <li>Samples\00-System\01_Async.Win32</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
     </ul>
     <hr />
     <h2>To Do for next versions</h2>
     <ul>
+        <li id="new_feature">w_tree_list added</li>
+        <li id="new_feature">w_tree_list_widget</li>
+
+		<li id="new_feature">Use PySide for cross platform native UI</li>
+
         <li id="new_feature">Work on texture compression</li>
         <li id="improved">Switch from C++Amp to ComputeShaders</li>
 
