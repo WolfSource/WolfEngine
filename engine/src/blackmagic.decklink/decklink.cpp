@@ -483,6 +483,8 @@ void decklink::_get_input_supported_display_modes()
 
 HRESULT decklink::start_output()
 {
+	this->_is_running = true;
+
 	logger.user(L"Decklink is going to start outputing");
 
 	auto selectedDisplayMode = this->_output_display_modes[PREFERED_DISPLAY_MODE];
@@ -587,8 +589,6 @@ HRESULT decklink::start_output()
 
 	this->_decklink_output->StartScheduledPlayback(0, this->_frame_time_scale, 1.0);
 
-	this->_is_running = true;
-
 	return S_OK;
 }
 
@@ -653,12 +653,12 @@ void decklink::_schedule_next_frame(bool pPreroll)
 
 		scalable_free(_frameOfQueue);
 	}
-	else
-	{
+	//else
+	//{
 		//uint8_t* _frame = nullptr;
-		//this->videoFrame->GetBytes((void**)&_frame);
-		//std::fill(&_frame[0], &_frame[0] + this->bufferSize, 255);
-	}
+		//this->_video_frame->GetBytes((void**)&_frame);
+		//std::fill(&_frame[0], &_frame[0] + this->_buffer_size, 255);
+	//}
 
 	this->_video_frame->SetTimecodeFromComponents(
 		this->_time_code_format,
