@@ -1,4 +1,7 @@
 #include "w_system_pch.h"
+
+#ifdef __WIN32
+
 #include "w_tcp_client.h"
 
 using namespace wolf::system::network;
@@ -211,3 +214,5 @@ void w_tcp_client::unregister_all_callbacks()
 		this->_on_received_callback->disconnect_all_slots();
 	}
 }
+
+#endif // __WIN32

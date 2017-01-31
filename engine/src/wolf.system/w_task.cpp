@@ -31,9 +31,15 @@ void w_task::execute_deferred(_In_ const std::function<void(void)>& pTaskWork)
 	_deferred = std::async(std::launch::deferred, pTaskWork);
 }
 
+template<typename _REP, typename _PER>
+std::future_status w_task::wait_for(_In_ const std::chrono::duration<_REP, _PER>& pTime)
+{
+	return _deferred.wait_for(pTime);
+}
+
 std::future_status w_task::wait_for(_In_ const long long pMilliSeconds)
 {
-	return _deferred.wait_for(std::chrono::microseconds(pMilliSeconds));
+	return _deferred.wait_for(std::chrono::milliseconds(pMilliSeconds));
 }
 
 void w_task::wait()

@@ -10,6 +10,8 @@
 #ifndef __W_TCP_CLIENT_H__
 #define __W_TCP_CLIENT_H__
 
+#ifdef __WIN32
+
 #if _MSC_VER > 1000
 #pragma once
 #endif
@@ -98,5 +100,7 @@ namespace wolf
 		}
 	}
 }
+
+#endif // __WIN32
 
 #endif //__W_TCP_CLIENT_H__

@@ -21,6 +21,7 @@
 #endif
 
 #include <future>
+#include <functional>
 #include "w_system_export.h"
 
 namespace wolf
@@ -35,8 +36,14 @@ namespace wolf
 #endif
 			WSYS_EXP static void execute_async(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack = nullptr);
 			WSYS_EXP static void execute_deferred(_In_ const std::function<void(void)>& pTaskWork);
+			//wait only work for deferred task
 			WSYS_EXP static std::future_status wait_for(_In_ const long long pMilliSeconds);
+			//wait only work for deferred task
+			template<typename _REP, typename _PER>
+			WSYS_EXP static std::future_status wait_for(_In_ const std::chrono::duration<_REP, _PER>& pTime);
+			//wait only work for deferred task
 			WSYS_EXP static void wait();
+			//get only work for deferred task
 			WSYS_EXP static void get();
 
 		private:

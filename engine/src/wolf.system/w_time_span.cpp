@@ -116,13 +116,19 @@ w_time_span w_time_span::zero()
 w_time_span w_time_span::now()
 {
 	time_t t = time(0);   // get time now
-	struct tm* now = nullptr;
-#ifdef __ANDROID
-	now = localtime(&t);
+#if defined(__ANDROID) || defined(__linux)
+	struct tm* _now = localtime(&t);
+	if (_now)
+	{
+		return w_time_span(_now->tm_hour, _now->tm_min, _now->tm_sec);
+	}
+	return w_time_span(-1, -1, -1);
 #else
-	localtime_s(now, &t);
+	struct tm _now;
+	localtime_s(&_now, &t);
+	return w_time_span(_now.tm_hour, _now.tm_min, _now.tm_sec);
 #endif
-	return w_time_span(now->tm_hour, now->tm_min, now->tm_sec);
+
 }
 
 w_time_span w_time_span::min_value()
