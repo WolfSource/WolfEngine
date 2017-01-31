@@ -7,20 +7,21 @@
 	Comment          :
 */
 
-#ifndef __W_BASETSD_H__
-#define __W_BASETSD_H__
 
 #if _MSC_VER > 1000
 #pragma once
 #endif
 
+#ifndef __W_BASETSD_H__
+#define __W_BASETSD_H__
+
 #ifdef __WIN32
 
 #include <limits.h>
 
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__linux)
 
-//define dummy SAL for android
+//define dummy SAL for android and linux
 #ifndef _In_
 #define _In_
 #endif
@@ -103,6 +104,6 @@ namespace std
 	}
 }
 
-#endif//ANDROID
+#endif//ANDROID && __linux
 
 #endif//__W_BASETSD_H__

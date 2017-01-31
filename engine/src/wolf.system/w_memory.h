@@ -10,6 +10,8 @@
 #ifndef __W_MEMORY_H__
 #define __W_MEMORY_H__
 
+#ifdef __WIN32
+
 #if _MSC_VER > 1000
 #pragma once
 #endif
@@ -58,5 +60,6 @@ namespace wolf
 	}
 }
 
-#endif //__W_MEMORY_H__
+#endif // __WIN32
 
+#endif //__W_MEMORY_H__

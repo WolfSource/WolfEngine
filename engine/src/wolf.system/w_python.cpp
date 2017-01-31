@@ -4,26 +4,27 @@
 
 #include "w_python.h"
 
+#ifndef BOOST_PYTHON_SOURCE
+#define BOOST_PYTHON_STATIC_LIB
+#endif
+#include <boost/python.hpp>
+
 using namespace std;
 using namespace wolf::system;
 using namespace boost::python;
 
-w_python::w_python()
+void w_python::initialize()
 {
 	Py_Initialize();
-	//create main python module
-	object main_module(handle<>(borrowed(PyImport_AddModule("__main__"))));
-	//create main namespace as dictionary
-	this->_main_namespace = main_module.attr("__dict__");
-}
-
-w_python::~w_python()
-{
-	release();
 }
 
 HRESULT w_python::run(std::string pScriptText)
 {
+	//create main python module
+	object main_module(handle<>(borrowed(PyImport_AddModule("__main__"))));
+	//create main namespace as dictionary
+	boost::python::object _main_namespace = main_module.attr("__dict__");
+
 	auto _hr = S_OK;
 	handle<>* _handle_script = nullptr;
 
@@ -32,11 +33,12 @@ HRESULT w_python::run(std::string pScriptText)
 		_handle_script = new handle<>((PyRun_String(
 			pScriptText.c_str(),
 			Py_file_input,
-			this->_main_namespace.ptr(),
-			this->_main_namespace.ptr())));
+			_main_namespace.ptr(),
+			_main_namespace.ptr())));
 	}
 	catch (error_already_set&)
 	{
+		_hr = S_FALSE;
 		V(_hr, _fetch_error(), this->name, 3);
 	}
 	if (_handle_script)
@@ -59,6 +61,12 @@ const std::wstring w_python::_fetch_error()
 	handle<> _handle_type(_type);
 	object extype(_handle_type);
 
+	if (!_traceback)
+	{
+		auto _error_msg = L"Unknown";
+		this->_log += _error_msg;
+		return _error_msg;
+	}
 	handle<> _handle_traceback(_traceback);
 	object traceback(_handle_traceback);
 
@@ -89,19 +97,10 @@ ULONG w_python::release()
 {
 	if (is_released()) return 0;
 
-	this->_log.clear();
+	_log.clear();
 	Py_Finalize();
 
 	return w_object::release();
 }
-
-#pragma region Setters
-
-#pragma endregion
-
-#pragma region Getters
-
-
-#pragma endregion
 
 #endif

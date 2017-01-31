@@ -28,7 +28,7 @@
 #endif
 
 
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__linux)
 
 #ifndef WSYS_EXP
 #define WSYS_EXP //dump

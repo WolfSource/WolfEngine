@@ -10,15 +10,16 @@
 
 #ifndef __W_SYSTEM_PCH_H__
 #define __W_SYSTEM_PCH_H__
-
+        
 #if _MSC_VER > 1000
 #pragma once
 #endif
 
-#define WOLF_MajorVersion 0// when you make incompatible API changes.
-#define WOLF_MinorVersion 5// when you add functionality in a backwards - compatible manner.
-#define WOLF_PatchVersion 0// bug fixes
-#define WOLF_DebugVersion 0// for debugging.
+                
+#define WOLF_MAJOR_VERSION 0// when you make incompatible API changes.
+#define WOLF_MINOR_VERSION 7// when you add functionality in a backwards - compatible manner.
+#define WOLF_PATCH_VERSION 4// bug fixes
+#define WOLF_DEBUG_VERSION 0// for debugging.
 
 #ifndef W_UNUSED
 #define W_UNUSED(p) {(void)(p); } 
@@ -65,6 +66,10 @@
 #include <jni.h>
 #include <android/asset_manager.h>
 #include "w_std.h"
+        
+#elif defined(__linux)
+        
+#include "w_logger.h"
 
 #endif
 

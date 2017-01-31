@@ -34,14 +34,8 @@
 
 #endif
 
-#include "w_system_dll.h"
+#include "w_system_export.h"
 #include "w_object.h"
-
-#ifndef BOOST_PYTHON_SOURCE
-#define BOOST_PYTHON_STATIC_LIB
-#endif
-
-#include <boost/python.hpp>
 
 namespace wolf
 {
@@ -54,15 +48,14 @@ namespace wolf
 			T value;
 		};
 
-		class w_python : public wolf::system::w_object
+		class w_python : wolf::system::w_object
 		{
 		public:
-			SYS_EXP w_python();
-			SYS_EXP virtual ~w_python();
-			SYS_EXP HRESULT run(std::string pScriptText);
-			SYS_EXP ULONG release() override;
+			WSYS_EXP void initialize();
+			WSYS_EXP HRESULT run(std::string pScriptText);
+			WSYS_EXP ULONG release() override;
 			
-			template <class T>
+			/*template <class T>
 			HRESULT register_class_methods(std::string pName, boost::python::class_<T> pClass)
 			{
 				auto _hr = S_OK;
@@ -108,25 +101,16 @@ namespace wolf
 					logger.error("error on casting python result for : " + pName);
 				}
 				return _value;
-			}
+			}*/
 
-#pragma region Setters
-
-			
-
-#pragma endregion
-
-#pragma region Getters
-
-#pragma endregion
+			WSYS_EXP const wchar_t* log() const { return this->_log.c_str(); }
 
 		private:
 			typedef w_object _super;
 
-			WSYS_EXP const std::wstring  _fetch_error();
-			
+			const std::wstring  _fetch_error();
+
 			std::wstring _log;
-			boost::python::object _main_namespace;
 		};
 	}
 }
