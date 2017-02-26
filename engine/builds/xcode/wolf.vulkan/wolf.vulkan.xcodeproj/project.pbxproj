@@ -1,0 +1,340 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C0969621E608C7F00B9E582 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0969601E608C7F00B9E582 /* w_game.cpp */; };
+		2C0969631E608C7F00B9E582 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0969611E608C7F00B9E582 /* w_game.h */; };
+		2C860F971E5F17ED000E71B5 /* w_vulkan_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C860F8F1E5F17ED000E71B5 /* w_vulkan_export.h */; };
+		2C860F981E5F17ED000E71B5 /* w_vulkan_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C860F901E5F17ED000E71B5 /* w_vulkan_pch.cpp */; };
+		2C860F991E5F17ED000E71B5 /* w_vulkan_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C860F911E5F17ED000E71B5 /* w_vulkan_pch.h */; };
+		2C860FA21E5F1E5B000E71B5 /* libwolf.system.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA11E5F1E5B000E71B5 /* libwolf.system.dylib */; };
+		2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA31E5F1E80000E71B5 /* libc++.tbd */; };
+		2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA51E5F1E86000E71B5 /* Metal.framework */; };
+		2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */; };
+		2C860FAA1E5F1EC3000E71B5 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA91E5F1EC3000E71B5 /* MoltenVK.framework */; };
+		2C860FAD1E5F1F8D000E71B5 /* w_graphics_device_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C860FAB1E5F1F8D000E71B5 /* w_graphics_device_manager.cpp */; };
+		2C860FAE1E5F1F8D000E71B5 /* w_graphics_device_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C860FAC1E5F1F8D000E71B5 /* w_graphics_device_manager.h */; };
+		2C860FB41E5F3E7D000E71B5 /* w_obj_c_wrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C860FB31E5F3E7D000E71B5 /* w_obj_c_wrapper.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2C0969601E608C7F00B9E582 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../../src/wolf.render/wolf.vulkan/w_game.cpp; sourceTree = "<group>"; };
+		2C0969611E608C7F00B9E582 /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../../src/wolf.render/wolf.vulkan/w_game.h; sourceTree = "<group>"; };
+		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C860F8F1E5F17ED000E71B5 /* w_vulkan_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vulkan_export.h; path = ../../../../src/wolf.render/wolf.vulkan/w_vulkan_export.h; sourceTree = "<group>"; };
+		2C860F901E5F17ED000E71B5 /* w_vulkan_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_vulkan_pch.cpp; path = ../../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.cpp; sourceTree = "<group>"; };
+		2C860F911E5F17ED000E71B5 /* w_vulkan_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vulkan_pch.h; path = ../../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h; sourceTree = "<group>"; };
+		2C860FA11E5F1E5B000E71B5 /* libwolf.system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.dylib; path = "../../../../../../Library/Developer/Xcode/DerivedData/wolf.engine.vulkan.metal-eazceldyiastkpblslicunkdnckr/Build/Products/Debug/libwolf.system.dylib"; sourceTree = "<group>"; };
+		2C860FA31E5F1E80000E71B5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		2C860FA51E5F1E86000E71B5 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		2C860FA91E5F1EC3000E71B5 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../dependencies/Vulkan/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
+		2C860FAB1E5F1F8D000E71B5 /* w_graphics_device_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_graphics_device_manager.cpp; path = ../../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.cpp; sourceTree = "<group>"; };
+		2C860FAC1E5F1F8D000E71B5 /* w_graphics_device_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_graphics_device_manager.h; path = ../../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.h; sourceTree = "<group>"; };
+		2C860FB31E5F3E7D000E71B5 /* w_obj_c_wrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = w_obj_c_wrapper.mm; path = ../../../src/wolf.render/wolf.vulkan/w_obj_c_wrapper.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2C69E9A61E5EC2CB00F15C44 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C860FAA1E5F1EC3000E71B5 /* MoltenVK.framework in Frameworks */,
+				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
+				2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */,
+				2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */,
+				2C860FA21E5F1E5B000E71B5 /* libwolf.system.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2C69E9A01E5EC2CB00F15C44 = {
+			isa = PBXGroup;
+			children = (
+				2C860FB31E5F3E7D000E71B5 /* w_obj_c_wrapper.mm */,
+				2C69E9AB1E5EC2CB00F15C44 /* wolf.vulkan */,
+				2C69E9AA1E5EC2CB00F15C44 /* Products */,
+				2C860FA01E5F1E5B000E71B5 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2C69E9AA1E5EC2CB00F15C44 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2C69E9AB1E5EC2CB00F15C44 /* wolf.vulkan */ = {
+			isa = PBXGroup;
+			children = (
+				2C0969601E608C7F00B9E582 /* w_game.cpp */,
+				2C0969611E608C7F00B9E582 /* w_game.h */,
+				2C860FAB1E5F1F8D000E71B5 /* w_graphics_device_manager.cpp */,
+				2C860FAC1E5F1F8D000E71B5 /* w_graphics_device_manager.h */,
+				2C860F8F1E5F17ED000E71B5 /* w_vulkan_export.h */,
+				2C860F901E5F17ED000E71B5 /* w_vulkan_pch.cpp */,
+				2C860F911E5F17ED000E71B5 /* w_vulkan_pch.h */,
+			);
+			path = wolf.vulkan;
+			sourceTree = "<group>";
+		};
+		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2C860FA91E5F1EC3000E71B5 /* MoltenVK.framework */,
+				2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */,
+				2C860FA51E5F1E86000E71B5 /* Metal.framework */,
+				2C860FA31E5F1E80000E71B5 /* libc++.tbd */,
+				2C860FA11E5F1E5B000E71B5 /* libwolf.system.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2C69E9A71E5EC2CB00F15C44 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C860F991E5F17ED000E71B5 /* w_vulkan_pch.h in Headers */,
+				2C860FAE1E5F1F8D000E71B5 /* w_graphics_device_manager.h in Headers */,
+				2C0969631E608C7F00B9E582 /* w_game.h in Headers */,
+				2C860F971E5F17ED000E71B5 /* w_vulkan_export.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		2C69E9A81E5EC2CB00F15C44 /* wolf.vulkan */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2C69E9B41E5EC2CB00F15C44 /* Build configuration list for PBXNativeTarget "wolf.vulkan" */;
+			buildPhases = (
+				2C69E9A51E5EC2CB00F15C44 /* Sources */,
+				2C69E9A61E5EC2CB00F15C44 /* Frameworks */,
+				2C69E9A71E5EC2CB00F15C44 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = wolf.vulkan;
+			productName = wolf.vulkan;
+			productReference = 2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2C69E9A11E5EC2CB00F15C44 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = WolfSource.io;
+				TargetAttributes = {
+					2C69E9A81E5EC2CB00F15C44 = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2C69E9A41E5EC2CB00F15C44 /* Build configuration list for PBXProject "wolf.vulkan" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2C69E9A01E5EC2CB00F15C44;
+			productRefGroup = 2C69E9AA1E5EC2CB00F15C44 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2C69E9A81E5EC2CB00F15C44 /* wolf.vulkan */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2C69E9A51E5EC2CB00F15C44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C860FB41E5F3E7D000E71B5 /* w_obj_c_wrapper.mm in Sources */,
+				2C860FAD1E5F1F8D000E71B5 /* w_graphics_device_manager.cpp in Sources */,
+				2C860F981E5F17ED000E71B5 /* w_vulkan_pch.cpp in Sources */,
+				2C0969621E608C7F00B9E582 /* w_game.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2C69E9B21E5EC2CB00F15C44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2C69E9B31E5EC2CB00F15C44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2C69E9B51E5EC2CB00F15C44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/Vulkan/Molten/MoltenVK/MacOS";
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../dependencies/Vulkan/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/glm/",
+					"$(SRCROOT)/../../../dependencies/rapidxml/",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2C69E9B61E5EC2CB00F15C44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/Vulkan/Molten/MoltenVK/MacOS";
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../dependencies/Vulkan/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/glm/",
+					"$(SRCROOT)/../../../dependencies/rapidxml/",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2C69E9A41E5EC2CB00F15C44 /* Build configuration list for PBXProject "wolf.vulkan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C69E9B21E5EC2CB00F15C44 /* Debug */,
+				2C69E9B31E5EC2CB00F15C44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2C69E9B41E5EC2CB00F15C44 /* Build configuration list for PBXNativeTarget "wolf.vulkan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C69E9B51E5EC2CB00F15C44 /* Debug */,
+				2C69E9B61E5EC2CB00F15C44 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2C69E9A11E5EC2CB00F15C44 /* Project object */;
+}
