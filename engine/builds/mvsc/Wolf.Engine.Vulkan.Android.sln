@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{9C0ABFBA-43B0-4175-9A6E-E86955F40846}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\docs\Change Log.html = ..\..\..\docs\Change Log.html
+		..\..\..\docs\ProblemSolutions.txt = ..\..\..\docs\ProblemSolutions.txt
+		..\..\..\docs\RoadMap.txt = ..\..\..\docs\RoadMap.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wolf.System", "Wolf.System", "{76529150-A76A-4339-B841-F78F5C6F52E4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Wolf.System.Android", "Wolf.System\Wolf.System.Android.vcxproj", "{70B4AF00-0706-4E55-8AA0-55086A153DAC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vulkan.Android", "Tests\Vulkan.Android\Vulkan.Android.vcxproj", "{CDE10563-07DD-43C6-A023-13E7A8EB88E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Tegra-Android = Debug|Tegra-Android
+		Release|Tegra-Android = Release|Tegra-Android
+		Shipping|Tegra-Android = Shipping|Tegra-Android
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70B4AF00-0706-4E55-8AA0-55086A153DAC}.Debug|Tegra-Android.ActiveCfg = Debug|Tegra-Android
+		{70B4AF00-0706-4E55-8AA0-55086A153DAC}.Debug|Tegra-Android.Build.0 = Debug|Tegra-Android
+		{70B4AF00-0706-4E55-8AA0-55086A153DAC}.Release|Tegra-Android.ActiveCfg = Release|Tegra-Android
+		{70B4AF00-0706-4E55-8AA0-55086A153DAC}.Release|Tegra-Android.Build.0 = Release|Tegra-Android
+		{70B4AF00-0706-4E55-8AA0-55086A153DAC}.Shipping|Tegra-Android.ActiveCfg = Shipping|Tegra-Android
+		{70B4AF00-0706-4E55-8AA0-55086A153DAC}.Shipping|Tegra-Android.Build.0 = Shipping|Tegra-Android
+		{CDE10563-07DD-43C6-A023-13E7A8EB88E4}.Debug|Tegra-Android.ActiveCfg = Debug|Tegra-Android
+		{CDE10563-07DD-43C6-A023-13E7A8EB88E4}.Debug|Tegra-Android.Build.0 = Debug|Tegra-Android
+		{CDE10563-07DD-43C6-A023-13E7A8EB88E4}.Release|Tegra-Android.ActiveCfg = Release|Tegra-Android
+		{CDE10563-07DD-43C6-A023-13E7A8EB88E4}.Release|Tegra-Android.Build.0 = Release|Tegra-Android
+		{CDE10563-07DD-43C6-A023-13E7A8EB88E4}.Shipping|Tegra-Android.ActiveCfg = Shipping|Tegra-Android
+		{CDE10563-07DD-43C6-A023-13E7A8EB88E4}.Shipping|Tegra-Android.Build.0 = Shipping|Tegra-Android
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{70B4AF00-0706-4E55-8AA0-55086A153DAC} = {76529150-A76A-4339-B841-F78F5C6F52E4}
+	EndGlobalSection
+EndGlobal

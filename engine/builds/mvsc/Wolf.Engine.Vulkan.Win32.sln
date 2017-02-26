@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{C8A100ED-684C-4856-9D44-47980E7DEE4F}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\docs\Change Log.html = ..\..\..\docs\Change Log.html
+		..\..\..\docs\git-commands.txt = ..\..\..\docs\git-commands.txt
+		..\..\..\docs\ProblemSolutions.txt = ..\..\..\docs\ProblemSolutions.txt
+		..\..\..\docs\RoadMap.txt = ..\..\..\docs\RoadMap.txt
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test.Vulkan.Win32", "Tests\Vulkan.Win32\Vulkan.Win32.vcxproj", "{C4AB1F97-2370-486B-A048-53AE0DD1065D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wolf.System", "Wolf.System", "{6B69D64E-F87A-4590-AB50-305C5425EDAD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Wolf.System.Win32", "Wolf.System\Wolf.System.Win32.vcxproj", "{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4AB1F97-2370-486B-A048-53AE0DD1065D}.Debug|x64.ActiveCfg = Debug|x64
+		{C4AB1F97-2370-486B-A048-53AE0DD1065D}.Debug|x64.Build.0 = Debug|x64
+		{C4AB1F97-2370-486B-A048-53AE0DD1065D}.Debug|x86.ActiveCfg = Debug|Win32
+		{C4AB1F97-2370-486B-A048-53AE0DD1065D}.Debug|x86.Build.0 = Debug|Win32
+		{C4AB1F97-2370-486B-A048-53AE0DD1065D}.Release|x64.ActiveCfg = Release|x64
+		{C4AB1F97-2370-486B-A048-53AE0DD1065D}.Release|x64.Build.0 = Release|x64
+		{C4AB1F97-2370-486B-A048-53AE0DD1065D}.Release|x86.ActiveCfg = Release|Win32
+		{C4AB1F97-2370-486B-A048-53AE0DD1065D}.Release|x86.Build.0 = Release|Win32
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|x64.ActiveCfg = Debug|x64
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|x64.Build.0 = Debug|x64
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|x86.ActiveCfg = Debug|Win32
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Debug|x86.Build.0 = Debug|Win32
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x64.ActiveCfg = Release|x64
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x64.Build.0 = Release|x64
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x86.ActiveCfg = Release|Win32
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35} = {6B69D64E-F87A-4590-AB50-305C5425EDAD}
+	EndGlobalSection
+EndGlobal
