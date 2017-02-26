@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "container:"
+      name = "01-Initialize">
+      <FileRef
+         location = "group:01-Initialize/01-window/macOS/01_window.xcodeproj">
+      </FileRef>
+   </Group>
+</Workspace>
