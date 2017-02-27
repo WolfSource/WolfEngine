@@ -32,7 +32,7 @@ const INT64 MinSeconds = _I64_MIN / TICKS_PER_SECOND;
 const INT64 MaxMilliSeconds = _I64_MAX / TICKS_PER_MILLISECOND;
 const INT64 MinMilliSeconds = _I64_MIN / TICKS_PER_MILLISECOND;
 
-const INT64 TicksPerTenthSecond = TICKS_PER_MILLISECOND * 100;
+//const INT64 TicksPerTenthSecond = TICKS_PER_MILLISECOND * 100;
 
 #pragma endregion
 

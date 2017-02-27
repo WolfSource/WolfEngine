@@ -55,7 +55,7 @@ ULONG w_graphics_device::release()
         //release command pool & buffers
         vkFreeCommandBuffers(this->vk_device,
                              _output_window->vk_command_pool,
-                             _output_window->vk_command_buffers.size(),
+                             static_cast<uint32_t>(_output_window->vk_command_buffers.size()),
                              _output_window->vk_command_buffers.data());
         
         vkDestroyCommandPool(this->vk_device, _output_window->vk_command_pool, nullptr);
@@ -508,7 +508,7 @@ namespace wolf
                     _hr = vkCreateDevice(_gpus[i], &_device_info, nullptr, &_gDevice->vk_device);
                     V(_hr, L"could not create Vulkan device", this->_name, 3, true, true);
                     
-                    auto _win = this->_windows_info.find(i);
+                    auto _win = this->_windows_info.find(static_cast<int>(i));
                     if (_win !=  this->_windows_info.end())
                     {
                         for(size_t j = 0; j < _win->second.size(); ++j)
@@ -520,7 +520,7 @@ namespace wolf
                             _out_window.height = _window.height;
                             _out_window.aspectRatio = (float) _window.width/ (float)_window.height;
                             _out_window.v_sync = _window.v_sync_enable;
-                            _out_window.index = j;
+                            _out_window.index = static_cast<int>(j);
 #ifdef __WIN32
                             _out_window.HWND = _window.hwnd;
                             _out_window.hInstance = _window.hInstance;
@@ -594,12 +594,12 @@ namespace wolf
                     
                     //get graphics and presentation queues (which may be the same)
                     vkGetDeviceQueue(_gDevice->vk_device,
-                                     _gDevice->vk_queue_family_selected_index,
+                                     static_cast<uint32_t>(_gDevice->vk_queue_family_selected_index),
                                      0,
                                      &_gDevice->vk_graphics_queue);
                     
                     vkGetDeviceQueue(_gDevice->vk_device,
-                                     _gDevice->vk_queue_family_selected_support_present_index,
+                                     static_cast<uint32_t>(_gDevice->vk_queue_family_selected_support_present_index),
                                      0,
                                      &_gDevice->vk_present_queue);
                     
@@ -661,7 +661,7 @@ namespace wolf
                 {
                     //check if this device support presentation
                     auto _hr = vkGetPhysicalDeviceSurfaceSupportKHR(pGDevice->vk_physical_device,
-                                                                    j,
+                                                                     static_cast<uint32_t>(j),
                                                                     _vk_presentation_surface,
                                                                     &pGDevice->vk_queue_family_supports_present[j]);
                     V(_hr, L"could not get physical device surface support for graphics device: " + _device_name +
@@ -901,7 +901,7 @@ namespace wolf
             {
                 auto _device_name =  wolf::system::convert::string_to_wstring(pGDevice->device_name);
                 auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
-                auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
+                //auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
                 
                 VkImageCreateInfo _depth_buffer_image_info = {};
                 const VkFormat _depth_format = VK_FORMAT_D16_UNORM;
@@ -1052,13 +1052,13 @@ namespace wolf
             {
                 auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
                 auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
-                auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
+                //auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
                 
                 //create a command pool to allocate our command buffer from
                 VkCommandPoolCreateInfo _command_pool_info = {};
                 _command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
                 _command_pool_info.pNext = nullptr;
-                _command_pool_info.queueFamilyIndex = pGDevice->vk_queue_family_selected_index;
+                _command_pool_info.queueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_index);
                 _command_pool_info.flags = 0;
                 
                 auto _hr = vkCreateCommandPool(pGDevice->vk_device,
@@ -1120,8 +1120,8 @@ namespace wolf
                     _present_to_clear_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
                     _present_to_clear_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
                     _present_to_clear_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-                    _present_to_clear_barrier.srcQueueFamilyIndex = pGDevice->vk_queue_family_selected_support_present_index;
-                    _present_to_clear_barrier.dstQueueFamilyIndex = pGDevice->vk_queue_family_selected_support_present_index;
+                    _present_to_clear_barrier.srcQueueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
+                    _present_to_clear_barrier.dstQueueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
                     _present_to_clear_barrier.image = _output_presentation_window->vk_swap_chain_image_views[i].image;
                     _present_to_clear_barrier.subresourceRange = _sub_resource_range;
                     
@@ -1132,8 +1132,8 @@ namespace wolf
                     _clear_to_present_barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
                     _clear_to_present_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
                     _clear_to_present_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-                    _clear_to_present_barrier.srcQueueFamilyIndex = pGDevice->vk_queue_family_selected_support_present_index;
-                    _clear_to_present_barrier.dstQueueFamilyIndex = pGDevice->vk_queue_family_selected_support_present_index;
+                    _clear_to_present_barrier.srcQueueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
+                    _clear_to_present_barrier.dstQueueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
                     _clear_to_present_barrier.image = _output_presentation_window->vk_swap_chain_image_views[i].image;
                     _clear_to_present_barrier.subresourceRange = _sub_resource_range;
                     
@@ -1193,7 +1193,7 @@ namespace wolf
                         // Type is available, does it match user properties?
                         if ((pMemoryProperties.memoryTypes[i].propertyFlags & pRequirementsMask) == pRequirementsMask) 
                         {
-                            *pTypeIndex = i;
+                            *pTypeIndex =  static_cast<uint32_t>(i);
                             return VkResult::VK_SUCCESS;
                         }
                     }

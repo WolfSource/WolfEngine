@@ -422,7 +422,7 @@ ULONG w_logger::release()
 {
     if (!this->_pimp || (this->_pimp && this->_pimp->get_is_released())) return 0;
     
-    auto _hr = 1;
+    ULONG _hr = 1;
     _hr = this->_pimp->release();
     delete this->_pimp;
     this->_pimp = nullptr;

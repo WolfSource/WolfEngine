@@ -49,7 +49,7 @@ ULONG w_object::release()
     this->tag = nullptr;
     this->name.clear();
     
-    auto _hr = 1;
+    ULONG _hr = 1;
     _hr = this->_pimp->release();
     SAFE_DELETE(this->_pimp);
     return _hr;
