@@ -11,7 +11,7 @@
 
 scene::scene()
 {
-    w_game::set_app_name("Wolf.TestDX.Win32");
+    w_game::set_app_name("Wolf.TestDX.Linux");
     w_game::set_fixed_time_step(false);
 }
 
@@ -69,7 +69,7 @@ HRESULT scene::on_msg_proc(/*HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM p
 
 ULONG scene::release()
 {
-    if (this->is_released()) return 0;
+    if (w_game::get_is_released()) return 0;
 
     return w_game::release();
 }

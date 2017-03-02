@@ -26,6 +26,7 @@
 #include <string.h>
 #include <algorithm>
 #include <thread>
+#include <mutex>
 
 //Wolf
 #include <w_object.h>

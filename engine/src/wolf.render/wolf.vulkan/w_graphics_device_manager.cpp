@@ -1103,10 +1103,10 @@ namespace wolf
                 
                 VkClearColorValue _vk_clear_color =
                 {
-                    static_cast<float>(this->_clear_color.r),
-                    static_cast<float>(this->_clear_color.g),
-                    static_cast<float>(this->_clear_color.b),
-                    static_cast<float>(this->_clear_color.a)
+                    static_cast<float>(this->_clear_color.r / 255.0f),
+                    static_cast<float>(this->_clear_color.g / 255.0f),
+                    static_cast<float>(this->_clear_color.b / 255.0f),
+                    static_cast<float>(this->_clear_color.a / 255.0f)
                 };
                 
                 //record the command buffer for every swap chain image
