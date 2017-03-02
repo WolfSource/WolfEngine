@@ -8,23 +8,40 @@
 */
 
 #include "pch.h"
-#include <w_logger.h>
-#include <w_task.h>
 
 //namespaces
 using namespace std;
 
 //global variables
 
-//Entry point of program 
+//Entry point of program
+#ifdef __WIN32
 int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
+#elif defined(__linux) || defined(__APPLE__) 
+int main(int pArgc, const char * pArgv[])
+#endif
 {
-	//initialize logger, and log in to the output debug window of visual studio and Log folder beside the ".exe".
+	//initialize logger, and log in to the output debug window of visual studio and Log folder inside running directory
+#ifdef __WIN32
 	logger.initialize(L"00_01_Async.Win32", wolf::system::io::get_current_directoryW());
-
+#elif defined(__APPLE__)
+    logger.initialize("00_01_Async.OSX", wolf::system::io::get_current_directory());
+#endif
 	//log to output file
 	logger.write(L"Starting Wolf");
 
+    //test tbb task
+#ifndef __ANDROID
+    
+    std::function<void(void)> _task_work = []() -> void
+    {
+         logger.write("tbb task executed");
+    };
+    tbb::Task _tbb_task(_task_work);
+    _tbb_task.execute();
+    
+#endif
+    
 #if defined(__WIN32) || defined(__UNIVERSAL)
 	//execute async tasks with ppl
 	wolf::system::w_task::execute_async_ppl([]()-> void
@@ -49,8 +66,8 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	wolf::system::w_task::execute_deferred([]()-> void
 	{
 		logger.write("Deferred task 01 started");
-		//wait for 1 sec
-		Sleep(5000);
+		//wait for 5 sec
+        std::this_thread::sleep_for(std::chrono::seconds::duration(5));
 		logger.write("Deferred task 01 done");
 	});
 	//main thread will wait for only 1 sec and then continue
@@ -76,7 +93,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	{
 		logger.write("Deferred task 02 started");
 		//wait for 1 sec
-		Sleep(1000);
+        std::this_thread::sleep_for(std::chrono::seconds::duration(1));
 		logger.write("Deferred task 02 done");
 	});
 	//main thread will block until deferred task done
@@ -84,12 +101,12 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 
 	logger.write("All done");
 
-	//release logger
-	logger.release();
-
 	//output a message to the log file
 	logger.write(L"Shutting down Wolf");
 
+    //release logger
+    logger.release();
+    
 	//exit
 	return EXIT_SUCCESS;
 }

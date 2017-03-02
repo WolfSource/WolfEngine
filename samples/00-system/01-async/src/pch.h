@@ -25,5 +25,8 @@
 #endif
 
 #include <memory>
+#include <chrono>
+#include <w_logger.h>
+#include <w_task.h>
 
 #endif

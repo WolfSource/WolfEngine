@@ -3,9 +3,19 @@
    version = "1.0">
    <Group
       location = "container:"
-      name = "01-Initialize">
+      name = "00-system">
       <FileRef
-         location = "group:01-Initialize/01-window/macOS/01_window.xcodeproj">
+         location = "group:00-system/01-async/builds/xcode/01_async.xcodeproj">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "01-initialize">
+      <FileRef
+         location = "group:01-initialize/01-window/builds/xcode/01_window.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:01-initialize/03-scene/builds/xcode/03-scene.xcodeproj">
       </FileRef>
    </Group>
 </Workspace>
