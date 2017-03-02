@@ -1,3 +1,8 @@
+/bin/Build/
+/bin/x64/
+/docs/extra/
+/engine/dependencies/
+
 # Prerequisites 
 *.c
 *.c++ 
