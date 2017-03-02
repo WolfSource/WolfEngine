@@ -22,25 +22,25 @@ public:
      Calling Game::Initialize() will enumerate through any components and initialize them as well.
      The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
      */
-    void initialize(std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) override;
+    void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) override;
     
     //The function "Load()" will be called once per game and is the place to load all of your game assets.
     void load() override;
     
     //This is the place where allows the game to run logic such as updating the world, checking camera, collisions, physics, input, playing audio and etc.
-    void update(const wolf::system::w_game_time& pGameTime) override;
+    void update(_In_ const wolf::system::w_game_time& pGameTime) override;
     
     //Begin render on all graphics devices
-    void begin_render(const wolf::system::w_game_time& pGameTime) override;
+    void begin_render(_In_ const wolf::system::w_game_time& pGameTime) override;
     
     //This is called when the game should draw itself.
-    void render(const wolf::system::w_game_time& pGameTime) override;
+    void render(_In_ const wolf::system::w_game_time& pGameTime) override;
     
     //End render on all graphics devices
-    void end_render(const wolf::system::w_game_time& pGameTime) override;
+    void end_render(_In_ const wolf::system::w_game_time& pGameTime) override;
     
     //This is called when the window game should resized. pIndex is the index of window.
-    void on_window_resized(UINT pIndex) override;
+    void on_window_resized(_In_ UINT pIndex) override;
     
     //This is called when the we lost graphics device.
     void on_device_lost() override;

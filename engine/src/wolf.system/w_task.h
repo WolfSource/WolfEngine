@@ -60,7 +60,7 @@ namespace wolf
 	}
 }
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#ifndef __ANDROID
 
 #include <tbb/task.h>
 
@@ -69,23 +69,23 @@ namespace tbb
 	class Task : public tbb::task
 	{
 	public:
-		Task::Task(std::function<void(void)>& pTaskWork)
+		WSYS_EXP Task(_In_ std::function<void(void)>& pTaskWork)
 		{
 			this->_task_work = pTaskWork;
 		}
-		Task::Task(std::function<void(void)>& pTaskWork, tbb::priority_t pPriority)
+		WSYS_EXP Task(_In_ std::function<void(void)>& pTaskWork, _In_ tbb::priority_t pPriority)
 		{
 			this->_task_work = pTaskWork;
 			this->set_group_priority(pPriority);
 		}
-		Task::Task(std::function<void(void)>& pTaskWork, std::function<void(void)>& pCallBack, tbb::priority_t pPriority)
+		WSYS_EXP Task(_In_ std::function<void(void)>& pTaskWork, _In_ std::function<void(void)>& pCallBack, _In_ tbb::priority_t pPriority)
 		{
 			this->_task_work = pTaskWork;
 			this->_call_back = pCallBack;
 			this->set_group_priority(pPriority);
 		}
 		
-		tbb::task* execute()
+		WSYS_EXP tbb::task* execute()
 		{
 			if (_task_work)
 			{

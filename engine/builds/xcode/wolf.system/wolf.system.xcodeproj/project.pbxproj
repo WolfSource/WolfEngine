@@ -32,6 +32,8 @@
 		2CE5BB241E64307D005E0F45 /* w_window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB0B1E64307D005E0F45 /* w_window.h */; };
 		2CE5BB251E64307D005E0F45 /* w_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BB0C1E64307D005E0F45 /* w_xml.cpp */; };
 		2CE5BB261E64307D005E0F45 /* w_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB0D1E64307D005E0F45 /* w_xml.h */; };
+		2CFA17101E674C860041A83F /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CFA170E1E674C860041A83F /* libtbb_debug.dylib */; };
+		2CFA17111E674C860041A83F /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CFA170F1E674C860041A83F /* libtbbmalloc_debug.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,8 @@
 		2CE5BB0B1E64307D005E0F45 /* w_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_window.h; path = ../../../src/wolf.system/w_window.h; sourceTree = "<group>"; };
 		2CE5BB0C1E64307D005E0F45 /* w_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_xml.cpp; path = ../../../src/wolf.system/w_xml.cpp; sourceTree = "<group>"; };
 		2CE5BB0D1E64307D005E0F45 /* w_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_xml.h; path = ../../../src/wolf.system/w_xml.h; sourceTree = "<group>"; };
+		2CFA170E1E674C860041A83F /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/tbb2017_20161128oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
+		2CFA170F1E674C860041A83F /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../dependencies/tbb/tbb2017_20161128oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +72,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CFA17101E674C860041A83F /* libtbb_debug.dylib in Frameworks */,
+				2CFA17111E674C860041A83F /* libtbbmalloc_debug.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +109,7 @@
 				2CE5BB0C1E64307D005E0F45 /* w_xml.cpp */,
 				2CE5BB0D1E64307D005E0F45 /* w_xml.h */,
 				2CD617241E59DA3E006FC5DC /* Products */,
+				2CFA170D1E674C850041A83F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -112,6 +119,15 @@
 				2CD617231E59DA3E006FC5DC /* libwolf.system.dylib */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2CFA170D1E674C850041A83F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2CFA170E1E674C860041A83F /* libtbb_debug.dylib */,
+				2CFA170F1E674C860041A83F /* libtbbmalloc_debug.dylib */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -305,6 +321,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/tbb2017_20161128oss/osx/lib/";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -313,6 +330,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
+					"$(SRCROOT)/../../../dependencies/tbb/tbb2017_20161128oss/osx/include",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -324,6 +342,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/tbb2017_20161128oss/osx/lib/";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -332,6 +351,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
+					"$(SRCROOT)/../../../dependencies/tbb/tbb2017_20161128oss/osx/include",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
