@@ -35,3 +35,5 @@
 *.exe
 *.out
 *.app
+/samples/00-system/01-async/builds/netbeans/build/
+/samples/00-system/01-async/builds/netbeans/dist/

@@ -13,5 +13,12 @@
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/scene.cpp</file>
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/pch.cpp</file>
         </group>
+        <group name="wolf.engine.vulkan.linux">
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/pch.cpp</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/main.cpp</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/scene.cpp</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/scene.h</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/pch.h</file>
+        </group>
     </open-files>
 </project-private>

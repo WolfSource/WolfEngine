@@ -30,15 +30,15 @@ int main(int pArgc, const char * pArgv[])
 	//log to output file
 	logger.write(L"Starting Wolf");
 
-    //test tbb task
+    //test tbb taskb
 #ifndef __ANDROID
-    
-    std::function<void(void)> _task_work = []() -> void
-    {
-         logger.write("tbb task executed");
-    };
-    tbb::Task _tbb_task(_task_work);
-    _tbb_task.execute();
+        
+        std::function<void(void)> _task_work = []() -> void
+        {
+             logger.write("tbb task executed");
+        };
+        tbb::Task _tbb_task(_task_work);
+        _tbb_task.execute();
     
 #endif
     
@@ -67,7 +67,7 @@ int main(int pArgc, const char * pArgv[])
 	{
 		logger.write("Deferred task 01 started");
 		//wait for 5 sec
-        std::this_thread::sleep_for(std::chrono::seconds::duration(5));
+                std::this_thread::sleep_for(5s);
 		logger.write("Deferred task 01 done");
 	});
 	//main thread will wait for only 1 sec and then continue
@@ -93,7 +93,7 @@ int main(int pArgc, const char * pArgv[])
 	{
 		logger.write("Deferred task 02 started");
 		//wait for 1 sec
-        std::this_thread::sleep_for(std::chrono::seconds::duration(1));
+                std::this_thread::sleep_for(1s);
 		logger.write("Deferred task 02 done");
 	});
 	//main thread will block until deferred task done
@@ -104,8 +104,8 @@ int main(int pArgc, const char * pArgv[])
 	//output a message to the log file
 	logger.write(L"Shutting down Wolf");
 
-    //release logger
-    logger.release();
+        //release logger
+        logger.release();
     
 	//exit
 	return EXIT_SUCCESS;
