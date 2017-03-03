@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EXAMPLE_NAME_TO_BE_RUN="01_async"
+EXAMPLE_NAME_TO_BE_RUN="03_scene"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DIR_PATH="$DIR"/../bin/x64/Debug/GNU-Linux

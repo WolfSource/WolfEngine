@@ -35,14 +35,14 @@
           <standard>11</standard>
           <incDir>
             <pElem>../../../src/wolf.system</pElem>
-            <pElem>../../../../../../VulkanSDK/1.0.39.0/x86_64/include</pElem>
+            <pElem>../../../dependencies/vulkan/linux/include</pElem>
           </incDir>
         </ccTool>
         <linkerTool>
           <output>${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.vulkan.${CND_DLIB_EXT}</output>
           <linkerAddLib>
             <pElem>../../../../bin/x64/Debug/GNU-Linux</pElem>
-            <pElem>../../../../../../VulkanSDK/1.0.39.0/x86_64/lib</pElem>
+            <pElem>../../../dependencies/vulkan/linux/lib</pElem>
           </linkerAddLib>
           <linkerLibItems>
             <linkerOptionItem>-lvulkan</linkerOptionItem>
