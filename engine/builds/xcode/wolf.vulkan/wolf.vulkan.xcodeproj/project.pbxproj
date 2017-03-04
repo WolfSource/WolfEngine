@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C4EA59A1E6ACD790076465B /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5961E6AC2CB0076465B /* MoltenVK.framework */; };
 		2C860FA21E5F1E5B000E71B5 /* libwolf.system.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA11E5F1E5B000E71B5 /* libwolf.system.dylib */; };
 		2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA31E5F1E80000E71B5 /* libc++.tbd */; };
 		2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA51E5F1E86000E71B5 /* Metal.framework */; };
@@ -19,10 +20,10 @@
 		2CE5BAF21E63FBF1005E0F45 /* w_vulkan_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAEB1E63FBF1005E0F45 /* w_vulkan_export.h */; };
 		2CE5BAF31E63FBF1005E0F45 /* w_vulkan_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BAEC1E63FBF1005E0F45 /* w_vulkan_pch.cpp */; };
 		2CE5BAF41E63FBF1005E0F45 /* w_vulkan_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAED1E63FBF1005E0F45 /* w_vulkan_pch.h */; };
-		2CE5BB271E6432B5005E0F45 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA91E5F1EC3000E71B5 /* MoltenVK.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C4EA5961E6AC2CB0076465B /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C860FA11E5F1E5B000E71B5 /* libwolf.system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.dylib; path = "../../../../../../Library/Developer/Xcode/DerivedData/wolf.engine.vulkan.metal-eazceldyiastkpblslicunkdnckr/Build/Products/Debug/libwolf.system.dylib"; sourceTree = "<group>"; };
 		2C860FA31E5F1E80000E71B5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -44,7 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CE5BB271E6432B5005E0F45 /* MoltenVK.framework in Frameworks */,
+				2C4EA59A1E6ACD790076465B /* MoltenVK.framework in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
 				2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */,
 				2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */,
@@ -82,6 +83,7 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C4EA5961E6AC2CB0076465B /* MoltenVK.framework */,
 				2C860FA91E5F1EC3000E71B5 /* MoltenVK.framework */,
 				2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */,
 				2C860FA51E5F1E86000E71B5 /* Metal.framework */,
@@ -267,14 +269,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/Vulkan/Molten/MoltenVK/macOS";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/macOS";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/Vulkan/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
@@ -289,14 +291,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/Vulkan/Molten/MoltenVK/macOS";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/macOS";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/Vulkan/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",

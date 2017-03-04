@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C4EA5941E6AC29C0076465B /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */; };
+		2C4EA5951E6AC29C0076465B /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */; };
 		2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF51E64307D005E0F45 /* glm_extention.h */; };
 		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
 		2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF71E64307D005E0F45 /* w_convert.h */; };
@@ -32,11 +34,11 @@
 		2CE5BB241E64307D005E0F45 /* w_window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB0B1E64307D005E0F45 /* w_window.h */; };
 		2CE5BB251E64307D005E0F45 /* w_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BB0C1E64307D005E0F45 /* w_xml.cpp */; };
 		2CE5BB261E64307D005E0F45 /* w_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB0D1E64307D005E0F45 /* w_xml.h */; };
-		2CFA17101E674C860041A83F /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CFA170E1E674C860041A83F /* libtbb_debug.dylib */; };
-		2CFA17111E674C860041A83F /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CFA170F1E674C860041A83F /* libtbbmalloc_debug.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
+		2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE5BAF51E64307D005E0F45 /* glm_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extention.h; path = ../../../src/wolf.system/glm_extention.h; sourceTree = "<group>"; };
 		2CE5BAF61E64307D005E0F45 /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
@@ -72,8 +74,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CFA17101E674C860041A83F /* libtbb_debug.dylib in Frameworks */,
-				2CFA17111E674C860041A83F /* libtbbmalloc_debug.dylib in Frameworks */,
+				2C4EA5941E6AC29C0076465B /* libtbb_debug.dylib in Frameworks */,
+				2C4EA5951E6AC29C0076465B /* libtbbmalloc_debug.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,6 +126,8 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */,
+				2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */,
 				2CFA170E1E674C860041A83F /* libtbb_debug.dylib */,
 				2CFA170F1E674C860041A83F /* libtbbmalloc_debug.dylib */,
 			);
@@ -321,7 +325,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/tbb2017_20161128oss/osx/lib/";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -330,7 +334,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
-					"$(SRCROOT)/../../../dependencies/tbb/tbb2017_20161128oss/osx/include",
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -342,7 +346,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/tbb2017_20161128oss/osx/lib/";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -351,7 +355,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
-					"$(SRCROOT)/../../../dependencies/tbb/tbb2017_20161128oss/osx/include",
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

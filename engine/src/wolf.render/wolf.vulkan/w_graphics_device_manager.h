@@ -31,7 +31,7 @@
 #endif
 
 #include <vulkan/vulkan.h>
-#include <MoltenVK/vk_mvk_macos_surface.h>
+#include <MoltenVK/vk_mvk_moltenvk.h>
 #include <unistd.h>
 #else
 #include <vulkan/vulkan.hpp>
