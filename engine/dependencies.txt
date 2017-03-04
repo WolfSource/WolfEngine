@@ -1,2 +1,0 @@
-download dependencies.7z from following link
-and extract them in this folder
