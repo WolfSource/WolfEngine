@@ -53,7 +53,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-L../../../../../bin/x64/Debug/GNU-Linux -L../../../../../engine/dependencies/tbb/tbb2017_20161128oss/linux/lib/intel64/gcc4.7 -lwolf.system -ltbb_debug -ltbbmalloc_debug
+LDLIBSOPTIONS=-L../../../../../bin/x64/Debug/GNU-Linux -L../../../../../engine/dependencies/tbb/oss/linux/lib/intel64/gcc4.7 -lwolf.system -ltbb_debug -ltbbmalloc_debug
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -66,12 +66,12 @@ ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/01_async: $
 ${OBJECTDIR}/_ext/56252444/main.o: ../../src/main.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../../engine/src/wolf.system -I../../../../../engine/dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/main.o ../../src/main.cpp
+	$(COMPILE.cc) -g -I../../../../../engine/src/wolf.system -I../../../../../engine/dependencies/tbb/oss/linux/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/main.o ../../src/main.cpp
 
 ${OBJECTDIR}/_ext/56252444/pch.o: ../../src/pch.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../../engine/src/wolf.system -I../../../../../engine/dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/pch.o ../../src/pch.cpp
+	$(COMPILE.cc) -g -I../../../../../engine/src/wolf.system -I../../../../../engine/dependencies/tbb/oss/linux/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/pch.o ../../src/pch.cpp
 
 # Subprojects
 .build-subprojects:

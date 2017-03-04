@@ -35,17 +35,17 @@
           <standard>11</standard>
           <incDir>
             <pElem>../../../../../engine/src/wolf.system</pElem>
-            <pElem>../../../../../engine/dependencies/tbb/tbb2017_20161128oss/linux/include</pElem>
+            <pElem>../../../../../engine/dependencies/tbb/oss/linux/include</pElem>
             <pElem>../../../../../engine/src/wolf.render/wolf.vulkan</pElem>
-            <pElem>../../../../../engine/dependencies/vulkan/linux/include</pElem>
+            <pElem>../../../../../engine/dependencies/vulkan/sdk/linux/include</pElem>
           </incDir>
         </ccTool>
         <linkerTool>
           <output>${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/03_scene</output>
           <linkerAddLib>
             <pElem>../../../../../bin/x64/Debug/GNU-Linux</pElem>
-            <pElem>../../../../../engine/dependencies/tbb/tbb2017_20161128oss/linux/lib/intel64/gcc4.7</pElem>
-            <pElem>../../../../../engine/dependencies/vulkan/linux/lib</pElem>
+            <pElem>../../../../../engine/dependencies/tbb/oss/linux/lib/intel64/gcc4.7</pElem>
+            <pElem>../../../../../engine/dependencies/vulkan/sdk/linux/lib</pElem>
           </linkerAddLib>
           <linkerLibItems>
             <linkerOptionItem>-lwolf.system</linkerOptionItem>
