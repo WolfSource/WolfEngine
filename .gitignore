@@ -2,7 +2,7 @@
 /bin/x64/
 /docs/extra/
 /engine/dependencies/*
-!/engine/dependencies/.7z
+!/engine/dependencies/*.7z
 
 # Prerequisites 
 *.c
