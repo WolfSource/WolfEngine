@@ -1,7 +1,7 @@
 /bin/Build/
 /bin/x64/
 /docs/extra/
-/engine/dependencies/
+/engine/dependencies/*
 !/engine/dependencies/.7z
 
 # Prerequisites 
