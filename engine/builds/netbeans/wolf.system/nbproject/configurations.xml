@@ -69,13 +69,13 @@
             <pElem>../../../dependencies/glm</pElem>
             <pElem>../../../dependencies/rapidxml</pElem>
             <pElem>../../../dependencies/rapidjson</pElem>
-            <pElem>../../../dependencies/tbb/tbb2017_20161128oss/linux/include</pElem>
+            <pElem>../../../dependencies/tbb/oss/linux/include</pElem>
           </incDir>
         </ccTool>
         <linkerTool>
           <output>${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.system.${CND_DLIB_EXT}</output>
           <linkerAddLib>
-            <pElem>../../../dependencies/tbb/tbb2017_20161128oss/linux/lib/intel64/gcc4.7/</pElem>
+            <pElem>../../../dependencies/tbb/oss/linux/lib/intel64/gcc4.7/</pElem>
           </linkerAddLib>
           <linkerLibItems>
             <linkerOptionItem>-lpthread</linkerOptionItem>
@@ -274,6 +274,12 @@
         <packType>Tar</packType>
         <output>${CND_DISTDIR}/../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/package/libwolf.system.so.tar</output>
         <packFileList>
+          <packFileListElem type="File"
+                            to="${PACKAGE_TOP_DIR}lib/${OUTPUT_BASENAME}"
+                            from="${OUTPUT_PATH}"
+                            perm="644"
+                            owner="root"
+                            group="bin"/>
           <packFileListElem type="File"
                             to="${PACKAGE_TOP_DIR}lib/${OUTPUT_BASENAME}"
                             from="${OUTPUT_PATH}"

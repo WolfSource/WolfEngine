@@ -64,7 +64,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-L../../../dependencies/tbb/tbb2017_20161128oss/linux/lib/intel64/gcc4.7/ -lpthread -lxcb -ltbb_debug -ltbbmalloc_debug
+LDLIBSOPTIONS=-L../../../dependencies/tbb/oss/linux/lib/intel64/gcc4.7/ -lpthread -lxcb -ltbb_debug -ltbbmalloc_debug
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -77,67 +77,67 @@ ${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.system
 ${OBJECTDIR}/_ext/26f1a4f1/w_cpu.o: ../../../src/wolf.system/w_cpu.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_cpu.o ../../../src/wolf.system/w_cpu.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_cpu.o ../../../src/wolf.system/w_cpu.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_linear_allocator.o: ../../../src/wolf.system/w_linear_allocator.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_linear_allocator.o ../../../src/wolf.system/w_linear_allocator.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_linear_allocator.o ../../../src/wolf.system/w_linear_allocator.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_logger.o: ../../../src/wolf.system/w_logger.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_logger.o ../../../src/wolf.system/w_logger.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_logger.o ../../../src/wolf.system/w_logger.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_lua.o: ../../../src/wolf.system/w_lua.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_lua.o ../../../src/wolf.system/w_lua.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_lua.o ../../../src/wolf.system/w_lua.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_memory.o: ../../../src/wolf.system/w_memory.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_memory.o ../../../src/wolf.system/w_memory.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_memory.o ../../../src/wolf.system/w_memory.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_object.o: ../../../src/wolf.system/w_object.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_object.o ../../../src/wolf.system/w_object.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_object.o ../../../src/wolf.system/w_object.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_python.o: ../../../src/wolf.system/w_python.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_python.o ../../../src/wolf.system/w_python.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_python.o ../../../src/wolf.system/w_python.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_system_pch.o: ../../../src/wolf.system/w_system_pch.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_system_pch.o ../../../src/wolf.system/w_system_pch.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_system_pch.o ../../../src/wolf.system/w_system_pch.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_task.o: ../../../src/wolf.system/w_task.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_task.o ../../../src/wolf.system/w_task.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_task.o ../../../src/wolf.system/w_task.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_tcp_client.o: ../../../src/wolf.system/w_tcp_client.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_tcp_client.o ../../../src/wolf.system/w_tcp_client.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_tcp_client.o ../../../src/wolf.system/w_tcp_client.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_time_span.o: ../../../src/wolf.system/w_time_span.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_time_span.o ../../../src/wolf.system/w_time_span.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_time_span.o ../../../src/wolf.system/w_time_span.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_window.o: ../../../src/wolf.system/w_window.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_window.o ../../../src/wolf.system/w_window.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_window.o ../../../src/wolf.system/w_window.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_xml.o: ../../../src/wolf.system/w_xml.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/tbb2017_20161128oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_xml.o ../../../src/wolf.system/w_xml.cpp
+	$(COMPILE.cc) -g -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_xml.o ../../../src/wolf.system/w_xml.cpp
 
 # Subprojects
 .build-subprojects:
