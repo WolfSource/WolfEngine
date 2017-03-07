@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f1"
+                   displayName="w_graphics"
+                   projectFiles="true"
+                   kind="ROOT">
+      <logicalFolder name="f1" displayName="w_shader" projectFiles="true" kind="ROOT">
+        <itemPath>../../../src/wolf.render/wolf.vulkan/w_graphics/w_shaders/w_shader_buffer.h</itemPath>
+      </logicalFolder>
+    </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
                    projectFiles="false"
@@ -65,6 +73,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../src/wolf.render/wolf.vulkan/w_graphics/w_shaders/w_shader_buffer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.cpp"
             ex="false"
             tool="1"
@@ -122,6 +135,11 @@
             flavor2="0">
       </item>
       <item path="../../../src/wolf.render/wolf.vulkan/w_game.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/wolf.vulkan/w_graphics/w_shaders/w_shader_buffer.h"
             ex="false"
             tool="3"
             flavor2="0">
