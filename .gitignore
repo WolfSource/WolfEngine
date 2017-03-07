@@ -44,3 +44,7 @@
 /samples/01_initialize/03_scene/builds/netbeans/dist/
 /engine/builds/netbeans/wolf.system/build/
 /engine/builds/netbeans/wolf.system/dist/
+/engine/builds/netbeans/wolf.vulkan/build/
+/engine/builds/netbeans/wolf.vulkan/dist/
+/engine/builds/netbeans/tests/vulkan.linux/build/
+/engine/builds/netbeans/tests/vulkan.linux/dist/

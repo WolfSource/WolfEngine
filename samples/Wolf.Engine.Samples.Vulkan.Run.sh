@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EXAMPLE_NAME_TO_BE_RUN="03_scene"
+EXAMPLE_NAME_TO_BE_RUN="vulkan.linux"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DIR_PATH="$DIR"/../bin/x64/Debug/GNU-Linux
