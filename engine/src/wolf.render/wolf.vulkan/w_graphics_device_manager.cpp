@@ -668,7 +668,8 @@ namespace wolf
                       L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
                       this->_name, 2);
                     
-                    if (pGDevice->vk_queue_family_selected_index != SIZE_MAX &&
+                    if (pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX && 
+                        pGDevice->vk_queue_family_selected_index != SIZE_MAX &&
                         pGDevice->vk_queue_family_supports_present[j])
                     {
                         pGDevice->vk_queue_family_selected_support_present_index = j;

@@ -34,21 +34,19 @@
             <pElem>../../../../dependencies/rapidxml</pElem>
             <pElem>../../../../src/wolf.system</pElem>
             <pElem>../../../../src/wolf.render/wolf.vulkan</pElem>
-            <pElem>../../../../../../../VulkanSDK/1.0.39.0/x86_64/include</pElem>
+            <pElem>../../../../../../../VulkanSDK/1.0.42.0/x86_64/include</pElem>
           </incDir>
         </ccTool>
         <linkerTool>
           <output>${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/vulkan.linux</output>
           <linkerAddLib>
             <pElem>../../../../../bin/x64/Debug/GNU-Linux</pElem>
-            <pElem>../../../../../../../VulkanSDK/1.0.39.0/x86_64/lib</pElem>
+            <pElem>../../../../../../../VulkanSDK/1.0.42.0/x86_64/lib</pElem>
           </linkerAddLib>
           <linkerDynSerch>
             <pElem>../../../../../bin/x64/Debug/GNU-Linux</pElem>
           </linkerDynSerch>
           <linkerLibItems>
-            <linkerOptionItem>-lxcb</linkerOptionItem>
-            <linkerOptionItem>-lvulkan</linkerOptionItem>
             <linkerOptionItem>-lwolf.system</linkerOptionItem>
             <linkerOptionItem>-lwolf.vulkan</linkerOptionItem>
           </linkerLibItems>

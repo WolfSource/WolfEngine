@@ -55,7 +55,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-L../../../../bin/x64/Debug/GNU-Linux -L../../../dependencies/vulkan/linux/lib -lvulkan -lwolf.system
+LDLIBSOPTIONS=-L../../../../bin/x64/Debug/GNU-Linux -L../../../../../../VulkanSDK/1.0.42.0/x86_64/lib -lwolf.system -lvulkan
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -68,22 +68,22 @@ ${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.vulkan
 ${OBJECTDIR}/_ext/1dd5d910/dllmain.o: ../../../src/wolf.render/wolf.vulkan/dllmain.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1dd5d910
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../src/wolf.system -I../../../dependencies/vulkan/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1dd5d910/dllmain.o ../../../src/wolf.render/wolf.vulkan/dllmain.cpp
+	$(COMPILE.cc) -g -I../../../src/wolf.system -I../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1dd5d910/dllmain.o ../../../src/wolf.render/wolf.vulkan/dllmain.cpp
 
 ${OBJECTDIR}/_ext/1dd5d910/w_game.o: ../../../src/wolf.render/wolf.vulkan/w_game.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1dd5d910
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../src/wolf.system -I../../../dependencies/vulkan/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1dd5d910/w_game.o ../../../src/wolf.render/wolf.vulkan/w_game.cpp
+	$(COMPILE.cc) -g -I../../../src/wolf.system -I../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1dd5d910/w_game.o ../../../src/wolf.render/wolf.vulkan/w_game.cpp
 
 ${OBJECTDIR}/_ext/1dd5d910/w_graphics_device_manager.o: ../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1dd5d910
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../src/wolf.system -I../../../dependencies/vulkan/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1dd5d910/w_graphics_device_manager.o ../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.cpp
+	$(COMPILE.cc) -g -I../../../src/wolf.system -I../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1dd5d910/w_graphics_device_manager.o ../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.cpp
 
 ${OBJECTDIR}/_ext/1dd5d910/w_vulkan_pch.o: ../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/1dd5d910
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../src/wolf.system -I../../../dependencies/vulkan/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1dd5d910/w_vulkan_pch.o ../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.cpp
+	$(COMPILE.cc) -g -I../../../src/wolf.system -I../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/1dd5d910/w_vulkan_pch.o ../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.cpp
 
 # Subprojects
 .build-subprojects:

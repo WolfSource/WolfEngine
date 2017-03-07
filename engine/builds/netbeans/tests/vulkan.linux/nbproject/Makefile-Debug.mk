@@ -54,7 +54,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-L../../../../../bin/x64/Debug/GNU-Linux -L../../../../../../../VulkanSDK/1.0.39.0/x86_64/lib -Wl,-rpath,'../../../../../bin/x64/Debug/GNU-Linux' -lxcb -lvulkan -lwolf.system -lwolf.vulkan
+LDLIBSOPTIONS=-L../../../../../bin/x64/Debug/GNU-Linux -L../../../../../../../VulkanSDK/1.0.42.0/x86_64/lib -Wl,-rpath,'../../../../../bin/x64/Debug/GNU-Linux' -lwolf.system -lwolf.vulkan
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -67,17 +67,17 @@ ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/vulkan.linu
 ${OBJECTDIR}/_ext/46a988ea/main.o: ../../../../src/tests/Vulkan.Linux/main.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/46a988ea
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/wolf.vulkan -I../../../../../../../VulkanSDK/1.0.39.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/main.o ../../../../src/tests/Vulkan.Linux/main.cpp
+	$(COMPILE.cc) -g -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/wolf.vulkan -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/main.o ../../../../src/tests/Vulkan.Linux/main.cpp
 
 ${OBJECTDIR}/_ext/46a988ea/pch.o: ../../../../src/tests/Vulkan.Linux/pch.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/46a988ea
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/wolf.vulkan -I../../../../../../../VulkanSDK/1.0.39.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/pch.o ../../../../src/tests/Vulkan.Linux/pch.cpp
+	$(COMPILE.cc) -g -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/wolf.vulkan -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/pch.o ../../../../src/tests/Vulkan.Linux/pch.cpp
 
 ${OBJECTDIR}/_ext/46a988ea/scene.o: ../../../../src/tests/Vulkan.Linux/scene.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/46a988ea
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/wolf.vulkan -I../../../../../../../VulkanSDK/1.0.39.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/scene.o ../../../../src/tests/Vulkan.Linux/scene.cpp
+	$(COMPILE.cc) -g -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/wolf.vulkan -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/scene.o ../../../../src/tests/Vulkan.Linux/scene.cpp
 
 # Subprojects
 .build-subprojects:
