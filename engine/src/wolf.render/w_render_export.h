@@ -2,14 +2,14 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : w_vulkan_export.h
+	Name			 : w_render_export.h
 	Description		 : Dynamic library linkage header
 	Comment          : 
 */
 
 
-#ifndef __W_VULKAN_EXPORT_H__
-#define __W_VULKAN_EXPORT_H__
+#ifndef __W_RENDER_EXPORT_H__
+#define __W_RENDER_EXPORT_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -19,10 +19,10 @@
 
 #ifndef WVK_EXP
 
-	#ifdef __WOLF_VULKAN__
-		#define WVK_EXP __declspec(dllexport)
+	#ifdef __WOLF_RENDER__
+		#define WRND_EXP __declspec(dllexport)
 	#else
-		#define WVK_EXP __declspec(dllimport)
+		#define WRND_EXP __declspec(dllimport)
 	#endif
 
 #endif
@@ -30,8 +30,8 @@
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 
-#ifndef WVK_EXP
-#define WVK_EXP //dump
+#ifndef WRND_EXP
+#define WRND_EXP //dump
 #endif
 
 #endif

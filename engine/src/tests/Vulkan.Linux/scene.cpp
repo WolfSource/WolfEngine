@@ -8,6 +8,7 @@
 
 #include "pch.h"
 #include "scene.h"
+#include <w_graphics/w_shaders/w_shader_buffer.h>
 
 scene::scene()
 {

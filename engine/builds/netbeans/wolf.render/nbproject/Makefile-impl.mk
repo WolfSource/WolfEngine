@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=wolf.vulkan
+PROJECTNAME=wolf.render
 
 # Active Configuration
 DEFAULTCONF=Debug

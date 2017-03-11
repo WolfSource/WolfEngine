@@ -33,7 +33,7 @@
           <incDir>
             <pElem>../../../../dependencies/rapidxml</pElem>
             <pElem>../../../../src/wolf.system</pElem>
-            <pElem>../../../../src/wolf.render/wolf.vulkan</pElem>
+            <pElem>../../../../src/wolf.render/</pElem>
             <pElem>../../../../../../../VulkanSDK/1.0.42.0/x86_64/include</pElem>
           </incDir>
         </ccTool>
@@ -48,7 +48,7 @@
           </linkerDynSerch>
           <linkerLibItems>
             <linkerOptionItem>-lwolf.system</linkerOptionItem>
-            <linkerOptionItem>-lwolf.vulkan</linkerOptionItem>
+            <linkerOptionItem>-lwolf.render</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>

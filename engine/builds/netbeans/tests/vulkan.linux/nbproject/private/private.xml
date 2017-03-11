@@ -14,6 +14,9 @@
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/pch.h</file>
         </group>
         <group>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/scene.h</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/pch.h</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/scene.cpp</file>
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/pch.cpp</file>
         </group>
     </open-files>

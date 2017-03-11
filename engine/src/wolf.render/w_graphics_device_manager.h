@@ -37,7 +37,7 @@
 #include <vulkan/vulkan.hpp>
 #endif
 
-#include "w_vulkan_export.h"
+#include "w_render_export.h"
 #include <w_std.h>
 #include <w_object.h>
 #include <w_window.h>
@@ -167,21 +167,21 @@ namespace wolf
 		class w_graphics_device_manager : public system::w_object
 		{
 		public:
-			WVK_EXP w_graphics_device_manager(bool pUse_Wrap_Mode = false);
-			WVK_EXP virtual ~w_graphics_device_manager();
+			WRND_EXP w_graphics_device_manager(bool pUse_Wrap_Mode = false);
+			WRND_EXP virtual ~w_graphics_device_manager();
 
 			//Initialize graphics devices
-			WVK_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
+			WRND_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
 			//Called when corresponding window resized
-			WVK_EXP virtual void on_window_resized(_In_ UINT pIndex);
+			WRND_EXP virtual void on_window_resized(_In_ UINT pIndex);
 			//Called when any graphics device lost
-			WVK_EXP virtual void on_device_lost();
+			WRND_EXP virtual void on_device_lost();
 			//Begin render on all graphics devices
-			WVK_EXP virtual void begin_render();
+			WRND_EXP virtual void begin_render();
 			//End render on all graphics devices
-			WVK_EXP virtual void end_render();
+			WRND_EXP virtual void end_render();
 			//Release all resources
-			WVK_EXP ULONG release() override;
+			WRND_EXP ULONG release() override;
 
 			//Get the main graphics device, this is first and the primary device.
             std::shared_ptr<w_graphics_device> get_graphics_device() const;
@@ -203,6 +203,11 @@ namespace wolf
 //
 //#pragma endregion
 
+            static VkResult memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
+                                                  uint32_t pTypeBits,
+                                                  VkFlags pRequirementsMask,
+                                                  uint32_t* pTypeIndex);
+                        
 		protected:
 			std::vector<std::shared_ptr<w_graphics_device>>		graphics_devices;
 

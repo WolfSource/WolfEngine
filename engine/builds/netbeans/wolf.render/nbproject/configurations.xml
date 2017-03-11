@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <logicalFolder name="f1"
-                   displayName="w_graphics"
-                   projectFiles="true"
-                   kind="ROOT">
-      <logicalFolder name="f1" displayName="w_shader" projectFiles="true" kind="ROOT">
-        <itemPath>../../../src/wolf.render/wolf.vulkan/w_graphics/w_shaders/w_shader_buffer.h</itemPath>
+    <logicalFolder name="f1" displayName="w_graphics" projectFiles="true">
+      <logicalFolder name="f1" displayName="w_shader" projectFiles="true">
+        <itemPath>../../../src/wolf.render/w_graphics/w_shaders/w_shader_buffer.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -20,14 +17,14 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>../../../src/wolf.render/wolf.vulkan/dllmain.cpp</itemPath>
-    <itemPath>../../../src/wolf.render/wolf.vulkan/w_game.cpp</itemPath>
-    <itemPath>../../../src/wolf.render/wolf.vulkan/w_game.h</itemPath>
-    <itemPath>../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.cpp</itemPath>
-    <itemPath>../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.h</itemPath>
-    <itemPath>../../../src/wolf.render/wolf.vulkan/w_vulkan_export.h</itemPath>
-    <itemPath>../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.cpp</itemPath>
-    <itemPath>../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h</itemPath>
+    <itemPath>../../../src/wolf.render/dllmain.cpp</itemPath>
+    <itemPath>../../../src/wolf.render/w_game.cpp</itemPath>
+    <itemPath>../../../src/wolf.render/w_game.h</itemPath>
+    <itemPath>../../../src/wolf.render/w_graphics_device_manager.cpp</itemPath>
+    <itemPath>../../../src/wolf.render/w_graphics_device_manager.h</itemPath>
+    <itemPath>../../../src/wolf.render/w_render_export.h</itemPath>
+    <itemPath>../../../src/wolf.render/w_render_pch.cpp</itemPath>
+    <itemPath>../../../src/wolf.render/w_render_pch.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -44,10 +41,11 @@
           <incDir>
             <pElem>../../../src/wolf.system</pElem>
             <pElem>../../../../../../VulkanSDK/1.0.42.0/x86_64/include</pElem>
+            <pElem>../../../src/wolf.render/</pElem>
           </incDir>
         </ccTool>
         <linkerTool>
-          <output>${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.vulkan.${CND_DLIB_EXT}</output>
+          <output>${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.render.${CND_DLIB_EXT}</output>
           <linkerAddLib>
             <pElem>../../../../bin/x64/Debug/GNU-Linux</pElem>
             <pElem>../../../../../../VulkanSDK/1.0.42.0/x86_64/lib</pElem>
@@ -58,47 +56,44 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="../../../src/wolf.render/wolf.vulkan/dllmain.cpp"
+      <item path="../../../src/wolf.render/dllmain.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_game.cpp"
+      <item path="../../../src/wolf.render/w_game.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_game.h"
+      <item path="../../../src/wolf.render/w_game.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_shaders/w_shader_buffer.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_graphics/w_shaders/w_shader_buffer.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.cpp"
+      <item path="../../../src/wolf.render/w_graphics_device_manager.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.h"
+      <item path="../../../src/wolf.render/w_graphics_device_manager.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_vulkan_export.h"
+      <item path="../../../src/wolf.render/w_render_export.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.cpp"
+      <item path="../../../src/wolf.render/w_render_pch.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h"
+      <item path="../../../src/wolf.render/w_render_pch.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -124,47 +119,44 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="../../../src/wolf.render/wolf.vulkan/dllmain.cpp"
+      <item path="../../../src/wolf.render/dllmain.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_game.cpp"
+      <item path="../../../src/wolf.render/w_game.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_game.h"
+      <item path="../../../src/wolf.render/w_game.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_shaders/w_shader_buffer.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_graphics/w_shaders/w_shader_buffer.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.cpp"
+      <item path="../../../src/wolf.render/w_graphics_device_manager.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.h"
+      <item path="../../../src/wolf.render/w_graphics_device_manager.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_vulkan_export.h"
+      <item path="../../../src/wolf.render/w_render_export.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.cpp"
+      <item path="../../../src/wolf.render/w_render_pch.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h"
+      <item path="../../../src/wolf.render/w_render_pch.h"
             ex="false"
             tool="3"
             flavor2="0">

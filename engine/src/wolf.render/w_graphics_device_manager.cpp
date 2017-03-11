@@ -1,4 +1,4 @@
-#include "w_vulkan_pch.h"
+#include "w_render_pch.h"
 #include "w_graphics_device_manager.h"
 #include <w_logger.h>
 #include <w_convert.h>
@@ -969,7 +969,7 @@ namespace wolf
                 _mem_alloc.allocationSize = _mem_reqs.size;
                 
                 //use the memory properties to determine the type of memory required
-                _hr = _memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
+                _hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
                                                    _mem_reqs.memoryTypeBits, 
                                                    0, // No Requirements
                                                    &_mem_alloc.memoryTypeIndex);
@@ -1180,30 +1180,7 @@ namespace wolf
                       this->_name, 3, true, true);
                 }
             }
-            
-            VkResult _memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
-                                                  uint32_t pTypeBits,
-                                                  VkFlags pRequirementsMask,
-                                                  uint32_t* pTypeIndex)
-            {
-                // Search mem types to find first index with those properties
-                for (size_t i = 0; i <  pMemoryProperties.memoryTypeCount; ++i) 
-                {
-                    if ((pTypeBits & 1) == 1) 
-                    {
-                        // Type is available, does it match user properties?
-                        if ((pMemoryProperties.memoryTypes[i].propertyFlags & pRequirementsMask) == pRequirementsMask) 
-                        {
-                            *pTypeIndex =  static_cast<uint32_t>(i);
-                            return VkResult::VK_SUCCESS;
-                        }
-                    }
-                    pTypeBits >>= 1;
-                }
-                // No memory types matched, return failure
-                return VkResult::VK_INCOMPLETE;
-            }
-            
+                        
             bool                                                _is_released;
             std::map<int, std::vector<w_window_info>>           _windows_info;
             bool                                                _use_warp_mode;
@@ -1382,6 +1359,30 @@ ULONG w_graphics_device_manager::release()
 	return _super::release();
 }
 
+VkResult w_graphics_device_manager::memory_type_from_properties(
+        VkPhysicalDeviceMemoryProperties pMemoryProperties,
+        uint32_t pTypeBits,
+        VkFlags pRequirementsMask,
+        uint32_t* pTypeIndex)
+{
+    // Search mem types to find first index with those properties
+    for (size_t i = 0; i <  pMemoryProperties.memoryTypeCount; ++i) 
+    {
+        if ((pTypeBits & 1) == 1) 
+        {
+            // Type is available, does it match user properties?
+            if ((pMemoryProperties.memoryTypes[i].propertyFlags & pRequirementsMask) == pRequirementsMask) 
+            {
+                *pTypeIndex =  static_cast<uint32_t>(i);
+                return VkResult::VK_SUCCESS;
+            }
+        }
+        pTypeBits >>= 1;
+    }
+    // No memory types matched, return failure
+    return VkResult::VK_INCOMPLETE;
+}
+            
 #pragma endregion
 
 #pragma region Getters
