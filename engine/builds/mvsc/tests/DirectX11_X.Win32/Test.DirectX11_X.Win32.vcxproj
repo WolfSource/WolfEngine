@@ -105,7 +105,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.render/wolf.directX;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../src/blackmagic.decklink;$(SolutionDir)/../../dependencies/rapidjson-master/include;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/include/;$(SolutionDir)/../../dependencies/blackmagic/Blackmagic DeckLink SDK 10.6.4/Win/include;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml//;$(SolutionDir)/../../dependencies/lua/lua/include/;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/Blackmagic.Decklink;C:/Python/Python35/include;$(SolutionDir)/../../dependencies/freetype/freetype-2.7.1/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.render/wolf.directX;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../src/blackmagic.decklink;$(SolutionDir)/../../dependencies/rapidjson-master/include;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/blackmagic/Blackmagic DeckLink SDK 10.6.4/Win/include;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml//;$(SolutionDir)/../../dependencies/lua/lua/include/;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/Blackmagic.Decklink;C:/Python/Python35/include;$(SolutionDir)/../../dependencies/freetype/freetype-2.7.1/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PreprocessorDefinitions>__PAL__;__WIN32;_UNICODE;UNICODE;__DX11_X__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -118,7 +118,7 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;$(SolutionDir)/../../dependencies/lua/lua;C:\Python\Python35\libs;$(SolutionDir)/../../dependencies/freetype/freetype-2.7.1/libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;$(SolutionDir)/../../dependencies/lua/lua;C:\Python\Python35\libs;$(SolutionDir)/../../dependencies/freetype/freetype-2.7.1/libs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

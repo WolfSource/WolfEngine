@@ -137,7 +137,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/include/;$(SolutionDir)/../../dependencies/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/boost/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__PAL__;_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_FFMPEG__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_ffmpeg_pch.h</PrecompiledHeaderFile>
@@ -151,7 +151,7 @@
     </Link>
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/ffmpeg/lib;$(SolutionDir)/../../dependencies/boost/lib/x64;C:\Python\Python35\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/ffmpeg/lib;$(SolutionDir)/../../dependencies/boost/lib/x64;C:\Python\Python35\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

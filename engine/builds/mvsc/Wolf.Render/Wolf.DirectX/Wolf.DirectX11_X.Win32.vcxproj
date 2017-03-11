@@ -107,14 +107,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_DIRECTX__;__DX11_X__;_DEBUG;_WINDOWS;__DX_DIAGNOSTIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.render/wolf.directX;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/include/;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.render/wolf.directX;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_directX_pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:\Python\Python35\libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:\Python\Python35\libs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

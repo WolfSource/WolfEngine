@@ -152,7 +152,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_CONTENT_PIPELINE__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_cpipeline_pch.h</PrecompiledHeaderFile>
@@ -167,7 +167,7 @@
     </Link>
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:\Python\Python35\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:\Python\Python35\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
