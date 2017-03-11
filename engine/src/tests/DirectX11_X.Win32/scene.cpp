@@ -28,7 +28,7 @@ Comment          :
 #include <w_content_manager.h>
 #include <w_scene.h>
 #include <w_camera.h>
-#include <w_tcp_client.h>
+//#include <w_tcp_client.h>
 
 #include <w_timer_callback.h>
 
@@ -71,7 +71,7 @@ using namespace wolf::graphics::direct2D::shapes;
 
 static void CALLBACK on_gui_event(UINT pEvent, int pControlID, wolf::gui::w_control* pControl, void* pUserContext);
 static wolf::content_pipeline::w_camera* camera;
-static wolf::system::network::w_tcp_client* c;
+//static wolf::system::network::w_tcp_client* c;
 
 //static ID2D1PathGeometry1* sPathGeometry = nullptr;
 //static ID2D1SolidColorBrush* sBrush = nullptr;
@@ -215,24 +215,24 @@ scene::~scene()
 	release();
 }
 
-void scene::_on_connect(const boost::system::error_code& pErrorCode)
-{
-	logger.write("A");
-}
+//void scene::_on_connect(const boost::system::error_code& pErrorCode)
+//{
+//	logger.write("A");
+//}
 
-void scene::_on_sent(const boost::system::error_code& pErrorCode, const size_t pBytesTransferred)
-{
-	logger.write(std::to_string(pBytesTransferred));
-	if (!pErrorCode)
-	{
-		c->async_read();
-	}
-}
+//void scene::_on_sent(const boost::system::error_code& pErrorCode, const size_t pBytesTransferred)
+//{
+//	logger.write(std::to_string(pBytesTransferred));
+//	if (!pErrorCode)
+//	{
+//		//c->async_read();
+//	}
+//}
 
-void scene::_on_received(const boost::system::error_code& pErrorCode, const size_t pBytesTransferred, std::string _pReceivedMessage)
-{
-	logger.write(_pReceivedMessage);
-}
+//void scene::_on_received(const boost::system::error_code& pErrorCode, const size_t pBytesTransferred, std::string _pReceivedMessage)
+//{
+//	logger.write(_pReceivedMessage);
+//}
 
 void scene::initialize(std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
 {
@@ -266,7 +266,7 @@ void scene::load()
 	{
 		logger.write("Free type error");
 	}
-	_error = FT_New_Face(_freetype_lib, "E:\\SourceCode\\CG\\Wolf.CG\\docs\\RFP\\AlAlam Resources\\AlAlamB.ttf", 0, &_freetype_face);
+	_error = FT_New_Face(_freetype_lib, "C:\\Users\\PooyaEimandar\\Documents\\github\\Wolf.Engine\\bin\\x64\\Debug\\Win32\\arial.ttf", 0, &_freetype_face);
 	if (_error == FT_Err_Unknown_File_Format)
 	{
 		logger.write("FT_Err_Unknown_File_Format");

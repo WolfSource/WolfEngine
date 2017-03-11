@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "scene.h"
-#include <w_tcp_client.h>
+//#include <w_tcp_client.h>
 
 #define W_GUI_ID_LIST_WIDGET_TEXT_EDIT		0xF0000000
 
@@ -91,7 +91,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	};
 	std::function<void(void)> _run_func = [&_windowsInfo]()->void
 	{
-		service.run();
+//		service.run();
 		sScene->run(_windowsInfo);
 	};
 	

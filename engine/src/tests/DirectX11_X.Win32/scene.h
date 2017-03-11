@@ -64,9 +64,9 @@ public:
 
 private:
 
-	void _on_connect(const boost::system::error_code& pErrorCode);
-	void _on_sent(const boost::system::error_code& pErrorCode, const size_t pBytesTransferred);
-	void _on_received(const boost::system::error_code& pErrorCode, const size_t pBytesTransferred, std::string _pReceivedMessage);
+	//void _on_connect(const boost::system::error_code& pErrorCode);
+	//void _on_sent(const boost::system::error_code& pErrorCode, const size_t pBytesTransferred);
+	//void _on_received(const boost::system::error_code& pErrorCode, const size_t pBytesTransferred, std::string _pReceivedMessage);
 
 	//std::unique_ptr<Wolf::Graphics::W_SpriteFont>						spriteFont;
 

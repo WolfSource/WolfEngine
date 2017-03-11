@@ -17,9 +17,11 @@
 
 #include <Windows.h>
 #include <memory>
+#include <vector>
+#include <tuple>
 
-#include <boost/asio.hpp>
-extern boost::asio::io_service service;
+//#include <boost/asio.hpp>
+//extern boost::asio::io_service service;
 
 extern std::vector<std::tuple<HWND, int, int>> sTextBoxesHandles;
 

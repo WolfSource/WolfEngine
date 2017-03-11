@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 8.00.0603 */
-/* at Sun Feb 26 00:09:48 2017
+/* at Fri Mar 10 23:18:47 2017
  */
 /* Compiler settings for ..\..\..\dependencies\blackmagic\Blackmagic DeckLink SDK 10.6.4\Win\include\DeckLinkAPI.idl:
     Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.00.0603 
