@@ -45,8 +45,6 @@ public:
     //This is called when the we lost graphics device.
     void on_device_lost() override;
 
-    HRESULT on_msg_proc(/*HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam*/) override;
-
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
 

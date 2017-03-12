@@ -69,11 +69,11 @@ ULONG w_graphics_device::release()
     
         //release command pool & buffers
         vkFreeCommandBuffers(this->vk_device,
-                             _output_window->vk_command_pool,
-                             static_cast<uint32_t>(_output_window->vk_command_buffers.size()),
-                             _output_window->vk_command_buffers.data());
+                             _output_window->vk_command_allocator_pool,
+                             static_cast<uint32_t>(_output_window->vk_command_queues.size()),
+                             _output_window->vk_command_queues.data());
         
-        vkDestroyCommandPool(this->vk_device, _output_window->vk_command_pool, nullptr);
+        vkDestroyCommandPool(this->vk_device, _output_window->vk_command_allocator_pool, nullptr);
     
         //release semaphores
         vkDestroySemaphore(this->vk_device,
@@ -140,7 +140,7 @@ namespace wolf
         class w_graphics_device_manager_pimp
         {
         public:
-            w_graphics_device_manager_pimp(_In_ _In_ w_graphics_device_manager_configs pConfig) : _config(pConfig), _name("w_graphics_device_manager_pimp")
+            w_graphics_device_manager_pimp(_In_ w_graphics_device_manager_configs pConfig) : _config(pConfig), _name("w_graphics_device_manager_pimp")
             {
                 //set corn_flower_blue for back color
                 this->_clear_color.r = 100;
@@ -1253,7 +1253,7 @@ namespace wolf
                 auto _hr = vkCreateCommandPool(pGDevice->vk_device,
                                                &_command_pool_info,
                                                nullptr,
-                                               &_output_presentation_window->vk_command_pool);
+                                               &_output_presentation_window->vk_command_allocator_pool);
                 V(_hr, L"creating vulkan command pool for graphics device: " + _device_name +
                   L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
                   this->_name, 3, true, true);
@@ -1265,15 +1265,15 @@ namespace wolf
                 VkCommandBufferAllocateInfo _command_buffer_info = {};
                 _command_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
                 _command_buffer_info.pNext = nullptr;
-                _command_buffer_info.commandPool = _output_presentation_window->vk_command_pool;
+                _command_buffer_info.commandPool = _output_presentation_window->vk_command_allocator_pool;
                 _command_buffer_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
                 _command_buffer_info.commandBufferCount = _command_buffer_counts;
                 
-                _output_presentation_window->vk_command_buffers.resize(_command_buffer_counts);
+                _output_presentation_window->vk_command_queues.resize(_command_buffer_counts);
                 
                 _hr = vkAllocateCommandBuffers(pGDevice->vk_device,
                                                &_command_buffer_info,
-                                               _output_presentation_window->vk_command_buffers.data());
+                                               _output_presentation_window->vk_command_queues.data());
                 V(_hr, L"creating vulkan command buffers for swap chain of graphics device: " + _device_name +
                   L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
                   this->_name, 3, true, true);
@@ -1327,14 +1327,14 @@ namespace wolf
                     _clear_to_present_barrier.subresourceRange = _sub_resource_range;
                     
                     //record command buffer
-                    _hr = vkBeginCommandBuffer(_output_presentation_window->vk_command_buffers[i],
+                    _hr = vkBeginCommandBuffer(_output_presentation_window->vk_command_queues[i],
                                                &_command_buffer_begin_info);
                     
                     V(_hr, L"beginning command buffer of graphics device: " + _device_name +
                       L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
                       this->_name, 3, true, true);
                     
-                    vkCmdPipelineBarrier(_output_presentation_window->vk_command_buffers[i],
+                    vkCmdPipelineBarrier(_output_presentation_window->vk_command_queues[i],
                                          VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
                                          0,
                                          0,
@@ -1344,14 +1344,14 @@ namespace wolf
                                          1,
                                          &_present_to_clear_barrier);
                     
-                    vkCmdClearColorImage(_output_presentation_window->vk_command_buffers[i],
+                    vkCmdClearColorImage(_output_presentation_window->vk_command_queues[i],
                                          _output_presentation_window->vk_swap_chain_image_views[i].image, 
                                          VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
                                          &_vk_clear_color, 
                                          1, 
                                          &_sub_resource_range);
                     
-                    vkCmdPipelineBarrier(_output_presentation_window->vk_command_buffers[i],
+                    vkCmdPipelineBarrier(_output_presentation_window->vk_command_queues[i],
                                          VK_PIPELINE_STAGE_TRANSFER_BIT, 
                                          VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 
                                          0, 
@@ -1362,7 +1362,7 @@ namespace wolf
                                          1, 
                                          &_clear_to_present_barrier);
                     
-                    _hr = vkEndCommandBuffer(_output_presentation_window->vk_command_buffers[i]);
+                    _hr = vkEndCommandBuffer(_output_presentation_window->vk_command_queues[i]);
                     V(_hr, L"ending command buffer of graphics device: " + _device_name +
                       L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
                       this->_name, 3, true, true);
@@ -1479,7 +1479,7 @@ void w_graphics_device_manager::begin_render()
             _submit_info.pWaitDstStageMask = &_wait_dst_stage_mask;
 
             _submit_info.commandBufferCount = 1;
-            _submit_info.pCommandBuffers = &_present_window->vk_command_buffers[_present_window->vk_swap_chain_image_index];
+            _submit_info.pCommandBuffers = &_present_window->vk_command_queues[_present_window->vk_swap_chain_image_index];
             
             //submit queue
             _hr = vkQueueSubmit(

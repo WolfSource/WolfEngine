@@ -64,15 +64,18 @@ namespace wolf
 {
 	namespace graphics
 	{
-#ifdef __DX12__
+            
 		//the default config for creating graphics devices, you can edit the config before calling w_graphics_device_manager::initialize
 		struct w_graphics_device_manager_configs
 		{
+#ifdef __DX12__
 			bool							use_wrap_mode = false;
 			D3D_FEATURE_LEVEL				wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
 			std::vector<D3D_FEATURE_LEVEL>	harware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0 };
+#endif
 		};
-#elif	defined(__VULKAN__)
+                
+#ifdef __VULKAN__
         struct vk_image_view
         {
             VkImage                             image = nullptr;
@@ -135,7 +138,7 @@ namespace wolf
 			HANDLE									dx_fence_event = NULL;
 			ComPtr<ID3D12Fence>						dx_fence;
 			UINT64									dx_fence_value = 0;
-#elif __VULKAN__
+#elif defined(__VULKAN__)
             VkSurfaceKHR							vk_presentation_surface = nullptr;
                         
             VkFormat								vk_swap_chain_selected_format = VkFormat::VK_FORMAT_UNDEFINED;
@@ -217,10 +220,10 @@ namespace wolf
 		//handles the configuration and management of the graphics device.
 		class w_graphics_device_manager : public system::w_object
 		{
-		public:
-			W_EXP w_graphics_device_manager(_In_ w_graphics_device_manager_configs pConfig);
-			W_EXP virtual ~w_graphics_device_manager();
-
+		public:               
+			W_EXP w_graphics_device_manager(_In_ w_graphics_device_manager_configs pConfig);                                        
+                        W_EXP virtual ~w_graphics_device_manager();
+                        
 			//Initialize graphics devices
 			W_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
 			//Called when corresponding window resized

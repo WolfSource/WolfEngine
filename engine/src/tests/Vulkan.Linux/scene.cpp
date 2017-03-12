@@ -8,11 +8,11 @@
 
 #include "pch.h"
 #include "scene.h"
-#include <w_graphics/w_shaders/w_shader_buffer.h>
+//#include <w_graphics/w_shaders/w_shader_buffer.h>
 
 scene::scene()
 {
-    w_game::set_app_name("Wolf.TestDX.Linux");
+    w_game::set_app_name("Wolf.TestVK.Linux");
     w_game::set_fixed_time_step(false);
 }
 
@@ -61,11 +61,6 @@ void scene::on_window_resized(UINT pIndex)
 void scene::on_device_lost()
 {
     w_game::on_device_lost();
-}
-
-HRESULT scene::on_msg_proc(/*HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam*/)
-{
-    return S_FALSE;
 }
 
 ULONG scene::release()
