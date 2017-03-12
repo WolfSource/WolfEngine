@@ -18,7 +18,7 @@
 
 #include "w_std.h"
 
-#elif defined(__WIN32) || defined(__UNIVERSAL)
+#elif defined(__WIN32) || defined(__UWP)
 
 #include <windows.h>
 

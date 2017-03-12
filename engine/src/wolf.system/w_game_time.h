@@ -14,7 +14,7 @@
 #ifndef __W_GAME_TIME_H__
 #define __W_GAME_TIME_H__
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 #include "Winbase.h"
 #else
 #include "w_std.h"
@@ -51,7 +51,7 @@ namespace wolf
 			{
 				this->_name = "game_time";
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 				//Get frequency
 				if (!QueryPerformanceFrequency(&this->_frequency))
 				{
@@ -127,7 +127,7 @@ namespace wolf
 				// Query the current time.
 				auto _current_time = get_time();
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 				auto _time_delta = _current_time.QuadPart - this->_last_time.QuadPart;
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 				auto _time_delta = _current_time - this->_last_time;
@@ -144,7 +144,7 @@ namespace wolf
 
 				// Convert QPC units into a canonical tick format. This cannot overflow due to the previous clamp.
 				_time_delta *= TICKS_PER_SECOND;
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 				if (this->_frequency.QuadPart == 0)
 				{
 					logger.write(L"Division by Zero for frequency of CPU");
@@ -199,7 +199,7 @@ namespace wolf
 				// Track the current framerate.
 				this->_frames_this_second += (this->_frame_count - _last_frame_count);
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 				const auto _one_sec = static_cast<UINT64>(this->_frequency.QuadPart);
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 				const auto _one_sec = 1;
@@ -211,7 +211,7 @@ namespace wolf
 
 					this->_frames_this_second = 0;
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 					if (_one_sec == 0)
 					{
 						logger.write(L"Division by Zero for frequency of CPU");
@@ -231,7 +231,7 @@ namespace wolf
 			std::string _name;
 
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 			//get current time in second
 			LARGE_INTEGER get_time()
 			{
@@ -253,7 +253,7 @@ namespace wolf
 #endif
 
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 			// Source timing data uses Query Performance Counter units.
 			LARGE_INTEGER _frequency;
 			LARGE_INTEGER _last_time;

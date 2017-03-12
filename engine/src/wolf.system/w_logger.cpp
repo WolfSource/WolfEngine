@@ -6,7 +6,7 @@
 
 #include <codecvt>
 
-#elif defined(__UNIVERSAL)
+#elif defined(__UWP)
 
 #include <codecvt>
 #include <ppltasks.h>
@@ -115,7 +115,7 @@ namespace wolf
                     return this->_log_file.is_open();
                 }
                 
-#elif defined(__UNIVERSAL)
+#elif defined(__UWP)
                 
                 bool initialize(_In_z_ const std::wstring pAppName)
                 {
@@ -214,7 +214,7 @@ namespace wolf
                 {
                     pMsg = L"\t\t\"" + get_date_timeW() + L"\"" + L": {\"msg\":\"" + (pMsg.empty() ? L"NULL" : pMsg) + L"\",\"state\":\"" + pState + L"\"},\r\n";
                     
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
                     OutputDebugString(pMsg.c_str());
 #elif defined(__linux) || defined(__APPLE__)
                     std::cout << std::string(pMsg.begin(), pMsg.end()).c_str();
@@ -351,7 +351,7 @@ bool w_logger::initialize(
     {
         return this->_pimp->initialize(pAppName, pLogPath);
     }
-#elif defined(__UNIVERSAL)
+#elif defined(__UWP)
     _In_z_ const std::wstring pAppName)
     {
         return this->_pimp->initialize(pAppName);

@@ -109,13 +109,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_DIRECTX__;__DX12__;__DX_DIAGNOSTIC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.render/wolf.directX;$(SolutionDir)/../../dependencies/glm-master/;$(SolutionDir)/../../dependencies/rapidxml-master/1.13/;$(SolutionDir)/../../dependencies/rapidjson-master/include;$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/include/;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>w_directX_pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.render/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>w_render_pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;C:\Python\Python35\libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -158,23 +158,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\wolf.render\wolf.directX\dllmain.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\wolf.directX\w_directX_pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\wolf.render\wolf.directX\w_game.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\wolf.render\wolf.directX\w_graphics_device_manager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\wolf.render\wolf.directX\w_directX_dll.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\wolf.render\wolf.directX\w_directX_pch.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\wolf.render\wolf.directX\w_game.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\wolf.render\wolf.directX\w_graphics_device_manager.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Wolf.System\Wolf.System.Win32.vcxproj">
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\wolf.render\dllmain.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_game.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_render_pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_game.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_render_export.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_render_pch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

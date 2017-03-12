@@ -17,12 +17,12 @@
 
 #if defined(__WIN32)
 
-#ifndef WVK_EXP
+#ifndef W_EXP
 
 	#ifdef __WOLF_RENDER__
-		#define WRND_EXP __declspec(dllexport)
+		#define W_EXP __declspec(dllexport)
 	#else
-		#define WRND_EXP __declspec(dllimport)
+		#define W_EXP __declspec(dllimport)
 	#endif
 
 #endif
@@ -30,8 +30,8 @@
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 
-#ifndef WRND_EXP
-#define WRND_EXP //dump
+#ifndef W_EXP
+#define W_EXP //dump
 #endif
 
 #endif

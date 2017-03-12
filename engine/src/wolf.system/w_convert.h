@@ -16,7 +16,7 @@
 
 #include <vector>
 
-#if	defined(__WIN32) || defined(__UNIVERSAL)
+#if	defined(__WIN32) || defined(__UWP)
 
 #include <codecvt>
 #include <AtlConv.h>
@@ -35,7 +35,7 @@ namespace wolf
 	{
 		namespace convert
 		{
-#if	defined(__WIN32) || defined(__UNIVERSAL)
+#if	defined(__WIN32) || defined(__UWP)
 			// convert UTF-8 string to wstring
 			inline std::wstring from_utf8(const std::string& pStr)
 			{
@@ -99,7 +99,7 @@ namespace wolf
 			//	delete[] _w;
 			//}
 
-#endif //__WIN32 || __UNIVERSAL
+#endif //__WIN32 || __UWP
 
 			inline bool has_wstring_end_with(_In_z_ std::wstring const& pStr, _In_z_ std::wstring const& pEnding)
 			{

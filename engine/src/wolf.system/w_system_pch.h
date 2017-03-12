@@ -27,7 +27,7 @@
 #define W_ARRAY_SIZE(ARR)	(sizeof(ARR) / sizeof(ARR[0]))
 #endif
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 
 #ifdef _DEBUG
 	#pragma comment(lib, "tbb_debug.lib") 
@@ -60,7 +60,7 @@
 #include <vector>
 #include <tuple>
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 
 #include <tchar.h>
 #include <tbb/scalable_allocator.h>

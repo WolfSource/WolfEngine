@@ -11,8 +11,8 @@
 #pragma once
 #endif
 
-#ifndef __W_BASETSD_H__
-#define __W_BASETSD_H__
+#ifndef __W_STD_H__
+#define __W_STD_H__
 
 #ifdef __WIN32
 

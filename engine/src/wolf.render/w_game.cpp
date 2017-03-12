@@ -12,11 +12,13 @@ std::string w_game::_content_directory_path = "";
 std::wstring w_game::_content_directory_path = L"";
 #endif
 
-w_game::w_game() : 
+w_game::w_game(_In_ w_graphics_device_manager_configs pConfig) : 
+	_super(pConfig),
 	exiting(false)
 {
 	_super::set_class_name(typeid(this).name());
 	this->loadState = LoadState::NOTLOADED;
+
 #if defined(__linux) || defined(__ANDROID) ||  defined(__APPLE__)
     logger.initialize(this->_app_name, wolf::system::io::get_current_directory());
     _content_directory_path = wolf::system::io::get_content_directory();
@@ -111,11 +113,13 @@ void w_game::end_render(const wolf::system::w_game_time& pGameTime)
     w_graphics_device_manager::end_render();
 }
 
+#ifdef __WIN32
 //Handle input message procedure
-HRESULT w_game::on_msg_proc(/*HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam*/)
+HRESULT w_game::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam)
 {
     return S_FALSE;
 }
+#endif
 
 bool w_game::run(map<int, vector<w_window_info>> pOutputWindowsInfo)
 {

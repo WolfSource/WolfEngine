@@ -16,7 +16,7 @@
 
 #include <functional>
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 #include <ppltasks.h>
 #endif
 
@@ -39,7 +39,7 @@ namespace wolf
 		class w_task
 		{
 		public:
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 			WSYS_EXP static void execute_async_ppl(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack = nullptr);
 #endif
 			WSYS_EXP static void execute_async(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack = nullptr);
@@ -106,7 +106,7 @@ namespace tbb
 	};
 }
 
-#endif//__WIN32 || __UNIVERSAL
+#endif//__WIN32 || __UWP
 
 #ifdef __GNUC__
 #pragma GCC visibility pop

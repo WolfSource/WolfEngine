@@ -5,7 +5,7 @@ using namespace wolf::system;
 
 std::future<void> w_task::_deferred;
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 
 void w_task::execute_async_ppl(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack)
 {

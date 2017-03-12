@@ -16,7 +16,7 @@
 #ifndef __W_TARGET_VER_H__
 #define __W_TARGET_VER_H__
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 #include <SDKDDKVer.h>
 #endif
 

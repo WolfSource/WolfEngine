@@ -107,9 +107,9 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;_UNICODE;UNICODE;__DX12__;__PYTHON__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;_UNICODE;UNICODE;__DX12__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.render/wolf.directX;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../src/blackmagic.decklink;$(SolutionDir)/../../dependencies/rapidjson-master/include;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/include/;$(SolutionDir)/../../dependencies/blackmagic/Blackmagic DeckLink SDK 10.6.4/Win/include;$(SolutionDir)/../../dependencies/glm-master/;$(SolutionDir)/../../dependencies/rapidxml-master/1.13/;$(SolutionDir)/../../dependencies/lua/lua/include/;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/Blackmagic.Decklink;C:/Python/Python35/include;$(SolutionDir)/../../dependencies/freetype/freetype-2.7.1/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.ffmpeg;$(SolutionDir)/../../src/blackmagic.decklink;$(SolutionDir)/../../dependencies/rapidjson/include;$(SolutionDir)/../../dependencies/ffmpeg/include;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/blackmagic/Blackmagic DeckLink SDK 10.6.4/Win/include;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/lua/lua/include/;$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/Blackmagic.Decklink;C:/Python/Python35/include;$(SolutionDir)/../../dependencies/freetype/freetype-2.7.1/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -154,26 +154,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\tests\DirectX12.Win32\main.cpp" />
-    <ClCompile Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\tests\DirectX12.Win32\pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\tests\DirectX12.Win32\scene.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\tests\DirectX12.Win32\pch.h" />
-    <ClInclude Include="..\..\..\..\..\..\..\..\Pooya%27s MAC\Desktop\Wolf.Engine\engine\src\tests\DirectX12.Win32\scene.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Wolf.Render\Wolf.DirectX\Wolf.DirectX12.Win32.vcxproj">
       <Project>{3cad4c0b-8160-431f-839a-4b92f0322c31}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\Wolf.System\Wolf.System.Win32.vcxproj">
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\tests\DirectX12.Win32\main.cpp" />
+    <ClCompile Include="..\..\..\..\src\tests\DirectX12.Win32\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\tests\DirectX12.Win32\scene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\tests\DirectX12.Win32\pch.h" />
+    <ClInclude Include="..\..\..\..\src\tests\DirectX12.Win32\scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

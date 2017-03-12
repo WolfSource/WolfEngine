@@ -3,7 +3,9 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_graphics_device_manager.h
-	Description		 : The manager for graphics devices
+	Description		 : The manager for graphics devices. Wolf.Engine supports two render APIs, the first one is DirectX 12 
+						which supports both Windows 10 and Universal Windows P(UWP) and the second one is Vulkan which supports
+						Windows, Linux, Android and OSX/IOS(with MoltenVK)  
 	Comment          :
 */
 
@@ -14,27 +16,37 @@
 #ifndef __W_GRAPHICS_DEVICE_MANAGER_H__
 #define __W_GRAPHICS_DEVICE_MANAGER_H__
 
-#ifdef __WIN32
-    #ifndef VK_USE_PLATFORM_WIN32_KHR
-        #define VK_USE_PLATFORM_WIN32_KHR
-    #endif
-#elif defined(__linux)
-    #ifndef VK_USE_PLATFORM_XCB_KHR
-        #define VK_USE_PLATFORM_XCB_KHR
-    #endif
-#endif
+#ifdef __DX12__
 
-#ifdef __APPLE__
+#include <wrl.h>
+#include <d3d12.h>
+#include <dxgi1_4.h>
+#include <DirectXMath.h>
 
-#ifndef VK_USE_PLATFORM_MACOS_MVK
-#define VK_USE_PLATFORM_MACOS_MVK
-#endif
+using Microsoft::WRL::ComPtr;
 
-#include <vulkan/vulkan.h>
-#include <MoltenVK/vk_mvk_moltenvk.h>
-#include <unistd.h>
-#else
-#include <vulkan/vulkan.hpp>
+#elif defined (__VULKAN__) 
+	#ifdef __WIN32
+		#ifndef VK_USE_PLATFORM_WIN32_KHR
+			#define VK_USE_PLATFORM_WIN32_KHR
+		#endif
+	#elif defined(__linux)
+		#ifndef VK_USE_PLATFORM_XCB_KHR
+			#define VK_USE_PLATFORM_XCB_KHR
+		#endif
+	#endif
+
+	#ifdef __APPLE__
+		#ifndef VK_USE_PLATFORM_MACOS_MVK
+		#define VK_USE_PLATFORM_MACOS_MVK
+		#endif
+
+		#include <vulkan/vulkan.h>
+		#include <MoltenVK/vk_mvk_moltenvk.h>
+		#include <unistd.h>
+	#else
+		#include <vulkan/vulkan.hpp>
+	#endif
 #endif
 
 #include "w_render_export.h"
@@ -52,11 +64,21 @@ namespace wolf
 {
 	namespace graphics
 	{
+#ifdef __DX12__
+		//the default config for creating graphics devices, you can edit the config before calling w_graphics_device_manager::initialize
+		struct w_graphics_device_manager_configs
+		{
+			bool							use_wrap_mode = false;
+			D3D_FEATURE_LEVEL				wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+			std::vector<D3D_FEATURE_LEVEL>	harware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0 };
+		};
+#elif	defined(__VULKAN__)
         struct vk_image_view
         {
             VkImage                             image = nullptr;
             VkImageView                         view = nullptr;;
         };
+#endif
                 
 		//Output window which handles all 3d resources for output renderer
 		struct w_output_presentation_window
@@ -80,45 +102,62 @@ namespace wolf
 				return 1;
 			}
 
-			UINT                                index = 0;
+			UINT									index = 0;
 			
-			UINT                                width = 0;
-			UINT                                height = 0;
-			float                               aspectRatio = 0;
+			UINT									width = 0;
+			UINT									height = 0;
+			float									aspectRatio = 0;
                         
 #ifdef  __WIN32  
-			DWORD                               pdwCookie;
-            HWND                                hwnd = NULL;
-			HINSTANCE                           hInstance = NULL;
+			DWORD									pdwCookie;
+            HWND									hwnd = NULL;
+			HINSTANCE								hInstance = NULL;
 #elif defined(__linux)
-            xcb_connection_t*                   xcb_connection = nullptr;
-            xcb_window_t*                       xcb_window = nullptr;
+            xcb_connection_t*						xcb_connection = nullptr;
+            xcb_window_t*							xcb_window = nullptr;
 #elif defined(__APPLE__)
-            void*                               window = nullptr;
+            void*									window = nullptr;
 #endif
+                      
+			bool									v_sync = true;
+
+#ifdef __DX12__
+			DXGI_FORMAT								dx_swap_chain_selected_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
+			ComPtr<IDXGISwapChain3>					dx_swap_chain;
+			std::vector<ID3D12Resource*>			dx_swap_chain_image_views;
+			uint32_t								dx_swap_chain_image_index = 0;
+
+			ComPtr<ID3D12CommandAllocator>			dx_command_allocator_pool;
+			std::vector<ID3D12CommandQueue*>		dx_command_queues;
+			std::vector<ID3D12GraphicsCommandList*> dx_command_lists;
+
+			//Synchronization objects.
+			HANDLE									dx_fence_event = NULL;
+			ComPtr<ID3D12Fence>						dx_fence;
+			UINT64									dx_fence_value = 0;
+#elif __VULKAN__
+            VkSurfaceKHR							vk_presentation_surface = nullptr;
                         
-            VkSurfaceKHR                        vk_presentation_surface = nullptr;
+            VkFormat								vk_swap_chain_selected_format = VkFormat::VK_FORMAT_UNDEFINED;
+            VkSwapchainKHR							vk_swap_chain = nullptr;
+            std::vector<vk_image_view>				vk_swap_chain_image_views;
+            uint32_t								vk_swap_chain_image_index = 0;
                         
-            bool                                v_sync = true;
+            VkCommandPool							vk_command_allocator_pool = nullptr;
+            std::vector<VkCommandBuffer>			vk_command_queues;
+            std::vector<VkSurfaceFormatKHR>			vk_surface_formats;
                         
-            VkFormat                            vk_swap_chain_selected_format = VkFormat::VK_FORMAT_UNDEFINED;
-            VkSwapchainKHR                      vk_swap_chain = nullptr;
-            std::vector<vk_image_view>          vk_swap_chain_image_views;
-            uint32_t                            vk_swap_chain_image_index = 0;
-                        
-            VkCommandPool                       vk_command_pool = nullptr;
-            std::vector<VkCommandBuffer>        vk_command_buffers;
-            std::vector<VkSurfaceFormatKHR>     vk_surface_formats;
-                        
-            VkFormat                            vk_depth_buffer_format = VkFormat::VK_FORMAT_UNDEFINED;
-            vk_image_view                       vk_depth_buffer_image_view;
-            VkDeviceMemory                      vk_depth_buffer_memory = nullptr;
-                        
-            VkSemaphore                         vk_image_is_available_semaphore = nullptr;
-            VkSemaphore                         vk_rendering_done_semaphore = nullptr;
+            VkFormat								vk_depth_buffer_format = VkFormat::VK_FORMAT_UNDEFINED;
+            vk_image_view							vk_depth_buffer_image_view;
+            VkDeviceMemory							vk_depth_buffer_memory = nullptr;
             
+			//Synchronization objects
+            VkSemaphore								vk_image_is_available_semaphore = nullptr;
+            VkSemaphore								vk_rendering_done_semaphore = nullptr;
+#endif
+
         private:
-            bool                                _is_released = false;
+            bool									_is_released = false;
 		};
         
 		//contains graphics device which performs primitive-based rendering
@@ -136,6 +175,16 @@ namespace wolf
 
             std::vector<w_output_presentation_window>               output_presentation_windows;
             
+#ifdef __DX12__
+
+			static ComPtr<IDXGIFactory4>							dx_dxgi_factory;
+
+			bool													dx_is_wrap_device;
+			D3D_FEATURE_LEVEL										dx_feature_level;
+			ComPtr<IDXGIAdapter1>									dx_adaptor;
+			ComPtr<ID3D12Device>									dx_device;
+
+#elif defined(__VULKAN__)
             static VkInstance                                       vk_instance;
                         
             VkPhysicalDevice                                        vk_physical_device;
@@ -150,6 +199,7 @@ namespace wolf
             VkQueue                                                 vk_present_queue;
                                 
             VkDevice                                                vk_device;
+#endif //__DX12__
             
             std::string                                             device_name;
             
@@ -160,28 +210,29 @@ namespace wolf
             
             bool                                                    _is_released;
 		};
-        
+
+
         //forward decalaration
         class w_graphics_device_manager_pimp;
 		//handles the configuration and management of the graphics device.
 		class w_graphics_device_manager : public system::w_object
 		{
 		public:
-			WRND_EXP w_graphics_device_manager(bool pUse_Wrap_Mode = false);
-			WRND_EXP virtual ~w_graphics_device_manager();
+			W_EXP w_graphics_device_manager(_In_ w_graphics_device_manager_configs pConfig);
+			W_EXP virtual ~w_graphics_device_manager();
 
 			//Initialize graphics devices
-			WRND_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
+			W_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
 			//Called when corresponding window resized
-			WRND_EXP virtual void on_window_resized(_In_ UINT pIndex);
+			W_EXP virtual void on_window_resized(_In_ UINT pIndex);
 			//Called when any graphics device lost
-			WRND_EXP virtual void on_device_lost();
+			W_EXP virtual void on_device_lost();
 			//Begin render on all graphics devices
-			WRND_EXP virtual void begin_render();
+			W_EXP virtual void begin_render();
 			//End render on all graphics devices
-			WRND_EXP virtual void end_render();
+			W_EXP virtual void end_render();
 			//Release all resources
-			WRND_EXP ULONG release() override;
+			W_EXP ULONG release() override;
 
 			//Get the main graphics device, this is first and the primary device.
             std::shared_ptr<w_graphics_device> get_graphics_device() const;
@@ -203,10 +254,12 @@ namespace wolf
 //
 //#pragma endregion
 
+#ifdef __VULKAN__
             static VkResult memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
                                                   uint32_t pTypeBits,
                                                   VkFlags pRequirementsMask,
                                                   uint32_t* pTypeIndex);
+#endif
                         
 		protected:
 			std::vector<std::shared_ptr<w_graphics_device>>		graphics_devices;

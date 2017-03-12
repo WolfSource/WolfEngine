@@ -14,7 +14,7 @@
 #ifndef __W_OBJECT_H__
 #define __W_OBJECT_H__
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 #include <string>
 #endif
 

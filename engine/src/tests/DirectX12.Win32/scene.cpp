@@ -10,7 +10,6 @@
 #include "Scene.h"
 
 using namespace std;
-using namespace DirectX;
 using namespace wolf::system;
 using namespace wolf::framework;
 using namespace wolf::graphics;
@@ -87,7 +86,7 @@ HRESULT scene::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLP
 
 ULONG scene::release()
 {
-	if (this->is_released()) return 0;
+	if (w_game::get_is_released()) return 0;
 
 	return w_game::release();
 }

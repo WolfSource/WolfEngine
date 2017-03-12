@@ -22,7 +22,7 @@
     <ProjectGuid>{6F47C0C5-64DC-4843-BD94-82734FEC8E21}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BlackMagic.Decklink</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
     <ProjectName>BlackMagic.Decklink</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

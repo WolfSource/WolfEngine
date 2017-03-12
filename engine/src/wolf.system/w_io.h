@@ -21,7 +21,7 @@
 #include <io.h>
 #include "w_convert.h"
 
-#elif defined(__UNIVERSAL)
+#elif defined(__UWP)
 
 #include <wrl.h>
 #include <wrl/client.h>
@@ -52,7 +52,7 @@ namespace wolf
 	{
 		namespace io
 		{
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 
 			//Get the current running directory directory path
 #ifdef __WIN32
@@ -386,7 +386,7 @@ namespace wolf
 			{
 				time_t _t = time(0);
 				//get time now
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 				struct tm _now;
 				localtime_s(&_now, &_t);
 

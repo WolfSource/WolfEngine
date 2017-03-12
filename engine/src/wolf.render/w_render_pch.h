@@ -18,8 +18,21 @@
 #define NOMINMAX
 #endif
 
-//contains vector, w_logger
 #include <w_system_pch.h>
+
+#if defined(__WIN32) || defined(__UWP)
+
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
+
+#include <windows.h>
+#include <wrl.h>
+#include <d3d12.h>
+#include <dxgi1_4.h>
+#include <DirectXMath.h>
+
+#endif
+
 
 #include <memory>
 #include <map>

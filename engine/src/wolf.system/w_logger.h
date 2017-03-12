@@ -33,7 +33,7 @@ inline std::string get_date_time()
 	time_t _rawtime;
 	time(&_rawtime);
 
-#if defined(__WIN32) || defined(__UNIVERSAL)
+#if defined(__WIN32) || defined(__UWP)
 	localtime_s(&_time, &_rawtime);
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 	_time = *localtime(&_rawtime);
@@ -75,7 +75,7 @@ namespace wolf
 			WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath);
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 			WSYS_EXP bool initialize(_In_z_ const std::string pAppName, _In_z_ const std::string pLogPath);
-#elif defined(__UNIVERSAL)
+#elif defined(__UWP)
 			WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName);
 #endif
 			//Print message in to the screen, this function will be store the messages into the buffer
@@ -146,7 +146,7 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 
 		_errorMsg = L"Error on " + pMSG + L" with the following error info : ";
 
-#elif defined(__WIN32) || defined(__UNIVERSAL) || defined(__MAYA)
+#elif defined(__WIN32) || defined(__UWP) || defined(__MAYA)
 
 		auto _err = GetLastError();
 		_errorMsg = L"Error on " +pMSG + L" with the following error info : ";
@@ -230,7 +230,7 @@ inline void V(HRESULT pHR, std::string pMSG = "Undefined Error",
 	_msg.clear();
 }
 
-#if defined(__WIN32) || defined(__UNIVERSAL) || defined(__MAYA)
+#if defined(__WIN32) || defined(__UWP) || defined(__MAYA)
 inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...)
 {
 #ifdef _DEBUG
@@ -244,6 +244,6 @@ inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...)
 	UNREFERENCED_PARAMETER(format);
 #endif
 }
-#endif //defined(__WIN32) || defined(__UNIVERSAL) || defined(__MAYA)
+#endif //defined(__WIN32) || defined(__UWP) || defined(__MAYA)
 
 #endif //__W_LOGGER_H__
