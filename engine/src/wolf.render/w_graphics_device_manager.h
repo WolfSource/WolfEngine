@@ -71,7 +71,7 @@ namespace wolf
 #ifdef __DX12__
 			bool							use_wrap_mode = false;
 			D3D_FEATURE_LEVEL				wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-			std::vector<D3D_FEATURE_LEVEL>	harware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0 };
+			std::vector<D3D_FEATURE_LEVEL>	hardware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1 };
 #endif
 		};
                 
@@ -130,9 +130,13 @@ namespace wolf
 			std::vector<ID3D12Resource*>			dx_swap_chain_image_views;
 			uint32_t								dx_swap_chain_image_index = 0;
 
+			ComPtr<ID3D12DescriptorHeap>			dx_render_target_view_heap;
+			UINT									dx_render_target_descriptor_size = 0;
+
 			ComPtr<ID3D12CommandAllocator>			dx_command_allocator_pool;
-			std::vector<ID3D12CommandQueue*>		dx_command_queues;
-			std::vector<ID3D12GraphicsCommandList*> dx_command_lists;
+			ComPtr<ID3D12CommandQueue>				dx_command_queue;
+			ComPtr<ID3D12GraphicsCommandList>		dx_command_list;
+			ComPtr<ID3D12PipelineState>				dx_pipeline_state;
 
 			//Synchronization objects.
 			HANDLE									dx_fence_event = NULL;
@@ -213,7 +217,6 @@ namespace wolf
             
             bool                                                    _is_released;
 		};
-
 
         //forward decalaration
         class w_graphics_device_manager_pimp;

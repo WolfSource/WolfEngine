@@ -48,17 +48,19 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	sWindow->initialize(_msg_proc_func);
 
 	//run the main loop
-	map<int, vector<w_window_info>> _windowsInfo = { 
-		{ 
-			0, 
-			{ 
-				{ sWindow->get_HWND(), sWindow->get_HINSTANCE(), sWindow->get_width(), sWindow->get_height() }
-			} 
-		} 
-	};
-	std::function<void(void)> _run_func = [&_windowsInfo]()->void
+	w_window_info _w_info;
+	_w_info.hwnd = sWindow->get_HWND();
+	_w_info.hInstance = sWindow->get_HINSTANCE();
+	_w_info.width = sWindow->get_width();
+	_w_info.height = sWindow->get_height();
+	_w_info.v_sync_enable = false;
+	_w_info.swap_chain_format = 87;
+
+	map<int, vector<w_window_info>> _windowsInfos = { { 0, { _w_info } } };
+
+	std::function<void(void)> _run_func = [&_windowsInfos]()->void
 	{
-		sScene->run(_windowsInfo);
+		sScene->run(_windowsInfos);
 	};
 	
 	sWindow->run(_run_func);

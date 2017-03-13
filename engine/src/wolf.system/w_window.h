@@ -102,6 +102,11 @@ struct w_window_info
 	UINT                width;
 	UINT                height;
     bool                v_sync_enable;
+#ifdef __DX12__
+	UINT				swap_chain_format = 87;
+#elif defined(__VULKAN__)
+	UINT				swap_chain_format = 44;
+#endif
 };
 
 #if defined(__WIN32) || defined(__linux)

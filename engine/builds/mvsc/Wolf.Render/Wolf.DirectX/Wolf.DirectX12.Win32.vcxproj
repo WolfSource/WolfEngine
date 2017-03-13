@@ -171,6 +171,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_directX_helper.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_export.h" />

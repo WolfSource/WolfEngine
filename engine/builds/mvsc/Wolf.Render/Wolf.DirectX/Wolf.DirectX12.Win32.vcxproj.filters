@@ -21,5 +21,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_export.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_pch.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_directX_helper.h" />
   </ItemGroup>
 </Project>

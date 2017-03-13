@@ -126,7 +126,7 @@ extern WSYS_EXP wolf::system::w_logger logger;
 	pHR							= Status
 	pMSG						= the log message
 	pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
-	pExitNow					= abort appilcation
+	pTerminateAll				= abort appilcation. Strongly not recommended, please make sure release all your resources before aborting Wolf.Engine
 	pCheckForLastDirectXError	= check last error of GPU API
 */
 inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
@@ -149,7 +149,7 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 #elif defined(__WIN32) || defined(__UWP) || defined(__MAYA)
 
 		auto _err = GetLastError();
-		_errorMsg = L"Error on " +pMSG + L" with the following error info : ";
+		_errorMsg = L"Error on " + pMSG + L" with the following error info : ";
 		LPVOID _lpMsgBuf;
 		DWORD _bufLen = FormatMessage(
 
@@ -203,7 +203,11 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 		break;
 	}
 
-	if (pTerminateAll) abort();
+	if (pTerminateAll)
+	{
+		logger.release();
+		std::exit(EXIT_FAILURE);
+	}
 }
 
 inline void V(int pHR, std::wstring pMSG = L"Undefined Error",
