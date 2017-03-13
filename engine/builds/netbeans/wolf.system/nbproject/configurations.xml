@@ -71,6 +71,9 @@
             <pElem>../../../dependencies/rapidjson</pElem>
             <pElem>../../../dependencies/tbb/oss/linux/include</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>__VULKAN__</Elem>
+          </preprocessorList>
         </ccTool>
         <linkerTool>
           <output>${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.system.${CND_DLIB_EXT}</output>
@@ -274,6 +277,12 @@
         <packType>Tar</packType>
         <output>${CND_DISTDIR}/../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/package/libwolf.system.so.tar</output>
         <packFileList>
+          <packFileListElem type="File"
+                            to="${PACKAGE_TOP_DIR}lib/${OUTPUT_BASENAME}"
+                            from="${OUTPUT_PATH}"
+                            perm="644"
+                            owner="root"
+                            group="bin"/>
           <packFileListElem type="File"
                             to="${PACKAGE_TOP_DIR}lib/${OUTPUT_BASENAME}"
                             from="${OUTPUT_PATH}"

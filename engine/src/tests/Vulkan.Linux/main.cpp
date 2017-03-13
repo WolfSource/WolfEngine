@@ -23,22 +23,20 @@ int main(int pArgc, char** pArgv)
    
     //initialize window
     sWindow->initialize();
-    std::map<int, std::vector<w_window_info>> _windows_info = 
-    { 
-	{ 
-            0, { { 
+    
+    w_window_info _w_info;
 #ifdef __WIN32
-                    sWindow->get_HWND(), 
-                    sWindow->get_HINSTANCE(), 
+    _w_info.hwnd = sWindow->get_HWND();
+    _w_info.hInstance = sWindow->get_HINSTANCE();
 #elif defined(__linux)
-                    sWindow->get_xcb_connection(), 
-                    sWindow->get_xcb_window(),        
+    _w_info.xcb_connection = sWindow->get_xcb_connection();
+    _w_info.xcb_window = sWindow->get_xcb_window();
 #endif
-                    sWindow->get_width(), 
-                    sWindow->get_height() 
-                   } } 
-	} 
-    };
+    _w_info.width = sWindow->get_width();
+    _w_info.height = sWindow->get_height();
+    
+    std::map<int, std::vector<w_window_info>> _windows_info = { { 0, { _w_info } } }; 
+
     std::function<void(void)> _run_func = [&]()->void
     {
         sScene->run(_windows_info);

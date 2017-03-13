@@ -2,7 +2,10 @@
 #include "w_graphics_device_manager.h"
 #include <w_logger.h>
 #include <w_convert.h>
+
+#ifdef  __DX12__
 #include <w_directX_helper.h>
+#endif
 
 using namespace std;
 using namespace wolf::system;
@@ -353,12 +356,12 @@ namespace wolf
 					nullptr);
 				if (_hr)
 				{
-					//write the buffer to output before exiting
-					logger.write(_msg);
-					_msg.clear();
-					logger.error("error on enumerating instance extension properties.");
-					release();
-					std::exit(EXIT_FAILURE);
+                                    //write the buffer to output before exiting
+                                    logger.write(_msg);
+                                    _msg.clear();
+                                    logger.error("error on enumerating instance extension properties.");
+                                    release();
+                                    std::exit(EXIT_FAILURE);
 				}
 
 				auto _extensions_available = new VkExtensionProperties[_extension_count];
@@ -740,7 +743,7 @@ namespace wolf
 							_out_window.aspectRatio = (float)_window.width / (float)_window.height;
 							_out_window.v_sync = _window.v_sync_enable;
 							_out_window.index = static_cast<int>(j);
-							_out_window.dx_swap_chain_selected_format = (VkFormat)_window.swap_chain_format;
+							_out_window.vk_swap_chain_selected_format = (VkFormat)_window.swap_chain_format;
 #ifdef __WIN32
 							_out_window.HWND = _window.hwnd;
 							_out_window.hInstance = _window.hInstance;
@@ -901,7 +904,7 @@ namespace wolf
             void _create_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                     _In_ size_t pOutputPresentationWindowIndex)
             {
-                auto _device_name =  wolf::system::convert::string_to_wstring(pGDevice->device_name);
+                auto _device_name =  pGDevice->device_name;
                 auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 #ifdef __DX12__
@@ -989,9 +992,10 @@ namespace wolf
                                                                      static_cast<uint32_t>(j),
                                                                     _vk_presentation_surface,
                                                                     &pGDevice->vk_queue_family_supports_present[j]);
-                    V(_hr, L"could not get physical device surface support for graphics device: " + _device_name +
-                      L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                      this->_name, 2);
+                    V(_hr, L"could not get physical device surface support for graphics device: " + 
+                            std::wstring(_device_name.begin(), _device_name.end()) +
+                            L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+                            this->_name, 2);
                     
                     if (pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX && 
                         pGDevice->vk_queue_family_selected_index != SIZE_MAX &&
@@ -1002,9 +1006,10 @@ namespace wolf
                 }
                 
                 V(pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX ? S_FALSE : S_OK,
-                  L"could not find queue family which supports presentation for graphics device: " + _device_name +
-                  L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                  this->_name, 2);
+                        L"could not find queue family which supports presentation for graphics device: " + 
+                        std::wstring(_device_name.begin(), _device_name.end()) +
+                        L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+                        this->_name, 2);
                 
                 //get the list of VkFormats that are supported:
                 uint32_t _vk_format_count;
@@ -1012,16 +1017,13 @@ namespace wolf
                                                                 _vk_presentation_surface,
                                                                 &_vk_format_count,
                                                                 NULL);
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"could not get number of physical device surface formats for graphics device: " +
-						wolf::system::convert::string_to_wstring(pGDevice->device_name) +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("could not get number of physical device surface formats for graphics device: " +
+				_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 _output_presentation_window->vk_surface_formats.resize(_vk_format_count);
                 
@@ -1029,15 +1031,13 @@ namespace wolf
                                                            _vk_presentation_surface,
                                                            &_vk_format_count,
                                                            _output_presentation_window->vk_surface_formats.data());
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"could not get physical device surface formats for graphics device: " + _device_name +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("could not get physical device surface formats for graphics device: " + 
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 /*
                     If the format list includes just one entry of VK_FORMAT_UNDEFINED,
@@ -1057,30 +1057,27 @@ namespace wolf
                 _hr = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pGDevice->vk_physical_device,
                                                                 _vk_presentation_surface,
                                                                 &_surface_capabilities);
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"error on create vulkan surface capabilities for graphics device: " + _device_name +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("error on create vulkan surface capabilities for graphics device: " + 
+                        _device_name +
+                        " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
 
                 //get the count of present modes
                 uint32_t _present_mode_count;
                 _hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
                                                                 _vk_presentation_surface,
                                                                 &_present_mode_count, nullptr);
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"error on getting vulkan present mode(s) count for graphics device: " + _device_name +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("error on getting vulkan present mode(s) count for graphics device: " + 
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
 
                 //get present modes
                 std::vector<VkPresentModeKHR> _present_modes(_present_mode_count);
@@ -1088,17 +1085,15 @@ namespace wolf
                                                                 _vk_presentation_surface,
                                                                 &_present_mode_count,
                                                                 _present_modes.data());
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"error on getting vulkan present mode(s) for graphics device: " + _device_name +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("error on getting vulkan present mode(s) for graphics device: " + 
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
-                // width and height are either both 0xFFFFFFFF, or both not 0xFFFFFFFF.
+                //width and height are either both 0xFFFFFFFF, or both not 0xFFFFFFFF.
                 VkExtent2D _swap_chain_extent;
                 if (_surface_capabilities.currentExtent.width == 0xFFFFFFFF)
                 {
@@ -1195,15 +1190,13 @@ namespace wolf
                                            &_swap_chain_create_info,
                                            nullptr,
                                            &_output_presentation_window->vk_swap_chain);
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"error on creating swap chain for vulkan for graphics device: " + _device_name +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("error on creating swap chain for vulkan for graphics device: " + 
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 //get the count of swap chain 's images
                 uint32_t _swap_chain_image_count = UINT32_MAX;
@@ -1211,30 +1204,26 @@ namespace wolf
                                               _output_presentation_window->vk_swap_chain,
                                               &_swap_chain_image_count,
                                               nullptr);
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"error on getting total available image counts of swap chain for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("error on getting total available image counts of swap chain for graphics device: " +
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 std::vector<VkImage> _swap_chain_images(_swap_chain_image_count);
                 _hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
                                               _output_presentation_window->vk_swap_chain,
                                               &_swap_chain_image_count,
                                               _swap_chain_images.data());
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"error on getting total available images of swap chain for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("error on getting total available images of swap chain for graphics device: " +
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 for (size_t j = 0; j < _swap_chain_images.size(); ++j)
                 {
@@ -1263,15 +1252,13 @@ namespace wolf
                                             &_color_image_view, 
                                             nullptr,
                                             &_image_view.view);
-					if (_hr)
-					{
-						logger.write(_msg);
-						_msg.clear();
-						logger.error(L"error on creating image view total available images of swap chain for graphics device: " +
-							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-						release();
-						std::exit(EXIT_FAILURE);
-					}
+                    if (_hr)
+                    {
+			logger.error("error on creating image view total available images of swap chain for graphics device: " +
+                            _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+			release();
+			std::exit(EXIT_FAILURE);    
+                    }
 
                     _output_presentation_window->vk_swap_chain_image_views.push_back(_image_view);
                 }
@@ -1280,7 +1267,7 @@ namespace wolf
             
             void _create_depth_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
             {
-                auto _device_name =  wolf::system::convert::string_to_wstring(pGDevice->device_name);
+                auto _device_name =  pGDevice->device_name;
                 auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 #ifdef __DX12__ 
@@ -1301,15 +1288,13 @@ namespace wolf
                 {
                     _depth_buffer_image_info.tiling = VK_IMAGE_TILING_OPTIMAL;
                 } 
-				else
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"VK_FORMAT_D16_UNORM Unsupported for depth buffer for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+                else
+		{
+                    logger.error("VK_FORMAT_D16_UNORM Unsupported for depth buffer for graphics device: " +
+                    _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 auto _window = pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex);
                 
@@ -1343,15 +1328,13 @@ namespace wolf
                                          &_depth_buffer_image_info, 
                                          nullptr, 
                                          &_output_presentation_window->vk_depth_buffer_image_view.image);
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error(L"error on creating depth buffer for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("error on creating depth buffer for graphics device: " +
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 VkMemoryRequirements _mem_reqs;
                 vkGetImageMemoryRequirements(pGDevice->vk_device,
@@ -1365,33 +1348,39 @@ namespace wolf
                                                    _mem_reqs.memoryTypeBits, 
                                                    0, // No Requirements
                                                    &_mem_alloc.memoryTypeIndex);
-				if (_hr)
-				{
-					logger.write(_msg);
-					_msg.clear();
-					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+		if (_hr)
+		{
+                    logger.error("error on determining the type of memory required from memory properties for graphics device: " +
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 //allocate memory
                 _hr = vkAllocateMemory(pGDevice->vk_device,
                                        &_mem_alloc, 
                                        nullptr, 
                                        &_output_presentation_window->vk_depth_buffer_memory);
-                V(_hr, L"allocating memory for depth buffer image for graphics device: " + 
-                  _device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                  this->_name, 3, true, true);
+                if (_hr)
+		{
+                    logger.error("error on allocating memory for depth buffer image for graphics device: " + 
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 //bind memory
                 _hr = vkBindImageMemory(pGDevice->vk_device,
                                         _output_presentation_window->vk_depth_buffer_image_view.image, 
                                         _output_presentation_window->vk_depth_buffer_memory, 
                                         0);
-                V(_hr, L"binding to memory for depth buffer image for graphics device: " +
-                  _device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                  this->_name, 3, true, true);
+                if (_hr)
+		{
+                    logger.error("error on binding to memory for depth buffer image for graphics device: " +
+                  _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 //create depth buffer image view
                 VkImageViewCreateInfo _depth_buffer_view_info = {};
@@ -1415,9 +1404,13 @@ namespace wolf
                                         &_depth_buffer_view_info, 
                                         nullptr, 
                                         &_output_presentation_window->vk_depth_buffer_image_view.view);
-                V(_hr, L"creating image view for depth buffer image for graphics device: " + 
-                  _device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                  this->_name, 3, true, true);
+                if (_hr)
+		{
+                    logger.error("error on creating image view for depth buffer image for graphics device: " + 
+                  _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
 #endif
             }
             
@@ -1427,7 +1420,7 @@ namespace wolf
 #ifdef __DX12__ 
 
 #elif defined(__VULKAN__)
-                auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+                auto _device_name = pGDevice->device_name;
                 auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
                 
                 VkSemaphoreCreateInfo _create_info = {};
@@ -1437,24 +1430,32 @@ namespace wolf
                                              &_create_info,
                                              nullptr,
                                              &_output_presentation_window->vk_image_is_available_semaphore);
-                V(_hr, L"creating image_is_available semaphore for graphics device: " + _device_name +
-                  L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                  _name, 3, true, true);
+                if (_hr)
+		{
+                    logger.error("error on creating image_is_available semaphore for graphics device: " + 
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 _hr = vkCreateSemaphore(pGDevice->vk_device,
                                         &_create_info,
                                         nullptr,
                                         &_output_presentation_window->vk_rendering_done_semaphore);
-                V(_hr, L"creating rendering_is_done semaphore for graphics device: " + _device_name +
-                  L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                  _name, 3, true, true);
+                if (_hr)
+		{
+                    logger.error("error on creating rendering_is_done semaphore for graphics device: " + 
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
 #endif
             }
             
             void _create_command_queue(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                        _In_ size_t pOutputPresentationWindowIndex)
             {
-				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+				auto _device_name = pGDevice->device_name;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 #ifdef __DX12__ 
 				//create command allocator pool
@@ -1486,9 +1487,13 @@ namespace wolf
                                                &_command_pool_info,
                                                nullptr,
                                                &_output_presentation_window->vk_command_allocator_pool);
-                V(_hr, L"creating vulkan command pool for graphics device: " + _device_name +
-                  L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                  this->_name, 3, true, true);
+                if (_hr)
+		{
+                    logger.error("error on creating vulkan command pool for graphics device: " +
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 //resize command buffers based on swap chains
                 auto _command_buffer_counts = static_cast<uint32_t>(_output_presentation_window->vk_swap_chain_image_views.size());
@@ -1506,9 +1511,13 @@ namespace wolf
                 _hr = vkAllocateCommandBuffers(pGDevice->vk_device,
                                                &_command_buffer_info,
                                                _output_presentation_window->vk_command_queues.data());
-                V(_hr, L"creating vulkan command buffers for swap chain of graphics device: " + _device_name +
-                  L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                  this->_name, 3, true, true);
+                if (_hr)
+		{
+                    logger.error("error on creating vulkan command buffers for swap chain of graphics device: " 
+                        + _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+		}
                 
                 //prepare data for recording command buffers
                 VkCommandBufferBeginInfo _command_buffer_begin_info = {};
@@ -1562,9 +1571,13 @@ namespace wolf
                     _hr = vkBeginCommandBuffer(_output_presentation_window->vk_command_queues[i],
                                                &_command_buffer_begin_info);
                     
-                    V(_hr, L"beginning command buffer of graphics device: " + _device_name +
-                      L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                      this->_name, 3, true, true);
+                    if (_hr)
+                    {
+                        logger.error("error on beginning command buffer of graphics device: " + _device_name +
+                            " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                        release();
+                        std::exit(EXIT_FAILURE);
+                    }
                     
                     vkCmdPipelineBarrier(_output_presentation_window->vk_command_queues[i],
                                          VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
@@ -1595,9 +1608,13 @@ namespace wolf
                                          &_clear_to_present_barrier);
                     
                     _hr = vkEndCommandBuffer(_output_presentation_window->vk_command_queues[i]);
-                    V(_hr, L"ending command buffer of graphics device: " + _device_name +
-                      L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                      this->_name, 3, true, true);
+                    if (_hr)
+                    {
+                        logger.error("error on ending command buffer of graphics device: " + 
+                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                        release();
+                        std::exit(EXIT_FAILURE);
+                    }
                 }
 #endif
             }
@@ -1643,9 +1660,9 @@ void w_graphics_device_manager::initialize(_In_ std::map<int, std::vector<w_wind
     //If there is no associated graphics device
     if (this->graphics_devices.size() == 0)
     {
-		logger.error("No graphics device created");
-		release();
-		std::exit(1);
+	logger.error("No graphics device created");
+	release();
+	std::exit(EXIT_FAILURE);
     }
 }
 
@@ -1693,9 +1710,10 @@ void w_graphics_device_manager::begin_render()
             
             if (_hr != VK_SUCCESS && _hr != VK_SUBOPTIMAL_KHR)
             {
-                V(S_FALSE, L"acquiring image of graphics device's swap chain : " + 
-                    std::to_wstring(i) + L" and presentation window: " + std::to_wstring(j), 
-                    _super::name, 3, true, true);
+                logger.error("error acquiring image of graphics device's swap chain : " + 
+                    std::to_string(i) + " and presentation window: " + std::to_string(j));
+                release();
+                std::exit(EXIT_FAILURE);
             }
 
             //wait for image to be available and draw
@@ -1721,9 +1739,13 @@ void w_graphics_device_manager::begin_render()
                     1, 
                     &_submit_info, 
                     VK_NULL_HANDLE);
-            V(_hr, L"presenting queue graphics device: " + 
-                    std::to_wstring(i) + L" and presentation window: " + std::to_wstring(j), 
-                    _super::name, 3, true, true);
+            if (_hr)
+            {
+                logger.error("error on submitting queue of graphics device: " + 
+                    _gDevice->device_name + " and presentation window: " + std::to_string(j));
+                release();
+                std::exit(EXIT_FAILURE);
+            }
 #endif
         }
     }
@@ -1753,10 +1775,13 @@ void w_graphics_device_manager::end_render()
 
             auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue,
                                          &_present_info);
-            V(_hr, L"presenting queue of graphics device: " + 
-              wolf::system::convert::string_to_wstring(_gDevice->device_name) +
-              L" and presentation window: " + std::to_wstring(j),
-              _super::name, 3, true, true);
+            if (_hr)
+            {
+                logger.error("error on presenting queue of graphics device: " + 
+                    _gDevice->device_name + " and presentation window: " + std::to_string(j));
+                release();
+                std::exit(EXIT_FAILURE);
+            }
 #endif
         }
     }
