@@ -34,7 +34,7 @@ int main(int pArgc, char** pArgv)
 #endif
     _w_info.width = sWindow->get_width();
     _w_info.height = sWindow->get_height();
-    
+    _w_info.v_sync_enable = false;
     std::map<int, std::vector<w_window_info>> _windows_info = { { 0, { _w_info } } }; 
 
     std::function<void(void)> _run_func = [&]()->void
