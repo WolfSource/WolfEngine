@@ -7,37 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C4EA59A1E6ACD790076465B /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5961E6AC2CB0076465B /* MoltenVK.framework */; };
-		2C860FA21E5F1E5B000E71B5 /* libwolf.system.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA11E5F1E5B000E71B5 /* libwolf.system.dylib */; };
+		2C38D9461E79645400EE8595 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D9441E79645400EE8595 /* w_game.cpp */; };
+		2C38D9471E79645400EE8595 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D9451E79645400EE8595 /* w_game.h */; };
+		2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */; };
+		2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D9491E79646D00EE8595 /* w_graphics_device_manager.h */; };
+		2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D94A1E79646D00EE8595 /* w_obj_c_wrapper.mm */; };
+		2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D94B1E79646D00EE8595 /* w_render_export.h */; };
+		2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D94C1E79646D00EE8595 /* w_render_pch.cpp */; };
+		2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D94D1E79646D00EE8595 /* w_render_pch.h */; };
+		2C38D9551E79649A00EE8595 /* libwolf.system.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9541E79649A00EE8595 /* libwolf.system.dylib */; };
+		2C38D9571E7964BA00EE8595 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
 		2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA31E5F1E80000E71B5 /* libc++.tbd */; };
 		2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA51E5F1E86000E71B5 /* Metal.framework */; };
 		2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */; };
-		2C860FB41E5F3E7D000E71B5 /* w_obj_c_wrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C860FB31E5F3E7D000E71B5 /* w_obj_c_wrapper.mm */; };
-		2CE5BAEE1E63FBF1005E0F45 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BAE71E63FBF1005E0F45 /* w_game.cpp */; };
-		2CE5BAEF1E63FBF1005E0F45 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAE81E63FBF1005E0F45 /* w_game.h */; };
-		2CE5BAF01E63FBF1005E0F45 /* w_graphics_device_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BAE91E63FBF1005E0F45 /* w_graphics_device_manager.cpp */; };
-		2CE5BAF11E63FBF1005E0F45 /* w_graphics_device_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAEA1E63FBF1005E0F45 /* w_graphics_device_manager.h */; };
-		2CE5BAF21E63FBF1005E0F45 /* w_vulkan_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAEB1E63FBF1005E0F45 /* w_vulkan_export.h */; };
-		2CE5BAF31E63FBF1005E0F45 /* w_vulkan_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BAEC1E63FBF1005E0F45 /* w_vulkan_pch.cpp */; };
-		2CE5BAF41E63FBF1005E0F45 /* w_vulkan_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAED1E63FBF1005E0F45 /* w_vulkan_pch.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2C4EA5961E6AC2CB0076465B /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
+		2C38D9441E79645400EE8595 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_game.cpp; sourceTree = "<group>"; };
+		2C38D9451E79645400EE8595 /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/w_game.h; sourceTree = "<group>"; };
+		2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_graphics_device_manager.cpp; path = ../../../src/wolf.render/w_graphics_device_manager.cpp; sourceTree = "<group>"; };
+		2C38D9491E79646D00EE8595 /* w_graphics_device_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_graphics_device_manager.h; path = ../../../src/wolf.render/w_graphics_device_manager.h; sourceTree = "<group>"; };
+		2C38D94A1E79646D00EE8595 /* w_obj_c_wrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = w_obj_c_wrapper.mm; path = ../../../src/wolf.render/w_obj_c_wrapper.mm; sourceTree = "<group>"; };
+		2C38D94B1E79646D00EE8595 /* w_render_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_export.h; path = ../../../src/wolf.render/w_render_export.h; sourceTree = "<group>"; };
+		2C38D94C1E79646D00EE8595 /* w_render_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_pch.cpp; path = ../../../src/wolf.render/w_render_pch.cpp; sourceTree = "<group>"; };
+		2C38D94D1E79646D00EE8595 /* w_render_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_pch.h; path = ../../../src/wolf.render/w_render_pch.h; sourceTree = "<group>"; };
+		2C38D9541E79649A00EE8595 /* libwolf.system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.dylib; path = ../wolf.system/build/Debug/libwolf.system.dylib; sourceTree = "<group>"; };
+		2C38D9561E7964BA00EE8595 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		2C860FA11E5F1E5B000E71B5 /* libwolf.system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.dylib; path = "../../../../../../Library/Developer/Xcode/DerivedData/wolf.engine.vulkan.metal-eazceldyiastkpblslicunkdnckr/Build/Products/Debug/libwolf.system.dylib"; sourceTree = "<group>"; };
 		2C860FA31E5F1E80000E71B5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		2C860FA51E5F1E86000E71B5 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		2C860FA91E5F1EC3000E71B5 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../dependencies/Vulkan/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
-		2C860FB31E5F3E7D000E71B5 /* w_obj_c_wrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = w_obj_c_wrapper.mm; path = ../../../src/wolf.render/wolf.vulkan/w_obj_c_wrapper.mm; sourceTree = "<group>"; };
-		2CE5BAE71E63FBF1005E0F45 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/wolf.vulkan/w_game.cpp; sourceTree = "<group>"; };
-		2CE5BAE81E63FBF1005E0F45 /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/wolf.vulkan/w_game.h; sourceTree = "<group>"; };
-		2CE5BAE91E63FBF1005E0F45 /* w_graphics_device_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_graphics_device_manager.cpp; path = ../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.cpp; sourceTree = "<group>"; };
-		2CE5BAEA1E63FBF1005E0F45 /* w_graphics_device_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_graphics_device_manager.h; path = ../../../src/wolf.render/wolf.vulkan/w_graphics_device_manager.h; sourceTree = "<group>"; };
-		2CE5BAEB1E63FBF1005E0F45 /* w_vulkan_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vulkan_export.h; path = ../../../src/wolf.render/wolf.vulkan/w_vulkan_export.h; sourceTree = "<group>"; };
-		2CE5BAEC1E63FBF1005E0F45 /* w_vulkan_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_vulkan_pch.cpp; path = ../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.cpp; sourceTree = "<group>"; };
-		2CE5BAED1E63FBF1005E0F45 /* w_vulkan_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vulkan_pch.h; path = ../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,11 +44,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C4EA59A1E6ACD790076465B /* MoltenVK.framework in Frameworks */,
+				2C38D9571E7964BA00EE8595 /* MoltenVK.framework in Frameworks */,
+				2C38D9551E79649A00EE8595 /* libwolf.system.dylib in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
 				2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */,
 				2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */,
-				2C860FA21E5F1E5B000E71B5 /* libwolf.system.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,14 +58,14 @@
 		2C69E9A01E5EC2CB00F15C44 = {
 			isa = PBXGroup;
 			children = (
-				2CE5BAE71E63FBF1005E0F45 /* w_game.cpp */,
-				2CE5BAE81E63FBF1005E0F45 /* w_game.h */,
-				2CE5BAE91E63FBF1005E0F45 /* w_graphics_device_manager.cpp */,
-				2CE5BAEA1E63FBF1005E0F45 /* w_graphics_device_manager.h */,
-				2CE5BAEB1E63FBF1005E0F45 /* w_vulkan_export.h */,
-				2CE5BAEC1E63FBF1005E0F45 /* w_vulkan_pch.cpp */,
-				2CE5BAED1E63FBF1005E0F45 /* w_vulkan_pch.h */,
-				2C860FB31E5F3E7D000E71B5 /* w_obj_c_wrapper.mm */,
+				2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */,
+				2C38D9491E79646D00EE8595 /* w_graphics_device_manager.h */,
+				2C38D94A1E79646D00EE8595 /* w_obj_c_wrapper.mm */,
+				2C38D94B1E79646D00EE8595 /* w_render_export.h */,
+				2C38D94C1E79646D00EE8595 /* w_render_pch.cpp */,
+				2C38D94D1E79646D00EE8595 /* w_render_pch.h */,
+				2C38D9441E79645400EE8595 /* w_game.cpp */,
+				2C38D9451E79645400EE8595 /* w_game.h */,
 				2C69E9AA1E5EC2CB00F15C44 /* Products */,
 				2C860FA01E5F1E5B000E71B5 /* Frameworks */,
 			);
@@ -83,12 +82,11 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2C4EA5961E6AC2CB0076465B /* MoltenVK.framework */,
-				2C860FA91E5F1EC3000E71B5 /* MoltenVK.framework */,
+				2C38D9561E7964BA00EE8595 /* MoltenVK.framework */,
+				2C38D9541E79649A00EE8595 /* libwolf.system.dylib */,
 				2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */,
 				2C860FA51E5F1E86000E71B5 /* Metal.framework */,
 				2C860FA31E5F1E80000E71B5 /* libc++.tbd */,
-				2C860FA11E5F1E5B000E71B5 /* libwolf.system.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -100,10 +98,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CE5BAF21E63FBF1005E0F45 /* w_vulkan_export.h in Headers */,
-				2CE5BAF11E63FBF1005E0F45 /* w_graphics_device_manager.h in Headers */,
-				2CE5BAEF1E63FBF1005E0F45 /* w_game.h in Headers */,
-				2CE5BAF41E63FBF1005E0F45 /* w_vulkan_pch.h in Headers */,
+				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
+				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
+				2C38D9471E79645400EE8595 /* w_game.h in Headers */,
+				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,10 +162,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C860FB41E5F3E7D000E71B5 /* w_obj_c_wrapper.mm in Sources */,
-				2CE5BAEE1E63FBF1005E0F45 /* w_game.cpp in Sources */,
-				2CE5BAF31E63FBF1005E0F45 /* w_vulkan_pch.cpp in Sources */,
-				2CE5BAF01E63FBF1005E0F45 /* w_graphics_device_manager.cpp in Sources */,
+				2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */,
+				2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */,
+				2C38D9461E79645400EE8595 /* w_game.cpp in Sources */,
+				2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +205,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
-					"$(inherited)",
+					"__VULKAN__=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -251,6 +249,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "__VULKAN__=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -269,14 +268,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/macOS";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/w_render_pch.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
@@ -291,14 +290,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/macOS";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/wolf.vulkan/w_vulkan_pch.h";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/w_render_pch.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",

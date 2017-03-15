@@ -27,6 +27,7 @@
 #include <exception>
 #include "w_logger.h"
 
+
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
 #endif

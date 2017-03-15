@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C4EA5981E6ACBBF0076465B /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5901E6AC27F0076465B /* MoltenVK.framework */; };
+		2C38D9591E796CA200EE8595 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9581E796CA200EE8595 /* MoltenVK.framework */; };
 		2C620F951E617F81005DFB10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C620F941E617F81005DFB10 /* Assets.xcassets */; };
 		2C620F981E617F81005DFB10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C620F961E617F81005DFB10 /* Main.storyboard */; };
 		2C620FA71E617FED005DFB10 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C620FA01E617FED005DFB10 /* AppDelegate.m */; };
@@ -22,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C38D9581E796CA200EE8595 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2C4EA5901E6AC27F0076465B /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2C620F881E617F81005DFB10 /* wolf_vulkan_metal_macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wolf_vulkan_metal_macOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C620F941E617F81005DFB10 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -47,7 +48,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C4EA5981E6ACBBF0076465B /* MoltenVK.framework in Frameworks */,
+				2C38D9591E796CA200EE8595 /* MoltenVK.framework in Frameworks */,
 				2C620FB51E618061005DFB10 /* Metal.framework in Frameworks */,
 				2C620FB31E61805A005DFB10 /* QuartzCore.framework in Frameworks */,
 				2C620FB11E618052005DFB10 /* libc++.tbd in Frameworks */,
@@ -104,6 +105,7 @@
 		2C620FAB1E61804B005DFB10 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C38D9581E796CA200EE8595 /* MoltenVK.framework */,
 				2C4EA5901E6AC27F0076465B /* MoltenVK.framework */,
 				2C620FB61E618380005DFB10 /* MoltenVK.framework */,
 				2C620FB41E618061005DFB10 /* Metal.framework */,
@@ -298,14 +300,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/macOS";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS";
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../../dependencies/glm",
 					"$(SRCROOT)/../../../../dependencies/rapidxml",
 					"$(SRCROOT)/../../../../dependencies/rapidjson",
 					"$(SRCROOT)/../../../../src/wolf.system",
-					"$(SRCROOT)/../../../../src/wolf.render/wolf.vulkan",
+					"$(SRCROOT)/../../../../src/wolf.render/",
 				);
 				INFOPLIST_FILE = wolf_vulkan_metal_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -319,14 +321,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/macOS";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS";
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../dependencies/vulkan/SDK/Mac/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../../dependencies/glm",
 					"$(SRCROOT)/../../../../dependencies/rapidxml",
 					"$(SRCROOT)/../../../../dependencies/rapidjson",
 					"$(SRCROOT)/../../../../src/wolf.system",
-					"$(SRCROOT)/../../../../src/wolf.render/wolf.vulkan",
+					"$(SRCROOT)/../../../../src/wolf.render/",
 				);
 				INFOPLIST_FILE = wolf_vulkan_metal_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";

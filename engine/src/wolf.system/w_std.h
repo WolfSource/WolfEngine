@@ -20,6 +20,8 @@
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 
+#include <inttypes.h>
+
 //define dummy SAL for android and linux
 #ifndef _In_
 #define _In_

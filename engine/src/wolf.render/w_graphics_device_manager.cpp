@@ -1853,9 +1853,9 @@ void w_graphics_device_manager::on_window_resized(UINT pIndex)
 
 void w_graphics_device_manager::wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
 {
-	auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
-
 #ifdef __DX12__
+    auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
 	const UINT64 _fence_value = _output_presentation_window->dx_fence_value;
 	auto _hr = _output_presentation_window->dx_command_queue->Signal(_output_presentation_window->dx_fence.Get(), _fence_value);
 	if (FAILED(_hr))
@@ -2002,6 +2002,8 @@ HRESULT w_graphics_device_manager::begin_render()
 #endif
         }
     }
+    
+    return S_OK;
 }
 
 void w_graphics_device_manager::end_render()

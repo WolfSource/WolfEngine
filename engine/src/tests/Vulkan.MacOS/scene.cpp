@@ -54,11 +54,6 @@ void scene::on_device_lost()
     w_game::on_device_lost();
 }
 
-HRESULT scene::on_msg_proc(/*HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam*/)
-{
-    return S_FALSE;
-}
-
 ULONG scene::release()
 {
     if (this->get_is_released()) return 0;
