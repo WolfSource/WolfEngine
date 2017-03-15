@@ -57,6 +57,41 @@ ULONG w_graphics_device::release()
     
 #ifdef __DX12__
 
+	//wait for previous frame
+
+	this->device_name.clear();
+	//release all output presentation windows
+	for (size_t i = 0; i < this->output_presentation_windows.size(); ++i)
+	{
+		auto _output_window = &(this->output_presentation_windows.at(i));
+
+		if (_output_window->dx_swap_chain)
+		{
+			_output_window->dx_swap_chain->SetFullscreenState(false, NULL);
+		}
+
+		COMPTR_RELEASE(_output_window->dx_command_allocator_pool);
+		COMPTR_RELEASE(_output_window->dx_command_queue);
+		COMPTR_RELEASE(_output_window->dx_command_list);
+		COMPTR_RELEASE(_output_window->dx_fence);
+		COMPTR_RELEASE(_output_window->dx_pipeline_state);
+		
+		for (size_t i = 0; i < _output_window->dx_swap_chain_image_views.size(); ++i)
+		{
+			COM_RELEASE(_output_window->dx_swap_chain_image_views[i]);
+		}
+		COMPTR_RELEASE(_output_window->dx_render_target_view_heap);
+		COMPTR_RELEASE(_output_window->dx_swap_chain);
+		
+		_output_window->hwnd = NULL;
+		COMPTR_RELEASE(_output_window->dx_fence);
+		CloseHandle(_output_window->dx_fence_event);
+	}
+
+	COMPTR_RELEASE(this->dx_device);
+	COMPTR_RELEASE(this->dx_dxgi_outputs);
+	COMPTR_RELEASE(this->dx_adaptor);
+
 #elif defined(__VULKAN__)
     //wait for device to become IDLE
     vkDeviceWaitIdle(this->vk_device);
@@ -146,11 +181,6 @@ namespace wolf
         public:
             w_graphics_device_manager_pimp(_In_ w_graphics_device_manager_configs pConfig) : _config(pConfig), _name("w_graphics_device_manager_pimp")
             {
-                //set corn_flower_blue for back color
-                this->_clear_color.r = 100;
-                this->_clear_color.g = 149;
-                this->_clear_color.b = 237;
-                this->_clear_color.a = 255;
             }
             
             ~w_graphics_device_manager_pimp()
@@ -185,7 +215,12 @@ namespace wolf
 				}
 #endif
 				auto _hr = CreateDXGIFactory2(_dxgi_factory_flags, IID_PPV_ARGS(&w_graphics_device::dx_dxgi_factory));
-				V(_hr, L"getting dxgi factory", this->_name, 3, true, true);
+				if (FAILED(_hr))
+				{
+					logger.error(L"error on getting dxgi factory");
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 				
 				//create wrap mode device or hardware device?
 				if (this->_config.use_wrap_mode)
@@ -197,14 +232,24 @@ namespace wolf
 
 					ComPtr<IDXGIAdapter> _warp_adapter;
 					_hr = w_graphics_device::dx_dxgi_factory->EnumWarpAdapter(IID_PPV_ARGS(&_warp_adapter));
-					V(_hr, L"getting wrap adaptor", this->_name, 3, true, true);
+					if (FAILED(_hr))
+					{
+						logger.error(L"error on getting wrap adaptor");
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
 					_hr = D3D12CreateDevice(
 						_warp_adapter.Get(),
 						this->_config.wrap_mode_feature_level,
 						IID_PPV_ARGS(&_gDevice->dx_device));
-					V(_hr, L"creating wrap device with feature level: " + std::to_wstring(this->_config.wrap_mode_feature_level) +
-						L".D3D_FEATURE_LEVEL_9_1 = 0x9100 ... D3D_FEATURE_LEVEL_12_1 = 0xc100", this->_name, 3, true, true);
+					if (FAILED(_hr))
+					{
+						logger.error(L"creating wrap device with feature level: " + std::to_wstring(this->_config.wrap_mode_feature_level) +
+							L".D3D_FEATURE_LEVEL_9_1 = 0x9100 ... D3D_FEATURE_LEVEL_12_1 = 0xc100");
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 					
 					//add the wrap device graphics devices list
 					pGraphicsDevices.push_back(_gDevice);
@@ -286,6 +331,13 @@ namespace wolf
 						logger.write(_msg);
 						_msg.clear();
 
+
+#ifdef __WIN32
+						//get the monitors numerator and denominator
+						_hr = _adapter->EnumOutputs(0, &_gDevice->dx_dxgi_outputs);
+						V(_hr, "enumurate output monitors", this->_name, 2);
+
+#endif
 						//add harware device to graphics devices list
 						pGraphicsDevices.push_back(_gDevice);
 
@@ -302,6 +354,7 @@ namespace wolf
 								_out_window.height = _window.height;
 								_out_window.aspectRatio = (float)_window.width / (float)_window.height;
 								_out_window.v_sync = _window.v_sync_enable;
+								_out_window.is_full_screen = _window.is_full_screen;
 								_out_window.index = static_cast<int>(j);
 								_out_window.dx_swap_chain_selected_format = (DXGI_FORMAT)_window.swap_chain_format;
 								_out_window.hwnd = _window.hwnd;
@@ -874,11 +927,6 @@ namespace wolf
             
 #pragma region Getters
             
-            w_color get_clear_color() const
-            {
-                return this->_clear_color;
-            }
-            
             bool get_is_released() const
             {
                 return this->_is_released;
@@ -893,10 +941,6 @@ namespace wolf
                 this->_windows_info = pOutputWindowsInfo;
             }
             
-            void set_clear_color(_In_ const w_color pColor)
-            {
-                this->_clear_color = pColor;
-            }
 #pragma endregion
             
         private:
@@ -904,53 +948,110 @@ namespace wolf
             void _create_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                     _In_ size_t pOutputPresentationWindowIndex)
             {
-                auto _device_name =  pGDevice->device_name;
-                auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
-
 #ifdef __DX12__
+				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				const size_t _desired_number_of_swapchain_images = 2;
 				_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);
 				
-				// Describe and create the swap chain.
-				DXGI_SWAP_CHAIN_DESC1 _swap_chain_desc = {};
-				_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
-				_swap_chain_desc.Width = _output_presentation_window->width;
-				_swap_chain_desc.Height = _output_presentation_window->height;
-				_swap_chain_desc.Format = _output_presentation_window->dx_swap_chain_selected_format;
-				_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-				_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-				_swap_chain_desc.SampleDesc.Count = 1;
-
-				ComPtr<IDXGISwapChain1> _swap_chain = nullptr;
 #ifdef __WIN32
+				HRESULT _hr = S_FALSE;
+				float _numerator = 0;
+				float _denominator = 1;
+
+				//if this window does not need v-sync, then it is important to get the refresh rate of displays
+				if (!_output_presentation_window->v_sync)
+				{
+					//we need to get the numerator and denominator of display monitors
+					UINT _num_modes = 0;
+					_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
+						DXGI_ENUM_MODES_INTERLACED,
+						&_num_modes,
+						NULL);
+					if (SUCCEEDED(_hr))
+					{
+						std::vector<DXGI_MODE_DESC> _display_modes(_num_modes);
+						_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
+							DXGI_ENUM_MODES_INTERLACED,
+							&_num_modes,
+							_display_modes.data());
+						if (SUCCEEDED(_hr))
+						{
+							for (size_t i = 0; i < _num_modes; ++i)
+							{
+								if (_output_presentation_window->height == _display_modes[i].Height &&
+									_output_presentation_window->width == _display_modes[i].Width)
+								{
+									auto _refresh_rate = _display_modes[i].RefreshRate;
+									_numerator = _refresh_rate.Numerator;
+									_denominator = _refresh_rate.Denominator;
+								}
+							}
+						}
+						else
+						{
+							logger.warning(L"Could not get display modes list for graphics device: " + _device_name +
+								L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						}
+						_display_modes.clear();
+					}
+					else
+					{
+						logger.warning(L"Could not get number of display modes list for graphics device: " + _device_name +
+							L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					}
+
+				}
+
 				// Disable full screen with ALT+Enter
-				auto _hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
+				_hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
 				V(_hr, L"disabling ALT+Enter for presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 					this->_name, 2);
 
-				_hr = w_graphics_device::dx_dxgi_factory->CreateSwapChainForHwnd(
-					_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
-					_output_presentation_window->hwnd,
-					&_swap_chain_desc,
-					nullptr,
-					nullptr,
-					&_swap_chain);
-				V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name +
-					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-					this->_name, 2);
+				// Describe and create the swap chain.
+				DXGI_SWAP_CHAIN_DESC _swap_chain_desc = {};
+				_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
+				_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+				_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+				_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
+				_swap_chain_desc.SampleDesc.Quality = 0;
+				_swap_chain_desc.Windowed = _output_presentation_window->is_full_screen;
+				_swap_chain_desc.OutputWindow = _output_presentation_window->hwnd;
+				_swap_chain_desc.BufferDesc.Width = _output_presentation_window->width;
+				_swap_chain_desc.BufferDesc.Height = _output_presentation_window->height;
+				_swap_chain_desc.BufferDesc.Format = _output_presentation_window->dx_swap_chain_selected_format;
+				_swap_chain_desc.BufferDesc.RefreshRate.Numerator = _numerator;
+				_swap_chain_desc.BufferDesc.RefreshRate.Denominator = _denominator;
+				_swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+				_swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+				_swap_chain_desc.Flags = 0;
+				_swap_chain_desc.BufferDesc.RefreshRate.Numerator = _output_presentation_window->dx_swap_chain_selected_format;
+
+				{
+					ComPtr<IDXGISwapChain> _swap_chain = nullptr;
+
+					_hr = w_graphics_device::dx_dxgi_factory->CreateSwapChain(
+						_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
+						&_swap_chain_desc,
+						&_swap_chain);
+					V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name +
+						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+						this->_name, 2);
+
+					_hr = _swap_chain->QueryInterface(__uuidof(IDXGISwapChain3), (void**)&_output_presentation_window->dx_swap_chain);
+					if (FAILED(_hr))
+					{
+						logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " +
+							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+				}
 
 #elif defined(__UWP)
 
 #endif
-				_hr = _swap_chain.As(&_output_presentation_window->dx_swap_chain);
-				V(_hr, L"get swap chain3 from swap chain 1 for graphics device: " + _device_name +
-					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-					this->_name, 2);
-
-				//get the swap chain frame index
-				_output_presentation_window->dx_swap_chain_image_index = _output_presentation_window->dx_swap_chain->GetCurrentBackBufferIndex();
-
 				// Describe and create a render target view (RTV) descriptor heap.
 				D3D12_DESCRIPTOR_HEAP_DESC _render_target_view_heap_desc = {};
 				_render_target_view_heap_desc.NumDescriptors = _desired_number_of_swapchain_images;
@@ -981,7 +1082,14 @@ namespace wolf
 					_render_target_descriptor_handle.Offset(1, _output_presentation_window->dx_render_target_descriptor_size);
 				}
 
+				//get the swap chain frame index
+				_output_presentation_window->dx_swap_chain_image_index = _output_presentation_window->dx_swap_chain->GetCurrentBackBufferIndex();
+
+
 #elif defined(__VULKAN__)
+				auto _device_name = pGDevice->device_name;
+				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
                 auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
                 
                 pGDevice->vk_queue_family_selected_support_present_index = SIZE_MAX;
@@ -1267,12 +1375,13 @@ namespace wolf
             
             void _create_depth_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
             {
-                auto _device_name =  pGDevice->device_name;
-                auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
-
 #ifdef __DX12__ 
+				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 #elif defined(__VULKAN__)
+				auto _device_name = pGDevice->device_name;
+				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
                 VkImageCreateInfo _depth_buffer_image_info = {};
                 const VkFormat _depth_format = VK_FORMAT_D16_UNORM;
@@ -1418,6 +1527,28 @@ namespace wolf
                                     _In_ size_t pOutputPresentationWindowIndex)
             {
 #ifdef __DX12__ 
+				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
+				auto _hr = pGDevice->dx_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_output_presentation_window->dx_fence));
+				if (FAILED(_hr))
+				{
+					logger.error(L"error on creating directx fence for graphics device: " +
+						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				_output_presentation_window->dx_fence_event = CreateEventEx(NULL, FALSE, FALSE, EVENT_ALL_ACCESS);
+				if (_output_presentation_window->dx_fence_event == NULL)
+				{
+					logger.error(L"error on creating directx event handle for graphics device: " +
+						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				_output_presentation_window->dx_fence_value = 1;
 
 #elif defined(__VULKAN__)
                 auto _device_name = pGDevice->device_name;
@@ -1455,27 +1586,59 @@ namespace wolf
             void _create_command_queue(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                        _In_ size_t pOutputPresentationWindowIndex)
             {
-				auto _device_name = pGDevice->device_name;
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 #ifdef __DX12__ 
-				//create command allocator pool
-				auto _hr = pGDevice->dx_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_output_presentation_window->dx_command_allocator_pool));
-				V(_hr, L"creating directx command allocator pook for graphics device: " + _device_name +
-					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-					this->_name, 3, true, true);
+				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
+				//create command allocator pool
+				auto _hr = pGDevice->dx_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT, 
+					IID_PPV_ARGS(&_output_presentation_window->dx_command_allocator_pool));
+				if (FAILED(_hr))
+				{
+					logger.error(L"creating directx command allocator pook for graphics device: " + _device_name +
+						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 
 				//Describe and create the command queue.
-				D3D12_COMMAND_QUEUE_DESC _queue_desc = {};
-				_queue_desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-				_queue_desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+				D3D12_COMMAND_QUEUE_DESC _command_queue_desc = {};
+				_command_queue_desc.Flags = D3D12_COMMAND_QUEUE_FLAGS::D3D12_COMMAND_QUEUE_FLAG_NONE;
+				_command_queue_desc.Type = D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT;
+				_command_queue_desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY::D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
+				_command_queue_desc.NodeMask = 0;
 
-				_hr = pGDevice->dx_device->CreateCommandQueue(&_queue_desc, IID_PPV_ARGS(&_output_presentation_window->dx_command_queue));
-				V(_hr, L"creating directx command queue for graphics device: " + _device_name +
-					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-					this->_name, 3, true, true);
+				_hr = pGDevice->dx_device->CreateCommandQueue(&_command_queue_desc, IID_PPV_ARGS(&_output_presentation_window->dx_command_queue));
+				if (FAILED(_hr))
+				{
+					logger.error(L"creating directx command queue for graphics device : " + _device_name +
+						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 
-#elif defined(__VULKAN__)                
+				//create basic command list
+				_hr = pGDevice->dx_device->CreateCommandList(0,
+					D3D12_COMMAND_LIST_TYPE_DIRECT,
+					_output_presentation_window->dx_command_allocator_pool.Get(),
+					nullptr, 
+					IID_PPV_ARGS(&_output_presentation_window->dx_command_list));
+				if (FAILED(_hr))
+				{
+					logger.error(L"creating command list for graphics device : " + _device_name +
+						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//close command list for now
+				_output_presentation_window->dx_command_list->Close();
+
+#elif defined(__VULKAN__) 
+				
+				auto _device_name = pGDevice->device_name;
+				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
                 //create a command pool to allocate our command buffer from
                 VkCommandPoolCreateInfo _command_pool_info = {};
                 _command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -1533,10 +1696,10 @@ namespace wolf
                 
                 VkClearColorValue _vk_clear_color =
                 {
-                    static_cast<float>(this->_clear_color.r / 255.0f),
-                    static_cast<float>(this->_clear_color.g / 255.0f),
-                    static_cast<float>(this->_clear_color.b / 255.0f),
-                    static_cast<float>(this->_clear_color.a / 255.0f)
+                    static_cast<float>(_output_presentation_window->clear_color.r / 255.0f),
+                    static_cast<float>(_output_presentation_window->clear_color.g / 255.0f),
+                    static_cast<float>(_output_presentation_window->clear_color.b / 255.0f),
+                    static_cast<float>(_output_presentation_window->clear_color.a / 255.0f)
                 };
                 
                 //record the command buffer for every swap chain image
@@ -1622,7 +1785,6 @@ namespace wolf
             bool                                                _is_released;
 			w_graphics_device_manager_configs					_config;
             std::map<int, std::vector<w_window_info>>           _windows_info;
-            w_color                                             _clear_color;
             std::string                                         _name;
         };
     }
@@ -1689,7 +1851,39 @@ void w_graphics_device_manager::on_window_resized(UINT pIndex)
 //	}
 }
 
-void w_graphics_device_manager::begin_render()
+void w_graphics_device_manager::wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
+{
+	auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
+#ifdef __DX12__
+	const UINT64 _fence_value = _output_presentation_window->dx_fence_value;
+	auto _hr = _output_presentation_window->dx_command_queue->Signal(_output_presentation_window->dx_fence.Get(), _fence_value);
+	if (FAILED(_hr))
+	{
+		logger.error("error on signaling fence");
+		return;
+	}
+	_output_presentation_window->dx_fence_value++;
+
+	// Wait until the previous frame is finished.
+	if (_output_presentation_window->dx_fence->GetCompletedValue() < _fence_value)
+	{
+		_hr = _output_presentation_window->dx_fence->SetEventOnCompletion(_fence_value, _output_presentation_window->dx_fence_event);
+		if (FAILED(_hr))
+		{
+			logger.error("error on setting event on completion");
+			return;
+		}
+		WaitForSingleObject(_output_presentation_window->dx_fence_event, INFINITE);
+	}
+
+	_output_presentation_window->dx_swap_chain_image_index = _output_presentation_window->dx_swap_chain->GetCurrentBackBufferIndex();
+
+#endif
+}
+
+
+HRESULT w_graphics_device_manager::begin_render()
 {
     for (size_t i = 0; i < this->graphics_devices.size(); ++i)
     {
@@ -1699,6 +1893,65 @@ void w_graphics_device_manager::begin_render()
             auto _present_window = &(_gDevice->output_presentation_windows[j]);
             
 #ifdef __DX12__
+
+			wait_for_previous_frame(_gDevice, j);
+
+			/*
+				Command list allocators can only be reset when the associated 
+				command lists have finished execution on the GPU; apps should use 
+				fences to determine GPU execution progress.
+			*/
+			auto _hr = _present_window->dx_command_allocator_pool->Reset();
+			if (FAILED(_hr)) return S_FALSE;
+
+			/*
+				However, when ExecuteCommandList() is called on a particular command 
+				list, that command list can then be reset at any time and must be before 
+				re-recording.
+			*/
+			_hr = _present_window->dx_command_list->Reset(_present_window->dx_command_allocator_pool.Get(), _present_window->dx_pipeline_state.Get());
+			if (FAILED(_hr)) return S_FALSE;
+
+			D3D12_RESOURCE_BARRIER	_barrier = {};
+			_barrier.Flags = D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			_barrier.Transition.pResource = _present_window->dx_swap_chain_image_views[_present_window->dx_swap_chain_image_index];
+			_barrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT;
+			_barrier.Transition.StateAfter = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
+			_barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+			_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE::D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+
+			_present_window->dx_command_list->ResourceBarrier(1, &_barrier);
+
+			//get the swap chan target image view (render target view) for current frame buffer
+			auto _render_target_view_handle = _present_window->dx_render_target_view_heap->GetCPUDescriptorHandleForHeapStart();
+			auto _render_target_view_desc_size = _gDevice->dx_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+			if (_present_window->dx_swap_chain_image_index == 1)
+			{
+				_render_target_view_handle.ptr += _render_target_view_desc_size;
+			}
+
+			//set the back buffer render target
+			_present_window->dx_command_list->OMSetRenderTargets(1, &_render_target_view_handle, FALSE, NULL);
+			
+			float _clear_color[4] =
+			{
+				static_cast<float>(_present_window->clear_color.r / 255.0f),
+				static_cast<float>(_present_window->clear_color.g / 255.0f),
+				static_cast<float>(_present_window->clear_color.b / 255.0f),
+				static_cast<float>(_present_window->clear_color.a / 255.0f)
+			};
+			_present_window->dx_command_list->ClearRenderTargetView(_render_target_view_handle, _clear_color, 0, NULL );
+
+			//change the state of back buffer to transition into the presentation
+			_barrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
+			_barrier.Transition.StateAfter = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT;
+
+			//store barrier to command list
+			_present_window->dx_command_list->ResourceBarrier(1, &_barrier);
+
+			//close command list
+			_hr = _present_window->dx_command_list->Close();
+			if (FAILED(_hr)) return S_FALSE;
 
 #elif defined(__VULKAN__)
             auto _hr = vkAcquireNextImageKHR(_gDevice->vk_device,
@@ -1762,6 +2015,11 @@ void w_graphics_device_manager::end_render()
  
 #ifdef __DX12__
 
+			//submit command list for executing
+			ID3D12CommandList* _command_lists[1] = { _present_window->dx_command_list.Get() };
+			_present_window->dx_command_queue->ExecuteCommandLists(1, _command_lists);
+			_present_window->dx_swap_chain->Present(_present_window->v_sync ? 1 : 0, 0);
+
 #elif defined(__VULKAN__)
             VkPresentInfoKHR _present_info = {};
             
@@ -1799,6 +2057,12 @@ ULONG w_graphics_device_manager::release()
     while (this->graphics_devices.size() > 0)
 	{
 		auto _gDevice = this->graphics_devices.front();
+		
+		//wait for all presentation windows to perform their tasks
+		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
+		{
+			wait_for_previous_frame(_gDevice, j);
+		}
 
 		SHARED_RELEASE(_gDevice);
 

@@ -40,6 +40,7 @@ void scene::load()
 
 void scene::update(const wolf::system::w_game_time& pGameTime)
 {
+	logger.write(std::to_string(pGameTime.get_frames_per_second()));
 	w_game::update(pGameTime);
 }
 

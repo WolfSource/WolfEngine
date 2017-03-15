@@ -53,6 +53,7 @@ using Microsoft::WRL::ComPtr;
 #include <w_std.h>
 #include <w_object.h>
 #include <w_window.h>
+#include <w_color.h>
 #include <map>
 #include <vector>
 
@@ -106,11 +107,10 @@ namespace wolf
 			}
 
 			UINT									index = 0;
-			
+			bool									is_full_screen = false;
 			UINT									width = 0;
 			UINT									height = 0;
 			float									aspectRatio = 0;
-                        
 #ifdef  __WIN32  
 			DWORD									pdwCookie;
             HWND									hwnd = NULL;
@@ -123,8 +123,10 @@ namespace wolf
 #endif
                       
 			bool									v_sync = true;
+			w_color                                 clear_color = w_color::from_hex(w_color::CORNFLOWER_BLUE);
 
 #ifdef __DX12__
+			
 			DXGI_FORMAT								dx_swap_chain_selected_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
 			ComPtr<IDXGISwapChain3>					dx_swap_chain;
 			std::vector<ID3D12Resource*>			dx_swap_chain_image_views;
@@ -185,6 +187,8 @@ namespace wolf
 #ifdef __DX12__
 
 			static ComPtr<IDXGIFactory4>							dx_dxgi_factory;
+			
+			ComPtr<IDXGIOutput>										dx_dxgi_outputs;
 
 			bool													dx_is_wrap_device;
 			D3D_FEATURE_LEVEL										dx_feature_level;
@@ -234,7 +238,7 @@ namespace wolf
 			//Called when any graphics device lost
 			W_EXP virtual void on_device_lost();
 			//Begin render on all graphics devices
-			W_EXP virtual void begin_render();
+			W_EXP virtual HRESULT begin_render();
 			//End render on all graphics devices
 			W_EXP virtual void end_render();
 			//Release all resources
@@ -275,6 +279,8 @@ namespace wolf
             w_graphics_device_manager(w_graphics_device_manager const&);
             w_graphics_device_manager& operator= (w_graphics_device_manager const&);
             
+			void wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex);
+
             typedef  system::w_object                           _super;
             w_graphics_device_manager_pimp*                     _pimp;
 		};
