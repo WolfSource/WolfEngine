@@ -25,7 +25,8 @@
 
 #if defined(__APPLE__) || defined(__linux) || defined(__ANDROID)
 #include "w_std.h"
-#else
+#endif
+
 #include "w_system_export.h"
 #include <memory>
 #include "w_object.h"
@@ -33,7 +34,6 @@
 #include <functional>
 #include <vector>
 #include <string>
-#endif //__APPLE__
 
 #ifdef __UWP
 #include <wrl.h>

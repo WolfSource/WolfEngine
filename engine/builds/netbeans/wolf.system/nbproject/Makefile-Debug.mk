@@ -39,7 +39,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/26f1a4f1/w_linear_allocator.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_logger.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_lua.o \
-	${OBJECTDIR}/_ext/26f1a4f1/w_memory.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_object.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_python.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_system_pch.o \
@@ -93,11 +92,6 @@ ${OBJECTDIR}/_ext/26f1a4f1/w_lua.o: ../../../src/wolf.system/w_lua.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_lua.o ../../../src/wolf.system/w_lua.cpp
-
-${OBJECTDIR}/_ext/26f1a4f1/w_memory.o: ../../../src/wolf.system/w_memory.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_memory.o ../../../src/wolf.system/w_memory.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_object.o: ../../../src/wolf.system/w_object.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1

@@ -775,11 +775,8 @@ namespace wolf
 						std::exit(EXIT_FAILURE);
 					}
 
-#ifdef __ANDROID
-					/////////////////////////////////////////////test for linux
 					_enabled_extensions.clear();
 					_enabled_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-#endif
 
 					//create queue info
 					float _queue_priorities[1] = { 1.0f };
@@ -1412,7 +1409,7 @@ namespace wolf
 #ifdef __ANDROID
 					_output_presentation_window->vk_swap_chain_selected_format.format = VkFormat::VK_FORMAT_R8G8B8A8_UNORM;
 #else
-					_output_presentation_window->vk_swap_chain_selected_format = VK_FORMAT_B8G8R8A8_UNORM;
+					_output_presentation_window->vk_swap_chain_selected_format.format = VK_FORMAT_B8G8R8A8_UNORM;
 #endif // __ANDROID
 
 					_output_presentation_window->vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLORSPACE_SRGB_NONLINEAR_KHR;

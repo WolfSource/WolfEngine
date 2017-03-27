@@ -40,8 +40,8 @@
           <standard>11</standard>
           <incDir>
             <pElem>../../../src/wolf.system</pElem>
-            <pElem>../../../../../../VulkanSDK/1.0.42.0/x86_64/include</pElem>
             <pElem>../../../src/wolf.render/</pElem>
+            <pElem>../../../../../../VulkanSDK/1.0.42.0/x86_64/include</pElem>
           </incDir>
           <preprocessorList>
             <Elem>__VULKAN__</Elem>

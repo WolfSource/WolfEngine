@@ -28,8 +28,6 @@
     <itemPath>../../../src/wolf.system/w_logger.h</itemPath>
     <itemPath>../../../src/wolf.system/w_lua.cpp</itemPath>
     <itemPath>../../../src/wolf.system/w_lua.h</itemPath>
-    <itemPath>../../../src/wolf.system/w_memory.cpp</itemPath>
-    <itemPath>../../../src/wolf.system/w_memory.h</itemPath>
     <itemPath>../../../src/wolf.system/w_object.cpp</itemPath>
     <itemPath>../../../src/wolf.system/w_object.h</itemPath>
     <itemPath>../../../src/wolf.system/w_process.h</itemPath>
@@ -146,16 +144,6 @@
       <item path="../../../src/wolf.system/w_lua.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../../src/wolf.system/w_lua.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../../src/wolf.system/w_memory.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../src/wolf.system/w_memory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
       <item path="../../../src/wolf.system/w_object.cpp"
             ex="false"
@@ -343,6 +331,12 @@
                             perm="644"
                             owner="root"
                             group="bin"/>
+          <packFileListElem type="File"
+                            to="${PACKAGE_TOP_DIR}lib/${OUTPUT_BASENAME}"
+                            from="${OUTPUT_PATH}"
+                            perm="644"
+                            owner="root"
+                            group="bin"/>
         </packFileList>
       </packaging>
       <item path="../../../src/wolf.system/glm_extention.h"
@@ -403,16 +397,6 @@
       <item path="../../../src/wolf.system/w_lua.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../../src/wolf.system/w_lua.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../../src/wolf.system/w_memory.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../src/wolf.system/w_memory.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
       <item path="../../../src/wolf.system/w_object.cpp"
             ex="false"
