@@ -8,29 +8,39 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_logger.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_lua.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_object.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_system_pch.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_task.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_tcp_client.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_time_span.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_window.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_xml.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_logger.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\wolf.system\w_system_pch.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_target_ver.h" />
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_system_export.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_event.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_io.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_Ireleasable.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_logger.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_lua.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_object.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_process.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_std.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_system_export.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_system_pch.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_target_ver.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_task.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_tcp_client.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_time_span.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_timer.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_timer_callback.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_window.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_xml.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_logger.h" />
   </ItemGroup>
 </Project>

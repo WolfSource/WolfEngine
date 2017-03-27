@@ -6,6 +6,8 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_xml.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_logger.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_task.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_object.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\w_system_export.h" />
@@ -24,5 +26,8 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_task.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_timer.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_timer_callback.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_target_ver.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_window.h" />
   </ItemGroup>
 </Project>
