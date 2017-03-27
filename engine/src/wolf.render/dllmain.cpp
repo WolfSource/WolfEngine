@@ -1,6 +1,6 @@
 #include "w_render_pch.h"
 
-#if defined(__WIN32)
+#if defined(__WIN32) || defined (__UWP)
 
 #include <windows.h>
 
