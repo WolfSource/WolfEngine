@@ -5,6 +5,8 @@
 
 #ifdef  __DX12__
 #include <w_directX_helper.h>
+#elif defined(__APPLE__)
+#include <math.h>
 #endif
 
 using namespace std;

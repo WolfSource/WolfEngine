@@ -2,7 +2,7 @@
 
 scene::scene()
 {
-    w_game::set_app_name("Wolf.TestDX.Win32");
+    w_game::set_app_name("test.wolf.engine.metal.macOS");
     w_game::set_fixed_time_step(false);
 }
 
