@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wolf.System", "Wolf.System", "{AA6CAAF9-94EF-4640-952B-1A7B1999941E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wolf.system", "wolf.system", "{AA6CAAF9-94EF-4640-952B-1A7B1999941E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{40E8B71D-75CC-4EC2-8F89-B831B273429F}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,21 +14,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{5D25C0BB-8EC4-4169-B712-AE2789EA7040}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wolf.Render", "Wolf.Render", "{9B104242-71BF-4DAA-9BF4-E1B65FC42B60}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wolf.render", "wolf.render", "{9B104242-71BF-4DAA-9BF4-E1B65FC42B60}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Wolf.System.Win32", "Wolf.System\Wolf.System.Win32.vcxproj", "{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.system.Win32", "wolf.system\wolf.system.Win32.vcxproj", "{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Wolf.ffmpeg.Win32", "Wolf.FFmpeg\Wolf.ffmpeg.Win32.vcxproj", "{1C266BC7-AF7E-43E2-9CC9-4F6954295929}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.ffmpeg.Win32", "wolf.ffmpeg\Wolf.ffmpeg.Win32.vcxproj", "{1C266BC7-AF7E-43E2-9CC9-4F6954295929}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wolf.ContentPipeline", "Wolf.ContentPipeline", "{68D1D49A-1750-493A-83B7-4F0821A38D2D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wolf.content_pipeline", "wolf.content_pipeline", "{68D1D49A-1750-493A-83B7-4F0821A38D2D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Wolf.ContentPipeline.Win32", "Wolf.ContentPipeline\Wolf.ContentPipeline.Win32.vcxproj", "{1C266BC7-AF7E-43E2-9CC9-4F6954295928}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.content_pipeline.Win32", "wolf.content_pipeline\wolf.content_pipeline.Win32.vcxproj", "{1C266BC7-AF7E-43E2-9CC9-4F6954295928}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlackMagic.Decklink", "BlackMagic.Decklink\BlackMagic.Decklink.vcxproj", "{6F47C0C5-64DC-4843-BD94-82734FEC8E21}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blackmagic.decklink", "blackmagic.decklink\blackmagic.decklink.vcxproj", "{6F47C0C5-64DC-4843-BD94-82734FEC8E21}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test.DirectX11_X.Win32", "Tests\DirectX11_X.Win32\Test.DirectX11_X.Win32.vcxproj", "{7F9A1D6E-B151-49E5-A91C-2F05027FAC7C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.directX11_X.Win32", "tests\directX11_X.Win32\test.directX11_X.Win32.vcxproj", "{7F9A1D6E-B151-49E5-A91C-2F05027FAC7C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Wolf.DirectX11_X.Win32", "Wolf.Render\Wolf.DirectX\Wolf.DirectX11_X.Win32.vcxproj", "{AF657C54-55D1-490D-9366-1CFA01E71741}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.directX11_X.Win32", "wolf.render\wolf.directX\wolf.directX11_X.Win32.vcxproj", "{AF657C54-55D1-490D-9366-1CFA01E71741}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

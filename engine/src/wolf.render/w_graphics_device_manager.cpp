@@ -50,11 +50,11 @@ w_output_presentation_window w_graphics_device::main_window()
 
 ULONG w_graphics_device::release()
 {
-    //release all resources
-    if (this->_is_released) return 0;
-    
-    this->_is_released = true;
-    
+	//release all resources
+	if (this->_is_released) return 0;
+
+	this->_is_released = true;
+
 #ifdef __DX12__
 
 	//wait for previous frame
@@ -75,15 +75,18 @@ ULONG w_graphics_device::release()
 		COMPTR_RELEASE(_output_window->dx_command_list);
 		COMPTR_RELEASE(_output_window->dx_fence);
 		COMPTR_RELEASE(_output_window->dx_pipeline_state);
-		
+
 		for (size_t i = 0; i < _output_window->dx_swap_chain_image_views.size(); ++i)
 		{
 			COM_RELEASE(_output_window->dx_swap_chain_image_views[i]);
 		}
 		COMPTR_RELEASE(_output_window->dx_render_target_view_heap);
 		COMPTR_RELEASE(_output_window->dx_swap_chain);
-		
+
+#ifdef __WIN32
 		_output_window->hwnd = NULL;
+#endif
+
 		COMPTR_RELEASE(_output_window->dx_fence);
 		CloseHandle(_output_window->dx_fence_event);
 	}
@@ -93,77 +96,78 @@ ULONG w_graphics_device::release()
 	COMPTR_RELEASE(this->dx_adaptor);
 
 #elif defined(__VULKAN__)
-    //wait for device to become IDLE
-    vkDeviceWaitIdle(this->vk_device);
+
+	//wait for device to become IDLE
+	vkDeviceWaitIdle(this->vk_device);
 
 	//release all output presentation windows
-    for (size_t i = 0; i < this->output_presentation_windows.size(); ++i)
-    {
-        auto _output_window = &(this->output_presentation_windows.at(i));
-        
-        //release the surface
-        vkDestroySurfaceKHR(w_graphics_device::vk_instance,
-                            _output_window->vk_presentation_surface,
-                            nullptr);
-    
-        //release command pool & buffers
-        vkFreeCommandBuffers(this->vk_device,
-                             _output_window->vk_command_allocator_pool,
-                             static_cast<uint32_t>(_output_window->vk_command_queues.size()),
-                             _output_window->vk_command_queues.data());
-        
-        vkDestroyCommandPool(this->vk_device, _output_window->vk_command_allocator_pool, nullptr);
-    
-        //release semaphores
-        vkDestroySemaphore(this->vk_device,
-                           _output_window->vk_image_is_available_semaphore,
-                           nullptr);
-        vkDestroySemaphore(this->vk_device,
-                           _output_window->vk_rendering_done_semaphore,
-                           nullptr);
-    
-        //release both image and view, so no need to call vkDestroyImage
-        vkDestroyImageView(this->vk_device,
-                           _output_window->vk_depth_buffer_image_view.view,
-                           nullptr);
-        
-        //release memory of image
-        vkFreeMemory(this->vk_device,
-                    _output_window->vk_depth_buffer_memory,
-                    nullptr);
-    
-        //release all image view of swap chains
-        for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
-        {
-            //release both image and view, so no need to call vkDestroyImage
-            vkDestroyImageView(this->vk_device,
-                               _output_window->vk_swap_chain_image_views[i].view,
-                               nullptr);
-            //vkDestroyImage(this->vk_device, this->vk_swap_chain_image_views[i].image, nullptr);
-        }
-        _output_window->vk_swap_chain_image_views.clear();
-    
-        //release swap chain
-        vkDestroySwapchainKHR(this->vk_device,
-                              _output_window->vk_swap_chain,
-                              nullptr);
-    
-        this->output_presentation_windows.at(i).release();
-    }
-    this->output_presentation_windows.clear();
-    
-    this->vk_queue_family_properties.clear();
-    this->vk_queue_family_supports_present.clear();
-    
-    this->vk_graphics_queue = nullptr;
-    this->vk_present_queue = nullptr;
-    
-    //release vulkan resources
-    vkDestroyDevice(this->vk_device, nullptr);
+	for (size_t i = 0; i < this->output_presentation_windows.size(); ++i)
+	{
+		auto _output_window = &(this->output_presentation_windows.at(i));
+
+		//release the surface
+		vkDestroySurfaceKHR(w_graphics_device::vk_instance,
+			_output_window->vk_presentation_surface,
+			nullptr);
+
+		//release command pool & buffers
+		vkFreeCommandBuffers(this->vk_device,
+			_output_window->vk_command_allocator_pool,
+			static_cast<uint32_t>(_output_window->vk_command_queues.size()),
+			_output_window->vk_command_queues.data());
+
+		vkDestroyCommandPool(this->vk_device, _output_window->vk_command_allocator_pool, nullptr);
+
+		//release semaphores
+		vkDestroySemaphore(this->vk_device,
+			_output_window->vk_image_is_available_semaphore,
+			nullptr);
+		vkDestroySemaphore(this->vk_device,
+			_output_window->vk_rendering_done_semaphore,
+			nullptr);
+
+		//release both image and view, so no need to call vkDestroyImage
+		vkDestroyImageView(this->vk_device,
+			_output_window->vk_depth_buffer_image_view.view,
+			nullptr);
+
+		//release memory of image
+		vkFreeMemory(this->vk_device,
+			_output_window->vk_depth_buffer_memory,
+			nullptr);
+
+		//release all image view of swap chains
+		for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
+		{
+			//release both image and view, so no need to call vkDestroyImage
+			vkDestroyImageView(this->vk_device,
+				_output_window->vk_swap_chain_image_views[i].view,
+				nullptr);
+		}
+		_output_window->vk_swap_chain_image_views.clear();
+
+		//release swap chain
+		vkDestroySwapchainKHR(this->vk_device,
+			_output_window->vk_swap_chain,
+			nullptr);
+
+		this->output_presentation_windows.at(i).release();
+	}
+
+	this->output_presentation_windows.clear();
+
+	this->vk_queue_family_properties.clear();
+	this->vk_queue_family_supports_present.clear();
+
+	this->vk_graphics_queue = nullptr;
+	this->vk_present_queue = nullptr;
+
+	//release vulkan resources
+	vkDestroyDevice(this->vk_device, nullptr);
 
 #endif
 
-    return 1;
+	return 1;
 }
 
 #pragma region w_graphics_device_manager
@@ -176,17 +180,18 @@ namespace wolf
 {
     namespace graphics
     {
-        class w_graphics_device_manager_pimp
-        {
-        public:
-            w_graphics_device_manager_pimp(_In_ w_graphics_device_manager_configs pConfig) : _config(pConfig), _name("w_graphics_device_manager_pimp")
-            {
-            }
-            
-            ~w_graphics_device_manager_pimp()
-            {
-                release();
-            }
+		class w_graphics_device_manager_pimp
+		{
+		public:
+			w_graphics_device_manager_pimp() :
+				_name("w_graphics_device_manager_pimp")
+			{
+			}
+
+			~w_graphics_device_manager_pimp()
+			{
+				release();
+			}
 
 			void enumerate_devices(_Inout_  std::vector<std::shared_ptr<w_graphics_device>>& pGraphicsDevices)
 			{
@@ -221,7 +226,7 @@ namespace wolf
 					release();
 					std::exit(EXIT_FAILURE);
 				}
-				
+
 				//create wrap mode device or hardware device?
 				if (this->_config.use_wrap_mode)
 				{
@@ -250,7 +255,7 @@ namespace wolf
 						release();
 						std::exit(EXIT_FAILURE);
 					}
-					
+
 					//add the wrap device graphics devices list
 					pGraphicsDevices.push_back(_gDevice);
 				}
@@ -264,7 +269,7 @@ namespace wolf
 					for (int i = 0; w_graphics_device::dx_dxgi_factory->EnumAdapters1(i, &_adapter) != DXGI_ERROR_NOT_FOUND; ++i)
 					{
 						//if the feature level not specified in configs, the default feature level is D3D_FEATURE_LEVEL_11_0
-						auto _feature_level =  i >= this->_config.hardware_feature_levels.size() ? D3D_FEATURE_LEVEL_11_0 : this->_config.hardware_feature_levels[i];
+						auto _feature_level = i >= this->_config.hardware_feature_levels.size() ? D3D_FEATURE_LEVEL_11_0 : this->_config.hardware_feature_levels[i];
 
 						DXGI_ADAPTER_DESC1 _adapter_desc = {};
 						auto _hr = _adapter->GetDesc1(&_adapter_desc);
@@ -350,20 +355,34 @@ namespace wolf
 								auto _window = _win->second[j];
 
 								w_output_presentation_window _out_window;
-								_out_window.width = _window.width;
-								_out_window.height = _window.height;
-								_out_window.aspectRatio = (float)_window.width / (float)_window.height;
-								_out_window.v_sync = _window.v_sync_enable;
-								_out_window.is_full_screen = _window.is_full_screen;
 								_out_window.index = static_cast<int>(j);
 								_out_window.dx_swap_chain_selected_format = (DXGI_FORMAT)_window.swap_chain_format;
+
+#if defined(__WIN32) || ( defined(__linux) && !defined(__ANDROID) ) || defined(__APPLE__)
+								_out_window.width = _window.width;
+								_out_window.height = _window.height;
+								_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
+								_out_window.v_sync = _window.v_sync_enable;
+								_out_window.is_full_screen = _window.is_full_screen;
+#ifdef __WIN32
 								_out_window.hwnd = _window.hwnd;
 								_out_window.hInstance = _window.hInstance;
+#endif
+
+#elif defined(__UWP)
+								_out_window.window = _window.window;
+								_out_window.window_size = _window.window_size;
+								_out_window.window_current_orientation = _window.window_current_orientation;
+								_out_window.window_native_orientation = _window.window_native_orientation;
+								_out_window.window_dpi = _window.window_dpi;
+								_out_window.support_high_resolutions = _window.support_high_resolutions;
+								_out_window.aspect_ratio = _window.window_size.Width / _window.window_size.Height;
+#endif
 
 								_gDevice->output_presentation_windows.push_back(_out_window);
 
 								_create_command_queue(_gDevice, j);
-								_create_swap_chain(_gDevice, j);
+								create_or_resize_swap_chain(_gDevice, j);
 								_create_depth_buffer(_gDevice, j);
 								_create_synchronization(_gDevice, j);
 
@@ -380,7 +399,6 @@ namespace wolf
 				}
 
 #elif defined(__VULKAN__)
-
 				auto _vk_major = VK_VERSION_MAJOR(VK_API_VERSION_1_0);
 				auto _vk_minor = VK_VERSION_MINOR(VK_API_VERSION_1_0);
 				auto _vk_patch = VK_VERSION_PATCH(VK_HEADER_VERSION);
@@ -403,18 +421,20 @@ namespace wolf
 
 				uint32_t _extension_count = 0;
 
-				// get available extensions count
-				auto _hr = vkEnumerateInstanceExtensionProperties(nullptr,
-					&_extension_count,
-					nullptr);
+				//get available extensions count
+				auto _hr =
+
+					vkEnumerateInstanceExtensionProperties(nullptr,
+						&_extension_count,
+						nullptr);
 				if (_hr)
 				{
-                                    //write the buffer to output before exiting
-                                    logger.write(_msg);
-                                    _msg.clear();
-                                    logger.error("error on enumerating instance extension properties.");
-                                    release();
-                                    std::exit(EXIT_FAILURE);
+					//write the buffer to output before exiting
+					logger.write(_msg);
+					_msg.clear();
+					logger.error("error on enumerating instance extension properties.");
+					release();
+					std::exit(EXIT_FAILURE);
 				}
 
 				auto _extensions_available = new VkExtensionProperties[_extension_count];
@@ -434,39 +454,39 @@ namespace wolf
 				_app_info.pEngineName = "Wolf.Engine";
 				_app_info.apiVersion = VK_API_VERSION_1_0;
 
-
 				std::vector<const char*> _enabled_extensions = { VK_KHR_SURFACE_EXTENSION_NAME };
 
 				// Enable surface extensions depending on OS
-#if defined(_WIN32)
-				_enabled_extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
-#elif defined(__ANDROID__)
+#if defined(__ANDROID)
 				_enabled_extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+#elif defined(_WIN32)
+				_enabled_extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #elif defined(_DIRECT2DISPLAY)
 				_enabled_extensions.push_back(VK_KHR_DISPLAY_EXTENSION_NAME);
-#elif defined(__linux__)
+#elif defined(__linux)
 				_enabled_extensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
 #elif defined(__APPLE__)
 				_enabled_extensions.push_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
 #endif
+
 				VkInstanceCreateInfo _instance_create_info = {};
 				_instance_create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 				_instance_create_info.pNext = nullptr;
 				_instance_create_info.pApplicationInfo = &_app_info;
 				if (_enabled_extensions.size() > 0)
 				{
-					//            if (this->enable_validation)
-					//            {
-					//                _enabled_extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-					//            }
+					/*     if (this->enable_validation)
+					 {
+						 _enabled_extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+					 }*/
 					_instance_create_info.enabledExtensionCount = (uint32_t)_enabled_extensions.size();
 					_instance_create_info.ppEnabledExtensionNames = _enabled_extensions.data();
 				}
-				//	if (this->enable_validation)
-				//	{
-				//		_instance_create_info.enabledLayerCount = vkDebug::validationLayerCount;
-				//		_instance_create_info.ppEnabledLayerNames = vkDebug::validationLayerNames;
-				//	}
+				//if (this->enable_validation)
+				//{
+				//	_instance_create_info.enabledLayerCount = vkDebug::validationLayerCount;
+				//	_instance_create_info.ppEnabledLayerNames = vkDebug::validationLayerNames;
+				//}
 
 				//create Vulkan instance
 				_hr = vkCreateInstance(&_instance_create_info, nullptr, &w_graphics_device::vk_instance);
@@ -499,13 +519,14 @@ namespace wolf
 				_msg += "\r\n\t\t\t\t\tGPU(s) founded:\r\n";
 
 				auto _gpus = new VkPhysicalDevice[_gpu_count];
+
 				vkEnumeratePhysicalDevices(w_graphics_device::vk_instance, &_gpu_count, _gpus);
 
 				for (size_t i = 0; i < _gpu_count; ++i)
 				{
 					VkPhysicalDeviceProperties _device_properties;
-					vkGetPhysicalDeviceProperties(_gpus[i], &_device_properties);
 
+					vkGetPhysicalDeviceProperties(_gpus[i], &_device_properties);
 					auto _device_name = std::string(_device_properties.deviceName);
 					_msg += "\t\t\t\t\t\tDevice Name: " + _device_name + "\r\n";
 					_msg += "\t\t\t\t\t\tDevice ID: " + std::to_string(_device_properties.deviceID) + "\r\n";
@@ -646,6 +667,7 @@ namespace wolf
 					_gDevice->vk_physical_device = _gpus[i];
 
 					//get memory properties from the physical device or GPU
+
 					vkGetPhysicalDeviceMemoryProperties(_gpus[i], &_gDevice->vk_physical_device_memory_properties);
 
 					for (size_t j = 0; j < _gDevice->vk_physical_device_memory_properties.memoryHeapCount; ++j)
@@ -695,10 +717,11 @@ namespace wolf
 
 					//get queue family from default GPU
 					uint32_t _queue_family_property_count = 0;
+
 					vkGetPhysicalDeviceQueueFamilyProperties(_gpus[i],
 						&_queue_family_property_count,
 						nullptr);
-					
+
 					if (_queue_family_property_count == 0)
 					{
 						logger.write(_msg);
@@ -715,7 +738,7 @@ namespace wolf
 						&_queue_family_property_count,
 						_gDevice->vk_queue_family_properties.data());
 
-					
+
 					bool _queue_graphics_bit_found = false;
 					for (size_t j = 0; j < _queue_family_property_count; ++j)
 					{
@@ -752,12 +775,20 @@ namespace wolf
 						std::exit(EXIT_FAILURE);
 					}
 
+#ifdef __ANDROID
+					/////////////////////////////////////////////test for linux
+					_enabled_extensions.clear();
+					_enabled_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+#endif
+
 					//create queue info
-					float _queue_priorities[1] = { 0.0 };
+					float _queue_priorities[1] = { 1.0f };
 					VkDeviceQueueCreateInfo _queue_info = {};
 					_queue_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 					_queue_info.pNext = nullptr;
+					_queue_info.flags = 0;
 					_queue_info.queueCount = 1;
+					_queue_info.queueFamilyIndex = 0;
 					_queue_info.pQueuePriorities = _queue_priorities;
 
 					//create device info
@@ -766,11 +797,14 @@ namespace wolf
 					_device_info.pNext = nullptr;
 					_device_info.queueCreateInfoCount = 1;
 					_device_info.pQueueCreateInfos = &_queue_info;
-					_device_info.enabledExtensionCount = 0;
-					_device_info.ppEnabledExtensionNames = nullptr;
 					_device_info.enabledLayerCount = 0;
 					_device_info.ppEnabledLayerNames = nullptr;
 					_device_info.pEnabledFeatures = nullptr;
+					if (_enabled_extensions.size())
+					{
+						_device_info.enabledExtensionCount = static_cast<uint32_t>(_enabled_extensions.size());
+						_device_info.ppEnabledExtensionNames = _enabled_extensions.data();
+					}
 
 					//create device
 					_hr = vkCreateDevice(_gpus[i], &_device_info, nullptr, &_gDevice->vk_device);
@@ -793,18 +827,29 @@ namespace wolf
 							w_output_presentation_window _out_window;
 							_out_window.width = _window.width;
 							_out_window.height = _window.height;
-							_out_window.aspectRatio = (float)_window.width / (float)_window.height;
-							_out_window.v_sync = _window.v_sync_enable;
+							_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
 							_out_window.index = static_cast<int>(j);
-							_out_window.vk_swap_chain_selected_format = (VkFormat)_window.swap_chain_format;
+							_out_window.vk_swap_chain_selected_format.format = (VkFormat)_window.swap_chain_format;
+							_out_window.vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+
+#if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
+
+#ifndef __ANDROID
+							_out_window.v_sync = _window.v_sync_enable;
+#endif
+
 #ifdef __WIN32
 							_out_window.HWND = _window.hwnd;
 							_out_window.hInstance = _window.hInstance;
+#elif defined(__ANDROID)
+							_out_window.window = _window.window;
 #elif defined(__linux)
 							_out_window.xcb_connection = _window.xcb_connection;
 							_out_window.xcb_window = _window.xcb_window;
 #elif defined(__APPLE__)
 							_out_window.window = _window.window;
+#endif
+
 #endif
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
@@ -845,7 +890,7 @@ namespace wolf
 								logger.write(_msg);
 								_msg.clear();
 								logger.error("error on creating xcb surface for Vulkan.");
-									release();
+								release();
 								std::exit(EXIT_FAILURE);
 							}
 #elif defined(VK_USE_PLATFORM_XLIB_KHR)
@@ -864,6 +909,25 @@ namespace wolf
 								logger.write(_msg);
 								_msg.clear();
 								logger.error("error on creating xlib surface for Vulkan.");
+								release();
+								std::exit(EXIT_FAILURE);
+							}
+#elif defined(__ANDROID)
+							VkAndroidSurfaceCreateInfoKHR _android_surface_create_info = {};
+							_android_surface_create_info.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
+							_android_surface_create_info.window = _out_window.window;
+							_android_surface_create_info.flags = 0;
+							_android_surface_create_info.pNext = nullptr;
+
+							_hr = vkCreateAndroidSurfaceKHR(w_graphics_device::vk_instance,
+								&_android_surface_create_info,
+								nullptr,
+								&_out_window.vk_presentation_surface);
+							if (_hr)
+							{
+								logger.write(_msg);
+								_msg.clear();
+								logger.error("error on creating android surface for Vulkan.");
 								release();
 								std::exit(EXIT_FAILURE);
 							}
@@ -889,7 +953,7 @@ namespace wolf
 
 							_gDevice->output_presentation_windows.push_back(_out_window);
 
-							_create_swap_chain(_gDevice, j);
+							create_or_resize_swap_chain(_gDevice, j);
 							_create_depth_buffer(_gDevice, j);
 							_create_synchronization(_gDevice, j);
 							_create_command_queue(_gDevice, j);
@@ -911,135 +975,272 @@ namespace wolf
 				}
 #endif //__DX12__
 			}
-            
-            //Release all resources
-            ULONG release()
-            {
-                if (this->_is_released)  return 0;
-                
-                //release all windows info
-                this->_is_released = true;
-                this->_windows_info.clear();
-                this->_name = "";
 
-                return 1;
-            }
-            
-#pragma region Getters
-            
-            bool get_is_released() const
-            {
-                return this->_is_released;
-            }
-            
-#pragma endregion
-            
-#pragma region Setters
-            
-            void set_output_windows_info(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
-            {
-                this->_windows_info = pOutputWindowsInfo;
-            }
-            
-#pragma endregion
-            
-        private:
-    
-            void _create_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                                    _In_ size_t pOutputPresentationWindowIndex)
-            {
+			void create_or_resize_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ size_t pOutputPresentationWindowIndex)
+			{
 #ifdef __DX12__
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
+				//release dx_swap_chain_image_views
+				for (size_t i = 0; i < _output_presentation_window->dx_swap_chain_image_views.size(); i++)
+				{
+					COM_RELEASE(_output_presentation_window->dx_swap_chain_image_views[i]);
+				}
+
 				const size_t _desired_number_of_swapchain_images = 2;
 				_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);
-				
-#ifdef __WIN32
-				HRESULT _hr = S_FALSE;
-				float _numerator = 0;
-				float _denominator = 1;
+				_output_presentation_window->force_to_clear_color_times = _desired_number_of_swapchain_images;
 
-				//if this window does not need v-sync, then it is important to get the refresh rate of displays
-				if (!_output_presentation_window->v_sync)
+
+				HRESULT _hr = S_FALSE;
+#ifdef __WIN32
+
+				if (_output_presentation_window->dx_swap_chain != nullptr)
 				{
-					//we need to get the numerator and denominator of display monitors
-					UINT _num_modes = 0;
-					_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
-						DXGI_ENUM_MODES_INTERLACED,
-						&_num_modes,
-						NULL);
-					if (SUCCEEDED(_hr))
+					//If the swap chain already exists, resize it.
+					_hr = _output_presentation_window->dx_swap_chain->ResizeBuffers(_desired_number_of_swapchain_images,
+						_output_presentation_window->width,
+						_output_presentation_window->height,
+						_output_presentation_window->dx_swap_chain_selected_format,
+						0);
+					if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
 					{
-						std::vector<DXGI_MODE_DESC> _display_modes(_num_modes);
-						_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
-							DXGI_ENUM_MODES_INTERLACED,
-							&_num_modes,
-							_display_modes.data());
-						if (SUCCEEDED(_hr))
-						{
-							for (size_t i = 0; i < _num_modes; ++i)
-							{
-								if (_output_presentation_window->height == _display_modes[i].Height &&
-									_output_presentation_window->width == _display_modes[i].Width)
-								{
-									auto _refresh_rate = _display_modes[i].RefreshRate;
-									_numerator = _refresh_rate.Numerator;
-									_denominator = _refresh_rate.Denominator;
-								}
-							}
-						}
-						else
-						{
-							logger.warning(L"Could not get display modes list for graphics device: " + _device_name +
-								L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-						}
-						_display_modes.clear();
+						logger.error(L"Error on resizing swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
+							+ _device_name);
+						// If the device was removed for any reason, a new device and swap chain will need to be created.
+						pGDevice->dx_device_removed = true;
+						return;
 					}
 					else
 					{
-						logger.warning(L"Could not get number of display modes list for graphics device: " + _device_name +
-							L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
+							+ _device_name);
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+				}
+				else
+				{
+					float _numerator = 0;
+					float _denominator = 1;
+
+					//if this window does not need v-sync, then it is important to get the refresh rate of displays
+					if (!_output_presentation_window->v_sync)
+					{
+						//we need to get the numerator and denominator of display monitors
+						UINT _num_modes = 0;
+						_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
+							DXGI_ENUM_MODES_INTERLACED,
+							&_num_modes,
+							NULL);
+						if (SUCCEEDED(_hr))
+						{
+							std::vector<DXGI_MODE_DESC> _display_modes(_num_modes);
+							_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
+								DXGI_ENUM_MODES_INTERLACED,
+								&_num_modes,
+								_display_modes.data());
+							if (SUCCEEDED(_hr))
+							{
+								for (size_t i = 0; i < _num_modes; ++i)
+								{
+									if (_output_presentation_window->height == _display_modes[i].Height &&
+										_output_presentation_window->width == _display_modes[i].Width)
+									{
+										auto _refresh_rate = _display_modes[i].RefreshRate;
+										_numerator = _refresh_rate.Numerator;
+										_denominator = _refresh_rate.Denominator;
+									}
+								}
+							}
+							else
+							{
+								logger.warning(L"Could not get display modes list for graphics device: " + _device_name +
+									L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+							}
+							_display_modes.clear();
+						}
+						else
+						{
+							logger.warning(L"Could not get number of display modes list for graphics device: " + _device_name +
+								L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						}
+
 					}
 
+					// Disable full screen with ALT+Enter
+					_hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
+					V(_hr, L"disabling ALT+Enter for presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+						this->_name, 2);
+
+					// Describe and create the swap chain.
+					DXGI_SWAP_CHAIN_DESC _swap_chain_desc = {};
+					_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
+					_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+					_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+					_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
+					_swap_chain_desc.SampleDesc.Quality = 0;
+					_swap_chain_desc.Windowed = _output_presentation_window->is_full_screen;
+					_swap_chain_desc.OutputWindow = _output_presentation_window->hwnd;
+					_swap_chain_desc.BufferDesc.Width = _output_presentation_window->width;
+					_swap_chain_desc.BufferDesc.Height = _output_presentation_window->height;
+					_swap_chain_desc.BufferDesc.Format = _output_presentation_window->dx_swap_chain_selected_format;
+					_swap_chain_desc.BufferDesc.RefreshRate.Numerator = _numerator;
+					_swap_chain_desc.BufferDesc.RefreshRate.Denominator = _denominator;
+					_swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+					_swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+					_swap_chain_desc.Flags = 0;
+					_swap_chain_desc.BufferDesc.RefreshRate.Numerator = _output_presentation_window->dx_swap_chain_selected_format;
+
+					{
+						ComPtr<IDXGISwapChain> _swap_chain = nullptr;
+
+						_hr = w_graphics_device::dx_dxgi_factory->CreateSwapChain(
+							_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
+							&_swap_chain_desc,
+							&_swap_chain);
+						V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name +
+							L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+							this->_name, 2);
+
+						_hr = _swap_chain->QueryInterface(__uuidof(IDXGISwapChain3), (void**)&_output_presentation_window->dx_swap_chain);
+						if (FAILED(_hr))
+						{
+							logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " +
+								_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+					}
 				}
 
-				// Disable full screen with ALT+Enter
-				_hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
-				V(_hr, L"disabling ALT+Enter for presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-					this->_name, 2);
+#elif defined(__UWP)
 
-				// Describe and create the swap chain.
-				DXGI_SWAP_CHAIN_DESC _swap_chain_desc = {};
-				_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
-				_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-				_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-				_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
-				_swap_chain_desc.SampleDesc.Quality = 0;
-				_swap_chain_desc.Windowed = _output_presentation_window->is_full_screen;
-				_swap_chain_desc.OutputWindow = _output_presentation_window->hwnd;
-				_swap_chain_desc.BufferDesc.Width = _output_presentation_window->width;
-				_swap_chain_desc.BufferDesc.Height = _output_presentation_window->height;
-				_swap_chain_desc.BufferDesc.Format = _output_presentation_window->dx_swap_chain_selected_format;
-				_swap_chain_desc.BufferDesc.RefreshRate.Numerator = _numerator;
-				_swap_chain_desc.BufferDesc.RefreshRate.Denominator = _denominator;
-				_swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-				_swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-				_swap_chain_desc.Flags = 0;
-				_swap_chain_desc.BufferDesc.RefreshRate.Numerator = _output_presentation_window->dx_swap_chain_selected_format;
+				auto _display_rotation = _compute_display_rotation(_output_presentation_window->window_native_orientation,
+					_output_presentation_window->window_current_orientation);
 
+				float _back_buffer_width = 0;
+				float _back_buffer_height = 0;
+
+				//_update_render_target_size
 				{
-					ComPtr<IDXGISwapChain> _swap_chain = nullptr;
+					auto _effective_dpi = _output_presentation_window->window_dpi;
 
-					_hr = w_graphics_device::dx_dxgi_factory->CreateSwapChain(
+					/*
+						To improve battery life on high resolution devices, render to a smaller render target
+						and allow the GPU to scale the output when it is presented.
+
+						The default thresholds that define a "high resolution" display. If the thresholds
+						are exceeded and SupportHighResolutions is false, the dimensions will be scaled
+						by 50%.
+					*/
+					static const float _DpiThreshold = 192.0f;		// 200% of standard desktop display.
+					static const float _WidthThreshold = 1920.0f;	// 1080p width.
+					static const float _HeightThreshold = 1080.0f;	// 1080p height.
+					if (!_output_presentation_window->support_high_resolutions && _output_presentation_window->window_dpi > _DpiThreshold)
+					{
+						float _width = w_graphics_device_manager::convert_dips_to_pixels(
+							_output_presentation_window->window_size.Width,
+							_output_presentation_window->window_dpi);
+
+						float _height = w_graphics_device_manager::convert_dips_to_pixels(_output_presentation_window->window_size.Height,
+							_output_presentation_window->window_dpi);
+
+						/*
+							When the device is in portrait orientation, height > width. Compare the
+							larger dimension against the width threshold and the smaller dimension
+							against the height threshold.
+						*/
+						if (max(_width, _height) > _WidthThreshold && min(_width, _height) > _HeightThreshold)
+						{
+							// To scale the app we change the effective DPI. Logical size does not change.
+							_effective_dpi /= 2.0f;
+						}
+					}
+
+					// Calculate the necessary render target size in pixels.
+					_back_buffer_width = w_graphics_device_manager::convert_dips_to_pixels(_output_presentation_window->window_size.Width,
+						_effective_dpi);
+					_back_buffer_height = w_graphics_device_manager::convert_dips_to_pixels(_output_presentation_window->window_size.Height,
+						_effective_dpi);
+
+					// Prevent zero size DirectX content from being created.
+					_back_buffer_width = max(_back_buffer_width, 1.0f);
+					_back_buffer_height = max(_back_buffer_height, 1.0f);
+				}
+
+				bool _swap_dimensions = _display_rotation == DXGI_MODE_ROTATION_ROTATE90 || _display_rotation == DXGI_MODE_ROTATION_ROTATE270;
+				if (_swap_dimensions)
+				{
+					//need to swap size
+					_back_buffer_width = lround(_back_buffer_height);
+					_back_buffer_height = lround(_back_buffer_width);
+				}
+				else
+				{
+					_back_buffer_width = lround(_back_buffer_width);
+					_back_buffer_height = lround(_back_buffer_height);
+				}
+
+				if (_output_presentation_window->dx_swap_chain != nullptr)
+				{
+					//If the swap chain already exists, resize it.
+					_hr = _output_presentation_window->dx_swap_chain->ResizeBuffers(_desired_number_of_swapchain_images,
+						static_cast<UINT>(_back_buffer_width),
+						static_cast<UINT>(_back_buffer_height),
+						_output_presentation_window->dx_swap_chain_selected_format,
+						0);
+
+					if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
+					{
+						logger.error(L"Error on resizing swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
+							+ _device_name);
+						// If the device was removed for any reason, a new device and swap chain will need to be created.
+						pGDevice->dx_device_removed = true;
+						return;
+					}
+					else
+					{
+						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
+							+ _device_name);
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+				}
+				else
+				{
+					DXGI_SCALING _scaling = _output_presentation_window->support_high_resolutions ? DXGI_SCALING_NONE : DXGI_SCALING_STRETCH;
+
+					// Describe and create the swap chain.
+					DXGI_SWAP_CHAIN_DESC1 _swap_chain_desc = {};
+					_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
+					_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+					_swap_chain_desc.Stereo = false;
+					_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+					_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
+					_swap_chain_desc.SampleDesc.Quality = 0;
+					_swap_chain_desc.Width = static_cast<UINT>(_back_buffer_width);
+					_swap_chain_desc.Height = static_cast<UINT>(_back_buffer_height);
+					_swap_chain_desc.Format = _output_presentation_window->dx_swap_chain_selected_format;
+					_swap_chain_desc.Scaling = _scaling;
+					_swap_chain_desc.Flags = 0;
+					_swap_chain_desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+
+					ComPtr<IDXGISwapChain1> _swap_chain;
+					_hr = pGDevice->dx_dxgi_factory->CreateSwapChainForCoreWindow(
 						_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
+						_output_presentation_window->window,
 						&_swap_chain_desc,
+						nullptr,
 						&_swap_chain);
-					V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name +
+					V(_hr, L"create swap chain from core window for graphics device: " + _device_name +
 						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 						this->_name, 2);
 
-					_hr = _swap_chain->QueryInterface(__uuidof(IDXGISwapChain3), (void**)&_output_presentation_window->dx_swap_chain);
+					//getting swap chain 3 from swap chain 1
+					_hr = _swap_chain.As(&_output_presentation_window->dx_swap_chain);
 					if (FAILED(_hr))
 					{
 						logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " +
@@ -1047,24 +1248,78 @@ namespace wolf
 						release();
 						std::exit(EXIT_FAILURE);
 					}
+
+					_hr = _output_presentation_window->dx_swap_chain->SetRotation(_display_rotation);
+					if (FAILED(_hr))
+					{
+						logger.error(L"setting rotation of swap chain for graphics device: " +
+							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					switch (_display_rotation)
+					{
+					case DXGI_MODE_ROTATION_IDENTITY:
+						// 0-degree Z-rotation
+						_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
+							1.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, 1.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 1.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 1.0f
+						);
+						break;
+
+					case DXGI_MODE_ROTATION_ROTATE90:
+						// 90-degree Z-rotation
+						_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
+							0.0f, 1.0f, 0.0f, 0.0f,
+							-1.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 1.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 1.0f
+						);
+						break;
+
+					case DXGI_MODE_ROTATION_ROTATE180:
+						// 180-degree Z-rotation
+						_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
+							-1.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, -1.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 1.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 1.0f
+						);
+						break;
+
+					case DXGI_MODE_ROTATION_ROTATE270:
+						// 270-degree Z-rotation
+						_output_presentation_window->orientation_transform_3D = DirectX::XMFLOAT4X4(
+							0.0f, -1.0f, 0.0f, 0.0f,
+							1.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 1.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 1.0f
+						);
+						break;
+
+					case DXGI_MODE_ROTATION_UNSPECIFIED:
+						logger.warning(L"DXGI_MODE_ROTATION_UNSPECIFIED for graphics device: " +
+							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					}
+
 				}
-
-#elif defined(__UWP)
-
 #endif
 				// Describe and create a render target view (RTV) descriptor heap.
 				D3D12_DESCRIPTOR_HEAP_DESC _render_target_view_heap_desc = {};
 				_render_target_view_heap_desc.NumDescriptors = _desired_number_of_swapchain_images;
 				_render_target_view_heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 				_render_target_view_heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-					
+
 				_hr = pGDevice->dx_device->CreateDescriptorHeap(&_render_target_view_heap_desc, IID_PPV_ARGS(&_output_presentation_window->dx_render_target_view_heap));
 				V(_hr, L"creating render target heap descriptorfor graphics device: " + _device_name +
 					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 					this->_name, 2);
 
 				_output_presentation_window->dx_render_target_descriptor_size = pGDevice->dx_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-				
+
 				// Create frame resources.
 				DirectX::CD3DX12_CPU_DESCRIPTOR_HANDLE _render_target_descriptor_handle(_output_presentation_window->dx_render_target_view_heap->GetCPUDescriptorHandleForHeapStart());
 
@@ -1085,296 +1340,353 @@ namespace wolf
 				//get the swap chain frame index
 				_output_presentation_window->dx_swap_chain_image_index = _output_presentation_window->dx_swap_chain->GetCurrentBackBufferIndex();
 
-
 #elif defined(__VULKAN__)
 				auto _device_name = pGDevice->device_name;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
-                auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
-                
-                pGDevice->vk_queue_family_selected_support_present_index = SIZE_MAX;
-                for (size_t j = 0; j < pGDevice->vk_queue_family_properties.size(); ++j)
-                {
-                    //check if this device support presentation
-                    auto _hr = vkGetPhysicalDeviceSurfaceSupportKHR(pGDevice->vk_physical_device,
-                                                                     static_cast<uint32_t>(j),
-                                                                    _vk_presentation_surface,
-                                                                    &pGDevice->vk_queue_family_supports_present[j]);
-                    V(_hr, L"could not get physical device surface support for graphics device: " + 
-                            std::wstring(_device_name.begin(), _device_name.end()) +
-                            L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                            this->_name, 2);
-                    
-                    if (pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX && 
-                        pGDevice->vk_queue_family_selected_index != SIZE_MAX &&
-                        pGDevice->vk_queue_family_supports_present[j])
-                    {
-                        pGDevice->vk_queue_family_selected_support_present_index = j;
-                    }
-                }
-                
-                V(pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX ? S_FALSE : S_OK,
-                        L"could not find queue family which supports presentation for graphics device: " + 
-                        std::wstring(_device_name.begin(), _device_name.end()) +
-                        L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                        this->_name, 2);
-                
-                //get the list of VkFormats that are supported:
-                uint32_t _vk_format_count;
-                auto _hr = vkGetPhysicalDeviceSurfaceFormatsKHR(pGDevice->vk_physical_device,
-                                                                _vk_presentation_surface,
-                                                                &_vk_format_count,
-                                                                NULL);
-		if (_hr)
-		{
-                    logger.error("could not get number of physical device surface formats for graphics device: " +
-				_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                _output_presentation_window->vk_surface_formats.resize(_vk_format_count);
-                
-                _hr = vkGetPhysicalDeviceSurfaceFormatsKHR(pGDevice->vk_physical_device,
-                                                           _vk_presentation_surface,
-                                                           &_vk_format_count,
-                                                           _output_presentation_window->vk_surface_formats.data());
-		if (_hr)
-		{
-                    logger.error("could not get physical device surface formats for graphics device: " + 
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                /*
-                    If the format list includes just one entry of VK_FORMAT_UNDEFINED,
-                    the surface has no preferred format.  Otherwise, at least one
-                    supported format will be returned.
-                */
-                if (_vk_format_count == 1 && _output_presentation_window->vk_surface_formats[0].format == VK_FORMAT_UNDEFINED)
-                {
-                    _output_presentation_window->vk_swap_chain_selected_format = VK_FORMAT_B8G8R8A8_UNORM;
-                }
-                else
-                {
-                    _output_presentation_window->vk_swap_chain_selected_format = _output_presentation_window->vk_surface_formats[0].format;
-                }
-                
-                VkSurfaceCapabilitiesKHR _surface_capabilities;
-                _hr = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pGDevice->vk_physical_device,
-                                                                _vk_presentation_surface,
-                                                                &_surface_capabilities);
-		if (_hr)
-		{
-                    logger.error("error on create vulkan surface capabilities for graphics device: " + 
-                        _device_name +
-                        " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
+				auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
 
-                //get the count of present modes
-                uint32_t _present_mode_count;
-                _hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
-                                                                _vk_presentation_surface,
-                                                                &_present_mode_count, nullptr);
-		if (_hr)
-		{
-                    logger.error("error on getting vulkan present mode(s) count for graphics device: " + 
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
+				pGDevice->vk_queue_family_selected_support_present_index = SIZE_MAX;
+				for (size_t j = 0; j < pGDevice->vk_queue_family_properties.size(); ++j)
+				{
+					//check if this device support presentation
+					auto _hr = vkGetPhysicalDeviceSurfaceSupportKHR(pGDevice->vk_physical_device,
+						static_cast<uint32_t>(j),
+						_vk_presentation_surface,
+						&pGDevice->vk_queue_family_supports_present[j]);
 
-                //get present modes
-                std::vector<VkPresentModeKHR> _present_modes(_present_mode_count);
-                _hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
-                                                                _vk_presentation_surface,
-                                                                &_present_mode_count,
-                                                                _present_modes.data());
-		if (_hr)
-		{
-                    logger.error("error on getting vulkan present mode(s) for graphics device: " + 
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                //width and height are either both 0xFFFFFFFF, or both not 0xFFFFFFFF.
-                VkExtent2D _swap_chain_extent;
-                if (_surface_capabilities.currentExtent.width == 0xFFFFFFFF)
-                {
-                    // If the surface size is undefined, the size is set to the size of the images requested.
-                    _swap_chain_extent.width =  _output_presentation_window->width;
-                    _swap_chain_extent.height = _output_presentation_window->height;
-                    
-                    if (_swap_chain_extent.width < _surface_capabilities.minImageExtent.width)
-                    {
-                        _swap_chain_extent.width = _surface_capabilities.minImageExtent.width;
-                    }
-                    else if (_swap_chain_extent.width > _surface_capabilities.maxImageExtent.width)
-                    {
-                        _swap_chain_extent.width = _surface_capabilities.maxImageExtent.width;
-                    }
-                    
-                    if (_swap_chain_extent.height < _surface_capabilities.minImageExtent.height)
-                    {
-                        _swap_chain_extent.height = _surface_capabilities.minImageExtent.height;
-                    }
-                    else if (_swap_chain_extent.height > _surface_capabilities.maxImageExtent.height)
-                    {
-                        _swap_chain_extent.height = _surface_capabilities.maxImageExtent.height;
-                    }
-                }
-                else
-                {
-                    // If the surface size is defined, the swap chain size must match
-                    _swap_chain_extent = _surface_capabilities.currentExtent;
-                }
-                
-                //the FIFO present mode is guaranteed by the spec to be supported
-                VkPresentModeKHR _swap_chain_present_mode =  _output_presentation_window->v_sync ?
-                VK_PRESENT_MODE_FIFO_KHR : VK_PRESENT_MODE_IMMEDIATE_KHR;
-                
-                /*
-                    Determine the number of VkImage's to use in the swap chain.
-                    We need to acquire only 1 presentable image at at time.
-                    Asking for minImageCount images ensures that we can acquire
-                    1 presentable image as long as we present it before attempting
-                    to acquire another.
-                */
-                uint32_t _desired_number_of_swapchain_images = _surface_capabilities.minImageCount;
-                VkSurfaceTransformFlagBitsKHR _pre_transform;
-                if (_surface_capabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
-                {
-                    _pre_transform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
-                }
-                else
-                {
-                    _pre_transform = _surface_capabilities.currentTransform;
-                }
-                
-                VkSwapchainCreateInfoKHR _swap_chain_create_info = {};
-                _swap_chain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-                _swap_chain_create_info.pNext = nullptr;
-                _swap_chain_create_info.surface =  _vk_presentation_surface;
-                _swap_chain_create_info.minImageCount = _desired_number_of_swapchain_images;
-                _swap_chain_create_info.imageFormat = _output_presentation_window->vk_swap_chain_selected_format;
-                _swap_chain_create_info.imageExtent.width = _swap_chain_extent.width;
-                _swap_chain_create_info.imageExtent.height = _swap_chain_extent.height;
-                _swap_chain_create_info.preTransform = _pre_transform;
-                _swap_chain_create_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-                _swap_chain_create_info.imageArrayLayers = 1;
-                _swap_chain_create_info.presentMode = _swap_chain_present_mode;
-                _swap_chain_create_info.oldSwapchain = VK_NULL_HANDLE;
-                _swap_chain_create_info.clipped = true;
-                _swap_chain_create_info.imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
-                _swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-                _swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-                _swap_chain_create_info.queueFamilyIndexCount = 0;
-                _swap_chain_create_info.pQueueFamilyIndices = nullptr;
-                
-                uint32_t _queue_family_indices[2] =
-                {
-                    (uint32_t)pGDevice->vk_queue_family_selected_index,
-                    (uint32_t)pGDevice->vk_queue_family_selected_support_present_index,
-                };
-                if (_queue_family_indices[0] != _queue_family_indices[1])
-                {
-                    /*
-                        If the graphics and present queues are from different queue families,
-                        we either have to explicitly transfer ownership of images between
-                        the queues, or we have to create the swap chain with imageSharingMode
-                        as VK_SHARING_MODE_CONCURRENT
-                     */
-                    _swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-                    _swap_chain_create_info.queueFamilyIndexCount = 2;
-                    _swap_chain_create_info.pQueueFamilyIndices = _queue_family_indices;
-                }
-                
-                //create swap chain
-                _hr = vkCreateSwapchainKHR(pGDevice->vk_device,
-                                           &_swap_chain_create_info,
-                                           nullptr,
-                                           &_output_presentation_window->vk_swap_chain);
-		if (_hr)
-		{
-                    logger.error("error on creating swap chain for vulkan for graphics device: " + 
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                //get the count of swap chain 's images
-                uint32_t _swap_chain_image_count = UINT32_MAX;
-                _hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
-                                              _output_presentation_window->vk_swap_chain,
-                                              &_swap_chain_image_count,
-                                              nullptr);
-		if (_hr)
-		{
-                    logger.error("error on getting total available image counts of swap chain for graphics device: " +
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                std::vector<VkImage> _swap_chain_images(_swap_chain_image_count);
-                _hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
-                                              _output_presentation_window->vk_swap_chain,
-                                              &_swap_chain_image_count,
-                                              _swap_chain_images.data());
-		if (_hr)
-		{
-                    logger.error("error on getting total available images of swap chain for graphics device: " +
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                for (size_t j = 0; j < _swap_chain_images.size(); ++j)
-                {
-                    VkImageViewCreateInfo _color_image_view = {};
-                    
-                    _color_image_view.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-                    _color_image_view.pNext = nullptr;
-                    _color_image_view.flags = 0;
-                    _color_image_view.image = _swap_chain_images[j];
-                    _color_image_view.viewType = VK_IMAGE_VIEW_TYPE_2D;
-                    _color_image_view.format = _output_presentation_window->vk_swap_chain_selected_format;
-                    _color_image_view.components.r = VK_COMPONENT_SWIZZLE_R;
-                    _color_image_view.components.g = VK_COMPONENT_SWIZZLE_G;
-                    _color_image_view.components.b = VK_COMPONENT_SWIZZLE_B;
-                    _color_image_view.components.a = VK_COMPONENT_SWIZZLE_A;
-                    _color_image_view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-                    _color_image_view.subresourceRange.baseMipLevel = 0;
-                    _color_image_view.subresourceRange.levelCount = 1;
-                    _color_image_view.subresourceRange.baseArrayLayer = 0;
-                    _color_image_view.subresourceRange.layerCount = 1;
-                    
-                    vk_image_view _image_view;
-                    _image_view.image = _swap_chain_images[j];
-                    
-                    _hr = vkCreateImageView(pGDevice->vk_device,
-                                            &_color_image_view, 
-                                            nullptr,
-                                            &_image_view.view);
-                    if (_hr)
-                    {
-			logger.error("error on creating image view total available images of swap chain for graphics device: " +
-                            _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-			release();
-			std::exit(EXIT_FAILURE);    
-                    }
+					V(_hr, L"could not get physical device surface support for graphics device: " +
+						std::wstring(_device_name.begin(), _device_name.end()) +
+						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+						this->_name, 2);
 
-                    _output_presentation_window->vk_swap_chain_image_views.push_back(_image_view);
-                }
+					if (pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX &&
+						pGDevice->vk_queue_family_selected_index != SIZE_MAX &&
+						pGDevice->vk_queue_family_supports_present[j])
+					{
+						pGDevice->vk_queue_family_selected_support_present_index = j;
+					}
+				}
+
+				V(pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX ? S_FALSE : S_OK,
+					L"could not find queue family which supports presentation for graphics device: " +
+					std::wstring(_device_name.begin(), _device_name.end()) +
+					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+					this->_name, 2);
+
+				//get the list of VkFormats that are supported:
+				uint32_t _vk_format_count;
+				auto _hr = vkGetPhysicalDeviceSurfaceFormatsKHR(pGDevice->vk_physical_device,
+					_vk_presentation_surface,
+					&_vk_format_count,
+					NULL);
+				if (_hr)
+				{
+					logger.error("could not get number of physical device surface formats for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				_output_presentation_window->vk_surface_formats.resize(_vk_format_count);
+
+				_hr = vkGetPhysicalDeviceSurfaceFormatsKHR(pGDevice->vk_physical_device,
+					_vk_presentation_surface,
+					&_vk_format_count,
+					_output_presentation_window->vk_surface_formats.data());
+				if (_hr)
+				{
+					logger.error("could not get physical device surface formats for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				/*
+					If the format list includes just one entry of VK_FORMAT_UNDEFINED,
+					the surface has no preferred format.  Otherwise, at least one
+					supported format will be returned.
+				*/
+				if (_vk_format_count == 1 && _output_presentation_window->vk_surface_formats[0].format == VkFormat::VK_FORMAT_UNDEFINED)
+				{
+#ifdef __ANDROID
+					_output_presentation_window->vk_swap_chain_selected_format.format = VkFormat::VK_FORMAT_R8G8B8A8_UNORM;
+#else
+					_output_presentation_window->vk_swap_chain_selected_format = VK_FORMAT_B8G8R8A8_UNORM;
+#endif // __ANDROID
+
+					_output_presentation_window->vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+				}
+				else
+				{
+					bool _find_format = false;
+					for (auto _iter : _output_presentation_window->vk_surface_formats)
+					{
+						if (_iter.format == _output_presentation_window->vk_swap_chain_selected_format.format)
+						{
+							_find_format = true;
+							break;
+						}
+					}
+					//use the default one
+					if (!_find_format)
+					{
+						_output_presentation_window->vk_swap_chain_selected_format = _output_presentation_window->vk_surface_formats[0];
+					}
+				}
+
+				VkSurfaceCapabilitiesKHR _surface_capabilities;
+				_hr = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pGDevice->vk_physical_device,
+					_vk_presentation_surface,
+					&_surface_capabilities);
+				if (_hr)
+				{
+					logger.error("error on create vulkan surface capabilities for graphics device: " +
+						_device_name +
+						" and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//get the count of present modes
+				uint32_t _present_mode_count;
+				_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
+					_vk_presentation_surface,
+					&_present_mode_count, nullptr);
+				if (_hr)
+				{
+					logger.error("error on getting vulkan present mode(s) count for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//get present modes
+				std::vector<VkPresentModeKHR> _present_modes(_present_mode_count);
+				_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
+					_vk_presentation_surface,
+					&_present_mode_count,
+					_present_modes.data());
+				if (_hr)
+				{
+					logger.error("error on getting vulkan present mode(s) for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//width and height are either both 0xFFFFFFFF, or both not 0xFFFFFFFF.
+				VkExtent2D _swap_chain_extent;
+				if (_surface_capabilities.currentExtent.width == 0xFFFFFFFF)
+				{
+					// If the surface size is undefined, the size is set to the size of the images requested.
+					_swap_chain_extent.width = _output_presentation_window->width;
+					_swap_chain_extent.height = _output_presentation_window->height;
+
+					if (_swap_chain_extent.width < _surface_capabilities.minImageExtent.width)
+					{
+						_swap_chain_extent.width = _surface_capabilities.minImageExtent.width;
+					}
+					else if (_swap_chain_extent.width > _surface_capabilities.maxImageExtent.width)
+					{
+						_swap_chain_extent.width = _surface_capabilities.maxImageExtent.width;
+					}
+
+					if (_swap_chain_extent.height < _surface_capabilities.minImageExtent.height)
+					{
+						_swap_chain_extent.height = _surface_capabilities.minImageExtent.height;
+					}
+					else if (_swap_chain_extent.height > _surface_capabilities.maxImageExtent.height)
+					{
+						_swap_chain_extent.height = _surface_capabilities.maxImageExtent.height;
+					}
+				}
+				else
+				{
+					// If the surface size is defined, the swap chain size must match
+					_swap_chain_extent = _surface_capabilities.currentExtent;
+				}
+
+				//the FIFO present mode is guaranteed by the spec to be supported
+				VkPresentModeKHR _swap_chain_present_mode = _output_presentation_window->v_sync ?
+					VK_PRESENT_MODE_FIFO_KHR : VK_PRESENT_MODE_IMMEDIATE_KHR;
+
+				/*
+					Determine the number of VkImage's to use in the swap chain.
+					We need to acquire only 1 presentable image at at time.
+					Asking for minImageCount images ensures that we can acquire
+					1 presentable image as long as we present it before attempting
+					to acquire another.
+				*/
+				uint32_t _desired_number_of_swapchain_images = _surface_capabilities.minImageCount;
+				VkSurfaceTransformFlagBitsKHR _pre_transform;
+				if (_surface_capabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
+				{
+					_pre_transform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+				}
+				else
+				{
+					_pre_transform = _surface_capabilities.currentTransform;
+				}
+
+				uint32_t _queue_family = 0;
+				VkSwapchainCreateInfoKHR _swap_chain_create_info = {};
+				_swap_chain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+				_swap_chain_create_info.pNext = nullptr;
+				_swap_chain_create_info.surface = _vk_presentation_surface;
+				_swap_chain_create_info.minImageCount = _desired_number_of_swapchain_images;
+				_swap_chain_create_info.imageFormat = _output_presentation_window->vk_swap_chain_selected_format.format;
+				_swap_chain_create_info.imageColorSpace = _output_presentation_window->vk_swap_chain_selected_format.colorSpace;
+				_swap_chain_create_info.imageExtent = _surface_capabilities.currentExtent;
+				_swap_chain_create_info.preTransform = _pre_transform;
+				_swap_chain_create_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+				_swap_chain_create_info.imageArrayLayers = 1;
+				_swap_chain_create_info.presentMode = _swap_chain_present_mode;
+				_swap_chain_create_info.oldSwapchain = VK_NULL_HANDLE;
+				_swap_chain_create_info.clipped = VK_TRUE;
+				_swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+				_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+				_swap_chain_create_info.queueFamilyIndexCount = 1;
+				_swap_chain_create_info.pQueueFamilyIndices = &_queue_family;
+
+				uint32_t _queue_family_indices[2] =
+				{
+					(uint32_t)pGDevice->vk_queue_family_selected_index,
+					(uint32_t)pGDevice->vk_queue_family_selected_support_present_index,
+				};
+				if (_queue_family_indices[0] != _queue_family_indices[1])
+				{
+					/*
+					If the graphics and present queues are from different queue families,
+					we either have to explicitly transfer ownership of images between
+					the queues, or we have to create the swap chain with imageSharingMode
+					as VK_SHARING_MODE_CONCURRENT
+					*/
+					_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+					_swap_chain_create_info.queueFamilyIndexCount = 2;
+					_swap_chain_create_info.pQueueFamilyIndices = _queue_family_indices;
+				}
+
+				//create swap chain
+				_hr = vkCreateSwapchainKHR(pGDevice->vk_device,
+					&_swap_chain_create_info,
+					nullptr,
+					&_output_presentation_window->vk_swap_chain);
+				if (_hr || !_output_presentation_window->vk_swap_chain)
+				{
+					logger.error("error on creating swap chain for vulkan for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//get the count of swap chain 's images
+				uint32_t _swap_chain_image_count = UINT32_MAX;
+				_hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
+					_output_presentation_window->vk_swap_chain,
+					&_swap_chain_image_count,
+					nullptr);
+				if (_hr || _swap_chain_image_count == UINT32_MAX)
+				{
+					logger.error("error on getting total available image counts of swap chain for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				std::vector<VkImage> _swap_chain_images(_swap_chain_image_count);
+				_hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
+					_output_presentation_window->vk_swap_chain,
+					&_swap_chain_image_count,
+					_swap_chain_images.data());
+				if (_hr)
+				{
+					logger.error("error on getting total available images of swap chain for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				for (size_t j = 0; j < _swap_chain_images.size(); ++j)
+				{
+					VkImageViewCreateInfo _color_image_view = {};
+
+					_color_image_view.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+					_color_image_view.pNext = nullptr;
+					_color_image_view.flags = 0;
+					_color_image_view.image = _swap_chain_images[j];
+					_color_image_view.viewType = VK_IMAGE_VIEW_TYPE_2D;
+					_color_image_view.format = _output_presentation_window->vk_swap_chain_selected_format.format;
+					_color_image_view.components.r = VK_COMPONENT_SWIZZLE_R;
+					_color_image_view.components.g = VK_COMPONENT_SWIZZLE_G;
+					_color_image_view.components.b = VK_COMPONENT_SWIZZLE_B;
+					_color_image_view.components.a = VK_COMPONENT_SWIZZLE_A;
+					_color_image_view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+					_color_image_view.subresourceRange.baseMipLevel = 0;
+					_color_image_view.subresourceRange.levelCount = 1;
+					_color_image_view.subresourceRange.baseArrayLayer = 0;
+					_color_image_view.subresourceRange.layerCount = 1;
+
+					vk_image_view _image_view;
+					_image_view.image = _swap_chain_images[j];
+
+					_hr = vkCreateImageView(pGDevice->vk_device,
+						&_color_image_view,
+						nullptr,
+						&_image_view.view);
+					if (_hr)
+					{
+						logger.error("error on creating image view total available images of swap chain for graphics device: " +
+							_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					_output_presentation_window->vk_swap_chain_image_views.push_back(_image_view);
+				}
 #endif //__DX12__
-            }
+			}
+
+			//Release all resources
+			ULONG release()
+			{
+				if (this->_is_released)  return 0;
+
+				//release all windows info
+				this->_is_released = true;
+				this->_windows_info.clear();
+				this->_name = "";
+
+				return 1;
+			}
+
+#pragma region Getters
+
+			bool get_is_released() const
+			{
+				return this->_is_released;
+			}
+
+#pragma endregion
+
+#pragma region Setters
+
+			void set_graphics_device_manager_configs(_In_ const w_graphics_device_manager_configs& pConfig)
+			{
+				this->_config = pConfig;
+			}
+
+			void set_output_windows_info(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
+			{
+				this->_windows_info = pOutputWindowsInfo;
+			}
+
+#pragma endregion
+
+		private:
             
-            void _create_depth_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
-            {
+			void _create_depth_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
+			{
 #ifdef __DX12__ 
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
@@ -1383,149 +1695,149 @@ namespace wolf
 				auto _device_name = pGDevice->device_name;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
-                VkImageCreateInfo _depth_buffer_image_info = {};
-                const VkFormat _depth_format = VK_FORMAT_D16_UNORM;
-                
-                VkFormatProperties _properties;
-                vkGetPhysicalDeviceFormatProperties(pGDevice->vk_physical_device, _depth_format, &_properties);
-                
-                if (_properties.linearTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) 
-                {
-                    _depth_buffer_image_info.tiling = VK_IMAGE_TILING_LINEAR;
-                } 
-                else if (_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) 
-                {
-                    _depth_buffer_image_info.tiling = VK_IMAGE_TILING_OPTIMAL;
-                } 
-                else
-		{
-                    logger.error("VK_FORMAT_D16_UNORM Unsupported for depth buffer for graphics device: " +
-                    _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                auto _window = pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex);
-                
-                _depth_buffer_image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-                _depth_buffer_image_info.pNext = nullptr;
-                _depth_buffer_image_info.imageType = VK_IMAGE_TYPE_2D;
-                _depth_buffer_image_info.format = _depth_format;
-                _depth_buffer_image_info.extent.width = _window.width;
-                _depth_buffer_image_info.extent.height = _window.height;
-                _depth_buffer_image_info.extent.depth = 1;
-                _depth_buffer_image_info.mipLevels = 1;
-                _depth_buffer_image_info.arrayLayers = 1;
-                _depth_buffer_image_info.samples = NUM_SAMPLES;
-                _depth_buffer_image_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-                _depth_buffer_image_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-                _depth_buffer_image_info.queueFamilyIndexCount = 0;
-                _depth_buffer_image_info.pQueueFamilyIndices = nullptr;
-                _depth_buffer_image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-                _depth_buffer_image_info.flags = 0;
-                
-                VkMemoryAllocateInfo _mem_alloc = {};
-                _mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-                _mem_alloc.pNext = nullptr;
-                _mem_alloc.allocationSize = 0;
-                _mem_alloc.memoryTypeIndex = 0;
-                
-                _output_presentation_window->vk_depth_buffer_format = _depth_format;
-                
-                //Create image
-                auto _hr = vkCreateImage(pGDevice->vk_device,
-                                         &_depth_buffer_image_info, 
-                                         nullptr, 
-                                         &_output_presentation_window->vk_depth_buffer_image_view.image);
-		if (_hr)
-		{
-                    logger.error("error on creating depth buffer for graphics device: " +
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                VkMemoryRequirements _mem_reqs;
-                vkGetImageMemoryRequirements(pGDevice->vk_device,
-                                             _output_presentation_window->vk_depth_buffer_image_view.image, 
-                                             &_mem_reqs);
-                
-                _mem_alloc.allocationSize = _mem_reqs.size;
-                
-                //use the memory properties to determine the type of memory required
-                _hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
-                                                   _mem_reqs.memoryTypeBits, 
-                                                   0, // No Requirements
-                                                   &_mem_alloc.memoryTypeIndex);
-		if (_hr)
-		{
-                    logger.error("error on determining the type of memory required from memory properties for graphics device: " +
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                //allocate memory
-                _hr = vkAllocateMemory(pGDevice->vk_device,
-                                       &_mem_alloc, 
-                                       nullptr, 
-                                       &_output_presentation_window->vk_depth_buffer_memory);
-                if (_hr)
-		{
-                    logger.error("error on allocating memory for depth buffer image for graphics device: " + 
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                //bind memory
-                _hr = vkBindImageMemory(pGDevice->vk_device,
-                                        _output_presentation_window->vk_depth_buffer_image_view.image, 
-                                        _output_presentation_window->vk_depth_buffer_memory, 
-                                        0);
-                if (_hr)
-		{
-                    logger.error("error on binding to memory for depth buffer image for graphics device: " +
-                  _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                //create depth buffer image view
-                VkImageViewCreateInfo _depth_buffer_view_info = {};
-                _depth_buffer_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-                _depth_buffer_view_info.pNext = nullptr;
-                _depth_buffer_view_info.image = _output_presentation_window->vk_depth_buffer_image_view.image;
-                _depth_buffer_view_info.format = _depth_format;
-                _depth_buffer_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
-                _depth_buffer_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
-                _depth_buffer_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
-                _depth_buffer_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
-                _depth_buffer_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-                _depth_buffer_view_info.subresourceRange.baseMipLevel = 0;
-                _depth_buffer_view_info.subresourceRange.levelCount = 1;
-                _depth_buffer_view_info.subresourceRange.baseArrayLayer = 0;
-                _depth_buffer_view_info.subresourceRange.layerCount = 1;
-                _depth_buffer_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-                _depth_buffer_view_info.flags = 0;
-                
-                _hr = vkCreateImageView(pGDevice->vk_device,
-                                        &_depth_buffer_view_info, 
-                                        nullptr, 
-                                        &_output_presentation_window->vk_depth_buffer_image_view.view);
-                if (_hr)
-		{
-                    logger.error("error on creating image view for depth buffer image for graphics device: " + 
-                  _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
+				VkImageCreateInfo _depth_buffer_image_info = {};
+				const VkFormat _depth_format = VK_FORMAT_D16_UNORM;
+
+				VkFormatProperties _properties;
+				vkGetPhysicalDeviceFormatProperties(pGDevice->vk_physical_device, _depth_format, &_properties);
+
+				if (_properties.linearTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+				{
+					_depth_buffer_image_info.tiling = VK_IMAGE_TILING_LINEAR;
+				}
+				else if (_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+				{
+					_depth_buffer_image_info.tiling = VK_IMAGE_TILING_OPTIMAL;
+				}
+				else
+				{
+					logger.error("VK_FORMAT_D16_UNORM Unsupported for depth buffer for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				auto _window = pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex);
+
+				_depth_buffer_image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+				_depth_buffer_image_info.pNext = nullptr;
+				_depth_buffer_image_info.imageType = VK_IMAGE_TYPE_2D;
+				_depth_buffer_image_info.format = _depth_format;
+				_depth_buffer_image_info.extent.width = _window.width;
+				_depth_buffer_image_info.extent.height = _window.height;
+				_depth_buffer_image_info.extent.depth = 1;
+				_depth_buffer_image_info.mipLevels = 1;
+				_depth_buffer_image_info.arrayLayers = 1;
+				_depth_buffer_image_info.samples = NUM_SAMPLES;
+				_depth_buffer_image_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+				_depth_buffer_image_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+				_depth_buffer_image_info.queueFamilyIndexCount = 0;
+				_depth_buffer_image_info.pQueueFamilyIndices = nullptr;
+				_depth_buffer_image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+				_depth_buffer_image_info.flags = 0;
+
+				VkMemoryAllocateInfo _mem_alloc = {};
+				_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+				_mem_alloc.pNext = nullptr;
+				_mem_alloc.allocationSize = 0;
+				_mem_alloc.memoryTypeIndex = 0;
+
+				_output_presentation_window->vk_depth_buffer_format = _depth_format;
+
+				//Create image
+				auto _hr = vkCreateImage(pGDevice->vk_device,
+					&_depth_buffer_image_info,
+					nullptr,
+					&_output_presentation_window->vk_depth_buffer_image_view.image);
+				if (_hr)
+				{
+					logger.error("error on creating depth buffer for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				VkMemoryRequirements _mem_reqs;
+				vkGetImageMemoryRequirements(pGDevice->vk_device,
+					_output_presentation_window->vk_depth_buffer_image_view.image,
+					&_mem_reqs);
+
+				_mem_alloc.allocationSize = _mem_reqs.size;
+
+				//use the memory properties to determine the type of memory required
+				_hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
+					_mem_reqs.memoryTypeBits,
+					0, // No Requirements
+					&_mem_alloc.memoryTypeIndex);
+				if (_hr)
+				{
+					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//allocate memory
+				_hr = vkAllocateMemory(pGDevice->vk_device,
+					&_mem_alloc,
+					nullptr,
+					&_output_presentation_window->vk_depth_buffer_memory);
+				if (_hr)
+				{
+					logger.error("error on allocating memory for depth buffer image for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//bind memory
+				_hr = vkBindImageMemory(pGDevice->vk_device,
+					_output_presentation_window->vk_depth_buffer_image_view.image,
+					_output_presentation_window->vk_depth_buffer_memory,
+					0);
+				if (_hr)
+				{
+					logger.error("error on binding to memory for depth buffer image for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//create depth buffer image view
+				VkImageViewCreateInfo _depth_buffer_view_info = {};
+				_depth_buffer_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+				_depth_buffer_view_info.pNext = nullptr;
+				_depth_buffer_view_info.image = _output_presentation_window->vk_depth_buffer_image_view.image;
+				_depth_buffer_view_info.format = _depth_format;
+				_depth_buffer_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
+				_depth_buffer_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
+				_depth_buffer_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
+				_depth_buffer_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
+				_depth_buffer_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+				_depth_buffer_view_info.subresourceRange.baseMipLevel = 0;
+				_depth_buffer_view_info.subresourceRange.levelCount = 1;
+				_depth_buffer_view_info.subresourceRange.baseArrayLayer = 0;
+				_depth_buffer_view_info.subresourceRange.layerCount = 1;
+				_depth_buffer_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+				_depth_buffer_view_info.flags = 0;
+
+				_hr = vkCreateImageView(pGDevice->vk_device,
+					&_depth_buffer_view_info,
+					nullptr,
+					&_output_presentation_window->vk_depth_buffer_image_view.view);
+				if (_hr)
+				{
+					logger.error("error on creating image view for depth buffer image for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 #endif
-            }
+			}
             
-            void _create_synchronization(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                                    _In_ size_t pOutputPresentationWindowIndex)
-            {
+			void _create_synchronization(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ size_t pOutputPresentationWindowIndex)
+			{
 #ifdef __DX12__ 
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
@@ -1551,47 +1863,47 @@ namespace wolf
 				_output_presentation_window->dx_fence_value = 1;
 
 #elif defined(__VULKAN__)
-                auto _device_name = pGDevice->device_name;
-                auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
-                
-                VkSemaphoreCreateInfo _create_info = {};
-                _create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-                
-                auto _hr = vkCreateSemaphore(pGDevice->vk_device,
-                                             &_create_info,
-                                             nullptr,
-                                             &_output_presentation_window->vk_image_is_available_semaphore);
-                if (_hr)
-		{
-                    logger.error("error on creating image_is_available semaphore for graphics device: " + 
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                _hr = vkCreateSemaphore(pGDevice->vk_device,
-                                        &_create_info,
-                                        nullptr,
-                                        &_output_presentation_window->vk_rendering_done_semaphore);
-                if (_hr)
-		{
-                    logger.error("error on creating rendering_is_done semaphore for graphics device: " + 
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
+				auto _device_name = pGDevice->device_name;
+				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
+				VkSemaphoreCreateInfo _create_info = {};
+				_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+				auto _hr = vkCreateSemaphore(pGDevice->vk_device,
+					&_create_info,
+					nullptr,
+					&_output_presentation_window->vk_image_is_available_semaphore);
+				if (_hr)
+				{
+					logger.error("error on creating image_is_available semaphore for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				_hr = vkCreateSemaphore(pGDevice->vk_device,
+					&_create_info,
+					nullptr,
+					&_output_presentation_window->vk_rendering_done_semaphore);
+				if (_hr)
+				{
+					logger.error("error on creating rendering_is_done semaphore for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 #endif
-            }
+			}
             
-            void _create_command_queue(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                                       _In_ size_t pOutputPresentationWindowIndex)
-            {
+			void _create_command_queue(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ size_t pOutputPresentationWindowIndex)
+			{
 #ifdef __DX12__ 
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				//create command allocator pool
-				auto _hr = pGDevice->dx_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT, 
+				auto _hr = pGDevice->dx_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
 					IID_PPV_ARGS(&_output_presentation_window->dx_command_allocator_pool));
 				if (FAILED(_hr))
 				{
@@ -1621,7 +1933,7 @@ namespace wolf
 				_hr = pGDevice->dx_device->CreateCommandList(0,
 					D3D12_COMMAND_LIST_TYPE_DIRECT,
 					_output_presentation_window->dx_command_allocator_pool.Get(),
-					nullptr, 
+					nullptr,
 					IID_PPV_ARGS(&_output_presentation_window->dx_command_list));
 				if (FAILED(_hr))
 				{
@@ -1635,153 +1947,210 @@ namespace wolf
 				_output_presentation_window->dx_command_list->Close();
 
 #elif defined(__VULKAN__) 
-				
+
 				auto _device_name = pGDevice->device_name;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
-                //create a command pool to allocate our command buffer from
-                VkCommandPoolCreateInfo _command_pool_info = {};
-                _command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-                _command_pool_info.pNext = nullptr;
-                _command_pool_info.queueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_index);
-                _command_pool_info.flags = 0;
-                
-                auto _hr = vkCreateCommandPool(pGDevice->vk_device,
-                                               &_command_pool_info,
-                                               nullptr,
-                                               &_output_presentation_window->vk_command_allocator_pool);
-                if (_hr)
-		{
-                    logger.error("error on creating vulkan command pool for graphics device: " +
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                //resize command buffers based on swap chains
-                auto _command_buffer_counts = static_cast<uint32_t>(_output_presentation_window->vk_swap_chain_image_views.size());
-                
-                //create the command buffer from the command pool
-                VkCommandBufferAllocateInfo _command_buffer_info = {};
-                _command_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-                _command_buffer_info.pNext = nullptr;
-                _command_buffer_info.commandPool = _output_presentation_window->vk_command_allocator_pool;
-                _command_buffer_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-                _command_buffer_info.commandBufferCount = _command_buffer_counts;
-                
-                _output_presentation_window->vk_command_queues.resize(_command_buffer_counts);
-                
-                _hr = vkAllocateCommandBuffers(pGDevice->vk_device,
-                                               &_command_buffer_info,
-                                               _output_presentation_window->vk_command_queues.data());
-                if (_hr)
-		{
-                    logger.error("error on creating vulkan command buffers for swap chain of graphics device: " 
-                        + _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                    release();
-                    std::exit(EXIT_FAILURE);
-		}
-                
-                //prepare data for recording command buffers
-                VkCommandBufferBeginInfo _command_buffer_begin_info = {};
-                _command_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-                _command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-                
-                VkImageSubresourceRange _sub_resource_range = {};
-                _sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-                _sub_resource_range.baseMipLevel = 0;
-                _sub_resource_range.levelCount = 1;
-                _sub_resource_range.baseArrayLayer = 0;
-                _sub_resource_range.layerCount = 1;
-                
-                VkClearColorValue _vk_clear_color =
-                {
-                    static_cast<float>(_output_presentation_window->clear_color.r / 255.0f),
-                    static_cast<float>(_output_presentation_window->clear_color.g / 255.0f),
-                    static_cast<float>(_output_presentation_window->clear_color.b / 255.0f),
-                    static_cast<float>(_output_presentation_window->clear_color.a / 255.0f)
-                };
-                
-                //record the command buffer for every swap chain image
-                for (uint32_t i = 0; i < _output_presentation_window->vk_swap_chain_image_views.size(); ++i)
-                {
-                    // Change layout of image to be optimal for clearing
-                    // Note: previous layout doesn't matter, which will likely cause contents to be discarded
-                    VkImageMemoryBarrier _present_to_clear_barrier = {};
-                    _present_to_clear_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-                    _present_to_clear_barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-                    _present_to_clear_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-                    _present_to_clear_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-                    _present_to_clear_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-                    _present_to_clear_barrier.srcQueueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
-                    _present_to_clear_barrier.dstQueueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
-                    _present_to_clear_barrier.image = _output_presentation_window->vk_swap_chain_image_views[i].image;
-                    _present_to_clear_barrier.subresourceRange = _sub_resource_range;
-                    
-                    //change layout of image to be optimal for presenting
-                    VkImageMemoryBarrier _clear_to_present_barrier = {};
-                    _clear_to_present_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-                    _clear_to_present_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-                    _clear_to_present_barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-                    _clear_to_present_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-                    _clear_to_present_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-                    _clear_to_present_barrier.srcQueueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
-                    _clear_to_present_barrier.dstQueueFamilyIndex =  static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
-                    _clear_to_present_barrier.image = _output_presentation_window->vk_swap_chain_image_views[i].image;
-                    _clear_to_present_barrier.subresourceRange = _sub_resource_range;
-                    
-                    //record command buffer
-                    _hr = vkBeginCommandBuffer(_output_presentation_window->vk_command_queues[i],
-                                               &_command_buffer_begin_info);
-                    
-                    if (_hr)
-                    {
-                        logger.error("error on beginning command buffer of graphics device: " + _device_name +
-                            " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                        release();
-                        std::exit(EXIT_FAILURE);
-                    }
-                    
-                    vkCmdPipelineBarrier(_output_presentation_window->vk_command_queues[i],
-                                         VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                         0,
-                                         0,
-                                         nullptr,
-                                         0,
-                                         nullptr,
-                                         1,
-                                         &_present_to_clear_barrier);
-                    
-                    vkCmdClearColorImage(_output_presentation_window->vk_command_queues[i],
-                                         _output_presentation_window->vk_swap_chain_image_views[i].image, 
-                                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
-                                         &_vk_clear_color, 
-                                         1, 
-                                         &_sub_resource_range);
-                    
-                    vkCmdPipelineBarrier(_output_presentation_window->vk_command_queues[i],
-                                         VK_PIPELINE_STAGE_TRANSFER_BIT, 
-                                         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 
-                                         0, 
-                                         0, 
-                                         nullptr, 
-                                         0, 
-                                         nullptr, 
-                                         1, 
-                                         &_clear_to_present_barrier);
-                    
-                    _hr = vkEndCommandBuffer(_output_presentation_window->vk_command_queues[i]);
-                    if (_hr)
-                    {
-                        logger.error("error on ending command buffer of graphics device: " + 
-                        _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                        release();
-                        std::exit(EXIT_FAILURE);
-                    }
-                }
+				//create a command pool to allocate our command buffer from
+				VkCommandPoolCreateInfo _command_pool_info = {};
+				_command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+				_command_pool_info.pNext = nullptr;
+				_command_pool_info.queueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_index);
+				_command_pool_info.flags = 0;
+
+				auto _hr = vkCreateCommandPool(pGDevice->vk_device,
+						&_command_pool_info,
+						nullptr,
+						&_output_presentation_window->vk_command_allocator_pool);
+				if (_hr)
+				{
+					logger.error("error on creating vulkan command pool for graphics device: " +
+						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//resize command buffers based on swap chains
+				auto _command_buffer_counts = static_cast<uint32_t>(_output_presentation_window->vk_swap_chain_image_views.size());
+
+				//create the command buffer from the command pool
+				VkCommandBufferAllocateInfo _command_buffer_info = {};
+				_command_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+				_command_buffer_info.pNext = nullptr;
+				_command_buffer_info.commandPool = _output_presentation_window->vk_command_allocator_pool;
+				_command_buffer_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+				_command_buffer_info.commandBufferCount = _command_buffer_counts;
+
+				_output_presentation_window->vk_command_queues.resize(_command_buffer_counts);
+
+				_hr = vkAllocateCommandBuffers(pGDevice->vk_device,
+						&_command_buffer_info,
+						_output_presentation_window->vk_command_queues.data());
+				if (_hr)
+				{
+					logger.error("error on creating vulkan command buffers for swap chain of graphics device: "
+						+ _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//prepare data for recording command buffers
+				VkCommandBufferBeginInfo _command_buffer_begin_info = {};
+				_command_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+				_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+
+				VkImageSubresourceRange _sub_resource_range = {};
+				_sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+				_sub_resource_range.baseMipLevel = 0;
+				_sub_resource_range.levelCount = 1;
+				_sub_resource_range.baseArrayLayer = 0;
+				_sub_resource_range.layerCount = 1;
+
+				VkClearColorValue _vk_clear_color =
+				{
+					static_cast<float>(_output_presentation_window->clear_color.r / 255.0f),
+					static_cast<float>(_output_presentation_window->clear_color.g / 255.0f),
+					static_cast<float>(_output_presentation_window->clear_color.b / 255.0f),
+					static_cast<float>(_output_presentation_window->clear_color.a / 255.0f)
+				};
+
+				//record the command buffer for every swap chain image
+				for (uint32_t i = 0; i < _output_presentation_window->vk_swap_chain_image_views.size(); ++i)
+				{
+					// Change layout of image to be optimal for clearing
+					// Note: previous layout doesn't matter, which will likely cause contents to be discarded
+					VkImageMemoryBarrier _present_to_clear_barrier = {};
+					_present_to_clear_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+					_present_to_clear_barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+					_present_to_clear_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+					_present_to_clear_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+					_present_to_clear_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+					_present_to_clear_barrier.srcQueueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
+					_present_to_clear_barrier.dstQueueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
+					_present_to_clear_barrier.image = _output_presentation_window->vk_swap_chain_image_views[i].image;
+					_present_to_clear_barrier.subresourceRange = _sub_resource_range;
+
+					//change layout of image to be optimal for presenting
+					VkImageMemoryBarrier _clear_to_present_barrier = {};
+					_clear_to_present_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+					_clear_to_present_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+					_clear_to_present_barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+					_clear_to_present_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+					_clear_to_present_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+					_clear_to_present_barrier.srcQueueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
+					_clear_to_present_barrier.dstQueueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
+					_clear_to_present_barrier.image = _output_presentation_window->vk_swap_chain_image_views[i].image;
+					_clear_to_present_barrier.subresourceRange = _sub_resource_range;
+
+					//record command buffer
+					_hr = vkBeginCommandBuffer(_output_presentation_window->vk_command_queues[i],
+						&_command_buffer_begin_info);
+
+					if (_hr)
+					{
+						logger.error("error on beginning command buffer of graphics device: " + _device_name +
+							" and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					vkCmdPipelineBarrier(_output_presentation_window->vk_command_queues[i],
+						VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+						0,
+						0,
+						nullptr,
+						0,
+						nullptr,
+						1,
+						&_present_to_clear_barrier);
+
+					vkCmdClearColorImage(_output_presentation_window->vk_command_queues[i],
+						_output_presentation_window->vk_swap_chain_image_views[i].image,
+						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+						&_vk_clear_color,
+						1,
+						&_sub_resource_range);
+
+					vkCmdPipelineBarrier(_output_presentation_window->vk_command_queues[i],
+						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+						0,
+						0,
+						nullptr,
+						0,
+						nullptr,
+						1,
+						&_clear_to_present_barrier);
+
+					_hr = vkEndCommandBuffer(_output_presentation_window->vk_command_queues[i]);
+					if (_hr)
+					{
+						logger.error("error on ending command buffer of graphics device: " +
+							_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+				}
 #endif
-            }
-                        
+			}
+            
+#ifdef __UWP
+			// This method determines the rotation between the display device's native Orientation and the current display orientation.
+			static DXGI_MODE_ROTATION _compute_display_rotation(_In_ Windows::Graphics::Display::DisplayOrientations pNativeRotation,
+				_In_ Windows::Graphics::Display::DisplayOrientations pCurrentRotation)
+			{
+				auto _rotation = DXGI_MODE_ROTATION::DXGI_MODE_ROTATION_UNSPECIFIED;
+
+				using namespace Windows::Graphics::Display;
+
+				// pNativeOrientation can only be Landscape or Portrait even though, the DisplayOrientations enum has other values.
+				switch (pNativeRotation)
+				{
+				case DisplayOrientations::Landscape:
+					switch (pCurrentRotation)
+					{
+					case DisplayOrientations::Landscape:
+						_rotation = DXGI_MODE_ROTATION_IDENTITY;
+						break;
+
+					case DisplayOrientations::Portrait:
+						_rotation = DXGI_MODE_ROTATION_ROTATE270;
+						break;
+
+					case DisplayOrientations::LandscapeFlipped:
+						_rotation = DXGI_MODE_ROTATION_ROTATE180;
+						break;
+
+					case DisplayOrientations::PortraitFlipped:
+						_rotation = DXGI_MODE_ROTATION_ROTATE90;
+						break;
+					}
+					break;
+
+				case DisplayOrientations::Portrait:
+					switch (pCurrentRotation)
+					{
+					case DisplayOrientations::Landscape:
+						_rotation = DXGI_MODE_ROTATION_ROTATE90;
+						break;
+
+					case DisplayOrientations::Portrait:
+						_rotation = DXGI_MODE_ROTATION_IDENTITY;
+						break;
+
+					case DisplayOrientations::LandscapeFlipped:
+						_rotation = DXGI_MODE_ROTATION_ROTATE270;
+						break;
+
+					case DisplayOrientations::PortraitFlipped:
+						_rotation = DXGI_MODE_ROTATION_ROTATE180;
+						break;
+					}
+					break;
+				}
+				return _rotation;
+			}
+#endif
             bool                                                _is_released;
 			w_graphics_device_manager_configs					_config;
             std::map<int, std::vector<w_window_info>>           _windows_info;
@@ -1794,13 +2163,18 @@ namespace wolf
 #pragma GCC visibility pop
 #endif
 
-w_graphics_device_manager::w_graphics_device_manager(_In_ w_graphics_device_manager_configs pConfig) : _pimp(new w_graphics_device_manager_pimp(pConfig))
+w_graphics_device_manager::w_graphics_device_manager() : 
+	_pimp(new w_graphics_device_manager_pimp())
 {
-	_super::set_class_name(typeid(this).name());
-        
+	_super::set_class_name("w_graphics_device_manager_pimp");// typeid(this).name());
+   
 #ifdef __WIN32
         auto _hr = CoInitialize(NULL);
 	V(_hr, L"CoInitialize", _super::name, 3, true, false);
+#endif
+
+#ifdef __ANDROID
+	InitVulkan();
 #endif
 }
 
@@ -1822,33 +2196,34 @@ void w_graphics_device_manager::initialize(_In_ std::map<int, std::vector<w_wind
     //If there is no associated graphics device
     if (this->graphics_devices.size() == 0)
     {
-	logger.error("No graphics device created");
-	release();
-	std::exit(EXIT_FAILURE);
+		logger.error("No graphics device created");
+		release();
+		std::exit(EXIT_FAILURE);
     }
 }
 
 void w_graphics_device_manager::on_device_lost()
 {
-//	logger.write(L"Device is going to reset");
-//	
-//	initialize();
-//	initialize_output_windows(this->_windows_info);
-//	
-//	logger.write(L"Device reseted successfully");
+	logger.write(L"Device is going to reset");
+	
+	//initialize();
+	//initialize_output_windows(this->_windows_info);
+	
+	logger.write(L"Device reseted successfully");
 }
 
-void w_graphics_device_manager::on_window_resized(UINT pIndex)
+void w_graphics_device_manager::on_window_resized(_In_ UINT pIndex)
 {
-//	if (pIndex >= this->graphics_devices.size()) return;
-//
-//	auto _gDevice = this->graphics_devices.at(pIndex);
-//	auto _size = _gDevice->output_windows.size();
-//	for (size_t j = 0; j < _size; ++j)
-//	{
-//		auto _window = _gDevice->output_windows.at(j);
-//		_create_swapChain_for_window(_gDevice, _window);
-//	}
+	if (pIndex >= this->graphics_devices.size()) return;
+
+	auto _gDevice = this->graphics_devices.at(pIndex);
+	auto _size = _gDevice->output_presentation_windows.size();
+	for (size_t i = 0; i < _size; ++i)
+	{
+		auto _window = _gDevice->output_presentation_windows.at(i);
+		wait_for_previous_frame(_gDevice, i);
+		//this->_pimp->create_or_resize_swap_chain(_gDevice, i);
+	}
 }
 
 void w_graphics_device_manager::wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
@@ -1882,31 +2257,30 @@ void w_graphics_device_manager::wait_for_previous_frame(_In_ const std::shared_p
 #endif
 }
 
-
 HRESULT w_graphics_device_manager::begin_render()
 {
-    for (size_t i = 0; i < this->graphics_devices.size(); ++i)
-    {
-        auto _gDevice  = this->graphics_devices[i];
-        for (size_t j = 0 ; j < _gDevice->output_presentation_windows.size(); ++j)
-        {
-            auto _present_window = &(_gDevice->output_presentation_windows[j]);
-            
+	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
+	{
+		auto _gDevice = this->graphics_devices[i];
+		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
+		{
+			auto _present_window = &(_gDevice->output_presentation_windows[j]);
+
 #ifdef __DX12__
 
 			wait_for_previous_frame(_gDevice, j);
 
 			/*
-				Command list allocators can only be reset when the associated 
-				command lists have finished execution on the GPU; apps should use 
+				Command list allocators can only be reset when the associated
+				command lists have finished execution on the GPU; apps should use
 				fences to determine GPU execution progress.
 			*/
 			auto _hr = _present_window->dx_command_allocator_pool->Reset();
 			if (FAILED(_hr)) return S_FALSE;
 
 			/*
-				However, when ExecuteCommandList() is called on a particular command 
-				list, that command list can then be reset at any time and must be before 
+				However, when ExecuteCommandList() is called on a particular command
+				list, that command list can then be reset at any time and must be before
 				re-recording.
 			*/
 			_hr = _present_window->dx_command_list->Reset(_present_window->dx_command_allocator_pool.Get(), _present_window->dx_pipeline_state.Get());
@@ -1930,17 +2304,24 @@ HRESULT w_graphics_device_manager::begin_render()
 				_render_target_view_handle.ptr += _render_target_view_desc_size;
 			}
 
-			//set the back buffer render target
-			_present_window->dx_command_list->OMSetRenderTargets(1, &_render_target_view_handle, FALSE, NULL);
-			
-			float _clear_color[4] =
+			//no need to clear render target views
+			if (_present_window->force_to_clear_color_times > 0)
 			{
-				static_cast<float>(_present_window->clear_color.r / 255.0f),
-				static_cast<float>(_present_window->clear_color.g / 255.0f),
-				static_cast<float>(_present_window->clear_color.b / 255.0f),
-				static_cast<float>(_present_window->clear_color.a / 255.0f)
-			};
-			_present_window->dx_command_list->ClearRenderTargetView(_render_target_view_handle, _clear_color, 0, NULL );
+				//clear the first swap chain image view
+				_present_window->force_to_clear_color_times--;
+
+				//set the back buffer render target
+				_present_window->dx_command_list->OMSetRenderTargets(1, &_render_target_view_handle, FALSE, NULL);
+
+				float _clear_color[4] =
+				{
+					static_cast<float>(_present_window->clear_color.r / 255.0f),
+					static_cast<float>(_present_window->clear_color.g / 255.0f),
+					static_cast<float>(_present_window->clear_color.b / 255.0f),
+					static_cast<float>(_present_window->clear_color.a / 255.0f)
+				};
+				_present_window->dx_command_list->ClearRenderTargetView(_render_target_view_handle, _clear_color, 0, NULL);
+			}
 
 			//change the state of back buffer to transition into the presentation
 			_barrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -1954,97 +2335,114 @@ HRESULT w_graphics_device_manager::begin_render()
 			if (FAILED(_hr)) return S_FALSE;
 
 #elif defined(__VULKAN__)
-            auto _hr = vkAcquireNextImageKHR(_gDevice->vk_device,
-                                            _present_window->vk_swap_chain,
-                                             UINT64_MAX,
-                                             _present_window->vk_image_is_available_semaphore,
-                                             VK_NULL_HANDLE,
-                                             &_present_window->vk_swap_chain_image_index);
-            
-            if (_hr != VK_SUCCESS && _hr != VK_SUBOPTIMAL_KHR)
-            {
-                logger.error("error acquiring image of graphics device's swap chain : " + 
-                    std::to_string(i) + " and presentation window: " + std::to_string(j));
-                release();
-                std::exit(EXIT_FAILURE);
-            }
+			auto _hr = vkAcquireNextImageKHR(_gDevice->vk_device,
+				_present_window->vk_swap_chain,
+				UINT64_MAX,
+				_present_window->vk_image_is_available_semaphore,
+				VK_NULL_HANDLE,
+				&_present_window->vk_swap_chain_image_index);
 
-            //wait for image to be available and draw
-            VkSubmitInfo _submit_info = {};
-            _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+			if (_hr != VK_SUCCESS && _hr != VK_SUBOPTIMAL_KHR)
+			{
+				logger.error("error acquiring image of graphics device's swap chain : " +
+					std::to_string(i) + " and presentation window: " + std::to_string(j));
+				release();
+				std::exit(EXIT_FAILURE);
+			}
 
-            _submit_info.waitSemaphoreCount = 1;
-            _submit_info.pWaitSemaphores = &_present_window->vk_image_is_available_semaphore;
+			//wait for image to be available and draw
+			VkSubmitInfo _submit_info = {};
+			_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-            _submit_info.signalSemaphoreCount = 1;
-            _submit_info.pSignalSemaphores = &_present_window->vk_rendering_done_semaphore;
+			_submit_info.waitSemaphoreCount = 1;
+			_submit_info.pWaitSemaphores = &_present_window->vk_image_is_available_semaphore;
 
-            //this is the stage where the queue should wait on the semaphore (it doesn't have to wait with drawing, for example)
-            VkPipelineStageFlags _wait_dst_stage_mask = VK_PIPELINE_STAGE_TRANSFER_BIT;
-            _submit_info.pWaitDstStageMask = &_wait_dst_stage_mask;
+			_submit_info.signalSemaphoreCount = 1;
+			_submit_info.pSignalSemaphores = &_present_window->vk_rendering_done_semaphore;
 
-            _submit_info.commandBufferCount = 1;
-            _submit_info.pCommandBuffers = &_present_window->vk_command_queues[_present_window->vk_swap_chain_image_index];
-            
-            //submit queue
-            _hr = vkQueueSubmit(
-                    _gDevice->vk_present_queue, 
-                    1, 
-                    &_submit_info, 
-                    VK_NULL_HANDLE);
-            if (_hr)
-            {
-                logger.error("error on submitting queue of graphics device: " + 
-                    _gDevice->device_name + " and presentation window: " + std::to_string(j));
-                release();
-                std::exit(EXIT_FAILURE);
-            }
+			//this is the stage where the queue should wait on the semaphore (it doesn't have to wait with drawing, for example)
+			VkPipelineStageFlags _wait_dst_stage_mask = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			_submit_info.pWaitDstStageMask = &_wait_dst_stage_mask;
+
+			_submit_info.commandBufferCount = 1;
+			_submit_info.pCommandBuffers = &_present_window->vk_command_queues[_present_window->vk_swap_chain_image_index];
+
+			//submit queue
+			_hr = vkQueueSubmit(
+				_gDevice->vk_present_queue,
+				1,
+				&_submit_info,
+				VK_NULL_HANDLE);
+			if (_hr)
+			{
+				logger.error("error on submitting queue of graphics device: " +
+					_gDevice->device_name + " and presentation window: " + std::to_string(j));
+				release();
+				std::exit(EXIT_FAILURE);
+			}
 #endif
-        }
-    }
-    
-    return S_OK;
+		}
+	}
+
+	return S_OK;
 }
 
 void w_graphics_device_manager::end_render()
 {
-    for (size_t i = 0; i < this->graphics_devices.size(); ++i)
-    {
-        auto _gDevice  = this->graphics_devices[i];
-        for (size_t j = 0 ; j < _gDevice->output_presentation_windows.size(); ++j)
-        {
-            auto _present_window = &(_gDevice->output_presentation_windows[j]);
- 
+	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
+	{
+		auto _gDevice = this->graphics_devices[i];
+		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
+		{
+			auto _present_window = &(_gDevice->output_presentation_windows[j]);
+
 #ifdef __DX12__
 
 			//submit command list for executing
 			ID3D12CommandList* _command_lists[1] = { _present_window->dx_command_list.Get() };
 			_present_window->dx_command_queue->ExecuteCommandLists(1, _command_lists);
-			_present_window->dx_swap_chain->Present(_present_window->v_sync ? 1 : 0, 0);
+
+#ifdef __WIN32
+			auto _hr = _present_window->dx_swap_chain->Present(_present_window->v_sync ? 1 : 0, 0);
+#elif defined(__UWP)
+			auto _hr = _present_window->dx_swap_chain->Present(1, 0);
+#endif
+
+			/*
+				If the device was removed either by a disconnection or a driver upgrade, we
+				must recreate all device resources.
+			*/
+			if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
+			{
+				logger.error("Error on presenting swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
+					+ _gDevice->device_name);
+				// If the device was removed for any reason, a new device and swap chain will need to be created.
+				_gDevice->dx_device_removed = true;
+			}
 
 #elif defined(__VULKAN__)
-            VkPresentInfoKHR _present_info = {};
-            
-            _present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-            _present_info.waitSemaphoreCount = 1;
-            _present_info.pWaitSemaphores = &_present_window->vk_rendering_done_semaphore;
-  
-            _present_info.swapchainCount = 1;
-            _present_info.pSwapchains = &_present_window->vk_swap_chain;
-            _present_info.pImageIndices = &_present_window->vk_swap_chain_image_index;
+			VkPresentInfoKHR _present_info = {};
 
-            auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue,
-                                         &_present_info);
-            if (_hr)
-            {
-                logger.error("error on presenting queue of graphics device: " + 
-                    _gDevice->device_name + " and presentation window: " + std::to_string(j));
-                release();
-                std::exit(EXIT_FAILURE);
-            }
+			_present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+			_present_info.waitSemaphoreCount = 1;
+			_present_info.pWaitSemaphores = &_present_window->vk_rendering_done_semaphore;
+
+			_present_info.swapchainCount = 1;
+			_present_info.pSwapchains = &_present_window->vk_swap_chain;
+			_present_info.pImageIndices = &_present_window->vk_swap_chain_image_index;
+
+			auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue,
+					&_present_info);
+			if (_hr)
+			{
+				logger.error("error on presenting queue of graphics device: " +
+					_gDevice->device_name + " and presentation window: " + std::to_string(j));
+				release();
+				std::exit(EXIT_FAILURE);
+			}
 #endif
-        }
-    }
+		}
+	}
 }
 
 ULONG w_graphics_device_manager::release()
@@ -2080,9 +2478,13 @@ ULONG w_graphics_device_manager::release()
     //release vulkan instance
     if (w_graphics_device::vk_instance)
     {
-        vkDestroyInstance(w_graphics_device::vk_instance, nullptr);
+		vkDestroyInstance(w_graphics_device::vk_instance, nullptr);
         w_graphics_device::vk_instance = nullptr;
     }
+#endif
+
+#ifdef __ANDROID
+	FreeVulkan();
 #endif
 
 	return _super::release();
@@ -2121,13 +2523,20 @@ VkResult w_graphics_device_manager::memory_type_from_properties(
 //Get the main graphics device, this is first and the primary device.
 std::shared_ptr<w_graphics_device> w_graphics_device_manager::get_graphics_device() const
 {
-    return this->graphics_devices.size() > 0 ? this->graphics_devices.at(0) : nullptr;
+	return this->graphics_devices.size() > 0 ? this->graphics_devices.at(0) : nullptr;
 }
 
 //Returns number of available graphics devices
 const ULONG w_graphics_device_manager::get_number_of_graphics_devices() const
 {
-    return static_cast<ULONG>(this->graphics_devices.size());
+	return static_cast<ULONG>(this->graphics_devices.size());
+}
+
+w_color w_graphics_device_manager::get_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
+	_In_ size_t pOutputPresentationWindowIndex) const
+{
+	auto _output_presentation_window = &(this->graphics_devices[pGraphicsDeviceIndex]->output_presentation_windows[pOutputPresentationWindowIndex]);
+	return _output_presentation_window->clear_color;
 }
 
 #ifdef	__DX11_X__
@@ -2165,6 +2574,12 @@ concurrency::accelerator_view w_graphics_device_manager::get_camp_accelerator_vi
 }
 #endif
 
+const float w_graphics_device_manager::convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI)
+{
+	static const float dipsPerInch = 96.0f;
+	return floorf(pDIPS * pDPI / dipsPerInch + 0.5f); // Round to nearest integer.
+}
+
 //const DirectX::XMFLOAT2 w_graphics_device_manager::get_dpi() const
 //{
 //	auto _gDevice = get_graphics_device();
@@ -2188,6 +2603,32 @@ concurrency::accelerator_view w_graphics_device_manager::get_camp_accelerator_vi
 //	}
 //	return _inches;
 //}
+
+#pragma endregion
+
+#pragma region Setters
+
+void w_graphics_device_manager::set_graphics_device_manager_configs(_In_ const w_graphics_device_manager_configs& pConfig)
+{
+	if (this->_pimp)
+	{
+		this->_pimp->set_graphics_device_manager_configs(pConfig);
+	}
+}
+
+void w_graphics_device_manager::set_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
+	_In_ size_t pOutputPresentationWindowIndex, _In_ w_color pClearColor)
+{
+	auto _output_presentation_window = &(this->graphics_devices[pGraphicsDeviceIndex]->output_presentation_windows[pOutputPresentationWindowIndex]);
+	_output_presentation_window->clear_color = pClearColor;
+
+	//set how many images need to be refresh
+#ifdef __DX12__
+	_output_presentation_window->force_to_clear_color_times = _output_presentation_window->dx_swap_chain_image_views.size();
+#elif defined(__VULKAN__)
+	_output_presentation_window->force_to_clear_color_times = _output_presentation_window->vk_swap_chain_image_views.size();
+#endif
+}
 
 #pragma endregion
 

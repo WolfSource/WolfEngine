@@ -36,7 +36,7 @@ namespace wolf
 		public:
 
 			WSYS_EXP w_object();
-			WSYS_EXP virtual ~w_object() { release(); }
+			virtual ~w_object() { release(); }
 
 			WSYS_EXP virtual ULONG release() override;
 			WSYS_EXP virtual bool get_is_released();

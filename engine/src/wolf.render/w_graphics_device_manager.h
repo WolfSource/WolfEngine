@@ -30,7 +30,7 @@ using Microsoft::WRL::ComPtr;
 		#ifndef VK_USE_PLATFORM_WIN32_KHR
 			#define VK_USE_PLATFORM_WIN32_KHR
 		#endif
-	#elif defined(__linux)
+	#elif defined(__linux) && !defined(__ANDROID)
 		#ifndef VK_USE_PLATFORM_XCB_KHR
 			#define VK_USE_PLATFORM_XCB_KHR
 		#endif
@@ -44,6 +44,8 @@ using Microsoft::WRL::ComPtr;
 		#include <vulkan/vulkan.h>
 		#include <MoltenVK/vk_mvk_moltenvk.h>
 		#include <unistd.h>
+	#elif defined(__ANDROID)
+		#include "android/vulkan_wrapper.h"
 	#else
 		#include <vulkan/vulkan.hpp>
 	#endif
@@ -65,7 +67,6 @@ namespace wolf
 {
 	namespace graphics
 	{
-            
 		//the default config for creating graphics devices, you can edit the config before calling w_graphics_device_manager::initialize
 		struct w_graphics_device_manager_configs
 		{
@@ -79,8 +80,8 @@ namespace wolf
 #ifdef __VULKAN__
         struct vk_image_view
         {
-            VkImage                             image = nullptr;
-            VkImageView                         view = nullptr;;
+            VkImage                             image = NULL;
+            VkImageView                         view = NULL;
         };
 #endif
                 
@@ -97,7 +98,8 @@ namespace wolf
 #ifdef __WIN32
 				this->hwnd = NULL;
 				this->hInstance = NULL;
-                                
+#elif defined(__ANDROID)
+				this->window = nullptr;
 #elif defined(__linux)
                 this->xcb_connection = nullptr;
                 this->xcb_window = nullptr;
@@ -106,24 +108,40 @@ namespace wolf
 				return 1;
 			}
 
-			UINT									index = 0;
-			bool									is_full_screen = false;
-			UINT									width = 0;
-			UINT									height = 0;
-			float									aspectRatio = 0;
-#ifdef  __WIN32  
-			DWORD									pdwCookie;
-            HWND									hwnd = NULL;
-			HINSTANCE								hInstance = NULL;
+			UINT											index = 0;
+			bool											is_full_screen = false;
+			float											aspect_ratio = 0;
+
+#if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
+			UINT											width = 0;
+			UINT											height = 0;
+
+#ifdef  __WIN32
+			DWORD											pdwCookie;
+            HWND											hwnd = NULL;
+			HINSTANCE										hInstance = NULL;
+#elif defined(__ANDROID)
+			ANativeWindow*									window = nullptr;
 #elif defined(__linux)
-            xcb_connection_t*						xcb_connection = nullptr;
-            xcb_window_t*							xcb_window = nullptr;
+            xcb_connection_t*								xcb_connection = nullptr;
+            xcb_window_t*									xcb_window = nullptr;
 #elif defined(__APPLE__)
-            void*									window = nullptr;
+            void*											window = nullptr;
+#endif
+
+#elif defined(__UWP)
+			Windows::Graphics::Display::DisplayOrientations	window_native_orientation;
+			Windows::Graphics::Display::DisplayOrientations	window_current_orientation;
+			float											window_dpi;
+			bool											support_high_resolutions = true;
+			IUnknown*										window;
+			Windows::Foundation::Rect						window_size;
+			DirectX::XMFLOAT4X4								orientation_transform_3D;
 #endif
                       
 			bool									v_sync = true;
 			w_color                                 clear_color = w_color::from_hex(w_color::CORNFLOWER_BLUE);
+			int										force_to_clear_color_times;
 
 #ifdef __DX12__
 			
@@ -145,24 +163,25 @@ namespace wolf
 			ComPtr<ID3D12Fence>						dx_fence;
 			UINT64									dx_fence_value = 0;
 #elif defined(__VULKAN__)
-            VkSurfaceKHR							vk_presentation_surface = nullptr;
+            VkSurfaceKHR							vk_presentation_surface = NULL;
                         
-            VkFormat								vk_swap_chain_selected_format = VkFormat::VK_FORMAT_UNDEFINED;
-            VkSwapchainKHR							vk_swap_chain = nullptr;
+			VkSurfaceFormatKHR						vk_swap_chain_selected_format;
+			
+            VkSwapchainKHR							vk_swap_chain = NULL;
             std::vector<vk_image_view>				vk_swap_chain_image_views;
             uint32_t								vk_swap_chain_image_index = 0;
                         
-            VkCommandPool							vk_command_allocator_pool = nullptr;
+            VkCommandPool							vk_command_allocator_pool = NULL;
             std::vector<VkCommandBuffer>			vk_command_queues;
             std::vector<VkSurfaceFormatKHR>			vk_surface_formats;
                         
             VkFormat								vk_depth_buffer_format = VkFormat::VK_FORMAT_UNDEFINED;
             vk_image_view							vk_depth_buffer_image_view;
-            VkDeviceMemory							vk_depth_buffer_memory = nullptr;
+            VkDeviceMemory							vk_depth_buffer_memory = NULL;
             
 			//Synchronization objects
-            VkSemaphore								vk_image_is_available_semaphore = nullptr;
-            VkSemaphore								vk_rendering_done_semaphore = nullptr;
+            VkSemaphore								vk_image_is_available_semaphore = NULL;
+            VkSemaphore								vk_rendering_done_semaphore = NULL;
 #endif
 
         private:
@@ -190,6 +209,7 @@ namespace wolf
 			
 			ComPtr<IDXGIOutput>										dx_dxgi_outputs;
 
+			bool													dx_device_removed;
 			bool													dx_is_wrap_device;
 			D3D_FEATURE_LEVEL										dx_feature_level;
 			ComPtr<IDXGIAdapter1>									dx_adaptor;
@@ -228,8 +248,8 @@ namespace wolf
 		class w_graphics_device_manager : public system::w_object
 		{
 		public:               
-			W_EXP w_graphics_device_manager(_In_ w_graphics_device_manager_configs pConfig);                                        
-                        W_EXP virtual ~w_graphics_device_manager();
+			W_EXP w_graphics_device_manager();                                        
+            W_EXP virtual ~w_graphics_device_manager();
                         
 			//Initialize graphics devices
 			W_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
@@ -244,11 +264,25 @@ namespace wolf
 			//Release all resources
 			W_EXP ULONG release() override;
 
+			//convert dpis to pixels
+			static const float convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI);
+
+#pragma region Getters
 			//Get the main graphics device, this is first and the primary device.
             std::shared_ptr<w_graphics_device> get_graphics_device() const;
 			//Returns number of available graphics devices
             const ULONG get_number_of_graphics_devices() const;
-            
+			w_color get_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
+				_In_ size_t pOutputPresentationWindowIndex) const;
+#pragma endregion
+
+#pragma region Setters
+			W_EXP void set_graphics_device_manager_configs(_In_ const w_graphics_device_manager_configs& pConfig);
+			W_EXP void set_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
+				_In_ size_t pOutputPresentationWindowIndex, _In_ w_color pClearColor);
+#pragma endregion
+
+
 //			//Get deafult window HWND
 //			const HWND get_window_HWND() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? NULL : this->_windows_info.at(0).at(0).hwnd; }
 //			//Get deafult window HINSTANCE

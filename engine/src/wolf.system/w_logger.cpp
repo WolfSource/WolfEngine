@@ -109,6 +109,7 @@ namespace wolf
                     {
                         this->_log_file << _buffer[i].c_str();
                     }
+					clear_buffer();
                     
                     this->_log_file.flush();
                     
@@ -130,9 +131,8 @@ namespace wolf
                         std::wstring _created_time = L"\t\"Time\"             : \"" + get_date_timeW() + L"\",\r\n";
                         std::wstring _app_name = L"\t\"Application Name\" : \"" + pAppName + L"\",\r\n";
                         
-                        
-                        std::wstring _version = L"\t\"Version\"          : \"" + std::to_wstring(WOLF_MajorVersion) + L":" + std::to_wstring(WOLF_MinorVersion) +
-                        L":" + std::to_wstring(WOLF_PatchVersion) + L":" + std::to_wstring(WOLF_DebugVersion) + L"\",\r\n";
+                        std::wstring _version = L"\t\"Version\"          : \"" + std::to_wstring(WOLF_MAJOR_VERSION) + L":" + std::to_wstring(WOLF_MINOR_VERSION) +
+                        L":" + std::to_wstring(WOLF_PATCH_VERSION) + L":" + std::to_wstring(WOLF_DEBUG_VERSION) + L"\",\r\n";
                         
                         this->_log_file << L"{\r\n";
                         this->_log_file << L"\t\"Project\"          : \"Wolf Engine(http://WolfSource.io). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\",\r\n";
@@ -148,6 +148,7 @@ namespace wolf
                         {
                             this->_log_file << _buffer[i].c_str();
                         }
+						clear_buffer();
                         
                         this->_log_file.flush();
                         
@@ -179,13 +180,13 @@ namespace wolf
                 
 #endif //__WIN32 || __ANDROID __linux || __APPLE__
                 
-                void printf(std::wstring pMsg)
+                void print_buffer(std::wstring pMsg)
                 {
                     std::unique_lock<std::mutex> _lock(this->_mutex);
                     this->_msgs.push_back(pMsg + L"\r\n");
                 }
                 
-                void clearf()
+                void clear_buffer()
                 {
                     std::unique_lock<std::mutex> _lock(this->_mutex);
                     this->_msgs.clear();
@@ -358,14 +359,14 @@ bool w_logger::initialize(
     }    
 #endif
     
-void w_logger::printf(std::wstring pMsg)
+void w_logger::print_buffer(std::wstring pMsg)
 {
-     this->_pimp->printf(pMsg);
+     this->_pimp->print_buffer(pMsg);
 }
 
-void w_logger::clearf()
+void w_logger::clear_buffer()
 {
-    this->_pimp->clearf();
+    this->_pimp->clear_buffer();
 }
 
 std::vector<std::wstring> w_logger::get_buffer()

@@ -1,6 +1,6 @@
 #include "w_system_pch.h"
 
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(__UWP) && !defined(__ANDROID)
 
 #include "w_window.h"
 #include <map>
@@ -13,7 +13,7 @@ w_window::w_window() :
 #ifdef __WIN32
 	_hInstance(NULL),
 	_hwnd(NULL),
-#elif defined(__linux)
+#elif defined(__linux) && !defined(__ANDROID)
     _xcb_con(nullptr),
     _xcb_screen(nullptr),
     _xcb_window(nullptr),
@@ -145,7 +145,7 @@ HRESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> 
         return S_OK;
 }
 
-#elif defined(__linux)
+#elif defined(__linux) && !defined(__ANDROID)
 
 HRESULT w_window::initialize()
 {
@@ -301,7 +301,7 @@ void w_window::run(std::function<void(void)>& const pFunc)
 	}
 }
 
-#elif defined(__linux)
+#elif defined(__linux) && !defined(__ANDROID)
 void w_window::run(std::function<void(void)>& pFunc)
 {
     xcb_generic_event_t* _e = nullptr;
@@ -439,7 +439,7 @@ ULONG w_window::release()
 	UnregisterClass(this->_class_name.c_str(), NULL);
 	this->_class_name.clear();
         
-#elif defined(__linux)
+#elif defined(__linux) && !defined(__ANDROID)
         
         xcb_disconnect(this->_xcb_con);
         this->_xcb_con = nullptr;

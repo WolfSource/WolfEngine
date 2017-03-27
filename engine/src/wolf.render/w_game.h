@@ -30,7 +30,7 @@ namespace wolf
 		class w_game : public wolf::graphics::w_graphics_device_manager
 		{
 		public:
-			W_EXP w_game(_In_ wolf::graphics::w_graphics_device_manager_configs pConfig = wolf::graphics::w_graphics_device_manager_configs());
+			W_EXP w_game();
 			W_EXP virtual ~w_game();
 
 			//This will run the main loop cycle of the game
@@ -91,7 +91,7 @@ namespace wolf
 			W_EXP virtual HRESULT on_msg_proc(_In_ HWND pHWND, _In_ UINT pMessage, _In_ WPARAM pWParam, _In_ LPARAM pLParam);
 #endif
 
-			bool exiting;
+			bool													exiting;
 		private:
 			typedef	 wolf::graphics::w_graphics_device_manager      _super;
 			wolf::system::w_game_time                               _game_time;

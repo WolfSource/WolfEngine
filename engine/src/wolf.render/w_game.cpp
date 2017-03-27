@@ -3,7 +3,7 @@
 #include <future>
 
 using namespace std;
-using namespace wolf::graphics;
+//using namespace wolf::graphics;
 using namespace wolf::framework;
 
 #if defined(__linux) || defined(__ANDROID) || defined(__APPLE__)
@@ -12,18 +12,23 @@ std::string w_game::_content_directory_path = "";
 std::wstring w_game::_content_directory_path = L"";
 #endif
 
-w_game::w_game(_In_ w_graphics_device_manager_configs pConfig) : 
-	_super(pConfig),
+w_game::w_game() : 
 	exiting(false)
 {
-	_super::set_class_name(typeid(this).name());
+	_super::set_class_name("w_game");//typeid(this).name() not supported in NDK
 	this->loadState = LoadState::NOTLOADED;
 
 #if defined(__linux) || defined(__ANDROID) ||  defined(__APPLE__)
     logger.initialize(this->_app_name, wolf::system::io::get_current_directory());
     _content_directory_path = wolf::system::io::get_content_directory();
 #else
+
+#ifdef __WIN32
     logger.initialize(this->_app_name, wolf::system::io::get_current_directoryW());
+#elif defined (__UWP)
+	logger.initialize(this->_app_name);
+#endif
+
     _content_directory_path = wolf::system::io::get_content_directoryW();
 #endif
 }
@@ -87,30 +92,30 @@ void w_game::end_render(const wolf::system::w_game_time& pGameTime)
 
 #pragma region Show Printf on screen log messages
 
-    auto _msgs = logger.get_buffer();
-    auto _size = _msgs.size();
-    if (_size != 0)
-    {
-        this->sprite_batch->begin();
-        {
-            std::wstring _final_msg = L"";
-            for (size_t i = 0; i < _size; ++i)
-            {
-                _final_msg += _msgs.at(i) + L"\r\n";
-            }
-            this->sprite_batch->draw_string(_final_msg, 
-            D2D1::RectF(5, 5, static_cast<FLOAT>(get_window_width() / 2), static_cast<FLOAT>(get_window_height())));
-        }
-        this->sprite_batch->end();
-        
-        logger.clearf();
-    }
+	auto _msgs = logger.get_buffer();
+	auto _size = _msgs.size();
+	if (_size != 0)
+	{
+		this->sprite_batch->begin();
+		{
+			std::wstring _final_msg = L"";
+			for (size_t i = 0; i < _size; ++i)
+			{
+				_final_msg += _msgs.at(i) + L"\r\n";
+			}
+			this->sprite_batch->draw_string(_final_msg,
+				D2D1::RectF(5, 5, static_cast<FLOAT>(get_window_width() / 2), static_cast<FLOAT>(get_window_height())));
+		}
+		this->sprite_batch->end();
+
+		logger.clearf();
+	}
 
 #pragma endregion
 
 #endif
 
-    w_graphics_device_manager::end_render();
+	w_graphics_device_manager::end_render();
 }
 
 #ifdef __WIN32
@@ -123,20 +128,20 @@ HRESULT w_game::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pL
 
 bool w_game::run(map<int, vector<w_window_info>> pOutputWindowsInfo)
 {
-    if (this->loadState == LoadState::NOTLOADED)
-    {
-        this->loadState = LoadState::LOADING;
+	if (this->loadState == LoadState::NOTLOADED)
+	{
+		this->loadState = LoadState::LOADING;
 
-        //Async initialize & load
-        auto f = std::async(std::launch::async, [this, pOutputWindowsInfo]()->void
-                            {
-                                initialize(pOutputWindowsInfo);
-                                load();
-                                this->loadState = LoadState::LOADED;
-                            });
-        std::chrono::milliseconds _milli_sec(16);
-        f.wait_for(_milli_sec);
-    }
+		//Async initialize & load
+		auto f = std::async(std::launch::async, [this, pOutputWindowsInfo]()->void
+		{
+			initialize(pOutputWindowsInfo);
+			load();
+			this->loadState = LoadState::LOADED;
+		});
+		std::chrono::milliseconds _milli_sec(16);
+		f.wait_for(_milli_sec);
+	}
 
     if (this->loadState != LoadState::LOADED) return true;
 
@@ -164,5 +169,5 @@ ULONG w_game::release()
     this->exiting = true;
     logger.release();
 
-    return _super::release();
+	return  _super::release();
 }

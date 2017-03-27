@@ -48,7 +48,7 @@ namespace wolf
 			WSYS_EXP static std::future_status wait_for(_In_ const long long pMilliSeconds);
 			//wait only work for deferred task
 			template<typename _REP, typename _PER>
-			WSYS_EXP static std::future_status wait_for(_In_ const std::chrono::duration<_REP, _PER>& pTime);
+			static std::future_status wait_for(_In_ const std::chrono::duration<_REP, _PER>& pTime);
 			//wait only work for deferred task
 			WSYS_EXP static void wait();
 			//get only work for deferred task

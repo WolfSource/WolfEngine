@@ -158,7 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Wolf.System\Wolf.System.Win32.vcxproj">
+    <ProjectReference Include="..\..\wolf.system\wolf.system.Win32.vcxproj">
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
     </ProjectReference>
   </ItemGroup>

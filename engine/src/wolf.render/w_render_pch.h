@@ -33,7 +33,6 @@
 
 #endif
 
-
 #include <memory>
 #include <map>
 #include <string.h>

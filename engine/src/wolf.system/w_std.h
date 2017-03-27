@@ -82,6 +82,7 @@ extern "C" {
 #include <string>
 #include <sstream>
 #include <sys/stat.h>
+#include <memory>
 
 namespace std
 {
@@ -103,6 +104,16 @@ namespace std
 		_str.clear();
 		return _wstr;
 	}
+
+//#ifdef __ANDROID
+//	//Missing from the NDK
+//	template<typename T, typename... Args>
+//	std::unique_ptr<T> make_unique(Args&&... args)
+//	{
+//		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+//	}
+//#endif
+
 }
 
 #endif//ANDROID && __linux && __APPLE__

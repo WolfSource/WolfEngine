@@ -78,10 +78,10 @@ namespace wolf
 #elif defined(__UWP)
 			WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName);
 #endif
-			//Print message in to the screen, this function will be store the messages into the buffer
-			WSYS_EXP void printf(_In_z_ const std::wstring pMsg);
-			//Clear screen and all messages
-			WSYS_EXP void clearf();
+			//Print buffered messages in to the screen, this function will be store the messages into the buffer
+			WSYS_EXP void print_buffer(_In_z_ const std::wstring pMsg);
+			//Clear screen and all buffered messages
+			WSYS_EXP void clear_buffer();
 			//flush the output stream
 			WSYS_EXP void flush();
 			//get the buffer of messages

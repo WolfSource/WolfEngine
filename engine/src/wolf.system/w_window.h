@@ -16,13 +16,14 @@
 #ifndef __W_WINDOW_H__
 #define __W_WINDOW_H__
 
-#ifdef __linux
+#ifdef __ANDROID
+#include <android/native_window.h>
+#elif defined(__linux)
 #include <xcb/xcb.h>
 #include <xcb/xproto.h>
-#include "w_std.h"
 #endif
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__linux) || defined(__ANDROID)
 #include "w_std.h"
 #else
 #include "w_system_export.h"
@@ -33,6 +34,12 @@
 #include <vector>
 #include <string>
 #endif //__APPLE__
+
+#ifdef __UWP
+#include <wrl.h>
+#include <wrl/client.h>
+#include <agile.h>
+#endif
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
@@ -58,8 +65,9 @@ struct w_enumerate_screens
 		EnumDisplayMonitors(0, 0, w_enumerate_screens_callback, (LPARAM)this);
 	}
 };
-#elif defined(__linux)
+#elif defined(__linux) && !defined(__ANDROID)
 
+#ifndef __ANDROID
 struct w_enumerate_screens
 {
 	std::vector<xcb_screen_t*>   screens;
@@ -87,22 +95,42 @@ struct w_enumerate_screens
 };
 #endif
 
+#endif
+
 //Store the information of window
 struct w_window_info
 {
-#ifdef __WIN32
-	HWND                hwnd;
-	HINSTANCE           hInstance;
-#elif defined(__linux)
-    xcb_connection_t*   xcb_connection;
-    xcb_window_t*       xcb_window;
-#elif defined(__APPLE__)
-    void*               window;
+#if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
+
+	UINT                width = 800;
+	UINT                height = 600;
+
+#if defined(__WIN32) || defined(__linux) || defined(__APPLE__)
+	bool                v_sync_enable = true;
+	bool				is_full_screen = false;
 #endif
-	UINT                width;
-	UINT                height;
-    bool                v_sync_enable;
-	bool				is_full_screen;
+
+#ifdef __WIN32
+	HWND                hwnd = NULL;
+	HINSTANCE           hInstance = NULL;
+#elif defined(__ANDROID)
+	ANativeWindow*		window = nullptr;
+#elif defined(__linux)
+	xcb_connection_t*   xcb_connection = nullptr;
+	xcb_window_t*       xcb_window = nullptr;
+#elif defined(__APPLE__)
+	void*               window = nullptr;
+#endif
+
+#elif defined(__UWP)
+	IUnknown*			window = nullptr;
+	Windows::Foundation::Rect	window_size;
+	Windows::Graphics::Display::DisplayOrientations	window_native_orientation;
+	Windows::Graphics::Display::DisplayOrientations	window_current_orientation;
+	float				window_dpi = 96;
+	bool				support_high_resolutions = true;
+#endif
+
 #ifdef __DX12__
 	UINT				swap_chain_format = 87;
 #elif defined(__VULKAN__)
@@ -110,7 +138,7 @@ struct w_window_info
 #endif
 };
 
-#if defined(__WIN32) || defined(__linux)
+#if defined(__WIN32) || (defined(__linux) && !defined(__ANDROID))
 
 class w_window : public wolf::system::w_object
 {
@@ -165,12 +193,11 @@ public:
 	//Get hdc
 	WSYS_EXP HDC get_HDC() const;
         
-#elif defined(__linux)
+#elif defined(__linux) && !defined(__ANDROID)
     WSYS_EXP xcb_connection_t* get_xcb_connection() const
     {
         return this->_xcb_con;
     }
-        
     WSYS_EXP xcb_window_t* get_xcb_window() const
     {
         return this->_xcb_window;
@@ -200,7 +227,7 @@ private:
 	HINSTANCE                                       _hInstance;
 	HWND                                            _hwnd;
     HDC                                             _hdc;
-#elif __linux
+#elif defined(__linux) && !defined(__ANDROID)
     xcb_connection_t*                               _xcb_con;
     xcb_screen_t*                                   _xcb_screen;
     xcb_window_t*                                   _xcb_window;

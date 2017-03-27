@@ -15,7 +15,7 @@
 #pragma once
 #endif
 
-#if defined(__WIN32)
+#if defined(__WIN32) || defined(__UWP)
 
 #ifndef W_EXP
 
