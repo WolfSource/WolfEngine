@@ -7,14 +7,14 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="caddbe48-9c42-4724-98be-18e6579f8110"
+    Name="14e9bd89-c97f-4507-b99d-470da4382ccb"
     Publisher="CN=PooyaEimandar"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="caddbe48-9c42-4724-98be-18e6579f8110" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="14e9bd89-c97f-4507-b99d-470da4382ccb" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Test.DirectX12.Universal</DisplayName>
+    <DisplayName>01_window.UWP</DisplayName>
     <PublisherDisplayName>PooyaEimandar</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -30,12 +30,12 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="Test_DirectX12_Universal.App">
+      EntryPoint="_01_window_UWP.App">
       <uap:VisualElements
-        DisplayName="Test.DirectX12.Universal"
+        DisplayName="01_window.UWP"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="Test.DirectX12.Universal"
+        Description="01_window.UWP"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />

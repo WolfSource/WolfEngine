@@ -135,33 +135,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Wolf.ContentPipeline\Wolf.ContentPipeline.Win32.vcxproj">
+    <ProjectReference Include="..\..\wolf.content_pipeline\wolf.content_pipeline.Win32.vcxproj">
       <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295928}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\Wolf.DirectX\Wolf.DirectX11_1.Win32.vcxproj">
+    <ProjectReference Include="..\..\wolf.directX\wolf.directX11_1.Win32.vcxproj">
       <Project>{af657c54-55d1-490d-9366-1cfa01e71741}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\Wolf.FFmpeg\Wolf.ffmpeg.Win32.vcxproj">
+    <ProjectReference Include="..\..\wolf.ffmpeg\wolf.ffmpeg.Win32.vcxproj">
       <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295929}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\Wolf.Render\Wolf.DirectX\Wolf.DirectX11_X.Win32.vcxproj">
+    <ProjectReference Include="..\..\wolf.render\wolf.directX\wolf.directX11_X.Win32.vcxproj">
       <Project>{af657c54-55d1-490d-9366-1cfa01e71741}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\Wolf.System\Wolf.System.Win32.vcxproj">
+    <ProjectReference Include="..\..\wolf.system\wolf.system.Win32.vcxproj">
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\tests\DirectX11_X.Win32\main.cpp" />
-    <ClCompile Include="..\..\..\..\src\tests\DirectX11_X.Win32\pch.cpp">
+    <ClCompile Include="..\..\..\..\src\tests\directX11_X.Win32\main.cpp" />
+    <ClCompile Include="..\..\..\..\src\tests\directX11_X.Win32\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\tests\DirectX11_X.Win32\scene.cpp" />
+    <ClCompile Include="..\..\..\..\src\tests\directX11_X.Win32\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\tests\DirectX11_X.Win32\pch.h" />
-    <ClInclude Include="..\..\..\..\src\tests\DirectX11_X.Win32\scene.h" />
+    <ClInclude Include="..\..\..\..\src\tests\directX11_X.Win32\pch.h" />
+    <ClInclude Include="..\..\..\..\src\tests\directX11_X.Win32\scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

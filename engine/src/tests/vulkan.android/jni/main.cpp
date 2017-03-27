@@ -15,7 +15,6 @@
  *
  */
 
-//BEGIN_INCLUDE(all)
 #include <jni.h>
 #include <errno.h>
 #include <cstdlib>
@@ -38,6 +37,7 @@
 #include <unistd.h>
 
 #include <w_task.h>
+#include "scene.h"
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
@@ -46,13 +46,17 @@
 
 wolf::system::w_game_time sGameTime;
 
+static std::map<int, std::vector<w_window_info>> sWindowsInfos;
+static scene* sScene = nullptr;
+
 /**
  * Our saved state data.
  */
-struct saved_state {
+struct saved_state 
+{
     float angle;
-	size_t x;
-	size_t y;
+	int32_t x;
+	int32_t y;
 };
 
 /**
@@ -67,8 +71,8 @@ struct engine
     ASensorEventQueue* sensorEventQueue;
 
     int animating;
-    size_t width;
-	size_t height;
+	int32_t width;
+	int32_t height;
     struct saved_state state;
 };
 
@@ -201,6 +205,20 @@ static int engine_init_display(struct engine* pEngine)
 		logger.write("ASYNC");
 	});
 
+	pEngine->width = ANativeWindow_getWidth(pEngine->app->window);
+	pEngine->height = ANativeWindow_getHeight(pEngine->app->window);
+
+	w_window_info _w_info;
+	_w_info.width = static_cast<UINT>(pEngine->width);
+	_w_info.height = static_cast<UINT>(pEngine->height);
+	_w_info.window = pEngine->app->window;
+	std::vector<w_window_info> _v;
+	_v.push_back(_w_info);
+
+	sWindowsInfos[0] = _v;
+
+	sScene = new scene();
+
     return 0;
 }
 
@@ -209,6 +227,9 @@ static int engine_init_display(struct engine* pEngine)
  */
 static void engine_draw_frame(struct engine* engine) 
 {
+	//run the main loop
+	sScene->run(sWindowsInfos);
+
 	sGameTime.tick([]
 	{
 		/*logger.write("fps: " + std::to_string(sGameTime.get_frames_per_second()));
@@ -229,7 +250,7 @@ static void engine_term_display(struct engine* engine) {
 /**
  * Process the next input event.
  */
-static size_t engine_handle_input(struct android_app* app, AInputEvent* event) {
+static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
     struct engine* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         engine->animating = 1;
@@ -243,7 +264,7 @@ static size_t engine_handle_input(struct android_app* app, AInputEvent* event) {
 /**
  * Process the next main command.
  */
-static void engine_handle_cmd(struct android_app* app, size_t cmd) {
+static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
     struct engine* engine = (struct engine*)app->userData;
     switch (cmd) {
         case APP_CMD_SAVE_STATE:

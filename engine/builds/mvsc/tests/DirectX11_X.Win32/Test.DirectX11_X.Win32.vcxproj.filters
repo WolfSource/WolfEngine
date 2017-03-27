@@ -15,21 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\tests\DirectX11_X.Win32\main.cpp">
+    <ClCompile Include="..\..\..\..\src\tests\directX11_X.Win32\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\tests\DirectX11_X.Win32\pch.cpp">
+    <ClCompile Include="..\..\..\..\src\tests\directX11_X.Win32\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\tests\DirectX11_X.Win32\scene.cpp">
+    <ClCompile Include="..\..\..\..\src\tests\directX11_X.Win32\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\tests\DirectX11_X.Win32\pch.h">
+    <ClInclude Include="..\..\..\..\src\tests\directX11_X.Win32\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\tests\DirectX11_X.Win32\scene.h">
+    <ClInclude Include="..\..\..\..\src\tests\directX11_X.Win32\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

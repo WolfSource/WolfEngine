@@ -7,6 +7,10 @@
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
 */
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifndef __PCH_H__
 #define __PCH_H__
 
@@ -22,6 +26,10 @@
 
 #include <Windows.h>
 
+#elif defined(__UWP)
+#include <wrl.h>
+#include <wrl/client.h>
+#include <agile.h>
 #endif
 
 #include <memory>
