@@ -1,6 +1,6 @@
 #include "scene.h"
 
-scene::scene()
+scene::scene(std::string pRootDirectory) : w_game(pRootDirectory)
 {
     w_game::set_app_name("test.wolf.engine.metal.macOS");
     w_game::set_fixed_time_step(false);
