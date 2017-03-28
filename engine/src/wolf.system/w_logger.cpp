@@ -347,7 +347,7 @@ bool w_logger::initialize(
 	{
 		return this->_pimp->initialize(pAppName, pLogPath);
 	}
-#elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
+#elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__) 
     _In_z_ const std::string pAppName, _In_z_ const std::string pLogPath)
     {
         return this->_pimp->initialize(pAppName, pLogPath);

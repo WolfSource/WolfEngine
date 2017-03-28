@@ -28,7 +28,7 @@
 #endif
 
 
-#elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
+#elif defined(__ANDROID) || defined(__linux) || defined(__IOS__) || defined(__APPLE__)
 
 #ifndef W_EXP
 #define W_EXP //dump

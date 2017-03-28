@@ -1,0 +1,390 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C38D9421E79613700EE8595 /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */; };
+		2C38D9431E79613700EE8595 /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */; };
+		2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF51E64307D005E0F45 /* glm_extention.h */; };
+		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
+		2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF71E64307D005E0F45 /* w_convert.h */; };
+		2CE5BB111E64307D005E0F45 /* w_event.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF81E64307D005E0F45 /* w_event.h */; };
+		2CE5BB121E64307D005E0F45 /* w_game_time.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF91E64307D005E0F45 /* w_game_time.h */; };
+		2CE5BB131E64307D005E0F45 /* w_io.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAFA1E64307D005E0F45 /* w_io.h */; };
+		2CE5BB141E64307D005E0F45 /* w_ireleasable.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAFB1E64307D005E0F45 /* w_ireleasable.h */; };
+		2CE5BB151E64307D005E0F45 /* w_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BAFC1E64307D005E0F45 /* w_logger.cpp */; };
+		2CE5BB161E64307D005E0F45 /* w_logger.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAFD1E64307D005E0F45 /* w_logger.h */; };
+		2CE5BB171E64307D005E0F45 /* w_object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BAFE1E64307D005E0F45 /* w_object.cpp */; };
+		2CE5BB181E64307D005E0F45 /* w_object.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAFF1E64307D005E0F45 /* w_object.h */; };
+		2CE5BB191E64307D005E0F45 /* w_std.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB001E64307D005E0F45 /* w_std.h */; };
+		2CE5BB1A1E64307D005E0F45 /* w_system_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB011E64307D005E0F45 /* w_system_export.h */; };
+		2CE5BB1B1E64307D005E0F45 /* w_system_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BB021E64307D005E0F45 /* w_system_pch.cpp */; };
+		2CE5BB1C1E64307D005E0F45 /* w_system_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB031E64307D005E0F45 /* w_system_pch.h */; };
+		2CE5BB1D1E64307D005E0F45 /* w_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BB041E64307D005E0F45 /* w_task.cpp */; };
+		2CE5BB1E1E64307D005E0F45 /* w_task.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB051E64307D005E0F45 /* w_task.h */; };
+		2CE5BB1F1E64307D005E0F45 /* w_time_span.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BB061E64307D005E0F45 /* w_time_span.cpp */; };
+		2CE5BB201E64307D005E0F45 /* w_time_span.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB071E64307D005E0F45 /* w_time_span.h */; };
+		2CE5BB211E64307D005E0F45 /* w_timer_callback.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB081E64307D005E0F45 /* w_timer_callback.h */; };
+		2CE5BB221E64307D005E0F45 /* w_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB091E64307D005E0F45 /* w_timer.h */; };
+		2CE5BB231E64307D005E0F45 /* w_window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BB0A1E64307D005E0F45 /* w_window.cpp */; };
+		2CE5BB241E64307D005E0F45 /* w_window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB0B1E64307D005E0F45 /* w_window.h */; };
+		2CE5BB251E64307D005E0F45 /* w_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BB0C1E64307D005E0F45 /* w_xml.cpp */; };
+		2CE5BB261E64307D005E0F45 /* w_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB0D1E64307D005E0F45 /* w_xml.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
+		2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
+		2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CE5BAF51E64307D005E0F45 /* glm_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extention.h; path = ../../../src/wolf.system/glm_extention.h; sourceTree = "<group>"; };
+		2CE5BAF61E64307D005E0F45 /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
+		2CE5BAF71E64307D005E0F45 /* w_convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_convert.h; path = ../../../src/wolf.system/w_convert.h; sourceTree = "<group>"; };
+		2CE5BAF81E64307D005E0F45 /* w_event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_event.h; path = ../../../src/wolf.system/w_event.h; sourceTree = "<group>"; };
+		2CE5BAF91E64307D005E0F45 /* w_game_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game_time.h; path = ../../../src/wolf.system/w_game_time.h; sourceTree = "<group>"; };
+		2CE5BAFA1E64307D005E0F45 /* w_io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_io.h; path = ../../../src/wolf.system/w_io.h; sourceTree = "<group>"; };
+		2CE5BAFB1E64307D005E0F45 /* w_ireleasable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_ireleasable.h; path = ../../../src/wolf.system/w_ireleasable.h; sourceTree = "<group>"; };
+		2CE5BAFC1E64307D005E0F45 /* w_logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_logger.cpp; path = ../../../src/wolf.system/w_logger.cpp; sourceTree = "<group>"; };
+		2CE5BAFD1E64307D005E0F45 /* w_logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_logger.h; path = ../../../src/wolf.system/w_logger.h; sourceTree = "<group>"; };
+		2CE5BAFE1E64307D005E0F45 /* w_object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_object.cpp; path = ../../../src/wolf.system/w_object.cpp; sourceTree = "<group>"; };
+		2CE5BAFF1E64307D005E0F45 /* w_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_object.h; path = ../../../src/wolf.system/w_object.h; sourceTree = "<group>"; };
+		2CE5BB001E64307D005E0F45 /* w_std.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_std.h; path = ../../../src/wolf.system/w_std.h; sourceTree = "<group>"; };
+		2CE5BB011E64307D005E0F45 /* w_system_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_system_export.h; path = ../../../src/wolf.system/w_system_export.h; sourceTree = "<group>"; };
+		2CE5BB021E64307D005E0F45 /* w_system_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_system_pch.cpp; path = ../../../src/wolf.system/w_system_pch.cpp; sourceTree = "<group>"; };
+		2CE5BB031E64307D005E0F45 /* w_system_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_system_pch.h; path = ../../../src/wolf.system/w_system_pch.h; sourceTree = "<group>"; };
+		2CE5BB041E64307D005E0F45 /* w_task.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_task.cpp; path = ../../../src/wolf.system/w_task.cpp; sourceTree = "<group>"; };
+		2CE5BB051E64307D005E0F45 /* w_task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_task.h; path = ../../../src/wolf.system/w_task.h; sourceTree = "<group>"; };
+		2CE5BB061E64307D005E0F45 /* w_time_span.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_time_span.cpp; path = ../../../src/wolf.system/w_time_span.cpp; sourceTree = "<group>"; };
+		2CE5BB071E64307D005E0F45 /* w_time_span.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_time_span.h; path = ../../../src/wolf.system/w_time_span.h; sourceTree = "<group>"; };
+		2CE5BB081E64307D005E0F45 /* w_timer_callback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timer_callback.h; path = ../../../src/wolf.system/w_timer_callback.h; sourceTree = "<group>"; };
+		2CE5BB091E64307D005E0F45 /* w_timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timer.h; path = ../../../src/wolf.system/w_timer.h; sourceTree = "<group>"; };
+		2CE5BB0A1E64307D005E0F45 /* w_window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_window.cpp; path = ../../../src/wolf.system/w_window.cpp; sourceTree = "<group>"; };
+		2CE5BB0B1E64307D005E0F45 /* w_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_window.h; path = ../../../src/wolf.system/w_window.h; sourceTree = "<group>"; };
+		2CE5BB0C1E64307D005E0F45 /* w_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_xml.cpp; path = ../../../src/wolf.system/w_xml.cpp; sourceTree = "<group>"; };
+		2CE5BB0D1E64307D005E0F45 /* w_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_xml.h; path = ../../../src/wolf.system/w_xml.h; sourceTree = "<group>"; };
+		2CFA170E1E674C860041A83F /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/tbb2017_20161128oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
+		2CFA170F1E674C860041A83F /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../dependencies/tbb/tbb2017_20161128oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2CD617201E59DA3E006FC5DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C38D9421E79613700EE8595 /* libtbb_debug.dylib in Frameworks */,
+				2C38D9431E79613700EE8595 /* libtbbmalloc_debug.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2CD6171A1E59DA3E006FC5DC = {
+			isa = PBXGroup;
+			children = (
+				2CE5BAF51E64307D005E0F45 /* glm_extention.h */,
+				2CE5BAF61E64307D005E0F45 /* w_color.h */,
+				2CE5BAF71E64307D005E0F45 /* w_convert.h */,
+				2CE5BAF81E64307D005E0F45 /* w_event.h */,
+				2CE5BAF91E64307D005E0F45 /* w_game_time.h */,
+				2CE5BAFA1E64307D005E0F45 /* w_io.h */,
+				2CE5BAFB1E64307D005E0F45 /* w_ireleasable.h */,
+				2CE5BAFC1E64307D005E0F45 /* w_logger.cpp */,
+				2CE5BAFD1E64307D005E0F45 /* w_logger.h */,
+				2CE5BAFE1E64307D005E0F45 /* w_object.cpp */,
+				2CE5BAFF1E64307D005E0F45 /* w_object.h */,
+				2CE5BB001E64307D005E0F45 /* w_std.h */,
+				2CE5BB011E64307D005E0F45 /* w_system_export.h */,
+				2CE5BB021E64307D005E0F45 /* w_system_pch.cpp */,
+				2CE5BB031E64307D005E0F45 /* w_system_pch.h */,
+				2CE5BB041E64307D005E0F45 /* w_task.cpp */,
+				2CE5BB051E64307D005E0F45 /* w_task.h */,
+				2CE5BB061E64307D005E0F45 /* w_time_span.cpp */,
+				2CE5BB071E64307D005E0F45 /* w_time_span.h */,
+				2CE5BB081E64307D005E0F45 /* w_timer_callback.h */,
+				2CE5BB091E64307D005E0F45 /* w_timer.h */,
+				2CE5BB0A1E64307D005E0F45 /* w_window.cpp */,
+				2CE5BB0B1E64307D005E0F45 /* w_window.h */,
+				2CE5BB0C1E64307D005E0F45 /* w_xml.cpp */,
+				2CE5BB0D1E64307D005E0F45 /* w_xml.h */,
+				2CD617241E59DA3E006FC5DC /* Products */,
+				2CFA170D1E674C850041A83F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2CD617241E59DA3E006FC5DC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2CFA170D1E674C850041A83F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */,
+				2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */,
+				2CFA170E1E674C860041A83F /* libtbb_debug.dylib */,
+				2CFA170F1E674C860041A83F /* libtbbmalloc_debug.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2CD617211E59DA3E006FC5DC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CE5BB261E64307D005E0F45 /* w_xml.h in Headers */,
+				2CE5BB141E64307D005E0F45 /* w_ireleasable.h in Headers */,
+				2CE5BB131E64307D005E0F45 /* w_io.h in Headers */,
+				2CE5BB161E64307D005E0F45 /* w_logger.h in Headers */,
+				2CE5BB241E64307D005E0F45 /* w_window.h in Headers */,
+				2CE5BB181E64307D005E0F45 /* w_object.h in Headers */,
+				2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */,
+				2CE5BB1E1E64307D005E0F45 /* w_task.h in Headers */,
+				2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */,
+				2CE5BB111E64307D005E0F45 /* w_event.h in Headers */,
+				2CE5BB191E64307D005E0F45 /* w_std.h in Headers */,
+				2CE5BB211E64307D005E0F45 /* w_timer_callback.h in Headers */,
+				2CE5BB1C1E64307D005E0F45 /* w_system_pch.h in Headers */,
+				2CE5BB221E64307D005E0F45 /* w_timer.h in Headers */,
+				2CE5BB1A1E64307D005E0F45 /* w_system_export.h in Headers */,
+				2CE5BB121E64307D005E0F45 /* w_game_time.h in Headers */,
+				2CE5BB201E64307D005E0F45 /* w_time_span.h in Headers */,
+				2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		2CD617221E59DA3E006FC5DC /* wolf.system.macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "wolf.system.macOS" */;
+			buildPhases = (
+				2CD6171F1E59DA3E006FC5DC /* Sources */,
+				2CD617201E59DA3E006FC5DC /* Frameworks */,
+				2CD617211E59DA3E006FC5DC /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = wolf.system.macOS;
+			productName = wolf.system;
+			productReference = 2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2CD6171B1E59DA3E006FC5DC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = WolfSource.io;
+				TargetAttributes = {
+					2CD617221E59DA3E006FC5DC = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.system.macOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2CD6171A1E59DA3E006FC5DC;
+			productRefGroup = 2CD617241E59DA3E006FC5DC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2CD617221E59DA3E006FC5DC /* wolf.system.macOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2CD6171F1E59DA3E006FC5DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CE5BB231E64307D005E0F45 /* w_window.cpp in Sources */,
+				2CE5BB1D1E64307D005E0F45 /* w_task.cpp in Sources */,
+				2CE5BB171E64307D005E0F45 /* w_object.cpp in Sources */,
+				2CE5BB151E64307D005E0F45 /* w_logger.cpp in Sources */,
+				2CE5BB1B1E64307D005E0F45 /* w_system_pch.cpp in Sources */,
+				2CE5BB1F1E64307D005E0F45 /* w_time_span.cpp in Sources */,
+				2CE5BB251E64307D005E0F45 /* w_xml.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2CD6172C1E59DA3E006FC5DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+					"__VULKAN__=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2CD6172D1E59DA3E006FC5DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2CD6172F1E59DA3E006FC5DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/";
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.system/w_system_pch.h";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/glm/",
+					"$(SRCROOT)/../../../dependencies/rapidxml/",
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2CD617301E59DA3E006FC5DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/";
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.system/w_system_pch.h";
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "__VULKAN__=1";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/glm/",
+					"$(SRCROOT)/../../../dependencies/rapidxml/",
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.system.macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CD6172C1E59DA3E006FC5DC /* Debug */,
+				2CD6172D1E59DA3E006FC5DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "wolf.system.macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CD6172F1E59DA3E006FC5DC /* Debug */,
+				2CD617301E59DA3E006FC5DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2CD6171B1E59DA3E006FC5DC /* Project object */;
+}

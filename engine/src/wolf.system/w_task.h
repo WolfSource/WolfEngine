@@ -60,7 +60,7 @@ namespace wolf
 	}
 }
 
-#ifndef __ANDROID
+#if !defined(__ANDROID) && !defined(__iOS__)
 
 #include <tbb/task.h>
 

@@ -467,6 +467,8 @@ namespace wolf
 				_enabled_extensions.push_back(VK_KHR_DISPLAY_EXTENSION_NAME);
 #elif defined(__linux)
 				_enabled_extensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+#elif defined(__iOS__)
+                _enabled_extensions.push_back(VK_MVK_IOS_SURFACE_EXTENSION_NAME);
 #elif defined(__APPLE__)
 				_enabled_extensions.push_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
 #endif
@@ -833,7 +835,7 @@ namespace wolf
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
 
-#ifndef __ANDROID
+#if defined(__WIN32) || defined(__linux) 
 							_out_window.v_sync = _window.v_sync_enable;
 #endif
 
@@ -930,6 +932,25 @@ namespace wolf
 								release();
 								std::exit(EXIT_FAILURE);
 							}
+#elif defined(VK_USE_PLATFORM_IOS_MVK)
+                            VkIOSSurfaceCreateInfoMVK _surface_create_info = {};
+                            _surface_create_info.sType = VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK;
+                            _surface_create_info.pNext = NULL;
+                            _surface_create_info.flags = 0;
+                            _surface_create_info.pView = _window.window;
+                            
+                            _hr = vkCreateIOSSurfaceMVK(w_graphics_device::vk_instance,
+                                                          &_surface_create_info,
+                                                          NULL,
+                                                          &_out_window.vk_presentation_surface);
+                            if (_hr)
+                            {
+                                logger.write(_msg);
+                                _msg.clear();
+                                logger.error("error on creating iOS surface for Vulkan.");
+                                release();
+                                std::exit(EXIT_FAILURE);
+                            }
 #elif defined(VK_USE_PLATFORM_MACOS_MVK)
 							VkMacOSSurfaceCreateInfoMVK _surface_create_info = {};
 							_surface_create_info.sType = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK;

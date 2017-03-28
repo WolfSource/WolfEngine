@@ -36,14 +36,22 @@ using Microsoft::WRL::ComPtr;
 		#endif
 	#endif
 
-	#ifdef __APPLE__
-		#ifndef VK_USE_PLATFORM_MACOS_MVK
-		#define VK_USE_PLATFORM_MACOS_MVK
-		#endif
+    #if defined(__IOS__) || defined(__APPLE__)
 
-		#include <vulkan/vulkan.h>
-		#include <MoltenVK/vk_mvk_moltenvk.h>
-		#include <unistd.h>
+#ifdef __iOS__
+        #ifndef VK_USE_PLATFORM_IOS_MVK
+            #define VK_USE_PLATFORM_IOS_MVK
+        #endif
+#else
+        #ifndef VK_USE_PLATFORM_MACOS_MVK
+            #define VK_USE_PLATFORM_MACOS_MVK
+        #endif
+#endif
+
+        #include <vulkan/vulkan.h>
+        #include <MoltenVK/vk_mvk_moltenvk.h>
+        #include <unistd.h>
+
 	#elif defined(__ANDROID)
 		#include "android/vulkan_wrapper.h"
 	#else
@@ -98,7 +106,7 @@ namespace wolf
 #ifdef __WIN32
 				this->hwnd = NULL;
 				this->hInstance = NULL;
-#elif defined(__ANDROID)
+#elif defined(__ANDROID) || defined(__APPLE__)
 				this->window = nullptr;
 #elif defined(__linux)
                 this->xcb_connection = nullptr;

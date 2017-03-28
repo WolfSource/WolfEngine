@@ -2,8 +2,6 @@
 #import <QuartzCore/CAMetalLayer.h>
 #include <MoltenVK/mvk_datatypes.h>
 
-//#include "main_wrapper.h"
-
 #include <w_window.h>
 #include "scene.h"
 #include <utility>
@@ -11,7 +9,7 @@
 //global variable to pass NSView to Vulkan c++ code
 static NSView*                                      sSampleView;
 static CVDisplayLinkRef                             sDisplayLink;
-static scene                                        sScene;
+static scene*                                       sScene;
 static std::map<int, std::vector<w_window_info>>    sWindowInfo;
 
 //called from c++
@@ -21,22 +19,18 @@ void init_window(struct w_window_info& pInfo)
     pInfo.window = (void*)CFBridgingRetain(sSampleView);
 }
 
-//called from c++
-std::string get_base_data_dir()
-{
-    return [NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String;
-}
-
 @implementation ViewController
 {
 }
 
 + (void)Release
 {
-    if (!sScene.get_is_released())
+    if (sScene && !sScene->get_is_released())
     {
-        sScene.release();
+        sScene->release();
     }
+    delete sScene;
+    
     CVDisplayLinkRelease(sDisplayLink);
 }
 
@@ -48,6 +42,8 @@ std::string get_base_data_dir()
     //back the view with a layer created by the makeBackingLayer method.
     self.view.wantsLayer = YES;
     
+    sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String);
+    
     //pass the view to the sample code
     sSampleView = self.view;
     
@@ -56,7 +52,6 @@ std::string get_base_data_dir()
     _window_info.width = 800;
     _window_info.height = 600;
     _window_info.window = nullptr;
-    _window_info.v_sync_enable = true;
     
     //call init_window from objective-c and get the pointer to the window
     init_window(_window_info);
@@ -88,7 +83,7 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
                                     CVOptionFlags* pFlagsOut,
                                     void* pScene)
 {
-    sScene.run(sWindowInfo);
+    sScene->run(sWindowInfo);
     return kCVReturnSuccess;
 }
 

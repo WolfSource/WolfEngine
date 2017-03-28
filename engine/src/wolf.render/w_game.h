@@ -30,7 +30,14 @@ namespace wolf
 		class w_game : public wolf::graphics::w_graphics_device_manager
 		{
 		public:
-			W_EXP w_game();
+#if defined(__WIN32)
+            W_EXP w_game(std::wstring pRootDirectory);
+#eif defined(__UWP)
+            W_EXP w_game();
+#else
+            W_EXP w_game(std::string pRootDirectory);
+#endif
+            
 			W_EXP virtual ~w_game();
 
 			//This will run the main loop cycle of the game

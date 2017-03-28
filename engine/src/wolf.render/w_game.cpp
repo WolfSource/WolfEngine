@@ -6,30 +6,31 @@ using namespace std;
 //using namespace wolf::graphics;
 using namespace wolf::framework;
 
-#if defined(__linux) || defined(__ANDROID) || defined(__APPLE__)
+#if defined(__linux) || defined(__ANDROID) || defined(__APPLE__) || defined(__IOS__)
 std::string w_game::_content_directory_path = "";
 #else
 std::wstring w_game::_content_directory_path = L"";
 #endif
 
-w_game::w_game() : 
+#if defined(__WIN32)
+w_game::w_game(std::wstring pRootDirectory) :
+#eif defined(__UWP)
+w_game::w_game() :
+#else
+w_game::w_game(std::string pRootDirectory) :
+#endif
 	exiting(false)
 {
-	_super::set_class_name("w_game");//typeid(this).name() not supported in NDK
+	_super::set_class_name("w_game");
 	this->loadState = LoadState::NOTLOADED;
 
-#if defined(__linux) || defined(__ANDROID) ||  defined(__APPLE__)
-    logger.initialize(this->_app_name, wolf::system::io::get_current_directory());
+    logger.initialize(this->_app_name, pRootDirectory);
     _content_directory_path = wolf::system::io::get_content_directory();
-#else
 
-#ifdef __WIN32
-    logger.initialize(this->_app_name, wolf::system::io::get_current_directoryW());
-#elif defined (__UWP)
-	logger.initialize(this->_app_name);
-#endif
-
+#if defined(__WIN32) || defined(__UWP)
     _content_directory_path = wolf::system::io::get_content_directoryW();
+#else
+    _content_directory_path = wolf::system::io::get_content_directory();
 #endif
 }
 
