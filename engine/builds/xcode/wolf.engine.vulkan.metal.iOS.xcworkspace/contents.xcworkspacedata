@@ -5,6 +5,9 @@
       location = "group:wolf.system/wolf.system.iOS.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:wolf.vulkan/wolf.vulkan.iOS.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:tests/wolf_vulkan_metal_iOS/wolf_vulkan_metal_iOS.xcodeproj">
    </FileRef>
 </Workspace>

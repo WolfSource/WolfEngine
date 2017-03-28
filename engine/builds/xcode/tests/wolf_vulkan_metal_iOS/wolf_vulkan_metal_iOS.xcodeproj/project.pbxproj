@@ -18,6 +18,8 @@
 		2C4CD27E1E8A64690090EE0A /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD2671E8A5FAB0090EE0A /* libc++.tbd */; };
 		2C4CD2891E8A6CC50090EE0A /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD2751E8A63050090EE0A /* MoltenVK.framework */; };
 		2C4CD2F51E8A72580090EE0A /* libwolf.system.iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD2F41E8A72580090EE0A /* libwolf.system.iOS.a */; };
+		2C4CD32A1E8A74830090EE0A /* libwolf.vulkan.iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD3291E8A74830090EE0A /* libwolf.vulkan.iOS.a */; };
+		2C4CD32D1E8A76270090EE0A /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD32B1E8A76270090EE0A /* scene.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +40,9 @@
 		2C4CD2751E8A63050090EE0A /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../../dependencies/vulkan/Mac/Molten/MoltenVK/iOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2C4CD2771E8A63410090EE0A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2C4CD2F41E8A72580090EE0A /* libwolf.system.iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwolf.system.iOS.a; path = "../../../../../bin/Build/iOS/Products/Debug-iphoneos/libwolf.system.iOS.a"; sourceTree = "<group>"; };
+		2C4CD3291E8A74830090EE0A /* libwolf.vulkan.iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwolf.vulkan.iOS.a; path = "../../../../../bin/Build/iOS/Products/Debug-iphoneos/libwolf.vulkan.iOS.a"; sourceTree = "<group>"; };
+		2C4CD32B1E8A76270090EE0A /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../../../../src/tests/vulkan.iOS/scene.cpp; sourceTree = "<group>"; };
+		2C4CD32C1E8A76270090EE0A /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = ../../../../../src/tests/vulkan.iOS/scene.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C4CD32A1E8A74830090EE0A /* libwolf.vulkan.iOS.a in Frameworks */,
 				2C4CD2F51E8A72580090EE0A /* libwolf.system.iOS.a in Frameworks */,
 				2C4CD2891E8A6CC50090EE0A /* MoltenVK.framework in Frameworks */,
 				2C4CD27E1E8A64690090EE0A /* libc++.tbd in Frameworks */,
@@ -76,7 +82,8 @@
 		2C4CD2461E8A5D390090EE0A /* wolf_vulkan_metal_iOS */ = {
 			isa = PBXGroup;
 			children = (
-				2C4CD2771E8A63410090EE0A /* Assets.xcassets */,
+				2C4CD32B1E8A76270090EE0A /* scene.cpp */,
+				2C4CD32C1E8A76270090EE0A /* scene.h */,
 				2C4CD2691E8A60340090EE0A /* AppDelegate.h */,
 				2C4CD26A1E8A60340090EE0A /* AppDelegate.m */,
 				2C4CD26E1E8A60340090EE0A /* ViewController.h */,
@@ -84,6 +91,7 @@
 				2C4CD2501E8A5D390090EE0A /* Main.storyboard */,
 				2C4CD2551E8A5D390090EE0A /* LaunchScreen.storyboard */,
 				2C4CD2581E8A5D390090EE0A /* Info.plist */,
+				2C4CD2771E8A63410090EE0A /* Assets.xcassets */,
 				2C4CD2741E8A60D30090EE0A /* Supporting Files */,
 			);
 			path = wolf_vulkan_metal_iOS;
@@ -92,6 +100,7 @@
 		2C4CD25E1E8A5F980090EE0A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C4CD3291E8A74830090EE0A /* libwolf.vulkan.iOS.a */,
 				2C4CD2F41E8A72580090EE0A /* libwolf.system.iOS.a */,
 				2C4CD2751E8A63050090EE0A /* MoltenVK.framework */,
 				2C4CD2671E8A5FAB0090EE0A /* libc++.tbd */,
@@ -183,6 +192,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C4CD32D1E8A76270090EE0A /* scene.cpp in Sources */,
 				2C4CD2701E8A60340090EE0A /* AppDelegate.m in Sources */,
 				2C4CD2731E8A60340090EE0A /* ViewController.mm in Sources */,
 				2C4CD2711E8A60340090EE0A /* main.m in Sources */,

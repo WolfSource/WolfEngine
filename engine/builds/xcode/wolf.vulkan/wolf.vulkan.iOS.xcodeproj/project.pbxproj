@@ -7,16 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C4CD3031E8A72B60090EE0A /* wolf_vulkan_iOS.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD3021E8A72B60090EE0A /* wolf_vulkan_iOS.hpp */; };
-		2C4CD3051E8A72B60090EE0A /* wolf_vulkan_iOSPriv.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD3041E8A72B60090EE0A /* wolf_vulkan_iOSPriv.hpp */; };
-		2C4CD3071E8A72B60090EE0A /* wolf_vulkan_iOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD3061E8A72B60090EE0A /* wolf_vulkan_iOS.cpp */; };
+		2C4CD3211E8A73470090EE0A /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD3191E8A73470090EE0A /* w_game.cpp */; };
+		2C4CD3221E8A73470090EE0A /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD31A1E8A73470090EE0A /* w_game.h */; };
+		2C4CD3231E8A73470090EE0A /* w_graphics_device_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD31B1E8A73470090EE0A /* w_graphics_device_manager.cpp */; };
+		2C4CD3241E8A73470090EE0A /* w_graphics_device_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD31C1E8A73470090EE0A /* w_graphics_device_manager.h */; };
+		2C4CD3251E8A73470090EE0A /* w_obj_c_wrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD31D1E8A73470090EE0A /* w_obj_c_wrapper.mm */; };
+		2C4CD3261E8A73470090EE0A /* w_render_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD31E1E8A73470090EE0A /* w_render_export.h */; };
+		2C4CD3271E8A73470090EE0A /* w_render_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD31F1E8A73470090EE0A /* w_render_pch.cpp */; };
+		2C4CD3281E8A73470090EE0A /* w_render_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD3201E8A73470090EE0A /* w_render_pch.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2C4CD2FF1E8A72B60090EE0A /* libwolf.vulkan.iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwolf.vulkan.iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		2C4CD3021E8A72B60090EE0A /* wolf_vulkan_iOS.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = wolf_vulkan_iOS.hpp; sourceTree = "<group>"; };
-		2C4CD3041E8A72B60090EE0A /* wolf_vulkan_iOSPriv.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = wolf_vulkan_iOSPriv.hpp; sourceTree = "<group>"; };
-		2C4CD3061E8A72B60090EE0A /* wolf_vulkan_iOS.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = wolf_vulkan_iOS.cpp; sourceTree = "<group>"; };
+		2C4CD3191E8A73470090EE0A /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_game.cpp; sourceTree = "<group>"; };
+		2C4CD31A1E8A73470090EE0A /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/w_game.h; sourceTree = "<group>"; };
+		2C4CD31B1E8A73470090EE0A /* w_graphics_device_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_graphics_device_manager.cpp; path = ../../../src/wolf.render/w_graphics_device_manager.cpp; sourceTree = "<group>"; };
+		2C4CD31C1E8A73470090EE0A /* w_graphics_device_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_graphics_device_manager.h; path = ../../../src/wolf.render/w_graphics_device_manager.h; sourceTree = "<group>"; };
+		2C4CD31D1E8A73470090EE0A /* w_obj_c_wrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = w_obj_c_wrapper.mm; path = ../../../src/wolf.render/w_obj_c_wrapper.mm; sourceTree = "<group>"; };
+		2C4CD31E1E8A73470090EE0A /* w_render_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_export.h; path = ../../../src/wolf.render/w_render_export.h; sourceTree = "<group>"; };
+		2C4CD31F1E8A73470090EE0A /* w_render_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_pch.cpp; path = ../../../src/wolf.render/w_render_pch.cpp; sourceTree = "<group>"; };
+		2C4CD3201E8A73470090EE0A /* w_render_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_pch.h; path = ../../../src/wolf.render/w_render_pch.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,7 +43,14 @@
 		2C4CD2F61E8A72B60090EE0A = {
 			isa = PBXGroup;
 			children = (
-				2C4CD3011E8A72B60090EE0A /* wolf.vulkan.iOS */,
+				2C4CD3191E8A73470090EE0A /* w_game.cpp */,
+				2C4CD31A1E8A73470090EE0A /* w_game.h */,
+				2C4CD31B1E8A73470090EE0A /* w_graphics_device_manager.cpp */,
+				2C4CD31C1E8A73470090EE0A /* w_graphics_device_manager.h */,
+				2C4CD31D1E8A73470090EE0A /* w_obj_c_wrapper.mm */,
+				2C4CD31E1E8A73470090EE0A /* w_render_export.h */,
+				2C4CD31F1E8A73470090EE0A /* w_render_pch.cpp */,
+				2C4CD3201E8A73470090EE0A /* w_render_pch.h */,
 				2C4CD3001E8A72B60090EE0A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,16 +63,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2C4CD3011E8A72B60090EE0A /* wolf.vulkan.iOS */ = {
-			isa = PBXGroup;
-			children = (
-				2C4CD3021E8A72B60090EE0A /* wolf_vulkan_iOS.hpp */,
-				2C4CD3041E8A72B60090EE0A /* wolf_vulkan_iOSPriv.hpp */,
-				2C4CD3061E8A72B60090EE0A /* wolf_vulkan_iOS.cpp */,
-			);
-			path = wolf.vulkan.iOS;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -63,8 +70,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C4CD3051E8A72B60090EE0A /* wolf_vulkan_iOSPriv.hpp in Headers */,
-				2C4CD3031E8A72B60090EE0A /* wolf_vulkan_iOS.hpp in Headers */,
+				2C4CD3281E8A73470090EE0A /* w_render_pch.h in Headers */,
+				2C4CD3221E8A73470090EE0A /* w_game.h in Headers */,
+				2C4CD3261E8A73470090EE0A /* w_render_export.h in Headers */,
+				2C4CD3241E8A73470090EE0A /* w_graphics_device_manager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,7 +135,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C4CD3071E8A72B60090EE0A /* wolf_vulkan_iOS.cpp in Sources */,
+				2C4CD3251E8A73470090EE0A /* w_obj_c_wrapper.mm in Sources */,
+				2C4CD3271E8A73470090EE0A /* w_render_pch.cpp in Sources */,
+				2C4CD3231E8A73470090EE0A /* w_graphics_device_manager.cpp in Sources */,
+				2C4CD3211E8A73470090EE0A /* w_game.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,13 +172,18 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/w_render_pch.h";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"DEBUG=1",
+					"__VULKAN__=1",
+					"__iOS__=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -174,10 +191,16 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/glm/",
+					"$(SRCROOT)/../../../dependencies/rapidxml/",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -208,17 +231,30 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/iOS";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/w_render_pch.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__VULKAN__=1",
+					"__iOS__=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/glm/",
+					"$(SRCROOT)/../../../dependencies/rapidxml/",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};
@@ -229,6 +265,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -240,6 +277,7 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -263,6 +301,7 @@
 				2C4CD30C1E8A72B60090EE0A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
