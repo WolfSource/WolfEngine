@@ -1,3 +1,4 @@
+
 Wolf Engine
 ===========
 <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg" width="256" height="256" alt="WolfSource"/>
@@ -13,54 +14,28 @@ Wolf Engine is written in C++ and supports Python and Lua as an embedded script 
 
 <!--Major & Minor Changes-->
 <h2><a id="user-content-whatsnew" class="anchor" href="#whatsnew" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Latest version: 1.2.12.0 changes</h2>
+
 <h3>New Features</h3>
 <ul>
-<li>"<b>w_line_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
-<li>"<b>w_rounded_rectangle_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
-<li>"<b>w_ellipse_shape</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X</li>
-<li>"<b>w_list_widget</b>" has been added to "<b>GUI framework</b>" of DirectX 11.X with support of both wolf::gui and gdi controls</li>
-<li>Reducing texture memory usage by 2 channel encoding</li>
-<li>New samples have been added. Check out:
-  <ul>
-    <li>Samples\03-Direct2D\03_Animated_Geometries_DX11_X.Win32</li>
-    <li>Samples\05-Buffers\01_Quad_DX11_X.Win32</li>
-    <li>Samples\05-Buffers\02_Textured_Quad.DX11_X.Win32</li>
-  </ul>
-</li>
-<li>"<b>Wolf.System</b>" has been ported to "<b>Android Nvidia Tegra Shield</b>"</li>
-<li>"<b>Wolf.System</b>" has been ported to "<b>Windows Universal</b>"</li>
-</ul>
-
-<h3>Improved</h3>
-<ul>
-  <li>Drawing dynamic vertex buffers of gui</li>
-  <li>"<b>wolf::graphics::w_mesh</b>" is an independent drawing class, which can be used for drawing any geometric object with any texture and effect</li>
-  <li>"<b>wolf::gui::w_image</b> renders itself using w_texture_2d class instead of direct2D image class</li>
-  <li>the allocating dynamic buffer part of ffmpeg optimized</li>
-  <li>Classes "<b>w_mesh and w_quad</b>" optimized. Now <b>w_quad</b> is a template class available for various constant buffers</li>
-  <li>Support multiple image formats with stb_image. Now wolf::graphics::w_texture::load_texture_2D_from_file function supports following formats:
-  <ul>
-    <li>dds</li>
-    <li>png</li>
-    <li>jpg</li>
-    <li>tga</li>
-    <li>psd</li>
-  </ul>
+<li>DirectX 12 on Windows 10 supported</li>
+<li>DirectX 12 on Universal Windows Platform(UWP) supported</li>
+<li>DirectX 11 on Universal Windows Platform(UWP) supported</li>
+<li>Vulkan on Ubuntu 16.04 supported</li>
+<li>Vulkan on macOS via Metal wrapper(MoltenVK) supported</li>
+<li>Vulkan on IOS via Metal wrapper(MoltenVK) supported</li>
+<li>Vulkan on Nvidia Tegra Android supported</li>
+<li>Vulkan on Nvidia Tegra Android supported
+    <ul>
+      <li>Samples\00-system\01_async.Win32</li>
+    </ul>
 </li>
 </ul>
-
-<h3>Bug Fixes</h3>
-<ul>
-<li>Memory leaks for <b>wolf::gui::w_label</b> fixed</li>
-</ul>
-
 <!--Projects-->
 <h2><a id="user-content-projects" class="anchor" href="#projects" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Projects using Wolf</h2>
 <ul>
-<li>&quot;<a href="https://www.youtube.com/watch?v=EZSdEjBvuGY"><b>Wolf.Playout</b></a>&quot; is a playout automation software which is used by <a href="http://en.alalam.ir/">Alalam news
-network TV</a></li>
-<li>&quot;<b>Wolf.CG</b>&quot; is a true real time 3D graphics and character generator which can be integrate
-with any newsroom using python API.</li>
+<li>&quot;<a href="https://www.youtube.com/watch?v=EZSdEjBvuGY"><b>Wolf.Playout</b></a>&quot; is a playout automation software</li>
+<li>&quot;<b>Wolf.CG</b>&quot; is a true real time 3D graphics and character generator.</li>
+<li>At Fanap, we are using Wolf.Engine to build &quot;<b>3D Simulator</b>&quot; for 3D monitoring &amp; HSE training</li>
 </ul>
 <p>If you are using Wolf Engine in your projects, kindly let us know about your project.</p>
 
@@ -167,6 +142,7 @@ Here are the screenshots of samples, you can read full information about these s
 <p>
 Your access to and use of Wolf Engine on GitHub is governed by the&nbsp;<a href="https://github.com/PooyaEimandar/Wolf.Engine/blob/master/LICENSE">License Agreement</a>. If you don't agree to those terms, then you are not permitted to access or use Wolf Engine.
 </p>
+<p><a href="http://en.fanap.ir/" target="_blank">Fanap</a> is registered company</p>
 
 <!--Issues-->
 <h2><a id="user-content-issues" class="anchor" href="#issues" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Issues</h2>
