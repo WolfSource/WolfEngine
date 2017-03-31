@@ -2598,6 +2598,7 @@ void w_graphics_device_manager::on_device_lost()
 
 void w_graphics_device_manager::on_suspend()
 {
+#if defined(__DX12__) || defined(__DX11__)
 	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 	{
 		auto _gDevice = this->graphics_devices[i];
@@ -2617,6 +2618,7 @@ void w_graphics_device_manager::on_suspend()
 			_dxgi_device->Trim();
 		}
 	}
+#endif
 }
 
 void w_graphics_device_manager::on_window_resized(_In_ UINT pIndex)
@@ -2669,11 +2671,14 @@ HRESULT w_graphics_device_manager::begin_render()
 	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 	{
 		auto _gDevice = this->graphics_devices[i];
+
+#if defined(__DX12__) || defined(__DX11__)
 		if (_gDevice->dx_device_removed)
 		{
 			on_device_lost();
 			continue;
 		}
+#endif
 
 		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
 		{
@@ -2826,12 +2831,14 @@ void w_graphics_device_manager::end_render()
 	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 	{
 		auto _gDevice = this->graphics_devices[i];
+
+#if defined(__DX12__) || defined(__DX11__)
 		if (_gDevice->dx_device_removed)
 		{
 			on_device_lost();
 			continue;
 		}
-
+#endif
 		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
 		{
 			auto _present_window = &(_gDevice->output_presentation_windows[j]);
