@@ -26,9 +26,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.content_pipeline.Win32
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blackmagic.decklink", "blackmagic.decklink\blackmagic.decklink.vcxproj", "{6F47C0C5-64DC-4843-BD94-82734FEC8E21}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.directX12.Win32", "wolf.render\wolf.directX\wolf.directX12.Win32.vcxproj", "{3CAD4C0B-8160-431F-839A-4B92F0322C31}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.directX.Win32", "wolf.render\wolf.directX\wolf.directX.Win32.vcxproj", "{3CAD4C0B-8160-431F-839A-4B92F0322C31}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.directX12.Win32", "tests\directX12.Win32\directX12.Win32.vcxproj", "{CFAD581D-7E53-4567-A9FE-36D754454B31}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.directX.Win32", "tests\directX.Win32\directX.Win32.vcxproj", "{CFAD581D-7E53-4567-A9FE-36D754454B31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
