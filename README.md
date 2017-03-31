@@ -36,7 +36,7 @@ Wolf Engine is written in C++ and supports Python and Lua as an embedded script 
 <ul>
 <li>&quot;<a href="https://www.youtube.com/watch?v=EZSdEjBvuGY"><b>Wolf.Playout</b></a>&quot; is a playout automation software uses by <b>AlAlam</b> news network TV channel</li>
 <li>&quot;<b>Wolf.CG</b>&quot; is a true real time 3D graphics and character generator.</li>
-<li>At Fanap, we are using Wolf.Engine to build 3D Simulator for 3D monitoring &amp; HSE training</li>
+<li>At <b>Fanap</b>, we are using Wolf.Engine to build real time 3D monitoring &amp; HSE training</li>
 </ul>
 <p>If you are using Wolf Engine in your projects, kindly let us know about your project.</p>
 
