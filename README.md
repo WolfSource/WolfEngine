@@ -30,12 +30,13 @@ Wolf Engine is written in C++ and supports Python and Lua as an embedded script 
     </ul>
 </li>
 </ul>
+
 <!--Projects-->
 <h2><a id="user-content-projects" class="anchor" href="#projects" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Projects using Wolf</h2>
 <ul>
-<li>&quot;<a href="https://www.youtube.com/watch?v=EZSdEjBvuGY"><b>Wolf.Playout</b></a>&quot; is a playout automation software</li>
+<li>&quot;<a href="https://www.youtube.com/watch?v=EZSdEjBvuGY"><b>Wolf.Playout</b></a>&quot; is a playout automation software uses by <b>AlAlam</b> news network TV channel</li>
 <li>&quot;<b>Wolf.CG</b>&quot; is a true real time 3D graphics and character generator.</li>
-<li>At Fanap, we are using Wolf.Engine to build &quot;<b>3D Simulator</b>&quot; for 3D monitoring &amp; HSE training</li>
+<li>At Fanap, we are using Wolf.Engine to build 3D Simulator for 3D monitoring &amp; HSE training</li>
 </ul>
 <p>If you are using Wolf Engine in your projects, kindly let us know about your project.</p>
 
@@ -56,93 +57,13 @@ extensively tested and makes a great starting point for learning how to use Wolf
 To help you navigate the various ways you can use Wolf Engine, I have assembled a collection of learning tutorials for you at <a href="http://wolfsource.io/gpunotes/08082016"><b>GPU Notes blog</b></a>.
 </p>
 
-<!--Samples-->
-<h2><a id="user-content-samples" class="anchor" href="#samples" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Samples</h2>
-<p>
-Here are the screenshots of samples, you can read full information about these samples on GPU Notes, just click on the name of sample and you will be redirected to the specific page.
-</p>
-
-<!-- Screenshots -->
-<h2>01-Initialize</h2>
-<table>
-  <tr>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/01-window/view.jpg" alt="01_window/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 01-window</p>
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/02-multiple_windows/view.jpg" alt="02_multiple_windows/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 02-multiple_windows</p>
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/03-scene/view.jpg" alt="03_scene/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 03-scene</p>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/04-one_scene_multiple_windows/view.jpg" alt="04_one_scene_multiple_windows/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 04-one_scene_multiple_windows</p>
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/05-multiple_scenes_multiple_windows/view.jpg" alt="05_multiple_scenes_multiple_windows/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 05-multiple_scenes_multiple_windows</p>
-    </td>
-  </tr>
-</table>
-
-<h2>02-GUI</h2>
-<table>
-  <tr>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/02-GUI/01-widget/view.jpg" alt="01-widget/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 01-widget</p>
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/02-GUI/02-gui%20from%20xml/view.jpg" alt="02-gui from xml/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 02-gui from xml</p>
-    </td>
-  </tr>
-</table>
-
-<h2>03-Direct2D</h2>
-<table>
-  <tr>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/03-Direct2D/01-shapes/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 01-shapes</p>
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/03-Direct2D/02-geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 02-geometries</p>
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/03-Direct2D/03-animated_geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 03-animated_geometries</p>
-    </td>
-  </tr>
-</table>
-
-<h2>05-Buffers</h2>
-<table>
-  <tr>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/05-Buffers/01-quad/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 01-quad</p>
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/05-Buffers/02-textured_quad/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 02-textured_quad</p>
-    </td>
-  </tr>
-</table>
-
 <!--Licensing-->
 <h2><a id="user-content-licensing" class="anchor" href="#licensing" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Licensing</h2>
 <p>
 Your access to and use of Wolf Engine on GitHub is governed by the&nbsp;<a href="https://github.com/PooyaEimandar/Wolf.Engine/blob/master/LICENSE">License Agreement</a>. If you don't agree to those terms, then you are not permitted to access or use Wolf Engine.
 </p>
-<p><a href="http://en.fanap.ir/" target="_blank">Fanap</a> is registered company</p>
+<p>term <a href="http://en.fanap.ir/" target="_blank">Fanap</a> is trademark of registered company</p>
+<p>term <a href="http://en.alalam.ir/" target="_blank">AlAlam</a> is trademark of registered news network TV channel</p>
 
 <!--Issues-->
 <h2><a id="user-content-issues" class="anchor" href="#issues" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Issues</h2>
