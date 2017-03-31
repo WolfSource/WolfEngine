@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>DirectX12Win32</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
-    <ProjectName>test.directX12.Win32</ProjectName>
+    <ProjectName>test.directX.Win32</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -154,6 +154,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\wolf.render\wolf.directX\wolf.directX.Win32.vcxproj">
+      <Project>{3cad4c0b-8160-431f-839a-4b92f0322c31}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Wolf.Render\Wolf.DirectX\Wolf.DirectX12.Win32.vcxproj">
       <Project>{3cad4c0b-8160-431f-839a-4b92f0322c31}</Project>
     </ProjectReference>
