@@ -133,7 +133,7 @@ struct w_window_info
 	bool				support_high_resolutions = true;
 #endif
 
-#ifdef __DX12__
+#if defined(__DX12__) || defined(__DX11__)
 	UINT				swap_chain_format = 87;
 #elif defined(__VULKAN__)
 	UINT				swap_chain_format = 44;

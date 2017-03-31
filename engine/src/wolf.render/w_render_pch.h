@@ -22,12 +22,22 @@
 
 #if defined(__WIN32) || defined(__UWP)
 
+#ifdef __DX12__
 #pragma comment(lib, "d3d12.lib")
+#elif defined(__DX11__)
+#pragma comment(lib, "d3d11.lib")
+#endif
 #pragma comment(lib, "dxgi.lib")
 
 #include <windows.h>
 #include <wrl.h>
+
+#ifdef __DX12__
 #include <d3d12.h>
+#else
+#include <d3d11_3.h>
+#endif
+
 #include <dxgi1_4.h>
 #include <DirectXMath.h>
 

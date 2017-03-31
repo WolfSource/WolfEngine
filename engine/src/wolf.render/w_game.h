@@ -31,11 +31,11 @@ namespace wolf
 		{
 		public:
 #if defined(__WIN32)
-            W_EXP w_game(std::wstring pRootDirectory);
-#eif defined(__UWP)
+            W_EXP w_game(_In_z_ std::wstring pRootDirectory);
+#elif defined(__UWP)
             W_EXP w_game();
 #else
-            W_EXP w_game(std::string pRootDirectory);
+            W_EXP w_game(_In_z_ std::string pRootDirectory);
 #endif
             
 			W_EXP virtual ~w_game();

@@ -16,10 +16,16 @@
 #ifndef __W_GRAPHICS_DEVICE_MANAGER_H__
 #define __W_GRAPHICS_DEVICE_MANAGER_H__
 
-#ifdef __DX12__
+#if defined(__DX12__) || defined(__DX11__)
 
 #include <wrl.h>
+
+#ifdef __DX12__
 #include <d3d12.h>
+#else
+#include <d3d11_3.h>
+#endif
+
 #include <dxgi1_4.h>
 #include <DirectXMath.h>
 
@@ -78,10 +84,10 @@ namespace wolf
 		//the default config for creating graphics devices, you can edit the config before calling w_graphics_device_manager::initialize
 		struct w_graphics_device_manager_configs
 		{
-#ifdef __DX12__
+#if defined(__DX12__) || defined(__DX11__)
 			bool							use_wrap_mode = false;
-			D3D_FEATURE_LEVEL				wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-			std::vector<D3D_FEATURE_LEVEL>	hardware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1 };
+			D3D_FEATURE_LEVEL				wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_1;
+			std::vector<D3D_FEATURE_LEVEL>	hardware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_1 };
 #endif
 		};
                 
@@ -151,10 +157,11 @@ namespace wolf
 			w_color                                 clear_color = w_color::from_hex(w_color::CORNFLOWER_BLUE);
 			int										force_to_clear_color_times;
 
-#ifdef __DX12__
-			
+#if defined(__DX12__) || defined(__DX11__)		
 			DXGI_FORMAT								dx_swap_chain_selected_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
 			ComPtr<IDXGISwapChain3>					dx_swap_chain;
+#ifdef __DX12__
+
 			std::vector<ID3D12Resource*>			dx_swap_chain_image_views;
 			uint32_t								dx_swap_chain_image_index = 0;
 
@@ -170,6 +177,12 @@ namespace wolf
 			HANDLE									dx_fence_event = NULL;
 			ComPtr<ID3D12Fence>						dx_fence;
 			UINT64									dx_fence_value = 0;
+#elif defined(__DX11__)
+			ComPtr<ID3D11RenderTargetView1>			dx_render_target_view;
+			ComPtr<ID3D11DepthStencilView>			dx_depth_stencil_view;
+			D3D11_VIEWPORT							dx_screen_viewport;
+#endif
+
 #elif defined(__VULKAN__)
             VkSurfaceKHR							vk_presentation_surface = NULL;
                         
@@ -211,7 +224,7 @@ namespace wolf
 
             std::vector<w_output_presentation_window>               output_presentation_windows;
             
-#ifdef __DX12__
+#if defined(__DX12__) || defined(__DX11__)
 
 			static ComPtr<IDXGIFactory4>							dx_dxgi_factory;
 			
@@ -221,7 +234,13 @@ namespace wolf
 			bool													dx_is_wrap_device;
 			D3D_FEATURE_LEVEL										dx_feature_level;
 			ComPtr<IDXGIAdapter1>									dx_adaptor;
+
+#ifdef __DX12__
 			ComPtr<ID3D12Device>									dx_device;
+#elif defined(__DX11__)
+			ComPtr<ID3D11Device3>									dx_device;
+			ComPtr<ID3D11DeviceContext3>							dx_context;
+#endif
 
 #elif defined(__VULKAN__)
             static VkInstance                                       vk_instance;
@@ -265,6 +284,8 @@ namespace wolf
 			W_EXP virtual void on_window_resized(_In_ UINT pIndex);
 			//Called when any graphics device lost
 			W_EXP virtual void on_device_lost();
+			//Called when the app suspends. It provides a hint to the driver that the app is entering an idle state and that temporary buffers can be reclaimed for use by other apps.
+			W_EXP virtual void on_suspend();
 			//Begin render on all graphics devices
 			W_EXP virtual HRESULT begin_render();
 			//End render on all graphics devices

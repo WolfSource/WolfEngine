@@ -58,7 +58,46 @@ namespace DirectX
 			pValue[3][0], pValue[3][1], pValue[3][2], pValue[3][3]);
 	}
 
-	inline std::wstring GetFeatureLevelStr(_In_ D3D_FEATURE_LEVEL pFeatureLevel)
+	inline std::string GetFeatureLevelStr(_In_ D3D_FEATURE_LEVEL pFeatureLevel)
+	{
+		std::string _feature_level;
+		switch (pFeatureLevel)
+		{
+		case D3D_FEATURE_LEVEL_9_1:
+			_feature_level = "D3D_FEATURE_LEVEL_9_1";
+			break;
+		case D3D_FEATURE_LEVEL_9_2:
+			_feature_level = "D3D_FEATURE_LEVEL_9_2";
+			break;
+		case D3D_FEATURE_LEVEL_9_3:
+			_feature_level = "D3D_FEATURE_LEVEL_9_3";
+			break;
+		case D3D_FEATURE_LEVEL_10_0:
+			_feature_level = "D3D_FEATURE_LEVEL_10_0";
+			break;
+		case D3D_FEATURE_LEVEL_10_1:
+			_feature_level = "D3D_FEATURE_LEVEL_10_1";
+			break;
+		case D3D_FEATURE_LEVEL_11_0:
+			_feature_level = "D3D_FEATURE_LEVEL_11_0";
+			break;
+		case D3D_FEATURE_LEVEL_11_1:
+			_feature_level = "D3D_FEATURE_LEVEL_11_1";
+			break;
+		case D3D_FEATURE_LEVEL_12_0:
+			_feature_level = "D3D_FEATURE_LEVEL_12_0";
+			break;
+		case D3D_FEATURE_LEVEL_12_1:
+			_feature_level = "D3D_FEATURE_LEVEL_12_1";
+			break;
+		default:
+			break;
+		}
+
+		return _feature_level;
+	}
+
+	inline std::wstring GetFeatureLevelStrW(_In_ D3D_FEATURE_LEVEL pFeatureLevel)
 	{
 		std::wstring _feature_level;
 		switch (pFeatureLevel)

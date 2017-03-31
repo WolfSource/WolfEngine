@@ -3,7 +3,7 @@
 #include <w_logger.h>
 #include <w_convert.h>
 
-#ifdef  __DX12__
+#if defined(__DX12__) || defined(__DX11__)
 #include <w_directX_helper.h>
 #elif defined(__APPLE__)
 #include <math.h>
@@ -17,11 +17,9 @@ using namespace wolf::graphics;
 #define DEFAULT_HEIGHT  600
 #define NUM_SAMPLES     VK_SAMPLE_COUNT_1_BIT
 
-static std::once_flag sOnceFlag;
-
-#ifdef __DX12__
+#if defined(__DX12__) || defined(__DX11__)
 ComPtr<IDXGIFactory4>	w_graphics_device::dx_dxgi_factory = nullptr;
-#elif   defined(__VULKAN__)
+#elif defined(__VULKAN__)
 VkInstance w_graphics_device::vk_instance = NULL;
 #endif
 
@@ -197,11 +195,18 @@ namespace wolf
 
 			void enumerate_devices(_Inout_  std::vector<std::shared_ptr<w_graphics_device>>& pGraphicsDevices)
 			{
-#ifdef __DX12__
+#if defined(__DX12__) || defined(__DX11__)
+
+				HRESULT _hr = S_FALSE;
 
 				std::wstring _msg;
 				_msg += L"++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n";
+#ifdef __DX12__
 				_msg += L"\t\t\t\t\tDirectX API version: 12";
+#else
+				_msg += L"\t\t\t\t\tDirectX API version: 11";
+				UINT _device_flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+#endif
 
 				UINT _dxgi_factory_flags = 0;
 #ifdef _DEBUG
@@ -209,6 +214,7 @@ namespace wolf
 					Enable the debug layer (requires the Graphics Tools "optional feature").
 					NOTE: Enabling the debug layer after device creation will invalidate the active device.
 				*/
+#ifdef __DX12__
 				ComPtr<ID3D12Debug> _debug_controller;
 				if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&_debug_controller))))
 				{
@@ -216,12 +222,32 @@ namespace wolf
 					//Enable additional debug layers.
 					_dxgi_factory_flags |= DXGI_CREATE_FACTORY_DEBUG;
 				}
+#else
+				//on DirectX11 check the debug layer
+				_hr = D3D11CreateDevice(
+					nullptr,
+					D3D_DRIVER_TYPE_NULL,       // There is no need to create a real hardware device.
+					0,
+					D3D11_CREATE_DEVICE_DEBUG,  // Check for the SDK layers.
+					nullptr,                    // Any feature level will do.
+					0,
+					D3D11_SDK_VERSION,          // Always set this to D3D11_SDK_VERSION for Windows Store apps.
+					nullptr,                    // No need to keep the D3D device reference.
+					nullptr,                    // No need to know the feature level.
+					nullptr                     // No need to keep the D3D device context reference.
+				);
+				if (_hr == S_OK)
+				{
+					_device_flags |= D3D11_CREATE_DEVICE_DEBUG;
+					_dxgi_factory_flags |= DXGI_CREATE_FACTORY_DEBUG;
+				}
+#endif
 				else
 				{
 					logger.warning(L"Could not enable the debug layer for DirectX 12");
 				}
 #endif
-				auto _hr = CreateDXGIFactory2(_dxgi_factory_flags, IID_PPV_ARGS(&w_graphics_device::dx_dxgi_factory));
+				_hr = CreateDXGIFactory2(_dxgi_factory_flags, IID_PPV_ARGS(&w_graphics_device::dx_dxgi_factory));
 				if (FAILED(_hr))
 				{
 					logger.error(L"error on getting dxgi factory");
@@ -229,13 +255,46 @@ namespace wolf
 					std::exit(EXIT_FAILURE);
 				}
 
+				const D3D_FEATURE_LEVEL _feature_levels[] =
+				{
+					D3D_FEATURE_LEVEL_12_1,
+					D3D_FEATURE_LEVEL_12_0,
+					D3D_FEATURE_LEVEL_11_1,
+					D3D_FEATURE_LEVEL_11_0
+#ifdef __DX11__
+					,
+					D3D_FEATURE_LEVEL_10_1,
+					D3D_FEATURE_LEVEL_10_0,
+					D3D_FEATURE_LEVEL_9_3,
+					D3D_FEATURE_LEVEL_9_2,
+					D3D_FEATURE_LEVEL_9_1
+#endif
+				};
+
+				const size_t _features_len = ARRAYSIZE(_feature_levels);
+				size_t _feature_level_start_index = 0;
+		
 				//create wrap mode device or hardware device?
 				if (this->_config.use_wrap_mode)
 				{
+#ifdef __DX12__
+					if (this->_config.wrap_mode_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
+					{
+						this->_config.wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+						logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Wrap mode feature level set to D3D_FEATURE_LEVEL_11_0.");
+					}
+#endif
+					for (_feature_level_start_index = 0; _feature_level_start_index < _features_len; ++_feature_level_start_index)
+					{
+						if (_feature_levels[_feature_level_start_index] == this->_config.wrap_mode_feature_level)
+						{
+							break;
+						}
+					}
+
 					auto _gDevice = std::make_shared<w_graphics_device>();
-					_gDevice->device_name = "DirectX Wrap mode with D3D_FEATURE_LEVEL_11_0 feature level";
+					_gDevice->dx_device_removed = false;
 					_gDevice->dx_is_wrap_device = true;
-					_msg += L"\r\n\t\t\t\t\tDirectX device with D3D_FEATURE_LEVEL_11_0 feature level created in Wrap mode\r\n";
 
 					ComPtr<IDXGIAdapter> _warp_adapter;
 					_hr = w_graphics_device::dx_dxgi_factory->EnumWarpAdapter(IID_PPV_ARGS(&_warp_adapter));
@@ -245,25 +304,136 @@ namespace wolf
 						release();
 						std::exit(EXIT_FAILURE);
 					}
-
-					_hr = D3D12CreateDevice(
-						_warp_adapter.Get(),
-						this->_config.wrap_mode_feature_level,
-						IID_PPV_ARGS(&_gDevice->dx_device));
-					if (FAILED(_hr))
+#ifdef __DX12__
+					bool _device_created = false;
+					for (size_t i = _feature_level_start_index; i < _features_len; i++)
 					{
-						logger.error(L"creating wrap device with feature level: " + std::to_wstring(this->_config.wrap_mode_feature_level) +
-							L".D3D_FEATURE_LEVEL_9_1 = 0x9100 ... D3D_FEATURE_LEVEL_12_1 = 0xc100");
+						_hr = D3D12CreateDevice(
+							_warp_adapter.Get(),
+							_feature_levels[i],
+							IID_PPV_ARGS(&_gDevice->dx_device));
+						if (FAILED(_hr))
+						{
+							_msg += L"creating wrap device with feature level: " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
+							logger.error(_msg);
+						}
+						else
+						{
+							this->_config.wrap_mode_feature_level = _feature_levels[i];
+							_device_created = true;
+							break;
+						}
+					}
+
+					if (!_device_created)
+					{
 						release();
 						std::exit(EXIT_FAILURE);
 					}
 
+#else
+					ComPtr<ID3D11Device> _device;
+					ComPtr<ID3D11DeviceContext> _context;
+
+					std::vector<D3D_FEATURE_LEVEL> _desired_feature_levels;
+					for (size_t i = _feature_level_start_index; i < _features_len; i++)
+					{
+						_desired_feature_levels.push_back(_feature_levels[i]);
+					}
+
+					_hr = D3D11CreateDevice(
+						nullptr,
+						D3D_DRIVER_TYPE_WARP, // Create a WARP device instead of a hardware device.
+						0,
+						_device_flags,
+						_desired_feature_levels.data(),
+						_desired_feature_levels.size(),
+						D3D11_SDK_VERSION,
+						&_device,
+						&_gDevice->dx_feature_level,
+						&_context);
+
+					_desired_feature_levels.clear();
+
+					if (FAILED(_hr))
+					{
+						_msg += L"creating wrap device with feature level: " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
+						logger.error(_msg);
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					_hr = _device.As(&_gDevice->dx_device);
+					if (FAILED(_hr))
+					{
+						_msg += L"getting ID3D11Device3 from ID3D11Device";
+						logger.error(_msg);
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+
+					_hr = _context.As(&_gDevice->dx_context);
+					if (FAILED(_hr))
+					{
+						_msg += L"getting ID3D11Context3 from ID3D11Context";
+						logger.error(_msg);
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+#endif
+					_gDevice->device_name = "DirectX Wrap mode with " + DirectX::GetFeatureLevelStr(this->_config.wrap_mode_feature_level);
+					_msg += L"\r\n\t\t\t\t\tDirectX Wrap mode with " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
+
+
 					//add the wrap device graphics devices list
 					pGraphicsDevices.push_back(_gDevice);
+
+					//create first presentation windows for wrap graphics device
+					auto _win = this->_windows_info.find(0);
+					if (_win != this->_windows_info.end())
+					{
+						for (size_t j = 0; j < _win->second.size(); ++j)
+						{
+							auto _window = _win->second[j];
+
+							w_output_presentation_window _out_window;
+							_out_window.index = static_cast<int>(j);
+							_out_window.dx_swap_chain_selected_format = (DXGI_FORMAT)_window.swap_chain_format;
+
+#if defined(__WIN32) || ( defined(__linux) && !defined(__ANDROID) ) || defined(__APPLE__)
+							_out_window.width = _window.width;
+							_out_window.height = _window.height;
+							_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
+							_out_window.v_sync = _window.v_sync_enable;
+							_out_window.is_full_screen = _window.is_full_screen;
+#ifdef __WIN32
+							_out_window.hwnd = _window.hwnd;
+							_out_window.hInstance = _window.hInstance;
+#endif
+
+#elif defined(__UWP)
+							_out_window.window = _window.window;
+							_out_window.window_size = _window.window_size;
+							_out_window.window_current_orientation = _window.window_current_orientation;
+							_out_window.window_native_orientation = _window.window_native_orientation;
+							_out_window.window_dpi = _window.window_dpi;
+							_out_window.support_high_resolutions = _window.support_high_resolutions;
+							_out_window.aspect_ratio = _window.window_size.Width / _window.window_size.Height;
+#endif
+
+							_gDevice->output_presentation_windows.push_back(_out_window);
+
+							_create_command_queue(_gDevice, j);
+							create_or_resize_swap_chain(_gDevice, j);
+							_create_depth_buffer(_gDevice, j);
+							_create_synchronization(_gDevice, j);
+
+						}
+					}
 				}
 				else
 				{
-					//looking for hardware gpus 
+					//looking for hardware GPUs 
 					_msg += L"\r\n\t\t\t\t\tGPU(s) founded:\r\n";
 
 					//Iterate for all adaptors
@@ -271,7 +441,21 @@ namespace wolf
 					for (int i = 0; w_graphics_device::dx_dxgi_factory->EnumAdapters1(i, &_adapter) != DXGI_ERROR_NOT_FOUND; ++i)
 					{
 						//if the feature level not specified in configs, the default feature level is D3D_FEATURE_LEVEL_11_0
-						auto _feature_level = i >= this->_config.hardware_feature_levels.size() ? D3D_FEATURE_LEVEL_11_0 : this->_config.hardware_feature_levels[i];
+						auto _selected_feature_level = i >= this->_config.hardware_feature_levels.size() ? D3D_FEATURE_LEVEL_11_0 : this->_config.hardware_feature_levels[i];
+#ifdef __DX12__
+						if (_selected_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
+						{
+							_selected_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+							logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Hardware feature level for graphics device set to D3D_FEATURE_LEVEL_11_0.");
+						}
+#endif
+						for (_feature_level_start_index = 0; _feature_level_start_index < _features_len; ++_feature_level_start_index)
+						{
+							if (_feature_levels[_feature_level_start_index] == _selected_feature_level)
+							{
+								break;
+							}
+						}
 
 						DXGI_ADAPTER_DESC1 _adapter_desc = {};
 						auto _hr = _adapter->GetDesc1(&_adapter_desc);
@@ -305,35 +489,104 @@ namespace wolf
 							continue;
 						}
 
-						//Check to see if the adapter supports Direct3D 12, if not then skip it
-						if (FAILED(D3D12CreateDevice(_adapter.Get(), _feature_level, _uuidof(ID3D12Device), nullptr)))
+#ifdef __DX12__
+
+						bool _device_created = false;
+						for (size_t _index = _feature_level_start_index; _index < _features_len; ++_index)
 						{
-							_msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStr(_feature_level) + L" not supported\r\n";
-							break;
+							//Check to see if the adapter supports Direct3D 12, if not then skip it
+							if (FAILED(D3D12CreateDevice(_adapter.Get(), _feature_levels[_index], _uuidof(ID3D12Device), nullptr)))
+							{
+								_msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_feature_levels[_index]) + 
+									L" not supported for " + _device_name + L"\r\n";
+							}
+							else
+							{
+								_selected_feature_level = _feature_levels[_index];
+								_device_created = true;
+								break;
+							}
 						}
 
-						_msg += L"\t\t\t\t\t\ttFeature level: " + DirectX::GetFeatureLevelStr(_feature_level) + L" supported\r\n";
+						if (!_device_created)
+						{
+							continue;
+						}
+
+#else
+						ComPtr<ID3D11Device> _device;
+						ComPtr<ID3D11DeviceContext> _context;
+
+						std::vector<D3D_FEATURE_LEVEL> _desired_feature_levels;
+						for (size_t i = _feature_level_start_index; i < _features_len; i++)
+						{
+							_desired_feature_levels.push_back(_feature_levels[i]);
+						}
+
+						_hr = D3D11CreateDevice(
+							nullptr,									// Specify nullptr to use the default adapter.
+							D3D_DRIVER_TYPE_HARDWARE,					// Create a device using the hardware graphics driver.
+							0,											// Should be 0 unless the driver is D3D_DRIVER_TYPE_SOFTWARE.
+							_device_flags,								// Set debug and Direct2D compatibility flags.
+							_desired_feature_levels.data(),				// List of feature levels this app can support.
+							_desired_feature_levels.size(),				// Size of the list above.
+							D3D11_SDK_VERSION,							// Always set this to D3D11_SDK_VERSION for Windows Store apps.
+							&_device,									// Returns the Direct3D device created.
+							&_selected_feature_level,					// Returns feature level of device created.
+							&_context									// Returns the device immediate context.
+						);
+						_desired_feature_levels.clear();
+
+						if (FAILED(_hr))
+						{
+							_msg += L"error on creating hardware device from: " + _device_name;
+							logger.error(_msg);
+							continue;
+						}
+
+#endif
+						_msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_selected_feature_level) + L" supported\r\n";
 
 						auto _gDevice = std::make_shared<w_graphics_device>();
 						_gDevice->device_name = std::string(_device_name.begin(), _device_name.end());
+						_gDevice->dx_device_removed = false;
 						_gDevice->dx_is_wrap_device = false;
-						_gDevice->dx_feature_level = _feature_level;
+						_gDevice->dx_feature_level = _selected_feature_level;
 
+#ifdef __DX12__
 						_hr = D3D12CreateDevice(
 							_adapter.Get(),
-							_feature_level,
+							_selected_feature_level,
 							IID_PPV_ARGS(&_gDevice->dx_device));
 						if (_hr != S_OK)
 						{
 							logger.write(_msg);
 							_msg.clear();
-							_msg = L"creating harware device with feature level: " + std::to_wstring(_feature_level) +
-								L".D3D_FEATURE_LEVEL_9_1 = 0x9100 ... D3D_FEATURE_LEVEL_12_1 = 0xc100";
+							_msg = L"creating hadrware device with feature level: " + DirectX::GetFeatureLevelStrW((_selected_feature_level));
+							logger.error(_msg);
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+#else
+						//get device & context
+						_hr = _device.As(&_gDevice->dx_device);
+						if (FAILED(_hr))
+						{
+							_msg += L"getting ID3D11Device3 from ID3D11Device";
 							logger.error(_msg);
 							release();
 							std::exit(EXIT_FAILURE);
 						}
 
+						_hr = _context.As(&_gDevice->dx_context);
+						if (FAILED(_hr))
+						{
+							_msg += L"getting ID3D11Context3 from ID3D11Context";
+							logger.error(_msg);
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+#endif
 						//write to output
 						logger.write(_msg);
 						_msg.clear();
@@ -993,24 +1246,26 @@ namespace wolf
 
 					pGraphicsDevices.push_back(_gDevice);
 				}
-#endif //__DX12__
+#endif //__DX12__, __DX11__, __VULKAN__
 			}
 
 			void create_or_resize_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ size_t pOutputPresentationWindowIndex)
 			{
-#ifdef __DX12__
+#if defined(__DX12__) || defined(__DX11__)
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
+				const size_t _desired_number_of_swapchain_images = 2;
+#ifdef __DX12__
 				//release dx_swap_chain_image_views
 				for (size_t i = 0; i < _output_presentation_window->dx_swap_chain_image_views.size(); i++)
 				{
 					COM_RELEASE(_output_presentation_window->dx_swap_chain_image_views[i]);
 				}
 
-				const size_t _desired_number_of_swapchain_images = 2;
-				_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);
+				_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);				
+#endif
 				_output_presentation_window->force_to_clear_color_times = _desired_number_of_swapchain_images;
 
 
@@ -1043,52 +1298,54 @@ namespace wolf
 				}
 				else
 				{
-					float _numerator = 0;
-					float _denominator = 1;
+#pragma region NO NEED ANYMORE
+					//float _numerator = 0;
+					//float _denominator = 1;
 
-					//if this window does not need v-sync, then it is important to get the refresh rate of displays
-					if (!_output_presentation_window->v_sync)
-					{
-						//we need to get the numerator and denominator of display monitors
-						UINT _num_modes = 0;
-						_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
-							DXGI_ENUM_MODES_INTERLACED,
-							&_num_modes,
-							NULL);
-						if (SUCCEEDED(_hr))
-						{
-							std::vector<DXGI_MODE_DESC> _display_modes(_num_modes);
-							_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
-								DXGI_ENUM_MODES_INTERLACED,
-								&_num_modes,
-								_display_modes.data());
-							if (SUCCEEDED(_hr))
-							{
-								for (size_t i = 0; i < _num_modes; ++i)
-								{
-									if (_output_presentation_window->height == _display_modes[i].Height &&
-										_output_presentation_window->width == _display_modes[i].Width)
-									{
-										auto _refresh_rate = _display_modes[i].RefreshRate;
-										_numerator = _refresh_rate.Numerator;
-										_denominator = _refresh_rate.Denominator;
-									}
-								}
-							}
-							else
-							{
-								logger.warning(L"Could not get display modes list for graphics device: " + _device_name +
-									L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-							}
-							_display_modes.clear();
-						}
-						else
-						{
-							logger.warning(L"Could not get number of display modes list for graphics device: " + _device_name +
-								L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-						}
+					////if this window does not need v-sync, then it is important to get the refresh rate of displays
+					//if (!_output_presentation_window->v_sync)
+					//{
+					//	//we need to get the numerator and denominator of display monitors
+					//	UINT _num_modes = 0;
+					//	_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
+					//		DXGI_ENUM_MODES_INTERLACED,
+					//		&_num_modes,
+					//		NULL);
+					//	if (SUCCEEDED(_hr))
+					//	{
+					//		std::vector<DXGI_MODE_DESC> _display_modes(_num_modes);
+					//		_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
+					//			DXGI_ENUM_MODES_INTERLACED,
+					//			&_num_modes,
+					//			_display_modes.data());
+					//		if (SUCCEEDED(_hr))
+					//		{
+					//			for (size_t i = 0; i < _num_modes; ++i)
+					//			{
+					//				if (_output_presentation_window->height == _display_modes[i].Height &&
+					//					_output_presentation_window->width == _display_modes[i].Width)
+					//				{
+					//					auto _refresh_rate = _display_modes[i].RefreshRate;
+					//					_numerator = _refresh_rate.Numerator;
+					//					_denominator = _refresh_rate.Denominator;
+					//				}
+					//			}
+					//		}
+					//		else
+					//		{
+					//			logger.warning(L"Could not get display modes list for graphics device: " + _device_name +
+					//				L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					//		}
+					//		_display_modes.clear();
+					//	}
+					//	else
+					//	{
+					//		logger.warning(L"Could not get number of display modes list for graphics device: " + _device_name +
+					//			L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					//	}
 
-					}
+					//}
+#pragma endregion
 
 					// Disable full screen with ALT+Enter
 					_hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
@@ -1096,31 +1353,35 @@ namespace wolf
 						this->_name, 2);
 
 					// Describe and create the swap chain.
-					DXGI_SWAP_CHAIN_DESC _swap_chain_desc = {};
+					DXGI_SWAP_CHAIN_DESC1 _swap_chain_desc = {};
+					_swap_chain_desc.AlphaMode = DXGI_ALPHA_MODE::DXGI_ALPHA_MODE_UNSPECIFIED;
 					_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
 					_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 					_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 					_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
 					_swap_chain_desc.SampleDesc.Quality = 0;
-					_swap_chain_desc.Windowed = _output_presentation_window->is_full_screen;
-					_swap_chain_desc.OutputWindow = _output_presentation_window->hwnd;
-					_swap_chain_desc.BufferDesc.Width = _output_presentation_window->width;
-					_swap_chain_desc.BufferDesc.Height = _output_presentation_window->height;
-					_swap_chain_desc.BufferDesc.Format = _output_presentation_window->dx_swap_chain_selected_format;
-					_swap_chain_desc.BufferDesc.RefreshRate.Numerator = _numerator;
-					_swap_chain_desc.BufferDesc.RefreshRate.Denominator = _denominator;
-					_swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-					_swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+					_swap_chain_desc.Format = _output_presentation_window->dx_swap_chain_selected_format;
+					_swap_chain_desc.Width = _output_presentation_window->width;
+					_swap_chain_desc.Height = _output_presentation_window->height;
+					_swap_chain_desc.Scaling = DXGI_SCALING::DXGI_SCALING_NONE;
+					_swap_chain_desc.Stereo = FALSE;
 					_swap_chain_desc.Flags = 0;
-					_swap_chain_desc.BufferDesc.RefreshRate.Numerator = _output_presentation_window->dx_swap_chain_selected_format;
 
 					{
-						ComPtr<IDXGISwapChain> _swap_chain = nullptr;
+						ComPtr<IDXGISwapChain1> _swap_chain = nullptr;
 
-						_hr = w_graphics_device::dx_dxgi_factory->CreateSwapChain(
+						_hr = w_graphics_device::dx_dxgi_factory->CreateSwapChainForHwnd(
+#ifdef __DX12__
 							_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
+#else
+							pGDevice->dx_device.Get(),
+#endif
+							_output_presentation_window->hwnd,
 							&_swap_chain_desc,
+							nullptr,
+							nullptr,
 							&_swap_chain);
+
 						V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name +
 							L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 							this->_name, 2);
@@ -1221,7 +1482,7 @@ namespace wolf
 						pGDevice->dx_device_removed = true;
 						return;
 					}
-					else
+					else if(_hr != S_OK)
 					{
 						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
 							+ _device_name);
@@ -1250,7 +1511,11 @@ namespace wolf
 
 					ComPtr<IDXGISwapChain1> _swap_chain;
 					_hr = pGDevice->dx_dxgi_factory->CreateSwapChainForCoreWindow(
+#ifdef __DX12__
 						_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
+#else
+						pGDevice->dx_device.Get(),
+#endif
 						_output_presentation_window->window,
 						&_swap_chain_desc,
 						nullptr,
@@ -1327,6 +1592,8 @@ namespace wolf
 
 				}
 #endif
+
+#ifdef __DX12__
 				// Describe and create a render target view (RTV) descriptor heap.
 				D3D12_DESCRIPTOR_HEAP_DESC _render_target_view_heap_desc = {};
 				_render_target_view_heap_desc.NumDescriptors = _desired_number_of_swapchain_images;
@@ -1359,6 +1626,22 @@ namespace wolf
 
 				//get the swap chain frame index
 				_output_presentation_window->dx_swap_chain_image_index = _output_presentation_window->dx_swap_chain->GetCurrentBackBufferIndex();
+
+#elif defined(__DX11__)
+
+				{
+					// This sequence obtains the DXGI factory that was used to create the Direct3D device above.
+					ComPtr<IDXGIDevice3> _dxgi_device;
+					_hr = pGDevice->dx_device.As(&_dxgi_device);
+					V(_hr, L"getting DXGI device from graphics device: " + _device_name, this->_name, 2);
+
+					/*
+					Ensure that DXGI does not queue more than one frame at a time. This both reduces latency and
+					ensures that the application will only render after each VSync, minimizing power consumption.
+					*/
+					_dxgi_device->SetMaximumFrameLatency(1);
+				}
+#endif
 
 #elif defined(__VULKAN__)
 				auto _device_name = pGDevice->device_name;
@@ -1687,6 +1970,11 @@ namespace wolf
 				return this->_is_released;
 			}
 
+			std::map<int, std::vector<w_window_info>> get_output_windows_info() const
+			{
+				return this->_windows_info;
+			}
+
 #pragma endregion
 
 #pragma region Setters
@@ -1707,9 +1995,87 @@ namespace wolf
             
 			void _create_depth_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
 			{
-#ifdef __DX12__ 
+#ifdef __DX11__ 
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
+				// Create a render target view of the swap chain back buffer.
+				ComPtr<ID3D11Texture2D1> _back_buffer;
+				auto _hr = _output_presentation_window->dx_swap_chain->GetBuffer(0, IID_PPV_ARGS(&_back_buffer));
+				if (FAILED(_hr))
+				{
+					logger.error(L"error on getting back buffer for graphics device: " +
+						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				_hr = pGDevice->dx_device->CreateRenderTargetView1(
+					_back_buffer.Get(),
+					nullptr,
+					&_output_presentation_window->dx_render_target_view);
+				if (FAILED(_hr))
+				{
+					logger.error(L"error on creating render target view for graphics device: " +
+						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				// Create a depth stencil view for use with 3D rendering if needed.
+				CD3D11_TEXTURE2D_DESC1 _depth_stencil_desc(
+					DXGI_FORMAT_D24_UNORM_S8_UINT,
+#ifdef __WIN32
+					_output_presentation_window->width,
+					_output_presentation_window->height,
+#else
+					lround(_output_presentation_window->window_size.Width),
+					lround(_output_presentation_window->window_size.Height),
+#endif
+					1, // This depth stencil view has only one texture.
+					1, // Use a single mipmap level.
+					D3D11_BIND_DEPTH_STENCIL
+				);
+
+				ComPtr<ID3D11Texture2D1> _depth_stencil;
+				_hr = pGDevice->dx_device->CreateTexture2D1(
+					&_depth_stencil_desc,
+					nullptr,
+					&_depth_stencil);
+				if (FAILED(_hr))
+				{
+					logger.error(L"error on creating depth stencil for graphics device: " +
+						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				CD3D11_DEPTH_STENCIL_VIEW_DESC _depth_stencil_view_desc(D3D11_DSV_DIMENSION_TEXTURE2D);
+				_hr = pGDevice->dx_device->CreateDepthStencilView(
+					_depth_stencil.Get(),
+					&_depth_stencil_view_desc,
+					&_output_presentation_window->dx_depth_stencil_view);
+				if (FAILED(_hr))
+				{
+					logger.error(L"error on creating depth stencil view for graphics device: " +
+						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//Set the 3D rendering viewport to target the entire window.
+				_output_presentation_window->dx_screen_viewport = CD3D11_VIEWPORT(
+					0.0f,
+					0.0f,
+#ifdef __WIN32
+					_output_presentation_window->width,
+					_output_presentation_window->height
+#else
+					lround(_output_presentation_window->window_size.Width),
+					lround(_output_presentation_window->window_size.Height)
+#endif
+				);
+				pGDevice->dx_context->RSSetViewports(1, &_output_presentation_window->dx_screen_viewport);
 
 #elif defined(__VULKAN__)
 				auto _device_name = pGDevice->device_name;
@@ -2206,11 +2572,7 @@ w_graphics_device_manager::~w_graphics_device_manager()
 void w_graphics_device_manager::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
 {
     //store information of windows for the first time
-    std::call_once(sOnceFlag,[this, pOutputWindowsInfo]()
-    {
-         this->_pimp->set_output_windows_info(pOutputWindowsInfo);
-    });
-    
+    this->_pimp->set_output_windows_info(pOutputWindowsInfo);
     this->_pimp->enumerate_devices(this->graphics_devices);
     
     //If there is no associated graphics device
@@ -2224,12 +2586,37 @@ void w_graphics_device_manager::initialize(_In_ std::map<int, std::vector<w_wind
 
 void w_graphics_device_manager::on_device_lost()
 {
-	logger.write(L"Device is going to reset");
+	logger.write(L"Graphics device is going to reset");
 	
-	//initialize();
-	//initialize_output_windows(this->_windows_info);
+	auto _windows_info = this->_pimp->get_output_windows_info();
+	release();
+	this->_pimp = new w_graphics_device_manager_pimp();
+	initialize(_windows_info);
 	
-	logger.write(L"Device reseted successfully");
+	logger.write(L"Graphics device reseted successfully");
+}
+
+void w_graphics_device_manager::on_suspend()
+{
+	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
+	{
+		auto _gDevice = this->graphics_devices[i];
+		if (_gDevice->dx_device_removed)
+		{
+			on_device_lost();
+		}
+
+		ComPtr<IDXGIDevice3> _dxgi_device;
+		auto _hr = _gDevice->dx_device.As(&_dxgi_device);
+		if (FAILED(_hr))
+		{
+			V(S_FALSE, "getting dxgi device from d3d11device for graphics device: " + _gDevice->device_name, this->name, 2);
+		}
+		else
+		{
+			_dxgi_device->Trim();
+		}
+	}
 }
 
 void w_graphics_device_manager::on_window_resized(_In_ UINT pIndex)
@@ -2242,7 +2629,7 @@ void w_graphics_device_manager::on_window_resized(_In_ UINT pIndex)
 	{
 		auto _window = _gDevice->output_presentation_windows.at(i);
 		wait_for_previous_frame(_gDevice, i);
-		//this->_pimp->create_or_resize_swap_chain(_gDevice, i);
+		this->_pimp->create_or_resize_swap_chain(_gDevice, i);
 	}
 }
 
@@ -2282,11 +2669,38 @@ HRESULT w_graphics_device_manager::begin_render()
 	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 	{
 		auto _gDevice = this->graphics_devices[i];
+		if (_gDevice->dx_device_removed)
+		{
+			on_device_lost();
+			continue;
+		}
+
 		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
 		{
 			auto _present_window = &(_gDevice->output_presentation_windows[j]);
 
-#ifdef __DX12__
+#ifdef __DX11__
+			//Reset the viewport to target the whole screen.
+			_gDevice->dx_context->RSSetViewports(1, &_present_window->dx_screen_viewport);
+
+			// Reset render targets to the screen.
+			auto _render_target_view = _present_window->dx_render_target_view.Get();
+			auto _depth_stencil_view = _present_window->dx_depth_stencil_view.Get();
+
+			ID3D11RenderTargetView *const _targets[1] = { _render_target_view };
+			_gDevice->dx_context->OMSetRenderTargets(1, _targets, _depth_stencil_view);
+
+			//Clear the back buffer and depth stencil view.
+			const float _clear_color[4] = {
+				_present_window->clear_color.r / 255.f,
+				_present_window->clear_color.g / 255.f,
+				_present_window->clear_color.b / 255.f,
+				_present_window->clear_color.a / 255.f
+			};
+			_gDevice->dx_context->ClearRenderTargetView(_render_target_view, _clear_color);
+			_gDevice->dx_context->ClearDepthStencilView(_depth_stencil_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+#elif defined(__DX12__)
 
 			wait_for_previous_frame(_gDevice, j);
 
@@ -2412,11 +2826,53 @@ void w_graphics_device_manager::end_render()
 	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 	{
 		auto _gDevice = this->graphics_devices[i];
+		if (_gDevice->dx_device_removed)
+		{
+			on_device_lost();
+			continue;
+		}
+
 		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
 		{
 			auto _present_window = &(_gDevice->output_presentation_windows[j]);
 
-#ifdef __DX12__
+#ifdef __DX11__
+			/*
+				The first argument instructs DXGI to block until VSync, putting the application
+				to sleep until the next VSync. This ensures we don't waste any cycles rendering
+				frames that will never be displayed to the screen.
+			*/
+			DXGI_PRESENT_PARAMETERS _parameters = { 0 };
+			auto _hr = _present_window->dx_swap_chain->Present1(_present_window->v_sync ? 1 : 0, 0, &_parameters);
+
+			/*
+				Discard the contents of the render target.
+				This is a valid operation only when the existing contents will be entirely
+				overwritten. If dirty or scroll rects are used, this call should be removed.
+			*/
+			_gDevice->dx_context->DiscardView1(_present_window->dx_render_target_view.Get(), nullptr, 0);
+
+			//Discard the contents of the depth stencil.
+			_gDevice->dx_context->DiscardView1(_present_window->dx_depth_stencil_view.Get(), nullptr, 0);
+
+			/*
+				If the device was removed either by a disconnection or a driver upgrade, we
+				must recreate all device resources.
+			*/
+			if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
+			{
+				_gDevice->dx_device_removed = true;
+				return;
+			}
+			else if (_hr != S_OK)
+			{
+				logger.error("Unexpected error while presenting swap chain for graphics device: " +
+					_gDevice->device_name + " and presentation window: " + std::to_string(j));
+				release();
+				std::exit(EXIT_FAILURE);
+		}
+
+#elif defined(__DX12__)
 
 			//submit command list for executing
 			ID3D12CommandList* _command_lists[1] = { _present_window->dx_command_list.Get() };
@@ -2438,6 +2894,7 @@ void w_graphics_device_manager::end_render()
 					+ _gDevice->device_name);
 				// If the device was removed for any reason, a new device and swap chain will need to be created.
 				_gDevice->dx_device_removed = true;
+				return;
 			}
 
 #elif defined(__VULKAN__)
@@ -2489,7 +2946,7 @@ ULONG w_graphics_device_manager::release()
 		this->graphics_devices.pop_back();
 	}
     
-#ifdef __DX12__
+#if defined(__DX12__) || defined(__DX11__)
 
 	//release 
 	COMPTR_RELEASE(w_graphics_device::dx_dxgi_factory);
