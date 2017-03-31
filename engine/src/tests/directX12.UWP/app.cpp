@@ -42,6 +42,7 @@ void app::SetWindow(_In_ CoreWindow^ pWindow)
 	_w_info.window_native_orientation = _current_display_information->NativeOrientation;
 	_w_info.window_current_orientation = _current_display_information->CurrentOrientation;
 	_w_info.window_dpi = _current_display_information->LogicalDpi;
+	_w_info.support_high_resolutions = true;
 
 	pWindow->SizeChanged += ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &app::OnWindowSizeChanged);
 	pWindow->VisibilityChanged += ref new TypedEventHandler<CoreWindow^, VisibilityChangedEventArgs^>(this, &app::OnVisibilityChanged);
