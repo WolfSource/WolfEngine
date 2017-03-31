@@ -17,7 +17,7 @@ using namespace wolf::graphics;
 
 scene::scene()
 {
-	w_game::set_app_name(L"test.directX12.UWP");
+	w_game::set_app_name(L"test.wolf.engine.directX12.UWP");
 	w_game::set_fixed_time_step(false);
 
 	//set the graphics config

@@ -40,10 +40,11 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	};
 
 	//Initialize scene & window
-	sScene = make_unique<scene>();
+	sScene = make_unique<scene>(wolf::system::io::get_current_directoryW());
 	sWindow = make_unique<w_window>();
 	sWindow->set_width(1920);
 	sWindow->set_height(1080);
+	sWindow->set_position(10, 10);
 	//iniatilize window
 	sWindow->initialize(_msg_proc_func);
 

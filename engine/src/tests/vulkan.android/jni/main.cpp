@@ -80,10 +80,10 @@ static wolf::system::w_timer_callback tc;
 static int engine_init_display(struct engine* pEngine) 
 {
 	ANativeActivity* nativeActivity = pEngine->app->activity;
-	const char* internalPath = nativeActivity->externalDataPath;
-	std::string dataPath(internalPath);
+	//const char* internalPath = nativeActivity->externalDataPath;
+	//std::string dataPath(internalPath);
 
-	wolf::system::w_time_span _time;
+	/*wolf::system::w_time_span _time;
 	wolf::system::w_time_span _t(0, 1, 1);
 
 	_time = _time.add(wolf::system::w_time_span(1, 1, 1));
@@ -203,7 +203,7 @@ static int engine_init_display(struct engine* pEngine)
 	tc.do_async(1000, []()
 	{
 		logger.write("ASYNC");
-	});
+	});*/
 
 	pEngine->width = ANativeWindow_getWidth(pEngine->app->window);
 	pEngine->height = ANativeWindow_getHeight(pEngine->app->window);
@@ -217,7 +217,7 @@ static int engine_init_display(struct engine* pEngine)
 
 	sWindowsInfos[0] = _v;
 
-	sScene = new scene();
+	sScene = new scene(nativeActivity->internalDataPath);
 
     return 0;
 }

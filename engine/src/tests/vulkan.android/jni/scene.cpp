@@ -9,7 +9,7 @@
 #include "pch.h"
 #include "scene.h"
 
-scene::scene()
+scene::scene(_In_z_ std::string pRootDirectory) : w_game(pRootDirectory)
 {
     w_game::set_app_name("test.wolf.engine.vulkan.android");
     w_game::set_fixed_time_step(false);

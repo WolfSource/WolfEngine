@@ -14,10 +14,15 @@ using namespace wolf::system;
 using namespace wolf::framework;
 using namespace wolf::graphics;
 
-scene::scene()
+scene::scene(_In_z_ std::wstring pRootDirectory) : w_game(pRootDirectory)
 {
-	w_game::set_app_name(L"Test.DirectX12.Win32");
+	w_game::set_app_name(L"test.wolf.engine.directX.Win32");
 	w_game::set_fixed_time_step(false);
+
+	w_graphics_device_manager_configs _config;
+	_config.hardware_feature_levels.clear();
+	_config.hardware_feature_levels.push_back(D3D_FEATURE_LEVEL_9_3);
+	w_game::set_graphics_device_manager_configs(_config);
 }
 
 scene::~scene()

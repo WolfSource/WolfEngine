@@ -14,7 +14,7 @@
 class scene : public wolf::framework::w_game
 {
 public:
-    scene();
+    scene(_In_z_ std::string pRootDirectory);
     virtual ~scene();
 
     /*

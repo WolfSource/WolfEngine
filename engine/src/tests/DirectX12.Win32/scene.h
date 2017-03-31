@@ -14,7 +14,7 @@
 class scene sealed : public wolf::framework::w_game
 {
 public:
-	scene();
+	scene(_In_z_ std::wstring pRootDirectory);
 	virtual ~scene();
 
 	/*
