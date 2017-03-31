@@ -24,7 +24,7 @@ Wolf Engine is written in C++ and supports Python and Lua as an embedded script 
 <li>Vulkan on macOS via Metal wrapper(MoltenVK) supported</li>
 <li>Vulkan on IOS via Metal wrapper(MoltenVK) supported</li>
 <li>Vulkan on Nvidia Tegra Android supported</li>
-<li>Vulkan on Nvidia Tegra Android supported
+<li>New sample has been added
     <ul>
       <li>Samples\00-system\01_async.Win32</li>
     </ul>
