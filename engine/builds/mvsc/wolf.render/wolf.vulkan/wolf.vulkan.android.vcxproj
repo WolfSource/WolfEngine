@@ -66,7 +66,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\wolf.render\android\vulkan_wrapper.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\vk_android\vulkan_wrapper.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_game.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_render_pch.cpp">
@@ -74,7 +74,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\wolf.render\android\vulkan_wrapper.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\vk_android\vulkan_wrapper.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_export.h" />

@@ -4,8 +4,8 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_render_pch.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_game.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\android\vulkan_wrapper.cpp">
-      <Filter>android</Filter>
+    <ClCompile Include="..\..\..\..\src\wolf.render\vk_android\vulkan_wrapper.cpp">
+      <Filter>vk_android</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -13,12 +13,12 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_pch.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\android\vulkan_wrapper.h">
-      <Filter>android</Filter>
+    <ClInclude Include="..\..\..\..\src\wolf.render\vk_android\vulkan_wrapper.h">
+      <Filter>vk_android</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="android">
+    <Filter Include="vk_android">
       <UniqueIdentifier>{4100674d-f933-454a-83e9-61ad7df3875a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

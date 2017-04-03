@@ -1,0 +1,58 @@
+﻿  w_game.cpp
+  w_graphics_device_manager.cpp
+  C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_game.h(17): includes this header: 0,
+  C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\builds\mvsc\src\wolf.render\w_game.cpp(2): 
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(99,57): warning : converting to non-pointer type 'VkImage {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkImage                             image = NULL;
+                                                           ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(100,56): warning : converting to non-pointer type 'VkImageView {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkImageView                         view = NULL;
+                                                          ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(189,58): warning : converting to non-pointer type 'VkSurfaceKHR {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkSurfaceKHR       vk_presentation_surface = NULL;
+                                                            ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(193,50): warning : converting to non-pointer type 'VkSwapchainKHR {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkSwapchainKHR       vk_swap_chain = NULL;
+                                                    ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(197,61): warning : converting to non-pointer type 'VkCommandPool {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkCommandPool       vk_command_allocator_pool = NULL;
+                                                               ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(203,59): warning : converting to non-pointer type 'VkDeviceMemory {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkDeviceMemory       vk_depth_buffer_memory = NULL;
+                                                             ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(206,66): warning : converting to non-pointer type 'VkSemaphore {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkSemaphore        vk_image_is_available_semaphore = NULL;
+                                                                    ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(207,62): warning : converting to non-pointer type 'VkSemaphore {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkSemaphore        vk_rendering_done_semaphore = NULL;
+                                                                ^
+  C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.cpp(2): includes this header: 0:
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(99,57): warning : converting to non-pointer type 'VkImage {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkImage                             image = NULL;
+                                                           ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(100,56): warning : converting to non-pointer type 'VkImageView {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkImageView                         view = NULL;
+                                                          ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(189,58): warning : converting to non-pointer type 'VkSurfaceKHR {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkSurfaceKHR       vk_presentation_surface = NULL;
+                                                            ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(193,50): warning : converting to non-pointer type 'VkSwapchainKHR {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkSwapchainKHR       vk_swap_chain = NULL;
+                                                    ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(197,61): warning : converting to non-pointer type 'VkCommandPool {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkCommandPool       vk_command_allocator_pool = NULL;
+                                                               ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(203,59): warning : converting to non-pointer type 'VkDeviceMemory {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkDeviceMemory       vk_depth_buffer_memory = NULL;
+                                                             ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(206,66): warning : converting to non-pointer type 'VkSemaphore {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkSemaphore        vk_image_is_available_semaphore = NULL;
+                                                                    ^
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.h(207,62): warning : converting to non-pointer type 'VkSemaphore {aka long long unsigned int}' from NULL [-Wconversion-null]
+               VkSemaphore        vk_rendering_done_semaphore = NULL;
+                                                                ^
+  ../../../../src/wolf.render/w_graphics_device_manager.cpp: In member function 'HRESULT wolf::graphics::w_graphics_device::create_render_pass(const char*, std::vector<VkAttachmentDescription>, std::vector<VkSubpassDescription>, std::vector<VkSubpassDependency>, std::size_t)':
+C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\src\wolf.render\w_graphics_device_manager.cpp(98,13): warning : comparison between 'enum VkResult' and 'enum HRESULT' [-Wenum-compare]
+    if (_hr == S_OK && _render_pass)
+               ^
+  wolf.vulkan.android.vcxproj -> C:\Users\PooyaEimandar\Documents\github\Wolf.Engine\engine\builds\mvsc\/../../../bin/Tegra-Android/Debug/libwolf.vulkan.android.a
