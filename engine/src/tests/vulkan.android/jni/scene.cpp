@@ -9,6 +9,9 @@
 #include "pch.h"
 #include "scene.h"
 
+using namespace wolf::system;
+using namespace wolf::graphics;
+
 scene::scene(_In_z_ std::string pRootDirectory) : w_game(pRootDirectory)
 {
     w_game::set_app_name("test.wolf.engine.vulkan.android");
@@ -28,7 +31,42 @@ void scene::initialize(std::map<int, std::vector<w_window_info>> pOutputWindowsI
 
 void scene::load()
 {
-    w_game::load();
+	auto _gDevice = graphics_devices[0];
+	auto _output_window = &(_gDevice->output_presentation_windows[0]);
+
+	const std::vector<VkAttachmentDescription> _attachment_descriptions = { w_graphics_device::vk_default_attachment_description };
+	const VkAttachmentReference _attachment_ref[] = { w_graphics_device::vk_default_color_attachment_reference };
+	const std::vector<VkSubpassDescription> _subpass_descriptions =
+	{
+		{
+			0,
+			VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS,
+			0,
+			nullptr,
+			1,
+			_attachment_ref,
+			nullptr,
+			nullptr,
+			0,
+			nullptr
+		}
+	};
+	const std::vector<VkSubpassDependency> _subpass_deps = {};
+
+	_gDevice->create_render_pass("pass1",
+		_attachment_descriptions,
+		_subpass_descriptions,
+		_subpass_deps);
+
+	_gDevice->create_frame_buffers_collection("frame_buffers_swap_chain",
+		"pass1",
+		2,
+		_output_window->vk_swap_chain_image_views.data(),
+		(uint32_t)(1920),
+		(uint32_t)(1080),
+		(uint32_t)1);
+
+	w_game::load();
 }
 
 void scene::update(const wolf::system::w_game_time& pGameTime)
