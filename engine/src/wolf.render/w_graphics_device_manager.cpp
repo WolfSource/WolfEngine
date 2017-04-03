@@ -21,6 +21,26 @@ using namespace wolf::graphics;
 ComPtr<IDXGIFactory4>	w_graphics_device::dx_dxgi_factory = nullptr;
 #elif defined(__VULKAN__)
 VkInstance w_graphics_device::vk_instance = NULL;
+VkAttachmentDescription	w_graphics_device::vk_default_attachment_description =
+{
+	0,									// VkAttachmentDescriptionFlags: Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
+	VkFormat::VK_FORMAT_R8G8B8A8_UNORM,	// VkFormat: Format of an image used for the attachment. 
+	VK_SAMPLE_COUNT_1_BIT,				// VkSampleCountFlagBits: Number of samples of the image; The value greater than 1 means multisampling.
+	VK_ATTACHMENT_LOAD_OP_CLEAR,		// VkAttachmentLoadOp: Specifies what to do with the image’s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don’t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
+	VK_ATTACHMENT_STORE_OP_STORE,		// VkAttachmentStoreOp: Informs the driver what to do with the image’s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
+	VK_ATTACHMENT_LOAD_OP_DONT_CARE,	// VkAttachmentLoadOp: The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
+	VK_ATTACHMENT_STORE_OP_DONT_CARE,	// VkAttachmentStoreOp: The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
+	VK_IMAGE_LAYOUT_UNDEFINED,			// VkImageLayout: The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
+	VK_IMAGE_LAYOUT_PRESENT_SRC_KHR		// VkImageLayout: The layout the driver will automatically transition the given image into at the end of a render pass.
+};
+
+VkAttachmentReference w_graphics_device::vk_default_color_attachment_reference =
+{
+		0,											// uint32_t: attachment
+		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL	// VkImageLayout: the layout of attachment
+};
+
+
 #endif
 
 w_graphics_device::w_graphics_device():
@@ -46,6 +66,130 @@ w_output_presentation_window w_graphics_device::main_window()
     
     //return null window;
 	return w_output_presentation_window();
+}
+
+HRESULT w_graphics_device::create_render_pass(_In_z_ const char* pRenderPassName,
+	_In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
+	_In_ const std::vector<VkSubpassDescription> pSubpassDescription,
+	_In_ const std::vector<VkSubpassDependency> pSubpassDependency,
+	_In_ size_t pOutputPresentationWindowIndex)
+{
+	auto _present_window = &(this->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
+	const VkRenderPassCreateInfo _render_pass_create_info =
+	{
+		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,							// VkStructureType                sType
+		nullptr,															// const void                    *pNext
+		0,																	// VkRenderPassCreateFlags        flags
+		pAttachmentDescriptions.size(),										// uint32_t                       attachmentCount
+		pAttachmentDescriptions.data(),										// const VkAttachmentDescription *pAttachments
+		pSubpassDescription.size(),											// uint32_t                       subpassCount
+		pSubpassDescription.data(),											// const VkSubpassDescription    *pSubpasses
+		pSubpassDependency.size(),											// uint32_t                       dependencyCount
+		pSubpassDependency.size() ? pSubpassDependency.data() : nullptr		// const VkSubpassDependency     *pDependencies
+	};
+
+	VkRenderPass _render_pass = VK_NULL_HANDLE;
+	auto _hr = vkCreateRenderPass(this->vk_device, &_render_pass_create_info, nullptr, &_render_pass);
+	V(_hr, L"creating render pass with graphics device: " + std::wstring(this->device_name.begin(), this->device_name.end()) +
+		L" ID:" + std::to_wstring(this->device_id) +
+		L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex), "w_graphics_device", 3, false, true);
+
+	if (_hr == S_OK && _render_pass)
+	{
+		auto _iter = this->vk_render_passes.find(pRenderPassName);
+		if (_iter != this->vk_render_passes.end())
+		{
+			//we must disable last one 
+			if (!this->vk_render_passes[pRenderPassName])
+			{
+				vkDestroyRenderPass(this->vk_device, this->vk_render_passes[pRenderPassName], nullptr);
+				this->vk_render_passes[pRenderPassName] = VK_NULL_HANDLE;
+			}
+		}
+		this->vk_render_passes[pRenderPassName] = _render_pass;
+		return S_OK;
+	}
+
+	return S_FALSE;
+}
+
+HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pFrameBufferCollectionName, 
+	_In_z_ const char* pRenderPassUsedName,
+	_In_ size_t pSizeOfCollection,
+	_In_ vk_image_view pAttachments[],
+	_In_ uint32_t pFrameBufferWidth,
+	_In_ uint32_t pFrameBufferHeight,
+	_In_ uint32_t pNumberOfLayers,
+	_In_ size_t pOutputPresentationWindowIndex)
+{
+	auto _present_window = &(this->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
+	//get the desired render pass
+	auto _render_pass_name = std::string(pRenderPassUsedName);
+	if (_render_pass_name.empty())
+	{
+		logger.error("Before creating frame buffer, it needs desired render pass name.");
+		return S_FALSE;
+	}
+
+	VkRenderPass _render_pass = VK_NULL_HANDLE;
+	auto _iter_pass = this->vk_render_passes.find(pRenderPassUsedName);
+	if (_iter_pass == this->vk_render_passes.end())
+	{
+		logger.error("Render pass not found for frame buffers.");
+		return S_FALSE;
+	}
+	else
+	{
+		_render_pass = _iter_pass->second;
+		if (!_render_pass)
+		{
+			logger.error("Render pass founded but is NULL.");
+			return S_FALSE;
+		}
+	}
+
+	//release all frame buffers if exist
+	auto _iter_frames = this->vk_frame_buffers.find(pFrameBufferCollectionName);
+	if (_iter_frames != this->vk_frame_buffers.end())
+	{
+		//we must disable last one 
+		for (size_t i = 0; i < _iter_frames->second.size(); ++i)
+		{
+			vkDestroyFramebuffer(this->vk_device, _iter_frames->second[i], nullptr);
+			_iter_frames->second[i] = VK_NULL_HANDLE;
+		}
+	}
+
+	VkFramebuffer _frame_buffer = VK_NULL_HANDLE;
+	for (size_t i = 0; i < pSizeOfCollection; ++i)
+	{
+		VkFramebufferCreateInfo _framebuffer_create_info =
+		{
+			VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,  // VkStructureType : Frame buffer type
+			nullptr,                                    // const void                    *pNext
+			0,                                          // VkFramebufferCreateFlags       flags
+			_render_pass,								// VkRenderPass                   render pass
+			1,                                          // uint32_t                       attachmentCount
+			&pAttachments[i].view,						// const VkImageView             *pAttachments
+			pFrameBufferWidth,                          // uint32_t                       width
+			pFrameBufferHeight,                         // uint32_t                       height
+			pNumberOfLayers								// uint32_t                       layers
+		};
+
+		auto _hr = vkCreateFramebuffer(this->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
+		if (!_hr)
+		{
+			V(S_FALSE, L"creating frame buffer for graphics device: " + wolf::system::convert::string_to_wstring(this->device_name) +
+				L" ID:" + std::to_wstring(this->device_id), "", 3, false, true);
+			return S_FALSE;
+		}
+
+		this->vk_frame_buffers[pFrameBufferCollectionName].push_back(_frame_buffer);
+	}
+
+	return S_OK;
 }
 
 ULONG w_graphics_device::release()
@@ -175,6 +319,8 @@ ULONG w_graphics_device::release()
 #ifdef __GNUC__
 #pragma GCC visibility push(hidden)
 #endif
+
+#pragma region w_graphics_device_manager private implementation
 
 namespace wolf
 {
@@ -382,6 +528,8 @@ namespace wolf
 					}
 #endif
 					_gDevice->device_name = "DirectX Wrap mode with " + DirectX::GetFeatureLevelStr(this->_config.wrap_mode_feature_level);
+					_gDevice->device_id = 0;
+					_gDevice->device_vendor_id = 0;
 					_msg += L"\r\n\t\t\t\t\tDirectX Wrap mode with " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
 
 
@@ -425,7 +573,7 @@ namespace wolf
 
 							_create_command_queue(_gDevice, j);
 							create_or_resize_swap_chain(_gDevice, j);
-							_create_depth_buffer(_gDevice, j);
+							_create_depth_stencil_buffer(_gDevice, j);
 							_create_synchronization(_gDevice, j);
 
 						}
@@ -470,9 +618,12 @@ namespace wolf
 						}
 
 						auto _device_name = std::wstring(_adapter_desc.Description);
+						auto _device_id = _adapter_desc.DeviceId;
+						auto _device_vendor_id = _adapter_desc.VendorId;
+
 						_msg += L"\t\t\t\t\t\tDevice Name: " + _device_name + L"\r\n";
-						_msg += L"\t\t\t\t\t\tDevice ID: " + std::to_wstring(_adapter_desc.DeviceId) + L"\r\n";
-						_msg += L"\t\t\t\t\t\tDevice Vendor: " + std::to_wstring(_adapter_desc.VendorId) + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice ID: " + std::to_wstring(_device_id) + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice Vendor: " + std::to_wstring(_device_vendor_id) + L"\r\n";
 						_msg += L"\t\t\t\t\t\tDevice Subsystem ID: " + std::to_wstring(_adapter_desc.SubSysId) + L"\r\n";
 						_msg += L"\t\t\t\t\t\tDevice Revision: " + std::to_wstring(_adapter_desc.Revision) + L"\r\n";
 						_msg += L"\t\t\t\t\t\tDevice Dedicated Video Memory: " + std::to_wstring(_adapter_desc.DedicatedVideoMemory) + L"\r\n";
@@ -638,7 +789,7 @@ namespace wolf
 
 								_create_command_queue(_gDevice, j);
 								create_or_resize_swap_chain(_gDevice, j);
-								_create_depth_buffer(_gDevice, j);
+								_create_depth_stencil_buffer(_gDevice, j);
 								_create_synchronization(_gDevice, j);
 
 							}
@@ -785,9 +936,12 @@ namespace wolf
 
 					vkGetPhysicalDeviceProperties(_gpus[i], &_device_properties);
 					auto _device_name = std::string(_device_properties.deviceName);
+					auto _device_id = _device_properties.deviceID;
+					auto _device_vendor_id = _device_properties.vendorID;
+
 					_msg += "\t\t\t\t\t\tDevice Name: " + _device_name + "\r\n";
-					_msg += "\t\t\t\t\t\tDevice ID: " + std::to_string(_device_properties.deviceID) + "\r\n";
-					_msg += "\t\t\t\t\t\tDevice Vendor: " + std::to_string(_device_properties.vendorID) + "\r\n";
+					_msg += "\t\t\t\t\t\tDevice ID: " + std::to_string(_device_id) + "\r\n";
+					_msg += "\t\t\t\t\t\tDevice Vendor: " + std::to_string(_device_vendor_id) + "\r\n";
 					_msg += "\t\t\t\t\t\tAPI Version: " + std::to_string(_device_properties.apiVersion >> 22) + "." +
 						std::to_string((_device_properties.apiVersion >> 12) & 0x3ff) + "." +
 						std::to_string(_device_properties.apiVersion & 0xfff) + "\r\n";
@@ -921,6 +1075,8 @@ namespace wolf
 					//create a shared graphics device for this GPU
 					auto _gDevice = std::make_shared<w_graphics_device>();
 					_gDevice->device_name = _device_name;
+					_gDevice->device_id = _device_id;
+					_gDevice->device_vendor_id = _device_vendor_id;
 					_gDevice->vk_physical_device = _gpus[i];
 
 					//get memory properties from the physical device or GPU
@@ -1227,7 +1383,7 @@ namespace wolf
 							_gDevice->output_presentation_windows.push_back(_out_window);
 
 							create_or_resize_swap_chain(_gDevice, j);
-							_create_depth_buffer(_gDevice, j);
+							_create_depth_stencil_buffer(_gDevice, j);
 							_create_synchronization(_gDevice, j);
 							_create_command_queue(_gDevice, j);
 						}
@@ -1254,6 +1410,7 @@ namespace wolf
 			{
 #if defined(__DX12__) || defined(__DX11__)
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+				auto _device_id = pGDevice->device_id;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				const size_t _desired_number_of_swapchain_images = 2;
@@ -1283,7 +1440,7 @@ namespace wolf
 					if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
 					{
 						logger.error(L"Error on resizing swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
-							+ _device_name);
+							+ _device_name + L" ID:" + std::to_wstring(_device_id));
 						// If the device was removed for any reason, a new device and swap chain will need to be created.
 						pGDevice->dx_device_removed = true;
 						return;
@@ -1291,7 +1448,7 @@ namespace wolf
 					else
 					{
 						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
-							+ _device_name);
+							+ _device_name + L" ID:" + std::to_wstring(_device_id));
 						release();
 						std::exit(EXIT_FAILURE);
 					}
@@ -1382,14 +1539,14 @@ namespace wolf
 							nullptr,
 							&_swap_chain);
 
-						V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name +
+						V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
 							L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 							this->_name, 2);
 
 						_hr = _swap_chain->QueryInterface(__uuidof(IDXGISwapChain3), (void**)&_output_presentation_window->dx_swap_chain);
 						if (FAILED(_hr))
 						{
-							logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " +
+							logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
 								_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 							release();
 							std::exit(EXIT_FAILURE);
@@ -1477,7 +1634,7 @@ namespace wolf
 					if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
 					{
 						logger.error(L"Error on resizing swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
-							+ _device_name);
+							+ _device_name L" ID:" + std::to_wstring(_device_id));
 						// If the device was removed for any reason, a new device and swap chain will need to be created.
 						pGDevice->dx_device_removed = true;
 						return;
@@ -1485,7 +1642,7 @@ namespace wolf
 					else if(_hr != S_OK)
 					{
 						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
-							+ _device_name);
+							+ _device_name L" ID:" + std::to_wstring(_device_id));
 						release();
 						std::exit(EXIT_FAILURE);
 					}
@@ -1520,7 +1677,7 @@ namespace wolf
 						&_swap_chain_desc,
 						nullptr,
 						&_swap_chain);
-					V(_hr, L"create swap chain from core window for graphics device: " + _device_name +
+					V(_hr, L"create swap chain from core window for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
 						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 						this->_name, 2);
 
@@ -1528,7 +1685,7 @@ namespace wolf
 					_hr = _swap_chain.As(&_output_presentation_window->dx_swap_chain);
 					if (FAILED(_hr))
 					{
-						logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " +
+						logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
 							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 						release();
 						std::exit(EXIT_FAILURE);
@@ -1537,7 +1694,7 @@ namespace wolf
 					_hr = _output_presentation_window->dx_swap_chain->SetRotation(_display_rotation);
 					if (FAILED(_hr))
 					{
-						logger.error(L"setting rotation of swap chain for graphics device: " +
+						logger.error(L"setting rotation of swap chain for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
 							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 						release();
 						std::exit(EXIT_FAILURE);
@@ -1586,7 +1743,7 @@ namespace wolf
 						break;
 
 					case DXGI_MODE_ROTATION_UNSPECIFIED:
-						logger.warning(L"DXGI_MODE_ROTATION_UNSPECIFIED for graphics device: " +
+						logger.warning(L"DXGI_MODE_ROTATION_UNSPECIFIED for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
 							_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					}
 
@@ -1601,7 +1758,7 @@ namespace wolf
 				_render_target_view_heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
 				_hr = pGDevice->dx_device->CreateDescriptorHeap(&_render_target_view_heap_desc, IID_PPV_ARGS(&_output_presentation_window->dx_render_target_view_heap));
-				V(_hr, L"creating render target heap descriptorfor graphics device: " + _device_name +
+				V(_hr, L"creating render target heap descriptorfor graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
 					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 					this->_name, 2);
 
@@ -1615,7 +1772,7 @@ namespace wolf
 				for (UINT i = 0; i < _desired_number_of_swapchain_images; ++i)
 				{
 					_hr = _output_presentation_window->dx_swap_chain->GetBuffer(i, IID_PPV_ARGS(&_output_presentation_window->dx_swap_chain_image_views[i]));
-					V(_hr, L"creating render target image view for swap chain of graphics device: " + _device_name +
+					V(_hr, L"creating render target image view for swap chain of graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
 						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 						this->_name, 2);
 
@@ -1633,7 +1790,7 @@ namespace wolf
 					// This sequence obtains the DXGI factory that was used to create the Direct3D device above.
 					ComPtr<IDXGIDevice3> _dxgi_device;
 					_hr = pGDevice->dx_device.As(&_dxgi_device);
-					V(_hr, L"getting DXGI device from graphics device: " + _device_name, this->_name, 2);
+					V(_hr, L"getting DXGI device from graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id), this->_name, 2);
 
 					/*
 					Ensure that DXGI does not queue more than one frame at a time. This both reduces latency and
@@ -1645,6 +1802,7 @@ namespace wolf
 
 #elif defined(__VULKAN__)
 				auto _device_name = pGDevice->device_name;
+				auto _device_id = pGDevice->device_id;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
@@ -1659,7 +1817,7 @@ namespace wolf
 						&pGDevice->vk_queue_family_supports_present[j]);
 
 					V(_hr, L"could not get physical device surface support for graphics device: " +
-						std::wstring(_device_name.begin(), _device_name.end()) +
+						std::wstring(_device_name.begin(), _device_name.end()) + L" ID:" + std::to_wstring(_device_id) +
 						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 						this->_name, 2);
 
@@ -1673,7 +1831,7 @@ namespace wolf
 
 				V(pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX ? S_FALSE : S_OK,
 					L"could not find queue family which supports presentation for graphics device: " +
-					std::wstring(_device_name.begin(), _device_name.end()) +
+					std::wstring(_device_name.begin(), _device_name.end()) + L" ID:" + std::to_wstring(_device_id) +
 					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 					this->_name, 2);
 
@@ -1686,7 +1844,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("could not get number of physical device surface formats for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -1700,7 +1858,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("could not get physical device surface formats for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -1745,7 +1903,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on create vulkan surface capabilities for graphics device: " +
-						_device_name +
+						_device_name + " ID:" + std::to_string(_device_id) +
 						" and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
@@ -1759,7 +1917,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on getting vulkan present mode(s) count for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -1773,7 +1931,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on getting vulkan present mode(s) for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -1878,7 +2036,7 @@ namespace wolf
 				if (_hr || !_output_presentation_window->vk_swap_chain)
 				{
 					logger.error("error on creating swap chain for vulkan for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -1892,7 +2050,7 @@ namespace wolf
 				if (_hr || _swap_chain_image_count == UINT32_MAX)
 				{
 					logger.error("error on getting total available image counts of swap chain for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -1905,7 +2063,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on getting total available images of swap chain for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -1940,7 +2098,7 @@ namespace wolf
 					if (_hr)
 					{
 						logger.error("error on creating image view total available images of swap chain for graphics device: " +
-							_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+							_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 						release();
 						std::exit(EXIT_FAILURE);
 					}
@@ -1993,10 +2151,11 @@ namespace wolf
 
 		private:
             
-			void _create_depth_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
+			void _create_depth_stencil_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
 			{
 #ifdef __DX11__ 
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+				auto _device_id = pGdevice->device_id;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				// Create a render target view of the swap chain back buffer.
@@ -2005,7 +2164,7 @@ namespace wolf
 				if (FAILED(_hr))
 				{
 					logger.error(L"error on getting back buffer for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						_device_name + L" ID:" + std::to_string(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2017,7 +2176,7 @@ namespace wolf
 				if (FAILED(_hr))
 				{
 					logger.error(L"error on creating render target view for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						_device_name + L" ID:" + std::to_string(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2045,7 +2204,7 @@ namespace wolf
 				if (FAILED(_hr))
 				{
 					logger.error(L"error on creating depth stencil for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						_device_name + L" ID:" + std::to_string(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2058,7 +2217,7 @@ namespace wolf
 				if (FAILED(_hr))
 				{
 					logger.error(L"error on creating depth stencil view for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						_device_name + L" ID:" + std::to_string(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2079,9 +2238,10 @@ namespace wolf
 
 #elif defined(__VULKAN__)
 				auto _device_name = pGDevice->device_name;
+				auto _device_id = pGDevice->device_id;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
-				VkImageCreateInfo _depth_buffer_image_info = {};
+				VkImageCreateInfo _depth_stencil_image_create_info = {};
 				const VkFormat _depth_format = VK_FORMAT_D16_UNORM;
 
 				VkFormatProperties _properties;
@@ -2089,38 +2249,39 @@ namespace wolf
 
 				if (_properties.linearTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
 				{
-					_depth_buffer_image_info.tiling = VK_IMAGE_TILING_LINEAR;
+					_depth_stencil_image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
 				}
 				else if (_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
 				{
-					_depth_buffer_image_info.tiling = VK_IMAGE_TILING_OPTIMAL;
+					_depth_stencil_image_create_info.tiling = VK_IMAGE_TILING_OPTIMAL;
 				}
 				else
 				{
 					logger.error("VK_FORMAT_D16_UNORM Unsupported for depth buffer for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
 
 				auto _window = pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex);
 
-				_depth_buffer_image_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-				_depth_buffer_image_info.pNext = nullptr;
-				_depth_buffer_image_info.imageType = VK_IMAGE_TYPE_2D;
-				_depth_buffer_image_info.format = _depth_format;
-				_depth_buffer_image_info.extent.width = _window.width;
-				_depth_buffer_image_info.extent.height = _window.height;
-				_depth_buffer_image_info.extent.depth = 1;
-				_depth_buffer_image_info.mipLevels = 1;
-				_depth_buffer_image_info.arrayLayers = 1;
-				_depth_buffer_image_info.samples = NUM_SAMPLES;
-				_depth_buffer_image_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-				_depth_buffer_image_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-				_depth_buffer_image_info.queueFamilyIndexCount = 0;
-				_depth_buffer_image_info.pQueueFamilyIndices = nullptr;
-				_depth_buffer_image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-				_depth_buffer_image_info.flags = 0;
+				//define depth stencil image description
+				_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+				_depth_stencil_image_create_info.pNext = nullptr;
+				_depth_stencil_image_create_info.imageType = VK_IMAGE_TYPE_2D;
+				_depth_stencil_image_create_info.format = _depth_format;
+				_depth_stencil_image_create_info.extent.width = _window.width;
+				_depth_stencil_image_create_info.extent.height = _window.height;
+				_depth_stencil_image_create_info.extent.depth = 1;
+				_depth_stencil_image_create_info.mipLevels = 1;
+				_depth_stencil_image_create_info.arrayLayers = 1;
+				_depth_stencil_image_create_info.samples = NUM_SAMPLES;
+				_depth_stencil_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+				_depth_stencil_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+				_depth_stencil_image_create_info.queueFamilyIndexCount = 0;
+				_depth_stencil_image_create_info.pQueueFamilyIndices = nullptr;
+				_depth_stencil_image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+				_depth_stencil_image_create_info.flags = 0;
 
 				VkMemoryAllocateInfo _mem_alloc = {};
 				_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -2130,15 +2291,15 @@ namespace wolf
 
 				_output_presentation_window->vk_depth_buffer_format = _depth_format;
 
-				//Create image
+				//Create image of depth stencil
 				auto _hr = vkCreateImage(pGDevice->vk_device,
-					&_depth_buffer_image_info,
+					&_depth_stencil_image_create_info,
 					nullptr,
 					&_output_presentation_window->vk_depth_buffer_image_view.image);
 				if (_hr)
 				{
 					logger.error("error on creating depth buffer for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2158,7 +2319,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2171,7 +2332,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on allocating memory for depth buffer image for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2184,37 +2345,37 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on binding to memory for depth buffer image for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
 
-				//create depth buffer image view
-				VkImageViewCreateInfo _depth_buffer_view_info = {};
-				_depth_buffer_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-				_depth_buffer_view_info.pNext = nullptr;
-				_depth_buffer_view_info.image = _output_presentation_window->vk_depth_buffer_image_view.image;
-				_depth_buffer_view_info.format = _depth_format;
-				_depth_buffer_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
-				_depth_buffer_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
-				_depth_buffer_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
-				_depth_buffer_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
-				_depth_buffer_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-				_depth_buffer_view_info.subresourceRange.baseMipLevel = 0;
-				_depth_buffer_view_info.subresourceRange.levelCount = 1;
-				_depth_buffer_view_info.subresourceRange.baseArrayLayer = 0;
-				_depth_buffer_view_info.subresourceRange.layerCount = 1;
-				_depth_buffer_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-				_depth_buffer_view_info.flags = 0;
+				//create depth stencil buffer image view
+				VkImageViewCreateInfo _depth_stencil_view_info = {};
+				_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+				_depth_stencil_view_info.pNext = nullptr;
+				_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+				_depth_stencil_view_info.image = _output_presentation_window->vk_depth_buffer_image_view.image;
+				_depth_stencil_view_info.format = _depth_format;
+				_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
+				_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
+				_depth_stencil_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
+				_depth_stencil_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
+				_depth_stencil_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+				_depth_stencil_view_info.subresourceRange.baseMipLevel = 0;
+				_depth_stencil_view_info.subresourceRange.levelCount = 1;
+				_depth_stencil_view_info.subresourceRange.baseArrayLayer = 0;
+				_depth_stencil_view_info.subresourceRange.layerCount = 1;
+				_depth_stencil_view_info.flags = 0;
 
 				_hr = vkCreateImageView(pGDevice->vk_device,
-					&_depth_buffer_view_info,
+					&_depth_stencil_view_info,
 					nullptr,
 					&_output_presentation_window->vk_depth_buffer_image_view.view);
 				if (_hr)
 				{
 					logger.error("error on creating image view for depth buffer image for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2226,13 +2387,15 @@ namespace wolf
 			{
 #ifdef __DX12__ 
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+				auto _device_id = pGDevice->device_id;
+
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				auto _hr = pGDevice->dx_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_output_presentation_window->dx_fence));
 				if (FAILED(_hr))
 				{
 					logger.error(L"error on creating directx fence for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						_device_name + L" ID:" + std::to_wstring(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2241,7 +2404,7 @@ namespace wolf
 				if (_output_presentation_window->dx_fence_event == NULL)
 				{
 					logger.error(L"error on creating directx event handle for graphics device: " +
-						_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+						_device_name + L" ID:" + std::to_wstring(_device_id) + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2250,6 +2413,7 @@ namespace wolf
 
 #elif defined(__VULKAN__)
 				auto _device_name = pGDevice->device_name;
+				auto _device_id = pGDevice->device_id;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				VkSemaphoreCreateInfo _create_info = {};
@@ -2262,7 +2426,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on creating image_is_available semaphore for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2274,7 +2438,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on creating rendering_is_done semaphore for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2286,6 +2450,8 @@ namespace wolf
 			{
 #ifdef __DX12__ 
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+				auto _device_id = pGDevice->device_id;
+
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				//create command allocator pool
@@ -2293,7 +2459,7 @@ namespace wolf
 					IID_PPV_ARGS(&_output_presentation_window->dx_command_allocator_pool));
 				if (FAILED(_hr))
 				{
-					logger.error(L"creating directx command allocator pook for graphics device: " + _device_name +
+					logger.error(L"creating directx command allocator pook for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) + 
 						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
@@ -2309,7 +2475,7 @@ namespace wolf
 				_hr = pGDevice->dx_device->CreateCommandQueue(&_command_queue_desc, IID_PPV_ARGS(&_output_presentation_window->dx_command_queue));
 				if (FAILED(_hr))
 				{
-					logger.error(L"creating directx command queue for graphics device : " + _device_name +
+					logger.error(L"creating directx command queue for graphics device : " + _device_name + L" ID:" + std::to_wstring(_device_id) +
 						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
@@ -2323,7 +2489,7 @@ namespace wolf
 					IID_PPV_ARGS(&_output_presentation_window->dx_command_list));
 				if (FAILED(_hr))
 				{
-					logger.error(L"creating command list for graphics device : " + _device_name +
+					logger.error(L"creating command list for graphics device : " + _device_name + L" ID:" + std::to_wstring(_device_id) +
 						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
@@ -2335,6 +2501,8 @@ namespace wolf
 #elif defined(__VULKAN__) 
 
 				auto _device_name = pGDevice->device_name;
+				auto _device_id = pGDevice->device_id;
+
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				//create a command pool to allocate our command buffer from
@@ -2351,7 +2519,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on creating vulkan command pool for graphics device: " +
-						_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2375,7 +2543,7 @@ namespace wolf
 				if (_hr)
 				{
 					logger.error("error on creating vulkan command buffers for swap chain of graphics device: "
-						+ _device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+						+ _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2435,7 +2603,7 @@ namespace wolf
 					if (_hr)
 					{
 						logger.error("error on beginning command buffer of graphics device: " + _device_name +
-							" and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+							" ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 						release();
 						std::exit(EXIT_FAILURE);
 					}
@@ -2472,7 +2640,7 @@ namespace wolf
 					if (_hr)
 					{
 						logger.error("error on ending command buffer of graphics device: " +
-							_device_name + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+							_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 						release();
 						std::exit(EXIT_FAILURE);
 					}
@@ -2545,6 +2713,8 @@ namespace wolf
     }
 }
 
+#pragma endregion
+
 #ifdef __GNUC__
 #pragma GCC visibility pop
 #endif
@@ -2611,7 +2781,7 @@ void w_graphics_device_manager::on_suspend()
 		auto _hr = _gDevice->dx_device.As(&_dxgi_device);
 		if (FAILED(_hr))
 		{
-			V(S_FALSE, "getting dxgi device from d3d11device for graphics device: " + _gDevice->device_name, this->name, 2);
+			V(S_FALSE, "getting dxgi device from d3d11device for graphics device: " + _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id) + , this->name, 2);
 		}
 		else
 		{

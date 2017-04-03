@@ -46,7 +46,7 @@ extern "C" {
 	enum HRESULT : bool { S_OK = 0, S_FALSE = 1 };
 	
 	typedef unsigned char			BYTE;
-	typedef unsigned int			UINT, *PUINT;
+	typedef __uint32_t				UINT, *PUINT;
 	typedef signed char				INT8, *PINT8;
 	typedef signed short			INT16, *PINT16;
 	typedef signed int				INT32, *PINT32;

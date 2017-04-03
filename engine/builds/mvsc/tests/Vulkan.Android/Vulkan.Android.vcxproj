@@ -57,15 +57,15 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
     <ClCompile>
       <CppLanguageStandard>gnu++11</CppLanguageStandard>
-      <PreprocessorDefinitions>__ANDROID;DISABLE_IMPORTGL;VK_USE_PLATFORM_ANDROID_KHR;</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/vulkan/include;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../dependencies/rapidxml/</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__VULKAN__;__ANDROID;DISABLE_IMPORTGL;VK_USE_PLATFORM_ANDROID_KHR</PreprocessorDefinitions>
       <GccExceptionHandling>true</GccExceptionHandling>
       <AdditionalOptions>-std=c++11 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/vulkan/include;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.render/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/rapidjson/include;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>android;EGL;GLESv1_CM;wolf.system.android;wolf.vulkan.android</AdditionalDependencies>
+      <AdditionalDependencies>android;wolf.system.android;wolf.vulkan.android</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/</AdditionalLibraryDirectories>
     </Link>
     <AntBuild>

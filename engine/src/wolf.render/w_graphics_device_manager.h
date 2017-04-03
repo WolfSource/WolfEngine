@@ -59,11 +59,13 @@ using Microsoft::WRL::ComPtr;
         #include <unistd.h>
 
 	#elif defined(__ANDROID)
-		#include "android/vulkan_wrapper.h"
+		#include "vk_android/vulkan_wrapper.h"
 	#else
 		#include <vulkan/vulkan.hpp>
 	#endif
 #endif
+
+using std::size_t;
 
 #include "w_render_export.h"
 #include <w_std.h>
@@ -217,7 +219,20 @@ namespace wolf
             w_graphics_device();
 
 			//get the first and the primary window which was created with this device
-            w_output_presentation_window main_window();
+			W_EXP w_output_presentation_window main_window();
+			W_EXP HRESULT create_render_pass(_In_z_ const char* pRenderPassName,
+				_In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
+				_In_ const std::vector<VkSubpassDescription> pSubpassDescription,
+				_In_ const std::vector<VkSubpassDependency> pSubpassDependency,
+				_In_ size_t pOutputPresentationWindowIndex = 0);
+			 W_EXP HRESULT create_frame_buffers_collection(_In_z_ const char* pFrameBufferCollectionName,
+				_In_z_ const char* pRenderPassUsedName, 
+				_In_ size_t pSizeOfCollection, 
+				_In_ vk_image_view pAttachments[],
+				_In_ uint32_t pFrameBufferWidth,
+				_In_ uint32_t pFrameBufferHeight,
+				_In_ uint32_t pNumberOfLayers,
+				_In_ size_t pOutputPresentationWindowIndex = 0);
 
 			//release all resources
             ULONG release();
@@ -249,17 +264,26 @@ namespace wolf
             VkPhysicalDeviceMemoryProperties                        vk_physical_device_memory_properties;
                         
             std::vector<VkQueueFamilyProperties>                    vk_queue_family_properties;
-            size_t                                                  vk_queue_family_selected_index;
+			size_t													vk_queue_family_selected_index;
             std::vector<VkBool32>                                   vk_queue_family_supports_present;
-            size_t                                                  vk_queue_family_selected_support_present_index;
+			size_t													vk_queue_family_selected_support_present_index;
                         
             VkQueue                                                 vk_graphics_queue;
             VkQueue                                                 vk_present_queue;
                                 
             VkDevice                                                vk_device;
-#endif //__DX12__
+
+			std::map<const char*, VkRenderPass>						vk_render_passes;
+			std::map<const char*, std::vector<VkFramebuffer>>		vk_frame_buffers;
+
+			//static defaults
+			static VkAttachmentDescription							vk_default_attachment_description;
+			static VkAttachmentReference							vk_default_color_attachment_reference;
+#endif //__DX11__ __DX12__ __VULKAN__
             
             std::string                                             device_name;
+			UINT													device_id;
+			UINT													device_vendor_id;
             
 		private:
             //prevent copying
@@ -336,6 +360,7 @@ namespace wolf
                         
 		protected:
 			std::vector<std::shared_ptr<w_graphics_device>>		graphics_devices;
+			w_graphics_device*	graphics_devices_;
 
 		private:
             //prevent copying
