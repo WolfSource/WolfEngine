@@ -12,11 +12,11 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>../../../../src/tests/Vulkan.Linux/main.cpp</itemPath>
-    <itemPath>../../../../src/tests/Vulkan.Linux/pch.cpp</itemPath>
-    <itemPath>../../../../src/tests/Vulkan.Linux/pch.h</itemPath>
-    <itemPath>../../../../src/tests/Vulkan.Linux/scene.cpp</itemPath>
-    <itemPath>../../../../src/tests/Vulkan.Linux/scene.h</itemPath>
+    <itemPath>../../../../src/tests/vulkan.linux/main.cpp</itemPath>
+    <itemPath>../../../../src/tests/vulkan.linux/pch.cpp</itemPath>
+    <itemPath>../../../../src/tests/vulkan.linux/pch.h</itemPath>
+    <itemPath>../../../../src/tests/vulkan.linux/scene.cpp</itemPath>
+    <itemPath>../../../../src/tests/vulkan.linux/scene.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -27,6 +27,9 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <standard>10</standard>
+        </cTool>
         <ccTool>
           <architecture>2</architecture>
           <standard>11</standard>
@@ -36,6 +39,9 @@
             <pElem>../../../../src/wolf.render/</pElem>
             <pElem>../../../../../../../VulkanSDK/1.0.42.0/x86_64/include</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>__VULKAN__</Elem>
+          </preprocessorList>
         </ccTool>
         <linkerTool>
           <output>${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/vulkan.linux</output>
@@ -51,28 +57,50 @@
             <linkerOptionItem>-lwolf.render</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
+        <requiredProjects>
+          <makeArtifact PL="../../wolf.system"
+                        CT="2"
+                        CN="Debug"
+                        AC="true"
+                        BL="true"
+                        WD="../../wolf.system"
+                        BC="${MAKE}  -f Makefile CONF=Debug"
+                        CC="${MAKE}  -f Makefile CONF=Debug clean"
+                        OP="${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.system.${CND_DLIB_EXT}">
+          </makeArtifact>
+          <makeArtifact PL="../../wolf.render"
+                        CT="2"
+                        CN="Debug"
+                        AC="true"
+                        BL="true"
+                        WD="../../wolf.render"
+                        BC="${MAKE}  -f Makefile CONF=Debug"
+                        CC="${MAKE}  -f Makefile CONF=Debug clean"
+                        OP="${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.render.${CND_DLIB_EXT}">
+          </makeArtifact>
+        </requiredProjects>
       </compileType>
-      <item path="../../../../src/tests/Vulkan.Linux/main.cpp"
+      <item path="../../../../src/tests/vulkan.linux/main.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../../src/tests/Vulkan.Linux/pch.cpp"
+      <item path="../../../../src/tests/vulkan.linux/pch.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../../src/tests/Vulkan.Linux/pch.h"
+      <item path="../../../../src/tests/vulkan.linux/pch.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../src/tests/Vulkan.Linux/scene.cpp"
+      <item path="../../../../src/tests/vulkan.linux/scene.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../../src/tests/Vulkan.Linux/scene.h"
+      <item path="../../../../src/tests/vulkan.linux/scene.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -98,27 +126,27 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="../../../../src/tests/Vulkan.Linux/main.cpp"
+      <item path="../../../../src/tests/vulkan.linux/main.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../../src/tests/Vulkan.Linux/pch.cpp"
+      <item path="../../../../src/tests/vulkan.linux/pch.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../../src/tests/Vulkan.Linux/pch.h"
+      <item path="../../../../src/tests/vulkan.linux/pch.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../src/tests/Vulkan.Linux/scene.cpp"
+      <item path="../../../../src/tests/vulkan.linux/scene.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <item path="../../../../src/tests/Vulkan.Linux/scene.h"
+      <item path="../../../../src/tests/vulkan.linux/scene.h"
             ex="false"
             tool="3"
             flavor2="0">

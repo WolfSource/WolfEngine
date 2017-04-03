@@ -17,7 +17,6 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>../../../src/wolf.render/dllmain.cpp</itemPath>
     <itemPath>../../../src/wolf.render/w_game.cpp</itemPath>
     <itemPath>../../../src/wolf.render/w_game.h</itemPath>
     <itemPath>../../../src/wolf.render/w_graphics_device_manager.cpp</itemPath>
@@ -59,11 +58,6 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
-      <item path="../../../src/wolf.render/dllmain.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
       <item path="../../../src/wolf.render/w_game.cpp"
             ex="false"
             tool="1"
@@ -122,11 +116,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="../../../src/wolf.render/dllmain.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
       <item path="../../../src/wolf.render/w_game.cpp"
             ex="false"
             tool="1"

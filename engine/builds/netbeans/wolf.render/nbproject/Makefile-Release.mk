@@ -35,7 +35,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/_ext/24207458/dllmain.o \
 	${OBJECTDIR}/_ext/24207458/w_game.o \
 	${OBJECTDIR}/_ext/24207458/w_graphics_device_manager.o \
 	${OBJECTDIR}/_ext/24207458/w_render_pch.o
@@ -64,11 +63,6 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libwolf.render.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libwolf.render.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
-
-${OBJECTDIR}/_ext/24207458/dllmain.o: ../../../src/wolf.render/dllmain.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/24207458
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/24207458/dllmain.o ../../../src/wolf.render/dllmain.cpp
 
 ${OBJECTDIR}/_ext/24207458/w_game.o: ../../../src/wolf.render/w_game.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/24207458

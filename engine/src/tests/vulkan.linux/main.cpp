@@ -15,7 +15,8 @@ static void release()
 
 int main(int pArgc, char** pArgv) 
 {
-    sScene = make_unique<scene>();
+    sScene = make_unique<scene>(wolf::system::io::get_current_directory(),
+            "wolf.engine.vulkan.linux.test");
     
     sWindow = make_unique<w_window>();
     sWindow->set_width(1920);

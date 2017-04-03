@@ -293,7 +293,7 @@ namespace wolf
             bool                                                    _is_released;
 		};
 
-        //forward decalaration
+        //forward declaration
         class w_graphics_device_manager_pimp;
 		//handles the configuration and management of the graphics device.
 		class w_graphics_device_manager : public system::w_object
@@ -308,7 +308,7 @@ namespace wolf
 			W_EXP virtual void on_window_resized(_In_ UINT pIndex);
 			//Called when any graphics device lost
 			W_EXP virtual void on_device_lost();
-			//Called when the app suspends. It provides a hint to the driver that the app is entering an idle state and that temporary buffers can be reclaimed for use by other apps.
+			//Called when the APP suspends. It provides a hint to the driver that the APP is entering an idle state and that temporary buffers can be reclaimed for use by other apps.
 			W_EXP virtual void on_suspend();
 			//Begin render on all graphics devices
 			W_EXP virtual HRESULT begin_render();
@@ -317,7 +317,7 @@ namespace wolf
 			//Release all resources
 			W_EXP ULONG release() override;
 
-			//convert dpis to pixels
+			//convert DPIs to pixels
 			static const float convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI);
 
 #pragma region Getters
@@ -336,13 +336,13 @@ namespace wolf
 #pragma endregion
 
 
-//			//Get deafult window HWND
+//			//Get default window HWND
 //			const HWND get_window_HWND() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? NULL : this->_windows_info.at(0).at(0).hwnd; }
-//			//Get deafult window HINSTANCE
+//			//Get default window HINSTANCE
 //			const HINSTANCE get_window_HINSTANCE() const						{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? NULL : this->_windows_info.at(0).at(0).hInstance; }
-//			//Get deafult window width
+//			//Get default window width
 //			const UINT get_window_width() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? 0 : this->_windows_info.at(0).at(0).width; }
-//			//Get deafult window height
+//			//Get default window height
 //			const UINT get_window_height() const								{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? 0 : this->_windows_info.at(0).at(0).height; }
 //			//Get DPI
 //			const DirectX::XMFLOAT2 get_dpi() const;

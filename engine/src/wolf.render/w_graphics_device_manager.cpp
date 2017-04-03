@@ -26,8 +26,8 @@ VkAttachmentDescription	w_graphics_device::vk_default_attachment_description =
 	0,									// VkAttachmentDescriptionFlags: Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
 	VkFormat::VK_FORMAT_R8G8B8A8_UNORM,	// VkFormat: Format of an image used for the attachment. 
 	VK_SAMPLE_COUNT_1_BIT,				// VkSampleCountFlagBits: Number of samples of the image; The value greater than 1 means multisampling.
-	VK_ATTACHMENT_LOAD_OP_CLEAR,		// VkAttachmentLoadOp: Specifies what to do with the image’s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don’t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
-	VK_ATTACHMENT_STORE_OP_STORE,		// VkAttachmentStoreOp: Informs the driver what to do with the image’s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
+	VK_ATTACHMENT_LOAD_OP_CLEAR,		// VkAttachmentLoadOp: Specifies what to do with the imageï¿½s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we donï¿½t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
+	VK_ATTACHMENT_STORE_OP_STORE,		// VkAttachmentStoreOp: Informs the driver what to do with the imageï¿½s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
 	VK_ATTACHMENT_LOAD_OP_DONT_CARE,	// VkAttachmentLoadOp: The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
 	VK_ATTACHMENT_STORE_OP_DONT_CARE,	// VkAttachmentStoreOp: The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
 	VK_IMAGE_LAYOUT_UNDEFINED,			// VkImageLayout: The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
@@ -95,7 +95,7 @@ HRESULT w_graphics_device::create_render_pass(_In_z_ const char* pRenderPassName
 		L" ID:" + std::to_wstring(this->device_id) +
 		L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex), "w_graphics_device", 3, false, true);
 
-	if (_hr == S_OK && _render_pass)
+	if (_hr == VK_SUCCESS  && _render_pass)
 	{
 		auto _iter = this->vk_render_passes.find(pRenderPassName);
 		if (_iter != this->vk_render_passes.end())
@@ -179,7 +179,7 @@ HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pF
 		};
 
 		auto _hr = vkCreateFramebuffer(this->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
-		if (!_hr)
+		if (_hr != VK_SUCCESS)
 		{
 			V(S_FALSE, L"creating frame buffer for graphics device: " + wolf::system::convert::string_to_wstring(this->device_name) +
 				L" ID:" + std::to_wstring(this->device_id), "", 3, false, true);

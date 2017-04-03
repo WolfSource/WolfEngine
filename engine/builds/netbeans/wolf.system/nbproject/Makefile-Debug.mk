@@ -35,15 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/_ext/26f1a4f1/w_cpu.o \
-	${OBJECTDIR}/_ext/26f1a4f1/w_linear_allocator.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_logger.o \
-	${OBJECTDIR}/_ext/26f1a4f1/w_lua.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_object.o \
-	${OBJECTDIR}/_ext/26f1a4f1/w_python.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_system_pch.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_task.o \
-	${OBJECTDIR}/_ext/26f1a4f1/w_tcp_client.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_time_span.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_window.o \
 	${OBJECTDIR}/_ext/26f1a4f1/w_xml.o
@@ -73,35 +68,15 @@ ${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.system
 	${MKDIR} -p ${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.system.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
 
-${OBJECTDIR}/_ext/26f1a4f1/w_cpu.o: ../../../src/wolf.system/w_cpu.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_cpu.o ../../../src/wolf.system/w_cpu.cpp
-
-${OBJECTDIR}/_ext/26f1a4f1/w_linear_allocator.o: ../../../src/wolf.system/w_linear_allocator.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_linear_allocator.o ../../../src/wolf.system/w_linear_allocator.cpp
-
 ${OBJECTDIR}/_ext/26f1a4f1/w_logger.o: ../../../src/wolf.system/w_logger.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_logger.o ../../../src/wolf.system/w_logger.cpp
 
-${OBJECTDIR}/_ext/26f1a4f1/w_lua.o: ../../../src/wolf.system/w_lua.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_lua.o ../../../src/wolf.system/w_lua.cpp
-
 ${OBJECTDIR}/_ext/26f1a4f1/w_object.o: ../../../src/wolf.system/w_object.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_object.o ../../../src/wolf.system/w_object.cpp
-
-${OBJECTDIR}/_ext/26f1a4f1/w_python.o: ../../../src/wolf.system/w_python.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_python.o ../../../src/wolf.system/w_python.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_system_pch.o: ../../../src/wolf.system/w_system_pch.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
@@ -112,11 +87,6 @@ ${OBJECTDIR}/_ext/26f1a4f1/w_task.o: ../../../src/wolf.system/w_task.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_task.o ../../../src/wolf.system/w_task.cpp
-
-${OBJECTDIR}/_ext/26f1a4f1/w_tcp_client.o: ../../../src/wolf.system/w_tcp_client.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../dependencies/glm -I../../../dependencies/rapidxml -I../../../dependencies/rapidjson -I../../../dependencies/tbb/oss/linux/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/26f1a4f1/w_tcp_client.o ../../../src/wolf.system/w_tcp_client.cpp
 
 ${OBJECTDIR}/_ext/26f1a4f1/w_time_span.o: ../../../src/wolf.system/w_time_span.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/26f1a4f1

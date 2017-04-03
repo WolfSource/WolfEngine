@@ -35,7 +35,6 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/_ext/24207458/dllmain.o \
 	${OBJECTDIR}/_ext/24207458/w_game.o \
 	${OBJECTDIR}/_ext/24207458/w_graphics_device_manager.o \
 	${OBJECTDIR}/_ext/24207458/w_render_pch.o
@@ -64,11 +63,6 @@ LDLIBSOPTIONS=-L../../../../bin/x64/Debug/GNU-Linux -L../../../../../../VulkanSD
 ${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.render.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.render.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
-
-${OBJECTDIR}/_ext/24207458/dllmain.o: ../../../src/wolf.render/dllmain.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/24207458
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../src/wolf.system -I../../../src/wolf.render/ -I../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/24207458/dllmain.o ../../../src/wolf.render/dllmain.cpp
 
 ${OBJECTDIR}/_ext/24207458/w_game.o: ../../../src/wolf.render/w_game.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/24207458

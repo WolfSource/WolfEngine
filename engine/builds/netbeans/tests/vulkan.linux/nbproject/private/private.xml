@@ -13,6 +13,10 @@
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/scene.h</file>
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/Vulkan.Linux/pch.h</file>
         </group>
-        <group/>
+        <group>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/vulkan.linux/main.cpp</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/vulkan.linux/scene.cpp</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/tests/vulkan.linux/pch.h</file>
+        </group>
     </open-files>
 </project-private>

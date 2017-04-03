@@ -13,13 +13,14 @@ std::wstring w_game::_content_directory_path = L"";
 #endif
 
 #if defined(__WIN32)
-w_game::w_game(std::wstring pRootDirectory) :
+w_game::w_game(_In_z_ const std::wstring pRootDirectory) :
 #elif defined(__UWP)
-w_game::w_game() :
+w_game::w_game(_In_z_ const std::wstring pAppName) :
 #else
-w_game::w_game(std::string pRootDirectory) :
+w_game::w_game(_In_z_ const std::string pRootDirectory, _In_z_ const std::string pAppName) :
 #endif
-	exiting(false)
+	exiting(false),
+        _app_name(pAppName)
 {
 	_super::set_class_name("w_game");
 	this->loadState = LoadState::NOTLOADED;

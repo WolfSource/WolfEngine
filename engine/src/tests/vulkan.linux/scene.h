@@ -14,7 +14,7 @@
 class scene : public wolf::framework::w_game
 {
 public:
-    scene();
+    scene(const std::string pRootDirectory, const std::string pAppName);
     virtual ~scene();
 
     /*
@@ -49,7 +49,7 @@ public:
     ULONG release() override;
 
 private:
-
+    typedef  wolf::framework::w_game _super;
 };
 
 #endif

@@ -35,9 +35,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/_ext/46a988ea/main.o \
-	${OBJECTDIR}/_ext/46a988ea/pch.o \
-	${OBJECTDIR}/_ext/46a988ea/scene.o
+	${OBJECTDIR}/_ext/3ea124ea/main.o \
+	${OBJECTDIR}/_ext/3ea124ea/pch.o \
+	${OBJECTDIR}/_ext/3ea124ea/scene.o
 
 
 # C Compiler Flags
@@ -64,23 +64,25 @@ ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/vulkan.linu
 	${MKDIR} -p ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/vulkan.linux ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/_ext/46a988ea/main.o: ../../../../src/tests/Vulkan.Linux/main.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/46a988ea
+${OBJECTDIR}/_ext/3ea124ea/main.o: ../../../../src/tests/vulkan.linux/main.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/3ea124ea
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/ -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/main.o ../../../../src/tests/Vulkan.Linux/main.cpp
+	$(COMPILE.cc) -g -D__VULKAN__ -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/ -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3ea124ea/main.o ../../../../src/tests/vulkan.linux/main.cpp
 
-${OBJECTDIR}/_ext/46a988ea/pch.o: ../../../../src/tests/Vulkan.Linux/pch.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/46a988ea
+${OBJECTDIR}/_ext/3ea124ea/pch.o: ../../../../src/tests/vulkan.linux/pch.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/3ea124ea
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/ -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/pch.o ../../../../src/tests/Vulkan.Linux/pch.cpp
+	$(COMPILE.cc) -g -D__VULKAN__ -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/ -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3ea124ea/pch.o ../../../../src/tests/vulkan.linux/pch.cpp
 
-${OBJECTDIR}/_ext/46a988ea/scene.o: ../../../../src/tests/Vulkan.Linux/scene.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/46a988ea
+${OBJECTDIR}/_ext/3ea124ea/scene.o: ../../../../src/tests/vulkan.linux/scene.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/3ea124ea
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/ -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/46a988ea/scene.o ../../../../src/tests/Vulkan.Linux/scene.cpp
+	$(COMPILE.cc) -g -D__VULKAN__ -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/ -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3ea124ea/scene.o ../../../../src/tests/vulkan.linux/scene.cpp
 
 # Subprojects
 .build-subprojects:
+	cd ../../wolf.system && ${MAKE}  -f Makefile CONF=Debug
+	cd ../../wolf.render && ${MAKE}  -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -88,6 +90,8 @@ ${OBJECTDIR}/_ext/46a988ea/scene.o: ../../../../src/tests/Vulkan.Linux/scene.cpp
 
 # Subprojects
 .clean-subprojects:
+	cd ../../wolf.system && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../../wolf.render && ${MAKE}  -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

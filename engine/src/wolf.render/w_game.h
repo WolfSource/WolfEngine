@@ -31,11 +31,11 @@ namespace wolf
 		{
 		public:
 #if defined(__WIN32)
-            W_EXP w_game(_In_z_ std::wstring pRootDirectory);
+            W_EXP w_game(_In_z_ const std::wstring pRootDirectory, _In_z_ const std::wstring pAppName = L"Wolf.Engine");
 #elif defined(__UWP)
-            W_EXP w_game();
+            W_EXP w_game(_In_z_ const std::wstring pAppName = L"Wolf.Engine");
 #else
-            W_EXP w_game(_In_z_ std::string pRootDirectory);
+            W_EXP w_game(_In_z_ const std::string pRootDirectory, _In_z_ const std::string pAppName = "Wolf.Engine");
 #endif
             
 			W_EXP virtual ~w_game();
@@ -49,11 +49,6 @@ namespace wolf
 
 #pragma region Setters
 
-#if defined(__linux) || defined(__ANDROID) || defined(__APPLE__)
-			void set_app_name(_In_ std::string pAppName) { this->_app_name = pAppName; }
-#else 
-			void set_app_name(_In_ std::wstring pAppName) { this->_app_name = pAppName; }
-#endif
 			void set_fixed_time_step(_In_ bool pValue) { this->_game_time.set_fixed_time_step(pValue); }
 			void set_target_elapsed_ticks(_In_ UINT64 pValue) { this->_game_time.set_target_elapsed_ticks(10000000 / pValue); }
 			void set_target_elapsed_seconds(_In_ double pValue) { this->_game_time.set_target_elapsed_seconds(1.0 / pValue); }

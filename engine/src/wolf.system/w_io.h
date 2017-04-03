@@ -591,18 +591,18 @@ namespace wolf
 				-1 means the file could not be found,
 				-2 means file is exist but could not open
 			*/
-			inline HRESULT read_binary_file(_In_z_ const char* pPath, _Inout_ std::unique_ptr<unsigned char[]>& pData,
-				_Out_ size_t* pDataSize, _Out_ int& pFileState)
+			inline HRESULT read_binary_file(_In_z_ const char* pPath, _Inout_ std::vector<unsigned char>& pData,
+				_Out_ int& pFileState)
 			{
 				pFileState = 1;
 				std::ifstream _file(pPath, std::ios::binary);
-				if (_file)
+				if (!_file)
 				{
 					pFileState = -1;
 					return S_FALSE;
 				}
 
-				if (!_file.good())
+				if (_file.fail())
 				{
 					pFileState = -2;
 					return S_FALSE;
@@ -612,22 +612,20 @@ namespace wolf
 				_file.unsetf(std::ios::skipws);
 
 				// get its size:
-				std::streampos _file_size;
-
+				//std::streampos _file_size;
+                                size_t _data_size = 0;
+                                
 				_file.seekg(0, std::ios::end);
-				*pDataSize = static_cast<size_t>(_file.tellg());
+				_data_size = static_cast<size_t>(_file.tellg());
 				_file.seekg(0, std::ios::beg);
 
 				// reserve capacity
-				std::vector<unsigned char> _vec;
-				_vec.reserve(_file_size);
+				pData.reserve(_data_size);
 
 				// read the data:
 				std::copy(std::istream_iterator<unsigned char>(_file),
 					std::istream_iterator<unsigned char>(),
-					std::back_inserter(_vec));
-
-				pData.reset(_vec.data());
+					std::back_inserter(pData));
 
 				return S_OK;
 			}
