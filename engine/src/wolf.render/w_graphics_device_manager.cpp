@@ -21,26 +21,89 @@ using namespace wolf::graphics;
 ComPtr<IDXGIFactory4>	w_graphics_device::dx_dxgi_factory = nullptr;
 #elif defined(__VULKAN__)
 VkInstance w_graphics_device::vk_instance = NULL;
-VkAttachmentDescription	w_graphics_device::vk_default_attachment_description =
+       
+VkAttachmentDescription	w_graphics_device::defaults::vk_default_attachment_description =
 {
-	0,									// VkAttachmentDescriptionFlags: Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
-	VkFormat::VK_FORMAT_R8G8B8A8_UNORM,	// VkFormat: Format of an image used for the attachment. 
-	VK_SAMPLE_COUNT_1_BIT,				// VkSampleCountFlagBits: Number of samples of the image; The value greater than 1 means multisampling.
-	VK_ATTACHMENT_LOAD_OP_CLEAR,		// VkAttachmentLoadOp: Specifies what to do with the image�s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
-	VK_ATTACHMENT_STORE_OP_STORE,		// VkAttachmentStoreOp: Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
-	VK_ATTACHMENT_LOAD_OP_DONT_CARE,	// VkAttachmentLoadOp: The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
-	VK_ATTACHMENT_STORE_OP_DONT_CARE,	// VkAttachmentStoreOp: The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
-	VK_IMAGE_LAYOUT_UNDEFINED,			// VkImageLayout: The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
-	VK_IMAGE_LAYOUT_PRESENT_SRC_KHR		// VkImageLayout: The layout the driver will automatically transition the given image into at the end of a render pass.
+	0,								// Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
+	VkFormat::VK_FORMAT_R8G8B8A8_UNORM,                             // Format of an image used for the attachment. 
+	VK_SAMPLE_COUNT_1_BIT,                                          // Number of samples of the image; The value greater than 1 means multisampling.
+	VK_ATTACHMENT_LOAD_OP_CLEAR,                                    // Specifies what to do with the image�s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
+	VK_ATTACHMENT_STORE_OP_STORE,                                   // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
+	VK_ATTACHMENT_LOAD_OP_DONT_CARE,                                // The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
+	VK_ATTACHMENT_STORE_OP_DONT_CARE,                               // The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
+	VK_IMAGE_LAYOUT_UNDEFINED,                                      // The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
+	VK_IMAGE_LAYOUT_PRESENT_SRC_KHR                                 // The layout the driver will automatically transition the given image into at the end of a render pass.
 };
 
-VkAttachmentReference w_graphics_device::vk_default_color_attachment_reference =
+VkAttachmentReference w_graphics_device::defaults::vk_default_color_attachment_reference =
 {
-		0,											// uint32_t: attachment
-		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL	// VkImageLayout: the layout of attachment
+	0,                                                              // Attachment
+	VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL                        // The layout of attachment
 };
 
+VkPipelineVertexInputStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info = 
+{
+        VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,      // Type
+        nullptr,                                                        // Next
+        0,                                                              // Flags
+        0,                                                              // Count of vertex binding descriptions
+        nullptr,                                                        // Vertex binding descriptions
+        0,                                                              // Count of vertex attribute descriptions
+        nullptr                                                         // Vertex attribute descriptions
+};
+     
+VkPipelineInputAssemblyStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_input_assembly_state_create_info = 
+{
+        VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,    // Type
+        nullptr,                                                        // Next
+        0,                                                              // Flags
+        VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,                            // Topology
+        VK_FALSE                                                        // Enable restart primitive
+};
 
+VkPipelineRasterizationStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_rasterization_state_create_info = 
+{
+        VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,     // Type
+        nullptr,                                                        // Next
+        0,                                                              // flags
+        VK_FALSE,                                                       // depthClampEnable
+        VK_FALSE,                                                       // rasterizerDiscardEnable
+        VK_POLYGON_MODE_FILL,                                           // polygonMode
+        VK_CULL_MODE_BACK_BIT,                                          // cullMode
+        VK_FRONT_FACE_COUNTER_CLOCKWISE,                                // frontFace
+        VK_FALSE,                                                       // depthBiasEnable
+        0.0f,                                                           // depthBiasConstantFactor
+        0.0f,                                                           // depthBiasClamp
+        0.0f,                                                           // depthBiasSlopeFactor
+        1.0f                                                            // lineWidth
+};
+
+VkPipelineMultisampleStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_multisample_state_create_info = 
+{
+      VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,         // Type
+      nullptr,                                                          // Next
+      0,                                                                // flags
+      VK_SAMPLE_COUNT_1_BIT,                                            // rasterizationSamples
+      VK_FALSE,                                                         // sampleShadingEnable
+      1.0f,                                                             // minSampleShading
+      nullptr,                                                          // pSampleMask
+      VK_FALSE,                                                         // alphaToCoverageEnable
+      VK_FALSE                                                          // alphaToOneEnable
+};
+
+VkPipelineColorBlendAttachmentState w_graphics_device::defaults::vk_default_pipeline_color_blend_attachment_state = 
+{
+      VK_FALSE,                                                         // blendEnable
+      VK_BLEND_FACTOR_ONE,                                              // srcColorBlendFactor
+      VK_BLEND_FACTOR_ZERO,                                             // dstColorBlendFactor
+      VK_BLEND_OP_ADD,                                                  // colorBlendOp
+      VK_BLEND_FACTOR_ONE,                                              // srcAlphaBlendFactor
+      VK_BLEND_FACTOR_ZERO,                                             // DstAlphaBlendFactor
+      VK_BLEND_OP_ADD,                                                  // AlphaBlendOp
+      VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |             // ColorWriteMask
+      VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
+};
+    
 #endif
 
 w_graphics_device::w_graphics_device():
@@ -78,15 +141,15 @@ HRESULT w_graphics_device::create_render_pass(_In_z_ const char* pRenderPassName
 
 	const VkRenderPassCreateInfo _render_pass_create_info =
 	{
-		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,							// VkStructureType                sType
-		nullptr,															// const void                    *pNext
-		0,																	// VkRenderPassCreateFlags        flags
-		pAttachmentDescriptions.size(),										// uint32_t                       attachmentCount
-		pAttachmentDescriptions.data(),										// const VkAttachmentDescription *pAttachments
-		pSubpassDescription.size(),											// uint32_t                       subpassCount
-		pSubpassDescription.data(),											// const VkSubpassDescription    *pSubpasses
-		pSubpassDependency.size(),											// uint32_t                       dependencyCount
-		pSubpassDependency.size() ? pSubpassDependency.data() : nullptr		// const VkSubpassDependency     *pDependencies
+		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,                      //sType
+		nullptr,                                                        // Next
+		0,                                                              // Flags
+		static_cast<uint32_t>(pAttachmentDescriptions.size()),          // AttachmentCount
+		pAttachmentDescriptions.data(),                                 // Attachments
+		static_cast<uint32_t>(pSubpassDescription.size()),              // SubpassCount
+		pSubpassDescription.data(),                                     // Subpasses
+		static_cast<uint32_t>(pSubpassDependency.size()),               // DependencyCount
+		pSubpassDependency.size() ? pSubpassDependency.data() : nullptr	// Dependencies
 	};
 
 	VkRenderPass _render_pass = VK_NULL_HANDLE;
@@ -192,6 +255,76 @@ HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pF
 	return S_OK;
 }
 
+ HRESULT w_graphics_device::create_pipeline(_In_ const std::vector<w_viewport> pViewPorts,
+         _In_ const std::vector<w_viewport_scissor>* const pViewPortsScissors,
+         _In_ const VkPipelineVertexInputStateCreateInfo* const pPipelineVertexInputStateCreateInfo,
+         _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo,
+         _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
+         _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo,
+         _In_ const VkPipelineColorBlendAttachmentState* const pPipelineColorBlendAttachmentState,
+         _In_ const std::array<float,4> pBlendColors)
+ {
+    const VkPipelineViewportStateCreateInfo _viewport_state_create_info = 
+    {
+        VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,                  // Type
+        nullptr,                                                                // Next
+        0,                                                                      // Flags
+        static_cast<uint32_t>(pViewPorts.size()),                               // ViewportCount
+        pViewPorts.data(),                                                      // Viewports
+        pViewPortsScissors == nullptr ? 0 : 
+            static_cast<uint32_t>((*pViewPortsScissors).size()),                // ScissorCount
+        pViewPortsScissors == nullptr ? nullptr : (*pViewPortsScissors).data()  // Scissors
+    };
+
+    const VkPipelineColorBlendStateCreateInfo _color_blend_state_create_info = 
+    {
+        VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,               // Type
+        nullptr,                                                                // Next
+        0,                                                                      // Flags
+        VK_FALSE,                                                               // logicOpEnable
+        VK_LOGIC_OP_COPY,                                                       // logicOp
+        1,                                                                      // attachmentCount
+        pPipelineColorBlendAttachmentState == nullptr ? 
+            &(defaults::vk_default_pipeline_color_blend_attachment_state) : 
+            pPipelineColorBlendAttachmentState,                                 // pAttachments
+        { pBlendColors[0], pBlendColors[1], pBlendColors[2], pBlendColors[3] }  // blendConstants[4]
+    };
+    
+//    Tools::AutoDeleter<VkPipelineLayout, PFN_vkDestroyPipelineLayout> pipeline_layout = CreatePipelineLayout();
+//    if( !pipeline_layout ) {
+//      return false;
+//    }
+//
+//    VkGraphicsPipelineCreateInfo pipeline_create_info = {
+//      VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,              // VkStructureType                                sType
+//      nullptr,                                                      // const void                                    *pNext
+//      0,                                                            // VkPipelineCreateFlags                          flags
+//      static_cast<uint32_t>(shader_stage_create_infos.size()),      // uint32_t                                       stageCount
+//      &shader_stage_create_infos[0],                                // const VkPipelineShaderStageCreateInfo         *pStages
+//      &vertex_input_state_create_info,                              // const VkPipelineVertexInputStateCreateInfo    *pVertexInputState;
+//      &input_assembly_state_create_info,                            // const VkPipelineInputAssemblyStateCreateInfo  *pInputAssemblyState
+//      nullptr,                                                      // const VkPipelineTessellationStateCreateInfo   *pTessellationState
+//      &viewport_state_create_info,                                  // const VkPipelineViewportStateCreateInfo       *pViewportState
+//      &rasterization_state_create_info,                             // const VkPipelineRasterizationStateCreateInfo  *pRasterizationState
+//      &multisample_state_create_info,                               // const VkPipelineMultisampleStateCreateInfo    *pMultisampleState
+//      nullptr,                                                      // const VkPipelineDepthStencilStateCreateInfo   *pDepthStencilState
+//      &color_blend_state_create_info,                               // const VkPipelineColorBlendStateCreateInfo     *pColorBlendState
+//      nullptr,                                                      // const VkPipelineDynamicStateCreateInfo        *pDynamicState
+//      pipeline_layout.Get(),                                        // VkPipelineLayout                               layout
+//      Vulkan.RenderPass,                                            // VkRenderPass                                   renderPass
+//      0,                                                            // uint32_t                                       subpass
+//      VK_NULL_HANDLE,                                               // VkPipeline                                     basePipelineHandle
+//      -1                                                            // int32_t                                        basePipelineIndex
+//    };
+//
+//    if( vkCreateGraphicsPipelines( GetDevice(), VK_NULL_HANDLE, 1, &pipeline_create_info, nullptr, &Vulkan.GraphicsPipeline ) != VK_SUCCESS ) {
+//      std::cout << "Could not create graphics pipeline!" << std::endl;
+//      return false;
+//    }
+//    return true;   
+     return S_OK;
+ }
+                        
 ULONG w_graphics_device::release()
 {
 	//release all resources

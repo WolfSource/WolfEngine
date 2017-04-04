@@ -13,10 +13,6 @@
 #include "w_graphics_device_manager.h"
 #include <w_object.h>
 
-#if defined(__linux) ||  defined(__APPLE__) || defined(__ANDROID)
-#include <w_std.h>
-#endif
-
 namespace wolf
 {
 	namespace graphics

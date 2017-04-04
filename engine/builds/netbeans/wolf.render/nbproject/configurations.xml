@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f2"
+                   displayName="w_geometries"
+                   projectFiles="true"
+                   kind="ROOT">
+    </logicalFolder>
     <logicalFolder name="f1" displayName="w_graphics" projectFiles="true">
       <logicalFolder name="f1" displayName="w_shader" projectFiles="true">
         <itemPath>../../../src/wolf.render/w_graphics/w_shaders/w_shader.cpp</itemPath>

@@ -7,7 +7,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.render/w_graphics/w_shaders/w_shader.cpp</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.render/w_graphics/w_shaders/w_shader.h</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.render/w_graphics_device_manager.cpp</file>
         </group>
     </open-files>
 </project-private>

@@ -222,7 +222,7 @@ inline void V(int pHR, std::wstring pMSG = L"Undefined Error",
 	pHR						= Status
 	pMSG						= the log message
 	pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
-	pExitNow					= abort appilcation
+	pExitNow					= abort application
 	pCheckForLastDirectXError	= check last error of GPU API
 */
 inline void V(HRESULT pHR, std::string pMSG = "Undefined Error",

@@ -8,6 +8,7 @@
 
 #include "pch.h"
 #include "scene.h"
+#include <w_graphics/w_shaders/w_shader.h>
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -36,8 +37,14 @@ void scene::load()
     auto _gDevice =  wolf::framework::w_game::graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
 
-    const std::vector<VkAttachmentDescription> _attachment_descriptions = { w_graphics_device::vk_default_attachment_description };
-    const VkAttachmentReference _attachment_ref[] = { w_graphics_device::vk_default_color_attachment_reference };
+    const std::vector<VkAttachmentDescription> _attachment_descriptions = 
+    { 
+        w_graphics_device::defaults::vk_default_attachment_description 
+    };
+    const VkAttachmentReference _attachment_ref[] = 
+    { 
+        w_graphics_device::defaults::vk_default_color_attachment_reference 
+    };
     const std::vector<VkSubpassDescription> _subpass_descriptions =
     {
         {
@@ -68,17 +75,22 @@ void scene::load()
 	_output_window->height,
 	1);
     
-    std::vector<unsigned char> _data;
-    int _file_state = -1;
+    wolf::graphics::w_shader _shader;
+    _shader.load(_gDevice, "/home/pooyaeimandar/Desktop/SPIR-V/shader.vert.spv", w_shader_stage::VERTEX_SHADER);
+    _shader.load(_gDevice, "/home/pooyaeimandar/Desktop/SPIR-V/shader.frag.spv", w_shader_stage::FRAGMENT_SHADER);
     
-    auto _hr = wolf::system::io::read_binary_file("/home/pooyaeimandar/Desktop/SPIR-V/shader.vert.spv", 
-            _data,  
-            _file_state);
+    w_viewport _wp;
+    _wp.x = 0.0f;
+    _wp.y = 0.0f;
+    _wp.width = 1920.0f;
+    _wp.height = 1080.0f;
+    _wp.minDepth = 0.0f;
+    _wp.maxDepth = 1.0f;
     
-    if (_hr == S_OK)
-    {
-        logger.write("Hello");
-    }
+    auto _hr = _gDevice->create_pipeline(
+        { _wp } //viewports
+    );
+    
 }
 
 void scene::update(const wolf::system::w_game_time& pGameTime)

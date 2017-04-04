@@ -68,12 +68,16 @@ using Microsoft::WRL::ComPtr;
 using std::size_t;
 
 #include "w_render_export.h"
-#include <w_std.h>
 #include <w_object.h>
 #include <w_window.h>
 #include <w_color.h>
 #include <map>
 #include <vector>
+#include <array>
+
+#if defined(__linux) ||  defined(__APPLE__) || defined(__ANDROID)
+#include <w_std.h>
+#endif
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
@@ -100,6 +104,22 @@ namespace wolf
             VkImageView                         view = NULL;
         };
 #endif
+        
+                struct w_viewport : 
+#ifdef __VULKAN__
+                        public VkViewport
+        
+#endif
+                {
+                };
+                
+        struct w_viewport_scissor : 
+#ifdef __VULKAN__
+                        public VkRect2D
+        
+#endif
+                {
+                };
                 
 		//Output window which handles all 3d resources for output renderer
 		struct w_output_presentation_window
@@ -220,11 +240,13 @@ namespace wolf
 
 			//get the first and the primary window which was created with this device
 			W_EXP w_output_presentation_window main_window();
-			W_EXP HRESULT create_render_pass(_In_z_ const char* pRenderPassName,
+			//Create render pass
+                        W_EXP HRESULT create_render_pass(_In_z_ const char* pRenderPassName,
 				_In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
 				_In_ const std::vector<VkSubpassDescription> pSubpassDescription,
 				_In_ const std::vector<VkSubpassDependency> pSubpassDependency,
 				_In_ size_t pOutputPresentationWindowIndex = 0);
+                        //Create frame buffers collection
 			 W_EXP HRESULT create_frame_buffers_collection(_In_z_ const char* pFrameBufferCollectionName,
 				_In_z_ const char* pRenderPassUsedName, 
 				_In_ size_t pSizeOfCollection, 
@@ -233,6 +255,16 @@ namespace wolf
 				_In_ uint32_t pFrameBufferHeight,
 				_In_ uint32_t pNumberOfLayers,
 				_In_ size_t pOutputPresentationWindowIndex = 0);
+                         //Create pipeline 
+                         W_EXP HRESULT create_pipeline(_In_ const std::vector<w_viewport> pViewPorts,
+                                _In_ const std::vector<w_viewport_scissor>* const pViewPortsScissors = nullptr,
+                                _In_ const VkPipelineVertexInputStateCreateInfo* const pPipelineVertexInputStateCreateInfo = nullptr,
+                                _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo = nullptr,
+                                _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo = nullptr,
+                                _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo = nullptr,
+                                _In_ const VkPipelineColorBlendAttachmentState* const pPipelineColorBlendAttachmentState = nullptr,
+                                _In_ const std::array<float,4> pBlendColors = {0.0f, 0.0f, 0.0f, 0.0f});
+                          
 
 			//release all resources
             ULONG release();
@@ -270,15 +302,23 @@ namespace wolf
                         
             VkQueue                                                 vk_graphics_queue;
             VkQueue                                                 vk_present_queue;
-                                
+                     
             VkDevice                                                vk_device;
 
 			std::map<const char*, VkRenderPass>						vk_render_passes;
 			std::map<const char*, std::vector<VkFramebuffer>>		vk_frame_buffers;
-
-			//static defaults
-			static VkAttachmentDescription							vk_default_attachment_description;
-			static VkAttachmentReference							vk_default_color_attachment_reference;
+                        
+                        //static pipeline defaults
+			struct defaults
+                        {
+                            static VkAttachmentDescription				vk_default_attachment_description;
+                            static VkAttachmentReference				vk_default_color_attachment_reference;
+                            static VkPipelineVertexInputStateCreateInfo                 vk_default_pipeline_vertex_input_state_create_info;
+                            static VkPipelineInputAssemblyStateCreateInfo               vk_default_pipeline_input_assembly_state_create_info;
+                            static VkPipelineRasterizationStateCreateInfo               vk_default_pipeline_rasterization_state_create_info;
+                            static VkPipelineMultisampleStateCreateInfo                 vk_default_pipeline_multisample_state_create_info;
+                            static VkPipelineColorBlendAttachmentState                  vk_default_pipeline_color_blend_attachment_state;
+                        };
 #endif //__DX11__ __DX12__ __VULKAN__
             
             std::string                                             device_name;

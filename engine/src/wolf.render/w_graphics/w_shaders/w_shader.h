@@ -17,13 +17,17 @@ enum w_shader_stage
 	VERTEX_SHADER,
 #if defined(__DX12__) || defined(__DX11__)
 	PIXEL_SHADER,
+        HULL_SHADER,
+	DOMAIN_SHADER,
 #elif defined(__VULKAN__)
         FRAGMENT_SHADER,
+        TESSELATION_CONTROL,
+        TESSELATION_EVALUATION,
 #endif
 	GEOMETRY_SHADER,
-	DOMAIN_SHADER,
-	HULL_SHADER,
-	COMPUTE_SHADER
+
+	COMPUTE_SHADER,
+        ALL_STAGES
 };
 
 namespace wolf
@@ -38,7 +42,8 @@ namespace wolf
 
 			//Create shader from binary file
 			virtual HRESULT load(_In_ std::shared_ptr<w_graphics_device>& pGDevice,
-                            const char* pShaderBinaryPath);
+                            _In_z_ const char* pShaderBinaryPath, _In_ const w_shader_stage pShaderStage,
+                            _In_z_ const char* pMainFunctionName = "main");
 
 			//Apply shader, this must be called before drawing primitives
 			virtual void apply();
@@ -57,11 +62,9 @@ namespace wolf
 		private:
                     typedef	system::w_object                                _super;
                     std::shared_ptr<w_graphics_device>                          _gDevice;
-                    
-#if defined(__DX11__) || defined(__DX12__)
-#elif defined(__VULKAN__)
-                    VkShaderModule                                              _shader_module;                   
-#endif
+                  
+                    std::vector<VkPipelineShaderStageCreateInfo>                _shader_stages;
+                    std::vector<VkShaderModule>                                 _shader_modules;
 		};
 	}
 }
