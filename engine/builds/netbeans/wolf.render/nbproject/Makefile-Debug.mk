@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/_ext/24207458/w_game.o \
+	${OBJECTDIR}/_ext/de18f501/w_shader.o \
 	${OBJECTDIR}/_ext/24207458/w_graphics_device_manager.o \
 	${OBJECTDIR}/_ext/24207458/w_render_pch.o
 
@@ -68,6 +69,11 @@ ${OBJECTDIR}/_ext/24207458/w_game.o: ../../../src/wolf.render/w_game.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/24207458
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -D__VULKAN__ -I../../../src/wolf.system -I../../../src/wolf.render/ -I../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/24207458/w_game.o ../../../src/wolf.render/w_game.cpp
+
+${OBJECTDIR}/_ext/de18f501/w_shader.o: ../../../src/wolf.render/w_graphics/w_shaders/w_shader.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/de18f501
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -D__VULKAN__ -I../../../src/wolf.system -I../../../src/wolf.render/ -I../../../../../../VulkanSDK/1.0.42.0/x86_64/include -std=c++14 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/de18f501/w_shader.o ../../../src/wolf.render/w_graphics/w_shaders/w_shader.cpp
 
 ${OBJECTDIR}/_ext/24207458/w_graphics_device_manager.o: ../../../src/wolf.render/w_graphics_device_manager.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/24207458

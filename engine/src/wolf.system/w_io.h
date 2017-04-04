@@ -591,7 +591,7 @@ namespace wolf
 				-1 means the file could not be found,
 				-2 means file is exist but could not open
 			*/
-			inline HRESULT read_binary_file(_In_z_ const char* pPath, _Inout_ std::vector<unsigned char>& pData,
+			inline void read_binary_file(_In_z_ const char* pPath, _Inout_ std::vector<unsigned char>& pData,
 				_Out_ int& pFileState)
 			{
 				pFileState = 1;
@@ -599,13 +599,13 @@ namespace wolf
 				if (!_file)
 				{
 					pFileState = -1;
-					return S_FALSE;
+					return;
 				}
 
 				if (_file.fail())
 				{
 					pFileState = -2;
-					return S_FALSE;
+					return;
 				}
 
 				// Stop eating new lines in binary mode!!!
@@ -627,8 +627,7 @@ namespace wolf
 					std::istream_iterator<unsigned char>(),
 					std::back_inserter(pData));
 
-				return S_OK;
-			}
+                        }
 		}
 	}
 }

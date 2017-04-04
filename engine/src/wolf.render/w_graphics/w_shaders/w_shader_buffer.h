@@ -3,7 +3,7 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_shader_buffer.h
-	Description		 : Constant HLSL buffer
+	Description		 : HLSL/GLSL shader buffer(in HLSL refers to constant buffers and in GLSL refers to Uniforms)
 	Comment          :
 */
 
@@ -13,7 +13,7 @@
 #include "w_graphics_device_manager.h"
 #include <w_object.h>
 
-#if defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
+#if defined(__linux) ||  defined(__APPLE__) || defined(__ANDROID)
 #include <w_std.h>
 #endif
 
@@ -179,6 +179,7 @@ namespace wolf
                         
 #pragma endregion
 
+                        //constant buffer/uniforms
 			T data;
 
 		private:

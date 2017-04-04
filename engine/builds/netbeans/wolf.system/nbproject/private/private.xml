@@ -9,8 +9,6 @@
         <group name="wolf.engine.vulkan.linux">
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/w_task.h</file>
         </group>
-        <group>
-            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/w_io.h</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
