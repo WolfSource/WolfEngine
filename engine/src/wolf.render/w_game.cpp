@@ -64,63 +64,39 @@ void w_game::update(const wolf::system::w_game_time& pGameTime)
 	W_UNUSED(pGameTime);
 }
 
-void w_game::begin_render(const wolf::system::w_game_time& pGameTime)
+HRESULT w_game::render(const wolf::system::w_game_time& pGameTime)
 {
-	w_graphics_device_manager::begin_render();
-}
-
-void w_game::render(const wolf::system::w_game_time& pGameTime)
-{
-#ifdef	__DX11_X__
-	//execute all command lists
-	auto _gDevice = get_graphics_device();
-	auto _size = _gDevice->command_queue.size();
-	if (_size > 0)
-	{
-        for (size_t i = 0; i < _size; ++i)
+#ifdef	__DX11__
+    
+#pragma region show printf on screen log messages
+    
+    auto _msgs = logger.get_buffer();
+    auto _size = _msgs.size();
+    if (_size != 0)
+    {
+        this->sprite_batch->begin();
         {
-            auto _command = _gDevice->command_queue.at(i);
-            if (_command)
+            std::wstring _final_msg = L"";
+            for (size_t i = 0; i < _size; ++i)
             {
-                _gDevice->context->ExecuteCommandList(_command, true);
-                _command->Release();
-                _command = nullptr;
+                _final_msg += _msgs.at(i) + L"\r\n";
             }
+            this->sprite_batch->draw_string(_final_msg,
+                                            D2D1::RectF(5, 5, static_cast<FLOAT>(get_window_width() / 2), static_cast<FLOAT>(get_window_height())));
         }
-	}
-#endif
-}
-
-void w_game::end_render(const wolf::system::w_game_time& pGameTime)
-{
-#ifdef	__DX11_X__
-
-#pragma region Show Printf on screen log messages
-
-	auto _msgs = logger.get_buffer();
-	auto _size = _msgs.size();
-	if (_size != 0)
-	{
-		this->sprite_batch->begin();
-		{
-			std::wstring _final_msg = L"";
-			for (size_t i = 0; i < _size; ++i)
-			{
-				_final_msg += _msgs.at(i) + L"\r\n";
-			}
-			this->sprite_batch->draw_string(_final_msg,
-				D2D1::RectF(5, 5, static_cast<FLOAT>(get_window_width() / 2), static_cast<FLOAT>(get_window_height())));
-		}
-		this->sprite_batch->end();
-
-		logger.clearf();
-	}
-
+        this->sprite_batch->end();
+        
+        logger.clearf();
+    }
+    
 #pragma endregion
-
+    
 #endif
-
-	w_graphics_device_manager::end_render();
+        
+    auto _hr = w_graphics_device_manager::submit();
+    if (_hr) return _hr;
+    
+    return w_graphics_device_manager::present();
 }
 
 #ifdef __WIN32
@@ -154,9 +130,7 @@ bool w_game::run(map<int, vector<w_window_info>> pOutputWindowsInfo)
 
     this->_game_time.tick([&]()
     {
-        begin_render(this->_game_time);
         render(this->_game_time);
-        end_render(this->_game_time);
     });
 
     return !this->exiting;

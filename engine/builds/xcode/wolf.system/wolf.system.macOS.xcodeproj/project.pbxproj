@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2C38D9421E79613700EE8595 /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */; };
 		2C38D9431E79613700EE8595 /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */; };
+		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
 		2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF51E64307D005E0F45 /* glm_extention.h */; };
 		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
 		2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF71E64307D005E0F45 /* w_convert.h */; };
@@ -39,6 +40,7 @@
 /* Begin PBXFileReference section */
 		2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
+		2C98996B1E9B512F002FE161 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../src/wolf.system/stb_image.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE5BAF51E64307D005E0F45 /* glm_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extention.h; path = ../../../src/wolf.system/glm_extention.h; sourceTree = "<group>"; };
 		2CE5BAF61E64307D005E0F45 /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 		2CD6171A1E59DA3E006FC5DC = {
 			isa = PBXGroup;
 			children = (
+				2C98996B1E9B512F002FE161 /* stb_image.h */,
 				2CE5BAF51E64307D005E0F45 /* glm_extention.h */,
 				2CE5BAF61E64307D005E0F45 /* w_color.h */,
 				2CE5BAF71E64307D005E0F45 /* w_convert.h */,
@@ -151,6 +154,7 @@
 				2CE5BB1E1E64307D005E0F45 /* w_task.h in Headers */,
 				2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */,
 				2CE5BB111E64307D005E0F45 /* w_event.h in Headers */,
+				2C98996C1E9B512F002FE161 /* stb_image.h in Headers */,
 				2CE5BB191E64307D005E0F45 /* w_std.h in Headers */,
 				2CE5BB211E64307D005E0F45 /* w_timer_callback.h in Headers */,
 				2CE5BB1C1E64307D005E0F45 /* w_system_pch.h in Headers */,

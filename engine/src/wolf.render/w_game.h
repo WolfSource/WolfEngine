@@ -49,18 +49,18 @@ namespace wolf
 
 #pragma region Setters
 
-			void set_fixed_time_step(_In_ bool pValue) { this->_game_time.set_fixed_time_step(pValue); }
-			void set_target_elapsed_ticks(_In_ UINT64 pValue) { this->_game_time.set_target_elapsed_ticks(10000000 / pValue); }
-			void set_target_elapsed_seconds(_In_ double pValue) { this->_game_time.set_target_elapsed_seconds(1.0 / pValue); }
+			W_EXP void set_fixed_time_step(_In_ bool pValue) { this->_game_time.set_fixed_time_step(pValue); }
+			W_EXP void set_target_elapsed_ticks(_In_ UINT64 pValue) { this->_game_time.set_target_elapsed_ticks(10000000 / pValue); }
+			W_EXP void set_target_elapsed_seconds(_In_ double pValue) { this->_game_time.set_target_elapsed_seconds(1.0 / pValue); }
 
 #pragma endregion
 
 #pragma region Getters
 
 #if defined(__linux) || defined(__ANDROID) || defined(__APPLE__)
-			static const std::string get_content_directory() { return _content_directory_path; }
+			W_EXP static const std::string get_content_directory() { return _content_directory_path; }
 #else
-			static const std::wstring get_content_directory() { return _content_directory_path; }
+			W_EXP static const std::wstring get_content_directory() { return _content_directory_path; }
 #endif
 
 #pragma endregion
@@ -79,14 +79,9 @@ namespace wolf
 			//Update the game logic
 			W_EXP virtual void update(_In_ const system::w_game_time& pGameTime) = 0;
 
-			//Begin render on all graphics devices
-			W_EXP virtual void begin_render(_In_ const system::w_game_time& pGameTime);
-
-			//Draw the components of the game, also when you call Game::Render(), it will execute all command queue
-			W_EXP virtual void render(_In_ const system::w_game_time& pGameTime) = 0;
-
-			//End render on all graphics devices
-			W_EXP virtual void end_render(_In_ const system::w_game_time& pGameTime);
+			//Submit comand buffers on all graphics devices
+			W_EXP virtual HRESULT render(_In_ const system::w_game_time& pGameTime);
+            
 
 #ifdef __WIN32
 			//Handle window messages

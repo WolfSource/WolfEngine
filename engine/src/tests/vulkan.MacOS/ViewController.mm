@@ -42,7 +42,8 @@ void init_window(struct w_window_info& pInfo)
     //back the view with a layer created by the makeBackingLayer method.
     self.view.wantsLayer = YES;
     
-    sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String);
+    sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String,
+                       "test.wolf.engine.metal.macOS");
     
     //pass the view to the sample code
     sSampleView = self.view;

@@ -1,0 +1,55 @@
+/*
+	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
+	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
+	Website			 : http://WolfSource.io
+	Name			 : w_buffer
+	Description		 : buffer
+	Comment          : 
+*/
+
+#ifndef __W_BUFFER_H__
+#define __W_BUFFER_H__
+
+#include "w_graphics_device_manager.h"
+
+namespace wolf
+{
+	namespace graphics
+	{        
+        class w_buffer_pimp;
+        class w_buffer : public system::w_object
+        {
+        public:
+            W_EXP w_buffer();
+            W_EXP ~w_buffer();
+            
+            W_EXP HRESULT load_as_staging(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                                          _In_ const uint32_t pBufferSize);
+            
+            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                         _In_ const uint32_t pBufferSize,
+                         _In_ const VkBufferUsageFlags pUsage,
+                         _In_ const VkMemoryPropertyFlags pMemoryFlags);
+            W_EXP HRESULT bind();
+            
+            W_EXP ULONG release() override;
+            
+#pragma region Getters
+            
+            const UINT32                        get_size() const;
+            const VkBufferUsageFlags            get_usage_flags() const;
+            const VkMemoryPropertyFlags         get_memory_flags() const;
+            const VkBuffer                      get_handle() const;
+            const VkDeviceMemory                get_memory() const;
+            
+#pragma endregion
+            
+        private:
+            typedef system::w_object            _super;
+            w_buffer_pimp*                      _pimp;
+        };
+
+	}
+}
+
+#endif

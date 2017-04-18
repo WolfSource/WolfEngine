@@ -328,7 +328,8 @@ namespace wolf
 			inline HRESULT get_is_file(_In_z_ const char* pPath)
 			{
 				struct stat _stat;
-				return stat(pPath, &_stat) == 0 ? S_FALSE : S_OK;
+                auto _result = stat(pPath, &_stat);
+				return _result == -1 ? S_FALSE : S_OK;
 			}
 
 			//check size of file
@@ -591,7 +592,7 @@ namespace wolf
 				-1 means the file could not be found,
 				-2 means file is exist but could not open
 			*/
-			inline void read_binary_file(_In_z_ const char* pPath, _Inout_ std::vector<unsigned char>& pData,
+			inline void read_binary_file(_In_z_ const char* pPath, _Inout_ std::vector<uint8_t>& pData,
 				_Out_ int& pFileState)
 			{
 				pFileState = 1;

@@ -2,6 +2,7 @@
 #include "w_graphics_device_manager.h"
 #include <w_logger.h>
 #include <w_convert.h>
+#include "w_graphics/w_command_buffers.h"
 
 #if defined(__DX12__) || defined(__DX11__)
 #include <w_directX_helper.h>
@@ -25,7 +26,7 @@ VkInstance w_graphics_device::vk_instance = NULL;
 VkAttachmentDescription	w_graphics_device::defaults::vk_default_attachment_description =
 {
 	0,								// Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
-	VkFormat::VK_FORMAT_R8G8B8A8_UNORM,                             // Format of an image used for the attachment. 
+	VkFormat::VK_FORMAT_B8G8R8A8_UNORM,                             // Format of an image used for the attachment.
 	VK_SAMPLE_COUNT_1_BIT,                                          // Number of samples of the image; The value greater than 1 means multisampling.
 	VK_ATTACHMENT_LOAD_OP_CLEAR,                                    // Specifies what to do with the image�s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
 	VK_ATTACHMENT_STORE_OP_STORE,                                   // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
@@ -37,11 +38,44 @@ VkAttachmentDescription	w_graphics_device::defaults::vk_default_attachment_descr
 
 VkAttachmentReference w_graphics_device::defaults::vk_default_color_attachment_reference =
 {
-	0,                                                              // Attachment
-	VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL                        // The layout of attachment
+	0,                                                                  // Attachment
+	VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL                            // The layout of attachment
 };
 
-VkPipelineVertexInputStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info = 
+std::vector<VkSubpassDependency> w_graphics_device::defaults::vk_default_subpass_dependencies =
+{
+    {
+        VK_SUBPASS_EXTERNAL,                            // uint32_t                       srcSubpass
+        0,                                              // uint32_t                       dstSubpass
+        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,           // VkPipelineStageFlags           srcStageMask
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           dstStageMask
+        VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags                  srcAccessMask
+        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  dstAccessMask
+        VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags              dependencyFlags
+    },
+    {
+        0,                                              // uint32_t                       srcSubpass
+        VK_SUBPASS_EXTERNAL,                            // uint32_t                       dstSubpass
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           srcStageMask
+        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,           // VkPipelineStageFlags           dstStageMask
+        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  srcAccessMask
+        VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags                  dstAccessMask
+        VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags              dependencyFlags
+    }
+};
+
+VkPipelineLayoutCreateInfo w_graphics_device::defaults::vk_default_pipeline_layout_create_info
+{
+    VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,                      // Type
+    nullptr,                                                            // Next
+    0,                                                                  // Flags
+    0,                                                                  // SetLayoutCount
+    nullptr,                                                            // SetLayouts
+    0,                                                                  // PushConstantRangeCount
+    nullptr                                                             // PushConstantRanges
+};
+
+VkPipelineVertexInputStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info =
 {
         VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,      // Type
         nullptr,                                                        // Next
@@ -107,15 +141,15 @@ VkPipelineColorBlendAttachmentState w_graphics_device::defaults::vk_default_pipe
 #endif
 
 w_graphics_device::w_graphics_device():
-_is_released(false)
+_is_released(false), _name("w_graphics_device")
 
 #ifdef __VULKAN__
 ,
-vk_queue_family_selected_index(SIZE_MAX),
-vk_graphics_queue(nullptr),
-vk_present_queue(nullptr),
-vk_device(nullptr)
-
+vk_queue_family_selected_index(UINT32_MAX),
+vk_graphics_queue(0),
+vk_present_queue(0),
+vk_device(0),
+vk_command_allocator_pool(0)
 #endif
 {
 }
@@ -132,32 +166,82 @@ w_output_presentation_window w_graphics_device::main_window()
 }
 
 HRESULT w_graphics_device::create_render_pass(_In_z_ const char* pRenderPassName,
-	_In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
-	_In_ const std::vector<VkSubpassDescription> pSubpassDescription,
-	_In_ const std::vector<VkSubpassDependency> pSubpassDependency,
-	_In_ size_t pOutputPresentationWindowIndex)
+	_In_ const std::vector<VkAttachmentDescription>* pAttachmentDescriptions,
+	_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
+	_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 {
-	auto _present_window = &(this->output_presentation_windows.at(pOutputPresentationWindowIndex));
-
+    std:vector<VkAttachmentDescription> _attachment_descriptions;
+    std::vector<VkSubpassDescription> _subpass_descriptions;
+    std::vector<VkSubpassDependency> _subpass_dependencies;
+    
+    if (!pAttachmentDescriptions)
+    {
+        _attachment_descriptions.push_back(w_graphics_device::defaults::vk_default_attachment_description);
+    }
+    else
+    {
+        _attachment_descriptions = *pAttachmentDescriptions;
+    }
+    
+    if (!pSubpassDescriptions)
+    {
+        const VkAttachmentReference _attachment_ref[] =
+        {
+            w_graphics_device::defaults::vk_default_color_attachment_reference
+        };
+        
+        VkSubpassDescription _subpass_description =
+        {
+            0,
+            VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS,
+            0,
+            nullptr,
+            1,
+            _attachment_ref,
+            nullptr,
+            nullptr,
+            0,
+            nullptr
+        };
+        
+        _subpass_descriptions.push_back(_subpass_description);
+    }
+    else
+    {
+        _subpass_descriptions = *pSubpassDescriptions;
+    }
+    
+    
+    if (!pSubpassDependencies)
+    {
+        _subpass_dependencies = w_graphics_device::defaults::vk_default_subpass_dependencies;
+    }
+    else
+    {
+        _subpass_dependencies = *pSubpassDependencies;
+    }
+    
 	const VkRenderPassCreateInfo _render_pass_create_info =
 	{
-		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,                      //sType
-		nullptr,                                                        // Next
-		0,                                                              // Flags
-		static_cast<uint32_t>(pAttachmentDescriptions.size()),          // AttachmentCount
-		pAttachmentDescriptions.data(),                                 // Attachments
-		static_cast<uint32_t>(pSubpassDescription.size()),              // SubpassCount
-		pSubpassDescription.data(),                                     // Subpasses
-		static_cast<uint32_t>(pSubpassDependency.size()),               // DependencyCount
-		pSubpassDependency.size() ? pSubpassDependency.data() : nullptr	// Dependencies
+		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,                              //sType
+		nullptr,                                                                // Next
+		0,                                                                      // Flags
+    
+		static_cast<uint32_t>(_attachment_descriptions.size()),                 // AttachmentCount
+        _attachment_descriptions.data(),                                        // Attachments
+        
+		static_cast<uint32_t>(_subpass_descriptions.size()),                    // SubpassCount
+        _subpass_descriptions.data(),                                           // Subpasses
+        
+		static_cast<uint32_t>(_subpass_dependencies.size()),                    // DependencyCount
+        _subpass_dependencies.data()                                            // Dependencies
 	};
 
 	VkRenderPass _render_pass = VK_NULL_HANDLE;
 	auto _hr = vkCreateRenderPass(this->vk_device, &_render_pass_create_info, nullptr, &_render_pass);
 	V(_hr, L"creating render pass with graphics device: " + std::wstring(this->device_name.begin(), this->device_name.end()) +
-		L" ID:" + std::to_wstring(this->device_id) +
-		L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex), "w_graphics_device", 3, false, true);
-
+		L" ID:" + std::to_wstring(this->device_id), this->_name, 3, false, true);
+    
 	if (_hr == VK_SUCCESS  && _render_pass)
 	{
 		auto _iter = this->vk_render_passes.find(pRenderPassName);
@@ -177,26 +261,25 @@ HRESULT w_graphics_device::create_render_pass(_In_z_ const char* pRenderPassName
 	return S_FALSE;
 }
 
+
 HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pFrameBufferCollectionName, 
 	_In_z_ const char* pRenderPassUsedName,
-	_In_ size_t pSizeOfCollection,
-	_In_ vk_image_view pAttachments[],
+	_In_ size_t pNumberOfFrameBuffers,
+	_In_ w_image_view pAttachments[],
 	_In_ uint32_t pFrameBufferWidth,
 	_In_ uint32_t pFrameBufferHeight,
 	_In_ uint32_t pNumberOfLayers,
-	_In_ size_t pOutputPresentationWindowIndex)
+	_In_ size_t pOutputWindowIndex)
 {
-	auto _present_window = &(this->output_presentation_windows.at(pOutputPresentationWindowIndex));
-
 	//get the desired render pass
 	auto _render_pass_name = std::string(pRenderPassUsedName);
 	if (_render_pass_name.empty())
 	{
-		logger.error("Before creating frame buffer, it needs desired render pass name.");
+		logger.error("Before creating frame buffer, needs desired render pass name.");
 		return S_FALSE;
 	}
 
-	VkRenderPass _render_pass = VK_NULL_HANDLE;
+	VkRenderPass _render_pass = 0;
 	auto _iter_pass = this->vk_render_passes.find(pRenderPassUsedName);
 	if (_iter_pass == this->vk_render_passes.end())
 	{
@@ -221,31 +304,31 @@ HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pF
 		for (size_t i = 0; i < _iter_frames->second.size(); ++i)
 		{
 			vkDestroyFramebuffer(this->vk_device, _iter_frames->second[i], nullptr);
-			_iter_frames->second[i] = VK_NULL_HANDLE;
+			_iter_frames->second[i] = 0;
 		}
 	}
 
-	VkFramebuffer _frame_buffer = VK_NULL_HANDLE;
-	for (size_t i = 0; i < pSizeOfCollection; ++i)
+	VkFramebuffer _frame_buffer = 0;
+	for (size_t i = 0; i < pNumberOfFrameBuffers; ++i)
 	{
 		VkFramebufferCreateInfo _framebuffer_create_info =
 		{
-			VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,  // VkStructureType : Frame buffer type
-			nullptr,                                    // const void                    *pNext
-			0,                                          // VkFramebufferCreateFlags       flags
-			_render_pass,								// VkRenderPass                   render pass
-			1,                                          // uint32_t                       attachmentCount
-			&pAttachments[i].view,						// const VkImageView             *pAttachments
-			pFrameBufferWidth,                          // uint32_t                       width
-			pFrameBufferHeight,                         // uint32_t                       height
-			pNumberOfLayers								// uint32_t                       layers
+			VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,  // Type
+			nullptr,                                    // Next
+			0,                                          // Flags
+			_render_pass,								// Render pass
+			1,                                          // AttachmentCount
+			&pAttachments[i].view,						// Attachments
+			pFrameBufferWidth,                          // Width
+			pFrameBufferHeight,                         // Height
+			pNumberOfLayers								// Layers
 		};
 
 		auto _hr = vkCreateFramebuffer(this->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
 		if (_hr != VK_SUCCESS)
 		{
-			V(S_FALSE, L"creating frame buffer for graphics device: " + wolf::system::convert::string_to_wstring(this->device_name) +
-				L" ID:" + std::to_wstring(this->device_id), "", 3, false, true);
+			V(S_FALSE, "creating frame buffer for graphics device: " + this->device_name +
+				" ID:" + std::to_string(this->device_id), this->_name, 3, false, true);
 			return S_FALSE;
 		}
 
@@ -255,76 +338,179 @@ HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pF
 	return S_OK;
 }
 
- HRESULT w_graphics_device::create_pipeline(_In_ const std::vector<w_viewport> pViewPorts,
-         _In_ const std::vector<w_viewport_scissor>* const pViewPortsScissors,
+W_EXP HRESULT w_graphics_device::store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,
+                                                                 _In_ w_command_buffers* pCommandBuffers,
+                                                                 _In_ size_t pOutputWindowIndex)
+{
+    auto _output_window = &this->output_presentation_windows.at(pOutputWindowIndex);
+    
+    //store command buffers
+    auto _iter = _output_window->command_buffers.find(pCommandsBuffersName);
+    if (_iter != _output_window->command_buffers.end())
+    {
+        SAFE_RELEASE(_iter->second);
+    }
+    
+    _output_window->command_buffers[pCommandsBuffersName] = pCommandBuffers;
+         
+    return S_OK;
+}
+
+HRESULT w_graphics_device::create_pipeline(_In_z_ const char* pPipelineName,
+         _In_z_ const char* pRenderPassName,
+         _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
+         _In_ const std::vector<w_viewport> pViewPorts,
+         _In_ const std::vector<w_viewport_scissor> pViewPortsScissors,
+         _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo,
          _In_ const VkPipelineVertexInputStateCreateInfo* const pPipelineVertexInputStateCreateInfo,
          _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo,
          _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
          _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo,
          _In_ const VkPipelineColorBlendAttachmentState* const pPipelineColorBlendAttachmentState,
+         _In_ const VkPipelineDynamicStateCreateInfo* const pPipelineDynamicStateCreateInfo,
          _In_ const std::array<float,4> pBlendColors)
  {
-    const VkPipelineViewportStateCreateInfo _viewport_state_create_info = 
+     if(pShaderStages == nullptr)
+     {
+         logger.error("Shader could not be nullptr");
+         return S_FALSE;
+     }
+     
+     VkRenderPass _render_pass = VK_NULL_HANDLE;
+     auto _iter_pass = this->vk_render_passes.find(pRenderPassName);
+     if (_iter_pass == this->vk_render_passes.end())
+     {
+         logger.error("Render pass not found for frame buffers.");
+         return S_FALSE;
+     }
+     else
+     {
+         _render_pass = _iter_pass->second;
+         if (!_render_pass)
+         {
+             logger.error("Render pass founded but is NULL.");
+             return S_FALSE;
+         }
+     }
+     
+     
+     //create viewports and scissors
+     const VkPipelineViewportStateCreateInfo _viewport_state_create_info =
+     {
+         
+         VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,                  // Type
+         nullptr,                                                                // Next
+         0,                                                                      // Flags
+         static_cast<uint32_t>(pViewPorts.size()),                               // ViewportCount
+         pViewPorts.data(),                                                      // Viewports
+          static_cast<uint32_t>(pViewPortsScissors.size()),                      // ScissorCount
+         pViewPortsScissors.data()  // Scissors
+     };
+    
+    //create pipeline
+    VkPipelineLayout _pipeline_layout = 0;
+    auto _hr = vkCreatePipelineLayout(
+                                      this->vk_device,
+                                      pPipelineLayoutCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_layout_create_info) : pPipelineLayoutCreateInfo,
+                                      nullptr,
+                                      &_pipeline_layout);
+    if(_hr)
     {
-        VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,                  // Type
-        nullptr,                                                                // Next
-        0,                                                                      // Flags
-        static_cast<uint32_t>(pViewPorts.size()),                               // ViewportCount
-        pViewPorts.data(),                                                      // Viewports
-        pViewPortsScissors == nullptr ? 0 : 
-            static_cast<uint32_t>((*pViewPortsScissors).size()),                // ScissorCount
-        pViewPortsScissors == nullptr ? nullptr : (*pViewPortsScissors).data()  // Scissors
-    };
-
+        V(S_FALSE, "creating pipeline layout for graphics device: " +
+           this->device_name + " ID:" + std::to_string(this->device_id), this->_name, 3, false, true);
+        return S_FALSE;
+    }
+    
+    //create blend state
     const VkPipelineColorBlendStateCreateInfo _color_blend_state_create_info = 
     {
-        VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,               // Type
-        nullptr,                                                                // Next
-        0,                                                                      // Flags
-        VK_FALSE,                                                               // logicOpEnable
-        VK_LOGIC_OP_COPY,                                                       // logicOp
-        1,                                                                      // attachmentCount
+        VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,                // Type
+        nullptr,                                                                 // Next
+        0,                                                                       // Flags
+        VK_FALSE,                                                                // logicOpEnable
+        VK_LOGIC_OP_COPY,                                                        // logicOp
+        1,                                                                       // attachmentCount
         pPipelineColorBlendAttachmentState == nullptr ? 
             &(defaults::vk_default_pipeline_color_blend_attachment_state) : 
-            pPipelineColorBlendAttachmentState,                                 // pAttachments
-        { pBlendColors[0], pBlendColors[1], pBlendColors[2], pBlendColors[3] }  // blendConstants[4]
+            pPipelineColorBlendAttachmentState,                                  // pAttachments
+        { pBlendColors[0], pBlendColors[1], pBlendColors[2], pBlendColors[3] }   // blendConstants[4]
     };
-    
-//    Tools::AutoDeleter<VkPipelineLayout, PFN_vkDestroyPipelineLayout> pipeline_layout = CreatePipelineLayout();
-//    if( !pipeline_layout ) {
-//      return false;
-//    }
-//
-//    VkGraphicsPipelineCreateInfo pipeline_create_info = {
-//      VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,              // VkStructureType                                sType
-//      nullptr,                                                      // const void                                    *pNext
-//      0,                                                            // VkPipelineCreateFlags                          flags
-//      static_cast<uint32_t>(shader_stage_create_infos.size()),      // uint32_t                                       stageCount
-//      &shader_stage_create_infos[0],                                // const VkPipelineShaderStageCreateInfo         *pStages
-//      &vertex_input_state_create_info,                              // const VkPipelineVertexInputStateCreateInfo    *pVertexInputState;
-//      &input_assembly_state_create_info,                            // const VkPipelineInputAssemblyStateCreateInfo  *pInputAssemblyState
-//      nullptr,                                                      // const VkPipelineTessellationStateCreateInfo   *pTessellationState
-//      &viewport_state_create_info,                                  // const VkPipelineViewportStateCreateInfo       *pViewportState
-//      &rasterization_state_create_info,                             // const VkPipelineRasterizationStateCreateInfo  *pRasterizationState
-//      &multisample_state_create_info,                               // const VkPipelineMultisampleStateCreateInfo    *pMultisampleState
-//      nullptr,                                                      // const VkPipelineDepthStencilStateCreateInfo   *pDepthStencilState
-//      &color_blend_state_create_info,                               // const VkPipelineColorBlendStateCreateInfo     *pColorBlendState
-//      nullptr,                                                      // const VkPipelineDynamicStateCreateInfo        *pDynamicState
-//      pipeline_layout.Get(),                                        // VkPipelineLayout                               layout
-//      Vulkan.RenderPass,                                            // VkRenderPass                                   renderPass
-//      0,                                                            // uint32_t                                       subpass
-//      VK_NULL_HANDLE,                                               // VkPipeline                                     basePipelineHandle
-//      -1                                                            // int32_t                                        basePipelineIndex
-//    };
-//
-//    if( vkCreateGraphicsPipelines( GetDevice(), VK_NULL_HANDLE, 1, &pipeline_create_info, nullptr, &Vulkan.GraphicsPipeline ) != VK_SUCCESS ) {
-//      std::cout << "Could not create graphics pipeline!" << std::endl;
-//      return false;
-//    }
-//    return true;   
+
+    VkGraphicsPipelineCreateInfo _pipeline_create_info =
+    {
+        VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,                        // Type
+        nullptr,                                                                // Next
+        0,                                                                      // Flags
+        static_cast<uint32_t>((*pShaderStages).size()),                         // stageCount
+        (*pShaderStages).data(),                                                // Stages
+        
+        pPipelineVertexInputStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info) : pPipelineVertexInputStateCreateInfo, //vertex input state
+        
+        pPipelineInputAssemblyStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_input_assembly_state_create_info) : pPipelineInputAssemblyStateCreateInfo, //input assembly state
+        
+        nullptr,                                                                // TessellationState
+        
+        &_viewport_state_create_info,                                           // ViewportState
+        
+        pPipelineRasterizationStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_rasterization_state_create_info) : pPipelineRasterizationStateCreateInfo, //RasterizationState
+        
+        pPipelineMultisampleStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_multisample_state_create_info) : pPipelineMultisampleStateCreateInfo, //pMultisampleState
+        
+        nullptr,                                                                // DepthStencilState
+        
+        &_color_blend_state_create_info,                                        //pColorBlendState
+        
+        pPipelineDynamicStateCreateInfo == nullptr ? nullptr : pPipelineDynamicStateCreateInfo,                                    // DynamicState
+       
+        _pipeline_layout,                                                       // Layout
+        _render_pass,                                                           // VkRenderPass
+        0,                                                                      // subpass
+        VK_NULL_HANDLE,                                                         // basePipelineHandle
+       -1                                                                       // basePipelineIndex
+    };
+
+     VkPipeline _pipeline;
+     _hr = vkCreateGraphicsPipelines(this->vk_device,
+                                     VK_NULL_HANDLE,
+                                     1,
+                                     &_pipeline_create_info,
+                                     nullptr,
+                                     &_pipeline);
+     if(_hr)
+     {
+         V(S_FALSE, "creating pipeline for graphics device: " +
+           this->device_name + " ID:" + std::to_string(this->device_id), this->_name, 3, false, true);
+         return S_FALSE;
+     }
+     
+     //release the last pipeline with this name, if exists
+     auto _iter = this->vk_pipelines.find(pPipelineName);
+     if (_iter != this->vk_pipelines.end())
+     {
+         if (_iter->second.pipeline)
+         {
+             vkDestroyPipeline(this->vk_device,
+                               _iter->second.pipeline,
+                               nullptr);
+         }
+         if (_iter->second.layout)
+         {
+             vkDestroyPipelineLayout(this->vk_device,
+                               _iter->second.layout,
+                               nullptr);
+         }
+     }
+     
+     w_pipeline _w_pipeline =
+     {
+         _pipeline,
+         _pipeline_layout
+     };
+     this->vk_pipelines[pPipelineName] = _w_pipeline;
+     
      return S_OK;
  }
-                        
+
 ULONG w_graphics_device::release()
 {
 	//release all resources
@@ -337,6 +523,8 @@ ULONG w_graphics_device::release()
 	//wait for previous frame
 
 	this->device_name.clear();
+    this->device_id = 0;
+    
 	//release all output presentation windows
 	for (size_t i = 0; i < this->output_presentation_windows.size(); ++i)
 	{
@@ -377,49 +565,49 @@ ULONG w_graphics_device::release()
 	//wait for device to become IDLE
 	vkDeviceWaitIdle(this->vk_device);
 
+    
 	//release all output presentation windows
 	for (size_t i = 0; i < this->output_presentation_windows.size(); ++i)
 	{
 		auto _output_window = &(this->output_presentation_windows.at(i));
 
+        //release all commands buffers
+        for(auto _iter : _output_window->command_buffers)
+        {
+            SAFE_RELEASE(_iter.second);
+        }
+        
 		//release the surface
 		vkDestroySurfaceKHR(w_graphics_device::vk_instance,
 			_output_window->vk_presentation_surface,
 			nullptr);
-
-		//release command pool & buffers
-		vkFreeCommandBuffers(this->vk_device,
-			_output_window->vk_command_allocator_pool,
-			static_cast<uint32_t>(_output_window->vk_command_queues.size()),
-			_output_window->vk_command_queues.data());
-
-		vkDestroyCommandPool(this->vk_device, _output_window->vk_command_allocator_pool, nullptr);
+        _output_window->vk_presentation_surface = 0;
 
 		//release semaphores
 		vkDestroySemaphore(this->vk_device,
 			_output_window->vk_image_is_available_semaphore,
 			nullptr);
+        _output_window->vk_image_is_available_semaphore = 0;
+        
 		vkDestroySemaphore(this->vk_device,
 			_output_window->vk_rendering_done_semaphore,
 			nullptr);
-
-		//release both image and view, so no need to call vkDestroyImage
-		vkDestroyImageView(this->vk_device,
-			_output_window->vk_depth_buffer_image_view.view,
-			nullptr);
-
-		//release memory of image
-		vkFreeMemory(this->vk_device,
-			_output_window->vk_depth_buffer_memory,
-			nullptr);
-
+        _output_window->vk_rendering_done_semaphore = 0;
+        
 		//release all image view of swap chains
 		for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
 		{
-			//release both image and view, so no need to call vkDestroyImage
+			//release both image and view,
 			vkDestroyImageView(this->vk_device,
 				_output_window->vk_swap_chain_image_views[i].view,
 				nullptr);
+            _output_window->vk_swap_chain_image_views[i].view = 0;
+            
+            //No need to destroy image
+//            vkDestroyImage(this->vk_device,
+//                               _output_window->vk_swap_chain_image_views[i].image,
+//                               nullptr);
+            _output_window->vk_swap_chain_image_views[i].image = 0;
 		}
 		_output_window->vk_swap_chain_image_views.clear();
 
@@ -427,6 +615,7 @@ ULONG w_graphics_device::release()
 		vkDestroySwapchainKHR(this->vk_device,
 			_output_window->vk_swap_chain,
 			nullptr);
+        _output_window->vk_swap_chain = 0;
 
 		this->output_presentation_windows.at(i).release();
 	}
@@ -436,9 +625,15 @@ ULONG w_graphics_device::release()
 	this->vk_queue_family_properties.clear();
 	this->vk_queue_family_supports_present.clear();
 
-	this->vk_graphics_queue = nullptr;
-	this->vk_present_queue = nullptr;
+	this->vk_graphics_queue = 0;
+	this->vk_present_queue = 0;
 
+    //destroy command pool
+    vkDestroyCommandPool(this->vk_device,
+                         this->vk_command_allocator_pool,
+                         nullptr);
+    this->vk_command_allocator_pool = 0;
+    
 	//release vulkan resources
 	vkDestroyDevice(this->vk_device, nullptr);
 
@@ -465,11 +660,6 @@ namespace wolf
 			w_graphics_device_manager_pimp() :
 				_name("w_graphics_device_manager_pimp")
 			{
-			}
-
-			~w_graphics_device_manager_pimp()
-			{
-				release();
 			}
 
 			void enumerate_devices(_Inout_  std::vector<std::shared_ptr<w_graphics_device>>& pGraphicsDevices)
@@ -998,7 +1188,7 @@ namespace wolf
 				// Enable surface extensions depending on OS
 #if defined(__ANDROID)
 				_enabled_extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
-#elif defined(_WIN32)
+#elif defined(__WIN32)
 				_enabled_extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #elif defined(_DIRECT2DISPLAY)
 				_enabled_extensions.push_back(VK_KHR_DISPLAY_EXTENSION_NAME);
@@ -1292,7 +1482,7 @@ namespace wolf
 						if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_GRAPHICS_BIT)
 						{
 							_queue_graphics_bit_found = true;
-							_gDevice->vk_queue_family_selected_index = j;
+							_gDevice->vk_queue_family_selected_index = static_cast<UINT>(j);
 							_msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_GRAPHICS_BIT supported.";
 						}
 						if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_COMPUTE_BIT)
@@ -1359,6 +1549,27 @@ namespace wolf
 						release();
 						std::exit(EXIT_FAILURE);
 					}
+                    
+                    //create command pool
+                    //create a command pool to allocate our command buffer from
+                    VkCommandPoolCreateInfo _command_pool_info = {};
+                    _command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+                    _command_pool_info.pNext = nullptr;
+                    _command_pool_info.queueFamilyIndex = _gDevice->vk_queue_family_selected_index;
+                    _command_pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT |
+                    VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+                    
+                    _hr = vkCreateCommandPool(_gDevice->vk_device,
+                                                   &_command_pool_info,
+                                                   nullptr,
+                                                   &_gDevice->vk_command_allocator_pool);
+                    if (_hr)
+                    {
+                        logger.error("error on creating vulkan command pool for graphics device: " +
+                                     _device_name + " ID:" + std::to_string(_device_id));
+                        release();
+                        std::exit(EXIT_FAILURE);
+                    }
 
 					auto _win = this->_windows_info.find(static_cast<int>(i));
 					if (_win != this->_windows_info.end())
@@ -1516,20 +1727,20 @@ namespace wolf
 							_gDevice->output_presentation_windows.push_back(_out_window);
 
 							create_or_resize_swap_chain(_gDevice, j);
-							_create_depth_stencil_buffer(_gDevice, j);
+							//_create_depth_stencil_buffer(_gDevice, j);
 							_create_synchronization(_gDevice, j);
-							_create_command_queue(_gDevice, j);
+							_record_command_buffers(_gDevice, j);
 						}
 					}
 
 					//get graphics and presentation queues (which may be the same)
 					vkGetDeviceQueue(_gDevice->vk_device,
-						static_cast<uint32_t>(_gDevice->vk_queue_family_selected_index),
+						_gDevice->vk_queue_family_selected_index,
 						0,
 						&_gDevice->vk_graphics_queue);
 
 					vkGetDeviceQueue(_gDevice->vk_device,
-						static_cast<uint32_t>(_gDevice->vk_queue_family_selected_support_present_index),
+						_gDevice->vk_queue_family_selected_support_present_index,
 						0,
 						&_gDevice->vk_present_queue);
 
@@ -1547,6 +1758,7 @@ namespace wolf
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				const size_t _desired_number_of_swapchain_images = 2;
+                
 #ifdef __DX12__
 				//release dx_swap_chain_image_views
 				for (size_t i = 0; i < _output_presentation_window->dx_swap_chain_image_views.size(); i++)
@@ -1940,7 +2152,7 @@ namespace wolf
 
 				auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
 
-				pGDevice->vk_queue_family_selected_support_present_index = SIZE_MAX;
+				pGDevice->vk_queue_family_selected_support_present_index = UINT32_MAX;
 				for (size_t j = 0; j < pGDevice->vk_queue_family_properties.size(); ++j)
 				{
 					//check if this device support presentation
@@ -1954,15 +2166,15 @@ namespace wolf
 						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 						this->_name, 2);
 
-					if (pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX &&
-						pGDevice->vk_queue_family_selected_index != SIZE_MAX &&
+					if (pGDevice->vk_queue_family_selected_support_present_index == UINT32_MAX &&
+						pGDevice->vk_queue_family_selected_index != UINT32_MAX &&
 						pGDevice->vk_queue_family_supports_present[j])
 					{
-						pGDevice->vk_queue_family_selected_support_present_index = j;
+						pGDevice->vk_queue_family_selected_support_present_index = static_cast<UINT32>(j);
 					}
 				}
 
-				V(pGDevice->vk_queue_family_selected_support_present_index == SIZE_MAX ? S_FALSE : S_OK,
+				V(pGDevice->vk_queue_family_selected_support_present_index == UINT32_MAX ? S_FALSE : S_OK,
 					L"could not find queue family which supports presentation for graphics device: " +
 					std::wstring(_device_name.begin(), _device_name.end()) + L" ID:" + std::to_wstring(_device_id) +
 					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
@@ -2113,6 +2325,11 @@ namespace wolf
 					to acquire another.
 				*/
 				uint32_t _desired_number_of_swapchain_images = _surface_capabilities.minImageCount;
+                if (_desired_number_of_swapchain_images < 2)
+                {
+                    logger.warning("The images count of surface capabilities and swap chain is less than two.");
+                }
+                
 				VkSurfaceTransformFlagBitsKHR _pre_transform;
 				if (_surface_capabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
 				{
@@ -2143,10 +2360,10 @@ namespace wolf
 				_swap_chain_create_info.queueFamilyIndexCount = 1;
 				_swap_chain_create_info.pQueueFamilyIndices = &_queue_family;
 
-				uint32_t _queue_family_indices[2] =
+				UINT _queue_family_indices[2] =
 				{
-					(uint32_t)pGDevice->vk_queue_family_selected_index,
-					(uint32_t)pGDevice->vk_queue_family_selected_support_present_index,
+					pGDevice->vk_queue_family_selected_index,
+					pGDevice->vk_queue_family_selected_support_present_index,
 				};
 				if (_queue_family_indices[0] != _queue_family_indices[1])
 				{
@@ -2221,7 +2438,7 @@ namespace wolf
 					_color_image_view.subresourceRange.baseArrayLayer = 0;
 					_color_image_view.subresourceRange.layerCount = 1;
 
-					vk_image_view _image_view;
+					w_image_view _image_view;
 					_image_view.image = _swap_chain_images[j];
 
 					_hr = vkCreateImageView(pGDevice->vk_device,
@@ -2244,10 +2461,7 @@ namespace wolf
 			//Release all resources
 			ULONG release()
 			{
-				if (this->_is_released)  return 0;
-
 				//release all windows info
-				this->_is_released = true;
 				this->_windows_info.clear();
 				this->_name = "";
 
@@ -2255,11 +2469,6 @@ namespace wolf
 			}
 
 #pragma region Getters
-
-			bool get_is_released() const
-			{
-				return this->_is_released;
-			}
 
 			std::map<int, std::vector<w_window_info>> get_output_windows_info() const
 			{
@@ -2370,148 +2579,148 @@ namespace wolf
 				pGDevice->dx_context->RSSetViewports(1, &_output_presentation_window->dx_screen_viewport);
 
 #elif defined(__VULKAN__)
-				auto _device_name = pGDevice->device_name;
-				auto _device_id = pGDevice->device_id;
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+//				auto _device_name = pGDevice->device_name;
+//				auto _device_id = pGDevice->device_id;
+//				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+//
+//				VkImageCreateInfo _depth_stencil_image_create_info = {};
+//				const VkFormat _depth_format = VK_FORMAT_D16_UNORM;
+//
+//				VkFormatProperties _properties;
+//				vkGetPhysicalDeviceFormatProperties(pGDevice->vk_physical_device, _depth_format, &_properties);
+//
+//				if (_properties.linearTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+//				{
+//					_depth_stencil_image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
+//				}
+//				else if (_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
+//				{
+//					_depth_stencil_image_create_info.tiling = VK_IMAGE_TILING_OPTIMAL;
+//				}
+//				else
+//				{
+//					logger.error("VK_FORMAT_D16_UNORM Unsupported for depth buffer for graphics device: " +
+//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+//					release();
+//					std::exit(EXIT_FAILURE);
+//				}
+//
+//				auto _window = pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex);
+//
+//				//define depth stencil image description
+//				_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+//				_depth_stencil_image_create_info.pNext = nullptr;
+//				_depth_stencil_image_create_info.imageType = VK_IMAGE_TYPE_2D;
+//				_depth_stencil_image_create_info.format = _depth_format;
+//				_depth_stencil_image_create_info.extent.width = _window.width;
+//				_depth_stencil_image_create_info.extent.height = _window.height;
+//				_depth_stencil_image_create_info.extent.depth = 1;
+//				_depth_stencil_image_create_info.mipLevels = 1;
+//				_depth_stencil_image_create_info.arrayLayers = 1;
+//				_depth_stencil_image_create_info.samples = NUM_SAMPLES;
+//				_depth_stencil_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+//				_depth_stencil_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+//				_depth_stencil_image_create_info.queueFamilyIndexCount = 0;
+//				_depth_stencil_image_create_info.pQueueFamilyIndices = nullptr;
+//				_depth_stencil_image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+//				_depth_stencil_image_create_info.flags = 0;
+//
+//				VkMemoryAllocateInfo _mem_alloc = {};
+//				_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+//				_mem_alloc.pNext = nullptr;
+//				_mem_alloc.allocationSize = 0;
+//				_mem_alloc.memoryTypeIndex = 0;
+//
+//				_output_presentation_window->vk_depth_buffer_format = _depth_format;
+//
+//				//Create image of depth stencil
+//				auto _hr = vkCreateImage(pGDevice->vk_device,
+//					&_depth_stencil_image_create_info,
+//					nullptr,
+//					&_output_presentation_window->vk_depth_buffer_image_view.image);
+//				if (_hr)
+//				{
+//					logger.error("error on creating depth buffer for graphics device: " +
+//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+//					release();
+//					std::exit(EXIT_FAILURE);
+//				}
 
-				VkImageCreateInfo _depth_stencil_image_create_info = {};
-				const VkFormat _depth_format = VK_FORMAT_D16_UNORM;
-
-				VkFormatProperties _properties;
-				vkGetPhysicalDeviceFormatProperties(pGDevice->vk_physical_device, _depth_format, &_properties);
-
-				if (_properties.linearTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
-				{
-					_depth_stencil_image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
-				}
-				else if (_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
-				{
-					_depth_stencil_image_create_info.tiling = VK_IMAGE_TILING_OPTIMAL;
-				}
-				else
-				{
-					logger.error("VK_FORMAT_D16_UNORM Unsupported for depth buffer for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				auto _window = pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex);
-
-				//define depth stencil image description
-				_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-				_depth_stencil_image_create_info.pNext = nullptr;
-				_depth_stencil_image_create_info.imageType = VK_IMAGE_TYPE_2D;
-				_depth_stencil_image_create_info.format = _depth_format;
-				_depth_stencil_image_create_info.extent.width = _window.width;
-				_depth_stencil_image_create_info.extent.height = _window.height;
-				_depth_stencil_image_create_info.extent.depth = 1;
-				_depth_stencil_image_create_info.mipLevels = 1;
-				_depth_stencil_image_create_info.arrayLayers = 1;
-				_depth_stencil_image_create_info.samples = NUM_SAMPLES;
-				_depth_stencil_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-				_depth_stencil_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-				_depth_stencil_image_create_info.queueFamilyIndexCount = 0;
-				_depth_stencil_image_create_info.pQueueFamilyIndices = nullptr;
-				_depth_stencil_image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-				_depth_stencil_image_create_info.flags = 0;
-
-				VkMemoryAllocateInfo _mem_alloc = {};
-				_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-				_mem_alloc.pNext = nullptr;
-				_mem_alloc.allocationSize = 0;
-				_mem_alloc.memoryTypeIndex = 0;
-
-				_output_presentation_window->vk_depth_buffer_format = _depth_format;
-
-				//Create image of depth stencil
-				auto _hr = vkCreateImage(pGDevice->vk_device,
-					&_depth_stencil_image_create_info,
-					nullptr,
-					&_output_presentation_window->vk_depth_buffer_image_view.image);
-				if (_hr)
-				{
-					logger.error("error on creating depth buffer for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				VkMemoryRequirements _mem_reqs;
-				vkGetImageMemoryRequirements(pGDevice->vk_device,
-					_output_presentation_window->vk_depth_buffer_image_view.image,
-					&_mem_reqs);
-
-				_mem_alloc.allocationSize = _mem_reqs.size;
-
-				//use the memory properties to determine the type of memory required
-				_hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
-					_mem_reqs.memoryTypeBits,
-					0, // No Requirements
-					&_mem_alloc.memoryTypeIndex);
-				if (_hr)
-				{
-					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//allocate memory
-				_hr = vkAllocateMemory(pGDevice->vk_device,
-					&_mem_alloc,
-					nullptr,
-					&_output_presentation_window->vk_depth_buffer_memory);
-				if (_hr)
-				{
-					logger.error("error on allocating memory for depth buffer image for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//bind memory
-				_hr = vkBindImageMemory(pGDevice->vk_device,
-					_output_presentation_window->vk_depth_buffer_image_view.image,
-					_output_presentation_window->vk_depth_buffer_memory,
-					0);
-				if (_hr)
-				{
-					logger.error("error on binding to memory for depth buffer image for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//create depth stencil buffer image view
-				VkImageViewCreateInfo _depth_stencil_view_info = {};
-				_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-				_depth_stencil_view_info.pNext = nullptr;
-				_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-				_depth_stencil_view_info.image = _output_presentation_window->vk_depth_buffer_image_view.image;
-				_depth_stencil_view_info.format = _depth_format;
-				_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
-				_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
-				_depth_stencil_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
-				_depth_stencil_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
-				_depth_stencil_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
-				_depth_stencil_view_info.subresourceRange.baseMipLevel = 0;
-				_depth_stencil_view_info.subresourceRange.levelCount = 1;
-				_depth_stencil_view_info.subresourceRange.baseArrayLayer = 0;
-				_depth_stencil_view_info.subresourceRange.layerCount = 1;
-				_depth_stencil_view_info.flags = 0;
-
-				_hr = vkCreateImageView(pGDevice->vk_device,
-					&_depth_stencil_view_info,
-					nullptr,
-					&_output_presentation_window->vk_depth_buffer_image_view.view);
-				if (_hr)
-				{
-					logger.error("error on creating image view for depth buffer image for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+//				VkMemoryRequirements _mem_reqs;
+//				vkGetImageMemoryRequirements(pGDevice->vk_device,
+//					_output_presentation_window->vk_depth_buffer_image_view.image,
+//					&_mem_reqs);
+//
+//				_mem_alloc.allocationSize = _mem_reqs.size;
+//
+//				//use the memory properties to determine the type of memory required
+//				_hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
+//					_mem_reqs.memoryTypeBits,
+//					0, // No Requirements
+//					&_mem_alloc.memoryTypeIndex);
+//				if (_hr)
+//				{
+//					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
+//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+//					release();
+//					std::exit(EXIT_FAILURE);
+//				}
+//
+//				//allocate memory
+//				_hr = vkAllocateMemory(pGDevice->vk_device,
+//					&_mem_alloc,
+//					nullptr,
+//					&_output_presentation_window->vk_depth_buffer_memory);
+//				if (_hr)
+//				{
+//					logger.error("error on allocating memory for depth buffer image for graphics device: " +
+//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+//					release();
+//					std::exit(EXIT_FAILURE);
+//				}
+//
+//				//bind memory
+//				_hr = vkBindImageMemory(pGDevice->vk_device,
+//					_output_presentation_window->vk_depth_buffer_image_view.image,
+//					_output_presentation_window->vk_depth_buffer_memory,
+//					0);
+//				if (_hr)
+//				{
+//					logger.error("error on binding to memory for depth buffer image for graphics device: " +
+//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+//					release();
+//					std::exit(EXIT_FAILURE);
+//				}
+//
+//				//create depth stencil buffer image view
+//				VkImageViewCreateInfo _depth_stencil_view_info = {};
+//				_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+//				_depth_stencil_view_info.pNext = nullptr;
+//				_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+//				_depth_stencil_view_info.image = _output_presentation_window->vk_depth_buffer_image_view.image;
+//				_depth_stencil_view_info.format = _depth_format;
+//				_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
+//				_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
+//				_depth_stencil_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
+//				_depth_stencil_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
+//				_depth_stencil_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+//				_depth_stencil_view_info.subresourceRange.baseMipLevel = 0;
+//				_depth_stencil_view_info.subresourceRange.levelCount = 1;
+//				_depth_stencil_view_info.subresourceRange.baseArrayLayer = 0;
+//				_depth_stencil_view_info.subresourceRange.layerCount = 1;
+//				_depth_stencil_view_info.flags = 0;
+//
+//				_hr = vkCreateImageView(pGDevice->vk_device,
+//					&_depth_stencil_view_info,
+//					nullptr,
+//					&_output_presentation_window->vk_depth_buffer_image_view.view);
+//				if (_hr)
+//				{
+//					logger.error("error on creating image view for depth buffer image for graphics device: " +
+//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+//					release();
+//					std::exit(EXIT_FAILURE);
+//				}
 #endif
 			}
             
@@ -2578,14 +2787,18 @@ namespace wolf
 #endif
 			}
             
-			void _create_command_queue(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-				_In_ size_t pOutputPresentationWindowIndex)
+			HRESULT _record_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                                         _In_ const size_t pOutputWindowIndex)
 			{
+                
+                auto _output_window = &(pGDevice->output_presentation_windows.at(pOutputWindowIndex));
+                const char* _command_buffers_name = "clear_color_screen";
+                
 #ifdef __DX12__ 
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
 				auto _device_id = pGDevice->device_id;
 
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputWindowIndex));
 
 				//create command allocator pool
 				auto _hr = pGDevice->dx_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
@@ -2635,57 +2848,19 @@ namespace wolf
 
 				auto _device_name = pGDevice->device_name;
 				auto _device_id = pGDevice->device_id;
-
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
-
-				//create a command pool to allocate our command buffer from
-				VkCommandPoolCreateInfo _command_pool_info = {};
-				_command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-				_command_pool_info.pNext = nullptr;
-				_command_pool_info.queueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_index);
-				_command_pool_info.flags = 0;
-
-				auto _hr = vkCreateCommandPool(pGDevice->vk_device,
-						&_command_pool_info,
-						nullptr,
-						&_output_presentation_window->vk_command_allocator_pool);
-				if (_hr)
-				{
-					logger.error("error on creating vulkan command pool for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//resize command buffers based on swap chains
-				auto _command_buffer_counts = static_cast<uint32_t>(_output_presentation_window->vk_swap_chain_image_views.size());
-
-				//create the command buffer from the command pool
-				VkCommandBufferAllocateInfo _command_buffer_info = {};
-				_command_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-				_command_buffer_info.pNext = nullptr;
-				_command_buffer_info.commandPool = _output_presentation_window->vk_command_allocator_pool;
-				_command_buffer_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-				_command_buffer_info.commandBufferCount = _command_buffer_counts;
-
-				_output_presentation_window->vk_command_queues.resize(_command_buffer_counts);
-
-				_hr = vkAllocateCommandBuffers(pGDevice->vk_device,
-						&_command_buffer_info,
-						_output_presentation_window->vk_command_queues.data());
-				if (_hr)
-				{
-					logger.error("error on creating vulkan command buffers for swap chain of graphics device: "
-						+ _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//prepare data for recording command buffers
-				VkCommandBufferBeginInfo _command_buffer_begin_info = {};
-				_command_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-				_command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-
+                
+                auto _clear_screen_command_buffer = new w_command_buffers();
+                _clear_screen_command_buffer->load(pGDevice, _output_window->vk_swap_chain_image_views.size());
+                auto _hr = pGDevice->store_to_global_command_buffers(_command_buffers_name,
+                                                                     _clear_screen_command_buffer,
+                                                                     pOutputWindowIndex);
+                if (_hr)
+                {
+                    //we already output error in create_command_buffers
+                    release();
+                    std::exit(EXIT_FAILURE);
+                }
+                
 				VkImageSubresourceRange _sub_resource_range = {};
 				_sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 				_sub_resource_range.baseMipLevel = 0;
@@ -2695,14 +2870,14 @@ namespace wolf
 
 				VkClearColorValue _vk_clear_color =
 				{
-					static_cast<float>(_output_presentation_window->clear_color.r / 255.0f),
-					static_cast<float>(_output_presentation_window->clear_color.g / 255.0f),
-					static_cast<float>(_output_presentation_window->clear_color.b / 255.0f),
-					static_cast<float>(_output_presentation_window->clear_color.a / 255.0f)
+					static_cast<float>(_output_window->clear_color.r / 255.0f),
+					static_cast<float>(_output_window->clear_color.g / 255.0f),
+					static_cast<float>(_output_window->clear_color.b / 255.0f),
+					static_cast<float>(_output_window->clear_color.a / 255.0f)
 				};
 
-				//record the command buffer for every swap chain image
-				for (uint32_t i = 0; i < _output_presentation_window->vk_swap_chain_image_views.size(); ++i)
+				//record clear screen command buffer for every swap chain image
+				for (uint32_t i = 0; i < _output_window->command_buffers.at(_command_buffers_name)->get_commands_size(); ++i)
 				{
 					// Change layout of image to be optimal for clearing
 					// Note: previous layout doesn't matter, which will likely cause contents to be discarded
@@ -2712,9 +2887,9 @@ namespace wolf
 					_present_to_clear_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 					_present_to_clear_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 					_present_to_clear_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-					_present_to_clear_barrier.srcQueueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
-					_present_to_clear_barrier.dstQueueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
-					_present_to_clear_barrier.image = _output_presentation_window->vk_swap_chain_image_views[i].image;
+					_present_to_clear_barrier.srcQueueFamilyIndex = pGDevice->vk_queue_family_selected_support_present_index;
+					_present_to_clear_barrier.dstQueueFamilyIndex = pGDevice->vk_queue_family_selected_index;
+					_present_to_clear_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
 					_present_to_clear_barrier.subresourceRange = _sub_resource_range;
 
 					//change layout of image to be optimal for presenting
@@ -2724,24 +2899,25 @@ namespace wolf
 					_clear_to_present_barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
 					_clear_to_present_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 					_clear_to_present_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-					_clear_to_present_barrier.srcQueueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
-					_clear_to_present_barrier.dstQueueFamilyIndex = static_cast<uint32_t>(pGDevice->vk_queue_family_selected_support_present_index);
-					_clear_to_present_barrier.image = _output_presentation_window->vk_swap_chain_image_views[i].image;
+					_clear_to_present_barrier.srcQueueFamilyIndex = pGDevice->vk_queue_family_selected_support_present_index;
+					_clear_to_present_barrier.dstQueueFamilyIndex = pGDevice->vk_queue_family_selected_index;
+					_clear_to_present_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
 					_clear_to_present_barrier.subresourceRange = _sub_resource_range;
-
+                    
+                    
 					//record command buffer
-					_hr = vkBeginCommandBuffer(_output_presentation_window->vk_command_queues[i],
-						&_command_buffer_begin_info);
-
+                    auto _command_buffer = _output_window->command_buffers.at(_command_buffers_name)->get_commands()[i];
+                    
+                    auto _hr = _output_window->command_buffers.at(_command_buffers_name)->begin(i);
 					if (_hr)
 					{
 						logger.error("error on beginning command buffer of graphics device: " + _device_name +
-							" ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+							" ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputWindowIndex));
 						release();
 						std::exit(EXIT_FAILURE);
 					}
 
-					vkCmdPipelineBarrier(_output_presentation_window->vk_command_queues[i],
+					vkCmdPipelineBarrier(_command_buffer,
 						VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
 						0,
 						0,
@@ -2751,14 +2927,14 @@ namespace wolf
 						1,
 						&_present_to_clear_barrier);
 
-					vkCmdClearColorImage(_output_presentation_window->vk_command_queues[i],
-						_output_presentation_window->vk_swap_chain_image_views[i].image,
+					vkCmdClearColorImage(_command_buffer,
+						_output_window->vk_swap_chain_image_views[i].image,
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 						&_vk_clear_color,
 						1,
 						&_sub_resource_range);
 
-					vkCmdPipelineBarrier(_output_presentation_window->vk_command_queues[i],
+					vkCmdPipelineBarrier(_command_buffer,
 						VK_PIPELINE_STAGE_TRANSFER_BIT,
 						VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
 						0,
@@ -2769,16 +2945,18 @@ namespace wolf
 						1,
 						&_clear_to_present_barrier);
 
-					_hr = vkEndCommandBuffer(_output_presentation_window->vk_command_queues[i]);
-					if (_hr)
-					{
-						logger.error("error on ending command buffer of graphics device: " +
-							_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-						release();
-						std::exit(EXIT_FAILURE);
-					}
+                    _hr = _output_window->command_buffers.at(_command_buffers_name)->end(i);                    
+                    if (_hr)
+                    {
+                        logger.error("error on ending command buffer of graphics device: " +
+                                     _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputWindowIndex));
+                        release();
+                        std::exit(EXIT_FAILURE);
+                    }
 				}
+                
 #endif
+                return S_OK;
 			}
             
 #ifdef __UWP
@@ -2838,7 +3016,6 @@ namespace wolf
 				return _rotation;
 			}
 #endif
-            bool                                                _is_released;
 			w_graphics_device_manager_configs					_config;
             std::map<int, std::vector<w_window_info>>           _windows_info;
             std::string                                         _name;
@@ -2933,12 +3110,12 @@ void w_graphics_device_manager::on_window_resized(_In_ UINT pIndex)
 	for (size_t i = 0; i < _size; ++i)
 	{
 		auto _window = _gDevice->output_presentation_windows.at(i);
-		wait_for_previous_frame(_gDevice, i);
+		_wait_for_previous_frame(_gDevice, i);
 		this->_pimp->create_or_resize_swap_chain(_gDevice, i);
 	}
 }
 
-void w_graphics_device_manager::wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
+void w_graphics_device_manager::_wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
 {
 #ifdef __DX12__
     auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
@@ -2969,12 +3146,15 @@ void w_graphics_device_manager::wait_for_previous_frame(_In_ const std::shared_p
 #endif
 }
 
-HRESULT w_graphics_device_manager::begin_render()
+HRESULT w_graphics_device_manager::submit()
 {
 	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 	{
 		auto _gDevice = this->graphics_devices[i];
 
+        if (_gDevice->_is_released) continue;
+
+        
 #if defined(__DX12__) || defined(__DX11__)
 		if (_gDevice->dx_device_removed)
 		{
@@ -2985,7 +3165,7 @@ HRESULT w_graphics_device_manager::begin_render()
 
 		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
 		{
-			auto _present_window = &(_gDevice->output_presentation_windows[j]);
+			auto _output_window = &(_gDevice->output_presentation_windows[j]);
 
 #ifdef __DX11__
 			//Reset the viewport to target the whole screen.
@@ -3078,11 +3258,11 @@ HRESULT w_graphics_device_manager::begin_render()
 
 #elif defined(__VULKAN__)
 			auto _hr = vkAcquireNextImageKHR(_gDevice->vk_device,
-				_present_window->vk_swap_chain,
+				_output_window->vk_swap_chain,
 				UINT64_MAX,
-				_present_window->vk_image_is_available_semaphore,
+				_output_window->vk_image_is_available_semaphore,
 				VK_NULL_HANDLE,
-				&_present_window->vk_swap_chain_image_index);
+				&_output_window->vk_swap_chain_image_index);
 
 			if (_hr != VK_SUCCESS && _hr != VK_SUBOPTIMAL_KHR)
 			{
@@ -3097,18 +3277,49 @@ HRESULT w_graphics_device_manager::begin_render()
 			_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
 			_submit_info.waitSemaphoreCount = 1;
-			_submit_info.pWaitSemaphores = &_present_window->vk_image_is_available_semaphore;
+			_submit_info.pWaitSemaphores = &_output_window->vk_image_is_available_semaphore;
 
 			_submit_info.signalSemaphoreCount = 1;
-			_submit_info.pSignalSemaphores = &_present_window->vk_rendering_done_semaphore;
+			_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore;
 
-			//this is the stage where the queue should wait on the semaphore (it doesn't have to wait with drawing, for example)
+			//this is the stage where the queue should wait on the semaphore (it doesn't have to wait with drawing)
 			VkPipelineStageFlags _wait_dst_stage_mask = VK_PIPELINE_STAGE_TRANSFER_BIT;
 			_submit_info.pWaitDstStageMask = &_wait_dst_stage_mask;
+            
+            //sort and get all avaiable commands buffers pointers
+            std::vector<w_command_buffers*> _sorted_command_buffers;
+            for (auto _iter =  _output_window->command_buffers.begin();
+                 _iter !=  _output_window->command_buffers.end(); ++_iter)
+            {
+                _sorted_command_buffers.push_back(_iter->second);
+            }
+            std::sort(_sorted_command_buffers.begin(), _sorted_command_buffers.end(),
+                      [](_In_ w_command_buffers* a, _In_ w_command_buffers* b)
+                      {
+                          return a && b ? a->get_order() < b->get_order() : true;
+                      });
 
-			_submit_info.commandBufferCount = 1;
-			_submit_info.pCommandBuffers = &_present_window->vk_command_queues[_present_window->vk_swap_chain_image_index];
-
+            std::vector<VkCommandBuffer> _command_buffers;
+            for (auto _iter : _sorted_command_buffers)
+            {
+                if(_iter && _iter->get_enable())
+                {
+                    auto _cmds = _iter->get_commands();
+                    _command_buffers.push_back(_cmds[_output_window->vk_swap_chain_image_index]);
+                }
+            }
+            _sorted_command_buffers.clear();
+            
+            auto _size = _command_buffers.size();
+            if (_size)
+            {
+                //submit them
+                _submit_info.commandBufferCount = static_cast<uint32_t>(_size);
+                _submit_info.pCommandBuffers = _command_buffers.data();
+            
+                _command_buffers.clear();
+            }
+            
 			//submit queue
 			_hr = vkQueueSubmit(
 				_gDevice->vk_present_queue,
@@ -3122,6 +3333,7 @@ HRESULT w_graphics_device_manager::begin_render()
 				release();
 				std::exit(EXIT_FAILURE);
 			}
+            
 #endif
 		}
 	}
@@ -3129,152 +3341,178 @@ HRESULT w_graphics_device_manager::begin_render()
 	return S_OK;
 }
 
-void w_graphics_device_manager::end_render()
+HRESULT w_graphics_device_manager::present()
 {
-	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
-	{
-		auto _gDevice = this->graphics_devices[i];
-
+    for (size_t i = 0; i < this->graphics_devices.size(); ++i)
+    {
+        auto _gDevice = this->graphics_devices[i];
+        
+#ifdef	__DX11__
+        
+        //execute all command lists
+        auto _size = _gDevice->command_queue.size();
+        if (_size > 0)
+        {
+            for (size_t i = 0; i < _size; ++i)
+            {
+                auto _command = _gDevice->command_queue.at(i);
+                if (_command)
+                {
+                    _gDevice->context->ExecuteCommandList(_command, true);
+                    _command->Release();
+                    _command = nullptr;
+                }
+            }
+        }
+#endif
+        
+        
 #if defined(__DX12__) || defined(__DX11__)
-		if (_gDevice->dx_device_removed)
-		{
-			on_device_lost();
-			continue;
-		}
+        if (_gDevice->dx_device_removed)
+        {
+            on_device_lost();
+            continue;
+        }
 #endif
-		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
-		{
-			auto _present_window = &(_gDevice->output_presentation_windows[j]);
-
+        for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
+        {
+            auto _present_window = &(_gDevice->output_presentation_windows[j]);
+            
 #ifdef __DX11__
-			/*
-				The first argument instructs DXGI to block until VSync, putting the application
-				to sleep until the next VSync. This ensures we don't waste any cycles rendering
-				frames that will never be displayed to the screen.
-			*/
-			DXGI_PRESENT_PARAMETERS _parameters = { 0 };
-			auto _hr = _present_window->dx_swap_chain->Present1(_present_window->v_sync ? 1 : 0, 0, &_parameters);
-
-			/*
-				Discard the contents of the render target.
-				This is a valid operation only when the existing contents will be entirely
-				overwritten. If dirty or scroll rects are used, this call should be removed.
-			*/
-			_gDevice->dx_context->DiscardView1(_present_window->dx_render_target_view.Get(), nullptr, 0);
-
-			//Discard the contents of the depth stencil.
-			_gDevice->dx_context->DiscardView1(_present_window->dx_depth_stencil_view.Get(), nullptr, 0);
-
-			/*
-				If the device was removed either by a disconnection or a driver upgrade, we
-				must recreate all device resources.
-			*/
-			if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
-			{
-				_gDevice->dx_device_removed = true;
-				return;
-			}
-			else if (_hr != S_OK)
-			{
-				logger.error("Unexpected error while presenting swap chain for graphics device: " +
-					_gDevice->device_name + " and presentation window: " + std::to_string(j));
-				release();
-				std::exit(EXIT_FAILURE);
-		}
-
+            /*
+             The first argument instructs DXGI to block until VSync, putting the application
+             to sleep until the next VSync. This ensures we don't waste any cycles rendering
+             frames that will never be displayed to the screen.
+             */
+            DXGI_PRESENT_PARAMETERS _parameters = { 0 };
+            auto _hr = _present_window->dx_swap_chain->Present1(_present_window->v_sync ? 1 : 0, 0, &_parameters);
+            
+            /*
+             Discard the contents of the render target.
+             This is a valid operation only when the existing contents will be entirely
+             overwritten. If dirty or scroll rects are used, this call should be removed.
+             */
+            _gDevice->dx_context->DiscardView1(_present_window->dx_render_target_view.Get(), nullptr, 0);
+            
+            //Discard the contents of the depth stencil.
+            _gDevice->dx_context->DiscardView1(_present_window->dx_depth_stencil_view.Get(), nullptr, 0);
+            
+            /*
+             If the device was removed either by a disconnection or a driver upgrade, we
+             must recreate all device resources.
+             */
+            if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
+            {
+                _gDevice->dx_device_removed = true;
+                return S_FALSE;
+            }
+            else if (_hr != S_OK)
+            {
+                logger.error("Unexpected error while presenting swap chain for graphics device: " +
+                             _gDevice->device_name + " and presentation window: " + std::to_string(j));
+                release();
+                std::exit(EXIT_FAILURE);
+            }
+            
 #elif defined(__DX12__)
-
-			//submit command list for executing
-			ID3D12CommandList* _command_lists[1] = { _present_window->dx_command_list.Get() };
-			_present_window->dx_command_queue->ExecuteCommandLists(1, _command_lists);
-
+            
+            //submit command list for executing
+            ID3D12CommandList* _command_lists[1] = { _present_window->dx_command_list.Get() };
+            _present_window->dx_command_queue->ExecuteCommandLists(1, _command_lists);
+            
 #ifdef __WIN32
-			auto _hr = _present_window->dx_swap_chain->Present(_present_window->v_sync ? 1 : 0, 0);
+            auto _hr = _present_window->dx_swap_chain->Present(_present_window->v_sync ? 1 : 0, 0);
 #elif defined(__UWP)
-			auto _hr = _present_window->dx_swap_chain->Present(1, 0);
+            auto _hr = _present_window->dx_swap_chain->Present(1, 0);
 #endif
-
-			/*
-				If the device was removed either by a disconnection or a driver upgrade, we
-				must recreate all device resources.
-			*/
-			if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
-			{
-				logger.error("Error on presenting swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
-					+ _gDevice->device_name);
-				// If the device was removed for any reason, a new device and swap chain will need to be created.
-				_gDevice->dx_device_removed = true;
-				return;
-			}
-
+            
+            /*
+             If the device was removed either by a disconnection or a driver upgrade, we
+             must recreate all device resources.
+             */
+            if (_hr == DXGI_ERROR_DEVICE_REMOVED || _hr == DXGI_ERROR_DEVICE_RESET)
+            {
+                logger.error("Error on presenting swap chain, because of DXGI_ERROR_DEVICE_REMOVED or DXGI_ERROR_DEVICE_RESET for graphics device: "
+                             + _gDevice->device_name);
+                // If the device was removed for any reason, a new device and swap chain will need to be created.
+                _gDevice->dx_device_removed = true;
+                return S_FALSE;
+            }
+            
 #elif defined(__VULKAN__)
-			VkPresentInfoKHR _present_info = {};
-
-			_present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-			_present_info.waitSemaphoreCount = 1;
-			_present_info.pWaitSemaphores = &_present_window->vk_rendering_done_semaphore;
-
-			_present_info.swapchainCount = 1;
-			_present_info.pSwapchains = &_present_window->vk_swap_chain;
-			_present_info.pImageIndices = &_present_window->vk_swap_chain_image_index;
-
-			auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue,
-					&_present_info);
-			if (_hr)
-			{
-				logger.error("error on presenting queue of graphics device: " +
-					_gDevice->device_name + " and presentation window: " + std::to_string(j));
-				release();
-				std::exit(EXIT_FAILURE);
-			}
+            VkPresentInfoKHR _present_info = {};
+            
+            _present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+            _present_info.waitSemaphoreCount = 1;
+            _present_info.pWaitSemaphores = &_present_window->vk_rendering_done_semaphore;
+            
+            _present_info.swapchainCount = 1;
+            _present_info.pSwapchains = &_present_window->vk_swap_chain;
+            _present_info.pImageIndices = &_present_window->vk_swap_chain_image_index;
+            
+            auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue,
+                                         &_present_info);
+            if (_hr)
+            {
+                if (_hr == VK_ERROR_OUT_OF_DATE_KHR || _hr == VK_SUBOPTIMAL_KHR)
+                {
+                    on_window_resized(static_cast<UINT>(j));
+                    return S_FALSE;
+                }
+                
+                logger.error("error on presenting queue of graphics device: " +
+                             _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id) +
+                             " and presentation window: " + std::to_string(j));
+                release();
+                std::exit(EXIT_FAILURE);
+            }
 #endif
-		}
-	}
+        }
+    }
+    
+    return S_OK;
 }
 
 ULONG w_graphics_device_manager::release()
 {
     //release the private implementation
-    if(this->_pimp && !this->_pimp->release())
-    {
-        SAFE_RELEASE(this->_pimp);
-    }
+    SAFE_RELEASE(this->_pimp);
     
     //release all graphics devices
     while (this->graphics_devices.size() > 0)
-	{
-		auto _gDevice = this->graphics_devices.front();
-		
-		//wait for all presentation windows to perform their tasks
-		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
-		{
-			wait_for_previous_frame(_gDevice, j);
-		}
-
-		SHARED_RELEASE(_gDevice);
-
-		this->graphics_devices.pop_back();
-	}
+    {
+        auto _gDevice = this->graphics_devices.front();
+        
+        //wait for all presentation windows to perform their tasks
+        for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
+        {
+            _wait_for_previous_frame(_gDevice, j);
+        }
+        
+        SHARED_RELEASE(_gDevice);
+        
+        this->graphics_devices.pop_back();
+    }
     
 #if defined(__DX12__) || defined(__DX11__)
-
-	//release 
-	COMPTR_RELEASE(w_graphics_device::dx_dxgi_factory);
-
+    
+    //release 
+    COMPTR_RELEASE(w_graphics_device::dx_dxgi_factory);
+    
 #elif defined(__VULKAN__)
     //release vulkan instance
     if (w_graphics_device::vk_instance)
     {
-		vkDestroyInstance(w_graphics_device::vk_instance, nullptr);
+        vkDestroyInstance(w_graphics_device::vk_instance, nullptr);
         w_graphics_device::vk_instance = nullptr;
     }
 #endif
-
+    
 #ifdef __ANDROID
-	FreeVulkan();
+    FreeVulkan();
 #endif
-
-	return _super::release();
+    
+    return _super::release();
 }
 
 #ifdef __VULKAN__
@@ -3413,7 +3651,7 @@ void w_graphics_device_manager::set_output_window_clear_color(_In_ size_t pGraph
 #ifdef __DX12__
 	_output_presentation_window->force_to_clear_color_times = _output_presentation_window->dx_swap_chain_image_views.size();
 #elif defined(__VULKAN__)
-	_output_presentation_window->force_to_clear_color_times = _output_presentation_window->vk_swap_chain_image_views.size();
+	_output_presentation_window->force_to_clear_color_times = static_cast<int>(_output_presentation_window->vk_swap_chain_image_views.size());
 #endif
 }
 

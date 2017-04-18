@@ -53,7 +53,7 @@ extern "C" {
 	typedef __int64_t				INT64;
 	typedef unsigned char			UINT8, *PUINT8;
 	typedef unsigned short			UINT16, *PUINT16;
-	typedef unsigned int			UINT32, *PUINT32;
+	typedef __uint32_t              UINT32, *PUINT32;
 	typedef __uint64_t				UINT64, *PUINT64;
 
 	typedef unsigned long			ULONG, *PULONG;

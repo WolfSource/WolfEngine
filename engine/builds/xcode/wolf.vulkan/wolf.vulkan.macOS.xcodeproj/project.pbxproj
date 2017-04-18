@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C1B3FF71E97DC6500512959 /* w_shader_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1B3FF41E97DC6500512959 /* w_shader_buffer.h */; };
+		2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1B3FF51E97DC6500512959 /* w_shader.cpp */; };
+		2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1B3FF61E97DC6500512959 /* w_shader.h */; };
 		2C38D9461E79645400EE8595 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D9441E79645400EE8595 /* w_game.cpp */; };
 		2C38D9471E79645400EE8595 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D9451E79645400EE8595 /* w_game.h */; };
 		2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */; };
@@ -20,9 +23,20 @@
 		2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA31E5F1E80000E71B5 /* libc++.tbd */; };
 		2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA51E5F1E86000E71B5 /* Metal.framework */; };
 		2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */; };
+		2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899631E97EA74002FE161 /* w_mesh.cpp */; };
+		2C9899661E97EA74002FE161 /* w_mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9899641E97EA74002FE161 /* w_mesh.h */; };
+		2C9899691E9A2EA8002FE161 /* w_command_buffers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899671E9A2EA8002FE161 /* w_command_buffers.cpp */; };
+		2C98996A1E9A2EA8002FE161 /* w_command_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9899681E9A2EA8002FE161 /* w_command_buffers.h */; };
+		2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C98996D1E9B51D6002FE161 /* w_texture.cpp */; };
+		2C9899701E9B51D6002FE161 /* w_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996E1E9B51D6002FE161 /* w_texture.h */; };
+		2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899711E9BF6A3002FE161 /* w_buffer.cpp */; };
+		2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9899721E9BF6A3002FE161 /* w_buffer.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C1B3FF41E97DC6500512959 /* w_shader_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shader_buffer.h; path = ../../../src/wolf.render/w_graphics/w_shader_buffer.h; sourceTree = "<group>"; };
+		2C1B3FF51E97DC6500512959 /* w_shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_shader.cpp; path = ../../../src/wolf.render/w_graphics/w_shader.cpp; sourceTree = "<group>"; };
+		2C1B3FF61E97DC6500512959 /* w_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shader.h; path = ../../../src/wolf.render/w_graphics/w_shader.h; sourceTree = "<group>"; };
 		2C38D9441E79645400EE8595 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_game.cpp; sourceTree = "<group>"; };
 		2C38D9451E79645400EE8595 /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/w_game.h; sourceTree = "<group>"; };
 		2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_graphics_device_manager.cpp; path = ../../../src/wolf.render/w_graphics_device_manager.cpp; sourceTree = "<group>"; };
@@ -38,6 +52,14 @@
 		2C860FA31E5F1E80000E71B5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		2C860FA51E5F1E86000E71B5 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		2C9899631E97EA74002FE161 /* w_mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_mesh.cpp; path = ../../../src/wolf.render/w_graphics/w_mesh.cpp; sourceTree = "<group>"; };
+		2C9899641E97EA74002FE161 /* w_mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_mesh.h; path = ../../../src/wolf.render/w_graphics/w_mesh.h; sourceTree = "<group>"; };
+		2C9899671E9A2EA8002FE161 /* w_command_buffers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_command_buffers.cpp; path = ../../../src/wolf.render/w_graphics/w_command_buffers.cpp; sourceTree = "<group>"; };
+		2C9899681E9A2EA8002FE161 /* w_command_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffers.h; path = ../../../src/wolf.render/w_graphics/w_command_buffers.h; sourceTree = "<group>"; };
+		2C98996D1E9B51D6002FE161 /* w_texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_texture.cpp; path = ../../../src/wolf.render/w_graphics/w_texture.cpp; sourceTree = "<group>"; };
+		2C98996E1E9B51D6002FE161 /* w_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_texture.h; path = ../../../src/wolf.render/w_graphics/w_texture.h; sourceTree = "<group>"; };
+		2C9899711E9BF6A3002FE161 /* w_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_buffer.cpp; path = ../../../src/wolf.render/w_graphics/w_buffer.cpp; sourceTree = "<group>"; };
+		2C9899721E9BF6A3002FE161 /* w_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_buffer.h; path = ../../../src/wolf.render/w_graphics/w_buffer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,9 +78,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2C1B3FF31E97DC5300512959 /* w_graphics */ = {
+			isa = PBXGroup;
+			children = (
+				2C9899711E9BF6A3002FE161 /* w_buffer.cpp */,
+				2C9899721E9BF6A3002FE161 /* w_buffer.h */,
+				2C98996D1E9B51D6002FE161 /* w_texture.cpp */,
+				2C98996E1E9B51D6002FE161 /* w_texture.h */,
+				2C9899671E9A2EA8002FE161 /* w_command_buffers.cpp */,
+				2C9899681E9A2EA8002FE161 /* w_command_buffers.h */,
+				2C9899631E97EA74002FE161 /* w_mesh.cpp */,
+				2C9899641E97EA74002FE161 /* w_mesh.h */,
+				2C1B3FF41E97DC6500512959 /* w_shader_buffer.h */,
+				2C1B3FF51E97DC6500512959 /* w_shader.cpp */,
+				2C1B3FF61E97DC6500512959 /* w_shader.h */,
+			);
+			name = w_graphics;
+			sourceTree = "<group>";
+		};
 		2C69E9A01E5EC2CB00F15C44 = {
 			isa = PBXGroup;
 			children = (
+				2C1B3FF31E97DC5300512959 /* w_graphics */,
 				2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */,
 				2C38D9491E79646D00EE8595 /* w_graphics_device_manager.h */,
 				2C38D94A1E79646D00EE8595 /* w_obj_c_wrapper.mm */,
@@ -101,8 +142,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
+				2C9899661E97EA74002FE161 /* w_mesh.h in Headers */,
+				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
+				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
+				2C1B3FF71E97DC6500512959 /* w_shader_buffer.h in Headers */,
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
 				2C38D9471E79645400EE8595 /* w_game.h in Headers */,
+				2C98996A1E9A2EA8002FE161 /* w_command_buffers.h in Headers */,
+				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -164,10 +211,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */,
+				2C9899691E9A2EA8002FE161 /* w_command_buffers.cpp in Sources */,
+				2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */,
 				2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */,
 				2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */,
 				2C38D9461E79645400EE8595 /* w_game.cpp in Sources */,
+				2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */,
 				2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */,
+				2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

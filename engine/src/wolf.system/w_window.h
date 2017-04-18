@@ -132,7 +132,8 @@ struct w_window_info
 	float				window_dpi = 96;
 	bool				support_high_resolutions = true;
 #endif
-
+    
+    //BGRA8Unorm
 #if defined(__DX12__) || defined(__DX11__)
 	UINT				swap_chain_format = 87;
 #elif defined(__VULKAN__)

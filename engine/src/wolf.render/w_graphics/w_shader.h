@@ -11,6 +11,7 @@
 #define __W_SHADER_H__
 
 #include "w_graphics_device_manager.h"
+#include "w_texture.h"
 
 enum w_shader_stage
 {
@@ -27,13 +28,14 @@ enum w_shader_stage
 	GEOMETRY_SHADER,
 
 	COMPUTE_SHADER,
-        ALL_STAGES
+    ALL_STAGES
 };
 
 namespace wolf
 {
 	namespace graphics
 	{
+        class w_shader_pimp;
 		class w_shader : public system::w_object
 		{
 		public:
@@ -41,17 +43,25 @@ namespace wolf
 			W_EXP virtual ~w_shader();
 
 			//Create shader from binary file
-			virtual HRESULT load(_In_ std::shared_ptr<w_graphics_device>& pGDevice,
+			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                             _In_z_ const char* pShaderBinaryPath, _In_ const w_shader_stage pShaderStage,
                             _In_z_ const char* pMainFunctionName = "main");
-
-			//Apply shader, this must be called before drawing primitives
-			virtual void apply();
-                        
-			virtual ULONG release() override;
+            
+            //Create decriptor pool
+            W_EXP HRESULT create_descriptor_pool(_In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize);
+            //Create desciptor set layout binding
+            W_EXP HRESULT create_description_set_layout_binding(_In_ const std::vector<VkDescriptorSetLayoutBinding>& pDescriptorSetLayoutBinding);
+            //Update write descriptor sets
+            W_EXP void update_descriptor_sets(_In_ const std::vector<VkWriteDescriptorSet>& pWriteDescriptorSets);
+            
+			W_EXP virtual ULONG release() override;
 
 #pragma region Getters
 
+            W_EXP const std::vector<VkPipelineShaderStageCreateInfo>* get_shader_stages() const;
+            W_EXP const VkDescriptorSet get_descriptor_set() const;
+            W_EXP const VkDescriptorSetLayout get_descriptor_set_layout_binding() const;
+            
 #pragma endregion
 
 #pragma region Setters
@@ -60,11 +70,8 @@ namespace wolf
 #pragma endregion
 
 		private:
-                    typedef	system::w_object                                _super;
-                    std::shared_ptr<w_graphics_device>                          _gDevice;
-                  
-                    std::vector<VkPipelineShaderStageCreateInfo>                _shader_stages;
-                    std::vector<VkShaderModule>                                 _shader_modules;
+            typedef	system::w_object                                _super;
+            w_shader_pimp*                                          _pimp;
 		};
 	}
 }

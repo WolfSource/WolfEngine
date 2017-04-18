@@ -120,11 +120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.render/w_graphics_device_manager.cpp"
-            timestampString = "512313346.762636"
+            timestampString = "514149840.601428"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "968"
-            endingLineNumber = "968"
+            startingLineNumber = "1118"
+            endingLineNumber = "1118"
             landmarkName = "enumerate_devices(_Inout_ std::vector&lt;std::shared_ptr&lt;w_graphics_device&gt;&gt;&amp; pGraphicsDevices)"
             landmarkType = "7">
          </BreakpointContent>

@@ -56,5 +56,6 @@
 #include <w_ireleasable.h>
 #include <w_io.h>
 #include <w_color.h>
+#include <w_logger.h>
 
 #endif

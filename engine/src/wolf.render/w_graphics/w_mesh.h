@@ -14,25 +14,22 @@
 namespace wolf
 {
 	namespace graphics
-	{
+	{        
+        class w_mesh_pimp;
 		//Represents a 3D model mesh composed of multiple meshpart objects.
 		class w_mesh : public system::w_object
 		{
 		public:
-			W_EXP w_mesh();
+            W_EXP w_mesh();
 			W_EXP virtual ~w_mesh();
 
 			//Initialize mesh
-			W_EXP void load(_In_ std::shared_ptr<w_graphics_device> pDevice);
-                        
-			//create vertex buffer
-			W_EXP HRESULT create_vertex_buffer(_In_ const void* const pVertices,
-				_In_ const UINT pVerticesSize);
-                        
-			//create pixel buffer
-			W_EXP HRESULT create_index_buffer(_In_ const unsigned short* const pIndices,
-				_In_ const UINT pIndicesSize);
-                        
+			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                               _In_ const void* const pVerticesData,
+                               _In_ const UINT pVerticesSize,
+                               _In_ const unsigned short* const pIndicesData,
+                               _In_ const UINT pIndicesSize,
+                               _In_ bool pStaging = true);
 			//Render mesh
 			W_EXP void render();
                         
@@ -40,7 +37,10 @@ namespace wolf
 			W_EXP virtual ULONG release() override;
 
 #pragma region Getters
-
+            
+            W_EXP VkBuffer get_vertex_buffer_handle() const;
+            W_EXP VkBuffer get_index_buffer_handle() const;
+            
 #pragma endregion
 
 #pragma region Setters
@@ -49,8 +49,8 @@ namespace wolf
 #pragma endregion
 			
 		private:
-                    typedef		system::w_object                        _super;
-                       std::shared_ptr<w_graphics_device>                       _gDevice;
+            typedef		system::w_object                        _super;
+            w_mesh_pimp*                                        _pimp;
 		
 		};
 	}
