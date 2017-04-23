@@ -3,19 +3,25 @@
    version = "1.0">
    <Group
       location = "container:"
-      name = "00-system">
+      name = "01-System">
       <FileRef
-         location = "group:00_system/01_async/builds/xcode/01_async.xcodeproj">
+         location = "group:01_system/01_async/builds/xcode/01_async.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:/Users/pooyaeimandar/Documents/github/Wolf.Engine/samples/01_System/02_window/builds/xcode/02_window.xcodeproj">
       </FileRef>
    </Group>
    <Group
       location = "container:"
-      name = "01-initialize">
+      name = "02_Simples">
       <FileRef
-         location = "group:01_initialize/01_window/builds/xcode/01_window.xcodeproj">
+         location = "group:02_Simples/01_clear_screen/builds/xcode/01_clear_screen.xcodeproj">
       </FileRef>
       <FileRef
-         location = "group:01_initialize/03_scene/builds/xcode/03_scene.xcodeproj">
+         location = "group:02_Simples/02_shader/builds/xcode/02_shader.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:02_Simples/03_vertex_buffer/builds/xcode/03_vertex_buffer.xcodeproj">
       </FileRef>
    </Group>
 </Workspace>
