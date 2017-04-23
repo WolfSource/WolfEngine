@@ -33,7 +33,7 @@ namespace wolf
                 std::vector<unsigned char> _shader_binary_code;
                 int _file_state = 0;
                 
-                system::io::read_binary_file(pShaderBinaryPath,_shader_binary_code, _file_state);
+                system::io::read_binary_file(_shader_path.c_str(), _shader_binary_code, _file_state);
                 if(_file_state != 1)
                 {
                     if(_file_state == -1)

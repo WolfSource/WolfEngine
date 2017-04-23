@@ -10,13 +10,13 @@
 		2C38D9591E796CA200EE8595 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9581E796CA200EE8595 /* MoltenVK.framework */; };
 		2C620F951E617F81005DFB10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C620F941E617F81005DFB10 /* Assets.xcassets */; };
 		2C620F981E617F81005DFB10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C620F961E617F81005DFB10 /* Main.storyboard */; };
-		2C620FA71E617FED005DFB10 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C620FA01E617FED005DFB10 /* AppDelegate.m */; };
-		2C620FA81E617FED005DFB10 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C620FA21E617FED005DFB10 /* ViewController.mm */; };
-		2C620FA91E617FED005DFB10 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C620FA41E617FED005DFB10 /* main.m */; };
-		2C620FAA1E617FED005DFB10 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C620FA51E617FED005DFB10 /* scene.cpp */; };
 		2C620FB11E618052005DFB10 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C620FB01E618052005DFB10 /* libc++.tbd */; };
 		2C620FB31E61805A005DFB10 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C620FB21E61805A005DFB10 /* QuartzCore.framework */; };
 		2C620FB51E618061005DFB10 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C620FB41E618061005DFB10 /* Metal.framework */; };
+		2C7079951EAB6D7D003784A2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C70798F1EAB6D7D003784A2 /* AppDelegate.m */; };
+		2C7079961EAB6D7D003784A2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079901EAB6D7D003784A2 /* main.m */; };
+		2C7079971EAB6D7D003784A2 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079911EAB6D7D003784A2 /* scene.cpp */; };
+		2C7079981EAB6D7D003784A2 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079941EAB6D7D003784A2 /* ViewController.mm */; };
 		2CE21C411E89678F00EEE579 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */; };
 		2CE21C421E89678F00EEE579 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */; };
 /* End PBXBuildFile section */
@@ -24,19 +24,19 @@
 /* Begin PBXFileReference section */
 		2C38D9581E796CA200EE8595 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2C620F881E617F81005DFB10 /* wolf_vulkan_metal_macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wolf_vulkan_metal_macOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2C620F941E617F81005DFB10 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2C620F941E617F81005DFB10 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = wolf_vulkan_metal_macOS/Assets.xcassets; sourceTree = "<group>"; };
 		2C620F971E617F81005DFB10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		2C620F991E617F81005DFB10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2C620F9F1E617FED005DFB10 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../../src/tests/Vulkan.MacOS/AppDelegate.h; sourceTree = "<group>"; };
-		2C620FA01E617FED005DFB10 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../../src/tests/Vulkan.MacOS/AppDelegate.m; sourceTree = "<group>"; };
-		2C620FA11E617FED005DFB10 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../../src/tests/Vulkan.MacOS/ViewController.h; sourceTree = "<group>"; };
-		2C620FA21E617FED005DFB10 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../../src/tests/Vulkan.MacOS/ViewController.mm; sourceTree = "<group>"; };
-		2C620FA41E617FED005DFB10 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../../src/tests/Vulkan.MacOS/main.m; sourceTree = "<group>"; };
-		2C620FA51E617FED005DFB10 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../../../../src/tests/Vulkan.MacOS/scene.cpp; sourceTree = "<group>"; };
-		2C620FA61E617FED005DFB10 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = ../../../../../src/tests/Vulkan.MacOS/scene.h; sourceTree = "<group>"; };
+		2C620F991E617F81005DFB10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = wolf_vulkan_metal_macOS/Info.plist; sourceTree = "<group>"; };
 		2C620FB01E618052005DFB10 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		2C620FB21E61805A005DFB10 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2C620FB41E618061005DFB10 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		2C70798E1EAB6D7D003784A2 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../src/tests/AppDelegate.h; sourceTree = "<group>"; };
+		2C70798F1EAB6D7D003784A2 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../src/tests/AppDelegate.m; sourceTree = "<group>"; };
+		2C7079901EAB6D7D003784A2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../src/tests/main.m; sourceTree = "<group>"; };
+		2C7079911EAB6D7D003784A2 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../../../src/tests/scene.cpp; sourceTree = "<group>"; };
+		2C7079921EAB6D7D003784A2 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = ../../../../src/tests/scene.h; sourceTree = "<group>"; };
+		2C7079931EAB6D7D003784A2 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../src/tests/ViewController.h; sourceTree = "<group>"; };
+		2C7079941EAB6D7D003784A2 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../src/tests/ViewController.mm; sourceTree = "<group>"; };
 		2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../wolf.system/build/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.vulkan.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.vulkan.macOS.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -61,7 +61,16 @@
 		2C620F7F1E617F81005DFB10 = {
 			isa = PBXGroup;
 			children = (
-				2C620F8A1E617F81005DFB10 /* wolf_vulkan_metal_macOS */,
+				2C70798E1EAB6D7D003784A2 /* AppDelegate.h */,
+				2C70798F1EAB6D7D003784A2 /* AppDelegate.m */,
+				2C7079901EAB6D7D003784A2 /* main.m */,
+				2C7079911EAB6D7D003784A2 /* scene.cpp */,
+				2C7079921EAB6D7D003784A2 /* scene.h */,
+				2C7079931EAB6D7D003784A2 /* ViewController.h */,
+				2C7079941EAB6D7D003784A2 /* ViewController.mm */,
+				2C620F941E617F81005DFB10 /* Assets.xcassets */,
+				2C620F961E617F81005DFB10 /* Main.storyboard */,
+				2C620F991E617F81005DFB10 /* Info.plist */,
 				2C620F891E617F81005DFB10 /* Products */,
 				2C620FAB1E61804B005DFB10 /* Frameworks */,
 			);
@@ -73,31 +82,6 @@
 				2C620F881E617F81005DFB10 /* wolf_vulkan_metal_macOS.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		2C620F8A1E617F81005DFB10 /* wolf_vulkan_metal_macOS */ = {
-			isa = PBXGroup;
-			children = (
-				2C620F9F1E617FED005DFB10 /* AppDelegate.h */,
-				2C620FA01E617FED005DFB10 /* AppDelegate.m */,
-				2C620FA11E617FED005DFB10 /* ViewController.h */,
-				2C620FA21E617FED005DFB10 /* ViewController.mm */,
-				2C620FA51E617FED005DFB10 /* scene.cpp */,
-				2C620FA61E617FED005DFB10 /* scene.h */,
-				2C620F941E617F81005DFB10 /* Assets.xcassets */,
-				2C620F961E617F81005DFB10 /* Main.storyboard */,
-				2C620F991E617F81005DFB10 /* Info.plist */,
-				2C620F8E1E617F81005DFB10 /* Supporting Files */,
-			);
-			path = wolf_vulkan_metal_macOS;
-			sourceTree = "<group>";
-		};
-		2C620F8E1E617F81005DFB10 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				2C620FA41E617FED005DFB10 /* main.m */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		2C620FAB1E61804B005DFB10 /* Frameworks */ = {
@@ -183,10 +167,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C620FAA1E617FED005DFB10 /* scene.cpp in Sources */,
-				2C620FA71E617FED005DFB10 /* AppDelegate.m in Sources */,
-				2C620FA81E617FED005DFB10 /* ViewController.mm in Sources */,
-				2C620FA91E617FED005DFB10 /* main.m in Sources */,
+				2C7079961EAB6D7D003784A2 /* main.m in Sources */,
+				2C7079951EAB6D7D003784A2 /* AppDelegate.m in Sources */,
+				2C7079981EAB6D7D003784A2 /* ViewController.mm in Sources */,
+				2C7079971EAB6D7D003784A2 /* scene.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,6 +183,7 @@
 				2C620F971E617F81005DFB10 /* Base */,
 			);
 			name = Main.storyboard;
+			path = wolf_vulkan_metal_macOS;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

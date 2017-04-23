@@ -289,9 +289,9 @@ namespace wolf
             VkPhysicalDeviceMemoryProperties                        vk_physical_device_memory_properties;
                         
             std::vector<VkQueueFamilyProperties>                    vk_queue_family_properties;
-			UINT32													vk_queue_family_selected_index;
+			UINT32													vk_graphics_queue_family_index;
             std::vector<VkBool32>                                   vk_queue_family_supports_present;
-			UINT32													vk_queue_family_selected_support_present_index;
+			UINT32													vk_present_queue_family_index;
                         
             VkQueue                                                 vk_graphics_queue;
             VkQueue                                                 vk_present_queue;
