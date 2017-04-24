@@ -99,7 +99,7 @@ namespace wolf
         struct w_viewport;
         struct w_viewport_scissor;
         struct w_buffer;
-        struct w_pipeline;
+        class  w_pipeline;
         class  w_command_buffers;
         
 		//Output window which handles all 3d resources for output renderer
@@ -223,15 +223,9 @@ namespace wolf
 			//get the first and the primary window which was created with this device
 			W_EXP w_output_presentation_window main_window();
             
-            //Create render pass
-            W_EXP HRESULT create_render_pass(_In_z_ const char* pRenderPassName,
-				_In_ const std::vector<VkAttachmentDescription>* pAttachmentDescriptions = nullptr,
-				_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions = nullptr,
-				_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
-            
             //Create frame buffers collection
 			 W_EXP HRESULT create_frame_buffers_collection(_In_z_ const char* pFrameBufferCollectionName,
-				_In_z_ const char* pRenderPassUsedName, 
+				_In_ const VkRenderPass pRenderPass,
 				_In_ size_t pNumberOfFrameBuffers,
 				_In_ w_image_view pAttachments[],
 				_In_ uint32_t pFrameBufferWidth,
@@ -243,21 +237,6 @@ namespace wolf
             W_EXP HRESULT store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,
                                                           _In_ w_command_buffers* pCommandBuffers,
                                                           _In_ size_t pOutputWindowIndex = 0);
-            
-            //Create pipeline
-            W_EXP HRESULT create_pipeline(_In_z_ const char* pPipelineName,
-                _In_z_ const char* pRenderPassName,
-                _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
-                _In_ const std::vector<w_viewport> pViewPorts,
-                _In_ const std::vector<w_viewport_scissor> pViewPortsScissors,
-                _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo = nullptr,
-                _In_ const VkPipelineVertexInputStateCreateInfo* const pPipelineVertexInputStateCreateInfo = nullptr,
-                _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo = nullptr,
-                _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo = nullptr,
-                _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo = nullptr,
-                _In_ const VkPipelineColorBlendAttachmentState* const pPipelineColorBlendAttachmentState = nullptr,
-                _In_ const VkPipelineDynamicStateCreateInfo* const pPipelineDynamicStateCreateInfo = nullptr,
-                _In_ const std::array<float,4> pBlendColors = { 0.0f, 0.0f, 0.0f, 0.0f });
             
             //release all resources
             ULONG release();
@@ -298,9 +277,7 @@ namespace wolf
                      
             VkDevice                                                vk_device;
 
-            std::map<std::string, VkRenderPass>						vk_render_passes;
             std::map<std::string, std::vector<VkFramebuffer>>		vk_frame_buffers;
-            std::map<std::string, w_pipeline>                       vk_pipelines;
             
             VkCommandPool                                           vk_command_allocator_pool;
             
@@ -449,14 +426,6 @@ namespace wolf
         {
         };
         
-        struct w_pipeline
-        {
-#ifdef __VULKAN__
-            VkPipeline              pipeline;
-            VkPipelineLayout        layout;
-#endif
-        };
-
 #pragma endregion
 	}
 }

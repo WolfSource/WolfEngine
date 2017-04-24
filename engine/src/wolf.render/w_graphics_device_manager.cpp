@@ -165,105 +165,9 @@ w_output_presentation_window w_graphics_device::main_window()
 	return w_output_presentation_window();
 }
 
-HRESULT w_graphics_device::create_render_pass(_In_z_ const char* pRenderPassName,
-	_In_ const std::vector<VkAttachmentDescription>* pAttachmentDescriptions,
-	_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
-	_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
-{
-    std:vector<VkAttachmentDescription> _attachment_descriptions;
-    std::vector<VkSubpassDescription> _subpass_descriptions;
-    std::vector<VkSubpassDependency> _subpass_dependencies;
-    
-    if (!pAttachmentDescriptions)
-    {
-        _attachment_descriptions.push_back(w_graphics_device::defaults::vk_default_attachment_description);
-    }
-    else
-    {
-        _attachment_descriptions = *pAttachmentDescriptions;
-    }
-    
-    if (!pSubpassDescriptions)
-    {
-        const VkAttachmentReference _attachment_ref[] =
-        {
-            w_graphics_device::defaults::vk_default_color_attachment_reference
-        };
-        
-        VkSubpassDescription _subpass_description =
-        {
-            0,
-            VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS,
-            0,
-            nullptr,
-            1,
-            _attachment_ref,
-            nullptr,
-            nullptr,
-            0,
-            nullptr
-        };
-        
-        _subpass_descriptions.push_back(_subpass_description);
-    }
-    else
-    {
-        _subpass_descriptions = *pSubpassDescriptions;
-    }
-    
-    
-    if (!pSubpassDependencies)
-    {
-        _subpass_dependencies = w_graphics_device::defaults::vk_default_subpass_dependencies;
-    }
-    else
-    {
-        _subpass_dependencies = *pSubpassDependencies;
-    }
-    
-	const VkRenderPassCreateInfo _render_pass_create_info =
-	{
-		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,                              //sType
-		nullptr,                                                                // Next
-		0,                                                                      // Flags
-    
-		static_cast<uint32_t>(_attachment_descriptions.size()),                 // AttachmentCount
-        _attachment_descriptions.data(),                                        // Attachments
-        
-		static_cast<uint32_t>(_subpass_descriptions.size()),                    // SubpassCount
-        _subpass_descriptions.data(),                                           // Subpasses
-        
-		static_cast<uint32_t>(_subpass_dependencies.size()),                    // DependencyCount
-        _subpass_dependencies.data()                                            // Dependencies
-	};
-
-	VkRenderPass _render_pass = VK_NULL_HANDLE;
-	auto _hr = vkCreateRenderPass(this->vk_device, &_render_pass_create_info, nullptr, &_render_pass);
-	V(_hr, L"creating render pass with graphics device: " + std::wstring(this->device_name.begin(), this->device_name.end()) +
-		L" ID:" + std::to_wstring(this->device_id), this->_name, 3, false, true);
-    
-	if (_hr == VK_SUCCESS  && _render_pass)
-	{
-		auto _iter = this->vk_render_passes.find(pRenderPassName);
-		if (_iter != this->vk_render_passes.end())
-		{
-			//we must disable last one 
-			if (!this->vk_render_passes[pRenderPassName])
-			{
-				vkDestroyRenderPass(this->vk_device, this->vk_render_passes[pRenderPassName], nullptr);
-				this->vk_render_passes[pRenderPassName] = VK_NULL_HANDLE;
-			}
-		}
-		this->vk_render_passes[pRenderPassName] = _render_pass;
-		return S_OK;
-	}
-
-	return S_FALSE;
-}
-
 
 HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pFrameBufferCollectionName, 
-	_In_z_ const char* pRenderPassUsedName,
+	_In_z_ const VkRenderPass pRenderPass,
 	_In_ size_t pNumberOfFrameBuffers,
 	_In_ w_image_view pAttachments[],
 	_In_ uint32_t pFrameBufferWidth,
@@ -271,30 +175,11 @@ HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pF
 	_In_ uint32_t pNumberOfLayers,
 	_In_ size_t pOutputWindowIndex)
 {
-	//get the desired render pass
-	auto _render_pass_name = std::string(pRenderPassUsedName);
-	if (_render_pass_name.empty())
-	{
-		logger.error("Before creating frame buffer, needs desired render pass name.");
-		return S_FALSE;
-	}
-
-	VkRenderPass _render_pass = 0;
-	auto _iter_pass = this->vk_render_passes.find(pRenderPassUsedName);
-	if (_iter_pass == this->vk_render_passes.end())
-	{
-		logger.error("Render pass not found for frame buffers.");
-		return S_FALSE;
-	}
-	else
-	{
-		_render_pass = _iter_pass->second;
-		if (!_render_pass)
-		{
-			logger.error("Render pass founded but is NULL.");
-			return S_FALSE;
-		}
-	}
+    if (!pRenderPass)
+    {
+        logger.error("Render Pass can not be nullptr.");
+        return S_FALSE;
+    }
 
 	//release all frame buffers if exist
 	auto _iter_frames = this->vk_frame_buffers.find(pFrameBufferCollectionName);
@@ -316,7 +201,7 @@ HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pF
 			VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,  // Type
 			nullptr,                                    // Next
 			0,                                          // Flags
-			_render_pass,								// Render pass
+			pRenderPass,								// Render pass
 			1,                                          // AttachmentCount
 			&pAttachments[i].view,						// Attachments
 			pFrameBufferWidth,                          // Width
@@ -355,161 +240,6 @@ W_EXP HRESULT w_graphics_device::store_to_global_command_buffers(_In_z_ const ch
          
     return S_OK;
 }
-
-HRESULT w_graphics_device::create_pipeline(_In_z_ const char* pPipelineName,
-         _In_z_ const char* pRenderPassName,
-         _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
-         _In_ const std::vector<w_viewport> pViewPorts,
-         _In_ const std::vector<w_viewport_scissor> pViewPortsScissors,
-         _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo,
-         _In_ const VkPipelineVertexInputStateCreateInfo* const pPipelineVertexInputStateCreateInfo,
-         _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo,
-         _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
-         _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo,
-         _In_ const VkPipelineColorBlendAttachmentState* const pPipelineColorBlendAttachmentState,
-         _In_ const VkPipelineDynamicStateCreateInfo* const pPipelineDynamicStateCreateInfo,
-         _In_ const std::array<float,4> pBlendColors)
- {
-     if(pShaderStages == nullptr)
-     {
-         logger.error("Shader could not be nullptr");
-         return S_FALSE;
-     }
-     
-     VkRenderPass _render_pass = VK_NULL_HANDLE;
-     auto _iter_pass = this->vk_render_passes.find(pRenderPassName);
-     if (_iter_pass == this->vk_render_passes.end())
-     {
-         logger.error("Render pass not found for frame buffers.");
-         return S_FALSE;
-     }
-     else
-     {
-         _render_pass = _iter_pass->second;
-         if (!_render_pass)
-         {
-             logger.error("Render pass founded but is NULL.");
-             return S_FALSE;
-         }
-     }
-     
-     
-     //create viewports and scissors
-     const VkPipelineViewportStateCreateInfo _viewport_state_create_info =
-     {
-         
-         VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,                  // Type
-         nullptr,                                                                // Next
-         0,                                                                      // Flags
-         static_cast<uint32_t>(pViewPorts.size()),                               // ViewportCount
-         pViewPorts.data(),                                                      // Viewports
-          static_cast<uint32_t>(pViewPortsScissors.size()),                      // ScissorCount
-         pViewPortsScissors.data()  // Scissors
-     };
-    
-    //create pipeline
-    VkPipelineLayout _pipeline_layout = 0;
-    auto _hr = vkCreatePipelineLayout(
-                                      this->vk_device,
-                                      pPipelineLayoutCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_layout_create_info) : pPipelineLayoutCreateInfo,
-                                      nullptr,
-                                      &_pipeline_layout);
-    if(_hr)
-    {
-        V(S_FALSE, "creating pipeline layout for graphics device: " +
-           this->device_name + " ID:" + std::to_string(this->device_id), this->_name, 3, false, true);
-        return S_FALSE;
-    }
-    
-    //create blend state
-    const VkPipelineColorBlendStateCreateInfo _color_blend_state_create_info = 
-    {
-        VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,                // Type
-        nullptr,                                                                 // Next
-        0,                                                                       // Flags
-        VK_FALSE,                                                                // logicOpEnable
-        VK_LOGIC_OP_COPY,                                                        // logicOp
-        1,                                                                       // attachmentCount
-        pPipelineColorBlendAttachmentState == nullptr ? 
-            &(defaults::vk_default_pipeline_color_blend_attachment_state) : 
-            pPipelineColorBlendAttachmentState,                                  // pAttachments
-        { pBlendColors[0], pBlendColors[1], pBlendColors[2], pBlendColors[3] }   // blendConstants[4]
-    };
-
-    VkGraphicsPipelineCreateInfo _pipeline_create_info =
-    {
-        VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,                        // Type
-        nullptr,                                                                // Next
-        0,                                                                      // Flags
-        static_cast<uint32_t>((*pShaderStages).size()),                         // stageCount
-        (*pShaderStages).data(),                                                // Stages
-        
-        pPipelineVertexInputStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info) : pPipelineVertexInputStateCreateInfo, //vertex input state
-        
-        pPipelineInputAssemblyStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_input_assembly_state_create_info) : pPipelineInputAssemblyStateCreateInfo, //input assembly state
-        
-        nullptr,                                                                // TessellationState
-        
-        &_viewport_state_create_info,                                           // ViewportState
-        
-        pPipelineRasterizationStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_rasterization_state_create_info) : pPipelineRasterizationStateCreateInfo, //RasterizationState
-        
-        pPipelineMultisampleStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_multisample_state_create_info) : pPipelineMultisampleStateCreateInfo, //pMultisampleState
-        
-        nullptr,                                                                // DepthStencilState
-        
-        &_color_blend_state_create_info,                                        //pColorBlendState
-        
-        pPipelineDynamicStateCreateInfo == nullptr ? nullptr : pPipelineDynamicStateCreateInfo,                                    // DynamicState
-       
-        _pipeline_layout,                                                       // Layout
-        _render_pass,                                                           // VkRenderPass
-        0,                                                                      // subpass
-        VK_NULL_HANDLE,                                                         // basePipelineHandle
-       -1                                                                       // basePipelineIndex
-    };
-
-     VkPipeline _pipeline;
-     _hr = vkCreateGraphicsPipelines(this->vk_device,
-                                     VK_NULL_HANDLE,
-                                     1,
-                                     &_pipeline_create_info,
-                                     nullptr,
-                                     &_pipeline);
-     if(_hr)
-     {
-         V(S_FALSE, "creating pipeline for graphics device: " +
-           this->device_name + " ID:" + std::to_string(this->device_id), this->_name, 3, false, true);
-         return S_FALSE;
-     }
-     
-     //release the last pipeline with this name, if exists
-     auto _iter = this->vk_pipelines.find(pPipelineName);
-     if (_iter != this->vk_pipelines.end())
-     {
-         if (_iter->second.pipeline)
-         {
-             vkDestroyPipeline(this->vk_device,
-                               _iter->second.pipeline,
-                               nullptr);
-         }
-         if (_iter->second.layout)
-         {
-             vkDestroyPipelineLayout(this->vk_device,
-                               _iter->second.layout,
-                               nullptr);
-         }
-     }
-     
-     w_pipeline _w_pipeline =
-     {
-         _pipeline,
-         _pipeline_layout
-     };
-     this->vk_pipelines[pPipelineName] = _w_pipeline;
-     
-     return S_OK;
- }
 
 ULONG w_graphics_device::release()
 {
@@ -3153,7 +2883,6 @@ HRESULT w_graphics_device_manager::submit()
 		auto _gDevice = this->graphics_devices[i];
 
         if (_gDevice->_is_released) continue;
-
         
 #if defined(__DX12__) || defined(__DX11__)
 		if (_gDevice->dx_device_removed)

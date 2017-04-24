@@ -18,8 +18,12 @@
 		2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D94B1E79646D00EE8595 /* w_render_export.h */; };
 		2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D94C1E79646D00EE8595 /* w_render_pch.cpp */; };
 		2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D94D1E79646D00EE8595 /* w_render_pch.h */; };
-		2C38D9571E7964BA00EE8595 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
-		2C4CD32F1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
+		2C410E6B1EAE111A003F2E84 /* w_pipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C410E691EAE111A003F2E84 /* w_pipeline.cpp */; };
+		2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C410E6A1EAE111A003F2E84 /* w_pipeline.h */; };
+		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
+		2C70799A1EACE705003784A2 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
+		2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */; };
+		2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C7F0DA51EAD348600F0C700 /* w_render_pass.h */; };
 		2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA31E5F1E80000E71B5 /* libc++.tbd */; };
 		2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA51E5F1E86000E71B5 /* Metal.framework */; };
 		2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */; };
@@ -47,8 +51,12 @@
 		2C38D94D1E79646D00EE8595 /* w_render_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_pch.h; path = ../../../src/wolf.render/w_render_pch.h; sourceTree = "<group>"; };
 		2C38D9541E79649A00EE8595 /* libwolf.system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.dylib; path = ../wolf.system/build/Debug/libwolf.system.dylib; sourceTree = "<group>"; };
 		2C38D9561E7964BA00EE8595 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
+		2C410E691EAE111A003F2E84 /* w_pipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_pipeline.cpp; path = ../../../src/wolf.render/w_graphics/w_pipeline.cpp; sourceTree = "<group>"; };
+		2C410E6A1EAE111A003F2E84 /* w_pipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_pipeline.h; path = ../../../src/wolf.render/w_graphics/w_pipeline.h; sourceTree = "<group>"; };
 		2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_pass.cpp; path = ../../../src/wolf.render/w_graphics/w_render_pass.cpp; sourceTree = "<group>"; };
+		2C7F0DA51EAD348600F0C700 /* w_render_pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_pass.h; path = ../../../src/wolf.render/w_graphics/w_render_pass.h; sourceTree = "<group>"; };
 		2C860FA31E5F1E80000E71B5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		2C860FA51E5F1E86000E71B5 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -67,8 +75,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C4CD32F1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib in Frameworks */,
-				2C38D9571E7964BA00EE8595 /* MoltenVK.framework in Frameworks */,
+				2C70799A1EACE705003784A2 /* MoltenVK.framework in Frameworks */,
+				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
 				2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */,
 				2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */,
@@ -81,6 +89,10 @@
 		2C1B3FF31E97DC5300512959 /* w_graphics */ = {
 			isa = PBXGroup;
 			children = (
+				2C410E691EAE111A003F2E84 /* w_pipeline.cpp */,
+				2C410E6A1EAE111A003F2E84 /* w_pipeline.h */,
+				2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */,
+				2C7F0DA51EAD348600F0C700 /* w_render_pass.h */,
 				2C9899711E9BF6A3002FE161 /* w_buffer.cpp */,
 				2C9899721E9BF6A3002FE161 /* w_buffer.h */,
 				2C98996D1E9B51D6002FE161 /* w_texture.cpp */,
@@ -143,6 +155,7 @@
 			files = (
 				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
 				2C9899661E97EA74002FE161 /* w_mesh.h in Headers */,
+				2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */,
 				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
 				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
 				2C1B3FF71E97DC6500512959 /* w_shader_buffer.h in Headers */,
@@ -151,6 +164,7 @@
 				2C98996A1E9A2EA8002FE161 /* w_command_buffers.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
+				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,10 +227,12 @@
 			files = (
 				2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */,
 				2C9899691E9A2EA8002FE161 /* w_command_buffers.cpp in Sources */,
+				2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */,
 				2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */,
 				2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */,
 				2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */,
 				2C38D9461E79645400EE8595 /* w_game.cpp in Sources */,
+				2C410E6B1EAE111A003F2E84 /* w_pipeline.cpp in Sources */,
 				2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */,
 				2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */,
 				2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */,
