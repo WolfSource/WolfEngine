@@ -126,14 +126,13 @@ void scene::load()
     auto _render_pass_handle = _render_pass.get_handle();
     
     //create frame buffers
-    _hr = _gDevice->create_frame_buffers_collection("frames",
-                                              _render_pass_handle,
-                                              _output_window->vk_swap_chain_image_views.size(),
-                                              _output_window->vk_swap_chain_image_views.data(),
-                                              _output_window->width,
-                                              _output_window->height,
-                                              1,
-                                              _output_window->index);
+    this->_frame_buffers.load(_gDevice,
+                              _render_pass_handle,
+                              _output_window->vk_swap_chain_image_views.size(),
+                              _output_window->vk_swap_chain_image_views.data(),
+                              _output_window->width,
+                              _output_window->height,
+                              1);
     
     std::vector<vertex_data> _vertex_data =
     {
@@ -284,19 +283,17 @@ void scene::load()
     };
 
     _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
-    
-    auto _command_buffers = _output_window->command_buffers.at("render_quad_with_texture");
-    
+
     
     auto _pipeline = this->_pipeline.get_handle();
     auto _pipeline_layout = this->_pipeline.get_layout_handle();
     
     //record clear screen command buffer for every swap chain image
-    for (uint32_t i = 0; i < _command_buffers->get_commands_size(); ++i)
+    for (uint32_t i = 0; i < this->_command_buffers->get_commands_size(); ++i)
     {
         this->_command_buffers->begin(i);
         {
-            auto _command_buffer = _command_buffers->get_command_at(i);
+            auto _command_buffer = this->_command_buffers->get_command_at(i);
         
             VkImageMemoryBarrier _present_to_render_barrier =
             {
@@ -328,7 +325,7 @@ void scene::load()
                 VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,     // VkStructureType                sType
                 nullptr,                                      // const void                    *pNext
                 _render_pass_handle,                            // VkRenderPass                   renderPass
-                _gDevice->vk_frame_buffers["frames"].at(i),                       // VkFramebuffer                  framebuffer
+                this->_frame_buffers.get_frame_buffer_at(i),                       // VkFramebuffer                  framebuffer
                 {                                             // VkRect2D                       renderArea
                     {                                           // VkOffset2D                     offset
                         0,                                          // int32_t                        x
@@ -440,6 +437,7 @@ ULONG scene::release()
     _uniform.release();
     _shader.release();
     this->_pipeline.release();
+    this->_frame_buffers.release();
     
     return w_game::release();
 }

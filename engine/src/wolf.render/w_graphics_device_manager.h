@@ -223,16 +223,6 @@ namespace wolf
 			//get the first and the primary window which was created with this device
 			W_EXP w_output_presentation_window main_window();
             
-            //Create frame buffers collection
-			 W_EXP HRESULT create_frame_buffers_collection(_In_z_ const char* pFrameBufferCollectionName,
-				_In_ const VkRenderPass pRenderPass,
-				_In_ size_t pNumberOfFrameBuffers,
-				_In_ w_image_view pAttachments[],
-				_In_ uint32_t pFrameBufferWidth,
-				_In_ uint32_t pFrameBufferHeight,
-				_In_ uint32_t pNumberOfLayers,
-				_In_ size_t pOutputWindowIndex = 0);
-            
             //Create global command buffer
             W_EXP HRESULT store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,
                                                           _In_ w_command_buffers* pCommandBuffers,
@@ -277,8 +267,6 @@ namespace wolf
                      
             VkDevice                                                vk_device;
 
-            std::map<std::string, std::vector<VkFramebuffer>>		vk_frame_buffers;
-            
             VkCommandPool                                           vk_command_allocator_pool;
             
             //static pipeline defaults

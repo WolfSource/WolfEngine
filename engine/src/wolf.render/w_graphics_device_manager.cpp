@@ -161,66 +161,8 @@ w_output_presentation_window w_graphics_device::main_window()
         return this->output_presentation_windows.at(0);
     }
     
-    //return null window;
+    //return null window;qwwa
 	return w_output_presentation_window();
-}
-
-
-HRESULT w_graphics_device::create_frame_buffers_collection(_In_z_ const char* pFrameBufferCollectionName, 
-	_In_z_ const VkRenderPass pRenderPass,
-	_In_ size_t pNumberOfFrameBuffers,
-	_In_ w_image_view pAttachments[],
-	_In_ uint32_t pFrameBufferWidth,
-	_In_ uint32_t pFrameBufferHeight,
-	_In_ uint32_t pNumberOfLayers,
-	_In_ size_t pOutputWindowIndex)
-{
-    if (!pRenderPass)
-    {
-        logger.error("Render Pass can not be nullptr.");
-        return S_FALSE;
-    }
-
-	//release all frame buffers if exist
-	auto _iter_frames = this->vk_frame_buffers.find(pFrameBufferCollectionName);
-	if (_iter_frames != this->vk_frame_buffers.end())
-	{
-		//we must disable last one 
-		for (size_t i = 0; i < _iter_frames->second.size(); ++i)
-		{
-			vkDestroyFramebuffer(this->vk_device, _iter_frames->second[i], nullptr);
-			_iter_frames->second[i] = 0;
-		}
-	}
-
-	VkFramebuffer _frame_buffer = 0;
-	for (size_t i = 0; i < pNumberOfFrameBuffers; ++i)
-	{
-		VkFramebufferCreateInfo _framebuffer_create_info =
-		{
-			VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,  // Type
-			nullptr,                                    // Next
-			0,                                          // Flags
-			pRenderPass,								// Render pass
-			1,                                          // AttachmentCount
-			&pAttachments[i].view,						// Attachments
-			pFrameBufferWidth,                          // Width
-			pFrameBufferHeight,                         // Height
-			pNumberOfLayers								// Layers
-		};
-
-		auto _hr = vkCreateFramebuffer(this->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
-		if (_hr != VK_SUCCESS)
-		{
-			V(S_FALSE, "creating frame buffer for graphics device: " + this->device_name +
-				" ID:" + std::to_string(this->device_id), this->_name, 3, false, true);
-			return S_FALSE;
-		}
-
-		this->vk_frame_buffers[pFrameBufferCollectionName].push_back(_frame_buffer);
-	}
-
-	return S_OK;
 }
 
 W_EXP HRESULT w_graphics_device::store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,

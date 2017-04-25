@@ -20,6 +20,8 @@
 		2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D94D1E79646D00EE8595 /* w_render_pch.h */; };
 		2C410E6B1EAE111A003F2E84 /* w_pipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C410E691EAE111A003F2E84 /* w_pipeline.cpp */; };
 		2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C410E6A1EAE111A003F2E84 /* w_pipeline.h */; };
+		2C4CCAF31EAE667100E0A422 /* w_frame_buffers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCAF11EAE667100E0A422 /* w_frame_buffers.cpp */; };
+		2C4CCAF41EAE667100E0A422 /* w_frame_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAF21EAE667100E0A422 /* w_frame_buffers.h */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
 		2C70799A1EACE705003784A2 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
 		2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */; };
@@ -53,6 +55,8 @@
 		2C38D9561E7964BA00EE8595 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2C410E691EAE111A003F2E84 /* w_pipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_pipeline.cpp; path = ../../../src/wolf.render/w_graphics/w_pipeline.cpp; sourceTree = "<group>"; };
 		2C410E6A1EAE111A003F2E84 /* w_pipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_pipeline.h; path = ../../../src/wolf.render/w_graphics/w_pipeline.h; sourceTree = "<group>"; };
+		2C4CCAF11EAE667100E0A422 /* w_frame_buffers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_frame_buffers.cpp; path = ../../../src/wolf.render/w_graphics/w_frame_buffers.cpp; sourceTree = "<group>"; };
+		2C4CCAF21EAE667100E0A422 /* w_frame_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_frame_buffers.h; path = ../../../src/wolf.render/w_graphics/w_frame_buffers.h; sourceTree = "<group>"; };
 		2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_pass.cpp; path = ../../../src/wolf.render/w_graphics/w_render_pass.cpp; sourceTree = "<group>"; };
@@ -89,6 +93,8 @@
 		2C1B3FF31E97DC5300512959 /* w_graphics */ = {
 			isa = PBXGroup;
 			children = (
+				2C4CCAF11EAE667100E0A422 /* w_frame_buffers.cpp */,
+				2C4CCAF21EAE667100E0A422 /* w_frame_buffers.h */,
 				2C410E691EAE111A003F2E84 /* w_pipeline.cpp */,
 				2C410E6A1EAE111A003F2E84 /* w_pipeline.h */,
 				2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */,
@@ -154,6 +160,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
+				2C4CCAF41EAE667100E0A422 /* w_frame_buffers.h in Headers */,
 				2C9899661E97EA74002FE161 /* w_mesh.h in Headers */,
 				2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */,
 				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
@@ -234,6 +241,7 @@
 				2C38D9461E79645400EE8595 /* w_game.cpp in Sources */,
 				2C410E6B1EAE111A003F2E84 /* w_pipeline.cpp in Sources */,
 				2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */,
+				2C4CCAF31EAE667100E0A422 /* w_frame_buffers.cpp in Sources */,
 				2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */,
 				2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */,
 			);
