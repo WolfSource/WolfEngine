@@ -29,6 +29,8 @@ namespace wolf
                                _In_ const UINT pVerticesSize,
                                _In_ const unsigned short* const pIndicesData,
                                _In_ const UINT pIndicesSize,
+                               _In_ const void* const pInstancedData = nullptr,
+                               _In_ const UINT pInstancedSize = 0,
                                _In_ bool pStaging = true);
 			//Render mesh
 			W_EXP void render();

@@ -11,7 +11,7 @@
 #define __C_PARSER_H__
 
 #include "w_scene.h"
-#include "w_cpipeline_dll.h"
+#include "w_cpipeline_export.h"
 #include "c_node.h"
 #include "c_bone.h"
 #include "c_extra.h"
@@ -29,7 +29,7 @@ namespace wolf
 				c_parser() {}
 				virtual ~c_parser() {};
 
-				CP_EXP static HRESULT parse_collada_from_file(const std::wstring& pFilePath, _Inout_ wolf::content_pipeline::w_scene* pScene,
+				WCP_EXP static HRESULT parse_collada_from_file(const std::wstring& pFilePath, _Inout_ wolf::content_pipeline::w_scene* pScene,
 					bool pUseTootleFastOptimizeMethod = true, bool pOptimizePoints = true, bool pInvertNormals = false);
 
 			private:

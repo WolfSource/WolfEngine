@@ -8,41 +8,34 @@ c_node* c_node::find_instanced_geomaetry_node()
 {
 	if (!this->instanced_geometry_name.empty()) return this;
 
-	std::for_each(this->nodes.begin(), this->nodes.end(), [](_In_ c_node* pNode)
-	{
-		if (pNode && !pNode->instanced_geometry_name.empty())
-		{
-			return pNode;
-		}
-	});
+    auto _iter =  std::find_if(this->nodes.begin(), this->nodes.end(), [](_In_ c_node* pNode)
+                                {
+                                    return pNode && !pNode->instanced_geometry_name.empty();
+                                });
 
-	return nullptr;
+    return *_iter;
 }
 
 c_node* c_node::find_instanced_geomaetry_node(std::string pGeometryName)
 {
 	if (this->instanced_geometry_name == pGeometryName) return this;
-	std::for_each(this->nodes.begin(), this->nodes.end(), [&pGeometryName](_In_ c_node* pNode)
-	{
-		if (pNode && pNode->instanced_geometry_name == pGeometryName)
-		{
-			return pNode;
-		}
-	});
-	return nullptr;
+    
+    auto _iter =  std::find_if(this->nodes.begin(), this->nodes.end(), [&pGeometryName](_In_ c_node* pNode)
+                                {
+                                    return pNode && pNode->instanced_geometry_name == pGeometryName;
+                                });
+	return *_iter;
 }
 
 c_node* c_node::find_instanced_node_name()
 {
 	if (!this->instanced_node_name.empty()) return this;
-	std::for_each(this->nodes.begin(), this->nodes.end(), [](_In_ c_node* pNode) -> c_node*
-	{
-		if (pNode && !pNode->instanced_node_name.empty())
-		{
-			return pNode;
-		}
-	});
-	return nullptr;
+    
+    auto _iter =  std::find_if(this->nodes.begin(), this->nodes.end(), [](_In_ c_node* pNode)
+                               {
+                                   return pNode && !pNode->instanced_node_name.empty();
+                               });
+	return *_iter;
 }
 
 ULONG c_node::release()

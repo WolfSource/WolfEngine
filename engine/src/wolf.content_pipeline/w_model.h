@@ -2,7 +2,7 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : c_model.h
+	Name			 : w_model.h
 	Description		 : The class of model used in collada
 	Comment          :
 */
@@ -10,7 +10,7 @@
 #ifndef __W_MODEL_H__
 #define __W_MODEL_H__
 
-#include "w_cpipeline_dll.h"
+#include "w_cpipeline_export.h"
 #include <w_object.h>
 #include <vector>
 #include <map>
@@ -91,15 +91,15 @@ namespace wolf
 		class w_model : public wolf::system::w_object
 		{
 		public:
-			CP_EXP w_model();
-			CP_EXP virtual ~w_model();
+			WCP_EXP w_model();
+			WCP_EXP virtual ~w_model();
 
-			CP_EXP struct w_bounding_box
+			WCP_EXP struct w_bounding_box
 			{
 				glm::vec3 min;
 				glm::vec3 max;
 			};
-			CP_EXP struct w_mesh
+			WCP_EXP struct w_mesh
 			{
 				//posX, posY, posZ
 				std::vector<float>				just_vertices_pos;
@@ -111,27 +111,27 @@ namespace wolf
 				w_bounding_box					bounding_box;
 			};
 
-			CP_EXP void update_world();
+			WCP_EXP void update_world();
 			
 #pragma region Getters
 
-			CP_EXP std::string get_name() const										{ return this->_name; }
-			CP_EXP void get_meshes(_Inout_ std::vector<w_mesh*>& pValue) 			{ pValue = this->_meshes; }
-			CP_EXP w_transform_info get_transform() const							{ return this->_transform; }
+			WCP_EXP std::string get_name() const										{ return this->_name; }
+			WCP_EXP void get_meshes(_Inout_ std::vector<w_mesh*>& pValue) 			{ pValue = this->_meshes; }
+			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
 
 #pragma endregion
 
 #pragma region Setters
 
-			CP_EXP void set_name(const std::string& pValue);
-			CP_EXP void set_materials(std::vector<c_material*>& pValue);
-			CP_EXP void set_effects(std::vector<c_effect*>& pValue);
-			CP_EXP void set_transform(w_transform_info& pValue);
+			WCP_EXP void set_name(const std::string& pValue);
+			WCP_EXP void set_materials(std::vector<c_material*>& pValue);
+			WCP_EXP void set_effects(std::vector<c_effect*>& pValue);
+			WCP_EXP void set_transform(w_transform_info& pValue);
 
 #pragma endregion
 
 			//access to private members of instance model from static method
-			class w_model;
+			//class w_model;
 			static w_model* create_model(_In_ collada::c_geometry& pGeometry, _In_ collada::c_skin* pSkin,
 				_In_ std::vector<collada::c_bone*>& pBones, _In_ std::string pBoneNames [], _In_ std::vector<c_material*>& pMaterials,
 				_In_ std::vector<collada::c_node*>& pNodes, _In_ bool pOptimizing, _In_ std::vector<unsigned short>& pOptimizedIndices);

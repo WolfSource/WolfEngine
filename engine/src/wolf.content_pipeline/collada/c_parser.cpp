@@ -27,8 +27,14 @@ HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_
 {
 	auto _hr = S_OK;
 
+#if defined(__WIN32) || defined(__UWP)
+    auto _path = pFilePath;
+#else
+    auto _path = wolf::system::convert::wstring_to_string(pFilePath);
+#endif
+    
 	//open stream of xml 
-	std::ifstream _file(pFilePath);
+	std::ifstream _file(_path);
 	std::stringstream _string_stream;
 	_string_stream << _file.rdbuf();
 	_file.close();
@@ -45,11 +51,11 @@ HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_
 	catch (...)
 	{
 		_hr = S_FALSE;
-		V(_hr, L"Could not parse collada file on following path : " + pFilePath, _trace_class_name, 3);
+        V(_hr, L"Could not parse collada file on following path : " + pFilePath, _trace_class_name, 3);
 	}
 
 	_hr = _process_xml_node(_doc.first_node());
-	V(_hr, L"processing xml node : " + pFilePath, _trace_class_name, 3);
+	//V(_hr, L"processing xml node : " + pFilePath, _trace_class_name, 3);
 	
 	//create scene
 	_create_scene(pScene, pUseTootleFastOptimizeMethod, pOptimizePoints, pInvertNormals);
@@ -82,14 +88,14 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	{
 #pragma region collada headers
 		//check collada version 1.4.1
-		auto _attr = pXNode->first_attribute("xmlns", 0Ui64, false);
+		auto _attr = pXNode->first_attribute("xmlns", 0, false);
 		if (_attr && 0 != std::strcmp(_attr->value(), "http://www.collada.org/2005/11/COLLADASchema"))
 		{
 			logger.error(L"Collada file does not have standard COLLADA header");
 			return S_FALSE;
 		}
 
-		_attr = pXNode->first_attribute("version", 0Ui64, false);
+		_attr = pXNode->first_attribute("version", 0, false);
 		if (_attr && 0 != std::strcmp(_attr->value(), "1.4.1"))
 		{
 			logger.error(L"Collada file does not have standard COLLADA header");

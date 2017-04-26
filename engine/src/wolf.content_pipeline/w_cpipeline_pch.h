@@ -11,8 +11,7 @@
 #ifndef __W_CPIPELINE_PCH_H__
 #define __W_CPIPELINE_PCH_H__
 
-#include "w_cpipeline_dll.h"
-
+#include "w_cpipeline_export.h"
 
 // disable VC++ 2K5 warnings about deprecated standard C functions
 #ifdef _MSC_VER
@@ -25,12 +24,6 @@
 #define __cdecl
 #define _isnan(x) isnan(x)
 #define _finite(x) finite(x)
-#endif
-
-#ifdef WIN32
-//#include <Windows.h>
-//TODO: just for amd-tootle, use glm later
-#include <DirectXMath.h>
 #endif
 
 #include <vector>
@@ -58,6 +51,6 @@
 #include <glm_extention.h>
 
 #include <w_logger.h>
-#include <w_Ireleasable.h>
+#include <w_ireleasable.h>
 
 #endif

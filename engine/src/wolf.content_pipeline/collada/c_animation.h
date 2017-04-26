@@ -190,7 +190,11 @@ namespace wolf
 			{
 				std::array<float, 2> get_control_point(int pStartIndex)
 				{
-					if (pStartIndex > lenght) throw std::exception("pStartIndex out of index range");
+					if (pStartIndex > lenght)
+                    {
+                        logger.error("pStartIndex out of index range");
+                        return std::array<float, 2>() = { 0, 0 };
+                    }
 					std::array<float, 2> _points;
 					_points[0] = data[pStartIndex];
 					_points[1] = data[pStartIndex + 1];

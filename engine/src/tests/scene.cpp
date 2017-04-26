@@ -33,7 +33,7 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
 }
 
 w_texture* _texture = nullptr;
-w_shader_buffer<glm::mat4x4> _uniform;
+w_shader_buffer<glm::mat4x4> _view_projection_uniform;
 w_shader _shader;
 void scene::load()
 {
@@ -42,10 +42,10 @@ void scene::load()
     auto _gDevice =  this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
     
-    auto _hr = _uniform.load(_gDevice);
+    auto _hr = _view_projection_uniform.load(_gDevice);
     
-    _uniform.data = glm::mat4x4(0);
-    _hr = _uniform.update();
+    _view_projection_uniform.data = glm::mat4x4(0);
+    _hr = _view_projection_uniform.update();
     
     //load shaders
     _hr = _shader.load(_gDevice, "/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/content/shaders/test/shader.vs.spv", w_shader_stage::VERTEX_SHADER);
@@ -90,7 +90,7 @@ void scene::load()
     _hr = _texture->initialize_texture_2D_from_file("/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/Logo.jpg", true);
     
     const VkDescriptorImageInfo _image_info = _texture->get_descriptor_info();
-    const VkDescriptorBufferInfo _buffer_info = _uniform.get_descriptor_info();
+    const VkDescriptorBufferInfo _buffer_info = _view_projection_uniform.get_descriptor_info();
     
     auto _descriptor_set = _shader.get_descriptor_set();
     std::vector<VkWriteDescriptorSet> _write_descriptor_sets =
@@ -142,13 +142,16 @@ void scene::load()
         { { 0.7f,  0.7f, 0.0f, 1.0f }, {  1.1f,  1.1f } }
     };
     
+
     this->_mesh = new w_mesh();
     this->_mesh->load(_gDevice,
                      _vertex_data.data(),
                      static_cast<UINT>(_vertex_data.size() * sizeof(vertex_data)),
                      nullptr,
                      0,
-                    true);
+                     nullptr,
+                     0,
+                     true);
     
     std::vector<VkVertexInputBindingDescription> _vertex_binding_descriptions =
     {
@@ -401,8 +404,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     
     if (_jj == 100)
     {
-        _uniform.data = glm::mat4x4(1);
-        auto _hr = _uniform.update();
+        _view_projection_uniform.data = glm::mat4x4(1);
+        auto _hr = _view_projection_uniform.update();
     }
     
     _jj++;
@@ -434,7 +437,7 @@ ULONG scene::release()
    _render_pass.release();
     
     _texture->release();
-    _uniform.release();
+    _view_projection_uniform.release();
     _shader.release();
     this->_pipeline.release();
     this->_frame_buffers.release();

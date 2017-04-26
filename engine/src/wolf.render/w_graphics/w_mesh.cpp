@@ -25,6 +25,8 @@ namespace wolf
                                _In_ const UINT pVerticesSize,
                                _In_ const unsigned short* const pIndicesData,
                                _In_ const UINT pIndicesSize,
+                               _In_ const void* const pInstancedData,
+                               _In_ const UINT pInstancedSize,
                                _In_ bool pStaging)
             {
                 this->_gDevice = pGDevice;
@@ -32,6 +34,10 @@ namespace wolf
                 
                 if(this->_staging)
                 {
+                    if (_create_instanced_staging_buffers(pInstancedData, pInstancedSize))
+                    {
+                        return S_FALSE;
+                    }
                     return _create_staging_buffers(pVerticesData,
                                                    pVerticesSize,
                                                    pIndicesData,
@@ -44,10 +50,10 @@ namespace wolf
                     //vertex buffer is necessary
                     if(pVerticesSize == 0 || pVerticesData == nullptr ||
                        _create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-                       pVerticesData,
-                       pVerticesSize,
-                       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                       this->_vertex_buffer))
+                                      pVerticesData,
+                                      pVerticesSize,
+                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                      this->_vertex_buffer))
                     {
                         return S_FALSE;
                     }
@@ -55,10 +61,10 @@ namespace wolf
                     //index buffer is not necessary
                     if(pIndicesSize && pIndicesData!= nullptr &&
                        _create_buffer(VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-                                  pIndicesData,
-                                  pIndicesSize,
-                                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                                  this->_index_buffer))
+                                      pIndicesData,
+                                      pIndicesSize,
+                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                      this->_index_buffer))
                     {
                         return S_FALSE;
                     }
@@ -88,10 +94,62 @@ namespace wolf
                 
                 return 1;
             }
-            
-            static  std::atomic<uint64_t>                     staging_command_buffers_current_index;
-            
         private:
+            
+            HRESULT _create_instanced_staging_buffers(_In_ const void* const pInstancedData,
+                                                      _In_ const UINT pInstancedSize)
+            {
+                if (!pInstancedData || pInstancedSize == 0) return S_OK;
+                
+                //create DRAM
+                w_buffer _staging_buffer;
+                if(_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                  pInstancedData,
+                                  pInstancedSize,
+                                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                                  _staging_buffer) == S_FALSE)
+                {
+                    return S_FALSE;
+                }
+                
+                
+                // create VRAM buffers
+                if(_create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                  nullptr,
+                                  pInstancedSize,
+                                  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                                  this->_instanced_buffer) == S_FALSE)
+                {
+                    return S_FALSE;
+                }
+        
+                
+                //create one command buffer
+                auto _copy_command_buffer = new w_command_buffers();
+                _copy_command_buffer->load(this->_gDevice, 1);
+                
+                _copy_command_buffer->begin(0);
+                {
+                    auto _copy_cmd = _copy_command_buffer->get_command_at(0);
+                    
+                    VkBufferCopy _copy_region = {};
+                    
+                    // Vertex buffer
+                    _copy_region.size = pInstancedSize;
+                    vkCmdCopyBuffer(_copy_cmd,
+                                    _staging_buffer.get_handle(),
+                                    this->_instanced_buffer.get_handle(),
+                                    1,
+                                    &_copy_region);
+                }
+                _copy_command_buffer->flush(0);
+                
+                SAFE_DELETE(_copy_command_buffer);
+                
+                _staging_buffer.release();
+                
+                return S_OK;
+            }
             
             /*
                 static data such as index buffer or vertex buffer should be stored on device memory
@@ -153,7 +211,7 @@ namespace wolf
                 
                 // create VRAM buffers
                 if(_create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                  pVerticesData,
+                                  nullptr,
                                   pVerticesSize,
                                   VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                   pVertexBuffer) == S_FALSE)
@@ -164,7 +222,7 @@ namespace wolf
                 if(!_there_is_no_index_buffer)
                 {
                     if(_create_buffer(VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                      pVerticesData,
+                                      nullptr,
                                       pVerticesSize,
                                       VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                       pIndexBuffer) == S_FALSE)
@@ -216,7 +274,7 @@ namespace wolf
             }
             
             /*
-                Create host visible buffers for rendering, This will result in poor rendering performance.
+                Create buffers for rendering.
              */
             HRESULT _create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag,
                                    _In_ const void* const pBufferData,
@@ -233,7 +291,7 @@ namespace wolf
                     return S_FALSE;
                 }
                 
-                //we can not access to VRAM
+                //we can not access to VRAM, but we can copy our data to DRAM
                 if (!(pMemoryFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT))
                 {
                     void* _data = nullptr;
@@ -290,23 +348,15 @@ namespace wolf
             std::shared_ptr<w_graphics_device>                  _gDevice;
             w_buffer                                            _vertex_buffer;
             w_buffer                                            _index_buffer;
+            w_buffer                                            _instanced_buffer;
             bool                                                _staging;
         };
     }
 }
 
-std::atomic<uint64_t> w_mesh_pimp::staging_command_buffers_current_index;
-static std::once_flag _initialize_flag;
-
 w_mesh::w_mesh() : _pimp(new w_mesh_pimp())
 {
 	_super::set_class_name("w_mesh");
-    
-    //call once
-    std::call_once(_initialize_flag, []()
-                   {
-                       w_mesh_pimp::staging_command_buffers_current_index = 0;
-                   });
 }
 
 w_mesh::~w_mesh()
@@ -319,14 +369,24 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const UINT pVerticesSize,
                      _In_ const unsigned short* const pIndicesData,
                      _In_ const UINT pIndicesSize,
+                     _In_ const void* const pInstancedData,
+                     _In_ const UINT pInstancedSize,
                      _In_ bool pStaging)
 {
-    return this->_pimp ? this->_pimp->load(pGDevice,
-                                           pVerticesData,
-                                           pVerticesSize,
-                                           pIndicesData,
-                                           pIndicesSize,
-                                           pStaging) : S_FALSE;
+    if (!this->_pimp) return S_FALSE;
+    
+    if (pInstancedData != nullptr && pInstancedSize != 0)
+    {
+        pStaging = true;
+    }
+    return this->_pimp->load(pGDevice,
+                             pVerticesData,
+                             pVerticesSize,
+                             pIndicesData,
+                             pIndicesSize,
+                             pInstancedData,
+                             pInstancedSize,
+                             pStaging);
 }
 
 ULONG w_mesh::release()

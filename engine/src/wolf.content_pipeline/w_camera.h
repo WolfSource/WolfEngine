@@ -1,6 +1,6 @@
 /*
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
+	Source			 : Please direct any bug to https://github.com/WolfSource/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_camera.h
 	Description		 : The base class for camera
@@ -10,7 +10,7 @@
 #ifndef __W_CAMERA_H__
 #define __W_CAMERA_H__
 
-#include "w_cpipeline_dll.h"
+#include "w_cpipeline_export.h"
 #include <glm/matrix.hpp>
 #include <glm/vec3.hpp>
 
@@ -23,52 +23,52 @@ namespace wolf
 		class w_camera
 		{
 		public:
-			CP_EXP w_camera();
-			CP_EXP virtual ~w_camera();
+			WCP_EXP w_camera();
+			WCP_EXP virtual ~w_camera();
 
 			//Update the view matrix
-			CP_EXP void update_view();
+			WCP_EXP void update_view();
 			//Update the projection matrix
-			CP_EXP void update_projection();
+			WCP_EXP void update_projection();
 
 #pragma region Getters
 
-			CP_EXP std::string get_name() const							{ return this->name; };
+			WCP_EXP std::string get_name() const							{ return this->name; };
 			//Get field of view
-			CP_EXP float get_field_of_view() const						{ return this->field_of_view; }
+			WCP_EXP float get_field_of_view() const						{ return this->field_of_view; }
 			//Get aspect ratio of the camera
-			CP_EXP float get_aspect_ratio() const						{ return this->aspect_ratio; }
+			WCP_EXP float get_aspect_ratio() const						{ return this->aspect_ratio; }
 			//Get near plane of the camera
-			CP_EXP float get_near_plane() const							{ return this->near_plane; }
+			WCP_EXP float get_near_plane() const							{ return this->near_plane; }
 			//Get far plane of the camera
-			CP_EXP float get_far_plane() const							{ return this->far_plane; }
+			WCP_EXP float get_far_plane() const							{ return this->far_plane; }
 			//Get view matrix of the camera
-			CP_EXP mat4x4_p get_view() const							{ return this->view; }
+			WCP_EXP mat4x4_p get_view() const							{ return this->view; }
 			//Get projection matrix of the camera
-			CP_EXP mat4x4_p get_projection() const						{ return this->projection; }
+			WCP_EXP mat4x4_p get_projection() const						{ return this->projection; }
 			//Get view * projection matrix of the camera
-			CP_EXP mat4x4_p get_view_projection() const					{ return this->projection * this->view; }
+			WCP_EXP mat4x4_p get_view_projection() const					{ return this->projection * this->view; }
 			//Get position of the camera
-			CP_EXP glm::vec3 get_transform() const						{ return this->transform; }
+			WCP_EXP glm::vec3 get_transform() const						{ return this->transform; }
 			//Get interest of the camera
-			CP_EXP glm::vec3 get_interest() const						{ return this->interest; }
+			WCP_EXP glm::vec3 get_interest() const						{ return this->interest; }
 
 #pragma region 
 
 #pragma region Setters
 
 			//Set name of camera
-			CP_EXP void set_name(const std::string& pName);
+			WCP_EXP void set_name(const std::string& pName);
 			//Set aspect ratio of the camera
-			CP_EXP void set_aspect_ratio(float pAspectRatio);
+			WCP_EXP void set_aspect_ratio(float pAspectRatio);
 			//Set position of the camera
-			CP_EXP void set_transform(float pX, float pY, float pZ);
+			WCP_EXP void set_transform(float pX, float pY, float pZ);
 			//Set position of the camera
-			CP_EXP void set_transform(glm::vec3 pInterest);
+			WCP_EXP void set_transform(glm::vec3 pInterest);
 			//Set camera interest
-			CP_EXP void set_interest(float pX, float pY, float pZ);
+			WCP_EXP void set_interest(float pX, float pY, float pZ);
 			//Set camera interest
-			CP_EXP void set_interest(glm::vec3 pInterest);
+			WCP_EXP void set_interest(glm::vec3 pInterest);
 
 #pragma endregion
 

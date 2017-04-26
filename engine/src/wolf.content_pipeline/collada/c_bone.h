@@ -72,7 +72,7 @@ namespace wolf
 				std::vector<c_animation>	animations;
 
 			private:
-				typedef public wolf::system::w_object _super;
+				typedef  wolf::system::w_object _super;
 			};
 		}
 	}

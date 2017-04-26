@@ -1,0 +1,380 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFC1EB0F54400E0A422 /* c_animation.h */; };
+		2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */; };
+		2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFE1EB0F54400E0A422 /* c_bone.h */; };
+		2C4CCB0B1EB0F54400E0A422 /* c_extra.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFF1EB0F54400E0A422 /* c_extra.h */; };
+		2C4CCB0E1EB0F54400E0A422 /* c_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB021EB0F54400E0A422 /* c_node.cpp */; };
+		2C4CCB0F1EB0F54400E0A422 /* c_node.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB031EB0F54400E0A422 /* c_node.h */; };
+		2C4CCB101EB0F54400E0A422 /* c_obj.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB041EB0F54400E0A422 /* c_obj.h */; };
+		2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB051EB0F54400E0A422 /* c_parser.cpp */; };
+		2C4CCB121EB0F54400E0A422 /* c_parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB061EB0F54400E0A422 /* c_parser.h */; };
+		2C4CCB131EB0F54400E0A422 /* c_skin.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB071EB0F54400E0A422 /* c_skin.h */; };
+		2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */; };
+		2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */; };
+		2C4CCB231EB0F81100E0A422 /* w_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB181EB0F81100E0A422 /* w_camera.cpp */; };
+		2C4CCB241EB0F81100E0A422 /* w_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB191EB0F81100E0A422 /* w_camera.h */; };
+		2C4CCB251EB0F81100E0A422 /* w_content_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB1A1EB0F81100E0A422 /* w_content_manager.cpp */; };
+		2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */; };
+		2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */; };
+		2C4CCB291EB0F81100E0A422 /* w_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB1E1EB0F81100E0A422 /* w_model.cpp */; };
+		2C4CCB2A1EB0F81100E0A422 /* w_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1F1EB0F81100E0A422 /* w_model.h */; };
+		2C4CCB2B1EB0F81100E0A422 /* w_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB201EB0F81100E0A422 /* w_scene.cpp */; };
+		2C4CCB2C1EB0F81100E0A422 /* w_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB211EB0F81100E0A422 /* w_scene.h */; };
+		2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */; };
+		2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2C4CCAFC1EB0F54400E0A422 /* c_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_animation.h; path = ../../../src/wolf.content_pipeline/collada/c_animation.h; sourceTree = "<group>"; };
+		2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_bone.cpp; path = ../../../src/wolf.content_pipeline/collada/c_bone.cpp; sourceTree = "<group>"; };
+		2C4CCAFE1EB0F54400E0A422 /* c_bone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_bone.h; path = ../../../src/wolf.content_pipeline/collada/c_bone.h; sourceTree = "<group>"; };
+		2C4CCAFF1EB0F54400E0A422 /* c_extra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_extra.h; path = ../../../src/wolf.content_pipeline/collada/c_extra.h; sourceTree = "<group>"; };
+		2C4CCB021EB0F54400E0A422 /* c_node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_node.cpp; path = ../../../src/wolf.content_pipeline/collada/c_node.cpp; sourceTree = "<group>"; };
+		2C4CCB031EB0F54400E0A422 /* c_node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_node.h; path = ../../../src/wolf.content_pipeline/collada/c_node.h; sourceTree = "<group>"; };
+		2C4CCB041EB0F54400E0A422 /* c_obj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_obj.h; path = ../../../src/wolf.content_pipeline/collada/c_obj.h; sourceTree = "<group>"; };
+		2C4CCB051EB0F54400E0A422 /* c_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_parser.cpp; path = ../../../src/wolf.content_pipeline/collada/c_parser.cpp; sourceTree = "<group>"; };
+		2C4CCB061EB0F54400E0A422 /* c_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_parser.h; path = ../../../src/wolf.content_pipeline/collada/c_parser.h; sourceTree = "<group>"; };
+		2C4CCB071EB0F54400E0A422 /* c_skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_skin.h; path = ../../../src/wolf.content_pipeline/collada/c_skin.h; sourceTree = "<group>"; };
+		2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_pch.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_pch.cpp; sourceTree = "<group>"; };
+		2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_pch.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_pch.h; sourceTree = "<group>"; };
+		2C4CCB181EB0F81100E0A422 /* w_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_camera.cpp; path = ../../../src/wolf.content_pipeline/w_camera.cpp; sourceTree = "<group>"; };
+		2C4CCB191EB0F81100E0A422 /* w_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_camera.h; path = ../../../src/wolf.content_pipeline/w_camera.h; sourceTree = "<group>"; };
+		2C4CCB1A1EB0F81100E0A422 /* w_content_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_content_manager.cpp; path = ../../../src/wolf.content_pipeline/w_content_manager.cpp; sourceTree = "<group>"; };
+		2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_content_manager.h; path = ../../../src/wolf.content_pipeline/w_content_manager.h; sourceTree = "<group>"; };
+		2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_export.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_export.h; sourceTree = "<group>"; };
+		2C4CCB1E1EB0F81100E0A422 /* w_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_model.cpp; path = ../../../src/wolf.content_pipeline/w_model.cpp; sourceTree = "<group>"; };
+		2C4CCB1F1EB0F81100E0A422 /* w_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_model.h; path = ../../../src/wolf.content_pipeline/w_model.h; sourceTree = "<group>"; };
+		2C4CCB201EB0F81100E0A422 /* w_scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_scene.cpp; path = ../../../src/wolf.content_pipeline/w_scene.cpp; sourceTree = "<group>"; };
+		2C4CCB211EB0F81100E0A422 /* w_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_scene.h; path = ../../../src/wolf.content_pipeline/w_scene.h; sourceTree = "<group>"; };
+		2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vertex_declaration.h; path = ../../../src/wolf.content_pipeline/w_vertex_declaration.h; sourceTree = "<group>"; };
+		2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
+		2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.content_pipeline.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2CD617201E59DA3E006FC5DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2C4CCAFB1EB0F50D00E0A422 /* collada */ = {
+			isa = PBXGroup;
+			children = (
+				2C4CCAFC1EB0F54400E0A422 /* c_animation.h */,
+				2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */,
+				2C4CCAFE1EB0F54400E0A422 /* c_bone.h */,
+				2C4CCAFF1EB0F54400E0A422 /* c_extra.h */,
+				2C4CCB021EB0F54400E0A422 /* c_node.cpp */,
+				2C4CCB031EB0F54400E0A422 /* c_node.h */,
+				2C4CCB041EB0F54400E0A422 /* c_obj.h */,
+				2C4CCB051EB0F54400E0A422 /* c_parser.cpp */,
+				2C4CCB061EB0F54400E0A422 /* c_parser.h */,
+				2C4CCB071EB0F54400E0A422 /* c_skin.h */,
+			);
+			name = collada;
+			sourceTree = "<group>";
+		};
+		2CD6171A1E59DA3E006FC5DC = {
+			isa = PBXGroup;
+			children = (
+				2C4CCAFB1EB0F50D00E0A422 /* collada */,
+				2C4CCB181EB0F81100E0A422 /* w_camera.cpp */,
+				2C4CCB191EB0F81100E0A422 /* w_camera.h */,
+				2C4CCB1A1EB0F81100E0A422 /* w_content_manager.cpp */,
+				2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */,
+				2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */,
+				2C4CCB1E1EB0F81100E0A422 /* w_model.cpp */,
+				2C4CCB1F1EB0F81100E0A422 /* w_model.h */,
+				2C4CCB201EB0F81100E0A422 /* w_scene.cpp */,
+				2C4CCB211EB0F81100E0A422 /* w_scene.h */,
+				2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */,
+				2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */,
+				2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */,
+				2CD617241E59DA3E006FC5DC /* Products */,
+				2CFA170D1E674C850041A83F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2CD617241E59DA3E006FC5DC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2CFA170D1E674C850041A83F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2CD617211E59DA3E006FC5DC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */,
+				2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */,
+				2C4CCB2A1EB0F81100E0A422 /* w_model.h in Headers */,
+				2C4CCB241EB0F81100E0A422 /* w_camera.h in Headers */,
+				2C4CCB101EB0F54400E0A422 /* c_obj.h in Headers */,
+				2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */,
+				2C4CCB0B1EB0F54400E0A422 /* c_extra.h in Headers */,
+				2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */,
+				2C4CCB121EB0F54400E0A422 /* c_parser.h in Headers */,
+				2C4CCB2C1EB0F81100E0A422 /* w_scene.h in Headers */,
+				2C4CCB131EB0F54400E0A422 /* c_skin.h in Headers */,
+				2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */,
+				2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */,
+				2C4CCB0F1EB0F54400E0A422 /* c_node.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		2CD617221E59DA3E006FC5DC /* wolf.content_pipeline.macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "wolf.content_pipeline.macOS" */;
+			buildPhases = (
+				2CD6171F1E59DA3E006FC5DC /* Sources */,
+				2CD617201E59DA3E006FC5DC /* Frameworks */,
+				2CD617211E59DA3E006FC5DC /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = wolf.content_pipeline.macOS;
+			productName = wolf.content_pipeline;
+			productReference = 2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2CD6171B1E59DA3E006FC5DC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = WolfSource.io;
+				TargetAttributes = {
+					2CD617221E59DA3E006FC5DC = {
+						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.content_pipeline.macOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2CD6171A1E59DA3E006FC5DC;
+			productRefGroup = 2CD617241E59DA3E006FC5DC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2CD617221E59DA3E006FC5DC /* wolf.content_pipeline.macOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2CD6171F1E59DA3E006FC5DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C4CCB2B1EB0F81100E0A422 /* w_scene.cpp in Sources */,
+				2C4CCB291EB0F81100E0A422 /* w_model.cpp in Sources */,
+				2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */,
+				2C4CCB0E1EB0F54400E0A422 /* c_node.cpp in Sources */,
+				2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */,
+				2C4CCB251EB0F81100E0A422 /* w_content_manager.cpp in Sources */,
+				2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */,
+				2C4CCB231EB0F81100E0A422 /* w_camera.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2CD6172C1E59DA3E006FC5DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2CD6172D1E59DA3E006FC5DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2CD6172F1E59DA3E006FC5DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.content_pipeline/w_cpipeline_pch.h";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/glm",
+					"$(SRCROOT)/../../../dependencies/rapidxml",
+					"$(SRCROOT)/../../../dependencies/rapidjson",
+					"$(SRCROOT)/../../../src/wolf.system",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2CD617301E59DA3E006FC5DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.content_pipeline/w_cpipeline_pch.h";
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/glm",
+					"$(SRCROOT)/../../../dependencies/rapidxml",
+					"$(SRCROOT)/../../../dependencies/rapidjson",
+					"$(SRCROOT)/../../../src/wolf.system",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.content_pipeline.macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CD6172C1E59DA3E006FC5DC /* Debug */,
+				2CD6172D1E59DA3E006FC5DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "wolf.content_pipeline.macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CD6172F1E59DA3E006FC5DC /* Debug */,
+				2CD617301E59DA3E006FC5DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2CD6171B1E59DA3E006FC5DC /* Project object */;
+}

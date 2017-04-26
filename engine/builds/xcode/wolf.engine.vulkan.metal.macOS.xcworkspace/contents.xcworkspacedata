@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:wolf.content_pipeline/wolf.content_pipeline.macOS.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:wolf.system/wolf.system.macOS.xcodeproj">
    </FileRef>
    <FileRef
