@@ -36,11 +36,11 @@ namespace wolf
             
 #pragma region Getters
             
-            const UINT32                        get_size() const;
-            const VkBufferUsageFlags            get_usage_flags() const;
-            const VkMemoryPropertyFlags         get_memory_flags() const;
-            const VkBuffer                      get_handle() const;
-            const VkDeviceMemory                get_memory() const;
+            W_EXP const UINT32                        get_size() const;
+            W_EXP const VkBufferUsageFlags            get_usage_flags() const;
+            W_EXP const VkMemoryPropertyFlags         get_memory_flags() const;
+            W_EXP const VkBuffer                      get_handle() const;
+            W_EXP const VkDeviceMemory                get_memory() const;
             
 #pragma endregion
             

@@ -17,6 +17,10 @@
 #include <w_graphics/w_shader_buffer.h>
 #include <w_model.h>
 
+#ifdef __GNUC__
+#pragma GCC visibility push(default)
+#endif
+
 namespace wolf
 {
 	namespace framework
@@ -82,5 +86,9 @@ namespace wolf
 			};
     }
 }
+
+#ifdef __GNUC__
+#pragma GCC visibility pop
+#endif
 
 #endif

@@ -31,11 +31,11 @@ namespace wolf
 		{
 		public:
 #if defined(__WIN32)
-            W_EXP w_game(_In_z_ const std::wstring pRootDirectory, _In_z_ const std::wstring pAppName = L"Wolf.Engine");
+            W_EXP w_game(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName = L"Wolf.Engine");
 #elif defined(__UWP)
-            W_EXP w_game(_In_z_ const std::wstring pAppName = L"Wolf.Engine");
+            W_EXP w_game(_In_z_ const std::wstring& pAppName = L"Wolf.Engine");
 #else
-            W_EXP w_game(_In_z_ const std::string pRootDirectory, _In_z_ const std::string pAppName = "Wolf.Engine");
+            W_EXP w_game(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::string& pAppName = "Wolf.Engine");
 #endif
             
 			W_EXP virtual ~w_game();
@@ -57,11 +57,6 @@ namespace wolf
 
 #pragma region Getters
 
-#if defined(__linux) || defined(__ANDROID) || defined(__APPLE__)
-			W_EXP static const std::string get_content_directory() { return _content_directory_path; }
-#else
-			W_EXP static const std::wstring get_content_directory() { return _content_directory_path; }
-#endif
 
 #pragma endregion
 
@@ -95,10 +90,8 @@ namespace wolf
 
 #if defined(__linux) || defined(__ANDROID) || defined(__APPLE__)
 			std::string                                             _app_name;
-			static std::string                                      _content_directory_path;
 #else
 			std::wstring                                            _app_name;
-			static std::wstring                                     _content_directory_path;
 #endif
 
 		};

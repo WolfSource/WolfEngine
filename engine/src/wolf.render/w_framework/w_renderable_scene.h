@@ -14,6 +14,10 @@
 #include <w_scene.h>
 #include "w_renderable_model.h"
 
+#ifdef __GNUC__
+#pragma GCC visibility push(default)
+#endif
+
 namespace wolf
 {
 	namespace framework
@@ -30,10 +34,10 @@ namespace wolf
 
 			W_EXP void get_first_or_default_camera(_Inout_ wolf::content_pipeline::w_camera** pCamera);
             
-            VkBuffer get_vertex_buffer_handle(_In_ const size_t pIndex) const;
-            VkBuffer get_index_buffer_handle(_In_ const size_t pIndex) const;
-            UINT get_vertices_count(_In_ const size_t pIndex) const;
-            UINT get_indices_count(_In_ const size_t pIndex) const;
+            W_EXP VkBuffer get_vertex_buffer_handle(_In_ const size_t pIndex) const;
+            W_EXP VkBuffer get_index_buffer_handle(_In_ const size_t pIndex) const;
+            W_EXP UINT get_vertices_count(_In_ const size_t pIndex) const;
+            W_EXP UINT get_indices_count(_In_ const size_t pIndex) const;
             
 #pragma endregion
 
@@ -52,5 +56,9 @@ namespace wolf
         };
     }
 }
+
+#ifdef __GNUC__
+#pragma GCC visibility pop
+#endif
 
 #endif

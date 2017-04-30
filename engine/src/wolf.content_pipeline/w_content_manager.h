@@ -28,7 +28,7 @@ namespace wolf
 			static T* load(std::wstring pAssetPath)
 			{
 #if defined(__WIN32) || defined(__UWP)
-                auto _file_exists = wolf::system::io::get_is_fileW(pAssetPath.c_str());
+                auto _file_exists = wolf::system::io::get_is_file(pAssetPath.c_str());
 #else
                 auto _path = wolf::system::convert::wstring_to_string(pAssetPath);
                 auto _file_exists = wolf::system::io::get_is_file(_path.c_str());

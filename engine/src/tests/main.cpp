@@ -1,10 +1,11 @@
 #include "pch.h"
 #include <w_window.h>
+#include "scene.h"
 
 using namespace std;
 
 static std::unique_ptr<w_window> sWindow;
-//static std::unique_ptr<scene> sScene;
+static std::unique_ptr<scene> sScene;
 
 static void release()
 {
@@ -39,26 +40,31 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		return DefWindowProc(pHWND, pMsg, pWParam, pLParam);// sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
 	};
 
-	//Initialize scene & window
-	//sScene = make_unique<scene>();
+	//Initialize window
 	sWindow = make_unique<w_window>();
-	sWindow->set_width(1920);
-	sWindow->set_height(1080);
-	//iniatilize window
+	sWindow->set_width(800);
+	sWindow->set_height(600);
 	sWindow->initialize(_msg_proc_func);
 
-	//run the main loop
-	std::map<int, vector<w_window_info>> _windowsInfo = {
-		{
-			0,
-			{
-				{ sWindow->get_HWND(), sWindow->get_HINSTANCE(), sWindow->get_width(), sWindow->get_height() }
-			}
-		}
-	};
-	std::function<void(void)> _run_func = [&_windowsInfo]()->void
+	//run the vulkan sample
+	w_window_info _window_info;
+	_window_info.width = sWindow->get_width();
+	_window_info.height = sWindow->get_height();
+	_window_info.hwnd = sWindow->get_HWND();
+	_window_info.hInstance = sWindow->get_HINSTANCE();
+
+	//call init_window from objective-c and get the pointer to the window
+	std::map<int, std::vector<w_window_info>> _windows_info;
+	_windows_info.insert({ 0,{ _window_info } });
+
+	//Initialize and run scene
+	auto _running_dir = wolf::system::io::get_current_directoryW();
+	content_path = _running_dir + L"../../../../content/";
+	
+	sScene = make_unique<scene>(_running_dir, L"wolf.engine.vulkan.test");
+	std::function<void(void)> _run_func = [&_windows_info]()->void
 	{
-		//sScene->run(_windowsInfo);
+		sScene->run(_windows_info);
 	};
 
 	sWindow->run(_run_func);

@@ -29,7 +29,6 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_parser.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_camera.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_content_manager.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -64,7 +63,7 @@
     <ProjectGuid>{1C266BC7-AF7E-43E2-9CC9-4F6954295928}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Wolf_ContentPipeline_Win32</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

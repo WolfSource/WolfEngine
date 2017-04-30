@@ -44,8 +44,13 @@ namespace wolf
 
 			//Create shader from binary file
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                            _In_z_ const char* pShaderBinaryPath, _In_ const w_shader_stage pShaderStage,
-                            _In_z_ const char* pMainFunctionName = "main");
+#if defined(__WIN32) || defined(__UWP)
+							   _In_z_ const std::wstring& pShaderBinaryPath,
+#else
+							   _In_z_ const std::string& pShaderBinaryPath,
+#endif
+				               _In_ const w_shader_stage pShaderStage,
+                               _In_z_ const char* pMainFunctionName = "main");
             
             //Create decriptor pool
             W_EXP HRESULT create_descriptor_pool(_In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize);

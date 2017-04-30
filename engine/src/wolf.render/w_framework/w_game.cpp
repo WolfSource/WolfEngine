@@ -6,18 +6,12 @@ using namespace std;
 //using namespace wolf::graphics;
 using namespace wolf::framework;
 
-#if defined(__linux) || defined(__ANDROID) || defined(__APPLE__) || defined(__IOS__)
-std::string w_game::_content_directory_path = "";
-#else
-std::wstring w_game::_content_directory_path = L"";
-#endif
-
 #if defined(__WIN32)
-w_game::w_game(_In_z_ const std::wstring pRootDirectory) :
+w_game::w_game(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
 #elif defined(__UWP)
-w_game::w_game(_In_z_ const std::wstring pAppName) :
+w_game::w_game(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
 #else
-w_game::w_game(_In_z_ const std::string pRootDirectory, _In_z_ const std::string pAppName) :
+w_game::w_game(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::string& pAppName) :
 #endif
 	exiting(false),
         _app_name(pAppName)
@@ -28,13 +22,7 @@ w_game::w_game(_In_z_ const std::string pRootDirectory, _In_z_ const std::string
 #ifdef __UWP
 	logger.initialize(this->_app_name);
 #else
-    logger.initialize(this->_app_name, pRootDirectory);
-#endif
-
-#if defined(__WIN32) || defined(__UWP)
-    _content_directory_path = wolf::system::io::get_content_directoryW();
-#else
-    _content_directory_path = wolf::system::io::get_content_directory();
+    logger.initialize(this->_app_name, pRunningDirectory);
 #endif
 }
 

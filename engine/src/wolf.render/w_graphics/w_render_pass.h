@@ -45,7 +45,7 @@ namespace wolf
             
 #pragma region Getters
 
-            const VkRenderPass get_handle() const;
+			W_EXP const VkRenderPass get_handle() const;
             
 #pragma endregion
 

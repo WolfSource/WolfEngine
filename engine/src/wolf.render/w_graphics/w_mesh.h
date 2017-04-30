@@ -33,9 +33,7 @@ namespace wolf
                                _In_ const void* const pInstancedData = nullptr,
                                _In_ const UINT pInstancedSize = 0,
                                _In_ bool pStaging = true);
-			//Render mesh
-			W_EXP void render();
-                        
+                       
 			//Release all resources
 			W_EXP virtual ULONG release() override;
 

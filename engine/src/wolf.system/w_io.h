@@ -97,8 +97,8 @@ namespace wolf
 				});
 			}
 
-			inline Concurrency::task<Windows::Storage::StorageFolder^> create_directory_async(_In_ Windows::Storage::StorageFolder^ pSourceFolder, 
-				_In_z_ Platform::String^ pFolderNameShoudBeCreated, 
+			inline Concurrency::task<Windows::Storage::StorageFolder^> create_directory_async(_In_ Windows::Storage::StorageFolder^ pSourceFolder,
+				_In_z_ Platform::String^ pFolderNameShoudBeCreated,
 				_In_ Windows::Storage::CreationCollisionOption pCreationCollisionOption = Windows::Storage::CreationCollisionOption::FailIfExists)
 			{
 				return Concurrency::create_task(pSourceFolder->CreateFolderAsync(pFolderNameShoudBeCreated, pCreationCollisionOption));
@@ -128,12 +128,6 @@ namespace wolf
 			}
 
 #endif //__WIN32
-            
-			//Get the content directory path 
-			inline const std::wstring get_content_directoryW()
-			{
-				return get_current_directoryW() + L"Content\\";
-			}
 
 			//check whether a file does exist or not
 			inline HRESULT get_is_file(_In_z_ const char* pPath)
@@ -237,13 +231,15 @@ namespace wolf
 			1 means everything is ok
 			-1 means the file could not be found,
 			-2 means file is exist but could not open
+			-3 means file is to big to handle
 			*/
-			inline HRESULT read_binary_file(_In_z_ const wchar_t* pPath, _Inout_ std::unique_ptr<unsigned char[]>& pData,
-				_Out_ size_t* pDataSize, _Out_ int& pFileState)
+			inline void read_binary_file(_In_z_ const wchar_t* pPath, _Inout_ std::vector<uint8_t>& pData,
+				_Out_ int& pFileState)
 			{
-				if (pFileState = get_is_file(pPath) && !pFileState)
+				if (get_is_file(pPath) == S_FALSE)
 				{
-					return S_FALSE;
+					pFileState = -1;
+					return;
 				}
 
 				// Open the file.
@@ -253,8 +249,11 @@ namespace wolf
 				ScopedHandle _hFile(safe_handle(CreateFileW(_path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)));
 #endif //(_WIN32_WINNT >= 0x0602 /*_WIN32_WINNT_WIN8*/)
 
-				if (!_hFile) return HRESULT_FROM_WIN32(GetLastError());
-
+				if (!_hFile)
+				{
+					pFileState = -2;
+					return;// HRESULT_FROM_WIN32(GetLastError());
+				}
 				// Get the file size.
 				LARGE_INTEGER _file_size = { 0 };
 
@@ -263,7 +262,8 @@ namespace wolf
 
 				if (!GetFileInformationByHandleEx(_hFile.get(), FileStandardInfo, &fileInfo, sizeof(fileInfo)))
 				{
-					return HRESULT_FROM_WIN32(GetLastError());
+					pFileState = -2;
+					return;// HRESULT_FROM_WIN32(GetLastError());
 				}
 
 				_file_size = fileInfo.EndOfFile;
@@ -274,51 +274,49 @@ namespace wolf
 				// File is too big for 32-bit allocation, so reject read.
 				if (_file_size.HighPart > 0)
 				{
-					return E_FAIL;
+					pFileState = -3;
+					return;// E_FAIL;
 				}
 
-				// Create enough space for the file data.
-				pData.reset(new unsigned char[_file_size.LowPart]);
-
-				if (!pData)
-				{
-					return E_OUTOFMEMORY;
-				}
 				// Read the data in.
 				DWORD _bytesRead = 0;
 
-				if (!ReadFile(_hFile.get(), pData.get(), _file_size.LowPart, &_bytesRead, nullptr))
+				auto _file_data = static_cast<uint8_t*>(malloc(_file_size.LowPart * sizeof(uint8_t)));
+				if (!ReadFile(_hFile.get(), _file_data, _file_size.LowPart, &_bytesRead, nullptr))
 				{
-					return HRESULT_FROM_WIN32(GetLastError());
+					pFileState = -2;
+					return;// HRESULT_FROM_WIN32(GetLastError());
 				}
 
 				if (_bytesRead < _file_size.LowPart)
 				{
-					return E_FAIL;
+					pFileState = -2;
+					return;// E_FAIL;
 				}
 
-				*pDataSize = _bytesRead;
-
-				return S_OK;
+				// Create enough space for the file data.
+				pData.reserve(_file_size.LowPart);
+				std::copy(&_file_data[0], &_file_data[_file_size.LowPart], std::back_inserter(pData));
+				free(_file_data);
 			}
 
 #endif //__WIN32
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
-                        
+
 #if defined(__linux) || defined(__APPLE__)
-                        //get current working directory
-            inline const std::string get_current_directory()
+			//get current working directory
+			inline const std::string get_current_directory()
 			{
-                char _current_working_dir[4096];
-                if (getcwd(_current_working_dir, sizeof(_current_working_dir)) != NULL)
-                {
-                    return std::string(_current_working_dir);
-                }
-                return "";
+				char _current_working_dir[4096];
+				if (getcwd(_current_working_dir, sizeof(_current_working_dir)) != NULL)
+				{
+					return std::string(_current_working_dir);
+				}
+				return "";
 			}
-                        
-                        //Get the content directory path 
+
+			//Get the content directory path 
 			inline const std::string get_content_directory()
 			{
 				return get_current_directory() + "Content\\";
@@ -328,7 +326,7 @@ namespace wolf
 			inline HRESULT get_is_file(_In_z_ const char* pPath)
 			{
 				struct stat _stat;
-                auto _result = stat(pPath, &_stat);
+				auto _result = stat(pPath, &_stat);
 				return _result == -1 ? S_FALSE : S_OK;
 			}
 
@@ -379,9 +377,9 @@ namespace wolf
 
 				return _hr;
 			}
-                        
+
 #endif
-			 
+
 			//Get a unique name - format: mm-dd-year-hour-min-sec
 			inline std::string get_unique_name()
 			{
@@ -399,14 +397,14 @@ namespace wolf
 					<< _now.tm_hour << "-" << _now.tm_min << "-" << _now.tm_sec;
 
 				auto _name = _ss.str();
-				
+
 				//Clear sstream
 				_ss.clear();
 				_ss.str(std::string());
 
 				return _name;
 			}
-			
+
 			//Get a unique name - format: mm-dd-year-hour-min-sec
 			inline std::wstring get_unique_nameW()
 			{
@@ -426,7 +424,7 @@ namespace wolf
 					|| (pPath.size() == 2 && pPath[0] == __FS_PERIOD && pPath[1] == __FS_PERIOD)	// only ..
 					? "" : pPath.substr(_index));
 			}
-			
+
 			// pick off .extension in filename, including dot
 			inline std::wstring get_file_extentionW(_In_z_ std::wstring pPath)
 			{
@@ -614,8 +612,8 @@ namespace wolf
 
 				// get its size:
 				//std::streampos _file_size;
-                                size_t _data_size = 0;
-                                
+				size_t _data_size = 0;
+
 				_file.seekg(0, std::ios::end);
 				_data_size = static_cast<size_t>(_file.tellg());
 				_file.seekg(0, std::ios::beg);
@@ -624,11 +622,13 @@ namespace wolf
 				pData.reserve(_data_size);
 
 				// read the data:
-				std::copy(std::istream_iterator<unsigned char>(_file),
-					std::istream_iterator<unsigned char>(),
+				std::copy(std::istream_iterator<uint8_t>(_file),
+					std::istream_iterator<uint8_t>(),
 					std::back_inserter(pData));
 
-                        }
+			}
+
+			
 		}
 	}
 }

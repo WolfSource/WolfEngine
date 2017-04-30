@@ -619,6 +619,8 @@ void c_parser::_get_vertices(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geomet
 				if (_source[0] == '#') _source = _source.erase(0, 1);
 				_c_semantic->source = _source;
 
+				_c_semantic->offset = pGeometry.vertices->semantics.size();
+
 				pGeometry.vertices->semantics.push_back(_c_semantic);
 			}
 		}
@@ -642,25 +644,42 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geome
 
 		if (_node_name == "input")
 		{
-			std::string _source, _offset, _semantic;
+			std::string _source_str, _offset_str, _semantic_str;
 
-			_get_node_attribute_value(_child, "source", _source);
-			_get_node_attribute_value(_child, "offset", _offset);
-			_get_node_attribute_value(_child, "semantic", _semantic);
+			_get_node_attribute_value(_child, "source", _source_str);
+			_get_node_attribute_value(_child, "offset", _offset_str);
+			_get_node_attribute_value(_child, "semantic", _semantic_str);
 
-			if (_source != "" && _offset != "" && _semantic != "")
+			if (_source_str != "" && _offset_str != "" && _semantic_str != "")
 			{
-				if (_source[0] == '#') _source = _source.erase(0, 1);
-				
-				if (pGeometry.vertices->id != _source)
-				{
-					auto _c_semantic = new c_semantic();
-					if (_semantic[0] == '#') _semantic = _semantic.erase(0, 1);
-					_c_semantic->offset = _triangles->semantics.size();
-					_c_semantic->source = _source;
-					_c_semantic->semantic = _semantic;
+				if (_source_str[0] == '#') _source_str = _source_str.erase(0, 1);
+				int _offset_val = atoi(_offset_str.c_str());
 
-					_triangles->semantics.push_back(_c_semantic);
+				if (pGeometry.vertices->id != _source_str)
+				{
+					/*
+						If we already added an offset index for any other semantic, then skip this semantic
+						DAE without UV which has exported from Maya cause this problem
+					*/
+					for (size_t i = 0; i < _triangles->semantics.size(); ++i)
+					{
+						if (_triangles->semantics[i]->offset == _offset_val)
+						{
+							_offset_val = -1;
+							break;
+						}
+					}
+
+					if (_offset_val != -1)
+					{
+						auto _c_semantic = new c_semantic();
+						if (_semantic_str[0] == '#') _semantic_str = _semantic_str.erase(0, 1);
+						_c_semantic->offset = _triangles->semantics.size();
+						_c_semantic->source = _source_str;
+						_c_semantic->semantic = _semantic_str;
+
+						_triangles->semantics.push_back(_c_semantic);
+					}
 				}
 				else
 				{
@@ -671,7 +690,7 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geome
 		else if (_node_name == "p")
 		{
             //wolf::system::convert::find_all_numbers_then_convert_to<float>(_float_array_str, _source->float_array);
-			wolf::system::convert::find_all_numbers_then_convert_to<unsigned short>(_child->value(), _triangles->indices);
+			wolf::system::convert::find_all_numbers_then_convert_to<UINT>(_child->value(), _triangles->indices);
 		}
 	}
 

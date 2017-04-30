@@ -36,8 +36,8 @@ namespace wolf
             
 #pragma region Getters
 
-            const VkFramebuffer get_frame_buffer_at(_In_ size_t pIndex) const;
-            const size_t get_frame_buffers_size() const;
+            W_EXP const VkFramebuffer get_frame_buffer_at(_In_ size_t pIndex) const;
+            W_EXP const size_t get_frame_buffers_size() const;
             
 #pragma endregion
 

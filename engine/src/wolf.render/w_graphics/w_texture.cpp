@@ -2,8 +2,8 @@
 #include "w_texture.h"
 #include <w_convert.h>
 #include <w_io.h>
-#include <w_buffer.h>
-#include <w_command_buffers.h>
+#include "w_buffer.h"
+#include "w_command_buffers.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -54,7 +54,7 @@ namespace wolf
                 using namespace system::io;
                 
 #if defined(__WIN32) || defined(__UWP)
-                auto _path = ( pIsAbsolutePath ? L"" : get_content_directoryW() ) + pPath;
+                auto _path = ( pIsAbsolutePath ? L"" : content_path ) + pPath;
                 auto _ext = get_file_extentionW(_path.c_str());
 #else
                 auto _path = ( pIsAbsolutePath ? "" : get_content_directory() ) + pPath;
@@ -71,20 +71,28 @@ namespace wolf
                     int _file_status = -1;
                     system::io::read_binary_file(_path.c_str(), data, _file_status);
                     if (_file_status != 1)
-                    {
-                        string msg = "";
-                        if (_file_status == -1)
-                        {
-                            msg = "Could not find the texture file: ";
-                        }
-                        else
-                        {
-                            msg = "Texture file is corrupted: ";
-                        }
-                        
+                    {                        
 #if defined(__WIN32) || defined(__UWP)
+						wstring msg = L"";
+						if (_file_status == -1)
+						{
+							msg = L"Could not find the texture file: ";
+						}
+						else
+						{
+							msg = L"Texture file is corrupted: ";
+						}
                         V(S_FALSE, msg + _path, this->_name, 3);
 #else
+						string msg = "";
+						if (_file_status == -1)
+						{
+							msg = "Could not find the texture file: ";
+						}
+						else
+						{
+							msg = "Texture file is corrupted: ";
+						}
                         V(S_FALSE, msg + _path, this->_name, 3);
 #endif
                         
@@ -101,12 +109,12 @@ namespace wolf
                 else if (_ext == L".jpg" || _ext == L".bmp" || _ext == L".png" || _ext == L".psd" || _ext == L".tga")
                 {
                     if (S_FALSE == system::io::get_is_file(_path.c_str()))
-                    {
-                        string msg = "could not find the texture file: ";
-                        
+                    {                        
 #if defined(__WIN32) || defined(__UWP)
+						wstring msg = L"could not find the texture file: ";
                         V(S_FALSE, msg + _path, this->_name, 3);
 #else
+						string msg = "could not find the texture file: ";
                         V(S_FALSE, msg + _path, this->_name, 3);
 #endif
                         return S_FALSE;
@@ -122,11 +130,11 @@ namespace wolf
                             
                             if (this->_width == 0 || this->_height == 0)
                             {
-                                string msg = "Width or Height of texture file is zero: ";
-                                
 #if defined(__WIN32) || defined(__UWP)
+								wstring msg = L"Width or Height of texture file is zero: ";
                                 V(S_FALSE, msg + _path, this->_name, 3);
 #else
+								string msg = "Width or Height of texture file is zero: ";
                                 V(S_FALSE, msg + _path, this->_name, 3);
 #endif
                                 return S_FALSE;
@@ -144,8 +152,8 @@ namespace wolf
                                                  this->_memory,
                                                  0 ))
                             {
-                                V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
-                                  " ID: " + std::to_string(this->_gDevice->device_name), this->_name, 3, false, true);
+								V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
+									" ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
                                 return S_FALSE;
                             }
                             
@@ -164,12 +172,12 @@ namespace wolf
                             stbi_image_free(_rgba);
                         }
                         else
-                        {
-                            string msg = "texture file is corrupted: ";
-                            
+                        {  
 #if defined(__WIN32) || defined(__UWP)
-                            V(S_FALSE, msg + _path, this->name, 3);
+							wstring msg = L"texture file is corrupted: ";
+                            V(S_FALSE, msg + _path, this->_name, 3);
 #else
+							string msg = "texture file is corrupted: ";
                             V(S_FALSE, msg + _path, this->_name, 3);
 #endif
                             return S_FALSE;
@@ -231,7 +239,7 @@ namespace wolf
                 if (_hr)
                 {
                     V(S_FALSE, "creating VkImage for graphics device: " + this->_gDevice->device_name +
-                      " ID: " + std::to_string(this->_gDevice->device_name), this->_name, 3, false, true);
+                      " ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
                     return S_FALSE;
                 }
                 

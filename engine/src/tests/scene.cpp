@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "scene.h"
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_command_buffers.h>
@@ -18,8 +19,16 @@ struct vertex_data
     //float uv[2];
 };
 
-scene::scene(_In_z_ std::string pRootDirectory, _In_z_ std::string pAppName) :
-    w_game(pRootDirectory, pAppName)
+#if defined(__WIN32)
+scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
+	w_game(pRunningDirectory, pAppName)
+#elif defined(__UWP)
+scene::scene(_In_z_ const std::wstring& pAppName):
+	w_game(pAppName)
+#else
+scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::string& pAppName):
+	w_game(pRunningDirectory, pAppName)
+#endif
 {
     w_game::set_fixed_time_step(false);
 }
@@ -46,7 +55,7 @@ void scene::load()
     
     w_game::load();
     
-    auto _scene = w_content_manager::load<w_scene>(L"/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/content/models/plan_maya.dae");
+    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/plan_3dmax.dae");
     this->_renderable_scene = new w_renderable_scene(_scene);
     this->_renderable_scene->load(_gDevice);
     this->_renderable_scene->get_first_or_default_camera(&this->_camera);
@@ -62,8 +71,8 @@ void scene::load()
     _hr = _view_projection_uniform.update();
     
     //load shaders
-    _hr = _shader.load(_gDevice, "/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/content/shaders/test/shader.vs.spv", w_shader_stage::VERTEX_SHADER);
-    _hr = _shader.load(_gDevice, "/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/content/shaders/test/shader.fs.spv", w_shader_stage::FRAGMENT_SHADER);
+    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader.vs.spv", w_shader_stage::VERTEX_SHADER);
+    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader.fs.spv", w_shader_stage::FRAGMENT_SHADER);
     
     std::vector<VkDescriptorPoolSize> _descriptor_pool_sizes =
     {

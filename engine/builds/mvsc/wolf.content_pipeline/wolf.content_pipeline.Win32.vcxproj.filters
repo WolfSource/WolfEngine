@@ -17,7 +17,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_camera.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_content_manager.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_model.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_scene.cpp" />

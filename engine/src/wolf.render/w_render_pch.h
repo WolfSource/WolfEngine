@@ -34,12 +34,14 @@
 
 #ifdef __DX12__
 #include <d3d12.h>
-#else
+#elif defined(__DX11__)
 #include <d3d11_3.h>
 #endif
 
+#if defined(__DX12__) || defined(__DX11__)
 #include <dxgi1_4.h>
 #include <DirectXMath.h>
+#endif
 
 #endif
 

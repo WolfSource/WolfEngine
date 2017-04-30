@@ -43,8 +43,8 @@ namespace wolf
             
 #pragma region Getters
 
-            const VkPipeline get_handle() const;
-            const VkPipelineLayout get_layout_handle() const;
+			W_EXP const VkPipeline get_handle() const;
+			W_EXP const VkPipelineLayout get_layout_handle() const;
             
 #pragma endregion
 

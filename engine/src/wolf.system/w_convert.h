@@ -250,6 +250,12 @@ namespace wolf
                         continue;
                     }
                 }
+
+				if (_number.size())
+				{
+					substr_function(_number, 0, _number.size(), pResult);
+					_number.clear();
+				}
             }
 
 #pragma endregion
@@ -338,6 +344,12 @@ namespace wolf
                         continue;
                     }
                 }
+
+				if (_number.size())
+				{
+					substr_function(_number, 0, _number.size(), pResult);
+					_number.clear();
+				}
             }
             
 #endif

@@ -197,6 +197,20 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 		std::map<int, int> _dic1;
 		std::vector<std::vector<int>> _l1;
 
+		//uint32_t _faces = 0;
+		//if (_ind)
+		//{
+		//	_faces = (_pos_source->float_array.size() / _ind) - 2;
+		//}
+		//std::vector<UINT> _indices;
+		//_indices.reserve(_faces * 3);
+
+		// 1 1 3 
+		// 3 0 0 
+		// 0 0 3 
+		// 3 2 2
+		//  1 1 3 3 0 0 0 0 3 3 2 2
+
 		//read indices
 		for (int i = 0; i < _triangle->indices.size(); i += _ind)
 		{
@@ -265,6 +279,8 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 							}
 							else
 							{
+								logger.warning("Duplicated vertex with different uv for model: " + pGeometry.name);
+
 								_dic1[_vertices_size] = j;
 								bool _done = false;
 								for (auto int1 : _normal_list)

@@ -23,27 +23,37 @@ namespace wolf
             }
             
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                         _In_z_ const char* pShaderBinaryPath,
+#if defined(__WIN32) || defined(__UWP)
+						 _In_z_ const std::wstring& pShaderBinaryPath,
+#else
+				         _In_z_ const std::string& pShaderBinaryPath,
+#endif
                          _In_ const w_shader_stage pShaderStage,
                          _In_z_ const char* pMainFunctionName)
             {
                 this->_gDevice = pGDevice;
-                auto _shader_path = std::string(pShaderBinaryPath);
-                
+				               
                 std::vector<unsigned char> _shader_binary_code;
-                int _file_state = 0;
-                
-                system::io::read_binary_file(_shader_path.c_str(), _shader_binary_code, _file_state);
+                int _file_state = 1;
+                system::io::read_binary_file(pShaderBinaryPath.c_str(), _shader_binary_code, _file_state);
                 if(_file_state != 1)
                 {
                     if(_file_state == -1)
                     {
-                        logger.error("Shader on following path: " + _shader_path +  " not exists.");
+#if defined(__WIN32) || defined(__UWP)
+						logger.error(L"Shader on following path: " + pShaderBinaryPath + L" not exists.");
+#else
+						logger.error("Shader on following path: " + pShaderBinaryPath + " not exists.");
+#endif
                         return S_FALSE;
                     }
                     if(_file_state == -2)
                     {
-                        logger.error("Shader on following path: " + _shader_path +  " exists but could not open.");
+#if defined(__WIN32) || defined(__UWP)
+						logger.error(L"Shader on following path: " + pShaderBinaryPath + L" exists but could not open.");
+#else
+						logger.error("Shader on following path: " + pShaderBinaryPath + " exists but could not open.");
+#endif
                         return S_FALSE;
                     }
                 }
@@ -65,8 +75,13 @@ namespace wolf
                                                 &_shader_module);
                 if(_hr)
                 {
-                    V(S_FALSE, "creating shader module for shader on following path: " + _shader_path + ".",
-                      this->_name, 3, false, true);
+#if defined(__WIN32) || defined(__UWP)
+					V(S_FALSE, L"creating shader module for shader on following path: " + pShaderBinaryPath,
+						this->_name, 3, false, true);
+#else
+					V(S_FALSE, "creating shader module for shader on following path: " + pShaderBinaryPath,
+						this->_name, 3, false, true);
+#endif
                     return S_FALSE;
                 }
                 
@@ -269,7 +284,11 @@ w_shader::~w_shader()
 }
 
 HRESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-        _In_z_ const char* pShaderBinaryPath,
+#if defined(__WIN32) || defined(__UWP)
+		_In_z_ const std::wstring& pShaderBinaryPath,
+#else
+        _In_z_ const std::string& pShaderBinaryPath,
+#endif
         _In_ const w_shader_stage pShaderStage,
         _In_z_ const char* pMainFunctionName) 
 {

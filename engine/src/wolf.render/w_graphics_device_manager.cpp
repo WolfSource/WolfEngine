@@ -1265,7 +1265,7 @@ namespace wolf
 #endif
 
 #ifdef __WIN32
-							_out_window.HWND = _window.hwnd;
+							_out_window.hwnd = _window.hwnd;
 							_out_window.hInstance = _window.hInstance;
 #elif defined(__ANDROID)
 							_out_window.window = _window.window;
@@ -1281,14 +1281,17 @@ namespace wolf
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
 							VkWin32SurfaceCreateInfoKHR surface_create_info =
 							{
-								VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,    // VkStructureType                  sType
-								nullptr,                                            // const void                      *pNext
-								0,                                                  // VkWin32SurfaceCreateFlagsKHR     flags
-								_out_window.Instance,                               // HINSTANCE                        hinstance
-								_out_window.Handle                                  // HWND                             hwnd
+								VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,    // Type
+								nullptr,                                            // Next
+								0,                                                  // Flags
+								_out_window.hInstance,                              // Hinstance
+								_out_window.hwnd                                    // Hwnd
 							};
 
-							_hr = vkCreateWin32SurfaceKHR(Vulkan.Instance, &surface_create_info, nullptr, &Vulkan.PresentationSurface);
+							_hr = vkCreateWin32SurfaceKHR(w_graphics_device::vk_instance, 
+														  &surface_create_info, 
+														  nullptr, 
+								                          &_out_window.vk_presentation_surface);
 							if (_hr)
 							{
 								logger.write(_msg);
@@ -1301,11 +1304,11 @@ namespace wolf
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
 							VkXcbSurfaceCreateInfoKHR _surface_create_info =
 							{
-								VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,      // VkStructureType                  sType
-								nullptr,                                            // const void                      *pNext
-								0,                                                  // VkXcbSurfaceCreateFlagsKHR       flags
-								_out_window.xcb_connection,                         // xcb_connection_t*                connection
-								(*_out_window.xcb_window)                           // xcb_window_t                     window
+								VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,      // Type
+								nullptr,                                            // Next
+								0,                                                  // Flags
+								_out_window.xcb_connection,                         // Connection
+								(*_out_window.xcb_window)                           // Window
 							};
 							_hr = vkCreateXcbSurfaceKHR(w_graphics_device::vk_instance,
 								&_surface_create_info,
