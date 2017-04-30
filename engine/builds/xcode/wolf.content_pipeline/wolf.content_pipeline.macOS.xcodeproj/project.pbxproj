@@ -21,7 +21,6 @@
 		2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */; };
 		2C4CCB231EB0F81100E0A422 /* w_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB181EB0F81100E0A422 /* w_camera.cpp */; };
 		2C4CCB241EB0F81100E0A422 /* w_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB191EB0F81100E0A422 /* w_camera.h */; };
-		2C4CCB251EB0F81100E0A422 /* w_content_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB1A1EB0F81100E0A422 /* w_content_manager.cpp */; };
 		2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */; };
 		2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */; };
 		2C4CCB291EB0F81100E0A422 /* w_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB1E1EB0F81100E0A422 /* w_model.cpp */; };
@@ -47,7 +46,6 @@
 		2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_pch.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_pch.h; sourceTree = "<group>"; };
 		2C4CCB181EB0F81100E0A422 /* w_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_camera.cpp; path = ../../../src/wolf.content_pipeline/w_camera.cpp; sourceTree = "<group>"; };
 		2C4CCB191EB0F81100E0A422 /* w_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_camera.h; path = ../../../src/wolf.content_pipeline/w_camera.h; sourceTree = "<group>"; };
-		2C4CCB1A1EB0F81100E0A422 /* w_content_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_content_manager.cpp; path = ../../../src/wolf.content_pipeline/w_content_manager.cpp; sourceTree = "<group>"; };
 		2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_content_manager.h; path = ../../../src/wolf.content_pipeline/w_content_manager.h; sourceTree = "<group>"; };
 		2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_export.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_export.h; sourceTree = "<group>"; };
 		2C4CCB1E1EB0F81100E0A422 /* w_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_model.cpp; path = ../../../src/wolf.content_pipeline/w_model.cpp; sourceTree = "<group>"; };
@@ -94,7 +92,6 @@
 				2C4CCAFB1EB0F50D00E0A422 /* collada */,
 				2C4CCB181EB0F81100E0A422 /* w_camera.cpp */,
 				2C4CCB191EB0F81100E0A422 /* w_camera.h */,
-				2C4CCB1A1EB0F81100E0A422 /* w_content_manager.cpp */,
 				2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */,
 				2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */,
 				2C4CCB1E1EB0F81100E0A422 /* w_model.cpp */,
@@ -211,7 +208,6 @@
 				2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */,
 				2C4CCB0E1EB0F54400E0A422 /* c_node.cpp in Sources */,
 				2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */,
-				2C4CCB251EB0F81100E0A422 /* w_content_manager.cpp in Sources */,
 				2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */,
 				2C4CCB231EB0F81100E0A422 /* w_camera.cpp in Sources */,
 			);

@@ -227,6 +227,30 @@ namespace wolf
 			{
 				split_string_then_convert_to<std::string>(pStr, pSplit, pResult);
 			}
+            
+            template<class T>
+            inline void find_all_numbers_then_convert_to(const std::string& pStr, _Inout_ std::vector<T>& pResult)
+            {
+                using namespace std;
+                
+                std::string _number;
+                for(size_t i = 0 ; i < pStr.size() ; ++i)
+                {
+                    if ((pStr[i] >= '0' && pStr[i] <= '9') || pStr[i] == '.' || pStr[i] == '+' || pStr[i] == '-')
+                    {
+                        _number += pStr[i];
+                    }
+                    else
+                    {
+                        if(_number.size())
+                        {
+                            substr_function(_number, 0, _number.size(), pResult);
+                            _number.clear();
+                        }
+                        continue;
+                    }
+                }
+            }
 
 #pragma endregion
 
@@ -292,6 +316,30 @@ namespace wolf
 				split_wstring_then_convert_to<std::wstring>(pStr, pSplit, pResult);
 			}
 
+            template<class T>
+            inline void find_all_numbers_then_convert_toW(const std::wstring& pStr, _Inout_ std::vector<T>& pResult)
+            {
+                using namespace std;
+                
+                std::string _number;
+                for(size_t i = 0 ; i < pStr.size() ; ++i)
+                {
+                    if ((pStr[i] >= L'0' && pStr[i] <= L'9') || pStr[i] == L'.' || pStr[i] == L'+' || pStr[i] == L'-')
+                    {
+                        _number += pStr[i];
+                    }
+                    else
+                    {
+                        if(_number.size())
+                        {
+                            substr_function(_number, 0, _number.size(), pResult);
+                            _number.clear();
+                        }
+                        continue;
+                    }
+                }
+            }
+            
 #endif
 
 #pragma endregion

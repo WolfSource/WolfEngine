@@ -17,13 +17,13 @@ static std::vector<std::string>		sSkeletonNames;
 static std::vector<c_material*>		sMaterials;
 static std::string					sSkipChildrenOfThisNode;
 static c_xsi_extra					sXSI_Extra;
-static std::vector<unsigned short>	sXSI_Indices;
+//static std::vector<unsigned short>	sXSI_Indices;
 static rapidxml::xml_node<>*		SGeometryLibraryNode;
 
 const char* c_parser::_trace_class_name = "w_collada_parser";
 
 HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_ w_scene* pScene, 
-	bool pUseTootleFastOptimizeMethod, bool pOptimizePoints, bool pInvertNormals)
+	bool pOptimizePoints, bool pInvertNormals)
 {
 	auto _hr = S_OK;
 
@@ -58,7 +58,7 @@ HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_
 	//V(_hr, L"processing xml node : " + pFilePath, _trace_class_name, 3);
 	
 	//create scene
-	_create_scene(pScene, pUseTootleFastOptimizeMethod, pOptimizePoints, pInvertNormals);
+	_create_scene(pScene, pOptimizePoints, pInvertNormals);
 
 	//clear all
 	_doc.clear();
@@ -199,19 +199,19 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 							}
 						}
 					}
-					else if (__node_name == "xsi_trianglelist")
-					{
-						for (auto ___child = __child->first_node(); ___child != nullptr; ___child = ___child->next_sibling())
-						{
-							string _sid;
-							_get_node_attribute_value(___child, "sid", _sid);
-							if (_sid == "vertexIndices")
-							{
-								std::string _value = ___child->value();
-								wolf::system::convert::split_string_then_convert_to<unsigned short>(_value, " ", sXSI_Indices);
-							}
-						}
-					}
+//					else if (__node_name == "xsi_trianglelist")
+//					{
+//						for (auto ___child = __child->first_node(); ___child != nullptr; ___child = ___child->next_sibling())
+//						{
+//							string _sid;
+//							_get_node_attribute_value(___child, "sid", _sid);
+//							if (_sid == "vertexIndices")
+//							{
+////								std::string _value = ___child->value();
+////								wolf::system::convert::split_string_then_convert_to<unsigned short>(_value, " ", sXSI_Indices);
+//							}
+//						}
+//					}
 				}
 			}
 		}
@@ -578,19 +578,23 @@ void c_parser::_get_sources(_In_ rapidxml::xml_node<>* pXNode, std::string pID, 
 		else if (_node_name == "technique_common")
 		{
 			auto _stride = 1;
+            auto _count = 0 ;
 			for (auto __child = _child->first_node(); __child != nullptr; __child = __child->next_sibling())
 			{
-				std::string _stride_str;
-				_get_node_attribute_value(__child, "stride", _stride_str);
-				_stride = std::atoi(_stride_str.c_str());
+				std::string _str;
+				_get_node_attribute_value(__child, "stride", _str);
+				_stride = std::atoi(_str.c_str());
+                
+                _get_node_attribute_value(__child, "count", _str);
+                _count = std::atoi(_str.c_str());
 			}
 
 			auto _source = new c_source();
 			_source->c_id = pID;
 			_source->c_name = pName;
 			_source->stride = _stride;
-
-			wolf::system::convert::split_string_then_convert_to<float>(_float_array_str, " ", _source->float_array);
+            
+			wolf::system::convert::find_all_numbers_then_convert_to<float>(_float_array_str, _source->float_array);
 			pGeometry.sources.push_back(_source);
 		}
 	}
@@ -666,14 +670,15 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geome
 		}
 		else if (_node_name == "p")
 		{
-			wolf::system::convert::split_string_then_convert_to<unsigned short>(_child->value(), " ", _triangles->indices);
+            //wolf::system::convert::find_all_numbers_then_convert_to<float>(_float_array_str, _source->float_array);
+			wolf::system::convert::find_all_numbers_then_convert_to<unsigned short>(_child->value(), _triangles->indices);
 		}
 	}
 
 	pGeometry.triangles.push_back(_triangles);
 }
 
-HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pUseTootleFastOptimizeMethod, bool pOptimizePoints, bool pInvertNormals)
+HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)
 {
 	//The list of instanced geometries
 	std::vector<string> _instanced_geometries;
@@ -761,13 +766,16 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pUseTootleFastOpti
 	std::for_each(sNodes.begin(), sNodes.end(), [pScene](c_node* pNode)
 	{
 		//we will find #instance_camera and the parent node contains camera information and the next child node is camera interest
-		glm::vec3 _camera_interest;
-
 		if (pNode)
 		{
 			bool _found = false;
+            
+            glm::vec3 _camera_transform;
+            glm::vec3 _camera_interest;
+            
 			if (!pNode->instanced_camera_name.empty())
 			{
+                //TODO : we need to check instanced camera
 				pScene->add_camera(pNode->c_name, pNode->translate, _camera_interest);
 				pNode->proceeded = true;
 				_found = true;
@@ -781,11 +789,6 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pUseTootleFastOpti
 					auto pInnerNode = pNode->nodes[i];
 					if (pInnerNode && !pInnerNode->instanced_camera_name.empty())
 					{
-						auto _next_node = i + 1;
-						if (_next_node < _size)
-						{
-							_camera_interest = pNode->nodes[_next_node]->translate;
-						}
 						_found = true;
 						break;
 					}
@@ -795,7 +798,19 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pUseTootleFastOpti
 			if (_found)
 			{
 				pNode->proceeded = true;
-				pScene->add_camera(pNode->c_name, pNode->translate, pNode->translate + _camera_interest);
+                
+                //the first one is camera and the second one is camera interest
+                if (pNode->nodes.size() == 2)
+                {
+                    _camera_transform = pNode->nodes[0]->translate;
+                    _camera_interest = pNode->nodes[1]->translate;
+                }
+                else
+                {
+                    _camera_transform = pNode->translate;
+                }
+                
+				pScene->add_camera(pNode->c_name, _camera_transform, _camera_interest);
 			}
 		}
 	});
@@ -809,7 +824,7 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pUseTootleFastOpti
 		//	skin = s[i];
 		//}
 
-		auto _model = w_model::create_model(_geometry, skin, sBones, sSkeletonNames.data(), sMaterials, sNodes, pOptimizePoints, sXSI_Indices);
+		auto _model = w_model::create_model(_geometry, skin, sBones, sSkeletonNames.data(), sMaterials, sNodes, pOptimizePoints);
 		//_model->set_effects(effects);
 		////_model.Textures = textureInfos;
 		////_model.Initialize(dir);
@@ -832,10 +847,10 @@ void c_parser::_clear_all_resources()
 	{
 		sSkeletonNames.clear();
 	}
-	if (sXSI_Indices.size() > 0)
-	{
-		sXSI_Indices.clear();
-	}
+//	if (sXSI_Indices.size() > 0)
+//	{
+//		sXSI_Indices.clear();
+//	}
 
 	if (sBones.size() > 0)
 	{

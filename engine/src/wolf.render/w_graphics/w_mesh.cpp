@@ -15,22 +15,27 @@ namespace wolf
         public:
             w_mesh_pimp() :
                 _name("w_mesh"),
-                _gDevice(nullptr)
+                _gDevice(nullptr),
+                _vertices_count(0),
+                _indices_count(0)
             {
             }
             
             //Initialize mesh
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const void* const pVerticesData,
+                               _In_ const UINT pVerticesCount,
                                _In_ const UINT pVerticesSize,
-                               _In_ const unsigned short* const pIndicesData,
-                               _In_ const UINT pIndicesSize,
+                               _In_ const UINT* const pIndicesData,
+                               _In_ const UINT pIndicesCount,
                                _In_ const void* const pInstancedData,
                                _In_ const UINT pInstancedSize,
                                _In_ bool pStaging)
             {
                 this->_gDevice = pGDevice;
                 this->_staging = pStaging;
+                this->_vertices_count = pVerticesCount;
+                this->_indices_count = pIndicesCount;
                 
                 if(this->_staging)
                 {
@@ -41,7 +46,7 @@ namespace wolf
                     return _create_staging_buffers(pVerticesData,
                                                    pVerticesSize,
                                                    pIndicesData,
-                                                   pIndicesSize,
+                                                   static_cast<UINT>(pIndicesCount * sizeof(UINT)),
                                                    this->_vertex_buffer,
                                                    this->_index_buffer);
                 }
@@ -59,10 +64,10 @@ namespace wolf
                     }
                 
                     //index buffer is not necessary
-                    if(pIndicesSize && pIndicesData!= nullptr &&
+                    if(pIndicesCount && pIndicesData!= nullptr &&
                        _create_buffer(VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
                                       pIndicesData,
-                                      pIndicesSize,
+                                      static_cast<UINT>(pIndicesCount * sizeof(UINT)),
                                       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                       this->_index_buffer))
                     {
@@ -81,6 +86,16 @@ namespace wolf
             VkBuffer get_index_buffer_handle() const
             {
                 return this->_index_buffer.get_handle();
+            }
+   
+            UINT get_vertices_count() const
+            {
+                return this->_vertices_count;
+            }
+            
+            UINT get_indices_count() const
+            {
+                return this->_indices_count;
             }
             
             ULONG release()
@@ -164,7 +179,7 @@ namespace wolf
             */
             HRESULT _create_staging_buffers(_In_ const void* const pVerticesData,
                                             _In_ const UINT pVerticesSize,
-                                            _In_ const unsigned short* const pIndicesData,
+                                            _In_ const UINT* const pIndicesData,
                                             _In_ const UINT pIndicesSize,
                                             _Inout_ w_buffer& pVertexBuffer,
                                             _Inout_ w_buffer& pIndexBuffer)
@@ -199,10 +214,10 @@ namespace wolf
                 if(!_there_is_no_index_buffer)
                 {
                     if(_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                               pVerticesData,
-                               pVerticesSize,
+                               pIndicesData,
+                               pIndicesSize,
                                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                               _stagings_buffers.vertices) == S_FALSE)
+                               _stagings_buffers.indices) == S_FALSE)
                     {
                         return S_FALSE;
                     }
@@ -223,7 +238,7 @@ namespace wolf
                 {
                     if(_create_buffer(VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                                       nullptr,
-                                      pVerticesSize,
+                                      pIndicesSize,
                                       VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                                       pIndexBuffer) == S_FALSE)
                     {
@@ -240,9 +255,8 @@ namespace wolf
                 {
                     auto _copy_cmd = _copy_command_buffer->get_command_at(0);
                 
-                    VkBufferCopy _copy_region = {};
-                
                     // Vertex buffer
+                    VkBufferCopy _copy_region = {};
                     _copy_region.size = pVerticesSize;
                     vkCmdCopyBuffer(_copy_cmd,
                                     _stagings_buffers.vertices.get_handle(),
@@ -278,7 +292,7 @@ namespace wolf
              */
             HRESULT _create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag,
                                    _In_ const void* const pBufferData,
-                                   _In_ uint32_t pBufferSize,
+                                   _In_ UINT pBufferSize,
                                    _In_ const VkMemoryPropertyFlags pMemoryFlags,
                                    _Inout_ w_buffer& pBuffer)
             {
@@ -349,6 +363,8 @@ namespace wolf
             w_buffer                                            _vertex_buffer;
             w_buffer                                            _index_buffer;
             w_buffer                                            _instanced_buffer;
+            UINT                                                _indices_count;
+            UINT                                                _vertices_count;
             bool                                                _staging;
         };
     }
@@ -366,9 +382,10 @@ w_mesh::~w_mesh()
 
 HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const void* const pVerticesData,
+                     _In_ const UINT pVerticesCount,
                      _In_ const UINT pVerticesSize,
-                     _In_ const unsigned short* const pIndicesData,
-                     _In_ const UINT pIndicesSize,
+                     _In_ const UINT* const pIndicesData,
+                     _In_ const UINT pIndicesCount,
                      _In_ const void* const pInstancedData,
                      _In_ const UINT pInstancedSize,
                      _In_ bool pStaging)
@@ -381,9 +398,10 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     }
     return this->_pimp->load(pGDevice,
                              pVerticesData,
+                             pVerticesCount,
                              pVerticesSize,
                              pIndicesData,
-                             pIndicesSize,
+                             pIndicesCount,
                              pInstancedData,
                              pInstancedSize,
                              pStaging);
@@ -406,4 +424,14 @@ VkBuffer w_mesh::get_vertex_buffer_handle() const
 VkBuffer w_mesh::get_index_buffer_handle() const
 {
     return this->_pimp ? this->_pimp->get_index_buffer_handle() : VK_NULL_HANDLE;
+}
+
+UINT w_mesh::get_vertices_count() const
+{
+    return this->_pimp ? this->_pimp->get_vertices_count() : 0;
+}
+
+UINT w_mesh::get_indices_count() const
+{
+    return this->_pimp ? this->_pimp->get_indices_count() : 0;
 }

@@ -10,8 +10,13 @@
 		2C1B3FF71E97DC6500512959 /* w_shader_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1B3FF41E97DC6500512959 /* w_shader_buffer.h */; };
 		2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1B3FF51E97DC6500512959 /* w_shader.cpp */; };
 		2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1B3FF61E97DC6500512959 /* w_shader.h */; };
-		2C38D9461E79645400EE8595 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D9441E79645400EE8595 /* w_game.cpp */; };
-		2C38D9471E79645400EE8595 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D9451E79645400EE8595 /* w_game.h */; };
+		2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C29CD1C1EB3344000BEFF54 /* w_game.cpp */; };
+		2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C29CD1D1EB3344000BEFF54 /* w_game.h */; };
+		2C29CD241EB371A000BEFF54 /* w_renderable_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C29CD221EB371A000BEFF54 /* w_renderable_model.cpp */; };
+		2C29CD251EB371A000BEFF54 /* w_renderable_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C29CD231EB371A000BEFF54 /* w_renderable_model.h */; };
+		2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */; };
+		2C29CD2A1EB384EE00BEFF54 /* w_renderable_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C29CD281EB384EE00BEFF54 /* w_renderable_scene.cpp */; };
+		2C29CD2B1EB384EE00BEFF54 /* w_renderable_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C29CD291EB384EE00BEFF54 /* w_renderable_scene.h */; };
 		2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */; };
 		2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C38D9491E79646D00EE8595 /* w_graphics_device_manager.h */; };
 		2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C38D94A1E79646D00EE8595 /* w_obj_c_wrapper.mm */; };
@@ -43,8 +48,13 @@
 		2C1B3FF41E97DC6500512959 /* w_shader_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shader_buffer.h; path = ../../../src/wolf.render/w_graphics/w_shader_buffer.h; sourceTree = "<group>"; };
 		2C1B3FF51E97DC6500512959 /* w_shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_shader.cpp; path = ../../../src/wolf.render/w_graphics/w_shader.cpp; sourceTree = "<group>"; };
 		2C1B3FF61E97DC6500512959 /* w_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shader.h; path = ../../../src/wolf.render/w_graphics/w_shader.h; sourceTree = "<group>"; };
-		2C38D9441E79645400EE8595 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_game.cpp; sourceTree = "<group>"; };
-		2C38D9451E79645400EE8595 /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/w_game.h; sourceTree = "<group>"; };
+		2C29CD1C1EB3344000BEFF54 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_framework/w_game.cpp; sourceTree = "<group>"; };
+		2C29CD1D1EB3344000BEFF54 /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/w_framework/w_game.h; sourceTree = "<group>"; };
+		2C29CD221EB371A000BEFF54 /* w_renderable_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_renderable_model.cpp; path = ../../../src/wolf.render/w_framework/w_renderable_model.cpp; sourceTree = "<group>"; };
+		2C29CD231EB371A000BEFF54 /* w_renderable_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_renderable_model.h; path = ../../../src/wolf.render/w_framework/w_renderable_model.h; sourceTree = "<group>"; };
+		2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.content_pipeline.macOS.dylib; sourceTree = "<group>"; };
+		2C29CD281EB384EE00BEFF54 /* w_renderable_scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_renderable_scene.cpp; path = ../../../src/wolf.render/w_framework/w_renderable_scene.cpp; sourceTree = "<group>"; };
+		2C29CD291EB384EE00BEFF54 /* w_renderable_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_renderable_scene.h; path = ../../../src/wolf.render/w_framework/w_renderable_scene.h; sourceTree = "<group>"; };
 		2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_graphics_device_manager.cpp; path = ../../../src/wolf.render/w_graphics_device_manager.cpp; sourceTree = "<group>"; };
 		2C38D9491E79646D00EE8595 /* w_graphics_device_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_graphics_device_manager.h; path = ../../../src/wolf.render/w_graphics_device_manager.h; sourceTree = "<group>"; };
 		2C38D94A1E79646D00EE8595 /* w_obj_c_wrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = w_obj_c_wrapper.mm; path = ../../../src/wolf.render/w_obj_c_wrapper.mm; sourceTree = "<group>"; };
@@ -79,6 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2C70799A1EACE705003784A2 /* MoltenVK.framework in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
@@ -114,9 +125,23 @@
 			name = w_graphics;
 			sourceTree = "<group>";
 		};
+		2C29CD131EB3339E00BEFF54 /* w_framework */ = {
+			isa = PBXGroup;
+			children = (
+				2C29CD281EB384EE00BEFF54 /* w_renderable_scene.cpp */,
+				2C29CD291EB384EE00BEFF54 /* w_renderable_scene.h */,
+				2C29CD221EB371A000BEFF54 /* w_renderable_model.cpp */,
+				2C29CD231EB371A000BEFF54 /* w_renderable_model.h */,
+				2C29CD1C1EB3344000BEFF54 /* w_game.cpp */,
+				2C29CD1D1EB3344000BEFF54 /* w_game.h */,
+			);
+			name = w_framework;
+			sourceTree = "<group>";
+		};
 		2C69E9A01E5EC2CB00F15C44 = {
 			isa = PBXGroup;
 			children = (
+				2C29CD131EB3339E00BEFF54 /* w_framework */,
 				2C1B3FF31E97DC5300512959 /* w_graphics */,
 				2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */,
 				2C38D9491E79646D00EE8595 /* w_graphics_device_manager.h */,
@@ -124,8 +149,6 @@
 				2C38D94B1E79646D00EE8595 /* w_render_export.h */,
 				2C38D94C1E79646D00EE8595 /* w_render_pch.cpp */,
 				2C38D94D1E79646D00EE8595 /* w_render_pch.h */,
-				2C38D9441E79645400EE8595 /* w_game.cpp */,
-				2C38D9451E79645400EE8595 /* w_game.h */,
 				2C69E9AA1E5EC2CB00F15C44 /* Products */,
 				2C860FA01E5F1E5B000E71B5 /* Frameworks */,
 			);
@@ -142,6 +165,7 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */,
 				2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */,
 				2C38D9561E7964BA00EE8595 /* MoltenVK.framework */,
 				2C38D9541E79649A00EE8595 /* libwolf.system.dylib */,
@@ -165,12 +189,14 @@
 				2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */,
 				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
 				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
+				2C29CD2B1EB384EE00BEFF54 /* w_renderable_scene.h in Headers */,
 				2C1B3FF71E97DC6500512959 /* w_shader_buffer.h in Headers */,
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
-				2C38D9471E79645400EE8595 /* w_game.h in Headers */,
 				2C98996A1E9A2EA8002FE161 /* w_command_buffers.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
+				2C29CD251EB371A000BEFF54 /* w_renderable_model.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
+				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
 				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -235,10 +261,12 @@
 				2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */,
 				2C9899691E9A2EA8002FE161 /* w_command_buffers.cpp in Sources */,
 				2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */,
+				2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */,
 				2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */,
 				2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */,
+				2C29CD241EB371A000BEFF54 /* w_renderable_model.cpp in Sources */,
 				2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */,
-				2C38D9461E79645400EE8595 /* w_game.cpp in Sources */,
+				2C29CD2A1EB384EE00BEFF54 /* w_renderable_scene.cpp in Sources */,
 				2C410E6B1EAE111A003F2E84 /* w_pipeline.cpp in Sources */,
 				2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */,
 				2C4CCAF31EAE667100E0A422 /* w_frame_buffers.cpp in Sources */,
@@ -355,6 +383,8 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../src/wolf.render",
+					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
 				);
@@ -377,6 +407,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../src/wolf.render",
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
 				);

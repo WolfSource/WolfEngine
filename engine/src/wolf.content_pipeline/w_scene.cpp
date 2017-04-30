@@ -52,9 +52,9 @@ void w_scene::get_first_or_default_camera(_Inout_ w_camera** pCamera)
 {
 	if (this->_cameras.size() == 0)
 	{
-		if (*pCamera)
+		if (*pCamera != nullptr)
 		{
-			delete *pCamera;
+			*pCamera = nullptr;
 		}
 		*pCamera = new w_camera();
 		(*pCamera)->set_aspect_ratio(800.0f / 600.0f);

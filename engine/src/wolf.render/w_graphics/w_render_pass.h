@@ -29,6 +29,16 @@ namespace wolf
                                _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
             
             
+            W_EXP void begin(_In_ const VkCommandBuffer pCommandBuffer,
+                                _In_ const VkFramebuffer pFrameBuffer,
+                                _In_ const w_color pClearColor = w_color::from_hex(w_color::CORNFLOWER_BLUE),
+                                _In_ const INT32 pStartOffsetX = 0,
+                                _In_ const INT32 pStartOffsetY = 0,
+                                _In_ const UINT  pWidth = 800,
+                                _In_ const UINT  pHeight = 600);
+            
+            W_EXP void end(_In_ VkCommandBuffer pCommandBuffer);
+            
             //release all resources
             W_EXP virtual ULONG release() override;
             

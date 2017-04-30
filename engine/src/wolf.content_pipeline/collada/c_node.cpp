@@ -13,7 +13,8 @@ c_node* c_node::find_instanced_geomaetry_node()
                                     return pNode && !pNode->instanced_geometry_name.empty();
                                 });
 
-    return *_iter;
+    if (_iter != this->nodes.end()) return (*_iter);
+    return nullptr;
 }
 
 c_node* c_node::find_instanced_geomaetry_node(std::string pGeometryName)
@@ -24,7 +25,9 @@ c_node* c_node::find_instanced_geomaetry_node(std::string pGeometryName)
                                 {
                                     return pNode && pNode->instanced_geometry_name == pGeometryName;
                                 });
-	return *_iter;
+    
+    if (_iter != this->nodes.end()) return (*_iter);
+    return nullptr;
 }
 
 c_node* c_node::find_instanced_node_name()
@@ -35,7 +38,9 @@ c_node* c_node::find_instanced_node_name()
                                {
                                    return pNode && !pNode->instanced_node_name.empty();
                                });
-	return *_iter;
+    
+    if (_iter != this->nodes.end()) return (*_iter);
+    return nullptr;
 }
 
 ULONG c_node::release()

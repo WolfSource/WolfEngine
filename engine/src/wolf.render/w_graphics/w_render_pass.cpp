@@ -100,6 +100,51 @@ namespace wolf
                 return _hr ? S_FALSE : S_OK;
             }
             
+            void begin(_In_ const VkCommandBuffer pCommandBuffer,
+                          _In_ const VkFramebuffer pFrameBuffer,
+                          _In_ const w_color pClearColor,
+                          _In_ const INT32 pStartOffsetX,
+                          _In_ const INT32 pStartOffsetY,
+                          _In_ const UINT  pWidth,
+                          _In_ const UINT  pHeight)
+            {
+                VkClearValue _vk_clear_color =
+                {
+                    {
+                        pClearColor.r / 255.0f,
+                        pClearColor.g / 255.0f,
+                        pClearColor.b / 255.0f,
+                        pClearColor.a / 255.0f
+                    }
+                };
+                
+                VkRenderPassBeginInfo _render_pass_begin_info =
+                {
+                    VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,    // Type
+                    nullptr,                                     // Next
+                    this->_render_pass,                          // RenderPass
+                    pFrameBuffer,                                // Framebuffer
+                    {                                            // RenderArea
+                        {
+                            pStartOffsetX,                       // X
+                            pStartOffsetY                        // Y
+                        },
+                        {
+                            pWidth,                              // Width
+                            pHeight,                             // Height
+                        }
+                    },
+                    1,                                           // ClearValueCount
+                    &_vk_clear_color                             // ClearValues
+                };
+                vkCmdBeginRenderPass( pCommandBuffer, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE );
+            }
+            
+            void end(_In_ const VkCommandBuffer pCommandBuffer)
+            {
+                vkCmdEndRenderPass(pCommandBuffer);
+            }
+            
             ULONG release()
             {
                 if(this->_render_pass)
@@ -160,6 +205,30 @@ HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDev
                              pAttachmentDescriptions,
                              pSubpassDescriptions,
                              pSubpassDependencies);
+}
+
+void w_render_pass::begin(_In_ const VkCommandBuffer pCommandBuffer,
+           _In_ const VkFramebuffer pFrameBuffer,
+           _In_ const w_color pClearColor,
+           _In_ const INT32 pStartOffsetX,
+           _In_ const INT32 pStartOffsetY,
+           _In_ const UINT  pWidth,
+           _In_ const UINT  pHeight)
+{
+    if(!this->_pimp) return;
+    this->_pimp->begin(pCommandBuffer,
+                              pFrameBuffer,
+                              pClearColor,
+                              pStartOffsetX,
+                              pStartOffsetY,
+                              pWidth,
+                              pHeight);
+}
+
+void w_render_pass::end(_In_ VkCommandBuffer pCommandBuffer)
+{
+    if(!this->_pimp) return;
+    this->_pimp->end(pCommandBuffer);
 }
 
 ULONG w_render_pass::release()

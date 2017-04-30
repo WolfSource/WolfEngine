@@ -69,7 +69,9 @@ namespace wolf
 			WCP_EXP void set_interest(float pX, float pY, float pZ);
 			//Set camera interest
 			WCP_EXP void set_interest(glm::vec3 pInterest);
-
+            //Set Left/Right hand coordinate system
+            WCP_EXP void set_coordiante_system(_In_ const bool pIsLeftHand);
+            
 #pragma endregion
 
 		protected:
@@ -83,6 +85,8 @@ namespace wolf
 			glm::vec3		interest;
 			mat4x4_p		view;
 			mat4x4_p		projection;
+            //DirectX is right hand coordinate system and opengle/vulkan/metal is left hand coordinate system
+            bool            is_left_hand_coordinate_system;
 		};
 	}
 }

@@ -22,7 +22,7 @@ w_model::~w_model()
 
 w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 	_In_ std::vector<c_bone*>& pBones, _In_ string pBoneNames [], _In_ std::vector<c_material*>& pMaterials,
-	_In_ std::vector<c_node*>& pNodes, _In_ bool pOptimizing, _In_ std::vector<unsigned short>& pOptimizedIndices)
+	_In_ std::vector<c_node*>& pNodes, _In_ bool pOptimizing)
 {
 	auto _model = new w_model();
 	_model->set_materials(pMaterials);
@@ -95,7 +95,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 		//find semantic resource index
 		for (auto _sem : _triangle->semantics)
 		{
-			for (size_t i = 0; i < pGeometry.sources.size(); ++i)
+			for (int i = 0; i < pGeometry.sources.size(); ++i)
 			{
 				if (pGeometry.sources[i] && pGeometry.sources[i]->c_id != _sem->source) continue;
 
@@ -191,7 +191,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 
 		std::vector<float> _just_vertices_pos;
 		std::vector<w_vertex_data> _vertices_data;
-		std::vector<unsigned short> _indices_data;
+		std::vector<UINT> _indices_data;
 		std::map<int, w_vertex_index> _vertices;
 
 		std::map<int, int> _dic1;
@@ -339,7 +339,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 			{
 				//Not implemented yet
 			}
-			glm::vec4 _pos(_v.vertex[0], _v.vertex[1], _v.vertex[2], 1);
+			glm::vec4 _pos(_v.vertex[0], _v.vertex[1], _v.vertex[2], 1.0f);
 			_min_vertex.x = min(_pos.x, _min_vertex.x);
 			_min_vertex.y = min(_pos.y, _min_vertex.y);
 			_min_vertex.z = min(_pos.z, _min_vertex.z);
@@ -356,13 +356,26 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 			_vertex_data.uv = _v.texture.size() > 0 ? glm::vec2(_v.texture[0], 1.0f - _v.texture[1]) : glm::vec2(0);
 			_vertex_data.vertex_index = _v.vertex_index;
 
-			_just_vertices_pos.push_back(_v.vertex[0]);
-			_just_vertices_pos.push_back(_v.vertex[1]);
-			_just_vertices_pos.push_back(_v.vertex[2]);
+			_just_vertices_pos.push_back(_pos[0]);
+			_just_vertices_pos.push_back(_pos[1]);
+            _just_vertices_pos.push_back(_pos[2]);
+            _just_vertices_pos.push_back(_pos[3]);
 
 			_vertices_data.push_back(_vertex_data);
 		}
 
+        auto _round_to_four = _vertices_data.size() % 4;
+        if (_round_to_four)
+        {
+            for(size_t i = 0; i < _round_to_four; ++i)
+            {
+                w_vertex_data _vertex_data;
+                std::memset(&_vertex_data, 0, sizeof(_vertex_data));
+                _vertex_data.vertex_index = _vertices_data.size() + i + 1;
+                _vertices_data.push_back(_vertex_data);
+            }
+        }
+        
 #pragma endregion
 
 		if (_nor_index == -1)
@@ -456,7 +469,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 	{
 		_model->_skeleton.swap(pBones);
 	}
-
+    
 	return _model;
 }
 

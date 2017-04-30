@@ -9,12 +9,13 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include <w_game.h>
+#include <w_framework/w_game.h>
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_command_buffers.h>
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_frame_buffers.h>
+#include <w_framework/w_renderable_scene.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -54,6 +55,8 @@ private:
     wolf::graphics::w_render_pass               _render_pass;
     wolf::graphics::w_pipeline                  _pipeline;
     wolf::graphics::w_frame_buffers             _frame_buffers;
+    wolf::framework::w_renderable_scene*        _renderable_scene;
+    wolf::content_pipeline::w_camera*           _camera;
 };
 
 #endif

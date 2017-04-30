@@ -104,7 +104,7 @@ namespace wolf
 				//posX, posY, posZ
 				std::vector<float>				just_vertices_pos;
 				std::vector<w_vertex_data>		vertices;
-				std::vector<unsigned short>		indices;
+				std::vector<UINT>               indices;
 				c_material*						material;
 				std::vector<c_effect*>			effects;
 				std::vector<w_texture_info>		texture_infos;
@@ -134,7 +134,7 @@ namespace wolf
 			//class w_model;
 			static w_model* create_model(_In_ collada::c_geometry& pGeometry, _In_ collada::c_skin* pSkin,
 				_In_ std::vector<collada::c_bone*>& pBones, _In_ std::string pBoneNames [], _In_ std::vector<c_material*>& pMaterials,
-				_In_ std::vector<collada::c_node*>& pNodes, _In_ bool pOptimizing, _In_ std::vector<unsigned short>& pOptimizedIndices);
+				_In_ std::vector<collada::c_node*>& pNodes, _In_ bool pOptimizing);
 
 		private:
 			typedef w_object _super;

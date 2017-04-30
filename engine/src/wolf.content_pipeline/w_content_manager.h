@@ -23,19 +23,15 @@ namespace wolf
 		class w_content_manager : public wolf::system::w_object
 		{
 		public:
-			
-			WCP_EXP w_content_manager();
-			WCP_EXP virtual ~w_content_manager();
-			
+
 			template<class T>
-			T* load(std::wstring pAssetPath)
+			static T* load(std::wstring pAssetPath)
 			{
 #if defined(__WIN32) || defined(__UWP)
-                auto _path_wcstr = pAssetPath.c_str();
-                auto _file_exists = wolf::system::io::get_is_fileW(_path_wcstr);
+                auto _file_exists = wolf::system::io::get_is_fileW(pAssetPath.c_str());
 #else
-                auto _path_cstr = wolf::system::convert::wstring_to_string(pAssetPath).c_str();
-                auto _file_exists = wolf::system::io::get_is_file(_path_cstr);
+                auto _path = wolf::system::convert::wstring_to_string(pAssetPath);
+                auto _file_exists = wolf::system::io::get_is_file(_path.c_str());
 #endif
 				if (_file_exists  == S_FALSE)
 				{
@@ -50,7 +46,7 @@ namespace wolf
                 
                 if (_extension == L".dae")
                 {
-                    if (_type == "class wolf::content_pipeline::w_scene")
+                    if (std::is_same<T, wolf::content_pipeline::w_scene>::value)//_type == "class wolf::content_pipeline::w_scene")
                     {
                         //load scene from collada file
                         auto _scene = new w_scene();

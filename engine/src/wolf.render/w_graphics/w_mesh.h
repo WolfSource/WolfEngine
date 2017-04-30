@@ -26,9 +26,10 @@ namespace wolf
 			//Initialize mesh
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const void* const pVerticesData,
+                               _In_ const UINT pVerticesCount,
                                _In_ const UINT pVerticesSize,
-                               _In_ const unsigned short* const pIndicesData,
-                               _In_ const UINT pIndicesSize,
+                               _In_ const UINT* const pIndicesData,
+                               _In_ const UINT pIndicesCount,
                                _In_ const void* const pInstancedData = nullptr,
                                _In_ const UINT pInstancedSize = 0,
                                _In_ bool pStaging = true);
@@ -42,6 +43,8 @@ namespace wolf
             
             W_EXP VkBuffer get_vertex_buffer_handle() const;
             W_EXP VkBuffer get_index_buffer_handle() const;
+            W_EXP UINT get_vertices_count() const;
+            W_EXP UINT get_indices_count() const;
             
 #pragma endregion
 

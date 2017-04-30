@@ -4,7 +4,8 @@
 using namespace wolf::content_pipeline;
 
 w_camera::w_camera() : aspect_ratio(1.777f), near_plane(0.01f), far_plane(1000.0f),
-transform(0, 2, 20.0f), interest(0, 0, 0), up(0, 1, 0), field_of_view(70.0f)
+transform(0, 10, 50.0f), interest(0, 0, 0), up(0, 1, 0), field_of_view(70.0f),
+is_left_hand_coordinate_system(true)
 {
 	update_view();
 	update_projection();
@@ -17,7 +18,24 @@ w_camera::~w_camera()
 
 void w_camera::update_view()
 {
-	this->view = glm::lookAtRH(this->transform, this->interest, this->up);
+//    this->transform.x = 53.6684f;
+//    this->transform.y = 29.4587f;
+//    this->transform.z = -62.5413f;
+//    
+//    
+//    this->interest.x = -9.5155;
+//    this->interest.y = -6.948f;
+//    this->interest.z = -15.4112f;
+    
+    
+    if (this->is_left_hand_coordinate_system)
+    {
+        this->view = glm::lookAtLH(this->transform, this->interest, this->up);
+    }
+    else
+    {
+        this->view = glm::lookAtRH(this->transform, this->interest, this->up);
+    }
 }
 
 void w_camera::update_projection()
@@ -28,16 +46,38 @@ void w_camera::update_projection()
 	if (this->aspect_ratio < 1.0f)
 	{
 		// portrait or snap view
-		this->up.x = 1.0f; this->up.y = 0.0f; this->up.z = 0.0f;
+        if (this->is_left_hand_coordinate_system)
+        {
+            this->up.x = -1.0f; this->up.y = 0.0f; this->up.z = 0.0f;
+        }
+        else
+        {
+            this->up.x = 1.0f; this->up.y = 0.0f; this->up.z = 0.0f;
+        }
+        
 		_fov_angle_y = 120.0f * _pi / 180.0f;
 	}
 	else
 	{
 		// landscape view
-		this->up.x = 0.0f; this->up.y = 1.0f; this->up.z = 0.0f;
+        if (this->is_left_hand_coordinate_system)
+        {
+            this->up.x = 0.0f; this->up.y = -1.0f; this->up.z = 0.0f;
+        }
+        else
+        {
+            this->up.x = 0.0f; this->up.y = 1.0f; this->up.z = 0.0f;
+        }
 	}
 
-	this->projection = glm::perspectiveRH(_fov_angle_y, this->aspect_ratio, this->near_plane, this->far_plane);
+    if (this->is_left_hand_coordinate_system)
+    {
+        this->projection = glm::perspectiveLH(_fov_angle_y, this->aspect_ratio, this->near_plane, this->far_plane);
+    }
+    else
+    {
+        this->projection = glm::perspectiveRH(_fov_angle_y, this->aspect_ratio, this->near_plane, this->far_plane);
+    }
 }
 
 #pragma region Setters
@@ -70,6 +110,11 @@ void w_camera::set_interest(float pX, float pY, float pZ)
 void w_camera::set_interest(glm::vec3 pInterest)
 {
 	this->interest = pInterest;
+}
+
+void w_camera::set_coordiante_system(_In_ const bool pIsLeftHand)
+{
+    this->is_left_hand_coordinate_system = pIsLeftHand;
 }
 
 #pragma endregion

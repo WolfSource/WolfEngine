@@ -212,14 +212,15 @@ namespace glm
 			std::atof(pResult[3].c_str()));
 	}
 	
-	inline std::vector<glm::mat4x4> to_matrix_array(float pFloats[], int pArraySize = 16, int pRowSize = 4)
+    inline std::vector<glm::mat4x4> to_matrix_array(float pFloats[], int pArraySize = 16, int pRowSize = 4)
 	{
 		std::vector<glm::mat4x4> _mats;
 
-		for (size_t j = 0; j < W_ARRAY_SIZE(pFloats); j += pArraySize)
+        auto _size = static_cast<size_t>(W_ARRAY_SIZE(pFloats));
+		for (size_t j = 0; j < _size; j += pArraySize)
 		{
 			glm::mat4x4 _mat;
-			for (size_t i = 0; i < pArraySize; i += pRowSize)
+			for (int i = 0; i < pArraySize; i += pRowSize)
 			{
 				auto _index = i / 4;
 				_mat[_index][0] = pFloats[i + j];
