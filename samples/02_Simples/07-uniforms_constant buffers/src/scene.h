@@ -12,6 +12,9 @@
 #include <w_game.h>
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_command_buffers.h>
+#include <w_graphics/w_render_pass.h>
+#include <w_graphics/w_pipeline.h>
+#include <w_graphics/w_frame_buffers.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -48,6 +51,9 @@ public:
 private:
     wolf::graphics::w_mesh*                     _mesh;
     wolf::graphics::w_command_buffers*          _command_buffers;
+    wolf::graphics::w_render_pass               _render_pass;
+    wolf::graphics::w_pipeline                  _pipeline;
+    wolf::graphics::w_frame_buffers             _frame_buffers;
 };
 
 #endif
