@@ -4,7 +4,7 @@
 using namespace wolf::content_pipeline;
 
 w_camera::w_camera() : aspect_ratio(1.777f), near_plane(0.01f), far_plane(1000.0f),
-transform(0, 10, 50.0f), interest(0, 0, 0), up(0, 1, 0), field_of_view(70.0f),
+transform(0, 5, 100.0f), interest(0, 0, 0), up(0, 1, 0), field_of_view(70.0f),
 is_left_hand_coordinate_system(true)
 {
 	update_view();

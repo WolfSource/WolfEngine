@@ -27,6 +27,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 	auto _model = new w_model();
 	_model->set_materials(pMaterials);
 
+	std::string _messages;
 	//read all nodes
 	for (auto _node : pNodes)
 	{
@@ -205,12 +206,6 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 		//std::vector<UINT> _indices;
 		//_indices.reserve(_faces * 3);
 
-		// 1 1 3 
-		// 3 0 0 
-		// 0 0 3 
-		// 3 2 2
-		//  1 1 3 3 0 0 0 0 3 3 2 2
-
 		//read indices
 		for (int i = 0; i < _triangle->indices.size(); i += _ind)
 		{
@@ -279,8 +274,8 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 							}
 							else
 							{
-								logger.warning("Duplicated vertex with different uv for model: " + pGeometry.name);
-
+								_messages += "Duplicated vertex with different uv for model: " + pGeometry.name + "\r\n";
+							
 								_dic1[_vertices_size] = j;
 								bool _done = false;
 								for (auto int1 : _normal_list)
@@ -486,6 +481,9 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 		_model->_skeleton.swap(pBones);
 	}
     
+	logger.warning(_messages);
+	_messages.clear();
+
 	return _model;
 }
 

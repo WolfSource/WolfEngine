@@ -1,10 +1,11 @@
 /*
-	Project			 : Wolf Engine (http://WolfSource.io). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-	Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to contact@WolfSource.io
+	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
+	Source			 : Please direct any bug to https://github.com/WolfSource/Wolf.Engine/issues
+	Website			 : http://WolfSource.io
 	Name			 : scene.h
 	Description		 : The main class of your game
 	Comment          :
- */
+*/
 
 #ifndef __SCENE_H__
 #define __SCENE_H__

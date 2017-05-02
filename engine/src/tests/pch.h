@@ -1,9 +1,10 @@
 ﻿/*
-Project			 : Wolf Engine (http://WolfSource.io). Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-Source			 : https://github.com/PooyaEimandar/WolfEngine - Please direct any bug to hello@WolfSource.io or tweet @Wolf_Engine on twitter
-Name			 : PCH.h
-Description		 : The pre-compiled header
-Comment          :
+	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
+	Source			 : Please direct any bug to https://github.com/WolfSource/Wolf.Engine/issues
+	Website			 : http://WolfSource.io
+	Name			 : pch.h
+	Description		 : The pre-compiled header
+	Comment          :
 */
 
 #ifndef __PCH_H__
