@@ -185,5 +185,9 @@
     <technique profile="COLLADA">
       <source_data_base_uri>file:///Users/pooyaeimandar/Documents/maya/projects/default/</source_data_base_uri>
     </technique>
+	<wolf_data>
+		<model id="pCubeShape1" deleted="true" hide="false" ></model>
+		
+	</wolf_data>
   </extra>
 </COLLADA>
