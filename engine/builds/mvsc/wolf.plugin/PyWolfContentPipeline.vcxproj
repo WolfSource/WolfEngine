@@ -108,12 +108,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDLL;__WIN32;UNICODE;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Python27\include\;$(SolutionDir)/../../dependencies/boost/include;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Python27\include\;$(SolutionDir)/../../dependencies/boost/include;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/msgpack/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Python27\libs\;$(SolutionDir)/../../dependencies/boost/lib/x64/Python 2-7-6;$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Python27\libs\;$(SolutionDir)/../../dependencies/boost/lib/x64/Python 2-7-6;$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/msgpack/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -19,6 +19,11 @@ void w_scene::add_model(w_model* pModel)
 	this->_models.push_back(pModel);
 }
 
+void w_scene::add_models(std::vector<w_model*>& pModel)
+{
+    this->_models.insert(this->_models.end(), pModel.begin(), pModel.end());
+}
+
 void w_scene::add_camera(std::string pID, glm::vec3 pTransform, glm::vec3 pInterest)
 {
 	auto _camera = new w_camera();
@@ -78,6 +83,13 @@ void w_scene::get_cameras_by_id(const std::string& pID, _Inout_ std::vector<w_ca
 			pCameras.push_back(this->_cameras.at(i));
 		}
 	}
+}
+
+HRESULT w_scene::get_scene_pack(_Inout_ w_scene_pack& pScenePack)
+{
+    pScenePack._scene_name = wolf::system::convert::wstring_to_string(this->_scene_name);
+
+    return S_OK;
 }
 
 #pragma endregion

@@ -12,6 +12,9 @@ _hr = PyWolfContentPipeline.initialize()
 if not _hr:
     print "PyWolfContentPipeline could not initialize"
 
-print PyWolfContentPipeline.collada_to_wolf_scene("C:\\Users\\PooyaEimandar\\Documents\\github\\WolfSource\\Wolf.Engine\\content\\models\\inst_max_oc.DAE", "[]")
+print PyWolfContentPipeline.collada_to_wolf_scene(
+"C:\\Users\\DFM\\Documents\\github\\WolfSource\\Wolf.Engine\\content\\models\\inst_max_oc.DAE", 
+"c:\\log\\wolf_scene.wscene",
+"[]")
 
 print "Done"

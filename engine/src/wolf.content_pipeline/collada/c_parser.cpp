@@ -261,95 +261,82 @@ void c_parser::_read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inou
             pNodes.push_back(_node);
         }
     }
+
 }
 
 void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node** pParentNode)
 {
-    if (pXNode == nullptr) return;
+    auto _parent_node_ptr = (*pParentNode);
+
+    if (pXNode == nullptr || _parent_node_ptr == nullptr || pParentNode == nullptr) return;
 
     for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
     {
         //get the name of node
         auto _name = _get_node_name(_child);
+
 #ifdef DEBUG
         logger.write(_name);
 #endif
         if (_name == "translate")
         {
-            (*pParentNode)->translate = glm::to_vec3(pXNode->value());
+            _parent_node_ptr->translate = glm::to_vec3(_child->value());
+        }
+        else if (_name == "rotate")
+        {
+            std::string _rotation_type;
+            _get_node_attribute_value(pXNode, "sid", _rotation_type);
+            auto _vec4 = glm::to_vec4(pXNode->value());
+
+            if (_rotation_type == "rotation_z")
+            {
+                _parent_node_ptr->rotation.z = _vec4[3];
+            }
+            else if (_rotation_type == "rotation_y")
+            {
+                _parent_node_ptr->rotation.y = _vec4[3];
+            }
+            else if (_rotation_type == "rotation_x")
+            {
+                _parent_node_ptr->rotation.x = _vec4[3];
+            }
+        }
+        else if (_name == "scale")
+        {
+            _parent_node_ptr->scale = glm::to_vec3(pXNode->value());
+        }
+        else if (_name == "instance_geometry")
+        {
+            _get_node_attribute_value(_child, "url", _parent_node_ptr->instanced_geometry_name);
+            if (_parent_node_ptr->instanced_geometry_name.size() &&
+                _parent_node_ptr->instanced_geometry_name[0] == '#')
+            {
+                _parent_node_ptr->type = c_node_type::MESH;
+                _parent_node_ptr->instanced_geometry_name = _parent_node_ptr->instanced_geometry_name.erase(0, 1);
+            }
         }
         else if (_name == "node")
         {
             //create node
-            auto __node = new c_node();
-            std::memset(__node, 0, sizeof(__node));
+            auto _node = new c_node();
+            std::memset(_node, 0, sizeof(_node));
 
             //get collada attributes
-            _get_collada_obj_attribute(pXNode, __node);
+            _get_collada_obj_attribute(_child, _node);
 
-            _get_node_data(pXNode, &__node);
+            _get_node_data(_child, &_node);
 
-            __node->child_nodes.push_back(__node);
+            _parent_node_ptr->child_nodes.push_back(_node);
         }
 
         _get_node_data(_child, pParentNode);
     }
 
-    //else if (_name == "rotate")
-    //{
-    //    std::string _rotation_type;
-    //    _get_node_attribute_value(pXNode, "sid", _rotation_type);
-    //    auto _vec4 = glm::to_vec4(pXNode->value());
+    _parent_node_ptr->transform = glm::make_wpv_mat(
+            _parent_node_ptr->scale,
+            _parent_node_ptr->rotation,
+            _parent_node_ptr->translate);
 
-    //    if (_rotation_type == "rotation_z")
-    //    {
-    //        _node->rotation.z = _vec4[3];
-    //    }
-    //    else if (_rotation_type == "rotation_y")
-    //    {
-    //        _node->rotation.y = _vec4[3];
-    //    }
-    //    else if (_rotation_type == "rotation_x")
-    //    {
-    //        _node->rotation.x = _vec4[3];
-    //    }
-    //}
-    //else if (_name == "scale")
-    //{
-    //    _node->scale = glm::to_vec3(pXNode->value());
-    //}
-
-    //_node->transform = glm::make_wpv_mat(_node->scale, _node->rotation, _node->translate);
-    ////iterate over children of this node
-    //for (auto __child = pXNode->first_node(); __child != nullptr; __child = __child->next_sibling())
-    //{
-    //    //create node
-    //    auto _child_node = new c_node();
-    //    std::memset(_child_node, 0, sizeof(_child_node));
-
-    //    //get node attributes
-    //    _get_collada_obj_attribute(__child, _child_node);
-
-    //    _get_node(__child, &_child_node);
-
-    //    _node->child_nodes.push_back(_child_node);
-    //}
-
- 
-    //pNodes.push_back(_node);
-
-    //        auto _name = _get_node_name(__child);
-    //
-
-    //
-    //        // get translate of this node
-
-    //        else if (_name == "")
-    //        {
-    //            
-    //        }
-    //        
-    //
     //#pragma region FOR_ANIMATION
     //        //else if (__child_name == "instance_controller")
     //        //{
@@ -789,163 +776,241 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geome
 
 HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)
 {
-	//The list of instanced geometries
-	std::vector<string> _instanced_geometries;
-	std::vector<c_geometry> _base_geometeries;
+    std::vector<w_model*> _models;
+	//iterate over all nodes
+    for (size_t i = 0; i < sNodes.size(); ++i)
+    {
+        auto _node = sNodes[i];
+        if (!_node || _node->proceeded) continue;
 
-	//Finding the base geometries
-	for (auto _node : sNodes)
-	{
-		auto _inst_geo = _node->find_instanced_geomaetry_node();
-		if (_inst_geo == nullptr) continue;
-		_instanced_geometries.push_back(_inst_geo->instanced_geometry_name);
-	}
+        switch (_node->type)
+        {
+        case c_node_type::MESH:
+            //find instance if avaiable in models
+            auto _iter = std::find_if(_models.begin(), _models.end(), [_node](_In_ w_model* pModel)
+            {
+                return pModel->get_instance_geometry_name() == _node->instanced_geometry_name;
+            });
 
-	//Loading geometries
-	for (auto _child = SGeometryLibraryNode->first_node(); _child != nullptr; _child = _child->next_sibling())
-	{
-		string _id;
-		_get_node_attribute_value(_child, "id", _id);
-		if (_instanced_geometries.size() == 0 ||
-			std::find(_instanced_geometries.begin(), _instanced_geometries.end(), _id) != _instanced_geometries.end())
-		{
-			c_geometry _g;
-
-			_get_node_attribute_value(_child, "id", _g.id);
-			_get_node_attribute_value(_child, "name", _g.name);
-
-			for (auto __child = _child->first_node(); __child != nullptr; __child = __child->next_sibling())
-			{
-				auto _node_name = _get_node_name(__child);
-#ifdef DEBUG
-				logger.write(_node_name);
-#endif
-
-				if (_node_name == "mesh")
-				{
-#pragma region read mesh data
-
-					for (auto ___child = __child->first_node(); ___child != nullptr; ___child = ___child->next_sibling())
-					{
-						std::string _name = ___child->name();
-
-						std::string __id, __name;
-						_get_node_attribute_value(___child, "id", __id);
-						_get_node_attribute_value(___child, "name", __name);
-
-#ifdef DEBUG
-						logger.write(_name);
-#endif
-
-						if (_name == "source")
-						{
-							_get_sources(___child, __id, __name, _g);
-						}
-						else if (_name == "vertices")
-						{
-							_g.vertices = new c_vertices();
-							_get_node_attribute_value(___child, "id", _g.vertices->id);
-
-							_get_vertices(___child, _g);
-						}
-						else if (_name == "triangles")
-						{
-							_get_triangles(___child, _g);
-						}
-					}
-#pragma endregion
-				}
-			}
-
-			_base_geometeries.push_back(_g);
-		}
-	}
+            if (_iter != _models.end())
+            {
+                //we find source model
+                w_transform_info _instance_trasform;
+                _instance_trasform.position = _node->translate;
+                _instance_trasform.rotation = _node->rotation;
+                _instance_trasform.scale = _node->scale;
+                _instance_trasform.transform = glm::make_wpv_mat(_node->scale, _node->rotation, _node->translate);
+                (*_iter)->add_instance_transform(_instance_trasform);
+                _node->proceeded = true;
+            }
+            else
+            {
+                _update_models(pOptimizePoints, pInvertNormals, &_node, _models);
+            }
+            break;
+        }
+    }
 
 	//creating animation container
-	auto _animation_container = new c_animation_container();
-	_animation_container->xsi_extra = sXSI_Extra;
+	//auto _animation_container = new c_animation_container();
+	//_animation_container->xsi_extra = sXSI_Extra;
 
-	//Check bones
-	if (sBones.size() > 0)
-	{
+	////Check bones
+	//if (sBones.size() > 0)
+	//{
 
-	}
+	//}
 
 	//add camera if avaiable
-	std::for_each(sNodes.begin(), sNodes.end(), [pScene](c_node* pNode)
-	{
-		//we will find #instance_camera and the parent node contains camera information and the next child node is camera interest
-		if (pNode)
-		{
-			bool _found = false;
-            
-            glm::vec3 _camera_transform;
-            glm::vec3 _camera_interest;
-            
-			if (!pNode->instanced_camera_name.empty())
-			{
-                //TODO : we need to check instanced camera
-				pScene->add_camera(pNode->c_name, pNode->translate, _camera_interest);
-				pNode->proceeded = true;
-				_found = true;
-			}
-			else
-			{
-				//Serach childs
-				auto _size = pNode->child_nodes.size();
-				for (size_t i = 0; i < _size; ++i)
-				{
-					auto pInnerNode = pNode->child_nodes[i];
-					if (pInnerNode && !pInnerNode->instanced_camera_name.empty())
-					{
-						_found = true;
-						break;
-					}
-				}
-			}
+	//std::for_each(sNodes.begin(), sNodes.end(), [pScene](c_node* pNode)
+	//{
+	//	//we will find #instance_camera and the parent node contains camera information and the next child node is camera interest
+	//	if (pNode)
+	//	{
+	//		bool _found = false;
+ //           
+ //           glm::vec3 _camera_transform;
+ //           glm::vec3 _camera_interest;
+ //           
+	//		if (!pNode->instanced_camera_name.empty())
+	//		{
+ //               //TODO : we need to check instanced camera
+	//			pScene->add_camera(pNode->c_name, pNode->translate, _camera_interest);
+	//			pNode->proceeded = true;
+	//			_found = true;
+	//		}
+	//		else
+	//		{
+	//			//Serach childs
+	//			auto _size = pNode->child_nodes.size();
+	//			for (size_t i = 0; i < _size; ++i)
+	//			{
+	//				auto pInnerNode = pNode->child_nodes[i];
+	//				if (pInnerNode && !pInnerNode->instanced_camera_name.empty())
+	//				{
+	//					_found = true;
+	//					break;
+	//				}
+	//			}
+	//		}
 
-			if (_found)
-			{
-				pNode->proceeded = true;
-                
-                //the first one is camera and the second one is camera interest
-                if (pNode->child_nodes.size() == 2)
-                {
-                    _camera_transform = pNode->child_nodes[0]->translate;
-                    _camera_interest = pNode->child_nodes[1]->translate;
-                }
-                else
-                {
-                    _camera_transform = pNode->translate;
-                }
-                
-				pScene->add_camera(pNode->c_name, _camera_transform, _camera_interest);
-			}
-		}
-	});
+	//		if (_found)
+	//		{
+	//			pNode->proceeded = true;
+ //               
+ //               //the first one is camera and the second one is camera interest
+ //               if (pNode->child_nodes.size() == 2)
+ //               {
+ //                   _camera_transform = pNode->child_nodes[0]->translate;
+ //                   _camera_interest = pNode->child_nodes[1]->translate;
+ //               }
+ //               else
+ //               {
+ //                   _camera_transform = pNode->translate;
+ //               }
+ //               
+	//			pScene->add_camera(pNode->c_name, _camera_transform, _camera_interest);
+	//		}
+	//	}
+	//});
 
 	//add models
-	for (auto _geometry : _base_geometeries)
-	{
-		c_skin* skin = nullptr;
-		//if (s.Count != 0)
-		//{
-		//	skin = s[i];
-		//}
+	//for (auto _geometry : _base_geometeries)
+	//{
+	//	c_skin* skin = nullptr;
+	//	//if (s.Count != 0)
+	//	//{
+	//	//	skin = s[i];
+	//	//}
 
-		auto _model = w_model::create_model(_geometry, skin, sBones, sSkeletonNames.data(), sMaterials, sNodes, pOptimizePoints);
-		//_model->set_effects(effects);
-		////_model.Textures = textureInfos;
-		////_model.Initialize(dir);
-		////_model.SceneName = sceneId;
-		////_model.Name = geometry.Name;
-		////_model.AnimationContainers.Add("Animation 1", animContainer);
-		////_model.SetAnimation("Animation 1");
-		
-		pScene->add_model(_model);
-	}
+	//	auto _model = w_model::create_model(_geometry, skin, sBones, sSkeletonNames.data(), sMaterials, sNodes, pOptimizePoints);
+	//	//_model->set_effects(effects);
+	//	////_model.Textures = textureInfos;
+	//	////_model.Initialize(dir);
+	//	////_model.SceneName = sceneId;
+	//	////_model.Name = geometry.Name;
+	//	////_model.AnimationContainers.Add("Animation 1", animContainer);
+	//	////_model.SetAnimation("Animation 1");
+	//	
+	//	pScene->add_model(_model);
+	//}
 
+    if (_models.size())
+    {
+        pScene->add_models(_models);
+        _models.clear();
+    }
 	return S_OK;
+}
+
+void c_parser::_update_models(_In_ const bool pOptimizePoints, 
+    _In_ const bool pInvertNormals,
+    _Inout_ c_node** pNode,
+    _Inout_ std::vector<w_model*>& pModels)
+{
+    //Loading geometries
+    c_geometry _g;
+    bool _found_geometry = false;
+    auto _node_ptr = *pNode;
+    for (auto _child = SGeometryLibraryNode->first_node();
+        _child != nullptr;
+        _child = _child->next_sibling())
+    {
+        string _id;
+        _get_node_attribute_value(_child, "id", _id);
+        if (_node_ptr->instanced_geometry_name == _id)
+        {
+            _found_geometry = true;
+            _node_ptr->proceeded = true;
+            _get_node_attribute_value(_child, "id", _g.id);
+            _get_node_attribute_value(_child, "name", _g.name);
+
+            for (auto __child = _child->first_node(); __child != nullptr; __child = __child->next_sibling())
+            {
+                auto _node_name = _get_node_name(__child);
+#ifdef DEBUG
+                logger.write(_node_name);
+#endif
+
+                if (_node_name == "mesh")
+                {
+#pragma region read mesh data
+
+                    for (auto ___child = __child->first_node(); ___child != nullptr; ___child = ___child->next_sibling())
+                    {
+                        std::string _name = ___child->name();
+
+                        std::string __id, __name;
+                        _get_node_attribute_value(___child, "id", __id);
+                        _get_node_attribute_value(___child, "name", __name);
+
+#ifdef DEBUG
+                        logger.write(_name);
+#endif
+
+                        if (_name == "source")
+                        {
+                            _get_sources(___child, __id, __name, _g);
+                        }
+                        else if (_name == "vertices")
+                        {
+                            _g.vertices = new c_vertices();
+                            _get_node_attribute_value(___child, "id", _g.vertices->id);
+
+                            _get_vertices(___child, _g);
+                        }
+                        else if (_name == "triangles")
+                        {
+                            _get_triangles(___child, _g);
+                        }
+                    }
+#pragma endregion
+                }
+            }
+            break;
+        }
+    }
+
+    if (_found_geometry)
+    {
+        //create model from geometry
+        c_skin* skin = nullptr;
+        //if (s.Count != 0)
+        //{
+        //	skin = s[i];
+        //}
+        auto _model = w_model::create_model(
+            _g,
+            skin,
+            sBones,
+            sSkeletonNames.data(),
+            sMaterials,
+            sNodes,
+            pOptimizePoints);
+        
+        _model->set_name(_node_ptr->c_name);
+        _model->set_instance_geometry_name(_node_ptr->instanced_geometry_name);
+        _model->set_materials(sMaterials);
+        
+        //set transform
+        w_transform_info _instance_trasform;
+        _instance_trasform.position = _node_ptr->translate;
+        _instance_trasform.rotation = _node_ptr->rotation;
+        _instance_trasform.scale = _node_ptr->scale;
+        _instance_trasform.transform = _node_ptr->transform;
+        _model->set_transform(_instance_trasform);
+        _model->update_world();
+
+        //_model->set_effects(effects);
+        ////_model.Textures = textureInfos;
+        ////_model.Initialize(dir);
+        ////_model.SceneName = sceneId;
+        ////_model.Name = geometry.Name;
+        ////_model.AnimationContainers.Add("Animation 1", animContainer);
+        ////_model.SetAnimation("Animation 1");
+
+        pModels.push_back(_model);
+    }
 }
 
 void c_parser::_clear_all_resources()

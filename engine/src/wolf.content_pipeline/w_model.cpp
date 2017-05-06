@@ -20,16 +20,20 @@ w_model::~w_model()
 {
 }
 
-w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
-	_In_ std::vector<c_bone*>& pBones, _In_ string pBoneNames [], _In_ std::vector<c_material*>& pMaterials,
-	_In_ std::vector<c_node*>& pNodes, _In_ bool pOptimizing)
+w_model* w_model::create_model(_In_ c_geometry& pGeometry, 
+    _In_ c_skin* pSkin,
+	_In_ std::vector<c_bone*>& pBones, 
+    _In_ string pBoneNames [], 
+    _In_ std::vector<c_material*>& pMaterials,
+	_In_ std::vector<c_node*>& pNodes, 
+    _In_ bool pOptimizing)
 {
 	auto _model = new w_model();
 	_model->set_materials(pMaterials);
 
 	std::string _messages;
 	//read all nodes
-	for (auto _node : pNodes)
+	/*for (auto _node : pNodes)
 	{
 		if (_node->proceeded) continue;
 
@@ -74,13 +78,12 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 			_transform.position = _node->translate;
 			_transform.transform = _node->transform;
 			_model->set_transform(_transform);
-			_model->set_name(_node->c_name);
 			_model->update_world();
 
 			_node->proceeded = true;
 			break;
 		}
-	}
+	}*/
 
 	for (auto _triangle : pGeometry.triangles)
 	{
@@ -487,6 +490,11 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 	return _model;
 }
 
+void w_model::add_instance_transform(_In_ const w_transform_info pTransform)
+{
+    this->_instanced_transforms.push_back(pTransform);
+}
+
 void w_model::update_world()
 {
 	this->_world = glm::make_wpv_mat(this->_transform.scale, _transform.rotation, _transform.position);
@@ -499,13 +507,23 @@ w_transform_info* w_model::get_instance_at(_In_ const size_t pIndex)
     return pIndex < this->_instanced_transforms.size() ? &this->_instanced_transforms[pIndex] : nullptr;
 }
 
+std::string w_model::get_instance_geometry_name() const
+{
+    return this->_instanced_geo_name;
+}
+
 #pragma endregion
 
 #pragma region Setters
 
-void w_model::set_name(const std::string& pValue)
+void w_model::set_name(_In_z_ const std::string& pValue)
 {
 	this->_name = pValue;
+}
+
+void w_model::set_instance_geometry_name(_In_z_ const std::string& pValue)
+{
+    this->_instanced_geo_name = pValue;
 }
 
 void w_model::set_materials(std::vector<c_material*>& pValue)

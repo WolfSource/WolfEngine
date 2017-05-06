@@ -21,6 +21,7 @@ namespace wolf
 	{
 		namespace collada
 		{
+            enum c_node_type { NONE, MESH, LIGHT, CAMERA };
 			struct c_node : c_obj
 			{
 				c_node* find_instanced_geomaetry_node();
@@ -28,6 +29,7 @@ namespace wolf
 				c_node* find_instanced_node_name();
 				ULONG release();
 
+                c_node_type             type = c_node_type::NONE;
 				bool					proceeded = false;
 				glm::vec3				translate;
 				glm::vec3				scale;

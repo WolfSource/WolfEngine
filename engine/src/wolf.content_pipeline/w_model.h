@@ -111,21 +111,25 @@ namespace wolf
 				w_bounding_box					bounding_box;
 			};
 
+            WCP_EXP void add_instance_transform(_In_ const w_transform_info pTransform);
 			WCP_EXP void update_world();
 			
 #pragma region Getters
 
 			WCP_EXP std::string get_name() const									{ return this->_name; }
+            WCP_EXP std::string set_instance_geometry_name()                        { return this->_instanced_geo_name; }
 			WCP_EXP void get_meshes(_Inout_ std::vector<w_mesh*>& pValue) 			{ pValue = this->_meshes; }
 			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
             WCP_EXP size_t get_instnaces_count() const                              { return this->_instanced_transforms.size(); }
             WCP_EXP w_transform_info* w_model::get_instance_at(_In_ const size_t pIndex);
+            WCP_EXP std::string get_instance_geometry_name() const;
 
 #pragma endregion
 
 #pragma region Setters
 
-			WCP_EXP void set_name(const std::string& pValue);
+			WCP_EXP void set_name(_In_z_ const std::string& pValue);
+            WCP_EXP void set_instance_geometry_name(_In_z_ const std::string& pValue);
 			WCP_EXP void set_materials(std::vector<c_material*>& pValue);
 			WCP_EXP void set_effects(std::vector<c_effect*>& pValue);
 			WCP_EXP void set_transform(w_transform_info& pValue);
@@ -134,14 +138,19 @@ namespace wolf
 
 			//access to private members of instance model from static method
 			//class w_model;
-			static w_model* create_model(_In_ collada::c_geometry& pGeometry, _In_ collada::c_skin* pSkin,
-				_In_ std::vector<collada::c_bone*>& pBones, _In_ std::string pBoneNames [], _In_ std::vector<c_material*>& pMaterials,
-				_In_ std::vector<collada::c_node*>& pNodes, _In_ bool pOptimizing);
+			static w_model* create_model(_In_ collada::c_geometry& pGeometry,
+                _In_ collada::c_skin* pSkin,
+				_In_ std::vector<collada::c_bone*>& pBones, 
+                _In_ std::string pBoneNames [], 
+                _In_ std::vector<c_material*>& pMaterials,
+				_In_ std::vector<collada::c_node*>& pNodes, 
+                _In_ bool pOptimizing);
 
 		private:
 			typedef w_object _super;
 
 			std::string												_name;
+            std::string												_instanced_geo_name;
 
 			std::vector<c_material*>								_materials;
 			std::vector<c_effect*>									_effects;
