@@ -115,9 +115,11 @@ namespace wolf
 			
 #pragma region Getters
 
-			WCP_EXP std::string get_name() const										{ return this->_name; }
+			WCP_EXP std::string get_name() const									{ return this->_name; }
 			WCP_EXP void get_meshes(_Inout_ std::vector<w_mesh*>& pValue) 			{ pValue = this->_meshes; }
 			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
+            WCP_EXP size_t get_instnaces_count() const                              { return this->_instanced_transforms.size(); }
+            WCP_EXP w_transform_info* w_model::get_instance_at(_In_ const size_t pIndex);
 
 #pragma endregion
 

@@ -1,7 +1,8 @@
 #include "w_system_pch.h"
-#include "w_lua.h"
 
-#ifdef __WIN32
+#ifdef __LUA__
+
+#include "w_lua.h"
 
 using namespace wolf::system;
 

@@ -44,9 +44,9 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry, _In_ c_skin* pSkin,
 			auto _index = _result - pNodes.begin();
 			if (_index < pNodes.size())
 			{
-				if (pNodes[_index]->nodes.size() > 0 && pNodes[_index]->instanced_geometry_name.empty())
+				if (pNodes[_index]->child_nodes.size() > 0 && pNodes[_index]->instanced_geometry_name.empty())
 				{
-					if (pNodes[_index]->nodes[0]->instanced_geometry_name != pGeometry.name)
+					if (pNodes[_index]->child_nodes[0]->instanced_geometry_name != pGeometry.name)
 					{
 						pNodes[_index]->proceeded = true;
 						continue;
@@ -491,6 +491,15 @@ void w_model::update_world()
 {
 	this->_world = glm::make_wpv_mat(this->_transform.scale, _transform.rotation, _transform.position);
 }
+
+#pragma region Getters
+
+w_transform_info* w_model::get_instance_at(_In_ const size_t pIndex) 
+{
+    return pIndex < this->_instanced_transforms.size() ? &this->_instanced_transforms[pIndex] : nullptr;
+}
+
+#pragma endregion
 
 #pragma region Setters
 

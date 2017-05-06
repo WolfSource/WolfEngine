@@ -31,13 +31,30 @@ class PropertyGrids(QtGui.QWidget):
      self.setFixedHeight(350)
  
      widget = QtGui.QWidget()
+
+     p0_layout = QtGui.QHBoxLayout()
+     p0_layout.addWidget(QtGui.QLabel("Name"))
+     p0_layout.addWidget(QtGui.QLineEdit("Name"))
+
+     p1_layout = QtGui.QHBoxLayout()
+     p1_layout.addWidget(QtGui.QLabel("Enable Physic"))
+     p1_layout.addWidget(QtGui.QCheckBox())
+
+     p2_layout = QtGui.QHBoxLayout()
+     p2_layout.addWidget(QtGui.QLabel("Enable Light"))
+     p2_layout.addWidget(QtGui.QCheckBox())
+
+     p3_layout = QtGui.QHBoxLayout()
+     p3_layout.addWidget(QtGui.QLabel("Cast Shadow"))
+     p3_layout.addWidget(QtGui.QCheckBox())
+
      #Layout of Container Widget
      layout = QtGui.QVBoxLayout(self)
-     for _ in range(20):
-         hlayout = QtGui.QHBoxLayout()
-         hlayout.addWidget(QtGui.QLabel("Item    "))
-         hlayout.addWidget(QtGui.QLineEdit("Value"))
-         layout.addLayout(hlayout)
+     layout.addLayout(p0_layout)
+     layout.addLayout(p1_layout)
+     layout.addLayout(p2_layout)
+     layout.addLayout(p3_layout)
+
      widget.setLayout(layout)
      
      #Scroll Area Properties
@@ -95,8 +112,6 @@ class MainWindow(QtGui.QWidget):
         _ip_port_layout.addWidget(_port_label)
         _ip_port_layout.addWidget(_port_text)
 
-        left_first_left_layout = QtGui.QVBoxLayout()
-        
         left_00_layout = QtGui.QVBoxLayout()
         left_00_layout.addLayout(_engine_path_layout)
         left_00_layout.addLayout(_content_path_layout)
@@ -152,7 +167,7 @@ class MainWindow(QtGui.QWidget):
 
         left_bottom_layout = QtGui.QVBoxLayout()
         left_bottom_layout.addWidget(text_log_history)
-        left_bottom_layout.addWidget(QtGui.QPushButton("Clear History Log"))
+        left_bottom_layout.addWidget(QtGui.QPushButton("Clear Log History"))
         
         # +++++++++++++++++++++++++++++++++++++++++++++++
         # ++++++++++++++++++++ Left  ++++++++++++++++++++

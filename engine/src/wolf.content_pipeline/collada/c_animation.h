@@ -16,6 +16,7 @@
 #include "c_obj.h"
 #include "c_extra.h"
 #include <glm/matrix.hpp>
+#include <w_logger.h>
 
 namespace wolf
 {

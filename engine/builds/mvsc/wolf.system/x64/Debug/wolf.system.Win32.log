@@ -1,0 +1,20 @@
+﻿  w_system_pch.cpp
+  dllmain.cpp
+  w_cpu.cpp
+  w_linear_allocator.cpp
+  w_logger.cpp
+  w_lua.cpp
+  w_memory.cpp
+  w_object.cpp
+  w_python.cpp
+  w_task.cpp
+  w_tcp_client.cpp
+  w_time_span.cpp
+  w_window.cpp
+c:\users\pooyaeimandar\documents\github\wolfsource\wolf.engine\engine\src\wolf.system\w_window.cpp(238): warning C4227: anachronism used: qualifiers on reference are ignored
+  w_xml.cpp
+  Generating Code...
+     Creating library C:\Users\PooyaEimandar\Documents\github\WolfSource\Wolf.Engine\engine\builds\mvsc\/../../../bin/x64/Debug/Win32/wolf.system.Win32.lib and object C:\Users\PooyaEimandar\Documents\github\WolfSource\Wolf.Engine\engine\builds\mvsc\/../../../bin/x64/Debug/Win32/wolf.system.Win32.exp
+LINK : warning LNK4039: section '.shared' specified with /SECTION option does not exist
+  wolf.system.Win32.vcxproj -> C:\Users\PooyaEimandar\Documents\github\WolfSource\Wolf.Engine\engine\builds\mvsc\/../../../bin/x64/Debug/Win32/wolf.system.Win32.dll
+  wolf.system.Win32.vcxproj -> C:\Users\PooyaEimandar\Documents\github\WolfSource\Wolf.Engine\engine\builds\mvsc\/../../../bin/x64/Debug/Win32/wolf.system.Win32.pdb (Full PDB)

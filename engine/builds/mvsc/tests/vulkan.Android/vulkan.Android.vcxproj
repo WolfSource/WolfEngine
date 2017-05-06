@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="NsightTegraProject">
+    <NsightTegraProjectRevisionNumber>11</NsightTegraProjectRevisionNumber>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Tegra-Android">
+      <Configuration>Debug</Configuration>
+      <Platform>Tegra-Android</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Tegra-Android">
+      <Configuration>Release</Configuration>
+      <Platform>Tegra-Android</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Shipping|Tegra-Android">
+      <Configuration>Shipping</Configuration>
+      <Platform>Tegra-Android</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CDE10563-07DD-43C6-A023-13E7A8EB88E4}</ProjectGuid>
+    <RootNamespace>Vulkan_Android</RootNamespace>
+    <ProjectName>test.vulkan.android</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <AndroidTargetAPI>android-24</AndroidTargetAPI>
+    <AndroidMinAPI>android-23</AndroidMinAPI>
+    <AndroidArch>armv7-a</AndroidArch>
+    <AndroidStlType>gnustl_static</AndroidStlType>
+    <NdkToolchainVersion>gcc-4.9</NdkToolchainVersion>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <AndroidTargetAPI>android-24</AndroidTargetAPI>
+    <AndroidMinAPI>android-23</AndroidMinAPI>
+    <NdkToolchainVersion>gcc-4.9</NdkToolchainVersion>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Shipping|Tegra-Android'">
+    <AndroidTargetAPI>android-24</AndroidTargetAPI>
+    <NdkToolchainVersion>gcc-4.9</NdkToolchainVersion>
+    <AndroidMinAPI>android-23</AndroidMinAPI>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Shipping|Tegra-Android'">
+    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <PreprocessorDefinitions>__VULKAN__;__ANDROID;DISABLE_IMPORTGL;VK_USE_PLATFORM_ANDROID_KHR</PreprocessorDefinitions>
+      <GccExceptionHandling>true</GccExceptionHandling>
+      <AdditionalOptions>-std=c++11 %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/vulkan/include;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.render/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/rapidjson/include;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>android;wolf.system.android;wolf.vulkan.android</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/</AdditionalLibraryDirectories>
+    </Link>
+    <AntBuild>
+      <NativeLibDirectories>
+      </NativeLibDirectories>
+    </AntBuild>
+    <AntBuild>
+      <NativeLibDependencies>
+      </NativeLibDependencies>
+      <AssetsDirectories>$(SolutionDir)/../../assets/android;</AssetsDirectories>
+    </AntBuild>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Tegra-Android'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <PreprocessorDefinitions>__ANDROID;DISABLE_IMPORTGL</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/rapidxml-master;</AdditionalIncludeDirectories>
+      <GccExceptionHandling>true</GccExceptionHandling>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>android;EGL;GLESv1_CM</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Shipping|Tegra-Android'">
+    <ClCompile>
+      <CppLanguageStandard>gnu++11</CppLanguageStandard>
+      <PreprocessorDefinitions>DISABLE_IMPORTGL</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>android;EGL;GLESv1_CM</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <AndroidBuild Include="AndroidManifest.xml" />
+    <AndroidBuild Include="res\values\strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\tests\vulkan.android\jni\main.cpp" />
+    <ClCompile Include="..\..\..\..\src\tests\vulkan.android\jni\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Tegra-Android'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\tests\vulkan.android\jni\scene.cpp" />
+    <ClCompile Include="..\..\..\..\src\tests\vulkan.android\native_app_glue\android_native_app_glue.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\wolf.render\wolf.vulkan\wolf.vulkan.android.vcxproj">
+      <Project>{7bfe29c5-c6ed-47ae-8eae-a3fa2c6828bf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Wolf.System\Wolf.System.Android.vcxproj">
+      <Project>{70b4af00-0706-4e55-8aa0-55086a153dac}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\tests\vulkan.android\jni\pch.h" />
+    <ClInclude Include="..\..\..\..\src\tests\vulkan.android\jni\scene.h" />
+    <ClInclude Include="..\..\..\..\src\tests\vulkan.android\native_app_glue\android_native_app_glue.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

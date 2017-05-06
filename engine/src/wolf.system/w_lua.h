@@ -2,6 +2,8 @@
 #pragma once
 #endif
 
+#ifdef __LUA__
+
 #ifndef __W_LUA_H__
 #define __W_LUA_H__
 
@@ -526,5 +528,7 @@ namespace wolf
 }
 
 #endif // __WIN32
+
+#endif // __LUA__
 
 #endif //__W_LUA_H__

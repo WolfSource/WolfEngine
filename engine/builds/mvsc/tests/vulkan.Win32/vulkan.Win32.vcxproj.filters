@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\tests\pch.h" />
+    <ClInclude Include="..\..\..\..\src\tests\scene.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\tests\main.cpp" />
+    <ClCompile Include="..\..\..\..\src\tests\pch.cpp" />
+    <ClCompile Include="..\..\..\..\src\tests\scene.cpp" />
+  </ItemGroup>
+</Project>

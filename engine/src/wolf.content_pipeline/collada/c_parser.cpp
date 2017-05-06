@@ -136,6 +136,9 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 		for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
 		{
 			auto _node_name = _get_node_name(_child);
+#ifdef DEBUG
+            logger.write(_node_name);
+#endif
 			if (_node_name == "visual_scene")
 			{
 				//read scene id
@@ -229,7 +232,6 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 
 void c_parser::_read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std::vector<c_node*>& pNodes)
 {
-
 #ifdef DEBUG
 	std::string _id;
 	_get_node_attribute_value(pXNode, "id", _id);
@@ -237,66 +239,154 @@ void c_parser::_read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inou
 #endif
 
 	//iterate over children of this node
-	for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
-	{
-		//get the name of node
-		auto _child_name = _get_node_name(_child);
-
+    for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
+    {
+        //get the name of node
+        auto _name = _get_node_name(_child);
 #ifdef DEBUG
-		std::string __id;
-		_get_node_attribute_value(_child, "id", __id);
-		logger.write(__id);
+        logger.write(_name);
 #endif
 
-		if (_child_name == "node")
-		{
-			//iterate over children of this node
-			for (auto __child = _child->first_node(); __child != nullptr; __child = __child->next_sibling())
-			{
-				auto __child_name = _get_node_name(__child);
+        if (_name == "node")
+        {
+            //create node
+            auto _node = new c_node();
+            std::memset(_node, 0, sizeof(_node));
+
+            //get collada attributes
+            _get_collada_obj_attribute(_child, _node);
+
+            _get_node_data(_child, &_node);
+
+            pNodes.push_back(_node);
+        }
+    }
+}
+
+void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node** pParentNode)
+{
+    if (pXNode == nullptr) return;
+
+    for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
+    {
+        //get the name of node
+        auto _name = _get_node_name(_child);
 #ifdef DEBUG
-				std::string ___id;
-				_get_node_attribute_value(__child, "id", ___id);
-				logger.write(___id);
+        logger.write(_name);
 #endif
+        if (_name == "translate")
+        {
+            (*pParentNode)->translate = glm::to_vec3(pXNode->value());
+        }
+        else if (_name == "node")
+        {
+            //create node
+            auto __node = new c_node();
+            std::memset(__node, 0, sizeof(__node));
 
-				if (__child_name == "instance_controller")
-				{
-					//iterate over children of this node
-					for (auto ___child = __child->first_node(); ___child != nullptr; ___child = ___child->next_sibling())
-					{
-						auto ___child_name = _get_node_name(___child);
-						if (___child_name == "skeleton")
-						{
-							std::string _value = ___child->value();
-							sSkeletonNames.push_back(_value);
-						}
-					}
-				}
-				else if (__child_name == "node")
-				{
-					rapidxml::xml_node<>* _joint_node = nullptr;
-					_find_node(__child, "type", "JOINT", _joint_node);
-					if (_joint_node != nullptr)
-					{
-						c_bone _temp_bone;
-						std::memset(&_temp_bone, 0, sizeof(_temp_bone));
+            //get collada attributes
+            _get_collada_obj_attribute(pXNode, __node);
 
-						auto _base_class = (c_obj*) (&_temp_bone);
-						_get_collada_obj_attribute(_joint_node, _base_class);
-						_get_bones(_joint_node, &_temp_bone, _temp_bone.flat_bones);
+            _get_node_data(pXNode, &__node);
 
-						sBones.push_back(&_temp_bone);
-					}
-					_get_nodes(__child, pNodes);
+            __node->child_nodes.push_back(__node);
+        }
 
-#ifdef DEBUG
-					logger.write(std::to_string(pNodes.size()));
-#endif
-				}
-			}
-		}
-	}
+        _get_node_data(_child, pParentNode);
+    }
+
+    //else if (_name == "rotate")
+    //{
+    //    std::string _rotation_type;
+    //    _get_node_attribute_value(pXNode, "sid", _rotation_type);
+    //    auto _vec4 = glm::to_vec4(pXNode->value());
+
+    //    if (_rotation_type == "rotation_z")
+    //    {
+    //        _node->rotation.z = _vec4[3];
+    //    }
+    //    else if (_rotation_type == "rotation_y")
+    //    {
+    //        _node->rotation.y = _vec4[3];
+    //    }
+    //    else if (_rotation_type == "rotation_x")
+    //    {
+    //        _node->rotation.x = _vec4[3];
+    //    }
+    //}
+    //else if (_name == "scale")
+    //{
+    //    _node->scale = glm::to_vec3(pXNode->value());
+    //}
+
+    //_node->transform = glm::make_wpv_mat(_node->scale, _node->rotation, _node->translate);
+    ////iterate over children of this node
+    //for (auto __child = pXNode->first_node(); __child != nullptr; __child = __child->next_sibling())
+    //{
+    //    //create node
+    //    auto _child_node = new c_node();
+    //    std::memset(_child_node, 0, sizeof(_child_node));
+
+    //    //get node attributes
+    //    _get_collada_obj_attribute(__child, _child_node);
+
+    //    _get_node(__child, &_child_node);
+
+    //    _node->child_nodes.push_back(_child_node);
+    //}
+
+ 
+    //pNodes.push_back(_node);
+
+    //        auto _name = _get_node_name(__child);
+    //
+
+    //
+    //        // get translate of this node
+
+    //        else if (_name == "")
+    //        {
+    //            
+    //        }
+    //        
+    //
+    //#pragma region FOR_ANIMATION
+    //        //else if (__child_name == "instance_controller")
+    //        //{
+    //        //    //iterate over children of this node
+    //        //    for (auto ___child = __child->first_node(); ___child != nullptr; ___child = ___child->next_sibling())
+    //        //    {
+    //        //        auto ___child_name = _get_node_name(___child);
+    //        //        if (___child_name == "skeleton")
+    //        //        {
+    //        //            std::string _value = ___child->value();
+    //        //            sSkeletonNames.push_back(_value);
+    //        //        }
+    //        //    }
+    //        //}
+    //        //				else if (__child_name == "node")
+    //        //				{
+    //        //					rapidxml::xml_node<>* _joint_node = nullptr;
+    //        //					_find_node(__child, "type", "JOINT", _joint_node);
+    //        //					if (_joint_node != nullptr)
+    //        //					{
+    //        //						c_bone _temp_bone;
+    //        //						std::memset(&_temp_bone, 0, sizeof(_temp_bone));
+    //        //
+    //        //						auto _base_class = (c_obj*) (&_temp_bone);
+    //        //						_get_collada_obj_attribute(_joint_node, _base_class);
+    //        //						_get_bones(_joint_node, &_temp_bone, _temp_bone.flat_bones);
+    //        //
+    //        //						sBones.push_back(&_temp_bone);
+    //        //					}
+    //        //					_get_nodes(__child, pNodes);
+    //        //
+    //        //#ifdef DEBUG
+    //        //					logger.write(std::to_string(pNodes.size()));
+    //        //#endif
+    //        //				}
+    //#pragma endregion
+    //    }
 }
 
 void c_parser::_get_si_scene_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std::vector<c_value_obj*>& pSIs)
@@ -375,7 +465,7 @@ void c_parser::_get_collada_obj_attribute(_In_ rapidxml::xml_node<>* pXNode, _In
 
 	_get_node_attribute_value(pXNode, "id", _id);
 	_get_node_attribute_value(pXNode, "name", _name);
-	_get_node_attribute_value(pXNode, "sid", _sid);
+	_get_node_attribute_value(pXNode, "sid", _sid);//just for softimage xsi
 
 	pCObj->c_id = _id;
 	pCObj->c_name = _name;
@@ -468,96 +558,96 @@ void c_parser::_get_bones(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_bone* pBo
 	}
 }
 
-void c_parser::_get_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std::vector<c_node*>& pNodes)
-{
-	auto _node = new c_node();
-	std::memset(_node, 0, sizeof(_node));
-
-	_get_collada_obj_attribute(pXNode, _node);
-
-#ifdef DEBUG
-	auto _name = _get_node_name(pXNode);
-	std::string _id;
-	_get_node_attribute_value(pXNode, "id", _id);
-
-	logger.write(_name + " with id: " + _id);
-#endif
-
-	for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
-	{
-		auto _node_name = _get_node_name(_child);
-#ifdef DEBUG
-		logger.write(_node_name);
-#endif
-		if (_node_name == "translate")
-		{
-			_node->translate = glm::to_vec3(_child->value());
-		}
-		else if (_node_name == "rotate")
-		{
-			std::string _rotation_type;
-			_get_node_attribute_value(_child, "sid", _rotation_type);
-			auto _vec4 = glm::to_vec4(_child->value());
-
-			if (_rotation_type == "rotation_z")
-			{
-				_node->rotation.z = _vec4[3];
-			}
-			else if (_rotation_type == "rotation_y")
-			{
-				_node->rotation.y = _vec4[3];
-			}
-			else if (_rotation_type == "rotation_x")
-			{
-				_node->rotation.x = _vec4[3];
-			}
-		}
-		else if (_node_name == "scale")
-		{
-			_node->scale = glm::to_vec3(_child->value());
-		}
-		else if (_node_name == "node")
-		{
-			_get_nodes(_child, _node->nodes);
-		}
-		else if (_node_name == "instance_geometry")
-		{
-			_get_node_attribute_value(_child, "url", _node->instanced_geometry_name);
-			if (_node->instanced_geometry_name[0] == '#')
-			{
-				_node->instanced_geometry_name = _node->instanced_geometry_name.erase(0, 1);
-			}
-
-		}
-		else if (_node_name == "instance_node")
-		{
-			_get_node_attribute_value(_child, "url", _node->instanced_node_name);
-			if (_node->instanced_geometry_name[0] == '#')
-			{
-				_node->instanced_geometry_name = _node->instanced_geometry_name.erase(0, 1);
-			}
-		}
-		else if (_node_name == "instance_camera")
-		{
-			_get_node_attribute_value(_child, "url", _node->instanced_camera_name);
-			if (_node->instanced_camera_name[0] == '#')
-			{
-				_node->instanced_camera_name = _node->instanced_camera_name.erase(0, 1);
-			}
-		}
-		else if (_node_name == "instance_light")
-		{
-			//ToDo
-		}
-	}
-
-	_node->transform = glm::make_wpv_mat(_node->scale, _node->rotation, _node->translate);
-	pNodes.push_back(_node);
-
-#ifdef DEBUG
-	logger.write(std::to_string(pNodes.size()));
-#endif // DEBUG
-}
+//void c_parser::_get_nodes()
+//{
+//	auto _node = new c_node();
+//	std::memset(_node, 0, sizeof(_node));
+//
+//	_get_collada_obj_attribute(pXNode, _node);
+//
+//#ifdef DEBUG
+//	auto _name = _get_node_name(pXNode);
+//	std::string _id;
+//	_get_node_attribute_value(pXNode, "id", _id);
+//
+//	logger.write(_name + " with id: " + _id);
+//#endif
+//
+//	for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
+//	{
+//		auto _node_name = _get_node_name(_child);
+//#ifdef DEBUG
+//		logger.write(_node_name);
+//#endif
+//		if (_node_name == "translate")
+//		{
+//			_node->translate = glm::to_vec3(_child->value());
+//		}
+//		else if (_node_name == "rotate")
+//		{
+//			std::string _rotation_type;
+//			_get_node_attribute_value(_child, "sid", _rotation_type);
+//			auto _vec4 = glm::to_vec4(_child->value());
+//
+//			if (_rotation_type == "rotation_z")
+//			{
+//				_node->rotation.z = _vec4[3];
+//			}
+//			else if (_rotation_type == "rotation_y")
+//			{
+//				_node->rotation.y = _vec4[3];
+//			}
+//			else if (_rotation_type == "rotation_x")
+//			{
+//				_node->rotation.x = _vec4[3];
+//			}
+//		}
+//		else if (_node_name == "scale")
+//		{
+//			_node->scale = glm::to_vec3(_child->value());
+//		}
+//		else if (_node_name == "node")
+//		{
+//			_get_nodes(_child, _node->nodes);
+//		}
+//		else if (_node_name == "instance_geometry")
+//		{
+//			_get_node_attribute_value(_child, "url", _node->instanced_geometry_name);
+//			if (_node->instanced_geometry_name[0] == '#')
+//			{
+//				_node->instanced_geometry_name = _node->instanced_geometry_name.erase(0, 1);
+//			}
+//
+//		}
+//		else if (_node_name == "instance_node")
+//		{
+//			_get_node_attribute_value(_child, "url", _node->instanced_node_name);
+//			if (_node->instanced_geometry_name[0] == '#')
+//			{
+//				_node->instanced_geometry_name = _node->instanced_geometry_name.erase(0, 1);
+//			}
+//		}
+//		else if (_node_name == "instance_camera")
+//		{
+//			_get_node_attribute_value(_child, "url", _node->instanced_camera_name);
+//			if (_node->instanced_camera_name[0] == '#')
+//			{
+//				_node->instanced_camera_name = _node->instanced_camera_name.erase(0, 1);
+//			}
+//		}
+//		else if (_node_name == "instance_light")
+//		{
+//			//ToDo
+//		}
+//	}
+//
+//	_node->transform = glm::make_wpv_mat(_node->scale, _node->rotation, _node->translate);
+//	pNodes.push_back(_node);
+//
+//#ifdef DEBUG
+//	logger.write(std::to_string(pNodes.size()));
+//#endif // DEBUG
+//}
 
 void c_parser::_get_sources(_In_ rapidxml::xml_node<>* pXNode, std::string pID, std::string pName, _Inout_ c_geometry& pGeometry)
 {
@@ -802,10 +892,10 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
 			else
 			{
 				//Serach childs
-				auto _size = pNode->nodes.size();
+				auto _size = pNode->child_nodes.size();
 				for (size_t i = 0; i < _size; ++i)
 				{
-					auto pInnerNode = pNode->nodes[i];
+					auto pInnerNode = pNode->child_nodes[i];
 					if (pInnerNode && !pInnerNode->instanced_camera_name.empty())
 					{
 						_found = true;
@@ -819,10 +909,10 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
 				pNode->proceeded = true;
                 
                 //the first one is camera and the second one is camera interest
-                if (pNode->nodes.size() == 2)
+                if (pNode->child_nodes.size() == 2)
                 {
-                    _camera_transform = pNode->nodes[0]->translate;
-                    _camera_interest = pNode->nodes[1]->translate;
+                    _camera_transform = pNode->child_nodes[0]->translate;
+                    _camera_interest = pNode->child_nodes[1]->translate;
                 }
                 else
                 {

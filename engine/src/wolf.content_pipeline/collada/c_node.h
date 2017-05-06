@@ -36,7 +36,7 @@ namespace wolf
 				std::string				instanced_node_name;
 				std::string				instanced_geometry_name;
 				std::string				instanced_camera_name;
-				std::vector<c_node*>	nodes;
+				std::vector<c_node*>	child_nodes;
 
 			private:
 				bool					is_released = false;
