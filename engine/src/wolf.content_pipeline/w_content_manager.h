@@ -40,7 +40,7 @@ namespace wolf
 				}
                 
                 auto _extension = wolf::system::io::get_file_extentionW(pAssetPath);
-                auto _name = wolf::system::io::get_base_file_nameW(pAssetPath);
+                auto _name = wolf::system::io::get_base_file_name(wolf::system::convert::wstring_to_string(pAssetPath));
 
 				//to lower
 				std::transform(_extension.begin(), _extension.end(), _extension.begin(), ::tolower);
@@ -74,7 +74,7 @@ namespace wolf
 				return nullptr;
 			}
 
-            static HRESULT save_wolf_scenes_to_file(_In_ std::vector<w_scene_pack>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
+            static HRESULT save_wolf_scenes_to_file(_In_ std::vector<w_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
             {
                 std::stringstream _sbuffer;
                 msgpack::pack(_sbuffer, pScenePacks);
@@ -92,17 +92,10 @@ namespace wolf
 
                 _sbuffer.clear();
 
-                //auto _msg = msgpack::unpack(_sbuffer.data(), _sbuffer.size());
-                //auto _obj = _msg.get();
-
-                //// you can convert object to myclass directly
-                //std::vector<w_scene_pack> _result;
-                //_obj.convert(_result);
-
                 return S_OK;
             }
 
-            static HRESULT load_wolf_scenes_from_file(_In_ std::vector<w_scene_pack>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
+            static HRESULT load_wolf_scenes_from_file(_In_ std::vector<w_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
             {
                 std::ifstream _file(pWolfSceneFilePath, std::ios::in | std::ios::binary);
                 if (!_file || _file.bad())
@@ -117,6 +110,8 @@ namespace wolf
                 _file.close();
 
                 auto _msg = msgpack::unpack(_str.data(), _str.size());
+                _str.clear();
+
                 auto _obj = _msg.get();
                 _obj.convert(pScenePacks);
 

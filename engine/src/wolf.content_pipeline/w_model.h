@@ -21,6 +21,7 @@
 #include "collada/c_bone.h"
 #include "collada/c_skin.h"
 #include "collada/c_animation.h"
+#include <msgpack.hpp>
 
 namespace wolf
 {
@@ -69,26 +70,30 @@ namespace wolf
 
 		struct w_transform_info
 		{
-			glm::vec3	position;
-			glm::vec3	rotation;
-			glm::vec3	scale;
-			glm::mat4x4 transform;
+			float	        position[3];
+            float	        rotation[3];
+            float	        scale[3];
+			glm::mat4x4     transform;
+
+            MSGPACK_DEFINE(position, rotation, scale);
 		};
 
 		struct w_vertex_data
 		{
-			glm::vec4		position;
-			glm::vec3		normal;
-			glm::vec4		blend_weight;
-			glm::int4		blend_indices;
-			glm::vec2		uv;
-			glm::vec3		tangent;
-			glm::vec3		binormal;
-			glm::vec4		color;
+			float		    position[4];
+            float		    normal[3];
+            float		    blend_weight[4];
+            float		    blend_indices[4];
+            float		    uv[2];
+            float		    tangent[3];
+            float		    binormal[3];
+            float		    color[4];
 			unsigned short	vertex_index;
+
+            MSGPACK_DEFINE(position, normal, blend_weight, blend_indices, uv, tangent, binormal, color);
 		};
 
-		class w_model : public wolf::system::w_object
+		class w_model
 		{
 		public:
 			WCP_EXP w_model();
@@ -96,8 +101,10 @@ namespace wolf
 
 			WCP_EXP struct w_bounding_box
 			{
-				glm::vec3 min;
-				glm::vec3 max;
+				float min[3];
+				float max[3];
+
+                MSGPACK_DEFINE(min, max);
 			};
 			WCP_EXP struct w_mesh
 			{
@@ -109,6 +116,8 @@ namespace wolf
 				std::vector<c_effect*>			effects;
 				std::vector<w_texture_info>		texture_infos;
 				w_bounding_box					bounding_box;
+
+                MSGPACK_DEFINE(vertices, indices, bounding_box);
 			};
 
             WCP_EXP void add_instance_transform(_In_ const w_transform_info pTransform);
@@ -118,7 +127,6 @@ namespace wolf
 
 			WCP_EXP std::string get_name() const									{ return this->_name; }
             WCP_EXP std::string set_instance_geometry_name()                        { return this->_instanced_geo_name; }
-			WCP_EXP void get_meshes(_Inout_ std::vector<w_mesh*>& pValue) 			{ pValue = this->_meshes; }
 			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
             WCP_EXP size_t get_instnaces_count() const                              { return this->_instanced_transforms.size(); }
             WCP_EXP w_transform_info* w_model::get_instance_at(_In_ const size_t pIndex);
@@ -146,9 +154,9 @@ namespace wolf
 				_In_ std::vector<collada::c_node*>& pNodes, 
                 _In_ bool pOptimizing);
 
-		private:
-			typedef w_object _super;
+            MSGPACK_DEFINE(_name, _transform, _instanced_transforms, _meshes);
 
+		private:
 			std::string												_name;
             std::string												_instanced_geo_name;
 
@@ -169,7 +177,7 @@ namespace wolf
 			std::vector<w_transform_info>							_instanced_transforms;
 			w_transform_info										_transform;
 
-			std::vector<w_mesh*>									_meshes;
+			std::vector<w_mesh>								    	_meshes;
 
 			std::vector<collada::c_bone*>							_skeleton;
 			std::vector<std::string>								_bone_names;
