@@ -50,23 +50,23 @@ namespace wolf
 			bool _is_released = false;
 		};
 
-		struct c_material : public collada::c_obj
-		{
-			std::string instance_effect;
-		};
+		//struct c_material : public collada::c_obj
+		//{
+		//	std::string instance_effect;
+		//};
 
-		struct c_effect : public collada::c_obj
-		{
-			std::string _initialize_from;
-		};
+		//struct c_effect : public collada::c_obj
+		//{
+		//	std::string _initialize_from;
+		//};
 
-		struct w_texture_info : public collada::c_obj
-		{
-			std::string file_path;
-			std::string format;
-			int height;
-			int width;
-		};
+		//struct w_texture_info : public collada::c_obj
+		//{
+		//	std::string file_path;
+		//	std::string format;
+		//	int height;
+		//	int width;
+		//};
 
 		struct w_transform_info
 		{
@@ -90,7 +90,7 @@ namespace wolf
             float		    color[4];
 			unsigned short	vertex_index;
 
-            MSGPACK_DEFINE(position, normal, blend_weight, blend_indices, uv, tangent, binormal, color);
+            MSGPACK_DEFINE(position, normal, blend_weight, blend_indices, uv, tangent, binormal, color, vertex_index);
 		};
 
 		class w_model
@@ -112,12 +112,12 @@ namespace wolf
 				std::vector<float>				just_vertices_pos;
 				std::vector<w_vertex_data>		vertices;
 				std::vector<UINT>               indices;
-				c_material*						material;
-				std::vector<c_effect*>			effects;
-				std::vector<w_texture_info>		texture_infos;
+				//c_material*						material;
+				//std::vector<c_effect*>			effects;
+				std::string		                textures_path;
 				w_bounding_box					bounding_box;
 
-                MSGPACK_DEFINE(vertices, indices, bounding_box);
+                MSGPACK_DEFINE(vertices, indices, textures_path, bounding_box);
 			};
 
             WCP_EXP void add_instance_transform(_In_ const w_transform_info pTransform);
@@ -131,6 +131,7 @@ namespace wolf
             WCP_EXP size_t get_instnaces_count() const                              { return this->_instanced_transforms.size(); }
             WCP_EXP w_transform_info* w_model::get_instance_at(_In_ const size_t pIndex);
             WCP_EXP std::string get_instance_geometry_name() const;
+            WCP_EXP void get_meshes(_In_ std::vector<w_model::w_mesh*>& pMeshes);
 
 #pragma endregion
 
@@ -138,8 +139,8 @@ namespace wolf
 
 			WCP_EXP void set_name(_In_z_ const std::string& pValue);
             WCP_EXP void set_instance_geometry_name(_In_z_ const std::string& pValue);
-			WCP_EXP void set_materials(std::vector<c_material*>& pValue);
-			WCP_EXP void set_effects(std::vector<c_effect*>& pValue);
+			//WCP_EXP void set_materials(std::vector<c_material*>& pValue);
+			//WCP_EXP void set_effects(std::vector<c_effect*>& pValue);
 			WCP_EXP void set_transform(w_transform_info& pValue);
 
 #pragma endregion
@@ -150,18 +151,20 @@ namespace wolf
                 _In_ collada::c_skin* pSkin,
 				_In_ std::vector<collada::c_bone*>& pBones, 
                 _In_ std::string pBoneNames [], 
-                _In_ std::vector<c_material*>& pMaterials,
-				_In_ std::vector<collada::c_node*>& pNodes, 
-                _In_ bool pOptimizing);
+                _In_ std::map<std::string, std::string>& sLibraryMaterials,
+                _In_ std::map<std::string, std::string>& sLibraryEffects,
+                _In_ std::map<std::string, std::string>& sLibraryImages,
+                _In_ bool pOptimizing,
+                _In_ bool pYUp);
 
-            MSGPACK_DEFINE(_name, _transform, _instanced_transforms, _meshes);
+            MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instanced_transforms, _meshes);
 
 		private:
 			std::string												_name;
             std::string												_instanced_geo_name;
 
-			std::vector<c_material*>								_materials;
-			std::vector<c_effect*>									_effects;
+			//std::vector<c_material*>								_materials;
+			//std::vector<c_effect*>									_effects;
 
 			glm::mat4x4												_world;
 

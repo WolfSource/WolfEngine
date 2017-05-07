@@ -10,15 +10,18 @@ using namespace wolf::content_pipeline;
 using namespace wolf::content_pipeline::collada;
 
 //static variables which are necessary for parsing collada file 
-static std::vector<c_bone*>			sBones;
-static std::vector<c_node*>			sNodes;
-static std::string					sSceneID;
-static std::vector<std::string>		sSkeletonNames;
-static std::vector<c_material*>		sMaterials;
-static std::string					sSkipChildrenOfThisNode;
-static c_xsi_extra					sXSI_Extra;
+static std::vector<c_bone*>			        sBones;
+static std::vector<c_node*>			        sNodes;
+static std::string					        sSceneID;
+static std::vector<std::string>		        sSkeletonNames;
+static std::map<std::string, std::string>   sLibraryMaterials;
+static std::map<std::string, std::string>	sLibraryEffects;
+static std::map<std::string, std::string>	sLibraryImages;
+static std::string					        sSkipChildrenOfThisNode;
+static c_xsi_extra					        sXSI_Extra;
 //static std::vector<unsigned short>	sXSI_Indices;
-static rapidxml::xml_node<>*		SGeometryLibraryNode;
+static rapidxml::xml_node<>*		        SGeometryLibraryNode;
+static std::string                          sUp_Axis = "y_up";
 
 const char* c_parser::_trace_class_name = "w_collada_parser";
 
@@ -69,6 +72,8 @@ HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_
 
 HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 {
+    if (!pXNode) return S_FALSE;
+
 	//get the name of node
 	auto _node_name = _get_node_name(pXNode);
 
@@ -105,7 +110,24 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	}
 	else if (_node_name == "asset")
 	{
-		//ToDo: Asset
+        sSkipChildrenOfThisNode = _node_name;
+
+        for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
+        {
+            auto _node_name = _get_node_name(_child);
+
+#ifdef DEBUG
+            logger.write(_node_name);
+#endif
+
+            if (_node_name == "up_axis")
+            {
+                auto _str = std::string(_child->value());
+                std::transform(_str.begin(), _str.end(), sUp_Axis.begin(), ::tolower);
+                _str.clear();
+            }
+        }
+        return S_OK;
 	}
 	else if (_node_name == "library_cameras")
 	{
@@ -119,12 +141,22 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	}
 	else if (_node_name == "library_effects")
 	{
-		//ToDo: read effects
+        sSkipChildrenOfThisNode = _node_name;
+        _get_library_effects(pXNode);
+        return S_OK;
 	}
 	else if (_node_name == "library_materials")
 	{
-		//ToDo: read material
+        sSkipChildrenOfThisNode = _node_name;
+        _get_library_materials(pXNode);
+        return S_OK;
 	}
+    else if (_node_name == "library_images")
+    {
+        sSkipChildrenOfThisNode = _node_name;
+        _get_library_images(pXNode);
+        return S_OK;
+    }
 	else if (_node_name == "library_geometries")
 	{
 		SGeometryLibraryNode = pXNode;
@@ -137,7 +169,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 		{
 			auto _node_name = _get_node_name(_child);
 #ifdef DEBUG
-            logger.write(_node_name);
+            //logger.write(_node_name);
 #endif
 			if (_node_name == "visual_scene")
 			{
@@ -163,7 +195,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 		{
 			auto _node_name = _get_node_name(_child);
 #ifdef DEBUG
-			logger.write(_node_name);
+			//logger.write(_node_name);
 #endif
 
 			if (_node_name == "technique")
@@ -172,7 +204,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 				{
 					auto __node_name = _get_node_name(__child);
 #ifdef DEBUG
-					logger.write(__node_name);
+					//logger.write(__node_name);
 #endif
 
 					if (__node_name == "si_scene")
@@ -230,12 +262,176 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	return S_OK;
 }
 
+void c_parser::_get_library_effects(_In_ rapidxml::xml_node<>* pXNode)
+{
+    if (!pXNode) return;
+
+    //get instance effects
+    for (auto _child_0 = pXNode->first_node(); _child_0 != nullptr; _child_0 = _child_0->next_sibling())
+    {
+        auto _node_name_0 = _get_node_name(_child_0);
+
+#ifdef DEBUG
+        logger.write(_node_name_0);
+#endif
+
+        if (_node_name_0 == "effect")
+        {
+            std::string _effect_id;
+            _get_node_attribute_value(_child_0, "id", _effect_id);
+
+            for (auto _child_1 = _child_0->first_node(); _child_1 != nullptr; _child_1 = _child_1->next_sibling())
+            {
+                auto _node_name_1 = _get_node_name(_child_1);
+#ifdef DEBUG
+                logger.write(_node_name_1);
+#endif
+                if (_node_name_1 == "profile_common")
+                {
+                    for (auto _child_2 = _child_1->first_node(); _child_2 != nullptr; _child_2 = _child_2->next_sibling())
+                    {
+                        auto _node_name_2 = _get_node_name(_child_2);
+#ifdef DEBUG
+                        logger.write(_node_name_2);
+#endif
+                        if (_node_name_2 == "newparam")
+                        {
+                            for (auto _child_3 = _child_2->first_node(); _child_3 != nullptr; _child_3 = _child_3->next_sibling())
+                            {
+                                auto _node_name_3 = _get_node_name(_child_3);
+#ifdef DEBUG
+                                logger.write(_node_name_3);
+#endif
+                                if (_node_name_3 == "surface")
+                                {
+                                    for (auto _child_4 = _child_3->first_node(); _child_4 != nullptr; _child_4 = _child_4->next_sibling())
+                                    {
+                                        auto _node_name_4 = _get_node_name(_child_4);
+#ifdef DEBUG
+                                        logger.write(_node_name_4);
+#endif
+                                        if (_node_name_4 == "init_from")
+                                        {
+                                            auto _iter = sLibraryEffects.find(_effect_id);
+                                            //we did not find same name for this effect, so we can add it
+                                            if (_iter == sLibraryEffects.end())
+                                            {
+                                                sLibraryEffects[_effect_id] = _child_4->value();
+                                            }
+                                        }
+                                        break; //init_from
+                                    }
+                                    break; //surface
+                                }
+                            }
+                            break; //newparam
+                        }
+                    }
+
+                    break; //profile_common
+                }
+            }
+        }
+    }
+}
+
+void c_parser::_get_library_materials(_In_ rapidxml::xml_node<>* pXNode)
+{
+    if (!pXNode) return;
+
+    //get materials
+    for (auto _child_0 = pXNode->first_node(); _child_0 != nullptr; _child_0 = _child_0->next_sibling())
+    {
+        auto _node_name_0 = _get_node_name(_child_0);
+
+#ifdef DEBUG
+        logger.write(_node_name_0);
+#endif
+
+        if (_node_name_0 == "material")
+        {
+            std::string _material_id;
+            _get_node_attribute_value(_child_0, "id", _material_id);
+            auto _child_1 = _child_0->first_node();
+            if (_child_1)
+            {
+                auto _node_name_1 = _get_node_name(_child_1);
+#ifdef DEBUG
+                logger.write(_node_name_1);
+#endif
+
+                if (_node_name_1 == "instance_effect")
+                {
+                    std::string _url;
+                    _get_node_attribute_value(_child_1, "url", _url);
+                    if (_url.size() &&
+                        _url[0] == '#')
+                    {
+                        _url= _url.erase(0, 1);
+                    }
+
+                    auto _iter = sLibraryEffects.find(_material_id);
+                    //we did not find same name for this effect, so we can add it
+                    if (_iter == sLibraryEffects.end())
+                    {
+                        sLibraryMaterials[_material_id] = _url;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void c_parser::_get_library_images(_In_ rapidxml::xml_node<>* pXNode)
+{
+    if (!pXNode) return;
+
+    //get texture init from
+    for (auto _child_0 = pXNode->first_node(); _child_0 != nullptr; _child_0 = _child_0->next_sibling())
+    {
+        auto _node_name_0 = _get_node_name(_child_0);
+
+#ifdef DEBUG
+        logger.write(_node_name_0);
+#endif
+
+        if (_node_name_0 == "image")
+        {
+            std::string _image_id;
+            _get_node_attribute_value(_child_0, "id", _image_id);
+            auto _child_1 = _child_0->first_node();
+            if (_child_1)
+            {
+                auto _node_name_1 = _get_node_name(_child_1);
+#ifdef DEBUG
+                logger.write(_node_name_1);
+#endif
+
+                if (_node_name_1 == "init_from")
+                {
+                    auto _iter = sLibraryImages.find(_image_id);
+                    //we did not find same name for this effect, so we can add it
+                    if (_iter == sLibraryImages.end())
+                    {
+                        /*
+                            We are just save image name without prepath
+                            Wolf will be load all images from one folder from /~/content/images/
+                            make sure do not use different images with same name
+                         */
+                        sLibraryImages[_image_id] = wolf::system::io::get_base_file_name(_child_1->value());
+                    }
+                }
+            }
+        }
+    }
+}
+
 void c_parser::_read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std::vector<c_node*>& pNodes)
 {
 #ifdef DEBUG
 	std::string _id;
 	_get_node_attribute_value(pXNode, "id", _id);
-	logger.write(_id);
+	//logger.write(_id);
 #endif
 
 	//iterate over children of this node
@@ -256,8 +452,10 @@ void c_parser::_read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inou
             //get collada attributes
             _get_collada_obj_attribute(_child, _node);
 
+            //if this node has a mesh child, so this node is a group or layer
             _get_node_data(_child, &_node);
-
+            
+            //merge transforms of nodes
             pNodes.push_back(_node);
         }
     }
@@ -281,6 +479,10 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         if (_name == "translate")
         {
             _parent_node_ptr->translate = glm::to_vec3(_child->value());
+            if (sUp_Axis == "z_up")
+            {
+                std::swap(_parent_node_ptr->translate.y, _parent_node_ptr->translate.z);
+            }
         }
         else if (_name == "rotate")
         {
@@ -314,6 +516,10 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
                 _parent_node_ptr->type = c_node_type::MESH;
                 _parent_node_ptr->instanced_geometry_name = _parent_node_ptr->instanced_geometry_name.erase(0, 1);
             }
+
+            auto _instanced_material_name = _get_instance_material_symbol_target_name(_child);
+            _parent_node_ptr->instanced_material_symbol_name = std::get<0>(_instanced_material_name);
+            _parent_node_ptr->instanced_material_target_name = std::get<1>(_instanced_material_name);
         }
         else if (_name == "node")
         {
@@ -325,11 +531,17 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
             _get_collada_obj_attribute(_child, _node);
 
             _get_node_data(_child, &_node);
+            _parent_node_ptr->type |= _node->type;
+
+            //merge with parent node transformation
+            _node->translate += _parent_node_ptr->translate;
+            _node->rotation += _parent_node_ptr->rotation;
+            _node->scale += _parent_node_ptr->scale;
 
             _parent_node_ptr->child_nodes.push_back(_node);
         }
 
-        _get_node_data(_child, pParentNode);
+        //_get_node_data(_child, pParentNode);
     }
 
     _parent_node_ptr->transform = glm::make_wpv_mat(
@@ -376,6 +588,65 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
     //    }
 }
 
+std::tuple<std::string, std::string> c_parser::_get_instance_material_symbol_target_name(_In_ rapidxml::xml_node<>* pXNode)
+{
+    std::string _instance_material_symbol_name;
+    std::string _instance_material_target_name;
+
+    for (auto _child_0 = pXNode->first_node(); _child_0 != nullptr; _child_0 = _child_0->next_sibling())
+    {
+        //get the name of node
+        auto _node_name_0 = _get_node_name(_child_0);
+
+#ifdef DEBUG
+        logger.write(_node_name_0);
+#endif
+        if (_node_name_0 == "bind_material")
+        {
+            for (auto _child_1 = _child_0->first_node(); _child_1 != nullptr; _child_1 = _child_1->next_sibling())
+            {
+                //get the name of node
+                auto _node_name_1 = _get_node_name(_child_1);
+
+#ifdef DEBUG
+                logger.write(_node_name_1);
+#endif
+                if (_node_name_1 == "technique_common")
+                {
+                    for (auto _child_2 = _child_1->first_node(); _child_2 != nullptr; _child_2 = _child_2->next_sibling())
+                    {
+                        //get the name of node
+                        auto _node_name_2 = _get_node_name(_child_2);
+
+#ifdef DEBUG
+                        logger.write(_node_name_2);
+#endif
+                        if (_node_name_2 == "instance_material")
+                        {
+                            //TODO: currently we are not support multi texturing
+                            _get_node_attribute_value(_child_2, "symbol", _instance_material_symbol_name);
+                            _get_node_attribute_value(_child_2, "target", _instance_material_target_name);
+
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            break;
+        }
+    }
+
+    if (_instance_material_target_name.size() &&
+        _instance_material_target_name[1] == '#')
+    {
+        _instance_material_target_name = _instance_material_target_name.erase(0, 1);
+    }
+
+    return std::make_tuple(_instance_material_symbol_name, _instance_material_target_name);
+}
+
 void c_parser::_get_si_scene_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std::vector<c_value_obj*>& pSIs)
 {
 	for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
@@ -383,7 +654,7 @@ void c_parser::_get_si_scene_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std
 		auto _node_name = _get_node_name(_child);
 
 #ifdef DEBUG
-		logger.write(_node_name);
+		//logger.write(_node_name);
 #endif
 
 		if (_node_name == "xsi_param")
@@ -481,7 +752,7 @@ void c_parser::_get_bones(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_bone* pBo
 		if (_name == "matrix")
 		{
 #ifdef DEBUG
-			logger.write(_child->value());
+			//logger.write(_child->value());
 #endif
 			//pBone->initial_matrix = e.Value.Split(' ').ToMatrix().Transpose();
 
@@ -645,7 +916,7 @@ void c_parser::_get_sources(_In_ rapidxml::xml_node<>* pXNode, std::string pID, 
 		auto _node_name =  _get_node_name(_child);
 
 #ifdef DEBUG
-		logger.write(_node_name);
+		//logger.write(_node_name);
 #endif
 
 		if (_node_name == "float_array")
@@ -704,11 +975,12 @@ void c_parser::_get_vertices(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geomet
 	}
 }
 
-void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geometry& pGeometry)
+void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pNode, _Inout_ c_geometry& pGeometry)
 {
 	std::string _material_name;
 	_get_node_attribute_value(pXNode, "material", _material_name);
-	auto _triangles = new c_triangles();
+    
+    auto _triangles = new c_triangles();
 	_triangles->material_name = _material_name;
 
 	for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
@@ -716,7 +988,7 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geome
 		auto _node_name = _get_node_name(_child);
 
 #ifdef DEBUG
-		logger.write(_node_name);
+		//logger.write(_node_name);
 #endif
 
 		if (_node_name == "input")
@@ -776,47 +1048,22 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geome
 
 HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)
 {
+    std::vector<c_node*> _mesh_with_unknown_instance_ref;
     std::vector<w_model*> _models;
-	//iterate over all nodes
-    for (size_t i = 0; i < sNodes.size(); ++i)
+
+    _iterate_over_nodes(pOptimizePoints, pInvertNormals, sNodes, _models, _mesh_with_unknown_instance_ref);
+    
+    //if we have nodes without unknown instance ref
+    if (_mesh_with_unknown_instance_ref.size())
     {
-        auto _node = sNodes[i];
-        if (!_node || _node->proceeded) continue;
-
-        switch (_node->type)
+        for (auto pNode : _mesh_with_unknown_instance_ref)
         {
-        case c_node_type::MESH:
-            //find instance if avaiable in models
-            auto _iter = std::find_if(_models.begin(), _models.end(), [_node](_In_ w_model* pModel)
+            w_model* _model = nullptr;
+            _create_model(pOptimizePoints, pInvertNormals, &pNode, &_model);
+            if (_model)
             {
-                return pModel->get_instance_geometry_name() == _node->instanced_geometry_name;
-            });
-
-            if (_iter != _models.end())
-            {
-                //we find source model
-                w_transform_info _instance_trasform;
-                _instance_trasform.position[0] = _node->translate.x; 
-                _instance_trasform.position[1] = _node->translate.y; 
-                _instance_trasform.position[2] = _node->translate.z;
-
-                _instance_trasform.rotation[0] = _node->rotation.x;
-                _instance_trasform.rotation[1] = _node->rotation.y;
-                _instance_trasform.rotation[2] = _node->rotation.z;
-
-                _instance_trasform.scale[0] = _node->scale.x;
-                _instance_trasform.scale[1] = _node->scale.y;
-                _instance_trasform.scale[2] = _node->scale.z;
-
-                _instance_trasform.transform = glm::make_wpv_mat(_node->scale, _node->rotation, _node->translate);
-                (*_iter)->add_instance_transform(_instance_trasform);
-                _node->proceeded = true;
+                _models.push_back(_model);
             }
-            else
-            {
-                _update_models(pOptimizePoints, pInvertNormals, &_node, _models);
-            }
-            break;
         }
     }
 
@@ -909,13 +1156,79 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
         pScene->add_models(_models);
         _models.clear();
     }
+
 	return S_OK;
 }
 
-void c_parser::_update_models(_In_ const bool pOptimizePoints, 
+void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, 
+    _In_ const bool pInvertNormals, 
+    _Inout_ std::vector<c_node*>& pNodes, 
+    _Inout_ std::vector<w_model*>& pModels,
+    _Inout_ std::vector<c_node*>& pMeshWithUnknownInstanceRef)
+{
+    for (auto _node : pNodes)
+    {
+        if (!_node || _node->proceeded) continue;
+
+        if (_node->type & c_node_type::MESH)
+        {
+            //find instance if avaiable in models
+            auto _iter = std::find_if(pModels.begin(), pModels.end(), [_node](_In_ w_model* pModel)
+            {
+                return pModel->get_instance_geometry_name() == _node->instanced_geometry_name;
+            });
+
+            if (_iter != pModels.end())
+            {
+                //we find source model
+                w_transform_info _instance_trasform;
+                _instance_trasform.position[0] = _node->translate.x;
+                _instance_trasform.position[1] = _node->translate.y;
+                _instance_trasform.position[2] = _node->translate.z;
+
+                _instance_trasform.rotation[0] = _node->rotation.x;
+                _instance_trasform.rotation[1] = _node->rotation.y;
+                _instance_trasform.rotation[2] = _node->rotation.z;
+
+                _instance_trasform.scale[0] = _node->scale.x;
+                _instance_trasform.scale[1] = _node->scale.y;
+                _instance_trasform.scale[2] = _node->scale.z;
+
+                _instance_trasform.transform = glm::make_wpv_mat(_node->scale, _node->rotation, _node->translate);
+                (*_iter)->add_instance_transform(_instance_trasform);
+                _node->proceeded = true;
+            }
+            else
+            {
+                w_model* _model = nullptr;
+                _create_model(pOptimizePoints, pInvertNormals, &_node, &_model);
+                //if node procceded and model created
+                if (_model)
+                {
+                    pModels.push_back(_model);
+                }
+                else
+                {
+                    pMeshWithUnknownInstanceRef.push_back(_node);
+                }
+                //iterate over sub models
+                if (_node->child_nodes.size())
+                {
+                    _iterate_over_nodes(pOptimizePoints,
+                        pInvertNormals,
+                        _node->child_nodes,
+                        pModels,
+                        pMeshWithUnknownInstanceRef);
+                }
+            }
+        }
+    }
+}
+
+void c_parser::_create_model(_In_ const bool pOptimizePoints, 
     _In_ const bool pInvertNormals,
     _Inout_ c_node** pNode,
-    _Inout_ std::vector<w_model*>& pModels)
+    _Inout_ w_model** pModel)
 {
     //Loading geometries
     c_geometry _g;
@@ -938,7 +1251,7 @@ void c_parser::_update_models(_In_ const bool pOptimizePoints,
             {
                 auto _node_name = _get_node_name(__child);
 #ifdef DEBUG
-                logger.write(_node_name);
+                //logger.write(_node_name);
 #endif
 
                 if (_node_name == "mesh")
@@ -954,7 +1267,7 @@ void c_parser::_update_models(_In_ const bool pOptimizePoints,
                         _get_node_attribute_value(___child, "name", __name);
 
 #ifdef DEBUG
-                        logger.write(_name);
+                        //logger.write(_name);
 #endif
 
                         if (_name == "source")
@@ -993,14 +1306,15 @@ void c_parser::_update_models(_In_ const bool pOptimizePoints,
             skin,
             sBones,
             sSkeletonNames.data(),
-            sMaterials,
-            sNodes,
-            pOptimizePoints);
-        
+            sLibraryMaterials,
+            sLibraryEffects,
+            sLibraryImages,
+            pOptimizePoints,
+            sUp_Axis == "y_up");
+
         _model->set_name(_node_ptr->c_name);
         _model->set_instance_geometry_name(_node_ptr->instanced_geometry_name);
-        _model->set_materials(sMaterials);
-        
+
         //set transform
         w_transform_info _instance_trasform;
         _instance_trasform.position[0] = _node_ptr->translate.x;
@@ -1027,7 +1341,7 @@ void c_parser::_update_models(_In_ const bool pOptimizePoints,
         ////_model.AnimationContainers.Add("Animation 1", animContainer);
         ////_model.SetAnimation("Animation 1");
 
-        pModels.push_back(_model);
+        *pModel = _model;
     }
 }
 
@@ -1035,14 +1349,12 @@ void c_parser::_clear_all_resources()
 {
 	sSceneID = "";
 	sSkipChildrenOfThisNode = "NULL";
-	if (sSkeletonNames.size() > 0)
-	{
-		sSkeletonNames.clear();
-	}
-//	if (sXSI_Indices.size() > 0)
-//	{
-//		sXSI_Indices.clear();
-//	}
+	
+    sSkeletonNames.clear();
+	
+    sLibraryEffects.clear();
+    sLibraryMaterials.clear();
+    sLibraryImages.clear();
 
 	if (sBones.size() > 0)
 	{

@@ -26,17 +26,19 @@ namespace wolf
 			{
 				c_node* find_instanced_geomaetry_node();
 				c_node* find_instanced_geomaetry_node(std::string pGeometryName);
-				c_node* find_instanced_node_name();
+				//c_node* find_instanced_node_name();
 				ULONG release();
 
-                c_node_type             type = c_node_type::NONE;
+                int                     type = c_node_type::NONE;
 				bool					proceeded = false;
 				glm::vec3				translate;
 				glm::vec3				scale;
 				glm::vec3				rotation;
 				glm::mat4x4				transform;
-				std::string				instanced_node_name;
+				/*std::string				instanced_node_name;*/
 				std::string				instanced_geometry_name;
+                std::string				instanced_material_symbol_name;
+                std::string				instanced_material_target_name;
 				std::string				instanced_camera_name;
 				std::vector<c_node*>	child_nodes;
 

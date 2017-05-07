@@ -31,7 +31,9 @@ namespace wolf
             
 #pragma region Getters
 
+            WCP_EXP void get_models_by_index(_In_ const size_t pIndex, _Inout_ w_model** pModel);
 			WCP_EXP void get_models_by_id(const std::string& pID, _Inout_ std::vector<w_model*>& pModels);
+            WCP_EXP void get_all_models(_Inout_ std::vector<w_model*>& pModels);
 
 			//Get first camera if avaible, else create a default one
 			WCP_EXP void get_first_or_default_camera(_Inout_ w_camera** pCamera);
@@ -50,6 +52,7 @@ namespace wolf
             MSGPACK_DEFINE(_name, _models);
 
 #pragma endregion
+
 		private:
             std::string                 _name;
 			std::vector<w_model>		_models;

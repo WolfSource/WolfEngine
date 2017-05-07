@@ -8,7 +8,7 @@
     <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
-    <WorkingDirectory>C:\Users\PooyaEimandar\Documents\github\WolfSource\Wolf.Engine\bin\x64\Debug\Win32\</WorkingDirectory>
+    <WorkingDirectory>C:\Users\DFM\Documents\github\WolfSource\Wolf.Engine\bin\x64\Debug\Win32\</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>PyWolfContentPipelineTest</Name>
     <RootNamespace>PyWolfContentPipelineTest</RootNamespace>

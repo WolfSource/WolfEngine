@@ -47,6 +47,13 @@ ULONG w_scene::release()
 
 #pragma region Getters
 
+void w_scene::get_models_by_index(_In_ const size_t pIndex, _Inout_ w_model** pModel)
+{
+    if (pIndex < this->_models.size()) return;
+
+    *pModel = &this->_models[pIndex];
+}
+
 void w_scene::get_models_by_id(const std::string& pID, std::vector<w_model*>& pModels)
 {
 	for (size_t i = 0; i < this->_models.size(); ++i)
@@ -56,6 +63,16 @@ void w_scene::get_models_by_id(const std::string& pID, std::vector<w_model*>& pM
 			pModels.push_back(&this->_models[i]);
 		}
 	}
+}
+
+void w_scene::get_all_models(_Inout_ std::vector<w_model*>& pModels)
+{
+    if (!this->_models.size()) return;
+    
+    for (size_t i = 0; i < this->_models.size(); ++i)
+    {
+        pModels.push_back(&this->_models[i]);
+    }
 }
 
 void w_scene::get_first_or_default_camera(_Inout_ w_camera** pCamera)

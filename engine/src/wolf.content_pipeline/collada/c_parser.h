@@ -34,23 +34,32 @@ namespace wolf
 					bool pOptimizePoints = true, bool pInvertNormals = false);
 
 			private:
-				static HRESULT		_process_xml_node(_In_ rapidxml::xml_node<>* pXNode);
-				static void			_read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std::vector<c_node*>& pNodes);
-				static void			_get_si_scene_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std::vector<c_value_obj*>& pNodes);
-				static void			_find_node(_In_ rapidxml::xml_node<>* pXNode, const std::string& pAttributeName, const std::string& pAttributeValue, _Inout_ rapidxml::xml_node<>* pFoundNode);
-				static std::string	_get_node_name(_In_ rapidxml::xml_node<>* pXNode);
-				static bool			_get_node_attribute_value(_In_ rapidxml::xml_node<>* pXNode, _In_ const std::string& pAttributeName, _Inout_ std::string& pAttributeValue);
-				static void			_get_collada_obj_attribute(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_obj* pCObj);
-				static void			_get_bones(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_bone* pBone, _Inout_ std::vector<c_bone*>& pFlatBones);
-				static void			_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node** pNode);
-				static void			_get_sources(_In_ rapidxml::xml_node<>* pXNode, std::string pID, std::string pName, _Inout_ c_geometry& pGeometry);
-				static void			_get_vertices(_In_ rapidxml::xml_node<>*, _Inout_ c_geometry& pGeometry);
-				static void			_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geometry& pGeometry);
-                static void         _update_models(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ std::vector<w_model*>& pModels);
-				static HRESULT		_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals);
-				static void			_clear_all_resources();
+				static HRESULT		                          _process_xml_node(_In_ rapidxml::xml_node<>* pXNode);
+                static void                                   _get_library_effects(_In_ rapidxml::xml_node<>* pXNode);
+                static void                                   _get_library_materials(_In_ rapidxml::xml_node<>* pXNode);
+                static void                                   _get_library_images(_In_ rapidxml::xml_node<>* pXNode);
+				static void			                          _read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std::vector<c_node*>& pNodes);
+                static std::tuple<std::string,std::string>    _get_instance_material_symbol_target_name(_In_ rapidxml::xml_node<>* pXNode);
+                static void			                          _get_si_scene_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ std::vector<c_value_obj*>& pNodes);
+				static void			                          _find_node(_In_ rapidxml::xml_node<>* pXNode, const std::string& pAttributeName, const std::string& pAttributeValue, _Inout_ rapidxml::xml_node<>* pFoundNode);
+				static std::string	                          _get_node_name(_In_ rapidxml::xml_node<>* pXNode);
+				static bool			                          _get_node_attribute_value(_In_ rapidxml::xml_node<>* pXNode, _In_ const std::string& pAttributeName, _Inout_ std::string& pAttributeValue);
+				static void			                          _get_collada_obj_attribute(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_obj* pCObj);
+				static void			                          _get_bones(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_bone* pBone, _Inout_ std::vector<c_bone*>& pFlatBones);
+				static void                                   _get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node** pNode);
+				static void			                          _get_sources(_In_ rapidxml::xml_node<>* pXNode, std::string pID, std::string pName, _Inout_ c_geometry& pGeometry);
+				static void			                          _get_vertices(_In_ rapidxml::xml_node<>*, _Inout_ c_geometry& pGeometry);
+				static void			                          _get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pNode, _Inout_ c_geometry& pGeometry);
+                static void                                   _iterate_over_nodes(_In_ const bool pOptimizePoints, 
+                                                                                  _In_ const bool pInvertNormals,
+                                                                                  _Inout_ std::vector<c_node*>& pNodes,
+                                                                                  _Inout_ std::vector<w_model*>& pModels,
+                                                                                  _Inout_ std::vector<c_node*>& pNodeWithUnknownInstanceRef);
+                static void                                   _create_model(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_model** pModel);
+				static HRESULT		                          _create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals);
+				static void			                          _clear_all_resources();
 
-				static const char*	_trace_class_name;
+				static const char*	                          _trace_class_name;
 			};
 		}
 	}
