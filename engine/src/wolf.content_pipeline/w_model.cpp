@@ -504,7 +504,19 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 
 		auto _mesh = new w_mesh();
 		
-        _mesh->textures_path = "";
+        auto _mat_iter = sLibraryMaterials.find(_triangle->material_name);
+        if (_mat_iter != sLibraryMaterials.end())
+        {
+            auto _effect_iter = sLibraryEffects.find(_mat_iter->second);
+            if (_effect_iter != sLibraryEffects.end())
+            {
+                auto _image_iter = sLibraryImages.find(_effect_iter->second);
+                if (_image_iter != sLibraryImages.end())
+                {
+                    _mesh->textures_path = _image_iter->second;
+                }
+            }
+        }
 
 		_mesh->just_vertices_pos.swap(_just_vertices_pos);
 		_mesh->vertices.swap(_vertices_data);
@@ -517,15 +529,6 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 		_mesh->bounding_box.max[0] = _max_vertex[0];
         _mesh->bounding_box.max[1] = _max_vertex[1];
         _mesh->bounding_box.max[2] = _max_vertex[2];
-
-		
-		//for (auto _material : pMaterials)
-		//{
-		//	if (_material && _material->c_name == _triangle->material_name)
-		//	{
-		//		_mesh->material = _material;
-		//	}
-		//}
 
 		_model->_meshes.push_back(*_mesh);
 

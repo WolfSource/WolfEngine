@@ -418,7 +418,8 @@ void c_parser::_get_library_images(_In_ rapidxml::xml_node<>* pXNode)
                             Wolf will be load all images from one folder from /~/content/images/
                             make sure do not use different images with same name
                          */
-                        sLibraryImages[_image_id] = wolf::system::io::get_base_file_name(_child_1->value());
+                        sLibraryImages[_image_id] = wolf::system::io::get_base_file_name(_child_1->value()) + 
+                            "." + wolf::system::io::get_file_extention(_child_1->value());
                     }
                 }
             }
@@ -639,7 +640,7 @@ std::tuple<std::string, std::string> c_parser::_get_instance_material_symbol_tar
     }
 
     if (_instance_material_target_name.size() &&
-        _instance_material_target_name[1] == '#')
+        _instance_material_target_name[0] == '#')
     {
         _instance_material_target_name = _instance_material_target_name.erase(0, 1);
     }
@@ -981,7 +982,17 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pN
 	_get_node_attribute_value(pXNode, "material", _material_name);
     
     auto _triangles = new c_triangles();
-	_triangles->material_name = _material_name;
+
+    //for open collada
+    if (_material_name == pNode->instanced_material_symbol_name)
+    {
+        _triangles->material_name =  pNode->instanced_material_target_name;
+    }
+    else
+    {
+        //for simple collada
+        _triangles->material_name = pNode->instanced_material_symbol_name;
+    }
 
 	for (auto _child = pXNode->first_node(); _child != nullptr; _child = _child->next_sibling())
 	{
@@ -1283,7 +1294,7 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
                         }
                         else if (_name == "triangles")
                         {
-                            _get_triangles(___child, _g);
+                            _get_triangles(___child, *pNode, _g);
                         }
                     }
 #pragma endregion
