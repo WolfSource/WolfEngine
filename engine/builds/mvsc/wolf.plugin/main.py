@@ -13,8 +13,9 @@ if not _hr:
     print "PyWolfContentPipeline could not initialize"
 
 print PyWolfContentPipeline.collada_to_wolf_scene(
-"C:\\Users\\DFM\\Documents\\github\\WolfSource\\Wolf.Engine\\content\\models\\test_instance.DAE", 
-"C:\\Users\\DFM\\Documents\\github\\WolfSource\\Wolf.Engine\\content\\models\\test_instance.wscene",
+"C:\\Users\\PooyaEimandar\\Documents\\github\\WolfSource\\Wolf.Engine\\content\\models\\888.DAE", 
+"C:\\Users\\PooyaEimandar\\Documents\\github\\WolfSource\\Wolf.Engine\\content\\models\\888.wscene",
 "[]")
 
 print "Done"
+
