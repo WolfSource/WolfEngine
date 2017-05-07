@@ -796,9 +796,18 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
             {
                 //we find source model
                 w_transform_info _instance_trasform;
-                _instance_trasform.position = _node->translate;
-                _instance_trasform.rotation = _node->rotation;
-                _instance_trasform.scale = _node->scale;
+                _instance_trasform.position[0] = _node->translate.x; 
+                _instance_trasform.position[1] = _node->translate.y; 
+                _instance_trasform.position[2] = _node->translate.z;
+
+                _instance_trasform.rotation[0] = _node->rotation.x;
+                _instance_trasform.rotation[1] = _node->rotation.y;
+                _instance_trasform.rotation[2] = _node->rotation.z;
+
+                _instance_trasform.scale[0] = _node->scale.x;
+                _instance_trasform.scale[1] = _node->scale.y;
+                _instance_trasform.scale[2] = _node->scale.z;
+
                 _instance_trasform.transform = glm::make_wpv_mat(_node->scale, _node->rotation, _node->translate);
                 (*_iter)->add_instance_transform(_instance_trasform);
                 _node->proceeded = true;
@@ -994,9 +1003,18 @@ void c_parser::_update_models(_In_ const bool pOptimizePoints,
         
         //set transform
         w_transform_info _instance_trasform;
-        _instance_trasform.position = _node_ptr->translate;
-        _instance_trasform.rotation = _node_ptr->rotation;
-        _instance_trasform.scale = _node_ptr->scale;
+        _instance_trasform.position[0] = _node_ptr->translate.x;
+        _instance_trasform.position[1] = _node_ptr->translate.y;
+        _instance_trasform.position[2] = _node_ptr->translate.z;
+
+        _instance_trasform.rotation[0] = _node_ptr->rotation.x;
+        _instance_trasform.rotation[1] = _node_ptr->rotation.y;
+        _instance_trasform.rotation[2] = _node_ptr->rotation.z;
+
+        _instance_trasform.scale[0] = _node_ptr->scale.x;
+        _instance_trasform.scale[1] = _node_ptr->scale.y;
+        _instance_trasform.scale[2] = _node_ptr->scale.z;
+
         _instance_trasform.transform = _node_ptr->transform;
         _model->set_transform(_instance_trasform);
         _model->update_world();

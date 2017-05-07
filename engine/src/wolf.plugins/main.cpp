@@ -24,28 +24,20 @@ int collada_to_wolf_scene(const char* pColladaFilePath, const char* pWolfSceneFi
 
     _path = string_to_wstring(pWolfSceneFilePath);
 
-    w_scene_pack _scene_pack;
-    auto _hr = _scene->get_scene_pack(_scene_pack);
+    std::vector<w_scene> _scenes_pack;
+    _scenes_pack.push_back(*_scene);
 
-    if (_hr == S_OK)
+    auto _hr = _content_manager.save_wolf_scenes_to_file(_scenes_pack, _path);
+    if (_hr == S_FALSE)
     {
-        std::vector<w_scene_pack> _scenes_pack;
-        _scenes_pack.push_back(_scene_pack);
+        logger.error("Error on saving wolf for scene: " + _scene->get_name());
+    }
 
-        _hr = _content_manager.save_wolf_scenes_to_file(_scenes_pack, _path);
-        if (_hr == S_FALSE)
-        {
-            logger.error(L"Error on saving wolf for scene: " + _scene->get_scene_name());
-        }
-
-
-        _scenes_pack.clear();
-        _hr = _content_manager.load_wolf_scenes_from_file(_scenes_pack, _path);
-        if (_hr == S_FALSE)
-        {
-            logger.error(L"Error on loading wolf for scene");
-        }
-
+    _scenes_pack.clear();
+    _hr = _content_manager.load_wolf_scenes_from_file(_scenes_pack, _path);
+    if (_hr == S_FALSE)
+    {
+        logger.error(L"Error on loading wolf for scene");
     }
 
     _path.clear();
