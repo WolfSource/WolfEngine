@@ -45,7 +45,7 @@
                BlueprintIdentifier = "2C620F871E617F81005DFB10"
                BuildableName = "wolf_vulkan_metal_macOS.app"
                BlueprintName = "wolf_vulkan_metal_macOS"
-               ReferencedContainer = "container:../tests/wolf_vulkan_metal_macOS/wolf_vulkan_metal_macOS.xcodeproj">
+               ReferencedContainer = "container:../tests/wolf_vulkan_metal_macOS/test.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

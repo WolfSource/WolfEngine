@@ -541,7 +541,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "684"
             endingLineNumber = "684"
-            landmarkName = "c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
+            landmarkName = "c_parser::_get_triangles(_In_ rapidxml::xml_node&lt;&gt;* pXNode, _Inout_ c_geometry&amp; pGeometry)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -670,6 +670,22 @@
             startingLineNumber = "250"
             endingLineNumber = "250"
             landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::vector&lt;c_material*&gt;&amp; pMaterials, _In_ std::vector&lt;c_node*&gt;&amp; pNodes, _In_ bool pOptimizing)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
+            timestampString = "515355831.514652"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "846"
+            endingLineNumber = "846"
+            landmarkName = "c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

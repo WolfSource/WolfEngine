@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2C38D9591E796CA200EE8595 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9581E796CA200EE8595 /* MoltenVK.framework */; };
+		2C3C81A21EB7B7CE00E3906E /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C3C81A01EB7B7CE00E3906E /* pch.cpp */; };
 		2C4CCAF91EB0E63A00E0A422 /* shader.fs in Resources */ = {isa = PBXBuildFile; fileRef = 2C4CCAF71EB0E63A00E0A422 /* shader.fs */; };
 		2C4CCAFA1EB0E63A00E0A422 /* shader.vs in Resources */ = {isa = PBXBuildFile; fileRef = 2C4CCAF81EB0E63A00E0A422 /* shader.vs */; };
 		2C4CCB311EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib */; };
@@ -26,6 +27,8 @@
 
 /* Begin PBXFileReference section */
 		2C38D9581E796CA200EE8595 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
+		2C3C81A01EB7B7CE00E3906E /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../../../src/tests/pch.cpp; sourceTree = "<group>"; };
+		2C3C81A11EB7B7CE00E3906E /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../../../src/tests/pch.h; sourceTree = "<group>"; };
 		2C4CCAF71EB0E63A00E0A422 /* shader.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.fs; path = ../../../../../content/shaders/test/shader.fs; sourceTree = "<group>"; };
 		2C4CCAF81EB0E63A00E0A422 /* shader.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.vs; path = ../../../../../content/shaders/test/shader.vs; sourceTree = "<group>"; };
 		2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.content_pipeline.macOS.dylib; sourceTree = "<group>"; };
@@ -86,6 +89,8 @@
 			isa = PBXGroup;
 			children = (
 				2C4CCAF51EB0E5EC00E0A422 /* content */,
+				2C3C81A01EB7B7CE00E3906E /* pch.cpp */,
+				2C3C81A11EB7B7CE00E3906E /* pch.h */,
 				2C70798E1EAB6D7D003784A2 /* AppDelegate.h */,
 				2C70798F1EAB6D7D003784A2 /* AppDelegate.m */,
 				2C7079901EAB6D7D003784A2 /* main.m */,
@@ -195,6 +200,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C3C81A21EB7B7CE00E3906E /* pch.cpp in Sources */,
 				2C7079961EAB6D7D003784A2 /* main.m in Sources */,
 				2C7079951EAB6D7D003784A2 /* AppDelegate.m in Sources */,
 				2C7079981EAB6D7D003784A2 /* ViewController.mm in Sources */,
@@ -247,6 +253,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -293,6 +300,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -311,6 +319,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../../dependencies/glm",
@@ -333,6 +343,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../../dependencies/glm",

@@ -14,20 +14,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2C620F871E617F81005DFB10"
-               BuildableName = "wolf_vulkan_metal_macOS.app"
-               BlueprintName = "wolf_vulkan_metal_macOS"
-               ReferencedContainer = "container:wolf_vulkan_metal_macOS.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
                BuildableName = "libwolf.content_pipeline.macOS.dylib"
                BlueprintName = "wolf.content_pipeline.macOS"
@@ -62,6 +48,20 @@
                ReferencedContainer = "container:../../wolf.vulkan/wolf.vulkan.macOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C620F871E617F81005DFB10"
+               BuildableName = "wolf_vulkan_metal_macOS.app"
+               BlueprintName = "wolf_vulkan_metal_macOS"
+               ReferencedContainer = "container:wolf_vulkan_metal_macOS.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -74,10 +74,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2C620F871E617F81005DFB10"
-            BuildableName = "wolf_vulkan_metal_macOS.app"
-            BlueprintName = "wolf_vulkan_metal_macOS"
-            ReferencedContainer = "container:wolf_vulkan_metal_macOS.xcodeproj">
+            BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
+            BuildableName = "libwolf.content_pipeline.macOS.dylib"
+            BlueprintName = "wolf.content_pipeline.macOS"
+            ReferencedContainer = "container:../../wolf.content_pipeline/wolf.content_pipeline.macOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -93,16 +93,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2C620F871E617F81005DFB10"
-            BuildableName = "wolf_vulkan_metal_macOS.app"
-            BlueprintName = "wolf_vulkan_metal_macOS"
-            ReferencedContainer = "container:wolf_vulkan_metal_macOS.xcodeproj">
+            BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
+            BuildableName = "libwolf.content_pipeline.macOS.dylib"
+            BlueprintName = "wolf.content_pipeline.macOS"
+            ReferencedContainer = "container:../../wolf.content_pipeline/wolf.content_pipeline.macOS.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -112,16 +111,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2C620F871E617F81005DFB10"
-            BuildableName = "wolf_vulkan_metal_macOS.app"
-            BlueprintName = "wolf_vulkan_metal_macOS"
-            ReferencedContainer = "container:wolf_vulkan_metal_macOS.xcodeproj">
+            BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
+            BuildableName = "libwolf.content_pipeline.macOS.dylib"
+            BlueprintName = "wolf.content_pipeline.macOS"
+            ReferencedContainer = "container:../../wolf.content_pipeline/wolf.content_pipeline.macOS.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
