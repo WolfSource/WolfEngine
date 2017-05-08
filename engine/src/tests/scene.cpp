@@ -58,7 +58,8 @@ void scene::load()
     
     w_game::load();
     
-    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/inst_max_oc.dae");
+    //auto _scene = w_content_manager::load<w_scene>(content_path + L"models/inst_max_oc.dae");
+    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/test_instance.wscene");
     this->_renderable_scene = new w_renderable_scene(_scene);
     this->_renderable_scene->load(_gDevice);
     this->_renderable_scene->get_first_or_default_camera(&this->_camera);
@@ -454,7 +455,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	glm::mat4x4 _translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(0, 0, 0.0f));
 	glm::mat4x4 _rotate = glm::rotate(glm::mat4x4(1.0f), _jjj, glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4x4 _scale = glm::scale(glm::mat4x4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
-	auto _world = _scale * _rotate * _translate;
+    auto _world = glm::mat4(1);// _scale * _rotate * _translate;
 	_view_projection_uniform.data = this->_camera->get_projection() * this->_camera->get_view() *_world;
 	_view_projection_uniform.update();
 

@@ -191,6 +191,8 @@ namespace glm
 
 	inline vec3 to_vec3(std::string pValue)
 	{
+        if (pValue.empty()) return vec3(0);
+
 		std::vector<std::string> pResult;
 		wolf::system::convert::split_string(pValue, " ", pResult);
 
@@ -202,6 +204,8 @@ namespace glm
 
 	inline vec4 to_vec4(std::string pValue)
 	{
+        if (pValue.empty()) return vec4(0);
+
 		std::vector<std::string> pResult;
 		wolf::system::convert::split_string(pValue, " ", pResult);
 
