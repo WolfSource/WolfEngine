@@ -1,0 +1,26 @@
+﻿  main.cpp
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.content_pipeline\collada\c_animation.h(280): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.content_pipeline\w_model.h(108): warning C4091: '__declspec(dllimport)': ignored on left of 'wolf::content_pipeline::w_model::w_bounding_box' when no variable is declared
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.content_pipeline\w_model.h(121): warning C4091: '__declspec(dllimport)': ignored on left of 'wolf::content_pipeline::w_model::w_mesh' when no variable is declared
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.render\w_graphics\w_buffer.h(20): warning C4099: 'wolf::graphics::w_buffer': type name first seen using 'struct' now seen using 'class'
+  c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.render\w_graphics\w_buffer.h(20): note: see declaration of 'wolf::graphics::w_buffer'
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\tests\main.cpp(40): warning C4244: 'return': conversion from 'LRESULT' to 'HRESULT', possible loss of data
+  Generating Code...
+  Compiling...
+  scene.cpp
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.content_pipeline\collada\c_animation.h(280): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.content_pipeline\w_model.h(108): warning C4091: '__declspec(dllimport)': ignored on left of 'wolf::content_pipeline::w_model::w_bounding_box' when no variable is declared
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.content_pipeline\w_model.h(121): warning C4091: '__declspec(dllimport)': ignored on left of 'wolf::content_pipeline::w_model::w_mesh' when no variable is declared
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.render\w_graphics\w_buffer.h(20): warning C4099: 'wolf::graphics::w_buffer': type name first seen using 'struct' now seen using 'class'
+  c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\wolf.render\w_graphics\w_buffer.h(20): note: see declaration of 'wolf::graphics::w_buffer'
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\tests\scene.cpp(26): warning C4273: 'scene::scene': inconsistent dll linkage
+  c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\tests\scene.h(25): note: see previous definition of '{ctor}'
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\tests\scene.cpp(252): warning C4244: '=': conversion from 'UINT' to 'float', possible loss of data
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\tests\scene.cpp(253): warning C4244: '=': conversion from 'UINT' to 'float', possible loss of data
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\tests\scene.cpp(258): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+c:\users\dfm\documents\github\wolfsource\wolf.engine\engine\src\tests\scene.cpp(259): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+  Generating Code...
+     Creating library C:\Users\DFM\Documents\github\WolfSource\Wolf.Engine\engine\builds\mvsc\/../../../bin/x64/Debug/Win32/test.lib and object C:\Users\DFM\Documents\github\WolfSource\Wolf.Engine\engine\builds\mvsc\/../../../bin/x64/Debug/Win32/test.exp
+main.obj : warning LNK4217: locally defined symbol ??0scene@@QEAA@AEBV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@0@Z (public: __cdecl scene::scene(class std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> > const &,class std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> > const &)) imported in function "class std::unique_ptr<class scene,struct std::default_delete<class scene> > __cdecl std::make_unique<class scene,class std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> > &,wchar_t const (&)[24]>(class std::basic_string<wchar_t,struct std::char_traits<wchar_t>,class std::allocator<wchar_t> > &,wchar_t const (&)[24])" (??$make_unique@Vscene@@AEAV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@std@@AEAY0BI@$$CB_W@std@@YA?AV?$unique_ptr@Vscene@@U?$default_delete@Vscene@@@std@@@0@AEAV?$basic_string@_WU?$char_traits@_W@std@@V?$allocator@_W@2@@0@AEAY0BI@$$CB_W@Z)
+  vulkan.Win32.vcxproj -> C:\Users\DFM\Documents\github\WolfSource\Wolf.Engine\engine\builds\mvsc\/../../../bin/x64/Debug/Win32/test.exe
+  vulkan.Win32.vcxproj -> C:\Users\DFM\Documents\github\WolfSource\Wolf.Engine\engine\builds\mvsc\/../../../bin/x64/Debug/Win32/test.pdb (Full PDB)

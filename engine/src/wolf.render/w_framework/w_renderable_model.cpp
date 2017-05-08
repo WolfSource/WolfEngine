@@ -38,6 +38,15 @@ HRESULT w_renderable_model::load()
 	{
         auto _mesh = new wolf::graphics::w_mesh();
 
+        //prepare just_vertices_pos
+        for (size_t j = 0; j < _model_meshes[i]->vertices.size(); ++j)
+        {
+            _model_meshes[i]->just_vertices_pos.push_back(_model_meshes[i]->vertices[j].position[0]);
+            _model_meshes[i]->just_vertices_pos.push_back(_model_meshes[i]->vertices[j].position[1]);
+            _model_meshes[i]->just_vertices_pos.push_back(_model_meshes[i]->vertices[j].position[2]);
+            _model_meshes[i]->just_vertices_pos.push_back(_model_meshes[i]->vertices[j].position[3]);
+        }
+
         _hr = _mesh->load(this->_gDevice,
                    _model_meshes[i]->just_vertices_pos.data(),
                    static_cast<UINT>(_model_meshes[i]->just_vertices_pos.size()),
