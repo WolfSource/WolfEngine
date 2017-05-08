@@ -34,7 +34,7 @@ namespace wolf
 				glm::vec3				translate;
 				glm::vec3				scale;
 				glm::vec3				rotation;
-				glm::mat4x4				transform;
+				glm::mat4				transform;
 				/*std::string				instanced_node_name;*/
 				std::string				instanced_geometry_name;
                 std::string				instanced_material_symbol_name;

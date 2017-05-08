@@ -38,21 +38,28 @@ HRESULT w_renderable_model::load()
 	{
         auto _mesh = new wolf::graphics::w_mesh();
 
-        //prepare just_vertices_pos
+        //prepare vertices
+        std::vector<float> _v_data;
         for (size_t j = 0; j < _model_meshes[i]->vertices.size(); ++j)
         {
-            _model_meshes[i]->just_vertices_pos.push_back(_model_meshes[i]->vertices[j].position[0]);
-            _model_meshes[i]->just_vertices_pos.push_back(_model_meshes[i]->vertices[j].position[1]);
-            _model_meshes[i]->just_vertices_pos.push_back(_model_meshes[i]->vertices[j].position[2]);
-            _model_meshes[i]->just_vertices_pos.push_back(_model_meshes[i]->vertices[j].position[3]);
+            _v_data.push_back(_model_meshes[i]->vertices[j].position[0]);
+            _v_data.push_back(_model_meshes[i]->vertices[j].position[1]);
+            _v_data.push_back(_model_meshes[i]->vertices[j].position[2]);
+            _v_data.push_back(_model_meshes[i]->vertices[j].position[3]);
+
+            _v_data.push_back(_model_meshes[i]->vertices[j].uv[0]);
+            _v_data.push_back(_model_meshes[i]->vertices[j].uv[1]);
         }
 
+        //load mesh
         _hr = _mesh->load(this->_gDevice,
-                   _model_meshes[i]->just_vertices_pos.data(),
-                   static_cast<UINT>(_model_meshes[i]->just_vertices_pos.size()),
-                   static_cast<UINT>(_model_meshes[i]->just_vertices_pos.size() * sizeof(float)),
+                   _v_data.data(),
+                   static_cast<UINT>(_v_data.size()),
+                   static_cast<UINT>(_v_data.size() * sizeof(float)),
                    _model_meshes[i]->indices.data(),
                    static_cast<UINT>(_model_meshes[i]->indices.size()));
+
+        _v_data.clear();
         if (_hr == S_FALSE)
         {
             _error += 1;

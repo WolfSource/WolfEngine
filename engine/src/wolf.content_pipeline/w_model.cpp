@@ -28,7 +28,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
     _In_ std::map<std::string, std::string>& sLibraryEffects,
     _In_ std::map<std::string, std::string>& sLibraryImages,
     _In_ bool pOptimizing,
-    _In_ bool pYUp)
+    _In_ bool pLeftCoordinateSystem)
 {
 	auto _model = new w_model();
 
@@ -374,20 +374,20 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 			}
 
             glm::vec4 _pos;
-            if (pYUp)
+            if (pLeftCoordinateSystem)
+            {
+                //Z Up like 3ds max
+                _pos.x = _v.vertex[0];
+                _pos.y = _v.vertex[2];
+                _pos.z = _v.vertex[1];
+                _pos.w = 1;
+            }
+            else
             {
                 //Y Up
                 _pos.x = _v.vertex[0];
                 _pos.y = _v.vertex[1];
                 _pos.z = _v.vertex[2];
-                _pos.w = 1;
-            }
-            else
-            {
-                //For Z Up coordinate systems such as 3dsmax
-                _pos.x = _v.vertex[0];
-                _pos.y = _v.vertex[2];
-                _pos.z = _v.vertex[1];
                 _pos.w = 1;
             }
 
@@ -404,6 +404,11 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
             _vertex_data.position[1] = _pos[1];
             _vertex_data.position[2] = _pos[2];
             _vertex_data.position[3] = _pos[3];
+
+            if (pLeftCoordinateSystem)
+            {
+                std::swap(_v.normal[1], _v.normal[2]);
+            }
 
 			auto _normal = _v.normal.size() > 0 ? glm::vec3(_v.normal[0], _v.normal[1], _v.normal[2]) : glm::vec3(0);
             _vertex_data.normal[0] = _normal[0];

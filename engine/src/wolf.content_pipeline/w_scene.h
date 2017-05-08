@@ -25,9 +25,10 @@ namespace wolf
 			WCP_EXP w_scene();
 			WCP_EXP virtual ~w_scene();
 			
-			WCP_EXP void add_model(w_model* pModel);
-            WCP_EXP void add_models(std::vector<w_model*>& pModel);
-			WCP_EXP void add_camera(std::string pName, glm::vec3 pTransform, glm::vec3 pInterest);
+			WCP_EXP void add_model(_In_ w_model* pModel);
+            WCP_EXP void add_models(_Inout_ std::vector<w_model*>& pModel);
+            WCP_EXP void add_camera(_In_ w_camera* pCamera);
+			WCP_EXP void add_camera(_In_z_ const std::string& pName, _In_ const glm::vec3 pTransform, _In_ const glm::vec3 pInterest);
             
 #pragma region Getters
 
@@ -49,14 +50,14 @@ namespace wolf
 
             WCP_EXP void set_name(_In_z_ std::string pValue)   { this->_name = pValue; }
 
-            MSGPACK_DEFINE(_name, _models);
+            MSGPACK_DEFINE(_name, _cameras, _models);
 
 #pragma endregion
 
 		private:
             std::string                 _name;
-			std::vector<w_model>		_models;
 			std::vector<w_camera>		_cameras;
+            std::vector<w_model>		_models;
 		};
 	}
 }

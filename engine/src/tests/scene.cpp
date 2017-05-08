@@ -19,7 +19,7 @@ using namespace wolf::content_pipeline;
 struct vertex_data
 {
     float position[4];
-    //float uv[2];
+    float uv[2];
 };
 
 #if defined(__WIN32)
@@ -59,14 +59,13 @@ void scene::load()
     w_game::load();
     
     //auto _scene = w_content_manager::load<w_scene>(content_path + L"models/inst_max_oc.dae");
-    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/test_instance.wscene");
+    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/test.wscene");
     this->_renderable_scene = new w_renderable_scene(_scene);
     this->_renderable_scene->load(_gDevice);
     this->_renderable_scene->get_first_or_default_camera(&this->_camera);
     
     
     auto _hr = _view_projection_uniform.load(_gDevice);
-    
     this->_camera->set_aspect_ratio((float)_output_window->width / (float)_output_window->height);
     this->_camera->update_view();
     this->_camera->update_projection();
@@ -79,15 +78,15 @@ void scene::load()
     _hr = _view_projection_uniform.update();
     
     //load shaders
-    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader.vs.spv", w_shader_stage::VERTEX_SHADER);
-    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader.fs.spv", w_shader_stage::FRAGMENT_SHADER);
+    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader.vert.spv", w_shader_stage::VERTEX_SHADER);
+    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader.frag.spv", w_shader_stage::FRAGMENT_SHADER);
     
     std::vector<VkDescriptorPoolSize> _descriptor_pool_sizes =
     {
-//        {
-//            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // Type
-//            1                                                   // DescriptorCount
-//        },
+        {
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // Type
+            1                                                   // DescriptorCount
+        },
         {
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // Type
             1                                                   // DescriptorCount
@@ -97,13 +96,13 @@ void scene::load()
     
     std::vector<VkDescriptorSetLayoutBinding> _layout_bindings =
     {
-//        {
-//            0,                                                  // Binding
-//            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // DescriptorType
-//            1,                                                  // DescriptorCount
-//            VK_SHADER_STAGE_FRAGMENT_BIT,                       // StageFlags
-//            nullptr                                             // ImmutableSamplers
-//        },
+        {
+            0,                                                  // Binding
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // DescriptorType
+            1,                                                  // DescriptorCount
+            VK_SHADER_STAGE_FRAGMENT_BIT,                       // StageFlags
+            nullptr                                             // ImmutableSamplers
+        },
         {
             0,                                                  // Binding
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // DescriptorType
@@ -116,27 +115,27 @@ void scene::load()
     
     
     //load texture
-//    _texture = new w_texture();
-//    _hr = _texture->load(_gDevice);
-//    _hr = _texture->initialize_texture_2D_from_file("/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/Logo.jpg", true);
+    _texture = new w_texture();
+    _hr = _texture->load(_gDevice);
+    _hr = _texture->initialize_texture_2D_from_file(L"C:\\Users\\DFM\\Documents\\github\\WolfSource\\Wolf.Engine\\Logo.jpg", true);
     
-   // const VkDescriptorImageInfo _image_info = _texture->get_descriptor_info();
+    const VkDescriptorImageInfo _image_info = _texture->get_descriptor_info();
     const VkDescriptorBufferInfo _buffer_info = _view_projection_uniform.get_descriptor_info();
     
     auto _descriptor_set = _shader.get_descriptor_set();
     std::vector<VkWriteDescriptorSet> _write_descriptor_sets =
     {
-//        {
-//            VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
-//            nullptr,                                        // Next
-//            _descriptor_set,                                // DstSet
-//            0,                                              // DstBinding
-//            0,                                              // DstArrayElement
-//            1,                                              // DescriptorCount
-//            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,      // DescriptorType
-//            &_image_info,                                   // ImageInfo
-//            nullptr,
-//        },
+        {
+            VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
+            nullptr,                                        // Next
+            _descriptor_set,                                // DstSet
+            0,                                              // DstBinding
+            0,                                              // DstArrayElement
+            1,                                              // DescriptorCount
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,      // DescriptorType
+            &_image_info,                                   // ImageInfo
+            nullptr,
+        },
         {
             VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
             nullptr,                                        // Next
@@ -165,26 +164,6 @@ void scene::load()
                               _output_window->height,
                               1);
     
-//    std::vector<vertex_data> _vertex_data =
-//    {
-//        { {-0.7f, -0.7f, 0.0f, 1.0f }},
-//        { {-0.7f,  0.7f, 0.0f, 1.0f }},
-//        { { 0.7f, -0.7f, 0.0f, 1.0f }},
-//        { { 0.7f,  0.7f, 0.0f, 1.0f }}
-//    };
-
-
-//    this->_mesh = new w_mesh();
-//    this->_mesh->load(_gDevice,
-//                     _vertex_data.data(),
-//                     static_cast<UINT>(_vertex_data.size()),
-//                     static_cast<UINT>(_vertex_data.size() * sizeof(vertex_data)),
-//                     nullptr,
-//                     0,
-//                     nullptr,
-//                     0,
-//                     true);
-    
     std::vector<VkVertexInputBindingDescription> _vertex_binding_descriptions =
     {
         {
@@ -201,13 +180,13 @@ void scene::load()
             _vertex_binding_descriptions[0].binding,                    // Binding
             VK_FORMAT_R32G32B32A32_SFLOAT,                                 // Format
             offsetof(vertex_data, position)                             // Offset
-        }//,
-//        {
-//            1,                                                          // Location
-//            _vertex_binding_descriptions[0].binding,                    // Binding
-//            VK_FORMAT_R32G32_SFLOAT,                                    // Format
-//            offsetof(vertex_data, uv)                                // Offset
-//        }
+        },
+        {
+            1,                                                          // Location
+            _vertex_binding_descriptions[0].binding,                    // Binding
+            VK_FORMAT_R32G32_SFLOAT,                                    // Format
+            offsetof(vertex_data, uv)                                // Offset
+        }
     };
     
     VkPipelineVertexInputStateCreateInfo _vertex_input_state_create_info =
@@ -376,27 +355,26 @@ void scene::load()
             auto _index_buffer_handle = this->_renderable_scene->get_index_buffer_handle(0);
             vkCmdBindIndexBuffer( _command_buffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32 );
 
-            //auto _v_c = this->_renderable_scene->get_vertices_count();
             auto _i_c = this->_renderable_scene->get_indices_count(0);
             
-            //vkCmdDraw( _command_buffer, _v_c, 1, 0, 0 );
             vkCmdDrawIndexed(_command_buffer, _i_c, 1, 0, 0, 0);
             
             
             //draw second one
             
-            _offset = 0;
-            _vertex_buffer_handle = this->_renderable_scene->get_vertex_buffer_handle(1);
-            vkCmdBindVertexBuffers( _command_buffer, 0, 1, &_vertex_buffer_handle, &_offset );
-            
-            _index_buffer_handle = this->_renderable_scene->get_index_buffer_handle(1);
-            vkCmdBindIndexBuffer( _command_buffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32 );
-            
-            //auto _v_c = this->_renderable_scene->get_vertices_count();
-            _i_c = this->_renderable_scene->get_indices_count(1);
-            
+            //_offset = 0;
+            ////_vertex_buffer_handle = this->_renderable_scene->get_vertex_buffer_handle(1);
+            //auto _vertex_buffer_handle = this->_mesh->get_vertex_buffer_handle();
+            //vkCmdBindVertexBuffers( _command_buffer, 0, 1, &_vertex_buffer_handle, &_offset );
+            //
+            ////_index_buffer_handle = this->_renderable_scene->get_index_buffer_handle(1);
+            ////vkCmdBindIndexBuffer( _command_buffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32 );
+            //
+            //auto _v_c = this->_mesh->get_vertices_count();
+            ////_i_c = this->_renderable_scene->get_indices_count(1);
+            //
             //vkCmdDraw( _command_buffer, _v_c, 1, 0, 0 );
-            vkCmdDrawIndexed(_command_buffer, _i_c, 1, 0, 0, 0);
+            ////vkCmdDrawIndexed(_command_buffer, _i_c, 1, 0, 0, 0);
             
             
             //draw third one

@@ -14,14 +14,14 @@ w_scene::~w_scene()
 {
 }
 
-void w_scene::add_model(w_model* pModel)
+void w_scene::add_model(_In_ w_model* pModel)
 {
     if (!pModel) return;
 
     this->_models.push_back(*pModel);
 }
 
-void w_scene::add_models(std::vector<w_model*>& pModel)
+void w_scene::add_models(_Inout_ std::vector<w_model*>& pModel)
 {
     for (size_t i = 0; i < pModel.size(); ++i)
     {
@@ -29,7 +29,12 @@ void w_scene::add_models(std::vector<w_model*>& pModel)
     }
 }
 
-void w_scene::add_camera(std::string pID, glm::vec3 pTransform, glm::vec3 pInterest)
+void w_scene::add_camera(_In_ w_camera* pCamera)
+{
+    this->_cameras.push_back(*pCamera);
+}
+
+void w_scene::add_camera(_In_z_ const std::string& pID, _In_ const glm::vec3 pTransform, _In_ const glm::vec3 pInterest)
 {
     auto _camera = new w_camera();
     _camera->set_name(pID);

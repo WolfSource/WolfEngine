@@ -14,6 +14,7 @@ static std::vector<c_bone*>			        sBones;
 static std::vector<c_node*>			        sNodes;
 static std::string					        sSceneID;
 static std::vector<std::string>		        sSkeletonNames;
+static std::map<std::string, w_camera>      sLibraryCameras;
 static std::map<std::string, std::string>   sLibraryMaterials;
 static std::map<std::string, std::string>	sLibraryEffects;
 static std::map<std::string, std::string>	sLibraryImages;
@@ -21,7 +22,7 @@ static std::string					        sSkipChildrenOfThisNode;
 static c_xsi_extra					        sXSI_Extra;
 //static std::vector<unsigned short>	sXSI_Indices;
 static rapidxml::xml_node<>*		        SGeometryLibraryNode;
-static std::string                          sUp_Axis = "y_up";
+static bool                                 sLeftCoordinateSystem = true;
 
 const char* c_parser::_trace_class_name = "w_collada_parser";
 
@@ -123,7 +124,11 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
             if (_node_name == "up_axis")
             {
                 auto _str = std::string(_child->value());
-                std::transform(_str.begin(), _str.end(), sUp_Axis.begin(), ::tolower);
+                std::transform(_str.begin(), _str.end(), _str.begin(), ::tolower);
+                if (_str == "y_up")
+                {
+                    sLeftCoordinateSystem = false;
+                }
                 _str.clear();
             }
         }
@@ -133,6 +138,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	{
 		//we don't need basic information of camera, such as near plan, far plan and etc
 		sSkipChildrenOfThisNode = _node_name;
+        _get_library_cameras(pXNode);
 		return S_OK;
 	}
 	else if (_node_name == "library_lights")
@@ -260,6 +266,133 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	}
 
 	return S_OK;
+}
+
+void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
+{
+    if (!pXNode) return;
+
+    //get instance cameras
+    w_camera* _camera = nullptr;
+    for (auto _child_0 = pXNode->first_node(); _child_0 != nullptr; _child_0 = _child_0->next_sibling())
+    {
+        auto _node_name_0 = _get_node_name(_child_0);
+
+#ifdef DEBUG
+        logger.write(_node_name_0);
+#endif
+
+        if (_node_name_0 == "camera")
+        {
+            std::string _camera_id;
+            _get_node_attribute_value(_child_0, "id", _camera_id);
+            
+            _camera = new w_camera();
+            _camera->set_name(_camera_id);
+            
+            for (auto _child_1 = _child_0->first_node(); _child_1 != nullptr; _child_1 = _child_1->next_sibling())
+            {
+                auto _node_name_1 = _get_node_name(_child_1);
+#ifdef DEBUG
+                logger.write(_node_name_1);
+#endif
+
+                if (_node_name_1 == "optics")
+                {
+                    for (auto _child_2 = _child_1->first_node(); _child_2 != nullptr; _child_2 = _child_2->next_sibling())
+                    {
+                        auto _node_name_2 = _get_node_name(_child_2);
+#ifdef DEBUG
+                        logger.write(_node_name_2);
+#endif
+                        if (_node_name_2 == "technique_common")
+                        {
+                            auto _child_3 = _child_2->first_node();
+                            if (_child_3)
+                            {
+                                auto _node_name_3 = _get_node_name(_child_3);
+#ifdef DEBUG
+                                logger.write(_node_name_3);
+#endif
+
+                                if (_node_name_3 == "perspective")
+                                {
+                                    if (_camera)
+                                    {
+                                        for (auto _child_4 = _child_3->first_node(); _child_4 != nullptr; _child_4 = _child_4->next_sibling())
+                                        {
+                                            auto _node_name_4 = _get_node_name(_child_4);
+#ifdef DEBUG
+                                            logger.write(_node_name_4);
+#endif
+
+                                            if (_node_name_4 == "xfov")
+                                            {
+                                                _camera->set_field_of_view(std::atof(_child_4->value()));
+                                            }
+                                            else if (_node_name_4 == "znear")
+                                            {
+                                                _camera->set_near_plan(std::atof(_child_4->value()));
+                                            }
+                                            else if (_node_name_4 == "zfar")
+                                            {
+                                                _camera->set_far_plan(std::atof(_child_4->value()));
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                                break;
+                            }
+                            break;
+                        }
+                    }
+                }
+                else if (_node_name_1 == "extra")
+                {
+                    for (auto _child_2 = _child_1->first_node(); _child_2 != nullptr; _child_2 = _child_2->next_sibling())
+                    {
+                        auto _node_name_2 = _get_node_name(_child_2);
+#ifdef DEBUG
+                        logger.write(_node_name_2);
+#endif
+                        if (_node_name_2 == "technique")
+                        {
+                            auto _child_3 = _child_2->first_node();
+                            if (_child_3)
+                            {
+                                std::string _sid;
+                                _get_node_attribute_value(_child_3, "sid", _sid);
+                                if (_sid == "target")
+                                {
+                                    if (_camera)
+                                    {
+                                        auto _camera_id = _camera->get_name();
+                                        auto _iter = sLibraryCameras.find(_camera_id);
+                                        if (_iter == sLibraryCameras.end())
+                                        {
+                                            std::string _camera_target_name = _child_3->value();
+                                            if (_camera_target_name.size() &&
+                                                _camera_target_name[0] == '#')
+                                            {
+                                                _camera_target_name = _camera_target_name.erase(0, 1);
+                                            }
+
+                                            _camera->set_camera_target_name(_camera_target_name);
+                                            sLibraryCameras[_camera_id] = *_camera;
+                                        }
+                                    }
+                                    break;
+                                }
+                                break;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void c_parser::_get_library_effects(_In_ rapidxml::xml_node<>* pXNode)
@@ -419,7 +552,7 @@ void c_parser::_get_library_images(_In_ rapidxml::xml_node<>* pXNode)
                             make sure do not use different images with same name
                          */
                         sLibraryImages[_image_id] = wolf::system::io::get_base_file_name(_child_1->value()) + 
-                            "." + wolf::system::io::get_file_extention(_child_1->value());
+                            wolf::system::io::get_file_extention(_child_1->value());
                     }
                 }
             }
@@ -480,7 +613,7 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         if (_name == "translate")
         {
             _parent_node_ptr->translate = glm::to_vec3(_child->value());
-            if (sUp_Axis == "z_up")
+            if (sLeftCoordinateSystem)
             {
                 std::swap(_parent_node_ptr->translate.y, _parent_node_ptr->translate.z);
             }
@@ -488,8 +621,8 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         else if (_name == "rotate")
         {
             std::string _rotation_type;
-            _get_node_attribute_value(pXNode, "sid", _rotation_type);
-            auto _vec4 = glm::to_vec4(pXNode->value());
+            _get_node_attribute_value(_child, "sid", _rotation_type);
+            auto _vec4 = glm::to_vec4(_child->value());
 
             if (_rotation_type == "rotation_z")
             {
@@ -506,7 +639,34 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         }
         else if (_name == "scale")
         {
-            _parent_node_ptr->scale = glm::to_vec3(pXNode->value());
+            _parent_node_ptr->scale = glm::to_vec3(_child->value());
+        }
+        else if (_name == "matrix")
+        {
+            auto _matrix = glm::to_mat4(_child->value());
+            if (sLeftCoordinateSystem)
+            {
+                //swap y and z
+                _parent_node_ptr->translate.x = _matrix[0][3];
+                _parent_node_ptr->translate.y = _matrix[2][3];
+                _parent_node_ptr->translate.z = _matrix[1][3];
+            }
+            else 
+            {
+                _parent_node_ptr->translate.x = _matrix[0][3];
+                _parent_node_ptr->translate.y = _matrix[1][3];
+                _parent_node_ptr->translate.z = _matrix[2][3];
+            }
+        }
+        else if (_name == "instance_camera")
+        {
+            _get_node_attribute_value(_child, "url", _parent_node_ptr->instanced_camera_name);
+            if (_parent_node_ptr->instanced_camera_name.size() &&
+                _parent_node_ptr->instanced_camera_name[0] == '#')
+            {
+                _parent_node_ptr->type = c_node_type::CAMERA;
+                _parent_node_ptr->instanced_camera_name = _parent_node_ptr->instanced_camera_name.erase(0, 1);
+            }
         }
         else if (_name == "instance_geometry")
         {
@@ -1167,6 +1327,15 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
         pScene->add_models(_models);
         _models.clear();
     }
+    if (sLibraryCameras.size())
+    {
+        for (auto _iter : sLibraryCameras)
+        {
+            auto _camera = new w_camera(_iter.second);
+            _camera->set_coordiante_system(sLeftCoordinateSystem);
+            pScene->add_camera(_camera);
+        }
+    }
 
 	return S_OK;
 }
@@ -1181,7 +1350,28 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
     {
         if (!_node || _node->proceeded) continue;
 
-        if (_node->type & c_node_type::MESH)
+        auto _type = static_cast<c_node_type>(_node->type);
+        if (_type == c_node_type::CAMERA)
+        {
+            //find camera
+            auto _iter = sLibraryCameras.find(_node->instanced_camera_name);
+            if (_iter != sLibraryCameras.end())
+            {
+                _iter->second.set_transform(_node->translate);
+                //find target node
+                for (auto __node : pNodes)
+                {
+                    if (__node->c_name == _iter->second.get_camera_target_name())
+                    {
+                        _iter->second.set_interest(__node->translate);
+                        __node->proceeded = true;
+                    }
+                }
+
+                _node->proceeded = true;
+            }
+        }
+        else if (_type == c_node_type::MESH)
         {
             //find instance if avaiable in models
             auto _iter = std::find_if(pModels.begin(), pModels.end(), [_node](_In_ w_model* pModel)
@@ -1321,7 +1511,7 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
             sLibraryEffects,
             sLibraryImages,
             pOptimizePoints,
-            sUp_Axis == "y_up");
+            sLeftCoordinateSystem);
 
         _model->set_name(_node_ptr->c_name);
         _model->set_instance_geometry_name(_node_ptr->instanced_geometry_name);
@@ -1363,6 +1553,7 @@ void c_parser::_clear_all_resources()
 	
     sSkeletonNames.clear();
 	
+    sLibraryCameras.clear();
     sLibraryEffects.clear();
     sLibraryMaterials.clear();
     sLibraryImages.clear();

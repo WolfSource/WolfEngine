@@ -4,14 +4,44 @@
     <contributor>
       <author>DFM</author>
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
+      <source_data>file:///C:/Users/DFM/Documents/github/WolfSource/Wolf.Engine/content/models/test.max</source_data>
     </contributor>
-    <created>2017-05-07T19:17:07</created>
-    <modified>2017-05-07T19:17:07</modified>
+    <created>2017-05-08T15:30:48</created>
+    <modified>2017-05-08T15:30:48</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_effects>
-    <effect id="Material__25">
+    <effect id="ColorEffectR87G120B204">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <ambient>
+              <color>0.3411765 0.4705882 0.8 1</color>
+            </ambient>
+            <diffuse>
+              <color>0.3411765 0.4705882 0.8 1</color>
+            </diffuse>
+            <specular>
+              <color>1 1 1 1</color>
+            </specular>
+            <shininess>
+              <float>10</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent>
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+    <effect id="Material__27">
       <profile_COMMON>
         <newparam sid="Logo_jpg-surface">
           <surface type="2D">
@@ -79,15 +109,18 @@
     </effect>
   </library_effects>
   <library_materials>
-    <material id="Material__25-material" name="Material__25">
-      <instance_effect url="#Material__25"/>
+    <material id="ColorEffectR87G120B204-material" name="ColorEffectR87G120B204-material">
+      <instance_effect url="#ColorEffectR87G120B204"/>
+    </material>
+    <material id="Material__27-material" name="Material__27">
+      <instance_effect url="#Material__27"/>
     </material>
   </library_materials>
   <library_geometries>
     <geometry id="geom-Box001" name="Box001">
       <mesh>
         <source id="geom-Box001-positions">
-          <float_array id="geom-Box001-positions-array" count="24">-28.78946 -27.46185 0 28.78946 -27.46185 0 -28.78946 27.46185 0 28.78946 27.46185 0 -28.78946 -27.46185 46.21652 28.78946 -27.46185 46.21652 -28.78946 27.46185 46.21652 28.78946 27.46185 46.21652</float_array>
+          <float_array id="geom-Box001-positions-array" count="24">-47.52688 -32.07131 0 47.52688 -32.07131 0 -47.52688 32.07131 0 47.52688 32.07131 0 -47.52688 -32.07131 52.76976 47.52688 -32.07131 52.76976 -47.52688 32.07131 52.76976 47.52688 32.07131 52.76976</float_array>
           <technique_common>
             <accessor source="#geom-Box001-positions-array" count="8" stride="3">
               <param name="X" type="float"/>
@@ -97,7 +130,7 @@
           </technique_common>
         </source>
         <source id="geom-Box001-normals">
-          <float_array id="geom-Box001-normals-array" count="72">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0</float_array>
+          <float_array id="geom-Box001-normals-array" count="72">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0</float_array>
           <technique_common>
             <accessor source="#geom-Box001-normals-array" count="24" stride="3">
               <param name="X" type="float"/>
@@ -107,7 +140,7 @@
           </technique_common>
         </source>
         <source id="geom-Box001-map1">
-          <float_array id="geom-Box001-map1-array" count="108">0.9999998 0 0 2.98023e-8 0 0.9999998 0 0 2.08616e-7 0 0 0.9999998 0.9999998 1 0 2.98023e-8 1 0.9999998 0 1 2.08616e-7 0 1 0.9999998 1 2.68221e-7 0 0.9999998 1 0 0 0.9999998 0 0 0.9999998 0 2.38419e-7 2.98023e-8 0 1 2.68221e-7 0 0 2.68221e-7 1 0.9999998 2.98023e-8 1 1 0.9999998 1 1 0.9999998 1 2.08616e-7 1 1 0 2.68221e-7 1 0 0 2.68221e-7 0.9999998 0 2.98023e-8 0.9999998 1 2.98023e-8 0.9999998 1 2.98023e-8 0 1 2.68221e-7 0 0 2.68221e-7 2.98023e-8 0 0.9999998 0.9999998 0 1 0.9999998 1 1 0.9999998 1 1 0 0 0.9999998 0.9999998 0 1 0.9999998 1 1 0.9999998 1 1 0 0 2.08616e-7 0.9999998 1 0</float_array>
+          <float_array id="geom-Box001-map1-array" count="108">0.9999996 0 0 0 0 0.9999999 0 0 1.49012e-7 0 0 0.9999996 0.9999996 1 0 0 1 0.9999999 0 1 1.49012e-7 0 1 0.9999996 1 3.57628e-7 0 0.9999999 1 0 0 0.9999996 0 0 0.9999996 0 1.19209e-7 0 0 1 3.57628e-7 0 0 3.57628e-7 1 0.9999999 0 1 1 0.9999996 1 1 0.9999996 1 1.49012e-7 1 1 0 3.57628e-7 1 0 0 3.57628e-7 0.9999999 0 0 0.9999999 1 0 0.9999999 1 0 0 1 3.57628e-7 0 0 3.57628e-7 0 0 0.9999999 0.9999996 0 1 0.9999996 1 1 0.9999996 1 1 0 0 0.9999996 0.9999999 0 1 0.9999999 1 1 0.9999999 1 1 0 0 1.49012e-7 0.9999996 1 0</float_array>
           <technique_common>
             <accessor source="#geom-Box001-map1-array" count="36" stride="3">
               <param name="S" type="float"/>
@@ -119,7 +152,7 @@
         <vertices id="geom-Box001-vertices">
           <input semantic="POSITION" source="#geom-Box001-positions"/>
         </vertices>
-        <triangles material="Material__25_1" count="12">
+        <triangles material="Material__27_1" count="12">
           <input semantic="VERTEX" source="#geom-Box001-vertices" offset="0"/>
           <input semantic="NORMAL" source="#geom-Box001-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#geom-Box001-map1" offset="2" set="0"/>
@@ -128,6 +161,24 @@
       </mesh>
     </geometry>
   </library_geometries>
+  <library_cameras>
+    <camera id="Camera001-camera" name="Camera001">
+      <optics>
+        <technique_common>
+          <perspective>
+            <xfov>45</xfov>
+            <znear>1</znear>
+            <zfar>1000</zfar>
+          </perspective>
+        </technique_common>
+      </optics>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <target sid="target" type="string">#Camera001.Target</target>
+        </technique>
+      </extra>
+    </camera>
+  </library_cameras>
   <library_lights>
     <light id="EnvironmentAmbientLight" name="EnvironmentAmbientLight">
       <technique_common>
@@ -139,7 +190,7 @@
   </library_lights>
   <library_images>
     <image id="Logo_jpg">
-      <init_from>./images/Logo.jpg</init_from>
+      <init_from>./images/0_Logo.jpg</init_from>
     </image>
   </library_images>
   <library_visual_scenes>
@@ -147,12 +198,35 @@
       <node name="EnvironmentAmbientLight">
         <instance_light url="#EnvironmentAmbientLight"/>
       </node>
+      <node id="node-Camera001" name="Camera001">
+        <matrix>-0.9977436 0.001531472 -0.06712151 -68.42079 -0.06713898 -0.02275901 0.997484 745.2316 0 0.9997398 0.02281048 92.98166 0 0 0 1</matrix>
+        <instance_camera url="#Camera001-camera"/>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-Camera001.Target" name="Camera001.Target">
+        <translate>-22.70206 65.81148 77.44467</translate>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
       <node id="node-Box001" name="Box001">
-        <translate>-67.34962 37.60211 0</translate>
+        <translate>5.71936 -8.520744 0</translate>
         <instance_geometry url="#geom-Box001">
           <bind_material>
             <technique_common>
-              <instance_material symbol="Material__25_1" target="#Material__25-material">
+              <instance_material symbol="Material__27_1" target="#Material__27-material">
                 <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>
@@ -168,11 +242,11 @@
         </extra>
       </node>
       <node id="node-Box002" name="Box002">
-        <translate>1.318262 -31.10089 0</translate>
+        <translate>-68.15497 -168.9857 0</translate>
         <instance_geometry url="#geom-Box001">
           <bind_material>
             <technique_common>
-              <instance_material symbol="Material__25_1" target="#Material__25-material">
+              <instance_material symbol="Material__27_1" target="#Material__27-material">
                 <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>

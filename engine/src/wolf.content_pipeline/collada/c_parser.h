@@ -35,6 +35,7 @@ namespace wolf
 
 			private:
 				static HRESULT		                          _process_xml_node(_In_ rapidxml::xml_node<>* pXNode);
+                static void                                   _get_library_cameras(_In_ rapidxml::xml_node<>* pXNode);
                 static void                                   _get_library_effects(_In_ rapidxml::xml_node<>* pXNode);
                 static void                                   _get_library_materials(_In_ rapidxml::xml_node<>* pXNode);
                 static void                                   _get_library_images(_In_ rapidxml::xml_node<>* pXNode);

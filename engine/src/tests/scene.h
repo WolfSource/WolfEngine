@@ -57,7 +57,6 @@ public:
     ULONG release() override;
     
 private:
-    wolf::graphics::w_mesh*                     _mesh;
     wolf::graphics::w_command_buffers*          _command_buffers;
     wolf::graphics::w_render_pass               _render_pass;
     wolf::graphics::w_pipeline                  _pipeline;

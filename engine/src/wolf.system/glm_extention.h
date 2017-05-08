@@ -216,6 +216,20 @@ namespace glm
 			std::atof(pResult[3].c_str()));
 	}
 	
+    inline mat4 to_mat4(std::string pValue)
+    {
+        if (pValue.empty()) return mat4(0);
+
+        std::vector<std::string> pResult;
+        wolf::system::convert::split_string(pValue, " ", pResult);
+
+        return mat4(
+            std::atof(pResult[0].c_str()), std::atof(pResult[1].c_str()), std::atof(pResult[2].c_str()), std::atof(pResult[3].c_str()),
+            std::atof(pResult[4].c_str()), std::atof(pResult[5].c_str()), std::atof(pResult[6].c_str()), std::atof(pResult[7].c_str()),
+            std::atof(pResult[8].c_str()), std::atof(pResult[9].c_str()), std::atof(pResult[10].c_str()), std::atof(pResult[11].c_str()),
+            std::atof(pResult[12].c_str()), std::atof(pResult[13].c_str()), std::atof(pResult[14].c_str()), std::atof(pResult[15].c_str()));
+    }
+
     inline std::vector<glm::mat4x4> to_matrix_array(float pFloats[], int pArraySize = 16, int pRowSize = 4)
 	{
 		std::vector<glm::mat4x4> _mats;

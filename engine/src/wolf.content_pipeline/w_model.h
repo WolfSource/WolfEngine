@@ -82,15 +82,15 @@ namespace wolf
 		{
 			float		    position[4];
             float		    normal[3];
+            float		    uv[2];
             float		    blend_weight[4];
             float		    blend_indices[4];
-            float		    uv[2];
             float		    tangent[3];
             float		    binormal[3];
             float		    color[4];
 			unsigned short	vertex_index;
 
-            MSGPACK_DEFINE(position, normal, blend_weight, blend_indices, uv, tangent, binormal, color, vertex_index);
+            MSGPACK_DEFINE(position, normal, uv, vertex_index);
 		};
 
 		class w_model
