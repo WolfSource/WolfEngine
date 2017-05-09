@@ -10,6 +10,8 @@
 #ifndef __PCH_H__
 #define __PCH_H__
 
+#ifdef __WIN32
+
 #include "w_target_ver.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
@@ -17,6 +19,9 @@
 #endif
 
 #include <Windows.h>
+
+#endif
+
 #include <memory>
 #include <map>
 

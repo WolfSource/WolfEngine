@@ -29,6 +29,7 @@
 		2C4CCB2C1EB0F81100E0A422 /* w_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB211EB0F81100E0A422 /* w_scene.h */; };
 		2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */; };
 		2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */; };
+		2C61A6BD1EC0F65400C0AB3E /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C61A6AD1EC0C32D00C0AB3E /* libmsgpackc.2.0.0.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,9 @@
 		2C4CCB211EB0F81100E0A422 /* w_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_scene.h; path = ../../../src/wolf.content_pipeline/w_scene.h; sourceTree = "<group>"; };
 		2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vertex_declaration.h; path = ../../../src/wolf.content_pipeline/w_vertex_declaration.h; sourceTree = "<group>"; };
 		2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
+		2C61A6AD1EC0C32D00C0AB3E /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
+		2C61A6B31EC0DD9200C0AB3E /* libmsgpackc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmsgpackc.a; path = ../../../dependencies/msgpack/lib/libmsgpackc.a; sourceTree = "<group>"; };
+		2C61A6BB1EC0E3D700C0AB3E /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/xcode/Debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.content_pipeline.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -62,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C61A6BD1EC0F65400C0AB3E /* libmsgpackc.2.0.0.dylib in Frameworks */,
 				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -117,6 +122,9 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C61A6BB1EC0E3D700C0AB3E /* libmsgpackc.2.0.0.dylib */,
+				2C61A6B31EC0DD9200C0AB3E /* libmsgpackc.a */,
+				2C61A6AD1EC0C32D00C0AB3E /* libmsgpackc.2.0.0.dylib */,
 				2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */,
 			);
 			name = Frameworks;
@@ -249,6 +257,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"DEBUG=1",
+					"MSGPACK_USE_CPP03=1",
+					"MSGPACK_DISABLE_LEGACY_NIL=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -310,7 +320,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/msgpack/lib/";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -321,7 +331,9 @@
 					"$(SRCROOT)/../../../dependencies/rapidxml",
 					"$(SRCROOT)/../../../dependencies/rapidjson",
 					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -332,7 +344,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/msgpack/lib/";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -344,7 +356,9 @@
 					"$(SRCROOT)/../../../dependencies/rapidxml",
 					"$(SRCROOT)/../../../dependencies/rapidjson",
 					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

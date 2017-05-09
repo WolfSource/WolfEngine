@@ -14,6 +14,7 @@
 #include <w_object.h>
 #include "w_model.h"
 #include "w_camera.h"
+#include <msgpack.hpp>
 
 namespace wolf
 {

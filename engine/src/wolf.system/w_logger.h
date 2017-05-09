@@ -120,12 +120,8 @@ namespace wolf
 #endif
 
 extern WSYS_EXP wolf::system::w_logger logger;
-
-#if defined(__WIN32) || defined(__UWP)
 extern WSYS_EXP std::wstring content_path;
-#else 
-extern WSYS_EXP std::string content_path;
-#endif
+
 
 /*
 	Validate HResult and write in to the log file

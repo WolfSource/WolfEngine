@@ -42,22 +42,17 @@ namespace wolf
                 return S_OK;
             }
             
-            HRESULT initialize_texture_2D_from_file(
-#if defined(__WIN32) || defined(__UWP)
-                                                         _In_z_ std::wstring pPath,
-#else
-                                                         _In_z_ std::string pPath,
-#endif
-                                                         _In_ bool pIsAbsolutePath)
+            HRESULT initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
             {
                 using namespace std;
                 using namespace system::io;
+                
                 
 #if defined(__WIN32) || defined(__UWP)
                 auto _path = ( pIsAbsolutePath ? L"" : content_path ) + pPath;
                 auto _ext = get_file_extentionW(_path.c_str());
 #else
-                auto _path = ( pIsAbsolutePath ? "" : get_content_directory() ) + pPath;
+                auto _path = ( pIsAbsolutePath ? "" : get_content_directory() ) + wolf::system::convert::wstring_to_string(pPath);
                 auto _extension = get_file_extention(_path.c_str());
                 auto _ext = system::convert::string_to_wstring(_extension);
 #endif
@@ -727,13 +722,7 @@ HRESULT w_texture::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     return this->_pimp->load(pGDevice, pMemoryPropertyFlags);
 }
 
-HRESULT w_texture::initialize_texture_2D_from_file(
-#if defined(__WIN32) || defined(__UWP)
-                                                _In_z_ std::wstring pPath,
-#else
-                                                _In_z_ std::string pPath,
-#endif
-                                                _In_ bool pIsAbsolutePath)
+HRESULT w_texture::initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->initialize_texture_2D_from_file(pPath, pIsAbsolutePath);

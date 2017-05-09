@@ -58,9 +58,6 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	_windows_info.insert({ 0,{ _window_info } });
 
 	//Initialize and run scene
-	auto _running_dir = wolf::system::io::get_current_directoryW();
-	content_path = _running_dir + L"../../../../content/";
-	
 	sScene = make_unique<scene>(_running_dir, L"wolf.engine.vulkan.test");
 	std::function<void(void)> _run_func = [&_windows_info]()->void
 	{

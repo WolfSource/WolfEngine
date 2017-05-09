@@ -89,8 +89,8 @@ namespace wolf
 #pragma endregion
 
             MSGPACK_DEFINE(
-                _name, _camera_target_name, _field_of_view, 
-                _near_plane, _far_plane, _up, 
+                _name, _camera_target_name, _field_of_view,
+                _near_plane, _far_plane, _up,
                 _transform, _interest, _is_left_hand_coordinate_system);
 
 		private:

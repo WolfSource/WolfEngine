@@ -68,6 +68,7 @@
 		2C4CCAF11EAE667100E0A422 /* w_frame_buffers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_frame_buffers.cpp; path = ../../../src/wolf.render/w_graphics/w_frame_buffers.cpp; sourceTree = "<group>"; };
 		2C4CCAF21EAE667100E0A422 /* w_frame_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_frame_buffers.h; path = ../../../src/wolf.render/w_graphics/w_frame_buffers.h; sourceTree = "<group>"; };
 		2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
+		2C61A6AF1EC0DA0000C0AB3E /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_pass.cpp; path = ../../../src/wolf.render/w_graphics/w_render_pass.cpp; sourceTree = "<group>"; };
 		2C7F0DA51EAD348600F0C700 /* w_render_pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_pass.h; path = ../../../src/wolf.render/w_graphics/w_render_pass.h; sourceTree = "<group>"; };
@@ -165,6 +166,7 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C61A6AF1EC0DA0000C0AB3E /* libmsgpackc.2.0.0.dylib */,
 				2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */,
 				2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */,
 				2C38D9561E7964BA00EE8595 /* MoltenVK.framework */,
@@ -312,6 +314,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"__VULKAN__=1",
+					"MSGPACK_USE_CPP03=1",
+					"MSGPACK_DISABLE_LEGACY_NIL=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -387,6 +391,7 @@
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

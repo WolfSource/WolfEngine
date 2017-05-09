@@ -30,13 +30,7 @@ namespace wolf
                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
             
 			//Load texture2D from path
-			W_EXP HRESULT initialize_texture_2D_from_file(
-#if defined(__WIN32) || defined(__UWP)
-                                                    _In_ std::wstring pPath,
-#else
-                                                    _In_ std::string pPath,
-#endif
-                                                    _In_ bool pIsAbsolutePath = false);
+			W_EXP HRESULT initialize_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
             
             //release all resources
             W_EXP virtual ULONG release() override;

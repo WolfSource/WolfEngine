@@ -23,6 +23,7 @@
 #include "collada/c_animation.h"
 #include <msgpack.hpp>
 
+
 namespace wolf
 {
 	namespace content_pipeline
@@ -129,7 +130,7 @@ namespace wolf
             WCP_EXP std::string set_instance_geometry_name()                        { return this->_instanced_geo_name; }
 			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
             WCP_EXP size_t get_instnaces_count() const                              { return this->_instanced_transforms.size(); }
-            WCP_EXP w_transform_info* w_model::get_instance_at(_In_ const size_t pIndex);
+            WCP_EXP w_transform_info* get_instance_at(_In_ const size_t pIndex);
             WCP_EXP std::string get_instance_geometry_name() const;
             WCP_EXP void get_meshes(_In_ std::vector<w_model::w_mesh*>& pMeshes);
 

@@ -436,12 +436,8 @@ ULONG w_logger::release()
 #endif
 
 wolf::system::w_logger logger;
-
-#if defined(__WIN32) || defined(__UWP)
 std::wstring content_path;
-#else 
-std::string content_path;
-#endif
+
 
 #ifdef __WIN32
 #pragma data_seg ()

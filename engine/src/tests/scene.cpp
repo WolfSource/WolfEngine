@@ -6,7 +6,6 @@
 #include <w_graphics/w_shader_buffer.h>
 #include <glm/glm.hpp>
 #include <glm_extention.h>
-
 #include <w_content_manager.h>
 #include <w_scene.h>
 
@@ -34,6 +33,16 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
 #endif
 {
     w_game::set_fixed_time_step(false);
+    
+#if defined(__WIN32) || defined(__UWP)
+    auto _running_dir = wolf::system::io::get_current_directoryW();
+    content_path = _running_dir + L"../../../../content/";
+#elif defined(__APPLE__)
+    auto _running_dir = wolf::system::convert::string_to_wstring(wolf::system::io::get_current_directory());
+    content_path = _running_dir + L"/../../../../../content/";
+    
+#endif
+    
 }
 
 scene::~scene()
@@ -59,7 +68,7 @@ void scene::load()
     w_game::load();
     
     //auto _scene = w_content_manager::load<w_scene>(content_path + L"models/inst_max_oc.dae");
-    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/test.wscene");
+    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/test.dae");
     this->_renderable_scene = new w_renderable_scene(_scene);
     this->_renderable_scene->load(_gDevice);
     this->_renderable_scene->get_first_or_default_camera(&this->_camera);
@@ -104,7 +113,7 @@ void scene::load()
             nullptr                                             // ImmutableSamplers
         },
         {
-            0,                                                  // Binding
+            1,                                                  // Binding
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // DescriptorType
             1,                                                  // DescriptorCount
             VK_SHADER_STAGE_VERTEX_BIT,                         // StageFlags
@@ -117,7 +126,7 @@ void scene::load()
     //load texture
     _texture = new w_texture();
     _hr = _texture->load(_gDevice);
-    _hr = _texture->initialize_texture_2D_from_file(L"C:\\Users\\DFM\\Documents\\github\\WolfSource\\Wolf.Engine\\Logo.jpg", true);
+    _hr = _texture->initialize_texture_2D_from_file(content_path + L"../download.jpg", true);
     
     const VkDescriptorImageInfo _image_info = _texture->get_descriptor_info();
     const VkDescriptorBufferInfo _buffer_info = _view_projection_uniform.get_descriptor_info();
@@ -140,7 +149,7 @@ void scene::load()
             VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
             nullptr,                                        // Next
             _descriptor_set,                                // DstSet
-            0,                                              // DstBinding
+            1,                                              // DstBinding
             0,                                              // DstArrayElement
             1,                                              // DescriptorCount
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,              // DescriptorType

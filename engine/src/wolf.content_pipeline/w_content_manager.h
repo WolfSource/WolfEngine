@@ -15,6 +15,7 @@
 #include <string>
 #include <w_io.h>
 #include "collada/c_parser.h"
+#include <msgpack.hpp>
 
 namespace wolf
 {
@@ -86,13 +87,23 @@ namespace wolf
 
             static HRESULT save_wolf_scenes_to_file(_In_ std::vector<w_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
             {
+#if defined(__WIN32) || defined(__UWP)
+                auto _path = pWolfSceneFilePath;
+#else
+                auto _path = wolf::system::convert::wstring_to_string(pWolfSceneFilePath);
+#endif
+                
                 std::stringstream _sbuffer;
                 msgpack::pack(_sbuffer, pScenePacks);
  
-                std::ofstream _file(pWolfSceneFilePath, std::ios::out | std::ios::binary);
+                std::ofstream _file(_path, std::ios::out | std::ios::binary);
                 if (!_file || _file.bad())
                 {
-                    logger.error(L"Error on creating saving wolf scene file on following path: " + pWolfSceneFilePath);
+#if defined(__WIN32) || defined(__UWP)
+                    logger.error(L"Error on creating saving wolf scene file on following path: " + _path);
+#else
+                    logger.error("Error on creating saving wolf scene file on following path: " + _path);
+#endif
                     _file.close();
                     return S_FALSE;
                 }
@@ -106,11 +117,21 @@ namespace wolf
             }
 
             static HRESULT load_wolf_scenes_from_file(_In_ std::vector<w_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
+                                                      
             {
-                std::ifstream _file(pWolfSceneFilePath, std::ios::in | std::ios::binary);
+#if defined(__WIN32) || defined(__UWP)
+                auto _path = pWolfSceneFilePath;
+#else
+                auto _path = wolf::system::convert::wstring_to_string(pWolfSceneFilePath);
+#endif
+                std::ifstream _file(_path, std::ios::in | std::ios::binary);
                 if (!_file || _file.bad())
                 {
-                    logger.error(L"Error on opening wolf scene file from following path: " + pWolfSceneFilePath);
+#if defined(__WIN32) || defined(__UWP)
+                    logger.error(L"Error on opening wolf scene file from following path: " + _path);
+#else
+                    logger.error("Error on opening wolf scene file from following path: " + _path);
+#endif
                     _file.close();
                     return S_FALSE;
                 }

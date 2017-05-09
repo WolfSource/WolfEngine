@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/engine/builds/xcode/tests/wolf_vulkan_metal_macOS/wolf_vulkan_metal_macOS.xcodeproj">
+      location = "group:tests/wolf_vulkan_metal_macOS/wolf_vulkan_metal_macOS.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:wolf.content_pipeline/wolf.content_pipeline.macOS.xcodeproj">

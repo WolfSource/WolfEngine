@@ -152,11 +152,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "515055888.852748"
+            timestampString = "515966101.039905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "159"
-            endingLineNumber = "159"
+            startingLineNumber = "160"
+            endingLineNumber = "160"
             landmarkName = "c_parser::_process_xml_node(_In_ rapidxml::xml_node&lt;&gt;* pXNode)"
             landmarkType = "7">
          </BreakpointContent>
@@ -168,11 +168,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "515055893.52332"
+            timestampString = "515966101.039905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
             landmarkName = "c_parser::_process_xml_node(_In_ rapidxml::xml_node&lt;&gt;* pXNode)"
             landmarkType = "7">
          </BreakpointContent>
@@ -220,9 +220,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "212"
-            endingLineNumber = "212"
-            landmarkName = "w_renderable_model::load()"
-            landmarkType = "7">
+            endingLineNumber = "212">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -232,11 +230,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "515155692.612737"
+            timestampString = "515963111.20257"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "365"
-            endingLineNumber = "365"
+            startingLineNumber = "374"
+            endingLineNumber = "374"
             landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
@@ -316,9 +314,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "199"
-            endingLineNumber = "199"
-            landmarkName = "w_renderable_model::load()"
-            landmarkType = "7">
+            endingLineNumber = "199">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -328,11 +324,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "515155692.612737"
+            timestampString = "515963111.20257"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "363"
-            endingLineNumber = "363"
+            startingLineNumber = "372"
+            endingLineNumber = "372"
             landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
@@ -344,11 +340,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "515155692.612737"
+            timestampString = "515963111.20257"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "356"
-            endingLineNumber = "356"
+            startingLineNumber = "365"
+            endingLineNumber = "365"
             landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
@@ -380,7 +376,21 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "73"
-            endingLineNumber = "73"
+            endingLineNumber = "73">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
+            timestampString = "515966101.039905"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
             landmarkName = "c_parser::_process_xml_node(_In_ rapidxml::xml_node&lt;&gt;* pXNode)"
             landmarkType = "7">
          </BreakpointContent>
@@ -392,28 +402,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "515147440.287436"
+            timestampString = "515966101.039905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "166"
-            endingLineNumber = "166"
-            landmarkName = "c_parser::_process_xml_node(_In_ rapidxml::xml_node&lt;&gt;* pXNode)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "515147548.77418"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "542"
-            endingLineNumber = "542"
-            landmarkName = "c_parser::_get_nodes(_In_ rapidxml::xml_node&lt;&gt;* pXNode, _Inout_ std::vector&lt;c_node*&gt;&amp; pNodes)"
+            startingLineNumber = "543"
+            endingLineNumber = "543"
+            landmarkName = "c_parser::_get_library_images(_In_ rapidxml::xml_node&lt;&gt;* pXNode)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -429,7 +423,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "332"
             endingLineNumber = "332"
-            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::vector&lt;c_material*&gt;&amp; pMaterials, _In_ std::vector&lt;c_node*&gt;&amp; pNodes, _In_ bool pOptimizing)"
+            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryMaterials, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryEffects, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryImages, _In_ bool pOptimizing, _In_ bool pLeftCoordinateSystem)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -437,22 +431,6 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/tests/scene.cpp"
-            timestampString = "515157316.655372"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
-            landmarkName = "scene::load()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/w_model.cpp"
@@ -461,40 +439,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "473"
             endingLineNumber = "473"
-            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::vector&lt;c_material*&gt;&amp; pMaterials, _In_ std::vector&lt;c_node*&gt;&amp; pNodes, _In_ bool pOptimizing)"
+            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryMaterials, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryEffects, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryImages, _In_ bool pOptimizing, _In_ bool pLeftCoordinateSystem)"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.content_pipeline/w_content_manager.h"
-            timestampString = "515175779.982372"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
-            landmarkName = "load(std::wstring pAssetPath)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.content_pipeline/w_content_manager.h"
-            timestampString = "515175802.416262"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
-            landmarkName = "load(std::wstring pAssetPath)"
-            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -509,7 +455,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "321"
             endingLineNumber = "321"
-            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::vector&lt;c_material*&gt;&amp; pMaterials, _In_ std::vector&lt;c_node*&gt;&amp; pNodes, _In_ bool pOptimizing)"
+            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryMaterials, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryEffects, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryImages, _In_ bool pOptimizing, _In_ bool pLeftCoordinateSystem)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -525,7 +471,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "309"
             endingLineNumber = "309"
-            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::vector&lt;c_material*&gt;&amp; pMaterials, _In_ std::vector&lt;c_node*&gt;&amp; pNodes, _In_ bool pOptimizing)"
+            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryMaterials, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryEffects, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryImages, _In_ bool pOptimizing, _In_ bool pLeftCoordinateSystem)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -536,12 +482,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "515233620.171292"
+            timestampString = "515966101.039905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "684"
-            endingLineNumber = "684"
-            landmarkName = "c_parser::_get_triangles(_In_ rapidxml::xml_node&lt;&gt;* pXNode, _Inout_ c_geometry&amp; pGeometry)"
+            startingLineNumber = "685"
+            endingLineNumber = "685"
+            landmarkName = "c_parser::_get_node_data(_In_ rapidxml::xml_node&lt;&gt;* pXNode, _Inout_ c_node** pParentNode)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -552,12 +498,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "515233620.171292"
+            timestampString = "515966101.039905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "733"
-            endingLineNumber = "733"
-            landmarkName = "c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
+            startingLineNumber = "734"
+            endingLineNumber = "734"
+            landmarkName = "c_parser::_get_node_data(_In_ rapidxml::xml_node&lt;&gt;* pXNode, _Inout_ c_node** pParentNode)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -568,12 +514,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "515234867.737072"
+            timestampString = "515966101.039905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "597"
-            endingLineNumber = "597"
-            landmarkName = "c_parser::_get_sources(_In_ rapidxml::xml_node&lt;&gt;* pXNode, std::string pID, std::string pName, _Inout_ c_geometry&amp; pGeometry)"
+            startingLineNumber = "598"
+            endingLineNumber = "598"
+            landmarkName = "c_parser::_read_visual_scene_nodes(_In_ rapidxml::xml_node&lt;&gt;* pXNode, _Inout_ std::vector&lt;c_node*&gt;&amp; pNodes)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -632,19 +578,17 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "515235072.642173"
+            timestampString = "515966101.039905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "598"
-            endingLineNumber = "598"
-            landmarkName = "c_parser::_get_sources(_In_ rapidxml::xml_node&lt;&gt;* pXNode, std::string pID, std::string pName, _Inout_ c_geometry&amp; pGeometry)"
-            landmarkType = "7">
+            startingLineNumber = "599"
+            endingLineNumber = "599">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/w_model.cpp"
@@ -653,7 +597,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "27"
             endingLineNumber = "27"
-            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::vector&lt;c_material*&gt;&amp; pMaterials, _In_ std::vector&lt;c_node*&gt;&amp; pNodes, _In_ bool pOptimizing)"
+            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryMaterials, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryEffects, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryImages, _In_ bool pOptimizing, _In_ bool pLeftCoordinateSystem)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -669,7 +613,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "250"
             endingLineNumber = "250"
-            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::vector&lt;c_material*&gt;&amp; pMaterials, _In_ std::vector&lt;c_node*&gt;&amp; pNodes, _In_ bool pOptimizing)"
+            landmarkName = "w_model::create_model(_In_ c_geometry&amp; pGeometry, _In_ c_skin* pSkin, _In_ std::vector&lt;c_bone*&gt;&amp; pBones, _In_ string pBoneNames [], _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryMaterials, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryEffects, _In_ std::map&lt;std::string, std::string&gt;&amp; sLibraryImages, _In_ bool pOptimizing, _In_ bool pLeftCoordinateSystem)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -680,12 +624,268 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "515355831.514652"
+            timestampString = "515966101.039905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "846"
-            endingLineNumber = "846"
-            landmarkName = "c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
+            startingLineNumber = "847"
+            endingLineNumber = "847"
+            landmarkName = "c_parser::_find_node(_In_ rapidxml::xml_node&lt;&gt;* pXNode, const string&amp; pAttributeName, const string&amp; pAttributeValue, _Inout_ rapidxml::xml_node&lt;&gt;* pFoundNode)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963111.20257"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963213.124975"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963444.18129"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963474.860149"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963492.01125"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "131"
+            endingLineNumber = "131"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963776.72672"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963777.441805"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963821.955401"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963829.319396"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963833.876324"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963846.278543"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963850.415514"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515963952.88362"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515964756.559229"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "515964757.302847"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.render/w_framework/w_renderable_model.cpp"
+            timestampString = "515965647.181936"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
+            landmarkName = "w_renderable_model::load()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

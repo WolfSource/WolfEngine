@@ -44,11 +44,7 @@ namespace wolf
 
 			//Create shader from binary file
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-#if defined(__WIN32) || defined(__UWP)
 							   _In_z_ const std::wstring& pShaderBinaryPath,
-#else
-							   _In_z_ const std::string& pShaderBinaryPath,
-#endif
 				               _In_ const w_shader_stage pShaderStage,
                                _In_z_ const char* pMainFunctionName = "main");
             

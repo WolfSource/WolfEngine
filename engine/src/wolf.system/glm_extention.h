@@ -31,7 +31,7 @@
 namespace std
 {
     //create glm::vec2 from string in the format of "0,0" (x,y)
-    inline glm::vec2 atov2(const char* pValue)
+    inline glm::vec2 atov2(_In_z_ const char* pValue)
     {
         //create glm::vec2 from string in the format of "0,0"
         std::stringstream _sstrream(pValue);
@@ -68,7 +68,7 @@ namespace std
     }
     
     //create glm::vec3 from string in the format of "0,0,0" (w,x,y)
-    inline glm::vec3 atov3(const char* pValue)
+    inline glm::vec3 atov3(_In_z_ const char* pValue)
     {
         //create glm::vec3 from string in the format of "0,0,0"
         std::stringstream _sstrream(pValue);
@@ -155,17 +155,17 @@ namespace std
 
 namespace glm
 {
-	inline vec4 vec4_from_mat4x4_row(mat4x4 pMat, unsigned int PRowindex)
+	inline vec4 vec4_from_mat4x4_row(_In_ const mat4x4 pMat, _In_ const unsigned int PRowindex)
 	{
 		return vec4(pMat[PRowindex][0], pMat[PRowindex][1], pMat[PRowindex][2], pMat[PRowindex][3]);
 	}
 
-	inline vec3 transform_from_mat4x4(mat4x4 pMat)
+	inline vec3 transform_from_mat4x4(_In_ const mat4x4 pMat)
 	{
 		return vec3(pMat[3][0], pMat[3][1], pMat[3][2]);
 	}
 
-	inline mat4x4 rotate(float pX, float pY, float pZ)
+	inline mat4x4 rotate(_In_ const float pX, _In_ const float pY, _In_ const float pZ)
 	{
 		return
 			rotate(pX, vec3(1.0f, 0.0f, 0.0f)) *
@@ -173,7 +173,7 @@ namespace glm
 			rotate(pZ, vec3(0.0f, 0.0f, 1.0f));
 	}
 
-	inline mat4x4 rotate(vec3 pValue)
+	inline mat4x4 rotate(_In_ const vec3 pValue)
 	{
 		return
 			rotate(pValue.x, vec3(1.0f, 0.0f, 0.0f)) *
@@ -181,7 +181,7 @@ namespace glm
 			rotate(pValue.z, vec3(0.0f, 0.0f, 1.0f));
 	}
 
-	inline mat4x4 make_wpv_mat(vec3 pScale, vec3 pRotate, vec3 pTransform)
+	inline mat4x4 make_wpv_mat(_In_ const vec3 pScale, _In_ const vec3 pRotate, _In_ const vec3 pTransform)
 	{
 		return
 			glm::scale(pScale)*
@@ -189,7 +189,7 @@ namespace glm
 			glm::translate(pTransform);
 	}
 
-	inline vec3 to_vec3(std::string pValue)
+	inline vec3 to_vec3(_In_z_ const std::string& pValue)
 	{
         if (pValue.empty()) return vec3(0);
 
@@ -202,7 +202,7 @@ namespace glm
 			std::atof(pResult[2].c_str()));
 	}
 
-	inline vec4 to_vec4(std::string pValue)
+	inline vec4 to_vec4(_In_z_ const std::string& pValue)
 	{
         if (pValue.empty()) return vec4(0);
 
@@ -216,7 +216,7 @@ namespace glm
 			std::atof(pResult[3].c_str()));
 	}
 	
-    inline mat4 to_mat4(std::string pValue)
+    inline mat4 to_mat4(_In_z_ const std::string& pValue)
     {
         if (pValue.empty()) return mat4(0);
 
@@ -230,7 +230,7 @@ namespace glm
             std::atof(pResult[12].c_str()), std::atof(pResult[13].c_str()), std::atof(pResult[14].c_str()), std::atof(pResult[15].c_str()));
     }
 
-    inline std::vector<glm::mat4x4> to_matrix_array(float pFloats[], int pArraySize = 16, int pRowSize = 4)
+    inline std::vector<glm::mat4x4> to_matrix_array(_In_ float pFloats[], _In_ const int pArraySize = 16, _In_ const int pRowSize = 4)
 	{
 		std::vector<glm::mat4x4> _mats;
 
