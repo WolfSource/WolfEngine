@@ -54,9 +54,10 @@ ULONG w_scene::release()
 
 void w_scene::get_models_by_index(_In_ const size_t pIndex, _Inout_ w_model** pModel)
 {
-    if (pIndex < this->_models.size()) return;
-
-    *pModel = &this->_models[pIndex];
+    if (pIndex < this->_models.size())
+    {
+        *pModel = &this->_models[pIndex];
+    }
 }
 
 void w_scene::get_models_by_id(const std::string& pID, std::vector<w_model*>& pModels)

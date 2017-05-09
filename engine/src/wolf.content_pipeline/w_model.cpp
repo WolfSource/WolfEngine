@@ -278,7 +278,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 			const float _epsilon = 0.0001f;
 
 			int _vertices_size = static_cast<int>(_vertices.size());
-			if (pOptimizing)
+			/*if (pOptimizing)
 			{
 				for (int j = _vertices_size - 1; j >= 0; j--)
 				{
@@ -333,7 +333,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 					}
 
 				}
-			}
+			}*/
 
 #pragma endregion
 
@@ -377,9 +377,9 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
             if (pLeftCoordinateSystem)
             {
                 //Z Up like 3ds max
-                _pos.x = _v.vertex[0];
-                _pos.y = _v.vertex[2];
+                _pos.x = -1 * _v.vertex[0];
                 _pos.z = _v.vertex[1];
+                _pos.y = _v.vertex[2];
                 _pos.w = 1;
             }
             else
@@ -425,7 +425,10 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
             _vertex_data.blend_indices[2] = _bi[2];
             _vertex_data.blend_indices[3] = _bi[3];
 
-			auto _uv = _v.texture.size() > 0 ? glm::vec2(_v.texture[0], 1.0f - _v.texture[1]) : glm::vec2(0);
+			auto _uv = _v.texture.size() > 0 ?  
+                (pLeftCoordinateSystem ? glm::vec2(1 - _v.texture[0], 1 - _v.texture[1]) : 
+                    glm::vec2(_v.texture[0], _v.texture[1])) 
+                : glm::vec2(0);
             _vertex_data.uv[0] = _uv[0];
             _vertex_data.uv[1] = _uv[1];
 

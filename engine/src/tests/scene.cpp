@@ -35,10 +35,9 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
     w_game::set_fixed_time_step(false);
     
 #if defined(__WIN32) || defined(__UWP)
-    auto _running_dir = wolf::system::io::get_current_directoryW();
-    content_path = _running_dir + L"../../../../content/";
+    content_path = pRunningDirectory + L"../../../../content/";
 #elif defined(__APPLE__)
-    auto _running_dir = wolf::system::convert::string_to_wstring(wolf::system::io::get_current_directory());
+    auto _running_dir = wolf::system::convert::string_to_wstring(pRunningDirectory);
     content_path = _running_dir + L"/../../../../../content/";
     
 #endif
@@ -68,22 +67,26 @@ void scene::load()
     w_game::load();
     
     //auto _scene = w_content_manager::load<w_scene>(content_path + L"models/inst_max_oc.dae");
-    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/test.dae");
+    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/teapot.dae");
     this->_renderable_scene = new w_renderable_scene(_scene);
     this->_renderable_scene->load(_gDevice);
     this->_renderable_scene->get_first_or_default_camera(&this->_camera);
     
-    
+    w_model* _m;
+    _scene->get_models_by_index(0, &_m);
+
     auto _hr = _view_projection_uniform.load(_gDevice);
     this->_camera->set_aspect_ratio((float)_output_window->width / (float)_output_window->height);
     this->_camera->update_view();
     this->_camera->update_projection();
     
-	glm::mat4x4 _translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(1.5f, 0.0f, 0.0f));
-	glm::mat4x4 _rotate = glm::rotate(glm::mat4x4(1.0f), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4x4 _scale = glm::scale(glm::mat4x4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-	auto _world = _scale * _rotate * _translate;
-	_view_projection_uniform.data = this->_camera->get_projection() * this->_camera->get_view() *_world;
+    auto _t = _m->get_transform();
+    glm::mat4x4 _translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(_t.position[0], _t.position[1], _t.position[2]));
+	glm::mat4x4 _rotate = glm::rotate(glm::vec3(_t.rotation[0], _t.rotation[1], _t.rotation[2]));
+	glm::mat4x4 _scale = glm::scale(glm::mat4x4(1.0f), glm::vec3(_t.scale[0], _t.scale[1], _t.scale[2]));
+
+    auto _world = _scale * _rotate * _translate;
+	_view_projection_uniform.data = this->_camera->get_projection() * this->_camera->get_view() * _world;
     _hr = _view_projection_uniform.update();
     
     //load shaders
@@ -126,7 +129,7 @@ void scene::load()
     //load texture
     _texture = new w_texture();
     _hr = _texture->load(_gDevice);
-    _hr = _texture->initialize_texture_2D_from_file(content_path + L"../download.jpg", true);
+    _hr = _texture->initialize_texture_2D_from_file(content_path + L"../logo.jpg", true);
     
     const VkDescriptorImageInfo _image_info = _texture->get_descriptor_info();
     const VkDescriptorBufferInfo _buffer_info = _view_projection_uniform.get_descriptor_info();
@@ -439,14 +442,6 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
     
-	glm::mat4x4 _translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(0, 0, 0.0f));
-	glm::mat4x4 _rotate = glm::rotate(glm::mat4x4(1.0f), _jjj, glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4x4 _scale = glm::scale(glm::mat4x4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
-    auto _world = glm::mat4(1);// _scale * _rotate * _translate;
-	_view_projection_uniform.data = this->_camera->get_projection() * this->_camera->get_view() *_world;
-	_view_projection_uniform.update();
-
-	_jjj += 0.01f;
      w_game::update(pGameTime);
 }
 

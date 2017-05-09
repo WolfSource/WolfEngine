@@ -613,29 +613,19 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         if (_name == "translate")
         {
             _parent_node_ptr->translate = glm::to_vec3(_child->value());
-            if (sLeftCoordinateSystem)
-            {
-                std::swap(_parent_node_ptr->translate.y, _parent_node_ptr->translate.z);
-            }
+            //if (sLeftCoordinateSystem)
+            //{
+            //    std::swap(_parent_node_ptr->translate.x, _parent_node_ptr->translate.y);
+            //}
         }
         else if (_name == "rotate")
         {
-            std::string _rotation_type;
-            _get_node_attribute_value(_child, "sid", _rotation_type);
-            auto _vec4 = glm::to_vec4(_child->value());
-
-            if (_rotation_type == "rotation_z")
-            {
-                _parent_node_ptr->rotation.z = _vec4[3];
-            }
-            else if (_rotation_type == "rotation_y")
-            {
-                _parent_node_ptr->rotation.y = _vec4[3];
-            }
-            else if (_rotation_type == "rotation_x")
-            {
-                _parent_node_ptr->rotation.x = _vec4[3];
-            }
+            _parent_node_ptr->rotation = glm::to_vec3(_child->value());
+            //if (sLeftCoordinateSystem)
+            //{
+            //    std::swap(_parent_node_ptr->rotation.y, _parent_node_ptr->rotation.z);
+            //    _parent_node_ptr->rotation.z *= -1;
+            //}
         }
         else if (_name == "scale")
         {
@@ -646,10 +636,10 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
             auto _matrix = glm::to_mat4(_child->value());
             if (sLeftCoordinateSystem)
             {
-                //swap y and z
+                //swap y and z for camera
                 _parent_node_ptr->translate.x = _matrix[0][3];
-                _parent_node_ptr->translate.y = _matrix[2][3];
                 _parent_node_ptr->translate.z = _matrix[1][3];
+                _parent_node_ptr->translate.y = _matrix[2][3];
             }
             else 
             {
@@ -695,9 +685,9 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
             _parent_node_ptr->type |= _node->type;
 
             //merge with parent node transformation
-            _node->translate += _parent_node_ptr->translate;
-            _node->rotation += _parent_node_ptr->rotation;
-            _node->scale += _parent_node_ptr->scale;
+            _node->translate = _parent_node_ptr->translate;
+            _node->rotation = _parent_node_ptr->rotation;
+            _node->scale = _parent_node_ptr->scale;
 
             _parent_node_ptr->child_nodes.push_back(_node);
         }
@@ -1233,6 +1223,15 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
             _create_model(pOptimizePoints, pInvertNormals, &pNode, &_model);
             if (_model)
             {
+                //check scale
+                auto _t = _model->get_transform();
+                if (_t.scale[0] == 0 && _t.scale[1] == 0 && _t.scale[2] == 0)
+                {
+                    _t.scale[0] == 1;
+                    _t.scale[1] == 1;
+                    _t.scale[2] == 1;
+                    _model->set_transform(_t);
+                }
                 _models.push_back(_model);
             }
         }
@@ -1383,17 +1382,42 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
             {
                 //we find source model
                 w_transform_info _instance_trasform;
-                _instance_trasform.position[0] = _node->translate.x;
-                _instance_trasform.position[1] = _node->translate.y;
-                _instance_trasform.position[2] = _node->translate.z;
 
-                _instance_trasform.rotation[0] = _node->rotation.x;
-                _instance_trasform.rotation[1] = _node->rotation.y;
-                _instance_trasform.rotation[2] = _node->rotation.z;
+                if (sLeftCoordinateSystem)
+                {
+                    _instance_trasform.position[0] = _node->translate.y;
+                    _instance_trasform.position[1] = _node->translate.x;
+                    _instance_trasform.position[2] = _node->translate.z;
 
-                _instance_trasform.scale[0] = _node->scale.x;
-                _instance_trasform.scale[1] = _node->scale.y;
-                _instance_trasform.scale[2] = _node->scale.z;
+                    _instance_trasform.rotation[0] = _node->rotation.x;
+                    _instance_trasform.rotation[1] = _node->rotation.z;
+                    _instance_trasform.rotation[2] = -1 * _node->rotation.y;
+                }
+                else
+                {
+                    _instance_trasform.position[0] = _node->translate.x;
+                    _instance_trasform.position[1] = _node->translate.y;
+                    _instance_trasform.position[2] = _node->translate.z;
+
+                    _instance_trasform.rotation[0] = _node->rotation.x;
+                    _instance_trasform.rotation[1] = _node->rotation.y;
+                    _instance_trasform.rotation[2] = _node->rotation.z;
+                }
+
+                if (_node->scale.x == 0 &&
+                    _node->scale.y == 0 &&
+                    _node->scale.z == 0)
+                {
+                    _instance_trasform.scale[0] = 1;
+                    _instance_trasform.scale[1] = 1;
+                    _instance_trasform.scale[2] = 1;
+                }
+                else
+                {
+                    _instance_trasform.scale[0] = _node->scale.x;
+                    _instance_trasform.scale[1] = _node->scale.y;
+                    _instance_trasform.scale[2] = _node->scale.z;
+                }
 
                 _instance_trasform.transform = glm::make_wpv_mat(_node->scale, _node->rotation, _node->translate);
                 (*_iter)->add_instance_transform(_instance_trasform);
@@ -1518,17 +1542,41 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
 
         //set transform
         w_transform_info _instance_trasform;
-        _instance_trasform.position[0] = _node_ptr->translate.x;
-        _instance_trasform.position[1] = _node_ptr->translate.y;
-        _instance_trasform.position[2] = _node_ptr->translate.z;
+        if (sLeftCoordinateSystem)
+        {
+            _instance_trasform.position[0] = _node_ptr->translate.y;
+            _instance_trasform.position[1] = _node_ptr->translate.x;
+            _instance_trasform.position[2] = _node_ptr->translate.z;
 
-        _instance_trasform.rotation[0] = _node_ptr->rotation.x;
-        _instance_trasform.rotation[1] = _node_ptr->rotation.y;
-        _instance_trasform.rotation[2] = _node_ptr->rotation.z;
+            _instance_trasform.rotation[0] = _node_ptr->rotation.x;
+            _instance_trasform.rotation[1] = _node_ptr->rotation.z;
+            _instance_trasform.rotation[2] = -1 * _node_ptr->rotation.y;
+        }
+        else
+        {
+            _instance_trasform.position[0] = _node_ptr->translate.x;
+            _instance_trasform.position[1] = _node_ptr->translate.y;
+            _instance_trasform.position[2] = _node_ptr->translate.z;
 
-        _instance_trasform.scale[0] = _node_ptr->scale.x;
-        _instance_trasform.scale[1] = _node_ptr->scale.y;
-        _instance_trasform.scale[2] = _node_ptr->scale.z;
+            _instance_trasform.rotation[0] = _node_ptr->rotation.x;
+            _instance_trasform.rotation[1] = _node_ptr->rotation.y;
+            _instance_trasform.rotation[2] = _node_ptr->rotation.z;
+        }
+
+        if (_node_ptr->scale.x == 0 && 
+            _node_ptr->scale.y == 0 &&
+            _node_ptr->scale.z == 0)
+        {
+            _instance_trasform.scale[0] = 1;
+            _instance_trasform.scale[1] = 1;
+            _instance_trasform.scale[2] = 1;
+        }
+        else
+        {
+            _instance_trasform.scale[0] = _node_ptr->scale.x;
+            _instance_trasform.scale[1] = _node_ptr->scale.y;
+            _instance_trasform.scale[2] = _node_ptr->scale.z;
+        }
 
         _instance_trasform.transform = _node_ptr->transform;
         _model->set_transform(_instance_trasform);

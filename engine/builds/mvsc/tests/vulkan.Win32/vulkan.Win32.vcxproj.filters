@@ -9,4 +9,26 @@
     <ClCompile Include="..\..\..\..\src\tests\pch.cpp" />
     <ClCompile Include="..\..\..\..\src\tests\scene.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\content\shaders\test\shader.vert">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\test\shader.frag">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\test\shader_instancing.frag">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\test\shader_instancing.vert">
+      <Filter>content\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="content">
+      <UniqueIdentifier>{d1a9df74-0455-40be-9e3e-ee23b98c3732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="content\shaders">
+      <UniqueIdentifier>{663395fa-8d4d-4387-92b3-a11a34f426fb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
 </Project>
