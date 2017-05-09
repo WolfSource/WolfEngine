@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0820"
+   LastUpgradeVersion = "0830"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -20,34 +20,6 @@
                ReferencedContainer = "container:wolf.content_pipeline.macOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2C69E9A81E5EC2CB00F15C44"
-               BuildableName = "libwolf.vulkan.macOS.dylib"
-               BlueprintName = "wolf.vulkan.macOS"
-               ReferencedContainer = "container:../wolf.vulkan/wolf.vulkan.macOS.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2C620F871E617F81005DFB10"
-               BuildableName = "wolf_vulkan_metal_macOS.app"
-               BlueprintName = "wolf_vulkan_metal_macOS"
-               ReferencedContainer = "container:../tests/wolf_vulkan_metal_macOS/test.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -57,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
-            BuildableName = "libwolf.content_pipeline.macOS.dylib"
-            BlueprintName = "wolf.content_pipeline.macOS"
-            ReferencedContainer = "container:wolf.content_pipeline.macOS.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
