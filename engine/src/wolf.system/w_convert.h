@@ -236,7 +236,7 @@ namespace wolf
                 std::string _number;
                 for(size_t i = 0 ; i < pStr.size() ; ++i)
                 {
-                    if ((pStr[i] >= '0' && pStr[i] <= '9') || pStr[i] == '.' || pStr[i] == '+' || pStr[i] == '-')
+                    if ((pStr[i] >= '0' && pStr[i] <= '9') || pStr[i] == '.' || pStr[i] == '+' || pStr[i] == '-' || pStr[i] == 'e')
                     {
                         _number += pStr[i];
                     }
