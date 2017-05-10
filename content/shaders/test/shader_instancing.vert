@@ -1,4 +1,3 @@
-//https://math.stackexchange.com/questions/13272/how-would-i-create-a-rotation-matrix-that-rotates-x-by-a-y-by-b-and-z-by-c
 #version 450
 
 #extension GL_ARB_separate_shader_objects : enable
@@ -10,7 +9,7 @@ layout(set=0, binding=1) uniform u_buffer
 } U0;
 
 // vertex input attributes
-layout(location = 0) in vec4 i_position;
+layout(location = 0) in vec3 i_position;
 layout(location = 1) in vec2 i_uv;
 
 //vertex instance attributes
@@ -19,24 +18,57 @@ layout (location = 3) in vec3 i_instance_rot;
 layout (location = 4) in float i_instance_scale;
 layout (location = 5) in int i_instance_uv_index;
 
-out gl_PerVertex
-{
-    vec4 gl_Position;
-};
 
-layout(location = 0) out vec2 v_Texcoord;
+layout(location = 0) out vec2 o_uv;
 
 void main() 
 {
 	mat3 mx, my, mz;
 	
-	float _s = sin(instanceRot.x + ubo.locSpeed);
-	float _c = cos(instanceRot.x + ubo.locSpeed);
-
+	float s = sin(i_instance_rot.x);
+	float c = cos(i_instance_rot.x);
+    float _s = -1.0 * s;
+    float _c = -1.0 * c;
+    
 	mx[0] = vec3(1.0, 0.0, 0.0);
-	mx[1] = vec3(0.0, c, 0.0);
-	mx[2] = vec3(0.0, 0.0, 1.0);
+	mx[1] = vec3(0.0, c, _s);
+	mx[2] = vec3(0.0, s, c);
+    
+    s = sin(i_instance_rot.y);
+    c = cos(i_instance_rot.y);
+    _s = -1.0 * s;
+    _c = -1.0 * c;
+    
+    my[0] = vec3(c, 0.0, s);
+    my[1] = vec3(0.0, 1.0, 0.0);
+    my[2] = vec3(_s, 0.0, c);
+    
+    s = sin(i_instance_rot.z);
+    c = cos(i_instance_rot.z);
+    _s = -1.0 * s;
+    _c = -1.0 * c;
+    
+    mz[0] = vec3(c, _s, 0.0);
+    mz[1] = vec3(s, c, 0.0);
+    mz[2] = vec3(0.0, 0.0, 1.0);
 
-    gl_Position = U0.wvp * i_position;
-    v_Texcoord = i_uv;
+    mat3 _rot_mat = mz * my * mx;
+    
+    mat4 g_rot_mat;
+    s = sin(i_instance_rot.y);
+    c = cos(i_instance_rot.y);
+    g_rot_mat[0] = vec4(c  , 0.0, s  , 0.0);
+    g_rot_mat[1] = vec4(0.0, 1.0, 0.0, 0.0);
+    g_rot_mat[2] = vec4(-s , 0.0, c  , 0.0);
+    g_rot_mat[3] = vec4(0.0, 0.0, 0.0, 1.0);
+    
+//    vec4 _loc_pos = vec4(i_position * _rot_mat, 1.0);
+//    vec4 _pos = vec4((_loc_pos.xyz * i_instance_scale) + i_instance_pos, 1.0);
+    
+    vec4 _pos = vec4(i_position + i_instance_pos, 1.0);
+    
+    gl_Position = U0.wvp  * _pos;
+    
+    //gl_Position = U0.wvp * vec4(i_position + i_instance_pos, 1.0);
+    o_uv = i_uv;//, i_instance_uv_index);
 }
