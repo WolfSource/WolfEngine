@@ -77,7 +77,7 @@ void w_camera::update_projection()
 		// landscape view
         if (this->_is_left_hand_coordinate_system)
         {
-            this->_up[0] = 0.0f; this->_up[1] = -1.0f; this->_up[2] = 0.0f;
+            this->_up[0] = 0.0f; this->_up[1] = 0.0f; this->_up[2] = -1.0f;
         }
         else
         {

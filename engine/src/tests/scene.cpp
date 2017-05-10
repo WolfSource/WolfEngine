@@ -8,6 +8,7 @@
 #include <glm_extention.h>
 #include <w_content_manager.h>
 #include <w_scene.h>
+#include <w_vertex_declaration.h>
 
 
 using namespace wolf::system;
@@ -15,11 +16,9 @@ using namespace wolf::graphics;
 using namespace wolf::framework;
 using namespace wolf::content_pipeline;
 
-struct vertex_data
-{
-    float position[4];
-    float uv[2];
-};
+#define VERTEX_BUFFER_BIND_ID 0
+#define INSTANCE_BUFFER_BIND_ID 1
+
 
 #if defined(__WIN32)
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
@@ -35,13 +34,12 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
     w_game::set_fixed_time_step(false);
     
 #if defined(__WIN32) || defined(__UWP)
-    content_path = pRunningDirectory + L"../../../../content/";
+    auto _running_dir = pRunningDirectory;
+    content_path = _running_dir + L"../../../../content/";
 #elif defined(__APPLE__)
     auto _running_dir = wolf::system::convert::string_to_wstring(pRunningDirectory);
     content_path = _running_dir + L"/../../../../../content/";
-    
 #endif
-    
 }
 
 scene::~scene()
@@ -55,6 +53,7 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     w_game::initialize(pOutputWindowsInfo);
 }
 
+w_scene* _scene;
 w_texture* _texture = nullptr;
 w_shader_buffer<glm::mat4x4> _view_projection_uniform;
 w_shader _shader;
@@ -67,10 +66,13 @@ void scene::load()
     w_game::load();
     
     //auto _scene = w_content_manager::load<w_scene>(content_path + L"models/inst_max_oc.dae");
-    auto _scene = w_content_manager::load<w_scene>(content_path + L"models/teapot.dae");
+    _scene = w_content_manager::load<w_scene>(content_path + L"models/teapot.dae");
     this->_renderable_scene = new w_renderable_scene(_scene);
     this->_renderable_scene->load(_gDevice);
     this->_renderable_scene->get_first_or_default_camera(&this->_camera);
+    
+    this->_camera->update_view();
+    this->_camera->update_projection();
     
     w_model* _m;
     _scene->get_models_by_index(0, &_m);
@@ -90,8 +92,8 @@ void scene::load()
     _hr = _view_projection_uniform.update();
     
     //load shaders
-    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader.vert.spv", w_shader_stage::VERTEX_SHADER);
-    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader.frag.spv", w_shader_stage::FRAGMENT_SHADER);
+    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader_instancing.vert.spv", w_shader_stage::VERTEX_SHADER);
+    _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader_instancing.frag.spv", w_shader_stage::FRAGMENT_SHADER);
     
     std::vector<VkDescriptorPoolSize> _descriptor_pool_sizes =
     {
@@ -179,9 +181,14 @@ void scene::load()
     std::vector<VkVertexInputBindingDescription> _vertex_binding_descriptions =
     {
         {
-            0,                                                          // Binding
-            sizeof(vertex_data),                                        // Stride
+            VERTEX_BUFFER_BIND_ID,                                      // Binding
+            sizeof(vertex_declaration_structs::vertex_position_uv),     // Stride
             VK_VERTEX_INPUT_RATE_VERTEX                                 // InputRate
+        },
+        {
+            INSTANCE_BUFFER_BIND_ID,                                    // Binding
+            sizeof(wolf::content_pipeline::w_model::w_instance_info),   // Stride
+            VK_VERTEX_INPUT_RATE_INSTANCE                               // InputRate
         }
     };
     
@@ -190,14 +197,39 @@ void scene::load()
         {
             0,                                                          // Location
             _vertex_binding_descriptions[0].binding,                    // Binding
-            VK_FORMAT_R32G32B32A32_SFLOAT,                                 // Format
-            offsetof(vertex_data, position)                             // Offset
+            VK_FORMAT_R32G32B32_SFLOAT,                                 // Format
+            0                                                           // Offset
         },
         {
             1,                                                          // Location
             _vertex_binding_descriptions[0].binding,                    // Binding
             VK_FORMAT_R32G32_SFLOAT,                                    // Format
-            offsetof(vertex_data, uv)                                // Offset
+            sizeof(float) * 3                                           // Offset
+        },
+        // Per instance attributes
+        {
+            2,                                                          // Location
+            _vertex_binding_descriptions[1].binding,                    // Binding
+            VK_FORMAT_R32G32B32_SFLOAT,                                 // Format
+            0                                                           // Offset
+        },
+        {
+            3,                                                          // Location
+            _vertex_binding_descriptions[1].binding,                    // Binding
+            VK_FORMAT_R32G32B32_SFLOAT,                                 // Format
+            sizeof(float) * 3                                           // Offset
+        },
+        {
+            4,                                                          // Location
+            _vertex_binding_descriptions[1].binding,                    // Binding
+            VK_FORMAT_R32_SFLOAT,                                       // Format
+            sizeof(float) * 6                                           // Offset
+        },
+        {
+            5,                                                          // Location
+            _vertex_binding_descriptions[1].binding,                    // Binding
+            VK_FORMAT_R32_SINT,                                         // Format
+            sizeof(float) * 7                                           // Offset
         }
     };
     
@@ -362,14 +394,17 @@ void scene::load()
             
             VkDeviceSize _offset = 0;
             auto _vertex_buffer_handle = this->_renderable_scene->get_vertex_buffer_handle(0);
-            vkCmdBindVertexBuffers( _command_buffer, 0, 1, &_vertex_buffer_handle, &_offset );
+            vkCmdBindVertexBuffers( _command_buffer, VERTEX_BUFFER_BIND_ID, 1, &_vertex_buffer_handle, &_offset );
         
+            auto _instance_buffer_handle = this->_renderable_scene->get_instance_buffer_handle(0);
+            vkCmdBindVertexBuffers(_command_buffer, INSTANCE_BUFFER_BIND_ID, 1, &_instance_buffer_handle, &_offset);
+            
             auto _index_buffer_handle = this->_renderable_scene->get_index_buffer_handle(0);
             vkCmdBindIndexBuffer( _command_buffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32 );
 
             auto _i_c = this->_renderable_scene->get_indices_count(0);
-            
-            vkCmdDrawIndexed(_command_buffer, _i_c, 1, 0, 0, 0);
+            auto _instances_count = this->_renderable_scene->get_instances_count(0) + 1;
+            vkCmdDrawIndexed(_command_buffer, _i_c, _instances_count, 0, 0, 0);
             
             
             //draw second one

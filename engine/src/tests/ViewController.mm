@@ -6,6 +6,10 @@
 #include "scene.h"
 #include <utility>
 
+#ifdef __APPLE__
+#include <w_io.h>
+#endif
+
 //global variable to pass NSView to Vulkan c++ code
 static NSView*                                      sSampleView;
 static CVDisplayLinkRef                             sDisplayLink;
@@ -42,8 +46,16 @@ void init_window(struct w_window_info& pInfo)
     //back the view with a layer created by the makeBackingLayer method.
     self.view.wantsLayer = YES;
     
+#if defined __APPLE__
+    auto _running_dir = wolf::system::io::get_current_directory();
+    sScene = new scene(_running_dir, "test.wolf.engine.metal.macOS");
+#elif defined __iOS__
     sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String,
-                       "test.wolf.engine.metal.macOS");
+                       "test.wolf.engine.metal.iOS");
+    
+#endif
+    
+    
     
     //pass the view to the sample code
     sSampleView = self.view;

@@ -30,6 +30,9 @@ namespace wolf
                          _In_ const uint32_t pBufferSize,
                          _In_ const VkBufferUsageFlags pUsage,
                          _In_ const VkMemoryPropertyFlags pMemoryFlags);
+            
+            W_EXP HRESULT set_data(_In_ const void* const pData);
+            
             W_EXP HRESULT bind();
             
             W_EXP ULONG release() override;

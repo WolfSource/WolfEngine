@@ -68,7 +68,7 @@ namespace wolf
 		//	int height;
 		//	int width;
 		//};
-
+        
 		struct w_transform_info
 		{
 			float	        position[3];
@@ -81,7 +81,7 @@ namespace wolf
 
 		struct w_vertex_data
 		{
-			float		    position[4];
+			float		    position[3];
             float		    normal[3];
             float		    uv[2];
             float		    blend_weight[4];
@@ -107,6 +107,15 @@ namespace wolf
 
                 MSGPACK_DEFINE(min, max);
 			};
+            WCP_EXP struct w_instance_info
+            {
+                float	        position[3];
+                float	        rotation[3];
+                float	        scale = 1.0f;
+                UINT            texture_sampler_index = 0;
+                
+                MSGPACK_DEFINE(position, rotation, scale, texture_sampler_index);
+            };
 			WCP_EXP struct w_mesh
 			{
 				//posX, posY, posZ
@@ -121,7 +130,7 @@ namespace wolf
                 MSGPACK_DEFINE(vertices, indices, textures_path, bounding_box);
 			};
 
-            WCP_EXP void add_instance_transform(_In_ const w_transform_info pTransform);
+            WCP_EXP void add_instance(_In_ const w_instance_info pValue);
 			WCP_EXP void update_world();
 			
 #pragma region Getters
@@ -129,10 +138,11 @@ namespace wolf
 			WCP_EXP std::string get_name() const									{ return this->_name; }
             WCP_EXP std::string set_instance_geometry_name()                        { return this->_instanced_geo_name; }
 			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
-            WCP_EXP size_t get_instnaces_count() const                              { return this->_instanced_transforms.size(); }
-            WCP_EXP w_transform_info* get_instance_at(_In_ const size_t pIndex);
+            WCP_EXP size_t get_instnaces_count() const                              { return this->_instances_info.size(); }
+            WCP_EXP w_instance_info* get_instance_at(_In_ const size_t pIndex);
+            WCP_EXP void get_instances(_Inout_ std::vector<w_instance_info>& pInstances);
             WCP_EXP std::string get_instance_geometry_name() const;
-            WCP_EXP void get_meshes(_In_ std::vector<w_model::w_mesh*>& pMeshes);
+            WCP_EXP void get_meshes(_Inout_ std::vector<w_mesh*>& pMeshes);
 
 #pragma endregion
 
@@ -158,7 +168,7 @@ namespace wolf
                 _In_ bool pOptimizing,
                 _In_ bool pYUp);
 
-            MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instanced_transforms, _meshes);
+            MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _meshes);
 
 		private:
 			std::string												_name;
@@ -178,7 +188,7 @@ namespace wolf
 			bool													_overlapping;
 			float													_overlapping_start_time;
 			std::vector<collada::c_bone*>							_temp_skeleton;
-			std::vector<w_transform_info>							_instanced_transforms;
+			std::vector<w_instance_info>							_instances_info;
 			w_transform_info										_transform;
 
 			std::vector<w_mesh>								    	_meshes;

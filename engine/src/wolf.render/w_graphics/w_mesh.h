@@ -30,8 +30,6 @@ namespace wolf
                                _In_ const UINT pVerticesSize,
                                _In_ const UINT* const pIndicesData,
                                _In_ const UINT pIndicesCount,
-                               _In_ const void* const pInstancedData = nullptr,
-                               _In_ const UINT pInstancedSize = 0,
                                _In_ bool pStaging = true);
                        
 			//Release all resources

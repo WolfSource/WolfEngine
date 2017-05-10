@@ -57,6 +57,11 @@ namespace wolf
                     return this->_meshes[0]->get_index_buffer_handle();
                 }
                
+                VkBuffer get_instance_buffer_handle() const
+                {
+                    return this->_instance_buffer.get_handle();
+                }
+                
                 UINT get_vertices_count() const
                 {
                     return this->_meshes[0]->get_vertices_count();
@@ -65,6 +70,11 @@ namespace wolf
                 UINT get_indices_count() const
                 {
                     return this->_meshes[0]->get_indices_count();
+                }
+                
+                UINT get_instances_count() const
+                {
+                    return static_cast<UINT>(this->_model->get_instnaces_count());
                 }
                 
 #pragma endregion
@@ -76,13 +86,17 @@ namespace wolf
 #pragma endregion
 
 			private:
-				typedef	wolf::system::w_object                              _super;
+				
+                HRESULT _create_instance_buffer(_In_ const void* const pInstanceData, _In_ const UINT pInstanceSize);
+                
+                typedef	wolf::system::w_object                              _super;
                 
 				std::shared_ptr<wolf::graphics::w_graphics_device>			_gDevice;
 				wolf::content_pipeline::w_model*							_model;
                 glm::mat4x4                                                 _view_projection;
 				wolf::graphics::w_shader_buffer<mvp_shader_buffer>          _mvp_shader_buffer;
                 std::vector<wolf::graphics::w_mesh*>                        _meshes;
+                wolf::graphics::w_buffer                                    _instance_buffer;
 			};
     }
 }

@@ -38,6 +38,8 @@ namespace wolf
             W_EXP VkBuffer get_index_buffer_handle(_In_ const size_t pIndex) const;
             W_EXP UINT get_vertices_count(_In_ const size_t pIndex) const;
             W_EXP UINT get_indices_count(_In_ const size_t pIndex) const;
+            W_EXP VkBuffer get_instance_buffer_handle(_In_ const size_t pIndex) const;
+            W_EXP uint32_t get_instances_count(_In_ const size_t pIndex) const;
             
 #pragma endregion
 

@@ -33,76 +33,6 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 	auto _model = new w_model();
 
 	std::string _messages;
-	////read all nodes
-	//for (auto _node : pNodes)
-	//{
-	//	if (_node->proceeded) continue;
-
-	//	auto _ins_geom = _node->find_instanced_geomaetry_node();
-	//	auto _ins_node = _node->find_instanced_node_name();
-	//	if (_ins_node)
-	//	{
-	//		auto _result = std::find_if(pNodes.begin(), pNodes.end(), [&_ins_node](c_node* pNode)
-	//		{
-	//			return pNode != nullptr && pNode->c_name == _ins_node->instanced_node_name;
-	//		});
-	//		auto _index = _result - pNodes.begin();
-	//		if (_index < pNodes.size())
-	//		{
-	//			if (pNodes[_index]->child_nodes.size() > 0 && pNodes[_index]->instanced_geometry_name.empty())
-	//			{
-	//				if (pNodes[_index]->child_nodes[0]->instanced_geometry_name != pGeometry.name)
-	//				{
-	//					pNodes[_index]->proceeded = true;
-	//					continue;
-	//				}
-	//			}
-	//		}
-	//		w_transform_info _transform;
-	//		_transform.rotation[0] = pNodes[_index]->rotation[0];
- //           _transform.rotation[1] = pNodes[_index]->rotation[1];
- //           _transform.rotation[2] = pNodes[_index]->rotation[2];
-
-	//		_transform.scale[0] = pNodes[_index]->scale[0];
- //           _transform.scale[1] = pNodes[_index]->scale[1];
- //           _transform.scale[2] = pNodes[_index]->scale[2];
-
-	//		_transform.position[0] = pNodes[_index]->translate[0];
- //           _transform.position[1] = pNodes[_index]->translate[1];
- //           _transform.position[2] = pNodes[_index]->translate[2];
-
-	//		_transform.transform = pNodes[_index]->transform;
-
-	//		_model->_instanced_transforms.push_back(_transform);
-
-	//		pNodes[_index]->proceeded = true;
-	//		_node->proceeded = true;
-
-	//		continue;
-	//	}
-	//	if (_ins_geom)
-	//	{
-	//		w_transform_info _transform;
-	//		_transform.rotation[0] = _node->rotation[0];
- //           _transform.rotation[1] = _node->rotation[1];
- //           _transform.rotation[2] = _node->rotation[2];
-
-	//		_transform.scale[0] = _node->scale[0];
- //           _transform.scale[1] = _node->scale[1];
- //           _transform.scale[2] = _node->scale[2];
-
-	//		_transform.position[0] = _node->translate[0];
- //           _transform.position[1] = _node->translate[1];
- //           _transform.position[2] = _node->translate[2];
-
-	//		_transform.transform = _node->transform;
-	//		_model->set_transform(_transform);
-	//		_model->update_world();
-
-	//		_node->proceeded = true;
-	//		break;
-	//	}
-	//}
 
 	for (auto _triangle : pGeometry.triangles)
 	{
@@ -223,7 +153,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 		uint32_t _faces = 0;
 		if (_ind)
 		{
-			_faces = (_pos_source->float_array.size() / _ind) - 2;
+			_faces = (static_cast<uint32_t>(_pos_source->float_array.size()) / _ind) - 2;
 		}
 		std::vector<UINT> _indices;
 		_indices.reserve(_faces * 3);
@@ -373,14 +303,13 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 				//Not implemented yet
 			}
 
-            glm::vec4 _pos;
+            glm::vec3 _pos;
             if (pLeftCoordinateSystem)
             {
                 //Z Up like 3ds max
-                _pos.x = -1 * _v.vertex[0];
-                _pos.z = _v.vertex[1];
-                _pos.y = _v.vertex[2];
-                _pos.w = 1;
+                _pos.x = _v.vertex[0];
+                _pos.y = _v.vertex[1];
+                _pos.z = _v.vertex[2];
             }
             else
             {
@@ -388,7 +317,6 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
                 _pos.x = _v.vertex[0];
                 _pos.y = _v.vertex[1];
                 _pos.z = _v.vertex[2];
-                _pos.w = 1;
             }
 
 			_min_vertex.x = min(_pos.x, _min_vertex.x);
@@ -403,9 +331,8 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 			_vertex_data.position[0] = _pos[0];
             _vertex_data.position[1] = _pos[1];
             _vertex_data.position[2] = _pos[2];
-            _vertex_data.position[3] = _pos[3];
 
-            if (pLeftCoordinateSystem)
+            //if (pLeftCoordinateSystem)
             {
                 std::swap(_v.normal[1], _v.normal[2]);
             }
@@ -437,7 +364,6 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 			_just_vertices_pos.push_back(_pos[0]);
 			_just_vertices_pos.push_back(_pos[1]);
             _just_vertices_pos.push_back(_pos[2]);
-            _just_vertices_pos.push_back(_pos[3]);
 
 			_vertices_data.push_back(_vertex_data);
 		}
@@ -585,9 +511,9 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 	return _model;
 }
 
-void w_model::add_instance_transform(_In_ const w_transform_info pTransform)
+void w_model::add_instance(_In_ const w_instance_info pValue)
 {
-    this->_instanced_transforms.push_back(pTransform);
+    this->_instances_info.push_back(pValue);
 }
 
 void w_model::update_world()
@@ -600,9 +526,17 @@ void w_model::update_world()
 
 #pragma region Getters
 
-w_transform_info* w_model::get_instance_at(_In_ const size_t pIndex) 
+w_model::w_instance_info* w_model::get_instance_at(_In_ const size_t pIndex)
 {
-    return pIndex < this->_instanced_transforms.size() ? &this->_instanced_transforms[pIndex] : nullptr;
+    return pIndex < this->_instances_info.size() ? &this->_instances_info[pIndex] : nullptr;
+}
+
+void w_model::get_instances(_Inout_ std::vector<w_instance_info>& pInstances)
+{
+    auto _size = this->_instances_info.size();
+    if (!_size) return;
+    
+    pInstances = this->_instances_info;
 }
 
 std::string w_model::get_instance_geometry_name() const
@@ -610,7 +544,7 @@ std::string w_model::get_instance_geometry_name() const
     return this->_instanced_geo_name;
 }
 
-void w_model::get_meshes(_In_ std::vector<w_model::w_mesh*>& pMeshes)
+void w_model::get_meshes(_Inout_ std::vector<w_model::w_mesh*>& pMeshes)
 {
     auto _size = this->_meshes.size();
     if (!_size) return;

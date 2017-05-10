@@ -88,6 +88,53 @@ namespace wolf
                 return S_FALSE;
             }
             
+            //Set data to DRAM
+            HRESULT set_data(_In_ const void* const pData)
+            {
+                //we can not access to VRAM, but we can copy our data to DRAM
+                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return S_FALSE;
+                
+                auto _size = this->get_size();
+                auto _memory = this->get_memory();
+                
+                void* _data = nullptr;
+                auto _hr = vkMapMemory(this->_gDevice->vk_device,
+                                       _memory,
+                                       0,
+                                       _size,
+                                       0,
+                                       &_data);
+                if(_hr)
+                {
+                    _data = nullptr;
+                    V(S_FALSE, "mapping data to to vertex buffer's memory for graphics device: " +
+                      _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
+                      this->_name, 3, false, true);
+                    
+                    return S_FALSE;
+                }
+                
+                memcpy(_data, pData, (size_t)_size);
+                
+                VkMappedMemoryRange _flush_range =
+                {
+                    VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,            // Type
+                    nullptr,                                          // Next
+                    _memory,                                          // Memory
+                    0,                                                // Offset
+                    VK_WHOLE_SIZE                                     // Size
+                };
+                
+                vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_flush_range);
+                
+                //unmap memory
+                vkUnmapMemory(this->_gDevice->vk_device, _memory);
+                
+                _data = nullptr;
+                
+                return S_OK;
+            }
+            
             HRESULT bind()
             {
                 return vkBindBufferMemory(this->_gDevice->vk_device,
@@ -184,7 +231,7 @@ HRESULT w_buffer::load_as_staging(_In_ const std::shared_ptr<w_graphics_device>&
     return this->_pimp->load(pGDevice,
                              pBufferSize,
                              VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+                             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 }
 
 HRESULT w_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -195,6 +242,13 @@ HRESULT w_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     if(!this->_pimp) return S_FALSE;
     
     return this->_pimp->load(pGDevice, pBufferSize, pUsageFlags, pMemoryFlags);
+}
+
+HRESULT w_buffer::set_data(_In_ const void* const pData)
+{
+    if(!this->_pimp) return S_FALSE;
+    
+    return this->_pimp->set_data(pData);
 }
 
 HRESULT w_buffer::bind()

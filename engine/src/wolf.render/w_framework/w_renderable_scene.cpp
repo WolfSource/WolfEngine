@@ -106,4 +106,22 @@ UINT w_renderable_scene::get_indices_count(_In_ const size_t pIndex) const
     return 0;
 }
 
+VkBuffer w_renderable_scene::get_instance_buffer_handle(_In_ const size_t pIndex) const
+{
+    if (pIndex < this->_models.size() && this->_models[pIndex] != nullptr)
+    {
+        return this->_models[pIndex]->get_instance_buffer_handle();
+    }
+    return 0;
+}
+
+uint32_t w_renderable_scene::get_instances_count(_In_ const size_t pIndex) const
+{
+    if (pIndex < this->_models.size() && this->_models[pIndex] != nullptr)
+    {
+        return this->_models[pIndex]->get_instances_count();
+    }
+    return 0;
+}
+
 #pragma endregion

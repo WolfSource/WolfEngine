@@ -28,8 +28,6 @@ namespace wolf
                                _In_ const UINT pVerticesSize,
                                _In_ const UINT* const pIndicesData,
                                _In_ const UINT pIndicesCount,
-                               _In_ const void* const pInstancedData,
-                               _In_ const UINT pInstancedSize,
                                _In_ bool pStaging)
             {
                 this->_gDevice = pGDevice;
@@ -39,10 +37,6 @@ namespace wolf
                 
                 if(this->_staging)
                 {
-                    if (_create_instanced_staging_buffers(pInstancedData, pInstancedSize))
-                    {
-                        return S_FALSE;
-                    }
                     return _create_staging_buffers(pVerticesData,
                                                    pVerticesSize,
                                                    pIndicesData,
@@ -98,6 +92,7 @@ namespace wolf
                 return this->_indices_count;
             }
             
+            
             ULONG release()
             {
                 //release vertex and index buffers
@@ -110,61 +105,6 @@ namespace wolf
                 return 1;
             }
         private:
-            
-            HRESULT _create_instanced_staging_buffers(_In_ const void* const pInstancedData,
-                                                      _In_ const UINT pInstancedSize)
-            {
-                if (!pInstancedData || pInstancedSize == 0) return S_OK;
-                
-                //create DRAM
-                w_buffer _staging_buffer;
-                if(_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                  pInstancedData,
-                                  pInstancedSize,
-                                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                                  _staging_buffer) == S_FALSE)
-                {
-                    return S_FALSE;
-                }
-                
-                
-                // create VRAM buffers
-                if(_create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                  nullptr,
-                                  pInstancedSize,
-                                  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                                  this->_instanced_buffer) == S_FALSE)
-                {
-                    return S_FALSE;
-                }
-        
-                
-                //create one command buffer
-                auto _copy_command_buffer = new w_command_buffers();
-                _copy_command_buffer->load(this->_gDevice, 1);
-                
-                _copy_command_buffer->begin(0);
-                {
-                    auto _copy_cmd = _copy_command_buffer->get_command_at(0);
-                    
-                    VkBufferCopy _copy_region = {};
-                    
-                    // Vertex buffer
-                    _copy_region.size = pInstancedSize;
-                    vkCmdCopyBuffer(_copy_cmd,
-                                    _staging_buffer.get_handle(),
-                                    this->_instanced_buffer.get_handle(),
-                                    1,
-                                    &_copy_region);
-                }
-                _copy_command_buffer->flush(0);
-                
-                SAFE_DELETE(_copy_command_buffer);
-                
-                _staging_buffer.release();
-                
-                return S_OK;
-            }
             
             /*
                 static data such as index buffer or vertex buffer should be stored on device memory
@@ -305,48 +245,25 @@ namespace wolf
                     return S_FALSE;
                 }
                 
+                
+                HRESULT _hr;
                 //we can not access to VRAM, but we can copy our data to DRAM
                 if (!(pMemoryFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT))
                 {
-                    void* _data = nullptr;
-                    auto _hr = vkMapMemory(this->_gDevice->vk_device,
-                                      pBuffer.get_memory(),
-                                      0,
-                                      pBuffer.get_size(),
-                                      0,
-                                      &_data);
-                    if(_hr)
+                    _hr = pBuffer.set_data(pBufferData);
+                    if(_hr == S_FALSE)
                     {
-                        _data = nullptr;
-                        V(S_FALSE, "mapping data to to vertex buffer's memory for graphics device: " +
-                            _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
-                            this->_name, 3, false, true);
+                        V(S_FALSE, "setting data to vertex buffer's memory staging for graphics device: " +
+                          _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
+                          this->_name, 3, false, true);
                     
                         return S_FALSE;
                     }
-                
-                    memcpy(_data, pBufferData, (size_t)pBuffer.get_size());
-                
-                    VkMappedMemoryRange _flush_range =
-                    {
-                        VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,            // Type
-                        nullptr,                                          // Next
-                        pBuffer.get_memory(),                             // Memory
-                        0,                                                // Offset
-                        VK_WHOLE_SIZE                                     // Size
-                    };
-                
-                    vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_flush_range );
-                
-                    //unmap memory
-                    vkUnmapMemory(this->_gDevice->vk_device, pBuffer.get_memory());
-                    
-                    _data = nullptr;
                 }
                 
                 //bind to it
-                auto _hr = pBuffer.bind();
-                if(_hr)
+                _hr = pBuffer.bind();
+                if(_hr == S_FALSE)
                 {
                     V(S_FALSE, "binding to vertex buffer's memory for graphics device: " +
                       _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
@@ -362,7 +279,6 @@ namespace wolf
             std::shared_ptr<w_graphics_device>                  _gDevice;
             w_buffer                                            _vertex_buffer;
             w_buffer                                            _index_buffer;
-            w_buffer                                            _instanced_buffer;
             UINT                                                _indices_count;
             UINT                                                _vertices_count;
             bool                                                _staging;
@@ -386,24 +302,16 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const UINT pVerticesSize,
                      _In_ const UINT* const pIndicesData,
                      _In_ const UINT pIndicesCount,
-                     _In_ const void* const pInstancedData,
-                     _In_ const UINT pInstancedSize,
                      _In_ bool pStaging)
 {
     if (!this->_pimp) return S_FALSE;
     
-    if (pInstancedData != nullptr && pInstancedSize != 0)
-    {
-        pStaging = true;
-    }
     return this->_pimp->load(pGDevice,
                              pVerticesData,
                              pVerticesCount,
                              pVerticesSize,
                              pIndicesData,
                              pIndicesCount,
-                             pInstancedData,
-                             pInstancedSize,
                              pStaging);
 }
 

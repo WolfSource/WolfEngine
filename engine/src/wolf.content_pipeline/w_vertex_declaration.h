@@ -21,7 +21,6 @@ namespace wolf
 	{
 		enum w_vertex_declaration
 		{
-			DONTCARE,
 			POSITION,
 			POSITION_COLOR,
 			POSITION_UV,
