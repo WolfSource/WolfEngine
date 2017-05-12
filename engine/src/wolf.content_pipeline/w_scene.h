@@ -42,6 +42,9 @@ namespace wolf
 			WCP_EXP void get_cameras_by_id(const std::string& pID, _Inout_ std::vector<w_camera*>& pCameras);
             WCP_EXP void get_cameras_by_index(const size_t pIndex, _Inout_ w_camera** pCamera);
 
+            //Get coordinate system
+            WCP_EXP bool get_coordiante_system()         { return this->_is_left_hand_coordinate_system; }
+            
             WCP_EXP std::string get_name() const         { return this->_name; }
             WCP_EXP ULONG release();
 
@@ -50,7 +53,8 @@ namespace wolf
 #pragma region Setters
 
             WCP_EXP void set_name(_In_z_ std::string pValue)   { this->_name = pValue; }
-
+            WCP_EXP void set_coordiante_system(_In_ const bool pIsLeftHand);
+            
             MSGPACK_DEFINE(_name, _cameras, _models);
 
 #pragma endregion
@@ -59,6 +63,7 @@ namespace wolf
             std::string                 _name;
 			std::vector<w_camera>		_cameras;
             std::vector<w_model>		_models;
+            bool                        _is_left_hand_coordinate_system;
 		};
 	}
 }

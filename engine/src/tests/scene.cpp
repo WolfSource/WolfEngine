@@ -10,7 +10,6 @@
 #include <w_scene.h>
 #include <w_vertex_declaration.h>
 
-
 using namespace wolf::system;
 using namespace wolf::graphics;
 using namespace wolf::framework;
@@ -53,6 +52,66 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     w_game::initialize(pOutputWindowsInfo);
 }
 
+static void from_angle_axis ( const float& rfAngle_radian, const glm::vec3& rkAxis )
+{
+    // assert:  axis[] is unit length
+    //
+    // The quaternion representing the rotation is
+    //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
+    
+    float fHalfAngle_radian ( 0.5 * rfAngle_radian );
+    float fSin = sin( fHalfAngle_radian );
+    float w = cos( fHalfAngle_radian );
+    float x = fSin * rkAxis.x;
+    float y = fSin * rkAxis.y;
+    float z = fSin * rkAxis.z;
+    
+    //#Max -12.745 -27.363 -26.06
+    
+    logger.write(std::to_string(glm::degrees(w)));
+    logger.write(std::to_string(glm::degrees(x)));
+    logger.write(std::to_string(glm::degrees(y)));
+    logger.write(std::to_string(glm::degrees(z)));
+}
+
+//-----------------------------------------------------------------------
+static void angle_axis ( float& rfAngle_radian, glm::vec3&  rkAxis )
+{
+                           
+    // The quaternion representing the rotation is
+    //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
+    
+    float x = -12.745;
+    float y = -27.363;
+    float z = -26.06;
+    float w = 1;
+    
+    float fSqrLength = x * x + y * y + z * z;
+    
+    if ( fSqrLength > 0.0 )
+    {
+        rfAngle_radian = 2.0 * acos( w );
+        float fInvLength = 1/sqrt( fSqrLength );
+        rkAxis.x = x * fInvLength;
+        rkAxis.y = y * fInvLength;
+        rkAxis.z = z * fInvLength;
+    }
+    
+    else
+    {
+        // angle is 0 (mod 2*pi), so any axis will do
+        rfAngle_radian = 0.0;
+        rkAxis.x = 1.0;
+        rkAxis.y = 0.0;
+        rkAxis.z = 0.0;
+    }
+    
+    logger.write(std::to_string(rkAxis.x));
+    logger.write(std::to_string(rkAxis.y));
+    logger.write(std::to_string(rkAxis.z));
+    logger.write(std::to_string(w));
+}
+
 w_scene* _scene;
 w_texture* _texture = nullptr;
 w_shader_buffer<glm::mat4x4> _view_projection_uniform;
@@ -70,7 +129,7 @@ void scene::load()
     this->_renderable_scene = new w_renderable_scene(_scene);
     this->_renderable_scene->load(_gDevice);
     this->_renderable_scene->get_first_or_default_camera(&this->_camera);
-    
+
     this->_camera->update_view();
     this->_camera->update_projection();
     
@@ -83,11 +142,28 @@ void scene::load()
     this->_camera->update_projection();
     
     auto _t = _m->get_transform();
-    glm::mat4x4 _translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(_t.position[0], _t.position[1], _t.position[2]));
-	glm::mat4x4 _rotate = glm::rotate(glm::vec3(_t.rotation[0], _t.rotation[1], _t.rotation[2]));
-	glm::mat4x4 _scale = glm::scale(glm::mat4x4(1.0f), glm::vec3(_t.scale[0], _t.scale[1], _t.scale[2]));
+    
+    glm::quat _rotation;
+    
+    float fHalfAngle_radian ( 0.5 * glm::radians(_t.rotation[3]) );
+    float fSin = sin( fHalfAngle_radian );
+    _rotation.w = cos( fHalfAngle_radian );
+    _rotation.x = fSin * _t.rotation[0];
+    _rotation.y = fSin * _t.rotation[1];
+    _rotation.z = fSin * _t.rotation[2];
+    
+    glm::mat4 _translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(_t.position[0], _t.position[2], -_t.position[1]));
+    glm::mat4 _scale = glm::scale(glm::mat4x4(1.0f), glm::vec3(_t.scale[0], _t.scale[1], _t.scale[2]));
 
-    auto _world = _scale * _rotate * _translate;
+    //glm::mat4 _r(_q + glm::quat(-90, 0, 0, 0));
+    
+//    auto _r_rotate = _r;
+//    _r_rotate[0][2] = -_r_rotate[0][2];
+//    _r_rotate[1][2] = -_r_rotate[1][2];
+//    _r_rotate[2][0] = -_r_rotate[2][0];
+//    _r_rotate[2][1] = -_r_rotate[2][1];
+    
+    auto _world = _scale * glm::mat4(_rotation)  * _translate;
 	_view_projection_uniform.data = this->_camera->get_projection() * this->_camera->get_view() * _world;
     _hr = _view_projection_uniform.update();
     
@@ -393,6 +469,8 @@ void scene::load()
                                     nullptr);
             
             VkDeviceSize _offset = 0;
+            
+            
             auto _vertex_buffer_handle = this->_renderable_scene->get_vertex_buffer_handle(0);
             vkCmdBindVertexBuffers( _command_buffer, VERTEX_BUFFER_BIND_ID, 1, &_vertex_buffer_handle, &_offset );
         

@@ -55,7 +55,7 @@ namespace wolf
 			//Get view * projection matrix of the camera
 			WCP_EXP mat4x4_p get_view_projection() const					        { return this->_projection * this->_view; }
 			//Get position of the camera
-			WCP_EXP glm::vec3 get_transform() const						            { return glm::vec3(this->_transform[0], this->_transform[1], this->_transform[2]); }
+			WCP_EXP glm::vec3 get_translate() const						            { return glm::vec3(this->_translate[0], this->_translate[1], this->_translate[2]); }
 			//Get interest of the camera
 			WCP_EXP glm::vec3 get_interest() const						            { return glm::vec3(this->_interest[0], this->_interest[1], this->_interest[2]); }
 
@@ -76,22 +76,20 @@ namespace wolf
 			//Set aspect ratio of the camera
 			WCP_EXP void set_aspect_ratio(_In_ const float pAspectRatio);
 			//Set position of the camera
-			WCP_EXP void set_transform(_In_ const float pX, _In_ const float pY, _In_ const float pZ);
+			WCP_EXP void set_translate(_In_ const float pX, _In_ const float pY, _In_ const float pZ);
 			//Set position of the camera
-			WCP_EXP void set_transform(_In_ const glm::vec3 pInterest);
+			WCP_EXP void set_translate(_In_ const glm::vec3 pInterest);
 			//Set camera interest
 			WCP_EXP void set_interest(_In_ const float pX, _In_ const float pY, _In_ const float pZ);
 			//Set camera interest
 			WCP_EXP void set_interest(_In_ const glm::vec3 pInterest);
-            //Set Left/Right hand coordinate system
-            WCP_EXP void set_coordiante_system(_In_ const bool pIsLeftHand);
             
 #pragma endregion
 
             MSGPACK_DEFINE(
                 _name, _camera_target_name, _field_of_view,
                 _near_plane, _far_plane, _up,
-                _transform, _interest, _is_left_hand_coordinate_system);
+                _translate, _interest);
 
 		private:
 			std::string		_name;
@@ -101,11 +99,10 @@ namespace wolf
 			float			_near_plane;
 			float			_far_plane;
 			float		    _up[3];
-			float		    _transform[3];
+			float		    _translate[3];
 			float	    	_interest[3];
 			mat4x4_p		_view;
 			mat4x4_p		_projection;
-            bool            _is_left_hand_coordinate_system;
 		};
 	}
 }

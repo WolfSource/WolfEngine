@@ -616,7 +616,7 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         }
         else if (_name == "rotate")
         {
-            _parent_node_ptr->rotation = glm::to_vec3(_child->value());
+            _parent_node_ptr->rotation = glm::to_vec4(_child->value());
         }
         else if (_name == "scale")
         {
@@ -625,19 +625,9 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         else if (_name == "matrix")
         {
             auto _matrix = glm::to_mat4(_child->value());
-            if (sLeftCoordinateSystem)
-            {
-                //swap y and z for camera
-                _parent_node_ptr->translate.x = _matrix[0][3];
-                _parent_node_ptr->translate.y = _matrix[1][3];
-                _parent_node_ptr->translate.z = _matrix[2][3];
-            }
-            else 
-            {
-                _parent_node_ptr->translate.x = _matrix[0][3];
-                _parent_node_ptr->translate.y = _matrix[1][3];
-                _parent_node_ptr->translate.z = _matrix[2][3];
-            }
+            _parent_node_ptr->translate.x = _matrix[0][3];
+            _parent_node_ptr->translate.y = _matrix[1][3];
+            _parent_node_ptr->translate.z = _matrix[2][3];
         }
         else if (_name == "instance_camera")
         {
@@ -1322,11 +1312,22 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
         for (auto _iter : sLibraryCameras)
         {
             auto _camera = new w_camera(_iter.second);
-            _camera->set_coordiante_system(sLeftCoordinateSystem);
+            if (sLeftCoordinateSystem)
+            {
+                //make transform change
+                auto _t = _camera->get_translate();
+                
+                std::swap(_t.y, _t.z);
+                _t.z *= -1;
+                
+                _camera->set_translate(_t);
+            }
             pScene->add_camera(_camera);
         }
     }
 
+    pScene->set_coordiante_system(sLeftCoordinateSystem);
+    
 	return S_OK;
 }
 
@@ -1347,7 +1348,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
             auto _iter = sLibraryCameras.find(_node->instanced_camera_name);
             if (_iter != sLibraryCameras.end())
             {
-                _iter->second.set_transform(_node->translate);
+                _iter->second.set_translate(_node->translate);
                 //find target node
                 for (auto __node : pNodes)
                 {
@@ -1374,26 +1375,14 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
                 //we find source model
                 w_model::w_instance_info _instance_info;
 
-                if (sLeftCoordinateSystem)
-                {
-                    _instance_info.position[0] = _node->translate.x;
-                    _instance_info.position[1] = _node->translate.y;
-                    _instance_info.position[2] = _node->translate.z;
+                _instance_info.position[0] = _node->translate.x;
+                _instance_info.position[1] = _node->translate.y;
+                _instance_info.position[2] = _node->translate.z;
 
-                    _instance_info.rotation[0] = _node->rotation.x;
-                    _instance_info.rotation[1] = _node->rotation.z;
-                    _instance_info.rotation[2] = _node->rotation.y;
-                }
-                else
-                {
-                    _instance_info.position[0] = _node->translate.x;
-                    _instance_info.position[1] = _node->translate.y;
-                    _instance_info.position[2] = _node->translate.z;
-
-                    _instance_info.rotation[0] = _node->rotation.x;
-                    _instance_info.rotation[1] = _node->rotation.y;
-                    _instance_info.rotation[2] = _node->rotation.z;
-                }
+                _instance_info.rotation[0] = _node->rotation.x;
+                _instance_info.rotation[1] = _node->rotation.z;
+                _instance_info.rotation[2] = _node->rotation.y;
+                _instance_info.rotation[3] = _node->rotation.w;
 
                 if (_node->scale.x == 0 &&
                     _node->scale.y == 0 &&
@@ -1521,35 +1510,21 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
             sLibraryMaterials,
             sLibraryEffects,
             sLibraryImages,
-            pOptimizePoints,
-            sLeftCoordinateSystem);
+            pOptimizePoints);
 
         _model->set_name(_node_ptr->c_name);
         _model->set_instance_geometry_name(_node_ptr->instanced_geometry_name);
 
         //set transform
         w_transform_info _trasform;
-        if (sLeftCoordinateSystem)
-        {
-            
-            _trasform.position[0] = _node_ptr->translate.x;
-            _trasform.position[1] = _node_ptr->translate.y;
-            _trasform.position[2] = _node_ptr->translate.z;
+        
+        _trasform.position[0] = _node_ptr->translate.x;
+        _trasform.position[1] = _node_ptr->translate.y;
+        _trasform.position[2] = _node_ptr->translate.z;
 
-            _trasform.rotation[0] = _node_ptr->rotation.x;
-            _trasform.rotation[1] = _node_ptr->rotation.z;
-            _trasform.rotation[2] = -1 * _node_ptr->rotation.y;
-        }
-        else
-        {
-            _trasform.position[0] = _node_ptr->translate.x;
-            _trasform.position[1] = _node_ptr->translate.y;
-            _trasform.position[2] = _node_ptr->translate.z;
-
-            _trasform.rotation[0] = _node_ptr->rotation.x;
-            _trasform.rotation[1] = _node_ptr->rotation.y;
-            _trasform.rotation[2] = _node_ptr->rotation.z;
-        }
+        _trasform.rotation[0] = _node_ptr->rotation.x;
+        _trasform.rotation[1] = _node_ptr->rotation.z;
+        _trasform.rotation[2] = -1 * _node_ptr->rotation.y;
 
         if (_node_ptr->scale.x == 0 && 
             _node_ptr->scale.y == 0 &&

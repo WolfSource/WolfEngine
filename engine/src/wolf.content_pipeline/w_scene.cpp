@@ -34,12 +34,12 @@ void w_scene::add_camera(_In_ w_camera* pCamera)
     this->_cameras.push_back(*pCamera);
 }
 
-void w_scene::add_camera(_In_z_ const std::string& pID, _In_ const glm::vec3 pTransform, _In_ const glm::vec3 pInterest)
+void w_scene::add_camera(_In_z_ const std::string& pID, _In_ const glm::vec3 pTranslate, _In_ const glm::vec3 pInterest)
 {
     auto _camera = new w_camera();
     _camera->set_name(pID);
     _camera->set_aspect_ratio(800.0f / 600.0f);
-    _camera->set_transform(pTransform);
+    _camera->set_translate(pTranslate);
     _camera->set_interest(pInterest);
 
     this->_cameras.push_back(*_camera);
@@ -114,6 +114,15 @@ void w_scene::get_cameras_by_id(const std::string& pID, _Inout_ std::vector<w_ca
 			pCameras.push_back(&this->_cameras.at(i));
 		}
 	}
+}
+
+#pragma endregion
+
+#pragma region Setters
+
+void w_scene::set_coordiante_system(_In_ const bool pIsLeftHand)
+{
+    this->_is_left_hand_coordinate_system = pIsLeftHand;
 }
 
 #pragma endregion

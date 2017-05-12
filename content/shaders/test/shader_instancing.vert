@@ -23,6 +23,14 @@ layout(location = 0) out vec2 o_uv;
 
 void main() 
 {
+    if (i_instance_scale == 0)
+    {
+        //is ref model
+         gl_Position = U0.wvp  * vec4(i_position, 1);
+    }
+    else
+    {
+        //is instance
 	mat3 mx, my, mz;
 	
 	float s = sin(i_instance_rot.x);
@@ -52,23 +60,12 @@ void main()
     mz[1] = vec3(s, c, 0.0);
     mz[2] = vec3(0.0, 0.0, 1.0);
 
-    mat3 _rot_mat = mz * my * mx;
+    mat3 _rot_mat = mx * my * mz;
     
-    mat4 g_rot_mat;
-    s = sin(i_instance_rot.y);
-    c = cos(i_instance_rot.y);
-    g_rot_mat[0] = vec4(c  , 0.0, s  , 0.0);
-    g_rot_mat[1] = vec4(0.0, 1.0, 0.0, 0.0);
-    g_rot_mat[2] = vec4(-s , 0.0, c  , 0.0);
-    g_rot_mat[3] = vec4(0.0, 0.0, 0.0, 1.0);
-    
-//    vec4 _loc_pos = vec4(i_position * _rot_mat, 1.0);
-//    vec4 _pos = vec4((_loc_pos.xyz * i_instance_scale) + i_instance_pos, 1.0);
-    
-    vec4 _pos = vec4(i_position + i_instance_pos, 1.0);
+    vec4 _loc_pos = vec4(i_position * _rot_mat, 1.0);
+    vec4 _pos = vec4((_loc_pos.xyz * 0 /*i_instance_scale*/) + i_instance_pos, 1.0);
     
     gl_Position = U0.wvp  * _pos;
-    
-    //gl_Position = U0.wvp * vec4(i_position + i_instance_pos, 1.0);
+    }
     o_uv = i_uv;//, i_instance_uv_index);
 }

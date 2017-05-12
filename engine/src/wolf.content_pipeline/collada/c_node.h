@@ -33,7 +33,7 @@ namespace wolf
 				bool					proceeded = false;
 				glm::vec3				translate;
 				glm::vec3				scale;
-				glm::vec3				rotation;
+				glm::vec4				rotation;
 				glm::mat4				transform;
 				/*std::string				instanced_node_name;*/
 				std::string				instanced_geometry_name;

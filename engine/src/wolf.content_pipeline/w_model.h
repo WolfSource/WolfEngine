@@ -72,7 +72,7 @@ namespace wolf
 		struct w_transform_info
 		{
 			float	        position[3];
-            float	        rotation[3];
+            float	        rotation[4];
             float	        scale[3];
 			glm::mat4x4     transform;
 
@@ -165,8 +165,7 @@ namespace wolf
                 _In_ std::map<std::string, std::string>& sLibraryMaterials,
                 _In_ std::map<std::string, std::string>& sLibraryEffects,
                 _In_ std::map<std::string, std::string>& sLibraryImages,
-                _In_ bool pOptimizing,
-                _In_ bool pYUp);
+                _In_ bool pOptimizing);
 
             MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _meshes);
 

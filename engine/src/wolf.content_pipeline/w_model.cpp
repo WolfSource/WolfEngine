@@ -27,8 +27,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
     _In_ std::map<std::string, std::string>& sLibraryMaterials,
     _In_ std::map<std::string, std::string>& sLibraryEffects,
     _In_ std::map<std::string, std::string>& sLibraryImages,
-    _In_ bool pOptimizing,
-    _In_ bool pLeftCoordinateSystem)
+    _In_ bool pOptimizing)
 {
 	auto _model = new w_model();
 
@@ -304,20 +303,11 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 			}
 
             glm::vec3 _pos;
-            if (pLeftCoordinateSystem)
-            {
-                //Z Up like 3ds max
-                _pos.x = _v.vertex[0];
-                _pos.y = _v.vertex[1];
-                _pos.z = _v.vertex[2];
-            }
-            else
-            {
-                //Y Up
-                _pos.x = _v.vertex[0];
-                _pos.y = _v.vertex[1];
-                _pos.z = _v.vertex[2];
-            }
+            
+            //Z Up like 3ds max
+            _pos.x = _v.vertex[0];
+            _pos.y = _v.vertex[1];
+            _pos.z = _v.vertex[2];
 
 			_min_vertex.x = min(_pos.x, _min_vertex.x);
 			_min_vertex.y = min(_pos.y, _min_vertex.y);
@@ -332,10 +322,6 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
             _vertex_data.position[1] = _pos[1];
             _vertex_data.position[2] = _pos[2];
 
-            //if (pLeftCoordinateSystem)
-            {
-                std::swap(_v.normal[1], _v.normal[2]);
-            }
 
 			auto _normal = _v.normal.size() > 0 ? glm::vec3(_v.normal[0], _v.normal[1], _v.normal[2]) : glm::vec3(0);
             _vertex_data.normal[0] = _normal[0];
@@ -352,10 +338,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
             _vertex_data.blend_indices[2] = _bi[2];
             _vertex_data.blend_indices[3] = _bi[3];
 
-			auto _uv = _v.texture.size() > 0 ?  
-                (pLeftCoordinateSystem ? glm::vec2(1 - _v.texture[0], 1 - _v.texture[1]) : 
-                    glm::vec2(_v.texture[0], _v.texture[1])) 
-                : glm::vec2(0);
+            auto _uv = _v.texture.size() > 0 ?  glm::vec2(_v.texture[0], _v.texture[1]) : glm::vec2(0);
             _vertex_data.uv[0] = _uv[0];
             _vertex_data.uv[1] = _uv[1];
 
