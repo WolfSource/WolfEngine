@@ -19,19 +19,19 @@ namespace wolf
 	namespace graphics
 	{
 		template<typename T>
-		class w_shader_buffer : public wolf::system::w_object
+		class w_uniform : public wolf::system::w_object
 		{
 		public:
-            w_shader_buffer()
+            w_uniform()
             {
             }
             
-			~w_shader_buffer()
+			~w_uniform()
             {
 				release();
 			}
 
-			//Load the shader buffer
+			//Load the uniform buffer
 			HRESULT load(_In_ std::shared_ptr<w_graphics_device>& pGDevice)
 			{
                 //store the shared graphics device pointer

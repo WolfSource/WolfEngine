@@ -4,8 +4,6 @@
 #include <w_convert.h>
 #include <w_logger.h>
 
-using namespace wolf::graphics;
-
 namespace wolf
 {
     namespace graphics
@@ -276,6 +274,10 @@ namespace wolf
     }
 }
 
+using namespace wolf::graphics;
+
+std::map<std::string, w_shader*> w_shader::_shared;
+
 w_shader::w_shader() : _pimp(new w_shader_pimp())
 {
     _super::set_class_name("w_shader");
@@ -344,3 +346,50 @@ const VkDescriptorSetLayout w_shader::get_descriptor_set_layout_binding() const
 }
 
 #pragma endregion
+
+HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_z_ const std::string& pName,
+    _In_z_ const std::wstring& pVertexShaderPath,
+    _In_z_ const std::wstring& pFragmentShaderPath,
+    _In_z_ const char* pMainFunctionName)
+{
+    auto _shader = new (std::nothrow) w_shader();
+    if (!_shader)
+    {
+        logger.error(L"Could not perform allocation for shared shader: " + pVertexShaderPath + L" , " +
+            pFragmentShaderPath);
+        return S_FALSE;
+    }
+
+    if (!pVertexShaderPath.empty())
+    {
+        _shader->load(pGDevice, pVertexShaderPath, w_shader_stage::VERTEX_SHADER, pMainFunctionName);
+    }
+    if (!pFragmentShaderPath.empty())
+    {
+        _shader->load(pGDevice, pFragmentShaderPath, w_shader_stage::FRAGMENT_SHADER, pMainFunctionName);
+    }
+
+    //check if already exists
+    auto _iter = _shared.find(pName);
+    if (_iter != _shared.end())
+    {
+        logger.warning("Shader " + pName + "  already exists. The new one will be replaced with old one.");
+        SAFE_RELEASE(_shared.at(pName));
+    }
+    _shared[pName] = _shader;
+
+    return S_OK;
+}
+
+ULONG w_shader::release_shared_shaders()
+{
+    if (!_shared.size()) return 0;
+
+    for (auto _pair : _shared)
+    {
+        SAFE_RELEASE(_pair.second);
+    }
+    _shared.clear();
+    return 1;
+}

@@ -706,7 +706,11 @@ namespace wolf
 
 using namespace wolf::graphics;
 
-w_texture::w_texture() : _pimp(new w_texture_pimp())
+std::map<std::wstring, w_texture*> w_texture::_shared;
+w_texture* w_texture::default_texture = nullptr;
+
+w_texture::w_texture() : 
+    _pimp(new w_texture_pimp())
 {
 	_super::set_class_name("w_texture_2d");
 }
@@ -728,6 +732,33 @@ HRESULT w_texture::initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _I
     return this->_pimp->initialize_texture_2D_from_file(pPath, pIsAbsolutePath);
 }
 
+HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_z_ std::wstring pPath,
+    _Inout_ w_texture** pPointerToTexture)
+{
+    auto _texture = new (std::nothrow) w_texture();
+    if (!_texture)
+    {
+        logger.error(L"Could not perform allocation for shared texture: " + pPath);
+        return S_FALSE;
+    }
+
+    _texture->load(pGDevice);
+    _texture->initialize_texture_2D_from_file(pPath, true);
+
+    //check if already exists
+    auto _iter = _shared.find(pPath);
+    if (_iter != _shared.end())
+    {
+        logger.warning("Texture already exists. The new one will be replaced with old one.");
+        SAFE_RELEASE(_shared.at(pPath));
+    }
+    _shared[pPath] = _texture;
+    *pPointerToTexture = _texture;
+
+    return S_OK;
+}
+
 ULONG w_texture::release()
 {
 	if (_super::get_is_released()) return 0;
@@ -735,6 +766,20 @@ ULONG w_texture::release()
     SAFE_RELEASE(this->_pimp);
     
 	return _super::release();
+}
+
+ULONG w_texture::release_shared_textures()
+{
+    if (!_shared.size()) return 0;
+
+    default_texture = nullptr;
+    for (auto _pair : _shared)
+    {
+        SAFE_RELEASE(_pair.second);
+    }
+    _shared.clear();
+
+    return 1;
 }
 
 #pragma region Getters

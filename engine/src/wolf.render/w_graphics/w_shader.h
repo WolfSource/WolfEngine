@@ -70,9 +70,18 @@ namespace wolf
 
 #pragma endregion
 
+            W_EXP static HRESULT load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                                                        _In_z_ const std::string& pName,
+                                                        _In_z_ const std::wstring& pVertexShaderPath,
+                                                        _In_z_ const std::wstring& pFragmentShaderPath,
+                                                        _In_z_ const char* pMainFunctionName = "main");
+            W_EXP static ULONG release_shared_shaders();
+
 		private:
             typedef	system::w_object                                _super;
             w_shader_pimp*                                          _pimp;
+
+            static std::map<std::string, w_shader*>                 _shared;
 		};
 	}
 }

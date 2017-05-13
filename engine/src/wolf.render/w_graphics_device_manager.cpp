@@ -3,6 +3,8 @@
 #include <w_logger.h>
 #include <w_convert.h>
 #include "w_graphics/w_command_buffers.h"
+#include "w_graphics/w_texture.h"
+#include "w_graphics/w_shader.h"
 
 #if defined(__DX12__) || defined(__DX11__)
 #include <w_directX_helper.h>
@@ -2737,6 +2739,21 @@ void w_graphics_device_manager::initialize(_In_ std::map<int, std::vector<w_wind
 		release();
 		std::exit(EXIT_FAILURE);
     }
+
+    _load_shared_resources();
+}
+
+void w_graphics_device_manager::_load_shared_resources()
+{
+    auto _gDevice = this->graphics_devices.at(0);
+
+    std::wstring _path = content_path + L"../logo.jpg";
+    w_texture* _default = nullptr;
+    if (w_texture::load_to_shared_textures(_gDevice, _path, &_default) == S_OK)
+    {
+        w_texture::default_texture = _default;
+    }
+    _default = nullptr;
 }
 
 void w_graphics_device_manager::on_device_lost()
@@ -3149,6 +3166,10 @@ HRESULT w_graphics_device_manager::present()
 
 ULONG w_graphics_device_manager::release()
 {
+    //release all shared resources
+    w_texture::release_shared_textures();
+    w_shader::release_shared_shaders();
+
     //release the private implementation
     SAFE_RELEASE(this->_pimp);
     

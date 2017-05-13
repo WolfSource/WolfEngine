@@ -14,7 +14,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <w_graphics/w_mesh.h>
-#include <w_graphics/w_shader_buffer.h>
+#include <w_graphics/w_uniform.h>
 #include <w_model.h>
 
 #ifdef __GNUC__
@@ -26,7 +26,7 @@ namespace wolf
 	namespace framework
 	{
 #pragma pack(push,1)
-			struct mvp_shader_buffer
+			struct mvp_unifrom
 			{
 				//view projection (transform) matrix
                 glm::mat4x4 view_projection = glm::mat4x4(1);//Identity matrix
@@ -94,7 +94,7 @@ namespace wolf
 				std::shared_ptr<wolf::graphics::w_graphics_device>			_gDevice;
 				wolf::content_pipeline::w_model*							_model;
                 glm::mat4x4                                                 _view_projection;
-				wolf::graphics::w_shader_buffer<mvp_shader_buffer>          _mvp_shader_buffer;
+				wolf::graphics::w_uniform<mvp_unifrom>                      _mvp_shader_buffer;
                 std::vector<wolf::graphics::w_mesh*>                        _meshes;
                 wolf::graphics::w_buffer                                    _instance_buffer;
 			};

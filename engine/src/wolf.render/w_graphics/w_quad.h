@@ -10,6 +10,11 @@
 #ifndef __W_QUAD_H__
 #define __W_QUAD_H__
 
+#include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
+#include <w_vertex_declaration.h>
+#include <w_graphics/w_uniform.h>
+#include <w_graphics/w_texture.h>
 #include "w_mesh.h"
 
 namespace wolf
@@ -17,124 +22,145 @@ namespace wolf
 	namespace graphics
 	{
 #pragma pack(push, 1)
-		struct quad_texture_const_buffer
+		struct quad_texture_uniform
 		{
-			DirectX::XMFLOAT2	uv_scale = DirectX::XMFLOAT2(1, 1);
+            //UV scale and invert property
+			glm::vec2	        uv_scale = glm::vec2(1, 1);
+            //opacity
 			float				opacity = 1.0f;
+            //don't care padding float
 			float				padding;
 		};
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-		struct quad_color_const_buffer
+		struct quad_color_uniform
 		{
-			DirectX::XMFLOAT4	color = DirectX::XMFLOAT4(1, 1, 1, 1);
+            //color
+            glm::vec4	        color = glm::vec4(1, 1, 1, 1);
 		};
 #pragma pack(pop)
 
-		template<typename T = quad_texture_const_buffer>
+		template<typename T = quad_color_texture_uniform>
 		class w_quad : public w_mesh
 		{
 		public:
-			w_quad()
-			{
-				_super::set_class_name(typeid(this).name());
-			}
+            w_quad() :
+                _texture(nullptr)
+            {
+                _super::set_class_name(typeid(this).name());
+            }
 
 			virtual ~w_quad()
 			{
 				release();
 			}
 
-			HRESULT load(_In_ ID3D11Device1* pDevice, _In_ bool pLoadDeafultTexture2D = true,
-				_In_z_ const std::wstring& pTexture2DPath = L"", _In_ bool pIsAbsolutePath = false,
-				_In_z_ const std::wstring& pVertexShaderPath = L"",
-				_In_z_ const std::vector<std::wstring>& pPixelShaderPaths = std::vector<std::wstring>())
-			{
-				_super::initialize(pDevice);
+            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_z_ const std::wstring& pTexture2DPath = L"",
+                _In_z_ const std::wstring& pVertexShaderPath = L"",
+                _In_z_ const std::wstring& pPixelShaderPath = L"")
+            {
+                //Load uniform/constant buffer
+                this->_uniform.load(pDevice);
 
-				//Load constant buffer of quad
-				this->const_buffer.load(pDevice);
+                using namespace wolf::content_pipeline::vertex_declaration_structs;
 
-				using namespace wolf::content_pipeline::vertex_declaration_structs;
+                const float _left = -1, _top = -1, _right = 1.0f, _down = 1.0f;
 
-				float _left = -1, _top = -1, _right = 1.0f, _down = 1.0f;
+                const UINT _vertices_size = 4;
+                const vertex_position_uv _vertices[_vertices_size] =
+                {
+                    { glm::vec3(_right	,  _down, 0.0f)	, glm::vec2(1.0f, 0.0f) },
+                    { glm::vec3(_left	,  _top	, 0.0f)	, glm::vec2(0.0f, 1.0f) },
+                    { glm::vec3(_left	,  _down, 0.0f)	, glm::vec2(0.0f, 0.0f) },
+                    { glm::vec3(_right	,  _top	, 0.0f)	, glm::vec2(1.0f, 1.0f) }
+                };
 
-				const UINT _vertices_size = 4;
-				const vertex_position_normal_uv _vertices[_vertices_size] =
-				{
-					{ glm::vec3(_right	,  _down, 0.0f)	, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 0.0f) },
-					{ glm::vec3(_left	,  _top	, 0.0f)	, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f) },
-					{ glm::vec3(_left	,  _down, 0.0f)	, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f) },
-					{ glm::vec3(_right	,  _top	, 0.0f)	, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f) }
-				};
+                const UINT _indices_size = 6;
+                const UINT _indices[] = { 0, 1, 2, 0, 3, 1 };
 
-				const UINT _indices_size = 6;
-				const unsigned short _indices[] = { 0, 1, 2, 0, 3, 1 };
+                //create buffers
+                auto _hr = _super::load(pDevice,
+                    _vertices,
+                    _vertices_size,
+                    static_cast<UINT>(sizeof(vertex_position_uv)),
+                    _indices,
+                    _indices_size);
 
-				//create buffers
-				if (FAILED(_super::create_vertex_buffer(pDevice, _vertices, _vertices_size, sizeof(vertex_position_normal_uv)))) return S_FALSE;
-				if (FAILED(_super::create_index_buffer(pDevice, _indices, _indices_size))) return S_FALSE;
+                if (_hr == S_FALSE)
+                {
+                    logger.error("Error on creating quad vertex and index buffers".);
+                    return S_FALSE;
+                }
 
-				//create texture buffer
-				if (pLoadDeafultTexture2D)
-				{
-					if (FAILED(_super::create_default_texture_2D(pDevice))) return S_FALSE;
-				}
+                if (pTexture2DPath.empty())
+                {
+                    //we will use default texture
+                    this->_texture = w_texture::default_texture;
+                    logger.write(this->_texture->name);
+                }
+                else
+                {
 
-				//create vertex shader
-				std::wstring _v_shader_path = pVertexShaderPath;
-				if (_v_shader_path.empty())
-				{
-					_v_shader_path = L"Shaders\\quad_vs.cso";
-				}
-				if (FAILED(_super::create_vertex_shader(pDevice, _v_shader_path)))  return S_FALSE;
+                }
 
-				//create pixel shaders
-				auto _ps_size = pPixelShaderPaths.size();
-				if (_ps_size == 0)
-				{
-					if (FAILED(_super::create_pixel_shader(pDevice, L"Shaders\\quad_texture_ps.cso"))) return S_FALSE;
-				}
-				else
-				{
-					for (size_t i = 0; i < _ps_size; ++i)
-					{
-						if (FAILED(_super::create_pixel_shader(pDevice, pPixelShaderPaths[i]))) return S_FALSE;
-					}
-				}
+                //	//create vertex shader
+                //	std::wstring _v_shader_path = pVertexShaderPath;
+                //	if (_v_shader_path.empty())
+                //	{
+                //		_v_shader_path = L"Shaders\\quad_vs.cso";
+                //	}
+                //	if (FAILED(_super::create_vertex_shader(pDevice, _v_shader_path)))  return S_FALSE;
 
-				return _super::load_texture_2D_from_file(pDevice, pTexture2DPath, pIsAbsolutePath);
-			}
+                //	//create pixel shaders
+                //	auto _ps_size = pPixelShaderPaths.size();
+                //	if (_ps_size == 0)
+                //	{
+                //		if (FAILED(_super::create_pixel_shader(pDevice, L"Shaders\\quad_texture_ps.cso"))) return S_FALSE;
+                //	}
+                //	else
+                //	{
+                //		for (size_t i = 0; i < _ps_size; ++i)
+                //		{
+                //			if (FAILED(_super::create_pixel_shader(pDevice, pPixelShaderPaths[i]))) return S_FALSE;
+                //		}
+                //	}
 
-			void render(_In_ ID3D11DeviceContext1* pContext, _In_ D3D_PRIMITIVE_TOPOLOGY pPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
-			{
-				this->const_buffer.update(pContext);
-				_super::update_shader_constant_buffer(pContext, 1, 1, this->const_buffer.get_buffer());
-				_super::render(pContext, pPrimitiveTopology);
-			}
+                //	return _super::load_texture_2D_from_file(pDevice, pTexture2DPath, pIsAbsolutePath);
 
-			void render(_In_ ID3D11DeviceContext1* pContext, _In_ std::vector<ID3D11ShaderResourceView*> pShaderResourceViews, _In_ D3D_PRIMITIVE_TOPOLOGY pPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
-			{
-				this->const_buffer.update(pContext);
-				_super::update_shader_constant_buffer(pContext, 1, 1, this->const_buffer.get_buffer());
-				_super::render(pContext, pShaderResourceViews, pPrimitiveTopology);
-			}
+                return S_OK;
+            }
+
+			//void render(_In_ ID3D11DeviceContext1* pContext, _In_ D3D_PRIMITIVE_TOPOLOGY pPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+			//{
+			//	this->const_buffer.update(pContext);
+			//	_super::update_shader_constant_buffer(pContext, 1, 1, this->const_buffer.get_buffer());
+			//	_super::render(pContext, pPrimitiveTopology);
+			//}
+
+			//void render(_In_ ID3D11DeviceContext1* pContext, _In_ std::vector<ID3D11ShaderResourceView*> pShaderResourceViews, _In_ D3D_PRIMITIVE_TOPOLOGY pPrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+			//{
+			//	this->const_buffer.update(pContext);
+			//	_super::update_shader_constant_buffer(pContext, 1, 1, this->const_buffer.get_buffer());
+			//	_super::render(pContext, pShaderResourceViews, pPrimitiveTopology);
+			//}
 
 			virtual ULONG release() override
 			{
 				if (_super::get_is_released()) return 0;
 
-				//Release shader's constant buffers
-				this->const_buffer.release();
+				//release shader's constant/uniform buffers
+				this->_uniform.release();
 
 				return w_mesh::release();
 			}
 
-			w_constant_buffer<T>		const_buffer;
+			w_uniform<T>		                _uniform;
 
 		private:
-			typedef	 w_mesh				_super;
+			typedef	 w_mesh				        _super;
+            wolf::graphics::w_texture*          _texture;
 			
 		};
 	}

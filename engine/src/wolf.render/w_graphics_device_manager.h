@@ -364,19 +364,19 @@ namespace wolf
                         
 		protected:
 			std::vector<std::shared_ptr<w_graphics_device>>		graphics_devices;
-			w_graphics_device*	graphics_devices_;
 
 		private:
             //prevent copying
             w_graphics_device_manager(w_graphics_device_manager const&);
             w_graphics_device_manager& operator= (w_graphics_device_manager const&);
             
+            void _load_shared_resources();
+
 			void _wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex);
             
             typedef  system::w_object                           _super;
             w_graphics_device_manager_pimp*                     _pimp;
 		};
-        
         
 #pragma region structures
         

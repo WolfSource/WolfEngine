@@ -176,9 +176,10 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_pipeline.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_quad.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_render_pass.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shader.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shader_buffer.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_uniform.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_texture.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_export.h" />

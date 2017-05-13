@@ -63,9 +63,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shader.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shader_buffer.h">
-      <Filter>w_graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_texture.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
@@ -77,6 +74,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_renderable_scene.h">
       <Filter>w_framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_quad.h">
+      <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_uniform.h">
+      <Filter>w_graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

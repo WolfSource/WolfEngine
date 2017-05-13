@@ -34,8 +34,14 @@ namespace wolf
             
             //release all resources
             W_EXP virtual ULONG release() override;
-            
-            
+
+            //load texture and store it into the shared
+            W_EXP static HRESULT load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
+                                                         _In_z_ std::wstring pPath,
+                                                        _Inout_ w_texture** pPointerToTexture);
+
+            //release all shared textures
+            ULONG static release_shared_textures();
 #pragma region Getters
 
             //get width of image
@@ -72,9 +78,13 @@ namespace wolf
 
 #pragma endregion
 
+            static w_texture*                               default_texture;
+
 		private:
 			typedef system::w_object						_super;
             w_texture_pimp*                                 _pimp;
+
+            static std::map<std::wstring, w_texture*>       _shared;
         };
     }
 }
