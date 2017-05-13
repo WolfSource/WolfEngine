@@ -72,7 +72,7 @@ namespace wolf
 		struct w_transform_info
 		{
 			float	        position[3];
-            float	        rotation[4];
+            float	        rotation[3];
             float	        scale[3];
 			glm::mat4x4     transform;
 

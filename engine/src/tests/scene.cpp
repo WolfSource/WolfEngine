@@ -137,33 +137,18 @@ void scene::load()
     _scene->get_models_by_index(0, &_m);
 
     auto _hr = _view_projection_uniform.load(_gDevice);
+    
     this->_camera->set_aspect_ratio((float)_output_window->width / (float)_output_window->height);
     this->_camera->update_view();
     this->_camera->update_projection();
     
     auto _t = _m->get_transform();
     
-    glm::quat _rotation;
-    
-    float fHalfAngle_radian ( 0.5 * glm::radians(_t.rotation[3]) );
-    float fSin = sin( fHalfAngle_radian );
-    _rotation.w = cos( fHalfAngle_radian );
-    _rotation.x = fSin * _t.rotation[0];
-    _rotation.y = fSin * _t.rotation[1];
-    _rotation.z = fSin * _t.rotation[2];
-    
-    glm::mat4 _translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(_t.position[0], _t.position[2], -_t.position[1]));
+    glm::mat4 _translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(_t.position[0], _t.position[1], _t.position[2]));
     glm::mat4 _scale = glm::scale(glm::mat4x4(1.0f), glm::vec3(_t.scale[0], _t.scale[1], _t.scale[2]));
-
-    //glm::mat4 _r(_q + glm::quat(-90, 0, 0, 0));
     
-//    auto _r_rotate = _r;
-//    _r_rotate[0][2] = -_r_rotate[0][2];
-//    _r_rotate[1][2] = -_r_rotate[1][2];
-//    _r_rotate[2][0] = -_r_rotate[2][0];
-//    _r_rotate[2][1] = -_r_rotate[2][1];
+    auto _world = _translate * glm::rotate(_t.rotation[0], _t.rotation[1], _t.rotation[2]) * _scale;
     
-    auto _world = _scale * glm::mat4(_rotation)  * _translate;
 	_view_projection_uniform.data = this->_camera->get_projection() * this->_camera->get_view() * _world;
     _hr = _view_projection_uniform.update();
     

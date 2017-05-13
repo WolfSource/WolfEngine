@@ -1375,14 +1375,43 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
                 //we find source model
                 w_model::w_instance_info _instance_info;
 
-                _instance_info.position[0] = _node->translate.x;
-                _instance_info.position[1] = _node->translate.y;
-                _instance_info.position[2] = _node->translate.z;
+                if (sLeftCoordinateSystem)
+                {
+                    _instance_info.position[0] = _node->translate.x;
+                    _instance_info.position[1] = _node->translate.z;
+                    _instance_info.position[2] = -_node->translate.y;
+                }
+                else
+                {
+                    _instance_info.position[0] = _node->translate.x;
+                    _instance_info.position[1] = _node->translate.y;
+                    _instance_info.position[2] = _node->translate.z;
+                }
 
-                _instance_info.rotation[0] = _node->rotation.x;
-                _instance_info.rotation[1] = _node->rotation.z;
-                _instance_info.rotation[2] = _node->rotation.y;
-                _instance_info.rotation[3] = _node->rotation.w;
+                
+                if (_node->rotation.y)
+                {
+                    _node->rotation.y*= -1;
+                    _node->rotation.w*= -1;
+                }
+                
+               // _node->rotation.x*= -1;
+                _node->rotation.y*= -1;
+                //_node->rotation.z*= -1;
+                _node->rotation.w*= -1;
+                
+                auto _rotation = glm::rotation_from_angle_axis(_node->rotation.x, _node->rotation.y, _node->rotation.z, _node->rotation.w);
+                
+                if (sLeftCoordinateSystem)
+                {
+                    _instance_info.rotation[0] = _rotation.x;
+                }
+                else
+                {
+                    _instance_info.rotation[0] = _rotation.x;
+                }
+                _instance_info.rotation[1] = _rotation.y;
+                _instance_info.rotation[2] = _rotation.z;
 
                 if (_node->scale.x == 0 &&
                     _node->scale.y == 0 &&
@@ -1518,13 +1547,42 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
         //set transform
         w_transform_info _trasform;
         
-        _trasform.position[0] = _node_ptr->translate.x;
-        _trasform.position[1] = _node_ptr->translate.y;
-        _trasform.position[2] = _node_ptr->translate.z;
-
-        _trasform.rotation[0] = _node_ptr->rotation.x;
-        _trasform.rotation[1] = _node_ptr->rotation.z;
-        _trasform.rotation[2] = -1 * _node_ptr->rotation.y;
+        if (sLeftCoordinateSystem)
+        {
+            _trasform.position[0] = _node_ptr->translate.x;
+            _trasform.position[1] = _node_ptr->translate.z;
+            _trasform.position[2] = -_node_ptr->translate.y;
+        }
+        else
+        {
+            _trasform.position[0] = _node_ptr->translate.x;
+            _trasform.position[1] = _node_ptr->translate.y;
+            _trasform.position[2] = _node_ptr->translate.z;
+        }
+        
+        if (_node_ptr->rotation.y)
+        {
+            _node_ptr->rotation.y*= -1;
+            _node_ptr->rotation.w*= -1;
+        }
+        
+//        ->rotation.x*= -1;
+//        _node_ptr->rotation.y*= -1;
+//        _node_ptr->rotation.z*= -1;
+//        _node_ptr->rotation.w*= -1;
+        
+        auto _rotation = glm::rotation_from_angle_axis(_node_ptr->rotation.x, _node_ptr->rotation.y, _node_ptr->rotation.z, _node_ptr->rotation.w);
+        
+        if (sLeftCoordinateSystem)
+        {
+            _trasform.rotation[0] = _rotation.x;// + (_node_ptr->rotation.x ? 0 : glm::radians(90.0f));
+        }
+        else
+        {
+            _trasform.rotation[0] = _rotation.x;
+        }
+        _trasform.rotation[1] = _rotation.y;
+        _trasform.rotation[2] = _rotation.z;
 
         if (_node_ptr->scale.x == 0 && 
             _node_ptr->scale.y == 0 &&

@@ -16,11 +16,12 @@
 
 #include "w_system_pch.h"
 #include <glm/glm.hpp>
-#include <glm/gtx/rotate_vector.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/constants.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <string>
 #include "w_convert.h"
 
@@ -250,7 +251,25 @@ namespace glm
 		}
 		return _mats;
 	}
-
+    
+    inline glm::vec3 rotation_from_angle_axis(_In_ const float pAxisX, _In_ const float pAxisY, _In_ const float pAxisZ, _In_ const float pAngleDegree)
+    {
+        glm::quat _quat;
+        
+        float _half_angle_radian ( 0.5 * glm::radians(pAngleDegree));
+        float fSin = sin( _half_angle_radian );
+        _quat.w = cos( _half_angle_radian );
+    
+        _quat.x = fSin * pAxisX;
+        _quat.y = fSin * pAxisY;
+        _quat.z = fSin * pAxisZ;
+    
+        auto _pitch = glm::pitch(_quat);
+        auto _yaw = glm::yaw(_quat);
+        auto _roll = glm::roll(_quat);
+        
+        return glm::vec3(_pitch, _yaw, _roll);
+    }
 }
 
 #endif

@@ -38,21 +38,17 @@ HRESULT w_renderable_model::load()
     this->_model->get_instances(_model_instances);
     if (_model_instances.size())
     {
-        _model_instances.erase(_model_instances.begin() + 1);
-        
         for (size_t i = 0; i < _model_instances.size(); ++i)
         {
-            std::swap(_model_instances[i].position[1], _model_instances[i].position[2]);
-            _model_instances[i].position[2] *= -1;
-            
             _model_instances[i].position[0] = glm::distance(_t.position[0], _model_instances[i].position[0]);
             _model_instances[i].position[1] = glm::distance(_t.position[1], _model_instances[i].position[1]);
             _model_instances[i].position[2] = glm::distance(_t.position[2], _model_instances[i].position[2]);
+        
             
             
-            //_model_instances[i].rotation[0] = _model_instances[i].rotation[0];
-            //_model_instances[i].rotation[1] = _model_instances[i].rotation[1];
-            //_model_instances[i].rotation[2] =  - _model_instances[i].rotation[2];
+           // _model_instances[i].rotation[0] = _model_instances[i].rotation[0] + glm::radians(90.0f);
+//            _model_instances[i].rotation[1] =  glm::distance(_t.rotation[1], _model_instances[i].rotation[1]);
+//            _model_instances[i].rotation[2] = glm::distance(_t.rotation[1], _model_instances[i].rotation[1]);
         }
         _create_instance_buffer(_model_instances.data(),
                                 static_cast<UINT>(_model_instances.size() * sizeof(w_model::w_instance_info)));
@@ -77,7 +73,7 @@ HRESULT w_renderable_model::load()
             _v_data.push_back(_pos[2]);
 
             _v_data.push_back(_uv[0]);
-            _v_data.push_back(1 - _uv[1]);
+            _v_data.push_back(_uv[1]);
         }
 
         //prepare instances
