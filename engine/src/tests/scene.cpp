@@ -3,7 +3,7 @@
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_command_buffers.h>
 #include <w_graphics/w_texture.h>
-#include <w_graphics/w_shader_buffer.h>
+#include <w_graphics/w_uniform.h>
 #include <glm/glm.hpp>
 #include <glm_extention.h>
 #include <w_content_manager.h>
@@ -17,7 +17,6 @@ using namespace wolf::content_pipeline;
 
 #define VERTEX_BUFFER_BIND_ID 0
 #define INSTANCE_BUFFER_BIND_ID 1
-
 
 #if defined(__WIN32)
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
@@ -52,80 +51,27 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     w_game::initialize(pOutputWindowsInfo);
 }
 
-static void from_angle_axis ( const float& rfAngle_radian, const glm::vec3& rkAxis )
-{
-    // assert:  axis[] is unit length
-    //
-    // The quaternion representing the rotation is
-    //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
-    
-    float fHalfAngle_radian ( 0.5 * rfAngle_radian );
-    float fSin = sin( fHalfAngle_radian );
-    float w = cos( fHalfAngle_radian );
-    float x = fSin * rkAxis.x;
-    float y = fSin * rkAxis.y;
-    float z = fSin * rkAxis.z;
-    
-    //#Max -12.745 -27.363 -26.06
-    
-    logger.write(std::to_string(glm::degrees(w)));
-    logger.write(std::to_string(glm::degrees(x)));
-    logger.write(std::to_string(glm::degrees(y)));
-    logger.write(std::to_string(glm::degrees(z)));
-}
-
-//-----------------------------------------------------------------------
-static void angle_axis ( float& rfAngle_radian, glm::vec3&  rkAxis )
-{
-                           
-    // The quaternion representing the rotation is
-    //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
-    
-    float x = -12.745;
-    float y = -27.363;
-    float z = -26.06;
-    float w = 1;
-    
-    float fSqrLength = x * x + y * y + z * z;
-    
-    if ( fSqrLength > 0.0 )
-    {
-        rfAngle_radian = 2.0 * acos( w );
-        float fInvLength = 1/sqrt( fSqrLength );
-        rkAxis.x = x * fInvLength;
-        rkAxis.y = y * fInvLength;
-        rkAxis.z = z * fInvLength;
-    }
-    
-    else
-    {
-        // angle is 0 (mod 2*pi), so any axis will do
-        rfAngle_radian = 0.0;
-        rkAxis.x = 1.0;
-        rkAxis.y = 0.0;
-        rkAxis.z = 0.0;
-    }
-    
-    logger.write(std::to_string(rkAxis.x));
-    logger.write(std::to_string(rkAxis.y));
-    logger.write(std::to_string(rkAxis.z));
-    logger.write(std::to_string(w));
-}
-
+w_viewport _wp;
+w_viewport_scissor _wp_sc;
+VkDescriptorSet _descriptor_set;
 w_scene* _scene;
 w_texture* _texture = nullptr;
-w_shader_buffer<glm::mat4x4> _view_projection_uniform;
+struct shader_param
+{
+    glm::mat4 view_projection;
+    glm::mat4 model;
+};
+w_uniform<shader_param> _view_projection_model_uniform;
 w_shader _shader;
 void scene::load()
 {
     auto _gDevice =  this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
-    
-    
+        
     w_game::load();
     
     //auto _scene = w_content_manager::load<w_scene>(content_path + L"models/inst_max_oc.dae");
-    _scene = w_content_manager::load<w_scene>(content_path + L"models/teapot.dae");
+    _scene = w_content_manager::load<w_scene>(content_path + L"models/123.dae");
     this->_renderable_scene = new w_renderable_scene(_scene);
     this->_renderable_scene->load(_gDevice);
     this->_renderable_scene->get_first_or_default_camera(&this->_camera);
@@ -136,21 +82,26 @@ void scene::load()
     w_model* _m;
     _scene->get_models_by_index(0, &_m);
 
-    auto _hr = _view_projection_uniform.load(_gDevice);
-    
+    auto _hr = _view_projection_model_uniform.load(_gDevice);
     this->_camera->set_aspect_ratio((float)_output_window->width / (float)_output_window->height);
     this->_camera->update_view();
     this->_camera->update_projection();
     
     auto _t = _m->get_transform();
-    
+       
     glm::mat4 _translate = glm::translate(glm::mat4x4(1.0f), glm::vec3(_t.position[0], _t.position[1], _t.position[2]));
     glm::mat4 _scale = glm::scale(glm::mat4x4(1.0f), glm::vec3(_t.scale[0], _t.scale[1], _t.scale[2]));
-    
-    auto _world = _translate * glm::rotate(_t.rotation[0], _t.rotation[1], _t.rotation[2]) * _scale;
-    
-	_view_projection_uniform.data = this->_camera->get_projection() * this->_camera->get_view() * _world;
-    _hr = _view_projection_uniform.update();
+
+    auto _model_mat = _translate * 
+        glm::rotate(_t.rotation[0], glm::vec3(-1.0f, 0.0f, 0.0f)) *
+        glm::rotate(_t.rotation[1], glm::vec3(0.0f, 1.0f, 0.0f)) *
+        glm::rotate(_t.rotation[2], glm::vec3(0.0f, 0.0f, 1.0f)) *
+        _scale;
+
+    _view_projection_model_uniform.data.model = _model_mat;
+    _view_projection_model_uniform.data.view_projection = this->_camera->get_projection() * this->_camera->get_view();
+
+    _hr = _view_projection_model_uniform.update();
     
     //load shaders
     _hr = _shader.load(_gDevice, content_path + L"shaders/test/shader_instancing.vert.spv", w_shader_stage::VERTEX_SHADER);
@@ -195,9 +146,9 @@ void scene::load()
     _hr = _texture->initialize_texture_2D_from_file(content_path + L"../logo.jpg", true);
     
     const VkDescriptorImageInfo _image_info = _texture->get_descriptor_info();
-    const VkDescriptorBufferInfo _buffer_info = _view_projection_uniform.get_descriptor_info();
+    const VkDescriptorBufferInfo _buffer_info = _view_projection_model_uniform.get_descriptor_info();
     
-    auto _descriptor_set = _shader.get_descriptor_set();
+    _descriptor_set = _shader.get_descriptor_set();
     std::vector<VkWriteDescriptorSet> _write_descriptor_sets =
     {
         {
@@ -330,7 +281,6 @@ void scene::load()
     };
     
     //create view port
-    w_viewport _wp;
     _wp.x = 0.0f;
     _wp.y = 0.0f;
     _wp.width = _output_window->width;
@@ -338,7 +288,6 @@ void scene::load()
     _wp.minDepth = 0.0f;
     _wp.maxDepth = 1.0f;
     
-    w_viewport_scissor _wp_sc;
     _wp_sc.offset.x = 0.0f;
     _wp_sc.offset.y = 0.0f;
     _wp_sc.extent.width = _output_window->width;
@@ -388,28 +337,39 @@ void scene::load()
         logger.error("Error creating command buffer");
         return;
     }
+
+    _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
+}
+
+void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
+{
+    if (w_game::exiting) return;
     
+     w_game::update(pGameTime);
+}
+
+HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
+{
+    auto _gDevice = this->graphics_devices[0];
+    auto _output_window = &(_gDevice->output_presentation_windows[0]);
+
+    auto _pipeline = this->_pipeline.get_handle();
+    auto _pipeline_layout = this->_pipeline.get_layout_handle();
+
     VkImageSubresourceRange _sub_resource_range = {};
     _sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     _sub_resource_range.baseMipLevel = 0;
     _sub_resource_range.levelCount = 1;
     _sub_resource_range.baseArrayLayer = 0;
     _sub_resource_range.layerCount = 1;
-    
 
-    _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
-
-    
-    auto _pipeline = this->_pipeline.get_handle();
-    auto _pipeline_layout = this->_pipeline.get_layout_handle();
-    
     //record clear screen command buffer for every swap chain image
     for (uint32_t i = 0; i < this->_command_buffers->get_commands_size(); ++i)
     {
         this->_command_buffers->begin(i);
         {
             auto _command_buffer = this->_command_buffers->get_command_at(i);
-        
+
             VkImageMemoryBarrier _present_to_render_barrier =
             {
                 VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,                                         // Type
@@ -423,55 +383,55 @@ void scene::load()
                 _output_window->vk_swap_chain_image_views[i].image,                             // Image
                 _sub_resource_range                                                             // subresourceRange
             };
-            
+
             vkCmdPipelineBarrier(_command_buffer,
-                                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                 0,
-                                 0,
-                                 nullptr,
-                                 0,
-                                 nullptr,
-                                 1,
-                                 &_present_to_render_barrier);
-        
-            
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                0,
+                0,
+                nullptr,
+                0,
+                nullptr,
+                1,
+                &_present_to_render_barrier);
+
+
             this->_render_pass.begin(_command_buffer,
-                                     this->_frame_buffers.get_frame_buffer_at(i));
-            
-            vkCmdBindPipeline( _command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
-    
+                this->_frame_buffers.get_frame_buffer_at(i));
+
+            vkCmdBindPipeline(_command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
+
             vkCmdSetViewport(_command_buffer, 0, 1, &_wp);
             vkCmdSetScissor(_command_buffer, 0, 1, &_wp_sc);
-    
+
             vkCmdBindDescriptorSets(_command_buffer,
-                                    VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    _pipeline_layout,
-                                    0,
-                                    1,
-                                    &_descriptor_set,
-                                    0,
-                                    nullptr);
-            
+                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                _pipeline_layout,
+                0,
+                1,
+                &_descriptor_set,
+                0,
+                nullptr);
+
             VkDeviceSize _offset = 0;
-            
-            
+
+
             auto _vertex_buffer_handle = this->_renderable_scene->get_vertex_buffer_handle(0);
-            vkCmdBindVertexBuffers( _command_buffer, VERTEX_BUFFER_BIND_ID, 1, &_vertex_buffer_handle, &_offset );
-        
+            vkCmdBindVertexBuffers(_command_buffer, VERTEX_BUFFER_BIND_ID, 1, &_vertex_buffer_handle, &_offset);
+
             auto _instance_buffer_handle = this->_renderable_scene->get_instance_buffer_handle(0);
             vkCmdBindVertexBuffers(_command_buffer, INSTANCE_BUFFER_BIND_ID, 1, &_instance_buffer_handle, &_offset);
-            
+
             auto _index_buffer_handle = this->_renderable_scene->get_index_buffer_handle(0);
-            vkCmdBindIndexBuffer( _command_buffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32 );
+            vkCmdBindIndexBuffer(_command_buffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
 
             auto _i_c = this->_renderable_scene->get_indices_count(0);
             auto _instances_count = this->_renderable_scene->get_instances_count(0) + 1;
             vkCmdDrawIndexed(_command_buffer, _i_c, _instances_count, 0, 0, 0);
-            
-            
+
+
             //draw second one
-            
+
             //_offset = 0;
             ////_vertex_buffer_handle = this->_renderable_scene->get_vertex_buffer_handle(1);
             //auto _vertex_buffer_handle = this->_mesh->get_vertex_buffer_handle();
@@ -485,27 +445,27 @@ void scene::load()
             //
             //vkCmdDraw( _command_buffer, _v_c, 1, 0, 0 );
             ////vkCmdDrawIndexed(_command_buffer, _i_c, 1, 0, 0, 0);
-            
-            
+
+
             //draw third one
-            
-//            _offset = 0;
-//            _vertex_buffer_handle = this->_renderable_scene->get_vertex_buffer_handle(2);
-//            vkCmdBindVertexBuffers( _command_buffer, 0, 1, &_vertex_buffer_handle, &_offset );
-//            
-//            _index_buffer_handle = this->_renderable_scene->get_index_buffer_handle(2);
-//            vkCmdBindIndexBuffer( _command_buffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32 );
-            
+
+            //            _offset = 0;
+            //            _vertex_buffer_handle = this->_renderable_scene->get_vertex_buffer_handle(2);
+            //            vkCmdBindVertexBuffers( _command_buffer, 0, 1, &_vertex_buffer_handle, &_offset );
+            //            
+            //            _index_buffer_handle = this->_renderable_scene->get_index_buffer_handle(2);
+            //            vkCmdBindIndexBuffer( _command_buffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32 );
+
             //auto _v_c = this->_renderable_scene->get_vertices_count();
             //_i_c = this->_renderable_scene->get_indices_count(2);
-            
+
             //vkCmdDraw( _command_buffer, _v_c, 1, 0, 0 );
-           // vkCmdDrawIndexed(_command_buffer, _i_c, 1, 0, 0, 0);
-            
+            // vkCmdDrawIndexed(_command_buffer, _i_c, 1, 0, 0, 0);
+
             this->_render_pass.end(_command_buffer);
-            
+
             //_vertex_buffer_handle = nullptr;
-        
+
             VkImageMemoryBarrier _barrier_from_render_to_present =
             {
                 VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,                     // Type
@@ -519,32 +479,21 @@ void scene::load()
                 _output_window->vk_swap_chain_image_views[i].image,         // Image
                 _sub_resource_range                                         // SubresourceRange
             };
-            
+
             vkCmdPipelineBarrier(_command_buffer,
-                             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                             0,
-                             0,
-                             nullptr,
-                             0,
-                             nullptr,
-                             1,
-                             &_barrier_from_render_to_present );
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                0,
+                0,
+                nullptr,
+                0,
+                nullptr,
+                1,
+                &_barrier_from_render_to_present);
         }
         this->_command_buffers->end(i);
     }
-}
 
-static float _jjj = 0;
-void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
-{
-    if (w_game::exiting) return;
-    
-     w_game::update(pGameTime);
-}
-
-HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
-{
     return w_game::render(pGameTime);
 }
 
@@ -565,7 +514,7 @@ ULONG scene::release()
    _render_pass.release();
     
     //_texture->release();
-    _view_projection_uniform.release();
+   _view_projection_model_uniform.release();
     _shader.release();
     this->_pipeline.release();
     this->_frame_buffers.release();

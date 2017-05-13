@@ -5,7 +5,8 @@
 
 layout(set=0, binding=1) uniform u_buffer
 {
-    mat4 wvp;
+    mat4 view_projection;
+	mat4 model;
 } U0;
 
 // vertex input attributes
@@ -21,51 +22,56 @@ layout (location = 5) in int i_instance_uv_index;
 
 layout(location = 0) out vec2 o_uv;
 
+//forward declaration 
+mat3 rotate_over_axis(float pAngle, vec3 pAxis);
+
 void main() 
 {
     if (i_instance_scale == 0)
     {
         //is ref model
-         gl_Position = U0.wvp  * vec4(i_position, 1);
+         gl_Position = U0.view_projection * U0.model * vec4(i_position, 1);
     }
     else
     {
         //is instance
-        mat3 mx, my, mz;
-	
-        float s = sin(i_instance_rot.x);
-        float c = cos(i_instance_rot.x);
-        float _s = -1.0 * s;
-        float _c = -1.0 * c;
-    
-        mx[0] = vec3(1.0, 0.0, 0.0);
-        mx[1] = vec3(0.0, c, _s);
-        mx[2] = vec3(0.0, s, c);
-    
-        s = sin(i_instance_rot.y);
-        c = cos(i_instance_rot.y);
-        _s = -1.0 * s;
-        _c = -1.0 * c;
-    
-        my[0] = vec3(c, 0.0, s);
-        my[1] = vec3(0.0, 1.0, 0.0);
-        my[2] = vec3(_s, 0.0, c);
-    
-        s = sin(i_instance_rot.z);
-        c = cos(i_instance_rot.z);
-        _s = -1.0 * s;
-        _c = -1.0 * c;
-    
-        mz[0] = vec3(c, _s, 0.0);
-        mz[1] = vec3(s, c, 0.0);
-        mz[2] = vec3(0.0, 0.0, 1.0);
+        mat3 rx = rotate_over_axis(i_instance_rot.x, vec3( -1.0, 0.0, 0.0));
+		mat3 ry = rotate_over_axis(i_instance_rot.y, vec3( 0.0, 1.0, 0.0));
+		mat3 rz = rotate_over_axis(i_instance_rot.z, vec3( 0.0, 0.0, 1.0));
 
-        mat3 _rot_mat = mx * my * mz;
-    
-        vec4 _loc_pos = vec4(i_position * _rot_mat, 1.0);
-        vec4 _pos = vec4((_loc_pos.xyz * i_instance_scale) + i_instance_pos, 1.0);
-    
-        gl_Position = U0.wvp  * _pos;
+        mat3 _rot = rx * ry * rz;
+		mat4 _model_mat = mat4( _rot[0][0]       , _rot[0][1]		, _rot[0][2]		, 0.0,
+								_rot[1][0]       , _rot[1][1]		, _rot[1][2]		, 0.0,
+								_rot[2][0]       , _rot[2][1]		, _rot[2][2]		, 0.0,
+								i_instance_pos.x , i_instance_pos.y , i_instance_pos.z  , 1.0);
+
+        gl_Position =  U0.view_projection * _model_mat * vec4(i_position, 1.0);
     }
     o_uv = i_uv;//, i_instance_uv_index);
+}
+
+//forward declaration 
+mat3 rotate_over_axis(float pAngle, vec3 pAxis)
+{
+	const float a = pAngle;
+	const float c = cos(a);
+	const float s = sin(a);
+
+	vec3 axis = normalize(pAxis);
+	vec3 temp = (1 - c) * axis;
+
+	mat3 rotate;
+	rotate[0][0] = c + temp[0] * axis[0];
+	rotate[0][1] = temp[0] * axis[1] + s * axis[2];
+	rotate[0][2] = temp[0] * axis[2] - s * axis[1];
+
+	rotate[1][0] = temp[1] * axis[0] - s * axis[2];
+	rotate[1][1] = c + temp[1] * axis[1];
+	rotate[1][2] = temp[1] * axis[2] + s * axis[0];
+
+	rotate[2][0] = temp[2] * axis[0] + s * axis[1];
+	rotate[2][1] = temp[2] * axis[1] - s * axis[0];
+	rotate[2][2] = c + temp[2] * axis[2];
+
+	return rotate;
 }
