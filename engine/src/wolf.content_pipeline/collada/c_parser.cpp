@@ -22,7 +22,7 @@ static std::string					        sSkipChildrenOfThisNode;
 static c_xsi_extra					        sXSI_Extra;
 //static std::vector<unsigned short>	sXSI_Indices;
 static rapidxml::xml_node<>*		        SGeometryLibraryNode;
-static bool                                 sLeftCoordinateSystem = true;
+static bool                                 sZ_Up = true;
 
 const char* c_parser::_trace_class_name = "w_collada_parser";
 
@@ -127,7 +127,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
                 std::transform(_str.begin(), _str.end(), _str.begin(), ::tolower);
                 if (_str == "y_up")
                 {
-                    sLeftCoordinateSystem = false;
+                    sZ_Up = false;
                 }
                 _str.clear();
             }
@@ -1312,21 +1312,22 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
         for (auto _iter : sLibraryCameras)
         {
             auto _camera = new w_camera(_iter.second);
-            if (sLeftCoordinateSystem)
+            if (sZ_Up)
             {
                 //make transform change
                 auto _t = _camera->get_translate();
                 
                 std::swap(_t.y, _t.z);
                 _t.z *= -1;
-                
+                _t.y *= -1;
+
                 _camera->set_translate(_t);
             }
             pScene->add_camera(_camera);
         }
     }
 
-    pScene->set_coordiante_system(sLeftCoordinateSystem);
+    pScene->set_coordiante_system(sZ_Up);
     
 	return S_OK;
 }
@@ -1375,43 +1376,28 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
                 //we find source model
                 w_model::w_instance_info _instance_info;
 
-                if (sLeftCoordinateSystem)
+                auto _rotation = glm::rotation_from_angle_axis(_node->rotation.x, _node->rotation.y, _node->rotation.z, _node->rotation.w);
+
+                if (sZ_Up)
                 {
                     _instance_info.position[0] = _node->translate.x;
                     _instance_info.position[1] = _node->translate.z;
                     _instance_info.position[2] = -_node->translate.y;
+
+                    _instance_info.rotation[0] = _rotation.x - glm::radians(90.0f);
+                    _instance_info.rotation[1] = _rotation.y;
+                    _instance_info.rotation[2] = _rotation.z;
                 }
                 else
                 {
                     _instance_info.position[0] = _node->translate.x;
                     _instance_info.position[1] = _node->translate.y;
                     _instance_info.position[2] = _node->translate.z;
-                }
 
-                
-                if (_node->rotation.y)
-                {
-                    _node->rotation.y*= -1;
-                    _node->rotation.w*= -1;
-                }
-                
-               // _node->rotation.x*= -1;
-                _node->rotation.y*= -1;
-                //_node->rotation.z*= -1;
-                _node->rotation.w*= -1;
-                
-                auto _rotation = glm::rotation_from_angle_axis(_node->rotation.x, _node->rotation.y, _node->rotation.z, _node->rotation.w);
-                
-                if (sLeftCoordinateSystem)
-                {
                     _instance_info.rotation[0] = _rotation.x;
+                    _instance_info.rotation[1] = _rotation.y;
+                    _instance_info.rotation[2] = _rotation.z;
                 }
-                else
-                {
-                    _instance_info.rotation[0] = _rotation.x;
-                }
-                _instance_info.rotation[1] = _rotation.y;
-                _instance_info.rotation[2] = _rotation.z;
 
                 if (_node->scale.x == 0 &&
                     _node->scale.y == 0 &&
@@ -1546,43 +1532,28 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
 
         //set transform
         w_transform_info _trasform;
-        
-        if (sLeftCoordinateSystem)
+        auto _rotation = glm::rotation_from_angle_axis(_node_ptr->rotation.x, _node_ptr->rotation.y, _node_ptr->rotation.z, _node_ptr->rotation.w);
+
+        if (sZ_Up)
         {
             _trasform.position[0] = _node_ptr->translate.x;
             _trasform.position[1] = _node_ptr->translate.z;
             _trasform.position[2] = -_node_ptr->translate.y;
+
+            _trasform.rotation[0] = _rotation.x - glm::radians(90.0f);
+            _trasform.rotation[1] = _rotation.y;
+            _trasform.rotation[2] = _rotation.z;
         }
         else
         {
             _trasform.position[0] = _node_ptr->translate.x;
             _trasform.position[1] = _node_ptr->translate.y;
             _trasform.position[2] = _node_ptr->translate.z;
-        }
-        
-        if (_node_ptr->rotation.y)
-        {
-            _node_ptr->rotation.y*= -1;
-            _node_ptr->rotation.w*= -1;
-        }
-        
-//        ->rotation.x*= -1;
-//        _node_ptr->rotation.y*= -1;
-//        _node_ptr->rotation.z*= -1;
-//        _node_ptr->rotation.w*= -1;
-        
-        auto _rotation = glm::rotation_from_angle_axis(_node_ptr->rotation.x, _node_ptr->rotation.y, _node_ptr->rotation.z, _node_ptr->rotation.w);
-        
-        if (sLeftCoordinateSystem)
-        {
-            _trasform.rotation[0] = _rotation.x;// + (_node_ptr->rotation.x ? 0 : glm::radians(90.0f));
-        }
-        else
-        {
+
             _trasform.rotation[0] = _rotation.x;
+            _trasform.rotation[1] = _rotation.y;
+            _trasform.rotation[2] = _rotation.z;
         }
-        _trasform.rotation[1] = _rotation.y;
-        _trasform.rotation[2] = _rotation.z;
 
         if (_node_ptr->scale.x == 0 && 
             _node_ptr->scale.y == 0 &&

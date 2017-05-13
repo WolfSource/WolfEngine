@@ -267,7 +267,7 @@ namespace glm
         auto _pitch = glm::pitch(_quat);
         auto _yaw = glm::yaw(_quat);
         auto _roll = glm::roll(_quat);
-        
+
         return glm::vec3(_pitch, _yaw, _roll);
     }
 }
