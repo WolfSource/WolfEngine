@@ -31,41 +31,41 @@ void main()
     else
     {
         //is instance
-	mat3 mx, my, mz;
+        mat3 mx, my, mz;
 	
-	float s = sin(i_instance_rot.x);
-	float c = cos(i_instance_rot.x);
-    float _s = -1.0 * s;
-    float _c = -1.0 * c;
+        float s = sin(i_instance_rot.x);
+        float c = cos(i_instance_rot.x);
+        float _s = -1.0 * s;
+        float _c = -1.0 * c;
     
-	mx[0] = vec3(1.0, 0.0, 0.0);
-	mx[1] = vec3(0.0, c, _s);
-	mx[2] = vec3(0.0, s, c);
+        mx[0] = vec3(1.0, 0.0, 0.0);
+        mx[1] = vec3(0.0, c, _s);
+        mx[2] = vec3(0.0, s, c);
     
-    s = sin(i_instance_rot.y);
-    c = cos(i_instance_rot.y);
-    _s = -1.0 * s;
-    _c = -1.0 * c;
+        s = sin(i_instance_rot.y);
+        c = cos(i_instance_rot.y);
+        _s = -1.0 * s;
+        _c = -1.0 * c;
     
-    my[0] = vec3(c, 0.0, s);
-    my[1] = vec3(0.0, 1.0, 0.0);
-    my[2] = vec3(_s, 0.0, c);
+        my[0] = vec3(c, 0.0, s);
+        my[1] = vec3(0.0, 1.0, 0.0);
+        my[2] = vec3(_s, 0.0, c);
     
-    s = sin(i_instance_rot.z);
-    c = cos(i_instance_rot.z);
-    _s = -1.0 * s;
-    _c = -1.0 * c;
+        s = sin(i_instance_rot.z);
+        c = cos(i_instance_rot.z);
+        _s = -1.0 * s;
+        _c = -1.0 * c;
     
-    mz[0] = vec3(c, _s, 0.0);
-    mz[1] = vec3(s, c, 0.0);
-    mz[2] = vec3(0.0, 0.0, 1.0);
+        mz[0] = vec3(c, _s, 0.0);
+        mz[1] = vec3(s, c, 0.0);
+        mz[2] = vec3(0.0, 0.0, 1.0);
 
-    mat3 _rot_mat = mx * my * mz;
+        mat3 _rot_mat = mx * my * mz;
     
-    vec4 _loc_pos = vec4(i_position * _rot_mat, 1.0);
-    vec4 _pos = vec4((_loc_pos.xyz * 0 /*i_instance_scale*/) + i_instance_pos, 1.0);
+        vec4 _loc_pos = vec4(i_position * _rot_mat, 1.0);
+        vec4 _pos = vec4((_loc_pos.xyz * i_instance_scale) + i_instance_pos, 1.0);
     
-    gl_Position = U0.wvp  * _pos;
+        gl_Position = U0.wvp  * _pos;
     }
     o_uv = i_uv;//, i_instance_uv_index);
 }
