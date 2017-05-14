@@ -24,6 +24,7 @@ namespace wolf
 			W_EXP virtual ~w_pipeline();
 
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                               _In_ const std::string& pPipelineCacheName,
                                _In_ const VkRenderPass pRenderPass,
                                _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
                                _In_ const std::vector<w_viewport> pViewPorts,
@@ -48,13 +49,17 @@ namespace wolf
             
 #pragma endregion
 
-#pragma region Setters
+            W_EXP static VkPipelineLayout create_pipeline_layout(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo);
 
- 
+            W_EXP static HRESULT create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
+                _In_z_ const std::string& pPipelineCacheName);
+            
+            W_EXP static VkPipelineCache get_pipeline_cache(_In_z_ const std::string& pPipelineCacheName);
+            
+            W_EXP static ULONG release_all_pipeline_caches(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
 
-#pragma endregion
-
-		private:
+        private:
 			typedef system::w_object						_super;
             w_pipeline_pimp*                                _pimp;
         };

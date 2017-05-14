@@ -5,7 +5,7 @@
 
 layout(set=0, binding=1) uniform u_buffer
 {
-    mat4 view_projection;
+    mat4 projection_view;
 	mat4 model;
 } U0;
 
@@ -30,12 +30,12 @@ void main()
     if (i_instance_scale == 0)
     {
         //is ref model
-         gl_Position = U0.view_projection * U0.model * vec4(i_position, 1);
+         gl_Position = U0.projection_view * U0.model * vec4(i_position, 1);
     }
     else
     {
         //is instance
-        mat3 rx = rotate_over_axis(i_instance_rot.x, vec3( -1.0, 0.0, 0.0));
+        mat3 rx = rotate_over_axis(i_instance_rot.x, vec3( 1.0, 0.0, 0.0));
 		mat3 ry = rotate_over_axis(i_instance_rot.y, vec3( 0.0, 1.0, 0.0));
 		mat3 rz = rotate_over_axis(i_instance_rot.z, vec3( 0.0, 0.0, 1.0));
 
@@ -45,7 +45,7 @@ void main()
 								_rot[2][0]       , _rot[2][1]		, _rot[2][2]		, 0.0,
 								i_instance_pos.x , i_instance_pos.y , i_instance_pos.z  , 1.0);
 
-        gl_Position =  U0.view_projection * _model_mat * vec4(i_position, 1.0);
+        gl_Position =  U0.projection_view * _model_mat * vec4(i_position, 1.0);
     }
     o_uv = i_uv;//, i_instance_uv_index);
 }

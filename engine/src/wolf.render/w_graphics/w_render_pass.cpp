@@ -9,23 +9,26 @@ namespace wolf
         {
         public:
             w_render_pass_pimp() :
-            _name("w_render_pass"),
-            _render_pass(0)
+                _name("w_render_pass"),
+                _render_pass(0)
             {
-                
             }
-            
+
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                         _In_ const std::vector<VkAttachmentDescription>* pAttachmentDescriptions,
-                         _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
-                         _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
+                _In_ const w_viewport& pViewPort,
+                _In_ const w_viewport_scissor& pViewPortScissor,
+                _In_ const std::vector<VkAttachmentDescription>* pAttachmentDescriptions,
+                _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
+                _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
             {
                 this->_gDevice = pGDevice;
-                
+                this->_viewport = pViewPort;
+                this->_viewport_scissor = pViewPortScissor;
+
                 std::vector<VkAttachmentDescription> _attachment_descriptions;
                 std::vector<VkSubpassDescription> _subpass_descriptions;
                 std::vector<VkSubpassDependency> _subpass_dependencies;
-                
+
                 if (!pAttachmentDescriptions)
                 {
                     _attachment_descriptions.push_back(w_graphics_device::defaults::vk_default_attachment_description);
@@ -34,14 +37,14 @@ namespace wolf
                 {
                     _attachment_descriptions = *pAttachmentDescriptions;
                 }
-                
+
                 if (!pSubpassDescriptions)
                 {
                     const VkAttachmentReference _attachment_ref[] =
                     {
                         w_graphics_device::defaults::vk_default_color_attachment_reference
                     };
-                    
+
                     VkSubpassDescription _subpass_description =
                     {
                         0,
@@ -55,15 +58,15 @@ namespace wolf
                         0,
                         nullptr
                     };
-                    
+
                     _subpass_descriptions.push_back(_subpass_description);
                 }
                 else
                 {
                     _subpass_descriptions = *pSubpassDescriptions;
                 }
-                
-                
+
+
                 if (!pSubpassDependencies)
                 {
                     _subpass_dependencies = w_graphics_device::defaults::vk_default_subpass_dependencies;
@@ -72,41 +75,37 @@ namespace wolf
                 {
                     _subpass_dependencies = *pSubpassDependencies;
                 }
-                
+
                 const VkRenderPassCreateInfo _render_pass_create_info =
                 {
                     VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,                              //sType
                     nullptr,                                                                // Next
                     0,                                                                      // Flags
-                    
+
                     static_cast<uint32_t>(_attachment_descriptions.size()),                 // AttachmentCount
                     _attachment_descriptions.data(),                                        // Attachments
-                    
+
                     static_cast<uint32_t>(_subpass_descriptions.size()),                    // SubpassCount
                     _subpass_descriptions.data(),                                           // Subpasses
-                    
+
                     static_cast<uint32_t>(_subpass_dependencies.size()),                    // DependencyCount
                     _subpass_dependencies.data()                                            // Dependencies
                 };
-                
-                auto _hr = vkCreateRenderPass(this->_gDevice ->vk_device,
-                                              &_render_pass_create_info,
-                                              nullptr,
-                                              &this->_render_pass);
+
+                auto _hr = vkCreateRenderPass(this->_gDevice->vk_device,
+                    &_render_pass_create_info,
+                    nullptr,
+                    &this->_render_pass);
                 V(_hr, L"creating render pass for graphics device: " +
-                  std::wstring(this->_gDevice ->device_name.begin(), this->_gDevice ->device_name.end()) +
-                  L" ID:" + std::to_wstring(this->_gDevice ->device_id), this->_name, 3, false, true);
-                
+                    std::wstring(this->_gDevice->device_name.begin(), this->_gDevice->device_name.end()) +
+                    L" ID:" + std::to_wstring(this->_gDevice->device_id), this->_name, 3, false, true);
+
                 return _hr ? S_FALSE : S_OK;
             }
-            
+
             void begin(_In_ const VkCommandBuffer pCommandBuffer,
-                          _In_ const VkFramebuffer pFrameBuffer,
-                          _In_ const w_color pClearColor,
-                          _In_ const INT32 pStartOffsetX,
-                          _In_ const INT32 pStartOffsetY,
-                          _In_ const UINT  pWidth,
-                          _In_ const UINT  pHeight)
+                _In_ const VkFramebuffer pFrameBuffer,
+                _In_ const w_color pClearColor)
             {
                 VkClearValue _vk_clear_color =
                 {
@@ -117,7 +116,7 @@ namespace wolf
                         pClearColor.a / 255.0f
                     }
                 };
-                
+
                 VkRenderPassBeginInfo _render_pass_begin_info =
                 {
                     VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,    // Type
@@ -126,59 +125,90 @@ namespace wolf
                     pFrameBuffer,                                // Framebuffer
                     {                                            // RenderArea
                         {
-                            pStartOffsetX,                       // X
-                            pStartOffsetY                        // Y
+                            this->_viewport.x,                   // X
+                            this->_viewport.y                    // Y
                         },
                         {
-                            pWidth,                              // Width
-                            pHeight,                             // Height
+                            this->_viewport.width,               // Width
+                            this->_viewport.height,              // Height
                         }
                     },
                     1,                                           // ClearValueCount
                     &_vk_clear_color                             // ClearValues
                 };
-                vkCmdBeginRenderPass( pCommandBuffer, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE );
+                vkCmdBeginRenderPass(pCommandBuffer, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
+
+                vkCmdSetViewport(pCommandBuffer, 0, 1, &this->_viewport);
+                vkCmdSetScissor(pCommandBuffer, 0, 1, &this->_viewport_scissor);
             }
-            
+
             void end(_In_ const VkCommandBuffer pCommandBuffer)
             {
                 vkCmdEndRenderPass(pCommandBuffer);
             }
-            
+
             ULONG release()
             {
-                if(this->_render_pass)
+                if (this->_render_pass)
                 {
                     vkDestroyRenderPass(this->_gDevice->vk_device,
-                                        this->_render_pass,
-                                        nullptr);
+                        this->_render_pass,
+                        nullptr);
                     this->_render_pass = nullptr;
                 }
                 this->_gDevice = nullptr;
-                
+
                 return 1;
             }
-            
-            
+
+
 #pragma region Getters
-            
+
             const VkRenderPass get_handle() const
             {
                 return this->_render_pass;
             }
-            
+
+            w_viewport get_viewport() const
+            {
+                return this->_viewport;
+            }
+
+            w_viewport_scissor get_viewport_scissor() const
+            {
+                return this->_viewport_scissor;
+            }
+
 #pragma endregion
-       
+
 #pragma region Setters
-            
-        
-            
+
+            void set_viewport(_In_ const w_viewport& pViewPort)
+            {
+                this->_viewport = pViewPort;
+            }
+
+            void set_viewport_scissor(_In_ const w_viewport_scissor& pViewPortScissor)
+            {
+                this->_viewport_scissor = pViewPortScissor;
+            }
+
 #pragma endregion
-            
+
+#pragma endregion
+
+#pragma region Setters
+
+
+
+#pragma endregion
+
         private:
             std::string                                     _name;
             std::shared_ptr<w_graphics_device>              _gDevice;
             VkRenderPass                                    _render_pass;
+            w_viewport                                      _viewport;
+            w_viewport_scissor                              _viewport_scissor;
         };
     }
 }
@@ -196,12 +226,16 @@ w_render_pass::~w_render_pass()
 }
 
 HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                            _In_ const w_viewport& pViewPort,
+                            _In_ const w_viewport_scissor& pViewPortScissor,
                             _In_ const std::vector<VkAttachmentDescription>* pAttachmentDescriptions,
                             _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
                             _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->load(pGDevice,
+                             pViewPort,
+                             pViewPortScissor,
                              pAttachmentDescriptions,
                              pSubpassDescriptions,
                              pSubpassDependencies);
@@ -209,20 +243,12 @@ HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDev
 
 void w_render_pass::begin(_In_ const VkCommandBuffer pCommandBuffer,
            _In_ const VkFramebuffer pFrameBuffer,
-           _In_ const w_color pClearColor,
-           _In_ const INT32 pStartOffsetX,
-           _In_ const INT32 pStartOffsetY,
-           _In_ const UINT  pWidth,
-           _In_ const UINT  pHeight)
+           _In_ const w_color pClearColor)
 {
     if(!this->_pimp) return;
     this->_pimp->begin(pCommandBuffer,
                               pFrameBuffer,
-                              pClearColor,
-                              pStartOffsetX,
-                              pStartOffsetY,
-                              pWidth,
-                              pHeight);
+                              pClearColor);
 }
 
 void w_render_pass::end(_In_ VkCommandBuffer pCommandBuffer)
@@ -248,10 +274,42 @@ const VkRenderPass w_render_pass::get_handle() const
     return this->_pimp->get_handle();
 }
 
+w_viewport w_render_pass::get_viewport() const
+{
+    if (!this->_pimp) return w_viewport();
+    return this->_pimp->get_viewport();
+}
+
+w_viewport_scissor w_render_pass::get_viewport_scissor() const
+{
+    if (!this->_pimp) return w_viewport_scissor();
+    return this->_pimp->get_viewport_scissor();
+}
+
 #pragma endregion
 
 #pragma region Setters
 
 
+
+#pragma endregion
+
+#pragma region Setters
+
+void w_render_pass::set_viewport(_In_ const w_viewport& pViewPort)
+{
+    if (this->_pimp)
+    {
+        this->_pimp->set_viewport(pViewPort);
+    }
+}
+
+void w_render_pass::set_viewport_scissor(_In_ const  w_viewport_scissor& pViewPortScissor)
+{
+    if (this->_pimp)
+    {
+        this->_pimp->set_viewport_scissor(pViewPortScissor);
+    }
+}
 
 #pragma endregion

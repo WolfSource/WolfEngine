@@ -322,14 +322,14 @@ namespace wolf
 			W_EXP ULONG release() override;
 
 			//convert DPIs to pixels
-			static const float convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI);
+            W_EXP static const float convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI);
 
 #pragma region Getters
 			//Get the main graphics device, this is first and the primary device.
-            std::shared_ptr<w_graphics_device> get_graphics_device() const;
+            W_EXP std::shared_ptr<w_graphics_device> get_graphics_device() const;
 			//Returns number of available graphics devices
-            const ULONG get_number_of_graphics_devices() const;
-			w_color get_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
+            W_EXP const ULONG get_number_of_graphics_devices() const;
+            W_EXP w_color get_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
 				_In_ size_t pOutputPresentationWindowIndex) const;
 #pragma endregion
 
@@ -356,7 +356,7 @@ namespace wolf
 //#pragma endregion
 
 #ifdef __VULKAN__
-            static VkResult memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
+            W_EXP static VkResult memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
                                                   uint32_t pTypeBits,
                                                   VkFlags pRequirementsMask,
                                                   uint32_t* pTypeIndex);
@@ -404,6 +404,15 @@ namespace wolf
         
 #endif
         {
+            w_viewport()
+            {
+                this->x = 0.0f;
+                this->y = 0.0f;
+                this->width = 800.0f;
+                this->height = 600.0f;
+                this->minDepth = 0.0f;
+                this->maxDepth = 1.0f;
+            }
         };
         
         struct w_viewport_scissor :
@@ -412,6 +421,13 @@ namespace wolf
         
 #endif
         {
+            w_viewport_scissor()
+            {
+                this->offset.x = 0;
+                this->offset.y = 0;
+                this->extent.width = 800;
+                this->extent.height = 600;
+            }
         };
         
 #pragma endregion

@@ -59,7 +59,6 @@ public:
 private:
     wolf::graphics::w_command_buffers*          _command_buffers;
     wolf::graphics::w_render_pass               _render_pass;
-    wolf::graphics::w_pipeline                  _pipeline;
     wolf::graphics::w_frame_buffers             _frame_buffers;
     wolf::framework::w_renderable_scene*        _renderable_scene;
     wolf::content_pipeline::w_camera*           _camera;

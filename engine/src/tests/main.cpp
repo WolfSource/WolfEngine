@@ -52,6 +52,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	_window_info.height = sWindow->get_height();
 	_window_info.hwnd = sWindow->get_HWND();
 	_window_info.hInstance = sWindow->get_HINSTANCE();
+    _window_info.v_sync_enable = false;
 
 	//call init_window from objective-c and get the pointer to the window
 	std::map<int, std::vector<w_window_info>> _windows_info;

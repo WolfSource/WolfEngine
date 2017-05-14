@@ -351,6 +351,7 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
     _In_z_ const std::string& pName,
     _In_z_ const std::wstring& pVertexShaderPath,
     _In_z_ const std::wstring& pFragmentShaderPath,
+    _Inout_ w_shader** pShader,
     _In_z_ const char* pMainFunctionName)
 {
     auto _shader = new (std::nothrow) w_shader();
@@ -363,23 +364,40 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
 
     if (!pVertexShaderPath.empty())
     {
-        _shader->load(pGDevice, pVertexShaderPath, w_shader_stage::VERTEX_SHADER, pMainFunctionName);
+        if (_shader->load(pGDevice, pVertexShaderPath, w_shader_stage::VERTEX_SHADER, pMainFunctionName) == S_FALSE)
+        {
+            return S_FALSE;
+        }
     }
     if (!pFragmentShaderPath.empty())
     {
-        _shader->load(pGDevice, pFragmentShaderPath, w_shader_stage::FRAGMENT_SHADER, pMainFunctionName);
+        if (_shader->load(pGDevice, pFragmentShaderPath, w_shader_stage::FRAGMENT_SHADER, pMainFunctionName) == S_FALSE)
+        {
+            return S_FALSE;
+        }
     }
 
     //check if already exists
+    auto _old_shader = get_shader_from_shared(pName);
+    if (_old_shader)
+    {
+        logger.warning("Shader " + pName + "  already exists. The new one will be replaced with old one.");
+        SAFE_RELEASE(_old_shader);
+    }
+    _shared[pName] = _shader;
+    *pShader = _shader;
+
+    return S_OK;
+}
+
+w_shader* w_shader::get_shader_from_shared(_In_z_ const std::string& pName)
+{
     auto _iter = _shared.find(pName);
     if (_iter != _shared.end())
     {
-        logger.warning("Shader " + pName + "  already exists. The new one will be replaced with old one.");
-        SAFE_RELEASE(_shared.at(pName));
+        return _iter->second;
     }
-    _shared[pName] = _shader;
-
-    return S_OK;
+    return nullptr;
 }
 
 ULONG w_shader::release_shared_shaders()

@@ -15,8 +15,8 @@
 #define __W_SYSTEM_PCH_H__
                         
 #define WOLF_MAJOR_VERSION 1// when you make incompatible API changes.
-#define WOLF_MINOR_VERSION 0// when you add functionality in a backwards - compatible manner.
-#define WOLF_PATCH_VERSION 4// bug fixes
+#define WOLF_MINOR_VERSION 10// when you add functionality in a backwards - compatible manner.
+#define WOLF_PATCH_VERSION 0// bug fixes
 #define WOLF_DEBUG_VERSION 0// for debugging.
 
 #ifndef W_UNUSED

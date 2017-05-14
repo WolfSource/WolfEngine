@@ -16,6 +16,7 @@
 #include <w_graphics/w_uniform.h>
 #include <w_graphics/w_texture.h>
 #include "w_mesh.h"
+#include "w_pipeline.h"
 
 namespace wolf
 {
@@ -152,6 +153,7 @@ namespace wolf
 
 				//release shader's constant/uniform buffers
 				this->_uniform.release();
+                this->_texture = nullptr;
 
 				return w_mesh::release();
 			}

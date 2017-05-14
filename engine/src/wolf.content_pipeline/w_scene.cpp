@@ -120,9 +120,9 @@ void w_scene::get_cameras_by_id(const std::string& pID, _Inout_ std::vector<w_ca
 
 #pragma region Setters
 
-void w_scene::set_coordiante_system(_In_ const bool pIsLeftHand)
+void w_scene::set_coordiante_system(_In_ const bool pZUp)
 {
-    this->_is_left_hand_coordinate_system = pIsLeftHand;
+    this->_z_up = pZUp;
 }
 
 #pragma endregion

@@ -13,6 +13,12 @@
 #include "w_graphics_device_manager.h"
 #include "w_texture.h"
 
+enum w_shader_type
+{
+    BASIC_SHADER,
+    BASIC_INSTANCE_SHADER,
+};
+
 enum w_shader_stage
 {
 	VERTEX_SHADER,
@@ -74,7 +80,10 @@ namespace wolf
                                                         _In_z_ const std::string& pName,
                                                         _In_z_ const std::wstring& pVertexShaderPath,
                                                         _In_z_ const std::wstring& pFragmentShaderPath,
+                                                        _Inout_ w_shader** pShader,
                                                         _In_z_ const char* pMainFunctionName = "main");
+
+            W_EXP static w_shader* get_shader_from_shared(_In_z_ const std::string& pName);
             W_EXP static ULONG release_shared_shaders();
 
 		private:

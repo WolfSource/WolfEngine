@@ -10,7 +10,9 @@ w_renderable_scene::w_renderable_scene(_In_ wolf::content_pipeline::w_scene* pSc
 {
 }
 
-void w_renderable_scene::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
+void w_renderable_scene::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+    _In_ const w_render_pass* pRenderPass,
+    _In_ const std::string& pPipelineCacheName)
 {
 	if (!_scene) return;
 	
@@ -23,23 +25,28 @@ void w_renderable_scene::load(_In_ const std::shared_ptr<wolf::graphics::w_graph
 
 	for (size_t i = 0; i < this->_model_counts; ++i)
 	{
-		this->_models[i] = new w_renderable_model(pGDevice, __models[i]);
-		if (this->_models[i]->load() == S_FALSE)
+		this->_models[i] = new w_renderable_model(pGDevice, __models[i], _scene->get_z_up());
+		if (this->_models[i]->load(pRenderPass, pPipelineCacheName) == S_FALSE)
 		{
 			SAFE_RELEASE(this->_models[i]);
 		}
 	}
 }
 
-void w_renderable_scene::set_view_projection(_In_ const glm::mat4x4 pValue)
+void w_renderable_scene::update(_In_ const glm::mat4& pViewProjection)
 {
-	for (size_t i = 0; i < this->_model_counts; ++i)
-	{
-		if (this->_models[i] != nullptr)
-		{
-			this->_models[i]->set_view_projection(pValue);
-		}
-	}
+    std::for_each(this->_models.begin(), this->_models.end(), [&pViewProjection](_In_ w_renderable_model* pModel)
+    {
+        pModel->update(pViewProjection);
+    });
+}
+
+void w_renderable_scene::render(_In_ const VkCommandBuffer& pBuffer)
+{
+    std::for_each(this->_models.begin(), this->_models.end(), [&pBuffer](_In_ w_renderable_model* pModel)
+    {
+        pModel->render(pBuffer);
+    });
 }
 
 ULONG w_renderable_scene::release()
@@ -70,51 +77,6 @@ void w_renderable_scene::get_first_or_default_camera(_Inout_ wolf::content_pipel
 	}
 }
 
-VkBuffer w_renderable_scene::get_vertex_buffer_handle(_In_ const size_t pIndex) const
-{
-    if (pIndex < this->_models.size() && this->_models[pIndex] != nullptr)
-    {
-        return this->_models[pIndex]->get_vertex_buffer_handle();
-    }
-    return 0;
-}
-
-VkBuffer w_renderable_scene::get_index_buffer_handle(_In_ const size_t pIndex) const
-{
-    if (pIndex < this->_models.size() && this->_models[pIndex] != nullptr)
-    {
-        return this->_models[pIndex]->get_index_buffer_handle();
-    }
-    return 0;
-}
-
-UINT w_renderable_scene::get_vertices_count(_In_ const size_t pIndex) const
-{
-    if (pIndex < this->_models.size() && this->_models[pIndex] != nullptr)
-    {
-        return this->_models[pIndex]->get_vertices_count();
-    }
-    return 0;
-}
-
-UINT w_renderable_scene::get_indices_count(_In_ const size_t pIndex) const
-{
-    if (pIndex < this->_models.size() && this->_models[pIndex] != nullptr)
-    {
-        return this->_models[pIndex]->get_indices_count();
-    }
-    return 0;
-}
-
-VkBuffer w_renderable_scene::get_instance_buffer_handle(_In_ const size_t pIndex) const
-{
-    if (pIndex < this->_models.size() && this->_models[pIndex] != nullptr)
-    {
-        return this->_models[pIndex]->get_instance_buffer_handle();
-    }
-    return 0;
-}
-
 uint32_t w_renderable_scene::get_instances_count(_In_ const size_t pIndex) const
 {
     if (pIndex < this->_models.size() && this->_models[pIndex] != nullptr)
@@ -125,3 +87,4 @@ uint32_t w_renderable_scene::get_instances_count(_In_ const size_t pIndex) const
 }
 
 #pragma endregion
+

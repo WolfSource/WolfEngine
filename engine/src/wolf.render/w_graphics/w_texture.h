@@ -41,7 +41,7 @@ namespace wolf
                                                         _Inout_ w_texture** pPointerToTexture);
 
             //release all shared textures
-            ULONG static release_shared_textures();
+            W_EXP ULONG static release_shared_textures();
 #pragma region Getters
 
             //get width of image
@@ -78,7 +78,7 @@ namespace wolf
 
 #pragma endregion
 
-            static w_texture*                               default_texture;
+            W_EXP static w_texture*                               default_texture;
 
 		private:
 			typedef system::w_object						_super;
