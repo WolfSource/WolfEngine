@@ -2,13 +2,13 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : w_model.h
+	Name			 : w_cpipeline_model.h
 	Description		 : The class of model used in collada
 	Comment          :
 */
 
-#ifndef __W_MODEL_H__
-#define __W_MODEL_H__
+#ifndef __W_CPIPELINE_MODEL_H__
+#define __W_CPIPELINE_MODEL_H__
 
 #include "w_cpipeline_export.h"
 #include <w_object.h>
@@ -22,7 +22,6 @@
 #include "collada/c_skin.h"
 #include "collada/c_animation.h"
 #include <msgpack.hpp>
-
 
 namespace wolf
 {
@@ -94,11 +93,11 @@ namespace wolf
             MSGPACK_DEFINE(position, normal, uv, vertex_index);
 		};
 
-		class w_model
+		class w_cpipeline_model
 		{
 		public:
-			WCP_EXP w_model();
-			WCP_EXP virtual ~w_model();
+			WCP_EXP w_cpipeline_model();
+			WCP_EXP virtual ~w_cpipeline_model();
 
 			WCP_EXP struct w_bounding_box
 			{
@@ -157,8 +156,8 @@ namespace wolf
 #pragma endregion
 
 			//access to private members of instance model from static method
-			//class w_model;
-			static w_model* create_model(_In_ collada::c_geometry& pGeometry,
+			//class w_cpipeline_model;
+			static w_cpipeline_model* create_model(_In_ collada::c_geometry& pGeometry,
                 _In_ collada::c_skin* pSkin,
 				_In_ std::vector<collada::c_bone*>& pBones, 
                 _In_ std::string pBoneNames [], 

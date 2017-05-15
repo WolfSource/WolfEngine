@@ -3,7 +3,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout(set=0, binding=1) uniform u_buffer
+layout(binding=0) uniform u_buffer
 {
     mat4 projection_view;
 	mat4 model;
@@ -35,15 +35,15 @@ void main()
     else
     {
         //is instance
-        mat3 rx = rotate_over_axis(i_instance_rot.x, vec3( 1.0, 0.0, 0.0));
+        mat3 rx = rotate_over_axis(i_instance_rot.x, vec3( -1.0, 0.0, 0.0));
 		mat3 ry = rotate_over_axis(i_instance_rot.y, vec3( 0.0, 1.0, 0.0));
 		mat3 rz = rotate_over_axis(i_instance_rot.z, vec3( 0.0, 0.0, 1.0));
 
         mat3 _rot = rx * ry * rz;
-		mat4 _model_mat = mat4( _rot[0][0]       , _rot[0][1]		, _rot[0][2]		, 0.0,
-								_rot[1][0]       , _rot[1][1]		, _rot[1][2]		, 0.0,
-								_rot[2][0]       , _rot[2][1]		, _rot[2][2]		, 0.0,
-								i_instance_pos.x , i_instance_pos.y , i_instance_pos.z  , 1.0);
+		mat4 _model_mat = mat4( i_instance_scale * _rot[0][0], _rot[0][1]					, _rot[0][2]				   , 0.0,
+								_rot[1][0]					 , i_instance_scale * _rot[1][1], _rot[1][2]				   , 0.0,
+								_rot[2][0]					 , _rot[2][1]					, i_instance_scale * _rot[2][2], 0.0,
+								i_instance_pos.x			 , i_instance_pos.y				, i_instance_pos.z			   , 1.0);
 
         gl_Position =  U0.projection_view * _model_mat * vec4(i_position, 1.0);
     }

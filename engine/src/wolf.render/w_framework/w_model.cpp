@@ -1,46 +1,48 @@
 #include "w_render_pch.h"
-#include "w_renderable_model.h"
+#include "w_model.h"
 #include <w_vertex_declaration.h>
 
 using namespace wolf::graphics;
 using namespace wolf::framework;
 using namespace wolf::content_pipeline;
 
-w_renderable_model::w_renderable_model(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-    _In_ w_model* pModelData, _In_ bool pZUp) :
+w_model::w_model(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+    _In_ w_cpipeline_model* pModelData, _In_ bool pZUp) :
 _gDevice(pGDevice),
-_model_content(nullptr),
+_pipeline_model(nullptr),
 _z_up(pZUp)
 {
 	if (pModelData)
 	{
-        this->_model_content = new w_model();
+        this->_pipeline_model = new w_cpipeline_model();
 		//copy memory
-		std::memcpy((void*)this->_model_content, pModelData, sizeof(w_model));
+		std::memcpy((void*)this->_pipeline_model, pModelData, sizeof(w_cpipeline_model));
 	}
 }
 
-w_renderable_model::~w_renderable_model()
+w_model::~w_model()
 {
     release();
 }
 
-HRESULT w_renderable_model::load(_In_ const w_render_pass* pRenderPass, _In_ const std::string& pPipelineCacheName)
+HRESULT w_model::load(_In_ w_shader* pShader, 
+    _In_ const w_render_pass* pRenderPass, 
+    _In_ const std::string& pPipelineCacheName)
 {
-    if (this->_model_content == nullptr) return S_FALSE;
+    if (this->_pipeline_model == nullptr || pShader == nullptr) return S_FALSE;
 
 	//load meshes
-	std::vector<w_model::w_mesh*> _model_meshes;
-	this->_model_content->get_meshes(_model_meshes);
+	std::vector<w_cpipeline_model::w_mesh*> _model_meshes;
+	this->_pipeline_model->get_meshes(_model_meshes);
     
-    auto _t = this->_model_content->get_transform();
+    auto _t = this->_pipeline_model->get_transform();
     
-    std::vector<w_model::w_instance_info> _model_instances;
-    this->_model_content->get_instances(_model_instances);
+    std::vector<w_cpipeline_model::w_instance_info> _model_instances;
+    this->_pipeline_model->get_instances(_model_instances);
     if (_model_instances.size())
     {
         _create_instances_buffer(_model_instances.data(),
-            static_cast<UINT>(_model_instances.size() * sizeof(w_model::w_instance_info)));
+            static_cast<UINT>(_model_instances.size() * sizeof(w_cpipeline_model::w_instance_info)));
     }
 
     HRESULT _hr;
@@ -65,6 +67,7 @@ HRESULT w_renderable_model::load(_In_ const w_render_pass* pRenderPass, _In_ con
             _v_data.push_back(1 - _uv[1]);
         }
                
+
         //load mesh
         _hr = _mesh->load(this->_gDevice,
                    _v_data.data(),
@@ -72,9 +75,9 @@ HRESULT w_renderable_model::load(_In_ const w_render_pass* pRenderPass, _In_ con
                    static_cast<UINT>(_v_data.size() * sizeof(float)),
                    _model_mesh->indices.data(),
                    static_cast<UINT>(_model_mesh->indices.size()),
+                   pShader,
                    pRenderPass,
                    pPipelineCacheName,
-                   this->_model_content->get_instnaces_count() ? w_shader_type::BASIC_INSTANCE_SHADER : w_shader_type::BASIC_SHADER,
                    _z_up);
 
         _v_data.clear();
@@ -82,7 +85,7 @@ HRESULT w_renderable_model::load(_In_ const w_render_pass* pRenderPass, _In_ con
         {
             _error += 1;
             logger.error("Could not create mesh #" + std::to_string(i) + 
-                " for model: " + this->_model_content->get_name());
+                " for model: " + this->_pipeline_model->get_name());
             continue;
         }
              
@@ -92,7 +95,7 @@ HRESULT w_renderable_model::load(_In_ const w_render_pass* pRenderPass, _In_ con
     return _error > 0 ? S_FALSE : S_OK;
 }
 
-HRESULT w_renderable_model::_create_instances_buffer(_In_ const void* const pInstancedData, _In_ const UINT pInstancedSize)
+HRESULT w_model::_create_instances_buffer(_In_ const void* const pInstancedData, _In_ const UINT pInstancedSize)
 {
     if (!pInstancedData || pInstancedSize == 0) return S_OK;
     
@@ -104,21 +107,21 @@ HRESULT w_renderable_model::_create_instances_buffer(_In_ const void* const pIns
     _hr = _staging_buffer.load_as_staging(this->_gDevice, pInstancedSize);
     if(_hr == S_FALSE)
     {
-        logger.error("Could not create staging instance buffer of model: " + this->_model_content->get_name());
+        logger.error("Could not create staging instance buffer of model: " + this->_pipeline_model->get_name());
         return _hr;
     }
     
     _hr = _staging_buffer.set_data(pInstancedData);
     if(_hr == S_FALSE)
     {
-        logger.error("Setting staging instance buffer of model: " + this->_model_content->get_name());
+        logger.error("Setting staging instance buffer of model: " + this->_pipeline_model->get_name());
         return _hr;
     }
     
     _hr = _staging_buffer.bind();
     if(_hr == S_FALSE)
     {
-        logger.error("Could not bind to staging instance buffer of model: " + this->_model_content->get_name());
+        logger.error("Could not bind to staging instance buffer of model: " + this->_pipeline_model->get_name());
         return _hr;
     }
     
@@ -131,14 +134,14 @@ HRESULT w_renderable_model::_create_instances_buffer(_In_ const void* const pIns
                                       
     if(_hr == S_FALSE)
     {
-        logger.error("Could not create instance buffer of model: " + this->_model_content->get_name());
+        logger.error("Could not create instance buffer of model: " + this->_pipeline_model->get_name());
         return _hr;
     }
     
     _hr = this->_instances_buffer.bind();
     if(_hr == S_FALSE)
     {
-        logger.error("Could not bind to instance buffer of model: " + this->_model_content->get_name());
+        logger.error("Could not bind to instance buffer of model: " + this->_pipeline_model->get_name());
         return _hr;
     }
     
@@ -168,35 +171,7 @@ HRESULT w_renderable_model::_create_instances_buffer(_In_ const void* const pIns
     return S_OK;
 }
 
-HRESULT w_renderable_model::update(_In_ const glm::mat4 pViewProjection)
-{
-    auto _transform = this->_model_content->get_transform();
-    auto _translate = glm::translate(glm::mat4(1.0f),
-        glm::vec3(_transform.position[0], _transform.position[1], _transform.position[2]));
-    glm::mat4 _scale = glm::scale(glm::mat4x4(1.0f),
-        glm::vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
-
-    auto _world = _translate *
-        glm::rotate(_transform.rotation[0], _z_up ? glm::vec3(-1.0f, 0.0f, 0.0f) : glm::vec3(1.0f, 0.0f, 0.0f)) *
-        glm::rotate(_transform.rotation[1], glm::vec3(0.0f, 1.0f, 0.0f)) *
-        glm::rotate(_transform.rotation[2], glm::vec3(0.0f, 0.0f, 1.0f)) *
-        _scale;
-
-    HRESULT _hr = S_OK;
-    for (size_t i = 0; i < this->_meshes.size(); ++i)
-    {
-        this->_meshes[i]->set_world(_world);
-        this->_meshes[i]->set_view_projection(pViewProjection);
-        if (this->_meshes[i]->update() == S_FALSE)
-        {
-            _hr = S_FALSE;
-        }
-    }
-
-    return _hr;
-}
-
-void w_renderable_model::render(_In_ const VkCommandBuffer& pCommandBuffer)
+void w_model::render(_In_ const VkCommandBuffer& pCommandBuffer)
 {
     auto _instance_count = get_instances_count();
     auto _instance_handle = this->_instances_buffer.get_handle();
@@ -207,9 +182,9 @@ void w_renderable_model::render(_In_ const VkCommandBuffer& pCommandBuffer)
     });
 }
 
-ULONG w_renderable_model::release()
+ULONG w_model::release()
 {
 	if (this->get_is_released()) return 0;
-
+    
 	return _super::release();
 }

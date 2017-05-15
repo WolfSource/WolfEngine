@@ -18,8 +18,8 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_camera.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_model.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_scene.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_scene.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.h">
@@ -47,9 +47,9 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_math.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_model.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_scene.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_vertex_declaration.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_export.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_scene.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_model.h" />
   </ItemGroup>
 </Project>

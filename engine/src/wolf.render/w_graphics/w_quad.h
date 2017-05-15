@@ -42,14 +42,18 @@ namespace wolf
 		};
 #pragma pack(pop)
 
-		template<typename T = quad_color_texture_uniform>
+		template<typename T = quad_color_uniform>
 		class w_quad : public w_mesh
 		{
 		public:
             w_quad() :
-                _texture(nullptr)
+                _texture(nullptr),
+                _left(-1.0f),
+                _top(-1.0f),
+                _right(1.0f),
+                _down(1.0f)
             {
-                _super::set_class_name(typeid(this).name());
+                _super::set_class_name("w_quad");
             }
 
 			virtual ~w_quad()
@@ -67,31 +71,29 @@ namespace wolf
 
                 using namespace wolf::content_pipeline::vertex_declaration_structs;
 
-                const float _left = -1, _top = -1, _right = 1.0f, _down = 1.0f;
-
-                const UINT _vertices_size = 4;
-                const vertex_position_uv _vertices[_vertices_size] =
+                const std::vector<vertex_position_uv> _vertices =
                 {
-                    { glm::vec3(_right	,  _down, 0.0f)	, glm::vec2(1.0f, 0.0f) },
-                    { glm::vec3(_left	,  _top	, 0.0f)	, glm::vec2(0.0f, 1.0f) },
-                    { glm::vec3(_left	,  _down, 0.0f)	, glm::vec2(0.0f, 0.0f) },
-                    { glm::vec3(_right	,  _top	, 0.0f)	, glm::vec2(1.0f, 1.0f) }
+                    { glm::vec3(_right,  _down, 0.0f), glm::vec2(1.0f, 0.0f) },
+                    { glm::vec3(_left ,  _top , 0.0f), glm::vec2(0.0f, 1.0f) },
+                    { glm::vec3(_left ,  _down, 0.0f), glm::vec2(0.0f, 0.0f) },
+                    { glm::vec3(_right,  _top , 0.0f), glm::vec2(1.0f, 1.0f) }
                 };
-
-                const UINT _indices_size = 6;
-                const UINT _indices[] = { 0, 1, 2, 0, 3, 1 };
+                const std::vector<UINT> _indices = { 0, 1, 2, 0, 3, 1 };
 
                 //create buffers
                 auto _hr = _super::load(pDevice,
-                    _vertices,
-                    _vertices_size,
+                    _vertices.data(),
+                    _vertices.size(),
                     static_cast<UINT>(sizeof(vertex_position_uv)),
-                    _indices,
-                    _indices_size);
+                    _indices.data(),
+                    _indices.size());
+                
+                _vertices.clear();
+                _indices.clear();
 
                 if (_hr == S_FALSE)
                 {
-                    logger.error("Error on creating quad vertex and index buffers".);
+                    logger.error("Error on loading mesh of quad");
                     return S_FALSE;
                 }
 
@@ -99,37 +101,16 @@ namespace wolf
                 {
                     //we will use default texture
                     this->_texture = w_texture::default_texture;
-                    logger.write(this->_texture->name);
                 }
                 else
                 {
-
+                    _hr = w_texture::load_to_shared_textures(this->_gDevice, pTexture2DPath, &this->_texture);
+                    if (_hr == S_FALSE)
+                    {
+                        logger.error("Error on loading texture for quad");
+                    }
                 }
-
-                //	//create vertex shader
-                //	std::wstring _v_shader_path = pVertexShaderPath;
-                //	if (_v_shader_path.empty())
-                //	{
-                //		_v_shader_path = L"Shaders\\quad_vs.cso";
-                //	}
-                //	if (FAILED(_super::create_vertex_shader(pDevice, _v_shader_path)))  return S_FALSE;
-
-                //	//create pixel shaders
-                //	auto _ps_size = pPixelShaderPaths.size();
-                //	if (_ps_size == 0)
-                //	{
-                //		if (FAILED(_super::create_pixel_shader(pDevice, L"Shaders\\quad_texture_ps.cso"))) return S_FALSE;
-                //	}
-                //	else
-                //	{
-                //		for (size_t i = 0; i < _ps_size; ++i)
-                //		{
-                //			if (FAILED(_super::create_pixel_shader(pDevice, pPixelShaderPaths[i]))) return S_FALSE;
-                //		}
-                //	}
-
-                //	return _super::load_texture_2D_from_file(pDevice, pTexture2DPath, pIsAbsolutePath);
-
+                
                 return S_OK;
             }
 
@@ -154,16 +135,31 @@ namespace wolf
 				//release shader's constant/uniform buffers
 				this->_uniform.release();
                 this->_texture = nullptr;
+                this->_gDevice = nullptr;
 
 				return w_mesh::release();
 			}
 
 			w_uniform<T>		                _uniform;
 
+#pragma region Setters
+            
+            void set_coordiantes(_In_ const float pLeft, _In_ const float pTop,
+                _In_ const float pRight, _In_ const float pDown)
+            {
+                this->_left = pLeft;
+                this->_top = pTop;
+                this->_right = pRight;
+                this->_down = pDown;
+            }
+
+#pragma endregion
+
 		private:
 			typedef	 w_mesh				        _super;
+            std::shared_ptr<w_graphics_device>  _gDevice;
             wolf::graphics::w_texture*          _texture;
-			
+            float                               _left, _top, _right, _down;
 		};
 	}
 }

@@ -174,10 +174,10 @@
     <ClCompile Include="..\..\..\..\src\tests\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\content\shaders\test\basic.vert" />
-    <None Include="..\..\..\..\..\content\shaders\test\basic.frag" />
-    <None Include="..\..\..\..\..\content\shaders\test\static_instancing_y_up.vert" />
-    <None Include="..\..\..\..\..\content\shaders\test\static_instancing_z_up.vert" />
+    <None Include="..\..\..\..\..\content\shaders\basic.frag" />
+    <None Include="..\..\..\..\..\content\shaders\basic.vert" />
+    <None Include="..\..\..\..\..\content\shaders\static_instancing_y_up.vert" />
+    <None Include="..\..\..\..\..\content\shaders\static_instancing_z_up.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

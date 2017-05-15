@@ -47,12 +47,12 @@ namespace wolf
                 std::transform(_extension.begin(), _extension.end(), _extension.begin(), ::tolower);
                 std::string _type(typeid(T).name());
 
-                if (std::is_same<T, wolf::content_pipeline::w_scene>::value)//_type == "class wolf::content_pipeline::w_scene")
+                if (std::is_same<T, wolf::content_pipeline::w_cpipeline_scene>::value)
                 {
                     if (_extension == L".dae")
                     {
                         //load scene from collada file
-                        auto _scene = new w_scene();
+                        auto _scene = new w_cpipeline_scene();
                         _scene->set_name(_name);
                         auto _hr = collada::c_parser::parse_collada_from_file(pAssetPath, _scene);
 
@@ -69,12 +69,12 @@ namespace wolf
                     }
                     else if (_extension == L".wscene")
                     {
-                        std::vector<w_scene> _scenes;
+                        std::vector<w_cpipeline_scene> _scenes;
                         auto _hr = load_wolf_scenes_from_file(_scenes, pAssetPath);
                         if (_hr == S_OK && _scenes.size())
                         {
                             //make a deep copy from first element
-                            auto _scene = new w_scene(_scenes[0]);
+                            auto _scene = new w_cpipeline_scene(_scenes[0]);
                             _scenes.clear();
                             return _scene;
                         }
@@ -85,7 +85,7 @@ namespace wolf
                 return nullptr;
             }
 
-            static HRESULT save_wolf_scenes_to_file(_In_ std::vector<w_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
+            static HRESULT save_wolf_scenes_to_file(_In_ std::vector<w_cpipeline_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
             {
 #if defined(__WIN32) || defined(__UWP)
                 auto _path = pWolfSceneFilePath;
@@ -116,7 +116,7 @@ namespace wolf
                 return S_OK;
             }
 
-            static HRESULT load_wolf_scenes_from_file(_In_ std::vector<w_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
+            static HRESULT load_wolf_scenes_from_file(_In_ std::vector<w_cpipeline_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
                                                       
             {
 #if defined(__WIN32) || defined(__UWP)

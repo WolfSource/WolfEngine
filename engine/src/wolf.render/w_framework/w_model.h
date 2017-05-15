@@ -2,13 +2,13 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : w_renderable_model.h
-	Description		 : Render wolf::content_pipeline::w_model using this class
+	Name			 : w_model.h
+	Description		 : Render wolf::content_pipeline::w_cpipeline_model using this class
 	Comment          :
 */
 
-#ifndef __W_RENDERABLE_MODEL_H__
-#define __W_RENDERABLE_MODEL_H__
+#ifndef __W_MODEL_H__
+#define __W_MODEL_H__
 
 #include "w_graphics_device_manager.h"
 #include <vector>
@@ -16,7 +16,7 @@
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_uniform.h>
 #include <w_graphics/w_shader.h>
-#include <w_model.h>
+#include <w_cpipeline_model.h>
 #include <w_camera.h>
 
 #ifdef __GNUC__
@@ -27,17 +27,18 @@ namespace wolf
 {
     namespace framework
     {
-        class w_renderable_model : public wolf::graphics::w_mesh
+        class w_model : public wolf::graphics::w_mesh
         {
         public:
 
-            W_EXP w_renderable_model(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-                wolf::content_pipeline::w_model* pModelData = nullptr,
+            W_EXP w_model(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+                wolf::content_pipeline::w_cpipeline_model* pModelData = nullptr,
                 _In_ const bool pZup = false);
-            W_EXP virtual ~w_renderable_model();
+            W_EXP virtual ~w_model();
 
-            W_EXP HRESULT load(_In_ const wolf::graphics::w_render_pass* pRenderPass, _In_ const std::string& pPipelineCacheName);
-            W_EXP HRESULT update(_In_ const glm::mat4 pViewProjection);
+            W_EXP HRESULT load(_In_ wolf::graphics::w_shader* pShader, 
+                _In_ const wolf::graphics::w_render_pass* pRenderPass, 
+                _In_ const std::string& pPipelineCacheName);
             W_EXP void render(_In_ const VkCommandBuffer& pCommandBuffer);
 
             W_EXP virtual ULONG release() override;
@@ -46,7 +47,12 @@ namespace wolf
 
             UINT get_instances_count() const
             {
-                return static_cast<UINT>(this->_model_content->get_instnaces_count());
+                return static_cast<UINT>(this->_pipeline_model->get_instnaces_count());
+            }
+
+            wolf::content_pipeline::w_transform_info get_transform() const
+            {
+                return this->_pipeline_model ? this->_pipeline_model->get_transform() : wolf::content_pipeline::w_transform_info();
             }
 
 #pragma endregion
@@ -65,7 +71,7 @@ namespace wolf
             typedef	wolf::system::w_object                              _super;
 
             std::shared_ptr<wolf::graphics::w_graphics_device>			_gDevice;
-            wolf::content_pipeline::w_model*							_model_content;
+            wolf::content_pipeline::w_cpipeline_model*					_pipeline_model;
             std::vector<wolf::graphics::w_mesh*>                        _meshes;
             wolf::graphics::w_buffer                                    _instances_buffer;
             bool                                                        _z_up;

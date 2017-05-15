@@ -31,10 +31,7 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp">
       <Filter>w_framework</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_renderable_model.cpp">
-      <Filter>w_framework</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_renderable_scene.cpp">
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_model.cpp">
       <Filter>w_framework</Filter>
     </ClCompile>
   </ItemGroup>
@@ -69,17 +66,14 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h">
       <Filter>w_framework</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_renderable_model.h">
-      <Filter>w_framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_renderable_scene.h">
-      <Filter>w_framework</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_quad.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_uniform.h">
       <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h">
+      <Filter>w_framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

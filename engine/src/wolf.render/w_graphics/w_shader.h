@@ -15,8 +15,15 @@
 
 enum w_shader_type
 {
+    UNKNOWN = 0,
     BASIC_SHADER,
     BASIC_INSTANCE_SHADER,
+};
+
+enum w_shader_binding_type
+{
+    SAMPLER = 0,
+    UNIFORM
 };
 
 enum w_shader_stage
@@ -35,6 +42,16 @@ enum w_shader_stage
 
 	COMPUTE_SHADER,
     ALL_STAGES
+};
+
+struct w_shader_binding_param
+{
+    uint32_t                    index;
+    w_shader_binding_type       type;
+#ifdef  __VULKAN__
+    VkDescriptorBufferInfo*     unifrom_info;
+    VkDescriptorImageInfo*      sampler_info;
+#endif //  __VULKAN__
 };
 
 namespace wolf
@@ -65,6 +82,8 @@ namespace wolf
 
 #pragma region Getters
 
+            W_EXP const std::vector<w_shader_binding_param> get_shader_binding_params() const;
+            W_EXP const w_shader_type get_shader_type() const;
             W_EXP const std::vector<VkPipelineShaderStageCreateInfo>* get_shader_stages() const;
             W_EXP const VkDescriptorSet get_descriptor_set() const;
             W_EXP const VkDescriptorSetLayout get_descriptor_set_layout_binding() const;
@@ -73,6 +92,8 @@ namespace wolf
 
 #pragma region Setters
 
+            W_EXP void set_shader_type(_In_ const w_shader_type pShaderType);
+            W_EXP void set_shader_binding_param(_In_ const w_shader_binding_param& pShaderParam);
 
 #pragma endregion
 
@@ -80,6 +101,8 @@ namespace wolf
                                                         _In_z_ const std::string& pName,
                                                         _In_z_ const std::wstring& pVertexShaderPath,
                                                         _In_z_ const std::wstring& pFragmentShaderPath,
+                                                        _In_ const w_shader_type& pShaderType,
+                                                        _In_ const std::vector<w_shader_binding_param>& pShaderBindings,
                                                         _Inout_ w_shader** pShader,
                                                         _In_z_ const char* pMainFunctionName = "main");
 

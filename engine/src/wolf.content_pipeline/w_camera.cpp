@@ -7,9 +7,9 @@ w_camera::w_camera() :
     _aspect_ratio(1.777f), 
     _near_plane(0.01f), 
     _far_plane(1000.0f),
-    _field_of_view(70.0f)
+    _field_of_view(45.0f)
 {
-    this->_translate[0] = 0; this->_translate[1] = 5; this->_translate[2] = 100.0f;
+    this->_translate[0] = 0; this->_translate[1] = 7; this->_translate[2] = 27.0f;
     this->_interest[0] = 0; this->_interest[1] = 0; this->_interest[2] = 0;
     this->_up[0] = 0; this->_up[1] = 1; this->_up[2] = 0;
     

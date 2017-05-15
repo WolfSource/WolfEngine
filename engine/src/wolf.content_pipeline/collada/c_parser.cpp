@@ -1,6 +1,6 @@
 #include "w_cpipeline_pch.h"
 #include "c_parser.h"
-#include "w_model.h"
+#include "w_cpipeline_model.h"
 #include "c_skin.h"
 
 
@@ -26,7 +26,7 @@ static bool                                 sZ_Up = true;
 
 const char* c_parser::_trace_class_name = "w_collada_parser";
 
-HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_ w_scene* pScene, 
+HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_ w_cpipeline_scene* pScene,
 	bool pOptimizePoints, bool pInvertNormals)
 {
 	auto _hr = S_OK;
@@ -1188,10 +1188,10 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pN
 	pGeometry.triangles.push_back(_triangles);
 }
 
-HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)
+HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals)
 {
     std::vector<c_node*> _mesh_with_unknown_instance_ref;
-    std::vector<w_model*> _models;
+    std::vector<w_cpipeline_model*> _models;
 
     _iterate_over_nodes(pOptimizePoints, pInvertNormals, sNodes, _models, _mesh_with_unknown_instance_ref);
     
@@ -1200,7 +1200,7 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
     {
         for (auto pNode : _mesh_with_unknown_instance_ref)
         {
-            w_model* _model = nullptr;
+            w_cpipeline_model* _model = nullptr;
             _create_model(pOptimizePoints, pInvertNormals, &pNode, &_model);
             if (_model)
             {
@@ -1290,7 +1290,7 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
 	//	//	skin = s[i];
 	//	//}
 
-	//	auto _model = w_model::create_model(_geometry, skin, sBones, sSkeletonNames.data(), sMaterials, sNodes, pOptimizePoints);
+	//	auto _model = w_cpipeline_model::create_model(_geometry, skin, sBones, sSkeletonNames.data(), sMaterials, sNodes, pOptimizePoints);
 	//	//_model->set_effects(effects);
 	//	////_model.Textures = textureInfos;
 	//	////_model.Initialize(dir);
@@ -1335,7 +1335,7 @@ HRESULT c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, b
 void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, 
     _In_ const bool pInvertNormals, 
     _Inout_ std::vector<c_node*>& pNodes, 
-    _Inout_ std::vector<w_model*>& pModels,
+    _Inout_ std::vector<w_cpipeline_model*>& pModels,
     _Inout_ std::vector<c_node*>& pMeshWithUnknownInstanceRef)
 {
     for (auto _node : pNodes)
@@ -1366,7 +1366,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
         else if (_type == c_node_type::MESH)
         {
             //find instance if avaiable in models
-            auto _iter = std::find_if(pModels.begin(), pModels.end(), [_node](_In_ w_model* pModel)
+            auto _iter = std::find_if(pModels.begin(), pModels.end(), [_node](_In_ w_cpipeline_model* pModel)
             {
                 return pModel->get_instance_geometry_name() == _node->instanced_geometry_name;
             });
@@ -1374,7 +1374,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
             if (_iter != pModels.end())
             {
                 //we find source model
-                w_model::w_instance_info _instance_info;
+                w_cpipeline_model::w_instance_info _instance_info;
 
                 auto _rotation = glm::rotation_from_angle_axis(_node->rotation.x, _node->rotation.y, _node->rotation.z, _node->rotation.w);
 
@@ -1416,7 +1416,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
             }
             else
             {
-                w_model* _model = nullptr;
+                w_cpipeline_model* _model = nullptr;
                 _create_model(pOptimizePoints, pInvertNormals, &_node, &_model);
                 //if node procceded and model created
                 if (_model)
@@ -1444,7 +1444,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
 void c_parser::_create_model(_In_ const bool pOptimizePoints, 
     _In_ const bool pInvertNormals,
     _Inout_ c_node** pNode,
-    _Inout_ w_model** pModel)
+    _Inout_ w_cpipeline_model** pModel)
 {
     //Loading geometries
     c_geometry _g;
@@ -1517,7 +1517,7 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
         //{
         //	skin = s[i];
         //}
-        auto _model = w_model::create_model(
+        auto _model = w_cpipeline_model::create_model(
             _g,
             skin,
             sBones,

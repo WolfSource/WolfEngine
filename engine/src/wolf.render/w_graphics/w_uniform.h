@@ -215,7 +215,7 @@ namespace wolf
                 return S_OK;
             }
 
-            const VkDescriptorBufferInfo get_descriptor_info() const
+            VkDescriptorBufferInfo get_descriptor_info() const
             {
                 const VkDescriptorBufferInfo _info =
                 {

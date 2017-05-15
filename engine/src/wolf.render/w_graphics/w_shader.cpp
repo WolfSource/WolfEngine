@@ -16,7 +16,8 @@ namespace wolf
                 _gDevice(nullptr),
                 _descriptor_pool(0),
                 _descriptor_set_layout(0),
-                _descriptor_set(0)
+                _descriptor_set(0),
+                _shader_type(w_shader_type::BASIC_SHADER)
             {
                 
             }
@@ -27,7 +28,7 @@ namespace wolf
                          _In_z_ const char* pMainFunctionName)
             {
                 this->_gDevice = pGDevice;
-
+                
 #if defined(__WIN32) || defined(__UWP)
                 auto _path = pShaderBinaryPath;
 #else
@@ -246,7 +247,13 @@ namespace wolf
                 return 1;
             }
             
-            
+#pragma region Getters
+
+            const w_shader_type get_shader_type() const
+            {
+                return this->_shader_type;
+            }
+
             const std::vector<VkPipelineShaderStageCreateInfo>* get_shader_stages() const
             {
                 return &(this->_shader_stages);
@@ -262,6 +269,27 @@ namespace wolf
                 return this->_descriptor_set_layout;
             }
             
+            const std::vector<w_shader_binding_param> get_shader_binding_params() const
+            {
+                return this->_shader_binding_params;
+            }
+
+#pragma endregion
+
+#pragma region Setters
+            
+            void set_shader_type(_In_ const w_shader_type pShaderType)
+            {
+                this->_shader_type = pShaderType;
+            }
+
+            void set_shader_binding_param(_In_ const w_shader_binding_param& pShaderParam)
+            {
+                this->_shader_binding_params.push_back(pShaderParam);
+            }
+
+#pragma endregion
+
         private:
             std::string                                             _name;
             std::shared_ptr<w_graphics_device>                      _gDevice;
@@ -270,6 +298,8 @@ namespace wolf
             VkDescriptorPool                                        _descriptor_pool;
             VkDescriptorSetLayout                                   _descriptor_set_layout;
             VkDescriptorSet                                         _descriptor_set;
+            w_shader_type                                           _shader_type;
+            std::vector<w_shader_binding_param>                     _shader_binding_params;
         };
     }
 }
@@ -312,7 +342,7 @@ HRESULT w_shader::create_description_set_layout_binding(_In_ const std::vector<V
 void w_shader::update_descriptor_sets(_In_ const std::vector<VkWriteDescriptorSet>& pWriteDescriptorSets)
 {
     if(!this->_pimp) return;
-    return this->_pimp->update_descriptor_sets(pWriteDescriptorSets);
+    this->_pimp->update_descriptor_sets(pWriteDescriptorSets);
 }
 
 ULONG w_shader::release()
@@ -326,6 +356,12 @@ ULONG w_shader::release()
 }
 
 #pragma region Getters
+
+const w_shader_type w_shader::get_shader_type() const
+{
+    if (!this->_pimp) return w_shader_type::UNKNOWN;
+    return this->_pimp->get_shader_type();
+}
 
 const std::vector<VkPipelineShaderStageCreateInfo>* w_shader::get_shader_stages() const
 {
@@ -345,12 +381,36 @@ const VkDescriptorSetLayout w_shader::get_descriptor_set_layout_binding() const
     return this->_pimp->get_descriptor_set_layout_binding();
 }
 
+const std::vector<w_shader_binding_param> w_shader::get_shader_binding_params() const
+{
+    if (!this->_pimp) return {};
+    return this->_pimp->get_shader_binding_params();
+}
+
+#pragma endregion
+
+#pragma region Setters
+
+void w_shader::set_shader_binding_param(_In_ const w_shader_binding_param& pShaderParam)
+{
+    if (!this->_pimp) return;
+    this->_pimp->set_shader_binding_param(pShaderParam);
+}
+
+void w_shader::set_shader_type(_In_ const w_shader_type pShaderType)
+{
+    if (!this->_pimp) return;
+    this->_pimp->set_shader_type(pShaderType);
+}
+
 #pragma endregion
 
 HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_z_ const std::string& pName,
     _In_z_ const std::wstring& pVertexShaderPath,
     _In_z_ const std::wstring& pFragmentShaderPath,
+    _In_ const w_shader_type& pShaderType,
+    _In_ const std::vector<w_shader_binding_param>& pShaderBindings,
     _Inout_ w_shader** pShader,
     _In_z_ const char* pMainFunctionName)
 {
@@ -361,6 +421,14 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
             pFragmentShaderPath);
         return S_FALSE;
     }
+
+    //set shader params
+    std::for_each(pShaderBindings.begin(), pShaderBindings.end(), [_shader](_In_ const w_shader_binding_param& pParam)
+    {
+        _shader->set_shader_binding_param(pParam);
+    });
+    //set shader type
+    _shader->set_shader_type(pShaderType);
 
     if (!pVertexShaderPath.empty())
     {

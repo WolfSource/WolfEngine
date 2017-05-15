@@ -1,22 +1,12 @@
 #include "pch.h"
 #include "scene.h"
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_texture.h>
-#include <w_graphics/w_uniform.h>
-#include <glm/glm.hpp>
-#include <glm_extention.h>
+#include <w_graphics/w_pipeline.h>
 #include <w_content_manager.h>
-#include <w_scene.h>
-
 
 using namespace wolf::system;
 using namespace wolf::graphics;
 using namespace wolf::framework;
 using namespace wolf::content_pipeline;
-
-#define VERTEX_BUFFER_BIND_ID 0
-#define INSTANCE_BUFFER_BIND_ID 1
 
 #if defined(__WIN32)
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
@@ -51,8 +41,6 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     w_game::initialize(pOutputWindowsInfo);
 }
 
-w_scene* _scene;
-
 void scene::load()
 {
     auto _gDevice =  this->graphics_devices[0];
@@ -62,6 +50,15 @@ void scene::load()
 
     w_game::load();
     
+    //optional: create pipeline cache    
+    std::string _pipeline_cache_name = "pipeline_cache_0";
+    if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+    {
+        logger.error("Could not create pipeline cache 0");
+        _pipeline_cache_name.clear();
+    }
+
+    //create render pass
     w_viewport _viewport;
     _viewport.y = 0;
     _viewport.width = _width;
@@ -74,16 +71,6 @@ void scene::load()
     _viewport_scissor.offset.y = 0;
     _viewport_scissor.extent.width = _width;
     _viewport_scissor.extent.height = _height;
-
-    
-    std::string _pipeline_cache_name = "pipeline_cache_0";
-    if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
-    {
-        logger.error("Could not create pipeline cache 0");
-        _pipeline_cache_name.clear();
-    }
-
-    //create render pass
     auto _hr = this->_render_pass.load(_gDevice, _viewport, _viewport_scissor);
     if (_hr == S_FALSE)
     {
@@ -92,16 +79,167 @@ void scene::load()
         exit(1);
     }
     
-    //auto _scene = w_content_manager::load<w_scene>(content_path + L"models/inst_max_oc.dae");
-    _scene = w_content_manager::load<w_scene>(content_path + L"models/test.dae");
-    this->_renderable_scene = new w_renderable_scene(_scene);
-    this->_renderable_scene->load(_gDevice, &this->_render_pass, _pipeline_cache_name);
-    this->_renderable_scene->get_first_or_default_camera(&this->_camera);
-      
-    this->_camera->set_aspect_ratio(_width / _height);
-    this->_camera->update_view();
-    this->_camera->update_projection();
-        
+    //load scene
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");
+    if (_scene)
+    {
+        //get all models
+        std::vector<w_cpipeline_model*> _cmodels;
+        _scene->get_all_models(_cmodels);
+
+        if (_cmodels.size())
+        {
+            auto _z_up = _scene->get_z_up();
+            auto _size = _cmodels.size();
+
+            for (size_t i = 0; i < _size; ++i)
+            {
+                auto _model = new w_model(_gDevice, _cmodels[i], _z_up);
+                if (_model->get_instances_count())
+                {
+                    //load shader uniforms
+                    auto _wvp = new w_uniform<world_view_projection_unifrom>();
+                    auto _hr = _wvp->load(_gDevice);
+                    if (_hr == S_FALSE)
+                    {
+                        logger.error("Error on loading world_view_projection uniform for instance model");
+                        continue;
+                    }
+                    this->_instance_wvp_unifrom.push_back(_wvp);
+
+                    auto _color = new w_uniform<color_unifrom>();
+                    _hr = _color->load(_gDevice);
+                    if (_hr == S_FALSE)
+                    {
+                        logger.error("Error on loading world_view_projection uniform for instance model");
+                        continue;
+                    }
+                    this->_instance_color_unifrom.push_back(_color);
+
+                    std::vector<w_shader_binding_param> _shader_params;
+
+                    w_shader_binding_param _param;
+                    _param.index = 0;
+                    _param.type = w_shader_binding_type::UNIFORM;
+                    _param.unifrom_info = &(_wvp->get_descriptor_info());
+                    _param.sampler_info = nullptr;
+                    _shader_params.push_back(_param);
+
+
+                    _param.index = 1;
+                    _param.type = w_shader_binding_type::SAMPLER;
+                    _param.sampler_info = &(w_texture::default_texture->get_descriptor_info());
+                    _param.unifrom_info = nullptr;
+                    _shader_params.push_back(_param);
+
+                    _param.index = 2;
+                    _param.type = w_shader_binding_type::UNIFORM;
+                    _param.unifrom_info = &(_color->get_descriptor_info());
+                    _param.sampler_info = nullptr;
+                    _shader_params.push_back(_param);
+
+                    _hr = S_OK;
+                    if (this->_basic_instance_shader)
+                    {
+                        for (size_t i = 0; i < _shader_params.size(); ++i)
+                        {
+                            this->_basic_instance_shader->set_shader_binding_param(_shader_params[i]);
+                        }
+                    }
+                    else
+                    {
+                        //load shader
+                        w_shader* _shader = nullptr;
+                        w_shader::load_to_shared_shaders(_gDevice,
+                            "basic_instancing",
+                            content_path + L"shaders/static_instancing_z_up.vert.spv",
+                            content_path + L"shaders/basic.frag.spv",
+                            w_shader_type::BASIC_INSTANCE_SHADER,
+                            _shader_params,
+                            &_shader);
+                        if (!_shader || _hr == S_FALSE)
+                        {
+                            logger.error("Could not load instance shader");
+                            return;
+                        }
+                        this->_basic_instance_shader.reset(_shader);
+                    }
+                    if (_hr == S_OK)
+                    {
+                        if (_model->load(this->_basic_instance_shader.get(), &this->_render_pass, _pipeline_cache_name) == S_FALSE)
+                        {
+                            SAFE_RELEASE(_model);
+                            continue;
+                        }
+                        this->_models.push_back(_model);
+                    }
+                }
+                else
+                {
+                    //auto _hr = S_OK;
+                    //std::call_once(_basic_shader_load_flag, [this, &_gDevice, &_z_up, &_hr]()
+                    //{
+                    //    //load shader
+                    //    w_shader* _shader = nullptr;
+                    //    _hr = w_shader::load_to_shared_shaders(_gDevice,
+                    //        "basic_instancing",
+                    //        content_path + (_z_up ? L"shaders/basic_instancing_z_up.vert.spv" : L"shaders/basic_instancing_y_up.vert.spv"),
+                    //        content_path + L"shaders/basic.frag.spv",
+                    //        w_shader_type::BASIC_SHADER,
+                    //        {
+
+
+                    //        },
+                    //        &_shader);
+                    //    if (!_shader || _hr == S_FALSE)
+                    //    {
+                    //        logger.error("Could not load instance shader");
+                    //        return;
+                    //    }
+                    //    this->_basic_instance_shader.reset(_shader);
+                    //});
+                    //if (_hr == S_OK)
+                    //{
+                    //    if (_model->load(&this->_render_pass, _pipeline_cache_name) == S_FALSE)
+                    //    {
+                    //        SAFE_RELEASE(_model);
+                    //        continue;
+                    //    }
+                    //    this->_models.push_back(_model);
+
+                    //    //load shader uniforms
+                    //    auto _vwp = new w_uniform<world_view_projection_unifrom>();
+                    //    _hr = _vwp->load(_gDevice);
+                    //    if (_hr == S_FALSE)
+                    //    {
+                    //        logger.error("Error on loading world_view_projection uniform for instance model");
+                    //        release();
+                    //        exit(1);
+                    //    }
+                    //    this->_basic_wvp_unifrom.push_back(_vwp);
+
+                    //    auto _color = new w_uniform<color_unifrom>();
+                    //    _hr = _color->load(_gDevice);
+                    //    if (_hr == S_FALSE)
+                    //    {
+                    //        logger.error("Error on loading world_view_projection uniform for instance model");
+                    //        release();
+                    //        exit(1);
+                    //    }
+                    //    this->_basic_color_unifrom.push_back(_color);
+                    //}
+                }
+            }
+        }
+
+        _scene->get_first_camera(this->_camera);
+        this->_camera.set_aspect_ratio(_width / _height);
+        this->_camera.update_view();
+        this->_camera.update_projection();
+
+        _scene->release();
+    }
+
     //create frame buffers
     auto _render_pass_handle = this->_render_pass.get_handle();
     _hr = this->_frame_buffers.load(_gDevice,
@@ -117,13 +255,11 @@ void scene::load()
         release();
         exit(1);
     }
-   
-    
+
     //now assign new command buffers
-    this->_command_buffers = new w_command_buffers();
-    this->_command_buffers->set_enable(true);
-    this->_command_buffers->set_order(1);
-    _hr = this->_command_buffers->load(_gDevice, _output_window->vk_swap_chain_image_views.size());
+    this->_command_buffers.set_enable(true);
+    this->_command_buffers.set_order(1);
+    _hr = this->_command_buffers.load(_gDevice, _output_window->vk_swap_chain_image_views.size());
     if (_hr == S_FALSE)
     {
         logger.error("Error on creating command buffers");
@@ -132,7 +268,7 @@ void scene::load()
     }
 
     _hr = _gDevice->store_to_global_command_buffers("render_quad_with_texture",
-                                                  this->_command_buffers,
+                                                  &this->_command_buffers,
                                                   _output_window->index);
     if (_hr == S_FALSE)
     {
@@ -154,7 +290,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
     auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
-    
+
     VkImageSubresourceRange _sub_resource_range = {};
     _sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     _sub_resource_range.baseMipLevel = 0;
@@ -163,11 +299,11 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _sub_resource_range.layerCount = 1;
 
     //record clear screen command buffer for every swap chain image
-    for (uint32_t i = 0; i < this->_command_buffers->get_commands_size(); ++i)
+    for (uint32_t i = 0; i < this->_command_buffers.get_commands_size(); ++i)
     {
-        this->_command_buffers->begin(i);
+        this->_command_buffers.begin(i);
         {
-            auto _command_buffer = this->_command_buffers->get_command_at(i);
+            auto _cmd = this->_command_buffers.get_command_at(i);
 
             VkImageMemoryBarrier _present_to_render_barrier =
             {
@@ -183,7 +319,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                 _sub_resource_range                                                             // subresourceRange
             };
 
-            vkCmdPipelineBarrier(_command_buffer,
+            vkCmdPipelineBarrier(_cmd,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 0,
@@ -195,13 +331,38 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                 &_present_to_render_barrier);
 
 
-            this->_render_pass.begin(_command_buffer,
+            this->_render_pass.begin(_cmd,
                 this->_frame_buffers.get_frame_buffer_at(i));
             {
-                this->_renderable_scene->update(this->_camera->get_projection() * this->_camera->get_view());
-                this->_renderable_scene->render(_command_buffer);
-            }
-            this->_render_pass.end(_command_buffer);
+                for (size_t i = 0; i < this->_models.size(); ++i)
+                {
+                    if (this->_models[i]->get_instances_count())
+                    {
+                        using namespace glm;
+
+                        auto _transform = this->_models[i]->get_transform();
+                        auto _translate = translate(mat4(1.0f),
+                            vec3(_transform.position[0], _transform.position[1], _transform.position[2]));
+                        mat4 _scale = scale(mat4x4(1.0f),
+                            vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
+
+                        auto _world = _translate *
+                            rotate(_transform.rotation[0], true ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f)) *
+                            rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
+                            rotate(_transform.rotation[2], vec3(0.0f, 0.0f, 1.0f)) *
+                            _scale;
+
+                        this->_instance_wvp_unifrom[i]->data.world = _world;
+                        this->_instance_wvp_unifrom[i]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
+                        this->_instance_wvp_unifrom[i]->update();
+
+                        this->_instance_color_unifrom[i]->data.color = glm::vec4(1);
+                        this->_instance_color_unifrom[i]->update();
+
+                        this->_models[i]->render(_cmd);
+                    }
+                }}
+            this->_render_pass.end(_cmd);
 
             VkImageMemoryBarrier _barrier_from_render_to_present =
             {
@@ -217,7 +378,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                 _sub_resource_range                                         // SubresourceRange
             };
 
-            vkCmdPipelineBarrier(_command_buffer,
+            vkCmdPipelineBarrier(_cmd,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
                 0,
@@ -228,7 +389,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                 1,
                 &_barrier_from_render_to_present);
         }
-        this->_command_buffers->end(i);
+        this->_command_buffers.end(i);
     }
 
     logger.write(std::to_string(pGameTime.get_frames_per_second()));
@@ -253,6 +414,9 @@ ULONG scene::release()
 
     this->_render_pass.release();
     this->_frame_buffers.release();
+
+    UNIQUE_RELEASE(this->_basic_shader);
+    UNIQUE_RELEASE(this->_basic_instance_shader);
 
     w_pipeline::release_all_pipeline_caches(_gDevice);
 

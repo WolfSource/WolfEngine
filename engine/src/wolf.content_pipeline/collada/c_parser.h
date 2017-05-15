@@ -11,7 +11,7 @@
 #define __C_PARSER_H__
 
 #include <rapidxml.hpp>
-#include "w_scene.h"
+#include "w_cpipeline_scene.h"
 #include "w_cpipeline_export.h"
 #include "c_node.h"
 #include "c_bone.h"
@@ -30,7 +30,7 @@ namespace wolf
 				c_parser() {}
 				virtual ~c_parser() {};
 
-				WCP_EXP static HRESULT parse_collada_from_file(const std::wstring& pFilePath, _Inout_ wolf::content_pipeline::w_scene* pScene,
+				WCP_EXP static HRESULT parse_collada_from_file(const std::wstring& pFilePath, _Inout_ wolf::content_pipeline::w_cpipeline_scene* pScene,
 					bool pOptimizePoints = true, bool pInvertNormals = false);
 
 			private:
@@ -54,10 +54,10 @@ namespace wolf
                 static void                                   _iterate_over_nodes(_In_ const bool pOptimizePoints, 
                                                                                   _In_ const bool pInvertNormals,
                                                                                   _Inout_ std::vector<c_node*>& pNodes,
-                                                                                  _Inout_ std::vector<w_model*>& pModels,
+                                                                                  _Inout_ std::vector<w_cpipeline_model*>& pModels,
                                                                                   _Inout_ std::vector<c_node*>& pNodeWithUnknownInstanceRef);
-                static void                                   _create_model(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_model** pModel);
-				static HRESULT		                          _create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals);
+                static void                                   _create_model(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_cpipeline_model** pModel);
+				static HRESULT		                          _create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals);
 				static void			                          _clear_all_resources();
 
 				static const char*	                          _trace_class_name;

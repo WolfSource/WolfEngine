@@ -34,13 +34,12 @@ namespace wolf
                                _In_ const UINT pVerticesSize,
                                _In_ const UINT* const pIndicesData,
                                _In_ const UINT pIndicesCount,
+                               _In_ w_shader* pShader,
                                _In_ const w_render_pass* pRenderPass,
                                _In_ const std::string& pPipelineCacheName = "",
-                               _In_ const w_shader_type pShaderType = w_shader_type::BASIC_SHADER,
                                _In_ const bool pZUp = false,
                                _In_ bool pStaging = true);
             
-            W_EXP HRESULT update();
             W_EXP void render(_In_ const VkCommandBuffer& pCommandBuffer, _In_ const VkBuffer& pInstanceHandle,
                 _In_ uint32_t& pInstancesCount);
 
@@ -51,12 +50,10 @@ namespace wolf
             
             W_EXP VkBuffer get_vertex_buffer_handle() const;
             W_EXP VkBuffer get_index_buffer_handle() const;
-            W_EXP UINT get_vertices_count() const;
-            W_EXP UINT get_indices_count() const;
+            W_EXP const UINT get_vertices_count() const;
+            W_EXP const UINT get_indices_count() const;
             W_EXP w_shader* get_shader() const ;
             W_EXP w_texture* get_texture() const;
-            W_EXP const glm::mat4 get_world() const;
-            W_EXP const glm::mat4 get_view_projection() const;
 
 #pragma endregion
 
@@ -64,8 +61,6 @@ namespace wolf
 		
             W_EXP void set_shader(_In_ w_shader* pShader);
             W_EXP void set_texture(_In_ w_texture* pTexture);
-            W_EXP void set_world(_In_ const glm::mat4 pWorld);
-            W_EXP void set_view_projection(_In_ const glm::mat4 pViewProjection);
 
 #pragma endregion
 			

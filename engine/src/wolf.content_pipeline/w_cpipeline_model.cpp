@@ -1,12 +1,12 @@
 #include "w_cpipeline_pch.h"
-#include "w_model.h"
+#include "w_cpipeline_model.h"
 
 using namespace std;
 using namespace wolf::system;
 using namespace wolf::content_pipeline;
 using namespace wolf::content_pipeline::collada;
 
-w_model::w_model() :
+w_cpipeline_model::w_cpipeline_model() :
 	_name("unknown"),
 	_animation_time(0),
 	_last_animation_time(0),
@@ -16,11 +16,11 @@ w_model::w_model() :
 {
 }
 
-w_model::~w_model()
+w_cpipeline_model::~w_cpipeline_model()
 {
 }
 
-w_model* w_model::create_model(_In_ c_geometry& pGeometry, 
+w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry, 
     _In_ c_skin* pSkin,
 	_In_ std::vector<c_bone*>& pBones, 
     _In_ string pBoneNames [], 
@@ -29,7 +29,7 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
     _In_ std::map<std::string, std::string>& sLibraryImages,
     _In_ bool pOptimizing)
 {
-	auto _model = new w_model();
+	auto _model = new w_cpipeline_model();
 
 	std::string _messages;
 
@@ -494,12 +494,12 @@ w_model* w_model::create_model(_In_ c_geometry& pGeometry,
 	return _model;
 }
 
-void w_model::add_instance(_In_ const w_instance_info pValue)
+void w_cpipeline_model::add_instance(_In_ const w_instance_info pValue)
 {
     this->_instances_info.push_back(pValue);
 }
 
-void w_model::update_world()
+void w_cpipeline_model::update_world()
 {
 	this->_world = glm::make_wpv_mat(
         glm::vec3(this->_transform.scale[0], this->_transform.scale[1], this->_transform.scale[2]),
@@ -509,12 +509,12 @@ void w_model::update_world()
 
 #pragma region Getters
 
-w_model::w_instance_info* w_model::get_instance_at(_In_ const size_t pIndex)
+w_cpipeline_model::w_instance_info* w_cpipeline_model::get_instance_at(_In_ const size_t pIndex)
 {
     return pIndex < this->_instances_info.size() ? &this->_instances_info[pIndex] : nullptr;
 }
 
-void w_model::get_instances(_Inout_ std::vector<w_instance_info>& pInstances)
+void w_cpipeline_model::get_instances(_Inout_ std::vector<w_instance_info>& pInstances)
 {
     auto _size = this->_instances_info.size();
     if (!_size) return;
@@ -522,12 +522,12 @@ void w_model::get_instances(_Inout_ std::vector<w_instance_info>& pInstances)
     pInstances = this->_instances_info;
 }
 
-std::string w_model::get_instance_geometry_name() const
+std::string w_cpipeline_model::get_instance_geometry_name() const
 {
     return this->_instanced_geo_name;
 }
 
-void w_model::get_meshes(_Inout_ std::vector<w_model::w_mesh*>& pMeshes)
+void w_cpipeline_model::get_meshes(_Inout_ std::vector<w_cpipeline_model::w_mesh*>& pMeshes)
 {
     auto _size = this->_meshes.size();
     if (!_size) return;
@@ -542,17 +542,17 @@ void w_model::get_meshes(_Inout_ std::vector<w_model::w_mesh*>& pMeshes)
 
 #pragma region Setters
 
-void w_model::set_name(_In_z_ const std::string& pValue)
+void w_cpipeline_model::set_name(_In_z_ const std::string& pValue)
 {
 	this->_name = pValue;
 }
 
-void w_model::set_instance_geometry_name(_In_z_ const std::string& pValue)
+void w_cpipeline_model::set_instance_geometry_name(_In_z_ const std::string& pValue)
 {
     this->_instanced_geo_name = pValue;
 }
 
-void w_model::set_transform(w_transform_info& pValue)
+void w_cpipeline_model::set_transform(w_transform_info& pValue)
 {
 	this->_transform = pValue;
 }
