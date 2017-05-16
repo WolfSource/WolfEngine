@@ -93,30 +93,7 @@ namespace wolf
                 _pipeline_shader_stage_info.module = _shader_module;
                 _pipeline_shader_stage_info.pName = pMainFunctionName;
                 
-                switch(pShaderStage)
-                {
-                    case w_shader_stage::VERTEX_SHADER:
-                        _pipeline_shader_stage_info.stage = VK_SHADER_STAGE_VERTEX_BIT;
-                        break;
-                    case w_shader_stage::FRAGMENT_SHADER:
-                        _pipeline_shader_stage_info.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-                        break;
-                    case w_shader_stage::GEOMETRY_SHADER:
-                        _pipeline_shader_stage_info.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
-                        break;
-                    case w_shader_stage::TESSELATION_CONTROL:
-                        _pipeline_shader_stage_info.stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-                        break;
-                    case w_shader_stage::TESSELATION_EVALUATION:
-                        _pipeline_shader_stage_info.stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-                        break;    
-                    case w_shader_stage::COMPUTE_SHADER:
-                        _pipeline_shader_stage_info.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-                        break;  
-                    case w_shader_stage::ALL_STAGES:
-                        _pipeline_shader_stage_info.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-                        break;  
-                };
+                _pipeline_shader_stage_info.stage = (VkShaderStageFlagBits)pShaderStage;
                 
                 this->_shader_stages.push_back(_pipeline_shader_stage_info);
                 this->_shader_modules.push_back(_shader_module);
@@ -124,101 +101,11 @@ namespace wolf
                 return S_OK;
             }
             
-            HRESULT create_descriptor_pool(_In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize)
-            {
-                VkDescriptorPoolCreateInfo _descriptor_pool_create_info =
-                {
-                    VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,    // Type
-                    nullptr,                                          // Next
-                    0,                                                // Flags
-                    1,                                                // MaxSets
-                    static_cast<uint32_t>(pDescriptorPoolSize.size()),// PoolSizeCount
-                    pDescriptorPoolSize.data()                        // PoolSizes
-                };
-                
-                auto _hr = vkCreateDescriptorPool(this->_gDevice->vk_device,
-                                                  &_descriptor_pool_create_info,
-                                                  nullptr,
-                                                  &this->_descriptor_pool);
-                if(_hr)
-                {
-                    V(S_FALSE, "creating descriptor pool for graphics device: " + this->_gDevice->device_name +
-                      " ID:" + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
-                    return S_FALSE;
-                }
-                
-                return S_OK;
-            }
-            
-            //Create desciption set layout binding
-            HRESULT create_descriptor_set_layout_binding(_In_ const std::vector<VkDescriptorSetLayoutBinding>& pDescriptorSetLayoutBinding)
-            {
-                VkDescriptorSetLayoutCreateInfo _descriptor_set_layout_create_info =
-                {
-                    VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,        // Type
-                    nullptr,                                                    // Next
-                    0,                                                          // Flags
-                    static_cast<UINT32>(pDescriptorSetLayoutBinding.size()),    // BindingCount
-                    pDescriptorSetLayoutBinding.data()                          // Bindings
-                };
-                    
-                auto _hr = vkCreateDescriptorSetLayout(this->_gDevice->vk_device,
-                                                       &_descriptor_set_layout_create_info,
-                                                       nullptr,
-                                                       &this->_descriptor_set_layout);
-                if(_hr)
-                {
-                    V(S_FALSE, "creating descriptor set layout for graphics device :" + this->_gDevice->device_name +
-                      " ID: " + std::to_string(this->_gDevice->device_id),
-                      this->_name, 3,
-                      false,
-                      true);
-                
-                      return S_FALSE;
-                }
-                
-                if(!this->_descriptor_pool)
-                {
-                    logger.error("Descriptor pool not exists");
-                    return S_FALSE;
-                
-                }
-                VkDescriptorSetAllocateInfo _descriptor_set_allocate_info =
-                {
-                    VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO, // Type
-                    nullptr,                                        // Next
-                    this->_descriptor_pool,                         // DescriptorPool
-                    1,                                              // DescriptorSetCount
-                    &this->_descriptor_set_layout                   // SetLayouts
-                };
-                
-                _hr = vkAllocateDescriptorSets(this->_gDevice->vk_device,
-                                               &_descriptor_set_allocate_info,
-                                               &this->_descriptor_set);
-                if(_hr)
-                {
-                    V(S_FALSE, "creating descriptor set for graphics device :" + this->_gDevice->device_name +
-                      " ID: " + std::to_string(this->_gDevice->device_id),
-                      this->_name, 3,
-                      false,
-                      true);
-                    return S_FALSE;
-                }
-                return S_OK;
-            }
-            
-            void update_descriptor_sets(_In_ const std::vector<VkWriteDescriptorSet>& pWriteDescriptorSets)
-            {
-                vkUpdateDescriptorSets(this->_gDevice->vk_device,
-                                       static_cast<UINT32>(pWriteDescriptorSets.size()),
-                                       pWriteDescriptorSets.data(),
-                                       0,
-                                       nullptr );
-            }
-            
             ULONG release()
             {
                 this->_shader_stages.clear();
+                this->_shader_binding_params.clear();
+                
                 for(size_t i = 0; i  < this->_shader_modules.size(); ++i)
                 {
                     vkDestroyShaderModule(this->_gDevice->vk_device,
@@ -283,14 +170,234 @@ namespace wolf
                 this->_shader_type = pShaderType;
             }
 
-            void set_shader_binding_param(_In_ const w_shader_binding_param& pShaderParam)
+            HRESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
             {
-                this->_shader_binding_params.push_back(pShaderParam);
+                this->_shader_binding_params.swap(pShaderBindingParams);
+                return _prepare_shader_params();
             }
-
+            
 #pragma endregion
 
         private:
+            
+            HRESULT _create_descriptor_pool(_In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize)
+            {
+                VkDescriptorPoolCreateInfo _descriptor_pool_create_info =
+                {
+                    VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,    // Type
+                    nullptr,                                          // Next
+                    0,                                                // Flags
+                    1,                                                // MaxSets
+                    static_cast<uint32_t>(pDescriptorPoolSize.size()),// PoolSizeCount
+                    pDescriptorPoolSize.data()                        // PoolSizes
+                };
+                
+                auto _hr = vkCreateDescriptorPool(this->_gDevice->vk_device,
+                                                  &_descriptor_pool_create_info,
+                                                  nullptr,
+                                                  &this->_descriptor_pool);
+                if(_hr)
+                {
+                    V(S_FALSE, "creating descriptor pool for graphics device: " + this->_gDevice->device_name +
+                      " ID:" + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
+                    return S_FALSE;
+                }
+                
+                return S_OK;
+            }
+            
+            //Create desciption set layout binding
+            HRESULT _create_descriptor_set_layout_binding(_In_ const std::vector<VkDescriptorSetLayoutBinding>& pDescriptorSetLayoutBinding)
+            {
+                VkDescriptorSetLayoutCreateInfo _descriptor_set_layout_create_info =
+                {
+                    VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,        // Type
+                    nullptr,                                                    // Next
+                    0,                                                          // Flags
+                    static_cast<UINT32>(pDescriptorSetLayoutBinding.size()),    // BindingCount
+                    pDescriptorSetLayoutBinding.data()                          // Bindings
+                };
+                
+                auto _hr = vkCreateDescriptorSetLayout(this->_gDevice->vk_device,
+                                                       &_descriptor_set_layout_create_info,
+                                                       nullptr,
+                                                       &this->_descriptor_set_layout);
+                if(_hr)
+                {
+                    V(S_FALSE, "creating descriptor set layout for graphics device :" + this->_gDevice->device_name +
+                      " ID: " + std::to_string(this->_gDevice->device_id),
+                      this->_name, 3,
+                      false,
+                      true);
+                    
+                    return S_FALSE;
+                }
+                
+                if(!this->_descriptor_pool)
+                {
+                    logger.error("Descriptor pool not exists");
+                    return S_FALSE;
+                    
+                }
+                VkDescriptorSetAllocateInfo _descriptor_set_allocate_info =
+                {
+                    VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO, // Type
+                    nullptr,                                        // Next
+                    this->_descriptor_pool,                         // DescriptorPool
+                    1,                                              // DescriptorSetCount
+                    &this->_descriptor_set_layout                   // SetLayouts
+                };
+                
+                _hr = vkAllocateDescriptorSets(this->_gDevice->vk_device,
+                                               &_descriptor_set_allocate_info,
+                                               &this->_descriptor_set);
+                if(_hr)
+                {
+                    V(S_FALSE, "creating descriptor set for graphics device :" + this->_gDevice->device_name +
+                      " ID: " + std::to_string(this->_gDevice->device_id),
+                      this->_name, 3,
+                      false,
+                      true);
+                    return S_FALSE;
+                }
+                return S_OK;
+            }
+            
+            HRESULT _prepare_shader_params()
+            {
+                HRESULT _hr = S_OK;
+                
+                uint32_t _number_of_uniforms = 0;
+                uint32_t _number_of_samplers = 0;
+                std::vector<VkDescriptorSetLayoutBinding> _layout_bindings;
+                for (auto& _iter : this->_shader_binding_params)
+                {
+                    auto _binding_index = _iter.index;
+                    auto _binding_type = _iter.type;
+                    auto _binding_stage = _iter.stage;
+                    
+                    switch (_binding_type)
+                    {
+                        case UNIFORM:
+                        {
+                            _number_of_uniforms++;
+                            _layout_bindings.push_back(
+                                                       {
+                                                           _binding_index,                                     // Binding
+                                                           VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // DescriptorType
+                                                           1,                                                  // DescriptorCount
+                                                           (VkShaderStageFlagBits)_binding_stage,              // StageFlags
+                                                           nullptr                                             // ImmutableSamplers
+                                                       });
+                        }
+                            break;
+                        case SAMPLER:
+                        {
+                            _number_of_samplers++;
+                            _layout_bindings.push_back(
+                                                       {
+                                                           _binding_index,                                     // Binding
+                                                           VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // DescriptorType
+                                                           1,                                                  // DescriptorCount
+                                                           (VkShaderStageFlagBits)_binding_stage,              // StageFlags
+                                                           nullptr                                             // ImmutableSamplers
+                                                       });
+                        }
+                            break;
+                    }
+                }
+                
+                //we need one image and one uniform for basic shaders
+                std::vector<VkDescriptorPoolSize> _descriptor_pool_sizes;
+                if (_number_of_uniforms)
+                {
+                    _descriptor_pool_sizes.push_back(
+                                                     {
+                                                         VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // Type
+                                                         _number_of_uniforms                                 // DescriptorCount
+                                                     });
+                }
+                if (_number_of_samplers)
+                {
+                    _descriptor_pool_sizes.push_back(
+                                                     {
+                                                         VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // Type
+                                                         _number_of_samplers                                 // DescriptorCount
+                                                     });
+                }
+                
+                if (_descriptor_pool_sizes.size())
+                {
+                    _hr = _create_descriptor_pool(_descriptor_pool_sizes);
+                    if (_hr == S_FALSE)
+                    {
+                        logger.error("Error on creating shader descriptor pool for mesh: " +
+                                     this->_name);
+                        return S_FALSE;
+                    }
+                }
+                
+                if (_layout_bindings.size())
+                {
+                    _hr = _create_descriptor_set_layout_binding(_layout_bindings);
+                    if (_hr == S_FALSE)
+                    {
+                        logger.error("Error on creating shader descriptor pool for mesh: " +
+                                     this->_name);
+                        return S_FALSE;
+                    }
+                }
+                
+                std::vector<VkWriteDescriptorSet> _write_descriptor_sets;
+                for (auto& _iter : _shader_binding_params)
+                {
+                    switch (_iter.type)
+                    {
+                        case w_shader_binding_type::UNIFORM:
+                        {
+                            _write_descriptor_sets.push_back(
+                                                             {
+                                                                 VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
+                                                                 nullptr,                                        // Next
+                                                                 this->_descriptor_set,                          // DstSet
+                                                                 _iter.index,                                    // DstBinding
+                                                                 0,                                              // DstArrayElement
+                                                                 1,                                              // DescriptorCount
+                                                                 VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,              // DescriptorType
+                                                                 nullptr,                                        // ImageInfo
+                                                                 &_iter.uniform_info,                            // BufferInfo
+                                                                 nullptr                                         // TexelBufferView
+                                                             });
+                        }
+                            break;
+                        case w_shader_binding_type::SAMPLER:
+                        {
+                            _write_descriptor_sets.push_back(
+                                                             {
+                                                                 VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
+                                                                 nullptr,                                        // Next
+                                                                 this->_descriptor_set,                          // DstSet
+                                                                 _iter.index,                                    // DstBinding
+                                                                 0,                                              // DstArrayElement
+                                                                 1,                                              // DescriptorCount
+                                                                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,      // DescriptorType
+                                                                 &_iter.sampler_info,                            // ImageInfo
+                                                                 nullptr,
+                                                             });
+                        }
+                            break;
+                    }
+                }
+                
+                vkUpdateDescriptorSets(this->_gDevice->vk_device,
+                                       static_cast<UINT32>(_write_descriptor_sets.size()),
+                                       _write_descriptor_sets.data(),
+                                       0,
+                                       nullptr );
+                
+                return _hr;
+            }
+            
             std::string                                             _name;
             std::shared_ptr<w_graphics_device>                      _gDevice;
             std::vector<VkPipelineShaderStageCreateInfo>            _shader_stages;
@@ -325,24 +432,6 @@ HRESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->load(pGDevice, pShaderBinaryPath, pShaderStage, pMainFunctionName);
-}
-
-HRESULT w_shader::create_descriptor_pool(_In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize)
-{
-    if(!this->_pimp) return S_FALSE;
-    return this->_pimp->create_descriptor_pool(pDescriptorPoolSize);
-}
-
-HRESULT w_shader::create_description_set_layout_binding(_In_ const std::vector<VkDescriptorSetLayoutBinding>& pDescriptorSetLayoutBinding)
-{
-    if(!this->_pimp) return S_FALSE;
-    return this->_pimp->create_descriptor_set_layout_binding(pDescriptorSetLayoutBinding);
-}
-
-void w_shader::update_descriptor_sets(_In_ const std::vector<VkWriteDescriptorSet>& pWriteDescriptorSets)
-{
-    if(!this->_pimp) return;
-    this->_pimp->update_descriptor_sets(pWriteDescriptorSets);
 }
 
 ULONG w_shader::release()
@@ -391,10 +480,10 @@ const std::vector<w_shader_binding_param> w_shader::get_shader_binding_params() 
 
 #pragma region Setters
 
-void w_shader::set_shader_binding_param(_In_ const w_shader_binding_param& pShaderParam)
+HRESULT w_shader::set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
 {
-    if (!this->_pimp) return;
-    this->_pimp->set_shader_binding_param(pShaderParam);
+    if (!this->_pimp) return S_FALSE;
+    return this->_pimp->set_shader_binding_params(pShaderBindingParams);
 }
 
 void w_shader::set_shader_type(_In_ const w_shader_type pShaderType)
@@ -410,7 +499,7 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
     _In_z_ const std::wstring& pVertexShaderPath,
     _In_z_ const std::wstring& pFragmentShaderPath,
     _In_ const w_shader_type& pShaderType,
-    _In_ const std::vector<w_shader_binding_param>& pShaderBindings,
+    _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
     _Inout_ w_shader** pShader,
     _In_z_ const char* pMainFunctionName)
 {
@@ -422,11 +511,6 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
         return S_FALSE;
     }
 
-    //set shader params
-    std::for_each(pShaderBindings.begin(), pShaderBindings.end(), [_shader](_In_ const w_shader_binding_param& pParam)
-    {
-        _shader->set_shader_binding_param(pParam);
-    });
     //set shader type
     _shader->set_shader_type(pShaderType);
 
@@ -445,6 +529,15 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
         }
     }
 
+    //set shader params
+    if (pShaderBindingParams.size())
+    {
+        if(_shader->set_shader_binding_params(pShaderBindingParams) == S_FALSE)
+        {
+            return S_FALSE;
+        }
+    }
+    
     //check if already exists
     auto _old_shader = get_shader_from_shared(pName);
     if (_old_shader)

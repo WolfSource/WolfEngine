@@ -119,22 +119,22 @@ namespace wolf
 
                 VkRenderPassBeginInfo _render_pass_begin_info =
                 {
-                    VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,    // Type
-                    nullptr,                                     // Next
-                    this->_render_pass,                          // RenderPass
-                    pFrameBuffer,                                // Framebuffer
-                    {                                            // RenderArea
+                    VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,               // Type
+                    nullptr,                                                // Next
+                    this->_render_pass,                                     // RenderPass
+                    pFrameBuffer,                                           // Framebuffer
+                    {                                                       // RenderArea
                         {
-                            this->_viewport.x,                   // X
-                            this->_viewport.y                    // Y
+                            static_cast<int32_t>(this->_viewport.x),        // X
+                            static_cast<int32_t>(this->_viewport.y)         // Y
                         },
                         {
-                            this->_viewport.width,               // Width
-                            this->_viewport.height,              // Height
+                            static_cast<uint32_t>(this->_viewport.width),   // Width
+                            static_cast<uint32_t>(this->_viewport.height),  // Height
                         }
                     },
-                    1,                                           // ClearValueCount
-                    &_vk_clear_color                             // ClearValues
+                    1,                                                      // ClearValueCount
+                    &_vk_clear_color                                        // ClearValues
                 };
                 vkCmdBeginRenderPass(pCommandBuffer, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 

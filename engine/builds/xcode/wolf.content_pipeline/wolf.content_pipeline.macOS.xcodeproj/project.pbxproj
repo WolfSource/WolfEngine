@@ -23,13 +23,13 @@
 		2C4CCB241EB0F81100E0A422 /* w_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB191EB0F81100E0A422 /* w_camera.h */; };
 		2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */; };
 		2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */; };
-		2C4CCB291EB0F81100E0A422 /* w_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB1E1EB0F81100E0A422 /* w_model.cpp */; };
-		2C4CCB2A1EB0F81100E0A422 /* w_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1F1EB0F81100E0A422 /* w_model.h */; };
-		2C4CCB2B1EB0F81100E0A422 /* w_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB201EB0F81100E0A422 /* w_scene.cpp */; };
-		2C4CCB2C1EB0F81100E0A422 /* w_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB211EB0F81100E0A422 /* w_scene.h */; };
 		2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */; };
 		2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */; };
 		2C61A6BD1EC0F65400C0AB3E /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C61A6AD1EC0C32D00C0AB3E /* libmsgpackc.2.0.0.dylib */; };
+		2C736BC31ECA1EE400624CC7 /* w_cpipeline_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */; };
+		2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */; };
+		2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */; };
+		2C736BC61ECA1EE400624CC7 /* w_cpipeline_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,15 +49,15 @@
 		2C4CCB191EB0F81100E0A422 /* w_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_camera.h; path = ../../../src/wolf.content_pipeline/w_camera.h; sourceTree = "<group>"; };
 		2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_content_manager.h; path = ../../../src/wolf.content_pipeline/w_content_manager.h; sourceTree = "<group>"; };
 		2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_export.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_export.h; sourceTree = "<group>"; };
-		2C4CCB1E1EB0F81100E0A422 /* w_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_model.cpp; path = ../../../src/wolf.content_pipeline/w_model.cpp; sourceTree = "<group>"; };
-		2C4CCB1F1EB0F81100E0A422 /* w_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_model.h; path = ../../../src/wolf.content_pipeline/w_model.h; sourceTree = "<group>"; };
-		2C4CCB201EB0F81100E0A422 /* w_scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_scene.cpp; path = ../../../src/wolf.content_pipeline/w_scene.cpp; sourceTree = "<group>"; };
-		2C4CCB211EB0F81100E0A422 /* w_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_scene.h; path = ../../../src/wolf.content_pipeline/w_scene.h; sourceTree = "<group>"; };
 		2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vertex_declaration.h; path = ../../../src/wolf.content_pipeline/w_vertex_declaration.h; sourceTree = "<group>"; };
 		2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2C61A6AD1EC0C32D00C0AB3E /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2C61A6B31EC0DD9200C0AB3E /* libmsgpackc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmsgpackc.a; path = ../../../dependencies/msgpack/lib/libmsgpackc.a; sourceTree = "<group>"; };
 		2C61A6BB1EC0E3D700C0AB3E /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/xcode/Debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
+		2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_model.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_model.cpp; sourceTree = "<group>"; };
+		2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_model.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_model.h; sourceTree = "<group>"; };
+		2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_scene.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_scene.cpp; sourceTree = "<group>"; };
+		2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_scene.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_scene.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.content_pipeline.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -95,14 +95,14 @@
 			isa = PBXGroup;
 			children = (
 				2C4CCAFB1EB0F50D00E0A422 /* collada */,
+				2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */,
+				2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */,
+				2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */,
+				2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */,
 				2C4CCB181EB0F81100E0A422 /* w_camera.cpp */,
 				2C4CCB191EB0F81100E0A422 /* w_camera.h */,
 				2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */,
 				2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */,
-				2C4CCB1E1EB0F81100E0A422 /* w_model.cpp */,
-				2C4CCB1F1EB0F81100E0A422 /* w_model.h */,
-				2C4CCB201EB0F81100E0A422 /* w_scene.cpp */,
-				2C4CCB211EB0F81100E0A422 /* w_scene.h */,
 				2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */,
 				2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */,
 				2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */,
@@ -138,15 +138,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */,
+				2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */,
 				2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */,
-				2C4CCB2A1EB0F81100E0A422 /* w_model.h in Headers */,
 				2C4CCB241EB0F81100E0A422 /* w_camera.h in Headers */,
 				2C4CCB101EB0F54400E0A422 /* c_obj.h in Headers */,
 				2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */,
 				2C4CCB0B1EB0F54400E0A422 /* c_extra.h in Headers */,
 				2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */,
 				2C4CCB121EB0F54400E0A422 /* c_parser.h in Headers */,
-				2C4CCB2C1EB0F81100E0A422 /* w_scene.h in Headers */,
+				2C736BC61ECA1EE400624CC7 /* w_cpipeline_scene.h in Headers */,
 				2C4CCB131EB0F54400E0A422 /* c_skin.h in Headers */,
 				2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */,
 				2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */,
@@ -211,9 +211,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C4CCB2B1EB0F81100E0A422 /* w_scene.cpp in Sources */,
-				2C4CCB291EB0F81100E0A422 /* w_model.cpp in Sources */,
 				2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */,
+				2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */,
+				2C736BC31ECA1EE400624CC7 /* w_cpipeline_model.cpp in Sources */,
 				2C4CCB0E1EB0F54400E0A422 /* c_node.cpp in Sources */,
 				2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */,
 				2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */,

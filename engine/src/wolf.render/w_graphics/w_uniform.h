@@ -75,9 +75,14 @@ namespace wolf
                     return S_FALSE;
                 }
                 
-                _descriptor_buffer_info.buffer = this->_buffer.get_handle();
-                _descriptor_buffer_info.offset = 0;
-                _descriptor_buffer_info.range = this->_buffer.get_size();
+                
+//                if (!this->_descriptor_buffer_info)
+//                {
+//                    this->_descriptor_buffer_info = new VkDescriptorBufferInfo();
+//                }
+                this->_descriptor_buffer_info.buffer = this->_buffer.get_handle();
+                this->_descriptor_buffer_info.offset = 0;
+                this->_descriptor_buffer_info.range = this->_buffer.get_size();
                 
                 return S_OK;
             }
@@ -215,15 +220,9 @@ namespace wolf
                 return S_OK;
             }
 
-            VkDescriptorBufferInfo get_descriptor_info() const
+            const VkDescriptorBufferInfo get_descriptor_info() const
             {
-                const VkDescriptorBufferInfo _info =
-                {
-                    this->_buffer.get_handle(),
-                    0,
-                    this->_buffer.get_size(),
-                };
-                return _info;
+                return this->_descriptor_buffer_info;
             }
                 
 			//Release resources

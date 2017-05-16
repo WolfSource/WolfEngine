@@ -285,6 +285,8 @@ HRESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_
     }
 
     w_pipeline_pimp::pipeline_caches[pPipelineCacheName] = _pipeline_cache;
+    
+    return S_OK;
 }
 
 VkPipelineCache w_pipeline::get_pipeline_cache(_In_z_ const std::string& pPipelineCacheName)

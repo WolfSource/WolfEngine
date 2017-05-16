@@ -28,13 +28,13 @@ enum w_shader_binding_type
 
 enum w_shader_stage
 {
-	VERTEX_SHADER,
+	VERTEX_SHADER = VK_SHADER_STAGE_VERTEX_BIT,
 #if defined(__DX12__) || defined(__DX11__)
 	PIXEL_SHADER,
         HULL_SHADER,
 	DOMAIN_SHADER,
 #elif defined(__VULKAN__)
-        FRAGMENT_SHADER,
+        FRAGMENT_SHADER = VK_SHADER_STAGE_FRAGMENT_BIT,
         TESSELATION_CONTROL,
         TESSELATION_EVALUATION,
 #endif
@@ -48,9 +48,10 @@ struct w_shader_binding_param
 {
     uint32_t                    index;
     w_shader_binding_type       type;
+    w_shader_stage              stage;
 #ifdef  __VULKAN__
-    VkDescriptorBufferInfo*     unifrom_info;
-    VkDescriptorImageInfo*      sampler_info;
+    VkDescriptorBufferInfo      uniform_info;
+    VkDescriptorImageInfo       sampler_info;
 #endif //  __VULKAN__
 };
 
@@ -71,13 +72,7 @@ namespace wolf
 				               _In_ const w_shader_stage pShaderStage,
                                _In_z_ const char* pMainFunctionName = "main");
             
-            //Create decriptor pool
-            W_EXP HRESULT create_descriptor_pool(_In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize);
-            //Create desciptor set layout binding
-            W_EXP HRESULT create_description_set_layout_binding(_In_ const std::vector<VkDescriptorSetLayoutBinding>& pDescriptorSetLayoutBinding);
-            //Update write descriptor sets
-            W_EXP void update_descriptor_sets(_In_ const std::vector<VkWriteDescriptorSet>& pWriteDescriptorSets);
-            
+        
 			W_EXP virtual ULONG release() override;
 
 #pragma region Getters
@@ -93,8 +88,8 @@ namespace wolf
 #pragma region Setters
 
             W_EXP void set_shader_type(_In_ const w_shader_type pShaderType);
-            W_EXP void set_shader_binding_param(_In_ const w_shader_binding_param& pShaderParam);
-
+            W_EXP HRESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
+            
 #pragma endregion
 
             W_EXP static HRESULT load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -102,7 +97,7 @@ namespace wolf
                                                         _In_z_ const std::wstring& pVertexShaderPath,
                                                         _In_z_ const std::wstring& pFragmentShaderPath,
                                                         _In_ const w_shader_type& pShaderType,
-                                                        _In_ const std::vector<w_shader_binding_param>& pShaderBindings,
+                                                        _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
                                                         _Inout_ w_shader** pShader,
                                                         _In_z_ const char* pMainFunctionName = "main");
 

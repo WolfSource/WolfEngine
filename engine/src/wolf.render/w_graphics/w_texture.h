@@ -63,7 +63,7 @@ namespace wolf
             //get is bgra
             W_EXP bool get_is_bgra() const;
             //get write descriptor image info
-            W_EXP VkDescriptorImageInfo get_descriptor_info() const;
+            W_EXP const VkDescriptorImageInfo get_descriptor_info() const;
             
 #pragma endregion
 

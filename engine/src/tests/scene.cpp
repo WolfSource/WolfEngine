@@ -121,30 +121,27 @@ void scene::load()
                     w_shader_binding_param _param;
                     _param.index = 0;
                     _param.type = w_shader_binding_type::UNIFORM;
-                    _param.unifrom_info = &(_wvp->get_descriptor_info());
-                    _param.sampler_info = nullptr;
+                    _param.stage = w_shader_stage::VERTEX_SHADER;
+                    _param.uniform_info = _wvp->get_descriptor_info();
                     _shader_params.push_back(_param);
 
 
                     _param.index = 1;
                     _param.type = w_shader_binding_type::SAMPLER;
-                    _param.sampler_info = &(w_texture::default_texture->get_descriptor_info());
-                    _param.unifrom_info = nullptr;
+                     _param.stage = w_shader_stage::FRAGMENT_SHADER;
+                    _param.sampler_info = w_texture::default_texture->get_descriptor_info();
                     _shader_params.push_back(_param);
 
                     _param.index = 2;
                     _param.type = w_shader_binding_type::UNIFORM;
-                    _param.unifrom_info = &(_color->get_descriptor_info());
-                    _param.sampler_info = nullptr;
+                    _param.stage = w_shader_stage::FRAGMENT_SHADER;
+                    _param.uniform_info = _color->get_descriptor_info();
                     _shader_params.push_back(_param);
 
                     _hr = S_OK;
                     if (this->_basic_instance_shader)
                     {
-                        for (size_t i = 0; i < _shader_params.size(); ++i)
-                        {
-                            this->_basic_instance_shader->set_shader_binding_param(_shader_params[i]);
-                        }
+                        this->_basic_instance_shader->set_shader_binding_params(_shader_params);
                     }
                     else
                     {

@@ -35,8 +35,6 @@ HRESULT w_model::load(_In_ w_shader* pShader,
 	std::vector<w_cpipeline_model::w_mesh*> _model_meshes;
 	this->_pipeline_model->get_meshes(_model_meshes);
     
-    auto _t = this->_pipeline_model->get_transform();
-    
     std::vector<w_cpipeline_model::w_instance_info> _model_instances;
     this->_pipeline_model->get_instances(_model_instances);
     if (_model_instances.size())

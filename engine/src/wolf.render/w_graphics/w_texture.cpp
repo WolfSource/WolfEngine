@@ -28,8 +28,8 @@ namespace wolf
             _image_type(VkImageType::VK_IMAGE_TYPE_2D),
             _image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D)
             {
-                
             }
+            
             ~w_texture_pimp()
             {
                 release();
@@ -165,6 +165,11 @@ namespace wolf
                              if(_hr == S_FALSE) return S_FALSE;
                             
                             stbi_image_free(_rgba);
+                            
+                            this->_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                            this->_image_info.sampler = this->_sampler;
+                            this->_image_info.imageView = this->_view;
+                            
                         }
                         else
                         {  
@@ -561,14 +566,7 @@ namespace wolf
             
             const VkDescriptorImageInfo get_descriptor_info() const
             {
-                const VkDescriptorImageInfo _image_info =
-                {
-                    this->_sampler,                                     // Sampler
-                    this->_view,                                        // ImageView
-                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL            // ImageLayout
-                };
-                
-                return _image_info;
+                return this->_image_info;
             }
             
             ULONG release()
@@ -700,6 +698,7 @@ namespace wolf
             VkFormat                                        _format;
             VkImageType                                     _image_type;
             VkImageViewType                                 _image_view_type;
+            VkDescriptorImageInfo                           _image_info;
         };
     }
 }
@@ -838,7 +837,7 @@ VkFormat w_texture::get_format() const
     return this->_pimp->get_format();
 }
 
-VkDescriptorImageInfo w_texture::get_descriptor_info() const
+const VkDescriptorImageInfo w_texture::get_descriptor_info() const
 {
     if(!this->_pimp) return VkDescriptorImageInfo();
     return this->_pimp->get_descriptor_info();

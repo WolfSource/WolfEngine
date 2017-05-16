@@ -141,7 +141,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "61"
             endingLineNumber = "61"
-            landmarkName = "c_parser::parse_collada_from_file(const std::wstring&amp; pFilePath, _Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
+            landmarkName = "c_parser::parse_collada_from_file(const std::wstring&amp; pFilePath, _Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -230,12 +230,26 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "472"
-            endingLineNumber = "472"
-            landmarkName = "scene::load()"
+            startingLineNumber = "469"
+            endingLineNumber = "469">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.render/w_graphics/w_mesh.cpp"
+            timestampString = "516653756.478007"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "338"
+            endingLineNumber = "338"
+            landmarkName = "_create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag, _In_ const void* const pBufferData, _In_ UINT pBufferSize, _In_ const VkMemoryPropertyFlags pMemoryFlags, _Inout_ w_buffer&amp; pBuffer)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -246,60 +260,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/wolf.render/w_graphics/w_mesh.cpp"
-            timestampString = "516038805.991119"
+            timestampString = "516653756.478007"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "344"
-            endingLineNumber = "344"
-            landmarkName = "w_mesh::get_indices_count()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.render/w_graphics/w_mesh.cpp"
-            timestampString = "516037876.547177"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_ const void* const pVerticesData, _In_ const UINT pVerticesCount, _In_ const UINT pVerticesSize, _In_ const UINT* const pIndicesData, _In_ const UINT pIndicesCount, _In_ bool pStaging)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.render/w_graphics/w_mesh.cpp"
-            timestampString = "516037876.547177"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_ const void* const pVerticesData, _In_ const UINT pVerticesCount, _In_ const UINT pVerticesSize, _In_ const UINT* const pIndicesData, _In_ const UINT pIndicesCount, _In_ bool pStaging)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.render/w_graphics/w_mesh.cpp"
-            timestampString = "516038805.991119"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
-            landmarkName = "w_mesh::get_vertices_count()"
+            startingLineNumber = "333"
+            endingLineNumber = "333"
+            landmarkName = "_create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag, _In_ const void* const pBufferData, _In_ UINT pBufferSize, _In_ const VkMemoryPropertyFlags pMemoryFlags, _Inout_ w_buffer&amp; pBuffer)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -324,13 +290,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "470"
-            endingLineNumber = "470"
-            landmarkName = "scene::load()"
-            landmarkType = "7">
+            startingLineNumber = "467"
+            endingLineNumber = "467">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -340,13 +304,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "460"
-            endingLineNumber = "460"
-            landmarkName = "scene::load()"
-            landmarkType = "7">
+            startingLineNumber = "457"
+            endingLineNumber = "457">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -610,11 +572,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
             landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
@@ -626,11 +588,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
             landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
@@ -642,11 +604,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "186"
-            endingLineNumber = "186"
+            startingLineNumber = "187"
+            endingLineNumber = "187"
             landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
@@ -658,11 +620,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
@@ -674,7 +636,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "224"
@@ -690,39 +652,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "227"
-            endingLineNumber = "227"
-            landmarkName = "scene::load()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "195"
-            endingLineNumber = "195"
-            landmarkName = "scene::load()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "192"
@@ -738,11 +668,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516307546.350203"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "191"
-            endingLineNumber = "191"
+            startingLineNumber = "189"
+            endingLineNumber = "189"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "516657386.934559"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "188"
+            endingLineNumber = "188"
             landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
@@ -775,7 +721,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1429"
             endingLineNumber = "1429"
-            landmarkName = "c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ std::vector&lt;c_node*&gt;&amp; pNodes, _Inout_ std::vector&lt;w_model*&gt;&amp; pModels, _Inout_ std::vector&lt;c_node*&gt;&amp; pMeshWithUnknownInstanceRef)"
+            landmarkName = "c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ std::vector&lt;c_node*&gt;&amp; pNodes, _Inout_ std::vector&lt;w_cpipeline_model*&gt;&amp; pModels, _Inout_ std::vector&lt;c_node*&gt;&amp; pMeshWithUnknownInstanceRef)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -935,8 +881,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "62"
             endingLineNumber = "62"
-            landmarkName = "from_angle_axis ( const float&amp; rfAngle_radian, const glm::vec3&amp; rkAxis )"
-            landmarkType = "9">
+            landmarkName = "scene::load()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -951,8 +897,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "75"
             endingLineNumber = "75"
-            landmarkName = "from_angle_axis ( const float&amp; rfAngle_radian, const glm::vec3&amp; rkAxis )"
-            landmarkType = "9">
+            landmarkName = "scene::load()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -983,7 +929,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1196"
             endingLineNumber = "1196"
-            landmarkName = "c_parser::_create_scene(_Inout_ w_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
+            landmarkName = "c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -999,7 +945,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1407"
             endingLineNumber = "1407"
-            landmarkName = "c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ std::vector&lt;c_node*&gt;&amp; pNodes, _Inout_ std::vector&lt;w_model*&gt;&amp; pModels, _Inout_ std::vector&lt;c_node*&gt;&amp; pMeshWithUnknownInstanceRef)"
+            landmarkName = "c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ std::vector&lt;c_node*&gt;&amp; pNodes, _Inout_ std::vector&lt;w_cpipeline_model*&gt;&amp; pModels, _Inout_ std::vector&lt;c_node*&gt;&amp; pMeshWithUnknownInstanceRef)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1010,7 +956,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "516314328.666044"
+            timestampString = "516657386.934559"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "129"
@@ -1031,7 +977,167 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1576"
             endingLineNumber = "1576"
-            landmarkName = "c_parser::_create_model(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_model** pModel)"
+            landmarkName = "c_parser::_create_model(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_cpipeline_model** pModel)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "516650215.449362"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
+            timestampString = "516657272.744406"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "175"
+            endingLineNumber = "175"
+            landmarkName = "set_shader_binding_params(_In_ std::vector&lt;w_shader_binding_param&gt; pShaderBindingParams)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
+            timestampString = "516655300.056674"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_z_ const std::wstring&amp; pShaderBinaryPath, _In_ const w_shader_stage pShaderStage, _In_z_ const char* pMainFunctionName)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
+            timestampString = "516657272.744406"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
+            landmarkName = "_prepare_shader_params()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "516657386.934559"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "142"
+            endingLineNumber = "142"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/tests/scene.cpp"
+            timestampString = "516657386.934559"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
+            landmarkName = "scene::load()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
+            timestampString = "516657245.0935"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
+            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_z_ const std::wstring&amp; pShaderBinaryPath, _In_ const w_shader_stage pShaderStage, _In_z_ const char* pMainFunctionName)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
+            timestampString = "516657270.261584"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
+            landmarkName = "_prepare_shader_params()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
+            timestampString = "516657296.569445"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
+            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_z_ const std::wstring&amp; pShaderBinaryPath, _In_ const w_shader_stage pShaderStage, _In_z_ const char* pMainFunctionName)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
+            timestampString = "516657439.918218"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "343"
+            endingLineNumber = "343"
+            landmarkName = "_prepare_shader_params()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

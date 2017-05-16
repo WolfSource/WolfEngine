@@ -10,10 +10,6 @@
 		2C38D9591E796CA200EE8595 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9581E796CA200EE8595 /* MoltenVK.framework */; };
 		2C3C81A21EB7B7CE00E3906E /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C3C81A01EB7B7CE00E3906E /* pch.cpp */; };
 		2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib */; };
-		2C61A6B91EC0E17900C0AB3E /* shader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C61A6B71EC0E17900C0AB3E /* shader.frag */; };
-		2C61A6BA1EC0E17900C0AB3E /* shader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C61A6B81EC0E17900C0AB3E /* shader.vert */; };
-		2C61A6C01EC1F79E00C0AB3E /* shader_instancing.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C61A6BE1EC1F79E00C0AB3E /* shader_instancing.frag */; };
-		2C61A6C11EC1F79E00C0AB3E /* shader_instancing.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C61A6BF1EC1F79E00C0AB3E /* shader_instancing.vert */; };
 		2C620F951E617F81005DFB10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C620F941E617F81005DFB10 /* Assets.xcassets */; };
 		2C620F981E617F81005DFB10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C620F961E617F81005DFB10 /* Main.storyboard */; };
 		2C620FB11E618052005DFB10 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C620FB01E618052005DFB10 /* libc++.tbd */; };
@@ -23,6 +19,10 @@
 		2C7079961EAB6D7D003784A2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079901EAB6D7D003784A2 /* main.m */; };
 		2C7079971EAB6D7D003784A2 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079911EAB6D7D003784A2 /* scene.cpp */; };
 		2C7079981EAB6D7D003784A2 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079941EAB6D7D003784A2 /* ViewController.mm */; };
+		2C736BB71ECA1E6A00624CC7 /* basic.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB31ECA1E6A00624CC7 /* basic.frag */; };
+		2C736BB81ECA1E6A00624CC7 /* basic.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB41ECA1E6A00624CC7 /* basic.vert */; };
+		2C736BB91ECA1E6A00624CC7 /* static_instancing_y_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */; };
+		2C736BBA1ECA1E6A00624CC7 /* static_instancing_z_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */; };
 		2CE21C411E89678F00EEE579 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */; };
 		2CE21C421E89678F00EEE579 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */; };
 /* End PBXBuildFile section */
@@ -32,10 +32,6 @@
 		2C3C81A01EB7B7CE00E3906E /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../../../src/tests/pch.cpp; sourceTree = "<group>"; };
 		2C3C81A11EB7B7CE00E3906E /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../../../src/tests/pch.h; sourceTree = "<group>"; };
 		2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.content_pipeline.macOS.dylib; sourceTree = "<group>"; };
-		2C61A6B71EC0E17900C0AB3E /* shader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.frag; path = ../../../../../content/shaders/test/shader.frag; sourceTree = "<group>"; };
-		2C61A6B81EC0E17900C0AB3E /* shader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = ../../../../../content/shaders/test/shader.vert; sourceTree = "<group>"; };
-		2C61A6BE1EC1F79E00C0AB3E /* shader_instancing.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader_instancing.frag; path = ../../../../../content/shaders/test/shader_instancing.frag; sourceTree = "<group>"; };
-		2C61A6BF1EC1F79E00C0AB3E /* shader_instancing.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader_instancing.vert; path = ../../../../../content/shaders/test/shader_instancing.vert; sourceTree = "<group>"; };
 		2C620F881E617F81005DFB10 /* wolf_vulkan_metal_macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wolf_vulkan_metal_macOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C620F941E617F81005DFB10 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = wolf_vulkan_metal_macOS/Assets.xcassets; sourceTree = "<group>"; };
 		2C620F971E617F81005DFB10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -50,6 +46,10 @@
 		2C7079921EAB6D7D003784A2 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = ../../../../src/tests/scene.h; sourceTree = "<group>"; };
 		2C7079931EAB6D7D003784A2 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../src/tests/ViewController.h; sourceTree = "<group>"; };
 		2C7079941EAB6D7D003784A2 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../src/tests/ViewController.mm; sourceTree = "<group>"; };
+		2C736BB31ECA1E6A00624CC7 /* basic.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.frag; path = ../../../../../content/shaders/basic.frag; sourceTree = "<group>"; };
+		2C736BB41ECA1E6A00624CC7 /* basic.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.vert; path = ../../../../../content/shaders/basic.vert; sourceTree = "<group>"; };
+		2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = static_instancing_y_up.vert; path = ../../../../../content/shaders/static_instancing_y_up.vert; sourceTree = "<group>"; };
+		2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = static_instancing_z_up.vert; path = ../../../../../content/shaders/static_instancing_z_up.vert; sourceTree = "<group>"; };
 		2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../wolf.system/build/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.vulkan.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.vulkan.macOS.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,10 +83,10 @@
 		2C4CCAF61EB0E5F700E0A422 /* shaders */ = {
 			isa = PBXGroup;
 			children = (
-				2C61A6BE1EC1F79E00C0AB3E /* shader_instancing.frag */,
-				2C61A6BF1EC1F79E00C0AB3E /* shader_instancing.vert */,
-				2C61A6B71EC0E17900C0AB3E /* shader.frag */,
-				2C61A6B81EC0E17900C0AB3E /* shader.vert */,
+				2C736BB31ECA1E6A00624CC7 /* basic.frag */,
+				2C736BB41ECA1E6A00624CC7 /* basic.vert */,
+				2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */,
+				2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */,
 			);
 			name = shaders;
 			sourceTree = "<group>";
@@ -192,12 +192,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C61A6B91EC0E17900C0AB3E /* shader.frag in Resources */,
-				2C61A6BA1EC0E17900C0AB3E /* shader.vert in Resources */,
 				2C620F951E617F81005DFB10 /* Assets.xcassets in Resources */,
+				2C736BB71ECA1E6A00624CC7 /* basic.frag in Resources */,
+				2C736BB91ECA1E6A00624CC7 /* static_instancing_y_up.vert in Resources */,
 				2C620F981E617F81005DFB10 /* Main.storyboard in Resources */,
-				2C61A6C01EC1F79E00C0AB3E /* shader_instancing.frag in Resources */,
-				2C61A6C11EC1F79E00C0AB3E /* shader_instancing.vert in Resources */,
+				2C736BBA1ECA1E6A00624CC7 /* static_instancing_z_up.vert in Resources */,
+				2C736BB81ECA1E6A00624CC7 /* basic.vert in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
