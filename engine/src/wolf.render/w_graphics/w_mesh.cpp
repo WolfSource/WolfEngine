@@ -95,14 +95,15 @@ namespace wolf
             {
                 auto _pipeline_handle = this->_pipeline.get_handle();
                 auto _pipeline_layout_handle = this->_pipeline.get_layout_handle();
-
+                auto _descriptor_set = this->_shader->get_descriptor_set();
+                
                 vkCmdBindPipeline(pCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline_handle);
                 vkCmdBindDescriptorSets(pCommandBuffer,
                     VK_PIPELINE_BIND_POINT_GRAPHICS,
                     _pipeline_layout_handle,
                     0,
                     1,
-                    &this->_descriptor_set,
+                    &_descriptor_set,
                     0,
                     nullptr);
 
@@ -546,7 +547,6 @@ namespace wolf
             w_pipeline                                          _pipeline;
             w_texture*                                          _texture;
             w_shader*                                           _shader;
-            VkDescriptorSet                                     _descriptor_set;
         };
     }
 }
