@@ -24,6 +24,42 @@ namespace wolf
 		class w_mesh : public system::w_object
 		{
 		public:
+            enum w_vertex_declaration
+            {
+                VERTEX_POSITION,
+                VERTEX_POSITION_INSTANCE_VEC2,
+                VERTEX_POSITION_INSTANCE_VEC3,
+                VERTEX_POSITION_INSTANCE_VEC4,
+                VERTEX_POSITION_INSTANCE_VEC7_INT,
+                VERTEX_POSITION_INSTANCE_VEC8,
+                VERTEX_POSITION_INSTANCE_MAT4,
+                VERTEX_POSITION_COLOR,
+                VERTEX_POSITION_COLOR_INSTANCE_VEC2,
+                VERTEX_POSITION_COLOR_INSTANCE_VEC3,
+                VERTEX_POSITION_COLOR_INSTANCE_VEC4,
+                VERTEX_POSITION_COLOR_INSTANCE_VEC7_INT,
+                VERTEX_POSITION_COLOR_INSTANCE_VEC8,
+                VERTEX_POSITION_COLOR_INSTANCE_MAT4,
+                VERTEX_POSITION_UV,
+                VERTEX_POSITION_UV_INSTANCE_VEC2,
+                VERTEX_POSITION_UV_INSTANCE_VEC3,
+                VERTEX_POSITION_UV_INSTANCE_VEC4,
+                VERTEX_POSITION_UV_INSTANCE_VEC7_INT,
+                VERTEX_POSITION_UV_INSTANCE_VEC8,
+                VERTEX_POSITION_UV_INSTANCE_MAT4,
+                VERTEX_POSITION_COLOR_UV,
+                VERTEX_POSITION_COLOR_UV_INSTANCE_VEC2,
+                VERTEX_POSITION_COLOR_UV_INSTANCE_VEC3,
+                VERTEX_POSITION_COLOR_UV_INSTANCE_VEC4,
+                VERTEX_POSITION_COLOR_UV_INSTANCE_VEC7_INT,
+                VERTEX_POSITION_COLOR_UV_INSTANCE_VEC8,
+                VERTEX_POSITION_COLOR_UV_INSTANCE_MAT4,
+                POSITION_NORMAL_COLOR,
+                POSITION_NORMAL_UV,
+                POSITION_NORMAL_UV_TANGENT_BINORMAL,
+                POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES,
+            };
+
             W_EXP w_mesh();
 			W_EXP virtual ~w_mesh();
 
@@ -54,6 +90,7 @@ namespace wolf
             W_EXP const UINT get_indices_count() const;
             W_EXP w_shader* get_shader() const ;
             W_EXP w_texture* get_texture() const;
+            W_EXP const w_vertex_declaration get_vertex_declaration_struct();
 
 #pragma endregion
 
@@ -61,6 +98,7 @@ namespace wolf
 		
             W_EXP void set_shader(_In_ w_shader* pShader);
             W_EXP void set_texture(_In_ w_texture* pTexture);
+            W_EXP void set_vertex_declaration_struct(_In_ const w_vertex_declaration& pValue);
 
 #pragma endregion
 			

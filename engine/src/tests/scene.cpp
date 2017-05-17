@@ -2,6 +2,7 @@
 #include "scene.h"
 #include <w_graphics/w_pipeline.h>
 #include <w_content_manager.h>
+#include <w_framework/w_quad.h>
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -41,8 +42,11 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     w_game::initialize(pOutputWindowsInfo);
 }
 
+auto _quad = new w_quad<vertex_declaration_structs::vertex_position_color_uv>();
 void scene::load()
 {
+
+
     auto _gDevice =  this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
     float _width = static_cast<float>(_output_window->width);
@@ -79,6 +83,36 @@ void scene::load()
         exit(1);
     }
     
+
+
+    //load shader
+    w_shader* _gui_shader = nullptr;
+    w_shader::load_to_shared_shaders(_gDevice,
+        "gui",
+        content_path + L"shaders/gui.vert.spv",
+        content_path + L"shaders/gui.frag.spv",
+        {},
+        &_gui_shader);
+    if (!_gui_shader || _hr == S_FALSE)
+    {
+        logger.error("Could not load gui shader");
+        return;
+    }
+    w_shader_binding_param _param;
+    _param.index = 0;
+    _param.type = w_shader_binding_type::SAMPLER;
+    _param.stage = w_shader_stage::FRAGMENT_SHADER;
+    _param.sampler_info =  w_texture::default_texture->get_descriptor_info();
+    
+    _gui_shader->set_shader_binding_params({ _param });
+
+    _hr = _quad->load(_gDevice, _gui_shader, &_render_pass, _pipeline_cache_name);
+    if (_hr == S_FALSE)
+    {
+        logger.error("Could not load quad");
+        return;
+    }
+
     //load scene
     auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");
     if (_scene)
@@ -94,8 +128,8 @@ void scene::load()
 
             for (size_t i = 0; i < _size; ++i)
             {
-                auto _model = new w_model(_gDevice, _cmodels[i], _z_up);
-                if (_model->get_instances_count())
+                auto _model = new w_model<vertex_declaration_structs::vertex_position_uv>(_cmodels[i], _z_up);
+                if (_cmodels[i]->get_instnaces_count())
                 {
                     //load shader uniforms
                     auto _wvp = new w_uniform<world_view_projection_unifrom>();
@@ -151,7 +185,6 @@ void scene::load()
                             "basic_instancing",
                             content_path + L"shaders/static_instancing_z_up.vert.spv",
                             content_path + L"shaders/basic.frag.spv",
-                            w_shader_type::BASIC_INSTANCE_SHADER,
                             _shader_params,
                             &_shader);
                         if (!_shader || _hr == S_FALSE)
@@ -163,7 +196,7 @@ void scene::load()
                     }
                     if (_hr == S_OK)
                     {
-                        if (_model->load(this->_basic_instance_shader.get(), &this->_render_pass, _pipeline_cache_name) == S_FALSE)
+                        if (_model->load(_gDevice, this->_basic_instance_shader.get(), &this->_render_pass, _pipeline_cache_name) == S_FALSE)
                         {
                             SAFE_RELEASE(_model);
                             continue;
@@ -337,28 +370,31 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                     {
                         using namespace glm;
 
-                        auto _transform = this->_models[i]->get_transform();
-                        auto _translate = translate(mat4(1.0f),
-                            vec3(_transform.position[0], _transform.position[1], _transform.position[2]));
-                        mat4 _scale = scale(mat4x4(1.0f),
-                            vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
+                        //auto _transform = this->_models[i]->get_transform();
+                        //auto _translate = translate(mat4(1.0f),
+                        //    vec3(_transform.position[0], _transform.position[1], _transform.position[2]));
+                        //mat4 _scale = scale(mat4x4(1.0f),
+                        //    vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
 
-                        auto _world = _translate *
-                            rotate(_transform.rotation[0], true ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f)) *
-                            rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
-                            rotate(_transform.rotation[2], vec3(0.0f, 0.0f, 1.0f)) *
-                            _scale;
+                        //auto _world = _translate *
+                        //    rotate(_transform.rotation[0], true ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f)) *
+                        //    rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
+                        //    rotate(_transform.rotation[2], vec3(0.0f, 0.0f, 1.0f)) *
+                        //    _scale;
 
-                        this->_instance_wvp_unifrom[i]->data.world = _world;
-                        this->_instance_wvp_unifrom[i]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
-                        this->_instance_wvp_unifrom[i]->update();
+                        //this->_instance_wvp_unifrom[i]->data.world = _world;
+                        //this->_instance_wvp_unifrom[i]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
+                        //this->_instance_wvp_unifrom[i]->update();
 
-                        this->_instance_color_unifrom[i]->data.color = glm::vec4(1);
-                        this->_instance_color_unifrom[i]->update();
+                        //this->_instance_color_unifrom[i]->data.color = glm::vec4(1);
+                        //this->_instance_color_unifrom[i]->update();
 
-                        this->_models[i]->render(_cmd);
+                        //this->_models[i]->render(_cmd);
+
                     }
-                }}
+                }
+                _quad->render(_cmd);
+            }
             this->_render_pass.end(_cmd);
 
             VkImageMemoryBarrier _barrier_from_render_to_present =

@@ -118,7 +118,6 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 			//		s.Sources[i].TechniqueCommon.AccessorSource.Contains("Weights"))
 			//		weightSrc = i;
 			//}
-
 		}
 
 		//sort bone names
@@ -506,6 +505,45 @@ void w_cpipeline_model::update_world()
         glm::vec3(this->_transform.rotation[0], this->_transform.rotation[1], this->_transform.rotation[2]),
         glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]));
 }
+
+void w_cpipeline_model::release()
+{
+    this->_bone_names.clear();
+    this->_instanced_geo_name.empty();
+    this->_instances_info.clear();
+
+    this->_m_bind_pos.clear();
+    this->_v_bind_pos.clear();
+    
+    //release animation containers
+    for (auto& iter : this->_animation_containers)
+    {
+        iter.second.release();
+    }
+    this->_animation_containers.clear();
+
+    //release meshes
+    for (auto& iter : this->_meshes)
+    {
+        iter.release();
+    }
+    this->_meshes.clear();
+
+    //release skeleton
+    for (auto& iter : this->_skeleton)
+    {
+        iter->release();
+    }
+    this->_skeleton.clear();
+
+    //release temp skeleton
+    for (auto& iter : this->_temp_skeleton)
+    {
+        iter->release();
+    }
+    this->_temp_skeleton.clear();
+}
+
 
 #pragma region Getters
 

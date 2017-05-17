@@ -126,12 +126,20 @@ namespace wolf
 				std::string		                textures_path;
 				w_bounding_box					bounding_box;
 
+                void release()
+                {
+                    this->just_vertices_pos.clear();
+                    this->vertices.clear();
+                    this->indices.clear();
+                }
+
                 MSGPACK_DEFINE(vertices, indices, textures_path, bounding_box);
 			};
 
             WCP_EXP void add_instance(_In_ const w_instance_info pValue);
 			WCP_EXP void update_world();
-			
+			WCP_EXP void release();
+
 #pragma region Getters
 
 			WCP_EXP std::string get_name() const									{ return this->_name; }

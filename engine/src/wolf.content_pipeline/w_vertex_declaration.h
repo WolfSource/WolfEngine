@@ -19,18 +19,6 @@ namespace wolf
 {
 	namespace content_pipeline
 	{
-		enum w_vertex_declaration
-		{
-			POSITION,
-			POSITION_COLOR,
-			POSITION_UV,
-			POSITION_COLOR_UV,
-			POSITION_NORMAL_COLOR,
-			POSITION_NORMAL_UV,
-			POSITION_NORMAL_UV_TANGENT_BINORMAL,
-			POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES
-		};
-
 		namespace vertex_declaration_structs
 		{
 			struct vertex_position
@@ -50,7 +38,7 @@ namespace wolf
 				glm::vec2 uv;
 			};
 
-			struct vertex_color_uv
+			struct vertex_position_color_uv
 			{
 				glm::vec3 position;
 				glm::vec4 color;

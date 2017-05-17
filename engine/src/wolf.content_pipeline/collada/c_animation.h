@@ -255,16 +255,11 @@ namespace wolf
 					return _key;
 				}
 
-				ULONG release()
-				{
-					if (this->_is_released) return 0;
-					
-					this->times.clear();
-					this->keys.clear();
-					this->_is_released = true;
-
-					return 1;
-				}
+                void release()
+                {
+                    this->times.clear();
+                    this->keys.clear();
+                }
 
 			private:
 				unsigned int get_time_index(float pTime)
@@ -299,46 +294,53 @@ namespace wolf
 					return _key_1 * (1 - _delta_time) + _key_2 * (_delta_time);
 				}
 
-				float get_bezier_key(float pTime, _Out_ bool& pContainsAnimation)
-				{
-					pContainsAnimation = true;
+                float get_bezier_key(float pTime, _Out_ bool& pContainsAnimation)
+                {
+                    pContainsAnimation = true;
 
-					auto _time_index = get_time_index(pTime);
+                    auto _time_index = get_time_index(pTime);
 
-					auto _time_1 = this->times[_time_index];
-					auto _time_2 = this->times[_time_index + 1];
+                    auto _time_1 = this->times[_time_index];
+                    auto _time_2 = this->times[_time_index + 1];
 
-					auto _delta_time = std::abs(pTime - _time_1) / (_time_2 - _time_1);
-					auto s = glm::vec4(
-						std::powf(_delta_time, 3.0f),
-						std::powf(_delta_time, 2),
-						std::powf(_delta_time, 1),
-						1);
+                    auto _delta_time = std::abs(pTime - _time_1) / (_time_2 - _time_1);
+                    auto s = glm::vec4(
+                        std::powf(_delta_time, 3.0f),
+                        std::powf(_delta_time, 2),
+                        std::powf(_delta_time, 1),
+                        1);
 
-					auto _p0 = this->keys[_time_index];
-					auto _p1 = this->keys[_time_index + 1];
+                    auto _p0 = this->keys[_time_index];
+                    auto _p1 = this->keys[_time_index + 1];
 
-					auto _c0 = this->out_tangent.data[_time_index * 2 + 1];
-					auto _c1 = this->in_tangent.data[_time_index * 2 + 3];
+                    auto _c0 = this->out_tangent.data[_time_index * 2 + 1];
+                    auto _c1 = this->in_tangent.data[_time_index * 2 + 3];
 
-					//tranform vect4 by matrix4x4
-					auto _coff = c_bezier_matrix::get_bezier_coefficients_matrix() * s;
-					auto _key = glm::dot(_coff, glm::vec4(_p0, _c0, _c1, _p1));
+                    //tranform vect4 by matrix4x4
+                    auto _coff = c_bezier_matrix::get_bezier_coefficients_matrix() * s;
+                    auto _key = glm::dot(_coff, glm::vec4(_p0, _c0, _c1, _p1));
 
-					if (std::abs(_p0 - _c0) < 0.0001f && std::abs(_p0 - _c1) < 0.0001f && std::abs(_p0 - _p1) < 0.0001f && this->keys.size() <= 2)
-					{
-						pContainsAnimation = false;
-					}
-					return _key;
-				}
-
-				bool _is_released = false;
+                    if (std::abs(_p0 - _c0) < 0.0001f && std::abs(_p0 - _c1) < 0.0001f && std::abs(_p0 - _p1) < 0.0001f && this->keys.size() <= 2)
+                    {
+                        pContainsAnimation = false;
+                    }
+                    return _key;
+                }
 			};
 
 			struct c_animation_container
 			{
 				std::vector<c_animation> animations;
 				c_xsi_extra xsi_extra;
+
+                void release()
+                {
+                    for (auto& _iter : this->animations)
+                    {
+                        _iter.release();
+                    }
+                    this->animations.clear();
+                }
 			};
 		}
 	}

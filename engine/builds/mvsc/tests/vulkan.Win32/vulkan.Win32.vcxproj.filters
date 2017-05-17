@@ -30,5 +30,11 @@
     <None Include="..\..\..\..\..\content\shaders\static_instancing_z_up.vert">
       <Filter>content\shaders</Filter>
     </None>
+    <None Include="..\..\..\..\..\content\shaders\gui.frag">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\gui.vert">
+      <Filter>content\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -16,8 +16,7 @@ namespace wolf
                 _gDevice(nullptr),
                 _descriptor_pool(0),
                 _descriptor_set_layout(0),
-                _descriptor_set(0),
-                _shader_type(w_shader_type::BASIC_SHADER)
+                _descriptor_set(0)
             {
                 
             }
@@ -136,11 +135,6 @@ namespace wolf
             
 #pragma region Getters
 
-            const w_shader_type get_shader_type() const
-            {
-                return this->_shader_type;
-            }
-
             const std::vector<VkPipelineShaderStageCreateInfo>* get_shader_stages() const
             {
                 return &(this->_shader_stages);
@@ -164,11 +158,6 @@ namespace wolf
 #pragma endregion
 
 #pragma region Setters
-            
-            void set_shader_type(_In_ const w_shader_type pShaderType)
-            {
-                this->_shader_type = pShaderType;
-            }
 
             HRESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
             {
@@ -286,7 +275,7 @@ namespace wolf
                                                            _binding_index,                                     // Binding
                                                            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // DescriptorType
                                                            1,                                                  // DescriptorCount
-                                                           (VkShaderStageFlagBits)_binding_stage,              // StageFlags
+                                                           (VkShaderStageFlags)_binding_stage,              // StageFlags
                                                            nullptr                                             // ImmutableSamplers
                                                        });
                         }
@@ -299,7 +288,7 @@ namespace wolf
                                                            _binding_index,                                     // Binding
                                                            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // DescriptorType
                                                            1,                                                  // DescriptorCount
-                                                           (VkShaderStageFlagBits)_binding_stage,              // StageFlags
+                                                           (VkShaderStageFlags)_binding_stage,              // StageFlags
                                                            nullptr                                             // ImmutableSamplers
                                                        });
                         }
@@ -405,7 +394,6 @@ namespace wolf
             VkDescriptorPool                                        _descriptor_pool;
             VkDescriptorSetLayout                                   _descriptor_set_layout;
             VkDescriptorSet                                         _descriptor_set;
-            w_shader_type                                           _shader_type;
             std::vector<w_shader_binding_param>                     _shader_binding_params;
         };
     }
@@ -446,12 +434,6 @@ ULONG w_shader::release()
 
 #pragma region Getters
 
-const w_shader_type w_shader::get_shader_type() const
-{
-    if (!this->_pimp) return w_shader_type::UNKNOWN;
-    return this->_pimp->get_shader_type();
-}
-
 const std::vector<VkPipelineShaderStageCreateInfo>* w_shader::get_shader_stages() const
 {
     if(!this->_pimp) return nullptr;
@@ -486,19 +468,12 @@ HRESULT w_shader::set_shader_binding_params(_In_ std::vector<w_shader_binding_pa
     return this->_pimp->set_shader_binding_params(pShaderBindingParams);
 }
 
-void w_shader::set_shader_type(_In_ const w_shader_type pShaderType)
-{
-    if (!this->_pimp) return;
-    this->_pimp->set_shader_type(pShaderType);
-}
-
 #pragma endregion
 
 HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_z_ const std::string& pName,
     _In_z_ const std::wstring& pVertexShaderPath,
     _In_z_ const std::wstring& pFragmentShaderPath,
-    _In_ const w_shader_type& pShaderType,
     _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
     _Inout_ w_shader** pShader,
     _In_z_ const char* pMainFunctionName)
@@ -510,9 +485,6 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
             pFragmentShaderPath);
         return S_FALSE;
     }
-
-    //set shader type
-    _shader->set_shader_type(pShaderType);
 
     if (!pVertexShaderPath.empty())
     {

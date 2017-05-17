@@ -75,11 +75,6 @@ namespace wolf
                     return S_FALSE;
                 }
                 
-                
-//                if (!this->_descriptor_buffer_info)
-//                {
-//                    this->_descriptor_buffer_info = new VkDescriptorBufferInfo();
-//                }
                 this->_descriptor_buffer_info.buffer = this->_buffer.get_handle();
                 this->_descriptor_buffer_info.offset = 0;
                 this->_descriptor_buffer_info.range = this->_buffer.get_size();

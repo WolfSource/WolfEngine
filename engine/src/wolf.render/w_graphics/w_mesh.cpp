@@ -20,7 +20,8 @@ namespace wolf
                 _name("w_mesh"),
                 _gDevice(nullptr),
                 _vertices_count(0),
-                _indices_count(0)
+                _indices_count(0),
+                _vertex_declaration(w_mesh::w_vertex_declaration::VERTEX_POSITION_UV)
             {
             }
             
@@ -98,14 +99,18 @@ namespace wolf
                 auto _descriptor_set = this->_shader->get_descriptor_set();
                 
                 vkCmdBindPipeline(pCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline_handle);
-                vkCmdBindDescriptorSets(pCommandBuffer,
-                    VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    _pipeline_layout_handle,
-                    0,
-                    1,
-                    &_descriptor_set,
-                    0,
-                    nullptr);
+                
+                if (_descriptor_set)
+                {
+                    vkCmdBindDescriptorSets(pCommandBuffer,
+                        VK_PIPELINE_BIND_POINT_GRAPHICS,
+                        _pipeline_layout_handle,
+                        0,
+                        1,
+                        &_descriptor_set,
+                        0,
+                        nullptr);
+                }
 
                 VkDeviceSize _offset = 0;
 
@@ -158,6 +163,11 @@ namespace wolf
                 return this->_texture;
             }
 
+            const w_mesh::w_vertex_declaration get_vertex_declaration_struct()
+            {
+                return this->_vertex_declaration;
+            }
+
 #pragma endregion
 
 #pragma region Setters
@@ -172,12 +182,17 @@ namespace wolf
                 this->_texture = pTexture;
             }
 
+            void set_vertex_declaration_struct(_In_ const w_mesh::w_vertex_declaration& pValue)
+            {
+                this->_vertex_declaration = pValue;
+            }
+
 #pragma endregion
 
-            ULONG release()
+            void release()
             {
                 //release vertex and index buffers
-                
+
                 this->_vertex_buffer.release();
                 this->_index_buffer.release();
                 this->_pipeline.release();
@@ -185,9 +200,8 @@ namespace wolf
                 this->_shader = nullptr;
                 this->_texture = nullptr;
                 this->_gDevice = nullptr;
-                
-                return 1;
             }
+
         private:
 
 
@@ -364,7 +378,7 @@ namespace wolf
 
             HRESULT _load_texture()
             {
-               // this->_texture = w_texture::default_texture;
+                this->_texture = w_texture::default_texture;
                 return S_OK;
             }
 
@@ -373,20 +387,26 @@ namespace wolf
             {
                 HRESULT _hr = S_OK;
 
+                using namespace wolf::content_pipeline;
+
                 std::vector<VkVertexInputBindingDescription> _vertex_binding_descriptions;
                 std::vector<VkVertexInputAttributeDescription> _vertex_attribute_descriptions;
 
-                auto _shader_type = this->_shader->get_shader_type();
-                switch (_shader_type)
+                switch (this->_vertex_declaration)
                 {
                 default:
-                case BASIC_SHADER:
+                case w_mesh::w_vertex_declaration::VERTEX_POSITION:
+                {
+
+                }
+                break;
+                case w_mesh::w_vertex_declaration::VERTEX_POSITION_UV:
                 {
                     //create pipeline for basic shader
                     _vertex_binding_descriptions.push_back(
                     {
                         0,                                                                                        // Binding
-                        sizeof(wolf::content_pipeline::vertex_declaration_structs::vertex_position_uv),           // Stride
+                        sizeof(vertex_declaration_structs::vertex_position_uv),                                   // Stride
                         VK_VERTEX_INPUT_RATE_VERTEX                                                               // InputRate
                     });
                     _vertex_attribute_descriptions.push_back(
@@ -394,24 +414,24 @@ namespace wolf
                         0,                                                                                        // Location
                         _vertex_binding_descriptions[0].binding,                                                  // Binding
                         VK_FORMAT_R32G32B32A32_SFLOAT,                                                            // Format
-                        offsetof(wolf::content_pipeline::vertex_declaration_structs::vertex_position_uv, position)// Offset
+                        offsetof(vertex_declaration_structs::vertex_position_uv, position)                        // Offset
                     });
                     _vertex_attribute_descriptions.push_back(
                     { 
                         1,                                                                                        // Location
                         _vertex_binding_descriptions[0].binding,                                                  // Binding
                         VK_FORMAT_R32G32_SFLOAT,                                                                  // Format
-                        offsetof(wolf::content_pipeline::vertex_declaration_structs::vertex_position_uv, uv)      // Offset
+                        offsetof(vertex_declaration_structs::vertex_position_uv, uv)                              // Offset
                     });
                 }
                 break;
-                case BASIC_INSTANCE_SHADER:
+                case  w_mesh::w_vertex_declaration::VERTEX_POSITION_UV_INSTANCE_VEC7_INT:
                 {
                     //create pipeline for instance shader
                     _vertex_binding_descriptions.push_back(
                     {
                         0,                                                                                        // Binding
-                        sizeof(wolf::content_pipeline::vertex_declaration_structs::vertex_position_uv),           // Stride
+                        sizeof(vertex_declaration_structs::vertex_position_uv),                                   // Stride
                         VK_VERTEX_INPUT_RATE_VERTEX                                                               // InputRate
                     });
                     _vertex_binding_descriptions.push_back(
@@ -436,7 +456,13 @@ namespace wolf
                         sizeof(float) * 3                                                                         // Offset
                     });
                     
-                    // Per instance attributes
+                    /*
+                        Per instance attributes: 
+                        vec3        i_instance_pos;
+                        vec3        i_instance_rot;
+                        float       i_instance_scale;
+                        int         i_instance_uv_index;
+                    */
                     _vertex_attribute_descriptions.push_back(
                     {
                         2,                                                                                        // Location
@@ -467,6 +493,38 @@ namespace wolf
                     });
                 }
                 break;
+                case w_mesh::w_vertex_declaration::VERTEX_POSITION_COLOR_UV:
+                {
+                    //create pipeline for basic shader
+                    _vertex_binding_descriptions.push_back(
+                    {
+                        0,                                                                                              // Binding
+                        sizeof(vertex_declaration_structs::vertex_position_color_uv),                                   // Stride
+                        VK_VERTEX_INPUT_RATE_VERTEX                                                                     // InputRate
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        0,                                                                                              // Location
+                        _vertex_binding_descriptions[0].binding,                                                        // Binding
+                        VK_FORMAT_R32G32B32_SFLOAT,                                                                     // Format
+                        offsetof(vertex_declaration_structs::vertex_position_color_uv, position)                        // Offset
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        1,                                                                                              // Location
+                        _vertex_binding_descriptions[0].binding,                                                        // Binding
+                        VK_FORMAT_R32G32B32A32_SFLOAT,                                                                  // Format
+                        offsetof(vertex_declaration_structs::vertex_position_color_uv, color)                           // Offset
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        2,                                                                                              // Location
+                        _vertex_binding_descriptions[0].binding,                                                        // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                                                        // Format
+                        offsetof(vertex_declaration_structs::vertex_position_color_uv, uv)                           // Offset
+                    });
+                }
+                break;
                 }
 
                 VkPipelineVertexInputStateCreateInfo _vertex_input_state_create_info =
@@ -475,9 +533,11 @@ namespace wolf
                     nullptr,                                                      // Next
                     0,                                                            // Flags
                     static_cast<uint32_t>(_vertex_binding_descriptions.size()),   // VertexBindingDescriptionCount
-                    &_vertex_binding_descriptions[0],                             // VertexBindingDescriptions
+                    _vertex_binding_descriptions.size() ? 
+                    &_vertex_binding_descriptions[0] : nullptr,                   // VertexBindingDescriptions
                     static_cast<uint32_t>(_vertex_attribute_descriptions.size()), // VertexAttributeDescriptionCount
-                    &_vertex_attribute_descriptions[0]                            // VertexAttributeDescriptions
+                    _vertex_attribute_descriptions.size() ? 
+                    &_vertex_attribute_descriptions[0] : nullptr                  // VertexAttributeDescriptions
                 };
 
                 VkPipelineInputAssemblyStateCreateInfo _input_assembly_state_create_info =
@@ -507,13 +567,13 @@ namespace wolf
                 auto _descriptor_set_layout = this->_shader->get_descriptor_set_layout_binding();
                 VkPipelineLayoutCreateInfo _pipeline_layout_create_info =
                 {
-                    VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,  // Type
-                    nullptr,                                        // Next
-                    0,                                              // Flags
-                    1,                                              // SetLayoutCount
-                    &_descriptor_set_layout,                        // SetLayouts
-                    0,                                              // PushConstantRangeCount
-                    nullptr                                         // PushConstantRanges
+                    VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,                          // Type
+                    nullptr,                                                                // Next
+                    0,                                                                      // Flags
+                    _descriptor_set_layout == nullptr ? 0 : 1,                              // SetLayoutCount
+                    _descriptor_set_layout == nullptr ? nullptr : &_descriptor_set_layout,  // SetLayouts
+                    0,                                                                      // PushConstantRangeCount
+                    nullptr                                                                 // PushConstantRanges
                 };
 
                 _hr = this->_pipeline.load(_gDevice,
@@ -547,6 +607,7 @@ namespace wolf
             w_pipeline                                          _pipeline;
             w_texture*                                          _texture;
             w_shader*                                           _shader;
+            w_mesh::w_vertex_declaration                        _vertex_declaration;
         };
     }
 }
@@ -639,18 +700,31 @@ w_texture* w_mesh::get_texture() const
     return this->_pimp ? this->_pimp->get_texture() : nullptr;
 }
 
+const w_mesh::w_vertex_declaration w_mesh::get_vertex_declaration_struct()
+{
+    return this->_pimp ? w_vertex_declaration::VERTEX_POSITION : this->_pimp->get_vertex_declaration_struct();
+}
+
 #pragma endregion
 
 #pragma region Setters
 
 void w_mesh::set_shader(_In_ w_shader* pShader)
 {
+    if (!this->_pimp) return;
     this->_pimp->set_shader(pShader);
 }
 
 void w_mesh::set_texture(_In_ w_texture* pTexture)
 {
+    if (!this->_pimp) return;
     this->_pimp->set_texture(pTexture);
+}
+
+void w_mesh::set_vertex_declaration_struct(_In_ const w_mesh::w_vertex_declaration& pValue)
+{
+    if (!this->_pimp) return;
+    this->_pimp->set_vertex_declaration_struct(pValue);
 }
 
 #pragma endregion

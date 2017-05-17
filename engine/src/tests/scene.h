@@ -87,7 +87,7 @@ private:
     wolf::graphics::w_command_buffers                                        _command_buffers;
     wolf::graphics::w_render_pass                                            _render_pass;
     wolf::graphics::w_frame_buffers                                          _frame_buffers;
-    std::vector<wolf::framework::w_model*>                                   _models;
+    std::vector<wolf::framework::w_model<>*>                                 _models;
 
 };
 

@@ -176,6 +176,8 @@
   <ItemGroup>
     <None Include="..\..\..\..\..\content\shaders\basic.frag" />
     <None Include="..\..\..\..\..\content\shaders\basic.vert" />
+    <None Include="..\..\..\..\..\content\shaders\gui.frag" />
+    <None Include="..\..\..\..\..\content\shaders\gui.vert" />
     <None Include="..\..\..\..\..\content\shaders\static_instancing_y_up.vert" />
     <None Include="..\..\..\..\..\content\shaders\static_instancing_z_up.vert" />
   </ItemGroup>
