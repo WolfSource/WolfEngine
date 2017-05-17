@@ -126,9 +126,9 @@ HRESULT w_model::_create_instances_buffer(_In_ const void* const pInstancedData,
     
     // create VRAM buffers
     _hr = this->_instances_buffer.load(this->_gDevice,
-                                      pInstancedSize,
-                                      VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+                                       pInstancedSize,
+                                       VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                       VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
                                       
     if(_hr == S_FALSE)
     {

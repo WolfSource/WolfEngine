@@ -40,6 +40,8 @@
 		2C9899701E9B51D6002FE161 /* w_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996E1E9B51D6002FE161 /* w_texture.h */; };
 		2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899711E9BF6A3002FE161 /* w_buffer.cpp */; };
 		2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9899721E9BF6A3002FE161 /* w_buffer.h */; };
+		2CF9CFEF1ECBADD500BC2AEC /* w_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF9CFED1ECBADD500BC2AEC /* w_widget.cpp */; };
+		2CF9CFF01ECBADD500BC2AEC /* w_widget.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF9CFEE1ECBADD500BC2AEC /* w_widget.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,6 +81,8 @@
 		2C98996E1E9B51D6002FE161 /* w_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_texture.h; path = ../../../src/wolf.render/w_graphics/w_texture.h; sourceTree = "<group>"; };
 		2C9899711E9BF6A3002FE161 /* w_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_buffer.cpp; path = ../../../src/wolf.render/w_graphics/w_buffer.cpp; sourceTree = "<group>"; };
 		2C9899721E9BF6A3002FE161 /* w_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_buffer.h; path = ../../../src/wolf.render/w_graphics/w_buffer.h; sourceTree = "<group>"; };
+		2CF9CFED1ECBADD500BC2AEC /* w_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_widget.cpp; path = ../../../src/wolf.render/w_gui/w_controls/w_widget.cpp; sourceTree = "<group>"; };
+		2CF9CFEE1ECBADD500BC2AEC /* w_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_widget.h; path = ../../../src/wolf.render/w_gui/w_controls/w_widget.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +148,7 @@
 				2C38D94B1E79646D00EE8595 /* w_render_export.h */,
 				2C38D94C1E79646D00EE8595 /* w_render_pch.cpp */,
 				2C38D94D1E79646D00EE8595 /* w_render_pch.h */,
+				2CF9CFE71ECBAA6D00BC2AEC /* w_gui */,
 				2C69E9AA1E5EC2CB00F15C44 /* Products */,
 				2C860FA01E5F1E5B000E71B5 /* Frameworks */,
 			);
@@ -172,6 +177,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		2CF9CFE71ECBAA6D00BC2AEC /* w_gui */ = {
+			isa = PBXGroup;
+			children = (
+				2CF9CFEC1ECBAD9B00BC2AEC /* w_controls */,
+			);
+			name = w_gui;
+			sourceTree = "<group>";
+		};
+		2CF9CFEC1ECBAD9B00BC2AEC /* w_controls */ = {
+			isa = PBXGroup;
+			children = (
+				2CF9CFED1ECBADD500BC2AEC /* w_widget.cpp */,
+				2CF9CFEE1ECBADD500BC2AEC /* w_widget.h */,
+			);
+			name = w_controls;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -188,6 +210,7 @@
 				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
 				2C98996A1E9A2EA8002FE161 /* w_command_buffers.h in Headers */,
+				2CF9CFF01ECBADD500BC2AEC /* w_widget.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
@@ -254,6 +277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */,
+				2CF9CFEF1ECBADD500BC2AEC /* w_widget.cpp in Sources */,
 				2C9899691E9A2EA8002FE161 /* w_command_buffers.cpp in Sources */,
 				2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */,
 				2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */,
