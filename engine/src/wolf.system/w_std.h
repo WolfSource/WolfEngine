@@ -27,6 +27,10 @@
 #define _In_
 #endif
 
+#ifndef _In_opt_
+#define _In_opt_
+#endif
+
 #ifndef _In_z_
 #define _In_z_
 #endif
@@ -43,7 +47,7 @@
 extern "C" {
 #endif
 
-	enum HRESULT : bool { S_OK = 0, S_FALSE = 1 };
+	enum HRESULT : bool { S_OK = 0, S_FALSE = 1, E_INVALIDARG = 2, E_OUTOFMEMORY = 3};
 	
 	typedef unsigned char			BYTE;
 	typedef __uint32_t				UINT, *PUINT;
@@ -51,10 +55,17 @@ extern "C" {
 	typedef int16_t                 INT16, *PINT16;
 	typedef int32_t                 INT32, *PINT32;
 	typedef __int64_t				INT64;
-	typedef unsigned char			UINT8, *PUINT8;
+    typedef INT64                   LONG_PTR;
+
+    typedef unsigned char			UINT8, *PUINT8;
 	typedef unsigned short			UINT16, *PUINT16;
 	typedef __uint32_t              UINT32, *PUINT32;
 	typedef __uint64_t				UINT64, *PUINT64;
+    typedef UINT64                  UINT_PTR;
+    
+    typedef UINT_PTR                WPARAM;
+    typedef LONG_PTR                LPARAM;
+    typedef LONG_PTR                LRESULT;
 
 	typedef unsigned long			ULONG, *PULONG;
 	typedef unsigned short			USHORT, *PUSHORT;
@@ -67,6 +78,8 @@ extern "C" {
 
 	typedef unsigned long			DWORD;
 	typedef unsigned short			WORD;
+
+ 
 
 	// minimum signed 64 bit value
 #define _I64_MIN		(-9223372036854775807 - 1)
@@ -104,16 +117,6 @@ namespace std
 		_str.clear();
 		return _wstr;
 	}
-
-//#ifdef __ANDROID
-//	//Missing from the NDK
-//	template<typename T, typename... Args>
-//	std::unique_ptr<T> make_unique(Args&&... args)
-//	{
-//		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-//	}
-//#endif
-
 }
 
 #endif//ANDROID && __linux && __APPLE__

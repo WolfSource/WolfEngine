@@ -44,5 +44,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_xml.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_system_export.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_std.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_point.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_rectangle.h" />
   </ItemGroup>
 </Project>

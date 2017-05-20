@@ -18,6 +18,7 @@
 #include <cstdlib>
 #include <string>
 #include <sstream>
+#include <glm\vec4.hpp>
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default) //The classes/structs below are exported
@@ -104,6 +105,26 @@ struct w_color
 	{
 		return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
 	}
+
+#if defined(__DX12__) || defined(__DX11__)
+    static w_color to_w_color(_In_ const XMFLOAT4 pValue)
+    {
+        return w_color(
+            static_cast<UINT>(pValue.x * 255.0f),
+            static_cast<UINT>(pValue.y * 255.0f),
+            static_cast<UINT>(pValue.z * 255.0f),
+            static_cast<UINT>(pValue.w * 255.0f));
+    }
+#else
+    static w_color to_color(_In_ const glm::vec4 pValue)
+    {
+        return w_color(
+            static_cast<UINT>(pValue.x * 255.0f),
+            static_cast<UINT>(pValue.y * 255.0f),
+            static_cast<UINT>(pValue.z * 255.0f),
+            static_cast<UINT>(pValue.w * 255.0f));
+    }
+#endif //defined(__DX12__) || defined(__DX11__)
 
 	enum COLORS_HEX
 	{

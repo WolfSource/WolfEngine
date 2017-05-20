@@ -161,6 +161,9 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_shader.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_texture.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_control.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_element.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_widget.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_render_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -179,6 +182,9 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_uniform.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_texture.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_control.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_element.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_widget.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_export.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_pch.h" />
   </ItemGroup>

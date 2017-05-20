@@ -22,8 +22,10 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/compatibility.hpp>
 #include <string>
 #include "w_convert.h"
+#include "w_color.h"
 
 #ifndef RGBA_TO_HEX_COLOR
 #define RGBA_TO_HEX_COLOR(r,g,b,a) ((unsigned long)((((a)&0xff)<<24) | (((r)&0xff)<<16) | (((g)&0xff)<<8) | ((b)&0xff)))
@@ -216,7 +218,22 @@ namespace glm
 			std::atof(pResult[2].c_str()),
 			std::atof(pResult[3].c_str()));
 	}
+
+    inline glm::vec4 to_vec4(_In_ const DWORD& pValue)
+    {
+        //Convert ARGB(DWORD) to RGBA(in the range of 0..1)
+        return glm::vec4(
+            ((pValue >> 16) & 0xFF) / 255.0f,//R
+            ((pValue >> 8) & 0xFF) / 255.0f,//G
+            (pValue & 0xFF) / 255.0f,//B
+            ((pValue >> 24) & 0xFF) / 255.0f);//A
+    }
 	
+    inline glm::vec4 to_vec4(_In_ const w_color pValue)
+    {
+        return glm::vec4(pValue.r / 255.0f, pValue.g / 255.0f, pValue.b / 255.0f, pValue.a / 255.0f);
+    }
+
     inline mat4 to_mat4(_In_z_ const std::string& pValue)
     {
         if (pValue.empty()) return mat4(0);
@@ -271,5 +288,16 @@ namespace glm
         return glm::vec3(_pitch, _yaw, _roll);
     }
 }
+
+#if defined(__DX12__) || defined(__DX11__)
+    inline XMMATRIX XMMatrixFromGLMMatrix(_In_ glm::tmat4x4<float, _In_ glm::precision::highp> const& pValue)
+    {
+        return XMMATRIX(
+            pValue[0][0], pValue[0][1], pValue[0][2], pValue[0][3],
+            pValue[1][0], pValue[1][1], pValue[1][2], pValue[1][3],
+            pValue[2][0], pValue[2][1], pValue[2][2], pValue[2][3],
+            pValue[3][0], pValue[3][1], pValue[3][2], pValue[3][3]);
+    }
+#endif //defined(__DX12__) || defined(__DX11__)
 
 #endif

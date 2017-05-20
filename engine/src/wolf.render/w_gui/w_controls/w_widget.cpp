@@ -1,69 +1,63 @@
 #include "w_render_pch.h"
 #include "w_widget.h"
-#include "w_gui/w_widgets_manager.h"
 //#include <w_timer_callback.h>
 
 using namespace wolf::graphics;
 using namespace wolf::gui;
 
-//wolf::system::w_time_span   w_widget::s_time_refresh = wolf::system::w_time_span::zero();
-//w_control*					w_widget::s_pControlFocus = nullptr;        // The control which has focus
-//w_control*					w_widget::s_pControlPressed = nullptr;      // The control currently pressed
+//all widgets
+std::vector<w_widget*>      w_widget::widgets;
+
+wolf::system::w_time_span   w_widget::s_time_refresh = wolf::system::w_time_span::zero();
+w_control*					w_widget::s_pControlFocus = nullptr;        // The control which has focus
+w_control*					w_widget::s_pControlPressed = nullptr;      // The control currently pressed
 
 w_widget::w_widget(UINT pParentWindowWidth, UINT pParentWindowHeight) :
-_shader(nullptr),
-_texture(nullptr)
-
-//:
-//	_hwnd(pHwnd),
-//	_parent_window_width(pParentWindowWidth),
-//	_parent_window_height(pParentWindowHeight),
-//	_widgets_resource_manager(nullptr),
-//	_sprite_batch(nullptr),
-//	_name("widget"),
-//	_width(400),
-//	_height(200),
-//	_draggable(false),
-//	_is_dragging(false),
-//	_visible(true),
-//	_minimized(false),
-//	_x(0),
-//	_y(0),
-//	_enabled(true),
-//	_z_order(0),
-//	_background_color_top_left(216, 238, 249, 200),
-//	_background_color_top_right(216, 238, 249, 200),
-//	_background_color_bottom_left(71, 188, 242, 200),
-//	_background_color_bottom_right(71, 188, 242, 200),
-//	_active_background_color_top_left(216, 238, 249, 255),
-//	_active_background_color_top_right(216, 238, 249, 255),
-//	_active_background_color_bottom_left(71, 188, 242, 255),
-//	_active_background_color_bottom_right(71, 188, 242, 255),
-//	_is_caption_enabled(true),
-//	_caption_background_color(57, 57, 57, 200),
-//	_caption_active_background_color(57, 57, 57, 255),
-//	_caption_height(25),
-//	_caption_margin_left(0),
-//	_caption_margin_top(0),
-//	_control_mouse_over(nullptr),
-//	_is_mouse_over_widget(false),
-//	_is_double_click(true),
-//	_texture_cache_index(0),
-//	_vertex_buffer(nullptr),
-//	_brush(nullptr),
-//	non_user_events(false),
-//	keyboard_input(false),
-//	mouse_input(true),
-//	on_mouse_move_callback(nullptr),
-//	on_mouse_enter_callback(nullptr),
-//	on_mouse_leave_callback(nullptr)
+    _shader(nullptr),
+    _texture(nullptr),
+    _parent_window_width(pParentWindowWidth),
+    _parent_window_height(pParentWindowHeight),
+    _name("widget"),
+    _width(400),
+    _height(200),
+    _draggable(false),
+    _is_dragging(false),
+    _visible(true),
+    _minimized(false),
+    _x(0),
+    _y(0),
+    _enabled(true),
+    _z_order(0),
+    _background_color_top_left(216, 238, 249, 200),
+    _background_color_top_right(216, 238, 249, 200),
+    _background_color_bottom_left(71, 188, 242, 200),
+    _background_color_bottom_right(71, 188, 242, 200),
+    _active_background_color_top_left(216, 238, 249, 255),
+    _active_background_color_top_right(216, 238, 249, 255),
+    _active_background_color_bottom_left(71, 188, 242, 255),
+    _active_background_color_bottom_right(71, 188, 242, 255),
+    _is_caption_enabled(true),
+    _caption_background_color(57, 57, 57, 200),
+    _caption_active_background_color(57, 57, 57, 255),
+    _caption_height(25),
+    _caption_margin_left(0),
+    _caption_margin_top(0),
+    _control_mouse_over(nullptr),
+    _is_mouse_over_widget(false),
+    _is_double_click(true),
+    non_user_events(false),
+    keyboard_input(false),
+    mouse_input(true),
+    on_mouse_move_callback(nullptr),
+    on_mouse_enter_callback(nullptr),
+    on_mouse_leave_callback(nullptr)
 {
-//	this->_caption[0] = L'\0';
-//	time_last_refresh = system::w_time_span::zero();
-//	this->_next_widget = this;
-//	this->_prev_widget = this;
-//
-//	std::memset(&this->_global_mouse_point, 0, sizeof(this->_global_mouse_point));
+    this->_caption[0] = L'\0';
+    time_last_refresh = system::w_time_span::zero();
+    this->_next_widget = this;
+    this->_prev_widget = this;
+
+    std::memset(&this->_global_mouse_point, 0, sizeof(this->_global_mouse_point));
 }
 
 w_widget::~w_widget()
@@ -98,7 +92,6 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
                                                 "w_gui",
                                                 L"shaders/gui.vert.spv",
                                                 L"shaders/gui.frag.spv",
-                                                w_shader_type::BASIC_SHADER,
                                                 _shader_binding_params,
                                                 &this->_shader);
     if (_hr == S_FALSE)
@@ -107,341 +100,308 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
         return S_FALSE;
     }
     
-
-    
     return S_OK;
 }
 
-//void w_widget::_initialize()
-//{
-//	// Create a vertex buffer quad for rendering later
-//	D3D11_BUFFER_DESC _buffer_desc;
-//	_buffer_desc.ByteWidth = 4 * sizeof(w_gui_screen_vertex);
-//	_buffer_desc.Usage = D3D11_USAGE_DYNAMIC;
-//	_buffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//	_buffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-//	_buffer_desc.MiscFlags = 0;
-//	auto _hr = this->_gDevice->device->CreateBuffer(&_buffer_desc, nullptr, &this->_vertex_buffer);
-//	V(_hr, L"creating dynamic vertex buffer for w_widget", _super::name, 3, true, true);
-//
-//	this->_redraw = true;
-//
-//	set_font(0, L"Arial", 14, FW_NORMAL);
-//
-//	//create shared brush over controls of this widget
-//	COM_RELEASE(this->_brush);
-//
-//	_hr = _gDevice->context_2D->CreateSolidColorBrush(
-//		D2D1::ColorF(1, 1, 1, 1),
-//		&this->_brush);
-//	V(_hr, L"creating shared brush for widget", this->name, 2, true, true);
-//
-//
-//	w_element Element;
-//	RECT rcTexture;
-//
-//	//-------------------------------------
-//	// Element for the caption
-//	//-------------------------------------
-//	this->_caption_element.set_font(0);
-//	SetRect(&rcTexture, 142, 269, 243, 287);
-//	this->_caption_element.set_texture(0, &rcTexture);
-//	//this->caption_element.font_color.color_states[W_GUI_STATE_NORMAL] = ARGB_TO_DWORD_COLOR(255, 255, 255, 255);
-//	this->_caption_element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
-//	// Pre-blend as we don't need to transition the state
-//	this->_caption_element.texture_color.blend(W_GUI_STATE_NORMAL, 10.0f);
-//	this->_caption_element.font_color.blend(W_GUI_STATE_NORMAL, 10.0f);
-//
-//	//-------------------------------------
-//	// CDXUTStatic
-//	//-------------------------------------
-//	Element.set_font(0);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_LABEL, 0, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTButton - Button
-//	//-------------------------------------
-//	set_default_element(W_GUI_CONTROL_IMAGE, 0, &Element);
-//	//-------------------------------------
-//	// CDXUTButton - TAB
-//	//-------------------------------------
-//	set_default_element(W_GUI_CONTROL_TAB, 0, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTButton - Button
-//	//-------------------------------------
-//	SetRect(&rcTexture, 0, 0, 136, 54);
-//	Element.set_texture(0, &rcTexture);
-//	Element.set_font(0);
-//	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = ARGB_TO_D3DCOLOR(255, 255, 255, 255);
-//	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = ARGB_TO_D3DCOLOR(200, 255, 255, 255);
-//	//Element.font_color.color_states[W_GUI_STATE_MOUSEOVER] = ARGB_TO_D3DCOLOR(255, 0, 0, 0);
-//
-//	//// Assign the Element
-//	set_default_element(W_GUI_CONTROL_BUTTON, 0, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTButton - Fill layer
-//	//-------------------------------------
-//	SetRect(&rcTexture, 136, 0, 252, 54);
-//	Element.set_texture(0, &rcTexture, RGBA_TO_HEX_COLOR(255, 255, 255, 0));
-//	//Element.texture_color.color_states[W_GUI_STATE_MOUSEOVER] = RGBA_TO_HEX_COLOR(255, 255, 255, 160);
-//	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(0, 0, 0, 60);
-//	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 30);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_BUTTON, 1, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTCheckBox - Box
-//	//-------------------------------------
-//	SetRect(&rcTexture, 0, 54, 27, 81);
-//	Element.set_texture(0, &rcTexture);
-//	//Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
-//	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
-//	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
-//	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
-//	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(255, 255, 255, 255);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_CHECKBOX, 0, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTCheckBox - Check
-//	//-------------------------------------
-//	SetRect(&rcTexture, 27, 54, 54, 81);
-//	Element.set_texture(0, &rcTexture);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_CHECKBOX, 1, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTRadioButton - Box
-//	//-------------------------------------
-//	SetRect(&rcTexture, 54, 54, 81, 81);
-//	Element.set_texture(0, &rcTexture);
-//	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
-//	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
-//	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
-//	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
-//	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(255, 255, 255, 255);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_RADIOBUTTON, 0, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTRadioButton - Check
-//	//-------------------------------------
-//	SetRect(&rcTexture, 81, 54, 108, 81);
-//	Element.set_texture(0, &rcTexture);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_RADIOBUTTON, 1, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTComboBox - Main
-//	//-------------------------------------
-//	SetRect(&rcTexture, 7, 81, 247, 123);
-//	Element.set_texture(0, &rcTexture);
-//	Element.set_font(0);
-//	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(200, 200, 200, 150);
-//	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(230, 230, 230, 170);
-//	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 70);
-//	//Element.font_color.color_states[W_GUI_STATE_MOUSEOVER] = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
-//	//Element.font_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
-//	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_COMBOBOX, 0, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTComboBox - Button
-//	//-------------------------------------
-//	SetRect(&rcTexture, 98, 189, 151, 238);
-//	Element.set_texture(0, &rcTexture);
-//	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
-//	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(150, 150, 150, 255);
-//	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
-//	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(255, 255, 255, 70);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_COMBOBOX, 1, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTComboBox - Dropdown
-//	//-------------------------------------
-//	SetRect(&rcTexture, 13, 123, 241, 160);
-//	Element.set_texture(0, &rcTexture);
-//	//Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_COMBOBOX, 2, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTComboBox - Selection
-//	//-------------------------------------
-//	SetRect(&rcTexture, 12, 163, 239, 183);
-//	Element.set_texture(0, &rcTexture);
-//	//Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_COMBOBOX, 3, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTSlider - Track
-//	//-------------------------------------
-//	SetRect(&rcTexture, 1, 187, 93, 228);
-//	Element.set_texture(0, &rcTexture);
-//	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
-//	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
-//	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(255, 255, 255, 70);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_SLIDER, 0, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTSlider - Button
-//	//-------------------------------------
-//	SetRect(&rcTexture, 151, 193, 192, 234);
-//	Element.set_texture(0, &rcTexture);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_SLIDER, 1, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTScrollBar - Track
-//	//-------------------------------------
-//	int nScrollBarStartX = 196;
-//	int nScrollBarStartY = 191;
-//	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 21, nScrollBarStartX + 22, nScrollBarStartY + 32);
-//	Element.set_texture(0, &rcTexture);
-//	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_SCROLLBAR, 0, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTScrollBar - Up Arrow
-//	//-------------------------------------
-//	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 1, nScrollBarStartX + 22, nScrollBarStartY + 21);
-//	Element.set_texture(0, &rcTexture);
-//	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
-//
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_SCROLLBAR, 1, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTScrollBar - Down Arrow
-//	//-------------------------------------
-//	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 32, nScrollBarStartX + 22, nScrollBarStartY + 53);
-//	Element.set_texture(0, &rcTexture);
-//	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_SCROLLBAR, 2, &Element);
-//
-//	//-------------------------------------
-//	// CDXUTScrollBar - Button
-//	//-------------------------------------
-//	SetRect(&rcTexture, 220, 192, 238, 234);
-//	Element.set_texture(0, &rcTexture);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_SCROLLBAR, 3, &Element);
-//
-//
-//	//-------------------------------------
-//	// CDXUTEditBox
-//	//-------------------------------------
-//	// Element assignment:
-//	//   0 - text area
-//	//   1 - top left border
-//	//   2 - top border
-//	//   3 - top right border
-//	//   4 - left border
-//	//   5 - right border
-//	//   6 - lower left border
-//	//   7 - lower border
-//	//   8 - lower right border
-//
-//	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
-//
-//	// Assign the style
-//	SetRect(&rcTexture, 14, 90, 241, 113);
-//	Element.set_texture(0, &rcTexture);
-//	set_default_element(W_GUI_CONTROL_EDITBOX, 0, &Element);
-//	SetRect(&rcTexture, 8, 82, 14, 90);
-//	Element.set_texture(0, &rcTexture);
-//	set_default_element(W_GUI_CONTROL_EDITBOX, 1, &Element);
-//	SetRect(&rcTexture, 14, 82, 241, 90);
-//	Element.set_texture(0, &rcTexture);
-//	set_default_element(W_GUI_CONTROL_EDITBOX, 2, &Element);
-//	SetRect(&rcTexture, 241, 82, 246, 90);
-//	Element.set_texture(0, &rcTexture);
-//	set_default_element(W_GUI_CONTROL_EDITBOX, 3, &Element);
-//	SetRect(&rcTexture, 8, 90, 14, 113);
-//	Element.set_texture(0, &rcTexture);
-//	set_default_element(W_GUI_CONTROL_EDITBOX, 4, &Element);
-//	SetRect(&rcTexture, 241, 90, 246, 113);
-//	Element.set_texture(0, &rcTexture);
-//	set_default_element(W_GUI_CONTROL_EDITBOX, 5, &Element);
-//	SetRect(&rcTexture, 8, 113, 14, 121);
-//	Element.set_texture(0, &rcTexture);
-//	set_default_element(W_GUI_CONTROL_EDITBOX, 6, &Element);
-//	SetRect(&rcTexture, 14, 113, 241, 121);
-//	Element.set_texture(0, &rcTexture);
-//	set_default_element(W_GUI_CONTROL_EDITBOX, 7, &Element);
-//	SetRect(&rcTexture, 241, 113, 246, 121);
-//	Element.set_texture(0, &rcTexture);
-//	set_default_element(W_GUI_CONTROL_EDITBOX, 8, &Element);
-//
-//	//-------------------------------------
-//	// w_list_box - main
-//	//-------------------------------------
-//	SetRect(&rcTexture, 13, 123, 241, 160);
-//	Element.set_texture(0, &rcTexture);
-//	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_LISTBOX, 0, &Element);
-//
-//	//-------------------------------------
-//	// w_list_box - selection
-//	//-------------------------------------
-//
-//	SetRect(&rcTexture, 16, 166, 240, 183);
-//	Element.set_texture(0, &rcTexture);
-//	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_LISTBOX, 1, &Element);
-//
-//
-//	//-------------------------------------
-//	// w_list_widget - main
-//	//-------------------------------------
-//	SetRect(&rcTexture, 13, 123, 241, 160);
-//	Element.set_texture(0, &rcTexture);
-//	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_LISTWIDGET, 0, &Element);
-//
-//	//-------------------------------------
-//	// w_list_widget - selection
-//	//-------------------------------------
-//
-//	SetRect(&rcTexture, 16, 166, 240, 183);
-//	Element.set_texture(0, &rcTexture);
-//	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
-//
-//	// Assign the Element
-//	set_default_element(W_GUI_CONTROL_LISTWIDGET, 1, &Element);
-//}
-//
+void w_widget::_initialize()
+{
+	this->_redrawing = true;
+
+	w_element _element;
+	w_rectangle _rectangle_texture;
+
+	//-------------------------------------
+	// caption
+	//-------------------------------------
+    _rectangle_texture.left = 142;
+    _rectangle_texture.top = 269;
+    _rectangle_texture.right = 243;
+    _rectangle_texture.bottom = 287;
+
+	this->_caption_element.set_texture(0, &_rectangle_texture);
+	this->_caption_element.texture_color.blend(W_GUI_STATE_NORMAL, 10.0f);
+
+	//-------------------------------------
+	// w_label
+	//-------------------------------------
+	set_default_element(W_GUI_CONTROL_LABEL, 0, &_element);
+
+	//-------------------------------------
+	// w_image
+	//-------------------------------------
+	set_default_element(W_GUI_CONTROL_IMAGE, 0, &_element);
+	//-------------------------------------
+	// w_tAB
+	//-------------------------------------
+	set_default_element(W_GUI_CONTROL_TAB, 0, &_element);
+
+	//-------------------------------------
+	// w_button
+	//-------------------------------------
+    _rectangle_texture.left = 0;
+    _rectangle_texture.top = 0;
+    _rectangle_texture.right = 136;
+    _rectangle_texture.bottom = 54;
+	_element.set_texture(0, &_rectangle_texture);
+	set_default_element(W_GUI_CONTROL_BUTTON, 0, &_element);
+
+	//-------------------------------------
+	// Fill layer
+	//-------------------------------------
+    _rectangle_texture.left = 136;
+    _rectangle_texture.top = 0;
+    _rectangle_texture.right = 252;
+    _rectangle_texture.bottom = 54;
+	_element.set_texture(0, &_rectangle_texture, RGBA_TO_HEX_COLOR(255, 255, 255, 0));
+	set_default_element(W_GUI_CONTROL_BUTTON, 1, &_element);
+
+	//-------------------------------------
+	// CDXUTCheckBox - Box
+	//-------------------------------------
+	SetRect(&rcTexture, 0, 54, 27, 81);
+	Element.set_texture(0, &rcTexture);
+	//Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
+	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(255, 255, 255, 255);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_CHECKBOX, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTCheckBox - Check
+	//-------------------------------------
+	SetRect(&rcTexture, 27, 54, 54, 81);
+	Element.set_texture(0, &rcTexture);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_CHECKBOX, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTRadioButton - Box
+	//-------------------------------------
+	SetRect(&rcTexture, 54, 54, 81, 81);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_VCENTER);
+	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(255, 255, 255, 255);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_RADIOBUTTON, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTRadioButton - Check
+	//-------------------------------------
+	SetRect(&rcTexture, 81, 54, 108, 81);
+	Element.set_texture(0, &rcTexture);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_RADIOBUTTON, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTComboBox - Main
+	//-------------------------------------
+	SetRect(&rcTexture, 7, 81, 247, 123);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(200, 200, 200, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(230, 230, 230, 170);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 70);
+	//Element.font_color.color_states[W_GUI_STATE_MOUSEOVER] = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
+	//Element.font_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(0, 0, 0, 255);
+	//Element.font_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 200);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_COMBOBOX, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTComboBox - Button
+	//-------------------------------------
+	SetRect(&rcTexture, 98, 189, 151, 238);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_PRESSED] = RGBA_TO_HEX_COLOR(150, 150, 150, 255);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(255, 255, 255, 70);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_COMBOBOX, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTComboBox - Dropdown
+	//-------------------------------------
+	SetRect(&rcTexture, 13, 123, 241, 160);
+	Element.set_texture(0, &rcTexture);
+	//Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_COMBOBOX, 2, &Element);
+
+	//-------------------------------------
+	// CDXUTComboBox - Selection
+	//-------------------------------------
+	SetRect(&rcTexture, 12, 163, 239, 183);
+	Element.set_texture(0, &rcTexture);
+	//Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_COMBOBOX, 3, &Element);
+
+	//-------------------------------------
+	// CDXUTSlider - Track
+	//-------------------------------------
+	SetRect(&rcTexture, 1, 187, 93, 228);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_NORMAL] = RGBA_TO_HEX_COLOR(255, 255, 255, 150);
+	//Element.texture_color.color_states[W_GUI_STATE_FOCUS] = RGBA_TO_HEX_COLOR(255, 255, 255, 200);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(255, 255, 255, 70);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SLIDER, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTSlider - Button
+	//-------------------------------------
+	SetRect(&rcTexture, 151, 193, 192, 234);
+	Element.set_texture(0, &rcTexture);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SLIDER, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTScrollBar - Track
+	//-------------------------------------
+	int nScrollBarStartX = 196;
+	int nScrollBarStartY = 191;
+	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 21, nScrollBarStartX + 22, nScrollBarStartY + 32);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SCROLLBAR, 0, &Element);
+
+	//-------------------------------------
+	// CDXUTScrollBar - Up Arrow
+	//-------------------------------------
+	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 1, nScrollBarStartX + 22, nScrollBarStartY + 21);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
+
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SCROLLBAR, 1, &Element);
+
+	//-------------------------------------
+	// CDXUTScrollBar - Down Arrow
+	//-------------------------------------
+	SetRect(&rcTexture, nScrollBarStartX + 0, nScrollBarStartY + 32, nScrollBarStartX + 22, nScrollBarStartY + 53);
+	Element.set_texture(0, &rcTexture);
+	//Element.texture_color.color_states[W_GUI_STATE_DISABLED] = RGBA_TO_HEX_COLOR(200, 200, 200, 255);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SCROLLBAR, 2, &Element);
+
+	//-------------------------------------
+	// CDXUTScrollBar - Button
+	//-------------------------------------
+	SetRect(&rcTexture, 220, 192, 238, 234);
+	Element.set_texture(0, &rcTexture);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_SCROLLBAR, 3, &Element);
+
+
+	//-------------------------------------
+	// CDXUTEditBox
+	//-------------------------------------
+	// Element assignment:
+	//   0 - text area
+	//   1 - top left border
+	//   2 - top border
+	//   3 - top right border
+	//   4 - left border
+	//   5 - right border
+	//   6 - lower left border
+	//   7 - lower border
+	//   8 - lower right border
+
+	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
+
+	// Assign the style
+	SetRect(&rcTexture, 14, 90, 241, 113);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 0, &Element);
+	SetRect(&rcTexture, 8, 82, 14, 90);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 1, &Element);
+	SetRect(&rcTexture, 14, 82, 241, 90);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 2, &Element);
+	SetRect(&rcTexture, 241, 82, 246, 90);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 3, &Element);
+	SetRect(&rcTexture, 8, 90, 14, 113);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 4, &Element);
+	SetRect(&rcTexture, 241, 90, 246, 113);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 5, &Element);
+	SetRect(&rcTexture, 8, 113, 14, 121);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 6, &Element);
+	SetRect(&rcTexture, 14, 113, 241, 121);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 7, &Element);
+	SetRect(&rcTexture, 241, 113, 246, 121);
+	Element.set_texture(0, &rcTexture);
+	set_default_element(W_GUI_CONTROL_EDITBOX, 8, &Element);
+
+	//-------------------------------------
+	// w_list_box - main
+	//-------------------------------------
+	SetRect(&rcTexture, 13, 123, 241, 160);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_LISTBOX, 0, &Element);
+
+	//-------------------------------------
+	// w_list_box - selection
+	//-------------------------------------
+
+	SetRect(&rcTexture, 16, 166, 240, 183);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0, RGBA_TO_HEX_COLOR(255, 255, 255, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_LISTBOX, 1, &Element);
+
+
+	//-------------------------------------
+	// w_list_widget - main
+	//-------------------------------------
+	SetRect(&rcTexture, 13, 123, 241, 160);
+	Element.set_texture(0, &rcTexture);
+	Element.set_font(0, RGBA_TO_HEX_COLOR(0, 0, 0, 255), DT_LEFT | DT_TOP);
+
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_LISTWIDGET, 0, &Element);
+
+	//-------------------------------------
+	// w_list_widget - selection
+	//-------------------------------------
+
+	SetRect(&rcTexture, 16, 166, 240, 183);
+	Element.set_texture(0, &rcTexture);
+	
+	// Assign the Element
+	set_default_element(W_GUI_CONTROL_LISTWIDGET, 1, &Element);
+}
+
 //HRESULT w_widget::render(_In_ const float pElapsedTime)
 //{
 //	if (this->get_is_released()) return S_FALSE;
@@ -614,102 +574,102 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
 //	return S_OK;
 //}
 
-//void w_widget::remove_control(_In_ int pID)
-//{
-//	for (auto it = this->_controls.begin(); it != this->_controls.end(); ++it)
-//	{
-//		if ((*it)->get_ID() == pID)
-//		{
-//			// Clean focus first
-//			clear_focus();
-//
-//			// Clear references to this control
-//			if (s_pControlFocus == (*it))
-//			{
-//				s_pControlFocus = nullptr;
-//			}
-//			if (s_pControlPressed == (*it))
-//			{
-//				s_pControlPressed = nullptr;
-//			}
-//			if (this->_control_mouse_over == (*it))
-//			{
-//				this->_control_mouse_over = nullptr;
-//			}
-//			SAFE_RELEASE((*it));
-//			this->_controls.erase(it);
-//
-//			return;
-//		}
-//	}
-//}
-//
-//void w_widget::remove_all_controls()
-//{
-//	if (s_pControlFocus && s_pControlFocus->parent_widget == this)
-//	{
-//		s_pControlFocus = nullptr;
-//	}
-//	if (s_pControlPressed && s_pControlPressed->parent_widget == this)
-//	{
-//		s_pControlPressed = nullptr;
-//	}
-//	this->_control_mouse_over = nullptr;
-//
-//	for (auto it = this->_controls.begin(); it != this->_controls.end(); ++it)
-//	{
-//		SAFE_DELETE(*it);
-//	}
-//
-//	this->_controls.clear();
-//}
-//
-//void w_widget::refresh()
-//{
-//	if (s_pControlFocus)
-//	{
-//		s_pControlFocus->on_focus_out();
-//	}
-//	if (this->_control_mouse_over)
-//	{
-//		this->_control_mouse_over->on_mouse_leave();
-//	}
-//	s_pControlFocus = nullptr;
-//	s_pControlPressed = nullptr;
-//	this->_control_mouse_over = nullptr;
-//
-//	for (auto it = this->_controls.begin(); it != this->_controls.end(); ++it)
-//	{
-//		(*it)->refresh();
-//	}
-//
-//	if (this->keyboard_input)
-//	{
-//		focus_default_control();
-//	}
-//}
-//
-//void w_widget::send_event(UINT pEvent, bool pTriggeredByUser, w_control* pControl)
-//{
-//	// If no callback has been registered there's nowhere to send the event to
-//	if (this->_call_back_events.size() == 0) return;
-//
-//	// Discard events triggered programatically if these types of events haven't been
-//	// enabled
-//	if (!pTriggeredByUser && !this->non_user_events) return;
-//
-//	for (size_t i = 0; i < this->_call_back_events.size(); ++i)
-//	{
-//		auto _event = this->_call_back_events.at(i);
-//		auto _context = this->_call_back_events_user_contexts.at(i);
-//
-//		if (_event)
-//		{
-//			_event(pEvent, pControl->get_ID(), pControl, _context);
-//		}
-//	}
-//}
-//
+void w_widget::remove_control(_In_ int pID)
+{
+	for (auto it = this->_controls.begin(); it != this->_controls.end(); ++it)
+	{
+		if ((*it)->get_ID() == pID)
+		{
+			// Clean focus first
+			clear_focus();
+
+			// Clear references to this control
+			if (s_pControlFocus == (*it))
+			{
+				s_pControlFocus = nullptr;
+			}
+			if (s_pControlPressed == (*it))
+			{
+				s_pControlPressed = nullptr;
+			}
+			if (this->_control_mouse_over == (*it))
+			{
+				this->_control_mouse_over = nullptr;
+			}
+			SAFE_RELEASE((*it));
+			this->_controls.erase(it);
+
+			return;
+		}
+	}
+}
+
+void w_widget::remove_all_controls()
+{
+	if (s_pControlFocus && s_pControlFocus->get_parent_widget() == this)
+	{
+		s_pControlFocus = nullptr;
+	}
+	if (s_pControlPressed && s_pControlPressed->get_parent_widget() == this)
+	{
+		s_pControlPressed = nullptr;
+	}
+	this->_control_mouse_over = nullptr;
+
+	for (auto it = this->_controls.begin(); it != this->_controls.end(); ++it)
+	{
+		SAFE_DELETE(*it);
+	}
+
+	this->_controls.clear();
+}
+
+void w_widget::refresh()
+{
+	if (s_pControlFocus)
+	{
+		s_pControlFocus->on_focus_out();
+	}
+	if (this->_control_mouse_over)
+	{
+		this->_control_mouse_over->on_mouse_leave();
+	}
+	s_pControlFocus = nullptr;
+	s_pControlPressed = nullptr;
+	this->_control_mouse_over = nullptr;
+
+	for (auto it = this->_controls.begin(); it != this->_controls.end(); ++it)
+	{
+		(*it)->refresh();
+	}
+
+	if (this->keyboard_input)
+	{
+		focus_default_control();
+	}
+}
+
+void w_widget::send_event(UINT pEvent, bool pTriggeredByUser, w_control* pControl)
+{
+	// If no callback has been registered there's nowhere to send the event to
+	if (this->_call_back_events.size() == 0) return;
+
+	// Discard events triggered programatically if these types of events haven't been
+	// enabled
+	if (!pTriggeredByUser && !this->non_user_events) return;
+
+	for (size_t i = 0; i < this->_call_back_events.size(); ++i)
+	{
+		auto _event = this->_call_back_events.at(i);
+		auto _context = this->_call_back_events_user_contexts.at(i);
+
+		if (_event)
+		{
+			_event(pEvent, pControl->get_ID(), pControl, _context);
+		}
+	}
+}
+
 //HRESULT w_widget::add_label(_In_ int pID,
 //	_In_z_ std::wstring pText,
 //	_In_ int pX, _In_ int pY,
@@ -1687,40 +1647,40 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
 //		this->_control_mouse_over->on_mouse_enter();
 //	}
 //}
-//
-//HRESULT w_widget::initialize_control(_In_ w_control* pControl)
-//{
-//	if (!pControl)
-//	{
-//		return E_INVALIDARG;
-//	}
-//	pControl->index = static_cast<UINT>(this->_controls.size());
-//
-//	// Look for a default Element entries
-//	for (auto it = this->_default_elements.begin(); it != this->_default_elements.end(); ++it)
-//	{
-//		if ((*it)->control_type == pControl->get_type())
-//		{
-//			pControl->set_element((*it)->index_element, &(*it)->element);
-//		}
-//	}
-//
-//	auto _hr = pControl->on_initialize(this->_gDevice);
-//
-//	return _hr;
-//}
-//
-//HRESULT w_widget::add_control(_In_ w_control* pControl)
-//{
-//	auto _hr = initialize_control(pControl);
-//	V(_hr, L"initializing control", _super::name, 2);
-//
-//	// Add to the list
-//	this->_controls.push_back(pControl);
-//
-//	return S_OK;
-//}
-//
+
+HRESULT w_widget::initialize_control(_In_ w_control* pControl)
+{
+	if (!pControl)
+	{
+		return E_INVALIDARG;
+	}
+	pControl->set_index(static_cast<UINT>(this->_controls.size()));
+
+	// Look for a default Element entries
+	for (auto it = this->_default_elements.begin(); it != this->_default_elements.end(); ++it)
+	{
+		if ((*it)->control_type == pControl->get_type())
+		{
+			pControl->set_element((*it)->index_element, &(*it)->element);
+		}
+	}
+
+	auto _hr = pControl->on_initialize(this->_gDevice);
+
+	return _hr;
+}
+
+HRESULT w_widget::add_control(_In_ w_control* pControl)
+{
+	auto _hr = initialize_control(pControl);
+	V(_hr, L"initializing control", _super::name, 2);
+
+	// Add to the list
+	this->_controls.push_back(pControl);
+
+	return S_OK;
+}
+
 //void w_widget::clear_radioButton_group(_In_ UINT pButtonGroup)
 //{
 //	// Find all radio buttons with the given group number
@@ -1737,7 +1697,7 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
 //		////////////////////////////////}
 //	}
 //}
-//
+
 //void w_widget::clear_comboBox(_In_ int pID)
 //{
 //	////////////////////////////////auto _comboBox = reinterpret_cast<w_comboBox*>(get_control(pID, W_GUI_CONTROL_COMBOBOX));
@@ -1758,7 +1718,7 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
 //	pControl->on_focus_in();
 //	s_pControlFocus = pControl;
 //}
-//
+
 //HRESULT w_widget::draw_sprite(w_element* pElement, const RECT* pRectDest, float pDepth)
 //{
 //	// No need to draw fully transparent layers
@@ -1862,7 +1822,7 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
 //
 //	return S_OK;
 //}
-//
+
 //HRESULT w_widget::draw_image(_In_z_ const wchar_t* pIconName,
 //	const DirectX::XMFLOAT2 pPosition,
 //	const DirectX::XMFLOAT2 pScale, const DirectX::XMFLOAT2 pScaleCenter,
@@ -1875,7 +1835,7 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
 //
 //	return S_OK;
 //}
-//
+
 //HRESULT w_widget::draw_image(_In_z_ const wchar_t* pIconName,
 //	const DirectX::XMFLOAT2 pPosition, const D2D1_RECT_F pRectangle,
 //	const DirectX::XMFLOAT2 pScale, const DirectX::XMFLOAT2 pScaleCenter,
@@ -1888,7 +1848,7 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
 //
 //	return S_OK;
 //}
-//
+
 //HRESULT w_widget::draw_text(_In_z_ std::wstring pText, DirectX::XMFLOAT2 pPosition, _In_ ID2D1SolidColorBrush* pBrush)
 //{
 //	if (this->_sprite_batch != nullptr)
@@ -1900,7 +1860,7 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
 //
 //	return S_OK;
 //}
-//
+
 //HRESULT w_widget::draw_shape(_In_ wolf::graphics::direct2D::Isprite_batch_drawable* pShape)
 //{
 //	if (this->_sprite_batch != nullptr)
@@ -1912,586 +1872,465 @@ HRESULT w_widget::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_dev
 //
 //	return S_OK;
 //}
-//
-//void w_widget::clear_focus()
-//{
-//	if (s_pControlFocus)
-//	{
-//		s_pControlFocus->on_focus_out();
-//		s_pControlFocus = nullptr;
-//	}
-//
-//	ReleaseCapture();
-//}
-//
-//void w_widget::focus_default_control()
-//{
-//	// Check for default control in this dialog
-//	for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
-//	{
-//		if ((*it)->is_default)
-//		{
-//			// Remove focus from the current control
-//			clear_focus();
-//
-//			// Give focus to the default control
-//			s_pControlFocus = *it;
-//			s_pControlFocus->on_focus_in();
-//			return;
-//		}
-//	}
-//}
-//
-//bool w_widget::on_cycle_focus(_In_ bool pForward)
-//{
-//	w_control* pControl = nullptr;
-//	w_widget* pWidget = nullptr; // pDialog and pLastDialog are used to track wrapping of
-//	w_widget* pLastWidget;    // focus from first control to last or vice versa.
-//
-//	if (!s_pControlFocus)
-//	{
-//		// If s_pControlFocus is nullptr, we focus the first control of first dialog in
-//		// the case that bForward is true, and focus the last control of last dialog when
-//		// bForward is false.
-//		//
-//		if (pForward)
-//		{
-//			// Search for the first control from the start of the dialog
-//			// array.
-//			for (auto it = this->_widgets_resource_manager->widgets.cbegin(); it != this->_widgets_resource_manager->widgets.cend(); ++it)
-//			{
-//				pWidget = pLastWidget = *it;
-//				if (pWidget && !pWidget->_controls.empty())
-//				{
-//					pControl = pWidget->_controls[0];
-//					break;
-//				}
-//			}
-//
-//			if (!pWidget || !pControl)
-//			{
-//				// No dialog has been registered yet or no controls have been
-//				// added to the dialogs. Cannot proceed.
-//				return true;
-//			}
-//		}
-//		else
-//		{
-//			// Search for the first control from the end of the dialog
-//			// array.
-//			for (auto it = this->_widgets_resource_manager->widgets.crbegin(); it != this->_widgets_resource_manager->widgets.crend(); ++it)
-//			{
-//				pWidget = pLastWidget = *it;
-//				if (pWidget && !pWidget->_controls.empty())
-//				{
-//					pControl = pWidget->_controls[pWidget->_controls.size() - 1];
-//					break;
-//				}
-//			}
-//
-//			if (!pWidget || !pControl)
-//			{
-//				// No dialog has been registered yet or no controls have been
-//				// added to the dialogs. Cannot proceed.
-//				return true;
-//			}
-//		}
-//	}
-//	else if (s_pControlFocus->parent_widget != this)
-//	{
-//		// If a control belonging to another dialog has focus, let that other dialog handle this event by returning false.
-//		return false;
-//	}
-//	else
-//	{
-//		// Focused control belongs to this dialog. Cycle to the next/previous control.
-//		if (!pControl) return false;
-//		//_Analysis_assume_(pControl != 0);
-//		pLastWidget = s_pControlFocus->parent_widget;
-//		pControl = (pForward) ? get_next_control(s_pControlFocus) : get_prev_control(s_pControlFocus);
-//		pWidget = pControl->parent_widget;
-//	}
-//
-//	if (!pControl) return false;
-//	//assert(pControl != 0);
-//	//_Analysis_assume_(pControl != 0);
-//
-//	for (int i = 0; i < 0xffff; i++)
-//	{
-//		// If we just wrapped from last control to first or vice versa,
-//		// set the focused control to nullptr. This state, where no control
-//		// has focus, allows the camera to work.
-//		int nLastDialogIndex = -1;
-//		auto fit = std::find(this->_widgets_resource_manager->widgets.cbegin(), this->_widgets_resource_manager->widgets.cend(), pLastWidget);
-//		if (fit != this->_widgets_resource_manager->widgets.cend())
-//		{
-//			nLastDialogIndex = int(fit - this->_widgets_resource_manager->widgets.begin());
-//		}
-//
-//		int nDialogIndex = -1;
-//		fit = std::find(this->_widgets_resource_manager->widgets.cbegin(), this->_widgets_resource_manager->widgets.cend(), pWidget);
-//		if (fit != this->_widgets_resource_manager->widgets.cend())
-//		{
-//			nDialogIndex = int(fit - this->_widgets_resource_manager->widgets.begin());
-//		}
-//
-//		if ((!pForward && nLastDialogIndex < nDialogIndex) || (pForward && nDialogIndex < nLastDialogIndex))
-//		{
-//			if (s_pControlFocus)
-//			{
-//				s_pControlFocus->on_focus_out();
-//			}
-//			s_pControlFocus = nullptr;
-//			return true;
-//		}
-//
-//		// If we've gone in a full circle then focus doesn't change
-//		if (pControl == s_pControlFocus)
-//		{
-//			return true;
-//		}
-//
-//		// If the dialog accepts keybord input and the control can have focus then
-//		// move focus
-//		if (pControl->parent_widget->keyboard_input && pControl->can_have_focus())
-//		{
-//			if (s_pControlFocus)
-//			{
-//				s_pControlFocus->on_focus_out();
-//			}
-//			s_pControlFocus = pControl;
-//			if (s_pControlFocus)
-//			{
-//				s_pControlFocus->on_focus_in();
-//			}
-//			return true;
-//		}
-//
-//		pLastWidget = pWidget;
-//		pControl = (pForward) ? get_next_control(pControl) : get_prev_control(pControl);
-//		pWidget = pControl->parent_widget;
-//	}
-//
-//	// If we reached this point, the chain of dialogs didn't form a complete loop
-//	V(S_FALSE, L"multiple dialogs are improperly chained together", _super::name, 2);
-//	return false;
-//}
-//
-//void w_widget::remove_call_back(_In_ W_CALLBACK_GUI_EVENT pCallback)
-//{
-//	// If this assert triggers, you need to call w_widget::Initialize() first.  This change
-//	// was made so that the DXUT's GUI could become seperate and optional from DXUT's core.  The 
-//	// creation and interfacing with w_widget_resource_manager is now the responsibility 
-//	// of the application if it wishes to use DXUT's GUI.
-//	assert(this->_widgets_resource_manager && L"To fix call w_widget_resource_manager::initialize() first.  See comments for details.");
-//
-//	for (size_t i = 0; i < this->_call_back_events.size(); ++i)
-//	{
-//		if (this->_call_back_events.at(i) == pCallback)
-//		{
-//			this->_call_back_events.erase(this->_call_back_events.begin() + i);
-//			break;
-//		}
-//	}
-//}
+
+void w_widget::clear_focus()
+{
+	if (s_pControlFocus)
+	{
+		s_pControlFocus->on_focus_out();
+		s_pControlFocus = nullptr;
+	}
+
+	ReleaseCapture();
+}
+
+bool w_widget::on_cycle_focus(_In_ bool pForward)
+{
+	w_control* pControl = nullptr;
+    // pDialog and pLastDialog are used to track wrapping of
+	w_widget* pWidget = nullptr; 
+    // focus from first control to last or vice versa.
+	w_widget* pLastWidget;    
+
+	if (!s_pControlFocus)
+	{
+		/*
+            If s_pControlFocus is nullptr, we focus the first control of first dialog in
+		    the case that bForward is true, and focus the last control of last dialog when
+		    bForward is false.
+        */
+		if (pForward)
+		{
+			// Search for the first control from the start of the dialog array.
+			for (auto it = w_widget::widgets.cbegin(); it != w_widget::widgets.cend(); ++it)
+			{
+				pWidget = pLastWidget = *it;
+				if (pWidget && !pWidget->_controls.empty())
+				{
+					pControl = pWidget->_controls[0];
+					break;
+				}
+			}
+
+			if (!pWidget || !pControl)
+			{
+				/*
+                    No dialog has been registered yet or no controls have been
+				    added to the dialogs. Cannot proceed.
+                */
+				return true;
+			}
+		}
+		else
+		{
+			// Search for the first control from the end of the dialog array.
+			for (auto it = w_widget::widgets.crbegin(); it != w_widget::widgets.crend(); ++it)
+			{
+				pWidget = pLastWidget = *it;
+				if (pWidget && !pWidget->_controls.empty())
+				{
+					pControl = pWidget->_controls[pWidget->_controls.size() - 1];
+					break;
+				}
+			}
+
+			if (!pWidget || !pControl)
+			{
+				/* 
+                    No dialog has been registered yet or no controls have been
+				    added to the dialogs. Cannot proceed.
+                */
+				return true;
+			}
+		}
+	}
+	else if (s_pControlFocus->get_parent_widget() != this)
+	{
+		// If a control belonging to another dialog has focus, let that other dialog handle this event by returning false.
+		return false;
+	}
+	else
+	{
+		// Focused control belongs to this dialog. Cycle to the next/previous control.
+		if (!pControl) return false;
+		//_Analysis_assume_(pControl != 0);
+		pLastWidget = s_pControlFocus->get_parent_widget();
+		pControl = (pForward) ? get_next_control(s_pControlFocus) : get_prev_control(s_pControlFocus);
+		pWidget = pControl->get_parent_widget();
+	}
+
+	if (!pControl) return false;
+
+	for (int i = 0; i < 0xffff; i++)
+	{
+		/*
+            If we just wrapped from last control to first or vice versa,
+		    set the focused control to nullptr. This state, where no control
+		    has focus, allows the camera to work.
+        */
+		int nLastDialogIndex = -1;
+		auto fit = std::find(w_widget::widgets.cbegin(), w_widget::widgets.cend(), pLastWidget);
+		if (fit != w_widget::widgets.cend())
+		{
+			nLastDialogIndex = int(fit - w_widget::widgets.begin());
+		}
+
+		int nDialogIndex = -1;
+		fit = std::find(w_widget::widgets.cbegin(), w_widget::widgets.cend(), pWidget);
+		if (fit != w_widget::widgets.cend())
+		{
+			nDialogIndex = int(fit - w_widget::widgets.begin());
+		}
+
+		if ((!pForward && nLastDialogIndex < nDialogIndex) || (pForward && nDialogIndex < nLastDialogIndex))
+		{
+			if (s_pControlFocus)
+			{
+				s_pControlFocus->on_focus_out();
+			}
+			s_pControlFocus = nullptr;
+			return true;
+		}
+
+		// If we've gone in a full circle then focus doesn't change
+		if (pControl == s_pControlFocus)
+		{
+			return true;
+		}
+
+		// If the dialog accepts keybord input and the control can have focus then move focus
+        auto _parent_widget = pControl->get_parent_widget();
+		if (_parent_widget && _parent_widget->keyboard_input && pControl->can_have_focus())
+		{
+			if (s_pControlFocus)
+			{
+				s_pControlFocus->on_focus_out();
+			}
+			s_pControlFocus = pControl;
+			if (s_pControlFocus)
+			{
+				s_pControlFocus->on_focus_in();
+			}
+			return true;
+		}
+
+		pLastWidget = pWidget;
+		pControl = (pForward) ? get_next_control(pControl) : get_prev_control(pControl);
+		pWidget = pControl->get_parent_widget();
+	}
+
+	// If we reached this point, the chain of dialogs didn't form a complete loop
+	V(S_FALSE, L"multiple dialogs are improperly chained together", _super::name, 2);
+	return false;
+}
+
+void w_widget::remove_call_back(_In_ W_CALLBACK_GUI_EVENT pCallback)
+{
+	for (size_t i = 0; i < this->_call_back_events.size(); ++i)
+	{
+		if (this->_call_back_events.at(i) == pCallback)
+		{
+			this->_call_back_events.erase(this->_call_back_events.begin() + i);
+			break;
+		}
+	}
+}
 
 ULONG w_widget::release()
 {
     if (_super::get_is_released()) return 0;
 	
-	//remove_all_controls();
+	remove_all_controls();
 
-//	COM_RELEASE(this->_vertex_buffer);
-//	COM_RELEASE(this->_brush);
-//
-//	for (auto it = this->_default_elements.begin(); it != this->_default_elements.end(); ++it)
-//	{
-//		SAFE_DELETE(*it);
-//	}
-//
-//	this->_default_elements.clear();
-//
-//	//callbacks
-//	if (this->on_mouse_move_callback)
-//	{
-//		this->on_mouse_move_callback = nullptr;
-//	}
-//	if (this->on_mouse_enter_callback)
-//	{
-//		this->on_mouse_enter_callback = nullptr;
-//	}
-//	if (this->on_mouse_leave_callback)
-//	{
-//		this->on_mouse_leave_callback = nullptr;
-//	}
-//
-//	//pointers
-//	if (this->_widgets_resource_manager)
-//	{
-//		this->_widgets_resource_manager = nullptr;
-//	}
-//	for (size_t i = 0; i < this->_call_back_events.size(); ++i)
-//	{
-//		if (this->_call_back_events.at(i))
-//		{
-//			this->_call_back_events.at(i) = nullptr;
-//		}
-//	}
-//	this->_call_back_events.clear();
-//
-//	for (size_t i = 0; i < this->_call_back_events_user_contexts.size(); ++i)
-//	{
-//		if (this->_call_back_events_user_contexts.at(i))
-//		{
-//			this->_call_back_events_user_contexts.at(i) = nullptr;
-//		}
-//	}
-//	this->_call_back_events_user_contexts.clear();
-//
-//	if (this->_hwnd)
-//	{
-//		this->_hwnd = nullptr;
-//	}
-//	
-//	if (this->_control_mouse_over)
-//	{
-//		this->_control_mouse_over = nullptr;
-//	}
-//	if (this->_next_widget)
-//	{
-//		this->_next_widget = nullptr;
-//	}
-//	if (this->_prev_widget)
-//	{
-//		this->_prev_widget = nullptr;
-//	}
-//	if (this->s_pControlFocus)
-//	{
-//		this->s_pControlFocus = nullptr;
-//	}
-//	if (this->s_pControlPressed)
-//	{
-//		this->s_pControlPressed = nullptr;
-//	}
-//	if (this->_sprite_batch)
-//	{
-//		this->_sprite_batch = nullptr;
-//	}
+    this->_buffer.release();
+    this->_texture = nullptr;
+    this->_shader = nullptr;
+
+	for (auto it = this->_default_elements.begin(); it != this->_default_elements.end(); ++it)
+	{
+		SAFE_DELETE(*it);
+	}
+
+	this->_default_elements.clear();
+
+	//callbacks
+	if (this->on_mouse_move_callback) this->on_mouse_move_callback = nullptr;
+	if (this->on_mouse_enter_callback) this->on_mouse_enter_callback = nullptr;
+	if (this->on_mouse_leave_callback) this->on_mouse_leave_callback = nullptr;
+
+	for (size_t i = 0; i < this->_call_back_events.size(); ++i)
+	{
+		if (this->_call_back_events.at(i))
+		{
+			this->_call_back_events.at(i) = nullptr;
+		}
+	}
+
+	this->_call_back_events.clear();
+
+	for (size_t i = 0; i < this->_call_back_events_user_contexts.size(); ++i)
+	{
+		if (this->_call_back_events_user_contexts.at(i))
+		{
+			this->_call_back_events_user_contexts.at(i) = nullptr;
+		}
+	}
+	this->_call_back_events_user_contexts.clear();
+
+	if (this->_hwnd) this->_hwnd = nullptr;	
+	if (this->_control_mouse_over) this->_control_mouse_over = nullptr;
+	if (this->_next_widget) this->_next_widget = nullptr;
+	if (this->_prev_widget) this->_prev_widget = nullptr;
+	if (this->s_pControlFocus) this->s_pControlFocus = nullptr;
+	if (this->s_pControlPressed) this->s_pControlPressed = nullptr;
+
 	this->_gDevice = nullptr;
 
 	return _super::release();
 }
 
-//#pragma region Getters
-//
-//void w_widget::get_all_controls_id(_Inout_ std::vector<int>& pIDs)
-//{
-//	std::for_each(this->_controls.begin(), this->_controls.end(), [&](w_control* pControl)
-//	{
-//		if (pControl)
-//		{
-//			pIDs.push_back(pControl->get_ID());
-//		}
-//	});
-//}
-//
-//w_font_node* w_widget::get_font(_In_ UINT pIndex) const
-//{
-//	if (!this->_widgets_resource_manager) return nullptr;
-//	return this->_widgets_resource_manager->get_font_node(this->_fonts_indices[pIndex]);
-//}
-//
-//w_texture_node* w_widget::get_texture(_In_ UINT pIndex) const
-//{
-//	if (!this->_widgets_resource_manager || this->_textures_indices.size() == 0) return nullptr;
-//	return this->_widgets_resource_manager->get_texture_node(this->_textures_indices[pIndex]);
-//}
-//
-//w_control* w_widget::get_control_at_point(_In_ const POINT& pPoint) const
-//{
-//	// Search through all child controls for the first one which
-//	// contains the mouse point
-//	for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
-//	{
-//		if (!*it)
-//		{
-//			continue;
-//		}
-//
-//		// We only return the current control if it is visible
-//		// and enabled.  Because GetControlAtPoint() is used to do mouse
-//		// hittest, it makes sense to perform this filtering.
-//		if ((*it)->contains_point(pPoint) && (*it)->get_enabled() && (*it)->get_visible())
-//		{
-//			return *it;
-//		}
-//	}
-//
-//	return nullptr;
-//}
-//
-//bool w_widget::get_control_enabled(_In_ int pID) const
-//{
-//	auto pControl = get_control(pID);
-//	if (!pControl)
-//	{
-//		return false;
-//	}
-//	return pControl->get_enabled();
-//}
-//
-//w_control* w_widget::get_control(_In_ int pID) const
-//{
-//	// Try to find the control with the given ID
-//	for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
-//	{
-//		if ((*it)->get_ID() == pID)
-//		{
-//			return *it;
-//		}
-//	}
-//
-//	// Not found
-//	return nullptr;
-//}
-//
-//w_control* w_widget::get_control(_In_  int pID, _In_  UINT pControlType) const
-//{
-//	// Try to find the control with the given ID
-//	for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
-//	{
-//		if ((*it)->get_ID() == pID && (*it)->get_type() == pControlType)
-//		{
-//			return *it;
-//		}
-//	}
-//
-//	// Not found
-//	return nullptr;
-//}
-//
-//w_control* w_widget::get_next_control(_In_ w_control* pControl)
-//{
-//	int index = pControl->index + 1;
-//
-//	auto pWidget = pControl->parent_widget;
-//
-//	/*
-//	Cycle through dialogs in the loop to find the next control. Note
-//	that if only one control exists in all looped dialogs it will
-//	be the returned 'next' control.
-//	*/
-//	while (index >= (int) pWidget->_controls.size())
-//	{
-//		pWidget = pWidget->_next_widget;
-//		index = 0;
-//	}
-//
-//	return pWidget->_controls[index];
-//}
-//
-//w_control* w_widget::get_prev_control(_In_ w_control* pControl)
-//{
-//	int index = pControl->index - 1;
-//
-//	auto _widget = pControl->parent_widget;
-//
-//	/*
-//	Cycle through dialogs in the loop to find the next control. Note
-//	that if only one control exists in all looped dialogs it will
-//	be the returned 'previous' control.
-//	*/
-//	while (index < 0)
-//	{
-//		_widget = _widget->_prev_widget;
-//		if (!_widget)
-//		{
-//			_widget = pControl->parent_widget;
-//		}
-//		index = int(_widget->_controls.size()) - 1;
-//	}
-//
-//	return _widget->_controls[index];
-//}
-//
-//w_element* w_widget::get_default_element(UINT pControlType, UINT pIndexElement) const
-//{
-//	for (auto it = this->_default_elements.cbegin(); it != this->_default_elements.cend(); ++it)
-//	{
-//		if ((*it)->control_type == pControlType &&
-//			(*it)->index_element == pIndexElement)
-//		{
-//			return &(*it)->element;
-//		}
-//	}
-//
-//	return nullptr;
-//}
-//
-//UINT w_widget::get_background_buffer_width() const
-//{
-//	return this->_widgets_resource_manager->back_buffer_width;
-//}
-//
-//UINT w_widget::get_background_buffer_height() const
-//{
-//	return this->_widgets_resource_manager->back_buffer_height;
-//}
-//
-//#pragma endregion
-//
-//#pragma region Setters
-//
-//void w_widget::set_call_back(_In_ W_CALLBACK_GUI_EVENT pCallback, _In_opt_ void* pUserContext)
-//{
-//	// If this assert triggers, you need to call w_widget::Initialize() first.  This change
-//	// was made so that the DXUT's GUI could become seperate and optional from DXUT's core.  The 
-//	// creation and interfacing with w_widget_resource_manager is now the responsibility 
-//	// of the application if it wishes to use DXUT's GUI.
-//	assert(this->_widgets_resource_manager && L"To fix call w_widget_resource_manager::initialize() first.  See comments for details.");
-//
-//	this->_call_back_events.push_back(pCallback);
-//	this->_call_back_events_user_contexts.push_back(pUserContext);
-//}
-//
-//HRESULT w_widget::set_font(UINT pIndex, LPCWSTR pFontName, LONG pHeight, LONG pWeight)
-//{
-//	// If this assert triggers, you need to call CDXUTDialog::Init() first.  This change
-//	// was made so that the DXUT's GUI could become seperate and optional from DXUT's core.  The 
-//	// creation and interfacing with CDXUTDialogResourceManager is now the responsibility 
-//	// of the application if it wishes to use DXUT's GUI.
-//	assert(this->_widgets_resource_manager && L"To fix call CDXUTDialog::Init() first.  See comments for details.");
-//	_Analysis_assume_(this->_widgets_resource_manager);
-//
-//	// Make sure the list is at least as large as the index being set
-//	for (size_t i = this->_fonts_indices.size(); i <= pIndex; i++)
-//	{
-//		this->_fonts_indices.push_back(-1);
-//	}
-//
-//	int iFont = this->_widgets_resource_manager->add_font(pFontName, pHeight, pWeight);
-//	this->_fonts_indices[pIndex] = iFont;
-//
-//	return S_OK;
-//}
-//
-//HRESULT w_widget::set_texture(UINT pIndex, LPCWSTR pFilename)
-//{
-//	// If this assert triggers, you need to call CDXUTDialog::Init() first.  This change
-//	// was made so that the DXUT's GUI could become seperate and optional from DXUT's core.  The 
-//	// creation and interfacing with CDXUTDialogResourceManager is now the responsibility 
-//	// of the application if it wishes to use DXUT's GUI.
-//	assert(this->_widgets_resource_manager && L"To fix this, call CDXUTDialog::Init() first.  See comments for details.");
-//	_Analysis_assume_(this->_widgets_resource_manager);
-//
-//	// Make sure the list is at least as large as the index being set
-//	for (size_t i = this->_textures_indices.size(); i <= pIndex; i++)
-//	{
-//		this->_textures_indices.push_back(-1);
-//	}
-//
-//	int iTexture = this->_widgets_resource_manager->add_texture(pFilename);
-//
-//	this->_textures_indices[pIndex] = iTexture;
-//
-//	return S_OK;
-//}
-//
-//HRESULT w_widget::set_texture(UINT pIndex, LPCWSTR pResourceName, HMODULE pHResourceModule)
-//{
-//	// If this assert triggers, you need to call CDXUTDialog::Init() first.  This change
-//	// was made so that the DXUT's GUI could become seperate and optional from DXUT's core.  The 
-//	// creation and interfacing with CDXUTDialogResourceManager is now the responsibility 
-//	// of the application if it wishes to use DXUT's GUI.
-//	assert(this->_widgets_resource_manager && L"To fix this, call CDXUTDialog::Init() first.  See comments for details.");
-//	_Analysis_assume_(this->_widgets_resource_manager);
-//
-//	// Make sure the list is at least as large as the index being set
-//	for (size_t i = this->_textures_indices.size(); i <= pIndex; i++)
-//	{
-//		this->_textures_indices.push_back(-1);
-//	}
-//
-//	int iTexture = this->_widgets_resource_manager->add_texture(pResourceName, pHResourceModule);
-//
-//	this->_textures_indices[pIndex] = iTexture;
-//
-//	return S_OK;
-//}
-//
-//void w_widget::set_control_enabled(_In_ int pID, _In_ bool pEnabled)
-//{
-//	auto pControl = get_control(pID);
-//	if (!pControl)
-//		return;
-//
-//	pControl->set_enabled(pEnabled);
-//}
-//
-//HRESULT w_widget::set_default_element(UINT nControlType, UINT iElement, w_element* pElement)
-//{
-//	// If this Element type already exist in the list, simply update the stored Element
-//	for (auto it = this->_default_elements.begin(); it != this->_default_elements.end(); ++it)
-//	{
-//		if ((*it)->control_type == nControlType &&
-//			(*it)->index_element == iElement)
-//		{
-//			(*it)->element = *pElement;
-//			return S_OK;
-//		}
-//	}
-//
-//	// Otherwise, add a new entry
-//	w_element_holder* _new_holder;
-//	_new_holder = new (std::nothrow) w_element_holder;
-//	if (!_new_holder)
-//	{
-//		return E_OUTOFMEMORY;
-//	}
-//	_new_holder->control_type = nControlType;
-//	_new_holder->index_element = iElement;
-//	_new_holder->element = *pElement;
-//
-//	this->_default_elements.push_back(_new_holder);
-//
-//	return S_OK;
-//}
-//
-//void w_widget::set_next_widget(_In_ w_widget* pNextWidget)
-//{
-//	if (!pNextWidget)
-//	{
-//		pNextWidget = this;
-//	}
-//	this->_next_widget = pNextWidget;
-//	if (pNextWidget)
-//	{
-//		this->_next_widget->_prev_widget = this;
-//	}
-//}
-//
-//void w_widget::set_background_colors(_In_ w_color pColorTopLeft, _In_ w_color pColorTopRight, _In_ w_color pColorBottomLeft, _In_ w_color pColorBottomRight)
-//{
-//	this->_background_color_top_left = pColorTopLeft;
-//	this->_background_color_top_right = pColorTopRight;
-//	this->_background_color_bottom_left = pColorBottomLeft;
-//	this->_background_color_bottom_right = pColorBottomRight;
-//}
-//
-//void w_widget::set_active_background_colors(_In_ w_color pColorTopLeft, _In_ w_color pColorTopRight, _In_ w_color pColorBottomLeft, _In_ w_color pColorBottomRight)
-//{
-//	this->_active_background_color_top_left = pColorTopLeft;
-//	this->_active_background_color_top_right = pColorTopRight;
-//	this->_active_background_color_bottom_left = pColorBottomLeft;
-//	this->_active_background_color_bottom_right = pColorBottomRight;
-//}
-//
-//void w_widget::set_enabled(_In_ bool pEnabled)
-//{
-//	for (auto _control : this->_controls)
-//	{
-//		_control->set_enabled(pEnabled);
-//	}
-//}
-//
-//#pragma endregion
+#pragma region Getters
+
+void w_widget::get_all_controls_id(_Inout_ std::vector<int>& pIDs)
+{
+	std::for_each(this->_controls.begin(), this->_controls.end(), [&](w_control* pControl)
+	{
+		if (pControl)
+		{
+			pIDs.push_back(pControl->get_ID());
+		}
+	});
+}
+
+w_control* w_widget::get_control_at_point(_In_ const w_point& pPoint) const
+{
+	/* Search through all child controls for the first one which contains the mouse point
+    */
+	for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
+	{
+		if (!*it)
+		{
+			continue;
+		}
+
+		/*
+            We only return the current control if it is visible
+		    and enabled.  Because GetControlAtPoint() is used to do mouse
+		    hittest, it makes sense to perform this filtering.
+        */
+		if ((*it)->contains_point(pPoint) && (*it)->get_enabled() && (*it)->get_visible())
+		{
+			return *it;
+		}
+	}
+
+	return nullptr;
+}
+
+bool w_widget::get_control_enabled(_In_ int pID) const
+{
+	auto pControl = get_control(pID);
+	if (!pControl)
+	{
+		return false;
+	}
+	return pControl->get_enabled();
+}
+
+w_control* w_widget::get_control(_In_ int pID) const
+{
+	// Try to find the control with the given ID
+	for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
+	{
+		if ((*it)->get_ID() == pID)
+		{
+			return *it;
+		}
+	}
+
+	// Not found
+	return nullptr;
+}
+
+w_control* w_widget::get_control(_In_  int pID, _In_  UINT pControlType) const
+{
+	// Try to find the control with the given ID
+	for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
+	{
+		if ((*it)->get_ID() == pID && (*it)->get_type() == pControlType)
+		{
+			return *it;
+		}
+	}
+
+	// Not found
+	return nullptr;
+}
+
+w_control* w_widget::get_next_control(_In_ w_control* pControl)
+{
+	int index = pControl->get_index() + 1;
+
+	auto pWidget = pControl->get_parent_widget();
+
+	/*
+	    Cycle through dialogs in the loop to find the next control. Note
+	    that if only one control exists in all looped dialogs it will
+	    be the returned 'next' control.
+	*/
+	while (index >= (int) pWidget->_controls.size())
+	{
+		pWidget = pWidget->_next_widget;
+		index = 0;
+	}
+
+	return pWidget->_controls[index];
+}
+
+w_control* w_widget::get_prev_control(_In_ w_control* pControl)
+{
+	int index = pControl->get_index() - 1;
+
+	auto _widget = pControl->get_parent_widget();
+
+	/*
+	    Cycle through dialogs in the loop to find the next control. Note
+	    that if only one control exists in all looped dialogs it will
+	    be the returned 'previous' control.
+	*/
+	while (index < 0)
+	{
+		_widget = _widget->_prev_widget;
+		if (!_widget)
+		{
+			_widget = pControl->get_parent_widget();
+		}
+		index = int(_widget->_controls.size()) - 1;
+	}
+
+	return _widget->_controls[index];
+}
+
+w_element* w_widget::get_default_element(UINT pControlType, UINT pIndexElement) const
+{
+	for (auto it = this->_default_elements.cbegin(); it != this->_default_elements.cend(); ++it)
+	{
+		if ((*it)->control_type == pControlType &&
+			(*it)->index_element == pIndexElement)
+		{
+			return &(*it)->element;
+		}
+	}
+
+	return nullptr;
+}
+
+UINT w_widget::get_background_buffer_width() const
+{
+	return this->_parent_window_width;
+}
+
+UINT w_widget::get_background_buffer_height() const
+{
+	return this->_parent_window_height;
+}
+
+#pragma endregion
+
+#pragma region Setters
+
+void w_widget::set_call_back(_In_ W_CALLBACK_GUI_EVENT pCallback, _In_opt_ void* pUserContext)
+{
+    this->_call_back_events.push_back(pCallback);
+    this->_call_back_events_user_contexts.push_back(pUserContext);
+}
+
+void w_widget::set_control_enabled(_In_ int pID, _In_ bool pEnabled)
+{
+	auto pControl = get_control(pID);
+	if (!pControl)
+		return;
+
+	pControl->set_enabled(pEnabled);
+}
+
+HRESULT w_widget::set_default_element(_In_ const UINT pControlType, _In_ const UINT iElement, _In_ const w_element* pElement)
+{
+	// If this Element type already exist in the list, simply update the stored Element
+	for (auto it = this->_default_elements.begin(); it != this->_default_elements.end(); ++it)
+	{
+		if ((*it)->control_type == pControlType &&
+			(*it)->index_element == iElement)
+		{
+			(*it)->element = *pElement;
+			return S_OK;
+		}
+	}
+
+	// Otherwise, add a new entry
+	w_element_holder* _new_holder;
+	_new_holder = new (std::nothrow) w_element_holder;
+	if (!_new_holder)
+	{
+		return E_OUTOFMEMORY;
+	}
+	_new_holder->control_type = pControlType;
+	_new_holder->index_element = iElement;
+	_new_holder->element = *pElement;
+
+	this->_default_elements.push_back(_new_holder);
+
+	return S_OK;
+}
+
+void w_widget::set_next_widget(_In_ w_widget* pNextWidget)
+{
+	if (!pNextWidget)
+	{
+		pNextWidget = this;
+	}
+	this->_next_widget = pNextWidget;
+	if (pNextWidget)
+	{
+		this->_next_widget->_prev_widget = this;
+	}
+}
+
+void w_widget::set_background_colors(_In_ const w_color pColorForAllCorners)
+{
+    set_background_colors(pColorForAllCorners, pColorForAllCorners, pColorForAllCorners, pColorForAllCorners);
+}
+
+void w_widget::set_background_colors(
+    _In_ const w_color pColorTopLeft,
+    _In_ const w_color pColorTopRight,
+    _In_ const w_color pColorBottomLeft,
+    _In_ const w_color pColorBottomRight)
+{
+	this->_background_color_top_left = pColorTopLeft;
+	this->_background_color_top_right = pColorTopRight;
+	this->_background_color_bottom_left = pColorBottomLeft;
+	this->_background_color_bottom_right = pColorBottomRight;
+}
+
+void w_widget::set_active_background_colors(
+    _In_ const w_color pColorTopLeft, 
+    _In_ const w_color pColorTopRight, 
+    _In_ const w_color pColorBottomLeft, 
+    _In_ const w_color pColorBottomRight)
+{
+	this->_active_background_color_top_left = pColorTopLeft;
+	this->_active_background_color_top_right = pColorTopRight;
+	this->_active_background_color_bottom_left = pColorBottomLeft;
+	this->_active_background_color_bottom_right = pColorBottomRight;
+}
+
+void w_widget::set_enabled(_In_ const bool pEnabled)
+{
+	for (auto _control : this->_controls)
+	{
+		_control->set_enabled(pEnabled);
+	}
+}
+
+#pragma endregion
