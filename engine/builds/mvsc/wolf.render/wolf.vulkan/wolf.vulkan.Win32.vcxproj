@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;__WOLF_RENDER__;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.gui;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_render_pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -155,15 +155,13 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffers.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_gui_render.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_pipeline.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_render_pass.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_shader.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_texture.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_control.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_element.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_widget.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_render_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -175,6 +173,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffers.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_gui_render.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_pipeline.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_render_pass.h" />
@@ -182,15 +181,15 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_uniform.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_texture.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_control.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_element.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_widget.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_export.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\wolf.content_pipeline\wolf.content_pipeline.Win32.vcxproj">
       <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295928}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\wolf.gui\wolf.gui.Win32.vcxproj">
+      <Project>{0b4673ac-8d5c-40e6-8071-34bad1b5945d}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\wolf.system\wolf.system.Win32.vcxproj">
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>

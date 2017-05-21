@@ -17,6 +17,7 @@
 #include <w_graphics_device_manager.h>
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_shader.h>
+#include <w_graphics/w_buffer.h>
 #include <w_vertex_declaration.h>
 
 namespace wolf
@@ -128,7 +129,7 @@ namespace wolf
                 this->_mesh = new (std::nothrow) w_mesh();
                 if (!this->_mesh)
                 {
-                    logger.error(L"Failed to allocate memory for w_mesh of w_quad");
+                    V(S_FALSE, "allocating memory for mesh", this->name, 3);
                     return S_FALSE;
                 }
                 _mesh->set_vertex_declaration_struct(this->_instances_count ? this->_instance_declaration :
@@ -254,12 +255,10 @@ namespace wolf
             
             void render(_In_ const VkCommandBuffer& pCommandBuffer)
             {
-                auto _instance_handle = this->_instances_buffer ? this->_instances_buffer->get_handle() : nullptr;
+                if (!this->_mesh) return;
 
-                if (this->_mesh)
-                {
-                    this->_mesh->render(pCommandBuffer, _instance_handle, this->_instances_count);
-                }
+                auto _instance_handle = this->_instances_buffer ? this->_instances_buffer->get_handle() : nullptr;
+                this->_mesh->render(pCommandBuffer, _instance_handle, this->_instances_count);
             }
             
             virtual ULONG release() override

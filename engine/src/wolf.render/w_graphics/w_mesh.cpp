@@ -5,6 +5,7 @@
 #include "w_command_buffers.h"
 #include "w_uniform.h"
 #include <w_vertex_declaration.h>
+#include <w_gui_vertex.h>
 #include <w_cpipeline_model.h>
 
 using namespace wolf::graphics;
@@ -521,7 +522,39 @@ namespace wolf
                         2,                                                                                              // Location
                         _vertex_binding_descriptions[0].binding,                                                        // Binding
                         VK_FORMAT_R32G32_SFLOAT,                                                                        // Format
-                        offsetof(vertex_declaration_structs::vertex_position_color_uv, uv)                           // Offset
+                        offsetof(vertex_declaration_structs::vertex_position_color_uv, uv)                              // Offset
+                    });
+                }
+                break;
+                case w_mesh::w_vertex_declaration::VERTEX_GUI_2D:
+                {
+                    //create pipeline for basic shader
+                    _vertex_binding_descriptions.push_back(
+                    {
+                        0,                                                                                              // Binding
+                        sizeof(wolf::gui::w_gui_vertex_2d),                                                             // Stride
+                        VK_VERTEX_INPUT_RATE_VERTEX                                                                     // InputRate
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        0,                                                                                              // Location
+                        _vertex_binding_descriptions[0].binding,                                                        // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                                                        // Format
+                        offsetof(wolf::gui::w_gui_vertex_2d, position)                                                  // Offset
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        1,                                                                                              // Location
+                        _vertex_binding_descriptions[0].binding,                                                        // Binding
+                        VK_FORMAT_R32G32B32A32_SFLOAT,                                                                  // Format
+                        offsetof(wolf::gui::w_gui_vertex_2d, color)                                                     // Offset
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        2,                                                                                              // Location
+                        _vertex_binding_descriptions[0].binding,                                                        // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                                                        // Format
+                        offsetof(wolf::gui::w_gui_vertex_2d, uv)                                                        // Offset
                     });
                 }
                 break;

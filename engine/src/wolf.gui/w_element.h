@@ -10,7 +10,6 @@
 #ifndef __W_ELEMENT__
 #define __W_ELEMENT__
 
-#include <w_object.h> 
 #include <w_color.h>
 #include <w_rectangle.h>
 #include <glm_extention.h>

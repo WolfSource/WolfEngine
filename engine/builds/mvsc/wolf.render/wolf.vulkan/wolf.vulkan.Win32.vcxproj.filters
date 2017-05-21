@@ -31,14 +31,8 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp">
       <Filter>w_framework</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_widget.cpp">
-      <Filter>w_gui\w_controls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_control.cpp">
-      <Filter>w_gui\w_controls</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_element.cpp">
-      <Filter>w_gui\w_controls</Filter>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_gui_render.cpp">
+      <Filter>w_graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,14 +75,8 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_quad.h">
       <Filter>w_framework</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_widget.h">
-      <Filter>w_gui\w_controls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_control.h">
-      <Filter>w_gui\w_controls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_gui\w_controls\w_element.h">
-      <Filter>w_gui\w_controls</Filter>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_gui_render.h">
+      <Filter>w_graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -97,12 +85,6 @@
     </Filter>
     <Filter Include="w_framework">
       <UniqueIdentifier>{d665d56d-5e17-4d27-9ccc-5b8793822c6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="w_gui">
-      <UniqueIdentifier>{f848e963-bf89-420a-9b79-21ffcc70e526}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="w_gui\w_controls">
-      <UniqueIdentifier>{10a4f171-f702-4adb-9751-eecd05a79cd7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

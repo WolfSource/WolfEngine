@@ -104,7 +104,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.gui;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -155,6 +155,9 @@
     <ProjectReference Include="..\..\wolf.content_pipeline\wolf.content_pipeline.Win32.vcxproj">
       <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295928}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\wolf.gui\wolf.gui.Win32.vcxproj">
+      <Project>{0b4673ac-8d5c-40e6-8071-34bad1b5945d}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\wolf.render\wolf.vulkan\wolf.vulkan.Win32.vcxproj">
       <Project>{be11c662-e8ca-4083-a5b2-f380a96a20c2}</Project>
     </ProjectReference>
@@ -176,8 +179,6 @@
   <ItemGroup>
     <None Include="..\..\..\..\..\content\shaders\basic.frag" />
     <None Include="..\..\..\..\..\content\shaders\basic.vert" />
-    <None Include="..\..\..\..\..\content\shaders\gui.frag" />
-    <None Include="..\..\..\..\..\content\shaders\gui.vert" />
     <None Include="..\..\..\..\..\content\shaders\static_instancing_y_up.vert" />
     <None Include="..\..\..\..\..\content\shaders\static_instancing_z_up.vert" />
   </ItemGroup>

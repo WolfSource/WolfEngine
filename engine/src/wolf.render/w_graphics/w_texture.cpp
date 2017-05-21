@@ -742,8 +742,18 @@ HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics
         return S_FALSE;
     }
 
-    _texture->load(pGDevice);
-    _texture->initialize_texture_2D_from_file(pPath, true);
+    auto _hr = _texture->load(pGDevice);
+    if (_hr == S_FALSE)
+    {
+        SAFE_RELEASE(_texture);
+        return S_FALSE;
+    }
+    _hr = _texture->initialize_texture_2D_from_file(pPath, true);
+    if (_hr == S_FALSE)
+    {
+        SAFE_RELEASE(_texture);
+        return S_FALSE;
+    }
 
     //check if already exists
     auto _iter = _shared.find(pPath);

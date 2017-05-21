@@ -3,6 +3,7 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_content_manager.h>
 #include <w_framework/w_quad.h>
+#include <w_gui.h>
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -42,11 +43,9 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     w_game::initialize(pOutputWindowsInfo);
 }
 
-auto _quad = new w_quad<vertex_declaration_structs::vertex_position_color_uv>();
+//auto _quad = new w_quad<vertex_declaration_structs::vertex_position_color_uv>();
 void scene::load()
 {
-
-
     auto _gDevice =  this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
     float _width = static_cast<float>(_output_window->width);
@@ -83,38 +82,19 @@ void scene::load()
         exit(1);
     }
     
+    auto _render_pass_handle = this->_render_pass.get_handle();
 
-
-    //load shader
-    w_shader* _gui_shader = nullptr;
-    w_shader::load_to_shared_shaders(_gDevice,
-        "gui",
-        content_path + L"shaders/gui.vert.spv",
-        content_path + L"shaders/gui.frag.spv",
-        {},
-        &_gui_shader);
-    if (!_gui_shader || _hr == S_FALSE)
-    {
-        logger.error("Could not load gui shader");
-        return;
-    }
-    w_shader_binding_param _param;
-    _param.index = 0;
-    _param.type = w_shader_binding_type::SAMPLER;
-    _param.stage = w_shader_stage::FRAGMENT_SHADER;
-    _param.sampler_info =  w_texture::default_texture->get_descriptor_info();
-    
-    _gui_shader->set_shader_binding_params({ _param });
-
-    _hr = _quad->load(_gDevice, _gui_shader, &_render_pass, _pipeline_cache_name);
+    _hr = wolf::gui::w_gui::load(L"c:\\test.xml", _width, _height);
     if (_hr == S_FALSE)
     {
-        logger.error("Could not load quad");
-        return;
+        logger.error("load gui");
     }
+    wolf::gui::w_gui::render(w_game_time());
+    auto _gui_2d_vertices = wolf::gui::w_gui::get_widgets_2d_vertices();
+    _gui_render.load(_gDevice, &_render_pass, "pipeline_cache_0", _gui_2d_vertices);
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test0000.dae");
     if (_scene)
     {
         //get all models
@@ -162,7 +142,7 @@ void scene::load()
 
                     _param.index = 1;
                     _param.type = w_shader_binding_type::SAMPLER;
-                     _param.stage = w_shader_stage::FRAGMENT_SHADER;
+                    _param.stage = w_shader_stage::FRAGMENT_SHADER;
                     _param.sampler_info = w_texture::default_texture->get_descriptor_info();
                     _shader_params.push_back(_param);
 
@@ -271,7 +251,6 @@ void scene::load()
     }
 
     //create frame buffers
-    auto _render_pass_handle = this->_render_pass.get_handle();
     _hr = this->_frame_buffers.load(_gDevice,
                               _render_pass_handle,
                               _output_window->vk_swap_chain_image_views.size(),
@@ -393,7 +372,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
                     }
                 }
-                _quad->render(_cmd);
+                _gui_render.render(_cmd);
             }
             this->_render_pass.end(_cmd);
 
@@ -424,6 +403,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         }
         this->_command_buffers.end(i);
     }
+
+    wolf::gui::w_gui::render(pGameTime);
 
     logger.write(std::to_string(pGameTime.get_frames_per_second()));
     return w_game::render(pGameTime);

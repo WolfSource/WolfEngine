@@ -10,12 +10,10 @@
 #ifndef __W_WIDGET_H__
 #define __W_WIDGET_H__
 
-#include "w_graphics_device_manager.h"
-#include "w_graphics/w_shader.h"
-#include "w_graphics/w_buffer.h"
-
+#include <atomic>
+#include <functional>
 #include <w_time_span.h>
-
+#include "w_gui_vertex.h"
 #include "w_element.h"
 #include "w_control.h"
 //#include "w_label.h"
@@ -43,15 +41,12 @@ namespace wolf
 		class w_widget : public system::w_object
 		{
 		public:
-			W_EXP w_widget(UINT pParentWindowWidth, UINT pParentWindowHeight);
-			W_EXP ~w_widget();
+            WGUI_EXP w_widget(UINT pParentWindowWidth, UINT pParentWindowHeight);
+            WGUI_EXP ~w_widget();
+                        
+            WGUI_EXP static void clear_focus();
 
-            W_EXP HRESULT load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-                               _In_z_ const std::wstring& pControlTextureFilePath = L"");
-            
-			W_EXP static void clear_focus();
-
-			W_EXP HRESULT render(_In_ const float pElapsedTime);
+            WGUI_EXP HRESULT render(_In_ const float pElapsedTime);
 
 //			/*
 //				Add label to widget
@@ -524,7 +519,7 @@ namespace wolf
 //				_Out_opt_ w_ellipse_shape** pCreatedControl = nullptr);
 
 			// Windows message handler
-			W_EXP bool on_msg_proc(_In_ HWND pHWND, _In_ UINT pMsg, _In_ WPARAM pWParam, _In_ LPARAM pLParam);
+            WGUI_EXP bool on_msg_proc(_In_ HWND pHWND, _In_ UINT pMsg, _In_ WPARAM pWParam, _In_ LPARAM pLParam);
 
 //			DX_EXP HRESULT add_image_to_resource_manager(_In_z_ const wchar_t* pPath);
 
@@ -569,7 +564,6 @@ namespace wolf
 			
 			// Device state notification
 			void refresh();
-			void focus_default_control();
 			void apply_render_UI();
 			void apply_render_UI_Untex();
 
@@ -583,24 +577,22 @@ namespace wolf
 
 			bool get_is_keyboard_input_enabled() const																{ return this->keyboard_input; }
 
-			//get hwnd associated  to this widget
-			W_EXP HWND							get_hwnd() const													{ return this->_hwnd; }
 			//get name of this widget
-            W_EXP const char*					get_name() const													{ return this->_name; }
+            WGUI_EXP const char*					get_name() const													{ return this->_name; }
 			//get width
-            W_EXP int							get_width() const													{ return this->_width; }
+            WGUI_EXP int							get_width() const													{ return this->_width; }
 			//get height
-            W_EXP int							get_height() const													{ return this->_height; }
+            WGUI_EXP int							get_height() const													{ return this->_height; }
 			//get wheather this widget is dragable
-            W_EXP bool							get_is_dragable() const												{ return this->_draggable; }
+            WGUI_EXP bool							get_is_dragable() const												{ return this->_draggable; }
 			//get wheather this widget is visible
-            W_EXP bool							get_is_visible() const												{ return this->_visible; }
+            WGUI_EXP bool							get_is_visible() const												{ return this->_visible; }
 			//get is widget minimized
-            W_EXP bool							get_is_minimized() const											{ return this->_minimized; }
+            WGUI_EXP bool							get_is_minimized() const											{ return this->_minimized; }
 			//get the position of widget
-            W_EXP void							get_position(_Out_ int& pX, _Out_ int& pY)      					{ pX = this->_x; pY = this->_y; }
+            WGUI_EXP void							get_position(_Out_ int& pX, _Out_ int& pY)      					{ pX = this->_x; pY = this->_y; }
 			//get background color
-            W_EXP void							get_background_colors(
+            WGUI_EXP void							get_background_colors(
 				_Out_ w_color& pColorTopLeft,
 				_Out_ w_color& pColorTopRight,
 				_Out_ w_color& pColorBottomLeft,
@@ -612,7 +604,7 @@ namespace wolf
 				pColorBottomRight = this->_background_color_bottom_right;
 			}
 			//get background color when mouse over widget
-            W_EXP void							get_active_background_colors(
+            WGUI_EXP void							get_active_background_colors(
 				_Out_ w_color& pColorTopLeft,
 				_Out_ w_color& pColorTopRight,
 				_Out_ w_color& pColorBottomLeft,
@@ -625,45 +617,44 @@ namespace wolf
 			}
 
 			//get caption is enabled
-            W_EXP bool							    get_is_caption_enabled() const										{ return this->_is_caption_enabled; }
+            WGUI_EXP bool							    get_is_caption_enabled() const										{ return this->_is_caption_enabled; }
 			//get caption																							 
-            W_EXP const wchar_t*				    get_caption() const													{ return this->_caption; }
+            WGUI_EXP const wchar_t*				    get_caption() const													{ return this->_caption; }
 			//get caption background color																			 
-            W_EXP void							    get_caption_background_color(_Out_ w_color& pColor) const			{ pColor = this->_caption_background_color; }
+            WGUI_EXP void							    get_caption_background_color(_Out_ w_color& pColor) const			{ pColor = this->_caption_background_color; }
 			//get caption background color																			 
-            W_EXP void							    get_caption_active_background_color(_Out_ w_color& pColor) const	{ pColor = this->_caption_active_background_color; }
+            WGUI_EXP void							    get_caption_active_background_color(_Out_ w_color& pColor) const	{ pColor = this->_caption_active_background_color; }
 			//get is dragging																						 
-            W_EXP bool							    get_is_dragging() const												{ return this->_draggable ? this->_is_dragging : false; }
+            WGUI_EXP bool							    get_is_dragging() const												{ return this->_draggable ? this->_is_dragging : false; }
 			//get caption height																					 
-            W_EXP UINT							    get_caption_height() const											{ return this->_caption_height; }
+            WGUI_EXP UINT							    get_caption_height() const											{ return this->_caption_height; }
 			//get caption margin left																				 
-            W_EXP int							    get_caption_margin_left() const										{ return this->_caption_margin_left; }
+            WGUI_EXP int							    get_caption_margin_left() const										{ return this->_caption_margin_left; }
 			//get caption margin top																				 
-            W_EXP int							    get_caption_margin_top() const										{ return this->_caption_margin_top; }
+            WGUI_EXP int							    get_caption_margin_top() const										{ return this->_caption_margin_top; }
 			//get whether control is enable																			 
-            W_EXP  bool						        get_enabled() const													{ return this->_enabled; }
+            WGUI_EXP  bool						        get_enabled() const													{ return this->_enabled; }
 			//get z index order																						 
-            W_EXP  float						    get_z_order() const													{ return this->_z_order; }
+            WGUI_EXP  float						    get_z_order() const													{ return this->_z_order; }
 																													 
 			//get parent window width																				 
-            W_EXP int							    get_parent_window_width() const										{ return this->_parent_window_width; }
+            WGUI_EXP int							    get_parent_window_width() const										{ return this->_parent_window_width; }
 			//get parent window height																				 
-            W_EXP int							    get_parent_window_height() const									{ return this->_parent_window_height; }
+            WGUI_EXP int							    get_parent_window_height() const									{ return this->_parent_window_height; }
 			//get control is enabled																				 
-            W_EXP bool							    get_control_enabled(_In_ int pID) const;
+            WGUI_EXP bool							    get_control_enabled(_In_ int pID) const;
 			//get default element
-            W_EXP w_element*					    get_default_element(_In_ UINT pControlType, _In_ UINT pElement) const;
+            WGUI_EXP w_element*					    get_default_element(_In_ UINT pControlType, _In_ UINT pElement) const;
 			//get base control class by ID
-            W_EXP w_control*					    get_control(_In_ int pID) const;
+            WGUI_EXP w_control*					    get_control(_In_ int pID) const;
 			//get base control class by ID and control type
-            W_EXP w_control*					    get_control(_In_ int pID, _In_ UINT pControlType) const;
+            WGUI_EXP w_control*					    get_control(_In_ int pID, _In_ UINT pControlType) const;
 			//get base control at point
-            W_EXP w_control*					    get_control_at_point(_In_ const w_point& pPoint) const;
+            WGUI_EXP w_control*					    get_control_at_point(_In_ const w_point& pPoint) const;
 			//get background buffer width
-            W_EXP UINT							    get_background_buffer_width() const;
+            WGUI_EXP UINT							    get_background_buffer_width() const;
 			//get background buffer height
-            W_EXP UINT							    get_background_buffer_height() const;
-
+            WGUI_EXP UINT							    get_background_buffer_height() const;
 
 			//get label control by ID
             //W_EXP w_label*						get_label(_In_ const int pID) const									{ return reinterpret_cast<w_label*>(get_control(pID, W_GUI_CONTROL_LABEL)); }
@@ -684,8 +675,9 @@ namespace wolf
 			//get list_box control by ID
             //W_EXP w_list_box*					get_list_box(_In_ const int ID) const								    { return reinterpret_cast<w_list_box*>(get_control(ID, W_GUI_CONTROL_LISTBOX)); }
 			//get all controls id
-            W_EXP void							get_all_controls_id(_Inout_ std::vector<int>& pIDs);
-			
+            WGUI_EXP void							get_all_controls_id(_Inout_ std::vector<INT64>& pIDs);
+            WGUI_EXP std::vector<w_gui_vertex_2d>   get_vertex_declarations_2d();
+
 #pragma endregion
 
 #pragma region Setters
@@ -693,61 +685,61 @@ namespace wolf
 			static void WINAPI set_refresh_time(_In_ double pValue)											{ s_time_refresh.from_seconds(pValue); }
 
 			//set the name of widget
-			W_EXP void	    set_name(_In_z_ const char* pValue)												{ this->_name = pValue; }
+            WGUI_EXP void	    set_name(_In_z_ const char* pValue)												{ this->_name = pValue; }
 			//set the width of widget
-			W_EXP void	    set_width(_In_ UINT pValue)														{ this->_width = pValue; }
+            WGUI_EXP void	    set_width(_In_ UINT pValue)														{ this->_width = pValue; }
 			//set the height of widget
-			W_EXP void	    set_height(_In_ UINT pValue)													{ this->_height = pValue; }
+            WGUI_EXP void	    set_height(_In_ UINT pValue)													{ this->_height = pValue; }
 			//enable/disable dragging widget 
-			W_EXP void	    set_draggable(_In_ bool pValue)													{ this->_draggable = pValue; }
+            WGUI_EXP void	    set_draggable(_In_ bool pValue)													{ this->_draggable = pValue; }
 			//enable/disable visibility of widget 
-			W_EXP void	    set_visibility(_In_ bool pValue)												{ this->_visible = pValue; }
+            WGUI_EXP void	    set_visibility(_In_ bool pValue)												{ this->_visible = pValue; }
 			//set whether widget is minimized
-			W_EXP void	    set_minimized(_In_ bool bMinimized)												{ this->_minimized = bMinimized; }
+            WGUI_EXP void	    set_minimized(_In_ bool bMinimized)												{ this->_minimized = bMinimized; }
 			//set the position of widget
-			W_EXP void	    set_position(_In_ int pX, _In_ int pY)											{ this->_x = pX; this->_y = pY; }
+            WGUI_EXP void	    set_position(_In_ int pX, _In_ int pY)											{ this->_x = pX; this->_y = pY; }
 			//set background color, one color for all corners
-            W_EXP void	    set_background_colors(_In_ const w_color pColorForAllCorners);
+            WGUI_EXP void	    set_background_colors(_In_ const w_color pColorForAllCorners);
 			//set background color
-			W_EXP void	    set_background_colors(
+            WGUI_EXP void	    set_background_colors(
                 _In_ const w_color pColorTopLeft, 
                 _In_ const w_color pColorTopRight, 
                 _In_ const w_color pColorBottomLeft, 
                 _In_ const w_color pColorBottomRight);
 			//The background color of widget when mouse is over on it 
-			W_EXP void	    set_mouse_over_background_colors(_In_ const w_color pColorForAllCorners)		{ set_active_background_colors(pColorForAllCorners, pColorForAllCorners, pColorForAllCorners, pColorForAllCorners); }
+            WGUI_EXP void	    set_mouse_over_background_colors(_In_ const w_color pColorForAllCorners)		{ set_active_background_colors(pColorForAllCorners, pColorForAllCorners, pColorForAllCorners, pColorForAllCorners); }
 			//The background color of widget when mouse is over on it 
-			W_EXP void	    set_active_background_colors(
+            WGUI_EXP void	    set_active_background_colors(
                 _In_ const w_color pColorTopLeft, 
                 _In_ const w_color pColorTopRight, 
                 _In_ const w_color pColorBottomLeft, 
                 _In_ const w_color pColorBottomRight);
 			//set enabled
-			W_EXP void	    set_enabled(_In_ bool pValue);
+            WGUI_EXP void	    set_enabled(_In_ bool pValue);
 			//set z index order
-			W_EXP void	    set_z_order(_In_ float pValue)													{ this->_z_order = pValue; }
+            WGUI_EXP void	    set_z_order(_In_ float pValue)													{ this->_z_order = pValue; }
 			//set whether caption is enable			
-            W_EXP void	    set_enable_caption(bool pValue)													{ this->_is_caption_enabled = pValue; }
+            WGUI_EXP void	    set_enable_caption(bool pValue)													{ this->_is_caption_enabled = pValue; }
 			//set caption of widget
-            W_EXP void	    set_caption(_In_ const wchar_t* pValue)											{ wcscpy_s(this->_caption, sizeof(this->_caption) / sizeof(this->_caption[0]), pValue); }
+            WGUI_EXP void	    set_caption(_In_ const wchar_t* pValue)											{ wcscpy_s(this->_caption, sizeof(this->_caption) / sizeof(this->_caption[0]), pValue); }
 			//set caption background color
-            W_EXP void	    set_caption_background_color(_In_ w_color pValue)								{ this->_caption_background_color = pValue; }
+            WGUI_EXP void	    set_caption_background_color(_In_ w_color pValue)								{ this->_caption_background_color = pValue; }
 			//set the background color of caption, when mouse is over on widget
-            W_EXP void	    set_caption_active_background_color(_In_ w_color pValue)						{ this->_caption_active_background_color = pValue; }
+            WGUI_EXP void	    set_caption_active_background_color(_In_ w_color pValue)						{ this->_caption_active_background_color = pValue; }
 			//set the caption height
-            W_EXP void	    set_caption_height(UINT pValue)													{ this->_caption_height = pValue; }
+            WGUI_EXP void	    set_caption_height(UINT pValue)													{ this->_caption_height = pValue; }
 			//set the caption margin left
-            W_EXP void	    set_caption_margin_left(_In_ int pValue)										{ this->_caption_margin_left = pValue; }
+            WGUI_EXP void	    set_caption_margin_left(_In_ int pValue)										{ this->_caption_margin_left = pValue; }
 			//set the caption margin top
-            W_EXP void	    set_caption_margin_top(_In_ int pValue)											{ this->_caption_margin_top = pValue; }
+            WGUI_EXP void	    set_caption_margin_top(_In_ int pValue)											{ this->_caption_margin_top = pValue; }
 
 			//set graphical user interface callback
-			W_EXP void	    set_call_back(_In_ W_CALLBACK_GUI_EVENT pCallback, _In_opt_ void* pUserContext = nullptr);
+            WGUI_EXP void	    set_call_back(_In_ W_CALLBACK_GUI_EVENT pCallback, _In_opt_ void* pUserContext = nullptr);
 			//remove graphical user interface callback
-			W_EXP void	    remove_call_back(_In_ W_CALLBACK_GUI_EVENT pCallback);
+            WGUI_EXP void	    remove_call_back(_In_ W_CALLBACK_GUI_EVENT pCallback);
 
 			//set whether control is enabled
-            W_EXP void		set_control_enabled(_In_ const int pID, _In_ const bool pEnabled);
+            WGUI_EXP void		set_control_enabled(_In_ const int pID, _In_ const bool pEnabled);
 #pragma endregion
 
 #pragma region Events
@@ -771,8 +763,8 @@ namespace wolf
 			void            _initialize();
 
 			// Windows message handlers
-			void            on_mouse_move(_In_ const POINT& pPoint);
-			void            on_mouse_up(_In_ const POINT& pPoint);
+			void            on_mouse_move(_In_ const w_point& pPoint);
+			void            on_mouse_up(_In_ const w_point& pPoint);
 
 			void            set_next_widget(_In_ w_widget* pNextWidget);
 
@@ -780,13 +772,6 @@ namespace wolf
 			bool            on_cycle_focus(_In_ const bool pForward);
 
 
-            std::shared_ptr<wolf::graphics::w_graphics_device>			_gDevice;
-            wolf::graphics::w_shader*                                   _shader;
-            wolf::graphics::w_texture*                                  _texture;
-            wolf::graphics::w_buffer                                    _buffer;
-            wolf::graphics::w_buffer                                    _instance_buffer;
-
-			HWND														_hwnd;
 			UINT														_parent_window_width;
 			UINT														_parent_window_height;
 			const char*													_name;
@@ -818,7 +803,7 @@ namespace wolf
 			UINT														_caption_height;
 			int															_caption_margin_left;
 			int															_caption_margin_top;
-			POINT														_global_mouse_point;
+            w_point														_global_mouse_point;
 
 			static system::w_time_span									s_time_refresh;
 			static w_control*											s_pControlFocus;// The control which has focus
@@ -845,6 +830,10 @@ namespace wolf
 
 			w_widget*													_next_widget;
 			w_widget*													_prev_widget;
+
+            std::atomic<bool>                                           _vertices_updated;
+            std::vector<w_gui_vertex_2d>                                _vertex_declarations_2d;
+
 		};
 	}
 }

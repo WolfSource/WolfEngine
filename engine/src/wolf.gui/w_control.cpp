@@ -1,4 +1,4 @@
-#include "w_render_pch.h"
+#include "w_gui_pch.h"
 #include "w_control.h"
 
 using namespace wolf::gui;
@@ -30,9 +30,8 @@ w_control::~w_control()
     release();
 }
 
-HRESULT w_control::on_initialize(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
+HRESULT w_control::on_initialize()
 {
-	W_UNUSED(pGDevice);
 	return S_OK; 
 }
 
@@ -55,9 +54,8 @@ void w_control::update_rects()
     this->bounding_box.bottom = this->y + this->height;
 }
 
-void w_control::render(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ float pElapsedTime)
+void w_control::render(_In_ float pElapsedTime)
 { 
-	W_UNUSED(pGDevice.get());
 	W_UNUSED(pElapsedTime);
 }
 
@@ -78,7 +76,7 @@ bool w_control::handle_keyboard(_In_ UINT pMsg, _In_ WPARAM pWParam, _In_ LPARAM
 
 	return false;
 }
-bool w_control::handle_mouse(_In_ UINT pMsg, _In_ const POINT& pPoint, _In_ WPARAM pWParam, _In_ LPARAM pLParam)
+bool w_control::handle_mouse(_In_ UINT pMsg, _In_ const w_point& pPoint, _In_ WPARAM pWParam, _In_ LPARAM pLParam)
 {
 	W_UNUSED(pMsg);
 	W_UNUSED(pPoint);
