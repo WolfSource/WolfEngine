@@ -28,16 +28,19 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		//close window on KeyUp event of Escape button
 		case WM_KEYUP:
 		{
-			if (pWParam == VK_ESCAPE)
-			{
-				/*sWindow->close();
-				logger.write(L"The window just closed");*/
-			}
+            if (pWParam == VK_ESCAPE)
+            {
+                sWindow->close();
+            }
 		}
 		break;
 		}
 
-		return DefWindowProc(pHWND, pMsg, pWParam, pLParam);// sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
+        if (sScene)
+        {
+            return sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
+        }
+		return DefWindowProc(pHWND, pMsg, pWParam, pLParam);
 	};
 
 	//Initialize window

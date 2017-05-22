@@ -61,7 +61,6 @@ namespace wolf
 #pragma endregion
 
 		protected:
-
 			/*
 				Allows the game to perform any initialization before starting to run.
 				Note that Log file will be created inside this function
@@ -80,7 +79,11 @@ namespace wolf
 
 #ifdef __WIN32
 			//Handle window messages
-			W_EXP virtual HRESULT on_msg_proc(_In_ HWND pHWND, _In_ UINT pMessage, _In_ WPARAM pWParam, _In_ LPARAM pLParam);
+			W_EXP virtual HRESULT on_msg_proc(
+                _In_ const HWND pHWND, 
+                _In_ const UINT pMessage, 
+                _In_ const WPARAM pWParam, 
+                _In_ const LPARAM pLParam);
 #endif
 
 			bool													exiting;

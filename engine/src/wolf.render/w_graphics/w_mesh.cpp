@@ -20,10 +20,11 @@ namespace wolf
             w_mesh_pimp() :
                 _name("w_mesh"),
                 _gDevice(nullptr),
+                _shader(nullptr),
+                _copy_command_buffer(nullptr),
                 _vertices_count(0),
                 _indices_count(0),
-                _vertex_declaration(w_mesh::w_vertex_declaration::VERTEX_POSITION_UV),
-                _copy_command_buffer(nullptr)
+                _vertex_declaration(w_mesh::w_vertex_declaration::VERTEX_POSITION_UV)
             {
             }
             
@@ -39,9 +40,8 @@ namespace wolf
                     * use VRAM buffer for rendering
             */
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const void* const pVerticesData,
+                _In_ const float* const pVerticesData,
                 _In_ const UINT pVerticesCount,
-                _In_ const UINT pVerticesSize,
                 _In_ const UINT* const pIndicesData,
                 _In_ const UINT pIndicesCount,
                 _In_ w_shader* pShader,
@@ -56,12 +56,19 @@ namespace wolf
                 this->_shader = pShader;
                 this->_dynamic_buffer = pUseDynamicBuffer;
 
-                if (pVerticesSize == 0 || pVerticesData == nullptr)
+                if (pVerticesCount == 0 || pVerticesData == nullptr)
+                {
+                    return S_FALSE;
+                }
+
+                if (this->_shader == nullptr)
                 {
                     return S_FALSE;
                 }
 
                 bool _there_is_no_index_buffer = false;
+                UINT _indices_size = pIndicesCount * sizeof(UINT);
+                UINT _verices_size = pVerticesCount * sizeof(float);
                 if (pIndicesCount == 0 || pIndicesData == nullptr)
                 {
                     _there_is_no_index_buffer = true;
@@ -70,7 +77,7 @@ namespace wolf
                 //create a buffers hosted into the DRAM named staging buffers
                 if (_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                     pVerticesData,
-                    pVerticesSize,
+                    _verices_size,
                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                     this->_stagings_buffers.vertices) == S_FALSE)
                 {
@@ -81,9 +88,9 @@ namespace wolf
                 {
                     if (_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                         pIndicesData,
-                        pIndicesCount,
+                        _indices_size,
                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                        _stagings_buffers.indices) == S_FALSE)
+                        this->_stagings_buffers.indices) == S_FALSE)
                     {
                         return S_FALSE;
                     }
@@ -92,7 +99,7 @@ namespace wolf
                 // create VRAM buffers
                 if (_create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                     nullptr,
-                    pVerticesSize,
+                    _verices_size,
                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                     this->_vertex_buffer) == S_FALSE)
                 {
@@ -103,7 +110,7 @@ namespace wolf
                 {
                     if (_create_buffer(VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                         nullptr,
-                        pIndicesCount,
+                        _indices_size,
                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                         this->_index_buffer) == S_FALSE)
                     {
@@ -111,7 +118,7 @@ namespace wolf
                     }
                 }
 
-                if (_copy_DRAM_to_VRAM(pVerticesCount, pIndicesCount) == S_FALSE)
+                if (_copy_DRAM_to_VRAM(_verices_size, _indices_size) == S_FALSE)
                 {
                     return S_FALSE;
                 }
@@ -133,6 +140,42 @@ namespace wolf
                 }
 
                 return _load_pipeline(pRenderPass, pPipelineCacheName);
+            }
+
+            HRESULT update_dynamic_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const void* const pVerticesData,
+                _In_ const UINT pVerticesCount,
+                _In_ const UINT* const pIndicesData,
+                _In_ const UINT pIndicesCount)
+            {
+                if (!this->_dynamic_buffer)
+                {
+                    V(S_FALSE, "updating none dynamic buffer.", this->_name, 2);
+                    return S_FALSE;
+                }
+                if (pVerticesCount != this->_vertices_count ||
+                    pIndicesCount != this->_indices_count)
+                {
+                    V(S_FALSE, "Size of vertex or index buffer does not match.", this->_name, 2);
+                    return S_FALSE;
+                }
+
+                auto _hr = this->_stagings_buffers.vertices.set_data(pVerticesData);
+                V(_hr, "updating staging vertex buffer", this->_name, 3);
+
+                _hr = this->_stagings_buffers.vertices.bind();
+                V(_hr, "binding to staging vertex buffer", this->_name, 3);
+
+                if (pIndicesCount && pIndicesData)
+                {
+                    _hr = this->_stagings_buffers.indices.set_data(pIndicesData);
+                    V(_hr, "updating staging index buffer", this->_name, 3);
+
+                    _hr = this->_stagings_buffers.vertices.bind();
+                    V(_hr, "binding staging index buffer", this->_name, 3);
+                }
+
+                return _copy_DRAM_to_VRAM(this->_vertices_count * sizeof(float), this->_indices_count * sizeof(UINT));
             }
 
             void render(_In_ const VkCommandBuffer& pCommandBuffer, _In_ const VkBuffer& pInstanceHandle,
@@ -262,8 +305,8 @@ namespace wolf
         private:
 
             HRESULT _copy_DRAM_to_VRAM(
-                _In_ const UINT pVerticesCount,
-                _In_ const UINT pIndicesCount)
+                _In_ const UINT pVerticesSize,
+                _In_ const UINT pIndicesSize)
             {
                 //create one command buffer 
                 if (!this->_copy_command_buffer)
@@ -278,7 +321,7 @@ namespace wolf
 
                     // Vertex buffer
                     VkBufferCopy _copy_region = {};
-                    _copy_region.size = pVerticesCount;
+                    _copy_region.size = pVerticesSize;
                     vkCmdCopyBuffer(
                         _copy_cmd,
                         _stagings_buffers.vertices.get_handle(),
@@ -286,10 +329,10 @@ namespace wolf
                         1,
                         &_copy_region);
 
-                    if (pIndicesCount)
+                    if (pIndicesSize)
                     {
                         // Index buffer
-                        _copy_region.size = pIndicesCount;
+                        _copy_region.size = pIndicesSize;
                         vkCmdCopyBuffer(
                             _copy_cmd,
                             _stagings_buffers.indices.get_handle(),
@@ -299,7 +342,7 @@ namespace wolf
                     }
                 }
 
-                _copy_command_buffer->flush(0);
+                this->_copy_command_buffer->flush(0);
                 if (!this->_dynamic_buffer)
                 {
                     SAFE_DELETE(this->_copy_command_buffer);
@@ -485,24 +528,24 @@ namespace wolf
                     });
                     _vertex_attribute_descriptions.push_back(
                     {
-                        0,                                                                                              // Location
-                        _vertex_binding_descriptions[0].binding,                                                        // Binding
-                        VK_FORMAT_R32G32B32_SFLOAT,                                                                     // Format
-                        offsetof(vertex_declaration_structs::vertex_position_color_uv, position)                        // Offset
+                        0,                                                                       // Location
+                        _vertex_binding_descriptions[0].binding,                                 // Binding
+                        VK_FORMAT_R32G32B32_SFLOAT,                                              // Format
+                        offsetof(vertex_declaration_structs::vertex_position_color_uv, position) // Offset
                     });
                     _vertex_attribute_descriptions.push_back(
                     {
-                        1,                                                                                              // Location
-                        _vertex_binding_descriptions[0].binding,                                                        // Binding
-                        VK_FORMAT_R32G32B32A32_SFLOAT,                                                                  // Format
-                        offsetof(vertex_declaration_structs::vertex_position_color_uv, color)                           // Offset
+                        1,                                                                       // Location
+                        _vertex_binding_descriptions[0].binding,                                 // Binding
+                        VK_FORMAT_R32G32B32A32_SFLOAT,                                           // Format
+                        offsetof(vertex_declaration_structs::vertex_position_color_uv, color)    // Offset
                     });
                     _vertex_attribute_descriptions.push_back(
                     {
-                        2,                                                                                              // Location
-                        _vertex_binding_descriptions[0].binding,                                                        // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                                                        // Format
-                        offsetof(vertex_declaration_structs::vertex_position_color_uv, uv)                              // Offset
+                        2,                                                                       // Location
+                        _vertex_binding_descriptions[0].binding,                                 // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                                 // Format
+                        offsetof(vertex_declaration_structs::vertex_position_color_uv, uv)       // Offset
                     });
                 }
                 break;
@@ -511,30 +554,74 @@ namespace wolf
                     //create pipeline for basic shader
                     _vertex_binding_descriptions.push_back(
                     {
-                        0,                                                                                              // Binding
-                        sizeof(wolf::gui::w_gui_vertex_2d),                                                             // Stride
-                        VK_VERTEX_INPUT_RATE_VERTEX                                                                     // InputRate
+                        0,                                                     // Binding
+                        sizeof(wolf::gui::w_gui_vertex_2d),                    // Stride
+                        VK_VERTEX_INPUT_RATE_VERTEX                            // InputRate
+                    });
+                    _vertex_binding_descriptions.push_back(
+                    {
+                        1,                                                     // Binding
+                        sizeof(wolf::gui::w_gui_instance_vertex_2d),           // Stride
+                        VK_VERTEX_INPUT_RATE_INSTANCE                          // InputRate
+                    });
+
+                    //vertex attributes
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        0,                                                      // Location
+                        _vertex_binding_descriptions[0].binding,                // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                // Format
+                        offsetof(wolf::gui::w_gui_vertex_2d, position)          // Offset
                     });
                     _vertex_attribute_descriptions.push_back(
                     {
-                        0,                                                                                              // Location
-                        _vertex_binding_descriptions[0].binding,                                                        // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                                                        // Format
-                        offsetof(wolf::gui::w_gui_vertex_2d, position)                                                  // Offset
+                        1,                                                      // Location
+                        _vertex_binding_descriptions[0].binding,                // Binding
+                        VK_FORMAT_R32G32B32A32_SFLOAT,                          // Format
+                        offsetof(wolf::gui::w_gui_vertex_2d, color)             // Offset
                     });
                     _vertex_attribute_descriptions.push_back(
                     {
-                        1,                                                                                              // Location
-                        _vertex_binding_descriptions[0].binding,                                                        // Binding
-                        VK_FORMAT_R32G32B32A32_SFLOAT,                                                                  // Format
-                        offsetof(wolf::gui::w_gui_vertex_2d, color)                                                     // Offset
+                        2,                                                      // Location
+                        _vertex_binding_descriptions[0].binding,                // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                // Format
+                        offsetof(wolf::gui::w_gui_vertex_2d, uv)                // Offset
+                    });
+
+                    /*
+                        Per instance attributes:
+                        vec2        i_instance_pos;
+                        vec4        i_instance_color;
+                        vec2        i_instance_uv;
+                        int         i_instance_index;
+                    */
+                    _vertex_attribute_descriptions.push_back(
+                    {   
+                        3,                                                       // Location
+                        _vertex_binding_descriptions[1].binding,                 // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                 // Format
+                        0                                                        // Offset
                     });
                     _vertex_attribute_descriptions.push_back(
                     {
-                        2,                                                                                              // Location
-                        _vertex_binding_descriptions[0].binding,                                                        // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                                                        // Format
-                        offsetof(wolf::gui::w_gui_vertex_2d, uv)                                                        // Offset
+                        4,                                                       // Location
+                        _vertex_binding_descriptions[1].binding,                 // Binding
+                        VK_FORMAT_R32G32B32A32_SFLOAT,                           // Format
+                        sizeof(float) * 2                                        // Offset
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        5,                                                       // Location
+                        _vertex_binding_descriptions[1].binding,                 // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                 // Format
+                        sizeof(float) * 6                                        // Offset
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        6,                                                       // Location
+                        _vertex_binding_descriptions[1].binding,                 // Binding
+                        VK_FORMAT_R32_SINT,                                      // Format
+                        sizeof(float) * 8                                        // Offset
                     });
                 }
                 break;
@@ -642,9 +729,8 @@ w_mesh::~w_mesh()
 }
 
 HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                     _In_ const void* const pVerticesData,
+                     _In_ const float* const pVerticesData,
                      _In_ const UINT pVerticesCount,
-                     _In_ const UINT pVerticesSize,
                      _In_ const UINT* const pIndicesData,
                      _In_ const UINT pIndicesCount,
                      _In_ w_shader* pShader,
@@ -659,7 +745,6 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
         pGDevice,
         pVerticesData,
         pVerticesCount,
-        pVerticesSize,
         pIndicesData,
         pIndicesCount,
         pShader,
@@ -667,6 +752,21 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
         pPipelineCacheName,
         pZUp,
         pUseDynamicBuffer);
+}
+
+HRESULT w_mesh::update_dynamic_buffer(
+    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_ const void* const pVerticesData,
+    _In_ const UINT pVerticesCount,
+    _In_ const UINT* const pIndicesData,
+    _In_ const UINT pIndicesCount)
+{
+    return this->_pimp ? this->_pimp->update_dynamic_buffer(
+        pGDevice,
+        pVerticesData,
+        pVerticesCount,
+        pIndicesData,
+        pIndicesCount) : S_FALSE;
 }
 
 void w_mesh::render(_In_ const VkCommandBuffer& pCommandBuffer,

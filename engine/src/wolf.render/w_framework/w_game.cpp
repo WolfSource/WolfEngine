@@ -88,8 +88,13 @@ HRESULT w_game::render(const wolf::system::w_game_time& pGameTime)
 }
 
 #ifdef __WIN32
+
 //Handle input message procedure
-HRESULT w_game::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam)
+HRESULT w_game::on_msg_proc(
+    _In_ const HWND pHWND, 
+    _In_ const UINT pMessage, 
+    _In_ const WPARAM pWParam, 
+    _In_ const LPARAM pLParam)
 {
     return S_FALSE;
 }

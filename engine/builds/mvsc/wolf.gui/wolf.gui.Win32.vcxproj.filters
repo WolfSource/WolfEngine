@@ -25,7 +25,7 @@
     <None Include="..\..\..\..\content\shaders\gui.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="..\..\..\..\content\shaders\gui.vert">
+    <None Include="..\..\..\..\content\shaders\gui_2d.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

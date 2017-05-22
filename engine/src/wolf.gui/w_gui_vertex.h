@@ -24,6 +24,11 @@ namespace wolf
             float color[4];
             float uv[2];
         };
+
+        struct w_gui_instance_vertex_2d : public w_gui_vertex_2d
+        {
+            int   index;
+        };
     }
 }
 

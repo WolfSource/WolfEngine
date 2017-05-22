@@ -18,6 +18,7 @@
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_buffer.h>
+#include <w_graphics/w_command_buffers.h>
 #include <w_vertex_declaration.h>
 
 namespace wolf

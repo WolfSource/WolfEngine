@@ -518,9 +518,10 @@ namespace wolf
 //				_In_ w_color pDisabledColor = w_color(50, 50, 50, 150),
 //				_Out_opt_ w_ellipse_shape** pCreatedControl = nullptr);
 
+#ifdef __WIN32
 			// Windows message handler
-            WGUI_EXP bool on_msg_proc(_In_ HWND pHWND, _In_ UINT pMsg, _In_ WPARAM pWParam, _In_ LPARAM pLParam);
-
+            WGUI_EXP bool on_msg_proc(_In_ const HWND pHWND, _In_ const UINT pMsg, _In_ const WPARAM pWParam, _In_ const LPARAM pLParam);
+#endif
 //			DX_EXP HRESULT add_image_to_resource_manager(_In_z_ const wchar_t* pPath);
 
 			HRESULT add_control(_In_ wolf::gui::w_control* pControl);

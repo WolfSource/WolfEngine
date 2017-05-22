@@ -1183,7 +1183,8 @@ void w_widget::send_event(UINT pEvent, bool pTriggeredByUser, w_control* pContro
 //	return this->_sprite_batch->add_image_from_file(pPath);
 //}
 
-bool w_widget::on_msg_proc(HWND pHWnd, UINT pMsg, WPARAM pWParam, LPARAM pLParam)
+#ifdef __WIN32
+bool w_widget::on_msg_proc(_In_ const HWND pHWnd, _In_ const UINT pMsg, _In_ const WPARAM pWParam, _In_ const LPARAM pLParam)
 {
 	bool bHandled = false;
 
@@ -1460,6 +1461,7 @@ bool w_widget::on_msg_proc(HWND pHWnd, UINT pMsg, WPARAM pWParam, LPARAM pLParam
 
 	return false;
 }
+#endif
 
 void w_widget::on_mouse_up(_In_ const w_point& pPoint)
 {

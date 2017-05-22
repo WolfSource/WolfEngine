@@ -1,6 +1,6 @@
 ﻿<Wolf.Gui>
   <Widget
-   Name = "widget_2"
+   Name = "widget_01"
    Size = "300,400"
    Dragable = "true"
    Visisble = "true"

@@ -188,7 +188,6 @@ namespace wolf
                     _hr = _mesh->load(this->_gDevice,
                         _v_data.data(),
                         static_cast<UINT>(_v_data.size()),
-                        static_cast<UINT>(_v_data.size() * sizeof(float)),
                         _model_mesh->indices.data(),
                         static_cast<UINT>(_model_mesh->indices.size()),
                         pShader,

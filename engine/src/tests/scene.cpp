@@ -87,8 +87,11 @@ void scene::load()
     _hr = wolf::gui::w_gui::load(content_path + L"\\gui\\test.xml", _width, _height);
     if (_hr == S_FALSE)
     {
-        logger.error("load gui");
+        logger.error("loading gui");
     }
+
+    //get pointer to widgets
+    wolf::gui::w_gui::get_widget("widget_01", &this->_widget);
 
     //make sure render all gui before loading gui_render
     _gui_render.load(_gDevice);
@@ -422,6 +425,38 @@ void scene::on_device_lost()
 {
     w_game::on_device_lost();
 }
+
+
+#ifdef __WIN32
+
+HRESULT scene::on_msg_proc(
+    _In_ const HWND pHWND,
+    _In_ const UINT pMessage,
+    _In_ const WPARAM pWParam,
+    _In_ const LPARAM pLParam)
+{
+    if (this->_widget)
+    {
+        auto _procced = this->_widget->on_msg_proc(pHWND, pMessage, pWParam, pLParam);
+        if (_procced)
+        {
+            return S_OK;
+        }
+    }
+
+    //switch (pMessage)
+    //{
+    //case WM_MOUSEMOVE:
+    //    //this->_global_mouse_point.x = short(LOWORD(pLParam));
+    //    //this->_global_mouse_point.y = short(HIWORD(pLParam));
+    //    break;
+    //}
+
+    //if not procced yet
+    return S_FALSE;
+}
+
+#endif
 
 ULONG scene::release()
 {

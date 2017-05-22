@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\content\shaders\gui.frag" />
-    <None Include="..\..\..\..\content\shaders\gui.vert" />
+    <None Include="..\..\..\..\content\shaders\gui_2d.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0B4673AC-8D5C-40E6-8071-34BAD1B5945D}</ProjectGuid>
