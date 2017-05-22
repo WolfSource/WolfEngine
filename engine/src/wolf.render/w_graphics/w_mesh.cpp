@@ -22,10 +22,22 @@ namespace wolf
                 _gDevice(nullptr),
                 _vertices_count(0),
                 _indices_count(0),
-                _vertex_declaration(w_mesh::w_vertex_declaration::VERTEX_POSITION_UV)
+                _vertex_declaration(w_mesh::w_vertex_declaration::VERTEX_POSITION_UV),
+                _copy_command_buffer(nullptr)
             {
             }
             
+            /*
+                static data such as index buffer or vertex buffer should be stored on device memory
+                for fastest access by GPU.
+                So we are giong to do folloing steps:
+                    * create buffer in DRAM
+                    * copy user data to this buffer
+                    * create buffer in VRAM
+                    * copy from DRAM to VRAM
+                    * delete DRAM buffer
+                    * use VRAM buffer for rendering
+            */
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
                 _In_ const UINT pVerticesCount,
@@ -36,54 +48,85 @@ namespace wolf
                 _In_ const w_render_pass* pRenderPass,
                 _In_ const std::string& pPipelineCacheName,
                 _In_ const bool pZUp,
-                _In_ bool pStaging)
+                _In_ const bool pUseDynamicBuffer)
             {
                 this->_gDevice = pGDevice;
-                this->_staging = pStaging;
                 this->_vertices_count = pVerticesCount;
                 this->_indices_count = pIndicesCount;
                 this->_shader = pShader;
+                this->_dynamic_buffer = pUseDynamicBuffer;
 
-                HRESULT _hr;
-                if (this->_staging)
+                if (pVerticesSize == 0 || pVerticesData == nullptr)
                 {
-                    _hr = _create_staging_buffers(pVerticesData,
-                        pVerticesSize,
+                    return S_FALSE;
+                }
+
+                bool _there_is_no_index_buffer = false;
+                if (pIndicesCount == 0 || pIndicesData == nullptr)
+                {
+                    _there_is_no_index_buffer = true;
+                }
+
+                //create a buffers hosted into the DRAM named staging buffers
+                if (_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                    pVerticesData,
+                    pVerticesSize,
+                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                    this->_stagings_buffers.vertices) == S_FALSE)
+                {
+                    return S_FALSE;
+                }
+
+                if (!_there_is_no_index_buffer)
+                {
+                    if (_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                         pIndicesData,
-                        static_cast<UINT>(pIndicesCount * sizeof(UINT)),
-                        this->_vertex_buffer,
-                        this->_index_buffer);
-                    if (_hr == S_FALSE)
+                        pIndicesCount,
+                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                        _stagings_buffers.indices) == S_FALSE)
                     {
                         return S_FALSE;
                     }
                 }
-                else
+
+                // create VRAM buffers
+                if (_create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                    nullptr,
+                    pVerticesSize,
+                    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                    this->_vertex_buffer) == S_FALSE)
                 {
-                    //vertex buffer is necessary
-                    if (pVerticesSize == 0 || pVerticesData == nullptr ||
-                        _create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-                            pVerticesData,
-                            pVerticesSize,
-                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                            this->_vertex_buffer) == S_FALSE)
-                    {
-                        return S_FALSE;
-                    }
+                    return S_FALSE;
+                }
 
-                    //index buffer is not necessary
-                    if (pIndicesCount && pIndicesData != nullptr &&
-                        _create_buffer(VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-                            pIndicesData,
-                            static_cast<UINT>(pIndicesCount * sizeof(UINT)),
-                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                            this->_index_buffer) == S_FALSE)
+                if (!_there_is_no_index_buffer)
+                {
+                    if (_create_buffer(VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                        nullptr,
+                        pIndicesCount,
+                        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                        this->_index_buffer) == S_FALSE)
                     {
                         return S_FALSE;
                     }
                 }
 
-                _hr = _load_texture();
+                if (_copy_DRAM_to_VRAM(pVerticesCount, pIndicesCount) == S_FALSE)
+                {
+                    return S_FALSE;
+                }
+
+                if (!pUseDynamicBuffer)
+                {
+                    //release staging buffers
+                    this->_stagings_buffers.vertices.release();
+                    if (!_there_is_no_index_buffer)
+                    {
+                        this->_stagings_buffers.indices.release();
+                    }
+                }
+    
+                auto _hr = _load_texture();
                 if (_hr == S_FALSE)
                 {
                     return S_FALSE;
@@ -195,8 +238,21 @@ namespace wolf
                 //release vertex and index buffers
 
                 this->_vertex_buffer.release();
-                this->_index_buffer.release();
+                if (this->_indices_count)
+                {
+                    this->_index_buffer.release();
+                }
                 this->_pipeline.release();
+                
+                if (this->_dynamic_buffer)
+                {
+                    this->_stagings_buffers.vertices.release();
+                    if (this->_indices_count)
+                    {
+                        this->_stagings_buffers.indices.release();
+                    }
+                    SAFE_DELETE(this->_copy_command_buffer);
+                }
 
                 this->_shader = nullptr;
                 this->_texture = nullptr;
@@ -205,126 +261,50 @@ namespace wolf
 
         private:
 
-
-
-            /*
-                static data such as index buffer or vertex buffer should be stored on device memory
-                for fastest access by GPU.
-                So we are giong to do folloing steps:
-                    * create buffer in DRAM
-                    * copy user data to this buffer
-                    * create buffer in VRAM
-                    * copy from DRAM to VRAM
-                    * delete DRAM buffer
-                    * use VRAM buffer for rendering
-            */
-            HRESULT _create_staging_buffers(_In_ const void* const pVerticesData,
-                                            _In_ const UINT pVerticesSize,
-                                            _In_ const UINT* const pIndicesData,
-                                            _In_ const UINT pIndicesSize,
-                                            _Inout_ w_buffer& pVertexBuffer,
-                                            _Inout_ w_buffer& pIndexBuffer)
+            HRESULT _copy_DRAM_to_VRAM(
+                _In_ const UINT pVerticesCount,
+                _In_ const UINT pIndicesCount)
             {
-                if (pVerticesSize == 0 || pVerticesData == nullptr)
+                //create one command buffer 
+                if (!this->_copy_command_buffer)
                 {
-                    return S_FALSE;
+                    this->_copy_command_buffer = new w_command_buffers();
+                    _copy_command_buffer->load(this->_gDevice, 1);
                 }
-                
-                bool _there_is_no_index_buffer = false;
-                if (pIndicesSize == 0 || pIndicesData == nullptr)
-                {
-                    _there_is_no_index_buffer = true;
-                }
-                
-                //create a buffers hosted into the DRAM named staging buffers
-                struct
-                {
-                    w_buffer vertices;
-                    w_buffer indices;
-                } _stagings_buffers;
-                
-                if(_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                               pVerticesData,
-                               pVerticesSize,
-                               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                               _stagings_buffers.vertices) == S_FALSE)
-                {
-                    return S_FALSE;
-                }
-                
-                if(!_there_is_no_index_buffer)
-                {
-                    if(_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                               pIndicesData,
-                               pIndicesSize,
-                               VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                               _stagings_buffers.indices) == S_FALSE)
-                    {
-                        return S_FALSE;
-                    }
-                }
-            
-                
-                // create VRAM buffers
-                if(_create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                  nullptr,
-                                  pVerticesSize,
-                                  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                                  pVertexBuffer) == S_FALSE)
-                {
-                    return S_FALSE;
-                }
-                
-                if(!_there_is_no_index_buffer)
-                {
-                    if(_create_buffer(VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                      nullptr,
-                                      pIndicesSize,
-                                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                                      pIndexBuffer) == S_FALSE)
-                    {
-                        return S_FALSE;
-                    }
-                }
-                
-                
-                //create one command buffer
-                auto _copy_command_buffer = new w_command_buffers();
-                _copy_command_buffer->load(this->_gDevice, 1);
-                
-                _copy_command_buffer->begin(0);
+
+                this->_copy_command_buffer->begin(0);
                 {
                     auto _copy_cmd = _copy_command_buffer->get_command_at(0);
-                
+
                     // Vertex buffer
                     VkBufferCopy _copy_region = {};
-                    _copy_region.size = pVerticesSize;
-                    vkCmdCopyBuffer(_copy_cmd,
-                                    _stagings_buffers.vertices.get_handle(),
-                                    pVertexBuffer.get_handle(),
-                                    1,
-                                    &_copy_region);
-                
-                    if (!_there_is_no_index_buffer)
+                    _copy_region.size = pVerticesCount;
+                    vkCmdCopyBuffer(
+                        _copy_cmd,
+                        _stagings_buffers.vertices.get_handle(),
+                        this->_vertex_buffer.get_handle(),
+                        1,
+                        &_copy_region);
+
+                    if (pIndicesCount)
                     {
                         // Index buffer
-                        _copy_region.size = pIndicesSize;
-                        vkCmdCopyBuffer(_copy_cmd,
-                                        _stagings_buffers.indices.get_handle(),
-                                        pIndexBuffer.get_handle(),
-                                        1,
-                                        &_copy_region);
+                        _copy_region.size = pIndicesCount;
+                        vkCmdCopyBuffer(
+                            _copy_cmd,
+                            _stagings_buffers.indices.get_handle(),
+                            this->_index_buffer.get_handle(),
+                            1,
+                            &_copy_region);
                     }
                 }
+
                 _copy_command_buffer->flush(0);
-                
-                SAFE_DELETE(_copy_command_buffer);
-                
-                _stagings_buffers.vertices.release();
-                if (!_there_is_no_index_buffer)
+                if (!this->_dynamic_buffer)
                 {
-                    _stagings_buffers.indices.release();
+                    SAFE_DELETE(this->_copy_command_buffer);
                 }
+
                 return S_OK;
             }
             
@@ -636,11 +616,17 @@ namespace wolf
             w_buffer                                            _index_buffer;
             UINT                                                _indices_count;
             UINT                                                _vertices_count;
-            bool                                                _staging;
             w_pipeline                                          _pipeline;
             w_texture*                                          _texture;
             w_shader*                                           _shader;
             w_mesh::w_vertex_declaration                        _vertex_declaration;
+            bool                                                _dynamic_buffer;
+            w_command_buffers*                                  _copy_command_buffer;
+            struct
+            {
+                w_buffer vertices;
+                w_buffer indices;
+            } _stagings_buffers;
         };
     }
 }
@@ -665,21 +651,22 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const w_render_pass* pRenderPass,
                      _In_ const std::string& pPipelineCacheName,
                      _In_ const bool pZUp,
-                     _In_ const bool pStaging)
+                     _In_ const bool pUseDynamicBuffer)
 {
     if (!this->_pimp) return S_FALSE;
     
-    return this->_pimp->load(pGDevice,
-                             pVerticesData,
-                             pVerticesCount,
-                             pVerticesSize,
-                             pIndicesData,
-                             pIndicesCount,
-                             pShader,
-                             pRenderPass,
-                             pPipelineCacheName,
-                             pZUp,
-                             pStaging);
+    return this->_pimp->load(
+        pGDevice,
+        pVerticesData,
+        pVerticesCount,
+        pVerticesSize,
+        pIndicesData,
+        pIndicesCount,
+        pShader,
+        pRenderPass,
+        pPipelineCacheName,
+        pZUp,
+        pUseDynamicBuffer);
 }
 
 void w_mesh::render(_In_ const VkCommandBuffer& pCommandBuffer,

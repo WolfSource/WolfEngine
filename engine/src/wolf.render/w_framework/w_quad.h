@@ -49,7 +49,8 @@ namespace wolf
             HRESULT load(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
                 _In_ w_shader* pShader,
                 _In_ const w_render_pass* pRenderPass,
-                _In_ const std::string& pPipelineCacheName)
+                _In_ const std::string& pPipelineCacheName,
+                _In_ const bool pUseDynamicBuffer)
             {
                 using namespace wolf::content_pipeline;
                 
@@ -143,7 +144,8 @@ namespace wolf
                     pShader,
                     pRenderPass,
                     pPipelineCacheName,
-                    false);
+                    false,
+                    pUseDynamicBuffer);
 
                 if (_hr == S_FALSE)
                 {

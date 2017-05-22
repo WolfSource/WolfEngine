@@ -17,7 +17,6 @@ w_widget::w_widget(UINT pParentWindowWidth, UINT pParentWindowHeight) :
     _name("widget"),
     _width(400),
     _height(200),
-    _vertices_updated(false),
     _draggable(false),
     _is_dragging(false),
     _visible(true),
@@ -390,8 +389,6 @@ HRESULT w_widget::render(_In_ const float pElapsedTime)
             _vertex.color[3] = _top_right_color[3];
             _vertex.uv[0] = 0.0f; _vertex.uv[1] = 0.0f;
             this->_vertex_declarations_2d.push_back(_vertex);
-
-            this->_vertices_updated = true;
         }
     }
 	
@@ -2120,7 +2117,6 @@ UINT w_widget::get_background_buffer_height() const
 
 std::vector<w_gui_vertex_2d> w_widget::get_vertex_declarations_2d()
 {
-    this->_vertices_updated = false;
     return this->_vertex_declarations_2d;
 }
 

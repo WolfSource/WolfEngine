@@ -24,10 +24,10 @@ namespace wolf
 		{
 		public:
 			//load gui design path
-            WGUI_EXP  static HRESULT load(const wchar_t* pGuiDesignPath, _In_ const UINT pParentWidth, _In_ const UINT pParentHeight);
+            WGUI_EXP  static HRESULT load(const std::wstring& pGuiDesignPath, _In_ const UINT pParentWidth, _In_ const UINT pParentHeight);
 
 			//create a widget with unique name
-            WGUI_EXP  static HRESULT add_widget(_In_ const std::string pWidgetName,
+            WGUI_EXP  static HRESULT add_widget(_In_ const std::string& pWidgetName,
 				_Inout_ wolf::gui::w_widget** pWidget = nullptr,
 				_In_ int pX = 10, _In_ int pY = 10,
 				_In_ UINT pWidth = 400, _In_ UINT pHeight = 200,
@@ -82,7 +82,7 @@ namespace wolf
 			//get all controls id of specific widget
             WGUI_EXP	static void get_all_controls_id(_In_z_ const char* pWidgetName, _Inout_ std::vector<INT64>& pControlsID);
 			//get all 2d vertices of widgets
-            WGUI_EXP    static std::vector<std::vector<w_gui_vertex_2d>> get_widgets_2d_vertices();
+            WGUI_EXP    static std::map<std::string, std::vector<w_gui_vertex_2d>> get_widgets_2d_vertices();
 
 #pragma endregion
 
@@ -385,7 +385,7 @@ namespace wolf
 			static UINT															_parent_width;
 			static UINT															_parent_height;
 			static const char*													_trace_class_name;
-            static std::vector<std::vector<w_gui_vertex_2d>>                    _widgets_2d_vertices;
+            static std::map<std::string,std::vector<w_gui_vertex_2d>>           _widgets_2d_vertices;
 #ifdef WIN32
 			static HWND															_hwnd;
 #endif

@@ -24,14 +24,15 @@ namespace wolf
 		public:
 			W_EXP w_gui_render();
 			W_EXP virtual ~w_gui_render();
+            
+            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
 
-            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_EXP HRESULT render(
+                _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_render_pass* pRenderPass,
                 _In_ const std::string& pPipelineCacheName,
-                _In_ std::vector<std::vector<wolf::gui::w_gui_vertex_2d>>& pWidgetsVertices);
-
-
-            W_EXP void render(_In_ const VkCommandBuffer& pCommandBuffer);
+                _In_ const VkCommandBuffer& pCommandBuffer, 
+                _In_ std::map<std::string, std::vector<wolf::gui::w_gui_vertex_2d>>& pWidgetsVertices);
 
             W_EXP virtual ULONG release() override;
 

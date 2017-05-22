@@ -10,13 +10,13 @@ w_widget*													w_gui::_temp_parent_widget_ptr = nullptr;
 UINT														w_gui::_parent_width;
 UINT														w_gui::_parent_height;
 const char*													w_gui::_trace_class_name = "w_gui";
-std::vector<std::vector<w_gui_vertex_2d>>                   w_gui::_widgets_2d_vertices;
+std::map<std::string, std::vector<w_gui_vertex_2d>>         w_gui::_widgets_2d_vertices;
 
 //#ifdef WIN32
 //HWND														w_gui::_hwnd = NULL;
 //#endif
 
-HRESULT w_gui::load(const wchar_t* pGuiDesignPath, _In_ const UINT pParentWidth, _In_ const UINT pParentHeight)
+HRESULT w_gui::load(const std::wstring& pGuiDesignPath, _In_ const UINT pParentWidth, _In_ const UINT pParentHeight)
 {
     _is_released = false;
 
@@ -25,8 +25,10 @@ HRESULT w_gui::load(const wchar_t* pGuiDesignPath, _In_ const UINT pParentWidth,
 
 	//_hwnd = pHwnd;
 
+    auto _c_str = pGuiDesignPath.c_str();
+
 	//parse gui from xml file
-	if (wolf::system::io::get_is_file(pGuiDesignPath) == S_FALSE)
+	if (wolf::system::io::get_is_file(_c_str) == S_FALSE)
 	{
 		wchar_t _msg[1024];
 		wsprintf(_msg, L"load wolf.gui design file, file not found. %s", pGuiDesignPath);
@@ -86,7 +88,7 @@ HRESULT w_gui::load(const wchar_t* pGuiDesignPath, _In_ const UINT pParentWidth,
 	//Check all nodes inside the wolf.gui
 	for (auto _node = _wolf_gui_node->first_node(); _node != nullptr; _node = _node->next_sibling())
 	{
-		_traversing_gui_node(_node, pGuiDesignPath);
+		_traversing_gui_node(_node, _c_str);
 	}
 
 	_doc.clear();
@@ -1501,7 +1503,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 	}
 }
 
-HRESULT w_gui::add_widget(_In_ const std::string pWidgetName,
+HRESULT w_gui::add_widget(_In_ const std::string& pWidgetName,
 	_Inout_ wolf::gui::w_widget** pWidget,
 	_In_ int pX, _In_ int pY,
 	_In_ UINT pWidth, _In_ UINT pHeight,
@@ -1543,6 +1545,7 @@ HRESULT w_gui::add_widget(_In_ const std::string pWidgetName,
 
 	auto _widget = new wolf::gui::w_widget(_parent_width, _parent_height);
 
+    _widget->set_name(pWidgetName);
 	_widget->set_width(pWidth);
 	_widget->set_height(pHeight);
 	_widget->set_draggable(pDraggable);
@@ -2491,7 +2494,7 @@ void w_gui::get_all_controls_id(_In_z_ const char* pWidgetName, _Inout_ std::vec
     }
 }
 
-std::vector<std::vector<w_gui_vertex_2d>> w_gui::get_widgets_2d_vertices()
+std::map<std::string, std::vector<w_gui_vertex_2d>> w_gui::get_widgets_2d_vertices()
 {
     _widgets_2d_vertices.clear();
     for (auto _iter = _widgets.cbegin(); _iter != _widgets.cend(); ++_iter)
@@ -2499,7 +2502,7 @@ std::vector<std::vector<w_gui_vertex_2d>> w_gui::get_widgets_2d_vertices()
         if (_iter->second)
         {
             auto _name = _iter->second->get_name();
-            _widgets_2d_vertices.push_back(_iter->second->get_vertex_declarations_2d());
+            _widgets_2d_vertices[_name] = _iter->second->get_vertex_declarations_2d();
         }
     }
 

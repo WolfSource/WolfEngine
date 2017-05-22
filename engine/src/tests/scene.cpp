@@ -84,14 +84,14 @@ void scene::load()
     
     auto _render_pass_handle = this->_render_pass.get_handle();
 
-    _hr = wolf::gui::w_gui::load(L"c:\\test.xml", _width, _height);
+    _hr = wolf::gui::w_gui::load(content_path + L"\\gui\\test.xml", _width, _height);
     if (_hr == S_FALSE)
     {
         logger.error("load gui");
     }
-    wolf::gui::w_gui::render(w_game_time());
-    auto _gui_2d_vertices = wolf::gui::w_gui::get_widgets_2d_vertices();
-    _gui_render.load(_gDevice, &_render_pass, "pipeline_cache_0", _gui_2d_vertices);
+
+    //make sure render all gui before loading gui_render
+    _gui_render.load(_gDevice);
 
     //load scene
     auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test0000.dae");
@@ -372,7 +372,10 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
                     }
                 }
-                _gui_render.render(_cmd);
+                //make sure render all gui before loading gui_render
+                wolf::gui::w_gui::render(pGameTime);
+                auto _gui_2d_vertices = wolf::gui::w_gui::get_widgets_2d_vertices();
+                _gui_render.render(_gDevice, &this->_render_pass, "pipeline_cache_0", _cmd, _gui_2d_vertices);
             }
             this->_render_pass.end(_cmd);
 
@@ -406,7 +409,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
     wolf::gui::w_gui::render(pGameTime);
 
-    logger.write(std::to_string(pGameTime.get_frames_per_second()));
+    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
     return w_game::render(pGameTime);
 }
 

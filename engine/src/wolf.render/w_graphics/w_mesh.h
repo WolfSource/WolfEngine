@@ -76,7 +76,7 @@ namespace wolf
                                _In_ const w_render_pass* pRenderPass,
                                _In_ const std::string& pPipelineCacheName = "",
                                _In_ const bool pZUp = false,
-                               _In_ bool pStaging = true);
+                               _In_ bool pUseDynamicBuffer = false);
             
             W_EXP void render(_In_ const VkCommandBuffer& pCommandBuffer, _In_ const VkBuffer& pInstanceHandle,
                 _In_ uint32_t& pInstancesCount);
@@ -86,13 +86,13 @@ namespace wolf
 
 #pragma region Getters
             
-            W_EXP VkBuffer get_vertex_buffer_handle() const;
-            W_EXP VkBuffer get_index_buffer_handle() const;
-            W_EXP const UINT get_vertices_count() const;
-            W_EXP const UINT get_indices_count() const;
-            W_EXP w_shader* get_shader() const ;
-            W_EXP w_texture* get_texture() const;
-            W_EXP const w_vertex_declaration get_vertex_declaration_struct();
+            W_EXP VkBuffer                      get_vertex_buffer_handle() const;
+            W_EXP VkBuffer                      get_index_buffer_handle() const;
+            W_EXP const UINT                    get_vertices_count() const;
+            W_EXP const UINT                    get_indices_count() const;
+            W_EXP w_shader*                     get_shader() const ;
+            W_EXP w_texture*                    get_texture() const;
+            W_EXP const w_vertex_declaration    get_vertex_declaration_struct();
 
 #pragma endregion
 

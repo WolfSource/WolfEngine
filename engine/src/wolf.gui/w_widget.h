@@ -578,7 +578,7 @@ namespace wolf
 			bool get_is_keyboard_input_enabled() const																{ return this->keyboard_input; }
 
 			//get name of this widget
-            WGUI_EXP const char*					get_name() const													{ return this->_name; }
+            WGUI_EXP const std::string				get_name() const													{ return this->_name; }
 			//get width
             WGUI_EXP int							get_width() const													{ return this->_width; }
 			//get height
@@ -677,6 +677,7 @@ namespace wolf
 			//get all controls id
             WGUI_EXP void							get_all_controls_id(_Inout_ std::vector<INT64>& pIDs);
             WGUI_EXP std::vector<w_gui_vertex_2d>   get_vertex_declarations_2d();
+            
 
 #pragma endregion
 
@@ -685,7 +686,7 @@ namespace wolf
 			static void WINAPI set_refresh_time(_In_ double pValue)											{ s_time_refresh.from_seconds(pValue); }
 
 			//set the name of widget
-            WGUI_EXP void	    set_name(_In_z_ const char* pValue)												{ this->_name = pValue; }
+            WGUI_EXP void	    set_name(_In_z_ const std::string& pValue)										{ this->_name = pValue; }
 			//set the width of widget
             WGUI_EXP void	    set_width(_In_ UINT pValue)														{ this->_width = pValue; }
 			//set the height of widget
@@ -774,7 +775,7 @@ namespace wolf
 
 			UINT														_parent_window_width;
 			UINT														_parent_window_height;
-			const char*													_name;
+			std::string													_name;
 			UINT														_width;
 			UINT														_height;
 			bool														_draggable;
@@ -831,7 +832,6 @@ namespace wolf
 			w_widget*													_next_widget;
 			w_widget*													_prev_widget;
 
-            std::atomic<bool>                                           _vertices_updated;
             std::vector<w_gui_vertex_2d>                                _vertex_declarations_2d;
 
 		};
