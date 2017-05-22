@@ -47,7 +47,7 @@
 extern "C" {
 #endif
 
-	enum HRESULT : bool { S_OK = 0, S_FALSE = 1, E_INVALIDARG = 2, E_OUTOFMEMORY = 3};
+	enum HRESULT : uint8_t { S_OK = 0, S_FALSE = 1, E_INVALIDARG = 2, E_OUTOFMEMORY = 3};
 	
 	typedef unsigned char			BYTE;
 	typedef __uint32_t				UINT, *PUINT;

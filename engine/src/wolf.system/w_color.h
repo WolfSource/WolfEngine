@@ -18,7 +18,7 @@
 #include <cstdlib>
 #include <string>
 #include <sstream>
-#include <glm\vec4.hpp>
+#include <array>
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default) //The classes/structs below are exported
@@ -107,7 +107,7 @@ struct w_color
 	}
 
 #if defined(__DX12__) || defined(__DX11__)
-    static w_color to_w_color(_In_ const XMFLOAT4 pValue)
+    static w_color to_color(_In_ const XMFLOAT4& pValue)
     {
         return w_color(
             static_cast<UINT>(pValue.x * 255.0f),
@@ -116,13 +116,13 @@ struct w_color
             static_cast<UINT>(pValue.w * 255.0f));
     }
 #else
-    static w_color to_color(_In_ const glm::vec4 pValue)
+    static w_color to_color(_In_ const std::array<float, 4>& pValue)
     {
         return w_color(
-            static_cast<UINT>(pValue.x * 255.0f),
-            static_cast<UINT>(pValue.y * 255.0f),
-            static_cast<UINT>(pValue.z * 255.0f),
-            static_cast<UINT>(pValue.w * 255.0f));
+            static_cast<UINT>(pValue[0] * 255.0f),
+            static_cast<UINT>(pValue[1] * 255.0f),
+            static_cast<UINT>(pValue[2] * 255.0f),
+            static_cast<UINT>(pValue[3] * 255.0f));
     }
 #endif //defined(__DX12__) || defined(__DX11__)
 

@@ -234,9 +234,9 @@ namespace glm
         return glm::vec4(pValue.r / 255.0f, pValue.g / 255.0f, pValue.b / 255.0f, pValue.a / 255.0f);
     }
 
-    inline mat4 to_mat4(_In_z_ const std::string& pValue)
+    inline glm::mat4 to_mat4(_In_z_ const std::string& pValue)
     {
-        if (pValue.empty()) return mat4(0);
+        if (pValue.empty()) return glm::mat4(0);
 
         std::vector<std::string> pResult;
         wolf::system::convert::split_string(pValue, " ", pResult);
