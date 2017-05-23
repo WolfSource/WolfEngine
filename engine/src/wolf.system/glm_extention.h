@@ -234,6 +234,21 @@ namespace glm
         return glm::vec4(pValue.r / 255.0f, pValue.g / 255.0f, pValue.b / 255.0f, pValue.a / 255.0f);
     }
 
+    inline std::array<float, 4> to_float_array(_In_ const vec4 pValue)
+    {
+        return { pValue.r, pValue.g, pValue.b, pValue.a };
+    }
+    
+    inline std::array<float, 3> to_float_array(_In_ const vec3 pValue)
+    {
+        return { pValue.r, pValue.g, pValue.b };
+    }
+    
+    inline std::array<float, 2> to_float_array(_In_ const vec2 pValue)
+    {
+        return { pValue.r, pValue.g };
+    }
+    
     inline glm::mat4 to_mat4(_In_z_ const std::string& pValue)
     {
         if (pValue.empty()) return glm::mat4(0);

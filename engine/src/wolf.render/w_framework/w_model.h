@@ -17,6 +17,8 @@
 #include <w_graphics_device_manager.h>
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_shader.h>
+#include <w_graphics/w_buffer.h>
+#include <w_graphics/w_command_buffers.h>
 #include <w_cpipeline_model.h>
 #include <w_vertex_declaration.h>
 
@@ -68,15 +70,15 @@ namespace wolf
                 this->_gDevice = pGDevice;
 
                 //load meshes
-                std::vector<w_cpipeline_model::w_mesh*> _model_meshes;
+                std::vector<content_pipeline::w_cpipeline_model::w_mesh*> _model_meshes;
                 this->_pipeline_model->get_meshes(_model_meshes);
 
-                std::vector<w_cpipeline_model::w_instance_info> _model_instances;
+                std::vector<content_pipeline::w_cpipeline_model::w_instance_info> _model_instances;
                 this->_pipeline_model->get_instances(_model_instances);
                 if (_model_instances.size())
                 {
                     update_instance_buffer(_model_instances.data(),
-                        static_cast<UINT>(_model_instances.size() * sizeof(w_cpipeline_model::w_instance_info)),
+                        static_cast<UINT>(_model_instances.size() * sizeof(content_pipeline::w_cpipeline_model::w_instance_info)),
                         w_vertex_declaration::VERTEX_POSITION_UV_INSTANCE_VEC7_INT);
                 }
 

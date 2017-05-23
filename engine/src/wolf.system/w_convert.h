@@ -15,10 +15,10 @@
 #define __W_CONVERT_H__
 
 #include <vector>
+#include <codecvt>
 
 #if	defined(__WIN32) || defined(__UWP)
 
-#include <codecvt>
 #include <AtlConv.h>
 #include <string.h>
 #include <sstream>
@@ -36,33 +36,6 @@ namespace wolf
 		namespace convert
 		{
 #if	defined(__WIN32) || defined(__UWP)
-			// convert UTF-8 string to wstring
-			inline std::wstring from_utf8(const std::string& pStr)
-			{
-				std::wstring_convert<std::codecvt_utf8<wchar_t>> _convert;
-				return _convert.from_bytes(pStr);
-			}
-
-			// convert UTF-16 string to wstring
-			inline std::wstring from_utf16(const std::string& pStr)
-			{
-				std::wstring_convert<std::codecvt_utf16<wchar_t>> _convert;
-				return _convert.from_bytes(pStr);
-			}
-			
-			// convert wstring to UTF-8 string
-			inline std::string to_utf8(const std::wstring& pStr)
-			{
-				std::wstring_convert<std::codecvt_utf8<wchar_t>> _convert;
-				return _convert.to_bytes(pStr);
-			}
-
-			// convert wstring to UTF-16 string
-			inline std::string to_utf16(const std::wstring& pStr)
-			{
-				std::wstring_convert<std::codecvt_utf16<wchar_t>> _convert;
-				return _convert.to_bytes(pStr);
-			}
 
 			inline HRESULT chars_to_GUID(const std::wstring& pStr, GUID& pGUID)
 			{
@@ -101,6 +74,34 @@ namespace wolf
 
 #endif //__WIN32 || __UWP
 
+            // convert UTF-8 string to wstring
+            inline std::wstring from_utf8(const std::string& pStr)
+            {
+                std::wstring_convert<std::codecvt_utf8<wchar_t>> _convert;
+                return _convert.from_bytes(pStr);
+            }
+            
+            // convert UTF-16 string to wstring
+            inline std::wstring from_utf16(const std::string& pStr)
+            {
+                std::wstring_convert<std::codecvt_utf16<wchar_t>> _convert;
+                return _convert.from_bytes(pStr);
+            }
+            
+            // convert wstring to UTF-8 string
+            inline std::string to_utf8(const std::wstring& pStr)
+            {
+                std::wstring_convert<std::codecvt_utf8<wchar_t>> _convert;
+                return _convert.to_bytes(pStr);
+            }
+            
+            // convert wstring to UTF-16 string
+            inline std::string to_utf16(const std::wstring& pStr)
+            {
+                std::wstring_convert<std::codecvt_utf16<wchar_t>> _convert;
+                return _convert.to_bytes(pStr);
+            }
+            
 			inline bool has_wstring_end_with(_In_z_ std::wstring const& pStr, _In_z_ std::wstring const& pEnding)
 			{
 				if (pStr.length() >= pEnding.length())

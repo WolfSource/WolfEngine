@@ -24,12 +24,13 @@ void w_blend_color::blend(_In_ const UINT pStateIndex, _In_ const float pElapsed
     auto _src_color = glm::to_vec4(this->current_color_state);
     auto _lerp = glm::lerp(_src_color, _dest_color, 1.0f - powf(pFrameRate, 30 * pElapsedTime));
 
-    this->current_color_state = w_color::to_color(_lerp);
+    this->current_color_state = w_color::to_color(glm::to_float_array(_lerp));
 }
 
 void w_blend_color::set_current(_In_ const DWORD pColor)
 {
-	this->current_color_state = w_color::to_color(glm::to_vec4(pColor));
+    auto _vec4 = glm::to_vec4(pColor);
+	this->current_color_state = w_color::to_color(glm::to_float_array(_vec4));
 }
 
 #pragma endregion

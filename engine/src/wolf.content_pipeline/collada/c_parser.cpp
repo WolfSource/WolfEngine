@@ -581,7 +581,7 @@ void c_parser::_read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inou
         {
             //create node
             auto _node = new c_node();
-            std::memset(_node, 0, sizeof(_node));
+            std::memset(_node, 0, sizeof(c_node));
 
             //get collada attributes
             _get_collada_obj_attribute(_child, _node);
@@ -657,7 +657,7 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         {
             //create node
             auto _node = new c_node();
-            std::memset(_node, 0, sizeof(_node));
+            std::memset(_node, 0, sizeof(c_node));
 
             //get collada attributes
             _get_collada_obj_attribute(_child, _node);
@@ -866,7 +866,7 @@ void c_parser::_get_bones(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_bone* pBo
 {
 	if (pBone == nullptr) throw std::runtime_error("pbone must not null");
 
-	pBone->index = pFlatBones.size();
+	pBone->index = (int)pFlatBones.size();
 	pFlatBones.push_back(pBone);
 
 	auto _no_matrix = false;
@@ -897,7 +897,7 @@ void c_parser::_get_bones(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_bone* pBo
 		}
 		else if (_name == "scale")
 		{
-			auto _parent_rotation = pBone->parent != nullptr ? pBone->parent->rotation : glm::vec3(0);
+			//auto _parent_rotation = pBone->parent != nullptr ? pBone->parent->rotation : glm::vec3(0);
 			pBone->scale = _scale = glm::to_vec3(_child->value());
 			pBone->rotation_matrix = glm::rotate(_rotate[2], glm::vec3(1, 0, 0)) *
 				glm::rotate(_rotate[1], glm::vec3(0, 1, 0)) *
@@ -1099,7 +1099,7 @@ void c_parser::_get_vertices(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_geomet
 				if (_source[0] == '#') _source = _source.erase(0, 1);
 				_c_semantic->source = _source;
 
-				_c_semantic->offset = pGeometry.vertices->semantics.size();
+				_c_semantic->offset = (int)pGeometry.vertices->semantics.size();
 
 				pGeometry.vertices->semantics.push_back(_c_semantic);
 			}
@@ -1165,7 +1165,7 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pN
 					{
 						auto _c_semantic = new c_semantic();
 						if (_semantic_str[0] == '#') _semantic_str = _semantic_str.erase(0, 1);
-						_c_semantic->offset = _triangles->semantics.size();
+						_c_semantic->offset = (int)_triangles->semantics.size();
 						_c_semantic->source = _source_str;
 						_c_semantic->semantic = _semantic_str;
 

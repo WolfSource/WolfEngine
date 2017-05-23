@@ -4,15 +4,15 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>wolf.content_pipeline.macOS.xcscheme_^#shared#^_</key>
+		<key>wolf.gui.iOS.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>2CD617221E59DA3E006FC5DC</key>
+		<key>2C4CD2931E8A71450090EE0A</key>
 		<dict>
 			<key>primary</key>
 			<true/>

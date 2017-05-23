@@ -15,6 +15,7 @@
 #define __W_COLOR_H__
 
 #include "w_system_export.h"
+#include <w_std.h>
 #include <cstdlib>
 #include <string>
 #include <sstream>

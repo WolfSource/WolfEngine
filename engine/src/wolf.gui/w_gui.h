@@ -9,6 +9,7 @@
 #include "w_widget.h"
 #include <w_game_time.h>
 #include <w_color.h>
+#include <w_point.h>
 #include <rapidxml.hpp>
 #include <map>
 
@@ -69,7 +70,7 @@ namespace wolf
             WGUI_EXP	static void render(const char* pWidgetName, const wolf::system::w_game_time& pGameTime);
 
 			//release all controls
-            WGUI_EXP	static HRESULT release();
+            WGUI_EXP	static ULONG release();
 
 #pragma region Getters
 
@@ -87,7 +88,13 @@ namespace wolf
 #pragma endregion
 
 		private:
-			static void	_traversing_gui_node(rapidxml::xml_node<char>* pNode, const wchar_t* pGuiDesignPath);
+            static void _traversing_gui_node(rapidxml::xml_node<char>* pNode,
+#if defined(__WIN32) || defined(__UWP)
+                                             const std::wstring& pGuiDesignPath
+#else
+                                             const std::string& pGuiDesignPath
+#endif
+            );
 
 			static HRESULT add_image(_In_ int pID,
 				_In_ int pX, _In_ int pY,
@@ -216,7 +223,7 @@ namespace wolf
 				_In_ UINT pWidth, _In_ UINT pHeight,
 				_In_ int pTextOffsetX, _In_ int pTextOffsetY,
 				_In_ UINT pItemHeight,
-				_In_ POINT pItemMargin,
+				_In_ const w_point& pItemMargin,
 				_In_ UINT pHotkey,
 				_In_ bool pIsDefault,
 				_In_ w_color pColor,

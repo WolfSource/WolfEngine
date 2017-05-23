@@ -620,7 +620,7 @@ namespace wolf
 			//get caption is enabled
             WGUI_EXP bool							    get_is_caption_enabled() const										{ return this->_is_caption_enabled; }
 			//get caption																							 
-            WGUI_EXP const wchar_t*				    get_caption() const													{ return this->_caption; }
+            WGUI_EXP const std::wstring				    get_caption() const													{ return this->_caption; }
 			//get caption background color																			 
             WGUI_EXP void							    get_caption_background_color(_Out_ w_color& pColor) const			{ pColor = this->_caption_background_color; }
 			//get caption background color																			 
@@ -684,7 +684,7 @@ namespace wolf
 
 #pragma region Setters
 
-			static void WINAPI set_refresh_time(_In_ double pValue)											{ s_time_refresh.from_seconds(pValue); }
+			static void         set_refresh_time(_In_ double pValue)											{ s_time_refresh.from_seconds(pValue); }
 
 			//set the name of widget
             WGUI_EXP void	    set_name(_In_z_ const std::string& pValue)										{ this->_name = pValue; }
@@ -723,7 +723,7 @@ namespace wolf
 			//set whether caption is enable			
             WGUI_EXP void	    set_enable_caption(bool pValue)													{ this->_is_caption_enabled = pValue; }
 			//set caption of widget
-            WGUI_EXP void	    set_caption(_In_ const wchar_t* pValue)											{ wcscpy_s(this->_caption, sizeof(this->_caption) / sizeof(this->_caption[0]), pValue); }
+            WGUI_EXP void	    set_caption(_In_ const std::wstring& pValue)									{ this->_caption = pValue; }
 			//set caption background color
             WGUI_EXP void	    set_caption_background_color(_In_ w_color pValue)								{ this->_caption_background_color = pValue; }
 			//set the background color of caption, when mouse is over on widget
@@ -799,7 +799,7 @@ namespace wolf
 			w_color														_active_background_color_bottom_right;
 
 			bool														_is_caption_enabled;
-			wchar_t														_caption[256];
+            std::wstring												_caption;
 			w_color														_caption_background_color;
 			w_color														_caption_active_background_color;
 			UINT														_caption_height;

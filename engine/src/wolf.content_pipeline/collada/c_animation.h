@@ -272,7 +272,7 @@ namespace wolf
 						{
 							if (pTime >= this->times[i] && pTime < this->times[i + 1])
 							{
-								_index = i;
+								_index = (unsigned int)i;
 								break;
 							}
 						}

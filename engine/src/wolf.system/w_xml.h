@@ -61,12 +61,10 @@ namespace wolf
 			//get xml node attribute value
 			WSYS_EXP static const std::string	get_node_attribute(_In_ rapidxml::xml_node<>* pNode, _In_z_ const char* const pAttribute);
 
-#if defined(__WIN32) || defined(__UWP)
 			//get xml node value as utf8
 			WSYS_EXP static const std::wstring	get_node_value_utf8(_In_ rapidxml::xml_node<>* pNode);
 			//get xml node attribute value as utf8
 			WSYS_EXP static const std::wstring	get_node_attribute_utf8(_In_ rapidxml::xml_node<>* pNode, _In_z_ const char* pAttribute);
-#endif
 
 		private:
 			static void _write_element(_In_ wolf::system::w_xml_data& pData, _In_ rapidxml::xml_document<wchar_t>& pDoc, _Inout_ rapidxml::xml_node<wchar_t>** pParentNode);

@@ -1768,7 +1768,9 @@ void w_widget::clear_focus()
 		s_pControlFocus = nullptr;
 	}
 
+#ifdef __WIN32
 	ReleaseCapture();
+#endif
 }
 
 bool w_widget::on_cycle_focus(_In_ bool pForward)

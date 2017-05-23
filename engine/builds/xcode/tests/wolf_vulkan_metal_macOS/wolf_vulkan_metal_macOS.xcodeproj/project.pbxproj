@@ -23,10 +23,9 @@
 		2C736BB81ECA1E6A00624CC7 /* basic.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB41ECA1E6A00624CC7 /* basic.vert */; };
 		2C736BB91ECA1E6A00624CC7 /* static_instancing_y_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */; };
 		2C736BBA1ECA1E6A00624CC7 /* static_instancing_z_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */; };
+		2CA945CE1ED4DE9C007B70B8 /* libwolf.gui.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA945CD1ED4DE9C007B70B8 /* libwolf.gui.macOS.dylib */; };
 		2CE21C411E89678F00EEE579 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */; };
 		2CE21C421E89678F00EEE579 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */; };
-		2CF9CFF71ECBF8DF00BC2AEC /* gui.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2CF9CFF51ECBF8DF00BC2AEC /* gui.frag */; };
-		2CF9CFF81ECBF8DF00BC2AEC /* gui.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2CF9CFF61ECBF8DF00BC2AEC /* gui.vert */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,10 +51,9 @@
 		2C736BB41ECA1E6A00624CC7 /* basic.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.vert; path = ../../../../../content/shaders/basic.vert; sourceTree = "<group>"; };
 		2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = static_instancing_y_up.vert; path = ../../../../../content/shaders/static_instancing_y_up.vert; sourceTree = "<group>"; };
 		2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = static_instancing_z_up.vert; path = ../../../../../content/shaders/static_instancing_z_up.vert; sourceTree = "<group>"; };
+		2CA945CD1ED4DE9C007B70B8 /* libwolf.gui.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.gui.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.gui.macOS.dylib; sourceTree = "<group>"; };
 		2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../wolf.system/build/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.vulkan.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.vulkan.macOS.dylib; sourceTree = "<group>"; };
-		2CF9CFF51ECBF8DF00BC2AEC /* gui.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = gui.frag; path = ../../../../../content/shaders/gui.frag; sourceTree = "<group>"; };
-		2CF9CFF61ECBF8DF00BC2AEC /* gui.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = gui.vert; path = ../../../../../content/shaders/gui.vert; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CA945CE1ED4DE9C007B70B8 /* libwolf.gui.macOS.dylib in Frameworks */,
 				2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2CE21C411E89678F00EEE579 /* libwolf.system.macOS.dylib in Frameworks */,
 				2CE21C421E89678F00EEE579 /* libwolf.vulkan.macOS.dylib in Frameworks */,
@@ -87,8 +86,6 @@
 		2C4CCAF61EB0E5F700E0A422 /* shaders */ = {
 			isa = PBXGroup;
 			children = (
-				2CF9CFF51ECBF8DF00BC2AEC /* gui.frag */,
-				2CF9CFF61ECBF8DF00BC2AEC /* gui.vert */,
 				2C736BB31ECA1E6A00624CC7 /* basic.frag */,
 				2C736BB41ECA1E6A00624CC7 /* basic.vert */,
 				2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */,
@@ -129,6 +126,7 @@
 		2C620FAB1E61804B005DFB10 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CA945CD1ED4DE9C007B70B8 /* libwolf.gui.macOS.dylib */,
 				2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib */,
 				2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */,
 				2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */,
@@ -198,11 +196,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CF9CFF71ECBF8DF00BC2AEC /* gui.frag in Resources */,
 				2C620F951E617F81005DFB10 /* Assets.xcassets in Resources */,
 				2C736BB71ECA1E6A00624CC7 /* basic.frag in Resources */,
 				2C736BB91ECA1E6A00624CC7 /* static_instancing_y_up.vert in Resources */,
-				2CF9CFF81ECBF8DF00BC2AEC /* gui.vert in Resources */,
 				2C620F981E617F81005DFB10 /* Main.storyboard in Resources */,
 				2C736BBA1ECA1E6A00624CC7 /* static_instancing_z_up.vert in Resources */,
 				2C736BB81ECA1E6A00624CC7 /* basic.vert in Resources */,
@@ -348,6 +344,7 @@
 					"$(SRCROOT)/../../../../src/wolf.system",
 					"$(SRCROOT)/../../../../src/wolf.render",
 					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
+					"$(SRCROOT)/../../../../src/wolf.gui",
 				);
 				INFOPLIST_FILE = wolf_vulkan_metal_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -373,6 +370,7 @@
 					"$(SRCROOT)/../../../../src/wolf.system",
 					"$(SRCROOT)/../../../../src/wolf.render",
 					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
+					"$(SRCROOT)/../../../../src/wolf.gui",
 				);
 				INFOPLIST_FILE = wolf_vulkan_metal_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";

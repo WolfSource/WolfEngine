@@ -670,7 +670,7 @@ namespace wolf
                     VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,                          // Type
                     nullptr,                                                                // Next
                     0,                                                                      // Flags
-                    _descriptor_set_layout == nullptr ? 0 : 1,                              // SetLayoutCount
+                    static_cast<uint32_t>(_descriptor_set_layout == nullptr ? 0 : 1),       // SetLayoutCount
                     _descriptor_set_layout == nullptr ? nullptr : &_descriptor_set_layout,  // SetLayouts
                     0,                                                                      // PushConstantRangeCount
                     nullptr                                                                 // PushConstantRanges

@@ -25,19 +25,28 @@ HRESULT w_gui::load(const std::wstring& pGuiDesignPath, _In_ const UINT pParentW
 
 	//_hwnd = pHwnd;
 
-    auto _c_str = pGuiDesignPath.c_str();
-
+#if defined(__WIN32) || defined(__UWP)
+    auto _path = pGuiDesignPath;
+#else
+    auto _path = wolf::system::convert::wstring_to_string(pGuiDesignPath);
+#endif
+    
 	//parse gui from xml file
-	if (wolf::system::io::get_is_file(_c_str) == S_FALSE)
+	if (wolf::system::io::get_is_file(_path.c_str()) == S_FALSE)
 	{
-		wchar_t _msg[1024];
-		wsprintf(_msg, L"load wolf.gui design file, file not found. %s", pGuiDesignPath);
-		V(S_FALSE, _msg, _trace_class_name, 3);
+        V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+          L"load wolf.gui design file, file not found. "
+#else
+          "load wolf.gui design file, file not found. "
+#endif
+          + _path, _trace_class_name, 3);
+        
 		return S_FALSE;
 	}
 
 	//first open the stream of xml file 
-	std::ifstream _file(pGuiDesignPath);
+	std::ifstream _file(_path);
 	std::stringstream _string_stream;
 	_string_stream << _file.rdbuf();
 	//close file
@@ -58,9 +67,13 @@ HRESULT w_gui::load(const std::wstring& pGuiDesignPath, _In_ const UINT pParentW
 	{
 		_error = true;
 
-		wchar_t _msg[2048];
-		wsprintf(_msg, L"wolf.gui design file, file corrupted: %s", pGuiDesignPath);
-		V(S_FALSE, _msg, _trace_class_name, 3);
+         V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+       L"wolf.gui design file, file corrupted: "
+#else
+        "wolf.gui design file, file corrupted: "
+#endif
+           + _path, _trace_class_name, 3);
 	}
 
 	if (_error) return S_FALSE;
@@ -69,9 +82,14 @@ HRESULT w_gui::load(const std::wstring& pGuiDesignPath, _In_ const UINT pParentW
 	auto _wolf_gui_node = _doc.first_node();
 	if (!_wolf_gui_node)
 	{
-		wchar_t _msg[2048];
-		wsprintf(_msg, L"wolf.gui design file, it might be is empty or corrupted. %s", pGuiDesignPath);
-		V(S_FALSE, _msg, _trace_class_name, 3);
+        V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+          L"wolf.gui design file, it might be is empty or corrupted. "
+#else
+          "wolf.gui design file, it might be is empty or corrupted. "
+#endif
+          + _path, _trace_class_name, 3);
+        
 		return S_FALSE;
 	}
 
@@ -79,16 +97,21 @@ HRESULT w_gui::load(const std::wstring& pGuiDesignPath, _In_ const UINT pParentW
 	std::transform(_name.begin(), _name.end(), _name.begin(), ::tolower);
 	if (_name != "wolf.gui")
 	{
-		wchar_t _msg[2048];
-		wsprintf(_msg, L"wolf.gui design file, the design file must be started with <wolf.gui>...</wolf.gui>.: %s", pGuiDesignPath);
-		V(S_FALSE, _msg, _trace_class_name, 3);
+        V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+          L"wolf.gui design file, the design file must be started with <wolf.gui>...</wolf.gui>.: "
+#else
+          "wolf.gui design file, the design file must be started with <wolf.gui>...</wolf.gui>.: "
+#endif
+          + _path, _trace_class_name, 3);
+        
 		return S_FALSE;
 	}
 
 	//Check all nodes inside the wolf.gui
 	for (auto _node = _wolf_gui_node->first_node(); _node != nullptr; _node = _node->next_sibling())
 	{
-		_traversing_gui_node(_node, _c_str);
+		_traversing_gui_node(_node, _path);
 	}
 
 	_doc.clear();
@@ -96,7 +119,13 @@ HRESULT w_gui::load(const std::wstring& pGuiDesignPath, _In_ const UINT pParentW
 	return S_OK;
 }
 
-void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t* pGuiDesignPath)
+void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,
+#if defined(__WIN32) || defined(__UWP)
+                                 const std::wstring& pGuiDesignPath
+#else
+                                 const std::string& pGuiDesignPath
+#endif
+                                 )
 {
 	if (!pNode) return;
 
@@ -198,9 +227,16 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating widget: %s from path: %s", _name, pGuiDesignPath);
-			V(S_FALSE, _msg, _trace_class_name, 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating widget: " +  wolf::system::convert::string_to_wstring(_name) + L" from path: "
+#else
+              "creating widget: " + _name + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
+            
+            return;
+            
 		}
 
 #pragma endregion
@@ -219,7 +255,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui image without parent. The image must be child of a widget.", _trace_class_name, 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui image without parent. The image must be child of a widget. "
+#else
+              "loading a gui image without parent. The image must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
+            
 			return;
 		}
 		else
@@ -228,7 +271,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui image with unsupported parent. The image must be child of a widget.", _trace_class_name, 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui image with unsupported parent. The image must be child of a widget. "
+#else
+                  "loading a gui image with unsupported parent. The image must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 3);
+                
 				return;
 			}
 		}
@@ -274,9 +324,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating label: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, _trace_class_name, 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating label: " + wolf::system::convert::string_to_wstring(_name)  + " from path: "
+#else
+              "creating label: " + _name + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
+            
 		}
 
 #pragma endregion
@@ -289,7 +344,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui label without parent. The label must be child of a widget.", _trace_class_name, 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui label without parent. The label must be child of a widget. "
+#else
+              "loading a gui label without parent. The label must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -298,7 +360,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui label with unsupported parent. The label must be child of a widget.", _trace_class_name, 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui label with unsupported parent. The label must be child of a widget. "
+#else
+                  "loading a gui label with unsupported parent. The label must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+
 				return;
 			}
 		}
@@ -306,7 +375,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		//read xml values
 
 		auto _id = wolf::system::w_xml::get_node_attribute(pNode, "ID");
-		auto _text = wolf::system::w_xml::get_node_attribute_utf8(pNode, "Text");
+        std::wstring _text = wolf::system::w_xml::get_node_attribute_utf8(pNode, "Text");
 		auto _position = wolf::system::w_xml::get_node_attribute(pNode, "Position");
 		auto _size = wolf::system::w_xml::get_node_attribute(pNode, "Size");
 
@@ -360,10 +429,15 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating label: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, "w_gui", 3);
-		}
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating label: " + wolf::system::convert::string_to_wstring(_name) + L" from path: "
+#else
+              "creating label: " + _name + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+
+        }
 
 #pragma endregion
 	}
@@ -375,7 +449,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui button without parent. The button must be child of a widget.", "w_gui", 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui button without parent. The button must be child of a widget. "
+#else
+              "loading a gui button without parent. The button must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -384,7 +465,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui button with unsupported parent. The button must be child of a widget.", "w_gui", 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui button with unsupported parent. The button must be child of a widget. "
+#else
+                  "loading a gui button with unsupported parent. The button must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+
 				return;
 			}
 		}
@@ -485,9 +573,13 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating button: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, "w_gui", 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating button: " + wolf::system::convert::string_to_wstring(_name) + L" from path: "
+#else
+              "creating button: " + _name + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
 		}
 
 #pragma endregion
@@ -500,7 +592,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui check_box without parent. The check_box must be child of a widget.", "w_gui", 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui check_box without parent. The check_box must be child of a widget. "
+#else
+              "loading a gui check_box without parent. The check_box must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -509,7 +608,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui check_box with unsupported parent. The check_box must be child of a widget.", "w_gui", 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui check_box with unsupported parent. The check_box must be child of a widget. "
+#else
+                  "loading a gui check_box with unsupported parent. The check_box must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+                
 				return;
 			}
 		}
@@ -591,9 +697,13 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating check_box: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, "w_gui", 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating check_box: " + wolf::system::convert::string_to_wstring(_name) + L" from path: "
+#else
+              "creating check_box: " + _name + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
 		}
 
 #pragma endregion
@@ -606,7 +716,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui radio_button without parent. The radio_button must be child of a widget.", "w_gui", 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui radio_button without parent. The radio_button must be child of a widget. "
+#else
+              "loading a gui radio_button without parent. The radio_button must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -615,7 +732,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui radio_button with unsupported parent. The radio_button must be child of a widget.", "w_gui", 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui radio_button with unsupported parent. The radio_button must be child of a widget. "
+#else
+                  "loading a gui radio_button with unsupported parent. The radio_button must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+                
 				return;
 			}
 		}
@@ -699,9 +823,13 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating radio_button: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, "w_gui", 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating radio_button: " + wolf::system::convert::string_to_wstring(_name) + " from path: "
+#else
+              "creating radio_button: " + _name  + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
 		}
 
 #pragma endregion
@@ -714,7 +842,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui combo_box without parent. The combo_box must be child of a widget.", "w_gui", 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui combo_box without parent. The combo_box must be child of a widget. "
+#else
+              "loading a gui combo_box without parent. The combo_box must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -723,7 +858,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui combo_box with unsupported parent. The combo_box must be child of a widget.", "w_gui", 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui combo_box with unsupported parent. The combo_box must be child of a widget. "
+#else
+                  "loading a gui combo_box with unsupported parent. The combo_box must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+                
 				return;
 			}
 		}
@@ -782,9 +924,9 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		glm::vec2 _text_offset_values = std::atov2(_text_offset.c_str());
 		glm::vec2 _item_margin_values = std::atov2(_item_margin.c_str());
 
-		POINT _item_margin_point;
-		_item_margin_point.x = static_cast<LONG>(_item_margin_values.x);
-		_item_margin_point.y = static_cast<LONG>(_item_margin_values.y);
+		w_point _item_margin_point;
+		_item_margin_point.x = _item_margin_values.x;
+		_item_margin_point.y = _item_margin_values.y;
 
 		//read combo box items
 		std::vector<std::wstring> _combo_box_items;
@@ -841,9 +983,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating combo_box: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, "w_gui", 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating combo_box: " + wolf::system::convert::string_to_wstring(_name) + L" from path: "
+#else
+              "creating combo_box: " + _name  + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
+            
 		}
 
 #pragma endregion
@@ -856,7 +1003,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui slider without parent. The slider must be child of a widget.", _trace_class_name, 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui slider without parent. The slider must be child of a widget. "
+#else
+              "loading a gui slider without parent. The slider must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -865,7 +1019,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui slider with unsupported parent. The slider must be child of a widget.", _trace_class_name, 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui slider with unsupported parent. The slider must be child of a widget. "
+#else
+                  "loading a gui slider with unsupported parent. The slider must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+                
 				return;
 			}
 		}
@@ -944,9 +1105,13 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating slider: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, _trace_class_name, 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating slider: " + wolf::system::string_to_wstring(_id)  + L" from path: "
+#else
+              "creating slider: " + _id + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
 		}
 
 #pragma endregion
@@ -959,7 +1124,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui listbox without parent. The listbox must be child of a widget.", _trace_class_name, 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui listbox without parent. The listbox must be child of a widget. "
+#else
+              "loading a gui listbox without parent. The listbox must be child of a widget."
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -968,7 +1140,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui listbox with unsupported parent. The listbox must be child of a widget.", _trace_class_name, 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui listbox with unsupported parent. The listbox must be child of a widget. "
+#else
+                  "loading a gui listbox with unsupported parent. The listbox must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+                
 				return;
 			}
 		}
@@ -1093,10 +1272,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating listbox: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, _trace_class_name, 3);
-		}
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating listbox: " +  wolf::system::convert::string_to_wstring(_id) + L" from path: "
+#else
+              "creating listbox: " +  _id + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
+        }
 
 #pragma endregion
 	}
@@ -1108,7 +1291,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui list_widget without parent. The list_widget must be child of a widget.", _trace_class_name, 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui list_widget without parent. The list_widget must be child of a widget. "
+#else
+              "loading a gui list_widget without parent. The list_widget must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
+            
 			return;
 		}
 		else
@@ -1117,7 +1307,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui list_widget with unsupported parent. The list_widget must be child of a widget.", _trace_class_name, 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui list_widget with unsupported parent. The list_widget must be child of a widget. "
+#else
+                  "loading a gui list_widget with unsupported parent. The list_widget must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+                
 				return;
 			}
 		}
@@ -1176,9 +1373,13 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating list_widget: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, _trace_class_name, 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating list_widget: " +  wolf::system::convert::string_to_wstring(_id) + L" from path: "
+#else
+              "creating list_widget: " +  _id + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
 		}
 
 #pragma endregion
@@ -1191,7 +1392,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui tab without parent. The tab must be child of a widget.", _trace_class_name, 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui tab without parent. The tab must be child of a widget. "
+#else
+              "loading a gui tab without parent. The tab must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+    
 			return;
 		}
 		else
@@ -1200,7 +1408,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui tab with unsupported parent. The tab must be child of a widget.", _trace_class_name, 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui tab with unsupported parent. The tab must be child of a widget. "
+#else
+                  "loading a gui tab with unsupported parent. The tab must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+                
 				return;
 			}
 		}
@@ -1296,10 +1511,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating combo_box: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, _trace_class_name, 3);
-		}
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating combo_box: " +  wolf::system::convert::string_to_wstring(_id) + L" from path: "
+#else
+              "creating combo_box: " +  _id + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
+        }
 
 #pragma endregion
 	}
@@ -1311,7 +1530,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui line shape without parent. The line shape must be child of a widget.", _trace_class_name, 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui line shape without parent. The line shape must be child of a widget. "
+#else
+              "loading a gui line shape without parent. The line shape must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -1320,7 +1546,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui line shape with unsupported parent. The line shape must be child of a widget.", _trace_class_name, 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui line shape with unsupported parent. The line shape must be child of a widget. "
+#else
+                  "loading a gui line shape with unsupported parent. The line shape must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+            
 				return;
 			}
 		}
@@ -1359,9 +1592,13 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating line shape: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, _trace_class_name, 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating line shape: " +  wolf::system::convert::string_to_wstring(_id) + L" from path: "
+#else
+              "creating line shape: " +  _id + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
 		}
 
 #pragma endregion
@@ -1374,7 +1611,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui rectangle shape without parent. The rectangle shape must be child of a widget.", _trace_class_name, 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui rectangle shape without parent. The rectangle shape must be child of a widget. "
+#else
+              "loading a gui rectangle shape without parent. The rectangle shape must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -1383,7 +1627,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui rectangle shape with unsupported parent. The rectangle shape must be child of a widget.", _trace_class_name, 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui rectangle shape with unsupported parent. The rectangle shape must be child of a widget. "
+#else
+                  "loading a gui rectangle shape with unsupported parent. The rectangle shape must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+                
 				return;
 			}
 		}
@@ -1428,10 +1679,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating rectangle shape: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, _trace_class_name, 3);
-		}
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating rectangle shape: " + wolf::system::convert::string_to_wstring(_name) + L" from path: "
+#else
+              "creating rectangle shape: " + _name + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
+        }
 
 #pragma endregion
 	}
@@ -1443,7 +1698,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 		auto _parent_node = pNode->parent();
 		if (_parent_node == nullptr || _temp_parent_widget_ptr == nullptr)
 		{
-			V(S_FALSE, L"loading a gui ellipse shape without parent. The ellipse shape must be child of a widget.", _trace_class_name, 2);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"loading a gui ellipse shape without parent. The ellipse shape must be child of a widget. "
+#else
+              "loading a gui ellipse shape without parent. The ellipse shape must be child of a widget. "
+#endif
+              + pGuiDesignPath, _trace_class_name, 2);
+            
 			return;
 		}
 		else
@@ -1452,7 +1714,14 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 			std::transform(_parent_node_name.begin(), _parent_node_name.end(), _parent_node_name.begin(), ::tolower);
 			if (_parent_node_name != "widget")
 			{
-				V(S_FALSE, L"loading a gui ellipse shape with unsupported parent. The ellipse shape must be child of a widget.", _trace_class_name, 2);
+                V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+                  L"loading a gui ellipse shape with unsupported parent. The ellipse shape must be child of a widget. "
+#else
+                  "loading a gui ellipse shape with unsupported parent. The ellipse shape must be child of a widget. "
+#endif
+                  + pGuiDesignPath, _trace_class_name, 2);
+            
 				return;
 			}
 		}
@@ -1494,9 +1763,13 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,  const wchar_t
 
 		if (_hr == S_FALSE)
 		{
-			wchar_t _msg[2048];
-			wsprintf(_msg, L"creating ellipse shape: %s from path: %s", _id, pGuiDesignPath);
-			V(S_FALSE, _msg, _trace_class_name, 3);
+            V(S_FALSE,
+#if defined(__WIN32) || defined(__UWP)
+              L"creating ellipse shape: " + wolf::system::convert::string_to_wstring(_name) + L" from path: "
+#else
+              "creating ellipse shape: " + _name + " from path: "
+#endif
+              + pGuiDesignPath, _trace_class_name, 3);
 		}
 
 #pragma endregion
@@ -1909,7 +2182,7 @@ HRESULT w_gui::add_combo_box(_In_ int pID,
 	_In_ UINT pWidth, _In_ UINT pHeight,
 	_In_ int pTextOffsetX, _In_ int pTextOffsetY,
 	_In_ UINT pItemHeight,
-	_In_ POINT pItemMargin,
+	_In_ const w_point& pItemMargin,
 	_In_ UINT pHotkey,
 	_In_ bool pIsDefault,
 	_In_ w_color pColor,
@@ -2413,7 +2686,7 @@ void w_gui::render(const char* pWidgetName, const wolf::system::w_game_time& pGa
 	V(S_FALSE, _msg, _trace_class_name, 2);
 }
 
-HRESULT w_gui::release()
+ULONG w_gui::release()
 {
 	if (w_gui::_is_released) return 0;
 	

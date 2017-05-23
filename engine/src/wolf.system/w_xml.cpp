@@ -2,10 +2,7 @@
 #include "w_xml.h"
 #include <rapidxml_print.hpp>
 #include <fstream>
-
-#if defined(__WIN32) || defined(__UWP)
 #include <w_convert.h>
-#endif
 
 using namespace wolf::system;
 using namespace rapidxml;
@@ -30,12 +27,10 @@ HRESULT w_xml::save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::syste
 	std::wofstream _file(pPath);
 	if (!_file) return S_FALSE;
 
-#if defined(__WIN32) || defined(__UWP)
 	if (pUTF_8)
 	{
-		_file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
+		_file.imbue(std::locale(std::locale(""), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
 	}
-#endif
 
 	xml_document<wchar_t> _doc;
 
@@ -117,8 +112,6 @@ const std::string w_xml::get_node_attribute(_In_ rapidxml::xml_node<>* pNode, _I
 	return "";
 }
 
-#if defined(__WIN32) || defined(__UWP)
-
 const std::wstring w_xml::get_node_value_utf8(_In_ rapidxml::xml_node<>* pNode)
 {
 	if (pNode == nullptr) return L"";
@@ -139,5 +132,3 @@ const std::wstring w_xml::get_node_attribute_utf8(_In_ rapidxml::xml_node<>* pNo
 
 	return L"";
 }
-
-#endif

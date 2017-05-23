@@ -84,7 +84,7 @@ void scene::load()
     
     auto _render_pass_handle = this->_render_pass.get_handle();
 
-    _hr = wolf::gui::w_gui::load(content_path + L"\\gui\\test.xml", _width, _height);
+    _hr = wolf::gui::w_gui::load(content_path + L"gui/test.xml", _width, _height);
     if (_hr == S_FALSE)
     {
         logger.error("loading gui");

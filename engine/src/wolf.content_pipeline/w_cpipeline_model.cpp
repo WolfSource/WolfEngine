@@ -72,9 +72,9 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 		}
 
 
-		auto _joint_index = 0;
-		auto _weight_index = 0;
-		auto _weight_src = -1;
+		//auto _joint_index = 0;
+		//auto _weight_index = 0;
+		//auto _weight_src = -1;
 		if (pSkin != nullptr)
 		{
 			////find transform and joint source index
@@ -134,8 +134,8 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 
 #pragma region read vertices & indices data
 
-		auto _ind2 = 0;
-		auto _ind3 = 0;
+		//auto _ind2 = 0;
+		//auto _ind3 = 0;
 		auto _pos_source = pGeometry.sources[_pos_index];
 		auto _tex_source = _tex_index != -1 ? pGeometry.sources[_tex_index] : nullptr;
 		auto _nor_source = _nor_index != -1 ? pGeometry.sources[_nor_index] : nullptr;
@@ -203,7 +203,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 
 #pragma region optimizing
 
-			const float _epsilon = 0.0001f;
+			//const float _epsilon = 0.0001f;
 
 			int _vertices_size = static_cast<int>(_vertices.size());
 			/*if (pOptimizing)

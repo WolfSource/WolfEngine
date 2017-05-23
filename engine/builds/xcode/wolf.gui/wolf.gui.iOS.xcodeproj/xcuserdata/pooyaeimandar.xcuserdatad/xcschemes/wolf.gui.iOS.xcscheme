@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
-               BuildableName = "libwolf.system.macOS.dylib"
-               BlueprintName = "wolf.system.macOS"
-               ReferencedContainer = "container:wolf.system.macOS.xcodeproj">
+               BlueprintIdentifier = "2C4CD2931E8A71450090EE0A"
+               BuildableName = "libwolf.gui.iOS.a"
+               BlueprintName = "wolf.gui.iOS"
+               ReferencedContainer = "container:wolf.gui.iOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,10 +45,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
-            BuildableName = "libwolf.system.macOS.dylib"
-            BlueprintName = "wolf.system.macOS"
-            ReferencedContainer = "container:wolf.system.macOS.xcodeproj">
+            BlueprintIdentifier = "2C4CD2931E8A71450090EE0A"
+            BuildableName = "libwolf.gui.iOS.a"
+            BlueprintName = "wolf.gui.iOS"
+            ReferencedContainer = "container:wolf.gui.iOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,10 +63,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
-            BuildableName = "libwolf.system.macOS.dylib"
-            BlueprintName = "wolf.system.macOS"
-            ReferencedContainer = "container:wolf.system.macOS.xcodeproj">
+            BlueprintIdentifier = "2C4CD2931E8A71450090EE0A"
+            BuildableName = "libwolf.gui.iOS.a"
+            BlueprintName = "wolf.gui.iOS"
+            ReferencedContainer = "container:wolf.gui.iOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
