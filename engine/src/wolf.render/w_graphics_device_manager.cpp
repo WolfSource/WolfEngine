@@ -127,7 +127,7 @@ VkPipelineMultisampleStateCreateInfo w_graphics_device::defaults::vk_default_pip
       VK_FALSE                                                          // alphaToOneEnable
 };
 
-VkPipelineColorBlendAttachmentState w_graphics_device::defaults::vk_default_pipeline_color_blend_attachment_state = 
+VkPipelineColorBlendAttachmentState w_graphics_device::w_blend_states::blend_none = 
 {
       VK_FALSE,                                                         // blendEnable
       VK_BLEND_FACTOR_ONE,                                              // srcColorBlendFactor
@@ -139,7 +139,20 @@ VkPipelineColorBlendAttachmentState w_graphics_device::defaults::vk_default_pipe
       VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |             // ColorWriteMask
       VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
 };
-    
+
+VkPipelineColorBlendAttachmentState w_graphics_device::w_blend_states::premulitplied_alpha =
+{
+    VK_TRUE,                                                            // blendEnable
+    VK_BLEND_FACTOR_ONE,                                                // srcColorBlendFactor
+    VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,                                // dstColorBlendFactor
+    VK_BLEND_OP_ADD,                                                    // colorBlendOp
+    VK_BLEND_FACTOR_ONE,                                                // srcAlphaBlendFactor
+    VK_BLEND_FACTOR_ZERO,                                               // DstAlphaBlendFactor
+    VK_BLEND_OP_ADD,                                                    // AlphaBlendOp
+    VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |               // ColorWriteMask
+    VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
+};
+
 #endif
 
 w_graphics_device::w_graphics_device():

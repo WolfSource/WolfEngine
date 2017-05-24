@@ -89,34 +89,27 @@ namespace wolf
                     if (!_widget_vertices.size()) continue;
                     
                     const std::vector<UINT> _indices = { 0, 1, 2, 0, 3, 1 };
-                    std::vector<float> _vertices;
-                    std::vector<float> _instance_vertices;
+                    std::vector<wolf::gui::w_gui_vertex_2d> _vertices;
+                    std::vector<wolf::gui::w_gui_instance_vertex_2d> _instance_vertices;
 
-                    //the four first iter is widget
-                    for (size_t i = 0; i < 4; ++i)
-                    {
-                        _vertices.push_back(_widget_vertices[i].position[0]);
-                        _vertices.push_back(_widget_vertices[i].position[1]);
-                        _vertices.push_back(_widget_vertices[i].color[0]);
-                        _vertices.push_back(_widget_vertices[i].color[1]);
-                        _vertices.push_back(_widget_vertices[i].color[2]);
-                        _vertices.push_back(_widget_vertices[i].color[3]);
-                        _vertices.push_back(1 - _widget_vertices[i].uv[0]);
-                        _vertices.push_back(_widget_vertices[i].uv[1]);
-                    }
+                    //the four first iters are vertices of widget
+                    _vertices.insert(_vertices.begin(), _widget_vertices.begin(), _widget_vertices.begin() + 4);
 
                     //others are instances
-                    for (size_t i = 4; i < _widget_vertices.size(); ++i)
+                    for (size_t i = 4; i < 5 /*_widget_vertices.size()*/; ++i)
                     {
-                        _instance_vertices.push_back(_widget_vertices[i].position[0]);
-                        _instance_vertices.push_back(_widget_vertices[i].position[1]);
-                        _instance_vertices.push_back(_widget_vertices[i].color[0]);
-                        _instance_vertices.push_back(_widget_vertices[i].color[1]);
-                        _instance_vertices.push_back(_widget_vertices[i].color[2]);
-                        _instance_vertices.push_back(_widget_vertices[i].color[3]);
-                        _instance_vertices.push_back(1 - _widget_vertices[i].uv[0]);
-                        _instance_vertices.push_back(_widget_vertices[i].uv[1]);
-                        _instance_vertices.push_back((float)i);
+                        wolf::gui::w_gui_instance_vertex_2d _instance_vertex;
+                        _instance_vertex.position[0] = _widget_vertices[i].position[0];
+                        _instance_vertex.position[1] = _widget_vertices[i].position[1];
+                        _instance_vertex.color[0] = 0.0f;// _widget_vertices[i].color[0];
+                        _instance_vertex.color[1] = 0.0f;// _widget_vertices[i].color[1];
+                        _instance_vertex.color[2] = 1.0f; //_widget_vertices[i].color[2];
+                        _instance_vertex.color[3] = 0.5f;// _widget_vertices[i].color[3];
+                        _instance_vertex.uv[0] = 1 - _widget_vertices[i].uv[0];
+                        _instance_vertex.uv[1] = _widget_vertices[i].uv[1];
+                        _instance_vertex.index = static_cast<UINT>(0);
+
+                        _instance_vertices.push_back(_instance_vertex);
                     }
 
                     auto _iter_find = this->_widgets.find(_widget_name);
@@ -132,9 +125,11 @@ namespace wolf
                         }
 
                         _mesh->set_vertex_declaration_struct(w_mesh::w_vertex_declaration::VERTEX_GUI_2D);
+                        auto _count = static_cast<UINT>(_vertices.size());
                         auto _hr = _mesh->load(pGDevice,
                             _vertices.data(),
-                            static_cast<UINT>(_vertices.size()),
+                            _count * sizeof(wolf::gui::w_gui_vertex_2d),
+                            _count,
                             _indices.data(),
                             static_cast<UINT>(_indices.size()),
                             this->_shader,
@@ -148,10 +143,28 @@ namespace wolf
                             V(_hr, "loading mesh", this->_name, 3);
                             break;
                         }
-                        this->_widgets[_widget_name]._widget_mesh = _mesh;
 
-                        _instance_vertices.clear();
+                        widget_render _widget_render;
+                        _widget_render._widget_mesh = _mesh;
+
+                        //if we have instances
+                        _widget_render._widget_childs_instances_size = static_cast<UINT>(_instance_vertices.size() * sizeof(wolf::gui::w_gui_instance_vertex_2d));
+                        if (_widget_render._widget_childs_instances_size)
+                        {
+                            if (update_instance_buffer(pGDevice,
+                                _instance_vertices.data(),
+                                _widget_render._widget_childs_instances_size,
+                                &_widget_render._widget_childs_instances) == S_FALSE)
+                            {
+                                _widget_render._widget_childs_instances_size = 0;
+                                SAFE_RELEASE(_widget_render._widget_childs_instances);
+                                V(S_FALSE, "Error creating instance buffer for widget " + _widget_name, this->_name, 3);
+                            }
+                            _instance_vertices.clear();
+                        }
                         _vertices.clear();
+
+                        this->_widgets[_widget_name] = _widget_render;
                     }
                     else
                     {
@@ -159,10 +172,12 @@ namespace wolf
                         auto _mesh = _iter_find->second._widget_mesh;
                         if (_mesh)
                         {
+                            auto _count = static_cast<UINT>(_vertices.size());
                             if(_mesh->update_dynamic_buffer(
                                 pGDevice,
                                 _vertices.data(),
-                                _vertices.size(),
+                                _count * sizeof(wolf::gui::w_gui_vertex_2d),
+                                _count,
                                 _indices.data(),
                                 _indices.size()) == S_FALSE)
                             {
@@ -197,8 +212,13 @@ namespace wolf
                         else
                         {
                             //render the mesh
-                            auto _instance_handle = _widget._widget_childs_instances ? _widget._widget_childs_instances->get_handle() : nullptr;
-                            _widget._widget_mesh->render(pCommandBuffer, _instance_handle, _widget._widget_childs_instances_count);
+                            auto _instance_handle = _widget._widget_childs_instances &&  _widget._widget_childs_instances_size ? 
+                                _widget._widget_childs_instances->get_handle() : nullptr;
+
+                            _widget._widget_mesh->render(
+                                pCommandBuffer, 
+                                _instance_handle, 
+                                _widget._widget_childs_instances_size);
                         }
                     }
                 });
@@ -271,33 +291,32 @@ namespace wolf
 #pragma region create VRAM instance buffer
 
                 //release instance buffer
-                auto _buffer = *pInstanceBuffer;
-                if (_buffer)
+                if (!*pInstanceBuffer)
                 {
-                    _buffer->release();
-                }
-                _buffer = new (std::nothrow) w_buffer();
-                if (!_buffer)
-                {
-                    V(_hr, "allcating instance buffer", this->_name, 3);
-                    return S_FALSE;
-                }
+                    auto _buffer = new (std::nothrow) w_buffer();
+                    if (!_buffer)
+                    {
+                        V(_hr, "allcating instance buffer", this->_name, 3);
+                        return S_FALSE;
+                    }
+                    *pInstanceBuffer = _buffer;
 
-                _hr = _buffer->load(pGDevice,
+                    _hr = (*pInstanceBuffer)->load(pGDevice,
                         pInstancedSize,
                         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-                if (_hr == S_FALSE)
-                {
-                    V(_hr, "loading instance buffer", this->_name, 3);
-                    return S_FALSE;
+                    if (_hr == S_FALSE)
+                    {
+                        V(_hr, "loading instance buffer", this->_name, 3);
+                        return S_FALSE;
+                    }
                 }
 
 #pragma endregion
 
                 //bind instance buffer
-                _hr = _buffer->bind();
+                _hr = (*pInstanceBuffer)->bind();
                 if (_hr == S_FALSE)
                 {
                     V(_hr, "binding instance buffer", this->_name, 3);
@@ -313,7 +332,7 @@ namespace wolf
                     _copy_region.size = pInstancedSize;
                     vkCmdCopyBuffer(_copy_cmd,
                         _staging_buffer.get_handle(),
-                        _buffer->get_handle(),
+                        (*pInstanceBuffer)->get_handle(),
                         1,
                         &_copy_region);
                 }
@@ -333,14 +352,14 @@ namespace wolf
             struct widget_render
             {
                 wolf::graphics::w_mesh*                                        _widget_mesh = nullptr;
-                UINT                                                           _widget_childs_instances_count = 0;
+                UINT                                                           _widget_childs_instances_size = 0;
                 wolf::graphics::w_buffer*                                      _widget_childs_instances = nullptr;
 
                 void release()
                 {
                     SAFE_RELEASE(this->_widget_mesh);
                     SAFE_RELEASE(this->_widget_childs_instances);
-                    this->_widget_childs_instances_count = 0;
+                    this->_widget_childs_instances_size = 0;
                 }
             };
 

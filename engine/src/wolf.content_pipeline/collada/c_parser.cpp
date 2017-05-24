@@ -1334,7 +1334,7 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
 
 void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, 
     _In_ const bool pInvertNormals, 
-    _Inout_ std::vector<c_node*>& pNodes, 
+    _Inout_ std::vector<c_node*> pNodes, 
     _Inout_ std::vector<w_cpipeline_model*>& pModels,
     _Inout_ std::vector<c_node*>& pMeshWithUnknownInstanceRef)
 {

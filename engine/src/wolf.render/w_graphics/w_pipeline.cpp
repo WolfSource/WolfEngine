@@ -26,8 +26,9 @@ namespace wolf
                 _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo,
                 _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
                 _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo,
-                _In_ const VkPipelineColorBlendAttachmentState* const pPipelineColorBlendAttachmentState,
                 _In_ const VkPipelineDynamicStateCreateInfo* const pPipelineDynamicStateCreateInfo,
+                _In_ const bool pEnableDepthStencilState,
+                _In_ const VkPipelineColorBlendAttachmentState pBlendState,
                 _In_ const std::array<float, 4> pBlendColors)
             {
                 this->_gDevice = pGDevice;
@@ -59,52 +60,44 @@ namespace wolf
                 };
 
                 //create blend state
-                const VkPipelineColorBlendStateCreateInfo _color_blend_state_create_info =
-                {
-                    VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,                // Type
-                    nullptr,                                                                 // Next
-                    0,                                                                       // Flags
-                    VK_FALSE,                                                                // logicOpEnable
-                    VK_LOGIC_OP_COPY,                                                        // logicOp
-                    1,                                                                       // attachmentCount
-                    pPipelineColorBlendAttachmentState == nullptr ?
-                    &(w_graphics_device::defaults::vk_default_pipeline_color_blend_attachment_state) :
-                    pPipelineColorBlendAttachmentState,                                  // pAttachments
-                    { pBlendColors[0], pBlendColors[1], pBlendColors[2], pBlendColors[3] }   // blendConstants[4]
-                };
+                VkPipelineColorBlendStateCreateInfo _color_blend_state_create_info = {};
+                _color_blend_state_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+                _color_blend_state_create_info.attachmentCount = 1;
+                _color_blend_state_create_info.pAttachments = &pBlendState;
+                _color_blend_state_create_info.blendConstants[0] = pBlendColors[0];
+                _color_blend_state_create_info.blendConstants[1] = pBlendColors[1];
+                _color_blend_state_create_info.blendConstants[2] = pBlendColors[2];
+                _color_blend_state_create_info.blendConstants[3] = pBlendColors[3];
 
-                VkGraphicsPipelineCreateInfo _pipeline_create_info =
-                {
-                    VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,                        // Type
-                    nullptr,                                                                // Next
-                    0,                                                                      // Flags
-                    static_cast<uint32_t>((*pShaderStages).size()),                         // stageCount
-                    (*pShaderStages).data(),                                                // Stages
-
-                    pPipelineVertexInputStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info) : pPipelineVertexInputStateCreateInfo, //vertex input state
-
-                    pPipelineInputAssemblyStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_input_assembly_state_create_info) : pPipelineInputAssemblyStateCreateInfo, //input assembly state
-
-                    nullptr,                                                                // TessellationState
-
-                    &_viewport_state_create_info,                                           // ViewportState
-
-                    pPipelineRasterizationStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_rasterization_state_create_info) : pPipelineRasterizationStateCreateInfo, //RasterizationState
-
-                    pPipelineMultisampleStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_multisample_state_create_info) : pPipelineMultisampleStateCreateInfo, //pMultisampleState
-
-                    nullptr,                                                                // DepthStencilState
-
-                    &_color_blend_state_create_info,                                        //pColorBlendState
-
-                    pPipelineDynamicStateCreateInfo == nullptr ? nullptr : pPipelineDynamicStateCreateInfo,                                    // DynamicState
-
-                    this->_pipeline_layout,                                                       // Layout
-                    pRenderPass,                                                            // VkRenderPass
-                    0,                                                                      // subpass
-                    VK_NULL_HANDLE,                                                         // basePipelineHandle
-                    -1                                                                       // basePipelineIndex
-                };
+                VkPipelineDepthStencilStateCreateInfo _depth_stencil_state = {};
+                if (pEnableDepthStencilState)
+                {   _depth_stencil_state.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+                    _depth_stencil_state.depthTestEnable = VK_TRUE;
+                    _depth_stencil_state.depthWriteEnable = VK_TRUE;
+                    _depth_stencil_state.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+                    _depth_stencil_state.front = _depth_stencil_state.back;
+                    _depth_stencil_state.back.compareOp = VK_COMPARE_OP_ALWAYS;
+                }
+                VkGraphicsPipelineCreateInfo _pipeline_create_info;
+                _pipeline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+                _pipeline_create_info.pNext = nullptr;
+                _pipeline_create_info.flags = 0;
+                _pipeline_create_info.stageCount = static_cast<uint32_t>((*pShaderStages).size());
+                _pipeline_create_info.pStages = (*pShaderStages).data();
+                _pipeline_create_info.pVertexInputState = pPipelineVertexInputStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info) : pPipelineVertexInputStateCreateInfo;
+                _pipeline_create_info.pInputAssemblyState = pPipelineInputAssemblyStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_input_assembly_state_create_info) : pPipelineInputAssemblyStateCreateInfo;
+                _pipeline_create_info.pTessellationState = nullptr;
+                _pipeline_create_info.pRasterizationState = pPipelineRasterizationStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_rasterization_state_create_info) : pPipelineRasterizationStateCreateInfo;
+                _pipeline_create_info.pMultisampleState = pPipelineMultisampleStateCreateInfo == nullptr ? &(w_graphics_device::defaults::vk_default_pipeline_multisample_state_create_info) : pPipelineMultisampleStateCreateInfo;
+                _pipeline_create_info.pDepthStencilState = pEnableDepthStencilState ? &_depth_stencil_state : nullptr;
+                _pipeline_create_info.pColorBlendState = &_color_blend_state_create_info;
+                _pipeline_create_info.pDynamicState = pPipelineDynamicStateCreateInfo == nullptr ? nullptr : pPipelineDynamicStateCreateInfo;
+                _pipeline_create_info.pViewportState = &_viewport_state_create_info;
+                _pipeline_create_info.layout = this->_pipeline_layout;
+                _pipeline_create_info.renderPass = pRenderPass;
+                _pipeline_create_info.subpass = 0;
+                _pipeline_create_info.basePipelineHandle = 0;
+                _pipeline_create_info.basePipelineIndex = -1;
 
                 auto _pipeline_cache = w_pipeline::get_pipeline_cache(pPipelineCacheName);
 
@@ -187,35 +180,39 @@ w_pipeline::~w_pipeline()
 }
 
 HRESULT w_pipeline::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                         _In_ const std::string& pPipelineCacheName,
-                         _In_ const VkRenderPass pRenderPass,
-                         _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
-                         _In_ const std::vector<w_viewport> pViewPorts,
-                         _In_ const std::vector<w_viewport_scissor> pViewPortsScissors,
-                         _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo,
-                         _In_ const VkPipelineVertexInputStateCreateInfo* const pPipelineVertexInputStateCreateInfo,
-                         _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo,
-                         _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
-                         _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo,
-                         _In_ const VkPipelineColorBlendAttachmentState* const pPipelineColorBlendAttachmentState,
-                         _In_ const VkPipelineDynamicStateCreateInfo* const pPipelineDynamicStateCreateInfo,
-                         _In_ const std::array<float,4> pBlendColors)
+    _In_ const std::string& pPipelineCacheName,
+    _In_ const VkRenderPass pRenderPass,
+    _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
+    _In_ const std::vector<w_viewport> pViewPorts,
+    _In_ const std::vector<w_viewport_scissor> pViewPortsScissors,
+    _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo,
+    _In_ const VkPipelineVertexInputStateCreateInfo* const pPipelineVertexInputStateCreateInfo,
+    _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo,
+    _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
+    _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo,
+    _In_ const VkPipelineDynamicStateCreateInfo* const pPipelineDynamicStateCreateInfo,
+    _In_ const bool pEnableDepthStencilState,
+    _In_ const VkPipelineColorBlendAttachmentState pBlendState,
+    _In_ const std::array<float, 4> pBlendColors)
 {
-    if(!this->_pimp) return S_FALSE;
-    return this->_pimp->load(pGDevice,
-                             pPipelineCacheName,
-                             pRenderPass,
-                             pShaderStages,
-                             pViewPorts,
-                             pViewPortsScissors,
-                             pPipelineLayoutCreateInfo,
-                             pPipelineVertexInputStateCreateInfo,
-                             pPipelineInputAssemblyStateCreateInfo,
-                             pPipelineRasterizationStateCreateInfo,
-                             pPipelineMultisampleStateCreateInfo,
-                             pPipelineColorBlendAttachmentState,
-                             pPipelineDynamicStateCreateInfo,
-                             pBlendColors);
+    if (!this->_pimp) return S_FALSE;
+
+    return this->_pimp->load(
+        pGDevice,
+        pPipelineCacheName,
+        pRenderPass,
+        pShaderStages,
+        pViewPorts,
+        pViewPortsScissors,
+        pPipelineLayoutCreateInfo,
+        pPipelineVertexInputStateCreateInfo,
+        pPipelineInputAssemblyStateCreateInfo,
+        pPipelineRasterizationStateCreateInfo,
+        pPipelineMultisampleStateCreateInfo,
+        pPipelineDynamicStateCreateInfo,
+        pEnableDepthStencilState,
+        pBlendState,
+        pBlendColors);
 }
 
 ULONG w_pipeline::release()

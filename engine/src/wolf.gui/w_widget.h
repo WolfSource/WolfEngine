@@ -16,8 +16,8 @@
 #include "w_gui_vertex.h"
 #include "w_element.h"
 #include "w_control.h"
-//#include "w_label.h"
-//#include "w_image.h"
+#include "w_label.h"
+#include "w_image.h"
 //#include "w_button.h"
 //#include "w_check_box.h"
 //#include "w_radio_button.h"
@@ -67,32 +67,31 @@ namespace wolf
 //				_In_ int pWidth, _In_ int pHeight,
 //				_In_ bool pIsDefault = false,
 //				_Out_opt_ w_label** pCreatedControl = nullptr);
-//
-//			/*
-//				Add image to widget
-//
-//				pID = Unique ID of control, please do not use INT_MAX and INT_MIN, 2147483647 and -2147483648 are reserved,
-//				pX = X parameter of location,
-//				pY = Y parameter of location,
-//				pPath = path of image file,
-//				pAbsolutePath = if false means, the image is related to Content Path, otherwise it has absolute path,
-//				pRotationX = X parameter of image's rotation
-//				pRotationY = Y parameter of image's rotation
-//				pUseDefaultSize = Use absolute size of image
-//				pWidth = Width of image,
-//				pHeight = Height of image,
-//				pIsDefault = Is default control,
-//				pCreatedControl = Output reference created image 
-//			*/
-//			DX_EXP HRESULT add_image(_In_ int pID,
-//				_In_ int pX, _In_ int pY,
-//				_In_z_ const std::wstring pPath,
-//				_In_ bool pAbsolutePath = false,
-//				_In_ float pRotationX = 0.0f, _In_ float pRotationY = 0.0f,
-//				_In_ bool pUseDefaultSize = true,
-//				_In_ UINT pWidth = 0, _In_ UINT pHeight = 0,
-//				_In_ bool pIsDefault = false,
-//				_Out_opt_ w_image** pCreatedControl = nullptr);
+
+			/*
+				Add image to widget
+
+				pID = Unique ID of control, please do not use INT_MAX and INT_MIN, 2147483647 and -2147483648 are reserved,
+				pX = X parameter of location,
+				pY = Y parameter of location,
+				pPath = path of image file,
+				pAbsolutePath = if false means, the image is related to Content Path, otherwise it has absolute path,
+				pRotationX = X parameter of image's rotation
+				pRotationY = Y parameter of image's rotation
+				pUseDefaultSize = Use absolute size of image
+				pWidth = Width of image,
+				pHeight = Height of image,
+				pIsDefault = Is default control,
+				pCreatedControl = Output reference created image 
+			*/
+            WGUI_EXP HRESULT add_image(_In_ int pID,
+				_In_ int pX, _In_ int pY,
+				_In_z_ const std::wstring pPath,
+				_In_ bool pAbsolutePath = false,
+				_In_ float pRotationX = 0.0f, _In_ float pRotationY = 0.0f,
+				_In_ bool pUseDefaultSize = true,
+				_In_ UINT pWidth = 0, _In_ UINT pHeight = 0,
+				_Out_opt_ w_image** pCreatedControl = nullptr);
 //
 //			/*
 //				Add button to widget

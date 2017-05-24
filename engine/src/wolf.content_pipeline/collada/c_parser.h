@@ -53,7 +53,7 @@ namespace wolf
 				static void			                          _get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pNode, _Inout_ c_geometry& pGeometry);
                 static void                                   _iterate_over_nodes(_In_ const bool pOptimizePoints, 
                                                                                   _In_ const bool pInvertNormals,
-                                                                                  _Inout_ std::vector<c_node*>& pNodes,
+                                                                                  _Inout_ std::vector<c_node*> pNodes,
                                                                                   _Inout_ std::vector<w_cpipeline_model*>& pModels,
                                                                                   _Inout_ std::vector<c_node*>& pNodeWithUnknownInstanceRef);
                 static void                                   _create_model(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_cpipeline_model** pModel);

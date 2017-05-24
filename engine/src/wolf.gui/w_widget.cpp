@@ -323,10 +323,6 @@ HRESULT w_widget::render(_In_ const float pElapsedTime)
 		
 		//enable redraw
 		this->_redrawing = true;
-		for (auto _iter : this->_controls)
-		{
-			_iter->set_redrawing(true);
-		}
 	}
 
     if (!this->_minimized)
@@ -335,60 +331,29 @@ HRESULT w_widget::render(_In_ const float pElapsedTime)
         {
             this->_vertex_declarations_2d.clear();
 
-            // Convert the draw rectangle from screen coordinates to clip space coordinates.
-            float _left = (float)this->_x * 2.0f / (float)this->_parent_window_width - 1.0f;
-            float _right = (float)(this->_x + this->_width) * 2.0f / (float)this->_parent_window_width - 1.0f;
-            float _top = (float)this->_y * 2.0f / (float)this->_parent_window_height - 1.0f;
-            float _down = (float)(this->_y + this->_height) * 2.0f / (float)this->_parent_window_height - 1.0f;
-
-            glm::vec4 _top_left_color, _top_right_color, _down_left_color, _down_right_color;
+            w_color _corner_colors[4];
             if (this->_is_mouse_over_widget)
             {
-                _top_left_color = glm::to_vec4(this->_active_background_color_top_left);
-                _top_right_color = glm::to_vec4(this->_active_background_color_top_right);
-                _down_left_color = glm::to_vec4(this->_active_background_color_bottom_left);
-                _down_right_color = glm::to_vec4(this->_active_background_color_bottom_right);
+                _corner_colors[0] = this->_active_background_color_top_left;
+                _corner_colors[2] = this->_active_background_color_top_right;
+                _corner_colors[1] = this->_active_background_color_bottom_left;
+                _corner_colors[3] = this->_active_background_color_bottom_right;
             }
             else
             {
-                _top_left_color = glm::to_vec4(this->_background_color_top_left);
-                _top_right_color = glm::to_vec4(this->_background_color_top_right);
-                _down_left_color = glm::to_vec4(this->_background_color_bottom_left);
-                _down_right_color = glm::to_vec4(this->_background_color_bottom_right);
+                _corner_colors[0] = this->_background_color_top_left;
+                _corner_colors[2] = this->_background_color_top_right;
+                _corner_colors[1] = this->_background_color_bottom_left;
+                _corner_colors[3] = this->_background_color_bottom_right;
             }
 
-            w_gui_vertex_2d _vertex;
-            _vertex.position[0] = _right; _vertex.position[1] = _down;
-            _vertex.color[0] = _down_right_color[0];
-            _vertex.color[1] = _down_right_color[1];
-            _vertex.color[2] = _down_right_color[2];
-            _vertex.color[3] = _down_right_color[3];
-            _vertex.uv[0] = 0.0f; _vertex.uv[1] = 1.0f;
-            this->_vertex_declarations_2d.push_back(_vertex);
-
-            _vertex.position[0] = _left; _vertex.position[1] = _top;
-            _vertex.color[0] = _top_left_color[0];
-            _vertex.color[1] = _top_left_color[1];
-            _vertex.color[2] = _top_left_color[2];
-            _vertex.color[3] = _top_left_color[3];
-            _vertex.uv[0] = 1.0f; _vertex.uv[1] = 0.0f;
-            this->_vertex_declarations_2d.push_back(_vertex);
-
-            _vertex.position[0] = _left; _vertex.position[1] = _down;
-            _vertex.color[0] = _down_left_color[0];
-            _vertex.color[1] = _down_left_color[1];
-            _vertex.color[2] = _down_left_color[2];
-            _vertex.color[3] = _down_left_color[3];
-            _vertex.uv[0] = 1.0f; _vertex.uv[1] = 1.0f;
-            this->_vertex_declarations_2d.push_back(_vertex);
-
-            _vertex.position[0] = _right; _vertex.position[1] = _top;
-            _vertex.color[0] = _top_right_color[0];
-            _vertex.color[1] = _top_right_color[1];
-            _vertex.color[2] = _top_right_color[2];
-            _vertex.color[3] = _top_right_color[3];
-            _vertex.uv[0] = 0.0f; _vertex.uv[1] = 0.0f;
-            this->_vertex_declarations_2d.push_back(_vertex);
+            w_control::generate_2d_vertices(
+                glm::vec2((float)this->_parent_window_width, (float)this->_parent_window_height),
+                glm::vec2((float)this->_width, (float)this->_height),
+                glm::vec2((float)this->_x, (float)this->_y),
+                _corner_colors,
+                this->_vertex_declarations_2d
+            );
         }
     }
 	
@@ -433,31 +398,23 @@ HRESULT w_widget::render(_In_ const float pElapsedTime)
 		//	}
 		//}
 	}
-	else
-	{
-        for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
+    else
+    {
+        if (this->_redrawing)
         {
-            // Focused control is drawn last
-            if (*it == s_pControlFocus) continue;
+            for (auto it = this->_controls.cbegin(); it != this->_controls.cend(); ++it)
+            {
+                // Focused control is drawn last
+                if (*it == s_pControlFocus) continue;
+                (*it)->render_2d(pElapsedTime, this->_vertex_declarations_2d);
+            }
 
-            //make sure set srv for each element
-            //apply_render_UI(_context);
-            //{
-            //    _context->PSSetShaderResources(0, 1, &pTextureNode->shader_resource_view);
-            //    (*it)->render(this->_gDevice, pElapsedTime);
-            //}
+            if (s_pControlFocus && s_pControlFocus->get_parent_widget() == this)
+            {
+                s_pControlFocus->render_2d(pElapsedTime, this->_vertex_declarations_2d);
+            }
         }
-
-		//if (s_pControlFocus && s_pControlFocus->parent_widget == this)
-		//{
-		//	apply_render_UI(_context);
-		//	{
-		//		_context->PSSetShaderResources(0, 1, &pTextureNode->shader_resource_view);
-		//		s_pControlFocus->render(this->_gDevice, pElapsedTime);
-		//	}
-		//	this->_widgets_resource_manager->restore_D3D_state(_context);
-		//}
-	}
+    }
 		
 	this->_redrawing = false;
 
@@ -586,45 +543,43 @@ void w_widget::send_event(UINT pEvent, bool pTriggeredByUser, w_control* pContro
 //
 //	return S_OK;
 //}
-//
-//HRESULT w_widget::add_image(_In_ int pID,
-//	_In_ int pX, _In_ int pY,
-//	_In_z_ std::wstring pPath,
-//	_In_ bool pAbsolutePath,
-//	_In_ float pRotationX, _In_ float pRotationY,
-//	_In_ bool pUseDefaultSize,
-//	_In_ UINT pWidth, _In_ UINT pHeight,
-//	_In_ bool pIsDefault,
-//	_Out_opt_ w_image** pCreatedControl)
-//{
-//	auto _control = new (std::nothrow) w_image(this);
-//
-//	if (pCreatedControl)
-//	{
-//		*pCreatedControl = _control;
-//	}
-//
-//	if (!_control) return E_OUTOFMEMORY;
-//
-//	//auto _path = pRelativePath ? wolf::framework::w_game::get_content_directory() + pPath : pPath;
-//
-//	// Set the ID and list index
-//	_control->set_ID(pID);
-//	_control->set_path(pPath, pAbsolutePath);
-//	_control->set_position_2d(pX, pY);
-//	_control->set_use_default_size(pUseDefaultSize);
-//	_control->set_size(pWidth, pHeight);
-//	_control->set_rotation(pRotationX, pRotationY);
-//	_control->is_default = pIsDefault;
-//
-//	auto _hr = add_control(_control);
-//	if (FAILED(_hr))
-//	{
-//		return _hr;
-//	}
-//	return S_OK;
-//}
-//
+
+HRESULT w_widget::add_image(_In_ int pID,
+	_In_ int pX, _In_ int pY,
+	_In_z_ std::wstring pPath,
+	_In_ bool pAbsolutePath,
+	_In_ float pRotationX, _In_ float pRotationY,
+	_In_ bool pUseDefaultSize,
+	_In_ UINT pWidth, _In_ UINT pHeight,
+	_Out_opt_ w_image** pCreatedControl)
+{
+	auto _control = new (std::nothrow) w_image(this);
+
+	if (pCreatedControl)
+	{
+		*pCreatedControl = _control;
+	}
+
+	if (!_control) return E_OUTOFMEMORY;
+
+	//auto _path = pRelativePath ? wolf::framework::w_game::get_content_directory() + pPath : pPath;
+
+	// Set the ID and list index
+	_control->set_ID(pID);
+	_control->set_path(pPath, pAbsolutePath);
+	_control->set_position_2d(pX, pY);
+	_control->set_use_default_size(pUseDefaultSize);
+	_control->set_size(pWidth, pHeight);
+	_control->set_rotation(glm::vec2(pRotationX, pRotationY));
+
+	auto _hr = add_control(_control);
+	if (FAILED(_hr))
+	{
+		return _hr;
+	}
+	return S_OK;
+}
+
 //HRESULT w_widget::add_button(_In_ int pID,
 //	_In_z_ std::wstring pText,
 //	_In_ int pX, _In_ int pY,
@@ -1523,14 +1478,12 @@ void w_widget::on_mouse_move(_In_ const w_point& pPoint)
 	// Handle mouse leaving the old control
 	if (this->_control_mouse_over)
 	{
-		this->_control_mouse_over->set_redrawing(true);
 		this->_control_mouse_over->on_mouse_leave();
 	}
 	// Handle mouse entering the new control
 	this->_control_mouse_over = pControl;
 	if (pControl)
 	{
-		this->_control_mouse_over->set_redrawing (true);
 		this->_control_mouse_over->on_mouse_enter();
 	}
 }
@@ -1552,9 +1505,7 @@ HRESULT w_widget::initialize_control(_In_ w_control* pControl)
 		}
 	}
 
-	auto _hr = pControl->on_initialize();
-
-	return _hr;
+	return S_OK;
 }
 
 HRESULT w_widget::add_control(_In_ w_control* pControl)

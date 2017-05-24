@@ -326,7 +326,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,
 		{
             V(S_FALSE,
 #if defined(__WIN32) || defined(__UWP)
-              L"creating label: " + wolf::system::convert::string_to_wstring(_name)  + " from path: "
+              L"creating label: " + wolf::system::convert::string_to_wstring(_name)  + L" from path: "
 #else
               "creating label: " + _name + " from path: "
 #endif
@@ -825,7 +825,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,
 		{
             V(S_FALSE,
 #if defined(__WIN32) || defined(__UWP)
-              L"creating radio_button: " + wolf::system::convert::string_to_wstring(_name) + " from path: "
+              L"creating radio_button: " + wolf::system::convert::string_to_wstring(_name) + L" from path: "
 #else
               "creating radio_button: " + _name  + " from path: "
 #endif
@@ -1107,7 +1107,7 @@ void w_gui::_traversing_gui_node(rapidxml::xml_node<char>* pNode,
 		{
             V(S_FALSE,
 #if defined(__WIN32) || defined(__UWP)
-              L"creating slider: " + wolf::system::string_to_wstring(_id)  + L" from path: "
+              L"creating slider: " + wolf::system::convert::string_to_wstring(_id)  + L" from path: "
 #else
               "creating slider: " + _id + " from path: "
 #endif
@@ -1872,43 +1872,42 @@ void w_gui::remove_widget(_In_ const std::string pWidgetName)
 }
 
 HRESULT w_gui::add_image(_In_ int pID,
-	_In_ int pX, _In_ int pY,
-	_In_z_ std::wstring pPath,
-	_In_ bool pAbsolutePath,
-	_In_ float pRotationX, _In_ float pRotationY,
-	_In_ bool pUseDefaultSize,
-	_In_ UINT pWidth, _In_ UINT pHeight,
-	_In_ bool pIsDefault,
-	_In_ float pZOrder,
-	_In_ bool pEnabled)
+    _In_ int pX, _In_ int pY,
+    _In_z_ std::wstring pPath,
+    _In_ bool pAbsolutePath,
+    _In_ float pRotationX, _In_ float pRotationY,
+    _In_ bool pUseDefaultSize,
+    _In_ UINT pWidth, _In_ UINT pHeight,
+    _In_ bool pIsDefault,
+    _In_ float pZOrder,
+    _In_ bool pEnabled)
 {
-	/*if (_temp_parent_widget_ptr)
-	{
-		wolf::gui::w_image* _control = nullptr;
-		auto _hr = _temp_parent_widget_ptr->add_image(pID,
-			pX, pY,
-			pPath, pAbsolutePath,
-			pRotationX, pRotationY,
-			pUseDefaultSize,
-			pWidth, pHeight,
-			pIsDefault,
-			&_control);
-		if (FAILED(_hr))
-		{
-			auto _msg = std::string("creating image with id: ") + std::to_string(pID);
-			V(_hr, _msg, _trace_class_name, 3);
-			return _hr;
-		}
+    if (_temp_parent_widget_ptr)
+    {
+        wolf::gui::w_image* _control = nullptr;
+        auto _hr = _temp_parent_widget_ptr->add_image(pID,
+            pX, pY,
+            pPath, pAbsolutePath,
+            pRotationX, pRotationY,
+            pUseDefaultSize,
+            pWidth, pHeight,
+            &_control);
+        if (FAILED(_hr))
+        {
+            auto _msg = std::string("creating image with id: ") + std::to_string(pID);
+            V(_hr, _msg, _trace_class_name, 3);
+            return _hr;
+        }
 
-		if (_control)
-		{
-			_control->set_z_order(pZOrder);
-			_control->set_enabled(pEnabled);
-		}
+        if (_control)
+        {
+            _control->set_z_order(pZOrder);
+            _control->set_enabled(pEnabled);
+        }
 
-		return _hr;
-	}*/
-	return S_FALSE;
+        return _hr;
+    }
+    return S_FALSE;
 }
 
 HRESULT w_gui::add_label(_In_ int pID,

@@ -54,6 +54,7 @@
 
 //Wolf
 #include <w_object.h>
+#include <w_std.h>
 #include <w_window.h>
 #include <w_ireleasable.h>
 #include <w_io.h>

@@ -40,7 +40,8 @@ namespace wolf
                     * use VRAM buffer for rendering
             */
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const float* const pVerticesData,
+                _In_ const void* const pVerticesData,
+                _In_ const UINT  pVerticesSize,
                 _In_ const UINT pVerticesCount,
                 _In_ const UINT* const pIndicesData,
                 _In_ const UINT pIndicesCount,
@@ -68,7 +69,6 @@ namespace wolf
 
                 bool _there_is_no_index_buffer = false;
                 UINT _indices_size = pIndicesCount * sizeof(UINT);
-                UINT _verices_size = pVerticesCount * sizeof(float);
                 if (pIndicesCount == 0 || pIndicesData == nullptr)
                 {
                     _there_is_no_index_buffer = true;
@@ -77,7 +77,7 @@ namespace wolf
                 //create a buffers hosted into the DRAM named staging buffers
                 if (_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                     pVerticesData,
-                    _verices_size,
+                    pVerticesSize,
                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                     this->_stagings_buffers.vertices) == S_FALSE)
                 {
@@ -99,7 +99,7 @@ namespace wolf
                 // create VRAM buffers
                 if (_create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                     nullptr,
-                    _verices_size,
+                    pVerticesSize,
                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                     this->_vertex_buffer) == S_FALSE)
                 {
@@ -118,7 +118,7 @@ namespace wolf
                     }
                 }
 
-                if (_copy_DRAM_to_VRAM(_verices_size, _indices_size) == S_FALSE)
+                if (_copy_DRAM_to_VRAM(pVerticesSize, _indices_size) == S_FALSE)
                 {
                     return S_FALSE;
                 }
@@ -144,6 +144,7 @@ namespace wolf
 
             HRESULT update_dynamic_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
+                _In_ const UINT pVerticesSize,
                 _In_ const UINT pVerticesCount,
                 _In_ const UINT* const pIndicesData,
                 _In_ const UINT pIndicesCount)
@@ -175,7 +176,7 @@ namespace wolf
                     V(_hr, "binding staging index buffer", this->_name, 3);
                 }
 
-                return _copy_DRAM_to_VRAM(this->_vertices_count * sizeof(float), this->_indices_count * sizeof(UINT));
+                return _copy_DRAM_to_VRAM(pVerticesSize, this->_indices_count * sizeof(UINT));
             }
 
             void render(_In_ const VkCommandBuffer& pCommandBuffer, _In_ const VkBuffer& pInstanceHandle,
@@ -729,7 +730,8 @@ w_mesh::~w_mesh()
 }
 
 HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                     _In_ const float* const pVerticesData,
+                     _In_ const void* const pVerticesData,
+                    _In_  const UINT  pVerticesSize,
                      _In_ const UINT pVerticesCount,
                      _In_ const UINT* const pIndicesData,
                      _In_ const UINT pIndicesCount,
@@ -744,6 +746,7 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     return this->_pimp->load(
         pGDevice,
         pVerticesData,
+        pVerticesSize,
         pVerticesCount,
         pIndicesData,
         pIndicesCount,
@@ -757,6 +760,7 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 HRESULT w_mesh::update_dynamic_buffer(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const void* const pVerticesData,
+    _In_ const UINT pVerticesSize,
     _In_ const UINT pVerticesCount,
     _In_ const UINT* const pIndicesData,
     _In_ const UINT pIndicesCount)
@@ -764,6 +768,7 @@ HRESULT w_mesh::update_dynamic_buffer(
     return this->_pimp ? this->_pimp->update_dynamic_buffer(
         pGDevice,
         pVerticesData,
+        pVerticesSize,
         pVerticesCount,
         pIndicesData,
         pIndicesCount) : S_FALSE;

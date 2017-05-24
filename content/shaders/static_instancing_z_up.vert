@@ -27,7 +27,7 @@ mat3 rotate_over_axis(float pAngle, vec3 pAxis);
 
 void main() 
 {
-    if (i_instance_scale == 0)
+    if (gl_InstanceIndex > 0)
     {
         //is ref model
          gl_Position = U0.projection_view * U0.model * vec4(i_position, 1);

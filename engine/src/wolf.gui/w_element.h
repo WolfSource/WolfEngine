@@ -32,12 +32,20 @@ namespace wolf
 
         struct w_blend_color
         {
-            void initialize(_In_ const DWORD defaultColor,
-                _In_ const DWORD disabledColor = RGBA_TO_HEX_COLOR(128, 128, 128, 200), _In_ DWORD hiddenColor = 0);
-            void blend(_In_ const UINT pStateIndex, _In_ const float pElapsedTime, _In_ const float pRate = 0.7f);
-            void set_current(_In_ const DWORD pColor);
+            void initialize(
+                _In_ const w_color& default_color,
+                _In_ const w_color& disabled_color = w_color(128, 128, 128, 200), 
+                _In_ const w_color& hidden_Color = w_color(0));
+            
+            void blend(
+                _In_ const UINT pStateIndex, 
+                _In_ const float pElapsedTime, 
+                _In_ const float pRate = 0.7f);
+            
+            void set_current(_In_ const w_color& pColor);
+
             // Control color states
-            DWORD color_states[MAX_CONTROL_STATES];
+            w_color color_states[MAX_CONTROL_STATES];
             w_color current_color_state;
         };
 
@@ -49,11 +57,9 @@ namespace wolf
             void refresh();
             // Index of the texture for this Element 
             UINT            index_texture;
-            // The format argument to DrawText
-            //DWORD draw_text_format;
-            // Bounding rect of this element on the composite texture
             w_rectangle     rect_texture;
             w_blend_color   texture_color;
+            w_blend_color   font_color;
         };
 
         struct w_element_holder

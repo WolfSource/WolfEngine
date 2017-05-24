@@ -6,16 +6,19 @@ using namespace wolf::gui;
 
 #pragma region w_blend_color
 
-void w_blend_color::initialize(_In_ const DWORD pDefaultColor, _In_ const DWORD pDisabledColor, _In_ const DWORD pHiddenColor)
+void w_blend_color::initialize(
+    _In_ const w_color& pDefaultColor,
+    _In_ const w_color& pDisabledColor,
+    _In_ const w_color& pHiddenColor)
 {
-	for (size_t i = 0; i < MAX_CONTROL_STATES; ++i)
-	{
-		this->color_states[i] = pDefaultColor;
-	}
+    for (size_t i = 0; i < MAX_CONTROL_STATES; ++i)
+    {
+        this->color_states[i] = pDefaultColor;
+    }
 
-	this->color_states[W_GUI_STATE_DISABLED] = pDisabledColor;
-	this->color_states[W_GUI_STATE_HIDDEN] = pHiddenColor;
-	set_current(pHiddenColor);
+    this->color_states[W_GUI_STATE_DISABLED] = pDisabledColor;
+    this->color_states[W_GUI_STATE_HIDDEN] = pHiddenColor;
+    set_current(pHiddenColor);
 }
 
 void w_blend_color::blend(_In_ const UINT pStateIndex, _In_ const float pElapsedTime, _In_ const float pFrameRate)
@@ -27,10 +30,9 @@ void w_blend_color::blend(_In_ const UINT pStateIndex, _In_ const float pElapsed
     this->current_color_state = w_color::to_color(glm::to_float_array(_lerp));
 }
 
-void w_blend_color::set_current(_In_ const DWORD pColor)
+void w_blend_color::set_current(_In_ const w_color& pColor)
 {
-    auto _vec4 = glm::to_vec4(pColor);
-	this->current_color_state = w_color::to_color(glm::to_float_array(_vec4));
+    this->current_color_state = pColor;
 }
 
 #pragma endregion

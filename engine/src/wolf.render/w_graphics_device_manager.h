@@ -280,8 +280,14 @@ namespace wolf
                 static VkPipelineInputAssemblyStateCreateInfo       vk_default_pipeline_input_assembly_state_create_info;
                 static VkPipelineRasterizationStateCreateInfo       vk_default_pipeline_rasterization_state_create_info;
                 static VkPipelineMultisampleStateCreateInfo         vk_default_pipeline_multisample_state_create_info;
-                static VkPipelineColorBlendAttachmentState          vk_default_pipeline_color_blend_attachment_state;
             };
+
+            struct w_blend_states
+            {
+                static VkPipelineColorBlendAttachmentState          blend_none;
+                static VkPipelineColorBlendAttachmentState          premulitplied_alpha;
+            };
+
 #endif //__DX11__ __DX12__ __VULKAN__
             
             std::string                                             device_name;

@@ -97,7 +97,7 @@ void scene::load()
     _gui_render.load(_gDevice);
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test0000.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");
     if (_scene)
     {
         //get all models
@@ -352,26 +352,26 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                     {
                         using namespace glm;
 
-                        //auto _transform = this->_models[i]->get_transform();
-                        //auto _translate = translate(mat4(1.0f),
-                        //    vec3(_transform.position[0], _transform.position[1], _transform.position[2]));
-                        //mat4 _scale = scale(mat4x4(1.0f),
-                        //    vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
+                        auto _transform = this->_models[i]->get_transform();
+                        auto _translate = translate(mat4(1.0f),
+                            vec3(_transform.position[0], _transform.position[1], _transform.position[2]));
+                        mat4 _scale = scale(mat4x4(1.0f),
+                            vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
 
-                        //auto _world = _translate *
-                        //    rotate(_transform.rotation[0], true ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f)) *
-                        //    rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
-                        //    rotate(_transform.rotation[2], vec3(0.0f, 0.0f, 1.0f)) *
-                        //    _scale;
+                        auto _world = _translate *
+                            rotate(_transform.rotation[0], true ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f)) *
+                            rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
+                            rotate(_transform.rotation[2], vec3(0.0f, 0.0f, 1.0f)) *
+                            _scale;
 
-                        //this->_instance_wvp_unifrom[i]->data.world = _world;
-                        //this->_instance_wvp_unifrom[i]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
-                        //this->_instance_wvp_unifrom[i]->update();
+                        this->_instance_wvp_unifrom[i]->data.world = _world;
+                        this->_instance_wvp_unifrom[i]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
+                        this->_instance_wvp_unifrom[i]->update();
 
-                        //this->_instance_color_unifrom[i]->data.color = glm::vec4(1);
-                        //this->_instance_color_unifrom[i]->update();
+                        this->_instance_color_unifrom[i]->data.color = glm::vec4(1);
+                        this->_instance_color_unifrom[i]->update();
 
-                        //this->_models[i]->render(_cmd);
+                        this->_models[i]->render(_cmd);
 
                     }
                 }

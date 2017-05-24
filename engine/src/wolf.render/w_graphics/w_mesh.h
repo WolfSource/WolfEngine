@@ -67,7 +67,8 @@ namespace wolf
 
 			//initialize and load mesh
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                               _In_ const float* const pVerticesData,
+                               _In_ const void* const pVerticesData,
+                               _In_ const UINT  pVerticesSize,
                                _In_ const UINT pVerticesCount,
                                _In_ const UINT* const pIndicesData,
                                _In_ const UINT pIndicesCount,
@@ -81,6 +82,7 @@ namespace wolf
             W_EXP HRESULT update_dynamic_buffer(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
+                _In_ const UINT pVerticesSize,
                 _In_ const UINT pVerticesCount,
                 _In_ const UINT* const pIndicesData,
                 _In_ const UINT pIndicesCount);

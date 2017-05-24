@@ -46,6 +46,15 @@ struct w_color
 	{
 	}
 
+    //rgba(0-255)
+    w_color(unsigned char pRGBA) :
+        r(pRGBA),
+        g(pRGBA),
+        b(pRGBA),
+        a(pRGBA)
+    {
+    }
+
 	//Create w_color from string in the format of "r(0-255),g(0-255),b(0-255),a(0-255)", for example "255,0,0,255"
 	static w_color from_string(const char* pValue)
 	{

@@ -34,8 +34,9 @@ namespace wolf
                                _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo = nullptr,
                                _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo = nullptr,
                                _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo = nullptr,
-                               _In_ const VkPipelineColorBlendAttachmentState* const pPipelineColorBlendAttachmentState = nullptr,
                                _In_ const VkPipelineDynamicStateCreateInfo* const pPipelineDynamicStateCreateInfo = nullptr,
+                               _In_ const bool pEnableDepthStencilState = true,
+                               _In_ const VkPipelineColorBlendAttachmentState pBlendState = w_graphics_device::w_blend_states::premulitplied_alpha,
                                _In_ const std::array<float,4> pBlendColors = { 0.0f, 0.0f, 0.0f, 0.0f });
             
             //release all resources

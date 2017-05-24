@@ -187,9 +187,12 @@ namespace wolf
                     //load mesh
                     _mesh->set_vertex_declaration_struct(this->_instances_count ? this->_instance_declaration:
                         this->_vertex_declaration);
+
+                    auto _count = static_cast<UINT>(_v_data.size());
                     _hr = _mesh->load(this->_gDevice,
                         _v_data.data(),
-                        static_cast<UINT>(_v_data.size()),
+                        _count * sizeof(float),
+                        _count,
                         _model_mesh->indices.data(),
                         static_cast<UINT>(_model_mesh->indices.size()),
                         pShader,

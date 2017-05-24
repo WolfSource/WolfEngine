@@ -25,6 +25,8 @@
     <ClCompile Include="..\..\..\src\wolf.gui\w_gui_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.gui\w_image.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.gui\w_label.cpp" />
     <ClCompile Include="..\..\..\src\wolf.gui\w_widget.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +36,8 @@
     <ClInclude Include="..\..\..\src\wolf.gui\w_gui_export.h" />
     <ClInclude Include="..\..\..\src\wolf.gui\w_gui_pch.h" />
     <ClInclude Include="..\..\..\src\wolf.gui\w_gui_vertex.h" />
+    <ClInclude Include="..\..\..\src\wolf.gui\w_image.h" />
+    <ClInclude Include="..\..\..\src\wolf.gui\w_label.h" />
     <ClInclude Include="..\..\..\src\wolf.gui\w_widget.h" />
   </ItemGroup>
   <ItemGroup>
@@ -141,7 +145,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.gui;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/lua/lua/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.gui;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/glm;$(SolutionDir)/../../dependencies/rapidxml;$(SolutionDir)/../../dependencies/tbb/oss/windows/include;$(SolutionDir)/../../dependencies/lua/lua/include;$(SolutionDir)/../../dependencies/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_GUI__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_gui_pch.h</PrecompiledHeaderFile>
@@ -151,8 +155,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/lua/lua;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/lua/lua;$(SolutionDir)/../../dependencies/freetype/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype28MTd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -6,6 +6,8 @@
     <ClCompile Include="..\..\..\src\wolf.gui\w_gui_pch.cpp" />
     <ClCompile Include="..\..\..\src\wolf.gui\w_widget.cpp" />
     <ClCompile Include="..\..\..\src\wolf.gui\w_gui.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.gui\w_label.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.gui\w_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.gui\w_control.h" />
@@ -15,6 +17,8 @@
     <ClInclude Include="..\..\..\src\wolf.gui\w_gui_pch.h" />
     <ClInclude Include="..\..\..\src\wolf.gui\w_widget.h" />
     <ClInclude Include="..\..\..\src\wolf.gui\w_gui_vertex.h" />
+    <ClInclude Include="..\..\..\src\wolf.gui\w_label.h" />
+    <ClInclude Include="..\..\..\src\wolf.gui\w_image.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shaders">
