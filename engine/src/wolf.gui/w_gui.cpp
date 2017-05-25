@@ -1892,7 +1892,7 @@ HRESULT w_gui::add_image(_In_ int pID,
             pUseDefaultSize,
             pWidth, pHeight,
             &_control);
-        if (FAILED(_hr))
+        if (_hr != S_OK)
         {
             auto _msg = std::string("creating image with id: ") + std::to_string(pID);
             V(_hr, _msg, _trace_class_name, 3);

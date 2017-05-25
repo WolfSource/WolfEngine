@@ -17,6 +17,10 @@
 		2C41F9391ED48B7E007012E4 /* w_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C41F9301ED48B7E007012E4 /* w_widget.cpp */; };
 		2C41F93A1ED48B7E007012E4 /* w_widget.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9311ED48B7E007012E4 /* w_widget.h */; };
 		2C41F93C1ED49078007012E4 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C41F93B1ED49078007012E4 /* libwolf.system.macOS.dylib */; };
+		2CA945D71ED6C8E9007B70B8 /* w_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945D31ED6C8E9007B70B8 /* w_image.cpp */; };
+		2CA945D81ED6C8E9007B70B8 /* w_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945D41ED6C8E9007B70B8 /* w_image.h */; };
+		2CA945D91ED6C8E9007B70B8 /* w_label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945D51ED6C8E9007B70B8 /* w_label.cpp */; };
+		2CA945DA1ED6C8E9007B70B8 /* w_label.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945D61ED6C8E9007B70B8 /* w_label.h */; };
 		2CE5BB1A1E64307D005E0F45 /* w_gui_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB011E64307D005E0F45 /* w_gui_export.h */; };
 		2CE5BB1B1E64307D005E0F45 /* w_gui_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE5BB021E64307D005E0F45 /* w_gui_pch.cpp */; };
 		2CE5BB1C1E64307D005E0F45 /* w_gui_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BB031E64307D005E0F45 /* w_gui_pch.h */; };
@@ -35,6 +39,10 @@
 		2C41F93B1ED49078007012E4 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2CA945D01ED4DEEF007B70B8 /* gui_2d.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = gui_2d.vert; path = ../../../../content/shaders/gui_2d.vert; sourceTree = "<group>"; };
 		2CA945D11ED4DEEF007B70B8 /* gui.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = gui.frag; path = ../../../../content/shaders/gui.frag; sourceTree = "<group>"; };
+		2CA945D31ED6C8E9007B70B8 /* w_image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_image.cpp; path = ../../../src/wolf.gui/w_image.cpp; sourceTree = "<group>"; };
+		2CA945D41ED6C8E9007B70B8 /* w_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_image.h; path = ../../../src/wolf.gui/w_image.h; sourceTree = "<group>"; };
+		2CA945D51ED6C8E9007B70B8 /* w_label.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_label.cpp; path = ../../../src/wolf.gui/w_label.cpp; sourceTree = "<group>"; };
+		2CA945D61ED6C8E9007B70B8 /* w_label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_label.h; path = ../../../src/wolf.gui/w_label.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.gui.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.gui.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE5BB011E64307D005E0F45 /* w_gui_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_gui_export.h; path = ../../../src/wolf.gui/w_gui_export.h; sourceTree = "<group>"; };
 		2CE5BB021E64307D005E0F45 /* w_gui_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_gui_pch.cpp; path = ../../../src/wolf.gui/w_gui_pch.cpp; sourceTree = "<group>"; };
@@ -66,6 +74,10 @@
 			isa = PBXGroup;
 			children = (
 				2CA945D21ED4DEF4007B70B8 /* shaders */,
+				2CA945D31ED6C8E9007B70B8 /* w_image.cpp */,
+				2CA945D41ED6C8E9007B70B8 /* w_image.h */,
+				2CA945D51ED6C8E9007B70B8 /* w_label.cpp */,
+				2CA945D61ED6C8E9007B70B8 /* w_label.h */,
 				2C41F9291ED48B7E007012E4 /* w_control.cpp */,
 				2C41F92A1ED48B7E007012E4 /* w_control.h */,
 				2C41F92B1ED48B7E007012E4 /* w_element.cpp */,
@@ -106,7 +118,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CA945D81ED6C8E9007B70B8 /* w_image.h in Headers */,
 				2C41F9381ED48B7E007012E4 /* w_gui.h in Headers */,
+				2CA945DA1ED6C8E9007B70B8 /* w_label.h in Headers */,
 				2CE5BB1C1E64307D005E0F45 /* w_gui_pch.h in Headers */,
 				2C41F9351ED48B7E007012E4 /* w_element.h in Headers */,
 				2C41F9361ED48B7E007012E4 /* w_gui_vertex.h in Headers */,
@@ -174,7 +188,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CE5BB1B1E64307D005E0F45 /* w_gui_pch.cpp in Sources */,
+				2CA945D71ED6C8E9007B70B8 /* w_image.cpp in Sources */,
 				2C41F9391ED48B7E007012E4 /* w_widget.cpp in Sources */,
+				2CA945D91ED6C8E9007B70B8 /* w_label.cpp in Sources */,
 				2C41F9371ED48B7E007012E4 /* w_gui.cpp in Sources */,
 				2C41F9321ED48B7E007012E4 /* w_control.cpp in Sources */,
 				2C41F9341ED48B7E007012E4 /* w_element.cpp in Sources */,

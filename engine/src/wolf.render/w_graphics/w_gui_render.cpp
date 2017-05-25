@@ -179,7 +179,7 @@ namespace wolf
                                 _count * sizeof(wolf::gui::w_gui_vertex_2d),
                                 _count,
                                 _indices.data(),
-                                _indices.size()) == S_FALSE)
+                                static_cast<UINT>(_indices.size())) == S_FALSE)
                             {
                                 _hr = S_FALSE;
                                 V(_hr, "loading mesh", this->_name, 3);

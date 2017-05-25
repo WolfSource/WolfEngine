@@ -572,12 +572,7 @@ HRESULT w_widget::add_image(_In_ int pID,
 	_control->set_size(pWidth, pHeight);
 	_control->set_rotation(glm::vec2(pRotationX, pRotationY));
 
-	auto _hr = add_control(_control);
-	if (FAILED(_hr))
-	{
-		return _hr;
-	}
-	return S_OK;
+	return add_control(_control);
 }
 
 //HRESULT w_widget::add_button(_In_ int pID,

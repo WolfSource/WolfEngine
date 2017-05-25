@@ -967,7 +967,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "175"
             endingLineNumber = "175"
-            landmarkName = "set_shader_binding_params(_In_ std::vector&lt;w_shader_binding_param&gt; pShaderBindingParams)"
+            landmarkName = "_create_descriptor_pool(_In_ const std::vector&lt;VkDescriptorPoolSize&gt; pDescriptorPoolSize)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -999,8 +999,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "392"
             endingLineNumber = "392"
-            landmarkName = "_prepare_shader_params()"
-            landmarkType = "7">
+            landmarkName = "class w_shader_pimp"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

@@ -97,7 +97,7 @@ void scene::load()
     _gui_render.load(_gDevice);
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test000.dae");
     if (_scene)
     {
         //get all models

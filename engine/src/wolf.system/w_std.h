@@ -39,6 +39,10 @@
 #define _Out_
 #endif
 
+#ifndef _Out_opt_
+#define _Out_opt_
+#endif
+
 #ifndef _Inout_
 #define _Inout_
 #endif
