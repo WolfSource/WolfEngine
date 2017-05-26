@@ -32,7 +32,7 @@ namespace wolf
 			}
 
 			//Load the uniform buffer
-			HRESULT load(_In_ std::shared_ptr<w_graphics_device>& pGDevice)
+			HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 			{
                 //store the shared graphics device pointer
                 auto _buffer_size = static_cast<UINT32>(sizeof(T));

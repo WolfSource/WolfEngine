@@ -31,7 +31,8 @@ namespace wolf
 
                 if (!pAttachmentDescriptions)
                 {
-                    _attachment_descriptions.push_back(w_graphics_device::defaults::vk_default_attachment_description);
+                    _attachment_descriptions.push_back(w_graphics_device::w_render_pass_attachments::color_attachment_description);
+                    _attachment_descriptions.push_back(w_graphics_device::w_render_pass_attachments::depth_attachment_description);
                 }
                 else
                 {
@@ -40,11 +41,6 @@ namespace wolf
 
                 if (!pSubpassDescriptions)
                 {
-                    const VkAttachmentReference _attachment_ref[] =
-                    {
-                        w_graphics_device::defaults::vk_default_color_attachment_reference
-                    };
-
                     VkSubpassDescription _subpass_description =
                     {
                         0,
@@ -52,9 +48,9 @@ namespace wolf
                         0,
                         nullptr,
                         1,
-                        _attachment_ref,
+                        &w_graphics_device::w_render_pass_attachments::color_attachment_reference,
                         nullptr,
-                        nullptr,
+                        &w_graphics_device::w_render_pass_attachments::depth_attachment_reference,
                         0,
                         nullptr
                     };
@@ -105,17 +101,20 @@ namespace wolf
 
             void begin(_In_ const VkCommandBuffer pCommandBuffer,
                 _In_ const VkFramebuffer pFrameBuffer,
-                _In_ const w_color pClearColor)
+                _In_ const w_color pClearColor,
+                _In_ const float   pClearDepth,
+                _In_ const UINT    pClearStencil)
             {
-                VkClearValue _vk_clear_color =
+                std::array<VkClearValue, 2> _clear_values = {};
+                _clear_values[0].color = 
                 {
-                    {
-                        pClearColor.r / 255.0f,
-                        pClearColor.g / 255.0f,
-                        pClearColor.b / 255.0f,
-                        pClearColor.a / 255.0f
-                    }
+                    pClearColor.r / 255.0f,
+                    pClearColor.g / 255.0f,
+                    pClearColor.b / 255.0f,
+                    pClearColor.a / 255.0f
                 };
+                _clear_values[1].depthStencil.depth = pClearDepth;
+                _clear_values[1].depthStencil.stencil = pClearStencil;
 
                 VkRenderPassBeginInfo _render_pass_begin_info =
                 {
@@ -133,8 +132,8 @@ namespace wolf
                             static_cast<uint32_t>(this->_viewport.height),  // Height
                         }
                     },
-                    1,                                                      // ClearValueCount
-                    &_vk_clear_color                                        // ClearValues
+                    _clear_values.size(),                                   // ClearValueCount
+                    _clear_values.data()                                    // ClearValues
                 };
                 vkCmdBeginRenderPass(pCommandBuffer, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
 
@@ -243,12 +242,16 @@ HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDev
 
 void w_render_pass::begin(_In_ const VkCommandBuffer pCommandBuffer,
            _In_ const VkFramebuffer pFrameBuffer,
-           _In_ const w_color pClearColor)
+           _In_ const w_color pClearColor,
+           _In_ const float   pClearDepth,
+           _In_ const UINT    pClearStencil)
 {
     if(!this->_pimp) return;
     this->_pimp->begin(pCommandBuffer,
                               pFrameBuffer,
-                              pClearColor);
+                              pClearColor,
+                              pClearDepth,
+                              pClearStencil);
 }
 
 void w_render_pass::end(_In_ VkCommandBuffer pCommandBuffer)

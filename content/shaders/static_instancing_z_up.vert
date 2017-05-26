@@ -50,7 +50,6 @@ void main()
     o_uv = i_uv;//, i_instance_uv_index);
 }
 
-//forward declaration 
 mat3 rotate_over_axis(float pAngle, vec3 pAxis)
 {
 	const float a = pAngle;

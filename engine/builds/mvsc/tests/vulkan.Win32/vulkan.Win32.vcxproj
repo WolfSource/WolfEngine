@@ -155,9 +155,6 @@
     <ProjectReference Include="..\..\wolf.content_pipeline\wolf.content_pipeline.Win32.vcxproj">
       <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295928}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\wolf.gui\wolf.gui.Win32.vcxproj">
-      <Project>{0b4673ac-8d5c-40e6-8071-34bad1b5945d}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\wolf.render\wolf.vulkan\wolf.vulkan.Win32.vcxproj">
       <Project>{be11c662-e8ca-4083-a5b2-f380a96a20c2}</Project>
     </ProjectReference>

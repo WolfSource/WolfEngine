@@ -1,15 +1,15 @@
 ﻿<Wolf.Gui>
   <Widget
    Name = "widget_01"
-   Size = "200,200"
+   Size = "400,300"
    Dragable = "true"
    Visisble = "true"
    Minimized = "false"
-   Position = "0, 0"
+   Position = "100, 100"
    BackgroundColorTopLeft = "255,0,0,255"
-   BackgroundColorTopRight = "41,184,204,255"
-   BackgroundColorBottomLeft = "41,184,204,255"
-   BackgroundColorBottomRight = "41,184,204,255"
+   BackgroundColorTopRight = "0,0,255,255"
+   BackgroundColorBottomLeft = "255,0,204,255"
+   BackgroundColorBottomRight = "0,255,204,255"
    ActiveBackgroundColorTopLeft = "41,184,204,255"
    ActiveBackgroundColorTopRight = "41,184,204,255"
    ActiveBackgroundColorBottomLeft = "41,184,204,255"
@@ -30,9 +30,9 @@
    CaptionFontStretch = "5"
    CaptionFontParagraphAlignment = "0"
    CaptionFontTextAlignment = "0">
-   <Image
+<!--    <Image
         ID = "0x00000001"
-        Position = "300, 300" 
+        Position = "300,300" 
         Path = "F:\github\WolfSource\Wolf.Engine\Logo.jpg"
         AbsolutePath = "true"
         Size = "50,50"
@@ -41,6 +41,6 @@
         IsDefault = "false"
         ZOrder = "0"
         Enabled = "true">       
-    </Image>
+    </Image> -->
   </Widget>
 </Wolf.Gui>

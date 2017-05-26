@@ -24,28 +24,56 @@ using namespace wolf::graphics;
 ComPtr<IDXGIFactory4>	w_graphics_device::dx_dxgi_factory = nullptr;
 #elif defined(__VULKAN__)
 VkInstance w_graphics_device::vk_instance = NULL;
-       
-VkAttachmentDescription	w_graphics_device::defaults::vk_default_attachment_description =
+
+VkAttachmentDescription	w_graphics_device::w_render_pass_attachments::color_attachment_description =
 {
-	0,								// Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
-	VkFormat::VK_FORMAT_B8G8R8A8_UNORM,                             // Format of an image used for the attachment.
-	VK_SAMPLE_COUNT_1_BIT,                                          // Number of samples of the image; The value greater than 1 means multisampling.
-	VK_ATTACHMENT_LOAD_OP_CLEAR,                                    // Specifies what to do with the image�s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
-	VK_ATTACHMENT_STORE_OP_STORE,                                   // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
-	VK_ATTACHMENT_LOAD_OP_DONT_CARE,                                // The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
-	VK_ATTACHMENT_STORE_OP_DONT_CARE,                               // The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
-	VK_IMAGE_LAYOUT_UNDEFINED,                                      // The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
-	VK_IMAGE_LAYOUT_PRESENT_SRC_KHR                                 // The layout the driver will automatically transition the given image into at the end of a render pass.
+    0,								        // Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
+    VkFormat::VK_FORMAT_B8G8R8A8_UNORM,     // Format of an image used for the attachment.
+    VK_SAMPLE_COUNT_1_BIT,                  // Number of samples of the image; The value greater than 1 means multisampling.
+    VK_ATTACHMENT_LOAD_OP_CLEAR,            // Specifies what to do with the image�s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
+    VK_ATTACHMENT_STORE_OP_STORE,           // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
+    VK_ATTACHMENT_LOAD_OP_DONT_CARE,        // The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
+    VK_ATTACHMENT_STORE_OP_DONT_CARE,       // The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
+    VK_IMAGE_LAYOUT_UNDEFINED,              // The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
+    VK_IMAGE_LAYOUT_PRESENT_SRC_KHR         // The layout the driver will automatically transition the given image into at the end of a render pass.
 };
 
-VkAttachmentReference w_graphics_device::defaults::vk_default_color_attachment_reference =
+VkAttachmentReference w_graphics_device::w_render_pass_attachments::color_attachment_reference =
 {
-	0,                                                                  // Attachment
-	VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL                            // The layout of attachment
+    0,                                                                  // Attachment
+    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL                            // The layout of attachment
+};
+
+VkAttachmentDescription	w_graphics_device::w_render_pass_attachments::depth_attachment_description =
+{
+	0,								        // Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
+	VkFormat::VK_FORMAT_D16_UNORM,          // Format of an image used for the attachment.
+	VK_SAMPLE_COUNT_1_BIT,                  // Number of samples of the image; The value greater than 1 means multisampling.
+	VK_ATTACHMENT_LOAD_OP_CLEAR,            // Specifies what to do with the image�s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
+	VK_ATTACHMENT_STORE_OP_DONT_CARE,       // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
+	VK_ATTACHMENT_LOAD_OP_DONT_CARE,        // The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
+	VK_ATTACHMENT_STORE_OP_DONT_CARE,       // The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
+	VK_IMAGE_LAYOUT_UNDEFINED,              // The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
+    VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL         // The layout the driver will automatically transition the given image into at the end of a render pass.
+};
+
+VkAttachmentReference w_graphics_device::w_render_pass_attachments::depth_attachment_reference =
+{
+    1,                                                                  // Attachment
+    VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL                    // The layout of attachment
 };
 
 std::vector<VkSubpassDependency> w_graphics_device::defaults::vk_default_subpass_dependencies =
 {
+    //{
+    //    VK_SUBPASS_EXTERNAL,                            // uint32_t                       srcSubpass
+    //    0,                                              // uint32_t                       dstSubpass
+    //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           srcStageMask
+    //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           dstStageMask
+    //    0,                      // VkAccessFlags                  srcAccessMask
+    //    VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  dstAccessMask
+    //    0                     // VkDependencyFlags              dependencyFlags
+    //}
     {
         VK_SUBPASS_EXTERNAL,                            // uint32_t                       srcSubpass
         0,                                              // uint32_t                       dstSubpass
@@ -1417,7 +1445,7 @@ namespace wolf
 							_gDevice->output_presentation_windows.push_back(_out_window);
 
 							create_or_resize_swap_chain(_gDevice, j);
-							//_create_depth_stencil_buffer(_gDevice, j);
+							_create_depth_stencil_buffer(_gDevice, j);
 							_create_synchronization(_gDevice, j);
 							_record_command_buffers(_gDevice, j);
 						}
@@ -2185,10 +2213,11 @@ namespace wolf
             
 			void _create_depth_stencil_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
 			{
+                auto _device_id = pGDevice->device_id;
+                auto _window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+
 #ifdef __DX11__ 
-				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
-				auto _device_id = pGdevice->device_id;
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
+                auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
 
 				// Create a render target view of the swap chain back buffer.
 				ComPtr<ID3D11Texture2D1> _back_buffer;
@@ -2269,148 +2298,140 @@ namespace wolf
 				pGDevice->dx_context->RSSetViewports(1, &_output_presentation_window->dx_screen_viewport);
 
 #elif defined(__VULKAN__)
-//				auto _device_name = pGDevice->device_name;
-//				auto _device_id = pGDevice->device_id;
-//				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
-//
-//				VkImageCreateInfo _depth_stencil_image_create_info = {};
-//				const VkFormat _depth_format = VK_FORMAT_D16_UNORM;
-//
-//				VkFormatProperties _properties;
-//				vkGetPhysicalDeviceFormatProperties(pGDevice->vk_physical_device, _depth_format, &_properties);
-//
-//				if (_properties.linearTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
-//				{
-//					_depth_stencil_image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
-//				}
-//				else if (_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)
-//				{
-//					_depth_stencil_image_create_info.tiling = VK_IMAGE_TILING_OPTIMAL;
-//				}
-//				else
-//				{
-//					logger.error("VK_FORMAT_D16_UNORM Unsupported for depth buffer for graphics device: " +
-//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-//					release();
-//					std::exit(EXIT_FAILURE);
-//				}
-//
-//				auto _window = pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex);
-//
-//				//define depth stencil image description
-//				_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-//				_depth_stencil_image_create_info.pNext = nullptr;
-//				_depth_stencil_image_create_info.imageType = VK_IMAGE_TYPE_2D;
-//				_depth_stencil_image_create_info.format = _depth_format;
-//				_depth_stencil_image_create_info.extent.width = _window.width;
-//				_depth_stencil_image_create_info.extent.height = _window.height;
-//				_depth_stencil_image_create_info.extent.depth = 1;
-//				_depth_stencil_image_create_info.mipLevels = 1;
-//				_depth_stencil_image_create_info.arrayLayers = 1;
-//				_depth_stencil_image_create_info.samples = NUM_SAMPLES;
-//				_depth_stencil_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-//				_depth_stencil_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-//				_depth_stencil_image_create_info.queueFamilyIndexCount = 0;
-//				_depth_stencil_image_create_info.pQueueFamilyIndices = nullptr;
-//				_depth_stencil_image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-//				_depth_stencil_image_create_info.flags = 0;
-//
-//				VkMemoryAllocateInfo _mem_alloc = {};
-//				_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-//				_mem_alloc.pNext = nullptr;
-//				_mem_alloc.allocationSize = 0;
-//				_mem_alloc.memoryTypeIndex = 0;
-//
-//				_output_presentation_window->vk_depth_buffer_format = _depth_format;
-//
-//				//Create image of depth stencil
-//				auto _hr = vkCreateImage(pGDevice->vk_device,
-//					&_depth_stencil_image_create_info,
-//					nullptr,
-//					&_output_presentation_window->vk_depth_buffer_image_view.image);
-//				if (_hr)
-//				{
-//					logger.error("error on creating depth buffer for graphics device: " +
-//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-//					release();
-//					std::exit(EXIT_FAILURE);
-//				}
+                auto _device_name = pGDevice->device_name;
 
-//				VkMemoryRequirements _mem_reqs;
-//				vkGetImageMemoryRequirements(pGDevice->vk_device,
-//					_output_presentation_window->vk_depth_buffer_image_view.image,
-//					&_mem_reqs);
-//
-//				_mem_alloc.allocationSize = _mem_reqs.size;
-//
-//				//use the memory properties to determine the type of memory required
-//				_hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
-//					_mem_reqs.memoryTypeBits,
-//					0, // No Requirements
-//					&_mem_alloc.memoryTypeIndex);
-//				if (_hr)
-//				{
-//					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
-//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-//					release();
-//					std::exit(EXIT_FAILURE);
-//				}
-//
-//				//allocate memory
-//				_hr = vkAllocateMemory(pGDevice->vk_device,
-//					&_mem_alloc,
-//					nullptr,
-//					&_output_presentation_window->vk_depth_buffer_memory);
-//				if (_hr)
-//				{
-//					logger.error("error on allocating memory for depth buffer image for graphics device: " +
-//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-//					release();
-//					std::exit(EXIT_FAILURE);
-//				}
-//
-//				//bind memory
-//				_hr = vkBindImageMemory(pGDevice->vk_device,
-//					_output_presentation_window->vk_depth_buffer_image_view.image,
-//					_output_presentation_window->vk_depth_buffer_memory,
-//					0);
-//				if (_hr)
-//				{
-//					logger.error("error on binding to memory for depth buffer image for graphics device: " +
-//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-//					release();
-//					std::exit(EXIT_FAILURE);
-//				}
-//
-//				//create depth stencil buffer image view
-//				VkImageViewCreateInfo _depth_stencil_view_info = {};
-//				_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-//				_depth_stencil_view_info.pNext = nullptr;
-//				_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-//				_depth_stencil_view_info.image = _output_presentation_window->vk_depth_buffer_image_view.image;
-//				_depth_stencil_view_info.format = _depth_format;
-//				_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
-//				_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
-//				_depth_stencil_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
-//				_depth_stencil_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
-//				_depth_stencil_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
-//				_depth_stencil_view_info.subresourceRange.baseMipLevel = 0;
-//				_depth_stencil_view_info.subresourceRange.levelCount = 1;
-//				_depth_stencil_view_info.subresourceRange.baseArrayLayer = 0;
-//				_depth_stencil_view_info.subresourceRange.layerCount = 1;
-//				_depth_stencil_view_info.flags = 0;
-//
-//				_hr = vkCreateImageView(pGDevice->vk_device,
-//					&_depth_stencil_view_info,
-//					nullptr,
-//					&_output_presentation_window->vk_depth_buffer_image_view.view);
-//				if (_hr)
-//				{
-//					logger.error("error on creating image view for depth buffer image for graphics device: " +
-//						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-//					release();
-//					std::exit(EXIT_FAILURE);
-//				}
+				VkImageCreateInfo _depth_stencil_image_create_info = {};
+				const VkFormat _depth_format = w_graphics_device_manager::find_supported_format(
+                    pGDevice,
+                    { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+                    VK_IMAGE_TILING_OPTIMAL,
+                    VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+                if (_depth_format == VkFormat::VK_FORMAT_UNDEFINED)
+                {
+                    logger.error("Depth format not supported for graphics device: " +
+                        _device_name + " ID:" + std::to_string(_device_id) + 
+                        " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+                }
+
+                _window->vk_depth_buffer_format = _depth_format;
+
+				//define depth stencil image description
+				_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+				_depth_stencil_image_create_info.pNext = nullptr;
+				_depth_stencil_image_create_info.imageType = VK_IMAGE_TYPE_2D;
+				_depth_stencil_image_create_info.format = _depth_format;
+				_depth_stencil_image_create_info.extent.width = _window->width;
+				_depth_stencil_image_create_info.extent.height = _window->height;
+				_depth_stencil_image_create_info.extent.depth = 1;
+				_depth_stencil_image_create_info.mipLevels = 1;
+				_depth_stencil_image_create_info.arrayLayers = 1;
+				_depth_stencil_image_create_info.samples = NUM_SAMPLES;
+				_depth_stencil_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+				_depth_stencil_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+				_depth_stencil_image_create_info.queueFamilyIndexCount = 0;
+				_depth_stencil_image_create_info.pQueueFamilyIndices = nullptr;
+				_depth_stencil_image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+				_depth_stencil_image_create_info.flags = 0;
+
+				VkMemoryAllocateInfo _mem_alloc = {};
+				_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+				_mem_alloc.pNext = nullptr;
+				_mem_alloc.allocationSize = 0;
+				_mem_alloc.memoryTypeIndex = 0;
+
+				//Create image of depth stencil
+				auto _hr = vkCreateImage(pGDevice->vk_device,
+					&_depth_stencil_image_create_info,
+					nullptr,
+					&_window->vk_depth_buffer_image_view.image);
+				if (_hr)
+				{
+					logger.error("error on creating depth buffer for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				VkMemoryRequirements _mem_reqs;
+				vkGetImageMemoryRequirements(pGDevice->vk_device,
+					_window->vk_depth_buffer_image_view.image,
+					&_mem_reqs);
+
+				_mem_alloc.allocationSize = _mem_reqs.size;
+
+				//use the memory properties to determine the type of memory required
+				_hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
+					_mem_reqs.memoryTypeBits,
+					0, // No Requirements
+					&_mem_alloc.memoryTypeIndex);
+				if (_hr)
+				{
+					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + 
+                        std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//allocate memory
+				_hr = vkAllocateMemory(pGDevice->vk_device,
+					&_mem_alloc,
+					nullptr,
+					&_window->vk_depth_buffer_memory);
+				if (_hr)
+				{
+					logger.error("error on allocating memory for depth buffer image for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " +
+                        std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//bind memory
+				_hr = vkBindImageMemory(pGDevice->vk_device,
+					_window->vk_depth_buffer_image_view.image,
+					_window->vk_depth_buffer_memory,
+					0);
+				if (_hr)
+				{
+					logger.error("error on binding to memory for depth buffer image for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//create depth stencil buffer image view
+				VkImageViewCreateInfo _depth_stencil_view_info = {};
+				_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+				_depth_stencil_view_info.pNext = nullptr;
+				_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+				_depth_stencil_view_info.image = _window->vk_depth_buffer_image_view.image;
+				_depth_stencil_view_info.format = _depth_format;
+				_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
+				_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
+				_depth_stencil_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
+				_depth_stencil_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
+				_depth_stencil_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+				_depth_stencil_view_info.subresourceRange.baseMipLevel = 0;
+				_depth_stencil_view_info.subresourceRange.levelCount = 1;
+				_depth_stencil_view_info.subresourceRange.baseArrayLayer = 0;
+				_depth_stencil_view_info.subresourceRange.layerCount = 1;
+				_depth_stencil_view_info.flags = 0;
+
+				_hr = vkCreateImageView(pGDevice->vk_device,
+					&_depth_stencil_view_info,
+					nullptr,
+					&_window->vk_depth_buffer_image_view.view);
+				if (_hr)
+				{
+					logger.error("error on creating image view for depth buffer image for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + 
+                        std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 #endif
 			}
             
@@ -3247,6 +3268,35 @@ VkResult w_graphics_device_manager::memory_type_from_properties(
     // No memory types matched, return failure
     return VkResult::VK_INCOMPLETE;
 }
+
+VkFormat w_graphics_device_manager::find_supported_format(
+    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_ const std::vector<VkFormat>& pFormatCandidates,
+    _In_ VkImageTiling pImageTiling,
+    _In_ VkFormatFeatureFlags pFormatFeatureFlags)
+{
+    VkFormat _selected_format = VkFormat::VK_FORMAT_UNDEFINED;
+    for (auto& _format : pFormatCandidates)
+    {
+
+        VkFormatProperties _properties;
+        vkGetPhysicalDeviceFormatProperties(pGDevice->vk_physical_device, _format, &_properties);
+        if (pImageTiling == VK_IMAGE_TILING_LINEAR &&
+            (_properties.linearTilingFeatures & pFormatFeatureFlags) == pFormatFeatureFlags)
+        {
+            _selected_format = _format;
+            break;
+        }
+        else if (pImageTiling == VK_IMAGE_TILING_OPTIMAL &&
+            (_properties.optimalTilingFeatures & pFormatFeatureFlags) == pFormatFeatureFlags)
+        {
+            _selected_format = _format;
+            break;
+        }
+    }
+    return _selected_format;
+}
+
 #endif
             
 #pragma endregion

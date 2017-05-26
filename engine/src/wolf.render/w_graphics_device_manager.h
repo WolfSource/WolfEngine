@@ -95,13 +95,20 @@ namespace wolf
 	{
         //forward declaration
         struct w_graphics_device_manager_configs;
-        struct w_image_view;
         struct w_viewport;
         struct w_viewport_scissor;
         struct w_buffer;
         class  w_pipeline;
         class  w_command_buffers;
         
+        struct w_image_view
+        {
+#ifdef __VULKAN__
+            VkImage                             image = 0;
+            VkImageView                         view = 0;
+#endif
+        };
+
 		//Output window which handles all 3d resources for output renderer
 		struct w_output_presentation_window
 		{
@@ -190,19 +197,17 @@ namespace wolf
 #endif
 
 #elif defined(__VULKAN__)
-            VkSurfaceKHR                                    vk_presentation_surface = 0;
-                        
-			VkSurfaceFormatKHR                              vk_swap_chain_selected_format;
-			
-            VkSwapchainKHR                                  vk_swap_chain = 0;
+            VkSurfaceKHR                            vk_presentation_surface = 0;
+            VkSurfaceFormatKHR                      vk_swap_chain_selected_format;
+			VkSwapchainKHR                          vk_swap_chain = 0;
             std::vector<w_image_view>				vk_swap_chain_image_views;
             uint32_t								vk_swap_chain_image_index = 0;
             
             std::vector<VkSurfaceFormatKHR>			vk_surface_formats;
                         
-            //VkFormat								vk_depth_buffer_format = VkFormat::VK_FORMAT_UNDEFINED;
-            //vk_image_view							vk_depth_buffer_image_view;
-            //VkDeviceMemory							vk_depth_buffer_memory = NULL;
+            VkFormat								vk_depth_buffer_format = VkFormat::VK_FORMAT_UNDEFINED;
+            w_image_view							vk_depth_buffer_image_view;
+            VkDeviceMemory							vk_depth_buffer_memory = 0;
             
 			//Synchronization objects
             VkSemaphore								vk_image_is_available_semaphore = 0;
@@ -272,20 +277,26 @@ namespace wolf
             //static pipeline defaults
 			struct defaults
             {
-                static VkAttachmentDescription                      vk_default_attachment_description;
-                static VkAttachmentReference                        vk_default_color_attachment_reference;
-                static std::vector<VkSubpassDependency>             vk_default_subpass_dependencies;
-                static VkPipelineLayoutCreateInfo                   vk_default_pipeline_layout_create_info;
-                static VkPipelineVertexInputStateCreateInfo         vk_default_pipeline_vertex_input_state_create_info;
-                static VkPipelineInputAssemblyStateCreateInfo       vk_default_pipeline_input_assembly_state_create_info;
-                static VkPipelineRasterizationStateCreateInfo       vk_default_pipeline_rasterization_state_create_info;
-                static VkPipelineMultisampleStateCreateInfo         vk_default_pipeline_multisample_state_create_info;
+                W_EXP static std::vector<VkSubpassDependency>             vk_default_subpass_dependencies;
+                W_EXP static VkPipelineLayoutCreateInfo                   vk_default_pipeline_layout_create_info;
+                W_EXP static VkPipelineVertexInputStateCreateInfo         vk_default_pipeline_vertex_input_state_create_info;
+                W_EXP static VkPipelineInputAssemblyStateCreateInfo       vk_default_pipeline_input_assembly_state_create_info;
+                W_EXP static VkPipelineRasterizationStateCreateInfo       vk_default_pipeline_rasterization_state_create_info;
+                W_EXP static VkPipelineMultisampleStateCreateInfo         vk_default_pipeline_multisample_state_create_info;
             };
+
+            struct w_render_pass_attachments
+            {
+                W_EXP static VkAttachmentDescription                      color_attachment_description;
+                W_EXP static VkAttachmentReference                        color_attachment_reference;
+                W_EXP static VkAttachmentDescription                      depth_attachment_description;
+                W_EXP static VkAttachmentReference                        depth_attachment_reference;
+            };  
 
             struct w_blend_states
             {
-                static VkPipelineColorBlendAttachmentState          blend_none;
-                static VkPipelineColorBlendAttachmentState          premulitplied_alpha;
+                W_EXP static VkPipelineColorBlendAttachmentState          blend_none;
+                W_EXP static VkPipelineColorBlendAttachmentState          premulitplied_alpha;
             };
 
 #endif //__DX11__ __DX12__ __VULKAN__
@@ -366,6 +377,12 @@ namespace wolf
                                                   uint32_t pTypeBits,
                                                   VkFlags pRequirementsMask,
                                                   uint32_t* pTypeIndex);
+
+            W_EXP static VkFormat find_supported_format(
+                _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const std::vector<VkFormat>& pFormatCandidates,
+                _In_ VkImageTiling pImageTiling,
+                _In_ VkFormatFeatureFlags pFormatFeatureFlags);
 #endif
                         
 		protected:
@@ -395,15 +412,7 @@ namespace wolf
             std::vector<D3D_FEATURE_LEVEL>	hardware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_1 };
 #endif
         };
-        
-#ifdef __VULKAN__
-        struct w_image_view
-        {
-            VkImage                             image = 0;
-            VkImageView                         view = 0;
-        };
-#endif
-        
+
         struct w_viewport :
 #ifdef __VULKAN__
         public VkViewport

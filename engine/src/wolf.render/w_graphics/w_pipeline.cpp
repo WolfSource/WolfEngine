@@ -75,8 +75,11 @@ namespace wolf
                     _depth_stencil_state.depthTestEnable = VK_TRUE;
                     _depth_stencil_state.depthWriteEnable = VK_TRUE;
                     _depth_stencil_state.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
-                    _depth_stencil_state.front = _depth_stencil_state.back;
-                    _depth_stencil_state.back.compareOp = VK_COMPARE_OP_ALWAYS;
+                    _depth_stencil_state.minDepthBounds = 0.0f;
+                    _depth_stencil_state.maxDepthBounds = 1.0f;
+                    _depth_stencil_state.stencilTestEnable = VK_FALSE;
+                    _depth_stencil_state.front = {};
+                    _depth_stencil_state.back = {};
                 }
                 VkGraphicsPipelineCreateInfo _pipeline_create_info;
                 _pipeline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;

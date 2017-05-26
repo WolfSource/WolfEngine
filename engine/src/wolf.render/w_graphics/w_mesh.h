@@ -57,9 +57,7 @@ namespace wolf
                 VERTEX_POSITION_NORMAL_COLOR,
                 VERTEX_POSITION_NORMAL_UV,
                 VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL,
-                VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES,
-                VERTEX_GUI_2D,
-                VERTEX_GUI_3D,
+                VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES
             };
 
             W_EXP w_mesh();

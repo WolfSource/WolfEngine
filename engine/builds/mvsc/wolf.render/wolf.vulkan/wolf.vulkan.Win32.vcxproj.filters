@@ -31,8 +31,14 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp">
       <Filter>w_framework</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_gui_render.cpp">
-      <Filter>w_graphics</Filter>
+    <ClCompile Include="..\..\..\..\dependencies\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\dependencies\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\w_imgui.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,8 +81,11 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_quad.h">
       <Filter>w_framework</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_gui_render.h">
-      <Filter>w_graphics</Filter>
+    <ClInclude Include="..\..\..\..\dependencies\imgui\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\imgui\w_imgui.h">
+      <Filter>imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +94,9 @@
     </Filter>
     <Filter Include="w_framework">
       <UniqueIdentifier>{d665d56d-5e17-4d27-9ccc-5b8793822c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{c119a45e-0261-4cc1-9b79-252a7c47d460}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

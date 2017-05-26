@@ -25,8 +25,8 @@ namespace wolf
 
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const VkRenderPass pRenderPass,
-                               _In_ size_t pNumberOfFrameBuffers,
-                               _In_ w_image_view pAttachments[],
+                               _In_ std::vector<w_image_view> pAttachments,
+                               _In_ w_image_view* pDepthAttachment,
                                _In_ uint32_t pFrameBufferWidth,
                                _In_ uint32_t pFrameBufferHeight,
                                _In_ uint32_t pNumberOfLayers);

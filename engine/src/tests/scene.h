@@ -18,8 +18,6 @@
 #include <w_graphics/w_command_buffers.h>
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_frame_buffers.h>
-#include <w_gui.h>
-#include <w_graphics/w_gui_render.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -97,11 +95,7 @@ private:
     wolf::graphics::w_command_buffers                                        _command_buffers;
     wolf::graphics::w_render_pass                                            _render_pass;
     wolf::graphics::w_frame_buffers                                          _frame_buffers;
-    wolf::graphics::w_gui_render                                             _gui_render;
     std::vector<wolf::framework::w_model<>*>                                 _models;
-
-
-    wolf::gui::w_widget*												     _widget;
 
 };
 

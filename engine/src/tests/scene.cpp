@@ -69,12 +69,26 @@ void scene::load()
     _viewport.minDepth = 0;
     _viewport.maxDepth = 1;
 
+    //we need depth
+    //VkSubpassDescription _sub_pass = {};
+    //_sub_pass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    //_sub_pass.colorAttachmentCount = 1;
+    //_sub_pass.pColorAttachments = &w_graphics_device::w_render_pass_attachments::color_attachment_reference;
+    //_sub_pass.pDepthStencilAttachment = &w_graphics_device::w_render_pass_attachments::depth_attachment_reference;
+    //auto _sub_passes = new std::vector<VkSubpassDescription>{ _sub_pass };
+
     w_viewport_scissor _viewport_scissor;
     _viewport_scissor.offset.x = 0;
     _viewport_scissor.offset.y = 0;
     _viewport_scissor.extent.width = _width;
     _viewport_scissor.extent.height = _height;
-    auto _hr = this->_render_pass.load(_gDevice, _viewport, _viewport_scissor);
+    
+    
+    auto _hr = this->_render_pass.load(
+        _gDevice,
+        _viewport,
+        _viewport_scissor,
+        nullptr);
     if (_hr == S_FALSE)
     {
         logger.error("Error on creating render pass");
@@ -83,18 +97,6 @@ void scene::load()
     }
     
     auto _render_pass_handle = this->_render_pass.get_handle();
-
-    _hr = wolf::gui::w_gui::load(content_path + L"gui/test.xml", _width, _height);
-    if (_hr == S_FALSE)
-    {
-        logger.error("loading gui");
-    }
-
-    //get pointer to widgets
-    wolf::gui::w_gui::get_widget("widget_01", &this->_widget);
-
-    //make sure render all gui before loading gui_render
-    _gui_render.load(_gDevice);
 
     //load scene
     auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test000.dae");
@@ -252,12 +254,12 @@ void scene::load()
 
         _scene->release();
     }
-
+    
     //create frame buffers
     _hr = this->_frame_buffers.load(_gDevice,
                               _render_pass_handle,
-                              _output_window->vk_swap_chain_image_views.size(),
-                              _output_window->vk_swap_chain_image_views.data(),
+                              _output_window->vk_swap_chain_image_views,
+                              &_output_window->vk_depth_buffer_image_view,
                               _width,
                               _height,
                               1);
@@ -376,9 +378,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                     }
                 }
                 //make sure render all gui before loading gui_render
-                wolf::gui::w_gui::render(pGameTime);
-                auto _gui_2d_vertices = wolf::gui::w_gui::get_widgets_2d_vertices();
-                _gui_render.render(_gDevice, &this->_render_pass, "pipeline_cache_0", _cmd, _gui_2d_vertices);
+
             }
             this->_render_pass.end(_cmd);
 
@@ -409,10 +409,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         }
         this->_command_buffers.end(i);
     }
-
-    wolf::gui::w_gui::render(pGameTime);
-
-    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
+    
+    logger.write(std::to_string(pGameTime.get_frames_per_second()));
     return w_game::render(pGameTime);
 }
 
@@ -435,15 +433,6 @@ HRESULT scene::on_msg_proc(
     _In_ const WPARAM pWParam,
     _In_ const LPARAM pLParam)
 {
-    if (this->_widget)
-    {
-        auto _procced = this->_widget->on_msg_proc(pHWND, pMessage, pWParam, pLParam);
-        if (_procced)
-        {
-            return S_OK;
-        }
-    }
-
     //switch (pMessage)
     //{
     //case WM_MOUSEMOVE:

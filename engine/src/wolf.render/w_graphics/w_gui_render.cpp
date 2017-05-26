@@ -1,6 +1,12 @@
 #include "w_render_pch.h"
 #include "w_gui_render.h"
-#include <w_framework/w_quad.h>
+#include "w_mesh.h"
+#include "w_uniform.h"
+
+#include <w_camera.h>
+
+wolf::content_pipeline::w_camera camera;
+wolf::graphics::w_uniform<glm::mat4> view_projection;
 
 namespace wolf
 {
@@ -25,23 +31,35 @@ namespace wolf
 
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
             {
+                view_projection.load(pGDevice);
+
                 auto _hr = w_texture::load_to_shared_textures(pGDevice, content_path + L"textures/gui.png", &this->_texture);
                 if (_hr == S_FALSE || !this->_texture)
                 {
                     logger.error("Could not load texture for w_gui_render");
                 }
 
+                std::vector<w_shader_binding_param> _shader_params;
+
                 w_shader_binding_param _shader_param;
                 _shader_param.index = 0;
+                _shader_param.uniform_info = view_projection.get_descriptor_info();
+                _shader_param.stage = w_shader_stage::VERTEX_SHADER;
+                _shader_param.type = w_shader_binding_type::UNIFORM;
+                _shader_params.push_back(_shader_param);
+
+                _shader_param.index = 1;
                 _shader_param.sampler_info = this->_texture->get_descriptor_info();
                 _shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
                 _shader_param.type = w_shader_binding_type::SAMPLER;
+                _shader_params.push_back(_shader_param);
+
 
                 _hr = w_shader::load_to_shared_shaders(pGDevice,
                     "gui",
-                    content_path + L"shaders/gui_2d.vert.spv",
+                    content_path + L"shaders/gui.vert.spv",
                     content_path + L"shaders/gui.frag.spv",
-                    { _shader_param },
+                    _shader_params,
                     &this->_shader);
                 if (_hr == S_FALSE || !this->_shader)
                 {
@@ -71,13 +89,19 @@ namespace wolf
                 _In_ const w_render_pass* pRenderPass,
                 _In_ const std::string& pPipelineCacheName,
                 _In_ const VkCommandBuffer& pCommandBuffer,
-                _In_ std::map<std::string, std::vector<wolf::gui::w_gui_vertex_2d>>& pWidgetsVertices)
+                _In_ std::map<std::string, std::vector<wolf::gui::w_gui_instance_vertex>>& pWidgetsVertices)
             {
                 if (pRenderPass == nullptr)
                 {
                     V(S_FALSE, "Render Pass can not be nullptr.", this->_name, 3);
                     return S_FALSE;
                 }
+
+                camera.set_translate(0, 0, 1.36f);
+                camera.update_view();
+                camera.update_projection();
+                view_projection.data = camera.get_projection() * camera.get_view();
+                view_projection.update();
 
                 //load mesh
                 HRESULT _hr = S_OK;
@@ -89,24 +113,69 @@ namespace wolf
                     if (!_widget_vertices.size()) continue;
                     
                     const std::vector<UINT> _indices = { 0, 1, 2, 0, 3, 1 };
-                    std::vector<wolf::gui::w_gui_vertex_2d> _vertices;
-                    std::vector<wolf::gui::w_gui_instance_vertex_2d> _instance_vertices;
+                    std::vector<wolf::gui::w_gui_vertex> _vertices(4);
+                    std::vector<wolf::gui::w_gui_instance_vertex> _instance_vertices;
 
-                    //the four first iters are vertices of widget
-                    _vertices.insert(_vertices.begin(), _widget_vertices.begin(), _widget_vertices.begin() + 4);
+                    const float _left = -1.0f;
+                    const float _top = -1.0f;
+                    const float _right = 1.0f;
+                    const float _down = 1.0f;
 
-                    //others are instances
-                    for (size_t i = 4; i < 5 /*_widget_vertices.size()*/; ++i)
+                    //create full screen quad, we will instnace from this one
+                    _vertices[0].position[0] = _right;  _vertices[0].position[1] = _down;                  
+                    _vertices[1].position[0] = _left;   _vertices[1].position[1] = _top; 
+                    _vertices[2].position[0] = _left;   _vertices[2].position[1] = _down;
+                    _vertices[3].position[0] = _right;  _vertices[3].position[1] = _top; 
+
+                    //widget and child controls are instances
+                    for (size_t i = 0; i < _widget_vertices.size(); ++i)
                     {
-                        wolf::gui::w_gui_instance_vertex_2d _instance_vertex;
+                        wolf::gui::w_gui_instance_vertex _instance_vertex;
+                        
                         _instance_vertex.position[0] = _widget_vertices[i].position[0];
                         _instance_vertex.position[1] = _widget_vertices[i].position[1];
-                        _instance_vertex.color[0] = 0.0f;// _widget_vertices[i].color[0];
-                        _instance_vertex.color[1] = 0.0f;// _widget_vertices[i].color[1];
-                        _instance_vertex.color[2] = 1.0f; //_widget_vertices[i].color[2];
-                        _instance_vertex.color[3] = 0.5f;// _widget_vertices[i].color[3];
-                        _instance_vertex.uv[0] = 1 - _widget_vertices[i].uv[0];
-                        _instance_vertex.uv[1] = _widget_vertices[i].uv[1];
+                        _instance_vertex.position[2] = _widget_vertices[i].position[2];
+                        
+                        _instance_vertex.rotation[0] = _widget_vertices[i].rotation[0];
+                        _instance_vertex.rotation[1] = _widget_vertices[i].rotation[1];
+                        _instance_vertex.rotation[2] = _widget_vertices[i].rotation[2];
+                        
+                        _instance_vertex.scale[0] = _widget_vertices[i].scale[0];
+                        _instance_vertex.scale[1] = _widget_vertices[i].scale[1];
+                        
+                        _instance_vertex.left_top_color[0] = _widget_vertices[i].left_top_color[0];
+                        _instance_vertex.left_top_color[1] = _widget_vertices[i].left_top_color[1];
+                        _instance_vertex.left_top_color[2] = _widget_vertices[i].left_top_color[2];
+                        _instance_vertex.left_top_color[3] = _widget_vertices[i].left_top_color[3];
+
+                        _instance_vertex.left_down_color[0] = _widget_vertices[i].left_down_color[0];
+                        _instance_vertex.left_down_color[1] = _widget_vertices[i].left_down_color[1];
+                        _instance_vertex.left_down_color[2] = _widget_vertices[i].left_down_color[2];
+                        _instance_vertex.left_down_color[3] = _widget_vertices[i].left_down_color[3];
+
+                        _instance_vertex.right_top_color[0] = _widget_vertices[i].right_top_color[0];
+                        _instance_vertex.right_top_color[1] = _widget_vertices[i].right_top_color[1];
+                        _instance_vertex.right_top_color[2] = _widget_vertices[i].right_top_color[2];
+                        _instance_vertex.right_top_color[3] = _widget_vertices[i].right_top_color[3];
+
+                        _instance_vertex.right_down_color[0] = _widget_vertices[i].right_down_color[0];
+                        _instance_vertex.right_down_color[1] = _widget_vertices[i].right_down_color[1];
+                        _instance_vertex.right_down_color[2] = _widget_vertices[i].right_down_color[2];
+                        _instance_vertex.right_down_color[3] = _widget_vertices[i].right_down_color[3];
+
+                        
+                        _instance_vertex.left_top_uv[0] = _widget_vertices[i].left_top_uv[0];
+                        _instance_vertex.left_top_uv[1] = _widget_vertices[i].left_top_uv[1];
+                        
+                        _instance_vertex.left_down_uv[0] = _widget_vertices[i].left_down_uv[0];
+                        _instance_vertex.left_down_uv[1] = _widget_vertices[i].left_down_uv[1];
+                        
+                        _instance_vertex.right_top_uv[0] = _widget_vertices[i].right_top_uv[0];
+                        _instance_vertex.right_top_uv[1] = _widget_vertices[i].right_top_uv[1];
+                        
+                        _instance_vertex.right_down_uv[0] = _widget_vertices[i].right_down_uv[0];
+                        _instance_vertex.right_down_uv[1] = _widget_vertices[i].right_down_uv[1];
+                        
                         _instance_vertex.index = static_cast<UINT>(0);
 
                         _instance_vertices.push_back(_instance_vertex);
@@ -115,7 +184,7 @@ namespace wolf
                     auto _iter_find = this->_widgets.find(_widget_name);
                     if (_iter_find == this->_widgets.end())
                     {
-                        //there is no mesh for this widget, so we need to create one
+                        //there is no mesh and instance for this widget, so we need to create one
                         auto _mesh = new (std::nothrow) w_mesh();
                         if (!_mesh)
                         {
@@ -128,7 +197,7 @@ namespace wolf
                         auto _count = static_cast<UINT>(_vertices.size());
                         auto _hr = _mesh->load(pGDevice,
                             _vertices.data(),
-                            _count * sizeof(wolf::gui::w_gui_vertex_2d),
+                            _count * sizeof(wolf::gui::w_gui_vertex),
                             _count,
                             _indices.data(),
                             static_cast<UINT>(_indices.size()),
@@ -148,7 +217,8 @@ namespace wolf
                         _widget_render._widget_mesh = _mesh;
 
                         //if we have instances
-                        _widget_render._widget_childs_instances_size = static_cast<UINT>(_instance_vertices.size() * sizeof(wolf::gui::w_gui_instance_vertex_2d));
+                        _widget_render._widget_childs_instances_size = static_cast<UINT>(_instance_vertices.size() * 
+                            sizeof(wolf::gui::w_gui_instance_vertex));
                         if (_widget_render._widget_childs_instances_size)
                         {
                             if (update_instance_buffer(pGDevice,
@@ -160,33 +230,33 @@ namespace wolf
                                 SAFE_RELEASE(_widget_render._widget_childs_instances);
                                 V(S_FALSE, "Error creating instance buffer for widget " + _widget_name, this->_name, 3);
                             }
-                            _instance_vertices.clear();
                         }
-                        _vertices.clear();
-
                         this->_widgets[_widget_name] = _widget_render;
                     }
                     else
                     {
-                        //we found the mesh, update vertices
-                        auto _mesh = _iter_find->second._widget_mesh;
-                        if (_mesh)
+                        //we found the widget, update instance vertices
+                        auto _widget_render = _iter_find->second;
+                        if (_widget_render._widget_childs_instances_size)
                         {
-                            auto _count = static_cast<UINT>(_vertices.size());
-                            if(_mesh->update_dynamic_buffer(
-                                pGDevice,
-                                _vertices.data(),
-                                _count * sizeof(wolf::gui::w_gui_vertex_2d),
-                                _count,
-                                _indices.data(),
-                                static_cast<UINT>(_indices.size())) == S_FALSE)
+                            if (update_instance_buffer(pGDevice,
+                                _instance_vertices.data(),
+                                _widget_render._widget_childs_instances_size,
+                                &_widget_render._widget_childs_instances) == S_FALSE)
                             {
-                                _hr = S_FALSE;
-                                V(_hr, "loading mesh", this->_name, 3);
-                                break;
+                                //release widget and remove it from widgets
+
+                                _widget_render._widget_childs_instances_size = 0;
+                                SAFE_RELEASE(_widget_render._widget_childs_instances);
+                                V(S_FALSE, "Error creating instance buffer for widget " + _widget_name, this->_name, 3);
+                                
+                                this->_widgets.erase(_widget_name);
                             }
                         }
                     }
+
+                    _vertices.clear();
+                    _instance_vertices.clear();
                 }
 
                 if (_hr != S_OK) return _hr;
@@ -393,7 +463,7 @@ HRESULT w_gui_render::render(
     _In_ const w_render_pass* pRenderPass,
     _In_ const std::string& pPipelineCacheName,
     _In_ const VkCommandBuffer& pCommandBuffer,
-    _In_ std::map<std::string, std::vector<wolf::gui::w_gui_vertex_2d>>& pWidgetsVertices)
+    _In_ std::map<std::string, std::vector<wolf::gui::w_gui_instance_vertex>>& pWidgetsVertices)
 {
     if (!this->_pimp) return S_FALSE;
     return this->_pimp->render(pGDevice, pRenderPass, pPipelineCacheName, pCommandBuffer, pWidgetsVertices);

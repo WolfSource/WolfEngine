@@ -33,7 +33,9 @@ namespace wolf
 
             W_EXP void begin(_In_ const VkCommandBuffer pCommandBuffer,
                 _In_ const VkFramebuffer pFrameBuffer,
-                _In_ const w_color pClearColor = w_color::from_hex(w_color::CORNFLOWER_BLUE));
+                _In_ const w_color pClearColor = w_color::from_hex(w_color::CORNFLOWER_BLUE),
+                _In_ const float   pClearDepth = 1.0f,
+                _In_ const UINT    pClearStencil = 0.0f);
 
             W_EXP void end(_In_ VkCommandBuffer pCommandBuffer);
 

@@ -16,8 +16,8 @@ namespace wolf
             
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                          _In_ const VkRenderPass pRenderPass,
-                         _In_ size_t pNumberOfFrameBuffers,
-                         _In_ w_image_view pAttachments[],
+                         _In_ std::vector<w_image_view> pAttachments,
+                         _In_ w_image_view* pDepthAttachment,
                          _In_ uint32_t pFrameBufferWidth,
                          _In_ uint32_t pFrameBufferHeight,
                          _In_ uint32_t pNumberOfLayers)
@@ -31,16 +31,23 @@ namespace wolf
                 this->_gDevice = pGDevice;
                 
                 VkFramebuffer _frame_buffer = 0;
-                for (size_t i = 0; i < pNumberOfFrameBuffers; ++i)
+                for (size_t i = 0; i < pAttachments.size(); ++i)
                 {
+                    std::vector<VkImageView> _attachments;
+                    _attachments.push_back(pAttachments[i].view);
+                    if (pDepthAttachment)
+                    {
+                        _attachments.push_back(pDepthAttachment->view);//depth
+                    }
+
                     VkFramebufferCreateInfo _framebuffer_create_info =
                     {
                         VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,  // Type
                         nullptr,                                    // Next
                         0,                                          // Flags
                         pRenderPass,								// Render pass
-                        1,                                          // AttachmentCount
-                        &pAttachments[i].view,						// Attachments
+                        static_cast<uint32_t>(_attachments.size()), // AttachmentCount
+                        _attachments.data(),						// Attachments
                         pFrameBufferWidth,                          // Width
                         pFrameBufferHeight,                         // Height
                         pNumberOfLayers								// Layers
@@ -55,6 +62,8 @@ namespace wolf
                     }
                     
                     this->_buffers.push_back(_frame_buffer);
+
+                    _attachments.clear();
                 }
                 
                 return S_OK;
@@ -117,8 +126,8 @@ w_frame_buffers::~w_frame_buffers()
 
 HRESULT w_frame_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                               _In_ const VkRenderPass pRenderPass,
-                              _In_ size_t pNumberOfFrameBuffers,
-                              _In_ w_image_view pAttachments[],
+                              _In_ std::vector<w_image_view> pAttachments,
+                              _In_ w_image_view* pDepthAttachment,
                               _In_ uint32_t pFrameBufferWidth,
                               _In_ uint32_t pFrameBufferHeight,
                               _In_ uint32_t pNumberOfLayers)
@@ -126,8 +135,8 @@ HRESULT w_frame_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGD
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->load(pGDevice,
                              pRenderPass,
-                             pNumberOfFrameBuffers,
                              pAttachments,
+                             pDepthAttachment,
                              pFrameBufferWidth,
                              pFrameBufferHeight,
                              pNumberOfLayers);
