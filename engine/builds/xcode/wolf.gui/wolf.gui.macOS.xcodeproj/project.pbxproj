@@ -37,8 +37,6 @@
 		2C41F9301ED48B7E007012E4 /* w_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_widget.cpp; path = ../../../src/wolf.gui/w_widget.cpp; sourceTree = "<group>"; };
 		2C41F9311ED48B7E007012E4 /* w_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_widget.h; path = ../../../src/wolf.gui/w_widget.h; sourceTree = "<group>"; };
 		2C41F93B1ED49078007012E4 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
-		2CA945D01ED4DEEF007B70B8 /* gui_2d.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = gui_2d.vert; path = ../../../../content/shaders/gui_2d.vert; sourceTree = "<group>"; };
-		2CA945D11ED4DEEF007B70B8 /* gui.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = gui.frag; path = ../../../../content/shaders/gui.frag; sourceTree = "<group>"; };
 		2CA945D31ED6C8E9007B70B8 /* w_image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_image.cpp; path = ../../../src/wolf.gui/w_image.cpp; sourceTree = "<group>"; };
 		2CA945D41ED6C8E9007B70B8 /* w_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_image.h; path = ../../../src/wolf.gui/w_image.h; sourceTree = "<group>"; };
 		2CA945D51ED6C8E9007B70B8 /* w_label.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_label.cpp; path = ../../../src/wolf.gui/w_label.cpp; sourceTree = "<group>"; };
@@ -61,19 +59,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2CA945D21ED4DEF4007B70B8 /* shaders */ = {
-			isa = PBXGroup;
-			children = (
-				2CA945D01ED4DEEF007B70B8 /* gui_2d.vert */,
-				2CA945D11ED4DEEF007B70B8 /* gui.frag */,
-			);
-			name = shaders;
-			sourceTree = "<group>";
-		};
 		2CD6171A1E59DA3E006FC5DC = {
 			isa = PBXGroup;
 			children = (
-				2CA945D21ED4DEF4007B70B8 /* shaders */,
 				2CA945D31ED6C8E9007B70B8 /* w_image.cpp */,
 				2CA945D41ED6C8E9007B70B8 /* w_image.h */,
 				2CA945D51ED6C8E9007B70B8 /* w_label.cpp */,

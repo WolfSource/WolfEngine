@@ -89,7 +89,7 @@ namespace wolf
                 _In_ const w_render_pass* pRenderPass,
                 _In_ const std::string& pPipelineCacheName,
                 _In_ const VkCommandBuffer& pCommandBuffer,
-                _In_ std::map<std::string, std::vector<wolf::gui::w_gui_instance_vertex>>& pWidgetsVertices)
+                _In_ std::map<std::string, std::vector<wolf::gui::w_gui_vertex>>& pWidgetsVertices)
             {
                 if (pRenderPass == nullptr)
                 {
@@ -114,7 +114,7 @@ namespace wolf
                     
                     const std::vector<UINT> _indices = { 0, 1, 2, 0, 3, 1 };
                     std::vector<wolf::gui::w_gui_vertex> _vertices(4);
-                    std::vector<wolf::gui::w_gui_instance_vertex> _instance_vertices;
+                    //std::vector<wolf::gui::w_gui_instance_vertex> _instance_vertices;
 
                     const float _left = -1.0f;
                     const float _top = -1.0f;
@@ -128,58 +128,58 @@ namespace wolf
                     _vertices[3].position[0] = _right;  _vertices[3].position[1] = _top; 
 
                     //widget and child controls are instances
-                    for (size_t i = 0; i < _widget_vertices.size(); ++i)
-                    {
-                        wolf::gui::w_gui_instance_vertex _instance_vertex;
+                    //for (size_t i = 0; i < _widget_vertices.size(); ++i)
+                    //{
+                       // wolf::gui::w_gui_instance_vertex _instance_vertex;
                         
-                        _instance_vertex.position[0] = _widget_vertices[i].position[0];
-                        _instance_vertex.position[1] = _widget_vertices[i].position[1];
-                        _instance_vertex.position[2] = _widget_vertices[i].position[2];
+                       // _instance_vertex.position[0] = _widget_vertices[i].position[0];
+                        //_instance_vertex.position[1] = _widget_vertices[i].position[1];
+                        //_instance_vertex.position[2] = _widget_vertices[i].position[2];
                         
-                        _instance_vertex.rotation[0] = _widget_vertices[i].rotation[0];
-                        _instance_vertex.rotation[1] = _widget_vertices[i].rotation[1];
-                        _instance_vertex.rotation[2] = _widget_vertices[i].rotation[2];
+                        //_instance_vertex.rotation[0] = _widget_vertices[i].rotation[0];
+                        //_instance_vertex.rotation[1] = _widget_vertices[i].rotation[1];
+                        //_instance_vertex.rotation[2] = _widget_vertices[i].rotation[2];
                         
-                        _instance_vertex.scale[0] = _widget_vertices[i].scale[0];
-                        _instance_vertex.scale[1] = _widget_vertices[i].scale[1];
+                        //_instance_vertex.scale[0] = _widget_vertices[i].scale[0];
+                        //_instance_vertex.scale[1] = _widget_vertices[i].scale[1];
                         
-                        _instance_vertex.left_top_color[0] = _widget_vertices[i].left_top_color[0];
-                        _instance_vertex.left_top_color[1] = _widget_vertices[i].left_top_color[1];
-                        _instance_vertex.left_top_color[2] = _widget_vertices[i].left_top_color[2];
-                        _instance_vertex.left_top_color[3] = _widget_vertices[i].left_top_color[3];
+                        //_instance_vertex.left_top_color[0] = _widget_vertices[i].left_top_color[0];
+                        //_instance_vertex.left_top_color[1] = _widget_vertices[i].left_top_color[1];
+                        //_instance_vertex.left_top_color[2] = _widget_vertices[i].left_top_color[2];
+                        //_instance_vertex.left_top_color[3] = _widget_vertices[i].left_top_color[3];
 
-                        _instance_vertex.left_down_color[0] = _widget_vertices[i].left_down_color[0];
-                        _instance_vertex.left_down_color[1] = _widget_vertices[i].left_down_color[1];
-                        _instance_vertex.left_down_color[2] = _widget_vertices[i].left_down_color[2];
-                        _instance_vertex.left_down_color[3] = _widget_vertices[i].left_down_color[3];
+                        //_instance_vertex.left_down_color[0] = _widget_vertices[i].left_down_color[0];
+                        //_instance_vertex.left_down_color[1] = _widget_vertices[i].left_down_color[1];
+                        //_instance_vertex.left_down_color[2] = _widget_vertices[i].left_down_color[2];
+                        //_instance_vertex.left_down_color[3] = _widget_vertices[i].left_down_color[3];
 
-                        _instance_vertex.right_top_color[0] = _widget_vertices[i].right_top_color[0];
-                        _instance_vertex.right_top_color[1] = _widget_vertices[i].right_top_color[1];
-                        _instance_vertex.right_top_color[2] = _widget_vertices[i].right_top_color[2];
-                        _instance_vertex.right_top_color[3] = _widget_vertices[i].right_top_color[3];
+                        //_instance_vertex.right_top_color[0] = _widget_vertices[i].right_top_color[0];
+                        //_instance_vertex.right_top_color[1] = _widget_vertices[i].right_top_color[1];
+                        //_instance_vertex.right_top_color[2] = _widget_vertices[i].right_top_color[2];
+                        //_instance_vertex.right_top_color[3] = _widget_vertices[i].right_top_color[3];
 
-                        _instance_vertex.right_down_color[0] = _widget_vertices[i].right_down_color[0];
-                        _instance_vertex.right_down_color[1] = _widget_vertices[i].right_down_color[1];
-                        _instance_vertex.right_down_color[2] = _widget_vertices[i].right_down_color[2];
-                        _instance_vertex.right_down_color[3] = _widget_vertices[i].right_down_color[3];
+                        //_instance_vertex.right_down_color[0] = _widget_vertices[i].right_down_color[0];
+                        //_instance_vertex.right_down_color[1] = _widget_vertices[i].right_down_color[1];
+                        //_instance_vertex.right_down_color[2] = _widget_vertices[i].right_down_color[2];
+                        //_instance_vertex.right_down_color[3] = _widget_vertices[i].right_down_color[3];
 
                         
-                        _instance_vertex.left_top_uv[0] = _widget_vertices[i].left_top_uv[0];
-                        _instance_vertex.left_top_uv[1] = _widget_vertices[i].left_top_uv[1];
+                        //_instance_vertex.left_top_uv[0] = _widget_vertices[i].left_top_uv[0];
+                        //_instance_vertex.left_top_uv[1] = _widget_vertices[i].left_top_uv[1];
                         
-                        _instance_vertex.left_down_uv[0] = _widget_vertices[i].left_down_uv[0];
-                        _instance_vertex.left_down_uv[1] = _widget_vertices[i].left_down_uv[1];
+                        //_instance_vertex.left_down_uv[0] = _widget_vertices[i].left_down_uv[0];
+                        //_instance_vertex.left_down_uv[1] = _widget_vertices[i].left_down_uv[1];
                         
-                        _instance_vertex.right_top_uv[0] = _widget_vertices[i].right_top_uv[0];
-                        _instance_vertex.right_top_uv[1] = _widget_vertices[i].right_top_uv[1];
+                        //_instance_vertex.right_top_uv[0] = _widget_vertices[i].right_top_uv[0];
+                        //_instance_vertex.right_top_uv[1] = _widget_vertices[i].right_top_uv[1];
                         
-                        _instance_vertex.right_down_uv[0] = _widget_vertices[i].right_down_uv[0];
-                        _instance_vertex.right_down_uv[1] = _widget_vertices[i].right_down_uv[1];
+                        //_instance_vertex.right_down_uv[0] = _widget_vertices[i].right_down_uv[0];
+                        //_instance_vertex.right_down_uv[1] = _widget_vertices[i].right_down_uv[1];
                         
-                        _instance_vertex.index = static_cast<UINT>(0);
+                        //_instance_vertex.index = static_cast<UINT>(0);
 
-                        _instance_vertices.push_back(_instance_vertex);
-                    }
+                        //_instance_vertices.push_back(_instance_vertex);
+                    //}
 
                     auto _iter_find = this->_widgets.find(_widget_name);
                     if (_iter_find == this->_widgets.end())
@@ -193,7 +193,7 @@ namespace wolf
                             break;
                         }
 
-                        _mesh->set_vertex_declaration_struct(w_mesh::w_vertex_declaration::VERTEX_GUI_2D);
+                       // _mesh->set_vertex_declaration_struct(w_mesh::w_vertex_declaration::VERTEX_GUI_2D);
                         auto _count = static_cast<UINT>(_vertices.size());
                         auto _hr = _mesh->load(pGDevice,
                             _vertices.data(),
@@ -217,19 +217,19 @@ namespace wolf
                         _widget_render._widget_mesh = _mesh;
 
                         //if we have instances
-                        _widget_render._widget_childs_instances_size = static_cast<UINT>(_instance_vertices.size() * 
-                            sizeof(wolf::gui::w_gui_instance_vertex));
+                        //_widget_render._widget_childs_instances_size = static_cast<UINT>(_instance_vertices.size() *
+                          //  sizeof(wolf::gui::w_gui_instance_vertex));
                         if (_widget_render._widget_childs_instances_size)
                         {
-                            if (update_instance_buffer(pGDevice,
-                                _instance_vertices.data(),
-                                _widget_render._widget_childs_instances_size,
-                                &_widget_render._widget_childs_instances) == S_FALSE)
-                            {
-                                _widget_render._widget_childs_instances_size = 0;
-                                SAFE_RELEASE(_widget_render._widget_childs_instances);
-                                V(S_FALSE, "Error creating instance buffer for widget " + _widget_name, this->_name, 3);
-                            }
+                          //  if (update_instance_buffer(pGDevice,
+                           //     _instance_vertices.data(),
+                           //     _widget_render._widget_childs_instances_size,
+                           //     &_widget_render._widget_childs_instances) == S_FALSE)
+                            //{
+                              //  _widget_render._widget_childs_instances_size = 0;
+                              //  SAFE_RELEASE(_widget_render._widget_childs_instances);
+                              //  V(S_FALSE, "Error creating instance buffer for widget " + _widget_name, this->_name, 3);
+                            //}
                         }
                         this->_widgets[_widget_name] = _widget_render;
                     }
@@ -237,26 +237,26 @@ namespace wolf
                     {
                         //we found the widget, update instance vertices
                         auto _widget_render = _iter_find->second;
-                        if (_widget_render._widget_childs_instances_size)
-                        {
-                            if (update_instance_buffer(pGDevice,
-                                _instance_vertices.data(),
-                                _widget_render._widget_childs_instances_size,
-                                &_widget_render._widget_childs_instances) == S_FALSE)
-                            {
+                        //if (_widget_render._widget_childs_instances_size)
+                        //{
+                            //if (update_instance_buffer(pGDevice,
+                              //  _instance_vertices.data(),
+                              //  _widget_render._widget_childs_instances_size,
+                               // &_widget_render._widget_childs_instances) == S_FALSE)
+                            //{
                                 //release widget and remove it from widgets
 
-                                _widget_render._widget_childs_instances_size = 0;
-                                SAFE_RELEASE(_widget_render._widget_childs_instances);
-                                V(S_FALSE, "Error creating instance buffer for widget " + _widget_name, this->_name, 3);
+                              //  _widget_render._widget_childs_instances_size = 0;
+                              //  SAFE_RELEASE(_widget_render._widget_childs_instances);
+                              //  V(S_FALSE, "Error creating instance buffer for widget " + _widget_name, this->_name, 3);
                                 
-                                this->_widgets.erase(_widget_name);
-                            }
-                        }
+                               // this->_widgets.erase(_widget_name);
+                            //}
+                        //}
                     }
 
                     _vertices.clear();
-                    _instance_vertices.clear();
+                    //_instance_vertices.clear();
                 }
 
                 if (_hr != S_OK) return _hr;
@@ -463,7 +463,7 @@ HRESULT w_gui_render::render(
     _In_ const w_render_pass* pRenderPass,
     _In_ const std::string& pPipelineCacheName,
     _In_ const VkCommandBuffer& pCommandBuffer,
-    _In_ std::map<std::string, std::vector<wolf::gui::w_gui_instance_vertex>>& pWidgetsVertices)
+    _In_ std::map<std::string, std::vector<wolf::gui::w_gui_vertex>>& pWidgetsVertices)
 {
     if (!this->_pimp) return S_FALSE;
     return this->_pimp->render(pGDevice, pRenderPass, pPipelineCacheName, pCommandBuffer, pWidgetsVertices);

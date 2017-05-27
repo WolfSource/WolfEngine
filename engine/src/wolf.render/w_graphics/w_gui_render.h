@@ -32,7 +32,7 @@ namespace wolf
                 _In_ const w_render_pass* pRenderPass,
                 _In_ const std::string& pPipelineCacheName,
                 _In_ const VkCommandBuffer& pCommandBuffer, 
-                _In_ std::map<std::string, std::vector<wolf::gui::w_gui_instance_vertex>>& pWidgetsVertices);
+                _In_ std::map<std::string, std::vector<wolf::gui::w_gui_vertex>>& pWidgetsVertices);
 
             W_EXP virtual ULONG release() override;
 

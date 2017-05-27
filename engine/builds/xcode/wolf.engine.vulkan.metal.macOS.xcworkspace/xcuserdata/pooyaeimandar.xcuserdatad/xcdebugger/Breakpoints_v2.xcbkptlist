@@ -1191,7 +1191,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "201"
             endingLineNumber = "201"
-            landmarkName = "render( _In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_ const w_render_pass* pRenderPass, _In_ const std::string&amp; pPipelineCacheName, _In_ const VkCommandBuffer&amp; pCommandBuffer, _In_ std::map&lt;std::string, std::vector&lt;wolf::gui::w_gui_vertex_2d&gt;&gt;&amp; pWidgetsVertices)"
+            landmarkName = "render( _In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_ const w_render_pass* pRenderPass, _In_ const std::string&amp; pPipelineCacheName, _In_ const VkCommandBuffer&amp; pCommandBuffer, _In_ std::map&lt;std::string, std::vector&lt;wolf::gui::w_gui_instance_vertex&gt;&gt;&amp; pWidgetsVertices)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
