@@ -13,7 +13,8 @@ namespace wolf
                 _gDevice(nullptr),
                 _size(0),
                 _handle(0),
-                _memory(0)
+                _memory(0),
+                _mapped(nullptr)
             {
             }
             
@@ -88,50 +89,65 @@ namespace wolf
                 return S_FALSE;
             }
             
+            void* map()
+            {
+                //we can not access to VRAM, but we can copy our data to DRAM
+                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return nullptr;
+
+                auto _size = this->get_size();
+                auto _memory = this->get_memory();
+
+                auto _hr = vkMapMemory(this->_gDevice->vk_device,
+                    _memory,
+                    0,
+                    _size,
+                    0,
+                    &this->_mapped);
+                if (_hr)
+                {
+                    this->_mapped = nullptr;
+                    V(S_FALSE, "mapping data to to vertex buffer's memory for graphics device: " +
+                        _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
+                        this->_name, 3, false, true);
+
+                    return nullptr;
+                }
+
+                return this->_mapped;
+            }
+
+            void unmap()
+            {
+                if (this->_mapped)
+                {
+                    vkUnmapMemory(this->_gDevice->vk_device, _memory);
+                    this->_mapped = nullptr;
+                }
+            }
+
+            HRESULT flush(VkDeviceSize pSize, VkDeviceSize pOffset)
+            {
+                VkMappedMemoryRange _mapped_range = {};
+                _mapped_range.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+                _mapped_range.memory = this->_memory;
+                _mapped_range.offset = pOffset;
+                _mapped_range.size = pSize;
+                return vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range);
+            }
+
             //Set data to DRAM
             HRESULT set_data(_In_ const void* const pData)
             {
                 //we can not access to VRAM, but we can copy our data to DRAM
                 if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return S_FALSE;
-                
-                auto _size = this->get_size();
-                auto _memory = this->get_memory();
-                
-                void* _data = nullptr;
-                auto _hr = vkMapMemory(this->_gDevice->vk_device,
-                                       _memory,
-                                       0,
-                                       _size,
-                                       0,
-                                       &_data);
-                if(_hr)
-                {
-                    _data = nullptr;
-                    V(S_FALSE, "mapping data to to vertex buffer's memory for graphics device: " +
-                      _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
-                      this->_name, 3, false, true);
-                    
-                    return S_FALSE;
-                }
-                
-                memcpy(_data, pData, (size_t)_size);
-                
-                VkMappedMemoryRange _flush_range =
-                {
-                    VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,            // Type
-                    nullptr,                                          // Next
-                    _memory,                                          // Memory
-                    0,                                                // Offset
-                    VK_WHOLE_SIZE                                     // Size
-                };
-                
-                vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_flush_range);
-                
-                //unmap memory
-                vkUnmapMemory(this->_gDevice->vk_device, _memory);
-                
-                _data = nullptr;
-                
+
+                if (map() == nullptr) return S_FALSE;
+                memcpy(this->_mapped, pData, (size_t)_size);
+
+                if (flush(VK_WHOLE_SIZE, 0) == S_FALSE) return S_FALSE;
+
+                unmap();
+
                 return S_OK;
             }
             
@@ -199,6 +215,7 @@ namespace wolf
             std::string                                         _name;
             std::shared_ptr<w_graphics_device>                  _gDevice;
             UINT32                                              _size;
+            void*                                               _mapped;
             
 #ifdef __VULKAN__
             VkBuffer                                            _handle;
@@ -256,6 +273,27 @@ HRESULT w_buffer::bind()
     if(!this->_pimp) return S_FALSE;
     
     return this->_pimp->bind();
+}
+
+void* w_buffer::map()
+{
+    if (!this->_pimp) return nullptr;
+
+    return this->_pimp->map();
+}
+
+void w_buffer::unmap()
+{
+    if (!this->_pimp) return;
+
+    this->_pimp->unmap();
+}
+
+HRESULT w_buffer::flush(VkDeviceSize pSize, VkDeviceSize pOffset)
+{
+    if (!this->_pimp) return S_FALSE;
+
+    return this->_pimp->flush(pSize, pOffset);
 }
 
 ULONG w_buffer::release()

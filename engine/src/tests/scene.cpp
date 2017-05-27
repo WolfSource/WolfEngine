@@ -3,7 +3,10 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_content_manager.h>
 #include <w_framework/w_quad.h>
-#include <w_gui.h>
+
+#include <imgui\imgui_impl.h>
+
+imgui_imp* imGui = nullptr;
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -46,13 +49,13 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
 //auto _quad = new w_quad<vertex_declaration_structs::vertex_position_color_uv>();
 void scene::load()
 {
-    auto _gDevice =  this->graphics_devices[0];
+    auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
     float _width = static_cast<float>(_output_window->width);
     float _height = static_cast<float>(_output_window->height);
 
     w_game::load();
-    
+
     //optional: create pipeline cache    
     std::string _pipeline_cache_name = "pipeline_cache_0";
     if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
@@ -82,8 +85,8 @@ void scene::load()
     _viewport_scissor.offset.y = 0;
     _viewport_scissor.extent.width = _width;
     _viewport_scissor.extent.height = _height;
-    
-    
+
+
     auto _hr = this->_render_pass.load(
         _gDevice,
         _viewport,
@@ -95,11 +98,11 @@ void scene::load()
         release();
         exit(1);
     }
-    
+
     auto _render_pass_handle = this->_render_pass.get_handle();
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test000.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");
     if (_scene)
     {
         //get all models
@@ -254,15 +257,15 @@ void scene::load()
 
         _scene->release();
     }
-    
+
     //create frame buffers
     _hr = this->_frame_buffers.load(_gDevice,
-                              _render_pass_handle,
-                              _output_window->vk_swap_chain_image_views,
-                              &_output_window->vk_depth_buffer_image_view,
-                              _width,
-                              _height,
-                              1);
+        _render_pass_handle,
+        _output_window->vk_swap_chain_image_views,
+        &_output_window->vk_depth_buffer_image_view,
+        _width,
+        _height,
+        1);
     if (_hr == S_FALSE)
     {
         logger.error("Error on creating frame buffers");
@@ -282,8 +285,8 @@ void scene::load()
     }
 
     _hr = _gDevice->store_to_global_command_buffers("render_quad_with_texture",
-                                                  &this->_command_buffers,
-                                                  _output_window->index);
+        &this->_command_buffers,
+        _output_window->index);
     if (_hr == S_FALSE)
     {
         logger.error("Error creating command buffer");
@@ -291,6 +294,9 @@ void scene::load()
     }
 
     _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
+
+    imGui = new imgui_imp();
+    imGui->load(_gDevice, 1920, 1080, _render_pass_handle);
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
@@ -378,7 +384,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                     }
                 }
                 //make sure render all gui before loading gui_render
-
+                imGui->new_frame();
+                imGui->update_buffers(this->_render_pass);
+                //imGui->render(_cmd, (float)pGameTime.get_total_seconds());
             }
             this->_render_pass.end(_cmd);
 
@@ -390,8 +398,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                 VK_ACCESS_MEMORY_READ_BIT,                                  // DstAccessMask
                 VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,                   // OldLayout
                 VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,                            // NewLayout
-                _gDevice->vk_graphics_queue_family_index,                    // SrcQueueFamilyIndex
-                _gDevice->vk_present_queue_family_index,                   // DstQueueFamilyIndex
+                _gDevice->vk_graphics_queue_family_index,                   // SrcQueueFamilyIndex
+                _gDevice->vk_present_queue_family_index,                    // DstQueueFamilyIndex
                 _output_window->vk_swap_chain_image_views[i].image,         // Image
                 _sub_resource_range                                         // SubresourceRange
             };

@@ -2766,19 +2766,4 @@ void w_gui::get_all_controls_id(_In_z_ const char* pWidgetName, _Inout_ std::vec
     }
 }
 
-std::map<std::string, std::vector<w_gui_vertex>> w_gui::get_widgets_vertices()
-{
-    _widgets_vertices.clear();
-    for (auto _iter = _widgets.cbegin(); _iter != _widgets.cend(); ++_iter)
-    {
-        if (_iter->second)
-        {
-            auto _name = _iter->second->get_name();
-            _widgets_vertices[_name] = _iter->second->get_vertex_declarations();
-        }
-    }
-
-    return _widgets_vertices;
-}
-
 #pragma endregion

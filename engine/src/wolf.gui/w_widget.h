@@ -13,7 +13,6 @@
 #include <atomic>
 #include <functional>
 #include <w_time_span.h>
-#include "w_gui_vertex.h"
 #include "w_element.h"
 #include "w_control.h"
 #include "w_label.h"
@@ -675,9 +674,7 @@ namespace wolf
 			//get list_box control by ID
             //W_EXP w_list_box*					get_list_box(_In_ const int ID) const								    { return reinterpret_cast<w_list_box*>(get_control(ID, W_GUI_CONTROL_LISTBOX)); }
 			//get all controls id
-            WGUI_EXP void							get_all_controls_id(_Inout_ std::vector<INT64>& pIDs);
-            WGUI_EXP std::vector<w_gui_vertex>   get_vertex_declarations();
-            
+            WGUI_EXP void							get_all_controls_id(_Inout_ std::vector<INT64>& pIDs);           
 
 #pragma endregion
 
@@ -831,9 +828,6 @@ namespace wolf
 
 			w_widget*													_next_widget;
 			w_widget*													_prev_widget;
-
-            std::vector<w_gui_vertex>                                  _vertex_declarations;
-
 		};
 	}
 }

@@ -3248,7 +3248,7 @@ ULONG w_graphics_device_manager::release()
 VkResult w_graphics_device_manager::memory_type_from_properties(
         VkPhysicalDeviceMemoryProperties pMemoryProperties,
         uint32_t pTypeBits,
-        VkFlags pRequirementsMask,
+        VkFlags pRequirementsFlags,
         uint32_t* pTypeIndex)
 {
     // Search mem types to find first index with those properties
@@ -3257,7 +3257,7 @@ VkResult w_graphics_device_manager::memory_type_from_properties(
         if ((pTypeBits & 1) == 1) 
         {
             // Type is available, does it match user properties?
-            if ((pMemoryProperties.memoryTypes[i].propertyFlags & pRequirementsMask) == pRequirementsMask) 
+            if ((pMemoryProperties.memoryTypes[i].propertyFlags & pRequirementsFlags) == pRequirementsFlags)
             {
                 *pTypeIndex =  static_cast<uint32_t>(i);
                 return VkResult::VK_SUCCESS;

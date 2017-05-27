@@ -29,9 +29,11 @@ namespace wolf
                                _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags =
                                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
             
-			//Load texture2D from path
+			//Load texture2D from file
 			W_EXP HRESULT initialize_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
-            
+            //Load texture2D from memory
+            W_EXP HRESULT initialize_texture_from_memory(_In_ std::vector<uint8_t>& pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight);
+
             //release all resources
             W_EXP virtual ULONG release() override;
 
@@ -60,23 +62,11 @@ namespace wolf
             W_EXP VkImageViewType get_image_view_type() const;
             //get image format
             W_EXP VkFormat get_format() const;
-            //get is bgra
-            W_EXP bool get_is_bgra() const;
             //get write descriptor image info
             W_EXP const VkDescriptorImageInfo get_descriptor_info() const;
             
 #pragma endregion
 
-#pragma region Setters
-
-            //Set image type
-            W_EXP void set_image_type(_In_ VkImageType pImageViewType);
-            //Set image view type
-            W_EXP void set_image_view_type(_In_ VkImageViewType pImageViewType);
-            //Set format
-            W_EXP void set_format(_In_ VkFormat pFormat);
-
-#pragma endregion
 
             W_EXP static w_texture*                               default_texture;
 

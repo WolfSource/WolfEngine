@@ -45,8 +45,8 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 
 	//Initialize window
 	sWindow = make_unique<w_window>();
-	sWindow->set_width(1920);
-	sWindow->set_height(1080);
+	sWindow->set_width(1280);
+	sWindow->set_height(720);
 	sWindow->initialize(_msg_proc_func);
 
 	//run the vulkan sample

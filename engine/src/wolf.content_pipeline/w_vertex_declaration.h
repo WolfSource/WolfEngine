@@ -38,12 +38,19 @@ namespace wolf
 				glm::vec2 uv;
 			};
 
-			struct vertex_position_color_uv
+			struct vertex_position_uv_color
 			{
 				glm::vec3 position;
-				glm::vec4 color;
 				glm::vec2 uv;
+                glm::vec4 color;
 			};
+
+            struct vertex_position2_uv_color
+            {
+                glm::vec2 position;
+                glm::vec2 uv;
+                glm::vec4 color;
+            };
 
 			struct vertex_position_normal_color
 			{

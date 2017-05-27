@@ -52,7 +52,7 @@ namespace wolf
             WGUI_EXP virtual				~w_control();
 
 			virtual void				    refresh();
-			virtual void				    render( _In_ const float& pElapsedTime, _In_ std::vector<w_gui_vertex>& pVertexDeclarations);
+			virtual void				    render(_In_ const float& pElapsedTime, _In_ std::map<std::string, std::vector<w_gui_element>> pWidgetVertices);
 
 			// Windows message handler
 			virtual bool				    on_msg_proc(_In_ UINT pMsg, _In_ WPARAM pWParam, _In_ LPARAM pLParam);
@@ -71,20 +71,6 @@ namespace wolf
             virtual bool				    contains_point(_In_ const w_point& pPoint);
             
             ULONG                           release() override;
-
-            /*
-                _In_ const glm::vec2& pParentWidgetSize = Size of Parent Widget
-                _In_ const glm::vec2& pControlSize = Size of Control
-                _In_ const glm::vec2& pControlPosition = Position of Control
-                _In_ const w_color pControlCornerColors[4] = {TopLeftColor, DownLeftColor, TopRightColor, DownRightColor }
-                _Inout_ std::vector<w_gui_vertex_2d>& pVertexDeclarations = output vertices
-            */
-            static void                    generate_2d_vertices(
-                _In_ const glm::vec2& pParentWidgetSize,
-                _In_ const glm::vec2& pControlSize,
-                _In_ const glm::vec2& pControlPosition,
-                _In_ const w_color pControlCornerColors[4],
-                _Inout_ std::vector<w_gui_vertex>& pVertexDeclarations);
 
 #pragma region Getters
 
@@ -156,7 +142,7 @@ namespace wolf
             std::vector<w_element*>		    elements;// All display elements
 
 		private:
-			typedef system::w_object	    _super;
+            typedef system::w_object	    _super;
 		};
 	}
 }

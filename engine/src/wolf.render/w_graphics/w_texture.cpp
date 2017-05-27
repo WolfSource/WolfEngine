@@ -16,86 +16,86 @@ namespace wolf
         {
         public:
             w_texture_pimp() :
-            _name("w_texture"),
-            _gDevice(nullptr),
-            _width(0),
-            _height(0),
-            _image(0),
-            _view(0),
-            _sampler(0),
-            _memory(0),
-            _format(VK_FORMAT_R8G8B8A8_UNORM),
-            _image_type(VkImageType::VK_IMAGE_TYPE_2D),
-            _image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D)
+                _name("w_texture"),
+                _gDevice(nullptr),
+                _width(0),
+                _height(0),
+                _image(0),
+                _view(0),
+                _sampler(0),
+                _memory(0),
+                _format(VK_FORMAT_R8G8B8A8_UNORM),
+                _image_type(VkImageType::VK_IMAGE_TYPE_2D),
+                _image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D)
             {
             }
-            
+
             ~w_texture_pimp()
             {
                 release();
             }
-            
+
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
             {
                 this->_gDevice = pGDevice;
                 this->_memory_property_flags = pMemoryPropertyFlags;
                 return S_OK;
             }
-            
+
             HRESULT initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
             {
                 using namespace std;
                 using namespace system::io;
-                
-                
+
+
 #if defined(__WIN32) || defined(__UWP)
-                auto _path = ( pIsAbsolutePath ? L"" : content_path ) + pPath;
+                auto _path = (pIsAbsolutePath ? L"" : content_path) + pPath;
                 auto _ext = get_file_extentionW(_path.c_str());
 #else
-                auto _path = ( pIsAbsolutePath ? "" : get_content_directory() ) + wolf::system::convert::wstring_to_string(pPath);
+                auto _path = (pIsAbsolutePath ? "" : get_content_directory()) + wolf::system::convert::wstring_to_string(pPath);
                 auto _extension = get_file_extention(_path.c_str());
                 auto _ext = system::convert::string_to_wstring(_extension);
 #endif
-                
+
                 //lower it
                 std::transform(_ext.begin(), _ext.end(), _ext.begin(), ::tolower);
-                
+
                 if (_ext == L".dds")
                 {
                     std::vector<uint8_t> data;
                     int _file_status = -1;
                     system::io::read_binary_file(_path.c_str(), data, _file_status);
                     if (_file_status != 1)
-                    {                        
+                    {
 #if defined(__WIN32) || defined(__UWP)
-						wstring msg = L"";
-						if (_file_status == -1)
-						{
-							msg = L"Could not find the texture file: ";
-						}
-						else
-						{
-							msg = L"Texture file is corrupted: ";
-						}
+                        wstring msg = L"";
+                        if (_file_status == -1)
+                        {
+                            msg = L"Could not find the texture file: ";
+                        }
+                        else
+                        {
+                            msg = L"Texture file is corrupted: ";
+                        }
                         V(S_FALSE, msg + _path, this->_name, 3);
 #else
-						string msg = "";
-						if (_file_status == -1)
-						{
-							msg = "Could not find the texture file: ";
-						}
-						else
-						{
-							msg = "Texture file is corrupted: ";
-						}
+                        string msg = "";
+                        if (_file_status == -1)
+                        {
+                            msg = "Could not find the texture file: ";
+                        }
+                        else
+                        {
+                            msg = "Texture file is corrupted: ";
+                        }
                         V(S_FALSE, msg + _path, this->_name, 3);
 #endif
-                        
+
                         return S_FALSE;
                     }
-                    
+
 #if defined(__WIN32) || defined(__UWP)
-                    
+
 #else
                     logger.error("DDS format not supported on this platform for following file: " + _path);
                     return S_FALSE;
@@ -104,12 +104,12 @@ namespace wolf
                 else if (_ext == L".jpg" || _ext == L".bmp" || _ext == L".png" || _ext == L".psd" || _ext == L".tga")
                 {
                     if (S_FALSE == system::io::get_is_file(_path.c_str()))
-                    {                        
+                    {
 #if defined(__WIN32) || defined(__UWP)
-						wstring msg = L"could not find the texture file: ";
+                        wstring msg = L"could not find the texture file: ";
                         V(S_FALSE, msg + _path, this->_name, 3);
 #else
-						string msg = "could not find the texture file: ";
+                        string msg = "could not find the texture file: ";
                         V(S_FALSE, msg + _path, this->_name, 3);
 #endif
                         return S_FALSE;
@@ -122,62 +122,62 @@ namespace wolf
                         {
                             this->_width = __width;
                             this->_height = __height;
-                            
+
                             if (this->_width == 0 || this->_height == 0)
                             {
 #if defined(__WIN32) || defined(__UWP)
-								wstring msg = L"Width or Height of texture file is zero: ";
+                                wstring msg = L"Width or Height of texture file is zero: ";
                                 V(S_FALSE, msg + _path, this->_name, 3);
 #else
-								string msg = "Width or Height of texture file is zero: ";
+                                string msg = "Width or Height of texture file is zero: ";
                                 V(S_FALSE, msg + _path, this->_name, 3);
 #endif
                                 return S_FALSE;
                             }
-                            
+
                             auto _hr = _create_image();
-                            if(_hr == S_FALSE) return S_FALSE;
-                            
+                            if (_hr == S_FALSE) return S_FALSE;
+
                             _hr = _allocate_memory();
-                            if(_hr == S_FALSE) return S_FALSE;
-                            
+                            if (_hr == S_FALSE) return S_FALSE;
+
                             //bind to memory
-                            if(vkBindImageMemory( this->_gDevice->vk_device,
-                                                 this->_image,
-                                                 this->_memory,
-                                                 0 ))
+                            if (vkBindImageMemory(this->_gDevice->vk_device,
+                                this->_image,
+                                this->_memory,
+                                0))
                             {
-								V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
-									" ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
+                                V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
+                                    " ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
                                 return S_FALSE;
                             }
-                            
+
                             _hr = _create_image_view();
-                            if(_hr == S_FALSE) return S_FALSE;
-                            
+                            if (_hr == S_FALSE) return S_FALSE;
+
                             _hr = _create_sampler();
-                            if(_hr == S_FALSE) return S_FALSE;
-                            
+                            if (_hr == S_FALSE) return S_FALSE;
+
                             auto _size = this->_width * this->_height * 4;
                             std::vector<uint8_t> _data(_rgba, _rgba + _size);
 
-                            _hr = _copy_data_to_texture_2D(_data);
-                             if(_hr == S_FALSE) return S_FALSE;
-                            
+                            _hr = copy_data_to_texture_2D(_data);
+                            if (_hr == S_FALSE) return S_FALSE;
+
                             stbi_image_free(_rgba);
-                            
+
                             this->_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
                             this->_image_info.sampler = this->_sampler;
                             this->_image_info.imageView = this->_view;
-                            
+
                         }
                         else
-                        {  
+                        {
 #if defined(__WIN32) || defined(__UWP)
-							wstring msg = L"texture file is corrupted: ";
+                            wstring msg = L"texture file is corrupted: ";
                             V(S_FALSE, msg + _path, this->_name, 3);
 #else
-							string msg = "texture file is corrupted: ";
+                            string msg = "texture file is corrupted: ";
                             V(S_FALSE, msg + _path, this->_name, 3);
 #endif
                             return S_FALSE;
@@ -193,10 +193,48 @@ namespace wolf
 #endif
                     return S_FALSE;
                 }
-                
+
                 return S_OK;
             }
-            
+
+            HRESULT initialize_texture_from_memory(_In_ std::vector<uint8_t>& pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+            {
+                this->_width = pWidth;
+                this->_height = pHeight;
+
+                auto _hr = _create_image();
+                if (_hr == S_FALSE) return S_FALSE;
+
+                _hr = _allocate_memory();
+                if (_hr == S_FALSE) return S_FALSE;
+
+                //bind to memory
+                if (vkBindImageMemory(this->_gDevice->vk_device,
+                    this->_image,
+                    this->_memory,
+                    0))
+                {
+                    V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
+                        " ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
+                    return S_FALSE;
+                }
+
+                _hr = _create_image_view();
+                if (_hr == S_FALSE) return S_FALSE;
+
+                _hr = _create_sampler();
+                if (_hr == S_FALSE) return S_FALSE;
+                
+                _hr = copy_data_to_texture_2D(pRGBAData);
+                if (_hr == S_FALSE) return S_FALSE;
+                
+                this->_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                this->_image_info.sampler = this->_sampler;
+                this->_image_info.imageView = this->_view;
+
+                return S_OK;
+            }
+
             HRESULT _create_image()
             {
                 const VkImageCreateInfo _image_create_info =
@@ -378,7 +416,7 @@ namespace wolf
                 return S_OK;
             }
             
-            HRESULT _copy_data_to_texture_2D(_In_ const std::vector<uint8_t> pData)
+            HRESULT copy_data_to_texture_2D(_In_ const std::vector<uint8_t> pData)
             {
                 auto _data_size = static_cast<uint32_t>(pData.size());
                 w_buffer _staging_buffer;
@@ -654,36 +692,7 @@ namespace wolf
             }
             
 #pragma endregion
-       
-#pragma region Setters
-            
-            void set_width(_In_ UINT pWidth)
-            {
-                this->_width = pWidth;
-            }
-            
-            void set_height(_In_ UINT pHeight)
-            {
-                this->_height = pHeight;
-            }
-            
-            void set_image_type(_In_ VkImageType pImageType)
-            {
-                this->_image_type = pImageType;
-            }
-            
-            void set_image_view_type(_In_ VkImageViewType pImageViewType)
-            {
-                this->_image_view_type = pImageViewType;
-            }
-            
-            void set_format(_In_ VkFormat pFormat)
-            {
-                this->_format = pFormat;
-            }
-            
-#pragma endregion
-            
+                   
         private:
             
             std::string                                     _name;
@@ -729,6 +738,12 @@ HRESULT w_texture::initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _I
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->initialize_texture_2D_from_file(pPath, pIsAbsolutePath);
+}
+
+HRESULT w_texture::initialize_texture_from_memory(_In_ std::vector<uint8_t>& pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+{
+    if (!this->_pimp) return S_FALSE;
+    return this->_pimp->initialize_texture_from_memory(pRGBAData, pWidth, pHeight);
 }
 
 HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -855,24 +870,3 @@ const VkDescriptorImageInfo w_texture::get_descriptor_info() const
 
 #pragma endregion
 
-#pragma region Setters
-
-void w_texture::set_image_type(_In_ VkImageType pImageViewType)
-{
-    if(!this->_pimp) return;
-    this->_pimp->set_image_type(pImageViewType);
-}
-
-void w_texture::set_image_view_type(_In_ VkImageViewType pImageViewType)
-{
-    if(!this->_pimp) return;
-    this->_pimp->set_image_view_type(pImageViewType);
-}
-
-void w_texture::set_format(_In_ VkFormat pFormat)
-{
-    if(!this->_pimp) return;
-    this->_pimp->set_format(pFormat);
-}
-
-#pragma endregion

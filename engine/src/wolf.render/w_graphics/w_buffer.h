@@ -32,9 +32,15 @@ namespace wolf
                          _In_ const VkMemoryPropertyFlags pMemoryFlags);
             
             W_EXP HRESULT set_data(_In_ const void* const pData);
-            
+
             W_EXP HRESULT bind();
+
+            W_EXP void* map();
             
+            W_EXP void unmap();
+            
+            W_EXP HRESULT flush(VkDeviceSize pSize = VK_WHOLE_SIZE, VkDeviceSize pOffset = 0);
+
             W_EXP ULONG release() override;
             
 #pragma region Getters

@@ -101,7 +101,7 @@ ULONG w_control::release()
     return _super::release();
 }
 
-void w_control::generate_2d_vertices(
+void w_control::generate_vertices(
     _In_ const glm::vec2& pParentWidgetSize,
     _In_ const glm::vec2& pControlSize,
     _In_ const glm::vec2& pControlPosition,

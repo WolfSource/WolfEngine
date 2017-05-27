@@ -14,6 +14,8 @@
 #ifndef __W_GUI_VERTEX_H__
 #define __W_GUI_VERTEX_H__
 
+#include <w_color.h>
+
 namespace wolf
 {
     namespace gui
@@ -21,8 +23,16 @@ namespace wolf
         struct w_gui_vertex
         {
             float position[2];
-            float color[4];
             float uv[2];
+        };
+
+        struct w_gui_element
+        {
+            w_gui_vertex vertices[4];
+            w_color      left_top_color;
+            w_color      left_bottom_color;
+            w_color      right_top_color;
+            w_color      right_top_color;
         };
     }
 }

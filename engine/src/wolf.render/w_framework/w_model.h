@@ -149,7 +149,7 @@ namespace wolf
                         }
                         this->_vertex_declaration = w_vertex_declaration::VERTEX_POSITION_UV;
                     }
-                    else if (std::is_same<T, wolf::content_pipeline::vertex_declaration_structs::vertex_position_color_uv>::value)
+                    else if (std::is_same<T, wolf::content_pipeline::vertex_declaration_structs::vertex_position_uv_color>::value)
                     {
                         //for (size_t j = 0; j < _model_mesh->vertices.size(); ++j)
                         //{

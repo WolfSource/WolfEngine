@@ -82,8 +82,6 @@ namespace wolf
             WGUI_EXP	static void get_control(_In_z_ const char* pWidgetName, _In_ int pControlID, _Inout_ wolf::gui::w_control** pControl);
 			//get all controls id of specific widget
             WGUI_EXP	static void get_all_controls_id(_In_z_ const char* pWidgetName, _Inout_ std::vector<INT64>& pControlsID);
-			//get all 2d vertices of widgets
-            WGUI_EXP    static std::map<std::string, std::vector<w_gui_vertex>> get_widgets_vertices();
 
 #pragma endregion
 

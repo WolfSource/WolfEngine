@@ -517,13 +517,13 @@ namespace wolf
                     });
                 }
                 break;
-                case w_mesh::w_vertex_declaration::VERTEX_POSITION_COLOR_UV:
+                case w_mesh::w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
                 {
                     //create pipeline for basic shader
                     _vertex_binding_descriptions.push_back(
                     {
                         0,                                                                                              // Binding
-                        sizeof(vertex_declaration_structs::vertex_position_color_uv),                                   // Stride
+                        sizeof(vertex_declaration_structs::vertex_position_uv_color),                                   // Stride
                         VK_VERTEX_INPUT_RATE_VERTEX                                                                     // InputRate
                     });
                     _vertex_attribute_descriptions.push_back(
@@ -531,21 +531,53 @@ namespace wolf
                         0,                                                                       // Location
                         _vertex_binding_descriptions[0].binding,                                 // Binding
                         VK_FORMAT_R32G32B32_SFLOAT,                                              // Format
-                        offsetof(vertex_declaration_structs::vertex_position_color_uv, position) // Offset
+                        offsetof(vertex_declaration_structs::vertex_position_uv_color, position) // Offset
                     });
                     _vertex_attribute_descriptions.push_back(
                     {
                         1,                                                                       // Location
                         _vertex_binding_descriptions[0].binding,                                 // Binding
-                        VK_FORMAT_R32G32B32A32_SFLOAT,                                           // Format
-                        offsetof(vertex_declaration_structs::vertex_position_color_uv, color)    // Offset
+                        VK_FORMAT_R32G32_SFLOAT,                                           // Format
+                        offsetof(vertex_declaration_structs::vertex_position_uv_color, uv)    // Offset
                     });
                     _vertex_attribute_descriptions.push_back(
                     {
                         2,                                                                       // Location
                         _vertex_binding_descriptions[0].binding,                                 // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                                 // Format
-                        offsetof(vertex_declaration_structs::vertex_position_color_uv, uv)       // Offset
+                        VK_FORMAT_R32G32B32A32_SFLOAT,                                                 // Format
+                        offsetof(vertex_declaration_structs::vertex_position_uv_color, color)       // Offset
+                    });
+                }
+                break;
+                case w_mesh::w_vertex_declaration::VERTEX_POSITION2_UV_COLOR:
+                {
+                    //create pipeline for basic shader
+                    _vertex_binding_descriptions.push_back(
+                    {
+                        0,                                                                                              // Binding
+                        sizeof(vertex_declaration_structs::vertex_position2_uv_color),                                   // Stride
+                        VK_VERTEX_INPUT_RATE_VERTEX                                                                     // InputRate
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        0,                                                                       // Location
+                        _vertex_binding_descriptions[0].binding,                                 // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                              // Format
+                        offsetof(vertex_declaration_structs::vertex_position2_uv_color, position) // Offset
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        1,                                                                       // Location
+                        _vertex_binding_descriptions[0].binding,                                 // Binding
+                        VK_FORMAT_R32G32_SFLOAT,                                           // Format
+                        offsetof(vertex_declaration_structs::vertex_position2_uv_color, uv)    // Offset
+                    });
+                    _vertex_attribute_descriptions.push_back(
+                    {
+                        2,                                                                       // Location
+                        _vertex_binding_descriptions[0].binding,                                 // Binding
+                        VK_FORMAT_R32G32B32A32_SFLOAT,                                                 // Format
+                        offsetof(vertex_declaration_structs::vertex_position2_uv_color, color)       // Offset
                     });
                 }
                 break;

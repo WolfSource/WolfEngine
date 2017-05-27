@@ -375,7 +375,7 @@ namespace wolf
 #ifdef __VULKAN__
             W_EXP static VkResult memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
                                                   uint32_t pTypeBits,
-                                                  VkFlags pRequirementsMask,
+                                                  VkFlags pRequirementsFlags,
                                                   uint32_t* pTypeIndex);
 
             W_EXP static VkFormat find_supported_format(
