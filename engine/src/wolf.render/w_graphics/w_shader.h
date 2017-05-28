@@ -65,7 +65,9 @@ namespace wolf
 				               _In_ const w_shader_stage pShaderStage,
                                _In_z_ const char* pMainFunctionName = "main");
             
-        
+            W_EXP HRESULT load_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
+            W_EXP void update_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
+
 			W_EXP virtual ULONG release() override;
 
 #pragma region Getters
@@ -74,12 +76,6 @@ namespace wolf
             W_EXP const std::vector<VkPipelineShaderStageCreateInfo>* get_shader_stages() const;
             W_EXP const VkDescriptorSet get_descriptor_set() const;
             W_EXP const VkDescriptorSetLayout get_descriptor_set_layout_binding() const;
-            
-#pragma endregion
-
-#pragma region Setters
-
-            W_EXP HRESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
             
 #pragma endregion
 

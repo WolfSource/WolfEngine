@@ -4,9 +4,7 @@
 #include <w_content_manager.h>
 #include <w_framework/w_quad.h>
 
-#include <imgui/imgui_impl.h>
-
-imgui_imp* imGui = nullptr;
+#include <imgui/w_imgui.h>
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -155,7 +153,7 @@ void scene::load()
                     _hr = S_OK;
                     if (this->_basic_instance_shader)
                     {
-                        this->_basic_instance_shader->set_shader_binding_params(_shader_params);
+                        this->_basic_instance_shader->load_shader_binding_params(_shader_params);
                     }
                     else
                     {
@@ -287,8 +285,7 @@ void scene::load()
 
     _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
 
-    imGui = new imgui_imp();
-    imGui->load(_gDevice, _width, _height, _render_pass_handle);
+    w_imgui::load(_gDevice, _output_window->hwnd, _width, _height, _render_pass_handle);
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
@@ -372,13 +369,12 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                         this->_instance_color_unifrom[i]->update();
 
                         this->_models[i]->render(_cmd);
-
                     }
                 }
                 //make sure render all gui before loading gui_render
-                imGui->new_frame();
-                imGui->update_buffers(this->_render_pass);
-                imGui->render(_cmd, (float)pGameTime.get_total_seconds());
+                w_imgui::new_frame((float)pGameTime.get_elapsed_seconds());
+                w_imgui::update_buffers(this->_render_pass);
+                w_imgui::render(_cmd);
             }
             this->_render_pass.end(_cmd);
 
@@ -441,8 +437,7 @@ HRESULT scene::on_msg_proc(
     //    break;
     //}
 
-    //if not procced yet
-    return S_FALSE;
+    return w_imgui::on_msg_proc(pHWND, pMessage, pWParam, pLParam);
 }
 
 #endif
@@ -456,6 +451,7 @@ ULONG scene::release()
     this->_render_pass.release();
     this->_frame_buffers.release();
 
+    w_imgui::release();
     UNIQUE_RELEASE(this->_basic_shader);
     UNIQUE_RELEASE(this->_basic_instance_shader);
 

@@ -154,7 +154,7 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\dllmain.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_impl.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\w_imgui.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp" />
@@ -171,7 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui_impl.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\imgui\w_imgui.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_quad.h" />
