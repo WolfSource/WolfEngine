@@ -23,7 +23,9 @@ public:
         _In_ VkRenderPass& pRenderPass)
     {
         this->_gDevice = pGDevice;
-
+        this->_width = pWidth;
+        this->_height = pHeight;
+        
 #pragma region Set Style
         //Color scheme
         ImGuiStyle& style = ImGui::GetStyle();
@@ -34,7 +36,7 @@ public:
         style.Colors[ImGuiCol_CheckMark] = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
         //Dimensions
         ImGuiIO& io = ImGui::GetIO();
-        io.DisplaySize = ImVec2(pWidth, pHeight);
+        io.DisplaySize = ImVec2(this->_width , this->_height);
         io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 #pragma endregion
         
@@ -42,21 +44,16 @@ public:
 
         // Create font texture
         uint8_t* _font_data = nullptr;
-        int _width, _height;
-        io.Fonts->GetTexDataAsRGBA32(&_font_data, &_width, &_height);
-        VkDeviceSize _upload_size = _width * _height * 4 * sizeof(uint8_t);
+        int _texture_width, _texture_height;
+        io.Fonts->GetTexDataAsRGBA32(&_font_data, &_texture_width, &_texture_height);
+        size_t _upload_size = _texture_width * _texture_height * 4 * sizeof(uint8_t);
 
         std::vector<uint8_t> _texture_data(_font_data, _font_data + _upload_size);
         _texture.load(_gDevice);
         _texture.initialize_texture_from_memory(
             _texture_data,
-            (UINT)_width,
-            (UINT)_height);
-        /*VK_IMAGE_TYPE_2D,
-        VK_FORMAT_R8G8B8A8_UNORM,
-        VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
-        VK_SHARING_MODE_EXCLUSIVE);*/
-
+            (UINT)_texture_width,
+            (UINT)_texture_height);
         
         auto __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
         if (__hr != S_OK)
@@ -114,22 +111,6 @@ public:
             0,
             sizeof(push_constant_block)
         };
-
-        VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = 
-        {
-            VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-            nullptr,
-            0,
-            1,
-            &_descriptor_set_layout,
-            1,
-            &pushConstantRange
-        };
-        _hr = vkCreatePipelineLayout(
-            _gDevice->vk_device, 
-            &pipelineLayoutCreateInfo, 
-            nullptr, 
-            &_pipeline_layout);
 
         // Setup graphics pipeline for UI rendering
         VkPipelineInputAssemblyStateCreateInfo inputAssemblyState =
@@ -359,7 +340,7 @@ public:
     {
         ImGuiIO& io = ImGui::GetIO();
         
-        io.DisplaySize = ImVec2((float)800, (float)600);
+        io.DisplaySize = ImVec2(this->_width, this->_height);
         io.DeltaTime = pDeltaTimeTicks;
 
         auto _descriptor_set = this->_shader.get_descriptor_set();
@@ -444,7 +425,9 @@ private:
     VkPipeline _pipeline;
     wolf::graphics::w_shader _shader;
     wolf::graphics::w_texture _texture;
-
+    float                       _width;
+    float                       _height;
+    
     struct push_constant_block 
     {
         float scale[2];

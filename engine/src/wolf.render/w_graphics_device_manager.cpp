@@ -16,8 +16,6 @@ using namespace std;
 using namespace wolf::system;
 using namespace wolf::graphics;
 
-#define DEFAULT_WIDTH   800
-#define DEFAULT_HEIGHT  600
 #define NUM_SAMPLES     VK_SAMPLE_COUNT_1_BIT
 
 #if defined(__DX12__) || defined(__DX11__)

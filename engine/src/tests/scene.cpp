@@ -72,14 +72,6 @@ void scene::load()
     _viewport.minDepth = 0;
     _viewport.maxDepth = 1;
 
-    //we need depth
-    //VkSubpassDescription _sub_pass = {};
-    //_sub_pass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    //_sub_pass.colorAttachmentCount = 1;
-    //_sub_pass.pColorAttachments = &w_graphics_device::w_render_pass_attachments::color_attachment_reference;
-    //_sub_pass.pDepthStencilAttachment = &w_graphics_device::w_render_pass_attachments::depth_attachment_reference;
-    //auto _sub_passes = new std::vector<VkSubpassDescription>{ _sub_pass };
-
     w_viewport_scissor _viewport_scissor;
     _viewport_scissor.offset.x = 0;
     _viewport_scissor.offset.y = 0;
@@ -296,7 +288,7 @@ void scene::load()
     _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
 
     imGui = new imgui_imp();
-    imGui->load(_gDevice, 800, 600, _render_pass_handle);
+    imGui->load(_gDevice, _width, _height, _render_pass_handle);
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
