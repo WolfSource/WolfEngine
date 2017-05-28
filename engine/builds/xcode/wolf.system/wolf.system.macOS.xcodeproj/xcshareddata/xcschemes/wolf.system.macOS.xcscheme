@@ -62,20 +62,6 @@
                ReferencedContainer = "container:../tests/wolf_vulkan_metal_macOS/wolf_vulkan_metal_macOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
-               BuildableName = "libwolf.gui.macOS.dylib"
-               BlueprintName = "wolf.gui.macOS"
-               ReferencedContainer = "container:../wolf.gui/wolf.gui.macOS.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

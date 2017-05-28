@@ -4,7 +4,7 @@
 #include <w_content_manager.h>
 #include <w_framework/w_quad.h>
 
-#include <imgui\imgui_impl.h>
+#include <imgui/imgui_impl.h>
 
 imgui_imp* imGui = nullptr;
 
@@ -296,7 +296,7 @@ void scene::load()
     _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
 
     imGui = new imgui_imp();
-    imGui->load(_gDevice, 1920, 1080, _render_pass_handle);
+    imGui->load(_gDevice, 800, 600, _render_pass_handle);
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
@@ -386,7 +386,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                 //make sure render all gui before loading gui_render
                 imGui->new_frame();
                 imGui->update_buffers(this->_render_pass);
-                //imGui->render(_cmd, (float)pGameTime.get_total_seconds());
+                imGui->render(_cmd, (float)pGameTime.get_total_seconds());
             }
             this->_render_pass.end(_cmd);
 

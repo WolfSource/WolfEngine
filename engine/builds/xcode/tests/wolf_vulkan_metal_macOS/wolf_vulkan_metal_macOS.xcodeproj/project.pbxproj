@@ -23,7 +23,6 @@
 		2C736BB81ECA1E6A00624CC7 /* basic.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB41ECA1E6A00624CC7 /* basic.vert */; };
 		2C736BB91ECA1E6A00624CC7 /* static_instancing_y_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */; };
 		2C736BBA1ECA1E6A00624CC7 /* static_instancing_z_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */; };
-		2CA945CE1ED4DE9C007B70B8 /* libwolf.gui.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA945CD1ED4DE9C007B70B8 /* libwolf.gui.macOS.dylib */; };
 		2CE21C411E89678F00EEE579 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */; };
 		2CE21C421E89678F00EEE579 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */; };
 /* End PBXBuildFile section */
@@ -61,7 +60,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CA945CE1ED4DE9C007B70B8 /* libwolf.gui.macOS.dylib in Frameworks */,
 				2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2CE21C411E89678F00EEE579 /* libwolf.system.macOS.dylib in Frameworks */,
 				2CE21C421E89678F00EEE579 /* libwolf.vulkan.macOS.dylib in Frameworks */,
@@ -344,7 +342,6 @@
 					"$(SRCROOT)/../../../../src/wolf.system",
 					"$(SRCROOT)/../../../../src/wolf.render",
 					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
-					"$(SRCROOT)/../../../../src/wolf.gui",
 				);
 				INFOPLIST_FILE = wolf_vulkan_metal_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -370,7 +367,6 @@
 					"$(SRCROOT)/../../../../src/wolf.system",
 					"$(SRCROOT)/../../../../src/wolf.render",
 					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
-					"$(SRCROOT)/../../../../src/wolf.gui",
 				);
 				INFOPLIST_FILE = wolf_vulkan_metal_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";

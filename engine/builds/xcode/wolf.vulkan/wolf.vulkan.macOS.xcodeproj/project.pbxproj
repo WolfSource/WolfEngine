@@ -39,8 +39,11 @@
 		2C9899701E9B51D6002FE161 /* w_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996E1E9B51D6002FE161 /* w_texture.h */; };
 		2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899711E9BF6A3002FE161 /* w_buffer.cpp */; };
 		2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9899721E9BF6A3002FE161 /* w_buffer.h */; };
-		2CA945CB1ED4DE5B007B70B8 /* w_gui_render.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945C91ED4DE5B007B70B8 /* w_gui_render.cpp */; };
-		2CA945CC1ED4DE5B007B70B8 /* w_gui_render.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945CA1ED4DE5B007B70B8 /* w_gui_render.h */; };
+		2CA945EB1ED9F7CC007B70B8 /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */; };
+		2CA945EC1ED9F7CC007B70B8 /* imgui_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E71ED9F7CC007B70B8 /* imgui_impl.cpp */; };
+		2CA945ED1ED9F7CC007B70B8 /* imgui_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945E81ED9F7CC007B70B8 /* imgui_impl.h */; };
+		2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E91ED9F7CC007B70B8 /* imgui.cpp */; };
+		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,8 +82,11 @@
 		2C98996E1E9B51D6002FE161 /* w_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_texture.h; path = ../../../src/wolf.render/w_graphics/w_texture.h; sourceTree = "<group>"; };
 		2C9899711E9BF6A3002FE161 /* w_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_buffer.cpp; path = ../../../src/wolf.render/w_graphics/w_buffer.cpp; sourceTree = "<group>"; };
 		2C9899721E9BF6A3002FE161 /* w_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_buffer.h; path = ../../../src/wolf.render/w_graphics/w_buffer.h; sourceTree = "<group>"; };
-		2CA945C91ED4DE5B007B70B8 /* w_gui_render.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_gui_render.cpp; path = ../../../src/wolf.render/w_graphics/w_gui_render.cpp; sourceTree = "<group>"; };
-		2CA945CA1ED4DE5B007B70B8 /* w_gui_render.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_gui_render.h; path = ../../../src/wolf.render/w_graphics/w_gui_render.h; sourceTree = "<group>"; };
+		2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_draw.cpp; path = ../../../src/wolf.render/imgui/imgui_draw.cpp; sourceTree = "<group>"; };
+		2CA945E71ED9F7CC007B70B8 /* imgui_impl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_impl.cpp; path = ../../../src/wolf.render/imgui/imgui_impl.cpp; sourceTree = "<group>"; };
+		2CA945E81ED9F7CC007B70B8 /* imgui_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui_impl.h; path = ../../../src/wolf.render/imgui/imgui_impl.h; sourceTree = "<group>"; };
+		2CA945E91ED9F7CC007B70B8 /* imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui.cpp; path = ../../../src/wolf.render/imgui/imgui.cpp; sourceTree = "<group>"; };
+		2CA945EA1ED9F7CC007B70B8 /* imgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui.h; path = ../../../src/wolf.render/imgui/imgui.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,8 +109,6 @@
 		2C1B3FF31E97DC5300512959 /* w_graphics */ = {
 			isa = PBXGroup;
 			children = (
-				2CA945C91ED4DE5B007B70B8 /* w_gui_render.cpp */,
-				2CA945CA1ED4DE5B007B70B8 /* w_gui_render.h */,
 				2C736BC71ECB710900624CC7 /* w_uniform.h */,
 				2C4CCAF11EAE667100E0A422 /* w_frame_buffers.cpp */,
 				2C4CCAF21EAE667100E0A422 /* w_frame_buffers.h */,
@@ -139,6 +143,7 @@
 		2C69E9A01E5EC2CB00F15C44 = {
 			isa = PBXGroup;
 			children = (
+				2CA945DB1ED9F5B9007B70B8 /* imgui */,
 				2C29CD131EB3339E00BEFF54 /* w_framework */,
 				2C1B3FF31E97DC5300512959 /* w_graphics */,
 				2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */,
@@ -176,6 +181,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		2CA945DB1ED9F5B9007B70B8 /* imgui */ = {
+			isa = PBXGroup;
+			children = (
+				2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */,
+				2CA945E71ED9F7CC007B70B8 /* imgui_impl.cpp */,
+				2CA945E81ED9F7CC007B70B8 /* imgui_impl.h */,
+				2CA945E91ED9F7CC007B70B8 /* imgui.cpp */,
+				2CA945EA1ED9F7CC007B70B8 /* imgui.h */,
+			);
+			name = imgui;
+			sourceTree = "<group>";
+		};
 		2CF9CFE71ECBAA6D00BC2AEC /* w_gui */ = {
 			isa = PBXGroup;
 			children = (
@@ -191,13 +208,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
+				2CA945ED1ED9F7CC007B70B8 /* imgui_impl.h in Headers */,
 				2C4CCAF41EAE667100E0A422 /* w_frame_buffers.h in Headers */,
 				2C9899661E97EA74002FE161 /* w_mesh.h in Headers */,
 				2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */,
 				2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */,
 				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
-				2CA945CC1ED4DE5B007B70B8 /* w_gui_render.h in Headers */,
 				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
+				2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */,
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
 				2C98996A1E9A2EA8002FE161 /* w_command_buffers.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
@@ -265,9 +283,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CA945EB1ED9F7CC007B70B8 /* imgui_draw.cpp in Sources */,
 				2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */,
 				2C9899691E9A2EA8002FE161 /* w_command_buffers.cpp in Sources */,
-				2CA945CB1ED4DE5B007B70B8 /* w_gui_render.cpp in Sources */,
 				2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */,
 				2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */,
 				2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */,
@@ -278,6 +296,8 @@
 				2C4CCAF31EAE667100E0A422 /* w_frame_buffers.cpp in Sources */,
 				2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */,
 				2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */,
+				2CA945EC1ED9F7CC007B70B8 /* imgui_impl.cpp in Sources */,
+				2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,12 +411,12 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../src/wolf.system",
-					"$(SRCROOT)/../../../src/wolf.gui",
 					"$(SRCROOT)/../../../src/wolf.render",
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
+					"$(SRCROOT)/../../src/wolf.render",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

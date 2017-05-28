@@ -2303,7 +2303,7 @@ namespace wolf
 				VkImageCreateInfo _depth_stencil_image_create_info = {};
 				const VkFormat _depth_format = w_graphics_device_manager::find_supported_format(
                     pGDevice,
-                    { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+                    { VK_FORMAT_D16_UNORM, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
                     VK_IMAGE_TILING_OPTIMAL,
                     VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
                 if (_depth_format == VkFormat::VK_FORMAT_UNDEFINED)

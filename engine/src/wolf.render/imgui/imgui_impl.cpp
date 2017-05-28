@@ -1,11 +1,11 @@
 #include "w_render_pch.h"
 #include "imgui_impl.h"
 #include "imgui.h"
-#include <w_graphics\w_buffer.h>
-#include <w_graphics\w_texture.h>
-#include <w_graphics\w_shader.h>
-#include <w_graphics\w_render_pass.h>
-#include <w_graphics\w_mesh.h>
+#include <w_graphics/w_buffer.h>
+#include <w_graphics/w_texture.h>
+#include <w_graphics/w_shader.h>
+#include <w_graphics/w_render_pass.h>
+#include <w_graphics/w_pipeline.h>
 
 class imgui_pimp
 {
@@ -57,70 +57,50 @@ public:
         VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
         VK_SHARING_MODE_EXCLUSIVE);*/
 
-        // Descriptor pool
-        std::vector<VkDescriptorPoolSize> _pool_sizes =
+        
+        auto __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
+        if (__hr != S_OK)
         {
-            {
-                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                1
-            }
-        };
-        VkDescriptorPoolCreateInfo _descriptor_pool_info =
+            V(__hr, "loading vertex shader", this->_name);
+            return S_FALSE;
+        }
+        __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.frag.spv", w_shader_stage::FRAGMENT_SHADER);
+        if (__hr != S_OK)
         {
-            VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
-            nullptr,
-            0,
-            1,
-            (UINT)_pool_sizes.size(),
-            _pool_sizes.data()
-        };
-        auto _hr = vkCreateDescriptorPool(
-            pGDevice->vk_device,
-            &_descriptor_pool_info,
-            nullptr,
-            &_descriptor_pool);
-
-        // Descriptor set layout
-        std::vector<VkDescriptorSetLayoutBinding> _set_layout_bindings =
+            V(__hr, "loading fragment shader", this->_name);
+            return S_FALSE;
+        }
+        
+        w_shader_binding_param _sampler_param;
+        _sampler_param.index = 0;
+        _sampler_param.stage = w_shader_stage::FRAGMENT_SHADER;
+        _sampler_param.type = w_shader_binding_type::SAMPLER;
+        _sampler_param.sampler_info = _texture.get_descriptor_info();
+        
+        this->_shader.set_shader_binding_params({_sampler_param});
+        
+        auto _descriptor_set_layout = this->_shader.get_descriptor_set_layout_binding();
+        const VkPipelineLayoutCreateInfo _pipeline_layout_create_info =
         {
-            {
-                0,
-                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-                1,
-                VK_SHADER_STAGE_FRAGMENT_BIT,
-                nullptr
-            }
+            VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,                          // Type
+            nullptr,                                                                // Next
+            0,                                                                      // Flags
+            static_cast<uint32_t>(_descriptor_set_layout == nullptr ? 0 : 1),       // SetLayoutCount
+            _descriptor_set_layout == nullptr ? nullptr : &_descriptor_set_layout,  // SetLayouts
+            0,                                                                      // PushConstantRangeCount
+            nullptr                                                                 // PushConstantRanges
         };
-        VkDescriptorSetLayoutCreateInfo _descriptor_layout =
+        
+        this->_pipeline_layout =  w_pipeline::create_pipeline_layout(_gDevice, &_pipeline_layout_create_info);
+        if (!this->_pipeline_layout)
         {
-            VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-            nullptr,
-            0,
-            (UINT)_set_layout_bindings.size(),
-            _set_layout_bindings.data(),
-        };
-        _hr = vkCreateDescriptorSetLayout(
-            pGDevice->vk_device,
-            &_descriptor_layout,
-            nullptr,
-            &this->_descriptor_set_layout);
-
-        // Descriptor set
-        VkDescriptorSetAllocateInfo _alloc_info =
-        {
-            VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-            nullptr,
-            this->_descriptor_pool,
-            1,
-            &_descriptor_set_layout,
-        };
-
-        _hr = vkAllocateDescriptorSets(_gDevice->vk_device, &_alloc_info, &_descriptor_set);
-
+            V(S_FALSE, "creating pipeline layout", this->_name);
+            return S_FALSE;
+        }
         // Pipeline cache
         VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
         pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-        _hr = vkCreatePipelineCache(
+        auto _hr = vkCreatePipelineCache(
             _gDevice->vk_device,
             &pipelineCacheCreateInfo,
             nullptr,
@@ -213,23 +193,13 @@ public:
         VkPipelineDynamicStateCreateInfo dynamicState = {};
         dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
         dynamicState.pDynamicStates = dynamicStateEnables.data();
-        dynamicState.dynamicStateCount = dynamicStateEnables.size();
-
-        w_shader_binding_param _sampler_param;
-        _sampler_param.index = 0;
-        _sampler_param.sampler_info = _texture.get_descriptor_info();
-        _sampler_param.stage = w_shader_stage::FRAGMENT_SHADER;
-        _sampler_param.type = w_shader_binding_type::SAMPLER;
-
-        this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
-        this->_shader.load(pGDevice, content_path + L"shaders/imgui.frag.spv", w_shader_stage::FRAGMENT_SHADER);
-        this->_shader.set_shader_binding_params({ _sampler_param });
+        dynamicState.dynamicStateCount = (UINT)dynamicStateEnables.size();
 
         auto _shader_stages = this->_shader.get_shader_stages();
 
         VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
         pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-        pipelineCreateInfo.layout = _pipeline_layout;
+        pipelineCreateInfo.layout = this->_pipeline_layout;
         pipelineCreateInfo.renderPass = pRenderPass;
         pipelineCreateInfo.renderPass = pRenderPass;
         pipelineCreateInfo.flags = 0;
@@ -298,7 +268,7 @@ public:
             nullptr, 
             &this->_pipeline);
 
-        return S_OK;
+        return _hr == VK_SUCCESS ? S_OK : S_FALSE;
     }
 
     HRESULT update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass)
@@ -307,17 +277,23 @@ public:
         ImDrawData* _im_draw_data = ImGui::GetDrawData();
 
         // Note: Alignment is done inside buffer creation
-        VkDeviceSize _vertex_buffer_size = _im_draw_data->TotalVtxCount * sizeof(ImDrawVert);
-        VkDeviceSize _index_buffer_size = _im_draw_data->TotalIdxCount * sizeof(ImDrawIdx);
+        UINT _vertex_buffer_size = _im_draw_data->TotalVtxCount * sizeof(ImDrawVert);
+        UINT _index_buffer_size = _im_draw_data->TotalIdxCount * sizeof(ImDrawIdx);
 
         // Update buffers only if vertex or index count has been changed compared to current buffer size
-
+        HRESULT _hr;
+        
         //Vertex buffer
         if ( !this->_vertex_buffer || this->_vertex_buffer->get_size() != _vertex_buffer_size)
         {
             SAFE_RELEASE(this->_vertex_buffer);
             this->_vertex_buffer = new wolf::graphics::w_buffer();
-            this->_vertex_buffer->load_as_staging(this->_gDevice, _vertex_buffer_size);
+            _hr = this->_vertex_buffer->load_as_staging(this->_gDevice, _vertex_buffer_size);
+            if (_hr == S_FALSE)
+            {
+                V(_hr, "loading staging index buffer", this->_name);
+                return _hr;
+            }
         }
 
         // Index buffer
@@ -325,27 +301,47 @@ public:
         {
             SAFE_RELEASE(this->_index_buffer);
             this->_index_buffer = new wolf::graphics::w_buffer();
-            this->_index_buffer->load_as_staging(this->_gDevice, _index_buffer_size);
+            _hr = this->_index_buffer->load_as_staging(this->_gDevice, _index_buffer_size);
+            if (_hr == S_FALSE)
+            {
+                V(_hr, "loading staging vertex buffer", this->_name);
+                return _hr;
+            }
         }
 
+        _hr = this->_vertex_buffer->bind();
+        if (_hr == S_FALSE)
+        {
+            V(_hr, "binding staging vertex buffer", this->_name);
+            return _hr;
+        }
+        _hr = this->_index_buffer->bind();
+        if (_hr == S_FALSE)
+        {
+            V(_hr, "binding staging index buffer", this->_name);
+            return _hr;
+        }
+        
+        ImDrawVert* vtxDst = (ImDrawVert*)this->_vertex_buffer->map();
+        ImDrawIdx* idxDst = (ImDrawIdx*)this->_index_buffer->map();
 
-        //ImDrawVert* vtxDst = (ImDrawVert*)this->_vertex_buffer->map();
-        //ImDrawIdx* idxDst = (ImDrawIdx*)this->_index_buffer->map();
+        for (int n = 0; n < _im_draw_data->CmdListsCount; n++)
+        {
+            const ImDrawList* cmd_list = _im_draw_data->CmdLists[n];
+            memcpy(vtxDst, cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
+            memcpy(idxDst, cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
+            vtxDst += cmd_list->VtxBuffer.Size;
+            idxDst += cmd_list->IdxBuffer.Size;
+        }
+        
+        this->_vertex_buffer->flush();
+        this->_index_buffer->flush();
 
-        //for (int n = 0; n < _im_draw_data->CmdListsCount; n++) 
-        //{
-        //    const ImDrawList* cmd_list = _im_draw_data->CmdLists[n];
-        //    memcpy(vtxDst, cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
-        //    memcpy(idxDst, cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
-        //    vtxDst += cmd_list->VtxBuffer.Size;
-        //    idxDst += cmd_list->IdxBuffer.Size;
-        //}
-        //
-        //this->_vertex_buffer->flush();
-        //this->_index_buffer->flush();
-
-        //vtxDst = nullptr;
-        //idxDst = nullptr;
+        this->_vertex_buffer->unmap();
+        this->_index_buffer->unmap();
+        
+        vtxDst = nullptr;
+        idxDst = nullptr;
 
         return S_OK;
     }
@@ -363,9 +359,10 @@ public:
     {
         ImGuiIO& io = ImGui::GetIO();
         
-        io.DisplaySize = ImVec2((float)1280, (float)720);
+        io.DisplaySize = ImVec2((float)800, (float)600);
         io.DeltaTime = pDeltaTimeTicks;
 
+        auto _descriptor_set = this->_shader.get_descriptor_set();
         vkCmdBindDescriptorSets(
             pCommandBuffer, 
             VK_PIPELINE_BIND_POINT_GRAPHICS, 
@@ -445,12 +442,8 @@ private:
     VkPipelineCache _pipeline_cache;
     VkPipelineLayout _pipeline_layout;
     VkPipeline _pipeline;
-    VkDescriptorPool _descriptor_pool;
-    VkDescriptorSetLayout _descriptor_set_layout;
-    VkDescriptorSet _descriptor_set;
     wolf::graphics::w_shader _shader;
     wolf::graphics::w_texture _texture;
-    wolf::graphics::w_mesh _mesh;
 
     struct push_constant_block 
     {
@@ -484,7 +477,8 @@ HRESULT imgui_imp::update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPas
 
 void imgui_imp::new_frame()
 {
-    return this->_pimp ? this->_pimp->new_frame() : S_FALSE;
+    if (!this->_pimp) return;
+    this->_pimp->new_frame();
 }
 
 void imgui_imp::render(_In_ VkCommandBuffer pCommandBuffer, _In_ float pTotalTime)

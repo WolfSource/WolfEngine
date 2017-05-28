@@ -32,7 +32,7 @@ namespace wolf
             w_color      left_top_color;
             w_color      left_bottom_color;
             w_color      right_top_color;
-            w_color      right_top_color;
+            w_color      right_bottom_color;
         };
     }
 }

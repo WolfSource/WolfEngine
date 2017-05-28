@@ -95,7 +95,7 @@ namespace wolf
                     
                     this->_vertex_declaration = w_vertex_declaration::VERTEX_POSITION_UV;
                 }
-                else if (std::is_same < T, vertex_declaration_structs::vertex_position_color_uv>::value)
+                else if (std::is_same < T, vertex_declaration_structs::vertex_position_uv_color>::value)
                 {
                     //v1
                     _vertices.push_back(_right); _vertices.push_back(_down); _vertices.push_back(0);
@@ -117,7 +117,7 @@ namespace wolf
                     _vertices.push_back(this->_right_top_color.r / 255.0f); _vertices.push_back(this->_right_top_color.g / 255.0f); _vertices.push_back(this->_right_top_color.g / 255.0f); _vertices.push_back(this->_right_top_color.a / 255.0f);
                     _vertices.push_back(0.0f); _vertices.push_back(0.0f);
 
-                    this->_vertex_declaration = w_vertex_declaration::VERTEX_POSITION_COLOR_UV;
+                    this->_vertex_declaration = w_vertex_declaration::VERTEX_POSITION_UV_COLOR;
                 }
                 else
                 {

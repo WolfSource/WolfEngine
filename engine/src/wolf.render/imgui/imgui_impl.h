@@ -15,7 +15,7 @@
 #define __IMGUI_IMPL_H__
 
 #include <w_graphics_device_manager.h>
-#include <w_graphics\w_render_pass.h>
+#include <w_graphics/w_render_pass.h>
 
 class imgui_pimp;
 class imgui_imp : public wolf::system::w_object

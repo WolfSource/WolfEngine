@@ -25,6 +25,7 @@ namespace wolf
                 _indices_count(0),
                 _vertex_declaration(w_mesh::w_vertex_declaration::VERTEX_POSITION_UV)
             {
+        
             }
             
             /*
@@ -303,7 +304,7 @@ namespace wolf
             }
 
         private:
-
+            
             HRESULT _copy_DRAM_to_VRAM(
                 _In_ const UINT pVerticesSize,
                 _In_ const UINT pIndicesSize)
@@ -548,39 +549,7 @@ namespace wolf
                         offsetof(vertex_declaration_structs::vertex_position_uv_color, color)       // Offset
                     });
                 }
-                break;
-                case w_mesh::w_vertex_declaration::VERTEX_POSITION2_UV_COLOR:
-                {
-                    //create pipeline for basic shader
-                    _vertex_binding_descriptions.push_back(
-                    {
-                        0,                                                                                              // Binding
-                        sizeof(vertex_declaration_structs::vertex_position2_uv_color),                                   // Stride
-                        VK_VERTEX_INPUT_RATE_VERTEX                                                                     // InputRate
-                    });
-                    _vertex_attribute_descriptions.push_back(
-                    {
-                        0,                                                                       // Location
-                        _vertex_binding_descriptions[0].binding,                                 // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                              // Format
-                        offsetof(vertex_declaration_structs::vertex_position2_uv_color, position) // Offset
-                    });
-                    _vertex_attribute_descriptions.push_back(
-                    {
-                        1,                                                                       // Location
-                        _vertex_binding_descriptions[0].binding,                                 // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                           // Format
-                        offsetof(vertex_declaration_structs::vertex_position2_uv_color, uv)    // Offset
-                    });
-                    _vertex_attribute_descriptions.push_back(
-                    {
-                        2,                                                                       // Location
-                        _vertex_binding_descriptions[0].binding,                                 // Binding
-                        VK_FORMAT_R32G32B32A32_SFLOAT,                                                 // Format
-                        offsetof(vertex_declaration_structs::vertex_position2_uv_color, color)       // Offset
-                    });
-                }
-                break;
+                    break;
                 }
 
                 VkPipelineVertexInputStateCreateInfo _vertex_input_state_create_info =
@@ -643,8 +612,8 @@ namespace wolf
                     &_input_assembly_state_create_info,
                     nullptr,
                     nullptr,
-                    nullptr,
-                    &_dynamic_state_create_info);
+                    &_dynamic_state_create_info,
+                    true);
                 if (_hr)
                 {
                     logger.error("Error creating pipeline for mesh");

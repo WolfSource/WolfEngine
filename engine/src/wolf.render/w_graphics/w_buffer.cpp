@@ -132,7 +132,9 @@ namespace wolf
                 _mapped_range.memory = this->_memory;
                 _mapped_range.offset = pOffset;
                 _mapped_range.size = pSize;
-                return vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range);
+                auto _hr = vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range);
+                
+                return _hr == VK_SUCCESS ? S_OK : S_FALSE;
             }
 
             //Set data to DRAM
