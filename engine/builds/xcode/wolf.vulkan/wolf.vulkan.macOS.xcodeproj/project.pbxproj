@@ -44,6 +44,7 @@
 		2CA945ED1ED9F7CC007B70B8 /* imgui_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945E81ED9F7CC007B70B8 /* imgui_impl.h */; };
 		2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E91ED9F7CC007B70B8 /* imgui.cpp */; };
 		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
+		2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +88,7 @@
 		2CA945E81ED9F7CC007B70B8 /* imgui_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui_impl.h; path = ../../../src/wolf.render/imgui/imgui_impl.h; sourceTree = "<group>"; };
 		2CA945E91ED9F7CC007B70B8 /* imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui.cpp; path = ../../../src/wolf.render/imgui/imgui.cpp; sourceTree = "<group>"; };
 		2CA945EA1ED9F7CC007B70B8 /* imgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui.h; path = ../../../src/wolf.render/imgui/imgui.h; sourceTree = "<group>"; };
+		2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_demo.cpp; path = ../../../src/wolf.render/imgui/imgui_demo.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +186,7 @@
 		2CA945DB1ED9F5B9007B70B8 /* imgui */ = {
 			isa = PBXGroup;
 			children = (
+				2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */,
 				2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */,
 				2CA945E71ED9F7CC007B70B8 /* imgui_impl.cpp */,
 				2CA945E81ED9F7CC007B70B8 /* imgui_impl.h */,
@@ -297,6 +300,7 @@
 				2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */,
 				2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */,
 				2CA945EC1ED9F7CC007B70B8 /* imgui_impl.cpp in Sources */,
+				2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */,
 				2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
