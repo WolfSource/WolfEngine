@@ -4,12 +4,15 @@
 #include <w_content_manager.h>
 #include <w_framework/w_quad.h>
 
-#include <imgui/w_imgui.h>
+#include <w_graphics\w_imgui.h>
 
 using namespace wolf::system;
 using namespace wolf::graphics;
 using namespace wolf::framework;
 using namespace wolf::content_pipeline;
+
+//forward declaration
+static void make_gui();
 
 #if defined(__WIN32)
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
@@ -92,7 +95,7 @@ void scene::load()
     auto _render_pass_handle = this->_render_pass.get_handle();
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/areas/zone_1/area_171_173.dae");
     if (_scene)
     {
         //get all models
@@ -184,58 +187,78 @@ void scene::load()
                 }
                 else
                 {
-                    //auto _hr = S_OK;
-                    //std::call_once(_basic_shader_load_flag, [this, &_gDevice, &_z_up, &_hr]()
-                    //{
-                    //    //load shader
-                    //    w_shader* _shader = nullptr;
-                    //    _hr = w_shader::load_to_shared_shaders(_gDevice,
-                    //        "basic_instancing",
-                    //        content_path + (_z_up ? L"shaders/basic_instancing_z_up.vert.spv" : L"shaders/basic_instancing_y_up.vert.spv"),
-                    //        content_path + L"shaders/basic.frag.spv",
-                    //        w_shader_type::BASIC_SHADER,
-                    //        {
+                    //load shader uniforms
+                    auto _wvp = new w_uniform<world_view_projection_unifrom>();
+                    auto _hr = _wvp->load(_gDevice);
+                    if (_hr == S_FALSE)
+                    {
+                        logger.error("Error on loading world_view_projection uniform for basic model");
+                        continue;
+                    }
+                    this->_basic_wvp_unifrom.push_back(_wvp);
+
+                    auto _color = new w_uniform<color_unifrom>();
+                    _hr = _color->load(_gDevice);
+                    if (_hr == S_FALSE)
+                    {
+                        logger.error("Error on loading world_view_projection uniform for basic model");
+                        continue;
+                    }
+                    this->_basic_color_unifrom.push_back(_color);
+
+                    std::vector<w_shader_binding_param> _shader_params;
+
+                    w_shader_binding_param _param;
+                    _param.index = 0;
+                    _param.type = w_shader_binding_type::UNIFORM;
+                    _param.stage = w_shader_stage::VERTEX_SHADER;
+                    _param.uniform_info = _wvp->get_descriptor_info();
+                    _shader_params.push_back(_param);
 
 
-                    //        },
-                    //        &_shader);
-                    //    if (!_shader || _hr == S_FALSE)
-                    //    {
-                    //        logger.error("Could not load instance shader");
-                    //        return;
-                    //    }
-                    //    this->_basic_instance_shader.reset(_shader);
-                    //});
-                    //if (_hr == S_OK)
-                    //{
-                    //    if (_model->load(&this->_render_pass, _pipeline_cache_name) == S_FALSE)
-                    //    {
-                    //        SAFE_RELEASE(_model);
-                    //        continue;
-                    //    }
-                    //    this->_models.push_back(_model);
+                    _param.index = 1;
+                    _param.type = w_shader_binding_type::SAMPLER;
+                    _param.stage = w_shader_stage::FRAGMENT_SHADER;
+                    _param.sampler_info = w_texture::default_texture->get_descriptor_info();
+                    _shader_params.push_back(_param);
 
-                    //    //load shader uniforms
-                    //    auto _vwp = new w_uniform<world_view_projection_unifrom>();
-                    //    _hr = _vwp->load(_gDevice);
-                    //    if (_hr == S_FALSE)
-                    //    {
-                    //        logger.error("Error on loading world_view_projection uniform for instance model");
-                    //        release();
-                    //        exit(1);
-                    //    }
-                    //    this->_basic_wvp_unifrom.push_back(_vwp);
+                    _param.index = 2;
+                    _param.type = w_shader_binding_type::UNIFORM;
+                    _param.stage = w_shader_stage::FRAGMENT_SHADER;
+                    _param.uniform_info = _color->get_descriptor_info();
+                    _shader_params.push_back(_param);
 
-                    //    auto _color = new w_uniform<color_unifrom>();
-                    //    _hr = _color->load(_gDevice);
-                    //    if (_hr == S_FALSE)
-                    //    {
-                    //        logger.error("Error on loading world_view_projection uniform for instance model");
-                    //        release();
-                    //        exit(1);
-                    //    }
-                    //    this->_basic_color_unifrom.push_back(_color);
-                    //}
+                    _hr = S_OK;
+                    if (this->_basic_shader)
+                    {
+                        this->_basic_shader->load_shader_binding_params(_shader_params);
+                    }
+                    else
+                    {
+                        //load shader
+                        w_shader* _shader = nullptr;
+                        w_shader::load_to_shared_shaders(_gDevice,
+                            "basic",
+                            content_path + L"shaders/basic.vert.spv",
+                            content_path + L"shaders/basic.frag.spv",
+                            _shader_params,
+                            &_shader);
+                        if (!_shader || _hr == S_FALSE)
+                        {
+                            logger.error("Could not load basic shader");
+                            return;
+                        }
+                        this->_basic_shader.reset(_shader);
+                    }
+                    if (_hr == S_OK)
+                    {
+                        if (_model->load(_gDevice, this->_basic_shader.get(), &this->_render_pass, _pipeline_cache_name) == S_FALSE)
+                        {
+                            SAFE_RELEASE(_model);
+                            continue;
+                        }
+                        this->_models.push_back(_model);
+                    }
                 }
             }
         }
@@ -285,7 +308,11 @@ void scene::load()
 
     _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
 
-    w_imgui::load(_gDevice, _output_window->hwnd, _width, _height, _render_pass_handle);
+    //load image texture
+    w_texture* _gui_images = new w_texture();
+    _gui_images->load(_gDevice);
+    _gui_images->initialize_texture_2D_from_file(content_path + L"textures/gui/icons.png", &_gui_images);
+    w_imgui::load(_gDevice, _output_window->hwnd, _width, _height, _render_pass_handle, _gui_images);
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
@@ -341,8 +368,11 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 
             this->_render_pass.begin(_cmd,
-                this->_frame_buffers.get_frame_buffer_at(i));
+                this->_frame_buffers.get_frame_buffer_at(i),
+                w_color(43));
             {
+                UINT _basic_model_index = 0;
+                UINT _instance_model_index = 0;
                 for (size_t i = 0; i < this->_models.size(); ++i)
                 {
                     if (this->_models[i]->get_instances_count())
@@ -356,27 +386,60 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                             vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
 
                         auto _world = _translate *
-                            rotate(_transform.rotation[0], true ? vec3(-1.0f, 0.0f, 0.0f) : vec3(1.0f, 0.0f, 0.0f)) *
+                            rotate(_transform.rotation[0], vec3(-1.0f, 0.0f, 0.0f)) *
                             rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
                             rotate(_transform.rotation[2], vec3(0.0f, 0.0f, 1.0f)) *
                             _scale;
 
-                        this->_instance_wvp_unifrom[i]->data.world = _world;
-                        this->_instance_wvp_unifrom[i]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
-                        this->_instance_wvp_unifrom[i]->update();
+                        this->_instance_wvp_unifrom[_instance_model_index]->data.world = _world;
+                        this->_instance_wvp_unifrom[_instance_model_index]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
+                        this->_instance_wvp_unifrom[_instance_model_index]->update();
 
-                        this->_instance_color_unifrom[i]->data.color = glm::vec4(1);
-                        this->_instance_color_unifrom[i]->update();
+                        this->_instance_color_unifrom[_instance_model_index]->data.color = glm::vec4(1);
+                        this->_instance_color_unifrom[_instance_model_index]->update();
+
+                        _instance_model_index++;
+
+                        this->_models[i]->render(_cmd);
+                    }
+                    else
+                    {
+                        using namespace glm;
+
+                        auto _transform = this->_models[i]->get_transform();
+                        auto _translate = translate(mat4(1.0f),
+                            vec3(_transform.position[0], _transform.position[1], _transform.position[2]));
+                        mat4 _scale = scale(mat4x4(1.0f),
+                            vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
+
+                        auto _world = _translate *
+                            rotate(_transform.rotation[0], vec3(-1.0f, 0.0f, 0.0f))*
+                            rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
+                            rotate(_transform.rotation[2], vec3(0.0f, 0.0f, 1.0f)) *
+                            _scale;
+
+                        this->_basic_wvp_unifrom[_basic_model_index]->data.world = _world;
+                        this->_basic_wvp_unifrom[_basic_model_index]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
+                        this->_basic_wvp_unifrom[_basic_model_index]->update();
+
+                        this->_basic_color_unifrom[_basic_model_index]->data.color = glm::vec4(1);
+                        this->_basic_color_unifrom[_basic_model_index]->update();
+
+                        _basic_model_index++;
 
                         this->_models[i]->render(_cmd);
                     }
                 }
                 //make sure render all gui before loading gui_render
-                w_imgui::new_frame((float)pGameTime.get_elapsed_seconds());
+                w_imgui::new_frame((float)pGameTime.get_elapsed_seconds(), []()
+                {
+                    make_gui();
+                });
                 w_imgui::update_buffers(this->_render_pass);
                 w_imgui::render(_cmd);
             }
             this->_render_pass.end(_cmd);
+
 
             VkImageMemoryBarrier _barrier_from_render_to_present =
             {
@@ -405,7 +468,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         }
         this->_command_buffers.end(i);
     }
-    
+
     logger.write(std::to_string(pGameTime.get_frames_per_second()));
     return w_game::render(pGameTime);
 }
@@ -460,3 +523,61 @@ ULONG scene::release()
     return w_game::release();
 }
 
+static void make_gui()
+{
+    ImGuiStyle& _style = ImGui::GetStyle();
+    _style.WindowPadding = ImVec2(3, 2);
+    _style.WindowRounding = 0;
+    _style.GrabRounding = 4;
+    _style.GrabMinSize = 20;
+    _style.FramePadding = ImVec2(5, 5);
+    _style.Colors[2].x = 0.9098039215686275f;
+    _style.Colors[2].y = 0.4431372549019608f;
+    _style.Colors[2].z = 0.3176470588235294f;
+    _style.Colors[2].w = 1.0f;
+
+    static bool no_titlebar = true;
+    static bool no_border = true;
+    static bool no_resize = true;
+    static bool no_move = true;
+    static bool no_scrollbar = true;
+    static bool no_collapse = true;
+    static bool no_menu = true;
+
+    ImGuiWindowFlags window_flags = 0;
+    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
+    if (!no_border)   window_flags |= ImGuiWindowFlags_ShowBorders;
+    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
+    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
+    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
+    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
+    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
+    if (!ImGui::Begin("ImGui Demo", 0, window_flags))
+    {
+        // Early out if the window is collapsed, as an optimization.
+        ImGui::End();
+        return;
+    }
+
+    ImGui::SetWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiSetCond_FirstUseEver);
+    for (int i = 0; i < 6; i++)
+    {
+        ImTextureID tex_id = (void*)("#image");
+        ImGui::PushID(i);
+        ImGui::PushStyleColor(ImGuiCol_ImageActive, ImColor(0.0f, 0.0f, 255.0f, 255.0f));
+        ImGui::PushStyleColor(ImGuiCol_ImageHovered, ImColor(0.0f, 0.0f, 255.0f, 155.0f));
+        if (ImGui::ImageButton(tex_id, ImVec2(40, 40), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
+        {
+            logger.write("Pressed");
+        }
+        ImGui::PopStyleColor(2);
+        ImGui::PopID();
+        ImGui::Spacing();
+        ImGui::Spacing();
+    }
+
+    //ImGui::ShowTestWindow();
+
+    ImGui::End();
+}

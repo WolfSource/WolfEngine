@@ -240,65 +240,62 @@ void w_window::run(std::function<void(void)>& const pFunc)
 	MSG msg;
 	std::memset(&msg, 0, sizeof(msg));
 
-	while (true)
-	{
-		if (this->_close)
-		{
-			break;
-		}
+    while (true)
+    {
+        // Handle the windows messages.
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            //switch (msg.message)
+            //{
+            //case WM_CLOSE:
+            //    DestroyWindow(msg.hwnd);
+            //    break;
+            //case WM_MOVE:
+            //{
+            //    RECT _rect;
 
-		// Handle the windows messages.
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{
-			switch (msg.message)
-			{
-			case WM_CLOSE:
-				DestroyWindow(msg.hwnd);
-				break;
-			case WM_MOVE:
-			{
-				RECT _rect;
+            //    GetClientRect(msg.hwnd, &_rect);
+            //    MapWindowPoints(msg.hwnd, GetParent(msg.hwnd), (LPPOINT)&_rect, 2);
 
-				GetClientRect(msg.hwnd, &_rect);
-				MapWindowPoints(msg.hwnd, GetParent(msg.hwnd), (LPPOINT) &_rect, 2);
+            //    //get width and height
+            //    _rect.left -= 2;
+            //    _rect.top -= 2;
+            //    _rect.right += 2;
+            //    _rect.bottom += 2;
 
-				//get width and height
-				_rect.left -= 2;
-				_rect.top -= 2;
-				_rect.right += 2;
-				_rect.bottom += 2;
+            //    auto _width = _rect.right - _rect.left;
+            //    auto _height = _rect.bottom - _rect.top;
 
-				auto _width = _rect.right - _rect.left;
-				auto _height = _rect.bottom - _rect.top;
+            //    MoveWindow(msg.hwnd,
+            //        msg.wParam,
+            //        msg.lParam,
+            //        _width,
+            //        _height,
+            //        TRUE);
+            //}
+            //break;
+            //case WM_SHOWWINDOW:
+            //{
+            //    ShowWindow(msg.hwnd, msg.wParam);
+            //    break;
+            //}
+            //case WM_ENABLE:
+            //{
+            //    EnableWindow(msg.hwnd, msg.wParam);
+            //    break;
+            //}
+            //}
 
-				MoveWindow(msg.hwnd,
-					msg.wParam,
-					msg.lParam,
-					_width,
-					_height,
-					TRUE);
-			}
-			break;
-			case WM_SHOWWINDOW:
-			{
-				ShowWindow(msg.hwnd, msg.wParam);
-				break;
-			}
-			case WM_ENABLE:
-			{
-				EnableWindow(msg.hwnd, msg.wParam);
-				break;
-			}
-			}
-
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		else
-		{
-			pFunc();
-		}
-	}
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            continue;
+        }
+        if (this->_close)
+        {
+            break;
+        }
+        pFunc();
+    }
 }
 
 #elif defined(__linux) && !defined(__ANDROID)

@@ -12,10 +12,13 @@ void main()
 {
 	if(i_uv_image_index.z == 0)
 	{
+		//font
 		o_color = i_color * texture(font_sampler, i_uv_image_index.xy);
 	}
 	else
 	{
+		//icons
 		o_color = i_color * texture(image_sampler, i_uv_image_index.xy);
-	}	
+	}
+	if(o_color.a == 0) discard;	
 }

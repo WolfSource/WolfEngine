@@ -8,6 +8,7 @@ layout (push_constant) uniform PushConstants
 {
 	vec2 scale;
 	vec2 translate;
+	//vec4 sampler_color;
 	int  sampler_index;
 } push_0;
 
@@ -23,6 +24,13 @@ void main()
 {
 	o_uv_image_index.xy = i_uv;
 	o_uv_image_index.z = push_0.sampler_index;
-	o_color = i_color;
+	//if(push_0.sampler_index == 0)
+	//{
+		o_color = i_color;
+	//}
+	//else
+	//{
+		//o_color = push_0.sampler_color;
+	//}
 	gl_Position = vec4(i_position * push_0.scale + push_0.translate, 0.0, 1.0);
 }

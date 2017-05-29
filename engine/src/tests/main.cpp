@@ -44,7 +44,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		return DefWindowProc(pHWND, pMsg, pWParam, pLParam);
 	};
 
-	//Initialize window
+	//Initialize window 720p
 	sWindow = make_unique<w_window>();
 	sWindow->set_width(1280);
 	sWindow->set_height(720);
