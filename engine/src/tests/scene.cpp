@@ -95,7 +95,7 @@ void scene::load()
     auto _render_pass_handle = this->_render_pass.get_handle();
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/areas/zone_1/1234567.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/textures.dae");
     if (_scene)
     {
         //get all models
