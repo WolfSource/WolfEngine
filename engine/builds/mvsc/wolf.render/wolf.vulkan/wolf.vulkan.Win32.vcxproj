@@ -150,10 +150,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\dependencies\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\..\..\dependencies\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\..\..\..\dependencies\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\dllmain.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp" />
@@ -170,7 +170,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\dependencies\imgui\imgui.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_quad.h" />
@@ -197,8 +197,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\..\content\shaders\basic.frag" />
+    <None Include="..\..\..\..\..\content\shaders\basic.vert" />
     <None Include="..\..\..\..\..\content\shaders\imgui.frag" />
     <None Include="..\..\..\..\..\content\shaders\imgui.vert" />
+    <None Include="..\..\..\..\..\content\shaders\static_instancing_y_up.vert" />
+    <None Include="..\..\..\..\..\content\shaders\static_instancing_z_up.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

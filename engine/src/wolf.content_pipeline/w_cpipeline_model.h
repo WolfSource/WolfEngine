@@ -172,7 +172,8 @@ namespace wolf
                 _In_ std::map<std::string, std::string>& sLibraryMaterials,
                 _In_ std::map<std::string, std::string>& sLibraryEffects,
                 _In_ std::map<std::string, std::string>& sLibraryImages,
-                _In_ bool pOptimizing);
+                _In_ bool pOptimizing,
+                _In_ bool pZUp);
 
             MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _meshes);
 

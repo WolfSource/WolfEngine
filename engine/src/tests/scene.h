@@ -67,7 +67,6 @@ public:
     ULONG release() override;
     
 private:
-    std::unique_ptr<wolf::graphics::w_shader>                   _basic_shader;
     std::unique_ptr<wolf::graphics::w_shader>                   _basic_instance_shader;
 
 #pragma pack(push,1)

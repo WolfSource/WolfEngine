@@ -1525,7 +1525,8 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
             sLibraryMaterials,
             sLibraryEffects,
             sLibraryImages,
-            pOptimizePoints);
+            pOptimizePoints,
+            sZ_Up);
 
         _model->set_name(_node_ptr->c_name);
         _model->set_instance_geometry_name(_node_ptr->instanced_geometry_name);

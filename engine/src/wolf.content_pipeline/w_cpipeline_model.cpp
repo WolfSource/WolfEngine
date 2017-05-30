@@ -27,7 +27,8 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
     _In_ std::map<std::string, std::string>& sLibraryMaterials,
     _In_ std::map<std::string, std::string>& sLibraryEffects,
     _In_ std::map<std::string, std::string>& sLibraryImages,
-    _In_ bool pOptimizing)
+    _In_ bool pOptimizing,
+    _In_ bool pZUp)
 {
 	auto _model = new w_cpipeline_model();
 
@@ -303,9 +304,8 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 
             glm::vec3 _pos;
             
-            //Z Up like 3ds max
             _pos.x = _v.vertex[0];
-            _pos.y = _v.vertex[1];
+            _pos.y = pZUp  ? -_v.vertex[1] : _v.vertex[1];
             _pos.z = _v.vertex[2];
 
 			_min_vertex.x = min(_pos.x, _min_vertex.x);

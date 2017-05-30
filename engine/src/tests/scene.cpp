@@ -95,7 +95,7 @@ void scene::load()
     auto _render_pass_handle = this->_render_pass.get_handle();
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/areas/zone_1/area_171_173.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/areas/zone_1/1234567.dae");
     if (_scene)
     {
         //get all models
@@ -229,41 +229,45 @@ void scene::load()
                     _shader_params.push_back(_param);
 
                     _hr = S_OK;
-                    if (this->_basic_shader)
+                    //load shader
+                    auto _shader = new (std::nothrow) w_shader();
+                    if (!_shader)
                     {
-                        this->_basic_shader->load_shader_binding_params(_shader_params);
+                        logger.error("Could allocate memory for basic shader");
+                        continue;
                     }
-                    else
+
+                    _hr = _shader->load(_gDevice, content_path + L"shaders/basic.vert.spv", w_shader_stage::VERTEX_SHADER);
+                    if (_hr == S_FALSE)
                     {
-                        //load shader
-                        w_shader* _shader = nullptr;
-                        w_shader::load_to_shared_shaders(_gDevice,
-                            "basic",
-                            content_path + L"shaders/basic.vert.spv",
-                            content_path + L"shaders/basic.frag.spv",
-                            _shader_params,
-                            &_shader);
-                        if (!_shader || _hr == S_FALSE)
-                        {
-                            logger.error("Could not load basic shader");
-                            return;
-                        }
-                        this->_basic_shader.reset(_shader);
+                        logger.error("Could not load basic vertex shader");
+                        continue;
                     }
-                    if (_hr == S_OK)
+                    _hr = _shader->load(_gDevice, content_path + L"shaders/basic.frag.spv", w_shader_stage::FRAGMENT_SHADER);
+                    if (_hr == S_FALSE)
                     {
-                        if (_model->load(_gDevice, this->_basic_shader.get(), &this->_render_pass, _pipeline_cache_name) == S_FALSE)
-                        {
-                            SAFE_RELEASE(_model);
-                            continue;
-                        }
-                        this->_models.push_back(_model);
+                        logger.error("Could not load basic fragment shader");
+                        continue;
                     }
+                    _hr = _shader->load_shader_binding_params(_shader_params);
+                    if (_hr == S_FALSE)
+                    {
+                        logger.error("Could not load shader binding params");
+                        continue;
+                    }
+
+                    if (_model->load(_gDevice, _shader, &this->_render_pass, _pipeline_cache_name) == S_FALSE)
+                    {
+                        SAFE_RELEASE(_model);
+                        continue;
+                    }
+                    this->_models.push_back(_model);
                 }
             }
         }
 
         _scene->get_first_camera(this->_camera);
+        this->_camera.set_far_plan(10000);
         this->_camera.set_aspect_ratio(_width / _height);
         this->_camera.update_view();
         this->_camera.update_projection();
@@ -322,10 +326,15 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
      w_game::update(pGameTime);
 }
 
+static float f = 0;
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
     auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
+
+    //this->_camera.set_translate(-3, 3, 5);
+    //this->_camera.update_view();
+    //this->_camera.update_projection();
 
     VkImageSubresourceRange _sub_resource_range = {};
     _sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -388,9 +397,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                         auto _world = _translate *
                             rotate(_transform.rotation[0], vec3(-1.0f, 0.0f, 0.0f)) *
                             rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
-                            rotate(_transform.rotation[2], vec3(0.0f, 0.0f, 1.0f)) *
+                            rotate(_transform.rotation[2], vec3(0.0f, 0.0f, -1.0f)) *
                             _scale;
-
+                      
                         this->_instance_wvp_unifrom[_instance_model_index]->data.world = _world;
                         this->_instance_wvp_unifrom[_instance_model_index]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
                         this->_instance_wvp_unifrom[_instance_model_index]->update();
@@ -413,11 +422,11 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                             vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
 
                         auto _world = _translate *
-                            rotate(_transform.rotation[0], vec3(-1.0f, 0.0f, 0.0f))*
+                            rotate(_transform.rotation[0], vec3(-1.0f, 0.0f, 0.0f)) *
                             rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
-                            rotate(_transform.rotation[2], vec3(0.0f, 0.0f, 1.0f)) *
+                            rotate(_transform.rotation[2], vec3(0.0f, 0.0f, -1.0f)) *
                             _scale;
-
+                        f += 0.001f;
                         this->_basic_wvp_unifrom[_basic_model_index]->data.world = _world;
                         this->_basic_wvp_unifrom[_basic_model_index]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
                         this->_basic_wvp_unifrom[_basic_model_index]->update();
@@ -515,7 +524,6 @@ ULONG scene::release()
     this->_frame_buffers.release();
 
     w_imgui::release();
-    UNIQUE_RELEASE(this->_basic_shader);
     UNIQUE_RELEASE(this->_basic_instance_shader);
 
     w_pipeline::release_all_pipeline_caches(_gDevice);
