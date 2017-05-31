@@ -47,6 +47,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_event.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_input.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_io.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_Ireleasable.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_linear_allocator.h" />

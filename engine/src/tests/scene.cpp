@@ -95,7 +95,7 @@ void scene::load()
     auto _render_pass_handle = this->_render_pass.get_handle();
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/textures.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/inst.dae");
     if (_scene)
     {
         //get all models
@@ -436,7 +436,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
                         _basic_model_index++;
 
-                        this->_models[i]->render(_cmd);
+                        //this->_models[i]->render(_cmd);
                     }
                 }
                 //make sure render all gui before loading gui_render

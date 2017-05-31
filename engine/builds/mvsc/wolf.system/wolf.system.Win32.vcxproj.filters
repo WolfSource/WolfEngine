@@ -46,5 +46,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_std.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_point.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_rectangle.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_input.h" />
   </ItemGroup>
 </Project>
