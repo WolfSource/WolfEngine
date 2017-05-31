@@ -14,7 +14,6 @@
 #ifndef __W_INPUT_H__
 #define __W_INPUT_H__
 
-#include <vector>
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default) //The classes/structs below are exported
@@ -22,51 +21,9 @@
 
 namespace wolf
 {
-	namespace system
-	{
-		template<typename T>
-		class w_event
-		{
-		public:
-			typedef void(*func)(T);
-
-		public:
-			void call(T pArg)
-			{
-				for (auto i = this->_handlers.begin(); i != this->_handlers.end(); ++i)
-				{
-					(*i)(pArg);
-				}
-			}
-
-			void operator ()(T pArg)
-			{
-				call(pArg);
-			}
-
-			w_event& operator += (func pFunc)
-			{
-				this->_handlers.push_back(pFunc);
-				return *this;
-			}
-
-			w_event& operator -= (func pFunc)
-			{
-				for (auto i = this->_handlers.begin(); i != this->_handlers.end(); ++i)
-				{
-					if (*i == pFunc)
-					{
-						this->_handlers.erase(i);
-						break;
-					}
-				}
-				return *this;
-			}
-
-		private:
-			std::vector<func> _handlers;
-		};
-	}
+    namespace system
+    {
+    }
 }
 
 #ifdef __GNUC__
@@ -74,4 +31,4 @@ namespace wolf
 #endif
 
 
-#endif //__W_EVENT_H__
+#endif //__W_INPUT_H__
