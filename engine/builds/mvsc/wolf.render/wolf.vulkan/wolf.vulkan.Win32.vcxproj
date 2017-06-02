@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;__WOLF_RENDER__;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/imgui/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_render_pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -203,6 +203,10 @@
     <None Include="..\..\..\..\..\content\shaders\imgui.vert" />
     <None Include="..\..\..\..\..\content\shaders\static_instancing_y_up.vert" />
     <None Include="..\..\..\..\..\content\shaders\static_instancing_z_up.vert" />
+    <None Include="..\..\..\..\..\content\shaders\tessellation\tessellation.frag" />
+    <None Include="..\..\..\..\..\content\shaders\tessellation\tessellation.vert" />
+    <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tesc" />
+    <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tese" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

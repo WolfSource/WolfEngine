@@ -22,19 +22,22 @@ enum w_shader_binding_type
 enum w_shader_stage
 {
 	VERTEX_SHADER = VK_SHADER_STAGE_VERTEX_BIT,
-#if defined(__DX12__) || defined(__DX11__)
-	PIXEL_SHADER,
-        HULL_SHADER,
-	DOMAIN_SHADER,
-#elif defined(__VULKAN__)
-        FRAGMENT_SHADER = VK_SHADER_STAGE_FRAGMENT_BIT,
-        TESSELATION_CONTROL,
-        TESSELATION_EVALUATION,
-#endif
-	GEOMETRY_SHADER,
 
-	COMPUTE_SHADER,
-    ALL_STAGES
+#if defined(__DX12__) || defined(__DX11__)
+    HULL_SHADER,
+	DOMAIN_SHADER,
+    PIXEL_SHADER,
+#elif defined(__VULKAN__)
+    TESSELATION_CONTROL = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT,
+    TESSELATION_EVALUATION = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT,
+    FRAGMENT_SHADER = VK_SHADER_STAGE_FRAGMENT_BIT,
+#endif
+
+	GEOMETRY_SHADER = VK_SHADER_STAGE_GEOMETRY_BIT,
+
+	COMPUTE_SHADER = VK_SHADER_STAGE_COMPUTE_BIT,
+
+    ALL_STAGES = VK_SHADER_STAGE_ALL
 };
 
 struct w_shader_binding_param
@@ -82,6 +85,8 @@ namespace wolf
             W_EXP static HRESULT load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                                         _In_z_ const std::string& pName,
                                                         _In_z_ const std::wstring& pVertexShaderPath,
+                                                        _In_z_ const std::wstring& pTessellationControlShaderPath,
+                                                        _In_z_ const std::wstring& pTessellationEvaluationShaderPath,
                                                         _In_z_ const std::wstring& pFragmentShaderPath,
                                                         _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
                                                         _Inout_ w_shader** pShader,

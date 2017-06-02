@@ -11,6 +11,7 @@
 #define __W_PIEPELINE_H__
 
 #include "w_graphics_device_manager.h"
+#include "w_mesh.h"
 
 namespace wolf
 {
@@ -24,21 +25,24 @@ namespace wolf
 			W_EXP virtual ~w_pipeline();
 
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                               _In_ w_mesh::w_vertex_declaration pVertexDeclaration,
+                               _In_ const VkPrimitiveTopology pPrimitiveTopology,
                                _In_ const std::string& pPipelineCacheName,
                                _In_ const VkRenderPass pRenderPass,
                                _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
-                               _In_ const std::vector<w_viewport> pViewPorts,
-                               _In_ const std::vector<w_viewport_scissor> pViewPortsScissors,
-                               _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo = nullptr,
-                               _In_ const VkPipelineVertexInputStateCreateInfo* const pPipelineVertexInputStateCreateInfo = nullptr,
-                               _In_ const VkPipelineInputAssemblyStateCreateInfo* const pPipelineInputAssemblyStateCreateInfo = nullptr,
+                               _In_ const VkDescriptorSetLayout* pShaderDescriptorSetLayoutBinding,
+                               _In_ const std::vector<w_viewport>& pViewPorts,
+                               _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
+                               _In_ const std::vector<VkDynamicState>& pDynamicStates,
+                               _In_ const UINT& pTessellationPatchControlPoints = 0,
                                _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo = nullptr,
                                _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo = nullptr,
-                               _In_ const VkPipelineDynamicStateCreateInfo* const pPipelineDynamicStateCreateInfo = nullptr,
                                _In_ const bool pEnableDepthStencilState = true,
                                _In_ const VkPipelineColorBlendAttachmentState pBlendState = w_graphics_device::w_blend_states::premulitplied_alpha,
                                _In_ const std::array<float,4> pBlendColors = { 0.0f, 0.0f, 0.0f, 0.0f });
             
+            W_EXP void bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet);
+
             //release all resources
             W_EXP virtual ULONG release() override;
             

@@ -26,7 +26,7 @@ namespace wolf
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,
-                _In_ const std::vector<VkAttachmentDescription>* pAttachmentDescriptions = nullptr,
+                _In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions = nullptr,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
 

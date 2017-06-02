@@ -76,6 +76,7 @@ using std::size_t;
 #include <map>
 #include <vector>
 #include <array>
+#include <w_event.h>
 
 #if defined(__linux) ||  defined(__APPLE__) || defined(__ANDROID)
 #include <w_std.h>
@@ -260,8 +261,11 @@ namespace wolf
             static VkInstance                                       vk_instance;
                         
             VkPhysicalDevice                                        vk_physical_device;
+            VkPhysicalDeviceFeatures                                vk_physical_device_features;
             VkPhysicalDeviceMemoryProperties                        vk_physical_device_memory_properties;
-                        
+            
+            std::vector<const char*>                                vk_device_extensions;
+
             std::vector<VkQueueFamilyProperties>                    vk_queue_family_properties;
 			UINT32													vk_graphics_queue_family_index;
             std::vector<VkBool32>                                   vk_queue_family_supports_present;
@@ -325,12 +329,15 @@ namespace wolf
                         
 			//Initialize graphics devices
 			W_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
+
 			//Called when corresponding window resized
 			W_EXP virtual void on_window_resized(_In_ UINT pIndex);
 			//Called when any graphics device lost
 			W_EXP virtual void on_device_lost();
 			//Called when the APP suspends. It provides a hint to the driver that the APP is entering an idle state and that temporary buffers can be reclaimed for use by other apps.
 			W_EXP virtual void on_suspend();
+            //Prepare frame on all graphics devices
+            W_EXP virtual HRESULT prepare();
 			//Submit command buffers on all graphics devices
 			W_EXP virtual HRESULT submit();
 			//Present on all graphics devices
@@ -340,6 +347,27 @@ namespace wolf
 
 			//convert DPIs to pixels
             W_EXP static const float convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI);
+
+            struct w_device_features_extensions
+            {
+            public:
+                w_device_features_extensions(_In_ const UINT& pDeviceID, _In_z_ const char*  pDeviceName)
+                {
+                    this->_device_id = pDeviceID;
+                    this->_device_name = pDeviceName;
+                }
+
+                UINT                        get_device_id() const   { return this->_device_id; }
+                const char*                 get_device_name() const { return this->_device_name; }
+
+                VkPhysicalDeviceFeatures*   device_features;
+                std::vector<const char*>    device_extensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
+            private:
+                UINT                        _device_id = 0;
+                const char*                 _device_name = "unknown";
+            };
+            wolf::system::w_event<w_device_features_extensions&> on_device_features_fetched;
 
 #pragma region Getters
 			//Get the main graphics device, this is first and the primary device.
@@ -411,6 +439,7 @@ namespace wolf
             D3D_FEATURE_LEVEL				wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_1;
             std::vector<D3D_FEATURE_LEVEL>	hardware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_1 };
 #endif
+            bool debug_gpu = false;
         };
 
         struct w_viewport :

@@ -18,6 +18,7 @@
 #include <w_graphics/w_command_buffers.h>
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_frame_buffers.h>
+#include <w_graphics/w_pipeline.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -43,11 +44,10 @@ public:
     
     //This is the place where allows the game to run logic such as updating the world, checking camera, collisions, physics, input, playing audio and etc.
     void update(_In_ const wolf::system::w_game_time& pGameTime) override;
-    
+
     //Render on all graphics devices
     HRESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
-    
-    
+        
     //This is called when the window game should resized. pIndex is the index of window.
     void on_window_resized(_In_ UINT pIndex) override;
     
@@ -67,7 +67,13 @@ public:
     ULONG release() override;
     
 private:
-    std::unique_ptr<wolf::graphics::w_shader>                   _basic_instance_shader;
+    
+#pragma pack(push,1)
+    struct tessellation_level_unifrom
+    {
+        float tess_level_uniform = 1.0f;
+    };
+#pragma pack(pop)
 
 #pragma pack(push,1)
     struct world_view_projection_unifrom
@@ -84,18 +90,34 @@ private:
     };
 #pragma pack(pop)
 
-    std::vector<wolf::graphics::w_uniform<world_view_projection_unifrom>*>   _basic_wvp_unifrom;
-    std::vector<wolf::graphics::w_uniform<color_unifrom>*>                   _basic_color_unifrom;
+    wolf::content_pipeline::w_camera                               _camera;
+    wolf::graphics::w_command_buffers                              _command_buffers;
+    wolf::graphics::w_render_pass                                  _render_pass;
+    wolf::graphics::w_frame_buffers                                _frame_buffers;
 
-    std::vector<wolf::graphics::w_uniform<world_view_projection_unifrom>*>   _instance_wvp_unifrom;
-    std::vector<wolf::graphics::w_uniform<color_unifrom>*>                   _instance_color_unifrom;
 
-    wolf::content_pipeline::w_camera                                         _camera;
-    wolf::graphics::w_command_buffers                                        _command_buffers;
-    wolf::graphics::w_render_pass                                            _render_pass;
-    wolf::graphics::w_frame_buffers                                          _frame_buffers;
-    std::vector<wolf::framework::w_model<>*>                                 _models;
+    struct model
+    {
+        wolf::framework::w_model<>*                                 model_meshes = nullptr;
+        wolf::graphics::w_uniform<tessellation_level_unifrom>       tess_level_unifrom;
+        wolf::graphics::w_uniform<world_view_projection_unifrom>    wvp_unifrom;
+        wolf::graphics::w_uniform<color_unifrom>                    color_unifrom;
+        wolf::graphics::w_shader*                                   shader = nullptr;
+        wolf::graphics::w_pipeline*                                 pipeline = nullptr;
+        bool                                                        has_instances = false;
 
+        ULONG release()
+        {
+            SAFE_RELEASE(this->model_meshes);
+            SAFE_RELEASE(this->shader);
+            SAFE_RELEASE(this->pipeline);
+            this->wvp_unifrom.release();
+            this->color_unifrom.release();
+            return 1;
+        }
+    };
+
+    std::vector<model*>                                             _models;
 };
 
 #endif

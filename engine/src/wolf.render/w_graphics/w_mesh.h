@@ -11,9 +11,9 @@
 
 #include "w_graphics_device_manager.h"
 #include "w_texture.h"
-#include "w_shader.h"
 #include "w_render_pass.h"
 #include <glm/mat4x4.hpp>
+#include <w_vertex_declaration.h>
 
 namespace wolf
 {
@@ -26,6 +26,7 @@ namespace wolf
 		public:
             enum w_vertex_declaration
             {
+                VERTEX_UNKNOWN,
                 VERTEX_POSITION,
                 VERTEX_POSITION_INSTANCE_VEC2,
                 VERTEX_POSITION_INSTANCE_VEC3,
@@ -70,9 +71,6 @@ namespace wolf
                                _In_ const UINT pVerticesCount,
                                _In_ const UINT* const pIndicesData,
                                _In_ const UINT pIndicesCount,
-                               _In_ w_shader* pShader,
-                               _In_ const w_render_pass* pRenderPass,
-                               _In_ const std::string& pPipelineCacheName = "",
                                _In_ const bool pZUp = false,
                                _In_ bool pUseDynamicBuffer = false);
             
@@ -97,20 +95,18 @@ namespace wolf
             W_EXP VkBuffer                      get_index_buffer_handle() const;
             W_EXP const UINT                    get_vertices_count() const;
             W_EXP const UINT                    get_indices_count() const;
-            W_EXP w_shader*                     get_shader() const ;
             W_EXP w_texture*                    get_texture() const;
-            W_EXP const w_vertex_declaration    get_vertex_declaration_struct();
+            W_EXP w_vertex_declaration          get_vertex_declaration() const;
 
 #pragma endregion
 
 #pragma region Setters
 		
-            W_EXP void set_shader(_In_ w_shader* pShader);
             W_EXP void set_texture(_In_ w_texture* pTexture);
-            W_EXP void set_vertex_declaration_struct(_In_ const w_vertex_declaration& pValue);
+            W_EXP void set_vertex_declaration(_In_ const w_vertex_declaration& pValue);
 
-#pragma endregion
-			
+#pragma endregion	
+
 		private:
             typedef		system::w_object                        _super;
             w_mesh_pimp*                                        _pimp;              

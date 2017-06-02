@@ -133,7 +133,7 @@ namespace wolf
                 auto _descriptor_set_layout = this->_shader.get_descriptor_set_layout_binding();
 
                 // Push constants for UI rendering parameters
-                VkPushConstantRange pushConstantRange =
+                VkPushConstantRange _push_constant_range =
                 {
                     VK_SHADER_STAGE_VERTEX_BIT,
                     0,
@@ -146,7 +146,7 @@ namespace wolf
                 _pipeline_layout_create_info.setLayoutCount = 1;
                 _pipeline_layout_create_info.pSetLayouts = &_descriptor_set_layout;
                 _pipeline_layout_create_info.pushConstantRangeCount = 1;
-                _pipeline_layout_create_info.pPushConstantRanges = &pushConstantRange;
+                _pipeline_layout_create_info.pPushConstantRanges = &_push_constant_range;
 
                 this->_pipeline_layout = w_pipeline::create_pipeline_layout(_gDevice, &_pipeline_layout_create_info);
                 if (!this->_pipeline_layout)

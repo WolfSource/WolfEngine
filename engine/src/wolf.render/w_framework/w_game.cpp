@@ -30,7 +30,7 @@ w_game::~w_game()
 {
 }
 
-void w_game::initialize(map<int, vector<w_window_info>> pOutputWindowsInfo)
+void w_game::initialize(_In_ map<int, vector<w_window_info>> pOutputWindowsInfo)
 {	
 	w_graphics_device_manager::initialize(pOutputWindowsInfo);
 
@@ -47,12 +47,12 @@ void w_game::load()
 {
 }
 
-void w_game::update(const wolf::system::w_game_time& pGameTime)
+void w_game::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
 	W_UNUSED(pGameTime);
 }
 
-HRESULT w_game::render(const wolf::system::w_game_time& pGameTime)
+HRESULT w_game::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
 #ifdef	__DX11__
     
@@ -100,7 +100,7 @@ HRESULT w_game::on_msg_proc(
 }
 #endif
 
-bool w_game::run(map<int, vector<w_window_info>> pOutputWindowsInfo)
+bool w_game::run(_In_ map<int, vector<w_window_info>> pOutputWindowsInfo)
 {
 	if (this->loadState == LoadState::NOTLOADED)
 	{
@@ -123,7 +123,10 @@ bool w_game::run(map<int, vector<w_window_info>> pOutputWindowsInfo)
 
     this->_game_time.tick([&]()
     {
-        render(this->_game_time);
+        if (w_graphics_device_manager::prepare() == S_OK)
+        {
+            render(this->_game_time);
+        }
     });
 
     return !this->exiting;

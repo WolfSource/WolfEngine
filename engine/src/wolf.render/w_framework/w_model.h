@@ -16,7 +16,6 @@
 
 #include <w_graphics_device_manager.h>
 #include <w_graphics/w_mesh.h>
-#include <w_graphics/w_shader.h>
 #include <w_graphics/w_buffer.h>
 #include <w_graphics/w_command_buffers.h>
 #include <w_cpipeline_model.h>
@@ -31,16 +30,17 @@ namespace wolf
     namespace framework
     {
         template<typename T = wolf::content_pipeline::vertex_declaration_structs::vertex_position_uv>
-        class w_model : public wolf::graphics::w_mesh
+        class w_model : public wolf::system::w_object
         {
         public:
 
-            w_model(wolf::content_pipeline::w_cpipeline_model* pModelData = nullptr,
+            w_model(wolf::content_pipeline::w_cpipeline_model* pModelData,
                 _In_ bool pZup = false,
                 _In_ bool pFlipU = false,
                 _In_ bool pFlipV = true) :
+
                 _instances_buffer(nullptr),
-                _pipeline_model(nullptr),
+                _cp_model(nullptr),
                 _z_up(pZup),
                 _flip_u(pFlipU),
                 _flip_v(pFlipV)
@@ -49,9 +49,9 @@ namespace wolf
 
                 if (pModelData)
                 {
-                    this->_pipeline_model = new w_cpipeline_model();
+                    this->_cp_model = new w_cpipeline_model();
                     //copy memory
-                    std::memcpy((void*)this->_pipeline_model, pModelData, sizeof(w_cpipeline_model));
+                    std::memcpy((void*)this->_cp_model, pModelData, sizeof(w_cpipeline_model));
                 }
             }
 
@@ -60,26 +60,25 @@ namespace wolf
                 release();
             }
 
-            HRESULT load(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-                _In_ wolf::graphics::w_shader* pShader,
-                _In_ const wolf::graphics::w_render_pass* pRenderPass,
-                _In_ const std::string& pPipelineCacheName)
+            HRESULT load(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
             {
-                if (this->_pipeline_model == nullptr || pShader == nullptr) return S_FALSE;
+                using namespace wolf::graphics;
 
+                if (pGDevice == nullptr) return S_FALSE;
+                
                 this->_gDevice = pGDevice;
-
+                
                 //load meshes
                 std::vector<content_pipeline::w_cpipeline_model::w_mesh*> _model_meshes;
-                this->_pipeline_model->get_meshes(_model_meshes);
+                this->_cp_model->get_meshes(_model_meshes);
 
                 std::vector<content_pipeline::w_cpipeline_model::w_instance_info> _model_instances;
-                this->_pipeline_model->get_instances(_model_instances);
+                this->_cp_model->get_instances(_model_instances);
                 if (_model_instances.size())
                 {
                     update_instance_buffer(_model_instances.data(),
                         static_cast<UINT>(_model_instances.size() * sizeof(content_pipeline::w_cpipeline_model::w_instance_info)),
-                        w_vertex_declaration::VERTEX_POSITION_UV_INSTANCE_VEC7_INT);
+                        w_mesh::w_vertex_declaration::VERTEX_POSITION_UV_INSTANCE_VEC7_INT);
                 }
 
                 HRESULT _hr;
@@ -87,7 +86,7 @@ namespace wolf
                 for (size_t i = 0; i < _model_meshes.size(); ++i)
                 {
                     auto _model_mesh = _model_meshes[i];
-                    auto _mesh = new wolf::graphics::w_mesh();
+                    auto _mesh = new w_mesh();
 
                     //prepare vertices
                     std::vector<float> _v_data;
@@ -147,7 +146,7 @@ namespace wolf
                             _v_data.push_back(this->_flip_u ? 1 - _uv[0] : _uv[0]);
                             _v_data.push_back(this->_flip_v ? 1 - _uv[1] : _uv[1]);
                         }
-                        this->_vertex_declaration = w_vertex_declaration::VERTEX_POSITION_UV;
+                        this->_vertex_declaration = w_mesh::w_vertex_declaration::VERTEX_POSITION_UV;
                     }
                     else if (std::is_same<T, wolf::content_pipeline::vertex_declaration_structs::vertex_position_uv_color>::value)
                     {
@@ -180,12 +179,12 @@ namespace wolf
                     {
                         _error += 1;
                         logger.error("Unsupported vertex layout of mesh #" + std::to_string(i) +
-                            " for model: " + this->_pipeline_model->get_name());
+                            " for model: " + this->_cp_model->get_name());
                         continue;
                     }
 
                     //load mesh
-                    _mesh->set_vertex_declaration_struct(this->_instances_count ? this->_instance_declaration:
+                    _mesh->set_vertex_declaration(this->_instances_count ? this->_instance_declaration:
                         this->_vertex_declaration);
 
                     auto _count = static_cast<UINT>(_v_data.size());
@@ -195,16 +194,13 @@ namespace wolf
                         _count,
                         _model_mesh->indices.data(),
                         static_cast<UINT>(_model_mesh->indices.size()),
-                        pShader,
-                        pRenderPass,
-                        pPipelineCacheName,
                         _z_up);
                     _v_data.clear();
                     if (_hr == S_FALSE)
                     {
                         _error += 1;
                         logger.error("Could not create mesh #" + std::to_string(i) +
-                            " for model: " + this->_pipeline_model->get_name());
+                            " for model: " + this->_cp_model->get_name());
                         continue;
                     }
                     this->_meshes.push_back(_mesh);
@@ -214,7 +210,7 @@ namespace wolf
             }
 
             HRESULT update_instance_buffer(_In_ const void* const pInstancedData,
-                _In_ const UINT pInstancedSize, _In_ const w_vertex_declaration pInstanceVertexDeclaration)
+                _In_ const UINT pInstancedSize, _In_ const wolf::graphics::w_mesh::w_vertex_declaration pInstanceVertexDeclaration)
             {
                 using namespace wolf::graphics;
 
@@ -231,7 +227,7 @@ namespace wolf
                 if (_hr == S_FALSE)
                 {
                     logger.error("Could not create staging instance buffer of model: " +
-                        this->_pipeline_model->get_name());
+                        this->_cp_model->get_name());
                     return _hr;
                 }
 
@@ -239,7 +235,7 @@ namespace wolf
                 if (_hr == S_FALSE)
                 {
                     logger.error("Setting staging instance buffer of model: " +
-                        this->_pipeline_model->get_name());
+                        this->_cp_model->get_name());
                     return _hr;
                 }
 
@@ -247,7 +243,7 @@ namespace wolf
                 if (_hr == S_FALSE)
                 {
                     logger.error("Could not bind to staging instance buffer of model: " +
-                        this->_pipeline_model->get_name());
+                        this->_cp_model->get_name());
                     return _hr;
                 }
 #pragma endregion
@@ -271,7 +267,7 @@ namespace wolf
                     if (_hr == S_FALSE)
                     {
                         logger.error("Could not create instance buffer of model: " +
-                            this->_pipeline_model->get_name());
+                            this->_cp_model->get_name());
                         return _hr;
                     }
                 }
@@ -282,7 +278,7 @@ namespace wolf
                 if (_hr == S_FALSE)
                 {
                     logger.error("Could not bind to instance buffer of model: " +
-                        this->_pipeline_model->get_name());
+                        this->_cp_model->get_name());
                     return _hr;
                 }
 
@@ -328,7 +324,8 @@ namespace wolf
             {
                 if (_super::get_is_released()) return 0;
 
-                SAFE_RELEASE(this->_pipeline_model);
+                SAFE_RELEASE(this->_cp_model);
+
                 for (auto _iter : this->_meshes)
                 {
                     SAFE_RELEASE(_iter);
@@ -348,7 +345,7 @@ namespace wolf
 
             wolf::content_pipeline::w_transform_info get_transform() const
             {
-                return this->_pipeline_model ? this->_pipeline_model->get_transform() :
+                return this->_cp_model ? this->_cp_model->get_transform() :
                     wolf::content_pipeline::w_transform_info();
             }
 
@@ -365,12 +362,12 @@ namespace wolf
             typedef	wolf::system::w_object                              _super;
 
             std::shared_ptr<wolf::graphics::w_graphics_device>			_gDevice;
-            wolf::content_pipeline::w_cpipeline_model*					_pipeline_model;
+            wolf::content_pipeline::w_cpipeline_model*					_cp_model;
             std::vector<wolf::graphics::w_mesh*>                        _meshes;
             wolf::graphics::w_buffer*                                   _instances_buffer;
             UINT                                                        _instances_count;
-            w_vertex_declaration                                        _vertex_declaration;
-            w_vertex_declaration                                        _instance_declaration;
+            wolf::graphics::w_mesh::w_vertex_declaration                _vertex_declaration;
+            wolf::graphics::w_mesh::w_vertex_declaration                _instance_declaration;
             bool                                                        _flip_u, _flip_v;
             bool                                                        _z_up;
         };

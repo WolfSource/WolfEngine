@@ -1,82 +1,79 @@
-/*
-Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
-Website			 : http://WolfSource.io
-Name			 : main.cpp
-Description		 : This sample shows how to show vertices in Wolf Engine
-Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
-*/
-
 #include "pch.h"
+#include <w_window.h>
 #include "scene.h"
 
 using namespace std;
 
 static std::unique_ptr<w_window> sWindow;
 static std::unique_ptr<scene> sScene;
-static std::map<int, std::vector<w_window_info>> sWindowsInfo;
 
 static void release()
 {
+	//UNIQUE_RELEASE(sScene);
 	UNIQUE_RELEASE(sWindow);
-	UNIQUE_RELEASE(sScene);
-	sWindowsInfo.clear();
-}
-
-void loop_window()
-{
-	sScene->run(sWindowsInfo);
 }
 
 //Entry point of program 
 int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
 {
-	/*
-		set message procedure function fo windows
-		we use it for handling messages from window, such as keyboard status, on createing window event or etc.
-	*/
+	//first add msg_proc
 	auto _msg_proc_func = [](HWND pHWND, UINT pMsg, WPARAM pWParam, LPARAM pLParam) -> HRESULT
 	{
 		switch (pMsg)
 		{
 		case WM_CREATE:
 		{
-			logger.write(L"The window just created");
 		}
 		break;
 		//close window on KeyUp event of Escape button
 		case WM_KEYUP:
 		{
-			if (pWParam == VK_ESCAPE)
-			{
-				sWindow->close();
-				logger.write(L"The windows just closed");
-			}
+            if (pWParam == VK_ESCAPE)
+            {
+                sWindow->close();
+            }
 		}
 		break;
 		}
 
-		return sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
+        if (sScene)
+        {
+            auto _result = sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
+            if (_result) return _result;
+        }
+		return DefWindowProc(pHWND, pMsg, pWParam, pLParam);
 	};
 
-	//Initialize scene & window
-	sScene = make_unique<scene>();
+	//Initialize window 720p
 	sWindow = make_unique<w_window>();
+	sWindow->set_width(1280);
+	sWindow->set_height(720);
 	sWindow->initialize(_msg_proc_func);
 
-	//create window info and add it to the map
-	sWindowsInfo[0] = { { sWindow->get_HWND(),sWindow->get_HINSTANCE(), sWindow->get_width(), sWindow->get_height() } };
+	//run the vulkan sample
+	w_window_info _window_info;
+	_window_info.width = sWindow->get_width();
+	_window_info.height = sWindow->get_height();
+	_window_info.hwnd = sWindow->get_HWND();
+	_window_info.hInstance = sWindow->get_HINSTANCE();
+    _window_info.v_sync_enable = false;
 
-	//run the main loop of window
-	std::function<void(void)> _f = std::bind(&loop_window);
-	sWindow->run(_f);
+	//call init_window from objective-c and get the pointer to the window
+	std::map<int, std::vector<w_window_info>> _windows_info;
+	_windows_info.insert({ 0,{ _window_info } });
+
+	//Initialize and run scene
+    auto _running_dir = wolf::system::io::get_current_directoryW();
+	sScene = make_unique<scene>(_running_dir, L"wolf.engine.vulkan.test");
+	std::function<void(void)> _run_func = [&_windows_info]()->void
+	{
+		sScene->run(_windows_info);
+	};
+
+	sWindow->run(_run_func);
 
 	//release all
 	release();
 
-	//output a message to the log file
-	logger.write(L"Shutting down Wolf");
-
-	//exit
 	return EXIT_SUCCESS;
 }

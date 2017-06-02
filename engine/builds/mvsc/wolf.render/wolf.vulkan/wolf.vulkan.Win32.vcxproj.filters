@@ -107,6 +107,9 @@
     <Filter Include="content\shaders">
       <UniqueIdentifier>{c5c007c1-25c7-4fbe-950e-be7e3e961a33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="content\shaders\tessellation">
+      <UniqueIdentifier>{0bcda048-dada-4713-a2a3-d91b88a6d626}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\content\shaders\basic.frag">
@@ -126,6 +129,18 @@
     </None>
     <None Include="..\..\..\..\..\content\shaders\imgui.frag">
       <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\tessellation\tessellation.frag">
+      <Filter>content\shaders\tessellation</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\tessellation\tessellation.vert">
+      <Filter>content\shaders\tessellation</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tese">
+      <Filter>content\shaders\tessellation</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tesc">
+      <Filter>content\shaders\tessellation</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -17,7 +17,7 @@ namespace wolf
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,
-                _In_ const std::vector<VkAttachmentDescription>* pAttachmentDescriptions,
+                _In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
             {
@@ -29,14 +29,13 @@ namespace wolf
                 std::vector<VkSubpassDescription> _subpass_descriptions;
                 std::vector<VkSubpassDependency> _subpass_dependencies;
 
-                if (!pAttachmentDescriptions)
+                if (!pAttachmentDescriptions.size())
                 {
                     _attachment_descriptions.push_back(w_graphics_device::w_render_pass_attachments::color_attachment_description);
-                    _attachment_descriptions.push_back(w_graphics_device::w_render_pass_attachments::depth_attachment_description);
                 }
                 else
                 {
-                    _attachment_descriptions = *pAttachmentDescriptions;
+                    _attachment_descriptions.insert(_attachment_descriptions.end(), pAttachmentDescriptions.begin(), pAttachmentDescriptions.end());
                 }
 
                 if (!pSubpassDescriptions)
@@ -227,7 +226,7 @@ w_render_pass::~w_render_pass()
 HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                             _In_ const w_viewport& pViewPort,
                             _In_ const w_viewport_scissor& pViewPortScissor,
-                            _In_ const std::vector<VkAttachmentDescription>* pAttachmentDescriptions,
+                            _In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
                             _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
                             _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 {

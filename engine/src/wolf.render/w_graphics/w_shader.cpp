@@ -479,6 +479,8 @@ const std::vector<w_shader_binding_param> w_shader::get_shader_binding_params() 
 HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_z_ const std::string& pName,
     _In_z_ const std::wstring& pVertexShaderPath,
+    _In_z_ const std::wstring& pTessellationControlShaderPath,
+    _In_z_ const std::wstring& pTessellationEvaluationShaderPath,
     _In_z_ const std::wstring& pFragmentShaderPath,
     _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
     _Inout_ w_shader** pShader,
@@ -487,14 +489,27 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
     auto _shader = new (std::nothrow) w_shader();
     if (!_shader)
     {
-        logger.error(L"Could not perform allocation for shared shader: " + pVertexShaderPath + L" , " +
-            pFragmentShaderPath);
+        logger.error("Could not perform allocation for shared shader name: " + pName);
         return S_FALSE;
     }
 
     if (!pVertexShaderPath.empty())
     {
         if (_shader->load(pGDevice, pVertexShaderPath, w_shader_stage::VERTEX_SHADER, pMainFunctionName) == S_FALSE)
+        {
+            return S_FALSE;
+        }
+    }
+    if (!pTessellationControlShaderPath.empty())
+    {
+        if (_shader->load(pGDevice, pTessellationControlShaderPath, w_shader_stage::TESSELATION_CONTROL, pMainFunctionName) == S_FALSE)
+        {
+            return S_FALSE;
+        }
+    }
+    if (!pTessellationEvaluationShaderPath.empty())
+    {
+        if (_shader->load(pGDevice, pTessellationEvaluationShaderPath, w_shader_stage::TESSELATION_EVALUATION, pMainFunctionName) == S_FALSE)
         {
             return S_FALSE;
         }
