@@ -20,6 +20,9 @@
 #include <w_graphics/w_frame_buffers.h>
 #include <w_graphics/w_pipeline.h>
 
+#include <cameras/w_first_person_camera.h>
+#include <w_point.h>
+
 class scene : public wolf::framework::w_game
 {
 public:
@@ -54,15 +57,6 @@ public:
     //This is called when the we lost graphics device.
     void on_device_lost() override;
 
-#ifdef __WIN32
-    //handle user inputs
-    HRESULT on_msg_proc(
-        _In_ const HWND pHWND, 
-        _In_ const UINT pMessage, 
-        _In_ const WPARAM pWParam, 
-        _In_ const LPARAM pLParam) override;
-#endif
-
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
     
@@ -90,7 +84,7 @@ private:
     };
 #pragma pack(pop)
 
-    wolf::content_pipeline::w_camera                               _camera;
+    wolf::content_pipeline::w_first_person_camera                  _camera;
     wolf::graphics::w_command_buffers                              _command_buffers;
     wolf::graphics::w_render_pass                                  _render_pass;
     wolf::graphics::w_frame_buffers                                _frame_buffers;
@@ -117,6 +111,7 @@ private:
         }
     };
 
+    w_point_t                                                       _screen_size;
     std::vector<model*>                                             _models;
 };
 

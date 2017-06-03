@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_cpu.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_linear_allocator.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_logger.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_lua.cpp" />
@@ -47,7 +48,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_event.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_input.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_io.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_Ireleasable.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_linear_allocator.h" />

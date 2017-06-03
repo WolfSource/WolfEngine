@@ -19,11 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\cameras\w_camera.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\cameras\w_first_person_camera.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_node.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_parser.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\dllmain.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_camera.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -38,6 +39,8 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\cameras\w_camera.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\cameras\w_first_person_camera.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_animation.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_extra.h" />
@@ -45,7 +48,6 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_obj.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_parser.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_skin.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_camera.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_export.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.h" />

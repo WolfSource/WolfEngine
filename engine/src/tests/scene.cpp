@@ -84,24 +84,24 @@ void scene::load()
 {
     auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
-    float _width = static_cast<float>(_output_window->width);
-    float _height = static_cast<float>(_output_window->height);
+    _screen_size.x = static_cast<uint32_t>(_output_window->width);
+    _screen_size.y = static_cast<uint32_t>(_output_window->height);
 
     w_game::load();
     
     //create render pass
     w_viewport _viewport;
     _viewport.y = 0;
-    _viewport.width = _width;
-    _viewport.height = _height;
+    _viewport.width = static_cast<float>(_screen_size.x);
+    _viewport.height = static_cast<float>(_screen_size.y);
     _viewport.minDepth = 0;
     _viewport.maxDepth = 1;
 
     w_viewport_scissor _viewport_scissor;
     _viewport_scissor.offset.x = 0;
     _viewport_scissor.offset.y = 0;
-    _viewport_scissor.extent.width = _width;
-    _viewport_scissor.extent.height = _height;
+    _viewport_scissor.extent.width = _screen_size.x;
+    _viewport_scissor.extent.height = _screen_size.y;
 
     auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
     _depth_attachment.format = _output_window->vk_depth_buffer_format;
@@ -149,7 +149,6 @@ void scene::load()
         if (_size)
         {
             auto _z_up = _scene->get_z_up();
-
 
             for (size_t i = 0; i < _size; ++i)
             {
@@ -328,7 +327,7 @@ void scene::load()
 
         _scene->get_first_camera(this->_camera);
         this->_camera.set_far_plan(10000);
-        this->_camera.set_aspect_ratio(_width / _height);
+        this->_camera.set_aspect_ratio((float)_screen_size.x / (float)_screen_size.y);
         this->_camera.update_view();
         this->_camera.update_projection();
 
@@ -340,8 +339,7 @@ void scene::load()
         _render_pass_handle,
         _output_window->vk_swap_chain_image_views,
         &_output_window->vk_depth_buffer_image_view,
-        _width,
-        _height,
+        _screen_size,
         1);
     if (_hr == S_FALSE)
     {
@@ -376,13 +374,13 @@ void scene::load()
     w_texture* _gui_images = new w_texture();
     _gui_images->load(_gDevice);
     _gui_images->initialize_texture_2D_from_file(content_path + L"textures/gui/icons.png", &_gui_images);
-    w_imgui::load(_gDevice, _output_window->hwnd, _width, _height, _render_pass_handle, _gui_images);
+    w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _gui_images);
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
-    
+    this->_camera.update(pGameTime, this->_screen_size);
      w_game::update(pGameTime);
 }
 
@@ -478,7 +476,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         }
         this->_command_buffers.end(i);
     }
-    logger.write(std::to_string(pGameTime.get_frames_per_second()));
+    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
     return w_game::render(pGameTime);
 }
 
@@ -491,28 +489,6 @@ void scene::on_device_lost()
 {
     w_game::on_device_lost();
 }
-
-
-#ifdef __WIN32
-
-HRESULT scene::on_msg_proc(
-    _In_ const HWND pHWND,
-    _In_ const UINT pMessage,
-    _In_ const WPARAM pWParam,
-    _In_ const LPARAM pLParam)
-{
-    //switch (pMessage)
-    //{
-    //case WM_MOUSEMOVE:
-    //    //this->_global_mouse_point.x = short(LOWORD(pLParam));
-    //    //this->_global_mouse_point.y = short(HIWORD(pLParam));
-    //    break;
-    //}
-
-    return w_imgui::on_msg_proc(pHWND, pMessage, pWParam, pLParam);
-}
-
-#endif
 
 ULONG scene::release()
 {

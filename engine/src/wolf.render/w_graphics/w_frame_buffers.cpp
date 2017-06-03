@@ -18,8 +18,7 @@ namespace wolf
                          _In_ const VkRenderPass pRenderPass,
                          _In_ std::vector<w_image_view> pAttachments,
                          _In_ w_image_view* pDepthAttachment,
-                         _In_ uint32_t pFrameBufferWidth,
-                         _In_ uint32_t pFrameBufferHeight,
+                         _In_ const w_point_t& pFrameSize,
                          _In_ uint32_t pNumberOfLayers)
             {
                 if (!pRenderPass)
@@ -48,8 +47,8 @@ namespace wolf
                         pRenderPass,								// Render pass
                         static_cast<uint32_t>(_attachments.size()), // AttachmentCount
                         _attachments.data(),						// Attachments
-                        pFrameBufferWidth,                          // Width
-                        pFrameBufferHeight,                         // Height
+                        pFrameSize.x,                               // Width
+                        pFrameSize.y,                               // Height
                         pNumberOfLayers								// Layers
                     };
                     
@@ -128,8 +127,7 @@ HRESULT w_frame_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGD
                               _In_ const VkRenderPass pRenderPass,
                               _In_ std::vector<w_image_view> pAttachments,
                               _In_ w_image_view* pDepthAttachment,
-                              _In_ uint32_t pFrameBufferWidth,
-                              _In_ uint32_t pFrameBufferHeight,
+                              _In_ const w_point_t& pFrameSize,
                               _In_ uint32_t pNumberOfLayers)
 {
     if(!this->_pimp) return S_FALSE;
@@ -137,8 +135,7 @@ HRESULT w_frame_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGD
                              pRenderPass,
                              pAttachments,
                              pDepthAttachment,
-                             pFrameBufferWidth,
-                             pFrameBufferHeight,
+                             pFrameSize,
                              pNumberOfLayers);
 }
 

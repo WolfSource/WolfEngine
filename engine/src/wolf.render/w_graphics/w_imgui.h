@@ -18,6 +18,7 @@
 #include <w_graphics_device_manager.h>
 #include "w_render_pass.h"
 #include "w_texture.h"
+#include <w_point.h>
 
 namespace wolf
 {
@@ -30,16 +31,9 @@ namespace wolf
 
             static W_EXP HRESULT load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
                 _In_ HWND pHWND,
-                _In_ const float& pWidth,
-                _In_ const float& pHeight,
+                _In_ const w_point_t& pScreenSize,
                 _In_ VkRenderPass& pRenderPass,
                 _In_ wolf::graphics::w_texture* pImageTexture);
-
-            static W_EXP LRESULT on_msg_proc(
-                _In_ const HWND pHWND,
-                _In_ const UINT pMessage,
-                _In_ const WPARAM pWParam,
-                _In_ const LPARAM pLParam);
 
             static W_EXP HRESULT update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass);
             static W_EXP void new_frame(_In_ float pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork);
@@ -48,8 +42,8 @@ namespace wolf
 
 #pragma region Getters
 
-            static W_EXP UINT get_width();
-            static W_EXP UINT get_height();
+            static W_EXP uint32_t get_width();
+            static W_EXP uint32_t get_height();
 
 #pragma endregion
 
@@ -58,8 +52,8 @@ namespace wolf
 #ifdef __WIN32
             //static W_EXP void set_HWND();
 #endif 
-            static W_EXP void set_width(_In_ const UINT& pWidth);
-            static W_EXP void set_height(_In_ const UINT& pHeight);
+            static W_EXP void set_width(_In_ const uint32_t& pWidth);
+            static W_EXP void set_height(_In_ const uint32_t& pHeight);
 
 #pragma endregion
 

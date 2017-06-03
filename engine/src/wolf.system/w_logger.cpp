@@ -437,7 +437,7 @@ ULONG w_logger::release()
 
 wolf::system::w_logger logger;
 std::wstring content_path;
-
+wolf::system::w_inputs_manager inputs_manager;
 
 #ifdef __WIN32
 #pragma data_seg ()

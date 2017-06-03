@@ -36,11 +36,9 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		break;
 		}
 
-        if (sScene)
-        {
-            auto _result = sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
-            if (_result) return _result;
-        }
+        auto _result = inputs_manager.update(pHWND, pMsg, pWParam, pLParam);
+        if (_result) return _result;
+
 		return DefWindowProc(pHWND, pMsg, pWParam, pLParam);
 	};
 

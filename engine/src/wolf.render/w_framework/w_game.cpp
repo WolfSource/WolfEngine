@@ -87,19 +87,6 @@ HRESULT w_game::render(_In_ const wolf::system::w_game_time& pGameTime)
     return w_graphics_device_manager::present();
 }
 
-#ifdef __WIN32
-
-//Handle input message procedure
-HRESULT w_game::on_msg_proc(
-    _In_ const HWND pHWND, 
-    _In_ const UINT pMessage, 
-    _In_ const WPARAM pWParam, 
-    _In_ const LPARAM pLParam)
-{
-    return S_FALSE;
-}
-#endif
-
 bool w_game::run(_In_ map<int, vector<w_window_info>> pOutputWindowsInfo)
 {
 	if (this->loadState == LoadState::NOTLOADED)

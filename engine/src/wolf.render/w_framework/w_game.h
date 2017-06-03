@@ -74,16 +74,6 @@ namespace wolf
 			W_EXP virtual void update(_In_ const system::w_game_time& pGameTime);
 			//Submit comand buffers on all graphics devices
 			W_EXP virtual HRESULT render(_In_ const system::w_game_time& pGameTime);
-            
-
-#ifdef __WIN32
-			//Handle window messages
-			W_EXP virtual HRESULT on_msg_proc(
-                _In_ const HWND pHWND, 
-                _In_ const UINT pMessage, 
-                _In_ const WPARAM pWParam, 
-                _In_ const LPARAM pLParam);
-#endif
 
 			bool													exiting;
 		private:

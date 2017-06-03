@@ -13,7 +13,7 @@
 #include "w_cpipeline_export.h"
 #include <w_object.h>
 #include "w_cpipeline_model.h"
-#include "w_camera.h"
+#include "cameras/w_camera.h"
 #include <msgpack.hpp>
 
 namespace wolf

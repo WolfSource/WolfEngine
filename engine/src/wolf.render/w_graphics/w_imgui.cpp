@@ -25,15 +25,13 @@ namespace wolf
 
             HRESULT load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
                 _In_ HWND pHWND,
-                _In_ const float& pWidth,
-                _In_ const float& pHeight,
+                _In_ const w_point_t& pScreenSize,
                 _In_ VkRenderPass& pRenderPass,
                 _In_ w_texture* pImageTexure)
             {
                 this->_gDevice = pGDevice;
                 this->_hwnd = pHWND;
-                this->_width = pWidth;
-                this->_height = pHeight;
+                this->_screen_size = pScreenSize;
                 this->_images_texture = pImageTexure;
 
 #pragma region Set Style
@@ -46,7 +44,7 @@ namespace wolf
                 style.Colors[ImGuiCol_CheckMark] = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
                 //Dimensions
                 ImGuiIO& _io = ImGui::GetIO();
-                _io.DisplaySize = ImVec2(this->_width, this->_height);
+                _io.DisplaySize = ImVec2((float)this->_screen_size.x, (float)this->_screen_size.y);
                 _io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 #pragma endregion
 
@@ -301,64 +299,6 @@ namespace wolf
                 return _hr == VK_SUCCESS ? S_OK : S_FALSE;
             }
 
-#ifdef __WIN32
-            LRESULT on_msg_proc(
-                _In_ const HWND pHWND,
-                _In_ const UINT pMessage,
-                _In_ const WPARAM pWParam,
-                _In_ const LPARAM pLParam)
-            {
-                ImGuiIO& io = ImGui::GetIO();
-                switch (pMessage)
-                {
-                case WM_LBUTTONDOWN:
-                    io.MouseDown[0] = true;
-                    return true;
-                case WM_LBUTTONUP:
-                    io.MouseDown[0] = false;
-                    return true;
-                case WM_RBUTTONDOWN:
-                    io.MouseDown[1] = true;
-                    return true;
-                case WM_RBUTTONUP:
-                    io.MouseDown[1] = false;
-                    return true;
-                case WM_MBUTTONDOWN:
-                    io.MouseDown[2] = true;
-                    return true;
-                case WM_MBUTTONUP:
-                    io.MouseDown[2] = false;
-                    return true;
-                case WM_MOUSEWHEEL:
-                    io.MouseWheel += GET_WHEEL_DELTA_WPARAM(pWParam) > 0 ? +1.0f : -1.0f;
-                    return true;
-                case WM_MOUSEMOVE:
-                    io.MousePos.x = (signed short)(pLParam);
-                    io.MousePos.y = (signed short)(pLParam >> 16);
-                    return true;
-                case WM_KEYDOWN:
-                    if (pWParam < 256)
-                    {
-                        io.KeysDown[pWParam] = 1;
-                    }
-                    return true;
-                case WM_KEYUP:
-                    if (pWParam < 256)
-                    {
-                        io.KeysDown[pWParam] = 0;
-                    }
-                    return true;
-                case WM_CHAR:
-                    // You can also use ToAscii()+GetKeyboardState() to retrieve characters.
-                    if (pWParam > 0 && pWParam < 0x10000)
-                        io.AddInputCharacter((unsigned short)pWParam);
-                    return true;
-                }
-                return 0;
-            }
-
-#endif
-
             HRESULT update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass)
             {
                 ImDrawData* _im_draw_data = ImGui::GetDrawData();
@@ -447,8 +387,31 @@ namespace wolf
             void new_frame(_In_ float pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
             {
                 ImGuiIO& _io = ImGui::GetIO();
+
+                _io.MouseDown[0] = inputs_manager.mouse.left_button_pressed;
+                _io.MouseDown[1] = inputs_manager.mouse.right_button_pressed;
+                _io.MouseDown[2] = inputs_manager.mouse.middle_button_pressed;
+                _io.MouseWheel = inputs_manager.mouse.wheel;
+                _io.MousePos.x = inputs_manager.mouse.pos_x;
+                _io.MousePos.y = inputs_manager.mouse.pos_y;
+
+                for (auto& _key : inputs_manager.keyboard.keys_pressed)
+                {
+                    if (_key < 256)
+                    {
+                        _io.KeysDown[_key] = 1;
+                    }
+                }
+                for (auto& _key : inputs_manager.keyboard.keys_released)
+                {
+                    if (_key < 256)
+                    {
+                        _io.KeysDown[_key] = 0;
+                    }
+                }
+
                 //check for new size
-                _io.DisplaySize = ImVec2((float)this->_width, (float)this->_height);
+                _io.DisplaySize = ImVec2((float)this->_screen_size.x, (float)this->_screen_size.y);
                 _io.DeltaTime = pDeltaTime;
 
                 // Read keyboard modifiers inputs
@@ -464,13 +427,13 @@ namespace wolf
                 // Hide OS mouse cursor if ImGui is drawing it
                 if (_io.MouseDrawCursor)
                 {
+#ifdef __WIN32
                     SetCursor(NULL);
+#endif
                 }
 
                 ImGui::NewFrame();
-
                 pMakeGuiWork();
-
                 ImGui::Render();
             }
 
@@ -597,9 +560,6 @@ namespace wolf
 
                 _shader.release();
 
-                this->_width = 0;
-                this->_height = 0;
-
 #ifdef __WIN32
                 this->_hwnd = NULL;
 #endif
@@ -609,26 +569,26 @@ namespace wolf
             }
 
 #pragma region Setters
-            UINT get_width() const
+            uint32_t get_width() const
             {
-                return this->_width;
+                return this->_screen_size.x;
             }
 
-            UINT get_height() const
+            uint32_t get_height() const
             {
-                return this->_height;
+                return this->_screen_size.y;
             }
 #pragma endregion
 
 #pragma region Setters
-            void set_width(_In_ const UINT& pWidth)
+            void set_width(_In_ const uint32_t& pWidth)
             {
-                this->_width = pWidth;
+                this->_screen_size.x = pWidth;
             }
 
-            void set_height(_In_ const UINT& pHeight)
+            void set_height(_In_ const uint32_t& pHeight)
             {
-                this->_height = pHeight;
+                this->_screen_size.y = pHeight;
             }
 #pragma endregion
 
@@ -648,8 +608,7 @@ namespace wolf
             w_shader                    _shader;
             w_texture*                  _font_texture;
             w_texture*                  _images_texture;
-            UINT                        _width;
-            UINT                        _height;
+            w_point_t                   _screen_size;
 
             struct push_constant_block
             {
@@ -668,21 +627,11 @@ w_imgui_pimp* w_imgui::_pimp = new w_imgui_pimp();
 
 HRESULT w_imgui::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
     _In_ HWND pHWND,
-    _In_ const float& pWidth,
-    _In_ const float& pHeight,
+    _In_ const w_point_t& pScreenSize,
     _In_ VkRenderPass& pRenderPass,
     _In_ w_texture* pImageTexure)
 {
-    return _pimp ? _pimp->load(pGDevice, pHWND, pWidth, pHeight, pRenderPass, pImageTexure) : S_FALSE;
-}
-
-LRESULT w_imgui::on_msg_proc(
-    _In_ const HWND pHWND,
-    _In_ const UINT pMessage,
-    _In_ const WPARAM pWParam,
-    _In_ const LPARAM pLParam)
-{
-    return _pimp ? _pimp->on_msg_proc(pHWND, pMessage, pWParam, pLParam) : S_FALSE;
+    return _pimp ? _pimp->load(pGDevice, pHWND, pScreenSize, pRenderPass, pImageTexure) : S_FALSE;
 }
 
 HRESULT w_imgui::update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass)
@@ -713,12 +662,12 @@ ULONG w_imgui::release()
 
 #pragma region Getters
 
-UINT w_imgui::get_width()
+uint32_t w_imgui::get_width()
 {
     return _pimp ? _pimp->get_width() : 0;
 }
 
-UINT w_imgui::get_height()
+uint32_t w_imgui::get_height()
 {
     return _pimp ? _pimp->get_height() : 0;
 }
@@ -727,13 +676,13 @@ UINT w_imgui::get_height()
 
 #pragma region Setters
 
-void w_imgui::set_width(_In_ const UINT& pWidth)
+void w_imgui::set_width(_In_ const uint32_t& pWidth)
 {
     if (!_pimp) return;
     _pimp->set_width(pWidth);
 }
 
-void w_imgui::set_height(_In_ const UINT& pHeight)
+void w_imgui::set_height(_In_ const uint32_t& pHeight)
 {
     if (!_pimp) return;
     _pimp->set_width(pHeight);

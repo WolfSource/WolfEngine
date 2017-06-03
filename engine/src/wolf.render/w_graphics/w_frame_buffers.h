@@ -11,6 +11,7 @@
 #define __W_FRAME_BUFFERS_H__
 
 #include "w_graphics_device_manager.h"
+#include <w_point.h>
 
 namespace wolf
 {
@@ -27,8 +28,7 @@ namespace wolf
                                _In_ const VkRenderPass pRenderPass,
                                _In_ std::vector<w_image_view> pAttachments,
                                _In_ w_image_view* pDepthAttachment,
-                               _In_ uint32_t pFrameBufferWidth,
-                               _In_ uint32_t pFrameBufferHeight,
+                               _In_ const w_point_t& pFrameSize,
                                _In_ uint32_t pNumberOfLayers);
             
             W_EXP virtual ULONG release() override;
