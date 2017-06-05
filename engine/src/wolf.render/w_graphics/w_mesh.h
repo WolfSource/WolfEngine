@@ -19,48 +19,39 @@ namespace wolf
 {
 	namespace graphics
 	{        
+        enum w_vertex_declaration
+        {
+            NOT_DEFINED,
+            USER_DEFINED,
+            VERTEX_POSITION,
+            VERTEX_POSITION_COLOR,
+            VERTEX_POSITION_UV,
+            VERTEX_POSITION_UV_COLOR,
+            VERTEX_POSITION_NORMAL_COLOR,
+            VERTEX_POSITION_NORMAL_UV,
+            VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL,
+            VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES,
+        };
+
+        enum w_vertex_attribute : uint32_t
+        {
+            Float = 4,
+            Vec2 = 4 * 2,
+            Vec3 = 4 * 3,
+            Vec4 = 4 * 4,
+        };
+
+        struct w_vertex_binding_attributes
+        {
+            w_vertex_declaration                                    declaration = w_vertex_declaration::NOT_DEFINED;
+            std::map<uint32_t, std::vector<w_vertex_attribute>>     binding_attributes;
+        };
+
         class w_mesh_pimp;
 		//Represents a 3D model mesh composed of multiple meshpart objects.
 		class w_mesh : public system::w_object
 		{
 		public:
-            enum w_vertex_declaration
-            {
-                VERTEX_UNKNOWN,
-                VERTEX_POSITION,
-                VERTEX_POSITION_INSTANCE_VEC2,
-                VERTEX_POSITION_INSTANCE_VEC3,
-                VERTEX_POSITION_INSTANCE_VEC4,
-                VERTEX_POSITION_INSTANCE_VEC7_INT,
-                VERTEX_POSITION_INSTANCE_VEC8,
-                VERTEX_POSITION_INSTANCE_MAT4,
-                VERTEX_POSITION_COLOR,
-                VERTEX_POSITION_COLOR_INSTANCE_VEC2,
-                VERTEX_POSITION_COLOR_INSTANCE_VEC3,
-                VERTEX_POSITION_COLOR_INSTANCE_VEC4,
-                VERTEX_POSITION_COLOR_INSTANCE_VEC7_INT,
-                VERTEX_POSITION_COLOR_INSTANCE_VEC8,
-                VERTEX_POSITION_COLOR_INSTANCE_MAT4,
-                VERTEX_POSITION_UV,
-                VERTEX_POSITION_UV_INSTANCE_VEC2,
-                VERTEX_POSITION_UV_INSTANCE_VEC3,
-                VERTEX_POSITION_UV_INSTANCE_VEC4,
-                VERTEX_POSITION_UV_INSTANCE_VEC7_INT,
-                VERTEX_POSITION_UV_INSTANCE_VEC8,
-                VERTEX_POSITION_UV_INSTANCE_MAT4,
-                VERTEX_POSITION_UV_COLOR,
-                VERTEX_POSITION_UV_COLOR_INSTANCE_VEC2,
-                VERTEX_POSITION_UV_COLOR_INSTANCE_VEC3,
-                VERTEX_POSITION_UV_COLOR_INSTANCE_VEC4,
-                VERTEX_POSITION_UV_COLOR_INSTANCE_VEC7_INT,
-                VERTEX_POSITION_UV_COLOR_INSTANCE_VEC8,
-                VERTEX_POSITION_UV_COLOR_INSTANCE_MAT4,
-                VERTEX_POSITION_NORMAL_COLOR,
-                VERTEX_POSITION_NORMAL_UV,
-                VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL,
-                VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES
-            };
-
             W_EXP w_mesh();
 			W_EXP virtual ~w_mesh();
 
@@ -71,7 +62,6 @@ namespace wolf
                                _In_ const UINT pVerticesCount,
                                _In_ const UINT* const pIndicesData,
                                _In_ const UINT pIndicesCount,
-                               _In_ const bool pZUp = false,
                                _In_ bool pUseDynamicBuffer = false);
             
             //update data of vertices and indices
@@ -91,19 +81,20 @@ namespace wolf
 
 #pragma region Getters
             
-            W_EXP VkBuffer                      get_vertex_buffer_handle() const;
-            W_EXP VkBuffer                      get_index_buffer_handle() const;
-            W_EXP const UINT                    get_vertices_count() const;
-            W_EXP const UINT                    get_indices_count() const;
-            W_EXP w_texture*                    get_texture() const;
-            W_EXP w_vertex_declaration          get_vertex_declaration() const;
+            W_EXP VkBuffer                                                  get_vertex_buffer_handle() const;
+            W_EXP VkBuffer                                                  get_index_buffer_handle() const;
+            W_EXP const UINT                                                get_vertices_count() const;
+            W_EXP const UINT                                                get_indices_count() const;
+            W_EXP w_texture*                                                get_texture() const;
+            W_EXP const w_vertex_binding_attributes                         get_vertex_binding_attributes() const;
 
 #pragma endregion
 
 #pragma region Setters
 		
             W_EXP void set_texture(_In_ w_texture* pTexture);
-            W_EXP void set_vertex_declaration(_In_ const w_vertex_declaration& pValue);
+            W_EXP void set_vertex_binding_attributes(_In_ const w_vertex_declaration& pVertexBindingAttributes);
+            W_EXP void set_vertex_binding_attributes(_In_ const w_vertex_binding_attributes& pVertexBindingAttributes);
 
 #pragma endregion	
 

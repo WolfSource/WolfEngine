@@ -89,29 +89,27 @@ private:
     wolf::graphics::w_render_pass                                  _render_pass;
     wolf::graphics::w_frame_buffers                                _frame_buffers;
 
+    wolf::graphics::w_uniform<world_view_projection_unifrom>        _wvp_unifrom;
+
+    wolf::graphics::w_shader*                                       _shader;
+    wolf::graphics::w_pipeline*                                     _pipeline;
+
+    w_point_t                                                       _screen_size;
 
     struct model
     {
-        wolf::framework::w_model<>*                                 model_meshes = nullptr;
-        wolf::graphics::w_uniform<tessellation_level_unifrom>       tess_level_unifrom;
-        wolf::graphics::w_uniform<world_view_projection_unifrom>    wvp_unifrom;
-        wolf::graphics::w_uniform<color_unifrom>                    color_unifrom;
-        wolf::graphics::w_shader*                                   shader = nullptr;
-        wolf::graphics::w_pipeline*                                 pipeline = nullptr;
+        std::vector<wolf::graphics::w_mesh*>                        model_meshes;
         bool                                                        has_instances = false;
 
         ULONG release()
         {
-            SAFE_RELEASE(this->model_meshes);
-            SAFE_RELEASE(this->shader);
-            SAFE_RELEASE(this->pipeline);
-            this->wvp_unifrom.release();
-            this->color_unifrom.release();
+            for (auto& _mesh : this->model_meshes)
+            {
+                SAFE_RELEASE(_mesh);
+            }
             return 1;
         }
     };
-
-    w_point_t                                                       _screen_size;
     std::vector<model*>                                             _models;
 };
 

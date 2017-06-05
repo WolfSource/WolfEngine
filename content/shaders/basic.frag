@@ -3,7 +3,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout (binding=1) uniform sampler2D u_samplers;
+layout (binding=1) uniform sampler2D tex_sampler;
 
 //must be push color
 layout (binding=2) uniform UBO
@@ -17,7 +17,7 @@ layout(location = 0) out vec4 o_color;
 
 void main()
 {
-    vec4 _color = ubo.color * texture( u_samplers, i_uv );
+    vec4 _color = ubo.color * texture( tex_sampler, i_uv );
 	if(_color.a == 0)
 	{
 		discard;

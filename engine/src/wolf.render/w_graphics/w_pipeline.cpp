@@ -17,7 +17,7 @@ namespace wolf
             }
 
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ w_mesh::w_vertex_declaration pVertexDeclaration,
+                _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
                 _In_ const VkPrimitiveTopology pPrimitiveTopology,
                 _In_ const std::string& pPipelineCacheName,
                 _In_ const VkRenderPass pRenderPass,
@@ -35,9 +35,9 @@ namespace wolf
             {
                 this->_gDevice = pGDevice;
 
-                if (pVertexDeclaration == w_mesh::w_vertex_declaration::VERTEX_UNKNOWN)
+                if (!pVertexBindingAttributes.declaration == w_vertex_declaration::NOT_DEFINED)
                 {
-                    logger.error("Unknown vertex type");
+                    logger.error("Vertex type not defined");
                     return S_FALSE;
                 }
 
@@ -55,8 +55,9 @@ namespace wolf
                 VkPipelineVertexInputStateCreateInfo* _vertex_input_state_create_info = nullptr;
                 VkPipelineInputAssemblyStateCreateInfo* _input_assembly_state_create_info = nullptr;
                 VkPipelineDynamicStateCreateInfo* _pipeline_dynamic_state_create_info = nullptr;
+
                 auto _pipeline_layout_create_info = _generate_pipeline_layout_create_info(
-                    pVertexDeclaration,
+                    pVertexBindingAttributes,
                     pPrimitiveTopology,
                     pShaderDescriptorSetLayoutBinding,
                     pDynamicStates,
@@ -132,10 +133,10 @@ namespace wolf
                     _pipeline_create_info.pTessellationState = &_tessellation_state_create_info;
                 }
 
-                _pipeline_create_info.pRasterizationState = pPipelineRasterizationStateCreateInfo == nullptr ? 
+                _pipeline_create_info.pRasterizationState = pPipelineRasterizationStateCreateInfo == nullptr ?
                     &(w_graphics_device::defaults::vk_default_pipeline_rasterization_state_create_info) : pPipelineRasterizationStateCreateInfo;
 
-                _pipeline_create_info.pMultisampleState = pPipelineMultiSampleStateCreateInfo == nullptr ? 
+                _pipeline_create_info.pMultisampleState = pPipelineMultiSampleStateCreateInfo == nullptr ?
                     &(w_graphics_device::defaults::vk_default_pipeline_multisample_state_create_info) : pPipelineMultiSampleStateCreateInfo;
 
                 _pipeline_create_info.pDepthStencilState = pEnableDepthStencilState ? &_depth_stencil_state : nullptr;
@@ -224,7 +225,7 @@ namespace wolf
         private:
 
             const VkPipelineLayoutCreateInfo _generate_pipeline_layout_create_info(
-                _In_ const w_mesh::w_vertex_declaration pVertexDeclaration,
+                _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
                 _In_ const VkPrimitiveTopology pPrimitiveTopology,
                 _In_ const VkDescriptorSetLayout* const pDescriptorSetLayoutBinding,
                 _In_ const std::vector<VkDynamicState>& pDynamicStates,
@@ -239,139 +240,69 @@ namespace wolf
                 auto _vertex_binding_descriptions = new std::vector<VkVertexInputBindingDescription>();
                 auto _vertex_attribute_descriptions = new std::vector<VkVertexInputAttributeDescription>();
 
-                switch (pVertexDeclaration)
+                uint32_t _offset = 0;
+                for (auto& _binding : pVertexBindingAttributes.binding_attributes)
                 {
-                default:
-                case w_mesh::w_vertex_declaration::VERTEX_POSITION:
-                {
+                    uint32_t _size = 0;
+                    for (auto& _iter : _binding.second)
+                    {
+                        _size += _iter;
+                    }
 
-                }
-                break;
-                case w_mesh::w_vertex_declaration::VERTEX_POSITION_UV:
-                {
-                    //create pipeline for basic shader
                     _vertex_binding_descriptions->push_back(
                     {
-                        0,                                                                                        // Binding
-                        sizeof(vertex_declaration_structs::vertex_position_uv),                                   // Stride
-                        VK_VERTEX_INPUT_RATE_VERTEX                                                               // InputRate
-                    });
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        0,                                                                                        // Location
-                        _vertex_binding_descriptions->at(0).binding,                                                  // Binding
-                        VK_FORMAT_R32G32B32A32_SFLOAT,                                                            // Format
-                        offsetof(vertex_declaration_structs::vertex_position_uv, position)                        // Offset
-                    });
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        1,                                                                                        // Location
-                        _vertex_binding_descriptions->at(0).binding,                                                  // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                                                  // Format
-                        offsetof(vertex_declaration_structs::vertex_position_uv, uv)                              // Offset
-                    });
-                }
-                break;
-                case  w_mesh::w_vertex_declaration::VERTEX_POSITION_UV_INSTANCE_VEC7_INT:
-                {
-                    //create pipeline for instance shader
-                    _vertex_binding_descriptions->push_back(
-                    {
-                        0,                                                                                        // Binding
-                        sizeof(vertex_declaration_structs::vertex_position_uv),                                   // Stride
-                        VK_VERTEX_INPUT_RATE_VERTEX                                                               // InputRate
-                    });
-                    _vertex_binding_descriptions->push_back(
-                    {
-                        1,                                                                                        // Binding
-                        sizeof(wolf::content_pipeline::w_cpipeline_model::w_instance_info),                       // Stride
-                        VK_VERTEX_INPUT_RATE_INSTANCE                                                             // InputRate
+                            _binding.first,                                                         // Binding
+                            _size * sizeof(float),                                                  // Stride
+                            (VkVertexInputRate)_binding.first                                       // InputRate => 0 = VK_VERTEX_INPUT_RATE_VERTEX , 1 = VK_VERTEX_INPUT_RATE_INSTANCE                         
                     });
 
-                    _vertex_attribute_descriptions->push_back(
+                    for (uint32_t i = 0; i < (uint32_t)_binding.second.size(); ++i)
                     {
-                        0,                                                                                        // Location
-                        _vertex_binding_descriptions->at(0).binding,                                                  // Binding
-                        VK_FORMAT_R32G32B32_SFLOAT,                                                               // Format
-                        0                                                                                         // Offset
-                    });
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        1,                                                                                        // Location
-                        _vertex_binding_descriptions->at(0).binding,                                                  // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                                                  // Format
-                        sizeof(float) * 3                                                                         // Offset
-                    });
-
-                    /*
-                         Per instance attributes:
-                            vec3        i_instance_pos;
-                            vec3        i_instance_rot;
-                            float       i_instance_scale;
-                            int         i_instance_uv_index;
-                    */
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        2,                                                                                        // Location
-                        _vertex_binding_descriptions->at(1).binding,                                                  // Binding
-                        VK_FORMAT_R32G32B32_SFLOAT,                                                               // Format
-                        0                                                                                         // Offset
-                    });
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        3,                                                                                        // Location
-                        _vertex_binding_descriptions->at(1).binding,                                                  // Binding
-                        VK_FORMAT_R32G32B32_SFLOAT,                                                               // Format
-                        sizeof(float) * 3                                                                         // Offset
-                    });
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        4,                                                                                        // Location
-                        _vertex_binding_descriptions->at(1).binding,                                                  // Binding
-                        VK_FORMAT_R32_SFLOAT,                                                                     // Format
-                        sizeof(float) * 6                                                                         // Offset
-                    });
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        5,                                                                                        // Location
-                        _vertex_binding_descriptions->at(1).binding,                                                  // Binding
-                        VK_FORMAT_R32_SINT,                                                                       // Format
-                        sizeof(float) * 7                                                                         // Offset
-                    });
-                }
-                break;
-                case w_mesh::w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
-                {
-                    //create pipeline for basic shader
-                    _vertex_binding_descriptions->push_back(
-                    {
-                        0,                                                                                              // Binding
-                        sizeof(vertex_declaration_structs::vertex_position_uv_color),                                   // Stride
-                        VK_VERTEX_INPUT_RATE_VERTEX                                                                     // InputRate
-                    });
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        0,                                                                       // Location
-                        _vertex_binding_descriptions->at(0).binding,                                 // Binding
-                        VK_FORMAT_R32G32B32_SFLOAT,                                              // Format
-                        offsetof(vertex_declaration_structs::vertex_position_uv_color, position) // Offset
-                    });
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        1,                                                                       // Location
-                        _vertex_binding_descriptions->at(0).binding,                                 // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                           // Format
-                        offsetof(vertex_declaration_structs::vertex_position_uv_color, uv)    // Offset
-                    });
-                    _vertex_attribute_descriptions->push_back(
-                    {
-                        2,                                                                       // Location
-                        _vertex_binding_descriptions->at(0).binding,                                 // Binding
-                        VK_FORMAT_R32G32B32A32_SFLOAT,                                                 // Format
-                        offsetof(vertex_declaration_structs::vertex_position_uv_color, color)       // Offset
-                    });
-                }
-                break;
+                        auto _attr = _binding.second[i];
+                        switch (_attr)
+                        {
+                        case w_vertex_attribute::Float:
+                            _vertex_attribute_descriptions->push_back(
+                            {
+                                i,                                                             // Location
+                                _vertex_binding_descriptions->at(_binding.first).binding,      // Binding
+                                VK_FORMAT_R32_SFLOAT,                                          // Format
+                                _offset                                                        // Offset
+                            });
+                            _offset += _attr;
+                            break;
+                        case w_vertex_attribute::Vec2:
+                            _vertex_attribute_descriptions->push_back(
+                            {
+                                i,                                                             // Location
+                                _vertex_binding_descriptions->at(_binding.first).binding,      // Binding
+                                VK_FORMAT_R32G32_SFLOAT,                                       // Format
+                                _offset                                                        // Offset
+                            });
+                            _offset += _attr;
+                            break;
+                        case w_vertex_attribute::Vec3:
+                            _vertex_attribute_descriptions->push_back(
+                            {
+                                i,                                                             // Location
+                                _vertex_binding_descriptions->at(_binding.first).binding,      // Binding
+                                VK_FORMAT_R32G32B32_SFLOAT,                                    // Format
+                                _offset                                                        // Offset
+                            });
+                            _offset += _attr;
+                            break;
+                        case w_vertex_attribute::Vec4:
+                            _vertex_attribute_descriptions->push_back(
+                            {
+                                i,                                                             // Location
+                                _vertex_binding_descriptions->at(_binding.first).binding,      // Binding
+                                VK_FORMAT_R32G32B32A32_SFLOAT,                                 // Format
+                                _offset                                                        // Offset
+                            });
+                            _offset += _attr;
+                            break;
+                        }
+                    }
                 }
 
                 auto _vis_ptr = new VkPipelineVertexInputStateCreateInfo();
@@ -382,7 +313,7 @@ namespace wolf
                 _vis_ptr->vertexAttributeDescriptionCount = static_cast<uint32_t>(_vertex_attribute_descriptions->size());
                 _vis_ptr->pVertexAttributeDescriptions = _vertex_attribute_descriptions->data();
                 *pVertexInputStateCreateInfo = _vis_ptr;
-                
+
                 auto _vas_ptr = new VkPipelineInputAssemblyStateCreateInfo();
                 _vas_ptr->sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
                 _vas_ptr->pNext = nullptr;
@@ -390,7 +321,7 @@ namespace wolf
                 _vas_ptr->topology = pPrimitiveTopology;
                 _vas_ptr->primitiveRestartEnable = VK_FALSE;
                 *pInputAssemblyStateCreateInfo = _vas_ptr;
-                
+
                 auto _dys_ptr = new VkPipelineDynamicStateCreateInfo();
                 _dys_ptr->sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
                 _dys_ptr->pNext = nullptr;
@@ -438,7 +369,7 @@ w_pipeline::~w_pipeline()
 
 HRESULT w_pipeline::load(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ w_mesh::w_vertex_declaration pVertexDeclaration,
+    _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
     _In_ const VkPrimitiveTopology pPrimitiveTopology,
     _In_ const std::string& pPipelineCacheName,
     _In_ const VkRenderPass pRenderPass,
@@ -458,7 +389,7 @@ HRESULT w_pipeline::load(
 
     return this->_pimp->load(
         pGDevice,
-        pVertexDeclaration,
+        pVertexBindingAttributes,
         pPrimitiveTopology,
         pPipelineCacheName,
         pRenderPass,

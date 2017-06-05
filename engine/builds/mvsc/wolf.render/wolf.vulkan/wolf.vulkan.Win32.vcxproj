@@ -199,6 +199,9 @@
   <ItemGroup>
     <None Include="..\..\..\..\..\content\shaders\basic.frag" />
     <None Include="..\..\..\..\..\content\shaders\basic.vert" />
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x1.comp" />
+    <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.frag" />
+    <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.vert" />
     <None Include="..\..\..\..\..\content\shaders\imgui.frag" />
     <None Include="..\..\..\..\..\content\shaders\imgui.vert" />
     <None Include="..\..\..\..\..\content\shaders\static_instancing_y_up.vert" />

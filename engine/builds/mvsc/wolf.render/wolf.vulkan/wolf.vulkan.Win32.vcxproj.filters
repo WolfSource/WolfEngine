@@ -110,6 +110,9 @@
     <Filter Include="content\shaders\tessellation">
       <UniqueIdentifier>{0bcda048-dada-4713-a2a3-d91b88a6d626}</UniqueIdentifier>
     </Filter>
+    <Filter Include="content\shaders\compute">
+      <UniqueIdentifier>{f292ce56-4fc9-431e-a5d1-51bc9a9ee7a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\content\shaders\basic.frag">
@@ -141,6 +144,15 @@
     </None>
     <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tesc">
       <Filter>content\shaders\tessellation</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.vert">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.frag">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x1.comp">
+      <Filter>content\shaders\compute</Filter>
     </None>
   </ItemGroup>
 </Project>

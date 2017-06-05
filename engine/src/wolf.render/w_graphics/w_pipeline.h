@@ -25,7 +25,7 @@ namespace wolf
 			W_EXP virtual ~w_pipeline();
 
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                               _In_ w_mesh::w_vertex_declaration pVertexDeclaration,
+                               _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
                                _In_ const VkPrimitiveTopology pPrimitiveTopology,
                                _In_ const std::string& pPipelineCacheName,
                                _In_ const VkRenderPass pRenderPass,

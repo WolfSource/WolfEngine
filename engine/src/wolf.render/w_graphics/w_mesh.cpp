@@ -18,8 +18,7 @@ namespace wolf
                 _gDevice(nullptr),
                 _copy_command_buffer(nullptr),
                 _vertices_count(0),
-                _indices_count(0),
-                _vertex_declaration(w_mesh::w_vertex_declaration::VERTEX_POSITION_UV)
+                _indices_count(0)
             {
         
             }
@@ -41,7 +40,6 @@ namespace wolf
                 _In_ const UINT pVerticesCount,
                 _In_ const UINT* const pIndicesData,
                 _In_ const UINT pIndicesCount,
-                _In_ const bool pZUp,
                 _In_ const bool pUseDynamicBuffer)
             {
                 this->_gDevice = pGDevice;
@@ -209,18 +207,9 @@ namespace wolf
                 return this->_texture;
             }
 
-            const w_mesh::w_vertex_declaration get_vertex_declaration_struct()
+            const w_vertex_binding_attributes get_vertex_binding_attributes() const
             {
-                return this->_vertex_declaration;
-            }
-
-#pragma endregion
-
-#pragma region Getters
-
-            w_mesh::w_vertex_declaration get_vertex_declaration() const
-            {
-                return this->_vertex_declaration;
+                return this->_vertex_binding_attributes;
             }
 
 #pragma endregion
@@ -232,9 +221,73 @@ namespace wolf
                 this->_texture = pTexture;
             }
 
-            void set_vertex_declaration(_In_ const w_mesh::w_vertex_declaration& pValue)
+            void set_vertex_binding_attributes(_In_ const w_vertex_declaration& pVertexBindingAttributes)
             {
-                this->_vertex_declaration = pValue;
+                if (pVertexBindingAttributes == w_vertex_declaration::NOT_DEFINED) return;
+
+                std::vector<w_vertex_attribute> _attr;
+
+                switch (pVertexBindingAttributes)
+                {
+                case w_vertex_declaration::USER_DEFINED:
+                    break;
+                case w_vertex_declaration::VERTEX_POSITION:
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    break;
+                case w_vertex_declaration::VERTEX_POSITION_COLOR:
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec4);
+                    break;
+                case w_vertex_declaration::VERTEX_POSITION_NORMAL_COLOR:
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec4);
+                    break;
+                case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV:
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec2);
+                    break;
+                case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec2);
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    break;
+                case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES:
+                    /*_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
+                    _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
+                    _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec2);
+                    _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
+                    _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);*/
+                    break;
+                case w_vertex_declaration::VERTEX_POSITION_UV:
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec2);
+                    break;
+                case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
+                    _attr.push_back(w_vertex_attribute::Vec3);
+                    _attr.push_back(w_vertex_attribute::Vec2);
+                    _attr.push_back(w_vertex_attribute::Vec4);
+                    break;
+                }
+
+                //clear binding attributes
+                for (auto& _iter : this->_vertex_binding_attributes.binding_attributes)
+                {
+                    _iter.second.clear();
+                }
+                this->_vertex_binding_attributes.binding_attributes.clear();
+
+                //create new binding attributes
+                this->_vertex_binding_attributes.declaration = pVertexBindingAttributes;
+                this->_vertex_binding_attributes.binding_attributes[0] = _attr;
+            }
+
+            void set_vertex_binding_attributes(_In_ const w_vertex_binding_attributes& pVertexBindingAttributes)
+            {
+                this->_vertex_binding_attributes = pVertexBindingAttributes;
             }
 
 #pragma endregion
@@ -373,7 +426,7 @@ namespace wolf
             UINT                                                _indices_count;
             UINT                                                _vertices_count;
             w_texture*                                          _texture;
-            w_mesh::w_vertex_declaration                        _vertex_declaration;
+            w_vertex_binding_attributes                         _vertex_binding_attributes;
             bool                                                _dynamic_buffer;
             w_command_buffers*                                  _copy_command_buffer;
             struct
@@ -401,7 +454,6 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const UINT pVerticesCount,
                      _In_ const UINT* const pIndicesData,
                      _In_ const UINT pIndicesCount,
-                     _In_ const bool pZUp,
                      _In_ const bool pUseDynamicBuffer)
 {
     if (!this->_pimp) return S_FALSE;
@@ -413,7 +465,6 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
         pVerticesCount,
         pIndicesData,
         pIndicesCount,
-        pZUp,
         pUseDynamicBuffer);
 }
 
@@ -480,14 +531,10 @@ w_texture* w_mesh::get_texture() const
     return this->_pimp ? this->_pimp->get_texture() : nullptr;
 }
 
-#pragma endregion
-
-#pragma region Getters
-
-w_mesh::w_vertex_declaration w_mesh::get_vertex_declaration() const
+const w_vertex_binding_attributes w_mesh::get_vertex_binding_attributes() const
 {
-    if (!this->_pimp) return w_mesh::w_vertex_declaration::VERTEX_UNKNOWN;
-    return this->_pimp->get_vertex_declaration();
+    if (!this->_pimp) return w_vertex_binding_attributes();
+    return this->_pimp->get_vertex_binding_attributes();
 }
 
 #pragma endregion
@@ -500,10 +547,16 @@ void w_mesh::set_texture(_In_ w_texture* pTexture)
     this->_pimp->set_texture(pTexture);
 }
 
-void w_mesh::set_vertex_declaration(_In_ const w_mesh::w_vertex_declaration& pValue)
+void w_mesh::set_vertex_binding_attributes(_In_ const w_vertex_declaration& pVertexBindingAttributes)
 {
     if (!this->_pimp) return;
-    this->_pimp->set_vertex_declaration(pValue);
+    this->_pimp->set_vertex_binding_attributes(pVertexBindingAttributes);
+}
+
+void w_mesh::set_vertex_binding_attributes(_In_ const w_vertex_binding_attributes& pVertexBindingAttributes)
+{
+    if (!this->_pimp) return;
+    this->_pimp->set_vertex_binding_attributes(pVertexBindingAttributes);
 }
 
 #pragma endregion

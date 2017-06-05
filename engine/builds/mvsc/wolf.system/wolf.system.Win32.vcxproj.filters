@@ -23,7 +23,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_event.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_io.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_Ireleasable.h" />
@@ -48,5 +47,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_point.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_rectangle.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />
   </ItemGroup>
 </Project>

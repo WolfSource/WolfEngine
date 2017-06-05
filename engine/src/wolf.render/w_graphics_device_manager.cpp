@@ -428,7 +428,7 @@ namespace wolf
 			}
 
 			void enumerate_devices(_Inout_  std::vector<std::shared_ptr<w_graphics_device>>& pGraphicsDevices, 
-                _In_ wolf::system::w_event<w_graphics_device_manager::w_device_features_extensions&>* pOnDeviceFeaturesFetched)
+                _In_ wolf::system::w_signal<void(w_graphics_device_manager::w_device_features_extensions&)>* pOnDeviceFeaturesFetched)
 			{
 #if defined(__DX12__) || defined(__DX11__)
 

@@ -73,10 +73,10 @@ using std::size_t;
 #include <w_object.h>
 #include <w_window.h>
 #include <w_color.h>
+#include <w_signal.h>
 #include <map>
 #include <vector>
 #include <array>
-#include <w_event.h>
 
 #if defined(__linux) ||  defined(__APPLE__) || defined(__ANDROID)
 #include <w_std.h>
@@ -367,7 +367,7 @@ namespace wolf
                 UINT                        _device_id = 0;
                 const char*                 _device_name = "unknown";
             };
-            wolf::system::w_event<w_device_features_extensions&> on_device_features_fetched;
+            wolf::system::w_signal<void(w_device_features_extensions&)> on_device_features_fetched;
 
 #pragma region Getters
 			//Get the main graphics device, this is first and the primary device.

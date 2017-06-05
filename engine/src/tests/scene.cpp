@@ -11,21 +11,6 @@ using namespace wolf::graphics;
 using namespace wolf::framework;
 using namespace wolf::content_pipeline;
 
-
-template<class sig>
-class w_signal;
-
-template<class T, class... Args>
-class w_signal<T(Args...)> 
-{
-    typedef std::function<T(Args...)> w_slot;
-    
-    void emit(Args... args) const 
-    {
-        // iterate over slots and call them, passing `args...`
-    }
-};
-
 //forward declaration
 static void make_gui();
 
@@ -52,7 +37,7 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
 #endif
 
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = false;
+    _config.debug_gpu = true;
     this->set_graphics_device_manager_configs(_config);
 }
 
@@ -66,12 +51,12 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     this->on_device_features_fetched += [](w_graphics_device_manager::w_device_features_extensions& pDeviceFeaturesExtensions)
     {
         auto _fe = pDeviceFeaturesExtensions.device_features;
-        if (_fe && (*_fe).tessellationShader == VK_FALSE)
-        {
-            logger.write("Tesselation not supported for graphics device:" +
-                std::string(pDeviceFeaturesExtensions.get_device_name()) +
-                " ID:" + std::to_string(pDeviceFeaturesExtensions.get_device_id()));
-        }
+        //if (_fe && (*_fe).tessellationShader == VK_FALSE)
+        //{
+        //    logger.write("Tesselation not supported for graphics device:" +
+        //        std::string(pDeviceFeaturesExtensions.get_device_name()) +
+        //        " ID:" + std::to_string(pDeviceFeaturesExtensions.get_device_id()));
+        //}
         // Fill mode non solid is required for wireframe display
         (*_fe).fillModeNonSolid = VK_TRUE;
     };
@@ -89,7 +74,6 @@ void scene::load()
 
     w_game::load();
     
-    //create render pass
     w_viewport _viewport;
     _viewport.y = 0;
     _viewport.width = static_cast<float>(_screen_size.x);
@@ -106,6 +90,7 @@ void scene::load()
     auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
     _depth_attachment.format = _output_window->vk_depth_buffer_format;
 
+    //create render pass
     auto _hr = this->_render_pass.load(
         _gDevice,
         _viewport,
@@ -123,206 +108,140 @@ void scene::load()
     }
     auto _render_pass_handle = this->_render_pass.get_handle();
     
-    std::string _pipeline_cache_name = "pipeline_cache_basic";
+    std::string _pipeline_cache_name = "pipeline_cache";
     if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
     {
-        logger.error("Could not create pipeline cache 0");
+        logger.error("Could not create pipeline cache");
         _pipeline_cache_name.clear();
     }
 
-    _pipeline_cache_name = "pipeline_cache_instance";
-    if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+    //load shader
+    std::vector<w_shader_binding_param> _shader_params;
+
+    w_shader_binding_param _param;
+    _param.index = 0;
+    _param.type = w_shader_binding_type::UNIFORM;
+    _param.stage = w_shader_stage::VERTEX_SHADER;
+    _param.uniform_info = this->_wvp_unifrom.get_descriptor_info();
+    _shader_params.push_back(_param);
+    
+    _param.index = 1;
+    _param.type = w_shader_binding_type::SAMPLER;
+    _param.stage = w_shader_stage::FRAGMENT_SHADER;
+    _param.sampler_info = w_texture::default_texture->get_descriptor_info();
+    _shader_params.push_back(_param);
+
+    //load shaders
+    _hr = w_shader::load_to_shared_shaders(
+        _gDevice,
+        "indirect_shader",
+        content_path + L"shaders/compute/indirect_draw.vert.spv",
+        L"",
+        L"",
+        content_path + L"shaders/compute/indirect_draw.frag.spv",
+        _shader_params,
+        &this->_shader);
+    if (_hr == S_FALSE)
     {
-        logger.error("Could not create pipeline cache 0");
-        _pipeline_cache_name.clear();
+        logger.error("Error on loading indirect shader");
+        w_game::exiting = true;
+        return;
     }
+
+    std::vector<VkDynamicState> _dynamic_states =
+    {
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR//,
+    };
+
+    w_vertex_binding_attributes _vertex_binding_attrs;
+    _vertex_binding_attrs.declaration = w_vertex_declaration::USER_DEFINED;
+    _vertex_binding_attrs.binding_attributes[0] = { Vec3, Vec2 };
+    _vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float };
+    
+    auto _descriptor_set_layout_binding = this->_shader->get_descriptor_set_layout_binding();
+    this->_pipeline = new w_pipeline();
+    _hr = this->_pipeline->load(
+        _gDevice,
+        _vertex_binding_attrs,
+        VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_PATCH_LIST,
+        "pipeline_cache",
+        _render_pass_handle,
+        _shader->get_shader_stages(),
+        &_descriptor_set_layout_binding,
+        { this->_render_pass.get_viewport() }, //viewports
+        { this->_render_pass.get_viewport_scissor() }, //viewports scissor
+        _dynamic_states,
+        3,
+        nullptr,
+        nullptr,
+        _output_window->vk_depth_buffer_format != VkFormat::VK_FORMAT_UNDEFINED);
+    if (_hr)
+    {
+        logger.error("Error creating pipeline for mesh");
+    }
+
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/tes.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/suzanne_lods.dae");
     if (_scene)
     {
         //get all models
         std::vector<w_cpipeline_model*> _cmodels;
         _scene->get_all_models(_cmodels);
-        auto _size = _cmodels.size();
-
-        if (_size)
+        
+        auto _z_up = _scene->get_z_up();
+        for (auto& _model : _cmodels)
         {
-            auto _z_up = _scene->get_z_up();
+            //load meshes
+            std::vector<w_cpipeline_model::w_mesh*> _model_meshes;
+            _model->get_meshes(_model_meshes);
 
-            for (size_t i = 0; i < _size; ++i)
+            for (auto& _mesh_data : _model_meshes)
             {
-                auto _model = new w_model<vertex_declaration_structs::vertex_position_uv>(_cmodels[i], _z_up);
-                if (_cmodels[i]->get_instnaces_count())
+                auto _mesh = new (std::nothrow) wolf::graphics::w_mesh();
+                if (!_mesh)
                 {
-                    ////load shader uniforms
-                    //auto _wvp = new w_uniform<world_view_projection_unifrom>();
-                    //auto _hr = _wvp->load(_gDevice);
-                    //if (_hr == S_FALSE)
-                    //{
-                    //    logger.error("Error on loading world_view_projection uniform for instance model");
-                    //    continue;
-                    //}
-                    //this->_instance_wvp_unifrom.push_back(_wvp);
-
-                    //auto _color = new w_uniform<color_unifrom>();
-                    //_hr = _color->load(_gDevice);
-                    //if (_hr == S_FALSE)
-                    //{
-                    //    logger.error("Error on loading world_view_projection uniform for instance model");
-                    //    continue;
-                    //}
-                    //this->_instance_color_unifrom.push_back(_color);
-
-                    //std::vector<w_shader_binding_param> _shader_params;
-
-                    //w_shader_binding_param _param;
-                    //_param.index = 0;
-                    //_param.type = w_shader_binding_type::UNIFORM;
-                    //_param.stage = w_shader_stage::VERTEX_SHADER;
-                    //_param.uniform_info = _wvp->get_descriptor_info();
-                    //_shader_params.push_back(_param);
-
-
-                    //_param.index = 1;
-                    //_param.type = w_shader_binding_type::SAMPLER;
-                    //_param.stage = w_shader_stage::FRAGMENT_SHADER;
-                    //_param.sampler_info = w_texture::default_texture->get_descriptor_info();
-                    //_shader_params.push_back(_param);
-
-                    //_param.index = 2;
-                    //_param.type = w_shader_binding_type::UNIFORM;
-                    //_param.stage = w_shader_stage::FRAGMENT_SHADER;
-                    //_param.uniform_info = _color->get_descriptor_info();
-                    //_shader_params.push_back(_param);
-
-                    //_hr = S_OK;
-                    //if (this->_basic_instance_shader)
-                    //{
-                    //    this->_basic_instance_shader->load_shader_binding_params(_shader_params);
-                    //}
-                    //else
-                    //{
-                    //    //load shader
-                    //    w_shader::load_to_shared_shaders(_gDevice,
-                    //        "basic_instancing",
-                    //        content_path + L"shaders/static_instancing_z_up.vert.spv",
-                    //        content_path + L"shaders/basic.frag.spv",
-                    //        _shader_params,
-                    //        &this->_basic_instance_shader);
-                    //    if (!this->_basic_instance_shader || _hr == S_FALSE)
-                    //    {
-                    //        logger.error("Could not load instance shader");
-                    //        return;
-                    //    }
-                    //}
-                    //if (_hr == S_OK)
-                    //{
-                    //    if (_model->load(_gDevice) == S_FALSE)
-                    //    {
-                    //        SAFE_RELEASE(_model);
-                    //        continue;
-                    //    }
-                    //    this->_models.push_back(_model);
-                    //}
+                    logger.error("Error on allocating memory for mesh");
+                    continue;
                 }
-                else
+
+                std::vector<float> _v;
+                for (auto& _data : _mesh_data->vertices)
                 {
-                    //load shader uniforms
-                    auto _model = new model();
+                    auto _pos = _data.position;
+                    auto _uv = _data.uv;
 
-                    _hr = _model->tess_level_unifrom.load(_gDevice);
-                    if (_hr == S_FALSE)
-                    {
-                        logger.error("Error on loading tess_level_uniform uniform for basic model");
-                    }
+                    //position
+                    _v.push_back(_pos[0]);
+                    _v.push_back(_pos[1]);
+                    _v.push_back(_pos[2]);
 
-                    _hr = _model->wvp_unifrom.load(_gDevice);
-                    if (_hr == S_FALSE)
-                    {
-                        logger.error("Error on loading world_view_projection uniform for basic model");
-                    }
+                    //uv
+                    _v.push_back(_uv[0]);
+                    _v.push_back(1 - _uv[1]);
+                }
 
-                    _hr = _model->color_unifrom.load(_gDevice);
-                    if (_hr == S_FALSE)
-                    {
-                        logger.error("Error on loading world_view_projection uniform for basic model");
-                    }
+                auto _v_size = _v.size();
+                _hr = _mesh->load(_gDevice, _v.data(), _v_size * sizeof(float), _v_size, _mesh_data->indices.data(), _mesh_data->indices.size());
 
-                    std::vector<w_shader_binding_param> _shader_params;
-
-                    w_shader_binding_param _param;
-                    _param.index = 0;
-                    _param.type = w_shader_binding_type::UNIFORM;
-                    _param.stage = w_shader_stage::TESSELATION_CONTROL;
-                    _param.uniform_info = _model->tess_level_unifrom.get_descriptor_info();
-                    _shader_params.push_back(_param);
-
-                    _param.index = 1;
-                    _param.type = w_shader_binding_type::UNIFORM;
-                    _param.stage = w_shader_stage::TESSELATION_EVALUATION;
-                    _param.uniform_info = _model->wvp_unifrom.get_descriptor_info();
-                    _shader_params.push_back(_param);
-                    
-                    _param.index = 2;
-                    _param.type = w_shader_binding_type::UNIFORM;
-                    _param.stage = w_shader_stage::FRAGMENT_SHADER;
-                    _param.uniform_info = _model->color_unifrom.get_descriptor_info();
-                    _shader_params.push_back(_param);
-
-                    _param.index = 3;
-                    _param.type = w_shader_binding_type::SAMPLER;
-                    _param.stage = w_shader_stage::FRAGMENT_SHADER;
-                    _param.sampler_info = w_texture::default_texture->get_descriptor_info();
-                    _shader_params.push_back(_param);
-
-                    //load shaders
-                    w_shader::load_to_shared_shaders(
-                        _gDevice,
-                        "basic_shader" + std::to_string(i),
-                        content_path + L"shaders/tessellation/tessellation.vert.spv",
-                        content_path + L"shaders/tessellation/pass_throught.tesc.spv",
-                        content_path + L"shaders/tessellation/pass_throught.tese.spv",
-                        content_path + L"shaders/tessellation/tessellation.frag.spv",
-                        _shader_params,
-                        &_model->shader);
-                    std::vector<VkDynamicState> _dynamic_states =
-                    {
-                        VK_DYNAMIC_STATE_VIEWPORT,
-                        VK_DYNAMIC_STATE_SCISSOR//,
-                        //VK_DYNAMIC_STATE_LINE_WIDTH
-                    };
-                    auto _descriptor_binding_layout = _model->shader->get_descriptor_set_layout_binding();
-                    _model->pipeline = new w_pipeline();
-                    _hr = _model->pipeline->load(
-                        _gDevice,
-                        w_mesh::w_vertex_declaration::VERTEX_POSITION_UV,
-                        VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_PATCH_LIST,
-                        "pipeline_cache_basic",
-                        _render_pass_handle,
-                        _model->shader->get_shader_stages(),
-                        &_descriptor_binding_layout,
-                        { this->_render_pass.get_viewport() }, //viewports
-                        { this->_render_pass.get_viewport_scissor() }, //viewports scissor
-                        _dynamic_states,
-                        3,
-                        nullptr,
-                        nullptr,
-                        _output_window->vk_depth_buffer_format != VkFormat::VK_FORMAT_UNDEFINED);
-                    if (_hr)
-                    {
-                        logger.error("Error creating pipeline for mesh");
-                    }
-
-                    _model->model_meshes = new w_model<>(_cmodels[i]);
-                    if (_model->model_meshes->load(_gDevice) == S_FALSE)
-                    {
-                        _model->release();
-                        continue;
-                    }
-                    this->_models.push_back(_model);
+                _v.clear();
+                if (_hr == S_FALSE)
+                {
+                    logger.error("Error on creating mesh");
+                    continue;
                 }
             }
+
+            //std::vector<w_cpipeline_model::w_instance_info> _model_instances;
+            //_model->get_instances(_model_instances);
+            //if (_model_instances.size())
+            //{
+            //    //update_instance_buffer(_model_instances.data(),
+            //    //    static_cast<UINT>(_model_instances.size() * sizeof(content_pipeline::w_cpipeline_model::w_instance_info)),
+            //    //    w_mesh::w_vertex_declaration::VERTEX_POSITION_UV_INSTANCE_VEC7_INT);
+            //}
+
         }
 
         _scene->get_first_camera(this->_camera);
@@ -410,17 +329,17 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                     {
                         using namespace glm;
 
-                        auto _transform = _model->model_meshes->get_transform();
-                        auto _translate = translate(mat4(1.0f),
-                            vec3(_transform.position[0], _transform.position[1], _transform.position[2]));
-                        mat4 _scale = scale(mat4x4(1.0f),
-                            vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
+                        //auto _transform = _model->model_meshes->get_transform();
+                        //auto _translate = translate(mat4(1.0f),
+                        //    vec3(_transform.position[0], _transform.position[1], _transform.position[2]));
+                        //mat4 _scale = scale(mat4x4(1.0f),
+                        //    vec3(_transform.scale[0], _transform.scale[1], _transform.scale[2]));
 
-                        auto _world = _translate *
-                            rotate(_transform.rotation[0], vec3(-1.0f, 0.0f, 0.0f)) *
-                            rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
-                            rotate(_transform.rotation[2], vec3(0.0f, 0.0f, -1.0f)) *
-                            _scale;
+                        //auto _world = _translate *
+                        //    rotate(_transform.rotation[0], vec3(-1.0f, 0.0f, 0.0f)) *
+                        //    rotate(_transform.rotation[1], vec3(0.0f, 1.0f, 0.0f)) *
+                        //    rotate(_transform.rotation[2], vec3(0.0f, 0.0f, -1.0f)) *
+                        //    _scale;
 
                         //this->_instance_wvp_unifrom[_instance_model_index]->data.world = _world;
                         //this->_instance_wvp_unifrom[_instance_model_index]->data.view_projection = this->_camera.get_projection() * this->_camera.get_view();
@@ -435,7 +354,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                     }
                     else
                     {
-                        using namespace glm;
+                       /* using namespace glm;
 
                         auto _transform = _model->model_meshes->get_transform();
                         auto _translate = translate(mat4(1.0f),
@@ -461,7 +380,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                         
                         auto _descriptor_set = _model->shader->get_descriptor_set();
                         _model->pipeline->bind(_cmd, &_descriptor_set);
-                        _model->model_meshes->render(_cmd);
+                        _model->model_meshes->render(_cmd);*/
                     }
                 }
                 //make sure render all gui before loading gui_render
@@ -476,7 +395,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         }
         this->_command_buffers.end(i);
     }
-    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
+    logger.write(std::to_string(pGameTime.get_frames_per_second()));
     return w_game::render(pGameTime);
 }
 
@@ -507,6 +426,10 @@ ULONG scene::release()
     }
     this->_models.clear();
 
+    SAFE_RELEASE(this->_shader);
+    SAFE_RELEASE(this->_pipeline);
+    this->_wvp_unifrom.release();
+   
     w_pipeline::release_all_pipeline_caches(_gDevice);
 
     return w_game::release();
