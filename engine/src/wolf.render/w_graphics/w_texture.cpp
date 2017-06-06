@@ -581,7 +581,7 @@ namespace wolf
                         nullptr                               // SignalSemaphores
                 };
                 
-                _hr = vkQueueSubmit( this->_gDevice->vk_graphics_queue, 1, &_submit_info, VK_NULL_HANDLE );
+                _hr = vkQueueSubmit( this->_gDevice->vk_graphics_queue.queue, 1, &_submit_info, VK_NULL_HANDLE );
                 if (_hr)
                 {
                     V(S_FALSE , "Could submit map memory and upload texture data to a staging buffer on graphics device: " +

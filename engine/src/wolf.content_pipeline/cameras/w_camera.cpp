@@ -57,6 +57,50 @@ void w_camera::update_projection()
    this->_projection = glm::perspectiveRH(_fov_angle_y, this->_aspect_ratio, this->_near_plane, this->_far_plane);
 }
 
+void w_camera::update_frustum()
+{
+    auto _matrix = this->_projection * this->_view;
+
+    this->_frustum_planes[0].x = _matrix[0].w + _matrix[0].x;
+    this->_frustum_planes[0].y = _matrix[1].w + _matrix[1].x;
+    this->_frustum_planes[0].z = _matrix[2].w + _matrix[2].x;
+    this->_frustum_planes[0].w = _matrix[3].w + _matrix[3].x;
+
+    this->_frustum_planes[1].x = _matrix[0].w - _matrix[0].x;
+    this->_frustum_planes[1].y = _matrix[1].w - _matrix[1].x;
+    this->_frustum_planes[1].z = _matrix[2].w - _matrix[2].x;
+    this->_frustum_planes[1].w = _matrix[3].w - _matrix[3].x;
+
+    this->_frustum_planes[2].x = _matrix[0].w - _matrix[0].y;
+    this->_frustum_planes[2].y = _matrix[1].w - _matrix[1].y;
+    this->_frustum_planes[2].z = _matrix[2].w - _matrix[2].y;
+    this->_frustum_planes[2].w = _matrix[3].w - _matrix[3].y;
+
+    this->_frustum_planes[3].x = _matrix[0].w + _matrix[0].y;
+    this->_frustum_planes[3].y = _matrix[1].w + _matrix[1].y;
+    this->_frustum_planes[3].z = _matrix[2].w + _matrix[2].y;
+    this->_frustum_planes[3].w = _matrix[3].w + _matrix[3].y;
+
+    this->_frustum_planes[4].x = _matrix[0].w + _matrix[0].z;
+    this->_frustum_planes[4].y = _matrix[1].w + _matrix[1].z;
+    this->_frustum_planes[4].z = _matrix[2].w + _matrix[2].z;
+    this->_frustum_planes[4].w = _matrix[3].w + _matrix[3].z;
+
+    this->_frustum_planes[5].x = _matrix[0].w - _matrix[0].z;
+    this->_frustum_planes[5].y = _matrix[1].w - _matrix[1].z;
+    this->_frustum_planes[5].z = _matrix[2].w - _matrix[2].z;
+    this->_frustum_planes[5].w = _matrix[3].w - _matrix[3].z;
+
+    for (size_t i = 0; i < this->_frustum_planes.size(); i++)
+    {
+        float length = sqrtf(
+            this->_frustum_planes[i].x * this->_frustum_planes[i].x +
+            this->_frustum_planes[i].y * this->_frustum_planes[i].y +
+            this->_frustum_planes[i].z * this->_frustum_planes[i].z);
+        this->_frustum_planes[i] /= length;
+    }
+}
+
 #pragma region Setters
 
 void w_camera::set_name(_In_z_ const std::string& pValue)

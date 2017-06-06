@@ -3,12 +3,6 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout (binding = 0) uniform UBO 
-{
-	mat4 projection_view;
-	mat4 model;
-} ubo;
-
 //input vertex attributes
 layout(location = 0) in vec3	i_pos;
 layout(location = 1) in vec2	i_uv;
@@ -18,11 +12,13 @@ layout (location = 2) in vec3	i_ins_pos;
 layout (location = 3) in vec3	i_ins_rot;
 layout (location = 4) in float	i_ins_scale;
 
-//Out
-out gl_PerVertex
+layout (binding = 0) uniform UBO 
 {
-	vec4 gl_Position;
-};
+	mat4 projection_view;
+	mat4 model;
+} ubo;
+
+//Out
 layout (location = 0) out vec2 o_uv;
 
 void main() 

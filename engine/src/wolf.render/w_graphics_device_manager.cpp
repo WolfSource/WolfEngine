@@ -187,9 +187,6 @@ _is_released(false), _name("w_graphics_device")
 
 #ifdef __VULKAN__
 ,
-vk_graphics_queue_family_index(UINT32_MAX),
-vk_graphics_queue(0),
-vk_present_queue(0),
 vk_device(0),
 vk_command_allocator_pool(0)
 #endif
@@ -338,8 +335,10 @@ ULONG w_graphics_device::release()
 	this->vk_queue_family_properties.clear();
 	this->vk_queue_family_supports_present.clear();
 
-	this->vk_graphics_queue = 0;
-	this->vk_present_queue = 0;
+	this->vk_graphics_queue.release();
+    this->vk_present_queue.release();
+    this->vk_compute_queue.release();
+    this->vk_transfer_queue.release();
 
     //destroy command pool
     vkDestroyCommandPool(this->vk_device,
@@ -1309,28 +1308,55 @@ namespace wolf
 
 
 					bool _queue_graphics_bit_found = false;
-					for (size_t j = 0; j < _queue_family_property_count; ++j)
-					{
-						_msg += "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
-						if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-						{
-							_queue_graphics_bit_found = true;
-							_gDevice->vk_graphics_queue_family_index = static_cast<UINT>(j);
-							_msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_GRAPHICS_BIT supported.";
-						}
-						if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_COMPUTE_BIT)
-						{
-							_msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_COMPUTE_BIT supported.";
-						}
-						if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_TRANSFER_BIT)
-						{
-							_msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_TRANSFER_BIT supported.";
-						}
-						if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_SPARSE_BINDING_BIT)
-						{
-							_msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_SPARSE_BINDING_BIT supported.";
-						}
-					}
+                    for (size_t j = 0; j < _queue_family_property_count; ++j)
+                    {
+                        _msg += "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
+                        if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+                        {
+                            _queue_graphics_bit_found = true;
+                            _gDevice->vk_graphics_queue.index = static_cast<uint32_t>(j);
+                            _msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_GRAPHICS_BIT supported.";
+                            break;
+                        }
+                    }
+
+                    for (size_t j = 0; j < _queue_family_property_count; ++j)
+                    {
+                        _msg += "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
+                        if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_COMPUTE_BIT)
+                        {
+                            _queue_graphics_bit_found = true;
+                            _gDevice->vk_compute_queue.index = static_cast<uint32_t>(j);
+                            _msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_COMPUTE_BIT supported.";
+                            break;
+                        }
+                    }
+
+
+                    for (size_t j = 0; j < _queue_family_property_count; ++j)
+                    {
+                        _msg += "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
+                        if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_TRANSFER_BIT)
+                        {
+                            _queue_graphics_bit_found = true;
+                            _gDevice->vk_transfer_queue.index = static_cast<uint32_t>(j);
+                            _msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_TRANSFER_BIT supported.";
+                            break;
+                        }
+                    }
+
+
+                    for (size_t j = 0; j < _queue_family_property_count; ++j)
+                    {
+                        _msg += "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
+                        if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_SPARSE_BINDING_BIT)
+                        {
+                            _queue_graphics_bit_found = true;
+                            _gDevice->vk_sparse_queue.index = static_cast<uint32_t>(j);
+                            _msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_SPARSE_BINDING_BIT supported.";
+                            break;
+                        }
+                    }
 
 					logger.write(_msg);
 					_msg.clear();
@@ -1385,9 +1411,8 @@ namespace wolf
                     VkCommandPoolCreateInfo _command_pool_info = {};
                     _command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
                     _command_pool_info.pNext = nullptr;
-                    _command_pool_info.queueFamilyIndex = _gDevice->vk_graphics_queue_family_index;
-                    _command_pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT |
-                    VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+                    _command_pool_info.queueFamilyIndex = _gDevice->vk_graphics_queue.index;
+                    _command_pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
                     
                     _hr = vkCreateCommandPool(_gDevice->vk_device,
                                                    &_command_pool_info,
@@ -1566,16 +1591,52 @@ namespace wolf
 						}
 					}
 
-					//get graphics and presentation queues (which may be the same)
-					vkGetDeviceQueue(_gDevice->vk_device,
-						_gDevice->vk_graphics_queue_family_index,
-						0,
-						&_gDevice->vk_graphics_queue);
+					//get queues (graphics and present may be the same)
+                    
+                    //graphics
+                    if (_gDevice->vk_graphics_queue.index != UINT32_MAX)
+                    {
+                        vkGetDeviceQueue(_gDevice->vk_device,
+                            _gDevice->vk_graphics_queue.index,
+                            0,
+                            &_gDevice->vk_graphics_queue.queue);
+                    }
 
-					vkGetDeviceQueue(_gDevice->vk_device,
-						_gDevice->vk_present_queue_family_index,
-						0,
-						&_gDevice->vk_present_queue);
+                    //present
+                    if (_gDevice->vk_compute_queue.index != UINT32_MAX)
+                    {
+                        vkGetDeviceQueue(_gDevice->vk_device,
+                            _gDevice->vk_present_queue.index,
+                            0,
+                            &_gDevice->vk_present_queue.queue);
+                    }
+
+                    //compute
+                    if (_gDevice->vk_compute_queue.index != UINT32_MAX)
+                    {
+                        vkGetDeviceQueue(_gDevice->vk_device,
+                            _gDevice->vk_compute_queue.index,
+                            0,
+                            &_gDevice->vk_compute_queue.queue);
+                    }
+
+                    //transfer
+                    if (_gDevice->vk_transfer_queue.index != UINT32_MAX)
+                    {
+                        vkGetDeviceQueue(_gDevice->vk_device,
+                            _gDevice->vk_transfer_queue.index,
+                            0,
+                            &_gDevice->vk_transfer_queue.queue);
+                    }
+
+                    //sparse
+                    if (_gDevice->vk_sparse_queue.index != UINT32_MAX)
+                    {
+                        vkGetDeviceQueue(_gDevice->vk_device,
+                            _gDevice->vk_sparse_queue.index,
+                            0,
+                            &_gDevice->vk_sparse_queue.queue);
+                    }
 
 					pGraphicsDevices.push_back(_gDevice);
 				}
@@ -1985,7 +2046,6 @@ namespace wolf
 
 				auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
 
-				pGDevice->vk_present_queue_family_index = UINT32_MAX;
 				for (size_t j = 0; j < pGDevice->vk_queue_family_properties.size(); ++j)
 				{
 					//check if this device support presentation
@@ -1999,15 +2059,15 @@ namespace wolf
 						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
 						this->_name, 2);
 
-					if (pGDevice->vk_present_queue_family_index == UINT32_MAX &&
-						pGDevice->vk_graphics_queue_family_index != UINT32_MAX &&
+					if (pGDevice->vk_present_queue.index == UINT32_MAX &&
+						pGDevice->vk_graphics_queue.index != UINT32_MAX &&
 						pGDevice->vk_queue_family_supports_present[j])
 					{
-						pGDevice->vk_present_queue_family_index = static_cast<UINT32>(j);
+						pGDevice->vk_present_queue.index = static_cast<uint32_t>(j);
 					}
 				}
 
-				V(pGDevice->vk_present_queue_family_index == UINT32_MAX ? S_FALSE : S_OK,
+				V(pGDevice->vk_present_queue.index == UINT32_MAX ? S_FALSE : S_OK,
 					L"could not find queue family which supports presentation for graphics device: " +
 					std::wstring(_device_name.begin(), _device_name.end()) + L" ID:" + std::to_wstring(_device_id) +
 					L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
@@ -2195,8 +2255,8 @@ namespace wolf
 
 				UINT _queue_family_indices[2] =
 				{
-					pGDevice->vk_graphics_queue_family_index,
-					pGDevice->vk_present_queue_family_index,
+					pGDevice->vk_graphics_queue.index,
+					pGDevice->vk_present_queue.index,
 				};
 				if (_queue_family_indices[0] != _queue_family_indices[1])
 				{
@@ -2717,8 +2777,8 @@ namespace wolf
 					_present_to_clear_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 					_present_to_clear_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 					_present_to_clear_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-					_present_to_clear_barrier.srcQueueFamilyIndex = pGDevice->vk_present_queue_family_index;
-					_present_to_clear_barrier.dstQueueFamilyIndex = pGDevice->vk_graphics_queue_family_index;
+					_present_to_clear_barrier.srcQueueFamilyIndex = pGDevice->vk_present_queue.index;
+					_present_to_clear_barrier.dstQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
 					_present_to_clear_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
 					_present_to_clear_barrier.subresourceRange = _sub_resource_range;
 
@@ -2729,8 +2789,8 @@ namespace wolf
 					_clear_to_present_barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
 					_clear_to_present_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 					_clear_to_present_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-					_clear_to_present_barrier.srcQueueFamilyIndex = pGDevice->vk_present_queue_family_index;
-					_clear_to_present_barrier.dstQueueFamilyIndex = pGDevice->vk_graphics_queue_family_index;
+					_clear_to_present_barrier.srcQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
+					_clear_to_present_barrier.dstQueueFamilyIndex = pGDevice->vk_present_queue.index;
 					_clear_to_present_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
 					_clear_to_present_barrier.subresourceRange = _sub_resource_range;
                     
@@ -3201,7 +3261,7 @@ HRESULT w_graphics_device_manager::submit()
             
 			//submit queue
 			auto _hr = vkQueueSubmit(
-				_gDevice->vk_present_queue,
+				_gDevice->vk_present_queue.queue,
 				1,
 				&_submit_info,
 				VK_NULL_HANDLE);
@@ -3213,7 +3273,7 @@ HRESULT w_graphics_device_manager::submit()
 				std::exit(EXIT_FAILURE);
 			}
 
-            _hr = vkQueueWaitIdle(_gDevice->vk_present_queue);
+            _hr = vkQueueWaitIdle(_gDevice->vk_present_queue.queue);
             if (_hr)
             {
                 logger.error("error on wait idle queue of graphics device: " +
@@ -3337,7 +3397,7 @@ HRESULT w_graphics_device_manager::present()
             _present_info.pSwapchains = &_present_window->vk_swap_chain;
             _present_info.pImageIndices = &_present_window->vk_swap_chain_image_index;
             
-            auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue,
+            auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue.queue,
                                          &_present_info);
             if (_hr)
             {

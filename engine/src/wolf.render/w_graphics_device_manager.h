@@ -110,6 +110,19 @@ namespace wolf
 #endif
         };
 
+        struct w_queue_index
+        {
+            VkQueue        queue = 0;
+            uint32_t       index = UINT32_MAX;
+
+            ULONG release()
+            {
+                this->queue = 0;
+                this->index = UINT32_MAX;
+                return 0;
+            }
+        };
+
 		//Output window which handles all 3d resources for output renderer
 		struct w_output_presentation_window
 		{
@@ -258,25 +271,26 @@ namespace wolf
 #endif
 
 #elif defined(__VULKAN__)
-            static VkInstance                                       vk_instance;
+            static VkInstance                                           vk_instance;
                         
-            VkPhysicalDevice                                        vk_physical_device;
-            VkPhysicalDeviceFeatures                                vk_physical_device_features;
-            VkPhysicalDeviceMemoryProperties                        vk_physical_device_memory_properties;
+            VkPhysicalDevice                                            vk_physical_device;
+            VkPhysicalDeviceFeatures                                    vk_physical_device_features;
+            VkPhysicalDeviceMemoryProperties                            vk_physical_device_memory_properties;
             
-            std::vector<const char*>                                vk_device_extensions;
+            std::vector<const char*>                                    vk_device_extensions;
 
-            std::vector<VkQueueFamilyProperties>                    vk_queue_family_properties;
-			UINT32													vk_graphics_queue_family_index;
-            std::vector<VkBool32>                                   vk_queue_family_supports_present;
-			UINT32													vk_present_queue_family_index;
-                        
-            VkQueue                                                 vk_graphics_queue;
-            VkQueue                                                 vk_present_queue;
-                     
-            VkDevice                                                vk_device;
+            std::vector<VkQueueFamilyProperties>                        vk_queue_family_properties;
+            std::vector<VkBool32>                                       vk_queue_family_supports_present;
+			
+            w_queue_index                                               vk_graphics_queue;
+            w_queue_index                                               vk_present_queue;
+            w_queue_index                                               vk_compute_queue;
+            w_queue_index                                               vk_transfer_queue;
+            w_queue_index                                               vk_sparse_queue;
 
-            VkCommandPool                                           vk_command_allocator_pool;
+            VkDevice                                                    vk_device;
+
+            VkCommandPool                                               vk_command_allocator_pool;
             
             //static pipeline defaults
 			struct defaults

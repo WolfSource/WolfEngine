@@ -134,6 +134,23 @@ namespace wolf
                         });
                     }
                     break;
+                    case w_shader_binding_type::STORAGE:
+                    {
+                        _write_descriptor_sets.push_back(
+                        {
+                            VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
+                            nullptr,                                        // Next
+                            this->_descriptor_set,                          // DstSet
+                            _iter.index,                                    // DstBinding
+                            0,                                              // DstArrayElement
+                            1,                                              // DescriptorCount
+                            VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,              // DescriptorType
+                            nullptr,                                        // ImageInfo
+                            &_iter.storage_info,                            // BufferInfo
+                            nullptr                                         // TexelBufferView
+                        });
+                    }
+                    break;
                     case w_shader_binding_type::SAMPLER:
                     {
                         _write_descriptor_sets.push_back(
@@ -308,7 +325,9 @@ namespace wolf
                 HRESULT _hr = S_OK;
 
                 uint32_t _number_of_uniforms = 0;
+                uint32_t _number_of_storages = 0;
                 uint32_t _number_of_samplers = 0;
+
                 std::vector<VkDescriptorSetLayoutBinding> _layout_bindings;
                 for (auto& _iter : this->_shader_binding_params)
                 {
@@ -325,6 +344,19 @@ namespace wolf
                         {
                             _binding_index,                                     // Binding
                             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // DescriptorType
+                            1,                                                  // DescriptorCount
+                            (VkShaderStageFlags)_binding_stage,                 // StageFlags
+                            nullptr                                             // ImmutableSamplers
+                        });
+                    }
+                    break;
+                    case STORAGE:
+                    {
+                        _number_of_storages++;
+                        _layout_bindings.push_back(
+                        {
+                            _binding_index,                                     // Binding
+                            VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,                  // DescriptorType
                             1,                                                  // DescriptorCount
                             (VkShaderStageFlags)_binding_stage,                 // StageFlags
                             nullptr                                             // ImmutableSamplers
@@ -355,6 +387,14 @@ namespace wolf
                     {
                         VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // Type
                         _number_of_uniforms                                 // DescriptorCount
+                    });
+                }
+                if (_number_of_storages)
+                {
+                    _descriptor_pool_sizes.push_back(
+                    {
+                        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,                  // Type
+                        _number_of_storages                                 // DescriptorCount
                     });
                 }
                 if (_number_of_samplers)
@@ -481,7 +521,9 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
     _In_z_ const std::wstring& pVertexShaderPath,
     _In_z_ const std::wstring& pTessellationControlShaderPath,
     _In_z_ const std::wstring& pTessellationEvaluationShaderPath,
+    _In_z_ const std::wstring& pGeometryShaderPath,
     _In_z_ const std::wstring& pFragmentShaderPath,
+    _In_z_ const std::wstring& pComputeShaderPath,
     _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
     _Inout_ w_shader** pShader,
     _In_z_ const char* pMainFunctionName)
@@ -514,9 +556,23 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
             return S_FALSE;
         }
     }
+    if (!pGeometryShaderPath.empty())
+    {
+        if (_shader->load(pGDevice, pGeometryShaderPath, w_shader_stage::GEOMETRY_SHADER, pMainFunctionName) == S_FALSE)
+        {
+            return S_FALSE;
+        }
+    }
     if (!pFragmentShaderPath.empty())
     {
         if (_shader->load(pGDevice, pFragmentShaderPath, w_shader_stage::FRAGMENT_SHADER, pMainFunctionName) == S_FALSE)
+        {
+            return S_FALSE;
+        }
+    }
+    if (!pComputeShaderPath.empty())
+    {
+        if (_shader->load(pGDevice, pComputeShaderPath, w_shader_stage::COMPUTE_SHADER, pMainFunctionName) == S_FALSE)
         {
             return S_FALSE;
         }

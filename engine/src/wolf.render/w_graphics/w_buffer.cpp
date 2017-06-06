@@ -1,6 +1,7 @@
 #include "w_render_pch.h"
 #include "w_buffer.h"
 #include <w_convert.h>
+#include "w_command_buffers.h"
 
 namespace wolf
 {
@@ -60,12 +61,12 @@ namespace wolf
                 vkGetPhysicalDeviceMemoryProperties(this->_gDevice->vk_physical_device,
                                                     &_memory_properties);
                 
-                for( uint32_t i = 0; i < _memory_properties.memoryTypeCount; ++i )
+                for (uint32_t i = 0; i < _memory_properties.memoryTypeCount; ++i)
                 {
-                    if( (_buffer_memory_requirements.memoryTypeBits & (1 << i)) &&
-                       (_memory_properties.memoryTypes[i].propertyFlags & this->_memory_flags) )
+                    if ((_buffer_memory_requirements.memoryTypeBits & (1 << i)) &&
+                        (_memory_properties.memoryTypes[i].propertyFlags & this->_memory_flags))
                     {
-                        
+
                         VkMemoryAllocateInfo _memory_allocate_info =
                         {
                             VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO, // Type
@@ -73,12 +74,16 @@ namespace wolf
                             _buffer_memory_requirements.size,       // AllocationSize
                             i                                       // MemoryTypeIndex
                         };
-                        
-                        if( vkAllocateMemory(this->_gDevice->vk_device,
-                                             &_memory_allocate_info,
-                                             nullptr,
-                                             &this->_memory) == VK_SUCCESS)
+
+                        if (vkAllocateMemory(this->_gDevice->vk_device,
+                            &_memory_allocate_info,
+                            nullptr,
+                            &this->_memory) == VK_SUCCESS)
                         {
+                            this->_descriptor_info.buffer = this->_handle;
+                            this->_descriptor_info.offset = 0;
+                            this->_descriptor_info.range = this->_size;
+
                             return S_OK;
                         }
                     }
@@ -89,6 +94,81 @@ namespace wolf
                 return S_FALSE;
             }
             
+            HRESULT bind()
+            {
+                return vkBindBufferMemory(this->_gDevice->vk_device,
+                    this->_handle,
+                    this->_memory,
+                    0) == VK_SUCCESS ? S_OK : S_FALSE;
+            }
+
+            //Set data to DRAM
+            HRESULT set_data(_In_ const void* const pData)
+            {
+                //we can not access to VRAM, but we can copy our data to DRAM
+                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return S_FALSE;
+
+                if (map() == nullptr) return S_FALSE;
+                memcpy(this->_mapped, pData, (size_t)_size);
+
+                if (flush(VK_WHOLE_SIZE, 0) == S_FALSE) return S_FALSE;
+
+                unmap();
+
+                return S_OK;
+            }
+            
+            HRESULT copy_to(_In_ w_buffer& pDestinationBuffer)
+            {
+                //create one command buffer
+                w_command_buffers _copy_command_buffer;
+                auto _hr = _copy_command_buffer.load(this->_gDevice, 1);
+                if (_hr != S_OK)
+                {
+                    V(S_FALSE,
+                        "loading command buffer for copying buffer to another buffer",
+                        this->_name,
+                        3);
+                    return _hr;
+                }
+
+                _hr = _copy_command_buffer.begin(0);
+                if (_hr != S_OK)
+                {
+                    V(S_FALSE,
+                        "begining command buffer for copying buffer to another buffer",
+                        this->_name,
+                        3);
+                    return _hr;
+                }
+
+                auto _copy_cmd = _copy_command_buffer.get_command_at(0);
+
+                VkBufferCopy _copy_region = {};
+
+                _copy_region.size = this->_size;
+                vkCmdCopyBuffer(
+                    _copy_cmd,
+                    this->_handle,
+                    pDestinationBuffer.get_handle(),
+                    1,
+                    &_copy_region);
+
+                _hr = _copy_command_buffer.flush(0);
+                if (_hr != S_OK)
+                {
+                    V(S_FALSE,
+                        "flushing command buffer for copying buffer to another buffer",
+                        this->_name,
+                        3);
+                    return _hr;
+                }
+
+                _copy_command_buffer.release();
+
+                return S_OK;
+            }
+
             void* map()
             {
                 //we can not access to VRAM, but we can copy our data to DRAM
@@ -135,30 +215,6 @@ namespace wolf
                 auto _hr = vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range);
                 
                 return _hr == VK_SUCCESS ? S_OK : S_FALSE;
-            }
-
-            //Set data to DRAM
-            HRESULT set_data(_In_ const void* const pData)
-            {
-                //we can not access to VRAM, but we can copy our data to DRAM
-                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return S_FALSE;
-
-                if (map() == nullptr) return S_FALSE;
-                memcpy(this->_mapped, pData, (size_t)_size);
-
-                if (flush(VK_WHOLE_SIZE, 0) == S_FALSE) return S_FALSE;
-
-                unmap();
-
-                return S_OK;
-            }
-            
-            HRESULT bind()
-            {
-                return vkBindBufferMemory(this->_gDevice->vk_device,
-                                          this->_handle,
-                                          this->_memory,
-                                          0) == VK_SUCCESS ? S_OK : S_FALSE;
             }
             
             ULONG release()
@@ -213,6 +269,11 @@ namespace wolf
                 return this->_memory;
             }
             
+            const VkDescriptorBufferInfo get_descriptor_info() const
+            {
+                return this->_descriptor_info;
+            }
+
         private:
             std::string                                         _name;
             std::shared_ptr<w_graphics_device>                  _gDevice;
@@ -224,6 +285,7 @@ namespace wolf
             VkDeviceMemory                                      _memory;
             VkMemoryPropertyFlags                               _memory_flags;
             VkBufferUsageFlags                                  _usage_flags;
+            VkDescriptorBufferInfo                              _descriptor_info;
 #endif
             
         };
@@ -263,6 +325,13 @@ HRESULT w_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     return this->_pimp->load(pGDevice, pBufferSize, pUsageFlags, pMemoryFlags);
 }
 
+HRESULT w_buffer::bind()
+{
+    if (!this->_pimp) return S_FALSE;
+
+    return this->_pimp->bind();
+}
+
 HRESULT w_buffer::set_data(_In_ const void* const pData)
 {
     if(!this->_pimp) return S_FALSE;
@@ -270,11 +339,11 @@ HRESULT w_buffer::set_data(_In_ const void* const pData)
     return this->_pimp->set_data(pData);
 }
 
-HRESULT w_buffer::bind()
+HRESULT w_buffer::copy_to(_In_ w_buffer& pDestinationBuffer)
 {
-    if(!this->_pimp) return S_FALSE;
-    
-    return this->_pimp->bind();
+    if (!this->_pimp) return S_FALSE;
+
+    return this->_pimp->copy_to(pDestinationBuffer);
 }
 
 void* w_buffer::map()
@@ -342,6 +411,13 @@ const VkDeviceMemory w_buffer::get_memory() const
     if(!this->_pimp) return 0;
     
     return this->_pimp->get_memory();
+}
+
+const VkDescriptorBufferInfo w_buffer::get_descriptor_info() const
+{
+    if (!this->_pimp) return VkDescriptorBufferInfo();
+
+    return this->_pimp->get_descriptor_info();
 }
 
 #pragma endregion

@@ -31,9 +31,11 @@ namespace wolf
                          _In_ const VkBufferUsageFlags pUsage,
                          _In_ const VkMemoryPropertyFlags pMemoryFlags);
             
-            W_EXP HRESULT set_data(_In_ const void* const pData);
-
             W_EXP HRESULT bind();
+
+            W_EXP HRESULT set_data(_In_ const void* const pData);          
+            
+            W_EXP HRESULT copy_to(_In_ w_buffer& pDestinationBuffer);
 
             W_EXP void* map();
             
@@ -50,7 +52,8 @@ namespace wolf
             W_EXP const VkMemoryPropertyFlags         get_memory_flags() const;
             W_EXP const VkBuffer                      get_handle() const;
             W_EXP const VkDeviceMemory                get_memory() const;
-            
+            W_EXP const VkDescriptorBufferInfo        get_descriptor_info() const;
+
 #pragma endregion
             
         private:

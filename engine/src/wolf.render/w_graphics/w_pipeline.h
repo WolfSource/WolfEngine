@@ -27,13 +27,13 @@ namespace wolf
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
                                _In_ const VkPrimitiveTopology pPrimitiveTopology,
-                               _In_ const std::string& pPipelineCacheName,
                                _In_ const VkRenderPass pRenderPass,
                                _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
                                _In_ const VkDescriptorSetLayout* pShaderDescriptorSetLayoutBinding,
                                _In_ const std::vector<w_viewport>& pViewPorts,
                                _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
                                _In_ const std::vector<VkDynamicState>& pDynamicStates,
+                               _In_ const std::string& pPipelineCacheName = "pipeline_cache",
                                _In_ const UINT& pTessellationPatchControlPoints = 0,
                                _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo = nullptr,
                                _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo = nullptr,
@@ -41,6 +41,13 @@ namespace wolf
                                _In_ const VkPipelineColorBlendAttachmentState pBlendState = w_graphics_device::w_blend_states::premulitplied_alpha,
                                _In_ const std::array<float,4> pBlendColors = { 0.0f, 0.0f, 0.0f, 0.0f });
             
+            W_EXP HRESULT load_compute(
+                _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
+                _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
+                _In_ const uint32_t& pSpecializationData,
+                _In_ const std::string& pPipelineCacheName = "");
+
             W_EXP void bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet);
 
             //release all resources

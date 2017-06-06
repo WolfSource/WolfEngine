@@ -19,13 +19,13 @@ namespace wolf
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
                 _In_ const VkPrimitiveTopology pPrimitiveTopology,
-                _In_ const std::string& pPipelineCacheName,
                 _In_ const VkRenderPass pRenderPass,
                 _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
                 _In_ const VkDescriptorSetLayout* const pShaderDescriptorSetLayoutBinding,
                 _In_ const std::vector<w_viewport>& pViewPorts,
                 _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
                 _In_ const std::vector<VkDynamicState>& pDynamicStates,
+                _In_ const std::string& pPipelineCacheName,
                 _In_ const UINT& pTessellationPatchControlPoints,
                 _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
                 _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo,
@@ -35,7 +35,7 @@ namespace wolf
             {
                 this->_gDevice = pGDevice;
 
-                if (!pVertexBindingAttributes.declaration == w_vertex_declaration::NOT_DEFINED)
+                if (pVertexBindingAttributes.declaration == w_vertex_declaration::NOT_DEFINED)
                 {
                     logger.error("Vertex type not defined");
                     return S_FALSE;
@@ -168,6 +168,77 @@ namespace wolf
                 return S_OK;
             }
 
+            HRESULT load_compute(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
+                _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
+                _In_ const uint32_t& pSpecializationData,
+                _In_ const std::string& pPipelineCacheName)
+            {
+                auto _pipeline_cache = w_pipeline::get_pipeline_cache(pPipelineCacheName);
+
+                std::vector<VkDescriptorSetLayout> _descriptor_set_layouts = { pDescriptorSetLayouts };
+
+                VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
+                _pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+                _pipeline_layout_create_info.setLayoutCount = _descriptor_set_layouts.size();
+                _pipeline_layout_create_info.pSetLayouts = _descriptor_set_layouts.data();
+
+                auto _hr = vkCreatePipelineLayout(
+                    pGDevice->vk_device,
+                    &_pipeline_layout_create_info,
+                    nullptr,
+                    &this->_pipeline_layout);
+
+                if (_hr)
+                {
+                    V(S_FALSE, "creating compute pipeline layout for graphics device: " +
+                        this->_gDevice->device_name + " ID:" + std::to_string(this->_gDevice->device_id),
+                        this->_name, 3, false, true);
+                    return S_FALSE;
+                }
+
+                // Create pipeline		
+                VkComputePipelineCreateInfo _compute_pipeline_create_info = {};
+                _compute_pipeline_create_info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+                _compute_pipeline_create_info.layout = this->_pipeline_layout;
+                _compute_pipeline_create_info.flags = 0;
+                _compute_pipeline_create_info.stage = pComputeShaderStage;
+
+                // Use specialization constants to pass max. level of detail (determined by no. of meshes)
+                VkSpecializationMapEntry specializationEntry{};
+                specializationEntry.constantID = 0;
+                specializationEntry.offset = 0;
+                specializationEntry.size = sizeof(uint32_t);
+
+                uint32_t _specialization_data = pSpecializationData - 1;
+
+                VkSpecializationInfo _specialization_info;
+                _specialization_info.mapEntryCount = 1;
+                _specialization_info.pMapEntries = &specializationEntry;
+                _specialization_info.dataSize = sizeof(_specialization_data);
+                _specialization_info.pData = &_specialization_data;
+
+                _compute_pipeline_create_info.stage.pSpecializationInfo = &_specialization_info;
+
+                _hr = vkCreateComputePipelines(
+                    pGDevice->vk_device,
+                    _pipeline_cache,
+                    1,
+                    &_compute_pipeline_create_info,
+                    nullptr,
+                    &this->_pipeline);
+
+                if (_hr)
+                {
+                    V(S_FALSE, "creating compute pipeline for graphics device: " +
+                        this->_gDevice->device_name + " ID:" + std::to_string(this->_gDevice->device_id),
+                        this->_name, 3, false, true);
+                    return S_FALSE;
+                }
+
+                return S_OK;
+            }
+
             void bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)
             {
                 if (pDescriptorSet)
@@ -241,6 +312,7 @@ namespace wolf
                 auto _vertex_attribute_descriptions = new std::vector<VkVertexInputAttributeDescription>();
 
                 uint32_t _offset = 0;
+                uint32_t _location_index = 0;
                 for (auto& _binding : pVertexBindingAttributes.binding_attributes)
                 {
                     uint32_t _size = 0;
@@ -256,15 +328,14 @@ namespace wolf
                             (VkVertexInputRate)_binding.first                                       // InputRate => 0 = VK_VERTEX_INPUT_RATE_VERTEX , 1 = VK_VERTEX_INPUT_RATE_INSTANCE                         
                     });
 
-                    for (uint32_t i = 0; i < (uint32_t)_binding.second.size(); ++i)
+                    for (auto& _attr : _binding.second)
                     {
-                        auto _attr = _binding.second[i];
                         switch (_attr)
                         {
                         case w_vertex_attribute::Float:
                             _vertex_attribute_descriptions->push_back(
                             {
-                                i,                                                             // Location
+                                _location_index,                                               // Location
                                 _vertex_binding_descriptions->at(_binding.first).binding,      // Binding
                                 VK_FORMAT_R32_SFLOAT,                                          // Format
                                 _offset                                                        // Offset
@@ -274,7 +345,7 @@ namespace wolf
                         case w_vertex_attribute::Vec2:
                             _vertex_attribute_descriptions->push_back(
                             {
-                                i,                                                             // Location
+                                _location_index,                                               // Location
                                 _vertex_binding_descriptions->at(_binding.first).binding,      // Binding
                                 VK_FORMAT_R32G32_SFLOAT,                                       // Format
                                 _offset                                                        // Offset
@@ -284,7 +355,7 @@ namespace wolf
                         case w_vertex_attribute::Vec3:
                             _vertex_attribute_descriptions->push_back(
                             {
-                                i,                                                             // Location
+                                _location_index,                                               // Location
                                 _vertex_binding_descriptions->at(_binding.first).binding,      // Binding
                                 VK_FORMAT_R32G32B32_SFLOAT,                                    // Format
                                 _offset                                                        // Offset
@@ -294,7 +365,7 @@ namespace wolf
                         case w_vertex_attribute::Vec4:
                             _vertex_attribute_descriptions->push_back(
                             {
-                                i,                                                             // Location
+                                _location_index,                                               // Location
                                 _vertex_binding_descriptions->at(_binding.first).binding,      // Binding
                                 VK_FORMAT_R32G32B32A32_SFLOAT,                                 // Format
                                 _offset                                                        // Offset
@@ -302,6 +373,8 @@ namespace wolf
                             _offset += _attr;
                             break;
                         }
+
+                        _location_index++;
                     }
                 }
 
@@ -371,13 +444,13 @@ HRESULT w_pipeline::load(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
     _In_ const VkPrimitiveTopology pPrimitiveTopology,
-    _In_ const std::string& pPipelineCacheName,
     _In_ const VkRenderPass pRenderPass,
     _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
     _In_ const VkDescriptorSetLayout* pShaderDescriptorSetLayoutBinding,
     _In_ const std::vector<w_viewport>& pViewPorts,
     _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
     _In_ const std::vector<VkDynamicState>& pDynamicStates,
+    _In_ const std::string& pPipelineCacheName,
     _In_ const UINT& pTessellationPatchControlPoints,
     _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
     _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo,
@@ -391,19 +464,36 @@ HRESULT w_pipeline::load(
         pGDevice,
         pVertexBindingAttributes,
         pPrimitiveTopology,
-        pPipelineCacheName,
         pRenderPass,
         pShaderStages,
         pShaderDescriptorSetLayoutBinding,
         pViewPorts,
         pViewPortsScissors,
         pDynamicStates,
+        pPipelineCacheName,
         pTessellationPatchControlPoints,
         pPipelineRasterizationStateCreateInfo,
         pPipelineMultiSampleStateCreateInfo,
         pEnableDepthStencilState,
         pBlendState,
         pBlendColors);
+}
+
+HRESULT w_pipeline::load_compute(
+    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
+    _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
+    _In_ const uint32_t& pSpecializationData,
+    _In_ const std::string& pPipelineCacheName)
+{
+    if (!this->_pimp) return S_FALSE;
+
+    return this->_pimp->load_compute(
+        pGDevice,
+        pComputeShaderStage,
+        pDescriptorSetLayouts,
+        pSpecializationData,
+        pPipelineCacheName);
 }
 
 void w_pipeline::bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)

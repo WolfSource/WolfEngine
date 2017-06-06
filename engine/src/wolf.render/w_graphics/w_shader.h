@@ -16,7 +16,8 @@
 enum w_shader_binding_type
 {
     SAMPLER = 0,
-    UNIFORM
+    UNIFORM,
+    STORAGE
 };
 
 enum w_shader_stage
@@ -35,9 +36,7 @@ enum w_shader_stage
 
 	GEOMETRY_SHADER = VK_SHADER_STAGE_GEOMETRY_BIT,
 
-	COMPUTE_SHADER = VK_SHADER_STAGE_COMPUTE_BIT,
-
-    ALL_STAGES = VK_SHADER_STAGE_ALL
+	COMPUTE_SHADER = VK_SHADER_STAGE_COMPUTE_BIT
 };
 
 struct w_shader_binding_param
@@ -47,6 +46,7 @@ struct w_shader_binding_param
     w_shader_stage              stage;
 #ifdef  __VULKAN__
     VkDescriptorBufferInfo      uniform_info;
+    VkDescriptorBufferInfo      storage_info;
     VkDescriptorImageInfo       sampler_info;
 #endif //  __VULKAN__
 };
@@ -82,15 +82,18 @@ namespace wolf
             
 #pragma endregion
 
-            W_EXP static HRESULT load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                                                        _In_z_ const std::string& pName,
-                                                        _In_z_ const std::wstring& pVertexShaderPath,
-                                                        _In_z_ const std::wstring& pTessellationControlShaderPath,
-                                                        _In_z_ const std::wstring& pTessellationEvaluationShaderPath,
-                                                        _In_z_ const std::wstring& pFragmentShaderPath,
-                                                        _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
-                                                        _Inout_ w_shader** pShader,
-                                                        _In_z_ const char* pMainFunctionName = "main");
+            W_EXP static HRESULT load_to_shared_shaders(
+                _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_z_ const std::string& pName,
+                _In_z_ const std::wstring& pVertexShaderPath,
+                _In_z_ const std::wstring& pTessellationControlShaderPath,
+                _In_z_ const std::wstring& pTessellationEvaluationShaderPath,
+                _In_z_ const std::wstring& pGeometryShaderPath,
+                _In_z_ const std::wstring& pFragmentShaderPath,
+                _In_z_ const std::wstring& pComputeShaderPath,
+                _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
+                _Inout_ w_shader** pShader,
+                _In_z_ const char* pMainFunctionName = "main");
 
             W_EXP static w_shader* get_shader_from_shared(_In_z_ const std::string& pName);
             W_EXP static ULONG release_shared_shaders();

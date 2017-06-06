@@ -12,12 +12,41 @@ namespace wolf
             w_command_buffers_pimp() :
                 _name("w_command_buffers"),
                 _enable(true),
-                _order(0)
+                _order(0),
+                _command_pool(0)
             {
             }
             
-            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const size_t pCount)
+            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
+                _In_ const size_t pCount,
+                _In_ const bool pCreateCommandPool,
+                _In_ const w_queue_index* pCommandPoolQueue)
             {
+                if (pCreateCommandPool)
+                {
+                    VkCommandPoolCreateInfo _command_pool_info = {};
+                    _command_pool_info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+                    _command_pool_info.queueFamilyIndex = pCommandPoolQueue ? pCommandPoolQueue->index : pGDevice->vk_graphics_queue.index;
+                    _command_pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+
+                    auto _hr = vkCreateCommandPool(
+                        pGDevice->vk_device,
+                        &_command_pool_info,
+                        nullptr,
+                        &this->_command_pool);
+                    if (_hr)
+                    {
+                        V(S_FALSE, "creating vulkan command pool for graphics device :" + 
+                            this->_gDevice->device_name +
+                            " ID: " + std::to_string(this->_gDevice->device_id),
+                            this->_name, 3,
+                            false,
+                            true);
+
+                        return S_FALSE;
+                    }
+                }
+
                 this->_counts = pCount;
                 
                 if (!this->_counts) return S_FALSE;
@@ -50,8 +79,9 @@ namespace wolf
                                                     this->_commands.data());
                 if (_hr)
                 {
-                    V(S_FALSE, L"creating vulkan command buffers for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
-                      L" ID: " + std::to_wstring(this->_gDevice->device_id),
+                    V(S_FALSE, "creating vulkan command buffers for graphics device :" + 
+                        this->_gDevice->device_name +
+                      " ID: " + std::to_string(this->_gDevice->device_id),
                       this->_name, 3,
                       false,
                       true);
@@ -168,7 +198,7 @@ namespace wolf
                 }
                 
                 // Submit to the queue
-                _hr = vkQueueSubmit(this->_gDevice->vk_present_queue,
+                _hr = vkQueueSubmit(this->_gDevice->vk_present_queue.queue,
                                     1,
                                     &_submit_info,
                                     _fence);
@@ -267,6 +297,7 @@ namespace wolf
             
 #ifdef __VULKAN__
             std::vector<VkCommandBuffer>                        _commands;
+            VkCommandPool                                       _command_pool;
 #endif
             
             bool                                                _enable;
@@ -289,11 +320,14 @@ w_command_buffers::~w_command_buffers()
     release();
 }
 
-HRESULT w_command_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const size_t pCount)
+HRESULT w_command_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
+    _In_ const size_t pCount,
+    _In_ const bool pCreateCommandPool,
+    _In_ const w_queue_index* pCommandPoolQueue)
 {
     if(!this->_pimp) return S_FALSE;
     
-    return this->_pimp->load(pGDevice, pCount);
+    return this->_pimp->load(pGDevice, pCount, pCreateCommandPool, pCommandPoolQueue);
 }
 
 HRESULT w_command_buffers::begin(_In_ const size_t pCommandBufferIndex, _In_ const VkCommandBufferUsageFlags pFlags)

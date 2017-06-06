@@ -22,7 +22,17 @@ namespace wolf
             W_EXP w_command_buffers();
             W_EXP ~w_command_buffers();
             
-            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const size_t pCount);
+            /*
+                pGDevice = graphices device, 
+                pCount = count of command buffers to be created, 
+                pCreateCommandPool = create seperated command pool,
+                pCommandPoolQueue = if pCreateCommandPool set true, then use this w_queue_index for creating command pool
+            */
+            W_EXP HRESULT load(
+                _In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
+                _In_ const size_t pCount, 
+                _In_ const bool pCreateCommandPool = false,
+                _In_ const w_queue_index* pCommandPoolQueue = nullptr);
             
             W_EXP HRESULT begin(_In_ const size_t pCommandBufferIndex,
                                 _In_ const VkCommandBufferUsageFlags pFlags = VkCommandBufferUsageFlagBits::VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);

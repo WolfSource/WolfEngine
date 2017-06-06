@@ -74,11 +74,7 @@ namespace wolf
                     logger.error("Error on binding to staging buffer of shader buffer");
                     return S_FALSE;
                 }
-                
-                this->_descriptor_buffer_info.buffer = this->_buffer.get_handle();
-                this->_descriptor_buffer_info.offset = 0;
-                this->_descriptor_buffer_info.range = this->_buffer.get_size();
-                
+                                
                 return S_OK;
             }
 
@@ -217,7 +213,7 @@ namespace wolf
 
             const VkDescriptorBufferInfo get_descriptor_info() const
             {
-                return this->_descriptor_buffer_info;
+                return this->_buffer.get_descriptor_info();
             }
                 
 			//Release resources
@@ -250,9 +246,7 @@ namespace wolf
             typedef  wolf::system::w_object      _super;
             std::shared_ptr<w_graphics_device>   _gDevice;
             w_buffer                             _buffer;
-            w_buffer                             _staging_buffer;
-            VkDescriptorBufferInfo               _descriptor_buffer_info;
-            
+            w_buffer                             _staging_buffer;            
 		};
 	}
 }
