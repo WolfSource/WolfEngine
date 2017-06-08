@@ -22,8 +22,10 @@ namespace wolf
 		class w_uniform : public wolf::system::w_object
 		{
 		public:
-            w_uniform()
+            w_uniform() :
+                _host_visible(false)
             {
+                _super::name = "w_uniform";
             }
             
 			~w_uniform()
@@ -31,184 +33,139 @@ namespace wolf
 				release();
 			}
 
-			//Load the uniform buffer
-			HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+			/*
+                Load the uniform buffer
+                _In_ pGDevice : Graphics Device
+                _In_ pHostVisible : True means host memory of uniform's buffer in DRAM, otherwise host memory in VRAM
+            */
+			HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const bool& pHostVisible = false)
 			{
+                const std::string _trace = this->name + "update";
+
+                this->_host_visible = pHostVisible;
+
                 //store the shared graphics device pointer
                 auto _buffer_size = static_cast<UINT32>(sizeof(T));
                 
                 this->_gDevice = pGDevice;
                 
                 //create uniform buffer
-                auto _hr = this->_buffer.load(pGDevice,
-                                   _buffer_size,
-                                   VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                                   VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-                if(_hr)
+                HRESULT _hr = S_OK;
+
+                if (this->_host_visible)
                 {
-                    logger.error("Could not create shader buffer");
-                    return S_FALSE;
+                    _hr = this->_buffer.load(pGDevice,
+                        _buffer_size,
+                        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+                    if (_hr == S_FALSE)
+                    {
+                        V(_hr, "loading host visible buffer " +
+                            _gDevice->print_info(),
+                            _trace,
+                            3);
+                        return _hr;
+                    }
+                }
+                else
+                {
+                    _hr = this->_buffer.load(pGDevice,
+                        _buffer_size,
+                        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+                    
+                    if (_hr == S_FALSE)
+                    {
+                        V(_hr, "loading device buffer " +
+                            _gDevice->print_info(),
+                            _trace,
+                            3);
+                        return _hr;
+                    }
+
+                    //create staging buffer
+                    _hr = this->_staging_buffer.load(pGDevice,
+                        _buffer_size,
+                        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+                    if (_hr == S_FALSE)
+                    {
+                        V(_hr, "loading staging buffer " +
+                            _gDevice->print_info(),
+                            _trace,
+                            3);
+                        return _hr;
+                    }
+
+                    _hr = this->_staging_buffer.bind();
+                    if (_hr == S_FALSE)
+                    {
+                        V(_hr, "binding device buffer " +
+                            _gDevice->print_info(),
+                            _trace,
+                            3);
+                        return _hr;
+                    }
                 }
                 
                 _hr = this->_buffer.bind();
-                if(_hr)
+                if (_hr == S_FALSE)
                 {
-                    logger.error("Error on binding to shader buffer");
-                    return S_FALSE;
+                    V(_hr, "binding buffer " +
+                        _gDevice->print_info(),
+                        _trace,
+                        3);
+                    return _hr;
                 }
-                
-                //create staging buffer
-                _hr = this->_staging_buffer.load(pGDevice,
-                                                 _buffer_size,
-                                                 VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-                if(_hr)
-                {
-                    logger.error("Could not create staging buffer of shader buffer");
-                    return S_FALSE;
-                }
-                
-                 _hr = this->_staging_buffer.bind();
-                if(_hr)
-                {
-                    logger.error("Error on binding to staging buffer of shader buffer");
-                    return S_FALSE;
-                }
-                                
-                return S_OK;
+                                                
+                return _hr;
             }
 
-			HRESULT update()
-			{
-                auto _size = this->_staging_buffer.get_size();
-                auto _staging_memory = this->_staging_buffer.get_memory();
-                void* _staging_buffer_memory_pointer = nullptr;
-                
-                auto _hr = vkMapMemory(this->_gDevice->vk_device,
-                                       this->_staging_buffer.get_memory(),
-                                       0,
-                                       _size,
-                                       0,
-                                       &_staging_buffer_memory_pointer);
-                if(_hr)
-                {
-                    _staging_memory = nullptr;
-                    
-                    V(S_FALSE, "w_shader_buffer", "mapping memory and upload data to stagging buffer for graphics device: " + this->_gDevice->device_name +
-                      " ID: " + std::to_string(this->_gDevice->device_id), 3, false, true);
-                    return S_FALSE;
-                }
-                    
+            HRESULT update()
+            {
+                const std::string _trace = this->name + "update";
 
-                memcpy(_staging_buffer_memory_pointer, &this->data, _size);
-                
-                VkMappedMemoryRange _flush_range =
+                HRESULT _hr = S_OK;
+
+                if (this->_host_visible)
                 {
-                    VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,              // Type
-                    nullptr,                                            // Next
-                    _staging_memory,                                    // Memory
-                    0,                                                  // Offset
-                    _size                                               // Size
-                };
-                vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_flush_range );
-                vkUnmapMemory(this->_gDevice->vk_device, _staging_memory);
-                
-                w_command_buffers _command_buffer;
-                auto _HR = _command_buffer.load(this->_gDevice, 1);
-                if(_HR)
-                {
-                    _staging_memory = nullptr;
-                    _staging_buffer_memory_pointer = nullptr;
-                    
-                    return S_FALSE;
+                    _hr = this->_buffer.set_data(&this->data);
+                    V(_hr, "setting to host visible buffer " +
+                        _gDevice->print_info(),
+                        _trace,
+                        3);
                 }
-                
-                _HR = _command_buffer.begin(0, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+                else
                 {
-                    if(_HR)
+                    auto _size = this->_staging_buffer.get_size();
+                    auto _mapped = this->_staging_buffer.map();
+                    if (_mapped)
                     {
-                        _staging_memory = nullptr;
-                        _staging_buffer_memory_pointer = nullptr;
-                        
-                        return S_FALSE;
+                        memcpy(_mapped, &this->data, _size);
+                        this->_staging_buffer.flush();
                     }
-                
-                    VkBufferCopy _buffer_copy_info =
+                    else
                     {
-                        0,                                                  // SrcOffset
-                        0,                                                  // DstOffset
-                        _size                                               // Size
-                    };
-                
-                    auto _staging_handle = this->_staging_buffer.get_handle();
-                    auto _buffer_handle = this->_buffer.get_handle();
-                
-                    auto __cmd = _command_buffer.get_command_at(0);
-                    vkCmdCopyBuffer(__cmd,
-                                    _staging_handle,
-                                    _buffer_handle,
-                                    1,
-                                    &_buffer_copy_info);
-                
-                    VkBufferMemoryBarrier _buffer_memory_barrier =
-                    {
-                        VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER,            // Type;
-                        nullptr,                                            // Next
-                        VK_ACCESS_MEMORY_WRITE_BIT,                         // SrcAccessMask
-                        VK_ACCESS_UNIFORM_READ_BIT,                         // DstAccessMask
-                        VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
-                        VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
-                        _buffer_handle,                                     // Buffer
-                        0,                                                  // Offset
-                        VK_WHOLE_SIZE                                       // Size
-                    };
-                    vkCmdPipelineBarrier( __cmd,
-                                         VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                         VK_PIPELINE_STAGE_VERTEX_SHADER_BIT,
-                                         0,
-                                         0,
-                                         nullptr,
-                                         1,
-                                         &_buffer_memory_barrier,
-                                         0,
-                                         nullptr);
+                        _hr = S_FALSE;
+                        V(_hr, "begining command buffer " +
+                            _gDevice->print_info(),
+                            _trace,
+                            3);
+                    }
+                    this->_staging_buffer.unmap();
+
+                    if (_hr == S_FALSE) return _hr;
+
+                    _hr = this->_staging_buffer.copy_to(this->_buffer);
+                    V(_hr, "copy staging buffer to device buffer " +
+                        _gDevice->print_info(),
+                        _trace,
+                        3);
                 }
-                _command_buffer.end(0);
-                
-                // Submit command buffer and copy data from staging buffer to a vertex buffer
-                VkSubmitInfo _submit_info =
-                {
-                    VK_STRUCTURE_TYPE_SUBMIT_INFO,                      // Type
-                    nullptr,                                            // Next
-                    0,                                                  // WaitSemaphoreCount
-                    nullptr,                                            // WaitSemaphores
-                    nullptr,                                            // WaitDstStageMask;
-                    1,                                                  // CommandBufferCount
-                    _command_buffer.get_commands(),                     // CommandBuffers
-                    0,                                                  // SignalSemaphoreCount
-                    nullptr                                             // SignalSemaphores
-                };
-                
-                _hr = vkQueueSubmit(this->_gDevice->vk_graphics_queue,
-                                    1,
-                                    &_submit_info,
-                                    0);
-                
-                _staging_memory = nullptr;
-                _staging_buffer_memory_pointer = nullptr;
-                
-                if(_hr)
-                {
-                    V(S_FALSE, "w_shader_buffer", "mapping memory and upload data to stagging buffer for graphics device: " + this->_gDevice->device_name +
-                      " ID: " + std::to_string(this->_gDevice->device_id), 3, false, true);
-                    return S_FALSE;
-                }
-                
-                vkDeviceWaitIdle(this->_gDevice->vk_device);
-                
-                _command_buffer.release();
-                
-                return S_OK;
+
+                return _hr;
             }
 
             const VkDescriptorBufferInfo get_descriptor_info() const
@@ -246,7 +203,8 @@ namespace wolf
             typedef  wolf::system::w_object      _super;
             std::shared_ptr<w_graphics_device>   _gDevice;
             w_buffer                             _buffer;
-            w_buffer                             _staging_buffer;            
+            w_buffer                             _staging_buffer;
+            bool                                 _host_visible;
 		};
 	}
 }

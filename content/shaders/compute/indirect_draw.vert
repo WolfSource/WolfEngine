@@ -12,10 +12,14 @@ layout (location = 2) in vec3	i_ins_pos;
 layout (location = 3) in vec3	i_ins_rot;
 layout (location = 4) in float	i_ins_scale;
 
+layout (binding = 0) uniform UBO_In
+{
+	mat4 projection_view;
+} i_ubo;
+
 layout (binding = 0) uniform UBO 
 {
 	mat4 projection_view;
-	mat4 model;
 } ubo;
 
 //Out
@@ -24,7 +28,7 @@ layout (location = 0) out vec2 o_uv;
 void main() 
 {
 	vec4 _pos = vec4((i_pos.xyz * i_ins_scale) + i_ins_pos, 1.0);
-	gl_Position = ubo.projection_view * ubo.model * _pos;
+	gl_Position = i_ubo.projection_view * _pos;
 
 	o_uv = i_uv;
 }

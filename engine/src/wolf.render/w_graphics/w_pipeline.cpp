@@ -311,23 +311,23 @@ namespace wolf
                 auto _vertex_binding_descriptions = new std::vector<VkVertexInputBindingDescription>();
                 auto _vertex_attribute_descriptions = new std::vector<VkVertexInputAttributeDescription>();
 
-                uint32_t _offset = 0;
                 uint32_t _location_index = 0;
                 for (auto& _binding : pVertexBindingAttributes.binding_attributes)
                 {
-                    uint32_t _size = 0;
+                    uint32_t _stride = 0;
                     for (auto& _iter : _binding.second)
                     {
-                        _size += _iter;
+                        _stride += _iter;
                     }
 
                     _vertex_binding_descriptions->push_back(
                     {
                             _binding.first,                                                         // Binding
-                            _size * sizeof(float),                                                  // Stride
+                            _stride,                                                                // Stride
                             (VkVertexInputRate)_binding.first                                       // InputRate => 0 = VK_VERTEX_INPUT_RATE_VERTEX , 1 = VK_VERTEX_INPUT_RATE_INSTANCE                         
                     });
 
+                    uint32_t _offset = 0;
                     for (auto& _attr : _binding.second)
                     {
                         switch (_attr)

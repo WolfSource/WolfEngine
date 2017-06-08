@@ -11,10 +11,10 @@ layout (location = 0) out vec4 o_color;
 
 void main()
 {
-    vec4 _color = texture( tex_sampler, i_uv );
-	if(_color.a == 0)
-	{
-		discard;
-	}
-	o_color = _color;
+    //vec4 _color = texture( tex_sampler, i_uv );
+	//if(_color.a == 0)
+	//{
+		//discard;
+	//}
+	o_color = vec4(1,1,1,1);//_color;
 }

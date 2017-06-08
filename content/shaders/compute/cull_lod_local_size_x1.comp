@@ -37,8 +37,6 @@ layout (binding = 1, std430) writeonly buffer IndirectDraws
 // Matrices
 layout (binding = 2) uniform UBO_In
 {
-	mat4 projection_view;
-	mat4 model;
 	vec4 camera_pos;
 	vec4 frustum_planes[6];
 } i_ubo;

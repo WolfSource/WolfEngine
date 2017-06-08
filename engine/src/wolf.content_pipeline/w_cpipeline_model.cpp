@@ -204,10 +204,10 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 
 #pragma region optimizing
 
-			//const float _epsilon = 0.0001f;
+			const float _epsilon = 0.0001f;
 
 			int _vertices_size = static_cast<int>(_vertices.size());
-			/*if (pOptimizing)
+			if (pOptimizing)
 			{
 				for (int j = _vertices_size - 1; j >= 0; j--)
 				{
@@ -262,7 +262,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 					}
 
 				}
-			}*/
+			}
 
 #pragma endregion
 

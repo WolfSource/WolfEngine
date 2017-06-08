@@ -118,17 +118,17 @@ namespace wolf
                 _font_sampler_param.index = 0;
                 _font_sampler_param.stage = w_shader_stage::FRAGMENT_SHADER;
                 _font_sampler_param.type = w_shader_binding_type::SAMPLER;
-                _font_sampler_param.sampler_info = this->_font_texture->get_descriptor_info();
+                _font_sampler_param.image_info = this->_font_texture->get_descriptor_info();
 
                 w_shader_binding_param _image_sampler_param;
                 _image_sampler_param.index = 1;
                 _image_sampler_param.stage = w_shader_stage::FRAGMENT_SHADER;
                 _image_sampler_param.type = w_shader_binding_type::SAMPLER;
-                _image_sampler_param.sampler_info = this->_images_texture->get_descriptor_info();
+                _image_sampler_param.image_info = this->_images_texture->get_descriptor_info();
 
                 this->_shader.load_shader_binding_params({ _font_sampler_param,_image_sampler_param });
 
-                auto _descriptor_set_layout = this->_shader.get_descriptor_set_layout_binding();
+                auto _descriptor_set_layout = this->_shader.get_descriptor_set_layout();
 
                 // Push constants for UI rendering parameters
                 VkPushConstantRange _push_constant_range =

@@ -66,21 +66,7 @@ private:
     
     void _prepare_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT _record_compute_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-
-#pragma pack(push,1)
-    struct tessellation_level_unifrom
-    {
-        float tess_level_uniform = 1.0f;
-    };
-#pragma pack(pop)
-
-#pragma pack(push,1)
-    struct world_view_projection_unifrom
-    {
-        glm::mat4 view_projection = glm::mat4(1);//identity
-        glm::mat4 world = glm::mat4(1);//identity
-    };
-#pragma pack(pop)
+    HRESULT _record_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     
 #pragma pack(push,1)
     struct color_unifrom
@@ -94,10 +80,7 @@ private:
     wolf::graphics::w_render_pass                                  _render_pass;
     wolf::graphics::w_frame_buffers                                _frame_buffers;
 
-    wolf::graphics::w_uniform<world_view_projection_unifrom>        _wvp_unifrom;
-
-    wolf::graphics::w_shader*                                       _indirect_shader;
-    wolf::graphics::w_shader*                                       _compute_shader;
+    wolf::graphics::w_shader*                                       _shader;
 
     wolf::graphics::w_pipeline*                                     _pipeline;
     wolf::graphics::w_pipeline*                                     _compute_pipeline;
@@ -127,14 +110,20 @@ private:
         float       scale;
     };
 
-    struct compute_unifrom
+    struct vertex_unifrom
     {
         glm::mat4 projection_view;
+    };
+
+    struct compute_unifrom
+    {
         glm::vec4 cameraPos;
         glm::vec4 frustumPlanes[6];
     };
 
-    wolf::graphics::w_uniform<compute_unifrom>                   _compute_unifrom;
+
+    wolf::graphics::w_uniform<vertex_unifrom>                      _vertex_unifrom;
+    wolf::graphics::w_uniform<compute_unifrom>                      _compute_unifrom;
 
     // Contains the instanced data
     wolf::graphics::w_buffer instanceBuffer;

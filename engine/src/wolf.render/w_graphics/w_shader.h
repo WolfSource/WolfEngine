@@ -45,9 +45,8 @@ struct w_shader_binding_param
     w_shader_binding_type       type;
     w_shader_stage              stage;
 #ifdef  __VULKAN__
-    VkDescriptorBufferInfo      uniform_info;
-    VkDescriptorBufferInfo      storage_info;
-    VkDescriptorImageInfo       sampler_info;
+    VkDescriptorBufferInfo      buffer_info;
+    VkDescriptorImageInfo       image_info;
 #endif //  __VULKAN__
 };
 
@@ -66,7 +65,8 @@ namespace wolf
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 							   _In_z_ const std::wstring& pShaderBinaryPath,
 				               _In_ const w_shader_stage pShaderStage,
-                               _In_z_ const char* pMainFunctionName = "main");
+                               _In_z_ const char* pMainFunctionName = "main",
+                               _In_ const bool pIsComputeShader = false);
             
             W_EXP HRESULT load_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
             W_EXP void update_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
@@ -77,9 +77,14 @@ namespace wolf
 
             W_EXP const std::vector<w_shader_binding_param> get_shader_binding_params() const;
             W_EXP const std::vector<VkPipelineShaderStageCreateInfo>* get_shader_stages() const;
-            W_EXP const VkDescriptorSet get_descriptor_set() const;
-            W_EXP const VkDescriptorSetLayout get_descriptor_set_layout_binding() const;
+            W_EXP const VkPipelineShaderStageCreateInfo get_compute_shader_stage() const;
             
+            W_EXP const VkDescriptorSet get_descriptor_set() const;           
+            W_EXP const VkDescriptorSet get_compute_descriptor_set() const;
+
+            W_EXP const VkDescriptorSetLayout get_descriptor_set_layout() const;
+            W_EXP const VkDescriptorSetLayout get_compute_descriptor_set_layout() const;
+
 #pragma endregion
 
             W_EXP static HRESULT load_to_shared_shaders(

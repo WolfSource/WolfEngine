@@ -131,7 +131,7 @@ VkPipelineRasterizationStateCreateInfo w_graphics_device::defaults::vk_default_p
         0,                                                              // flags
         VK_FALSE,                                                       // depthClampEnable
         VK_FALSE,                                                       // rasterizerDiscardEnable
-        VK_POLYGON_MODE_LINE,                                           // polygonMode
+        VK_POLYGON_MODE_FILL,                                           // polygonMode
         VK_CULL_MODE_BACK_BIT,                                          // cullMode
         VK_FRONT_FACE_COUNTER_CLOCKWISE,                                // frontFace
         VK_FALSE,                                                       // depthBiasEnable
@@ -295,9 +295,9 @@ ULONG w_graphics_device::release()
 
 		//release semaphores
 		vkDestroySemaphore(this->vk_device,
-			_output_window->vk_image_is_available_semaphore,
+			_output_window->vk_swap_chain_image_is_available_semaphore,
 			nullptr);
-        _output_window->vk_image_is_available_semaphore = 0;
+        _output_window->vk_swap_chain_image_is_available_semaphore = 0;
         
 		vkDestroySemaphore(this->vk_device,
 			_output_window->vk_rendering_done_semaphore,
@@ -2654,7 +2654,7 @@ namespace wolf
 				auto _hr = vkCreateSemaphore(pGDevice->vk_device,
 					&_create_info,
 					nullptr,
-					&_output_presentation_window->vk_image_is_available_semaphore);
+					&_output_presentation_window->vk_swap_chain_image_is_available_semaphore);
 				if (_hr)
 				{
 					logger.error("error on creating image_is_available semaphore for graphics device: " +
@@ -3082,7 +3082,7 @@ HRESULT w_graphics_device_manager::prepare()
             auto _hr = vkAcquireNextImageKHR(_gDevice->vk_device,
                 _output_window->vk_swap_chain,
                 UINT64_MAX,
-                _output_window->vk_image_is_available_semaphore,
+                _output_window->vk_swap_chain_image_is_available_semaphore,
                 VK_NULL_HANDLE,
                 &_output_window->vk_swap_chain_image_index);
 
@@ -3212,75 +3212,66 @@ HRESULT w_graphics_device_manager::submit()
 #elif defined(__VULKAN__)
 
 			//wait for image to be available and draw
-			VkSubmitInfo _submit_info = {};
-			_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+			//VkSubmitInfo _submit_info = {};
+			//_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-			_submit_info.waitSemaphoreCount = 1;
-			_submit_info.pWaitSemaphores = &_output_window->vk_image_is_available_semaphore;
+			//_submit_info.waitSemaphoreCount = 1;
+			//_submit_info.pWaitSemaphores = &_output_window->vk_image_is_available_semaphore;
 
-			_submit_info.signalSemaphoreCount = 1;
-			_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore;
+			//_submit_info.signalSemaphoreCount = 1;
+			//_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore;
 
-			//this is the stage where the queue should wait on the semaphore (it doesn't have to wait with drawing)
-			VkPipelineStageFlags _wait_dst_stage_mask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-			_submit_info.pWaitDstStageMask = &_wait_dst_stage_mask;
-            
-            //sort and get all avaiable commands buffers pointers
-            std::vector<w_command_buffers*> _sorted_command_buffers;
-            for (auto _iter =  _output_window->command_buffers.begin();
-                 _iter !=  _output_window->command_buffers.end(); ++_iter)
-            {
-                _sorted_command_buffers.push_back(_iter->second);
-            }
-            std::sort(_sorted_command_buffers.begin(), _sorted_command_buffers.end(),
-                      [](_In_ w_command_buffers* a, _In_ w_command_buffers* b)
-                      {
-                          return a && b ? a->get_order() < b->get_order() : true;
-                      });
+			////this is the stage where the queue should wait on the semaphore (it doesn't have to wait with drawing)
+			//VkPipelineStageFlags _wait_dst_stage_mask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			//_submit_info.pWaitDstStageMask = &_wait_dst_stage_mask;
+   //         
+   //         //sort and get all avaiable commands buffers pointers
+   //         std::vector<w_command_buffers*> _sorted_command_buffers;
+   //         for (auto _iter =  _output_window->command_buffers.begin();
+   //              _iter !=  _output_window->command_buffers.end(); ++_iter)
+   //         {
+   //             _sorted_command_buffers.push_back(_iter->second);
+   //         }
+   //         std::sort(_sorted_command_buffers.begin(), _sorted_command_buffers.end(),
+   //                   [](_In_ w_command_buffers* a, _In_ w_command_buffers* b)
+   //                   {
+   //                       return a && b ? a->get_order() < b->get_order() : true;
+   //                   });
 
-            std::vector<VkCommandBuffer> _command_buffers;
-            for (auto _iter : _sorted_command_buffers)
-            {
-                if(_iter && _iter->get_enable())
-                {
-                    auto _cmds = _iter->get_commands();
-                    _command_buffers.push_back(_cmds[_output_window->vk_swap_chain_image_index]);
-                }
-            }
-            _sorted_command_buffers.clear();
-            
-            auto _size = _command_buffers.size();
-            if (_size)
-            {
-                //submit them
-                _submit_info.commandBufferCount = static_cast<uint32_t>(_size);
-                _submit_info.pCommandBuffers = _command_buffers.data();
-            
-                _command_buffers.clear();
-            }
-            
-			//submit queue
-			auto _hr = vkQueueSubmit(
-				_gDevice->vk_present_queue.queue,
-				1,
-				&_submit_info,
-				VK_NULL_HANDLE);
-			if (_hr)
-			{
-				logger.error("error on submitting queue of graphics device: " +
-					_gDevice->device_name + " and presentation window: " + std::to_string(j));
-				release();
-				std::exit(EXIT_FAILURE);
-			}
-
-            _hr = vkQueueWaitIdle(_gDevice->vk_present_queue.queue);
-            if (_hr)
-            {
-                logger.error("error on wait idle queue of graphics device: " +
-                    _gDevice->device_name + " and presentation window: " + std::to_string(j));
-                release();
-                std::exit(EXIT_FAILURE);
-            }
+   //         std::vector<VkCommandBuffer> _command_buffers;
+   //         for (auto _iter : _sorted_command_buffers)
+   //         {
+   //             if(_iter && _iter->get_enable())
+   //             {
+   //                 auto _cmds = _iter->get_commands();
+   //                 _command_buffers.push_back(_cmds[_output_window->vk_swap_chain_image_index]);
+   //             }
+   //         }
+   //         _sorted_command_buffers.clear();
+   //         
+   //         auto _size = _command_buffers.size();
+   //         if (_size)
+   //         {
+   //             //submit them
+   //             _submit_info.commandBufferCount = static_cast<uint32_t>(_size);
+   //             _submit_info.pCommandBuffers = _command_buffers.data();
+   //         
+   //             _command_buffers.clear();
+   //         }
+   //         
+			////submit queue
+			//auto _hr = vkQueueSubmit(
+			//	_gDevice->vk_present_queue.queue,
+			//	1,
+			//	&_submit_info,
+			//	VK_NULL_HANDLE);
+			//if (_hr)
+			//{
+			//	logger.error("error on submitting queue of graphics device: " +
+			//		_gDevice->device_name + " and presentation window: " + std::to_string(j));
+			//	release();
+			//	std::exit(EXIT_FAILURE);
+			//}
 #endif
 		}
 	}
@@ -3410,6 +3401,15 @@ HRESULT w_graphics_device_manager::present()
                 logger.error("error on presenting queue of graphics device: " +
                              _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id) +
                              " and presentation window: " + std::to_string(j));
+                release();
+                std::exit(EXIT_FAILURE);
+            }
+
+            _hr = vkQueueWaitIdle(_gDevice->vk_present_queue.queue);
+            if (_hr)
+            {
+                logger.error("error on wait idle queue of graphics device: " +
+                    _gDevice->device_name + " and presentation window: " + std::to_string(j));
                 release();
                 std::exit(EXIT_FAILURE);
             }

@@ -16,7 +16,9 @@ namespace wolf
                 _gDevice(nullptr),
                 _descriptor_pool(0),
                 _descriptor_set_layout(0),
-                _descriptor_set(0)
+                _compute_descriptor_set_layout(0),
+                _descriptor_set(0),
+                _compute_descriptor_set(0)
             {
                 
             }
@@ -24,7 +26,8 @@ namespace wolf
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 						 _In_z_ const std::wstring& pShaderBinaryPath,
                          _In_ const w_shader_stage pShaderStage,
-                         _In_z_ const char* pMainFunctionName)
+                         _In_z_ const char* pMainFunctionName,
+                         _In_ const bool pIsCompueteShader)
             {
                 this->_gDevice = pGDevice;
                 
@@ -94,7 +97,14 @@ namespace wolf
                 
                 _pipeline_shader_stage_info.stage = (VkShaderStageFlagBits)pShaderStage;
                 
-                this->_shader_stages.push_back(_pipeline_shader_stage_info);
+                if (pIsCompueteShader)
+                {
+                    this->_compute_shader_stage = _pipeline_shader_stage_info;
+                }
+                else
+                {
+                    this->_shader_stages.push_back(_pipeline_shader_stage_info);
+                }
                 this->_shader_modules.push_back(_shader_module);
                 
                 return S_OK;
@@ -103,110 +113,99 @@ namespace wolf
             HRESULT load_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
             {
                 this->_shader_binding_params.swap(pShaderBindingParams);
+                
                 if (_prepare_shader_params() == S_FALSE) return S_FALSE;
+                
                 update_shader_binding_params(this->_shader_binding_params);
                 return S_OK;
             }
             
             void update_shader_binding_params(_In_ std::vector<w_shader_binding_param>& pShaderBindingParams)
             {
-                this->_shader_binding_params.swap(pShaderBindingParams);
-
                 std::vector<VkWriteDescriptorSet> _write_descriptor_sets;
+                std::vector<VkWriteDescriptorSet> _compute_write_descriptor_sets;
+
+                //seperated write descriptor for compute shader and other shader stages
                 for (auto& _iter : pShaderBindingParams)
                 {
-                    switch (_iter.type)
+                    if (_iter.stage == w_shader_stage::COMPUTE_SHADER)
                     {
-                    case w_shader_binding_type::UNIFORM:
-                    {
-                        _write_descriptor_sets.push_back(
-                        {
-                            VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
-                            nullptr,                                        // Next
-                            this->_descriptor_set,                          // DstSet
-                            _iter.index,                                    // DstBinding
-                            0,                                              // DstArrayElement
-                            1,                                              // DescriptorCount
-                            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,              // DescriptorType
-                            nullptr,                                        // ImageInfo
-                            &_iter.uniform_info,                            // BufferInfo
-                            nullptr                                         // TexelBufferView
-                        });
+                        _create_write_descriptor_sets(
+                            _iter,
+                            this->_compute_descriptor_set,
+                            _compute_write_descriptor_sets);
                     }
-                    break;
-                    case w_shader_binding_type::STORAGE:
+                    else
                     {
-                        _write_descriptor_sets.push_back(
-                        {
-                            VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
-                            nullptr,                                        // Next
-                            this->_descriptor_set,                          // DstSet
-                            _iter.index,                                    // DstBinding
-                            0,                                              // DstArrayElement
-                            1,                                              // DescriptorCount
-                            VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,              // DescriptorType
-                            nullptr,                                        // ImageInfo
-                            &_iter.storage_info,                            // BufferInfo
-                            nullptr                                         // TexelBufferView
-                        });
-                    }
-                    break;
-                    case w_shader_binding_type::SAMPLER:
-                    {
-                        _write_descriptor_sets.push_back(
-                        {
-                            VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
-                            nullptr,                                        // Next
-                            this->_descriptor_set,                          // DstSet
-                            _iter.index,                                    // DstBinding
-                            0,                                              // DstArrayElement
-                            1,                                              // DescriptorCount
-                            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,      // DescriptorType
-                            &_iter.sampler_info,                            // ImageInfo
-                            nullptr,
-                        });
-                    }
-                    break;
+                        _create_write_descriptor_sets(
+                            _iter,
+                            this->_descriptor_set,
+                            _write_descriptor_sets);
                     }
                 }
 
-                vkUpdateDescriptorSets(this->_gDevice->vk_device,
-                    static_cast<UINT32>(_write_descriptor_sets.size()),
-                    _write_descriptor_sets.data(),
-                    0,
-                    nullptr);
+                //update descriptor sets of compute shader stage
+                if (_compute_write_descriptor_sets.size())
+                {
+                    vkUpdateDescriptorSets(this->_gDevice->vk_device,
+                        static_cast<UINT32>(_compute_write_descriptor_sets.size()),
+                        _compute_write_descriptor_sets.data(),
+                        0,
+                        nullptr);
+                }
+
+                //update descriptor sets of all shader stages except compute shader
+                if (_write_descriptor_sets.size())
+                {
+                    vkUpdateDescriptorSets(this->_gDevice->vk_device,
+                        static_cast<UINT32>(_write_descriptor_sets.size()),
+                        _write_descriptor_sets.data(),
+                        0,
+                        nullptr);
+                }
             }
 
             ULONG release()
             {
                 this->_shader_stages.clear();
                 this->_shader_binding_params.clear();
-                
-                for(size_t i = 0; i  < this->_shader_modules.size(); ++i)
+
+                for (size_t i = 0; i < this->_shader_modules.size(); ++i)
                 {
                     vkDestroyShaderModule(this->_gDevice->vk_device,
-                                          this->_shader_modules[i],
-                                          nullptr);
+                        this->_shader_modules[i],
+                        nullptr);
                     this->_shader_modules[i] = 0;
                 }
-                
+
                 //release descriptor set layout
                 if (this->_descriptor_set_layout)
                 {
                     vkDestroyDescriptorSetLayout(this->_gDevice->vk_device,
-                                                 this->_descriptor_set_layout,
-                                                 nullptr);
-                    this->_descriptor_set_layout= 0;
+                        this->_descriptor_set_layout,
+                        nullptr);
+                    this->_descriptor_set_layout = 0;
                 }
                 this->_descriptor_set = 0;
-                
+
+                //release descriptor set layout
+                if (this->_compute_descriptor_set_layout)
+                {
+                    vkDestroyDescriptorSetLayout(this->_gDevice->vk_device,
+                        this->_compute_descriptor_set_layout,
+                        nullptr);
+                    this->_compute_descriptor_set_layout = 0;
+                }
+                this->_compute_descriptor_set = 0;
+
+
                 //destroy descriptor pool
                 vkDestroyDescriptorPool(this->_gDevice->vk_device,
-                                        this->_descriptor_pool,
-                                        nullptr);
+                    this->_descriptor_pool,
+                    nullptr);
                 this->_descriptor_pool = 0;
 
-                
+
                 return 1;
             }
             
@@ -217,14 +216,29 @@ namespace wolf
                 return &(this->_shader_stages);
             }
             
+            const VkPipelineShaderStageCreateInfo get_compute_shader_stage() const
+            {
+                return this->_compute_shader_stage;
+            }
+
             const VkDescriptorSet get_descriptor_set() const
             {
                 return this->_descriptor_set;
             }
 
-            const VkDescriptorSetLayout get_descriptor_set_layout_binding() const
+            const VkDescriptorSet get_compute_descriptor_set() const
+            {
+                return this->_compute_descriptor_set;
+            }
+
+            const VkDescriptorSetLayout get_descriptor_set_layout() const
             {
                 return this->_descriptor_set_layout;
+            }
+
+            const VkDescriptorSetLayout get_compute_descriptor_set_layout() const
+            {
+                return this->_compute_descriptor_set_layout;
             }
             
             const std::vector<w_shader_binding_param> get_shader_binding_params() const
@@ -236,14 +250,76 @@ namespace wolf
 
         private:
             
-            HRESULT _create_descriptor_pool(_In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize)
+            void _create_write_descriptor_sets(
+                _In_ const w_shader_binding_param& pBindingParam,
+                _In_ const VkDescriptorSet& pDescriptoSet,
+                _Inout_ std::vector<VkWriteDescriptorSet>& pWriteDescriptorSets)
+            {
+                switch (pBindingParam.type)
+                {
+                case w_shader_binding_type::UNIFORM:
+                {
+                    pWriteDescriptorSets.push_back(
+                    {
+                        VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
+                        nullptr,                                        // Next
+                        pDescriptoSet,                                  // DstSet
+                        pBindingParam.index,                            // DstBinding
+                        0,                                              // DstArrayElement
+                        1,                                              // DescriptorCount
+                        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,              // DescriptorType
+                        nullptr,                                        // ImageInfo
+                        &pBindingParam.buffer_info,                     // BufferInfo
+                        nullptr                                         // TexelBufferView
+                    });
+                }
+                break;
+                case w_shader_binding_type::STORAGE:
+                {
+                    pWriteDescriptorSets.push_back(
+                    {
+                        VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
+                        nullptr,                                        // Next
+                        pDescriptoSet,                                  // DstSet
+                        pBindingParam.index,                            // DstBinding
+                        0,                                              // DstArrayElement
+                        1,                                              // DescriptorCount
+                        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,              // DescriptorType
+                        nullptr,                                        // ImageInfo
+                        &pBindingParam.buffer_info,                     // BufferInfo
+                        nullptr                                         // TexelBufferView
+                    });
+                }
+                break;
+                case w_shader_binding_type::SAMPLER:
+                {
+                    pWriteDescriptorSets.push_back(
+                    {
+                        VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
+                        nullptr,                                        // Next
+                        pDescriptoSet,                                  // DstSet
+                        pBindingParam.index,                            // DstBinding
+                        0,                                              // DstArrayElement
+                        1,                                              // DescriptorCount
+                        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,      // DescriptorType
+                        &pBindingParam.image_info,                      // ImageInfo
+                        nullptr,
+                    });
+                }
+                break;
+                }
+            }
+
+            HRESULT _create_descriptor_pool(
+                _In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize, 
+                _In_ const uint32_t& pMaxPoolSets)
             {
                 VkDescriptorPoolCreateInfo _descriptor_pool_create_info =
                 {
                     VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,    // Type
                     nullptr,                                          // Next
                     0,                                                // Flags
-                    1,                                                // MaxSets
+                    pMaxPoolSets,                                     // MaxSets
                     static_cast<uint32_t>(pDescriptorPoolSize.size()),// PoolSizeCount
                     pDescriptorPoolSize.data()                        // PoolSizes
                 };
@@ -262,8 +338,61 @@ namespace wolf
                 return S_OK;
             }
             
-            //Create desciption set layout binding
-            HRESULT _create_descriptor_set_layout_binding(_In_ const std::vector<VkDescriptorSetLayoutBinding>& pDescriptorSetLayoutBinding)
+            void _create_descriptor_layout_bindings(
+                _In_    const w_shader_binding_param& pParam,
+                _Inout_ uint32_t& pNumberOfUniforms,
+                _Inout_ uint32_t& pNumberOfStorages,
+                _Inout_ uint32_t& pNumberOfSamplers,
+                _Inout_ std::vector<VkDescriptorSetLayoutBinding>& pDescriptorSetLayoutBindings)
+            {
+                switch (pParam.type)
+                {
+                case UNIFORM:
+                {
+                    pNumberOfUniforms++;
+                    pDescriptorSetLayoutBindings.push_back(
+                    {
+                        pParam.index,                                       // Binding
+                        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // DescriptorType
+                        1,                                                  // DescriptorCount
+                        (VkShaderStageFlags)pParam.stage,                   // StageFlags
+                        nullptr                                             // ImmutableSamplers
+                    });
+                }
+                break;
+                case STORAGE:
+                {
+                    pNumberOfStorages++;
+                    pDescriptorSetLayoutBindings.push_back(
+                    {
+                        pParam.index,                                       // Binding
+                        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,                  // DescriptorType
+                        1,                                                  // DescriptorCount
+                        (VkShaderStageFlags)pParam.stage,                   // StageFlags
+                        nullptr                                             // ImmutableSamplers
+                    });
+                }
+                break;
+                case SAMPLER:
+                {
+                    pNumberOfSamplers++;
+                    pDescriptorSetLayoutBindings.push_back(
+                    {
+                        pParam.index,                                       // Binding
+                        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // DescriptorType
+                        1,                                                  // DescriptorCount
+                        (VkShaderStageFlags)pParam.stage,                   // StageFlags
+                        nullptr                                             // ImmutableSamplers
+                    });
+                }
+                break;
+                }
+            }
+
+            HRESULT _create_descriptor_set_layout_binding(
+                _In_ const std::vector<VkDescriptorSetLayoutBinding>& pDescriptorSetLayoutBinding,
+                _Inout_ VkDescriptorSet& pDescriptorSet, 
+                _Inout_ VkDescriptorSetLayout& pDescriptorSetLyout)
             {
                 VkDescriptorSetLayoutCreateInfo _descriptor_set_layout_create_info =
                 {
@@ -277,7 +406,7 @@ namespace wolf
                 auto _hr = vkCreateDescriptorSetLayout(this->_gDevice->vk_device,
                                                        &_descriptor_set_layout_create_info,
                                                        nullptr,
-                                                       &this->_descriptor_set_layout);
+                                                       &pDescriptorSetLyout);
                 if(_hr)
                 {
                     V(S_FALSE, "creating descriptor set layout for graphics device :" +
@@ -302,12 +431,12 @@ namespace wolf
                     nullptr,                                        // Next
                     this->_descriptor_pool,                         // DescriptorPool
                     1,                                              // DescriptorSetCount
-                    &this->_descriptor_set_layout                   // SetLayouts
+                    &pDescriptorSetLyout                            // SetLayouts
                 };
                 
                 _hr = vkAllocateDescriptorSets(this->_gDevice->vk_device,
                                                &_descriptor_set_allocate_info,
-                                               &this->_descriptor_set);
+                                               &pDescriptorSet);
                 if(_hr)
                 {
                     V(S_FALSE, "creating descriptor set for graphics device :" + this->_gDevice->device_name +
@@ -329,57 +458,30 @@ namespace wolf
                 uint32_t _number_of_samplers = 0;
 
                 std::vector<VkDescriptorSetLayoutBinding> _layout_bindings;
+                std::vector<VkDescriptorSetLayoutBinding> _compute_layout_bindings;
+
                 for (auto& _iter : this->_shader_binding_params)
                 {
-                    auto _binding_index = _iter.index;
-                    auto _binding_type = _iter.type;
-                    auto _binding_stage = _iter.stage;
-
-                    switch (_binding_type)
+                    if (_iter.stage == w_shader_stage::COMPUTE_SHADER)
                     {
-                    case UNIFORM:
-                    {
-                        _number_of_uniforms++;
-                        _layout_bindings.push_back(
-                        {
-                            _binding_index,                                     // Binding
-                            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // DescriptorType
-                            1,                                                  // DescriptorCount
-                            (VkShaderStageFlags)_binding_stage,                 // StageFlags
-                            nullptr                                             // ImmutableSamplers
-                        });
+                        _create_descriptor_layout_bindings(
+                            _iter,
+                            _number_of_uniforms,
+                            _number_of_storages,
+                            _number_of_samplers,
+                            _compute_layout_bindings);
                     }
-                    break;
-                    case STORAGE:
+                    else
                     {
-                        _number_of_storages++;
-                        _layout_bindings.push_back(
-                        {
-                            _binding_index,                                     // Binding
-                            VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,                  // DescriptorType
-                            1,                                                  // DescriptorCount
-                            (VkShaderStageFlags)_binding_stage,                 // StageFlags
-                            nullptr                                             // ImmutableSamplers
-                        });
-                    }
-                    break;
-                    case SAMPLER:
-                    {
-                        _number_of_samplers++;
-                        _layout_bindings.push_back(
-                        {
-                            _binding_index,                                     // Binding
-                            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // DescriptorType
-                            1,                                                  // DescriptorCount
-                            (VkShaderStageFlags)_binding_stage,                 // StageFlags
-                            nullptr                                             // ImmutableSamplers
-                        });
-                    }
-                    break;
+                        _create_descriptor_layout_bindings(
+                            _iter,
+                            _number_of_uniforms,
+                            _number_of_storages,
+                            _number_of_samplers,
+                            _layout_bindings);
                     }
                 }
 
-                //we need one image and one uniform for basic shaders
                 std::vector<VkDescriptorPoolSize> _descriptor_pool_sizes;
                 if (_number_of_uniforms)
                 {
@@ -408,7 +510,9 @@ namespace wolf
 
                 if (_descriptor_pool_sizes.size())
                 {
-                    _hr = _create_descriptor_pool(_descriptor_pool_sizes);
+                    _hr = _create_descriptor_pool(
+                        _descriptor_pool_sizes,
+                        _compute_layout_bindings.size() ? 2 : 1);
                     if (_hr == S_FALSE)
                     {
                         logger.error("Error on creating shader descriptor pool for mesh: " +
@@ -419,7 +523,23 @@ namespace wolf
 
                 if (_layout_bindings.size())
                 {
-                    _hr = _create_descriptor_set_layout_binding(_layout_bindings);
+                    _hr = _create_descriptor_set_layout_binding(
+                        _layout_bindings, 
+                        this->_descriptor_set, 
+                        this->_descriptor_set_layout);
+                    if (_hr == S_FALSE)
+                    {
+                        logger.error("Error on creating shader descriptor pool for mesh: " +
+                            this->_name);
+                        return S_FALSE;
+                    }
+                }
+                if (_compute_layout_bindings.size())
+                {
+                    _hr = _create_descriptor_set_layout_binding(
+                        _compute_layout_bindings, 
+                        this->_compute_descriptor_set, 
+                        this->_compute_descriptor_set_layout);
                     if (_hr == S_FALSE)
                     {
                         logger.error("Error on creating shader descriptor pool for mesh: " +
@@ -434,10 +554,13 @@ namespace wolf
             std::string                                             _name;
             std::shared_ptr<w_graphics_device>                      _gDevice;
             std::vector<VkPipelineShaderStageCreateInfo>            _shader_stages;
+            VkPipelineShaderStageCreateInfo                         _compute_shader_stage;
             std::vector<VkShaderModule>                             _shader_modules;
             VkDescriptorPool                                        _descriptor_pool;
             VkDescriptorSetLayout                                   _descriptor_set_layout;
+            VkDescriptorSetLayout                                   _compute_descriptor_set_layout;
             VkDescriptorSet                                         _descriptor_set;
+            VkDescriptorSet                                         _compute_descriptor_set;
             std::vector<w_shader_binding_param>                     _shader_binding_params;
         };
     }
@@ -460,10 +583,11 @@ w_shader::~w_shader()
 HRESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 		_In_z_ const std::wstring& pShaderBinaryPath,
         _In_ const w_shader_stage pShaderStage,
-        _In_z_ const char* pMainFunctionName) 
+        _In_z_ const char* pMainFunctionName,
+        _In_ const bool pIsComputeShader)
 {
     if(!this->_pimp) return S_FALSE;
-    return this->_pimp->load(pGDevice, pShaderBinaryPath, pShaderStage, pMainFunctionName);
+    return this->_pimp->load(pGDevice, pShaderBinaryPath, pShaderStage, pMainFunctionName, pIsComputeShader);
 }
 
 HRESULT w_shader::load_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
@@ -496,16 +620,35 @@ const std::vector<VkPipelineShaderStageCreateInfo>* w_shader::get_shader_stages(
     return this->_pimp->get_shader_stages();
 }
 
+
+const VkPipelineShaderStageCreateInfo w_shader::get_compute_shader_stage() const
+{
+    if (!this->_pimp) return VkPipelineShaderStageCreateInfo();
+    return this->_pimp->get_compute_shader_stage();
+}
+
 const VkDescriptorSet w_shader::get_descriptor_set() const
 {
     if(!this->_pimp) return VkDescriptorSet();
     return this->_pimp->get_descriptor_set();
 }
 
-const VkDescriptorSetLayout w_shader::get_descriptor_set_layout_binding() const
+const VkDescriptorSet w_shader::get_compute_descriptor_set() const
+{
+    if (!this->_pimp) return VkDescriptorSet();
+    return this->_pimp->get_compute_descriptor_set();
+}
+
+const VkDescriptorSetLayout w_shader::get_descriptor_set_layout() const
 {
     if(!this->_pimp) return VkDescriptorSetLayout();
-    return this->_pimp->get_descriptor_set_layout_binding();
+    return this->_pimp->get_descriptor_set_layout();
+}
+
+const VkDescriptorSetLayout w_shader::get_compute_descriptor_set_layout() const
+{
+    if (!this->_pimp) return VkDescriptorSetLayout();
+    return this->_pimp->get_compute_descriptor_set_layout();
 }
 
 const std::vector<w_shader_binding_param> w_shader::get_shader_binding_params() const
@@ -572,7 +715,7 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
     }
     if (!pComputeShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pComputeShaderPath, w_shader_stage::COMPUTE_SHADER, pMainFunctionName) == S_FALSE)
+        if (_shader->load(pGDevice, pComputeShaderPath, w_shader_stage::COMPUTE_SHADER, pMainFunctionName, true) == S_FALSE)
         {
             return S_FALSE;
         }

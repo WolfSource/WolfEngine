@@ -11,6 +11,7 @@ namespace wolf
         {
         public:
             w_buffer_pimp() :
+                _name("w_buffer::"),
                 _gDevice(nullptr),
                 _size(0),
                 _handle(0),
@@ -120,14 +121,16 @@ namespace wolf
             
             HRESULT copy_to(_In_ w_buffer& pDestinationBuffer)
             {
+                const std::string _trace = this->_name + "copy_to";
+                
                 //create one command buffer
                 w_command_buffers _copy_command_buffer;
                 auto _hr = _copy_command_buffer.load(this->_gDevice, 1);
                 if (_hr != S_OK)
                 {
-                    V(S_FALSE,
-                        "loading command buffer for copying buffer to another buffer",
-                        this->_name,
+                    V(S_FALSE, "loading command buffer " +
+                        _gDevice->print_info(),
+                        _trace,
                         3);
                     return _hr;
                 }
@@ -135,9 +138,9 @@ namespace wolf
                 _hr = _copy_command_buffer.begin(0);
                 if (_hr != S_OK)
                 {
-                    V(S_FALSE,
-                        "begining command buffer for copying buffer to another buffer",
-                        this->_name,
+                    V(S_FALSE, "begining command buffer " +
+                        _gDevice->print_info(),
+                        _trace,
                         3);
                     return _hr;
                 }
@@ -158,8 +161,9 @@ namespace wolf
                 if (_hr != S_OK)
                 {
                     V(S_FALSE,
-                        "flushing command buffer for copying buffer to another buffer",
-                        this->_name,
+                        "flushing command buffer" +
+                        _gDevice->print_info(),
+                        _trace,
                         3);
                     return _hr;
                 }
@@ -171,6 +175,8 @@ namespace wolf
 
             void* map()
             {
+                const std::string _trace = this->_name + "map";
+
                 //we can not access to VRAM, but we can copy our data to DRAM
                 if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return nullptr;
 
@@ -186,9 +192,9 @@ namespace wolf
                 if (_hr)
                 {
                     this->_mapped = nullptr;
-                    V(S_FALSE, "mapping data to to vertex buffer's memory for graphics device: " +
-                        _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
-                        this->_name, 3, false, true);
+                    V(S_FALSE, "mapping data to to vertex buffer's memory " + 
+                        _gDevice->print_info(),
+                        _trace, 3, false, true);
 
                     return nullptr;
                 }

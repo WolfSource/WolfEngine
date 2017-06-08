@@ -158,23 +158,28 @@ namespace wolf
                 return _copy_DRAM_to_VRAM(pVerticesSize, this->_indices_count * sizeof(UINT));
             }
 
-            void render(_In_ const VkCommandBuffer& pCommandBuffer, _In_ const VkBuffer& pInstanceHandle,
-                _In_ uint32_t& pInstancesCount)
+            void draw(_In_ const VkCommandBuffer& pCommandBuffer, 
+                _In_ const VkBuffer& pInstanceHandle,
+                _In_ uint32_t& pInstancesCount,
+                _In_ const bool& pIndrectDraw)
             {
-                VkDeviceSize _offset = 0;
+                VkDeviceSize _offsets[1] = { 0 };
 
                 auto _vertex_buffer_handle = this->_vertex_buffer.get_handle();
-                vkCmdBindVertexBuffers(pCommandBuffer, 0, 1, &_vertex_buffer_handle, &_offset);
+                vkCmdBindVertexBuffers(pCommandBuffer, 0, 1, &_vertex_buffer_handle, _offsets);
 
                 if (pInstanceHandle)
                 {
-                    vkCmdBindVertexBuffers(pCommandBuffer, 1, 1, &pInstanceHandle, &_offset);
+                    vkCmdBindVertexBuffers(pCommandBuffer, 1, 1, &pInstanceHandle, _offsets);
                 }
 
                 auto _index_buffer_handle = this->_index_buffer.get_handle();
                 vkCmdBindIndexBuffer(pCommandBuffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
 
-                vkCmdDrawIndexed(pCommandBuffer, this->_indices_count, pInstancesCount + 1, 0, 0, 0);
+                if (!pIndrectDraw)
+                {
+                    vkCmdDrawIndexed(pCommandBuffer, this->_indices_count, pInstancesCount + 1, 0, 0, 0);
+                }
 
                 _vertex_buffer_handle = nullptr;
                 _index_buffer_handle = nullptr;
@@ -485,13 +490,14 @@ HRESULT w_mesh::update_dynamic_buffer(
         pIndicesCount) : S_FALSE;
 }
 
-void w_mesh::render(_In_ const VkCommandBuffer& pCommandBuffer,
+void w_mesh::draw(_In_ const VkCommandBuffer& pCommandBuffer,
     _In_ const VkBuffer& pInstanceHandle,
-    _In_ uint32_t& pInstancesCount)
+    _In_ uint32_t& pInstancesCount,
+    _In_ const bool& pIndirectDraw)
 {
     if (this->_pimp)
     {
-        this->_pimp->render(pCommandBuffer, pInstanceHandle, pInstancesCount);
+        this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw);
     }
 }
 

@@ -73,8 +73,10 @@ namespace wolf
                 _In_ const UINT* const pIndicesData,
                 _In_ const UINT pIndicesCount);
 
-            W_EXP void render(_In_ const VkCommandBuffer& pCommandBuffer, _In_ const VkBuffer& pInstanceHandle,
-                _In_ uint32_t& pInstancesCount);
+            W_EXP void draw(_In_ const VkCommandBuffer& pCommandBuffer, 
+                _In_ const VkBuffer& pInstanceHandle,
+                _In_ uint32_t& pInstancesCount,
+                _In_ const bool& pIndirectDraw);
 
 			//release all resources
 			W_EXP virtual ULONG release() override;

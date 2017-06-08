@@ -224,7 +224,7 @@ namespace wolf
             VkDeviceMemory							vk_depth_buffer_memory = 0;
             
 			//Synchronization objects
-            VkSemaphore								vk_image_is_available_semaphore = 0;
+            VkSemaphore								vk_swap_chain_image_is_available_semaphore = 0;
             VkSemaphore								vk_rendering_done_semaphore = 0;
 #endif
 
@@ -238,6 +238,14 @@ namespace wolf
 			friend class w_graphics_device_manager;
 		public:
             w_graphics_device();
+
+            W_EXP const std::string print_info()
+            {
+                return std::string(
+                    "graphics device: " + this->device_name +
+                    " ID:" + std::to_string(this->device_id) +
+                    " VendorID:" + std::to_string(this->device_vendor_id));
+            }
 
 			//get the first and the primary window which was created with this device
 			W_EXP w_output_presentation_window main_window();

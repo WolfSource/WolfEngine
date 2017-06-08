@@ -26,9 +26,7 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
     w_game(pRunningDirectory, pAppName)
 #endif
 
-    ,
-    _indirect_shader(nullptr),
-    _compute_shader(nullptr)
+    ,_shader(nullptr)
 
 {
     w_game::set_fixed_time_step(false);
@@ -92,7 +90,7 @@ void scene::load()
     HRESULT _hr;
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/lod.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/lod_pri.dae");
     if (_scene)
     {
         //get all models
@@ -115,17 +113,19 @@ void scene::load()
 
             for (auto& _mesh_data : _model_meshes)
             {
+                auto _base_index = _indices.size();
+
+                for (size_t i = 0; i < _mesh_data->indices.size(); ++i)
+                {
+                    _indices.push_back(_base_index + _mesh_data->indices[i]);
+                }
+
                 LOD lod;
-                lod.firstIndex = _indices.size();			    // First index for this LOD
+                lod.firstIndex = _base_index;			        // First index for this LOD
                 lod.indexCount = _mesh_data->indices.size();	// Index count for this LOD
-                lod.distance = 5.0f + n * 5.0f;					// Starting distance (to viewer) for this LOD
+                lod.distance = 200.0f + n * 50.0f;					// Starting distance (to viewer) for this LOD
                 n++;
                 LODLevels.push_back(lod);
-
-                _indices.insert(
-                    _indices.end(),
-                    _mesh_data->indices.begin(),
-                    _mesh_data->indices.end());
 
                 for (auto& _data : _mesh_data->vertices)
                 {
@@ -160,7 +160,7 @@ void scene::load()
             logger.error("Error on allocating memory for mesh");
             w_game::exit();
         }
-        auto _v_size = _vertices.size();
+        auto _v_size = static_cast<uint32_t>(_vertices.size());
         _hr = _mesh->load(_gDevice,
             _vertices.data(),
             _v_size * sizeof(float),
@@ -180,8 +180,11 @@ void scene::load()
         _scene->get_first_camera(this->_camera);
         this->_camera.set_far_plan(10000);
         this->_camera.set_aspect_ratio((float)_screen_size.x / (float)_screen_size.y);
+
+        this->_camera.set_translate(0, 0, 0);
         this->_camera.update_view();
         this->_camera.update_projection();
+        this->_camera.update_frustum();
 
         _scene->release();
     }
@@ -219,6 +222,10 @@ void scene::load()
         w_game::exiting = true;
         return;
     }
+
+
+    _prepare_buffers(_gDevice);
+
     auto _render_pass_handle = this->_render_pass.get_handle();
     
     std::string _pipeline_cache_name = "pipeline_cache";
@@ -228,25 +235,8 @@ void scene::load()
         _pipeline_cache_name.clear();
     }
 
-
-    _hr = this->_wvp_unifrom.load(_gDevice);
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error on loading wvp uniform");
-        release();
-        w_game::exiting = true;
-        return;
-    }
-
-    auto _translate = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-    glm::mat4 _scale = scale(glm::mat4(1.0f), glm::vec3(1.0));
-
-    auto _world = _translate *
-        rotate(0.0f, glm::vec3(-1.0f, 0.0f, 0.0f)) *
-        rotate(0.0f, glm::vec3(0.0f, 1.0f, 0.0f)) *
-        rotate(0.0f, glm::vec3(0.0f, 0.0f, -1.0f)) * _scale;
-
-    this->_wvp_unifrom.data.world = _world;
+    this->_vertex_unifrom.load(_gDevice);
+    this->_compute_unifrom.load(_gDevice);
 
     //load shader
     std::vector<w_shader_binding_param> _shader_params;
@@ -255,27 +245,57 @@ void scene::load()
     _param.index = 0;
     _param.type = w_shader_binding_type::UNIFORM;
     _param.stage = w_shader_stage::VERTEX_SHADER;
-    _param.uniform_info = this->_wvp_unifrom.get_descriptor_info();
+    _param.buffer_info = this->_vertex_unifrom.get_descriptor_info();
     _shader_params.push_back(_param);
     
     _param.index = 1;
     _param.type = w_shader_binding_type::SAMPLER;
     _param.stage = w_shader_stage::FRAGMENT_SHADER;
-    _param.sampler_info = w_texture::default_texture->get_descriptor_info();
+    _param.image_info = w_texture::default_texture->get_descriptor_info();
+    _shader_params.push_back(_param);
+
+    _param.index = 0;
+    _param.type = w_shader_binding_type::STORAGE;
+    _param.stage = w_shader_stage::COMPUTE_SHADER;
+    _param.buffer_info = instanceBuffer.get_descriptor_info();
+    _shader_params.push_back(_param);
+
+    _param.index = 1;
+    _param.type = w_shader_binding_type::STORAGE;
+    _param.stage = w_shader_stage::COMPUTE_SHADER;
+    _param.buffer_info = indirectCommandsBuffer.get_descriptor_info();
+    _shader_params.push_back(_param);
+
+    _param.index = 2;
+    _param.type = w_shader_binding_type::UNIFORM;
+    _param.stage = w_shader_stage::COMPUTE_SHADER;
+    _param.buffer_info = this->_compute_unifrom.get_descriptor_info();
+    _shader_params.push_back(_param);
+
+    _param.index = 3;
+    _param.type = w_shader_binding_type::STORAGE;
+    _param.stage = w_shader_stage::COMPUTE_SHADER;
+    _param.buffer_info = indirectDrawCountBuffer.get_descriptor_info();
+    _shader_params.push_back(_param);
+
+    _param.index = 4;
+    _param.type = w_shader_binding_type::STORAGE;
+    _param.stage = w_shader_stage::COMPUTE_SHADER;
+    _param.buffer_info = compute.lodLevelsBuffers.get_descriptor_info();
     _shader_params.push_back(_param);
 
     //load shaders
     _hr = w_shader::load_to_shared_shaders(
         _gDevice,
-        "indirect_shader",
+        "shader",
         content_path + L"shaders/compute/indirect_draw.vert.spv",
         L"",
         L"",
         L"",
         content_path + L"shaders/compute/indirect_draw.frag.spv",
-        L"",
+        content_path + L"shaders/compute/cull_lod_local_size_x1.comp.spv",
         _shader_params,
-        &this->_indirect_shader);
+        &this->_shader);
     if (_hr == S_FALSE)
     {
         logger.error("Error on loading indirect shader");
@@ -295,14 +315,14 @@ void scene::load()
     _vertex_binding_attrs.binding_attributes[0] = { Vec3, Vec2 };
     _vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float };
 
-    auto _descriptor_set_layout_binding = this->_indirect_shader->get_descriptor_set_layout_binding();
+    auto _descriptor_set_layout_binding = this->_shader->get_descriptor_set_layout();
     this->_pipeline = new w_pipeline();
     _hr = this->_pipeline->load(
         _gDevice,
         _vertex_binding_attrs,
         VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
         _render_pass_handle,
-        _indirect_shader->get_shader_stages(),
+        _shader->get_shader_stages(),
         &_descriptor_set_layout_binding,
         { this->_render_pass.get_viewport() }, //viewports
         { this->_render_pass.get_viewport_scissor() }, //viewports scissor
@@ -317,66 +337,14 @@ void scene::load()
         logger.error("Error creating pipeline for mesh");
     }
 
-    _prepare_buffers(_gDevice);
-
-    _shader_params.clear();
-    
-    _param.index = 0;
-    _param.type = w_shader_binding_type::STORAGE;
-    _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.storage_info = instanceBuffer.get_descriptor_info();
-    _shader_params.push_back(_param);
-
-    _param.index = 1;
-    _param.type = w_shader_binding_type::STORAGE;
-    _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.storage_info = indirectCommandsBuffer.get_descriptor_info();
-    _shader_params.push_back(_param);
-
-    _param.index = 2;
-    _param.type = w_shader_binding_type::UNIFORM;
-    _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.storage_info = _compute_unifrom.get_descriptor_info();
-    _shader_params.push_back(_param);
-
-    _param.index = 3;
-    _param.type = w_shader_binding_type::STORAGE;
-    _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.storage_info = indirectDrawCountBuffer.get_descriptor_info();
-    _shader_params.push_back(_param);
-
-    _param.index = 4;
-    _param.type = w_shader_binding_type::STORAGE;
-    _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.storage_info = compute.lodLevelsBuffers.get_descriptor_info();
-    _shader_params.push_back(_param);
-
-    //load shaders
-    _hr = w_shader::load_to_shared_shaders(
-        _gDevice,
-        "compute_shader",
-        L"",
-        L"",
-        L"",
-        L"",
-        L"",
-        content_path + L"shaders/compute/cull_lod_local_size_x1.comp.spv",
-        _shader_params,
-        &this->_compute_shader);
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error on loading indirect shader");
-        w_game::exiting = true;
-        return;
-    }
-
-    auto _compute_descriptor_set_layout_binding = this->_compute_shader->get_descriptor_set_layout_binding();
-    auto _compute_shader_stages = this->_compute_shader->get_shader_stages();
+        
+    auto _compute_descriptor_set_layout_binding = this->_shader->get_compute_descriptor_set_layout();
+    auto _compute_shader_stage = this->_shader->get_compute_shader_stage();
 
     this->_compute_pipeline = new w_pipeline();
     _hr = this->_compute_pipeline->load_compute(
         _gDevice,
-        _compute_shader_stages->at(0),
+        _compute_shader_stage,
         _compute_descriptor_set_layout_binding,
         6,
         "pipeline_cache");
@@ -421,8 +389,6 @@ void scene::load()
         nullptr, 
         &compute.semaphore);
     
-    _record_compute_command_buffer(_gDevice);
-
     //now assign new command buffers
     this->_draw_command_buffers.set_enable(true);
     this->_draw_command_buffers.set_order(1);
@@ -434,7 +400,7 @@ void scene::load()
         exit(1);
     }
 
-    _hr = _gDevice->store_to_global_command_buffers("render_quad_with_texture",
+    _hr = _gDevice->store_to_global_command_buffers("draw",
         &this->_draw_command_buffers,
         _output_window->index);
     if (_hr == S_FALSE)
@@ -451,19 +417,25 @@ void scene::load()
     _gui_images->initialize_texture_2D_from_file(content_path + L"textures/gui/icons.png", &_gui_images);
     w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _gui_images);
 
+
+
+    _record_compute_command_buffer(_gDevice);
+    _record_draw_command_buffer(_gDevice);
 }
 
 void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
     w_buffer stagingBuffer;
 
+    const int __count = 1;
+
     // Indirect draw commands
-    indirectCommands.resize(1);
-    for (uint32_t z = 0; z < 1; z++)
+    indirectCommands.resize(__count);
+    for (uint32_t z = 0; z < __count; z++)
     {
         uint32_t index = 0;
         indirectCommands[index].instanceCount = 1;
-        indirectCommands[index].firstInstance = index;
+        indirectCommands[index].firstInstance = index++;
         // firstIndex and indexCount are written by the compute shader
     }
 
@@ -494,17 +466,15 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     this->indirectDrawCountBuffer.map();
 
 
-    std::vector<InstanceData> instanceData(1);
+    std::vector<InstanceData> instanceData(__count);
     // Map for host access
-    for (uint32_t z = 0; z < 1; z++)
+    for (uint32_t z = 0; z < __count; z++)
     {
         uint32_t index = 0;
         instanceData[index].pos = glm::vec3(0, 0, 0);
         instanceData[index].rot = glm::vec3(0, 0, 0);
         instanceData[index].scale = 2.0f;
     }
-    _hr = this->indirectDrawCountBuffer.flush();
-    this->indirectDrawCountBuffer.unmap();
 
     _size = instanceData.size() * sizeof(InstanceData);
     w_buffer stagingBuffer_1;
@@ -520,22 +490,6 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     _hr = instanceBuffer.bind();
     _hr = stagingBuffer_1.copy_to(instanceBuffer);
     stagingBuffer_1.release();
-
-    uint32_t n = 0;
-    for (auto _model : this->_models)
-    {
-        for (size_t i = 0; i < _model->model_meshes.size(); ++i)
-        {
-            auto _mesh = _model->model_meshes[i];
-
-            LOD lod;
-            lod.firstIndex = 0;	                            // First index for this LOD
-            lod.indexCount = _mesh->get_indices_count();	// Index count for this LOD
-            lod.distance = 5.0f + n * 5.0f;			        // Starting distance (to viewer) for this LOD
-            n++;
-            LODLevels.push_back(lod);
-        }
-    }
 
     _size = LODLevels.size() * sizeof(LOD);
     w_buffer stagingBuffer_2;
@@ -553,7 +507,7 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     _hr = stagingBuffer_2.copy_to(compute.lodLevelsBuffers);
     _hr = stagingBuffer_2.release();
 
-    _hr = this->_compute_unifrom.load(pGDevice);
+    _hr = this->_compute_unifrom.load(pGDevice, true);
 }
 
 HRESULT scene::_record_compute_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -583,7 +537,7 @@ HRESULT scene::_record_compute_command_buffer(_In_ const std::shared_ptr<w_graph
         1, &_buffer_barrier,
         0, nullptr);
 
-    auto _desciptor_set = this->_compute_shader->get_descriptor_set();
+    auto _desciptor_set = this->_shader->get_compute_descriptor_set();
     vkCmdBindPipeline(_cmd, VK_PIPELINE_BIND_POINT_COMPUTE, this->_compute_pipeline->get_handle());
     vkCmdBindDescriptorSets(
         _cmd,
@@ -623,27 +577,8 @@ HRESULT scene::_record_compute_command_buffer(_In_ const std::shared_ptr<w_graph
     return S_OK;
 }
 
-void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
+HRESULT scene::_record_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
-    if (w_game::exiting) return;
-    this->_camera.update(pGameTime, this->_screen_size);
-    this->_camera.update_frustum();
-
-    auto _pos = this->_camera.get_translate();
-    this->_compute_unifrom.data.cameraPos = glm::vec4(_pos.x, _pos.y, _pos.z, 1.0) * -1.0f;
-    this->_compute_unifrom.data.projection_view = this->_camera.get_projection() * this->_camera.get_view();
-
-    std::memcpy(this->_compute_unifrom.data.frustumPlanes, this->_camera.get_frustum_plans().data(), sizeof(glm::vec4) * 6);
-
-    w_game::update(pGameTime);
-}
-
-static float __t = 1.0f;
-HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
-{
-    auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows[0]);
-
     //record clear screen command buffer for every swap chain image
     for (uint32_t i = 0; i < this->_draw_command_buffers.get_commands_size(); ++i)
     {
@@ -658,21 +593,20 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
                 // Mesh containing the LODs
 
-                VkDeviceSize offsets[1] = { 0 };
 
-                auto _descriptor_set = this->_indirect_shader->get_descriptor_set();
+                auto _descriptor_set = this->_shader->get_descriptor_set();
                 this->_pipeline->bind(_cmd, &_descriptor_set);
 
                 uint32_t _instances_count = 1;
-                _mesh->render(_cmd, instanceBuffer.get_handle(), _instances_count);
+                _mesh->draw(_cmd, instanceBuffer.get_handle(), _instances_count, true);
 
-                if (_gDevice->vk_physical_device_features.multiDrawIndirect)
+                if (pGDevice->vk_physical_device_features.multiDrawIndirect)
                 {
                     vkCmdDrawIndexedIndirect(
                         _cmd,
-                        indirectCommandsBuffer.get_handle(), 
-                        0, 
-                        indirectStats.drawCount, 
+                        indirectCommandsBuffer.get_handle(),
+                        0,
+                        indirectStats.drawCount,
                         sizeof(VkDrawIndexedIndirectCommand));
                 }
                 else
@@ -681,36 +615,119 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                     for (auto j = 0; j < indirectCommands.size(); j++)
                     {
                         vkCmdDrawIndexedIndirect(
-                            _cmd, 
-                            indirectCommandsBuffer.get_handle(), 
+                            _cmd,
+                            indirectCommandsBuffer.get_handle(),
                             j * sizeof(VkDrawIndexedIndirectCommand),
                             1, sizeof(VkDrawIndexedIndirectCommand));
                     }
                 }
 
-               
+
                 //make sure render all gui before loading gui_render
-                w_imgui::new_frame((float)pGameTime.get_elapsed_seconds(), []()
-                {
-                    make_gui();
-                });
-                w_imgui::update_buffers(this->_render_pass);
-                w_imgui::render(_cmd);
+                //w_imgui::new_frame((float)pGameTime.get_elapsed_seconds(), []()
+                //{
+                //    make_gui();
+                //});
+                //w_imgui::update_buffers(this->_render_pass);
+                //w_imgui::render(_cmd);
             }
             this->_render_pass.end(_cmd);
         }
         this->_draw_command_buffers.end(i);
     }
-    logger.write(std::to_string(pGameTime.get_frames_per_second()));
-    auto _hr =  w_game::render(pGameTime);
+
+    return S_OK;
+}
+
+void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
+{
+    if (w_game::exiting) return;
+    this->_camera.update(pGameTime, this->_screen_size);
+    this->_camera.update_frustum();
+    
+    auto _pos = this->_camera.get_translate();
+    auto _view_projection = this->_camera.get_projection() * this->_camera.get_view();
+
+    this->_vertex_unifrom.data.projection_view = _view_projection;
+
+    this->_compute_unifrom.data.cameraPos = glm::vec4(_pos.x, _pos.y, _pos.z, 1.0) * -1.0f;
+    std::memcpy(this->_compute_unifrom.data.frustumPlanes, this->_camera.get_frustum_plans().data(), sizeof(glm::vec4) * 6);
+    
+    auto _hr = this->_compute_unifrom.update();
+    _hr = this->_vertex_unifrom.update();
+    
+    w_game::update(pGameTime);
+}
+
+static float __t = 1.0f;
+HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
+{
+    auto _gDevice = this->graphics_devices[0];
+    auto _output_window = &(_gDevice->output_presentation_windows[0]);
+    
+    // Wait for fence to ensure that compute buffer writes have finished
+    vkWaitForFences(_gDevice->vk_device, 1, &compute.fence, VK_TRUE, UINT64_MAX);
+    vkResetFences(_gDevice->vk_device, 1, &compute.fence);
+
+    auto _c_cmd = this->compute.command_buffer.get_command_at(0);
+
+    VkSubmitInfo computeSubmitInfo = {};
+    computeSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    computeSubmitInfo.commandBufferCount = 1;
+    computeSubmitInfo.pCommandBuffers = &_c_cmd;
+    computeSubmitInfo.signalSemaphoreCount = 1;
+    computeSubmitInfo.pSignalSemaphores = &compute.semaphore;
+
+    auto _hr = vkQueueSubmit(_gDevice->vk_compute_queue.queue, 1, &computeSubmitInfo, 0);
+
+    // Submit graphics command buffer
+    auto _cmd = this->_draw_command_buffers.get_command_at(_output_window->vk_swap_chain_image_index);
+
+    VkSubmitInfo _submit_info = {};
+    _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    _submit_info.commandBufferCount = 1;
+    _submit_info.pCommandBuffers = &_cmd;
+
+    // Wait on present and compute semaphores
+    std::array<VkPipelineStageFlags, 2> stageFlags = {
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+        VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+    };
+    std::array<VkSemaphore, 2> waitSemaphores = 
+    {
+        _output_window->vk_swap_chain_image_is_available_semaphore,						// Wait for presentation to finished
+        compute.semaphore								// Wait for compute to finish
+    };
+
+    _submit_info.pWaitSemaphores = waitSemaphores.data();
+    _submit_info.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size());
+    _submit_info.pWaitDstStageMask = stageFlags.data();
+    _submit_info.signalSemaphoreCount = 1;
+    _submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore;
+
+    // Submit to queue
+    _hr = vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, compute.fence);
+
+
+
+   // logger.write(std::to_string(pGameTime.get_frames_per_second()));
+    auto __hr =  w_game::render(pGameTime);
 
 
     // Get draw count from compute
-    //indirectDrawCountBuffer.map();
-    //memcpy(&indirectStats, indirectDrawCountBuffer.map(), sizeof(indirectStats));
-    //indirectDrawCountBuffer.flush();
-    //indirectDrawCountBuffer.unmap();
-    return _hr;
+    auto _mapped = indirectDrawCountBuffer.map();
+    memcpy(&indirectStats, _mapped, sizeof(indirectStats));
+    indirectDrawCountBuffer.flush();
+    indirectDrawCountBuffer.unmap();
+
+    for (size_t i = 0; i < 6; i++)
+    {
+        if (indirectStats.lodCount[i])
+        {
+            logger.write("lod " + std::to_string(i));
+        }
+    }
+    return __hr;
 }
 
 void scene::on_window_resized(_In_ UINT pIndex)
@@ -729,6 +746,9 @@ ULONG scene::release()
 
     auto _gDevice = get_graphics_device();
 
+    this->_vertex_unifrom.release();
+    this->_compute_unifrom.release();
+
     this->_render_pass.release();
     this->_frame_buffers.release();
 
@@ -740,10 +760,8 @@ ULONG scene::release()
     }
     this->_models.clear();
 
-    SAFE_RELEASE(this->_indirect_shader);
-    SAFE_RELEASE(this->_compute_shader);
+    SAFE_RELEASE(this->_shader);
     SAFE_RELEASE(this->_pipeline);
-    this->_wvp_unifrom.release();
    
     w_pipeline::release_all_pipeline_caches(_gDevice);
 
