@@ -11,8 +11,6 @@ using namespace wolf::graphics;
 using namespace wolf::framework;
 using namespace wolf::content_pipeline;
 
-#define COMPUE_SHADER_LOCAL_SIZE_X_ 2
-
 //forward declaration
 static void make_gui();
 
@@ -94,10 +92,10 @@ void scene::load()
     w_vertex_binding_attributes _vertex_binding_attrs;
     _vertex_binding_attrs.declaration = w_vertex_declaration::USER_DEFINED;
     _vertex_binding_attrs.binding_attributes[0] = { Vec3, Vec2 };
-    _vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float, Float };
+    _vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float };
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/lod.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/lod_pri.dae");
     if (_scene)
     {
         //get all models
@@ -133,7 +131,7 @@ void scene::load()
                 LOD lod;
                 lod.firstIndex = _base_index;			        // First index for this LOD
                 lod.indexCount = _mesh_data->indices.size();	// Index count for this LOD
-                lod.distance = 200.0f + n * 200.0f;				// Starting distance (to viewer) for this LOD
+                lod.distance = 200.0f + n * 50.0f;				// Starting distance (to viewer) for this LOD
                 n++;
                 LODLevels.push_back(lod);
 
@@ -191,8 +189,7 @@ void scene::load()
         }
 
         _scene->get_first_camera(this->_camera);
-        this->_camera.set_near_plan(0.01f);
-        this->_camera.set_far_plan(1000);
+        this->_camera.set_far_plan(10000);
         this->_camera.set_aspect_ratio((float)_screen_size.x / (float)_screen_size.y);
 
         this->_camera.set_translate(0, 0, 0);
@@ -432,18 +429,19 @@ void scene::load()
     _record_draw_command_buffer(_gDevice);
 }
 
-const int _obj_count = 2;
-
 void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
     w_buffer stagingBuffer;
 
+    const int __count = 1;
+
     // Indirect draw commands
-    indirectCommands.resize(COMPUE_SHADER_LOCAL_SIZE_X_);
-    for (uint32_t z = 0; z < _obj_count; z++)
+    indirectCommands.resize(__count);
+    for (uint32_t z = 0; z < __count; z++)
     {
-        indirectCommands[z].instanceCount = 1;
-        indirectCommands[z].firstInstance = z;
+        uint32_t index = 0;
+        indirectCommands[index].instanceCount = 1;
+        indirectCommands[index].firstInstance = index++;
         // firstIndex and indexCount are written by the compute shader
     }
 
@@ -473,14 +471,15 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     _hr = this->indirectDrawCountBuffer.bind();
     this->indirectDrawCountBuffer.map();
 
-    std::vector<InstanceData> instanceData(_obj_count);
+
+    std::vector<InstanceData> instanceData(__count);
     // Map for host access
-    for (uint32_t z = 0; z < _obj_count; z++)
+    for (uint32_t z = 0; z < __count; z++)
     {
-        instanceData[z].pos = glm::vec3(z * 200, 0, z * 200);
-        instanceData[z].rot = glm::vec3(0, 0, 0);
-        instanceData[z].scale = 0.1f;
-        instanceData[z].bounding_sphere_radius = 200.0f;
+        uint32_t index = 0;
+        instanceData[index].pos = glm::vec3(0, 0, 0);
+        instanceData[index].rot = glm::vec3(0, 0, 0);
+        instanceData[index].scale = 1.0f;
     }
 
     _size = instanceData.size() * sizeof(InstanceData);
@@ -558,7 +557,7 @@ HRESULT scene::_record_compute_command_buffer(_In_ const std::shared_ptr<w_graph
     // Dispatch the compute job
     // The compute shader will do the frustum culling and adjust the indirect draw calls depending on object visibility. 
     // It also determines the lod to use depending on distance to the viewer.
-    vkCmdDispatch(_cmd, _obj_count / COMPUE_SHADER_LOCAL_SIZE_X_, 1, 1);
+    vkCmdDispatch(_cmd, 1 /*objectCount / 16*/, 1, 1);
 
     // Add memory barrier to ensure that the compute shader has finished writing the indirect command buffer before it's consumed
     _buffer_barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
@@ -576,7 +575,9 @@ HRESULT scene::_record_compute_command_buffer(_In_ const std::shared_ptr<w_graph
         0, nullptr,
         1, &_buffer_barrier,
         0, nullptr);
-    
+
+    // todo: barrier for indirect stats buffer?
+
     vkEndCommandBuffer(_cmd);
 
     return S_OK;
@@ -654,8 +655,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     auto _view_projection = this->_camera.get_projection() * this->_camera.get_view();
 
     this->_vertex_unifrom.data.projection_view = _view_projection;
-        
-    this->_compute_unifrom.data.cameraPos = glm::vec4(_pos.x, _pos.z, _pos.y, 1.0);//z_up for 3d max and blender
+
+    this->_compute_unifrom.data.cameraPos = glm::vec4(_pos.x, _pos.y, _pos.z, 1.0) * -1.0f;
     std::memcpy(this->_compute_unifrom.data.frustumPlanes, this->_camera.get_frustum_plans().data(), sizeof(glm::vec4) * 6);
     
     auto _hr = this->_compute_unifrom.update();
@@ -725,7 +726,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     indirectDrawCountBuffer.flush();
     indirectDrawCountBuffer.unmap();
 
-    logger.write("visible " + std::to_string(indirectStats.drawCount));
     for (size_t i = 0; i < 6; i++)
     {
         if (indirectStats.lodCount[i])

@@ -108,7 +108,6 @@ private:
         glm::vec3   pos;
         glm::vec3   rot;
         float       scale;
-        float       bounding_sphere_radius;
     };
 
     struct vertex_unifrom

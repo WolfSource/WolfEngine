@@ -8,7 +8,8 @@ w_camera::w_camera() :
     _aspect_ratio(1.777f),
     _near_plane(0.01f),
     _far_plane(1000.0f),
-    _field_of_view(45.0f)
+    _field_of_view(45.0f),
+    _z_up(true)
 {
     this->_translate[0] = 0; this->_translate[1] = 7; this->_translate[2] = 27.0f;
     this->_interest[0] = 0; this->_interest[1] = 0; this->_interest[2] = 0;
@@ -61,35 +62,96 @@ void w_camera::update_frustum()
 {
     auto _matrix = this->_projection * this->_view;
 
-    this->_frustum_planes[0].x = _matrix[0].w + _matrix[0].x;
-    this->_frustum_planes[0].y = _matrix[1].w + _matrix[1].x;
-    this->_frustum_planes[0].z = _matrix[2].w + _matrix[2].x;
-    this->_frustum_planes[0].w = _matrix[3].w + _matrix[3].x;
+    const uint32_t _left = 0;
+    const uint32_t _right = 1;
+    const uint32_t _top = 2;
+    const uint32_t _bottom = 3;
+    const uint32_t _back = 4;
+    const uint32_t _front = 5;
 
-    this->_frustum_planes[1].x = _matrix[0].w - _matrix[0].x;
-    this->_frustum_planes[1].y = _matrix[1].w - _matrix[1].x;
-    this->_frustum_planes[1].z = _matrix[2].w - _matrix[2].x;
-    this->_frustum_planes[1].w = _matrix[3].w - _matrix[3].x;
+    //Left
+    this->_frustum_planes[_left].x = _matrix[0].w + _matrix[0].x;
+    if (this->_z_up)
+    {
+        this->_frustum_planes[_left].z = _matrix[1].w + _matrix[1].x;
+        this->_frustum_planes[_left].y = _matrix[2].w + _matrix[2].x;
+    }
+    else
+    {
+        this->_frustum_planes[_left].y = _matrix[1].w + _matrix[1].x;
+        this->_frustum_planes[_left].z = _matrix[2].w + _matrix[2].x;
+    }
+    this->_frustum_planes[_left].w = _matrix[3].w + _matrix[3].x;
 
-    this->_frustum_planes[2].x = _matrix[0].w - _matrix[0].y;
-    this->_frustum_planes[2].y = _matrix[1].w - _matrix[1].y;
-    this->_frustum_planes[2].z = _matrix[2].w - _matrix[2].y;
-    this->_frustum_planes[2].w = _matrix[3].w - _matrix[3].y;
+    //Right
+    this->_frustum_planes[_right].x = _matrix[0].w - _matrix[0].x;
+    if (this->_z_up)
+    {
+        this->_frustum_planes[_right].z = _matrix[1].w - _matrix[1].x;
+        this->_frustum_planes[_right].y = _matrix[2].w - _matrix[2].x;
+    }
+    else
+    {
+        this->_frustum_planes[_right].y = _matrix[1].w - _matrix[1].x;
+        this->_frustum_planes[_right].z = _matrix[2].w - _matrix[2].x;
+    }
+    this->_frustum_planes[_right].w = _matrix[3].w - _matrix[3].x;
 
-    this->_frustum_planes[3].x = _matrix[0].w + _matrix[0].y;
-    this->_frustum_planes[3].y = _matrix[1].w + _matrix[1].y;
-    this->_frustum_planes[3].z = _matrix[2].w + _matrix[2].y;
-    this->_frustum_planes[3].w = _matrix[3].w + _matrix[3].y;
+    //Top
+    this->_frustum_planes[_top].x = _matrix[0].w - _matrix[0].y;
+    if (this->_z_up)
+    {
+        this->_frustum_planes[_top].z = _matrix[1].w - _matrix[1].y;
+        this->_frustum_planes[_top].y = _matrix[2].w - _matrix[2].y;
+    }
+    else
+    {
+        this->_frustum_planes[_top].y = _matrix[1].w - _matrix[1].y;
+        this->_frustum_planes[_top].z = _matrix[2].w - _matrix[2].y;
+    }
+    this->_frustum_planes[_top].w = _matrix[3].w - _matrix[3].y;
 
-    this->_frustum_planes[4].x = _matrix[0].w + _matrix[0].z;
-    this->_frustum_planes[4].y = _matrix[1].w + _matrix[1].z;
-    this->_frustum_planes[4].z = _matrix[2].w + _matrix[2].z;
-    this->_frustum_planes[4].w = _matrix[3].w + _matrix[3].z;
+    //Bottom
+    this->_frustum_planes[_bottom].x = _matrix[0].w + _matrix[0].y;
+    if (this->_z_up)
+    {
+        this->_frustum_planes[_bottom].z = _matrix[1].w + _matrix[1].y;
+        this->_frustum_planes[_bottom].y = _matrix[2].w + _matrix[2].y;
+    }
+    else
+    {
+        this->_frustum_planes[_bottom].y = _matrix[1].w + _matrix[1].y;
+        this->_frustum_planes[_bottom].z = _matrix[2].w + _matrix[2].y;
+    }
+    this->_frustum_planes[_bottom].w = _matrix[3].w + _matrix[3].y;
 
-    this->_frustum_planes[5].x = _matrix[0].w - _matrix[0].z;
-    this->_frustum_planes[5].y = _matrix[1].w - _matrix[1].z;
-    this->_frustum_planes[5].z = _matrix[2].w - _matrix[2].z;
-    this->_frustum_planes[5].w = _matrix[3].w - _matrix[3].z;
+    //Back
+    this->_frustum_planes[_back].x = _matrix[0].w + _matrix[0].z;
+    if (this->_z_up)
+    {
+        this->_frustum_planes[_back].z = _matrix[1].w + _matrix[1].z;
+        this->_frustum_planes[_back].y = _matrix[2].w + _matrix[2].z;
+    }
+    else
+    {
+        this->_frustum_planes[_back].y = _matrix[1].w + _matrix[1].z;
+        this->_frustum_planes[_back].z = _matrix[2].w + _matrix[2].z;
+    }
+    this->_frustum_planes[_back].w = _matrix[3].w + _matrix[3].z;
+
+    //Front
+    this->_frustum_planes[_front].x = _matrix[0].w - _matrix[0].z;
+    if (this->_z_up)
+    {
+        this->_frustum_planes[_front].z = _matrix[1].w - _matrix[1].z;
+        this->_frustum_planes[_front].y = _matrix[2].w - _matrix[2].z;
+    }
+    else
+    {
+        this->_frustum_planes[_front].y = _matrix[1].w - _matrix[1].z;
+        this->_frustum_planes[_front].z = _matrix[2].w - _matrix[2].z;
+    }
+    this->_frustum_planes[_front].w = _matrix[3].w - _matrix[3].z;
 
     for (size_t i = 0; i < this->_frustum_planes.size(); i++)
     {

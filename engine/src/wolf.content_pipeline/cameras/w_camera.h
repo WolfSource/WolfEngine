@@ -108,7 +108,8 @@ namespace wolf
             float	    	            _interest[3];
             mat4x4_p		            _view;
             mat4x4_p		            _projection;
-            std::array<glm::vec4, 6>     _frustum_planes;
+            std::array<glm::vec4, 6>    _frustum_planes;
+            bool                        _z_up;
         };
     }
 }

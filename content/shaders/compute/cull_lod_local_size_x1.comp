@@ -10,6 +10,7 @@ struct instance_data
 	vec3	pos;
 	vec3	rot;
 	float	scale;
+	float	bounding_sphere_radius;
 };
 
 // instances buffer
@@ -54,14 +55,14 @@ struct LOD
 	uint	first_index;
 	uint	index_count;
 	float	distance;
-	float	_padding;
+	float	padding;
 };
 layout (binding = 4) readonly buffer LODs
 {
 	LOD lods[];
 };
 
-layout (local_size_x = 1) in;
+layout (local_size_x = 2) in;
 
 bool frustum_check(vec4 pPos, float pRadius)
 {
@@ -76,7 +77,7 @@ bool frustum_check(vec4 pPos, float pRadius)
 	return true;
 }
 
-layout (local_size_x = 1) in;
+layout (local_size_x = 2) in;
 
 void main()
 {
@@ -95,7 +96,7 @@ void main()
 	vec4 pos = vec4(instances[idx].pos.xyz, 1.0);
 
 	// Check wheather object is within current viewing frustum
-	if (frustum_check(pos, 1.0))
+	if (frustum_check(pos, instances[idx].bounding_sphere_radius))
 	{
 		indirect_draws[idx].instance_count = 1;
 		

@@ -53,7 +53,7 @@ namespace wolf
                 }
 
                 bool _there_is_no_index_buffer = false;
-                UINT _indices_size = pIndicesCount * sizeof(UINT);
+                UINT _indices_size = pIndicesCount * sizeof(uint32_t);
                 if (pIndicesCount == 0 || pIndicesData == nullptr)
                 {
                     _there_is_no_index_buffer = true;
