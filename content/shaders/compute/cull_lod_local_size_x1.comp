@@ -7,8 +7,8 @@ layout (constant_id = 0) const int MAX_LOD_LEVEL = 5;
 
 struct instance_data 
 {
-	vec3	min_bb;
-	vec3	max_bb;
+	vec4	pos;
+//	vec3	max_bb;
 };
 
 // instances buffer
@@ -81,7 +81,7 @@ layout (local_size_x = 2) in;
 void main()
 {
 	uint idx = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-
+	
 	//clear stats on first invocation
 	if (idx == 0)
 	{
@@ -91,12 +91,6 @@ void main()
 			atomicExchange(o_ubo.lod_count[i], 0);
 		}
 	}
-
-	vec3  _center = vec3(
-		(instances[idx].min_bb.x + instances[idx].max_bb.x) / 2.0f,
-		(instances[idx].min_bb.y + instances[idx].max_bb.y) / 2.0f,
-		(instances[idx].min_bb.z + instances[idx].max_bb.z) / 2.0f
-	);
 	
 	// Check wheather object is within current viewing frustum
 	const bool t= true;
@@ -111,7 +105,7 @@ void main()
 		uint _lod_level = MAX_LOD_LEVEL;
 		for (uint i = 0; i < MAX_LOD_LEVEL; i++)
 		{
-			if (distance(_center, i_ubo.camera_pos.xyz) < lods[i].distance) 
+			if (distance(instances[idx].pos.xyz, i_ubo.camera_pos.xyz) <= lods[i].distance) 
 			{
 				_lod_level = i;
 				break;

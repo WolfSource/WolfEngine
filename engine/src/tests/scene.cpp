@@ -100,7 +100,7 @@ void scene::load()
     _vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float };
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/lod.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/lod_pri.dae");
     if (_scene)
     {
         //get all models
@@ -109,7 +109,7 @@ void scene::load()
 
         auto _z_up = _scene->get_z_up();
 
-        uint32_t n = 0;
+        uint32_t n = 1;
 
         //create one big vertex buffer and index buffer from all LODs
         std::vector<float> _vertices;
@@ -146,7 +146,7 @@ void scene::load()
                 LOD lod;
                 lod.firstIndex = _base_index;			        // First index for this LOD
                 lod.indexCount = _mesh_data->indices.size();	// Index count for this LOD
-                lod.distance = 500.0f + n * 50.0f;				// Starting distance (to viewer) for this LOD
+                lod.distance = n * 200.0f;				// Starting distance (to viewer) for this LOD
                 n++;
                 LODLevels.push_back(lod);
 
@@ -494,7 +494,7 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     {
         _vertex_instance_data[z].pos = glm::vec3(z * 1000, 0, z * 1000);
         _vertex_instance_data[z].rot = glm::vec3(0, 0, 0);
-        _vertex_instance_data[z].scale = 0.1f;
+        _vertex_instance_data[z].scale = 1.0f;
     }
 
     _size = _vertex_instance_data.size() * sizeof(vertex_instance_data);
@@ -535,10 +535,7 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     // Map for host access
     for (uint32_t z = 0; z < _obj_count; z++)
     {
-        _compute_instance_data[z].min_bounding_box = (_vertex_instance_data[z].pos + _min_bb);// * _vertex_instance_data[z].scale;
-        _compute_instance_data[z].max_bounding_box = (_vertex_instance_data[z].pos + _max_bb);// * _vertex_instance_data[z].scale;
-
-        centers[z] = (_compute_instance_data[z].min_bounding_box + _compute_instance_data[z].max_bounding_box) / 2.0f;
+        _compute_instance_data[z].pos = glm::vec4(_vertex_instance_data[z].pos, 1.0f);// +_min_bb);// * _vertex_instance_data[z].scale;
     }
 
     
@@ -550,7 +547,7 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
 
     _hr = compute_instance_buffer.load(pGDevice,
         _size,
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
     _hr = compute_instance_buffer.bind();
@@ -703,7 +700,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     _hr = this->_vertex_unifrom.update();
     
     auto _dis = glm::distance(centers[1], _pos);
-    logger.write(std::to_string(_dis));
+    //logger.write(std::to_string(_dis));
 
     w_game::update(pGameTime);
 }
@@ -782,7 +779,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     {
         if (indirectStats.lodCount[i])
         {
-            //logger.write("lod " + std::to_string(i));
+            logger.write("lod " + std::to_string(i));
         }
     }
     return __hr;

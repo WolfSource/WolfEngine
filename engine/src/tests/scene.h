@@ -112,8 +112,8 @@ private:
 
     struct compute_instance_data
     {
-        glm::vec3   min_bounding_box;
-        glm::vec3   max_bounding_box;
+        glm::vec4   pos;
+        //glm::vec3   max_bounding_box;
     };
 
     struct vertex_unifrom
