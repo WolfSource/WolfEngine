@@ -80,6 +80,9 @@ std::vector<LOD> LODLevels;
 
 wolf::graphics::w_mesh* _mesh = nullptr;
 
+static glm::vec3 _min_bb;
+static glm::vec3 _max_bb;
+
 void scene::load()
 {
     auto _gDevice = this->graphics_devices[0];
@@ -94,7 +97,7 @@ void scene::load()
     w_vertex_binding_attributes _vertex_binding_attrs;
     _vertex_binding_attrs.declaration = w_vertex_declaration::USER_DEFINED;
     _vertex_binding_attrs.binding_attributes[0] = { Vec3, Vec2 };
-    _vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float, Float };
+    _vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float };
 
     //load scene
     auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/lod.dae");
@@ -123,6 +126,16 @@ void scene::load()
 
             for (auto& _mesh_data : _model_meshes)
             {
+                _min_bb = glm::vec3(
+                    _mesh_data->bounding_box.min[0],
+                    _mesh_data->bounding_box.min[1], 
+                    _mesh_data->bounding_box.min[2]);
+
+                _max_bb = glm::vec3(
+                    _mesh_data->bounding_box.max[0],
+                    _mesh_data->bounding_box.max[1],
+                    _mesh_data->bounding_box.max[2]);
+
                 _base_index = _indices.size();
 
                 for (size_t i = 0; i < _mesh_data->indices.size(); ++i)
@@ -133,7 +146,7 @@ void scene::load()
                 LOD lod;
                 lod.firstIndex = _base_index;			        // First index for this LOD
                 lod.indexCount = _mesh_data->indices.size();	// Index count for this LOD
-                lod.distance = 200.0f + n * 200.0f;				// Starting distance (to viewer) for this LOD
+                lod.distance = 500.0f + n * 50.0f;				// Starting distance (to viewer) for this LOD
                 n++;
                 LODLevels.push_back(lod);
 
@@ -192,7 +205,7 @@ void scene::load()
 
         _scene->get_first_camera(this->_camera);
         this->_camera.set_near_plan(0.01f);
-        this->_camera.set_far_plan(1000);
+        this->_camera.set_far_plan(10000);
         this->_camera.set_aspect_ratio((float)_screen_size.x / (float)_screen_size.y);
 
         this->_camera.set_translate(0, 0, 0);
@@ -271,7 +284,7 @@ void scene::load()
     _param.index = 0;
     _param.type = w_shader_binding_type::STORAGE;
     _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.buffer_info = instanceBuffer.get_descriptor_info();
+    _param.buffer_info = compute_instance_buffer.get_descriptor_info();
     _shader_params.push_back(_param);
 
     _param.index = 1;
@@ -434,6 +447,7 @@ void scene::load()
 
 const int _obj_count = 2;
 
+static glm::vec3 centers[2];
 void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
     w_buffer stagingBuffer;
@@ -473,29 +487,29 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     _hr = this->indirectDrawCountBuffer.bind();
     this->indirectDrawCountBuffer.map();
 
-    std::vector<InstanceData> instanceData(_obj_count);
+    std::vector<vertex_instance_data> _vertex_instance_data(_obj_count);
+    
     // Map for host access
     for (uint32_t z = 0; z < _obj_count; z++)
     {
-        instanceData[z].pos = glm::vec3(z * 200, 0, z * 200);
-        instanceData[z].rot = glm::vec3(0, 0, 0);
-        instanceData[z].scale = 0.1f;
-        instanceData[z].bounding_sphere_radius = 200.0f;
+        _vertex_instance_data[z].pos = glm::vec3(z * 1000, 0, z * 1000);
+        _vertex_instance_data[z].rot = glm::vec3(0, 0, 0);
+        _vertex_instance_data[z].scale = 0.1f;
     }
 
-    _size = instanceData.size() * sizeof(InstanceData);
+    _size = _vertex_instance_data.size() * sizeof(vertex_instance_data);
     w_buffer stagingBuffer_1;
     _hr = stagingBuffer_1.load_as_staging(pGDevice, _size);
     _hr = stagingBuffer_1.bind();
-    _hr = stagingBuffer_1.set_data(instanceData.data());
+    _hr = stagingBuffer_1.set_data(_vertex_instance_data.data());
 
-    _hr = instanceBuffer.load(pGDevice,
+    _hr = vertex_instance_buffer.load(pGDevice,
         _size,
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-    _hr = instanceBuffer.bind();
-    _hr = stagingBuffer_1.copy_to(instanceBuffer);
+    _hr = vertex_instance_buffer.bind();
+    _hr = stagingBuffer_1.copy_to(vertex_instance_buffer);
     stagingBuffer_1.release();
 
     _size = LODLevels.size() * sizeof(LOD);
@@ -515,6 +529,33 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     _hr = stagingBuffer_2.release();
 
     _hr = this->_compute_unifrom.load(pGDevice, true);
+
+    std::vector<compute_instance_data> _compute_instance_data(_obj_count);
+
+    // Map for host access
+    for (uint32_t z = 0; z < _obj_count; z++)
+    {
+        _compute_instance_data[z].min_bounding_box = (_vertex_instance_data[z].pos + _min_bb);// * _vertex_instance_data[z].scale;
+        _compute_instance_data[z].max_bounding_box = (_vertex_instance_data[z].pos + _max_bb);// * _vertex_instance_data[z].scale;
+
+        centers[z] = (_compute_instance_data[z].min_bounding_box + _compute_instance_data[z].max_bounding_box) / 2.0f;
+    }
+
+    
+    _size = _compute_instance_data.size() * sizeof(compute_instance_data);
+    w_buffer stagingBuffer_3;
+    _hr = stagingBuffer_3.load_as_staging(pGDevice, _size);
+    _hr = stagingBuffer_3.bind();
+    _hr = stagingBuffer_3.set_data(_compute_instance_data.data());
+
+    _hr = compute_instance_buffer.load(pGDevice,
+        _size,
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+    _hr = compute_instance_buffer.bind();
+    _hr = stagingBuffer_3.copy_to(compute_instance_buffer);
+    stagingBuffer_3.release();
 }
 
 HRESULT scene::_record_compute_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -603,7 +644,7 @@ HRESULT scene::_record_draw_command_buffer(_In_ const std::shared_ptr<w_graphics
                 this->_pipeline->bind(_cmd, &_descriptor_set);
 
                 uint32_t _instances_count = 1;
-                _mesh->draw(_cmd, instanceBuffer.get_handle(), _instances_count, true);
+                _mesh->draw(_cmd, vertex_instance_buffer.get_handle(), _instances_count, true);
 
                 if (pGDevice->vk_physical_device_features.multiDrawIndirect)
                 {
@@ -644,23 +685,26 @@ HRESULT scene::_record_draw_command_buffer(_In_ const std::shared_ptr<w_graphics
     return S_OK;
 }
 
+static glm::vec3 _pw;
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
     this->_camera.update(pGameTime, this->_screen_size);
-    this->_camera.update_frustum();
     
     auto _pos = this->_camera.get_translate();
     auto _view_projection = this->_camera.get_projection() * this->_camera.get_view();
 
     this->_vertex_unifrom.data.projection_view = _view_projection;
-        
-    this->_compute_unifrom.data.cameraPos = glm::vec4(_pos.x, _pos.z, _pos.y, 1.0);//z_up for 3d max and blender
+
+    this->_compute_unifrom.data.cameraPos = glm::vec4(_pos, 1.0f);//z_up for 3d max and blender
     std::memcpy(this->_compute_unifrom.data.frustumPlanes, this->_camera.get_frustum_plans().data(), sizeof(glm::vec4) * 6);
     
     auto _hr = this->_compute_unifrom.update();
     _hr = this->_vertex_unifrom.update();
     
+    auto _dis = glm::distance(centers[1], _pos);
+    logger.write(std::to_string(_dis));
+
     w_game::update(pGameTime);
 }
 
@@ -715,7 +759,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 
 
-    logger.write(std::to_string(pGameTime.get_frames_per_second()));
+    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
     auto __hr =  w_game::render(pGameTime);
 
 
@@ -725,12 +769,20 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     indirectDrawCountBuffer.flush();
     indirectDrawCountBuffer.unmap();
 
-    logger.write("visible " + std::to_string(indirectStats.drawCount));
+//    auto _t = this->_camera.get_translate();
+    //logger.write("visible " + std::to_string(indirectStats.drawCount));
+    //logger.write("c " + std::to_string(_t.x) + " "  +
+    //    std::to_string(_t.y) + " " + 
+    //    std::to_string(_t.z));
+    //logger.write("vp " + std::to_string(_pw.x) + " " +
+    //    std::to_string(_pw.y) + " " +
+    //    std::to_string(_pw.z));
+
     for (size_t i = 0; i < 6; i++)
     {
         if (indirectStats.lodCount[i])
         {
-            logger.write("lod " + std::to_string(i));
+            //logger.write("lod " + std::to_string(i));
         }
     }
     return __hr;

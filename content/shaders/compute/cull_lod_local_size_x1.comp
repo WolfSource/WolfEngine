@@ -7,10 +7,8 @@ layout (constant_id = 0) const int MAX_LOD_LEVEL = 5;
 
 struct instance_data 
 {
-	vec3	pos;
-	vec3	rot;
-	float	scale;
-	float	bounding_sphere_radius;
+	vec3	min_bb;
+	vec3	max_bb;
 };
 
 // instances buffer
@@ -64,12 +62,13 @@ layout (binding = 4) readonly buffer LODs
 
 layout (local_size_x = 2) in;
 
-bool frustum_check(vec4 pPos, float pRadius)
+bool frustum_check(vec4 pPos)
 {
+	return true;
 	// Check sphere against frustum planes
 	for (int i = 0; i < 6; i++) 
 	{
-		if (dot(pPos, i_ubo.frustum_planes[i]) + pRadius < 0.0)
+		if (dot(pPos, i_ubo.frustum_planes[i]) < 0.0)
 		{
 			return false;
 		}
@@ -93,10 +92,15 @@ void main()
 		}
 	}
 
-	vec4 pos = vec4(instances[idx].pos.xyz, 1.0);
-
+	vec3  _center = vec3(
+		(instances[idx].min_bb.x + instances[idx].max_bb.x) / 2.0f,
+		(instances[idx].min_bb.y + instances[idx].max_bb.y) / 2.0f,
+		(instances[idx].min_bb.z + instances[idx].max_bb.z) / 2.0f
+	);
+	
 	// Check wheather object is within current viewing frustum
-	if (frustum_check(pos, instances[idx].bounding_sphere_radius))
+	const bool t= true;
+	if (t)//frustum_check(_pos))
 	{
 		indirect_draws[idx].instance_count = 1;
 		
@@ -107,7 +111,7 @@ void main()
 		uint _lod_level = MAX_LOD_LEVEL;
 		for (uint i = 0; i < MAX_LOD_LEVEL; i++)
 		{
-			if (distance(instances[idx].pos.xyz, i_ubo.camera_pos.xyz) < lods[i].distance) 
+			if (distance(_center, i_ubo.camera_pos.xyz) < lods[i].distance) 
 			{
 				_lod_level = i;
 				break;

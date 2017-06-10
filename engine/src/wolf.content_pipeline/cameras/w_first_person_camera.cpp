@@ -117,13 +117,6 @@ void w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
         this->_translate[1] += _vector_transform[1];
         this->_translate[2] += _vector_transform[2];
 
-        //auto __up = _camera_rotation * glm::vec4(this->_up[0], this->_up[1], this->_up[2], 0.0f);
-        //__up = glm::normalize(__up);
-
-        //this->_up[0] = __up.x;
-        //this->_up[1] = __up.y;
-        //this->_up[2] = __up.z;
-
         _vector_transform = _camera_rotation * glm::vec4(1, 0, 0, 0);
         auto _target = glm::vec3(this->_translate[0], this->_translate[1], this->_translate[2]) + 
             glm::vec3(_vector_transform.x, _vector_transform.y, _vector_transform.z);
@@ -133,5 +126,6 @@ void w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
         this->_interest[2] = _target[2];
 
         update_view();
+        update_frustum();
     }
 }

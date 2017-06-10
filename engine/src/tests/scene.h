@@ -103,12 +103,17 @@ private:
     };
     std::vector<model*>                                             _models;
     
-    struct InstanceData 
+    struct vertex_instance_data 
     {
         glm::vec3   pos;
         glm::vec3   rot;
         float       scale;
-        float       bounding_sphere_radius;
+    };
+
+    struct compute_instance_data
+    {
+        glm::vec3   min_bounding_box;
+        glm::vec3   max_bounding_box;
     };
 
     struct vertex_unifrom
@@ -127,7 +132,9 @@ private:
     wolf::graphics::w_uniform<compute_unifrom>                      _compute_unifrom;
 
     // Contains the instanced data
-    wolf::graphics::w_buffer instanceBuffer;
+    wolf::graphics::w_buffer vertex_instance_buffer;
+    wolf::graphics::w_buffer compute_instance_buffer;
+
     // Contains the indirect drawing commands
     wolf::graphics::w_buffer indirectCommandsBuffer;
     wolf::graphics::w_buffer indirectDrawCountBuffer;

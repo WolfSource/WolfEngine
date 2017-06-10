@@ -17,6 +17,7 @@ w_camera::w_camera() :
 
     update_view();
     update_projection();
+    update_frustum();
 }
 
 w_camera::~w_camera()
@@ -62,105 +63,152 @@ void w_camera::update_frustum()
 {
     auto _matrix = this->_projection * this->_view;
 
-    const uint32_t _left = 0;
-    const uint32_t _right = 1;
-    const uint32_t _top = 2;
-    const uint32_t _bottom = 3;
-    const uint32_t _back = 4;
-    const uint32_t _front = 5;
+    //Near
+    this->_frustum_planes[0].x = _matrix[0][3] + _matrix[0][2];
+    this->_frustum_planes[0].y = _matrix[1][3] + _matrix[1][2];
+    this->_frustum_planes[0].z = _matrix[2][3] + _matrix[2][2];
+    this->_frustum_planes[0].w = _matrix[3][3] + _matrix[3][2];
+    this->_frustum_planes[0] = glm::normalize(this->_frustum_planes[0]);
+
+    //Far
+    this->_frustum_planes[1].x = _matrix[0][3] - _matrix[0][2];
+    this->_frustum_planes[1].y = _matrix[1][3] - _matrix[1][2];
+    this->_frustum_planes[1].z = _matrix[2][3] - _matrix[2][2];
+    this->_frustum_planes[1].w = _matrix[3][3] - _matrix[3][2];
+    this->_frustum_planes[1] = glm::normalize(this->_frustum_planes[1]);
 
     //Left
-    this->_frustum_planes[_left].x = _matrix[0].w + _matrix[0].x;
-    if (this->_z_up)
-    {
-        this->_frustum_planes[_left].z = _matrix[1].w + _matrix[1].x;
-        this->_frustum_planes[_left].y = _matrix[2].w + _matrix[2].x;
-    }
-    else
-    {
-        this->_frustum_planes[_left].y = _matrix[1].w + _matrix[1].x;
-        this->_frustum_planes[_left].z = _matrix[2].w + _matrix[2].x;
-    }
-    this->_frustum_planes[_left].w = _matrix[3].w + _matrix[3].x;
+    this->_frustum_planes[2].x = _matrix[0][3] + _matrix[0][0];
+    this->_frustum_planes[2].y = _matrix[1][3] + _matrix[1][0];
+    this->_frustum_planes[2].z = _matrix[2][3] + _matrix[2][0];
+    this->_frustum_planes[2].w = _matrix[3][3] + _matrix[3][0];
+    this->_frustum_planes[2] = glm::normalize(this->_frustum_planes[2]);
 
     //Right
-    this->_frustum_planes[_right].x = _matrix[0].w - _matrix[0].x;
-    if (this->_z_up)
-    {
-        this->_frustum_planes[_right].z = _matrix[1].w - _matrix[1].x;
-        this->_frustum_planes[_right].y = _matrix[2].w - _matrix[2].x;
-    }
-    else
-    {
-        this->_frustum_planes[_right].y = _matrix[1].w - _matrix[1].x;
-        this->_frustum_planes[_right].z = _matrix[2].w - _matrix[2].x;
-    }
-    this->_frustum_planes[_right].w = _matrix[3].w - _matrix[3].x;
+    this->_frustum_planes[3].x = _matrix[0][3] - _matrix[0][0];
+    this->_frustum_planes[3].y = _matrix[1][3] - _matrix[1][0];
+    this->_frustum_planes[3].z = _matrix[2][3] - _matrix[2][0];
+    this->_frustum_planes[3].w = _matrix[3][3] - _matrix[3][0];
+    this->_frustum_planes[3] = glm::normalize(this->_frustum_planes[3]);
 
     //Top
-    this->_frustum_planes[_top].x = _matrix[0].w - _matrix[0].y;
-    if (this->_z_up)
-    {
-        this->_frustum_planes[_top].z = _matrix[1].w - _matrix[1].y;
-        this->_frustum_planes[_top].y = _matrix[2].w - _matrix[2].y;
-    }
-    else
-    {
-        this->_frustum_planes[_top].y = _matrix[1].w - _matrix[1].y;
-        this->_frustum_planes[_top].z = _matrix[2].w - _matrix[2].y;
-    }
-    this->_frustum_planes[_top].w = _matrix[3].w - _matrix[3].y;
+    this->_frustum_planes[4].x = _matrix[0][3] - _matrix[0][1];
+    this->_frustum_planes[4].y = _matrix[1][3] - _matrix[1][1];
+    this->_frustum_planes[4].z = _matrix[2][3] - _matrix[2][1];
+    this->_frustum_planes[4].w = _matrix[3][3] - _matrix[3][1];
+    this->_frustum_planes[4] = glm::normalize(this->_frustum_planes[4]);
+    
+    //Top
+    this->_frustum_planes[5].x = _matrix[0][3] + _matrix[0][1];
+    this->_frustum_planes[5].y = _matrix[1][3] + _matrix[1][1];
+    this->_frustum_planes[5].z = _matrix[2][3] + _matrix[2][1];
+    this->_frustum_planes[5].w = _matrix[3][3] + _matrix[3][1];
+    this->_frustum_planes[5] = glm::normalize(this->_frustum_planes[5]);
 
-    //Bottom
-    this->_frustum_planes[_bottom].x = _matrix[0].w + _matrix[0].y;
-    if (this->_z_up)
-    {
-        this->_frustum_planes[_bottom].z = _matrix[1].w + _matrix[1].y;
-        this->_frustum_planes[_bottom].y = _matrix[2].w + _matrix[2].y;
-    }
-    else
-    {
-        this->_frustum_planes[_bottom].y = _matrix[1].w + _matrix[1].y;
-        this->_frustum_planes[_bottom].z = _matrix[2].w + _matrix[2].y;
-    }
-    this->_frustum_planes[_bottom].w = _matrix[3].w + _matrix[3].y;
 
-    //Back
-    this->_frustum_planes[_back].x = _matrix[0].w + _matrix[0].z;
-    if (this->_z_up)
-    {
-        this->_frustum_planes[_back].z = _matrix[1].w + _matrix[1].z;
-        this->_frustum_planes[_back].y = _matrix[2].w + _matrix[2].z;
-    }
-    else
-    {
-        this->_frustum_planes[_back].y = _matrix[1].w + _matrix[1].z;
-        this->_frustum_planes[_back].z = _matrix[2].w + _matrix[2].z;
-    }
-    this->_frustum_planes[_back].w = _matrix[3].w + _matrix[3].z;
 
-    //Front
-    this->_frustum_planes[_front].x = _matrix[0].w - _matrix[0].z;
-    if (this->_z_up)
-    {
-        this->_frustum_planes[_front].z = _matrix[1].w - _matrix[1].z;
-        this->_frustum_planes[_front].y = _matrix[2].w - _matrix[2].z;
-    }
-    else
-    {
-        this->_frustum_planes[_front].y = _matrix[1].w - _matrix[1].z;
-        this->_frustum_planes[_front].z = _matrix[2].w - _matrix[2].z;
-    }
-    this->_frustum_planes[_front].w = _matrix[3].w - _matrix[3].z;
 
-    for (size_t i = 0; i < this->_frustum_planes.size(); i++)
-    {
-        float length = sqrtf(
-            this->_frustum_planes[i].x * this->_frustum_planes[i].x +
-            this->_frustum_planes[i].y * this->_frustum_planes[i].y +
-            this->_frustum_planes[i].z * this->_frustum_planes[i].z);
-        this->_frustum_planes[i] /= length;
-    }
+
+
+
+
+
+
+
+
+
+    ////Left
+    //this->_frustum_planes[_left].x = _matrix[0].w + _matrix[0].x;
+    //if (this->_z_up)
+    //{
+    //    this->_frustum_planes[_left].z = _matrix[1].w + _matrix[1].x;
+    //    this->_frustum_planes[_left].y = _matrix[2].w + _matrix[2].x;
+    //}
+    //else
+    //{
+    //    this->_frustum_planes[_left].y = _matrix[1].w + _matrix[1].x;
+    //    this->_frustum_planes[_left].z = _matrix[2].w + _matrix[2].x;
+    //}
+    //this->_frustum_planes[_left].w = _matrix[3].w + _matrix[3].x;
+
+    ////Right
+    //this->_frustum_planes[_right].x = _matrix[0].w - _matrix[0].x;
+    //if (this->_z_up)
+    //{
+    //    this->_frustum_planes[_right].z = _matrix[1].w - _matrix[1].x;
+    //    this->_frustum_planes[_right].y = _matrix[2].w - _matrix[2].x;
+    //}
+    //else
+    //{
+    //    this->_frustum_planes[_right].y = _matrix[1].w - _matrix[1].x;
+    //    this->_frustum_planes[_right].z = _matrix[2].w - _matrix[2].x;
+    //}
+    //this->_frustum_planes[_right].w = _matrix[3].w - _matrix[3].x;
+
+    ////Top
+    //this->_frustum_planes[_top].x = _matrix[0].w - _matrix[0].y;
+    //if (this->_z_up)
+    //{
+    //    this->_frustum_planes[_top].z = _matrix[1].w - _matrix[1].y;
+    //    this->_frustum_planes[_top].y = _matrix[2].w - _matrix[2].y;
+    //}
+    //else
+    //{
+    //    this->_frustum_planes[_top].y = _matrix[1].w - _matrix[1].y;
+    //    this->_frustum_planes[_top].z = _matrix[2].w - _matrix[2].y;
+    //}
+    //this->_frustum_planes[_top].w = _matrix[3].w - _matrix[3].y;
+
+    ////Bottom
+    //this->_frustum_planes[_bottom].x = _matrix[0].w + _matrix[0].y;
+    //if (this->_z_up)
+    //{
+    //    this->_frustum_planes[_bottom].z = _matrix[1].w + _matrix[1].y;
+    //    this->_frustum_planes[_bottom].y = _matrix[2].w + _matrix[2].y;
+    //}
+    //else
+    //{
+    //    this->_frustum_planes[_bottom].y = _matrix[1].w + _matrix[1].y;
+    //    this->_frustum_planes[_bottom].z = _matrix[2].w + _matrix[2].y;
+    //}
+    //this->_frustum_planes[_bottom].w = _matrix[3].w + _matrix[3].y;
+
+    ////Back
+    //this->_frustum_planes[_back].x = _matrix[0].w + _matrix[0].z;
+    //if (this->_z_up)
+    //{
+    //    this->_frustum_planes[_back].z = _matrix[1].w + _matrix[1].z;
+    //    this->_frustum_planes[_back].y = _matrix[2].w + _matrix[2].z;
+    //}
+    //else
+    //{
+    //    this->_frustum_planes[_back].y = _matrix[1].w + _matrix[1].z;
+    //    this->_frustum_planes[_back].z = _matrix[2].w + _matrix[2].z;
+    //}
+    //this->_frustum_planes[_back].w = _matrix[3].w + _matrix[3].z;
+
+    ////Front
+    //this->_frustum_planes[_front].x = _matrix[0].w - _matrix[0].z;
+    //if (this->_z_up)
+    //{
+    //    this->_frustum_planes[_front].z = _matrix[1].w - _matrix[1].z;
+    //    this->_frustum_planes[_front].y = _matrix[2].w - _matrix[2].z;
+    //}
+    //else
+    //{
+    //    this->_frustum_planes[_front].y = _matrix[1].w - _matrix[1].z;
+    //    this->_frustum_planes[_front].z = _matrix[2].w - _matrix[2].z;
+    //}
+    //this->_frustum_planes[_front].w = _matrix[3].w - _matrix[3].z;
+
+    //for (size_t i = 0; i < this->_frustum_planes.size(); i++)
+    //{
+    //    float length = sqrtf(
+    //        this->_frustum_planes[i].x * this->_frustum_planes[i].x +
+    //        this->_frustum_planes[i].y * this->_frustum_planes[i].y +
+    //        this->_frustum_planes[i].z * this->_frustum_planes[i].z);
+    //    this->_frustum_planes[i] /= length;
+    //}
 }
 
 #pragma region Setters
