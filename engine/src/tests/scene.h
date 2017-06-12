@@ -67,7 +67,9 @@ private:
     void _prepare_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT _record_compute_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT _record_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-    
+    HRESULT _record_gui_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+        _In_ const wolf::system::w_game_time& pGameTime);
+
 #pragma pack(push,1)
     struct color_unifrom
     {
@@ -76,16 +78,21 @@ private:
 #pragma pack(pop)
 
     wolf::content_pipeline::w_first_person_camera                  _camera;
+
     wolf::graphics::w_command_buffers                              _draw_command_buffers;
-    wolf::graphics::w_render_pass                                  _render_pass;
-    wolf::graphics::w_frame_buffers                                _frame_buffers;
+    wolf::graphics::w_render_pass                                  _draw_render_pass;
+    wolf::graphics::w_frame_buffers                                _draw_frame_buffers;
 
-    wolf::graphics::w_shader*                                       _shader;
+    wolf::graphics::w_command_buffers                              _gui_command_buffers;
+    wolf::graphics::w_render_pass                                  _gui_render_pass;
+    wolf::graphics::w_frame_buffers                                _gui_frame_buffers;
+    
+    wolf::graphics::w_shader*                                      _shader;
 
-    wolf::graphics::w_pipeline*                                     _pipeline;
-    wolf::graphics::w_pipeline*                                     _compute_pipeline;
+    wolf::graphics::w_pipeline*                                    _pipeline;
+    wolf::graphics::w_pipeline*                                    _compute_pipeline;
 
-    w_point_t                                                       _screen_size;
+    w_point_t                                                      _screen_size;
 
     struct model
     {
@@ -112,8 +119,8 @@ private:
 
     struct compute_instance_data
     {
-        glm::vec4   pos;
-        //glm::vec3   max_bounding_box;
+        glm::vec4   min_bounding_box;
+        glm::vec4   max_bounding_box;
     };
 
     struct vertex_unifrom
@@ -156,6 +163,8 @@ private:
         VkFence fence;								// Synchronization fence to avoid rewriting compute CB if still in use
         VkSemaphore semaphore;						// Used as a wait semaphore for graphics submission
     } compute;
+
+    VkSemaphore gui_semaphore;						// Used as a wait semaphore for graphics submission
 };
 
 #endif

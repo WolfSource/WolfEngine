@@ -42,7 +42,7 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
 #endif
 
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = true;
+    _config.debug_gpu = false;
     this->set_graphics_device_manager_configs(_config);
 }
 
@@ -80,8 +80,8 @@ std::vector<LOD> LODLevels;
 
 wolf::graphics::w_mesh* _mesh = nullptr;
 
-static glm::vec3 _min_bb;
-static glm::vec3 _max_bb;
+static glm::vec4 _min_bb;
+static glm::vec4 _max_bb;
 
 void scene::load()
 {
@@ -126,15 +126,17 @@ void scene::load()
 
             for (auto& _mesh_data : _model_meshes)
             {
-                _min_bb = glm::vec3(
+                _min_bb = glm::vec4(
                     _mesh_data->bounding_box.min[0],
-                    _mesh_data->bounding_box.min[1], 
-                    _mesh_data->bounding_box.min[2]);
+                    _mesh_data->bounding_box.min[1],
+                    _mesh_data->bounding_box.min[2],
+                    0);
 
-                _max_bb = glm::vec3(
+                _max_bb = glm::vec4(
                     _mesh_data->bounding_box.max[0],
                     _mesh_data->bounding_box.max[1],
-                    _mesh_data->bounding_box.max[2]);
+                    _mesh_data->bounding_box.max[2],
+                    0);
 
                 _base_index = _indices.size();
 
@@ -167,16 +169,6 @@ void scene::load()
                     _base_vertex++;
                 }
             }
-
-            //std::vector<w_cpipeline_model::w_instance_info> _model_instances;
-            //_model->get_instances(_model_instances);
-            //if (_model_instances.size())
-            //{
-            //    //update_instance_buffer(_model_instances.data(),
-            //    //    static_cast<UINT>(_model_instances.size() * sizeof(content_pipeline::w_cpipeline_model::w_instance_info)),
-            //    //    w_mesh::w_vertex_declaration::VERTEX_POSITION_UV_INSTANCE_VEC7_INT);
-            //}
-
         }
 
         _mesh = new (std::nothrow) wolf::graphics::w_mesh();
@@ -232,8 +224,8 @@ void scene::load()
     auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
     _depth_attachment.format = _output_window->vk_depth_buffer_format;
 
-    //create render pass
-    _hr = this->_render_pass.load(
+    //create draw render pass
+    _hr = this->_draw_render_pass.load(
         _gDevice,
         _viewport,
         _viewport_scissor,
@@ -250,10 +242,90 @@ void scene::load()
         return;
     }
 
+    std::vector<VkAttachmentDescription> _attachments(2);
+    // Color attachment
+    _attachments[0].format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
+    _attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
+    // Don't clear the framebuffer (like the renderpass from the example does)
+    _attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    _attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    _attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    _attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    _attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    _attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+    // Depth attachment
+    _attachments[1].format = _output_window->vk_depth_buffer_format;
+    _attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
+    _attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    _attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    _attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    _attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    _attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    _attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+    VkAttachmentReference colorReference = {};
+    colorReference.attachment = 0;
+    colorReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+    VkAttachmentReference depthReference = {};
+    depthReference.attachment = 1;
+    depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+    VkSubpassDescription subpassDescription = {};
+    subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpassDescription.flags = 0;
+    subpassDescription.inputAttachmentCount = 0;
+    subpassDescription.pInputAttachments = NULL;
+    subpassDescription.colorAttachmentCount = 1;
+    subpassDescription.pColorAttachments = &colorReference;
+    subpassDescription.pResolveAttachments = NULL;
+    subpassDescription.pDepthStencilAttachment = &depthReference;
+    subpassDescription.preserveAttachmentCount = 0;
+    subpassDescription.pPreserveAttachments = NULL;
+
+    VkSubpassDependency subpassDependencies[2] = {};
+
+    // Transition from final to initial (VK_SUBPASS_EXTERNAL refers to all commmands executed outside of the actual renderpass)
+    subpassDependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
+    subpassDependencies[0].dstSubpass = 0;
+    subpassDependencies[0].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    subpassDependencies[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    subpassDependencies[0].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+    subpassDependencies[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    subpassDependencies[0].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+
+    // Transition from initial to final
+    subpassDependencies[1].srcSubpass = 0;
+    subpassDependencies[1].dstSubpass = VK_SUBPASS_EXTERNAL;
+    subpassDependencies[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    subpassDependencies[1].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+    subpassDependencies[1].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    subpassDependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+    subpassDependencies[1].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
+
+    std::vector<VkSubpassDescription> _subpass_description = { subpassDescription };
+    std::vector<VkSubpassDependency> _subpassDependencies = { subpassDependencies[0], subpassDependencies[1] };
+
+    _hr = this->_gui_render_pass.load(
+        _gDevice,
+        _viewport,
+        _viewport_scissor,
+        _attachments,
+        &_subpass_description,
+        &_subpassDependencies);
+
+    if (_hr == S_FALSE)
+    {
+        logger.error("Error on creating render pass");
+        release();
+        w_game::exiting = true;
+        return;
+    }
 
     _prepare_buffers(_gDevice);
 
-    auto _render_pass_handle = this->_render_pass.get_handle();
+    auto _render_pass_handle = this->_draw_render_pass.get_handle();
     
     std::string _pipeline_cache_name = "pipeline_cache";
     if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
@@ -346,8 +418,8 @@ void scene::load()
         _render_pass_handle,
         _shader->get_shader_stages(),
         &_descriptor_set_layout_binding,
-        { this->_render_pass.get_viewport() }, //viewports
-        { this->_render_pass.get_viewport_scissor() }, //viewports scissor
+        { this->_draw_render_pass.get_viewport() }, //viewports
+        { this->_draw_render_pass.get_viewport_scissor() }, //viewports scissor
         _dynamic_states,
         "pipeline_cache",
         0,
@@ -376,7 +448,7 @@ void scene::load()
     }
 
     //create frame buffers
-    _hr = this->_frame_buffers.load(_gDevice,
+    _hr = this->_draw_frame_buffers.load(_gDevice,
         _render_pass_handle,
         _output_window->vk_swap_chain_image_views,
         &_output_window->vk_depth_buffer_image_view,
@@ -384,11 +456,25 @@ void scene::load()
         1);
     if (_hr == S_FALSE)
     {
-        logger.error("Error on creating frame buffers");
+        logger.error("Error on creating draw frame buffers");
         release();
         exit(1);
     }
 
+    //create gui frame buffers
+    auto _gui_render_pass_handle = this->_gui_render_pass.get_handle();
+    _hr = this->_gui_frame_buffers.load(_gDevice,
+        _gui_render_pass_handle,
+        _output_window->vk_swap_chain_image_views,
+        &_output_window->vk_depth_buffer_image_view,
+        _screen_size,
+        1);
+    if (_hr == S_FALSE)
+    {
+        logger.error("Error on creating gui frame buffers");
+        release();
+        exit(1);
+    }
 
     //create command buffer for compute shader
     compute.command_buffer.load(_gDevice, 1, true, &_gDevice->vk_compute_queue);
@@ -411,9 +497,12 @@ void scene::load()
         nullptr, 
         &compute.semaphore);
     
+    _hr = vkCreateSemaphore(_gDevice->vk_device,
+        &_semaphore_create_info,
+        nullptr,
+        &gui_semaphore);
+
     //now assign new command buffers
-    this->_draw_command_buffers.set_enable(true);
-    this->_draw_command_buffers.set_order(1);
     _hr = this->_draw_command_buffers.load(_gDevice, _output_window->vk_swap_chain_image_views.size());
     if (_hr == S_FALSE)
     {
@@ -422,14 +511,14 @@ void scene::load()
         exit(1);
     }
 
-    _hr = _gDevice->store_to_global_command_buffers("draw",
-        &this->_draw_command_buffers,
-        _output_window->index);
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error creating command buffer");
-        return;
-    }
+    //_hr = _gDevice->store_to_global_command_buffers("draw",
+    //    &this->_draw_command_buffers,
+    //    _output_window->index);
+    //if (_hr == S_FALSE)
+    //{
+    //    logger.error("Error creating command buffer");
+    //    return;
+    //}
 
     _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
 
@@ -439,7 +528,13 @@ void scene::load()
     _gui_images->initialize_texture_2D_from_file(content_path + L"textures/gui/icons.png", &_gui_images);
     w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _gui_images);
 
-
+    _hr = this->_gui_command_buffers.load(_gDevice, _output_window->vk_swap_chain_image_views.size());
+    if (_hr == S_FALSE)
+    {
+        logger.error("Error on creating gui command buffers");
+        release();
+        exit(1);
+    }
 
     _record_compute_command_buffer(_gDevice);
     _record_draw_command_buffer(_gDevice);
@@ -535,9 +630,9 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     // Map for host access
     for (uint32_t z = 0; z < _obj_count; z++)
     {
-        _compute_instance_data[z].pos = glm::vec4(_vertex_instance_data[z].pos, 1.0f);// +_min_bb);// * _vertex_instance_data[z].scale;
+        _compute_instance_data[z].min_bounding_box = _min_bb + glm::vec4(_vertex_instance_data[z].pos, 0.0f);
+        _compute_instance_data[z].max_bounding_box = _max_bb + glm::vec4(_vertex_instance_data[z].pos, 0.0f);
     }
-
     
     _size = _compute_instance_data.size() * sizeof(compute_instance_data);
     w_buffer stagingBuffer_3;
@@ -629,13 +724,10 @@ HRESULT scene::_record_draw_command_buffer(_In_ const std::shared_ptr<w_graphics
         {
             auto _cmd = this->_draw_command_buffers.get_command_at(i);
 
-            this->_render_pass.begin(_cmd,
-                this->_frame_buffers.get_frame_buffer_at(i),
+            this->_draw_render_pass.begin(_cmd,
+                this->_draw_frame_buffers.get_frame_buffer_at(i),
                 w_color(43));
             {
-
-                // Mesh containing the LODs
-
 
                 auto _descriptor_set = this->_shader->get_descriptor_set();
                 this->_pipeline->bind(_cmd, &_descriptor_set);
@@ -664,17 +756,8 @@ HRESULT scene::_record_draw_command_buffer(_In_ const std::shared_ptr<w_graphics
                             1, sizeof(VkDrawIndexedIndirectCommand));
                     }
                 }
-
-
-                //make sure render all gui before loading gui_render
-                //w_imgui::new_frame((float)pGameTime.get_elapsed_seconds(), []()
-                //{
-                //    make_gui();
-                //});
-                //w_imgui::update_buffers(this->_render_pass);
-                //w_imgui::render(_cmd);
             }
-            this->_render_pass.end(_cmd);
+            this->_draw_render_pass.end(_cmd);
         }
         this->_draw_command_buffers.end(i);
     }
@@ -682,7 +765,34 @@ HRESULT scene::_record_draw_command_buffer(_In_ const std::shared_ptr<w_graphics
     return S_OK;
 }
 
-static glm::vec3 _pw;
+HRESULT scene::_record_gui_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_ const w_game_time& pGameTime)
+{
+    //record clear screen command buffer for every swap chain image
+    for (uint32_t i = 0; i < this->_gui_command_buffers.get_commands_size(); ++i)
+    {
+        this->_gui_command_buffers.begin(i);
+        {
+            auto _cmd = this->_gui_command_buffers.get_command_at(i);
+
+            this->_gui_render_pass.begin(_cmd,
+                this->_gui_frame_buffers.get_frame_buffer_at(i));
+            {
+                //make sure render all gui before loading gui_render
+                w_imgui::new_frame((float)pGameTime.get_elapsed_seconds(), []()
+                {
+                    make_gui();
+                });
+                w_imgui::update_buffers(this->_gui_render_pass);
+                w_imgui::render(_cmd);
+            }
+            this->_gui_render_pass.end(_cmd);
+        }
+        this->_gui_command_buffers.end(i);
+    }
+    return S_OK;
+}
+
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
@@ -698,14 +808,13 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     
     auto _hr = this->_compute_unifrom.update();
     _hr = this->_vertex_unifrom.update();
-    
-    auto _dis = glm::distance(centers[1], _pos);
-    //logger.write(std::to_string(_dis));
+
 
     w_game::update(pGameTime);
 }
 
 static float __t = 1.0f;
+static bool show_gui = true;
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
     auto _gDevice = this->graphics_devices[0];
@@ -735,7 +844,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _submit_info.pCommandBuffers = &_cmd;
 
     // Wait on present and compute semaphores
-    std::array<VkPipelineStageFlags, 2> stageFlags = {
+    std::array<VkPipelineStageFlags, 2> stageFlags = 
+    {
         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
         VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
     };
@@ -749,14 +859,35 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _submit_info.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size());
     _submit_info.pWaitDstStageMask = stageFlags.data();
     _submit_info.signalSemaphoreCount = 1;
-    _submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore;
+    _submit_info.pSignalSemaphores = &gui_semaphore;
 
     // Submit to queue
     _hr = vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, compute.fence);
 
+    if (show_gui)
+    {
+        _record_gui_command_buffer(_gDevice, pGameTime);
 
 
-    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
+        VkPipelineStageFlags stageFlags = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+        _cmd = this->_gui_command_buffers.get_command_at(_output_window->vk_swap_chain_image_index);
+
+        VkSubmitInfo _gui_submit_info = {};
+        _gui_submit_info.commandBufferCount = 1;
+        _gui_submit_info.pCommandBuffers = &_cmd;
+        _gui_submit_info.pWaitDstStageMask = &stageFlags;
+        _gui_submit_info.waitSemaphoreCount = 1;
+        _gui_submit_info.pWaitSemaphores = &gui_semaphore;
+        _gui_submit_info.signalSemaphoreCount = 1;
+        _gui_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore;
+
+        // Submit to queue
+        _hr = vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_gui_submit_info, 0);
+    }
+
+
+    logger.write(std::to_string(pGameTime.get_frames_per_second()));
     auto __hr =  w_game::render(pGameTime);
 
 
@@ -767,7 +898,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     indirectDrawCountBuffer.unmap();
 
 //    auto _t = this->_camera.get_translate();
-    //logger.write("visible " + std::to_string(indirectStats.drawCount));
+    logger.write("visible " + std::to_string(indirectStats.drawCount));
     //logger.write("c " + std::to_string(_t.x) + " "  +
     //    std::to_string(_t.y) + " " + 
     //    std::to_string(_t.z));
@@ -775,13 +906,13 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     //    std::to_string(_pw.y) + " " +
     //    std::to_string(_pw.z));
 
-    for (size_t i = 0; i < 6; i++)
-    {
-        if (indirectStats.lodCount[i])
-        {
-            logger.write("lod " + std::to_string(i));
-        }
-    }
+    //for (size_t i = 0; i < 6; i++)
+    //{
+    //    if (indirectStats.lodCount[i])
+    //    {
+    //        logger.write("lod " + std::to_string(i));
+    //    }
+    //}
     return __hr;
 }
 
@@ -804,8 +935,11 @@ ULONG scene::release()
     this->_vertex_unifrom.release();
     this->_compute_unifrom.release();
 
-    this->_render_pass.release();
-    this->_frame_buffers.release();
+    this->_draw_render_pass.release();
+    this->_draw_frame_buffers.release();
+
+    this->_gui_render_pass.release();
+    this->_gui_frame_buffers.release();
 
     w_imgui::release();
     

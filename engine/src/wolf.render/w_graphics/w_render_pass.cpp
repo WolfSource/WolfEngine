@@ -140,6 +140,35 @@ namespace wolf
                 vkCmdSetScissor(pCommandBuffer, 0, 1, &this->_viewport_scissor);
             }
 
+            void begin(_In_ const VkCommandBuffer pCommandBuffer,
+                _In_ const VkFramebuffer pFrameBuffer)
+            {
+                VkRenderPassBeginInfo _render_pass_begin_info =
+                {
+                    VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,               // Type
+                    nullptr,                                                // Next
+                    this->_render_pass,                                     // RenderPass
+                    pFrameBuffer,                                           // Framebuffer
+                    {                                                       // RenderArea
+                        {
+                            static_cast<int32_t>(this->_viewport.x),        // X
+                            static_cast<int32_t>(this->_viewport.y)         // Y
+                        },
+                        {
+                            static_cast<uint32_t>(this->_viewport.width),   // Width
+                            static_cast<uint32_t>(this->_viewport.height),  // Height
+                        }
+                    },
+                    0,                                                  // ClearValueCount
+                    nullptr                                             // ClearValues
+                };
+                vkCmdBeginRenderPass(pCommandBuffer, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
+
+                vkCmdSetViewport(pCommandBuffer, 0, 1, &this->_viewport);
+                vkCmdSetScissor(pCommandBuffer, 0, 1, &this->_viewport_scissor);
+            }
+
+
             void end(_In_ const VkCommandBuffer pCommandBuffer)
             {
                 vkCmdEndRenderPass(pCommandBuffer);
@@ -251,6 +280,15 @@ void w_render_pass::begin(_In_ const VkCommandBuffer pCommandBuffer,
                               pClearColor,
                               pClearDepth,
                               pClearStencil);
+}
+
+void w_render_pass::begin(_In_ const VkCommandBuffer pCommandBuffer,
+    _In_ const VkFramebuffer pFrameBuffer)
+{
+    if (!this->_pimp) return;
+    this->_pimp->begin(
+        pCommandBuffer,
+        pFrameBuffer);
 }
 
 void w_render_pass::end(_In_ VkCommandBuffer pCommandBuffer)

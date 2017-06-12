@@ -2217,7 +2217,13 @@ namespace wolf
 					1 presentable image as long as we present it before attempting
 					to acquire another.
 				*/
-				uint32_t _desired_number_of_swapchain_images = _surface_capabilities.minImageCount;
+                uint32_t _desired_number_of_swapchain_images = _surface_capabilities.minImageCount + 1;
+                if ((_surface_capabilities.maxImageCount > 0) &&
+                    (_desired_number_of_swapchain_images > _surface_capabilities.maxImageCount))
+                {
+                    _desired_number_of_swapchain_images = _surface_capabilities.maxImageCount;
+                }
+
                 if (_desired_number_of_swapchain_images < 2)
                 {
                     logger.warning("The images count of surface capabilities and swap chain is less than two.");
@@ -2284,7 +2290,7 @@ namespace wolf
 					std::exit(EXIT_FAILURE);
 				}
 
-				//get the count of swap chain 's images
+                //get the count of swap chain 's images
 				uint32_t _swap_chain_image_count = UINT32_MAX;
 				_hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
 					_output_presentation_window->vk_swap_chain,
