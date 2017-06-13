@@ -305,8 +305,15 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
             glm::vec3 _pos;
             
             _pos.x = _v.vertex[0];
-            _pos.y = pZUp  ? -_v.vertex[1] : _v.vertex[1];
-            _pos.z = _v.vertex[2];
+            if (pZUp)
+            {
+                _pos.y = -_v.vertex[2];
+            }
+            else
+            {
+                _pos.y = _v.vertex[1];
+            }
+            _pos.z = _v.vertex[1];
 
 			_min_vertex.x = min(_pos.x, _min_vertex.x);
 			_min_vertex.y = min(_pos.y, _min_vertex.y);

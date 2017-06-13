@@ -11,7 +11,7 @@ using namespace wolf::graphics;
 using namespace wolf::framework;
 using namespace wolf::content_pipeline;
 
-#define COMPUE_SHADER_LOCAL_SIZE_X_ 2
+#define COMPUE_SHADER_LOCAL_SIZE_X_ 1
 
 //forward declaration
 static void make_gui();
@@ -42,7 +42,7 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
 #endif
 
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = false;
+    _config.debug_gpu = true;
     this->set_graphics_device_manager_configs(_config);
 }
 
@@ -83,6 +83,8 @@ wolf::graphics::w_mesh* _mesh = nullptr;
 static glm::vec4 _min_bb;
 static glm::vec4 _max_bb;
 
+static glm::vec3 _pppos;
+
 void scene::load()
 {
     auto _gDevice = this->graphics_devices[0];
@@ -100,7 +102,7 @@ void scene::load()
     _vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float };
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/lod_pri.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/export-engine.dae");
     if (_scene)
     {
         //get all models
@@ -118,8 +120,14 @@ void scene::load()
         uint32_t _base_index = 0;
         uint32_t _base_vertex = 0;
 
-        for (auto& _model : _cmodels)
+        _pppos.x = _cmodels[0]->get_transform().position[0];
+        _pppos.y = _cmodels[0]->get_transform().position[1];
+        _pppos.z = _cmodels[0]->get_transform().position[2];
+
+        for (size_t i = 0; i < 3; i++)
+     /*   for (auto& _model : _cmodels)*/
         {
+            auto _model = _cmodels[0];
             //load meshes
             std::vector<w_cpipeline_model::w_mesh*> _model_meshes;
             _model->get_meshes(_model_meshes);
@@ -200,7 +208,7 @@ void scene::load()
         this->_camera.set_far_plan(10000);
         this->_camera.set_aspect_ratio((float)_screen_size.x / (float)_screen_size.y);
 
-        this->_camera.set_translate(0, 0, 0);
+        //this->_camera.set_translate(0, 0, 0);
         this->_camera.update_view();
         this->_camera.update_projection();
         this->_camera.update_frustum();
@@ -540,9 +548,9 @@ void scene::load()
     _record_draw_command_buffer(_gDevice);
 }
 
-const int _obj_count = 2;
+const int _obj_count = 1;
 
-static glm::vec3 centers[2];
+static glm::vec3 centers[1];
 void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
     w_buffer stagingBuffer;
@@ -587,7 +595,8 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     // Map for host access
     for (uint32_t z = 0; z < _obj_count; z++)
     {
-        _vertex_instance_data[z].pos = glm::vec3(z * 1000, 0, z * 1000);
+        _vertex_instance_data[z].pos = _pppos;
+
         _vertex_instance_data[z].rot = glm::vec3(0, 0, 0);
         _vertex_instance_data[z].scale = 1.0f;
     }
@@ -630,10 +639,23 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     // Map for host access
     for (uint32_t z = 0; z < _obj_count; z++)
     {
-        _compute_instance_data[z].min_bounding_box = _min_bb + glm::vec4(_vertex_instance_data[z].pos, 0.0f);
-        _compute_instance_data[z].max_bounding_box = _max_bb + glm::vec4(_vertex_instance_data[z].pos, 0.0f);
+        _compute_instance_data[z].min_bounding_box = _min_bb +  glm::vec4(_vertex_instance_data[z].pos, 0.0f);
+        _compute_instance_data[z].max_bounding_box = _max_bb +  glm::vec4(_vertex_instance_data[z].pos, 0.0f);
     }
+
+    centers[0] = _vertex_instance_data[0].pos;// (_compute_instance_data[0].min_bounding_box + _compute_instance_data[0].max_bounding_box) / 2.0f;
     
+    //((_min_bb + _max_bb) / 2.0f).x;
+    ////centers[0].y = ((_min_bb + _max_bb) / 2.0f).y;
+    ////centers[0].z = ((_min_bb + _max_bb) / 2.0f).z;
+
+    
+    // (_compute_instance_data[0].min_bounding_box + _compute_instance_data[0].max_bounding_box) / 2.0f;
+   
+   // std::swap(centers[0].y, centers[0].z);
+   // centers[0].y *= -1;
+    //centers[0].z *= -1;
+
     _size = _compute_instance_data.size() * sizeof(compute_instance_data);
     w_buffer stagingBuffer_3;
     _hr = stagingBuffer_3.load_as_staging(pGDevice, _size);
@@ -648,6 +670,31 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     _hr = compute_instance_buffer.bind();
     _hr = stagingBuffer_3.copy_to(compute_instance_buffer);
     stagingBuffer_3.release();
+
+    
+    //auto v1 = _min_bb;
+    //auto v2 = _max_bb;
+    //
+    //std::vector<float> _vertices =
+    //{
+    //    v1.x, v1.y, v1.z, 0, 0,
+    //    v2.x, v1.y, v1.z, 0, 0,
+    //    v2.x, v1.y, v2.z, 0, 0,
+    //    v1.x, v1.y, v2.z, 0, 0,
+    //    v1.x, v2.y, v1.z, 0, 0,
+    //    v2.x, v2.y, v1.z, 0, 0,
+    //    v2.x, v2.y, v2.z, 0, 0,
+    //    v1.x, v2.y, v2.z, 0, 0
+    //};
+    //std::vector<uint32_t> _indices = { 0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7 };
+
+    //this->_bounding_box.load(pGDevice, _vertices.data(), _vertices.size() * sizeof(float), _vertices.size(),
+    //    _indices.data(), _indices.size());
+    //w_vertex_binding_attributes _vertex_binding_attrs;
+    //_vertex_binding_attrs.declaration = w_vertex_declaration::USER_DEFINED;
+    //_vertex_binding_attrs.binding_attributes[0] = { Vec3, Vec2 };
+    //_vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float };
+    //this->_bounding_box.set_vertex_binding_attributes(_vertex_binding_attrs);
 }
 
 HRESULT scene::_record_compute_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -797,7 +844,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
     this->_camera.update(pGameTime, this->_screen_size);
-    
+
     auto _pos = this->_camera.get_translate();
     auto _view_projection = this->_camera.get_projection() * this->_camera.get_view();
 
@@ -805,10 +852,12 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
     this->_compute_unifrom.data.cameraPos = glm::vec4(_pos, 1.0f);//z_up for 3d max and blender
     std::memcpy(this->_compute_unifrom.data.frustumPlanes, this->_camera.get_frustum_plans().data(), sizeof(glm::vec4) * 6);
-    
+
     auto _hr = this->_compute_unifrom.update();
     _hr = this->_vertex_unifrom.update();
 
+
+    logger.write(std::to_string(glm::distance(_pos, centers[0])));
 
     w_game::update(pGameTime);
 }
@@ -874,6 +923,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         _cmd = this->_gui_command_buffers.get_command_at(_output_window->vk_swap_chain_image_index);
 
         VkSubmitInfo _gui_submit_info = {};
+        _gui_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         _gui_submit_info.commandBufferCount = 1;
         _gui_submit_info.pCommandBuffers = &_cmd;
         _gui_submit_info.pWaitDstStageMask = &stageFlags;
@@ -887,7 +937,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     }
 
 
-    logger.write(std::to_string(pGameTime.get_frames_per_second()));
+   // logger.write(std::to_string(pGameTime.get_frames_per_second()));
     auto __hr =  w_game::render(pGameTime);
 
 
@@ -898,7 +948,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     indirectDrawCountBuffer.unmap();
 
 //    auto _t = this->_camera.get_translate();
-    logger.write("visible " + std::to_string(indirectStats.drawCount));
+    //logger.write("visible " + std::to_string(indirectStats.drawCount));
     //logger.write("c " + std::to_string(_t.x) + " "  +
     //    std::to_string(_t.y) + " " + 
     //    std::to_string(_t.z));
@@ -906,13 +956,13 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     //    std::to_string(_pw.y) + " " +
     //    std::to_string(_pw.z));
 
-    //for (size_t i = 0; i < 6; i++)
-    //{
-    //    if (indirectStats.lodCount[i])
-    //    {
-    //        logger.write("lod " + std::to_string(i));
-    //    }
-    //}
+    for (size_t i = 0; i < MAX_LOD_LEVEL + 1; i++)
+    {
+        if (indirectStats.lodCount[i])
+        {
+            //logger.write("lod " + std::to_string(i));
+        }
+    }
     return __hr;
 }
 

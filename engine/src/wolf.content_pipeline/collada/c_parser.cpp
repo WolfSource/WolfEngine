@@ -1384,7 +1384,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
                     _instance_info.position[1] = _node->translate.z;
                     _instance_info.position[2] = -_node->translate.y;
 
-                    _instance_info.rotation[0] = _rotation.x - glm::radians(90.0f);
+                    _instance_info.rotation[0] = _rotation.x; - glm::radians(90.0f);
                     _instance_info.rotation[1] = _rotation.y;
                     _instance_info.rotation[2] = _rotation.z;
                 }

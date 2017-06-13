@@ -23,7 +23,7 @@
 #include <cameras/w_first_person_camera.h>
 #include <w_point.h>
 
-#define MAX_LOD_LEVEL 5
+#define MAX_LOD_LEVEL 2
 
 class scene : public wolf::framework::w_game
 {
@@ -165,6 +165,9 @@ private:
     } compute;
 
     VkSemaphore gui_semaphore;						// Used as a wait semaphore for graphics submission
+
+/*
+    wolf::graphics::w_mesh                      _bounding_box;*/
 };
 
 #endif

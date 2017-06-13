@@ -3,7 +3,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout (constant_id = 0) const int MAX_LOD_LEVEL = 5;
+layout (constant_id = 0) const int MAX_LOD_LEVEL = 2;
 
 struct instance_data 
 {
@@ -60,7 +60,7 @@ layout (binding = 4) readonly buffer LODs
 	LOD lods[];
 };
 
-layout (local_size_x = 2) in;
+layout (local_size_x = 1) in;
 
 bool frustum_check(vec3 pMinBox, vec3 pMaxBox)
 {
@@ -76,7 +76,7 @@ bool frustum_check(vec3 pMinBox, vec3 pMaxBox)
 	return true;
 }
 
-layout (local_size_x = 2) in;
+layout (local_size_x = 1) in;
 
 void main()
 {
@@ -97,7 +97,7 @@ void main()
 	const vec3 _max_bb = instances[idx].max_bounding_box.xyz;
 	const vec3 _center = (_min_bb + _max_bb) / 2.0f;
 
-	if (frustum_check(_min_bb, _max_bb))
+	if (true)//frustum_check(_min_bb, _max_bb))
 	{
 		indirect_draws[idx].instance_count = 1;
 		
@@ -108,11 +108,15 @@ void main()
 		uint _lod_level = MAX_LOD_LEVEL;
 		for (uint i = 0; i < MAX_LOD_LEVEL; i++)
 		{
-			if (distance(_center, i_ubo.camera_pos.xyz) <= lods[i].distance) 
+			if (distance(_min_bb, i_ubo.camera_pos.xyz) <= lods[i].distance) 
 			{
 				_lod_level = i;
 				break;
 			}
+		}
+		if(_lod_level != 0 || _lod_level != 1 || _lod_level != 2)
+		{
+			_lod_level = 2;
 		}
 		indirect_draws[idx].first_index = lods[_lod_level].first_index;
 		indirect_draws[idx].index_count = lods[_lod_level].index_count;
