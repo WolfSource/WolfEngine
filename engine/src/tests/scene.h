@@ -94,22 +94,6 @@ private:
 
     w_point_t                                                      _screen_size;
 
-    struct model
-    {
-        std::vector<wolf::graphics::w_mesh*>                        model_meshes;
-        bool                                                        has_instances = false;
-
-        ULONG release()
-        {
-            for (auto& _mesh : this->model_meshes)
-            {
-                SAFE_RELEASE(_mesh);
-            }
-            return 1;
-        }
-    };
-    std::vector<model*>                                             _models;
-    
     struct vertex_instance_data 
     {
         glm::vec3   pos;
@@ -165,9 +149,6 @@ private:
     } compute;
 
     VkSemaphore gui_semaphore;						// Used as a wait semaphore for graphics submission
-
-/*
-    wolf::graphics::w_mesh                      _bounding_box;*/
 };
 
 #endif

@@ -5,7 +5,7 @@ using namespace wolf::content_pipeline;
 
 w_first_person_camera::w_first_person_camera() :
     _rotation_speed(0.4f),
-    _movement_speed(500.0f)
+    _movement_speed(200.0f)
 {
     this->_rotation[0] = 0;
     this->_rotation[1] = 0;

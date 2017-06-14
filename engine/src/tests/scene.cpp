@@ -124,10 +124,12 @@ void scene::load()
         _pppos.y = _cmodels[0]->get_transform().position[1];
         _pppos.z = _cmodels[0]->get_transform().position[2];
 
-        for (size_t i = 0; i < 3; i++)
-     /*   for (auto& _model : _cmodels)*/
+
+        std::vector<size_t> _order_of_lods = { 0, 7, 6};
+        std::vector<size_t> _insts = { 1, 2, 3, 4, 5 };
+        for (auto& _iter : _order_of_lods)
         {
-            auto _model = _cmodels[0];
+            auto _model = _cmodels[_iter];
             //load meshes
             std::vector<w_cpipeline_model::w_mesh*> _model_meshes;
             _model->get_meshes(_model_meshes);
@@ -156,7 +158,7 @@ void scene::load()
                 LOD lod;
                 lod.firstIndex = _base_index;			        // First index for this LOD
                 lod.indexCount = _mesh_data->indices.size();	// Index count for this LOD
-                lod.distance = n * 200.0f;				// Starting distance (to viewer) for this LOD
+                lod.distance = n * 50.0f;				        // Starting distance (to viewer) for this LOD
                 n++;
                 LODLevels.push_back(lod);
 
@@ -643,18 +645,7 @@ void scene::_prepare_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDe
         _compute_instance_data[z].max_bounding_box = _max_bb +  glm::vec4(_vertex_instance_data[z].pos, 0.0f);
     }
 
-    centers[0] = _vertex_instance_data[0].pos;// (_compute_instance_data[0].min_bounding_box + _compute_instance_data[0].max_bounding_box) / 2.0f;
-    
-    //((_min_bb + _max_bb) / 2.0f).x;
-    ////centers[0].y = ((_min_bb + _max_bb) / 2.0f).y;
-    ////centers[0].z = ((_min_bb + _max_bb) / 2.0f).z;
-
-    
-    // (_compute_instance_data[0].min_bounding_box + _compute_instance_data[0].max_bounding_box) / 2.0f;
-   
-   // std::swap(centers[0].y, centers[0].z);
-   // centers[0].y *= -1;
-    //centers[0].z *= -1;
+    centers[0] = (_compute_instance_data[0].min_bounding_box + _compute_instance_data[0].max_bounding_box) / 2.0f;
 
     _size = _compute_instance_data.size() * sizeof(compute_instance_data);
     w_buffer stagingBuffer_3;
@@ -948,7 +939,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     indirectDrawCountBuffer.unmap();
 
 //    auto _t = this->_camera.get_translate();
-    //logger.write("visible " + std::to_string(indirectStats.drawCount));
+    logger.write("visible " + std::to_string(indirectStats.drawCount));
     //logger.write("c " + std::to_string(_t.x) + " "  +
     //    std::to_string(_t.y) + " " + 
     //    std::to_string(_t.z));
@@ -956,13 +947,13 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     //    std::to_string(_pw.y) + " " +
     //    std::to_string(_pw.z));
 
-    for (size_t i = 0; i < MAX_LOD_LEVEL + 1; i++)
-    {
-        if (indirectStats.lodCount[i])
-        {
-            //logger.write("lod " + std::to_string(i));
-        }
-    }
+    //for (size_t i = 0; i < MAX_LOD_LEVEL + 1; i++)
+    //{
+    //    if (indirectStats.lodCount[i])
+    //    {
+    //        logger.write("lod " + std::to_string(i));
+    //    }
+    //}
     return __hr;
 }
 
@@ -992,12 +983,6 @@ ULONG scene::release()
     this->_gui_frame_buffers.release();
 
     w_imgui::release();
-    
-    for (auto _model : this->_models)
-    {
-        SAFE_RELEASE(_model);
-    }
-    this->_models.clear();
 
     SAFE_RELEASE(this->_shader);
     SAFE_RELEASE(this->_pipeline);
@@ -1044,14 +1029,14 @@ static void make_gui()
     }
 
     ImGui::SetWindowPos(ImVec2(0, 0));
-    ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiSetCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(320, 320), ImGuiSetCond_FirstUseEver);
     for (int i = 0; i < 6; i++)
     {
         ImTextureID tex_id = (void*)("#image");
         ImGui::PushID(i);
         ImGui::PushStyleColor(ImGuiCol_ImageActive, ImColor(0.0f, 0.0f, 255.0f, 255.0f));
         ImGui::PushStyleColor(ImGuiCol_ImageHovered, ImColor(0.0f, 0.0f, 255.0f, 155.0f));
-        if (ImGui::ImageButton(tex_id, ImVec2(40, 40), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
+        if (ImGui::ImageButton(tex_id, ImVec2(32, 32), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
         {
             __t -= 0.1f;
         }

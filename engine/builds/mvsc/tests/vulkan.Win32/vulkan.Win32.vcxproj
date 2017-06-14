@@ -163,11 +163,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\tests\model.h" />
     <ClInclude Include="..\..\..\..\src\tests\pch.h" />
     <ClInclude Include="..\..\..\..\src\tests\scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\tests\main.cpp" />
+    <ClCompile Include="..\..\..\..\src\tests\model.cpp" />
     <ClCompile Include="..\..\..\..\src\tests\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>

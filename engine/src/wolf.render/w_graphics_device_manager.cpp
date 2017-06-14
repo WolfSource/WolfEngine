@@ -378,7 +378,6 @@ static VkBool32 DebugMessageCallback(
     const char* pMsg,
     void* pUserData)
 {
-    return VK_FALSE;
     // Error that may result in undefined behaviour
     if (pFlags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
