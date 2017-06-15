@@ -409,7 +409,7 @@ void scene::load()
     _fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     _fence_create_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
     
-    _hr = vkCreateFence(
+    auto __hr = vkCreateFence(
         _gDevice->vk_device, 
         &_fence_create_info,
         nullptr, 
@@ -418,12 +418,12 @@ void scene::load()
     VkSemaphoreCreateInfo _semaphore_create_info = {};
     _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-    _hr = vkCreateSemaphore(_gDevice->vk_device, 
+    __hr = vkCreateSemaphore(_gDevice->vk_device,
         &_semaphore_create_info,
         nullptr, 
         &compute.semaphore);
     
-    _hr = vkCreateSemaphore(_gDevice->vk_device,
+    __hr = vkCreateSemaphore(_gDevice->vk_device,
         &_semaphore_create_info,
         nullptr,
         &gui_semaphore);
