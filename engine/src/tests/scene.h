@@ -23,6 +23,8 @@
 #include <cameras/w_first_person_camera.h>
 #include <w_point.h>
 
+#include "model.h"
+
 #define MAX_LOD_LEVEL 2
 
 class scene : public wolf::framework::w_game
@@ -78,6 +80,7 @@ private:
 #pragma pack(pop)
 
     wolf::content_pipeline::w_first_person_camera                  _camera;
+    std::vector<model*>                                            _models;
 
     wolf::graphics::w_command_buffers                              _draw_command_buffers;
     wolf::graphics::w_render_pass                                  _draw_render_pass;

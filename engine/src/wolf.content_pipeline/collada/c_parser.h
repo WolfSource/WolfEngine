@@ -57,7 +57,7 @@ namespace wolf
                                                                                   _Inout_ std::vector<w_cpipeline_model*>& pModels,
                                                                                   _Inout_ std::vector<c_node*>& pNodeWithUnknownInstanceRef);
                 static void                                   _create_model(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_cpipeline_model** pModel);
-				static HRESULT		                          _create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals);
+				static HRESULT		                          _create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals, bool pFindLODs);
 				static void			                          _clear_all_resources();
 
 				static const char*	                          _trace_class_name;

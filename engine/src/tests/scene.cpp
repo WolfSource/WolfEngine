@@ -101,116 +101,32 @@ void scene::load()
     _vertex_binding_attrs.binding_attributes[0] = { Vec3, Vec2 };
     _vertex_binding_attrs.binding_attributes[1] = { Vec3, Vec3, Float };
 
+
+    //1281.05, 874.844, 9.601
+    //1306.126, 937.196, 9.6
+
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/export-engine.dae");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/export-engine.wscene");//export-engine.dae
     if (_scene)
     {
+        //just for converting
+        //std::vector<w_cpipeline_scene> _scenes = { *_scene };
+        //w_content_manager::save_wolf_scenes_to_file(_scenes, content_path + L"models/export-engine.wscene");
+        //_scenes.clear();
+
         //get all models
         std::vector<w_cpipeline_model*> _cmodels;
         _scene->get_all_models(_cmodels);
-
-        auto _z_up = _scene->get_z_up();
-
-        uint32_t n = 1;
-
-        //create one big vertex buffer and index buffer from all LODs
-        std::vector<float> _vertices;
-        std::vector<uint32_t> _indices;
-
-        uint32_t _base_index = 0;
-        uint32_t _base_vertex = 0;
-
-        _pppos.x = _cmodels[0]->get_transform().position[0];
-        _pppos.y = _cmodels[0]->get_transform().position[1];
-        _pppos.z = _cmodels[0]->get_transform().position[2];
+        
+       
 
 
-        std::vector<size_t> _order_of_lods = { 0, 7, 6};
-        std::vector<size_t> _insts = { 1, 2, 3, 4, 5 };
-        for (auto& _iter : _order_of_lods)
-        {
-            auto _model = _cmodels[_iter];
-            //load meshes
-            std::vector<w_cpipeline_model::w_mesh*> _model_meshes;
-            _model->get_meshes(_model_meshes);
-
-            for (auto& _mesh_data : _model_meshes)
-            {
-                _min_bb = glm::vec4(
-                    _mesh_data->bounding_box.min[0],
-                    _mesh_data->bounding_box.min[1],
-                    _mesh_data->bounding_box.min[2],
-                    0);
-
-                _max_bb = glm::vec4(
-                    _mesh_data->bounding_box.max[0],
-                    _mesh_data->bounding_box.max[1],
-                    _mesh_data->bounding_box.max[2],
-                    0);
-
-                _base_index = _indices.size();
-
-                for (size_t i = 0; i < _mesh_data->indices.size(); ++i)
-                {
-                    _indices.push_back(_base_vertex + _mesh_data->indices[i]);
-                }
-
-                LOD lod;
-                lod.firstIndex = _base_index;			        // First index for this LOD
-                lod.indexCount = _mesh_data->indices.size();	// Index count for this LOD
-                lod.distance = n * 50.0f;				        // Starting distance (to viewer) for this LOD
-                n++;
-                LODLevels.push_back(lod);
-
-                for (auto& _data : _mesh_data->vertices)
-                {
-                    auto _pos = _data.position;
-                    auto _uv = _data.uv;
-
-                    //position
-                    _vertices.push_back(_pos[0]);
-                    _vertices.push_back(_pos[1]);
-                    _vertices.push_back(_pos[2]);
-
-                    //uv
-                    _vertices.push_back(_uv[0]);
-                    _vertices.push_back(1 - _uv[1]);
-
-                    _base_vertex++;
-                }
-            }
-        }
-
-        _mesh = new (std::nothrow) wolf::graphics::w_mesh();
-        if (!_mesh)
-        {
-            logger.error("Error on allocating memory for mesh");
-            w_game::exit();
-        }
-        auto _v_size = static_cast<uint32_t>(_vertices.size());
-        _hr = _mesh->load(_gDevice,
-            _vertices.data(),
-            _v_size * sizeof(float),
-            _v_size,
-            _indices.data(),
-            _indices.size());
-        _mesh->set_vertex_binding_attributes(_vertex_binding_attrs);
-
-        _vertices.clear();
-        _indices.clear();
-
-        if (_hr == S_FALSE)
-        {
-            logger.error("Error on loading vertices for mesh");
-            w_game::exit();
-        }
-
+        
         _scene->get_first_camera(this->_camera);
         this->_camera.set_near_plan(0.01f);
         this->_camera.set_far_plan(10000);
         this->_camera.set_aspect_ratio((float)_screen_size.x / (float)_screen_size.y);
 
-        //this->_camera.set_translate(0, 0, 0);
         this->_camera.update_view();
         this->_camera.update_projection();
         this->_camera.update_frustum();
@@ -839,6 +755,55 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     auto _pos = this->_camera.get_translate();
     auto _view_projection = this->_camera.get_projection() * this->_camera.get_view();
 
+    glm::vec3 _inpos = glm::vec3(6.20592403f, 64.5980225f, 0.0f);
+    auto _world = _view_projection * glm::translate(_inpos);
+
+    std::string _matrix_in = " { ";
+    _matrix_in += std::to_string(_world[0][0]) + "f, " +
+        std::to_string(_world[0][1]) + "f, " +
+        std::to_string(_world[0][2]) + "f, " +
+        std::to_string(_world[0][3]) + "f, ";
+
+    _matrix_in += std::to_string(_world[0][0]) + "f, " +
+        std::to_string(_world[1][1]) + "f, " +
+        std::to_string(_world[1][2]) + "f, " +
+        std::to_string(_world[1][3]) + "f, ";
+
+    _matrix_in += std::to_string(_world[0][0]) + "f, " +
+        std::to_string(_world[2][1]) + "f, " +
+        std::to_string(_world[2][2]) + "f, " +
+        std::to_string(_world[2][3]) + "f, ";
+
+    _matrix_in += std::to_string(_world[0][0]) + "f, " +
+        std::to_string(_world[3][1]) + "f, " +
+        std::to_string(_world[3][2]) + "f, " +
+        std::to_string(_world[3][3]) + "f } ";
+
+    glm::vec3 _outpos = glm::vec3(-58.0545692f, 0.0f, 8.56261444f);
+    glm::mat4 __world = glm::translate(_outpos);
+
+    _world = _view_projection * __world;
+
+    auto _matrix_out = "{" + std::to_string(_world[0][0]) + "f, " +
+        std::to_string(_world[0][1]) + "f, " +
+        std::to_string(_world[0][2]) + "f, " +
+        std::to_string(_world[0][3]) + "f, ";;
+
+    _matrix_out += std::to_string(_world[0][0]) + "f, " +
+        std::to_string(_world[1][1]) + "f, " +
+        std::to_string(_world[1][2]) + "f, " +
+        std::to_string(_world[1][3]) + "f, ";
+
+    _matrix_out += std::to_string(_world[0][0]) + "f, " +
+        std::to_string(_world[2][1]) + "f, " +
+        std::to_string(_world[2][2]) + "f, " +
+        std::to_string(_world[2][3]) + "f, ";
+
+    _matrix_out += std::to_string(_world[0][0]) + "f, " +
+        std::to_string(_world[3][1]) + "f, " +
+        std::to_string(_world[3][2]) + "f, " +
+        std::to_string(_world[3][3]) + "f } ";
+
     this->_vertex_unifrom.data.projection_view = _view_projection;
 
     this->_compute_unifrom.data.cameraPos = glm::vec4(_pos, 1.0f);//z_up for 3d max and blender
@@ -981,6 +946,12 @@ ULONG scene::release()
 
     this->_gui_render_pass.release();
     this->_gui_frame_buffers.release();
+
+    //release all models
+    for (auto& _iter : this->_models)
+    {
+        SAFE_RELEASE(_iter);
+    }
 
     w_imgui::release();
 

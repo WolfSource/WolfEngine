@@ -1188,7 +1188,7 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pN
 	pGeometry.triangles.push_back(_triangles);
 }
 
-HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals)
+HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals, bool pFindLODs)
 {
     std::vector<c_node*> _mesh_with_unknown_instance_ref;
     std::vector<w_cpipeline_model*> _models;
@@ -1302,11 +1302,72 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
 	//	pScene->add_model(_model);
 	//}
 
+    //find LODS index
+    if (pFindLODs)
+    {
+        std::vector<size_t> _roots;
+        std::vector<size_t> _lods;
+
+        for (size_t i = 0; i < _models.size(); i++)
+        {
+            auto _model = _models[i];
+            if (_model)
+            {
+                auto _name = _model->get_name();
+                if (strstr(_name.c_str(), "lod") != NULL)
+                {
+                    _lods.push_back(i);
+                }
+                else
+                {
+                    _roots.push_back(i);
+                }
+            }
+        }
+
+            std::map<size_t, std::vector<size_t>> _map_of_models;
+
+            std::vector<std::string> _splits;
+            for (size_t i = 0; i < _roots.size(); ++i)
+            {
+                auto _index = _roots[i];
+                auto _name = _cmodels[_index]->get_name();
+
+                std::vector<size_t> model_lods;
+                wolf::system::convert::split_string(_name, "_", _splits);
+                if (_splits.size() > 0)
+                {
+                    auto _design_name = _splits[0];
+                    int _i = 0;
+
+                    _lods.erase(std::remove_if(_lods.begin(), _lods.end(),
+                        [_design_name, _cmodels, &model_lods](_In_ size_t pIter)
+                    {
+                        auto __name = _cmodels[pIter]->get_name();
+                        if (wolf::system::convert::string_start_with(__name, _design_name))
+                        {
+                            model_lods.push_back(pIter);
+                            return true;
+                        }
+
+                        return false;
+
+                    }), _lods.end());
+                }
+
+                _map_of_models[_index] = model_lods;
+
+                _splits.clear();
+            }
+        }
+    }
+
     if (_models.size())
     {
         pScene->add_models(_models);
         _models.clear();
     }
+
     if (sLibraryCameras.size())
     {
         for (auto _iter : sLibraryCameras)
@@ -1374,7 +1435,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
             if (_iter != pModels.end())
             {
                 //we find source model
-                w_cpipeline_model::w_instance_info _instance_info;
+                w_instance_info _instance_info;
 
                 auto _rotation = glm::rotation_from_angle_axis(_node->rotation.x, _node->rotation.y, _node->rotation.z, _node->rotation.w);
 

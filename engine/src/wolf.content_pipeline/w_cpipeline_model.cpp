@@ -32,7 +32,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 {
 	auto _model = new w_cpipeline_model();
 
-	std::string _messages;
+	//std::string _messages;
 
 	for (auto _triangle : pGeometry.triangles)
 	{
@@ -225,7 +225,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 							}
 							else
 							{
-								_messages += "Duplicated vertex with different uv for model: " + pGeometry.name + "\r\n";
+								//_messages += "Duplicated vertex with different uv for model: " + pGeometry.name + "\r\n";
 							
 								_dic1[_vertices_size] = j;
 								bool _done = false;
@@ -495,8 +495,8 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
 		_model->_skeleton.swap(pBones);
 	}
     
-	logger.warning(_messages);
-	_messages.clear();
+	//logger.warning(_messages);
+	//_messages.clear();
 
 	return _model;
 }
@@ -555,7 +555,7 @@ void w_cpipeline_model::release()
 
 #pragma region Getters
 
-w_cpipeline_model::w_instance_info* w_cpipeline_model::get_instance_at(_In_ const size_t pIndex)
+w_instance_info* w_cpipeline_model::get_instance_at(_In_ const size_t pIndex)
 {
     return pIndex < this->_instances_info.size() ? &this->_instances_info[pIndex] : nullptr;
 }

@@ -166,6 +166,16 @@ namespace wolf
 				return wstring_to_string(wstr);
 			}
 
+            inline bool string_start_with(_In_z_ const std::string& pString, _In_z_ const std::string pStartWith)
+            {
+                return !pString.compare(0, pStartWith.size(), pStartWith);
+            }
+
+            inline bool wstring_start_with(_In_z_ const std::wstring& pString, _In_z_ const std::wstring pStartWith)
+            {
+                return !pString.compare(0, pStartWith.size(), pStartWith);
+            }
+
 #pragma region sub string and convert functions
 			
 			template<class T >

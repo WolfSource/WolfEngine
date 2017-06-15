@@ -93,28 +93,29 @@ namespace wolf
             MSGPACK_DEFINE(position, normal, uv, vertex_index);
 		};
 
+        WCP_EXP struct w_bounding_box
+        {
+            float min[3];
+            float max[3];
+
+            MSGPACK_DEFINE(min, max);
+        };
+        WCP_EXP struct w_instance_info
+        {
+            float	        position[3];
+            float	        rotation[3];
+            float	        scale = 1.0f;
+            UINT            texture_sampler_index = 0;
+
+            MSGPACK_DEFINE(position, rotation, scale, texture_sampler_index);
+        };
+
 		class w_cpipeline_model
 		{
 		public:
 			WCP_EXP w_cpipeline_model();
 			WCP_EXP virtual ~w_cpipeline_model();
 
-			WCP_EXP struct w_bounding_box
-			{
-				float min[3];
-				float max[3];
-
-                MSGPACK_DEFINE(min, max);
-			};
-            WCP_EXP struct w_instance_info
-            {
-                float	        position[3];
-                float	        rotation[3];
-                float	        scale = 1.0f;
-                UINT            texture_sampler_index = 0;
-                
-                MSGPACK_DEFINE(position, rotation, scale, texture_sampler_index);
-            };
 			WCP_EXP struct w_mesh
 			{
 				//posX, posY, posZ
