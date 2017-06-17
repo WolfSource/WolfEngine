@@ -659,7 +659,7 @@ const std::vector<w_shader_binding_param> w_shader::get_shader_binding_params() 
 
 #pragma endregion
 
-HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+HRESULT w_shader::load_shader(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_z_ const std::string& pName,
     _In_z_ const std::wstring& pVertexShaderPath,
     _In_z_ const std::wstring& pTessellationControlShaderPath,
@@ -668,10 +668,25 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
     _In_z_ const std::wstring& pFragmentShaderPath,
     _In_z_ const std::wstring& pComputeShaderPath,
     _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
+    _In_ const bool pStoreToSharedShaders,
     _Inout_ w_shader** pShader,
     _In_z_ const char* pMainFunctionName)
 {
-    auto _shader = new (std::nothrow) w_shader();
+    //check already exists
+    w_shader* _shader = nullptr;
+
+    //already exists or not?
+    if (pStoreToSharedShaders)
+    {
+        _shader = get_shader_from_shared(pName);
+        if (_shader != nullptr)
+        {
+            *pShader = _shader;
+            return S_OK;
+        }
+    }
+
+    _shader = new (std::nothrow) w_shader();
     if (!_shader)
     {
         logger.error("Could not perform allocation for shared shader name: " + pName);
@@ -724,20 +739,17 @@ HRESULT w_shader::load_to_shared_shaders(_In_ const std::shared_ptr<w_graphics_d
     //set shader params
     if (pShaderBindingParams.size())
     {
-        if(_shader->load_shader_binding_params(pShaderBindingParams) == S_FALSE)
+        if (_shader->load_shader_binding_params(pShaderBindingParams) == S_FALSE)
         {
             return S_FALSE;
         }
     }
-    
-    //check if already exists
-    auto _old_shader = get_shader_from_shared(pName);
-    if (_old_shader)
+
+    if (pStoreToSharedShaders)
     {
-        logger.warning("Shader " + pName + "  already exists. The new one will be replaced with old one.");
-        SAFE_RELEASE(_old_shader);
+        _shared[pName] = _shader;
     }
-    _shared[pName] = _shader;
+
     *pShader = _shader;
 
     return S_OK;

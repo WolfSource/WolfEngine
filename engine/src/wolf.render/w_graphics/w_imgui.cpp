@@ -314,6 +314,7 @@ namespace wolf
                 //Vertex buffer
                 if (!this->_vertex_buffer || this->_vertex_buffer->get_size() != _vertex_buffer_size)
                 {
+                    //BUG: Fix this
                     SAFE_RELEASE(this->_vertex_buffer);
                     this->_vertex_buffer = new wolf::graphics::w_buffer();
                     _hr = this->_vertex_buffer->load_as_staging(this->_gDevice, _vertex_buffer_size);
@@ -327,6 +328,7 @@ namespace wolf
                 // Index buffer
                 if (!this->_index_buffer || this->_index_buffer->get_size() != _index_buffer_size)
                 {
+                    //BUG: Fix this
                     SAFE_RELEASE(this->_index_buffer);
                     this->_index_buffer = new wolf::graphics::w_buffer();
                     _hr = this->_index_buffer->load_as_staging(this->_gDevice, _index_buffer_size);

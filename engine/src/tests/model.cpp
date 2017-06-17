@@ -32,21 +32,18 @@ HRESULT model::load(
     //get trasform of base object and instances objects
     this->_transform = pCPModel->get_transform();
     pCPModel->get_instances(this->_instances_transforms);
-    
+
     //get full name 
     this->_full_name = pCPModel->get_name();
-
-    //get serachable name
-    std::vector<std::string> _splits;
-    wolf::system::convert::split_string(this->_full_name, "_", _splits);
-    for (size_t i = 1; i < _splits.size(); i++)
+    get_searchable_name(this->_full_name);
+    //get instances names
+    for (auto& _iter : this->_instances_transforms)
     {
-        this->_search_name += _splits[i];
+        get_searchable_name(_iter.name);
     }
-    _splits.clear();
 
     uint32_t _lod_distance_index = 1;
-    const uint32_t _lod_distance_offset = 50;
+    const uint32_t _lod_distance_offset = 500;
 
     //create one big vertex buffer and index buffer from root model and LODs
     std::vector<float> _batch_vertices;
@@ -60,7 +57,13 @@ HRESULT model::load(
 
     if (_model_meshes.size())
     {
-        this->_bounding_boxes = _model_meshes[0]->bounding_box;
+        this->_bounding_box_min.x = _model_meshes[0]->bounding_box.min[0];
+        this->_bounding_box_min.y = _model_meshes[0]->bounding_box.min[1];
+        this->_bounding_box_min.z = _model_meshes[0]->bounding_box.min[2];
+
+        this->_bounding_box_max.x = _model_meshes[0]->bounding_box.max[0];
+        this->_bounding_box_max.y = _model_meshes[0]->bounding_box.max[1];
+        this->_bounding_box_max.z = _model_meshes[0]->bounding_box.max[2];
 
         //create first lod information
         lod _lod;
@@ -134,8 +137,27 @@ HRESULT model::load(
     if (_load_buffers(pGDevice) == S_FALSE) return S_FALSE;
     if (_load_shader(pGDevice) == S_FALSE) return S_FALSE;
     if (_load_pipelines(pGDevice, pRenderPass) == S_FALSE) return S_FALSE;
+    if (_load_semaphores(pGDevice) == S_FALSE) return S_FALSE;
+
+    //load command buffer for compute shader and build it
+    cs.command_buffer.load(pGDevice, 1, true, &pGDevice->vk_compute_queue);
+    if (_build_command_buffers(pGDevice) == S_FALSE) return S_FALSE;
 
     return S_OK;
+}
+
+void model::get_searchable_name(_In_z_ const std::string& pName)
+{
+    std::string _search_name;
+    std::vector<std::string> _splits;
+    wolf::system::convert::split_string(pName, "_", _splits);
+    for (size_t i = 1; i < _splits.size(); i++)
+    {
+        _search_name += _splits[i];
+    }
+    _splits.clear();
+
+    this->_search_names.push_back(_search_name);
 }
 
 void model::_store_to_batch(
@@ -203,35 +225,37 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     _param.index = 0;
     _param.type = w_shader_binding_type::STORAGE;
     _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.buffer_info = cs.instance_buffer.get_descriptor_info();
+    _param.buffer_info = this->cs.instance_buffer.get_descriptor_info();
     _shader_params.push_back(_param);
 
     _param.index = 1;
     _param.type = w_shader_binding_type::STORAGE;
     _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.buffer_info = cs.indirect_draw_commands_buffer.get_descriptor_info();
+    _param.buffer_info = this->indirect.indirect_draw_commands_buffer.get_descriptor_info();
     _shader_params.push_back(_param);
 
     _param.index = 2;
     _param.type = w_shader_binding_type::UNIFORM;
     _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.buffer_info = cs.unifrom.get_descriptor_info();
+    _param.buffer_info = this->cs.unifrom.get_descriptor_info();
     _shader_params.push_back(_param);
 
     _param.index = 3;
     _param.type = w_shader_binding_type::STORAGE;
     _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.buffer_info = cs.indirect_draw_count_buffer.get_descriptor_info();
+    _param.buffer_info = this->indirect.indirect_draw_count_buffer.get_descriptor_info();
     _shader_params.push_back(_param);
 
     _param.index = 4;
     _param.type = w_shader_binding_type::STORAGE;
     _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.buffer_info = cs.lod_levels_buffers.get_descriptor_info();
+    _param.buffer_info = this->cs.lod_levels_buffers.get_descriptor_info();
     _shader_params.push_back(_param);
 
     //check path of shader
-    auto _compute_shader_path = content_path + L"shaders/compute/cull_lod_local_size_x" + std::to_wstring(cs.batch_local_size) + L".comp.spv";
+    auto _lod_level = this->_lod_levels.size() ? this->_lod_levels.size() - 1 : 0;
+    auto _shader_name = "cull_lod_" + std::to_string(_lod_level) + "_local_size_x" + std::to_string(cs.batch_local_size) + ".comp.spv";
+    auto _compute_shader_path = content_path + L"shaders/compute/" + wolf::system::convert::string_to_wstring(_shader_name);
     if (wolf::system::io::get_is_file(_compute_shader_path.c_str()) == S_FALSE)
     {
         V(S_FALSE, L"compute shader not exists on path " + _compute_shader_path, _trace);
@@ -239,9 +263,9 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     }
 
     //load shaders
-    if (w_shader::load_to_shared_shaders(
+    if (w_shader::load_shader(
         pGDevice,
-        "shader",
+        _shader_name,
         content_path + L"shaders/compute/indirect_draw.vert.spv",
         L"",
         L"",
@@ -249,15 +273,17 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
         content_path + L"shaders/compute/indirect_draw.frag.spv",
         _compute_shader_path,
         _shader_params,
+        false,
         &this->_shader) == S_FALSE)
     {
-        V(S_FALSE, "Error on loading shader for " + this->_full_name, _trace);
+        V(S_FALSE, "Loading shader for " + this->_full_name, _trace);
         return S_FALSE;
     }
 
     return S_OK;
 }
 
+//static glm::vec3 centers;
 HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
 {
     const std::string _trace = this->name + "::_prepare_buffers";
@@ -275,16 +301,15 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     uint32_t _draw_counts = 1 + static_cast<uint32_t>(this->_instances_transforms.size());
 
     //find nearest pow of 2 for compute shader local batch size
-    cs.batch_local_size = pow(2, ceil(log(_draw_counts) / log(2)));
-    cs.indirect_draw_commands.resize(cs.batch_local_size);
+    this->cs.batch_local_size = pow(2, ceil(log(_draw_counts) / log(2)));
+    this->indirect.indirect_draw_commands.resize(cs.batch_local_size);
     
-    cs.indirect_status.draw_count = _draw_counts;
-    cs.indirect_status.lod_count.resize(_draw_counts);
+    this->indirect_status.draw_count = _draw_counts;
 
     for (size_t i = 0; i < _draw_counts; ++i)
     {
-        cs.indirect_draw_commands[i].instanceCount = 1;
-        cs.indirect_draw_commands[i].firstInstance = i;
+        this->indirect.indirect_draw_commands[i].instanceCount = 1;
+        this->indirect.indirect_draw_commands[i].firstInstance = i;
         // firstIndex and indexCount are written by the compute shader
     }
 
@@ -301,13 +326,13 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
         return S_FALSE;
     }
 
-    if (_staging_buffers[0].set_data(cs.indirect_draw_commands.data()) == S_FALSE)
+    if (_staging_buffers[0].set_data(this->indirect.indirect_draw_commands.data()) == S_FALSE)
     {
         V(S_FALSE, "setting data for staging buffer of indirect_draw_commands", _trace, 3);
         return S_FALSE;
     }
 
-    if (cs.indirect_draw_commands_buffer.load(
+    if (this->indirect.indirect_draw_commands_buffer.load(
         pGDevice,
         _size,
         VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -317,20 +342,20 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
         return S_FALSE;
     }
 
-    if (cs.indirect_draw_commands_buffer.bind() == S_FALSE)
+    if (this->indirect.indirect_draw_commands_buffer.bind() == S_FALSE)
     {
         V(S_FALSE, "binding to staging buffer of indirect_commands_buffer", _trace, 3);
         return S_FALSE;
     }
 
-    if (_staging_buffers[0].copy_to(cs.indirect_draw_commands_buffer) == S_FALSE)
+    if (_staging_buffers[0].copy_to(this->indirect.indirect_draw_commands_buffer) == S_FALSE)
     {
         V(S_FALSE, "copy staging buffer to device buffer of indirect_commands_buffer", _trace, 3);
         return S_FALSE;
     }
 
-    _size = sizeof(cs.indirect_status);
-    if (cs.indirect_draw_count_buffer.load(
+    _size = (uint32_t)sizeof(this->indirect_status);
+    if (this->indirect.indirect_draw_count_buffer.load(
         pGDevice,
         _size,
         VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
@@ -340,12 +365,11 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
         return S_FALSE;
     }
     
-    if (cs.indirect_draw_count_buffer.bind() == S_FALSE)
+    if (this->indirect.indirect_draw_count_buffer.bind() == S_FALSE)
     {
         V(S_FALSE, "binding to device buffer of indirect_draw_count", _trace, 3);
         return S_FALSE;
     }
-    //cs.indirect_draw_count_buffer.map();
 
     std::vector<vertex_instance_data> _vertex_instances_data(_draw_counts);
     //first one is root model
@@ -361,23 +385,24 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     _vertex_instances_data[0].scale = 1.0f;
     
     //others are instances
-    _size = this->_instances_transforms.size();
-    for (size_t i = 1; i < _size; ++i)
+    for (size_t i = 0; i <  this->_instances_transforms.size(); ++i)
     {
-        _vertex_instances_data[i].pos[0] = this->_instances_transforms[i].position[0];
-        _vertex_instances_data[i].pos[1] = this->_instances_transforms[i].position[1];
-        _vertex_instances_data[i].pos[2] = this->_instances_transforms[i].position[2];
+        auto _index = i + 1;
+        _vertex_instances_data[_index].pos[0] = this->_instances_transforms[i].position[0];
+        _vertex_instances_data[_index].pos[1] = this->_instances_transforms[i].position[1];
+        _vertex_instances_data[_index].pos[2] = this->_instances_transforms[i].position[2];
 
-        _vertex_instances_data[i].rot[0] = this->_instances_transforms[i].rotation[0];
-        _vertex_instances_data[i].rot[1] = this->_instances_transforms[i].rotation[1];
-        _vertex_instances_data[i].rot[2] = this->_instances_transforms[i].rotation[2];
+        _vertex_instances_data[_index].rot[0] = this->_instances_transforms[i].rotation[0];
+        _vertex_instances_data[_index].rot[1] = this->_instances_transforms[i].rotation[1];
+        _vertex_instances_data[_index].rot[2] = this->_instances_transforms[i].rotation[2];
 
         //TODO: remove it
-        _vertex_instances_data[i].scale = 1.0f;
+        _vertex_instances_data[_index].scale = 1.0f;
     }
 
 
-    if (_staging_buffers[1].load_as_staging(pGDevice, _size * sizeof(vertex_instance_data)) == S_FALSE)
+    _size = (uint32_t)(_vertex_instances_data.size() * sizeof(vertex_instance_data));
+    if (_staging_buffers[1].load_as_staging(pGDevice, _size) == S_FALSE)
     {
         V(S_FALSE, "loading staging buffer of vertex_instance_buffer", _trace, 3);
         return S_FALSE;
@@ -463,17 +488,13 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     }
 
     std::vector<compute_instance_data> _compute_instance_data(_draw_counts);
-    // Map for host access
-    auto _bb_min = glm::vec4(this->_bounding_boxes.min[0], this->_bounding_boxes.min[1], this->_bounding_boxes.min[2], 0.0f);
-    auto _bb_max = glm::vec4(this->_bounding_boxes.max[0], this->_bounding_boxes.max[1], this->_bounding_boxes.max[2], 0.0f);
-
     for (size_t i = 0; i < _draw_counts; i++)
     {
-        _compute_instance_data[i].min_bounding_box = _bb_min + glm::vec4(_vertex_instances_data[i].pos, 0.0f);
-        _compute_instance_data[i].max_bounding_box = _bb_max + glm::vec4(_vertex_instances_data[i].pos, 0.0f);
+        _compute_instance_data[i].min_bounding_box = glm::vec4(this->_bounding_box_min, 0.0f) + glm::vec4(_vertex_instances_data[i].pos, 0.0f);
+        _compute_instance_data[i].max_bounding_box = glm::vec4(this->_bounding_box_max, 0.0f) + glm::vec4(_vertex_instances_data[i].pos, 0.0f);
     }
 
-    //centers[0] = (_compute_instance_data[0].min_bounding_box + _compute_instance_data[0].max_bounding_box) / 2.0f;
+    //centers = (_compute_instance_data[0].min_bounding_box + _compute_instance_data[0].max_bounding_box) / 2.0f;
 
     _size = _compute_instance_data.size() * sizeof(compute_instance_data);
     if (_staging_buffers[3].load_as_staging(pGDevice, _size) == S_FALSE)
@@ -541,7 +562,7 @@ HRESULT model::_load_pipelines(
         { pRenderPass.get_viewport() }, //viewports
         { pRenderPass.get_viewport_scissor() }, //viewports scissor
         _dynamic_states,
-        "pipeline_cache",
+        "model_pipeline_cache",
         0,
         nullptr,
         nullptr,
@@ -567,15 +588,204 @@ HRESULT model::_load_pipelines(
     }
 }
 
-HRESULT model::draw(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)
+HRESULT model::_load_semaphores(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
 {
+    const std::string _trace = this->name + "::_load_semaphores";
+
+    VkSemaphoreCreateInfo _semaphore_create_info = {};
+    _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    auto _hr = vkCreateSemaphore(pGDevice->vk_device,
+        &_semaphore_create_info,
+        nullptr,
+        &cs.semaphore);
+    if (_hr)
+    {
+        V(S_FALSE, "creating semaphore for command buffer of " + this->_full_name, _trace);
+        return S_FALSE;
+    }
+}
+
+HRESULT model::_build_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
+{
+    VkCommandBufferBeginInfo _cmd_buffer_info = {};
+    _cmd_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    auto _cmd = this->cs.command_buffer.get_command_at(0);
+    vkBeginCommandBuffer(_cmd, &_cmd_buffer_info);
+
+    auto _cmd_handle = this->indirect.indirect_draw_commands_buffer.get_handle();
+    auto _size = this->indirect.indirect_draw_commands_buffer.get_descriptor_info().range;
+
+
+    // Add memory barrier to ensure that the indirect commands have been consumed before the compute shader updates them
+    VkBufferMemoryBarrier _buffer_barrier = {};
+    _buffer_barrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+    _buffer_barrier.buffer = _cmd_handle;
+    _buffer_barrier.size = _size;
+    _buffer_barrier.srcAccessMask = VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
+    _buffer_barrier.dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+    _buffer_barrier.srcQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
+    _buffer_barrier.dstQueueFamilyIndex = pGDevice->vk_compute_queue.index;
+
+    vkCmdPipelineBarrier(
+        _cmd,
+        VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
+        VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+        0,
+        0, nullptr,
+        1, &_buffer_barrier,
+        0, nullptr);
+
+    auto _desciptor_set = this->_shader->get_compute_descriptor_set();
+    vkCmdBindPipeline(_cmd, VK_PIPELINE_BIND_POINT_COMPUTE, this->cs.pipeline.get_handle());
+    vkCmdBindDescriptorSets(
+        _cmd,
+        VK_PIPELINE_BIND_POINT_COMPUTE,
+        this->cs.pipeline.get_layout_handle(),
+        0,
+        1, &_desciptor_set,
+        0,
+        0);
+
+    vkCmdDispatch(_cmd, (uint32_t)(this->indirect.indirect_draw_commands.size() / cs.batch_local_size), 1, 1);
+
+    // Add memory barrier to ensure that the compute shader has finished writing the indirect command buffer before it's consumed
+    _buffer_barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+    _buffer_barrier.dstAccessMask = VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
+    _buffer_barrier.buffer = _cmd_handle;
+    _buffer_barrier.size = _size;
+    _buffer_barrier.srcQueueFamilyIndex = pGDevice->vk_compute_queue.index;
+    _buffer_barrier.dstQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
+
+    vkCmdPipelineBarrier(
+        _cmd,
+        VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+        VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
+        0,
+        0, nullptr,
+        1, &_buffer_barrier,
+        0, nullptr);
+
+    vkEndCommandBuffer(_cmd);
+
     return S_OK;
+}
+
+void model::indirect_draw(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_ const VkCommandBuffer& pCommandBuffer)
+{
+    auto _descriptor_set = this->_shader->get_descriptor_set();
+    this->vs.pipeline.bind(pCommandBuffer, &_descriptor_set);
+
+    auto _instances_size = (uint32_t)this->_instances_transforms.size();
+    _mesh->draw(pCommandBuffer, this->vs.instance_buffer.get_handle(), _instances_size, true);
+
+    if (pGDevice->vk_physical_device_features.multiDrawIndirect)
+    {
+        vkCmdDrawIndexedIndirect(
+            pCommandBuffer,
+            this->indirect.indirect_draw_commands_buffer.get_handle(),
+            0,
+            this->indirect_status.draw_count,
+            sizeof(VkDrawIndexedIndirectCommand));
+    }
+    else
+    {
+        // If multi draw is not available, we must issue separate draw commands
+        for (auto j = 0; j < this->indirect.indirect_draw_commands.size(); j++)
+        {
+            vkCmdDrawIndexedIndirect(
+                pCommandBuffer,
+                this->indirect.indirect_draw_commands_buffer.get_handle(),
+                j * sizeof(VkDrawIndexedIndirectCommand),
+                1, sizeof(VkDrawIndexedIndirectCommand));
+        }
+    }
+}
+
+HRESULT model::pre_render(
+    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_ const wolf::content_pipeline::w_first_person_camera* pCamera)
+{
+    HRESULT _hr = S_OK;
+
+    const std::string _trace = this->name + "::draw";
+
+    //Update uniforms
+
+    auto _projection_view = pCamera->get_projection() * pCamera->get_view();
+
+    auto _pos = glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
+    auto _world = _projection_view * glm::translate(_pos);
+
+    auto _camera_pos = pCamera->get_translate();
+
+    this->vs.unifrom.data.projection_view = _projection_view;
+    this->cs.unifrom.data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+    std::memcpy(this->cs.unifrom.data.frustum_planes, pCamera->get_frustum_plans().data(), sizeof(glm::vec4) * 6);
+
+    if (this->vs.unifrom.update() == S_FALSE)
+    {
+        _hr = S_FALSE;
+        V(_hr, "updating vertex shader unifrom", _trace, 3);
+    }
+    if (this->cs.unifrom.update() == S_FALSE)
+    {
+        _hr = S_FALSE;
+        V(_hr, "updating compute shader unifrom", _trace, 3);
+    }
+
+    //logger.write(std::to_string(glm::distance(_camera_pos, centers)));
+
+    VkPipelineStageFlags _stage_flags = VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+
+    auto _c_cmd = this->cs.command_buffer.get_command_at(0);
+
+    VkSubmitInfo _submit_info = {};
+    _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    _submit_info.commandBufferCount = 1;
+    _submit_info.pCommandBuffers = &_c_cmd;
+    _submit_info.signalSemaphoreCount = 1;
+    _submit_info.pSignalSemaphores = &this->cs.semaphore;
+    _submit_info.pWaitDstStageMask = &_stage_flags;
+
+    if (vkQueueSubmit(pGDevice->vk_compute_queue.queue, 1, &_submit_info, 0))
+    {
+        _hr = S_FALSE;
+        V(_hr, "submiting queu for " + this->_full_name, _trace, 3);
+    }
+    
+    return _hr;
+}
+
+void model::post_render(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+{
+    // Get draw count from compute
+    //auto _mapped = this->indirect.indirect_draw_count_buffer.map();
+    //{
+    //    memcpy(&this->indirect_status, _mapped, sizeof(this->indirect_status));
+    //    this->indirect.indirect_draw_commands_buffer.flush();
+    //}
+    //this->indirect.indirect_draw_count_buffer.unmap();
+
+
+    //logger.write("visible " + std::to_string(this->indirect_status.draw_count));
+    //for (size_t i = 0; i < MAX_LOD_LEVEL + 1; i++)
+    //{
+    //    if (this->indirect_status.lod_count[i])
+    //    {
+    //        logger.write("lod " + std::to_string(i));
+    //    }
+    //}
 }
 
 ULONG model::release()
 {
     if (this->get_is_released()) return 0;
 
-
+    this->vs.unifrom.release();
+    this->cs.unifrom.release();
+    
     return _super::release();
 }

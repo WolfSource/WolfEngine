@@ -64,9 +64,8 @@ public:
     
 private:
     
-    HRESULT _record_compute_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-    HRESULT _record_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-    HRESULT _record_gui_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+    HRESULT _build_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+    HRESULT _build_gui_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ const wolf::system::w_game_time& pGameTime);
 
     wolf::content_pipeline::w_first_person_camera                  _camera;
@@ -82,6 +81,9 @@ private:
     
 
     w_point_t                                                      _screen_size;
+
+    VkFence                                                        _compute_fence;//Synchronization fence to avoid rewriting compute command buffer if still in use
+
 
     VkSemaphore gui_semaphore;						// Used as a wait semaphore for graphics submission
 };

@@ -151,25 +151,73 @@
     <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.frag">
       <Filter>content\shaders\compute</Filter>
     </None>
-    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x1.comp">
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x1.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
-    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x2.comp">
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x2.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
-    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x4.comp">
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x4.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
-    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x8.comp">
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x8.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
-    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x16.comp">
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x16.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
-    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x32.comp">
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x32.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
-    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x64.comp">
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x64.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x1.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x2.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x4.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x8.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x16.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x32.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x64.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.frag.spv">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.vert.spv">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x1.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x8.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x4.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x16.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x32.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x64.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x2.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
   </ItemGroup>

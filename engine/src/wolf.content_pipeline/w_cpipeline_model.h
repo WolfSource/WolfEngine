@@ -102,12 +102,13 @@ namespace wolf
         };
         WCP_EXP struct w_instance_info
         {
+            std::string     name;
             float	        position[3];
             float	        rotation[3];
             float	        scale = 1.0f;
             UINT            texture_sampler_index = 0;
 
-            MSGPACK_DEFINE(position, rotation, scale, texture_sampler_index);
+            MSGPACK_DEFINE(name, position, rotation, scale, texture_sampler_index);
         };
 
 		class w_cpipeline_model

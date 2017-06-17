@@ -83,7 +83,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	auto _node_name = _get_node_name(pXNode);
 
 #ifdef DEBUG
-	logger.write(_node_name);
+	//logger.write(_node_name);
 #endif
 
 	std::string _parent_node_name;
@@ -122,7 +122,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
             auto _node_name = _get_node_name(_child);
 
 #ifdef DEBUG
-            logger.write(_node_name);
+            //logger.write(_node_name);
 #endif
 
             if (_node_name == "up_axis")
@@ -283,7 +283,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
         auto _node_name_0 = _get_node_name(_child_0);
 
 #ifdef DEBUG
-        logger.write(_node_name_0);
+        //logger.write(_node_name_0);
 #endif
 
         if (_node_name_0 == "camera")
@@ -298,7 +298,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
             {
                 auto _node_name_1 = _get_node_name(_child_1);
 #ifdef DEBUG
-                logger.write(_node_name_1);
+                //logger.write(_node_name_1);
 #endif
 
                 if (_node_name_1 == "optics")
@@ -307,7 +307,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
                     {
                         auto _node_name_2 = _get_node_name(_child_2);
 #ifdef DEBUG
-                        logger.write(_node_name_2);
+                        //logger.write(_node_name_2);
 #endif
                         if (_node_name_2 == "technique_common")
                         {
@@ -316,7 +316,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
                             {
                                 auto _node_name_3 = _get_node_name(_child_3);
 #ifdef DEBUG
-                                logger.write(_node_name_3);
+                                //logger.write(_node_name_3);
 #endif
 
                                 if (_node_name_3 == "perspective")
@@ -327,7 +327,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
                                         {
                                             auto _node_name_4 = _get_node_name(_child_4);
 #ifdef DEBUG
-                                            logger.write(_node_name_4);
+                                            //logger.write(_node_name_4);
 #endif
 
                                             if (_node_name_4 == "xfov")
@@ -358,7 +358,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
                     {
                         auto _node_name_2 = _get_node_name(_child_2);
 #ifdef DEBUG
-                        logger.write(_node_name_2);
+                        //logger.write(_node_name_2);
 #endif
                         if (_node_name_2 == "technique")
                         {
@@ -409,7 +409,7 @@ void c_parser::_get_library_effects(_In_ rapidxml::xml_node<>* pXNode)
         auto _node_name_0 = _get_node_name(_child_0);
 
 #ifdef DEBUG
-        logger.write(_node_name_0);
+        //logger.write(_node_name_0);
 #endif
 
         if (_node_name_0 == "effect")
@@ -421,7 +421,7 @@ void c_parser::_get_library_effects(_In_ rapidxml::xml_node<>* pXNode)
             {
                 auto _node_name_1 = _get_node_name(_child_1);
 #ifdef DEBUG
-                logger.write(_node_name_1);
+                //logger.write(_node_name_1);
 #endif
                 if (_node_name_1 == "profile_common")
                 {
@@ -429,7 +429,7 @@ void c_parser::_get_library_effects(_In_ rapidxml::xml_node<>* pXNode)
                     {
                         auto _node_name_2 = _get_node_name(_child_2);
 #ifdef DEBUG
-                        logger.write(_node_name_2);
+                        //logger.write(_node_name_2);
 #endif
                         if (_node_name_2 == "newparam")
                         {
@@ -437,7 +437,7 @@ void c_parser::_get_library_effects(_In_ rapidxml::xml_node<>* pXNode)
                             {
                                 auto _node_name_3 = _get_node_name(_child_3);
 #ifdef DEBUG
-                                logger.write(_node_name_3);
+                                //logger.write(_node_name_3);
 #endif
                                 if (_node_name_3 == "surface")
                                 {
@@ -445,7 +445,7 @@ void c_parser::_get_library_effects(_In_ rapidxml::xml_node<>* pXNode)
                                     {
                                         auto _node_name_4 = _get_node_name(_child_4);
 #ifdef DEBUG
-                                        logger.write(_node_name_4);
+                                        //logger.write(_node_name_4);
 #endif
                                         if (_node_name_4 == "init_from")
                                         {
@@ -482,7 +482,7 @@ void c_parser::_get_library_materials(_In_ rapidxml::xml_node<>* pXNode)
         auto _node_name_0 = _get_node_name(_child_0);
 
 #ifdef DEBUG
-        logger.write(_node_name_0);
+        //logger.write(_node_name_0);
 #endif
 
         if (_node_name_0 == "material")
@@ -494,7 +494,7 @@ void c_parser::_get_library_materials(_In_ rapidxml::xml_node<>* pXNode)
             {
                 auto _node_name_1 = _get_node_name(_child_1);
 #ifdef DEBUG
-                logger.write(_node_name_1);
+                //logger.write(_node_name_1);
 #endif
 
                 if (_node_name_1 == "instance_effect")
@@ -529,7 +529,7 @@ void c_parser::_get_library_images(_In_ rapidxml::xml_node<>* pXNode)
         auto _node_name_0 = _get_node_name(_child_0);
 
 #ifdef DEBUG
-        logger.write(_node_name_0);
+        //logger.write(_node_name_0);
 #endif
 
         if (_node_name_0 == "image")
@@ -541,7 +541,7 @@ void c_parser::_get_library_images(_In_ rapidxml::xml_node<>* pXNode)
             {
                 auto _node_name_1 = _get_node_name(_child_1);
 #ifdef DEBUG
-                logger.write(_node_name_1);
+                //logger.write(_node_name_1);
 #endif
 
                 if (_node_name_1 == "init_from")
@@ -578,7 +578,7 @@ void c_parser::_read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inou
         //get the name of node
         auto _name = _get_node_name(_child);
 #ifdef DEBUG
-        logger.write(_name);
+        //logger.write(_name);
 #endif
 
         if (_name == "node")
@@ -612,7 +612,7 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         auto _name = _get_node_name(_child);
 
 #ifdef DEBUG
-        logger.write(_name);
+        //logger.write(_name);
 #endif
         if (_name == "translate")
         {
@@ -735,7 +735,7 @@ std::tuple<std::string, std::string> c_parser::_get_instance_material_symbol_tar
         auto _node_name_0 = _get_node_name(_child_0);
 
 #ifdef DEBUG
-        logger.write(_node_name_0);
+        //logger.write(_node_name_0);
 #endif
         if (_node_name_0 == "bind_material")
         {
@@ -745,7 +745,7 @@ std::tuple<std::string, std::string> c_parser::_get_instance_material_symbol_tar
                 auto _node_name_1 = _get_node_name(_child_1);
 
 #ifdef DEBUG
-                logger.write(_node_name_1);
+                //logger.write(_node_name_1);
 #endif
                 if (_node_name_1 == "technique_common")
                 {
@@ -755,7 +755,7 @@ std::tuple<std::string, std::string> c_parser::_get_instance_material_symbol_tar
                         auto _node_name_2 = _get_node_name(_child_2);
 
 #ifdef DEBUG
-                        logger.write(_node_name_2);
+                        //logger.write(_node_name_2);
 #endif
                         if (_node_name_2 == "instance_material")
                         {
@@ -1465,13 +1465,14 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
             {
                 //we find source model
                 w_instance_info _instance_info;
+                _instance_info.name = _node->c_name;
 
                 auto _rotation = glm::rotation_from_angle_axis(_node->rotation.x, _node->rotation.y, _node->rotation.z, _node->rotation.w);
-
+                
                 if (sZ_Up)
                 {
                     _instance_info.position[0] = _node->translate.x;
-                    _instance_info.position[1] = _node->translate.z;
+                    _instance_info.position[1] = -_node->translate.z;
                     _instance_info.position[2] = -_node->translate.y;
 
                     _instance_info.rotation[0] = _rotation.x - glm::radians(90.0f);
@@ -1628,7 +1629,7 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
         if (sZ_Up)
         {
             _trasform.position[0] = _node_ptr->translate.x;
-            _trasform.position[1] = _node_ptr->translate.z;
+            _trasform.position[1] = -_node_ptr->translate.z;
             _trasform.position[2] = -_node_ptr->translate.y;
 
             _trasform.rotation[0] = _rotation.x - glm::radians(90.0f);

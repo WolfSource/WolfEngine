@@ -17,7 +17,9 @@
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_render_pass.h>
+#include <cameras/w_first_person_camera.h>
 
+#define MAX_LOD_LEVEL 2
 //struct clipspace_vertex { float x, y, z, w; };
 
 class model : public wolf::system::w_object
@@ -31,31 +33,51 @@ public:
         _In_ wolf::content_pipeline::w_cpipeline_model* pCPModel,
         _In_ wolf::graphics::w_render_pass& pRenderPass);
 
-    HRESULT draw(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet);
+    void indirect_draw(
+        _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+        _In_ const VkCommandBuffer& pCommandBuffer);
+
+    HRESULT pre_render(
+        _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+        _In_ const wolf::content_pipeline::w_first_person_camera* pCamera);
+
+    void post_render(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
 
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
 
+#pragma region Getters
+
+    VkSemaphore get_semaphore() const                       { return this->cs.semaphore; }
+
+#pragma endregion
+
 private:
-    
+    typedef wolf::system::w_object                          _super;
+
+    void get_searchable_name(_In_z_ const std::string& pName);
+
     void _store_to_batch(
         _In_ const std::vector<wolf::content_pipeline::w_cpipeline_model::w_mesh*>& pModelMeshes,
         _Inout_ std::vector<float>& pVertices,
         _Inout_ std::vector<uint32_t>& pIndices,
         _Inout_ uint32_t& pBaseVertex);
 
-    HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+    HRESULT _load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT  _load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT  _load_pipelines(
         _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ wolf::graphics::w_render_pass& pRenderPass);
-
-    typedef wolf::system::w_object                          _super;
+    HRESULT _load_semaphores(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+    HRESULT _build_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
 
     std::string                                             _full_name;
-    std::string                                             _search_name;
 
-    wolf::content_pipeline::w_bounding_box                  _bounding_boxes;
+    //unique name of factory for searching
+    std::vector<std::string>                                _search_names;
+
+    glm::vec3                                               _bounding_box_min;
+    glm::vec3                                               _bounding_box_max;
 
     wolf::content_pipeline::w_transform_info               _transform;
     std::vector<wolf::content_pipeline::w_instance_info>   _instances_transforms;
@@ -129,24 +151,27 @@ private:
         wolf::graphics::w_uniform<compute_unifrom>              unifrom;
         wolf::graphics::w_buffer                                instance_buffer;
 
-        wolf::graphics::w_buffer                                indirect_draw_commands_buffer;
-        std::vector<VkDrawIndexedIndirectCommand>               indirect_draw_commands;
-        wolf::graphics::w_buffer                                indirect_draw_count_buffer;
-
         wolf::graphics::w_command_buffers                       command_buffer;
         wolf::graphics::w_buffer                                lod_levels_buffers;
-        VkFence                                                 fence = nullptr;//Synchronization fence to avoid rewriting compute command buffer if still in use
         VkSemaphore                                             semaphore = nullptr;;// Used as a wait semaphore for graphics submission
 
         wolf::graphics::w_pipeline                              pipeline;
 
-        struct
-        {
-            uint32_t                                            draw_count;				  // Total number of indirect draw counts to be issued
-            std::vector<uint32_t>                               lod_count;// Statistics for number of draws per LOD level (written by compute shader)
-        } indirect_status;
+
     } cs;
 
+    struct
+    {
+        wolf::graphics::w_buffer                                indirect_draw_commands_buffer;
+        std::vector<VkDrawIndexedIndirectCommand>               indirect_draw_commands;
+        wolf::graphics::w_buffer                                indirect_draw_count_buffer;
+    } indirect;
+
+    struct
+    {
+        uint32_t                                                draw_count;// Total number of indirect draw counts to be issued
+        uint32_t                                                lod_count[MAX_LOD_LEVEL + 1];// Statistics for number of draws per LOD level (written by compute shader)
+    } indirect_status;
 };
 
 #endif
