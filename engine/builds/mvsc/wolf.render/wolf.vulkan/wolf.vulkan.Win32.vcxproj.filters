@@ -154,5 +154,23 @@
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x1.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x2.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x4.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x8.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x16.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x32.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_local_size_x64.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
   </ItemGroup>
 </Project>

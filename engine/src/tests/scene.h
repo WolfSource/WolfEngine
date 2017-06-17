@@ -25,8 +25,6 @@
 
 #include "model.h"
 
-#define MAX_LOD_LEVEL 2
-
 class scene : public wolf::framework::w_game
 {
 public:
@@ -66,18 +64,10 @@ public:
     
 private:
     
-    void _prepare_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT _record_compute_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT _record_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT _record_gui_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ const wolf::system::w_game_time& pGameTime);
-
-#pragma pack(push,1)
-    struct color_unifrom
-    {
-        glm::vec4 color = glm::vec4(1, 1, 1, 1);
-    };
-#pragma pack(pop)
 
     wolf::content_pipeline::w_first_person_camera                  _camera;
     std::vector<model*>                                            _models;
@@ -90,66 +80,8 @@ private:
     wolf::graphics::w_render_pass                                  _gui_render_pass;
     wolf::graphics::w_frame_buffers                                _gui_frame_buffers;
     
-    wolf::graphics::w_shader*                                      _shader;
-
-    wolf::graphics::w_pipeline*                                    _pipeline;
-    wolf::graphics::w_pipeline*                                    _compute_pipeline;
 
     w_point_t                                                      _screen_size;
-
-    struct vertex_instance_data 
-    {
-        glm::vec3   pos;
-        glm::vec3   rot;
-        float       scale;
-    };
-
-    struct compute_instance_data
-    {
-        glm::vec4   min_bounding_box;
-        glm::vec4   max_bounding_box;
-    };
-
-    struct vertex_unifrom
-    {
-        glm::mat4 projection_view;
-    };
-
-    struct compute_unifrom
-    {
-        glm::vec4 cameraPos;
-        glm::vec4 frustumPlanes[6];
-    };
-
-
-    wolf::graphics::w_uniform<vertex_unifrom>                      _vertex_unifrom;
-    wolf::graphics::w_uniform<compute_unifrom>                      _compute_unifrom;
-
-    // Contains the instanced data
-    wolf::graphics::w_buffer vertex_instance_buffer;
-    wolf::graphics::w_buffer compute_instance_buffer;
-
-    // Contains the indirect drawing commands
-    wolf::graphics::w_buffer indirectCommandsBuffer;
-    wolf::graphics::w_buffer indirectDrawCountBuffer;
-
-    // Indirect draw statistics (updated via compute)
-    struct {
-        uint32_t drawCount;						// Total number of indirect draw counts to be issued
-        uint32_t lodCount[MAX_LOD_LEVEL + 1];	// Statistics for number of draws per LOD level (written by compute shader)
-    } indirectStats;
-
-    // Store the indirect draw commands containing index offsets and instance count per object
-    std::vector<VkDrawIndexedIndirectCommand> indirectCommands;
-
-    // Resources for the compute part of the example
-    struct 
-    {
-        wolf::graphics::w_command_buffers           command_buffer;
-        wolf::graphics::w_buffer lodLevelsBuffers;	// Contains index start and counts for the different lod levels
-        VkFence fence;								// Synchronization fence to avoid rewriting compute CB if still in use
-        VkSemaphore semaphore;						// Used as a wait semaphore for graphics submission
-    } compute;
 
     VkSemaphore gui_semaphore;						// Used as a wait semaphore for graphics submission
 };

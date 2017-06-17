@@ -30,8 +30,12 @@ namespace wolf
 				c_parser() {}
 				virtual ~c_parser() {};
 
-				WCP_EXP static HRESULT parse_collada_from_file(const std::wstring& pFilePath, _Inout_ wolf::content_pipeline::w_cpipeline_scene* pScene,
-					bool pOptimizePoints = true, bool pInvertNormals = false);
+				WCP_EXP static HRESULT parse_collada_from_file(
+                    _In_z_ const std::wstring& pFilePath, 
+                    _Inout_ wolf::content_pipeline::w_cpipeline_scene* pScene,
+					_In_ bool pOptimizePoints = true, 
+                    _In_ bool pInvertNormals = false,
+                    _In_ bool pFindLODs = true);
 
 			private:
 				static HRESULT		                          _process_xml_node(_In_ rapidxml::xml_node<>* pXNode);

@@ -138,6 +138,7 @@ namespace wolf
 			};
 
             WCP_EXP void add_instance(_In_ const w_instance_info pValue);
+            WCP_EXP void add_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs);
 			WCP_EXP void update_world();
 			WCP_EXP void release();
 
@@ -146,11 +147,14 @@ namespace wolf
 			WCP_EXP std::string get_name() const									{ return this->_name; }
             WCP_EXP std::string set_instance_geometry_name()                        { return this->_instanced_geo_name; }
 			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
-            WCP_EXP size_t get_instnaces_count() const                              { return this->_instances_info.size(); }
+            WCP_EXP size_t get_instances_count() const                              { return this->_instances_info.size(); }
             WCP_EXP w_instance_info* get_instance_at(_In_ const size_t pIndex);
             WCP_EXP void get_instances(_Inout_ std::vector<w_instance_info>& pInstances);
             WCP_EXP std::string get_instance_geometry_name() const;
             WCP_EXP void get_meshes(_Inout_ std::vector<w_mesh*>& pMeshes);
+            WCP_EXP void get_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs);
+            WCP_EXP size_t get_lods_count();
+            WCP_EXP w_cpipeline_model* get_lod_at(_In_ size_t pIndex);
 
 #pragma endregion
 
@@ -160,7 +164,7 @@ namespace wolf
             WCP_EXP void set_instance_geometry_name(_In_z_ const std::string& pValue);
 			//WCP_EXP void set_materials(std::vector<c_material*>& pValue);
 			//WCP_EXP void set_effects(std::vector<c_effect*>& pValue);
-			WCP_EXP void set_transform(w_transform_info& pValue);
+			WCP_EXP void set_transform(_In_ const w_transform_info& pValue);
 
 #pragma endregion
 
@@ -176,7 +180,7 @@ namespace wolf
                 _In_ bool pOptimizing,
                 _In_ bool pZUp);
 
-            MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _meshes);
+            MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _lods, _meshes);
 
 		private:
 			std::string												_name;
@@ -196,13 +200,16 @@ namespace wolf
 			bool													_overlapping;
 			float													_overlapping_start_time;
 			std::vector<collada::c_bone*>							_temp_skeleton;
+            w_transform_info										_transform;
+            std::vector<w_cpipeline_model>                          _lods;
 			std::vector<w_instance_info>							_instances_info;
-			w_transform_info										_transform;
 
 			std::vector<w_mesh>								    	_meshes;
 
 			std::vector<collada::c_bone*>							_skeleton;
 			std::vector<std::string>								_bone_names;
+
+          
 		};
 
 	}

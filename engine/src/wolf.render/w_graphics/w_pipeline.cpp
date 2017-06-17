@@ -180,7 +180,7 @@ namespace wolf
 
                 VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
                 _pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-                _pipeline_layout_create_info.setLayoutCount = _descriptor_set_layouts.size();
+                _pipeline_layout_create_info.setLayoutCount = static_cast<uint32_t>(_descriptor_set_layouts.size());
                 _pipeline_layout_create_info.pSetLayouts = _descriptor_set_layouts.data();
 
                 auto _hr = vkCreatePipelineLayout(

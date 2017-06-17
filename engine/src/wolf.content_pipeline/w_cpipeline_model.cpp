@@ -506,6 +506,14 @@ void w_cpipeline_model::add_instance(_In_ const w_instance_info pValue)
     this->_instances_info.push_back(pValue);
 }
 
+void w_cpipeline_model::add_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs)
+{
+    for (size_t i = 0; i < pLODs.size(); ++i)
+    {
+        this->_lods.push_back(*pLODs[i]);
+    }
+}
+
 void w_cpipeline_model::update_world()
 {
 	this->_world = glm::make_wpv_mat(
@@ -584,6 +592,27 @@ void w_cpipeline_model::get_meshes(_Inout_ std::vector<w_cpipeline_model::w_mesh
     }
 }
 
+void w_cpipeline_model::get_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs)
+{
+    auto _size = this->_lods.size();
+    if (!_size) return;
+
+    for (size_t i = 0; i < _size; ++i)
+    {
+        pLODs.push_back(&this->_lods[i]);
+    }
+}
+
+size_t w_cpipeline_model::get_lods_count()
+{
+    return this->_lods.size();
+}
+
+w_cpipeline_model* w_cpipeline_model::get_lod_at(_In_ size_t pIndex)
+{
+    return pIndex < this->_lods.size() ? &this->_lods[pIndex] : nullptr;
+}
+
 #pragma endregion
 
 #pragma region Setters
@@ -598,7 +627,7 @@ void w_cpipeline_model::set_instance_geometry_name(_In_z_ const std::string& pVa
     this->_instanced_geo_name = pValue;
 }
 
-void w_cpipeline_model::set_transform(w_transform_info& pValue)
+void w_cpipeline_model::set_transform(_In_ const w_transform_info& pValue)
 {
 	this->_transform = pValue;
 }

@@ -26,8 +26,12 @@ static bool                                 sZ_Up = true;
 
 const char* c_parser::_trace_class_name = "w_collada_parser";
 
-HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_ w_cpipeline_scene* pScene,
-	bool pOptimizePoints, bool pInvertNormals)
+HRESULT c_parser::parse_collada_from_file(
+    _In_z_ const std::wstring& pFilePath, 
+    _Inout_ w_cpipeline_scene* pScene,
+    _In_ bool pOptimizePoints,
+    _In_ bool pInvertNormals,
+    _In_ bool pFindLODs)
 {
 	auto _hr = S_OK;
 
@@ -62,7 +66,7 @@ HRESULT c_parser::parse_collada_from_file(const std::wstring& pFilePath, _Inout_
 	//V(_hr, L"processing xml node : " + pFilePath, _trace_class_name, 3);
 	
 	//create scene
-	_create_scene(pScene, pOptimizePoints, pInvertNormals);
+	_create_scene(pScene, pOptimizePoints, pInvertNormals, pFindLODs);
 
 	//clear all
 	_doc.clear();
@@ -1303,9 +1307,9 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
 	//}
 
     //find LODS index
+    std::vector<size_t> _roots;
     if (pFindLODs)
     {
-        std::vector<size_t> _roots;
         std::vector<size_t> _lods;
 
         for (size_t i = 0; i < _models.size(); i++)
@@ -1325,46 +1329,71 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
             }
         }
 
-            std::map<size_t, std::vector<size_t>> _map_of_models;
+        std::vector<std::string> _splits;
+        for (size_t i = 0; i < _roots.size(); ++i)
+        {
+            auto _index = _roots[i];
+            auto _name = _models[_index]->get_name();
 
-            std::vector<std::string> _splits;
-            for (size_t i = 0; i < _roots.size(); ++i)
+            std::vector<int> index_lods;
+            wolf::system::convert::split_string(_name, "_", _splits);
+            if (_splits.size() > 0)
             {
-                auto _index = _roots[i];
-                auto _name = _cmodels[_index]->get_name();
+                auto _design_name = _splits[0];
+                int _i = 0;
 
-                std::vector<size_t> model_lods;
-                wolf::system::convert::split_string(_name, "_", _splits);
-                if (_splits.size() > 0)
+                _lods.erase(std::remove_if(_lods.begin(), _lods.end(),
+                    [_design_name, _models, &index_lods](_In_ size_t pIter)
                 {
-                    auto _design_name = _splits[0];
-                    int _i = 0;
-
-                    _lods.erase(std::remove_if(_lods.begin(), _lods.end(),
-                        [_design_name, _cmodels, &model_lods](_In_ size_t pIter)
+                    auto __name = _models[pIter]->get_name();
+                    if (wolf::system::convert::string_start_with(__name, _design_name))
                     {
-                        auto __name = _cmodels[pIter]->get_name();
-                        if (wolf::system::convert::string_start_with(__name, _design_name))
-                        {
-                            model_lods.push_back(pIter);
-                            return true;
-                        }
+                        index_lods.push_back(pIter);
+                        return true;
+                    }
 
-                        return false;
+                    return false;
 
-                    }), _lods.end());
-                }
-
-                _map_of_models[_index] = model_lods;
-
-                _splits.clear();
+                }), _lods.end());
             }
+
+            //sort by name
+            std::sort(index_lods.begin(), index_lods.end(), [&_models](_In_ int const& a, _In_ int const& b)
+            {
+                return (_models[a]->get_name().compare(_models[b]->get_name()) < 0 );
+            });
+
+            std::vector<w_cpipeline_model*> _lods_models;
+            for (auto& _lod_index : index_lods)
+            {
+                _lods_models.push_back(_models[_lod_index]);
+            }
+            _models[_index]->add_lods(_lods_models);
+            _lods_models.clear();
+
+            _splits.clear();
         }
+
+        _lods.clear();
     }
 
     if (_models.size())
     {
-        pScene->add_models(_models);
+        if (pFindLODs)
+        {
+            std::vector<w_cpipeline_model*> _root_models;
+            for (auto& _index : _roots)
+            {
+                _root_models.push_back(_models[_index]);
+            }
+            pScene->add_models(_root_models);
+            _root_models.clear();
+            _roots.clear();
+        }
+        else
+        {
+            pScene->add_models(_models);
+        }
         _models.clear();
     }
 
@@ -1445,7 +1474,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
                     _instance_info.position[1] = _node->translate.z;
                     _instance_info.position[2] = -_node->translate.y;
 
-                    _instance_info.rotation[0] = _rotation.x; - glm::radians(90.0f);
+                    _instance_info.rotation[0] = _rotation.x - glm::radians(90.0f);
                     _instance_info.rotation[1] = _rotation.y;
                     _instance_info.rotation[2] = _rotation.z;
                 }

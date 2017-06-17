@@ -36,10 +36,10 @@ namespace wolf
             */
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
-                _In_ const UINT  pVerticesSize,
-                _In_ const UINT pVerticesCount,
-                _In_ const UINT* const pIndicesData,
-                _In_ const UINT pIndicesCount,
+                _In_ const uint32_t  pVerticesSize,
+                _In_ const uint32_t pVerticesCount,
+                _In_ const uint32_t* const pIndicesData,
+                _In_ const uint32_t pIndicesCount,
                 _In_ const bool pUseDynamicBuffer)
             {
                 this->_gDevice = pGDevice;
@@ -53,7 +53,7 @@ namespace wolf
                 }
 
                 bool _there_is_no_index_buffer = false;
-                UINT _indices_size = pIndicesCount * sizeof(uint32_t);
+                uint32_t _indices_size = pIndicesCount * sizeof(uint32_t);
                 if (pIndicesCount == 0 || pIndicesData == nullptr)
                 {
                     _there_is_no_index_buffer = true;
@@ -123,10 +123,10 @@ namespace wolf
 
             HRESULT update_dynamic_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
-                _In_ const UINT pVerticesSize,
-                _In_ const UINT pVerticesCount,
-                _In_ const UINT* const pIndicesData,
-                _In_ const UINT pIndicesCount)
+                _In_ const uint32_t pVerticesSize,
+                _In_ const uint32_t pVerticesCount,
+                _In_ const uint32_t* const pIndicesData,
+                _In_ const uint32_t pIndicesCount)
             {
                 if (!this->_dynamic_buffer)
                 {
@@ -374,7 +374,7 @@ namespace wolf
              */
             HRESULT _create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag,
                                    _In_ const void* const pBufferData,
-                                   _In_ UINT pBufferSize,
+                                   _In_ uint32_t pBufferSize,
                                    _In_ const VkMemoryPropertyFlags pMemoryFlags,
                                    _Inout_ w_buffer& pBuffer)
             {
@@ -428,8 +428,8 @@ namespace wolf
             std::shared_ptr<w_graphics_device>                  _gDevice;
             w_buffer                                            _vertex_buffer;
             w_buffer                                            _index_buffer;
-            UINT                                                _indices_count;
-            UINT                                                _vertices_count;
+            uint32_t                                            _indices_count;
+            uint32_t                                            _vertices_count;
             w_texture*                                          _texture;
             w_vertex_binding_attributes                         _vertex_binding_attributes;
             bool                                                _dynamic_buffer;
@@ -455,10 +455,10 @@ w_mesh::~w_mesh()
 
 HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const void* const pVerticesData,
-                    _In_  const UINT  pVerticesSize,
-                     _In_ const UINT pVerticesCount,
-                     _In_ const UINT* const pIndicesData,
-                     _In_ const UINT pIndicesCount,
+                    _In_  const uint32_t  pVerticesSize,
+                     _In_ const uint32_t pVerticesCount,
+                     _In_ const uint32_t* const pIndicesData,
+                     _In_ const uint32_t pIndicesCount,
                      _In_ const bool pUseDynamicBuffer)
 {
     if (!this->_pimp) return S_FALSE;
@@ -476,10 +476,10 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 HRESULT w_mesh::update_dynamic_buffer(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const void* const pVerticesData,
-    _In_ const UINT pVerticesSize,
-    _In_ const UINT pVerticesCount,
-    _In_ const UINT* const pIndicesData,
-    _In_ const UINT pIndicesCount)
+    _In_ const uint32_t pVerticesSize,
+    _In_ const uint32_t pVerticesCount,
+    _In_ const uint32_t* const pIndicesData,
+    _In_ const uint32_t pIndicesCount)
 {
     return this->_pimp ? this->_pimp->update_dynamic_buffer(
         pGDevice,
@@ -522,12 +522,12 @@ VkBuffer w_mesh::get_index_buffer_handle() const
     return this->_pimp ? this->_pimp->get_index_buffer_handle() : VK_NULL_HANDLE;
 }
 
-const UINT w_mesh::get_vertices_count() const
+const uint32_t w_mesh::get_vertices_count() const
 {
     return this->_pimp ? this->_pimp->get_vertices_count() : 0;
 }
 
-const UINT w_mesh::get_indices_count() const
+const uint32_t w_mesh::get_indices_count() const
 {
     return this->_pimp ? this->_pimp->get_indices_count() : 0;
 }

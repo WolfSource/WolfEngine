@@ -36,6 +36,11 @@
 #define SHARED_RELEASE(x)		{ if (x) { x->release(); while(x.use_count() != 0) x.reset(); x = nullptr;} }
 #define SAFE_RELEASE(x)			{ if (x) { x->release(); delete x; x = nullptr;	} }
 
+#include <memory>
+#include <functional>
+
+using defer = std::shared_ptr<void>;
+
 struct w_Ireleasable
 {
 	virtual ULONG release() = 0;

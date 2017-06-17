@@ -60,10 +60,10 @@ namespace wolf
 #pragma endregion
 
 		private:
-            std::string                 _name;
-			std::vector<w_camera>		_cameras;
+            std::string                         _name;
+			std::vector<w_camera>		        _cameras;
             std::vector<w_cpipeline_model>		_models;
-            bool                        _z_up;
+            bool                                _z_up;
 		};
 	}
 }

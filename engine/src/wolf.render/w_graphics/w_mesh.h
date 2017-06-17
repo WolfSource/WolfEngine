@@ -58,20 +58,20 @@ namespace wolf
 			//initialize and load mesh
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const void* const pVerticesData,
-                               _In_ const UINT  pVerticesSize,
-                               _In_ const UINT pVerticesCount,
-                               _In_ const UINT* const pIndicesData,
-                               _In_ const UINT pIndicesCount,
+                               _In_ const uint32_t  pVerticesSize,
+                               _In_ const uint32_t pVerticesCount,
+                               _In_ const uint32_t* const pIndicesData,
+                               _In_ const uint32_t pIndicesCount,
                                _In_ bool pUseDynamicBuffer = false);
             
             //update data of vertices and indices
             W_EXP HRESULT update_dynamic_buffer(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
-                _In_ const UINT pVerticesSize,
-                _In_ const UINT pVerticesCount,
-                _In_ const UINT* const pIndicesData,
-                _In_ const UINT pIndicesCount);
+                _In_ const uint32_t pVerticesSize,
+                _In_ const uint32_t pVerticesCount,
+                _In_ const uint32_t* const pIndicesData,
+                _In_ const uint32_t pIndicesCount);
 
             W_EXP void draw(_In_ const VkCommandBuffer& pCommandBuffer, 
                 _In_ const VkBuffer& pInstanceHandle,
@@ -85,8 +85,8 @@ namespace wolf
             
             W_EXP VkBuffer                                                  get_vertex_buffer_handle() const;
             W_EXP VkBuffer                                                  get_index_buffer_handle() const;
-            W_EXP const UINT                                                get_vertices_count() const;
-            W_EXP const UINT                                                get_indices_count() const;
+            W_EXP const uint32_t                                            get_vertices_count() const;
+            W_EXP const uint32_t                                            get_indices_count() const;
             W_EXP w_texture*                                                get_texture() const;
             W_EXP const w_vertex_binding_attributes                         get_vertex_binding_attributes() const;
 
