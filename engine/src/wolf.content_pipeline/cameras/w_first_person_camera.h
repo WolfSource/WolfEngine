@@ -25,7 +25,8 @@ namespace wolf
 			WCP_EXP w_first_person_camera();
 			WCP_EXP virtual ~w_first_person_camera();
 
-            WCP_EXP void update(_In_ const wolf::system::w_game_time& pGameTime,
+            //returns true if camera updated
+            WCP_EXP bool update(_In_ const wolf::system::w_game_time& pGameTime,
                 _In_ const w_point_t& pScreenSize);
 
 #pragma region Getters

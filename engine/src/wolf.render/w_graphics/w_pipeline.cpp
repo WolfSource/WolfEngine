@@ -172,16 +172,21 @@ namespace wolf
                 _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
                 _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
                 _In_ const uint32_t& pSpecializationData,
-                _In_ const std::string& pPipelineCacheName)
+                _In_ const std::string& pPipelineCacheName,
+                _In_ const std::vector<VkPushConstantRange> pPushConstantRanges)
             {
                 auto _pipeline_cache = w_pipeline::get_pipeline_cache(pPipelineCacheName);
 
                 std::vector<VkDescriptorSetLayout> _descriptor_set_layouts = { pDescriptorSetLayouts };
 
+                auto _push_const_size = pPushConstantRanges.size();
+
                 VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
                 _pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
                 _pipeline_layout_create_info.setLayoutCount = static_cast<uint32_t>(_descriptor_set_layouts.size());
                 _pipeline_layout_create_info.pSetLayouts = _descriptor_set_layouts.data();
+                _pipeline_layout_create_info.pushConstantRangeCount = _push_const_size;
+                _pipeline_layout_create_info.pPushConstantRanges = _push_const_size ? pPushConstantRanges.data() : nullptr;
 
                 auto _hr = vkCreatePipelineLayout(
                     pGDevice->vk_device,
@@ -484,7 +489,8 @@ HRESULT w_pipeline::load_compute(
     _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
     _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
     _In_ const uint32_t& pSpecializationData,
-    _In_ const std::string& pPipelineCacheName)
+    _In_ const std::string& pPipelineCacheName,
+    _In_ const std::vector<VkPushConstantRange> pPushConstantRanges)
 {
     if (!this->_pimp) return S_FALSE;
 
@@ -493,7 +499,8 @@ HRESULT w_pipeline::load_compute(
         pComputeShaderStage,
         pDescriptorSetLayouts,
         pSpecializationData,
-        pPipelineCacheName);
+        pPipelineCacheName,
+        pPushConstantRanges);
 }
 
 void w_pipeline::bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)

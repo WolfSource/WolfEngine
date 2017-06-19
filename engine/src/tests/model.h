@@ -18,9 +18,11 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_render_pass.h>
 #include <cameras/w_first_person_camera.h>
+#include "masked_occlusion_culling/MaskedOcclusionCulling.h"
 
 #define MAX_LOD_LEVEL 2
-//struct clipspace_vertex { float x, y, z, w; };
+
+struct clipspace_vertex { float x, y, z, w; };
 
 class model : public wolf::system::w_object
 {
@@ -33,11 +35,20 @@ public:
         _In_ wolf::content_pipeline::w_cpipeline_model* pCPModel,
         _In_ wolf::graphics::w_render_pass& pRenderPass);
 
+    void pre_update(
+        _In_    wolf::content_pipeline::w_first_person_camera pCamera,
+        _Inout_ MaskedOcclusionCulling** sMOC);
+
+    void post_update(_Inout_ MaskedOcclusionCulling* sMOC,
+        _Inout_ uint32_t& pNumberOfVisibles,
+        _Inout_ uint32_t& pNumberOfOccluded,
+        _Inout_ uint32_t& pNumberOfViewCulled);
+
     void indirect_draw(
         _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ const VkCommandBuffer& pCommandBuffer);
 
-    HRESULT pre_render(
+    HRESULT render(
         _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ const wolf::content_pipeline::w_first_person_camera* pCamera);
 
@@ -49,6 +60,7 @@ public:
 #pragma region Getters
 
     VkSemaphore get_semaphore() const                       { return this->cs.semaphore; }
+    glm::vec3   get_position() const;
 
 #pragma endregion
 
@@ -61,7 +73,8 @@ private:
         _In_ const std::vector<wolf::content_pipeline::w_cpipeline_model::w_mesh*>& pModelMeshes,
         _Inout_ std::vector<float>& pVertices,
         _Inout_ std::vector<uint32_t>& pIndices,
-        _Inout_ uint32_t& pBaseVertex);
+        _Inout_ uint32_t& pBaseVertex,
+        _In_ const bool& pUseForMaskedOcclusionCulling);
 
     HRESULT _load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT  _load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
@@ -69,7 +82,7 @@ private:
         _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ wolf::graphics::w_render_pass& pRenderPass);
     HRESULT _load_semaphores(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-    HRESULT _build_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+    HRESULT _build_compute_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
 
     std::string                                             _full_name;
 
@@ -84,6 +97,17 @@ private:
 
     wolf::graphics::w_mesh*                                 _mesh;
     wolf::graphics::w_shader*                               _shader;
+    wolf::graphics::w_texture*                              _texture;
+
+    size_t                                                  _number_of_tris;
+    //vertex for masked occlusion culling
+    std::vector<clipspace_vertex>                           _vertices_for_moc;
+    //indices for masked occlusion culling
+    std::vector<uint32_t>                                   _indices_for_moc;
+
+    //World view Projections o f root and all instances
+    std::vector<glm::mat4>                                  _world_view_projections;
+    std::vector<float>                                      _visibilities;
 
     //struct masked_occulusion_culling_data
     //{
@@ -118,18 +142,77 @@ private:
 #pragma pack(push,1)
     struct compute_instance_data
     {
-        glm::vec4   min_bounding_box;
-        glm::vec4   max_bounding_box;
+        glm::vec4   pos;
+    };
+#pragma pack(pop)
+
+#pragma region compute uniforms
+
+#pragma pack(push,1)
+    struct compute_unifrom_x1
+    {
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible;
     };
 #pragma pack(pop)
 
 #pragma pack(push,1)
-    struct compute_unifrom
+    struct compute_unifrom_x2
     {
-        glm::vec4 camera_pos;
-        glm::vec4 frustum_planes[6];
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible;
     };
 #pragma pack(pop)
+
+#pragma pack(push,1)
+    struct compute_unifrom_x4
+    {
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible;
+    };
+#pragma pack(pop)
+
+#pragma pack(push,1)
+    struct compute_unifrom_x8
+    {
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible[2];
+    };
+#pragma pack(pop)
+
+#pragma pack(push,1)
+    struct compute_unifrom_x16
+    {
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible[4];
+    };
+#pragma pack(pop)
+
+#pragma pack(push,1)
+    struct compute_unifrom_x32
+    {
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible[8];
+    };
+#pragma pack(pop)
+
+#pragma pack(push,1)
+    struct compute_unifrom_x64
+    {
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible[16];
+    };
+#pragma pack(pop)
+
+#pragma pack(push,1)
+    struct compute_unifrom_x128
+    {
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible[32];
+    };
+#pragma pack(pop)
+
+#pragma endregion
 
 #pragma pack(push,1)
     struct color_unifrom
@@ -148,7 +231,16 @@ private:
     struct compute_stage
     {
         uint32_t                                                batch_local_size = 1;
-        wolf::graphics::w_uniform<compute_unifrom>              unifrom;
+        
+        wolf::graphics::w_uniform<compute_unifrom_x1>*          unifrom_x1;
+        wolf::graphics::w_uniform<compute_unifrom_x2>*          unifrom_x2;
+        wolf::graphics::w_uniform<compute_unifrom_x4>*          unifrom_x4;
+        wolf::graphics::w_uniform<compute_unifrom_x8>*          unifrom_x8;
+        wolf::graphics::w_uniform<compute_unifrom_x16>*         unifrom_x16;
+        wolf::graphics::w_uniform<compute_unifrom_x32>*         unifrom_x32;
+        wolf::graphics::w_uniform<compute_unifrom_x64>*         unifrom_x64;
+        wolf::graphics::w_uniform<compute_unifrom_x128>*        unifrom_x128;
+
         wolf::graphics::w_buffer                                instance_buffer;
 
         wolf::graphics::w_command_buffers                       command_buffer;

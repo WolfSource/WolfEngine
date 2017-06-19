@@ -48,7 +48,7 @@ VkAttachmentDescription	w_graphics_device::w_render_pass_attachments::depth_atta
 	0,								        // Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
 	VkFormat::VK_FORMAT_D16_UNORM,          // Format of an image used for the attachment.
 	VK_SAMPLE_COUNT_1_BIT,                  // Number of samples of the image; The value greater than 1 means multisampling.
-	VK_ATTACHMENT_LOAD_OP_CLEAR,            // Specifies what to do with the image�s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
+	VK_ATTACHMENT_LOAD_OP_CLEAR,            // Specifies what to do with the images contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
 	VK_ATTACHMENT_STORE_OP_DONT_CARE,       // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
 	VK_ATTACHMENT_LOAD_OP_DONT_CARE,        // The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
 	VK_ATTACHMENT_STORE_OP_DONT_CARE,       // The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
@@ -131,9 +131,9 @@ VkPipelineRasterizationStateCreateInfo w_graphics_device::defaults::vk_default_p
         0,                                                              // flags
         VK_FALSE,                                                       // depthClampEnable
         VK_FALSE,                                                       // rasterizerDiscardEnable
-        VK_POLYGON_MODE_LINE,                                           // polygonMode
-        VK_CULL_MODE_BACK_BIT,                                          // cullMode
-        VK_FRONT_FACE_COUNTER_CLOCKWISE,                                // frontFace
+        VK_POLYGON_MODE_FILL,                                           // polygonMode
+        VK_CULL_MODE_FRONT_BIT,                                         // cullMode
+        VK_FRONT_FACE_CLOCKWISE,                                        // frontFace
         VK_FALSE,                                                       // depthBiasEnable
         0.0f,                                                           // depthBiasConstantFactor
         0.0f,                                                           // depthBiasClamp

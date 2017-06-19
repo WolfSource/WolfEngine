@@ -5,6 +5,7 @@
 #include <w_framework/w_quad.h>
 #include <imgui/imgui.h>
 #include <w_graphics/w_imgui.h>
+#include "masked_occlusion_culling/MaskedOcclusionCulling.h"
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -13,6 +14,14 @@ using namespace wolf::content_pipeline;
 
 //forward declaration
 static void make_gui();
+
+static bool sForceUpdate = true;
+static MaskedOcclusionCulling* sMOC;
+static std::vector<model*> sModelsToBeRender;
+static uint32_t sVisible = 0;
+static uint32_t sOcclued = 0;
+static uint32_t sViewCulled = 0;
+static UINT32 sFPS = 0;
 
 #if defined(__WIN32)
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
@@ -25,10 +34,7 @@ scene::scene(_In_z_ const std::wstring& pAppName):
 scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::string& pAppName) :
     w_game(pRunningDirectory, pAppName)
 #endif
-    ,_compute_fence(nullptr)
 {
-    w_game::set_fixed_time_step(false);
-
 #if defined(__WIN32) || defined(__UWP)
     auto _running_dir = pRunningDirectory;
     content_path = _running_dir + L"../../../../content/";
@@ -37,8 +43,14 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
     content_path = _running_dir + L"/../../../../../content/";
 #endif
 
+    this->_compute_fence = nullptr;
+
+    //we do not need fixed time step
+    w_game::set_fixed_time_step(false);
+
+    //enable/disable gpu debugging
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = false;
+    _config.debug_gpu = true;
     this->set_graphics_device_manager_configs(_config);
 }
 
@@ -63,6 +75,22 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     };
     // TODO: Add your pre-initialization logic here
     w_game::initialize(pOutputWindowsInfo);
+
+    //create masked occlusion culling instnace
+    sMOC = MaskedOcclusionCulling::Create();
+    MaskedOcclusionCulling::Implementation _implementation = sMOC->GetImplementation();
+    switch (_implementation)
+    {
+    case MaskedOcclusionCulling::SSE2:
+        logger.write("Using SSE2 implementation of MaskedOcclusionCulling");
+        break;
+    case MaskedOcclusionCulling::SSE41:
+        logger.write("Using SSE41 implementation of MaskedOcclusionCulling");
+        break;
+    case MaskedOcclusionCulling::AVX2:
+        logger.write("Using AVX2 implementation of MaskedOcclusionCulling");
+        break;
+    }
 }
 
 void scene::load()
@@ -106,8 +134,8 @@ void scene::load()
     _viewport_scissor.extent.width = _screen_size.x;
     _viewport_scissor.extent.height = _screen_size.y;
 
-    auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
-    _depth_attachment.format = _output_window->vk_depth_buffer_format;
+    //auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
+    //_depth_attachment.format = _output_window->vk_depth_buffer_format;
 
     //create draw render pass
     auto _hr = this->_draw_render_pass.load(
@@ -116,7 +144,7 @@ void scene::load()
         _viewport_scissor,
         {
             w_graphics_device::w_render_pass_attachments::color_attachment_description,
-            _depth_attachment,
+            //_depth_attachment,
         });
 
     if (_hr == S_FALSE)
@@ -127,7 +155,7 @@ void scene::load()
         return;
     }
 
-    std::vector<VkAttachmentDescription> _attachments(2);
+    std::vector<VkAttachmentDescription> _attachments(1);
     // Color attachment
     _attachments[0].format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
     _attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
@@ -140,22 +168,22 @@ void scene::load()
     _attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
     // Depth attachment
-    _attachments[1].format = _output_window->vk_depth_buffer_format;
-    _attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
-    _attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    _attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    _attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    _attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    _attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    _attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    //_attachments[1].format = _output_window->vk_depth_buffer_format;
+    //_attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
+    //_attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    //_attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    //_attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    //_attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    //_attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    //_attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
     VkAttachmentReference colorReference = {};
     colorReference.attachment = 0;
     colorReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-    VkAttachmentReference depthReference = {};
-    depthReference.attachment = 1;
-    depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    //VkAttachmentReference depthReference = {};
+    //depthReference.attachment = 1;
+    //depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
     VkSubpassDescription subpassDescription = {};
     subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -165,7 +193,7 @@ void scene::load()
     subpassDescription.colorAttachmentCount = 1;
     subpassDescription.pColorAttachments = &colorReference;
     subpassDescription.pResolveAttachments = NULL;
-    subpassDescription.pDepthStencilAttachment = &depthReference;
+    subpassDescription.pDepthStencilAttachment = nullptr;
     subpassDescription.preserveAttachmentCount = 0;
     subpassDescription.pPreserveAttachments = NULL;
 
@@ -222,7 +250,7 @@ void scene::load()
     _hr = this->_draw_frame_buffers.load(_gDevice,
         _render_pass_handle,
         _output_window->vk_swap_chain_image_views,
-        &_output_window->vk_depth_buffer_image_view,
+        nullptr,//&_output_window->vk_depth_buffer_image_view,
         _screen_size,
         1);
     if (_hr == S_FALSE)
@@ -237,7 +265,7 @@ void scene::load()
     _hr = this->_gui_frame_buffers.load(_gDevice,
         _gui_render_pass_handle,
         _output_window->vk_swap_chain_image_views,
-        &_output_window->vk_depth_buffer_image_view,
+        nullptr,//&_output_window->vk_depth_buffer_image_view,
         _screen_size,
         1);
     if (_hr == S_FALSE)
@@ -249,18 +277,19 @@ void scene::load()
 
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/A_120_Water-Treatment_v1_16_4.dae");//export-engine.dae
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");//A_120_Water-Treatment_v1_16_4.wscene");
     if (_scene)
     {
         //just for converting
         //std::vector<w_cpipeline_scene> _scenes = { *_scene };
-        //w_content_manager::save_wolf_scenes_to_file(_scenes, content_path + L"models/export-engine.wscene");
+        //w_content_manager::save_wolf_scenes_to_file(_scenes, content_path + L"models/A_120_Water-Treatment_v1_16_4.wscene");
         //_scenes.clear();
 
         //get all models
         std::vector<w_cpipeline_model*> _cmodels;
         _scene->get_all_models(_cmodels);
-
+        
+        int kkk = 0;
         for (auto& _iter : _cmodels)
         {
             if (!_iter) continue;
@@ -278,9 +307,19 @@ void scene::load()
         }
 
         _scene->get_first_camera(this->_camera);
-        this->_camera.set_near_plan(0.01f);
-        this->_camera.set_far_plan(10000);
-        this->_camera.set_aspect_ratio((float)_screen_size.x / (float)_screen_size.y);
+
+        float _near_plan = 0.01f, far_plan = 5000;
+        
+        this->_camera.set_near_plan(_near_plan);
+        sMOC->SetNearClipPlane(_near_plan);
+        
+        this->_camera.set_far_plan(far_plan);
+        
+        auto _screen_width = (float)_screen_size.x;
+        auto _screen_height = (float)_screen_size.y;
+
+        this->_camera.set_aspect_ratio(_screen_width / _screen_height);
+        sMOC->SetResolution(_screen_width, _screen_height);
 
         this->_camera.update_view();
         this->_camera.update_projection();
@@ -327,7 +366,7 @@ void scene::load()
         exit(1);
     }
 
-    _build_draw_command_buffer(_gDevice);
+    sMOC->ClearBuffer();
 }
 
 const int _obj_count = 1;
@@ -347,7 +386,7 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
                 this->_draw_frame_buffers.get_frame_buffer_at(i),
                 w_color(43));
             {
-                for (auto& _iter : this->_models)
+                for (auto& _iter : sModelsToBeRender)
                 {
                     _iter->indirect_draw(pGDevice, _cmd);
                 }
@@ -390,8 +429,52 @@ HRESULT scene::_build_gui_command_buffer(_In_ const std::shared_ptr<w_graphics_d
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
-    this->_camera.update(pGameTime, this->_screen_size);
     
+    auto _gDevice = this->graphics_devices[0];
+
+    //if camera updated, then update command buffers based on result of masked occlusion culling
+    auto _camera_just_updated = this->_camera.update(pGameTime, this->_screen_size);
+    if(sForceUpdate || _camera_just_updated)
+    {
+        sForceUpdate = false;
+
+       // auto _view_projection = this->_camera.get_projection() * this->_camera.get_view();
+
+        sVisible = 0;
+        sOcclued = 0;
+        sViewCulled = 0;
+
+        sMOC->ClearBuffer();
+        sModelsToBeRender.clear();
+        
+        for (auto _model : this->_models)
+        {
+            _model->pre_update(this->_camera, &sMOC);
+        }
+        
+        for (auto _model : this->_models)
+        {
+            auto _old_value = sVisible;
+            _model->post_update(sMOC, sVisible, sOcclued, sViewCulled);
+            if (sVisible > _old_value)
+            {
+                sModelsToBeRender.push_back(_model);
+            }
+        }
+
+        //order by distance to camera
+        auto _cam_pos = this->_camera.get_translate();
+        std::sort(sModelsToBeRender.begin(), sModelsToBeRender.end(), [&_cam_pos](_In_ model* a, _In_ model* b)
+        {
+            auto _a_distance = glm::distance(_cam_pos, a->get_position());
+            auto _b_distance = glm::distance(_cam_pos, b->get_position());
+
+            return _a_distance < _b_distance;
+        });
+
+        _build_draw_command_buffer(_gDevice);
+    }
+
     w_game::update(pGameTime);
 }
 
@@ -418,9 +501,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     });
 
     //pre render which run compute shaders
-    for (auto& _model : this->_models)
+    for (auto& _model : sModelsToBeRender)
     {
-        if (_model->pre_render(_gDevice, &this->_camera) == S_OK)
+        if (_model->render(_gDevice, &this->_camera) == S_OK)
         {
             _wait_for_pre_render_semaphores.push_back(_model->get_semaphore());
         }
@@ -445,7 +528,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _submit_info.waitSemaphoreCount = static_cast<uint32_t>(_wait_for_pre_render_semaphores.size());
     _submit_info.pWaitDstStageMask = &_stage_flags[0];
     _submit_info.signalSemaphoreCount = 1;
-    _submit_info.pSignalSemaphores = &gui_semaphore;
+    _submit_info.pSignalSemaphores = show_gui ? &gui_semaphore : &_output_window->vk_rendering_done_semaphore;
 
     // Submit to queue
     if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_compute_fence))
@@ -479,9 +562,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
             V(_hr, "submiting queu for drawing gui", _trace, 3);
         }
     }
-
-
-    logger.write(std::to_string(pGameTime.get_frames_per_second()));
     auto __hr = w_game::render(pGameTime);
 
     //post render which run compute shaders
@@ -490,6 +570,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         _model->post_render(_gDevice);
     }
 
+    sFPS = pGameTime.get_frames_per_second();
     return S_OK;
 }
 
@@ -582,6 +663,13 @@ static void make_gui()
         ImGui::Spacing();
     }
 
+    std::string text = 
+        "FPS: " + std::to_string(sFPS) + "\r\n" +
+        "Visible: " + std::to_string(sVisible) + "\r\n" +
+        "Occlued: " + std::to_string(sOcclued) + "\r\n" + 
+        "ViewCulled: " + std::to_string(sViewCulled);
+    ImGui::Text(text.c_str());
+    
     //ImGui::ShowTestWindow();
 
     ImGui::End();

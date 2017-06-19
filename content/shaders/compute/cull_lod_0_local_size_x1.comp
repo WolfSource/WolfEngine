@@ -5,8 +5,7 @@
 
 struct instance_data 
 {
-	vec4	min_bounding_box;
-	vec4	max_bounding_box;
+	vec4	pos;
 };
 
 // instances buffer
@@ -34,8 +33,8 @@ layout (binding = 1, std430) writeonly buffer IndirectDraws
 // Matrices
 layout (binding = 2) uniform UBO_In
 {
-	vec4 camera_pos;
-	vec4 frustum_planes[6];
+	vec4	camera_pos;
+	vec4	is_visible;//only x contains data others are padding
 } i_ubo;
 
 // indirect draw stats
@@ -60,22 +59,6 @@ layout (binding = 4) readonly buffer LODs
 
 layout (local_size_x = 1) in;
 
-bool frustum_check(vec3 pMinBox, vec3 pMaxBox)
-{
-	// Check bounding box against frustum planes
-	for (int i = 0; i < 6; i++) 
-	{
-		if (dot(vec4(pMinBox, 1.0), i_ubo.frustum_planes[i]) < 0.0 &&
-			dot(vec4(pMaxBox, 1.0), i_ubo.frustum_planes[i]) < 0.0)
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-layout (local_size_x = 1) in;
-
 void main()
 {
 	uint idx = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
@@ -87,12 +70,7 @@ void main()
 		atomicExchange(o_ubo.lod_count[0], 0);
 	}
 	
-	// Check wheather object is within current viewing frustum
-	const vec3 _min_bb = instances[idx].min_bounding_box.xyz;
-	const vec3 _max_bb = instances[idx].max_bounding_box.xyz;
-	const vec3 _center = (_min_bb + _max_bb) / 2.0f;
-
-	if (frustum_check(_min_bb, _max_bb))
+	if (i_ubo.is_visible[idx] != 0)
 	{
 		indirect_draws[idx].instance_count = 1;
 		

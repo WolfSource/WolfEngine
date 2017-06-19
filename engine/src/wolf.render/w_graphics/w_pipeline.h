@@ -46,7 +46,8 @@ namespace wolf
                 _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
                 _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
                 _In_ const uint32_t& pSpecializationData,
-                _In_ const std::string& pPipelineCacheName = "");
+                _In_ const std::string& pPipelineCacheName = "",
+                _In_ const std::vector<VkPushConstantRange> pPushConstantRanges = {});
 
             W_EXP void bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet);
 

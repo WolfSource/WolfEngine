@@ -43,6 +43,15 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.cpp">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.cpp">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
@@ -90,6 +99,12 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h">
       <Filter>imgui</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_graphics">
@@ -112,6 +127,9 @@
     </Filter>
     <Filter Include="content\shaders\compute">
       <UniqueIdentifier>{f292ce56-4fc9-431e-a5d1-51bc9a9ee7a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="masked_occlusion_culling">
+      <UniqueIdentifier>{18495b95-ede0-4812-aaf6-9ac8446435c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +236,18 @@
       <Filter>content\shaders\compute</Filter>
     </None>
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x2.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl">
+      <Filter>masked_occlusion_culling</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x128.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x128.comp">
+      <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x128.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
   </ItemGroup>

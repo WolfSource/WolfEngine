@@ -105,6 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_render_pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,6 +155,9 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp" />
@@ -171,6 +175,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_quad.h" />
@@ -200,6 +206,7 @@
     <None Include="..\..\..\..\..\content\shaders\basic.frag" />
     <None Include="..\..\..\..\..\content\shaders\basic.vert" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x1.comp" />
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x128.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x16.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x2.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x32.comp" />
@@ -207,6 +214,7 @@
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x64.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x8.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x1.comp" />
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x128.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x16.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x2.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x32.comp" />
@@ -214,6 +222,7 @@
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x64.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x8.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x1.comp" />
+    <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x128.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x16.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x2.comp" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x32.comp" />
@@ -232,6 +241,7 @@
     <None Include="..\..\..\..\..\content\shaders\tessellation\tessellation.vert" />
     <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tesc" />
     <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tese" />
+    <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

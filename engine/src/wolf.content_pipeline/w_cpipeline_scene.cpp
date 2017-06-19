@@ -47,6 +47,12 @@ void w_cpipeline_scene::add_camera(_In_z_ const std::string& pID, _In_ const glm
 
 ULONG w_cpipeline_scene::release()
 {
+    for (auto& _iter : this->_models)
+    {
+        _iter.release();
+    }
+    this->_name.clear();
+    this->_cameras.clear();
     return 1;
 }
 

@@ -7,7 +7,8 @@ using namespace wolf::content_pipeline;
 
 model::model() : 
     _mesh(nullptr),
-    _shader(nullptr)
+    _shader(nullptr),
+    _number_of_tris(0)
 {
     //define vertex binding attributes
     this->_vertex_binding_attributes.declaration = w_vertex_declaration::USER_DEFINED;
@@ -32,7 +33,7 @@ HRESULT model::load(
     //get trasform of base object and instances objects
     this->_transform = pCPModel->get_transform();
     pCPModel->get_instances(this->_instances_transforms);
-
+    
     //get full name 
     this->_full_name = pCPModel->get_name();
     get_searchable_name(this->_full_name);
@@ -74,7 +75,12 @@ HRESULT model::load(
 
         this->_lod_levels.push_back(_lod);
 
-        _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex);
+        _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex, true);
+
+        //load texture
+        w_texture::load_to_shared_textures(pGDevice, 
+            content_path + L"textures/areas/" + 
+            wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &this->_texture);
     }
 
     //append load mesh data to big vertices and indices
@@ -97,7 +103,7 @@ HRESULT model::load(
 
             this->_lod_levels.push_back(_lod);
 
-            _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex);
+            _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex, false);
         }
     }
 
@@ -141,7 +147,10 @@ HRESULT model::load(
 
     //load command buffer for compute shader and build it
     cs.command_buffer.load(pGDevice, 1, true, &pGDevice->vk_compute_queue);
-    if (_build_command_buffers(pGDevice) == S_FALSE) return S_FALSE;
+    if (_build_compute_command_buffers(pGDevice) == S_FALSE) return S_FALSE;
+
+    auto _num_of_verts = this->_vertices_for_moc.size();
+    this->_number_of_tris = _num_of_verts / 3;
 
     return S_OK;
 }
@@ -164,8 +173,10 @@ void model::_store_to_batch(
     _In_ const std::vector<wolf::content_pipeline::w_cpipeline_model::w_mesh*>& pModelMeshes,
     _Inout_ std::vector<float>& pBatchVertices,
     _Inout_ std::vector<uint32_t>& pBatchIndices,
-    _Inout_ uint32_t& pBaseVertex)
+    _Inout_ uint32_t& pBaseVertex,
+    _In_ const bool& pUseForMaskedOcclusionCulling)
 {
+    clipspace_vertex _cv;
     for (auto& _mesh_data : pModelMeshes)
     {
         for (size_t i = 0; i < _mesh_data->indices.size(); ++i)
@@ -183,12 +194,28 @@ void model::_store_to_batch(
             pBatchVertices.push_back(_pos[1]);
             pBatchVertices.push_back(_pos[2]);
 
+            if (pUseForMaskedOcclusionCulling)
+            {
+                _cv.x = _pos[0];
+                _cv.y = _pos[1];
+                _cv.z = 0;
+                _cv.w = _pos[2];
+
+                this->_vertices_for_moc.push_back(_cv);
+            }
+
             //uv
-            pBatchVertices.push_back(_uv[0]);
-            pBatchVertices.push_back(1 - _uv[1]);
+            pBatchVertices.push_back(_uv[1]);
+            pBatchVertices.push_back(1 - _uv[0]);
 
             pBaseVertex++;
         }
+    }
+
+    if (pUseForMaskedOcclusionCulling)
+    {
+        this->_indices_for_moc.insert(this->_indices_for_moc.end(),
+            pBatchIndices.begin(), pBatchIndices.end());
     }
 }
 
@@ -196,16 +223,13 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
 {
     const std::string _trace = this->name + "::_load_shader";
 
+    //load vertex shader uniform
     if (this->vs.unifrom.load(pGDevice) == S_FALSE)
     {
-        V(S_FALSE, "Error on loading vertex uniform for " + this->_full_name, _trace);
+        V(S_FALSE, "loading vertex shader uniform for " + this->_full_name, _trace);
         return S_FALSE;
     }
-    if (this->cs.unifrom.load(pGDevice) == S_FALSE)
-    {
-        V(S_FALSE, "Error on loading compute uniform for " + this->_full_name, _trace);
-        return S_FALSE;
-    }
+
 
     std::vector<w_shader_binding_param> _shader_params;
 
@@ -219,7 +243,8 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     _param.index = 1;
     _param.type = w_shader_binding_type::SAMPLER;
     _param.stage = w_shader_stage::FRAGMENT_SHADER;
-    _param.image_info = w_texture::default_texture->get_descriptor_info();
+    _param.image_info = this->_texture == nullptr ? w_texture::default_texture->get_descriptor_info() :
+        this->_texture->get_descriptor_info();
     _shader_params.push_back(_param);
 
     _param.index = 0;
@@ -237,7 +262,94 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     _param.index = 2;
     _param.type = w_shader_binding_type::UNIFORM;
     _param.stage = w_shader_stage::COMPUTE_SHADER;
-    _param.buffer_info = this->cs.unifrom.get_descriptor_info();
+
+    //load compute uniform then assign it to shader
+    switch (this->cs.batch_local_size)
+    {
+    default:
+        V(S_FALSE, "batch_local_size " + std::to_string(this->cs.batch_local_size) + " not supported" + this->_full_name, _trace);
+        return S_FALSE;
+    case 1:
+        this->_visibilities.resize(1);
+        this->cs.unifrom_x1 = new w_uniform<compute_unifrom_x1>();
+        if (this->cs.unifrom_x1->load(pGDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader uniform_x1 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x1->get_descriptor_info();
+        break;
+    case 2:
+        this->_visibilities.resize(2);
+        this->cs.unifrom_x2 = new w_uniform<compute_unifrom_x2>();
+        if (this->cs.unifrom_x2->load(pGDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader unifrom_x2 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x2->get_descriptor_info();
+        break;
+    case 4:
+        this->_visibilities.resize(4);
+        this->cs.unifrom_x4 = new w_uniform<compute_unifrom_x4>();
+        if (this->cs.unifrom_x4->load(pGDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader unifrom_x4 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x4->get_descriptor_info();
+        break;
+    case 8:
+        this->_visibilities.resize(8);
+        this->cs.unifrom_x8 = new w_uniform<compute_unifrom_x8>();
+        if (this->cs.unifrom_x8->load(pGDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader unifrom_x8 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x8->get_descriptor_info();
+        break;
+    case 16:
+        this->_visibilities.resize(16);
+        this->cs.unifrom_x16 = new w_uniform<compute_unifrom_x16>();
+        if (this->cs.unifrom_x16->load(pGDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader unifrom_x16 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x16->get_descriptor_info();
+        break;
+    case 32:
+        this->_visibilities.resize(32);
+        this->cs.unifrom_x32 = new w_uniform<compute_unifrom_x32>();
+        if (this->cs.unifrom_x32->load(pGDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader unifrom_x32 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x32->get_descriptor_info();
+        break;
+    case 64:
+        this->_visibilities.resize(64);
+        this->cs.unifrom_x64 = new w_uniform<compute_unifrom_x64>();
+        if (this->cs.unifrom_x64->load(pGDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader unifrom_x64 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x64->get_descriptor_info();
+        break;
+    case 128:
+        this->_visibilities.resize(128);
+        this->cs.unifrom_x128 = new w_uniform<compute_unifrom_x128>();
+        if (this->cs.unifrom_x128->load(pGDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader uniform_x128 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x128->get_descriptor_info();
+        break;
+    }
     _shader_params.push_back(_param);
 
     _param.index = 3;
@@ -283,7 +395,6 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     return S_OK;
 }
 
-//static glm::vec3 centers;
 HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
 {
     const std::string _trace = this->name + "::_prepare_buffers";
@@ -385,7 +496,10 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     _vertex_instances_data[0].scale = 1.0f;
     
     //others are instances
-    for (size_t i = 0; i <  this->_instances_transforms.size(); ++i)
+    _size = this->_instances_transforms.size();
+
+    //resize world view projections of root and other instances
+    for (size_t i = 0; i <  _size; ++i)
     {
         auto _index = i + 1;
         _vertex_instances_data[_index].pos[0] = this->_instances_transforms[i].position[0];
@@ -399,7 +513,8 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
         //TODO: remove it
         _vertex_instances_data[_index].scale = 1.0f;
     }
-
+    //root and instances
+    this->_world_view_projections.resize(_size + 1);
 
     _size = (uint32_t)(_vertex_instances_data.size() * sizeof(vertex_instance_data));
     if (_staging_buffers[1].load_as_staging(pGDevice, _size) == S_FALSE)
@@ -481,20 +596,11 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
         return S_FALSE;
     }
 
-    if (this->cs.unifrom.load(pGDevice, true) == S_FALSE)
-    {
-        V(S_FALSE, "loading compute shader uniform", _trace, 3);
-        return S_FALSE;
-    }
-
     std::vector<compute_instance_data> _compute_instance_data(_draw_counts);
     for (size_t i = 0; i < _draw_counts; i++)
     {
-        _compute_instance_data[i].min_bounding_box = glm::vec4(this->_bounding_box_min, 0.0f) + glm::vec4(_vertex_instances_data[i].pos, 0.0f);
-        _compute_instance_data[i].max_bounding_box = glm::vec4(this->_bounding_box_max, 0.0f) + glm::vec4(_vertex_instances_data[i].pos, 0.0f);
+        _compute_instance_data[i].pos = glm::vec4(_vertex_instances_data[i].pos, 0.0f);
     }
-
-    //centers = (_compute_instance_data[0].min_bounding_box + _compute_instance_data[0].max_bounding_box) / 2.0f;
 
     _size = _compute_instance_data.size() * sizeof(compute_instance_data);
     if (_staging_buffers[3].load_as_staging(pGDevice, _size) == S_FALSE)
@@ -606,7 +712,7 @@ HRESULT model::_load_semaphores(_In_ const std::shared_ptr<wolf::graphics::w_gra
     }
 }
 
-HRESULT model::_build_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
+HRESULT model::_build_compute_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
 {
     VkCommandBufferBeginInfo _cmd_buffer_info = {};
     _cmd_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -637,12 +743,13 @@ HRESULT model::_build_command_buffers(_In_ const std::shared_ptr<wolf::graphics:
         1, &_buffer_barrier,
         0, nullptr);
 
+    auto _pipline_layout_handle = this->cs.pipeline.get_layout_handle();
     auto _desciptor_set = this->_shader->get_compute_descriptor_set();
     vkCmdBindPipeline(_cmd, VK_PIPELINE_BIND_POINT_COMPUTE, this->cs.pipeline.get_handle());
     vkCmdBindDescriptorSets(
         _cmd,
         VK_PIPELINE_BIND_POINT_COMPUTE,
-        this->cs.pipeline.get_layout_handle(),
+        _pipline_layout_handle,
         0,
         1, &_desciptor_set,
         0,
@@ -670,6 +777,127 @@ HRESULT model::_build_command_buffers(_In_ const std::shared_ptr<wolf::graphics:
     vkEndCommandBuffer(_cmd);
 
     return S_OK;
+}
+
+void model::pre_update(
+    _In_    w_first_person_camera pCamera,
+    _Inout_ MaskedOcclusionCulling** sMOC)
+{
+    auto _view_projection = pCamera.get_projection() * pCamera.get_view();
+
+    glm::vec3 _pos = glm::vec3(
+        this->_transform.position[0], 
+        this->_transform.position[1], 
+        this->_transform.position[2]);
+    glm::vec3 _center_pos = ( (_pos + this->_bounding_box_min) + (_pos + this->_bounding_box_max) ) / glm::vec3(2);
+
+    this->_world_view_projections[0] = _view_projection *
+        glm::translate(_center_pos) *
+        glm::rotate(
+            this->_transform.rotation[0],
+            this->_transform.rotation[1],
+            this->_transform.rotation[2]) *
+        glm::scale(glm::vec3(
+            this->_transform.scale[0],
+            this->_transform.scale[1],
+            this->_transform.scale[2])) *
+        glm::mat4(
+            1, 0, 0, 0,
+            0, 0, 1, 0,
+            0, 1, 0, 0,
+            0, 0, 0, 1);//swap -y and -z
+            
+    //render root model to Masked Occlusion culling
+    (*sMOC)->RenderTriangles(
+        (float*)&this->_vertices_for_moc[0],
+        this->_indices_for_moc.data(), 
+        this->_number_of_tris,
+        (float*)&this->_world_view_projections[0][0]);
+
+    size_t _index = 1;
+    for (auto& _ins : this->_instances_transforms)
+    {
+        _pos = glm::vec3(
+            _ins.position[0],
+            _ins.position[1],
+            _ins.position[2]);
+        _center_pos = ((_pos + this->_bounding_box_min) + (_pos + this->_bounding_box_max)) / glm::vec3(2);
+
+        this->_world_view_projections[_index] = _view_projection *
+            glm::translate(_center_pos) *
+            glm::rotate(
+                _ins.rotation[0],
+                _ins.rotation[1],
+                _ins.rotation[2]) *
+            glm::scale(glm::vec3(
+                _ins.scale,
+                _ins.scale,
+                _ins.scale)) *
+            glm::mat4(
+                1, 0, 0, 0,
+                0, 0, 1, 0,
+                0, 1, 0, 0,
+                0, 0, 0, 1);//swap -y and -z
+
+        (*sMOC)->RenderTriangles(
+            (float*)&this->_vertices_for_moc[0],
+            this->_indices_for_moc.data(),
+            this->_number_of_tris,
+            (float*)&this->_world_view_projections[_index++][0]);
+    }
+}
+
+void model::post_update(
+    _Inout_ MaskedOcclusionCulling* sMOC,
+    _Inout_ uint32_t& pNumberOfVisibles,
+    _Inout_ uint32_t& pNumberOfOccluded,
+    _Inout_ uint32_t& pNumberOfViewCulled)
+{
+    std::fill(this->_visibilities.begin(), this->_visibilities.end(), 0.0f);
+
+    //check root model
+    auto _culling_result = sMOC->TestTriangles(
+        (float*)&this->_vertices_for_moc[0],
+        this->_indices_for_moc.data(),
+        this->_number_of_tris,
+        (float*)&this->_world_view_projections[0][0]);
+
+    switch (_culling_result)
+    {
+    case MaskedOcclusionCulling::VISIBLE:
+        this->_visibilities[0] = true;
+        pNumberOfVisibles++;
+        break;
+    case MaskedOcclusionCulling::OCCLUDED:
+        pNumberOfOccluded++;
+        break;
+    case MaskedOcclusionCulling::VIEW_CULLED:
+        pNumberOfViewCulled++;
+        break;
+    }
+
+    for (size_t i = 1; i <= this->_instances_transforms.size(); ++i)
+    {
+        _culling_result = sMOC->TestTriangles(
+            (float*)&this->_vertices_for_moc[0],
+            this->_indices_for_moc.data(),
+            this->_number_of_tris,
+            (float*)&this->_world_view_projections[i][0]);
+
+        switch (_culling_result)
+        {
+        case MaskedOcclusionCulling::VISIBLE:
+            this->_visibilities[i] = 1.0f;
+            pNumberOfVisibles++;
+            break;
+        case MaskedOcclusionCulling::OCCLUDED:
+            pNumberOfOccluded++;
+            break;
+        case MaskedOcclusionCulling::VIEW_CULLED:
+            pNumberOfViewCulled++;
+            break;
+        }
+    }
 }
 
 void model::indirect_draw(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -702,18 +930,18 @@ void model::indirect_draw(_In_ const std::shared_ptr<w_graphics_device>& pGDevic
                 1, sizeof(VkDrawIndexedIndirectCommand));
         }
     }
+
 }
 
-HRESULT model::pre_render(
+HRESULT model::render(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const wolf::content_pipeline::w_first_person_camera* pCamera)
 {
     HRESULT _hr = S_OK;
 
     const std::string _trace = this->name + "::draw";
-
+    
     //Update uniforms
-
     auto _projection_view = pCamera->get_projection() * pCamera->get_view();
 
     auto _pos = glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
@@ -722,24 +950,69 @@ HRESULT model::pre_render(
     auto _camera_pos = pCamera->get_translate();
 
     this->vs.unifrom.data.projection_view = _projection_view;
-    this->cs.unifrom.data.camera_pos = glm::vec4(_camera_pos, 1.0f);
-    std::memcpy(this->cs.unifrom.data.frustum_planes, pCamera->get_frustum_plans().data(), sizeof(glm::vec4) * 6);
-
     if (this->vs.unifrom.update() == S_FALSE)
     {
         _hr = S_FALSE;
         V(_hr, "updating vertex shader unifrom", _trace, 3);
     }
-    if (this->cs.unifrom.update() == S_FALSE)
+
+   switch (this->cs.batch_local_size)
     {
-        _hr = S_FALSE;
-        V(_hr, "updating compute shader unifrom", _trace, 3);
+    case 1:
+        this->cs.unifrom_x1->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x1->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x1->data.is_visible));
+        _hr = this->cs.unifrom_x1->update();
+        break;
+    case 2:
+        this->cs.unifrom_x2->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x2->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x2->data.is_visible));
+        _hr = this->cs.unifrom_x2->update();
+        break;
+    case 4:
+        this->cs.unifrom_x4->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x4->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x4->data.is_visible));
+        _hr = this->cs.unifrom_x4->update();
+        break;
+    case 8:
+        this->cs.unifrom_x8->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x8->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x8->data.is_visible));
+        _hr = this->cs.unifrom_x8->update();
+        break;
+    case 16:
+        this->cs.unifrom_x16->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x16->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x16->data.is_visible));
+        _hr = this->cs.unifrom_x16->update();
+        break;
+    case 32:
+        this->cs.unifrom_x32->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x32->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x32->data.is_visible));
+        _hr = this->cs.unifrom_x32->update();
+        break;
+    case 64:
+        this->cs.unifrom_x64->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x64->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x64->data.is_visible));
+        _hr = this->cs.unifrom_x64->update();
+        break;
+    case 128:
+        this->cs.unifrom_x128->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x128->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x128->data.is_visible));
+        _hr = this->cs.unifrom_x128->update();
+        break;
     }
 
-    //logger.write(std::to_string(glm::distance(_camera_pos, centers)));
-
-    VkPipelineStageFlags _stage_flags = VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
-
+    if (_hr == S_FALSE)
+    {
+        V(_hr, "updating compute shader's unifrom", _trace, 3);
+    }
+    
     auto _c_cmd = this->cs.command_buffer.get_command_at(0);
 
     VkSubmitInfo _submit_info = {};
@@ -748,8 +1021,7 @@ HRESULT model::pre_render(
     _submit_info.pCommandBuffers = &_c_cmd;
     _submit_info.signalSemaphoreCount = 1;
     _submit_info.pSignalSemaphores = &this->cs.semaphore;
-    _submit_info.pWaitDstStageMask = &_stage_flags;
-
+   
     if (vkQueueSubmit(pGDevice->vk_compute_queue.queue, 1, &_submit_info, 0))
     {
         _hr = S_FALSE;
@@ -785,7 +1057,32 @@ ULONG model::release()
     if (this->get_is_released()) return 0;
 
     this->vs.unifrom.release();
-    this->cs.unifrom.release();
-    
+    switch (this->cs.batch_local_size)
+    {
+    case 1:  SAFE_RELEASE(this->cs.unifrom_x1); break;
+    case 2:  SAFE_RELEASE(this->cs.unifrom_x2); break;
+    case 4:  SAFE_RELEASE(this->cs.unifrom_x4); break;
+    case 8:  SAFE_RELEASE(this->cs.unifrom_x8); break;
+    case 16: SAFE_RELEASE(this->cs.unifrom_x16); break;
+    case 32: SAFE_RELEASE(this->cs.unifrom_x32); break;
+    case 64: SAFE_RELEASE(this->cs.unifrom_x64); break;
+    case 128:SAFE_RELEASE(this->cs.unifrom_x128); break;
+    }
+
+    this->_vertices_for_moc.clear();
+    this->_indices_for_moc.clear();
+
     return _super::release();
 }
+
+#pragma region Getters
+
+glm::vec3 model::get_position() const
+{
+    return glm::vec3(
+        this->_transform.position[0],
+        this->_transform.position[1],
+        this->_transform.position[2]);
+}
+
+#pragma endregion

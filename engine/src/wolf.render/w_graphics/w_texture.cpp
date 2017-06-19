@@ -389,9 +389,9 @@ namespace wolf
                     VK_FILTER_LINEAR,                                     // MagFilter
                     VK_FILTER_LINEAR,                                     // MinFilter
                     VK_SAMPLER_MIPMAP_MODE_NEAREST,                       // MipmapMode
-                    VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,                // AddressModeU
-                    VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,                // AddressModeV
-                    VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,                // AddressModeW
+                    VK_SAMPLER_ADDRESS_MODE_REPEAT,                // AddressModeU
+                    VK_SAMPLER_ADDRESS_MODE_REPEAT,                // AddressModeV
+                    VK_SAMPLER_ADDRESS_MODE_REPEAT,                // AddressModeW
                     0.0f,                                                 // MipLodBias
                     VK_FALSE,                                             // AnisotropyEnable
                     1.0f,                                                 // MaxAnisotropy
@@ -750,6 +750,14 @@ HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics
     _In_z_ std::wstring pPath,
     _Inout_ w_texture** pPointerToTexture)
 {
+    //check if already exists
+    auto _iter = _shared.find(pPath);
+    if (_iter != _shared.end())
+    {
+        *pPointerToTexture = _shared[pPath];
+        return S_OK;
+    }
+
     auto _texture = new (std::nothrow) w_texture();
     if (!_texture)
     {
@@ -770,13 +778,6 @@ HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics
         return S_FALSE;
     }
 
-    //check if already exists
-    auto _iter = _shared.find(pPath);
-    if (_iter != _shared.end())
-    {
-        logger.warning("Texture already exists. The new one will be replaced with old one.");
-        SAFE_RELEASE(_shared.at(pPath));
-    }
     _shared[pPath] = _texture;
     *pPointerToTexture = _texture;
 

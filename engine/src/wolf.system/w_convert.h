@@ -102,24 +102,6 @@ namespace wolf
                 return _convert.to_bytes(pStr);
             }
             
-			inline bool has_wstring_end_with(_In_z_ std::wstring const& pStr, _In_z_ std::wstring const& pEnding)
-			{
-				if (pStr.length() >= pEnding.length())
-				{
-					return (0 == pStr.compare(pStr.length() - pEnding.length(), pEnding.length(), pEnding));
-				}
-				return false;
-			}
-
-			inline bool has_string_end_with(_In_z_ std::string const& pStr, _In_z_ std::string const& pEnding)
-			{
-				if (pStr.length() >= pEnding.length())
-				{
-					return (0 == pStr.compare(pStr.length() - pEnding.length(), pEnding.length(), pEnding));
-				}
-				return false;
-			}
-
 			inline int to_hex(const std::string& pStr)
 			{
 				std::stringstream _ss;
@@ -166,14 +148,32 @@ namespace wolf
 				return wstring_to_string(wstr);
 			}
 
-            inline bool string_start_with(_In_z_ const std::string& pString, _In_z_ const std::string pStartWith)
+            inline bool has_string_start_with(_In_z_ const std::string& pString, _In_z_ const std::string pStartWith)
             {
-                return !pString.compare(0, pStartWith.size(), pStartWith);
+                return strncmp(pStartWith.c_str(), pString.c_str(), pStartWith.size()) == 0;
             }
 
-            inline bool wstring_start_with(_In_z_ const std::wstring& pString, _In_z_ const std::wstring pStartWith)
+            inline bool has_wstring_start_with(_In_z_ const std::wstring& pString, _In_z_ const std::wstring pStartWith)
             {
-                return !pString.compare(0, pStartWith.size(), pStartWith);
+                return wcsncmp(pStartWith.c_str(), pString.c_str(), pStartWith.size()) == 0;
+            }
+            
+            inline bool has_string_end_with(_In_z_ std::string const& pStr, _In_z_ std::string const& pEnding)
+            {
+                if (pStr.length() >= pEnding.length())
+                {
+                    return (0 == pStr.compare(pStr.length() - pEnding.length(), pEnding.length(), pEnding));
+                }
+                return false;
+            }
+
+            inline bool has_wstring_end_with(_In_z_ std::wstring const& pStr, _In_z_ std::wstring const& pEnding)
+            {
+                if (pStr.length() >= pEnding.length())
+                {
+                    return (0 == pStr.compare(pStr.length() - pEnding.length(), pEnding.length(), pEnding));
+                }
+                return false;
             }
 
 #pragma region sub string and convert functions

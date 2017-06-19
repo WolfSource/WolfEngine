@@ -46,7 +46,7 @@ namespace wolf
                 this->_host_visible = pHostVisible;
 
                 //store the shared graphics device pointer
-                auto _buffer_size = static_cast<UINT32>(sizeof(T));
+                auto _buffer_size = static_cast<uint32_t>(sizeof(T));
                 
                 this->_gDevice = pGDevice;
                 

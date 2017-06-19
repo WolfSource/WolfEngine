@@ -555,8 +555,20 @@ void c_parser::_get_library_images(_In_ rapidxml::xml_node<>* pXNode)
                             Wolf will be load all images from one folder from /~/content/images/
                             make sure do not use different images with same name
                          */
-                        sLibraryImages[_image_id] = wolf::system::io::get_base_file_name(_child_1->value()) + 
+                      auto _path = wolf::system::io::get_base_file_name(_child_1->value()) +
                             wolf::system::io::get_file_extention(_child_1->value());
+
+                      //remove _number added by open collada
+                      size_t i;
+                      for ( i = 0; i < _path.size(); i++)
+                      {
+                          if (_path[i] >= '0' && _path[i] <= '9') continue;
+                          break;
+                      }
+
+                      _path.replace(_path.begin(), _path.begin() + i + 1, "");
+
+                      sLibraryImages[_image_id] = _path;
                     }
                 }
             }
@@ -1346,7 +1358,7 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
                     [_design_name, _models, &index_lods](_In_ size_t pIter)
                 {
                     auto __name = _models[pIter]->get_name();
-                    if (wolf::system::convert::string_start_with(__name, _design_name))
+                    if (wolf::system::convert::has_string_start_with(__name, _design_name))
                     {
                         index_lods.push_back(pIter);
                         return true;

@@ -28,7 +28,7 @@ w_first_person_camera::~w_first_person_camera()
 //    return vector;
 //}
 
-void w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTime, 
+bool w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTime, 
     _In_ const w_point_t& pScreenSize)
 {
     const int _W_KEY_CODE = 87;
@@ -38,7 +38,7 @@ void w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
     const int _Q_KEY_CODE = 81;
     const int _Z_KEY_CODE = 90;
 
-    bool _update_view = false;
+    bool _updated = false;
     glm::vec3 _move_vector;
 
     auto _result_of_keys = inputs_manager.is_keys_pressed({ _W_KEY_CODE , _S_KEY_CODE , _A_KEY_CODE , _D_KEY_CODE, _Q_KEY_CODE, _Z_KEY_CODE });
@@ -81,12 +81,12 @@ void w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
             _move_vector.y += _move_speed_time;
         }
 
-        _update_view = true;
+        _updated = true;
     }
 
     if (inputs_manager.mouse.left_button_pressed)
     {
-        _update_view = true;
+        _updated = true;
 
         if (inputs_manager.mouse.pos_x - inputs_manager.mouse.last_pos_x > 1)
         {
@@ -106,7 +106,7 @@ void w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
         }
     }
 
-    if (_update_view)
+    if (_updated)
     {
         auto _camera_rotation = 
             glm::rotate(this->_rotation[0], glm::vec3(0.0f, 1.0f, 0.0f)) *
@@ -128,4 +128,6 @@ void w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
         update_view();
         update_frustum();
     }
+
+    return _updated;
 }
