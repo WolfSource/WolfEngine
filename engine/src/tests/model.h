@@ -98,7 +98,6 @@ private:
     wolf::graphics::w_mesh*                                 _mesh;
     wolf::graphics::w_shader*                               _shader;
     wolf::graphics::w_texture*                              _texture;
-
     size_t                                                  _number_of_tris;
     //vertex for masked occlusion culling
     std::vector<clipspace_vertex>                           _vertices_for_moc;
@@ -109,12 +108,6 @@ private:
     std::vector<glm::mat4>                                  _world_view_projections;
     std::vector<float>                                      _visibilities;
 
-    //struct masked_occulusion_culling_data
-    //{
-    //    clipspace_vertex*   vertices = nullptr;
-    //    uint32_t*           indices = nullptr;
-    //    uint32_t            vertices_count = 0;
-    //} _occulusion_culling_data;
 
     struct lod
     {
@@ -131,7 +124,6 @@ private:
     {
         glm::vec3   pos;
         glm::vec3   rot;
-        float       scale;
     };
 
     struct vertex_unifrom

@@ -134,8 +134,8 @@ void scene::load()
     _viewport_scissor.extent.width = _screen_size.x;
     _viewport_scissor.extent.height = _screen_size.y;
 
-    //auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
-    //_depth_attachment.format = _output_window->vk_depth_buffer_format;
+    auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
+    _depth_attachment.format = _output_window->vk_depth_buffer_format;
 
     //create draw render pass
     auto _hr = this->_draw_render_pass.load(
@@ -144,7 +144,7 @@ void scene::load()
         _viewport_scissor,
         {
             w_graphics_device::w_render_pass_attachments::color_attachment_description,
-            //_depth_attachment,
+            _depth_attachment,
         });
 
     if (_hr == S_FALSE)
@@ -155,7 +155,7 @@ void scene::load()
         return;
     }
 
-    std::vector<VkAttachmentDescription> _attachments(1);
+    std::vector<VkAttachmentDescription> _attachments(2);
     // Color attachment
     _attachments[0].format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
     _attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
@@ -167,23 +167,23 @@ void scene::load()
     _attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     _attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-    // Depth attachment
-    //_attachments[1].format = _output_window->vk_depth_buffer_format;
-    //_attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
-    //_attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    //_attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    //_attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    //_attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    //_attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    //_attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    //Depth attachment
+    _attachments[1].format = _output_window->vk_depth_buffer_format;
+    _attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
+    _attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    _attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    _attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    _attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    _attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    _attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
     VkAttachmentReference colorReference = {};
     colorReference.attachment = 0;
     colorReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-    //VkAttachmentReference depthReference = {};
-    //depthReference.attachment = 1;
-    //depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    VkAttachmentReference depthReference = {};
+    depthReference.attachment = 1;
+    depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
     VkSubpassDescription subpassDescription = {};
     subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -250,7 +250,7 @@ void scene::load()
     _hr = this->_draw_frame_buffers.load(_gDevice,
         _render_pass_handle,
         _output_window->vk_swap_chain_image_views,
-        nullptr,//&_output_window->vk_depth_buffer_image_view,
+        &_output_window->vk_depth_buffer_image_view,
         _screen_size,
         1);
     if (_hr == S_FALSE)
@@ -265,7 +265,7 @@ void scene::load()
     _hr = this->_gui_frame_buffers.load(_gDevice,
         _gui_render_pass_handle,
         _output_window->vk_swap_chain_image_views,
-        nullptr,//&_output_window->vk_depth_buffer_image_view,
+        &_output_window->vk_depth_buffer_image_view,
         _screen_size,
         1);
     if (_hr == S_FALSE)
@@ -275,14 +275,13 @@ void scene::load()
         exit(1);
     }
 
-
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");//A_120_Water-Treatment_v1_16_4.wscene");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");// A_120_Water - Treatment_v1_16_4.DAE");
     if (_scene)
     {
         //just for converting
         //std::vector<w_cpipeline_scene> _scenes = { *_scene };
-        //w_content_manager::save_wolf_scenes_to_file(_scenes, content_path + L"models/A_120_Water-Treatment_v1_16_4.wscene");
+        //w_content_manager::save_wolf_scenes_to_file(_scenes, content_path + L"models/test.wscene");
         //_scenes.clear();
 
         //get all models
@@ -350,8 +349,6 @@ void scene::load()
         exit(1);
     }
 
-    _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
-
     //load image texture
     w_texture* _gui_images = new w_texture();
     _gui_images->load(_gDevice);
@@ -365,13 +362,7 @@ void scene::load()
         release();
         exit(1);
     }
-
-    sMOC->ClearBuffer();
 }
-
-const int _obj_count = 1;
-
-static glm::vec3 centers[1];
 
 HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
@@ -434,6 +425,17 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
     //if camera updated, then update command buffers based on result of masked occlusion culling
     auto _camera_just_updated = this->_camera.update(pGameTime, this->_screen_size);
+    
+    //order by distance to camera
+    auto _cam_pos = this->_camera.get_translate();
+    std::sort(sModelsToBeRender.begin(), sModelsToBeRender.end(), [&_cam_pos](_In_ model* a, _In_ model* b)
+    {
+        auto _a_distance = glm::distance(_cam_pos, a->get_position());
+        auto _b_distance = glm::distance(_cam_pos, b->get_position());
+
+        return _a_distance < _b_distance;
+    });   
+    
     if(sForceUpdate || _camera_just_updated)
     {
         sForceUpdate = false;
@@ -462,23 +464,13 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
             }
         }
 
-        //order by distance to camera
-        auto _cam_pos = this->_camera.get_translate();
-        std::sort(sModelsToBeRender.begin(), sModelsToBeRender.end(), [&_cam_pos](_In_ model* a, _In_ model* b)
-        {
-            auto _a_distance = glm::distance(_cam_pos, a->get_position());
-            auto _b_distance = glm::distance(_cam_pos, b->get_position());
-
-            return _a_distance < _b_distance;
-        });
-
         _build_draw_command_buffer(_gDevice);
     }
 
     w_game::update(pGameTime);
 }
 
-static bool show_gui = true;
+static bool show_gui = false;
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
     const std::string _trace = this->name + "::render";
@@ -570,6 +562,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         _model->post_render(_gDevice);
     }
 
+  
     sFPS = pGameTime.get_frames_per_second();
     return S_OK;
 }

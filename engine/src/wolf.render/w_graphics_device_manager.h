@@ -100,7 +100,6 @@ namespace wolf
         struct w_viewport_scissor;
         struct w_buffer;
         class  w_pipeline;
-        class  w_command_buffers;
         
         struct w_image_view
         {
@@ -180,10 +179,7 @@ namespace wolf
 			bool									v_sync = true;
 			w_color                                 clear_color = w_color::from_hex(w_color::CORNFLOWER_BLUE);
 			int										force_to_clear_color_times;
-            
-            
-            std::map<std::string, w_command_buffers*>       command_buffers;
-            
+                        
 #if defined(__DX12__) || defined(__DX11__)		
 			DXGI_FORMAT								dx_swap_chain_selected_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
 			ComPtr<IDXGISwapChain3>					dx_swap_chain;
@@ -251,9 +247,9 @@ namespace wolf
 			W_EXP w_output_presentation_window main_window();
             
             //Create global command buffer
-            W_EXP HRESULT store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,
-                                                          _In_ w_command_buffers* pCommandBuffers,
-                                                          _In_ size_t pOutputWindowIndex = 0);
+            //W_EXP HRESULT store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,
+            //                                              _In_ w_command_buffers* pCommandBuffers,
+            //                                              _In_ size_t pOutputWindowIndex = 0);
             
             //release all resources
             ULONG release();

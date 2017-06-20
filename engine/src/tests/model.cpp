@@ -13,7 +13,7 @@ model::model() :
     //define vertex binding attributes
     this->_vertex_binding_attributes.declaration = w_vertex_declaration::USER_DEFINED;
     this->_vertex_binding_attributes.binding_attributes[0] = { Vec3, Vec2 };
-    this->_vertex_binding_attributes.binding_attributes[1] = { Vec3, Vec3, Float };
+    this->_vertex_binding_attributes.binding_attributes[1] = { Vec3, Vec3 };
 }
 
 model::~model()
@@ -86,7 +86,7 @@ HRESULT model::load(
     //append load mesh data to big vertices and indices
     std::vector<w_cpipeline_model*> _lods;
     pCPModel->get_lods(_lods);
-
+    
     for (auto& _lod_mesh_data : _lods)
     {
         _model_meshes.clear();
@@ -205,8 +205,8 @@ void model::_store_to_batch(
             }
 
             //uv
-            pBatchVertices.push_back(_uv[1]);
-            pBatchVertices.push_back(1 - _uv[0]);
+            pBatchVertices.push_back(_uv[0]);
+            pBatchVertices.push_back(1 - _uv[1]);
 
             pBaseVertex++;
         }
@@ -491,10 +491,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     _vertex_instances_data[0].rot[0] = this->_transform.rotation[0];
     _vertex_instances_data[0].rot[1] = this->_transform.rotation[1];
     _vertex_instances_data[0].rot[2] = this->_transform.rotation[2];
-
-    //TODO: remove it
-    _vertex_instances_data[0].scale = 1.0f;
-    
+        
     //others are instances
     _size = this->_instances_transforms.size();
 
@@ -509,9 +506,6 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
         _vertex_instances_data[_index].rot[0] = this->_instances_transforms[i].rotation[0];
         _vertex_instances_data[_index].rot[1] = this->_instances_transforms[i].rotation[1];
         _vertex_instances_data[_index].rot[2] = this->_instances_transforms[i].rotation[2];
-
-        //TODO: remove it
-        _vertex_instances_data[_index].scale = 1.0f;
     }
     //root and instances
     this->_world_view_projections.resize(_size + 1);
@@ -789,7 +783,7 @@ void model::pre_update(
         this->_transform.position[0], 
         this->_transform.position[1], 
         this->_transform.position[2]);
-    glm::vec3 _center_pos = ( (_pos + this->_bounding_box_min) + (_pos + this->_bounding_box_max) ) / glm::vec3(2);
+    glm::vec3 _center_pos = _pos;// ((_pos + this->_bounding_box_min) + (_pos + this->_bounding_box_max)) / glm::vec3(2);
 
     this->_world_view_projections[0] = _view_projection *
         glm::translate(_center_pos) *
@@ -797,15 +791,11 @@ void model::pre_update(
             this->_transform.rotation[0],
             this->_transform.rotation[1],
             this->_transform.rotation[2]) *
-        glm::scale(glm::vec3(
-            this->_transform.scale[0],
-            this->_transform.scale[1],
-            this->_transform.scale[2])) *
         glm::mat4(
             1, 0, 0, 0,
-            0, 0, 1, 0,
-            0, 1, 0, 0,
-            0, 0, 0, 1);//swap -y and -z
+            0, 0, -1, 0,
+            0, -1, 0, 0,
+            0, 0, 0, 1);//swap -y and -z*/
             
     //render root model to Masked Occlusion culling
     (*sMOC)->RenderTriangles(
@@ -821,7 +811,7 @@ void model::pre_update(
             _ins.position[0],
             _ins.position[1],
             _ins.position[2]);
-        _center_pos = ((_pos + this->_bounding_box_min) + (_pos + this->_bounding_box_max)) / glm::vec3(2);
+        _center_pos = _pos;// +this->_bounding_box_min) + (_pos + this->_bounding_box_max)) / glm::vec3(2);
 
         this->_world_view_projections[_index] = _view_projection *
             glm::translate(_center_pos) *
@@ -829,21 +819,22 @@ void model::pre_update(
                 _ins.rotation[0],
                 _ins.rotation[1],
                 _ins.rotation[2]) *
-            glm::scale(glm::vec3(
-                _ins.scale,
-                _ins.scale,
-                _ins.scale)) *
             glm::mat4(
                 1, 0, 0, 0,
-                0, 0, 1, 0,
-                0, 1, 0, 0,
+                0, 0, -1, 0,
+                0, -1, 0, 0,
                 0, 0, 0, 1);//swap -y and -z
 
-        (*sMOC)->RenderTriangles(
+        auto _RE = (*sMOC)->RenderTriangles(
             (float*)&this->_vertices_for_moc[0],
             this->_indices_for_moc.data(),
             this->_number_of_tris,
             (float*)&this->_world_view_projections[_index++][0]);
+
+        if (_RE == MaskedOcclusionCulling::VISIBLE)
+        {
+            logger.write("a");
+        }
     }
 }
 

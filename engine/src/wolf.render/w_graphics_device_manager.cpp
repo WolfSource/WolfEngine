@@ -46,13 +46,13 @@ VkAttachmentReference w_graphics_device::w_render_pass_attachments::color_attach
 VkAttachmentDescription	w_graphics_device::w_render_pass_attachments::depth_attachment_description =
 {
 	0,								        // Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
-	VkFormat::VK_FORMAT_D16_UNORM,          // Format of an image used for the attachment.
+	VK_FORMAT_D32_SFLOAT_S8_UINT,           // Format of an image used for the attachment.
 	VK_SAMPLE_COUNT_1_BIT,                  // Number of samples of the image; The value greater than 1 means multisampling.
 	VK_ATTACHMENT_LOAD_OP_CLEAR,            // Specifies what to do with the images contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
-	VK_ATTACHMENT_STORE_OP_DONT_CARE,       // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
-	VK_ATTACHMENT_LOAD_OP_DONT_CARE,        // The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
-	VK_ATTACHMENT_STORE_OP_DONT_CARE,       // The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
-	VK_IMAGE_LAYOUT_UNDEFINED,              // The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
+    VK_ATTACHMENT_STORE_OP_STORE,           // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
+    VK_ATTACHMENT_LOAD_OP_DONT_CARE,        // The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
+    VK_ATTACHMENT_STORE_OP_DONT_CARE,       // The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
+    VK_IMAGE_LAYOUT_UNDEFINED,              // The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL         // The layout the driver will automatically transition the given image into at the end of a render pass.
 };
 
@@ -64,22 +64,13 @@ VkAttachmentReference w_graphics_device::w_render_pass_attachments::depth_attach
 
 std::vector<VkSubpassDependency> w_graphics_device::defaults::vk_default_subpass_dependencies =
 {
-    //{
-    //    VK_SUBPASS_EXTERNAL,                            // uint32_t                       srcSubpass
-    //    0,                                              // uint32_t                       dstSubpass
-    //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           srcStageMask
-    //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           dstStageMask
-    //    0,                      // VkAccessFlags                  srcAccessMask
-    //    VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  dstAccessMask
-    //    0                     // VkDependencyFlags              dependencyFlags
-    //}
     {
         VK_SUBPASS_EXTERNAL,                            // uint32_t                       srcSubpass
         0,                                              // uint32_t                       dstSubpass
         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,           // VkPipelineStageFlags           srcStageMask
         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           dstStageMask
         VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags                  srcAccessMask
-        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  dstAccessMask
+        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  dstAccessMask
         VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags              dependencyFlags
     },
     {
@@ -87,7 +78,7 @@ std::vector<VkSubpassDependency> w_graphics_device::defaults::vk_default_subpass
         VK_SUBPASS_EXTERNAL,                            // uint32_t                       dstSubpass
         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           srcStageMask
         VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,           // VkPipelineStageFlags           dstStageMask
-        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  srcAccessMask
+        VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  srcAccessMask
         VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags                  dstAccessMask
         VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags              dependencyFlags
     }
@@ -131,9 +122,9 @@ VkPipelineRasterizationStateCreateInfo w_graphics_device::defaults::vk_default_p
         0,                                                              // flags
         VK_FALSE,                                                       // depthClampEnable
         VK_FALSE,                                                       // rasterizerDiscardEnable
-        VK_POLYGON_MODE_FILL,                                           // polygonMode
-        VK_CULL_MODE_FRONT_BIT,                                         // cullMode
-        VK_FRONT_FACE_CLOCKWISE,                                        // frontFace
+        VK_POLYGON_MODE_LINE,                                           // polygonMode
+        VK_CULL_MODE_BACK_BIT,                                          // cullMode
+        VK_FRONT_FACE_COUNTER_CLOCKWISE,                                // frontFace
         VK_FALSE,                                                       // depthBiasEnable
         0.0f,                                                           // depthBiasConstantFactor
         0.0f,                                                           // depthBiasClamp
@@ -204,23 +195,23 @@ w_output_presentation_window w_graphics_device::main_window()
 	return w_output_presentation_window();
 }
 
-W_EXP HRESULT w_graphics_device::store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,
-                                                                 _In_ w_command_buffers* pCommandBuffers,
-                                                                 _In_ size_t pOutputWindowIndex)
-{
-    auto _output_window = &this->output_presentation_windows.at(pOutputWindowIndex);
-    
-    //store command buffers
-    auto _iter = _output_window->command_buffers.find(pCommandsBuffersName);
-    if (_iter != _output_window->command_buffers.end())
-    {
-        SAFE_RELEASE(_iter->second);
-    }
-    
-    _output_window->command_buffers[pCommandsBuffersName] = pCommandBuffers;
-         
-    return S_OK;
-}
+//W_EXP HRESULT w_graphics_device::store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,
+//                                                                 _In_ w_command_buffers* pCommandBuffers,
+//                                                                 _In_ size_t pOutputWindowIndex)
+//{
+//    auto _output_window = &this->output_presentation_windows.at(pOutputWindowIndex);
+//    
+//    //store command buffers
+//    auto _iter = _output_window->command_buffers.find(pCommandsBuffersName);
+//    if (_iter != _output_window->command_buffers.end())
+//    {
+//        SAFE_RELEASE(_iter->second);
+//    }
+//    
+//    _output_window->command_buffers[pCommandsBuffersName] = pCommandBuffers;
+//         
+//    return S_OK;
+//}
 
 ULONG w_graphics_device::release()
 {
@@ -280,13 +271,7 @@ ULONG w_graphics_device::release()
 	for (size_t i = 0; i < this->output_presentation_windows.size(); ++i)
 	{
 		auto _output_window = &(this->output_presentation_windows.at(i));
-
-        //release all commands buffers
-        for(auto _iter : _output_window->command_buffers)
-        {
-            SAFE_RELEASE(_iter.second);
-        }
-        
+       
 		//release the surface
 		vkDestroySurfaceKHR(w_graphics_device::vk_instance,
 			_output_window->vk_presentation_surface,
@@ -984,27 +969,22 @@ namespace wolf
                 }
                 if (this->_config.debug_gpu)
                 {
-
-#ifdef __ANDROID
-                    int32_t validationLayerCount = 6;
                     const char* _validation_layer_names[] =
                     {
+                        "VK_LAYER_LUNARG_core_validation",
+#ifdef __ANDROID
                         "VK_LAYER_GOOGLE_threading",
                         "VK_LAYER_LUNARG_parameter_validation",
+                        "VK_LAYER_LUNARG_device_limits,"
                         "VK_LAYER_LUNARG_object_tracker",
+                        "VK_LAYER_LUNARG_image",
                         "VK_LAYER_LUNARG_core_validation",
                         "VK_LAYER_LUNARG_swapchain",
                         "VK_LAYER_GOOGLE_unique_objects"
-                };
-
-#else
-                    int32_t _validation_layer_count = 1;
-                    const char* _validation_layer_names[] =
-                    {
-                        "VK_LAYER_LUNARG_standard_validation"
-                    };
 #endif
-                    _instance_create_info.enabledLayerCount = _validation_layer_count;
+                    };
+
+                    _instance_create_info.enabledLayerCount = (uint32_t)W_ARRAY_SIZE(_validation_layer_names);
                     _instance_create_info.ppEnabledLayerNames = _validation_layer_names;
                 }
 
@@ -1587,7 +1567,7 @@ namespace wolf
 							create_or_resize_swap_chain(_gDevice, j);
 							_create_depth_stencil_buffer(_gDevice, j);
 							_create_synchronization(_gDevice, j);
-							_record_command_buffers(_gDevice, j);
+							//_record_command_buffers(_gDevice, j);
 						}
 					}
 
@@ -2488,7 +2468,7 @@ namespace wolf
 				VkImageCreateInfo _depth_stencil_image_create_info = {};
 				const VkFormat _depth_format = w_graphics_device_manager::find_supported_format(
                     pGDevice,
-                    { VK_FORMAT_D16_UNORM, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+                    { VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
                     VK_IMAGE_TILING_OPTIMAL,
                     VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
                 if (_depth_format == VkFormat::VK_FORMAT_UNDEFINED)
@@ -2683,177 +2663,177 @@ namespace wolf
 #endif
 			}
             
-			HRESULT _record_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                                         _In_ const size_t pOutputWindowIndex)
-			{
-                
-                auto _output_window = &(pGDevice->output_presentation_windows.at(pOutputWindowIndex));
-                const char* _command_buffers_name = "clear_color_screen";
-                
-#ifdef __DX12__ 
-				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
-				auto _device_id = pGDevice->device_id;
-
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputWindowIndex));
-
-				//create command allocator pool
-				auto _hr = pGDevice->dx_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
-					IID_PPV_ARGS(&_output_presentation_window->dx_command_allocator_pool));
-				if (FAILED(_hr))
-				{
-					logger.error(L"creating directx command allocator pook for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) + 
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//Describe and create the command queue.
-				D3D12_COMMAND_QUEUE_DESC _command_queue_desc = {};
-				_command_queue_desc.Flags = D3D12_COMMAND_QUEUE_FLAGS::D3D12_COMMAND_QUEUE_FLAG_NONE;
-				_command_queue_desc.Type = D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT;
-				_command_queue_desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY::D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
-				_command_queue_desc.NodeMask = 0;
-
-				_hr = pGDevice->dx_device->CreateCommandQueue(&_command_queue_desc, IID_PPV_ARGS(&_output_presentation_window->dx_command_queue));
-				if (FAILED(_hr))
-				{
-					logger.error(L"creating directx command queue for graphics device : " + _device_name + L" ID:" + std::to_wstring(_device_id) +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//create basic command list
-				_hr = pGDevice->dx_device->CreateCommandList(0,
-					D3D12_COMMAND_LIST_TYPE_DIRECT,
-					_output_presentation_window->dx_command_allocator_pool.Get(),
-					nullptr,
-					IID_PPV_ARGS(&_output_presentation_window->dx_command_list));
-				if (FAILED(_hr))
-				{
-					logger.error(L"creating command list for graphics device : " + _device_name + L" ID:" + std::to_wstring(_device_id) +
-						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//close command list for now
-				_output_presentation_window->dx_command_list->Close();
-
-#elif defined(__VULKAN__) 
-
-				auto _device_name = pGDevice->device_name;
-				auto _device_id = pGDevice->device_id;
-                
-                auto _clear_screen_command_buffer = new w_command_buffers();
-                _clear_screen_command_buffer->load(pGDevice, _output_window->vk_swap_chain_image_views.size());
-                auto _hr = pGDevice->store_to_global_command_buffers(_command_buffers_name,
-                                                                     _clear_screen_command_buffer,
-                                                                     pOutputWindowIndex);
-                if (_hr)
-                {
-                    //we already output error in create_command_buffers
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
-                
-				VkImageSubresourceRange _sub_resource_range = {};
-				_sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-				_sub_resource_range.baseMipLevel = 0;
-				_sub_resource_range.levelCount = 1;
-				_sub_resource_range.baseArrayLayer = 0;
-				_sub_resource_range.layerCount = 1;
-
-				VkClearColorValue _vk_clear_color =
-				{
-					static_cast<float>(_output_window->clear_color.r / 255.0f),
-					static_cast<float>(_output_window->clear_color.g / 255.0f),
-					static_cast<float>(_output_window->clear_color.b / 255.0f),
-					static_cast<float>(_output_window->clear_color.a / 255.0f)
-				};
-
-				//record clear screen command buffer for every swap chain image
-				for (uint32_t i = 0; i < _output_window->command_buffers.at(_command_buffers_name)->get_commands_size(); ++i)
-				{
-					// Change layout of image to be optimal for clearing
-					// Note: previous layout doesn't matter, which will likely cause contents to be discarded
-					VkImageMemoryBarrier _present_to_clear_barrier = {};
-					_present_to_clear_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-					_present_to_clear_barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-					_present_to_clear_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-					_present_to_clear_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-					_present_to_clear_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-					_present_to_clear_barrier.srcQueueFamilyIndex = pGDevice->vk_present_queue.index;
-					_present_to_clear_barrier.dstQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
-					_present_to_clear_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
-					_present_to_clear_barrier.subresourceRange = _sub_resource_range;
-
-					//change layout of image to be optimal for presenting
-					VkImageMemoryBarrier _clear_to_present_barrier = {};
-					_clear_to_present_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-					_clear_to_present_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-					_clear_to_present_barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-					_clear_to_present_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-					_clear_to_present_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-					_clear_to_present_barrier.srcQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
-					_clear_to_present_barrier.dstQueueFamilyIndex = pGDevice->vk_present_queue.index;
-					_clear_to_present_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
-					_clear_to_present_barrier.subresourceRange = _sub_resource_range;
-                    
-                    
-					//record command buffer
-                    auto _cmd = _clear_screen_command_buffer->get_command_at(i);
-                    
-                    auto _hr = _clear_screen_command_buffer->begin(i);
-					if (_hr)
-					{
-						logger.error("error on beginning command buffer of graphics device: " + _device_name +
-							" ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputWindowIndex));
-						release();
-						std::exit(EXIT_FAILURE);
-					}
-
-					vkCmdPipelineBarrier(_cmd,
-						VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
-						0,
-						0,
-						nullptr,
-						0,
-						nullptr,
-						1,
-						&_present_to_clear_barrier);
-
-					vkCmdClearColorImage(_cmd,
-						_output_window->vk_swap_chain_image_views[i].image,
-						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-						&_vk_clear_color,
-						1,
-						&_sub_resource_range);
-
-					vkCmdPipelineBarrier(_cmd,
-						VK_PIPELINE_STAGE_TRANSFER_BIT,
-						VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-						0,
-						0,
-						nullptr,
-						0,
-						nullptr,
-						1,
-						&_clear_to_present_barrier);
-
-                    _hr = _clear_screen_command_buffer->end(i);
-                    if (_hr)
-                    {
-                        logger.error("error on ending command buffer of graphics device: " +
-                                     _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputWindowIndex));
-                        release();
-                        std::exit(EXIT_FAILURE);
-                    }
-				}
-                
-#endif
-                return S_OK;
-			}
+//			HRESULT _record_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+//                                         _In_ const size_t pOutputWindowIndex)
+//			{
+//                
+//                auto _output_window = &(pGDevice->output_presentation_windows.at(pOutputWindowIndex));
+//                const char* _command_buffers_name = "clear_color_screen";
+//                
+//#ifdef __DX12__ 
+//				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
+//				auto _device_id = pGDevice->device_id;
+//
+//				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputWindowIndex));
+//
+//				//create command allocator pool
+//				auto _hr = pGDevice->dx_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
+//					IID_PPV_ARGS(&_output_presentation_window->dx_command_allocator_pool));
+//				if (FAILED(_hr))
+//				{
+//					logger.error(L"creating directx command allocator pook for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) + 
+//						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+//					release();
+//					std::exit(EXIT_FAILURE);
+//				}
+//
+//				//Describe and create the command queue.
+//				D3D12_COMMAND_QUEUE_DESC _command_queue_desc = {};
+//				_command_queue_desc.Flags = D3D12_COMMAND_QUEUE_FLAGS::D3D12_COMMAND_QUEUE_FLAG_NONE;
+//				_command_queue_desc.Type = D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT;
+//				_command_queue_desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY::D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
+//				_command_queue_desc.NodeMask = 0;
+//
+//				_hr = pGDevice->dx_device->CreateCommandQueue(&_command_queue_desc, IID_PPV_ARGS(&_output_presentation_window->dx_command_queue));
+//				if (FAILED(_hr))
+//				{
+//					logger.error(L"creating directx command queue for graphics device : " + _device_name + L" ID:" + std::to_wstring(_device_id) +
+//						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+//					release();
+//					std::exit(EXIT_FAILURE);
+//				}
+//
+//				//create basic command list
+//				_hr = pGDevice->dx_device->CreateCommandList(0,
+//					D3D12_COMMAND_LIST_TYPE_DIRECT,
+//					_output_presentation_window->dx_command_allocator_pool.Get(),
+//					nullptr,
+//					IID_PPV_ARGS(&_output_presentation_window->dx_command_list));
+//				if (FAILED(_hr))
+//				{
+//					logger.error(L"creating command list for graphics device : " + _device_name + L" ID:" + std::to_wstring(_device_id) +
+//						L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+//					release();
+//					std::exit(EXIT_FAILURE);
+//				}
+//
+//				//close command list for now
+//				_output_presentation_window->dx_command_list->Close();
+//
+//#elif defined(__VULKAN__) 
+//
+//				auto _device_name = pGDevice->device_name;
+//				auto _device_id = pGDevice->device_id;
+//                
+//                auto _clear_screen_command_buffer = new w_command_buffers();
+//                _clear_screen_command_buffer->load(pGDevice, _output_window->vk_swap_chain_image_views.size());
+//                auto _hr = pGDevice->store_to_global_command_buffers(_command_buffers_name,
+//                                                                     _clear_screen_command_buffer,
+//                                                                     pOutputWindowIndex);
+//                if (_hr)
+//                {
+//                    //we already output error in create_command_buffers
+//                    release();
+//                    std::exit(EXIT_FAILURE);
+//                }
+//                
+//				VkImageSubresourceRange _sub_resource_range = {};
+//				_sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//				_sub_resource_range.baseMipLevel = 0;
+//				_sub_resource_range.levelCount = 1;
+//				_sub_resource_range.baseArrayLayer = 0;
+//				_sub_resource_range.layerCount = 1;
+//
+//				VkClearColorValue _vk_clear_color =
+//				{
+//					static_cast<float>(_output_window->clear_color.r / 255.0f),
+//					static_cast<float>(_output_window->clear_color.g / 255.0f),
+//					static_cast<float>(_output_window->clear_color.b / 255.0f),
+//					static_cast<float>(_output_window->clear_color.a / 255.0f)
+//				};
+//
+//				//record clear screen command buffer for every swap chain image
+//				for (uint32_t i = 0; i < _output_window->command_buffers.at(_command_buffers_name)->get_commands_size(); ++i)
+//				{
+//					// Change layout of image to be optimal for clearing
+//					// Note: previous layout doesn't matter, which will likely cause contents to be discarded
+//					VkImageMemoryBarrier _present_to_clear_barrier = {};
+//					_present_to_clear_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//					_present_to_clear_barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+//					_present_to_clear_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+//					_present_to_clear_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+//					_present_to_clear_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+//					_present_to_clear_barrier.srcQueueFamilyIndex = pGDevice->vk_present_queue.index;
+//					_present_to_clear_barrier.dstQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
+//					_present_to_clear_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
+//					_present_to_clear_barrier.subresourceRange = _sub_resource_range;
+//
+//					//change layout of image to be optimal for presenting
+//					VkImageMemoryBarrier _clear_to_present_barrier = {};
+//					_clear_to_present_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//					_clear_to_present_barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+//					_clear_to_present_barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+//					_clear_to_present_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+//					_clear_to_present_barrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+//					_clear_to_present_barrier.srcQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
+//					_clear_to_present_barrier.dstQueueFamilyIndex = pGDevice->vk_present_queue.index;
+//					_clear_to_present_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
+//					_clear_to_present_barrier.subresourceRange = _sub_resource_range;
+//                    
+//                    
+//					//record command buffer
+//                    auto _cmd = _clear_screen_command_buffer->get_command_at(i);
+//                    
+//                    auto _hr = _clear_screen_command_buffer->begin(i);
+//					if (_hr)
+//					{
+//						logger.error("error on beginning command buffer of graphics device: " + _device_name +
+//							" ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputWindowIndex));
+//						release();
+//						std::exit(EXIT_FAILURE);
+//					}
+//
+//					vkCmdPipelineBarrier(_cmd,
+//						VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+//						0,
+//						0,
+//						nullptr,
+//						0,
+//						nullptr,
+//						1,
+//						&_present_to_clear_barrier);
+//
+//					vkCmdClearColorImage(_cmd,
+//						_output_window->vk_swap_chain_image_views[i].image,
+//						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+//						&_vk_clear_color,
+//						1,
+//						&_sub_resource_range);
+//
+//					vkCmdPipelineBarrier(_cmd,
+//						VK_PIPELINE_STAGE_TRANSFER_BIT,
+//						VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+//						0,
+//						0,
+//						nullptr,
+//						0,
+//						nullptr,
+//						1,
+//						&_clear_to_present_barrier);
+//
+//                    _hr = _clear_screen_command_buffer->end(i);
+//                    if (_hr)
+//                    {
+//                        logger.error("error on ending command buffer of graphics device: " +
+//                                     _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputWindowIndex));
+//                        release();
+//                        std::exit(EXIT_FAILURE);
+//                    }
+//				}
+//                
+//#endif
+//                return S_OK;
+//			}
             
 #ifdef __UWP
 			// This method determines the rotation between the display device's native Orientation and the current display orientation.

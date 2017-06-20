@@ -388,18 +388,18 @@ namespace wolf
                     0,                                                    // Flags
                     VK_FILTER_LINEAR,                                     // MagFilter
                     VK_FILTER_LINEAR,                                     // MinFilter
-                    VK_SAMPLER_MIPMAP_MODE_NEAREST,                       // MipmapMode
-                    VK_SAMPLER_ADDRESS_MODE_REPEAT,                // AddressModeU
-                    VK_SAMPLER_ADDRESS_MODE_REPEAT,                // AddressModeV
-                    VK_SAMPLER_ADDRESS_MODE_REPEAT,                // AddressModeW
+                    VK_SAMPLER_MIPMAP_MODE_LINEAR,                        // MipmapMode
+                    VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeU
+                    VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeV
+                    VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeW
                     0.0f,                                                 // MipLodBias
-                    VK_FALSE,                                             // AnisotropyEnable
+                    VK_TRUE,                                              // AnisotropyEnable
                     1.0f,                                                 // MaxAnisotropy
                     VK_FALSE,                                             // CompareEnable
-                    VK_COMPARE_OP_ALWAYS,                                 // CompareOp
+                    VK_COMPARE_OP_NEVER,                                  // CompareOp
                     0.0f,                                                 // MinLod
                     0.0f,                                                 // MaxLod
-                    VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,              // BorderColor
+                    VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE,                   // BorderColor
                     VK_FALSE                                              // UnnormalizedCoordinates
                 };
                 
