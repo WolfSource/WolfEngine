@@ -16,6 +16,7 @@
 
 #ifdef __WIN32
 
+#include <Windows.h>
 #include <limits.h>
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)

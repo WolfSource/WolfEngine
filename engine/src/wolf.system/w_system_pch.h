@@ -19,6 +19,10 @@
 #define WOLF_PATCH_VERSION 0// bug fixes
 #define WOLF_DEBUG_VERSION 0// for debugging.
 
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
 #ifndef W_UNUSED
 #define W_UNUSED(p) {(void)(p); } 
 #endif

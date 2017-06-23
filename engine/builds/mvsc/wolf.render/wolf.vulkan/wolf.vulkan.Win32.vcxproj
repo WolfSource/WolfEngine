@@ -158,6 +158,7 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_quad.h" />

@@ -16,6 +16,15 @@
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_object.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\math\w_vector2.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\math\w_matrix.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\math\w_vector3.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
@@ -48,5 +57,19 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_rectangle.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\math\w_vector2.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\math\w_matrix.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\math\w_vector3.h">
+      <Filter>math</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="math">
+      <UniqueIdentifier>{8d9b524c-d790-4064-b4c6-56f1ac66ca0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : w_color.h
+	Name			 : w_point.h
 	Description		 : Global color structure
 	Comment          :
 */

@@ -52,6 +52,9 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
       <Filter>masked_occlusion_culling</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.cpp">
+      <Filter>w_framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
@@ -104,6 +107,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h">
       <Filter>masked_occlusion_culling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.h">
+      <Filter>w_framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

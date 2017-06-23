@@ -98,7 +98,7 @@ void w_camera::update_frustum()
     this->_frustum_planes[4].w = _matrix[3][3] - _matrix[3][1];
     this->_frustum_planes[4] = glm::normalize(this->_frustum_planes[4]);
     
-    //Top
+    //Bottom
     this->_frustum_planes[5].x = _matrix[0][3] + _matrix[0][1];
     this->_frustum_planes[5].y = _matrix[1][3] + _matrix[1][1];
     this->_frustum_planes[5].z = _matrix[2][3] + _matrix[2][1];
