@@ -4,7 +4,7 @@
 	Website			 : http://WolfSource.io
 	Name			 : w_linear_allocator.h
 	Description		 : Responsible for allocating memory linear. This code modified and optimized based on "LinearAllocator" class written by "Tiago Costa", Copyright(c) 2013
-	Comment          :
+	Comment          : TODO: depricated
 */
 
 #if _MSC_VER > 1000
