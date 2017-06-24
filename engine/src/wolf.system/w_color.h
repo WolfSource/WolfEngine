@@ -136,49 +136,52 @@ struct w_color
     }
 #endif //defined(__DX12__) || defined(__DX11__)
 
+    static w_color ALICE_BLUE() { return w_color::from_hex(0xFFF0F8FF); }
+    static w_color ANTIQUE_WHITE() { return w_color::from_hex(0xFFFAEBD7); }
+    static w_color AQUA() { return w_color::from_hex(0xFF00FFFF); }
+    static w_color AQUAMARINE() { return w_color::from_hex(0xFF7FFFD4); }
+    static w_color AZURE() { return w_color::from_hex(0xFFF0FFFF); }
+    static w_color BEIGE() { return w_color::from_hex(0xFFF5F5DC); }
+    static w_color BISQUE() { return w_color::from_hex(0xFFFFE4C4); }
+    static w_color BLACK() { return w_color::from_hex(0xFF000000); }
+    static w_color BLANCHED_ALMOND() { return w_color::from_hex(0xFFFFEBCD); }
+    static w_color BLUE() { return w_color::from_hex(0xFF0000FF); }
+    static w_color BLUE_VIOLET() { return w_color::from_hex(0xFF8A2BE2); }
+    static w_color BROWN() { return w_color::from_hex(0xFFA52A2A); }
+    static w_color BURLY_WOOD() { return w_color::from_hex(0xFFDEB887); }
+    static w_color CADET_BLUE() { return w_color::from_hex(0xFF5F9EA0); }
+    static w_color CHARTREUSE() { return w_color::from_hex(0xFF7FFF00); }
+    static w_color CHOCOLATE() { return w_color::from_hex(0xFFD2691E); }
+    static w_color CORAL() { return w_color::from_hex(0xFFFF7F50); }
+    static w_color CORNFLOWER_BLUE() { return w_color::from_hex(0xFF6495ED); }
+    static w_color CORNSILK() { return w_color::from_hex(0xFFFFF8DC); }
+    static w_color CRIMSON() { return w_color::from_hex(0xFFDC143C); }
+    static w_color CYAN() { return w_color::from_hex(0xFF00FFFF); }
+    static w_color DARK_BLUE() { return w_color::from_hex(0xFF00008B); }
+    static w_color DARK_CYAN() { return w_color::from_hex(0xFF008B8B); }
+    static w_color DARK_GOLDENROD() { return w_color::from_hex(0xFFB8860B); }
+    static w_color DARK_GRAY() { return w_color::from_hex(0xFFA9A9A9); }
+    static w_color DARK_GREEN() { return w_color::from_hex(0xFF006400); }
+    static w_color DARK_KHAKI() { return w_color::from_hex(0xFFBDB76B); }
+    static w_color DARK_MAGENTA() { return w_color::from_hex(0xFF8B008B); }
+    static w_color DARK_OLIVE_GREEN() { return w_color::from_hex(0xFF556B2F); }
+    static w_color DARK_ORANGE() { return w_color::from_hex(0xFFFF8C00); }
+    static w_color DARK_ORCHID() { return w_color::from_hex(0xFF9932CC); }
+    static w_color DARK_RED() { return w_color::from_hex(0xFF8B0000); }
+    static w_color DARK_SALMON() { return w_color::from_hex(0xFFE9967A); }
+    static w_color DARK_SEA_GREEN() { return w_color::from_hex(0xFF8FBC8F); }
+    static w_color DARK_SLATE_BLUE() { return w_color::from_hex(0xFF483D8B); }
+    static w_color DARK_SLATE_GRAY() { return w_color::from_hex(0xFF2F4F4F); }
+    static w_color DARK_TURQUOISE() { return w_color::from_hex(0xFF00CED1); }
+    static w_color DARK_VIOLET() { return w_color::from_hex(0xFF9400D3); }
+    static w_color DEEP_PINK() { return w_color::from_hex(0xFFFF1493); }
+    static w_color DEEP_SKY_BLUE() { return w_color::from_hex(0xFF00BFFF); }
+    static w_color DIM_GRAY() { return w_color::from_hex(0xFF696969); }
+
+    //TODO remove and convert these to static functions
 	enum COLORS_HEX
 	{
-		ALICE_BLUE = 0xFFF0F8FF,
-		ANTIQUE_WHITE = 0xFFFAEBD7,
-		AQUA = 0xFF00FFFF,
-		AQUAMARINE = 0xFF7FFFD4,
-		AZURE = 0xFFF0FFFF,
-		BEIGE = 0xFFF5F5DC,
-		BISQUE = 0xFFFFE4C4,
-		BLACK = 0xFF000000,
-		BLANCHED_ALMOND = 0xFFFFEBCD,
-		BLUE = 0xFF0000FF,
-		BLUE_VIOLET = 0xFF8A2BE2,
-		BROWN = 0xFFA52A2A,
-		BURLY_WOOD = 0xFFDEB887,
-		CADET_BLUE = 0xFF5F9EA0,
-		CHARTREUSE = 0xFF7FFF00,
-		CHOCOLATE = 0xFFD2691E,
-		CORAL = 0xFFFF7F50,
-		CORNFLOWER_BLUE = 0xFF6495ED,
-		CORNSILK = 0xFFFFF8DC,
-		CRIMSON = 0xFFDC143C,
-		CYAN = 0xFF00FFFF,
-		DARK_BLUE = 0xFF00008B,
-		DARK_CYAN = 0xFF008B8B,
-		DARK_GOLDENROD = 0xFFB8860B,
-		DARK_GRAY = 0xFFA9A9A9,
-		DARK_GREEN = 0xFF006400,
-		DARK_KHAKI = 0xFFBDB76B,
-		DARK_MAGENTA = 0xFF8B008B,
-		DARK_OLIVE_GREEN = 0xFF556B2F,
-		DARK_ORANGE = 0xFFFF8C00,
-		DARK_ORCHID = 0xFF9932CC,
-		DARK_RED = 0xFF8B0000,
-		DARK_SALMON = 0xFFE9967A,
-		DARK_SEA_GREEN = 0xFF8FBC8F,
-		DARK_SLATE_BLUE = 0xFF483D8B,
-		DARK_SLATE_GRAY = 0xFF2F4F4F,
-		DARK_TURQUOISE = 0xFF00CED1,
-		DARK_VIOLET = 0xFF9400D3,
-		DEEP_PINK = 0xFFFF1493,
-		DEEP_SKY_BLUE = 0xFF00BFFF,
-		DIM_GRAY = 0xFF696969,
+
 		DODGER_BLUE = 0xFF1E90FF,
 		FIREBRICK = 0xFFB22222,
 		FLORAL_WHITE = 0xFFFFFAF0,
