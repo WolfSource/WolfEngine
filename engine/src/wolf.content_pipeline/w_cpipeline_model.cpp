@@ -307,7 +307,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(_In_ c_geometry& pGeometry,
             _pos.x = _v.vertex[0];
             if (pZUp)
             {
-                _pos.y = -_v.vertex[2];
+                _pos.y = _v.vertex[2];
                 _pos.z = -_v.vertex[1];
             }
             else

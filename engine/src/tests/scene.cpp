@@ -50,7 +50,7 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
 
     //enable/disable gpu debugging
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = false;
+    _config.debug_gpu = true;
     this->set_graphics_device_manager_configs(_config);
 }
 
@@ -276,7 +276,7 @@ void scene::load()
     }
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");// A_120_Water - Treatment_v1_16_4.DAE");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/maya-test.dae");// A_120_Water - Treatment_v1_16_4.DAE");
     if (_scene)
     {
         //just for converting
@@ -470,7 +470,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     w_game::update(pGameTime);
 }
 
-static bool show_gui = false;
+static bool show_gui = true;
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
     const std::string _trace = this->name + "::render";

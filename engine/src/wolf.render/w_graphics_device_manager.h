@@ -177,7 +177,7 @@ namespace wolf
 #endif
                       
 			bool									v_sync = true;
-			w_color                                 clear_color = w_color::from_hex(w_color::CORNFLOWER_BLUE);
+			w_color                                 clear_color = w_color::CORNFLOWER_BLUE();
 			int										force_to_clear_color_times;
                         
 #if defined(__DX12__) || defined(__DX11__)		

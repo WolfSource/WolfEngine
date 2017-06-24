@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_render_pch.h</PrecompiledHeaderFile>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,7 +153,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\wolf.render\dllmain.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.cpp" />
@@ -175,6 +174,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imconfig.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />

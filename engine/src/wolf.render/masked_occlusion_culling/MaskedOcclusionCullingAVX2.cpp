@@ -39,9 +39,9 @@
 		return idx;
 	}
 
-	#ifndef __AVX2__
-		#error For best performance, MaskedOcclusionCullingAVX2.cpp should be compiled with /arch:AVX2
-	#endif
+	//#ifndef __AVX2__
+		//#error For best performance, MaskedOcclusionCullingAVX2.cpp should be compiled with /arch:AVX2
+	//#endif
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

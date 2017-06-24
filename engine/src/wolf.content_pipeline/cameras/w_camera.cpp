@@ -13,7 +13,7 @@ w_camera::w_camera() :
 {
     this->_translate[0] = 0; this->_translate[1] = 7; this->_translate[2] = 27.0f;
     this->_interest[0] = 0; this->_interest[1] = 0; this->_interest[2] = 0;
-    this->_up[0] = 0; this->_up[1] = 1; this->_up[2] = 0;
+    this->_up[0] = 0.0f; this->_up[1] = 1.0f; this->_up[2] = 0.0f;
 
     update_view();
     update_projection();
@@ -27,16 +27,11 @@ w_camera::~w_camera()
 
 void w_camera::update_view()
 {
-    this->_view = glm::lookAtRH(
-            glm::vec3(this->_translate[0],
-                this->_translate[1],
-                this->_translate[2]),
-            glm::vec3(this->_interest[0],
-                this->_interest[1],
-                this->_interest[2]),
-            glm::vec3(this->_up[0],
-                this->_up[1],
-                this->_up[2]));
+    glm::vec3 __pos = glm::vec3(this->_translate[0], this->_translate[1], this->_translate[2]);
+    glm::vec3 __target = glm::vec3(this->_interest[0], this->_interest[1], this->_interest[2]);
+    glm::vec3 __up = glm::vec3(this->_up[0], this->_up[1], this->_up[2]);
+
+    this->_view = glm::lookAt(__pos, __target, __up);
 }
 
 void w_camera::update_projection()
@@ -56,7 +51,7 @@ void w_camera::update_projection()
         this->_up[0] = 0.0f; this->_up[1] = 1.0f; this->_up[2] = 0.0f;
     }
 
-   this->_projection = glm::perspectiveRH(_fov_angle_y, this->_aspect_ratio, this->_near_plane, this->_far_plane);
+   this->_projection = glm::perspective(_fov_angle_y, this->_aspect_ratio, this->_near_plane, this->_far_plane);
 }
 
 void w_camera::update_frustum()
@@ -105,6 +100,21 @@ void w_camera::update_frustum()
     this->_frustum_planes[5].w = _matrix[3][3] + _matrix[3][1];
     this->_frustum_planes[5] = glm::normalize(this->_frustum_planes[5]);
 }
+
+#pragma region Getters
+
+mat4x4_p w_camera::get_projection_view() const
+{
+    //vulkan clip spaces has inverted Y and half Z
+    const glm::mat4 _clip(
+        1.0f, 0.0f, 0.0f, 0.0f, 
+        0.0f, -1.0f, 0.0f, 0.0f, 
+        0.0f, 0.0f, 0.5f, 0.0f, 
+        0.0f, 0.0f, 0.5f, 1.0f);
+    return _clip * this->_projection * this->_view;
+}
+
+#pragma endregion
 
 #pragma region Setters
 

@@ -20,9 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\math\w_matrix.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\math\w_vector2.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\math\w_vector3.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_cpu.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_linear_allocator.cpp" />
@@ -45,9 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\math\w_matrix.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\math\w_vector2.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\math\w_vector3.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />

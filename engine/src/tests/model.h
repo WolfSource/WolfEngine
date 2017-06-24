@@ -101,6 +101,8 @@ private:
     size_t                                                  _number_of_tris;
     //vertex for masked occlusion culling
     std::vector<clipspace_vertex>                           _vertices_for_moc;
+    //vertex for masked occlusion culling
+    std::vector<clipspace_vertex>                           _transformed_vertices_for_moc;
     //indices for masked occlusion culling
     std::vector<uint32_t>                                   _indices_for_moc;
 

@@ -1484,7 +1484,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
                 if (sZ_Up)
                 {
                     _instance_info.position[0] = _node->translate.x;
-                    _instance_info.position[1] = -_node->translate.z;
+                    _instance_info.position[1] = _node->translate.z;
                     _instance_info.position[2] = -_node->translate.y;
 
                     _instance_info.rotation[0] = _rotation.x - glm::radians(90.0f);
@@ -1641,7 +1641,7 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
         if (sZ_Up)
         {
             _trasform.position[0] = _node_ptr->translate.x;
-            _trasform.position[1] = -_node_ptr->translate.z;
+            _trasform.position[1] = _node_ptr->translate.z;
             _trasform.position[2] = -_node_ptr->translate.y;
 
             _trasform.rotation[0] = _rotation.x - glm::radians(90.0f);

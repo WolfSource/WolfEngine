@@ -78,9 +78,9 @@ HRESULT model::load(
         _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex, true);
 
         //load texture
-        w_texture::load_to_shared_textures(pGDevice, 
+      /*  w_texture::load_to_shared_textures(pGDevice, 
             content_path + L"textures/areas/" + 
-            wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &this->_texture);
+            wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &this->_texture);*/
     }
 
     //append load mesh data to big vertices and indices
@@ -777,7 +777,7 @@ void model::pre_update(
     _In_    w_first_person_camera pCamera,
     _Inout_ MaskedOcclusionCulling** sMOC)
 {
-    auto _view_projection = pCamera.get_projection() * pCamera.get_view();
+    auto _view_projection = pCamera.get_projection_view();
 
     glm::vec3 _pos = glm::vec3(
         this->_transform.position[0], 
@@ -788,22 +788,33 @@ void model::pre_update(
     this->_world_view_projections[0] = _view_projection *
         glm::translate(_center_pos) *
         glm::rotate(
-            this->_transform.rotation[0],
-            this->_transform.rotation[1],
-            this->_transform.rotation[2]) *
-        glm::mat4(
-            1, 0, 0, 0,
-            0, 0, -1, 0,
-            0, -1, 0, 0,
-            0, 0, 0, 1);//swap -y and -z*/
-            
+            0.0f,
+            0.0f,
+            0.0f) * 
+        glm::scale(glm::vec3(1.0f, 1.0f, 1.0f)) * glm::mat4(
+                1, 0, 0, 0,
+                0, 0,-1, 0,
+                0, 1, 0, 0,
+                0, 0, 0, 1);
+
+    if (_transformed_vertices_for_moc.size() != _vertices_for_moc.size())
+    {
+        _transformed_vertices_for_moc.resize(_vertices_for_moc.size());
+    }
+
+    MaskedOcclusionCulling::TransformVertices(
+        (float*)&this->_world_view_projections[0][0],
+        (float*)&this->_vertices_for_moc[0],
+        (float*)&this->_transformed_vertices_for_moc[0],
+        _transformed_vertices_for_moc.size());
+
     //render root model to Masked Occlusion culling
     (*sMOC)->RenderTriangles(
-        (float*)&this->_vertices_for_moc[0],
+        (float*)&this->_transformed_vertices_for_moc[0],
         this->_indices_for_moc.data(), 
-        this->_number_of_tris,
-        (float*)&this->_world_view_projections[0][0]);
+        this->_number_of_tris);
 
+    return;
     size_t _index = 1;
     for (auto& _ins : this->_instances_transforms)
     {
@@ -816,25 +827,20 @@ void model::pre_update(
         this->_world_view_projections[_index] = _view_projection *
             glm::translate(_center_pos) *
             glm::rotate(
-                _ins.rotation[0],
-                _ins.rotation[1],
-                _ins.rotation[2]) *
-            glm::mat4(
-                1, 0, 0, 0,
-                0, 0, -1, 0,
-                0, -1, 0, 0,
-                0, 0, 0, 1);//swap -y and -z
+                0.0f,
+                0.0f,
+                0.0f);
+            //glm::mat4(
+            //    1, 0, 0, 0,
+            //    0, 0, -1, 0,
+            //    0, -1, 0, 0,
+            //    0, 0, 0, 1);//swap -y and -z
 
         auto _RE = (*sMOC)->RenderTriangles(
             (float*)&this->_vertices_for_moc[0],
             this->_indices_for_moc.data(),
             this->_number_of_tris,
             (float*)&this->_world_view_projections[_index++][0]);
-
-        if (_RE == MaskedOcclusionCulling::VISIBLE)
-        {
-            logger.write("a");
-        }
     }
 }
 
@@ -848,11 +854,10 @@ void model::post_update(
 
     //check root model
     auto _culling_result = sMOC->TestTriangles(
-        (float*)&this->_vertices_for_moc[0],
+        (float*)&this->_transformed_vertices_for_moc[0],
         this->_indices_for_moc.data(),
-        this->_number_of_tris,
-        (float*)&this->_world_view_projections[0][0]);
-
+        this->_number_of_tris);
+    
     switch (_culling_result)
     {
     case MaskedOcclusionCulling::VISIBLE:
@@ -867,6 +872,7 @@ void model::post_update(
         break;
     }
 
+    return;
     for (size_t i = 1; i <= this->_instances_transforms.size(); ++i)
     {
         _culling_result = sMOC->TestTriangles(
@@ -933,14 +939,9 @@ HRESULT model::render(
     const std::string _trace = this->name + "::draw";
     
     //Update uniforms
-    auto _projection_view = pCamera->get_projection() * pCamera->get_view();
-
-    auto _pos = glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
-    auto _world = _projection_view * glm::translate(_pos);
-
     auto _camera_pos = pCamera->get_translate();
 
-    this->vs.unifrom.data.projection_view = _projection_view;
+    this->vs.unifrom.data.projection_view = pCamera->get_projection_view();;
     if (this->vs.unifrom.update() == S_FALSE)
     {
         _hr = S_FALSE;

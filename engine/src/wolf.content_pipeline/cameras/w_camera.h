@@ -56,6 +56,8 @@ namespace wolf
             WCP_EXP mat4x4_p get_view() const { return this->_view; }
             //Get projection matrix of the camera
             WCP_EXP mat4x4_p get_projection() const { return this->_projection; }
+            //Get projection * view matrix of the camera
+            WCP_EXP mat4x4_p get_projection_view() const;
             //Get projection matrix of the camera
             WCP_EXP std::array<glm::vec4, 6> get_frustum_plans() const { return this->_frustum_planes; }
             //Get position of the camera
