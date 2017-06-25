@@ -50,7 +50,7 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
 
     //enable/disable gpu debugging
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = true;
+    _config.debug_gpu = false;
     this->set_graphics_device_manager_configs(_config);
 }
 
@@ -470,7 +470,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     w_game::update(pGameTime);
 }
 
-static bool show_gui = true;
+static bool show_gui = false;
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
     const std::string _trace = this->name + "::render";
@@ -529,6 +529,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         V(_hr, "submiting queu for drawing models", _trace, 3);
     }
 
+    logger.write(std::to_string(sVisible));
     if (show_gui)
     {
         _build_gui_command_buffer(_gDevice, pGameTime);

@@ -45,10 +45,6 @@
 #include <assert.h>
 #include <float.h>
 
-#ifndef GLM_FORCE_DEPTH_ZERO_TO_ONE
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#endif
-
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/compatibility.hpp>

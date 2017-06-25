@@ -16,18 +16,6 @@ w_first_person_camera::~w_first_person_camera()
 
 }
 
-//static glm::vec3 transform(glm::vec3 position, glm::mat4 matrix)
-//{
-//    glm::vec3 vector;
-//    float num3 = (((position.x * matrix[0][0]) + (position.y * matrix[1][0])) + (position.z * matrix[2][0])) + matrix[3][0];
-//    float num2 = (((position.x * matrix[0][1]) + (position.y * matrix[1][1])) + (position.z * matrix[2][3])) + matrix[3][1];
-//    float num = (((position.x * matrix[0][2]) + (position.y * matrix[1][2])) + (position.z * matrix[2][2])) + matrix[3][2];
-//    vector.x = num3;
-//    vector.y = num2;
-//    vector.z = num;
-//    return vector;
-//}
-
 bool w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTime, 
     _In_ const w_point_t& pScreenSize)
 {

@@ -13,7 +13,7 @@ w_camera::w_camera() :
 {
     this->_translate[0] = 0; this->_translate[1] = 7; this->_translate[2] = 27.0f;
     this->_interest[0] = 0; this->_interest[1] = 0; this->_interest[2] = 0;
-    this->_up[0] = 0.0f; this->_up[1] = 1.0f; this->_up[2] = 0.0f;
+    this->_up[0] = 0.0f; this->_up[1] = -1.0f; this->_up[2] = 0.0f;
 
     update_view();
     update_projection();
@@ -27,17 +27,17 @@ w_camera::~w_camera()
 
 void w_camera::update_view()
 {
-    glm::vec3 __pos = glm::vec3(this->_translate[0], this->_translate[1], this->_translate[2]);
-    glm::vec3 __target = glm::vec3(this->_interest[0], this->_interest[1], this->_interest[2]);
-    glm::vec3 __up = glm::vec3(this->_up[0], this->_up[1], this->_up[2]);
+    const glm::vec3 __pos = glm::vec3(this->_translate[0], this->_translate[1], this->_translate[2]);
+    const glm::vec3 __target = glm::vec3(this->_interest[0], this->_interest[1], this->_interest[2]);
+    const glm::vec3 __up = glm::vec3(this->_up[0], this->_up[1], this->_up[2]);
 
-    this->_view = glm::lookAt(__pos, __target, __up);
+    this->_view = glm::lookAtLH(__pos, __target, __up);
 }
 
 void w_camera::update_projection()
 {
 	auto _pi = glm::pi<float>();
-	float _fov_angle_y = this->_field_of_view * _pi / 180.0f;
+    float _fov_angle_y = this->_field_of_view * _pi / 180.0f;
 
 	if (this->_aspect_ratio < 1.0f)
 	{
@@ -48,10 +48,10 @@ void w_camera::update_projection()
 	else
 	{
 		// landscape view
-        this->_up[0] = 0.0f; this->_up[1] = 1.0f; this->_up[2] = 0.0f;
+        this->_up[0] = 0.0f; this->_up[1] = -1.0f; this->_up[2] = 0.0f;
     }
 
-   this->_projection = glm::perspective(_fov_angle_y, this->_aspect_ratio, this->_near_plane, this->_far_plane);
+   this->_projection = glm::perspectiveLH(_fov_angle_y, this->_aspect_ratio, this->_near_plane, this->_far_plane);
 }
 
 void w_camera::update_frustum()
@@ -105,13 +105,7 @@ void w_camera::update_frustum()
 
 mat4x4_p w_camera::get_projection_view() const
 {
-    //vulkan clip spaces has inverted Y and half Z
-    const glm::mat4 _clip(
-        1.0f, 0.0f, 0.0f, 0.0f, 
-        0.0f, -1.0f, 0.0f, 0.0f, 
-        0.0f, 0.0f, 0.5f, 0.0f, 
-        0.0f, 0.0f, 0.5f, 1.0f);
-    return _clip * this->_projection * this->_view;
+    return this->_projection * this->_view;
 }
 
 #pragma endregion
