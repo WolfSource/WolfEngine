@@ -1644,7 +1644,7 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
             _trasform.position[1] = _node_ptr->translate.z;
             _trasform.position[2] = -_node_ptr->translate.y;
 
-            _trasform.rotation[0] = _rotation.x - glm::radians(90.0f);
+            _trasform.rotation[0] = _rotation.x;
             _trasform.rotation[1] = _rotation.y;
             _trasform.rotation[2] = _rotation.z;
         }

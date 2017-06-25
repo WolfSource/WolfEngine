@@ -58,47 +58,47 @@ void w_camera::update_frustum()
 {
     auto _matrix = this->_projection * this->_view;
 
-    //Near
-    this->_frustum_planes[0].x = _matrix[0][3] + _matrix[0][2];
-    this->_frustum_planes[0].y = _matrix[1][3] + _matrix[1][2];
-    this->_frustum_planes[0].z = _matrix[2][3] + _matrix[2][2];
-    this->_frustum_planes[0].w = _matrix[3][3] + _matrix[3][2];
+    // Calculate near plane of frustum.
+    this->_frustum_planes[0].x = _matrix[0].w + _matrix[0].z;
+    this->_frustum_planes[0].y = _matrix[1].w + _matrix[1].z;
+    this->_frustum_planes[0].z = _matrix[2].w + _matrix[2].z;
+    this->_frustum_planes[0].w = _matrix[3].w + _matrix[3].z;
     this->_frustum_planes[0] = glm::normalize(this->_frustum_planes[0]);
 
-    //Far
-    this->_frustum_planes[1].x = _matrix[0][3] - _matrix[0][2];
-    this->_frustum_planes[1].y = _matrix[1][3] - _matrix[1][2];
-    this->_frustum_planes[1].z = _matrix[2][3] - _matrix[2][2];
-    this->_frustum_planes[1].w = _matrix[3][3] - _matrix[3][2];
-    this->_frustum_planes[1] = glm::normalize(this->_frustum_planes[1]);
+    // Calculate far plane of frustum.
+    this->_frustum_planes[1].x = _matrix[0].w - _matrix[0].z;
+    this->_frustum_planes[1].y = _matrix[1].w - _matrix[1].z;
+    this->_frustum_planes[1].z = _matrix[2].w - _matrix[2].z;
+    this->_frustum_planes[1].w = _matrix[3].w - _matrix[3].z;
+    this->_frustum_planes[1] = glm::normalize(this->_frustum_planes[0]);
 
-    //Left
-    this->_frustum_planes[2].x = _matrix[0][3] + _matrix[0][0];
-    this->_frustum_planes[2].y = _matrix[1][3] + _matrix[1][0];
-    this->_frustum_planes[2].z = _matrix[2][3] + _matrix[2][0];
-    this->_frustum_planes[2].w = _matrix[3][3] + _matrix[3][0];
-    this->_frustum_planes[2] = glm::normalize(this->_frustum_planes[2]);
+    // Calculate left plane of frustum.
+    this->_frustum_planes[2].x = _matrix[0].w + _matrix[0].x;
+    this->_frustum_planes[2].y = _matrix[1].w + _matrix[1].x;
+    this->_frustum_planes[2].z = _matrix[2].w + _matrix[2].x;
+    this->_frustum_planes[2].w = _matrix[3].w + _matrix[3].x;
+    this->_frustum_planes[2] = glm::normalize(this->_frustum_planes[0]);
 
-    //Right
-    this->_frustum_planes[3].x = _matrix[0][3] - _matrix[0][0];
-    this->_frustum_planes[3].y = _matrix[1][3] - _matrix[1][0];
-    this->_frustum_planes[3].z = _matrix[2][3] - _matrix[2][0];
-    this->_frustum_planes[3].w = _matrix[3][3] - _matrix[3][0];
-    this->_frustum_planes[3] = glm::normalize(this->_frustum_planes[3]);
+    // Calculate right plane of frustum.
+    this->_frustum_planes[3].x = _matrix[0].w - _matrix[0].x;
+    this->_frustum_planes[3].y = _matrix[1].w - _matrix[1].x;
+    this->_frustum_planes[3].z = _matrix[2].w - _matrix[2].x;
+    this->_frustum_planes[3].w = _matrix[3].w - _matrix[3].x;
+    this->_frustum_planes[3] = glm::normalize(this->_frustum_planes[0]);
 
-    //Top
-    this->_frustum_planes[4].x = _matrix[0][3] - _matrix[0][1];
-    this->_frustum_planes[4].y = _matrix[1][3] - _matrix[1][1];
-    this->_frustum_planes[4].z = _matrix[2][3] - _matrix[2][1];
-    this->_frustum_planes[4].w = _matrix[3][3] - _matrix[3][1];
-    this->_frustum_planes[4] = glm::normalize(this->_frustum_planes[4]);
-    
-    //Bottom
-    this->_frustum_planes[5].x = _matrix[0][3] + _matrix[0][1];
-    this->_frustum_planes[5].y = _matrix[1][3] + _matrix[1][1];
-    this->_frustum_planes[5].z = _matrix[2][3] + _matrix[2][1];
-    this->_frustum_planes[5].w = _matrix[3][3] + _matrix[3][1];
-    this->_frustum_planes[5] = glm::normalize(this->_frustum_planes[5]);
+    // Calculate top plane of frustum.
+    this->_frustum_planes[4].x = _matrix[0].w - _matrix[0].y;
+    this->_frustum_planes[4].y = _matrix[1].w - _matrix[1].y;
+    this->_frustum_planes[4].z = _matrix[2].w - _matrix[2].y;
+    this->_frustum_planes[4].w = _matrix[3].w - _matrix[3].y;
+    this->_frustum_planes[4] = glm::normalize(this->_frustum_planes[0]);
+
+    // Calculate bottom plane of frustum.
+    this->_frustum_planes[5].x = _matrix[0].w + _matrix[0].y;
+    this->_frustum_planes[5].y = _matrix[1].w + _matrix[1].y;
+    this->_frustum_planes[5].z = _matrix[2].w + _matrix[2].y;
+    this->_frustum_planes[5].w = _matrix[3].w + _matrix[3].y;
+    this->_frustum_planes[5] = glm::normalize(this->_frustum_planes[0]);
 }
 
 #pragma region Getters

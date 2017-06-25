@@ -773,33 +773,6 @@ HRESULT model::_build_compute_command_buffers(_In_ const std::shared_ptr<wolf::g
     return S_OK;
 }
 
-static glm::mat3 rotate_over_axis(float pAngle, glm::vec3 pAxis)
-{
-    using namespace glm;
-
-    const float a = pAngle;
-    const float c = cos(a);
-    const float s = sin(a);
-
-    vec3 axis = normalize(pAxis);
-    vec3 temp = (1 - c) * axis;
-
-    mat3 rotate;
-    rotate[0][0] = c + temp[0] * axis[0];
-    rotate[0][1] = temp[0] * axis[1] + s * axis[2];
-    rotate[0][2] = temp[0] * axis[2] - s * axis[1];
-
-    rotate[1][0] = temp[1] * axis[0] - s * axis[2];
-    rotate[1][1] = c + temp[1] * axis[1];
-    rotate[1][2] = temp[1] * axis[2] + s * axis[0];
-
-    rotate[2][0] = temp[2] * axis[0] + s * axis[1];
-    rotate[2][1] = temp[2] * axis[1] - s * axis[0];
-    rotate[2][2] = c + temp[2] * axis[2];
-
-    return rotate;
-}
-
 float _f = 0;
 void model::pre_update(
     _In_    w_first_person_camera pCamera,
@@ -814,14 +787,19 @@ void model::pre_update(
         this->_transform.position[1],
         this->_transform.position[2]);
 
-    this->_world_view_projections[0] = _view_projection * glm::translate(_pos);
+    //glm::vec3 _rot = glm::vec3(
+    //    this->_transform.rotation[0],
+    //    this->_transform.rotation[1],
+    //    this->_transform.rotation[2]);
+
+    this->_world_view_projections[0] = _view_projection * glm::translate(_pos);// *
+        //glm::rotate(_rot);
 
 
-    ////check this->_bounding_box_min
     //this->_visibilities[0] = true;
 
-    //glm::vec4 _transformed_vector_1 =  this->_world_view_projections[0] * glm::vec4(this->_bounding_box_min, 0.0f);
-    //glm::vec4 _transformed_vector_2 =  this->_world_view_projections[0] * glm::vec4(this->_bounding_box_max, 0.0f);
+    //glm::vec4 _transformed_vector_1 = this->_world_view_projections[0] * glm::vec4(this->_bounding_box_min, 0.0f);
+    //glm::vec4 _transformed_vector_2 = this->_world_view_projections[0] * glm::vec4(this->_bounding_box_max, 0.0f);
 
     //auto _f_plans = pCamera.get_frustum_plans();
     //// Check sphere against frustum planes
@@ -834,19 +812,6 @@ void model::pre_update(
     //    }
     //}
 
-
-
-    if (_transformed_vertices_for_moc.size() != _vertices_for_moc.size())
-    {
-        _transformed_vertices_for_moc.resize(_vertices_for_moc.size());
-    }
-
-    //MaskedOcclusionCulling::TransformVertices(
-    //    (float*)&this->_world_view_projections[0][0],
-    //    (float*)&this->_vertices_for_moc[0],
-    //    (float*)&this->_transformed_vertices_for_moc[0],
-    //    _transformed_vertices_for_moc.size());
-
     //render root model to Masked Occlusion culling
     (*sMOC)->RenderTriangles(
         (float*)&this->_vertices_for_moc[0],
@@ -854,34 +819,23 @@ void model::pre_update(
         this->_number_of_tris,
         (float*)(&this->_world_view_projections[0][0]));
 
-    return;
-    //size_t _index = 1;
-    //for (auto& _ins : this->_instances_transforms)
-    //{
-    //    _pos = glm::vec3(
-    //        _ins.position[0],
-    //        _ins.position[1],
-    //        _ins.position[2]);
-    //    _center_pos = _pos;// +this->_bounding_box_min) + (_pos + this->_bounding_box_max)) / glm::vec3(2);
+    size_t _index = 1;
+    for (auto& _ins : this->_instances_transforms)
+    {
+        _pos = glm::vec3(
+            _ins.position[0],
+            _ins.position[1],
+            _ins.position[2]);
+        
+        this->_world_view_projections[_index] = _view_projection *
+            glm::translate(_pos);
 
-    //    this->_world_view_projections[_index] = _view_projection *
-    //        glm::translate(_center_pos) *
-    //        glm::rotate(
-    //            0.0f,
-    //            0.0f,
-    //            0.0f);
-    //        //glm::mat4(
-    //        //    1, 0, 0, 0,
-    //        //    0, 0, -1, 0,
-    //        //    0, -1, 0, 0,
-    //        //    0, 0, 0, 1);//swap -y and -z
-
-    //    auto _RE = (*sMOC)->RenderTriangles(
-    //        (float*)&this->_vertices_for_moc[0],
-    //        this->_indices_for_moc.data(),
-    //        this->_number_of_tris,
-    //        (float*)&this->_world_view_projections[_index++][0]);
-    //}
+        auto _RE = (*sMOC)->RenderTriangles(
+            (float*)&this->_vertices_for_moc[0],
+            this->_indices_for_moc.data(),
+            this->_number_of_tris,
+            (float*)&this->_world_view_projections[_index++][0]);
+    }
 }
 
 void model::post_update(
@@ -890,6 +844,7 @@ void model::post_update(
     _Inout_ uint32_t& pNumberOfOccluded,
     _Inout_ uint32_t& pNumberOfViewCulled)
 {
+
     std::fill(this->_visibilities.begin(), this->_visibilities.end(), 0.0f);
 
     //check root model
@@ -898,7 +853,7 @@ void model::post_update(
         this->_indices_for_moc.data(),
         this->_number_of_tris,
         (float*)(&this->_world_view_projections[0][0]));
-    
+
     switch (_culling_result)
     {
     case MaskedOcclusionCulling::VISIBLE:
@@ -913,8 +868,7 @@ void model::post_update(
         break;
     }
 
-    return;
-    /*for (size_t i = 1; i <= this->_instances_transforms.size(); ++i)
+    for (size_t i = 1; i <= this->_instances_transforms.size(); ++i)
     {
         _culling_result = sMOC->TestTriangles(
             (float*)&this->_vertices_for_moc[0],
@@ -935,7 +889,7 @@ void model::post_update(
             pNumberOfViewCulled++;
             break;
         }
-    }*/
+    }
 }
 
 void model::indirect_draw(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -982,7 +936,10 @@ HRESULT model::render(
     //Update uniforms
     auto _camera_pos = pCamera->get_translate();
 
-    this->vs.unifrom.data.projection_view = this->_world_view_projections[0];
+    logger.write(std::to_string(glm::distance(_camera_pos,
+        glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]))));
+
+    this->vs.unifrom.data.projection_view = pCamera->get_projection_view();
     if (this->vs.unifrom.update() == S_FALSE)
     {
         _hr = S_FALSE;

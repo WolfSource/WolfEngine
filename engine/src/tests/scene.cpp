@@ -6,7 +6,7 @@
 #include <imgui/imgui.h>
 #include <w_graphics/w_imgui.h>
 #include "masked_occlusion_culling/MaskedOcclusionCulling.h"
-
+#include <cameras/w_camera.h>
 using namespace wolf::system;
 using namespace wolf::graphics;
 using namespace wolf::framework;
@@ -276,7 +276,7 @@ void scene::load()
     }
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/maya-test.dae");// A_120_Water - Treatment_v1_16_4.DAE");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");// A_120_Water - Treatment_v1_16_4.DAE");
     if (_scene)
     {
         //just for converting
