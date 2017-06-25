@@ -59,7 +59,7 @@
  * behaviour. It also affects the ScissorRect screen space coordinates and the memory layout of the buffer 
  * returned by ComputePixelDepthBuffer().
  */
-#define USE_D3D				0
+#define USE_D3D				1
 
 #endif
 

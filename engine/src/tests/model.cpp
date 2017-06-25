@@ -78,9 +78,9 @@ HRESULT model::load(
         _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex, true);
 
         //load texture
-      /*  w_texture::load_to_shared_textures(pGDevice, 
-            content_path + L"textures/areas/" + 
-            wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &this->_texture);*/
+        w_texture::load_to_shared_textures(pGDevice,
+            content_path + L"textures/areas/" +
+            wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &this->_texture);
     }
 
     //append load mesh data to big vertices and indices
@@ -795,24 +795,7 @@ void model::pre_update(
     this->_world_view_projections[0] = _view_projection * glm::translate(_pos);// *
         //glm::rotate(_rot);
 
-
-    //this->_visibilities[0] = true;
-
-    //glm::vec4 _transformed_vector_1 = this->_world_view_projections[0] * glm::vec4(this->_bounding_box_min, 0.0f);
-    //glm::vec4 _transformed_vector_2 = this->_world_view_projections[0] * glm::vec4(this->_bounding_box_max, 0.0f);
-
-    //auto _f_plans = pCamera.get_frustum_plans();
-    //// Check sphere against frustum planes
-    //for (int i = 0; i < 6; i++)
-    //{
-    //    if ((glm::dot(_transformed_vector_1, _f_plans[i]) < 0.0) && (glm::dot(_transformed_vector_2, _f_plans[i]) < 0.0))
-    //    {
-    //        this->_visibilities[0] = false;
-    //        break;
-    //    }
-    //}
-
-    //render root model to Masked Occlusion culling
+        //render root model to Masked Occlusion culling
     (*sMOC)->RenderTriangles(
         (float*)&this->_vertices_for_moc[0],
         this->_indices_for_moc.data(), 
@@ -830,7 +813,7 @@ void model::pre_update(
         this->_world_view_projections[_index] = _view_projection *
             glm::translate(_pos);
 
-        auto _RE = (*sMOC)->RenderTriangles(
+        (*sMOC)->RenderTriangles(
             (float*)&this->_vertices_for_moc[0],
             this->_indices_for_moc.data(),
             this->_number_of_tris,
@@ -838,6 +821,43 @@ void model::pre_update(
     }
 }
 
+static void WriteBMP(const char *filename, const unsigned char *data, int w, int h)
+{
+    short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)w, (short)h, 1, 24 };
+    FILE *f;
+    fopen_s(&f, filename, "wb");
+    fwrite(header, 1, sizeof(header), f);
+    fwrite(data, 1, w * h * 3, f);
+    fclose(f);
+}
+
+static void TonemapDepth(float *depth, unsigned char *image, int w, int h)
+{
+    // Find min/max w coordinate (discard cleared pixels)
+    float minW = FLT_MAX, maxW = 0.0f;
+    for (int i = 0; i < w*h; ++i)
+    {
+        if (depth[i] > 0.0f)
+        {
+            minW = std::min(minW, depth[i]);
+            maxW = std::max(maxW, depth[i]);
+        }
+    }
+
+    // Tonemap depth values
+    for (int i = 0; i < w*h; ++i)
+    {
+        int intensity = 0;
+        if (depth[i] > 0)
+            intensity = (unsigned char)(223.0*(depth[i] - minW) / (maxW - minW) + 32.0);
+
+        image[i * 3 + 0] = intensity;
+        image[i * 3 + 1] = intensity;
+        image[i * 3 + 2] = intensity;
+    }
+}
+
+float *perPixelZBuffer = new float[1280 * 720];
 void model::post_update(
     _Inout_ MaskedOcclusionCulling* sMOC,
     _Inout_ uint32_t& pNumberOfVisibles,
@@ -890,6 +910,16 @@ void model::post_update(
             break;
         }
     }
+
+    // Compute a per pixel depth buffer from the hierarchical depth buffer, used for visualization.
+
+    //sMOC->ComputePixelDepthBuffer(perPixelZBuffer);
+
+    //// Tonemap the image
+    //unsigned char *image = new unsigned char[1280 * 720 * 3];
+    //TonemapDepth(perPixelZBuffer, image, 1280, 720);
+    //WriteBMP("F:\\image.bmp", image, 1280, 720);
+    //delete[] image;
 }
 
 void model::indirect_draw(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -935,10 +965,7 @@ HRESULT model::render(
     
     //Update uniforms
     auto _camera_pos = pCamera->get_translate();
-
-    logger.write(std::to_string(glm::distance(_camera_pos,
-        glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]))));
-
+    
     this->vs.unifrom.data.projection_view = pCamera->get_projection_view();
     if (this->vs.unifrom.update() == S_FALSE)
     {

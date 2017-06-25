@@ -54,7 +54,7 @@ namespace wolf
                         //load scene from collada file
                         auto _scene = new w_cpipeline_scene();
                         _scene->set_name(_name);
-                        auto _hr = collada::c_parser::parse_collada_from_file(pAssetPath, _scene, true, false, true);
+                        auto _hr = collada::c_parser::parse_collada_from_file(pAssetPath, _scene, false, false, true);
 
                         _extension.clear();
                         _name.clear();

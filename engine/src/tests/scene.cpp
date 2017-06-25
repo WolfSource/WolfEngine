@@ -276,7 +276,7 @@ void scene::load()
     }
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");// A_120_Water - Treatment_v1_16_4.DAE");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test_boxes.dae");// A_120_Water - Treatment_v1_16_4.DAE");
     if (_scene)
     {
         //just for converting
@@ -529,7 +529,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         V(_hr, "submiting queu for drawing models", _trace, 3);
     }
 
-    logger.write(std::to_string(sVisible));
+    logger.write("Occlued: " + std::to_string(sOcclued));
+    logger.write("FPS: " + std::to_string(pGameTime.get_frames_per_second()));
+
     if (show_gui)
     {
         _build_gui_command_buffer(_gDevice, pGameTime);
