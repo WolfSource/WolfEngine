@@ -7,6 +7,27 @@
     <Filter Include="cameras">
       <UniqueIdentifier>{7aa00a85-90d4-42be-8854-0c72d589a7b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="amd">
+      <UniqueIdentifier>{32d5854e-e9e8-47d9-ae7f-301ebfd00ccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="directXmesh">
+      <UniqueIdentifier>{3b27c01f-1df3-417e-998c-0a3a0c701f74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="amd\amd_tootle">
+      <UniqueIdentifier>{be3cddb7-bfc8-4446-8cba-3995c647c1bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="amd\amd_tootle\include">
+      <UniqueIdentifier>{c88a5ae7-9d1b-41a8-8a18-89ac110983a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="amd\amd_tootle\RayTracer">
+      <UniqueIdentifier>{053d8ee1-4ee6-446d-bd3a-14d12ef4a1dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="amd\amd_tootle\RayTracer\JRT">
+      <UniqueIdentifier>{8c1b1ff8-5d18-4dec-848b-57736415cd47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="amd\amd_tootle\RayTracer\Math">
+      <UniqueIdentifier>{4369d90a-b296-4831-abf8-7ad2e4e6d7a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp">
@@ -27,6 +48,99 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\cameras\w_first_person_camera.cpp">
       <Filter>cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\aligned_malloc.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\clustering.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\d3doverdrawwindow.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\d3dwm.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\feedback.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\fit.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\gdiwm.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\tootlelib.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\overdraw.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\soup.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\souptomesh.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\Stripifier.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\triorder.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\heap.cpp">
+      <Filter>amd\amd_tootle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\TootleRaytracer.cpp">
+      <Filter>amd\amd_tootle\RayTracer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTBoundingBox.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTCamera.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTCore.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTCoreUtils.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTH2KDTreeBuilder.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTHeuristicKDTreeBuilder.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTKDTree.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTKDTreeBuilder.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTMesh.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTOrthoCamera.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTPPMImage.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTTriangleIntersection.cpp">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\Math\JMLFuncs.cpp">
+      <Filter>amd\amd_tootle\RayTracer\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshOptimize.cpp">
+      <Filter>directXmesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshUtil.cpp">
+      <Filter>directXmesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle.cpp">
+      <Filter>amd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -63,5 +177,172 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\cameras\w_first_person_camera.h">
       <Filter>cameras</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.h">
+      <Filter>directXmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\aligned_malloc.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\bbox.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\cloud.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\clustering.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\color.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\d3doverdrawwindow.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\d3dwindow.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\d3dwm.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\feedback.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\fit.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\gdiwindow.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\gdiwm.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\heap.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\include\tootlelib.h">
+      <Filter>amd\amd_tootle\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\matrix.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\mesh.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\option.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\overdraw.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\quaternion.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\scalar.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\soup.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\souptomesh.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\Stripifier.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\triorder.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\vector.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\viewpoints.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\window.h">
+      <Filter>amd\amd_tootle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\TootleRaytracer.h">
+      <Filter>amd\amd_tootle\RayTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTBoundingBox.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTCamera.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTCommon.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTCore.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTCoreUtils.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTH2KDTreeBuilder.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTHeuristicKDTreeBuilder.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTKDTree.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTKDTreeBuilder.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTMesh.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTOrthoCamera.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTPPMImage.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\JRT\JRTTriangleIntersection.h">
+      <Filter>amd\amd_tootle\RayTracer\JRT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\Math\JML.h">
+      <Filter>amd\amd_tootle\RayTracer\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\Math\JMLFuncs.h">
+      <Filter>amd\amd_tootle\RayTracer\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\Math\JMLMatrix.h">
+      <Filter>amd\amd_tootle\RayTracer\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\Math\JMLScalar.h">
+      <Filter>amd\amd_tootle\RayTracer\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\Math\JMLSSEVec.h">
+      <Filter>amd\amd_tootle\RayTracer\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\Math\JMLVec2.h">
+      <Filter>amd\amd_tootle\RayTracer\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\RayTracer\Math\JMLVec3.h">
+      <Filter>amd\amd_tootle\RayTracer\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshP.h">
+      <Filter>directXmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\scoped.h">
+      <Filter>directXmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle.h">
+      <Filter>amd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.inl">
+      <Filter>directXmesh</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\src\wolf.content_pipeline\directXmesh\ReadMe.txt">
+      <Filter>directXmesh</Filter>
+    </Text>
   </ItemGroup>
 </Project>

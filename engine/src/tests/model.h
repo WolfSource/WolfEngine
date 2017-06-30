@@ -39,10 +39,7 @@ public:
         _In_    wolf::content_pipeline::w_first_person_camera pCamera,
         _Inout_ MaskedOcclusionCulling** sMOC);
 
-    void post_update(_Inout_ MaskedOcclusionCulling* sMOC,
-        _Inout_ uint32_t& pNumberOfVisibles,
-        _Inout_ uint32_t& pNumberOfOccluded,
-        _Inout_ uint32_t& pNumberOfViewCulled);
+    bool post_update(_Inout_ MaskedOcclusionCulling* sMOC);
 
     void indirect_draw(
         _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
@@ -73,8 +70,9 @@ private:
         _In_ const std::vector<wolf::content_pipeline::w_cpipeline_model::w_mesh*>& pModelMeshes,
         _Inout_ std::vector<float>& pVertices,
         _Inout_ std::vector<uint32_t>& pIndices,
-        _Inout_ uint32_t& pBaseVertex,
-        _In_ const bool& pUseForMaskedOcclusionCulling);
+        _Inout_ uint32_t& pBaseVertex);
+
+    void _add_data_for_masked_occlusion_culling(_In_ const wolf::content_pipeline::w_bounding_box& pBoundingBox);
 
     HRESULT _load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT  _load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
@@ -89,25 +87,28 @@ private:
     //unique name of factory for searching
     std::vector<std::string>                                _search_names;
 
-    glm::vec3                                               _bounding_box_min;
-    glm::vec3                                               _bounding_box_max;
-
     wolf::content_pipeline::w_transform_info               _transform;
     std::vector<wolf::content_pipeline::w_instance_info>   _instances_transforms;
 
     wolf::graphics::w_mesh*                                 _mesh;
     wolf::graphics::w_shader*                               _shader;
     wolf::graphics::w_texture*                              _texture;
-    size_t                                                  _number_of_tris;
-    //vertex for masked occlusion culling
-    std::vector<clipspace_vertex>                           _vertices_for_moc;
-    //indices for masked occlusion culling
-    std::vector<uint32_t>                                   _indices_for_moc;
 
     //World view Projections o f root and all instances
-    std::vector<glm::mat4>                                  _world_view_projections;
+    glm::mat4                                               _view_projection;
     std::vector<float>                                      _visibilities;
 
+    //masked occlusion culling
+    struct moc_data
+    {
+        //vertex for masked occlusion culling
+        std::vector<clipspace_vertex>                           vertices;
+        std::vector<uint32_t>                                   indices;
+        int                                                     num_of_tris_for_moc;
+        glm::vec3                                               position;
+        glm::vec3                                               rotation;
+    };
+    std::vector<moc_data>                                       _mocs;
 
     struct lod
     {

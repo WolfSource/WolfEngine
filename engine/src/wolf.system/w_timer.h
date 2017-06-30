@@ -48,15 +48,23 @@ namespace wolf
 				_timer.tick([]() { /*NOP*/ });
 			}
 
+            void reset()
+            {
+                _timer.reset();
+                _timer.tick([]() { /*NOP*/ });
+            }
+
 			//Get total time in seconds
 			double get_seconds()
 			{
+                _timer.tick([]() { /*NOP*/ });
 				return _timer.get_total_seconds();
 			};
 
 			//Get total time in milliseconds
 			double get_milliseconds()
 			{
+                _timer.tick([]() { /*NOP*/ });
 				return _timer.get_total_seconds() * 1000;
 			};
 			

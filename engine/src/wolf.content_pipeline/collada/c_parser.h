@@ -33,9 +33,9 @@ namespace wolf
 				WCP_EXP static HRESULT parse_collada_from_file(
                     _In_z_ const std::wstring& pFilePath, 
                     _Inout_ wolf::content_pipeline::w_cpipeline_scene* pScene,
-					_In_ bool pOptimizePoints = true, 
-                    _In_ bool pInvertNormals = false,
-                    _In_ bool pFindLODs = true);
+					_In_ const bool& pAMDTootleOptimizing = true,
+                    _In_ const bool& pInvertNormals = false,
+                    _In_ const bool& pFind_LODs_BBs = true);
 
 			private:
 				static HRESULT		                          _process_xml_node(_In_ rapidxml::xml_node<>* pXNode);
@@ -55,13 +55,13 @@ namespace wolf
 				static void			                          _get_sources(_In_ rapidxml::xml_node<>* pXNode, std::string pID, std::string pName, _Inout_ c_geometry& pGeometry);
 				static void			                          _get_vertices(_In_ rapidxml::xml_node<>*, _Inout_ c_geometry& pGeometry);
 				static void			                          _get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pNode, _Inout_ c_geometry& pGeometry);
-                static void                                   _iterate_over_nodes(_In_ const bool pOptimizePoints, 
-                                                                                  _In_ const bool pInvertNormals,
+                static void                                   _iterate_over_nodes(_In_ const bool& pAMDTootleOptimizing,
+                                                                                  _In_ const bool& pInvertNormals,
                                                                                   _Inout_ std::vector<c_node*> pNodes,
                                                                                   _Inout_ std::vector<w_cpipeline_model*>& pModels,
                                                                                   _Inout_ std::vector<c_node*>& pNodeWithUnknownInstanceRef);
-                static void                                   _create_model(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_cpipeline_model** pModel);
-				static HRESULT		                          _create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals, bool pFindLODs);
+                static void                                   _create_model(_In_ const bool& pAMDTootleOptimizing, _In_ const bool& pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_cpipeline_model** pModel);
+				static HRESULT		                          _create_scene(_Inout_ w_cpipeline_scene* pScene, _In_ const bool& pAMDTootleOptimizing, _In_ const bool& pInvertNormals, _In_ const bool& pFindLODs);
 				static void			                          _clear_all_resources();
 
 				static const char*	                          _trace_class_name;

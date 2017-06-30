@@ -111,7 +111,7 @@ namespace wolf
 			static double ticks_to_seconds(UINT64 pTicks)						{ return static_cast<double>(pTicks) / TICKS_PER_SECOND; }
 			static UINT64 seconds_to_ticks(double pSeconds)						{ return static_cast<UINT64>(pSeconds * TICKS_PER_SECOND); }
 
-			void reset_elapsed_time()
+			void reset()
 			{
 				this->_last_time = get_time();
 

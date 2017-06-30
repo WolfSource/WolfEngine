@@ -18,9 +18,6 @@ static void make_gui();
 static bool sForceUpdate = true;
 static MaskedOcclusionCulling* sMOC;
 static std::vector<model*> sModelsToBeRender;
-static uint32_t sVisible = 0;
-static uint32_t sOcclued = 0;
-static uint32_t sViewCulled = 0;
 static UINT32 sFPS = 0;
 
 #if defined(__WIN32)
@@ -276,7 +273,7 @@ void scene::load()
     }
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test_boxes.dae");// A_120_Water - Treatment_v1_16_4.DAE");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/A_120_Water-Treatment_v1_16_4.dae");// A_120_Water - Treatment_v1_16_4.DAE");
     if (_scene)
     {
         //just for converting
@@ -439,13 +436,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     if(sForceUpdate || _camera_just_updated)
     {
         sForceUpdate = false;
-
-       // auto _view_projection = this->_camera.get_projection() * this->_camera.get_view();
-
-        sVisible = 0;
-        sOcclued = 0;
-        sViewCulled = 0;
-
+        
         sMOC->ClearBuffer();
         sModelsToBeRender.clear();
         
@@ -456,9 +447,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         
         for (auto _model : this->_models)
         {
-            auto _old_value = sVisible;
-            _model->post_update(sMOC, sVisible, sOcclued, sViewCulled);
-            if (sVisible > _old_value)
+            if (_model->post_update(sMOC))
             {
                 sModelsToBeRender.push_back(_model);
             }
@@ -529,7 +518,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         V(_hr, "submiting queu for drawing models", _trace, 3);
     }
 
-    logger.write("Occlued: " + std::to_string(sOcclued));
     logger.write("FPS: " + std::to_string(pGameTime.get_frames_per_second()));
 
     if (show_gui)
@@ -659,11 +647,8 @@ static void make_gui()
         ImGui::Spacing();
     }
 
-    std::string text = 
-        "FPS: " + std::to_string(sFPS) + "\r\n" +
-        "Visible: " + std::to_string(sVisible) + "\r\n" +
-        "Occlued: " + std::to_string(sOcclued) + "\r\n" + 
-        "ViewCulled: " + std::to_string(sViewCulled);
+    std::string text =
+        "FPS: " + std::to_string(sFPS) + "\r\n";
     ImGui::Text(text.c_str());
     
     //ImGui::ShowTestWindow();

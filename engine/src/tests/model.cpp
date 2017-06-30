@@ -7,8 +7,7 @@ using namespace wolf::content_pipeline;
 
 model::model() : 
     _mesh(nullptr),
-    _shader(nullptr),
-    _number_of_tris(0)
+    _shader(nullptr)
 {
     //define vertex binding attributes
     this->_vertex_binding_attributes.declaration = w_vertex_declaration::USER_DEFINED;
@@ -54,18 +53,29 @@ HRESULT model::load(
     std::vector<w_cpipeline_model::w_mesh*> _model_meshes;
     pCPModel->get_meshes(_model_meshes);
 
+    size_t _sub_meshes_count = _model_meshes.size();
     uint32_t _base_vertex = 0;
 
-    if (_model_meshes.size())
+    //generate masked occlusion culling data
+    auto _bbs = pCPModel->get_bounding_boxes();
+    if (_bbs.size())
     {
-        this->_bounding_box_min.x = _model_meshes[0]->bounding_box.min[0];
-        this->_bounding_box_min.y = _model_meshes[0]->bounding_box.min[1];
-        this->_bounding_box_min.z = _model_meshes[0]->bounding_box.min[2];
+        for (auto& _iter : _bbs)
+        {
+            //generate vertices and indices of bounding box
+            _iter.generate_vertices_indices();
+            _add_data_for_masked_occlusion_culling(_iter);
+        }
+    }
+    else if (_sub_meshes_count)
+    {
+        //generate vertices and indices of bounding box
+        _model_meshes[0]->bounding_box.generate_vertices_indices();
+        _add_data_for_masked_occlusion_culling(_model_meshes[0]->bounding_box);
+    }
 
-        this->_bounding_box_max.x = _model_meshes[0]->bounding_box.max[0];
-        this->_bounding_box_max.y = _model_meshes[0]->bounding_box.max[1];
-        this->_bounding_box_max.z = _model_meshes[0]->bounding_box.max[2];
-
+    if (_sub_meshes_count)
+    {
         //create first lod information
         lod _lod;
         _lod.first_index = _batch_indices.size();// First index for this LOD
@@ -75,7 +85,7 @@ HRESULT model::load(
 
         this->_lod_levels.push_back(_lod);
 
-        _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex, true);
+        _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex);
 
         //load texture
         w_texture::load_to_shared_textures(pGDevice,
@@ -103,7 +113,7 @@ HRESULT model::load(
 
             this->_lod_levels.push_back(_lod);
 
-            _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex, false);
+            _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex);
         }
     }
 
@@ -148,10 +158,7 @@ HRESULT model::load(
     //load command buffer for compute shader and build it
     cs.command_buffer.load(pGDevice, 1, true, &pGDevice->vk_compute_queue);
     if (_build_compute_command_buffers(pGDevice) == S_FALSE) return S_FALSE;
-
-    auto _num_of_verts = this->_vertices_for_moc.size();
-    this->_number_of_tris = _num_of_verts / 3;
-
+    
     return S_OK;
 }
 
@@ -173,10 +180,8 @@ void model::_store_to_batch(
     _In_ const std::vector<wolf::content_pipeline::w_cpipeline_model::w_mesh*>& pModelMeshes,
     _Inout_ std::vector<float>& pBatchVertices,
     _Inout_ std::vector<uint32_t>& pBatchIndices,
-    _Inout_ uint32_t& pBaseVertex,
-    _In_ const bool& pUseForMaskedOcclusionCulling)
+    _Inout_ uint32_t& pBaseVertex)
 {
-    clipspace_vertex _cv;
     for (auto& _mesh_data : pModelMeshes)
     {
         for (size_t i = 0; i < _mesh_data->indices.size(); ++i)
@@ -194,16 +199,6 @@ void model::_store_to_batch(
             pBatchVertices.push_back(_pos[1]);
             pBatchVertices.push_back(_pos[2]);
 
-            if (pUseForMaskedOcclusionCulling)
-            {
-                _cv.x = _pos[0];
-                _cv.y = _pos[1];
-                _cv.z = 0;
-                _cv.w = _pos[2];
-
-                this->_vertices_for_moc.push_back(_cv);
-            }
-
             //uv
             pBatchVertices.push_back(_uv[0]);
             pBatchVertices.push_back(1 - _uv[1]);
@@ -211,12 +206,35 @@ void model::_store_to_batch(
             pBaseVertex++;
         }
     }
+}
 
-    if (pUseForMaskedOcclusionCulling)
+void model::_add_data_for_masked_occlusion_culling(_In_ const w_bounding_box& pBoundingBox)
+{
+    moc_data _moc_data;
+
+    auto _bb_vertices_size = pBoundingBox.vertices.size();
+    uint32_t _index = 0;
+    clipspace_vertex _cv;
+    for (size_t i = 0; i < _bb_vertices_size; i += 3)
     {
-        this->_indices_for_moc.insert(this->_indices_for_moc.end(),
-            pBatchIndices.begin(), pBatchIndices.end());
+        _cv.x = pBoundingBox.vertices[i + 0];
+        _cv.y = pBoundingBox.vertices[i + 1];
+        _cv.z = 0;
+        _cv.w = pBoundingBox.vertices[i + 2];
+
+        _moc_data.vertices.push_back(_cv);
+        _moc_data.indices.push_back(_index++);
     }
+    _moc_data.position.x = pBoundingBox.position[0];
+    _moc_data.position.y = pBoundingBox.position[1];
+    _moc_data.position.z = pBoundingBox.position[2];
+
+    _moc_data.rotation.x = pBoundingBox.rotation[0];
+    _moc_data.rotation.y = pBoundingBox.rotation[1];
+    _moc_data.rotation.z = pBoundingBox.rotation[2];
+
+    _moc_data.num_of_tris_for_moc = _bb_vertices_size / 9;
+    this->_mocs.push_back(_moc_data);
 }
 
 HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
@@ -507,8 +525,6 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
         _vertex_instances_data[_index].rot[1] = this->_instances_transforms[i].rotation[1];
         _vertex_instances_data[_index].rot[2] = this->_instances_transforms[i].rotation[2];
     }
-    //root and instances
-    this->_world_view_projections.resize(_size + 1);
 
     _size = (uint32_t)(_vertex_instances_data.size() * sizeof(vertex_instance_data));
     if (_staging_buffers[1].load_as_staging(pGDevice, _size) == S_FALSE)
@@ -773,51 +789,65 @@ HRESULT model::_build_compute_command_buffers(_In_ const std::shared_ptr<wolf::g
     return S_OK;
 }
 
-float _f = 0;
 void model::pre_update(
     _In_    w_first_person_camera pCamera,
     _Inout_ MaskedOcclusionCulling** sMOC)
 {
-    _f += 0.01f;
     using namespace glm;
-    auto _view_projection = pCamera.get_projection_view();
+    this->_view_projection = pCamera.get_projection_view();
 
-    glm::vec3 _pos = glm::vec3(
-        this->_transform.position[0],
-        this->_transform.position[1],
-        this->_transform.position[2]);
-
-    //glm::vec3 _rot = glm::vec3(
-    //    this->_transform.rotation[0],
-    //    this->_transform.rotation[1],
-    //    this->_transform.rotation[2]);
-
-    this->_world_view_projections[0] = _view_projection * glm::translate(_pos);// *
-        //glm::rotate(_rot);
-
-        //render root model to Masked Occlusion culling
-    (*sMOC)->RenderTriangles(
-        (float*)&this->_vertices_for_moc[0],
-        this->_indices_for_moc.data(), 
-        this->_number_of_tris,
-        (float*)(&this->_world_view_projections[0][0]));
+    glm::mat4 _model_to_clip_matrix;
+    //render bounding boxes of root model to Masked Occlusion culling
+    for (auto& _iter : this->_mocs)
+    {
+        //world view projection for bounding box of masked occlusion culling
+        _model_to_clip_matrix = this->_view_projection * glm::translate(_iter.position);
+        (*sMOC)->RenderTriangles(
+            (float*)&_iter.vertices[0],
+            _iter.indices.data(),
+            _iter.num_of_tris_for_moc,
+            (float*)(&_model_to_clip_matrix[0]));
+    }
 
     size_t _index = 1;
+    glm::vec3 _pos;
     for (auto& _ins : this->_instances_transforms)
     {
         _pos = glm::vec3(
             _ins.position[0],
             _ins.position[1],
             _ins.position[2]);
-        
-        this->_world_view_projections[_index] = _view_projection *
-            glm::translate(_pos);
 
-        (*sMOC)->RenderTriangles(
-            (float*)&this->_vertices_for_moc[0],
-            this->_indices_for_moc.data(),
-            this->_number_of_tris,
-            (float*)&this->_world_view_projections[_index++][0]);
+        //render all bounding boxes of instances to Masked Occlusion culling
+        if (this->_mocs.size() == 1)
+        {
+            for (auto& _iter : this->_mocs)
+            {
+                //world view projection for bounding box of masked occlusion culling
+                _model_to_clip_matrix = _view_projection * glm::translate(_pos);
+
+                (*sMOC)->RenderTriangles(
+                    (float*)&_iter.vertices[0],
+                    _iter.indices.data(),
+                    _iter.num_of_tris_for_moc,
+                    (float*)(&_model_to_clip_matrix[0]));
+            }
+        }
+        else
+        {
+            //use the bounding box transform
+            for (auto& _iter : this->_mocs)
+            {
+                //world view projection for bounding box of masked occlusion culling
+                _model_to_clip_matrix = _view_projection * glm::translate(_pos + _iter.position);
+
+                (*sMOC)->RenderTriangles(
+                    (float*)&_iter.vertices[0],
+                    _iter.indices.data(),
+                    _iter.num_of_tris_for_moc,
+                    (float*)(&_model_to_clip_matrix[0]));
+            }
+        }
     }
 }
 
@@ -858,56 +888,83 @@ static void TonemapDepth(float *depth, unsigned char *image, int w, int h)
 }
 
 float *perPixelZBuffer = new float[1280 * 720];
-void model::post_update(
-    _Inout_ MaskedOcclusionCulling* sMOC,
-    _Inout_ uint32_t& pNumberOfVisibles,
-    _Inout_ uint32_t& pNumberOfOccluded,
-    _Inout_ uint32_t& pNumberOfViewCulled)
+bool model::post_update(
+    _Inout_ MaskedOcclusionCulling* sMOC)
 {
-
+    bool _add_to_render_queue = false;
     std::fill(this->_visibilities.begin(), this->_visibilities.end(), 0.0f);
 
-    //check root model
-    auto _culling_result = sMOC->TestTriangles(
-        (float*)&this->_vertices_for_moc[0],
-        this->_indices_for_moc.data(),
-        this->_number_of_tris,
-        (float*)(&this->_world_view_projections[0][0]));
-
-    switch (_culling_result)
+    glm::mat4 _model_to_clip_matrix;
+    //check bounding boxes of root model from Masked Occlusion culling
+    MaskedOcclusionCulling::CullingResult _culling_result;
+    for (auto& _iter : this->_mocs)
     {
-    case MaskedOcclusionCulling::VISIBLE:
-        this->_visibilities[0] = true;
-        pNumberOfVisibles++;
-        break;
-    case MaskedOcclusionCulling::OCCLUDED:
-        pNumberOfOccluded++;
-        break;
-    case MaskedOcclusionCulling::VIEW_CULLED:
-        pNumberOfViewCulled++;
-        break;
+        _model_to_clip_matrix = this->_view_projection * glm::translate(_iter.position);
+        _culling_result = sMOC->TestTriangles(
+            (float*)&_iter.vertices[0],
+            _iter.indices.data(),
+            _iter.num_of_tris_for_moc,
+            (float*)(&_model_to_clip_matrix[0]));
+
+        //if at least one of the bounding boxes is visible, break this loop
+        if (_culling_result == MaskedOcclusionCulling::VISIBLE)
+        {
+            this->_visibilities[0] = true;
+            _add_to_render_queue = true;
+            break;
+        }
     }
 
-    for (size_t i = 1; i <= this->_instances_transforms.size(); ++i)
+    //check all instnaces
+    glm::vec3 _pos;
+    for (size_t i = 0; i < this->_instances_transforms.size(); ++i)
     {
-        _culling_result = sMOC->TestTriangles(
-            (float*)&this->_vertices_for_moc[0],
-            this->_indices_for_moc.data(),
-            this->_number_of_tris,
-            (float*)&this->_world_view_projections[i][0]);
+        _pos = glm::vec3(
+            this->_instances_transforms[i].position[0],
+            this->_instances_transforms[i].position[1],
+            this->_instances_transforms[i].position[2]);
 
-        switch (_culling_result)
+        if (this->_mocs.size() == 1)
         {
-        case MaskedOcclusionCulling::VISIBLE:
-            this->_visibilities[i] = 1.0f;
-            pNumberOfVisibles++;
-            break;
-        case MaskedOcclusionCulling::OCCLUDED:
-            pNumberOfOccluded++;
-            break;
-        case MaskedOcclusionCulling::VIEW_CULLED:
-            pNumberOfViewCulled++;
-            break;
+            for (auto& _iter : this->_mocs)
+            {
+                //world view projection for bounding box of masked occlusion culling
+                _model_to_clip_matrix = _view_projection * glm::translate(_pos);
+
+                _culling_result = sMOC->TestTriangles(
+                    (float*)&_iter.vertices[0],
+                    _iter.indices.data(),
+                    _iter.num_of_tris_for_moc,
+                    (float*)(&_model_to_clip_matrix[0]));
+
+                if (_culling_result == MaskedOcclusionCulling::VISIBLE)
+                {
+                    this->_visibilities[i + 1] = true;
+                    _add_to_render_queue = true;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            //use the bounding box transform
+            for (auto& _iter : this->_mocs)
+            {
+                //world view projection for bounding box of masked occlusion culling
+                _model_to_clip_matrix = _view_projection * glm::translate(_pos + _iter.position);
+
+                _culling_result = sMOC->TestTriangles(
+                    (float*)&_iter.vertices[0],
+                    _iter.indices.data(),
+                    _iter.num_of_tris_for_moc,
+                    (float*)(&_model_to_clip_matrix[0]));
+                if (_culling_result == MaskedOcclusionCulling::VISIBLE)
+                {
+                    this->_visibilities[i + 1] = true;
+                    _add_to_render_queue = true;
+                    break;
+                }
+            }
         }
     }
 
@@ -915,11 +972,13 @@ void model::post_update(
 
     //sMOC->ComputePixelDepthBuffer(perPixelZBuffer);
 
-    //// Tonemap the image
+    // Tonemap the image
     //unsigned char *image = new unsigned char[1280 * 720 * 3];
     //TonemapDepth(perPixelZBuffer, image, 1280, 720);
-    //WriteBMP("F:\\image.bmp", image, 1280, 720);
+    //WriteBMP("E:\\image.bmp", image, 1280, 720);
     //delete[] image;
+
+    return _add_to_render_queue;
 }
 
 void model::indirect_draw(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -966,7 +1025,7 @@ HRESULT model::render(
     //Update uniforms
     auto _camera_pos = pCamera->get_translate();
     
-    this->vs.unifrom.data.projection_view = pCamera->get_projection_view();
+    this->vs.unifrom.data.projection_view = this->_view_projection;
     if (this->vs.unifrom.update() == S_FALSE)
     {
         _hr = S_FALSE;
@@ -1086,9 +1145,14 @@ ULONG model::release()
     case 128:SAFE_RELEASE(this->cs.unifrom_x128); break;
     }
 
-    this->_vertices_for_moc.clear();
-    this->_indices_for_moc.clear();
-
+    //release all masked occlusion data
+    for (auto& _iter : this->_mocs)
+    {
+        _iter.vertices.clear();
+        _iter.indices.clear();
+    }
+    this->_mocs.clear();
+    
     return _super::release();
 }
 

@@ -29,9 +29,9 @@ const char* c_parser::_trace_class_name = "w_collada_parser";
 HRESULT c_parser::parse_collada_from_file(
     _In_z_ const std::wstring& pFilePath, 
     _Inout_ w_cpipeline_scene* pScene,
-    _In_ bool pOptimizePoints,
-    _In_ bool pInvertNormals,
-    _In_ bool pFindLODs)
+    _In_ const bool& pAMDTootleOptimizing,
+    _In_ const bool& pInvertNormals,
+    _In_ const bool& pFindLODs)
 {
 	auto _hr = S_OK;
 
@@ -66,7 +66,7 @@ HRESULT c_parser::parse_collada_from_file(
 	//V(_hr, L"processing xml node : " + pFilePath, _trace_class_name, 3);
 	
 	//create scene
-	_create_scene(pScene, pOptimizePoints, pInvertNormals, pFindLODs);
+	_create_scene(pScene, pAMDTootleOptimizing, pInvertNormals, pFindLODs);
 
 	//clear all
 	_doc.clear();
@@ -1204,12 +1204,15 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pN
 	pGeometry.triangles.push_back(_triangles);
 }
 
-HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals, bool pFindLODs)
+HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, 
+    _In_ const bool& pAMDTootleOptimizing, 
+    _In_ const bool& pInvertNormals, 
+    _In_ const bool& pFind_LODs_BBs)
 {
     std::vector<c_node*> _mesh_with_unknown_instance_ref;
     std::vector<w_cpipeline_model*> _models;
 
-    _iterate_over_nodes(pOptimizePoints, pInvertNormals, sNodes, _models, _mesh_with_unknown_instance_ref);
+    _iterate_over_nodes(pAMDTootleOptimizing, pInvertNormals, sNodes, _models, _mesh_with_unknown_instance_ref);
     
     //if we have nodes without unknown instance ref
     if (_mesh_with_unknown_instance_ref.size())
@@ -1217,7 +1220,7 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
         for (auto pNode : _mesh_with_unknown_instance_ref)
         {
             w_cpipeline_model* _model = nullptr;
-            _create_model(pOptimizePoints, pInvertNormals, &pNode, &_model);
+            _create_model(pAMDTootleOptimizing, pInvertNormals, &pNode, &_model);
             if (_model)
             {
                 //check scale
@@ -1320,9 +1323,10 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
 
     //find LODS index
     std::vector<size_t> _roots;
-    if (pFindLODs)
+    if (pFind_LODs_BBs)
     {
         std::vector<size_t> _lods;
+        std::vector<size_t> _bbs;
 
         for (size_t i = 0; i < _models.size(); i++)
         {
@@ -1333,6 +1337,10 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
                 if (strstr(_name.c_str(), "lod") != NULL)
                 {
                     _lods.push_back(i);
+                }
+                else if (strstr(_name.c_str(), "bb") != NULL)
+                {
+                    _bbs.push_back(i);
                 }
                 else
                 {
@@ -1347,7 +1355,7 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
             auto _index = _roots[i];
             auto _name = _models[_index]->get_name();
 
-            std::vector<int> index_lods;
+            std::vector<int> _index_lods, _index_bbs;;
             wolf::system::convert::split_string(_name, "_", _splits);
             if (_splits.size() > 0)
             {
@@ -1355,43 +1363,80 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
                 int _i = 0;
 
                 _lods.erase(std::remove_if(_lods.begin(), _lods.end(),
-                    [_design_name, _models, &index_lods](_In_ size_t pIter)
+                    [_design_name, _models, &_index_lods](_In_ size_t pIter)
                 {
                     auto __name = _models[pIter]->get_name();
                     if (wolf::system::convert::has_string_start_with(__name, _design_name))
                     {
-                        index_lods.push_back(pIter);
+                        _index_lods.push_back(pIter);
                         return true;
                     }
 
                     return false;
 
                 }), _lods.end());
+
+                _bbs.erase(std::remove_if(_bbs.begin(), _bbs.end(),
+                    [_design_name, _models, &_index_bbs](_In_ size_t pIter)
+                {
+                    auto __name = _models[pIter]->get_name();
+                    if (wolf::system::convert::has_string_start_with(__name, _design_name))
+                    {
+                        _index_bbs.push_back(pIter);
+                        return true;
+                    }
+
+                    return false;
+
+                }), _bbs.end());
             }
 
-            //sort by name
-            std::sort(index_lods.begin(), index_lods.end(), [&_models](_In_ int const& a, _In_ int const& b)
+            //sort lods by name
+            std::sort(_index_lods.begin(), _index_lods.end(), [&_models](_In_ int const& a, _In_ int const& b)
             {
-                return (_models[a]->get_name().compare(_models[b]->get_name()) < 0 );
+                return (_models[a]->get_name().compare(_models[b]->get_name()) < 0);
             });
 
             std::vector<w_cpipeline_model*> _lods_models;
-            for (auto& _lod_index : index_lods)
+            for (auto& _lod_index : _index_lods)
             {
                 _lods_models.push_back(_models[_lod_index]);
             }
-            _models[_index]->add_lods(_lods_models);
-            _lods_models.clear();
+            std::vector<w_bounding_box> _bbs;
+            for (auto& _bb_index : _index_bbs)
+            {
+                auto _m = _models[_bb_index];
+                if (!_m) continue;
+                for (size_t i = 0; i < _m->get_meshes_count(); ++i)
+                {
+                    auto _t = _m->get_transform();
+
+                    _bbs.push_back(*(_m->get_mesh_bounding_box(i)));
+                }
+            }
+            
+            if (_lods_models.size())
+            {
+                _models[_index]->add_lods(_lods_models);
+                _lods_models.clear();
+            }
+
+            if (_bbs.size())
+            {
+                _models[_index]->add_bounding_boxes(_bbs);
+                _bbs.clear();
+            }
 
             _splits.clear();
         }
 
-        _lods.clear();
+        if (_lods.size()) _lods.clear();
+        if (_bbs.size()) _bbs.clear();
     }
 
     if (_models.size())
     {
-        if (pFindLODs)
+        if (pFind_LODs_BBs)
         {
             std::vector<w_cpipeline_model*> _root_models;
             for (auto& _index : _roots)
@@ -1434,8 +1479,8 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimiz
 	return S_OK;
 }
 
-void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, 
-    _In_ const bool pInvertNormals, 
+void c_parser::_iterate_over_nodes(_In_ const bool& pAMDTootleOptimizing,
+    _In_ const bool& pInvertNormals, 
     _Inout_ std::vector<c_node*> pNodes, 
     _Inout_ std::vector<w_cpipeline_model*>& pModels,
     _Inout_ std::vector<c_node*>& pMeshWithUnknownInstanceRef)
@@ -1520,7 +1565,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
             else
             {
                 w_cpipeline_model* _model = nullptr;
-                _create_model(pOptimizePoints, pInvertNormals, &_node, &_model);
+                _create_model(pAMDTootleOptimizing, pInvertNormals, &_node, &_model);
                 //if node procceded and model created
                 if (_model)
                 {
@@ -1533,7 +1578,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
                 //iterate over sub models
                 if (_node->child_nodes.size())
                 {
-                    _iterate_over_nodes(pOptimizePoints,
+                    _iterate_over_nodes(pAMDTootleOptimizing,
                         pInvertNormals,
                         _node->child_nodes,
                         pModels,
@@ -1544,8 +1589,8 @@ void c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints,
     }
 }
 
-void c_parser::_create_model(_In_ const bool pOptimizePoints, 
-    _In_ const bool pInvertNormals,
+void c_parser::_create_model(_In_ const bool& pAMDTootleOptimizing,
+    _In_ const bool& pInvertNormals,
     _Inout_ c_node** pNode,
     _Inout_ w_cpipeline_model** pModel)
 {
@@ -1620,6 +1665,49 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
         //{
         //	skin = s[i];
         //}
+
+        //set transform
+        w_transform_info _transform;
+        auto _rotation = glm::rotation_from_angle_axis(_node_ptr->rotation.x, _node_ptr->rotation.y, _node_ptr->rotation.z, _node_ptr->rotation.w);
+
+        if (sZ_Up)
+        {
+            _transform.position[0] = _node_ptr->translate.x;
+            _transform.position[1] = _node_ptr->translate.z;
+            _transform.position[2] = -_node_ptr->translate.y;
+
+            _transform.rotation[0] = _rotation.x;
+            _transform.rotation[1] = _rotation.y;
+            _transform.rotation[2] = _rotation.z;
+        }
+        else
+        {
+            _transform.position[0] = _node_ptr->translate.x;
+            _transform.position[1] = _node_ptr->translate.y;
+            _transform.position[2] = _node_ptr->translate.z;
+
+            _transform.rotation[0] = _rotation.x;
+            _transform.rotation[1] = _rotation.y;
+            _transform.rotation[2] = _rotation.z;
+        }
+
+        if (_node_ptr->scale.x == 0 &&
+            _node_ptr->scale.y == 0 &&
+            _node_ptr->scale.z == 0)
+        {
+            _transform.scale[0] = 1;
+            _transform.scale[1] = 1;
+            _transform.scale[2] = 1;
+        }
+        else
+        {
+            _transform.scale[0] = _node_ptr->scale.x;
+            _transform.scale[1] = _node_ptr->scale.y;
+            _transform.scale[2] = _node_ptr->scale.z;
+        }
+
+        _transform.transform = _node_ptr->transform;
+
         auto _model = w_cpipeline_model::create_model(
             _g,
             skin,
@@ -1628,55 +1716,12 @@ void c_parser::_create_model(_In_ const bool pOptimizePoints,
             sLibraryMaterials,
             sLibraryEffects,
             sLibraryImages,
-            pOptimizePoints,
+            _transform,
+            pAMDTootleOptimizing,
             sZ_Up);
 
         _model->set_name(_node_ptr->c_name);
         _model->set_instance_geometry_name(_node_ptr->instanced_geometry_name);
-
-        //set transform
-        w_transform_info _trasform;
-        auto _rotation = glm::rotation_from_angle_axis(_node_ptr->rotation.x, _node_ptr->rotation.y, _node_ptr->rotation.z, _node_ptr->rotation.w);
-
-        if (sZ_Up)
-        {
-            _trasform.position[0] = _node_ptr->translate.x;
-            _trasform.position[1] = _node_ptr->translate.z;
-            _trasform.position[2] = -_node_ptr->translate.y;
-
-            _trasform.rotation[0] = _rotation.x;
-            _trasform.rotation[1] = _rotation.y;
-            _trasform.rotation[2] = _rotation.z;
-        }
-        else
-        {
-            _trasform.position[0] = _node_ptr->translate.x;
-            _trasform.position[1] = _node_ptr->translate.y;
-            _trasform.position[2] = _node_ptr->translate.z;
-
-            _trasform.rotation[0] = _rotation.x;
-            _trasform.rotation[1] = _rotation.y;
-            _trasform.rotation[2] = _rotation.z;
-        }
-
-        if (_node_ptr->scale.x == 0 && 
-            _node_ptr->scale.y == 0 &&
-            _node_ptr->scale.z == 0)
-        {
-            _trasform.scale[0] = 1;
-            _trasform.scale[1] = 1;
-            _trasform.scale[2] = 1;
-        }
-        else
-        {
-            _trasform.scale[0] = _node_ptr->scale.x;
-            _trasform.scale[1] = _node_ptr->scale.y;
-            _trasform.scale[2] = _node_ptr->scale.z;
-        }
-
-        _trasform.transform = _node_ptr->transform;
-        _model->set_transform(_trasform);
-        _model->update_world();
 
         //_model->set_effects(effects);
         ////_model.Textures = textureInfos;
