@@ -304,7 +304,7 @@ void scene::load()
 
         _scene->get_first_camera(this->_camera);
 
-        float _near_plan = 0.01f, far_plan = 5000;
+        float _near_plan = 0.1f, far_plan = 5000;
         
         this->_camera.set_near_plan(_near_plan);
         sMOC->SetNearClipPlane(_near_plan);

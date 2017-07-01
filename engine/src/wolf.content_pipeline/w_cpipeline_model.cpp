@@ -240,31 +240,40 @@ w_cpipeline_model* w_cpipeline_model::create_model(
             else if (_iter != _indices_data.end() && _tex.size() && _vertex_index < _vertices_data.size() && 
                 (_vertices_data[_vertex_index].uv[0] != _tex[0] || _vertices_data[_vertex_index].uv[1] != _tex[1]))
             {
-                logger.error(pGeometry.name + " : duplicated UV for vertex[" + std::to_string(_vertex_index) + "]: " +
-                    std::to_string(_pos[0]) + "," + std::to_string(_pos[0]) + "," + std::to_string(_pos[0]));
+                //duplicated UV for vertex
 
-                //bool _done = false;
-                //int _vertices_size = _vertices_data.size() - 1;
-                //int j = _vertex_index;
-                //for (auto int1 : _normal_list)
-                //{
-                //    if (std::find_if(int1.begin(), int1.end(), [&_vertices_size](auto _iter) -> bool { return _iter == _vertices_size; }) != int1.end())
-                //    {
-                //        int1.push_back(j);
-                //        _done = true;
-                //    }
-                //    if (std::find_if(int1.begin(), int1.end(), [&j](auto _iter) -> bool { return _iter == j; }) != int1.end())
-                //    {
-                //        int1.push_back(_vertices_size);
-                //        _done = true;
-                //    }
-                //}
+                if (pZUp)
+                {
+                    std::swap(_pos[1], _pos[2]);
+                    _pos[2] *= -1;
+                }
 
-                //if (!_done)
-                //{
-                //    std::vector<int> _iner_list = { _vertices_size, j };
-                //    _normal_list.push_back(_iner_list);
-                //}
+                //check for minimum and maximum vertices for bounding boxes
+                _min_vertex.x = std::min(_pos[0], _min_vertex.x);
+                _min_vertex.y = std::min(_pos[1], _min_vertex.y);
+                _min_vertex.z = std::min(_pos[2], _min_vertex.z);
+
+                _max_vertex.x = std::max(_pos[0], _max_vertex.x);
+                _max_vertex.y = std::max(_pos[1], _max_vertex.y);
+                _max_vertex.z = std::max(_pos[2], _max_vertex.z);
+
+                if (_pos.size()) std::memcpy(&_vertex.position[0], _pos.data(), 3 * sizeof(float));
+                if (_nor.size()) std::memcpy(&_vertex.normal[0], _nor.data(), 3 * sizeof(float));
+                if (_tex.size()) std::memcpy(&_vertex.uv[0], _tex.data(), 2 * sizeof(float));
+
+                _vertex_index = _vertices_data.size();
+                _vertex.vertex_index = _vertex_index + 1;
+
+                if (pAMDTootleOptimizing)
+                {
+                    _vertices_positions.insert(_vertices_positions.end(), _pos.begin(), _pos.end());
+                }
+
+                //TODO:
+                std::memset(&_vertex.blend_weight[0], -1, 4 * sizeof(float));
+                std::memset(&_vertex.blend_indices[0], -1, 4 * sizeof(int));
+
+                _vertices_data.push_back(_vertex);
             }
 
             //store vertices and indices

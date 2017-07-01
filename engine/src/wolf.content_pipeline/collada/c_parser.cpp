@@ -1532,9 +1532,9 @@ void c_parser::_iterate_over_nodes(_In_ const bool& pAMDTootleOptimizing,
                     _instance_info.position[1] = _node->translate.z;
                     _instance_info.position[2] = -_node->translate.y;
 
-                    _instance_info.rotation[0] = _rotation.x - glm::radians(90.0f);
-                    _instance_info.rotation[1] = _rotation.y;
-                    _instance_info.rotation[2] = _rotation.z;
+                    _instance_info.rotation[0] = _rotation.x;
+                    _instance_info.rotation[1] = _rotation.z;
+                    _instance_info.rotation[2] = _rotation.y;
                 }
                 else
                 {
@@ -1542,7 +1542,7 @@ void c_parser::_iterate_over_nodes(_In_ const bool& pAMDTootleOptimizing,
                     _instance_info.position[1] = _node->translate.y;
                     _instance_info.position[2] = _node->translate.z;
 
-                    _instance_info.rotation[0] = _rotation.x;
+                    _instance_info.rotation[0] = _rotation.x - glm::radians(90.0f);
                     _instance_info.rotation[1] = _rotation.y;
                     _instance_info.rotation[2] = _rotation.z;
                 }
@@ -1677,8 +1677,8 @@ void c_parser::_create_model(_In_ const bool& pAMDTootleOptimizing,
             _transform.position[2] = -_node_ptr->translate.y;
 
             _transform.rotation[0] = _rotation.x;
-            _transform.rotation[1] = _rotation.y;
-            _transform.rotation[2] = _rotation.z;
+            _transform.rotation[1] = _rotation.z;
+            _transform.rotation[2] = _rotation.y;
         }
         else
         {
@@ -1686,7 +1686,7 @@ void c_parser::_create_model(_In_ const bool& pAMDTootleOptimizing,
             _transform.position[1] = _node_ptr->translate.y;
             _transform.position[2] = _node_ptr->translate.z;
 
-            _transform.rotation[0] = _rotation.x;
+            _transform.rotation[0] = _rotation.x - glm::radians(90.0f);
             _transform.rotation[1] = _rotation.y;
             _transform.rotation[2] = _rotation.z;
         }

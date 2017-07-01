@@ -51,9 +51,9 @@ mat3 rotate_over_axis(float pAngle, vec3 pAxis)
 
 void main() 
 {
-    mat3 rx = rotate_over_axis(0.0, vec3( 1.0, 0.0, 0.0));
-	mat3 ry = rotate_over_axis(0.0, vec3( 0.0, 1.0, 0.0));
-	mat3 rz = rotate_over_axis(0.0, vec3( 0.0, 0.0, 1.0));
+    mat3 rx = rotate_over_axis(i_ins_rot.x, vec3( 1.0, 0.0, 0.0));
+	mat3 ry = rotate_over_axis(i_ins_rot.y, vec3( 0.0, 1.0, 0.0));
+	mat3 rz = rotate_over_axis(i_ins_rot.z, vec3( 0.0, 0.0, 1.0));
 
 	mat3 _rot = rx * ry * rz;
 	mat4 _world = mat4( _rot[0][0]			, _rot[0][1]		, _rot[0][2]				, 0.0,
