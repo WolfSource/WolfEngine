@@ -972,10 +972,11 @@ bool model::post_update(
 
     //sMOC->ComputePixelDepthBuffer(perPixelZBuffer);
 
-    // Tonemap the image
+    //Tonemap the image
+    
     //unsigned char *image = new unsigned char[1280 * 720 * 3];
     //TonemapDepth(perPixelZBuffer, image, 1280, 720);
-    //WriteBMP("E:\\image.bmp", image, 1280, 720);
+    //WriteBMP("F:\\image.bmp", image, 1280, 720);
     //delete[] image;
 
     return _add_to_render_queue;
