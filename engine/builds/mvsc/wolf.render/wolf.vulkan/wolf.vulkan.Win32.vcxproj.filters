@@ -52,6 +52,9 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />

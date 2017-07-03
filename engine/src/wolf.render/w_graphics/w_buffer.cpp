@@ -21,15 +21,16 @@ namespace wolf
             }
             
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                         _In_ const uint32_t pBufferSize,
-                         _In_ const VkBufferUsageFlags pUsageFlags,
-                         _In_ const VkMemoryPropertyFlags pMemoryFlags)
+                _In_ const uint32_t pBufferSize,
+                _In_ const VkBufferUsageFlags pUsageFlags,
+                _In_ const VkMemoryPropertyFlags pMemoryFlags)
             {
                 this->_gDevice = pGDevice;
-                this->_size = pBufferSize;
                 this->_usage_flags = pUsageFlags;
                 this->_memory_flags = pMemoryFlags;
-                
+
+                this->_size = pBufferSize;
+
                 const VkBufferCreateInfo _buffer_create_info =
                 {
                     VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,             // Type
@@ -41,27 +42,27 @@ namespace wolf
                     0,                                                // QueueFamilyIndexCount
                     nullptr                                           // QueueFamilyIndices
                 };
-                
+
                 auto _hr = vkCreateBuffer(this->_gDevice->vk_device,
-                                          &_buffer_create_info,
-                                          nullptr,
-                                          &this->_handle);
-                if(_hr)
+                    &_buffer_create_info,
+                    nullptr,
+                    &this->_handle);
+                if (_hr)
                 {
                     V(S_FALSE, "w_buffer", "creating buffer for graphics device: " + this->_gDevice->device_name +
-                      " ID: " + std::to_string(this->_gDevice->device_id), 3, false, true);
+                        " ID: " + std::to_string(this->_gDevice->device_id), 3, false, true);
                     return S_FALSE;
                 }
-                
+
                 VkMemoryRequirements _buffer_memory_requirements;
                 vkGetBufferMemoryRequirements(this->_gDevice->vk_device,
-                                              this->_handle,
-                                              &_buffer_memory_requirements);
-                
+                    this->_handle,
+                    &_buffer_memory_requirements);
+
                 VkPhysicalDeviceMemoryProperties _memory_properties;
                 vkGetPhysicalDeviceMemoryProperties(this->_gDevice->vk_physical_device,
-                                                    &_memory_properties);
-                
+                    &_memory_properties);
+
                 for (uint32_t i = 0; i < _memory_properties.memoryTypeCount; ++i)
                 {
                     if ((_buffer_memory_requirements.memoryTypeBits & (1 << i)) &&
@@ -89,9 +90,9 @@ namespace wolf
                         }
                     }
                 }
-                
+
                 logger.error("Could not create buffer, because proposed memory property not found.");
-                
+
                 return S_FALSE;
             }
             
@@ -218,15 +219,15 @@ namespace wolf
                 _mapped_range.memory = this->_memory;
                 _mapped_range.offset = pOffset;
                 _mapped_range.size = pSize;
-                auto _hr = vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range);
-                
-                return _hr == VK_SUCCESS ? S_OK : S_FALSE;
+                return vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range) == VK_SUCCESS ? S_OK : S_FALSE;
             }
             
             ULONG release()
             {
                 this->_size = 0;
-                
+                this->_name.clear();
+                this->_mapped = nullptr;
+
                 if(this->_handle)
                 {
                     vkDestroyBuffer(this->_gDevice->vk_device,

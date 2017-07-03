@@ -7,6 +7,12 @@
 #include <w_graphics/w_imgui.h>
 #include "masked_occlusion_culling/MaskedOcclusionCulling.h"
 #include <cameras/w_camera.h>
+
+#include "tbb/parallel_for_each.h"
+#include "tbb/tick_count.h"
+#include "tbb/blocked_range.h"
+#include "tbb/parallel_for.h"
+
 using namespace wolf::system;
 using namespace wolf::graphics;
 using namespace wolf::framework;
@@ -47,7 +53,7 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
 
     //enable/disable gpu debugging
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = false;
+    _config.debug_gpu = true;
     this->set_graphics_device_manager_configs(_config);
 }
 
@@ -134,15 +140,18 @@ void scene::load()
     auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
     _depth_attachment.format = _output_window->vk_depth_buffer_format;
 
+    std::vector<VkAttachmentDescription> _attachments =
+    {
+        w_graphics_device::w_render_pass_attachments::color_attachment_description,
+        _depth_attachment,
+    };
+
     //create draw render pass
     auto _hr = this->_draw_render_pass.load(
         _gDevice,
         _viewport,
         _viewport_scissor,
-        {
-            w_graphics_device::w_render_pass_attachments::color_attachment_description,
-            _depth_attachment,
-        });
+        _attachments);
 
     if (_hr == S_FALSE)
     {
@@ -152,27 +161,14 @@ void scene::load()
         return;
     }
 
-    std::vector<VkAttachmentDescription> _attachments(2);
-    // Color attachment
-    _attachments[0].format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
-    _attachments[0].samples = VK_SAMPLE_COUNT_1_BIT;
+
+    // Color attachments
     // Don't clear the framebuffer (like the renderpass from the example does)
     _attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-    _attachments[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    _attachments[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    _attachments[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    _attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    _attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
     //Depth attachment
-    _attachments[1].format = _output_window->vk_depth_buffer_format;
-    _attachments[1].samples = VK_SAMPLE_COUNT_1_BIT;
     _attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     _attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    _attachments[1].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    _attachments[1].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    _attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    _attachments[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
     VkAttachmentReference colorReference = {};
     colorReference.attachment = 0;
@@ -182,48 +178,12 @@ void scene::load()
     depthReference.attachment = 1;
     depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-    VkSubpassDescription subpassDescription = {};
-    subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-    subpassDescription.flags = 0;
-    subpassDescription.inputAttachmentCount = 0;
-    subpassDescription.pInputAttachments = NULL;
-    subpassDescription.colorAttachmentCount = 1;
-    subpassDescription.pColorAttachments = &colorReference;
-    subpassDescription.pResolveAttachments = NULL;
-    subpassDescription.pDepthStencilAttachment = nullptr;
-    subpassDescription.preserveAttachmentCount = 0;
-    subpassDescription.pPreserveAttachments = NULL;
-
-    VkSubpassDependency subpassDependencies[2] = {};
-
-    // Transition from final to initial (VK_SUBPASS_EXTERNAL refers to all commmands executed outside of the actual renderpass)
-    subpassDependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
-    subpassDependencies[0].dstSubpass = 0;
-    subpassDependencies[0].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-    subpassDependencies[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    subpassDependencies[0].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-    subpassDependencies[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    subpassDependencies[0].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
-
-    // Transition from initial to final
-    subpassDependencies[1].srcSubpass = 0;
-    subpassDependencies[1].dstSubpass = VK_SUBPASS_EXTERNAL;
-    subpassDependencies[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    subpassDependencies[1].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-    subpassDependencies[1].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    subpassDependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-    subpassDependencies[1].dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT;
-
-    std::vector<VkSubpassDescription> _subpass_description = { subpassDescription };
-    std::vector<VkSubpassDependency> _subpassDependencies = { subpassDependencies[0], subpassDependencies[1] };
 
     _hr = this->_gui_render_pass.load(
         _gDevice,
         _viewport,
         _viewport_scissor,
-        _attachments,
-        &_subpass_description,
-        &_subpassDependencies);
+        _attachments);
 
     if (_hr == S_FALSE)
     {
@@ -273,12 +233,12 @@ void scene::load()
     }
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/A_120_Water-Treatment_v1_16_4.dae");// A_120_Water - Treatment_v1_16_4.DAE");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");// A_120_Water - Treatment_v1_16_4.wscene");// A_120_Water - Treatment_v1_16_4.DAE");
     if (_scene)
     {
         //just for converting
         //std::vector<w_cpipeline_scene> _scenes = { *_scene };
-        //w_content_manager::save_wolf_scenes_to_file(_scenes, content_path + L"models/test.wscene");
+        //w_content_manager::save_wolf_scenes_to_file(_scenes, content_path + L"models/A_120_Water-Treatment_v1_16_4.wscene");
         //_scenes.clear();
 
         //get all models
@@ -423,43 +383,45 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     //if camera updated, then update command buffers based on result of masked occlusion culling
     auto _camera_just_updated = this->_camera.update(pGameTime, this->_screen_size);
     
-    //order by distance to camera
     auto _cam_pos = this->_camera.get_translate();
-    std::sort(sModelsToBeRender.begin(), sModelsToBeRender.end(), [&_cam_pos](_In_ model* a, _In_ model* b)
-    {
-        auto _a_distance = glm::distance(_cam_pos, a->get_position());
-        auto _b_distance = glm::distance(_cam_pos, b->get_position());
-
-        return _a_distance < _b_distance;
-    });   
-    
-    if(sForceUpdate || _camera_just_updated)
+    if (sForceUpdate || _camera_just_updated)
     {
         sForceUpdate = false;
-        
-        sMOC->ClearBuffer();
-        sModelsToBeRender.clear();
-        
-        for (auto _model : this->_models)
-        {
-            _model->pre_update(this->_camera, &sMOC);
-        }
-        
-        for (auto _model : this->_models)
-        {
-            if (_model->post_update(sMOC))
-            {
-                sModelsToBeRender.push_back(_model);
-            }
-        }
+        //order by distance to camera
+        //std::sort(this->_models.begin(), this->_models.end(), [&_cam_pos](_In_ model* a, _In_ model* b)
+        //{
+        //    auto _a_distance = glm::distance(_cam_pos, a->get_position());
+        //    auto _b_distance = glm::distance(_cam_pos, b->get_position());
 
-        _build_draw_command_buffer(_gDevice);
+        //    return _a_distance < _b_distance;
+        //});  
+
+        if (this->_models.size())
+        {
+            sMOC->ClearBuffer();
+            sModelsToBeRender.clear();
+
+            std::for_each(this->_models.begin(), this->_models.end(), [&](_In_ model* pModel)
+            {
+                pModel->pre_update(this->_camera, &sMOC);
+            });
+
+            std::for_each(this->_models.begin(), this->_models.end(), [&](_In_ model* pModel)
+            {
+                if (pModel->post_update(sMOC))
+                {
+                    sModelsToBeRender.push_back(pModel);
+                }
+            });
+
+            _build_draw_command_buffer(_gDevice);
+        }
     }
 
     w_game::update(pGameTime);
 }
 
-static bool show_gui = false;
+static bool show_gui = true;
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
     const std::string _trace = this->name + "::render";
@@ -482,13 +444,13 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     });
 
     //pre render which run compute shaders
-    for (auto& _model : sModelsToBeRender)
+    std::for_each(sModelsToBeRender.begin(), sModelsToBeRender.end(), [&](_In_ model* pModel)
     {
-        if (_model->render(_gDevice, &this->_camera) == S_OK)
+        if (pModel->render(_gDevice, &this->_camera) == S_OK)
         {
-            _wait_for_pre_render_semaphores.push_back(_model->get_semaphore());
+            _wait_for_pre_render_semaphores.push_back(pModel->get_semaphore());
         }
-    }
+    });
 
     // Submit graphics command buffer
     auto _compute_cmd_buffer = this->_draw_command_buffers.get_command_at(_output_window->vk_swap_chain_image_index);
@@ -517,9 +479,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         _hr = S_FALSE;
         V(_hr, "submiting queu for drawing models", _trace, 3);
     }
-
-    logger.write("FPS: " + std::to_string(pGameTime.get_frames_per_second()));
-
+    
     if (show_gui)
     {
         _build_gui_command_buffer(_gDevice, pGameTime);
@@ -545,17 +505,16 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
             V(_hr, "submiting queu for drawing gui", _trace, 3);
         }
     }
-    auto __hr = w_game::render(pGameTime);
+    _hr = w_game::render(pGameTime);
 
     //post render which run compute shaders
     for (auto& _model : this->_models)
     {
         _model->post_render(_gDevice);
     }
-
   
     sFPS = pGameTime.get_frames_per_second();
-    return S_OK;
+    return _hr;
 }
 
 void scene::on_window_resized(_In_ UINT pIndex)
@@ -595,63 +554,108 @@ ULONG scene::release()
 
 static void make_gui()
 {
-    ImGuiStyle& _style = ImGui::GetStyle();
-    _style.WindowPadding = ImVec2(3, 2);
-    _style.WindowRounding = 0;
-    _style.GrabRounding = 4;
-    _style.GrabMinSize = 20;
-    _style.FramePadding = ImVec2(5, 5);
-    _style.Colors[2].x = 0.9098039215686275f;
-    _style.Colors[2].y = 0.4431372549019608f;
-    _style.Colors[2].z = 0.3176470588235294f;
-    _style.Colors[2].w = 1.0f;
-
-    static bool no_titlebar = true;
-    static bool no_border = true;
-    static bool no_resize = true;
-    static bool no_move = true;
-    static bool no_scrollbar = true;
-    static bool no_collapse = true;
-    static bool no_menu = true;
-
-    ImGuiWindowFlags window_flags = 0;
-    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
-    if (!no_border)   window_flags |= ImGuiWindowFlags_ShowBorders;
-    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
-    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
-    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
-    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
-    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
-    if (!ImGui::Begin("ImGui Demo", 0, window_flags))
-    {
-        // Early out if the window is collapsed, as an optimization.
-        ImGui::End();
-        return;
-    }
-
-    ImGui::SetWindowPos(ImVec2(0, 0));
-    ImGui::SetNextWindowSize(ImVec2(320, 320), ImGuiSetCond_FirstUseEver);
-    for (int i = 0; i < 6; i++)
-    {
-        ImTextureID tex_id = (void*)("#image");
-        ImGui::PushID(i);
-        ImGui::PushStyleColor(ImGuiCol_ImageActive, ImColor(0.0f, 0.0f, 255.0f, 255.0f));
-        ImGui::PushStyleColor(ImGuiCol_ImageHovered, ImColor(0.0f, 0.0f, 255.0f, 155.0f));
-        if (ImGui::ImageButton(tex_id, ImVec2(32, 32), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
-        {
-         
-        }
-        ImGui::PopStyleColor(2);
-        ImGui::PopID();
-        ImGui::Spacing();
-        ImGui::Spacing();
-    }
-
-    std::string text =
-        "FPS: " + std::to_string(sFPS) + "\r\n";
-    ImGui::Text(text.c_str());
+    //    ImGuiStyle& _style = ImGui::GetStyle();
+    //    _style.WindowPadding = ImVec2(3, 2);
+    //    _style.WindowRounding = 0;
+    //    _style.GrabRounding = 4;
+    //    _style.GrabMinSize = 20;
+    //    _style.FramePadding = ImVec2(5, 5);
+    //    _style.Colors[2].x = 0.9098039215686275f;
+    //    _style.Colors[2].y = 0.4431372549019608f;
+    //    _style.Colors[2].z = 0.3176470588235294f;
+    //    _style.Colors[2].w = 1.0f;
+    //
+    //    static bool no_titlebar = true;
+    //    static bool no_border = true;
+    //    static bool no_resize = true;
+    //    static bool no_move = true;
+    //    static bool no_scrollbar = true;
+    //    static bool no_collapse = true;
+    //    static bool no_menu = true;
+    //
+    //    ImGuiWindowFlags window_flags = 0;
+    //    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
+    //    if (!no_border)   window_flags |= ImGuiWindowFlags_ShowBorders;
+    //    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
+    //    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
+    //    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
+    //    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
+    //    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
+    //
+    //#pragma region Left Buttons
+    //
+    //    if (!ImGui::Begin("Left_Widget", 0, window_flags))
+    //    {
+    //        // Early out if the window is collapsed, as an optimization.
+    //        ImGui::End();
+    //        return;
+    //    }
+    //
+    //    ImGui::SetWindowPos(ImVec2(0, 0));
+    //    ImGui::SetNextWindowSize(ImVec2(320, 320), ImGuiSetCond_FirstUseEver);
+    //    
+    //    for (int i = 0; i < 6; i++)
+    //    {
+    //        ImTextureID tex_id = (void*)("#image");
+    //        ImGui::PushID(i);
+    //        ImGui::PushStyleColor(ImGuiCol_ImageActive, ImColor(0.0f, 0.0f, 255.0f, 255.0f));
+    //        ImGui::PushStyleColor(ImGuiCol_ImageHovered, ImColor(0.0f, 0.0f, 255.0f, 155.0f));
+    //        if (ImGui::ImageButton(tex_id, ImVec2(32, 32), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
+    //        {
+    //            logger.write("Button");
+    //        }
+    //        ImGui::PopStyleColor(2);
+    //        ImGui::PopID();
+    //        ImGui::Spacing();
+    //        ImGui::Spacing();
+    //    }
+    //
+    //    std::string text =
+    //        "FPS:" + std::to_string(sFPS) + "  \r\n";
+    //    ImGui::Text(text.c_str());
+    //    
+    //    ImGui::End();
+    //
+    //#pragma endregion
+    //
+    //#pragma region Search
+    //    
+    //    window_flags = 0;
+    //    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
+    //    if (!no_border)   window_flags |= ImGuiWindowFlags_ShowBorders;
+    //    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
+    //    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
+    //    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
+    //    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
+    //    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
+    //    if (!ImGui::Begin("Search_Widget", 0, window_flags))
+    //    {
+    //        // Early out if the window is collapsed, as an optimization.
+    //        ImGui::End();
+    //        return;
+    //    }
+    //
+    //    ImGui::SetWindowPos(ImVec2(40, 10));
+    //    ImGui::SetNextWindowSize(ImVec2(400, 100), ImGuiSetCond_FirstUseEver);
+    //
+    //    const size_t _size = 256;
+    //    char str0[_size] = "Hello, world!";
+    //    ImGui::InputText("input text", str0, _size);
+    //    
+    //    //ImGui::SameLine(); 
+    //    //ImGui::TextDisabled("(?)");
+    //    //if (ImGui::IsItemHovered())
+    //    //{
+    //    //    ImGui::BeginTooltip();
+    //    //    ImGui::PushTextWrapPos(450.0f);
+    //    //    ImGui::TextUnformatted("Search area by entering device name.");
+    //    //    ImGui::PopTextWrapPos();
+    //    //    ImGui::EndTooltip();
+    //    //}
+    //
+    //    ImGui::End();
+    //
+    //#pragma endregion
     
-    //ImGui::ShowTestWindow();
-
-    ImGui::End();
+ImGui::ShowTestWindow();
 }

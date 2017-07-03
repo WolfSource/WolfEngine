@@ -122,7 +122,7 @@ VkPipelineRasterizationStateCreateInfo w_graphics_device::defaults::vk_default_p
         0,                                                              // flags
         VK_FALSE,                                                       // depthClampEnable
         VK_FALSE,                                                       // rasterizerDiscardEnable
-        VK_POLYGON_MODE_FILL,                                           // polygonMode
+        VK_POLYGON_MODE_LINE,                                           // polygonMode
         VK_CULL_MODE_FRONT_BIT,                                         // cullMode
         VK_FRONT_FACE_CLOCKWISE,                                        // frontFace
         VK_FALSE,                                                       // depthBiasEnable
@@ -194,24 +194,6 @@ w_output_presentation_window w_graphics_device::main_window()
     //return null window;qwwa
 	return w_output_presentation_window();
 }
-
-//W_EXP HRESULT w_graphics_device::store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,
-//                                                                 _In_ w_command_buffers* pCommandBuffers,
-//                                                                 _In_ size_t pOutputWindowIndex)
-//{
-//    auto _output_window = &this->output_presentation_windows.at(pOutputWindowIndex);
-//    
-//    //store command buffers
-//    auto _iter = _output_window->command_buffers.find(pCommandsBuffersName);
-//    if (_iter != _output_window->command_buffers.end())
-//    {
-//        SAFE_RELEASE(_iter->second);
-//    }
-//    
-//    _output_window->command_buffers[pCommandsBuffersName] = pCommandBuffers;
-//         
-//    return S_OK;
-//}
 
 ULONG w_graphics_device::release()
 {

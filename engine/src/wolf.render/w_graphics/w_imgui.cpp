@@ -314,8 +314,7 @@ namespace wolf
                 //Vertex buffer
                 if (!this->_vertex_buffer || this->_vertex_buffer->get_size() != _vertex_buffer_size)
                 {
-                    //BUG: Fix this
-                    SAFE_RELEASE(this->_vertex_buffer);
+                    //TODO : BUG..it is better to create multiple vertex buffer and index buffer with different size
                     this->_vertex_buffer = new wolf::graphics::w_buffer();
                     _hr = this->_vertex_buffer->load_as_staging(this->_gDevice, _vertex_buffer_size);
                     if (_hr == S_FALSE)
@@ -323,13 +322,18 @@ namespace wolf
                         V(_hr, "loading staging index buffer", this->_name);
                         return _hr;
                     }
+                    _hr = this->_vertex_buffer->bind();
+                    if (_hr == S_FALSE)
+                    {
+                        V(_hr, "binding staging vertex buffer", this->_name);
+                        return _hr;
+                    }
                 }
 
                 // Index buffer
                 if (!this->_index_buffer || this->_index_buffer->get_size() != _index_buffer_size)
                 {
-                    //BUG: Fix this
-                    SAFE_RELEASE(this->_index_buffer);
+                    //TODO : BUG
                     this->_index_buffer = new wolf::graphics::w_buffer();
                     _hr = this->_index_buffer->load_as_staging(this->_gDevice, _index_buffer_size);
                     if (_hr == S_FALSE)
@@ -337,19 +341,12 @@ namespace wolf
                         V(_hr, "loading staging vertex buffer", this->_name);
                         return _hr;
                     }
-                }
-
-                _hr = this->_vertex_buffer->bind();
-                if (_hr == S_FALSE)
-                {
-                    V(_hr, "binding staging vertex buffer", this->_name);
-                    return _hr;
-                }
-                _hr = this->_index_buffer->bind();
-                if (_hr == S_FALSE)
-                {
-                    V(_hr, "binding staging index buffer", this->_name);
-                    return _hr;
+                    _hr = this->_index_buffer->bind();
+                    if (_hr == S_FALSE)
+                    {
+                        V(_hr, "binding staging index buffer", this->_name);
+                        return _hr;
+                    }
                 }
 
                 ImDrawVert* vtxDst = (ImDrawVert*)this->_vertex_buffer->map();
@@ -412,6 +409,10 @@ namespace wolf
                     }
                 }
 
+                for (auto& p : _io.InputCharacters)
+                {
+                    logger.write(std::to_string(p));
+                }
                 //check for new size
                 _io.DisplaySize = ImVec2((float)this->_screen_size.x, (float)this->_screen_size.y);
                 _io.DeltaTime = pDeltaTime;
