@@ -31,8 +31,12 @@ namespace wolf
             
 			//Load texture2D from file
 			W_EXP HRESULT initialize_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
-            //Load texture2D from memory
-            W_EXP HRESULT initialize_texture_from_memory(_In_ std::vector<uint8_t>& pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight);
+            //Load texture2D from memory in format of RGBA
+            W_EXP HRESULT initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight);
+            //Load texture2D from memory in format of RGB
+            W_EXP HRESULT initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight);
+            //Load texture2D from memory from single channel
+            W_EXP HRESULT initialize_texture_from_memory_all_channels_same(_In_ uint8_t pData, _In_ const UINT pWidth, _In_ const UINT pHeight);
 
             //release all resources
             W_EXP virtual ULONG release() override;
@@ -41,6 +45,11 @@ namespace wolf
             W_EXP static HRESULT load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
                                                          _In_z_ std::wstring pPath,
                                                         _Inout_ w_texture** pPointerToTexture);
+
+            W_EXP static void write_bitmap_to_file(
+                _In_z_ const char* pFilename,
+                _In_ const uint8_t* pData,
+                _In_ const int& pWidth, const int& pHeight);
 
             //release all shared textures
             W_EXP ULONG static release_shared_textures();

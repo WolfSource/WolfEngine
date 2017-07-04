@@ -226,7 +226,8 @@ namespace wolf
             {
                 this->_size = 0;
                 this->_name.clear();
-                this->_mapped = nullptr;
+                
+                unmap();
 
                 if(this->_handle)
                 {

@@ -161,7 +161,7 @@ namespace wolf
                             auto _size = this->_width * this->_height * 4;
                             std::vector<uint8_t> _data(_rgba, _rgba + _size);
 
-                            _hr = copy_data_to_texture_2D(_data);
+                            _hr = copy_data_to_texture_2D(_data.data());
                             if (_hr == S_FALSE) return S_FALSE;
 
                             stbi_image_free(_rgba);
@@ -197,7 +197,7 @@ namespace wolf
                 return S_OK;
             }
 
-            HRESULT initialize_texture_from_memory(_In_ std::vector<uint8_t>& pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+            HRESULT initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight)
             {
                 this->_width = pWidth;
                 this->_height = pHeight;
@@ -416,9 +416,9 @@ namespace wolf
                 return S_OK;
             }
             
-            HRESULT copy_data_to_texture_2D(_In_ const std::vector<uint8_t> pData)
+            HRESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
             {
-                auto _data_size = static_cast<uint32_t>(pData.size());
+                auto _data_size = this->_width * this->_height * 4;
                 w_buffer _staging_buffer;
                 auto _hResult = _staging_buffer.load_as_staging(this->_gDevice, _data_size);
                 if(_hResult == S_FALSE)
@@ -451,7 +451,7 @@ namespace wolf
                     return S_FALSE;
                 }
                 
-                memcpy( _staging_buffer_memory_pointer,  pData.data(), (size_t)_data_size );
+                memcpy( _staging_buffer_memory_pointer, pRGBA, (size_t)_data_size );
                 
                 VkMappedMemoryRange _flush_range =
                 {
@@ -697,8 +697,8 @@ namespace wolf
             
             std::string                                     _name;
             std::shared_ptr<w_graphics_device>              _gDevice;
-            UINT                                            _width;
-            UINT                                            _height;
+            uint32_t                                        _width;
+            uint32_t                                        _height;
             VkMemoryPropertyFlags                           _memory_property_flags;
             VkImage                                         _image;
             VkImageView                                     _view;
@@ -740,10 +740,41 @@ HRESULT w_texture::initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _I
     return this->_pimp->initialize_texture_2D_from_file(pPath, pIsAbsolutePath);
 }
 
-HRESULT w_texture::initialize_texture_from_memory(_In_ std::vector<uint8_t>& pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+HRESULT w_texture::initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight)
 {
     if (!this->_pimp) return S_FALSE;
-    return this->_pimp->initialize_texture_from_memory(pRGBAData, pWidth, pHeight);
+    return this->_pimp->initialize_texture_from_memory_rgba(pRGBAData, pWidth, pHeight);
+}
+
+HRESULT w_texture::initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+{
+    if (!this->_pimp || pWidth == 0 || pHeight == 0) return S_FALSE;
+
+    auto _rgba = (uint8_t*)malloc(pWidth * pHeight * 4);
+    if (!_rgba) return S_FALSE;
+    
+    size_t _count = pWidth * pHeight;
+    for (int i = _count; --i; _rgba += 4, pRGBData += 3) 
+    {
+        *(uint32_t*)(void*)_rgba = *(const uint32_t*)(const void*)pRGBData;
+    }
+    for (int j = 0; j < 3; ++j)
+    {
+        _rgba[j] = pRGBData[j];
+    }
+
+    return this->_pimp->initialize_texture_from_memory_rgba(_rgba, pWidth, pHeight);
+}
+
+HRESULT w_texture::initialize_texture_from_memory_all_channels_same(_In_ uint8_t pData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+{
+    if (!this->_pimp) return S_FALSE;
+
+    auto _rgba = (uint8_t*)malloc(pWidth * pHeight * 4);
+    if (!_rgba) return S_FALSE;
+
+    std::memset(_rgba, pData, pWidth * pHeight);
+    return this->_pimp->initialize_texture_from_memory_rgba(_rgba, pWidth, pHeight);
 }
 
 HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -782,6 +813,21 @@ HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics
     *pPointerToTexture = _texture;
 
     return S_OK;
+}
+
+void w_texture::write_bitmap_to_file(
+    _In_z_ const char* pFilename,
+    _In_ const uint8_t* pData,
+    _In_ const int& pWidth, const int& pHeight)
+{
+    short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)pWidth, (short)pHeight, 1, 24 };
+    FILE *f;
+    if (!fopen_s(&f, pFilename, "wb"))
+    {
+        fwrite(header, 1, sizeof(header), f);
+        fwrite(pData, 1, pWidth * pHeight * 3, f);
+        fclose(f);
+    }
 }
 
 ULONG w_texture::release()

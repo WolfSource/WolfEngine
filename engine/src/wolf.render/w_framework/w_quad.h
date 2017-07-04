@@ -134,25 +134,21 @@ namespace wolf
                     V(S_FALSE, "allocating memory for mesh", this->name, 3);
                     return S_FALSE;
                 }
-                _mesh->set_vertex_declaration_struct(this->_instances_count ? this->_instance_declaration :
-                    this->_vertex_declaration);
-                auto _hr = _mesh->load(this->_gDevice,
+                //_mesh->set_vertex_declaration_struct(this->_instances_count ? this->_instance_declaration :
+                //    this->_vertex_declaration);
+                /*auto _hr = _mesh->load(this->_gDevice,
                     _vertices.data(),
-                    static_cast<UINT>(_vertices.size()),
-                    static_cast<UINT>(_vertices.size() * sizeof(float)),
+                    static_cast<uint32_t>(_vertices.size()),
+                    static_cast<uint32_t>(_vertices.size() * sizeof(float)),
                     _indices.data(),
-                    static_cast<UINT>(_indices.size()),
-                    pShader,
-                    pRenderPass,
-                    pPipelineCacheName,
-                    false,
+                    static_cast<uint32_t>(_indices.size(),
                     pUseDynamicBuffer);
 
                 if (_hr == S_FALSE)
                 {
                     logger.error(L"Could not create mesh for quad");
                     return S_FALSE;
-                }
+                }*/
 
                 return S_OK;
             }

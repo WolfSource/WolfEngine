@@ -29,14 +29,33 @@ namespace wolf
         {
         public:
 
+            struct texture_index
+            {
+                int         _start_index;
+                w_texture*  _texture;
+
+                texture_index()
+                {
+                    this->_start_index = -1;
+                    this->_texture = nullptr;
+                }
+                texture_index(_In_ int  pStartIndex, _In_ w_texture*  pTexture)
+                {
+                    this->_start_index = pStartIndex;
+                    this->_texture = pTexture;
+                }
+            };
+
             static W_EXP HRESULT load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
                 _In_ HWND pHWND,
                 _In_ const w_point_t& pScreenSize,
                 _In_ VkRenderPass& pRenderPass,
-                _In_ wolf::graphics::w_texture* pImageTexture);
+                _In_ w_texture* pTexture,
+                _In_ const char* pFontPath = nullptr,
+                _In_ const float& pFontPixelSize = 15.0f);
 
             static W_EXP HRESULT update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass);
-            static W_EXP void new_frame(_In_ float pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork);
+            static W_EXP void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork);
             static W_EXP void render(_In_ VkCommandBuffer pCommandBuffer);
             static W_EXP ULONG release();
 

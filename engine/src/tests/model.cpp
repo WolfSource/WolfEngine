@@ -851,43 +851,6 @@ void model::pre_update(
     }
 }
 
-static void WriteBMP(const char *filename, const unsigned char *data, int w, int h)
-{
-    short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)w, (short)h, 1, 24 };
-    FILE *f;
-    fopen_s(&f, filename, "wb");
-    fwrite(header, 1, sizeof(header), f);
-    fwrite(data, 1, w * h * 3, f);
-    fclose(f);
-}
-
-static void TonemapDepth(float *depth, unsigned char *image, int w, int h)
-{
-    // Find min/max w coordinate (discard cleared pixels)
-    float minW = FLT_MAX, maxW = 0.0f;
-    for (int i = 0; i < w*h; ++i)
-    {
-        if (depth[i] > 0.0f)
-        {
-            minW = std::min(minW, depth[i]);
-            maxW = std::max(maxW, depth[i]);
-        }
-    }
-
-    // Tonemap depth values
-    for (int i = 0; i < w*h; ++i)
-    {
-        int intensity = 0;
-        if (depth[i] > 0)
-            intensity = (unsigned char)(223.0*(depth[i] - minW) / (maxW - minW) + 32.0);
-
-        image[i * 3 + 0] = intensity;
-        image[i * 3 + 1] = intensity;
-        image[i * 3 + 2] = intensity;
-    }
-}
-
-float *perPixelZBuffer = new float[1280 * 720];
 bool model::post_update(
     _Inout_ MaskedOcclusionCulling* sMOC)
 {
@@ -967,17 +930,6 @@ bool model::post_update(
             }
         }
     }
-
-    // Compute a per pixel depth buffer from the hierarchical depth buffer, used for visualization.
-
-    //sMOC->ComputePixelDepthBuffer(perPixelZBuffer);
-
-    //Tonemap the image
-    
-    //unsigned char *image = new unsigned char[1280 * 720 * 3];
-    //TonemapDepth(perPixelZBuffer, image, 1280, 720);
-    //WriteBMP("F:\\image.bmp", image, 1280, 720);
-    //delete[] image;
 
     return _add_to_render_queue;
 }

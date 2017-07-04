@@ -4,6 +4,7 @@
 
 #include "w_window.h"
 #include <map>
+#include <chrono>
 
 #ifdef __WIN32
 static std::map<std::wstring, std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)>> sMsgsProcFunctions;
@@ -11,8 +12,8 @@ static std::map<std::wstring, std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)>
 
 w_window::w_window() :
 #ifdef __WIN32
-	_hInstance(NULL),
-	_hwnd(NULL),
+    _hInstance(NULL),
+    _hwnd(NULL),
 #elif defined(__linux) && !defined(__ANDROID)
     _xcb_con(nullptr),
     _xcb_screen(nullptr),
@@ -20,14 +21,15 @@ w_window::w_window() :
 #endif
     _title(L"Wolf.Engine"),
     _icon(L""),
-	_full_screen(false), 
-	_screen_width(800), 
-	_screen_height(600), 
-	_screen_posX(0), 
-	_screen_posY(0),
-	_close(false)
+    _full_screen(false),
+    _screen_width(800),
+    _screen_height(600),
+    _screen_posX(0),
+    _screen_posY(0),
+    _id(0),
+    _close(false)
 {
-	set_fixed_time_step(true);
+    set_fixed_time_step(true);
 }
 
 w_window::~w_window()
@@ -52,6 +54,17 @@ static LRESULT CALLBACK MsgProc(HWND pHwnd, UINT pMessage, WPARAM pWParam, LPARA
 
 HRESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction)
 {
+    auto _iter = windows_frame_time_in_sec.find((uint32_t)this->_id);
+    if (_iter == windows_frame_time_in_sec.end())
+    {
+        windows_frame_time_in_sec[(uint32_t)this->_id] = 0.0f;
+    }
+    else
+    {
+        _id = -1;
+        logger.error("Window with following ID " + std::to_string(this->_id) + " already registered. You can not get the frame time of it");
+    }
+
 	//Unregister all
 	this->_hInstance = NULL;
 	this->_hwnd = NULL;
@@ -242,50 +255,10 @@ void w_window::run(std::function<void(void)>& const pFunc)
 
     while (true)
     {
+        auto _start = std::chrono::high_resolution_clock::now();
         // Handle the windows messages.
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
-            //switch (msg.message)
-            //{
-            //case WM_CLOSE:
-            //    DestroyWindow(msg.hwnd);
-            //    break;
-            //case WM_MOVE:
-            //{
-            //    RECT _rect;
-
-            //    GetClientRect(msg.hwnd, &_rect);
-            //    MapWindowPoints(msg.hwnd, GetParent(msg.hwnd), (LPPOINT)&_rect, 2);
-
-            //    //get width and height
-            //    _rect.left -= 2;
-            //    _rect.top -= 2;
-            //    _rect.right += 2;
-            //    _rect.bottom += 2;
-
-            //    auto _width = _rect.right - _rect.left;
-            //    auto _height = _rect.bottom - _rect.top;
-
-            //    MoveWindow(msg.hwnd,
-            //        msg.wParam,
-            //        msg.lParam,
-            //        _width,
-            //        _height,
-            //        TRUE);
-            //}
-            //break;
-            //case WM_SHOWWINDOW:
-            //{
-            //    ShowWindow(msg.hwnd, msg.wParam);
-            //    break;
-            //}
-            //case WM_ENABLE:
-            //{
-            //    EnableWindow(msg.hwnd, msg.wParam);
-            //    break;
-            //}
-            //}
-
             TranslateMessage(&msg);
             DispatchMessage(&msg);
             continue;
@@ -295,6 +268,13 @@ void w_window::run(std::function<void(void)>& const pFunc)
             break;
         }
         pFunc();
+
+        auto _end = std::chrono::high_resolution_clock::now();
+        auto _delta = std::chrono::duration<double, std::milli>(_end - _start).count();
+        if (this->_id != -1)
+        {
+            windows_frame_time_in_sec.at((uint32_t)this->_id) = (float)_delta / 1000.0f;
+        }
     }
 }
 
@@ -459,6 +439,11 @@ void w_window::set_class_name(_In_ LPWSTR pValue)
 }
 #endif
 
+void w_window::set_id(_In_ const uint32_t& pValue)
+{
+    this->_id = (int)pValue;
+}
+
 void w_window::set_full_screen(bool pValue)
 {
 	this->_full_screen = pValue;
@@ -510,6 +495,11 @@ HWND w_window::get_HWND() const
 	return this->_hwnd;
 }
 #endif
+
+const uint32_t w_window::get_id() const
+{
+    return this->_id;
+}
 
 UINT w_window::get_width() const
 {

@@ -170,7 +170,9 @@ public:
 	//Set class name of window 
 	WSYS_EXP void set_class_name(_In_ LPWSTR pValue);
 #endif
-        
+    
+    //Set ID of window
+    WSYS_EXP void set_id(_In_ const uint32_t& pValue);
 	//Set time step value of game time 
 	WSYS_EXP void set_fixed_time_step(bool pValue);
 	//Set windows is full screen
@@ -206,8 +208,10 @@ public:
         return this->_xcb_window;
     }
 #endif
-        
-	//Get absolute width of window
+    
+    //Get ID of window
+    WSYS_EXP const uint32_t get_id() const;
+    //Get absolute width of window
 	WSYS_EXP UINT get_width() const;
 	//Get absolute height of window
 	WSYS_EXP UINT get_height() const;
@@ -224,6 +228,8 @@ private:
 	typedef w_object                                _super;
 
 	bool                                            _close;
+
+    int                                             _id;
 
 #ifdef __WIN32
 	std::wstring                                    _class_name;

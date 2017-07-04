@@ -115,7 +115,7 @@ bool w_game::run(_In_ map<int, vector<w_window_info>> pOutputWindowsInfo)
             render(this->_game_time);
         }
     });
-
+ 
     return !this->exiting;
 }
 

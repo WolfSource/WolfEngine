@@ -52,11 +52,12 @@ namespace wolf
 
             struct w_keyboard
             {
-                std::set<int>         keys_pressed;
-                std::set<int>         keys_released;
+                std::set<int>               keys_pressed;
+                std::set<int>               keys_released;
+                std::vector<unsigned short> inputed_chars;
             } keyboard;
 
-            void reset();
+            WSYS_EXP void reset();
 
 #ifdef __WIN32
             WSYS_EXP HRESULT update(

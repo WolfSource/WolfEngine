@@ -2174,6 +2174,7 @@ void ImGui::NewFrame()
     else
         g.IO.MouseDelta = g.IO.MousePos - g.IO.MousePosPrev;
     g.IO.MousePosPrev = g.IO.MousePos;
+
     for (int i = 0; i < IM_ARRAYSIZE(g.IO.MouseDown); i++)
     {
         g.IO.MouseClicked[i] = g.IO.MouseDown[i] && g.IO.MouseDownDuration[i] < 0.0f;

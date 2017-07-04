@@ -7,11 +7,10 @@
 #include <w_graphics/w_imgui.h>
 #include "masked_occlusion_culling/MaskedOcclusionCulling.h"
 #include <cameras/w_camera.h>
+#include <mutex>
 
-#include "tbb/parallel_for_each.h"
-#include "tbb/tick_count.h"
-#include "tbb/blocked_range.h"
-#include "tbb/parallel_for.h"
+#define DEBUG_MASKED_OCCLUSION_CULLING
+#define MAX_SEARCH_LENGHT 256
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -19,10 +18,15 @@ using namespace wolf::framework;
 using namespace wolf::content_pipeline;
 
 //forward declaration
-static void make_gui();
+static bool update_gui();
+static void TonemapDepth(_In_ float* pDepth, _In_ unsigned char* pImage, _In_ const int& pW, _In_ const int& pH);
 
-static bool sForceUpdate = true;
+static bool sShowGui = true;
+static char sSearch[MAX_SEARCH_LENGHT];
+static std::once_flag sFirstTime;
 static MaskedOcclusionCulling* sMOC;
+static float* sMOCPerPixelZBuffer = nullptr; 
+static uint8_t* sMOCTonemapDepthImage = nullptr;
 static std::vector<model*> sModelsToBeRender;
 static UINT32 sFPS = 0;
 
@@ -94,6 +98,8 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
         logger.write("Using AVX2 implementation of MaskedOcclusionCulling");
         break;
     }
+
+    sprintf_s(sSearch, "Search");
 }
 
 void scene::load()
@@ -107,6 +113,14 @@ void scene::load()
 
     w_game::load();
     
+#ifdef DEBUG_MASKED_OCCLUSION_CULLING
+    {
+        size_t _size = _screen_size.x * _screen_size.y;
+        sMOCPerPixelZBuffer = (float*)malloc(_size * sizeof(float));
+        sMOCTonemapDepthImage = (uint8_t*)malloc(_size * 3 * sizeof(uint8_t));
+    }
+#endif
+
     //Fence for compute Command Buffer sync
     VkFenceCreateInfo _fence_create_info = {};
     _fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
@@ -233,7 +247,7 @@ void scene::load()
     }
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/test.dae");// A_120_Water - Treatment_v1_16_4.wscene");// A_120_Water - Treatment_v1_16_4.DAE");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/A_120_Water-Treatment_v1_16_4.dae");// ");// ");
     if (_scene)
     {
         //just for converting
@@ -309,8 +323,43 @@ void scene::load()
     //load image texture
     w_texture* _gui_images = new w_texture();
     _gui_images->load(_gDevice);
-    _gui_images->initialize_texture_2D_from_file(content_path + L"textures/gui/icons.png", &_gui_images);
-    w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _gui_images);
+
+
+    _gui_images->initialize_texture_2D_from_file(L"textures/gui/icons.png");
+
+    //set images which will be used by imgui
+    
+#ifdef DEBUG_MASKED_OCCLUSION_CULLING
+    w_texture* _debug_image = new w_texture();
+    _debug_image->load(_gDevice);
+    _debug_image->initialize_texture_2D_from_file(L"C:\\Users\\DFM\\Desktop\\header.jpg", true);
+
+    w_shader_binding_param _param;
+    _param.index = 0;
+    _param.stage = w_shader_stage::FRAGMENT_SHADER;
+    _param.type = w_shader_binding_type::SAMPLER;
+    _param.image_info = _debug_image->get_descriptor_info();
+    
+    //w_shader* _basic;
+    //w_shader::load_shader(
+    //    _gDevice, 
+    //    "basic", 
+    //    L"shaders/basic.vert.spv", 
+    //    L"", 
+    //    L"", 
+    //    L"", 
+    //    L"", 
+    //    L"shaders/basic.frag.spv",
+    //    { _param },
+    //    true, 
+    //    &_basic);
+    //_q.load(_gDevice, _basic, &this->_draw_render_pass, "", false);
+
+#endif
+
+
+    auto _font_path = wolf::system::convert::wstring_to_string(content_path) + "fonts/arial.ttf";
+    w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _gui_images, _font_path.c_str());
 
     _hr = this->_gui_command_buffers.load(_gDevice, _output_window->vk_swap_chain_image_views.size());
     if (_hr == S_FALSE)
@@ -360,10 +409,6 @@ HRESULT scene::_build_gui_command_buffer(_In_ const std::shared_ptr<w_graphics_d
                 this->_gui_frame_buffers.get_frame_buffer_at(i));
             {
                 //make sure render all gui before loading gui_render
-                w_imgui::new_frame((float)pGameTime.get_elapsed_seconds(), []()
-                {
-                    make_gui();
-                });
                 w_imgui::update_buffers(this->_gui_render_pass);
                 w_imgui::render(_cmd);
             }
@@ -377,16 +422,43 @@ HRESULT scene::_build_gui_command_buffer(_In_ const std::shared_ptr<w_graphics_d
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
-    
+    defer(nullptr, [&](...)
+    {
+        w_game::update(pGameTime);
+    });
+
     auto _gDevice = this->graphics_devices[0];
+    auto _output_window = &(_gDevice->output_presentation_windows[0]);
+
+    bool _gui_proceeded = false;
+    if (sShowGui)
+    {
+        w_imgui::new_frame(windows_frame_time_in_sec.at(0), [&_gui_proceeded]()
+        {
+            _gui_proceeded = update_gui();
+        });
+    }
+
+    //if gui proceeded or mouse captured by gui do not update view
+    if (_gui_proceeded)
+    {
+        inputs_manager.reset();
+        return;
+    }
+    if (ImGui::IsMouseHoveringAnyWindow()) return;
 
     //if camera updated, then update command buffers based on result of masked occlusion culling
     auto _camera_just_updated = this->_camera.update(pGameTime, this->_screen_size);
-    
     auto _cam_pos = this->_camera.get_translate();
-    if (sForceUpdate || _camera_just_updated)
+
+    //allow first time to build draw command buffer
+    std::call_once(sFirstTime, [&]()
     {
-        sForceUpdate = false;
+        _camera_just_updated = true;
+    });
+
+    if (_camera_just_updated)
+    {
         //order by distance to camera
         //std::sort(this->_models.begin(), this->_models.end(), [&_cam_pos](_In_ model* a, _In_ model* b)
         //{
@@ -416,12 +488,17 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
             _build_draw_command_buffer(_gDevice);
         }
-    }
 
-    w_game::update(pGameTime);
+#ifdef DEBUG_MASKED_OCCLUSION_CULLING
+        //Compute a per pixel depth buffer from the hierarchical depth buffer, used for visualization.
+        sMOC->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
+        //Tonemap the depth image
+        TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, _output_window->width, _output_window->height);
+        w_texture::write_bitmap_to_file("F:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
+#endif
+    }
 }
 
-static bool show_gui = true;
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
     const std::string _trace = this->name + "::render";
@@ -471,7 +548,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _submit_info.waitSemaphoreCount = static_cast<uint32_t>(_wait_for_pre_render_semaphores.size());
     _submit_info.pWaitDstStageMask = &_stage_flags[0];
     _submit_info.signalSemaphoreCount = 1;
-    _submit_info.pSignalSemaphores = show_gui ? &gui_semaphore : &_output_window->vk_rendering_done_semaphore;
+    _submit_info.pSignalSemaphores = sShowGui ? &gui_semaphore : &_output_window->vk_rendering_done_semaphore;
 
     // Submit to queue
     if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_compute_fence))
@@ -480,7 +557,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         V(_hr, "submiting queu for drawing models", _trace, 3);
     }
     
-    if (show_gui)
+    if (sShowGui)
     {
         _build_gui_command_buffer(_gDevice, pGameTime);
 
@@ -514,6 +591,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     }
   
     sFPS = pGameTime.get_frames_per_second();
+
     return _hr;
 }
 
@@ -546,116 +624,175 @@ ULONG scene::release()
     }
 
     w_imgui::release();
-   
+    
+#ifdef DEBUG_MASKED_OCCLUSION_CULLING
+    free(sMOCPerPixelZBuffer);
+    free(sMOCTonemapDepthImage);
+#endif
+
+    MaskedOcclusionCulling::Destroy(sMOC);
+
     w_pipeline::release_all_pipeline_caches(_gDevice);
 
     return w_game::release();
 }
 
-static void make_gui()
+static bool update_gui()
 {
-    //    ImGuiStyle& _style = ImGui::GetStyle();
-    //    _style.WindowPadding = ImVec2(3, 2);
-    //    _style.WindowRounding = 0;
-    //    _style.GrabRounding = 4;
-    //    _style.GrabMinSize = 20;
-    //    _style.FramePadding = ImVec2(5, 5);
-    //    _style.Colors[2].x = 0.9098039215686275f;
-    //    _style.Colors[2].y = 0.4431372549019608f;
-    //    _style.Colors[2].z = 0.3176470588235294f;
-    //    _style.Colors[2].w = 1.0f;
-    //
-    //    static bool no_titlebar = true;
-    //    static bool no_border = true;
-    //    static bool no_resize = true;
-    //    static bool no_move = true;
-    //    static bool no_scrollbar = true;
-    //    static bool no_collapse = true;
-    //    static bool no_menu = true;
-    //
-    //    ImGuiWindowFlags window_flags = 0;
-    //    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
-    //    if (!no_border)   window_flags |= ImGuiWindowFlags_ShowBorders;
-    //    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
-    //    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
-    //    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
-    //    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
-    //    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
-    //
-    //#pragma region Left Buttons
-    //
-    //    if (!ImGui::Begin("Left_Widget", 0, window_flags))
-    //    {
-    //        // Early out if the window is collapsed, as an optimization.
-    //        ImGui::End();
-    //        return;
-    //    }
-    //
-    //    ImGui::SetWindowPos(ImVec2(0, 0));
-    //    ImGui::SetNextWindowSize(ImVec2(320, 320), ImGuiSetCond_FirstUseEver);
-    //    
-    //    for (int i = 0; i < 6; i++)
-    //    {
-    //        ImTextureID tex_id = (void*)("#image");
-    //        ImGui::PushID(i);
-    //        ImGui::PushStyleColor(ImGuiCol_ImageActive, ImColor(0.0f, 0.0f, 255.0f, 255.0f));
-    //        ImGui::PushStyleColor(ImGuiCol_ImageHovered, ImColor(0.0f, 0.0f, 255.0f, 155.0f));
-    //        if (ImGui::ImageButton(tex_id, ImVec2(32, 32), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
-    //        {
-    //            logger.write("Button");
-    //        }
-    //        ImGui::PopStyleColor(2);
-    //        ImGui::PopID();
-    //        ImGui::Spacing();
-    //        ImGui::Spacing();
-    //    }
-    //
-    //    std::string text =
-    //        "FPS:" + std::to_string(sFPS) + "  \r\n";
-    //    ImGui::Text(text.c_str());
-    //    
-    //    ImGui::End();
-    //
-    //#pragma endregion
-    //
-    //#pragma region Search
-    //    
-    //    window_flags = 0;
-    //    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
-    //    if (!no_border)   window_flags |= ImGuiWindowFlags_ShowBorders;
-    //    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
-    //    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
-    //    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
-    //    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
-    //    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
-    //    if (!ImGui::Begin("Search_Widget", 0, window_flags))
-    //    {
-    //        // Early out if the window is collapsed, as an optimization.
-    //        ImGui::End();
-    //        return;
-    //    }
-    //
-    //    ImGui::SetWindowPos(ImVec2(40, 10));
-    //    ImGui::SetNextWindowSize(ImVec2(400, 100), ImGuiSetCond_FirstUseEver);
-    //
-    //    const size_t _size = 256;
-    //    char str0[_size] = "Hello, world!";
-    //    ImGui::InputText("input text", str0, _size);
-    //    
-    //    //ImGui::SameLine(); 
-    //    //ImGui::TextDisabled("(?)");
-    //    //if (ImGui::IsItemHovered())
-    //    //{
-    //    //    ImGui::BeginTooltip();
-    //    //    ImGui::PushTextWrapPos(450.0f);
-    //    //    ImGui::TextUnformatted("Search area by entering device name.");
-    //    //    ImGui::PopTextWrapPos();
-    //    //    ImGui::EndTooltip();
-    //    //}
-    //
-    //    ImGui::End();
-    //
-    //#pragma endregion
+    bool _proceeded = false;
+
+    //ImGui::ShowTestWindow();
+
+#pragma region Setting Style
+    ImGuiStyle& _style = ImGui::GetStyle();
+    _style.WindowPadding = ImVec2(3, 2);
+    _style.WindowRounding = 0;
+    _style.GrabRounding = 4;
+    _style.GrabMinSize = 20;
+    _style.FramePadding = ImVec2(5, 5);
+
+    _style.Colors[ImGuiCol_Text].x = 1.0f;
+    _style.Colors[ImGuiCol_Text].y = 1.0f;
+    _style.Colors[ImGuiCol_Text].z = 1.0f;
+    _style.Colors[ImGuiCol_Text].w = 1.0f;
     
-ImGui::ShowTestWindow();
+    _style.Colors[ImGuiCol_WindowBg].x = 0.9098039215686275f;
+    _style.Colors[ImGuiCol_WindowBg].y = 0.4431372549019608f;
+    _style.Colors[ImGuiCol_WindowBg].z = 0.3176470588235294f;
+    _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    
+    _style.Colors[ImGuiCol_FrameBg].x = 1.0f;
+    _style.Colors[ImGuiCol_FrameBg].y = 1.0f;
+    _style.Colors[ImGuiCol_FrameBg].z = 1.0f;
+    _style.Colors[ImGuiCol_FrameBg].w = 1.0f;
+
+    _style.Colors[ImGuiCol_TextSelectedBg].x = 0.9098039215686275f;
+    _style.Colors[ImGuiCol_TextSelectedBg].y = 0.4431372549019608f;
+    _style.Colors[ImGuiCol_TextSelectedBg].z = 0.3176470588235294f;
+    _style.Colors[ImGuiCol_TextSelectedBg].w = 0.6f;
+#pragma endregion
+
+    ImGuiWindowFlags window_flags = 0;
+    window_flags |= ImGuiWindowFlags_NoTitleBar;
+    //window_flags |= ImGuiWindowFlags_ShowBorders;
+    window_flags |= ImGuiWindowFlags_NoResize;
+    window_flags |= ImGuiWindowFlags_NoMove;
+    window_flags |= ImGuiWindowFlags_NoScrollbar;
+    window_flags |= ImGuiWindowFlags_NoCollapse;
+    //window_flags |= ImGuiWindowFlags_MenuBar;
+
+#pragma region Left Buttons
+    if (!ImGui::Begin("Left_Widget", 0, window_flags))
+    {
+        // Early out if the window is collapsed, as an optimization.
+        ImGui::End();
+        return _proceeded;
+    }
+
+    ImGui::SetWindowPos(ImVec2(0, 0));
+
+    for (int i = 0; i < 6; i++)
+    {
+        ImTextureID tex_id = (void*)("#");
+        ImGui::PushID(i);
+        ImGui::PushStyleColor(ImGuiCol_ImageActive, ImColor(0.0f, 0.0f, 255.0f, 255.0f));
+        ImGui::PushStyleColor(ImGuiCol_ImageHovered, ImColor(0.0f, 0.0f, 255.0f, 155.0f));
+        if (ImGui::ImageButton(tex_id, ImVec2(32, 32), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
+        {
+            logger.write("Button");
+            _proceeded = true;
+        }
+        ImGui::PopStyleColor(2);
+        ImGui::PopID();
+        ImGui::Spacing();
+        ImGui::Spacing();
+    }
+    ImGui::End();
+
+#pragma endregion
+
+#pragma region Search
+    _style.WindowPadding = ImVec2(1, 4);
+
+    _style.Colors[ImGuiCol_Text].x = 0.1f;
+    _style.Colors[ImGuiCol_Text].y = 0.1f;
+    _style.Colors[ImGuiCol_Text].z = 0.1f;
+    _style.Colors[ImGuiCol_Text].w = 1.0f;
+
+    _style.Colors[ImGuiCol_WindowBg].x = 1.0f;
+    _style.Colors[ImGuiCol_WindowBg].y = 1.0f;
+    _style.Colors[ImGuiCol_WindowBg].z = 1.0f;
+    _style.Colors[ImGuiCol_WindowBg].w = 1.0f; 
+
+    ImGui::SetNextWindowContentSize(ImVec2(300, 20));
+    if (!ImGui::Begin("Search_Widget", 0, window_flags))
+    {
+        // Early out if the window is collapsed, as an optimization.
+        ImGui::End();
+        return _proceeded;
+    }
+
+    ImGui::SetWindowPos(ImVec2(38, 0));
+    ImGui::PushItemWidth(299);
+    if (ImGui::InputText("", sSearch, MAX_SEARCH_LENGHT))
+    {
+        _proceeded = true;
+    }
+    ImGui::PopItemWidth();
+    ImGui::End();
+#pragma endregion
+    
+#pragma region Debug Window
+
+    _style.WindowPadding = ImVec2(3, 2);
+
+    _style.Colors[ImGuiCol_Text].x = 1.0f;
+    _style.Colors[ImGuiCol_Text].y = 1.0f;
+    _style.Colors[ImGuiCol_Text].z = 1.0f;
+    _style.Colors[ImGuiCol_Text].w = 1.0f;
+
+    _style.Colors[ImGuiCol_WindowBg].x = 0.9098039215686275f;
+    _style.Colors[ImGuiCol_WindowBg].y = 0.4431372549019608f;
+    _style.Colors[ImGuiCol_WindowBg].z = 0.3176470588235294f;
+    _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    
+    ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
+    ImGui::Begin("Debug");
+    ImGui::Text("FPS:%d", sFPS);
+    ImGui::Text("FrameTime:%f", windows_frame_time_in_sec.at(0));
+        
+    ImGui::End();
+    
+#pragma endregion
+
+    return _proceeded;
 }
+
+static void TonemapDepth(_In_ float* pDepth, _In_ unsigned char* pImage, _In_ const int& pW, _In_ const int& pH)
+{
+    // Find min/max w coordinate (discard cleared pixels)
+    float _minW = FLT_MAX, _maxW = 0.0f;
+    for (int i = 0; i < pW * pH; ++i)
+    {
+        if (pDepth[i] > 0.0f)
+        {
+            _minW = std::min(_minW, pDepth[i]);
+            _maxW = std::max(_maxW, pDepth[i]);
+        }
+    }
+
+    // Tonemap depth values
+    for (int i = 0; i < pW * pH; ++i)
+    {
+        int intensity = 0;
+        if (pDepth[i] > 0)
+        {
+            intensity = (unsigned char)(223.0*(pDepth[i] - _minW) / (_maxW - _minW) + 32.0);
+        }
+
+        pImage[i * 3 + 0] = intensity;
+        pImage[i * 3 + 1] = intensity;
+        pImage[i * 3 + 2] = intensity;
+    }
+}
+

@@ -21,6 +21,7 @@
 #include <locale>
 #include "w_io.h"
 #include <vector>
+#include <map>
 #include "w_inputs_manager.h"
 
 #if defined(__MAYA)
@@ -123,6 +124,7 @@ namespace wolf
 extern WSYS_EXP wolf::system::w_logger logger;
 extern WSYS_EXP std::wstring content_path;
 extern WSYS_EXP wolf::system::w_inputs_manager inputs_manager;
+extern WSYS_EXP std::map<uint32_t, float> windows_frame_time_in_sec;
 
 /*
 	Validate HResult and write in to the log file

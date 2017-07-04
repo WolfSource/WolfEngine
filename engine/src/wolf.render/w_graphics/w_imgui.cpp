@@ -7,19 +7,19 @@
 
 using namespace wolf::graphics;
 
+static INT64  g_Time = 0;
+
 namespace wolf
 {
     namespace graphics
     {
-
         class w_imgui_pimp
         {
         public:
             w_imgui_pimp() :
                 _gDevice(nullptr),
                 _vertex_buffer(nullptr),
-                _index_buffer(nullptr),
-                _images_texture(nullptr)
+                _index_buffer(nullptr)
             {
             }
 
@@ -27,12 +27,14 @@ namespace wolf
                 _In_ HWND pHWND,
                 _In_ const w_point_t& pScreenSize,
                 _In_ VkRenderPass& pRenderPass,
-                _In_ w_texture* pImageTexure)
+                _In_ w_texture* pTexture,
+                _In_ const char* pFontPath,
+                _In_ const float& pFontPixelSize)
             {
                 this->_gDevice = pGDevice;
                 this->_hwnd = pHWND;
                 this->_screen_size = pScreenSize;
-                this->_images_texture = pImageTexure;
+                this->_images_texture = pTexture;
 
 #pragma region Set Style
                 //Color scheme
@@ -46,6 +48,12 @@ namespace wolf
                 ImGuiIO& _io = ImGui::GetIO();
                 _io.DisplaySize = ImVec2((float)this->_screen_size.x, (float)this->_screen_size.y);
                 _io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+
+                if (pFontPath)
+                {
+                    _io.Fonts->AddFontFromFileTTF(pFontPath, pFontPixelSize);
+                }
+
 #pragma endregion
 
 #pragma region Set Key Maps
@@ -96,10 +104,10 @@ namespace wolf
                 this->_font_texture->load(_gDevice);
 
                 std::vector<uint8_t> _texture_data(_font_data, _font_data + _upload_size);
-                _font_texture->initialize_texture_from_memory(
-                    _texture_data,
-                    (UINT)_texture_width,
-                    (UINT)_texture_height);
+                _font_texture->initialize_texture_from_memory_rgba(
+                    _texture_data.data(),
+                    (uint32_t)_texture_width,
+                    (uint32_t)_texture_height);
 
                 auto __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
                 if (__hr != S_OK)
@@ -114,19 +122,23 @@ namespace wolf
                     return S_FALSE;
                 }
 
-                w_shader_binding_param _font_sampler_param;
-                _font_sampler_param.index = 0;
-                _font_sampler_param.stage = w_shader_stage::FRAGMENT_SHADER;
-                _font_sampler_param.type = w_shader_binding_type::SAMPLER;
-                _font_sampler_param.image_info = this->_font_texture->get_descriptor_info();
+                std::vector<w_shader_binding_param> _shader_params;
 
-                w_shader_binding_param _image_sampler_param;
-                _image_sampler_param.index = 1;
-                _image_sampler_param.stage = w_shader_stage::FRAGMENT_SHADER;
-                _image_sampler_param.type = w_shader_binding_type::SAMPLER;
-                _image_sampler_param.image_info = this->_images_texture->get_descriptor_info();
+                w_shader_binding_param _param;
+                _param.index = 0;
+                _param.stage = w_shader_stage::FRAGMENT_SHADER;
+                _param.type = w_shader_binding_type::SAMPLER;
+                _param.image_info = this->_font_texture->get_descriptor_info();
+                _shader_params.push_back(_param);
 
-                this->_shader.load_shader_binding_params({ _font_sampler_param,_image_sampler_param });
+                _param.index = 1;
+                _param.stage = w_shader_stage::FRAGMENT_SHADER;
+                _param.type = w_shader_binding_type::SAMPLER;
+                _param.image_info = this->_images_texture ? this->_images_texture->get_descriptor_info() 
+                    : w_texture::default_texture->get_descriptor_info();
+                _shader_params.push_back(_param);
+                
+                this->_shader.load_shader_binding_params(_shader_params);
 
                 auto _descriptor_set_layout = this->_shader.get_descriptor_set_layout();
 
@@ -314,7 +326,8 @@ namespace wolf
                 //Vertex buffer
                 if (!this->_vertex_buffer || this->_vertex_buffer->get_size() != _vertex_buffer_size)
                 {
-                    //TODO : BUG..it is better to create multiple vertex buffer and index buffer with different size
+                    SAFE_RELEASE(this->_vertex_buffer);
+                    
                     this->_vertex_buffer = new wolf::graphics::w_buffer();
                     _hr = this->_vertex_buffer->load_as_staging(this->_gDevice, _vertex_buffer_size);
                     if (_hr == S_FALSE)
@@ -333,7 +346,8 @@ namespace wolf
                 // Index buffer
                 if (!this->_index_buffer || this->_index_buffer->get_size() != _index_buffer_size)
                 {
-                    //TODO : BUG
+                    SAFE_RELEASE(this->_index_buffer);
+
                     this->_index_buffer = new wolf::graphics::w_buffer();
                     _hr = this->_index_buffer->load_as_staging(this->_gDevice, _index_buffer_size);
                     if (_hr == S_FALSE)
@@ -383,7 +397,7 @@ namespace wolf
                 return S_OK;
             }
 
-            void new_frame(_In_ float pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
+            void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
             {
                 ImGuiIO& _io = ImGui::GetIO();
 
@@ -398,24 +412,24 @@ namespace wolf
                 {
                     if (_key < 256)
                     {
-                        _io.KeysDown[_key] = 1;
+                        _io.KeysDown[_key] = true;
                     }
                 }
                 for (auto& _key : inputs_manager.keyboard.keys_released)
                 {
                     if (_key < 256)
                     {
-                        _io.KeysDown[_key] = 0;
+                        _io.KeysDown[_key] = false;
                     }
                 }
-
-                for (auto& p : _io.InputCharacters)
+                for (auto& _char : inputs_manager.keyboard.inputed_chars)
                 {
-                    logger.write(std::to_string(p));
+                    _io.AddInputCharacter(_char);
                 }
+
                 //check for new size
                 _io.DisplaySize = ImVec2((float)this->_screen_size.x, (float)this->_screen_size.y);
-                _io.DeltaTime = pDeltaTime;
+                _io.DeltaTime = pDeltaTime / 100.0f;
 
                 // Read keyboard modifiers inputs
                 _io.KeyCtrl = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
@@ -500,7 +514,6 @@ namespace wolf
                         }
                         else
                         {
-                            //image
                             _push_constant_block.image_index = 1;
                             if (_last_texture_id != 1)
                             {
@@ -563,6 +576,7 @@ namespace wolf
 
                 _shader.release();
 
+
 #ifdef __WIN32
                 this->_hwnd = NULL;
 #endif
@@ -570,8 +584,8 @@ namespace wolf
 
                 return 1;
             }
-
-#pragma region Setters
+            
+#pragma region Getters
             uint32_t get_width() const
             {
                 return this->_screen_size.x;
@@ -603,15 +617,15 @@ namespace wolf
             HWND _hwnd;
 #endif
 
-            w_buffer*                   _vertex_buffer;
-            w_buffer*                   _index_buffer;
-            VkPipelineCache             _pipeline_cache;
-            VkPipelineLayout            _pipeline_layout;
-            VkPipeline                  _pipeline;
-            w_shader                    _shader;
-            w_texture*                  _font_texture;
-            w_texture*                  _images_texture;
-            w_point_t                   _screen_size;
+            w_buffer*                                               _vertex_buffer;
+            w_buffer*                                               _index_buffer;
+            VkPipelineCache                                         _pipeline_cache;
+            VkPipelineLayout                                        _pipeline_layout;
+            VkPipeline                                              _pipeline;
+            w_shader                                                _shader;
+            w_texture*                                              _font_texture;
+            w_texture*                                              _images_texture;
+            w_point_t                                               _screen_size;
 
             struct push_constant_block
             {
@@ -632,9 +646,11 @@ HRESULT w_imgui::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_devi
     _In_ HWND pHWND,
     _In_ const w_point_t& pScreenSize,
     _In_ VkRenderPass& pRenderPass,
-    _In_ w_texture* pImageTexure)
+    _In_ w_texture* pImages,
+    _In_ const char* pFontPath,
+    _In_ const float& pFontPixelSize)
 {
-    return _pimp ? _pimp->load(pGDevice, pHWND, pScreenSize, pRenderPass, pImageTexure) : S_FALSE;
+    return _pimp ? _pimp->load(pGDevice, pHWND, pScreenSize, pRenderPass, pImages, pFontPath, pFontPixelSize) : S_FALSE;
 }
 
 HRESULT w_imgui::update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass)
@@ -642,7 +658,7 @@ HRESULT w_imgui::update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass)
     return _pimp ? _pimp->update_buffers(pRenderPass) : S_FALSE;
 }
 
-void w_imgui::new_frame(_In_ float pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
+void w_imgui::new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
 {
     if (!_pimp) return;
     _pimp->new_frame(pDeltaTime, pMakeGuiWork);

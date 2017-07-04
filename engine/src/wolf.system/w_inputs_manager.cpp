@@ -28,6 +28,7 @@ void w_inputs_manager::reset()
     this->mouse.last_pos_y = 0;
     this->keyboard.keys_pressed.clear();
     this->keyboard.keys_released.clear();
+    this->keyboard.inputed_chars.clear();
 }
 
 #ifdef __WIN32
@@ -41,6 +42,8 @@ HRESULT w_inputs_manager::update(
     if (this->mouse.left_button_released) this->mouse.left_button_released = false;
     if (this->mouse.middle_button_released) this->mouse.middle_button_released = false;
     if (this->mouse.right_button_released) this->mouse.right_button_released = false;
+
+    this->keyboard.inputed_chars.clear();
     this->keyboard.keys_released.clear();
 
     switch (pMessage)
@@ -79,15 +82,19 @@ HRESULT w_inputs_manager::update(
         this->keyboard.keys_pressed.insert((int)pWParam);
         return true;
     case WM_KEYUP:
+    {
         auto _value = (int)pWParam;
         this->keyboard.keys_pressed.erase(_value);
         this->keyboard.keys_released.insert(_value);
         return true;
-        //case WM_CHAR:
-        //    // You can also use ToAscii()+GetKeyboardState() to retrieve characters.
-        //    if (pWParam > 0 && pWParam < 0x10000)
-        //        io.AddInputCharacter((unsigned short)pWParam);
-        //    return true;
+    }
+    case WM_CHAR:
+        // You can also use ToAscii()+GetKeyboardState() to retrieve characters.
+        if (pWParam > 0 && pWParam < 0x10000)
+        {
+            this->keyboard.inputed_chars.push_back((unsigned short)pWParam);
+        }
+        return true;
     }
     return 0;
 }

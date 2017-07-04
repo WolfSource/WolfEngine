@@ -61,7 +61,7 @@ public:
 
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
-    
+
 private:
     
     HRESULT _build_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
