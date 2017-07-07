@@ -9,7 +9,7 @@
 #include <cameras/w_camera.h>
 #include <mutex>
 
-#define DEBUG_MASKED_OCCLUSION_CULLING
+//#define DEBUG_MASKED_OCCLUSION_CULLING
 #define MAX_SEARCH_LENGHT 256
 
 using namespace wolf::system;
@@ -57,7 +57,7 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
 
     //enable/disable gpu debugging
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = true;
+    _config.debug_gpu = false;
     this->set_graphics_device_manager_configs(_config);
 }
 
@@ -494,7 +494,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         sMOC->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
         //Tonemap the depth image
         TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, _output_window->width, _output_window->height);
-        w_texture::write_bitmap_to_file("F:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
+        w_texture::write_bitmap_to_file("E:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
 #endif
     }
 }
@@ -756,7 +756,7 @@ static bool update_gui()
     _style.Colors[ImGuiCol_WindowBg].z = 0.3176470588235294f;
     _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     
-    ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiSetCond_FirstUseEver);
     ImGui::Begin("Debug");
     ImGui::Text("FPS:%d", sFPS);
     ImGui::Text("FrameTime:%f", windows_frame_time_in_sec.at(0));

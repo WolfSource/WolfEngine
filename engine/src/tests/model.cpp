@@ -801,7 +801,10 @@ void model::pre_update(
     for (auto& _iter : this->_mocs)
     {
         //world view projection for bounding box of masked occlusion culling
-        _model_to_clip_matrix = this->_view_projection * glm::translate(_iter.position);
+        _model_to_clip_matrix = this->_view_projection * 
+            glm::translate(_iter.position) * 
+            glm::rotate(_iter.rotation);
+
         (*sMOC)->RenderTriangles(
             (float*)&_iter.vertices[0],
             _iter.indices.data(),
@@ -810,7 +813,7 @@ void model::pre_update(
     }
 
     size_t _index = 1;
-    glm::vec3 _pos;
+    glm::vec3 _pos, _rot, _dif;
     for (auto& _ins : this->_instances_transforms)
     {
         _pos = glm::vec3(
@@ -818,35 +821,31 @@ void model::pre_update(
             _ins.position[1],
             _ins.position[2]);
 
-        //render all bounding boxes of instances to Masked Occlusion culling
-        if (this->_mocs.size() == 1)
-        {
-            for (auto& _iter : this->_mocs)
-            {
-                //world view projection for bounding box of masked occlusion culling
-                _model_to_clip_matrix = _view_projection * glm::translate(_pos);
+        _rot = glm::vec3(
+            _ins.rotation[0],
+            _ins.rotation[1],
+            _ins.rotation[2]);
 
-                (*sMOC)->RenderTriangles(
-                    (float*)&_iter.vertices[0],
-                    _iter.indices.data(),
-                    _iter.num_of_tris_for_moc,
-                    (float*)(&_model_to_clip_matrix[0]));
-            }
-        }
-        else
+        //render all bounding boxes of instances to masked occlusion culling
+        for (auto& _iter : this->_mocs)
         {
-            //use the bounding box transform
-            for (auto& _iter : this->_mocs)
+            if (this->_mocs.size() == 1)
             {
-                //world view projection for bounding box of masked occlusion culling
-                _model_to_clip_matrix = _view_projection * glm::translate(_pos + _iter.position);
-
-                (*sMOC)->RenderTriangles(
-                    (float*)&_iter.vertices[0],
-                    _iter.indices.data(),
-                    _iter.num_of_tris_for_moc,
-                    (float*)(&_model_to_clip_matrix[0]));
+                //use transform of instance model
+                _model_to_clip_matrix = _view_projection * glm::translate(_pos) * glm::rotate(_rot);
             }
+            else
+            {
+                //find the difference from transform of instance and root
+                _dif = _pos - glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
+                _model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif) * glm::rotate(_rot);
+            }
+
+            (*sMOC)->RenderTriangles(
+                (float*)&_iter.vertices[0],
+                _iter.indices.data(),
+                _iter.num_of_tris_for_moc,
+                (float*)(&_model_to_clip_matrix[0]));
         }
     }
 }
@@ -862,7 +861,7 @@ bool model::post_update(
     MaskedOcclusionCulling::CullingResult _culling_result;
     for (auto& _iter : this->_mocs)
     {
-        _model_to_clip_matrix = this->_view_projection * glm::translate(_iter.position);
+        _model_to_clip_matrix = this->_view_projection * glm::translate(_iter.position) * glm::rotate(_iter.rotation);
         _culling_result = sMOC->TestTriangles(
             (float*)&_iter.vertices[0],
             _iter.indices.data(),
@@ -879,7 +878,7 @@ bool model::post_update(
     }
 
     //check all instnaces
-    glm::vec3 _pos;
+    glm::vec3 _pos, _rot, _dif;
     for (size_t i = 0; i < this->_instances_transforms.size(); ++i)
     {
         _pos = glm::vec3(
@@ -887,46 +886,36 @@ bool model::post_update(
             this->_instances_transforms[i].position[1],
             this->_instances_transforms[i].position[2]);
 
-        if (this->_mocs.size() == 1)
+        _rot = glm::vec3(
+            this->_instances_transforms[i].rotation[0],
+            this->_instances_transforms[i].rotation[1],
+            this->_instances_transforms[i].rotation[2]);
+
+        for (auto& _iter : this->_mocs)
         {
-            for (auto& _iter : this->_mocs)
+            if (this->_mocs.size() == 1)
             {
-                //world view projection for bounding box of masked occlusion culling
-                _model_to_clip_matrix = _view_projection * glm::translate(_pos);
-
-                _culling_result = sMOC->TestTriangles(
-                    (float*)&_iter.vertices[0],
-                    _iter.indices.data(),
-                    _iter.num_of_tris_for_moc,
-                    (float*)(&_model_to_clip_matrix[0]));
-
-                if (_culling_result == MaskedOcclusionCulling::VISIBLE)
-                {
-                    this->_visibilities[i + 1] = true;
-                    _add_to_render_queue = true;
-                    break;
-                }
+                //use transform of instance model
+                _model_to_clip_matrix = _view_projection * glm::translate(_pos) * glm::rotate(_rot);
             }
-        }
-        else
-        {
-            //use the bounding box transform
-            for (auto& _iter : this->_mocs)
+            else
             {
-                //world view projection for bounding box of masked occlusion culling
-                _model_to_clip_matrix = _view_projection * glm::translate(_pos + _iter.position);
+                //find the difference from transform of instance and root
+                _dif = _pos - glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
+                _model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif) * glm::rotate(_rot);
+            }
 
-                _culling_result = sMOC->TestTriangles(
-                    (float*)&_iter.vertices[0],
-                    _iter.indices.data(),
-                    _iter.num_of_tris_for_moc,
-                    (float*)(&_model_to_clip_matrix[0]));
-                if (_culling_result == MaskedOcclusionCulling::VISIBLE)
-                {
-                    this->_visibilities[i + 1] = true;
-                    _add_to_render_queue = true;
-                    break;
-                }
+            _culling_result = sMOC->TestTriangles(
+                (float*)&_iter.vertices[0],
+                _iter.indices.data(),
+                _iter.num_of_tris_for_moc,
+                (float*)(&_model_to_clip_matrix[0]));
+
+            if (_culling_result == MaskedOcclusionCulling::VISIBLE)
+            {
+                this->_visibilities[i + 1] = true;
+                _add_to_render_queue = true;
+                break;
             }
         }
     }
