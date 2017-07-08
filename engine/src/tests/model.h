@@ -54,6 +54,8 @@ public:
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
 
+    bool change_color_if_serach_names_equal_to(_In_z_ const std::string& pToBeFind);
+
 #pragma region Getters
 
     VkSemaphore get_semaphore() const                       { return this->cs.semaphore; }
@@ -92,7 +94,6 @@ private:
 
     wolf::graphics::w_mesh*                                 _mesh;
     wolf::graphics::w_shader*                               _shader;
-    wolf::graphics::w_texture*                              _texture;
 
     //World view Projections o f root and all instances
     glm::mat4                                               _view_projection;
@@ -220,6 +221,12 @@ private:
         wolf::graphics::w_buffer                                instance_buffer;
         wolf::graphics::w_pipeline                              pipeline;
     } vs;
+
+    struct fragment_stage
+    {
+        wolf::graphics::w_texture*                              texture = nullptr;
+        wolf::graphics::w_uniform<color_unifrom>                unifrom;
+    } fs;
 
     struct compute_stage
     {

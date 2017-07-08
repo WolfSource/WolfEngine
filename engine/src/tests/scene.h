@@ -67,6 +67,7 @@ private:
     HRESULT _build_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT _build_gui_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ const wolf::system::w_game_time& pGameTime);
+    bool _update_gui();
 
     wolf::content_pipeline::w_first_person_camera                  _camera;
     std::vector<model*>                                            _models;

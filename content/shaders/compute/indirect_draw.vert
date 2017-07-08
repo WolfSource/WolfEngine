@@ -16,11 +16,6 @@ layout (binding = 0) uniform UBO_In
 	mat4 projection_view;
 } i_ubo;
 
-layout (binding = 0) uniform UBO 
-{
-	mat4 projection_view;
-} ubo;
-
 //Out
 layout (location = 0) out vec2 o_uv;
 

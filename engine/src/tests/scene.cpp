@@ -8,6 +8,7 @@
 #include "masked_occlusion_culling/MaskedOcclusionCulling.h"
 #include <cameras/w_camera.h>
 #include <mutex>
+#include <w_task.h>
 
 //#define DEBUG_MASKED_OCCLUSION_CULLING
 #define MAX_SEARCH_LENGHT 256
@@ -18,10 +19,11 @@ using namespace wolf::framework;
 using namespace wolf::content_pipeline;
 
 //forward declaration
-static bool update_gui();
 static void TonemapDepth(_In_ float* pDepth, _In_ unsigned char* pImage, _In_ const int& pW, _In_ const int& pH);
 
 static bool sShowGui = true;
+static bool sSearching = false;
+static glm::vec3 sLastSearchPosition = glm::vec3();
 static char sSearch[MAX_SEARCH_LENGHT];
 static std::once_flag sFirstTime;
 static MaskedOcclusionCulling* sMOC;
@@ -247,7 +249,7 @@ void scene::load()
     }
 
     //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/A_120_Water-Treatment_v1_16_4.dae");// ");// ");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/A_120_Water-Treatment_v1_16_4.wscene");
     if (_scene)
     {
         //just for converting
@@ -433,9 +435,9 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     bool _gui_proceeded = false;
     if (sShowGui)
     {
-        w_imgui::new_frame(windows_frame_time_in_sec.at(0), [&_gui_proceeded]()
+        w_imgui::new_frame(windows_frame_time_in_sec.at(0), [&_gui_proceeded, this]()
         {
-            _gui_proceeded = update_gui();
+            _gui_proceeded = _update_gui();
         });
     }
 
@@ -637,7 +639,7 @@ ULONG scene::release()
     return w_game::release();
 }
 
-static bool update_gui()
+bool scene::_update_gui()
 {
     bool _proceeded = false;
 
@@ -734,10 +736,37 @@ static bool update_gui()
 
     ImGui::SetWindowPos(ImVec2(38, 0));
     ImGui::PushItemWidth(299);
-    if (ImGui::InputText("", sSearch, MAX_SEARCH_LENGHT))
+    if (ImGui::InputText("", sSearch, MAX_SEARCH_LENGHT, ImGuiInputTextFlags_EnterReturnsTrue))
     {
         _proceeded = true;
+
+        logger.write("Start Searching");
+        if (sSearch[0] != '\0' && !sSearching)
+        {
+            sSearching = true;
+            std::string _lower_str(sSearch);
+            std::transform(_lower_str.begin(), _lower_str.end(), _lower_str.begin(), ::tolower);
+            w_task::execute_async_ppl([this, _lower_str]()
+            {
+                //start seraching models
+                std::for_each(this->_models.begin(), this->_models.end(), [_lower_str](_In_ model* pModel)
+                {
+                    if (pModel->change_color_if_serach_names_equal_to(_lower_str))
+                    {
+                        logger.write("Found");
+                        sLastSearchPosition = pModel->get_position();
+                    }
+                });
+            }, [this]()
+            {
+                //on callback
+                sSearching = false;
+                this->_camera.set_translate(sLastSearchPosition);
+                logger.write("Search done");
+            });
+        }
     }
+
     ImGui::PopItemWidth();
     ImGui::End();
 #pragma endregion

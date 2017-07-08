@@ -90,7 +90,7 @@ HRESULT model::load(
         //load texture
         w_texture::load_to_shared_textures(pGDevice,
             content_path + L"textures/areas/" +
-            wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &this->_texture);
+            wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &fs.texture);
     }
 
     //append load mesh data to big vertices and indices
@@ -173,6 +173,7 @@ void model::get_searchable_name(_In_z_ const std::string& pName)
     }
     _splits.clear();
 
+    std::transform(_search_name.begin(), _search_name.end(), _search_name.begin(), ::tolower);
     this->_search_names.push_back(_search_name);
 }
 
@@ -248,6 +249,12 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
         return S_FALSE;
     }
 
+    //load fragment shader uniform
+    if (this->fs.unifrom.load(pGDevice) == S_FALSE)
+    {
+        V(S_FALSE, "loading fragment shader uniform for " + this->_full_name, _trace);
+        return S_FALSE;
+    }
 
     std::vector<w_shader_binding_param> _shader_params;
 
@@ -261,8 +268,14 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     _param.index = 1;
     _param.type = w_shader_binding_type::SAMPLER;
     _param.stage = w_shader_stage::FRAGMENT_SHADER;
-    _param.image_info = this->_texture == nullptr ? w_texture::default_texture->get_descriptor_info() :
-        this->_texture->get_descriptor_info();
+    _param.image_info = this->fs.texture == nullptr ? w_texture::default_texture->get_descriptor_info() :
+        this->fs.texture->get_descriptor_info();
+    _shader_params.push_back(_param);
+
+    _param.index = 2;
+    _param.type = w_shader_binding_type::UNIFORM;
+    _param.stage = w_shader_stage::FRAGMENT_SHADER;
+    _param.buffer_info = this->fs.unifrom.get_descriptor_info();
     _shader_params.push_back(_param);
 
     _param.index = 0;
@@ -813,7 +826,7 @@ void model::pre_update(
     }
 
     size_t _index = 1;
-    glm::vec3 _pos, _rot, _dif;
+    glm::vec3 _pos, _rot, _dif_pos, _dif_rot;
     for (auto& _ins : this->_instances_transforms)
     {
         _pos = glm::vec3(
@@ -837,8 +850,9 @@ void model::pre_update(
             else
             {
                 //find the difference from transform of instance and root
-                _dif = _pos - glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
-                _model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif) * glm::rotate(_rot);
+                _dif_pos = _pos - glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
+                _dif_rot = _rot - glm::vec3(this->_transform.rotation[0], this->_transform.rotation[1], this->_transform.rotation[2]);
+                _model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
             }
 
             (*sMOC)->RenderTriangles(
@@ -973,7 +987,12 @@ HRESULT model::render(
         _hr = S_FALSE;
         V(_hr, "updating vertex shader unifrom", _trace, 3);
     }
-
+    if (this->fs.unifrom.update() == S_FALSE)
+    {
+        _hr = S_FALSE;
+        V(_hr, "updating fragment shader unifrom", _trace, 3);
+    }
+    
    switch (this->cs.batch_local_size)
     {
     case 1:
@@ -1075,6 +1094,8 @@ ULONG model::release()
     if (this->get_is_released()) return 0;
 
     this->vs.unifrom.release();
+    this->fs.unifrom.release();
+
     switch (this->cs.batch_local_size)
     {
     case 1:  SAFE_RELEASE(this->cs.unifrom_x1); break;
@@ -1096,6 +1117,29 @@ ULONG model::release()
     this->_mocs.clear();
     
     return _super::release();
+}
+
+bool model::change_color_if_serach_names_equal_to(_In_z_ const std::string& pToBeFind)
+{
+    bool _find = false;
+    this->fs.unifrom.data.color.r = 0.5f;
+    this->fs.unifrom.data.color.g = 0.5f;
+    this->fs.unifrom.data.color.b = 0.5f;
+    this->fs.unifrom.data.color.a = 0.5f;
+
+    for (uint32_t i = 0; i < this->_search_names.size(); ++i)
+    {
+        if (strstr(this->_search_names[i].c_str(), pToBeFind.c_str()))
+        {
+            _find = true;
+            this->fs.unifrom.data.color.r = 0.0f;
+            this->fs.unifrom.data.color.g = 1.0f;
+            this->fs.unifrom.data.color.b = 0.0f;
+            this->fs.unifrom.data.color.a = 1.0f;
+            break;
+        }
+    }
+    return _find;
 }
 
 #pragma region Getters
