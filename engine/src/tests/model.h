@@ -24,6 +24,12 @@
 
 struct clipspace_vertex { float x, y, z, w; };
 
+struct search_item_struct
+{
+    std::string                                 name;
+    wolf::content_pipeline::w_bounding_sphere   bounding_sphere;
+};
+
 class model : public wolf::system::w_object
 {
 public:
@@ -54,7 +60,9 @@ public:
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
 
-    bool change_color_if_serach_names_equal_to(_In_z_ const std::string& pToBeFind);
+    void search_for_name(
+        _In_z_ const std::string& pToBeFind, 
+        _Inout_ std::vector<search_item_struct>& pResults);
 
 #pragma region Getters
 
@@ -110,6 +118,7 @@ private:
         glm::vec3                                               rotation;
     };
     std::vector<moc_data>                                       _mocs;
+    wolf::content_pipeline::w_bounding_sphere                   _root_bounding_sphere;
 
     struct lod
     {

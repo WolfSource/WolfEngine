@@ -23,9 +23,11 @@ static void TonemapDepth(_In_ float* pDepth, _In_ unsigned char* pImage, _In_ co
 
 static bool sShowGui = true;
 static bool sSearching = false;
-static glm::vec3 sLastSearchPosition = glm::vec3();
+static bool sForceUpdateCamera = true;
+
+static std::vector<search_item_struct> sSearchedItems;
+
 static char sSearch[MAX_SEARCH_LENGHT];
-static std::once_flag sFirstTime;
 static MaskedOcclusionCulling* sMOC;
 static float* sMOCPerPixelZBuffer = nullptr; 
 static uint8_t* sMOCTonemapDepthImage = nullptr;
@@ -442,25 +444,27 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     }
 
     //if gui proceeded or mouse captured by gui do not update view
-    if (_gui_proceeded)
+    bool _camera_just_updated = false;
+    if (!sForceUpdateCamera)
     {
-        inputs_manager.reset();
-        return;
+        if (_gui_proceeded)
+        {
+            inputs_manager.reset();
+            return;
+        }
+        if (ImGui::IsMouseHoveringAnyWindow()) return;
+
+        _camera_just_updated = this->_camera.update(pGameTime, this->_screen_size);
     }
-    if (ImGui::IsMouseHoveringAnyWindow()) return;
-
+    
     //if camera updated, then update command buffers based on result of masked occlusion culling
-    auto _camera_just_updated = this->_camera.update(pGameTime, this->_screen_size);
-    auto _cam_pos = this->_camera.get_translate();
 
-    //allow first time to build draw command buffer
-    std::call_once(sFirstTime, [&]()
-    {
-        _camera_just_updated = true;
-    });
+    //auto _cam_pos = this->_camera.get_translate();
 
-    if (_camera_just_updated)
+    if (sForceUpdateCamera || _camera_just_updated)
     {
+        sForceUpdateCamera = false;
+
         //order by distance to camera
         //std::sort(this->_models.begin(), this->_models.end(), [&_cam_pos](_In_ model* a, _In_ model* b)
         //{
@@ -684,7 +688,7 @@ bool scene::_update_gui()
     //window_flags |= ImGuiWindowFlags_MenuBar;
 
 #pragma region Left Buttons
-    if (!ImGui::Begin("Left_Widget", 0, window_flags))
+    if (!ImGui::Begin("Buttons", 0, window_flags))
     {
         // Early out if the window is collapsed, as an optimization.
         ImGui::End();
@@ -727,7 +731,7 @@ bool scene::_update_gui()
     _style.Colors[ImGuiCol_WindowBg].w = 1.0f; 
 
     ImGui::SetNextWindowContentSize(ImVec2(300, 20));
-    if (!ImGui::Begin("Search_Widget", 0, window_flags))
+    if (!ImGui::Begin("Search", 0, window_flags))
     {
         // Early out if the window is collapsed, as an optimization.
         ImGui::End();
@@ -740,7 +744,7 @@ bool scene::_update_gui()
     {
         _proceeded = true;
 
-        logger.write("Start Searching");
+        sSearchedItems.clear();
         if (sSearch[0] != '\0' && !sSearching)
         {
             sSearching = true;
@@ -751,25 +755,92 @@ bool scene::_update_gui()
                 //start seraching models
                 std::for_each(this->_models.begin(), this->_models.end(), [_lower_str](_In_ model* pModel)
                 {
-                    if (pModel->change_color_if_serach_names_equal_to(_lower_str))
-                    {
-                        logger.write("Found");
-                        sLastSearchPosition = pModel->get_position();
-                    }
+                    pModel->search_for_name(_lower_str, sSearchedItems);
                 });
             }, [this]()
             {
                 //on callback
                 sSearching = false;
-                this->_camera.set_translate(sLastSearchPosition);
-                logger.write("Search done");
             });
         }
     }
-
+    
     ImGui::PopItemWidth();
     ImGui::End();
 #pragma endregion
+
+    if (sSearchedItems.size())
+    {
+#pragma region Show Search Results
+        _style.Colors[ImGuiCol_Text].x = 0.1f;
+        _style.Colors[ImGuiCol_Text].y = 0.1f;
+        _style.Colors[ImGuiCol_Text].z = 0.1f;
+        _style.Colors[ImGuiCol_Text].w = 1.0f;
+
+        _style.Colors[ImGuiCol_WindowBg].x = 1.0f;
+        _style.Colors[ImGuiCol_WindowBg].y = 1.0f;
+        _style.Colors[ImGuiCol_WindowBg].z = 1.0f;
+        _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
+        window_flags = 0;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        window_flags |= ImGuiWindowFlags_NoResize;
+        window_flags |= ImGuiWindowFlags_NoMove;
+
+        ImGui::SetNextWindowSizeConstraints(ImVec2(300, 229), ImVec2(300, 600));
+        ImGui::SetNextWindowContentWidth(300);
+
+        if (!ImGui::Begin("Search Results", 0, window_flags))
+        {
+            // Early out if the window is collapsed, as an optimization.
+            ImGui::End();
+            return _proceeded;
+        }
+
+        ImGui::SetWindowPos(ImVec2(38, 35));
+        ImGui::PushItemWidth(299);
+        
+        if (ImGui::CollapsingHeader("Area 120"))
+        {
+            if (ImGui::TreeNode("Water Treatment"))
+            {
+                for (int i = 0; i < sSearchedItems.size(); ++i)
+                {
+                    ImGuiTreeNodeFlags _node_flags =
+                        ImGuiTreeNodeFlags_OpenOnArrow | 
+                        ImGuiTreeNodeFlags_OpenOnDoubleClick |
+                        ImGuiTreeNodeFlags_Selected | 
+                        ImGuiTreeNodeFlags_Leaf | 
+                        ImGuiTreeNodeFlags_NoTreePushOnOpen;
+                    ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, sSearchedItems[i].name.c_str());
+                    if (ImGui::IsItemClicked())
+                    {
+                        this->_camera.set_interest(
+                            sSearchedItems[i].bounding_sphere.center[0],
+                            sSearchedItems[i].bounding_sphere.center[1],
+                            sSearchedItems[i].bounding_sphere.center[2]);
+
+                        auto _radius = +sSearchedItems[i].bounding_sphere.radius * 3.0f;
+                        this->_camera.set_translate(
+                            sSearchedItems[i].bounding_sphere.center[0],
+                            sSearchedItems[i].bounding_sphere.center[1] + _radius,
+                            sSearchedItems[i].bounding_sphere.center[2] + _radius);
+
+                        this->_camera.update_view();
+                        this->_camera.update_projection();
+                        this->_camera.update_frustum();
+
+                        sForceUpdateCamera = true;
+                    }
+                }
+                ImGui::TreePop();
+            }
+        }
+
+        ImGui::PopItemWidth();
+        ImGui::End();
+#pragma endregion
+    }
     
 #pragma region Debug Window
 

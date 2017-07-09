@@ -12,16 +12,15 @@
 
 #include "w_cpipeline_export.h"
 #include <w_object.h>
-#include <vector>
 #include <map>
 #include <glm/matrix.hpp>
-#include <glm/vec4.hpp>
 #include <glm/gtx/compatibility.hpp>//for int4
 #include "collada/c_node.h"
 #include "collada/c_bone.h"
 #include "collada/c_skin.h"
 #include "collada/c_animation.h"
 #include "w_cpipeline_structs.h"
+#include "w_bounding.h"
 
 namespace wolf
 {
@@ -77,62 +76,6 @@ namespace wolf
 
             MSGPACK_DEFINE(position, rotation, scale);
 		};
-
-        WCP_EXP struct w_bounding_box
-        {
-            float           min[3];
-            float           max[3];
-            
-            float	        position[3];
-            float	        rotation[3];
-            
-            //used for rendering and masked occulusion culling
-            std::vector<float>      vertices;
-            void generate_vertices_indices()
-            {
-                if (vertices.size()) vertices.clear();
-                vertices =
-                {
-                    min[0], min[1], min[2],
-                    min[0], max[1], min[2],
-                    max[0], max[1], min[2],
-                    max[0], max[1], min[2],
-                    max[0], min[1], min[2],
-                    min[0], min[1], min[2],
-                    min[0], min[1], max[2],
-                    max[0], min[1], max[2],
-                    max[0], max[1], max[2],
-                    max[0], max[1], max[2],
-                    min[0], max[1], max[2],
-                    min[0], min[1], max[2],
-                    min[0], min[1], min[2],
-                    max[0], min[1], min[2],
-                    max[0], min[1], max[2],
-                    max[0], min[1], max[2],
-                    min[0], min[1], max[2],
-                    min[0], min[1], min[2],
-                    max[0], min[1], min[2],
-                    max[0], max[1], min[2],
-                    max[0], max[1], max[2],
-                    max[0], max[1], max[2],
-                    max[0], min[1], max[2],
-                    max[0], min[1], min[2],
-                    max[0], max[1], min[2],
-                    min[0], max[1], min[2],
-                    min[0], max[1], max[2],
-                    min[0], max[1], max[2],
-                    max[0], max[1], max[2],
-                    max[0], max[1], min[2],
-                    min[0], max[1], min[2],
-                    min[0], min[1], min[2],
-                    min[0], min[1], max[2],
-                    min[0], min[1], max[2],
-                    min[0], max[1], max[2],
-                    min[0], max[1], min[2]
-                };
-            }
-            MSGPACK_DEFINE(min, max, position, rotation);
-        };
 
         WCP_EXP struct w_instance_info
         {

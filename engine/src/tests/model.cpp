@@ -33,6 +33,7 @@ HRESULT model::load(
     this->_transform = pCPModel->get_transform();
     pCPModel->get_instances(this->_instances_transforms);
     
+
     //get full name 
     this->_full_name = pCPModel->get_name();
     get_searchable_name(this->_full_name);
@@ -55,6 +56,15 @@ HRESULT model::load(
 
     size_t _sub_meshes_count = _model_meshes.size();
     uint32_t _base_vertex = 0;
+    
+    //we need original bounding sphere for camera focus
+    if (_sub_meshes_count)
+    {
+        this->_root_bounding_sphere.create_from_bounding_box(_model_meshes[0]->bounding_box);
+        this->_root_bounding_sphere.center[0] = this->_transform.position[0];
+        this->_root_bounding_sphere.center[1] = this->_transform.position[1];
+        this->_root_bounding_sphere.center[2] = this->_transform.position[2];
+    }
 
     //generate masked occlusion culling data
     auto _bbs = pCPModel->get_bounding_boxes();
@@ -1119,27 +1129,38 @@ ULONG model::release()
     return _super::release();
 }
 
-bool model::change_color_if_serach_names_equal_to(_In_z_ const std::string& pToBeFind)
+void model::search_for_name(
+    _In_z_ const std::string& pToBeFind,
+    _Inout_ std::vector<search_item_struct>& pResults)
 {
-    bool _find = false;
-    this->fs.unifrom.data.color.r = 0.5f;
-    this->fs.unifrom.data.color.g = 0.5f;
-    this->fs.unifrom.data.color.b = 0.5f;
-    this->fs.unifrom.data.color.a = 0.5f;
+    this->fs.unifrom.data.color.r = 0.1f;
+    this->fs.unifrom.data.color.g = 0.1f;
+    this->fs.unifrom.data.color.b = 0.1f;
+    this->fs.unifrom.data.color.a = 0.1f;
 
+    search_item_struct _item;
     for (uint32_t i = 0; i < this->_search_names.size(); ++i)
     {
         if (strstr(this->_search_names[i].c_str(), pToBeFind.c_str()))
         {
-            _find = true;
-            this->fs.unifrom.data.color.r = 0.0f;
+            this->fs.unifrom.data.color.r = 1.0f;
             this->fs.unifrom.data.color.g = 1.0f;
-            this->fs.unifrom.data.color.b = 0.0f;
+            this->fs.unifrom.data.color.b = 1.0f;
             this->fs.unifrom.data.color.a = 1.0f;
-            break;
+
+
+            _item.name = this->_search_names[i];
+            _item.bounding_sphere = this->_root_bounding_sphere;
+            if (i != 0)
+            {
+                _item.bounding_sphere.center[0] = this->_instances_transforms[i - 1].position[0];
+                _item.bounding_sphere.center[1] = this->_instances_transforms[i - 1].position[1];
+                _item.bounding_sphere.center[2] = this->_instances_transforms[i - 1].position[2];
+            }
+
+            pResults.push_back(_item);
         }
     }
-    return _find;
 }
 
 #pragma region Getters
