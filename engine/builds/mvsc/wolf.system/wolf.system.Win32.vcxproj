@@ -174,6 +174,8 @@
       <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -190,14 +192,19 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_SYSTEM__;__PYTHON__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/glm-master/;$(SolutionDir)/../../dependencies/rapidxml-master/1.13/;$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/include/;$(SolutionDir)/../../dependencies/lua/lua/include/;$(SolutionDir)/../../dependencies/boost/include/;C:/Python/Python35/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_SYSTEM__;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/glm/;$(SolutionDir)/../../dependencies/rapidxml;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/lua/lua/include/;C:\VulkanSDK\1.0.51.0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/tbb2017_20161128oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/boost/lib/x64;$(SolutionDir)/../../dependencies/lua/lua;C:/Python/Python35/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/lua/lua;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AssemblyDebug>false</AssemblyDebug>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <FullProgramDatabaseFile>false</FullProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

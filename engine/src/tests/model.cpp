@@ -26,6 +26,8 @@ HRESULT model::load(
     _In_ w_render_pass& pRenderPass)
 {
     if (!pGDevice || !pCPModel) return S_FALSE;
+    
+    this->_gDevice = pGDevice;
 
     const std::string _trace = this->name + "model::load";
 
@@ -33,7 +35,6 @@ HRESULT model::load(
     this->_transform = pCPModel->get_transform();
     pCPModel->get_instances(this->_instances_transforms);
     
-
     //get full name 
     this->_full_name = pCPModel->get_name();
     get_searchable_name(this->_full_name);
@@ -42,7 +43,7 @@ HRESULT model::load(
     {
         get_searchable_name(_iter.name);
     }
-
+    
     uint32_t _lod_distance_index = 1;
     const uint32_t _lod_distance_offset = 500;
 
@@ -83,7 +84,7 @@ HRESULT model::load(
         _model_meshes[0]->bounding_box.generate_vertices_indices();
         _add_data_for_masked_occlusion_culling(_model_meshes[0]->bounding_box);
     }
-
+    
     if (_sub_meshes_count)
     {
         //create first lod information
@@ -98,11 +99,11 @@ HRESULT model::load(
         _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex);
 
         //load texture
-        w_texture::load_to_shared_textures(pGDevice,
+        w_texture::load_to_shared_textures(this->_gDevice,
             content_path + L"textures/areas/" +
             wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &fs.texture);
     }
-
+    
     //append load mesh data to big vertices and indices
     std::vector<w_cpipeline_model*> _lods;
     pCPModel->get_lods(_lods);
@@ -126,7 +127,7 @@ HRESULT model::load(
             _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex);
         }
     }
-
+    
     if (!_batch_vertices.size())
     {
         V(S_FALSE, "Model " + this->_full_name + " does not have vertices data", _trace);
@@ -142,7 +143,7 @@ HRESULT model::load(
     }
 
     auto _v_size = static_cast<uint32_t>(_batch_vertices.size());
-    auto _hr = _mesh->load(pGDevice,
+    auto _hr = _mesh->load(this->_gDevice,
         _batch_vertices.data(),
         _v_size * sizeof(float),
         _v_size,
@@ -152,22 +153,21 @@ HRESULT model::load(
 
     _batch_vertices.clear();
     _batch_indices.clear();
-
+    
     if (_hr == S_FALSE)
     {
         V(S_FALSE, "Error on loading mesh for " + this->_full_name, _trace);
         return S_FALSE;
     }
 
-
-    if (_load_buffers(pGDevice) == S_FALSE) return S_FALSE;
-    if (_load_shader(pGDevice) == S_FALSE) return S_FALSE;
-    if (_load_pipelines(pGDevice, pRenderPass) == S_FALSE) return S_FALSE;
-    if (_load_semaphores(pGDevice) == S_FALSE) return S_FALSE;
-
+    if (_load_buffers() == S_FALSE) return S_FALSE;
+    if (_load_shader() == S_FALSE) return S_FALSE;
+    if (_load_pipelines(pRenderPass) == S_FALSE) return S_FALSE;
+    if (_load_semaphores() == S_FALSE) return S_FALSE;
+    
     //load command buffer for compute shader and build it
-    cs.command_buffer.load(pGDevice, 1, true, &pGDevice->vk_compute_queue);
-    if (_build_compute_command_buffers(pGDevice) == S_FALSE) return S_FALSE;
+    cs.command_buffer.load(this->_gDevice, 1, true, &this->_gDevice->vk_compute_queue);
+    if (_build_compute_command_buffers() == S_FALSE) return S_FALSE;
     
     return S_OK;
 }
@@ -203,12 +203,14 @@ void model::_store_to_batch(
         for (auto& _data : _mesh_data->vertices)
         {
             auto _pos = _data.position;
+            //auto _nor = _data.normal;
             auto _uv = _data.uv;
-
+            
             //position
             pBatchVertices.push_back(_pos[0]);
             pBatchVertices.push_back(_pos[1]);
             pBatchVertices.push_back(_pos[2]);
+
 
             //uv
             pBatchVertices.push_back(_uv[0]);
@@ -248,19 +250,19 @@ void model::_add_data_for_masked_occlusion_culling(_In_ const w_bounding_box& pB
     this->_mocs.push_back(_moc_data);
 }
 
-HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
+HRESULT model::_load_shader()
 {
     const std::string _trace = this->name + "::_load_shader";
 
     //load vertex shader uniform
-    if (this->vs.unifrom.load(pGDevice) == S_FALSE)
+    if (this->vs.unifrom.load(this->_gDevice) == S_FALSE)
     {
         V(S_FALSE, "loading vertex shader uniform for " + this->_full_name, _trace);
         return S_FALSE;
     }
 
     //load fragment shader uniform
-    if (this->fs.unifrom.load(pGDevice) == S_FALSE)
+    if (this->fs.unifrom.load(this->_gDevice) == S_FALSE)
     {
         V(S_FALSE, "loading fragment shader uniform for " + this->_full_name, _trace);
         return S_FALSE;
@@ -313,7 +315,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     case 1:
         this->_visibilities.resize(1);
         this->cs.unifrom_x1 = new w_uniform<compute_unifrom_x1>();
-        if (this->cs.unifrom_x1->load(pGDevice) == S_FALSE)
+        if (this->cs.unifrom_x1->load(this->_gDevice) == S_FALSE)
         {
             V(S_FALSE, "loading compute shader uniform_x1 for " + this->_full_name, _trace);
             return S_FALSE;
@@ -323,7 +325,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     case 2:
         this->_visibilities.resize(2);
         this->cs.unifrom_x2 = new w_uniform<compute_unifrom_x2>();
-        if (this->cs.unifrom_x2->load(pGDevice) == S_FALSE)
+        if (this->cs.unifrom_x2->load(this->_gDevice) == S_FALSE)
         {
             V(S_FALSE, "loading compute shader unifrom_x2 for " + this->_full_name, _trace);
             return S_FALSE;
@@ -333,7 +335,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     case 4:
         this->_visibilities.resize(4);
         this->cs.unifrom_x4 = new w_uniform<compute_unifrom_x4>();
-        if (this->cs.unifrom_x4->load(pGDevice) == S_FALSE)
+        if (this->cs.unifrom_x4->load(this->_gDevice) == S_FALSE)
         {
             V(S_FALSE, "loading compute shader unifrom_x4 for " + this->_full_name, _trace);
             return S_FALSE;
@@ -343,7 +345,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     case 8:
         this->_visibilities.resize(8);
         this->cs.unifrom_x8 = new w_uniform<compute_unifrom_x8>();
-        if (this->cs.unifrom_x8->load(pGDevice) == S_FALSE)
+        if (this->cs.unifrom_x8->load(this->_gDevice) == S_FALSE)
         {
             V(S_FALSE, "loading compute shader unifrom_x8 for " + this->_full_name, _trace);
             return S_FALSE;
@@ -353,7 +355,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     case 16:
         this->_visibilities.resize(16);
         this->cs.unifrom_x16 = new w_uniform<compute_unifrom_x16>();
-        if (this->cs.unifrom_x16->load(pGDevice) == S_FALSE)
+        if (this->cs.unifrom_x16->load(this->_gDevice) == S_FALSE)
         {
             V(S_FALSE, "loading compute shader unifrom_x16 for " + this->_full_name, _trace);
             return S_FALSE;
@@ -363,7 +365,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     case 32:
         this->_visibilities.resize(32);
         this->cs.unifrom_x32 = new w_uniform<compute_unifrom_x32>();
-        if (this->cs.unifrom_x32->load(pGDevice) == S_FALSE)
+        if (this->cs.unifrom_x32->load(this->_gDevice) == S_FALSE)
         {
             V(S_FALSE, "loading compute shader unifrom_x32 for " + this->_full_name, _trace);
             return S_FALSE;
@@ -373,7 +375,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     case 64:
         this->_visibilities.resize(64);
         this->cs.unifrom_x64 = new w_uniform<compute_unifrom_x64>();
-        if (this->cs.unifrom_x64->load(pGDevice) == S_FALSE)
+        if (this->cs.unifrom_x64->load(this->_gDevice) == S_FALSE)
         {
             V(S_FALSE, "loading compute shader unifrom_x64 for " + this->_full_name, _trace);
             return S_FALSE;
@@ -383,7 +385,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     case 128:
         this->_visibilities.resize(128);
         this->cs.unifrom_x128 = new w_uniform<compute_unifrom_x128>();
-        if (this->cs.unifrom_x128->load(pGDevice) == S_FALSE)
+        if (this->cs.unifrom_x128->load(this->_gDevice) == S_FALSE)
         {
             V(S_FALSE, "loading compute shader uniform_x128 for " + this->_full_name, _trace);
             return S_FALSE;
@@ -417,7 +419,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
 
     //load shaders
     if (w_shader::load_shader(
-        pGDevice,
+        this->_gDevice,
         _shader_name,
         content_path + L"shaders/compute/indirect_draw.vert.spv",
         L"",
@@ -436,7 +438,7 @@ HRESULT model::_load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphic
     return S_OK;
 }
 
-HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
+HRESULT model::_load_buffers()
 {
     const std::string _trace = this->name + "::_prepare_buffers";
 
@@ -466,7 +468,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     }
 
     uint32_t _size = (uint32_t)(_draw_counts * sizeof(VkDrawIndexedIndirectCommand));
-    if (_staging_buffers[0].load_as_staging(pGDevice, _size) == S_FALSE)
+    if (_staging_buffers[0].load_as_staging(this->_gDevice, _size) == S_FALSE)
     {
         V(S_FALSE, "loading staging buffer of indirect_draw_commands", _trace, 3);
         return S_FALSE;
@@ -485,7 +487,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     }
 
     if (this->indirect.indirect_draw_commands_buffer.load(
-        pGDevice,
+        this->_gDevice,
         _size,
         VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == S_FALSE)
@@ -508,7 +510,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
 
     _size = (uint32_t)sizeof(this->indirect_status);
     if (this->indirect.indirect_draw_count_buffer.load(
-        pGDevice,
+        this->_gDevice,
         _size,
         VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == S_FALSE)
@@ -550,7 +552,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     }
 
     _size = (uint32_t)(_vertex_instances_data.size() * sizeof(vertex_instance_data));
-    if (_staging_buffers[1].load_as_staging(pGDevice, _size) == S_FALSE)
+    if (_staging_buffers[1].load_as_staging(this->_gDevice, _size) == S_FALSE)
     {
         V(S_FALSE, "loading staging buffer of vertex_instance_buffer", _trace, 3);
         return S_FALSE;
@@ -568,7 +570,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
         return S_FALSE;
     }
 
-    if (vs.instance_buffer.load(pGDevice,
+    if (vs.instance_buffer.load(this->_gDevice,
         _size,
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == S_FALSE)
@@ -589,7 +591,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     }
 
     _size = this->_lod_levels.size() * sizeof(lod);
-    if (_staging_buffers[2].load_as_staging(pGDevice, _size) == S_FALSE)
+    if (_staging_buffers[2].load_as_staging(this->_gDevice, _size) == S_FALSE)
     {
         V(S_FALSE, "loading staging buffer of lod_levels_buffers", _trace, 3);
         return S_FALSE;
@@ -608,7 +610,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     }
 
     if (cs.lod_levels_buffers.load(
-        pGDevice,
+        this->_gDevice,
         _size,
         VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == S_FALSE)
@@ -636,7 +638,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     }
 
     _size = _compute_instance_data.size() * sizeof(compute_instance_data);
-    if (_staging_buffers[3].load_as_staging(pGDevice, _size) == S_FALSE)
+    if (_staging_buffers[3].load_as_staging(this->_gDevice, _size) == S_FALSE)
     {
         V(S_FALSE, "loading staging buffer of compute_instance_buffer", _trace, 3);
         return S_FALSE;
@@ -654,7 +656,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
         return S_FALSE;
     }
 
-    if (cs.instance_buffer.load(pGDevice,
+    if (cs.instance_buffer.load(this->_gDevice,
         _size,
         VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == S_FALSE)
@@ -678,9 +680,7 @@ HRESULT model::_load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphi
     return S_OK;
 }
 
-HRESULT model::_load_pipelines(
-    _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-    _In_ w_render_pass& pRenderPass)
+HRESULT model::_load_pipelines(_In_ w_render_pass& pRenderPass)
 {
     const std::string _trace = this->name + "::_load_pipelines";
 
@@ -691,8 +691,9 @@ HRESULT model::_load_pipelines(
     };
 
     auto _descriptor_set_layout_binding = this->_shader->get_descriptor_set_layout();
+   
     auto _hr = vs.pipeline.load(
-        pGDevice,
+        this->_gDevice,
         this->_vertex_binding_attributes,
         VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
         pRenderPass.get_handle(),
@@ -711,12 +712,11 @@ HRESULT model::_load_pipelines(
         V(S_FALSE, "creating vertex pipeline for " + this->_full_name, _trace);
         return S_FALSE;
     }
-
     auto _compute_descriptor_set_layout_binding = this->_shader->get_compute_descriptor_set_layout();
     auto _compute_shader_stage = this->_shader->get_compute_shader_stage();
 
-    if (cs.pipeline.load_compute(
-        pGDevice,
+    if (this->cs.pipeline.load_compute(
+        this->_gDevice,
         _compute_shader_stage,
         _compute_descriptor_set_layout_binding,
         6,
@@ -725,16 +725,18 @@ HRESULT model::_load_pipelines(
         V(S_FALSE, "loading compute pipeline for " + this->_full_name, _trace);
         return S_FALSE;
     }
+    
+    return S_OK;
 }
 
-HRESULT model::_load_semaphores(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
+HRESULT model::_load_semaphores()
 {
     const std::string _trace = this->name + "::_load_semaphores";
 
     VkSemaphoreCreateInfo _semaphore_create_info = {};
     _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-    auto _hr = vkCreateSemaphore(pGDevice->vk_device,
+    auto _hr = vkCreateSemaphore(this->_gDevice->vk_device,
         &_semaphore_create_info,
         nullptr,
         &cs.semaphore);
@@ -743,9 +745,10 @@ HRESULT model::_load_semaphores(_In_ const std::shared_ptr<wolf::graphics::w_gra
         V(S_FALSE, "creating semaphore for command buffer of " + this->_full_name, _trace);
         return S_FALSE;
     }
+    return S_OK;
 }
 
-HRESULT model::_build_compute_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice)
+HRESULT model::_build_compute_command_buffers()
 {
     VkCommandBufferBeginInfo _cmd_buffer_info = {};
     _cmd_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -764,8 +767,8 @@ HRESULT model::_build_compute_command_buffers(_In_ const std::shared_ptr<wolf::g
     _buffer_barrier.size = _size;
     _buffer_barrier.srcAccessMask = VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
     _buffer_barrier.dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-    _buffer_barrier.srcQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
-    _buffer_barrier.dstQueueFamilyIndex = pGDevice->vk_compute_queue.index;
+    _buffer_barrier.srcQueueFamilyIndex = this->_gDevice->vk_graphics_queue.index;
+    _buffer_barrier.dstQueueFamilyIndex = this->_gDevice->vk_compute_queue.index;
 
     vkCmdPipelineBarrier(
         _cmd,
@@ -795,8 +798,8 @@ HRESULT model::_build_compute_command_buffers(_In_ const std::shared_ptr<wolf::g
     _buffer_barrier.dstAccessMask = VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
     _buffer_barrier.buffer = _cmd_handle;
     _buffer_barrier.size = _size;
-    _buffer_barrier.srcQueueFamilyIndex = pGDevice->vk_compute_queue.index;
-    _buffer_barrier.dstQueueFamilyIndex = pGDevice->vk_graphics_queue.index;
+    _buffer_barrier.srcQueueFamilyIndex = this->_gDevice->vk_compute_queue.index;
+    _buffer_barrier.dstQueueFamilyIndex = this->_gDevice->vk_graphics_queue.index;
 
     vkCmdPipelineBarrier(
         _cmd,
@@ -947,8 +950,7 @@ bool model::post_update(
     return _add_to_render_queue;
 }
 
-void model::indirect_draw(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const VkCommandBuffer& pCommandBuffer)
+void model::indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer)
 {
     auto _descriptor_set = this->_shader->get_descriptor_set();
     this->vs.pipeline.bind(pCommandBuffer, &_descriptor_set);
@@ -956,7 +958,7 @@ void model::indirect_draw(_In_ const std::shared_ptr<w_graphics_device>& pGDevic
     auto _instances_size = (uint32_t)this->_instances_transforms.size();
     _mesh->draw(pCommandBuffer, this->vs.instance_buffer.get_handle(), _instances_size, true);
 
-    if (pGDevice->vk_physical_device_features.multiDrawIndirect)
+    if (this->_gDevice->vk_physical_device_features.multiDrawIndirect)
     {
         vkCmdDrawIndexedIndirect(
             pCommandBuffer,
@@ -980,9 +982,7 @@ void model::indirect_draw(_In_ const std::shared_ptr<w_graphics_device>& pGDevic
 
 }
 
-HRESULT model::render(
-    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const wolf::content_pipeline::w_first_person_camera* pCamera)
+HRESULT model::render(_In_ const wolf::content_pipeline::w_first_person_camera* pCamera)
 {
     HRESULT _hr = S_OK;
 
@@ -992,6 +992,7 @@ HRESULT model::render(
     auto _camera_pos = pCamera->get_translate();
     
     this->vs.unifrom.data.projection_view = this->_view_projection;
+    
     if (this->vs.unifrom.update() == S_FALSE)
     {
         _hr = S_FALSE;
@@ -1069,7 +1070,7 @@ HRESULT model::render(
     _submit_info.signalSemaphoreCount = 1;
     _submit_info.pSignalSemaphores = &this->cs.semaphore;
    
-    if (vkQueueSubmit(pGDevice->vk_compute_queue.queue, 1, &_submit_info, 0))
+    if (vkQueueSubmit(this->_gDevice->vk_compute_queue.queue, 1, &_submit_info, 0))
     {
         _hr = S_FALSE;
         V(_hr, "submiting queu for " + this->_full_name, _trace, 3);
@@ -1078,54 +1079,35 @@ HRESULT model::render(
     return _hr;
 }
 
-void model::post_render(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
-{
-    // Get draw count from compute
-    //auto _mapped = this->indirect.indirect_draw_count_buffer.map();
-    //{
-    //    memcpy(&this->indirect_status, _mapped, sizeof(this->indirect_status));
-    //    this->indirect.indirect_draw_commands_buffer.flush();
-    //}
-    //this->indirect.indirect_draw_count_buffer.unmap();
-
-
-    //logger.write("visible " + std::to_string(this->indirect_status.draw_count));
-    //for (size_t i = 0; i < MAX_LOD_LEVEL + 1; i++)
-    //{
-    //    if (this->indirect_status.lod_count[i])
-    //    {
-    //        logger.write("lod " + std::to_string(i));
-    //    }
-    //}
-}
-
 ULONG model::release()
 {
-    if (this->get_is_released()) return 0;
+    if (_super::get_is_released()) return 0;
 
-    this->vs.unifrom.release();
-    this->fs.unifrom.release();
-
-    switch (this->cs.batch_local_size)
+    if (this->cs.semaphore)
     {
-    case 1:  SAFE_RELEASE(this->cs.unifrom_x1); break;
-    case 2:  SAFE_RELEASE(this->cs.unifrom_x2); break;
-    case 4:  SAFE_RELEASE(this->cs.unifrom_x4); break;
-    case 8:  SAFE_RELEASE(this->cs.unifrom_x8); break;
-    case 16: SAFE_RELEASE(this->cs.unifrom_x16); break;
-    case 32: SAFE_RELEASE(this->cs.unifrom_x32); break;
-    case 64: SAFE_RELEASE(this->cs.unifrom_x64); break;
-    case 128:SAFE_RELEASE(this->cs.unifrom_x128); break;
+        vkDestroySemaphore(this->_gDevice->vk_device, this->cs.semaphore, nullptr);
+        this->cs.semaphore = 0;
     }
+    this->cs.release();
+    this->vs.release();
+    this->fs.release();
+    this->indirect.release();
+    this->_instances_transforms.clear();
+    this->_lod_levels.clear();
+    this->_search_names.clear();
+    this->_visibilities.clear();
 
     //release all masked occlusion data
     for (auto& _iter : this->_mocs)
     {
-        _iter.vertices.clear();
-        _iter.indices.clear();
+        _iter.release();
     }
     this->_mocs.clear();
     
+    SAFE_RELEASE(this->_mesh);
+    
+    this->_gDevice = nullptr;
+
     return _super::release();
 }
 
@@ -1133,22 +1115,16 @@ void model::search_for_name(
     _In_z_ const std::string& pToBeFind,
     _Inout_ std::vector<search_item_struct>& pResults)
 {
-    this->fs.unifrom.data.color.r = 0.1f;
-    this->fs.unifrom.data.color.g = 0.1f;
-    this->fs.unifrom.data.color.b = 0.1f;
-    this->fs.unifrom.data.color.a = 0.1f;
+    set_color(glm::vec4(0.1f));
 
     search_item_struct _item;
     for (uint32_t i = 0; i < this->_search_names.size(); ++i)
     {
         if (strstr(this->_search_names[i].c_str(), pToBeFind.c_str()))
         {
-            this->fs.unifrom.data.color.r = 1.0f;
-            this->fs.unifrom.data.color.g = 1.0f;
-            this->fs.unifrom.data.color.b = 1.0f;
-            this->fs.unifrom.data.color.a = 1.0f;
-
-
+            //TODO: we need to set opacity for each instance not all instanced
+            set_color(glm::vec4(1.0f));
+            
             _item.name = this->_search_names[i];
             _item.bounding_sphere = this->_root_bounding_sphere;
             if (i != 0)
@@ -1171,6 +1147,23 @@ glm::vec3 model::get_position() const
         this->_transform.position[0],
         this->_transform.position[1],
         this->_transform.position[2]);
+}
+
+#pragma endregion
+
+#pragma region Setters
+
+void model::set_opacity(const float& pValue)
+{
+    this->fs.unifrom.data.color.a = pValue;
+}
+
+void model::set_color(const glm::vec4& pValue)
+{
+    this->fs.unifrom.data.color.r = pValue.r;
+    this->fs.unifrom.data.color.g = pValue.g;
+    this->fs.unifrom.data.color.b = pValue.b;
+    this->fs.unifrom.data.color.a = pValue.a;
 }
 
 #pragma endregion

@@ -20,7 +20,6 @@ static std::map<std::string, std::string>	sLibraryEffects;
 static std::map<std::string, std::string>	sLibraryImages;
 static std::string					        sSkipChildrenOfThisNode;
 static c_xsi_extra					        sXSI_Extra;
-//static std::vector<unsigned short>	sXSI_Indices;
 static rapidxml::xml_node<>*		        SGeometryLibraryNode;
 static bool                                 sZ_Up = true;
 
@@ -1718,7 +1717,8 @@ void c_parser::_create_model(_In_ const bool& pAMDTootleOptimizing,
             sLibraryImages,
             _transform,
             pAMDTootleOptimizing,
-            sZ_Up);
+            sZ_Up,
+            pInvertNormals);
 
         _model->set_name(_node_ptr->c_name);
         _model->set_instance_geometry_name(_node_ptr->instanced_geometry_name);

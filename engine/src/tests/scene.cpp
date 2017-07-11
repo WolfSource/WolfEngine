@@ -116,7 +116,7 @@ void scene::load()
     _screen_size.y = static_cast<uint32_t>(_output_window->height);
 
     w_game::load();
-    
+
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
     {
         size_t _size = _screen_size.x * _screen_size.y;
@@ -124,13 +124,13 @@ void scene::load()
         sMOCTonemapDepthImage = (uint8_t*)malloc(_size * 3 * sizeof(uint8_t));
     }
 #endif
-
+    
     //Fence for compute Command Buffer sync
     VkFenceCreateInfo _fence_create_info = {};
     _fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     _fence_create_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-    if(vkCreateFence(
+    if (vkCreateFence(
         _gDevice->vk_device,
         &_fence_create_info,
         nullptr,
@@ -141,7 +141,7 @@ void scene::load()
         w_game::exiting = true;
         return;
     }
-
+    
     w_viewport _viewport;
     _viewport.y = 0;
     _viewport.width = static_cast<float>(_screen_size.x);
@@ -179,7 +179,6 @@ void scene::load()
         return;
     }
 
-
     // Color attachments
     // Don't clear the framebuffer (like the renderpass from the example does)
     _attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
@@ -195,8 +194,7 @@ void scene::load()
     VkAttachmentReference depthReference = {};
     depthReference.attachment = 1;
     depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-
+    
     _hr = this->_gui_render_pass.load(
         _gDevice,
         _viewport,
@@ -212,7 +210,7 @@ void scene::load()
     }
     
     auto _render_pass_handle = this->_draw_render_pass.get_handle();
-    
+
     //create pipeline_cache for drawing models
     std::string _pipeline_cache_name = "model_pipeline_cache";
     if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
@@ -250,62 +248,10 @@ void scene::load()
         exit(1);
     }
 
-    //load scene
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/A_120_Water-Treatment_v1_16_4.wscene");
-    if (_scene)
-    {
-        //just for converting
-        //std::vector<w_cpipeline_scene> _scenes = { *_scene };
-        //w_content_manager::save_wolf_scenes_to_file(_scenes, content_path + L"models/A_120_Water-Treatment_v1_16_4.wscene");
-        //_scenes.clear();
-
-        //get all models
-        std::vector<w_cpipeline_model*> _cmodels;
-        _scene->get_all_models(_cmodels);
-        
-        int kkk = 0;
-        for (auto& _iter : _cmodels)
-        {
-            if (!_iter) continue;
-
-            auto _model = new model();
-            if (_model->load(_gDevice, _iter, this->_draw_render_pass) == S_OK)
-            {
-                this->_models.push_back(_model);
-            }
-            else
-            {
-                SAFE_DELETE(_model);
-                logger.error("Error on loading model " + _iter->get_name());
-            }
-        }
-
-        _scene->get_first_camera(this->_camera);
-
-        float _near_plan = 0.1f, far_plan = 5000;
-        
-        this->_camera.set_near_plan(_near_plan);
-        sMOC->SetNearClipPlane(_near_plan);
-        
-        this->_camera.set_far_plan(far_plan);
-        
-        auto _screen_width = (float)_screen_size.x;
-        auto _screen_height = (float)_screen_size.y;
-
-        this->_camera.set_aspect_ratio(_screen_width / _screen_height);
-        sMOC->SetResolution(_screen_width, _screen_height);
-
-        this->_camera.update_view();
-        this->_camera.update_projection();
-        this->_camera.update_frustum();
-
-        _scene->release();
-    }
-
     VkSemaphoreCreateInfo _semaphore_create_info = {};
     _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-    if(vkCreateSemaphore(_gDevice->vk_device,
+    if (vkCreateSemaphore(_gDevice->vk_device,
         &_semaphore_create_info,
         nullptr,
         &gui_semaphore))
@@ -332,7 +278,7 @@ void scene::load()
     _gui_images->initialize_texture_2D_from_file(L"textures/gui/icons.png");
 
     //set images which will be used by imgui
-    
+
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
     w_texture* _debug_image = new w_texture();
     _debug_image->load(_gDevice);
@@ -343,7 +289,7 @@ void scene::load()
     _param.stage = w_shader_stage::FRAGMENT_SHADER;
     _param.type = w_shader_binding_type::SAMPLER;
     _param.image_info = _debug_image->get_descriptor_info();
-    
+
     //w_shader* _basic;
     //w_shader::load_shader(
     //    _gDevice, 
@@ -372,6 +318,87 @@ void scene::load()
         release();
         exit(1);
     }
+    _load_areas();
+}
+
+HRESULT scene::_load_areas()
+{
+    auto _gDevice = this->graphics_devices[0];
+
+    const std::vector<std::wstring> _areas =
+    {
+        //L"models/areas/100/_120_water-treatment_v1_16_19.dae",
+        L"models/model.dae",
+
+        //"models/areas/100/_120_water-treatment_outer_v1_16_17.dae",
+        //"models/areas/100/_120_water-treatment_outer_v1_16_17.dae",
+        //"models/areas/100/_120_water-treatment_outer_v1_16_17.dae",
+    };
+
+
+    std::for_each(_areas.begin(), _areas.end(), [&](_In_ const std::wstring& pAreaPath)
+    {
+        //load scene
+        auto _path = content_path + pAreaPath;
+        auto _scene = w_content_manager::load<w_cpipeline_scene>(_path);
+        if (_scene)
+        {
+            //just for converting
+            //std::vector<w_cpipeline_scene> _scenes = { *_scene };
+            //w_content_manager::save_wolf_scenes_to_file(_scenes, 
+            //    content_path + 
+            //    wolf::system::io::get_parent_directoryW(pAreaPath) + L"/" +
+            //    wolf::system::io::get_base_file_nameW(pAreaPath) + L".wscene");
+            //_scenes.clear();
+
+            //get all models
+            std::vector<w_cpipeline_model*> _cmodels;
+            _scene->get_all_models(_cmodels);
+
+            for (auto& _iter : _cmodels)
+            {
+                if (!_iter) continue;
+
+                auto _model = new model();
+                if (_model->load(_gDevice, _iter, this->_draw_render_pass) == S_OK)
+                {
+                    this->_models.push_back(_model);
+                }
+                else
+                {
+                    SAFE_DELETE(_model);
+                    logger.error("Error on loading model " + _iter->get_name());
+                }
+            }
+
+            _scene->get_first_camera(this->_camera);
+
+            float _near_plan = 0.1f, far_plan = 5000;
+
+            this->_camera.set_near_plan(_near_plan);
+            sMOC->SetNearClipPlane(_near_plan);
+
+            this->_camera.set_far_plan(far_plan);
+
+            auto _screen_width = (float)_screen_size.x;
+            auto _screen_height = (float)_screen_size.y;
+
+            this->_camera.set_aspect_ratio(_screen_width / _screen_height);
+            sMOC->SetResolution(_screen_width, _screen_height);
+
+            this->_camera.update_view();
+            this->_camera.update_projection();
+            this->_camera.update_frustum();
+
+            _scene->release();
+        }
+        else
+        {
+            logger.write(L"Scene on following path not exists " + _path);
+        }
+    });
+
+    return S_OK;
 }
 
 HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -389,7 +416,7 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
             {
                 for (auto& _iter : sModelsToBeRender)
                 {
-                    _iter->indirect_draw(pGDevice, _cmd);
+                    _iter->indirect_draw(_cmd);
                 }
             }
             this->_draw_render_pass.end(_cmd);
@@ -500,7 +527,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         sMOC->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
         //Tonemap the depth image
         TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, _output_window->width, _output_window->height);
-        w_texture::write_bitmap_to_file("E:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
+        w_texture::write_bitmap_to_file("F:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
 #endif
     }
 }
@@ -529,7 +556,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     //pre render which run compute shaders
     std::for_each(sModelsToBeRender.begin(), sModelsToBeRender.end(), [&](_In_ model* pModel)
     {
-        if (pModel->render(_gDevice, &this->_camera) == S_OK)
+        if (pModel->render(&this->_camera) == S_OK)
         {
             _wait_for_pre_render_semaphores.push_back(pModel->get_semaphore());
         }
@@ -590,12 +617,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     }
     _hr = w_game::render(pGameTime);
 
-    //post render which run compute shaders
-    for (auto& _model : this->_models)
-    {
-        _model->post_render(_gDevice);
-    }
-  
     sFPS = pGameTime.get_frames_per_second();
 
     return _hr;
@@ -613,15 +634,9 @@ void scene::on_device_lost()
 
 ULONG scene::release()
 {
-    if (this->get_is_released()) return 0;
+    if (w_game::get_is_released()) return 0;
 
     auto _gDevice = get_graphics_device();
-
-    this->_draw_render_pass.release();
-    this->_draw_frame_buffers.release();
-
-    this->_gui_render_pass.release();
-    this->_gui_frame_buffers.release();
 
     //release all models
     for (auto& _iter : this->_models)
@@ -629,7 +644,24 @@ ULONG scene::release()
         SAFE_RELEASE(_iter);
     }
 
-    w_imgui::release();
+    if (this->_compute_fence)
+    {
+        vkDestroyFence(_gDevice->vk_device, this->_compute_fence, nullptr);
+        this->_compute_fence = 0;
+    }
+
+    this->_draw_render_pass.release();
+    this->_draw_frame_buffers.release();
+    this->_draw_command_buffers.release();
+
+    this->_gui_render_pass.release();
+    this->_gui_frame_buffers.release();
+    this->_gui_command_buffers.release();
+    if (this->gui_semaphore)
+    {
+        vkDestroySemaphore(_gDevice->vk_device, this->gui_semaphore, nullptr);
+        this->gui_semaphore = 0;
+    }
     
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
     free(sMOCPerPixelZBuffer);
@@ -638,7 +670,10 @@ ULONG scene::release()
 
     MaskedOcclusionCulling::Destroy(sMOC);
 
+    w_imgui::release();
+
     w_pipeline::release_all_pipeline_caches(_gDevice);
+    w_texture::release_shared_textures();
 
     return w_game::release();
 }
@@ -745,23 +780,42 @@ bool scene::_update_gui()
         _proceeded = true;
 
         sSearchedItems.clear();
-        if (sSearch[0] != '\0' && !sSearching)
+        if (!sSearching)
         {
-            sSearching = true;
-            std::string _lower_str(sSearch);
-            std::transform(_lower_str.begin(), _lower_str.end(), _lower_str.begin(), ::tolower);
-            w_task::execute_async_ppl([this, _lower_str]()
+            if (sSearch[0] != '\0')
             {
-                //start seraching models
-                std::for_each(this->_models.begin(), this->_models.end(), [_lower_str](_In_ model* pModel)
+                sSearching = true;
+                std::string _lower_str(sSearch);
+                std::transform(_lower_str.begin(), _lower_str.end(), _lower_str.begin(), ::tolower);
+                w_task::execute_async_ppl([this, _lower_str]()
                 {
-                    pModel->search_for_name(_lower_str, sSearchedItems);
+                    //start seraching models
+                    std::for_each(this->_models.begin(), this->_models.end(), [_lower_str](_In_ model* pModel)
+                    {
+                        pModel->search_for_name(_lower_str, sSearchedItems);
+                    });
+                }, [this]()
+                {
+                    //on callback
+                    sSearching = false;
+                    if (sSearchedItems.size() == 0)
+                    {
+                        //switch all model's transparency to 1
+                        std::for_each(this->_models.begin(), this->_models.end(), [](_In_ model* pModel)
+                        {
+                            pModel->set_color(glm::vec4(1.0f));
+                        });
+                    }
                 });
-            }, [this]()
+            }
+            else
             {
-                //on callback
-                sSearching = false;
-            });
+                //switch all model's transparency to 1
+                std::for_each(this->_models.begin(), this->_models.end(), [](_In_ model* pModel)
+                {
+                    pModel->set_color(glm::vec4(1.0f));
+                });
+            }
         }
     }
     

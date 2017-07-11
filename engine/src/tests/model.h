@@ -47,15 +47,9 @@ public:
 
     bool post_update(_Inout_ MaskedOcclusionCulling* sMOC);
 
-    void indirect_draw(
-        _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-        _In_ const VkCommandBuffer& pCommandBuffer);
+    void indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer);
 
-    HRESULT render(
-        _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-        _In_ const wolf::content_pipeline::w_first_person_camera* pCamera);
-
-    void post_render(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+    HRESULT render(_In_ const wolf::content_pipeline::w_first_person_camera* pCamera);
 
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
@@ -68,6 +62,13 @@ public:
 
     VkSemaphore get_semaphore() const                       { return this->cs.semaphore; }
     glm::vec3   get_position() const;
+
+#pragma endregion
+
+#pragma region Setters
+
+    void set_opacity(const float& pValue); 
+    void set_color(const glm::vec4& pValue);
 
 #pragma endregion
 
@@ -84,13 +85,13 @@ private:
 
     void _add_data_for_masked_occlusion_culling(_In_ const wolf::content_pipeline::w_bounding_box& pBoundingBox);
 
-    HRESULT _load_shader(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-    HRESULT  _load_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-    HRESULT  _load_pipelines(
-        _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-        _In_ wolf::graphics::w_render_pass& pRenderPass);
-    HRESULT _load_semaphores(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-    HRESULT _build_compute_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+    HRESULT _load_shader();
+    HRESULT  _load_buffers();
+    HRESULT  _load_pipelines(_In_ wolf::graphics::w_render_pass& pRenderPass);
+    HRESULT _load_semaphores();
+    HRESULT _build_compute_command_buffers();
+
+    std::shared_ptr<wolf::graphics::w_graphics_device>      _gDevice;
 
     std::string                                             _full_name;
 
@@ -116,6 +117,12 @@ private:
         int                                                     num_of_tris_for_moc;
         glm::vec3                                               position;
         glm::vec3                                               rotation;
+
+        void release()
+        {
+            this->vertices.clear();
+            this->indices.clear();
+        }
     };
     std::vector<moc_data>                                       _mocs;
     wolf::content_pipeline::w_bounding_sphere                   _root_bounding_sphere;
@@ -229,12 +236,26 @@ private:
         wolf::graphics::w_uniform<vertex_unifrom>               unifrom;
         wolf::graphics::w_buffer                                instance_buffer;
         wolf::graphics::w_pipeline                              pipeline;
+
+        void release()
+        {
+            this->unifrom.release();
+            this->instance_buffer.release();
+            this->pipeline.release();
+        }
     } vs;
 
     struct fragment_stage
     {
         wolf::graphics::w_texture*                              texture = nullptr;
         wolf::graphics::w_uniform<color_unifrom>                unifrom;
+
+        void release()
+        {
+            this->unifrom.release();
+            //texture will be release at the end of program
+            //SAFE_RELEASE(this->texture);
+        }
     } fs;
 
     struct compute_stage
@@ -254,10 +275,26 @@ private:
 
         wolf::graphics::w_command_buffers                       command_buffer;
         wolf::graphics::w_buffer                                lod_levels_buffers;
-        VkSemaphore                                             semaphore = nullptr;;// Used as a wait semaphore for graphics submission
+        VkSemaphore                                             semaphore = 0;// Used as a wait semaphore for graphics submission
 
         wolf::graphics::w_pipeline                              pipeline;
 
+        void release()
+        {
+            SAFE_RELEASE(this->unifrom_x1);
+            SAFE_RELEASE(this->unifrom_x2);
+            SAFE_RELEASE(this->unifrom_x4);
+            SAFE_RELEASE(this->unifrom_x8);
+            SAFE_RELEASE(this->unifrom_x16);
+            SAFE_RELEASE(this->unifrom_x32);
+            SAFE_RELEASE(this->unifrom_x64);
+            SAFE_RELEASE(this->unifrom_x128);
+
+            this->instance_buffer.release();
+            this->command_buffer.release();
+            this->lod_levels_buffers.release();
+            this->pipeline.release();
+        }
 
     } cs;
 
@@ -266,6 +303,14 @@ private:
         wolf::graphics::w_buffer                                indirect_draw_commands_buffer;
         std::vector<VkDrawIndexedIndirectCommand>               indirect_draw_commands;
         wolf::graphics::w_buffer                                indirect_draw_count_buffer;
+
+        void release()
+        {
+            this->indirect_draw_commands_buffer.release();
+            this->indirect_draw_count_buffer.release();
+            this->indirect_draw_commands.clear();
+
+        }
     } indirect;
 
     struct

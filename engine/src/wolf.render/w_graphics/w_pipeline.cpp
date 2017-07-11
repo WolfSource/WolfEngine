@@ -178,6 +178,8 @@ namespace wolf
                 _In_ const std::string& pPipelineCacheName,
                 _In_ const std::vector<VkPushConstantRange> pPushConstantRanges)
             {
+                this->_gDevice = pGDevice;
+
                 auto _pipeline_cache = w_pipeline::get_pipeline_cache(pPipelineCacheName);
 
                 std::vector<VkDescriptorSetLayout> _descriptor_set_layouts = { pDescriptorSetLayouts };

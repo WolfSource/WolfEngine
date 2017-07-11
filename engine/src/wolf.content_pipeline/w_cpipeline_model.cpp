@@ -31,7 +31,8 @@ w_cpipeline_model* w_cpipeline_model::create_model(
     _In_ std::map<std::string, std::string>& sLibraryImages,
     _In_ const w_transform_info& pTransform,
     _In_ const bool& pAMDTootleOptimizing,
-    _In_ const bool& pZUp)
+    _In_ const bool& pZUp,
+    _In_ const bool& pInvertNormal)
 {
 	auto _model = new w_cpipeline_model();
     _model->set_transform(pTransform);
@@ -41,8 +42,6 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 
     for (auto _triangle : pGeometry.triangles)
     {
-        std::vector<std::vector<int>> _normal_list;
-
         //find indices
         auto _pos_index = -1;
         auto _nor_index = -1;
@@ -210,6 +209,16 @@ w_cpipeline_model* w_cpipeline_model::create_model(
                 {
                     std::swap(_pos[1], _pos[2]);
                     _pos[2] *= -1;
+
+                    std::swap(_nor[1], _nor[2]);
+                    _nor[2] *= -1;
+                }
+
+                if (pInvertNormal)
+                {
+                    _nor[0] = 1 - _nor[0];
+                    _nor[1] = 1 - _nor[1];
+                    _nor[2] = 1 - _nor[2];
                 }
 
                 //check for minimum and maximum vertices for bounding boxes
@@ -246,6 +255,16 @@ w_cpipeline_model* w_cpipeline_model::create_model(
                 {
                     std::swap(_pos[1], _pos[2]);
                     _pos[2] *= -1;
+
+                    std::swap(_nor[1], _nor[2]);
+                    _nor[2] *= -1;
+                }
+
+                if (pInvertNormal)
+                {
+                    _nor[0] = 1 - _nor[0];
+                    _nor[1] = 1 - _nor[1];
+                    _nor[2] = 1 - _nor[2];
                 }
 
                 //check for minimum and maximum vertices for bounding boxes
@@ -319,51 +338,6 @@ w_cpipeline_model* w_cpipeline_model::create_model(
             //compute tangent
         }
 
-        for (auto _normal : _normal_list)
-        {
-            glm::vec3 _nor(0);
-            glm::vec3 _tan(0);
-            glm::vec3 _bin(0);
-            for (auto i : _normal)
-            {
-                auto _v = _vertices_data[i];
-
-                _nor[0] += _v.normal[0];
-                _nor[1] += _v.normal[1];
-                _nor[2] += _v.normal[2];
-
-                _tan[0] += _v.tangent[0];
-                _tan[1] += _v.tangent[1];
-                _tan[2] += _v.tangent[2];
-
-                _bin[0] += _v.binormal[0];
-                _bin[1] += _v.binormal[1];
-                _bin[2] += _v.binormal[2];
-            }
-            _nor = glm::normalize(_nor);
-            _tan = glm::normalize(_tan);
-            _bin = glm::normalize(_bin);
-
-            for (auto i : _normal)
-            {
-                auto _v = _vertices_data[i];
-
-                _v.normal[0] = _nor[0];
-                _v.normal[1] = _nor[1];
-                _v.normal[2] = _nor[2];
-
-                _v.tangent[0] = _tan[0];
-                _v.tangent[1] = _tan[1];
-                _v.tangent[2] = _tan[2];
-
-                _v.binormal[0] = _bin[0];
-                _v.binormal[1] = _bin[1];
-                _v.binormal[2] = _bin[2];
-
-                _vertices_data[i] = _v;
-            }
-        }
-
         auto _mesh = new w_mesh();
 
         auto _mat_iter = sLibraryMaterials.find(_triangle->material_name);
@@ -399,7 +373,6 @@ w_cpipeline_model* w_cpipeline_model::create_model(
         _model->_meshes.push_back(*_mesh);
 
         //free resources
-        if (_normal_list.size() > 0) _normal_list.clear();
         if (_vertices_data.size() > 0) _vertices_data.clear();
         if (_vertices_positions.size() > 0) _vertices_positions.clear();
         if (_indices_data.size() > 0) _indices_data.clear();

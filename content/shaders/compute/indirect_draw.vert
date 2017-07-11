@@ -44,9 +44,60 @@ mat3 rotate_over_axis(float pAngle, vec3 pAxis)
 	return rotate;
 }
 
+//mat4 inverse_transpose(mat4 pM)
+//{
+//	float _sub_factor_00 = pM[2][2] * pM[3][3] - pM[3][2] * pM[2][3];
+//	float _sub_factor_01 = pM[2][1] * pM[3][3] - pM[3][1] * pM[2][3];
+//	float _sub_factor_02 = pM[2][1] * pM[3][2] - pM[3][1] * pM[2][2];
+//	float _sub_factor_03 = pM[2][0] * pM[3][3] - pM[3][0] * pM[2][3];
+//	float _sub_factor_04 = pM[2][0] * pM[3][2] - pM[3][0] * pM[2][2];
+//	float _sub_factor_05 = pM[2][0] * pM[3][1] - pM[3][0] * pM[2][1];
+//	float _sub_factor_06 = pM[1][2] * pM[3][3] - pM[3][2] * pM[1][3];
+//	float _sub_factor_07 = pM[1][1] * pM[3][3] - pM[3][1] * pM[1][3];
+//	float _sub_factor_08 = pM[1][1] * pM[3][2] - pM[3][1] * pM[1][2];
+//	float _sub_factor_09 = pM[1][0] * pM[3][3] - pM[3][0] * pM[1][3];
+//	float _sub_factor_10 = pM[1][0] * pM[3][2] - pM[3][0] * pM[1][2];
+//	float _sub_factor_11 = pM[1][1] * pM[3][3] - pM[3][1] * pM[1][3];
+//	float _sub_factor_12 = pM[1][0] * pM[3][1] - pM[3][0] * pM[1][1];
+//	float _sub_factor_13 = pM[1][2] * pM[2][3] - pM[2][2] * pM[1][3];
+//	float _sub_factor_14 = pM[1][1] * pM[2][3] - pM[2][1] * pM[1][3];
+//	float _sub_factor_15 = pM[1][1] * pM[2][2] - pM[2][1] * pM[1][2];
+//	float _sub_factor_16 = pM[1][0] * pM[2][3] - pM[2][0] * pM[1][3];
+//	float _sub_factor_17 = pM[1][0] * pM[2][2] - pM[2][0] * pM[1][2];
+//	float _sub_factor_18 = pM[1][0] * pM[2][1] - pM[2][0] * pM[1][1];
+//
+//	mat4 _inverse;
+//	_inverse[0][0] = + (pM[1][1] * _sub_factor_00 - pM[1][2] * _sub_factor_01 + pM[1][3] * _sub_factor_02);
+//	_inverse[0][1] = - (pM[1][0] * _sub_factor_00 - pM[1][2] * _sub_factor_03 + pM[1][3] * _sub_factor_04);
+//	_inverse[0][2] = + (pM[1][0] * _sub_factor_01 - pM[1][1] * _sub_factor_03 + pM[1][3] * _sub_factor_05);
+//	_inverse[0][3] = - (pM[1][0] * _sub_factor_02 - pM[1][1] * _sub_factor_04 + pM[1][2] * _sub_factor_05);
+//	
+//	_inverse[1][0] = - (pM[0][1] * _sub_factor_00 - pM[0][2] * _sub_factor_01 + pM[0][3] * _sub_factor_02);
+//	_inverse[1][1] = + (pM[0][0] * _sub_factor_00 - pM[0][2] * _sub_factor_03 + pM[0][3] * _sub_factor_04);
+//	_inverse[1][2] = - (pM[0][0] * _sub_factor_01 - pM[0][1] * _sub_factor_03 + pM[0][3] * _sub_factor_05);
+//	_inverse[1][3] = + (pM[0][0] * _sub_factor_02 - pM[0][1] * _sub_factor_04 + pM[0][2] * _sub_factor_05);
+//								   							 
+//	_inverse[2][0] = + (pM[0][1] * _sub_factor_06 - pM[0][2] * _sub_factor_07 + pM[0][3] * _sub_factor_08);
+//	_inverse[2][1] = - (pM[0][0] * _sub_factor_06 - pM[0][2] * _sub_factor_09 + pM[0][3] * _sub_factor_10);
+//	_inverse[2][2] = + (pM[0][0] * _sub_factor_11 - pM[0][1] * _sub_factor_09 + pM[0][3] * _sub_factor_12);
+//	_inverse[2][3] = - (pM[0][0] * _sub_factor_08 - pM[0][1] * _sub_factor_10 + pM[0][2] * _sub_factor_12);
+//															 
+//	_inverse[3][0] = - (pM[0][1] * _sub_factor_13 - pM[0][2] * _sub_factor_14 + pM[0][3] * _sub_factor_15);
+//	_inverse[3][1] = + (pM[0][0] * _sub_factor_13 - pM[0][2] * _sub_factor_16 + pM[0][3] * _sub_factor_17);
+//	_inverse[3][2] = - (pM[0][0] * _sub_factor_14 - pM[0][1] * _sub_factor_16 + pM[0][3] * _sub_factor_18);
+//	_inverse[3][3] = + (pM[0][0] * _sub_factor_15 - pM[0][1] * _sub_factor_17 + pM[0][2] * _sub_factor_18);
+//	
+//	float _determinant = 
+//		pM[0][0] * _inverse[0][0] + pM[0][1] * _inverse[0][1] + pM[0][2] * _inverse[0][2] + pM[0][3] * _inverse[0][3];
+//		
+//	_inverse /= _determinant;
+//
+//	return _inverse;
+//}
+
 void main() 
 {
-    mat3 rx = rotate_over_axis(i_ins_rot.x, vec3( 1.0, 0.0, 0.0));
+	mat3 rx = rotate_over_axis(i_ins_rot.x, vec3( 1.0, 0.0, 0.0));
 	mat3 ry = rotate_over_axis(i_ins_rot.y, vec3( 0.0, 1.0, 0.0));
 	mat3 rz = rotate_over_axis(i_ins_rot.z, vec3( 0.0, 0.0, 1.0));
 

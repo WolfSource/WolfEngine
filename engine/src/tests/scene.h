@@ -64,6 +64,7 @@ public:
 
 private:
     
+    HRESULT _load_areas();
     HRESULT _build_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     HRESULT _build_gui_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ const wolf::system::w_game_time& pGameTime);
@@ -87,6 +88,23 @@ private:
 
 
     VkSemaphore gui_semaphore;						// Used as a wait semaphore for graphics submission
+
+
+    struct area
+    {
+        const char*                                                 area_name;
+
+        wolf::content_pipeline::w_bounding_box                      inner_region;
+        std::vector<model>                                          inner_models;
+
+        wolf::content_pipeline::w_bounding_box                      middle_region;
+        std::vector<model>                                          middle_models;
+
+        wolf::content_pipeline::w_bounding_box                      outer_region;
+        std::vector<model>                                          outer_models;
+    };
+
+    std::vector<area>                                               _areas;
 };
 
 #endif

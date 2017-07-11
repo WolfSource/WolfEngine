@@ -220,12 +220,6 @@
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_1_local_size_x64.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
-    <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.frag.spv">
-      <Filter>content\shaders\compute</Filter>
-    </None>
-    <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.vert.spv">
-      <Filter>content\shaders\compute</Filter>
-    </None>
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x1.comp">
       <Filter>content\shaders\compute</Filter>
     </None>

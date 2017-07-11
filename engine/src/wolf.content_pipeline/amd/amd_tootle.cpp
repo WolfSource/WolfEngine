@@ -437,7 +437,11 @@ HRESULT tootle::apply(
     PrintAlgorithm(_print, _settings.eVCacheOptimizer, _settings.algorithmChoice, _settings.nCacheSize, _stats.nClusters);
     PrintStats(_print, &_stats);
 
+#ifdef DEBUG
     logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message :\n" + _print);
+#endif
+
+    _print.clear();
 
     return S_OK;
 }
