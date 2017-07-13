@@ -63,6 +63,8 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
     w_graphics_device_manager_configs _config;
     _config.debug_gpu = false;
     this->set_graphics_device_manager_configs(_config);
+
+    auto _numthreads = std::thread::hardware_concurrency();
 }
 
 scene::~scene()

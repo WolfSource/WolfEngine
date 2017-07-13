@@ -16,6 +16,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_object.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_thread_pool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
@@ -48,5 +49,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_rectangle.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_thread_pool.h" />
   </ItemGroup>
 </Project>
