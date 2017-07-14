@@ -10,6 +10,9 @@
 #include <mutex>
 #include <w_task.h>
 
+//test
+#include <w_thread_pool.h>
+
 //#define DEBUG_MASKED_OCCLUSION_CULLING
 #define MAX_SEARCH_LENGHT 256
 
@@ -33,6 +36,8 @@ static float* sMOCPerPixelZBuffer = nullptr;
 static uint8_t* sMOCTonemapDepthImage = nullptr;
 static std::vector<model*> sModelsToBeRender;
 static UINT32 sFPS = 0;
+
+w_thread_pool _pool;
 
 #if defined(__WIN32)
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
@@ -64,7 +69,36 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
     _config.debug_gpu = false;
     this->set_graphics_device_manager_configs(_config);
 
-    auto _numthreads = std::thread::hardware_concurrency();
+    auto _numthreads = w_thread::get_number_of_hardware_thread_contexts();
+    _pool.allocate(_numthreads);
+
+    std::vector<std::function<void()>> _jobs;
+    _jobs.push_back([]()
+    {
+        Sleep(1000);
+        logger.write("first job done on thread id: " + std::to_string(w_thread::get_current_thread_id()));
+    });
+    _jobs.push_back([]()
+    {
+        Sleep(5000);
+        logger.write("second job done on thread id: " + std::to_string(w_thread::get_current_thread_id()));
+    });
+    _pool.set_jobs_for_thread(0, _jobs);
+
+
+    _jobs.clear();
+    _jobs.push_back([]()
+    {
+        Sleep(1000);
+        logger.write("third job done on thread id: " + std::to_string(w_thread::get_current_thread_id()));
+    });
+    _jobs.push_back([]()
+    {
+        Sleep(5000);
+        logger.write("fourth job done on thread id: " + std::to_string(w_thread::get_current_thread_id()));
+    });
+    _pool.set_jobs_for_thread(1, _jobs);
+
 }
 
 scene::~scene()
@@ -106,6 +140,7 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     }
 
     sprintf_s(sSearch, "Search");
+
 }
 
 void scene::load()
@@ -117,7 +152,11 @@ void scene::load()
     _screen_size.x = static_cast<uint32_t>(_output_window->width);
     _screen_size.y = static_cast<uint32_t>(_output_window->height);
 
+    _pool.wait_all();
+    _pool.release();
+
     w_game::load();
+       
 
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
     {

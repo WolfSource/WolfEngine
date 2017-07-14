@@ -36,6 +36,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\w_task.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_tcp_client.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_thread.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_thread_pool.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_time_span.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_window.cpp" />
@@ -67,6 +68,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_target_ver.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_task.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_tcp_client.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_thread.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_thread_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_timer.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_timer_callback.h" />

@@ -14,19 +14,8 @@
 #ifndef __W_THREAD_POOL_H__
 #define __W_THREAD_POOL_H__
 
-#if  defined(__WIN32) || defined(__UWP)
-#include <Windows.h>
-#else
-#include <thread>
-#endif
-
-#include "w_system_export.h"
-#include <queue>
-#include <functional>
-
-#if defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
-#include "w_std.h"
-#endif
+#include "w_thread.h"
+#include <vector>
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
@@ -36,23 +25,21 @@ namespace wolf
 {
 	namespace system
 	{
-		class w_thread_pool
-		{
-		public:
-			//WSYS_EXP static void execute_async(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack = nullptr);
-			//WSYS_EXP static void execute_deferred(_In_ const std::function<void(void)>& pTaskWork);
-			////wait only work for deferred task
-			//WSYS_EXP static std::future_status wait_for(_In_ const long long pMilliSeconds);
-			////wait only work for deferred task
-			//template<typename _REP, typename _PER>
-			//static std::future_status wait_for(_In_ const std::chrono::duration<_REP, _PER>& pTime);
-			////wait only work for deferred task
-			//WSYS_EXP static void wait();
-			////get only work for deferred task
-			//WSYS_EXP static void get();
+        class w_thread_pool
+        {
+        public:
+            WSYS_EXP w_thread_pool();
+            WSYS_EXP ~w_thread_pool();
 
-		private:
-			static std::queue<std::function<void>> _deferred;
+            WSYS_EXP void allocate(_In_ const size_t& pSize);
+            WSYS_EXP void set_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs);
+            WSYS_EXP void set_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob);
+            WSYS_EXP void wait_for(_In_ const size_t& pThreadIndex);
+            WSYS_EXP void wait_all();
+            WSYS_EXP void release();
+
+        private:
+            std::vector<w_thread> _threads;
         };
 	}
 }
@@ -61,4 +48,4 @@ namespace wolf
 #pragma GCC visibility pop
 #endif
 
-#endif //__W_TASK_H__
+#endif //__W_THREAD_H__
