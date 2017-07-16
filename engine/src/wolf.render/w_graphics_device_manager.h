@@ -326,7 +326,7 @@ namespace wolf
             std::string                                             device_name;
 			UINT													device_id;
 			UINT													device_vendor_id;
-            
+                        
 		private:
             //prevent copying
             w_graphics_device(w_graphics_device const&);

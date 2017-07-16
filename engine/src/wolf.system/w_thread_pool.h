@@ -32,11 +32,18 @@ namespace wolf
             WSYS_EXP ~w_thread_pool();
 
             WSYS_EXP void allocate(_In_ const size_t& pSize);
-            WSYS_EXP void set_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs);
-            WSYS_EXP void set_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob);
             WSYS_EXP void wait_for(_In_ const size_t& pThreadIndex);
             WSYS_EXP void wait_all();
             WSYS_EXP void release();
+
+#pragma region Getters
+            WSYS_EXP size_t get_pool_size() const;
+#pragma endregion
+
+#pragma region Setters
+            WSYS_EXP void set_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs);
+            WSYS_EXP void set_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob);
+#pragma endregion
 
         private:
             std::vector<w_thread> _threads;

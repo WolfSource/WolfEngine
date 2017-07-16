@@ -24,6 +24,8 @@
 #include <w_point.h>
 
 #include "model.h"
+#include <w_thread_pool.h>
+#include <tbb/concurrent_vector.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -70,41 +72,50 @@ private:
         _In_ const wolf::system::w_game_time& pGameTime);
     bool _update_gui();
 
+    wolf::graphics::w_viewport                                      _viewport;
+    wolf::graphics::w_viewport_scissor                              _viewport_scissor;
+    
     wolf::content_pipeline::w_first_person_camera                  _camera;
     std::vector<model*>                                            _models;
+    bool                                                           _show_gui;
 
     wolf::graphics::w_command_buffers                              _draw_command_buffers;
     wolf::graphics::w_render_pass                                  _draw_render_pass;
     wolf::graphics::w_frame_buffers                                _draw_frame_buffers;
-
+    
     wolf::graphics::w_command_buffers                              _gui_command_buffers;
     wolf::graphics::w_render_pass                                  _gui_render_pass;
     wolf::graphics::w_frame_buffers                                _gui_frame_buffers;
     
 
     w_point_t                                                      _screen_size;
-
-    VkFence                                                        _compute_fence;//Synchronization fence to avoid rewriting compute command buffer if still in use
-
-
-    VkSemaphore gui_semaphore;						// Used as a wait semaphore for graphics submission
+    VkFence                                                        _draw_fence;
+    VkSemaphore                                                     gui_semaphore;						// Used as a wait semaphore for graphics submission
+    
 
 
-    struct area
-    {
-        const char*                                                 area_name;
+    wolf::system::w_thread_pool                                     _thread_pool;
+    std::vector<model*>                                             _models_to_be_render;
 
-        wolf::content_pipeline::w_bounding_box                      inner_region;
-        std::vector<model>                                          inner_models;
+    wolf::graphics::w_command_buffers                               _threads_draw_commands_buffers;
+    wolf::graphics::w_command_buffers                               _threads_compute_commands_buffers;
 
-        wolf::content_pipeline::w_bounding_box                      middle_region;
-        std::vector<model>                                          middle_models;
 
-        wolf::content_pipeline::w_bounding_box                      outer_region;
-        std::vector<model>                                          outer_models;
-    };
+    //struct area
+    //{
+    //    const char*                                                 area_name;
 
-    std::vector<area>                                               _areas;
+    //    wolf::content_pipeline::w_bounding_box                      inner_region;
+    //    std::vector<model>                                          inner_models;
+
+    //    wolf::content_pipeline::w_bounding_box                      middle_region;
+    //    std::vector<model>                                          middle_models;
+
+    //    wolf::content_pipeline::w_bounding_box                      outer_region;
+    //    std::vector<model>                                          outer_models;
+    //};
+
+    //std::vector<area>                                               _areas;                                             
 };
 
 #endif

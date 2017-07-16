@@ -7,14 +7,16 @@ std::future<void> w_task::_deferred;
 
 #if defined(__WIN32) || defined(__UWP)
 
-void w_task::execute_async_ppl(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack)
+void w_task::execute_async_ppl(_In_ const std::function<void(void)>& pTaskWork,
+    _In_ const std::function<void(void)>& pCallBack)
 {
 	concurrency::create_task(pTaskWork).then(pCallBack);
 }
 
 #endif
 
-void w_task::execute_async(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack)
+void w_task::execute_async(_In_ const std::function<void(void)>& pTaskWork, 
+    _In_ const std::function<void(void)>& pCallBack)
 {
 	_deferred = std::async(std::launch::async, [pTaskWork, pCallBack]()
 	{

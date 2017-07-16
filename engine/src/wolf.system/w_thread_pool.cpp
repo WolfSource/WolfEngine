@@ -18,25 +18,6 @@ void w_thread_pool::allocate(_In_ const size_t& pSize)
     this->_threads.resize(pSize);
 }
 
-void w_thread_pool::set_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs)
-{
-    if (pThreadIndex < this->_threads.size())
-    {
-        for (auto& _job : pJobs)
-        {
-            this->_threads[pThreadIndex].add_job(_job);
-        }
-    }
-}
-
-void w_thread_pool::set_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob)
-{
-    if (pThreadIndex < this->_threads.size())
-    {
-        this->_threads[pThreadIndex].add_job(pJob);
-    }
-}
-
 void w_thread_pool::wait_for(_In_ const size_t& pThreadIndex)
 {
     if (pThreadIndex < this->_threads.size())
@@ -61,3 +42,35 @@ void w_thread_pool::release()
     }
     this->_threads.clear();
 }
+
+#pragma region Getters
+
+size_t w_thread_pool::get_pool_size() const
+{
+    return this->_threads.size();
+}
+
+#pragma endregion
+
+#pragma region Setters
+
+void w_thread_pool::set_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs)
+{
+    if (pThreadIndex < this->_threads.size())
+    {
+        for (auto& _job : pJobs)
+        {
+            this->_threads[pThreadIndex].add_job(_job);
+        }
+    }
+}
+
+void w_thread_pool::set_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob)
+{
+    if (pThreadIndex < this->_threads.size())
+    {
+        this->_threads[pThreadIndex].add_job(pJob);
+    }
+}
+
+#pragma endregion

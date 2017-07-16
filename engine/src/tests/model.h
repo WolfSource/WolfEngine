@@ -41,6 +41,8 @@ public:
         _In_ wolf::content_pipeline::w_cpipeline_model* pCPModel,
         _In_ wolf::graphics::w_render_pass& pRenderPass);
 
+    HRESULT build_compute_command_buffers(_In_ const VkCommandBuffer& pCommandBuffer);
+
     void pre_update(
         _In_    wolf::content_pipeline::w_first_person_camera pCamera,
         _Inout_ MaskedOcclusionCulling** sMOC);
@@ -49,7 +51,9 @@ public:
 
     void indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer);
 
-    HRESULT render(_In_ const wolf::content_pipeline::w_first_person_camera* pCamera);
+    HRESULT execute_compute_shader(
+        _In_ const VkCommandBuffer& pCommandBuffer,
+        _In_ const wolf::content_pipeline::w_first_person_camera* pCamera);
 
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
@@ -60,8 +64,9 @@ public:
 
 #pragma region Getters
 
-    VkSemaphore get_semaphore() const                       { return this->cs.semaphore; }
-    glm::vec3   get_position() const;
+    const char*     get_full_name() const;
+    glm::vec3       get_position() const;
+    VkSemaphore     get_compute_semaphore() const;
 
 #pragma endregion
 
@@ -88,11 +93,9 @@ private:
     HRESULT _load_shader();
     HRESULT  _load_buffers();
     HRESULT  _load_pipelines(_In_ wolf::graphics::w_render_pass& pRenderPass);
-    HRESULT _load_semaphores();
-    HRESULT _build_compute_command_buffers();
 
     std::shared_ptr<wolf::graphics::w_graphics_device>      _gDevice;
-
+    std::atomic<bool>                                       _loaded;
     std::string                                             _full_name;
 
     //unique name of factory for searching
@@ -273,11 +276,11 @@ private:
 
         wolf::graphics::w_buffer                                instance_buffer;
 
-        wolf::graphics::w_command_buffers                       command_buffer;
         wolf::graphics::w_buffer                                lod_levels_buffers;
-        VkSemaphore                                             semaphore = 0;// Used as a wait semaphore for graphics submission
-
+        
         wolf::graphics::w_pipeline                              pipeline;
+        VkSemaphore                                             semaphore = 0;
+        VkFence                                                 fence = 0;
 
         void release()
         {
@@ -291,7 +294,6 @@ private:
             SAFE_RELEASE(this->unifrom_x128);
 
             this->instance_buffer.release();
-            this->command_buffer.release();
             this->lod_levels_buffers.release();
             this->pipeline.release();
         }

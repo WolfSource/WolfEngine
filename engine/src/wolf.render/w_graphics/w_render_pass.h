@@ -26,23 +26,24 @@ namespace wolf
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,
-                _In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
+                _In_ const std::vector<VkAttachmentDescription>& pAttachmentDescriptions,
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions = nullptr,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
 
 
             W_EXP void begin(
-                _In_ const VkCommandBuffer pCommandBuffer,
-                _In_ const VkFramebuffer pFrameBuffer,
-                _In_ const w_color pClearColor,
-                _In_ const float   pClearDepth = 1.0f,
-                _In_ const UINT    pClearStencil = 0.0f);
+                _In_ const VkCommandBuffer& pCommandBuffer,
+                _In_ const VkFramebuffer& pFrameBuffer,
+                _In_ const w_color& pClearColor,
+                _In_ const float&   pClearDepth = 1.0f,
+                _In_ const UINT&    pClearStencil = 0.0f,
+                _In_ const VkSubpassContents& pSubpassContents = VK_SUBPASS_CONTENTS_INLINE);
 
             W_EXP void begin(
-                _In_ const VkCommandBuffer pCommandBuffer,
-                _In_ const VkFramebuffer pFrameBuffer);
+                _In_ const VkCommandBuffer& pCommandBuffer,
+                _In_ const VkFramebuffer& pFrameBuffer);
 
-            W_EXP void end(_In_ VkCommandBuffer pCommandBuffer);
+            W_EXP void end(_In_ VkCommandBuffer& pCommandBuffer);
 
             //release all resources
             W_EXP virtual ULONG release() override;

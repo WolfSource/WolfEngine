@@ -18,8 +18,9 @@ namespace wolf
             }
             
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
-                _In_ const size_t pCount,
-                _In_ const bool pCreateCommandPool,
+                _In_ const size_t& pCount,
+                _In_ const VkCommandBufferLevel& pLevel,
+                _In_ const bool& pCreateCommandPool,
                 _In_ const w_queue_index* pCommandPoolQueue)
             {
                 if (pCreateCommandPool)
@@ -70,7 +71,7 @@ namespace wolf
                 _command_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
                 _command_buffer_info.pNext = nullptr;
                 _command_buffer_info.commandPool = this->_gDevice->vk_command_allocator_pool;
-                _command_buffer_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+                _command_buffer_info.level = pLevel;
                 _command_buffer_info.commandBufferCount = static_cast<uint32_t>(this->_counts);
                 
                 
@@ -321,13 +322,14 @@ w_command_buffers::~w_command_buffers()
 }
 
 HRESULT w_command_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
-    _In_ const size_t pCount,
-    _In_ const bool pCreateCommandPool,
+    _In_ const size_t& pCount,
+    _In_ const VkCommandBufferLevel& pLevel,
+    _In_ const bool& pCreateCommandPool,
     _In_ const w_queue_index* pCommandPoolQueue)
 {
     if(!this->_pimp) return S_FALSE;
     
-    return this->_pimp->load(pGDevice, pCount, pCreateCommandPool, pCommandPoolQueue);
+    return this->_pimp->load(pGDevice, pCount, pLevel, pCreateCommandPool, pCommandPoolQueue);
 }
 
 HRESULT w_command_buffers::begin(_In_ const size_t pCommandBufferIndex, _In_ const VkCommandBufferUsageFlags pFlags)

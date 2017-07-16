@@ -98,11 +98,12 @@ namespace wolf
                 return _hr ? S_FALSE : S_OK;
             }
 
-            void begin(_In_ const VkCommandBuffer pCommandBuffer,
-                _In_ const VkFramebuffer pFrameBuffer,
-                _In_ const w_color pClearColor,
-                _In_ const float   pClearDepth,
-                _In_ const UINT    pClearStencil)
+            void begin(_In_ const VkCommandBuffer& pCommandBuffer,
+                _In_ const VkFramebuffer& pFrameBuffer,
+                _In_ const w_color& pClearColor,
+                _In_ const float&   pClearDepth,
+                _In_ const UINT&    pClearStencil,
+                _In_ const VkSubpassContents& pSubpassContents)
             {
                 std::array<VkClearValue, 2> _clear_values = {};
                 _clear_values[0].color = 
@@ -134,14 +135,11 @@ namespace wolf
                     _clear_values.size(),                                   // ClearValueCount
                     _clear_values.data()                                    // ClearValues
                 };
-                vkCmdBeginRenderPass(pCommandBuffer, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
-
-                vkCmdSetViewport(pCommandBuffer, 0, 1, &this->_viewport);
-                vkCmdSetScissor(pCommandBuffer, 0, 1, &this->_viewport_scissor);
+                vkCmdBeginRenderPass(pCommandBuffer, &_render_pass_begin_info, pSubpassContents);
             }
 
-            void begin(_In_ const VkCommandBuffer pCommandBuffer,
-                _In_ const VkFramebuffer pFrameBuffer)
+            void begin(_In_ const VkCommandBuffer& pCommandBuffer,
+                _In_ const VkFramebuffer& pFrameBuffer)
             {
                 VkRenderPassBeginInfo _render_pass_begin_info =
                 {
@@ -163,13 +161,12 @@ namespace wolf
                     nullptr                                             // ClearValues
                 };
                 vkCmdBeginRenderPass(pCommandBuffer, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
-
                 vkCmdSetViewport(pCommandBuffer, 0, 1, &this->_viewport);
                 vkCmdSetScissor(pCommandBuffer, 0, 1, &this->_viewport_scissor);
             }
 
 
-            void end(_In_ const VkCommandBuffer pCommandBuffer)
+            void end(_In_ const VkCommandBuffer& pCommandBuffer)
             {
                 vkCmdEndRenderPass(pCommandBuffer);
             }
@@ -255,7 +252,7 @@ w_render_pass::~w_render_pass()
 HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                             _In_ const w_viewport& pViewPort,
                             _In_ const w_viewport_scissor& pViewPortScissor,
-                            _In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
+                            _In_ const std::vector<VkAttachmentDescription>& pAttachmentDescriptions,
                             _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
                             _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 {
@@ -268,22 +265,24 @@ HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDev
                              pSubpassDependencies);
 }
 
-void w_render_pass::begin(_In_ const VkCommandBuffer pCommandBuffer,
-           _In_ const VkFramebuffer pFrameBuffer,
-           _In_ const w_color pClearColor,
-           _In_ const float   pClearDepth,
-           _In_ const UINT    pClearStencil)
+void w_render_pass::begin(_In_ const VkCommandBuffer& pCommandBuffer,
+           _In_ const VkFramebuffer& pFrameBuffer,
+           _In_ const w_color& pClearColor,
+           _In_ const float&   pClearDepth,
+           _In_ const UINT&    pClearStencil,
+           _In_ const VkSubpassContents& pSubpassContents)
 {
     if(!this->_pimp) return;
     this->_pimp->begin(pCommandBuffer,
                               pFrameBuffer,
                               pClearColor,
                               pClearDepth,
-                              pClearStencil);
+                              pClearStencil,
+                              pSubpassContents);
 }
 
-void w_render_pass::begin(_In_ const VkCommandBuffer pCommandBuffer,
-    _In_ const VkFramebuffer pFrameBuffer)
+void w_render_pass::begin(_In_ const VkCommandBuffer& pCommandBuffer,
+    _In_ const VkFramebuffer& pFrameBuffer)
 {
     if (!this->_pimp) return;
     this->_pimp->begin(
@@ -291,7 +290,7 @@ void w_render_pass::begin(_In_ const VkCommandBuffer pCommandBuffer,
         pFrameBuffer);
 }
 
-void w_render_pass::end(_In_ VkCommandBuffer pCommandBuffer)
+void w_render_pass::end(_In_ VkCommandBuffer& pCommandBuffer)
 {
     if(!this->_pimp) return;
     this->_pimp->end(pCommandBuffer);
