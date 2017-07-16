@@ -41,8 +41,6 @@ public:
         _In_ wolf::content_pipeline::w_cpipeline_model* pCPModel,
         _In_ wolf::graphics::w_render_pass& pRenderPass);
 
-    HRESULT build_compute_command_buffers(_In_ const VkCommandBuffer& pCommandBuffer);
-
     void pre_update(
         _In_    wolf::content_pipeline::w_first_person_camera pCamera,
         _Inout_ MaskedOcclusionCulling** sMOC);
@@ -51,9 +49,7 @@ public:
 
     void indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer);
 
-    HRESULT execute_compute_shader(
-        _In_ const VkCommandBuffer& pCommandBuffer,
-        _In_ const wolf::content_pipeline::w_first_person_camera* pCamera);
+    HRESULT submit_compute_shader(_In_ const wolf::content_pipeline::w_first_person_camera* pCamera);
 
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
@@ -91,8 +87,9 @@ private:
     void _add_data_for_masked_occlusion_culling(_In_ const wolf::content_pipeline::w_bounding_box& pBoundingBox);
 
     HRESULT _load_shader();
-    HRESULT  _load_buffers();
-    HRESULT  _load_pipelines(_In_ wolf::graphics::w_render_pass& pRenderPass);
+    HRESULT _load_buffers();
+    HRESULT _load_pipelines(_In_ wolf::graphics::w_render_pass& pRenderPass);
+    HRESULT _build_compute_command_buffers();
 
     std::shared_ptr<wolf::graphics::w_graphics_device>      _gDevice;
     std::atomic<bool>                                       _loaded;
@@ -279,8 +276,8 @@ private:
         wolf::graphics::w_buffer                                lod_levels_buffers;
         
         wolf::graphics::w_pipeline                              pipeline;
+        wolf::graphics::w_command_buffers                       command_buffers;
         VkSemaphore                                             semaphore = 0;
-        VkFence                                                 fence = 0;
 
         void release()
         {
@@ -296,6 +293,7 @@ private:
             this->instance_buffer.release();
             this->lod_levels_buffers.release();
             this->pipeline.release();
+            this->command_buffers.release();
         }
 
     } cs;

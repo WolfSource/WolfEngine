@@ -34,10 +34,10 @@ static MaskedOcclusionCulling* sMOC;
 static float* sMOCPerPixelZBuffer = nullptr; 
 static uint8_t* sMOCTonemapDepthImage = nullptr;
 static UINT32 sFPS = 0;
+static UINT32 sRenderingThreads = 0;
+static UINT32 sTotalModels = 0;
+static UINT32 sVisibleModels = 0;
 static std::string SVersion;
-
-
-w_thread _t;
 
 #if defined(__WIN32)
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
@@ -67,7 +67,7 @@ scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::stri
 
     //enable/disable gpu debugging
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = true;
+    _config.debug_gpu = false;
     this->set_graphics_device_manager_configs(_config);
 
     SVersion =
@@ -96,10 +96,6 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     };
     // TODO: Add your pre-initialization logic here
     w_game::initialize(pOutputWindowsInfo);
-
-    auto _numthreads = w_thread::get_number_of_hardware_thread_contexts();
-    _thread_pool.allocate(_numthreads);
-    logger.write("Size of thread pool is " + std::to_string(_numthreads));
 
     //create masked occlusion culling instnace
     sMOC = MaskedOcclusionCulling::Create();
@@ -286,28 +282,32 @@ void scene::load()
         exit(1);
     }
 
-    _hr = this->_threads_compute_commands_buffers.load(
-        _gDevice,
-        _thread_pool.get_pool_size(),
-        VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_SECONDARY,
-        true,
-        &_gDevice->vk_compute_queue);
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error on creating thread compute command buffers");
-        release();
-        exit(1);
-    }
 
-    _hr = this->_threads_draw_commands_buffers.load(
-        _gDevice,
-        _thread_pool.get_pool_size(),
-        VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_SECONDARY);
-    if (_hr == S_FALSE)
+    auto _thread_pool_size = w_thread::get_number_of_hardware_thread_contexts();
+    this->_thread_pool.resize(_thread_pool_size);
+    logger.write("Size of thread pool is " + std::to_string(_thread_pool_size));
+    sRenderingThreads = _thread_pool_size;
+
+    for (size_t i = 0; i < _thread_pool_size; ++i)
     {
-        logger.error("Error on creating thread draw command buffers");
-        release();
-        exit(1);
+        this->_thread_pool[i] = new (std::nothrow) thread_context();
+        if (!this->_thread_pool[i])
+        {
+            logger.error("Could not allocate memory for thread context: " + std::to_string(i));
+            continue;
+        }
+        _hr = this->_thread_pool[i]->secondary_command_buffers.load(
+            _gDevice,
+            _swap_chain_image_size,
+            VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_SECONDARY,
+            true,
+            &_gDevice->vk_present_queue);
+        if (_hr == S_FALSE)
+        {
+            logger.error("Error on creating draw command buffer for thread " + std::to_string(i));
+            release();
+            exit(1);
+        }
     }
 
     //load image texture
@@ -317,35 +317,6 @@ void scene::load()
 
     _gui_images->initialize_texture_2D_from_file(L"textures/gui/icons.png");
 
-    //set images which will be used by imgui
-
-#ifdef DEBUG_MASKED_OCCLUSION_CULLING
-    w_texture* _debug_image = new w_texture();
-    _debug_image->load(_gDevice);
-    _debug_image->initialize_texture_2D_from_file(L"C:\\Users\\DFM\\Desktop\\header.jpg", true);
-
-    w_shader_binding_param _param;
-    _param.index = 0;
-    _param.stage = w_shader_stage::FRAGMENT_SHADER;
-    _param.type = w_shader_binding_type::SAMPLER;
-    _param.image_info = _debug_image->get_descriptor_info();
-
-    //w_shader* _basic;
-    //w_shader::load_shader(
-    //    _gDevice, 
-    //    "basic", 
-    //    L"shaders/basic.vert.spv", 
-    //    L"", 
-    //    L"", 
-    //    L"", 
-    //    L"", 
-    //    L"shaders/basic.frag.spv",
-    //    { _param },
-    //    true, 
-    //    &_basic);
-    //_q.load(_gDevice, _basic, &this->_draw_render_pass, "", false);
-
-#endif
 
     auto _font_path = wolf::system::convert::wstring_to_string(content_path) + "fonts/arial.ttf";
     w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _gui_images, _font_path.c_str());
@@ -362,19 +333,17 @@ void scene::load()
 
 HRESULT scene::_load_areas()
 {
-    _thread_pool.set_job_for_thread(0, [this]()
+    this->_thread_pool[0]->thread.add_job([this]()
     {
         auto _gDevice = this->graphics_devices[0];
         const std::vector<std::wstring> _areas_on_thread_0 =
         {
-            L"models/model.dae",
+            L"models/model.wscene",
         };
 
         std::for_each(_areas_on_thread_0.begin(), _areas_on_thread_0.end(),
             [&](_In_ const std::wstring& pAreaPath)
         {
-
-            auto _compute_cmd = this->_threads_compute_commands_buffers.get_command_at(0);
             auto _path = content_path + pAreaPath;
             auto _scene = w_content_manager::load<w_cpipeline_scene>(_path);
             if (_scene)
@@ -398,7 +367,6 @@ HRESULT scene::_load_areas()
                     auto _model = new model();
                     if (_model->load(_gDevice, _iter, this->_draw_render_pass) == S_OK)
                     {
-                        _model->build_compute_command_buffers(_compute_cmd);
                         this->_models.push_back(_model);
                     }
                     else
@@ -417,7 +385,8 @@ HRESULT scene::_load_areas()
             }
         });
     });
-
+    this->_thread_pool[0]->thread.wait();
+    
     //load camera
     auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/camera.dae");
     if (_scene)
@@ -445,19 +414,40 @@ HRESULT scene::_load_areas()
     return S_OK;
 }
 
-static std::vector<VkSemaphore> ss;
 HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
-    ss.clear();
-    //record draw command buffers for every swap chain image
-    std::vector<VkCommandBuffer> _secondary_commands;
-    
-    VkCommandBufferBeginInfo _cmd_buffer_begin_info{};
-    _cmd_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    
+    auto _models_count = this->_models_to_be_render.size();
+    auto _threads_count = this->_thread_pool.size();
+
+    //reset all batch size
+    std::for_each(this->_thread_pool.begin(), this->_thread_pool.end(), 
+        [](_In_ thread_context* pThread)
+    {
+        pThread->batch_size = 0;
+    });
+
+    if (_models_count < _threads_count)
+    {
+        for (size_t i = 0; i < _models_count; i++)
+        {
+            this->_thread_pool[i]->batch_size++;
+        }
+    }
+    else
+    {
+        auto _size = this->_models_to_be_render.size() / this->_thread_pool.size();
+        for (auto& _t : this->_thread_pool)
+        {
+            _t->batch_size = _size;
+        }
+        _size = this->_models_to_be_render.size() % this->_thread_pool.size();
+        for (size_t i = 0; i < _size; i++)
+        {
+            this->_thread_pool[i]->batch_size++;
+        }
+    }
     for (uint32_t i = 0; i < this->_draw_command_buffers.get_commands_size(); ++i)
     {
-        _secondary_commands.clear();
         this->_draw_command_buffers.begin(i);
         {
             auto _render_pass_handle = this->_draw_render_pass.get_handle();
@@ -468,45 +458,68 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
             _inheritance_info.renderPass = _render_pass_handle;
             _inheritance_info.framebuffer = _frame_buffer_handle;
 
-            auto _cmd = this->_draw_command_buffers.get_command_at(i);
-            this->_draw_render_pass.begin(_cmd,
+            VkCommandBufferBeginInfo _sec_cmd_buffer_begin_info{};
+            _sec_cmd_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+            _sec_cmd_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT | VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+            _sec_cmd_buffer_begin_info.pInheritanceInfo = &_inheritance_info;
+
+
+            auto _primary_draw_cmd = this->_draw_command_buffers.get_command_at(i);
+            this->_draw_render_pass.begin(_primary_draw_cmd,
                 _frame_buffer_handle,
                 w_color(43, 43, 43, 255),
                 1.0f,
                 0.0f,
                 VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
             {
-                _thread_pool.set_job_for_thread(0, [&]()
+                std::vector<VkCommandBuffer> _sec_cmd_buffers;
+                //add job for each thread
+                size_t _start_index = 0;
+                for (auto& _thread_context : this->_thread_pool)
                 {
-                    auto _compute_cmd = this->_threads_compute_commands_buffers.get_command_at(0);
-                    auto _draw_cmd = this->_threads_draw_commands_buffers.get_command_at(0);
+                    //if thread does not have any models then skip it
+                    if (_thread_context->batch_size == 0) continue;
 
-                    std::for_each(this->_models_to_be_render.begin(), _models_to_be_render.end(),
-                        [&](_In_ model* pModel)
+                    auto _thread_cmd = _thread_context->secondary_command_buffers.get_command_at(i);
+                    _sec_cmd_buffers.push_back(_thread_cmd);
+
+                    _thread_context->thread.add_job([&, _thread_cmd, _sec_cmd_buffer_begin_info, _start_index]()
                     {
-                        pModel->execute_compute_shader(_compute_cmd, &this->_camera);
-                        ss.push_back(pModel->get_compute_semaphore());
-
-                        vkBeginCommandBuffer(_draw_cmd, &_cmd_buffer_begin_info);
+                        vkBeginCommandBuffer(_thread_cmd, &_sec_cmd_buffer_begin_info);
                         {
-                            vkCmdSetViewport(_draw_cmd, 0, 1, &this->_viewport);
-                            vkCmdSetScissor(_draw_cmd, 0, 1, &this->_viewport_scissor);
-                            pModel->indirect_draw(_draw_cmd);
+                            vkCmdSetViewport(_thread_cmd, 0, 1, &this->_viewport);
+                            vkCmdSetScissor(_thread_cmd, 0, 1, &this->_viewport_scissor);
+
+                            auto _begin_iter = this->_models_to_be_render.begin() + _start_index;
+                            auto _end_iter = this->_models_to_be_render.begin() + _start_index + _thread_context->batch_size;
+                            std::for_each(
+                                _begin_iter,
+                                _end_iter,
+                                [&](_In_ model* pModel)
+                            {
+                                pModel->indirect_draw(_thread_cmd);
+                            });
                         }
-                        vkEndCommandBuffer(_draw_cmd);
-                        _secondary_commands.push_back(_draw_cmd);
+                        vkEndCommandBuffer(_thread_cmd);
                     });
-                });
+                    _start_index += _thread_context->batch_size;
+                }
 
-                _thread_pool.wait_all();
+                //wait for all threads
 
-                // Execute secondary commands buffer to primary command
-                if (_secondary_commands.size())
+                for (auto& _thread : this->_thread_pool)
                 {
-                    vkCmdExecuteCommands(_cmd, _secondary_commands.size(), _secondary_commands.data());
+                    _thread->thread.wait();
+                }
+
+                if (_sec_cmd_buffers.size())
+                {
+                    //Execute secondary commands buffer to primary command
+                    vkCmdExecuteCommands(_primary_draw_cmd, _sec_cmd_buffers.size(), _sec_cmd_buffers.data());
+                    _sec_cmd_buffers.clear();
                 }
             }
-            this->_draw_render_pass.end(_cmd);
+            this->_draw_render_pass.end(_primary_draw_cmd);
         }
         this->_draw_command_buffers.end(i);
     }
@@ -537,6 +550,7 @@ HRESULT scene::_build_gui_command_buffer(_In_ const std::shared_ptr<w_graphics_d
     return S_OK;
 }
 
+bool _record_draw_command_buffer = true;
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
@@ -604,14 +618,15 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
                 }
             });
         }
-        _build_draw_command_buffer(_gDevice);
 
+        _record_draw_command_buffer = true;
+        
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
         //Compute a per pixel depth buffer from the hierarchical depth buffer, used for visualization.
         sMOC->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
         //Tonemap the depth image
         TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, _output_window->width, _output_window->height);
-        w_texture::write_bitmap_to_file("F:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
+        w_texture::write_bitmap_to_file("E:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
 #endif
     }
 }
@@ -625,7 +640,29 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
     auto _frame_index = _output_window->vk_swap_chain_image_index;
-    
+
+    // Wait for fence to signal that all command buffers are ready
+    vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence, VK_TRUE, VK_TIMEOUT);
+    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence);
+
+    std::vector<VkSemaphore> _wait_semaphors = { _output_window->vk_swap_chain_image_is_available_semaphore };
+
+    if (_record_draw_command_buffer)
+    {
+        //submit compute shader for all visible models
+        std::for_each(this->_models_to_be_render.begin(), this->_models_to_be_render.end(),
+            [&](_In_ model* pModel)
+        {
+            if (pModel->submit_compute_shader(&this->_camera) == S_OK)
+            {
+                _wait_semaphors.push_back(pModel->get_compute_semaphore());
+            }
+        });
+
+        _build_draw_command_buffer(_gDevice);
+        _record_draw_command_buffer = false;
+    }
+
     auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 
     const VkPipelineStageFlags _stage_flags[2] =
@@ -639,21 +676,18 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _submit_info.commandBufferCount = 1;
     _submit_info.pCommandBuffers = &_cmd;
     _submit_info.pWaitDstStageMask = &_stage_flags[0];
-    _submit_info.waitSemaphoreCount = 1;
-    _submit_info.pWaitSemaphores = &_output_window->vk_swap_chain_image_is_available_semaphore;
+    _submit_info.waitSemaphoreCount = _wait_semaphors.size();
+    _submit_info.pWaitSemaphores = _wait_semaphors.data();
     _submit_info.signalSemaphoreCount = 1;
     _submit_info.pSignalSemaphores = this->_show_gui ? &gui_semaphore : &_output_window->vk_rendering_done_semaphore; //signal to gui if gui is avaiable, otherwise end the render 
 
     // Submit to queue
-    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence);
     if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_draw_fence))
     {
         _hr = S_FALSE;
         V(_hr, "submiting queu for drawing gui", _trace, 3);
     }
-    // Wait for fence to signal that all command buffers are ready
-    vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence, VK_TRUE, VK_TIMEOUT);
-   
+
     if (this->_show_gui)
     {
         _build_gui_command_buffer(_gDevice, pGameTime);
@@ -682,6 +716,10 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _hr = w_game::render(pGameTime);
 
     sFPS = pGameTime.get_frames_per_second();
+    sTotalModels = this->_models.size();
+    sVisibleModels = this->_models_to_be_render.size();
+
+    _wait_semaphors.clear();
 
     return _hr;
 }
@@ -703,8 +741,13 @@ ULONG scene::release()
     auto _gDevice = get_graphics_device();
     auto _device = _gDevice->vk_device;
     
-    this->_thread_pool.release();
+    for (auto _thread_context : this->_thread_pool)
+    {
+        SAFE_RELEASE(_thread_context);
+    }
+    this->_thread_pool.clear();
 
+    this->_models_to_be_render.clear();
     //release all models
     for (auto& _iter : this->_models)
     {
@@ -729,10 +772,7 @@ ULONG scene::release()
         vkDestroyFence(_device, this->_draw_fence, nullptr);
         this->_draw_fence = 0;
     }
-
-    this->_threads_compute_commands_buffers.release();
-    this->_threads_draw_commands_buffers.release();
-
+    
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
     free(sMOCPerPixelZBuffer);
     free(sMOCTonemapDepthImage);
@@ -985,9 +1025,12 @@ bool scene::_update_gui()
     
     ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiSetCond_FirstUseEver);
     ImGui::Begin(("Wolf.Engine " + SVersion).c_str());
-    ImGui::Text("FPS:%d", sFPS);
-    ImGui::Text("FrameTime:%f", windows_frame_time_in_sec.at(0));
-        
+    ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nThread pool rendering size: %d\r\nTotal Models: %d\r\nVisible Models: %d", 
+        sFPS, windows_frame_time_in_sec.at(0), sRenderingThreads, sTotalModels, sVisibleModels);
+
+    sTotalModels = this->_models.size();
+    sVisibleModels = this->_models_to_be_render.size();
+
     ImGui::End();
     
 #pragma endregion

@@ -164,6 +164,7 @@ HRESULT model::load(
     if (_load_buffers() == S_FALSE) return S_FALSE;
     if (_load_shader() == S_FALSE) return S_FALSE;
     if (_load_pipelines(pRenderPass) == S_FALSE) return S_FALSE;   
+    if (_build_compute_command_buffers() == S_FALSE) return S_FALSE;
 
     VkSemaphoreCreateInfo _semaphore_create_info = {};
     _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -173,22 +174,6 @@ HRESULT model::load(
         &this->cs.semaphore))
     {
         logger.error("Error on creating semaphore for compute command buffer");
-        release();
-        exit(1);
-    }
-
-    //Fence for render sync
-    VkFenceCreateInfo _fence_create_info = {};
-    _fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    _fence_create_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-    if (vkCreateFence(
-        _gDevice->vk_device,
-        &_fence_create_info,
-        nullptr,
-        &this->cs.fence))
-    {
-        V(S_FALSE, "creating compute fence", _trace);
         release();
         exit(1);
     }
@@ -755,17 +740,32 @@ HRESULT model::_load_pipelines(_In_ w_render_pass& pRenderPass)
     return S_OK;
 }
 
-HRESULT model::build_compute_command_buffers(_In_ const VkCommandBuffer& pCommandBuffer)
+HRESULT model::_build_compute_command_buffers()
 {
+    const std::string _trace = this->name + "::_build_compute_command_buffers";
+
+    auto _hr = this->cs.command_buffers.load(
+        this->_gDevice,
+        1,
+        VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+        true,
+        &_gDevice->vk_compute_queue);
+    if (_hr == S_FALSE)
+    {
+        V(S_FALSE, "creating compute command buffer for " + this->_full_name, _trace);
+        return S_FALSE;
+    }
+
+    auto _cmd = this->cs.command_buffers.get_command_at(0);
+
     VkCommandBufferBeginInfo _cmd_buffer_info = {};
     _cmd_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    _cmd_buffer_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 
-    vkBeginCommandBuffer(pCommandBuffer, &_cmd_buffer_info);
-    
+    vkBeginCommandBuffer(_cmd, &_cmd_buffer_info);
+
     auto _cmd_handle = this->indirect.indirect_draw_commands_buffer.get_handle();
     auto _size = this->indirect.indirect_draw_commands_buffer.get_descriptor_info().range;
-    
+
     // Add memory barrier to ensure that the indirect commands have been consumed before the compute shader updates them
     VkBufferMemoryBarrier _buffer_barrier = {};
     _buffer_barrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
@@ -777,7 +777,7 @@ HRESULT model::build_compute_command_buffers(_In_ const VkCommandBuffer& pComman
     _buffer_barrier.dstQueueFamilyIndex = this->_gDevice->vk_compute_queue.index;
 
     vkCmdPipelineBarrier(
-        pCommandBuffer,
+        _cmd,
         VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
         VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
         0,
@@ -787,9 +787,9 @@ HRESULT model::build_compute_command_buffers(_In_ const VkCommandBuffer& pComman
 
     auto _pipline_layout_handle = this->cs.pipeline.get_layout_handle();
     auto _desciptor_set = this->_shader->get_compute_descriptor_set();
-    vkCmdBindPipeline(pCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, this->cs.pipeline.get_handle());
+    vkCmdBindPipeline(_cmd, VK_PIPELINE_BIND_POINT_COMPUTE, this->cs.pipeline.get_handle());
     vkCmdBindDescriptorSets(
-        pCommandBuffer,
+        _cmd,
         VK_PIPELINE_BIND_POINT_COMPUTE,
         _pipline_layout_handle,
         0,
@@ -797,7 +797,7 @@ HRESULT model::build_compute_command_buffers(_In_ const VkCommandBuffer& pComman
         0,
         0);
 
-    vkCmdDispatch(pCommandBuffer, (uint32_t)(this->indirect.indirect_draw_commands.size() / cs.batch_local_size), 1, 1);
+    vkCmdDispatch(_cmd, (uint32_t)(this->indirect.indirect_draw_commands.size() / cs.batch_local_size), 1, 1);
 
     // Add memory barrier to ensure that the compute shader has finished writing the indirect command buffer before it's consumed
     _buffer_barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
@@ -808,7 +808,7 @@ HRESULT model::build_compute_command_buffers(_In_ const VkCommandBuffer& pComman
     _buffer_barrier.dstQueueFamilyIndex = this->_gDevice->vk_graphics_queue.index;
 
     vkCmdPipelineBarrier(
-        pCommandBuffer,
+        _cmd,
         VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
         VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
         0,
@@ -816,7 +816,7 @@ HRESULT model::build_compute_command_buffers(_In_ const VkCommandBuffer& pComman
         1, &_buffer_barrier,
         0, nullptr);
 
-    vkEndCommandBuffer(pCommandBuffer);
+    vkEndCommandBuffer(_cmd);
 
     return S_OK;
 }
@@ -992,9 +992,7 @@ void model::indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer)
 
 }
 
-HRESULT model::execute_compute_shader(
-    _In_ const VkCommandBuffer& pCommandBuffer,
-    _In_ const wolf::content_pipeline::w_first_person_camera* pCamera)
+HRESULT model::submit_compute_shader(_In_ const wolf::content_pipeline::w_first_person_camera* pCamera)
 {
     HRESULT _hr = S_OK;
 
@@ -1075,16 +1073,17 @@ HRESULT model::execute_compute_shader(
         V(_hr, "updating compute shader's unifrom", _trace, 3);
     }
 
+    auto _cmd = this->cs.command_buffers.get_command_at(0);
 
     VkSubmitInfo _submit_info = {};
     _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     _submit_info.commandBufferCount = 1;
-    _submit_info.pCommandBuffers = &pCommandBuffer;
+    _submit_info.pCommandBuffers = &_cmd;
     _submit_info.signalSemaphoreCount = 1;
     _submit_info.pSignalSemaphores = &this->cs.semaphore;
 
     //execute compute shader on gpu
-    if (vkQueueSubmit(this->_gDevice->vk_compute_queue.queue, 1, &_submit_info, this->cs.fence))
+    if (vkQueueSubmit(this->_gDevice->vk_compute_queue.queue, 1, &_submit_info, 0))
     {
         _hr = S_FALSE;
         V(_hr, "submiting queu for " + this->_full_name, _trace, 3);
@@ -1092,8 +1091,6 @@ HRESULT model::execute_compute_shader(
 
     return _hr;
 }
-
-
 
 ULONG model::release()
 {
@@ -1104,11 +1101,6 @@ ULONG model::release()
     {
         vkDestroySemaphore(_device, this->cs.semaphore, nullptr);
         this->cs.semaphore = 0;
-    }
-    if (this->cs.fence)
-    {
-        vkDestroyFence(_device, this->cs.fence, nullptr);
-        this->cs.fence = 0;
     }
 
     this->cs.release();

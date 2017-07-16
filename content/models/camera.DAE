@@ -2,12 +2,11 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <asset>
     <contributor>
-      <author>DFM</author>
+      <author>PooyaEimandar</author>
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
-      <source_data>file:///F:/github/WolfSource/Wolf.Engine/content/models/watertreatment-v1-16-19.max</source_data>
     </contributor>
-    <created>2017-07-15T12:37:02</created>
-    <modified>2017-07-15T12:37:02</modified>
+    <created>2017-07-16T19:36:37</created>
+    <modified>2017-07-16T19:36:37</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -80,7 +79,7 @@
         <instance_light url="#EnvironmentAmbientLight"/>
       </node>
       <node id="node-Camera001" name="Camera001">
-        <matrix>-0.2638616 0.196391 -0.9443557 688.9972 -0.9645606 -0.05372399 0.2583345 1048.201 0 0.9790528 0.2036067 116.9761 0 0 0 1</matrix>
+        <matrix>0.3078426 0 -0.9514373 -280.3965 -0.9514373 0 -0.3078426 -75.27155 0 1 0 8.481943 0 0 0 1</matrix>
         <instance_camera url="#Camera001-camera"/>
         <extra>
           <technique profile="OpenCOLLADA">
@@ -92,7 +91,7 @@
         </extra>
       </node>
       <node id="node-Camera001.Target" name="Camera001.Target">
-        <translate>1259.11 892.2432 -5.942373</translate>
+        <translate>23.90639 23.18726 8.481943</translate>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>

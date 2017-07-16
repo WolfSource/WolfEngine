@@ -67,7 +67,9 @@ public:
 private:
     
     HRESULT _load_areas();
+    
     HRESULT _build_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+
     HRESULT _build_gui_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ const wolf::system::w_game_time& pGameTime);
     bool _update_gui();
@@ -92,13 +94,21 @@ private:
     VkFence                                                        _draw_fence;
     VkSemaphore                                                     gui_semaphore;						// Used as a wait semaphore for graphics submission
     
+    std::vector<model*>                                            _models_to_be_render;
 
+    struct thread_context
+    {
+        wolf::system::w_thread                                      thread;
+        wolf::graphics::w_command_buffers                           secondary_command_buffers;
+        size_t                                                      batch_size;
+        void release()
+        {
+            this->thread.release();
+            this->secondary_command_buffers.release();
+        }
+    };
+    std::vector<thread_context*>                                     _thread_pool;
 
-    wolf::system::w_thread_pool                                     _thread_pool;
-    std::vector<model*>                                             _models_to_be_render;
-
-    wolf::graphics::w_command_buffers                               _threads_draw_commands_buffers;
-    wolf::graphics::w_command_buffers                               _threads_compute_commands_buffers;
 
 
     //struct area
