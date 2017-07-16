@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asset>
+    <contributor>
+      <author>DFM</author>
+      <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
+      <source_data>file:///F:/github/WolfSource/Wolf.Engine/content/models/watertreatment-v1-16-19.max</source_data>
+    </contributor>
+    <created>2017-07-15T12:37:02</created>
+    <modified>2017-07-15T12:37:02</modified>
+    <unit name="millimeter" meter="0.001"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_effects>
+    <effect id="ColorEffectR87G120B204">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <ambient>
+              <color>0.3411765 0.4705882 0.8 1</color>
+            </ambient>
+            <diffuse>
+              <color>0.3411765 0.4705882 0.8 1</color>
+            </diffuse>
+            <specular>
+              <color>1 1 1 1</color>
+            </specular>
+            <shininess>
+              <float>10</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent>
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_materials>
+    <material id="ColorEffectR87G120B204-material" name="ColorEffectR87G120B204-material">
+      <instance_effect url="#ColorEffectR87G120B204"/>
+    </material>
+  </library_materials>
+  <library_cameras>
+    <camera id="Camera001-camera" name="Camera001">
+      <optics>
+        <technique_common>
+          <perspective>
+            <xfov>45</xfov>
+            <znear>1</znear>
+            <zfar>1000</zfar>
+          </perspective>
+        </technique_common>
+      </optics>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <target sid="target" type="string">#Camera001.Target</target>
+        </technique>
+      </extra>
+    </camera>
+  </library_cameras>
+  <library_lights>
+    <light id="EnvironmentAmbientLight" name="EnvironmentAmbientLight">
+      <technique_common>
+        <ambient>
+          <color>0 0 0</color>
+        </ambient>
+      </technique_common>
+    </light>
+  </library_lights>
+  <library_visual_scenes>
+    <visual_scene id="MaxScene">
+      <node name="EnvironmentAmbientLight">
+        <instance_light url="#EnvironmentAmbientLight"/>
+      </node>
+      <node id="node-Camera001" name="Camera001">
+        <matrix>-0.2638616 0.196391 -0.9443557 688.9972 -0.9645606 -0.05372399 0.2583345 1048.201 0 0.9790528 0.2036067 116.9761 0 0 0 1</matrix>
+        <instance_camera url="#Camera001-camera"/>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-Camera001.Target" name="Camera001.Target">
+        <translate>1259.11 892.2432 -5.942373</translate>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#MaxScene"/>
+  </scene>
+</COLLADA>
