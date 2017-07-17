@@ -328,6 +328,7 @@ void scene::load()
         release();
         exit(1);
     }
+
     _load_areas();
 }
 
@@ -338,7 +339,7 @@ HRESULT scene::_load_areas()
         auto _gDevice = this->graphics_devices[0];
         const std::vector<std::wstring> _areas_on_thread_0 =
         {
-            L"models/model.wscene",
+            L"models/model.dae",
         };
 
         std::for_each(_areas_on_thread_0.begin(), _areas_on_thread_0.end(),
@@ -410,7 +411,6 @@ HRESULT scene::_load_areas()
         this->_camera.update_projection();
         this->_camera.update_frustum();
     }
-
     return S_OK;
 }
 
@@ -446,6 +446,7 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
             this->_thread_pool[i]->batch_size++;
         }
     }
+
     for (uint32_t i = 0; i < this->_draw_command_buffers.get_commands_size(); ++i)
     {
         this->_draw_command_buffers.begin(i);
@@ -506,12 +507,10 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
                 }
 
                 //wait for all threads
-
                 for (auto& _thread : this->_thread_pool)
                 {
                     _thread->thread.wait();
                 }
-
                 if (_sec_cmd_buffers.size())
                 {
                     //Execute secondary commands buffer to primary command
@@ -523,7 +522,6 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
         }
         this->_draw_command_buffers.end(i);
     }
-
     return S_OK;
 }
 
@@ -641,8 +639,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
     auto _frame_index = _output_window->vk_swap_chain_image_index;
 
-    // Wait for fence to signal that all command buffers are ready
-    vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence, VK_TRUE, VK_TIMEOUT);
     vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence);
 
     std::vector<VkSemaphore> _wait_semaphors = { _output_window->vk_swap_chain_image_is_available_semaphore };
@@ -658,7 +654,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                 _wait_semaphors.push_back(pModel->get_compute_semaphore());
             }
         });
-
         _build_draw_command_buffer(_gDevice);
         _record_draw_command_buffer = false;
     }
@@ -687,6 +682,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
         _hr = S_FALSE;
         V(_hr, "submiting queu for drawing gui", _trace, 3);
     }
+    // Wait for fence to signal that all command buffers are ready
+    vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence, VK_TRUE, VK_TIMEOUT);
 
     if (this->_show_gui)
     {

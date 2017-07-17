@@ -3,25 +3,10 @@
 #include "w_cpipeline_model.h"
 #include "c_skin.h"
 
-
 using namespace std;
 using namespace wolf::system;
 using namespace wolf::content_pipeline;
 using namespace wolf::content_pipeline::collada;
-
-//static variables which are necessary for parsing collada file 
-static std::vector<c_bone*>			        sBones;
-static std::vector<c_node*>			        sNodes;
-static std::string					        sSceneID;
-static std::vector<std::string>		        sSkeletonNames;
-static std::map<std::string, w_camera>      sLibraryCameras;
-static std::map<std::string, std::string>   sLibraryMaterials;
-static std::map<std::string, std::string>	sLibraryEffects;
-static std::map<std::string, std::string>	sLibraryImages;
-static std::string					        sSkipChildrenOfThisNode;
-static c_xsi_extra					        sXSI_Extra;
-static rapidxml::xml_node<>*		        SGeometryLibraryNode;
-static bool                                 sZ_Up = true;
 
 const char* c_parser::_trace_class_name = "w_collada_parser";
 
