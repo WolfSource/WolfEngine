@@ -4,10 +4,10 @@
     <contributor>
       <author>DFM</author>
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
-      <source_data>file:///F:/github/WolfSource/Wolf.Engine/content/models/air-compressor-v-1-24-2.max</source_data>
+      <source_data>file:///F:/github/WolfSource/Wolf.Engine/content/models/air-compressor-v-1-24-6.max</source_data>
     </contributor>
-    <created>2017-07-17T14:04:50</created>
-    <modified>2017-07-17T14:04:50</modified>
+    <created>2017-07-19T11:50:31</created>
+    <modified>2017-07-19T11:50:31</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
