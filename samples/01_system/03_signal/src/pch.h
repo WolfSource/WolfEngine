@@ -11,6 +11,7 @@
 #define __PCH_H__
 
 #include <wolf.h>
-#include <w_task.h>
+#include <w_thread.h>
+#include <w_signal.h>
 
 #endif

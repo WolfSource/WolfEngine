@@ -41,8 +41,8 @@ namespace wolf
 #pragma endregion
 
 #pragma region Setters
-            WSYS_EXP void set_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs);
-            WSYS_EXP void set_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob);
+            WSYS_EXP void add_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs);
+            WSYS_EXP void add_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob);
 #pragma endregion
 
         private:

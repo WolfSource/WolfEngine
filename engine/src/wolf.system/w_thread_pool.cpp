@@ -54,7 +54,7 @@ size_t w_thread_pool::get_pool_size() const
 
 #pragma region Setters
 
-void w_thread_pool::set_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs)
+void w_thread_pool::add_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs)
 {
     if (pThreadIndex < this->_threads.size())
     {
@@ -65,7 +65,7 @@ void w_thread_pool::set_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ co
     }
 }
 
-void w_thread_pool::set_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob)
+void w_thread_pool::add_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob)
 {
     if (pThreadIndex < this->_threads.size())
     {

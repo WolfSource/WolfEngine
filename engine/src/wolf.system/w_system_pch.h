@@ -68,7 +68,6 @@
 
 #include <tchar.h>
 #include <tbb/scalable_allocator.h>
-#include "w_logger.h"
 
 #elif defined(__ANDROID)
 
@@ -76,11 +75,9 @@
 #include <jni.h>
 #include <android/asset_manager.h>
 #include "w_std.h"
-        
-#elif defined(__linux)
-        
-#include "w_logger.h"
 
 #endif
+
+#include "w_logger.h"
 
 #endif //__W_SYSTEM_PCH_H__

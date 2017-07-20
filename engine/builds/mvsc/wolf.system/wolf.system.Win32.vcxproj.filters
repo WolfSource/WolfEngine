@@ -52,5 +52,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_thread.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_thread_pool.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
   </ItemGroup>
 </Project>
