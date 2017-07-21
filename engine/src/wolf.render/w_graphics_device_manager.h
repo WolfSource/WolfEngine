@@ -111,12 +111,16 @@ namespace wolf
 
         struct w_queue_index
         {
+#ifdef __VULKAN__
             VkQueue        queue = 0;
+#endif
             uint32_t       index = UINT32_MAX;
 
             ULONG release()
             {
+#ifdef __VULKAN__
                 this->queue = 0;
+#endif
                 this->index = UINT32_MAX;
                 return 0;
             }

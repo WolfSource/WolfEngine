@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wolf.system", "wolf.system", "{AA6CAAF9-94EF-4640-952B-1A7B1999941E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{40E8B71D-75CC-4EC2-8F89-B831B273429F}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\..\docs\Change Log.html = ..\..\..\docs\Change Log.html
@@ -12,23 +10,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{
 		..\..\..\docs\RoadMap.txt = ..\..\..\docs\RoadMap.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libraries", "libraries", "{5D25C0BB-8EC4-4169-B712-AE2789EA7040}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wolf.render", "wolf.render", "{9B104242-71BF-4DAA-9BF4-E1B65FC42B60}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.system.Win32", "wolf.system\wolf.system.Win32.vcxproj", "{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.ffmpeg.Win32", "wolf.ffmpeg\wolf.ffmpeg.Win32.vcxproj", "{1C266BC7-AF7E-43E2-9CC9-4F6954295929}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wolf.content_pipeline", "wolf.content_pipeline", "{68D1D49A-1750-493A-83B7-4F0821A38D2D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.content_pipeline.Win32", "Wolf.content_pipeline\wolf.content_pipeline.Win32.vcxproj", "{1C266BC7-AF7E-43E2-9CC9-4F6954295928}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blackmagic.decklink", "blackmagic.decklink\blackmagic.decklink.vcxproj", "{6F47C0C5-64DC-4843-BD94-82734FEC8E21}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.directX.Win32", "wolf.render\wolf.directX\wolf.directX.Win32.vcxproj", "{3CAD4C0B-8160-431F-839A-4B92F0322C31}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.directX.Win32", "tests\directX.Win32\directX.Win32.vcxproj", "{CFAD581D-7E53-4567-A9FE-36D754454B31}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "tests\directX.Win32\directX.Win32.vcxproj", "{CFAD581D-7E53-4567-A9FE-36D754454B31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,20 +44,6 @@ Global
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|Win32.Build.0 = Release|Win32
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x64.ActiveCfg = Release|x64
 		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35}.Release|x64.Build.0 = Release|x64
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Debug|ARM.ActiveCfg = Debug|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Debug|Win32.Build.0 = Debug|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Debug|x64.ActiveCfg = Debug|x64
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Debug|x64.Build.0 = Debug|x64
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Release|ARM.ActiveCfg = Release|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Release|Win32.ActiveCfg = Release|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Release|Win32.Build.0 = Release|Win32
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Release|x64.ActiveCfg = Release|x64
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929}.Release|x64.Build.0 = Release|x64
 		{1C266BC7-AF7E-43E2-9CC9-4F6954295928}.Debug|ARM.ActiveCfg = Debug|Win32
 		{1C266BC7-AF7E-43E2-9CC9-4F6954295928}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{1C266BC7-AF7E-43E2-9CC9-4F6954295928}.Debug|Mixed Platforms.Build.0 = Debug|Win32
@@ -84,20 +58,6 @@ Global
 		{1C266BC7-AF7E-43E2-9CC9-4F6954295928}.Release|Win32.Build.0 = Release|Win32
 		{1C266BC7-AF7E-43E2-9CC9-4F6954295928}.Release|x64.ActiveCfg = Release|x64
 		{1C266BC7-AF7E-43E2-9CC9-4F6954295928}.Release|x64.Build.0 = Release|x64
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Debug|ARM.ActiveCfg = Debug|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Debug|Win32.ActiveCfg = Debug|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Debug|Win32.Build.0 = Debug|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Debug|x64.ActiveCfg = Debug|x64
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Debug|x64.Build.0 = Debug|x64
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Release|ARM.ActiveCfg = Release|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Release|Win32.ActiveCfg = Release|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Release|Win32.Build.0 = Release|Win32
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Release|x64.ActiveCfg = Release|x64
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21}.Release|x64.Build.0 = Release|x64
 		{3CAD4C0B-8160-431F-839A-4B92F0322C31}.Debug|ARM.ActiveCfg = Debug|Win32
 		{3CAD4C0B-8160-431F-839A-4B92F0322C31}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{3CAD4C0B-8160-431F-839A-4B92F0322C31}.Debug|Mixed Platforms.Build.0 = Debug|Win32
@@ -129,12 +89,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{C7EAFC1C-9CFD-4C25-8AE9-C1373DD5DF35} = {AA6CAAF9-94EF-4640-952B-1A7B1999941E}
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295929} = {5D25C0BB-8EC4-4169-B712-AE2789EA7040}
-		{1C266BC7-AF7E-43E2-9CC9-4F6954295928} = {68D1D49A-1750-493A-83B7-4F0821A38D2D}
-		{6F47C0C5-64DC-4843-BD94-82734FEC8E21} = {5D25C0BB-8EC4-4169-B712-AE2789EA7040}
-		{3CAD4C0B-8160-431F-839A-4B92F0322C31} = {9B104242-71BF-4DAA-9BF4-E1B65FC42B60}
 	EndGlobalSection
 EndGlobal

@@ -13,7 +13,6 @@
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <glm/matrix.hpp>
-#include <w_math.h>
 #include <w_color.h>
 #include <d3d12.h>
 

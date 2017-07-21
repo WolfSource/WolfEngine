@@ -116,16 +116,6 @@ struct w_color
 		return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
 	}
 
-#if defined(__DX12__) || defined(__DX11__)
-    static w_color to_color(_In_ const XMFLOAT4& pValue)
-    {
-        return w_color(
-            static_cast<UINT>(pValue.x * 255.0f),
-            static_cast<UINT>(pValue.y * 255.0f),
-            static_cast<UINT>(pValue.z * 255.0f),
-            static_cast<UINT>(pValue.w * 255.0f));
-    }
-#else
     static w_color to_color(_In_ const std::array<float, 4>& pValue)
     {
         return w_color(
@@ -134,7 +124,6 @@ struct w_color
             static_cast<UINT>(pValue[2] * 255.0f),
             static_cast<UINT>(pValue[3] * 255.0f));
     }
-#endif //defined(__DX12__) || defined(__DX11__)
 
     static w_color ALICE_BLUE() { return w_color::from_hex(0xFFF0F8FF); }
     static w_color ANTIQUE_WHITE() { return w_color::from_hex(0xFFFAEBD7); }
