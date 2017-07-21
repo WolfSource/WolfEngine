@@ -300,6 +300,26 @@ namespace wolf
 				free(_file_data);
 			}
 
+            //Write text file
+            inline void write_text_file(_In_z_ const wchar_t* pPath, _In_z_ const wchar_t* pTextContent)
+            {
+                std::wofstream _file;
+                _file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
+                _file.open(pPath);
+                _file << pTextContent;
+                _file.flush();
+                _file.close();
+            }
+
+            //Write binary file
+            inline void write_binary_file(_In_z_ const wchar_t* pPath, _In_z_ const wchar_t* pTextContent)
+            {
+                std::wofstream _file(pPath, std::ios::binary);
+                _file << pTextContent;
+                _file.flush();
+                _file.close();
+            }
+
 #endif //__WIN32
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
@@ -629,6 +649,22 @@ namespace wolf
 			}
 
 			
+            inline void write_text_file(_In_z_ const char* pPath, _In_z_ const char* pTextContent)
+            {
+                std::wofstream _file;
+                _file.open(pPath);
+                _file << pTextContent;
+                _file.flush();
+                _file.close();
+            }
+
+            inline void write_binary_file(_In_z_ const char* pPath, _In_z_ const char* pTextContent)
+            {
+                std::wofstream _file(pPath, std::ios::binary);
+                _file << pTextContent;
+                _file.flush();
+                _file.close();
+            }
 		}
 	}
 }
