@@ -340,6 +340,8 @@ HRESULT scene::_load_areas()
         const std::vector<std::wstring> _areas_on_thread_0 =
         {
             L"models/model.dae",
+            //L"models/_120_water-treatment_v1_16_19.dae",
+            //L"models/_161_air-compressor-v1_24_10.dae",
         };
 
         std::for_each(_areas_on_thread_0.begin(), _areas_on_thread_0.end(),
