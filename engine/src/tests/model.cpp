@@ -46,7 +46,7 @@ HRESULT model::load(
     }
     
     uint32_t _lod_distance_index = 1;
-    const uint32_t _lod_distance_offset = 500;
+    const uint32_t _lod_distance_offset = 700;
 
     //create one big vertex buffer and index buffer from root model and LODs
     std::vector<float> _batch_vertices;
