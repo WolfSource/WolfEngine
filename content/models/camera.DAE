@@ -4,11 +4,11 @@
     <contributor>
       <author>DFM</author>
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
-      <source_data>file:///F:/github/WolfSource/Wolf.Engine/content/models/air-compressor-v-1-24-6.max</source_data>
+      <source_data>file:///F:/github/WolfSource/Wolf.Engine/content/models/office_building_comprehensive_v1_13_0.max</source_data>
     </contributor>
-    <created>2017-07-19T11:50:31</created>
-    <modified>2017-07-19T11:50:31</modified>
-    <unit name="meter" meter="1"/>
+    <created>2017-07-25T12:39:45</created>
+    <modified>2017-07-25T12:39:45</modified>
+    <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_effects>
@@ -52,7 +52,7 @@
       <optics>
         <technique_common>
           <perspective>
-            <xfov>54.43222</xfov>
+            <xfov>45</xfov>
             <znear>1</znear>
             <zfar>1000</zfar>
           </perspective>
@@ -79,9 +79,9 @@
       <node name="EnvironmentAmbientLight">
         <instance_light url="#EnvironmentAmbientLight"/>
       </node>
-      <node id="node-Camera001.Target" name="Camera001.Target">
-        <translate>-1.413533 825.4143 58.59167</translate>
-        <rotate>-0.9179615 -0.08920814 -0.3865081 -90.45964</rotate>
+      <node id="node-Camera001" name="Camera001">
+        <matrix>-0.8132862 0.05738365 -0.5790272 -428.6723 -0.5818638 -0.08020663 0.8093216 1954.402 0 0.9951251 0.09862041 192.0253 0 0 0 1</matrix>
+        <instance_camera url="#Camera001-camera"/>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
@@ -91,9 +91,8 @@
           </technique>
         </extra>
       </node>
-      <node id="node-Camera001" name="Camera001">
-        <matrix>-0.5363044 0.1892213 -0.8225407 -330.4594 -0.8440248 -0.1202336 0.5226529 1034.494 0 0.9745457 0.2241892 148.2754 0 0 0 1</matrix>
-        <instance_camera url="#Camera001-camera"/>
+      <node id="node-Camera001.Target" name="Camera001.Target">
+        <translate>407.3972 785.8058 49.62526</translate>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
