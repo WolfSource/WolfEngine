@@ -15,9 +15,8 @@ using namespace wolf::system;
 
 WOLF_MAIN()
 {
-    //initialize logger, and log in to the output debug window of visual studio and Log folder inside running directory
-    logger.initialize(L"01_system-03_signal", wolf::system::io::get_current_directoryW());
-
+    WOLF_INIT(L"01_system-03_signal");
+    
     //log to output file
     logger.write(L"starting Wolf");
 

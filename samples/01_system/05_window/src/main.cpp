@@ -8,7 +8,6 @@
 */
 
 #include "pch.h"
-#include <w_window.h>
 
 //namespaces
 using namespace std;
@@ -30,20 +29,12 @@ void loop()
 }
 
 //Entry point of program 
-#ifdef __WIN32
-int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
-#elif defined(__linux) || defined(__APPLE__) 
-int main(int pArgc, const char * pArgv[])
-#endif
+WOLF_MAIN()
 {
-    	//initialize logger, and log in to the output debug window of visual studio and Log folder inside running directory
-#ifdef __WIN32
-	logger.initialize(L"01_01_window.Win32", wolf::system::io::get_current_directoryW());
-#elif defined(__APPLE__) || defined(__linux)
-        logger.initialize("01_01_window.OSX", wolf::system::io::get_current_directory());
-#endif
+    WOLF_INIT(L"01_system-05_window");
+
 	//log to output file
-	logger.write(L"Starting Wolf");
+	logger.write(L"starting Wolf");
 
 #ifdef __WIN32
 	/*
@@ -80,22 +71,21 @@ int main(int pArgc, const char * pArgv[])
 	sWindow = make_unique<w_window>();
         
 #ifdef __WIN32
-	sWindow->set_class_name(L"01_Window_DX11_X_CLS");
-        sWindow->initialize(_msg_proc_func);
+	sWindow->set_class_name(L"WOLF_WINDOW_CLS");
+    sWindow->initialize(_msg_proc_func);
 #else
-        sWindow->initialize();
+    sWindow->initialize();
 #endif       
 
 	//run the main loop
 	std::function<void(void)> _f = std::bind(&loop);
 	sWindow->run(_f);
-	
+
+    //output a message to the log file
+    logger.write(L"shutting down Wolf");
+
 	//release all
 	release();
 
-	//output a message to the log file
-	logger.write(L"Shutting down Wolf");
-
-	//exit
 	return EXIT_SUCCESS;
 }

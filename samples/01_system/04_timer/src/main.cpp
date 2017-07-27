@@ -15,8 +15,7 @@ using namespace wolf::system;
 
 WOLF_MAIN()
 {
-    //initialize logger, and log in to the output debug window of visual studio and Log folder inside running directory
-    logger.initialize(L"01_system-04_timer", wolf::system::io::get_current_directoryW());
+    WOLF_INIT(L"01_system-04_timer");
 
     //log to output file
     logger.write(L"starting Wolf");
@@ -37,7 +36,7 @@ WOLF_MAIN()
     auto _time = _timer.get_seconds();
     
     char _buffer[256];
-    sprintf_s(_buffer, "writing file took: %d (s)", _time);
+    sprintf_s(_buffer, "writing file took: %f (s)", _time);
     logger.write(_buffer);
         
     _timer.reset();
