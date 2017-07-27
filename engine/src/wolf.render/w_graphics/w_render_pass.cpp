@@ -132,7 +132,7 @@ namespace wolf
                             static_cast<uint32_t>(this->_viewport.height),  // Height
                         }
                     },
-                    _clear_values.size(),                                   // ClearValueCount
+                    static_cast<uint32_t>(_clear_values.size()),            // ClearValueCount
                     _clear_values.data()                                    // ClearValues
                 };
                 vkCmdBeginRenderPass(pCommandBuffer, &_render_pass_begin_info, pSubpassContents);

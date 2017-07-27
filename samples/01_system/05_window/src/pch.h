@@ -14,24 +14,7 @@
 #ifndef __PCH_H__
 #define __PCH_H__
 
-#ifdef WIN32
-	
-#pragma comment(lib, "Wolf.System.Win32.lib")
-
-#include <w_target_ver.h>
-
-#ifndef WIN32_LEAN_AND_MEAN
-	#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <Windows.h>
-
-#elif defined(__UWP)
-#include <wrl.h>
-#include <wrl/client.h>
-#include <agile.h>
-#endif
-
-#include <memory>
+#include <wolf.h>
+#include <w_window.h>
 
 #endif
