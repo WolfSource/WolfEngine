@@ -27,34 +27,34 @@ void w_lua::_incompatible_type_for_variable(const char* pVariableName, const cha
 	switch (pOriginalType)
 	{
 	case -1:
-		sprintf(_msg, "lua: %s is type of none, not %s\n", pVariableName, pRequestedType);
+		sprintf_s(_msg, "lua: %s is type of none, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 0:
-		sprintf(_msg, "lua: %s is type of nil, not %s\n", pVariableName, pRequestedType);
+        sprintf_s(_msg, "lua: %s is type of nil, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 1:
-		sprintf(_msg, "lua: %s is type of boolean, not %s\n", pVariableName, pRequestedType);
+        sprintf_s(_msg, "lua: %s is type of boolean, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 2:
-		sprintf(_msg, "lua: %s is type of lightuserdata, not %s\n", pVariableName, pRequestedType);
+        sprintf_s(_msg, "lua: %s is type of lightuserdata, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 3:
-		sprintf(_msg, "lua: %s is type of number, not %s\n", pVariableName, pRequestedType);
+        sprintf_s(_msg, "lua: %s is type of number, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 4:
-		sprintf(_msg, "lua: %s is type of string, not %s\n", pVariableName, pRequestedType);
+        sprintf_s(_msg, "lua: %s is type of string, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 5:
-		sprintf(_msg, "lua: %s is type of table, not %s\n", pVariableName, pRequestedType);
+        sprintf_s(_msg, "lua: %s is type of table, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 6:
-		sprintf(_msg, "lua: %s is type of function, not %s\n", pVariableName, pRequestedType);
+        sprintf_s(_msg, "lua: %s is type of function, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 7:
-		sprintf(_msg, "lua: %s is type of userdata, not %s\n", pVariableName, pRequestedType);
+        sprintf_s(_msg, "lua: %s is type of userdata, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 8:
-		sprintf(_msg, "lua: %s is type of thread, not %s\n", pVariableName, pRequestedType);
+        sprintf_s(_msg, "lua: %s is type of thread, not %s\n", pVariableName, pRequestedType);
 		break;
 	}
 
@@ -114,7 +114,7 @@ void w_lua::prepare_function(const char* pFunctionName)
 		if (lua_isnil(_lua, -1))
 		{
 			char _msg[256];
-			sprintf(_msg, "error function %s is null\n", pFunctionName);
+            sprintf_s(_msg, "error function %s is null\n", pFunctionName);
 			_last_error = _msg;
 			return;
 		}

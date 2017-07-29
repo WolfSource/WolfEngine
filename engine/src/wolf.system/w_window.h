@@ -133,12 +133,8 @@ struct w_window_info
 	bool				support_high_resolutions = true;
 #endif
     
-    //BGRA8Unorm
-#if defined(__DX12__) || defined(__DX11__)
-	UINT				swap_chain_format = 87;
-#elif defined(__VULKAN__)
+    //BGRA8Unorm for DirectX12 is "87" and for VULKAN is 44
 	UINT				swap_chain_format = 44;
-#endif
 };
 
 #if defined(__WIN32) || (defined(__linux) && !defined(__ANDROID))

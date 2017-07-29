@@ -24,24 +24,14 @@
 
 #ifdef __DX12__
 #pragma comment(lib, "d3d12.lib")
-#elif defined(__DX11__)
-#pragma comment(lib, "d3d11.lib")
-#endif
 #pragma comment(lib, "dxgi.lib")
-
-#include <windows.h>
-#include <wrl.h>
-
-#ifdef __DX12__
 #include <d3d12.h>
-#elif defined(__DX11__)
-#include <d3d11_3.h>
-#endif
-
-#if defined(__DX12__) || defined(__DX11__)
 #include <dxgi1_4.h>
 #include <DirectXMath.h>
 #endif
+
+#include <windows.h>
+#include <wrl.h>
 
 #endif
 

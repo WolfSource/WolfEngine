@@ -10,7 +10,7 @@
 #ifdef __WIN32
 
 #ifdef WIN32
-#pragma comment(lib, "libluajit.lib")
+#pragma comment(lib, "luajit-static.lib")
 
 #include <Windows.h>
 #endif

@@ -16,16 +16,10 @@
 #ifndef __W_GRAPHICS_DEVICE_MANAGER_H__
 #define __W_GRAPHICS_DEVICE_MANAGER_H__
 
-#if defined(__DX12__) || defined(__DX11__)
+#ifdef __DX12__
 
 #include <wrl.h>
-
-#ifdef __DX12__
 #include <d3d12.h>
-#else
-#include <d3d11_3.h>
-#endif
-
 #include <dxgi1_4.h>
 #include <DirectXMath.h>
 
@@ -184,10 +178,9 @@ namespace wolf
 			w_color                                 clear_color = w_color::CORNFLOWER_BLUE();
 			int										force_to_clear_color_times;
                         
-#if defined(__DX12__) || defined(__DX11__)		
+#ifdef __DX12__		
 			DXGI_FORMAT								dx_swap_chain_selected_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
 			ComPtr<IDXGISwapChain3>					dx_swap_chain;
-#ifdef __DX12__
 
 			std::vector<ID3D12Resource*>			dx_swap_chain_image_views;
 			uint32_t								dx_swap_chain_image_index = 0;
@@ -204,11 +197,6 @@ namespace wolf
 			HANDLE									dx_fence_event = 0;
 			ComPtr<ID3D12Fence>						dx_fence;
 			UINT64									dx_fence_value = 0;
-#elif defined(__DX11__)
-			ComPtr<ID3D11RenderTargetView1>			dx_render_target_view;
-			ComPtr<ID3D11DepthStencilView>			dx_depth_stencil_view;
-			D3D11_VIEWPORT							dx_screen_viewport;
-#endif
 
 #elif defined(__VULKAN__)
             VkSurfaceKHR                            vk_presentation_surface = 0;
@@ -249,18 +237,13 @@ namespace wolf
 
 			//get the first and the primary window which was created with this device
 			W_EXP w_output_presentation_window main_window();
-            
-            //Create global command buffer
-            //W_EXP HRESULT store_to_global_command_buffers(_In_z_ const char* pCommandsBuffersName,
-            //                                              _In_ w_command_buffers* pCommandBuffers,
-            //                                              _In_ size_t pOutputWindowIndex = 0);
-            
+                        
             //release all resources
             ULONG release();
 
             std::vector<w_output_presentation_window>               output_presentation_windows;
             
-#if defined(__DX12__) || defined(__DX11__)
+#ifdef __DX12__
 
 			static ComPtr<IDXGIFactory4>							dx_dxgi_factory;
 			
@@ -270,13 +253,7 @@ namespace wolf
 			bool													dx_is_wrap_device;
 			D3D_FEATURE_LEVEL										dx_feature_level;
 			ComPtr<IDXGIAdapter1>									dx_adaptor;
-
-#ifdef __DX12__
 			ComPtr<ID3D12Device>									dx_device;
-#elif defined(__DX11__)
-			ComPtr<ID3D11Device3>									dx_device;
-			ComPtr<ID3D11DeviceContext3>							dx_context;
-#endif
 
 #elif defined(__VULKAN__)
             static VkInstance                                           vk_instance;
@@ -325,7 +302,7 @@ namespace wolf
                 W_EXP static VkPipelineColorBlendAttachmentState          premulitplied_alpha;
             };
 
-#endif //__DX11__ __DX12__ __VULKAN__
+#endif //__DX12__ __VULKAN__
             
             std::string                                             device_name;
 			UINT													device_id;
@@ -382,9 +359,10 @@ namespace wolf
                 UINT                        get_device_id() const   { return this->_device_id; }
                 const char*                 get_device_name() const { return this->_device_name; }
 
+#ifdef __VULKAN__
                 VkPhysicalDeviceFeatures*   device_features;
                 std::vector<const char*>    device_extensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-
+#endif
             private:
                 UINT                        _device_id = 0;
                 const char*                 _device_name = "unknown";
@@ -398,6 +376,14 @@ namespace wolf
             W_EXP const ULONG get_number_of_graphics_devices() const;
             W_EXP w_color get_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
 				_In_ size_t pOutputPresentationWindowIndex) const;
+
+//#ifdef __DX11__
+//            //Get DPI
+//            W_EXP const DirectX::XMFLOAT2 get_dpi() const;
+//            //Get pixels to inches
+//            W_EXP const DirectX::XMFLOAT2 get_pixels_to_inches(_In_ float pX, _In_ float pY) const;
+//#endif
+
 #pragma endregion
 
 #pragma region Setters
@@ -406,21 +392,6 @@ namespace wolf
 				_In_ size_t pOutputPresentationWindowIndex, _In_ w_color pClearColor);
 #pragma endregion
 
-
-//			//Get default window HWND
-//			const HWND get_window_HWND() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? NULL : this->_windows_info.at(0).at(0).hwnd; }
-//			//Get default window HINSTANCE
-//			const HINSTANCE get_window_HINSTANCE() const						{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? NULL : this->_windows_info.at(0).at(0).hInstance; }
-//			//Get default window width
-//			const UINT get_window_width() const									{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? 0 : this->_windows_info.at(0).at(0).width; }
-//			//Get default window height
-//			const UINT get_window_height() const								{ return this->_windows_info.size() == 0 || this->_windows_info.at(0).size() == 0 ? 0 : this->_windows_info.at(0).at(0).height; }
-//			//Get DPI
-//			const DirectX::XMFLOAT2 get_dpi() const;
-//			//Get pixels to inches
-//			const DirectX::XMFLOAT2 get_pixels_to_inches(_In_ float pX, _In_ float pY) const;
-//
-//#pragma endregion
 
 #ifdef __VULKAN__
             W_EXP static VkResult memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
@@ -456,7 +427,7 @@ namespace wolf
         //the default config for creating graphics devices, you can edit the config before calling w_graphics_device_manager::initialize
         struct w_graphics_device_manager_configs
         {
-#if defined(__DX12__) || defined(__DX11__)
+#ifdef __DX12__
             bool							use_wrap_mode = false;
             D3D_FEATURE_LEVEL				wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_1;
             std::vector<D3D_FEATURE_LEVEL>	hardware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_1 };
@@ -467,25 +438,32 @@ namespace wolf
         struct w_viewport :
 #ifdef __VULKAN__
         public VkViewport
-        
+#elif defined(__DX12__)
+        public RECT   
 #endif
         {
             w_viewport()
             {
+#ifdef __VULKAN__
                 this->x = 0.0f;
                 this->y = 0.0f;
                 this->width = 800.0f;
                 this->height = 600.0f;
                 this->minDepth = 0.0f;
                 this->maxDepth = 1.0f;
+#elif defined(__DX12__)
+                this->left = 0.0f;
+                this->top = 0.0f;
+                this->right = 800.0f;
+                this->bottom = 600.0f;
+#endif
+
             }
         };
         
-        struct w_viewport_scissor :
 #ifdef __VULKAN__
+        struct w_viewport_scissor :
         public VkRect2D
-        
-#endif
         {
             w_viewport_scissor()
             {
@@ -495,6 +473,7 @@ namespace wolf
                 this->extent.height = 600;
             }
         };
+#endif
         
 #pragma endregion
 	}
