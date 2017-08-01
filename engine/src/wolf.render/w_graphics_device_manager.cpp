@@ -404,7 +404,6 @@ namespace wolf
 
 				std::wstring _msg;
 				_msg += L"++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\t\t\t\t\tDirectX API version: 12";
-#endif
 
 				UINT _dxgi_factory_flags = 0;
 #ifdef _DEBUG
@@ -426,6 +425,7 @@ namespace wolf
                         logger.warning(L"Could not enable the debug layer for DirectX 12");
                     }
                 }
+#endif
 
                 _hr = CreateDXGIFactory2(_dxgi_factory_flags, IID_PPV_ARGS(&w_graphics_device::dx_dxgi_factory));
                 if (FAILED(_hr))

@@ -321,7 +321,7 @@ HRESULT model::_load_shader()
     switch (this->cs.batch_local_size)
     {
     default:
-        V(S_FALSE, "batch_local_size " + std::to_string(this->cs.batch_local_size) + " not supported" + this->_full_name, _trace);
+        V(S_FALSE, "batch_local_size " + std::to_string(this->cs.batch_local_size) + " not supported " + this->_full_name, _trace);
         return S_FALSE;
     case 1:
         this->_visibilities.resize(1);
@@ -402,6 +402,16 @@ HRESULT model::_load_shader()
             return S_FALSE;
         }
         _param.buffer_info = this->cs.unifrom_x128->get_descriptor_info();
+        break;
+    case 256:
+        this->_visibilities.resize(256);
+        this->cs.unifrom_x256 = new w_uniform<compute_unifrom_x256>();
+        if (this->cs.unifrom_x256->load(this->_gDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader uniform_x128 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x256->get_descriptor_info();
         break;
     }
     _shader_params.push_back(_param);
@@ -1065,6 +1075,12 @@ HRESULT model::submit_compute_shader(_In_ const wolf::content_pipeline::w_first_
         std::memcpy(&this->cs.unifrom_x128->data.is_visible[0],
             this->_visibilities.data(), sizeof(this->cs.unifrom_x128->data.is_visible));
         _hr = this->cs.unifrom_x128->update();
+        break;
+    case 256:
+        this->cs.unifrom_x256->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x256->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x256->data.is_visible));
+        _hr = this->cs.unifrom_x256->update();
         break;
     }
 
