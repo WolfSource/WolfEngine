@@ -4,10 +4,10 @@
     <contributor>
       <author>DFM</author>
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
-      <source_data>file:///F:/github/WolfSource/Wolf.Engine/content/models/office_building_comprehensive_v1_13_0.max</source_data>
+      <source_data>file:///F:/github/PooyaEimandar/3D_Simulator_Assets_Manager/Models/area-430-annular_cooler/max-files/rotary_annular_cooler-v-1-10-0.max</source_data>
     </contributor>
-    <created>2017-07-25T12:39:45</created>
-    <modified>2017-07-25T12:39:45</modified>
+    <created>2017-07-30T15:53:58</created>
+    <modified>2017-07-30T15:53:58</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -80,7 +80,7 @@
         <instance_light url="#EnvironmentAmbientLight"/>
       </node>
       <node id="node-Camera001" name="Camera001">
-        <matrix>-0.8132862 0.05738365 -0.5790272 -428.6723 -0.5818638 -0.08020663 0.8093216 1954.402 0 0.9951251 0.09862041 192.0253 0 0 0 1</matrix>
+        <matrix>-0.5288585 0 -0.84871 472.9586 -0.84871 0 0.5288585 1107.899 0 1 0 0 0 0 0 1</matrix>
         <instance_camera url="#Camera001-camera"/>
         <extra>
           <technique profile="OpenCOLLADA">
@@ -92,7 +92,7 @@
         </extra>
       </node>
       <node id="node-Camera001.Target" name="Camera001.Target">
-        <translate>407.3972 785.8058 49.62526</translate>
+        <translate>1729.967 324.6161 0</translate>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
