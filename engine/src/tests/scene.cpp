@@ -340,11 +340,10 @@ HRESULT scene::_load_areas()
         const std::vector<std::wstring> _areas_on_thread_0 =
         {
             L"models/model.dae"
-            //L"models/_120_water-treatment_v1_16_19.dae",
-
-            /*L"models/_171_173_office_building_comprehensive_v1_14_13.dae",
+            /*L"models/_120_water-treatment_v1_16_19.dae",
+            L"models/_171_173_office_building_comprehensive_v1_14_13.dae",
             L"models/_161_air-compressor-v1_31_16.dae",
-            L"models/_151_substation_v_1_40_17.dae"*/
+            L"models/_151_substation_v_1_40_25.dae"*/
         };
 
         std::for_each(_areas_on_thread_0.begin(), _areas_on_thread_0.end(),
