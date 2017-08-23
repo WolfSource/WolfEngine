@@ -246,7 +246,8 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 
                 _vertices_data.push_back(_vertex);
             }
-            else if (_iter != _indices_data.end() && _tex.size() && _vertex_index < _vertices_data.size() && 
+            else if (_iter != _indices_data.end() && _tex.size() && 
+                _vertex_index < _vertices_data.size() && 
                 (_vertices_data[_vertex_index].uv[0] != _tex[0] || _vertices_data[_vertex_index].uv[1] != _tex[1]))
             {
                 //duplicated UV for vertex
