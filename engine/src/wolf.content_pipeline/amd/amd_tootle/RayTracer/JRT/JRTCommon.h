@@ -13,10 +13,10 @@
 
 //#include <iostream>
 
-#ifdef _LINUX
-    typedef unsigned long long UINT64;
-#else
+#ifdef __WIN32
     typedef unsigned __int64 UINT64;
+#else
+    typedef unsigned long long UINT64;
 #endif
 typedef unsigned int UINT;
 typedef unsigned short USHORT;

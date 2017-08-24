@@ -55,13 +55,24 @@ namespace wolf
 				void			                            _get_sources(_In_ rapidxml::xml_node<>* pXNode, std::string pID, std::string pName, _Inout_ c_geometry& pGeometry);
 				void			                            _get_vertices(_In_ rapidxml::xml_node<>*, _Inout_ c_geometry& pGeometry);
 				void			                            _get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pNode, _Inout_ c_geometry& pGeometry);
-                void                                        _iterate_over_nodes(_In_ const bool& pAMDTootleOptimizing,
-                                                                                        _In_ const bool& pInvertNormals,
-                                                                                        _Inout_ std::vector<c_node*> pNodes,
-                                                                                        _Inout_ std::vector<w_cpipeline_model*>& pModels,
-                                                                                        _Inout_ std::vector<c_node*>& pNodeWithUnknownInstanceRef);
-                void                                        _create_model(_In_ const bool& pAMDTootleOptimizing, _In_ const bool& pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_cpipeline_model** pModel);
-				HRESULT		                                _create_scene(_Inout_ w_cpipeline_scene* pScene, _In_ const bool& pAMDTootleOptimizing, _In_ const bool& pInvertNormals, _In_ const bool& pFindLODs);
+                void                                        _iterate_over_nodes(
+                                                                _In_ const bool& pAMDTootleOptimizing,
+                                                                _In_ const bool& pInvertNormals,
+                                                                _Inout_ std::vector<c_node*> pNodes,
+                                                                _Inout_ std::vector<w_cpipeline_model*>& pModels,
+                                                                _Inout_ std::vector<c_node*>& pNodeWithUnknownInstanceRef);
+                
+                void                                        _create_model(
+                    _In_ const bool& pAMDTootleOptimizing,
+                    _In_ const bool& pInvertNormals,
+                    _Inout_ c_node** pNode,
+                    _Inout_ w_cpipeline_model** pModel);
+                
+				HRESULT		                                _create_scene(
+                    _Inout_ w_cpipeline_scene* pScene,
+                    _In_ const bool& pAMDTootleOptimizing,
+                    _In_ const bool& pInvertNormals,
+                    _In_ const bool& pFindLODs);
 				void			                            _clear_all_resources();
 
 				static const char*	                        _trace_class_name;

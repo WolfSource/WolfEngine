@@ -50,7 +50,11 @@ HRESULT c_parser::parse_collada_from_file(
 	//V(_hr, L"processing xml node : " + pFilePath, _trace_class_name, 3);
 	
 	//create scene
-	_create_scene(pScene, pAMDTootleOptimizing, pInvertNormals, pFindLODs);
+	_create_scene(
+        pScene,
+        pAMDTootleOptimizing,
+        pInvertNormals,
+        pFindLODs);
 
 	//clear all
 	_doc.clear();
@@ -1188,15 +1192,21 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pN
 	pGeometry.triangles.push_back(_triangles);
 }
 
-HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, 
-    _In_ const bool& pAMDTootleOptimizing, 
+HRESULT c_parser::_create_scene(
+    _Inout_ w_cpipeline_scene* pScene,
+    _In_ const bool& pAMDTootleOptimizing,
     _In_ const bool& pInvertNormals, 
     _In_ const bool& pFind_LODs_BBs)
 {
     std::vector<c_node*> _mesh_with_unknown_instance_ref;
     std::vector<w_cpipeline_model*> _models;
 
-    _iterate_over_nodes(pAMDTootleOptimizing, pInvertNormals, sNodes, _models, _mesh_with_unknown_instance_ref);
+    _iterate_over_nodes(
+        pAMDTootleOptimizing,
+        pInvertNormals,
+        sNodes,
+        _models,
+        _mesh_with_unknown_instance_ref);
     
     //if we have nodes without unknown instance ref
     if (_mesh_with_unknown_instance_ref.size())
@@ -1204,7 +1214,11 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene,
         for (auto pNode : _mesh_with_unknown_instance_ref)
         {
             w_cpipeline_model* _model = nullptr;
-            _create_model(pAMDTootleOptimizing, pInvertNormals, &pNode, &_model);
+            _create_model(
+                pAMDTootleOptimizing,
+                pInvertNormals,
+                &pNode,
+                &_model);
             if (_model)
             {
                 //check scale
@@ -1463,7 +1477,8 @@ HRESULT c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene,
 	return S_OK;
 }
 
-void c_parser::_iterate_over_nodes(_In_ const bool& pAMDTootleOptimizing,
+void c_parser::_iterate_over_nodes(
+    _In_ const bool& pAMDTootleOptimizing,
     _In_ const bool& pInvertNormals, 
     _Inout_ std::vector<c_node*> pNodes, 
     _Inout_ std::vector<w_cpipeline_model*>& pModels,
@@ -1549,7 +1564,11 @@ void c_parser::_iterate_over_nodes(_In_ const bool& pAMDTootleOptimizing,
             else
             {
                 w_cpipeline_model* _model = nullptr;
-                _create_model(pAMDTootleOptimizing, pInvertNormals, &_node, &_model);
+                _create_model(
+                    pAMDTootleOptimizing,
+                    pInvertNormals,
+                    &_node,
+                    &_model);
                 //if node procceded and model created
                 if (_model)
                 {
@@ -1562,7 +1581,8 @@ void c_parser::_iterate_over_nodes(_In_ const bool& pAMDTootleOptimizing,
                 //iterate over sub models
                 if (_node->child_nodes.size())
                 {
-                    _iterate_over_nodes(pAMDTootleOptimizing,
+                    _iterate_over_nodes(
+                        pAMDTootleOptimizing,
                         pInvertNormals,
                         _node->child_nodes,
                         pModels,
@@ -1573,7 +1593,8 @@ void c_parser::_iterate_over_nodes(_In_ const bool& pAMDTootleOptimizing,
     }
 }
 
-void c_parser::_create_model(_In_ const bool& pAMDTootleOptimizing,
+void c_parser::_create_model(
+    _In_ const bool& pAMDTootleOptimizing,
     _In_ const bool& pInvertNormals,
     _Inout_ c_node** pNode,
     _Inout_ w_cpipeline_model** pModel)

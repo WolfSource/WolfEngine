@@ -154,7 +154,11 @@ bool JRTKDTree::FindFirstHit(const Vec3f& rOrigin, const Vec3f& rDirection, JRTH
                 {
                     // pointing away from split plane
 
+#ifdef __WIN32
                     JRT_ASSERT(thit < 0 || !_finite(thit));
+#else
+                    JRT_ASSERT(thit < 0 || !finite(thit));
+#endif
                     // traverse front only
                     curr_node = front;
                 }
@@ -198,7 +202,11 @@ bool JRTKDTree::FindFirstHit(const Vec3f& rOrigin, const Vec3f& rDirection, JRTH
                 // on back side of split plane
                 if (dv <= 0)
                 {
+#ifdef __WIN32
                     JRT_ASSERT(thit < 0 || !_finite(thit));
+#else
+                    JRT_ASSERT(thit < 0 || !finite(thit));
+#endif
                     // back only
                     curr_node = back;
                 }
@@ -545,8 +553,11 @@ UINT JRTKDTree::FindAllHits(const Vec3f& rOrigin, const Vec3f& rDirection, Tootl
                 if (dv >= 0)
                 {
                     // pointing away from split plane
-
+#ifdef __WIN32
                     JRT_ASSERT(thit < 0 || !_finite(thit));
+#else
+                    JRT_ASSERT(thit < 0 || !finite(thit));
+#endif
                     // traverse front only
                     curr_node = front;
                 }
@@ -595,7 +606,11 @@ UINT JRTKDTree::FindAllHits(const Vec3f& rOrigin, const Vec3f& rDirection, Tootl
                 // on back side of split plane
                 if (dv <= 0)
                 {
+#ifdef __WIN32
                     JRT_ASSERT(thit < 0 || !_finite(thit));
+#else
+                    JRT_ASSERT(thit < 0 || !finite(thit));
+#endif
                     // back only
                     curr_node = back;
                 }

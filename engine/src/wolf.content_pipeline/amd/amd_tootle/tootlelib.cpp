@@ -6,6 +6,10 @@
 #include <assert.h>
 #include "w_cpipeline_pch.h"
 
+#if defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
+#define _SOFTWARE_ONLY_VERSION
+#endif
+
 #ifndef _SOFTWARE_ONLY_VERSION
     #include "gdiwm.h"
     #include "d3dwm.h"

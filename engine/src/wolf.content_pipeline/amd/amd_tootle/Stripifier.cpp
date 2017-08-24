@@ -19,7 +19,10 @@ static const int FINISH = 3;
 #ifdef _TIMING // if we define _TIMING, then we include Windows.h which defines ERROR
     #undef ERROR
 #endif
-//static const int ERROR = 9;
+
+#if defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
+static const int ERROR = 9;
+#endif
 
 //=================================================================================================================================
 //

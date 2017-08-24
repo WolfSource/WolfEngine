@@ -6,7 +6,7 @@
 #ifndef _TOOTLE_OVERDRAW_MODULE_H_
 #define _TOOTLE_OVERDRAW_MODULE_H_
 
-#include "amd/amd_tootle/include/tootlelib.h"
+#include "include/tootlelib.h"
 #include "vector.h"
 #include "feedback.h"
 #include <vector>

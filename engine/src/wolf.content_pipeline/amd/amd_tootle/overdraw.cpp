@@ -7,6 +7,10 @@
 #include "overdraw.h"
 #include "soup.h"
 
+#if defined(__linux) || defined(__APPLE__) || defined(__ANDROID) || defined(__IOS)
+#define _SOFTWARE_ONLY_VERSION
+#endif
+
 #ifndef _SOFTWARE_ONLY_VERSION
     #include "d3doverdrawwindow.h"
     #include "d3dwm.h"

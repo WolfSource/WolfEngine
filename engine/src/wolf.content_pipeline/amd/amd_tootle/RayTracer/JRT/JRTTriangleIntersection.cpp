@@ -158,7 +158,11 @@ bool SegTest(float segU1, float segU2, float segV1, float segV2, float Pu, float
     // locate U = Pu on the segment
     float alpha = (Pu - segU1) / (segU2 - segU1);
 
+#ifdef __WIN32
     assert(!_isnan(alpha) && _finite(alpha));
+#else
+    assert(!isnan(alpha) && finite(alpha));
+#endif
 
     if (alpha <= 0.0f || alpha > 1.0f)
     {
@@ -313,9 +317,12 @@ bool RayTriangleIntersect(const JRTCoreTriangle* pTri, const float* origin, cons
     JRTStats::Instance().nTotalPastPlaneHit++;
 #endif
 
-
+#ifdef __WIN32
     assert(!_isnan(t) && _finite(t) && t >= tmin && t <= tmax);
-
+#else 
+    assert(!isnan(t) && finite(t) && t >= tmin && t <= tmax);
+#endif
+    
     //see: http://graphics.stanford.edu/courses/cs348b-98/gg/intersect.html
 
     // compute hit location (projected to 2D)

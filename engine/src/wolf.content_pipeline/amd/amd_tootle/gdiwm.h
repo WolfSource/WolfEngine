@@ -5,6 +5,8 @@
 ****************************************************************************************/
 #ifndef GDIWM_H
 #define GDIWM_H
+
+#ifdef __WIN32
 /* -------------------------------------------------------------------------*\
 * This is an abstraction that simplifies window management.
 * Instead of implementing a window procedure, we implement the interface
@@ -67,5 +69,7 @@ int GDIWMAddDialog(HWND hDlg);
 * Window procedure used by windows created with GDIWMCreate window.
 \* -------------------------------------------------------------------------*/
 LRESULT CALLBACK GDIMsgProc(HWND hWnd, UINT uMsg, UINT wParam, LONG lParam);
+
+#endif
 
 #endif // GDIWM_H

@@ -7,10 +7,10 @@
 #ifndef _TOOTLE_LIB_H_
 #define _TOOTLE_LIB_H_
 
-#ifdef _LINUX
-    #define TOOTLE_DLL
-#else
+#if defined(__WIN32)
     #define TOOTLE_DLL __declspec(dllexport)
+#else
+    #define TOOTLE_DLL
 #endif
 
 /// \defgroup Tootle Tootle

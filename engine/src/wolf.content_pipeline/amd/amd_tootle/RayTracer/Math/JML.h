@@ -6,11 +6,11 @@
 #ifndef _JML_H_
 #define _JML_H_
 
-#ifdef _LINUX
-    #define ALIGN16
-#else
+#ifdef __WIN32
     // helpful alias for 16-byte alignment
     #define ALIGN16 __declspec(align(16))
+#else
+    #define ALIGN16
 #endif
 
 #include "JMLVec2.h"

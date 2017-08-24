@@ -140,9 +140,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "61"
-            endingLineNumber = "61"
-            landmarkName = "c_parser::parse_collada_from_file(const std::wstring&amp; pFilePath, _Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
-            landmarkType = "7">
+            endingLineNumber = "61">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -235,7 +233,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "461"
             endingLineNumber = "461"
-            landmarkName = "scene::release()"
+            landmarkName = "scene::_build_draw_command_buffer(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -297,7 +295,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "459"
             endingLineNumber = "459"
-            landmarkName = "scene::release()"
+            landmarkName = "scene::_build_draw_command_buffer(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -312,7 +310,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "449"
-            endingLineNumber = "449">
+            endingLineNumber = "449"
+            landmarkName = "scene::_build_draw_command_buffer(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -342,7 +342,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "73"
-            endingLineNumber = "73">
+            endingLineNumber = "73"
+            landmarkName = "c_parser::_process_xml_node(_In_ rapidxml::xml_node&lt;&gt;* pXNode)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -725,7 +727,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1429"
             endingLineNumber = "1429"
-            landmarkName = "c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ std::vector&lt;c_node*&gt;&amp; pNodes, _Inout_ std::vector&lt;w_cpipeline_model*&gt;&amp; pModels, _Inout_ std::vector&lt;c_node*&gt;&amp; pMeshWithUnknownInstanceRef)"
+            landmarkName = "c_parser::_create_scene( _Inout_ w_cpipeline_scene* pScene, #ifdef __WIN32 _In_ const bool&amp; pAMDTootleOptimizing, #endif _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFind_LODs_BBs)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -901,7 +903,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1196"
             endingLineNumber = "1196"
-            landmarkName = "c_parser::_create_scene(_Inout_ w_cpipeline_scene* pScene, bool pOptimizePoints, bool pInvertNormals)"
+            landmarkName = "c_parser::_create_scene( _Inout_ w_cpipeline_scene* pScene, #ifdef __WIN32 _In_ const bool&amp; pAMDTootleOptimizing, #endif _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFind_LODs_BBs)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -917,7 +919,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1407"
             endingLineNumber = "1407"
-            landmarkName = "c_parser::_iterate_over_nodes(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ std::vector&lt;c_node*&gt;&amp; pNodes, _Inout_ std::vector&lt;w_cpipeline_model*&gt;&amp; pModels, _Inout_ std::vector&lt;c_node*&gt;&amp; pMeshWithUnknownInstanceRef)"
+            landmarkName = "c_parser::_create_scene( _Inout_ w_cpipeline_scene* pScene, #ifdef __WIN32 _In_ const bool&amp; pAMDTootleOptimizing, #endif _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFind_LODs_BBs)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -934,22 +936,6 @@
             startingLineNumber = "121"
             endingLineNumber = "121"
             landmarkName = "scene::load()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
-            timestampString = "516315659.313782"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1576"
-            endingLineNumber = "1576"
-            landmarkName = "c_parser::_create_model(_In_ const bool pOptimizePoints, _In_ const bool pInvertNormals, _Inout_ c_node** pNode, _Inout_ w_cpipeline_model** pModel)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1109,7 +1095,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "79"
             endingLineNumber = "79"
-            landmarkName = "scene::load()"
+            landmarkName = "scene::~scene()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1125,7 +1111,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "80"
             endingLineNumber = "80"
-            landmarkName = "scene::load()"
+            landmarkName = "scene::~scene()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1253,7 +1239,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "57"
             endingLineNumber = "57"
-            landmarkName = "scene::load()"
+            landmarkName = "scene::scene(_In_z_ const std::wstring&amp; pRunningDirectory, _In_z_ const std::wstring&amp; pAppName)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
