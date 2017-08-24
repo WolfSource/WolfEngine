@@ -66,7 +66,7 @@ namespace wolf
             {
                 return std::this_thread::get_id();
             }
-            WSYS_EXP static void sleep_current_thread(_In_ const float& pMilliSecond)
+            WSYS_EXP static void sleep_current_thread(_In_ const long long& pMilliSecond)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(pMilliSecond));
             }

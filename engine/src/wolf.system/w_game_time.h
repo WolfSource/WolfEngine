@@ -69,7 +69,7 @@ namespace wolf
 				this->_max_delta = this->_frequency.QuadPart / 10;
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 
-				reset_elapsed_time();
+				reset();
 				this->_max_delta = 313918;
 #endif
 			}
@@ -90,7 +90,7 @@ namespace wolf
 			// Get the current framerate.
 			UINT32 get_frames_per_second() const								{ return this->_fps; }
 
-			bool get_fixed_time_step() const										{ return this->_fixed_time_step; }
+			bool get_fixed_time_step() const									{ return this->_fixed_time_step; }
 
 #pragma endregion
 

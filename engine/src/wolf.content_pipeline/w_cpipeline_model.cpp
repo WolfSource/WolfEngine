@@ -1,6 +1,9 @@
 #include "w_cpipeline_pch.h"
 #include "w_cpipeline_model.h"
+
+//#ifdef __WIN32
 #include "amd/amd_tootle.h"
+//#endif
 
 using namespace std;
 using namespace wolf::system;
@@ -239,7 +242,6 @@ w_cpipeline_model* w_cpipeline_model::create_model(
                 {
                     _vertices_positions.insert(_vertices_positions.end(), _pos.begin(), _pos.end());
                 }
-
                 //TODO:
                 std::memset(&_vertex.blend_weight[0], -1, 4 * sizeof(float));
                 std::memset(&_vertex.blend_indices[0], -1, 4 * sizeof(int));
@@ -288,7 +290,6 @@ w_cpipeline_model* w_cpipeline_model::create_model(
                 {
                     _vertices_positions.insert(_vertices_positions.end(), _pos.begin(), _pos.end());
                 }
-
                 //TODO:
                 std::memset(&_vertex.blend_weight[0], -1, 4 * sizeof(float));
                 std::memset(&_vertex.blend_indices[0], -1, 4 * sizeof(int));
@@ -326,12 +327,10 @@ w_cpipeline_model* w_cpipeline_model::create_model(
         }
 
 #pragma region AMD TOOTLE
-
         if (pAMDTootleOptimizing)
         {
             amd::tootle::apply(_vertices_data, _vertices_positions, _indices_data);
         }
-
 #pragma endregion
 
         if (_nor_index == -1)

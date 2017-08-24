@@ -66,9 +66,9 @@ namespace wolf
                 _In_ const WPARAM pWParam,
                 _In_ const LPARAM pLParam);
 
+#endif
             WSYS_EXP std::vector<bool> is_keys_pressed(_In_ std::initializer_list<int> pKeys);
             WSYS_EXP std::vector<bool> is_keys_released(_In_ std::initializer_list<int> pKeys);
-#endif
         };
 
     }
