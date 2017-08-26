@@ -16,10 +16,10 @@ using namespace wolf::system;
 WOLF_MAIN()
 {
     //initialize logger, and log in to the output debug window of visual studio(just for windows) and Log folder inside running directory
-    WOLF_INIT(L"01_system-02_thread");
+    WOLF_INIT(L"02_thread");
     
     //log to output file
-    logger.write(L"starting Wolf");
+    logger.write(L"Wolf started");
 
     //get number of hardware thread contexts which is needed for allocating thread pool's memory
     auto _thread_pool_size = w_thread::get_number_of_hardware_thread_contexts();

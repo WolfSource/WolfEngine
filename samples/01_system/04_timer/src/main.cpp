@@ -15,10 +15,10 @@ using namespace wolf::system;
 
 WOLF_MAIN()
 {
-    WOLF_INIT(L"01_system-04_timer");
+    WOLF_INIT(L"04_timer");
 
     //log to output file
-    logger.write(L"starting Wolf");
+    logger.write(L"Wolf started");
 
     struct signal_args
     {
@@ -30,13 +30,17 @@ WOLF_MAIN()
     w_timer _timer;
     _timer.start();
     
-    //write a file
-    io::write_text_file("test.txt", "this is test from 01_system-04-timer");
+    //write to file
+    io::write_text_file("test.txt", "this is test from 04-timer");
     
     auto _time = _timer.get_seconds();
     
     char _buffer[256];
+#if defined(__WIN32) || defined(__UWP)
     sprintf_s(_buffer, "writing file took: %f (s)", _time);
+#else
+    sprintf(_buffer, "writing file took: %f (s)", _time);
+#endif
     logger.write(_buffer);
         
     _timer.reset();
