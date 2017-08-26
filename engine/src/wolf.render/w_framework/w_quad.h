@@ -34,10 +34,10 @@ namespace wolf
                 _top(-1.0f),
                 _right(1.0f),
                 _down(1.0f),
-                _left_top_color(w_color::from_hex(w_color::WHITE)),
-                _right_bottom_color(w_color::from_hex(w_color::YELLOW)),
-                _left_bottom_color(w_color::from_hex(w_color::BLACK)),
-                _right_top_color(w_color::from_hex(w_color::GREEN))
+                _left_top_color(w_color::WHITE()),
+                _right_bottom_color(w_color::YELLOW()),
+                _left_bottom_color(w_color::BLACK()),
+                _right_top_color(w_color::GREEN())
             {
                 _super::set_class_name("w_quad");
             }

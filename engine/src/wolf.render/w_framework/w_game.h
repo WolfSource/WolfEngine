@@ -30,13 +30,8 @@ namespace wolf
 		class w_game : public wolf::graphics::w_graphics_device_manager
 		{
 		public:
-#if defined(__WIN32)
-            W_EXP w_game(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName = L"Wolf.Engine");
-#elif defined(__UWP)
-            W_EXP w_game(_In_z_ const std::wstring& pAppName = L"Wolf.Engine");
-#else
-            W_EXP w_game(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::string& pAppName = "Wolf.Engine");
-#endif
+            W_EXP w_game(_In_z_ const std::wstring& pRunningDirectory,
+                         _In_z_ const std::wstring& pAppName = L"Wolf.Engine");
             
 			W_EXP virtual ~w_game();
 
@@ -80,11 +75,7 @@ namespace wolf
 			typedef	 wolf::graphics::w_graphics_device_manager      _super;
 			wolf::system::w_game_time                               _game_time;
 
-#if defined(__linux) || defined(__ANDROID) || defined(__APPLE__)
-			std::string                                             _app_name;
-#else
 			std::wstring                                            _app_name;
-#endif
 
 		};
 	}

@@ -73,12 +73,10 @@ namespace wolf
             WSYS_EXP virtual ~w_logger();
 
             //Initialize the logger and create a log file inside a Log folder into output directory
-#if defined(__WIN32) 
-            WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath);
-#elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
-            WSYS_EXP bool initialize(_In_z_ const std::string pAppName, _In_z_ const std::string pLogPath);
-#elif defined(__UWP)
+#ifdef __UWP
             WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName);
+#else
+            WSYS_EXP bool initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath);            
 #endif
             //Print buffered messages in to the screen, this function will be store the messages into the buffer
             WSYS_EXP void print_buffer(_In_z_ const std::wstring pMsg);

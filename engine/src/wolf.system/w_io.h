@@ -19,7 +19,6 @@
 #include <Windows.h>
 #include <fileapi.h>
 #include <io.h>
-#include "w_convert.h"
 
 #elif defined(__UWP)
 
@@ -37,6 +36,7 @@
 
 #endif //__WIN32
 
+#include "w_convert.h"
 #include <memory>
 #include <string>
 #include <fstream>
@@ -56,7 +56,7 @@ namespace wolf
 
 			//Get the current running directory directory path
 #ifdef __WIN32
-			inline const std::wstring get_current_directoryW()
+			inline const std::wstring get_current_directory()
 			{
 				const int _lenght = 4096;
 				TCHAR _exe_path[_lenght];
@@ -73,7 +73,7 @@ namespace wolf
 				return _path.replace(_path.begin() + _i + 1, _path.end(), L"");
 			}
 #else
-			inline const std::wstring get_current_directoryW()
+			inline const std::wstring get_current_directory()
 			{
 				auto _installed_location_folder = Windows::ApplicationModel::Package::Current->InstalledLocation;
 				return std::wstring(_installed_location_folder->Path->ToString()->Data());
@@ -226,14 +226,14 @@ namespace wolf
 			inline HANDLE safe_handle(HANDLE h) { return (h == INVALID_HANDLE_VALUE) ? 0 : h; }
 
 			/*
-			Read binary file and return array of uint8_t
-			fileState indicates to state of file
-			1 means everything is ok
-			-1 means the file could not be found,
-			-2 means file is exist but could not open
-			-3 means file is to big to handle
+                Read binary file and return array of uint8_t
+                fileState indicates to state of file
+                1 means everything is ok
+                -1 means the file could not be found,
+                -2 means file is exist but could not open
+                -3 means file is to big to handle
 			*/
-			inline void read_binary_file(_In_z_ const wchar_t* pPath, _Inout_ std::vector<uint8_t>& pData,
+			inline void read_binary_fileW(_In_z_ const wchar_t* pPath, _Inout_ std::vector<uint8_t>& pData,
 				_Out_ int& pFileState)
 			{
 				if (get_is_file(pPath) == S_FALSE)
@@ -326,20 +326,20 @@ namespace wolf
 
 #if defined(__linux) || defined(__APPLE__)
 			//get current working directory
-			inline const std::string get_current_directory()
+			inline const std::wstring get_current_directory()
 			{
 				char _current_working_dir[4096];
 				if (getcwd(_current_working_dir, sizeof(_current_working_dir)) != NULL)
 				{
-					return std::string(_current_working_dir);
+                    return wolf::system::convert::string_to_wstring(_current_working_dir);
 				}
-				return "";
+				return L"";
 			}
 
 			//Get the content directory path 
-			inline const std::string get_content_directory()
+			inline const std::wstring get_content_directory()
 			{
-				return get_current_directory() + "Content\\";
+				return get_current_directory() + L"Content\\";
 			}
 #endif          
 			//check whether a file does exist or not

@@ -24,15 +24,19 @@ namespace wolf
             }
 
             HRESULT load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+#ifdef __WIN32
                 _In_ HWND pHWND,
+#endif
                 _In_ const w_point_t& pScreenSize,
                 _In_ VkRenderPass& pRenderPass,
                 _In_ w_texture* pTexture,
                 _In_ const char* pFontPath,
                 _In_ const float& pFontPixelSize)
             {
-                this->_gDevice = pGDevice;
+#ifdef __WIN32
                 this->_hwnd = pHWND;
+#endif
+                this->_gDevice = pGDevice;
                 this->_screen_size = pScreenSize;
                 this->_images_texture = pTexture;
 
@@ -56,13 +60,16 @@ namespace wolf
 
 #pragma endregion
 
-#pragma region Set Key Maps
 
+#ifdef __WIN32
+                _io.ImeWindowHandle = this->_hwnd;
+
+#pragma region Set Key Maps
                 /*
                     Keyboard mapping.
                     ImGui will use those indices to peek into the io.KeyDown[] array that
                     we will update during the application lifetime.
-                */
+                 */
                 _io.KeyMap[ImGuiKey_Tab] = VK_TAB;
                 _io.KeyMap[ImGuiKey_LeftArrow] = VK_LEFT;
                 _io.KeyMap[ImGuiKey_RightArrow] = VK_RIGHT;
@@ -76,6 +83,9 @@ namespace wolf
                 _io.KeyMap[ImGuiKey_Backspace] = VK_BACK;
                 _io.KeyMap[ImGuiKey_Enter] = VK_RETURN;
                 _io.KeyMap[ImGuiKey_Escape] = VK_ESCAPE;
+#pragma endregion
+
+#endif
                 _io.KeyMap[ImGuiKey_A] = 'A';
                 _io.KeyMap[ImGuiKey_C] = 'C';
                 _io.KeyMap[ImGuiKey_V] = 'V';
@@ -84,9 +94,6 @@ namespace wolf
                 _io.KeyMap[ImGuiKey_Z] = 'Z';
 
                 _io.RenderDrawListsFn = NULL;
-                _io.ImeWindowHandle = this->_hwnd;
-
-#pragma endregion
 
                 using namespace wolf::graphics;
 
@@ -432,9 +439,11 @@ namespace wolf
                 _io.DeltaTime = pDeltaTime / 100.0f;
 
                 // Read keyboard modifiers inputs
+#ifdef __WIN32
                 _io.KeyCtrl = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
                 _io.KeyShift = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
                 _io.KeyAlt = (GetKeyState(VK_MENU) & 0x8000) != 0;
+#endif
                 _io.KeySuper = false;
                 // io.KeysDown : filled by WM_KEYDOWN/WM_KEYUP events
                 // io.MousePos : filled by WM_MOUSEMOVE events
@@ -643,14 +652,25 @@ bool w_imgui::_is_released = false;
 w_imgui_pimp* w_imgui::_pimp = new w_imgui_pimp();
 
 HRESULT w_imgui::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+#ifdef __WIN32
     _In_ HWND pHWND,
+#endif
     _In_ const w_point_t& pScreenSize,
     _In_ VkRenderPass& pRenderPass,
     _In_ w_texture* pImages,
     _In_ const char* pFontPath,
     _In_ const float& pFontPixelSize)
 {
-    return _pimp ? _pimp->load(pGDevice, pHWND, pScreenSize, pRenderPass, pImages, pFontPath, pFontPixelSize) : S_FALSE;
+    return _pimp ? _pimp->load(
+                       pGDevice,
+#ifdef __WIN32
+                       pHWND,
+#endif
+                       pScreenSize,
+                       pRenderPass,
+                       pImages,
+                       pFontPath,
+                       pFontPixelSize) : S_FALSE;
 }
 
 HRESULT w_imgui::update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass)

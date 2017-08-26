@@ -47,7 +47,9 @@ namespace wolf
             };
 
             static W_EXP HRESULT load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+#ifdef __WIN32
                 _In_ HWND pHWND,
+#endif
                 _In_ const w_point_t& pScreenSize,
                 _In_ VkRenderPass& pRenderPass,
                 _In_ w_texture* pTexture,

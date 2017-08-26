@@ -2,19 +2,15 @@
 #pragma once
 #endif
 
-#ifdef __LUA__
-
 #ifndef __W_LUA_H__
 #define __W_LUA_H__
 
-#ifdef __WIN32
-
 #ifdef WIN32
 #pragma comment(lib, "luajit-static.lib")
-
 #include <Windows.h>
 #endif
 
+#include "w_system_pch.h"
 #include "w_system_export.h"
 #include <lua.hpp>
 #include <string>
@@ -121,7 +117,7 @@ namespace wolf
 			pVarType = lua_type(pLua, pIndex);
 			if (pVarType == LUA_TNUMBER)
 			{
-				pValue = lua_tointeger(pLua, pIndex);
+				pValue = (int)lua_tointeger(pLua, pIndex);
 				pRequestedTypeError.clear();
 			}
 			else
@@ -129,6 +125,21 @@ namespace wolf
 				pRequestedTypeError = "integer";
 			}
 		}
+        
+        template<typename T>
+        auto get_value(lua_State* pLua, int pIndex, _Inout_ T& pValue, int& pVarType, std::string& pRequestedTypeError) -> typename std::enable_if<std::is_same<T, long>::value, void>::type
+        {
+            pVarType = lua_type(pLua, pIndex);
+            if (pVarType == LUA_TNUMBER)
+            {
+                pValue = lua_tointeger(pLua, pIndex);
+                pRequestedTypeError.clear();
+            }
+            else
+            {
+                pRequestedTypeError = "integer";
+            }
+        }
 
 		template<typename T>
 		auto get_value(lua_State* pLua, int pIndex, _Inout_ T& pValue, _Inout_ int& pVarType, _Inout_ std::string& pRequestedTypeError) -> typename std::enable_if<std::is_floating_point<T>::value, void>::type
@@ -184,9 +195,10 @@ namespace wolf
 		{
 			lua_getglobal(_lua, pVariableName);
 			if (lua_isnil(_lua, -1))
-			{
-				char _msg[256];
-				sprintf_s(_msg, 256, "%s is null\n", pVariableName);
+            {
+                const int _length = 256;
+                char _msg[_length];
+				w_sprintf(_msg, _length, "%s is null\n", pVariableName);
 				_last_error = _msg;
 
 				return S_FALSE;
@@ -241,6 +253,21 @@ namespace wolf
 				pRequestedTypeError = "integer";
 			}
 		}
+        
+        template<typename T>
+        auto set_value(lua_State* pLua, const T pValue, int& pVarType, std::string& pRequestedTypeError) -> typename std::enable_if<std::is_same<T, long>::value, void>::type
+        {
+            pVarType = lua_type(pLua, -1);
+            if (pVarType == LUA_TNUMBER)
+            {
+                lua_pushinteger(pLua, pValue);
+                pRequestedTypeError.clear();
+            }
+            else
+            {
+                pRequestedTypeError = "integer";
+            }
+        }
 
 		template<typename T>
 		auto set_value(lua_State* pLua, const T pValue, _Inout_ int& pVarType, _Inout_ std::string& pRequestedTypeError) -> typename std::enable_if<std::is_floating_point<T>::value, void>::type
@@ -279,7 +306,7 @@ namespace wolf
 			pVarType = lua_type(pLua, -1);
 			if (pVarType == LUA_TSTRING)
 			{
-				auto _str = wolf::system::convert::wstring_to_utf8_string(pValue);
+				auto _str = wolf::system::convert::to_utf8(pValue);
 				lua_pushstring(pLua, _str.c_str());
 				pRequestedTypeError.clear();
 			}
@@ -328,8 +355,9 @@ namespace wolf
 			lua_getglobal(_lua, pVariableName);
 			if (lua_isnil(_lua, -1))
 			{
-				char _msg[256];
-				sprintf_s(_msg, 256, "%s is null\n", pVariableName);
+                const int _lenght = 256;
+				char _msg[_lenght];
+				w_sprintf(_msg, _lenght, "%s is null\n", pVariableName);
 				_last_error = _msg;
 
 				return S_FALSE;
@@ -351,6 +379,8 @@ namespace wolf
 					_incompatible_type_for_variable(pVariableName, _requested_type_error.c_str(), _original_lua_type);
 				}
 			}
+            
+            return S_OK;
 		}
 
 		/*
@@ -377,14 +407,14 @@ namespace wolf
 		template<typename T >
 		auto set_parameter(lua_State* pLua, const T pValue) -> typename std::enable_if<std::is_same<T, const wchar_t*>::value, void>::type
 		{
-			auto _str = wolf::system::convert::wstring_to_utf8_string(std::wstring(pValue));
+			auto _str = wolf::system::convert::to_utf8(std::wstring(pValue));
 			lua_pushstring(pLua, _str.c_str());
 		}
 
 		template<typename T >
 		auto set_parameter(lua_State* pLua, const T pValue) -> typename std::enable_if<std::is_same<T, std::wstring>::value, void>::type
 		{
-			auto _str = wolf::system::convert::wstring_to_utf8_string(pValue);
+			auto _str = wolf::system::convert::to_utf8(pValue);
 			lua_pushstring(pLua, _str.c_str());
 		}
 
@@ -526,9 +556,5 @@ namespace wolf
 
 	}
 }
-
-#endif // __WIN32
-
-#endif // __LUA__
 
 #endif //__W_LUA_H__

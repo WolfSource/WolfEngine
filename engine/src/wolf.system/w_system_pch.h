@@ -33,6 +33,11 @@
 
 #if defined(__WIN32) || defined(__UWP)
 
+#ifndef w_sprintf
+#define w_sprintf(s_, l_, f_, ...)                                      \
+    sprintf_s((s_), (l_), (f_), __VA_ARGS__)
+#endif
+
 #ifdef _DEBUG
 	#pragma comment(lib, "tbb_debug.lib") 
 	#pragma comment(lib, "tbbmalloc_debug.lib") 
@@ -47,7 +52,14 @@
 #define WIN32_LEAN_AND_MEAN 
 #endif
 
+#else
+
+#ifndef w_sprintf
+#define w_sprintf(s_, l_, f_, ...)                                    \
+    snprintf((s_), (l_), (f_), __VA_ARGS__)
 #endif
+
+#endif //defined(__WIN32) || defined(__UWP)
 
 // C RunTime Header Files
 #include <stdlib.h>

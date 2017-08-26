@@ -47,16 +47,15 @@ namespace wolf
                 using namespace std;
                 using namespace system::io;
 
-
-#if defined(__WIN32) || defined(__UWP)
                 auto _path = (pIsAbsolutePath ? L"" : content_path) + pPath;
                 auto _ext = get_file_extentionW(_path.c_str());
-#else
-                auto _path = (pIsAbsolutePath ? "" : get_content_directory()) + wolf::system::convert::wstring_to_string(pPath);
-                auto _extension = get_file_extention(_path.c_str());
-                auto _ext = system::convert::string_to_wstring(_extension);
-#endif
 
+#if defined(__WIN32) || defined(__UWP)
+                auto _c_str = _path.c_str();
+#else
+                auto _c_str = wolf::system::convert::wstring_to_string(_path).c_str();
+#endif
+                
                 //lower it
                 std::transform(_ext.begin(), _ext.end(), _ext.begin(), ::tolower);
 
@@ -64,60 +63,45 @@ namespace wolf
                 {
                     std::vector<uint8_t> data;
                     int _file_status = -1;
-                    system::io::read_binary_file(_path.c_str(), data, _file_status);
+                    
+#if defined(__WIN32) || defined(__UWP)
+                    system::io::read_binary_fileW(_c_str, data, _file_status);
+#else
+                    system::io::read_binary_file(_c_str, data, _file_status);
+#endif
                     if (_file_status != 1)
                     {
-#if defined(__WIN32) || defined(__UWP)
-                        wstring msg = L"";
+                        std::wstring _msg = L"";
+                        
                         if (_file_status == -1)
                         {
-                            msg = L"Could not find the texture file: ";
+                            _msg = L"Could not find the texture file: ";
                         }
                         else
                         {
-                            msg = L"Texture file is corrupted: ";
+                            _msg = L"Texture file is corrupted: ";
                         }
-                        V(S_FALSE, msg + _path, this->_name, 3);
-#else
-                        string msg = "";
-                        if (_file_status == -1)
-                        {
-                            msg = "Could not find the texture file: ";
-                        }
-                        else
-                        {
-                            msg = "Texture file is corrupted: ";
-                        }
-                        V(S_FALSE, msg + _path, this->_name, 3);
-#endif
+                        V(S_FALSE, _msg + _path, this->_name, 3);
 
                         return S_FALSE;
                     }
 
-#if defined(__WIN32) || defined(__UWP)
-
-#else
-                    logger.error("DDS format not supported on this platform for following file: " + _path);
+                    logger.error(L"DDS format not supported on this platform for following file: " + _path);
                     return S_FALSE;
-#endif
                 }
                 else if (_ext == L".jpg" || _ext == L".bmp" || _ext == L".png" || _ext == L".psd" || _ext == L".tga")
                 {
-                    if (S_FALSE == system::io::get_is_file(_path.c_str()))
+                    if (S_FALSE == system::io::get_is_file(_c_str))
                     {
-#if defined(__WIN32) || defined(__UWP)
                         wstring msg = L"could not find the texture file: ";
                         V(S_FALSE, msg + _path, this->_name, 3);
-#else
-                        string msg = "could not find the texture file: ";
-                        V(S_FALSE, msg + _path, this->_name, 3);
-#endif
+                        
                         return S_FALSE;
                     }
                     else
                     {
                         int __width, __height, __comp;
-                        uint8_t* _rgba = stbi_load(_path.c_str(), &__width, &__height, &__comp, STBI_rgb_alpha);
+                        uint8_t* _rgba = stbi_load(_c_str, &__width, &__height, &__comp, STBI_rgb_alpha);
                         if (_rgba)
                         {
                             this->_width = __width;
@@ -125,13 +109,8 @@ namespace wolf
 
                             if (this->_width == 0 || this->_height == 0)
                             {
-#if defined(__WIN32) || defined(__UWP)
                                 wstring msg = L"Width or Height of texture file is zero: ";
                                 V(S_FALSE, msg + _path, this->_name, 3);
-#else
-                                string msg = "Width or Height of texture file is zero: ";
-                                V(S_FALSE, msg + _path, this->_name, 3);
-#endif
                                 return S_FALSE;
                             }
 
@@ -173,24 +152,15 @@ namespace wolf
                         }
                         else
                         {
-#if defined(__WIN32) || defined(__UWP)
                             wstring msg = L"texture file is corrupted: ";
                             V(S_FALSE, msg + _path, this->_name, 3);
-#else
-                            string msg = "texture file is corrupted: ";
-                            V(S_FALSE, msg + _path, this->_name, 3);
-#endif
                             return S_FALSE;
                         }
                     }
                 }
                 else
                 {
-#if defined(__WIN32) || defined(__UWP)
                     logger.error(L"Format not supported yet for following file: " + _path);
-#else
-                    logger.error("Format not supported yet for following file: " + _path);
-#endif
                     return S_FALSE;
                 }
 
@@ -822,7 +792,13 @@ void w_texture::write_bitmap_to_file(
 {
     short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)pWidth, (short)pHeight, 1, 24 };
     FILE *f;
+    
+#ifdef __WIN32
     if (!fopen_s(&f, pFilename, "wb"))
+#else
+    f = fopen(pFilename, "wb");
+    if (!f)
+#endif
     {
         fwrite(header, 1, sizeof(header), f);
         fwrite(pData, 1, pWidth * pHeight * 3, f);

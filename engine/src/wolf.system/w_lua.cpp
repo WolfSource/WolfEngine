@@ -1,7 +1,5 @@
 #include "w_system_pch.h"
 
-#ifdef __LUA__
-
 #include "w_lua.h"
 
 using namespace wolf::system;
@@ -23,38 +21,39 @@ void w_lua::_VL(int pHR)
 
 void w_lua::_incompatible_type_for_variable(const char* pVariableName, const char* pRequestedType, int pOriginalType)
 {
-	char _msg[256];
+    const int _length = 256;
+	char _msg[_length];
 	switch (pOriginalType)
 	{
 	case -1:
-		sprintf_s(_msg, "lua: %s is type of none, not %s\n", pVariableName, pRequestedType);
+		w_sprintf(_msg, _length, "lua: %s is type of none, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 0:
-        sprintf_s(_msg, "lua: %s is type of nil, not %s\n", pVariableName, pRequestedType);
+        w_sprintf(_msg, _length, "lua: %s is type of nil, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 1:
-        sprintf_s(_msg, "lua: %s is type of boolean, not %s\n", pVariableName, pRequestedType);
+        w_sprintf(_msg, _length, "lua: %s is type of boolean, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 2:
-        sprintf_s(_msg, "lua: %s is type of lightuserdata, not %s\n", pVariableName, pRequestedType);
+        w_sprintf(_msg, _length, "lua: %s is type of lightuserdata, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 3:
-        sprintf_s(_msg, "lua: %s is type of number, not %s\n", pVariableName, pRequestedType);
+        w_sprintf(_msg, _length, "lua: %s is type of number, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 4:
-        sprintf_s(_msg, "lua: %s is type of string, not %s\n", pVariableName, pRequestedType);
+        w_sprintf(_msg, _length, "lua: %s is type of string, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 5:
-        sprintf_s(_msg, "lua: %s is type of table, not %s\n", pVariableName, pRequestedType);
+        w_sprintf(_msg, _length, "lua: %s is type of table, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 6:
-        sprintf_s(_msg, "lua: %s is type of function, not %s\n", pVariableName, pRequestedType);
+        w_sprintf(_msg, _length, "lua: %s is type of function, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 7:
-        sprintf_s(_msg, "lua: %s is type of userdata, not %s\n", pVariableName, pRequestedType);
+        w_sprintf(_msg, _length, "lua: %s is type of userdata, not %s\n", pVariableName, pRequestedType);
 		break;
 	case 8:
-        sprintf_s(_msg, "lua: %s is type of thread, not %s\n", pVariableName, pRequestedType);
+        w_sprintf(_msg, _length, "lua: %s is type of thread, not %s\n", pVariableName, pRequestedType);
 		break;
 	}
 
@@ -67,8 +66,19 @@ HRESULT w_lua::load_file(const wchar_t* pPath)
 	_last_error.clear();
 
 	auto _utf8_path = wolf::system::convert::to_utf8(pPath);
-	auto _is_exists = wolf::system::io::get_is_file(pPath);
-
+#if defined(__WIN32) || defined(__UWP)
+    auto _is_exists = wolf::system::io::get_is_file(pPath);
+#else
+    auto _c_str = wolf::system::convert::wstring_to_string(pPath).c_str();
+    auto _is_exists = wolf::system::io::get_is_file(_c_str);
+#endif
+    
+    if (_is_exists == S_FALSE)
+    {
+        _last_error = "lua: lua file not exists on following path: " + _utf8_path;
+        return S_FALSE;
+    }
+    
 	//initialize lua
 	_lua = luaL_newstate();
 	if (!_lua)
@@ -113,8 +123,9 @@ void w_lua::prepare_function(const char* pFunctionName)
 		lua_getglobal(_lua, pFunctionName);
 		if (lua_isnil(_lua, -1))
 		{
-			char _msg[256];
-            sprintf_s(_msg, "error function %s is null\n", pFunctionName);
+            const int _length = 256;
+			char _msg[_length];
+            w_sprintf(_msg, _length, "error function %s is null\n", pFunctionName);
 			_last_error = _msg;
 			return;
 		}
@@ -128,7 +139,6 @@ void w_lua::execute_function()
 	_VL(_hr);
 
 	int _r = lua_tonumber(_lua, -1);
-	OutputDebugStringA(std::to_string(_r).c_str());
 }
 
 ULONG w_lua::release()
@@ -152,5 +162,3 @@ HRESULT w_lua::set_lua_path(_In_z_ const char* pPath)
 	lua_pop(_lua, 1); // get rid of package table from top of stack
 	return S_OK;
 }
-
-#endif
