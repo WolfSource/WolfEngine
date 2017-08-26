@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2C2803461E61C73600048A80"
-               BuildableName = "02_window.app"
-               BlueprintName = "02_window"
-               ReferencedContainer = "container:02_window.xcodeproj">
+               BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+               BuildableName = "03_signal"
+               BlueprintName = "03_signal"
+               ReferencedContainer = "container:03_signal.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "02_window.app"
-            BlueprintName = "02_window"
-            ReferencedContainer = "container:02_window.xcodeproj">
+            BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+            BuildableName = "03_signal"
+            BlueprintName = "03_signal"
+            ReferencedContainer = "container:03_signal.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -55,10 +55,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "02_window.app"
-            BlueprintName = "02_window"
-            ReferencedContainer = "container:02_window.xcodeproj">
+            BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+            BuildableName = "03_signal"
+            BlueprintName = "03_signal"
+            ReferencedContainer = "container:03_signal.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -74,10 +74,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "02_window.app"
-            BlueprintName = "02_window"
-            ReferencedContainer = "container:02_window.xcodeproj">
+            BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+            BuildableName = "03_signal"
+            BlueprintName = "03_signal"
+            ReferencedContainer = "container:03_signal.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

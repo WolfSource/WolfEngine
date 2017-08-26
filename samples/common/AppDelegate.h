@@ -4,8 +4,9 @@
 	Website			 : http://WolfSource.io
 	Name			 : AppDelegate.h
 	Description		 : The app delegate class
-	Comment          :
+	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
  */
+
 
 #import <Cocoa/Cocoa.h>
 

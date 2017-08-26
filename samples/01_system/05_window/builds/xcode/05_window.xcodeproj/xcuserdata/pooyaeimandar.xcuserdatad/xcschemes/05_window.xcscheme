@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C2803461E61C73600048A80"
-               BuildableName = "02_window.app"
-               BlueprintName = "02_window"
-               ReferencedContainer = "container:02_window.xcodeproj">
+               BuildableName = "05_window.app"
+               BlueprintName = "05_window"
+               ReferencedContainer = "container:05_window.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "02_window.app"
-            BlueprintName = "02_window"
-            ReferencedContainer = "container:02_window.xcodeproj">
+            BuildableName = "05_window.app"
+            BlueprintName = "05_window"
+            ReferencedContainer = "container:05_window.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "02_window.app"
-            BlueprintName = "02_window"
-            ReferencedContainer = "container:02_window.xcodeproj">
+            BuildableName = "05_window.app"
+            BlueprintName = "05_window"
+            ReferencedContainer = "container:05_window.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "02_window.app"
-            BlueprintName = "02_window"
-            ReferencedContainer = "container:02_window.xcodeproj">
+            BuildableName = "05_window.app"
+            BlueprintName = "05_window"
+            ReferencedContainer = "container:05_window.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
