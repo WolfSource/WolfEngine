@@ -7,22 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C13839F1F5096DE00D5283B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C13839E1F5096DE00D5283B /* main.m */; };
+		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
 		2C4639531EA55A3700A16595 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639511EA55A3700A16595 /* Assets.xcassets */; };
 		2C4639541EA55A3700A16595 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639521EA55A3700A16595 /* Info.plist */; };
 		2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639551EA55A6C00A16595 /* Main.storyboard */; };
-		2CF34D661E61CB6B00929ABD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF34D621E61CB6B00929ABD /* AppDelegate.m */; };
-		2CF34D671E61CB6B00929ABD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF34D631E61CB6B00929ABD /* main.m */; };
 		2CF34D681E61CB6B00929ABD /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF34D651E61CB6B00929ABD /* ViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2C2803471E61C73600048A80 /* 02_window.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 02_window.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 02_window/Assets.xcassets; sourceTree = "<group>"; };
-		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 02_window/Info.plist; sourceTree = "<group>"; };
-		2C4639561EA55A6C00A16595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = 02_window/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		2CF34D611E61CB6B00929ABD /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../src/AppDelegate.h; sourceTree = "<group>"; };
-		2CF34D621E61CB6B00929ABD /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../src/AppDelegate.m; sourceTree = "<group>"; };
-		2CF34D631E61CB6B00929ABD /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../src/main.m; sourceTree = "<group>"; };
+		2C13839E1F5096DE00D5283B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../../common/main.m; sourceTree = "<group>"; };
+		2C1383A01F50971300D5283B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../common/AppDelegate.h; sourceTree = "<group>"; };
+		2C1383A11F50971300D5283B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../common/AppDelegate.m; sourceTree = "<group>"; };
+		2C2803471E61C73600048A80 /* 05_window.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 05_window.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 05_window/Assets.xcassets; sourceTree = "<group>"; };
+		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 05_window/Info.plist; sourceTree = "<group>"; };
+		2C4639561EA55A6C00A16595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = 05_window/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2CF34D641E61CB6B00929ABD /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../src/ViewController.h; sourceTree = "<group>"; };
 		2CF34D651E61CB6B00929ABD /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewController.m; path = ../../src/ViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -42,8 +42,8 @@
 			isa = PBXGroup;
 			children = (
 				2C4639551EA55A6C00A16595 /* Main.storyboard */,
-				2CF34D611E61CB6B00929ABD /* AppDelegate.h */,
-				2CF34D621E61CB6B00929ABD /* AppDelegate.m */,
+				2C1383A01F50971300D5283B /* AppDelegate.h */,
+				2C1383A11F50971300D5283B /* AppDelegate.m */,
 				2CF34D641E61CB6B00929ABD /* ViewController.h */,
 				2CF34D651E61CB6B00929ABD /* ViewController.m */,
 				2C4639511EA55A3700A16595 /* Assets.xcassets */,
@@ -56,7 +56,7 @@
 		2C2803481E61C73600048A80 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2C2803471E61C73600048A80 /* 02_window.app */,
+				2C2803471E61C73600048A80 /* 05_window.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,18 +64,18 @@
 		2C28034D1E61C73600048A80 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				2CF34D631E61CB6B00929ABD /* main.m */,
+				2C13839E1F5096DE00D5283B /* main.m */,
 			);
 			name = "Supporting Files";
-			path = 02_window;
+			path = 05_window;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2C2803461E61C73600048A80 /* 02_window */ = {
+		2C2803461E61C73600048A80 /* 05_window */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "02_window" */;
+			buildConfigurationList = 2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "05_window" */;
 			buildPhases = (
 				2C2803431E61C73600048A80 /* Sources */,
 				2C2803441E61C73600048A80 /* Frameworks */,
@@ -85,9 +85,9 @@
 			);
 			dependencies = (
 			);
-			name = 02_window;
-			productName = 02_window;
-			productReference = 2C2803471E61C73600048A80 /* 02_window.app */;
+			name = 05_window;
+			productName = 05_window;
+			productReference = 2C2803471E61C73600048A80 /* 05_window.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -106,7 +106,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2C2803421E61C73600048A80 /* Build configuration list for PBXProject "02_window" */;
+			buildConfigurationList = 2C2803421E61C73600048A80 /* Build configuration list for PBXProject "05_window" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -119,7 +119,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2C2803461E61C73600048A80 /* 02_window */,
+				2C2803461E61C73600048A80 /* 05_window */,
 			);
 		};
 /* End PBXProject section */
@@ -142,9 +142,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CF34D661E61CB6B00929ABD /* AppDelegate.m in Sources */,
-				2CF34D671E61CB6B00929ABD /* main.m in Sources */,
+				2C13839F1F5096DE00D5283B /* main.m in Sources */,
 				2CF34D681E61CB6B00929ABD /* ViewController.m in Sources */,
+				2C1383A21F50971300D5283B /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,7 +255,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
-				INFOPLIST_FILE = "$(SRCROOT)/02_window/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/05_window/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.01.02;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -268,7 +268,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
-				INFOPLIST_FILE = "$(SRCROOT)/02_window/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/05_window/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.01.02;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -278,7 +278,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2C2803421E61C73600048A80 /* Build configuration list for PBXProject "02_window" */ = {
+		2C2803421E61C73600048A80 /* Build configuration list for PBXProject "05_window" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C2803591E61C73600048A80 /* Debug */,
@@ -287,7 +287,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "02_window" */ = {
+		2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "05_window" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C28035C1E61C73600048A80 /* Debug */,

@@ -21,12 +21,18 @@ int c_function_bind(lua_State* pState)
 //Entry point of program 
 WOLF_MAIN()
 {
-    const wchar_t* _name = L"01_system-06_lua";
+    const wchar_t* _name = L"06_lua";
     WOLF_INIT(_name);
 
-	logger.write(L"starting Wolf");
+	logger.write(L"Wolf started");
 
-    std::wstring _path = wolf::system::io::get_current_directoryW() + L"../../../../content/scripts/samples/" + _name + L".lua";
+#ifdef __WIN32
+    auto _route = L"../../../../content/scripts/samples/";
+#elif defined(__APPLE__)
+    auto _route = L"/../../../../../content/scripts/samples/";
+#endif
+    
+    std::wstring _path = wolf::system::io::get_current_directory() + _route + _name + L".lua";
     if (w_lua::load_file(_path.c_str()) == S_OK)
     {
         //bind lua function named "bind" to c function, the script will call bind from action function 
@@ -51,8 +57,9 @@ WOLF_MAIN()
         float _var3 = -1.0f;
         w_lua::get_global_variable<float>("var3", _var3);
 
-        char _msg[256];
-        sprintf_s(_msg, "results:\r\nvar3:%f", _var3);
+        const int _lenght = 256;
+        char _msg[_lenght];
+        w_sprintf(_msg, _lenght, "results:\r\nvar3:%f", _var3);
         logger.write(_msg);
 
         //set new value for var1 then execute func1 which uses var1
@@ -68,7 +75,8 @@ WOLF_MAIN()
     }
     else
     {
-        logger.write(L"could not load lua script from following path: " + _path);
+        logger.write(L"could not find lua script from following path: " + _path);
+        logger.write("lua last error: " + std::string(w_lua::get_last_error()));
     }
 
     logger.write(L"shutting down Wolf");

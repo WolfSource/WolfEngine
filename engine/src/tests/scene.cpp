@@ -2,7 +2,6 @@
 #include "scene.h"
 #include <w_graphics/w_pipeline.h>
 #include <w_content_manager.h>
-#include <w_framework/w_quad.h>
 #include <imgui/imgui.h>
 #include <w_graphics/w_imgui.h>
 #include "masked_occlusion_culling/MaskedOcclusionCulling.h"
@@ -39,24 +38,19 @@ static UINT32 sTotalModels = 0;
 static UINT32 sVisibleModels = 0;
 static std::string SVersion;
 
-#if defined(__WIN32)
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
 	w_game(pRunningDirectory, pAppName)
-
-#elif defined(__UWP)
-scene::scene(_In_z_ const std::wstring& pAppName):
-	w_game(pAppName)
-#else
-scene::scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::string& pAppName) :
-    w_game(pRunningDirectory, pAppName)
-#endif
 {
+     auto _running_dir = pRunningDirectory;
+    
 #if defined(__WIN32) || defined(__UWP)
-    auto _running_dir = pRunningDirectory;
     content_path = _running_dir + L"../../../../content/";
 #elif defined(__APPLE__)
-    auto _running_dir = wolf::system::convert::string_to_wstring(pRunningDirectory);
     content_path = _running_dir + L"/../../../../../content/";
+#elif defined(__linux)
+    error
+#elif defined(__ANDROID)
+    error
 #endif
 
     this->_show_gui = true;
@@ -113,7 +107,11 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
         break;
     }
 
+#ifdef __WIN32
     sprintf_s(sSearch, "Search");
+#else
+    sprintf(sSearch, "Search");
+#endif
 
 }
 

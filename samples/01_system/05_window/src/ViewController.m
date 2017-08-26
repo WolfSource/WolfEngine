@@ -18,7 +18,7 @@
     self.view.wantsLayer = YES;
 }
 
-//Resize the window to fit the size of the content as set by the sample code. */
+//Resize the window to fit the size of the content as set by the sample code.
 -(void) viewWillAppear
 {
     [super viewWillAppear];

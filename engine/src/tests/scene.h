@@ -30,13 +30,7 @@
 class scene : public wolf::framework::w_game
 {
 public:
-#if defined(__WIN32)
 	W_EXP scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName);
-#elif defined(__UWP)
-	W_EXP scene(_In_z_ const std::wstring& pAppName);
-#else
-	W_EXP scene(_In_z_ const std::string& pRunningDirectory, _In_z_ const std::string& pAppName);
-#endif
     virtual ~scene();
     
     /*

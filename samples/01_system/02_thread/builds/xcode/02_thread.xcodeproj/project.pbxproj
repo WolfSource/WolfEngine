@@ -30,7 +30,7 @@
 		2C326D151EA5539000AEC380 /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
 		2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
-		2C8C83711E61CA6800A33C70 /* 01_async */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 01_async; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C8C83711E61CA6800A33C70 /* 02_thread */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 02_thread; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CB495BD1E6469BC000B94F6 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/main.cpp; sourceTree = "<group>"; };
 		2CB495BE1E6469BC000B94F6 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../src/pch.cpp; sourceTree = "<group>"; };
 		2CB495BF1E6469BC000B94F6 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../src/pch.h; sourceTree = "<group>"; };
@@ -64,7 +64,7 @@
 		2C8C83721E61CA6800A33C70 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2C8C83711E61CA6800A33C70 /* 01_async */,
+				2C8C83711E61CA6800A33C70 /* 02_thread */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,9 +82,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2C8C83701E61CA6800A33C70 /* 01_async */ = {
+		2C8C83701E61CA6800A33C70 /* 02_thread */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "01_async" */;
+			buildConfigurationList = 2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "02_thread" */;
 			buildPhases = (
 				2C8C836D1E61CA6800A33C70 /* Sources */,
 				2C8C836E1E61CA6800A33C70 /* Frameworks */,
@@ -94,9 +94,9 @@
 			);
 			dependencies = (
 			);
-			name = 01_async;
-			productName = 01_Async;
-			productReference = 2C8C83711E61CA6800A33C70 /* 01_async */;
+			name = 02_thread;
+			productName = 02_thread;
+			productReference = 2C8C83711E61CA6800A33C70 /* 02_thread */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -115,7 +115,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "01_async" */;
+			buildConfigurationList = 2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "02_thread" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -127,7 +127,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2C8C83701E61CA6800A33C70 /* 01_async */,
+				2C8C83701E61CA6800A33C70 /* 02_thread */,
 			);
 		};
 /* End PBXProject section */
@@ -277,7 +277,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "01_async" */ = {
+		2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "02_thread" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C8C83761E61CA6800A33C70 /* Debug */,
@@ -286,7 +286,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "01_async" */ = {
+		2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "02_thread" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C8C83791E61CA6800A33C70 /* Debug */,

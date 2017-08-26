@@ -10,6 +10,7 @@
 		2C326D181EA5539000AEC380 /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C326D151EA5539000AEC380 /* libtbb_debug.dylib */; };
 		2C326D191EA5539000AEC380 /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */; };
 		2C326D1A1EA5539000AEC380 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */; };
+		2C91879D1F5191500021C8FA /* libluajit.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C91879C1F5191500021C8FA /* libluajit.dylib */; };
 		2CB495C01E6469BC000B94F6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BD1E6469BC000B94F6 /* main.cpp */; };
 		2CB495C11E6469BC000B94F6 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BE1E6469BC000B94F6 /* pch.cpp */; };
 /* End PBXBuildFile section */
@@ -27,17 +28,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2C1383A91F50B21200D5283B /* libluajit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libluajit.a; path = ../../../../../engine/dependencies/luaJIT/lib/osx/libluajit.a; sourceTree = "<group>"; };
+		2C1383AE1F513EC100D5283B /* libluajit.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.so; path = ../../../../../engine/dependencies/luaJIT/lib/osx/libluajit.so; sourceTree = "<group>"; };
 		2C326D151EA5539000AEC380 /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
 		2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
-		2C8C83711E61CA6800A33C70 /* 01_async */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 01_async; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C8C83711E61CA6800A33C70 /* 06_lua */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 06_lua; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C91879A1F518E9B0021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../../../engine/dependencies/luaJIT/lib/osx/x64/debug/libluajit.dylib; sourceTree = "<group>"; };
+		2C91879C1F5191500021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../../../engine/dependencies/luaJIT/lib/osx/debug/libluajit.dylib; sourceTree = "<group>"; };
 		2CB495BD1E6469BC000B94F6 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/main.cpp; sourceTree = "<group>"; };
 		2CB495BE1E6469BC000B94F6 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../src/pch.cpp; sourceTree = "<group>"; };
 		2CB495BF1E6469BC000B94F6 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../src/pch.h; sourceTree = "<group>"; };
-		2CDCB30F1E64CF1F00DC0699 /* libwolf.system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.system.dylib; sourceTree = "<group>"; };
-		2CFA17121E6750680041A83F /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../../../engine/dependencies/tbb/tbb2017_20161128oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
-		2CFA17131E6750680041A83F /* libtbb.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb.dylib; path = ../../../../../engine/dependencies/tbb/tbb2017_20161128oss/osx/lib/libtbb.dylib; sourceTree = "<group>"; };
-		2CFA17161E6750D70041A83F /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../../../engine/dependencies/tbb/tbb2017_20161128oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C91879D1F5191500021C8FA /* libluajit.dylib in Frameworks */,
 				2C326D181EA5539000AEC380 /* libtbb_debug.dylib in Frameworks */,
 				2C326D191EA5539000AEC380 /* libtbbmalloc_debug.dylib in Frameworks */,
 				2C326D1A1EA5539000AEC380 /* libwolf.system.macOS.dylib in Frameworks */,
@@ -68,7 +70,7 @@
 		2C8C83721E61CA6800A33C70 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2C8C83711E61CA6800A33C70 /* 01_async */,
+				2C8C83711E61CA6800A33C70 /* 06_lua */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -76,13 +78,13 @@
 		2CDCB30E1E64CF1F00DC0699 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C91879C1F5191500021C8FA /* libluajit.dylib */,
+				2C91879A1F518E9B0021C8FA /* libluajit.dylib */,
+				2C1383AE1F513EC100D5283B /* libluajit.so */,
+				2C1383A91F50B21200D5283B /* libluajit.a */,
 				2C326D151EA5539000AEC380 /* libtbb_debug.dylib */,
 				2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */,
 				2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */,
-				2CFA17161E6750D70041A83F /* libtbbmalloc_debug.dylib */,
-				2CFA17121E6750680041A83F /* libtbb_debug.dylib */,
-				2CFA17131E6750680041A83F /* libtbb.dylib */,
-				2CDCB30F1E64CF1F00DC0699 /* libwolf.system.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -90,9 +92,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2C8C83701E61CA6800A33C70 /* 01_async */ = {
+		2C8C83701E61CA6800A33C70 /* 06_lua */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "01_async" */;
+			buildConfigurationList = 2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "06_lua" */;
 			buildPhases = (
 				2C8C836D1E61CA6800A33C70 /* Sources */,
 				2C8C836E1E61CA6800A33C70 /* Frameworks */,
@@ -102,9 +104,9 @@
 			);
 			dependencies = (
 			);
-			name = 01_async;
-			productName = 01_Async;
-			productReference = 2C8C83711E61CA6800A33C70 /* 01_async */;
+			name = 06_lua;
+			productName = 06_lua;
+			productReference = 2C8C83711E61CA6800A33C70 /* 06_lua */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -123,7 +125,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "01_async" */;
+			buildConfigurationList = 2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "06_lua" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -135,7 +137,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2C8C83701E61CA6800A33C70 /* 01_async */,
+				2C8C83701E61CA6800A33C70 /* 06_lua */,
 			);
 		};
 /* End PBXProject section */
@@ -247,15 +249,17 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
+					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/lib/osx/debug/",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../src/pch.h";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
+					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/include",
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -268,15 +272,17 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
+					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/lib/osx/debug/",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../src/pch.h";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
+					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/include",
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -285,7 +291,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "01_async" */ = {
+		2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "06_lua" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C8C83761E61CA6800A33C70 /* Debug */,
@@ -294,7 +300,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "01_async" */ = {
+		2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "06_lua" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C8C83791E61CA6800A33C70 /* Debug */,

@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C1383A51F509AC700D5283B /* w_lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A31F509AC700D5283B /* w_lua.cpp */; };
+		2C1383A61F509AC700D5283B /* w_lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1383A41F509AC700D5283B /* w_lua.h */; };
 		2C41F9271ED34FAE007012E4 /* w_point.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9251ED34FAE007012E4 /* w_point.h */; };
 		2C41F9281ED34FAE007012E4 /* w_rectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9261ED34FAE007012E4 /* w_rectangle.h */; };
+		2C91879F1F5191720021C8FA /* libluajit.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C91879E1F5191720021C8FA /* libluajit.dylib */; };
 		2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */; };
 		2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */; };
 		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
@@ -48,10 +51,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C1383A31F509AC700D5283B /* w_lua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_lua.cpp; path = ../../../src/wolf.system/w_lua.cpp; sourceTree = "<group>"; };
+		2C1383A41F509AC700D5283B /* w_lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_lua.h; path = ../../../src/wolf.system/w_lua.h; sourceTree = "<group>"; };
+		2C1383A71F50A23900D5283B /* libluajit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libluajit.a; path = ../../../dependencies/luaJIT/lib/osx/libluajit.a; sourceTree = "<group>"; };
+		2C1383B01F51403100D5283B /* libluajit.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.so; path = ../../../dependencies/luaJIT/lib/osx/libluajit.so; sourceTree = "<group>"; };
 		2C41F9251ED34FAE007012E4 /* w_point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_point.h; path = ../../../src/wolf.system/w_point.h; sourceTree = "<group>"; };
 		2C41F9261ED34FAE007012E4 /* w_rectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_rectangle.h; path = ../../../src/wolf.system/w_rectangle.h; sourceTree = "<group>"; };
 		2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
+		2C9187961F518DC40021C8FA /* debug */ = {isa = PBXFileReference; lastKnownFileType = folder; name = debug; path = ../../../dependencies/luaJIT/lib/osx/x64/debug; sourceTree = "<group>"; };
+		2C9187981F518DDF0021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../dependencies/luaJIT/lib/osx/x64/debug/libluajit.dylib; sourceTree = "<group>"; };
+		2C91879E1F5191720021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../dependencies/luaJIT/lib/osx/debug/libluajit.dylib; sourceTree = "<group>"; };
 		2C98996B1E9B512F002FE161 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../src/wolf.system/stb_image.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE5BAF51E64307D005E0F45 /* glm_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extention.h; path = ../../../src/wolf.system/glm_extention.h; sourceTree = "<group>"; };
@@ -95,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C91879F1F5191720021C8FA /* libluajit.dylib in Frameworks */,
 				2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */,
 				2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */,
 			);
@@ -126,6 +137,8 @@
 				2CE5BAFB1E64307D005E0F45 /* w_ireleasable.h */,
 				2CE5BAFC1E64307D005E0F45 /* w_logger.cpp */,
 				2CE5BAFD1E64307D005E0F45 /* w_logger.h */,
+				2C1383A31F509AC700D5283B /* w_lua.cpp */,
+				2C1383A41F509AC700D5283B /* w_lua.h */,
 				2CE5BAFE1E64307D005E0F45 /* w_object.cpp */,
 				2CE5BAFF1E64307D005E0F45 /* w_object.h */,
 				2CE5BB001E64307D005E0F45 /* w_std.h */,
@@ -158,6 +171,11 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C91879E1F5191720021C8FA /* libluajit.dylib */,
+				2C9187981F518DDF0021C8FA /* libluajit.dylib */,
+				2C9187961F518DC40021C8FA /* debug */,
+				2C1383B01F51403100D5283B /* libluajit.so */,
+				2C1383A71F50A23900D5283B /* libluajit.a */,
 				2CEE64181F48F0C6003177C0 /* libmsgpackc.2.0.0.dylib */,
 				2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */,
 				2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */,
@@ -197,6 +215,7 @@
 				2CE5BB121E64307D005E0F45 /* w_game_time.h in Headers */,
 				2CE5BB201E64307D005E0F45 /* w_time_span.h in Headers */,
 				2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */,
+				2C1383A61F509AC700D5283B /* w_lua.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +278,7 @@
 			files = (
 				2CE5BB231E64307D005E0F45 /* w_window.cpp in Sources */,
 				2CEE640C1F48E147003177C0 /* w_thread_pool.cpp in Sources */,
+				2C1383A51F509AC700D5283B /* w_lua.cpp in Sources */,
 				2CEE640E1F48E147003177C0 /* w_thread.cpp in Sources */,
 				2CEE64101F48E147003177C0 /* wolf.cpp in Sources */,
 				2CE5BB1D1E64307D005E0F45 /* w_task.cpp in Sources */,
@@ -368,7 +388,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
+				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -378,7 +401,9 @@
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
+					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
 				);
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -389,7 +414,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
+				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -400,7 +428,9 @@
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
+					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
 				);
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

@@ -330,7 +330,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
+					"$(SRCROOT)/../../../../dependencies/tbb/oss/osx/lib/",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
@@ -342,6 +345,7 @@
 					"$(SRCROOT)/../../../../src/wolf.system",
 					"$(SRCROOT)/../../../../src/wolf.render",
 					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
+					"$(SRCROOT)/../../../../dependencies/tbb/oss/osx/include/",
 				);
 				INFOPLIST_FILE = wolf_vulkan_metal_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -355,7 +359,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
+					"$(SRCROOT)/../../../../dependencies/tbb/oss/osx/lib/",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
@@ -367,6 +374,7 @@
 					"$(SRCROOT)/../../../../src/wolf.system",
 					"$(SRCROOT)/../../../../src/wolf.render",
 					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
+					"$(SRCROOT)/../../../../dependencies/tbb/oss/osx/include/",
 				);
 				INFOPLIST_FILE = wolf_vulkan_metal_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
