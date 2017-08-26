@@ -46,7 +46,10 @@ HRESULT w_xml::save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::syste
 	std::wstring _xml_as_string;
 	rapidxml::print(std::back_inserter(_xml_as_string), _doc);
 
-	_file << pPreComment;
+    if (!pPreComment.empty())
+    {
+        _file << pPreComment;
+    }
 	_file << _xml_as_string;
 
 	_file.flush();

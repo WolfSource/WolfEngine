@@ -247,7 +247,7 @@
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -268,7 +268,7 @@
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
 				);
 				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSION_INFO_PREFIX = "";
 			};

@@ -15,7 +15,7 @@
 #define __W_XML_H__
 
 #include "w_system_export.h"
-#include <rapidxml.hpp>
+#include "rapidxml/rapidxml.hpp"
 #include <vector>
 #include <string>
 
@@ -52,9 +52,9 @@ namespace wolf
 
 #if defined(__WIN32) || defined(__UWP)
 			//save xml
-			WSYS_EXP static HRESULT save(_In_z_ const wchar_t* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"<!---->");
+			WSYS_EXP static HRESULT save(_In_z_ const wchar_t* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"");
 #else
-			WSYS_EXP static HRESULT save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"<!---->");
+			WSYS_EXP static HRESULT save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"");
 #endif
 			//get xml node value
 			WSYS_EXP static const std::string	get_node_value(_In_ rapidxml::xml_node<>* pNode);

@@ -11,6 +11,10 @@
 		2C1383A61F509AC700D5283B /* w_lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1383A41F509AC700D5283B /* w_lua.h */; };
 		2C41F9271ED34FAE007012E4 /* w_point.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9251ED34FAE007012E4 /* w_point.h */; };
 		2C41F9281ED34FAE007012E4 /* w_rectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9261ED34FAE007012E4 /* w_rectangle.h */; };
+		2C7BC4431F51A320009F0C6E /* rapidxml_iterators.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC43F1F51A320009F0C6E /* rapidxml_iterators.hpp */; };
+		2C7BC4441F51A320009F0C6E /* rapidxml_print.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4401F51A320009F0C6E /* rapidxml_print.hpp */; };
+		2C7BC4451F51A320009F0C6E /* rapidxml_utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4411F51A320009F0C6E /* rapidxml_utils.hpp */; };
+		2C7BC4461F51A320009F0C6E /* rapidxml.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4421F51A320009F0C6E /* rapidxml.hpp */; };
 		2C91879F1F5191720021C8FA /* libluajit.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C91879E1F5191720021C8FA /* libluajit.dylib */; };
 		2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */; };
 		2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */; };
@@ -48,6 +52,39 @@
 		2CEE64111F48E147003177C0 /* wolf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CEE640A1F48E147003177C0 /* wolf.h */; };
 		2CEE64141F48EEFB003177C0 /* w_inputs_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */; };
 		2CEE64151F48EEFB003177C0 /* w_inputs_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */; };
+		2CFD41051F52007B00BF9A65 /* allocators.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F21F52007B00BF9A65 /* allocators.h */; };
+		2CFD41061F52007B00BF9A65 /* document.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F31F52007B00BF9A65 /* document.h */; };
+		2CFD41071F52007B00BF9A65 /* encodedstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F41F52007B00BF9A65 /* encodedstream.h */; };
+		2CFD41081F52007B00BF9A65 /* encodings.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F51F52007B00BF9A65 /* encodings.h */; };
+		2CFD41091F52007B00BF9A65 /* filereadstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F61F52007B00BF9A65 /* filereadstream.h */; };
+		2CFD410A1F52007B00BF9A65 /* filewritestream.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F71F52007B00BF9A65 /* filewritestream.h */; };
+		2CFD410B1F52007B00BF9A65 /* fwd.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F81F52007B00BF9A65 /* fwd.h */; };
+		2CFD410C1F52007B00BF9A65 /* istreamwrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F91F52007B00BF9A65 /* istreamwrapper.h */; };
+		2CFD410D1F52007B00BF9A65 /* memorybuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40FA1F52007B00BF9A65 /* memorybuffer.h */; };
+		2CFD410E1F52007B00BF9A65 /* memorystream.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40FB1F52007B00BF9A65 /* memorystream.h */; };
+		2CFD410F1F52007B00BF9A65 /* ostreamwrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40FC1F52007B00BF9A65 /* ostreamwrapper.h */; };
+		2CFD41101F52007B00BF9A65 /* pointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40FD1F52007B00BF9A65 /* pointer.h */; };
+		2CFD41111F52007B00BF9A65 /* prettywriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40FE1F52007B00BF9A65 /* prettywriter.h */; };
+		2CFD41121F52007B00BF9A65 /* rapidjson.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40FF1F52007B00BF9A65 /* rapidjson.h */; };
+		2CFD41131F52007B00BF9A65 /* reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41001F52007B00BF9A65 /* reader.h */; };
+		2CFD41141F52007B00BF9A65 /* schema.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41011F52007B00BF9A65 /* schema.h */; };
+		2CFD41151F52007B00BF9A65 /* stream.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41021F52007B00BF9A65 /* stream.h */; };
+		2CFD41161F52007B00BF9A65 /* stringbuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41031F52007B00BF9A65 /* stringbuffer.h */; };
+		2CFD41171F52007B00BF9A65 /* writer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41041F52007B00BF9A65 /* writer.h */; };
+		2CFD411B1F52009200BF9A65 /* en.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41191F52009200BF9A65 /* en.h */; };
+		2CFD411C1F52009200BF9A65 /* error.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD411A1F52009200BF9A65 /* error.h */; };
+		2CFD412A1F5200D500BF9A65 /* biginteger.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD411E1F5200D500BF9A65 /* biginteger.h */; };
+		2CFD412B1F5200D500BF9A65 /* diyfp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD411F1F5200D500BF9A65 /* diyfp.h */; };
+		2CFD412C1F5200D500BF9A65 /* dtoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41201F5200D500BF9A65 /* dtoa.h */; };
+		2CFD412D1F5200D500BF9A65 /* ieee754.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41211F5200D500BF9A65 /* ieee754.h */; };
+		2CFD412E1F5200D500BF9A65 /* itoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41221F5200D500BF9A65 /* itoa.h */; };
+		2CFD412F1F5200D500BF9A65 /* meta.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41231F5200D500BF9A65 /* meta.h */; };
+		2CFD41301F5200D500BF9A65 /* pow10.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41241F5200D500BF9A65 /* pow10.h */; };
+		2CFD41311F5200D500BF9A65 /* regex.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41251F5200D500BF9A65 /* regex.h */; };
+		2CFD41321F5200D500BF9A65 /* stack.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41261F5200D500BF9A65 /* stack.h */; };
+		2CFD41331F5200D500BF9A65 /* strfunc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41271F5200D500BF9A65 /* strfunc.h */; };
+		2CFD41341F5200D500BF9A65 /* strtod.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41281F5200D500BF9A65 /* strtod.h */; };
+		2CFD41351F5200D500BF9A65 /* swap.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD41291F5200D500BF9A65 /* swap.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +96,10 @@
 		2C41F9261ED34FAE007012E4 /* w_rectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_rectangle.h; path = ../../../src/wolf.system/w_rectangle.h; sourceTree = "<group>"; };
 		2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
+		2C7BC43F1F51A320009F0C6E /* rapidxml_iterators.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_iterators.hpp; path = ../../../src/wolf.system/rapidxml/rapidxml_iterators.hpp; sourceTree = "<group>"; };
+		2C7BC4401F51A320009F0C6E /* rapidxml_print.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_print.hpp; path = ../../../src/wolf.system/rapidxml/rapidxml_print.hpp; sourceTree = "<group>"; };
+		2C7BC4411F51A320009F0C6E /* rapidxml_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_utils.hpp; path = ../../../src/wolf.system/rapidxml/rapidxml_utils.hpp; sourceTree = "<group>"; };
+		2C7BC4421F51A320009F0C6E /* rapidxml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml.hpp; path = ../../../src/wolf.system/rapidxml/rapidxml.hpp; sourceTree = "<group>"; };
 		2C9187961F518DC40021C8FA /* debug */ = {isa = PBXFileReference; lastKnownFileType = folder; name = debug; path = ../../../dependencies/luaJIT/lib/osx/x64/debug; sourceTree = "<group>"; };
 		2C9187981F518DDF0021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../dependencies/luaJIT/lib/osx/x64/debug/libluajit.dylib; sourceTree = "<group>"; };
 		2C91879E1F5191720021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../dependencies/luaJIT/lib/osx/debug/libluajit.dylib; sourceTree = "<group>"; };
@@ -98,6 +139,39 @@
 		2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_inputs_manager.cpp; path = ../../../src/wolf.system/w_inputs_manager.cpp; sourceTree = "<group>"; };
 		2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_inputs_manager.h; path = ../../../src/wolf.system/w_inputs_manager.h; sourceTree = "<group>"; };
 		2CEE64181F48F0C6003177C0 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
+		2CFD40F21F52007B00BF9A65 /* allocators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = allocators.h; path = ../../../src/wolf.system/rapidjson/allocators.h; sourceTree = "<group>"; };
+		2CFD40F31F52007B00BF9A65 /* document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = document.h; path = ../../../src/wolf.system/rapidjson/document.h; sourceTree = "<group>"; };
+		2CFD40F41F52007B00BF9A65 /* encodedstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encodedstream.h; path = ../../../src/wolf.system/rapidjson/encodedstream.h; sourceTree = "<group>"; };
+		2CFD40F51F52007B00BF9A65 /* encodings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encodings.h; path = ../../../src/wolf.system/rapidjson/encodings.h; sourceTree = "<group>"; };
+		2CFD40F61F52007B00BF9A65 /* filereadstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filereadstream.h; path = ../../../src/wolf.system/rapidjson/filereadstream.h; sourceTree = "<group>"; };
+		2CFD40F71F52007B00BF9A65 /* filewritestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filewritestream.h; path = ../../../src/wolf.system/rapidjson/filewritestream.h; sourceTree = "<group>"; };
+		2CFD40F81F52007B00BF9A65 /* fwd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fwd.h; path = ../../../src/wolf.system/rapidjson/fwd.h; sourceTree = "<group>"; };
+		2CFD40F91F52007B00BF9A65 /* istreamwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = istreamwrapper.h; path = ../../../src/wolf.system/rapidjson/istreamwrapper.h; sourceTree = "<group>"; };
+		2CFD40FA1F52007B00BF9A65 /* memorybuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memorybuffer.h; path = ../../../src/wolf.system/rapidjson/memorybuffer.h; sourceTree = "<group>"; };
+		2CFD40FB1F52007B00BF9A65 /* memorystream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = memorystream.h; path = ../../../src/wolf.system/rapidjson/memorystream.h; sourceTree = "<group>"; };
+		2CFD40FC1F52007B00BF9A65 /* ostreamwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ostreamwrapper.h; path = ../../../src/wolf.system/rapidjson/ostreamwrapper.h; sourceTree = "<group>"; };
+		2CFD40FD1F52007B00BF9A65 /* pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pointer.h; path = ../../../src/wolf.system/rapidjson/pointer.h; sourceTree = "<group>"; };
+		2CFD40FE1F52007B00BF9A65 /* prettywriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = prettywriter.h; path = ../../../src/wolf.system/rapidjson/prettywriter.h; sourceTree = "<group>"; };
+		2CFD40FF1F52007B00BF9A65 /* rapidjson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rapidjson.h; path = ../../../src/wolf.system/rapidjson/rapidjson.h; sourceTree = "<group>"; };
+		2CFD41001F52007B00BF9A65 /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reader.h; path = ../../../src/wolf.system/rapidjson/reader.h; sourceTree = "<group>"; };
+		2CFD41011F52007B00BF9A65 /* schema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = schema.h; path = ../../../src/wolf.system/rapidjson/schema.h; sourceTree = "<group>"; };
+		2CFD41021F52007B00BF9A65 /* stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stream.h; path = ../../../src/wolf.system/rapidjson/stream.h; sourceTree = "<group>"; };
+		2CFD41031F52007B00BF9A65 /* stringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stringbuffer.h; path = ../../../src/wolf.system/rapidjson/stringbuffer.h; sourceTree = "<group>"; };
+		2CFD41041F52007B00BF9A65 /* writer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = writer.h; path = ../../../src/wolf.system/rapidjson/writer.h; sourceTree = "<group>"; };
+		2CFD41191F52009200BF9A65 /* en.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = en.h; path = ../../../src/wolf.system/rapidjson/error/en.h; sourceTree = "<group>"; };
+		2CFD411A1F52009200BF9A65 /* error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = error.h; path = ../../../src/wolf.system/rapidjson/error/error.h; sourceTree = "<group>"; };
+		2CFD411E1F5200D500BF9A65 /* biginteger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = biginteger.h; path = ../../../src/wolf.system/rapidjson/internal/biginteger.h; sourceTree = "<group>"; };
+		2CFD411F1F5200D500BF9A65 /* diyfp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = diyfp.h; path = ../../../src/wolf.system/rapidjson/internal/diyfp.h; sourceTree = "<group>"; };
+		2CFD41201F5200D500BF9A65 /* dtoa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dtoa.h; path = ../../../src/wolf.system/rapidjson/internal/dtoa.h; sourceTree = "<group>"; };
+		2CFD41211F5200D500BF9A65 /* ieee754.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ieee754.h; path = ../../../src/wolf.system/rapidjson/internal/ieee754.h; sourceTree = "<group>"; };
+		2CFD41221F5200D500BF9A65 /* itoa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = itoa.h; path = ../../../src/wolf.system/rapidjson/internal/itoa.h; sourceTree = "<group>"; };
+		2CFD41231F5200D500BF9A65 /* meta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = meta.h; path = ../../../src/wolf.system/rapidjson/internal/meta.h; sourceTree = "<group>"; };
+		2CFD41241F5200D500BF9A65 /* pow10.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pow10.h; path = ../../../src/wolf.system/rapidjson/internal/pow10.h; sourceTree = "<group>"; };
+		2CFD41251F5200D500BF9A65 /* regex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = regex.h; path = ../../../src/wolf.system/rapidjson/internal/regex.h; sourceTree = "<group>"; };
+		2CFD41261F5200D500BF9A65 /* stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stack.h; path = ../../../src/wolf.system/rapidjson/internal/stack.h; sourceTree = "<group>"; };
+		2CFD41271F5200D500BF9A65 /* strfunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strfunc.h; path = ../../../src/wolf.system/rapidjson/internal/strfunc.h; sourceTree = "<group>"; };
+		2CFD41281F5200D500BF9A65 /* strtod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strtod.h; path = ../../../src/wolf.system/rapidjson/internal/strtod.h; sourceTree = "<group>"; };
+		2CFD41291F5200D500BF9A65 /* swap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = swap.h; path = ../../../src/wolf.system/rapidjson/internal/swap.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,9 +188,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2C7BC43E1F51A2FB009F0C6E /* rapidxml */ = {
+			isa = PBXGroup;
+			children = (
+				2C7BC43F1F51A320009F0C6E /* rapidxml_iterators.hpp */,
+				2C7BC4401F51A320009F0C6E /* rapidxml_print.hpp */,
+				2C7BC4411F51A320009F0C6E /* rapidxml_utils.hpp */,
+				2C7BC4421F51A320009F0C6E /* rapidxml.hpp */,
+			);
+			name = rapidxml;
+			sourceTree = "<group>";
+		};
 		2CD6171A1E59DA3E006FC5DC = {
 			isa = PBXGroup;
 			children = (
+				2CFD40F11F51FF9300BF9A65 /* rapidjson */,
+				2C7BC43E1F51A2FB009F0C6E /* rapidxml */,
 				2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */,
 				2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */,
 				2CEE64041F48E147003177C0 /* w_signal.h */,
@@ -183,6 +270,62 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		2CFD40F11F51FF9300BF9A65 /* rapidjson */ = {
+			isa = PBXGroup;
+			children = (
+				2CFD41181F52008000BF9A65 /* error */,
+				2CFD411D1F5200BC00BF9A65 /* internal */,
+				2CFD40F21F52007B00BF9A65 /* allocators.h */,
+				2CFD40F31F52007B00BF9A65 /* document.h */,
+				2CFD40F41F52007B00BF9A65 /* encodedstream.h */,
+				2CFD40F51F52007B00BF9A65 /* encodings.h */,
+				2CFD40F61F52007B00BF9A65 /* filereadstream.h */,
+				2CFD40F71F52007B00BF9A65 /* filewritestream.h */,
+				2CFD40F81F52007B00BF9A65 /* fwd.h */,
+				2CFD40F91F52007B00BF9A65 /* istreamwrapper.h */,
+				2CFD40FA1F52007B00BF9A65 /* memorybuffer.h */,
+				2CFD40FB1F52007B00BF9A65 /* memorystream.h */,
+				2CFD40FC1F52007B00BF9A65 /* ostreamwrapper.h */,
+				2CFD40FD1F52007B00BF9A65 /* pointer.h */,
+				2CFD40FE1F52007B00BF9A65 /* prettywriter.h */,
+				2CFD40FF1F52007B00BF9A65 /* rapidjson.h */,
+				2CFD41001F52007B00BF9A65 /* reader.h */,
+				2CFD41011F52007B00BF9A65 /* schema.h */,
+				2CFD41021F52007B00BF9A65 /* stream.h */,
+				2CFD41031F52007B00BF9A65 /* stringbuffer.h */,
+				2CFD41041F52007B00BF9A65 /* writer.h */,
+			);
+			name = rapidjson;
+			sourceTree = "<group>";
+		};
+		2CFD41181F52008000BF9A65 /* error */ = {
+			isa = PBXGroup;
+			children = (
+				2CFD41191F52009200BF9A65 /* en.h */,
+				2CFD411A1F52009200BF9A65 /* error.h */,
+			);
+			name = error;
+			sourceTree = "<group>";
+		};
+		2CFD411D1F5200BC00BF9A65 /* internal */ = {
+			isa = PBXGroup;
+			children = (
+				2CFD411E1F5200D500BF9A65 /* biginteger.h */,
+				2CFD411F1F5200D500BF9A65 /* diyfp.h */,
+				2CFD41201F5200D500BF9A65 /* dtoa.h */,
+				2CFD41211F5200D500BF9A65 /* ieee754.h */,
+				2CFD41221F5200D500BF9A65 /* itoa.h */,
+				2CFD41231F5200D500BF9A65 /* meta.h */,
+				2CFD41241F5200D500BF9A65 /* pow10.h */,
+				2CFD41251F5200D500BF9A65 /* regex.h */,
+				2CFD41261F5200D500BF9A65 /* stack.h */,
+				2CFD41271F5200D500BF9A65 /* strfunc.h */,
+				2CFD41281F5200D500BF9A65 /* strtod.h */,
+				2CFD41291F5200D500BF9A65 /* swap.h */,
+			);
+			name = internal;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -190,32 +333,69 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CFD412C1F5200D500BF9A65 /* dtoa.h in Headers */,
+				2CFD412E1F5200D500BF9A65 /* itoa.h in Headers */,
 				2CEE64151F48EEFB003177C0 /* w_inputs_manager.h in Headers */,
+				2CFD41071F52007B00BF9A65 /* encodedstream.h in Headers */,
 				2CE5BB261E64307D005E0F45 /* w_xml.h in Headers */,
+				2CFD411C1F52009200BF9A65 /* error.h in Headers */,
 				2CE5BB141E64307D005E0F45 /* w_ireleasable.h in Headers */,
 				2CEE640B1F48E147003177C0 /* w_signal.h in Headers */,
 				2CE5BB131E64307D005E0F45 /* w_io.h in Headers */,
+				2CFD410A1F52007B00BF9A65 /* filewritestream.h in Headers */,
+				2CFD41121F52007B00BF9A65 /* rapidjson.h in Headers */,
 				2CEE64111F48E147003177C0 /* wolf.h in Headers */,
+				2CFD41171F52007B00BF9A65 /* writer.h in Headers */,
+				2CFD41331F5200D500BF9A65 /* strfunc.h in Headers */,
+				2CFD41101F52007B00BF9A65 /* pointer.h in Headers */,
 				2CE5BB161E64307D005E0F45 /* w_logger.h in Headers */,
+				2CFD41321F5200D500BF9A65 /* stack.h in Headers */,
 				2CE5BB241E64307D005E0F45 /* w_window.h in Headers */,
+				2CFD410D1F52007B00BF9A65 /* memorybuffer.h in Headers */,
 				2C41F9281ED34FAE007012E4 /* w_rectangle.h in Headers */,
 				2CE5BB181E64307D005E0F45 /* w_object.h in Headers */,
+				2CFD410C1F52007B00BF9A65 /* istreamwrapper.h in Headers */,
 				2CEE640F1F48E147003177C0 /* w_thread.h in Headers */,
 				2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */,
 				2CE5BB1E1E64307D005E0F45 /* w_task.h in Headers */,
+				2CFD41351F5200D500BF9A65 /* swap.h in Headers */,
+				2CFD41091F52007B00BF9A65 /* filereadstream.h in Headers */,
+				2C7BC4441F51A320009F0C6E /* rapidxml_print.hpp in Headers */,
 				2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */,
+				2CFD41301F5200D500BF9A65 /* pow10.h in Headers */,
+				2CFD41111F52007B00BF9A65 /* prettywriter.h in Headers */,
+				2CFD41341F5200D500BF9A65 /* strtod.h in Headers */,
 				2C98996C1E9B512F002FE161 /* stb_image.h in Headers */,
+				2CFD41081F52007B00BF9A65 /* encodings.h in Headers */,
 				2CE5BB191E64307D005E0F45 /* w_std.h in Headers */,
+				2C7BC4461F51A320009F0C6E /* rapidxml.hpp in Headers */,
 				2CE5BB211E64307D005E0F45 /* w_timer_callback.h in Headers */,
+				2CFD410E1F52007B00BF9A65 /* memorystream.h in Headers */,
+				2CFD412B1F5200D500BF9A65 /* diyfp.h in Headers */,
 				2CEE640D1F48E147003177C0 /* w_thread_pool.h in Headers */,
 				2CE5BB1C1E64307D005E0F45 /* w_system_pch.h in Headers */,
+				2CFD410B1F52007B00BF9A65 /* fwd.h in Headers */,
 				2CE5BB221E64307D005E0F45 /* w_timer.h in Headers */,
+				2CFD41151F52007B00BF9A65 /* stream.h in Headers */,
 				2C41F9271ED34FAE007012E4 /* w_point.h in Headers */,
 				2CE5BB1A1E64307D005E0F45 /* w_system_export.h in Headers */,
+				2CFD412A1F5200D500BF9A65 /* biginteger.h in Headers */,
 				2CE5BB121E64307D005E0F45 /* w_game_time.h in Headers */,
+				2CFD41161F52007B00BF9A65 /* stringbuffer.h in Headers */,
 				2CE5BB201E64307D005E0F45 /* w_time_span.h in Headers */,
+				2CFD410F1F52007B00BF9A65 /* ostreamwrapper.h in Headers */,
+				2CFD41131F52007B00BF9A65 /* reader.h in Headers */,
+				2C7BC4431F51A320009F0C6E /* rapidxml_iterators.hpp in Headers */,
+				2CFD411B1F52009200BF9A65 /* en.h in Headers */,
+				2CFD412D1F5200D500BF9A65 /* ieee754.h in Headers */,
+				2CFD412F1F5200D500BF9A65 /* meta.h in Headers */,
+				2CFD41051F52007B00BF9A65 /* allocators.h in Headers */,
 				2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */,
+				2C7BC4451F51A320009F0C6E /* rapidxml_utils.hpp in Headers */,
+				2CFD41141F52007B00BF9A65 /* schema.h in Headers */,
 				2C1383A61F509AC700D5283B /* w_lua.h in Headers */,
+				2CFD41061F52007B00BF9A65 /* document.h in Headers */,
+				2CFD41311F5200D500BF9A65 /* regex.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,7 +579,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../dependencies/glm/",
-					"$(SRCROOT)/../../../dependencies/rapidxml/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
 				);
@@ -426,7 +605,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../dependencies/glm/",
-					"$(SRCROOT)/../../../dependencies/rapidxml/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
 				);

@@ -13,7 +13,6 @@
 #ifdef WIN32
 
 #pragma comment(lib, "Wolf.System.Win32.lib")
-#pragma comment(lib, "Wolf.DirectX11_X.Win32.lib")
 
 #include <w_target_ver.h>
 

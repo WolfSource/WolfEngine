@@ -22,5 +22,15 @@
       <FileRef
          location = "group:01_system/06_lua/builds/xcode/06_lua.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:01_system/07_xml/builds/xcode/07_xml.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:01_system/08_json/builds/xcode/08_json.xcodeproj">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "02-Basics">
    </Group>
 </Workspace>

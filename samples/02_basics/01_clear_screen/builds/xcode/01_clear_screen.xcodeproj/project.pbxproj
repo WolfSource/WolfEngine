@@ -291,8 +291,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../../../engine/dependencies/glm",
-					"$(SRCROOT)/../../../../../engine/dependencies/rapidxml",
-					"$(SRCROOT)/../../../../../engine/dependencies/rapidjson",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render/",
 				);
@@ -318,8 +316,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/Molten/MoltenVK/include",
 					"$(SRCROOT)/../../../../../engine/dependencies/glm",
-					"$(SRCROOT)/../../../../../engine/dependencies/rapidxml",
-					"$(SRCROOT)/../../../../../engine/dependencies/rapidjson",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render/",
 				);
