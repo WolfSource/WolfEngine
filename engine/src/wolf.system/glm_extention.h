@@ -288,7 +288,7 @@ namespace glm
     {
         glm::quat _quat;
         
-        float _half_angle_radian ( 0.5 * glm::radians(pAngleDegree));
+        float _half_angle_radian ( 0.5f * glm::radians(pAngleDegree));
         float fSin = sin( _half_angle_radian );
         _quat.w = cos( _half_angle_radian );
     
