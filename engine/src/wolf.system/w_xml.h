@@ -18,10 +18,7 @@
 #include "rapidxml/rapidxml.hpp"
 #include <vector>
 #include <string>
-
-#if defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 #include "w_std.h"
-#endif
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
@@ -51,11 +48,12 @@ namespace wolf
 			WSYS_EXP ~w_xml();
 
 #if defined(__WIN32) || defined(__UWP)
-			//save xml
-			WSYS_EXP static HRESULT save(_In_z_ const wchar_t* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"");
+            WSYS_EXP HRESULT save(_In_z_ const wchar_t* pPath,
 #else
-			WSYS_EXP static HRESULT save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"");
+            WSYS_EXP HRESULT save(_In_z_ const char* pPath,
 #endif
+                _In_ const bool& pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"");
+
 			//get xml node value
 			WSYS_EXP static const std::string	get_node_value(_In_ rapidxml::xml_node<>* pNode);
 			//get xml node attribute value

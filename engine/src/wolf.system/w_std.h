@@ -14,12 +14,12 @@
 #ifndef __W_STD_H__
 #define __W_STD_H__
 
-#ifdef __WIN32
+#if defined(__WIN32) || defined(__UWP)
 
 #include <Windows.h>
 #include <limits.h>
 
-#elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
+#else
 
 #include <inttypes.h>
 

@@ -31,7 +31,7 @@
 #include <list>
 #include <queue>
 #include <set>
-#include <rapidxml.hpp>
+#include <w_xml.h>
 #include <fstream>
 #include <sstream>
 

@@ -31,15 +31,15 @@ namespace wolf
             {
                 this->_gDevice = pGDevice;
                 
-#if defined(__WIN32) || defined(__UWP)
-                auto _path = pShaderBinaryPath;
-#else
-                auto _path = wolf::system::convert::wstring_to_string(pShaderBinaryPath);
-#endif
-                
                 std::vector<unsigned char> _shader_binary_code;
                 int _file_state = 1;
+#if defined(__WIN32) || defined(__UWP)
+                auto _path = pShaderBinaryPath;
+                system::io::read_binary_fileW(_path.c_str(), _shader_binary_code, _file_state);
+#else
+                auto _path = wolf::system::convert::wstring_to_string(pShaderBinaryPath);
                 system::io::read_binary_file(_path.c_str(), _shader_binary_code, _file_state);
+#endif
                 if(_file_state != 1)
                 {
                     if(_file_state == -1)

@@ -1,6 +1,6 @@
 #include "w_system_pch.h"
 #include "w_xml.h"
-#include <rapidxml_print.hpp>
+#include "rapidxml/rapidxml_print.hpp"
 #include <fstream>
 #include <w_convert.h>
 
@@ -17,13 +17,12 @@ w_xml::~w_xml()
 }
 
 #if defined(__WIN32) || defined(__UWP)
-HRESULT w_xml::save(_In_z_ const wchar_t* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment)
-{
+HRESULT w_xml::save(_In_z_ const wchar_t* pPath,
 #else
-HRESULT w_xml::save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment)
-{	
+HRESULT w_xml::save(_In_z_ const char* pPath,
 #endif
-	
+    _In_ const bool& pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment)
+{
 	std::wofstream _file(pPath);
 	if (!_file) return S_FALSE;
 
@@ -37,7 +36,10 @@ HRESULT w_xml::save(_In_z_ const char* pPath, _In_ bool pUTF_8, _In_ wolf::syste
 	//Add xml version & encoding
 	auto _node = _doc.allocate_node(node_declaration);
 	_node->append_attribute(_doc.allocate_attribute(L"version", L"1.0"));
-	_node->append_attribute(_doc.allocate_attribute(L"encoding", L"utf-8"));
+    if (pUTF_8)
+    {
+        _node->append_attribute(_doc.allocate_attribute(L"encoding", L"utf-8"));
+    }
 	_doc.append_node(_node);
 
 	_write_element(pData, _doc, nullptr);
