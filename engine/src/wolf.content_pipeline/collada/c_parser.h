@@ -10,7 +10,7 @@
 #ifndef __C_PARSER_H__
 #define __C_PARSER_H__
 
-#include <rapidxml.hpp>
+#include <w_xml.h>
 #include "w_cpipeline_scene.h"
 #include "w_cpipeline_export.h"
 #include "c_node.h"
