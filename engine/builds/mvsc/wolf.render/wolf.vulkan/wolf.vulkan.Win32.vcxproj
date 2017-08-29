@@ -107,7 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_render_pch.h</PrecompiledHeaderFile>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;__WIN32;__WOLF_RENDER__;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>w_render_pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
