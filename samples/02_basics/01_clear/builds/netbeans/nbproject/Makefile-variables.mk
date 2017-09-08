@@ -9,8 +9,8 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux
 CND_ARTIFACT_DIR_Debug=dist/../../../../../../bin/x64/Debug/GNU-Linux
-CND_ARTIFACT_NAME_Debug=03_scene
-CND_ARTIFACT_PATH_Debug=dist/../../../../../../bin/x64/Debug/GNU-Linux/03_scene
+CND_ARTIFACT_NAME_Debug=01_window
+CND_ARTIFACT_PATH_Debug=dist/../../../../../../bin/x64/Debug/GNU-Linux/01_window
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux/package
 CND_PACKAGE_NAME_Debug=netbeans.tar
 CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/netbeans.tar

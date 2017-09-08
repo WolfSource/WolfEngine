@@ -36,8 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/_ext/56252444/main.o \
-	${OBJECTDIR}/_ext/56252444/pch.o \
-	${OBJECTDIR}/_ext/56252444/scene.o
+	${OBJECTDIR}/_ext/56252444/pch.o
 
 
 # C Compiler Flags
@@ -73,11 +72,6 @@ ${OBJECTDIR}/_ext/56252444/pch.o: ../../src/pch.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/pch.o ../../src/pch.cpp
-
-${OBJECTDIR}/_ext/56252444/scene.o: ../../src/scene.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/scene.o ../../src/scene.cpp
 
 # Subprojects
 .build-subprojects:

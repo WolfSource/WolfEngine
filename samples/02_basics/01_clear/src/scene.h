@@ -4,13 +4,17 @@
 	Website			 : http://WolfSource.io
 	Name			 : pch.h
 	Description		 : The main scene of Wolf Engine
-	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
+	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
 */
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
 
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include <w_game.h>
+#include <w_framework/w_game.h>
 
 class scene : public wolf::framework::w_game
 {

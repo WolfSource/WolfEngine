@@ -2,49 +2,35 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <asset>
     <contributor>
-      <author>DFM</author>
+      <author>PooyaEimandar</author>
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
-      <source_data>file:///F:/github/PooyaEimandar/3D_Simulator_Assets_Manager/Models/area-320/max-files/tranfer-station-v-1-0-18.max</source_data>
     </contributor>
-    <created>2017-08-23T15:31:21</created>
-    <modified>2017-08-23T15:31:21</modified>
+    <created>2017-09-08T12:19:23</created>
+    <modified>2017-09-08T12:19:23</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_effects>
-    <effect id="Phong2">
+    <effect id="ColorEffectR224G86B86">
       <profile_COMMON>
-        <newparam sid="T_zarand_1_jpg-surface">
-          <surface type="2D">
-            <init_from>T_zarand_1_jpg</init_from>
-          </surface>
-        </newparam>
-        <newparam sid="T_zarand_1_jpg-sampler">
-          <sampler2D>
-            <source>T_zarand_1_jpg-surface</source>
-          </sampler2D>
-        </newparam>
         <technique sid="common">
           <phong>
-            <emission>
-              <color>0 0 0 1</color>
-            </emission>
             <ambient>
-              <color>0.3 0.3 0.3 1</color>
+              <color>0.8784314 0.3372549 0.3372549 1</color>
             </ambient>
             <diffuse>
-              <texture texture="T_zarand_1_jpg-sampler" texcoord="CHANNEL1"/>
+              <color>0.8784314 0.3372549 0.3372549 1</color>
             </diffuse>
             <specular>
               <color>1 1 1 1</color>
             </specular>
             <shininess>
-              <float>56.43856</float>
+              <float>10</float>
             </shininess>
             <reflective>
               <color>0 0 0 1</color>
             </reflective>
-            <transparent opaque="A_ONE">
+            <transparent>
               <color>1 1 1 1</color>
             </transparent>
             <transparency>
@@ -53,658 +39,121 @@
           </phong>
         </technique>
       </profile_COMMON>
-      <extra>
-        <technique profile="OpenCOLLADA3dsMax">
-          <extended_shader>
-            <opacity_type sid="opacity_type" type="int">0</opacity_type>
-            <falloff_type sid="falloff_type" type="int">0</falloff_type>
-            <falloff sid="falloff" type="float">0</falloff>
-            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
-            <wire_size sid="wire_size" type="float">1</wire_size>
-            <wire_units sid="wire_units" type="int">0</wire_units>
-            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
-            <dim_level sid="dim_level" type="float">0</dim_level>
-            <reflection_level sid="reflection_level" type="float">3</reflection_level>
-          </extended_shader>
-          <shader>
-            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
-            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
-            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
-            <use_self_illum_color sid="use_self_illum_color" type="bool">1</use_self_illum_color>
-            <self_illumination sid="self_illumination" type="float">0</self_illumination>
-            <specular_level sid="specular_level" type="float">1</specular_level>
-            <soften sid="soften" type="float">0.1</soften>
-          </shader>
+    </effect>
+    <effect id="ColorEffectR87G120B204">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <ambient>
+              <color>0.3411765 0.4705882 0.8 1</color>
+            </ambient>
+            <diffuse>
+              <color>0.3411765 0.4705882 0.8 1</color>
+            </diffuse>
+            <specular>
+              <color>1 1 1 1</color>
+            </specular>
+            <shininess>
+              <float>10</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent>
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </phong>
         </technique>
-      </extra>
+      </profile_COMMON>
     </effect>
   </library_effects>
   <library_materials>
-    <material id="Phong2-material" name="Phong2">
-      <instance_effect url="#Phong2"/>
+    <material id="ColorEffectR224G86B86-material" name="ColorEffectR224G86B86-material">
+      <instance_effect url="#ColorEffectR224G86B86"/>
+    </material>
+    <material id="ColorEffectR87G120B204-material" name="ColorEffectR87G120B204-material">
+      <instance_effect url="#ColorEffectR87G120B204"/>
     </material>
   </library_materials>
   <library_geometries>
-    <geometry id="geom-TS193_" name="TS193_">
+    <geometry id="geom-Box001" name="Box001">
       <mesh>
-        <source id="geom-TS193_-positions">
-          <float_array id="geom-TS193_-positions-array" count="144">5.45742 -0.4660683 0.2293968 5.457542 -0.3981667 0.2743416 5.457573 -0.3801231 0.3560944 5.457497 -0.4225082 0.4267616 5.457352 -0.5004921 0.4449539 5.457237 -0.5683937 0.4000053 5.457207 -0.586441 0.3182564 5.457283 -0.5440559 0.2475853 -5.360626 -0.5181198 0.2694778 -5.353523 -0.5140457 0.2626648 -5.427155 -0.5562935 0.3333359 -5.43026 -0.5544472 0.341671 -5.457603 -0.5381927 0.4150848 -5.454422 -0.5311432 0.419754 -5.42701 -0.4703484 0.4600258 -5.419548 -0.4624748 0.4581871 -5.353302 -0.392498 0.4418373 -5.346291 -0.3884735 0.4351006 -5.279663 -0.3502464 0.3711662 -5.276932 -0.3518753 0.3638344 -5.249229 -0.3683472 0.2894173 -5.251915 -0.3742981 0.2854767 -5.279823 -0.4361954 0.2444763 -5.286491 -0.4432411 0.2461205 -5.425278 0.4828262 -0.4337807 -5.455673 0.525856 -0.37043 -5.425125 0.5687752 -0.3070831 -5.351532 0.586441 -0.2808495 -5.278008 0.5685043 -0.3070831 -5.247604 0.5254745 -0.37043 -5.278152 0.4825592 -0.4337807 -5.351753 0.4648933 -0.4600182 -5.360626 -0.5181198 0.2694778 -5.427155 -0.5562935 0.3333359 -5.353523 -0.5140457 0.2626648 -5.43026 -0.5544472 0.341671 -5.457603 -0.5381927 0.4150848 -5.454422 -0.5311432 0.419754 -5.42701 -0.4703484 0.4600258 -5.419548 -0.4624748 0.4581871 -5.353302 -0.392498 0.4418373 -5.346291 -0.3884735 0.4351006 -5.279663 -0.3502464 0.3711662 -5.276932 -0.3518753 0.3638344 -5.249229 -0.3683472 0.2894173 -5.251915 -0.3742981 0.2854767 -5.279823 -0.4361954 0.2444763 -5.286491 -0.4432411 0.2461205</float_array>
+        <source id="geom-Box001-positions">
+          <float_array id="geom-Box001-positions-array" count="24">-12.32118 -10.4619 0 12.32118 -10.4619 0 -12.32118 10.4619 0 12.32118 10.4619 0 -12.32118 -10.4619 26.12025 12.32118 -10.4619 26.12025 -12.32118 10.4619 26.12025 12.32118 10.4619 26.12025</float_array>
           <technique_common>
-            <accessor source="#geom-TS193_-positions-array" count="48" stride="3">
+            <accessor source="#geom-Box001-positions-array" count="8" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <source id="geom-TS193_-normals">
-          <float_array id="geom-TS193_-normals-array" count="288">0.9999983 -0.001837977 0 0.9999983 -0.001837977 0 0.9999983 -0.001837977 0 0.9999984 -0.001803173 0 0.9999984 -0.001803173 0 0.9999984 -0.001803299 0 0.9999984 -0.001803299 0 0.9999984 -0.001803299 0 -0.003051769 -0.8572349 -0.5149166 -0.002983769 -0.7412932 -0.6711746 -0.002780691 -0.5943379 -0.8042105 -0.002969675 -0.9875206 -0.1574618 -0.002761126 -0.9999762 -0.006316075 -0.002427591 -0.9765159 0.2154314 -0.002761126 -0.9999762 -0.006316075 -0.002969675 -0.9875206 -0.1574618 -0.001521884 -0.8286656 0.5597419 -0.001521847 -0.8291648 0.5590023 -3.46803e-4 -0.5520403 0.8338174 -0.001521847 -0.8291648 0.5590023 -0.001521884 -0.8286656 0.5597419 9.05416e-4 -0.1817101 0.9833516 3.47846e-4 -0.3482284 0.9374096 0.001942007 0.2264519 0.9740204 3.47846e-4 -0.3482284 0.9374096 9.05416e-4 -0.1817101 0.9833516 0.002780691 0.5943379 0.8042105 0.002436698 0.4252039 0.9050943 0.003190427 0.8572192 0.5149418 0.002436698 0.4252039 0.9050943 0.002780691 0.5943379 0.8042105 0.002969747 0.9876134 0.1568786 0.003040879 0.9618162 0.2736791 0.002358152 0.9765178 -0.2154241 0.003040879 0.9618162 0.2736791 0.002969747 0.9876134 0.1568786 0.00152189 0.8282197 -0.5604016 0.001521901 0.827983 -0.5607511 4.16163e-4 0.5520403 -0.8338174 0.001521901 0.827983 -0.5607511 0.00152189 0.8282197 -0.5604016 -9.0539e-4 0.1811127 -0.983462 -0.001184624 0.04651392 -0.998917 -0.002011364 -0.2264518 -0.9740203 -0.001184624 0.04651392 -0.998917 -9.0539e-4 0.1811127 -0.983462 -0.002780691 -0.5943379 -0.8042105 -0.002983769 -0.7412932 -0.6711746 0.001525844 0.8275623 -0.5613719 0.001525888 0.8275514 -0.561388 0.001525888 0.8275514 -0.561388 0.001525888 0.8275514 -0.561388 0.001525888 0.8275514 -0.561388 0.001525844 0.8275623 -0.5613719 0.001525888 0.8275514 -0.561388 0.001525888 0.8275514 -0.561388 -0.3965299 -0.5447518 -0.7389245 -0.8265046 -0.3372858 -0.4506977 -0.7128981 -0.4205384 -0.5611808 -0.001040379 -0.5939177 -0.8045251 -0.2020525 -0.5882252 -0.7830491 -0.929389 -0.218129 -0.2977513 -0.9999014 0.009537073 0.01030004 -0.9999466 -0.004993837 -0.00905133 -0.7128981 -0.4205384 -0.5611808 -0.8265046 -0.3372858 -0.4506977 -0.9285881 0.2215003 0.2977613 -0.8189338 0.3457859 0.4580171 -0.7231424 0.4158677 0.5514699 -0.9999466 -0.004993837 -0.00905133 -0.9999014 0.009537073 0.01030004 -0.3945775 0.546194 0.7389051 -0.2024647 0.588663 0.7826135 0.001040379 0.5939177 0.8045251 -0.7231424 0.4158677 0.5514699 -0.8189338 0.3457859 0.4580171 0.3965809 0.5447612 0.7388903 0.6180544 0.4716146 0.6289583 0.7246943 0.4132035 0.5514355 0.001040379 0.5939177 0.8045251 -0.2024647 0.588663 0.7826135 0.9293795 0.218143 0.2977704 0.9999745 0.003017194 0.006485234 0.999922 -0.008600286 -0.009051108 0.7246943 0.4132035 0.5514355 0.6180544 0.4716146 0.6289583 0.9285976 -0.2215026 -0.2977297 0.6269258 -0.4688574 -0.6222032 0.711363 -0.4231378 -0.5611748 0.999922 -0.008600286 -0.009051108 0.9999745 0.003017194 0.006485234 0.394529 -0.5462229 -0.7389095 -0.2020525 -0.5882252 -0.7830491 -0.001040379 -0.5939177 -0.8045251 0.711363 -0.4231378 -0.5611748 0.6269258 -0.4688574 -0.6222032</float_array>
+        <source id="geom-Box001-normals">
+          <float_array id="geom-Box001-normals-array" count="72">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0</float_array>
           <technique_common>
-            <accessor source="#geom-TS193_-normals-array" count="96" stride="3">
+            <accessor source="#geom-Box001-normals-array" count="24" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <source id="geom-TS193_-map1">
-          <float_array id="geom-TS193_-map1-array" count="78">0.7149656 0.1053076 0 0.7179861 0.1053076 0 0.7210068 0.1053076 0 0.7240273 0.1053076 0 0.7270479 0.1053076 0 0.7300684 0.1053076 0 0.733089 0.1053076 0 0.7361096 0.1053076 0 0.7358183 0.09112866 0 0.7361096 0.09121221 0 0.733089 0.09034564 0 0.7327809 0.09030904 0 0.7300684 0.0899867 0 0.7297545 0.09002401 0 0.7270479 0.09034564 0 0.7267423 0.09043328 0 0.7240273 0.09121221 0 0.7237394 0.09129478 0 0.7210068 0.09207878 0 0.7207357 0.09211099 0 0.7179861 0.09243772 0 0.7177212 0.09240624 0 0.7149656 0.09207878 0 0.7388568 0.09200037 0 0.7391301 0.09207878 0 0.7391301 0.1053076 0</float_array>
+        <source id="geom-Box001-map1">
+          <float_array id="geom-Box001-map1-array" count="36">0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0</float_array>
           <technique_common>
-            <accessor source="#geom-TS193_-map1-array" count="26" stride="3">
+            <accessor source="#geom-Box001-map1-array" count="12" stride="3">
               <param name="S" type="float"/>
               <param name="T" type="float"/>
               <param name="P" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <vertices id="geom-TS193_-vertices">
-          <input semantic="POSITION" source="#geom-TS193_-positions"/>
+        <vertices id="geom-Box001-vertices">
+          <input semantic="POSITION" source="#geom-Box001-positions"/>
         </vertices>
-        <triangles material="Phong2" count="60">
-          <input semantic="VERTEX" source="#geom-TS193_-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#geom-TS193_-normals" offset="1"/>
-          <input semantic="TEXCOORD" source="#geom-TS193_-map1" offset="2" set="0"/>
-          <p>0 0 0 1 1 1 2 2 2 0 0 0 2 2 2 3 3 3 0 0 0 3 3 3 4 4 4 0 0 0 4 4 4 5 5 5 0 0 0 5 5 5 6 6 6 0 0 0 6 6 6 7 7 7 8 8 8 9 9 9 7 10 7 8 8 8 7 10 7 6 11 6 8 8 8 6 11 6 10 12 10 11 13 11 10 14 10 6 15 6 11 13 11 6 15 6 5 16 5 11 13 11 5 16 5 12 17 12 13 18 13 12 19 12 5 20 5 13 18 13 5 20 5 4 21 4 13 18 13 4 21 4 14 22 14 15 23 15 14 24 14 4 25 4 15 23 15 4 25 4 3 26 3 15 23 15 3 26 3 16 27 16 17 28 17 16 29 16 3 30 3 17 28 17 3 30 3 2 31 2 17 28 17 2 31 2 18 32 18 19 33 19 18 34 18 2 35 2 19 33 19 2 35 2 1 36 1 19 33 19 1 36 1 20 37 20 21 38 21 20 39 20 1 40 1 21 38 21 1 40 1 0 41 0 21 38 21 0 41 0 22 42 22 23 43 23 22 44 24 0 45 25 23 43 23 0 45 25 7 46 7 23 43 23 7 46 7 9 47 9 24 48 6 25 49 5 26 50 4 24 48 6 26 50 4 27 51 3 24 48 6 27 51 3 28 52 2 24 48 6 28 52 2 29 53 1 24 48 6 29 53 1 30 54 25 24 48 6 30 54 25 31 55 7 32 56 8 33 57 10 24 58 6 32 56 8 24 58 6 31 59 7 32 56 8 31 59 7 34 60 9 35 61 11 36 62 12 25 63 5 35 61 11 25 63 5 24 64 6 35 61 11 24 64 6 33 65 10 37 66 13 38 67 14 26 68 4 37 66 13 26 68 4 25 69 5 37 66 13 25 69 5 36 70 12 39 71 15 40 72 16 27 73 3 39 71 15 27 73 3 26 74 4 39 71 15 26 74 4 38 75 14 41 76 17 42 77 18 28 78 2 41 76 17 28 78 2 27 79 3 41 76 17 27 79 3 40 80 16 43 81 19 44 82 20 29 83 1 43 81 19 29 83 1 28 84 2 43 81 19 28 84 2 42 85 18 45 86 21 46 87 22 30 88 0 45 86 21 30 88 0 29 89 1 45 86 21 29 89 1 44 90 20 47 91 23 34 92 9 31 93 7 47 91 23 31 93 7 30 94 25 47 91 23 30 94 25 46 95 24</p>
+        <triangles material="ColorMaterial" count="12">
+          <input semantic="VERTEX" source="#geom-Box001-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-Box001-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-Box001-map1" offset="2" set="0"/>
+          <p>0 0 9 2 1 11 3 2 10 3 2 10 1 3 8 0 0 9 4 4 8 5 5 9 7 6 11 7 6 11 6 7 10 4 4 8 0 8 4 1 9 5 5 10 7 5 10 7 4 11 6 0 8 4 1 12 0 3 13 1 7 14 3 7 14 3 5 15 2 1 12 0 3 16 4 2 17 5 6 18 7 6 18 7 7 19 6 3 16 4 2 20 0 0 21 1 4 22 3 4 22 3 6 23 2 2 20 0</p>
         </triangles>
       </mesh>
-    </geometry>
-    <geometry id="geom-Line112" name="Line112">
-      <spline closed="0">
-        <source id="geom-Line112-positions">
-          <float_array id="geom-Line112-positions-array" count="9">-0.03567028 -0.03959618 1.45687e-9 0.005555153 0.05936696 1.71504e-11 0.03256512 -0.04982065 2.10818e-9</float_array>
-          <technique_common>
-            <accessor source="#geom-Line112-positions-array" count="3" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line112-intangents">
-          <float_array id="geom-Line112-intangents-array" count="9">-0.03567028 -0.03959618 1.45687e-9 -0.03076077 0.05857425 1.10485e-9 0.03721809 0.005169511 5.18817e-10</float_array>
-          <technique_common>
-            <accessor source="#geom-Line112-intangents-array" count="3" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line112-outtangents">
-          <float_array id="geom-Line112-outtangents-array" count="9">-0.03321552 0.009489035 1.28086e-9 0.04187107 0.06015967 -1.07054e-9 0.03256512 -0.04982065 2.10818e-9</float_array>
-          <technique_common>
-            <accessor source="#geom-Line112-outtangents-array" count="3" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line112-interpolations">
-          <Name_array id="geom-Line112-interpolations-array" count="3">BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line112-interpolations-array" count="3" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line112-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line112-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line112-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line112-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line002" name="Line002">
-      <spline closed="0">
-        <source id="geom-Line002-positions">
-          <float_array id="geom-Line002-positions-array" count="9">-0.03567028 -0.03959618 1.45687e-9 0.005555153 0.05936696 1.71504e-11 0.03256512 -0.04982065 2.10818e-9</float_array>
-          <technique_common>
-            <accessor source="#geom-Line002-positions-array" count="3" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line002-intangents">
-          <float_array id="geom-Line002-intangents-array" count="9">-0.03567028 -0.03959618 1.45687e-9 -0.03076077 0.05857425 1.10485e-9 0.03721809 0.005169511 5.18817e-10</float_array>
-          <technique_common>
-            <accessor source="#geom-Line002-intangents-array" count="3" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line002-outtangents">
-          <float_array id="geom-Line002-outtangents-array" count="9">-0.03321552 0.009489035 1.28086e-9 0.04187107 0.06015967 -1.07054e-9 0.03256512 -0.04982065 2.10818e-9</float_array>
-          <technique_common>
-            <accessor source="#geom-Line002-outtangents-array" count="3" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line002-interpolations">
-          <Name_array id="geom-Line002-interpolations-array" count="3">BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line002-interpolations-array" count="3" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line002-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line002-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line002-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line002-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line034" name="Line034">
-      <spline closed="0">
-        <source id="geom-Line034-positions">
-          <float_array id="geom-Line034-positions-array" count="21">6.537343 -15.99052 1.523957 3.581495 -22.32149 0.9534268 -16.97904 -26.34004 -19.71579 -28.07395 11.62312 -14.99872 -18.53592 38.81714 4.03152 -6.993379 73.24686 25.49932 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line034-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line034-intangents">
-          <float_array id="geom-Line034-intangents-array" count="21">6.537343 -15.99052 1.523957 6.277295 -20.04197 2.83439 -9.812368 -32.92067 -15.16022 -30.20604 5.637632 -18.78594 -19.77857 35.56506 1.354277 -9.49468 70.86553 27.68079 -5.376795 98.02132 -10.34965</float_array>
-          <technique_common>
-            <accessor source="#geom-Line034-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line034-outtangents">
-          <float_array id="geom-Line034-outtangents-array" count="21">6.407319 -18.01625 2.179174 2.32257 -23.38601 0.07502627 -25.15873 -18.82923 -24.91528 -24.07381 22.85282 -7.893326 -17.29327 42.06921 6.708763 -4.602094 75.52345 23.41379 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line034-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line034-interpolations">
-          <Name_array id="geom-Line034-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line034-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line034-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line034-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line034-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line034-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line035" name="Line035">
-      <spline closed="0">
-        <source id="geom-Line035-positions">
-          <float_array id="geom-Line035-positions-array" count="21">6.502389 -15.6982 1.728645 3.000226 -23.75311 -0.7840961 -15.23524 -16.40812 -15.16426 -29.73435 12.10191 -14.90684 -21.33124 39.43069 4.461132 -9.768382 73.33784 28.50896 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line035-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line035-intangents">
-          <float_array id="geom-Line035-intangents-array" count="21">6.502389 -15.6982 1.728645 4.483196 -22.89969 2.477409 -7.403658 -23.37902 -10.92794 -31.81992 5.173714 -19.36831 -22.57389 36.17861 1.783888 -12.30647 69.42295 28.51055 -7.363713 98.93529 -7.707999</float_array>
-          <technique_common>
-            <accessor source="#geom-Line035-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line035-outtangents">
-          <float_array id="geom-Line035-outtangents-array" count="21">5.492792 -19.29894 2.103027 2.279971 -24.16761 -2.36816 -23.52847 -9.026296 -19.65031 -25.6793 25.57263 -6.232265 -20.08859 42.68276 7.138374 -7.34193 77.08053 28.50745 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line035-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line035-interpolations">
-          <Name_array id="geom-Line035-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line035-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line035-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line035-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line035-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line035-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line050" name="Line050">
-      <spline closed="0">
-        <source id="geom-Line050-positions">
-          <float_array id="geom-Line050-positions-array" count="21">6.537343 -15.99052 1.523957 3.581495 -22.32149 0.9534268 -16.97904 -26.34004 -19.71579 -28.07395 11.62312 -14.99872 -18.53592 38.81714 4.03152 -6.993379 73.24686 25.49932 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line050-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line050-intangents">
-          <float_array id="geom-Line050-intangents-array" count="21">6.537343 -15.99052 1.523957 6.277295 -20.04197 2.83439 -9.812368 -32.92067 -15.16022 -30.20604 5.637632 -18.78594 -19.77857 35.56506 1.354277 -9.49468 70.86553 27.68079 -5.376795 98.02132 -10.34965</float_array>
-          <technique_common>
-            <accessor source="#geom-Line050-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line050-outtangents">
-          <float_array id="geom-Line050-outtangents-array" count="21">6.407319 -18.01625 2.179174 2.32257 -23.38601 0.07502627 -25.15873 -18.82923 -24.91528 -24.07381 22.85282 -7.893326 -17.29327 42.06921 6.708763 -4.602094 75.52345 23.41379 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line050-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line050-interpolations">
-          <Name_array id="geom-Line050-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line050-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line050-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line050-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line050-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line050-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line051" name="Line051">
-      <spline closed="0">
-        <source id="geom-Line051-positions">
-          <float_array id="geom-Line051-positions-array" count="21">6.502389 -15.6982 1.728645 3.000226 -23.75311 -0.7840961 -15.23524 -16.40812 -15.16426 -29.73435 12.10191 -14.90684 -21.33124 39.43069 4.461132 -9.768382 73.33784 28.50896 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line051-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line051-intangents">
-          <float_array id="geom-Line051-intangents-array" count="21">6.502389 -15.6982 1.728645 4.483196 -22.89969 2.477409 -7.403658 -23.37902 -10.92794 -31.81992 5.173714 -19.36831 -22.57389 36.17861 1.783888 -12.30647 69.42295 28.51055 -7.363713 98.93529 -7.707999</float_array>
-          <technique_common>
-            <accessor source="#geom-Line051-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line051-outtangents">
-          <float_array id="geom-Line051-outtangents-array" count="21">5.492792 -19.29894 2.103027 2.279971 -24.16761 -2.36816 -23.52847 -9.026296 -19.65031 -25.6793 25.57263 -6.232265 -20.08859 42.68276 7.138374 -7.34193 77.08053 28.50745 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line051-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line051-interpolations">
-          <Name_array id="geom-Line051-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line051-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line051-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line051-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line051-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line051-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line066" name="Line066">
-      <spline closed="0">
-        <source id="geom-Line066-positions">
-          <float_array id="geom-Line066-positions-array" count="21">6.537343 -15.99052 1.523957 3.581495 -22.32149 0.9534268 -16.97904 -26.34004 -19.71579 -28.07395 11.62312 -14.99872 -18.53592 38.81714 4.03152 -6.993379 73.24686 25.49932 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line066-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line066-intangents">
-          <float_array id="geom-Line066-intangents-array" count="21">6.537343 -15.99052 1.523957 6.277295 -20.04197 2.83439 -9.812368 -32.92067 -15.16022 -30.20604 5.637632 -18.78594 -19.77857 35.56506 1.354277 -9.49468 70.86553 27.68079 -5.376795 98.02132 -10.34965</float_array>
-          <technique_common>
-            <accessor source="#geom-Line066-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line066-outtangents">
-          <float_array id="geom-Line066-outtangents-array" count="21">6.407319 -18.01625 2.179174 2.32257 -23.38601 0.07502627 -25.15873 -18.82923 -24.91528 -24.07381 22.85282 -7.893326 -17.29327 42.06921 6.708763 -4.602094 75.52345 23.41379 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line066-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line066-interpolations">
-          <Name_array id="geom-Line066-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line066-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line066-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line066-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line066-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line066-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line067" name="Line067">
-      <spline closed="0">
-        <source id="geom-Line067-positions">
-          <float_array id="geom-Line067-positions-array" count="21">6.502389 -15.6982 1.728645 3.000226 -23.75311 -0.7840961 -15.23524 -16.40812 -15.16426 -29.73435 12.10191 -14.90684 -21.33124 39.43069 4.461132 -9.768382 73.33784 28.50896 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line067-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line067-intangents">
-          <float_array id="geom-Line067-intangents-array" count="21">6.502389 -15.6982 1.728645 4.483196 -22.89969 2.477409 -7.403658 -23.37902 -10.92794 -31.81992 5.173714 -19.36831 -22.57389 36.17861 1.783888 -12.30647 69.42295 28.51055 -7.363713 98.93529 -7.707999</float_array>
-          <technique_common>
-            <accessor source="#geom-Line067-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line067-outtangents">
-          <float_array id="geom-Line067-outtangents-array" count="21">5.492792 -19.29894 2.103027 2.279971 -24.16761 -2.36816 -23.52847 -9.026296 -19.65031 -25.6793 25.57263 -6.232265 -20.08859 42.68276 7.138374 -7.34193 77.08053 28.50745 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line067-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line067-interpolations">
-          <Name_array id="geom-Line067-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line067-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line067-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line067-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line067-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line067-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line082" name="Line082">
-      <spline closed="0">
-        <source id="geom-Line082-positions">
-          <float_array id="geom-Line082-positions-array" count="21">6.537343 -15.99052 1.523957 3.581495 -22.32149 0.9534268 -16.97904 -26.34004 -19.71579 -28.07395 11.62312 -14.99872 -18.53592 38.81714 4.03152 -6.993379 73.24686 25.49932 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line082-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line082-intangents">
-          <float_array id="geom-Line082-intangents-array" count="21">6.537343 -15.99052 1.523957 6.277295 -20.04197 2.83439 -9.812368 -32.92067 -15.16022 -30.20604 5.637632 -18.78594 -19.77857 35.56506 1.354277 -9.49468 70.86553 27.68079 -5.376795 98.02132 -10.34965</float_array>
-          <technique_common>
-            <accessor source="#geom-Line082-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line082-outtangents">
-          <float_array id="geom-Line082-outtangents-array" count="21">6.407319 -18.01625 2.179174 2.32257 -23.38601 0.07502627 -25.15873 -18.82923 -24.91528 -24.07381 22.85282 -7.893326 -17.29327 42.06921 6.708763 -4.602094 75.52345 23.41379 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line082-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line082-interpolations">
-          <Name_array id="geom-Line082-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line082-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line082-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line082-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line082-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line082-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line083" name="Line083">
-      <spline closed="0">
-        <source id="geom-Line083-positions">
-          <float_array id="geom-Line083-positions-array" count="21">6.502389 -15.6982 1.728645 3.000226 -23.75311 -0.7840961 -15.23524 -16.40812 -15.16426 -29.73435 12.10191 -14.90684 -21.33124 39.43069 4.461132 -9.768382 73.33784 28.50896 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line083-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line083-intangents">
-          <float_array id="geom-Line083-intangents-array" count="21">6.502389 -15.6982 1.728645 4.483196 -22.89969 2.477409 -7.403658 -23.37902 -10.92794 -31.81992 5.173714 -19.36831 -22.57389 36.17861 1.783888 -12.30647 69.42295 28.51055 -7.363713 98.93529 -7.707999</float_array>
-          <technique_common>
-            <accessor source="#geom-Line083-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line083-outtangents">
-          <float_array id="geom-Line083-outtangents-array" count="21">5.492792 -19.29894 2.103027 2.279971 -24.16761 -2.36816 -23.52847 -9.026296 -19.65031 -25.6793 25.57263 -6.232265 -20.08859 42.68276 7.138374 -7.34193 77.08053 28.50745 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line083-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line083-interpolations">
-          <Name_array id="geom-Line083-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line083-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line083-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line083-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line083-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line083-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line098" name="Line098">
-      <spline closed="0">
-        <source id="geom-Line098-positions">
-          <float_array id="geom-Line098-positions-array" count="21">6.537343 -15.99052 1.523957 3.581495 -22.32149 0.9534268 -16.97904 -26.34004 -19.71579 -28.07395 11.62312 -14.99872 -18.53592 38.81714 4.03152 -6.993379 73.24686 25.49932 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line098-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line098-intangents">
-          <float_array id="geom-Line098-intangents-array" count="21">6.537343 -15.99052 1.523957 6.277295 -20.04197 2.83439 -9.812368 -32.92067 -15.16022 -30.20604 5.637632 -18.78594 -19.77857 35.56506 1.354277 -9.49468 70.86553 27.68079 -5.376795 98.02132 -10.34965</float_array>
-          <technique_common>
-            <accessor source="#geom-Line098-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line098-outtangents">
-          <float_array id="geom-Line098-outtangents-array" count="21">6.407319 -18.01625 2.179174 2.32257 -23.38601 0.07502627 -25.15873 -18.82923 -24.91528 -24.07381 22.85282 -7.893326 -17.29327 42.06921 6.708763 -4.602094 75.52345 23.41379 -6.151497 120.5192 -44.1131</float_array>
-          <technique_common>
-            <accessor source="#geom-Line098-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line098-interpolations">
-          <Name_array id="geom-Line098-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line098-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line098-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line098-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line098-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line098-interpolations"/>
-        </control_vertices>
-      </spline>
-    </geometry>
-    <geometry id="geom-Line099" name="Line099">
-      <spline closed="0">
-        <source id="geom-Line099-positions">
-          <float_array id="geom-Line099-positions-array" count="21">6.502389 -15.6982 1.728645 3.000226 -23.75311 -0.7840961 -15.23524 -16.40812 -15.16426 -29.73435 12.10191 -14.90684 -21.33124 39.43069 4.461132 -9.768382 73.33784 28.50896 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line099-positions-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line099-intangents">
-          <float_array id="geom-Line099-intangents-array" count="21">6.502389 -15.6982 1.728645 4.483196 -22.89969 2.477409 -7.403658 -23.37902 -10.92794 -31.81992 5.173714 -19.36831 -22.57389 36.17861 1.783888 -12.30647 69.42295 28.51055 -7.363713 98.93529 -7.707999</float_array>
-          <technique_common>
-            <accessor source="#geom-Line099-intangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line099-outtangents">
-          <float_array id="geom-Line099-outtangents-array" count="21">5.492792 -19.29894 2.103027 2.279971 -24.16761 -2.36816 -23.52847 -9.026296 -19.65031 -25.6793 25.57263 -6.232265 -20.08859 42.68276 7.138374 -7.34193 77.08053 28.50745 -7.385496 120.79 -43.92345</float_array>
-          <technique_common>
-            <accessor source="#geom-Line099-outtangents-array" count="7" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-Line099-interpolations">
-          <Name_array id="geom-Line099-interpolations-array" count="7">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
-          <technique_common>
-            <accessor source="#geom-Line099-interpolations-array" count="7" stride="1">
-              <param name="INTERPOLATION" type="name"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <control_vertices>
-          <input semantic="POSITION" source="#geom-Line099-positions"/>
-          <input semantic="IN_TANGENT" source="#geom-Line099-intangents"/>
-          <input semantic="OUT_TANGENT" source="#geom-Line099-outtangents"/>
-          <input semantic="INTERPOLATION" source="#geom-Line099-interpolations"/>
-        </control_vertices>
-      </spline>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <max_box>
+            <length sid="length" type="float">20.9238</length>
+            <width sid="width" type="float">24.64236</width>
+            <height sid="height" type="float">26.12026</height>
+            <widthsegments sid="widthsegments" type="int">1</widthsegments>
+            <lengthsegments sid="lengthsegments" type="int">1</lengthsegments>
+            <heightsegments sid="heightsegments" type="int">1</heightsegments>
+            <generateuvs sid="generateuvs" type="int">1</generateuvs>
+          </max_box>
+        </technique>
+      </extra>
     </geometry>
   </library_geometries>
+  <library_cameras>
+    <camera id="Camera001-camera" name="Camera001">
+      <optics>
+        <technique_common>
+          <perspective>
+            <xfov>45</xfov>
+            <znear>1</znear>
+            <zfar>1000</zfar>
+          </perspective>
+        </technique_common>
+      </optics>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <target sid="target" type="string">#Camera001.Target</target>
+        </technique>
+      </extra>
+    </camera>
+  </library_cameras>
   <library_lights>
     <light id="EnvironmentAmbientLight" name="EnvironmentAmbientLight">
       <technique_common>
@@ -714,24 +163,17 @@
       </technique_common>
     </light>
   </library_lights>
-  <library_images>
-    <image id="T_zarand_1_jpg">
-      <init_from>./images/0_T_zarand_1.jpg</init_from>
-    </image>
-  </library_images>
   <library_visual_scenes>
     <visual_scene id="MaxScene">
       <node name="EnvironmentAmbientLight">
         <instance_light url="#EnvironmentAmbientLight"/>
       </node>
-      <node id="node-TS193_" name="TS193_">
-        <translate>-1507.697 265.2888 55.98182</translate>
-        <instance_geometry url="#geom-TS193_">
+      <node id="node-Box001" name="Box001">
+        <translate>16.60542 -28.07486 0</translate>
+        <instance_geometry url="#geom-Box001">
           <bind_material>
             <technique_common>
-              <instance_material symbol="Phong2" target="#Phong2-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
+              <instance_material symbol="ColorMaterial" target="#ColorEffectR224G86B86-material"/>
             </technique_common>
           </bind_material>
         </instance_geometry>
@@ -744,18 +186,9 @@
           </technique>
         </extra>
       </node>
-      <node id="node-TS193-ins001" name="TS193-ins001">
-        <translate>-1507.697 263.898 56.43935</translate>
-        <rotate>-1 0 0 -46.83096</rotate>
-        <instance_geometry url="#geom-TS193_">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="Phong2" target="#Phong2-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
+      <node id="node-Camera001" name="Camera001">
+        <matrix>-0.8287638 0 -0.5595985 -186.5583 -0.5595985 0 0.8287638 302.621 0 1 0 29.61085 0 0 0 1</matrix>
+        <instance_camera url="#Camera001-camera"/>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
@@ -765,60 +198,8 @@
           </technique>
         </extra>
       </node>
-      <node id="node-TS193-ins002" name="TS193-ins002">
-        <translate>-1507.697 262.3051 56.7542</translate>
-        <rotate>-1 0 0 -79.67645</rotate>
-        <instance_geometry url="#geom-TS193_">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="Phong2" target="#Phong2-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
-      <node id="node-TS193-ins003" name="TS193-ins003">
-        <translate>-1507.697 260.9263 56.02227</translate>
-        <rotate>-1 0 0 -5.748957</rotate>
-        <instance_geometry url="#geom-TS193_">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="Phong2" target="#Phong2-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
-      <node id="node-TS193-ins004" name="TS193-ins004">
-        <translate>-1507.698 258.6175 55.84955</translate>
-        <rotate>1 0 0 -88.65993</rotate>
-        <instance_geometry url="#geom-TS193_">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="Phong2" target="#Phong2-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
+      <node id="node-Camera001.Target" name="Camera001.Target">
+        <translate>1.814841 23.64087 29.61085</translate>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
