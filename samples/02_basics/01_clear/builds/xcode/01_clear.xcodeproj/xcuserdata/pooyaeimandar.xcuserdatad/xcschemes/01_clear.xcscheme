@@ -14,52 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
-               BuildableName = "01_async"
-               BlueprintName = "01_async"
-               ReferencedContainer = "container:../../../../01_system/01_async/builds/xcode/01_async.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C2803461E61C73600048A80"
-               BuildableName = "02_window.app"
-               BlueprintName = "02_window"
-               ReferencedContainer = "container:../../../../01_System/02_window/builds/xcode/02_window.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2C2803461E61C73600048A80"
-               BuildableName = "01_clear_screen.app"
-               BlueprintName = "01_clear_screen"
-               ReferencedContainer = "container:01_clear_screen.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2C2803461E61C73600048A80"
-               BuildableName = "02_shader.app"
-               BlueprintName = "02_shader"
-               ReferencedContainer = "container:../../../02_shader/builds/xcode/02_shader.xcodeproj">
+               BuildableName = "01_clear.app"
+               BlueprintName = "01_clear"
+               ReferencedContainer = "container:01_clear.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -75,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "01_clear_screen.app"
-            BlueprintName = "01_clear_screen"
-            ReferencedContainer = "container:01_clear_screen.xcodeproj">
+            BuildableName = "01_clear.app"
+            BlueprintName = "01_clear"
+            ReferencedContainer = "container:01_clear.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -98,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "01_clear_screen.app"
-            BlueprintName = "01_clear_screen"
-            ReferencedContainer = "container:01_clear_screen.xcodeproj">
+            BuildableName = "01_clear.app"
+            BlueprintName = "01_clear"
+            ReferencedContainer = "container:01_clear.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -117,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "01_clear_screen.app"
-            BlueprintName = "01_clear_screen"
-            ReferencedContainer = "container:01_clear_screen.xcodeproj">
+            BuildableName = "01_clear.app"
+            BlueprintName = "01_clear"
+            ReferencedContainer = "container:01_clear.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

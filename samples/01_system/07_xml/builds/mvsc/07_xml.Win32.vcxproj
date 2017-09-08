@@ -31,7 +31,7 @@
   <ItemGroup>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{00CF2709-66E7-4421-9CB2-53763EAF3669}</ProjectGuid>
+    <ProjectGuid>{EA987FE4-68E7-4150-9F24-669D59CC1DE2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>_07_xml</RootNamespace>
     <ProjectName>07_xml.Win32</ProjectName>

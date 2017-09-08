@@ -8,7 +8,7 @@
 */
 
 #include "pch.h"
-#include "scene.h"
+#include <scene.h>
 #include <w_window.h>
 
 using namespace std;
@@ -29,87 +29,73 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 int main(int pArgc, const char * pArgv[])
 #endif
 {
-	/*
-		No need following code, the w_game class construction will be create an instance of logger 
-		
-		//initialize logger, and log in to the output debug window of visual studio and Log folder beside the ".exe".
-		logger.initialize(L"Multiple_Windows_DX11_1.Win32");
-	
-		//log to output file
-		logger.write(L"Starting Wolf");
-	*/
 
-	/*
-		set message procedure function fo windows
-		we use it for handling messages from window, such as keyboard status, on creating window event or etc.
-	*/
 #ifdef __WIN32
-	auto _msg_proc_func = [](HWND pHWND, UINT pMsg, WPARAM pWParam, LPARAM pLParam) -> HRESULT
-	{
-		switch (pMsg)
-		{
-		case WM_CREATE:
-		{
-			logger.write(L"The window just created");
-		}
-		break;
-		//close window on KeyUp event of Escape button
-		case WM_KEYUP:
-		{
-			if (pWParam == VK_ESCAPE)
-			{
-				sWindow->close();
-				logger.write(L"The windows just closed");
-			}
-		}
-		break;
-		}
-
-		return sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
-	};
-#endif
-
-	//Initialize scene & window
-	sScene = make_unique<scene>();
-	sWindow = make_unique<w_window>();
-#ifdef __WIN32
-	sWindow->initialize(_msg_proc_func);
-#else 
-        sWindow->initialize();
-#endif
-        //create window info and add it to the map
-        std::map<int, std::vector<w_window_info>> _windows_info = 
-        { 
-            { 
-                0, { { 
-#ifdef __WIN32
-                    sWindow->get_HWND(), 
-                    sWindow->get_HINSTANCE(), 
-#elif defined(__linux)
-                    sWindow->get_xcb_connection(), 
-                    sWindow->get_xcb_window(),        
-#endif
-                    sWindow->get_width(), 
-                    sWindow->get_height() 
-                   } } 
-            } 
-        };
-        
-        std::function<void(void)> _run_func = [&]()->void
+    auto _msg_proc_func = [](HWND pHWND, UINT pMsg, WPARAM pWParam, LPARAM pLParam) -> HRESULT
+    {
+        switch (pMsg)
         {
-            sScene->run(_windows_info);
-        };
-    
-	//run the main loop of window
-	sWindow->run(_run_func);
+        case WM_CREATE:
+        {
+            logger.write(L"The window just created");
+        }
+        break;
+        //close window on KeyUp event of Escape button
+        case WM_KEYUP:
+        {
+            if (pWParam == VK_ESCAPE)
+            {
+                sWindow->close();
+                logger.write(L"The windows just closed");
+            }
+        }
+        break;
+        }
 
-	//release all
-        _windows_info.clear();
-	release();
+        return sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
+    };
+#endif
 
-	//output a message to the log file
-	logger.write(L"Shutting down Wolf");
+    //Initialize scene & window
+    sScene = make_unique<scene>();
+    sWindow = make_unique<w_window>();
+#ifdef __WIN32
+    sWindow->initialize(_msg_proc_func);
+#else 
+    sWindow->initialize();
+#endif
+    //create window info and add it to the map
+    w_window_info _window_info;
+    _window_info.width = 800;
+    _window_info.height = 800;
+    _window_info.is_full_screen = false;
+    _window_info.v_sync_enable = false;
+    _window_info.swap_chain_format = 44;//using vulkan as render api
 
-	//exit
-	return EXIT_SUCCESS;
+#ifdef __WIN32
+    _window_info.hwnd = sWindow->get_HWND();
+    _window_info.hInstance = sWindow->get_HINSTANCE();
+#elif defined(__linux)
+    _window_info.xcb_connection = sWindow->get_xcb_connection(),
+        _window_info.xcb_window = sWindow->get_xcb_window(),
+#endif
+
+    std::map<int, std::vector<w_window_info>> _windows_info = { {0, {_window_info} } };
+    std::function<void(void)> _run_func = [&]()->void
+    {
+        sScene->run(_windows_info);
+    };
+
+    //run the main loop of window
+    sWindow->run(_run_func);
+
+    //release all
+    _windows_info.clear();
+    release();
+
+    //output a message to the log file
+    logger.write(L"Shutting down Wolf");
+
+    //exit
+    return EXIT_SUCCESS;
 }

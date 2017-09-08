@@ -31,7 +31,7 @@
   <ItemGroup>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{00CF2709-66E7-4421-9CB2-53763EAF3669}</ProjectGuid>
+    <ProjectGuid>{3A22FBB1-C982-4C2A-BDF1-3943535EBAC1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>_08_json</RootNamespace>
     <ProjectName>08_json.Win32</ProjectName>

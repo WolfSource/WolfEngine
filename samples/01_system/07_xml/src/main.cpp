@@ -59,9 +59,12 @@ WOLF_MAIN()
     
 #if defined(__WIN32) || defined(__UWP)
     _save_as_utf8 = true;
+    const wchar_t* _path = L"test.xml";
+#else
+    const char* _path = "test.xml";
 #endif
     
-    if(w_xml::save("test.xml", _save_as_utf8, _root, L"<!-- Sample XML -->") == S_OK)
+    if(w_xml::save(_path, _save_as_utf8, _root, L"<!-- Sample XML -->") == S_OK)
     {
             //Successfully saved, now load it again
             std::ifstream _file("test.xml");
