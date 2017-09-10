@@ -4,7 +4,7 @@
     Website			 : http://WolfSource.io
     Name			 : pch.h
     Description		 : Pre-Compiled header
-    Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
+    Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
 */
 
 #if _MSC_VER > 1000

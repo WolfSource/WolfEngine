@@ -148,8 +148,8 @@ namespace wolf
 			float											aspect_ratio = 0;
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
-			UINT											width = 0;
-			UINT											height = 0;
+			uint32_t										width = 0;
+			uint32_t										height = 0;
 
 #ifdef  __WIN32
 			DWORD											pdwCookie;
@@ -435,7 +435,7 @@ namespace wolf
             bool debug_gpu = false;
         };
 
-        struct w_viewport :
+        struct w_viewport : 
 #ifdef __VULKAN__
         public VkViewport
 #elif defined(__DX12__)
@@ -475,7 +475,28 @@ namespace wolf
         };
 #endif
         
+        struct w_fence
+        {
+#ifdef __VULKAN__
+        VkFence
+#elif defined(__DX12__)
+        ComPtr<ID3D12Fence>
+#endif
+            fence;
+        };
+
+        struct w_semaphore
+        {
+#ifdef __VULKAN__
+            VkSemaphore
+#elif defined(__DX12__)
+            ComPtr<?>
+#endif
+            semaphore;
+        };
+        
 #pragma endregion
+        
 	}
 }
 

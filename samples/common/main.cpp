@@ -4,7 +4,7 @@
 	Website			 : http://WolfSource.io
 	Name			 : main.cpp
 	Description		 : This sample shows how to create a scene in Wolf Engine
-	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
+	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
 */
 
 #include "pch.h"
@@ -77,7 +77,7 @@ int main(int pArgc, const char * pArgv[])
     _window_info.hInstance = sWindow->get_HINSTANCE();
 #elif defined(__linux)
     _window_info.xcb_connection = sWindow->get_xcb_connection(),
-        _window_info.xcb_window = sWindow->get_xcb_window(),
+    _window_info.xcb_window = sWindow->get_xcb_window(),
 #endif
 
     std::map<int, std::vector<w_window_info>> _windows_info = { {0, {_window_info} } };

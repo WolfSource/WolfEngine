@@ -32,5 +32,8 @@
    <Group
       location = "container:"
       name = "02-Basics">
+      <FileRef
+         location = "group:02_basics/01_clear/builds/xcode/01_clear.xcodeproj">
+      </FileRef>
    </Group>
 </Workspace>

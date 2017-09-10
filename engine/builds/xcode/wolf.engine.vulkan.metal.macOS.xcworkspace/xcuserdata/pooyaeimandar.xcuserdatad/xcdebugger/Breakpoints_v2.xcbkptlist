@@ -125,7 +125,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "848"
             endingLineNumber = "848"
-            landmarkName = "enumerate_devices(_Inout_ std::vector&lt;std::shared_ptr&lt;w_graphics_device&gt;&gt;&amp; pGraphicsDevices)"
+            landmarkName = "enumerate_devices(_Inout_ std::vector&lt;std::shared_ptr&lt;w_graphics_device&gt;&gt;&amp; pGraphicsDevices, _In_ wolf::system::w_signal&lt;void(w_graphics_device_manager::w_device_features_extensions&amp;)&gt;* pOnDeviceFeaturesFetched)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -839,7 +839,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "121"
             endingLineNumber = "121"
-            landmarkName = "scene::initialize(_In_ std::map&lt;int, std::vector&lt;w_window_info&gt;&gt; pOutputWindowsInfo)"
+            landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -999,7 +999,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "79"
             endingLineNumber = "79"
-            landmarkName = "scene::~scene()"
+            landmarkName = "scene::initialize(_In_ std::map&lt;int, std::vector&lt;w_window_info&gt;&gt; pOutputWindowsInfo)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1015,7 +1015,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "80"
             endingLineNumber = "80"
-            landmarkName = "scene::~scene()"
+            landmarkName = "scene::initialize(_In_ std::map&lt;int, std::vector&lt;w_window_info&gt;&gt; pOutputWindowsInfo)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

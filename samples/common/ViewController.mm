@@ -2,11 +2,12 @@
 #import <QuartzCore/CAMetalLayer.h>
 #include <MoltenVK/mvk_datatypes.h>
 
-//#include "main_wrapper.h"
-
+#include <wolf.h>
 #include <w_window.h>
-#include "scene.h"
+#include <scene.h>
 #include <utility>
+
+using namespace wolf::system;
 
 //global variable to pass NSView to Vulkan c++ code
 static NSView*                                      sSampleView;
@@ -19,6 +20,8 @@ void init_window(struct w_window_info& pInfo)
 {
     sSampleView.bounds = CGRectMake(0, 0, pInfo.width, pInfo.height);
     pInfo.window = (void*)CFBridgingRetain(sSampleView);
+    
+    WOLF_INIT(L"01_clear");
 }
 
 @implementation ViewController
@@ -34,7 +37,7 @@ void init_window(struct w_window_info& pInfo)
     CVDisplayLinkRelease(sDisplayLink);
 }
 
-//since this is a single-view app, initialize Vulkan during view loading.
+//since this is a single-view app, initialize game during view loading.
 -(void) viewDidLoad
 {
     [super viewDidLoad];
@@ -45,17 +48,14 @@ void init_window(struct w_window_info& pInfo)
     //pass the view to the sample code
     sSampleView = self.view;
     
-    sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String,
-                       "wolf.engine.clear_screen.metal.macOS");
+    std::string _root_dir = [NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String + std::string("../../../");
+    sScene = new scene(wolf::system::convert::string_to_wstring(_root_dir));
     
-    //run the vulkan sample
+    //initialize the information of window
     w_window_info _window_info;
     _window_info.width = 800;
     _window_info.height = 600;
     _window_info.window = nullptr;
-#if defined(__WIN32) || defined(__linux)
-    _window_info.v_sync_enable = true;
-#endif
     
     //call init_window from objective-c and get the pointer to the window
     init_window(_window_info);
@@ -109,6 +109,80 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
     CGSize viewScale = [self convertSizeToBacking: CGSizeMake(1.0, 1.0)];
     layer.contentsScale = MIN(viewScale.width, viewScale.height);
     return layer;
+}
+
+//allow mouse position tracking
+- (void) viewWillMoveToWindow:(NSWindow *)newWindow
+{
+    // Setup a new tracking area when the view is added to the window.
+    NSTrackingArea* trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options: (NSTrackingActiveAlways | NSTrackingInVisibleRect |
+                                                                                                NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved) owner:self userInfo:nil];
+    [self addTrackingArea:trackingArea];
+}
+
+//allow keydown and keyup override to catch keycode
+-(BOOL) acceptsFirstResponder
+{
+    return YES;
+}
+
+//on key down
+- (void)keyDown:(NSEvent*)event
+{
+    switch ([event keyCode])
+    {
+        case 0x02:
+            // D key pressed
+            break;
+        case 0x03:
+            // F key pressed
+            break;
+            // etc.
+    }
+    //wolf::system::w_inputs_manager:: inputs_manager::
+}
+
+//on key down
+- (void)keyUp:(NSEvent*)event
+{
+    switch ([event keyCode])
+    {
+        case 0x02:
+            // D key pressed
+            break;
+        case 0x03:
+            // F key pressed
+            break;
+            // etc.
+    }
+}
+
+// accept first mouse events
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+    return YES;
+}
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    NSPoint _touchPoint = [NSEvent mouseLocation];
+    logger.write(std::to_string(float(_touchPoint.x)));
+    
+}
+
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    NSPoint _touchPoint = [NSEvent mouseLocation];
+    logger.write(std::to_string(float(_touchPoint.x)));
+    
+}
+
+- (void)mouseMoved:(NSEvent *)event
+{
+    NSPoint _touchPoint = [NSEvent mouseLocation];
+    logger.write(std::to_string(float(_touchPoint.x)));
+    
+    [super mouseMoved: event];
 }
 
 @end
