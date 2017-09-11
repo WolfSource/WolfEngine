@@ -1581,6 +1581,14 @@ void c_parser::_iterate_over_nodes(
                 //iterate over sub models
                 if (_node->child_nodes.size())
                 {
+                    if (_node->type == c_node_type::MESH)
+                    {
+                        //pass the root name to the childs
+                        for (size_t i = 0; i < _node->child_nodes.size(); ++i)
+                        {
+                            _node->child_nodes[i]->c_name = _node->c_name;
+                        }
+                    }
                     _iterate_over_nodes(
                         pAMDTootleOptimizing,
                         pInvertNormals,

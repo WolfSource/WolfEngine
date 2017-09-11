@@ -36,7 +36,7 @@ layout (binding = 1, std430) writeonly buffer IndirectDraws
 layout (binding = 2) uniform UBO_In
 {
 	vec4	camera_pos;
-	vec4	is_visible;//only x contains data others are padding
+	vec4	is_visible;//only x and y contains data others are padding
 } i_ubo;
 
 // indirect draw stats

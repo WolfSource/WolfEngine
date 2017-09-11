@@ -257,7 +257,7 @@ void model::_add_data_for_masked_occlusion_culling(_In_ const w_bounding_box& pB
     _moc_data.rotation.y = pBoundingBox.rotation[1];
     _moc_data.rotation.z = pBoundingBox.rotation[2];
 
-    _moc_data.num_of_tris_for_moc = _bb_vertices_size / 9;
+    _moc_data.num_of_tris_for_moc = static_cast<int>(_bb_vertices_size / 9);
     this->_mocs.push_back(_moc_data);
 }
 
@@ -408,10 +408,30 @@ HRESULT model::_load_shader()
         this->cs.unifrom_x256 = new w_uniform<compute_unifrom_x256>();
         if (this->cs.unifrom_x256->load(this->_gDevice) == S_FALSE)
         {
-            V(S_FALSE, "loading compute shader uniform_x128 for " + this->_full_name, _trace);
+            V(S_FALSE, "loading compute shader uniform_x256 for " + this->_full_name, _trace);
             return S_FALSE;
         }
         _param.buffer_info = this->cs.unifrom_x256->get_descriptor_info();
+        break;
+    case 512:
+        this->_visibilities.resize(512);
+        this->cs.unifrom_x512 = new w_uniform<compute_unifrom_x512>();
+        if (this->cs.unifrom_x512->load(this->_gDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader uniform_x512 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x512->get_descriptor_info();
+        break;
+    case 1024:
+        this->_visibilities.resize(1024);
+        this->cs.unifrom_x1024 = new w_uniform<compute_unifrom_x1024>();
+        if (this->cs.unifrom_x1024->load(this->_gDevice) == S_FALSE)
+        {
+            V(S_FALSE, "loading compute shader uniform_x512 for " + this->_full_name, _trace);
+            return S_FALSE;
+        }
+        _param.buffer_info = this->cs.unifrom_x1024->get_descriptor_info();
         break;
     }
     _shader_params.push_back(_param);
@@ -476,12 +496,12 @@ HRESULT model::_load_buffers()
     uint32_t _draw_counts = 1 + static_cast<uint32_t>(this->_instances_transforms.size());
 
     //find nearest pow of 2 for compute shader local batch size
-    this->cs.batch_local_size = pow(2, ceil(log(_draw_counts) / log(2)));
+    this->cs.batch_local_size = static_cast<uint32_t>(pow(2, ceil(log(_draw_counts) / log(2))));
     this->indirect.indirect_draw_commands.resize(cs.batch_local_size);
     
     this->indirect_status.draw_count = _draw_counts;
 
-    for (size_t i = 0; i < _draw_counts; ++i)
+    for (uint32_t i = 0; i < _draw_counts; ++i)
     {
         this->indirect.indirect_draw_commands[i].instanceCount = 1;
         this->indirect.indirect_draw_commands[i].firstInstance = i;
@@ -557,7 +577,7 @@ HRESULT model::_load_buffers()
     _vertex_instances_data[0].rot[2] = this->_transform.rotation[2];
         
     //others are instances
-    _size = this->_instances_transforms.size();
+    _size = static_cast<uint32_t>(this->_instances_transforms.size());
 
     //resize world view projections of root and other instances
     for (size_t i = 0; i <  _size; ++i)
@@ -611,7 +631,7 @@ HRESULT model::_load_buffers()
         return S_FALSE;
     }
 
-    _size = this->_lod_levels.size() * sizeof(lod);
+    _size = static_cast<uint32_t>(this->_lod_levels.size() * sizeof(lod));
     if (_staging_buffers[2].load_as_staging(this->_gDevice, _size) == S_FALSE)
     {
         V(S_FALSE, "loading staging buffer of lod_levels_buffers", _trace, 3);
@@ -658,7 +678,7 @@ HRESULT model::_load_buffers()
         _compute_instance_data[i].pos = glm::vec4(_vertex_instances_data[i].pos, 0.0f);
     }
 
-    _size = _compute_instance_data.size() * sizeof(compute_instance_data);
+    _size = static_cast<uint32_t>(_compute_instance_data.size() * sizeof(compute_instance_data));
     if (_staging_buffers[3].load_as_staging(this->_gDevice, _size) == S_FALSE)
     {
         V(S_FALSE, "loading staging buffer of compute_instance_buffer", _trace, 3);
@@ -1081,6 +1101,18 @@ HRESULT model::submit_compute_shader(_In_ const wolf::content_pipeline::w_first_
         std::memcpy(&this->cs.unifrom_x256->data.is_visible[0],
             this->_visibilities.data(), sizeof(this->cs.unifrom_x256->data.is_visible));
         _hr = this->cs.unifrom_x256->update();
+        break;
+    case 512:
+        this->cs.unifrom_x512->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x512->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x512->data.is_visible));
+        _hr = this->cs.unifrom_x512->update();
+        break;
+    case 1024:
+        this->cs.unifrom_x1024->data.camera_pos = glm::vec4(_camera_pos, 1.0f);
+        std::memcpy(&this->cs.unifrom_x1024->data.is_visible[0],
+            this->_visibilities.data(), sizeof(this->cs.unifrom_x1024->data.is_visible));
+        _hr = this->cs.unifrom_x1024->update();
         break;
     }
 

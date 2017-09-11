@@ -230,6 +230,22 @@ private:
     };
 #pragma pack(pop)
 
+#pragma pack(push,1)
+    struct compute_unifrom_x512
+    {
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible[128];
+    };
+#pragma pack(pop)
+
+#pragma pack(push,1)
+    struct compute_unifrom_x1024
+    {
+        glm::vec4           camera_pos;
+        glm::vec4	        is_visible[256];
+    };
+#pragma pack(pop)
+
 #pragma endregion
 
 #pragma pack(push,1)
@@ -279,6 +295,8 @@ private:
         wolf::graphics::w_uniform<compute_unifrom_x64>*         unifrom_x64;
         wolf::graphics::w_uniform<compute_unifrom_x128>*        unifrom_x128;
         wolf::graphics::w_uniform<compute_unifrom_x256>*        unifrom_x256;
+        wolf::graphics::w_uniform<compute_unifrom_x512>*        unifrom_x512;
+        wolf::graphics::w_uniform<compute_unifrom_x1024>*       unifrom_x1024;
 
         wolf::graphics::w_buffer                                instance_buffer;
 
@@ -299,6 +317,8 @@ private:
             SAFE_RELEASE(this->unifrom_x64);
             SAFE_RELEASE(this->unifrom_x128);
             SAFE_RELEASE(this->unifrom_x256);
+            SAFE_RELEASE(this->unifrom_x512);
+            SAFE_RELEASE(this->unifrom_x1024);
 
             this->instance_buffer.release();
             this->lod_levels_buffers.release();

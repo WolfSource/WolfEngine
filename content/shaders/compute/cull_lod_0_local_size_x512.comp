@@ -34,7 +34,7 @@ layout (binding = 1, std430) writeonly buffer IndirectDraws
 layout (binding = 2) uniform UBO_In
 {
 	vec4	camera_pos;
-	vec4	is_visible;//only x and y contains data others are padding
+	vec4	is_visible[128];
 } i_ubo;
 
 // indirect draw stats
@@ -57,7 +57,7 @@ layout (binding = 4) readonly buffer LODs
 	LOD lods[];
 };
 
-layout (local_size_x = 2) in;
+layout (local_size_x = 512) in;
 
 void main()
 {
@@ -70,7 +70,8 @@ void main()
 		atomicExchange(o_ubo.lod_count[0], 0);
 	}
 	
-	if (i_ubo.is_visible[idx] != 0)
+	uint _base_index = idx % 4;
+	if (i_ubo.is_visible[_base_index][idx - _base_index * 4] != 0)
 	{
 		indirect_draws[idx].instance_count = 1;
 		
