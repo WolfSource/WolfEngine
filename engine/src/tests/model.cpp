@@ -69,13 +69,15 @@ HRESULT model::load(
     }
 
     //generate masked occlusion culling data
-    auto _bbs = pCPModel->get_bounding_boxes();
-    if (_bbs.size())
+    auto _size = pCPModel->get_convex_hulls_count();
+    if (_size)
     {
-        for (auto& _iter : _bbs)
+        std::vector<w_cpipeline_model*> _chs;
+        pCPModel->get_convex_hulls(_chs);
+
+        for (auto& _iter : _chs)
         {
             //generate vertices and indices of bounding box
-            _iter.generate_vertices_indices();
             _add_data_for_masked_occlusion_culling(_iter);
         }
     }
@@ -260,6 +262,60 @@ void model::_add_data_for_masked_occlusion_culling(_In_ const w_bounding_box& pB
     _moc_data.num_of_tris_for_moc = static_cast<int>(_bb_vertices_size / 9);
     this->_mocs.push_back(_moc_data);
 }
+
+void model::_add_data_for_masked_occlusion_culling(_In_ w_cpipeline_model* pConvexHull)
+{
+    
+    auto _size = pConvexHull->get_meshes_count();
+    if (!_size) return;
+    
+    std::vector<w_cpipeline_model::w_mesh*> _meshes;
+    pConvexHull->get_meshes(_meshes);
+
+    auto _transform = pConvexHull->get_transform();
+    auto _pos = _transform.position;
+    auto _rot = _transform.rotation;
+
+    for (auto& _iter : _meshes)
+    {
+        moc_data _moc_data;
+
+        clipspace_vertex _cv;
+        auto _vert_size = _iter->vertices.size();
+        for (uint32_t i = 0; i < _vert_size; i++)
+        {
+            auto _vertex_pos = _iter->vertices[i].position;
+            _cv.x = _vertex_pos[0];
+            _cv.y = _vertex_pos[1];
+            _cv.z = 0;
+            _cv.w = _vertex_pos[2];
+
+            _moc_data.vertices.push_back(_cv);
+            //_moc_data.indices.push_back(i);
+        }
+
+        _size = _iter->indices.size();
+        for (uint32_t i = 0; i < _size; i++)
+        {
+            _moc_data.indices.push_back(_iter->indices[i]);
+        }
+
+        auto _pos = _iter->bounding_box.position;
+        auto _rot = _iter->bounding_box.rotation;
+
+        _moc_data.position.x = _pos[0];
+        _moc_data.position.y = _pos[1];
+        _moc_data.position.z = _pos[2];
+
+        _moc_data.rotation.x = _rot[0];
+        _moc_data.rotation.y = _rot[1];
+        _moc_data.rotation.z = _rot[2];
+
+        _moc_data.num_of_tris_for_moc = static_cast<int>(_vert_size / 3);
+        this->_mocs.push_back(_moc_data);
+    }
+}
+
 
 HRESULT model::_load_shader()
 {

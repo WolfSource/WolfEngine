@@ -204,7 +204,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
                 std::copy(_from, _to, _nor.begin());
             }
 
-            //check if vertex already exists, make sure add vertex that has different UV
+            //check if vertex already exists, make sure add vertex that has different uv or normal
             auto _iter = std::find(_indices_data.begin(), _indices_data.end(), _vertex_index);
             if (_iter == _indices_data.end())
             {
@@ -248,53 +248,66 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 
                 _vertices_data.push_back(_vertex);
             }
-            else if (_iter != _indices_data.end() && _tex.size() && 
-                _vertex_index < _vertices_data.size() && 
-                (_vertices_data[_vertex_index].uv[0] != _tex[0] || _vertices_data[_vertex_index].uv[1] != _tex[1]))
+            else
             {
-                //duplicated UV for vertex
-
-                if (pZUp)
+                if (_vertex_index < _vertices_data.size())
                 {
-                    std::swap(_pos[1], _pos[2]);
-                    _pos[2] *= -1;
+                    bool _do_it = false;
 
-                    std::swap(_nor[1], _nor[2]);
-                    _nor[2] *= -1;
+                    if (_tex.size() && ((_vertices_data[_vertex_index].uv[0] != _tex[0] || _vertices_data[_vertex_index].uv[1] != _tex[1])))
+                    {
+                        _do_it = true;
+                    }
+                    else if (_nor.size() && (_vertices_data[_vertex_index].normal[0] != _nor[0] || _vertices_data[_vertex_index].normal[1] != _nor[1] || _vertices_data[_vertex_index].normal[2] != _nor[2]))
+                    {
+                        _do_it = true;
+                    }
+
+                    if (_do_it)
+                    {
+                        if (pZUp)
+                        {
+                            std::swap(_pos[1], _pos[2]);
+                            _pos[2] *= -1;
+
+                            std::swap(_nor[1], _nor[2]);
+                            _nor[2] *= -1;
+                        }
+
+                        if (pInvertNormal)
+                        {
+                            _nor[0] = 1 - _nor[0];
+                            _nor[1] = 1 - _nor[1];
+                            _nor[2] = 1 - _nor[2];
+                        }
+
+                        //check for minimum and maximum vertices for bounding boxes
+                        _min_vertex.x = std::min(_pos[0], _min_vertex.x);
+                        _min_vertex.y = std::min(_pos[1], _min_vertex.y);
+                        _min_vertex.z = std::min(_pos[2], _min_vertex.z);
+
+                        _max_vertex.x = std::max(_pos[0], _max_vertex.x);
+                        _max_vertex.y = std::max(_pos[1], _max_vertex.y);
+                        _max_vertex.z = std::max(_pos[2], _max_vertex.z);
+
+                        if (_pos.size()) std::memcpy(&_vertex.position[0], _pos.data(), 3 * sizeof(float));
+                        if (_nor.size()) std::memcpy(&_vertex.normal[0], _nor.data(), 3 * sizeof(float));
+                        if (_tex.size()) std::memcpy(&_vertex.uv[0], _tex.data(), 2 * sizeof(float));
+
+                        _vertex_index = _vertices_data.size();
+                        _vertex.vertex_index = _vertex_index + 1;
+
+                        if (pAMDTootleOptimizing)
+                        {
+                            _vertices_positions.insert(_vertices_positions.end(), _pos.begin(), _pos.end());
+                        }
+                        //TODO:
+                        std::memset(&_vertex.blend_weight[0], -1, 4 * sizeof(float));
+                        std::memset(&_vertex.blend_indices[0], -1, 4 * sizeof(int));
+
+                        _vertices_data.push_back(_vertex);
+                    }
                 }
-
-                if (pInvertNormal)
-                {
-                    _nor[0] = 1 - _nor[0];
-                    _nor[1] = 1 - _nor[1];
-                    _nor[2] = 1 - _nor[2];
-                }
-
-                //check for minimum and maximum vertices for bounding boxes
-                _min_vertex.x = std::min(_pos[0], _min_vertex.x);
-                _min_vertex.y = std::min(_pos[1], _min_vertex.y);
-                _min_vertex.z = std::min(_pos[2], _min_vertex.z);
-
-                _max_vertex.x = std::max(_pos[0], _max_vertex.x);
-                _max_vertex.y = std::max(_pos[1], _max_vertex.y);
-                _max_vertex.z = std::max(_pos[2], _max_vertex.z);
-
-                if (_pos.size()) std::memcpy(&_vertex.position[0], _pos.data(), 3 * sizeof(float));
-                if (_nor.size()) std::memcpy(&_vertex.normal[0], _nor.data(), 3 * sizeof(float));
-                if (_tex.size()) std::memcpy(&_vertex.uv[0], _tex.data(), 2 * sizeof(float));
-
-                _vertex_index = _vertices_data.size();
-                _vertex.vertex_index = _vertex_index + 1;
-
-                if (pAMDTootleOptimizing)
-                {
-                    _vertices_positions.insert(_vertices_positions.end(), _pos.begin(), _pos.end());
-                }
-                //TODO:
-                std::memset(&_vertex.blend_weight[0], -1, 4 * sizeof(float));
-                std::memset(&_vertex.blend_indices[0], -1, 4 * sizeof(int));
-
-                _vertices_data.push_back(_vertex);
             }
 
             //store vertices and indices
@@ -402,9 +415,12 @@ void w_cpipeline_model::add_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs)
     }
 }
 
-void w_cpipeline_model::add_bounding_boxes(_Inout_ std::vector<w_bounding_box>& pBBs)
+void w_cpipeline_model::add_convex_hulls(_Inout_ std::vector<w_cpipeline_model*>& pCHs)
 {
-    this->_bounding_boxes.insert(this->_bounding_boxes.end(), pBBs.begin(), pBBs.end());
+    for (size_t i = 0; i < pCHs.size(); ++i)
+    {
+        this->_convex_hulls.push_back(*pCHs[i]);
+    }
 }
 
 void w_cpipeline_model::update_world()
@@ -500,7 +516,18 @@ void w_cpipeline_model::get_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs)
     }
 }
 
-w_bounding_box* w_cpipeline_model::get_mesh_bounding_box(_In_ const size_t& pIndex)
+void w_cpipeline_model::get_convex_hulls(_Inout_ std::vector<w_cpipeline_model*>& pCHs)
+{
+    auto _size = this->_convex_hulls.size();
+    if (!_size) return;
+
+    for (size_t i = 0; i < _size; ++i)
+    {
+        pCHs.push_back(&this->_convex_hulls[i]);
+    }
+}
+
+w_bounding_box* w_cpipeline_model::get_bounding_box(_In_ const size_t& pIndex)
 {
     return pIndex < this->_meshes.size() ? &this->_meshes[pIndex].bounding_box : nullptr;
 }
@@ -513,6 +540,16 @@ size_t w_cpipeline_model::get_lods_count()
 w_cpipeline_model* w_cpipeline_model::get_lod_at(_In_ size_t pIndex)
 {
     return pIndex < this->_lods.size() ? &this->_lods[pIndex] : nullptr;
+}
+
+size_t w_cpipeline_model::get_convex_hulls_count()
+{
+    return this->_convex_hulls.size();
+}
+
+w_cpipeline_model* w_cpipeline_model::get_convex_hull_at(_In_ size_t pIndex)
+{
+    return pIndex < this->_convex_hulls.size() ? &this->_convex_hulls[pIndex] : nullptr;
 }
 
 #pragma endregion

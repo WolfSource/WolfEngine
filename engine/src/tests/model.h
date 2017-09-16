@@ -85,6 +85,7 @@ private:
         _Inout_ uint32_t& pBaseVertex);
 
     void _add_data_for_masked_occlusion_culling(_In_ const wolf::content_pipeline::w_bounding_box& pBoundingBox);
+    void _add_data_for_masked_occlusion_culling(_In_ wolf::content_pipeline::w_cpipeline_model* pConvexHull);
 
     HRESULT _load_shader();
     HRESULT _load_buffers();

@@ -1324,7 +1324,7 @@ HRESULT c_parser::_create_scene(
     if (pFind_LODs_BBs)
     {
         std::vector<size_t> _lods;
-        std::vector<size_t> _bbs;
+        std::vector<size_t> _chs;
 
         for (size_t i = 0; i < _models.size(); i++)
         {
@@ -1332,13 +1332,13 @@ HRESULT c_parser::_create_scene(
             if (_model)
             {
                 auto _name = _model->get_name();
-                if (strstr(_name.c_str(), "lod") != NULL)
+                if (strstr(_name.c_str(), "-lod") != NULL)
                 {
                     _lods.push_back(i);
                 }
-                else if (strstr(_name.c_str(), "bb") != NULL)
+                else if (strstr(_name.c_str(), "-ch") != NULL)
                 {
-                    _bbs.push_back(i);
+                    _chs.push_back(i);
                 }
                 else
                 {
@@ -1353,7 +1353,7 @@ HRESULT c_parser::_create_scene(
             auto _index = _roots[i];
             auto _name = _models[_index]->get_name();
 
-            std::vector<int> _index_lods, _index_bbs;;
+            std::vector<int> _index_lods, _index_chs;;
             wolf::system::convert::split_string(_name, "_", _splits);
             if (_splits.size() > 0)
             {
@@ -1374,19 +1374,19 @@ HRESULT c_parser::_create_scene(
 
                 }), _lods.end());
 
-                _bbs.erase(std::remove_if(_bbs.begin(), _bbs.end(),
-                    [_design_name, _models, &_index_bbs](_In_ size_t pIter)
+                _chs.erase(std::remove_if(_chs.begin(), _chs.end(),
+                    [_design_name, _models, &_index_chs](_In_ size_t pIter)
                 {
                     auto __name = _models[pIter]->get_name();
                     if (wolf::system::convert::has_string_start_with(__name, _design_name))
                     {
-                        _index_bbs.push_back(pIter);
+                        _index_chs.push_back(pIter);
                         return true;
                     }
 
                     return false;
 
-                }), _bbs.end());
+                }), _chs.end());
             }
 
             //sort lods by name
@@ -1396,21 +1396,18 @@ HRESULT c_parser::_create_scene(
             });
 
             std::vector<w_cpipeline_model*> _lods_models;
-            for (auto& _lod_index : _index_lods)
+            for (auto& _index : _index_lods)
             {
-                _lods_models.push_back(_models[_lod_index]);
-            }
-            std::vector<w_bounding_box> _bbs;
-            for (auto& _bb_index : _index_bbs)
-            {
-                auto _m = _models[_bb_index];
+                auto _m = _models[_index];
                 if (!_m) continue;
-                for (size_t i = 0; i < _m->get_meshes_count(); ++i)
-                {
-                    auto _t = _m->get_transform();
-
-                    _bbs.push_back(*(_m->get_mesh_bounding_box(i)));
-                }
+                _lods_models.push_back(_m);
+            }
+            std::vector<w_cpipeline_model*> _convex_hulls;
+            for (auto& _index : _index_chs)
+            {
+                auto _m = _models[_index];
+                if (!_m) continue;
+                _convex_hulls.push_back(_m);
             }
             
             if (_lods_models.size())
@@ -1419,17 +1416,17 @@ HRESULT c_parser::_create_scene(
                 _lods_models.clear();
             }
 
-            if (_bbs.size())
+            if (_convex_hulls.size())
             {
-                _models[_index]->add_bounding_boxes(_bbs);
-                _bbs.clear();
+                _models[_index]->add_convex_hulls(_convex_hulls);
+                _convex_hulls.clear();
             }
 
             _splits.clear();
         }
 
         if (_lods.size()) _lods.clear();
-        if (_bbs.size()) _bbs.clear();
+        if (_chs.size()) _chs.clear();
     }
 
     if (_models.size())
