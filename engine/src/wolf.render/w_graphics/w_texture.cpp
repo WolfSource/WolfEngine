@@ -47,13 +47,17 @@ namespace wolf
                 using namespace std;
                 using namespace system::io;
 
-                auto _path = (pIsAbsolutePath ? L"" : content_path) + pPath;
+                std::wstring _path = pPath;
+                if (!pIsAbsolutePath)
+                {
+                    _path = content_path + pPath;
+                }
                 auto _ext = get_file_extentionW(_path.c_str());
 
 #if defined(__WIN32) || defined(__UWP)
-                auto _c_str = _path.c_str();
+                std::string _str = _path;
 #else
-                auto _c_str = wolf::system::convert::wstring_to_string(_path).c_str();
+                std::string _str = wolf::system::convert::wstring_to_string(_path);
 #endif
                 
                 //lower it
@@ -65,9 +69,9 @@ namespace wolf
                     int _file_status = -1;
                     
 #if defined(__WIN32) || defined(__UWP)
-                    system::io::read_binary_fileW(_c_str, data, _file_status);
+                    system::io::read_binary_fileW(_str.c_str(), data, _file_status);
 #else
-                    system::io::read_binary_file(_c_str, data, _file_status);
+                    system::io::read_binary_file(_str.c_str(), data, _file_status);
 #endif
                     if (_file_status != 1)
                     {
@@ -91,7 +95,7 @@ namespace wolf
                 }
                 else if (_ext == L".jpg" || _ext == L".bmp" || _ext == L".png" || _ext == L".psd" || _ext == L".tga")
                 {
-                    if (S_FALSE == system::io::get_is_file(_c_str))
+                    if (S_FALSE == system::io::get_is_file(_str.c_str()))
                     {
                         wstring msg = L"could not find the texture file: ";
                         V(S_FALSE, msg + _path, this->_name, 3);
@@ -101,7 +105,7 @@ namespace wolf
                     else
                     {
                         int __width, __height, __comp;
-                        uint8_t* _rgba = stbi_load(_c_str, &__width, &__height, &__comp, STBI_rgb_alpha);
+                        uint8_t* _rgba = stbi_load(_str.c_str(), &__width, &__height, &__comp, STBI_rgb_alpha);
                         if (_rgba)
                         {
                             this->_width = __width;

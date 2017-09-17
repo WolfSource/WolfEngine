@@ -138,10 +138,10 @@ namespace wolf
                     V(S_FALSE, "allocating memory of mesh for " + this->_full_name, _trace);
                     return S_FALSE;
                 }
-                _mesh->set_vertex_declaration_struct(this->_instances_count ? this->_instance_declaration :
+                this->_mesh->set_vertex_declaration_struct(this->_instances_count ? this->_instance_declaration :
                     this->_vertex_declaration);
                 
-                _hr = _mesh->load(this->_gDevice,
+                auto _hr = _mesh->load(this->_gDevice,
                     _vertices.data(),
                     static_cast<uint32_t>(_vertices.size()),
                     static_cast<uint32_t>(_vertices.size() * sizeof(float)),

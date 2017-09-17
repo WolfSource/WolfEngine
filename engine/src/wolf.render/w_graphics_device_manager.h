@@ -478,21 +478,34 @@ namespace wolf
         struct w_fence
         {
 #ifdef __VULKAN__
-        VkFence
+        VkFence             fence;
+            
+        W_EXP ULONG release(VkDevice pDevice)
+        {
+            vkDestroyFence(pDevice, this->fence, nullptr);
+            return 1;
+        }
+            
 #elif defined(__DX12__)
         ComPtr<ID3D12Fence>
 #endif
-            fence;
         };
 
         struct w_semaphore
         {
 #ifdef __VULKAN__
-            VkSemaphore
+            VkSemaphore     semaphore;
+            
+            W_EXP ULONG release(VkDevice pDevice)
+            {
+                vkDestroySemaphore(pDevice, this->semaphore, nullptr);
+                return 1;
+            }
+            
 #elif defined(__DX12__)
-            ComPtr<?>
+            ComPtr<?>       semaphore;
 #endif
-            semaphore;
+            
         };
         
 #pragma endregion

@@ -33,12 +33,17 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
 {
 	// TODO: Add your pre-initialization logic here
 
-	_super::initialize(pOutputWindowsInfo);
+	w_game::initialize(pOutputWindowsInfo);
 }
 
 void scene::load()
 {
-    const std::string _trace = this->name + "::load";
+    defer(nullptr, [&](...)
+    {
+       w_game::load();
+    });
+    
+    const std::string _trace_info = this->name + "::load";
     
     auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
@@ -78,7 +83,8 @@ void scene::load()
                                             _attachment_descriptions);
     if (_hr == S_FALSE)
     {
-        V(S_FALSE, "creating render pass", _trace, 3, true, true);
+        release();
+        V(S_FALSE, "creating render pass", _trace_info, 3, true, true);
     }
     
     //create frame buffers
@@ -91,7 +97,8 @@ void scene::load()
                                          1);
     if (_hr == S_FALSE)
     {
-        V(S_FALSE, "creating frame buffers", _trace, 3, true, true);
+        release();
+        V(S_FALSE, "creating frame buffers", _trace_info, 3, true, true);
     }
     
     //create pipeline_cache
@@ -111,7 +118,8 @@ void scene::load()
                           nullptr,
                           &this->_draw_semaphore.semaphore))
     {
-        V(S_FALSE, "creating semaphore for draw command buffer", _trace, 3, true, true);
+        release();
+        V(S_FALSE, "creating semaphore for draw command buffer", _trace_info, 3, true, true);
     }
     
     //Fence for render sync
@@ -124,35 +132,117 @@ void scene::load()
                       nullptr,
                       &this->_draw_fence.fence))
     {
-        V(S_FALSE, "creating draw fence", _trace, 3, true, true);
+        release();
+        V(S_FALSE, "creating draw fence", _trace_info, 3, true, true);
     }
     
-//
-//    auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
-//    
-//    //load primary command buffer
-//    _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
-//    if (_hr == S_FALSE)
-//    {
-//        logger.error("Error on creating command buffers");
-//        release();
-//        exit(1);
-//    }
+    //create two primary command buffers for clearing screen
+    auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+    _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
+    if (_hr == S_FALSE)
+    {
+        release();
+        V(S_FALSE, "creating draw command buffers", _trace_info, 3, true, true);
+    }
     
-	_super::load();
+    build_draw_command_buffers(_gDevice);
+}
+
+HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+{
+    auto _size = this->_draw_command_buffers.get_commands_size();
+    for (uint32_t i = 0; i < _size; ++i)
+    {
+        this->_draw_command_buffers.begin(i);
+        {
+            auto _render_pass_handle = this->_draw_render_pass.get_handle();
+            auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
+            
+            VkCommandBufferInheritanceInfo _inheritance_info = {};
+            _inheritance_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
+            _inheritance_info.renderPass = _render_pass_handle;
+            _inheritance_info.framebuffer = _frame_buffer_handle;
+            
+            VkCommandBufferBeginInfo _sec_cmd_buffer_begin_info{};
+            _sec_cmd_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+            _sec_cmd_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT | VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+            _sec_cmd_buffer_begin_info.pInheritanceInfo = &_inheritance_info;
+            
+            
+            auto _cmd = this->_draw_command_buffers.get_command_at(i);
+            this->_draw_render_pass.begin(_cmd,
+                                          _frame_buffer_handle,
+                                          w_color::CORNFLOWER_BLUE(),
+                                          1.0f,
+                                          0.0f,
+                                          VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+            {
+                //place your draw code
+            }
+            this->_draw_render_pass.end(_cmd);
+        }
+        this->_draw_command_buffers.end(i);
+    }
+    return S_OK;
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
-	// TODO: add your update logic code here
-
-	_super::update(pGameTime);
+    if (w_game::exiting) return;
+    
+    defer(nullptr, [&](...)
+    {
+        w_game::update(pGameTime);
+    });
+    
+    const std::string _trace_info = this->name + "::update";
 }
 
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
-    // TODO: add your drawing code here
-    return _super::render(pGameTime);
+    if (w_game::exiting) return S_OK;
+    
+    const std::string _trace_info = this->name + "::render";
+
+    auto _gDevice = this->graphics_devices[0];
+    auto _output_window = &(_gDevice->output_presentation_windows[0]);
+    auto _frame_index = _output_window->vk_swap_chain_image_index;
+    
+    //reset draw fence
+    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
+    
+    //add wait semaphores
+    std::vector<VkSemaphore> _wait_semaphors = { _output_window->vk_swap_chain_image_is_available_semaphore };
+    auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
+    
+    const VkPipelineStageFlags _stage_flags[] =
+    {
+        VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+    };
+    
+    VkSubmitInfo _submit_info = {};
+    _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    _submit_info.commandBufferCount = 1;
+    _submit_info.pCommandBuffers = &_cmd;
+    _submit_info.pWaitDstStageMask = &_stage_flags[0];
+    _submit_info.waitSemaphoreCount = static_cast<uint32_t>(_wait_semaphors.size());
+    _submit_info.pWaitSemaphores = _wait_semaphors.data();
+    _submit_info.signalSemaphoreCount = 1;
+    _submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore; //signal to end the render
+    
+    // Submit to queue
+    if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_draw_fence.fence))
+    {
+        V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true, true);
+        return S_FALSE;
+    }
+    // Wait for fence to signal that all command buffers are ready
+    vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence.fence, VK_TRUE, VK_TIMEOUT);
+    
+    //clear all wait semaphores
+    _wait_semaphors.clear();
+    
+    return w_game::render(pGameTime);
 }
 
 void scene::on_window_resized(_In_ UINT pIndex)
@@ -177,8 +267,14 @@ HRESULT scene::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLP
 ULONG scene::release()
 {
 	if (this->get_is_released()) return 0;
-	
-	// TODO: release your assets here
+    
+    auto _gDevice = this->graphics_devices[0];
+    this->_draw_fence.release(_gDevice->vk_device);
+    this->_draw_semaphore.release(_gDevice->vk_device);
+    
+    this->_draw_command_buffers.release();
+    this->_draw_render_pass.release();
+    this->_draw_frame_buffers.release();
 
-	return _super::release();
+	return w_game::release();
 }
