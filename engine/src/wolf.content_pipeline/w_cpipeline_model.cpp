@@ -163,8 +163,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
         glm::vec3 _min_vertex;
         glm::vec3 _max_vertex;
 
-        UINT _vertex_index = 0;
-        auto _texcoord_index = 0;
+        uint32_t _vertex_index = 0, _texcoord_index = 0, _normal_index = 0;
         std::vector<float> _pos;
         std::vector<float> _tex;
         std::vector<float> _nor;
@@ -195,7 +194,8 @@ w_cpipeline_model* w_cpipeline_model::create_model(
             }
             if (_nor_index != -1)
             {
-                auto _start_index = _triangle->indices[i + _nor_index];
+                _normal_index = _triangle->indices[i + _nor_index];
+                auto _start_index = _normal_index * _nor_source->stride;
                 //resize destination vector
                 _nor.resize(_nor_source->stride);
 
@@ -214,7 +214,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
                     _pos[2] *= -1;
 
                     std::swap(_nor[1], _nor[2]);
-                    _nor[2] *= -1;
+                    _nor[2] = 1 - _nor[2];
                 }
 
                 if (pInvertNormal)
@@ -271,7 +271,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
                             _pos[2] *= -1;
 
                             std::swap(_nor[1], _nor[2]);
-                            _nor[2] *= -1;
+                            _nor[2] =  1 - _nor[2];
                         }
 
                         if (pInvertNormal)

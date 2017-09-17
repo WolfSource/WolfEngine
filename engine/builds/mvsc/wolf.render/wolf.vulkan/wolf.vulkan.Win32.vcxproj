@@ -193,13 +193,13 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_quad.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_imgui.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_pipeline.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_quad.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_render_pass.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shader.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_uniform.h" />

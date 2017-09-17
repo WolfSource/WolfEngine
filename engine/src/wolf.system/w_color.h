@@ -198,11 +198,12 @@ struct w_color
     static w_color LIGHT_SALMON()           { return w_color::from_hex(0xFFFFA07A); }
     static w_color LIGHT_SEA_GREEN()        { return w_color::from_hex(0xFF20B2AA); }
     static w_color LIGHT_SKY_BLUE()         { return w_color::from_hex(0xFF87CEFA); }
+    static w_color LIGHT_SLATE_GRAY()       { return w_color::from_hex(0xFF778899); }
 
     //TODO remove and convert these to static functions
 	enum COLORS_HEX
 	{
-//		LIGHT_SLATE_GRAY = 0xFF778899,
+
 //		LIGHT_STEEL_BLUE = 0xFFB0C4DE,
 //		LIGHT_YELLOW = 0xFFFFFFE0,
 //		LIME = 0xFF00FF00,

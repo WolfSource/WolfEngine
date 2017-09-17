@@ -93,9 +93,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h">
       <Filter>w_framework</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_quad.h">
-      <Filter>w_framework</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h">
       <Filter>masked_occlusion_culling</Filter>
     </ClInclude>
@@ -113,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h">
       <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_quad.h">
+      <Filter>w_graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

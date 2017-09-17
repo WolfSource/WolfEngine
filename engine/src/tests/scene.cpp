@@ -12,7 +12,7 @@
 #include <w_timer.h>
 #include <tbb/parallel_for_each.h>
 
-#define DEBUG_MASKED_OCCLUSION_CULLING
+//#define DEBUG_MASKED_OCCLUSION_CULLING
 #define MAX_SEARCH_LENGHT 256
 
 using namespace wolf::system;

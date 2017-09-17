@@ -55,6 +55,10 @@ namespace wolf
             {
                 using namespace wolf::content_pipeline;
                 
+                if (!pGDevice) return S_FALSE;
+                
+                const std::string _trace = this->name + "w_quad::load";
+
                 this->_gDevice = pGDevice;
 
                 std::vector<float> _vertices;
@@ -131,24 +135,25 @@ namespace wolf
                 this->_mesh = new (std::nothrow) w_mesh();
                 if (!this->_mesh)
                 {
-                    V(S_FALSE, "allocating memory for mesh", this->name, 3);
+                    V(S_FALSE, "allocating memory of mesh for " + this->_full_name, _trace);
                     return S_FALSE;
                 }
-                //_mesh->set_vertex_declaration_struct(this->_instances_count ? this->_instance_declaration :
-                //    this->_vertex_declaration);
-                /*auto _hr = _mesh->load(this->_gDevice,
+                _mesh->set_vertex_declaration_struct(this->_instances_count ? this->_instance_declaration :
+                    this->_vertex_declaration);
+                
+                _hr = _mesh->load(this->_gDevice,
                     _vertices.data(),
                     static_cast<uint32_t>(_vertices.size()),
                     static_cast<uint32_t>(_vertices.size() * sizeof(float)),
                     _indices.data(),
-                    static_cast<uint32_t>(_indices.size(),
+                    static_cast<uint32_t>(_indices.size()),
                     pUseDynamicBuffer);
 
                 if (_hr == S_FALSE)
                 {
                     logger.error(L"Could not create mesh for quad");
                     return S_FALSE;
-                }*/
+                }
 
                 return S_OK;
             }
@@ -257,7 +262,7 @@ namespace wolf
                 if (!this->_mesh) return;
 
                 auto _instance_handle = this->_instances_buffer ? this->_instances_buffer->get_handle() : nullptr;
-                this->_mesh->render(pCommandBuffer, _instance_handle, this->_instances_count);
+                this->_mesh->draw(pCommandBuffer, _instance_handle, this->_instances_count, false);
             }
             
             virtual ULONG release() override

@@ -19,6 +19,7 @@
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_frame_buffers.h>
 #include <w_graphics/w_pipeline.h>
+#include <w_graphics/w_quad.h>
 
 #include <cameras/w_first_person_camera.h>
 #include <w_point.h>
@@ -26,6 +27,9 @@
 #include "model.h"
 #include <w_thread_pool.h>
 #include <tbb/concurrent_vector.h>
+
+
+
 
 class scene : public wolf::framework::w_game
 {
@@ -103,6 +107,8 @@ private:
     };
     std::vector<thread_context*>                                     _thread_pool;
 
+
+    wolf::graphics::w_quad<>                                        _media_player;
 
 
     //struct area

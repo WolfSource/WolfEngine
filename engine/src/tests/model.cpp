@@ -12,8 +12,8 @@ model::model() :
 {
     //define vertex binding attributes
     this->_vertex_binding_attributes.declaration = w_vertex_declaration::USER_DEFINED;
-    this->_vertex_binding_attributes.binding_attributes[0] = { Vec3, Vec2 };
-    this->_vertex_binding_attributes.binding_attributes[1] = { Vec3, Vec3 };
+    this->_vertex_binding_attributes.binding_attributes[0] = { Vec3, Vec3, Vec2 }; //position, normal, uv per vertex
+    this->_vertex_binding_attributes.binding_attributes[1] = { Vec3, Vec3 }; // position, rotation per instance
 }
 
 model::~model()
@@ -141,7 +141,7 @@ HRESULT model::load(
     this->_mesh = new (std::nothrow) wolf::graphics::w_mesh();
     if (!_mesh)
     {
-        V(S_FALSE, "Error on allocating memory for mesh for " + this->_full_name, _trace);
+        V(S_FALSE, "allocating memory of mesh for " + this->_full_name, _trace);
         return S_FALSE;
     }
 
@@ -216,7 +216,7 @@ void model::_store_to_batch(
         for (auto& _data : _mesh_data->vertices)
         {
             auto _pos = _data.position;
-            //auto _nor = _data.normal;
+            auto _nor = _data.normal;
             auto _uv = _data.uv;
             
             //position
@@ -224,6 +224,10 @@ void model::_store_to_batch(
             pBatchVertices.push_back(_pos[1]);
             pBatchVertices.push_back(_pos[2]);
 
+            //normal
+            pBatchVertices.push_back(_nor[0]);
+            pBatchVertices.push_back(_nor[1]);
+            pBatchVertices.push_back(_nor[2]);
 
             //uv
             pBatchVertices.push_back(_uv[0]);
@@ -1089,7 +1093,8 @@ HRESULT model::submit_compute_shader(_In_ const wolf::content_pipeline::w_first_
     //Update uniforms
     auto _camera_pos = pCamera->get_translate();
 
-    this->vs.unifrom.data.projection_view = this->_view_projection;
+    this->vs.unifrom.data.view = pCamera->get_view();
+    this->vs.unifrom.data.projection = pCamera->get_projection();
 
     if (this->vs.unifrom.update() == S_FALSE)
     {
@@ -1234,7 +1239,7 @@ void model::search_for_name(
     _In_z_ const std::string& pToBeFind,
     _Inout_ std::vector<search_item_struct>& pResults)
 {
-    set_color(glm::vec4(0.1f));
+    set_color(glm::vec4(0.7f));
 
     search_item_struct _item;
     for (uint32_t i = 0; i < this->_search_names.size(); ++i)

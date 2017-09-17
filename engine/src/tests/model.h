@@ -147,7 +147,8 @@ private:
 
     struct vertex_unifrom
     {
-        glm::mat4 projection_view;
+        glm::mat4 view;
+        glm::mat4 projection;
     };
 
 #pragma pack(push,1)
