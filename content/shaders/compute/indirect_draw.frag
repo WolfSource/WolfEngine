@@ -20,8 +20,8 @@ vec3 calculate_ambient(vec3 pNormal, vec3 pColor)
 	// Convert from [-1, 1] to [0, 1]
 	float up = pNormal.y * 0.5 + 0.5;
 
-	const vec3 _ambient_lower_color = vec3(0.3, 0.3, 0.3);
-	const vec3 _ambient_upper_color = vec3(1.0, 1.0, 1.0);
+	const vec3 _ambient_lower_color = vec3(0.5, 0.5, 0.5);
+	const vec3 _ambient_upper_color = vec3(2.0, 2.0, 2.0);
 
 	// Calculate the ambient value
 	vec3 _ambient = _ambient_lower_color + up *_ambient_upper_color;
