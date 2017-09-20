@@ -55,7 +55,7 @@ namespace wolf
                 auto _ext = get_file_extentionW(_path.c_str());
 
 #if defined(__WIN32) || defined(__UWP)
-                std::string _str = _path;
+                std::wstring _str = _path;
 #else
                 std::string _str = wolf::system::convert::wstring_to_string(_path);
 #endif

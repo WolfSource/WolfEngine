@@ -1239,7 +1239,7 @@ void model::search_for_name(
     _In_z_ const std::string& pToBeFind,
     _Inout_ std::vector<search_item_struct>& pResults)
 {
-    set_color(glm::vec4(0.7f));
+    set_color(glm::vec4(0.3f));
 
     search_item_struct _item;
     for (uint32_t i = 0; i < this->_search_names.size(); ++i)
