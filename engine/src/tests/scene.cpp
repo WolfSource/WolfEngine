@@ -337,11 +337,13 @@ HRESULT scene::_load_areas()
         auto _gDevice = this->graphics_devices[0];
         const std::vector<std::wstring> _areas_on_thread_0 =
         {
-            L"models/model.dae"
-            /*L"models/_120_water-treatment_v1_16_19.dae",
-            L"models/_171_173_office_building_comprehensive_v1_14_13.dae",
-            L"models/_161_air-compressor-v1_31_16.dae",
-            L"models/_151_substation_v_1_40_25.dae"*/
+            //L"models/model.dae"
+            L"models/_120_water-treatment.dae",
+            L"models/_171_173_office_building_comprehensive.dae",
+            L"models/_161_air-compressor.dae",
+            L"models/_151_substation.dae",
+            L"models/_230_proportioning.dae",
+            L"models/_320_transfer_station.dae",
         };
 
         std::for_each(_areas_on_thread_0.begin(), _areas_on_thread_0.end(),
@@ -626,7 +628,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         sMOC->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
         //Tonemap the depth image
         TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, _output_window->width, _output_window->height);
-        w_texture::write_bitmap_to_file("E:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
+        w_texture::write_bitmap_to_file("F:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
 #endif
     }
 }
