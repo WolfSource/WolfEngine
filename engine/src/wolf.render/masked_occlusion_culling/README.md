@@ -6,20 +6,20 @@ on the hierarchical depth buffer. It lets us efficiently parallelize both covera
 
 ## Requirements
 
-This code is mainly optimized for the AVX2 instruction set, and some AVX specific instructions are required for best performance. However, we also provide
-SSE 4.1 and SSE 2 implementations for backwards compatibility. The appropriate implementation will be chosen during run-time based on the CPU's capabilities.
+This code is mainly optimized for AVX capable CPUs. However, we also provide SSE 4.1 and SSE 2 implementations for backwards compatibility. The appropriate 
+implementation will be chosen during run-time based on the CPU's capabilities.
 
 ## Notes on build time
 
 The code is optimized for runtime performance and may require a long time to compile due to heavy code inlining. This can be worked around by compiling 
-a library file. An alternative solution is to disable *whole program optimizations* for the `MaskedOcclusionCulling.cpp` 
-and `MaskedOcclusionCullingAVX2.cpp` files. It does not impact runtime performance, but greatly reduces the time of program linking. 
+a library file. An alternative solution is to disable *whole program optimizations* for the `MaskedOcclusionCulling.cpp`, 
+`MaskedOcclusionCullingAVX2.cpp` and `MaskedOcclusionCullingAVX512.cpp` files. It does not impact runtime performance, but greatly reduces the time of program linking. 
 
 ## <a name="cs"></a>Notes on coordinate systems and winding
 
 Most inputs are given as clip space (x,y,w) coordinates assuming the same right handed coordinate system as used by DirectX and OpenGL (x positive right, y
 positive up and w positive in the view direction). Note that we use the clip space w coordinate for depth and disregard the z coordinate. Internally our
-masked hierarchical depth buffer stores *depth = 1 / w*. Backface culling is **always enabled**, with counterclockwise winding considered front-facing.
+masked hierarchical depth buffer stores *depth = 1 / w*. 
 
 The `TestRect()` function is an exception and instead accepts normalized device coordinates (NDC), *(x' = x/w, y' = y/w)*, where the visible screen region
 maps to the range [-1,1] for *x'* and *y'* (x positive right and y positive up). Again, this is consistent with both DirectX and OpenGL behavior.
@@ -35,11 +35,11 @@ We have made an effort to keep the API as simple and minimal as possible. The re
 and we hope they will feel natural to anyone with graphics programming experience. In the following we will use the example project as a tutorial to showcase
 the API. Please refer to the documentation in the header file for further details.
 
-### State
+### Setup
 
 We begin by creating a new instance of the occlusion culling object. The object is created using the static `Create()` function rather than a standard
 constructor, and can be destroyed using the `Destroy()` function. The reason for using the factory `Create()`/`Destroy()` design pattern is that we want to
-support custom (aligned) memory allocators, and that the library choses either the AVX or SSE implementation based on the CPU's capabilities.
+support custom (aligned) memory allocators, and that the library choses either the AVX-512, AVX or SSE implementation based on the CPU's capabilities.
 
 ```C++
 MaskedOcclusionCulling *moc = MaskedOcclusionCulling::Create();
@@ -87,9 +87,10 @@ triangle, so the size of the array must be a multiple of 3. Note that we only su
 such as strips or fans.
 
 ```C++
-struct ClipSpaceVertex {float x, y, w};
+struct ClipSpaceVertex { float x, y, z, w; };
 
-// Create an example triangle. Note that the z component of each vertex is unused
+// Create an example triangle. The z component of each vertex is not used by the
+// occlusion culling system. 
 ClipspaceVertex triVerts[] = { { 5, 0, 0, 10 }, { 30, 0, 0, 20 }, { 10, 50, 0, 40 } };
 unsigned int triIndices[] = { 0, 1, 2 };
 unsigned int nTris = 1;
@@ -98,7 +99,7 @@ unsigned int nTris = 1;
 moc.RenderTriangles(triVerts, triIndices, nTris);
 ```
 
-It is possible to include a transform when calling `RenderTriangles()`, by passing the modelToClipSpace parameter.  This is equivalent to calling `TransformVertices()`, followed
+**Transform** It is possible to include a transform when calling `RenderTriangles()`, by passing the modelToClipSpace parameter.  This is equivalent to calling `TransformVertices()`, followed
 by `RenderTriangles()`, but performing the transform as shown in the example below typically
 leads to better performance.
 
@@ -114,7 +115,23 @@ float swapxyMatrix[4][4] = {
 moc.RenderTriangles(triVerts, triIndices, nTris, swapxyMatrix);
 ```
 
-The `RenderTriangles()` accepts an additional parameter to optimize polygon clipping. The calling application may disable any clipping plane if it can
+**Backface Culling** By default, clockwise winded triangles are considered backfacing and are culled when rasterizing occluders. However, you can 
+configure the `RenderTriangles()` function to backface cull either clockwise or counter-clockwise winded triangles, or to disable backface culling
+for two-sided rendering.
+
+```C++
+// A clockwise winded (normally backfacing) triangle
+ClipspaceVertex cwTriVerts[] = { { 7, -7, 0, 20 },{ 7.5, -7, 0, 20 },{ 7, -7.5, 0, 20 } };
+unsigned int cwTriIndices[] = { 0, 1, 2 };
+
+// Render with counter-clockwise backface culling, the triangle is drawn
+moc->RenderTriangles((float*)cwTriVerts, cwTriIndices, 1, nullptr, BACKFACE_CCW);
+```
+
+The rasterization code only handles counter-clockwise winded triangles, so configurable backface culling is implemented by re-winding clockwise winded triangles 
+on the fly. Therefore, other culling modes than `BACKFACE_CW` may decrease performance slightly.
+
+**Clip Flags** `RenderTriangles()` accepts an additional parameter to optimize polygon clipping. The calling application may disable any clipping plane if it can
 guarantee that the mesh does not intersect said clipping plane. In the example below we have a quad which is entirely on screen, and we can disable
 all clipping planes. **Warning** it is unsafe to incorrectly disable clipping planes and this may cause the program to crash or perform out of bounds
 memory accesses. Consider this a power user feature (use `CLIP_PLANE_ALL` to clip against the full frustum when in doubt).
@@ -127,12 +144,12 @@ unsigned int quadIndices[] = { 0, 1, 2, 0, 2, 3 };
 unsigned int nTris = 2;
 
 // Render the quad. As an optimization, indicate that clipping is not required
-moc.RenderTriangles((float*)quadVerts, quadIndices, nTris, nullptr, CLIP_PLANE_NONE);
+moc.RenderTriangles((float*)quadVerts, quadIndices, nTris, nullptr, BACKFACE_CW, CLIP_PLANE_NONE);
 ```
 
-Finally, the `RenderTriangles()` supports configurable vertex layout. The code so far has used an array of structs (AoS) layout based on the `ClipSpaceVertex`,
-but you may use the `VertexLayout` struct to configure the memory layout of the vertex data. Note that the vertex pointer passed to the `RenderTriangles()`
-should point at the *x* coordinate of the first vertex, so there is no x coordinate offset specified in the struct.
+**Vertex Storage Layout** Finally, the `RenderTriangles()` supports configurable vertex storage layout. The code so far has used an array of structs (AoS) layout based 
+on the `ClipSpaceVertex` struct, and this is the default behaviour. You may use the `VertexLayout` struct to configure the memory layout of the vertex data. Note that 
+the vertex pointer passed to the `RenderTriangles()` should point at the *x* coordinate of the first vertex, so there is no x coordinate offset specified in the struct.
 
 ```C++
 struct VertexLayout
@@ -157,10 +174,10 @@ float SoAVerts[] = {
 VertexLayout SoAVertexLayout(sizeof(float), 3 * sizeof(float), 6 * sizeof(float));
 
 // Render triangle with SoA layout
-moc.RenderTriangles((float*)SoAVerts, triIndices, 1, CLIP_PLANE_ALL, nullptr, SoAVertexLayout);
+moc.RenderTriangles((float*)SoAVerts, triIndices, 1, nullptr, BACKFACE_CW, CLIP_PLANE_ALL, SoAVertexLayout);
 ```
 
-Vertex layout may affect occlusion culling performance. We have seen no large performance impact when using either SoA or AoS layout, but generally speaking the
+Vertex layout may affect performance. We have seen no large performance impact when using either SoA or AoS layout, but generally speaking the
 vertex position data should be packed as compactly into memory as possible to minimize number of cache misses. It is, for example, not advicable to bundle vertex
 position data together with normals, texture coordinates, etc. and using a large stride.
 
@@ -223,7 +240,7 @@ OcclusionCullingStatistics stats = moc.GetStatistics();
 ### Memory management
 
 As shown in the example below, you may optionally provide callback functions for allocating and freeing memory when creating a
-`MaskedOcclusionCulling` object. The functions must support aligned allocations (at least to 32 byte boundaries).
+`MaskedOcclusionCulling` object. The functions must support aligned allocations.
 
 ```C++
 void *alignedAllocCallback(size_t alignment, size_t size)
@@ -306,14 +323,12 @@ moc.BinTriangles(triVerts, triIndices, nTris, triLists, binsW, binsW);
 
 After generating the triangle lists for each bin, the triangles may be rendered using the `RenderTrilist()` function and the rendering region should be
 limited using a scissor rectangle. It should be noted that the `BinTriangles()` function makes assumptions on the size of the bins, and the calling
-application must therefore always compute the scissor region of each bin as shown in the example below. The dimensions of each bin must be a multiple of
-*32 x 8* pixels, and the last column and row of bins have different widths and heights, respectively, to ensure that the entire screen is covered. Note
-that the scissor rectangle is specified in pixel coordinates according to OpenGL conventions, i.e. (0,0) is the bottom left corner of the screen and
-(width, height) is the top right corner.
+application must therefore always compute the scissor region of each bin, relying on the `ComputeBinWidthHeight()` utility function as shown in the 
+example below. Note that the scissor rectangle is specified in screen space coordinates which depends on the `USE_D3D` define.
 
 ```C++
-int binWidth = (screenWidth / binsW) - (screenWidth / binsW) % 32;
-int binHeight = (screenHeight / binsH) - (screenHeight / binsH) % 8;
+unsigned int binWidth, binHeight;
+moc.ComputeBinWidthHeight(mBinsW, mBinsH, binWidth, binHeight);
 
 for (int by = 0; by < binsH; ++by)
 {
@@ -324,9 +339,9 @@ for (int by = 0; by < binsH; ++by)
 		// being the bottom left corner
 		ScissorRect binRect;
 		binRect.minX = bx*binWidth;
-		binRect.maxX = bx == binsW - 1 ? screenWidth : (bx + 1) * binWidth;
+		binRect.maxX = bx + 1 == binsW ? screenWidth : (bx + 1) * binWidth;
 		binRect.minY = by*binHeight;
-		binRect.maxY = by == binsH - 1 ? screenHeight : (by + 1) * binHeight;
+		binRect.maxY = by + 1 == binsH ? screenHeight : (by + 1) * binHeight;
 
 		// Render all triangles overlapping the current bin.
 		moc.RenderTrilist(triLists[bx + by*4], &binRect);
@@ -358,8 +373,42 @@ of enabling multi-threading in a traditional single threaded application as the 
 a single threaded application. As previously mentioned we integrated this implementation in our interleaved BVH traversal algorithm (see the ["Masked Software Occlusion Culling"](https://software.intel.com/en-us/articles/masked-software-occlusion-culling)
 paper) and noted speedup of roughly *3x*, running on four threads, compared to our previous single threaded implementation.
 
+## Compiling
+
+The code has been reworked to support more platforms and compilers, such as [Intel C++ Compiler](https://software.intel.com/en-us/intel-compilers), [G++](https://gcc.gnu.org/) 
+and [LLVM/Clang](http://releases.llvm.org/download.html). The original Visual Studio 2015 projects remain and works with both ICC and Microsoft's compilers. Other compilers 
+are supported through [CMake](https://cmake.org/). See the `CMakeLists.txt` files in the `Example` and `FillrateTest` folders. You can use CMake to generate a 
+Visual Studio project for Clang on Windows:
+
+```
+md <path to library>\Example\Clang
+cd <path to library>\Example\Clang
+cmake -G"Visual Studio 14 2015 Win64" -T"LLVM-vs2014" ..
+```
+
+or build the library with G++/Clang on linux systems (the `D3DValidate` sample only works on Windows as it relies on Direct 3D)
+
+```
+mkdir <path to library>/Example/Release
+cd <path to library>/Example/Release
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+```
+
+Note that AVX-512 support is only experimental at the moment, and has only been verified through [Intel SDE](https://software.intel.com/en-us/articles/pre-release-license-agreement-for-intel-software-development-emulator-accept-end-user-license-agreement-and-download).
+If using the original visual studio project, you need to "opt in" for AVX-512 support by setting `#define USE_AVX512 1`. When building with CMake you can
+enable AVX support using the `-DUSE_AVX512=ON` option:
+
+```
+cmake -DUSE_AVX512=ON -G"Visual Studio 14 2015 Win64" -T"LLVM-vs2014" ..
+```
+
 ## Version History
 
+* Version 1.3: 
+  * **Experimental**: Added support for AVX-512 capable CPUs. Currently only verified through [emulator](https://software.intel.com/en-us/articles/intel-software-development-emulator).
+  * Added multiplatform support. Code now compiles on Visual C++ Compiler, Intel C++ Compiler, GCC, and Clang.
+  * Added configurable backface culling, to support two-sided occluder rendering.
 * Version 1.2: 
   * Added support for threading, through a binning rasterizer. The `CullingThreadpool` class implements an example multi-threaded task system with a very similar 
     API to the `MaskedOcclusionCulling`class.

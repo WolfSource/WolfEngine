@@ -13,21 +13,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 ////////////////////////////////////////////////////////////////////////////////
-#include "w_render_pch.h"
+#include <w_render_pch.h>
 #include <assert.h>
 #include "CullingThreadpool.h"
 
-#ifndef SAFE_DELETE
 #define SAFE_DELETE(X) {if (X != nullptr) delete X; X = nullptr;}
-#endif//SAFE_DELETE
-
-#ifndef SAFE_DELETE_ARRAY
 #define SAFE_DELETE_ARRAY(X) {if (X != nullptr) delete[] X; X = nullptr;}
-#endif //SAFE_DELETE_ARRAY
 
 template<class T> CullingThreadpool::StateData<T>::StateData(unsigned int maxJobs) :
-	mCurrentIdx(~0),
-	mMaxJobs(maxJobs)
+	mMaxJobs(maxJobs),
+	mCurrentIdx(~0)
 {
 	mData = new T[mMaxJobs];
 }
@@ -216,7 +211,7 @@ void CullingThreadpool::SetupScissors()
 
 	unsigned int binWidth;
 	unsigned int binHeight;
-	mMOC->ComputeBinWidthHeight( mBinsW, mBinsH, binWidth, binHeight );
+	mMOC->ComputeBinWidthHeight(mBinsW, mBinsH, binWidth, binHeight);
 
 	for (unsigned int ty = 0; ty < mBinsH; ++ty)
 	{
@@ -283,7 +278,7 @@ void CullingThreadpool::ThreadMain(unsigned int threadIdx)
 					RenderJobQueue::BinningJob &sjob = job->mBinningJob;
 					for (unsigned int i = 0; i < mNumBins; ++i)
 						job->mRenderJobs[i].mTriIdx = 0;
-					mMOC->BinTriangles(sjob.mVerts, sjob.mTris, sjob.nTris, job->mRenderJobs, mBinsW, mBinsH, sjob.mMatrix, sjob.mClipPlanes, *sjob.mVtxLayout);
+					mMOC->BinTriangles(sjob.mVerts, sjob.mTris, sjob.nTris, job->mRenderJobs, mBinsW, mBinsH, sjob.mMatrix, sjob.mBfWinding, sjob.mClipPlanes, *sjob.mVtxLayout);
 					mRenderQueue->FinishedBinningJob(job);
 				}
 				continue;
@@ -320,15 +315,15 @@ void CullingThreadpool::ThreadMain(unsigned int threadIdx)
 
 CullingThreadpool::CullingThreadpool(unsigned int numThreads, unsigned int binsW, unsigned int binsH, unsigned int maxJobs) :
 	mNumThreads(numThreads),
+	mMaxJobs(maxJobs),
+	mBinsW(binsW),
+	mBinsH(binsH),
 	mKillThreads(false),
 	mSuspendThreads(true),
 	mNumSuspendedThreads(0),
-	mBinsW(binsW),
-	mBinsH(binsH),
-	mMOC(nullptr),
-	mVertexLayouts(maxJobs),
 	mModelToClipMatrices(maxJobs),
-	mMaxJobs(maxJobs)
+	mVertexLayouts(maxJobs),
+	mMOC(nullptr)
 {
 	mNumBins = mBinsW*mBinsH;
 	assert(mNumBins >= mNumThreads);	// Having less bins than threads is a bad idea!
@@ -436,9 +431,13 @@ void CullingThreadpool::ClearBuffer()
 	mMOC->ClearBuffer();
 }
 
-void CullingThreadpool::RenderTriangles(const float *inVtx, const unsigned int *inTris, int nTris, ClipPlanes clipPlaneMask)
+void CullingThreadpool::RenderTriangles(const float *inVtx, const unsigned int *inTris, int nTris, BackfaceWinding bfWinding, ClipPlanes clipPlaneMask)
 {
-	for (int i = 0; i < nTris; i += TRIS_PER_JOB)
+#if ENABLE_RECORDER != 0
+    mMOC->RecordRenderTriangles( inVtx, inTris, nTris, mCurrentMatrix, clipPlaneMask, bfWinding, *mVertexLayouts.GetData( ) );
+#endif
+
+    for (int i = 0; i < nTris; i += TRIS_PER_JOB)
 	{
 		// Yield if work queue is full 
 		while (!mRenderQueue->CanWrite())
@@ -451,6 +450,7 @@ void CullingThreadpool::RenderTriangles(const float *inVtx, const unsigned int *
 		job->mBinningJob.nTris = nTris - i < TRIS_PER_JOB ? nTris - i : TRIS_PER_JOB;
 		job->mBinningJob.mMatrix = mCurrentMatrix;
 		job->mBinningJob.mClipPlanes = clipPlaneMask;
+		job->mBinningJob.mBfWinding = bfWinding;
 		job->mBinningJob.mVtxLayout = mVertexLayouts.GetData();
 		mRenderQueue->AdvanceWriteJob();
 	}
@@ -461,9 +461,9 @@ CullingThreadpool::CullingResult CullingThreadpool::TestRect(float xmin, float y
 	return mMOC->TestRect(xmin, ymin, xmax, ymax, wmin);
 }
 
-CullingThreadpool::CullingResult CullingThreadpool::TestTriangles(const float *inVtx, const unsigned int *inTris, int nTris, ClipPlanes clipPlaneMask)
+CullingThreadpool::CullingResult CullingThreadpool::TestTriangles(const float *inVtx, const unsigned int *inTris, int nTris, BackfaceWinding bfWinding, ClipPlanes clipPlaneMask)
 {
-	return mMOC->TestTriangles(inVtx, inTris, nTris, mCurrentMatrix, clipPlaneMask, nullptr, *mVertexLayouts.GetData());
+	return mMOC->TestTriangles(inVtx, inTris, nTris, mCurrentMatrix, bfWinding, clipPlaneMask, *mVertexLayouts.GetData());
 }
 
 void CullingThreadpool::ComputePixelDepthBuffer(float *depthData)

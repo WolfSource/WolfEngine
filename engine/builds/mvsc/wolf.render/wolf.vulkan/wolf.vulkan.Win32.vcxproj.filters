@@ -31,15 +31,6 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp">
       <Filter>w_framework</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.cpp">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.cpp">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.cpp">
       <Filter>w_framework</Filter>
     </ClCompile>
@@ -54,6 +45,21 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp">
       <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.cpp">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.cpp">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.cpp">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX512.cpp">
+      <Filter>masked_occlusion_culling</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -93,12 +99,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h">
       <Filter>w_framework</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.h">
       <Filter>w_framework</Filter>
     </ClInclude>
@@ -113,6 +113,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_quad.h">
       <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h">
+      <Filter>masked_occlusion_culling</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -177,9 +186,6 @@
     </None>
     <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.frag">
       <Filter>content\shaders\compute</Filter>
-    </None>
-    <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl">
-      <Filter>masked_occlusion_culling</Filter>
     </None>
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x1.comp">
       <Filter>content\shaders\compute</Filter>
@@ -279,6 +285,12 @@
     </None>
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x1024.comp">
       <Filter>content\shaders\compute</Filter>
+    </None>
+    <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CompilerSpecific.inl">
+      <Filter>masked_occlusion_culling</Filter>
+    </None>
+    <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl">
+      <Filter>masked_occlusion_culling</Filter>
     </None>
   </ItemGroup>
 </Project>

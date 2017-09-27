@@ -12,7 +12,7 @@
 #include <w_timer.h>
 #include <tbb/parallel_for_each.h>
 
-//#define DEBUG_MASKED_OCCLUSION_CULLING
+#define DEBUG_MASKED_OCCLUSION_CULLING
 #define MAX_SEARCH_LENGHT 256
 
 using namespace wolf::system;
@@ -32,10 +32,11 @@ static char sSearch[MAX_SEARCH_LENGHT];
 static MaskedOcclusionCulling* sMOC;
 static float* sMOCPerPixelZBuffer = nullptr; 
 static uint8_t* sMOCTonemapDepthImage = nullptr;
-static UINT32 sFPS = 0;
-static UINT32 sRenderingThreads = 0;
-static UINT32 sTotalModels = 0;
-static UINT32 sVisibleModels = 0;
+static uint32_t sFPS = 0;
+static uint32_t sRenderingThreads = 0;
+static uint32_t sTotalModels = 0;
+static uint32_t sVisibleModels = 0;
+static uint32_t sVisibleSubModels = 0;
 static std::string SVersion;
 
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
@@ -104,6 +105,9 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
         break;
     case MaskedOcclusionCulling::AVX2:
         logger.write("Using AVX2 implementation of MaskedOcclusionCulling");
+        break;
+    case MaskedOcclusionCulling::AVX512:
+        logger.write("Using AVX512 implementation of MaskedOcclusionCulling");
         break;
     }
 
@@ -337,13 +341,13 @@ HRESULT scene::_load_areas()
         auto _gDevice = this->graphics_devices[0];
         const std::vector<std::wstring> _areas_on_thread_0 =
         {
-            //L"models/model.dae"
-            L"models/_120_water-treatment.dae",
+            L"models/model.dae"
+            /*L"models/_120_water-treatment.dae",
             L"models/_171_173_office_building_comprehensive.dae",
             L"models/_161_air-compressor.dae",
             L"models/_151_substation.dae",
             L"models/_230_proportioning.dae",
-            L"models/_320_transfer_station.dae",
+            L"models/_320_transfer_station.dae",*/
         };
 
         std::for_each(_areas_on_thread_0.begin(), _areas_on_thread_0.end(),
@@ -410,7 +414,7 @@ HRESULT scene::_load_areas()
 
         this->_camera.set_aspect_ratio(_screen_width / _screen_height);
         sMOC->SetResolution(_screen_width, _screen_height);
-
+        
         this->_camera.update_view();
         this->_camera.update_projection();
         this->_camera.update_frustum();
@@ -604,6 +608,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
         if (this->_models.size())
         {
+            sVisibleSubModels = 0;
             sMOC->ClearBuffer();
             this->_models_to_be_render.clear();
 
@@ -614,7 +619,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
             std::for_each(this->_models.begin(), this->_models.end(), [&](_In_ model* pModel)
             {
-                if (pModel->post_update(sMOC))
+                if (pModel->post_update(sMOC, sVisibleSubModels))
                 {
                     this->_models_to_be_render.push_back(pModel);
                 }
@@ -1026,12 +1031,12 @@ bool scene::_update_gui()
     
     ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiSetCond_FirstUseEver);
     ImGui::Begin(("Wolf.Engine " + SVersion).c_str());
-    ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nThread pool rendering size: %d\r\nTotal Models: %d\r\nVisible Models: %d", 
-        sFPS, windows_frame_time_in_sec.at(0), sRenderingThreads, sTotalModels, sVisibleModels);
+    ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nThread pool rendering size: %d\r\nTotal Ref Models: %d\r\nTotal Visible Models: %d\r\nTotal Visible Ref Models: %d", 
+        sFPS, windows_frame_time_in_sec.at(0), sRenderingThreads, sTotalModels, sVisibleSubModels, sVisibleModels);
 
     sTotalModels = this->_models.size();
-    sVisibleModels = this->_models_to_be_render.size();
-
+    sVisibleModels = static_cast<uint32_t>(this->_models_to_be_render.size());
+     
     ImGui::End();
     
 #pragma endregion

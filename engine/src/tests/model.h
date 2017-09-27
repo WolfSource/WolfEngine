@@ -45,7 +45,7 @@ public:
         _In_    wolf::content_pipeline::w_first_person_camera pCamera,
         _Inout_ MaskedOcclusionCulling** sMOC);
 
-    bool post_update(_Inout_ MaskedOcclusionCulling* sMOC);
+    bool post_update(_Inout_ MaskedOcclusionCulling* sMOC, _Inout_ uint32_t& pVisibleSubModels);
 
     void indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer);
 

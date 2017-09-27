@@ -925,15 +925,17 @@ void model::pre_update(
     for (auto& _iter : this->_mocs)
     {
         //world view projection for bounding box of masked occlusion culling
-        _model_to_clip_matrix = this->_view_projection * 
-            glm::translate(_iter.position) * 
+        _model_to_clip_matrix = this->_view_projection *
+            glm::translate(_iter.position) *
             glm::rotate(_iter.rotation);
 
+        _model_to_clip_matrix *= glm::rotate(0.0f, glm::radians(0.0f), 0.0f);
         (*sMOC)->RenderTriangles(
             (float*)&_iter.vertices[0],
             _iter.indices.data(),
             _iter.num_of_tris_for_moc,
-            (float*)(&_model_to_clip_matrix[0]));
+            (float*)(&_model_to_clip_matrix[0]),
+            MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW);
     }
 
     size_t _index = 1;
@@ -966,17 +968,21 @@ void model::pre_update(
                 _model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
             }
 
+            _model_to_clip_matrix *= glm::rotate(0.0f, glm::radians(0.0f), 0.0f);
+
             (*sMOC)->RenderTriangles(
                 (float*)&_iter.vertices[0],
                 _iter.indices.data(),
                 _iter.num_of_tris_for_moc,
-                (float*)(&_model_to_clip_matrix[0]));
+                (float*)(&_model_to_clip_matrix[0]),
+                MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW);
         }
     }
 }
 
 bool model::post_update(
-    _Inout_ MaskedOcclusionCulling* sMOC)
+    _Inout_ MaskedOcclusionCulling* sMOC, 
+    _Inout_ uint32_t& pVisibleSubModels)
 {
     bool _add_to_render_queue = false;
     if (!this->_loaded.load()) return _add_to_render_queue;
@@ -993,13 +999,15 @@ bool model::post_update(
             (float*)&_iter.vertices[0],
             _iter.indices.data(),
             _iter.num_of_tris_for_moc,
-            (float*)(&_model_to_clip_matrix[0]));
+            (float*)(&_model_to_clip_matrix[0]),
+            MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW);
 
         //if at least one of the bounding boxes is visible, break this loop
         if (_culling_result == MaskedOcclusionCulling::VISIBLE)
         {
             this->_visibilities[0] = true;
             _add_to_render_queue = true;
+            pVisibleSubModels++;
             break;
         }
     }
@@ -1036,12 +1044,14 @@ bool model::post_update(
                 (float*)&_iter.vertices[0],
                 _iter.indices.data(),
                 _iter.num_of_tris_for_moc,
-                (float*)(&_model_to_clip_matrix[0]));
+                (float*)(&_model_to_clip_matrix[0]),
+                MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW);
 
             if (_culling_result == MaskedOcclusionCulling::VISIBLE)
             {
                 this->_visibilities[i + 1] = true;
                 _add_to_render_queue = true;
+                pVisibleSubModels++;
                 break;
             }
         }
