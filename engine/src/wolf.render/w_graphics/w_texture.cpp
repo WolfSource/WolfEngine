@@ -744,11 +744,36 @@ HRESULT w_texture::initialize_texture_from_memory_all_channels_same(_In_ uint8_t
 {
     if (!this->_pimp) return S_FALSE;
 
-    auto _rgba = (uint8_t*)malloc(pWidth * pHeight * 4);
+    auto _length = pWidth * pHeight * 4;
+    auto _rgba = (uint8_t*)malloc(_length * sizeof(uint8_t));
     if (!_rgba) return S_FALSE;
 
-    std::memset(_rgba, pData, pWidth * pHeight);
+    std::memset(_rgba, pData, _length);
     return this->_pimp->initialize_texture_from_memory_rgba(_rgba, pWidth, pHeight);
+}
+
+HRESULT w_texture::initialize_texture_from_memory_from_color(_In_ w_color pColor, _In_ const UINT pWidth, _In_ const UINT pHeight)
+{
+    if (!this->_pimp) return S_FALSE;
+
+    auto _length = pWidth * pHeight * 4;
+    auto _rgba = (uint8_t*)malloc(_length * sizeof(uint8_t));
+    if (!_rgba) return S_FALSE;
+
+    for (size_t i = 0; i < _length; i+=4)
+    {
+        _rgba[i + 0] = pColor.r;
+        _rgba[i + 1] = pColor.g;
+        _rgba[i + 2] = pColor.b;
+        _rgba[i + 3] = pColor.a;
+    }
+    return this->_pimp->initialize_texture_from_memory_rgba(_rgba, pWidth, pHeight);
+}
+
+HRESULT w_texture::copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
+{
+    if (!this->_pimp) return S_FALSE;
+    return this->_pimp->copy_data_to_texture_2D(pRGBA);
 }
 
 HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,

@@ -20,16 +20,24 @@
 #include <w_graphics/w_frame_buffers.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_quad.h>
+#include <w_media_core.h>
+#include <w_memory.h>
 
 #include <cameras/w_first_person_camera.h>
 #include <w_point.h>
 
 #include "model.h"
 #include <w_thread_pool.h>
+
+#include <tbb/tbb.h> 
+#include <tbb/mutex.h>
+#include <tbb/parallel_for_each.h>
+#include <tbb/parallel_invoke.h>
 #include <tbb/concurrent_vector.h>
+#include <tbb/compat/condition_variable>
 
-
-
+#define BUFFER_COUNTS			3
+#define MAXIMUM_BUFFER_SIZE		10
 
 class scene : public wolf::framework::w_game
 {
@@ -70,7 +78,13 @@ private:
 
     HRESULT _build_gui_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ const wolf::system::w_game_time& pGameTime);
-    bool _update_gui();
+    
+    bool    _update_gui();
+    void    _update_media_player();
+    HRESULT _open_media(_In_z_ const std::wstring& pPath, int64_t pSeekToFrame);
+    void    _video_buffering_thread();
+    void    _fill_buffers();
+    void    _clear_buffers();
 
     wolf::graphics::w_viewport                                      _viewport;
     wolf::graphics::w_viewport_scissor                              _viewport_scissor;
@@ -144,7 +158,24 @@ private:
         }
     };
 
-    std::vector<area>                                               _areas;                                             
+    std::vector<area>                                               _areas;                
+
+    int64_t															_current_frame;
+    int64_t															_video_frame_address;
+    wolf::system::w_game_time										_video_time;
+    wolf::system::w_memory											_video_buffers[BUFFER_COUNTS];
+    tbb::atomic<bool>												_halt_buffering;
+    tbb::mutex														_video_buffer_mutex;
+    tbb::critical_section											_video_streamer_cs;
+    wolf::framework::w_ffmpeg										_video_streamer;
+    tbb::atomic<bool>												_video_is_buffering;
+    tbb::interface5::condition_variable								_signal_video_buffer_cv;
+    int																_current_video_buffer;
+    tbb::atomic<size_t>												_total_video_frames_buffered;
+    size_t															_total_video_frames;
+    uint32_t                                                        _media_width;
+    uint32_t                                                        _media_height;
+    float                                                           _media_fps;
 };
 
 #endif

@@ -52,7 +52,8 @@ namespace wolf
 #endif
                 _In_ const w_point_t& pScreenSize,
                 _In_ VkRenderPass& pRenderPass,
-                _In_ w_texture* pTexture,
+                _In_ w_texture* pIconTexture,
+                _In_ w_texture** pStagingMediaTexture = nullptr,
                 _In_ const char* pFontPath = nullptr,
                 _In_ const float& pFontPixelSize = 15.0f);
 

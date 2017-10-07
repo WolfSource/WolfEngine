@@ -10,7 +10,6 @@
 #include <w_task.h>
 #include <w_thread.h>
 #include <w_timer.h>
-#include <tbb/parallel_for_each.h>
 
 //#define DEBUG_MASKED_OCCLUSION_CULLING
 #define MAX_SEARCH_LENGHT 256
@@ -39,6 +38,14 @@ static uint32_t sVisibleModels = 0;
 static uint32_t sVisibleSubModels = 0;
 static std::string SVersion;
 
+static uint32_t sMediaPlayerWidth = 1280, sMediaPlayerHeight = 720;
+static w_texture* sStagingMediaTexture = nullptr;
+static uint8_t* sStagingMediaData = nullptr;
+
+//first loading
+static bool sLoading = true;
+static bool sShowingLiveCamera = false;
+
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
 	w_game(pRunningDirectory, pAppName)
 {
@@ -56,6 +63,11 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
     this->_show_gui = true;
     this->_draw_fence = 0;
+    this->_media_width = 1280;
+    this->_media_height = 720;
+    this->_media_fps = 29.0f;
+    this->_current_frame = 0;
+    this->_video_frame_address = 0;
 
     //we do not need fixed time step
     w_game::set_fixed_time_step(false);
@@ -68,6 +80,8 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
     SVersion =
         std::to_string(WOLF_MAJOR_VERSION) + "." + std::to_string(WOLF_MINOR_VERSION) +
         "." + std::to_string(WOLF_PATCH_VERSION) + "." + std::to_string(WOLF_DEBUG_VERSION);
+
+    w_ffmpeg::initialize_MF();
 }
 
 scene::~scene()
@@ -129,7 +143,19 @@ void scene::load()
     _screen_size.y = static_cast<uint32_t>(_output_window->height);
 
     w_game::load();
-       
+    
+    if (_open_media(content_path + L"media/falcon_720p.mp4", 0) == S_OK)
+    {
+        //Run video buffering task
+        wolf::system::w_task::execute_async_ppl([this]()
+        {
+            _video_buffering_thread();
+        });
+    }
+    else
+    {
+        logger.warning("could not load intro \"media/falcon_720p.mp4\"");
+    }
 
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
     {
@@ -312,16 +338,33 @@ void scene::load()
         }
     }
 
-    //load image texture
-    w_texture* _gui_images = new w_texture();
-    _gui_images->load(_gDevice);
+    //load icon's texture
+    w_texture* _icon_images = new w_texture();
+    _icon_images->load(_gDevice);
+    _icon_images->initialize_texture_2D_from_file(L"textures/gui/icons.png");
 
+    //create staging texture
+    if (sStagingMediaTexture == nullptr)
+    {
+        sStagingMediaTexture = new w_texture();
+        sStagingMediaTexture->load(_gDevice, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+        sStagingMediaTexture->initialize_texture_from_memory_all_channels_same(0, sMediaPlayerWidth, sMediaPlayerHeight);
 
-    _gui_images->initialize_texture_2D_from_file(L"textures/gui/icons.png");
+        if (sStagingMediaData)
+        {
+            free(sStagingMediaData);
+        }
 
+        auto _length = sMediaPlayerWidth * sMediaPlayerHeight * 4;
+        sStagingMediaData = (uint8_t*)malloc(_length * sizeof(uint8_t));
+        if (!sStagingMediaData)
+        {
+            logger.error("could not allocate memory for media player");
+        }
+    }
 
     auto _font_path = wolf::system::convert::wstring_to_string(content_path) + "fonts/arial.ttf";
-    w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _gui_images, _font_path.c_str());
+    w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _icon_images, &sStagingMediaTexture, _font_path.c_str());
 
     _hr = this->_gui_command_buffers.load(_gDevice, _output_window->vk_swap_chain_image_views.size());
     if (_hr == S_FALSE)
@@ -575,6 +618,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
 
+    _update_media_player();
+    
     bool _gui_proceeded = false;
     if (this->_show_gui)
     {
@@ -761,6 +806,9 @@ ULONG scene::release()
     auto _gDevice = get_graphics_device();
     auto _device = _gDevice->vk_device;
     
+    //release staging texture
+    SAFE_RELEASE(sStagingMediaTexture);
+
     for (auto _thread_context : this->_thread_pool)
     {
         SAFE_RELEASE(_thread_context);
@@ -806,10 +854,82 @@ ULONG scene::release()
     w_pipeline::release_all_pipeline_caches(_gDevice);
     w_texture::release_shared_textures();
 
+    w_ffmpeg::release_MF();
+
     //wait one sec before closing to ensure all threads destroyed successfully
     w_thread::sleep_current_thread(1000);
 
     return w_game::release();
+}
+
+void scene::_update_media_player()
+{
+    auto _total_frames = this->_video_streamer.get_total_video_frames();
+
+    if (_total_frames == 0) return;
+    if (this->_current_frame >= _total_frames)
+    {
+        sLoading = false;
+        return;
+    }
+
+    const float _one_sec = 1;
+    this->_video_time.set_target_elapsed_seconds(static_cast<double>(_one_sec / this->_media_fps));
+
+    this->_video_time.tick([&]()
+    {
+        w_memory* _memory = nullptr;
+        auto _videoFrameAddress = this->_video_frame_address++;
+        //Read frame and copy buffers to DirectX Texture2D
+        _memory = &_video_buffers[this->_current_video_buffer];
+
+        auto _writeAddress = _memory->get_address();
+
+        auto _mem = _memory->read(_videoFrameAddress);
+
+        auto _frame = static_cast<int*>(_mem);
+        if (!_frame)
+        {
+            //Critical error
+            logger.error("Error on casting memory to W_VideoFrameData");
+        }
+        else
+        {
+            const size_t _length = this->_media_width * this->_media_height;
+            //copy frame to the staging texture
+            if (sStagingMediaData)
+            {
+                tbb::parallel_for(tbb::blocked_range<size_t>(0, _length), [&](const tbb::blocked_range<size_t>& pRange)
+                {
+                    for (size_t i = pRange.begin(); i < pRange.end(); ++i)
+                    {
+                        auto _c = _frame[i];
+                        auto _j = i * 4;
+                        sStagingMediaData[_j + 0] = _c & 0xFF;//R
+                        sStagingMediaData[_j + 1] = (_c >> 8) & 0xFF;//G
+                        sStagingMediaData[_j + 2] = (_c >> 16) & 0xFF;//B
+                        sStagingMediaData[_j + 3] = (_c >> 24) & 0xFF;//A
+                    }
+                });
+                sStagingMediaTexture->copy_data_to_texture_2D(sStagingMediaData);
+            }
+
+            this->_current_frame++;
+            if (_writeAddress != 0 && this->_current_frame != _total_video_frames && this->_video_frame_address % _writeAddress == 0)
+            {
+                //We need to switch to another buffer
+                this->_current_video_buffer = (this->_current_video_buffer + 1) % BUFFER_COUNTS;
+                this->_video_frame_address = 0;
+                //Signal to the waiting thread
+                this->_signal_video_buffer_cv.notify_one();
+            }
+        }
+
+        _frame = nullptr;
+        _mem = nullptr;
+        _memory = nullptr;
+
+    });
 }
 
 bool scene::_update_gui()
@@ -848,127 +968,97 @@ bool scene::_update_gui()
 #pragma endregion
 
     ImGuiWindowFlags window_flags = 0;
-    window_flags |= ImGuiWindowFlags_NoTitleBar;
-    //window_flags |= ImGuiWindowFlags_ShowBorders;
-    window_flags |= ImGuiWindowFlags_NoResize;
-    window_flags |= ImGuiWindowFlags_NoMove;
-    window_flags |= ImGuiWindowFlags_NoScrollbar;
-    window_flags |= ImGuiWindowFlags_NoCollapse;
-    //window_flags |= ImGuiWindowFlags_MenuBar;
+
+    if (sLoading)
+    {
+#pragma region Show Intro
+
+        window_flags |= ImGuiWindowFlags_NoResize;
+        window_flags |= ImGuiWindowFlags_NoScrollbar;
+        window_flags |= ImGuiWindowFlags_NoCollapse;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        window_flags |= ImGuiWindowFlags_NoMove;
+
+        _style.Colors[ImGuiCol_Text].x = 1.0f;
+        _style.Colors[ImGuiCol_Text].y = 1.0f;
+        _style.Colors[ImGuiCol_Text].z = 1.0f;
+        _style.Colors[ImGuiCol_Text].w = 1.0f;
+
+        _style.Colors[ImGuiCol_WindowBg].x = 0.9098039215686275f;
+        _style.Colors[ImGuiCol_WindowBg].y = 0.4431372549019608f;
+        _style.Colors[ImGuiCol_WindowBg].z = 0.3176470588235294f;
+        _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
+        ImVec2 _image_size;
+        ImVec2 _window_size;
+
+        _image_size.x = 1280;
+        _image_size.y = 720;
+        ImGui::SetNextWindowSizeConstraints(_image_size, _image_size);
+        ImGui::SetNextWindowContentWidth(_image_size.x);
+        
+        if (!ImGui::Begin("", 0, window_flags))
+        {
+            // Early out if the window is collapsed, as an optimization.
+            ImGui::End();
+            return _proceeded;
+        }
+
+        ImTextureID tex_id = (void*)("#s");//this texture used as staging texture
+        ImGui::Image(tex_id, _image_size);
+        ImGui::End();
+
+#pragma endregion
+
+    }
+    else
+    {
+        window_flags = 0;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        //window_flags |= ImGuiWindowFlags_ShowBorders;
+        window_flags |= ImGuiWindowFlags_NoResize;
+        window_flags |= ImGuiWindowFlags_NoMove;
+        window_flags |= ImGuiWindowFlags_NoScrollbar;
+        window_flags |= ImGuiWindowFlags_NoCollapse;
+        //window_flags |= ImGuiWindowFlags_MenuBar;
 
 #pragma region Left Buttons
-    if (!ImGui::Begin("Buttons", 0, window_flags))
-    {
-        // Early out if the window is collapsed, as an optimization.
-        ImGui::End();
-        return _proceeded;
-    }
-
-    ImGui::SetWindowPos(ImVec2(0, 0));
-
-    for (int i = 0; i < 6; i++)
-    {
-        ImTextureID tex_id = (void*)("#");
-        ImGui::PushID(i);
-        ImGui::PushStyleColor(ImGuiCol_ImageActive, ImColor(0.0f, 0.0f, 255.0f, 255.0f));
-        ImGui::PushStyleColor(ImGuiCol_ImageHovered, ImColor(0.0f, 0.0f, 255.0f, 155.0f));
-        if (ImGui::ImageButton(tex_id, ImVec2(32, 32), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
+        if (!ImGui::Begin("Buttons", 0, window_flags))
         {
-            logger.write("Button");
-            _proceeded = true;
+            // Early out if the window is collapsed, as an optimization.
+            ImGui::End();
+            return _proceeded;
         }
-        ImGui::PopStyleColor(2);
-        ImGui::PopID();
-        ImGui::Spacing();
-        ImGui::Spacing();
-    }
-    ImGui::End();
+
+        ImGui::SetWindowPos(ImVec2(0, 0));
+
+        for (int i = 0; i < 6; i++)
+        {
+            ImTextureID tex_id = (void*)("#i");//this texture used for icons
+            ImGui::PushID(i);
+            ImGui::PushStyleColor(ImGuiCol_ImageActive, ImColor(0.0f, 0.0f, 255.0f, 255.0f));
+            ImGui::PushStyleColor(ImGuiCol_ImageHovered, ImColor(0.0f, 0.0f, 255.0f, 155.0f));
+            if (ImGui::ImageButton(tex_id, ImVec2(32, 32), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
+            {
+                //show live camera 
+                if (i == 5)
+                {
+                    sShowingLiveCamera = !sShowingLiveCamera;
+                }
+                _proceeded = true;
+            }
+            ImGui::PopStyleColor(2);
+            ImGui::PopID();
+            ImGui::Spacing();
+            ImGui::Spacing();
+        }
+        ImGui::End();
 
 #pragma endregion
 
 #pragma region Search
-    _style.WindowPadding = ImVec2(1, 4);
+        _style.WindowPadding = ImVec2(1, 4);
 
-    _style.Colors[ImGuiCol_Text].x = 0.1f;
-    _style.Colors[ImGuiCol_Text].y = 0.1f;
-    _style.Colors[ImGuiCol_Text].z = 0.1f;
-    _style.Colors[ImGuiCol_Text].w = 1.0f;
-
-    _style.Colors[ImGuiCol_WindowBg].x = 1.0f;
-    _style.Colors[ImGuiCol_WindowBg].y = 1.0f;
-    _style.Colors[ImGuiCol_WindowBg].z = 1.0f;
-    _style.Colors[ImGuiCol_WindowBg].w = 1.0f; 
-
-    ImGui::SetNextWindowContentSize(ImVec2(300, 20));
-    if (!ImGui::Begin("Search", 0, window_flags))
-    {
-        // Early out if the window is collapsed, as an optimization.
-        ImGui::End();
-        return _proceeded;
-    }
-
-    ImGui::SetWindowPos(ImVec2(38, 0));
-    ImGui::PushItemWidth(299);
-    if (ImGui::InputText("", sSearch, MAX_SEARCH_LENGHT, ImGuiInputTextFlags_EnterReturnsTrue))
-    {
-        _proceeded = true;
-
-        sSearchedItems.clear();
-        if (!sSearching)
-        {
-            if (sSearch[0] != '\0')
-            {
-                sSearching = true;
-                std::string _lower_str(sSearch);
-                std::transform(_lower_str.begin(), _lower_str.end(), _lower_str.begin(), ::tolower);
-                w_task::execute_async_ppl([this, _lower_str]()
-                {
-                    //start seraching areas
-                    for (auto& _area : this->_areas)
-                    {
-                        std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [_lower_str](_In_ model* pModel)
-                        {
-                            pModel->search_for_name(_lower_str, sSearchedItems);
-                        });
-                    }
-                }, [this]()
-                {
-                    //on callback
-                    sSearching = false;
-                    if (sSearchedItems.size() == 0)
-                    {
-                        //switch all model's transparency to 1
-                        for (auto& _area : this->_areas)
-                        {
-                            std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [](_In_ model* pModel)
-                            {
-                                pModel->set_color(glm::vec4(1.0f));
-                            });
-                        }
-                    }
-                });
-            }
-            else
-            {
-                //switch all model's transparency to 1
-                for (auto& _area : this->_areas)
-                {
-                    std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [](_In_ model* pModel)
-                    {
-                        pModel->set_color(glm::vec4(1.0f));
-                    });
-                }
-            }
-        }
-    }
-    
-    ImGui::PopItemWidth();
-    ImGui::End();
-#pragma endregion
-
-    if (sSearchedItems.size())
-    {
-#pragma region Show Search Results
         _style.Colors[ImGuiCol_Text].x = 0.1f;
         _style.Colors[ImGuiCol_Text].y = 0.1f;
         _style.Colors[ImGuiCol_Text].z = 0.1f;
@@ -979,90 +1069,355 @@ bool scene::_update_gui()
         _style.Colors[ImGuiCol_WindowBg].z = 1.0f;
         _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 
-        window_flags = 0;
-        window_flags |= ImGuiWindowFlags_NoTitleBar;
-        window_flags |= ImGuiWindowFlags_NoResize;
-        window_flags |= ImGuiWindowFlags_NoMove;
-
-        ImGui::SetNextWindowSizeConstraints(ImVec2(300, 229), ImVec2(300, 600));
-        ImGui::SetNextWindowContentWidth(300);
-
-        if (!ImGui::Begin("Search Results", 0, window_flags))
+        ImGui::SetNextWindowContentSize(ImVec2(300, 20));
+        if (!ImGui::Begin("Search", 0, window_flags))
         {
             // Early out if the window is collapsed, as an optimization.
             ImGui::End();
             return _proceeded;
         }
 
-        ImGui::SetWindowPos(ImVec2(38, 35));
+        ImGui::SetWindowPos(ImVec2(38, 0));
         ImGui::PushItemWidth(299);
-        
-        if (ImGui::CollapsingHeader("Area 120"))
+        if (ImGui::InputText("", sSearch, MAX_SEARCH_LENGHT, ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            if (ImGui::TreeNode("Water Treatment"))
+            _proceeded = true;
+
+            sSearchedItems.clear();
+            if (!sSearching)
             {
-                for (int i = 0; i < sSearchedItems.size(); ++i)
+                if (sSearch[0] != '\0')
                 {
-                    ImGuiTreeNodeFlags _node_flags =
-                        ImGuiTreeNodeFlags_OpenOnArrow | 
-                        ImGuiTreeNodeFlags_OpenOnDoubleClick |
-                        ImGuiTreeNodeFlags_Selected | 
-                        ImGuiTreeNodeFlags_Leaf | 
-                        ImGuiTreeNodeFlags_NoTreePushOnOpen;
-                    ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, sSearchedItems[i].name.c_str());
-                    if (ImGui::IsItemClicked())
+                    sSearching = true;
+                    std::string _lower_str(sSearch);
+                    std::transform(_lower_str.begin(), _lower_str.end(), _lower_str.begin(), ::tolower);
+                    w_task::execute_async_ppl([this, _lower_str]()
                     {
-                        this->_camera.set_interest(
-                            sSearchedItems[i].bounding_sphere.center[0],
-                            sSearchedItems[i].bounding_sphere.center[1],
-                            sSearchedItems[i].bounding_sphere.center[2]);
-
-                        auto _radius = +sSearchedItems[i].bounding_sphere.radius * 3.0f;
-                        this->_camera.set_translate(
-                            sSearchedItems[i].bounding_sphere.center[0],
-                            sSearchedItems[i].bounding_sphere.center[1] + _radius,
-                            sSearchedItems[i].bounding_sphere.center[2] + _radius);
-
-                        this->_camera.update_view();
-                        this->_camera.update_projection();
-                        this->_camera.update_frustum();
-
-                        sForceUpdateCamera = true;
+                        //start seraching areas
+                        for (auto& _area : this->_areas)
+                        {
+                            std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [_lower_str](_In_ model* pModel)
+                            {
+                                pModel->search_for_name(_lower_str, sSearchedItems);
+                            });
+                        }
+                    }, [this]()
+                    {
+                        //on callback
+                        sSearching = false;
+                        if (sSearchedItems.size() == 0)
+                        {
+                            //switch all model's transparency to 1
+                            for (auto& _area : this->_areas)
+                            {
+                                std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [](_In_ model* pModel)
+                                {
+                                    pModel->set_color(glm::vec4(1.0f));
+                                });
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    //switch all model's transparency to 1
+                    for (auto& _area : this->_areas)
+                    {
+                        std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [](_In_ model* pModel)
+                        {
+                            pModel->set_color(glm::vec4(1.0f));
+                        });
                     }
                 }
-                ImGui::TreePop();
             }
         }
 
         ImGui::PopItemWidth();
         ImGui::End();
 #pragma endregion
-    }
-    
+
+        if (sSearchedItems.size())
+        {
+#pragma region Show Search Results
+            _style.Colors[ImGuiCol_Text].x = 0.1f;
+            _style.Colors[ImGuiCol_Text].y = 0.1f;
+            _style.Colors[ImGuiCol_Text].z = 0.1f;
+            _style.Colors[ImGuiCol_Text].w = 1.0f;
+
+            _style.Colors[ImGuiCol_WindowBg].x = 1.0f;
+            _style.Colors[ImGuiCol_WindowBg].y = 1.0f;
+            _style.Colors[ImGuiCol_WindowBg].z = 1.0f;
+            _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
+            window_flags = 0;
+            window_flags |= ImGuiWindowFlags_NoTitleBar;
+            window_flags |= ImGuiWindowFlags_NoResize;
+            window_flags |= ImGuiWindowFlags_NoMove;
+
+            ImGui::SetNextWindowSizeConstraints(ImVec2(300, 229), ImVec2(300, 600));
+            ImGui::SetNextWindowContentWidth(300);
+
+            if (!ImGui::Begin("Search Results", 0, window_flags))
+            {
+                // Early out if the window is collapsed, as an optimization.
+                ImGui::End();
+                return _proceeded;
+            }
+
+            ImGui::SetWindowPos(ImVec2(38, 35));
+            ImGui::PushItemWidth(299);
+
+            if (ImGui::CollapsingHeader("Area 120"))
+            {
+                if (ImGui::TreeNode("Water Treatment"))
+                {
+                    for (int i = 0; i < sSearchedItems.size(); ++i)
+                    {
+                        ImGuiTreeNodeFlags _node_flags =
+                            ImGuiTreeNodeFlags_OpenOnArrow |
+                            ImGuiTreeNodeFlags_OpenOnDoubleClick |
+                            ImGuiTreeNodeFlags_Selected |
+                            ImGuiTreeNodeFlags_Leaf |
+                            ImGuiTreeNodeFlags_NoTreePushOnOpen;
+                        ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, sSearchedItems[i].name.c_str());
+                        if (ImGui::IsItemClicked())
+                        {
+                            this->_camera.set_interest(
+                                sSearchedItems[i].bounding_sphere.center[0],
+                                sSearchedItems[i].bounding_sphere.center[1],
+                                sSearchedItems[i].bounding_sphere.center[2]);
+
+                            auto _radius = +sSearchedItems[i].bounding_sphere.radius * 3.0f;
+                            this->_camera.set_translate(
+                                sSearchedItems[i].bounding_sphere.center[0],
+                                sSearchedItems[i].bounding_sphere.center[1] + _radius,
+                                sSearchedItems[i].bounding_sphere.center[2] + _radius);
+
+                            this->_camera.update_view();
+                            this->_camera.update_projection();
+                            this->_camera.update_frustum();
+
+                            sForceUpdateCamera = true;
+                        }
+                    }
+                    ImGui::TreePop();
+                }
+            }
+
+            ImGui::PopItemWidth();
+            ImGui::End();
+#pragma endregion
+        }
+
+        if (sShowingLiveCamera)
+        {
+#pragma region Show Live Camera
+
+            window_flags = 0;
+            window_flags |= ImGuiWindowFlags_NoResize;
+            window_flags |= ImGuiWindowFlags_NoScrollbar;
+            window_flags |= ImGuiWindowFlags_NoCollapse;
+
+            _style.Colors[ImGuiCol_Text].x = 1.0f;
+            _style.Colors[ImGuiCol_Text].y = 1.0f;
+            _style.Colors[ImGuiCol_Text].z = 1.0f;
+            _style.Colors[ImGuiCol_Text].w = 1.0f;
+
+            _style.Colors[ImGuiCol_WindowBg].x = 0.9098039215686275f;
+            _style.Colors[ImGuiCol_WindowBg].y = 0.4431372549019608f;
+            _style.Colors[ImGuiCol_WindowBg].z = 0.3176470588235294f;
+            _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
+            ImVec2 _image_size(480, 360);
+            ImVec2 _window_size = ImVec2(_image_size.x + 5.0f, _image_size.y + 33.0f);
+
+            ImGui::SetNextWindowSizeConstraints(_window_size, _window_size);
+            ImGui::SetNextWindowContentWidth(_window_size.x);
+            if (!ImGui::Begin("Live Camera", 0, window_flags))
+            {
+                // Early out if the window is collapsed, as an optimization.
+                ImGui::End();
+                return _proceeded;
+            }
+
+            ImTextureID tex_id = (void*)("#s");//this texture used as staging texture
+            ImGui::Image(tex_id, _image_size);
+            ImGui::End();
+
+#pragma endregion
+        }
+
 #pragma region Debug Window
 
-    _style.WindowPadding = ImVec2(3, 2);
+        _style.WindowPadding = ImVec2(3, 2);
 
-    _style.Colors[ImGuiCol_Text].x = 1.0f;
-    _style.Colors[ImGuiCol_Text].y = 1.0f;
-    _style.Colors[ImGuiCol_Text].z = 1.0f;
-    _style.Colors[ImGuiCol_Text].w = 1.0f;
+        _style.Colors[ImGuiCol_Text].x = 1.0f;
+        _style.Colors[ImGuiCol_Text].y = 1.0f;
+        _style.Colors[ImGuiCol_Text].z = 1.0f;
+        _style.Colors[ImGuiCol_Text].w = 1.0f;
 
-    _style.Colors[ImGuiCol_WindowBg].x = 0.9098039215686275f;
-    _style.Colors[ImGuiCol_WindowBg].y = 0.4431372549019608f;
-    _style.Colors[ImGuiCol_WindowBg].z = 0.3176470588235294f;
-    _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-    
-    ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiSetCond_FirstUseEver);
-    ImGui::Begin(("Wolf.Engine " + SVersion).c_str());
-    ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nThread pool rendering size: %d\r\nTotal Ref Models: %d\r\nTotal Visible Models: %d\r\nTotal Visible Ref Models: %d", 
-        sFPS, windows_frame_time_in_sec.at(0), sRenderingThreads, sTotalModels, sVisibleSubModels, sVisibleModels);
-         
-    ImGui::End();
-    
+        _style.Colors[ImGuiCol_WindowBg].x = 0.9098039215686275f;
+        _style.Colors[ImGuiCol_WindowBg].y = 0.4431372549019608f;
+        _style.Colors[ImGuiCol_WindowBg].z = 0.3176470588235294f;
+        _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
+        ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiSetCond_FirstUseEver);
+        ImGui::Begin(("Wolf.Engine " + SVersion).c_str());
+        ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nThread pool rendering size: %d\r\nTotal Ref Models: %d\r\nTotal Visible Models: %d\r\nTotal Visible Ref Models: %d",
+            sFPS, windows_frame_time_in_sec.at(0), sRenderingThreads, sTotalModels, sVisibleSubModels, sVisibleModels);
+
+        ImGui::End();
+
 #pragma endregion
 
+    }
+
     return _proceeded;
+}
+
+HRESULT scene::_open_media(_In_z_ const std::wstring& pPath, int64_t pSeekToFrame)
+{
+    auto _hr = S_FALSE;
+
+    if (pPath.empty()) return _hr;
+
+    //Try open and buffer the video of media
+    this->_video_streamer_cs.lock();
+    {
+        _hr = this->_video_streamer.open_media(pPath, pSeekToFrame);
+        V(_hr, L"Could not open media for following path: " + pPath, this->name, 3);
+    }
+    this->_video_streamer_cs.unlock();
+
+    if (_hr == S_FALSE) return _hr;
+
+    //initialize buffers
+    this->_media_width = static_cast<uint32_t>(this->_video_streamer.get_video_width());
+    this->_media_height = static_cast<uint32_t>(this->_video_streamer.get_video_height());
+
+    for (size_t i = 0; i < BUFFER_COUNTS; ++i)
+    {
+        if (!this->_video_buffers[i].malloc(MAXIMUM_BUFFER_SIZE * this->_media_width * this->_media_height * sizeof(int)))
+        {
+            V(S_FALSE, L"Could not allocate memory for preview buffer", this->name, 3, true, false);
+            break;
+        }
+    }
+
+    if (_hr == S_OK)
+    {
+        this->_media_fps = this->_video_streamer.get_video_frame_rate();
+        _fill_buffers();
+    }
+
+    return _hr;
+}
+
+void scene::_video_buffering_thread()
+{
+    while (true)
+    {
+        auto _hr = S_FALSE;
+        this->_video_is_buffering = false;
+
+        //Lock this section and wait for signal to start buffering
+        tbb::interface5::unique_lock<tbb::mutex> _lk(this->_video_buffer_mutex);
+        {
+            //Continue to the first state of while
+            if (this->_halt_buffering || w_game::exiting) continue;
+
+            //Wait for signal from video
+            this->_signal_video_buffer_cv.wait(_lk);
+
+            this->_video_is_buffering = true;
+
+            auto _index = this->_current_video_buffer - 1;
+            if (_index < 0)
+            {
+                _index = BUFFER_COUNTS - 1;
+            }
+
+            _video_buffers[_index].clear();
+            if (this->_total_video_frames_buffered == this->_total_video_frames) continue;
+
+            //Read frames			
+            for (size_t i = 0; i < MAXIMUM_BUFFER_SIZE; ++i)
+            {
+                if (this->_halt_buffering) break;
+
+                this->_video_streamer_cs.lock();
+                _hr = this->_video_streamer.buffer_video_to_memory(_video_buffers[_index]);
+                this->_video_streamer_cs.unlock();
+
+                if (_hr == S_OK)
+                {
+                    this->_total_video_frames_buffered++;
+                    if (this->_total_video_frames_buffered == this->_total_video_frames)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    logger.error(L"Video thread could not buffer frame to memory");
+                }
+            }
+        }
+        _lk.unlock();
+    }
+}
+
+void scene::_fill_buffers()
+{
+    this->_total_video_frames_buffered = 0;
+    auto _time = this->_video_streamer.get_duration_time();
+    auto _tms = _time.get_total_milliseconds();
+    this->_total_video_frames = this->_video_streamer.get_total_video_frames();
+
+    _clear_buffers();
+
+    bool _break_parent = false;
+    auto _hr = S_OK;
+    for (size_t i = 0; i < BUFFER_COUNTS; ++i)
+    {
+        for (size_t j = 0; j < MAXIMUM_BUFFER_SIZE; ++j)
+        {
+            //Check for cancel
+            if (this->_halt_buffering || w_game::exiting)
+            {
+                _break_parent = true;
+                break;
+            }
+
+            this->_video_streamer_cs.lock();
+            _hr = _video_streamer.buffer_video_to_memory(_video_buffers[i]);
+            this->_video_streamer_cs.unlock();
+
+            if (_hr == S_OK)
+            {
+                this->_total_video_frames_buffered++;
+                if (this->_total_video_frames_buffered >= this->_total_video_frames)
+                {
+                    _break_parent = true;
+                    break;
+                }
+            }
+            else
+            {
+                logger.warning(L"Could not fill video buffer number : " + std::to_wstring(i));
+            }
+
+        }
+        if (_break_parent) break;
+    }
+}
+
+void scene::_clear_buffers()
+{
+    for (size_t i = 0; i < BUFFER_COUNTS; ++i)
+    {
+        this->_video_buffers[i].clear();
+    }
 }
 
 static void TonemapDepth(_In_ float* pDepth, _In_ unsigned char* pImage, _In_ const int& pW, _In_ const int& pH)

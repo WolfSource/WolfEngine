@@ -29,7 +29,8 @@ namespace wolf
 #endif
                 _In_ const w_point_t& pScreenSize,
                 _In_ VkRenderPass& pRenderPass,
-                _In_ w_texture* pTexture,
+                _In_ w_texture* pIconTexture,
+                _In_ w_texture** pStagingMediaTexture,
                 _In_ const char* pFontPath,
                 _In_ const float& pFontPixelSize)
             {
@@ -38,7 +39,8 @@ namespace wolf
 #endif
                 this->_gDevice = pGDevice;
                 this->_screen_size = pScreenSize;
-                this->_images_texture = pTexture;
+                this->_images_texture = pIconTexture;
+                this->_media_player_texture = *pStagingMediaTexture;
 
 #pragma region Set Style
                 //Color scheme
@@ -132,12 +134,15 @@ namespace wolf
                 std::vector<w_shader_binding_param> _shader_params;
 
                 w_shader_binding_param _param;
+
+                //binding 0 for font's image
                 _param.index = 0;
                 _param.stage = w_shader_stage::FRAGMENT_SHADER;
                 _param.type = w_shader_binding_type::SAMPLER;
                 _param.image_info = this->_font_texture->get_descriptor_info();
                 _shader_params.push_back(_param);
 
+                //binding 1 for icon's image
                 _param.index = 1;
                 _param.stage = w_shader_stage::FRAGMENT_SHADER;
                 _param.type = w_shader_binding_type::SAMPLER;
@@ -145,6 +150,14 @@ namespace wolf
                     : w_texture::default_texture->get_descriptor_info();
                 _shader_params.push_back(_param);
                 
+                //binding 2 for media player's data
+                _param.index = 2;
+                _param.stage = w_shader_stage::FRAGMENT_SHADER;
+                _param.type = w_shader_binding_type::SAMPLER;
+                _param.image_info = this->_media_player_texture ? this->_media_player_texture->get_descriptor_info()
+                    : w_texture::default_texture->get_descriptor_info();
+                _shader_params.push_back(_param);
+
                 this->_shader.load_shader_binding_params(_shader_params);
 
                 auto _descriptor_set_layout = this->_shader.get_descriptor_set_layout();
@@ -511,7 +524,8 @@ namespace wolf
                     for (int32_t j = 0; j < cmd_list->CmdBuffer.Size; j++)
                     {
                         const ImDrawCmd* _draw_cmds = &cmd_list->CmdBuffer[j];
-                        if (_draw_cmds->TextureId == nullptr)
+                        const char* _tex_id = static_cast<char*>(_draw_cmds->TextureId);
+                        if (_tex_id == nullptr)
                         {
                             //font
                             _push_constant_block.image_index = 0;
@@ -521,12 +535,21 @@ namespace wolf
                                 _need_to_update_push = true;
                             }
                         }
-                        else
+                        else if(strcmp(_tex_id, "#i") == 0)
                         {
                             _push_constant_block.image_index = 1;
                             if (_last_texture_id != 1)
                             {
                                 _last_texture_id = 1;
+                                _need_to_update_push = true;
+                            }
+                        }
+                        else if (strcmp(_tex_id, "#s") == 0)
+                        {
+                            _push_constant_block.image_index = 2;
+                            if (_last_texture_id != 2)
+                            {
+                                _last_texture_id = 2;
                                 _need_to_update_push = true;
                             }
                         }
@@ -634,6 +657,7 @@ namespace wolf
             w_shader                                                _shader;
             w_texture*                                              _font_texture;
             w_texture*                                              _images_texture;
+            w_texture*                                              _media_player_texture;
             w_point_t                                               _screen_size;
 
             struct push_constant_block
@@ -657,7 +681,8 @@ HRESULT w_imgui::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_devi
 #endif
     _In_ const w_point_t& pScreenSize,
     _In_ VkRenderPass& pRenderPass,
-    _In_ w_texture* pImages,
+    _In_ w_texture* pIconTexture,
+    _In_ w_texture** pStagingMediaTexture,
     _In_ const char* pFontPath,
     _In_ const float& pFontPixelSize)
 {
@@ -668,7 +693,8 @@ HRESULT w_imgui::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_devi
 #endif
                        pScreenSize,
                        pRenderPass,
-                       pImages,
+                       pIconTexture,
+                       pStagingMediaTexture,
                        pFontPath,
                        pFontPixelSize) : S_FALSE;
 }

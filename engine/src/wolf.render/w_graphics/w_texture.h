@@ -35,8 +35,18 @@ namespace wolf
             W_EXP HRESULT initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight);
             //Load texture2D from memory in format of RGB
             W_EXP HRESULT initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight);
-            //Load texture2D from memory from single channel
+            //Load texture2D from memory, all channels have same byte
             W_EXP HRESULT initialize_texture_from_memory_all_channels_same(_In_ uint8_t pData, _In_ const UINT pWidth, _In_ const UINT pHeight);
+            //Load texture2D from w_color
+            W_EXP HRESULT initialize_texture_from_memory_from_color(_In_ w_color pcolor, _In_ const UINT pWidth, _In_ const UINT pHeight);
+            /*
+                copy data to texture
+                warning, you can use this function anytime just for staging textures(textures loaded as 
+                VkMemoryPropertyFlags::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT). 
+                For default textures t is recommended use initializing functions such as 
+                "w_texture::initialize_texture_2D_from_file, w_texture::initialize_texture_from_memory_rgba and etc."
+            */
+            W_EXP HRESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA);
 
             //release all resources
             W_EXP virtual ULONG release() override;
@@ -44,8 +54,8 @@ namespace wolf
             //load texture and store it into the shared
             W_EXP static HRESULT load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
                                                          _In_z_ std::wstring pPath,
-                                                        _Inout_ w_texture** pPointerToTexture);
-
+                                                        _Inout_ w_texture** pPointerToTexture);            
+            //save texture as bitmap file
             W_EXP static void write_bitmap_to_file(
                 _In_z_ const char* pFilename,
                 _In_ const uint8_t* pData,
