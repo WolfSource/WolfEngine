@@ -28,6 +28,8 @@ namespace wolf
 			
 			WCP_EXP void add_model(_In_ w_cpipeline_model* pModel);
             WCP_EXP void add_models(_Inout_ std::vector<w_cpipeline_model*>& pModel);
+            WCP_EXP void add_boundary(_In_ w_bounding_sphere* pBoundary);
+            WCP_EXP void add_boundaries(_Inout_ std::vector<w_bounding_sphere*>& pBoundaries);
             WCP_EXP void add_camera(_In_ w_camera* pCamera);
 			WCP_EXP void add_camera(_In_z_ const std::string& pName, _In_ const glm::vec3 pTransform, _In_ const glm::vec3 pInterest);
             
@@ -36,6 +38,8 @@ namespace wolf
             WCP_EXP void get_models_by_index(_In_ const size_t pIndex, _Inout_ w_cpipeline_model** pModel);
 			WCP_EXP void get_models_by_id(const std::string& pID, _Inout_ std::vector<w_cpipeline_model*>& pModels);
             WCP_EXP void get_all_models(_Inout_ std::vector<w_cpipeline_model*>& pModels);
+            
+            WCP_EXP void get_boundaries(_Inout_ std::vector<w_bounding_sphere*>& pBoundaries);
 
 			//Get first camera if avaible, else create a default one
 			WCP_EXP void get_first_camera(_Inout_ w_camera& pCamera);
@@ -55,7 +59,7 @@ namespace wolf
             WCP_EXP void set_name(_In_z_ std::string pValue)   { this->_name = pValue; }
             WCP_EXP void set_coordiante_system(_In_ const bool pIsLeftHand);
             
-            MSGPACK_DEFINE(_name, _cameras, _models, _z_up);
+            MSGPACK_DEFINE(_name, _cameras, _models, _boundaries, _z_up);
 
 #pragma endregion
 
@@ -63,6 +67,7 @@ namespace wolf
             std::string                         _name;
 			std::vector<w_camera>		        _cameras;
             std::vector<w_cpipeline_model>		_models;
+            std::vector<w_bounding_sphere>		_boundaries;
             bool                                _z_up;
 		};
 	}

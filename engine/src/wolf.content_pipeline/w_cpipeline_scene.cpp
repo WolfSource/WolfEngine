@@ -29,6 +29,21 @@ void w_cpipeline_scene::add_models(_Inout_ std::vector<w_cpipeline_model*>& pMod
     }
 }
 
+void w_cpipeline_scene::add_boundary(_In_ w_bounding_sphere* pBoundary)
+{
+    if (!pBoundary) return;
+
+    this->_boundaries.push_back(*pBoundary);
+}
+
+void w_cpipeline_scene::add_boundaries(_Inout_ std::vector<w_bounding_sphere*>& pBoundaries)
+{
+    for (size_t i = 0; i < pBoundaries.size(); ++i)
+    {
+        this->_boundaries.push_back(*pBoundaries[i]);
+    }
+}
+
 void w_cpipeline_scene::add_camera(_In_ w_camera* pCamera)
 {
     this->_cameras.push_back(*pCamera);
@@ -51,6 +66,8 @@ ULONG w_cpipeline_scene::release()
     {
         _iter.release();
     }
+    this->_models.clear();
+    this->_boundaries.clear();
     this->_name.clear();
     this->_cameras.clear();
     return 1;
@@ -84,6 +101,16 @@ void w_cpipeline_scene::get_all_models(_Inout_ std::vector<w_cpipeline_model*>& 
     for (size_t i = 0; i < this->_models.size(); ++i)
     {
         pModels.push_back(&this->_models[i]);
+    }
+}
+
+void w_cpipeline_scene::get_boundaries(_Inout_ std::vector<w_bounding_sphere*>& pBoundaries)
+{
+    if (!this->_boundaries.size()) return;
+
+    for (size_t i = 0; i < this->_boundaries.size(); ++i)
+    {
+        pBoundaries.push_back(&this->_boundaries[i]);
     }
 }
 

@@ -12,7 +12,7 @@
 #include <w_timer.h>
 #include <tbb/parallel_for_each.h>
 
-#define DEBUG_MASKED_OCCLUSION_CULLING
+//#define DEBUG_MASKED_OCCLUSION_CULLING
 #define MAX_SEARCH_LENGHT 256
 
 using namespace wolf::system;
@@ -369,6 +369,9 @@ HRESULT scene::_load_areas()
                 std::vector<w_cpipeline_model*> _cmodels;
                 _scene->get_all_models(_cmodels);
 
+                area _area;
+                _area.name = "test";
+
                 for (auto& _iter : _cmodels)
                 {
                     if (!_iter) continue;
@@ -376,7 +379,7 @@ HRESULT scene::_load_areas()
                     auto _model = new model();
                     if (_model->load(_gDevice, _iter, this->_draw_render_pass) == S_OK)
                     {
-                        this->_models.push_back(_model);
+                        _area.outer_models.push_back(_model);
                     }
                     else
                     {
@@ -384,7 +387,11 @@ HRESULT scene::_load_areas()
                         logger.error("Error on loading model " + _iter->get_name());
                     }
                 }
+
+                _scene->get_boundaries(_area.boundaries);
                 _scene->release();
+
+                this->_areas.push_back(_area);
 
                 sForceUpdateCamera = true;
             }
@@ -606,24 +613,32 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         //    return _a_distance < _b_distance;
         //});  
 
-        if (this->_models.size())
+        sTotalModels = 0;
+        for (auto& _area : _areas)
         {
-            sVisibleSubModels = 0;
-            sMOC->ClearBuffer();
-            this->_models_to_be_render.clear();
-
-            std::for_each(this->_models.begin(), this->_models.end(), [this](_In_ model* pModel)
+            auto _outer_size = _area.outer_models.size();
+            sTotalModels += _outer_size;
+            if (_outer_size)
             {
-                pModel->pre_update(this->_camera, &sMOC);
-            });
+                sVisibleSubModels = 0;
+                sMOC->ClearBuffer();
+                this->_models_to_be_render.clear();
 
-            std::for_each(this->_models.begin(), this->_models.end(), [&](_In_ model* pModel)
-            {
-                if (pModel->post_update(sMOC, sVisibleSubModels))
+                std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [this](_In_ model* pModel)
                 {
-                    this->_models_to_be_render.push_back(pModel);
-                }
-            });
+                    pModel->pre_update(this->_camera, &sMOC);
+                });
+
+                std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [&](_In_ model* pModel)
+                {
+                    if (pModel->post_update(sMOC, sVisibleSubModels))
+                    {
+                        this->_models_to_be_render.push_back(pModel);
+                    }
+                });
+            }
+
+
         }
 
         _record_draw_command_buffer = true;
@@ -633,7 +648,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         sMOC->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
         //Tonemap the depth image
         TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, _output_window->width, _output_window->height);
-        w_texture::write_bitmap_to_file("F:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
+        w_texture::write_bitmap_to_file("E:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
 #endif
     }
 }
@@ -722,7 +737,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _hr = w_game::render(pGameTime);
 
     sFPS = pGameTime.get_frames_per_second();
-    sTotalModels = this->_models.size();
     sVisibleModels = this->_models_to_be_render.size();
 
     _wait_semaphors.clear();
@@ -755,10 +769,11 @@ ULONG scene::release()
 
     this->_models_to_be_render.clear();
     //release all models
-    for (auto& _iter : this->_models)
+    for (auto _area : this->_areas)
     {
-        SAFE_RELEASE(_iter);
+        _area.release();
     }
+    this->_areas.clear();
 
     this->_draw_render_pass.release();
     this->_draw_frame_buffers.release();
@@ -908,11 +923,14 @@ bool scene::_update_gui()
                 std::transform(_lower_str.begin(), _lower_str.end(), _lower_str.begin(), ::tolower);
                 w_task::execute_async_ppl([this, _lower_str]()
                 {
-                    //start seraching models
-                    std::for_each(this->_models.begin(), this->_models.end(), [_lower_str](_In_ model* pModel)
+                    //start seraching areas
+                    for (auto& _area : this->_areas)
                     {
-                        pModel->search_for_name(_lower_str, sSearchedItems);
-                    });
+                        std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [_lower_str](_In_ model* pModel)
+                        {
+                            pModel->search_for_name(_lower_str, sSearchedItems);
+                        });
+                    }
                 }, [this]()
                 {
                     //on callback
@@ -920,20 +938,26 @@ bool scene::_update_gui()
                     if (sSearchedItems.size() == 0)
                     {
                         //switch all model's transparency to 1
-                        std::for_each(this->_models.begin(), this->_models.end(), [](_In_ model* pModel)
+                        for (auto& _area : this->_areas)
                         {
-                            pModel->set_color(glm::vec4(1.0f));
-                        });
+                            std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [](_In_ model* pModel)
+                            {
+                                pModel->set_color(glm::vec4(1.0f));
+                            });
+                        }
                     }
                 });
             }
             else
             {
                 //switch all model's transparency to 1
-                std::for_each(this->_models.begin(), this->_models.end(), [](_In_ model* pModel)
+                for (auto& _area : this->_areas)
                 {
-                    pModel->set_color(glm::vec4(1.0f));
-                });
+                    std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [](_In_ model* pModel)
+                    {
+                        pModel->set_color(glm::vec4(1.0f));
+                    });
+                }
             }
         }
     }
@@ -1033,10 +1057,7 @@ bool scene::_update_gui()
     ImGui::Begin(("Wolf.Engine " + SVersion).c_str());
     ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nThread pool rendering size: %d\r\nTotal Ref Models: %d\r\nTotal Visible Models: %d\r\nTotal Visible Ref Models: %d", 
         sFPS, windows_frame_time_in_sec.at(0), sRenderingThreads, sTotalModels, sVisibleSubModels, sVisibleModels);
-
-    sTotalModels = this->_models.size();
-    sVisibleModels = static_cast<uint32_t>(this->_models_to_be_render.size());
-     
+         
     ImGui::End();
     
 #pragma endregion

@@ -1196,7 +1196,7 @@ HRESULT c_parser::_create_scene(
     _Inout_ w_cpipeline_scene* pScene,
     _In_ const bool& pAMDTootleOptimizing,
     _In_ const bool& pInvertNormals, 
-    _In_ const bool& pFind_LODs_BBs)
+    _In_ const bool& pFind_LODs_ConvexHulls_Boundaries)
 {
     std::vector<c_node*> _mesh_with_unknown_instance_ref;
     std::vector<w_cpipeline_model*> _models;
@@ -1319,12 +1319,13 @@ HRESULT c_parser::_create_scene(
 	//	pScene->add_model(_model);
 	//}
 
-    //find LODS index
+    //find LODS & convex hulls indices
     std::vector<size_t> _roots;
-    if (pFind_LODs_BBs)
+    if (pFind_LODs_ConvexHulls_Boundaries)
     {
         std::vector<size_t> _lods;
         std::vector<size_t> _chs;
+        std::vector<w_bounding_sphere*> _bounds;
 
         for (size_t i = 0; i < _models.size(); i++)
         {
@@ -1332,6 +1333,8 @@ HRESULT c_parser::_create_scene(
             if (_model)
             {
                 auto _name = _model->get_name();
+                //to lower
+                std::transform(_name.begin(), _name.end(), _name.begin(), ::tolower);
                 if (strstr(_name.c_str(), "-lod") != NULL)
                 {
                     _lods.push_back(i);
@@ -1339,6 +1342,20 @@ HRESULT c_parser::_create_scene(
                 else if (strstr(_name.c_str(), "-ch") != NULL)
                 {
                     _chs.push_back(i);
+                }
+                else if (_name == "inner_boundary" || _name == "middle_boundary" || _name == "outer_boundary")
+                {
+                    //get root bounding box
+                    auto _bb = _model->get_bounding_box(0);
+
+                    auto _bs = new w_bounding_sphere();
+                    _bs->create_from_bounding_box(*_bb);
+
+                    _bs->center[0] = _bb->position[0];
+                    _bs->center[1] = _bb->position[1];
+                    _bs->center[2] = _bb->position[2];
+
+                    _bounds.push_back(_bs);
                 }
                 else
                 {
@@ -1353,7 +1370,7 @@ HRESULT c_parser::_create_scene(
             auto _index = _roots[i];
             auto _name = _models[_index]->get_name();
 
-            std::vector<int> _index_lods, _index_chs;;
+            std::vector<int> _index_lods, _index_chs, _index_bounds;
             wolf::system::convert::split_string(_name, "_", _splits);
             if (_splits.size() > 0)
             {
@@ -1409,7 +1426,7 @@ HRESULT c_parser::_create_scene(
                 if (!_m) continue;
                 _convex_hulls.push_back(_m);
             }
-            
+
             if (_lods_models.size())
             {
                 _models[_index]->add_lods(_lods_models);
@@ -1427,11 +1444,23 @@ HRESULT c_parser::_create_scene(
 
         if (_lods.size()) _lods.clear();
         if (_chs.size()) _chs.clear();
+
+        if (_bounds.size())
+        {
+            //sort boundaries
+            std::sort(_bounds.begin(), _bounds.end(), [](_In_ w_bounding_sphere* a, _In_ w_bounding_sphere* b)
+            {
+                return a->radius < b->radius;
+            });
+
+            pScene->add_boundaries(_bounds);
+            _bounds.clear();
+        }
     }
 
     if (_models.size())
     {
-        if (pFind_LODs_BBs)
+        if (pFind_LODs_ConvexHulls_Boundaries)
         {
             std::vector<w_cpipeline_model*> _root_models;
             for (auto& _index : _roots)

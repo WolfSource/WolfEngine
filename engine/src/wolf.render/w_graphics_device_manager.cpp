@@ -122,7 +122,7 @@ VkPipelineRasterizationStateCreateInfo w_graphics_device::defaults::vk_default_p
         0,                                                              // flags
         VK_FALSE,                                                       // depthClampEnable
         VK_FALSE,                                                       // rasterizerDiscardEnable
-        VK_POLYGON_MODE_FILL,                                           // polygonMode
+        VK_POLYGON_MODE_LINE,                                           // polygonMode
         VK_CULL_MODE_FRONT_BIT,                                         // cullMode
         VK_FRONT_FACE_CLOCKWISE,                                        // frontFace
         VK_FALSE,                                                       // depthBiasEnable

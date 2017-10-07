@@ -54,6 +54,8 @@ namespace wolf
             WCP_EXP void create_from_bounding_box(_In_ const w_bounding_box& pBox);
             WCP_EXP bool intersects(_In_ const w_bounding_sphere& pSphere);
             WCP_EXP bool intersects(_In_ const w_bounding_box& pBox);
+
+            MSGPACK_DEFINE(center, radius);
         };
 	}
 }

@@ -76,7 +76,6 @@ private:
     wolf::graphics::w_viewport_scissor                              _viewport_scissor;
     
     wolf::content_pipeline::w_first_person_camera                  _camera;
-    std::vector<model*>                                            _models;
     bool                                                           _show_gui;
 
     wolf::graphics::w_command_buffers                              _draw_command_buffers;
@@ -111,21 +110,41 @@ private:
     wolf::graphics::w_quad<>                                        _media_player;
 
 
-    //struct area
-    //{
-    //    const char*                                                 area_name;
+    struct area
+    {
+        std::string                                                 name;
 
-    //    wolf::content_pipeline::w_bounding_box                      inner_region;
-    //    std::vector<model>                                          inner_models;
+        std::vector<wolf::content_pipeline::w_bounding_sphere*>     boundaries;
 
-    //    wolf::content_pipeline::w_bounding_box                      middle_region;
-    //    std::vector<model>                                          middle_models;
+        std::vector<model*>                                         inner_models;
+        std::vector<model*>                                         middle_models;
+        std::vector<model*>                                         outer_models;
 
-    //    wolf::content_pipeline::w_bounding_box                      outer_region;
-    //    std::vector<model>                                          outer_models;
-    //};
+        void release()
+        {
+            for (auto& _iter : this->inner_models)
+            {
+                SAFE_RELEASE(_iter);
+            }
+            this->inner_models.clear();
 
-    //std::vector<area>                                               _areas;                                             
+            for (auto& _iter : this->middle_models)
+            {
+                SAFE_RELEASE(_iter);
+            }
+            this->middle_models.clear();
+
+            for (auto& _iter : this->outer_models)
+            {
+                SAFE_RELEASE(_iter);
+            }
+            this->outer_models.clear();
+
+            this->boundaries.clear();
+        }
+    };
+
+    std::vector<area>                                               _areas;                                             
 };
 
 #endif

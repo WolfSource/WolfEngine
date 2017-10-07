@@ -68,7 +68,10 @@ HRESULT model::load(
         this->_root_bounding_sphere.center[2] = this->_transform.position[2];
     }
 
-    //generate masked occlusion culling data
+    std::vector<w_cpipeline_model*> _lods;
+    pCPModel->get_lods(_lods);
+
+    //generate masked occlusion culling data from -ch files
     auto _size = pCPModel->get_convex_hulls_count();
     if (_size)
     {
@@ -81,9 +84,14 @@ HRESULT model::load(
             _add_data_for_masked_occlusion_culling(_iter);
         }
     }
+    else if (_lods.size() > 0)
+    {
+        //if there are no -ch for this model, then use first lod for masked occlusion culling
+        _add_data_for_masked_occlusion_culling(_lods[0]);
+    }
     else if (_sub_meshes_count)
     {
-        //generate vertices and indices of bounding box
+        //no -ch and no -lod, so generate vertices and indices of model's bounding box
         _model_meshes[0]->bounding_box.generate_vertices_indices();
         _add_data_for_masked_occlusion_culling(_model_meshes[0]->bounding_box);
     }
@@ -108,9 +116,6 @@ HRESULT model::load(
     }
     
     //append load mesh data to big vertices and indices
-    std::vector<w_cpipeline_model*> _lods;
-    pCPModel->get_lods(_lods);
-    
     for (auto& _lod_mesh_data : _lods)
     {
         _model_meshes.clear();

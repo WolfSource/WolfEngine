@@ -167,12 +167,12 @@ void w_bounding_sphere::create_from_bounding_box(_In_ const w_bounding_box& pBox
 {
     glm::vec3 _in_min(pBox.min[0], pBox.min[1], pBox.min[2]);
     glm::vec3 _in_max(pBox.max[0], pBox.max[1], pBox.max[2]);
-    glm::vec3 _center;
-
-    glm::lerp(_in_min, _in_max, _center);
-    this->center[0] = _center.x;
-    this->center[1] = _center.y;
-    this->center[2] = _center.z;
+    
+    //apply lerp to calculate center
+    const float _lerp_amount = 0.5f;
+    this->center[0] = _in_min.x + ((_in_max.x - _in_min.x) * _lerp_amount);
+    this->center[1] = _in_min.y + ((_in_max.y - _in_min.y) * _lerp_amount);
+    this->center[2] = _in_min.z + ((_in_max.z - _in_min.z) * _lerp_amount);
 
     auto _num = glm::distance(_in_min, _in_max);
     this->radius = _num * 0.5f;

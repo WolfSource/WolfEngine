@@ -72,7 +72,7 @@ namespace wolf
                     _Inout_ w_cpipeline_scene* pScene,
                     _In_ const bool& pAMDTootleOptimizing,
                     _In_ const bool& pInvertNormals,
-                    _In_ const bool& pFindLODs);
+                    _In_ const bool& pFind_LODs_ConvexHulls_Boundaries);
 				void			                            _clear_all_resources();
 
 				static const char*	                        _trace_class_name;
