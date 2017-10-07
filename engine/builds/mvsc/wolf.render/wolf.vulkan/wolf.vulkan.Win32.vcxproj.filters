@@ -52,13 +52,13 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.cpp">
       <Filter>masked_occlusion_culling</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.cpp">
       <Filter>masked_occlusion_culling</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX512.cpp">
+      <Filter>masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
       <Filter>masked_occlusion_culling</Filter>
     </ClCompile>
   </ItemGroup>
@@ -125,9 +125,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="w_graphics">
-      <UniqueIdentifier>{602f206c-1517-4b06-9a9b-74c0c9d081fb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="w_framework">
       <UniqueIdentifier>{d665d56d-5e17-4d27-9ccc-5b8793822c6a}</UniqueIdentifier>
     </Filter>
@@ -148,6 +145,9 @@
     </Filter>
     <Filter Include="masked_occlusion_culling">
       <UniqueIdentifier>{18495b95-ede0-4812-aaf6-9ac8446435c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="w_graphics">
+      <UniqueIdentifier>{602f206c-1517-4b06-9a9b-74c0c9d081fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
