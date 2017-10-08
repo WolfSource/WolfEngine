@@ -395,28 +395,28 @@ namespace wolf
                 auto _data_size = this->_width * this->_height * 4;
                 w_buffer _staging_buffer;
                 auto _hResult = _staging_buffer.load_as_staging(this->_gDevice, _data_size);
-                if(_hResult == S_FALSE)
+                if (_hResult == S_FALSE)
                 {
                     return _hResult;
                 }
-                
+
                 _hResult = _staging_buffer.bind();
-                if(_hResult == S_FALSE)
+                if (_hResult == S_FALSE)
                 {
                     return _hResult;
                 }
-                
+
                 void* _staging_buffer_memory_pointer = nullptr;
                 auto _hr = vkMapMemory(this->_gDevice->vk_device,
-                                       _staging_buffer.get_memory(),
-                                       0,
-                                       _data_size,
-                                       0,
-                                       &_staging_buffer_memory_pointer );
-                
-                if(_hr)
+                    _staging_buffer.get_memory(),
+                    0,
+                    _data_size,
+                    0,
+                    &_staging_buffer_memory_pointer);
+
+                if (_hr)
                 {
-                    V(S_FALSE , "Could not map memory and upload texture data to a staging buffer on graphics device: " +
+                    V(S_FALSE, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
                         this->_gDevice->device_name + " ID: " + std::to_string(this->_gDevice->device_id),
                         this->_name,
                         3,
@@ -424,9 +424,9 @@ namespace wolf
                         true);
                     return S_FALSE;
                 }
-                
-                memcpy( _staging_buffer_memory_pointer, pRGBA, (size_t)_data_size );
-                
+
+                memcpy(_staging_buffer_memory_pointer, pRGBA, (size_t)_data_size);
+
                 VkMappedMemoryRange _flush_range =
                 {
                     VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,              // Type
@@ -435,19 +435,19 @@ namespace wolf
                     0,                                                  // Offset
                     _data_size                                          // Size
                 };
-                
+
                 vkFlushMappedMemoryRanges(this->_gDevice->vk_device,
-                                          1,
-                                          &_flush_range);
+                    1,
+                    &_flush_range);
                 vkUnmapMemory(this->_gDevice->vk_device,
-                              _staging_buffer.get_memory());
-                
-                
+                    _staging_buffer.get_memory());
+
+
                 //create command buffer
                 w_command_buffers _command_buffer;
                 _command_buffer.load(this->_gDevice, 1);
                 auto _cmd = _command_buffer.get_command_at(0);
-                
+
                 _command_buffer.begin(0, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
                 {
                     VkImageSubresourceRange _image_subresource_range =
@@ -458,7 +458,7 @@ namespace wolf
                         0,                                              // BaseArrayLayer
                         1                                               // LayerCount
                     };
-                    
+
                     VkImageMemoryBarrier _image_memory_barrier_from_undefined_to_transfer_dst =
                     {
                         VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,         // Type
@@ -472,18 +472,18 @@ namespace wolf
                         this->_image,                                   // image
                         _image_subresource_range                        // SubresourceRange
                     };
-                    
+
                     vkCmdPipelineBarrier(_cmd,
-                                         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                         VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                         0,
-                                         0,
-                                         nullptr,
-                                         0,
-                                         nullptr,
-                                         1,
-                                         &_image_memory_barrier_from_undefined_to_transfer_dst);
-                    
+                        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                        VK_PIPELINE_STAGE_TRANSFER_BIT,
+                        0,
+                        0,
+                        nullptr,
+                        0,
+                        nullptr,
+                        1,
+                        &_image_memory_barrier_from_undefined_to_transfer_dst);
+
                     VkBufferImageCopy _buffer_image_copy_info =
                     {
                         0,                                    // BufferOffset
@@ -506,14 +506,14 @@ namespace wolf
                             1                                 // Depth
                         }
                     };
-                    
+
                     vkCmdCopyBufferToImage(_cmd,
-                                          _staging_buffer.get_handle(),
-                                           this->_image,
-                                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                           1,
-                                           &_buffer_image_copy_info);
-                    
+                        _staging_buffer.get_handle(),
+                        this->_image,
+                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                        1,
+                        &_buffer_image_copy_info);
+
                     VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
                     {
                         VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
@@ -528,19 +528,19 @@ namespace wolf
                         _image_subresource_range                            // SubresourceRange
                     };
                     vkCmdPipelineBarrier(_cmd,
-                                         VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                         VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-                                         0,
-                                         0,
-                                         nullptr,
-                                         0,
-                                         nullptr,
-                                         1,
-                                         &_image_memory_barrier_from_transfer_to_shader_read);
-                
+                        VK_PIPELINE_STAGE_TRANSFER_BIT,
+                        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                        0,
+                        0,
+                        nullptr,
+                        0,
+                        nullptr,
+                        1,
+                        &_image_memory_barrier_from_transfer_to_shader_read);
+
                 }
                 _command_buffer.end(0);
-                    
+
                 // Submit command buffer and copy data from staging buffer to a vertex buffer
                 VkSubmitInfo _submit_info =
                 {
@@ -554,25 +554,25 @@ namespace wolf
                         0,                                    // SignalSemaphoreCount
                         nullptr                               // SignalSemaphores
                 };
-                
-                _hr = vkQueueSubmit( this->_gDevice->vk_graphics_queue.queue, 1, &_submit_info, VK_NULL_HANDLE );
+
+                _hr = vkQueueSubmit(this->_gDevice->vk_graphics_queue.queue, 1, &_submit_info, VK_NULL_HANDLE);
                 if (_hr)
                 {
-                    V(S_FALSE , "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
-                      this->_gDevice->device_name + " ID: " + std::to_string(this->_gDevice->device_id),
-                      this->_name,
-                      3,
-                      false,
-                      true);
-                    
+                    V(S_FALSE, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
+                        this->_gDevice->device_name + " ID: " + std::to_string(this->_gDevice->device_id),
+                        this->_name,
+                        3,
+                        false,
+                        true);
+
                     _command_buffer.release();
                     return S_FALSE;
                 }
                 vkDeviceWaitIdle(this->_gDevice->vk_device);
-                
+
                 //release command buffer
                 _command_buffer.release();
-                
+
                 return S_OK;
             }
             

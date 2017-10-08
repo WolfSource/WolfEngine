@@ -26,9 +26,9 @@ namespace wolf
                 _In_ const VkMemoryPropertyFlags pMemoryFlags)
             {
                 this->_gDevice = pGDevice;
+
                 this->_usage_flags = pUsageFlags;
                 this->_memory_flags = pMemoryFlags;
-
                 this->_size = pBufferSize;
 
                 const VkBufferCreateInfo _buffer_create_info =
@@ -76,7 +76,6 @@ namespace wolf
                             _buffer_memory_requirements.size,       // AllocationSize
                             i                                       // MemoryTypeIndex
                         };
-
                         if (vkAllocateMemory(this->_gDevice->vk_device,
                             &_memory_allocate_info,
                             nullptr,
@@ -90,7 +89,6 @@ namespace wolf
                         }
                     }
                 }
-
                 logger.error("Could not create buffer, because proposed memory property not found.");
 
                 return S_FALSE;
@@ -102,6 +100,7 @@ namespace wolf
                     this->_handle,
                     this->_memory,
                     0) == VK_SUCCESS ? S_OK : S_FALSE;
+
             }
 
             //Set data to DRAM
@@ -147,9 +146,7 @@ namespace wolf
                 }
 
                 auto _copy_cmd = _copy_command_buffer.get_command_at(0);
-
                 VkBufferCopy _copy_region = {};
-
                 _copy_region.size = this->_size;
                 vkCmdCopyBuffer(
                     _copy_cmd,
@@ -190,10 +187,11 @@ namespace wolf
                     _size,
                     0,
                     &this->_mapped);
+
                 if (_hr)
                 {
                     this->_mapped = nullptr;
-                    V(S_FALSE, "mapping data to to vertex buffer's memory " + 
+                    V(S_FALSE, "mapping data to to vertex buffer's memory " +
                         _gDevice->print_info(),
                         _trace, 3, false, true);
 
@@ -219,6 +217,7 @@ namespace wolf
                 _mapped_range.memory = this->_memory;
                 _mapped_range.offset = pOffset;
                 _mapped_range.size = pSize;
+
                 return vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range) == VK_SUCCESS ? S_OK : S_FALSE;
             }
             

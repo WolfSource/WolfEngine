@@ -43,8 +43,8 @@ static w_texture* sStagingMediaTexture = nullptr;
 static uint8_t* sStagingMediaData = nullptr;
 
 //first loading
-static bool sLoading = true;
-static bool sShowingLiveCamera = false;
+static tbb::atomic<bool>        sLoading = true;
+static bool                     sShowingLiveCamera = false;
 
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
 	w_game(pRunningDirectory, pAppName)
@@ -68,6 +68,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
     this->_media_fps = 29.0f;
     this->_current_frame = 0;
     this->_video_frame_address = 0;
+    this->_video_time.set_fixed_time_step(true);
 
     //we do not need fixed time step
     w_game::set_fixed_time_step(false);
@@ -144,7 +145,7 @@ void scene::load()
 
     w_game::load();
     
-    if (_open_media(content_path + L"media/falcon_720p.mp4", 0) == S_OK)
+    if (_open_media(content_path + L"media/falcon.avi", 0) == S_OK)
     {
         //Run video buffering task
         wolf::system::w_task::execute_async_ppl([this]()
@@ -154,7 +155,7 @@ void scene::load()
     }
     else
     {
-        logger.warning("could not load intro \"media/falcon_720p.mp4\"");
+        logger.warning("could not load intro \"media/falcon_720p.avi\"");
     }
 
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
@@ -312,19 +313,19 @@ void scene::load()
 
 
     auto _thread_pool_size = w_thread::get_number_of_hardware_thread_contexts();
-    this->_thread_pool.resize(_thread_pool_size);
+    this->_render_thread_pool.resize(_thread_pool_size);
     logger.write("Size of thread pool is " + std::to_string(_thread_pool_size));
     sRenderingThreads = _thread_pool_size;
 
     for (size_t i = 0; i < _thread_pool_size; ++i)
     {
-        this->_thread_pool[i] = new (std::nothrow) thread_context();
-        if (!this->_thread_pool[i])
+        this->_render_thread_pool[i] = new (std::nothrow) render_thread_context();
+        if (!this->_render_thread_pool[i])
         {
             logger.error("Could not allocate memory for thread context: " + std::to_string(i));
             continue;
         }
-        _hr = this->_thread_pool[i]->secondary_command_buffers.load(
+        _hr = this->_render_thread_pool[i]->secondary_command_buffers.load(
             _gDevice,
             _swap_chain_image_size,
             VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_SECONDARY,
@@ -377,14 +378,182 @@ void scene::load()
     _load_areas();
 }
 
+void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCollada)
+{
+    auto _gDevice = this->graphics_devices[0];
+    auto _full_path = content_path + L"models/" + pArea + L"/";
+
+    area _area;
+    _area.name = pArea;
+
+#pragma region Load Outer
+
+    auto _scene_path = _full_path + (pLoadCollada ? L"outer.dae" : L"outer.wscene");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+    if (_scene)
+    {
+        if (pLoadCollada)
+        {
+            //convert to wscene
+            std::vector<w_cpipeline_scene> _scenes = { *_scene };
+            w_content_manager::save_wolf_scenes_to_file(_scenes,
+                wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+            _scenes.clear();
+        }
+
+        //get all models
+        std::vector<w_cpipeline_model*> _cmodels;
+        _scene->get_all_models(_cmodels);
+
+        for (auto& _iter : _cmodels)
+        {
+            if (!_iter) continue;
+
+            auto _model = new model();
+            auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+            if (_hr == S_OK)
+            {
+                _area.outer_models.push_back(_model);
+            }
+            else
+            {
+                SAFE_DELETE(_model);
+                logger.error("Error on loading model " + _iter->get_name());
+            }
+        }
+        _scene->release();
+    }
+    else
+    {
+        logger.write(L"Scene on following path not exists " + _scene_path);
+    }
+#pragma endregion
+
+#pragma region Load Middle
+
+    _scene_path = _full_path + +(pLoadCollada ? L"middle.dae" : L"middle.wscene");
+    _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+    if (_scene)
+    {
+        if (pLoadCollada)
+        {
+            //convert to wscene
+            std::vector<w_cpipeline_scene> _scenes = { *_scene };
+            w_content_manager::save_wolf_scenes_to_file(_scenes,
+                wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+            _scenes.clear();
+        }
+
+        //get all models
+        std::vector<w_cpipeline_model*> _cmodels;
+        _scene->get_all_models(_cmodels);
+
+        for (auto& _iter : _cmodels)
+        {
+            if (!_iter) continue;
+
+            auto _model = new model();
+            auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+            if (_hr == S_OK)
+            {
+                _area.middle_models.push_back(_model);
+            }
+            else
+            {
+                SAFE_DELETE(_model);
+                logger.error("Error on loading model " + _iter->get_name());
+            }
+        }
+        _scene->release();
+    }
+    else
+    {
+        logger.write(L"Scene on following path not exists " + _scene_path);
+    }
+#pragma endregion
+
+#pragma region Load Inner
+    _scene_path = _full_path + +(pLoadCollada ? L"inner.dae" : L"inner.wscene");
+    _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+    if (_scene)
+    {
+        if (pLoadCollada)
+        {
+            //convert to wscene
+            std::vector<w_cpipeline_scene> _scenes = { *_scene };
+            w_content_manager::save_wolf_scenes_to_file(_scenes,
+                wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+            _scenes.clear();
+        }
+
+        //get all models
+        std::vector<w_cpipeline_model*> _cmodels;
+        _scene->get_all_models(_cmodels);
+
+        for (auto& _iter : _cmodels)
+        {
+            if (!_iter) continue;
+
+            auto _model = new model();
+            auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+            if (_hr == S_OK)
+            {
+                _area.inner_models.push_back(_model);
+            }
+            else
+            {
+                SAFE_DELETE(_model);
+                logger.error("Error on loading model " + _iter->get_name());
+            }
+        }
+        _scene->release();
+    }
+    else
+    {
+        logger.write(L"Scene on following path not exists " + _scene_path);
+    }
+#pragma endregion
+
+#pragma region Load Boundaries
+    _scene_path = _full_path + +(pLoadCollada ? L"boundaries.dae" : L"boundaries.wscene");
+    _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+    if (_scene)
+    {
+        if (pLoadCollada)
+        {
+            //convert to wscene
+            std::vector<w_cpipeline_scene> _scenes = { *_scene };
+            w_content_manager::save_wolf_scenes_to_file(_scenes,
+                wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+            _scenes.clear();
+        }
+
+        _scene->get_boundaries(_area.boundaries);
+        _scene->release();
+    }
+    else
+    {
+        logger.write(L"Scene on following path not exists " + _scene_path);
+    }
+#pragma endregion
+
+    this->_areas.push_back(_area);
+
+    sForceUpdateCamera = true;
+    sLoading.store(false);
+}
+
 HRESULT scene::_load_areas()
 {
-    this->_thread_pool[0]->thread.add_job([this]()
-    {
-        auto _gDevice = this->graphics_devices[0];
-        const std::vector<std::wstring> _areas_on_thread_0 =
+    //concurrency::create_task([this]()->void
+    //{
+        const std::vector<std::wstring> _areas =
         {
-            L"models/model.dae"
+            L"120 - water treatment"
             /*L"models/_120_water-treatment.dae",
             L"models/_171_173_office_building_comprehensive.dae",
             L"models/_161_air-compressor.dae",
@@ -392,60 +561,13 @@ HRESULT scene::_load_areas()
             L"models/_230_proportioning.dae",
             L"models/_320_transfer_station.dae",*/
         };
+        /*tbb::parallel_for_each(_areas.begin(), _areas.end(),
+            [&](_In_ std::wstring pArea)
+        {*/
+        _load_area(_areas[0], false);
+        //});
+    //});
 
-        std::for_each(_areas_on_thread_0.begin(), _areas_on_thread_0.end(),
-            [&](_In_ const std::wstring& pAreaPath)
-        {
-            auto _path = content_path + pAreaPath;
-            auto _scene = w_content_manager::load<w_cpipeline_scene>(_path);
-            if (_scene)
-            {
-                //just for converting
-                //std::vector<w_cpipeline_scene> _scenes = { *_scene };
-                //w_content_manager::save_wolf_scenes_to_file(_scenes, 
-                //    content_path + 
-                //    wolf::system::io::get_parent_directoryW(pAreaPath) + L"/" +
-                //    wolf::system::io::get_base_file_nameW(pAreaPath) + L".wscene");
-                //_scenes.clear();
-
-                //get all models
-                std::vector<w_cpipeline_model*> _cmodels;
-                _scene->get_all_models(_cmodels);
-
-                area _area;
-                _area.name = "test";
-
-                for (auto& _iter : _cmodels)
-                {
-                    if (!_iter) continue;
-
-                    auto _model = new model();
-                    if (_model->load(_gDevice, _iter, this->_draw_render_pass) == S_OK)
-                    {
-                        _area.outer_models.push_back(_model);
-                    }
-                    else
-                    {
-                        SAFE_DELETE(_model);
-                        logger.error("Error on loading model " + _iter->get_name());
-                    }
-                }
-
-                _scene->get_boundaries(_area.boundaries);
-                _scene->release();
-
-                this->_areas.push_back(_area);
-
-                sForceUpdateCamera = true;
-            }
-            else
-            {
-                logger.write(L"Scene on following path not exists " + _path);
-            }
-        });
-    });
-    this->_thread_pool[0]->thread.wait();
-    
     //load camera
     auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/camera.dae");
     if (_scene)
@@ -464,22 +586,23 @@ HRESULT scene::_load_areas()
 
         this->_camera.set_aspect_ratio(_screen_width / _screen_height);
         sMOC->SetResolution(_screen_width, _screen_height);
-        
+
         this->_camera.update_view();
         this->_camera.update_projection();
         this->_camera.update_frustum();
     }
+
     return S_OK;
 }
 
 HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
     auto _models_count = this->_models_to_be_render.size();
-    auto _threads_count = this->_thread_pool.size();
+    auto _threads_count = this->_render_thread_pool.size();
 
     //reset all batch size
-    std::for_each(this->_thread_pool.begin(), this->_thread_pool.end(), 
-        [](_In_ thread_context* pThread)
+    std::for_each(this->_render_thread_pool.begin(), this->_render_thread_pool.end(),
+        [](_In_ render_thread_context* pThread)
     {
         pThread->batch_size = 0;
     });
@@ -488,20 +611,20 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
     {
         for (size_t i = 0; i < _models_count; i++)
         {
-            this->_thread_pool[i]->batch_size++;
+            this->_render_thread_pool[i]->batch_size++;
         }
     }
     else
     {
-        auto _size = this->_models_to_be_render.size() / this->_thread_pool.size();
-        for (auto& _t : this->_thread_pool)
+        auto _size = this->_models_to_be_render.size() / this->_render_thread_pool.size();
+        for (auto& _t : this->_render_thread_pool)
         {
             _t->batch_size = _size;
         }
-        _size = this->_models_to_be_render.size() % this->_thread_pool.size();
+        _size = this->_models_to_be_render.size() % this->_render_thread_pool.size();
         for (size_t i = 0; i < _size; i++)
         {
-            this->_thread_pool[i]->batch_size++;
+            this->_render_thread_pool[i]->batch_size++;
         }
     }
 
@@ -534,7 +657,7 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
                 std::vector<VkCommandBuffer> _sec_cmd_buffers;
                 //add job for each thread
                 size_t _start_index = 0;
-                for (auto& _thread_context : this->_thread_pool)
+                for (auto& _thread_context : this->_render_thread_pool)
                 {
                     //if thread does not have any models then skip it
                     if (_thread_context->batch_size == 0) continue;
@@ -565,7 +688,7 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
                 }
 
                 //wait for all threads
-                for (auto& _thread : this->_thread_pool)
+                for (auto& _thread : this->_render_thread_pool)
                 {
                     _thread->thread.wait();
                 }
@@ -618,8 +741,6 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
 
-    _update_media_player();
-    
     bool _gui_proceeded = false;
     if (this->_show_gui)
     {
@@ -627,6 +748,12 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         {
             _gui_proceeded = _update_gui();
         });
+    }
+
+    if (sLoading.load())
+    {
+        _update_media_player();
+        return;
     }
 
     //if gui proceeded or mouse captured by gui do not update view
@@ -809,11 +936,12 @@ ULONG scene::release()
     //release staging texture
     SAFE_RELEASE(sStagingMediaTexture);
 
-    for (auto _thread_context : this->_thread_pool)
+    //release all rendering threads
+    for (auto _thread_context : this->_render_thread_pool)
     {
         SAFE_RELEASE(_thread_context);
     }
-    this->_thread_pool.clear();
+    this->_render_thread_pool.clear();
 
     this->_models_to_be_render.clear();
     //release all models
@@ -865,28 +993,27 @@ ULONG scene::release()
 void scene::_update_media_player()
 {
     auto _total_frames = this->_video_streamer.get_total_video_frames();
-
     if (_total_frames == 0) return;
-    if (this->_current_frame >= _total_frames)
-    {
-        sLoading = false;
-        return;
-    }
-
     const float _one_sec = 1;
     this->_video_time.set_target_elapsed_seconds(static_cast<double>(_one_sec / this->_media_fps));
+
+    if (this->_current_frame >= _total_frames - 1)
+    {
+        //loop again until loading finished
+        this->_current_video_buffer = 0;
+        this->_video_frame_address = 0;
+        _async_seek(138);
+        return;
+    }
 
     this->_video_time.tick([&]()
     {
         w_memory* _memory = nullptr;
         auto _videoFrameAddress = this->_video_frame_address++;
-        //Read frame and copy buffers to DirectX Texture2D
         _memory = &_video_buffers[this->_current_video_buffer];
 
         auto _writeAddress = _memory->get_address();
-
         auto _mem = _memory->read(_videoFrameAddress);
-
         auto _frame = static_cast<int*>(_mem);
         if (!_frame)
         {
@@ -913,22 +1040,39 @@ void scene::_update_media_player()
                 });
                 sStagingMediaTexture->copy_data_to_texture_2D(sStagingMediaData);
             }
-
             this->_current_frame++;
-            if (_writeAddress != 0 && this->_current_frame != _total_video_frames && this->_video_frame_address % _writeAddress == 0)
-            {
-                //We need to switch to another buffer
-                this->_current_video_buffer = (this->_current_video_buffer + 1) % BUFFER_COUNTS;
-                this->_video_frame_address = 0;
-                //Signal to the waiting thread
-                this->_signal_video_buffer_cv.notify_one();
-            }
+        }
+        if (_writeAddress != 0 && this->_current_frame != _total_video_frames && this->_video_frame_address % _writeAddress == 0)
+        {
+            //We need to switch to another buffer
+            this->_current_video_buffer = (this->_current_video_buffer + 1) % BUFFER_COUNTS;
+            this->_video_frame_address = 0;
+            //Signal to the waiting thread
+            this->_signal_video_buffer_cv.notify_one();
         }
 
         _frame = nullptr;
         _mem = nullptr;
         _memory = nullptr;
 
+    });
+}
+
+void scene::_async_seek(_In_ int64_t pSeekFrame)
+{
+    this->_halt_buffering.store(true);
+
+    auto _task = concurrency::create_task([this, pSeekFrame]()->void
+    {
+        //Seek video
+        this->_video_streamer_cs.lock();
+        this->_video_streamer.seek_frame(pSeekFrame);
+        this->_video_streamer_cs.unlock();
+        this->_current_frame = pSeekFrame;
+        
+        _fill_buffers();
+
+        this->_halt_buffering.store(false);
     });
 }
 
@@ -969,7 +1113,7 @@ bool scene::_update_gui()
 
     ImGuiWindowFlags window_flags = 0;
 
-    if (sLoading)
+    if (sLoading.load())
     {
 #pragma region Show Intro
 
@@ -1009,7 +1153,6 @@ bool scene::_update_gui()
         ImGui::End();
 
 #pragma endregion
-
     }
     else
     {
@@ -1324,8 +1467,10 @@ void scene::_video_buffering_thread()
         tbb::interface5::unique_lock<tbb::mutex> _lk(this->_video_buffer_mutex);
         {
             //Continue to the first state of while
-            if (this->_halt_buffering || w_game::exiting) continue;
-
+            if (this->_halt_buffering.load() || w_game::exiting)
+            {
+                continue;
+            }
             //Wait for signal from video
             this->_signal_video_buffer_cv.wait(_lk);
 
@@ -1343,8 +1488,10 @@ void scene::_video_buffering_thread()
             //Read frames			
             for (size_t i = 0; i < MAXIMUM_BUFFER_SIZE; ++i)
             {
-                if (this->_halt_buffering) break;
-
+                if (this->_halt_buffering.load())
+                {
+                    break;
+                }
                 this->_video_streamer_cs.lock();
                 _hr = this->_video_streamer.buffer_video_to_memory(_video_buffers[_index]);
                 this->_video_streamer_cs.unlock();
@@ -1383,7 +1530,7 @@ void scene::_fill_buffers()
         for (size_t j = 0; j < MAXIMUM_BUFFER_SIZE; ++j)
         {
             //Check for cancel
-            if (this->_halt_buffering || w_game::exiting)
+            if (w_game::exiting)
             {
                 _break_parent = true;
                 break;

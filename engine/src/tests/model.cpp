@@ -27,7 +27,7 @@ HRESULT model::load(
     _In_ w_render_pass& pRenderPass)
 {
     if (!pGDevice || !pCPModel) return S_FALSE;
-    
+
     this->_gDevice = pGDevice;
 
     const std::string _trace = this->name + "model::load";
@@ -35,7 +35,7 @@ HRESULT model::load(
     //get trasform of base object and instances objects
     this->_transform = pCPModel->get_transform();
     pCPModel->get_instances(this->_instances_transforms);
-    
+
     //get full name 
     this->_full_name = pCPModel->get_name();
     get_searchable_name(this->_full_name);
@@ -44,7 +44,7 @@ HRESULT model::load(
     {
         get_searchable_name(_iter.name);
     }
-    
+
     uint32_t _lod_distance_index = 1;
     const uint32_t _lod_distance_offset = 700;
 
@@ -58,7 +58,7 @@ HRESULT model::load(
 
     size_t _sub_meshes_count = _model_meshes.size();
     uint32_t _base_vertex = 0;
-    
+
     //we need original bounding sphere for camera focus
     if (_sub_meshes_count)
     {
@@ -95,7 +95,7 @@ HRESULT model::load(
         _model_meshes[0]->bounding_box.generate_vertices_indices();
         _add_data_for_masked_occlusion_culling(_model_meshes[0]->bounding_box);
     }
-    
+
     if (_sub_meshes_count)
     {
         //create first lod information
@@ -114,7 +114,7 @@ HRESULT model::load(
             content_path + L"textures/areas/" +
             wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &fs.texture);
     }
-    
+
     //append load mesh data to big vertices and indices
     for (auto& _lod_mesh_data : _lods)
     {
@@ -135,7 +135,7 @@ HRESULT model::load(
             _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex);
         }
     }
-    
+
     if (!_batch_vertices.size())
     {
         V(S_FALSE, "Model " + this->_full_name + " does not have vertices data", _trace);
@@ -151,17 +151,17 @@ HRESULT model::load(
     }
 
     auto _v_size = static_cast<uint32_t>(_batch_vertices.size());
+
     auto _hr = _mesh->load(this->_gDevice,
         _batch_vertices.data(),
         _v_size * sizeof(float),
         _v_size,
         _batch_indices.data(),
         _batch_indices.size());
-    _mesh->set_vertex_binding_attributes(this->_vertex_binding_attributes);
 
+    _mesh->set_vertex_binding_attributes(this->_vertex_binding_attributes);
     _batch_vertices.clear();
     _batch_indices.clear();
-    
     if (_hr == S_FALSE)
     {
         V(S_FALSE, "Error on loading mesh for " + this->_full_name, _trace);
@@ -170,7 +170,7 @@ HRESULT model::load(
 
     if (_load_buffers() == S_FALSE) return S_FALSE;
     if (_load_shader() == S_FALSE) return S_FALSE;
-    if (_load_pipelines(pRenderPass) == S_FALSE) return S_FALSE;   
+    if (_load_pipelines(pRenderPass) == S_FALSE) return S_FALSE;
     if (_build_compute_command_buffers() == S_FALSE) return S_FALSE;
 
     VkSemaphoreCreateInfo _semaphore_create_info = {};

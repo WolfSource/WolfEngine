@@ -72,6 +72,7 @@ public:
 
 private:
     
+    void    _load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCollada);
     HRESULT _load_areas();
     
     HRESULT _build_draw_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
@@ -79,6 +80,7 @@ private:
     HRESULT _build_gui_command_buffer(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
         _In_ const wolf::system::w_game_time& pGameTime);
     
+    void    _async_seek(_In_ int64_t pSeekValue);
     bool    _update_gui();
     void    _update_media_player();
     HRESULT _open_media(_In_z_ const std::wstring& pPath, int64_t pSeekToFrame);
@@ -107,7 +109,7 @@ private:
     
     std::vector<model*>                                            _models_to_be_render;
 
-    struct thread_context
+    struct render_thread_context
     {
         wolf::system::w_thread                                      thread;
         wolf::graphics::w_command_buffers                           secondary_command_buffers;
@@ -118,15 +120,11 @@ private:
             this->secondary_command_buffers.release();
         }
     };
-    std::vector<thread_context*>                                     _thread_pool;
-
-
-    wolf::graphics::w_quad<>                                        _media_player;
-
-
+    std::vector<render_thread_context*>                                    _render_thread_pool;
+    
     struct area
     {
-        std::string                                                 name;
+        std::wstring                                                name;
 
         std::vector<wolf::content_pipeline::w_bounding_sphere*>     boundaries;
 
@@ -158,7 +156,7 @@ private:
         }
     };
 
-    std::vector<area>                                               _areas;                
+    tbb::concurrent_vector<area>                                    _areas;                
 
     int64_t															_current_frame;
     int64_t															_video_frame_address;

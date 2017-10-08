@@ -69,6 +69,7 @@ using std::size_t;
 #include <w_color.h>
 #include <w_signal.h>
 #include <map>
+#include <mutex>
 #include <vector>
 #include <array>
 
@@ -276,7 +277,7 @@ namespace wolf
             VkDevice                                                    vk_device;
 
             VkCommandPool                                               vk_command_allocator_pool;
-            
+                        
             //static pipeline defaults
 			struct defaults
             {

@@ -53,7 +53,7 @@ public:
 
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
-
+    
     void search_for_name(
         _In_z_ const std::string& pToBeFind, 
         _Inout_ std::vector<search_item_struct>& pResults);
