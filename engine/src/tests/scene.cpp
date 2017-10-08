@@ -69,6 +69,8 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
     this->_current_frame = 0;
     this->_video_frame_address = 0;
     this->_video_time.set_fixed_time_step(true);
+    this->_total_loaded_areas = 0;
+    this->_total_areas = 0;
 
     //we do not need fixed time step
     w_game::set_fixed_time_step(false);
@@ -155,7 +157,7 @@ void scene::load()
     }
     else
     {
-        logger.warning("could not load intro \"media/falcon_720p.avi\"");
+        logger.warning("could not load intro \"media/falcon.avi\"");
     }
 
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
@@ -386,140 +388,149 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
     area _area;
     _area.name = pArea;
 
+    //load models in seperated threads
+    tbb::parallel_invoke([&]()
+    {
 #pragma region Load Outer
 
-    auto _scene_path = _full_path + (pLoadCollada ? L"outer.dae" : L"outer.wscene");
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
-    if (_scene)
-    {
-        if (pLoadCollada)
+        auto _scene_path = _full_path + (pLoadCollada ? L"outer.dae" : L"outer.wscene");
+        auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+        if (_scene)
         {
-            //convert to wscene
-            std::vector<w_cpipeline_scene> _scenes = { *_scene };
-            w_content_manager::save_wolf_scenes_to_file(_scenes,
-                wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
-                wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
-            _scenes.clear();
+            if (pLoadCollada)
+            {
+                //convert to wscene
+                std::vector<w_cpipeline_scene> _scenes = { *_scene };
+                w_content_manager::save_wolf_scenes_to_file(_scenes,
+                    wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                    wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+                _scenes.clear();
+            }
+
+            //get all models
+            std::vector<w_cpipeline_model*> _cmodels;
+            _scene->get_all_models(_cmodels);
+
+            for (auto& _iter : _cmodels)
+            {
+                if (!_iter) continue;
+
+                auto _model = new model();
+                auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                if (_hr == S_OK)
+                {
+                    _area.outer_models.push_back(_model);
+                }
+                else
+                {
+                    SAFE_DELETE(_model);
+                    logger.error("Error on loading model " + _iter->get_name());
+                }
+            }
+            _scene->release();
         }
-
-        //get all models
-        std::vector<w_cpipeline_model*> _cmodels;
-        _scene->get_all_models(_cmodels);
-
-        for (auto& _iter : _cmodels)
+        else
         {
-            if (!_iter) continue;
-
-            auto _model = new model();
-            auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
-            if (_hr == S_OK)
-            {
-                _area.outer_models.push_back(_model);
-            }
-            else
-            {
-                SAFE_DELETE(_model);
-                logger.error("Error on loading model " + _iter->get_name());
-            }
+            logger.write(L"Scene on following path not exists " + _scene_path);
         }
-        _scene->release();
-    }
-    else
-    {
-        logger.write(L"Scene on following path not exists " + _scene_path);
-    }
 #pragma endregion
-
+    },
+        [&]()
+    {
 #pragma region Load Middle
 
-    _scene_path = _full_path + +(pLoadCollada ? L"middle.dae" : L"middle.wscene");
-    _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
-    if (_scene)
-    {
-        if (pLoadCollada)
+        auto _scene_path = _full_path + +(pLoadCollada ? L"middle.dae" : L"middle.wscene");
+        auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+        if (_scene)
         {
-            //convert to wscene
-            std::vector<w_cpipeline_scene> _scenes = { *_scene };
-            w_content_manager::save_wolf_scenes_to_file(_scenes,
-                wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
-                wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
-            _scenes.clear();
+            if (pLoadCollada)
+            {
+                //convert to wscene
+                std::vector<w_cpipeline_scene> _scenes = { *_scene };
+                w_content_manager::save_wolf_scenes_to_file(_scenes,
+                    wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                    wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+                _scenes.clear();
+            }
+
+            //get all models
+            std::vector<w_cpipeline_model*> _cmodels;
+            _scene->get_all_models(_cmodels);
+
+            for (auto& _iter : _cmodels)
+            {
+                if (!_iter) continue;
+
+                auto _model = new model();
+                auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                if (_hr == S_OK)
+                {
+                    _area.middle_models.push_back(_model);
+                }
+                else
+                {
+                    SAFE_DELETE(_model);
+                    logger.error("Error on loading model " + _iter->get_name());
+                }
+            }
+            _scene->release();
         }
-
-        //get all models
-        std::vector<w_cpipeline_model*> _cmodels;
-        _scene->get_all_models(_cmodels);
-
-        for (auto& _iter : _cmodels)
+        else
         {
-            if (!_iter) continue;
-
-            auto _model = new model();
-            auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
-            if (_hr == S_OK)
-            {
-                _area.middle_models.push_back(_model);
-            }
-            else
-            {
-                SAFE_DELETE(_model);
-                logger.error("Error on loading model " + _iter->get_name());
-            }
+            logger.write(L"Scene on following path not exists " + _scene_path);
         }
-        _scene->release();
-    }
-    else
-    {
-        logger.write(L"Scene on following path not exists " + _scene_path);
-    }
 #pragma endregion
-
+    },
+        [&]()
+    {
 #pragma region Load Inner
-    _scene_path = _full_path + +(pLoadCollada ? L"inner.dae" : L"inner.wscene");
-    _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
-    if (_scene)
-    {
-        if (pLoadCollada)
+        auto _scene_path = _full_path + +(pLoadCollada ? L"inner.dae" : L"inner.wscene");
+        auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+        if (_scene)
         {
-            //convert to wscene
-            std::vector<w_cpipeline_scene> _scenes = { *_scene };
-            w_content_manager::save_wolf_scenes_to_file(_scenes,
-                wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
-                wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
-            _scenes.clear();
+            if (pLoadCollada)
+            {
+                //convert to wscene
+                std::vector<w_cpipeline_scene> _scenes = { *_scene };
+                w_content_manager::save_wolf_scenes_to_file(_scenes,
+                    wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                    wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+                _scenes.clear();
+            }
+
+            //get all models
+            std::vector<w_cpipeline_model*> _cmodels;
+            _scene->get_all_models(_cmodels);
+
+            for (auto& _iter : _cmodels)
+            {
+                if (!_iter) continue;
+
+                auto _model = new model();
+                auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                if (_hr == S_OK)
+                {
+                    _area.inner_models.push_back(_model);
+                }
+                else
+                {
+                    SAFE_DELETE(_model);
+                    logger.error("Error on loading model " + _iter->get_name());
+                }
+            }
+            _scene->release();
         }
-
-        //get all models
-        std::vector<w_cpipeline_model*> _cmodels;
-        _scene->get_all_models(_cmodels);
-
-        for (auto& _iter : _cmodels)
+        else
         {
-            if (!_iter) continue;
-
-            auto _model = new model();
-            auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
-            if (_hr == S_OK)
-            {
-                _area.inner_models.push_back(_model);
-            }
-            else
-            {
-                SAFE_DELETE(_model);
-                logger.error("Error on loading model " + _iter->get_name());
-            }
+            logger.write(L"Scene on following path not exists " + _scene_path);
         }
-        _scene->release();
-    }
-    else
-    {
-        logger.write(L"Scene on following path not exists " + _scene_path);
-    }
 #pragma endregion
+
+    });
 
 #pragma region Load Boundaries
-    _scene_path = _full_path + +(pLoadCollada ? L"boundaries.dae" : L"boundaries.wscene");
-    _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+    auto _scene_path = _full_path + +(pLoadCollada ? L"boundaries.dae" : L"boundaries.wscene");
+    auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
     if (_scene)
     {
         if (pLoadCollada)
@@ -542,15 +553,13 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
 #pragma endregion
 
     this->_areas.push_back(_area);
-
-    sForceUpdateCamera = true;
-    sLoading.store(false);
+    sLoading = false;
 }
 
 HRESULT scene::_load_areas()
 {
-    //concurrency::create_task([this]()->void
-    //{
+    concurrency::create_task([this]()->void
+    {
         const std::vector<std::wstring> _areas =
         {
             L"120 - water treatment"
@@ -561,12 +570,14 @@ HRESULT scene::_load_areas()
             L"models/_230_proportioning.dae",
             L"models/_320_transfer_station.dae",*/
         };
-        /*tbb::parallel_for_each(_areas.begin(), _areas.end(),
+        this->_total_areas = _areas.size();
+
+        tbb::parallel_for_each(_areas.begin(), _areas.end(),
             [&](_In_ std::wstring pArea)
-        {*/
-        _load_area(_areas[0], false);
-        //});
-    //});
+        {
+            _load_area(_areas[0], false);
+        });
+    });
 
     //load camera
     auto _scene = w_content_manager::load<w_cpipeline_scene>(content_path + L"models/camera.dae");
@@ -692,9 +703,10 @@ HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_
                 {
                     _thread->thread.wait();
                 }
+
+                //Execute secondary commands buffer to primary command
                 if (_sec_cmd_buffers.size())
                 {
-                    //Execute secondary commands buffer to primary command
                     vkCmdExecuteCommands(_primary_draw_cmd, _sec_cmd_buffers.size(), _sec_cmd_buffers.data());
                     _sec_cmd_buffers.clear();
                 }
@@ -741,6 +753,58 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
 
+    //check for loading areas
+    if (this->_total_loaded_areas != this->_total_areas)
+    {
+        for (auto& _area : this->_areas)
+        {
+            if (_area.is_loaded)
+            {
+                _total_loaded_areas++;
+            }
+            else
+            {
+                //create mesh in each update frame  
+
+                //create outer meshes
+                if (_area.outer_loaded_index < _area.outer_models.size())
+                {
+                    if (_area.outer_models[_area.outer_loaded_index]->create_mesh() == S_OK)
+                    {
+                        sForceUpdateCamera = true;
+                    }
+                    _area.outer_loaded_index++;
+                }
+                //create middle meshes
+                if (_area.middle_loaded_index < _area.middle_models.size())
+                {
+                    if (_area.middle_models[_area.middle_loaded_index]->create_mesh() == S_OK)
+                    {
+                        sForceUpdateCamera = true;
+                    }
+                    _area.middle_loaded_index++;
+                }
+                //create inner meshes
+                if (_area.inner_loaded_index < _area.inner_models.size())
+                {
+                    if (_area.inner_models[_area.inner_loaded_index]->create_mesh() == S_OK)
+                    {
+                        sForceUpdateCamera = true;
+                    }
+                    _area.inner_loaded_index++;
+                }
+
+                if (_area.outer_loaded_index == _area.outer_models.size() &&
+                    _area.middle_loaded_index == _area.middle_models.size() &&
+                    _area.inner_loaded_index == _area.inner_models.size())
+                {
+                    //all meshes have been loaded for this area
+                    _area.is_loaded = true;
+                }
+            }
+        }
+    }
+
     bool _gui_proceeded = false;
     if (this->_show_gui)
     {
@@ -786,21 +850,75 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         //});  
 
         sTotalModels = 0;
+        sVisibleSubModels = 0;
+
+        sMOC->ClearBuffer();
+        this->_models_to_be_render.clear();
+        
+        auto _cam_pos = this->_camera.get_translate();
         for (auto& _area : _areas)
         {
             auto _outer_size = _area.outer_models.size();
-            sTotalModels += _outer_size;
+            auto _middle_size = _area.middle_models.size();
+            auto _inner_size = _area.inner_models.size();
+
+            sTotalModels += _outer_size + _middle_size + _inner_size;
+
+            //check showing models
+            if (_inner_size)
+            {
+                glm::vec3 _boundary_center(
+                    _area.boundaries[0]->center[0],
+                    _area.boundaries[0]->center[1],
+                    _area.boundaries[0]->center[2]);
+                if (glm::distance(_boundary_center, _cam_pos) > _area.boundaries[0]->radius)
+                {
+                    //do not show inner models
+                    _inner_size = 0;
+                }
+            }
+
+            //check showing middle models
+            if (_middle_size)
+            {
+                glm::vec3 _boundary_center(
+                    _area.boundaries[1]->center[0],
+                    _area.boundaries[1]->center[1],
+                    _area.boundaries[1]->center[2]);
+                if (glm::distance(_boundary_center, _cam_pos) > _area.boundaries[1]->radius)
+                {
+                    //do not show middle models
+                    _middle_size = 0;
+                }
+            }
+
+            #pragma region pre update stage
             if (_outer_size)
             {
-                sVisibleSubModels = 0;
-                sMOC->ClearBuffer();
-                this->_models_to_be_render.clear();
-
                 std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [this](_In_ model* pModel)
                 {
                     pModel->pre_update(this->_camera, &sMOC);
                 });
+            }
+            if (_middle_size)
+            {
+                std::for_each(_area.middle_models.begin(), _area.middle_models.end(), [this](_In_ model* pModel)
+                {
+                    pModel->pre_update(this->_camera, &sMOC);
+                });
+            }
+            if (_inner_size)
+            {
+                std::for_each(_area.inner_models.begin(), _area.inner_models.end(), [this](_In_ model* pModel)
+                {
+                    pModel->pre_update(this->_camera, &sMOC);
+                });
+            }
+            #pragma endregion
 
+#pragma region post update stage
+            if (_outer_size)
+            {
                 std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [&](_In_ model* pModel)
                 {
                     if (pModel->post_update(sMOC, sVisibleSubModels))
@@ -809,7 +927,27 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
                     }
                 });
             }
-
+            if (_middle_size)
+            {
+                std::for_each(_area.middle_models.begin(), _area.middle_models.end(), [&](_In_ model* pModel)
+                {
+                    if (pModel->post_update(sMOC, sVisibleSubModels))
+                    {
+                        this->_models_to_be_render.push_back(pModel);
+                    }
+                });
+            }
+            if (_inner_size)
+            {
+                std::for_each(_area.inner_models.begin(), _area.inner_models.end(), [&](_In_ model* pModel)
+                {
+                    if (pModel->post_update(sMOC, sVisibleSubModels))
+                    {
+                        this->_models_to_be_render.push_back(pModel);
+                    }
+                });
+            }
+#pragma endregion
 
         }
 
@@ -1140,7 +1278,7 @@ bool scene::_update_gui()
         _image_size.y = 720;
         ImGui::SetNextWindowSizeConstraints(_image_size, _image_size);
         ImGui::SetNextWindowContentWidth(_image_size.x);
-        
+        ImGui::SetWindowPos(ImVec2(0, 0));
         if (!ImGui::Begin("", 0, window_flags))
         {
             // Early out if the window is collapsed, as an optimization.

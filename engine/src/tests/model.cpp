@@ -48,10 +48,6 @@ HRESULT model::load(
     uint32_t _lod_distance_index = 1;
     const uint32_t _lod_distance_offset = 700;
 
-    //create one big vertex buffer and index buffer from root model and LODs
-    std::vector<float> _batch_vertices;
-    std::vector<uint32_t> _batch_indices;
-
     //first store vertice and indices of root model
     std::vector<w_cpipeline_model::w_mesh*> _model_meshes;
     pCPModel->get_meshes(_model_meshes);
@@ -107,7 +103,7 @@ HRESULT model::load(
 
         this->_lod_levels.push_back(_lod);
 
-        _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex);
+        _store_to_batch(_model_meshes, _base_vertex);
 
         //load texture
         w_texture::load_to_shared_textures(this->_gDevice,
@@ -132,42 +128,16 @@ HRESULT model::load(
 
             this->_lod_levels.push_back(_lod);
 
-            _store_to_batch(_model_meshes, _batch_vertices, _batch_indices, _base_vertex);
+            _store_to_batch(_model_meshes, _base_vertex);
         }
     }
 
-    if (!_batch_vertices.size())
+    if (!this->_batch_vertices.size())
     {
         V(S_FALSE, "Model " + this->_full_name + " does not have vertices data", _trace);
         return S_FALSE;
     }
-
-    //create mesh
-    this->_mesh = new (std::nothrow) wolf::graphics::w_mesh();
-    if (!_mesh)
-    {
-        V(S_FALSE, "allocating memory of mesh for " + this->_full_name, _trace);
-        return S_FALSE;
-    }
-
-    auto _v_size = static_cast<uint32_t>(_batch_vertices.size());
-
-    auto _hr = _mesh->load(this->_gDevice,
-        _batch_vertices.data(),
-        _v_size * sizeof(float),
-        _v_size,
-        _batch_indices.data(),
-        _batch_indices.size());
-
-    _mesh->set_vertex_binding_attributes(this->_vertex_binding_attributes);
-    _batch_vertices.clear();
-    _batch_indices.clear();
-    if (_hr == S_FALSE)
-    {
-        V(S_FALSE, "Error on loading mesh for " + this->_full_name, _trace);
-        return S_FALSE;
-    }
-
+    
     if (_load_buffers() == S_FALSE) return S_FALSE;
     if (_load_shader() == S_FALSE) return S_FALSE;
     if (_load_pipelines(pRenderPass) == S_FALSE) return S_FALSE;
@@ -183,6 +153,42 @@ HRESULT model::load(
         logger.error("Error on creating semaphore for compute command buffer");
         release();
         exit(1);
+    }
+
+    return S_OK;
+}
+
+HRESULT model::create_mesh()
+{
+    const std::string _trace = this->name + "model::create_mesh";
+    
+    //this means, model does not have vertices or it has been created already
+    if (!this->_batch_vertices.size()) return S_FALSE;
+
+    //create mesh
+    this->_mesh = new (std::nothrow) wolf::graphics::w_mesh();
+    if (!_mesh)
+    {
+        V(S_FALSE, "allocating memory of mesh for " + this->_full_name, _trace);
+        return S_FALSE;
+    }
+
+    auto _v_size = static_cast<uint32_t>(this->_batch_vertices.size());
+
+    auto _hr = _mesh->load(this->_gDevice,
+        this->_batch_vertices.data(),
+        _v_size * sizeof(float),
+        _v_size,
+        this->_batch_indices.data(),
+        this->_batch_indices.size());
+
+    _mesh->set_vertex_binding_attributes(this->_vertex_binding_attributes);
+    this->_batch_vertices.clear();
+    this->_batch_indices.clear();
+    if (_hr == S_FALSE)
+    {
+        V(S_FALSE, "Error on loading mesh for " + this->_full_name, _trace);
+        return S_FALSE;
     }
 
     this->_loaded.store(true);
@@ -207,15 +213,13 @@ void model::get_searchable_name(_In_z_ const std::string& pName)
 
 void model::_store_to_batch(
     _In_ const std::vector<wolf::content_pipeline::w_cpipeline_model::w_mesh*>& pModelMeshes,
-    _Inout_ std::vector<float>& pBatchVertices,
-    _Inout_ std::vector<uint32_t>& pBatchIndices,
     _Inout_ uint32_t& pBaseVertex)
 {
     for (auto& _mesh_data : pModelMeshes)
     {
         for (size_t i = 0; i < _mesh_data->indices.size(); ++i)
         {
-            pBatchIndices.push_back(pBaseVertex + _mesh_data->indices[i]);
+            this->_batch_indices.push_back(pBaseVertex + _mesh_data->indices[i]);
         }
 
         for (auto& _data : _mesh_data->vertices)
@@ -225,18 +229,18 @@ void model::_store_to_batch(
             auto _uv = _data.uv;
             
             //position
-            pBatchVertices.push_back(_pos[0]);
-            pBatchVertices.push_back(_pos[1]);
-            pBatchVertices.push_back(_pos[2]);
+            this->_batch_vertices.push_back(_pos[0]);
+            this->_batch_vertices.push_back(_pos[1]);
+            this->_batch_vertices.push_back(_pos[2]);
 
             //normal
-            pBatchVertices.push_back(_nor[0]);
-            pBatchVertices.push_back(_nor[1]);
-            pBatchVertices.push_back(_nor[2]);
+            this->_batch_vertices.push_back(_nor[0]);
+            this->_batch_vertices.push_back(_nor[1]);
+            this->_batch_vertices.push_back(_nor[2]);
 
             //uv
-            pBatchVertices.push_back(_uv[0]);
-            pBatchVertices.push_back(1 - _uv[1]);
+            this->_batch_vertices.push_back(_uv[0]);
+            this->_batch_vertices.push_back(1 - _uv[1]);
 
             pBaseVertex++;
         }
@@ -1067,6 +1071,8 @@ bool model::post_update(
 
 void model::indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer)
 {
+    if (!this->_loaded.load()) return;
+
     auto _descriptor_set = this->_shader->get_descriptor_set();
     this->vs.pipeline.bind(pCommandBuffer, &_descriptor_set);
 

@@ -124,13 +124,18 @@ private:
     
     struct area
     {
-        std::wstring                                                name;
-
+        std::wstring                                                name = L"area";
+        bool                                                        is_loaded = false;
         std::vector<wolf::content_pipeline::w_bounding_sphere*>     boundaries;
 
         std::vector<model*>                                         inner_models;
         std::vector<model*>                                         middle_models;
         std::vector<model*>                                         outer_models;
+
+        uint32_t                                                    inner_loaded_index = 0;
+        uint32_t                                                    middle_loaded_index = 0;
+        uint32_t                                                    outer_loaded_index = 0;
+
 
         void release()
         {
@@ -156,8 +161,10 @@ private:
         }
     };
 
-    tbb::concurrent_vector<area>                                    _areas;                
-
+    tbb::concurrent_vector<area>                                    _areas;
+    size_t                                                          _total_loaded_areas;
+    size_t                                                          _total_areas;
+    
     int64_t															_current_frame;
     int64_t															_video_frame_address;
     wolf::system::w_game_time										_video_time;

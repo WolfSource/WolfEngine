@@ -40,6 +40,9 @@ public:
         _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, 
         _In_ wolf::content_pipeline::w_cpipeline_model* pCPModel,
         _In_ wolf::graphics::w_render_pass& pRenderPass);
+    
+    //this function must be called from main thread
+    HRESULT create_mesh();
 
     void pre_update(
         _In_    wolf::content_pipeline::w_first_person_camera pCamera,
@@ -80,8 +83,6 @@ private:
 
     void _store_to_batch(
         _In_ const std::vector<wolf::content_pipeline::w_cpipeline_model::w_mesh*>& pModelMeshes,
-        _Inout_ std::vector<float>& pVertices,
-        _Inout_ std::vector<uint32_t>& pIndices,
         _Inout_ uint32_t& pBaseVertex);
 
     void _add_data_for_masked_occlusion_culling(_In_ const wolf::content_pipeline::w_bounding_box& pBoundingBox);
@@ -95,6 +96,11 @@ private:
     std::shared_ptr<wolf::graphics::w_graphics_device>      _gDevice;
     std::atomic<bool>                                       _loaded;
     std::string                                             _full_name;
+
+    //create one big vertex buffer and index buffer from root model and LODs
+    std::vector<float>                                      _batch_vertices;
+    std::vector<uint32_t>                                   _batch_indices;
+
 
     //unique name of factory for searching
     std::vector<std::string>                                _search_names;
