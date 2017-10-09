@@ -389,8 +389,9 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
     _area.name = pArea;
 
     //load models in seperated threads
-    tbb::parallel_invoke([&]()
+    if (pLoadCollada)
     {
+        //load sequential, because of amd tootle optimizing
 #pragma region Load Outer
 
         auto _scene_path = _full_path + (pLoadCollada ? L"outer.dae" : L"outer.wscene");
@@ -434,13 +435,11 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
             logger.write(L"Scene on following path not exists " + _scene_path);
         }
 #pragma endregion
-    },
-        [&]()
-    {
+
 #pragma region Load Middle
 
-        auto _scene_path = _full_path + +(pLoadCollada ? L"middle.dae" : L"middle.wscene");
-        auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+        _scene_path = _full_path + +(pLoadCollada ? L"middle.dae" : L"middle.wscene");
+        _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
         if (_scene)
         {
             if (pLoadCollada)
@@ -480,12 +479,10 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
             logger.write(L"Scene on following path not exists " + _scene_path);
         }
 #pragma endregion
-    },
-        [&]()
-    {
+
 #pragma region Load Inner
-        auto _scene_path = _full_path + +(pLoadCollada ? L"inner.dae" : L"inner.wscene");
-        auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+        _scene_path = _full_path + +(pLoadCollada ? L"inner.dae" : L"inner.wscene");
+        _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
         if (_scene)
         {
             if (pLoadCollada)
@@ -525,8 +522,148 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
             logger.write(L"Scene on following path not exists " + _scene_path);
         }
 #pragma endregion
+    }
+    else
+    {
+        //load in thread
+        tbb::parallel_invoke([&]()
+        {
+#pragma region Load Outer
 
-    });
+            auto _scene_path = _full_path + (pLoadCollada ? L"outer.dae" : L"outer.wscene");
+            auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+            if (_scene)
+            {
+                if (pLoadCollada)
+                {
+                    //convert to wscene
+                    std::vector<w_cpipeline_scene> _scenes = { *_scene };
+                    w_content_manager::save_wolf_scenes_to_file(_scenes,
+                        wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                        wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+                    _scenes.clear();
+                }
+
+                //get all models
+                std::vector<w_cpipeline_model*> _cmodels;
+                _scene->get_all_models(_cmodels);
+
+                for (auto& _iter : _cmodels)
+                {
+                    if (!_iter) continue;
+
+                    auto _model = new model();
+                    auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                    if (_hr == S_OK)
+                    {
+                        _area.outer_models.push_back(_model);
+                    }
+                    else
+                    {
+                        SAFE_DELETE(_model);
+                        logger.error("Error on loading model " + _iter->get_name());
+                    }
+                }
+                _scene->release();
+            }
+            else
+            {
+                logger.write(L"Scene on following path not exists " + _scene_path);
+            }
+#pragma endregion
+        },
+            [&]()
+        {
+#pragma region Load Middle
+
+            auto _scene_path = _full_path + +(pLoadCollada ? L"middle.dae" : L"middle.wscene");
+            auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+            if (_scene)
+            {
+                if (pLoadCollada)
+                {
+                    //convert to wscene
+                    std::vector<w_cpipeline_scene> _scenes = { *_scene };
+                    w_content_manager::save_wolf_scenes_to_file(_scenes,
+                        wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                        wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+                    _scenes.clear();
+                }
+
+                //get all models
+                std::vector<w_cpipeline_model*> _cmodels;
+                _scene->get_all_models(_cmodels);
+
+                for (auto& _iter : _cmodels)
+                {
+                    if (!_iter) continue;
+
+                    auto _model = new model();
+                    auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                    if (_hr == S_OK)
+                    {
+                        _area.middle_models.push_back(_model);
+                    }
+                    else
+                    {
+                        SAFE_DELETE(_model);
+                        logger.error("Error on loading model " + _iter->get_name());
+                    }
+                }
+                _scene->release();
+            }
+            else
+            {
+                logger.write(L"Scene on following path not exists " + _scene_path);
+            }
+#pragma endregion
+        },
+            [&]()
+        {
+#pragma region Load Inner
+            auto _scene_path = _full_path + +(pLoadCollada ? L"inner.dae" : L"inner.wscene");
+            auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+            if (_scene)
+            {
+                if (pLoadCollada)
+                {
+                    //convert to wscene
+                    std::vector<w_cpipeline_scene> _scenes = { *_scene };
+                    w_content_manager::save_wolf_scenes_to_file(_scenes,
+                        wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                        wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+                    _scenes.clear();
+                }
+
+                //get all models
+                std::vector<w_cpipeline_model*> _cmodels;
+                _scene->get_all_models(_cmodels);
+
+                for (auto& _iter : _cmodels)
+                {
+                    if (!_iter) continue;
+
+                    auto _model = new model();
+                    auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                    if (_hr == S_OK)
+                    {
+                        _area.inner_models.push_back(_model);
+                    }
+                    else
+                    {
+                        SAFE_DELETE(_model);
+                        logger.error("Error on loading model " + _iter->get_name());
+                    }
+                }
+                _scene->release();
+            }
+            else
+            {
+                logger.write(L"Scene on following path not exists " + _scene_path);
+            }
+#pragma endregion
+        });
+    }
 
 #pragma region Load Boundaries
     auto _scene_path = _full_path + +(pLoadCollada ? L"boundaries.dae" : L"boundaries.wscene");
@@ -562,7 +699,8 @@ HRESULT scene::_load_areas()
     {
         const std::vector<std::wstring> _areas =
         {
-            L"120 - water treatment"
+            L"120 - water treatment",
+            L"161 - air compressor"
             /*L"models/_120_water-treatment.dae",
             L"models/_171_173_office_building_comprehensive.dae",
             L"models/_161_air-compressor.dae",
@@ -1152,47 +1290,49 @@ void scene::_update_media_player()
 
         auto _writeAddress = _memory->get_address();
         auto _mem = _memory->read(_videoFrameAddress);
-        auto _frame = static_cast<int*>(_mem);
-        if (!_frame)
+        if (_mem)
         {
-            //Critical error
-            logger.error("Error on casting memory to W_VideoFrameData");
-        }
-        else
-        {
-            const size_t _length = this->_media_width * this->_media_height;
-            //copy frame to the staging texture
-            if (sStagingMediaData)
+            auto _frame = static_cast<int*>(_mem);
+            if (!_frame)
             {
-                tbb::parallel_for(tbb::blocked_range<size_t>(0, _length), [&](const tbb::blocked_range<size_t>& pRange)
-                {
-                    for (size_t i = pRange.begin(); i < pRange.end(); ++i)
-                    {
-                        auto _c = _frame[i];
-                        auto _j = i * 4;
-                        sStagingMediaData[_j + 0] = _c & 0xFF;//R
-                        sStagingMediaData[_j + 1] = (_c >> 8) & 0xFF;//G
-                        sStagingMediaData[_j + 2] = (_c >> 16) & 0xFF;//B
-                        sStagingMediaData[_j + 3] = (_c >> 24) & 0xFF;//A
-                    }
-                });
-                sStagingMediaTexture->copy_data_to_texture_2D(sStagingMediaData);
+                //Critical error
+                logger.error("Error on casting memory to W_VideoFrameData");
             }
-            this->_current_frame++;
-        }
-        if (_writeAddress != 0 && this->_current_frame != _total_video_frames && this->_video_frame_address % _writeAddress == 0)
-        {
-            //We need to switch to another buffer
-            this->_current_video_buffer = (this->_current_video_buffer + 1) % BUFFER_COUNTS;
-            this->_video_frame_address = 0;
-            //Signal to the waiting thread
-            this->_signal_video_buffer_cv.notify_one();
-        }
+            else
+            {
+                const size_t _length = this->_media_width * this->_media_height;
+                //copy frame to the staging texture
+                if (sStagingMediaData)
+                {
+                    tbb::parallel_for(tbb::blocked_range<size_t>(0, _length), [&](const tbb::blocked_range<size_t>& pRange)
+                    {
+                        for (size_t i = pRange.begin(); i < pRange.end(); ++i)
+                        {
+                            auto _c = _frame[i];
+                            auto _j = i * 4;
+                            sStagingMediaData[_j + 0] = _c & 0xFF;//R
+                            sStagingMediaData[_j + 1] = (_c >> 8) & 0xFF;//G
+                            sStagingMediaData[_j + 2] = (_c >> 16) & 0xFF;//B
+                            sStagingMediaData[_j + 3] = (_c >> 24) & 0xFF;//A
+                        }
+                    });
+                    sStagingMediaTexture->copy_data_to_texture_2D(sStagingMediaData);
+                }
+                this->_current_frame++;
+            }
+            if (_writeAddress != 0 && this->_current_frame != _total_video_frames && this->_video_frame_address % _writeAddress == 0)
+            {
+                //We need to switch to another buffer
+                this->_current_video_buffer = (this->_current_video_buffer + 1) % BUFFER_COUNTS;
+                this->_video_frame_address = 0;
+                //Signal to the waiting thread
+                this->_signal_video_buffer_cv.notify_one();
+            }
 
-        _frame = nullptr;
-        _mem = nullptr;
-        _memory = nullptr;
-
+            _frame = nullptr;
+            _mem = nullptr;
+            _memory = nullptr;
+        }
     });
 }
 
