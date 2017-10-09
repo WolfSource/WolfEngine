@@ -574,6 +574,7 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
         },
             [&]()
         {
+            return;
 #pragma region Load Middle
 
             auto _scene_path = _full_path + +(pLoadCollada ? L"middle.dae" : L"middle.wscene");
@@ -620,6 +621,7 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
         },
             [&]()
         {
+            return;
 #pragma region Load Inner
             auto _scene_path = _full_path + +(pLoadCollada ? L"inner.dae" : L"inner.wscene");
             auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
@@ -699,8 +701,9 @@ HRESULT scene::_load_areas()
     {
         const std::vector<std::wstring> _areas =
         {
-            L"120 - water treatment",
-            L"161 - air compressor"
+            //L"120 - water treatment",
+            //L"161 - air compressor",
+            L"430 - rotary annular cooler"
             /*L"models/_120_water-treatment.dae",
             L"models/_171_173_office_building_comprehensive.dae",
             L"models/_161_air-compressor.dae",

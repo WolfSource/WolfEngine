@@ -1,0 +1,1120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asset>
+    <contributor>
+      <author>DFM</author>
+      <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
+      <source_data>file:///F:/github/PooyaEimandar/3D_Simulator_Assets_Manager/Models/area-440%20-%20chain%20grate%20workshop/Final/440-floor2-v-1-2-0.max</source_data>
+    </contributor>
+    <created>2017-10-05T17:51:06</created>
+    <modified>2017-10-05T17:51:06</modified>
+    <unit name="millimeter" meter="0.001"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_effects>
+    <effect id="Material__10">
+      <profile_COMMON>
+        <newparam sid="T_Metal_Yellow_B_1_1_jpg-surface">
+          <surface type="2D">
+            <init_from>T_Metal_Yellow_B_1_1_jpg</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="T_Metal_Yellow_B_1_1_jpg-sampler">
+          <sampler2D>
+            <source>T_Metal_Yellow_B_1_1_jpg-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="T_Metal_Yellow_B_1_1_jpg-sampler" texcoord="CHANNEL1"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>0.9999993</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </phong>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <extended_shader>
+            <opacity_type sid="opacity_type" type="int">0</opacity_type>
+            <falloff_type sid="falloff_type" type="int">0</falloff_type>
+            <falloff sid="falloff" type="float">0</falloff>
+            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
+            <wire_size sid="wire_size" type="float">1</wire_size>
+            <wire_units sid="wire_units" type="int">0</wire_units>
+            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
+            <dim_level sid="dim_level" type="float">0</dim_level>
+            <reflection_level sid="reflection_level" type="float">3</reflection_level>
+          </extended_shader>
+          <shader>
+            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
+            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
+            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
+            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
+            <self_illumination sid="self_illumination" type="float">0</self_illumination>
+            <specular_level sid="specular_level" type="float">1</specular_level>
+            <soften sid="soften" type="float">0.1</soften>
+          </shader>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="Material__10_1">
+      <profile_COMMON>
+        <newparam sid="T_Metal_Yellow_B_1_1_jpg-surface">
+          <surface type="2D">
+            <init_from>T_Metal_Yellow_B_1_1_jpg</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="T_Metal_Yellow_B_1_1_jpg-sampler">
+          <sampler2D>
+            <source>T_Metal_Yellow_B_1_1_jpg-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="T_Metal_Yellow_B_1_1_jpg-sampler" texcoord="CHANNEL1"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>10</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </phong>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <extended_shader>
+            <opacity_type sid="opacity_type" type="int">0</opacity_type>
+            <falloff_type sid="falloff_type" type="int">0</falloff_type>
+            <falloff sid="falloff" type="float">0</falloff>
+            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
+            <wire_size sid="wire_size" type="float">1</wire_size>
+            <wire_units sid="wire_units" type="int">0</wire_units>
+            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
+            <dim_level sid="dim_level" type="float">0</dim_level>
+            <reflection_level sid="reflection_level" type="float">3</reflection_level>
+          </extended_shader>
+          <shader>
+            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
+            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
+            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
+            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
+            <self_illumination sid="self_illumination" type="float">0</self_illumination>
+            <specular_level sid="specular_level" type="float">1</specular_level>
+            <soften sid="soften" type="float">0.1</soften>
+          </shader>
+        </technique>
+      </extra>
+    </effect>
+  </library_effects>
+  <library_materials>
+    <material id="Material__10-material" name="Material__10">
+      <instance_effect url="#Material__10"/>
+    </material>
+    <material id="Material__10_1-material" name="Material__10">
+      <instance_effect url="#Material__10_1"/>
+    </material>
+  </library_materials>
+  <library_geometries>
+    <geometry id="geom-HA406_ins0" name="HA406_ins0">
+      <mesh>
+        <source id="geom-HA406_ins0-positions">
+          <float_array id="geom-HA406_ins0-positions-array" count="24">1.269287 0.8877258 -1.156097 -1.156097 0.8877258 1.269272 -1.156097 -0.8877563 1.269272 1.269287 -0.8877563 -1.156097 -1.269287 -0.8877563 1.156082 1.156097 -0.8877563 -1.269287 -1.269287 0.8877258 1.156082 1.156097 0.8877258 -1.269287</float_array>
+          <technique_common>
+            <accessor source="#geom-HA406_ins0-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA406_ins0-normals">
+          <float_array id="geom-HA406_ins0-normals-array" count="54">0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437</float_array>
+          <technique_common>
+            <accessor source="#geom-HA406_ins0-normals-array" count="18" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA406_ins0-map1">
+          <float_array id="geom-HA406_ins0-map1-array" count="36">0.7012153 0.001992053 0 0.7012153 0.006940432 0 0.6999835 0.006940432 0 0.6999835 0.001992053 0 0.2423343 0.001992112 0 0.2423343 0.006940609 0 0.2420944 0.006940609 0 0.2420944 0.001992112 0 0.7073689 0.006940432 0 0.7073689 0.001992053 0 0.7086006 0.001992053 0 0.7086006 0.006940432 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA406_ins0-map1-array" count="12" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA406_ins0-vertices">
+          <input semantic="POSITION" source="#geom-HA406_ins0-positions"/>
+        </vertices>
+        <triangles material="Material__10" count="6">
+          <input semantic="VERTEX" source="#geom-HA406_ins0-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA406_ins0-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA406_ins0-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 0 3 0 2 4 2 3 5 3 4 6 4 5 7 5 3 8 6 3 9 6 2 10 7 4 11 4 6 12 8 7 13 9 5 14 10 6 15 8 5 16 10 4 17 11</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-HA403_ins0" name="HA403_ins0">
+      <mesh>
+        <source id="geom-HA403_ins0-positions">
+          <float_array id="geom-HA403_ins0-positions-array" count="24">0.08004761 0.862854 1.081146 0.08004761 -0.862854 1.081146 0.08004761 0.862854 -1.081139 0.08004761 -0.862854 -1.081139 -0.08001709 -0.862854 1.081146 -0.08001709 -0.862854 -1.081139 -0.08001709 0.862854 1.081146 -0.08001709 0.862854 -1.081139</float_array>
+          <technique_common>
+            <accessor source="#geom-HA403_ins0-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA403_ins0-normals">
+          <float_array id="geom-HA403_ins0-normals-array" count="54">0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA403_ins0-normals-array" count="18" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA403_ins0-map1">
+          <float_array id="geom-HA403_ins0-map1-array" count="36">0.7012153 0.006940432 0 0.6999835 0.006940432 0 0.7012153 0.001992053 0 0.6999835 0.001992053 0 0.2423343 0.001992112 0 0.2423343 0.006940609 0 0.2420944 0.006940609 0 0.2420944 0.001992112 0 0.7073689 0.006940432 0 0.7073689 0.001992053 0 0.7086006 0.001992053 0 0.7086006 0.006940432 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA403_ins0-map1-array" count="12" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA403_ins0-vertices">
+          <input semantic="POSITION" source="#geom-HA403_ins0-positions"/>
+        </vertices>
+        <triangles material="Material__10" count="6">
+          <input semantic="VERTEX" source="#geom-HA403_ins0-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA403_ins0-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA403_ins0-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 2 3 2 1 4 1 3 5 3 4 6 4 5 7 5 3 8 6 3 9 6 1 10 7 4 11 4 6 12 8 7 13 9 5 14 10 6 15 8 5 16 10 4 17 11</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-HA402_ins0" name="HA402_ins0">
+      <mesh>
+        <source id="geom-HA402_ins0-positions">
+          <float_array id="geom-HA402_ins0-positions-array" count="24">-4.464508 1.895538 -0.08002472 4.464508 1.895538 -0.08002472 4.464508 -1.895569 -0.08002472 -4.464508 -1.895569 -0.08002472 4.464508 -1.895569 0.08003235 -4.464508 -1.895569 0.08003235 4.464508 1.895538 0.08003235 -4.464508 1.895538 0.08003235</float_array>
+          <technique_common>
+            <accessor source="#geom-HA402_ins0-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA402_ins0-normals">
+          <float_array id="geom-HA402_ins0-normals-array" count="108">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA402_ins0-normals-array" count="36" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA402_ins0-map1">
+          <float_array id="geom-HA402_ins0-map1-array" count="48">0.7012153 0.001992053 0 0.7012153 0.006940432 0 0.6999835 0.006940432 0 0.6999835 0.001992053 0 0.2423343 0.001992112 0 0.2423343 0.006940609 0 0.2420944 0.006940609 0 0.2420944 0.001992112 0 0.7073689 0.006940432 0 0.7073689 0.001992053 0 0.7086006 0.001992053 0 0.7086006 0.006940432 0 1 0.02906911 0 0 0 0 1 0 0 0 0.02906911 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA402_ins0-map1-array" count="16" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA402_ins0-vertices">
+          <input semantic="POSITION" source="#geom-HA402_ins0-positions"/>
+        </vertices>
+        <triangles material="Material__10" count="12">
+          <input semantic="VERTEX" source="#geom-HA402_ins0-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA402_ins0-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA402_ins0-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 0 3 0 2 4 2 3 5 3 4 6 4 5 7 5 3 8 6 3 9 6 2 10 7 4 11 4 6 12 8 7 13 9 5 14 10 6 15 8 5 16 10 4 17 11 1 18 12 7 19 13 6 20 14 7 21 13 1 22 12 0 23 15 6 24 8 4 25 4 1 26 12 1 27 12 4 28 4 2 29 2 0 30 0 5 31 10 7 32 13 5 33 10 0 34 0 3 35 6</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-HA401_ins0" name="HA401_ins0">
+      <mesh>
+        <source id="geom-HA401_ins0-positions">
+          <float_array id="geom-HA401_ins0-positions-array" count="36">-1.30957 -1.68512 1.001129 -1.30957 1.68512 -1.161171 -1.30957 1.68512 1.001129 -1.30957 -1.68512 -1.161171 -1.469635 -1.68512 -1.161171 -1.469635 -1.68512 1.161163 -1.469635 1.68512 1.161163 -1.469635 1.68512 -1.161171 1.469635 1.68512 1.001129 1.469635 -1.68512 1.001129 1.469635 -1.68512 1.161163 1.469635 1.68512 1.161163</float_array>
+          <technique_common>
+            <accessor source="#geom-HA401_ins0-positions-array" count="12" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA401_ins0-normals">
+          <float_array id="geom-HA401_ins0-normals-array" count="144">0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA401_ins0-normals-array" count="48" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA401_ins0-map1">
+          <float_array id="geom-HA401_ins0-map1-array" count="63">0.6999835 0.005892742 0 0.7012153 0.001992053 0 0.7012153 0.005892742 0 0.6999835 0.001992053 0 0.2423343 0.006940609 0 0.2420944 0.003039826 0 0.2423343 0.002873303 0 0.2420944 0.006940609 0 0.7073689 0.006059262 0 0.7073689 0.001992053 0 0.7086006 0.001992053 0 0.7086006 0.006059262 0 1 1 0 0 0 0 1 0 0 0 1 0 0.9310889 0.06892166 0 0 0.06892166 0 1 0.05444714 0 0.05445544 0 0 0 0.05444714 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA401_ins0-map1-array" count="21" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA401_ins0-vertices">
+          <input semantic="POSITION" source="#geom-HA401_ins0-positions"/>
+        </vertices>
+        <triangles material="Material__10" count="16">
+          <input semantic="VERTEX" source="#geom-HA401_ins0-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA401_ins0-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA401_ins0-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 1 3 1 0 4 0 3 5 3 4 6 4 0 7 5 5 8 6 0 9 5 4 10 4 3 11 7 6 12 8 7 13 9 4 14 10 6 15 8 4 16 10 5 17 11 8 18 12 0 19 13 2 20 14 0 21 13 8 22 12 9 23 15 10 24 15 0 25 14 9 26 12 0 27 14 10 28 15 5 29 13 11 30 15 6 31 13 10 32 12 6 33 13 5 34 14 10 35 12 7 36 13 6 37 14 2 38 16 7 39 13 2 40 16 1 41 17 11 42 18 2 43 19 6 44 20 2 45 19 11 46 18 8 47 14</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-HA400_ins0" name="HA400_ins0">
+      <mesh>
+        <source id="geom-HA400_ins0-positions">
+          <float_array id="geom-HA400_ins0-positions-array" count="195">-1.606567 1.484833 -0.006103516 -1.485016 1.484833 -0.6174622 -1.485016 1.025024 -0.6174622 -1.606567 1.025024 -0.006103516 -1.485016 1.484833 0.6052704 -1.485016 1.025024 0.6052704 -1.138702 1.484833 1.123581 -1.138702 1.025024 1.123581 -0.6203918 1.484833 1.469879 -0.6203918 1.025024 1.469879 -0.009033203 1.484833 1.591461 -0.009033203 1.025024 1.591461 0.602356 1.484833 1.469879 0.602356 1.025024 1.469879 1.120636 1.484833 1.12355 1.120636 1.025024 1.12355 1.466949 1.484833 0.6052704 1.466949 1.025024 0.6052704 1.588531 1.484833 -0.006088257 1.588531 1.025024 -0.006088257 1.466949 1.484833 -0.6174622 1.466949 1.025024 -0.6174622 1.120636 1.484833 -1.135742 1.120636 1.025024 -1.135742 0.602356 1.484833 -1.482071 0.602356 1.025024 -1.482071 -0.009033203 1.484833 -1.603653 -0.009033203 1.025024 -1.603653 -0.6203918 1.484833 -1.482071 -0.6203918 1.025024 -1.482071 -1.138672 1.484833 -1.135742 -1.138672 1.025024 -1.135742 -0.009033203 1.484833 -0.006103516 0 -1.484833 1.717438 0 1.431641 1.717438 -0.3687134 1.431641 2.086151 -0.3687134 -1.484833 2.086151 -1.717529 -1.484833 -9.15527e-5 -2.086243 -1.484833 0.3686218 -1.717529 1.431641 -9.15527e-5 -2.086243 1.431641 0.3686218 -3.05176e-5 1.431641 -1.71759 1.717499 1.431641 -6.10352e-5 1.717499 -1.484833 -6.10352e-5 -3.05176e-5 -1.484833 -1.71759 2.086151 1.431641 -0.3687286 0.3686829 1.431641 -2.086288 0.3686829 -1.484833 -2.086288 2.086151 -1.484833 -0.3687286 0.3687134 -1.484833 2.086288 0.3687134 1.431641 2.086288 0 1.431641 1.717575 0 -1.484833 1.717575 2.086212 -1.484833 0.3687897 1.717499 -1.484833 9.15527e-5 2.086212 1.431641 0.3687897 1.717499 1.431641 9.15527e-5 -1.717529 -1.484833 4.57764e-5 -1.717529 1.431641 4.57764e-5 -2.086212 1.431641 -0.3686218 -2.086212 -1.484833 -0.3686218 -3.05176e-5 -1.484833 -1.717453 -0.3687134 -1.484833 -2.086121 -3.05176e-5 1.431641 -1.717453 -0.3687134 1.431641 -2.086121</float_array>
+          <technique_common>
+            <accessor source="#geom-HA400_ins0-positions-array" count="65" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA400_ins0-normals">
+          <float_array id="geom-HA400_ins0-normals-array" count="900">-1 0 0 -0.9230769 0 -0.3846154 -0.9230769 0 -0.3846154 -1 0 0 -0.9230769 0 -0.3846154 -1 0 0 -0.9230769 0 0.3846154 -1 0 0 -1 0 0 -0.9230769 0 0.3846154 -1 0 0 -0.9230769 0 0.3846154 -0.7071068 0 0.7071068 -0.9230769 0 0.3846154 -0.9230769 0 0.3846154 -0.7071068 0 0.7071068 -0.9230769 0 0.3846154 -0.7071068 0 0.7071068 -0.3920985 0 0.9199233 -0.7071068 0 0.7071068 -0.7071068 0 0.7071068 -0.3920985 0 0.9199233 -0.7071068 0 0.7071068 -0.3920985 0 0.9199233 0 0 1 -0.3920985 0 0.9199233 -0.3920985 0 0.9199233 0 0 1 -0.3920985 0 0.9199233 0 0 1 0.3920985 0 0.9199233 0 0 1 0 0 1 0.3920985 0 0.9199233 0 0 1 0.3920985 0 0.9199233 0.7071068 0 0.7071068 0.3920985 0 0.9199233 0.3920985 0 0.9199233 0.7071068 0 0.7071068 0.3920985 0 0.9199233 0.7071068 0 0.7071068 0.9230769 0 0.3846154 0.7071068 0 0.7071068 0.7071068 0 0.7071068 0.9230769 0 0.3846154 0.7071068 0 0.7071068 0.9230769 0 0.3846154 1 0 0 0.9230769 0 0.3846154 0.9230769 0 0.3846154 1 0 0 0.9230769 0 0.3846154 1 0 0 0.9230769 0 -0.3846154 1 0 0 1 0 0 0.9230769 0 -0.3846154 1 0 0 0.9230769 0 -0.3846154 0.7071068 0 -0.7071068 0.9230769 0 -0.3846154 0.9230769 0 -0.3846154 0.7071068 0 -0.7071068 0.9230769 0 -0.3846154 0.7071068 0 -0.7071068 0.3920985 0 -0.9199233 0.7071068 0 -0.7071068 0.7071068 0 -0.7071068 0.3920985 0 -0.9199233 0.7071068 0 -0.7071068 0.3920985 0 -0.9199233 0 0 -1 0.3920985 0 -0.9199233 0.3920985 0 -0.9199233 0 0 -1 0.3920985 0 -0.9199233 0 0 -1 -0.3920985 0 -0.9199233 0 0 -1 0 0 -1 -0.3920985 0 -0.9199233 0 0 -1 -0.3920985 0 -0.9199233 -0.7071068 0 -0.7071068 -0.3920985 0 -0.9199233 -0.3920985 0 -0.9199233 -0.7071068 0 -0.7071068 -0.3920985 0 -0.9199233 -0.7071068 0 -0.7071068 -0.9230769 0 -0.3846154 -0.7071068 0 -0.7071068 -0.7071068 0 -0.7071068 -0.9230769 0 -0.3846154 -0.7071068 0 -0.7071068 -0.9230769 0 -0.3846154 0 1 0 0 1 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 1 0 0 1 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 1 0 0 1 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 1 0 0 1 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0.7078692 0 -0.7063437 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 -0.7078692 0 0.7063437 0.7071068 0 -0.7071068 0.7071068 0 -0.7071068 0.7071068 0 -0.7071068 0.7071068 0 -0.7071068 0.7071068 0 -0.7071068 0.7071068 0 -0.7071068 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 -0.7078692 0 -0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437 0.7078692 0 0.7063437</float_array>
+          <technique_common>
+            <accessor source="#geom-HA400_ins0-normals-array" count="300" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA400_ins0-map1">
+          <float_array id="geom-HA400_ins0-map1-array" count="159">0.390625 0.6884398 0 0.375 0.6884398 0 0.375 0.3125 0 0.390625 0.3125 0 0.40625 0.6884398 0 0.40625 0.3125 0 0.421875 0.6884398 0 0.421875 0.3125 0 0.4375 0.6884398 0 0.4375 0.3125 0 0.453125 0.6884398 0 0.453125 0.3125 0 0.46875 0.6884398 0 0.46875 0.3125 0 0.484375 0.6884398 0 0.484375 0.3125 0 0.5 0.6884398 0 0.5 0.3125 0 0.515625 0.6884398 0 0.515625 0.3125 0 0.53125 0.6884398 0 0.53125 0.3125 0 0.546875 0.6884398 0 0.546875 0.3125 0 0.5625 0.6884398 0 0.5625 0.3125 0 0.578125 0.6884398 0 0.578125 0.3125 0 0.59375 0.6884398 0 0.59375 0.3125 0 0.609375 0.6884398 0 0.609375 0.3125 0 0.625 0.6884398 0 0.625 0.3125 0 0.6443562 0.9035443 0 0.6104854 0.9542354 0 0.5 0.8375 0 0.5597942 0.9881062 0 0.5 1 0 0.4402057 0.9881061 0 0.3895145 0.9542354 0 0.3556438 0.9035442 0 0.34375 0.8437499 0 0.3556438 0.7839557 0 0.3895146 0.7332645 0 0.4402058 0.6993938 0 0.5000001 0.6875 0 0.5597944 0.6993939 0 0.6104855 0.7332646 0 0.6443562 0.7839558 0 0.65625 0.84375 0 1 1 0 0 1 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA400_ins0-map1-array" count="53" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA400_ins0-vertices">
+          <input semantic="POSITION" source="#geom-HA400_ins0-positions"/>
+        </vertices>
+        <triangles material="Material__10" count="100">
+          <input semantic="VERTEX" source="#geom-HA400_ins0-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA400_ins0-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA400_ins0-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 0 3 0 2 4 2 3 5 3 4 6 4 0 7 0 3 8 3 4 9 4 3 10 3 5 11 5 6 12 6 4 13 4 5 14 5 6 15 6 5 16 5 7 17 7 8 18 8 6 19 6 7 20 7 8 21 8 7 22 7 9 23 9 10 24 10 8 25 8 9 26 9 10 27 10 9 28 9 11 29 11 12 30 12 10 31 10 11 32 11 12 33 12 11 34 11 13 35 13 14 36 14 12 37 12 13 38 13 14 39 14 13 40 13 15 41 15 16 42 16 14 43 14 15 44 15 16 45 16 15 46 15 17 47 17 18 48 18 16 49 16 17 50 17 18 51 18 17 52 17 19 53 19 20 54 20 18 55 18 19 56 19 20 57 20 19 58 19 21 59 21 22 60 22 20 61 20 21 62 21 22 63 22 21 64 21 23 65 23 24 66 24 22 67 22 23 68 23 24 69 24 23 70 23 25 71 25 26 72 26 24 73 24 25 74 25 26 75 26 25 76 25 27 77 27 28 78 28 26 79 26 27 80 27 28 81 28 27 82 27 29 83 29 30 84 30 28 85 28 29 86 29 30 87 30 29 88 29 31 89 31 1 90 32 30 91 30 31 92 31 1 93 32 31 94 31 2 95 33 1 96 34 0 97 35 32 98 36 0 99 35 4 100 37 32 101 36 4 102 37 6 103 38 32 104 36 6 105 38 8 106 39 32 107 36 8 108 39 10 109 40 32 110 36 10 111 40 12 112 41 32 113 36 12 114 41 14 115 42 32 116 36 14 117 42 16 118 43 32 119 36 16 120 43 18 121 44 32 122 36 18 123 44 20 124 45 32 125 36 20 126 45 22 127 46 32 128 36 22 129 46 24 130 47 32 131 36 24 132 47 26 133 48 32 134 36 26 135 48 28 136 49 32 137 36 28 138 49 30 139 50 32 140 36 30 141 50 1 142 34 32 143 36 33 144 51 34 145 51 35 146 51 35 147 51 36 148 51 33 149 51 37 150 52 33 151 51 36 152 51 36 153 51 38 154 52 37 155 52 39 156 52 38 157 52 40 158 52 38 159 52 39 160 52 37 161 52 34 162 51 39 163 52 40 164 52 40 165 52 35 166 51 34 167 51 41 168 52 39 169 52 42 170 51 39 171 52 34 172 51 42 173 51 43 174 51 33 175 51 44 176 52 33 177 51 37 178 52 44 179 52 45 180 51 46 181 52 41 182 52 41 183 52 42 184 51 45 185 51 46 186 52 44 187 52 41 188 52 44 189 52 46 190 52 47 191 52 48 192 51 44 193 52 47 194 52 44 195 52 48 196 51 43 197 51 48 198 51 45 199 51 42 200 51 42 201 51 43 202 51 48 203 51 49 204 51 50 205 51 51 206 51 51 207 51 52 208 51 49 209 51 53 210 52 49 211 51 52 212 51 53 213 52 52 214 51 54 215 52 55 216 52 54 217 52 56 218 52 54 219 52 55 220 52 53 221 52 56 222 52 51 223 51 50 224 51 56 225 52 50 226 51 55 227 52 57 228 51 58 229 51 59 230 51 59 231 51 60 232 51 57 233 51 61 234 52 57 235 51 60 236 51 61 237 52 60 238 51 62 239 52 63 240 52 62 241 52 64 242 52 62 243 52 63 244 52 61 245 52 64 246 52 59 247 51 58 248 51 64 249 52 58 250 51 63 251 52 35 252 51 40 253 52 36 254 51 40 255 52 38 256 52 36 257 51 46 258 52 45 259 51 48 260 51 46 261 52 48 262 51 47 263 52 34 264 51 33 265 51 42 266 51 42 267 51 33 268 51 43 269 51 39 270 52 41 271 52 37 272 52 41 273 52 44 274 52 37 275 52 51 276 51 56 277 52 52 278 51 56 279 52 54 280 52 52 281 51 55 282 52 50 283 51 49 284 51 55 285 52 49 286 51 53 287 52 59 288 51 64 289 52 60 290 51 64 291 52 62 292 52 60 293 51 63 294 52 58 295 51 57 296 51 63 297 52 57 298 51 61 299 52</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-HA406-lod1" name="HA406-lod1">
+      <mesh>
+        <source id="geom-HA406-lod1-positions">
+          <float_array id="geom-HA406-lod1-positions-array" count="18">1.156097 0.8877258 -1.269287 -1.269287 0.8877258 1.156082 -1.156097 -0.8877563 1.269272 1.269287 -0.8877563 -1.156097 -1.269287 -0.8877563 1.156082 1.156097 -0.8877563 -1.269287</float_array>
+          <technique_common>
+            <accessor source="#geom-HA406-lod1-positions-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA406-lod1-normals">
+          <float_array id="geom-HA406-lod1-normals-array" count="36">0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436</float_array>
+          <technique_common>
+            <accessor source="#geom-HA406-lod1-normals-array" count="12" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA406-lod1-map1">
+          <float_array id="geom-HA406-lod1-map1-array" count="36">0.7012153 0.001992053 0 0.7012153 0.006940432 0 0.6999835 0.006940432 0 0.6999835 0.001992053 0 0.2423343 0.001992112 0 0.2423343 0.006940609 0 0.2420944 0.006940609 0 0.2420944 0.001992112 0 0.7073689 0.006940432 0 0.7073689 0.001992053 0 0.7086006 0.001992053 0 0.7086006 0.006940432 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA406-lod1-map1-array" count="12" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA406-lod1-vertices">
+          <input semantic="POSITION" source="#geom-HA406-lod1-positions"/>
+        </vertices>
+        <triangles material="Material__10" count="6">
+          <input semantic="VERTEX" source="#geom-HA406-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA406-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA406-lod1-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 2 2 2 3 3 3 0 0 0 4 4 4 5 5 5 3 6 6 3 6 6 2 7 7 4 4 4 1 8 8 0 9 9 5 10 10 5 10 10 4 11 11 1 8 8</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-HA403-lod1" name="HA403-lod1">
+      <mesh>
+        <source id="geom-HA403-lod1-positions">
+          <float_array id="geom-HA403-lod1-positions-array" count="18">-0.08001709 0.862854 1.081146 0.08004761 -0.862854 1.081146 -0.08001709 0.862854 -1.081139 0.08004761 -0.862854 -1.081139 -0.08001709 -0.862854 1.081146 -0.08001709 -0.862854 -1.081139</float_array>
+          <technique_common>
+            <accessor source="#geom-HA403-lod1-positions-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA403-lod1-normals">
+          <float_array id="geom-HA403-lod1-normals-array" count="36">1 0 0 1 0 0 1 0 0 1 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA403-lod1-normals-array" count="12" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA403-lod1-map1">
+          <float_array id="geom-HA403-lod1-map1-array" count="36">0.7012153 0.006940432 0 0.6999835 0.006940432 0 0.7012153 0.001992053 0 0.6999835 0.001992053 0 0.2423343 0.001992112 0 0.2423343 0.006940609 0 0.2420944 0.006940609 0 0.2420944 0.001992112 0 0.7073689 0.006940432 0 0.7073689 0.001992053 0 0.7086006 0.001992053 0 0.7086006 0.006940432 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA403-lod1-map1-array" count="12" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA403-lod1-vertices">
+          <input semantic="POSITION" source="#geom-HA403-lod1-positions"/>
+        </vertices>
+        <triangles material="Material__10_1" count="6">
+          <input semantic="VERTEX" source="#geom-HA403-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA403-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA403-lod1-map1" offset="2" set="0"/>
+          <p>2 0 2 0 1 0 1 2 1 1 2 1 3 3 3 2 0 2 4 4 4 5 5 5 3 6 6 3 6 6 1 7 7 4 4 4 0 8 8 2 9 9 5 10 10 5 10 10 4 11 11 0 8 8</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-HA402-lod1" name="HA402-lod1">
+      <mesh>
+        <source id="geom-HA402-lod1-positions">
+          <float_array id="geom-HA402-lod1-positions-array" count="18">-4.464508 1.895538 -0.08002472 4.464508 -1.895569 -0.08002472 4.464508 -1.895569 0.08003235 -4.464508 -1.895569 -0.08002472 4.464508 1.895538 -0.08002472 -4.464508 1.895538 0.08003235</float_array>
+          <technique_common>
+            <accessor source="#geom-HA402-lod1-positions-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA402-lod1-normals">
+          <float_array id="geom-HA402-lod1-normals-array" count="66">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 1 0 0 1 0 0 1 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA402-lod1-normals-array" count="22" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA402-lod1-map1">
+          <float_array id="geom-HA402-lod1-map1-array" count="42">0.7012153 0.001992053 0 0.7012153 0.006940432 0 0.6999835 0.006940432 0 0.6999835 0.001992053 0 0.2423343 0.001992112 0 0.2423343 0.006940609 0 0.2420944 0.001992112 0 0.7073689 0.006940432 0 0.7073689 0.001992053 0 0.7086006 0.001992053 0 0.7086006 0.006940432 0 0 0 0 1 0 0 0 0.02906911 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA402-lod1-map1-array" count="14" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA402-lod1-vertices">
+          <input semantic="POSITION" source="#geom-HA402-lod1-positions"/>
+        </vertices>
+        <triangles material="Material__10_1" count="8">
+          <input semantic="VERTEX" source="#geom-HA402-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA402-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA402-lod1-map1" offset="2" set="0"/>
+          <p>0 0 0 4 1 1 1 2 2 1 2 2 3 3 3 0 0 0 2 4 4 3 5 5 1 6 6 4 8 7 5 9 8 3 10 9 3 10 9 2 11 10 4 8 7 5 12 11 4 13 12 0 14 13 4 15 7 2 16 4 1 17 2 3 18 9 5 19 11 0 20 0</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-HA401-lod1" name="HA401-lod1">
+      <mesh>
+        <source id="geom-HA401-lod1-positions">
+          <float_array id="geom-HA401-lod1-positions-array" count="24">-1.30957 -1.68512 1.001129 -1.469635 1.68512 -1.161171 -1.30957 1.68512 1.001129 -1.469635 -1.68512 -1.161171 -1.469635 -1.68512 1.161163 -1.469635 1.68512 1.161163 1.469635 -1.68512 1.161163 1.469635 1.68512 1.161163</float_array>
+          <technique_common>
+            <accessor source="#geom-HA401-lod1-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA401-lod1-normals">
+          <float_array id="geom-HA401-lod1-normals-array" count="87">1 0 0 1 0 0 1 0 0 1 0 0 0 -1 0 0 -1 0 0 -1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -1 0 0 -1 0 0 -1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA401-lod1-normals-array" count="29" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA401-lod1-map1">
+          <float_array id="geom-HA401-lod1-map1-array" count="84">0.6999835 0.005892742 0 0.7012153 0.001992053 0 0.7012153 0.005892742 0 0.6999835 0.001992053 0 0.2423343 0.006940609 0 0.2420944 0.003039826 0 0.2423343 0.002873303 0 0.7073689 0.006059262 0 0.7073689 0.001992053 0 0.7086006 0.001992053 0 0.7086006 0.006059262 0 1 1 0 0 0 0 1 0 0 0 1 0 0.9310889 0.06892166 0 0 0.06892166 0 1 0.05444714 0 0.05445544 0 0 0 0.05444714 0 1 0 0 1 1 0 0 0 0 1 1 0 0 1 0 0 0 0 1 0 0 1 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA401-lod1-map1-array" count="28" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA401-lod1-vertices">
+          <input semantic="POSITION" source="#geom-HA401-lod1-positions"/>
+        </vertices>
+        <triangles material="Material__10_1" count="12">
+          <input semantic="VERTEX" source="#geom-HA401-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA401-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA401-lod1-map1" offset="2" set="0"/>
+          <p>1 0 1 2 1 2 0 2 0 0 2 0 3 3 3 1 0 1 0 4 5 4 5 6 3 6 4 5 7 7 1 8 8 3 9 9 3 9 9 4 10 10 5 7 7 0 11 12 2 12 13 7 13 11 7 13 11 6 14 14 0 11 12 0 15 20 6 16 21 4 17 22 6 18 23 7 19 24 5 20 25 5 20 25 4 21 26 6 18 23 5 22 27 2 23 15 1 24 16 2 25 18 5 26 19 7 27 17</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-HA400-lod1" name="HA400-lod1">
+      <mesh>
+        <source id="geom-HA400-lod1-positions">
+          <float_array id="geom-HA400-lod1-positions-array" count="96">0 -1.484833 1.717438 0 1.431641 1.717438 -0.3687134 1.431641 2.086151 -0.3687134 -1.484833 2.086151 -1.717529 -1.484833 -9.15527e-5 -2.086243 -1.484833 0.3686218 -1.717529 1.431641 -9.15527e-5 -2.086243 1.431641 0.3686218 -3.05176e-5 1.431641 -1.71759 1.717499 1.431641 -6.10352e-5 1.717499 -1.484833 -6.10352e-5 -3.05176e-5 -1.484833 -1.71759 2.086151 1.431641 -0.3687286 0.3686829 1.431641 -2.086288 0.3686829 -1.484833 -2.086288 2.086151 -1.484833 -0.3687286 0.3687134 -1.484833 2.086288 0.3687134 1.431641 2.086288 0 1.431641 1.717575 0 -1.484833 1.717575 2.086212 -1.484833 0.3687897 1.717499 -1.484833 9.15527e-5 2.086212 1.431641 0.3687897 1.717499 1.431641 9.15527e-5 -1.717529 -1.484833 4.57764e-5 -1.717529 1.431641 4.57764e-5 -2.086212 1.431641 -0.3686218 -2.086212 -1.484833 -0.3686218 -3.05176e-5 -1.484833 -1.717453 -0.3687134 -1.484833 -2.086121 -3.05176e-5 1.431641 -1.717453 -0.3687134 1.431641 -2.086121</float_array>
+          <technique_common>
+            <accessor source="#geom-HA400-lod1-positions-array" count="32" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA400-lod1-normals">
+          <float_array id="geom-HA400-lod1-normals-array" count="318">0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 -0.7078692 0 0.7063436 -0.7078692 0 0.7063436 -0.7078692 0 0.7063436 -0.7078692 0 0.7063436 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0.7078692 0 -0.7063436 0.7078692 0 -0.7063436 0.7078692 0 -0.7063436 0.7078692 0 -0.7063436 0 1 0 0 1 0 0 1 0 0 1 0 -0.7078692 0 0.7063436 -0.7078692 0 0.7063436 -0.7078692 0 0.7063436 -0.7078692 0 0.7063436 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0.7078692 0 -0.7063436 0.7078692 0 -0.7063436 0.7078692 0 -0.7063436 0.7078692 0 -0.7063436 0 1 0 0 1 0 0 1 0 0 1 0 -0.7078692 0 0.7063436 -0.7078692 0 0.7063436 -0.7078692 0 0.7063436 -0.7078692 0 0.7063436 0.7071068 0 -0.7071068 0.7071068 0 -0.7071068 0.7071068 0 -0.7071068 0.7071068 0 -0.7071068 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 -0.7078692 0 -0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436 0.7078692 0 0.7063436</float_array>
+          <technique_common>
+            <accessor source="#geom-HA400-lod1-normals-array" count="106" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-HA400-lod1-map1">
+          <float_array id="geom-HA400-lod1-map1-array" count="303">1 1 0 0 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 1 1 0 0 1 0 0 1 0 1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0</float_array>
+          <technique_common>
+            <accessor source="#geom-HA400-lod1-map1-array" count="101" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-HA400-lod1-vertices">
+          <input semantic="POSITION" source="#geom-HA400-lod1-positions"/>
+        </vertices>
+        <triangles material="Material__10_1" count="52">
+          <input semantic="VERTEX" source="#geom-HA400-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-HA400-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-HA400-lod1-map1" offset="2" set="0"/>
+          <p>1 0 0 2 1 2 0 2 3 0 2 3 9 3 4 1 0 0 2 4 5 3 5 6 0 6 7 4 7 1 0 8 8 3 9 9 3 9 9 5 10 10 4 7 1 5 11 11 7 12 12 6 13 13 6 13 13 4 14 1 5 11 11 1 15 0 6 16 14 7 17 15 7 17 15 2 18 16 1 15 0 9 19 17 8 20 18 6 21 19 6 21 19 1 22 0 9 19 17 11 23 20 10 24 21 0 25 22 0 25 22 4 26 1 11 23 20 12 27 23 13 28 24 8 29 25 8 29 25 9 30 26 12 27 23 11 31 27 8 32 28 13 33 29 13 33 29 14 34 30 11 31 27 11 35 31 14 36 32 15 37 33 15 37 33 10 38 34 11 35 31 15 39 35 12 40 36 9 41 37 9 41 37 10 42 38 15 39 35 16 43 39 17 44 40 18 45 41 18 45 41 19 46 42 16 43 39 20 47 43 16 48 44 19 49 45 19 49 45 21 50 46 20 47 43 21 51 47 23 52 48 22 53 49 22 53 49 20 54 50 21 51 47 23 55 51 18 56 52 17 57 53 17 57 53 22 58 54 23 55 51 24 59 55 25 60 56 26 61 57 26 61 57 27 62 58 24 59 55 28 63 59 24 64 60 27 65 61 27 65 61 29 66 62 28 63 59 29 67 63 31 68 64 30 69 65 30 69 65 28 70 66 29 67 63 31 71 67 26 72 68 25 73 69 25 73 69 30 74 70 31 71 67 3 75 71 2 76 72 7 77 73 7 77 73 5 78 74 3 75 71 13 79 75 12 80 76 15 81 77 15 81 77 14 82 78 13 79 75 9 83 79 0 84 80 10 85 81 4 86 1 6 87 82 8 88 83 8 88 83 11 89 84 4 86 1 19 90 85 18 91 86 23 92 87 23 92 87 21 93 88 19 90 85 22 94 89 17 95 90 16 96 91 16 96 91 20 97 92 22 94 89 27 98 93 26 99 94 31 100 95 31 100 95 29 101 96 27 98 93 30 102 97 25 103 98 24 104 99 24 104 99 28 105 100 30 102 97</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_lights>
+    <light id="EnvironmentAmbientLight" name="EnvironmentAmbientLight">
+      <technique_common>
+        <ambient>
+          <color>0 0 0</color>
+        </ambient>
+      </technique_common>
+    </light>
+  </library_lights>
+  <library_images>
+    <image id="T_Metal_Yellow_B_1_1_jpg">
+      <init_from>./images/0_T_Metal_Yellow_B_1_1.jpg</init_from>
+    </image>
+  </library_images>
+  <library_visual_scenes>
+    <visual_scene id="MaxScene">
+      <node name="EnvironmentAmbientLight">
+        <instance_light url="#EnvironmentAmbientLight"/>
+      </node>
+      <node id="node-HA406_ins0" name="HA406_ins0">
+        <translate>449.1916 283.3048 130.0666</translate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA403_ins0" name="HA403_ins0">
+        <translate>443.3989 283.2798 126.9656</translate>
+        <instance_geometry url="#geom-HA403_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA402_ins0" name="HA402_ins0">
+        <translate>446.0171 338.727 125.6444</translate>
+        <instance_geometry url="#geom-HA402_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA401_ins0" name="HA401_ins0">
+        <translate>443.364 284.102 127.0457</translate>
+        <instance_geometry url="#geom-HA401_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA400_ins0" name="HA400_ins0">
+        <translate>452.2402 338.7663 139.5334</translate>
+        <instance_geometry url="#geom-HA400_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA402_ins001" name="HA402_ins001">
+        <translate>446.0171 284.1955 125.6444</translate>
+        <instance_geometry url="#geom-HA402_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA403_ins001" name="HA403_ins001">
+        <translate>443.399 339.6425 126.9656</translate>
+        <rotate>0 0 1 -180</rotate>
+        <instance_geometry url="#geom-HA403_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA400_ins001" name="HA400_ins001">
+        <translate>452.2403 284.1562 139.5334</translate>
+        <rotate>0 0 1 -180</rotate>
+        <instance_geometry url="#geom-HA400_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA401_ins001" name="HA401_ins001">
+        <translate>443.364 338.8203 127.0457</translate>
+        <instance_geometry url="#geom-HA401_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins001" name="HA406_ins001">
+        <translate>451.6865 283.3048 132.5614</translate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins002" name="HA406_ins002">
+        <translate>454.1811 283.3048 135.0562</translate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins003" name="HA406_ins003">
+        <translate>456.6758 283.3048 137.551</translate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins004" name="HA406_ins004">
+        <translate>459.1709 283.3048 140.0458</translate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins005" name="HA406_ins005">
+        <translate>462.5219 283.3048 143.3972</translate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins006" name="HA406_ins006">
+        <translate>449.1917 339.6177 130.0666</translate>
+        <rotate>0.7071069 -5.3385e-8 -0.7071066 -180</rotate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins007" name="HA406_ins007">
+        <translate>451.6866 339.6177 132.5615</translate>
+        <rotate>0.7071068 -3.09086e-8 0.7071068 -180</rotate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins008" name="HA406_ins008">
+        <translate>454.1812 339.6177 135.0562</translate>
+        <rotate>0.7071068 -3.09086e-8 0.7071068 -180</rotate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins010" name="HA406_ins010">
+        <translate>459.171 339.6177 140.0459</translate>
+        <rotate>0.7071068 -3.09086e-8 0.7071068 -180</rotate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins011" name="HA406_ins011">
+        <translate>462.522 339.6179 143.3972</translate>
+        <rotate>0.7071068 -3.09086e-8 0.7071068 -180</rotate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406_ins012" name="HA406_ins012">
+        <translate>456.6758 339.6178 137.5511</translate>
+        <rotate>0.7071068 -3.09086e-8 0.7071068 -180</rotate>
+        <instance_geometry url="#geom-HA406_ins0">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA406-lod1" name="HA406-lod1">
+        <translate>449.1916 283.3048 130.0666</translate>
+        <instance_geometry url="#geom-HA406-lod1">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10" target="#Material__10_1-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA403-lod1" name="HA403-lod1">
+        <translate>443.3989 283.2798 126.9656</translate>
+        <instance_geometry url="#geom-HA403-lod1">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10_1" target="#Material__10_1-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA402-lod1" name="HA402-lod1">
+        <translate>446.0171 338.727 125.6444</translate>
+        <instance_geometry url="#geom-HA402-lod1">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10_1" target="#Material__10_1-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA401-lod1" name="HA401-lod1">
+        <translate>443.364 284.102 127.0457</translate>
+        <instance_geometry url="#geom-HA401-lod1">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10_1" target="#Material__10_1-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-HA400-lod1" name="HA400-lod1">
+        <translate>452.2402 338.7663 139.5334</translate>
+        <instance_geometry url="#geom-HA400-lod1">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material__10_1" target="#Material__10_1-material">
+                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#MaxScene"/>
+  </scene>
+</COLLADA>
