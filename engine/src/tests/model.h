@@ -36,13 +36,12 @@ public:
     W_EXP model();
     virtual ~model();
 
-    HRESULT load(
+    HRESULT pre_load(
         _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, 
-        _In_ wolf::content_pipeline::w_cpipeline_model* pCPModel,
-        _In_ wolf::graphics::w_render_pass& pRenderPass);
+        _In_ wolf::content_pipeline::w_cpipeline_model* pCPModel);
     
     //this function must be called from main thread
-    HRESULT create_mesh();
+    HRESULT post_load(_In_ wolf::graphics::w_render_pass& pRenderPass);
 
     void pre_update(
         _In_    wolf::content_pipeline::w_first_person_camera pCamera,

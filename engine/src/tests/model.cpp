@@ -21,10 +21,9 @@ model::~model()
     release();
 }
 
-HRESULT model::load(
+HRESULT model::pre_load(
     _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-    _In_ w_cpipeline_model* pCPModel,
-    _In_ w_render_pass& pRenderPass)
+    _In_ w_cpipeline_model* pCPModel)
 {
     if (!pGDevice || !pCPModel) return S_FALSE;
 
@@ -138,11 +137,6 @@ HRESULT model::load(
         return S_FALSE;
     }
     
-    if (_load_buffers() == S_FALSE) return S_FALSE;
-    if (_load_shader() == S_FALSE) return S_FALSE;
-    if (_load_pipelines(pRenderPass) == S_FALSE) return S_FALSE;
-    if (_build_compute_command_buffers() == S_FALSE) return S_FALSE;
-
     VkSemaphoreCreateInfo _semaphore_create_info = {};
     _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
     if (vkCreateSemaphore(_gDevice->vk_device,
@@ -158,7 +152,7 @@ HRESULT model::load(
     return S_OK;
 }
 
-HRESULT model::create_mesh()
+HRESULT model::post_load(_In_ w_render_pass& pRenderPass)
 {
     const std::string _trace = this->name + "model::create_mesh";
     
@@ -190,6 +184,11 @@ HRESULT model::create_mesh()
         V(S_FALSE, "Error on loading mesh for " + this->_full_name, _trace);
         return S_FALSE;
     }
+
+    if (_load_buffers() == S_FALSE) return S_FALSE;
+    if (_load_shader() == S_FALSE) return S_FALSE;
+    if (_load_pipelines(pRenderPass) == S_FALSE) return S_FALSE;
+    if (_build_compute_command_buffers() == S_FALSE) return S_FALSE;
 
     this->_loaded.store(true);
 

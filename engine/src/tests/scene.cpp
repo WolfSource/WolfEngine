@@ -417,7 +417,7 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
                 if (!_iter) continue;
 
                 auto _model = new model();
-                auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                auto _hr = _model->pre_load(_gDevice, _iter);
                 if (_hr == S_OK)
                 {
                     _area.outer_models.push_back(_model);
@@ -461,7 +461,7 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
                 if (!_iter) continue;
 
                 auto _model = new model();
-                auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                auto _hr = _model->pre_load(_gDevice, _iter);
                 if (_hr == S_OK)
                 {
                     _area.middle_models.push_back(_model);
@@ -504,7 +504,7 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
                 if (!_iter) continue;
 
                 auto _model = new model();
-                auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                auto _hr = _model->pre_load(_gDevice, _iter);
                 if (_hr == S_OK)
                 {
                     _area.inner_models.push_back(_model);
@@ -553,7 +553,7 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
                     if (!_iter) continue;
 
                     auto _model = new model();
-                    auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                    auto _hr = _model->pre_load(_gDevice, _iter);
                     if (_hr == S_OK)
                     {
                         _area.outer_models.push_back(_model);
@@ -599,7 +599,7 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
                     if (!_iter) continue;
 
                     auto _model = new model();
-                    auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                    auto _hr = _model->pre_load(_gDevice, _iter);
                     if (_hr == S_OK)
                     {
                         _area.middle_models.push_back(_model);
@@ -644,7 +644,7 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
                     if (!_iter) continue;
 
                     auto _model = new model();
-                    auto _hr = _model->load(_gDevice, _iter, this->_draw_render_pass);
+                    auto _hr = _model->pre_load(_gDevice, _iter);
                     if (_hr == S_OK)
                     {
                         _area.inner_models.push_back(_model);
@@ -713,7 +713,7 @@ HRESULT scene::_load_areas()
         tbb::parallel_for_each(_areas.begin(), _areas.end(),
             [&](_In_ std::wstring pArea)
         {
-            _load_area(_areas[0], false);
+            _load_area(pArea, false);
         });
     });
 
@@ -896,38 +896,37 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     {
         for (auto& _area : this->_areas)
         {
-            if (_area.is_loaded)
-            {
-                _total_loaded_areas++;
-            }
-            else
+            if (!_area.is_loaded)
             {
                 //create mesh in each update frame  
 
                 //create outer meshes
                 if (_area.outer_loaded_index < _area.outer_models.size())
                 {
-                    if (_area.outer_models[_area.outer_loaded_index]->create_mesh() == S_OK)
+                    auto _model = _area.outer_models[_area.outer_loaded_index];
+                    if (_model->post_load(this->_draw_render_pass) == S_FALSE)
                     {
-                        sForceUpdateCamera = true;
+                        logger.error("error on post loading " + std::string(_area.outer_models[_area.outer_loaded_index]->get_full_name()));
                     }
                     _area.outer_loaded_index++;
                 }
                 //create middle meshes
                 if (_area.middle_loaded_index < _area.middle_models.size())
                 {
-                    if (_area.middle_models[_area.middle_loaded_index]->create_mesh() == S_OK)
+                    auto _model = _area.middle_models[_area.middle_loaded_index];
+                    if (_model->post_load(this->_draw_render_pass) == S_FALSE)
                     {
-                        sForceUpdateCamera = true;
+                        logger.error("error on post loading " + std::string(_model->get_full_name()));
                     }
                     _area.middle_loaded_index++;
                 }
                 //create inner meshes
                 if (_area.inner_loaded_index < _area.inner_models.size())
                 {
-                    if (_area.inner_models[_area.inner_loaded_index]->create_mesh() == S_OK)
+                    auto _model = _area.inner_models[_area.inner_loaded_index];
+                    if (_model->post_load(this->_draw_render_pass) == S_FALSE)
                     {
-                        sForceUpdateCamera = true;
+                        logger.error("error on post loading " + std::string(_model->get_full_name()));
                     }
                     _area.inner_loaded_index++;
                 }
@@ -938,6 +937,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
                 {
                     //all meshes have been loaded for this area
                     _area.is_loaded = true;
+                    sForceUpdateCamera = true;
+                    _total_loaded_areas++;
                 }
             }
         }
