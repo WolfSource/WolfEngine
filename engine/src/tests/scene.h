@@ -107,7 +107,7 @@ private:
     VkFence                                                        _draw_fence;
     VkSemaphore                                                     gui_semaphore;						// Used as a wait semaphore for graphics submission
     
-    std::vector<model*>                                            _models_to_be_render;
+    tbb::concurrent_vector<model*>                                 _models_to_be_render;
 
     struct render_thread_context
     {
@@ -131,6 +131,9 @@ private:
         std::vector<model*>                                         inner_models;
         std::vector<model*>                                         middle_models;
         std::vector<model*>                                         outer_models;
+
+        bool                                                        allow_update_inner_models = false;
+        bool                                                        allow_update_middle_models = false;
 
         uint32_t                                                    inner_loaded_index = 0;
         uint32_t                                                    middle_loaded_index = 0;

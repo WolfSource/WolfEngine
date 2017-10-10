@@ -18,7 +18,7 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_render_pass.h>
 #include <cameras/w_first_person_camera.h>
-#include "masked_occlusion_culling/MaskedOcclusionCulling.h"
+#include "masked_occlusion_culling/CullingThreadpool.h"
 
 #define MAX_LOD_LEVEL 2
 
@@ -43,11 +43,11 @@ public:
     //this function must be called from main thread
     HRESULT post_load(_In_ wolf::graphics::w_render_pass& pRenderPass);
 
-    void pre_update(
+    bool pre_update(
         _In_    wolf::content_pipeline::w_first_person_camera pCamera,
-        _Inout_ MaskedOcclusionCulling** sMOC);
+        _In_    CullingThreadpool* sMOC);
 
-    bool post_update(_Inout_ MaskedOcclusionCulling* sMOC, _Inout_ uint32_t& pVisibleSubModels);
+    bool post_update(_Inout_ CullingThreadpool* sMOC, _Inout_ uint32_t& pVisibleSubModels);
 
     void indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer);
 

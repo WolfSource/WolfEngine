@@ -15,6 +15,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
+#include <w_render_export.h>
+
  /*!
   * \file CullingThreadpool.h
   * \brief Worker threadpool example for threaded masked occlusion culling.
@@ -184,12 +186,12 @@ public:
 	 *        works well for our interleaved queries, while also allowing good load-balancing,
 	 *        and this is the recommended setting. 
 	 */
-	CullingThreadpool(unsigned int numThreads, unsigned int binsW, unsigned int binsH, unsigned int maxJobs = 32);
+    W_EXP CullingThreadpool(unsigned int numThreads, unsigned int binsW, unsigned int binsH, unsigned int maxJobs = 32);
 	
 	/*!
 	 * \brief Destroys the threadpool and terminates all worker threads.
 	 */
-	~CullingThreadpool();
+    W_EXP ~CullingThreadpool();
 
 	/*!
 	 * \brief Wakes up culling worker threads from suspended sleep, and puts them in a
@@ -198,7 +200,7 @@ public:
 	 * It may take on the order of 100us to wake up the threads, so this function should
 	 * preferably be called slightly ahead of starting occlusion culling work.
 	 */
-	void WakeThreads();
+    W_EXP void WakeThreads();
 
 	/*!
 	 * \brief Suspend all culling worker threads to a low CPU overhead sleep state. 
@@ -208,33 +210,33 @@ public:
 	 * with more worker threads it's important to put the culling worker threads in a 
 	 * low overhead sleep state after occlusion culling work has completed.
 	 */
-	void SuspendThreads();
+    W_EXP void SuspendThreads();
 
 	/*!
 	 * \brief Waits for all outstanding occluder rendering work to complete. Can be used
 	 *        to ensure that rendering has completed before performing a TestRect() or 
 	 *        TestTriangles() call.
 	 */
-	void Flush();
+    W_EXP void Flush();
 
 	/*
 	 * \brief Sets the MaskedOcclusionCulling object (buffer) to be used for rendering and
 	 *        testing calls. This method causes a Flush() to ensure that all unfinished 
 	 *        rendering is completed.
 	 */
-	void SetBuffer(MaskedOcclusionCulling *moc);
+    W_EXP void SetBuffer(MaskedOcclusionCulling *moc);
 
 	/*
 	 * \brief Changes the resolution of the occlusion buffer, see MaskedOcclusionCulling::SetResolution().
 	 *        This method causes a Flush() to ensure that all unfinished rendering is completed.
 	 */
-	void SetResolution(unsigned int width, unsigned int height);
+    W_EXP void SetResolution(unsigned int width, unsigned int height);
 
 	/*
 	 * \brief Sets the near clipping plane, see MaskedOcclusionCulling::SetNearClipPlane(). This 
 	 *        method causes a Flush() to ensure that all unfinished rendering is completed.
 	 */
-	void SetNearClipPlane(float nearDist);
+    W_EXP void SetNearClipPlane(float nearDist);
 
 	/*
 	 * \brief Sets the model to clipspace transform matrix used for the RenderTriangles() and TestTriangles() 
@@ -244,7 +246,7 @@ public:
 	 * \param modelToClipMatrix All vertices will be transformed by the specified model to clipspace matrix. 
 	 *        Passing nullptr [default] disables the transform (equivalent to using an identity matrix).
 	 */
-	void SetMatrix(const float *modelToClipMatrix = nullptr);
+    W_EXP void SetMatrix(const float *modelToClipMatrix = nullptr);
 
 	/*
 	 * \brief Sets the vertex layout used for the RenderTriangles() and TestTriangles() function calls.
@@ -255,13 +257,13 @@ public:
 	 *        description). For best performance, it is advicable to store position data
 	 *        as compactly in memory as possible.
 	 */
-	void SetVertexLayout(const VertexLayout &vtxLayout = VertexLayout(16, 4, 12));
+    W_EXP void SetVertexLayout(const VertexLayout &vtxLayout = VertexLayout(16, 4, 12));
 
 	/*
 	 * \brief Clears the occlusion buffer, see MaskedOcclusionCulling::ClearBuffer(). This method
 	 *        causes a Flush() to ensure that all unfinished rendering is completed.
 	 */
-	void ClearBuffer();
+    W_EXP void ClearBuffer();
 
 	/*
 	 * \brief Asynchronously render occluder triangles, see MaskedOcclusionCulling::RenderTriangles().
@@ -275,7 +277,7 @@ public:
 	 * is finished, or make sure to rotate between more buffers than the maximum number of outstanding
 	 * render jobs (see the CullingThreadpool() constructor).
 	 */
-	void RenderTriangles(const float *inVtx, const unsigned int *inTris, int nTris, BackfaceWinding bfWinding = MaskedOcclusionCulling::BACKFACE_CW, ClipPlanes clipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
+    W_EXP void RenderTriangles(const float *inVtx, const unsigned int *inTris, int nTris, BackfaceWinding bfWinding = MaskedOcclusionCulling::BACKFACE_CW, ClipPlanes clipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
 
 	/*
 	 * \brief Occlusion query for a rectangle with a given depth, see MaskedOcclusionCulling::TestRect().
@@ -290,7 +292,7 @@ public:
 	 * use "asynchronous" queries during traversal, and removing false positives later, when rendering 
 	 * has completed.
 	 */
-	CullingResult TestRect(float xmin, float ymin, float xmax, float ymax, float wmin);
+    W_EXP CullingResult TestRect(float xmin, float ymin, float xmax, float ymax, float wmin);
 
 	/*
 	 * \brief Occlusion query for a mesh, see MaskedOcclusionCulling::TestTriangles().
@@ -298,12 +300,12 @@ public:
 	 * <B>Important:</B> See the TestRect() method for a brief discussion about asynchronous occlusion 
 	 * queries.
 	 */
-	CullingResult TestTriangles(const float *inVtx, const unsigned int *inTris, int nTris, BackfaceWinding bfWinding = MaskedOcclusionCulling::BACKFACE_CW, ClipPlanes clipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
+    W_EXP CullingResult TestTriangles(const float *inVtx, const unsigned int *inTris, int nTris, BackfaceWinding bfWinding = MaskedOcclusionCulling::BACKFACE_CW, ClipPlanes clipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
 
 	/*!
 	 * \brief Creates a per-pixel depth buffer from the hierarchical z buffer representation, see
 	 *        MaskedOcclusionCulling::ComputePixelDepthBuffer(). This method causes a Flush() to 
 	 *        ensure that all unfinished rendering is completed.
 	 */
-	void ComputePixelDepthBuffer(float *depthData);
+    W_EXP void ComputePixelDepthBuffer(float *depthData);
 };

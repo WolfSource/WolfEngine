@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "model.h"
+#include <mutex>
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -919,11 +920,12 @@ HRESULT model::_build_compute_command_buffers()
     return S_OK;
 }
 
-void model::pre_update(
+bool model::pre_update(
     _In_    w_first_person_camera pCamera,
-    _Inout_ MaskedOcclusionCulling** sMOC)
+    _In_    CullingThreadpool* sMOCThreadPool)
 {
-    if (!this->_loaded.load()) return;
+    bool _hr = false;
+    if (!this->_loaded.load()) return _hr;
 
     using namespace glm;
     this->_view_projection = pCamera.get_projection_view();
@@ -937,13 +939,13 @@ void model::pre_update(
             glm::translate(_iter.position) *
             glm::rotate(_iter.rotation);
 
-        _model_to_clip_matrix *= glm::rotate(0.0f, glm::radians(0.0f), 0.0f);
-        (*sMOC)->RenderTriangles(
+        sMOCThreadPool->SetMatrix((float*)(&_model_to_clip_matrix[0]));
+        sMOCThreadPool->RenderTriangles(
             (float*)&_iter.vertices[0],
             _iter.indices.data(),
             _iter.num_of_tris_for_moc,
-            (float*)(&_model_to_clip_matrix[0]),
             MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW);
+        _hr = true;
     }
 
     size_t _index = 1;
@@ -976,20 +978,22 @@ void model::pre_update(
                 _model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
             }
 
-            _model_to_clip_matrix *= glm::rotate(0.0f, glm::radians(0.0f), 0.0f);
-
-            (*sMOC)->RenderTriangles(
+            sMOCThreadPool->SetMatrix((float*)(&_model_to_clip_matrix[0]));
+            sMOCThreadPool->RenderTriangles(
                 (float*)&_iter.vertices[0],
                 _iter.indices.data(),
                 _iter.num_of_tris_for_moc,
-                (float*)(&_model_to_clip_matrix[0]),
                 MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW);
+
+            _hr = true;
         }
     }
+
+    return _hr;
 }
 
 bool model::post_update(
-    _Inout_ MaskedOcclusionCulling* sMOC, 
+    _Inout_ CullingThreadpool* sMOCThreadPool,
     _Inout_ uint32_t& pVisibleSubModels)
 {
     bool _add_to_render_queue = false;
@@ -1003,11 +1007,11 @@ bool model::post_update(
     for (auto& _iter : this->_mocs)
     {
         _model_to_clip_matrix = this->_view_projection * glm::translate(_iter.position) * glm::rotate(_iter.rotation);
-        _culling_result = sMOC->TestTriangles(
+        sMOCThreadPool->SetMatrix((float*)(&_model_to_clip_matrix[0]));
+        _culling_result = sMOCThreadPool->TestTriangles(
             (float*)&_iter.vertices[0],
             _iter.indices.data(),
             _iter.num_of_tris_for_moc,
-            (float*)(&_model_to_clip_matrix[0]),
             MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW);
 
         //if at least one of the bounding boxes is visible, break this loop
@@ -1048,11 +1052,11 @@ bool model::post_update(
                 _model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif) * glm::rotate(_rot);
             }
 
-            _culling_result = sMOC->TestTriangles(
+            sMOCThreadPool->SetMatrix((float*)(&_model_to_clip_matrix[0]));
+            _culling_result = sMOCThreadPool->TestTriangles(
                 (float*)&_iter.vertices[0],
                 _iter.indices.data(),
                 _iter.num_of_tris_for_moc,
-                (float*)(&_model_to_clip_matrix[0]),
                 MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW);
 
             if (_culling_result == MaskedOcclusionCulling::VISIBLE)

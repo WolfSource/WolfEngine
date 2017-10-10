@@ -4,14 +4,14 @@
 #include <w_content_manager.h>
 #include <imgui/imgui.h>
 #include <w_graphics/w_imgui.h>
-#include "masked_occlusion_culling/MaskedOcclusionCulling.h"
+#include "masked_occlusion_culling/CullingThreadpool.h"
 #include <cameras/w_camera.h>
 #include <mutex>
 #include <w_task.h>
 #include <w_thread.h>
 #include <w_timer.h>
 
-//#define DEBUG_MASKED_OCCLUSION_CULLING
+#define DEBUG_MASKED_OCCLUSION_CULLING
 #define MAX_SEARCH_LENGHT 256
 
 using namespace wolf::system;
@@ -28,9 +28,10 @@ static bool sForceUpdateCamera = true;
 static std::vector<search_item_struct> sSearchedItems;
 
 static char sSearch[MAX_SEARCH_LENGHT];
-static MaskedOcclusionCulling* sMOC;
-static float* sMOCPerPixelZBuffer = nullptr; 
-static uint8_t* sMOCTonemapDepthImage = nullptr;
+
+static MaskedOcclusionCulling* sMOC = nullptr;
+static CullingThreadpool* sMOCThreadPool = nullptr;
+
 static uint32_t sFPS = 0;
 static uint32_t sRenderingThreads = 0;
 static uint32_t sTotalModels = 0;
@@ -45,6 +46,12 @@ static uint8_t* sStagingMediaData = nullptr;
 //first loading
 static tbb::atomic<bool>        sLoading = true;
 static bool                     sShowingLiveCamera = false;
+
+#ifdef DEBUG_MASKED_OCCLUSION_CULLING
+static bool                     sShowDebugMaskedOcclusionCulling = false;
+static float*                   sMOCPerPixelZBuffer = nullptr;
+static uint8_t*                 sMOCTonemapDepthImage = nullptr;
+#endif // DEBUG_MASKED_OCCLUSION_CULLING
 
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName):
 	w_game(pRunningDirectory, pAppName)
@@ -128,6 +135,12 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
         break;
     }
 
+    auto _thread_pool_size = w_thread::get_number_of_hardware_thread_contexts();
+    auto _bin_size = _thread_pool_size / 2;
+    sMOCThreadPool = new CullingThreadpool(_thread_pool_size, _bin_size, _bin_size);
+    sMOCThreadPool->SetBuffer(sMOC);
+    sMOCThreadPool->SuspendThreads();
+    
 #ifdef __WIN32
     sprintf_s(sSearch, "Search");
 #else
@@ -162,9 +175,9 @@ void scene::load()
 
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
     {
-        size_t _size = _screen_size.x * _screen_size.y;
+        size_t _size = sMediaPlayerWidth * sMediaPlayerHeight;
         sMOCPerPixelZBuffer = (float*)malloc(_size * sizeof(float));
-        sMOCTonemapDepthImage = (uint8_t*)malloc(_size * 3 * sizeof(uint8_t));
+        sMOCTonemapDepthImage = (uint8_t*)malloc(_size * 4 * sizeof(uint8_t));
     }
 #endif
        
@@ -574,7 +587,6 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
         },
             [&]()
         {
-            return;
 #pragma region Load Middle
 
             auto _scene_path = _full_path + +(pLoadCollada ? L"middle.dae" : L"middle.wscene");
@@ -621,7 +633,6 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
         },
             [&]()
         {
-            return;
 #pragma region Load Inner
             auto _scene_path = _full_path + +(pLoadCollada ? L"inner.dae" : L"inner.wscene");
             auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
@@ -701,7 +712,7 @@ HRESULT scene::_load_areas()
     {
         const std::vector<std::wstring> _areas =
         {
-            //L"120 - water treatment",
+            L"120 - water treatment",
             //L"161 - air compressor",
             L"430 - rotary annular cooler"
             /*L"models/_120_water-treatment.dae",
@@ -729,15 +740,15 @@ HRESULT scene::_load_areas()
         float _near_plan = 0.1f, far_plan = 5000;
 
         this->_camera.set_near_plan(_near_plan);
-        sMOC->SetNearClipPlane(_near_plan);
-
+        sMOCThreadPool->SetNearClipPlane(_near_plan);
+        
         this->_camera.set_far_plan(far_plan);
 
         auto _screen_width = (float)_screen_size.x;
         auto _screen_height = (float)_screen_size.y;
 
         this->_camera.set_aspect_ratio(_screen_width / _screen_height);
-        sMOC->SetResolution(_screen_width, _screen_height);
+        sMOCThreadPool->SetResolution(_screen_width, _screen_height);
 
         this->_camera.update_view();
         this->_camera.update_projection();
@@ -991,32 +1002,41 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         //    return _a_distance < _b_distance;
         //});  
 
+        auto _cam_pos = this->_camera.get_translate();
+        
         sTotalModels = 0;
         sVisibleSubModels = 0;
-
-        sMOC->ClearBuffer();
         this->_models_to_be_render.clear();
         
-        auto _cam_pos = this->_camera.get_translate();
-        for (auto& _area : _areas)
+        //clear buffers and wake up masked occlusion threads
+        sMOCThreadPool->ClearBuffer();
+        sMOCThreadPool->WakeThreads();
+
+        bool _need_flush_moc = false;
+
+        std::for_each(_areas.begin(), _areas.end(), [&](_In_ area& pArea)
         {
-            auto _outer_size = _area.outer_models.size();
-            auto _middle_size = _area.middle_models.size();
-            auto _inner_size = _area.inner_models.size();
+#pragma region pre update stage
+
+            auto _outer_size = pArea.outer_models.size();
+            auto _middle_size = pArea.middle_models.size();
+            auto _inner_size = pArea.inner_models.size();
 
             sTotalModels += _outer_size + _middle_size + _inner_size;
 
+            pArea.allow_update_inner_models = false;
+            pArea.allow_update_middle_models = false;
+            
             //check showing models
             if (_inner_size)
             {
                 glm::vec3 _boundary_center(
-                    _area.boundaries[0]->center[0],
-                    _area.boundaries[0]->center[1],
-                    _area.boundaries[0]->center[2]);
-                if (glm::distance(_boundary_center, _cam_pos) > _area.boundaries[0]->radius)
+                    pArea.boundaries[0]->center[0],
+                    pArea.boundaries[0]->center[1],
+                    pArea.boundaries[0]->center[2]);
+                if (glm::distance(_boundary_center, _cam_pos) < pArea.boundaries[0]->radius)
                 {
-                    //do not show inner models
-                    _inner_size = 0;
+                    pArea.allow_update_inner_models = true;
                 }
             }
 
@@ -1024,83 +1044,129 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
             if (_middle_size)
             {
                 glm::vec3 _boundary_center(
-                    _area.boundaries[1]->center[0],
-                    _area.boundaries[1]->center[1],
-                    _area.boundaries[1]->center[2]);
-                if (glm::distance(_boundary_center, _cam_pos) > _area.boundaries[1]->radius)
+                    pArea.boundaries[1]->center[0],
+                    pArea.boundaries[1]->center[1],
+                    pArea.boundaries[1]->center[2]);
+                if (glm::distance(_boundary_center, _cam_pos) < pArea.boundaries[1]->radius)
                 {
-                    //do not show middle models
-                    _middle_size = 0;
+                    pArea.allow_update_middle_models = true;
                 }
             }
 
-            #pragma region pre update stage
-            if (_outer_size)
-            {
-                std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [this](_In_ model* pModel)
+            //perform pre update in parallel threads
+            //tbb::parallel_invoke([&]()
+            //{
+                if (_outer_size)
                 {
-                    pModel->pre_update(this->_camera, &sMOC);
-                });
-            }
-            if (_middle_size)
-            {
-                std::for_each(_area.middle_models.begin(), _area.middle_models.end(), [this](_In_ model* pModel)
+                    std::for_each(pArea.outer_models.begin(), pArea.outer_models.end(), [&](_In_ model* pModel)
+                    {
+                        if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
+                    });
+                }
+            //},
+            //    [&]()
+            //{
+                if (pArea.allow_update_middle_models)
                 {
-                    pModel->pre_update(this->_camera, &sMOC);
-                });
-            }
-            if (_inner_size)
-            {
-                std::for_each(_area.inner_models.begin(), _area.inner_models.end(), [this](_In_ model* pModel)
+                    std::for_each(pArea.middle_models.begin(), pArea.middle_models.end(), [&](_In_ model* pModel)
+                    {
+                        if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
+                    });
+                }
+            //}, [&]()
+            //{
+                if (pArea.allow_update_inner_models)
                 {
-                    pModel->pre_update(this->_camera, &sMOC);
-                });
-            }
-            #pragma endregion
+                    std::for_each(pArea.inner_models.begin(), pArea.inner_models.end(), [&](_In_ model* pModel)
+                    {
+                        if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
+                    });
+                }
+            //});
 
-#pragma region post update stage
-            if (_outer_size)
-            {
-                std::for_each(_area.outer_models.begin(), _area.outer_models.end(), [&](_In_ model* pModel)
-                {
-                    if (pModel->post_update(sMOC, sVisibleSubModels))
-                    {
-                        this->_models_to_be_render.push_back(pModel);
-                    }
-                });
-            }
-            if (_middle_size)
-            {
-                std::for_each(_area.middle_models.begin(), _area.middle_models.end(), [&](_In_ model* pModel)
-                {
-                    if (pModel->post_update(sMOC, sVisibleSubModels))
-                    {
-                        this->_models_to_be_render.push_back(pModel);
-                    }
-                });
-            }
-            if (_inner_size)
-            {
-                std::for_each(_area.inner_models.begin(), _area.inner_models.end(), [&](_In_ model* pModel)
-                {
-                    if (pModel->post_update(sMOC, sVisibleSubModels))
-                    {
-                        this->_models_to_be_render.push_back(pModel);
-                    }
-                });
-            }
 #pragma endregion
-
+        });
+ 
+        if (!_need_flush_moc)
+        {
+            sMOCThreadPool->SuspendThreads();
+            return;
         }
+
+        //apply flush for all masked occlusion threads and force them to finish the jobs
+        sMOCThreadPool->Flush();
+
+        std::for_each(_areas.begin(), _areas.end(), [&](_In_ area& pArea)
+        {
+#pragma region post update stage
+            tbb::parallel_invoke(
+                [&]()
+            {
+                if (pArea.outer_models.size())
+                {
+                    for (auto pModel : pArea.outer_models)
+                    {
+                        if (pModel->post_update(sMOCThreadPool, sVisibleSubModels))
+                        {
+                            this->_models_to_be_render.push_back(pModel);
+                        }
+                    };
+                }
+            },
+                [&]()
+            {
+                if (pArea.allow_update_middle_models)
+                {
+                    for (auto pModel : pArea.middle_models)
+                    {
+                        if (pModel->post_update(sMOCThreadPool, sVisibleSubModels))
+                        {
+                            this->_models_to_be_render.push_back(pModel);
+                        }
+                    };
+                }
+            },
+                [&]()
+            {
+                if (pArea.allow_update_inner_models)
+                {
+                    for (auto pModel : pArea.inner_models)
+                    {
+                        if (pModel->post_update(sMOCThreadPool, sVisibleSubModels))
+                        {
+                            this->_models_to_be_render.push_back(pModel);
+                        }
+                    };
+                }
+            });
+#pragma endregion
+        });
+
+        sMOCThreadPool->SuspendThreads();
 
         _record_draw_command_buffer = true;
         
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
-        //Compute a per pixel depth buffer from the hierarchical depth buffer, used for visualization.
-        sMOC->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
-        //Tonemap the depth image
-        TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, _output_window->width, _output_window->height);
-        w_texture::write_bitmap_to_file("E:\\MOC.bmp", sMOCTonemapDepthImage, _output_window->width, _output_window->height);
+
+        if (sShowDebugMaskedOcclusionCulling)
+        {
+            //Compute a per pixel depth buffer from the hierarchical depth buffer, used for visualization.
+            sMOCThreadPool->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
+            //Tonemap the depth image
+            TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, sMediaPlayerWidth, sMediaPlayerHeight);
+
+            if (sStagingMediaData)
+            {
+                tbb::parallel_for(tbb::blocked_range<size_t>(0, sMediaPlayerWidth * sMediaPlayerHeight * 4), [&](const tbb::blocked_range<size_t>& pRange)
+                {
+                    for (size_t i = pRange.begin(); i < pRange.end(); ++i)
+                    {
+                        sStagingMediaData[i] = sMOCTonemapDepthImage[i];
+                    }
+                });
+                sStagingMediaTexture->copy_data_to_texture_2D(sStagingMediaData);
+            }
+        }
 #endif
     }
 }
@@ -1255,7 +1321,9 @@ ULONG scene::release()
     free(sMOCTonemapDepthImage);
 #endif
 
+    sMOCThreadPool->SuspendThreads();
     MaskedOcclusionCulling::Destroy(sMOC);
+    SAFE_DELETE(sMOCThreadPool);
 
     w_imgui::release();
 
@@ -1465,8 +1533,15 @@ bool scene::_update_gui()
             ImGui::PushStyleColor(ImGuiCol_ImageHovered, ImColor(0.0f, 0.0f, 255.0f, 155.0f));
             if (ImGui::ImageButton(tex_id, ImVec2(32, 32), ImVec2(i * 0.1, 0.0), ImVec2(i * 0.1 + 0.1f, 0.1), 0, ImColor(232, 113, 83, 255)))
             {
-                //show live camera 
-                if (i == 5)
+                //show debugger
+                if (i == 4)
+                {
+#ifdef DEBUG_MASKED_OCCLUSION_CULLING
+                    sShowDebugMaskedOcclusionCulling = !sShowDebugMaskedOcclusionCulling;
+#endif
+                }
+                //show live camera
+                else if (i == 5)
                 {
                     sShowingLiveCamera = !sShowingLiveCamera;
                 }
@@ -1871,9 +1946,11 @@ static void TonemapDepth(_In_ float* pDepth, _In_ unsigned char* pImage, _In_ co
             intensity = (unsigned char)(223.0*(pDepth[i] - _minW) / (_maxW - _minW) + 32.0);
         }
 
-        pImage[i * 3 + 0] = intensity;
-        pImage[i * 3 + 1] = intensity;
-        pImage[i * 3 + 2] = intensity;
+        auto _index = i * 4;
+        pImage[_index + 0] = intensity;
+        pImage[_index + 1] = intensity;
+        pImage[_index + 2] = intensity;
+        pImage[_index + 3] = 255;
     }
 }
 
