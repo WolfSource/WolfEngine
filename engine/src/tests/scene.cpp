@@ -712,9 +712,10 @@ HRESULT scene::_load_areas()
     {
         const std::vector<std::wstring> _areas =
         {
-            L"120 - water treatment",
+            L"420 - rotary annular kiln",
+            //L"120 - water treatment",
             //L"161 - air compressor",
-            L"430 - rotary annular cooler"
+           // L"430 - rotary annular cooler"
             /*L"models/_120_water-treatment.dae",
             L"models/_171_173_office_building_comprehensive.dae",
             L"models/_161_air-compressor.dae",
@@ -727,7 +728,7 @@ HRESULT scene::_load_areas()
         tbb::parallel_for_each(_areas.begin(), _areas.end(),
             [&](_In_ std::wstring pArea)
         {
-            _load_area(pArea, false);
+            _load_area(pArea, true);
         });
     });
 
@@ -986,7 +987,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
         _camera_just_updated = this->_camera.update(pGameTime, this->_screen_size);
     }
-    
+
     //if camera updated, then update command buffers based on result of masked occlusion culling
 
     if (sForceUpdateCamera || _camera_just_updated)
@@ -1003,11 +1004,11 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         //});  
 
         auto _cam_pos = this->_camera.get_translate();
-        
+
         sTotalModels = 0;
         sVisibleSubModels = 0;
         this->_models_to_be_render.clear();
-        
+
         //clear buffers and wake up masked occlusion threads
         sMOCThreadPool->ClearBuffer();
         sMOCThreadPool->WakeThreads();
@@ -1026,7 +1027,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
             pArea.allow_update_inner_models = false;
             pArea.allow_update_middle_models = false;
-            
+
             //check showing models
             if (_inner_size)
             {
@@ -1053,40 +1054,30 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
                 }
             }
 
-            //perform pre update in parallel threads
-            //tbb::parallel_invoke([&]()
-            //{
-                if (_outer_size)
+            if (_outer_size)
+            {
+                std::for_each(pArea.outer_models.begin(), pArea.outer_models.end(), [&](_In_ model* pModel)
                 {
-                    std::for_each(pArea.outer_models.begin(), pArea.outer_models.end(), [&](_In_ model* pModel)
-                    {
-                        if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
-                    });
-                }
-            //},
-            //    [&]()
-            //{
-                if (pArea.allow_update_middle_models)
+                    if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
+                });
+            }
+            if (pArea.allow_update_middle_models)
+            {
+                std::for_each(pArea.middle_models.begin(), pArea.middle_models.end(), [&](_In_ model* pModel)
                 {
-                    std::for_each(pArea.middle_models.begin(), pArea.middle_models.end(), [&](_In_ model* pModel)
-                    {
-                        if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
-                    });
-                }
-            //}, [&]()
-            //{
-                if (pArea.allow_update_inner_models)
+                    if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
+                });
+            }
+            if (pArea.allow_update_inner_models)
+            {
+                std::for_each(pArea.inner_models.begin(), pArea.inner_models.end(), [&](_In_ model* pModel)
                 {
-                    std::for_each(pArea.inner_models.begin(), pArea.inner_models.end(), [&](_In_ model* pModel)
-                    {
-                        if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
-                    });
-                }
-            //});
-
+                    if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
+                });
+            }
 #pragma endregion
         });
- 
+
         if (!_need_flush_moc)
         {
             sMOCThreadPool->SuspendThreads();
@@ -1096,56 +1087,57 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         //apply flush for all masked occlusion threads and force them to finish the jobs
         sMOCThreadPool->Flush();
 
-        std::for_each(_areas.begin(), _areas.end(), [&](_In_ area& pArea)
+        std::for_each(this->_areas.begin(), this->_areas.end(), [&](_In_ area& pArea)
         {
 #pragma region post update stage
-            tbb::parallel_invoke(
-                [&]()
-            {
+            //tbb::parallel_invoke(
+              //  [&]()
+            //{
                 if (pArea.outer_models.size())
                 {
-                    for (auto pModel : pArea.outer_models)
+                    std::for_each(pArea.outer_models.begin(), pArea.outer_models.end(), [&](_In_ model* pModel)
                     {
                         if (pModel->post_update(sMOCThreadPool, sVisibleSubModels))
                         {
                             this->_models_to_be_render.push_back(pModel);
                         }
-                    };
+                    });
                 }
-            },
-                [&]()
-            {
+            //},
+             //   [&]()
+            //{
                 if (pArea.allow_update_middle_models)
                 {
-                    for (auto pModel : pArea.middle_models)
+                    std::for_each(pArea.middle_models.begin(), pArea.middle_models.end(), [&](_In_ model* pModel)
                     {
                         if (pModel->post_update(sMOCThreadPool, sVisibleSubModels))
                         {
                             this->_models_to_be_render.push_back(pModel);
                         }
-                    };
+                    });
                 }
-            },
-                [&]()
-            {
+            //},
+            //        [&]()
+            //{
                 if (pArea.allow_update_inner_models)
                 {
-                    for (auto pModel : pArea.inner_models)
+                    std::for_each(pArea.inner_models.begin(), pArea.inner_models.end(), [&](_In_ model* pModel)
                     {
                         if (pModel->post_update(sMOCThreadPool, sVisibleSubModels))
                         {
                             this->_models_to_be_render.push_back(pModel);
                         }
-                    };
+                    });
                 }
-            });
+            //});
+
 #pragma endregion
         });
 
         sMOCThreadPool->SuspendThreads();
 
         _record_draw_command_buffer = true;
-        
+
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
 
         if (sShowDebugMaskedOcclusionCulling)
@@ -1168,6 +1160,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
             }
         }
 #endif
+
     }
 }
 

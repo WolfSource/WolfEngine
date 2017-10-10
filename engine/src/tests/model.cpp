@@ -927,6 +927,8 @@ bool model::pre_update(
     bool _hr = false;
     if (!this->_loaded.load()) return _hr;
 
+    logger.write("pre updating " + this->_full_name);
+
     using namespace glm;
     this->_view_projection = pCamera.get_projection_view();
 
@@ -999,6 +1001,8 @@ bool model::post_update(
     bool _add_to_render_queue = false;
     if (!this->_loaded.load()) return _add_to_render_queue;
 
+    logger.write("post updating " + this->_full_name);
+    
     std::fill(this->_visibilities.begin(), this->_visibilities.end(), 0.0f);
 
     glm::mat4 _model_to_clip_matrix;
