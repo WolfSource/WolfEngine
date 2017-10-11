@@ -400,7 +400,7 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
 
     area _area;
     _area.name = pArea;
-
+    
     //load models in seperated threads
     if (pLoadCollada)
     {
@@ -678,32 +678,35 @@ void scene::_load_area(_In_z_ const std::wstring& pArea, _In_ const bool pLoadCo
         });
     }
 
+    if (_area.outer_models.size() || _area.middle_models.size() || _area.inner_models.size())
+    {
 #pragma region Load Boundaries
-    auto _scene_path = _full_path + +(pLoadCollada ? L"boundaries.dae" : L"boundaries.wscene");
-    auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
-    if (_scene)
-    {
-        if (pLoadCollada)
+        auto _scene_path = _full_path + +(pLoadCollada ? L"boundaries.dae" : L"boundaries.wscene");
+        auto _scene = w_content_manager::load<w_cpipeline_scene>(_scene_path);
+        if (_scene)
         {
-            //convert to wscene
-            std::vector<w_cpipeline_scene> _scenes = { *_scene };
-            w_content_manager::save_wolf_scenes_to_file(_scenes,
-                wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
-                wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
-            _scenes.clear();
-        }
+            if (pLoadCollada)
+            {
+                //convert to wscene
+                std::vector<w_cpipeline_scene> _scenes = { *_scene };
+                w_content_manager::save_wolf_scenes_to_file(_scenes,
+                    wolf::system::io::get_parent_directoryW(_scene_path) + L"/" +
+                    wolf::system::io::get_base_file_nameW(_scene_path) + L".wscene");
+                _scenes.clear();
+            }
 
-        _scene->get_boundaries(_area.boundaries);
-        _scene->release();
-    }
-    else
-    {
-        logger.write(L"Scene on following path not exists " + _scene_path);
-    }
+            _scene->get_boundaries(_area.boundaries);
+            _scene->release();
+        }
+        else
+        {
+            logger.write(L"Scene on following path not exists " + _scene_path);
+        }
 #pragma endregion
 
-    this->_areas.push_back(_area);
-    sLoading = false;
+        this->_areas.push_back(_area);
+        sLoading = false;
+    }
 }
 
 HRESULT scene::_load_areas()
@@ -712,24 +715,36 @@ HRESULT scene::_load_areas()
     {
         const std::vector<std::wstring> _areas =
         {
+            L"120 - water treatment",
+            L"151 - substation",
+            L"161 - air compressor",
+            L"171-173 - office buildings",
+            L"230 - proportioning",
+            L"310 - pelletizing workshop",
+            L"320 - tranfer station",
+            L"410 - hot air return system",
             L"420 - rotary annular kiln",
-            //L"120 - water treatment",
-            //L"161 - air compressor",
-           // L"430 - rotary annular cooler"
-            /*L"models/_120_water-treatment.dae",
-            L"models/_171_173_office_building_comprehensive.dae",
-            L"models/_161_air-compressor.dae",
-            L"models/_151_substation.dae",
-            L"models/_230_proportioning.dae",
-            L"models/_320_transfer_station.dae",*/
+            L"430 - rotary annular cooler",
+            L"440 - chain grate workshop",
+            L"450 - main ESP"
         };
         this->_total_areas = _areas.size();
 
-        tbb::parallel_for_each(_areas.begin(), _areas.end(),
-            [&](_In_ std::wstring pArea)
+        bool _load_collada = true;
+        if (_load_collada)
         {
-            _load_area(pArea, true);
-        });
+            for (const auto& pArea : _areas)
+            {
+                _load_area(pArea, _load_collada);
+            }
+        }
+        else
+        {
+            tbb::parallel_for_each(_areas.begin(), _areas.end(), [&](_In_ const std::wstring& pArea)
+            {
+                _load_area(pArea, _load_collada);
+            });
+        }
     });
 
     //load camera
