@@ -2,16 +2,82 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <asset>
     <contributor>
-      <author>PooyaEimandar</author>
+      <author>DFM</author>
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
-      <source_data>file:///C:/Users/PooyaEimandar/Desktop/air-compressor-v-1-35-0.max</source_data>
+      <source_data>file:///F:/github/PooyaEimandar/3D_Simulator_Assets_Manager/Models/area-161-air-compressor/air-compressor-v-1-35-0.max</source_data>
     </contributor>
-    <created>2017-10-09T03:42:08</created>
-    <modified>2017-10-09T03:42:08</modified>
+    <created>2017-10-11T20:18:06</created>
+    <modified>2017-10-11T20:18:06</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_effects>
+    <effect id="T_Texture_1_1_v100_jpg">
+      <profile_COMMON>
+        <newparam sid="T_zarand_1_jpg-surface">
+          <surface type="2D">
+            <init_from>T_zarand_1_jpg</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="T_zarand_1_jpg-sampler">
+          <sampler2D>
+            <source>T_zarand_1_jpg-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0.588 0.588 0.588 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="T_zarand_1_jpg-sampler" texcoord="CHANNEL1"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>10</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </phong>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <extended_shader>
+            <opacity_type sid="opacity_type" type="int">0</opacity_type>
+            <falloff_type sid="falloff_type" type="int">0</falloff_type>
+            <falloff sid="falloff" type="float">0</falloff>
+            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
+            <wire_size sid="wire_size" type="float">1</wire_size>
+            <wire_units sid="wire_units" type="int">0</wire_units>
+            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
+            <dim_level sid="dim_level" type="float">0</dim_level>
+            <reflection_level sid="reflection_level" type="float">3</reflection_level>
+          </extended_shader>
+          <shader>
+            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
+            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
+            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
+            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
+            <self_illumination sid="self_illumination" type="float">0</self_illumination>
+            <specular_level sid="specular_level" type="float">1</specular_level>
+            <soften sid="soften" type="float">0.1</soften>
+          </shader>
+        </technique>
+      </extra>
+    </effect>
     <effect id="T_Concrete_1_v100_jpg">
       <profile_COMMON>
         <newparam sid="T_Concrete_1_v100_jpg-surface">
@@ -139,72 +205,6 @@
             <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
             <self_illumination sid="self_illumination" type="float">0</self_illumination>
             <specular_level sid="specular_level" type="float">0</specular_level>
-            <soften sid="soften" type="float">0.1</soften>
-          </shader>
-        </technique>
-      </extra>
-    </effect>
-    <effect id="T_Texture_1_1_v100_jpg">
-      <profile_COMMON>
-        <newparam sid="T_zarand_1_jpg-surface">
-          <surface type="2D">
-            <init_from>T_zarand_1_jpg</init_from>
-          </surface>
-        </newparam>
-        <newparam sid="T_zarand_1_jpg-sampler">
-          <sampler2D>
-            <source>T_zarand_1_jpg-surface</source>
-          </sampler2D>
-        </newparam>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color>0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color>0.588 0.588 0.588 1</color>
-            </ambient>
-            <diffuse>
-              <texture texture="T_zarand_1_jpg-sampler" texcoord="CHANNEL1"/>
-            </diffuse>
-            <specular>
-              <color>0 0 0 1</color>
-            </specular>
-            <shininess>
-              <float>10</float>
-            </shininess>
-            <reflective>
-              <color>0 0 0 1</color>
-            </reflective>
-            <transparent opaque="A_ONE">
-              <color>1 1 1 1</color>
-            </transparent>
-            <transparency>
-              <float>1</float>
-            </transparency>
-          </phong>
-        </technique>
-      </profile_COMMON>
-      <extra>
-        <technique profile="OpenCOLLADA3dsMax">
-          <extended_shader>
-            <opacity_type sid="opacity_type" type="int">0</opacity_type>
-            <falloff_type sid="falloff_type" type="int">0</falloff_type>
-            <falloff sid="falloff" type="float">0</falloff>
-            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
-            <wire_size sid="wire_size" type="float">1</wire_size>
-            <wire_units sid="wire_units" type="int">0</wire_units>
-            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
-            <dim_level sid="dim_level" type="float">0</dim_level>
-            <reflection_level sid="reflection_level" type="float">3</reflection_level>
-          </extended_shader>
-          <shader>
-            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
-            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
-            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
-            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
-            <self_illumination sid="self_illumination" type="float">0</self_illumination>
-            <specular_level sid="specular_level" type="float">1</specular_level>
             <soften sid="soften" type="float">0.1</soften>
           </shader>
         </technique>
@@ -342,72 +342,6 @@
         </technique>
       </extra>
     </effect>
-    <effect id="T_Concrete_1_v100_jpg_1">
-      <profile_COMMON>
-        <newparam sid="T_Concrete_1_v100_jpg-surface">
-          <surface type="2D">
-            <init_from>T_Concrete_1_v100_jpg</init_from>
-          </surface>
-        </newparam>
-        <newparam sid="T_Concrete_1_v100_jpg-sampler">
-          <sampler2D>
-            <source>T_Concrete_1_v100_jpg-surface</source>
-          </sampler2D>
-        </newparam>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color>0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color>0.588 0.588 0.588 1</color>
-            </ambient>
-            <diffuse>
-              <texture texture="T_Concrete_1_v100_jpg-sampler" texcoord="CHANNEL1"/>
-            </diffuse>
-            <specular>
-              <color>0 0 0 1</color>
-            </specular>
-            <shininess>
-              <float>10</float>
-            </shininess>
-            <reflective>
-              <color>0 0 0 1</color>
-            </reflective>
-            <transparent opaque="A_ONE">
-              <color>1 1 1 1</color>
-            </transparent>
-            <transparency>
-              <float>1</float>
-            </transparency>
-          </phong>
-        </technique>
-      </profile_COMMON>
-      <extra>
-        <technique profile="OpenCOLLADA3dsMax">
-          <extended_shader>
-            <opacity_type sid="opacity_type" type="int">0</opacity_type>
-            <falloff_type sid="falloff_type" type="int">0</falloff_type>
-            <falloff sid="falloff" type="float">0</falloff>
-            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
-            <wire_size sid="wire_size" type="float">1</wire_size>
-            <wire_units sid="wire_units" type="int">0</wire_units>
-            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
-            <dim_level sid="dim_level" type="float">0</dim_level>
-            <reflection_level sid="reflection_level" type="float">3</reflection_level>
-          </extended_shader>
-          <shader>
-            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
-            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
-            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
-            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
-            <self_illumination sid="self_illumination" type="float">0</self_illumination>
-            <specular_level sid="specular_level" type="float">1</specular_level>
-            <soften sid="soften" type="float">0.1</soften>
-          </shader>
-        </technique>
-      </extra>
-    </effect>
     <effect id="ColorEffectR141G7B58">
       <profile_COMMON>
         <technique sid="common">
@@ -436,72 +370,6 @@
           </phong>
         </technique>
       </profile_COMMON>
-    </effect>
-    <effect id="T_Texture_1_1_v100_jpg_1">
-      <profile_COMMON>
-        <newparam sid="T_zarand_1_jpg-surface">
-          <surface type="2D">
-            <init_from>T_zarand_1_jpg</init_from>
-          </surface>
-        </newparam>
-        <newparam sid="T_zarand_1_jpg-sampler">
-          <sampler2D>
-            <source>T_zarand_1_jpg-surface</source>
-          </sampler2D>
-        </newparam>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color>0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color>0.588 0.588 0.588 1</color>
-            </ambient>
-            <diffuse>
-              <texture texture="T_zarand_1_jpg-sampler" texcoord="CHANNEL1"/>
-            </diffuse>
-            <specular>
-              <color>0 0 0 1</color>
-            </specular>
-            <shininess>
-              <float>10</float>
-            </shininess>
-            <reflective>
-              <color>0 0 0 1</color>
-            </reflective>
-            <transparent opaque="A_ONE">
-              <color>1 1 1 1</color>
-            </transparent>
-            <transparency>
-              <float>1</float>
-            </transparency>
-          </phong>
-        </technique>
-      </profile_COMMON>
-      <extra>
-        <technique profile="OpenCOLLADA3dsMax">
-          <extended_shader>
-            <opacity_type sid="opacity_type" type="int">0</opacity_type>
-            <falloff_type sid="falloff_type" type="int">0</falloff_type>
-            <falloff sid="falloff" type="float">0</falloff>
-            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
-            <wire_size sid="wire_size" type="float">1</wire_size>
-            <wire_units sid="wire_units" type="int">0</wire_units>
-            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
-            <dim_level sid="dim_level" type="float">0</dim_level>
-            <reflection_level sid="reflection_level" type="float">3</reflection_level>
-          </extended_shader>
-          <shader>
-            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
-            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
-            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
-            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
-            <self_illumination sid="self_illumination" type="float">0</self_illumination>
-            <specular_level sid="specular_level" type="float">1</specular_level>
-            <soften sid="soften" type="float">0.1</soften>
-          </shader>
-        </technique>
-      </extra>
     </effect>
     <effect id="Material__23">
       <profile_COMMON>
@@ -635,7 +503,7 @@
         </technique>
       </extra>
     </effect>
-    <effect id="T_Texture_1_1_v100_jpg_2">
+    <effect id="T_Texture_1_1_v100_jpg_1">
       <profile_COMMON>
         <newparam sid="T_zarand_1_jpg-surface">
           <surface type="2D">
@@ -701,10 +569,145 @@
         </technique>
       </extra>
     </effect>
+    <effect id="Material__429">
+      <profile_COMMON>
+        <newparam sid="T_zarand_1_jpg-surface">
+          <surface type="2D">
+            <init_from>T_zarand_1_jpg</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="T_zarand_1_jpg-sampler">
+          <sampler2D>
+            <source>T_zarand_1_jpg-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0.588 0.588 0.588 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="T_zarand_1_jpg-sampler" texcoord="CHANNEL1"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>10</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </phong>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <extended_shader>
+            <opacity_type sid="opacity_type" type="int">0</opacity_type>
+            <falloff_type sid="falloff_type" type="int">0</falloff_type>
+            <falloff sid="falloff" type="float">0</falloff>
+            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
+            <wire_size sid="wire_size" type="float">1</wire_size>
+            <wire_units sid="wire_units" type="int">0</wire_units>
+            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
+            <dim_level sid="dim_level" type="float">0</dim_level>
+            <reflection_level sid="reflection_level" type="float">3</reflection_level>
+          </extended_shader>
+          <shader>
+            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
+            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
+            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
+            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
+            <self_illumination sid="self_illumination" type="float">0</self_illumination>
+            <specular_level sid="specular_level" type="float">1</specular_level>
+            <soften sid="soften" type="float">0.1</soften>
+          </shader>
+        </technique>
+      </extra>
+    </effect>
+    <effect id="T_Concrete_1_v100_jpg_1">
+      <profile_COMMON>
+        <newparam sid="T_Concrete_1_v100_jpg-surface">
+          <surface type="2D">
+            <init_from>T_Concrete_1_v100_jpg</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="T_Concrete_1_v100_jpg-sampler">
+          <sampler2D>
+            <source>T_Concrete_1_v100_jpg-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0.588 0.588 0.588 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="T_Concrete_1_v100_jpg-sampler" texcoord="CHANNEL1"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>10</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </phong>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <extended_shader>
+            <opacity_type sid="opacity_type" type="int">0</opacity_type>
+            <falloff_type sid="falloff_type" type="int">0</falloff_type>
+            <falloff sid="falloff" type="float">0</falloff>
+            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
+            <wire_size sid="wire_size" type="float">1</wire_size>
+            <wire_units sid="wire_units" type="int">0</wire_units>
+            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
+            <dim_level sid="dim_level" type="float">0</dim_level>
+            <reflection_level sid="reflection_level" type="float">3</reflection_level>
+          </extended_shader>
+          <shader>
+            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
+            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
+            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
+            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
+            <self_illumination sid="self_illumination" type="float">0</self_illumination>
+            <specular_level sid="specular_level" type="float">1</specular_level>
+            <soften sid="soften" type="float">0.1</soften>
+          </shader>
+        </technique>
+      </extra>
+    </effect>
   </library_effects>
   <library_materials>
     <material id="ColorEffectR141G7B58-material" name="ColorEffectR141G7B58-material">
       <instance_effect url="#ColorEffectR141G7B58"/>
+    </material>
+    <material id="T_Texture_1_1_v100_jpg-material" name="T_Texture_1_1_v100_jpg">
+      <instance_effect url="#T_Texture_1_1_v100_jpg"/>
     </material>
     <material id="T_Concrete_1_v100_jpg-material" name="T_Concrete_1_v100_jpg">
       <instance_effect url="#T_Concrete_1_v100_jpg"/>
@@ -712,20 +715,11 @@
     <material id="Material__426-material" name="Material__426">
       <instance_effect url="#Material__426"/>
     </material>
-    <material id="T_Texture_1_1_v100_jpg-material" name="T_Texture_1_1_v100_jpg">
-      <instance_effect url="#T_Texture_1_1_v100_jpg"/>
-    </material>
     <material id="T_Aluminium_Cream_1_2_v100_jpg1-material" name="T_Aluminium_Cream_1_2_v100_jpg1">
       <instance_effect url="#T_Aluminium_Cream_1_2_v100_jpg1"/>
     </material>
     <material id="T_Aluminium_Cream_1_2_v100_jpg1_1-material" name="T_Aluminium_Cream_1_2_v100_jpg1">
       <instance_effect url="#T_Aluminium_Cream_1_2_v100_jpg1_1"/>
-    </material>
-    <material id="T_Concrete_1_v100_jpg_1-material" name="T_Concrete_1_v100_jpg">
-      <instance_effect url="#T_Concrete_1_v100_jpg_1"/>
-    </material>
-    <material id="T_Texture_1_1_v100_jpg_1-material" name="T_Texture_1_1_v100_jpg">
-      <instance_effect url="#T_Texture_1_1_v100_jpg_1"/>
     </material>
     <material id="Material__23-material" name="Material__23">
       <instance_effect url="#Material__23"/>
@@ -733,11 +727,60 @@
     <material id="Material__23_1-material" name="Material__23">
       <instance_effect url="#Material__23_1"/>
     </material>
-    <material id="T_Texture_1_1_v100_jpg_2-material" name="T_Texture_1_1_v100_jpg">
-      <instance_effect url="#T_Texture_1_1_v100_jpg_2"/>
+    <material id="T_Texture_1_1_v100_jpg_1-material" name="T_Texture_1_1_v100_jpg">
+      <instance_effect url="#T_Texture_1_1_v100_jpg_1"/>
+    </material>
+    <material id="Material__429-material" name="Material__429">
+      <instance_effect url="#Material__429"/>
+    </material>
+    <material id="T_Concrete_1_v100_jpg_1-material" name="T_Concrete_1_v100_jpg">
+      <instance_effect url="#T_Concrete_1_v100_jpg_1"/>
     </material>
   </library_materials>
   <library_geometries>
+    <geometry id="geom-a010_door" name="a010_door">
+      <mesh>
+        <source id="geom-a010_door-positions">
+          <float_array id="geom-a010_door-positions-array" count="24">-4.999976 0.5184922 12.34769 4.999186 0.5184298 12.34769 4.99958 1.093262 -12.0923 -4.99958 1.093323 -12.0923 -4.99958 -1.093384 -12.0923 4.99958 -1.093384 -12.0923 -4.999976 -1.668215 12.34769 4.999185 -1.668215 12.34769</float_array>
+          <technique_common>
+            <accessor source="#geom-a010_door-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a010_door-normals">
+          <float_array id="geom-a010_door-normals-array" count="108">0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a010_door-normals-array" count="36" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a010_door-map1">
+          <float_array id="geom-a010_door-map1-array" count="24">0.5087547 0.1670975 0 0.5380825 0.1670975 0 0.5380825 0.08475947 0 0.5087547 0.08475947 0 0.2155955 0.3615349 0 0.3805956 0.3615349 0 0.2155955 0.1965349 0 0.3805956 0.1965349 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a010_door-map1-array" count="8" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-a010_door-vertices">
+          <input semantic="POSITION" source="#geom-a010_door-positions"/>
+        </vertices>
+        <triangles material="T_Texture_1_1_v100_jpg" count="12">
+          <input semantic="VERTEX" source="#geom-a010_door-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-a010_door-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-a010_door-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 0 3 0 2 4 2 3 5 3 4 6 3 5 7 2 6 8 0 5 9 2 7 10 1 6 11 0 5 12 4 4 13 5 2 14 6 3 15 7 2 16 6 4 17 5 4 18 4 6 19 5 3 20 6 0 21 7 3 22 6 6 23 5 6 24 4 7 25 5 0 26 6 1 27 7 0 28 6 7 29 5 7 30 4 5 31 5 1 32 6 2 33 7 1 34 6 5 35 5</p>
+        </triangles>
+      </mesh>
+    </geometry>
     <geometry id="geom-a001_wall" name="a001_wall">
       <mesh>
         <source id="geom-a001_wall-positions">
@@ -1039,49 +1082,6 @@
         </triangles>
       </mesh>
     </geometry>
-    <geometry id="geom-a001-lod1" name="a001-lod1">
-      <mesh>
-        <source id="geom-a001-lod1-positions">
-          <float_array id="geom-a001-lod1-positions-array" count="177">-151.3112 60.93896 37.11615 -20.3177 60.93896 -10.17662 -20.3177 60.93896 -30.45317 -20.3177 60.93896 -34.35166 -10.32246 60.93896 -34.35166 -10.32246 60.93896 -30.45317 -10.32246 60.93896 -10.17662 151.7504 60.93896 37.11615 152.8112 62.43896 -37.11613 -152.8112 61.99963 -37.11613 151.7504 -61.3783 37.11613 -151.3112 -61.3783 37.11613 -152.8111 -62.43896 -37.11615 152.8111 -62.43896 -37.11615 -147.9604 -19.52277 25.64942 -151.3112 -19.61127 25.64942 -151.3112 -19.61127 16.23603 -147.9604 -19.52277 16.23603 -147.9604 -56.008 25.64941 -151.3112 -56.008 25.64941 -151.3112 -15.34937 -6.857758 -151.3112 -15.34937 16.23603 -151.3112 14.63641 16.23602 -151.3112 14.63641 -6.857752 -147.9604 -15.34937 16.23603 -151.3112 -15.34937 25.64942 -147.9604 -15.34937 25.64942 -151.3112 -56.008 16.23601 -151.3112 -15.34937 -34.35168 -147.9604 -56.008 16.23602 -147.9604 -58.97473 37.11613 -147.9604 -58.97473 -37.11615 -147.9604 58.5061 -37.11613 -147.9604 14.63641 -34.35167 -147.9604 -15.34937 -34.35168 -147.9604 -15.34937 -6.857758 149.3468 -58.97473 37.11613 149.3468 -58.97473 -37.11615 -147.9604 19.41498 16.23603 -147.9604 14.63641 16.23603 -147.9604 14.63641 -6.857752 -147.9604 58.5061 37.11615 -147.9604 55.36005 16.23604 -147.9604 14.63641 25.64942 -147.9604 19.41498 25.64942 -147.9604 55.36005 25.64943 149.3468 58.5061 -37.11613 149.3468 58.5061 -30.45317 -10.32246 58.5061 -10.17662 -10.32246 58.5061 -34.12887 -20.3177 58.5061 -34.12887 -20.3177 58.5061 -10.17662 149.3468 58.5061 37.11615 -151.3112 14.63641 -34.35167 -151.3112 19.41498 16.23602 -151.3112 55.36005 16.23603 -151.3112 14.63641 25.64942 -151.3112 55.36005 25.64943 -151.3112 19.41498 25.64942</float_array>
-          <technique_common>
-            <accessor source="#geom-a001-lod1-positions-array" count="59" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-a001-lod1-normals">
-          <float_array id="geom-a001-lod1-normals-array" count="720">0 0.9999159 0.01297106 -7.63003e-4 0.9999156 0.01297105 -7.62807e-4 0.9996584 0.02612614 -7.62803e-4 0.9996533 0.0263167 -7.62803e-4 0.9996533 0.0263167 -7.62807e-4 0.9996584 0.02612614 -7.63003e-4 0.9999156 0.01297105 0 0.9999159 0.01297106 0 0.9996637 0.02593557 0 0.9996637 0.02593557 0 -0.9998949 0.01449676 0 -0.9998949 0.01449676 0 -0.9999003 0.01411534 0 -0.9999003 0.01411534 0.9999003 0 0.01412073 0.9998948 0 0.01450229 0.9998948 0 0.01450229 0.9998948 0 0.01450229 0.02594052 -0.9996635 0 0.02746531 -0.9996228 0 0.02746531 -0.9996228 0 0.02594052 -0.9996635 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 -0.9999018 0.01221254 0.006869555 -0.9999708 0.006106692 0.004580019 -0.9999708 -0.006106692 0.004580019 -0.9999018 -0.01221254 0.006869555 0 1 0 0 1 0 0 1 0 0 1 0 -0.9999708 0.006106692 0.004580019 -0.9999018 0.01221254 0.006869555 -0.9999018 0.01221254 0.006869555 -0.9999708 0.006106692 0.004580019 -0.9999018 0.01221254 0.006869555 -0.9674113 0.01220708 0.2529155 -0.9675047 0.01220826 0.2525584 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -0.9999018 -0.01221254 0.006869555 -0.9999708 -0.006106692 0.004580019 -0.9999018 -0.01221254 0.006869555 -0.9999018 -0.01221254 0.006869555 -0.9999708 -0.006106692 0.004580019 -0.9674113 -0.01220708 0.2529155 -0.9674113 -0.01220708 0.2529155 1 0 0 1 0 0 1 0 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -0.9999708 -0.006106692 0.004580019 -0.9999018 -0.01221254 0.006869555 -1 0 0 0 0.9999159 0.01297106 -7.63003e-4 0.9999156 0.01297105 -7.63003e-4 0.9999156 0.01297105 0 0.9999159 0.01297106 0 1 0 0 1 0 0 1 0 0 1 0 -0.9999708 0.006106692 0.004580019 -1 0 0 -0.9999018 0.01221254 0.006869555 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 -1 0 0 -1 0 0 -0.9999018 -0.01221254 0.006869555 -0.9999708 -0.006106692 0.004580019 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -0.9999708 0.006106692 0.004580019 -0.9999018 0.01221254 0.006869555 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0 1 0 0 1 0 0 1 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -0.9674113 -0.01220708 0.2529155 -0.9675047 0.01220826 0.2525584 -0.9674113 0.01220708 0.2529155 -0.9674113 -0.01220708 0.2529155 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0.09156771 0.9957988 0 0.09156771 0.9957988 0 0.09156771 0.9957988 0 0.09156771 0.9957988 0 1 0 0 1 0 0 1 0 0 1 0 1 0 0 1 0 0 1 0 0 1 0 0 -0.9999708 -0.006106692 0.004580019 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -0.9999708 0.006106692 0.004580019 0 0 1 0 0 1 0 0 1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0 1 0 0 1 0 0 1 1 0 0 1 0 0 1 0 0 1 0 0</float_array>
-          <technique_common>
-            <accessor source="#geom-a001-lod1-normals-array" count="240" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-a001-lod1-map1">
-          <float_array id="geom-a001-lod1-map1-array" count="414">6.030128 4.527629 0 3.509803 3.61779 0 3.509803 3.227701 0 3.509803 3.1527 0 3.317494 3.1527 0 3.317494 3.227701 0 3.317494 3.61779 0 0.1991979 4.527629 0 0.1787894 3.099138 0 6.058989 3.099249 0 0.1991979 4.558434 0 6.030128 4.558434 0 6.058988 3.130588 0 0.1787906 3.130588 0 1.40923 0.004281781 0 -3.320472 0.004281781 0 -3.26366 2.812055 0 1.369058 2.812055 0 -1.595742 0.07644656 0 -1.970874 0.06653829 0 -1.943049 -0.9869701 0 -1.567917 -0.9770611 0 -1.264299 -5.061758 0 -0.889171 -5.061758 0 -0.8891724 -0.9869673 0 -1.264304 -0.9770597 0 -0.3742698 0.6972079 0 -0.3742698 1.571201 0 -1.509969 1.571201 0 -1.509969 0.6972079 0 -1.264306 -1.563701 0 -0.8891738 -1.563701 0 -0.8891738 -0.5098246 0 -1.264306 -0.5098252 0 1.369058 2.361417 0 1.165659 1.571201 0 -0.2128522 1.571201 0 -0.3742698 -0.3433104 0 1.40923 -0.4501633 0 -1.100845 -0.9647247 0 -5.65119 -1.084911 0 -6.044939 1.243135 0 -5.82551 -7.064636 0 7.322459 -6.717365 0 2.404576 -6.537654 0 -0.9513096 -6.626293 0 -1.03258 -3.549286 0 5.700322 2.645621 0 -3.901716 2.645621 0 -3.901716 0.2481643 0 5.700322 0.2481643 0 2.789839 -0.8619632 0 2.25504 -0.8760878 0 2.323303 -3.460648 0 7.10303 1.590407 0 6.812659 -0.7557095 0 -5.679016 -0.03140325 0 -1.128671 0.08878371 0 2.227214 0.1774198 0 2.762014 0.1915452 0 6.784832 0.2977982 0 0.394585 -5.66299 0 0.7697122 -5.3939 0 0.7697122 7.758657 0 0.3945808 8.031029 0 13.85954 -6.93285 0 13.85954 -6.509338 0 3.710601 -5.220515 0 3.710601 -6.746513 0 -5.037972 -6.93285 0 3.075283 -6.742973 0 3.075283 -5.220515 0 -5.037972 -2.214483 0 13.85954 -2.214483 0 14.01231 -2.059843 0 -5.25095 -2.059843 0 -4.528513 2.847228 0 -4.528513 5.925306 0 -4.903646 5.925306 0 -4.903645 2.847227 0 -1.690956 1.571201 0 -3.05236 1.571201 0 -3.26366 2.361417 0 -3.303832 -0.4501633 0 -1.509969 -0.3433101 0 -0.8891759 2.847231 0 -1.264308 2.84723 0 -0.8891759 3.901106 0 -1.264308 3.901105 0 -3.05236 1.927455 0 -1.264299 -6.115633 0 -0.8891717 -6.115633 0 1.165659 1.927455 0 -1.943055 7.406436 0 -1.943052 3.382215 0 -1.567921 3.382215 0 -1.567927 7.406436 0 -4.528514 9.282362 0 -4.903647 9.282362 0 -1.509969 1.927454 0 -1.690956 1.927454 0 -1.943049 -0.5098267 0 -1.567916 -0.5098259 0 -1.567919 2.84723 0 -1.943052 2.84723 0 3.075283 -5.375154 0 3.710601 -5.375154 0 -3.824089 2.723249 0 -7.774531 2.723249 0 -1.567919 -5.061759 0 -1.943047 -5.061759 0 -1.943054 7.03131 0 -0.8891787 7.031312 0 -0.8891787 7.406439 0 -4.903646 -3.587907 0 -4.528514 -3.587907 0 -4.528513 -0.509828 0 -4.903646 -0.509828 0 3.555962 -5.220515 0 3.555962 -6.509338 0 -0.2128522 1.927455 0 -0.3742698 1.927455 0 3.229919 -6.509338 0 3.229919 -5.220515 0 -7.695957 0.2481643 0 -7.695957 2.645621 0 -7.695957 0.4633557 0 3.555962 -6.757133 0 3.22992 -6.752413 0 -1.264307 3.382215 0 -0.8891759 3.382215 0 -1.264307 7.406438 0 3.710601 -6.588334 0 3.075283 -6.588334 0 -0.8891759 3.757346 0 -1.943052 3.757344 0 -3.824089 -7.064636 0 -3.901716 -6.956419 0</float_array>
-          <technique_common>
-            <accessor source="#geom-a001-lod1-map1-array" count="138" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="geom-a001-lod1-vertices">
-          <input semantic="POSITION" source="#geom-a001-lod1-positions"/>
-        </vertices>
-        <triangles material="T_Concrete_1_v100_jpg" count="130">
-          <input semantic="VERTEX" source="#geom-a001-lod1-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#geom-a001-lod1-normals" offset="1"/>
-          <input semantic="TEXCOORD" source="#geom-a001-lod1-map1" offset="2" set="0"/>
-          <p>0 0 0 1 1 1 2 2 2 0 0 0 2 2 2 3 3 3 0 0 0 3 3 3 4 4 4 0 0 0 4 4 4 5 5 5 0 0 0 5 5 5 6 6 6 0 0 0 6 6 6 7 7 7 0 0 0 7 7 7 8 8 8 0 0 0 8 8 8 9 9 9 10 10 10 11 11 11 12 12 12 12 12 12 13 13 13 10 10 10 13 14 14 8 15 15 7 16 16 7 16 16 10 17 17 13 14 14 14 18 18 15 19 19 16 20 20 16 20 20 17 21 21 14 18 18 18 22 22 19 23 23 15 24 24 15 24 24 14 25 25 18 22 22 20 26 26 21 27 27 22 28 28 22 28 28 23 29 29 20 26 26 24 30 30 21 31 31 25 32 32 25 32 32 26 33 33 24 30 30 16 36 36 21 37 27 20 38 26 20 38 26 28 39 37 12 40 38 16 36 36 20 38 26 12 40 38 27 35 35 16 36 36 12 40 38 11 34 34 27 35 35 12 40 38 29 43 40 30 44 41 31 45 42 17 42 21 29 43 40 31 45 42 31 45 42 32 46 43 33 47 44 31 45 42 33 47 44 34 48 45 17 42 21 31 45 42 34 48 45 17 42 21 34 48 45 35 49 46 24 41 39 17 42 21 35 49 46 30 50 47 36 51 48 37 52 49 37 52 49 31 53 50 30 50 47 38 54 51 39 55 52 40 56 53 40 56 53 33 57 44 32 58 43 32 58 43 41 59 54 42 60 55 40 56 53 32 58 43 42 60 55 38 54 51 40 56 53 42 60 55 30 61 41 18 62 56 14 63 18 30 61 41 14 63 18 26 64 57 30 61 41 26 64 57 43 65 58 30 61 41 43 65 58 44 66 59 30 61 41 44 66 59 45 67 60 30 61 41 45 67 60 41 68 54 11 69 61 30 70 62 41 71 63 41 71 63 0 72 64 11 69 61 46 73 65 47 74 66 48 75 67 48 75 67 49 76 68 46 73 65 32 77 69 50 78 70 51 79 71 51 79 71 41 80 72 32 77 69 52 81 73 7 82 74 0 83 75 0 83 75 41 84 72 52 81 73 48 86 67 47 87 66 52 88 73 51 85 71 48 86 67 52 88 73 51 85 71 52 88 73 41 89 72 23 90 76 53 91 77 33 92 78 33 92 78 40 93 79 23 90 76 23 94 29 22 95 28 54 96 80 55 97 81 0 98 82 9 99 83 54 96 80 55 97 81 9 99 83 23 94 29 54 96 80 9 99 83 23 94 29 9 99 83 53 100 84 30 101 41 29 102 40 18 103 56 56 104 85 43 105 86 26 106 33 26 106 33 25 107 32 56 104 85 22 108 87 39 109 88 43 110 86 43 110 86 56 111 85 22 108 87 0 112 82 55 113 81 57 114 89 7 115 7 6 116 6 1 117 1 1 117 1 0 118 0 7 115 7 29 119 90 27 120 91 19 121 23 19 121 23 18 122 22 29 119 90 11 123 34 19 124 92 27 125 35 55 126 93 54 127 94 38 128 95 38 128 95 42 129 96 55 126 93 53 130 77 28 131 97 34 132 98 34 132 98 33 133 78 53 130 77 56 134 99 58 135 100 54 136 80 54 136 80 22 137 28 56 134 99 21 138 101 24 139 102 39 140 103 39 140 103 22 141 104 21 138 101 51 142 71 1 143 105 6 144 106 6 144 106 48 145 67 51 142 71 10 146 107 7 147 108 36 148 48 29 149 109 17 150 21 16 151 20 16 151 20 27 152 110 29 149 109 55 153 93 42 154 111 45 155 112 45 155 112 57 156 113 55 153 93 34 157 114 28 158 115 20 159 116 20 159 116 35 160 117 34 157 114 6 161 118 5 162 119 49 163 68 49 163 68 48 164 67 6 161 118 21 165 27 16 166 36 15 167 120 15 167 120 25 168 121 21 165 27 51 169 71 50 170 70 2 171 122 2 171 122 1 172 123 51 169 71 35 173 117 20 174 116 23 175 76 23 175 76 40 176 79 35 173 117 46 177 124 37 178 49 36 179 48 46 177 124 36 179 48 52 180 125 46 177 124 52 180 125 47 181 126 7 182 108 52 183 125 36 184 48 5 185 119 4 186 127 49 187 68 50 188 70 3 189 128 2 190 122 32 191 69 46 192 65 49 193 68 49 193 68 50 194 70 32 191 69 9 195 83 12 196 38 28 197 37 28 197 37 53 198 84 9 195 83 44 199 129 58 200 130 57 201 113 57 201 113 45 202 131 44 199 129 50 203 70 49 204 68 4 205 132 4 205 132 3 206 133 50 203 70 58 207 130 44 208 134 38 209 135 38 209 135 54 210 94 58 207 130 39 211 52 38 212 51 44 213 59 44 213 59 43 214 58 39 211 52 0 215 82 57 216 89 58 217 100 0 215 82 58 217 100 56 218 99 0 215 82 56 218 99 25 219 121 0 215 82 25 219 121 15 220 120 0 215 82 15 220 120 19 221 92 0 215 82 19 221 92 11 222 34 11 223 136 36 224 48 30 225 137 45 226 60 42 227 55 41 228 54 40 229 53 39 230 52 24 231 39 24 231 39 35 232 46 40 229 53 11 233 136 10 234 107 36 235 48 26 236 57 14 237 18 17 238 21 17 238 21 24 239 39 26 236 57</p>
-        </triangles>
-      </mesh>
-    </geometry>
     <geometry id="geom-a001-ch1" name="a001-ch1">
       <mesh>
         <source id="geom-a001-ch1-positions">
@@ -1337,49 +1337,6 @@
           <input semantic="NORMAL" source="#geom-a001-ch6-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#geom-a001-ch6-map1" offset="2" set="0"/>
           <p>0 0 0 2 1 1 3 2 2 3 2 2 1 3 3 0 0 0 4 4 3 5 5 0 7 6 1 7 6 1 6 7 2 4 4 3 0 8 3 1 9 0 5 10 1 5 10 1 4 11 2 0 8 3 1 12 3 3 13 0 7 14 1 7 14 1 5 15 2 1 12 3 3 16 3 2 17 0 6 18 1 6 18 1 7 19 2 3 16 3 2 20 3 0 21 0 4 22 1 4 22 1 6 23 2 2 20 3</p>
-        </triangles>
-      </mesh>
-    </geometry>
-    <geometry id="geom-a009_door" name="a009_door">
-      <mesh>
-        <source id="geom-a009_door-positions">
-          <float_array id="geom-a009_door-positions-array" count="42">0.598278 0.2686768 3.880098 -0.5982819 14.99878 13.75246 -0.5982742 -14.99878 13.75245 0.5982857 -14.99878 13.75245 0.5982742 14.99878 13.75246 0.5982742 14.99884 -13.75226 -0.5982819 14.99884 -13.75226 -0.598278 -14.99878 -13.75227 0.598278 -14.99878 -13.75227 0.5982819 -9.42334 3.880093 -0.598278 0.2686768 -12.84109 0.598278 -9.42334 -12.8411 -0.598278 -9.42334 -12.8411 0.598278 0.2686768 -12.84109</float_array>
-          <technique_common>
-            <accessor source="#geom-a009_door-positions-array" count="14" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-a009_door-normals">
-          <float_array id="geom-a009_door-normals-array" count="252">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0</float_array>
-          <technique_common>
-            <accessor source="#geom-a009_door-normals-array" count="84" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-a009_door-map1">
-          <float_array id="geom-a009_door-map1-array" count="111">0.6278189 0.05477722 0 0.6278189 0.08346731 0 0.613272 0.03401884 0 0.6165934 0.03442141 0 0.6128415 0.03917921 0 0.6132441 0.03917921 0 0.613272 0.03477973 0 0.6136745 0.03447318 0 0.6123872 0.03404276 0 0.6127898 0.03404276 0 0.6123872 0.04413493 0 0.6127898 0.04225917 0 0.655469 0.05477722 0 0.6450773 0.05477722 0 0.655469 0.08346731 0 0.5980747 0.003506823 0 0.6278189 0.003506823 0 0.6136745 0.04372667 0 0.613272 0.04372667 0 0.6450773 0.003506823 0 0.5980747 0.001335787 0 0.655469 0.001335787 0 0.6225255 0.03401884 0 0.6225255 0.0344214 0 0.6450773 0.001335787 0 0.6132441 0.03591851 0 0.6128415 0.03404276 0 0.6137263 0.03487969 0 0.6193519 0.0348797 0 0.6193519 0.03528226 0 0.6137263 0.03571268 0 0.6137263 0.03531013 0 0.616987 0.03531013 0 0.616987 0.03571268 0 0.6193519 0.03485183 0 0.6137263 0.03485183 0 0.6137263 0.03444927 0</float_array>
-          <technique_common>
-            <accessor source="#geom-a009_door-map1-array" count="37" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="geom-a009_door-vertices">
-          <input semantic="POSITION" source="#geom-a009_door-positions"/>
-        </vertices>
-        <triangles material="T_Texture_1_1_v100_jpg" count="28">
-          <input semantic="VERTEX" source="#geom-a009_door-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#geom-a009_door-normals" offset="1"/>
-          <input semantic="TEXCOORD" source="#geom-a009_door-map1" offset="2" set="0"/>
-          <p>7 0 10 6 1 8 5 2 9 7 3 10 5 4 9 8 5 11 6 6 20 10 7 16 0 8 0 0 9 0 1 10 1 6 11 20 7 12 22 8 13 23 3 14 3 3 15 3 2 16 2 7 17 22 8 18 24 11 19 19 9 20 13 9 21 13 3 22 12 8 23 24 1 24 17 4 25 18 5 26 6 5 27 6 6 28 7 1 29 17 7 30 21 12 31 19 10 32 16 6 33 20 7 34 21 10 35 16 9 36 13 2 37 14 1 38 1 1 39 1 0 40 0 9 41 13 2 42 26 3 43 25 4 44 5 4 45 5 1 46 4 2 47 26 5 48 15 4 49 1 0 50 0 0 51 0 13 52 16 5 53 15 0 54 0 4 55 1 3 56 12 3 57 12 9 58 13 0 59 0 5 60 15 13 61 16 11 62 19 11 63 19 8 64 24 5 65 15 7 66 21 2 67 14 9 68 13 9 69 13 12 70 19 7 71 21 11 72 28 12 73 29 9 74 27 13 75 30 10 76 31 12 77 32 12 78 32 11 79 33 13 80 30 10 81 35 13 82 36 0 83 34</p>
         </triangles>
       </mesh>
     </geometry>
@@ -2286,49 +2243,6 @@
         </triangles>
       </mesh>
     </geometry>
-    <geometry id="geom-a082-lod1" name="a082-lod1">
-      <mesh>
-        <source id="geom-a082-lod1-positions">
-          <float_array id="geom-a082-lod1-positions-array" count="48">-0.4872093 -1.643005 24.61821 0.2079124 -1.643005 24.61821 -0.4872093 1.643005 24.61821 0.2079124 1.643005 24.61821 -0.4872093 -1.643005 25.45235 0.2079124 -1.643005 25.45235 -0.4872093 1.643005 25.45235 0.2079124 1.643005 25.45235 0.6617794 0.2116089 -25.45235 -2.98023e-8 0.8733883 -25.45235 -0.6617794 0.2116088 -25.45235 1.49012e-8 -0.4501705 -25.45235 0.6617794 0.2116089 24.60942 -2.98023e-8 0.8733883 24.60942 -0.6617794 0.2116088 24.60942 1.49012e-8 -0.4501705 24.60942</float_array>
-          <technique_common>
-            <accessor source="#geom-a082-lod1-positions-array" count="16" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-a082-lod1-normals">
-          <float_array id="geom-a082-lod1-normals-array" count="120">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0.9999999 1.0196e-6 0 -9.98216e-7 1 0 9.65934e-7 1 0 0.9999999 -1.0196e-6 0 -0.9999999 -1.05188e-6 0 -0.9999999 9.12271e-7 0 9.97796e-7 -0.9999999 0 -1.0196e-6 -0.9999999 0 0 0 1 0 0 1 0 0 1 0 0 1</float_array>
-          <technique_common>
-            <accessor source="#geom-a082-lod1-normals-array" count="40" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-a082-lod1-map1">
-          <float_array id="geom-a082-lod1-map1-array" count="111">0.1315729 0.001780821 0 0.1592517 0.001780821 0 0.1592517 0.008495567 0 0.1315729 0.008495567 0 0.1385991 0.02661233 0 0.1385991 0.03220796 0 0.1315729 0.03220796 0 0.1315729 0.02661233 0 0.1315729 0.008528514 0 0.1592517 0.008528516 0 0.1592517 0.01412414 0 0.1315729 0.01412414 0 0.1315729 0.01986464 0 0.1592517 0.01986464 0 0.1592517 0.02657939 0 0.1315729 0.02657939 0 0.1459422 0.02661233 0 0.1459422 0.03220796 0 0.138916 0.03220796 0 0.138916 0.02661233 0 0.1592517 0.01419658 0 0.1592517 0.0197922 0 0.1315729 0.0197922 0 0.1315729 0.01419658 0 0.3145608 0.002183167 1 0.2974394 0.002183167 1 0.3031465 0.002183167 1 0.3088537 0.002183167 1 0.3145608 0.02954867 1 0.2974394 0.02954867 1 0.3031465 0.02954867 1 0.3088537 0.02954867 1 0.2917323 0.002183167 1 0.2917323 0.002183167 1 0.2917323 0.02954867 1 0.2917323 0.02954867 1 0.3202679 0.02954867 -1</float_array>
-          <technique_common>
-            <accessor source="#geom-a082-lod1-map1-array" count="37" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="geom-a082-lod1-vertices">
-          <input semantic="POSITION" source="#geom-a082-lod1-positions"/>
-        </vertices>
-        <triangles material="T_Texture_1_1_v100_jpg" count="24">
-          <input semantic="VERTEX" source="#geom-a082-lod1-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#geom-a082-lod1-normals" offset="1"/>
-          <input semantic="TEXCOORD" source="#geom-a082-lod1-map1" offset="2" set="0"/>
-          <p>3 0 10 1 1 11 0 2 8 0 2 8 2 3 9 3 0 10 7 4 22 6 5 23 4 6 20 4 6 20 5 7 21 7 4 22 5 8 6 4 9 7 0 10 4 0 10 4 1 11 5 5 8 6 7 12 14 5 13 15 1 14 12 1 14 12 3 15 13 7 12 14 6 16 18 7 17 19 3 18 16 3 18 16 2 19 17 6 16 18 4 20 2 6 21 3 2 22 0 2 22 0 0 23 1 4 20 2 10 24 26 9 25 25 8 26 32 8 26 32 11 27 27 10 24 26 8 28 33 9 29 25 13 30 29 13 30 29 12 31 34 8 28 33 9 29 25 10 32 26 14 33 30 14 33 30 13 30 29 9 29 25 10 32 26 11 34 27 15 35 31 15 35 31 14 33 30 10 32 26 11 34 27 8 28 24 12 31 28 12 31 28 15 35 31 11 34 27 12 36 35 13 37 29 14 38 30 14 38 30 15 39 36 12 36 35</p>
-        </triangles>
-      </mesh>
-    </geometry>
     <geometry id="geom-a082-ch1" name="a082-ch1">
       <mesh>
         <source id="geom-a082-ch1-positions">
@@ -2501,49 +2415,6 @@
         </triangles>
       </mesh>
     </geometry>
-    <geometry id="geom-a009-lod1" name="a009-lod1">
-      <mesh>
-        <source id="geom-a009-lod1-positions">
-          <float_array id="geom-a009-lod1-positions-array" count="42">0.598278 0.2686768 3.880098 -0.5982819 14.99878 13.75246 -0.5982742 -14.99878 13.75245 0.5982857 -14.99878 13.75245 0.5982742 14.99878 13.75246 0.5982742 14.99884 -13.75226 -0.5982819 14.99884 -13.75226 -0.598278 -14.99878 -13.75227 0.598278 -14.99878 -13.75227 0.5982819 -9.42334 3.880093 -0.598278 0.2686768 -12.84109 0.598278 -9.42334 -12.8411 -0.598278 -9.42334 -12.8411 0.598278 0.2686768 -12.84109</float_array>
-          <technique_common>
-            <accessor source="#geom-a009-lod1-positions-array" count="14" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-a009-lod1-normals">
-          <float_array id="geom-a009-lod1-normals-array" count="252">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 1 0 0 1 0 0 1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0</float_array>
-          <technique_common>
-            <accessor source="#geom-a009-lod1-normals-array" count="84" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-a009-lod1-map1">
-          <float_array id="geom-a009-lod1-map1-array" count="111">0.6278189 0.05477722 0 0.6278189 0.08346731 0 0.613272 0.03401884 0 0.6165934 0.03442141 0 0.6128415 0.03917921 0 0.6132441 0.03917921 0 0.613272 0.03477973 0 0.6136745 0.03447318 0 0.6123872 0.03404276 0 0.6127898 0.03404276 0 0.6123872 0.04413493 0 0.6127898 0.04225917 0 0.655469 0.05477722 0 0.6450773 0.05477722 0 0.655469 0.08346731 0 0.5980747 0.003506823 0 0.6278189 0.003506823 0 0.6136745 0.04372667 0 0.613272 0.04372667 0 0.6450773 0.003506823 0 0.5980747 0.001335787 0 0.655469 0.001335787 0 0.6225255 0.03401884 0 0.6225255 0.0344214 0 0.6450773 0.001335787 0 0.6132441 0.03591851 0 0.6128415 0.03404276 0 0.6137263 0.03487969 0 0.6193519 0.0348797 0 0.6193519 0.03528226 0 0.6137263 0.03571268 0 0.6137263 0.03531013 0 0.616987 0.03531013 0 0.616987 0.03571268 0 0.6193519 0.03485183 0 0.6137263 0.03485183 0 0.6137263 0.03444927 0</float_array>
-          <technique_common>
-            <accessor source="#geom-a009-lod1-map1-array" count="37" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="geom-a009-lod1-vertices">
-          <input semantic="POSITION" source="#geom-a009-lod1-positions"/>
-        </vertices>
-        <triangles material="T_Texture_1_1_v100_jpg_1" count="28">
-          <input semantic="VERTEX" source="#geom-a009-lod1-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#geom-a009-lod1-normals" offset="1"/>
-          <input semantic="TEXCOORD" source="#geom-a009-lod1-map1" offset="2" set="0"/>
-          <p>7 0 10 6 1 8 5 2 9 7 3 10 5 4 9 8 5 11 6 6 20 10 7 16 0 8 0 0 9 0 1 10 1 6 11 20 7 12 22 8 13 23 3 14 3 3 15 3 2 16 2 7 17 22 8 18 24 11 19 19 9 20 13 9 21 13 3 22 12 8 23 24 1 24 17 4 25 18 5 26 6 5 27 6 6 28 7 1 29 17 7 30 21 12 31 19 10 32 16 6 33 20 7 34 21 10 35 16 9 36 13 2 37 14 1 38 1 1 39 1 0 40 0 9 41 13 2 42 26 3 43 25 4 44 5 4 45 5 1 46 4 2 47 26 5 48 15 4 49 1 0 50 0 0 51 0 13 52 16 5 53 15 0 54 0 4 55 1 3 56 12 3 57 12 9 58 13 0 59 0 5 60 15 13 61 16 11 62 19 11 63 19 8 64 24 5 65 15 7 66 21 2 67 14 9 68 13 9 69 13 12 70 19 7 71 21 11 72 28 12 73 29 9 74 27 13 75 30 10 76 31 12 77 32 12 78 32 11 79 33 13 80 30 10 81 35 13 82 36 0 83 34</p>
-        </triangles>
-      </mesh>
-    </geometry>
     <geometry id="geom-a101-ch001" name="a101-ch001">
       <mesh>
         <source id="geom-a101-ch001-positions">
@@ -2587,6 +2458,307 @@
         </triangles>
       </mesh>
     </geometry>
+    <geometry id="geom-a009_door" name="a009_door">
+      <mesh>
+        <source id="geom-a009_door-positions">
+          <float_array id="geom-a009_door-positions-array" count="93">-0.5982819 14.99878 3.880102 -0.598278 0.2686768 3.880098 -0.598278 0.2686768 13.75245 -0.5982819 14.99878 13.75246 -0.5982742 -14.99878 13.75245 -0.5982742 -14.99878 3.880095 0.5982819 -14.99878 3.880093 0.5982857 -14.99878 13.75245 0.598278 0.2686768 13.75245 0.5982742 14.99878 13.75246 -0.5982819 14.99884 -12.84109 0.5982742 14.99884 -12.84109 0.5982742 14.99884 -13.75226 -0.5982819 14.99884 -13.75226 -0.598278 -2.482239 -13.75227 -0.598278 -14.99878 -13.75227 0.598278 0.2686768 -13.75227 0.598278 -9.42334 -13.75227 0.598278 -14.99878 -13.75227 0.5982819 -9.42334 3.880093 0.5982819 -9.42334 13.75245 -0.598278 0.2686768 -12.84109 -0.598278 -14.99878 -12.8411 0.598278 -14.99878 -12.8411 0.5982742 14.99878 3.880102 0.598278 -9.42334 -12.8411 -0.598278 -9.42334 -12.8411 -0.598278 -9.42334 3.880095 -0.5982742 -9.42334 13.75245 0.598278 0.2686768 3.880098 0.598278 0.2686768 -12.84109</float_array>
+          <technique_common>
+            <accessor source="#geom-a009_door-positions-array" count="31" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a009_door-normals">
+          <float_array id="geom-a009_door-normals-array" count="558">-1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a009_door-normals-array" count="186" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a009_door-map1">
+          <float_array id="geom-a009_door-map1-array" count="192">0.5980747 0.05477722 0 0.6278189 0.05477722 0 0.6278189 0.08346731 0 0.5980747 0.08346731 0 0.613272 0.03401884 0 0.6165934 0.03401884 0 0.6165934 0.03442141 0 0.613272 0.03442141 0 0.6128415 0.03917921 0 0.6132441 0.03917921 0 0.6132441 0.04413491 0 0.6128415 0.04413491 0 0.6136745 0.03477973 0 0.613272 0.03477973 0 0.613272 0.03447318 0 0.6136745 0.03447318 0 0.6123872 0.03992396 0 0.6123872 0.03404276 0 0.6127898 0.03404276 0 0.6123872 0.04413493 0 0.6127898 0.03899846 0 0.6127898 0.04225917 0 0.6127898 0.04413493 0 0.655469 0.05477722 0 0.6450773 0.05477722 0 0.6450773 0.08346731 0 0.655469 0.08346731 0 0.5980747 0.003506823 0 0.6278189 0.003506823 0 0.6222189 0.03401884 0 0.6222189 0.03442141 0 0.6136745 0.04372667 0 0.613272 0.04372667 0 0.613272 0.04040529 0 0.6136745 0.04040529 0 0.655469 0.003506823 0 0.6450773 0.003506823 0 0.5980747 0.001335787 0 0.6416442 0.001335787 0 0.655469 0.001335787 0 0.6225255 0.03401884 0 0.6225255 0.0344214 0 0.6450773 0.001335787 0 0.6128415 0.03591851 0 0.6132441 0.03591851 0 0.6278189 0.001335787 0 0.6128415 0.03404276 0 0.6132441 0.03404276 0 0.6137024 0.03576446 0 0.6141049 0.03576446 0 0.6141049 0.03902517 0 0.6137024 0.03902517 0 0.6137263 0.03528226 0 0.6137263 0.03487969 0 0.6193519 0.0348797 0 0.6193519 0.03528226 0 0.6137263 0.03571268 0 0.6137263 0.03531013 0 0.616987 0.03531013 0 0.616987 0.03571268 0 0.6193519 0.03444927 0 0.6193519 0.03485183 0 0.6137263 0.03485183 0 0.6137263 0.03444927 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a009_door-map1-array" count="64" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-a009_door-vertices">
+          <input semantic="POSITION" source="#geom-a009_door-positions"/>
+        </vertices>
+        <triangles material="Material__429_1" count="62">
+          <input semantic="VERTEX" source="#geom-a009_door-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-a009_door-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-a009_door-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 2 3 2 3 4 3 0 5 0 4 6 4 5 7 5 6 8 6 6 9 6 7 10 7 4 11 4 2 12 8 8 13 9 9 14 10 9 15 10 3 16 11 2 17 8 10 18 12 11 19 13 12 20 14 12 21 14 13 22 15 10 23 12 14 24 16 13 25 17 12 26 18 15 27 19 14 28 16 12 29 18 15 30 19 12 31 18 16 32 20 15 33 19 16 34 20 17 35 21 15 36 19 17 37 21 18 38 22 6 39 23 19 40 24 20 41 25 20 42 25 7 43 26 6 44 23 10 45 27 21 46 28 1 47 1 1 48 1 0 49 0 10 50 27 22 51 29 23 52 30 6 53 6 6 54 6 5 55 5 22 56 29 3 57 31 9 58 32 24 59 33 24 60 33 0 61 34 3 62 31 23 63 35 25 64 36 19 65 24 19 66 24 6 67 23 23 68 35 0 69 34 24 70 33 11 71 13 11 72 13 10 73 12 0 74 34 10 75 27 13 76 37 14 77 38 10 78 27 14 79 38 15 80 39 15 81 39 22 82 35 26 83 36 15 84 39 26 85 36 21 86 28 10 87 27 15 88 39 21 89 28 15 90 40 18 91 41 23 92 30 23 93 30 22 94 29 15 95 40 18 96 39 17 97 42 25 98 36 25 99 36 23 100 35 18 101 39 27 102 24 28 103 25 2 104 2 2 105 2 1 106 1 27 107 24 28 108 43 20 109 44 8 110 9 8 111 9 2 112 8 28 113 43 24 114 0 9 115 3 8 116 2 8 117 2 29 118 1 24 119 0 11 120 27 24 121 0 29 122 1 29 123 1 30 124 28 11 125 27 12 126 37 11 127 27 30 128 28 30 129 28 16 130 45 12 131 37 29 132 1 8 133 2 20 134 25 20 135 25 19 136 24 29 137 1 16 138 45 30 139 28 25 140 36 25 141 36 17 142 42 16 143 45 5 144 23 4 145 26 28 146 25 28 147 25 27 148 24 5 149 23 4 150 46 7 151 47 20 152 44 20 153 44 28 154 43 4 155 46 22 156 35 5 157 23 27 158 24 27 159 24 26 160 36 22 161 35 19 162 48 27 163 49 1 164 50 1 165 50 29 166 51 19 167 48 27 168 52 19 169 53 25 170 54 25 171 54 26 172 55 27 173 52 30 174 56 21 175 57 26 176 58 26 177 58 25 178 59 30 179 56 29 180 60 1 181 61 21 182 62 21 183 62 30 184 63 29 185 60</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-a009-ch1" name="a009-ch1">
+      <mesh>
+        <source id="geom-a009-ch1-positions">
+          <float_array id="geom-a009-ch1-positions-array" count="24">-0.5592232 -7.282615 -13.63229 0.5592251 -7.282615 -13.63229 -0.5592232 7.282645 -13.63229 0.5592251 7.282645 -13.63229 -0.5592232 -7.282615 13.63228 0.5592251 -7.282615 13.63228 -0.5592232 7.282645 13.63228 0.5592251 7.282645 13.63228</float_array>
+          <technique_common>
+            <accessor source="#geom-a009-ch1-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a009-ch1-normals">
+          <float_array id="geom-a009-ch1-normals-array" count="72">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a009-ch1-normals-array" count="24" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a009-ch1-map1">
+          <float_array id="geom-a009-ch1-map1-array" count="72">1 0 0 0 0 0 1 1 0 0 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a009-ch1-map1-array" count="24" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-a009-ch1-vertices">
+          <input semantic="POSITION" source="#geom-a009-ch1-positions"/>
+        </vertices>
+        <triangles material="ColorMaterial" count="12">
+          <input semantic="VERTEX" source="#geom-a009-ch1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-a009-ch1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-a009-ch1-map1" offset="2" set="0"/>
+          <p>0 0 0 2 1 2 3 2 3 3 2 3 1 3 1 0 0 0 4 4 4 5 5 5 7 6 7 7 6 7 6 7 6 4 4 4 0 8 8 1 9 9 5 10 11 5 10 11 4 11 10 0 8 8 1 12 12 3 13 13 7 14 15 7 14 15 5 15 14 1 12 12 3 16 16 2 17 17 6 18 19 6 18 19 7 19 18 3 16 16 2 20 20 0 21 21 4 22 23 4 22 23 6 23 22 2 20 20</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-a009-ch2" name="a009-ch2">
+      <mesh>
+        <source id="geom-a009-ch2-positions">
+          <float_array id="geom-a009-ch2-positions-array" count="24">-0.5592232 -2.816379 -13.63229 0.5592251 -2.816379 -13.63229 -0.5592232 2.816336 -13.63229 0.5592251 2.816336 -13.63229 -0.5592232 -2.816379 13.63228 0.5592251 -2.816379 13.63228 -0.5592232 2.816336 13.63228 0.5592251 2.816336 13.63228</float_array>
+          <technique_common>
+            <accessor source="#geom-a009-ch2-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a009-ch2-normals">
+          <float_array id="geom-a009-ch2-normals-array" count="72">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a009-ch2-normals-array" count="24" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a009-ch2-map1">
+          <float_array id="geom-a009-ch2-map1-array" count="72">1 0 0 0 0 0 1 1 0 0 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a009-ch2-map1-array" count="24" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-a009-ch2-vertices">
+          <input semantic="POSITION" source="#geom-a009-ch2-positions"/>
+        </vertices>
+        <triangles material="ColorMaterial" count="12">
+          <input semantic="VERTEX" source="#geom-a009-ch2-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-a009-ch2-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-a009-ch2-map1" offset="2" set="0"/>
+          <p>0 0 0 2 1 2 3 2 3 3 2 3 1 3 1 0 0 0 4 4 4 5 5 5 7 6 7 7 6 7 6 7 6 4 4 4 0 8 8 1 9 9 5 10 11 5 10 11 4 11 10 0 8 8 1 12 12 3 13 13 7 14 15 7 14 15 5 15 14 1 12 12 3 16 16 2 17 17 6 18 19 6 18 19 7 19 18 3 16 16 2 20 20 0 21 21 4 22 23 4 22 23 6 23 22 2 20 20</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-a009-ch3" name="a009-ch3">
+      <mesh>
+        <source id="geom-a009-ch3-positions">
+          <float_array id="geom-a009-ch3-positions-array" count="24">-0.5592232 -4.994028 -4.888847 0.5592251 -4.994028 -4.888847 -0.5592232 4.993975 -4.888847 0.5592251 4.993975 -4.888847 -0.5592232 -4.994028 4.888849 0.5592251 -4.994028 4.888849 -0.5592232 4.993975 4.888849 0.5592251 4.993975 4.888849</float_array>
+          <technique_common>
+            <accessor source="#geom-a009-ch3-positions-array" count="8" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a009-ch3-normals">
+          <float_array id="geom-a009-ch3-normals-array" count="72">0 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 -1 0 0 0.9999999 0 0 1 0 0 0.9999999 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 0 1 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a009-ch3-normals-array" count="24" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a009-ch3-map1">
+          <float_array id="geom-a009-ch3-map1-array" count="72">1 0 0 0 0 0 1 1 0 0 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0 0 0 0 1 0 0 0 1 0 1 1 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a009-ch3-map1-array" count="24" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-a009-ch3-vertices">
+          <input semantic="POSITION" source="#geom-a009-ch3-positions"/>
+        </vertices>
+        <triangles material="ColorMaterial" count="12">
+          <input semantic="VERTEX" source="#geom-a009-ch3-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-a009-ch3-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-a009-ch3-map1" offset="2" set="0"/>
+          <p>0 0 0 2 1 2 3 2 3 3 2 3 1 3 1 0 0 0 4 4 4 5 5 5 7 6 7 7 6 7 6 7 6 4 4 4 0 8 8 1 9 9 5 10 11 5 10 11 4 11 10 0 8 8 1 12 12 3 13 13 7 14 15 7 14 15 5 15 14 1 12 12 3 16 16 2 17 17 6 18 19 6 18 19 7 19 18 3 16 16 2 20 20 0 21 21 4 22 23 4 22 23 6 23 22 2 20 20</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-a001-lod1" name="a001-lod1">
+      <mesh>
+        <source id="geom-a001-lod1-positions">
+          <float_array id="geom-a001-lod1-positions-array" count="246">-151.3112 -0.3280029 -6.857664 -151.3112 -0.3280029 16.23611 -151.3112 14.63641 16.23611 -151.3112 14.63641 -6.85766 -151.3112 -15.34937 -6.85767 -151.3112 -15.34937 16.23611 -20.3177 60.93896 37.11626 -10.32246 60.93896 37.11626 -10.32246 60.93896 -10.17652 -20.3177 60.93896 -10.17652 -151.3111 60.93896 16.23613 -151.3111 55.36005 16.23613 -151.3111 55.36005 25.64952 -151.3111 60.93896 25.64952 -151.4592 61.08698 -30.45308 -152.2705 19.41498 -34.35158 -151.9283 14.63641 -35.27307 -151.5205 14.63641 -30.45309 -151.5205 19.41498 -30.45309 -151.5205 55.36005 -30.45308 -151.3112 19.41498 16.23611 -151.3112 19.41498 25.64951 -147.7578 19.41498 25.64951 -147.7578 19.41498 16.23612 -147.7578 55.36005 25.64952 -151.3111 55.36005 37.11624 -151.3111 60.93896 37.11626 -20.3177 61.14832 -30.45308 -20.3177 61.35767 -34.24016 -152.1352 61.54333 -34.35156 -152.1658 55.36005 -34.35156 -151.3112 14.63641 25.64951 -151.3112 19.41498 37.11624 -152.8111 55.36005 -37.11604 -152.8112 19.41498 -37.11605 -151.3112 -0.3280029 25.64951 -147.7578 14.63641 25.64951 -147.7578 -0.3280029 25.64951 -151.3112 14.63641 37.11624 -152.8111 61.99963 -37.11604 -147.7578 -15.34937 25.64951 -151.3112 -15.34937 25.64951 -151.3112 -0.3280029 37.11623 -10.32246 61.14832 -30.45308 151.7504 61.14832 -30.45308 151.9598 61.14832 -34.35156 -10.32246 61.40643 -34.26244 -20.3177 61.43896 -34.2773 -20.3177 62.43896 -37.11604 -151.3112 -19.61127 16.23611 -151.3112 -19.61127 25.64951 -151.3112 -15.34937 37.11623 151.7504 60.93896 37.11626 -10.32246 62.43896 -37.11604 -147.7578 -19.52277 25.64951 -147.9155 -56.008 25.64949 -151.3111 -56.008 25.64949 -151.3112 -19.61127 37.11623 -151.5205 -15.34937 -30.45311 -151.5205 -19.61127 -30.45311 151.7504 -61.3783 37.11621 151.8985 -61.52631 -30.45313 152.2808 61.68896 -34.35156 152.8112 62.43896 -37.11604 -151.3111 -56.008 37.11621 -151.3111 -61.3783 25.64949 -151.3111 -61.3783 37.11621 152.3548 -61.98267 -34.35161 152.8111 -62.43896 -37.11607 152.1692 60.93896 -30.45308 -152.8111 -62.43896 -37.11607 -152.1351 -61.98267 -34.35161 -151.3111 -56.008 16.23609 -151.3111 -61.3783 16.23609 -151.4592 -61.52631 -30.45313 -152.8111 -56.008 -37.11607 -152.1658 -56.008 -34.35161 -151.5205 -56.008 -30.45312 -152.1658 -19.61127 -34.35159 -152.8112 -19.61127 -37.11605 -151.7299 -15.34937 -34.35159 -152.0085 -15.34937 -35.45738</float_array>
+          <technique_common>
+            <accessor source="#geom-a001-lod1-positions-array" count="82" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a001-lod1-normals">
+          <float_array id="geom-a001-lod1-normals-array" count="744">-0.9999999 0 0 -1 0 0 -1 0 0 -1 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -1 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 0.9999999 0 -7.62195e-4 0.9999998 0 -7.62195e-4 0.9999998 0 0 0.9999999 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999257 0.01219422 0 -0.9999814 0.006097448 0 -1 0 0 -0.9999999 0 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9998327 0.01828962 0 -0.9998322 0.01831754 0 -0.9999814 0.006097448 0 -0.9999257 0.01219422 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 -0.9999999 0 0 -1 0 0 -1 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 -0.9999999 0 0 -1 0 0 -1 0 0 -1 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -0.003048766 0.9999954 0 -0.001524389 0.9999989 0 -0.001524389 0.9999989 0 -0.006097448 0.9999814 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 -0.9999999 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -0.001524389 0.9999989 0 0 0.9999999 0 0 0.9999999 0 -0.001524389 0.9999989 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9997028 -0.02438299 0 -0.9997028 -0.02438299 0 -0.9999814 -0.006097448 0 -0.9999257 -0.01219422 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999257 -0.01219422 0 -0.9999814 -0.006097448 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0 0 1 0 0 1 0 0 1 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 1 0 0 1 0 0 1 0 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -1 0 0 -1 0 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 -1 0 0 -0.9999999 0 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a001-lod1-normals-array" count="248" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a001-lod1-map1">
+          <float_array id="geom-a001-lod1-map1-array" count="468">2.241155 -2.262978 0 2.241155 -1.970223 0 2.051455 -1.970223 0 2.051455 -2.262978 0 2.431577 -2.262978 0 2.431577 -1.970223 0 3.585301 -0.020087 0 3.585301 0.1066203 0 2.985782 0.1066201 0 2.985782 -0.02008724 0 1.464489 -1.970223 0 1.535211 -1.970223 0 1.535211 -1.850892 0 1.464489 -1.850892 0 3.320609 -1.680659 0 2.728741 -1.680659 0 -1.981269 2.39023 0 -1.920693 2.39023 0 -1.920693 2.439651 0 -1.981269 2.439651 0 1.535211 -2.562091 0 1.990878 -2.562091 0 1.990878 -1.970223 0 3.452513 -2.645169 0 3.452513 -2.687646 0 3.571844 -2.687646 0 3.571844 -2.645169 0 1.920156 -1.702394 0 1.920156 -1.659918 0 1.464489 -1.659918 0 1.464489 -1.702394 0 1.535211 -1.705531 0 1.464489 -1.705531 0 -0.8971566 2.92646 0 -2.561483 2.92646 0 -2.561483 2.878452 0 -0.8971566 2.87704 0 1.464489 -2.562091 0 -2.436936 2.439651 0 -2.436936 2.39023 0 2.051455 -1.850892 0 1.990878 -1.850892 0 1.990878 -1.705531 0 -2.511412 2.439651 0 -2.511412 2.39023 0 -1.971577 2.334536 0 -2.427243 2.334536 0 -2.427243 2.299492 0 -1.971577 2.299492 0 3.208634 -2.516478 0 3.398335 -2.516478 0 3.398335 -2.474001 0 3.208634 -2.474001 0 2.051455 -1.705531 0 -2.511412 2.334536 0 -2.511412 2.299492 0 3.018212 -2.474001 0 3.018212 -2.516478 0 2.241155 -1.705531 0 2.241155 -1.850892 0 -0.5069244 2.278492 0 -2.561483 2.278492 0 -2.561483 2.229072 0 -0.5069244 2.230484 0 2.732435 -2.68407 0 1.052848 -2.68407 0 1.052848 -2.719114 0 2.732435 -2.719114 0 2.485604 -1.970223 0 2.485604 -1.850892 0 2.431577 -1.850892 0 2.431577 -1.705531 0 2.728741 0.1066201 0 3.5853 2.161179 0 2.728741 2.161179 0 0.9261403 -2.68407 0 0.9261403 -2.719114 0 0.4232564 2.229072 0 0.4243784 2.271549 0 -0.03813601 2.271548 0 -0.03813601 2.229073 0 2.485604 -1.705531 0 2.431577 -2.562091 0 2.485604 -2.562091 0 1.461352 -1.705531 0 -0.08923435 -1.705531 0 -0.08923435 -2.562091 0 1.461352 -2.562091 0 -1.141865 -2.68407 0 -1.141865 -2.719114 0 2.946997 -1.850892 0 2.946997 -1.705531 0 -0.9335668 -2.530304 0 -0.222368 1.311534 0 -1.078928 1.311534 0 -1.078928 -2.530304 0 0.690582 2.316674 0 -0.8924656 2.316674 0 -0.8924656 2.281629 0 0.690582 2.281629 0 3.015075 -1.850892 0 3.015075 -1.705531 0 -2.511412 2.337673 0 -0.9570729 2.337673 0 -0.9570729 2.387093 0 -2.511412 2.387093 0 -1.078928 -2.656178 0 2.79537 -2.656178 0 2.79537 -2.621133 0 -1.078928 -2.621133 0 2.946997 -1.970224 0 3.015075 -1.970224 0 -1.092445 -2.530304 0 -1.092445 1.319041 0 -1.141865 1.319041 0 -1.141865 -2.530304 0 -1.015458 2.299491 0 -0.9339343 2.299491 0 -0.9339343 2.334536 0 -1.015458 2.334536 0 2.946997 -2.562091 0 3.015075 -2.562091 0 -1.924161 2.442788 0 -1.924161 2.492208 0 -1.995993 2.492208 0 -1.995993 2.442788 0 -1.476851 2.334536 0 -1.476851 2.299492 0 -2.511412 2.492208 0 -2.511412 2.442788 0 -2.457385 2.442788 0 -2.457385 2.492208 0 -1.530878 2.317014 0 -1.911 2.317014 0 -0.9512818 2.387093 0 -0.9539359 2.337673 0 -0.9486278 2.337673 0 3.682676 -2.591364 0 3.686108 -1.038902 0 3.680799 -1.038902 0 -0.945491 2.387093 0 -0.945491 2.337673 0 -0.9401828 2.337673 0 -0.9401828 2.387093 0 -0.8142357 -2.530304 0 -0.222368 -2.530304 0 -2.665669 -1.426705 0 -2.668323 -1.474713 0 -2.663015 -1.474713 0 2.728741 -0.02008724 0 3.43994 -1.680659 0 3.585301 -1.680659 0 -2.654034 -1.117107 0 -2.656688 -1.166527 0 -2.65138 -1.166527 0 2.051455 -2.562091 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a001-lod1-map1-array" count="156" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-a001-lod1-vertices">
+          <input semantic="POSITION" source="#geom-a001-lod1-positions"/>
+        </vertices>
+        <triangles material="T_Concrete_1_v100_jpg" count="114">
+          <input semantic="VERTEX" source="#geom-a001-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-a001-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-a001-lod1-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 2 2 2 3 3 3 0 0 0 0 4 0 4 5 4 5 6 5 5 6 5 1 7 1 0 4 0 6 8 6 7 9 7 8 10 8 8 10 8 9 11 9 6 8 6 10 12 10 11 13 11 12 14 12 12 14 12 13 15 13 10 12 10 10 16 14 6 17 6 9 18 9 9 18 9 14 19 15 10 16 14 15 20 16 16 21 17 17 22 18 17 22 18 18 23 19 15 20 16 19 24 20 18 25 21 20 26 22 20 26 22 11 27 11 19 24 20 21 28 23 22 29 24 23 30 25 23 30 25 20 31 26 21 28 23 12 32 27 24 33 28 22 34 29 22 34 29 21 35 30 12 32 27 25 36 31 26 37 32 13 38 13 13 38 13 12 39 12 25 36 31 14 40 33 27 41 34 28 42 35 28 42 35 29 43 36 14 40 33 10 44 10 14 45 37 19 46 20 19 46 20 11 47 11 10 44 10 15 48 16 18 49 19 19 50 38 19 50 38 30 51 39 15 48 16 31 52 40 21 53 41 20 54 22 20 54 22 2 55 2 31 52 40 12 56 12 21 57 41 32 58 42 32 58 42 25 59 31 12 56 12 14 60 43 29 61 44 30 62 39 30 62 39 19 63 38 14 60 43 15 64 45 30 65 46 33 66 47 33 66 47 34 67 48 15 64 45 35 68 49 31 69 50 36 70 51 36 70 51 37 71 52 35 68 49 21 72 41 31 73 40 38 74 53 38 74 53 32 75 42 21 72 41 33 76 47 30 77 46 29 78 54 29 78 54 39 79 55 33 76 47 35 80 49 37 81 52 40 82 56 40 82 56 41 83 57 35 80 49 42 84 58 38 85 53 31 86 40 31 86 40 35 87 59 42 84 58 43 88 60 44 89 61 45 90 62 45 90 62 46 91 63 43 88 60 29 92 64 47 93 65 48 94 66 48 94 66 39 95 67 29 92 64 5 96 5 49 97 68 50 98 69 50 98 69 41 99 70 5 96 5 42 100 58 35 101 59 41 102 70 41 102 70 51 103 71 42 100 58 43 104 72 8 105 8 52 106 73 52 106 73 44 107 74 43 104 72 47 108 65 46 109 75 53 110 76 53 110 76 48 111 66 47 108 65 50 112 77 54 113 78 55 114 79 55 114 79 56 115 80 50 112 77 57 116 81 51 117 71 41 118 70 41 118 70 50 119 69 57 116 81 49 120 68 5 121 5 4 122 4 49 123 68 4 124 4 58 125 82 49 126 68 58 127 82 59 128 83 52 129 84 60 130 85 61 131 86 61 131 86 44 132 87 52 129 84 46 133 75 62 134 88 63 135 89 63 135 89 53 136 76 46 133 75 50 137 69 56 138 90 64 139 91 64 139 91 57 140 81 50 137 69 65 141 92 61 142 93 60 143 94 60 143 94 66 144 95 65 141 92 62 145 96 67 146 97 68 147 98 68 147 98 63 148 99 62 145 96 56 149 90 65 150 100 66 151 101 66 151 101 64 152 91 56 149 90 67 153 102 45 154 103 69 155 104 69 155 104 61 156 105 67 153 102 70 157 106 68 158 107 67 159 108 67 159 108 71 160 109 70 157 106 65 161 100 56 162 90 72 163 110 72 163 110 73 164 111 65 161 100 71 165 112 67 166 113 61 167 114 61 167 114 74 168 115 71 165 112 75 169 116 70 170 117 71 171 118 71 171 118 76 172 119 75 169 116 72 173 110 77 174 120 74 175 121 74 175 121 73 176 111 72 173 110 71 177 122 74 178 123 77 179 124 77 179 124 76 180 125 71 177 122 76 181 119 78 182 126 79 183 127 79 183 127 75 184 116 76 181 119 58 185 128 80 186 129 78 187 130 78 187 130 59 188 131 58 185 128 59 189 83 77 190 120 72 191 110 72 191 110 49 192 68 59 189 83 76 193 125 77 194 124 59 195 131 59 195 131 78 196 130 76 193 125 81 197 132 79 198 127 78 199 126 34 200 48 16 201 133 15 202 45 44 203 134 62 204 135 45 205 136 61 206 137 69 207 138 44 208 139 69 209 140 45 210 141 62 211 142 62 212 142 44 213 143 69 214 140 61 215 93 73 216 144 74 217 145 61 218 93 65 219 92 73 220 144 27 221 146 47 222 147 28 223 148 8 224 8 7 225 7 52 226 73 14 227 15 9 228 9 27 229 149 10 230 14 13 231 150 6 232 6 13 233 150 26 234 151 6 235 6 58 236 152 81 237 153 80 238 154 3 239 3 2 240 2 20 241 22 3 242 3 20 243 22 18 244 21 17 245 155 3 246 3 18 247 21</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-a010-lod1" name="a010-lod1">
+      <mesh>
+        <source id="geom-a010-lod1-positions">
+          <float_array id="geom-a010-lod1-positions-array" count="15">4.99958 1.093262 -12.0923 -4.999977 -1.668213 12.34769 4.999184 0.5184326 12.34769 -4.99958 -1.093384 -12.0923 4.99958 -1.093384 -12.0923</float_array>
+          <technique_common>
+            <accessor source="#geom-a010-lod1-positions-array" count="5" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a010-lod1-normals">
+          <float_array id="geom-a010-lod1-normals-array" count="54">0 1 0 0 1 0 -0.2133384 0.9755603 -0.05262102 0 1 0 -0.2133384 0.9755603 -0.05262102 0 1 0 0 -1 0 0.2546177 -0.9670414 -9.57599e-4 0 -1 0 0.2546177 -0.9670414 -9.57599e-4 0 -1 0 0 -1 0 0 0 -1 0 0 -1 -0.2133384 0.9755603 -0.05262102 1 0 0 0 -1 0 0.2546177 -0.9670414 -9.57599e-4</float_array>
+          <technique_common>
+            <accessor source="#geom-a010-lod1-normals-array" count="18" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a010-lod1-map1">
+          <float_array id="geom-a010-lod1-map1-array" count="24">0.2155955 0.1965349 0 0.2155955 0.3615349 0 0.3805956 0.1965349 0 0.3805956 0.3615349 0 0.5087547 0.08475947 0 0.5087547 0.1670976 0 0.5380825 0.08475947 0 0.5380825 0.1670976 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a010-lod1-map1-array" count="8" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-a010-lod1-vertices">
+          <input semantic="POSITION" source="#geom-a010-lod1-positions"/>
+        </vertices>
+        <triangles material="T_Texture_1_1_v100_jpg" count="6">
+          <input semantic="VERTEX" source="#geom-a010-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-a010-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-a010-lod1-map1" offset="2" set="0"/>
+          <p>1 0 5 2 1 7 0 2 6 1 3 5 0 4 6 3 5 4 3 6 4 4 7 6 1 8 5 4 9 6 2 10 7 1 11 5 4 12 1 3 13 3 0 14 0 0 15 2 2 16 0 4 17 3</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-a082-lod1" name="a082-lod1">
+      <mesh>
+        <source id="geom-a082-lod1-positions">
+          <float_array id="geom-a082-lod1-positions-array" count="21">0.4869919 0.6695557 -25.86927 0.09495544 -0.4075317 -25.86927 -0.3508453 0.8173218 -25.86927 0.4869919 -0.1811523 -25.86927 0.09495544 0.8959351 24.20031 0.6418228 0.2442017 24.20031 -0.6418304 0.47052 24.20031</float_array>
+          <technique_common>
+            <accessor source="#geom-a082-lod1-positions-array" count="7" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a082-lod1-normals">
+          <float_array id="geom-a082-lod1-normals-array" count="90">0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0.6830506 0.7303711 0 -0.6006647 0.7995011 0 0.2909946 0.9567247 0 0.2909946 0.9567247 0 0.9927207 -0.1204403 0 0.6830506 0.7303711 0 -0.6006647 0.7995011 0 -0.9393382 -0.3429036 -0.007809211 -0.8916593 0.4527071 0 -0.8916593 0.4527071 0 0.2909946 0.9567247 0 -0.6006647 0.7995011 0 -0.4999539 -0.8660167 0.007828925 -0.8916593 0.4527071 0 -0.9393382 -0.3429036 -0.007809211 -0.9393382 -0.3429036 -0.007809211 0.8378855 -0.545846 0 -0.4999539 -0.8660167 0.007828925 0.8378855 -0.545846 0 0.6830506 0.7303711 0 0.9927207 -0.1204403 0 0.9927207 -0.1204403 0 -0.4999539 -0.8660167 0.007828925 0.8378855 -0.545846 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a082-lod1-normals-array" count="30" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-a082-lod1-map1">
+          <float_array id="geom-a082-lod1-map1-array" count="30">0.2930058 0.009008169 0 0.2930058 0.009601116 0 0.2935987 0.007822275 0 0.2935987 0.009601116 0 0.2935987 0.02645534 0 0.3158734 0.009008169 0 0.3158734 0.02645534 0 0.3164663 0.009601116 0 0.3170592 0.02645534 0 0.3176522 0.009601116 0</float_array>
+          <technique_common>
+            <accessor source="#geom-a082-lod1-map1-array" count="10" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-a082-lod1-vertices">
+          <input semantic="POSITION" source="#geom-a082-lod1-positions"/>
+        </vertices>
+        <triangles material="T_Texture_1_1_v100_jpg" count="10">
+          <input semantic="VERTEX" source="#geom-a082-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-a082-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-a082-lod1-map1" offset="2" set="0"/>
+          <p>1 0 0 2 1 0 0 2 3 3 3 1 1 4 0 0 5 3 0 6 3 2 7 7 4 8 6 4 9 6 5 10 4 0 11 3 2 12 7 1 13 9 6 14 8 6 15 8 4 16 6 2 17 7 4 18 3 6 19 2 1 20 5 1 21 5 3 22 4 4 23 3 3 24 4 0 25 3 5 26 4 5 27 4 4 28 3 3 29 4</p>
+        </triangles>
+      </mesh>
+    </geometry>
   </library_geometries>
   <library_lights>
     <light id="EnvironmentAmbientLight" name="EnvironmentAmbientLight">
@@ -2602,19 +2774,42 @@
       <init_from>./images/2_T_Aluminium_Cream_1_2_v100.jpg</init_from>
     </image>
     <image id="T_Concrete_1_v100_jpg">
-      <init_from>./images/0_T_Concrete_1_v100.jpg</init_from>
+      <init_from>./images/1_T_Concrete_1_v100.jpg</init_from>
     </image>
     <image id="T_Metal_Gray_B_1_2_v100_jpg">
       <init_from>./images/3_T_Metal_Gray_B_1_2_v100.jpg</init_from>
     </image>
     <image id="T_zarand_1_jpg">
-      <init_from>./images/1_T_zarand_1.jpg</init_from>
+      <init_from>./images/0_T_zarand_1.jpg</init_from>
     </image>
   </library_images>
   <library_visual_scenes>
     <visual_scene id="MaxScene">
       <node name="EnvironmentAmbientLight">
         <instance_light url="#EnvironmentAmbientLight"/>
+      </node>
+      <node id="node-a010_door" name="a010_door">
+        <translate>93.96465 823.194 15.03753</translate>
+        <node>
+          <matrix>1 0 0 1.98364e-4 0 1 0 0.2874756 0 0 1 -0.1276951 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a010_door">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="T_Texture_1_1_v100_jpg" target="#T_Texture_1_1_v100_jpg-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
       </node>
       <node id="node-a001_wall" name="a001_wall">
         <translate>109.2796 763.6111 37.28713</translate>
@@ -2677,16 +2872,19 @@
         </extra>
       </node>
       <node id="node-a006_building-roof" name="a006_building-roof">
-        <translate>110 763.3118 85.70816</translate>
-        <instance_geometry url="#geom-a006_building-roof">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="T_Aluminium_Cream_1_2_v100_jpg1" target="#T_Aluminium_Cream_1_2_v100_jpg1-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
+        <translate>110 763.3119 85.70816</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 -1.2207e-4 0 0 1 0 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a006_building-roof">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="T_Aluminium_Cream_1_2_v100_jpg1" target="#T_Aluminium_Cream_1_2_v100_jpg1-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
@@ -2742,26 +2940,6 @@
           <bind_material>
             <technique_common>
               <instance_material symbol="T_Aluminium_Cream_1_2_v100_jpg1" target="#T_Aluminium_Cream_1_2_v100_jpg1-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
-      <node id="node-a001-lod1" name="a001-lod1">
-        <translate>109.2797 763.6111 37.28713</translate>
-        <instance_geometry url="#geom-a001-lod1">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="T_Concrete_1_v100_jpg" target="#T_Concrete_1_v100_jpg_1-material">
                 <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>
@@ -2884,14 +3062,14 @@
           </technique>
         </extra>
       </node>
-      <node id="node-a009_door" name="a009_door">
-        <translate>-40.42969 763.2539 16.67508</translate>
+      <node id="node-a011_walkroad1" name="a011_walkroad1">
+        <translate>109.0332 763.5931 -1.562195</translate>
         <node>
-          <matrix>1 0 0 0 0 1 0 0 0 0 1 -9.34601e-5 0 0 0 1</matrix>
-          <instance_geometry url="#geom-a009_door">
+          <matrix>1 0 0 0 0 1 0 0 0 0 1 -4.76837e-7 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a011_walkroad1">
             <bind_material>
               <technique_common>
-                <instance_material symbol="T_Texture_1_1_v100_jpg" target="#T_Texture_1_1_v100_jpg_1-material">
+                <instance_material symbol="Material__23" target="#Material__23-material">
                   <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
                 </instance_material>
               </technique_common>
@@ -2907,37 +3085,20 @@
           </technique>
         </extra>
       </node>
-      <node id="node-a011_walkroad1" name="a011_walkroad1">
-        <translate>109.0332 763.5931 -1.562195</translate>
-        <instance_geometry url="#geom-a011_walkroad1">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="Material__23" target="#Material__23-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
       <node id="node-a011-lod1" name="a011-lod1">
-        <translate>109.0332 763.5834 -0.2016352</translate>
-        <instance_geometry url="#geom-a011-lod1">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="Material__23" target="#Material__23_1-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
+        <translate>109.0332 763.5834 -0.2015442</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 0 0 0 1 -9.10312e-5 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a011-lod1">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="Material__23" target="#Material__23_1-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
@@ -3291,26 +3452,6 @@
           </technique>
         </extra>
       </node>
-      <node id="node-a082-lod1" name="a082-lod1">
-        <translate>-125.7501 848.8682 25.45235</translate>
-        <instance_geometry url="#geom-a082-lod1">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="T_Texture_1_1_v100_jpg" target="#T_Texture_1_1_v100_jpg-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
       <node id="node-a082-ch1" name="a082-ch1">
         <translate>-125.7717 849.1133 25.05331</translate>
         <instance_geometry url="#geom-a082-ch1">
@@ -3348,16 +3489,19 @@
         </extra>
       </node>
       <node id="node-a101_door101" name="a101_door101">
-        <translate>-43.07336 749.7186 12.1944</translate>
-        <instance_geometry url="#geom-a101_door101">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="T_Texture_1_1_v100_jpg" target="#T_Texture_1_1_v100_jpg_2-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
+        <translate>-43.07336 749.7186 12.19449</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 0 0 0 1 -8.96454e-5 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a101_door101">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="T_Texture_1_1_v100_jpg" target="#T_Texture_1_1_v100_jpg_1-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
@@ -3368,36 +3512,19 @@
         </extra>
       </node>
       <node id="node-a006-lod1" name="a006-lod1">
-        <translate>110 763.3118 85.70816</translate>
-        <instance_geometry url="#geom-a006-lod1">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="T_Aluminium_Cream_1_2_v100_jpg1" target="#T_Aluminium_Cream_1_2_v100_jpg1-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
-      <node id="node-a009-lod1" name="a009-lod1">
-        <translate>-40.42969 763.2539 16.67508</translate>
-        <instance_geometry url="#geom-a009-lod1">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="T_Texture_1_1_v100_jpg_1" target="#T_Texture_1_1_v100_jpg_1-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
+        <translate>110 763.3119 85.70816</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 -1.2207e-4 0 0 1 0 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a006-lod1">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="T_Aluminium_Cream_1_2_v100_jpg1" target="#T_Aluminium_Cream_1_2_v100_jpg1-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
@@ -3408,14 +3535,166 @@
         </extra>
       </node>
       <node id="node-a101-ch001" name="a101-ch001">
-        <translate>-43.07336 749.7186 12.1944</translate>
-        <instance_geometry url="#geom-a101-ch001">
+        <translate>-43.07336 749.7186 12.19449</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 0 0 0 1 -8.96454e-5 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a101-ch001">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="ColorMaterial" target="#ColorEffectR141G7B58-material"/>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-a009_door" name="a009_door">
+        <translate>-40.42969 763.2539 16.67508</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 0 0 0 1 -9.34601e-5 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a009_door">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="Material__429_1" target="#Material__429-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-a009-ch1" name="a009-ch1">
+        <translate>-40.37993 770.9794 16.72364</translate>
+        <instance_geometry url="#geom-a009-ch1">
           <bind_material>
             <technique_common>
               <instance_material symbol="ColorMaterial" target="#ColorEffectR141G7B58-material"/>
             </technique_common>
           </bind_material>
         </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-a009-ch2" name="a009-ch2">
+        <translate>-40.37993 751.1828 16.72364</translate>
+        <instance_geometry url="#geom-a009-ch2">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="ColorMaterial" target="#ColorEffectR141G7B58-material"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-a009-ch3" name="a009-ch3">
+        <translate>-40.37993 758.9724 25.46708</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 0 0 0 1 -1.90735e-6 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a009-ch3">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="ColorMaterial" target="#ColorEffectR141G7B58-material"/>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-a001-lod1" name="a001-lod1">
+        <translate>109.2797 763.6111 37.28725</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 0 0 0 1 -9.15527e-5 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a001-lod1">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="T_Concrete_1_v100_jpg" target="#T_Concrete_1_v100_jpg_1-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-a010-lod1" name="a010-lod1">
+        <translate>93.96465 823.194 15.03753</translate>
+        <node>
+          <matrix>1 0 0 1.98364e-4 0 1 0 0.2874756 0 0 1 -0.1276951 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a010-lod1">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="T_Texture_1_1_v100_jpg" target="#T_Texture_1_1_v100_jpg-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-a082-lod1" name="a082-lod1">
+        <translate>-125.7102 849.0798 25.03643</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 -0.2442017 0 0 1 0.8344803 0 0 0 1</matrix>
+          <instance_geometry url="#geom-a082-lod1">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="T_Texture_1_1_v100_jpg" target="#T_Texture_1_1_v100_jpg-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>

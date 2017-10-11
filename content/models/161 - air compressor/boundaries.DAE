@@ -2,12 +2,12 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <asset>
     <contributor>
-      <author>PooyaEimandar</author>
+      <author>DFM</author>
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
-      <source_data>file:///C:/Users/PooyaEimandar/Desktop/air-compressor-v-1-34-0.max</source_data>
+      <source_data>file:///F:/github/PooyaEimandar/3D_Simulator_Assets_Manager/Models/area-161-air-compressor/air-compressor-v-1-35-0.max</source_data>
     </contributor>
-    <created>2017-10-09T03:39:18</created>
-    <modified>2017-10-09T03:39:18</modified>
+    <created>2017-10-11T20:10:52</created>
+    <modified>2017-10-11T20:10:52</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
