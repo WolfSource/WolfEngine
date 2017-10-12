@@ -927,6 +927,8 @@ bool model::pre_update(
     _In_    CullingThreadpool* sMOCThreadPool)
 {
     bool _hr = false;
+    std::fill(this->_visibilities.begin(), this->_visibilities.end(), 0.0f);
+
     if (!this->_loaded.load()) return _hr;
 
 #ifndef FINAL_RELEASE
@@ -1009,8 +1011,6 @@ bool model::post_update(
     logger.write("post updating " + this->_full_name);
 #endif
 
-    std::fill(this->_visibilities.begin(), this->_visibilities.end(), 0.0f);
-
     glm::mat4 _model_to_clip_matrix;
     //check bounding boxes of root model from Masked Occlusion culling
     MaskedOcclusionCulling::CullingResult _culling_result;
@@ -1035,7 +1035,7 @@ bool model::post_update(
     }
 
     //check all instnaces
-    glm::vec3 _pos, _rot, _dif;
+    glm::vec3 _pos, _rot, _dif_pos, _dif_rot;
     for (size_t i = 0; i < this->_instances_transforms.size(); ++i)
     {
         _pos = glm::vec3(
@@ -1058,8 +1058,9 @@ bool model::post_update(
             else
             {
                 //find the difference from transform of instance and root
-                _dif = _pos - glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
-                _model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif) * glm::rotate(_rot);
+                _dif_pos = _pos - glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
+                _dif_rot = _rot - glm::vec3(this->_transform.rotation[0], this->_transform.rotation[1], this->_transform.rotation[2]);
+                _model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
             }
 
             sMOCThreadPool->SetMatrix((float*)(&_model_to_clip_matrix[0]));

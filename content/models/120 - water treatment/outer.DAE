@@ -6,8 +6,8 @@
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
       <source_data>file:///F:/github/PooyaEimandar/3D_Simulator_Assets_Manager/Models/area-120-water-treatment/watertreatment-v1-20-0.max</source_data>
     </contributor>
-    <created>2017-10-11T19:48:21</created>
-    <modified>2017-10-11T19:48:21</modified>
+    <created>2017-10-12T14:22:06</created>
+    <modified>2017-10-12T14:22:06</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -1427,6 +1427,72 @@
         </technique>
       </extra>
     </effect>
+    <effect id="OO_1_1">
+      <profile_COMMON>
+        <newparam sid="T_zarand_1_jpg-surface">
+          <surface type="2D">
+            <init_from>T_zarand_1_jpg</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="T_zarand_1_jpg-sampler">
+          <sampler2D>
+            <source>T_zarand_1_jpg-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0.588 0.588 0.588 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="T_zarand_1_jpg-sampler" texcoord="CHANNEL1"/>
+            </diffuse>
+            <specular>
+              <color>0 0 0 1</color>
+            </specular>
+            <shininess>
+              <float>9.999999</float>
+            </shininess>
+            <reflective>
+              <color>0 0 0 1</color>
+            </reflective>
+            <transparent opaque="A_ONE">
+              <color>1 1 1 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </phong>
+        </technique>
+      </profile_COMMON>
+      <extra>
+        <technique profile="OpenCOLLADA3dsMax">
+          <extended_shader>
+            <opacity_type sid="opacity_type" type="int">0</opacity_type>
+            <falloff_type sid="falloff_type" type="int">0</falloff_type>
+            <falloff sid="falloff" type="float">0</falloff>
+            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
+            <wire_size sid="wire_size" type="float">1</wire_size>
+            <wire_units sid="wire_units" type="int">0</wire_units>
+            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
+            <dim_level sid="dim_level" type="float">0</dim_level>
+            <reflection_level sid="reflection_level" type="float">3</reflection_level>
+          </extended_shader>
+          <shader>
+            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
+            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
+            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
+            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
+            <self_illumination sid="self_illumination" type="float">0</self_illumination>
+            <specular_level sid="specular_level" type="float">1</specular_level>
+            <soften sid="soften" type="float">0.1</soften>
+          </shader>
+        </technique>
+      </extra>
+    </effect>
   </library_effects>
   <library_materials>
     <material id="ColorEffectR141G7B58-material" name="ColorEffectR141G7B58-material">
@@ -1494,6 +1560,9 @@
     </material>
     <material id="COLOR_ORENG_4-material" name="COLOR_ORENG">
       <instance_effect url="#COLOR_ORENG_4"/>
+    </material>
+    <material id="OO_1_1-material" name="OO_1">
+      <instance_effect url="#OO_1_1"/>
     </material>
   </library_materials>
   <library_geometries>
@@ -3171,49 +3240,6 @@
         </triangles>
       </mesh>
     </geometry>
-    <geometry id="geom-W006-lod1" name="W006-lod1">
-      <mesh>
-        <source id="geom-W006-lod1-positions">
-          <float_array id="geom-W006-lod1-positions-array" count="18">10.46301 -0.1763306 16.05755 10.46301 -0.1763306 -16.10873 -10.26501 0.1763916 -16.10873 10.46301 0.2763062 -16.10873 -10.46289 -0.2763062 16.10873 10.46301 0.2763062 16.05755</float_array>
-          <technique_common>
-            <accessor source="#geom-W006-lod1-positions-array" count="6" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-W006-lod1-normals">
-          <float_array id="geom-W006-lod1-normals-array" count="36">0 -1 0 0 -1 0 0 0 1 0 -1 0 0 0 1 0 -1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 0 0 1 0 -1 0</float_array>
-          <technique_common>
-            <accessor source="#geom-W006-lod1-normals-array" count="12" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-W006-lod1-map1">
-          <float_array id="geom-W006-lod1-map1-array" count="24">0.6554523 0.08358314 0 0.5980831 0.08358314 0 0.6554523 0.00133012 0 0.5980831 0.00133012 0 0.2254229 0.5584551 0 0.1568875 0.6269339 0 0.2254229 0.6269339 0 0.1568875 0.5584551 0</float_array>
-          <technique_common>
-            <accessor source="#geom-W006-lod1-map1-array" count="8" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="geom-W006-lod1-vertices">
-          <input semantic="POSITION" source="#geom-W006-lod1-positions"/>
-        </vertices>
-        <triangles material="OO_1" count="4">
-          <input semantic="VERTEX" source="#geom-W006-lod1-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#geom-W006-lod1-normals" offset="1"/>
-          <input semantic="TEXCOORD" source="#geom-W006-lod1-map1" offset="2" set="0"/>
-          <p>0 0 0 4 1 1 1 2 2 2 3 3 1 4 2 4 5 1 3 6 4 4 7 5 5 8 6 4 9 5 3 10 4 2 11 7</p>
-        </triangles>
-      </mesh>
-    </geometry>
     <geometry id="geom-W014-lod1" name="W014-lod1">
       <mesh>
         <source id="geom-W014-lod1-positions">
@@ -4134,6 +4160,49 @@
           <input semantic="NORMAL" source="#geom-W063_Fence-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#geom-W063_Fence-map1" offset="2" set="0"/>
           <p>0 0 0 1 1 1 2 2 2 2 2 2 3 3 3 0 0 0 4 4 4 5 5 5 0 6 6 4 7 7 6 8 8 7 9 9 7 9 9 5 10 10 4 7 7 0 11 6 3 12 11 4 13 4 1 14 12 7 15 13 6 16 14 6 17 14 2 18 15 1 19 12</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-W006-lod1" name="W006-lod1">
+      <mesh>
+        <source id="geom-W006-lod1-positions">
+          <float_array id="geom-W006-lod1-positions-array" count="18">10.46301 -0.1763306 16.05764 -10.46289 -0.2763062 16.10882 10.46301 -0.1763306 -16.10864 -10.26501 0.1763916 -16.10864 10.46301 0.2763062 -16.10864 10.46301 0.2763062 16.05764</float_array>
+          <technique_common>
+            <accessor source="#geom-W006-lod1-positions-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-W006-lod1-normals">
+          <float_array id="geom-W006-lod1-normals-array" count="36">0 -0.9999999 0 0 -0.9999999 0 0 0 1 0 -0.9999999 0 0 0 1 0 -0.9999999 0 0 0 1 0 -0.9999999 0 0 0.9999999 0 0 -0.9999999 0 0 0 1 0 -0.9999999 0</float_array>
+          <technique_common>
+            <accessor source="#geom-W006-lod1-normals-array" count="12" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-W006-lod1-map1">
+          <float_array id="geom-W006-lod1-map1-array" count="24">0.6554523 0.08358314 0 0.5980831 0.08358314 0 0.6554523 0.00133012 0 0.5980831 0.00133012 0 0.2254229 0.5584551 0 0.1568875 0.6269339 0 0.2254229 0.6269339 0 0.1568875 0.5584551 0</float_array>
+          <technique_common>
+            <accessor source="#geom-W006-lod1-map1-array" count="8" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-W006-lod1-vertices">
+          <input semantic="POSITION" source="#geom-W006-lod1-positions"/>
+        </vertices>
+        <triangles material="OO_1" count="4">
+          <input semantic="VERTEX" source="#geom-W006-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-W006-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-W006-lod1-map1" offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 3 3 3 2 4 2 1 5 1 4 6 4 1 7 5 5 8 6 1 9 5 4 10 4 3 11 7</p>
         </triangles>
       </mesh>
     </geometry>
@@ -5321,26 +5390,6 @@
           </technique>
         </extra>
       </node>
-      <node id="node-W006-lod1" name="W006-lod1">
-        <translate>1293.515 744.4293 16.1089</translate>
-        <instance_geometry url="#geom-W006-lod1">
-          <bind_material>
-            <technique_common>
-              <instance_material symbol="OO_1" target="#OO_1-material">
-                <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-              </instance_material>
-            </technique_common>
-          </bind_material>
-        </instance_geometry>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
       <node id="node-W014-lod1" name="W014-lod1">
         <translate>1179.474 757.6077 37.1004</translate>
         <instance_geometry url="#geom-W014-lod1">
@@ -5823,6 +5872,29 @@
             </technique_common>
           </bind_material>
         </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-W006-lod1" name="W006-lod1">
+        <translate>1293.515 744.4293 16.10902</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 0 0 0 1 -8.96454e-5 0 0 0 1</matrix>
+          <instance_geometry url="#geom-W006-lod1">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="OO_1" target="#OO_1_1-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>

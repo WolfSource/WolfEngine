@@ -6,8 +6,8 @@
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
       <source_data>file:///F:/github/PooyaEimandar/3D_Simulator_Assets_Manager/Models/area-151-substation/substation-v-1-46-0.max</source_data>
     </contributor>
-    <created>2017-10-11T16:26:30</created>
-    <modified>2017-10-11T16:26:30</modified>
+    <created>2017-10-12T15:47:14</created>
+    <modified>2017-10-12T15:47:14</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -1697,72 +1697,6 @@
         </technique>
       </extra>
     </effect>
-    <effect id="Phong11">
-      <profile_COMMON>
-        <newparam sid="T_Floor__1_2_v100_jpg-surface">
-          <surface type="2D">
-            <init_from>T_Floor__1_2_v100_jpg</init_from>
-          </surface>
-        </newparam>
-        <newparam sid="T_Floor__1_2_v100_jpg-sampler">
-          <sampler2D>
-            <source>T_Floor__1_2_v100_jpg-surface</source>
-          </sampler2D>
-        </newparam>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color>0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color>0.3 0.3 0.3 1</color>
-            </ambient>
-            <diffuse>
-              <texture texture="T_Floor__1_2_v100_jpg-sampler" texcoord="CHANNEL1"/>
-            </diffuse>
-            <specular>
-              <color>1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float>56.43856</float>
-            </shininess>
-            <reflective>
-              <color>0 0 0 1</color>
-            </reflective>
-            <transparent opaque="A_ONE">
-              <color>1 1 1 1</color>
-            </transparent>
-            <transparency>
-              <float>1</float>
-            </transparency>
-          </phong>
-        </technique>
-      </profile_COMMON>
-      <extra>
-        <technique profile="OpenCOLLADA3dsMax">
-          <extended_shader>
-            <opacity_type sid="opacity_type" type="int">0</opacity_type>
-            <falloff_type sid="falloff_type" type="int">0</falloff_type>
-            <falloff sid="falloff" type="float">0</falloff>
-            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
-            <wire_size sid="wire_size" type="float">1</wire_size>
-            <wire_units sid="wire_units" type="int">0</wire_units>
-            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
-            <dim_level sid="dim_level" type="float">0</dim_level>
-            <reflection_level sid="reflection_level" type="float">3</reflection_level>
-          </extended_shader>
-          <shader>
-            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
-            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
-            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
-            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
-            <self_illumination sid="self_illumination" type="float">0</self_illumination>
-            <specular_level sid="specular_level" type="float">1</specular_level>
-            <soften sid="soften" type="float">0.1</soften>
-          </shader>
-        </technique>
-      </extra>
-    </effect>
     <effect id="Material__24">
       <profile_COMMON>
         <newparam sid="T_zarand_1_jpg-surface">
@@ -1785,72 +1719,6 @@
             </ambient>
             <diffuse>
               <texture texture="T_zarand_1_jpg-sampler" texcoord="CHANNEL1"/>
-            </diffuse>
-            <specular>
-              <color>1 1 1 1</color>
-            </specular>
-            <shininess>
-              <float>56.43856</float>
-            </shininess>
-            <reflective>
-              <color>0 0 0 1</color>
-            </reflective>
-            <transparent opaque="A_ONE">
-              <color>1 1 1 1</color>
-            </transparent>
-            <transparency>
-              <float>1</float>
-            </transparency>
-          </phong>
-        </technique>
-      </profile_COMMON>
-      <extra>
-        <technique profile="OpenCOLLADA3dsMax">
-          <extended_shader>
-            <opacity_type sid="opacity_type" type="int">0</opacity_type>
-            <falloff_type sid="falloff_type" type="int">0</falloff_type>
-            <falloff sid="falloff" type="float">0</falloff>
-            <index_of_refraction sid="index_of_refraction" type="float">1.5</index_of_refraction>
-            <wire_size sid="wire_size" type="float">1</wire_size>
-            <wire_units sid="wire_units" type="int">0</wire_units>
-            <apply_reflection_dimming sid="apply_reflection_dimming" type="bool">0</apply_reflection_dimming>
-            <dim_level sid="dim_level" type="float">0</dim_level>
-            <reflection_level sid="reflection_level" type="float">3</reflection_level>
-          </extended_shader>
-          <shader>
-            <ambient_diffuse_texture_lock sid="ambient_diffuse_texture_lock" type="bool">1</ambient_diffuse_texture_lock>
-            <ambient_diffuse_lock sid="ambient_diffuse_lock" type="bool">0</ambient_diffuse_lock>
-            <diffuse_specular_lock sid="diffuse_specular_lock" type="bool">0</diffuse_specular_lock>
-            <use_self_illum_color sid="use_self_illum_color" type="bool">0</use_self_illum_color>
-            <self_illumination sid="self_illumination" type="float">0</self_illumination>
-            <specular_level sid="specular_level" type="float">1</specular_level>
-            <soften sid="soften" type="float">0.1</soften>
-          </shader>
-        </technique>
-      </extra>
-    </effect>
-    <effect id="Phong12">
-      <profile_COMMON>
-        <newparam sid="T_Floor__1_2_v100_jpg-surface">
-          <surface type="2D">
-            <init_from>T_Floor__1_2_v100_jpg</init_from>
-          </surface>
-        </newparam>
-        <newparam sid="T_Floor__1_2_v100_jpg-sampler">
-          <sampler2D>
-            <source>T_Floor__1_2_v100_jpg-surface</source>
-          </sampler2D>
-        </newparam>
-        <technique sid="common">
-          <phong>
-            <emission>
-              <color>0 0 0 1</color>
-            </emission>
-            <ambient>
-              <color>0.3 0.3 0.3 1</color>
-            </ambient>
-            <diffuse>
-              <texture texture="T_Floor__1_2_v100_jpg-sampler" texcoord="CHANNEL1"/>
             </diffuse>
             <specular>
               <color>1 1 1 1</color>
@@ -1951,16 +1819,16 @@
         </technique>
       </extra>
     </effect>
-    <effect id="Phong2_7">
+    <effect id="Phong3_2">
       <profile_COMMON>
-        <newparam sid="T_Floor__1_2_v100_jpg-surface">
+        <newparam sid="T_Brick_1_1_v100_jpg-surface">
           <surface type="2D">
-            <init_from>T_Floor__1_2_v100_jpg</init_from>
+            <init_from>T_Brick_1_1_v100_jpg</init_from>
           </surface>
         </newparam>
-        <newparam sid="T_Floor__1_2_v100_jpg-sampler">
+        <newparam sid="T_Brick_1_1_v100_jpg-sampler">
           <sampler2D>
-            <source>T_Floor__1_2_v100_jpg-surface</source>
+            <source>T_Brick_1_1_v100_jpg-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -1972,7 +1840,7 @@
               <color>0.3 0.3 0.3 1</color>
             </ambient>
             <diffuse>
-              <texture texture="T_Floor__1_2_v100_jpg-sampler" texcoord="CHANNEL1"/>
+              <texture texture="T_Brick_1_1_v100_jpg-sampler" texcoord="CHANNEL1"/>
             </diffuse>
             <specular>
               <color>1 1 1 1</color>
@@ -2017,16 +1885,16 @@
         </technique>
       </extra>
     </effect>
-    <effect id="Phong3_2">
+    <effect id="Phong2_7">
       <profile_COMMON>
-        <newparam sid="T_Brick_1_1_v100_jpg-surface">
+        <newparam sid="T_Floor__1_2_v100_jpg-surface">
           <surface type="2D">
-            <init_from>T_Brick_1_1_v100_jpg</init_from>
+            <init_from>T_Floor__1_2_v100_jpg</init_from>
           </surface>
         </newparam>
-        <newparam sid="T_Brick_1_1_v100_jpg-sampler">
+        <newparam sid="T_Floor__1_2_v100_jpg-sampler">
           <sampler2D>
-            <source>T_Brick_1_1_v100_jpg-surface</source>
+            <source>T_Floor__1_2_v100_jpg-surface</source>
           </sampler2D>
         </newparam>
         <technique sid="common">
@@ -2038,7 +1906,7 @@
               <color>0.3 0.3 0.3 1</color>
             </ambient>
             <diffuse>
-              <texture texture="T_Brick_1_1_v100_jpg-sampler" texcoord="CHANNEL1"/>
+              <texture texture="T_Floor__1_2_v100_jpg-sampler" texcoord="CHANNEL1"/>
             </diffuse>
             <specular>
               <color>1 1 1 1</color>
@@ -2562,23 +2430,17 @@
     <material id="Material__23-material" name="Material__23">
       <instance_effect url="#Material__23"/>
     </material>
-    <material id="Phong11-material" name="Phong11">
-      <instance_effect url="#Phong11"/>
-    </material>
     <material id="Material__24-material" name="Material__24">
       <instance_effect url="#Material__24"/>
-    </material>
-    <material id="Phong12-material" name="Phong12">
-      <instance_effect url="#Phong12"/>
     </material>
     <material id="Phong5_1-material" name="Phong5">
       <instance_effect url="#Phong5_1"/>
     </material>
-    <material id="Phong2_7-material" name="Phong2">
-      <instance_effect url="#Phong2_7"/>
-    </material>
     <material id="Phong3_2-material" name="Phong3">
       <instance_effect url="#Phong3_2"/>
+    </material>
+    <material id="Phong2_7-material" name="Phong2">
+      <instance_effect url="#Phong2_7"/>
     </material>
     <material id="Material__25-material" name="Material__25">
       <instance_effect url="#Material__25"/>
@@ -9307,71 +9169,6 @@
         </triangles>
       </mesh>
     </geometry>
-    <geometry id="geom-SS114-lod1" name="SS114-lod1">
-      <mesh>
-        <source id="geom-SS114-lod1-positions">
-          <float_array id="geom-SS114-lod1-positions-array" count="18">2.785889 3.111877 16.50818 2.78595 3.197327 -16.50797 -2.786011 3.111816 -16.50797 -2.786011 3.026367 16.50818 2.78595 -3.111755 -16.50797 -2.786011 -3.197266 -16.50798</float_array>
-          <technique_common>
-            <accessor source="#geom-SS114-lod1-positions-array" count="6" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS114-lod1-normals">
-          <float_array id="geom-SS114-lod1-normals-array" count="42">-0.01828956 0.9998292 0.002667227 -0.01828957 0.9998296 0.002476712 -0.01828957 0.9998296 0.002476712 -0.01828956 0.9998292 0.002667227 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.01828962 -0.9998327 0 0.01828962 -0.9998327 0 0.01828962 -0.9998327 0 0.01828962 -0.9998327 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS114-lod1-normals-array" count="14" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS114-lod1-map1">
-          <float_array id="geom-SS114-lod1-map1-array" count="15">0.007148778 1.2291 0 0.007148778 -4.11237 0 0.9917098 -4.11237 0 0.9917098 1.2291 0 0.9917098 1.228979 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS114-lod1-map1-array" count="5" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS114-lod1-map2">
-          <float_array id="geom-SS114-lod1-map2-array" count="15">0.007148778 1.2291 0 0.007148778 -4.11237 0 0.9917098 -4.11237 0 0.9917098 1.2291 0 0.9917098 1.228979 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS114-lod1-map2-array" count="5" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS114-lod1-map3">
-          <float_array id="geom-SS114-lod1-map3-array" count="42">0.03960946 0.9950002 0 0.03960928 0.005000234 0 0.06891991 0.005000234 0 0.06892011 0.9950002 0 0.1415666 0.9950002 0 0.1088278 0.005000234 0 0.1415664 0.005000234 0 0.1035293 0.9950002 0 0.07421868 0.9950002 0 0.07421862 0.005000234 0 0.1035293 0.005000234 0 0.1796035 0.005000234 0 0.1468652 0.9950002 0 0.146865 0.005000234 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS114-lod1-map3-array" count="14" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="geom-SS114-lod1-vertices">
-          <input semantic="POSITION" source="#geom-SS114-lod1-positions"/>
-        </vertices>
-        <triangles material="Phong11" count="6">
-          <input semantic="VERTEX" source="#geom-SS114-lod1-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#geom-SS114-lod1-normals" offset="1"/>
-          <input semantic="TEXCOORD" source="#geom-SS114-lod1-map1" offset="2" set="0"/>
-          <input semantic="TEXCOORD" source="#geom-SS114-lod1-map2" offset="3" set="1"/>
-          <input semantic="TEXCOORD" source="#geom-SS114-lod1-map3" offset="4" set="2"/>
-          <p>0 0 0 0 0 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 0 0 0 0 0 0 4 4 4 4 4 5 1 1 5 1 6 2 2 6 0 7 0 0 7 3 8 3 3 8 5 9 2 2 9 5 9 2 2 9 4 10 1 1 10 0 7 0 0 7 5 11 1 1 11 3 12 4 4 12 2 13 2 2 13</p>
-        </triangles>
-      </mesh>
-    </geometry>
     <geometry id="geom-SS118-lod1" name="SS118-lod1">
       <mesh>
         <source id="geom-SS118-lod1-positions">
@@ -9423,71 +9220,6 @@
           <input semantic="TEXCOORD" source="#geom-SS118-lod1-map1" offset="2" set="0"/>
           <input semantic="TEXCOORD" source="#geom-SS118-lod1-map2" offset="3" set="1"/>
           <p>0 0 0 0 1 1 1 1 2 2 2 2 2 2 2 2 3 3 3 3 0 0 0 0 4 4 4 4 5 5 5 5 0 6 6 6 0 6 6 6 3 7 7 7 4 4 4 4 3 8 3 8 2 9 2 9 6 10 8 10 6 10 8 10 4 11 4 11 3 8 3 8 1 12 1 12 7 13 9 13 6 14 8 14 6 14 8 14 2 15 2 15 1 12 1 12 4 16 4 16 6 17 8 17 7 18 9 18 7 18 9 18 5 19 5 19 4 16 4 16 5 20 10 20 7 21 9 21 1 22 1 22 1 22 1 22 0 23 0 23 5 20 10 20</p>
-        </triangles>
-      </mesh>
-    </geometry>
-    <geometry id="geom-SS125-lod1" name="SS125-lod1">
-      <mesh>
-        <source id="geom-SS125-lod1-positions">
-          <float_array id="geom-SS125-lod1-positions-array" count="18">1.580322 1.751709 16.50818 1.580261 1.751709 -16.50798 -1.580322 1.751709 -16.50798 -1.580261 1.75177 16.50818 -1.580322 -1.75177 -16.50798 1.580261 -1.751709 -16.50798</float_array>
-          <technique_common>
-            <accessor source="#geom-SS125-lod1-positions-array" count="6" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS125-lod1-normals">
-          <float_array id="geom-SS125-lod1-normals-array" count="42">0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0 0 -0.9944069 0.1056176 0 -0.9999999 0 0 -0.9999999 0 0 -0.9999999 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS125-lod1-normals-array" count="14" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS125-lod1-map1">
-          <float_array id="geom-SS125-lod1-map1-array" count="42">-2.46355 1.341076 0 -2.463547 -1.869654 0 -2.338594 -1.869654 0 -2.338597 1.341076 0 -1.590486 1.341076 0 -1.590485 -1.869654 0 -1.520861 -1.869654 0 3.530482 1.341076 0 3.405526 1.341076 0 3.405526 -1.869654 0 3.530479 -1.869654 0 2.657416 1.341076 0 2.587794 -1.869654 0 2.657416 -1.869654 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS125-lod1-map1-array" count="14" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS125-lod1-map2">
-          <float_array id="geom-SS125-lod1-map2-array" count="42">0.1468652 0.9950002 0 0.146865 0.005000234 0 0.1796035 0.005000234 0 0.1796038 0.9950002 0 0.07421868 0.9950002 0 0.07421862 0.005000234 0 0.1035293 0.005000234 0 0.1415666 0.9950002 0 0.108828 0.9950002 0 0.1088278 0.005000234 0 0.1415664 0.005000234 0 0.06892011 0.9950002 0 0.03960928 0.005000234 0 0.06891991 0.005000234 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS125-lod1-map2-array" count="14" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS125-lod1-map3">
-          <float_array id="geom-SS125-lod1-map3-array" count="12">0.9902256 1.995296 0 0.9902256 -2.15458 0 0.01171919 -2.15458 0 0.01171919 1.995296 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS125-lod1-map3-array" count="4" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="geom-SS125-lod1-vertices">
-          <input semantic="POSITION" source="#geom-SS125-lod1-positions"/>
-        </vertices>
-        <triangles material="Phong12" count="6">
-          <input semantic="VERTEX" source="#geom-SS125-lod1-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#geom-SS125-lod1-normals" offset="1"/>
-          <input semantic="TEXCOORD" source="#geom-SS125-lod1-map1" offset="2" set="0"/>
-          <input semantic="TEXCOORD" source="#geom-SS125-lod1-map2" offset="3" set="1"/>
-          <input semantic="TEXCOORD" source="#geom-SS125-lod1-map3" offset="4" set="2"/>
-          <p>0 0 0 0 0 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 0 0 0 0 0 3 4 4 4 3 2 5 5 5 2 4 6 6 6 2 0 7 7 7 3 3 8 8 8 3 4 9 9 9 2 4 9 9 9 2 5 10 10 10 1 0 7 7 7 3 0 11 11 11 3 5 12 12 12 1 1 13 13 13 2</p>
         </triangles>
       </mesh>
     </geometry>
@@ -9621,71 +9353,6 @@
         </triangles>
       </mesh>
     </geometry>
-    <geometry id="geom-SS116-lod1" name="SS116-lod1">
-      <mesh>
-        <source id="geom-SS116-lod1-positions">
-          <float_array id="geom-SS116-lod1-positions-array" count="36">32.44788 0 -2.98288 32.44788 0 2.983192 113.6723 0 2.983192 113.6723 0 -2.98288 119.2443 0 2.983192 182.3334 6.10352e-5 2.983192 182.3334 6.10352e-5 -2.98288 119.2443 0 -2.98288 26.87592 0 2.983192 26.87592 0 -2.98288 -182.3334 6.10352e-5 -2.98299 -182.3334 6.10352e-5 2.983086</float_array>
-          <technique_common>
-            <accessor source="#geom-SS116-lod1-positions-array" count="12" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS116-lod1-normals">
-          <float_array id="geom-SS116-lod1-normals-array" count="36">0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0 0 0.9999999 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS116-lod1-normals-array" count="12" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS116-lod1-map1">
-          <float_array id="geom-SS116-lod1-map1-array" count="36">5.966201 0.9897065 0 5.966201 0.008348297 0 9.266214 0.008348297 0 9.266214 0.9897065 0 9.492595 0.008348297 0 12.05581 0.008348297 0 12.05581 0.9897065 0 9.492595 0.9897065 0 5.73982 0.008348297 0 5.73982 0.9897065 0 -2.760016 0.989725 0 -2.760016 0.008366656 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS116-lod1-map1-array" count="12" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS116-lod1-map2">
-          <float_array id="geom-SS116-lod1-map2-array" count="36">5.966201 0.9897065 0 5.966201 0.008348297 0 9.266214 0.008348297 0 9.266214 0.9897065 0 9.492595 0.008348297 0 12.05581 0.008348297 0 12.05581 0.9897065 0 9.492595 0.9897065 0 5.73982 0.008348297 0 5.73982 0.9897065 0 -2.760016 0.989725 0 -2.760016 0.008366656 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS116-lod1-map2-array" count="12" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="geom-SS116-lod1-map3">
-          <float_array id="geom-SS116-lod1-map3-array" count="36">0.1154626 0.4212965 0 0.1255719 0.9950004 0 0.1339078 0.9950004 0 0.09120619 0.2043373 0 0.1344796 0.9950003 0 0.1404291 0.9950002 0 0.07222597 0.03457085 0 0.0895422 0.189454 0 0.125 0.9950004 0 0.1171266 0.4361798 0 0.1796038 0.9950002 0 0.1035293 0.9950002 0</float_array>
-          <technique_common>
-            <accessor source="#geom-SS116-lod1-map3-array" count="12" stride="3">
-              <param name="S" type="float"/>
-              <param name="T" type="float"/>
-              <param name="P" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="geom-SS116-lod1-vertices">
-          <input semantic="POSITION" source="#geom-SS116-lod1-positions"/>
-        </vertices>
-        <triangles material="Phong2" count="6">
-          <input semantic="VERTEX" source="#geom-SS116-lod1-vertices" offset="0"/>
-          <input semantic="NORMAL" source="#geom-SS116-lod1-normals" offset="1"/>
-          <input semantic="TEXCOORD" source="#geom-SS116-lod1-map1" offset="2" set="0"/>
-          <input semantic="TEXCOORD" source="#geom-SS116-lod1-map2" offset="3" set="1"/>
-          <input semantic="TEXCOORD" source="#geom-SS116-lod1-map3" offset="4" set="2"/>
-          <p>0 0 0 0 0 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 0 0 0 0 0 4 4 4 4 4 5 5 5 5 5 6 6 6 6 6 6 6 6 6 6 7 7 7 7 7 4 4 4 4 4 8 8 8 8 8 9 9 9 9 9 10 10 10 10 10 10 10 10 10 10 11 11 11 11 11 8 8 8 8 8</p>
-        </triangles>
-      </mesh>
-    </geometry>
     <geometry id="geom-SS196-lod1" name="SS196-lod1">
       <mesh>
         <source id="geom-SS196-lod1-positions">
@@ -9806,7 +9473,7 @@
         <vertices id="geom-SS198-lod1-vertices">
           <input semantic="POSITION" source="#geom-SS198-lod1-positions"/>
         </vertices>
-        <triangles material="Phong2_7" count="8">
+        <triangles material="Phong2" count="8">
           <input semantic="VERTEX" source="#geom-SS198-lod1-vertices" offset="0"/>
           <input semantic="NORMAL" source="#geom-SS198-lod1-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#geom-SS198-lod1-map1" offset="2" set="0"/>
@@ -10745,6 +10412,71 @@
           <input semantic="TEXCOORD" source="#geom-S025-lod1-map2" offset="3" set="1"/>
           <input semantic="TEXCOORD" source="#geom-S025-lod1-map3" offset="4" set="2"/>
           <p>0 0 0 0 0 1 1 1 1 0 2 2 2 2 0 2 2 2 2 0 3 3 3 3 0 0 0 0 0 0 2 4 2 2 0 1 5 1 1 0 0 6 0 0 0 0 6 0 0 0 3 7 3 3 0 2 4 2 2 0</p>
+        </triangles>
+      </mesh>
+    </geometry>
+    <geometry id="geom-SS116-lod1" name="SS116-lod1">
+      <mesh>
+        <source id="geom-SS116-lod1-positions">
+          <float_array id="geom-SS116-lod1-positions-array" count="57">113.6723 3.111755 2.983196 32.44788 3.111755 2.983196 113.6723 -3.111877 2.983196 32.44781 -3.111877 2.983196 113.6723 3.111755 -2.982876 32.44788 3.111755 -2.982876 119.2443 3.111755 2.983196 119.2443 -3.111877 -2.982876 182.3334 3.111816 2.983196 182.3333 -3.111877 -2.982876 -176.1941 -3.111877 -2.982876 26.87592 3.111755 -2.982876 26.87592 -3.111877 -2.982876 -182.3334 3.111816 -2.982986 -176.1941 -3.111877 2.983196 26.87592 3.111755 2.983196 -182.3334 3.111816 2.983089 182.3334 3.111816 -2.982876 119.2443 3.111755 -2.982876</float_array>
+          <technique_common>
+            <accessor source="#geom-SS116-lod1-positions-array" count="19" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-SS116-lod1-normals">
+          <float_array id="geom-SS116-lod1-normals-array" count="171">0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -1 0 0 0 -1 0 0 -1 0 0 -1 0 -1 0 0 -1 0 0 -1 0 0 0 1 0 0 1 0 0 1 0 -1 0 0 -1 0 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 -0.7071068 0.7071068 0 -1 0 0 -1 0 0 -1 0 0 0 1 0 -0.7071068 0.7071068 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 -0.7071068 0.7071068 0 0 1 0 0 1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1 0 0 -1</float_array>
+          <technique_common>
+            <accessor source="#geom-SS116-lod1-normals-array" count="57" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-SS116-lod1-map1">
+          <float_array id="geom-SS116-lod1-map1-array" count="93">-2.760016 0.008366644 0 -2.760016 0.989725 0 -2.510588 0.008348286 0 -2.510588 0.9897065 0 3.08761 -1.965759 0 3.08761 -0.6309514 0 3.08761 -0.5130622 0 3.08761 1.205441 0 3.08761 1.32333 0 3.08761 5.74967 0 3.239084 -1.997844 0 3.239084 -0.6309514 0 3.239084 -0.5130622 0 3.239084 -0.5130606 0 3.239084 1.205442 0 3.239084 1.32333 0 3.239084 5.619779 0 5.739817 0.008348286 0 5.73982 0.008348286 0 5.73982 0.9897065 0 5.966201 0.008348286 0 5.966201 0.9897065 0 9.266214 0.008348286 0 9.266214 0.9897065 0 9.492593 0.008348286 0 9.492595 0.008348286 0 9.492595 0.9897065 0 12.0558 0.008348286 0 12.0558 0.9897065 0 12.05581 0.008348286 0 12.05581 0.9897065 0</float_array>
+          <technique_common>
+            <accessor source="#geom-SS116-lod1-map1-array" count="31" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-SS116-lod1-map2">
+          <float_array id="geom-SS116-lod1-map2-array" count="93">-2.760016 0.008366644 0 -2.760016 0.989725 0 -2.510588 0.008348286 0 -2.510588 0.9897065 0 3.08761 -1.965759 0 3.08761 -0.6309514 0 3.08761 -0.5130622 0 3.08761 1.205441 0 3.08761 1.32333 0 3.08761 5.74967 0 3.239084 -1.997844 0 3.239084 -0.6309514 0 3.239084 -0.5130622 0 3.239084 -0.5130606 0 3.239084 1.205442 0 3.239084 1.32333 0 3.239084 5.619779 0 5.739817 0.008348286 0 5.73982 0.008348286 0 5.73982 0.9897065 0 5.966201 0.008348286 0 5.966201 0.9897065 0 9.266214 0.008348286 0 9.266214 0.9897065 0 9.492593 0.008348286 0 9.492595 0.008348286 0 9.492595 0.9897065 0 12.0558 0.008348286 0 12.0558 0.9897065 0 12.05581 0.008348286 0 12.05581 0.9897065 0</float_array>
+          <technique_common>
+            <accessor source="#geom-SS116-lod1-map2-array" count="31" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="geom-SS116-lod1-map3">
+          <float_array id="geom-SS116-lod1-map3-array" count="105">0.07222597 0.03457087 0 0.07421862 0.005000234 0 0.07421864 0.1788136 0 0.07421865 0.4339931 0 0.07421868 0.9950002 0 0.0895422 0.189454 0 0.09120619 0.2043373 0 0.1035293 0.005000234 0 0.1035293 0.1788136 0 0.1035293 0.4339931 0 0.1035293 0.9950002 0 0.1088279 0.1942068 0 0.1088279 0.4185998 0 0.108828 0.9950002 0 0.1154626 0.4212965 0 0.1171266 0.4361798 0 0.125 0.9950004 0 0.1255719 0.9950004 0 0.1273077 0.4361798 0 0.1277999 0.4212965 0 0.1339078 0.9950004 0 0.1344796 0.9950003 0 0.1349745 0.2043373 0 0.1404291 0.9950002 0 0.1478429 0.03457087 0 0.1529648 0.189454 0 0.153457 0.2043373 0 0.1606317 0.4212965 0 0.1611239 0.4361798 0 0.1796035 0.005000234 0 0.1796036 0.1788136 0 0.1796036 0.1942068 0 0.1796037 0.4185998 0 0.1796037 0.4339931 0 0.1796038 0.9950002 0</float_array>
+          <technique_common>
+            <accessor source="#geom-SS116-lod1-map3-array" count="35" stride="3">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+              <param name="P" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geom-SS116-lod1-vertices">
+          <input semantic="POSITION" source="#geom-SS116-lod1-positions"/>
+        </vertices>
+        <triangles material="Phong2_1" count="19">
+          <input semantic="VERTEX" source="#geom-SS116-lod1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#geom-SS116-lod1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#geom-SS116-lod1-map1" offset="2" set="0"/>
+          <input semantic="TEXCOORD" source="#geom-SS116-lod1-map2" offset="3" set="1"/>
+          <input semantic="TEXCOORD" source="#geom-SS116-lod1-map3" offset="4" set="2"/>
+          <p>1 0 7 7 19 2 1 12 12 11 0 2 6 6 22 2 3 12 12 11 1 4 7 7 19 3 5 14 14 12 4 6 23 23 6 5 7 21 21 14 0 8 22 22 20 1 9 20 20 17 0 10 22 22 20 5 11 21 21 14 2 12 13 13 31 5 13 7 7 27 4 14 6 6 26 5 15 7 7 27 2 16 13 13 31 3 17 14 14 32 7 18 26 26 2 8 19 27 27 7 6 20 24 24 8 8 21 27 27 7 7 22 26 26 2 9 23 28 28 1 11 24 8 8 28 12 25 15 15 33 10 26 16 16 34 10 27 16 16 34 13 28 9 9 34 11 29 8 8 28 14 30 2 2 10 10 31 3 3 4 12 32 19 19 3 12 33 19 19 3 15 34 17 17 9 14 35 2 2 10 15 36 18 18 16 11 37 19 19 15 13 38 1 1 34 13 39 1 1 34 16 40 0 0 10 15 41 18 18 16 18 42 26 26 5 8 43 29 29 23 17 44 30 30 0 8 45 29 29 23 18 46 26 26 5 6 47 25 25 21 14 48 16 16 13 15 49 8 8 18 16 50 9 9 13 9 51 10 10 29 18 52 5 5 25 17 53 4 4 24 18 54 5 5 25 9 55 10 10 29 7 56 11 11 30</p>
         </triangles>
       </mesh>
     </geometry>
@@ -18086,29 +17818,6 @@
           </technique>
         </extra>
       </node>
-      <node id="node-SS114-lod1" name="SS114-lod1">
-        <translate>632.0933 861.3743 16.6433</translate>
-        <node>
-          <matrix>1 0 0 0 0 1 0 0 0 0 1 -1.02997e-4 0 0 0 1</matrix>
-          <instance_geometry url="#geom-SS114-lod1">
-            <bind_material>
-              <technique_common>
-                <instance_material symbol="Phong11" target="#Phong11-material">
-                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-                </instance_material>
-              </technique_common>
-            </bind_material>
-          </instance_geometry>
-        </node>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
       <node id="node-SS118-lod1" name="SS118-lod1">
         <translate>789.0538 774.4203 19.67398</translate>
         <node>
@@ -18117,29 +17826,6 @@
             <bind_material>
               <technique_common>
                 <instance_material symbol="Material__24" target="#Material__24-material">
-                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-                </instance_material>
-              </technique_common>
-            </bind_material>
-          </instance_geometry>
-        </node>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
-      <node id="node-SS125-lod1" name="SS125-lod1">
-        <translate>535.3428 862.9058 16.64331</translate>
-        <node>
-          <matrix>1 0 0 0 0 1 0 0 0 0 1 -1.02997e-4 0 0 0 1</matrix>
-          <instance_geometry url="#geom-SS125-lod1">
-            <bind_material>
-              <technique_common>
-                <instance_material symbol="Phong12" target="#Phong12-material">
                   <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
                 </instance_material>
               </technique_common>
@@ -18199,29 +17885,6 @@
           </technique>
         </extra>
       </node>
-      <node id="node-SS116-lod1" name="SS116-lod1">
-        <translate>672.0349 864.486 36.13419</translate>
-        <node>
-          <matrix>1 0 0 0 0 1 0 -6.10352e-5 0 0 1 -9.91821e-5 0 0 0 1</matrix>
-          <instance_geometry url="#geom-SS116-lod1">
-            <bind_material>
-              <technique_common>
-                <instance_material symbol="Phong2" target="#Phong2_7-material">
-                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
-                </instance_material>
-              </technique_common>
-            </bind_material>
-          </instance_geometry>
-        </node>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
       <node id="node-SS196-lod1" name="SS196-lod1">
         <translate>858.8793 788.7194 19.10156</translate>
         <node>
@@ -18252,7 +17915,7 @@
           <instance_geometry url="#geom-SS198-lod1">
             <bind_material>
               <technique_common>
-                <instance_material symbol="Phong2_7" target="#Phong2_7-material">
+                <instance_material symbol="Phong2" target="#Phong2_7-material">
                   <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
                 </instance_material>
               </technique_common>
@@ -18880,6 +18543,29 @@
             </technique_common>
           </bind_material>
         </instance_geometry>
+        <extra>
+          <technique profile="OpenCOLLADA">
+            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
+            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
+            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
+            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
+          </technique>
+        </extra>
+      </node>
+      <node id="node-SS116-lod1" name="SS116-lod1">
+        <translate>672.0349 861.3741 36.13405</translate>
+        <node>
+          <matrix>1 0 0 0 0 1 0 0 0 0 1 -1.06812e-4 0 0 0 1</matrix>
+          <instance_geometry url="#geom-SS116-lod1">
+            <bind_material>
+              <technique_common>
+                <instance_material symbol="Phong2_1" target="#Phong2_1-material">
+                  <bind_vertex_input semantic="CHANNEL1" input_semantic="TEXCOORD" input_set="0"/>
+                </instance_material>
+              </technique_common>
+            </bind_material>
+          </instance_geometry>
+        </node>
         <extra>
           <technique profile="OpenCOLLADA">
             <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>

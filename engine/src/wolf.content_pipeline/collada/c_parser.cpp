@@ -1375,8 +1375,12 @@ HRESULT c_parser::_create_scene(
             if (_splits.size() > 0)
             {
                 auto _design_name = _splits[0];
-                int _i = 0;
 
+                _splits.clear();
+                wolf::system::convert::split_string(_design_name, "-", _splits);
+                _design_name = _splits[0];
+
+                int _i = 0;
                 _lods.erase(std::remove_if(_lods.begin(), _lods.end(),
                     [_design_name, _models, &_index_lods](_In_ size_t pIter)
                 {
@@ -1467,6 +1471,35 @@ HRESULT c_parser::_create_scene(
             {
                 _root_models.push_back(_models[_index]);
             }
+
+            //make sure root is not -ins
+            //for (auto& _ref : _root_models)
+            //{
+            //    if (!_ref->get_instances_count()) continue;
+
+            //    auto _name = _ref->get_name();
+            //    if (_name.find("-ins"))
+            //    {
+            //        std::vector<w_instance_info> _instances;
+            //        _ref->get_instances(_instances);
+            //        for (auto& _ins : _instances)
+            //        {
+            //            if (_ins.name.find("-ins") == -1)
+            //            {
+            //                auto _ref_t = &_ref->get_transform();
+
+            //                auto _ins_p = &_ins.position;
+            //                auto _ins_r = &_ins.rotation;
+
+            //                std::swap(_ref_t->position, *_ins_p);
+            //                std::swap(_ref_t->rotation, *_ins_r);
+
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
             pScene->add_models(_root_models);
             _root_models.clear();
             _roots.clear();

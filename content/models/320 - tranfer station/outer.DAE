@@ -2,12 +2,12 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <asset>
     <contributor>
-      <author>PooyaEimandar</author>
+      <author>DFM</author>
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 45</authoring_tool>
-      <source_data>file:///C:/Users/PooyaEimandar/Desktop/Home/tranfer-station/tranfer-station-v-1-14-0.max</source_data>
+      <source_data>file:///F:/github/PooyaEimandar/3D_Simulator_Assets_Manager/Models/area-320%20-%20tranfer-station/tranfer-station-v-1-14-0.max</source_data>
     </contributor>
-    <created>2017-10-12T01:54:54</created>
-    <modified>2017-10-12T01:54:54</modified>
+    <created>2017-10-12T14:15:27</created>
+    <modified>2017-10-12T14:15:27</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
