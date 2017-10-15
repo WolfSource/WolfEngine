@@ -1378,7 +1378,10 @@ HRESULT c_parser::_create_scene(
 
                 _splits.clear();
                 wolf::system::convert::split_string(_design_name, "-", _splits);
-                _design_name = _splits[0];
+                if (_splits.size())
+                {
+                    _design_name = _splits[0];
+                }
 
                 int _i = 0;
                 _lods.erase(std::remove_if(_lods.begin(), _lods.end(),
@@ -1781,7 +1784,7 @@ void c_parser::_create_model(
         _transform.transform = _node_ptr->transform;
 
 //#ifdef DEBUG
-        logger.error("creating model " + _node_ptr->c_name);
+        logger.write("creating model " + _node_ptr->c_name);
 //#endif
 
         auto _model = w_cpipeline_model::create_model(

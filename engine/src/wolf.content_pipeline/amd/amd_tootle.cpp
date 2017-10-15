@@ -438,7 +438,7 @@ HRESULT tootle::apply(
     PrintStats(_print, &_stats);
 
 #ifdef DEBUG
-    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message :\n" + _print);
+    //logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message :\n" + _print);
 #endif
 
     _print.clear();
