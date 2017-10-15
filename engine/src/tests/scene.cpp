@@ -1090,6 +1090,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
                     if (pModel->pre_update(this->_camera, sMOCThreadPool)) _need_flush_moc = true;
                 });
             }
+
 #pragma endregion
         });
 
@@ -1348,6 +1349,10 @@ ULONG scene::release()
 
 void scene::_update_media_player()
 {
+#ifdef DEBUG
+    return;
+#endif // DEBUG
+
     auto _total_frames = this->_video_streamer.get_total_video_frames();
     if (_total_frames == 0) return;
     const float _one_sec = 1;
