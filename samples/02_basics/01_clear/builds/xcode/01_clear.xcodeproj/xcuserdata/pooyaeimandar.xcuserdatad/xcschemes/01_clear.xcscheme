@@ -20,6 +20,132 @@
                ReferencedContainer = "container:01_clear.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C2803461E61C73600048A80"
+               BuildableName = "02_shader.app"
+               BlueprintName = "02_shader"
+               ReferencedContainer = "container:../../../02_shader/builds/xcode/02_shader.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+               BuildableName = "01_async"
+               BlueprintName = "01_async"
+               ReferencedContainer = "container:../../../../01_system/01_async/builds/xcode/01_async.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+               BuildableName = "02_thread"
+               BlueprintName = "02_thread"
+               ReferencedContainer = "container:../../../../01_system/02_thread/builds/xcode/02_thread.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+               BuildableName = "03_signal"
+               BlueprintName = "03_signal"
+               ReferencedContainer = "container:../../../../01_system/03_signal/builds/xcode/03_signal.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+               BuildableName = "04_timer"
+               BlueprintName = "04_timer"
+               ReferencedContainer = "container:../../../../01_system/04_timer/builds/xcode/04_timer.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C2803461E61C73600048A80"
+               BuildableName = "05_window.app"
+               BlueprintName = "05_window"
+               ReferencedContainer = "container:../../../../01_system/05_window/builds/xcode/05_window.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+               BuildableName = "06_lua"
+               BlueprintName = "06_lua"
+               ReferencedContainer = "container:../../../../01_system/06_lua/builds/xcode/06_lua.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+               BuildableName = "07_xml"
+               BlueprintName = "07_xml"
+               ReferencedContainer = "container:../../../../01_system/07_xml/builds/xcode/07_xml.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
+               BuildableName = "08_json"
+               BlueprintName = "08_json"
+               ReferencedContainer = "container:../../../../01_system/08_json/builds/xcode/08_json.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

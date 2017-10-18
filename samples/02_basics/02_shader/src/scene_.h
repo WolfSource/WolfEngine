@@ -4,25 +4,20 @@
 	Website			 : http://WolfSource.io
 	Name			 : pch.h
 	Description		 : The main scene of Wolf Engine
-	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
+	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
 */
-
-#if _MSC_VER > 1000
-#pragma once
-#endif
 
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include <w_framework/w_game.h>
+#include <w_game.h>
+#include <w_graphics/w_shader.h>
 #include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffers.h>
 
 class scene : public wolf::framework::w_game
 {
 public:
-    scene(_In_z_ std::wstring pRootDirectory);
+    scene(_In_z_ std::string pRootDirectory, _In_z_ std::string pAppName);
     virtual ~scene();
     
     /*
@@ -54,20 +49,9 @@ public:
     ULONG release() override;
     
 private:
-    HRESULT build_draw_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-    
-    wolf::graphics::w_viewport                                      _viewport;
-    wolf::graphics::w_viewport_scissor                              _viewport_scissor;
-    
-    
-    wolf::graphics::w_command_buffers                               _draw_command_buffers;
-    wolf::graphics::w_render_pass                                   _draw_render_pass;
-    wolf::graphics::w_frame_buffers                                 _draw_frame_buffers;
-    
-    
-    wolf::graphics::w_fence                                         _draw_fence;
-    wolf::graphics::w_semaphore                                     _draw_semaphore;
-    
+    typedef wolf::framework::w_game      _super;
+    wolf::graphics::w_shader             _shader;
+    wolf::graphics::w_command_buffers*   _command_buffers;
 };
 #endif
 

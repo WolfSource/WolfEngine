@@ -35,5 +35,8 @@
       <FileRef
          location = "group:02_basics/01_clear/builds/xcode/01_clear.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:02_basics/02_shader/builds/xcode/02_shader.xcodeproj">
+      </FileRef>
    </Group>
 </Workspace>

@@ -101,14 +101,6 @@ void scene::load()
         V(S_FALSE, "creating frame buffers", _trace_info, 3, true, true);
     }
     
-    //create pipeline_cache
-    std::string _pipeline_cache_name = "model_pipeline_cache";
-    if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
-    {
-        logger.error("could not create pipeline cache");
-        _pipeline_cache_name.clear();
-    }
-    
     //create semaphore create info
     VkSemaphoreCreateInfo _semaphore_create_info = {};
     _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;

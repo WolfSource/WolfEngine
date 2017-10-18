@@ -36,8 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/_ext/56252444/main.o \
-	${OBJECTDIR}/_ext/56252444/pch.o \
-	${OBJECTDIR}/_ext/56252444/scene.o
+	${OBJECTDIR}/_ext/56252444/pch.o
 
 
 # C Compiler Flags
@@ -54,30 +53,25 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=-L../../../../../bin/x64/Debug/GNU-Linux -L../../../../../engine/dependencies/tbb/oss/linux/lib/intel64/gcc4.7 -L../../../../../engine/dependencies/vulkan/linux/lib -lwolf.system -ltbb_debug -ltbbmalloc_debug -lwolf.vulkan -lvulkan
+LDLIBSOPTIONS=-L../../../../../bin/x64/Debug/GNU-Linux -L../../../../../engine/dependencies/tbb/oss/linux/lib/intel64/gcc4.7 -lwolf.system -ltbb_debug -ltbbmalloc_debug
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/03_scene
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/01_window
 
-${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/03_scene: ${OBJECTFILES}
+${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/01_window: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/03_scene ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/01_window ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 ${OBJECTDIR}/_ext/56252444/main.o: ../../src/main.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../../engine/src/wolf.system -I../../../../../engine/dependencies/tbb/oss/linux/include -I../../../../../engine/src/wolf.render/wolf.vulkan -I../../../../../engine/dependencies/vulkan/linux/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/main.o ../../src/main.cpp
+	$(COMPILE.cc) -g -I../../../../../engine/src/wolf.system -I../../../../../engine/dependencies/tbb/oss/linux/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/main.o ../../src/main.cpp
 
 ${OBJECTDIR}/_ext/56252444/pch.o: ../../src/pch.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
 	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../../engine/src/wolf.system -I../../../../../engine/dependencies/tbb/oss/linux/include -I../../../../../engine/src/wolf.render/wolf.vulkan -I../../../../../engine/dependencies/vulkan/linux/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/pch.o ../../src/pch.cpp
-
-${OBJECTDIR}/_ext/56252444/scene.o: ../../src/scene.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -I../../../../../engine/src/wolf.system -I../../../../../engine/dependencies/tbb/oss/linux/include -I../../../../../engine/src/wolf.render/wolf.vulkan -I../../../../../engine/dependencies/vulkan/linux/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/scene.o ../../src/scene.cpp
+	$(COMPILE.cc) -g -I../../../../../engine/src/wolf.system -I../../../../../engine/dependencies/tbb/oss/linux/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/pch.o ../../src/pch.cpp
 
 # Subprojects
 .build-subprojects:

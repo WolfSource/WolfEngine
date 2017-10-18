@@ -1,219 +1,306 @@
+#include "pch.h"
 #include "scene.h"
 
+using namespace std;
 using namespace wolf::system;
 using namespace wolf::graphics;
-using namespace wolf::framework;
 
-scene::scene(_In_z_ std::string pRootDirectory, _In_z_ std::string pAppName) :
-    w_game(pRootDirectory, pAppName)
+scene::scene(_In_z_ std::wstring pRootDirectory) :
+w_game(pRootDirectory)
 {
+    auto _root_dir = pRootDirectory;
+    
+#if defined(__WIN32) || defined(__UWP)
+    content_path = _root_dir + L"../../../../content/";
+#elif defined(__APPLE__)
+    content_path = _root_dir + L"/../../../../../content/";
+#elif defined(__linux)
+    error not tested
+#elif defined(__ANDROID)
+    error not tested
+#endif
+    
     w_game::set_fixed_time_step(false);
 }
 
 scene::~scene()
 {
-    release();
+	//release all resources
+	release();
 }
 
 void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
 {
-    // TODO: Add your pre-initialization logic here
-    w_game::initialize(pOutputWindowsInfo);
+	// TODO: Add your pre-initialization logic here
+
+	w_game::initialize(pOutputWindowsInfo);
 }
 
 void scene::load()
 {
-    w_game::load();
+    defer(nullptr, [&](...)
+    {
+       w_game::load();
+    });
     
-    auto _gDevice =  this->graphics_devices[0];
+    const std::string _trace_info = this->name + "::load";
+    
+    auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
-    auto _width = _output_window->width;
-    auto _height = _output_window->height;
-    auto _content_path_dir = wolf::system::io::get_current_directory() + "/../../../../../samples/02_Simples/02_shader/src/content/";
     
-    //load shaders
-    auto _hr = _shader.load(_gDevice, (_content_path_dir + "shaders/shader.vs.spv").c_str(), w_shader_stage::VERTEX_SHADER);
-    if(_hr == S_FALSE)
+    w_point_t _screen_size;
+    _screen_size.x =  _output_window->width;
+    _screen_size.y = _output_window->height;
+    
+    //initialize viewport
+    this->_viewport.y = 0;
+    this->_viewport.width = static_cast<float>(_screen_size.x);
+    this->_viewport.height = static_cast<float>(_screen_size.y);
+    this->_viewport.minDepth = 0;
+    this->_viewport.maxDepth = 1;
+    
+    //initialize scissor of viewport
+    this->_viewport_scissor.offset.x = 0;
+    this->_viewport_scissor.offset.y = 0;
+    this->_viewport_scissor.extent.width = _screen_size.x;
+    this->_viewport_scissor.extent.height = _screen_size.y;
+    
+    //initialize depth attachment
+    auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
+    _depth_attachment.format = _output_window->vk_depth_buffer_format;
+   
+    //define attachments which has color and depth for render pass
+    std::vector<VkAttachmentDescription> _attachment_descriptions =
     {
-        logger.error("Error loading vertex shader.");
-        return;
-    }
-    _hr = _shader.load(_gDevice, (_content_path_dir + "shaders/shader.fs.spv").c_str(), w_shader_stage::FRAGMENT_SHADER);
-    if(_hr == S_FALSE)
-    {
-        logger.error("Error loading fragment shader.");
-        return;
-    }
-    
-    //create render pass
-    _gDevice->create_render_pass("pass1");
-    //create frame buffers
-    _gDevice->create_frame_buffers_collection("frames",
-                                              "pass1",
-                                              _output_window->vk_swap_chain_image_views.size(),
-                                              _output_window->vk_swap_chain_image_views.data(),
-                                              _output_window->width,
-                                              _output_window->height,
-                                              1,
-                                              _output_window->index);
-    
-    //create view port
-    w_viewport _wp;
-    _wp.x = 0.0f;
-    _wp.y = 0.0f;
-    _wp.width = _width;
-    _wp.height =  _height;
-    _wp.minDepth = 0.0f;
-    _wp.maxDepth = 1.0f;
-    
-    w_viewport_scissor _wp_sc;
-    _wp_sc.offset.x = 0;
-    _wp_sc.offset.y = 0;
-    _wp_sc.extent.width = _width;
-    _wp_sc.extent.height = _height;
-    
-    auto _hr = _gDevice->create_pipeline("pipeline1",
-                                         "pass1",
-                                         _shader.get_shader_stages(),
-                                         { _wp },
-                                         {_wp_sc});
-    if (_hr)
-    {
-        logger.error("Error creating pipeline");
-        return;
-    }
-    
-    this->_command_buffers = new w_command_buffers();
-    _hr = this->_command_buffers->load(_gDevice, 2);
-    if (_hr)
-    {
-        logger.error("Error loading command buffers");
-        return;
-    }
-    
-    _hr = _gDevice->store_to_global_command_buffers("render_triangle",
-                                                    this->_command_buffers,
-                                                    _output_window->index);
-    if (_hr)
-    {
-        logger.error("Error creating command buffer");
-        return;
-    }
-    
-    _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
-    
-    VkImageSubresourceRange _sub_resource_range = {};
-    _sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    _sub_resource_range.baseMipLevel = 0;
-    _sub_resource_range.levelCount = 1;
-    _sub_resource_range.baseArrayLayer = 0;
-    _sub_resource_range.layerCount = 1;
-    
-    VkClearValue _vk_clear_color =
-    {
-        { 0,1,0,1 }
+        w_graphics_device::w_render_pass_attachments::color_attachment_description,
+        _depth_attachment,
     };
     
-    uint32_t _present_queue_family_index = _gDevice->vk_present_queue_family_index;
-    uint32_t _graphics_queue_family_index = _gDevice->vk_graphics_queue_family_index;
-    
-    //record clear screen command buffer for every swap chain image
-    for (uint32_t i = 0; i < this->_command_buffers->get_commands_size(); ++i)
+    //create render pass
+    auto _hr = this->_draw_render_pass.load(_gDevice,
+                                            _viewport,
+                                            _viewport_scissor,
+                                            _attachment_descriptions);
+    if (_hr == S_FALSE)
     {
-        if(this->_command_buffers->begin(i) == S_FALSE)
-        {
-            logger.error("Error on beginning command buffer.");
-            continue;
-        }
-        auto _cmd = this->_command_buffers->get_command_at(static_cast<size_t>(i));
-        
-        VkImageMemoryBarrier _present_to_render_barrier = {};
-        _present_to_render_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        _present_to_render_barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-        _present_to_render_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        _present_to_render_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        _present_to_render_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-        _present_to_render_barrier.srcQueueFamilyIndex = _present_queue_family_index;
-        _present_to_render_barrier.dstQueueFamilyIndex = _graphics_queue_family_index;
-        _present_to_render_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
-        _present_to_render_barrier.subresourceRange = _sub_resource_range;
-        
-        vkCmdPipelineBarrier(_cmd,
-                             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                             0,
-                             0,
-                             nullptr,
-                             0,
-                             nullptr,
-                             1,
-                             &_present_to_render_barrier);
-        
-        VkRenderPassBeginInfo _render_pass_begin_info =
-        {
-            VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,     // VkStructureType                sType
-            nullptr,                                      // const void                    *pNext
-            _gDevice->vk_render_passes["pass1"],                            // VkRenderPass                   renderPass
-            _gDevice->vk_frame_buffers["frames"].at(i),                       // VkFramebuffer                  framebuffer
-            {                                             // VkRect2D                       renderArea
-                {                                           // VkOffset2D                     offset
-                    0,                                          // int32_t                        x
-                    0                                           // int32_t                        y
-                },
-                {                                           // VkExtent2D                     extent
-                    _output_window->width,                                        // int32_t                        width
-                    _output_window->height,                                        // int32_t                        height
-                }
-            },
-            1,                                            // uint32_t                       clearValueCount
-            &_vk_clear_color                                  // const VkClearValue            *pClearValues
-        };
-        
-        vkCmdBeginRenderPass( _cmd, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE );
-        vkCmdBindPipeline( _cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _gDevice->vk_pipelines["pipeline1"].pipeline);
-        vkCmdDraw( _cmd, 3, 1, 0, 0 );
-        vkCmdEndRenderPass( _cmd );
-        
-        VkImageMemoryBarrier _barrier_from_render_to_present = {
-            VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,       // VkStructureType              sType
-            nullptr,                                      // const void                  *pNext
-            VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,         // VkAccessFlags                srcAccessMask
-            VK_ACCESS_MEMORY_READ_BIT,                    // VkAccessFlags                dstAccessMask
-            VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,              // VkImageLayout                oldLayout
-            VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,              // VkImageLayout                newLayout
-            _graphics_queue_family_index,               // uint32_t                     srcQueueFamilyIndex
-            _present_queue_family_index,                // uint32_t                     dstQueueFamilyIndex
-           _output_window->vk_swap_chain_image_views[i].image,                  // VkImage                      image
-            _sub_resource_range                       // VkImageSubresourceRange      subresourceRange
-        };
-        vkCmdPipelineBarrier(_cmd,
-                             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                             0,
-                             0,
-                             nullptr,
-                             0,
-                             nullptr,
-                             1,
-                             &_barrier_from_render_to_present );
-
-        
-        if(this->_command_buffers->end(i) == S_FALSE)
-        {
-            logger.error("Error on ending command buffer.");
-        }
+        release();
+        V(S_FALSE, "creating render pass", _trace_info, 3, true, true);
     }
+    
+    //create frame buffers
+     auto _render_pass_handle = this->_draw_render_pass.get_handle();
+    _hr = this->_draw_frame_buffers.load(_gDevice,
+                                         _render_pass_handle,
+                                         _output_window->vk_swap_chain_image_views,
+                                         &_output_window->vk_depth_buffer_image_view,
+                                         _screen_size,
+                                         1);
+    if (_hr == S_FALSE)
+    {
+        release();
+        V(S_FALSE, "creating frame buffers", _trace_info, 3, true, true);
+    }
+
+    //create semaphore create info
+    VkSemaphoreCreateInfo _semaphore_create_info = {};
+    _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    
+    if (vkCreateSemaphore(_gDevice->vk_device,
+                          &_semaphore_create_info,
+                          nullptr,
+                          &this->_draw_semaphore.semaphore))
+    {
+        release();
+        V(S_FALSE, "creating semaphore for draw command buffer", _trace_info, 3, true, true);
+    }
+    
+    //Fence for render sync
+    VkFenceCreateInfo _fence_create_info = {};
+    _fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    _fence_create_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+    
+    if (vkCreateFence(_gDevice->vk_device,
+                      &_fence_create_info,
+                      nullptr,
+                      &this->_draw_fence.fence))
+    {
+        release();
+        V(S_FALSE, "creating draw fence", _trace_info, 3, true, true);
+    }
+    
+    //create two primary command buffers for clearing screen
+    auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+    _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
+    if (_hr == S_FALSE)
+    {
+        release();
+        V(S_FALSE, "creating draw command buffers", _trace_info, 3, true, true);
+    }
+    
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //The following codes have been added for this project
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/02_shader/src/content/";
+    
+    //loading vertex shaders
+    _hr = this->_shader.load(_gDevice,
+                             _content_path_dir + L"shaders/shader.vs.spv",
+                             w_shader_stage::VERTEX_SHADER);
+    if(_hr == S_FALSE)
+    {
+        release();
+        V(S_FALSE, "loading vertex shader", _trace_info, 3, true, true);
+    }
+    
+    //loading fragment shader
+    _hr = this->_shader.load(_gDevice,
+                       _content_path_dir + L"shaders/shader.fs.spv",
+                       w_shader_stage::FRAGMENT_SHADER);
+    if(_hr == S_FALSE)
+    {
+        release();
+        V(S_FALSE, "loading fragment shader", _trace_info, 3, true, true);
+    }
+    
+    //loading pipeline cache
+    std::string _pipeline_cache_name = "pipeline_cache";
+    if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+    {
+        logger.error("could not create pipeline cache");
+        _pipeline_cache_name.clear();
+    }
+    
+    //just we need vertex position
+    w_vertex_binding_attributes _vba;
+    _vba.declaration = w_vertex_declaration::VERTEX_POSITION;
+    
+    std::vector<VkDynamicState> _dynamic_states =
+    {
+        VK_DYNAMIC_STATE_VIEWPORT,
+        VK_DYNAMIC_STATE_SCISSOR
+    };
+    
+    auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
+    _hr = this->_pipeline.load(_gDevice,
+                         _vba,
+                         VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+                         this->_draw_render_pass.get_handle(),
+                         this->_shader.get_shader_stages(),
+                         &_descriptor_set_layout_binding,
+                         { this->_draw_render_pass.get_viewport() },
+                         { this->_draw_render_pass.get_viewport_scissor() },
+                         _dynamic_states,
+                         _pipeline_cache_name,
+                         0,
+                         nullptr,
+                         nullptr,
+                         true);
+    if(_hr == S_FALSE)
+    {
+        release();
+        V(S_FALSE, "creating pipeline", _trace_info, 3, true, true);
+    }
+    
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    build_draw_command_buffers(_gDevice);
+}
+
+HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+{
+    auto _size = this->_draw_command_buffers.get_commands_size();
+    for (uint32_t i = 0; i < _size; ++i)
+    {
+        this->_draw_command_buffers.begin(i);
+        {
+            auto _render_pass_handle = this->_draw_render_pass.get_handle();
+            auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
+            
+            VkCommandBufferInheritanceInfo _inheritance_info = {};
+            _inheritance_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
+            _inheritance_info.renderPass = _render_pass_handle;
+            _inheritance_info.framebuffer = _frame_buffer_handle;
+            
+            VkCommandBufferBeginInfo _sec_cmd_buffer_begin_info{};
+            _sec_cmd_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+            _sec_cmd_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT | VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+            _sec_cmd_buffer_begin_info.pInheritanceInfo = &_inheritance_info;
+            
+            
+            auto _cmd = this->_draw_command_buffers.get_command_at(i);
+            this->_draw_render_pass.begin(_cmd,
+                                          _frame_buffer_handle,
+                                          w_color::CORNFLOWER_BLUE(),
+                                          1.0f,
+                                          0.0f,
+                                          VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+            {
+                //place your draw code
+            }
+            this->_draw_render_pass.end(_cmd);
+        }
+        this->_draw_command_buffers.end(i);
+    }
+    return S_OK;
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
-    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
-    w_game::update(pGameTime);
+    
+    defer(nullptr, [&](...)
+    {
+        w_game::update(pGameTime);
+    });
+    
+    const std::string _trace_info = this->name + "::update";
 }
 
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
+    if (w_game::exiting) return S_OK;
+    
+    const std::string _trace_info = this->name + "::render";
+
+    auto _gDevice = this->graphics_devices[0];
+    auto _output_window = &(_gDevice->output_presentation_windows[0]);
+    auto _frame_index = _output_window->vk_swap_chain_image_index;
+    
+    //reset draw fence
+    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
+    
+    //add wait semaphores
+    std::vector<VkSemaphore> _wait_semaphors = { _output_window->vk_swap_chain_image_is_available_semaphore };
+    auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
+    
+    const VkPipelineStageFlags _stage_flags[] =
+    {
+        VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+    };
+    
+    VkSubmitInfo _submit_info = {};
+    _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    _submit_info.commandBufferCount = 1;
+    _submit_info.pCommandBuffers = &_cmd;
+    _submit_info.pWaitDstStageMask = &_stage_flags[0];
+    _submit_info.waitSemaphoreCount = static_cast<uint32_t>(_wait_semaphors.size());
+    _submit_info.pWaitSemaphores = _wait_semaphors.data();
+    _submit_info.signalSemaphoreCount = 1;
+    _submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore; //signal to end the render
+    
+    // Submit to queue
+    if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_draw_fence.fence))
+    {
+        V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true, true);
+        return S_FALSE;
+    }
+    // Wait for fence to signal that all command buffers are ready
+    vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence.fence, VK_TRUE, VK_TIMEOUT);
+    
+    //clear all wait semaphores
+    _wait_semaphors.clear();
+    
     return w_game::render(pGameTime);
 }
 
@@ -227,12 +314,34 @@ void scene::on_device_lost()
     w_game::on_device_lost();
 }
 
+#ifdef __WIN32
+HRESULT scene::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam)
+{
+	// TODO: add your window message code here
+
+	return S_FALSE;
+}
+#endif
+
 ULONG scene::release()
 {
-    if (this->get_is_released()) return 0;
+	if (this->get_is_released()) return 0;
     
-    this->_shader.release();
-    //_command_buffers set to the w_graphics_device, so it will be delete automatically
-    return w_game::release();
-}
+    auto _gDevice = this->graphics_devices[0];
+    this->_draw_fence.release(_gDevice->vk_device);
+    this->_draw_semaphore.release(_gDevice->vk_device);
+    
+    this->_draw_command_buffers.release();
+    this->_draw_render_pass.release();
+    this->_draw_frame_buffers.release();
 
+    
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //The following codes have been added for this project
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    this->_shader.release();
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+	return w_game::release();
+}
