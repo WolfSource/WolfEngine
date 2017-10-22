@@ -11,7 +11,7 @@ w_game::w_game(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::w
     _app_name(pAppName)
 {
 	_super::set_class_name("w_game");
-	this->loadState = LoadState::NOTLOADED;
+	this->load_state = LOAD_STATE::NOTLOADED;
 
 #ifdef __UWP
 	logger.initialize(this->_app_name);
@@ -83,22 +83,22 @@ HRESULT w_game::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 bool w_game::run(_In_ map<int, vector<w_window_info>> pOutputWindowsInfo)
 {
-	if (this->loadState == LoadState::NOTLOADED)
+	if (this->load_state == LOAD_STATE::NOTLOADED)
 	{
-		this->loadState = LoadState::LOADING;
+		this->load_state = LOAD_STATE::LOADING;
 
 		//Async initialize & load
 		auto f = std::async(std::launch::async, [this, pOutputWindowsInfo]()->void
 		{
 			initialize(pOutputWindowsInfo);
 			load();
-			this->loadState = LoadState::LOADED;
+			this->load_state = LOAD_STATE::LOADED;
 		});
 		std::chrono::milliseconds _milli_sec(16);
 		f.wait_for(_milli_sec);
 	}
 
-    if (this->loadState != LoadState::LOADED) return true;
+    if (this->load_state != LOAD_STATE::LOADED) return true;
 
     update(this->_game_time);
 

@@ -25,6 +25,8 @@
 #pragma GCC visibility push(default)
 #endif
 
+enum LOAD_STATE { NOTLOADED, LOADING, LOADED };
+
 namespace wolf
 {
 	namespace system
@@ -48,8 +50,7 @@ namespace wolf
 		protected:
 			WSYS_EXP void set_class_name(const char* pClassName);
 
-			enum LoadState { NOTLOADED, LOADING, LOADED };
-			LoadState loadState;
+			LOAD_STATE load_state;
 
 		private:
 			//prevent copying
