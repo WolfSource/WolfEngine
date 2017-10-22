@@ -22,7 +22,7 @@
 class scene : public wolf::framework::w_game
 {
 public:
-    scene(_In_z_ std::wstring pRootDirectory);
+	scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName);
     virtual ~scene();
     
     /*
@@ -47,9 +47,6 @@ public:
     //This is called when the we lost graphics device.
     void on_device_lost() override;
     
-#ifdef __WIN32
-    HRESULT on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam) override;
-#endif
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
     

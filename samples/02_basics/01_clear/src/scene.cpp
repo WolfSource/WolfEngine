@@ -5,23 +5,24 @@ using namespace std;
 using namespace wolf::system;
 using namespace wolf::graphics;
 
-scene::scene(_In_z_ std::wstring pRootDirectory) :
-w_game(pRootDirectory)
+scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
+	w_game(pRunningDirectory, pAppName)
 {
-    auto _root_dir = pRootDirectory;
-    
+	auto _running_dir = pRunningDirectory;
+
 #if defined(__WIN32) || defined(__UWP)
-    content_path = _root_dir + L"../../../../content/";
+	content_path = _running_dir + L"../../../../content/";
 #elif defined(__APPLE__)
-    content_path = _root_dir + L"/../../../../../content/";
+	content_path = _running_dir + L"/../../../../../content/";
 #elif defined(__linux)
-    error not tested
+	error
 #elif defined(__ANDROID)
-    error not tested
+	error
 #endif
-    
-    w_game::set_fixed_time_step(false);
+
+	w_game::set_fixed_time_step(false);
 }
+
 
 scene::~scene()
 {
@@ -150,24 +151,12 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
             auto _render_pass_handle = this->_draw_render_pass.get_handle();
             auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
             
-            VkCommandBufferInheritanceInfo _inheritance_info = {};
-            _inheritance_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
-            _inheritance_info.renderPass = _render_pass_handle;
-            _inheritance_info.framebuffer = _frame_buffer_handle;
-            
-            VkCommandBufferBeginInfo _sec_cmd_buffer_begin_info{};
-            _sec_cmd_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-            _sec_cmd_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT | VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-            _sec_cmd_buffer_begin_info.pInheritanceInfo = &_inheritance_info;
-            
-            
             auto _cmd = this->_draw_command_buffers.get_command_at(i);
             this->_draw_render_pass.begin(_cmd,
                                           _frame_buffer_handle,
                                           w_color::CORNFLOWER_BLUE(),
                                           1.0f,
-                                          0.0f,
-                                          VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+                                          0.0f);
             {
                 //place your draw code
             }
@@ -246,15 +235,6 @@ void scene::on_device_lost()
 {
     w_game::on_device_lost();
 }
-
-#ifdef __WIN32
-HRESULT scene::on_msg_proc(HWND pHWND, UINT pMessage, WPARAM pWParam, LPARAM pLParam)
-{
-	// TODO: add your window message code here
-
-	return S_FALSE;
-}
-#endif
 
 ULONG scene::release()
 {

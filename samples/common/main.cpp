@@ -33,31 +33,33 @@ int main(int pArgc, const char * pArgv[])
 #ifdef __WIN32
     auto _msg_proc_func = [](HWND pHWND, UINT pMsg, WPARAM pWParam, LPARAM pLParam) -> HRESULT
     {
-        switch (pMsg)
-        {
-        case WM_CREATE:
-        {
-            logger.write(L"The window just created");
-        }
-        break;
-        //close window on KeyUp event of Escape button
-        case WM_KEYUP:
-        {
-            if (pWParam == VK_ESCAPE)
-            {
-                sWindow->close();
-                logger.write(L"The windows just closed");
-            }
-        }
-        break;
-        }
+		switch (pMsg)
+		{
+		case WM_CREATE:
+		{
+		}
+		break;
+		//close window on KeyUp event of Escape button
+		case WM_KEYUP:
+		{
+			if (pWParam == VK_ESCAPE)
+			{
+				sWindow->close();
+			}
+		}
+		break;
+		}
 
-        return sScene->on_msg_proc(pHWND, pMsg, pWParam, pLParam);
+		auto _result = inputs_manager.update(pHWND, pMsg, pWParam, pLParam);
+		if (_result) return _result;
+
+		return (HRESULT)DefWindowProc(pHWND, pMsg, pWParam, pLParam);
     };
 #endif
 
     //Initialize scene & window
-    sScene = make_unique<scene>();
+	auto _running_dir = wolf::system::io::get_current_directory();
+	sScene = make_unique<scene>(_running_dir, L"wolf.engine.vulkan.01_clear");
     sWindow = make_unique<w_window>();
 #ifdef __WIN32
     sWindow->initialize(_msg_proc_func);
@@ -91,10 +93,9 @@ int main(int pArgc, const char * pArgv[])
 
     //release all
     _windows_info.clear();
-    release();
-
-    //output a message to the log file
-    logger.write(L"Shutting down Wolf");
+	//output a message to the log file
+	logger.write(L"Shutting down Wolf");
+	release();
 
     //exit
     return EXIT_SUCCESS;
