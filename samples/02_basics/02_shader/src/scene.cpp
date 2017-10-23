@@ -191,8 +191,8 @@ void scene::load()
 		this->_draw_render_pass.get_handle(),
 		this->_shader.get_shader_stages(),
 		_descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
-		{ this->_draw_render_pass.get_viewport() },
-		{ this->_draw_render_pass.get_viewport_scissor() });
+		{ this->_viewport },
+		{ this->_viewport_scissor });
 
 	if (_hr == S_FALSE)
 	{

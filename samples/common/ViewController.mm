@@ -106,8 +106,8 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 -(CALayer*) makeBackingLayer
 {
     CALayer* layer = [self.class.layerClass layer];
-    CGSize viewScale = [self convertSizeToBacking: CGSizeMake(1.0, 1.0)];
-    layer.contentsScale = MIN(viewScale.width, viewScale.height);
+    //CGSize viewScale = [self convertSizeToBacking: CGSizeMake(1.0, 1.0)];
+    //layer.contentsScale = MIN(viewScale.width, viewScale.height);
     return layer;
 }
 
