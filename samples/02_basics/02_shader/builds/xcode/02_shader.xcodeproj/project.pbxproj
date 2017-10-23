@@ -10,8 +10,9 @@
 		2C13839F1F5096DE00D5283B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C13839E1F5096DE00D5283B /* main.m */; };
 		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
 		2C4639531EA55A3700A16595 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639511EA55A3700A16595 /* Assets.xcassets */; };
-		2C4639541EA55A3700A16595 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639521EA55A3700A16595 /* Info.plist */; };
 		2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639551EA55A6C00A16595 /* Main.storyboard */; };
+		2C6844371F9E491800AEAB30 /* shader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C6844331F9E491800AEAB30 /* shader.vert */; };
+		2C68443A1F9E491800AEAB30 /* shader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C6844361F9E491800AEAB30 /* shader.frag */; };
 		2CB69EDB1F62DDF60068D1E6 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69ED81F62DDF60068D1E6 /* ViewController.mm */; };
 		2CB69EDE1F62E1BF0068D1E6 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */; };
 		2CB69EE11F62E53C0068D1E6 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE01F62E53C0068D1E6 /* MoltenVK.framework */; };
@@ -31,6 +32,8 @@
 		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 02_shader/Assets.xcassets; sourceTree = "<group>"; };
 		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 02_shader/Info.plist; sourceTree = "<group>"; };
 		2C4639561EA55A6C00A16595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = 02_shader/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2C6844331F9E491800AEAB30 /* shader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = ../../src/content/shaders/shader.vert; sourceTree = "<group>"; };
+		2C6844361F9E491800AEAB30 /* shader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.frag; path = ../../src/content/shaders/shader.frag; sourceTree = "<group>"; };
 		2CB69ED71F62DDF60068D1E6 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../common/ViewController.h; sourceTree = "<group>"; };
 		2CB69ED81F62DDF60068D1E6 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../common/ViewController.mm; sourceTree = "<group>"; };
 		2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../src/scene.cpp; sourceTree = "<group>"; };
@@ -65,6 +68,7 @@
 		2C28033E1E61C73600048A80 = {
 			isa = PBXGroup;
 			children = (
+				2C68443B1F9E493100AEAB30 /* content */,
 				2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */,
 				2CB69EDD1F62E1BF0068D1E6 /* scene.h */,
 				2CB69ED71F62DDF60068D1E6 /* ViewController.h */,
@@ -95,6 +99,23 @@
 			);
 			name = "Supporting Files";
 			path = 02_shader;
+			sourceTree = "<group>";
+		};
+		2C68443B1F9E493100AEAB30 /* content */ = {
+			isa = PBXGroup;
+			children = (
+				2C68443C1F9E494000AEAB30 /* shaders */,
+			);
+			name = content;
+			sourceTree = "<group>";
+		};
+		2C68443C1F9E494000AEAB30 /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				2C6844361F9E491800AEAB30 /* shader.frag */,
+				2C6844331F9E491800AEAB30 /* shader.vert */,
+			);
+			name = shaders;
 			sourceTree = "<group>";
 		};
 		2CB69EDF1F62E53B0068D1E6 /* Frameworks */ = {
@@ -137,7 +158,7 @@
 		2C28033F1E61C73600048A80 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = WolfSource.io;
 				TargetAttributes = {
 					2C2803461E61C73600048A80 = {
@@ -170,8 +191,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C68443A1F9E491800AEAB30 /* shader.frag in Resources */,
+				2C6844371F9E491800AEAB30 /* shader.vert in Resources */,
 				2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */,
-				2C4639541EA55A3700A16595 /* Info.plist in Resources */,
 				2C4639531EA55A3700A16595 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -213,7 +235,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -221,7 +245,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -261,7 +289,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -269,7 +299,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

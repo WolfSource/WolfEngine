@@ -49,7 +49,7 @@ void init_window(struct w_window_info& pInfo)
     sSampleView = self.view;
     
     std::string _root_dir = [NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String + std::string("../../../");
-    sScene = new scene(wolf::system::convert::string_to_wstring(_root_dir));
+    sScene = new scene(wolf::system::convert::string_to_wstring(_root_dir), L"wolf.vulkan.sample");
     
     //initialize the information of window
     w_window_info _window_info;
@@ -166,21 +166,21 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 - (void)mouseDown:(NSEvent *)theEvent
 {
     NSPoint _touchPoint = [NSEvent mouseLocation];
-    logger.write(std::to_string(float(_touchPoint.x)));
+    //logger.write(std::to_string(float(_touchPoint.x)));
     
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
     NSPoint _touchPoint = [NSEvent mouseLocation];
-    logger.write(std::to_string(float(_touchPoint.x)));
+    //logger.write(std::to_string(float(_touchPoint.x)));
     
 }
 
 - (void)mouseMoved:(NSEvent *)event
 {
     NSPoint _touchPoint = [NSEvent mouseLocation];
-    logger.write(std::to_string(float(_touchPoint.x)));
+    //logger.write(std::to_string(float(_touchPoint.x)));
     
     [super mouseMoved: event];
 }

@@ -59,7 +59,7 @@ int main(int pArgc, const char * pArgv[])
 
     //Initialize scene & window
 	auto _running_dir = wolf::system::io::get_current_directory();
-	sScene = make_unique<scene>(_running_dir, L"wolf.engine.vulkan.01_clear");
+	sScene = make_unique<scene>(_running_dir, L"wolf.vulkan.sample");
     sWindow = make_unique<w_window>();
 #ifdef __WIN32
     sWindow->initialize(_msg_proc_func);
@@ -69,7 +69,7 @@ int main(int pArgc, const char * pArgv[])
     //create window info and add it to the map
     w_window_info _window_info;
     _window_info.width = 800;
-    _window_info.height = 800;
+    _window_info.height = 600;
     _window_info.is_full_screen = false;
     _window_info.v_sync_enable = false;
     _window_info.swap_chain_format = 44;//using vulkan as render api

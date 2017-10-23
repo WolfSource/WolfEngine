@@ -20,10 +20,6 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 	error
 #endif
 
-	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
-
-	w_game::set_graphics_device_manager_configs(_config);
 	w_game::set_fixed_time_step(false);
 }
 
@@ -264,9 +260,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _output_window = &(_gDevice->output_presentation_windows[0]);
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
 
-	//reset draw fence
-	vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
-
 	//add wait semaphores
 	std::vector<VkSemaphore> _wait_semaphors = { _output_window->vk_swap_chain_image_is_available_semaphore };
 	auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
@@ -294,6 +287,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	}
 	// Wait for fence to signal that all command buffers are ready
 	vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence.fence, VK_TRUE, VK_TIMEOUT);
+    //reset draw fence
+    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
 
 	//clear all wait semaphores
 	_wait_semaphors.clear();

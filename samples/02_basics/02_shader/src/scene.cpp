@@ -19,11 +19,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 #elif defined(__ANDROID)
 	error
 #endif
-
-	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
-
-	w_game::set_graphics_device_manager_configs(_config);
+    
 	w_game::set_fixed_time_step(false);
 }
 
@@ -152,7 +148,7 @@ void scene::load()
 
 	//loading vertex shaders
 	_hr = this->_shader.load(_gDevice,
-		_content_path_dir + L"shaders/shader.vs.spv",
+		_content_path_dir + L"shaders/shader.vert.spv",
 		w_shader_stage::VERTEX_SHADER);
 	if (_hr == S_FALSE)
 	{
@@ -162,7 +158,7 @@ void scene::load()
 
 	//loading fragment shader
 	_hr = this->_shader.load(_gDevice,
-		_content_path_dir + L"shaders/shader.fs.spv",
+		_content_path_dir + L"shaders/shader.frag.spv",
 		w_shader_stage::FRAGMENT_SHADER);
 	if (_hr == S_FALSE)
 	{
@@ -184,10 +180,9 @@ void scene::load()
 
 	std::vector<VkDynamicState> _dynamic_states =
 	{
-		VK_DYNAMIC_STATE_VIEWPORT,
-		VK_DYNAMIC_STATE_SCISSOR
+		VK_DYNAMIC_STATE_VIEWPORT
 	};
-
+    
 	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(_gDevice,
 		_vba,
@@ -222,29 +217,22 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
 	{
 		this->_draw_command_buffers.begin(i);
 		{
-			auto _render_pass_handle = this->_draw_render_pass.get_handle();
 			auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
-
-			VkCommandBufferInheritanceInfo _inheritance_info = {};
-			_inheritance_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
-			_inheritance_info.renderPass = _render_pass_handle;
-			_inheritance_info.framebuffer = _frame_buffer_handle;
-
-			VkCommandBufferBeginInfo _sec_cmd_buffer_begin_info{};
-			_sec_cmd_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-			_sec_cmd_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT | VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-			_sec_cmd_buffer_begin_info.pInheritanceInfo = &_inheritance_info;
-
 
 			auto _cmd = this->_draw_command_buffers.get_command_at(i);
 			this->_draw_render_pass.begin(_cmd,
 				_frame_buffer_handle,
 				w_color::CORNFLOWER_BLUE(),
 				1.0f,
-				0.0f,
-				VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+				0.0f);
 			{
-				//place your draw code
+                //++++++++++++++++++++++++++++++++++++++++++++++++++++
+                //The following codes have been added for this project
+                //++++++++++++++++++++++++++++++++++++++++++++++++++++
+                vkCmdBindPipeline(_cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline.get_handle());
+                vkCmdDraw( _cmd, 3, 1, 0, 0 );
+                //++++++++++++++++++++++++++++++++++++++++++++++++++++
+                //++++++++++++++++++++++++++++++++++++++++++++++++++++
 			}
 			this->_draw_render_pass.end(_cmd);
 		}
@@ -256,13 +244,9 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
 	if (w_game::exiting) return;
-
-	defer(nullptr, [&](...)
-	{
-		w_game::update(pGameTime);
-	});
-
-	const std::string _trace_info = this->name + "::update";
+    const std::string _trace_info = this->name + "::update";
+    
+	w_game::update(pGameTime);
 }
 
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
@@ -274,9 +258,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _gDevice = this->graphics_devices[0];
 	auto _output_window = &(_gDevice->output_presentation_windows[0]);
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
-
-	//reset draw fence
-	vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
 
 	//add wait semaphores
 	std::vector<VkSemaphore> _wait_semaphors = { _output_window->vk_swap_chain_image_is_available_semaphore };
@@ -297,7 +278,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	_submit_info.signalSemaphoreCount = 1;
 	_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore; //signal to end the render
 
-																				   // Submit to queue
+	// Submit to queue
 	if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_draw_fence.fence))
 	{
 		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true, true);
@@ -305,6 +286,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	}
 	// Wait for fence to signal that all command buffers are ready
 	vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence.fence, VK_TRUE, VK_TIMEOUT);
+    //reset draw fence
+    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
 
 	//clear all wait semaphores
 	_wait_semaphors.clear();

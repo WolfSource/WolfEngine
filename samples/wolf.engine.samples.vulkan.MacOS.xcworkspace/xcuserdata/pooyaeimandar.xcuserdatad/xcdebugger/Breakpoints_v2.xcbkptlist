@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "common/ViewController.mm"
-            timestampString = "526586615.43136"
+            timestampString = "530472489.07246"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "132"
@@ -42,76 +42,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "common/ViewController.mm"
-            timestampString = "526586615.43136"
+            timestampString = "530472489.072573"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "148"
             endingLineNumber = "148"
             landmarkName = "-keyUp:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "02_basics/02_shader/src/scene.cpp"
-            timestampString = "530051142.889745"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "198"
-            endingLineNumber = "198"
-            landmarkName = "scene::load()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "02_basics/02_shader/src/scene.cpp"
-            timestampString = "530051142.889745"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
-            landmarkName = "scene::load()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../engine/src/wolf.render/w_graphics/w_pipeline.cpp"
-            timestampString = "530051190.306433"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
-            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_ const w_vertex_binding_attributes&amp; pVertexBindingAttributes, _In_ const VkPrimitiveTopology pPrimitiveTopology, _In_ const VkRenderPass pRenderPass, _In_ const std::vector&lt;VkPipelineShaderStageCreateInfo&gt;* pShaderStages, _In_ const VkDescriptorSetLayout* const pShaderDescriptorSetLayoutBinding, _In_ const std::vector&lt;w_viewport&gt;&amp; pViewPorts, _In_ const std::vector&lt;w_viewport_scissor&gt;&amp; pViewPortsScissors, _In_ const std::vector&lt;VkDynamicState&gt;&amp; pDynamicStates, _In_ const std::string&amp; pPipelineCacheName, _In_ const UINT&amp; pTessellationPatchControlPoints, _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo, _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo, _In_ const bool pEnableDepthStencilState, _In_ const VkPipelineColorBlendAttachmentState pBlendState, _In_ const std::array&lt;float, 4&gt; pBlendColors)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../engine/src/wolf.render/w_graphics/w_pipeline.cpp"
-            timestampString = "530051233.625512"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
-            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_ const w_vertex_binding_attributes&amp; pVertexBindingAttributes, _In_ const VkPrimitiveTopology pPrimitiveTopology, _In_ const VkRenderPass pRenderPass, _In_ const std::vector&lt;VkPipelineShaderStageCreateInfo&gt;* pShaderStages, _In_ const VkDescriptorSetLayout* const pShaderDescriptorSetLayoutBinding, _In_ const std::vector&lt;w_viewport&gt;&amp; pViewPorts, _In_ const std::vector&lt;w_viewport_scissor&gt;&amp; pViewPortsScissors, _In_ const std::vector&lt;VkDynamicState&gt;&amp; pDynamicStates, _In_ const std::string&amp; pPipelineCacheName, _In_ const UINT&amp; pTessellationPatchControlPoints, _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo, _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo, _In_ const bool pEnableDepthStencilState, _In_ const VkPipelineColorBlendAttachmentState pBlendState, _In_ const std::array&lt;float, 4&gt; pBlendColors)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

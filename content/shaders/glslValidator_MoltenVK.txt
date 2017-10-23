@@ -1,1 +1,0 @@
-./MoltenShaderConverter -gi /Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/content/shaders/test/shader.fs -t f -so shader.fs.spv

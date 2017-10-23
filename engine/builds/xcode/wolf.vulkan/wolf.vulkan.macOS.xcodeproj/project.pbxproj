@@ -23,6 +23,7 @@
 		2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C410E6A1EAE111A003F2E84 /* w_pipeline.h */; };
 		2C4CCAF31EAE667100E0A422 /* w_frame_buffers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCAF11EAE667100E0A422 /* w_frame_buffers.cpp */; };
 		2C4CCAF41EAE667100E0A422 /* w_frame_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAF21EAE667100E0A422 /* w_frame_buffers.h */; };
+		2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
 		2C70799A1EACE705003784A2 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
 		2C736BBE1ECA1EB600624CC7 /* w_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BBC1ECA1EB600624CC7 /* w_model.h */; };
@@ -63,14 +64,13 @@
 		2C38D94B1E79646D00EE8595 /* w_render_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_export.h; path = ../../../src/wolf.render/w_render_export.h; sourceTree = "<group>"; };
 		2C38D94C1E79646D00EE8595 /* w_render_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_pch.cpp; path = ../../../src/wolf.render/w_render_pch.cpp; sourceTree = "<group>"; };
 		2C38D94D1E79646D00EE8595 /* w_render_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_pch.h; path = ../../../src/wolf.render/w_render_pch.h; sourceTree = "<group>"; };
-		2C38D9541E79649A00EE8595 /* libwolf.system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.dylib; path = ../wolf.system/build/Debug/libwolf.system.dylib; sourceTree = "<group>"; };
 		2C38D9561E7964BA00EE8595 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2C410E691EAE111A003F2E84 /* w_pipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_pipeline.cpp; path = ../../../src/wolf.render/w_graphics/w_pipeline.cpp; sourceTree = "<group>"; };
 		2C410E6A1EAE111A003F2E84 /* w_pipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_pipeline.h; path = ../../../src/wolf.render/w_graphics/w_pipeline.h; sourceTree = "<group>"; };
 		2C4CCAF11EAE667100E0A422 /* w_frame_buffers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_frame_buffers.cpp; path = ../../../src/wolf.render/w_graphics/w_frame_buffers.cpp; sourceTree = "<group>"; };
 		2C4CCAF21EAE667100E0A422 /* w_frame_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_frame_buffers.h; path = ../../../src/wolf.render/w_graphics/w_frame_buffers.h; sourceTree = "<group>"; };
 		2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
-		2C61A6AF1EC0DA0000C0AB3E /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
+		2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C736BBC1ECA1EB600624CC7 /* w_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_model.h; path = ../../../src/wolf.render/w_framework/w_model.h; sourceTree = "<group>"; };
 		2C736BC71ECB710900624CC7 /* w_uniform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_uniform.h; path = ../../../src/wolf.render/w_graphics/w_uniform.h; sourceTree = "<group>"; };
@@ -105,6 +105,7 @@
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2C70799A1EACE705003784A2 /* MoltenVK.framework in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
+				2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
 				2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */,
 				2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */,
@@ -181,11 +182,10 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2C61A6AF1EC0DA0000C0AB3E /* libmsgpackc.2.0.0.dylib */,
+				2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */,
 				2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */,
 				2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */,
 				2C38D9561E7964BA00EE8595 /* MoltenVK.framework */,
-				2C38D9541E79649A00EE8595 /* libwolf.system.dylib */,
 				2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */,
 				2C860FA51E5F1E86000E71B5 /* Metal.framework */,
 				2C860FA31E5F1E80000E71B5 /* libc++.tbd */,
@@ -258,7 +258,7 @@
 		2C69E9A11E5EC2CB00F15C44 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = WolfSource.io;
 				TargetAttributes = {
 					2C69E9A81E5EC2CB00F15C44 = {
@@ -321,7 +321,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -329,7 +331,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -338,6 +344,10 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/debug/",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -355,6 +365,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include $(SRCROOT)/../../../dependencies/msgpack/include/ $(SRCROOT)/../../../src/wolf.system $(SRCROOT)/../../../src/wolf.render $(SRCROOT)/../../../src/wolf.content_pipeline";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -371,7 +382,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -379,7 +392,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -388,6 +405,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/release/",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -398,6 +419,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include $(SRCROOT)/../../../dependencies/msgpack/include/ $(SRCROOT)/../../../src/wolf.system $(SRCROOT)/../../../src/wolf.render $(SRCROOT)/../../../src/wolf.content_pipeline";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;

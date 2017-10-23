@@ -137,8 +137,6 @@ void w_lua::execute_function()
 {
 	auto _hr = lua_pcall(_lua, _function_number_input_parameters, 0, 0);
 	_VL(_hr);
-
-	int _r = lua_tonumber(_lua, -1);
 }
 
 ULONG w_lua::release()

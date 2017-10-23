@@ -48,7 +48,7 @@ void init_window(struct w_window_info& pInfo)
     
 #if defined __APPLE__
     auto _running_dir = wolf::system::io::get_current_directory();
-    sScene = new scene(_running_dir, "test.wolf.engine.metal.macOS");
+    sScene = new scene(_running_dir, L"test.wolf.engine.metal.macOS");
 #elif defined __iOS__
     sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String,
                        "test.wolf.engine.metal.iOS");

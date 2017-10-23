@@ -148,7 +148,6 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
     {
         this->_draw_command_buffers.begin(i);
         {
-            auto _render_pass_handle = this->_draw_render_pass.get_handle();
             auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
             
             auto _cmd = this->_draw_command_buffers.get_command_at(i);
@@ -170,13 +169,12 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
     if (w_game::exiting) return;
+    const std::string _trace_info = this->name + "::update";
     
     defer(nullptr, [&](...)
     {
         w_game::update(pGameTime);
     });
-    
-    const std::string _trace_info = this->name + "::update";
 }
 
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
@@ -188,9 +186,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     auto _gDevice = this->graphics_devices[0];
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
     auto _frame_index = _output_window->vk_swap_chain_image_index;
-    
-    //reset draw fence
-    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
     
     //add wait semaphores
     std::vector<VkSemaphore> _wait_semaphors = { _output_window->vk_swap_chain_image_is_available_semaphore };
@@ -219,6 +214,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     }
     // Wait for fence to signal that all command buffers are ready
     vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence.fence, VK_TRUE, VK_TIMEOUT);
+    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
     
     //clear all wait semaphores
     _wait_semaphors.clear();
