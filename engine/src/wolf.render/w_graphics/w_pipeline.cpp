@@ -24,8 +24,8 @@ namespace wolf
                 _In_ const VkDescriptorSetLayout* const pShaderDescriptorSetLayoutBinding,
                 _In_ const std::vector<w_viewport>& pViewPorts,
                 _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
-                _In_ const std::vector<VkDynamicState>& pDynamicStates,
                 _In_ const std::string& pPipelineCacheName,
+				_In_ const std::vector<VkDynamicState>& pDynamicStates,
                 _In_ const UINT& pTessellationPatchControlPoints,
                 _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
                 _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo,
@@ -409,9 +409,19 @@ namespace wolf
                 _dys_ptr->sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
                 _dys_ptr->pNext = nullptr;
                 _dys_ptr->flags = 0;
-                _dys_ptr->dynamicStateCount = static_cast<uint32_t>(pDynamicStates.size());
-                _dys_ptr->pDynamicStates = pDynamicStates.data();
-                *pDynamicStateCreateInfo = _dys_ptr;
+
+				auto _dynamic_state_count = static_cast<uint32_t>(pDynamicStates.size());
+				if (_dynamic_state_count)
+				{
+					_dys_ptr->dynamicStateCount = _dynamic_state_count;
+					_dys_ptr->pDynamicStates = pDynamicStates.data();
+				}
+				else
+				{
+					_dys_ptr->dynamicStateCount = 0;
+					_dys_ptr->pDynamicStates = nullptr;
+				}
+				*pDynamicStateCreateInfo = _dys_ptr;
 
                 VkPipelineLayoutCreateInfo _pipeline_layout_create_info =
                 {
@@ -459,8 +469,8 @@ HRESULT w_pipeline::load(
     _In_ const VkDescriptorSetLayout* pShaderDescriptorSetLayoutBinding,
     _In_ const std::vector<w_viewport>& pViewPorts,
     _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
-    _In_ const std::vector<VkDynamicState>& pDynamicStates,
     _In_ const std::string& pPipelineCacheName,
+	_In_ const std::vector<VkDynamicState>& pDynamicStates,
     _In_ const UINT& pTessellationPatchControlPoints,
     _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
     _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo,
@@ -479,8 +489,8 @@ HRESULT w_pipeline::load(
         pShaderDescriptorSetLayoutBinding,
         pViewPorts,
         pViewPortsScissors,
+		pPipelineCacheName,
         pDynamicStates,
-        pPipelineCacheName,
         pTessellationPatchControlPoints,
         pPipelineRasterizationStateCreateInfo,
         pPipelineMultiSampleStateCreateInfo,

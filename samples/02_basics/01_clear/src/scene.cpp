@@ -205,7 +205,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _submit_info.pWaitSemaphores = _wait_semaphors.data();
     _submit_info.signalSemaphoreCount = 1;
     _submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore; //signal to end the render
-    
+
+	//reset draw fence
+	vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
     // Submit to queue
     if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_draw_fence.fence))
     {
@@ -214,7 +216,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     }
     // Wait for fence to signal that all command buffers are ready
     vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence.fence, VK_TRUE, VK_TIMEOUT);
-    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
     
     //clear all wait semaphores
     _wait_semaphors.clear();

@@ -2,6 +2,7 @@
 /bin/x64/
 /docs/extra/
 /engine/dependencies/*
+/engine/builds/mvsc/.vs/*
 !/engine/dependencies/*.7z
 
 # Prerequisites 

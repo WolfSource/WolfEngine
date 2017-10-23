@@ -30,8 +30,12 @@
     <ClInclude Include="..\..\..\..\common\pch.h" />
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\content\shaders\shader.frag" />
+    <None Include="..\..\src\content\shaders\shader.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2680EBB2-EAA5-4A48-8C01-537448B6898D}</ProjectGuid>
+    <ProjectGuid>{E3FB2394-F769-4D51-A282-CD4118AAB568}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>_02_shader</RootNamespace>
     <ProjectName>02_shader.Win32</ProjectName>
@@ -52,11 +56,11 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -116,7 +120,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)/../engine/dependencies/msgpack/include/;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/include/;$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;__WIN32;WIN32;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -128,8 +132,8 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wolf.system.win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14;$(VULKAN_SDK)/lib/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wolf.system.win32.lib;wolf.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -140,8 +144,8 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>wolf.system.win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wolf.system.win32.lib;wolf.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14;$(VULKAN_SDK)/lib/</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AssemblyDebug>false</AssemblyDebug>
       <SubSystem>Windows</SubSystem>

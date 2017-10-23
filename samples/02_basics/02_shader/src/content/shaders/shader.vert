@@ -10,8 +10,8 @@ out gl_PerVertex
 
 vec2 vertices[3] = vec2[](
                           vec2(  0.0 , -0.9),
-                          vec2( -0.9 ,  0.0),
-                          vec2(  0.9 ,  0.0)
+                          vec2( -0.9 ,  0.9),
+                          vec2(  0.9 ,  0.9)
                        );
 
 void main()

@@ -19,7 +19,13 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 #elif defined(__ANDROID)
 	error
 #endif
-    
+
+#ifdef __WIN32
+	w_graphics_device_manager_configs _config;
+	_config.debug_gpu = true;
+	w_game::set_graphics_device_manager_configs(_config);
+#endif
+
 	w_game::set_fixed_time_step(false);
 }
 
@@ -177,11 +183,6 @@ void scene::load()
 	//just we need vertex position
 	w_vertex_binding_attributes _vba;
 	_vba.declaration = w_vertex_declaration::VERTEX_POSITION;
-
-	std::vector<VkDynamicState> _dynamic_states =
-	{
-		VK_DYNAMIC_STATE_VIEWPORT
-	};
     
 	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(_gDevice,
@@ -191,13 +192,8 @@ void scene::load()
 		this->_shader.get_shader_stages(),
 		_descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
 		{ this->_draw_render_pass.get_viewport() },
-		{ this->_draw_render_pass.get_viewport_scissor() },
-		_dynamic_states,
-		_pipeline_cache_name,
-		0,
-		nullptr,
-		nullptr,
-		true);
+		{ this->_draw_render_pass.get_viewport_scissor() });
+
 	if (_hr == S_FALSE)
 	{
 		release();
@@ -278,6 +274,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	_submit_info.signalSemaphoreCount = 1;
 	_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore; //signal to end the render
 
+	//reset draw fence
+	vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
 	// Submit to queue
 	if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_draw_fence.fence))
 	{
@@ -286,8 +284,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	}
 	// Wait for fence to signal that all command buffers are ready
 	vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence.fence, VK_TRUE, VK_TIMEOUT);
-    //reset draw fence
-    vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
 
 	//clear all wait semaphores
 	_wait_semaphors.clear();
