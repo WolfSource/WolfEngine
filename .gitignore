@@ -1,8 +1,9 @@
 /bin/Build/
 /bin/x64/
 /docs/extra/
-/engine/dependencies/*
+/samples/.vs/*
 /engine/builds/mvsc/.vs/*
+/engine/dependencies/*
 !/engine/dependencies/*.7z
 
 # Prerequisites 
