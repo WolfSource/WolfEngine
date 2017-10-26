@@ -18,6 +18,7 @@
 #include <w_graphics/w_command_buffers.h>
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_frame_buffers.h>
+#include <w_graphics/w_semaphore.h>
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
@@ -70,7 +71,7 @@ private:
 	wolf::graphics::w_frame_buffers                                 _draw_frame_buffers;
 
 
-	wolf::graphics::w_fence                                         _draw_fence;
+	wolf::graphics::w_fences                                        _draw_fence;
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
 
 

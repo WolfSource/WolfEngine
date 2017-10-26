@@ -33,7 +33,7 @@ namespace wolf
                 _In_ const size_t& pCount, 
                 _In_ const VkCommandBufferLevel& pLevel = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
                 _In_ const bool& pCreateCommandPool = false,
-                _In_ const w_queue_index* pCommandPoolQueue = nullptr);
+                _In_ const w_queue* pCommandPoolQueue = nullptr);
             
             W_EXP HRESULT begin(_In_ const size_t pCommandBufferIndex,
                                 _In_ const VkCommandBufferUsageFlags pFlags = VkCommandBufferUsageFlagBits::VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);

@@ -184,6 +184,61 @@ vk_command_allocator_pool(0)
 {
 }
 
+const std::string w_graphics_device::print_info()
+{
+    return std::string(
+                       "graphics device: " + this->device_name +
+                       " ID:" + std::to_string(this->device_id) +
+                       " VendorID:" + std::to_string(this->device_vendor_id));
+}
+
+void w_graphics_device::draw(_In_ VkCommandBuffer pCommandBuffer,
+                             _In_ uint32_t        pVertexCount,
+                             _In_ uint32_t        pInstanceCount,
+                             _In_ uint32_t        pFirstVertex,
+                             _In_ uint32_t        pFirstInstance)
+{
+#ifdef __VULKAN__
+    vkCmdDraw( pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance );
+#elif defined(__DX12__)
+    
+#endif
+}
+
+HRESULT w_graphics_device::submit(_In_ const std::vector<VkCommandBuffer>&  pCommandBuffers,
+                                  _In_ const w_queue&                       pQueue,
+                                  _In_ const VkPipelineStageFlags*          pWaitDstStageMask,
+                                  _In_ std::vector<VkSemaphore>             pWaitForSemaphores,
+                                  _In_ std::vector<VkSemaphore>             pSignalForSemaphores,
+                                  _In_ w_fences&                            pFence)
+{
+    const std::string _trace_info = "w_graphics_device::submit";
+    
+    VkSubmitInfo _submit_info = {};
+    _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    _submit_info.commandBufferCount = static_cast<uint32_t>(pCommandBuffers.size());
+    _submit_info.pCommandBuffers = pCommandBuffers.data();
+    _submit_info.pWaitDstStageMask = pWaitDstStageMask;
+    _submit_info.waitSemaphoreCount = static_cast<uint32_t>(pWaitForSemaphores.size());
+    _submit_info.pWaitSemaphores = pWaitForSemaphores.data();
+    _submit_info.signalSemaphoreCount = static_cast<uint32_t>(pSignalForSemaphores.size());;
+    _submit_info.pSignalSemaphores = pSignalForSemaphores.data();
+    
+    // Submit to queue
+    if (vkQueueSubmit(pQueue.queue, 1, &_submit_info, *(pFence.get())))
+    {
+        V(S_FALSE,
+          "submiting queue for graphics device" + this->device_name + " ID:" + std::to_string(this->device_id),
+          _trace_info,
+          3,
+          false,
+          true);
+        return S_FALSE;
+    }
+    
+    return S_OK;
+}
+
 w_output_presentation_window w_graphics_device::main_window()
 {
     if (this->output_presentation_windows.size() > 0)
@@ -261,15 +316,13 @@ ULONG w_graphics_device::release()
         _output_window->vk_presentation_surface = 0;
 
 		//release semaphores
-		vkDestroySemaphore(this->vk_device,
-			_output_window->vk_swap_chain_image_is_available_semaphore,
-			nullptr);
-        _output_window->vk_swap_chain_image_is_available_semaphore = 0;
-        
-		vkDestroySemaphore(this->vk_device,
-			_output_window->vk_rendering_done_semaphore,
-			nullptr);
-        _output_window->vk_rendering_done_semaphore = 0;
+        {
+            auto _gDevice = std::make_shared<w_graphics_device>();
+            _gDevice.reset(this);
+            _output_window->vk_rendering_done_semaphore.release(_gDevice);
+            _output_window->vk_swap_chain_image_is_available_semaphore.release(_gDevice);
+            _gDevice = nullptr;
+        }
         
 		//release all image view of swap chains
 		for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
@@ -2383,27 +2436,16 @@ namespace wolf
 				auto _device_id = pGDevice->device_id;
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
-				VkSemaphoreCreateInfo _create_info = {};
-				_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-				auto _hr = vkCreateSemaphore(pGDevice->vk_device,
-					&_create_info,
-					nullptr,
-					&_output_presentation_window->vk_swap_chain_image_is_available_semaphore);
-				if (_hr)
-				{
-					logger.error("error on creating image_is_available semaphore for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				_hr = vkCreateSemaphore(pGDevice->vk_device,
-					&_create_info,
-					nullptr,
-					&_output_presentation_window->vk_rendering_done_semaphore);
-				if (_hr)
-				{
+                //create semaphores fro this graphics device
+                if (_output_presentation_window->vk_swap_chain_image_is_available_semaphore.initialize(pGDevice) == S_FALSE)
+                {
+                    logger.error("error on creating image_is_available semaphore for graphics device: " +
+                                 _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                    release();
+                    std::exit(EXIT_FAILURE);
+                }
+                if (_output_presentation_window->vk_rendering_done_semaphore.initialize(pGDevice) == S_FALSE)
+                {
 					logger.error("error on creating rendering_is_done semaphore for graphics device: " +
 						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 					release();
@@ -2811,10 +2853,11 @@ HRESULT w_graphics_device_manager::prepare()
             _wait_for_previous_frame(_gDevice, j);
 
 #elif defined(__VULKAN__)
+            auto _semaphore = _output_window->vk_swap_chain_image_is_available_semaphore.get();
             auto _hr = vkAcquireNextImageKHR(_gDevice->vk_device,
                 _output_window->vk_swap_chain,
                 UINT64_MAX,
-                _output_window->vk_swap_chain_image_is_available_semaphore,
+                *_semaphore,
                 VK_NULL_HANDLE,
                 &_output_window->vk_swap_chain_image_index);
 
@@ -3037,8 +3080,7 @@ HRESULT w_graphics_device_manager::present()
             
             _present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
             _present_info.waitSemaphoreCount = 1;
-            _present_info.pWaitSemaphores = &_present_window->vk_rendering_done_semaphore;
-            
+            _present_info.pWaitSemaphores = _present_window->vk_rendering_done_semaphore.get();
             _present_info.swapchainCount = 1;
             _present_info.pSwapchains = &_present_window->vk_swap_chain;
             _present_info.pImageIndices = &_present_window->vk_swap_chain_image_index;

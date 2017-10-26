@@ -108,30 +108,19 @@ void scene::load()
 	}
 
 	//create semaphore create info
-	VkSemaphoreCreateInfo _semaphore_create_info = {};
-	_semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-	if (vkCreateSemaphore(_gDevice->vk_device,
-		&_semaphore_create_info,
-		nullptr,
-		&this->_draw_semaphore.semaphore))
-	{
-		release();
-		V(S_FALSE, "creating semaphore for draw command buffer", _trace_info, 3, true, true);
-	}
-
+    _hr = this->_draw_semaphore.initialize(_gDevice);
+    if (_hr == S_FALSE)
+    {
+        release();
+        V(S_FALSE, "creating draw semaphore", _trace_info, 3, true, false);
+    }
+    
 	//Fence for render sync
-	VkFenceCreateInfo _fence_create_info = {};
-	_fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-	_fence_create_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-	if (vkCreateFence(_gDevice->vk_device,
-		&_fence_create_info,
-		nullptr,
-		&this->_draw_fence.fence))
+    _hr = this->_draw_fence.initialize(_gDevice);
+	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating draw fence", _trace_info, 3, true, true);
+		V(S_FALSE, "creating draw fence", _trace_info, 3, true, false);
 	}
 
 	//create two primary command buffers for clearing screen
@@ -225,8 +214,8 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 //The following codes have been added for this project
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                vkCmdBindPipeline(_cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline.get_handle());
-                vkCmdDraw( _cmd, 3, 1, 0, 0 );
+                this->_pipeline.bind(_cmd, nullptr);
+                pGDevice->draw(_cmd, 3, 1, 0, 0 );
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 			}
@@ -256,34 +245,28 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
 
 	//add wait semaphores
-	std::vector<VkSemaphore> _wait_semaphors = { _output_window->vk_swap_chain_image_is_available_semaphore };
+	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
 	auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 
-	const VkPipelineStageFlags _stage_flags[] =
+	const VkPipelineStageFlags _wait_dst_stage_mask[] =
 	{
 		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
 
-	VkSubmitInfo _submit_info = {};
-	_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	_submit_info.commandBufferCount = 1;
-	_submit_info.pCommandBuffers = &_cmd;
-	_submit_info.pWaitDstStageMask = &_stage_flags[0];
-	_submit_info.waitSemaphoreCount = static_cast<uint32_t>(_wait_semaphors.size());
-	_submit_info.pWaitSemaphores = _wait_semaphors.data();
-	_submit_info.signalSemaphoreCount = 1;
-	_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore; //signal to end the render
-
 	//reset draw fence
-	vkResetFences(_gDevice->vk_device, 1, &this->_draw_fence.fence);
-	// Submit to queue
-	if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_draw_fence.fence))
-	{
-		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true, true);
-		return S_FALSE;
-	}
-	// Wait for fence to signal that all command buffers are ready
-	vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence.fence, VK_TRUE, VK_TIMEOUT);
+	this->_draw_fence.reset(_gDevice);
+    if(_gDevice->submit(
+                     {_cmd},
+                     _gDevice->vk_graphics_queue,
+                     &_wait_dst_stage_mask[0],
+                     _wait_semaphors,
+                     { *_output_window->vk_rendering_done_semaphore.get() },
+                     this->_draw_fence) == S_FALSE)
+    {
+        V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true, false);
+    }
+    // Wait for fence to signal that all command buffers are ready
+    this->_draw_fence.wait(_gDevice);
 
 	//clear all wait semaphores
 	_wait_semaphors.clear();
@@ -306,8 +289,8 @@ ULONG scene::release()
 	if (this->get_is_released()) return 0;
 
 	auto _gDevice = this->graphics_devices[0];
-	this->_draw_fence.release(_gDevice->vk_device);
-	this->_draw_semaphore.release(_gDevice->vk_device);
+	this->_draw_fence.release(_gDevice);
+	this->_draw_semaphore.release(_gDevice);
 
 	this->_draw_command_buffers.release();
 	this->_draw_render_pass.release();

@@ -3,9 +3,7 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_graphics_device_manager.h
-	Description		 : The manager for graphics devices. Wolf.Engine supports two render APIs, the first one is DirectX 12 
-						which supports both Windows 10 and Universal Windows P(UWP) and the second one is Vulkan which supports
-						Windows, Linux, Android and OSX/IOS(with MoltenVK)  
+	Description		 : The manager for graphics devices.
 	Comment          :
 */
 
@@ -16,53 +14,7 @@
 #ifndef __W_GRAPHICS_DEVICE_MANAGER_H__
 #define __W_GRAPHICS_DEVICE_MANAGER_H__
 
-#ifdef __DX12__
-
-#include <wrl.h>
-#include <d3d12.h>
-#include <dxgi1_4.h>
-#include <DirectXMath.h>
-
-using Microsoft::WRL::ComPtr;
-
-#elif defined (__VULKAN__) 
-	#ifdef __WIN32
-		#ifndef VK_USE_PLATFORM_WIN32_KHR
-			#define VK_USE_PLATFORM_WIN32_KHR
-		#endif
-	#elif defined(__linux) && !defined(__ANDROID)
-		#ifndef VK_USE_PLATFORM_XCB_KHR
-			#define VK_USE_PLATFORM_XCB_KHR
-		#endif
-	#endif
-
-    #if defined(__IOS__) || defined(__APPLE__)
-
-#ifdef __iOS__
-        #ifndef VK_USE_PLATFORM_IOS_MVK
-            #define VK_USE_PLATFORM_IOS_MVK
-        #endif
-#else
-        #ifndef VK_USE_PLATFORM_MACOS_MVK
-            #define VK_USE_PLATFORM_MACOS_MVK
-        #endif
-#endif
-
-        #include <vulkan/vulkan.h>
-        #include <MoltenVK/vk_mvk_moltenvk.h>
-        #include <unistd.h>
-
-	#elif defined(__ANDROID)
-		#include "vk_android/vulkan_wrapper.h"
-	#else
-		#include <vulkan/vulkan.hpp>
-	#endif
-#endif
-
-#ifdef __ANDROID
-using std::size_t;
-#endif
-
+#include "w_graphics_headers.h"
 #include "w_render_export.h"
 #include <w_object.h>
 #include <w_window.h>
@@ -72,14 +24,9 @@ using std::size_t;
 #include <mutex>
 #include <vector>
 #include <array>
-
-#if defined(__linux) ||  defined(__APPLE__) || defined(__ANDROID)
-#include <w_std.h>
-#endif
-
-#ifdef __VULKAN__
-#define DEFAULT_FENCE_TIMEOUT 1000000000
-#endif
+#include "w_graphics/w_queue.h"
+#include "w_graphics/w_semaphore.h"
+#include "w_graphics/w_fences.h"
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
@@ -102,23 +49,6 @@ namespace wolf
             VkImage                             image = 0;
             VkImageView                         view = 0;
 #endif
-        };
-
-        struct w_queue_index
-        {
-#ifdef __VULKAN__
-            VkQueue        queue = 0;
-#endif
-            uint32_t       index = UINT32_MAX;
-
-            ULONG release()
-            {
-#ifdef __VULKAN__
-                this->queue = 0;
-#endif
-                this->index = UINT32_MAX;
-                return 0;
-            }
         };
 
 		//Output window which handles all 3d resources for output renderer
@@ -213,8 +143,8 @@ namespace wolf
             VkDeviceMemory							vk_depth_buffer_memory = 0;
             
 			//Synchronization objects
-            VkSemaphore								vk_swap_chain_image_is_available_semaphore = 0;
-            VkSemaphore								vk_rendering_done_semaphore = 0;
+            w_semaphore								vk_swap_chain_image_is_available_semaphore;
+            w_semaphore								vk_rendering_done_semaphore;
 #endif
 
         private:
@@ -228,21 +158,29 @@ namespace wolf
 		public:
             w_graphics_device();
 
-            W_EXP const std::string print_info()
-            {
-                return std::string(
-                    "graphics device: " + this->device_name +
-                    " ID:" + std::to_string(this->device_id) +
-                    " VendorID:" + std::to_string(this->device_vendor_id));
-            }
+            //print info
+            W_EXP const std::string print_info();
 
 			//get the first and the primary window which was created with this device
 			W_EXP w_output_presentation_window main_window();
                         
             //release all resources
-            ULONG release();
+            W_EXP ULONG release();
 
             std::vector<w_output_presentation_window>               output_presentation_windows;
+            
+            W_EXP void draw(_In_ VkCommandBuffer pCommandBuffer,
+                            _In_ uint32_t        pVertexCount,
+                            _In_ uint32_t        pInstanceCount,
+                            _In_ uint32_t        pFirstVertex,
+                            _In_ uint32_t        pFirstInstance);
+            
+            W_EXP HRESULT submit(_In_ const std::vector<VkCommandBuffer>&   pCommandBuffers,
+                                 _In_ const w_queue&                        pQueue,
+                                 _In_ const VkPipelineStageFlags*           pWaitDstStageMask,
+                                 _In_ std::vector<VkSemaphore>              pWaitForSemaphores,
+                                 _In_ std::vector<VkSemaphore>              pSignalForSemaphores,
+                                 _In_ w_fences&                             pFence);
             
 #ifdef __DX12__
 
@@ -268,11 +206,11 @@ namespace wolf
             std::vector<VkQueueFamilyProperties>                        vk_queue_family_properties;
             std::vector<VkBool32>                                       vk_queue_family_supports_present;
 			
-            w_queue_index                                               vk_graphics_queue;
-            w_queue_index                                               vk_present_queue;
-            w_queue_index                                               vk_compute_queue;
-            w_queue_index                                               vk_transfer_queue;
-            w_queue_index                                               vk_sparse_queue;
+            w_queue                                                     vk_graphics_queue;
+            w_queue                                                     vk_present_queue;
+            w_queue                                                     vk_compute_queue;
+            w_queue                                                     vk_transfer_queue;
+            w_queue                                                     vk_sparse_queue;
 
             VkDevice                                                    vk_device;
 
@@ -475,39 +413,6 @@ namespace wolf
             }
         };
 #endif
-        
-        struct w_fence
-        {
-#ifdef __VULKAN__
-        VkFence             fence;
-            
-        W_EXP ULONG release(VkDevice pDevice)
-        {
-            vkDestroyFence(pDevice, this->fence, nullptr);
-            return 1;
-        }
-            
-#elif defined(__DX12__)
-        ComPtr<ID3D12Fence>
-#endif
-        };
-
-        struct w_semaphore
-        {
-#ifdef __VULKAN__
-            VkSemaphore     semaphore;
-            
-            W_EXP ULONG release(VkDevice pDevice)
-            {
-                vkDestroySemaphore(pDevice, this->semaphore, nullptr);
-                return 1;
-            }
-            
-#elif defined(__DX12__)
-            ComPtr<?>       semaphore;
-#endif
-            
-        };
         
 #pragma endregion
         

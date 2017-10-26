@@ -23,6 +23,13 @@
 		2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C410E6A1EAE111A003F2E84 /* w_pipeline.h */; };
 		2C4CCAF31EAE667100E0A422 /* w_frame_buffers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCAF11EAE667100E0A422 /* w_frame_buffers.cpp */; };
 		2C4CCAF41EAE667100E0A422 /* w_frame_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAF21EAE667100E0A422 /* w_frame_buffers.h */; };
+		2C598C611FA231280055D215 /* w_semaphore.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C598C5F1FA231280055D215 /* w_semaphore.h */; };
+		2C598C631FA235460055D215 /* w_semaphore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C598C621FA235460055D215 /* w_semaphore.cpp */; };
+		2C598C651FA2387B0055D215 /* w_graphics_headers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C598C641FA2387A0055D215 /* w_graphics_headers.h */; };
+		2C598C681FA268740055D215 /* w_queue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C598C661FA268730055D215 /* w_queue.cpp */; };
+		2C598C691FA268740055D215 /* w_queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C598C671FA268740055D215 /* w_queue.h */; };
+		2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C598C6C1FA27CC10055D215 /* w_fences.h */; };
+		2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C598C6D1FA27CC10055D215 /* w_fences.cpp */; };
 		2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
 		2C70799A1EACE705003784A2 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
@@ -70,6 +77,13 @@
 		2C4CCAF11EAE667100E0A422 /* w_frame_buffers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_frame_buffers.cpp; path = ../../../src/wolf.render/w_graphics/w_frame_buffers.cpp; sourceTree = "<group>"; };
 		2C4CCAF21EAE667100E0A422 /* w_frame_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_frame_buffers.h; path = ../../../src/wolf.render/w_graphics/w_frame_buffers.h; sourceTree = "<group>"; };
 		2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
+		2C598C5F1FA231280055D215 /* w_semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_semaphore.h; path = ../../../src/wolf.render/w_graphics/w_semaphore.h; sourceTree = "<group>"; };
+		2C598C621FA235460055D215 /* w_semaphore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_semaphore.cpp; path = ../../../src/wolf.render/w_graphics/w_semaphore.cpp; sourceTree = "<group>"; };
+		2C598C641FA2387A0055D215 /* w_graphics_headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_graphics_headers.h; path = ../../../src/wolf.render/w_graphics_headers.h; sourceTree = "<group>"; };
+		2C598C661FA268730055D215 /* w_queue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_queue.cpp; path = ../../../src/wolf.render/w_graphics/w_queue.cpp; sourceTree = "<group>"; };
+		2C598C671FA268740055D215 /* w_queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_queue.h; path = ../../../src/wolf.render/w_graphics/w_queue.h; sourceTree = "<group>"; };
+		2C598C6C1FA27CC10055D215 /* w_fences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_fences.h; path = ../../../src/wolf.render/w_graphics/w_fences.h; sourceTree = "<group>"; };
+		2C598C6D1FA27CC10055D215 /* w_fences.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_fences.cpp; path = ../../../src/wolf.render/w_graphics/w_fences.cpp; sourceTree = "<group>"; };
 		2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C736BBC1ECA1EB600624CC7 /* w_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_model.h; path = ../../../src/wolf.render/w_framework/w_model.h; sourceTree = "<group>"; };
@@ -118,6 +132,12 @@
 		2C1B3FF31E97DC5300512959 /* w_graphics */ = {
 			isa = PBXGroup;
 			children = (
+				2C598C661FA268730055D215 /* w_queue.cpp */,
+				2C598C671FA268740055D215 /* w_queue.h */,
+				2C598C6D1FA27CC10055D215 /* w_fences.cpp */,
+				2C598C6C1FA27CC10055D215 /* w_fences.h */,
+				2C598C621FA235460055D215 /* w_semaphore.cpp */,
+				2C598C5F1FA231280055D215 /* w_semaphore.h */,
 				2C06C2421F6ECE320022AB0C /* w_quad.h */,
 				2C8D5B691F4F98D1000BCB87 /* w_imgui.cpp */,
 				2C8D5B6A1F4F98D1000BCB87 /* w_imgui.h */,
@@ -160,6 +180,7 @@
 				2CA945DB1ED9F5B9007B70B8 /* imgui */,
 				2C29CD131EB3339E00BEFF54 /* w_framework */,
 				2C1B3FF31E97DC5300512959 /* w_graphics */,
+				2C598C641FA2387A0055D215 /* w_graphics_headers.h */,
 				2C38D9481E79646D00EE8595 /* w_graphics_device_manager.cpp */,
 				2C38D9491E79646D00EE8595 /* w_graphics_device_manager.h */,
 				2C38D94A1E79646D00EE8595 /* w_obj_c_wrapper.mm */,
@@ -211,11 +232,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C598C651FA2387B0055D215 /* w_graphics_headers.h in Headers */,
 				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
 				2C4CCAF41EAE667100E0A422 /* w_frame_buffers.h in Headers */,
 				2C9899661E97EA74002FE161 /* w_mesh.h in Headers */,
 				2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */,
 				2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */,
+				2C598C691FA268740055D215 /* w_queue.h in Headers */,
+				2C598C611FA231280055D215 /* w_semaphore.h in Headers */,
 				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
 				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
 				2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */,
@@ -226,6 +250,7 @@
 				2C8D5B651F4F98B5000BCB87 /* w_bounding_frustum.h in Headers */,
 				2C8D5B6E1F4F98D1000BCB87 /* w_imgui.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
+				2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */,
 				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
 				2C736BBE1ECA1EB600624CC7 /* w_model.h in Headers */,
 				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
@@ -289,6 +314,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C598C631FA235460055D215 /* w_semaphore.cpp in Sources */,
 				2CA945EB1ED9F7CC007B70B8 /* imgui_draw.cpp in Sources */,
 				2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */,
 				2C9899691E9A2EA8002FE161 /* w_command_buffers.cpp in Sources */,
@@ -299,6 +325,7 @@
 				2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */,
 				2C8D5B641F4F98B5000BCB87 /* w_bounding_frustum.cpp in Sources */,
 				2C410E6B1EAE111A003F2E84 /* w_pipeline.cpp in Sources */,
+				2C598C681FA268740055D215 /* w_queue.cpp in Sources */,
 				2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */,
 				2C4CCAF31EAE667100E0A422 /* w_frame_buffers.cpp in Sources */,
 				2C8D5B6D1F4F98D1000BCB87 /* w_imgui.cpp in Sources */,
@@ -306,6 +333,7 @@
 				2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */,
 				2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */,
 				2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */,
+				2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

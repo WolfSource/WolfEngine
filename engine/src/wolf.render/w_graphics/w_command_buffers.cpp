@@ -21,7 +21,7 @@ namespace wolf
                 _In_ const size_t& pCount,
                 _In_ const VkCommandBufferLevel& pLevel,
                 _In_ const bool& pCreateCommandPool,
-                _In_ const w_queue_index* pCommandPoolQueue)
+                _In_ const w_queue* pCommandPoolQueue)
             {
                 if (pCreateCommandPool)
                 {
@@ -325,7 +325,7 @@ HRESULT w_command_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& p
     _In_ const size_t& pCount,
     _In_ const VkCommandBufferLevel& pLevel,
     _In_ const bool& pCreateCommandPool,
-    _In_ const w_queue_index* pCommandPoolQueue)
+    _In_ const w_queue* pCommandPoolQueue)
 {
     if(!this->_pimp) return S_FALSE;
     

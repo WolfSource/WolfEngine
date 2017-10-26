@@ -62,7 +62,7 @@ private:
     wolf::graphics::w_frame_buffers                                 _draw_frame_buffers;
     
     
-    wolf::graphics::w_fence                                         _draw_fence;
+    wolf::graphics::w_fences                                        _draw_fence;
     wolf::graphics::w_semaphore                                     _draw_semaphore;
     
 };
