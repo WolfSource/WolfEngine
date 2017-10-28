@@ -8,9 +8,11 @@ HRESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDe
 {
     HRESULT _hr = S_OK;
     
+    this->_gDevice = pGDevice;
+
     if (this->_fences.size())
     {
-        release(pGDevice);
+        release();
     }
     
 #ifdef __VULKAN__
@@ -42,16 +44,16 @@ HRESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     return _hr;
 }
 
-HRESULT w_fences::wait(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ uint64_t pTimeOut)
+HRESULT w_fences::wait(_In_ uint64_t pTimeOut)
 {
-    return vkWaitForFences(pGDevice->vk_device, 1, this->_fences.data(), VK_TRUE, pTimeOut) == VkResult::VK_SUCCESS ? S_OK : S_FALSE;
+    return vkWaitForFences(this->_gDevice->vk_device, 1, this->_fences.data(), VK_TRUE, pTimeOut) == VkResult::VK_SUCCESS ? S_OK : S_FALSE;
 }
 
-HRESULT w_fences::reset(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT w_fences::reset()
 {
     //reset fence
 #ifdef __VULKAN__
-    return vkResetFences(pGDevice->vk_device, 1, this->_fences.data()) == VkResult::VK_SUCCESS ? S_OK : S_FALSE;
+    return vkResetFences(this->_gDevice->vk_device, 1, this->_fences.data()) == VkResult::VK_SUCCESS ? S_OK : S_FALSE;
 #elif defined(__DX12__)
     
 #endif
@@ -74,18 +76,19 @@ uint32_t w_fences::get_count()
     return static_cast<uint32_t>(this->_fences.size());
 }
 
-ULONG w_fences::release(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+ULONG w_fences::release()
 {
 #ifdef __VULKAN__
     for (auto& _fence : this->_fences)
     {
-        vkDestroyFence(pGDevice->vk_device, _fence, nullptr);
+        vkDestroyFence(this->_gDevice->vk_device, _fence, nullptr);
     }
 #elif defined(__DX12__)
     
 #endif
     
     this->_fences.clear();
-    
+    this->_gDevice = nullptr;
+
     return 1;
 }

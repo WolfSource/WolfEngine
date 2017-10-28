@@ -61,6 +61,15 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
       <Filter>masked_occlusion_culling</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_queue.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_semaphore.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
@@ -122,6 +131,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h">
       <Filter>masked_occlusion_culling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.h">
+      <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_queue.h">
+      <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_semaphore.h">
+      <Filter>w_graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

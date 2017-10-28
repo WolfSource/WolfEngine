@@ -303,8 +303,8 @@ ULONG w_graphics_device::release()
 
 	//wait for device to become IDLE
 	vkDeviceWaitIdle(this->vk_device);
-
-	//release all output presentation windows
+	
+    //release all output presentation windows
 	for (size_t i = 0; i < this->output_presentation_windows.size(); ++i)
 	{
 		auto _output_window = &(this->output_presentation_windows.at(i));
@@ -316,13 +316,8 @@ ULONG w_graphics_device::release()
         _output_window->vk_presentation_surface = 0;
 
 		//release semaphores
-        {
-            auto _gDevice = std::make_shared<w_graphics_device>();
-            _gDevice.reset(this);
-            _output_window->vk_rendering_done_semaphore.release(_gDevice);
-            _output_window->vk_swap_chain_image_is_available_semaphore.release(_gDevice);
-            _gDevice = nullptr;
-        }
+        _output_window->vk_rendering_done_semaphore.release();
+        _output_window->vk_swap_chain_image_is_available_semaphore.release();
         
 		//release all image view of swap chains
 		for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
@@ -368,7 +363,7 @@ ULONG w_graphics_device::release()
     
 	//release vulkan resources
 	vkDestroyDevice(this->vk_device, nullptr);
-
+    
 #endif
 
 	return 1;

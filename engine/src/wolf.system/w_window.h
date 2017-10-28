@@ -153,7 +153,7 @@ public:
 	WSYS_EXP HRESULT initialize();
 #endif
         //Run the main loop
-	WSYS_EXP void run(std::function<void(void)>& pFunc);
+	WSYS_EXP void run(std::function<void(void)> pFunc);
 	//Exit from main loop and close current window
 	WSYS_EXP void close();
 

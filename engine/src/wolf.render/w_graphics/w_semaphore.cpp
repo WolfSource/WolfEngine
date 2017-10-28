@@ -11,6 +11,8 @@ VkSemaphore* w_semaphore::get()
 
 HRESULT w_semaphore::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
+    this->_gDevice = pGDevice;
+
 #ifdef __VULKAN__
     //create semaphore create info
     VkSemaphoreCreateInfo _semaphore_create_info = {};
@@ -30,13 +32,16 @@ HRESULT w_semaphore::initialize(_In_ const std::shared_ptr<w_graphics_device>& p
     return S_OK;
 }
 
-ULONG w_semaphore::release(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+ULONG w_semaphore::release()
 {
 #ifdef __VULKAN__
-    vkDestroySemaphore(pGDevice->vk_device, this->_semaphore, nullptr);
+    vkDestroySemaphore(this->_gDevice->vk_device, this->_semaphore, nullptr);
     this->_semaphore = 0;
 #else
     
 #endif
+
+    this->_gDevice = nullptr;
+
     return 1;
 }

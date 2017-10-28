@@ -275,9 +275,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		return S_FALSE;
 	}
 	// Wait for fence to signal that all command buffers are ready
-    this->_draw_fence.wait(_gDevice);
+    this->_draw_fence.wait();
     //reset draw fence
-    this->_draw_fence.reset(_gDevice);
+    this->_draw_fence.reset();
 
 	return w_game::render(pGameTime);
 }
@@ -296,9 +296,8 @@ ULONG scene::release()
 {
 	if (this->get_is_released()) return 0;
 
-	auto _gDevice = this->graphics_devices[0];
-	this->_draw_fence.release(_gDevice);
-	this->_draw_semaphore.release(_gDevice);
+	this->_draw_fence.release();
+	this->_draw_semaphore.release();
 
 	this->_draw_command_buffers.release();
 	this->_draw_render_pass.release();

@@ -25,9 +25,10 @@ namespace wolf
             //initialize semaphore
             W_EXP HRESULT initialize(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
             //release resources of semaphore
-            W_EXP ULONG release(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+            W_EXP ULONG release();
             
         private:
+            std::shared_ptr<wolf::graphics::w_graphics_device>      _gDevice = nullptr;
 #ifdef __VULKAN__
             VkSemaphore     _semaphore = 0;
 #elif defined(__DX12__)

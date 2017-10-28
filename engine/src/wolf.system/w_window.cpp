@@ -248,7 +248,7 @@ HRESULT w_window::initialize()
 #endif
 
 #ifdef __WIN32
-void w_window::run(std::function<void(void)>& const pFunc)
+void w_window::run(std::function<void(void)> const pFunc)
 {
 	MSG msg;
 	std::memset(&msg, 0, sizeof(msg));
