@@ -1992,14 +1992,27 @@ namespace wolf
 				_hr = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pGDevice->vk_physical_device,
 					_vk_presentation_surface,
 					&_surface_capabilities);
-				if (_hr)
-				{
-					logger.error("error on create vulkan surface capabilities for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) +
-						" and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
+                if (_hr == -3)
+                {
+                    logger.error("error on create vulkan surface capabilities for graphics device: " +
+                        _device_name + " ID:" + std::to_string(_device_id) +
+                        " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+
+                    //manually create _surface_capabilities
+                    _surface_capabilities.currentExtent.width = _output_presentation_window->width;
+                    _surface_capabilities.currentExtent.height = _output_presentation_window->height;
+                    _surface_capabilities.currentTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+                    _surface_capabilities.maxImageArrayLayers = 1;
+                    _surface_capabilities.maxImageCount = 16;
+                    _surface_capabilities.maxImageExtent.width = _output_presentation_window->width;
+                    _surface_capabilities.maxImageExtent.height = _output_presentation_window->height;
+                    _surface_capabilities.minImageCount = 1;
+                    _surface_capabilities.minImageExtent.width = 1;
+                    _surface_capabilities.minImageExtent.height = 1;
+                    _surface_capabilities.supportedCompositeAlpha = 1;
+                    _surface_capabilities.supportedTransforms = 1;
+                    _surface_capabilities.supportedUsageFlags = 159;
+                }
 
 				//get the count of present modes
 				uint32_t _present_mode_count;
@@ -2691,13 +2704,13 @@ namespace wolf
 #pragma GCC visibility pop
 #endif
 
-w_graphics_device_manager::w_graphics_device_manager() :
+w_graphics_device_manager::w_graphics_device_manager() : immediately_release(false),
 	_pimp(new w_graphics_device_manager_pimp())
 {
 	_super::set_class_name("w_graphics_device_manager_pimp");// typeid(this).name());
    
 #ifdef __WIN32
-        auto _hr = CoInitialize(NULL);
+    auto _hr = CoInitialize(NULL);
 	V(_hr, L"CoInitialize", _super::name, 3, true, false);
 #endif
 
@@ -3126,12 +3139,15 @@ ULONG w_graphics_device_manager::release()
     {
         auto _gDevice = this->graphics_devices.front();
         
-        //wait for all presentation windows to perform their tasks
-        for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
+        if (!immediately_release)
         {
-            _wait_for_previous_frame(_gDevice, j);
-            //Present to avoid leak all references held by previous render
-            present();
+            //wait for all presentation windows to perform their tasks
+            for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
+            {
+                _wait_for_previous_frame(_gDevice, j);
+                //Present to avoid leak all references held by previous render
+                present();
+            }
         }
         
         SHARED_RELEASE(_gDevice);

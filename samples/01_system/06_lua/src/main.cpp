@@ -24,7 +24,7 @@ WOLF_MAIN()
     const wchar_t* _name = L"06_lua";
     WOLF_INIT(_name);
 
-	logger.write(L"Wolf started");
+	logger.write(L"Wolf initialized");
 
 #ifdef __WIN32
     auto _route = L"../../../../content/scripts/samples/";

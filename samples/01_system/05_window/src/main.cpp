@@ -34,7 +34,7 @@ WOLF_MAIN()
     WOLF_INIT(L"01_system-05_window");
 
 	//log to output file
-	logger.write(L"starting Wolf");
+	logger.write(L"Wolf initialized");
 
 #ifdef __WIN32
 	/*

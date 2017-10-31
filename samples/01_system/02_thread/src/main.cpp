@@ -19,7 +19,7 @@ WOLF_MAIN()
     WOLF_INIT(L"02_thread");
     
     //log to output file
-    logger.write(L"Wolf started");
+    logger.write(L"Wolf initialized");
 
     //get number of hardware thread contexts which is needed for allocating thread pool's memory
     auto _thread_pool_size = w_thread::get_number_of_hardware_thread_contexts();

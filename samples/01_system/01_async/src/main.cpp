@@ -19,7 +19,7 @@ WOLF_MAIN()
     WOLF_INIT(L"01_async");
 
     //log to output file
-    logger.write(L"Wolf started");
+    logger.write(L"Wolf initialized");
 
     //execute async task in standard c++
     w_task::execute_async([]()-> void

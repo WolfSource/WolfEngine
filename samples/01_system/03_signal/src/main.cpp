@@ -18,7 +18,7 @@ WOLF_MAIN()
     WOLF_INIT(L"03_signal");
     
     //log to output file
-    logger.write(L"starting Wolf");
+    logger.write(L"Wolf initialized");
 
     struct signal_args
     {

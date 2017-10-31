@@ -18,7 +18,7 @@ WOLF_MAIN()
     const wchar_t* _name = L"07_xml";
     WOLF_INIT(_name);
 
-	logger.write(L"Wolf started");
+	logger.write(L"Wolf initialized");
     
     //create root node
     w_xml_data _root;

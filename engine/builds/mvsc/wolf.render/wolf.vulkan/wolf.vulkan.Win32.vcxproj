@@ -224,14 +224,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\wolf.content_pipeline\wolf.content_pipeline.Win32.vcxproj">
-      <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295928}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\wolf.system\wolf.system.Win32.vcxproj">
-      <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\..\..\..\content\shaders\basic.frag" />
     <None Include="..\..\..\..\..\content\shaders\basic.vert" />
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_0_local_size_x1.comp" />
@@ -279,6 +271,11 @@
     <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tese" />
     <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CompilerSpecific.inl" />
     <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\wolf.system\wolf.system.Win32.vcxproj">
+      <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

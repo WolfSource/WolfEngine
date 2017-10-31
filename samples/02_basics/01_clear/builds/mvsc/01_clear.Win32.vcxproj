@@ -115,7 +115,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/dependencies/msgpack/include/;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/include/;$(SolutionDir)/../engine/dependencies/lua/include/;$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/dependencies/msgpack/include/;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/include/;$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
