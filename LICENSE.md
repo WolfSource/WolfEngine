@@ -7,7 +7,7 @@
 <p>The <a href="http://WolfSource.io">WolfSource</a> supports the free software concept by providing the Wolf.Engine Open Source Edition, which is licensed under the GNU General Public License (GPL) version 3. You can use Wolf.Engine to create and distribute software with licenses that are compatible with this free software license.</p>
 <p>More information on Free and Open Source software is available online.</p>
 <p>GNU GPL-3: <a href="http://www.gnu.org/">http://www.gnu.org/</a> and <a href="https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)">https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)</a></p>
-<p>Open Source licensing: <a href="http://www.opensource.org/"</a>http://www.opensource.org/</p>
+<p>Open Source licensing: <a href="http://www.opensource.org/">http://www.opensource.org/</a></p>
 <p>Additionaly, PyWolf is provided under the terms of <a href="https://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause License (Revised)</a>.</p>
 
 ## Commercial
