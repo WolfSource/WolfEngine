@@ -9,7 +9,7 @@
 <p>More information on Free and Open Source software is available online.</p>
 <p>GNU GPL-3: <a href="http://www.gnu.org/">http://www.gnu.org/</a> and <a href="https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)">https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)</a></p>
 <p>Open Source licensing: <a href="http://www.opensource.org/"</a>http://www.opensource.org/</p>
-<p>Additionaly, PyWolf is provided under the terms of <a href="https://opensource.org/licenses/BSD-3-Clause">https://opensource.org/licenses/BSD-3-Clause</a>BSD 3-Clause License (Revised).</p>
+
 
 ## Commercial
 <p>A commercial license is available for those that are not comfortable with GPL v3 terms. The commercial license is a paid per-user license that allows you to distribute your application under your own terms for more information please contact us: "contact{at}wolfsource{dot}io"</p>
