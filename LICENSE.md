@@ -10,6 +10,6 @@
 <p>Open Source licensing: <a href="http://www.opensource.org/"</a>http://www.opensource.org/</p>
 
 ## Commercial
-<p>A commercial license is available for those that are not comfortable with GPL v3 terms. The commercial license is a paid per-user license that allows you to distribute your application under your own terms for more information please contact us: "##contact{at}wolfsource{dot}io"</p>
+<p>A commercial license is available for those that are not comfortable with GPL v3 terms. The commercial license is a paid per-user license that allows you to distribute your application under your own terms for more information please contact us: "contact{at}wolfsource{dot}io"</p>
 
 
