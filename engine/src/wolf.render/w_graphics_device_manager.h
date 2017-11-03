@@ -347,7 +347,6 @@ namespace wolf
                         
 		protected:
 			std::vector<std::shared_ptr<w_graphics_device>>		graphics_devices;
-            bool                                                immediately_release;
 
 		private:
             //prevent copying

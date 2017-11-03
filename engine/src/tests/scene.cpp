@@ -20,6 +20,9 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 	error
 #endif
 
+	w_graphics_device_manager_configs _config;
+	_config.debug_gpu = true;
+	w_game::set_graphics_device_manager_configs(_config);
 	w_game::set_fixed_time_step(false);
 }
 
@@ -136,7 +139,7 @@ void scene::load()
 
 	//loading vertex shaders
 	_hr = this->_shader.load(_gDevice,
-		_content_path_dir + L"shaders/shader.vs.spv",
+		_content_path_dir + L"shaders/shader.vert.spv",
 		w_shader_stage::VERTEX_SHADER);
 	if (_hr == S_FALSE)
 	{
@@ -146,7 +149,7 @@ void scene::load()
 
 	//loading fragment shader
 	_hr = this->_shader.load(_gDevice,
-		_content_path_dir + L"shaders/shader.fs.spv",
+		_content_path_dir + L"shaders/shader.frag.spv",
 		w_shader_stage::FRAGMENT_SHADER);
 	if (_hr == S_FALSE)
 	{

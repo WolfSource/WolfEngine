@@ -1,6 +1,7 @@
 import os
 import sys
 import thread
+import ctypes
 import PyWolf
 
 #PySide
@@ -11,54 +12,97 @@ from PySide.QtCore import *
 WIDTH = 640
 HEIGHT = 480
 
+pywolf_version = "PyWolf (Python wrapper for Wolf.Engine)"
+
 #PySide code
 app = QtGui.QApplication(sys.argv)
 if not app:
     app = QtGui.QApplication([])
 
-class WolfWidget(QtGui.QWidget):
+class Logger(QPlainTextEdit):
     def __init__(self, parent = None):
-        QtGui.QWidget.__init__(self, parent)
+        super(Logger, self).__init__(parent)
+        self.setReadOnly(1)
+  
+    def log(self, pMsg):
+        self.appendPlainText(pMsg)
 
-    def paintEvent(self, event):
-        #p = QPainter(self)
-        #po = QPoint(0,0);
+w = QWidget()
+logger = Logger()
+cmd = Logger()
 
-        #img = QImage(WIDTH, HEIGHT, QImage.Format_RGB888)       
-        #for i in range(0, WIDTH):
-        #    for j in range(0, HEIGHT):
-        #        img.setPixel(i, j, qRgb(255, 0, 0))
-
-        #p.drawImage(po, img)
-        PyWolf.render()
-        self.update()
-
-w = WolfWidget()
-
-def main_wolf():
-    # get HWND for windows
-    _wid = w.winId()
-
+def run_wolf():
+    # get window handle
+    pycobject_hwnd = w.winId()
+    #convert window handle as HWND to unsigned integer pointer for c++
+    ctypes.pythonapi.PyCObject_AsVoidPtr.restype  = ctypes.c_void_p
+    ctypes.pythonapi.PyCObject_AsVoidPtr.argtypes = [ctypes.py_object]
+    int_hwnd = ctypes.pythonapi.PyCObject_AsVoidPtr(pycobject_hwnd)
+    
     #get the current path
     _current_path = os.path.dirname(os.path.abspath(__file__))
-    _hr = PyWolf.initialize(_wid, "PyWolf", _current_path, "content")
+    _hr = PyWolf.initialize(int_hwnd, "PyWolf", _current_path, "content")
     if _hr == 1 :
-        print "Error on initializing PyWolf"
+        print "Error on running PyWolf"
         return
+
+def on_clear_log_clicked():
+    logger.clear()
+    logger.log(pywolf_version)
+
+def on_execute_clicked():
+    exec(cmd.toPlainText())
+
+def init_wolf_utilities(pWidget):
+    
+    #initialize the widget
+    pWidget.setWindowTitle("PyWolf Utilities")
+    pWidget.resize(WIDTH / 2, HEIGHT / 2)
+    
+    #initialize the buttons
+    clear_btn = QPushButton("Clear Log")
+    clear_btn.clicked.connect(on_clear_log_clicked)
+
+    execute_btn = QPushButton("Execute")
+    execute_btn.clicked.connect(on_execute_clicked)
+
+    #clear log
+    on_clear_log_clicked()
+
+    #input command and logger
+    cmd.setReadOnly(0)
+    v = QVBoxLayout(pWidget)
+    v.addWidget(logger)
+    v.addWidget(cmd)
+    v.addWidget(clear_btn)
+    v.addWidget(execute_btn)
 
 #create instance of Wolf widget viewer
 if __name__ == '__main__':
     w.resize(WIDTH, HEIGHT)
-    w.setWindowTitle("PyWolf")
+    w.setWindowTitle("PyWolf Viewer")
     w.show()
-
+    
+    d = QWidget()
+    init_wolf_utilities(d)
+    d.show()
+     
     #run wolf
     try:
-        thread.start_new_thread( main_wolf, () )
+        thread.start_new_thread( run_wolf, () )
     except:
         print "Error: unable to start thread for PyWolf"
 
     app.exec_()
 
     PyWolf.release()
-    print "\r\nPyWolf successfully released"
+    print "\r\nPyWolf shut down successfully"
+    
+    #run wolf
+    try:
+        thread.start_new_thread( run_wolf, () )
+    except:
+        print "Error: unable to start thread for PyWolf"
+
+    while 1:
+        pass

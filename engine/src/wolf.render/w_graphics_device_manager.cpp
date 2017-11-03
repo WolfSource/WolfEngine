@@ -309,12 +309,6 @@ ULONG w_graphics_device::release()
 	{
 		auto _output_window = &(this->output_presentation_windows.at(i));
        
-		//release the surface
-		vkDestroySurfaceKHR(w_graphics_device::vk_instance,
-			_output_window->vk_presentation_surface,
-			nullptr);
-        _output_window->vk_presentation_surface = 0;
-
 		//release semaphores
         _output_window->vk_rendering_done_semaphore.release();
         _output_window->vk_swap_chain_image_is_available_semaphore.release();
@@ -327,11 +321,6 @@ ULONG w_graphics_device::release()
 				_output_window->vk_swap_chain_image_views[i].view,
 				nullptr);
             _output_window->vk_swap_chain_image_views[i].view = 0;
-            
-            //No need to destroy image
-//            vkDestroyImage(this->vk_device,
-//                               _output_window->vk_swap_chain_image_views[i].image,
-//                               nullptr);
             _output_window->vk_swap_chain_image_views[i].image = 0;
 		}
 		_output_window->vk_swap_chain_image_views.clear();
@@ -341,6 +330,12 @@ ULONG w_graphics_device::release()
 			_output_window->vk_swap_chain,
 			nullptr);
         _output_window->vk_swap_chain = 0;
+
+		//release the surface
+		vkDestroySurfaceKHR(w_graphics_device::vk_instance,
+			_output_window->vk_presentation_surface,
+			nullptr);
+		_output_window->vk_presentation_surface = 0;
 
 		this->output_presentation_windows.at(i).release();
 	}
@@ -2704,14 +2699,13 @@ namespace wolf
 #pragma GCC visibility pop
 #endif
 
-w_graphics_device_manager::w_graphics_device_manager() : immediately_release(false),
-	_pimp(new w_graphics_device_manager_pimp())
+w_graphics_device_manager::w_graphics_device_manager() : _pimp(new w_graphics_device_manager_pimp())
 {
 	_super::set_class_name("w_graphics_device_manager_pimp");// typeid(this).name());
    
 #ifdef __WIN32
     auto _hr = CoInitialize(NULL);
-	V(_hr, L"CoInitialize", _super::name, 3, true, false);
+	V(_hr, L"CoInitialize already been called", _super::name, 3, false, false);
 #endif
 
 #ifdef __ANDROID
@@ -3139,16 +3133,15 @@ ULONG w_graphics_device_manager::release()
     {
         auto _gDevice = this->graphics_devices.front();
         
-        if (!immediately_release)
-        {
-            //wait for all presentation windows to perform their tasks
-            for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
-            {
-                _wait_for_previous_frame(_gDevice, j);
-                //Present to avoid leak all references held by previous render
-                present();
-            }
-        }
+#ifdef __DX12__
+        //wait for all presentation windows to perform their tasks
+		//for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
+		//{
+		//	_wait_for_previous_frame(_gDevice, j);
+		//	//Present to avoid leak all references held by previous render
+		//	present();
+		//}
+#endif
         
         SHARED_RELEASE(_gDevice);
         
@@ -3173,6 +3166,10 @@ ULONG w_graphics_device_manager::release()
     FreeVulkan();
 #endif
     
+#ifdef __WIN32
+	CoUninitialize();
+#endif
+
     return _super::release();
 }
 

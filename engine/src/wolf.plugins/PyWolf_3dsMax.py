@@ -1,0 +1,402 @@
+import sys
+import os
+import MaxPlus
+import math
+import ctypes
+import thread
+
+#append search path for PyWolf
+PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+if not PyWolfPath in sys.path:
+	sys.path.append(PyWolfPath)
+wolf_version = ""
+try:
+	import PyWolf
+	wolf_version = "(version: 1.1.0.0)"
+except:
+	print "Error, could not find PyWolf"
+	
+from collections import defaultdict
+from sys import maxint
+
+#check pyside version
+pyside_version = -1
+try:
+	from PySide2 import QtWidgets, QtCore
+	from PySide2.QtWidgets import *
+	from PySide2.QtCore import *
+	pyside_version = 2
+except:
+	try:
+		from PySide import QtGui, QtCore
+		from PySide.QtGui import *
+		from PySide.QtCore import *
+		pyside_version = 1
+	except:
+		print "Error, could not find PySide2 or PySide"
+
+if 	pyside_version == -1:
+	sys.exit(1)
+
+class _GCProtector(object):
+    widgets = []
+
+app = QApplication.instance()
+if not app:
+	app = QApplication([])
+
+class Logger(QPlainTextEdit):
+    def __init__(self, parent = None):
+		super(Logger, self).__init__(parent)
+		self.setReadOnly(1)
+  
+    def log(self, pMsg):
+        self.appendPlainText(pMsg)
+
+class WolfWidget(QWidget):
+    def __init__(self, parent = None):
+		super(WolfWidget, self).__init__(parent)
+  
+    def closeEvent(self, event):
+        PyWolf.release()
+        logger.log("PyWolf shut down successfully")
+        event.accept()
+
+class Dialog(QDialog):
+    def __init__(self, parent = None):
+		super(Dialog, self).__init__(parent)
+  
+    def closeEvent(self, event):
+        PyWolf.release()
+        print "PyWolf shut down successfully"
+        event.accept()
+		
+#Global variables
+preNameTextBox = QTextEdit("CG")
+preNameTextBox.setMaximumHeight(23)
+
+logger = Logger()
+cmd = Logger()
+old_instances = defaultdict(list)
+
+#wolf widget
+wolfWidget = WolfWidget()
+WIDTH = 640
+HEIGHT = 480
+
+def quaternion_to_euler_angle(w, x, y, z):
+	ysqr = y * y
+	
+	t0 = +2.0 * (w * x + y * z)
+	t1 = +1.0 - 2.0 * (x * x + ysqr)
+	X = math.degrees(math.atan2(t0, t1))
+	
+	t2 = +2.0 * (w * y - z * x)
+	t2 = +1.0 if t2 > +1.0 else t2
+	t2 = -1.0 if t2 < -1.0 else t2
+	Y = math.degrees(math.asin(t2))
+	
+	t3 = +2.0 * (w * z + x * y)
+	t4 = +1.0 - 2.0 * (ysqr + z * z)
+	Z = math.degrees(math.atan2(t3, t4))
+	
+	return X, Y, Z
+
+def to_quaternion(pPitch, pRoll, pYaw):
+	#Abbreviations for the various angular functions
+	cy = math.cos(pYaw * 0.5)
+	sy = math.sin(pYaw * 0.5)
+	cr = math.cos(pRoll * 0.5)
+	sr = math.sin(pRoll * 0.5)
+	cp = math.cos(pPitch * 0.5)
+	sp = math.sin(pPitch * 0.5)
+
+	w = cy * cr * cp + sy * sr * sp
+	x = cy * sr * cp - sy * cr * sp
+	y = cy * cr * sp + sy * sr * cp
+	z = sy * cr * cp - cy * sr * sp
+	return w, x, y, z 
+
+def in_range_of(pNum, pMin, pMax):
+	return pNum >= pMin and pNum <= pMax
+	
+def apply_editpoly_reset_xform(pName):
+	_max_sxript_cmd = "select $" + pName + "									\r\n\
+	macros.run \"Modifier Stack\" \"Convert_to_Poly\"					\r\n\
+	ResetXForm $" +  pName + "														\r\n\
+	macros.run \"Modifier Stack\" \"Convert_to_Poly\"					\r\n\
+	"
+	MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+
+def get_standard_index_name(pIndex):
+	_index_str = ""
+	if pIndex < 10 :
+		_index_str = "00" + str(pIndex)
+	elif pIndex < 100 :
+		_index_str = "0" + str(pIndex)
+	else:
+		_index_str = str(pIndex)
+	return _index_str
+	
+def reinstance_current_layer():
+	pre_name = preNameTextBox.toPlainText()
+	
+	_layer = MaxPlus.LayerManager_GetCurrentLayer()
+	_n = _layer.GetName()
+	
+	if _n == "0" or _n == "_Problems_" or _n == "_Boundaries_" or _n == "_Inner_Layers_" or _n == "_Middle_Layers_" or _n == "_Outer_Layers_":
+		logger.log("The following layers not allowed: 0(default), _Inner_Layers_, _Middle_Layers_, _Outer_Layers_, _Problems_ and _Boundaries_ . Move your nodes to new layer.")
+		return
+	
+	y = _n.startswith('Layer')
+	if not y:
+		logger.log("Layer name \"" + _n + "\" must have start with \"Layer\"")
+		return
+	
+	#get layer index as str
+	_layer_index_str = str(_n .replace('Layer', ''))
+	#check is it valid ?
+	_layer_index = 0
+	
+	try:
+		_layer_index = int(_layer_index_str)
+	except:
+		_layer_index = -maxint - 1
+		
+	if _layer_index == (-maxint - 1):
+		logger.log("Layer \"" + _n + "\" must have in following format: Layer + Number; for example Layer001, Layer1, Layer1000")
+		return
+	
+	_layer_index_str = get_standard_index_name(_layer_index)
+		
+	#find ref node
+	No_Ref_Founded = 0
+	_ref_index = -1
+	_lod_index = -1
+	nodes = _layer.GetNodes()
+	instances_index = []
+	
+	_len_nodes = len(nodes)
+	if _len_nodes == 0:
+		logger.log("Layer \"" + _n + "\" does not have any node")
+		return
+		
+	for j in range(0, _len_nodes):
+		_node = nodes[j]
+		_rotate = _node.GetWorldRotation()
+		_rx, _ry, _rz = quaternion_to_euler_angle(_rotate.GetW(), _rotate.GetX(), _rotate.GetY(), _rotate.GetZ())	
+		_node_name = _node.Name
+			
+		if _node_name.find("-ch") != -1:
+			continue
+		
+		if _node_name.find("-lod") != -1:
+			_lod_index = j
+			continue
+		
+		if _ref_index == -1 and in_range_of(_rx, -0.1, 0.1) and in_range_of(_ry, -0.1, 0.1) and in_range_of(_rz, -0.1, 0.1):
+			#found ref node
+			_ref_index = j
+		else:
+			_node.Name = _node.Name + "_INS"
+			instances_index.append(j)
+	
+	if _ref_index == -1:
+		logger.log("Layer \"" + _n + "\" does not have ref object, At least one node should contain zero rotation")
+		return
+		
+	_ref =  nodes[_ref_index]
+	logger.log("using " + _ref.Name + " as ref node")
+	
+	#change ref node
+	_ref.Name = pre_name + _layer_index_str +"_"
+		
+	#move lod to ref location
+	if _lod_index != -1:
+		_lod =  nodes[_lod_index]
+		_ref_pos = _ref.Position
+		_lod.SetPositionX(_ref_pos.GetX())
+		_lod.SetPositionY(_ref_pos.GetY())
+		_lod.SetPositionZ(_ref_pos.GetZ())
+		
+	#apply convert to editpoly, reset xform 
+	apply_editpoly_reset_xform(_ref.Name)
+	
+	num_instances = len(instances_index)
+	for k in xrange(0, num_instances):
+		old_ins = nodes[instances_index[k]]
+		pos = old_ins.Position
+		rot = old_ins.GetWorldRotation()
+		
+		#create instance
+		instance = _ref.CreateTreeInstance()
+		instance.Name = pre_name + _layer_index_str + "-ins" +  get_standard_index_name(k + 1) + "_"
+		instance.SetPositionX(pos.GetX())
+		instance.SetPositionY(pos.GetY())
+		instance.SetPositionZ(pos.GetZ())
+		instance.SetWorldRotation(rot)
+			
+		#change color of old instance
+		old_ins.WireColor = MaxPlus.Color(1.0, 0.0, .0)
+		#store to old instances
+		old_instances[0].append(old_ins)
+	
+def delete_old_nodes():
+	#delete all nodes
+	do_not_add_for_first = 1
+	_max_sxript_cmd = "select #("
+	for k in old_instances:
+		for v in old_instances[k]:
+			if do_not_add_for_first:
+				do_not_add_for_first = 0
+				_max_sxript_cmd = _max_sxript_cmd + "$\'" + v.Name + "\'"
+			else:
+				_max_sxript_cmd = _max_sxript_cmd + ",$\'" + v.Name + "\'"
+	
+	_max_sxript_cmd =  _max_sxript_cmd + ")											\r\n\
+	actionMan.executeAction 0 \"40020\"  -- Edit: Delete Objects	\r\n\
+	"
+	MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+	
+	old_instances.clear()
+
+def clear_log():
+	logger.clear()
+	logger.appendPlainText("Wolf Engine Plugin for Autodesk 3ds Max "  + wolf_version)
+
+def run_pywolf():
+    if wolf_version == "" :
+		logger.log("PyWolf not available")
+		return
+		
+	#show widget
+    wolfWidget.show()
+    logger.log("PyWolf v.1.39.3.22 launched")
+
+def shutdown_pywolf():
+	if wolf_version == "":
+		logger.log("PyWolf not available")
+		return
+	PyWolf.release()
+	logger.log("PyWolf shut down successfully")
+	
+def execute_cmd():
+	_cmd = cmd.toPlainText()
+	exec(_cmd)
+	logger.log(_cmd)
+	
+def init_reinstance_layout():
+	widget = QWidget()
+	
+	label = QLabel("PreName")
+	
+	button_1 = QPushButton("1 - ReCreate new node(s)		")
+	button_1.clicked.connect(reinstance_current_layer)
+	
+	button_2 = QPushButton("2 - Delete old node(s)		")
+	button_2.clicked.connect(delete_old_nodes)
+	
+	h_layout = QHBoxLayout(widget)
+	h_layout.setAlignment(Qt.AlignTop)
+	h_layout.addWidget(label)
+	h_layout.addWidget(preNameTextBox)
+	h_layout.addWidget(button_1)
+	h_layout.addWidget(button_2)
+	
+	return widget
+
+def init_helper():
+	widget = QWidget()
+	
+	#command input
+	cmd.setReadOnly(0)
+	
+	#wolf buttons
+	wolf_buttons = QWidget()
+	
+	#run wolf.engine
+	run_wolf_button = QPushButton("Run Wolf")
+	run_wolf_button.clicked.connect(run_pywolf)
+	#shutdown wolf.engine
+	shutdown_wolf_button = QPushButton("ShutDown Wolf")
+	shutdown_wolf_button.clicked.connect(shutdown_pywolf)
+	#execute python codes
+	exe_button = QPushButton("execute")
+	exe_button.clicked.connect(execute_cmd)
+	
+	h_layout = QHBoxLayout(wolf_buttons)
+	h_layout.addWidget(run_wolf_button)
+	h_layout.addWidget(shutdown_wolf_button)
+	
+	v_layout = QVBoxLayout(widget)
+	v_layout.addWidget(wolf_buttons)
+	v_layout.addWidget(QLabel("PyWolf (Python wrapper for Wolf.Engine)"))
+	v_layout.addWidget(cmd)
+	v_layout.addWidget(exe_button)
+		
+	return widget
+
+def init_pywolf():
+	widget = QWidget()
+	
+	v_layout = QVBoxLayout(widget)	
+	v_layout.addWidget(QLabel("ReInstance active layer"))
+	v_layout.addWidget(init_reinstance_layout())
+		
+	return widget
+
+def run_wolf():
+    # get window handle
+    pycobject_hwnd =wolfWidget.winId()
+    #convert window handle as HWND to unsigned integer pointer for c++
+    ctypes.pythonapi.PyCObject_AsVoidPtr.restype  = ctypes.c_void_p
+    ctypes.pythonapi.PyCObject_AsVoidPtr.argtypes = [ctypes.py_object]
+    int_hwnd = ctypes.pythonapi.PyCObject_AsVoidPtr(pycobject_hwnd)
+    
+    #get the current path
+    _current_script_path = os.path.dirname(os.path.abspath(__file__))
+    _hr = PyWolf.initialize(int_hwnd, "PyWolf", str(_current_script_path), "content")
+    if _hr == 1 :
+        print "Error on initializing PyWolf"
+		
+def main():
+    dialog = Dialog(MaxPlus.GetQMaxMainWindow())
+    dialog.resize(WIDTH, HEIGHT)
+    _GCProtector.widgets.append(dialog)
+	
+    wolfWidget.setWindowTitle("PyWolf Viewer")
+    wolfWidget.resize(WIDTH, HEIGHT)
+    _GCProtector.widgets.append(wolfWidget)
+
+    title = "Wolf Engine Plugin for Autodesk 3ds Max "  + wolf_version
+    dialog.setWindowTitle(title)
+	
+	#create first tab	
+    main_tab = QTabWidget()
+    main_tab.addTab(init_pywolf(), "3Ds Max Helper")
+    main_tab.addTab(init_helper(), "Wolf Viewer")
+	
+    clear_log()
+    if wolf_version == "":
+	    logger.log("Error, could not find PyWolf")
+    else:
+		#run main thread of wolf engine
+        run_wolf()
+
+    #clear log
+	clear_log_btn = QPushButton("Clear Log")
+	clear_log_btn.clicked.connect(clear_log)
+	
+	#create vertex box layout
+	main_layout = QVBoxLayout()
+	main_layout.addWidget(main_tab)
+	main_layout.addWidget(logger)
+	main_layout.addWidget(clear_log_btn)
+	
+    dialog.setLayout(main_layout)
+    dialog.setWindowModality(Qt.NonModal)
+    dialog.show()
+    print title + " just launched"
+
+if __name__ == '__main__':
+	main()

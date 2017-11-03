@@ -17,6 +17,9 @@
 #include <boost/python.hpp>
 #include <wolf.h>
 #include <w_window.h>
+#include <w_task.h>
 #include "PyScene.h"
+#include <tbb/atomic.h>
+#include <tbb/compat/condition_variable>
 
 #endif //__W_PYTHON_PCH_H__
