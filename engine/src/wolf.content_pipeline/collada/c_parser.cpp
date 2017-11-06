@@ -1524,9 +1524,9 @@ HRESULT c_parser::_create_scene(
                 //make transform change
                 auto _t = _camera->get_translate();
                 
-                std::swap(_t.y, _t.z);
-                _t.z *= -1;
-                _t.y *= -1;
+                //std::swap(_t.y, _t.z);
+                //_t.z *= -1;
+                //_t.y *= -1;
 
                 _camera->set_translate(_t);
             }
@@ -1589,13 +1589,21 @@ void c_parser::_iterate_over_nodes(
                 
                 if (sZ_Up)
                 {
-                    _instance_info.position[0] = _node->translate.x;
-                    _instance_info.position[1] = _node->translate.z;
-                    _instance_info.position[2] = -_node->translate.y;
+                    //_instance_info.position[0] = _node->translate.x;
+                    //_instance_info.position[1] = _node->translate.z;
+                    //_instance_info.position[2] = -_node->translate.y;
 
-                    _instance_info.rotation[0] = _rotation.x;
-                    _instance_info.rotation[1] = _rotation.z;
-                    _instance_info.rotation[2] = _rotation.y;
+                    //_instance_info.rotation[0] = _rotation.x;
+                    //_instance_info.rotation[1] = _rotation.z;
+                    //_instance_info.rotation[2] = _rotation.y;
+
+                    _instance_info.position[0] = _node->translate.x;
+                    _instance_info.position[1] = _node->translate.y;
+                    _instance_info.position[2] = _node->translate.z;
+
+                    _instance_info.rotation[0] = _rotation.x - glm::radians(90.0f);
+                    _instance_info.rotation[1] = _rotation.y;
+                    _instance_info.rotation[2] = _rotation.z;
                 }
                 else
                 {
@@ -1747,13 +1755,22 @@ void c_parser::_create_model(
 
         if (sZ_Up)
         {
-            _transform.position[0] = _node_ptr->translate.x;
-            _transform.position[1] = _node_ptr->translate.z;
-            _transform.position[2] = -_node_ptr->translate.y;
+            //_transform.position[0] = _node_ptr->translate.x;
+            //_transform.position[1] = _node_ptr->translate.z;
+            //_transform.position[2] = -_node_ptr->translate.y;
 
-            _transform.rotation[0] = _rotation.x;
-            _transform.rotation[1] = _rotation.z;
-            _transform.rotation[2] = _rotation.y;
+            //_transform.rotation[0] = _rotation.x;
+            //_transform.rotation[1] = _rotation.z;
+            //_transform.rotation[2] = _rotation.y;
+
+            _transform.position[0] = _node_ptr->translate.x;
+            _transform.position[1] = _node_ptr->translate.y;
+            _transform.position[2] = _node_ptr->translate.z;
+
+            _transform.rotation[0] = _rotation.x - glm::radians(90.0f);
+            _transform.rotation[1] = _rotation.y;
+            _transform.rotation[2] = _rotation.z;
+
         }
         else
         {

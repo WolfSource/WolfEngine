@@ -1,8 +1,8 @@
-#include "w_python_pch.h"
+#include "pch.h"
 
 using namespace boost::python;
 
-static PyScene* sScene = nullptr;
+static scene* sScene = nullptr;
 static w_window_info sWindowInfo;
 static std::wstring _app_name;
 static std::wstring _running_dir;
@@ -19,7 +19,7 @@ static int initialize(unsigned int pIntHWND, const char* pAppName, const char* p
 	sExiting = DLL_EXIT_STATE::RUNNING;
     _app_name = wolf::system::convert::string_to_wstring(pAppName);
     _running_dir = wolf::system::convert::string_to_wstring(pLogPath);
-    content_path = wolf::system::convert::string_to_wstring(pContentPath);
+    wolf::content_path = wolf::system::convert::string_to_wstring(pContentPath);
   
     sHWND = (HWND)pIntHWND;
     sHINSTANCE = (HINSTANCE)GetModuleHandle(NULL);
@@ -30,7 +30,7 @@ static int initialize(unsigned int pIntHWND, const char* pAppName, const char* p
 		{
 			SAFE_RELEASE(sScene);
 		}
-        sScene = new PyScene(_running_dir, _app_name);
+        sScene = new scene(_running_dir, _app_name);
         
         //create window info and add it to the map
         sWindowInfo.width = 800;
@@ -63,9 +63,22 @@ static int initialize(unsigned int pIntHWND, const char* pAppName, const char* p
     return 0;
 }
 
-static void logg()
+static int load_scene(const char* pScenePath)
 {
-    logger.write("Hiiii");
+    auto _wstr = wolf::system::convert::string_to_wstring(pScenePath);
+    return sScene && sScene->load_scene(_wstr) == S_OK ? 0 : 1;
+}
+
+static int set_camera_viewport(float pTranslateX, float pTranslateY, float pTranslateZ, float pRotateX, float pRotateY, float pRotateZ)
+{
+    if (!sScene) return 1;
+    sScene->set_camera_viewport(pTranslateX, pTranslateY, pTranslateZ, pRotateX, pRotateY, pRotateZ);
+    return 0;
+}
+
+static void release_shared_data_over_all_instances()
+{
+    wolf::release_shared_data_over_all_instances();
 }
 
 static void release()
@@ -83,6 +96,8 @@ static void release()
 BOOST_PYTHON_MODULE(PyWolf)
 {
     def("initialize", initialize);
-    def("logg", logg);
+    def("load_scene", load_scene);
+    def("set_camera_viewport", set_camera_viewport);
     def("release", release);
+    def("release_shared_data_over_all_instances", release_shared_data_over_all_instances);
 }

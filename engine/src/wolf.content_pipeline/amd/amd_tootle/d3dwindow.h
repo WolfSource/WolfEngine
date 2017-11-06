@@ -25,7 +25,7 @@ public:
 
             if (nRef != 0)
             {
-                logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : D3D RESOURCE LEAK FOUND");
+                wolf::logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : D3D RESOURCE LEAK FOUND");
             }
 
             d3d = NULL;

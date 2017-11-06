@@ -3,6 +3,7 @@ import sys
 import thread
 import ctypes
 import PyWolf
+import datetime
 
 #PySide
 from PySide import QtCore, QtGui
@@ -41,7 +42,7 @@ def run_wolf():
     
     #get the current path
     _current_path = os.path.dirname(os.path.abspath(__file__))
-    _hr = PyWolf.initialize(int_hwnd, "PyWolf", _current_path, "content")
+    _hr = PyWolf.initialize(int_hwnd, "PyWolf", _current_path, "F:\\github\\WolfSource\\Wolf.Engine.1.35.4.22_Prototype\\content\\")
     if _hr == 1 :
         print "Error on running PyWolf"
         return
@@ -98,11 +99,3 @@ if __name__ == '__main__':
     PyWolf.release()
     print "\r\nPyWolf shut down successfully"
     
-    #run wolf
-    try:
-        thread.start_new_thread( run_wolf, () )
-    except:
-        print "Error: unable to start thread for PyWolf"
-
-    while 1:
-        pass

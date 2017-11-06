@@ -11,6 +11,7 @@ int
 Soup::
 ComputeNormals(bool force)
 {
+    using namespace wolf;
     logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Computing normals");
 
     if (n().size() == v().size() && !force) { return 1; }
@@ -92,6 +93,8 @@ int
 Soup::
 ComputeTriNormals(std::vector<Vector3>& tn)
 {
+    using namespace wolf;
+
     logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Computing tri normals");
 
     tn.resize (t ().size ());
@@ -116,6 +119,8 @@ int
 Soup::
 ComputeTriCenters(std::vector<Vector3>& tc)
 {
+    using namespace wolf;
+
     logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Computing tri centers");
 
     tc.resize (t ().size ());

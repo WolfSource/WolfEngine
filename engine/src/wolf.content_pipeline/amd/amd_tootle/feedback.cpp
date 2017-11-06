@@ -147,6 +147,8 @@ void Output(int v)
 
     int feedback(int nVerts, int nArcs, t_edge* graph, int* order)
     {
+        using namespace wolf;
+
         arc = (PARC) malloc(sizeof(ARC) * 2 * nArcs) ;
         DeltaCost = (int*) malloc(sizeof(int) * nVerts);
         ArcStart = (PARC*) malloc(sizeof(PARC*) * nVerts);

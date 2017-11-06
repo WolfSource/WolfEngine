@@ -123,7 +123,7 @@ VkPipelineRasterizationStateCreateInfo w_graphics_device::defaults::vk_default_p
         VK_FALSE,                                                       // depthClampEnable
         VK_FALSE,                                                       // rasterizerDiscardEnable
         VK_POLYGON_MODE_FILL,                                           // polygonMode
-		VK_CULL_MODE_BACK_BIT,                                          // cullMode
+        VK_CULL_MODE_FRONT_BIT,                                         // cullMode
 		VK_FRONT_FACE_COUNTER_CLOCKWISE,                                // frontFace
         VK_FALSE,                                                       // depthBiasEnable
         0.0f,                                                           // depthBiasConstantFactor
@@ -389,6 +389,8 @@ static VkBool32 DebugMessageCallback(
     const char* pMsg,
     void* pUserData)
 {
+    using namespace wolf;
+
     // Error that may result in undefined behaviour
     if (pFlags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {

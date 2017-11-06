@@ -4,20 +4,28 @@ import MaxPlus
 import math
 import ctypes
 import thread
+import datetime
+#import tempfile
+#import shutil
 
 #append search path for PyWolf
-PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+#PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+
 if not PyWolfPath in sys.path:
 	sys.path.append(PyWolfPath)
 wolf_version = ""
 try:
 	import PyWolf
-	wolf_version = "(version: 1.1.0.0)"
+	wolf_version = "PyWolf (v.1.40.3.6)"
 except:
 	print "Error, could not find PyWolf"
 	
 from collections import defaultdict
 from sys import maxint
+
+#create temp folder
+#tmp_dir = tempfile.mkdtemp()
 
 #check pyside version
 pyside_version = -1
@@ -58,15 +66,22 @@ class WolfWidget(QWidget):
 		super(WolfWidget, self).__init__(parent)
   
     def closeEvent(self, event):
-        PyWolf.release()
-        logger.log("PyWolf shut down successfully")
+		# just release all models
         event.accept()
+
+#wolf widget
+wolfWidget = WolfWidget()
+WIDTH = 640
+HEIGHT = 480
 
 class Dialog(QDialog):
     def __init__(self, parent = None):
 		super(Dialog, self).__init__(parent)
   
     def closeEvent(self, event):
+		#clear temp
+        #shutil.rmtree(tmp_dir)
+        wolfWidget.close()
         PyWolf.release()
         print "PyWolf shut down successfully"
         event.accept()
@@ -78,11 +93,6 @@ preNameTextBox.setMaximumHeight(23)
 logger = Logger()
 cmd = Logger()
 old_instances = defaultdict(list)
-
-#wolf widget
-wolfWidget = WolfWidget()
-WIDTH = 640
-HEIGHT = 480
 
 def quaternion_to_euler_angle(w, x, y, z):
 	ysqr = y * y
@@ -137,6 +147,9 @@ def get_standard_index_name(pIndex):
 	else:
 		_index_str = str(pIndex)
 	return _index_str
+
+def get_unique_name():
+	return datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
 	
 def reinstance_current_layer():
 	pre_name = preNameTextBox.toPlainText()
@@ -198,7 +211,7 @@ def reinstance_current_layer():
 			#found ref node
 			_ref_index = j
 		else:
-			_node.Name = _node.Name + "_INS"
+			_node.Name = _node.Name + "_OLDINS"
 			instances_index.append(j)
 	
 	if _ref_index == -1:
@@ -239,7 +252,7 @@ def reinstance_current_layer():
 		#change color of old instance
 		old_ins.WireColor = MaxPlus.Color(1.0, 0.0, .0)
 		#store to old instances
-		old_instances[0].append(old_ins)
+		##################################################old_instances[0].append(old_ins)
 	
 def delete_old_nodes():
 	#delete all nodes
@@ -263,22 +276,79 @@ def delete_old_nodes():
 def clear_log():
 	logger.clear()
 	logger.appendPlainText("Wolf Engine Plugin for Autodesk 3ds Max "  + wolf_version)
-
-def run_pywolf():
+	#logger.appendPlainText("Temp Path: \""  + tmp_dir + "\"")
+	
+def pywolf_show():
     if wolf_version == "" :
 		logger.log("PyWolf not available")
 		return
-		
 	#show widget
     wolfWidget.show()
-    logger.log("PyWolf v.1.39.3.22 launched")
 
-def shutdown_pywolf():
+def pywolf_sync_camera():
 	if wolf_version == "":
 		logger.log("PyWolf not available")
 		return
-	PyWolf.release()
-	logger.log("PyWolf shut down successfully")
+	
+	viewport = MaxPlus.ViewportManager.GetActiveViewport()
+	mat3 = viewport.GetViewMatrix()
+	t = mat3.GetTranslation()
+	    
+	#get rotations
+	r1 = mat3.GetRow(0)
+	r2 = mat3.GetRow(1)
+	r3 = mat3.GetRow(2)
+	
+	rx = math.atan2(r3.GetY(), r3.GetZ())
+	ry = math.atan2(-(r3.GetX()), math.sqrt( math.pow(r3.GetY(),2) + math.pow(r3.GetZ(),2)))
+	rz = math.atan2(r2.GetX(), r1.GetX())
+		
+	#convert Left hand viewport Y down of 3DMax to Right hand viewport y down of Vulkan
+	_hr = PyWolf.set_camera_viewport(-(t.GetX()), -(t.GetY()), t.GetZ(), 0, -ry, 0)
+	if _hr == 1:
+		logger.log("Error on syncing camera")
+
+def pywolf_sync_active_layer_models():
+	if wolf_version == "":
+		logger.log("PyWolf not available")
+		return
+	
+	#first select nodes of active layer
+	MaxPlus.SelectionManager.ClearNodeSelection()
+	_layer = MaxPlus.LayerManager.GetCurrentLayer()
+	_layer_name = _layer.GetName()
+	if _layer_name == "_Problems_" or _layer_name == "_Boundaries_" or _layer_name == "_Inner_Layers_" or _layer_name == "_Middle_Layers_" or _layer_name == "_Outer_Layers_":
+		logger.log("Could not add following Layers: _Problems_, _Boundaries_, _Inner_Layers_, _Middle_Layers_, _Outer_Layers_")
+		return
+	
+	_selecting_nodes = MaxPlus.INodeTab()
+	for _node in _layer.GetNodes():
+		_selecting_nodes.Append(_node)
+	if len(_selecting_nodes) != 0:
+		#select
+		MaxPlus.SelectionManager.SelectNodes(_selecting_nodes)
+		#_collada_exp_path = tmp_dir + "\W" + get_unique_name() + ".DAE"
+		#export the scene in the format of OpenCollada
+		_max_sxript_cmd = "exp_classes = exporterPlugin.classes																\r\n\
+		_idx = findItem exp_classes OpenCOLLADAExporter																			\r\n\
+		if _idx != 0 do 																															\r\n\
+		(																																					\r\n\
+		   file_url = \"c:\\Wolf\\0.DAE\"																				   		   \r\n\
+		   exportFile (file_url) #noprompt selectedOnly:on using:exp_classes[_idx]								\r\n\
+		)"
+		MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+		
+		#now call PyWolf to load the scene
+		_hr = PyWolf.load_scene("c:\\Wolf\\0.DAE")
+		if	_hr != 0:
+			logger.log("Could not sync active layer with Wolf")
+		pywolf_sync_camera()
+
+
+def pywolf_remove_all_models():
+	if wolf_version == "":
+		logger.log("PyWolf not available")
+		return
 	
 def execute_cmd():
 	_cmd = cmd.toPlainText()
@@ -294,6 +364,7 @@ def init_reinstance_layout():
 	button_1.clicked.connect(reinstance_current_layer)
 	
 	button_2 = QPushButton("2 - Delete old node(s)		")
+	button_2.setEnabled(0)#Bug in deleting
 	button_2.clicked.connect(delete_old_nodes)
 	
 	h_layout = QHBoxLayout(widget)
@@ -315,17 +386,25 @@ def init_helper():
 	wolf_buttons = QWidget()
 	
 	#run wolf.engine
-	run_wolf_button = QPushButton("Run Wolf")
-	run_wolf_button.clicked.connect(run_pywolf)
+	run_wolf_button = QPushButton("Show Wolf")
+	run_wolf_button.clicked.connect(pywolf_show)
+	#sync current models
+	sync_models_to_wolf_button = QPushButton("Sync active layer with Wolf")
+	sync_models_to_wolf_button.clicked.connect(pywolf_sync_active_layer_models)
+	#sync camera
+	sync_camera_wolf_button = QPushButton("Sync camera")
+	sync_camera_wolf_button.clicked.connect(pywolf_sync_camera)
 	#shutdown wolf.engine
-	shutdown_wolf_button = QPushButton("ShutDown Wolf")
-	shutdown_wolf_button.clicked.connect(shutdown_pywolf)
+	shutdown_wolf_button = QPushButton("Remove All Models")
+	shutdown_wolf_button.clicked.connect(pywolf_remove_all_models)
 	#execute python codes
 	exe_button = QPushButton("execute")
 	exe_button.clicked.connect(execute_cmd)
 	
 	h_layout = QHBoxLayout(wolf_buttons)
 	h_layout.addWidget(run_wolf_button)
+	h_layout.addWidget(sync_models_to_wolf_button)
+	h_layout.addWidget(sync_camera_wolf_button)
 	h_layout.addWidget(shutdown_wolf_button)
 	
 	v_layout = QVBoxLayout(widget)
@@ -355,9 +434,11 @@ def run_wolf():
     
     #get the current path
     _current_script_path = os.path.dirname(os.path.abspath(__file__))
-    _hr = PyWolf.initialize(int_hwnd, "PyWolf", str(_current_script_path), "content")
+    _hr = PyWolf.initialize(int_hwnd, "PyWolf", str(_current_script_path), "C:\\Wolf\\content\\")
     if _hr == 1 :
         print "Error on initializing PyWolf"
+    else:
+        logger.log( wolf_version + " launched")
 		
 def main():
     dialog = Dialog(MaxPlus.GetQMaxMainWindow())
@@ -397,6 +478,6 @@ def main():
     dialog.setWindowModality(Qt.NonModal)
     dialog.show()
     print title + " just launched"
-
+	
 if __name__ == '__main__':
 	main()

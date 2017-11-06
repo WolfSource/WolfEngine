@@ -448,6 +448,8 @@ HRESULT tootle::apply(
 
 void tootle::DisplayTootleErrorMessage(_In_ const TootleResult& pResult)
 {
+    using namespace wolf;
+
     switch (pResult)
     {
     case NA_TOOTLE_RESULT:

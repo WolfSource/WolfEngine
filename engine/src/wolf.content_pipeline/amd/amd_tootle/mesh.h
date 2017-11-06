@@ -47,6 +47,8 @@ private:
 inline int
 Mesh::ComputeVV(void)
 {
+    using namespace wolf;
+
     wolf::system::w_timer time;
     logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Finding vertex neighbors");
 
@@ -72,7 +74,9 @@ Mesh::ComputeVV(void)
 inline int
 Mesh::ComputeVT(VTArray& vtOut)
 {
-    wolf::system::w_timer time;
+    using namespace wolf;
+
+    system::w_timer time;
     logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Finding vertex faces");
 
     time.start();
@@ -99,7 +103,9 @@ Mesh::ComputeVT(VTArray& vtOut)
 inline int
 Mesh::ComputeAE(const VTArray& vt)
 {
-    wolf::system::w_timer time;
+    using namespace wolf;
+
+    system::w_timer time;
     logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Finding across edge-info");
 
     // clean across-edge info

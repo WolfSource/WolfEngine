@@ -168,6 +168,8 @@ static TootleResult FindFaceMappingFromIndex(const unsigned int* pnIB,
                                              const unsigned int  nFaces,
                                              unsigned int*       pnFaceMapOut)
 {
+    using namespace wolf;
+
     // sanity checks
     assert(pnIB);
     assert(pnIB2);
@@ -212,6 +214,8 @@ TootleResult TOOTLE_DLL TootleOptimizeVCache(const unsigned int*   pnIB,
                                              unsigned int*         pnFaceRemapOut,
                                              TootleVCacheOptimizer eVCacheOptimizer)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks on the input parameters
@@ -314,6 +318,8 @@ static TootleResult TootleOptimizeVCacheDirect3D(const unsigned int* pnIB,
                                                  unsigned int*       pnIBOut,
                                                  unsigned int*       pnFaceRemapOut)
 {
+    using namespace wolf;
+
     // sanity checks
     assert(pnIB);
 
@@ -398,6 +404,8 @@ static TootleResult TootleOptimizeVCacheLStrips(const unsigned int* pnIB,
                                                 unsigned int*       pnIBOut,
                                                 unsigned int*       pnFaceRemapOut)
 {
+    using namespace wolf;
+
     // sanity checks
     assert(pnIB);
 
@@ -449,6 +457,8 @@ static TootleResult TootleOptimizeVCacheTipsy(const unsigned int* pnIB,
                                               unsigned int*       pnIBOut,
                                               unsigned int*       pnFaceRemapOut)
 {
+    using namespace wolf;
+
     // sanity checks
     assert(pnIB);
 
@@ -509,6 +519,8 @@ TootleResult TOOTLE_DLL TootleClusterMesh(const void*         pVB,
                                           unsigned int*       pnFaceClustersOut,
                                           unsigned int*       pnFaceRemapOut)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks
@@ -608,6 +620,8 @@ TootleResult TOOTLE_DLL TootleFastOptimizeVCacheAndClusterMesh(const unsigned in
                                                                unsigned int*       pnNumClustersOut,
                                                                float               fAlpha)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks
@@ -693,6 +707,8 @@ TootleResult TOOTLE_DLL TootleOptimizeOverdraw(const void*             pVB,
                                                unsigned int*           pnClusterRemapOut,
                                                TootleOverdrawOptimizer eOverdrawOptimizer)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks
@@ -772,6 +788,8 @@ static TootleResult TootleOptimizeOverdrawDirect3DAndRaytrace(const void*       
                                                               unsigned int*           pnIBOut,
                                                               unsigned int*           pnClusterRemapOut)
 {
+    using namespace wolf;
+
     // sanity checks
     assert(pVB);
     assert(pnIB);
@@ -987,6 +1005,8 @@ static TootleResult TootleOptimizeOverdrawFastApproximation(const void*         
                                                             unsigned int*       pnIBOut,
                                                             unsigned int*       pnClusterRemapOut)
 {
+    using namespace wolf;
+
     // sanity checks
     assert(pVB);
     assert(pnIB);
@@ -1101,6 +1121,8 @@ TootleResult TOOTLE_DLL TootleOptimize(const void*             pVB,
                                        TootleVCacheOptimizer   eVCacheOptimizer,
                                        TootleOverdrawOptimizer eOverdrawOptimizer)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks
@@ -1197,6 +1219,8 @@ TootleResult TOOTLE_DLL TootleFastOptimize(const void*         pVB,
                                            unsigned int*       pnNumClustersOut,
                                            float               fAlpha)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks
@@ -1275,6 +1299,7 @@ TootleResult TOOTLE_DLL TootleVCacheClusters(const unsigned int*   pnIB,
                                              unsigned int*         pnFaceRemapOut,
                                              TootleVCacheOptimizer eVCacheOptimizer)
 {
+    using namespace wolf;
 
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
@@ -1348,6 +1373,8 @@ TootleResult TOOTLE_DLL TootleMeasureCacheEfficiency(const unsigned int* pnIB,
                                                      unsigned int        nCacheSize,
                                                      float*              pfEfficiencyOut)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks
@@ -1439,6 +1466,8 @@ TootleResult TOOTLE_DLL TootleMeasureOverdraw(const void*             pVB,
                                               float*                  pfMaxODOut,
                                               TootleOverdrawOptimizer eOverdrawOptimizer)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks
@@ -1503,6 +1532,8 @@ TootleResult TootleMeasureOverdrawDirect3D(const void*         pVB,
                                            float*              pfAvgODOut,
                                            float*              pfMaxODOut)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks
@@ -1601,6 +1632,8 @@ TootleResult TootleMeasureOverdrawRaytrace(const void*         pVB,
                                            float*              pfAvgODOut,
                                            float*              pfMaxODOut)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
 
     // sanity checks
@@ -1691,6 +1724,8 @@ TootleResult TootleMeasureOverdrawRaytrace(const void*         pVB,
 //=================================================================================================================================
 static TootleResult ConvertClusterArrayFromFullToCompact(unsigned int* pnID, unsigned int nFaces)
 {
+    using namespace wolf;
+
     // sanity checks
     assert(pnID);
 
@@ -1789,6 +1824,8 @@ static TootleResult ConvertClusterArrayFromFullToCompact(unsigned int* pnID, uns
 //=================================================================================================================================
 static TootleResult ConvertClusterArrayFromCompactToFull(unsigned int* pnID, unsigned int nFaces)
 {
+    using namespace wolf;
+
     // sanity checks
     assert(pnID);
 
@@ -1932,6 +1969,8 @@ TootleResult TOOTLE_DLL TootleOptimizeVertexMemory(const void*         pVB,
                                                    unsigned int*       pnIBOut,
                                                    unsigned int*       pnVertexRemapOut)
 {
+    using namespace wolf;
+
     AMD_TOOTLE_API_FUNCTION_BEGIN
  
     // sanity checks

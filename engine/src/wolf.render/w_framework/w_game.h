@@ -41,6 +41,7 @@ namespace wolf
 
 			//Release all resources
 			W_EXP ULONG release() override;
+            W_EXP static void release_shared_data_over_all_instances();
 
 #pragma region Setters
 

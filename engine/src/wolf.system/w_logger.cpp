@@ -40,24 +40,24 @@ namespace wolf
             w_logger_pimp() : _is_released(false)
             {
             }
-            
+
 #ifdef __UWP
             bool initialize(_In_z_ const std::wstring pAppName)
             {
                 //if directory of log is not existed
                 auto _local_folder = Windows::Storage::ApplicationData::Current->LocalFolder;
                 auto _log_file_path = _local_folder->Path + ref new Platform::String(L"\\log\\") + ref new Platform::String((io::get_unique_nameW() + L".wLog").c_str());
-                
+
                 auto _function = [this, _log_file_path, pAppName]() ->bool
                 {
                     this->_log_file.open(_log_file_path->Data());
-                    
+
                     std::wstring _created_time = L"\t\"Time\"             : \"" + get_date_timeW() + L"\",\r\n";
                     std::wstring _app_name = L"\t\"Application Name\" : \"" + pAppName + L"\",\r\n";
-                    
+
                     std::wstring _version = L"\t\"Version\"          : \"" + std::to_wstring(WOLF_MAJOR_VERSION) + L":" + std::to_wstring(WOLF_MINOR_VERSION) +
-                    L":" + std::to_wstring(WOLF_PATCH_VERSION) + L":" + std::to_wstring(WOLF_DEBUG_VERSION) + L"\",\r\n";
-                    
+                        L":" + std::to_wstring(WOLF_PATCH_VERSION) + L":" + std::to_wstring(WOLF_DEBUG_VERSION) + L"\",\r\n";
+
                     this->_log_file << L"{\r\n";
                     this->_log_file << L"\t\"Project\"          : \"Wolf Engine(http://WolfSource.io). Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\",\r\n";
                     this->_log_file << L"\t\"Info\"             : \"contact@WolfSource.io\r\n";
@@ -65,7 +65,7 @@ namespace wolf
                     this->_log_file << _created_time.c_str();
                     this->_log_file << _app_name.c_str();
                     this->_log_file << L"\t\"Logs\":{\r\n";
-                    
+
                     //store all buffered logs
                     auto _buffer = get_buffer();
                     for (size_t i = 0; i < _buffer.size(); ++i)
@@ -73,38 +73,38 @@ namespace wolf
                         this->_log_file << _buffer[i].c_str();
                     }
                     clear_buffer();
-                    
+
                     this->_log_file.flush();
-                    
+
                     return this->_log_file.is_open();
                 };
-                
+
                 wolf::system::io::get_directory_exists_async(_local_folder, "log")
-                .then([=](_In_ BOOL pExists)
-                      {
-                          if (!pExists)
-                          {
-                              wolf::system::io::create_directory_async(_local_folder, "log")
-                              .then([=](Windows::Storage::StorageFolder^ pFolder)
-                                    {
-                                        _function();
-                                    });
-                          }
-                          else
-                          {
-                              _function();
-                          }
-                      });
-                
+                    .then([=](_In_ BOOL pExists)
+                {
+                    if (!pExists)
+                    {
+                        wolf::system::io::create_directory_async(_local_folder, "log")
+                            .then([=](Windows::Storage::StorageFolder^ pFolder)
+                        {
+                            _function();
+                        });
+                    }
+                    else
+                    {
+                        _function();
+                    }
+                });
+
                 this->_is_released = false;
-                
-                
+
+
                 return true;
             }
 #else
             bool initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath)
             {
-                
+
 #ifdef __WIN32
                 auto _log_directory = pLogPath + L"\\Log\\";
                 auto _log_directory_cstr = _log_directory.c_str();
@@ -116,7 +116,7 @@ namespace wolf
                 }
                 auto _log_file_path = _log_directory + io::get_unique_nameW() + L".wLog";
 #else
-                
+
                 auto _log_directory = wolf::system::convert::wstring_to_string(pLogPath) + "/Log/";
                 auto _log_directory_cstr = _log_directory.c_str();
                 //if directory of log is not existed
@@ -131,11 +131,11 @@ namespace wolf
 
                 std::wstring _created_time = L"\t\"Time\"             : \"" + get_date_timeW() + L"\",\r\n";
                 std::wstring _app_name = L"\t\"Application Name\" : \"" + pAppName + L"\",\r\n";
-
+                
 #ifdef __WIN32
                 this->_log_file.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::generate_header>));
 #endif
-                
+
                 this->_log_file.open(_log_file_path.c_str());
 
                 this->_is_released = false;
@@ -163,7 +163,7 @@ namespace wolf
 
                 return this->_log_file.is_open();
             }
-            
+
 #endif //__UWP
 
             void print_buffer(std::wstring pMsg)
@@ -304,14 +304,19 @@ namespace wolf
                 return _is_released;
             }
 
+            bool get_is_open()
+            {
+                return this->_log_file.is_open();
+            }
+
         private:
             bool _is_released;
             std::wofstream _log_file;
             std::vector<std::wstring> _msgs;
             std::mutex _mutex;
-            };
-        }
+        };
     }
+}
 
 #ifdef __GNUC__
 #pragma GCC visibility pop
@@ -411,16 +416,33 @@ ULONG w_logger::release()
     return _hr;
 }
 
+#pragma region Getters
+
+bool w_logger::get_is_open() const
+{
+    if (!this->_pimp || (this->_pimp && this->_pimp->get_is_released())) return false;
+    return this->_pimp->get_is_open();
+}
+
+#pragma endregion
+
 //Declaration of extern logger as shared
 
 #ifdef __WIN32
 #pragma data_seg (".shared")
 #endif
 
-wolf::system::w_logger logger;
-std::wstring content_path;
-wolf::system::w_inputs_manager inputs_manager;
-std::map<uint32_t, float> windows_frame_time_in_sec;
+wolf::system::w_logger wolf::logger;
+std::wstring wolf::content_path;
+wolf::system::w_inputs_manager wolf::inputs_manager;
+std::map<uint32_t, float> wolf::windows_frame_time_in_sec;
+void wolf::release_shared_data_over_all_instances()
+{
+    logger.release();
+    content_path.clear();
+    inputs_manager.reset();
+    windows_frame_time_in_sec.clear();
+}
 
 #ifdef __WIN32
 #pragma data_seg ()

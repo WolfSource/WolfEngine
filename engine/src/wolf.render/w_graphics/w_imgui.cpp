@@ -40,7 +40,7 @@ namespace wolf
                 this->_gDevice = pGDevice;
                 this->_screen_size = pScreenSize;
                 this->_images_texture = pIconTexture;
-                this->_media_player_texture = *pStagingMediaTexture;
+                this->_media_player_texture = pStagingMediaTexture ? *pStagingMediaTexture : nullptr;
 
 #pragma region Set Style
                 //Color scheme

@@ -13,11 +13,14 @@ w_game::w_game(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::w
 	_super::set_class_name("w_game");
 	this->load_state = LOAD_STATE::NOTLOADED;
 
+    if (!logger.get_is_open())
+    {
 #ifdef __UWP
-	logger.initialize(this->_app_name);
+        logger.initialize(this->_app_name);
 #else
-    logger.initialize(this->_app_name, pRunningDirectory);
+        logger.initialize(this->_app_name, pRunningDirectory);
 #endif
+    }
 }
 
 w_game::~w_game()
@@ -123,7 +126,6 @@ ULONG w_game::release()
     if (_super::get_is_released()) return 0;
 	
     this->exiting = true;
-    logger.release();
 
 	return  _super::release();
 }

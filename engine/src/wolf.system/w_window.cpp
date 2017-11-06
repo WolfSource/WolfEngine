@@ -54,6 +54,8 @@ static LRESULT CALLBACK MsgProc(HWND pHwnd, UINT pMessage, WPARAM pWParam, LPARA
 
 HRESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction)
 {
+    using namespace wolf;
+
     auto _iter = windows_frame_time_in_sec.find((uint32_t)this->_id);
     if (_iter == windows_frame_time_in_sec.end())
     {
@@ -273,7 +275,7 @@ void w_window::run(std::function<void(void)> const pFunc)
         auto _delta = std::chrono::duration<double, std::milli>(_end - _start).count();
         if (this->_id != -1)
         {
-            windows_frame_time_in_sec.at((uint32_t)this->_id) = (float)_delta / 1000.0f;
+            wolf::windows_frame_time_in_sec.at((uint32_t)this->_id) = (float)_delta / 1000.0f;
         }
     }
 }

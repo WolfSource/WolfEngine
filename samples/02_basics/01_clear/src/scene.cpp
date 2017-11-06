@@ -2,6 +2,7 @@
 #include "scene.h"
 
 using namespace std;
+using namespace wolf;
 using namespace wolf::system;
 using namespace wolf::graphics;
 

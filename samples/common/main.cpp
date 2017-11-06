@@ -12,6 +12,7 @@
 #include <w_window.h>
 
 using namespace std;
+using namespace wolf;
 
 static std::unique_ptr<w_window> sWindow;
 static std::unique_ptr<scene> sScene;

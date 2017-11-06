@@ -105,6 +105,10 @@ namespace wolf
             //Release all resources and close the log file
             WSYS_EXP ULONG release();
 
+#pragma region Getters
+            WSYS_EXP bool get_is_open() const;
+#pragma endregion
+
         private:
             //Prevent copying
             w_logger(w_logger const&);
@@ -119,10 +123,14 @@ namespace wolf
 #pragma GCC visibility pop
 #endif
 
-extern WSYS_EXP wolf::system::w_logger logger;
-extern WSYS_EXP std::wstring content_path;
-extern WSYS_EXP wolf::system::w_inputs_manager inputs_manager;
-extern WSYS_EXP std::map<uint32_t, float> windows_frame_time_in_sec;
+namespace wolf
+{
+    extern WSYS_EXP system::w_logger logger;
+    extern WSYS_EXP std::wstring content_path;
+    extern WSYS_EXP system::w_inputs_manager inputs_manager;
+    extern WSYS_EXP std::map<uint32_t, float> windows_frame_time_in_sec;
+    extern WSYS_EXP void release_shared_data_over_all_instances();
+}
 
 /*
 Validate HResult and write in to the log file
@@ -137,6 +145,7 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
     bool pTerminateAll = false, bool pCheckForLastGPUError = false)
 {
     using namespace std;
+    using namespace wolf;
 
     if (pHR == S_OK) return;
 

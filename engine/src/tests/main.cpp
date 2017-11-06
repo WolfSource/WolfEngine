@@ -11,6 +11,7 @@ static void release()
 {
 	//UNIQUE_RELEASE(sScene);
 	UNIQUE_RELEASE(sWindow);
+    wolf::release_shared_data_over_all_instances();
 }
 
 //Entry point of program 
@@ -36,7 +37,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 		break;
 		}
 
-        auto _result = inputs_manager.update(pHWND, pMsg, pWParam, pLParam);
+        auto _result = wolf::inputs_manager.update(pHWND, pMsg, pWParam, pLParam);
         if (_result) return _result;
 
 		return (HRESULT)DefWindowProc(pHWND, pMsg, pWParam, pLParam);

@@ -186,6 +186,8 @@ static TootleResult ODComputeGraphDirect3D(const float*            pViewpoints,
 
 TootleResult ODInit()
 {
+    using namespace wolf;
+
 #ifndef _SOFTWARE_ONLY_VERSION
 
     if (s_bInitialized)

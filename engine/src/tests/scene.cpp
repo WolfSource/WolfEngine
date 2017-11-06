@@ -2,12 +2,15 @@
 #include "scene.h"
 
 using namespace std;
+using namespace wolf;
 using namespace wolf::system;
 using namespace wolf::graphics;
 
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
 	w_game(pRunningDirectory, pAppName)
 {
+    using namespace wolf;
+
 	auto _running_dir = pRunningDirectory;
 
 #if defined(__WIN32) || defined(__UWP)

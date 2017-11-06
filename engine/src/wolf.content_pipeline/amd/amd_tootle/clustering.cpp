@@ -84,6 +84,8 @@ static float FaceDistance(int a, int b, std::vector<Vector3>& tc)
 
 static int MoveFaces(Mesh& mesh, std::vector<int>& seeds, std::vector<int>& cluster, std::vector<int>& fixed, std::vector<Vector3>& tn, float& fAvgDist)
 {
+    using namespace wolf;
+
     float fMaxDist = 0.f;
     int distcnt = 0;
 
@@ -345,6 +347,7 @@ static int FingerPrint(Mesh& mesh, std::vector<int>& cluster)
 /// \return  One of the ClusterResult return codes
 ClusterResult Cluster(Soup* soup, UINT& nClusters, std::vector<int>& cluster)
 {
+    using namespace wolf;
 
     // compute face normals
     if (!soup->ComputeNormals())

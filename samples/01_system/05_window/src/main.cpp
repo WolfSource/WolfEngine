@@ -11,6 +11,7 @@
 
 //namespaces
 using namespace std;
+using namespace wolf;
 
 //global variables
 static std::unique_ptr<w_window> sWindow;
