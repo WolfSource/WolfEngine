@@ -337,7 +337,6 @@ void scene::load()
 
     this->_camera.update_view();
     this->_camera.update_projection();
-    this->_camera.update_frustum();
 }
 
 HRESULT scene::load_scene(_In_z_ const std::wstring& pScenePath)
@@ -353,31 +352,38 @@ HRESULT scene::load_scene(_In_z_ const std::wstring& pScenePath)
         std::vector<w_cpipeline_model*> _cmodels;
         _scene->get_all_models(_cmodels);
 
-        for (auto& _iter : _cmodels)
-        {
-            if (!_iter) continue;
+		if (_cmodels.size())
+		{
+			for (auto& _iter : _cmodels)
+			{
+				if (!_iter) continue;
 
-            auto _model = new model();
-            if (_model->pre_load(_gDevice, _iter) == S_OK)
-            {
-                if (_model->post_load(this->_draw_render_pass) == S_OK)
-                {
-                    this->models.push_back(_model);
-                }
-                else
-                {
-                    logger.error("Error on post-loading model " + _iter->get_name());
-                    SAFE_DELETE(_model);
-                    _hr = S_FALSE;
-                }
-            }
-            else
-            {
-                logger.error("Error on pre-loading model " + _iter->get_name());
-                SAFE_DELETE(_model);
-                _hr = S_FALSE;
-            }
-        }
+				auto _model = new model();
+				if (_model->pre_load(_gDevice, _iter) == S_OK)
+				{
+					if (_model->post_load(this->_draw_render_pass) == S_OK)
+					{
+						this->models.push_back(_model);
+					}
+					else
+					{
+						logger.error("Error on post-loading model " + _iter->get_name());
+						SAFE_DELETE(_model);
+						_hr = S_FALSE;
+					}
+				}
+				else
+				{
+					logger.error("Error on pre-loading model " + _iter->get_name());
+					SAFE_DELETE(_model);
+					_hr = S_FALSE;
+				}
+			}
+		}
+
+		_scene->get_first_camera(this->_camera);
+		this->_camera.update_view();
+
         _scene->release();
     }
     else
@@ -949,19 +955,20 @@ static void TonemapDepth(_In_ float* pDepth, _In_ unsigned char* pImage, _In_ co
 
 #pragma region Setters
 
-void scene::set_camera_viewport(float pTranslateX, float pTranslateY, float pTranslateZ, float pRotateX, float pRotateY, float pRotateZ)
+void scene::set_camera_position(float X, float Y, float Z)
 {
-    auto _camera_rotation = glm::rotate(pRotateX, pRotateY, pRotateZ);
-    auto _vector_transform = _camera_rotation * glm::vec4(1.0);
+	//change name to position
+	this->_camera.set_translate(X, Y, Z);
+	this->_camera.update_view();
+	sForceUpdateCamera = true;
+}
 
-    auto _target = glm::vec3(pTranslateX, pTranslateY, pTranslateZ) + glm::vec3(_vector_transform.x, _vector_transform.y, _vector_transform.z);
-
-    this->_camera.set_translate(pTranslateX, pTranslateY, pTranslateZ);
-    this->_camera.set_interest(_target.x, _target.y, _target.z);
-    this->_camera.update_view();
-    this->_camera.update_frustum();
-    sForceUpdateCamera = true;
+void scene::set_camera_lookat(float X, float Y, float Z)
+{
+	//change name to lookat
+	this->_camera.set_interest(X, Y, Z);
+	this->_camera.update_view();
+	sForceUpdateCamera = true;
 }
 
 #pragma endregion
-

@@ -9,8 +9,8 @@ import datetime
 #import shutil
 
 #append search path for PyWolf
-#PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
-PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+#PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
 
 if not PyWolfPath in sys.path:
 	sys.path.append(PyWolfPath)
@@ -290,23 +290,56 @@ def pywolf_sync_camera():
 		logger.log("PyWolf not available")
 		return
 	
-	viewport = MaxPlus.ViewportManager.GetActiveViewport()
-	mat3 = viewport.GetViewMatrix()
-	t = mat3.GetTranslation()
-	    
-	#get rotations
-	r1 = mat3.GetRow(0)
-	r2 = mat3.GetRow(1)
-	r3 = mat3.GetRow(2)
-	
-	rx = math.atan2(r3.GetY(), r3.GetZ())
-	ry = math.atan2(-(r3.GetX()), math.sqrt( math.pow(r3.GetY(),2) + math.pow(r3.GetZ(),2)))
-	rz = math.atan2(r2.GetX(), r1.GetX())
+	MaxPlus.SelectionManager.ClearNodeSelection()
+	#create camera from viewport
+	_max_sxript_cmd = "macros.run \"Lights and Cameras\" \"PhysicalCamera_CreateFromView\""
+	MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+	_camera_node = MaxPlus.SelectionManager.GetNode(0)
+	_camera_name =_camera_node.GetName()
+
+	_max_sxript_cmd = "select #($'" + _camera_name + "', $'" + _camera_name + ".Target')"
+	MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+
+	if MaxPlus.SelectionManager.GetCount() == 2:
+		_camera_node = MaxPlus.SelectionManager.GetNode(1)
+		_camera_name =_camera_node.GetName()
 		
-	#convert Left hand viewport Y down of 3DMax to Right hand viewport y down of Vulkan
-	_hr = PyWolf.set_camera_viewport(-(t.GetX()), -(t.GetY()), t.GetZ(), 0, -ry, 0)
-	if _hr == 1:
-		logger.log("Error on syncing camera")
+		look_atX = 0.0
+		look_atY = 0.0
+		look_atZ = 0.0
+		
+		posX = 0.0
+		posY = 0.0
+		posZ = 0.0
+		
+		if _camera_name.find("Target"):
+			look_atX = _camera_node.GetPositionX()
+			look_atY = _camera_node.GetPositionY()
+			look_atZ = _camera_node.GetPositionZ()
+			_camera_node = MaxPlus.SelectionManager.GetNode(0)
+			posX = _camera_node.GetPositionX()
+			posY = _camera_node.GetPositionZ()
+			posZ = _camera_node.GetPositionY()
+		else:
+			posX = _camera_node.GetPositionX()
+			posY = _camera_node.GetPositionY()
+			posZ = _camera_node.GetPositionZ()
+			_camera_node = MaxPlus.SelectionManager.GetNode(0)
+			look_atX = _camera_node.GetPositionX()
+			look_atY = _camera_node.GetPositionY()
+			look_atZ = _camera_node.GetPositionZ()
+		
+		#delete objects
+		_max_sxript_cmd = "actionMan.executeAction 0 \"40020\"  -- Edit: Delete Objects"
+		MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+		
+		_hr = PyWolf.set_camera_position(posX, posY, posZ)
+		if _hr != 0:
+			logger.log("Error on syncing camera position")	
+		_hr = PyWolf.set_camera_lookat(look_atX, look_atY, look_atZ)
+		if _hr != 0:
+			logger.log("Error on syncing camera look at")	
+		
 
 def pywolf_sync_active_layer_models():
 	if wolf_version == "":
@@ -333,15 +366,15 @@ def pywolf_sync_active_layer_models():
 		_idx = findItem exp_classes OpenCOLLADAExporter																			\r\n\
 		if _idx != 0 do 																															\r\n\
 		(																																					\r\n\
-		   file_url = \"c:\\Wolf\\0.DAE\"																				   		   \r\n\
+		   file_url = \"c:\\Wolf\\models.DAE\"																				   	\r\n\
 		   exportFile (file_url) #noprompt selectedOnly:on using:exp_classes[_idx]								\r\n\
 		)"
 		MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
 		
 		#now call PyWolf to load the scene
-		_hr = PyWolf.load_scene("c:\\Wolf\\0.DAE")
+		_hr = PyWolf.load_scene("c:\\Wolf\\models.DAE")
 		if	_hr != 0:
-			logger.log("Could not sync active layer with Wolf")
+			logger.log("Could not sync active layer with Wolf. Make sure run 3Ds Max as administrator and OpenCollada plugin is available")
 		pywolf_sync_camera()
 
 

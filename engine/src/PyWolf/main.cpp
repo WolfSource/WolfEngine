@@ -69,11 +69,18 @@ static int load_scene(const char* pScenePath)
     return sScene && sScene->load_scene(_wstr) == S_OK ? 0 : 1;
 }
 
-static int set_camera_viewport(float pTranslateX, float pTranslateY, float pTranslateZ, float pRotateX, float pRotateY, float pRotateZ)
+static int set_camera_position(float X, float Y, float Z)
 {
-    if (!sScene) return 1;
-    sScene->set_camera_viewport(pTranslateX, pTranslateY, pTranslateZ, pRotateX, pRotateY, pRotateZ);
-    return 0;
+	if (!sScene) return 1;
+	sScene->set_camera_position(X, Y, Z);
+	return 0;
+}
+
+static int set_camera_lookat(float X, float Y, float Z)
+{
+	if (!sScene) return 1;
+	sScene->set_camera_lookat(X, Y, Z);
+	return 0;
 }
 
 static void release_shared_data_over_all_instances()
@@ -97,7 +104,8 @@ BOOST_PYTHON_MODULE(PyWolf)
 {
     def("initialize", initialize);
     def("load_scene", load_scene);
-    def("set_camera_viewport", set_camera_viewport);
+	def("set_camera_position", set_camera_position);
+	def("set_camera_lookat", set_camera_lookat);
     def("release", release);
     def("release_shared_data_over_all_instances", release_shared_data_over_all_instances);
 }

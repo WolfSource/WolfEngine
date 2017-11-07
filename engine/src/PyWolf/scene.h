@@ -72,7 +72,8 @@ public:
 
 #pragma region Setters
 
-    void set_camera_viewport(float pTranslateX, float pTranslateY, float pTranslateZ, float pRotateX, float pRotateY, float pRotateZ);
+	void set_camera_position(float X, float Y, float Z);
+	void set_camera_lookat(float X, float Y, float Z);
 
 #pragma endregion
 
