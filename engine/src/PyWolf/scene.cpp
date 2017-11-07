@@ -380,10 +380,7 @@ HRESULT scene::load_scene(_In_z_ const std::wstring& pScenePath)
 				}
 			}
 		}
-
-		_scene->get_first_camera(this->_camera);
-		this->_camera.update_view();
-
+        
         _scene->release();
     }
     else
@@ -573,6 +570,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     if (sForceUpdateCamera || _camera_just_updated)
     {
         sForceUpdateCamera = false;
+
+        this->_camera.update_view();
 
         //order by distance to camera
         //std::sort(this->_models.begin(), this->_models.end(), [&_cam_pos](_In_ model* a, _In_ model* b)
@@ -959,7 +958,6 @@ void scene::set_camera_position(float X, float Y, float Z)
 {
 	//change name to position
 	this->_camera.set_translate(X, Y, Z);
-	this->_camera.update_view();
 	sForceUpdateCamera = true;
 }
 
@@ -967,7 +965,6 @@ void scene::set_camera_lookat(float X, float Y, float Z)
 {
 	//change name to lookat
 	this->_camera.set_interest(X, Y, Z);
-	this->_camera.update_view();
 	sForceUpdateCamera = true;
 }
 

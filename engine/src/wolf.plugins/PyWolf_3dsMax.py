@@ -5,16 +5,19 @@ import math
 import ctypes
 import thread
 import datetime
+
 #import tempfile
 #import shutil
 
 #append search path for PyWolf
-PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
-#PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+#PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
 
 if not PyWolfPath in sys.path:
 	sys.path.append(PyWolfPath)
+
 wolf_version = ""
+
 try:
 	import PyWolf
 	wolf_version = "PyWolf (v.1.40.3.6)"
@@ -46,6 +49,20 @@ except:
 if 	pyside_version == -1:
 	sys.exit(1)
 
+#_pywolf_lock = 0
+#class WolfLock:
+#	global pywolf_lock
+#	def pywolf_lock():
+#		_pywolf_lock = 1
+		
+#	global pywolf_unlock
+#	def pywolf_unlock():
+#		_pywolf_lock = 0
+    
+#	global pywolf_is_lock
+#	def pywolf_is_lock():
+#		return _pywolf_lock 
+
 class _GCProtector(object):
     widgets = []
 
@@ -69,6 +86,21 @@ class WolfWidget(QWidget):
 		# just release all models
         event.accept()
 
+class CallBacks():
+    def __init__(self):
+		self.OnSystemShutDownHandle = None
+		
+    def register_all(self):
+		self.OnSystemShutDownHandle = MaxPlus.NotificationManager.Register(MaxPlus.NotificationCodes.SystemShutdown, OnSystemShutDown)
+	
+    def unregister_all(self):
+		MaxPlus.NotificationManager.Unregister(self.OnSystemShutDownHandle)
+		self.OnSystemShutDownHandle = None
+
+    OnSystemShutDownHandle = None
+
+#callbacks
+callbacks = CallBacks()
 #wolf widget
 wolfWidget = WolfWidget()
 WIDTH = 640
@@ -81,9 +113,7 @@ class Dialog(QDialog):
     def closeEvent(self, event):
 		#clear temp
         #shutil.rmtree(tmp_dir)
-        wolfWidget.close()
-        PyWolf.release()
-        print "PyWolf shut down successfully"
+        pywolf_release() 
         event.accept()
 		
 #Global variables
@@ -286,13 +316,15 @@ def pywolf_show():
     wolfWidget.show()
 
 def pywolf_sync_camera():
-	if wolf_version == "":
-		logger.log("PyWolf not available")
+	if wolf_version == "" or (not wolfWidget.isVisible()):
 		return
-	
+		
 	MaxPlus.SelectionManager.ClearNodeSelection()
-	#create camera from viewport
-	_max_sxript_cmd = "macros.run \"Lights and Cameras\" \"PhysicalCamera_CreateFromView\""
+	#create camera from viewport, there is a bug which camera target not updated in Max 2018 so we need to do a trick an update the sliderTime a bit
+	_max_sxript_cmd = "macros.run \"Lights and Cameras\" \"PhysicalCamera_CreateFromView\" \r\n\
+	v = sliderTime \r\n\
+	sliderTime = v + 1 \r\n\
+	sliderTime = v"
 	MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
 	_camera_node = MaxPlus.SelectionManager.GetNode(0)
 	_camera_name =_camera_node.GetName()
@@ -336,16 +368,17 @@ def pywolf_sync_camera():
 		_hr = PyWolf.set_camera_position(posX, posY, posZ)
 		if _hr != 0:
 			logger.log("Error on syncing camera position")	
+				
 		_hr = PyWolf.set_camera_lookat(look_atX, look_atY, look_atZ)
 		if _hr != 0:
-			logger.log("Error on syncing camera look at")	
-		
+			logger.log("Error on syncing camera look at")
+	
 
 def pywolf_sync_active_layer_models():
 	if wolf_version == "":
 		logger.log("PyWolf not available")
 		return
-	
+			
 	#first select nodes of active layer
 	MaxPlus.SelectionManager.ClearNodeSelection()
 	_layer = MaxPlus.LayerManager.GetCurrentLayer()
@@ -382,6 +415,12 @@ def pywolf_remove_all_models():
 	if wolf_version == "":
 		logger.log("PyWolf not available")
 		return
+
+def pywolf_release():
+    wolfWidget.close()
+    PyWolf.release()
+    callbacks.unregister_all()
+    print "PyWolf shut down successfully"
 	
 def execute_cmd():
 	_cmd = cmd.toPlainText()
@@ -459,7 +498,7 @@ def init_pywolf():
 
 def run_wolf():
     # get window handle
-    pycobject_hwnd =wolfWidget.winId()
+    pycobject_hwnd = wolfWidget.winId()
     #convert window handle as HWND to unsigned integer pointer for c++
     ctypes.pythonapi.PyCObject_AsVoidPtr.restype  = ctypes.c_void_p
     ctypes.pythonapi.PyCObject_AsVoidPtr.argtypes = [ctypes.py_object]
@@ -472,6 +511,12 @@ def run_wolf():
         print "Error on initializing PyWolf"
     else:
         logger.log( wolf_version + " launched")
+
+	
+def OnSystemShutDown(e):
+	#shut down wolf
+	if wolf_version != "":
+		pywolf_release()
 		
 def main():
     dialog = Dialog(MaxPlus.GetQMaxMainWindow())
@@ -500,7 +545,7 @@ def main():
     #clear log
 	clear_log_btn = QPushButton("Clear Log")
 	clear_log_btn.clicked.connect(clear_log)
-	
+
 	#create vertex box layout
 	main_layout = QVBoxLayout()
 	main_layout.addWidget(main_tab)
@@ -510,6 +555,10 @@ def main():
     dialog.setLayout(main_layout)
     dialog.setWindowModality(Qt.NonModal)
     dialog.show()
+	
+    #register callbacks
+    callbacks.register_all()
+    
     print title + " just launched"
 	
 if __name__ == '__main__':

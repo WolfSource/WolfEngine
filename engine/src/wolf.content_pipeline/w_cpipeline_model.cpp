@@ -210,11 +210,11 @@ w_cpipeline_model* w_cpipeline_model::create_model(
             {
                 if (pZUp)
                 {
-                    //std::swap(_pos[1], _pos[2]);
-                    //_pos[2] *= -1;
+                    /*std::swap(_pos[1], _pos[2]);
+                    _pos[2] *= -1;
 
-                    //std::swap(_nor[1], _nor[2]);
-                    //_nor[2] = 1 - _nor[2];
+                    std::swap(_nor[1], _nor[2]);
+                    _nor[2] = 1 - _nor[2];*/
                 }
 
                 if (pInvertNormal)
