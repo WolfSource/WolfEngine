@@ -98,4 +98,13 @@ if __name__ == '__main__':
 
     PyWolf.release()
     print "\r\nPyWolf shut down successfully"
+
+
+    #run wolf
+    try:
+        thread.start_new_thread( run_wolf, () )
+    except:
+        print "Error: unable to start thread for PyWolf"
     
+
+    app.exec_()

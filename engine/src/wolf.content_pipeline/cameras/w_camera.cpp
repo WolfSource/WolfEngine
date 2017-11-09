@@ -13,7 +13,7 @@ w_camera::w_camera() :
 {
     this->_translate[0] = 0; this->_translate[1] = 7; this->_translate[2] = -27.0f;
     this->_interest[0] = 0; this->_interest[1] = 0; this->_interest[2] = 0;
-    this->_up[0] = 0.0f; this->_up[1] = -1.0f; this->_up[2] = 0.0f;
+    this->_up[0] = 0.0f; this->_up[1] = 1.0f; this->_up[2] = 0.0f;
 
     update_view();
     update_projection();
@@ -48,7 +48,7 @@ void w_camera::update_projection()
 	else
 	{
 		// landscape view
-        this->_up[0] = 0.0f; this->_up[1] = -1.0f; this->_up[2] = 0.0f;
+        this->_up[0] = 0.0f; this->_up[1] = 1.0f; this->_up[2] = 0.0f;
     }
 
    this->_projection = glm::perspectiveRH(_fov_angle_y, this->_aspect_ratio, this->_near_plane, this->_far_plane);

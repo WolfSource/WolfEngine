@@ -54,6 +54,7 @@ public:
     //The function "Load()" will be called once per game and is the place to load all of your game assets.
     void    load() override;
     HRESULT load_scene(_In_z_ const std::wstring& pScenePath);
+	HRESULT remove_all_models();
 
     //This is the place where allows the game to run logic such as updating the world, checking camera, collisions, physics, input, playing audio and etc.
     void update(_In_ const wolf::system::w_game_time& pGameTime) override;

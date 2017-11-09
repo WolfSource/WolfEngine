@@ -220,7 +220,7 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
 				_frame_buffer_handle,
 				w_color::CORNFLOWER_BLUE(),
 				1.0f,
-				0.0f);
+				0);
 			{
 				//drawing triangle
 				//vkCmdDraw(_cmd, 3, 1, 0, 0);

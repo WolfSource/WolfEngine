@@ -24,12 +24,7 @@ using namespace wolf::content_pipeline;
 //forward declaration
 static void TonemapDepth(_In_ float* pDepth, _In_ unsigned char* pImage, _In_ const int& pW, _In_ const int& pH);
 
-static bool sSearching = false;
-static bool sForceUpdateCamera = true;
-
-static std::vector<search_item_struct> sSearchedItems;
-
-static char sSearch[MAX_SEARCH_LENGHT];
+static bool sCameraJustUpdated = true;
 
 static MaskedOcclusionCulling* sMOC = nullptr;
 static CullingThreadpool* sMOCThreadPool = nullptr;
@@ -37,9 +32,11 @@ static CullingThreadpool* sMOCThreadPool = nullptr;
 static uint32_t sFPS = 0;
 static uint32_t sRenderingThreads = 0;
 static uint32_t sTotalModels = 0;
-static uint32_t sVisibleModels = 0;
-static uint32_t sVisibleSubModels = 0;
+static uint32_t sTotalInstances = 0;
+static uint32_t sAllVisibleRefModels = 0;
+static uint32_t sAllVisibleModels = 0;
 static std::string SVersion;
+static bool sRecordDrawCommandBuffer = true;
 
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
 static bool                     sShowDebugMaskedOcclusionCulling = false;
@@ -58,7 +55,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
     //enable/disable gpu debugging
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = false;
+    _config.debug_gpu = true;
     this->set_graphics_device_manager_configs(_config);
 
     SVersion =
@@ -111,13 +108,6 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
     sMOCThreadPool = new CullingThreadpool(4, 2, 2);
     sMOCThreadPool->SetBuffer(sMOC);
     sMOCThreadPool->SuspendThreads();
-    
-#ifdef __WIN32
-    sprintf_s(sSearch, "Search");
-#else
-    sprintf(sSearch, "Search");
-#endif
-
 }
 
 void scene::load()
@@ -318,7 +308,13 @@ void scene::load()
     _icon_images->initialize_texture_2D_from_file(L"textures/gui/icons.png");
 
     auto _font_path = wolf::system::convert::wstring_to_string(content_path) + "fonts/arial.ttf";
-    w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _icon_images, nullptr, _font_path.c_str());
+    _hr = w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _icon_images, nullptr, _font_path.c_str());
+	if (_hr == S_FALSE)
+	{
+		logger.error("Error on loading imgui");
+		release();
+		exit(1);
+	}
 
     _hr = this->_gui_command_buffers.load(_gDevice, _output_window->vk_swap_chain_image_views.size());
     if (_hr == S_FALSE)
@@ -337,6 +333,8 @@ void scene::load()
 
     this->_camera.update_view();
     this->_camera.update_projection();
+
+	sRecordDrawCommandBuffer = true;
 }
 
 HRESULT scene::load_scene(_In_z_ const std::wstring& pScenePath)
@@ -389,6 +387,21 @@ HRESULT scene::load_scene(_In_z_ const std::wstring& pScenePath)
         _hr = S_FALSE;
     }
     return _hr;
+}
+
+HRESULT scene::remove_all_models()
+{
+	this->_models_to_be_render.clear();
+	//release all models
+	for (auto _model : this->models)
+	{
+		SAFE_RELEASE(_model);
+	}
+	this->models.clear();
+
+	sCameraJustUpdated = true;
+
+	return S_OK;
 }
 
 HRESULT scene::_build_draw_command_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -527,126 +540,97 @@ HRESULT scene::_build_gui_command_buffer(_In_ const std::shared_ptr<w_graphics_d
     return S_OK;
 }
 
-bool _record_draw_command_buffer = true;
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
-    if (w_game::exiting) return;
-    defer(nullptr, [&](...)
-    {
-        w_game::update(pGameTime);
-    });
+	if (w_game::exiting) return;
+	defer(nullptr, [&](...)
+	{
+		w_game::update(pGameTime);
+	});
 
-    auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows[0]);
+	auto _gDevice = this->graphics_devices[0];
+	auto _output_window = &(_gDevice->output_presentation_windows[0]);
 
-    bool _gui_proceeded = false;
-    if (this->_show_gui)
-    {
-        w_imgui::new_frame(pGameTime.get_elapsed_seconds(), [&_gui_proceeded, this]()
-        {
-            _gui_proceeded = _update_gui();
-        });
-    }
+	if (this->_show_gui)
+	{
+		w_imgui::new_frame(pGameTime.get_elapsed_seconds(), [this]()
+		{
+			_update_gui();
+		});
+	}
 
+	sTotalModels = this->models.size();
 
-    sTotalModels = this->models.size();
+	if (!sCameraJustUpdated) return;
 
-    //if gui proceeded or mouse captured by gui do not update view
-    bool _camera_just_updated = false;
-    if (!sForceUpdateCamera)
-    {
-        if (_gui_proceeded)
-        {
-            inputs_manager.reset();
-            return;
-        }
-        if (ImGui::IsMouseHoveringAnyWindow()) return;
+	sCameraJustUpdated = false;
+	sRecordDrawCommandBuffer = true;
 
-       /* _camera_just_updated = this->_camera.update(pGameTime, this->_screen_size);*/
-    }
+	sTotalInstances = 0;
+	sAllVisibleModels = 0;
 
-    //if camera updated, then update command buffers based on result of masked occlusion culling
+	this->_camera.update_view();
 
-    if (sForceUpdateCamera || _camera_just_updated)
-    {
-        sForceUpdateCamera = false;
+	this->_models_to_be_render.clear();
 
-        this->_camera.update_view();
+	//clear buffers and wake up masked occlusion threads
+	sMOCThreadPool->ClearBuffer();
+	sMOCThreadPool->WakeThreads();
 
-        //order by distance to camera
-        //std::sort(this->_models.begin(), this->_models.end(), [&_cam_pos](_In_ model* a, _In_ model* b)
-        //{
-        //    auto _a_distance = glm::distance(_cam_pos, a->get_position());
-        //    auto _b_distance = glm::distance(_cam_pos, b->get_position());
+	bool _need_flush_moc = false;
 
-        //    return _a_distance < _b_distance;
-        //});  
+	std::for_each(this->models.begin(), this->models.end(), [&](_In_ model* pModel)
+	{
+		sTotalInstances += pModel->get_instances_count();
+		if (pModel->pre_update(this->_camera, sMOCThreadPool))
+		{
+			_need_flush_moc = true;
+		}
+	});
 
-        auto _cam_pos = this->_camera.get_translate();
-        sVisibleSubModels = 0;
-        this->_models_to_be_render.clear();
+	if (!_need_flush_moc)
+	{
+		sMOCThreadPool->SuspendThreads();
+		return;
+	}
 
-        //clear buffers and wake up masked occlusion threads
-        sMOCThreadPool->ClearBuffer();
-        sMOCThreadPool->WakeThreads();
+	//apply flush for all masked occlusion threads and force them to finish the jobs
+	sMOCThreadPool->Flush();
 
-        bool _need_flush_moc = false;
-        sTotalModels += this->models.size();
+	//post update stage
+	std::for_each(this->models.begin(), this->models.end(), [&](_In_ model* pModel)
+	{
+		if (pModel->post_update(sMOCThreadPool, sAllVisibleModels))
+		{
+			this->_models_to_be_render.push_back(pModel);
+		}
+	});
 
-        std::for_each(this->models.begin(), this->models.end(), [&](_In_ model* pModel)
-        {
-            if (pModel->pre_update(this->_camera, sMOCThreadPool))
-            {
-                _need_flush_moc = true;
-            }
-        });
-
-        if (!_need_flush_moc)
-        {
-            sMOCThreadPool->SuspendThreads();
-            return;
-        }
-
-        //apply flush for all masked occlusion threads and force them to finish the jobs
-        sMOCThreadPool->Flush();
-
-        //post update stage
-        std::for_each(this->models.begin(), this->models.end(), [&](_In_ model* pModel)
-        {
-            if (pModel->post_update(sMOCThreadPool, sVisibleSubModels))
-            {
-                this->_models_to_be_render.push_back(pModel);
-            }
-        });
-
-        sMOCThreadPool->SuspendThreads();
-
-        _record_draw_command_buffer = true;
+	sMOCThreadPool->SuspendThreads();
 
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
 
-        if (sShowDebugMaskedOcclusionCulling)
-        {
-            //Compute a per pixel depth buffer from the hierarchical depth buffer, used for visualization.
-            sMOCThreadPool->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
-            //Tonemap the depth image
-            TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, sMediaPlayerWidth, sMediaPlayerHeight);
+	if (sShowDebugMaskedOcclusionCulling)
+	{
+		//Compute a per pixel depth buffer from the hierarchical depth buffer, used for visualization.
+		sMOCThreadPool->ComputePixelDepthBuffer(sMOCPerPixelZBuffer);
+		//Tonemap the depth image
+		TonemapDepth(sMOCPerPixelZBuffer, sMOCTonemapDepthImage, sMediaPlayerWidth, sMediaPlayerHeight);
 
-            if (sStagingMediaData)
-            {
-                tbb::parallel_for(tbb::blocked_range<size_t>(0, sMediaPlayerWidth * sMediaPlayerHeight * 4), [&](const tbb::blocked_range<size_t>& pRange)
-                {
-                    for (size_t i = pRange.begin(); i < pRange.end(); ++i)
-                    {
-                        sStagingMediaData[i] = sMOCTonemapDepthImage[i];
-                    }
-                });
-                sStagingMediaTexture->copy_data_to_texture_2D(sStagingMediaData);
-            }
-        }
+		if (sStagingMediaData)
+		{
+			tbb::parallel_for(tbb::blocked_range<size_t>(0, sMediaPlayerWidth * sMediaPlayerHeight * 4), [&](const tbb::blocked_range<size_t>& pRange)
+			{
+				for (size_t i = pRange.begin(); i < pRange.end(); ++i)
+				{
+					sStagingMediaData[i] = sMOCTonemapDepthImage[i];
+				}
+			});
+			sStagingMediaTexture->copy_data_to_texture_2D(sStagingMediaData);
+		}
+	}
 #endif
 
-    }
 }
 
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
@@ -664,7 +648,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     auto _image_is_avaiable = _output_window->vk_swap_chain_image_is_available_semaphore.get();
     std::vector<VkSemaphore> _wait_semaphors = { *_image_is_avaiable };
 
-    if (_record_draw_command_buffer)
+    if (sRecordDrawCommandBuffer)
     {
         //submit compute shader for all visible models
         std::for_each(this->_models_to_be_render.begin(), this->_models_to_be_render.end(),
@@ -676,7 +660,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
             }
         });
         _build_draw_command_buffer(_gDevice);
-        _record_draw_command_buffer = false;
+		sRecordDrawCommandBuffer = false;
     }
 
     auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
@@ -701,7 +685,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, this->_draw_fence))
     {
         _hr = S_FALSE;
-        V(_hr, "submiting queu for drawing gui", _trace, 3);
+        V(_hr, "submiting queu for main drawing", _trace, 3);
     }
     // Wait for fence to signal that all command buffers are ready
     vkWaitForFences(_gDevice->vk_device, 1, &this->_draw_fence, VK_TRUE, VK_TIMEOUT);
@@ -734,7 +718,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     _hr = w_game::render(pGameTime);
 
     sFPS = pGameTime.get_frames_per_second();
-    sVisibleModels = this->_models_to_be_render.size();
+	sAllVisibleRefModels = this->_models_to_be_render.size();
 
     _wait_semaphors.clear();
 
@@ -765,13 +749,7 @@ ULONG scene::release()
     }
     this->_render_thread_pool.clear();
 
-    this->_models_to_be_render.clear();
-    //release all models
-    for (auto _model : this->models)
-    {
-        SAFE_RELEASE(_model);
-    }
-    this->models.clear();
+	remove_all_models();
 
     this->_draw_render_pass.release();
     this->_draw_frame_buffers.release();
@@ -801,7 +779,7 @@ ULONG scene::release()
     MaskedOcclusionCulling::Destroy(sMOC);
     SAFE_DELETE(sMOCThreadPool);
 
-    w_imgui::release();
+	w_imgui::release();
 
     w_pipeline::release_all_pipeline_caches(_gDevice);
     w_texture::release_shared_textures();
@@ -912,8 +890,8 @@ bool scene::_update_gui()
     ImGui::SetWindowPos(ImVec2(0, 360));
     ImGui::SetNextWindowSize(ImVec2(200, 120), ImGuiSetCond_Always);
     ImGui::Begin(("Wolf.Engine " + SVersion).c_str());
-    ImGui::Text("FPS:%d\r\nThread pool rendering size: %d\r\nTotal Ref Models: %d\r\nTotal Visible Models: %d\r\nTotal Visible Ref Models: %d",
-        sFPS, sRenderingThreads, sTotalModels, sVisibleSubModels, sVisibleModels);
+    ImGui::Text("FPS:%d\r\nRender Thread Pool Size: %d\r\nTotal Models: %d\r\nTotal Instances: %d\r\nVisible Ref Models: %d\r\nAll Visible Models: %d",
+        sFPS, sRenderingThreads, sTotalModels, sTotalInstances, sAllVisibleRefModels, sAllVisibleModels);
 
     ImGui::End();
 
@@ -958,14 +936,14 @@ void scene::set_camera_position(float X, float Y, float Z)
 {
 	//change name to position
 	this->_camera.set_translate(X, Y, Z);
-	sForceUpdateCamera = true;
+	sCameraJustUpdated = true;
 }
 
 void scene::set_camera_lookat(float X, float Y, float Z)
 {
 	//change name to lookat
 	this->_camera.set_interest(X, Y, Z);
-	sForceUpdateCamera = true;
+	sCameraJustUpdated = true;
 }
 
 #pragma endregion

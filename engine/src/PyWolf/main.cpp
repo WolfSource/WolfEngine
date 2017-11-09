@@ -33,8 +33,8 @@ static int initialize(unsigned int pIntHWND, const char* pAppName, const char* p
         sScene = new scene(_running_dir, _app_name);
         
         //create window info and add it to the map
-        sWindowInfo.width = 800;
-        sWindowInfo.height = 600;
+        sWindowInfo.width = 640;
+        sWindowInfo.height = 480;
         sWindowInfo.is_full_screen = false;
         sWindowInfo.v_sync_enable = false;
         sWindowInfo.swap_chain_format = 44;//using vulkan as render api
@@ -83,6 +83,11 @@ static int set_camera_lookat(float X, float Y, float Z)
 	return 0;
 }
 
+static int remove_all_models()
+{
+	return sScene && sScene->remove_all_models() == S_OK ? 0 : 1;
+}
+
 static void release_shared_data_over_all_instances()
 {
     wolf::release_shared_data_over_all_instances();
@@ -106,6 +111,7 @@ BOOST_PYTHON_MODULE(PyWolf)
     def("load_scene", load_scene);
 	def("set_camera_position", set_camera_position);
 	def("set_camera_lookat", set_camera_lookat);
+	def("remove_all_models", remove_all_models);
     def("release", release);
     def("release_shared_data_over_all_instances", release_shared_data_over_all_instances);
 }

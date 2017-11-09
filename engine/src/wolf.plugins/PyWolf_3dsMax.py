@@ -10,8 +10,8 @@ import datetime
 #import shutil
 
 #append search path for PyWolf
-#PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
-PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+#PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
 
 if not PyWolfPath in sys.path:
 	sys.path.append(PyWolfPath)
@@ -369,7 +369,7 @@ def pywolf_sync_camera():
 		if _hr != 0:
 			logger.log("Error on syncing camera position")	
 				
-		_hr = PyWolf.set_camera_lookat(look_atX, look_atY, look_atZ)
+		_hr = PyWolf.set_camera_lookat(look_atX, look_atZ, look_atY)
 		if _hr != 0:
 			logger.log("Error on syncing camera look at")
 	
@@ -401,7 +401,7 @@ def pywolf_sync_active_layer_models():
 		(																																					\r\n\
 		   file_url = \"c:\\Wolf\\models.DAE\"																				   	\r\n\
 		   exportFile (file_url) #noprompt selectedOnly:on using:exp_classes[_idx]								\r\n\
-		)"
+     )"
 		MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
 		
 		#now call PyWolf to load the scene
@@ -415,7 +415,10 @@ def pywolf_remove_all_models():
 	if wolf_version == "":
 		logger.log("PyWolf not available")
 		return
-
+	_hr = PyWolf.remove_all_models()
+	if	_hr != 0:
+		logger.log("Could not remove all models")
+		
 def pywolf_release():
     wolfWidget.close()
     PyWolf.release()
@@ -467,8 +470,8 @@ def init_helper():
 	sync_camera_wolf_button = QPushButton("Sync camera")
 	sync_camera_wolf_button.clicked.connect(pywolf_sync_camera)
 	#shutdown wolf.engine
-	shutdown_wolf_button = QPushButton("Remove All Models")
-	shutdown_wolf_button.clicked.connect(pywolf_remove_all_models)
+	remove_all_models_button = QPushButton("Remove All Models")
+	remove_all_models_button.clicked.connect(pywolf_remove_all_models)
 	#execute python codes
 	exe_button = QPushButton("execute")
 	exe_button.clicked.connect(execute_cmd)
@@ -477,7 +480,7 @@ def init_helper():
 	h_layout.addWidget(run_wolf_button)
 	h_layout.addWidget(sync_models_to_wolf_button)
 	h_layout.addWidget(sync_camera_wolf_button)
-	h_layout.addWidget(shutdown_wolf_button)
+	h_layout.addWidget(remove_all_models_button)
 	
 	v_layout = QVBoxLayout(widget)
 	v_layout.addWidget(wolf_buttons)
@@ -517,6 +520,7 @@ def OnSystemShutDown(e):
 	#shut down wolf
 	if wolf_version != "":
 		pywolf_release()
+		PyWolf.release_shared_data_over_all_instances()
 		
 def main():
     dialog = Dialog(MaxPlus.GetQMaxMainWindow())

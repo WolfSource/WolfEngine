@@ -24,12 +24,6 @@
 
 struct clipspace_vertex { float x, y, z, w; };
 
-struct search_item_struct
-{
-    std::string                                 name;
-    wolf::content_pipeline::w_bounding_sphere   bounding_sphere;
-};
-
 class model : public wolf::system::w_object
 {
 public:
@@ -47,7 +41,7 @@ public:
         _In_    wolf::content_pipeline::w_first_person_camera pCamera,
         _In_    CullingThreadpool* sMOC);
 
-    bool post_update(_Inout_ CullingThreadpool* sMOC, _Inout_ uint32_t& pVisibleSubModels);
+    bool post_update(_Inout_ CullingThreadpool* sMOC, _Inout_ uint32_t& pAllVisibleModels);
 
     void indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer);
 
@@ -58,15 +52,12 @@ public:
     //Release will be called once per game and is the place to unload assets and release all resources
     ULONG release() override;
     
-    void search_for_name(
-        _In_z_ const std::string& pToBeFind, 
-        _Inout_ std::vector<search_item_struct>& pResults);
-
 #pragma region Getters
 
     const char*     get_full_name() const;
     glm::vec3       get_position() const;
     VkSemaphore     get_compute_semaphore() const;
+	size_t			get_instances_count() const;
 
 #pragma endregion
 

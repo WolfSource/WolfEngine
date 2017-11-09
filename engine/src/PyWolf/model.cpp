@@ -1004,7 +1004,7 @@ bool model::pre_update(
 
 bool model::post_update(
     _Inout_ CullingThreadpool* sMOCThreadPool,
-    _Inout_ uint32_t& pVisibleSubModels)
+    _Inout_ uint32_t& pAllVisibleModels)
 {
     bool _add_to_render_queue = false;
     if (!this->_loaded.load()) return _add_to_render_queue;
@@ -1027,7 +1027,7 @@ bool model::post_update(
         {
             this->_visibilities[0] = true;
             _add_to_render_queue = true;
-            pVisibleSubModels++;
+			pAllVisibleModels++;
             break;
         }
     }
@@ -1072,7 +1072,7 @@ bool model::post_update(
             {
                 this->_visibilities[i + 1] = true;
                 _add_to_render_queue = true;
-                pVisibleSubModels++;
+				pAllVisibleModels++;
                 break;
             }
         }
@@ -1268,34 +1268,6 @@ ULONG model::release()
     return _super::release();
 }
 
-void model::search_for_name(
-    _In_z_ const std::string& pToBeFind,
-    _Inout_ std::vector<search_item_struct>& pResults)
-{
-    set_color(glm::vec4(0.3f));
-
-    search_item_struct _item;
-    for (uint32_t i = 0; i < this->_search_names.size(); ++i)
-    {
-        if (strstr(this->_search_names[i].c_str(), pToBeFind.c_str()))
-        {
-            //TODO: we need to set opacity for each instance not all instanced
-            set_color(glm::vec4(1.0f));
-            
-            _item.name = this->_search_names[i];
-            _item.bounding_sphere = this->_root_bounding_sphere;
-            if (i != 0)
-            {
-                _item.bounding_sphere.center[0] = this->_instances_transforms[i - 1].position[0];
-                _item.bounding_sphere.center[1] = this->_instances_transforms[i - 1].position[1];
-                _item.bounding_sphere.center[2] = this->_instances_transforms[i - 1].position[2];
-            }
-
-            pResults.push_back(_item);
-        }
-    }
-}
-
 #pragma region Getters
 
 const char*  model::get_full_name() const
@@ -1314,6 +1286,11 @@ glm::vec3 model::get_position() const
 VkSemaphore  model::get_compute_semaphore() const
 {
     return this->cs.semaphore;
+}
+
+size_t	model::get_instances_count() const
+{
+	return this->_instances_transforms.size();
 }
 
 #pragma endregion

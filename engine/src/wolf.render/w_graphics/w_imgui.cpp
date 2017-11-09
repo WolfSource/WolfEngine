@@ -673,7 +673,7 @@ namespace wolf
 using namespace wolf::graphics;
 
 bool w_imgui::_is_released = false;
-w_imgui_pimp* w_imgui::_pimp = new w_imgui_pimp();
+w_imgui_pimp* w_imgui::_pimp = nullptr;
 
 HRESULT w_imgui::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
 #ifdef __WIN32
@@ -686,7 +686,11 @@ HRESULT w_imgui::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_devi
     _In_ const char* pFontPath,
     _In_ const float& pFontPixelSize)
 {
-    return _pimp ? _pimp->load(
+	if (!_pimp)
+	{
+		_pimp = new w_imgui_pimp();
+	}
+    return _pimp->load(
                        pGDevice,
 #ifdef __WIN32
                        pHWND,
@@ -696,7 +700,7 @@ HRESULT w_imgui::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_devi
                        pIconTexture,
                        pStagingMediaTexture,
                        pFontPath,
-                       pFontPixelSize) : S_FALSE;
+                       pFontPixelSize);
 }
 
 HRESULT w_imgui::update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass)
