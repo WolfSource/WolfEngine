@@ -11,6 +11,7 @@
 
 //namespaces
 using namespace std;
+using namespace wolf;
 using namespace wolf::system;
 
 WOLF_MAIN()

@@ -174,6 +174,9 @@ void scene::load()
 	w_vertex_binding_attributes _vba;
 	_vba.declaration = w_vertex_declaration::VERTEX_POSITION;
     
+	VkPipelineRasterizationStateCreateInfo _rasterization_create_info = w_graphics_device::defaults::vk_default_pipeline_rasterization_state_create_info;
+	_rasterization_create_info.cullMode = VkCullModeFlagBits::VK_CULL_MODE_BACK_BIT;
+
 	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(_gDevice,
 		_vba,
@@ -182,7 +185,11 @@ void scene::load()
 		this->_shader.get_shader_stages(),
 		_descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
 		{ this->_viewport },
-		{ this->_viewport_scissor });
+		{ this->_viewport_scissor },
+		_pipeline_cache_name,
+		{},
+		0,
+		&_rasterization_create_info);
 
 	if (_hr == S_FALSE)
 	{

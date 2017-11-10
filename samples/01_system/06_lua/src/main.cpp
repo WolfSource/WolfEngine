@@ -10,6 +10,7 @@
 #include "pch.h"
 
 //namespaces
+using namespace wolf;
 using namespace wolf::system;
 
 int c_function_bind(lua_State* pState)

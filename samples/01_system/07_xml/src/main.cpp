@@ -10,6 +10,7 @@
 #include "pch.h"
 
 //namespaces
+using namespace wolf;
 using namespace wolf::system;
 
 //Entry point of program 
