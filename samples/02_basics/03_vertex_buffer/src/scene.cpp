@@ -1,333 +1,350 @@
+#include "pch.h"
 #include "scene.h"
-#include <w_graphics/w_shader.h>
 
+using namespace std;
+using namespace wolf;
 using namespace wolf::system;
 using namespace wolf::graphics;
-using namespace wolf::framework;
 
-struct vertex_data
+scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
+	w_game(pRunningDirectory, pAppName)
 {
-    float position[4];
-    float color[4];
-};
+	auto _running_dir = pRunningDirectory;
 
-scene::scene(_In_z_ std::string pRootDirectory, _In_z_ std::string pAppName) :
-    w_game(pRootDirectory, pAppName)
-{
-    w_game::set_fixed_time_step(false);
+#if defined(__WIN32) || defined(__UWP)
+	content_path = _running_dir + L"../../../../content/";
+#elif defined(__APPLE__)
+	content_path = _running_dir + L"/../../../../../content/";
+#elif defined(__linux)
+	error
+#elif defined(__ANDROID)
+	error
+#endif
+
+#ifdef __WIN32
+		w_graphics_device_manager_configs _config;
+	_config.debug_gpu = true;
+	w_game::set_graphics_device_manager_configs(_config);
+#endif
+
+	w_game::set_fixed_time_step(false);
 }
 
 scene::~scene()
 {
-    release();
+	//release all resources
+	release();
 }
 
 void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
 {
-    // TODO: Add your pre-initialization logic here
-    w_game::initialize(pOutputWindowsInfo);
+	// TODO: Add your pre-initialization logic here
+
+	w_game::initialize(pOutputWindowsInfo);
 }
 
 void scene::load()
 {
-    w_game::load();
-    
-    auto _gDevice =  this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows[0]);
-    auto _width = _output_window->width;
-    auto _height = _output_window->height;
-    auto _content_path_dir = wolf::system::io::get_current_directory() + "/../../../../../samples/02_Simples/03_vertex_buffer/src/content/";
-    
-    //load shaders
-    auto _hr = _shader.load(_gDevice, (_content_path_dir + "shaders/shader_vertex_color.vs.spv").c_str(), w_shader_stage::VERTEX_SHADER);
-    if(_hr == S_FALSE)
-    {
-        logger.error("Error loading vertex shader.");
-        return;
-    }
-    _hr = _shader.load(_gDevice, (_content_path_dir + "shaders/shader_1.fs.spv").c_str(), w_shader_stage::FRAGMENT_SHADER);
-    if(_hr == S_FALSE)
-    {
-        logger.error("Error loading fragment shader.");
-        return;
-    }
-    
-    //create render pass
-    _gDevice->create_render_pass("pass1");
-    //create frame buffers
-    _gDevice->create_frame_buffers_collection("frames",
-                                              "pass1",
-                                              _output_window->vk_swap_chain_image_views.size(),
-                                              _output_window->vk_swap_chain_image_views.data(),
-                                              _width,
-                                              _height,
-                                              1,
-                                              _output_window->index);
-    
-    std::vector<vertex_data> _vertex_data =
-    {
-        { { -0.7f, -0.7f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f} },
-        { { -0.7f,  0.7f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-        { {  0.7f, -0.7f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
-        { {  0.7f,  0.7f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-    };
-    this->_mesh.load(_gDevice,
-                     _vertex_data.data(),
-                     static_cast<UINT>(_vertex_data.size() * sizeof(vertex_data)),
-                     nullptr,
-                     0);
-    
-    std::vector<VkVertexInputBindingDescription> _vertex_binding_descriptions =
-    {
-        {
-            0,                                                          // Binding
-            sizeof(vertex_data),                                        // Stride
-            VK_VERTEX_INPUT_RATE_VERTEX                                 // InputRate
-        }
-    };
-    
-    std::vector<VkVertexInputAttributeDescription> _vertex_attribute_descriptions =
-    {
-        {
-            0,                                                          // Location
-            _vertex_binding_descriptions[0].binding,                    // Binding
-            VK_FORMAT_R32G32B32A32_SFLOAT,                              // Format
-            offsetof(vertex_data, position)                             // Offset
-        },
-        {
-            1,                                                          // Location
-            _vertex_binding_descriptions[0].binding,                    // Binding
-            VK_FORMAT_R32G32B32A32_SFLOAT,                              // Format
-            offsetof(vertex_data, color)                                // Offset
-        }
-    };
-    
-    VkPipelineVertexInputStateCreateInfo _vertex_input_state_create_info =
-    {
-        VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,    // Type
-        nullptr,                                                      // Next
-        0,                                                            // Flags
-        static_cast<uint32_t>(_vertex_binding_descriptions.size()),   // VertexBindingDescriptionCount
-        &_vertex_binding_descriptions[0],                             // VertexBindingDescriptions
-        static_cast<uint32_t>(_vertex_attribute_descriptions.size()), // VertexAttributeDescriptionCount
-        &_vertex_attribute_descriptions[0]                            // VertexAttributeDescriptions
-    };
-    
-    VkPipelineInputAssemblyStateCreateInfo _input_assembly_state_create_info =
-    {
-        VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,    // Type
-        nullptr,                                                        // Next
-        0,                                                              // Flags
-        VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,                           // Topology
-        VK_FALSE                                                        // Enable restart primitive
-    };
-    
-    std::vector<VkDynamicState> _dynamic_states =
-    {
-        VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR,
-    };
-    
-    VkPipelineDynamicStateCreateInfo _dynamic_state_create_info =
-    {
-        VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,                   // Type
-        nullptr,                                                                // Next
-        0,                                                                      // Flags
-        static_cast<uint32_t>(_dynamic_states.size()),                          // DynamicStateCount
-        &_dynamic_states[0]                                                     // DynamicStates
-    };
-    
-    //create view port
-    w_viewport _wp;
-    _wp.x = 0.0f;
-    _wp.y = 0.0f;
-    _wp.width = _width;
-    _wp.height =  _height;
-    _wp.minDepth = 0.0f;
-    _wp.maxDepth = 1.0f;
-    
-    w_viewport_scissor _wp_sc;
-    _wp_sc.offset.x = 0.0f;
-    _wp_sc.offset.y = 0.0f;
-    _wp_sc.extent.width = _width;
-    _wp_sc.extent.height = _height;
-    
-    _hr = _gDevice->create_pipeline("pipeline1",
-                                         "pass1",
-                                         _shader.get_shader_stages(),
-                                         { _wp }, //viewports
-                                         { _wp_sc },
-                                         nullptr,
-                                         &_vertex_input_state_create_info,
-                                         &_input_assembly_state_create_info,
-                                         nullptr,
-                                         nullptr,
-                                         nullptr,
-                                         &_dynamic_state_create_info);
-    if (_hr)
-    {
-        logger.error("Error creating pipeline");
-        return;
-    }
-    
-    this->_command_buffers = new w_command_buffers();
-    _hr = this->_command_buffers->load(_gDevice, 2);
-    if (_hr)
-    {
-        logger.error("Error creating command buffer");
-        return;
-    }
-    _hr = _gDevice->store_to_global_command_buffers("render_triangle",
-                                                    this->_command_buffers,
-                                                    _output_window->index);
-    if (_hr)
-    {
-        logger.error("Error creating command buffer");
-        return;
-    }
-    
-	//prepare data for recording command buffers
-    VkCommandBufferBeginInfo _command_buffer_begin_info = {};
-    _command_buffer_begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    _command_buffer_begin_info.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-    
-    VkImageSubresourceRange _sub_resource_range = {};
-    _sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    _sub_resource_range.baseMipLevel = 0;
-    _sub_resource_range.levelCount = 1;
-    _sub_resource_range.baseArrayLayer = 0;
-    _sub_resource_range.layerCount = 1;
-    
-    VkClearValue _vk_clear_color =
-    {
-        { 1,0,0,1 }
-    };
+	defer(nullptr, [&](...)
+	{
+		w_game::load();
+	});
 
-    _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
-    
-    //record clear screen command buffer for every swap chain image
-    for (uint32_t i = 0; i < this->_command_buffers->get_commands_size(); ++i)
-    {
-        auto _cmd = this->_command_buffers->get_command_at(i);
-        
-        this->_command_buffers->begin(i);
-        {
-            VkImageMemoryBarrier _present_to_render_barrier = {};
-            _present_to_render_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-            _present_to_render_barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-            _present_to_render_barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-            _present_to_render_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            _present_to_render_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-            _present_to_render_barrier.srcQueueFamilyIndex =_gDevice->vk_present_queue_family_index;
-            _present_to_render_barrier.dstQueueFamilyIndex = _gDevice->vk_graphics_queue_family_index;
-            _present_to_render_barrier.image = _output_window->vk_swap_chain_image_views[i].image;
-            _present_to_render_barrier.subresourceRange = _sub_resource_range;
-        
-            vkCmdPipelineBarrier(_cmd,
-                                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                 0,
-                                 0,
-                                 nullptr,
-                                 0,
-                                 nullptr,
-                                 1,
-                                 &_present_to_render_barrier);
-        
-            VkRenderPassBeginInfo _render_pass_begin_info =
-            {
-                VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,     // VkStructureType                sType
-                nullptr,                                      // const void                    *pNext
-                _gDevice->vk_render_passes["pass1"],                            // VkRenderPass                   renderPass
-                _gDevice->vk_frame_buffers["frames"].at(i),                       // VkFramebuffer                  framebuffer
-                {                                             // VkRect2D                       renderArea
-                    {                                           // VkOffset2D                     offset
-                        0,                                          // int32_t                        x
-                        0                                           // int32_t                        y
-                    },
-                    {                                           // VkExtent2D                     extent
-                        _output_window->width,                                        // int32_t                        width
-                        _output_window->height,                                        // int32_t                        height
-                    }
-                },
-                1,                                            // uint32_t                       clearValueCount
-                &_vk_clear_color                                  // const VkClearValue            *pClearValues
-            };
-        
-            vkCmdBeginRenderPass( _cmd, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE );
-            vkCmdBindPipeline( _cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _gDevice->vk_pipelines["pipeline1"].pipeline);
-    
-            vkCmdSetViewport(_cmd, 0, 1, &_wp);
-            vkCmdSetScissor(_cmd, 0, 1, &_wp_sc);
-    
-            VkDeviceSize _offset = 0;
-            auto _vertex_buffer_handle = this->_mesh.get_vertex_buffer_handle();
-            vkCmdBindVertexBuffers( _cmd, 0, 1, &_vertex_buffer_handle, &_offset );
-        
-            vkCmdDraw( _cmd, static_cast<uint32_t>(_vertex_data.size()), 1, 0, 0 );
-            vkCmdEndRenderPass( _cmd );
-        
-            _vertex_buffer_handle = nullptr;
-        
-            VkImageMemoryBarrier _barrier_from_render_to_present = {
-                VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,                 // Type
-                nullptr,                                                // Next
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,                   // SrcAccessMask
-                VK_ACCESS_MEMORY_READ_BIT,                              // DstAccessMask
-                VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,                        // OldLayout
-                VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,                        // NewLayout
-                _gDevice->vk_graphics_queue_family_index,               // SrcQueueFamilyIndex
-                _gDevice->vk_present_queue_family_index,                // DstQueueFamilyIndex
-                _output_window->vk_swap_chain_image_views[i].image,     // Image
-                _sub_resource_range                                     // SubresourceRange
-            };
-            vkCmdPipelineBarrier(_cmd,
-                                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                 VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                                 0,
-                                 0,
-                                 nullptr,
-                                 0,
-                                 nullptr,
-                                 1,
-                                 &_barrier_from_render_to_present );
-            }
-            _hr = this->_command_buffers->end(i);
-            if(_hr == S_FALSE)
-            {
-                logger.error("Could not end command buffer!");
-            }
-        }
+	const std::string _trace_info = this->name + "::load";
+
+	auto _gDevice = this->graphics_devices[0];
+	auto _output_window = &(_gDevice->output_presentation_windows[0]);
+
+	w_point_t _screen_size;
+	_screen_size.x = _output_window->width;
+	_screen_size.y = _output_window->height;
+
+	//initialize viewport
+	this->_viewport.y = 0;
+	this->_viewport.width = static_cast<float>(_screen_size.x);
+	this->_viewport.height = static_cast<float>(_screen_size.y);
+	this->_viewport.minDepth = 0;
+	this->_viewport.maxDepth = 1;
+
+	//initialize scissor of viewport
+	this->_viewport_scissor.offset.x = 0;
+	this->_viewport_scissor.offset.y = 0;
+	this->_viewport_scissor.extent.width = _screen_size.x;
+	this->_viewport_scissor.extent.height = _screen_size.y;
+
+	//initialize depth attachment
+	auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
+	_depth_attachment.format = _output_window->vk_depth_buffer_format;
+
+	//define attachments which has color and depth for render pass
+	std::vector<VkAttachmentDescription> _attachment_descriptions =
+	{
+		w_graphics_device::w_render_pass_attachments::color_attachment_description,
+		_depth_attachment,
+	};
+
+	//create render pass
+	auto _hr = this->_draw_render_pass.load(_gDevice,
+		_viewport,
+		_viewport_scissor,
+		_attachment_descriptions);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating render pass", _trace_info, 3, true, true);
+	}
+
+	//create frame buffers
+	auto _render_pass_handle = this->_draw_render_pass.get_handle();
+	_hr = this->_draw_frame_buffers.load(_gDevice,
+		_render_pass_handle,
+		_output_window->vk_swap_chain_image_views,
+		&_output_window->vk_depth_buffer_image_view,
+		_screen_size,
+		1);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating frame buffers", _trace_info, 3, true, true);
+	}
+
+	//create semaphore create info
+	_hr = this->_draw_semaphore.initialize(_gDevice);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating draw semaphore", _trace_info, 3, true, false);
+	}
+
+	//Fence for render sync
+	_hr = this->_draw_fence.initialize(_gDevice);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating draw fence", _trace_info, 3, true, false);
+	}
+
+	//create two primary command buffers for clearing screen
+	auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+	_hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating draw command buffers", _trace_info, 3, true, true);
+	}
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+#ifdef WIN32
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/03_vertex_buffer/src/content/";
+#elif defined(__APPLE__)
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/03_vertex_buffer/src/content/";
+#endif // WIN32
+
+	//loading vertex shaders
+	_hr = this->_shader.load(_gDevice,
+		_content_path_dir + L"shaders/shader.vert.spv",
+		w_shader_stage::VERTEX_SHADER);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading vertex shader", _trace_info, 3, true, true);
+	}
+
+	//loading fragment shader
+	_hr = this->_shader.load(_gDevice,
+		_content_path_dir + L"shaders/shader.frag.spv",
+		w_shader_stage::FRAGMENT_SHADER);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading fragment shader", _trace_info, 3, true, true);
+	}
+
+	//just we need vertex position color
+	this->_mesh.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_COLOR);
+
+	//loading pipeline cache
+	std::string _pipeline_cache_name = "pipeline_cache";
+	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+	{
+		logger.error("could not create pipeline cache");
+		_pipeline_cache_name.clear();
+	}
+
+	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
+	_hr = this->_pipeline.load(_gDevice,
+		this->_mesh.get_vertex_binding_attributes(),
+		VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
+		this->_draw_render_pass.get_handle(),
+		this->_shader.get_shader_stages(),
+		_descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
+		{ this->_viewport },
+		{ this->_viewport_scissor });
+
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating pipeline", _trace_info, 3, true, true);
+	}
+
+	std::vector<float> _vertex_data =
+	{
+		-0.7f, -0.7f,	0.0f,		//pos0
+		 1.0f,  0.0f,	0.0f, 1.0f, //color0
+		-0.7f,  0.7f,	0.0f,		//pos1
+		 1.0f,  1.0f,	1.0f, 1.0f, //color1
+		 0.7f, -0.7f,	0.0f,		//pos2
+		 0.0f,  0.0f,	0.0f, 1.0f, //color2
+		 0.7f,  0.7f,	0.0f,		//pos3
+		 0.0f,  1.0f,	0.0f, 1.0f	//color3
+	};
+	_hr = this->_mesh.load(_gDevice,
+		_vertex_data.data(),
+		static_cast<uint32_t>(_vertex_data.size() * sizeof(float)),
+		static_cast<uint32_t>(_vertex_data.size()),
+		nullptr,
+		0);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading mesh", _trace_info, 3, true, true);
+	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	build_draw_command_buffers(_gDevice);
+}
+
+HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+{
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	const std::string _trace_info = this->name + "::build_draw_command_buffers";
+	HRESULT _hr = S_OK;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	auto _size = this->_draw_command_buffers.get_commands_size();
+	for (uint32_t i = 0; i < _size; ++i)
+	{
+		this->_draw_command_buffers.begin(i);
+		{
+			auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
+
+			auto _cmd = this->_draw_command_buffers.get_command_at(i);
+			this->_draw_render_pass.begin(_cmd,
+				_frame_buffer_handle,
+				w_color::CORNFLOWER_BLUE(),
+				1.0f,
+				0.0f);
+			{
+				this->_pipeline.bind(_cmd, nullptr);
+
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//The following codes have been added for this project
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				_hr = this->_mesh.draw(_cmd, nullptr, 0, false);
+				if (_hr == S_FALSE)
+				{
+					V(S_FALSE, "drawing mesh", _trace_info, 3, false, false);
+				}
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+			}
+			this->_draw_render_pass.end(_cmd);
+		}
+		this->_draw_command_buffers.end(i);
+	}
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	return _hr;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
-    if (w_game::exiting) return;
-    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
-    w_game::update(pGameTime);
+	if (w_game::exiting) return;
+	const std::string _trace_info = this->name + "::update";
+
+	w_game::update(pGameTime);
 }
 
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
-    return w_game::render(pGameTime);
+	if (w_game::exiting) return S_OK;
+
+	const std::string _trace_info = this->name + "::render";
+
+	auto _gDevice = this->graphics_devices[0];
+	auto _output_window = &(_gDevice->output_presentation_windows[0]);
+	auto _frame_index = _output_window->vk_swap_chain_image_index;
+
+	//add wait semaphores
+	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
+	auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
+
+	const VkPipelineStageFlags _wait_dst_stage_mask[] =
+	{
+		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+	};
+
+	//reset draw fence
+	this->_draw_fence.reset();
+	if (_gDevice->submit(
+		{ _cmd },
+		_gDevice->vk_graphics_queue,
+		&_wait_dst_stage_mask[0],
+		_wait_semaphors,
+		{ *_output_window->vk_rendering_done_semaphore.get() },
+		this->_draw_fence) == S_FALSE)
+	{
+		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true, false);
+	}
+	// Wait for fence to signal that all command buffers are ready
+	this->_draw_fence.wait();
+
+	//clear all wait semaphores
+	_wait_semaphors.clear();
+
+	return w_game::render(pGameTime);
 }
 
 void scene::on_window_resized(_In_ UINT pIndex)
 {
-    w_game::on_window_resized(pIndex);
+	w_game::on_window_resized(pIndex);
 }
 
 void scene::on_device_lost()
 {
-    w_game::on_device_lost();
+	w_game::on_device_lost();
 }
 
 ULONG scene::release()
 {
-    if (this->get_is_released()) return 0;
-    
-    this->_shader.release();
-    
-    return w_game::release();
-}
+	if (this->get_is_released()) return 0;
 
+	this->_draw_fence.release();
+	this->_draw_semaphore.release();
+
+	this->_draw_command_buffers.release();
+	this->_draw_render_pass.release();
+	this->_draw_frame_buffers.release();
+
+	this->_shader.release();
+	this->_pipeline.release();
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	this->_mesh.release();
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	return w_game::release();
+}

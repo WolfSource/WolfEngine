@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-system", "01-system", "{7741F09D-E859-412C-A94D-5F25017E6F20}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01_clear.Win32", "02_basics\01_clear\builds\mvsc\01_clear.Win32.vcxproj", "{2680EBB2-EAA5-4A48-8C01-537448B6898D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02_shader.Win32", "02_basics\02_shader\builds\mvsc\02_shader.Win32.vcxproj", "{E3FB2394-F769-4D51-A282-CD4118AAB568}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03_vertex_buffer.Win32", "02_basics\03_vertex_buffer\builds\mvsc\03_vertex_buffer.Win32.vcxproj", "{91744D0E-F654-415B-9956-AF0494A0ED96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +121,14 @@ Global
 		{E3FB2394-F769-4D51-A282-CD4118AAB568}.Release|x64.Build.0 = Release|x64
 		{E3FB2394-F769-4D51-A282-CD4118AAB568}.Release|x86.ActiveCfg = Release|Win32
 		{E3FB2394-F769-4D51-A282-CD4118AAB568}.Release|x86.Build.0 = Release|Win32
+		{91744D0E-F654-415B-9956-AF0494A0ED96}.Debug|x64.ActiveCfg = Debug|x64
+		{91744D0E-F654-415B-9956-AF0494A0ED96}.Debug|x64.Build.0 = Debug|x64
+		{91744D0E-F654-415B-9956-AF0494A0ED96}.Debug|x86.ActiveCfg = Debug|Win32
+		{91744D0E-F654-415B-9956-AF0494A0ED96}.Debug|x86.Build.0 = Debug|Win32
+		{91744D0E-F654-415B-9956-AF0494A0ED96}.Release|x64.ActiveCfg = Release|x64
+		{91744D0E-F654-415B-9956-AF0494A0ED96}.Release|x64.Build.0 = Release|x64
+		{91744D0E-F654-415B-9956-AF0494A0ED96}.Release|x86.ActiveCfg = Release|Win32
+		{91744D0E-F654-415B-9956-AF0494A0ED96}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,5 +144,6 @@ Global
 		{3A22FBB1-C982-4C2A-BDF1-3943535EBAC1} = {7741F09D-E859-412C-A94D-5F25017E6F20}
 		{2680EBB2-EAA5-4A48-8C01-537448B6898D} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
 		{E3FB2394-F769-4D51-A282-CD4118AAB568} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
+		{91744D0E-F654-415B-9956-AF0494A0ED96} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
 	EndGlobalSection
 EndGlobal

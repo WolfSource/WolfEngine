@@ -22,12 +22,19 @@ namespace wolf
         enum w_vertex_declaration
         {
             NOT_DEFINED,
+			//User defined
             USER_DEFINED,
+			//Float3
             VERTEX_POSITION,
+			//Float3 + Float4
             VERTEX_POSITION_COLOR,
+			//Float3 + Float2
             VERTEX_POSITION_UV,
+			//Float3 + Float2 + Float4
             VERTEX_POSITION_UV_COLOR,
+			//Float3 + Float3 + Float4
             VERTEX_POSITION_NORMAL_COLOR,
+			//Float3 + Float3 + Float2
             VERTEX_POSITION_NORMAL_UV,
             VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL,
             VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES,
@@ -73,9 +80,9 @@ namespace wolf
                 _In_ const uint32_t* const pIndicesData,
                 _In_ const uint32_t pIndicesCount);
 
-            W_EXP void draw(_In_ const VkCommandBuffer& pCommandBuffer, 
+            W_EXP HRESULT draw(_In_ const VkCommandBuffer& pCommandBuffer,
                 _In_ const VkBuffer& pInstanceHandle,
-                _In_ uint32_t& pInstancesCount,
+                _In_ const uint32_t& pInstancesCount,
                 _In_ const bool& pIndirectDraw);
 
 			//release all resources

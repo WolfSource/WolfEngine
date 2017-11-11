@@ -158,14 +158,16 @@ namespace wolf
                 return _copy_DRAM_to_VRAM(pVerticesSize, this->_indices_count * sizeof(UINT));
             }
 
-            void draw(_In_ const VkCommandBuffer& pCommandBuffer, 
+            HRESULT draw(_In_ const VkCommandBuffer& pCommandBuffer, 
                 _In_ const VkBuffer& pInstanceHandle,
-                _In_ uint32_t& pInstancesCount,
+                _In_ const uint32_t& pInstancesCount,
                 _In_ const bool& pIndrectDraw)
             {
                 VkDeviceSize _offsets[1] = { 0 };
 
                 auto _vertex_buffer_handle = this->_vertex_buffer.get_handle();
+				if (!_vertex_buffer_handle) return S_FALSE;
+				
                 vkCmdBindVertexBuffers(pCommandBuffer, 0, 1, &_vertex_buffer_handle, _offsets);
 
                 if (pInstanceHandle)
@@ -173,16 +175,30 @@ namespace wolf
                     vkCmdBindVertexBuffers(pCommandBuffer, 1, 1, &pInstanceHandle, _offsets);
                 }
 
+				bool _draw_indexed = false;
                 auto _index_buffer_handle = this->_index_buffer.get_handle();
-                vkCmdBindIndexBuffer(pCommandBuffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
+				if (_index_buffer_handle)
+				{
+					_draw_indexed = true;
+					vkCmdBindIndexBuffer(pCommandBuffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
+				}
 
                 if (!pIndrectDraw)
                 {
-                    vkCmdDrawIndexed(pCommandBuffer, this->_indices_count, pInstancesCount + 1, 0, 0, 0);
+					if (_draw_indexed)
+					{
+						vkCmdDrawIndexed(pCommandBuffer, this->_indices_count, pInstancesCount + 1, 0, 0, 0);
+					}
+					else
+					{
+						vkCmdDraw(pCommandBuffer, this->_vertices_count, pInstancesCount + 1, 0, 0);
+					}
                 }
 
                 _vertex_buffer_handle = nullptr;
                 _index_buffer_handle = nullptr;
+
+				return S_OK;
             }
 
 #pragma region Getters
@@ -490,15 +506,12 @@ HRESULT w_mesh::update_dynamic_buffer(
         pIndicesCount) : S_FALSE;
 }
 
-void w_mesh::draw(_In_ const VkCommandBuffer& pCommandBuffer,
-    _In_ const VkBuffer& pInstanceHandle,
-    _In_ uint32_t& pInstancesCount,
-    _In_ const bool& pIndirectDraw)
+HRESULT w_mesh::draw(_In_ const VkCommandBuffer& pCommandBuffer,
+	_In_ const VkBuffer& pInstanceHandle,
+	_In_ const uint32_t& pInstancesCount,
+	_In_ const bool& pIndirectDraw)
 {
-    if (this->_pimp)
-    {
-        this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw);
-    }
+	return this->_pimp ? this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw) : S_FALSE;
 }
 
 ULONG w_mesh::release()

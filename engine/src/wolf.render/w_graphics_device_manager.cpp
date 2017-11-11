@@ -65,22 +65,22 @@ VkAttachmentReference w_graphics_device::w_render_pass_attachments::depth_attach
 std::vector<VkSubpassDependency> w_graphics_device::defaults::vk_default_subpass_dependencies =
 {
     {
-        VK_SUBPASS_EXTERNAL,                            // uint32_t                       srcSubpass
-        0,                                              // uint32_t                       dstSubpass
-        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,           // VkPipelineStageFlags           srcStageMask
-        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           dstStageMask
-        VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags                  srcAccessMask
-        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  dstAccessMask
-        VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags              dependencyFlags
+        VK_SUBPASS_EXTERNAL,																// uint32_t                       srcSubpass
+        0,																					// uint32_t                       dstSubpass
+        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,												// VkPipelineStageFlags           srcStageMask
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,										// VkPipelineStageFlags           dstStageMask
+        VK_ACCESS_MEMORY_READ_BIT,															// VkAccessFlags                  srcAccessMask
+        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,        // VkAccessFlags                  dstAccessMask
+        VK_DEPENDENCY_BY_REGION_BIT															// VkDependencyFlags              dependencyFlags
     },
     {
-        0,                                              // uint32_t                       srcSubpass
-        VK_SUBPASS_EXTERNAL,                            // uint32_t                       dstSubpass
-        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // VkPipelineStageFlags           srcStageMask
-        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,           // VkPipelineStageFlags           dstStageMask
-        VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,           // VkAccessFlags                  srcAccessMask
-        VK_ACCESS_MEMORY_READ_BIT,                      // VkAccessFlags                  dstAccessMask
-        VK_DEPENDENCY_BY_REGION_BIT                     // VkDependencyFlags              dependencyFlags
+        0,																					// uint32_t                       srcSubpass
+        VK_SUBPASS_EXTERNAL,																// uint32_t                       dstSubpass
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,										// VkPipelineStageFlags           srcStageMask
+        VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,												// VkPipelineStageFlags           dstStageMask
+        VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,			// VkAccessFlags                  srcAccessMask
+        VK_ACCESS_MEMORY_READ_BIT,															// VkAccessFlags                  dstAccessMask
+        VK_DEPENDENCY_BY_REGION_BIT															// VkDependencyFlags              dependencyFlags
     }
 };
 
@@ -123,7 +123,7 @@ VkPipelineRasterizationStateCreateInfo w_graphics_device::defaults::vk_default_p
         VK_FALSE,                                                       // depthClampEnable
         VK_FALSE,                                                       // rasterizerDiscardEnable
         VK_POLYGON_MODE_FILL,                                           // polygonMode
-		VK_CULL_MODE_FRONT_BIT,                                         // cullMode
+		VK_CULL_MODE_BACK_BIT,                                          // cullMode
 		VK_FRONT_FACE_COUNTER_CLOCKWISE,                                // frontFace
         VK_FALSE,                                                       // depthBiasEnable
         0.0f,                                                           // depthBiasConstantFactor

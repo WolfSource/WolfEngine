@@ -509,7 +509,7 @@ def run_wolf():
     
     #get the current path
     _current_script_path = os.path.dirname(os.path.abspath(__file__))
-    _hr = PyWolf.initialize(int_hwnd, "PyWolf", str(_current_script_path), "C:\\Wolf\\content\\")
+    _hr = PyWolf.initialize(int_hwnd, "PyWolf", str(_current_script_path), "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\content\\")
     if _hr == 1 :
         print "Error on initializing PyWolf"
     else:
