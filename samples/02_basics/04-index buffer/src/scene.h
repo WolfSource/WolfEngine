@@ -23,13 +23,6 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_mesh.h>
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//The following codes have been added for this project
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-#include <w_graphics/w_texture.h>
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 class scene : public wolf::framework::w_game
 {
 public:
@@ -79,14 +72,7 @@ private:
 	wolf::graphics::w_shader                                        _shader;
 	wolf::graphics::w_pipeline                                      _pipeline;
 
-    wolf::graphics::w_mesh											_mesh;
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++	
-    wolf::graphics::w_texture										_texture;
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	wolf::graphics::w_mesh											_mesh;
 };
 
 #endif

@@ -158,7 +158,7 @@ namespace wolf
                     : w_texture::default_texture->get_descriptor_info();
                 _shader_params.push_back(_param);
 
-                this->_shader.load_shader_binding_params(_shader_params);
+                this->_shader.set_shader_binding_params(_shader_params);
 
                 auto _descriptor_set_layout = this->_shader.get_descriptor_set_layout();
 

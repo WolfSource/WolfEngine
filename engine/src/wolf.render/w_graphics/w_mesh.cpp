@@ -118,7 +118,12 @@ namespace wolf
                     }
                 }
 
-                return _load_texture();
+                if (!this->_texture)
+                {
+                    this->_texture = w_texture::default_texture;
+                }
+
+                return S_OK;
             }
 
             HRESULT update_dynamic_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -433,13 +438,6 @@ namespace wolf
                 return S_OK;
             }
             
-
-            HRESULT _load_texture()
-            {
-                this->_texture = w_texture::default_texture;
-                return S_OK;
-            }
-
             std::string                                         _name;
             std::shared_ptr<w_graphics_device>                  _gDevice;
             w_buffer                                            _vertex_buffer;

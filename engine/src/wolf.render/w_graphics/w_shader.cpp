@@ -111,7 +111,7 @@ namespace wolf
                 return S_OK;
             }
             
-            HRESULT load_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
+            HRESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
             {
                 this->_shader_binding_params.swap(pShaderBindingParams);
                 
@@ -596,12 +596,6 @@ HRESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	return _hr;
 }
 
-HRESULT w_shader::load_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
-{
-    if (!this->_pimp) return S_FALSE;
-    return this->_pimp->load_shader_binding_params(pShaderBindingParams);
-}
-
 void w_shader::update_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
 {
     if (!this->_pimp) return;
@@ -661,6 +655,16 @@ const std::vector<w_shader_binding_param> w_shader::get_shader_binding_params() 
 {
     if (!this->_pimp) return {};
     return this->_pimp->get_shader_binding_params();
+}
+
+#pragma endregion
+
+#pragma region Setters
+
+HRESULT w_shader::set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
+{
+    if (!this->_pimp) return S_FALSE;
+    return this->_pimp->set_shader_binding_params(pShaderBindingParams);
 }
 
 #pragma endregion
@@ -745,7 +749,7 @@ HRESULT w_shader::load_shader(_In_ const std::shared_ptr<w_graphics_device>& pGD
     //set shader params
     if (pShaderBindingParams.size())
     {
-        if (_shader->load_shader_binding_params(pShaderBindingParams) == S_FALSE)
+        if (_shader->set_shader_binding_params(pShaderBindingParams) == S_FALSE)
         {
             return S_FALSE;
         }

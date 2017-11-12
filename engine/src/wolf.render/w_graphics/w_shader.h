@@ -68,7 +68,6 @@ namespace wolf
                                _In_z_ const char* pMainFunctionName = "main",
                                _In_ const bool pIsComputeShader = false);
             
-            W_EXP HRESULT load_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
             W_EXP void update_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
 
 			W_EXP virtual ULONG release() override;
@@ -84,6 +83,12 @@ namespace wolf
 
             W_EXP const VkDescriptorSetLayout get_descriptor_set_layout() const;
             W_EXP const VkDescriptorSetLayout get_compute_descriptor_set_layout() const;
+
+#pragma endregion
+
+#pragma region Getters
+            
+            W_EXP HRESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
 
 #pragma endregion
 

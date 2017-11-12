@@ -134,9 +134,9 @@ void scene::load()
 	}
 
 #ifdef WIN32
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/05-texture/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/03_vertex_buffer/src/content/";
 #elif defined(__APPLE__)
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/05-texture/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/03_vertex_buffer/src/content/";
 #endif // WIN32
 
 	//loading vertex shaders
@@ -159,44 +159,8 @@ void scene::load()
 		V(S_FALSE, "loading fragment shader", _trace_info, 3, true, true);
 	}
 
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //The following codes have been added for this project
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    //load texture
-    _hr = this->_texture.load(_gDevice);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "loading texture", _trace_info, 3, true, true);
-    }
-    //load texture from file
-    _hr = this->_texture.initialize_texture_2D_from_file(content_path + L"../Logo.jpg", true);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "loading Logo.jpg texture", _trace_info, 3, true, true);
-    }
-
 	//just we need vertex position color
-	this->_mesh.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_UV);
-    w_shader_binding_param _shader_param;
-    _shader_param.index = 0;
-    _shader_param.type = w_shader_binding_type::SAMPLER;
-    _shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
-    _shader_param.image_info = this->_texture.get_descriptor_info();
-
-    _hr = this->_shader.set_shader_binding_params(
-    {
-        _shader_param
-    });
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "setting shader binding param", _trace_info, 3, true, true);
-    }
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+	this->_mesh.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_COLOR);
 
 	//loading pipeline cache
 	std::string _pipeline_cache_name = "pipeline_cache";
@@ -229,16 +193,14 @@ void scene::load()
 	std::vector<float> _vertex_data =
 	{
 		-0.7f, -0.7f,	0.0f,		//pos0
-		 0.0f,  0.0f,               //uv0
+		 1.0f,  0.0f,	0.0f, 1.0f, //color0
 		-0.7f,  0.7f,	0.0f,		//pos1
-		 0.0f,  1.0f,               //uv1
+		 1.0f,  1.0f,	1.0f, 1.0f, //color1
 		 0.7f,  0.7f,	0.0f,		//pos2
-		 1.0f,  1.0f,           	//uv2
+		 0.0f,  1.0f,	0.0f, 1.0f,	//color2
          0.7f, -0.7f,	0.0f,		//pos3
-         1.0f,  0.0f,               //uv3
+         0.0f,  0.0f,	0.0f, 1.0f  //color3
 	};
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     std::vector<uint32_t> _index_data =
     {
@@ -250,13 +212,15 @@ void scene::load()
         2
     };
 
-    this->_mesh.set_texture(&this->_texture);
 	_hr = this->_mesh.load(_gDevice,
 		_vertex_data.data(),
 		static_cast<uint32_t>(_vertex_data.size() * sizeof(float)),
 		static_cast<uint32_t>(_vertex_data.size()),
         _index_data.data(),
         static_cast<uint32_t>(_index_data.size()));
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	if (_hr == S_FALSE)
 	{
 		release();
@@ -285,14 +249,7 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
 				1.0f,
 				0.0f);
 			{
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                //The following codes have been added for this project
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                auto _description_set = this->_shader.get_descriptor_set();
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-				this->_pipeline.bind(_cmd, &_description_set);
+				this->_pipeline.bind(_cmd, nullptr);
 				_hr = this->_mesh.draw(_cmd, nullptr, 0, false);
 				if (_hr == S_FALSE)
 				{
@@ -379,13 +336,6 @@ ULONG scene::release()
 	this->_pipeline.release();
 
 	this->_mesh.release();
-
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //The following codes have been added for this project
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    this->_texture.release();
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	return w_game::release();
 }
