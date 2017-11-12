@@ -24,8 +24,6 @@ using namespace wolf::content_pipeline;
 //forward declaration
 static void TonemapDepth(_In_ float* pDepth, _In_ unsigned char* pImage, _In_ const int& pW, _In_ const int& pH);
 
-static bool sCameraJustUpdated = true;
-
 static MaskedOcclusionCulling* sMOC = nullptr;
 static CullingThreadpool* sMOCThreadPool = nullptr;
 
@@ -36,6 +34,9 @@ static uint32_t sTotalInstances = 0;
 static uint32_t sAllVisibleRefModels = 0;
 static uint32_t sAllVisibleModels = 0;
 static std::string SVersion;
+
+enum COMMAND { NOP, UPDATE_CAMERA, REMOVE_ALL };
+static COMMAND command = COMMAND::NOP;
 static bool sRecordDrawCommandBuffer = true;
 
 #ifdef DEBUG_MASKED_OCCLUSION_CULLING
@@ -377,6 +378,8 @@ HRESULT scene::load_scene(_In_z_ const std::wstring& pScenePath)
 					_hr = S_FALSE;
 				}
 			}
+
+            command = COMMAND::UPDATE_CAMERA;
 		}
         
         _scene->release();
@@ -391,15 +394,7 @@ HRESULT scene::load_scene(_In_z_ const std::wstring& pScenePath)
 
 HRESULT scene::remove_all_models()
 {
-	this->_models_to_be_render.clear();
-	//release all models
-	for (auto _model : this->models)
-	{
-		SAFE_RELEASE(_model);
-	}
-	this->models.clear();
-
-	sCameraJustUpdated = true;
+    command = COMMAND::REMOVE_ALL;
 
 	return S_OK;
 }
@@ -559,18 +554,31 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		});
 	}
 
-	sTotalModels = this->models.size();
+	if (command == COMMAND::NOP) return;
 
-	if (!sCameraJustUpdated) return;
+    //check for command
+    switch (command)
+    {
+    case UPDATE_CAMERA:
+        this->_camera.update_view();
+        break;
+    case REMOVE_ALL:
+        //remove all models
+        for (auto _model : this->models)
+        {
+            SAFE_RELEASE(_model);
+        }
+        this->models.clear();
+        break;
+    }
+    command = COMMAND::NOP;
 
-	sCameraJustUpdated = false;
 	sRecordDrawCommandBuffer = true;
-
-	sTotalInstances = 0;
+    sTotalInstances = 0;
 	sAllVisibleModels = 0;
+    sTotalModels = this->models.size();
 
-	this->_camera.update_view();
-
+    //clear all models to be render
 	this->_models_to_be_render.clear();
 
 	//clear buffers and wake up masked occlusion threads
@@ -936,14 +944,14 @@ void scene::set_camera_position(float X, float Y, float Z)
 {
 	//change name to position
 	this->_camera.set_translate(X, Y, Z);
-	sCameraJustUpdated = true;
+    command = COMMAND::UPDATE_CAMERA;
 }
 
 void scene::set_camera_lookat(float X, float Y, float Z)
 {
 	//change name to lookat
 	this->_camera.set_interest(X, Y, Z);
-	sCameraJustUpdated = true;
+    command = COMMAND::UPDATE_CAMERA;
 }
 
 #pragma endregion

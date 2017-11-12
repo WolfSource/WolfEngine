@@ -10,8 +10,8 @@ import datetime
 #import shutil
 
 #append search path for PyWolf
-PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
-#PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+#PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
 
 if not PyWolfPath in sys.path:
 	sys.path.append(PyWolfPath)
@@ -509,7 +509,7 @@ def run_wolf():
     
     #get the current path
     _current_script_path = os.path.dirname(os.path.abspath(__file__))
-    _hr = PyWolf.initialize(int_hwnd, "PyWolf", str(_current_script_path), "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\content\\")
+    _hr = PyWolf.initialize(int_hwnd, "PyWolf", str(_current_script_path), "F:\\github\\WolfSource\\Wolf.Engine\\content\\")
     if _hr == 1 :
         print "Error on initializing PyWolf"
     else:
