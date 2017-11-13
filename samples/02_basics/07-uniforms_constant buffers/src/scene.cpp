@@ -1,444 +1,397 @@
+#include "pch.h"
 #include "scene.h"
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_texture.h>
-#include <w_graphics/w_shader_buffer.h>
-#include <glm/glm.hpp>
 
+using namespace std;
+using namespace wolf;
 using namespace wolf::system;
 using namespace wolf::graphics;
-using namespace wolf::framework;
 
-struct vertex_data
+scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
+	w_game(pRunningDirectory, pAppName)
 {
-    float position[4];
-    float uv[2];
-};
+	auto _running_dir = pRunningDirectory;
 
-scene::scene(_In_z_ std::string pRootDirectory, _In_z_ std::string pAppName) :
-    w_game(pRootDirectory, pAppName)
-{
-    w_game::set_fixed_time_step(false);
+#if defined(__WIN32) || defined(__UWP)
+	content_path = _running_dir + L"../../../../content/";
+#elif defined(__APPLE__)
+	content_path = _running_dir + L"/../../../../../content/";
+#elif defined(__linux)
+	error
+#elif defined(__ANDROID)
+	error
+#endif
+
+#ifdef __WIN32
+	w_graphics_device_manager_configs _config;
+	_config.debug_gpu = true;
+	w_game::set_graphics_device_manager_configs(_config);
+#endif
+
+	w_game::set_fixed_time_step(false);
 }
 
 scene::~scene()
 {
-    release();
+	//release all resources
+	release();
 }
 
 void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
 {
-    // TODO: Add your pre-initialization logic here
-    w_game::initialize(pOutputWindowsInfo);
+	// TODO: Add your pre-initialization logic here
+
+	w_game::initialize(pOutputWindowsInfo);
 }
 
-w_texture* _texture = nullptr;
-w_shader_buffer<glm::mat4x4> _uniform;
-w_shader _shader;
 void scene::load()
 {
-    w_game::load();
-    
-    auto _gDevice =  this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows[0]);
-    
-    auto _hr = _uniform.load(_gDevice);
-    
-    _uniform.data = glm::mat4x4(0);
-    _hr = _uniform.update();
-    
-    //load shaders
-    _hr = _shader.load(_gDevice, "/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/content/shaders/test/shader.vs.spv", w_shader_stage::VERTEX_SHADER);
-    _hr = _shader.load(_gDevice, "/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/content/shaders/test/shader.fs.spv", w_shader_stage::FRAGMENT_SHADER);
-    
-    std::vector<VkDescriptorPoolSize> _descriptor_pool_sizes =
-    {
-        {
-            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // Type
-            1                                                   // DescriptorCount
-        },
-        {
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // Type
-            1                                                   // DescriptorCount
-        }
-    };
-    _hr = _shader.create_descriptor_pool(_descriptor_pool_sizes);
-    
-    std::vector<VkDescriptorSetLayoutBinding> _layout_bindings =
-    {
-        {
-            0,                                                  // Binding
-            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // DescriptorType
-            1,                                                  // DescriptorCount
-            VK_SHADER_STAGE_FRAGMENT_BIT,                       // StageFlags
-            nullptr                                             // ImmutableSamplers
-        },
-        {
-            1,                                                  // Binding
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,                  // DescriptorType
-            1,                                                  // DescriptorCount
-            VK_SHADER_STAGE_VERTEX_BIT,                         // StageFlags
-            nullptr                                             // ImmutableSamplers
-        }
-    };
-    _hr = _shader.create_description_set_layout_binding(_layout_bindings);
-    
-    
+	defer(nullptr, [&](...)
+	{
+		w_game::load();
+	});
+
+	const std::string _trace_info = this->name + "::load";
+
+	auto _gDevice = this->graphics_devices[0];
+	auto _output_window = &(_gDevice->output_presentation_windows[0]);
+
+	w_point_t _screen_size;
+	_screen_size.x = _output_window->width;
+	_screen_size.y = _output_window->height;
+
+	//initialize viewport
+	this->_viewport.y = 0;
+	this->_viewport.width = static_cast<float>(_screen_size.x);
+	this->_viewport.height = static_cast<float>(_screen_size.y);
+	this->_viewport.minDepth = 0;
+	this->_viewport.maxDepth = 1;
+
+	//initialize scissor of viewport
+	this->_viewport_scissor.offset.x = 0;
+	this->_viewport_scissor.offset.y = 0;
+	this->_viewport_scissor.extent.width = _screen_size.x;
+	this->_viewport_scissor.extent.height = _screen_size.y;
+
+	//initialize depth attachment
+	auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
+	_depth_attachment.format = _output_window->vk_depth_buffer_format;
+
+	//define attachments which has color and depth for render pass
+	std::vector<VkAttachmentDescription> _attachment_descriptions =
+	{
+		w_graphics_device::w_render_pass_attachments::color_attachment_description,
+		_depth_attachment,
+	};
+
+	//create render pass
+	auto _hr = this->_draw_render_pass.load(_gDevice,
+		_viewport,
+		_viewport_scissor,
+		_attachment_descriptions);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating render pass", _trace_info, 3, true, true);
+	}
+
+	//create frame buffers
+	auto _render_pass_handle = this->_draw_render_pass.get_handle();
+	_hr = this->_draw_frame_buffers.load(_gDevice,
+		_render_pass_handle,
+		_output_window->vk_swap_chain_image_views,
+		&_output_window->vk_depth_buffer_image_view,
+		_screen_size,
+		1);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating frame buffers", _trace_info, 3, true, true);
+	}
+
+	//create semaphore create info
+	_hr = this->_draw_semaphore.initialize(_gDevice);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating draw semaphore", _trace_info, 3, true, false);
+	}
+
+	//Fence for render sync
+	_hr = this->_draw_fence.initialize(_gDevice);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating draw fence", _trace_info, 3, true, false);
+	}
+
+	//create two primary command buffers for clearing screen
+	auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+	_hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating draw command buffers", _trace_info, 3, true, true);
+	}
+
+#ifdef WIN32
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/07-uniforms_constant buffers/src/content/";
+#elif defined(__APPLE__)
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/07-uniforms_constant buffers/src/content/";
+#endif // WIN32
+
+	//loading vertex shaders
+	_hr = this->_shader.load(_gDevice,
+		_content_path_dir + L"shaders/shader.vert.spv",
+		w_shader_stage::VERTEX_SHADER);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading vertex shader", _trace_info, 3, true, true);
+	}
+
+	//loading fragment shader
+	_hr = this->_shader.load(_gDevice,
+		_content_path_dir + L"shaders/shader.frag.spv",
+		w_shader_stage::FRAGMENT_SHADER);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading fragment shader", _trace_info, 3, true, true);
+	}
+
     //load texture
-    _texture = new w_texture();
-    _hr = _texture->load(_gDevice);
-    _hr = _texture->initialize_texture_2D_from_file("/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/Logo.jpg", true);
-    
-    const VkDescriptorImageInfo _image_info = _texture->get_descriptor_info();
-    const VkDescriptorBufferInfo _buffer_info = _uniform.get_descriptor_info();
-    
-    auto _descriptor_set = _shader.get_descriptor_set();
-    std::vector<VkWriteDescriptorSet> _write_descriptor_sets =
+    _hr = this->_texture.load(_gDevice);
+    if (_hr == S_FALSE)
     {
-        {
-            VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
-            nullptr,                                        // Next
-            _descriptor_set,                                // DstSet
-            0,                                              // DstBinding
-            0,                                              // DstArrayElement
-            1,                                              // DescriptorCount
-            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,      // DescriptorType
-            &_image_info,                                   // ImageInfo
-            nullptr,
-        },
-        {
-            VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
-            nullptr,                                        // Next
-            _descriptor_set,                                // DstSet
-            1,                                              // DstBinding
-            0,                                              // DstArrayElement
-            1,                                              // DescriptorCount
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,              // DescriptorType
-            nullptr,                                        // ImageInfo
-            &_buffer_info,                                  // BufferInfo
-            nullptr                                         // TexelBufferView
-        }
-    };
-    _shader.update_descriptor_sets(_write_descriptor_sets);
-    
-    //create render pass
-    _render_pass.load(_gDevice);
-    auto _render_pass_handle = _render_pass.get_handle();
-    
-    //create frame buffers
-    this->_frame_buffers.load(_gDevice,
-                              _render_pass_handle,
-                              _output_window->vk_swap_chain_image_views.size(),
-                              _output_window->vk_swap_chain_image_views.data(),
-                              _output_window->width,
-                              _output_window->height,
-                              1);
-    
-    std::vector<vertex_data> _vertex_data =
-    {
-        { {-0.7f, -0.7f, 0.0f, 1.0f }, { -0.1f, -0.1f } },
-        { {-0.7f,  0.7f, 0.0f, 1.0f }, { -0.1f,  1.1f } },
-        { { 0.7f, -0.7f, 0.0f, 1.0f }, {  1.1f, -0.1f } },
-        { { 0.7f,  0.7f, 0.0f, 1.0f }, {  1.1f,  1.1f } }
-    };
-    
-    this->_mesh = new w_mesh();
-    this->_mesh->load(_gDevice,
-                     _vertex_data.data(),
-                     static_cast<UINT>(_vertex_data.size() * sizeof(vertex_data)),
-                     nullptr,
-                     0,
-                    true);
-    
-    std::vector<VkVertexInputBindingDescription> _vertex_binding_descriptions =
-    {
-        {
-            0,                                                          // Binding
-            sizeof(vertex_data),                                        // Stride
-            VK_VERTEX_INPUT_RATE_VERTEX                                 // InputRate
-        }
-    };
-    
-    std::vector<VkVertexInputAttributeDescription> _vertex_attribute_descriptions =
-    {
-        {
-            0,                                                          // Location
-            _vertex_binding_descriptions[0].binding,                    // Binding
-            VK_FORMAT_R32G32B32A32_SFLOAT,                              // Format
-            offsetof(vertex_data, position)                             // Offset
-        },
-        {
-            1,                                                          // Location
-            _vertex_binding_descriptions[0].binding,                    // Binding
-            VK_FORMAT_R32G32_SFLOAT,                                    // Format
-            offsetof(vertex_data, uv)                                // Offset
-        }
-    };
-    
-    VkPipelineVertexInputStateCreateInfo _vertex_input_state_create_info =
-    {
-        VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,    // Type
-        nullptr,                                                      // Next
-        0,                                                            // Flags
-        static_cast<uint32_t>(_vertex_binding_descriptions.size()),   // VertexBindingDescriptionCount
-        &_vertex_binding_descriptions[0],                             // VertexBindingDescriptions
-        static_cast<uint32_t>(_vertex_attribute_descriptions.size()), // VertexAttributeDescriptionCount
-        &_vertex_attribute_descriptions[0]                            // VertexAttributeDescriptions
-    };
-    
-    VkPipelineInputAssemblyStateCreateInfo _input_assembly_state_create_info =
-    {
-        VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,    // Type
-        nullptr,                                                        // Next
-        0,                                                              // Flags
-        VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,                           // Topology
-        VK_FALSE                                                        // Enable restart primitive
-    };
-    
-    std::vector<VkDynamicState> _dynamic_states =
-    {
-        VK_DYNAMIC_STATE_VIEWPORT,
-        VK_DYNAMIC_STATE_SCISSOR,
-    };
-    
-    VkPipelineDynamicStateCreateInfo _dynamic_state_create_info =
-    {
-        VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,                   // Type
-        nullptr,                                                                // Next
-        0,                                                                      // Flags
-        static_cast<uint32_t>(_dynamic_states.size()),                          // DynamicStateCount
-        &_dynamic_states[0]                                                     // DynamicStates
-    };
-    
-    //create view port
-    w_viewport _wp;
-    _wp.x = 0.0f;
-    _wp.y = 0.0f;
-    _wp.width = _output_window->width;
-    _wp.height =  _output_window->height;
-    _wp.minDepth = 0.0f;
-    _wp.maxDepth = 1.0f;
-    
-    w_viewport_scissor _wp_sc;
-    _wp_sc.offset.x = 0.0f;
-    _wp_sc.offset.y = 0.0f;
-    _wp_sc.extent.width = _output_window->width;
-    _wp_sc.extent.height = _output_window->height;
-    
-    auto _descriptor_set_layout = _shader.get_descriptor_set_layout_binding();
-    VkPipelineLayoutCreateInfo _pipeline_layout_create_info =
-    {
-        VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,  // Type
-        nullptr,                                        // Next
-        0,                                              // Flags
-        1,                                              // SetLayoutCount
-        &_descriptor_set_layout,                        // SetLayouts
-        0,                                              // PushConstantRangeCount
-        nullptr                                         // PushConstantRanges
-    };
-    
-    _hr = this->_pipeline.load(_gDevice,
-                         _render_pass_handle,
-                         _shader.get_shader_stages(),
-                         { _wp }, //viewports
-                         { _wp_sc },
-                         &_pipeline_layout_create_info,
-                         &_vertex_input_state_create_info,
-                         &_input_assembly_state_create_info,
-                         nullptr,
-                         nullptr,
-                         nullptr,
-                         &_dynamic_state_create_info);
-    if (_hr)
-    {
-        logger.error("Error creating pipeline");
-        return;
+        release();
+        V(S_FALSE, "loading texture", _trace_info, 3, true, true);
     }
-    
-    //now assign new command buffers
-    this->_command_buffers = new w_command_buffers();
-    this->_command_buffers->set_enable(true);
-    this->_command_buffers->set_order(1);
-    this->_command_buffers->load(_gDevice, _output_window->vk_swap_chain_image_views.size());
-    
-    _hr = _gDevice->store_to_global_command_buffers("render_quad_with_texture",
-                                                  this->_command_buffers,
-                                                  _output_window->index);
-    if (_hr)
+    //load texture from file
+    _hr = this->_texture.initialize_texture_2D_from_file(content_path + L"../Logo.jpg", true);
+    if (_hr == S_FALSE)
     {
-        logger.error("Error creating command buffer");
-        return;
+        release();
+        V(S_FALSE, "loading Logo.jpg texture", _trace_info, 3, true, true);
     }
-    
-    VkImageSubresourceRange _sub_resource_range = {};
-    _sub_resource_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    _sub_resource_range.baseMipLevel = 0;
-    _sub_resource_range.levelCount = 1;
-    _sub_resource_range.baseArrayLayer = 0;
-    _sub_resource_range.layerCount = 1;
-    
-    VkClearValue _vk_clear_color =
+
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //The following codes have been added for this project
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    //load vertex shader uniform
+    _hr = this->_u0.load(_gDevice);
+    if (_hr == S_FALSE)
     {
-        { 1,0,0,1 }
+        release();
+        V(S_FALSE, "loading vertex shader uniform", _trace_info, 3, true, true);
+    }
+
+    //update uniform's data
+    this->_u0.data.wvp = glm::mat4(1);
+    _hr = this->_u0.update();
+    if (_hr == S_FALSE)
+    {
+        release();
+        V(S_FALSE, "loading mesh", _trace_info, 3, true, true);
+    }
+
+	//just we need vertex position color
+	this->_mesh.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_UV);
+    
+    std::vector<w_shader_binding_param> _shader_params;
+
+    w_shader_binding_param _shader_param;
+    _shader_param.index = 0;
+    _shader_param.type = w_shader_binding_type::SAMPLER;
+    _shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
+    _shader_param.image_info = this->_texture.get_descriptor_info();
+    _shader_params.push_back(_shader_param);
+
+    _shader_param.index = 1;
+    _shader_param.type = w_shader_binding_type::UNIFORM;
+    _shader_param.stage = w_shader_stage::VERTEX_SHADER;
+    _shader_param.buffer_info = this->_u0.get_descriptor_info();
+    _shader_params.push_back(_shader_param);
+
+    _hr = this->_shader.set_shader_binding_params(_shader_params);
+    if (_hr == S_FALSE)
+    {
+        release();
+        V(S_FALSE, "setting shader binding param", _trace_info, 3, true, true);
+    }
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	//loading pipeline cache
+	std::string _pipeline_cache_name = "pipeline_cache";
+	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+	{
+		logger.error("could not create pipeline cache");
+		_pipeline_cache_name.clear();
+	}
+
+	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
+	_hr = this->_pipeline.load(_gDevice,
+		this->_mesh.get_vertex_binding_attributes(),
+		VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+		this->_draw_render_pass.get_handle(),
+		this->_shader.get_shader_stages(),
+		_descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
+		{ this->_viewport },
+		{ this->_viewport_scissor });
+
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating pipeline", _trace_info, 3, true, true);
+	}
+
+    std::vector<float> _vertex_data =
+	{
+		-0.7f, -0.7f,	0.0f,		//pos0
+		 0.0f,  0.0f,               //uv0
+		-0.7f,  0.7f,	0.0f,		//pos1
+		 0.0f,  1.0f,               //uv1
+		 0.7f,  0.7f,	0.0f,		//pos2
+		 1.0f,  1.0f,           	//uv2
+         0.7f, -0.7f,	0.0f,		//pos3
+         1.0f,  0.0f,               //uv3
+	};
+
+    std::vector<uint32_t> _index_data =
+    {
+        0,
+        1,
+        3,
+        3,
+        1,
+        2
     };
 
-    _output_window->command_buffers.at("clear_color_screen")->set_enable(false);
+    this->_mesh.set_texture(&this->_texture);
+	_hr = this->_mesh.load(_gDevice,
+		_vertex_data.data(),
+		static_cast<uint32_t>(_vertex_data.size() * sizeof(float)),
+		static_cast<uint32_t>(_vertex_data.size()),
+        _index_data.data(),
+        static_cast<uint32_t>(_index_data.size()));
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading mesh", _trace_info, 3, true, true);
+	}
 
-    
-    auto _pipeline = this->_pipeline.get_handle();
-    auto _pipeline_layout = this->_pipeline.get_layout_handle();
-    
-    //record clear screen command buffer for every swap chain image
-    for (uint32_t i = 0; i < this->_command_buffers->get_commands_size(); ++i)
-    {
-        this->_command_buffers->begin(i);
-        {
-            auto _command_buffer = this->_command_buffers->get_command_at(i);
-        
-            VkImageMemoryBarrier _present_to_render_barrier =
-            {
-                VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,                                         // Type
-                nullptr,                                                                        // Next
-                VK_ACCESS_MEMORY_READ_BIT,                                                      // SrcAccessMask
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,                                           // DstAccessMask
-                VK_IMAGE_LAYOUT_UNDEFINED,                                                      // OldLayout
-                VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,                                       // NewLayout
-                _gDevice->vk_present_queue_family_index,                                        // SrcQueueFamilyIndex
-                _gDevice->vk_graphics_queue_family_index,                // DstQueueFamilyIndex
-                _output_window->vk_swap_chain_image_views[i].image,                             // Image
-                _sub_resource_range                                                             // subresourceRange
-            };
-            
-            vkCmdPipelineBarrier(_command_buffer,
-                                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                 0,
-                                 0,
-                                 nullptr,
-                                 0,
-                                 nullptr,
-                                 1,
-                                 &_present_to_render_barrier);
-        
-            VkRenderPassBeginInfo _render_pass_begin_info =
-            {
-                VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,     // VkStructureType                sType
-                nullptr,                                      // const void                    *pNext
-                _render_pass_handle,                            // VkRenderPass                   renderPass
-                this->_frame_buffers.get_frame_buffer_at(i),                       // VkFramebuffer                  framebuffer
-                {                                             // VkRect2D                       renderArea
-                    {                                           // VkOffset2D                     offset
-                        0,                                          // int32_t                        x
-                        0                                           // int32_t                        y
-                    },
-                    {                                           // VkExtent2D                     extent
-                        _output_window->width,                                        // int32_t                        width
-                        _output_window->height,                                        // int32_t                        height
-                    }
-                },
-                1,                                            // uint32_t                       clearValueCount
-                &_vk_clear_color                                  // const VkClearValue            *pClearValues
-            };
-        
-            
-            vkCmdBeginRenderPass( _command_buffer, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE );
-            vkCmdBindPipeline( _command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
-    
-            vkCmdSetViewport(_command_buffer, 0, 1, &_wp);
-            vkCmdSetScissor(_command_buffer, 0, 1, &_wp_sc);
-    
-            VkDeviceSize _offset = 0;
-            auto _vertex_buffer_handle = this->_mesh->get_vertex_buffer_handle();
-            vkCmdBindVertexBuffers( _command_buffer, 0, 1, &_vertex_buffer_handle, &_offset );
-        
-            vkCmdBindDescriptorSets(_command_buffer,
-                                    VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    _pipeline_layout,
-                                    0,
-                                    1,
-                                    &_descriptor_set,
-                                    0,
-                                    nullptr);
-
-            vkCmdDraw( _command_buffer, static_cast<uint32_t>(_vertex_data.size()), 1, 0, 0 );
-            vkCmdEndRenderPass( _command_buffer );
-            
-            _vertex_buffer_handle = nullptr;
-        
-            VkImageMemoryBarrier _barrier_from_render_to_present =
-            {
-                VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,                     // Type
-                nullptr,                                                    // Next
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,                       // SrcAccessMask
-                VK_ACCESS_MEMORY_READ_BIT,                                  // DstAccessMask
-                VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,                   // OldLayout
-                VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,                            // NewLayout
-                _gDevice->vk_graphics_queue_family_index,                    // SrcQueueFamilyIndex
-                _gDevice->vk_present_queue_family_index,                   // DstQueueFamilyIndex
-                _output_window->vk_swap_chain_image_views[i].image,         // Image
-                _sub_resource_range                                         // SubresourceRange
-            };
-            
-            vkCmdPipelineBarrier(_command_buffer,
-                             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                             0,
-                             0,
-                             nullptr,
-                             0,
-                             nullptr,
-                             1,
-                             &_barrier_from_render_to_present );
-        }
-        this->_command_buffers->end(i);
-    }
+	build_draw_command_buffers(_gDevice);
 }
 
-static auto _jj = 0;
+HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+{
+	const std::string _trace_info = this->name + "::build_draw_command_buffers";
+	HRESULT _hr = S_OK;
+
+	auto _size = this->_draw_command_buffers.get_commands_size();
+	for (uint32_t i = 0; i < _size; ++i)
+	{
+		this->_draw_command_buffers.begin(i);
+		{
+			auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
+
+			auto _cmd = this->_draw_command_buffers.get_command_at(i);
+			this->_draw_render_pass.begin(_cmd,
+				_frame_buffer_handle,
+				w_color::CORNFLOWER_BLUE(),
+				1.0f,
+				0.0f);
+			{
+                auto _description_set = this->_shader.get_descriptor_set();
+                this->_pipeline.bind(_cmd, &_description_set);
+				_hr = this->_mesh.draw(_cmd, nullptr, 0, false);
+				if (_hr == S_FALSE)
+				{
+					V(S_FALSE, "drawing mesh", _trace_info, 3, false, false);
+				}
+			}
+			this->_draw_render_pass.end(_cmd);
+		}
+		this->_draw_command_buffers.end(i);
+	}
+	return _hr;
+}
+
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
-    if (w_game::exiting) return;
-    
-    if (_jj == 100)
-    {
-        _uniform.data = glm::mat4x4(1);
-        auto _hr = _uniform.update();
-    }
-    
-    _jj++;
-    
-    
-    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
-    w_game::update(pGameTime);
+	if (w_game::exiting) return;
+	const std::string _trace_info = this->name + "::update";
+
+	w_game::update(pGameTime);
 }
 
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
-    return w_game::render(pGameTime);
+	if (w_game::exiting) return S_OK;
+
+	const std::string _trace_info = this->name + "::render";
+
+	auto _gDevice = this->graphics_devices[0];
+	auto _output_window = &(_gDevice->output_presentation_windows[0]);
+	auto _frame_index = _output_window->vk_swap_chain_image_index;
+
+	//add wait semaphores
+	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
+	auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
+
+	const VkPipelineStageFlags _wait_dst_stage_mask[] =
+	{
+		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+	};
+
+	//reset draw fence
+	this->_draw_fence.reset();
+	if (_gDevice->submit(
+		{ _cmd },
+		_gDevice->vk_graphics_queue,
+		&_wait_dst_stage_mask[0],
+		_wait_semaphors,
+		{ *_output_window->vk_rendering_done_semaphore.get() },
+		this->_draw_fence) == S_FALSE)
+	{
+		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true, false);
+	}
+	// Wait for fence to signal that all command buffers are ready
+	this->_draw_fence.wait();
+
+	//clear all wait semaphores
+	_wait_semaphors.clear();
+
+	return w_game::render(pGameTime);
 }
 
 void scene::on_window_resized(_In_ UINT pIndex)
 {
-    w_game::on_window_resized(pIndex);
+	w_game::on_window_resized(pIndex);
 }
 
 void scene::on_device_lost()
 {
-    w_game::on_device_lost();
+	w_game::on_device_lost();
 }
 
 ULONG scene::release()
 {
-    if (this->get_is_released()) return 0;
-    
-   _render_pass.release();
-    
-    _texture->release();
-    _uniform.release();
-    _shader.release();
-    this->_pipeline.release();
-    this->_frame_buffers.release();
-    
-    return w_game::release();
-}
+	if (this->get_is_released()) return 0;
 
+	this->_draw_fence.release();
+	this->_draw_semaphore.release();
+
+	this->_draw_command_buffers.release();
+	this->_draw_render_pass.release();
+	this->_draw_frame_buffers.release();
+
+	this->_shader.release();
+	this->_pipeline.release();
+
+	this->_mesh.release();
+    this->_texture.release();
+
+	return w_game::release();
+}

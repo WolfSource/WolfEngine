@@ -24,6 +24,8 @@ namespace wolf
                 _view(0),
                 _sampler(0),
                 _memory(0),
+                _is_staging(false),
+                _staging_buffer_memory_pointer(nullptr),
                 _format(VK_FORMAT_R8G8B8A8_UNORM),
                 _image_type(VkImageType::VK_IMAGE_TYPE_2D),
                 _image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D)
@@ -35,10 +37,20 @@ namespace wolf
                 release();
             }
 
-            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
+            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
+                _In_ const uint32_t pWidth, _In_ const uint32_t pHeight, 
+                _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
             {
                 this->_gDevice = pGDevice;
                 this->_memory_property_flags = pMemoryPropertyFlags;
+                this->_width = pWidth;
+                this->_height = pHeight;
+                
+                if (pMemoryPropertyFlags & VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT ||
+                    pMemoryPropertyFlags & VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+                {
+                    this->_is_staging = true;
+                }
                 return S_OK;
             }
 
@@ -171,11 +183,8 @@ namespace wolf
                 return S_OK;
             }
 
-            HRESULT initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+            HRESULT initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData)
             {
-                this->_width = pWidth;
-                this->_height = pHeight;
-
                 auto _hr = _create_image();
                 if (_hr == S_FALSE) return S_FALSE;
 
@@ -393,26 +402,25 @@ namespace wolf
             HRESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
             {
                 auto _data_size = this->_width * this->_height * 4;
-                w_buffer _staging_buffer;
-                auto _hResult = _staging_buffer.load_as_staging(this->_gDevice, _data_size);
+
+                auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
                 if (_hResult == S_FALSE)
                 {
                     return _hResult;
                 }
 
-                _hResult = _staging_buffer.bind();
+                _hResult = this->_staging_buffer.bind();
                 if (_hResult == S_FALSE)
                 {
                     return _hResult;
                 }
 
-                void* _staging_buffer_memory_pointer = nullptr;
                 auto _hr = vkMapMemory(this->_gDevice->vk_device,
-                    _staging_buffer.get_memory(),
+                    this->_staging_buffer.get_memory(),
                     0,
                     _data_size,
                     0,
-                    &_staging_buffer_memory_pointer);
+                    &this->_staging_buffer_memory_pointer);
 
                 if (_hr)
                 {
@@ -425,13 +433,13 @@ namespace wolf
                     return S_FALSE;
                 }
 
-                memcpy(_staging_buffer_memory_pointer, pRGBA, (size_t)_data_size);
+                memcpy(this->_staging_buffer_memory_pointer, pRGBA, (size_t)_data_size);
 
                 VkMappedMemoryRange _flush_range =
                 {
                     VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,              // Type
                     nullptr,                                            // Next
-                    _staging_buffer.get_memory(),                       // Memory
+                    this->_staging_buffer.get_memory(),                       // Memory
                     0,                                                  // Offset
                     _data_size                                          // Size
                 };
@@ -440,7 +448,7 @@ namespace wolf
                     1,
                     &_flush_range);
                 vkUnmapMemory(this->_gDevice->vk_device,
-                    _staging_buffer.get_memory());
+                    this->_staging_buffer.get_memory());
 
 
                 //create command buffer
@@ -508,7 +516,7 @@ namespace wolf
                     };
 
                     vkCmdCopyBufferToImage(_cmd,
-                        _staging_buffer.get_handle(),
+                        this->_staging_buffer.get_handle(),
                         this->_image,
                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                         1,
@@ -573,9 +581,158 @@ namespace wolf
                 //release command buffer
                 _command_buffer.release();
 
+                if (!this->_is_staging)
+                {
+                    //release staging buffer
+                    this->_staging_buffer.release();
+                }
+
                 return S_OK;
             }
             
+            HRESULT flush_staging_data()
+            {
+                if (!this->_is_staging) return S_FALSE;
+                
+                //create command buffer
+                w_command_buffers _command_buffer;
+                _command_buffer.load(this->_gDevice, 1);
+                auto _cmd = _command_buffer.get_command_at(0);
+
+                _command_buffer.begin(0, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+                {
+                    VkImageSubresourceRange _image_subresource_range =
+                    {
+                        VK_IMAGE_ASPECT_COLOR_BIT,                      // AspectMask
+                        0,                                              // BaseMipLevel
+                        1,                                              // LevelCount
+                        0,                                              // BaseArrayLayer
+                        1                                               // LayerCount
+                    };
+
+                    VkImageMemoryBarrier _image_memory_barrier_from_undefined_to_transfer_dst =
+                    {
+                        VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,         // Type
+                        nullptr,                                        // Next
+                        0,                                              // SrcAccessMask
+                        VK_ACCESS_TRANSFER_WRITE_BIT,                   // DstAccessMask
+                        VK_IMAGE_LAYOUT_UNDEFINED,                      // OldLayout
+                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,           // NewLayout
+                        VK_QUEUE_FAMILY_IGNORED,                        // SrcQueueFamilyIndex
+                        VK_QUEUE_FAMILY_IGNORED,                        // DstQueueFamilyIndex
+                        this->_image,                                   // image
+                        _image_subresource_range                        // SubresourceRange
+                    };
+
+                    vkCmdPipelineBarrier(_cmd,
+                        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                        VK_PIPELINE_STAGE_TRANSFER_BIT,
+                        0,
+                        0,
+                        nullptr,
+                        0,
+                        nullptr,
+                        1,
+                        &_image_memory_barrier_from_undefined_to_transfer_dst);
+
+                    VkBufferImageCopy _buffer_image_copy_info =
+                    {
+                        0,                                    // BufferOffset
+                        0,                                    // BufferRowLength
+                        0,                                    // BufferImageHeight
+                        {                                     // ImageSubresource
+                            VK_IMAGE_ASPECT_COLOR_BIT,        // AspectMask
+                            0,                                // MipLevel
+                            0,                                // BaseArrayLayer
+                            1                                 // LayerCount
+                        },
+                        {                                     // ImageOffset
+                            0,                                // X
+                            0,                                // Y
+                            0                                 // Z
+                        },
+                        {                                     // ImageExtent
+                            this->_width,                     // Width
+                            this->_height,                    // Height
+                            1                                 // Depth
+                        }
+                    };
+
+                    vkCmdCopyBufferToImage(_cmd,
+                        this->_staging_buffer.get_handle(),
+                        this->_image,
+                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                        1,
+                        &_buffer_image_copy_info);
+
+                    VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
+                    {
+                        VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
+                        nullptr,                                            // Next
+                        VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
+                        VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
+                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
+                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
+                        VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
+                        VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
+                        this->_image,                                       // Image
+                        _image_subresource_range                            // SubresourceRange
+                    };
+                    vkCmdPipelineBarrier(_cmd,
+                        VK_PIPELINE_STAGE_TRANSFER_BIT,
+                        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                        0,
+                        0,
+                        nullptr,
+                        0,
+                        nullptr,
+                        1,
+                        &_image_memory_barrier_from_transfer_to_shader_read);
+
+                }
+                _command_buffer.end(0);
+
+                // Submit command buffer and copy data from staging buffer to a vertex buffer
+                VkSubmitInfo _submit_info =
+                {
+                    VK_STRUCTURE_TYPE_SUBMIT_INFO,        // Type
+                    nullptr,                              // Next
+                    0,                                    // WaitSemaphoreCount
+                    nullptr,                              // WaitSemaphores
+                    nullptr,                              // WaitDstStageMask;
+                    1,                                    // CommandBufferCount
+                    &_cmd,                                // CommandBuffers
+                    0,                                    // SignalSemaphoreCount
+                    nullptr                               // SignalSemaphores
+                };
+
+                auto _vhr = vkQueueSubmit(this->_gDevice->vk_graphics_queue.queue, 1, &_submit_info, VK_NULL_HANDLE);
+                if (_vhr)
+                {
+                    V(S_FALSE, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
+                        this->_gDevice->device_name + " ID: " + std::to_string(this->_gDevice->device_id),
+                        this->_name,
+                        3,
+                        false,
+                        true);
+
+                    _command_buffer.release();
+                    return S_FALSE;
+                }
+                vkDeviceWaitIdle(this->_gDevice->vk_device);
+
+                //release command buffer
+                _command_buffer.release();
+
+                if (!this->_is_staging)
+                {
+                    //release staging buffer
+                    this->_staging_buffer.release();
+                }
+
+                return S_OK;
+            }
+
             const VkDescriptorImageInfo get_descriptor_info() const
             {
                 return this->_image_info;
@@ -617,20 +774,26 @@ namespace wolf
                     this->_memory= 0;
                 }
                 
+                if (this->_is_staging)
+                {
+                    //release staging buffer
+                    this->_staging_buffer.release();
+                }
+
+                this->_staging_buffer_memory_pointer = nullptr;
                 this->_gDevice = nullptr;
                 
                 return 1;
             }
-            
-            
+                 
 #pragma region Getters
             
-            const UINT get_width() const
+            const uint32_t get_width() const
             {
                 return this->_width;
             }
             
-            const UINT get_height() const
+            const uint32_t get_height() const
             {
                 return this->_height;
             }
@@ -665,6 +828,11 @@ namespace wolf
                 return this->_format;
             }
             
+            void* get_pointer_to_staging_data()
+            {
+                return this->_is_staging ? this->_staging_buffer_memory_pointer : nullptr;
+            }
+
 #pragma endregion
                    
         private:
@@ -674,6 +842,9 @@ namespace wolf
             uint32_t                                        _width;
             uint32_t                                        _height;
             VkMemoryPropertyFlags                           _memory_property_flags;
+            bool                                            _is_staging;
+            void*                                           _staging_buffer_memory_pointer;
+            w_buffer                                        _staging_buffer;
             VkImage                                         _image;
             VkImageView                                     _view;
             VkSampler                                       _sampler;
@@ -702,10 +873,25 @@ w_texture::~w_texture()
 	release();
 }
 
-HRESULT w_texture::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
+HRESULT w_texture::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_ const bool& pIsStaging,
+    _In_ const uint32_t& pWidth,
+    _In_ const uint32_t& pHeight)
 {
-    if(!this->_pimp) return S_FALSE;
-    return this->_pimp->load(pGDevice, pMemoryPropertyFlags);
+    if (!this->_pimp) return S_FALSE;
+    return this->_pimp->load(pGDevice, 
+        pWidth,
+        pHeight,
+        pIsStaging ? (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+}
+
+HRESULT w_texture::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags,
+    _In_ const uint32_t& pWidth,
+    _In_ const uint32_t& pHeight)
+{
+    if (!this->_pimp) return S_FALSE;
+    return this->_pimp->load(pGDevice, pMemoryPropertyFlags, pWidth, pHeight);
 }
 
 HRESULT w_texture::initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
@@ -714,20 +900,25 @@ HRESULT w_texture::initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _I
     return this->_pimp->initialize_texture_2D_from_file(pPath, pIsAbsolutePath);
 }
 
-HRESULT w_texture::initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+HRESULT w_texture::initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData)
 {
     if (!this->_pimp) return S_FALSE;
-    return this->_pimp->initialize_texture_from_memory_rgba(pRGBAData, pWidth, pHeight);
+    return this->_pimp->initialize_texture_from_memory_rgba(pRGBAData);
 }
 
-HRESULT w_texture::initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+HRESULT w_texture::initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBData)
 {
-    if (!this->_pimp || pWidth == 0 || pHeight == 0) return S_FALSE;
+    if (!this->_pimp) return S_FALSE;
+    
+    const auto _width = this->_pimp->get_width();
+    const auto _height = this->_pimp->get_height();
 
-    auto _rgba = (uint8_t*)malloc(pWidth * pHeight * 4);
+    if (_width == 0 || _height == 0) return S_FALSE;
+    
+    auto _rgba = (uint8_t*)malloc(_width * _height * 4);
     if (!_rgba) return S_FALSE;
     
-    size_t _count = pWidth * pHeight;
+    size_t _count = _width * _height;
     for (int i = _count; --i; _rgba += 4, pRGBData += 3) 
     {
         *(uint32_t*)(void*)_rgba = *(const uint32_t*)(const void*)pRGBData;
@@ -737,43 +928,63 @@ HRESULT w_texture::initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBData, _I
         _rgba[j] = pRGBData[j];
     }
 
-    return this->_pimp->initialize_texture_from_memory_rgba(_rgba, pWidth, pHeight);
+    return this->_pimp->initialize_texture_from_memory_rgba(_rgba);
 }
 
-HRESULT w_texture::initialize_texture_from_memory_all_channels_same(_In_ uint8_t pData, _In_ const UINT pWidth, _In_ const UINT pHeight)
+HRESULT w_texture::initialize_texture_from_memory_all_channels_same(_In_ uint8_t pData)
 {
     if (!this->_pimp) return S_FALSE;
 
-    auto _length = pWidth * pHeight * 4;
+    const auto _width = this->_pimp->get_width();
+    const auto _height = this->_pimp->get_height();
+
+    if (_width == 0 || _height == 0) return S_FALSE;
+
+    auto _length = _width * _height * 4;
     auto _rgba = (uint8_t*)malloc(_length * sizeof(uint8_t));
     if (!_rgba) return S_FALSE;
 
     std::memset(_rgba, pData, _length);
-    return this->_pimp->initialize_texture_from_memory_rgba(_rgba, pWidth, pHeight);
+    auto _hr = this->_pimp->initialize_texture_from_memory_rgba(_rgba);
+    free(_rgba);
+    return _hr;
 }
 
-HRESULT w_texture::initialize_texture_from_memory_from_color(_In_ w_color pColor, _In_ const UINT pWidth, _In_ const UINT pHeight)
+HRESULT w_texture::initialize_texture_from_memory_color(_In_ w_color pColor)
 {
     if (!this->_pimp) return S_FALSE;
 
-    auto _length = pWidth * pHeight * 4;
+    const auto _width = this->_pimp->get_width();
+    const auto _height = this->_pimp->get_height();
+
+    if (_width == 0 || _height == 0) return S_FALSE;
+
+    auto _length = _width * _height * 4;
     auto _rgba = (uint8_t*)malloc(_length * sizeof(uint8_t));
     if (!_rgba) return S_FALSE;
 
-    for (size_t i = 0; i < _length; i+=4)
+    for (size_t i = 0; i < _length; i += 4)
     {
         _rgba[i + 0] = pColor.r;
         _rgba[i + 1] = pColor.g;
         _rgba[i + 2] = pColor.b;
         _rgba[i + 3] = pColor.a;
     }
-    return this->_pimp->initialize_texture_from_memory_rgba(_rgba, pWidth, pHeight);
+    auto _hr = this->_pimp->initialize_texture_from_memory_rgba(_rgba);
+    free(_rgba);
+    return _hr;
 }
 
 HRESULT w_texture::copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
 {
     if (!this->_pimp) return S_FALSE;
     return this->_pimp->copy_data_to_texture_2D(pRGBA);
+}
+
+HRESULT w_texture::flush_staging_data()
+{
+    if (!this->_pimp) return S_FALSE;
+    return this->_pimp->flush_staging_data();
 }
 
 HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -860,13 +1071,13 @@ ULONG w_texture::release_shared_textures()
 
 #pragma region Getters
 
-const UINT w_texture::get_width() const
+const uint32_t w_texture::get_width() const
 {
     if(!this->_pimp) return 0;
     return this->_pimp->get_width();
 }
 
-const UINT w_texture::get_height() const
+const uint32_t w_texture::get_height() const
 {
     if(!this->_pimp) return 0;
     return this->_pimp->get_height();
@@ -918,6 +1129,12 @@ const VkDescriptorImageInfo w_texture::get_descriptor_info() const
 {
     if(!this->_pimp) return VkDescriptorImageInfo();
     return this->_pimp->get_descriptor_info();
+}
+
+void* w_texture::get_pointer_to_staging_data()
+{
+    if (!this->_pimp) return nullptr;
+    return this->_pimp->get_pointer_to_staging_data();
 }
 
 #pragma endregion

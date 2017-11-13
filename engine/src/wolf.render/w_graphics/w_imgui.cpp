@@ -110,13 +110,12 @@ namespace wolf
                     SAFE_RELEASE(this->_font_texture);
                 }
                 this->_font_texture = new w_texture();
-                this->_font_texture->load(_gDevice);
-
+                this->_font_texture->load(_gDevice, 
+                    static_cast<uint32_t>(_texture_width),
+                    static_cast<uint32_t>(_texture_height));
                 std::vector<uint8_t> _texture_data(_font_data, _font_data + _upload_size);
                 _font_texture->initialize_texture_from_memory_rgba(
-                    _texture_data.data(),
-                    (uint32_t)_texture_width,
-                    (uint32_t)_texture_height);
+                    _texture_data.data());
 
                 auto __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
                 if (__hr != S_OK)

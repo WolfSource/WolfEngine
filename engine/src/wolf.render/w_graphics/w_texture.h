@@ -26,27 +26,35 @@ namespace wolf
 			W_EXP virtual ~w_texture();
 
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                               _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags =
-                               VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+                _In_ const bool& pIsStaging = false,
+                _In_ const uint32_t& pWidth = 32,
+                _In_ const uint32_t& pHeight = 32);
+            
+            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags,
+                _In_ const uint32_t& pWidth,
+                _In_ const uint32_t& pHeight);
             
 			//Load texture2D from file
 			W_EXP HRESULT initialize_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
             //Load texture2D from memory in format of RGBA
-            W_EXP HRESULT initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight);
+            W_EXP HRESULT initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData);
             //Load texture2D from memory in format of RGB
-            W_EXP HRESULT initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBAData, _In_ const UINT pWidth, _In_ const UINT pHeight);
+            W_EXP HRESULT initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBAData);
             //Load texture2D from memory, all channels have same byte
-            W_EXP HRESULT initialize_texture_from_memory_all_channels_same(_In_ uint8_t pData, _In_ const UINT pWidth, _In_ const UINT pHeight);
+            W_EXP HRESULT initialize_texture_from_memory_all_channels_same(_In_ uint8_t pData);
             //Load texture2D from w_color
-            W_EXP HRESULT initialize_texture_from_memory_from_color(_In_ w_color pcolor, _In_ const UINT pWidth, _In_ const UINT pHeight);
+            W_EXP HRESULT initialize_texture_from_memory_color(_In_ w_color pColor);
             /*
                 copy data to texture
-                warning, you can use this function anytime just for staging textures(textures loaded as 
-                VkMemoryPropertyFlags::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT). 
-                For default textures t is recommended use initializing functions such as 
-                "w_texture::initialize_texture_2D_from_file, w_texture::initialize_texture_from_memory_rgba and etc."
+                if this is a staging buffer, do not use this function because it will cause memory leaks,
+                instead use "get_pointer_to_staging_data" function
             */
             W_EXP HRESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA);
+            /*
+                flush staging buffer
+            */
+            W_EXP HRESULT flush_staging_data();
 
             //release all resources
             W_EXP virtual ULONG release() override;
@@ -66,9 +74,9 @@ namespace wolf
 #pragma region Getters
 
             //get width of image
-            W_EXP const UINT get_width() const;
+            W_EXP const uint32_t get_width() const;
             //get height of image
-            W_EXP const UINT get_height() const;
+            W_EXP const uint32_t get_height() const;
             //get sampler of image
             W_EXP VkSampler get_sampler() const;
             //get image handle
@@ -83,6 +91,8 @@ namespace wolf
             W_EXP VkFormat get_format() const;
             //get write descriptor image info
             W_EXP const VkDescriptorImageInfo get_descriptor_info() const;
+            //get pointer to the staging data
+            W_EXP void* get_pointer_to_staging_data();
             
 #pragma endregion
 

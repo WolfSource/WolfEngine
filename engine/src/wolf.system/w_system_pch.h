@@ -14,10 +14,10 @@
 #ifndef __W_SYSTEM_PCH_H__
 #define __W_SYSTEM_PCH_H__
                         
-#define WOLF_MAJOR_VERSION 1// when you make incompatible API changes.
-#define WOLF_MINOR_VERSION 40// when you add functionality in a backwards - compatible manner.
-#define WOLF_PATCH_VERSION 3// bug fixes
-#define WOLF_DEBUG_VERSION 6// for debugging.
+#define WOLF_MAJOR_VERSION 1// Making incompatible API changes.
+#define WOLF_MINOR_VERSION 44// Adding functionality in a backwards - compatible manner.
+#define WOLF_PATCH_VERSION 7// bug fixes
+#define WOLF_DEBUG_VERSION 13// for debugging.
 
 #ifndef NOMINMAX
 #define NOMINMAX
