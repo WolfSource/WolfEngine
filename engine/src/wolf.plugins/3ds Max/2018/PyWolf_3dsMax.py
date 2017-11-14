@@ -20,7 +20,7 @@ wolf_version = ""
 
 try:
 	import PyWolf
-	wolf_version = "PyWolf (v.1.40.3.6)"
+	wolf_version = "PyWolf (v.1.44.7.15)"
 except:
 	print "Error, could not find PyWolf"
 	
@@ -120,9 +120,12 @@ class Dialog(QDialog):
 preNameTextBox = QTextEdit("CG")
 preNameTextBox.setMaximumHeight(23)
 
+refModelTextBox = QTextEdit("")
+refModelTextBox.setMaximumHeight(23)
+
 logger = Logger()
 cmd = Logger()
-old_instances = defaultdict(list)
+#old_instances = defaultdict(list)
 
 def quaternion_to_euler_angle(w, x, y, z):
 	ysqr = y * y
@@ -180,6 +183,17 @@ def get_standard_index_name(pIndex):
 
 def get_unique_name():
 	return datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+
+def select_ref_node():
+	_selected_count = MaxPlus.SelectionManager.GetCount()
+	if _selected_count == 0:
+		logger.log("Nothing selected as a Ref node from current active layer")
+	elif _selected_count == 1:
+		for c in MaxPlus.SelectionManager.Nodes:
+			print c.Name
+			refModelTextBox.setText(c.Name)
+	else:
+		logger.log("Please select one node as a Ref node from current active layer")
 	
 def reinstance_current_layer():
 	pre_name = preNameTextBox.toPlainText()
@@ -189,11 +203,13 @@ def reinstance_current_layer():
 	
 	if _n == "0" or _n == "_Problems_" or _n == "_Boundaries_" or _n == "_Inner_Layers_" or _n == "_Middle_Layers_" or _n == "_Outer_Layers_":
 		logger.log("The following layers not allowed: 0(default), _Inner_Layers_, _Middle_Layers_, _Outer_Layers_, _Problems_ and _Boundaries_ . Move your nodes to new layer.")
+		refModelTextBox.setText("")
 		return
 	
 	y = _n.startswith('Layer')
 	if not y:
 		logger.log("Layer name \"" + _n + "\" must have start with \"Layer\"")
+		refModelTextBox.setText("")
 		return
 	
 	#get layer index as str
@@ -208,6 +224,7 @@ def reinstance_current_layer():
 		
 	if _layer_index == (-maxint - 1):
 		logger.log("Layer \"" + _n + "\" must have in following format: Layer + Number; for example Layer001, Layer1, Layer1000")
+		refModelTextBox.setText("")
 		return
 	
 	_layer_index_str = get_standard_index_name(_layer_index)
@@ -222,8 +239,11 @@ def reinstance_current_layer():
 	_len_nodes = len(nodes)
 	if _len_nodes == 0:
 		logger.log("Layer \"" + _n + "\" does not have any node")
+		refModelTextBox.setText("")
 		return
-		
+	
+	_preferred_ref_name = refModelTextBox.toPlainText()
+	#check for ref
 	for j in range(0, _len_nodes):
 		_node = nodes[j]
 		_rotate = _node.GetWorldRotation()
@@ -237,22 +257,52 @@ def reinstance_current_layer():
 			_lod_index = j
 			continue
 		
-		if _ref_index == -1 and in_range_of(_rx, -0.1, 0.1) and in_range_of(_ry, -0.1, 0.1) and in_range_of(_rz, -0.1, 0.1):
-			#found ref node
-			_ref_index = j
+		if _preferred_ref_name == "":
+			if in_range_of(_rx, -0.1, 0.1) and in_range_of(_ry, -0.1, 0.1) and in_range_of(_rz, -0.1, 0.1):
+				_ref_index = j
+				break
 		else:
-			_node.Name = _node.Name + "_OLDINS"
-			instances_index.append(j)
+			if _preferred_ref_name == _node_name and in_range_of(_rx, -0.1, 0.1) and in_range_of(_ry, -0.1, 0.1) and in_range_of(_rz, -0.1, 0.1):
+				_ref_index = j
+				break
 	
 	if _ref_index == -1:
-		logger.log("Layer \"" + _n + "\" does not have ref object, At least one node should contain zero rotation")
+		logger.log("Layer \"" + _n + "\" does not have ref object, At least one node should contain zero rotation or may be the preferred Ref node is not child of current active layer")
+		refModelTextBox.setText("")
 		return
 		
 	_ref =  nodes[_ref_index]
 	logger.log("using " + _ref.Name + " as ref node")
 	
-	#change ref node
-	_ref.Name = pre_name + _layer_index_str +"_"
+	for j in range(0, _len_nodes):
+		_node = nodes[j]
+		_rotate = _node.GetWorldRotation()
+		_rx, _ry, _rz = quaternion_to_euler_angle(_rotate.GetW(), _rotate.GetX(), _rotate.GetY(), _rotate.GetZ())	
+		_node_name = _node.Name
+			
+		#convex hull
+		if _node_name.find("-ch") != -1:
+			continue
+		
+		#lod
+		if _node_name.find("-lod") != -1:
+			_lod_index = j
+			continue
+		
+		#ref
+		if j == _ref_index:
+			continue
+			
+		_node.Name = "(OLD-INS)" + _node.Name
+		instances_index.append(j)
+	
+	#get ref node Equipment Name
+	_equipment_name = ""
+	_splits = _ref.Name.split("_", 1)
+	if len(_splits) > 1:
+		_equipment_name = _splits[1]	
+		
+	_ref.Name = pre_name + _layer_index_str + "_" + _equipment_name
 		
 	#move lod to ref location
 	if _lod_index != -1:
@@ -265,43 +315,57 @@ def reinstance_current_layer():
 	#apply convert to editpoly, reset xform 
 	apply_editpoly_reset_xform(_ref.Name)
 	
+	default_mat = MaxPlus.Factory.CreateDefaultStdMat() 
+	default_mat.Ambient = MaxPlus.Color(0.0, 1.0, 0.0) 
+	default_mat.Diffuse = MaxPlus.Color(0.0, 1.0, 0.0) 
+	default_mat.Specular = MaxPlus.Color(1.0, 1.0, 1.0) 
+	default_mat.Shininess = 0.5 
+	default_mat.ShinyStrength = 0.7 
+
 	num_instances = len(instances_index)
 	for k in xrange(0, num_instances):
 		old_ins = nodes[instances_index[k]]
 		pos = old_ins.Position
 		rot = old_ins.GetWorldRotation()
 		
+		_equipment_name = ""
+		#get ref node Equipment Name
+		_splits = old_ins.Name.split("_", 1)
+		if len(_splits) > 1:
+			_equipment_name = _splits[1]
+		
 		#create instance
 		instance = _ref.CreateTreeInstance()
-		instance.Name = pre_name + _layer_index_str + "-ins" +  get_standard_index_name(k + 1) + "_"
+		instance.Name = pre_name + _layer_index_str + "-ins" +  get_standard_index_name(k + 1) + "_" + _equipment_name
 		instance.SetPositionX(pos.GetX())
 		instance.SetPositionY(pos.GetY())
 		instance.SetPositionZ(pos.GetZ())
 		instance.SetWorldRotation(rot)
 			
 		#change color of old instance
-		old_ins.WireColor = MaxPlus.Color(1.0, 0.0, .0)
+		old_ins.Material = default_mat
+		#old_ins.WireColor = MaxPlus.Color(1.0, 0.0, 0.0)
 		#store to old instances
 		##################################################old_instances[0].append(old_ins)
 	
-def delete_old_nodes():
+	refModelTextBox.setText("")
+	
+#def delete_old_nodes():
 	#delete all nodes
-	do_not_add_for_first = 1
-	_max_sxript_cmd = "select #("
-	for k in old_instances:
-		for v in old_instances[k]:
-			if do_not_add_for_first:
-				do_not_add_for_first = 0
-				_max_sxript_cmd = _max_sxript_cmd + "$\'" + v.Name + "\'"
-			else:
-				_max_sxript_cmd = _max_sxript_cmd + ",$\'" + v.Name + "\'"
+	#do_not_add_for_first = 1
+	#_max_sxript_cmd = "select #("
+	#for k in old_instances:
+		#for v in old_instances[k]:
+			#if do_not_add_for_first:
+				#do_not_add_for_first = 0
+				#_max_sxript_cmd = _max_sxript_cmd + "$\'" + v.Name + "\'"
+			#else:
+				#_max_sxript_cmd = _max_sxript_cmd + ",$\'" + v.Name + "\'"
 	
-	_max_sxript_cmd =  _max_sxript_cmd + ")											\r\n\
-	actionMan.executeAction 0 \"40020\"  -- Edit: Delete Objects	\r\n\
-	"
-	MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
-	
-	old_instances.clear()
+	#_max_sxript_cmd =  _max_sxript_cmd + ")											\r\n\
+	#actionMan.executeAction 0 \"40020\"  -- Edit: Delete Objects	\r\n\"
+	#MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+	#old_instances.clear()
 
 def clear_log():
 	logger.clear()
@@ -435,18 +499,24 @@ def init_reinstance_layout():
 	
 	label = QLabel("PreName")
 	
-	button_1 = QPushButton("1 - ReCreate new node(s)		")
-	button_1.clicked.connect(reinstance_current_layer)
+	button_1 = QPushButton("Select Ref node ")
+	button_1.clicked.connect(select_ref_node)
+	button_1.setToolTip("Select preferred node as a parent of other instnaces. First select 3D object and then press me")
 	
-	button_2 = QPushButton("2 - Delete old node(s)		")
-	button_2.setEnabled(0)#Bug in deleting
-	button_2.clicked.connect(delete_old_nodes)
+	button_2 = QPushButton("ReInstance ")
+	button_2.clicked.connect(reinstance_current_layer)
+	button_2.setToolTip("I'm responisble to re-instnace all nodes of active layer except LOD and Convex Hull objects")
+	
+	#button_3 = QPushButton("Delete old node(s)  ")
+	#button_3.setEnabled(0)#Bug in deleting
+	#button_3.clicked.connect(delete_old_nodes)
 	
 	h_layout = QHBoxLayout(widget)
 	h_layout.setAlignment(Qt.AlignTop)
 	h_layout.addWidget(label)
 	h_layout.addWidget(preNameTextBox)
 	h_layout.addWidget(button_1)
+	h_layout.addWidget(refModelTextBox)
 	h_layout.addWidget(button_2)
 	
 	return widget
@@ -463,19 +533,28 @@ def init_helper():
 	#run wolf.engine
 	run_wolf_button = QPushButton("Show Wolf")
 	run_wolf_button.clicked.connect(pywolf_show)
+	run_wolf_button.setToolTip("Show Wolf Engine Viewer")
+	
 	#sync current models
-	sync_models_to_wolf_button = QPushButton("Sync active layer with Wolf")
+	sync_models_to_wolf_button = QPushButton("Export active layer to Wolf")
 	sync_models_to_wolf_button.clicked.connect(pywolf_sync_active_layer_models)
+	sync_models_to_wolf_button.setToolTip("Export nodes of active layer to Wolf Engine")
+	
 	#sync camera
 	sync_camera_wolf_button = QPushButton("Sync camera")
 	sync_camera_wolf_button.clicked.connect(pywolf_sync_camera)
+	sync_camera_wolf_button.setToolTip("Sync camera of 3ds Max with camera of Wolf Engine")
+
 	#shutdown wolf.engine
 	remove_all_models_button = QPushButton("Remove All Models")
 	remove_all_models_button.clicked.connect(pywolf_remove_all_models)
+	remove_all_models_button.setToolTip("Remove all models in Wolf Engine")
+
 	#execute python codes
 	exe_button = QPushButton("execute")
 	exe_button.clicked.connect(execute_cmd)
-	
+	exe_button.setToolTip("Run Python code")
+		
 	h_layout = QHBoxLayout(wolf_buttons)
 	h_layout.addWidget(run_wolf_button)
 	h_layout.addWidget(sync_models_to_wolf_button)

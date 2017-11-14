@@ -110,7 +110,8 @@ namespace wolf
                     SAFE_RELEASE(this->_font_texture);
                 }
                 this->_font_texture = new w_texture();
-                this->_font_texture->load(_gDevice, 
+                this->_font_texture->load(_gDevice,
+                    false,
                     static_cast<uint32_t>(_texture_width),
                     static_cast<uint32_t>(_texture_height));
                 std::vector<uint8_t> _texture_data(_font_data, _font_data + _upload_size);

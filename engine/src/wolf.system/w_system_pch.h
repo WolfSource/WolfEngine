@@ -17,7 +17,7 @@
 #define WOLF_MAJOR_VERSION 1// Making incompatible API changes.
 #define WOLF_MINOR_VERSION 44// Adding functionality in a backwards - compatible manner.
 #define WOLF_PATCH_VERSION 7// bug fixes
-#define WOLF_DEBUG_VERSION 13// for debugging.
+#define WOLF_DEBUG_VERSION 14// for debugging.
 
 #ifndef NOMINMAX
 #define NOMINMAX
