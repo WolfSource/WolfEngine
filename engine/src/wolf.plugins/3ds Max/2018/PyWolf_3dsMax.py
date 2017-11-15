@@ -13,7 +13,7 @@ import datetime
 #PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
 PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
 
-if not PyWolfPath in sys.path:
+if PyWolfPath != "" and (not PyWolfPath in sys.path):
 	sys.path.append(PyWolfPath)
 
 wolf_version = ""
@@ -163,14 +163,37 @@ def to_quaternion(pPitch, pRoll, pYaw):
 def in_range_of(pNum, pMin, pMax):
 	return pNum >= pMin and pNum <= pMax
 	
-def apply_editpoly_reset_xform(pName):
+def apply_editpoly_reset_xform_selected_model(pName):
+	if pName == "":
+		return
+	
 	_max_sxript_cmd = "select $" + pName + "									\r\n\
 	macros.run \"Modifier Stack\" \"Convert_to_Poly\"					\r\n\
 	ResetXForm $" +  pName + "														\r\n\
 	macros.run \"Modifier Stack\" \"Convert_to_Poly\"					\r\n\
 	"
 	MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+	
+def apply_editpoly_reset_xform_selected_models(pNames):
+	_l = len(pNames)
+	if _l == 0:
+		return
 
+	_str = "#("
+	for i in range(0, _l):
+		_str = _str + "$" + pNames[i]
+		if i != len(pNames) - 1 :
+			_str = _str + ","	
+
+	_str = _str +  ")"
+	
+	_max_sxript_cmd = "select " + _str + "										\r\n\
+	macros.run \"Modifier Stack\" \"Convert_to_Poly\"					\r\n\
+	ResetXForm " +  _str + "																\r\n\
+	macros.run \"Modifier Stack\" \"Convert_to_Poly\"					\r\n\
+	"
+	MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
+	
 def get_standard_index_name(pIndex):
 	_index_str = ""
 	if pIndex < 10 :
@@ -313,7 +336,7 @@ def reinstance_current_layer():
 		_lod.SetPositionZ(_ref_pos.GetZ())
 		
 	#apply convert to editpoly, reset xform 
-	apply_editpoly_reset_xform(_ref.Name)
+	apply_editpoly_reset_xform_selected_model(_ref.Name)
 	
 	default_mat = MaxPlus.Factory.CreateDefaultStdMat() 
 	default_mat.Ambient = MaxPlus.Color(0.0, 1.0, 0.0) 
@@ -366,6 +389,20 @@ def reinstance_current_layer():
 	#actionMan.executeAction 0 \"40020\"  -- Edit: Delete Objects	\r\n\"
 	#MaxPlus.Core.EvalMAXScript(_max_sxript_cmd)
 	#old_instances.clear()
+
+def reset_nodes():
+	_selected_count = MaxPlus.SelectionManager.GetCount()
+	if _selected_count == 0:
+		logger.log("Nothing selected for reseting")
+	
+	names = []
+	for c in MaxPlus.SelectionManager.Nodes:
+		names.append(c.Name)
+	
+	if len(names) == 1:
+		apply_editpoly_reset_xform_selected_model(names[0])
+	else:
+		apply_editpoly_reset_xform_selected_models(names)
 
 def clear_log():
 	logger.clear()
@@ -521,6 +558,19 @@ def init_reinstance_layout():
 	
 	return widget
 
+def init_reset_layout():
+	widget = QWidget()
+		
+	button_1 = QPushButton("Reset selected model(s)")
+	button_1.clicked.connect(reset_nodes)
+	button_1.setToolTip("I'm responisble to reset xform selected models and covert them to editable polygons")
+	
+	h_layout = QHBoxLayout(widget)
+	h_layout.setAlignment(Qt.AlignTop)
+	h_layout.addWidget(button_1)
+	
+	return widget
+	
 def init_helper():
 	widget = QWidget()
 	
@@ -575,7 +625,9 @@ def init_pywolf():
 	v_layout = QVBoxLayout(widget)	
 	v_layout.addWidget(QLabel("ReInstance active layer"))
 	v_layout.addWidget(init_reinstance_layout())
-		
+	v_layout.addWidget(QLabel("Model Utilities"))
+	v_layout.addWidget(init_reset_layout())
+
 	return widget
 
 def run_wolf():
