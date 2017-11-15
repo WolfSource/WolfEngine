@@ -43,5 +43,5 @@ ULONG w_semaphore::release()
 
     this->_gDevice = nullptr;
 
-    return 1;
+    return 0;
 }

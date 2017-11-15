@@ -144,7 +144,7 @@ ULONG w_lua::release()
 	lua_pop(_lua, 1);
 	lua_close(_lua);
 
-	return 1;
+	return 0;
 }
 
 HRESULT w_lua::set_lua_path(_In_z_ const char* pPath)

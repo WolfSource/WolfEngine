@@ -279,7 +279,7 @@ namespace wolf
 
             ULONG release()
             {
-                if (this->_is_released) return 0;
+                if (this->_is_released) return 1;
 
                 this->_is_released = true;
 
@@ -296,7 +296,7 @@ namespace wolf
                 this->_log_file.flush();
                 this->_log_file.close();
 
-                return 1;
+                return 0;
             }
 
             bool get_is_released()
@@ -407,9 +407,9 @@ void w_logger::error(_In_z_ std::string pMsg)
 
 ULONG w_logger::release()
 {
-    if (!this->_pimp || (this->_pimp && this->_pimp->get_is_released())) return 0;
+    if (!this->_pimp || (this->_pimp && this->_pimp->get_is_released())) return 1;
 
-    ULONG _hr = 1;
+    ULONG _hr = 0;
     _hr = this->_pimp->release();
     delete this->_pimp;
     this->_pimp = nullptr;

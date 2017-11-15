@@ -1,3 +1,5 @@
+#include "w_system_pch.h"
+
 /// @ref core
 /// @file glm/glm.cpp
 
@@ -255,4 +257,3 @@ template struct tdualquat<float64, highp>;
 
 }//namespace glm
 
-#include "w_system_pch.h"

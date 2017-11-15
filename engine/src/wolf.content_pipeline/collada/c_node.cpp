@@ -45,7 +45,7 @@ c_node* c_node::find_instanced_geomaetry_node(std::string pGeometryName)
 
 ULONG c_node::release()
 {
-	if (is_released) return 0;
+	if (is_released) return 1;
 	
 	for (size_t i = 0; i < this->child_nodes.size(); ++i)
 	{
@@ -53,5 +53,5 @@ ULONG c_node::release()
 	}
 	this->child_nodes.clear();
 
-	return 1;
+	return 0;
 }

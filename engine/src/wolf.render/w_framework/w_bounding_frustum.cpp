@@ -19,7 +19,7 @@ w_bounding_frustum::~w_bounding_frustum()
 
 ULONG w_bounding_frustum::release()
 {
-    if (_super::get_is_released()) return 0;
+    if (_super::get_is_released()) return 1;
 	
     
 	return  _super::release();

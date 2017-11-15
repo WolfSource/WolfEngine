@@ -90,5 +90,5 @@ ULONG w_fences::release()
     this->_fences.clear();
     this->_gDevice = nullptr;
 
-    return 1;
+    return 0;
 }

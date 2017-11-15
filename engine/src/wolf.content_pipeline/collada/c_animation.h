@@ -41,12 +41,12 @@ namespace wolf
 
 				ULONG release()
 				{
-					if (_is_released) return 0;
+					if (_is_released) return 1;
 					this->_is_released = true;
 
 					this->semantics.clear();
 
-					return 1;
+					return 0;
 				}
 
 			private:
@@ -76,14 +76,14 @@ namespace wolf
 				
 				ULONG release()
 				{
-					if (_is_released) return 0;
+					if (_is_released) return 1;
 
 					this->_is_released = true;
 
 					this->float_array.clear();
 					this->name_array.clear();
 
-					return 1;
+					return 0;
 				}
 
 			private:
@@ -98,12 +98,12 @@ namespace wolf
 
 				ULONG release()
 				{
-					if (_is_released) return 0;
+					if (_is_released) return 1;
 					this->_is_released = true;
 
 					this->semantics.clear();
 
-					return 1;
+					return 0;
 				}
 
 			private:
@@ -117,12 +117,12 @@ namespace wolf
 
 				ULONG release()
 				{
-					if (_is_released) return 0;
+					if (_is_released) return 1;
 					this->_is_released = true;
 
 					this->semantics.clear();
 
-					return 1;
+					return 0;
 				}
 
 			private:
@@ -140,7 +140,7 @@ namespace wolf
 
 				ULONG release()
 				{
-					if (_is_released) return 0;
+					if (_is_released) return 1;
 					
 					std::for_each(this->sources.begin(), this->sources.end(), [](c_source* pValue)
 					{
@@ -156,7 +156,7 @@ namespace wolf
 					SAFE_RELEASE(this->vertices);
 
 					_is_released = true;
-					return 1;
+					return 0;
 				}
 
 			private:
@@ -171,7 +171,7 @@ namespace wolf
 
 				ULONG release()
 				{
-					if (_is_released) return 0;
+					if (_is_released) return 1;
 
 					std::for_each(this->sources.begin(), this->sources.end(), [](c_source* pValue)
 					{
@@ -180,7 +180,7 @@ namespace wolf
 					this->sources.clear();
 					SAFE_RELEASE(sampler);
 					_is_released = true;
-					return 1;
+					return 0;
 				}
 
 			private:

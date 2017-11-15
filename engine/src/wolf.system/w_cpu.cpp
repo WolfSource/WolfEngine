@@ -67,7 +67,7 @@ int w_cpu::get_cpu_percentage() const
 
 ULONG w_cpu::release()
 {
-	if (this->get_is_released()) return 0;
+	if (this->get_is_released()) return 1;
 
 	if (this->_canReadCpu)
 	{

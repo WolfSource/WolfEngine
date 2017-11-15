@@ -35,14 +35,14 @@ namespace wolf
 
 			ULONG release()
 			{
-				if (_is_released) return 0;
+				if (_is_released) return 1;
 
 				vertex.clear();
 				texture.clear();
 				normal.clear();
 
 				this->_is_released = true;
-				return 1;
+				return 0;
 			}
 
 		private:

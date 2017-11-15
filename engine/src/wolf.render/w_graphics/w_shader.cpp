@@ -207,7 +207,7 @@ namespace wolf
                 this->_descriptor_pool = 0;
 
 
-                return 1;
+                return 0;
             }
             
 #pragma region Getters
@@ -604,7 +604,7 @@ void w_shader::update_shader_binding_params(_In_ std::vector<w_shader_binding_pa
 
 ULONG w_shader::release()
 {
-    if (_super::get_is_released()) return 0;
+    if (_super::get_is_released()) return 1;
  
     //release the private implementation
     SAFE_RELEASE(this->_pimp);
@@ -777,7 +777,7 @@ w_shader* w_shader::get_shader_from_shared(_In_z_ const std::string& pName)
 
 ULONG w_shader::release_shared_shaders()
 {
-    if (!_shared.size()) return 0;
+    if (!_shared.size()) return 1;
 
     for (auto _pair : _shared)
     {

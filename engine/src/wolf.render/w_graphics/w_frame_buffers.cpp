@@ -77,7 +77,7 @@ namespace wolf
                 }
                 this->_gDevice = nullptr;
                 
-                return 1;
+                return 0;
             }
             
             
@@ -141,7 +141,7 @@ HRESULT w_frame_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGD
 
 ULONG w_frame_buffers::release()
 {
-	if (_super::get_is_released()) return 0;
+	if (_super::get_is_released()) return 1;
     
     SAFE_RELEASE(this->_pimp);
     

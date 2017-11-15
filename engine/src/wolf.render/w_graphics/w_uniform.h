@@ -176,7 +176,7 @@ namespace wolf
 			//Release resources
 			ULONG release()
 			{
-				if (this->get_is_released()) return 0;
+				if (this->get_is_released()) return 1;
 				
                 this->_buffer.release();
                 this->_staging_buffer.release();

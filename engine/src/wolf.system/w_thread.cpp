@@ -148,7 +148,7 @@ namespace wolf
 
             ULONG release()
             {
-                if (this->_is_released) return 0;
+                if (this->_is_released) return 1;
 
 #ifdef __WIN32
                 EnterCriticalSection(&this->_critical_section);
@@ -183,7 +183,7 @@ namespace wolf
                     logger.write("thread with id: " + std::to_string(_thread_id) + " destroyed");
                 }
 #endif
-                return 1;
+                return 0;
             }
 
 #ifdef __WIN32

@@ -123,7 +123,7 @@ void w_game::exit(_In_ const int pExitCode)
 
 ULONG w_game::release()
 {
-    if (_super::get_is_released()) return 0;
+    if (_super::get_is_released()) return 1;
 	
     this->exiting = true;
 

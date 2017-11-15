@@ -284,7 +284,7 @@ namespace wolf
 
                 this->_gDevice = nullptr;
 
-                return 1;
+                return 0;
             }
 
 #pragma region Getters
@@ -526,7 +526,7 @@ void w_pipeline::bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescrip
 
 ULONG w_pipeline::release()
 {
-	if (_super::get_is_released()) return 0;
+	if (_super::get_is_released()) return 1;
     
     SAFE_RELEASE(this->_pimp);
     

@@ -396,7 +396,7 @@ void scene::on_device_lost()
 
 ULONG scene::release()
 {
-	if (this->get_is_released()) return 0;
+    if (this->get_is_released()) return 1;
 
 	this->_draw_fence.release();
 	this->_draw_semaphore.release();

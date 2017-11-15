@@ -30,7 +30,7 @@ namespace wolf
 
 				unsigned long release()
 				{
-					if (this->_is_released) return 0;
+					if (this->_is_released) return 1;
 
 					this->semantics.clear();
 					this->vertices_counts.clear();
@@ -38,7 +38,7 @@ namespace wolf
 
 					this->_is_released = true;
 
-					return 1;
+					return 0;
 				}
 
 			private:

@@ -378,7 +378,7 @@ void scene::on_device_lost()
 
 ULONG scene::release()
 {
-	if (this->get_is_released()) return 0;
+    if (this->get_is_released()) return 1;
 
 	this->_draw_fence.release();
 	this->_draw_semaphore.release();
@@ -392,6 +392,13 @@ ULONG scene::release()
 
 	this->_mesh.release();
     this->_texture.release();
+
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //The following codes have been added for this project
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    this->_u0.release();
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	return w_game::release();
 }

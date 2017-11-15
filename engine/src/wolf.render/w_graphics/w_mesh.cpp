@@ -514,7 +514,7 @@ HRESULT w_mesh::draw(_In_ const VkCommandBuffer& pCommandBuffer,
 
 ULONG w_mesh::release()
 {
-    if (this->get_is_released()) return 0;
+    if (this->get_is_released()) return 1;
     
     SAFE_RELEASE(this->_pimp);
    

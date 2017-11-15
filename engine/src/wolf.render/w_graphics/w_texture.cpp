@@ -5,6 +5,8 @@
 #include "w_buffer.h"
 #include "w_command_buffers.h"
 
+#include <gli/gli.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -20,6 +22,7 @@ namespace wolf
                 _gDevice(nullptr),
                 _width(0),
                 _height(0),
+                _layer_count(0),
                 _image(0),
                 _view(0),
                 _sampler(0),
@@ -72,106 +75,117 @@ namespace wolf
                 std::string _str = wolf::system::convert::wstring_to_string(_path);
 #endif
                 
+                if (S_FALSE == system::io::get_is_file(_str.c_str()))
+                {
+                    wstring msg = L"could not find the texture file: ";
+                    V(S_FALSE, msg + _path, this->_name, 3);
+                    return S_FALSE;
+                }
+
+                std::string _g_path;
+
+#if defined(__WIN32) || defined(__UWP)
+                _g_path = wolf::system::convert::to_utf8(_str).c_str();
+#else
+                _g_path = _str;
+#endif
+
                 //lower it
                 std::transform(_ext.begin(), _ext.end(), _ext.begin(), ::tolower);
 
-                if (_ext == L".dds")
+                if (_ext == L".dds" || _ext == L".ktx")
                 {
-                    std::vector<uint8_t> data;
-                    int _file_status = -1;
-                    
-#if defined(__WIN32) || defined(__UWP)
-                    system::io::read_binary_fileW(_str.c_str(), data, _file_status);
-#else
-                    system::io::read_binary_file(_str.c_str(), data, _file_status);
-#endif
-                    if (_file_status != 1)
-                    {
-                        std::wstring _msg = L"";
-                        
-                        if (_file_status == -1)
-                        {
-                            _msg = L"Could not find the texture file: ";
-                        }
-                        else
-                        {
-                            _msg = L"Texture file is corrupted: ";
-                        }
-                        V(S_FALSE, _msg + _path, this->_name, 3);
+                    gli::texture _gli_tex;
+#if defined(__ANDROID__)
+                    // Textures are stored inside the apk on Android (compressed)
+                    // So they need to be loaded via the asset manager
+                    /*AAsset* asset = AAssetManager_open(androidApp->activity->assetManager, filename.c_str(), AASSET_MODE_STREAMING);
+                    assert(asset);
+                    size_t size = AAsset_getLength(asset);
+                    assert(size > 0);
 
-                        return S_FALSE;
+                    void *textureData = malloc(size);
+                    AAsset_read(asset, textureData, size);
+                    AAsset_close(asset);
+
+                    _gli_texture = gli::load((const char*)textureData, size);
+*/
+#else
+                    //we re loading file with gli header
+                    _gli_tex = gli::load(_g_path.c_str());
+#endif
+                    if (_gli_tex.size())
+                    {
+                        gli::texture2d_array _gli_tex_2D_array(_gli_tex);
+
+                        this->_width = _gli_tex_2D_array.extent().x;
+                        this->_height = _gli_tex_2D_array.extent().y;
+                        this->_layer_count = _gli_tex_2D_array.layers();
                     }
 
-                    logger.error(L"DDS format not supported on this platform for following file: " + _path);
-                    return S_FALSE;
+                    _g_path.clear();
                 }
                 else if (_ext == L".jpg" || _ext == L".bmp" || _ext == L".png" || _ext == L".psd" || _ext == L".tga")
                 {
-                    if (S_FALSE == system::io::get_is_file(_str.c_str()))
+                    //we re loading file with stbi header
+
+                    int __width, __height, __comp;
+
+                    uint8_t* _rgba = stbi_load(_g_path.c_str(), &__width, &__height, &__comp, STBI_rgb_alpha);
+                    _g_path.clear();
+                    if (_rgba)
                     {
-                        wstring msg = L"could not find the texture file: ";
-                        V(S_FALSE, msg + _path, this->_name, 3);
-                        
-                        return S_FALSE;
-                    }
-                    else
-                    {
-                        int __width, __height, __comp;
-                        uint8_t* _rgba = stbi_load(_str.c_str(), &__width, &__height, &__comp, STBI_rgb_alpha);
-                        if (_rgba)
+                        this->_width = __width;
+                        this->_height = __height;
+                        this->_layer_count = 1;
+
+                        if (this->_width == 0 || this->_height == 0)
                         {
-                            this->_width = __width;
-                            this->_height = __height;
-
-                            if (this->_width == 0 || this->_height == 0)
-                            {
-                                wstring msg = L"Width or Height of texture file is zero: ";
-                                V(S_FALSE, msg + _path, this->_name, 3);
-                                return S_FALSE;
-                            }
-
-                            auto _hr = _create_image();
-                            if (_hr == S_FALSE) return S_FALSE;
-
-                            _hr = _allocate_memory();
-                            if (_hr == S_FALSE) return S_FALSE;
-
-                            //bind to memory
-                            if (vkBindImageMemory(this->_gDevice->vk_device,
-                                this->_image,
-                                this->_memory,
-                                0))
-                            {
-                                V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
-                                    " ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
-                                return S_FALSE;
-                            }
-
-                            _hr = _create_image_view();
-                            if (_hr == S_FALSE) return S_FALSE;
-
-                            _hr = _create_sampler();
-                            if (_hr == S_FALSE) return S_FALSE;
-
-                            auto _size = this->_width * this->_height * 4;
-                            std::vector<uint8_t> _data(_rgba, _rgba + _size);
-
-                            _hr = copy_data_to_texture_2D(_data.data());
-                            if (_hr == S_FALSE) return S_FALSE;
-
-                            stbi_image_free(_rgba);
-
-                            this->_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-                            this->_image_info.sampler = this->_sampler;
-                            this->_image_info.imageView = this->_view;
-
-                        }
-                        else
-                        {
-                            wstring msg = L"texture file is corrupted: ";
+                            wstring msg = L"Width or Height of texture file is zero: ";
                             V(S_FALSE, msg + _path, this->_name, 3);
                             return S_FALSE;
                         }
+
+                        auto _hr = _create_image();
+                        if (_hr == S_FALSE) return S_FALSE;
+
+                        _hr = _allocate_memory();
+                        if (_hr == S_FALSE) return S_FALSE;
+
+                        //bind to memory
+                        if (vkBindImageMemory(this->_gDevice->vk_device,
+                            this->_image,
+                            this->_memory,
+                            0))
+                        {
+                            V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
+                                " ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
+                            return S_FALSE;
+                        }
+
+                        _hr = _create_image_view();
+                        if (_hr == S_FALSE) return S_FALSE;
+
+                        _hr = _create_sampler();
+                        if (_hr == S_FALSE) return S_FALSE;
+
+                        auto _size = this->_width * this->_height * 4;
+                        std::vector<uint8_t> _data(_rgba, _rgba + _size);
+
+                        _hr = copy_data_to_texture_2D(_data.data());
+                        if (_hr == S_FALSE) return S_FALSE;
+
+                        stbi_image_free(_rgba);
+
+                        this->_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+                        this->_image_info.sampler = this->_sampler;
+                        this->_image_info.imageView = this->_view;
+                    }
+                    else
+                    {
+                        wstring msg = L"texture file is corrupted: ";
+                        V(S_FALSE, msg + _path, this->_name, 3);
+                        return S_FALSE;
                     }
                 }
                 else
@@ -335,17 +349,17 @@ namespace wolf
                     this->_image_view_type,                               // ViewType
                     this->_format,                                        // Format
                     {                                                     // Components
-                        VK_COMPONENT_SWIZZLE_IDENTITY,                        // VkComponentSwizzle         r
-                        VK_COMPONENT_SWIZZLE_IDENTITY,                        // VkComponentSwizzle         g
-                        VK_COMPONENT_SWIZZLE_IDENTITY,                        // VkComponentSwizzle         b
-                        VK_COMPONENT_SWIZZLE_IDENTITY                         // VkComponentSwizzle         a
+                        VK_COMPONENT_SWIZZLE_R,                                 // VkComponentSwizzle         r
+                        VK_COMPONENT_SWIZZLE_G,                                 // VkComponentSwizzle         g
+                        VK_COMPONENT_SWIZZLE_B,                                 // VkComponentSwizzle         b
+                        VK_COMPONENT_SWIZZLE_A                                  // VkComponentSwizzle         a
                     },
                     {                                                     // SubresourceRange
-                        VK_IMAGE_ASPECT_COLOR_BIT,                            // VkImageAspectFlags         aspectMask
-                        0,                                                    // uint32_t                   baseMipLevel
-                        1,                                                    // uint32_t                   levelCount
-                        0,                                                    // uint32_t                   baseArrayLayer
-                        1                                                     // uint32_t                   layerCount
+                        VK_IMAGE_ASPECT_COLOR_BIT,                              // VkImageAspectFlags         aspectMask
+                        0,                                                      // uint32_t                   baseMipLevel
+                        1,                                                      // uint32_t                   levelCount
+                        0,                                                      // uint32_t                   baseArrayLayer
+                        this->_layer_count                                      // uint32_t                   layerCount
                     }
                 };
                 
@@ -783,7 +797,7 @@ namespace wolf
                 this->_staging_buffer_memory_pointer = nullptr;
                 this->_gDevice = nullptr;
                 
-                return 1;
+                return 0;
             }
                  
 #pragma region Getters
@@ -841,6 +855,7 @@ namespace wolf
             std::shared_ptr<w_graphics_device>              _gDevice;
             uint32_t                                        _width;
             uint32_t                                        _height;
+            uint32_t                                        _layer_count;
             VkMemoryPropertyFlags                           _memory_property_flags;
             bool                                            _is_staging;
             void*                                           _staging_buffer_memory_pointer;
@@ -1048,7 +1063,7 @@ void w_texture::write_bitmap_to_file(
 
 ULONG w_texture::release()
 {
-	if (_super::get_is_released()) return 0;
+	if (_super::get_is_released()) return 1;
     
     SAFE_RELEASE(this->_pimp);
     
@@ -1057,7 +1072,7 @@ ULONG w_texture::release()
 
 ULONG w_texture::release_shared_textures()
 {
-    if (!_shared.size()) return 0;
+    if (!_shared.size()) return 1;
 
     default_texture = nullptr;
     for (auto _pair : _shared)
@@ -1066,7 +1081,7 @@ ULONG w_texture::release_shared_textures()
     }
     _shared.clear();
 
-    return 1;
+    return 0;
 }
 
 #pragma region Getters

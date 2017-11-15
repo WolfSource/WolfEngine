@@ -614,7 +614,7 @@ namespace wolf
 #endif
                 this->_gDevice = nullptr;
 
-                return 1;
+                return 0;
             }
             
 #pragma region Getters
@@ -722,11 +722,11 @@ void w_imgui::render(_In_ VkCommandBuffer pCommandBuffer)
 
 ULONG w_imgui::release()
 {
-    if (_is_released) return 0;
+    if (_is_released) return 1;
 
     SAFE_RELEASE(w_imgui::_pimp);
 
-    return 1;
+    return 0;
 }
 
 #pragma region Getters

@@ -1,4 +1,3 @@
-/// version: https://github.com/g-truc/glm/releases/tag/0.9.8.4
 /// @ref core
 /// @file glm/glm.hpp
 ///

@@ -1577,7 +1577,7 @@ void w_ffmpeg::_update_time(double pClock)
 
 ULONG w_ffmpeg::release()
 {
-	if (this->isReleased) return 0;
+	if (this->isReleased) return 1;
 
 	this->fullPath.clear();
 
@@ -1646,7 +1646,7 @@ ULONG w_ffmpeg::release()
 	}
 
 	this->isReleased = true;
-	return 1;
+	return 0;
 }
 
 void w_ffmpeg::release_MF()

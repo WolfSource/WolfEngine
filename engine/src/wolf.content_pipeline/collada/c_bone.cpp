@@ -180,7 +180,7 @@ glm::mat4x4 c_bone::calaculate_blended_matrices(float pTime, c_bone* pBone, floa
 
 ULONG c_bone::release()
 {
-	if (this->get_is_released()) return 0;
+	if (this->get_is_released()) return 1;
 	
 	//release children
 	std::for_each(children.begin(), children.end(), [](c_bone* pValue)

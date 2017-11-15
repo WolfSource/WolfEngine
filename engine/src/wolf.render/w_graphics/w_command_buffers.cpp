@@ -251,7 +251,7 @@ namespace wolf
                 this->_order = 0;
                 this->_gDevice = nullptr;
                 
-                return 1;
+                return 0;
             }
             
 #pragma region Getters

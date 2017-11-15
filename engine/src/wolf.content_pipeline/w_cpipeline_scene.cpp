@@ -70,7 +70,7 @@ ULONG w_cpipeline_scene::release()
     this->_boundaries.clear();
     this->_name.clear();
     this->_cameras.clear();
-    return 1;
+    return 0;
 }
 
 #pragma region Getters

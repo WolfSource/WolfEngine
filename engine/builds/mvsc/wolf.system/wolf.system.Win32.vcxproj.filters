@@ -612,6 +612,166 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp">
       <Filter>glm</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\stb_image.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\gli\clear.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\comparison.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\convert.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\copy.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\duplicate.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\dx.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\format.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\generate_mipmaps.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\gl.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\gli.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\image.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\levels.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\load.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\load_dds.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\load_kmg.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\load_ktx.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\make_texture.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\reduce.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler_cube.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler_cube_array.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler1d.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler1d_array.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler2d.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler2d_array.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\sampler3d.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\save.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\save_dds.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\save_kmg.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\save_ktx.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\target.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\texture.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\texture_cube.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\texture_cube_array.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\texture1d.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\texture1d_array.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\texture2d.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\texture2d_array.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\texture3d.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\transform.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\type.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\view.hpp">
+      <Filter>gli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\clear.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\convert_func.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\coord.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\file.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\filter.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\filter_compute.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\flip.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\mipmaps_compute.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\storage.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\storage_linear.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\gli\core\workaround.hpp">
+      <Filter>gli\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -643,6 +803,12 @@
     </Filter>
     <Filter Include="glm\simd">
       <UniqueIdentifier>{c0867f4b-a878-4b5f-a942-be3abd44a9b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gli">
+      <UniqueIdentifier>{8dee5fdf-77d6-4524-b46f-1878c7bbf82a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gli\core">
+      <UniqueIdentifier>{b1fa6346-6a07-4efb-831a-5f80393dce33}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -988,5 +1154,151 @@
     <None Include="..\..\..\src\wolf.system\glm\gtx\wrap.inl">
       <Filter>glm\gtx</Filter>
     </None>
+    <None Include="..\..\..\src\wolf.system\gli\manual.md">
+      <Filter>gli</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\clear.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\comparison.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\convert.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\copy.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\duplicate.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\dx.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\file.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\filter.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\flip.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\format.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\generate_mipmaps.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\gl.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\image.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\levels.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\load.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\load_dds.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\load_kmg.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\load_ktx.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\make_texture.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\reduce.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\sampler.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\sampler_cube.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\sampler_cube_array.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\sampler1d.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\sampler1d_array.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\sampler2d.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\sampler2d_array.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\sampler3d.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\save.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\save_dds.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\save_kmg.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\save_ktx.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\storage.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\storage_linear.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\texture.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\texture_cube.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\texture_cube_array.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\texture1d.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\texture1d_array.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\texture2d.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\texture2d_array.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\texture3d.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\transform.inl">
+      <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\gli\core\view.inl">
+      <Filter>gli\core</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\src\wolf.system\glm\copying.txt">
+      <Filter>glm</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\glm\version.txt">
+      <Filter>glm</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\gli\version.txt">
+      <Filter>gli</Filter>
+    </Text>
   </ItemGroup>
 </Project>

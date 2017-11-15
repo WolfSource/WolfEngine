@@ -407,7 +407,7 @@ void w_window::close()
 
 ULONG w_window::release()
 {
-	if (get_is_released()) return 0;
+	if (get_is_released()) return 1;
 
 #ifdef __WIN32	
         

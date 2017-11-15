@@ -182,7 +182,7 @@ namespace wolf
                 }
                 this->_gDevice = nullptr;
 
-                return 1;
+                return 0;
             }
 
 
@@ -298,7 +298,7 @@ void w_render_pass::end(_In_ VkCommandBuffer& pCommandBuffer)
 
 ULONG w_render_pass::release()
 {
-	if (_super::get_is_released()) return 0;
+	if (_super::get_is_released()) return 1;
     
     SAFE_RELEASE(this->_pimp);
     

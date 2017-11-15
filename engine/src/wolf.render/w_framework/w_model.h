@@ -322,7 +322,7 @@
 //
 //            virtual ULONG release() override
 //            {
-//                if (_super::get_is_released()) return 0;
+//                if (_super::get_is_released()) return 1;
 //
 //                SAFE_RELEASE(this->_cp_model);
 //
