@@ -231,8 +231,7 @@ HRESULT w_graphics_device::submit(_In_ const std::vector<VkCommandBuffer>&  pCom
           "submiting queue for graphics device" + this->device_name + " ID:" + std::to_string(this->device_id),
           _trace_info,
           3,
-          false,
-          true);
+          false);
         return S_FALSE;
     }
     
@@ -440,8 +439,8 @@ namespace wolf
 			{
 			}
 
-			void enumerate_devices(_Inout_  std::vector<std::shared_ptr<w_graphics_device>>& pGraphicsDevices, 
-                _In_ wolf::system::w_signal<void(w_graphics_device_manager::w_device_features_extensions&)>* pOnDeviceFeaturesFetched)
+			void enumerate_devices(_Inout_  std::vector<std::shared_ptr<w_graphics_device>>& pGraphicsDevices,
+				_In_ wolf::system::w_signal<void(w_graphics_device_manager::w_device_features_extensions&)>* pOnDeviceFeaturesFetched)
 			{
 #ifdef __DX12__
 
@@ -452,400 +451,403 @@ namespace wolf
 
 				UINT _dxgi_factory_flags = 0;
 #ifdef _DEBUG
-                if (this->_config.debug_gpu)
-                {
-                    /*
-                        Enable the debug layer (requires the Graphics Tools "optional feature").
-                        NOTE: Enabling the debug layer after device creation will invalidate the active device.
-                    */
-                    ComPtr<ID3D12Debug> _debug_controller;
-                    if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&_debug_controller))))
-                    {
-                        _debug_controller->EnableDebugLayer();
-                        //Enable additional debug layers.
-                        _dxgi_factory_flags |= DXGI_CREATE_FACTORY_DEBUG;
-                    }
-                    else
-                    {
-                        logger.warning(L"Could not enable the debug layer for DirectX 12");
-                    }
-                }
+				if (this->_config.debug_gpu)
+				{
+					/*
+						Enable the debug layer (requires the Graphics Tools "optional feature").
+						NOTE: Enabling the debug layer after device creation will invalidate the active device.
+					*/
+					ComPtr<ID3D12Debug> _debug_controller;
+					if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&_debug_controller))))
+					{
+						_debug_controller->EnableDebugLayer();
+						//Enable additional debug layers.
+						_dxgi_factory_flags |= DXGI_CREATE_FACTORY_DEBUG;
+					}
+					else
+					{
+						logger.warning(L"Could not enable the debug layer for DirectX 12");
+					}
+				}
 #endif
 
-                _hr = CreateDXGIFactory2(_dxgi_factory_flags, IID_PPV_ARGS(&w_graphics_device::dx_dxgi_factory));
-                if (FAILED(_hr))
-                {
-                    logger.error(L"error on getting dxgi factory");
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
+				_hr = CreateDXGIFactory2(_dxgi_factory_flags, IID_PPV_ARGS(&w_graphics_device::dx_dxgi_factory));
+				if (FAILED(_hr))
+				{
+					logger.error(L"error on getting dxgi factory");
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 
-                const D3D_FEATURE_LEVEL _feature_levels[] =
-                {
-                    D3D_FEATURE_LEVEL_12_1,
-                    D3D_FEATURE_LEVEL_12_0,
-                    D3D_FEATURE_LEVEL_11_1,
-                    D3D_FEATURE_LEVEL_11_0,
-                    D3D_FEATURE_LEVEL_10_1,
-                    D3D_FEATURE_LEVEL_10_0,
-                    D3D_FEATURE_LEVEL_9_3,
-                    D3D_FEATURE_LEVEL_9_2,
-                    D3D_FEATURE_LEVEL_9_1
-                };
+				const D3D_FEATURE_LEVEL _feature_levels[] =
+				{
+					D3D_FEATURE_LEVEL_12_1,
+					D3D_FEATURE_LEVEL_12_0,
+					D3D_FEATURE_LEVEL_11_1,
+					D3D_FEATURE_LEVEL_11_0,
+					D3D_FEATURE_LEVEL_10_1,
+					D3D_FEATURE_LEVEL_10_0,
+					D3D_FEATURE_LEVEL_9_3,
+					D3D_FEATURE_LEVEL_9_2,
+					D3D_FEATURE_LEVEL_9_1
+				};
 
-                const size_t _features_len = ARRAYSIZE(_feature_levels);
-                size_t _feature_level_start_index = 0;
+				const size_t _features_len = ARRAYSIZE(_feature_levels);
+				size_t _feature_level_start_index = 0;
 
-                //create wrap mode device or hardware device?
-                if (this->_config.use_wrap_mode)
-                {
-                    if (this->_config.wrap_mode_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
-                    {
-                        this->_config.wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-                        logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Wrap mode feature level set to D3D_FEATURE_LEVEL_11_0.");
-                    }
-                    for (_feature_level_start_index = 0; _feature_level_start_index < _features_len; ++_feature_level_start_index)
-                    {
-                        if (_feature_levels[_feature_level_start_index] == this->_config.wrap_mode_feature_level)
-                        {
-                            break;
-                        }
-                    }
+				//create wrap mode device or hardware device?
+				if (this->_config.use_wrap_mode)
+				{
+					if (this->_config.wrap_mode_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
+					{
+						this->_config.wrap_mode_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+						logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Wrap mode feature level set to D3D_FEATURE_LEVEL_11_0.");
+					}
+					for (_feature_level_start_index = 0; _feature_level_start_index < _features_len; ++_feature_level_start_index)
+					{
+						if (_feature_levels[_feature_level_start_index] == this->_config.wrap_mode_feature_level)
+						{
+							break;
+						}
+					}
 
-                    auto _gDevice = std::make_shared<w_graphics_device>();
-                    _gDevice->dx_device_removed = false;
-                    _gDevice->dx_is_wrap_device = true;
+					auto _gDevice = std::make_shared<w_graphics_device>();
+					_gDevice->dx_device_removed = false;
+					_gDevice->dx_is_wrap_device = true;
 
-                    ComPtr<IDXGIAdapter> _warp_adapter;
-                    _hr = w_graphics_device::dx_dxgi_factory->EnumWarpAdapter(IID_PPV_ARGS(&_warp_adapter));
-                    if (FAILED(_hr))
-                    {
-                        logger.error(L"error on getting wrap adaptor");
-                        release();
-                        std::exit(EXIT_FAILURE);
-                    }
+					ComPtr<IDXGIAdapter> _warp_adapter;
+					_hr = w_graphics_device::dx_dxgi_factory->EnumWarpAdapter(IID_PPV_ARGS(&_warp_adapter));
+					if (FAILED(_hr))
+					{
+						logger.error(L"error on getting wrap adaptor");
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-                    bool _device_created = false;
-                    for (size_t i = _feature_level_start_index; i < _features_len; i++)
-                    {
-                        _hr = D3D12CreateDevice(
-                            _warp_adapter.Get(),
-                            _feature_levels[i],
-                            IID_PPV_ARGS(&_gDevice->dx_device));
-                        if (FAILED(_hr))
-                        {
-                            _msg += L"creating wrap device with feature level: " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
-                            logger.error(_msg);
-                        }
-                        else
-                        {
-                            this->_config.wrap_mode_feature_level = _feature_levels[i];
-                            _device_created = true;
-                            break;
-                        }
-                    }
+					bool _device_created = false;
+					for (size_t i = _feature_level_start_index; i < _features_len; i++)
+					{
+						_hr = D3D12CreateDevice(
+							_warp_adapter.Get(),
+							_feature_levels[i],
+							IID_PPV_ARGS(&_gDevice->dx_device));
+						if (FAILED(_hr))
+						{
+							_msg += L"creating wrap device with feature level: " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
+							logger.error(_msg);
+						}
+						else
+						{
+							this->_config.wrap_mode_feature_level = _feature_levels[i];
+							_device_created = true;
+							break;
+						}
+					}
 
-                    if (!_device_created)
-                    {
-                        logger.error(L"no device was created");
-                        release();
-                        std::exit(EXIT_FAILURE);
-                    }
+					if (!_device_created)
+					{
+						logger.error(L"no device was created");
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
-                    _gDevice->device_name = "DirectX Wrap mode with " + DirectX::GetFeatureLevelStr(this->_config.wrap_mode_feature_level);
-                    _gDevice->device_id = 0;
-                    _gDevice->device_vendor_id = 0;
-                    _msg += L"\r\n\t\t\t\t\tDirectX Wrap mode with " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
+					_gDevice->device_name = "DirectX Wrap mode with " + DirectX::GetFeatureLevelStr(this->_config.wrap_mode_feature_level);
+					_gDevice->device_id = 0;
+					_gDevice->device_vendor_id = 0;
+					_msg += L"\r\n\t\t\t\t\tDirectX Wrap mode with " + DirectX::GetFeatureLevelStrW(this->_config.wrap_mode_feature_level);
 
 
-                    //add the wrap device graphics devices list
-                    pGraphicsDevices.push_back(_gDevice);
+					//add the wrap device graphics devices list
+					pGraphicsDevices.push_back(_gDevice);
 
-                    //create first presentation windows for wrap graphics device
-                    auto _win = this->_windows_info.find(0);
-                    if (_win != this->_windows_info.end())
-                    {
-                        for (size_t j = 0; j < _win->second.size(); ++j)
-                        {
-                            auto _window = _win->second[j];
+					//create first presentation windows for wrap graphics device
+					auto _win = this->_windows_info.find(0);
+					if (_win != this->_windows_info.end())
+					{
+						for (size_t j = 0; j < _win->second.size(); ++j)
+						{
+							auto _window = _win->second[j];
 
-                            w_output_presentation_window _out_window;
-                            _out_window.index = static_cast<int>(j);
-                            _out_window.dx_swap_chain_selected_format = (DXGI_FORMAT)_window.swap_chain_format;
+							w_output_presentation_window _out_window;
+							_out_window.index = static_cast<int>(j);
+							_out_window.dx_swap_chain_selected_format = (DXGI_FORMAT)_window.swap_chain_format;
 
 #if defined(__WIN32) || ( defined(__linux) && !defined(__ANDROID) ) || defined(__APPLE__)
-                            _out_window.width = _window.width;
-                            _out_window.height = _window.height;
-                            _out_window.aspect_ratio = (float)_window.width / (float)_window.height;
-                            _out_window.v_sync = _window.v_sync_enable;
-                            _out_window.is_full_screen = _window.is_full_screen;
+							_out_window.width = _window.width;
+							_out_window.height = _window.height;
+							_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
+							_out_window.v_sync = _window.v_sync_enable;
+							_out_window.is_full_screen = _window.is_full_screen;
 #ifdef __WIN32
-                            _out_window.hwnd = _window.hwnd;
-                            _out_window.hInstance = _window.hInstance;
+							_out_window.hwnd = _window.hwnd;
+							_out_window.hInstance = _window.hInstance;
 #endif
 
 #elif defined(__UWP)
-                            _out_window.window = _window.window;
-                            _out_window.window_size = _window.window_size;
-                            _out_window.window_current_orientation = _window.window_current_orientation;
-                            _out_window.window_native_orientation = _window.window_native_orientation;
-                            _out_window.window_dpi = _window.window_dpi;
-                            _out_window.support_high_resolutions = _window.support_high_resolutions;
-                            _out_window.aspect_ratio = _window.window_size.Width / _window.window_size.Height;
+							_out_window.window = _window.window;
+							_out_window.window_size = _window.window_size;
+							_out_window.window_current_orientation = _window.window_current_orientation;
+							_out_window.window_native_orientation = _window.window_native_orientation;
+							_out_window.window_dpi = _window.window_dpi;
+							_out_window.support_high_resolutions = _window.support_high_resolutions;
+							_out_window.aspect_ratio = _window.window_size.Width / _window.window_size.Height;
 #endif
 
-                            _gDevice->output_presentation_windows.push_back(_out_window);
+							_gDevice->output_presentation_windows.push_back(_out_window);
 
-                            create_or_resize_swap_chain(_gDevice, j);
-                            _create_depth_stencil_buffer(_gDevice, j);
-                            _create_fences(_gDevice, j);
+							create_or_resize_swap_chain(_gDevice, j);
+							_create_depth_stencil_buffer(_gDevice, j);
+							_create_fences(_gDevice, j);
 
-                        }
-                    }
-                }
-                else
-                {
-                    //looking for hardware GPUs 
-                    _msg += L"\r\n\t\t\t\t\tGPU(s) founded:\r\n";
+						}
+					}
+				}
+				else
+				{
+					//looking for hardware GPUs 
+					_msg += L"\r\n\t\t\t\t\tGPU(s) founded:\r\n";
 
-                    //Iterate for all adaptors
-                    ComPtr<IDXGIAdapter1> _adapter;
-                    for (int i = 0; w_graphics_device::dx_dxgi_factory->EnumAdapters1(i, &_adapter) != DXGI_ERROR_NOT_FOUND; ++i)
-                    {
-                        //if the feature level not specified in configs, the default feature level is D3D_FEATURE_LEVEL_11_0
-                        auto _selected_feature_level = i >= this->_config.hardware_feature_levels.size() ? D3D_FEATURE_LEVEL_11_0 : this->_config.hardware_feature_levels[i];
-                        if (_selected_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
-                        {
-                            _selected_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
-                            logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Hardware feature level for graphics device set to D3D_FEATURE_LEVEL_11_0.");
-                        }
-                        for (_feature_level_start_index = 0; _feature_level_start_index < _features_len; ++_feature_level_start_index)
-                        {
-                            if (_feature_levels[_feature_level_start_index] == _selected_feature_level)
-                            {
-                                break;
-                            }
-                        }
+					//Iterate for all adaptors
+					ComPtr<IDXGIAdapter1> _adapter;
+					for (int i = 0; w_graphics_device::dx_dxgi_factory->EnumAdapters1(i, &_adapter) != DXGI_ERROR_NOT_FOUND; ++i)
+					{
+						//if the feature level not specified in configs, the default feature level is D3D_FEATURE_LEVEL_11_0
+						auto _selected_feature_level = i >= this->_config.hardware_feature_levels.size() ? D3D_FEATURE_LEVEL_11_0 : this->_config.hardware_feature_levels[i];
+						if (_selected_feature_level < D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0)
+						{
+							_selected_feature_level = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0;
+							logger.warning("Minimum feature level must be at least D3D_FEATURE_LEVEL_11_0 for a D3D12 device. Hardware feature level for graphics device set to D3D_FEATURE_LEVEL_11_0.");
+						}
+						for (_feature_level_start_index = 0; _feature_level_start_index < _features_len; ++_feature_level_start_index)
+						{
+							if (_feature_levels[_feature_level_start_index] == _selected_feature_level)
+							{
+								break;
+							}
+						}
 
-                        DXGI_ADAPTER_DESC1 _adapter_desc = {};
-                        auto _hr = _adapter->GetDesc1(&_adapter_desc);
-                        if (_hr != S_OK)
-                        {
-                            logger.write(_msg);
-                            _msg.clear();
-                            _msg = L"Could not get adaptor.";
-                            logger.error(_msg);
-                            release();
-                            std::exit(EXIT_FAILURE);
-                        }
+						DXGI_ADAPTER_DESC1 _adapter_desc = {};
+						auto _hr = _adapter->GetDesc1(&_adapter_desc);
+						if (_hr != S_OK)
+						{
+							logger.write(_msg);
+							_msg.clear();
+							_msg = L"Could not get adaptor.";
+							logger.error(_msg);
+							release();
+							std::exit(EXIT_FAILURE);
+						}
 
-                        auto _device_name = std::wstring(_adapter_desc.Description);
-                        auto _device_id = _adapter_desc.DeviceId;
-                        auto _device_vendor_id = _adapter_desc.VendorId;
+						auto _device_name = std::wstring(_adapter_desc.Description);
+						auto _device_id = _adapter_desc.DeviceId;
+						auto _device_vendor_id = _adapter_desc.VendorId;
 
-                        _msg += L"\t\t\t\t\t\tDevice Name: " + _device_name + L"\r\n";
-                        _msg += L"\t\t\t\t\t\tDevice ID: " + std::to_wstring(_device_id) + L"\r\n";
-                        _msg += L"\t\t\t\t\t\tDevice Vendor: " + std::to_wstring(_device_vendor_id) + L"\r\n";
-                        _msg += L"\t\t\t\t\t\tDevice Subsystem ID: " + std::to_wstring(_adapter_desc.SubSysId) + L"\r\n";
-                        _msg += L"\t\t\t\t\t\tDevice Revision: " + std::to_wstring(_adapter_desc.Revision) + L"\r\n";
-                        _msg += L"\t\t\t\t\t\tDevice Dedicated Video Memory: " + std::to_wstring(_adapter_desc.DedicatedVideoMemory) + L"\r\n";
-                        _msg += L"\t\t\t\t\t\tDevice Dedicated System Memory: " + std::to_wstring(_adapter_desc.DedicatedSystemMemory) + L"\r\n";
-                        _msg += L"\t\t\t\t\t\tDevice Shared System Memory: " + std::to_wstring(_adapter_desc.SharedSystemMemory) + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice Name: " + _device_name + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice ID: " + std::to_wstring(_device_id) + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice Vendor: " + std::to_wstring(_device_vendor_id) + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice Subsystem ID: " + std::to_wstring(_adapter_desc.SubSysId) + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice Revision: " + std::to_wstring(_adapter_desc.Revision) + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice Dedicated Video Memory: " + std::to_wstring(_adapter_desc.DedicatedVideoMemory) + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice Dedicated System Memory: " + std::to_wstring(_adapter_desc.DedicatedSystemMemory) + L"\r\n";
+						_msg += L"\t\t\t\t\t\tDevice Shared System Memory: " + std::to_wstring(_adapter_desc.SharedSystemMemory) + L"\r\n";
 
-                        /*
-                            Acording to MSDN, starting with Windows 8, an adapter called the "Microsoft Basic Render Driver"
-                            is always present.This adapter has a VendorId of 0x1414 and a DeviceID of 0x8c.
-                            Wolf.Engine will skip it. Instead you can create w_graphics_device in wrap mode
-                        */
-                        if (_adapter_desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-                        {
-                            continue;
-                        }
+						/*
+							Acording to MSDN, starting with Windows 8, an adapter called the "Microsoft Basic Render Driver"
+							is always present.This adapter has a VendorId of 0x1414 and a DeviceID of 0x8c.
+							Wolf.Engine will skip it. Instead you can create w_graphics_device in wrap mode
+						*/
+						if (_adapter_desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+						{
+							continue;
+						}
 
-                        bool _device_created = false;
-                        for (size_t _index = _feature_level_start_index; _index < _features_len; ++_index)
-                        {
-                            //Check to see if the adapter supports Direct3D 12, if not then skip it
-                            if (FAILED(D3D12CreateDevice(_adapter.Get(), _feature_levels[_index], _uuidof(ID3D12Device), nullptr)))
-                            {
-                                _msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_feature_levels[_index]) +
-                                    L" not supported for " + _device_name + L"\r\n";
-                            }
-                            else
-                            {
-                                _selected_feature_level = _feature_levels[_index];
-                                _device_created = true;
-                                break;
-                            }
-                        }
+						bool _device_created = false;
+						for (size_t _index = _feature_level_start_index; _index < _features_len; ++_index)
+						{
+							//Check to see if the adapter supports Direct3D 12, if not then skip it
+							if (FAILED(D3D12CreateDevice(_adapter.Get(), _feature_levels[_index], _uuidof(ID3D12Device), nullptr)))
+							{
+								_msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_feature_levels[_index]) +
+									L" not supported for " + _device_name + L"\r\n";
+							}
+							else
+							{
+								_selected_feature_level = _feature_levels[_index];
+								_device_created = true;
+								break;
+							}
+						}
 
-                        if (!_device_created)
-                        {
-                            continue;
-                        }
+						if (!_device_created)
+						{
+							continue;
+						}
 
-                        _msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_selected_feature_level) + L" supported\r\n";
+						_msg += L"\t\t\t\t\t\tFeature level: " + DirectX::GetFeatureLevelStrW(_selected_feature_level) + L" supported\r\n";
 
-                        auto _gDevice = std::make_shared<w_graphics_device>();
-                        _gDevice->device_name = std::string(_device_name.begin(), _device_name.end());
-                        _gDevice->dx_device_removed = false;
-                        _gDevice->dx_is_wrap_device = false;
-                        _gDevice->dx_feature_level = _selected_feature_level;
+						auto _gDevice = std::make_shared<w_graphics_device>();
+						_gDevice->device_name = std::string(_device_name.begin(), _device_name.end());
+						_gDevice->dx_device_removed = false;
+						_gDevice->dx_is_wrap_device = false;
+						_gDevice->dx_feature_level = _selected_feature_level;
 
-                        _hr = D3D12CreateDevice(
-                            _adapter.Get(),
-                            _selected_feature_level,
-                            IID_PPV_ARGS(&_gDevice->dx_device));
-                        if (_hr != S_OK)
-                        {
-                            logger.write(_msg);
-                            _msg.clear();
-                            _msg = L"creating hadrware device with feature level: " + DirectX::GetFeatureLevelStrW((_selected_feature_level));
-                            logger.error(_msg);
-                            release();
-                            std::exit(EXIT_FAILURE);
-                        }
+						_hr = D3D12CreateDevice(
+							_adapter.Get(),
+							_selected_feature_level,
+							IID_PPV_ARGS(&_gDevice->dx_device));
+						if (_hr != S_OK)
+						{
+							logger.write(_msg);
+							_msg.clear();
+							_msg = L"creating hadrware device with feature level: " + DirectX::GetFeatureLevelStrW((_selected_feature_level));
+							logger.error(_msg);
+							release();
+							std::exit(EXIT_FAILURE);
+						}
 
-                        //write to output
-                        logger.write(_msg);
-                        _msg.clear();
+						//write to output
+						logger.write(_msg);
+						_msg.clear();
 
 
 #ifdef __WIN32
-                        //get the monitors numerator and denominator
-                        _hr = _adapter->EnumOutputs(0, &_gDevice->dx_dxgi_outputs);
-                        V(_hr, "enumurate output monitors", this->_name, 2);
+						//get the monitors numerator and denominator
+						_hr = _adapter->EnumOutputs(0, &_gDevice->dx_dxgi_outputs);
+						V(_hr, "enumurate output monitors", this->_name, 2);
 
 #endif
-                        //add harware device to graphics devices list
-                        pGraphicsDevices.push_back(_gDevice);
+						//add harware device to graphics devices list
+						pGraphicsDevices.push_back(_gDevice);
 
-                        //create necessry presentation windows for each graphics device
-                        auto _win = this->_windows_info.find(static_cast<int>(i));
-                        if (_win != this->_windows_info.end())
-                        {
-                            for (size_t j = 0; j < _win->second.size(); ++j)
-                            {
-                                auto _window = _win->second[j];
+						//create necessry presentation windows for each graphics device
+						auto _win = this->_windows_info.find(static_cast<int>(i));
+						if (_win != this->_windows_info.end())
+						{
+							for (size_t j = 0; j < _win->second.size(); ++j)
+							{
+								auto _window = _win->second[j];
 
-                                w_output_presentation_window _out_window;
-                                _out_window.index = static_cast<int>(j);
-                                _out_window.dx_swap_chain_selected_format = (DXGI_FORMAT)_window.swap_chain_format;
+								w_output_presentation_window _out_window;
+								_out_window.index = static_cast<int>(j);
+								_out_window.dx_swap_chain_selected_format = (DXGI_FORMAT)_window.swap_chain_format;
 
 #if defined(__WIN32) || ( defined(__linux) && !defined(__ANDROID) ) || defined(__APPLE__)
-                                _out_window.width = _window.width;
-                                _out_window.height = _window.height;
-                                _out_window.aspect_ratio = (float)_window.width / (float)_window.height;
-                                _out_window.v_sync = _window.v_sync_enable;
-                                _out_window.is_full_screen = _window.is_full_screen;
+								_out_window.width = _window.width;
+								_out_window.height = _window.height;
+								_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
+								_out_window.v_sync = _window.v_sync_enable;
+								_out_window.is_full_screen = _window.is_full_screen;
 #ifdef __WIN32
-                                _out_window.hwnd = _window.hwnd;
-                                _out_window.hInstance = _window.hInstance;
+								_out_window.hwnd = _window.hwnd;
+								_out_window.hInstance = _window.hInstance;
 #endif
 
 #elif defined(__UWP)
-                                _out_window.window = _window.window;
-                                _out_window.window_size = _window.window_size;
-                                _out_window.window_current_orientation = _window.window_current_orientation;
-                                _out_window.window_native_orientation = _window.window_native_orientation;
-                                _out_window.window_dpi = _window.window_dpi;
-                                _out_window.support_high_resolutions = _window.support_high_resolutions;
-                                _out_window.aspect_ratio = _window.window_size.Width / _window.window_size.Height;
+								_out_window.window = _window.window;
+								_out_window.window_size = _window.window_size;
+								_out_window.window_current_orientation = _window.window_current_orientation;
+								_out_window.window_native_orientation = _window.window_native_orientation;
+								_out_window.window_dpi = _window.window_dpi;
+								_out_window.support_high_resolutions = _window.support_high_resolutions;
+								_out_window.aspect_ratio = _window.window_size.Width / _window.window_size.Height;
 #endif
 
-                                _gDevice->output_presentation_windows.push_back(_out_window);
+								_gDevice->output_presentation_windows.push_back(_out_window);
 
-                                create_or_resize_swap_chain(_gDevice, j);
-                                _create_depth_stencil_buffer(_gDevice, j);
-                                _create_fences(_gDevice, j);
+								create_or_resize_swap_chain(_gDevice, j);
+								_create_depth_stencil_buffer(_gDevice, j);
+								_create_fences(_gDevice, j);
 
-                            }
-                        }
-                    }
-                }
+							}
+						}
+					}
+				}
 
-                if (_msg.length())
-                {
-                    //write to output
-                    logger.write(_msg);
-                    _msg.clear();
-                }
+				if (_msg.length())
+				{
+					//write to output
+					logger.write(_msg);
+					_msg.clear();
+				}
 
 #elif defined(__VULKAN__)
-                auto _vk_major = VK_VERSION_MAJOR(VK_API_VERSION_1_0);
-                auto _vk_minor = VK_VERSION_MINOR(VK_API_VERSION_1_0);
-                auto _vk_patch = VK_VERSION_PATCH(VK_HEADER_VERSION);
+				auto _vk_major = VK_VERSION_MAJOR(VK_API_VERSION_1_0);
+				auto _vk_minor = VK_VERSION_MINOR(VK_API_VERSION_1_0);
+				auto _vk_patch = VK_VERSION_PATCH(VK_HEADER_VERSION);
 
-                std::string _msg;
-                _msg += "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n";
-                _msg += "\t\t\t\t\tVulkan API version: " +
-                    std::to_string(_vk_major) + "." +
-                    std::to_string(_vk_minor) + "." +
-                    std::to_string(_vk_patch) + "\r\n";
+				std::string _msg;
+				_msg += "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n";
+				_msg += "\t\t\t\t\tVulkan API version: " +
+					std::to_string(_vk_major) + "." +
+					std::to_string(_vk_minor) + "." +
+					std::to_string(_vk_patch) + "\r\n";
 
-                //first find number of Vulkan instances
-                uint32_t _instance_layer_count;
+				//first find number of Vulkan instances
+				uint32_t _instance_layer_count;
 
-                // Use second parameter as NULL to return the layer count
-                vkEnumerateInstanceLayerProperties(&_instance_layer_count, nullptr);
+				// Use second parameter as NULL to return the layer count
+				vkEnumerateInstanceLayerProperties(&_instance_layer_count, nullptr);
 
-                VkLayerProperties* _layer_property = nullptr;
-                vkEnumerateInstanceLayerProperties(&_instance_layer_count, _layer_property);
+				VkLayerProperties* _layer_property = nullptr;
+				vkEnumerateInstanceLayerProperties(&_instance_layer_count, _layer_property);
 
-                uint32_t _extension_count = 0;
+				uint32_t _extension_count = 0;
 
-                //get available extensions count
-                auto _hr =
+				//get available extensions count
+				auto _hr =
 
-                    vkEnumerateInstanceExtensionProperties(nullptr,
-                        &_extension_count,
-                        nullptr);
-                if (_hr)
-                {
-                    //write the buffer to output before exiting
-                    logger.write(_msg);
-                    _msg.clear();
-                    logger.error("error on enumerating instance extension properties.");
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
+					vkEnumerateInstanceExtensionProperties(nullptr,
+						&_extension_count,
+						nullptr);
+				if (_hr)
+				{
+					//write the buffer to output before exiting
+					logger.write(_msg);
+					_msg.clear();
+					logger.error("error on enumerating instance extension properties.");
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 
-                auto _extensions_available = new VkExtensionProperties[_extension_count];
-                vkEnumerateInstanceExtensionProperties(nullptr, &_extension_count, _extensions_available);
+				auto _extensions_available = new VkExtensionProperties[_extension_count];
+				vkEnumerateInstanceExtensionProperties(nullptr, &_extension_count, _extensions_available);
 
-                _msg += "\t\t\t\t\tVulkan extension(s) available:";
-                for (size_t i = 0; i < _extension_count; ++i)
-                {
-                    _msg += "\r\n\t\t\t\t\t\t" + std::string(_extensions_available[i].extensionName);
-                }
+				_msg += "\t\t\t\t\tVulkan extension(s) available:";
+				for (size_t i = 0; i < _extension_count; ++i)
+				{
+					_msg += "\r\n\t\t\t\t\t\t" + std::string(_extensions_available[i].extensionName);
+				}
 
-                //Vulkan instance object
+				//Vulkan instance object
 
-                VkApplicationInfo _app_info = {};
-                _app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-                _app_info.pApplicationName = "Wolf.Engine";
-                _app_info.pEngineName = "Wolf.Engine";
-                _app_info.apiVersion = VK_API_VERSION_1_0;
+				VkApplicationInfo _app_info = {};
+				_app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+				_app_info.pApplicationName = "Wolf.Engine";
+				_app_info.pEngineName = "Wolf.Engine";
+				_app_info.apiVersion = VK_API_VERSION_1_0;
 
-                std::vector<const char*> _vk_instance_enabled_extensions =
-                {
-                    VK_KHR_SURFACE_EXTENSION_NAME,
-                };
+				std::vector<const char*> _vk_instance_enabled_extensions =
+				{
+					VK_KHR_SURFACE_EXTENSION_NAME,
+				};
 
-                // Enable surface extensions depending on OS
+				if (!this->_config.off_screen.enable)
+				{
+					// Enable surface extensions depending on OS
 #if defined(__ANDROID)
-                _vk_instance_enabled_extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
+					_vk_instance_enabled_extensions.push_back(VK_KHR_ANDROID_SURFACE_EXTENSION_NAME);
 #elif defined(__WIN32)
-                _vk_instance_enabled_extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+					_vk_instance_enabled_extensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #elif defined(_DIRECT2DISPLAY)
-                _vk_instance_enabled_extensions.push_back(VK_KHR_DISPLAY_EXTENSION_NAME);
+					_vk_instance_enabled_extensions.push_back(VK_KHR_DISPLAY_EXTENSION_NAME);
 #elif defined(__linux)
-                _vk_instance_enabled_extensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
+					_vk_instance_enabled_extensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
 #elif defined(__iOS__)
-                _vk_instance_enabled_extensions.push_back(VK_MVK_IOS_SURFACE_EXTENSION_NAME);
+					_vk_instance_enabled_extensions.push_back(VK_MVK_IOS_SURFACE_EXTENSION_NAME);
 #elif defined(__APPLE__)
-                _vk_instance_enabled_extensions.push_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
+					_vk_instance_enabled_extensions.push_back(VK_MVK_MACOS_SURFACE_EXTENSION_NAME);
 #endif
+				}
 
                 if (this->_config.debug_gpu)
                 {
@@ -1300,169 +1302,186 @@ namespace wolf
                         std::exit(EXIT_FAILURE);
                     }
 
-					auto _win = this->_windows_info.find(static_cast<int>(i));
-					if (_win != this->_windows_info.end())
-					{
-						for (size_t j = 0; j < _win->second.size(); ++j)
-						{
-							auto _window = _win->second[j];
 
-							w_output_presentation_window _out_window;
-							_out_window.width = _window.width;
-							_out_window.height = _window.height;
-							_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
-							_out_window.index = static_cast<int>(j);
-							_out_window.vk_swap_chain_selected_format.format = (VkFormat)_window.swap_chain_format;
-							_out_window.vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+					if (!this->_config.off_screen.enable)
+					{
+						auto _win = this->_windows_info.find(static_cast<int>(i));
+						if (_win != this->_windows_info.end())
+						{
+							for (size_t j = 0; j < _win->second.size(); ++j)
+							{
+								auto _window = _win->second[j];
+
+								w_output_presentation_window _out_window;
+								_out_window.width = _window.width;
+								_out_window.height = _window.height;
+								_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
+								_out_window.index = static_cast<int>(j);
+								_out_window.vk_swap_chain_selected_format.format = (VkFormat)_window.swap_chain_format;
+								_out_window.vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
 
 #if defined(__WIN32) || defined(__linux) 
-							_out_window.v_sync = _window.v_sync_enable;
+								_out_window.v_sync = _window.v_sync_enable;
 #endif
 
 #ifdef __WIN32
-							_out_window.hwnd = _window.hwnd;
-							_out_window.hInstance = _window.hInstance;
+								_out_window.hwnd = _window.hwnd;
+								_out_window.hInstance = _window.hInstance;
 #elif defined(__ANDROID)
-							_out_window.window = _window.window;
+								_out_window.window = _window.window;
 #elif defined(__linux)
-							_out_window.xcb_connection = _window.xcb_connection;
-							_out_window.xcb_window = _window.xcb_window;
+								_out_window.xcb_connection = _window.xcb_connection;
+								_out_window.xcb_window = _window.xcb_window;
 #elif defined(__APPLE__)
-							_out_window.window = _window.window;
+								_out_window.window = _window.window;
 #endif
 
 #endif
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
-							VkWin32SurfaceCreateInfoKHR surface_create_info =
-							{
-								VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,    // Type
-								nullptr,                                            // Next
-								0,                                                  // Flags
-								_out_window.hInstance,                              // Hinstance
-								_out_window.hwnd                                    // Hwnd
-							};
+								VkWin32SurfaceCreateInfoKHR surface_create_info =
+								{
+									VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,    // Type
+									nullptr,                                            // Next
+									0,                                                  // Flags
+									_out_window.hInstance,                              // Hinstance
+									_out_window.hwnd                                    // Hwnd
+								};
 
-							_hr = vkCreateWin32SurfaceKHR(w_graphics_device::vk_instance, 
-														  &surface_create_info, 
-														  nullptr, 
-								                          &_out_window.vk_presentation_surface);
-							if (_hr)
-							{
-								logger.write(_msg);
-								_msg.clear();
-								logger.error("error on creating win32 surface for Vulkan.");
-								release();
-								std::exit(EXIT_FAILURE);
-							}
+								_hr = vkCreateWin32SurfaceKHR(w_graphics_device::vk_instance,
+									&surface_create_info,
+									nullptr,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg);
+									_msg.clear();
+									logger.error("error on creating win32 surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
 
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
-							VkXcbSurfaceCreateInfoKHR _surface_create_info =
-							{
-								VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,      // Type
-								nullptr,                                            // Next
-								0,                                                  // Flags
-								_out_window.xcb_connection,                         // Connection
-								(*_out_window.xcb_window)                           // Window
-							};
-							_hr = vkCreateXcbSurfaceKHR(w_graphics_device::vk_instance,
-								&_surface_create_info,
-								nullptr,
-								&_out_window.vk_presentation_surface);
-							if (_hr)
-							{
-								logger.write(_msg);
-								_msg.clear();
-								logger.error("error on creating xcb surface for Vulkan.");
-								release();
-								std::exit(EXIT_FAILURE);
-							}
+								VkXcbSurfaceCreateInfoKHR _surface_create_info =
+								{
+									VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR,      // Type
+									nullptr,                                            // Next
+									0,                                                  // Flags
+									_out_window.xcb_connection,                         // Connection
+									(*_out_window.xcb_window)                           // Window
+								};
+								_hr = vkCreateXcbSurfaceKHR(w_graphics_device::vk_instance,
+									&_surface_create_info,
+									nullptr,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg);
+									_msg.clear();
+									logger.error("error on creating xcb surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
 #elif defined(VK_USE_PLATFORM_XLIB_KHR)
-							VkXlibSurfaceCreateInfoKHR surface_create_info =
-							{
-								VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,     // VkStructureType                sType
-								nullptr,                                            // const void                    *pNext
-								0,                                                  // VkXlibSurfaceCreateFlagsKHR    flags
-								_window.DisplayPtr,                                 // Display                       *dpy
-								_window.Handle                                      // Window                         window
-							};
-							_hr = vkCreateXlibSurfaceKHR(Vulkan.Instance,
-								&surface_create_info, nullptr, &Vulkan.PresentationSurface);
-							if (_hr)
-							{
-								logger.write(_msg);
-								_msg.clear();
-								logger.error("error on creating xlib surface for Vulkan.");
-								release();
-								std::exit(EXIT_FAILURE);
-							}
+								VkXlibSurfaceCreateInfoKHR surface_create_info =
+								{
+									VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR,     // VkStructureType                sType
+									nullptr,                                            // const void                    *pNext
+									0,                                                  // VkXlibSurfaceCreateFlagsKHR    flags
+									_window.DisplayPtr,                                 // Display                       *dpy
+									_window.Handle                                      // Window                         window
+								};
+								_hr = vkCreateXlibSurfaceKHR(Vulkan.Instance,
+									&surface_create_info, nullptr, &Vulkan.PresentationSurface);
+								if (_hr)
+								{
+									logger.write(_msg);
+									_msg.clear();
+									logger.error("error on creating xlib surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
 #elif defined(__ANDROID)
-							VkAndroidSurfaceCreateInfoKHR _android_surface_create_info = {};
-							_android_surface_create_info.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
-							_android_surface_create_info.window = _out_window.window;
-							_android_surface_create_info.flags = 0;
-							_android_surface_create_info.pNext = nullptr;
+								VkAndroidSurfaceCreateInfoKHR _android_surface_create_info = {};
+								_android_surface_create_info.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
+								_android_surface_create_info.window = _out_window.window;
+								_android_surface_create_info.flags = 0;
+								_android_surface_create_info.pNext = nullptr;
 
-							_hr = vkCreateAndroidSurfaceKHR(w_graphics_device::vk_instance,
-								&_android_surface_create_info,
-								nullptr,
-								&_out_window.vk_presentation_surface);
-							if (_hr)
-							{
-								logger.write(_msg);
-								_msg.clear();
-								logger.error("error on creating android surface for Vulkan.");
-								release();
-								std::exit(EXIT_FAILURE);
-							}
+								_hr = vkCreateAndroidSurfaceKHR(w_graphics_device::vk_instance,
+									&_android_surface_create_info,
+									nullptr,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg);
+									_msg.clear();
+									logger.error("error on creating android surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
 #elif defined(VK_USE_PLATFORM_IOS_MVK)
-                            VkIOSSurfaceCreateInfoMVK _surface_create_info = {};
-                            _surface_create_info.sType = VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK;
-                            _surface_create_info.pNext = NULL;
-                            _surface_create_info.flags = 0;
-                            _surface_create_info.pView = _window.window;
-                            
-                            _hr = vkCreateIOSSurfaceMVK(w_graphics_device::vk_instance,
-                                                          &_surface_create_info,
-                                                          NULL,
-                                                          &_out_window.vk_presentation_surface);
-                            if (_hr)
-                            {
-                                logger.write(_msg);
-                                _msg.clear();
-                                logger.error("error on creating iOS surface for Vulkan.");
-                                release();
-                                std::exit(EXIT_FAILURE);
-                            }
+								VkIOSSurfaceCreateInfoMVK _surface_create_info = {};
+								_surface_create_info.sType = VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK;
+								_surface_create_info.pNext = NULL;
+								_surface_create_info.flags = 0;
+								_surface_create_info.pView = _window.window;
+
+								_hr = vkCreateIOSSurfaceMVK(w_graphics_device::vk_instance,
+									&_surface_create_info,
+									NULL,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg);
+									_msg.clear();
+									logger.error("error on creating iOS surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
 #elif defined(VK_USE_PLATFORM_MACOS_MVK)
-							VkMacOSSurfaceCreateInfoMVK _surface_create_info = {};
-							_surface_create_info.sType = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK;
-							_surface_create_info.pNext = NULL;
-							_surface_create_info.flags = 0;
-							_surface_create_info.pView = _window.window;
-							_hr = vkCreateMacOSSurfaceMVK(w_graphics_device::vk_instance,
-								&_surface_create_info,
-								NULL,
-								&_out_window.vk_presentation_surface);
-							if (_hr)
-							{
-								logger.write(_msg);
-								_msg.clear();
-								logger.error("error on creating macOS surface for Vulkan.");
-								release();
-								std::exit(EXIT_FAILURE);
-							}
+								VkMacOSSurfaceCreateInfoMVK _surface_create_info = {};
+								_surface_create_info.sType = VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK;
+								_surface_create_info.pNext = NULL;
+								_surface_create_info.flags = 0;
+								_surface_create_info.pView = _window.window;
+								_hr = vkCreateMacOSSurfaceMVK(w_graphics_device::vk_instance,
+									&_surface_create_info,
+									NULL,
+									&_out_window.vk_presentation_surface);
+								if (_hr)
+								{
+									logger.write(_msg);
+									_msg.clear();
+									logger.error("error on creating macOS surface for Vulkan.");
+									release();
+									std::exit(EXIT_FAILURE);
+								}
 #endif
 
-							_gDevice->output_presentation_windows.push_back(_out_window);
+								_gDevice->output_presentation_windows.push_back(_out_window);
 
-							create_or_resize_swap_chain(_gDevice, j);
-							_create_depth_stencil_buffer(_gDevice, j);
-                            _create_fences(_gDevice, j);
-							//_record_command_buffers(_gDevice, j);
+								create_or_resize_swap_chain(_gDevice, j);
+								_create_depth_stencil_buffer(_gDevice, j);
+								_create_fences(_gDevice, j);
+							}
 						}
+					}
+					else
+					{
+						w_output_presentation_window _out_window;
+						_out_window.width = this->_config.off_screen.width;
+						_out_window.height = this->_config.off_screen.height;
+						_out_window.aspect_ratio = (float)this->_config.off_screen.width / (float)this->_config.off_screen.height;
+						_out_window.index = -1;
+						_out_window.vk_swap_chain_selected_format.format = this->_config.off_screen.swap_chain_format;
+						_out_window.vk_swap_chain_selected_format.colorSpace = this->_config.off_screen.swap_chain_color_space;
+						_gDevice->output_presentation_windows.push_back(_out_window);
+
+						_create_depth_stencil_buffer(_gDevice, 0);
+						_create_fences(_gDevice, 0);
 					}
 
 					//get queues (graphics and present may be the same)
@@ -1477,13 +1496,16 @@ namespace wolf
                     }
 
                     //present
-                    if (_gDevice->vk_compute_queue.index != UINT32_MAX)
-                    {
-                        vkGetDeviceQueue(_gDevice->vk_device,
-                            _gDevice->vk_present_queue.index,
-                            0,
-                            &_gDevice->vk_present_queue.queue);
-                    }
+					if (_gDevice->vk_compute_queue.index != UINT32_MAX)
+					{
+						if (!this->_config.off_screen.enable)
+						{
+							vkGetDeviceQueue(_gDevice->vk_device,
+								_gDevice->vk_present_queue.index,
+								0,
+								&_gDevice->vk_present_queue.queue);
+						}
+					}
 
                     //compute
                     if (_gDevice->vk_compute_queue.index != UINT32_MAX)
@@ -1518,7 +1540,7 @@ namespace wolf
 			}
 
 			void create_or_resize_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-				_In_ size_t pOutputPresentationWindowIndex)
+				_In_ int pOutputPresentationWindowIndex)
 			{
 #ifdef __DX12__
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
@@ -1526,14 +1548,14 @@ namespace wolf
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				const size_t _desired_number_of_swapchain_images = 2;
-                
-                //release dx_swap_chain_image_views
+
+				//release dx_swap_chain_image_views
 				for (size_t i = 0; i < _output_presentation_window->dx_swap_chain_image_views.size(); i++)
 				{
 					COM_RELEASE(_output_presentation_window->dx_swap_chain_image_views[i]);
 				}
 
-				_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);				
+				_output_presentation_window->dx_swap_chain_image_views.resize(_desired_number_of_swapchain_images);
 				_output_presentation_window->force_to_clear_color_times = _desired_number_of_swapchain_images;
 
 
@@ -1564,102 +1586,102 @@ namespace wolf
 						std::exit(EXIT_FAILURE);
 					}
 				}
-                else
-                {
+				else
+				{
 #pragma region NO NEED ANYMORE
-                    //float _numerator = 0;
-                    //float _denominator = 1;
+					//float _numerator = 0;
+					//float _denominator = 1;
 
-                    ////if this window does not need v-sync, then it is important to get the refresh rate of displays
-                    //if (!_output_presentation_window->v_sync)
-                    //{
-                    //	//we need to get the numerator and denominator of display monitors
-                    //	UINT _num_modes = 0;
-                    //	_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
-                    //		DXGI_ENUM_MODES_INTERLACED,
-                    //		&_num_modes,
-                    //		NULL);
-                    //	if (SUCCEEDED(_hr))
-                    //	{
-                    //		std::vector<DXGI_MODE_DESC> _display_modes(_num_modes);
-                    //		_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
-                    //			DXGI_ENUM_MODES_INTERLACED,
-                    //			&_num_modes,
-                    //			_display_modes.data());
-                    //		if (SUCCEEDED(_hr))
-                    //		{
-                    //			for (size_t i = 0; i < _num_modes; ++i)
-                    //			{
-                    //				if (_output_presentation_window->height == _display_modes[i].Height &&
-                    //					_output_presentation_window->width == _display_modes[i].Width)
-                    //				{
-                    //					auto _refresh_rate = _display_modes[i].RefreshRate;
-                    //					_numerator = _refresh_rate.Numerator;
-                    //					_denominator = _refresh_rate.Denominator;
-                    //				}
-                    //			}
-                    //		}
-                    //		else
-                    //		{
-                    //			logger.warning(L"Could not get display modes list for graphics device: " + _device_name +
-                    //				L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-                    //		}
-                    //		_display_modes.clear();
-                    //	}
-                    //	else
-                    //	{
-                    //		logger.warning(L"Could not get number of display modes list for graphics device: " + _device_name +
-                    //			L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-                    //	}
+					////if this window does not need v-sync, then it is important to get the refresh rate of displays
+					//if (!_output_presentation_window->v_sync)
+					//{
+					//	//we need to get the numerator and denominator of display monitors
+					//	UINT _num_modes = 0;
+					//	_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
+					//		DXGI_ENUM_MODES_INTERLACED,
+					//		&_num_modes,
+					//		NULL);
+					//	if (SUCCEEDED(_hr))
+					//	{
+					//		std::vector<DXGI_MODE_DESC> _display_modes(_num_modes);
+					//		_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
+					//			DXGI_ENUM_MODES_INTERLACED,
+					//			&_num_modes,
+					//			_display_modes.data());
+					//		if (SUCCEEDED(_hr))
+					//		{
+					//			for (size_t i = 0; i < _num_modes; ++i)
+					//			{
+					//				if (_output_presentation_window->height == _display_modes[i].Height &&
+					//					_output_presentation_window->width == _display_modes[i].Width)
+					//				{
+					//					auto _refresh_rate = _display_modes[i].RefreshRate;
+					//					_numerator = _refresh_rate.Numerator;
+					//					_denominator = _refresh_rate.Denominator;
+					//				}
+					//			}
+					//		}
+					//		else
+					//		{
+					//			logger.warning(L"Could not get display modes list for graphics device: " + _device_name +
+					//				L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					//		}
+					//		_display_modes.clear();
+					//	}
+					//	else
+					//	{
+					//		logger.warning(L"Could not get number of display modes list for graphics device: " + _device_name +
+					//			L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+					//	}
 
-                    //}
+					//}
 #pragma endregion
 
-                    // Disable full screen with ALT+Enter
-                    _hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
-                    V(_hr, L"disabling ALT+Enter for presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                        this->_name, 2);
+					// Disable full screen with ALT+Enter
+					_hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
+					V(_hr, L"disabling ALT+Enter for presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+						this->_name, 2);
 
-                    // Describe and create the swap chain.
-                    DXGI_SWAP_CHAIN_DESC1 _swap_chain_desc = {};
-                    _swap_chain_desc.AlphaMode = DXGI_ALPHA_MODE::DXGI_ALPHA_MODE_UNSPECIFIED;
-                    _swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
-                    _swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-                    _swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-                    _swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
-                    _swap_chain_desc.SampleDesc.Quality = 0;
-                    _swap_chain_desc.Format = _output_presentation_window->dx_swap_chain_selected_format;
-                    _swap_chain_desc.Width = _output_presentation_window->width;
-                    _swap_chain_desc.Height = _output_presentation_window->height;
-                    _swap_chain_desc.Scaling = DXGI_SCALING::DXGI_SCALING_NONE;
-                    _swap_chain_desc.Stereo = FALSE;
-                    _swap_chain_desc.Flags = 0;
+					// Describe and create the swap chain.
+					DXGI_SWAP_CHAIN_DESC1 _swap_chain_desc = {};
+					_swap_chain_desc.AlphaMode = DXGI_ALPHA_MODE::DXGI_ALPHA_MODE_UNSPECIFIED;
+					_swap_chain_desc.BufferCount = _desired_number_of_swapchain_images;
+					_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+					_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+					_swap_chain_desc.SampleDesc.Count = 1;//No hardware multisampling
+					_swap_chain_desc.SampleDesc.Quality = 0;
+					_swap_chain_desc.Format = _output_presentation_window->dx_swap_chain_selected_format;
+					_swap_chain_desc.Width = _output_presentation_window->width;
+					_swap_chain_desc.Height = _output_presentation_window->height;
+					_swap_chain_desc.Scaling = DXGI_SCALING::DXGI_SCALING_NONE;
+					_swap_chain_desc.Stereo = FALSE;
+					_swap_chain_desc.Flags = 0;
 
-                    {
-                        ComPtr<IDXGISwapChain1> _swap_chain = nullptr;
+					{
+						ComPtr<IDXGISwapChain1> _swap_chain = nullptr;
 
-                        _hr = w_graphics_device::dx_dxgi_factory->CreateSwapChainForHwnd(
-                            _output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
-                            _output_presentation_window->hwnd,
-                            &_swap_chain_desc,
-                            nullptr,
-                            nullptr,
-                            &_swap_chain);
+						_hr = w_graphics_device::dx_dxgi_factory->CreateSwapChainForHwnd(
+							_output_presentation_window->dx_command_queue.Get(),//Swap chain needs the queue so that it can force a flush on it.
+							_output_presentation_window->hwnd,
+							&_swap_chain_desc,
+							nullptr,
+							nullptr,
+							&_swap_chain);
 
-                        V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
-                            L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
-                            this->_name, 2);
+						V(_hr, L"create swap chain from hwnd for graphics device: " + _device_name + L" ID:" + std::to_wstring(_device_id) +
+							L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
+							this->_name, 2);
 
-                        _hr = _swap_chain->QueryInterface(__uuidof(IDXGISwapChain3), (void**)&_output_presentation_window->dx_swap_chain);
-                        if (FAILED(_hr))
-                        {
-                            logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
-                                _device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-                            release();
-                            std::exit(EXIT_FAILURE);
-                        }
-                    }
-                }
+						_hr = _swap_chain->QueryInterface(__uuidof(IDXGISwapChain3), (void**)&_output_presentation_window->dx_swap_chain);
+						if (FAILED(_hr))
+						{
+							logger.error(L"error on getting swap chain 3 from swap chain 1 for graphics device: " + L" ID:" + std::to_wstring(_device_id) +
+								_device_name + L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
+							release();
+							std::exit(EXIT_FAILURE);
+						}
+					}
+				}
 
 #elif defined(__UWP)
 
@@ -1746,7 +1768,7 @@ namespace wolf
 						pGDevice->dx_device_removed = true;
 						return;
 					}
-					else if(_hr != S_OK)
+					else if (_hr != S_OK)
 					{
 						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
 							+ _device_name L" ID:" + std::to_wstring(_device_id));
@@ -1896,7 +1918,8 @@ namespace wolf
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
-
+				if (!_vk_presentation_surface) return;
+				
 				for (size_t j = 0; j < pGDevice->vk_queue_family_properties.size(); ++j)
 				{
 					//check if this device support presentation
@@ -1952,6 +1975,7 @@ namespace wolf
 					std::exit(EXIT_FAILURE);
 				}
 
+
 				/*
 					If the format list includes just one entry of VK_FORMAT_UNDEFINED,
 					the surface has no preferred format.  Otherwise, at least one
@@ -1959,12 +1983,7 @@ namespace wolf
 				*/
 				if (_vk_format_count == 1 && _output_presentation_window->vk_surface_formats[0].format == VkFormat::VK_FORMAT_UNDEFINED)
 				{
-#ifdef __ANDROID
-					_output_presentation_window->vk_swap_chain_selected_format.format = VkFormat::VK_FORMAT_R8G8B8A8_UNORM;
-#else
-					_output_presentation_window->vk_swap_chain_selected_format.format = VK_FORMAT_B8G8R8A8_UNORM;
-#endif // __ANDROID
-
+					_output_presentation_window->vk_swap_chain_selected_format.format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
 					_output_presentation_window->vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLORSPACE_SRGB_NONLINEAR_KHR;
 				}
 				else
@@ -1989,27 +2008,27 @@ namespace wolf
 				_hr = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pGDevice->vk_physical_device,
 					_vk_presentation_surface,
 					&_surface_capabilities);
-                if (_hr == -3)
-                {
-                    logger.error("error on create vulkan surface capabilities for graphics device: " +
-                        _device_name + " ID:" + std::to_string(_device_id) +
-                        " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+				if (_hr == -3)
+				{
+					logger.error("error on create vulkan surface capabilities for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) +
+						" and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
 
-                    //manually create _surface_capabilities
-                    _surface_capabilities.currentExtent.width = _output_presentation_window->width;
-                    _surface_capabilities.currentExtent.height = _output_presentation_window->height;
-                    _surface_capabilities.currentTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
-                    _surface_capabilities.maxImageArrayLayers = 1;
-                    _surface_capabilities.maxImageCount = 16;
-                    _surface_capabilities.maxImageExtent.width = _output_presentation_window->width;
-                    _surface_capabilities.maxImageExtent.height = _output_presentation_window->height;
-                    _surface_capabilities.minImageCount = 1;
-                    _surface_capabilities.minImageExtent.width = 1;
-                    _surface_capabilities.minImageExtent.height = 1;
-                    _surface_capabilities.supportedCompositeAlpha = 1;
-                    _surface_capabilities.supportedTransforms = 1;
-                    _surface_capabilities.supportedUsageFlags = 159;
-                }
+					//manually create _surface_capabilities
+					_surface_capabilities.currentExtent.width = _output_presentation_window->width;
+					_surface_capabilities.currentExtent.height = _output_presentation_window->height;
+					_surface_capabilities.currentTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+					_surface_capabilities.maxImageArrayLayers = 1;
+					_surface_capabilities.maxImageCount = 16;
+					_surface_capabilities.maxImageExtent.width = _output_presentation_window->width;
+					_surface_capabilities.maxImageExtent.height = _output_presentation_window->height;
+					_surface_capabilities.minImageCount = 1;
+					_surface_capabilities.minImageExtent.width = 1;
+					_surface_capabilities.minImageExtent.height = 1;
+					_surface_capabilities.supportedCompositeAlpha = 1;
+					_surface_capabilities.supportedTransforms = 1;
+					_surface_capabilities.supportedUsageFlags = 159;
+				}
 
 				//get the count of present modes
 				uint32_t _present_mode_count;
@@ -2068,11 +2087,11 @@ namespace wolf
 				{
 					// If the surface size is defined, the swap chain size must match
 					_swap_chain_extent = _surface_capabilities.currentExtent;
+
 				}
 
-				//the FIFO present mode is guaranteed by the spec to be supported
-				VkPresentModeKHR _swap_chain_present_mode = _output_presentation_window->v_sync ?
-					VK_PRESENT_MODE_FIFO_KHR : VK_PRESENT_MODE_IMMEDIATE_KHR;
+				auto _desired_number_of_swapchain_images = _surface_capabilities.minImageCount + 1;
+
 
 				/*
 					Determine the number of VkImage's to use in the swap chain.
@@ -2081,18 +2100,17 @@ namespace wolf
 					1 presentable image as long as we present it before attempting
 					to acquire another.
 				*/
-                uint32_t _desired_number_of_swapchain_images = _surface_capabilities.minImageCount + 1;
-                if ((_surface_capabilities.maxImageCount > 0) &&
-                    (_desired_number_of_swapchain_images > _surface_capabilities.maxImageCount))
-                {
-                    _desired_number_of_swapchain_images = _surface_capabilities.maxImageCount;
-                }
+				if ((_surface_capabilities.maxImageCount > 0) &&
+					(_desired_number_of_swapchain_images > _surface_capabilities.maxImageCount))
+				{
+					_desired_number_of_swapchain_images = _surface_capabilities.maxImageCount;
+				}
 
-                if (_desired_number_of_swapchain_images < 2)
-                {
-                    logger.warning("The images count of surface capabilities and swap chain is less than two.");
-                }
-                
+				if (_desired_number_of_swapchain_images < 2)
+				{
+					logger.warning("The images count of surface capabilities and swap chain is less than two.");
+				}
+
 				VkSurfaceTransformFlagBitsKHR _pre_transform;
 				if (_surface_capabilities.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
 				{
@@ -2103,6 +2121,12 @@ namespace wolf
 					_pre_transform = _surface_capabilities.currentTransform;
 				}
 
+				auto _image_extend = _surface_capabilities.currentExtent;
+
+
+				//the FIFO present mode is guaranteed by the spec to be supported
+				VkPresentModeKHR _swap_chain_present_mode = (_output_presentation_window && _output_presentation_window->v_sync) ? VK_PRESENT_MODE_FIFO_KHR : VK_PRESENT_MODE_IMMEDIATE_KHR;
+
 				uint32_t _queue_family = 0;
 				VkSwapchainCreateInfoKHR _swap_chain_create_info = {};
 				_swap_chain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -2111,7 +2135,7 @@ namespace wolf
 				_swap_chain_create_info.minImageCount = _desired_number_of_swapchain_images;
 				_swap_chain_create_info.imageFormat = _output_presentation_window->vk_swap_chain_selected_format.format;
 				_swap_chain_create_info.imageColorSpace = _output_presentation_window->vk_swap_chain_selected_format.colorSpace;
-				_swap_chain_create_info.imageExtent = _surface_capabilities.currentExtent;
+				_swap_chain_create_info.imageExtent = _image_extend;
 				_swap_chain_create_info.preTransform = _pre_transform;
 				_swap_chain_create_info.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 				_swap_chain_create_info.imageArrayLayers = 1;
@@ -2131,10 +2155,10 @@ namespace wolf
 				if (_queue_family_indices[0] != _queue_family_indices[1])
 				{
 					/*
-					If the graphics and present queues are from different queue families,
-					we either have to explicitly transfer ownership of images between
-					the queues, or we have to create the swap chain with imageSharingMode
-					as VK_SHARING_MODE_CONCURRENT
+						If the graphics and present queues are from different queue families,
+						we either have to explicitly transfer ownership of images between
+						the queues, or we have to create the swap chain with imageSharingMode
+						as VK_SHARING_MODE_CONCURRENT
 					*/
 					_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 					_swap_chain_create_info.queueFamilyIndexCount = 2;
@@ -2154,7 +2178,7 @@ namespace wolf
 					std::exit(EXIT_FAILURE);
 				}
 
-                //get the count of swap chain 's images
+				//get the count of swap chain 's images
 				uint32_t _swap_chain_image_count = UINT32_MAX;
 				_hr = vkGetSwapchainImagesKHR(pGDevice->vk_device,
 					_output_presentation_window->vk_swap_chain,
@@ -2707,7 +2731,7 @@ w_graphics_device_manager::w_graphics_device_manager() : _pimp(new w_graphics_de
    
 #ifdef __WIN32
     auto _hr = CoInitialize(NULL);
-	V(_hr, L"CoInitialize already been called", _super::name, 3, false, false);
+	V(_hr, L"CoInitialize already been called", _super::name, 3, false);
 #endif
 
 #ifdef __ANDROID

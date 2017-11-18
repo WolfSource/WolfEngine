@@ -142,7 +142,7 @@ pCheckForLastDirectXError	= check last error of GPU API
 */
 inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
     std::string pTraceClass = "Undefined trace", unsigned char pLogType = 0,
-    bool pTerminateAll = false, bool pCheckForLastGPUError = false)
+    bool pTerminateAll = false)
 {
     using namespace std;
     using namespace wolf;
@@ -150,54 +150,8 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
     if (pHR == S_OK) return;
 
     auto _wstr_trace = std::wstring(pTraceClass.begin(), pTraceClass.end());
-    wstring _errorMsg = L"";
-    if (pCheckForLastGPUError)
-    {
-
-#if defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
-
-        _errorMsg = L"Error on " + pMSG + L" with the following error info : ";
-
-#elif defined(__WIN32) || defined(__UWP) || defined(__MAYA)
-
-        auto _err = GetLastError();
-        _errorMsg = L"Error on " + pMSG + L" with the following error info : ";
-        LPVOID _lpMsgBuf;
-        DWORD _bufLen = FormatMessage(
-
-#if defined(__WIN32) || defined(__MAYA)
-            FORMAT_MESSAGE_ALLOCATE_BUFFER |
-#endif // defined(__MAYA) || defined(__WIN32)
-
-            FORMAT_MESSAGE_FROM_SYSTEM |
-            FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL,
-            _err,
-            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPTSTR)&_lpMsgBuf,
-            0, NULL);
-        if (_bufLen)
-        {
-            auto _lpMsgStr = (LPCSTR)_lpMsgBuf;
-            wstring result(_lpMsgStr, _lpMsgStr + _bufLen);
-
-#if defined(__WIN32) || defined(__MAYA)
-            LocalFree(_lpMsgBuf);
-#endif //defined(__MAYA) || defined(__WIN32)
-
-            _errorMsg += result;
-        }
-
-        _errorMsg += L"Trace info " + _wstr_trace + L".";
-
-#endif // __ANDROID || __linux || __APPLE__
-
-    }
-    else
-    {
-        _errorMsg = L"Error on " + pMSG + L" with the following error info : " + L"Trace info " + _wstr_trace + L".";
-    }
-
+    wstring _errorMsg = L"Error on " + pMSG + L" with the following error info : " + L"Trace info " + _wstr_trace + L".";
+    
     switch (pLogType)
     {
     default:
@@ -224,9 +178,9 @@ inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
 
 inline void V(int pHR, std::wstring pMSG = L"Undefined Error",
     std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
-    bool pExitNow = false, bool pCheckForLastGPUError = false)
+    bool pExitNow = false)
 {
-    V(pHR == 0 ? S_OK : S_FALSE, pMSG, pTraceClass, pLogType, pExitNow, pCheckForLastGPUError);
+    V(pHR == 0 ? S_OK : S_FALSE, pMSG, pTraceClass, pLogType, pExitNow);
 }
 
 /*
@@ -239,10 +193,10 @@ pCheckForLastDirectXError	= check last error of GPU API
 */
 inline void V(HRESULT pHR, std::string pMSG = "Undefined Error",
     std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
-    bool pExitNow = false, bool pCheckForLastGPUError = false)
+    bool pExitNow = false)
 {
     auto _msg = std::wstring(pMSG.begin(), pMSG.end());
-    V(pHR, _msg, pTraceClass, pLogType, pExitNow, pCheckForLastGPUError);
+    V(pHR, _msg, pTraceClass, pLogType, pExitNow);
     _msg.clear();
 }
 

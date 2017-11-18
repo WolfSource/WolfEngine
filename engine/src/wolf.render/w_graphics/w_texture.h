@@ -18,6 +18,17 @@ namespace wolf
 {
 	namespace graphics
 	{
+		enum w_image_view_type 
+		{
+			W_IMAGE_VIEW_TYPE_1D = 0,
+			W_IMAGE_VIEW_TYPE_2D = 1,
+			W_IMAGE_VIEW_TYPE_3D = 2,
+			W_IMAGE_VIEW_TYPE_CUBE = 3,
+			W_IMAGE_VIEW_TYPE_1D_ARRAY = 4,
+			W_IMAGE_VIEW_TYPE_2D_ARRAY = 5,
+			W_IMAGE_VIEW_TYPE_CUBE_ARRAY = 6,
+		};
+				
         class w_texture_pimp;
 		class w_texture : public system::w_object
 		{
@@ -71,6 +82,7 @@ namespace wolf
 
             //release all shared textures
             W_EXP ULONG static release_shared_textures();
+
 #pragma region Getters
 
             //get width of image
@@ -96,6 +108,14 @@ namespace wolf
             
 #pragma endregion
 
+#pragma region Getters
+
+			//set image format
+			W_EXP void set_format(_In_ VkFormat pFormat);
+			//set image view type
+			W_EXP void set_image_view_type(_In_ w_image_view_type pImageViewType);
+
+#pragma region
 
             W_EXP static w_texture*                               default_texture;
 

@@ -91,7 +91,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating render pass", _trace_info, 3, true, true);
+		V(S_FALSE, "creating render pass", _trace_info, 3, true);
 	}
 
 	//create frame buffers
@@ -105,7 +105,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating frame buffers", _trace_info, 3, true, true);
+		V(S_FALSE, "creating frame buffers", _trace_info, 3, true);
 	}
 
 	//create semaphore create info
@@ -113,7 +113,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating draw semaphore", _trace_info, 3, true, false);
+		V(S_FALSE, "creating draw semaphore", _trace_info, 3, true);
 	}
 
 	//Fence for render sync
@@ -121,7 +121,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating draw fence", _trace_info, 3, true, false);
+		V(S_FALSE, "creating draw fence", _trace_info, 3, true);
 	}
 
 	//create two primary command buffers for clearing screen
@@ -130,7 +130,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating draw command buffers", _trace_info, 3, true, true);
+		V(S_FALSE, "creating draw command buffers", _trace_info, 3, true);
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -149,7 +149,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "loading vertex shader", _trace_info, 3, true, true);
+		V(S_FALSE, "loading vertex shader", _trace_info, 3, true);
 	}
 
 	//loading fragment shader
@@ -159,7 +159,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "loading fragment shader", _trace_info, 3, true, true);
+		V(S_FALSE, "loading fragment shader", _trace_info, 3, true);
 	}
 
 	//just we need vertex position color
@@ -186,7 +186,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating pipeline", _trace_info, 3, true, true);
+		V(S_FALSE, "creating pipeline", _trace_info, 3, true);
 	}
 
 	std::vector<float> _vertex_data =
@@ -209,7 +209,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "loading mesh", _trace_info, 3, true, true);
+		V(S_FALSE, "loading mesh", _trace_info, 3, true);
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -249,7 +249,7 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
 				_hr = this->_mesh.draw(_cmd, nullptr, 0, false);
 				if (_hr == S_FALSE)
 				{
-					V(S_FALSE, "drawing mesh", _trace_info, 3, false, false);
+					V(S_FALSE, "drawing mesh", _trace_info, 3, false);
 				}
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -304,7 +304,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		{ *_output_window->vk_rendering_done_semaphore.get() },
 		this->_draw_fence) == S_FALSE)
 	{
-		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true, false);
+		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true);
 	}
 	// Wait for fence to signal that all command buffers are ready
 	this->_draw_fence.wait();

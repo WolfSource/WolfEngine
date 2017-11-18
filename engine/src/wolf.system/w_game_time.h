@@ -56,13 +56,13 @@ namespace wolf
 				//Get frequency
 				if (!QueryPerformanceFrequency(&this->_frequency))
 				{
-					V(S_FALSE, "query performance frequency (on constructor)", this->_name, 3, true, false);
+					V(S_FALSE, "query performance frequency (on constructor)", this->_name, 3, true);
 				}
 
 				//Get performance
 				if (!QueryPerformanceCounter(&this->_last_time))
 				{
-					V(S_FALSE, "query performance frequency (on constructor)", this->_name, 3, true, false);
+					V(S_FALSE, "query performance frequency (on constructor)", this->_name, 3, true);
 				}
 
 				// Initialize max delta to 1/10 of a second.
@@ -239,7 +239,7 @@ namespace wolf
 				LARGE_INTEGER _time;
 				if (!QueryPerformanceCounter(&_time))
 				{
-					V(S_FALSE, "query performance on get_time method pf w_game_time", this->_name, 3, true, false);
+					V(S_FALSE, "query performance on get_time method pf w_game_time", this->_name, 3, true);
 				}
 				return _time;
 			}

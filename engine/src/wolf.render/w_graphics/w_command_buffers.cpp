@@ -41,8 +41,7 @@ namespace wolf
                             this->_gDevice->device_name +
                             " ID: " + std::to_string(this->_gDevice->device_id),
                             this->_name, 3,
-                            false,
-                            true);
+                            false);
 
                         return S_FALSE;
                     }
@@ -84,8 +83,7 @@ namespace wolf
                         this->_gDevice->device_name +
                       " ID: " + std::to_string(this->_gDevice->device_id),
                       this->_name, 3,
-                      false,
-                      true);
+                      false);
                     
                     return S_FALSE;
                 }
@@ -110,8 +108,7 @@ namespace wolf
                 V(_hr, L"begining command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
                   L" ID: " + std::to_wstring(this->_gDevice->device_id),
                   this->_name, 3,
-                  false,
-                  true);
+                  false);
                 
                 return _hr == VK_SUCCESS ? S_OK : S_FALSE;
             }
@@ -138,8 +135,7 @@ namespace wolf
                 V(_hr, L"ending command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
                   L" ID: " + std::to_wstring(this->_gDevice->device_id),
                   this->_name, 3,
-                  false,
-                  true);
+                  false);
                 
                 return _hr == VK_SUCCESS ? S_OK : S_FALSE;
             }
@@ -170,8 +166,7 @@ namespace wolf
                     V(S_FALSE, L"ending command buffer buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
                       L" ID: " + std::to_wstring(this->_gDevice->device_id),
                       this->_name, 3,
-                      false,
-                      true);
+                      false);
                     
                     return S_FALSE;
                 }
@@ -193,8 +188,7 @@ namespace wolf
                     V(S_FALSE, L"creating fence for command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
                       L" ID: " + std::to_wstring(this->_gDevice->device_id),
                       this->_name, 3,
-                      false,
-                      true);
+                      false);
                     return S_FALSE;
                 }
                 
@@ -208,8 +202,7 @@ namespace wolf
                     V(S_FALSE, L"submiting queue for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
                       L" ID: " + std::to_wstring(this->_gDevice->device_id),
                       this->_name, 3,
-                      false,
-                      true);
+                      false);
                     return S_FALSE;
                 }
                     

@@ -81,10 +81,10 @@ namespace wolf
                 {
 #if defined(__WIN32) || defined(__UWP)
 					V(S_FALSE, L"creating shader module for shader on following path: " + _path,
-						this->_name, 3, false, true);
+						this->_name, 3, false);
 #else
 					V(S_FALSE, "creating shader module for shader on following path: " + _path,
-						this->_name, 3, false, true);
+						this->_name, 3, false);
 #endif
                     return S_FALSE;
                 }
@@ -332,7 +332,7 @@ namespace wolf
                 if(_hr)
                 {
                     V(S_FALSE, "creating descriptor pool for graphics device: " + this->_gDevice->device_name +
-                      " ID:" + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
+                      " ID:" + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
                     return S_FALSE;
                 }
                 
@@ -414,8 +414,7 @@ namespace wolf
                         this->_gDevice->device_name +
                       " ID: " + std::to_string(this->_gDevice->device_id),
                       this->_name, 3,
-                      false,
-                      true);
+                      false);
                     
                     return S_FALSE;
                 }
@@ -443,8 +442,7 @@ namespace wolf
                     V(S_FALSE, "creating descriptor set for graphics device :" + this->_gDevice->device_name +
                       " ID: " + std::to_string(this->_gDevice->device_id),
                       this->_name, 3,
-                      false,
-                      true);
+                      false);
                     return S_FALSE;
                 }
                 return S_OK;

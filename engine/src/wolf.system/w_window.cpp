@@ -143,7 +143,7 @@ HRESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> 
 		NULL);
 	if (!this->_hwnd)
 	{
-		V(S_FALSE, L"creating window handle", this->name, 3, true, true);
+		V(S_FALSE, L"creating window handle", this->name, 3, true);
 		return S_FALSE;
 	}
 	

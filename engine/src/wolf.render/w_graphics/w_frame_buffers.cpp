@@ -56,7 +56,7 @@ namespace wolf
                     if (_hr != VK_SUCCESS)
                     {
                         V(S_FALSE, "creating frame buffer for graphics device: " + this->_gDevice->device_name +
-                          " ID:" + std::to_string(this->_gDevice->device_id), this->_name, 3, false, true);
+                          " ID:" + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
                         return S_FALSE;
                     }
                     

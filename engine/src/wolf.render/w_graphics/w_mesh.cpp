@@ -403,7 +403,7 @@ namespace wolf
                 {
                     V(S_FALSE, "loading memory of buffer for graphics device: " +
                           _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
-                          this->_name, 3, false, true);
+                          this->_name, 3, false);
                     
                     return S_FALSE;
                 }
@@ -418,7 +418,7 @@ namespace wolf
                     {
                         V(S_FALSE, "setting data to vertex buffer's memory staging for graphics device: " +
                           _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
-                          this->_name, 3, false, true);
+                          this->_name, 3, false);
                     
                         return S_FALSE;
                     }
@@ -430,7 +430,7 @@ namespace wolf
                 {
                     V(S_FALSE, "binding to vertex buffer's memory for graphics device: " +
                       _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
-                      this->_name, 3, false, true);
+                      this->_name, 3, false);
                     
                     return S_FALSE;
                 }

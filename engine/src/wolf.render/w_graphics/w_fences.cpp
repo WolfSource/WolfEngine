@@ -29,7 +29,7 @@ HRESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDe
                       nullptr,
                       &_fence))
         {
-            V(S_FALSE, "creating fence", "w_fence", 3, false, true);
+            V(S_FALSE, "creating fence", "w_fence", 3, false);
             _hr = S_FALSE;
         }
         else

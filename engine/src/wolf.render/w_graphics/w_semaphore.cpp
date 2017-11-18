@@ -23,7 +23,7 @@ HRESULT w_semaphore::initialize(_In_ const std::shared_ptr<w_graphics_device>& p
                           nullptr,
                           &this->_semaphore))
     {
-        V(S_FALSE, "creating semaphore", "w_semaphore", 3, false, true);
+        V(S_FALSE, "creating semaphore", "w_semaphore", 3, false);
         return S_FALSE;
     }
 #else

@@ -50,7 +50,7 @@ namespace wolf
                 if (_hr)
                 {
                     V(S_FALSE, "w_buffer", "creating buffer for graphics device: " + this->_gDevice->device_name +
-                        " ID: " + std::to_string(this->_gDevice->device_id), 3, false, true);
+                        " ID: " + std::to_string(this->_gDevice->device_id), 3, false);
                     return S_FALSE;
                 }
 
@@ -193,7 +193,7 @@ namespace wolf
                     this->_mapped = nullptr;
                     V(S_FALSE, "mapping data to to vertex buffer's memory " +
                         _gDevice->print_info(),
-                        _trace, 3, false, true);
+                        _trace, 3, false);
 
                     return nullptr;
                 }

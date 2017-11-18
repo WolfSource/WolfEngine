@@ -24,7 +24,9 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 #endif
 
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
+	_config.off_screen.enable = true;
+	_config.off_screen.vsync = false;
 	w_game::set_graphics_device_manager_configs(_config);
 	w_game::set_fixed_time_step(false);
 }
@@ -90,7 +92,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating render pass", _trace_info, 3, true, true);
+		V(S_FALSE, "creating render pass", _trace_info, 3, true);
 	}
 
 	//create frame buffers
@@ -104,14 +106,14 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating frame buffers", _trace_info, 3, true, true);
+		V(S_FALSE, "creating frame buffers", _trace_info, 3, true);
 	}
 
     this->_draw_semaphore.initialize(_gDevice);
     if(_hr == S_FALSE)
     {
         release();
-        V(S_FALSE, "creating draw semaphore", _trace_info, 3, true, false);
+        V(S_FALSE, "creating draw semaphore", _trace_info, 3, true);
     }
     
 	//Fence for render sync
@@ -119,7 +121,7 @@ void scene::load()
     if(_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating draw fence", _trace_info, 3, true, false);
+		V(S_FALSE, "creating draw fence", _trace_info, 3, true);
 	}
 
 	//create two primary command buffers for clearing screen
@@ -128,7 +130,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating draw command buffers", _trace_info, 3, true, true);
+		V(S_FALSE, "creating draw command buffers", _trace_info, 3, true);
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -147,7 +149,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "loading vertex shader", _trace_info, 3, true, true);
+		V(S_FALSE, "loading vertex shader", _trace_info, 3, true);
 	}
 
 	//loading fragment shader
@@ -157,7 +159,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "loading fragment shader", _trace_info, 3, true, true);
+		V(S_FALSE, "loading fragment shader", _trace_info, 3, true);
 	}
 
 	//loading pipeline cache
@@ -196,7 +198,7 @@ void scene::load()
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating pipeline", _trace_info, 3, true, true);
+		V(S_FALSE, "creating pipeline", _trace_info, 3, true);
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -277,7 +279,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     auto _fence = this->_draw_fence.get();
 	if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, *_fence))
 	{
-		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true, true);
+		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true);
 		return S_FALSE;
 	}
 	// Wait for fence to signal that all command buffers are ready

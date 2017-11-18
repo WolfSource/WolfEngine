@@ -372,6 +372,15 @@ namespace wolf
             std::vector<D3D_FEATURE_LEVEL>	hardware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_1 };
 #endif
             bool debug_gpu = false;
+			struct w_off_screen
+			{
+				bool enable = false;
+				bool vsync = false;
+				uint32_t width = 800;
+				uint32_t height = 600;
+				VkFormat swap_chain_format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
+				VkColorSpaceKHR swap_chain_color_space = VkColorSpaceKHR::VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+			} off_screen;
         };
 
         struct w_viewport : 
