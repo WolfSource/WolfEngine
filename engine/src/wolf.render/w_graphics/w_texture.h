@@ -2,7 +2,7 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : w_texture_2d.h
+	Name			 : w_texture.h
 	Description		 : create and handle 2D texture resource
 	Comment          : Wolf used encoding texture with two channel based on http://devkk.net/index.php?tag=articles&id=24
 */
@@ -18,15 +18,22 @@ namespace wolf
 {
 	namespace graphics
 	{
-		enum w_image_view_type 
+		enum w_texture_buffer_type
 		{
-			W_IMAGE_VIEW_TYPE_1D = 0,
-			W_IMAGE_VIEW_TYPE_2D = 1,
-			W_IMAGE_VIEW_TYPE_3D = 2,
-			W_IMAGE_VIEW_TYPE_CUBE = 3,
-			W_IMAGE_VIEW_TYPE_1D_ARRAY = 4,
-			W_IMAGE_VIEW_TYPE_2D_ARRAY = 5,
-			W_IMAGE_VIEW_TYPE_CUBE_ARRAY = 6,
+			W_TEXTURE_COLOR_BUFFER = 1,
+			W_TEXTURE_DEPTH_BUFFER = 2,
+			W_TEXTURE_STENCIL_BUFFER = 4,
+		};
+
+		enum w_texture_view_type 
+		{
+			W_TEXTURE_VIEW_TYPE_1D = 0,
+			W_TEXTURE_VIEW_TYPE_2D = 1,
+			W_TEXTURE_VIEW_TYPE_3D = 2,
+			W_TEXTURE_VIEW_TYPE_CUBE = 3,
+			W_TEXTURE_VIEW_TYPE_1D_ARRAY = 4,
+			W_TEXTURE_VIEW_TYPE_2D_ARRAY = 5,
+			W_TEXTURE_VIEW_TYPE_CUBE_ARRAY = 6,
 		};
 				
         class w_texture_pimp;
@@ -37,14 +44,14 @@ namespace wolf
 			W_EXP virtual ~w_texture();
 
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const bool& pIsStaging = false,
                 _In_ const uint32_t& pWidth = 32,
-                _In_ const uint32_t& pHeight = 32);
+                _In_ const uint32_t& pHeight = 32,
+				_In_ const bool& pIsStaging = false);
             
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags,
                 _In_ const uint32_t& pWidth,
-                _In_ const uint32_t& pHeight);
+                _In_ const uint32_t& pHeight,
+				_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags);
             
 			//Load texture2D from file
 			W_EXP HRESULT initialize_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
@@ -91,10 +98,8 @@ namespace wolf
             W_EXP const uint32_t get_height() const;
             //get sampler of image
             W_EXP VkSampler get_sampler() const;
-            //get image handle
-            W_EXP VkImage get_image() const;
-            //get image view resource
-            W_EXP VkImageView get_image_view() const;
+            //get image and view resources
+            W_EXP w_image_view get_image_view() const;
             //get image type
             W_EXP VkImageType get_image_type() const;
             //get image view type
@@ -108,12 +113,14 @@ namespace wolf
             
 #pragma endregion
 
-#pragma region Getters
+#pragma region Setters
 
 			//set image format
 			W_EXP void set_format(_In_ VkFormat pFormat);
+			//set buffer type
+			W_EXP void set_buffer_type(_In_ w_texture_buffer_type pBufferType);
 			//set image view type
-			W_EXP void set_image_view_type(_In_ w_image_view_type pImageViewType);
+			W_EXP void set_view_type(_In_ w_texture_view_type pViewType);
 
 #pragma region
 

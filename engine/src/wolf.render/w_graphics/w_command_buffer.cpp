@@ -1,16 +1,16 @@
 #include "w_render_pch.h"
-#include "w_command_buffers.h"
+#include "w_command_buffer.h"
 #include <w_convert.h>
 
 namespace wolf
 {
     namespace graphics
     {
-        class w_command_buffers_pimp
+        class w_command_buffer_pimp
         {
         public:
-            w_command_buffers_pimp() :
-                _name("w_command_buffers"),
+            w_command_buffer_pimp() :
+                _name("w_command_buffer"),
                 _enable(true),
                 _order(0),
                 _command_pool(0)
@@ -304,17 +304,17 @@ namespace wolf
 
 using namespace wolf::graphics;
 
-w_command_buffers::w_command_buffers() : _pimp(new w_command_buffers_pimp())
+w_command_buffer::w_command_buffer() : _pimp(new w_command_buffer_pimp())
 {
-    _super::set_class_name("w_command_buffers");
+    _super::set_class_name("w_command_buffer");
 }
 
-w_command_buffers::~w_command_buffers()
+w_command_buffer::~w_command_buffer()
 {
     release();
 }
 
-HRESULT w_command_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
+HRESULT w_command_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const size_t& pCount,
     _In_ const VkCommandBufferLevel& pLevel,
     _In_ const bool& pCreateCommandPool,
@@ -325,43 +325,43 @@ HRESULT w_command_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& p
     return this->_pimp->load(pGDevice, pCount, pLevel, pCreateCommandPool, pCommandPoolQueue);
 }
 
-HRESULT w_command_buffers::begin(_In_ const size_t pCommandBufferIndex, _In_ const VkCommandBufferUsageFlags pFlags)
+HRESULT w_command_buffer::begin(_In_ const size_t pCommandBufferIndex, _In_ const VkCommandBufferUsageFlags pFlags)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->begin(pCommandBufferIndex, pFlags);
 }
 
-HRESULT w_command_buffers::begin_all(_In_ const VkCommandBufferUsageFlags pFlags)
+HRESULT w_command_buffer::begin_all(_In_ const VkCommandBufferUsageFlags pFlags)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->begin_all(pFlags);
 }
 
-HRESULT w_command_buffers::end(_In_ const size_t pCommandBufferIndex)
+HRESULT w_command_buffer::end(_In_ const size_t pCommandBufferIndex)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->end(pCommandBufferIndex);
 }
 
-HRESULT w_command_buffers::end_all()
+HRESULT w_command_buffer::end_all()
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->end_all();
 }
 
-HRESULT w_command_buffers::flush(_In_ const size_t pCommandBufferIndex)
+HRESULT w_command_buffer::flush(_In_ const size_t pCommandBufferIndex)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->flush(pCommandBufferIndex);
 }
 
-HRESULT w_command_buffers::flush_all()
+HRESULT w_command_buffer::flush_all()
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->flush_all();
 }
 
-ULONG w_command_buffers::release()
+ULONG w_command_buffer::release()
 {
     if(_super::get_is_released()) return 0;
     
@@ -372,21 +372,21 @@ ULONG w_command_buffers::release()
 
 #pragma region Getters
 
-bool w_command_buffers::get_enable() const
+bool w_command_buffer::get_enable() const
 {
     if (!_pimp) return 0;
     
     return this->_pimp->get_enable();
 }
 
-int  w_command_buffers::get_order() const
+int  w_command_buffer::get_order() const
 {
     if (!_pimp) return 0;
     
     return this->_pimp->get_order();
 }
 
-const VkCommandBuffer w_command_buffers::get_command_at(_In_ const size_t pIndex) const
+const VkCommandBuffer w_command_buffer::get_command_at(_In_ const size_t pIndex) const
 {
     if (!_pimp) return 0;
     
@@ -397,14 +397,14 @@ const VkCommandBuffer w_command_buffers::get_command_at(_In_ const size_t pIndex
     return _cmds[pIndex];
 }
 
-const VkCommandBuffer* w_command_buffers::get_commands() const
+const VkCommandBuffer* w_command_buffer::get_commands() const
 {
     if (!_pimp) return 0;
     
     return this->_pimp->get_commands();
 }
 
-const size_t w_command_buffers::get_commands_size() const
+const size_t w_command_buffer::get_commands_size() const
 {
     if (!_pimp) return 0;
     
@@ -415,7 +415,7 @@ const size_t w_command_buffers::get_commands_size() const
 
 #pragma region Setters
 
-void w_command_buffers::set_enable(_In_ const bool pEnable)
+void w_command_buffer::set_enable(_In_ const bool pEnable)
 {
     if(this->_pimp)
     {
@@ -423,7 +423,7 @@ void w_command_buffers::set_enable(_In_ const bool pEnable)
     }
 }
 
-void w_command_buffers::set_order(_In_ bool pOrder)
+void w_command_buffer::set_order(_In_ bool pOrder)
 {
     if(this->_pimp)
     {

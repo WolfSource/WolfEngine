@@ -67,16 +67,16 @@ void scene::load()
     this->_viewport_scissor.extent.width = _screen_size.x;
     this->_viewport_scissor.extent.height = _screen_size.y;
     
-    //initialize depth attachment
-    auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
-    _depth_attachment.format = _output_window->vk_depth_buffer_format;
-   
-    //define attachments which has color and depth for render pass
-    std::vector<VkAttachmentDescription> _attachment_descriptions =
-    {
-        w_graphics_device::w_render_pass_attachments::color_attachment_description,
-        _depth_attachment,
-    };
+    //initialize attachments
+	w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+	w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+
+	//define color and depth attachments for render pass
+	std::vector<w_attachment_desc> _attachment_descriptions =
+	{
+		_color,
+		_depth
+	};
     
     //create render pass
     auto _hr = this->_draw_render_pass.load(_gDevice,

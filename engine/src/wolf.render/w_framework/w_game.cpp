@@ -77,10 +77,7 @@ HRESULT w_game::render(_In_ const wolf::system::w_game_time& pGameTime)
 #pragma endregion
     
 #endif
-        
-    auto _hr = w_graphics_device_manager::submit();
-    if (_hr) return _hr;
-    
+            
     return w_graphics_device_manager::present();
 }
 

@@ -17,7 +17,7 @@ namespace wolf
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,
-                _In_ const std::vector<VkAttachmentDescription> pAttachmentDescriptions,
+                _In_ const std::vector<w_attachment_desc> pAttachmentsDescriptions,
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
             {
@@ -29,30 +29,36 @@ namespace wolf
                 std::vector<VkSubpassDescription> _subpass_descriptions;
                 std::vector<VkSubpassDependency> _subpass_dependencies;
 
-                if (!pAttachmentDescriptions.size())
-                {
-                    _attachment_descriptions.push_back(w_graphics_device::w_render_pass_attachments::color_attachment_description);
-                }
-                else
-                {
-                    _attachment_descriptions.insert(_attachment_descriptions.end(), pAttachmentDescriptions.begin(), pAttachmentDescriptions.end());
-                }
+				w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+				w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+				if (!pAttachmentsDescriptions.size())
+				{
+					_attachment_descriptions.push_back(_color.desc);
+					_attachment_descriptions.push_back(_depth.desc);
+				}
+				else
+				{
+					for (auto _iter : pAttachmentsDescriptions)
+					{
+						_attachment_descriptions.push_back(_iter.desc);
+					}
+				}
 
                 if (!pSubpassDescriptions)
                 {
-                    VkSubpassDescription _subpass_description =
-                    {
-                        0,
-                        VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS,
-                        0,
-                        nullptr,
-                        1,
-                        &w_graphics_device::w_render_pass_attachments::color_attachment_reference,
-                        nullptr,
-                        &w_graphics_device::w_render_pass_attachments::depth_attachment_reference,
-                        0,
-                        nullptr
-                    };
+					VkSubpassDescription _subpass_description =
+					{
+						0,
+						VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS,
+						0,
+						nullptr,
+						1,
+						&_color.ref,
+						nullptr,
+						&_depth.ref,
+						0,
+						nullptr
+					};
 
                     _subpass_descriptions.push_back(_subpass_description);
                 }
@@ -94,7 +100,7 @@ namespace wolf
                 V(_hr, L"creating render pass for graphics device: " +
                     std::wstring(this->_gDevice->device_name.begin(), this->_gDevice->device_name.end()) +
                     L" ID:" + std::to_wstring(this->_gDevice->device_id), this->_name, 3, false);
-
+				
                 return _hr ? S_FALSE : S_OK;
             }
 
@@ -185,7 +191,6 @@ namespace wolf
                 return 0;
             }
 
-
 #pragma region Getters
 
             const VkRenderPass get_handle() const
@@ -202,7 +207,7 @@ namespace wolf
             {
                 return this->_viewport_scissor;
             }
-
+			
 #pragma endregion
 
 #pragma region Setters
@@ -250,19 +255,20 @@ w_render_pass::~w_render_pass()
 }
 
 HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                            _In_ const w_viewport& pViewPort,
-                            _In_ const w_viewport_scissor& pViewPortScissor,
-                            _In_ const std::vector<VkAttachmentDescription>& pAttachmentDescriptions,
-                            _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
-                            _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
+	_In_ const w_viewport& pViewPort,
+	_In_ const w_viewport_scissor& pViewPortScissor,
+	_In_ const std::vector<w_attachment_desc>& pAttachmentsDescriptions,
+	_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
+	_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 {
-    if(!this->_pimp) return S_FALSE;
-    return this->_pimp->load(pGDevice,
-                             pViewPort,
-                             pViewPortScissor,
-                             pAttachmentDescriptions,
-                             pSubpassDescriptions,
-                             pSubpassDependencies);
+	if (!this->_pimp) return S_FALSE;
+	return this->_pimp->load(
+		pGDevice,
+		pViewPort,
+		pViewPortScissor,
+		pAttachmentsDescriptions,
+		pSubpassDescriptions,
+		pSubpassDependencies);
 }
 
 void w_render_pass::begin(_In_ const VkCommandBuffer& pCommandBuffer,
@@ -324,12 +330,6 @@ w_viewport_scissor w_render_pass::get_viewport_scissor() const
     if (!this->_pimp) return w_viewport_scissor();
     return this->_pimp->get_viewport_scissor();
 }
-
-#pragma endregion
-
-#pragma region Setters
-
-
 
 #pragma endregion
 

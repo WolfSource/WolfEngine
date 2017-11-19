@@ -1,7 +1,7 @@
 #include "w_render_pch.h"
 #include "w_buffer.h"
 #include <w_convert.h>
-#include "w_command_buffers.h"
+#include "w_command_buffer.h"
 
 namespace wolf
 {
@@ -124,7 +124,7 @@ namespace wolf
                 const std::string _trace = this->_name + "copy_to";
                 
                 //create one command buffer
-                w_command_buffers _copy_command_buffer;
+                w_command_buffer _copy_command_buffer;
                 auto _hr = _copy_command_buffer.load(this->_gDevice, 1);
                 if (_hr != S_OK)
                 {

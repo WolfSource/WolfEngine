@@ -1,7 +1,7 @@
 #include "w_render_pch.h"
 #include "w_mesh.h"
 #include "w_buffer.h"
-#include "w_command_buffers.h"
+#include "w_command_buffer.h"
 #include "w_uniform.h"
 
 using namespace wolf::graphics;
@@ -350,7 +350,7 @@ namespace wolf
                 //create one command buffer 
                 if (!this->_copy_command_buffer)
                 {
-                    this->_copy_command_buffer = new w_command_buffers();
+                    this->_copy_command_buffer = new w_command_buffer();
                     _copy_command_buffer->load(this->_gDevice, 1);
                 }
 
@@ -447,7 +447,7 @@ namespace wolf
             w_texture*                                          _texture;
             w_vertex_binding_attributes                         _vertex_binding_attributes;
             bool                                                _dynamic_buffer;
-            w_command_buffers*                                  _copy_command_buffer;
+            w_command_buffer*                                   _copy_command_buffer;
             struct
             {
                 w_buffer vertices;

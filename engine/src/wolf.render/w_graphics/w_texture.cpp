@@ -3,7 +3,7 @@
 #include <w_convert.h>
 #include <w_io.h>
 #include "w_buffer.h"
-#include "w_command_buffers.h"
+#include "w_command_buffer.h"
 
 #include <gli/gli.hpp>
 
@@ -17,23 +17,22 @@ namespace wolf
         class w_texture_pimp
         {
         public:
-            w_texture_pimp() :
-                _name("w_texture"),
-                _gDevice(nullptr),
-                _width(0),
-                _height(0),
-                _layer_count(1),
-                _image(0),
-                _view(0),
-                _sampler(0),
-                _memory(0),
-                _is_staging(false),
-                _staging_buffer_memory_pointer(nullptr),
-                _format(VK_FORMAT_R8G8B8A8_UNORM),
-                _image_type(VkImageType::VK_IMAGE_TYPE_2D),
-                _image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D)
-            {
-            }
+			w_texture_pimp() :
+				_name("w_texture"),
+				_gDevice(nullptr),
+				_width(0),
+				_height(0),
+				_layer_count(1),
+				_sampler(0),
+				_memory(0),
+				_is_staging(false),
+				_staging_buffer_memory_pointer(nullptr),
+				_format(VK_FORMAT_R8G8B8A8_UNORM),
+				_image_type(VkImageType::VK_IMAGE_TYPE_2D),
+				_image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D),
+				_buffer_type(VK_IMAGE_ASPECT_COLOR_BIT)
+			{
+			}
 
             ~w_texture_pimp()
             {
@@ -41,7 +40,8 @@ namespace wolf
             }
 
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
-                _In_ const uint32_t pWidth, _In_ const uint32_t pHeight, 
+                _In_ const uint32_t pWidth, 
+				_In_ const uint32_t pHeight, 
                 _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
             {
                 this->_gDevice = pGDevice;
@@ -178,7 +178,7 @@ namespace wolf
 
 				//bind to memory
 				if (vkBindImageMemory(this->_gDevice->vk_device,
-					this->_image,
+					this->_image_view.image,
 					this->_memory,
 					0))
 				{
@@ -216,9 +216,7 @@ namespace wolf
 					return S_FALSE;
 				}
 
-				this->_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-				this->_image_info.sampler = this->_sampler;
-				this->_image_info.imageView = this->_view;
+				_create_descriptor_image_info();
 
 				return S_OK;
 			}
@@ -232,15 +230,15 @@ namespace wolf
                 if (_hr == S_FALSE) return S_FALSE;
 
                 //bind to memory
-                if (vkBindImageMemory(this->_gDevice->vk_device,
-                    this->_image,
-                    this->_memory,
-                    0))
-                {
-                    V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
-                        " ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
-                    return S_FALSE;
-                }
+				if (vkBindImageMemory(this->_gDevice->vk_device,
+					this->_image_view.image,
+					this->_memory,
+					0))
+				{
+					V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
+						" ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
+					return S_FALSE;
+				}
 
                 _hr = _create_image_view();
                 if (_hr == S_FALSE) return S_FALSE;
@@ -251,60 +249,60 @@ namespace wolf
                 _hr = copy_data_to_texture_2D(pRGBAData);
                 if (_hr == S_FALSE) return S_FALSE;
                 
-                this->_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-                this->_image_info.sampler = this->_sampler;
-                this->_image_info.imageView = this->_view;
+				_create_descriptor_image_info();
 
                 return S_OK;
             }
 
-            HRESULT _create_image()
-            {				
-                const VkImageCreateInfo _image_create_info =
-                {
-                    VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,							// Type;
-                    nullptr,														// Next
-                    0,																// Flags
-                    this->_image_type,												// ImageType
-                    this->_format,													// Format
-                    {																// Extent
-                        this->_width,												// Width
-                        this->_height,												// Height
-                        1															// Depth
-                    },
-                    1,																// MipLevels
-                    this->_layer_count,												// ArrayLayers
-                    VK_SAMPLE_COUNT_1_BIT,											// Samples
-                    VK_IMAGE_TILING_OPTIMAL,										// Tiling
-                    VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,   // Usage
-                    VK_SHARING_MODE_EXCLUSIVE,										// SharingMode
-                    0,																// QueueFamilyIndexCount
-                    nullptr,														// QueueFamilyIndices
-                    VK_IMAGE_LAYOUT_UNDEFINED										// InitialLayout
-                };
-                
-                //release the previous image
-                if (this->_image)
-                {
-                    //first release it
-                    vkDestroyImage(this->_gDevice->vk_device,
-                                   this->_image,
-                                   nullptr);
-                }
-                
-                auto _hr = vkCreateImage( this->_gDevice->vk_device,
-                                         &_image_create_info,
-                                         nullptr,
-                                         &this->_image );
-                if (_hr)
-                {
-                    V(S_FALSE, "creating VkImage for graphics device: " + this->_gDevice->device_name +
-                      " ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
-                    return S_FALSE;
-                }
-                
-                return S_OK;
-            }
+			HRESULT _create_image()
+			{
+				const VkImageCreateInfo _image_create_info =
+				{
+					VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,							// Type;
+					nullptr,														// Next
+					0,																// Flags
+					this->_image_type,												// ImageType
+					this->_format,													// Format
+					{																// Extent
+						this->_width,												// Width
+						this->_height,												// Height
+						1															// Depth
+					},
+					1,																// MipLevels
+					this->_layer_count,												// ArrayLayers
+					VK_SAMPLE_COUNT_1_BIT,											// Samples
+					VK_IMAGE_TILING_OPTIMAL,										// Tiling
+					VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,   // Usage
+					VK_SHARING_MODE_EXCLUSIVE,										// SharingMode
+					0,																// QueueFamilyIndexCount
+					nullptr,														// QueueFamilyIndices
+					VK_IMAGE_LAYOUT_UNDEFINED										// InitialLayout
+				};
+
+				//release the previous image
+				if (this->_image_view.image)
+				{
+					//first release it
+					vkDestroyImage(
+						this->_gDevice->vk_device,
+						this->_image_view.image,
+						nullptr);
+				}
+
+				auto _hr = vkCreateImage(
+					this->_gDevice->vk_device,
+					&_image_create_info,
+					nullptr,
+					&this->_image_view.image);
+				if (_hr)
+				{
+					V(S_FALSE, "creating VkImage for graphics device: " + this->_gDevice->device_name +
+						" ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
+					return S_FALSE;
+				}
+
+				return S_OK;
+			}
             
             HRESULT _allocate_memory()
             {
@@ -315,9 +313,10 @@ namespace wolf
                 }
                 
                 VkMemoryRequirements _image_memory_requirements;
-                vkGetImageMemoryRequirements(this->_gDevice->vk_device,
-                                             this->_image,
-                                             &_image_memory_requirements);
+                vkGetImageMemoryRequirements(
+					this->_gDevice->vk_device,
+					this->_image_view.image,
+                    &_image_memory_requirements);
                 
                 VkPhysicalDeviceMemoryProperties _memory_properties;
                 vkGetPhysicalDeviceMemoryProperties( this->_gDevice->vk_physical_device, &_memory_properties);
@@ -347,7 +346,7 @@ namespace wolf
                         }
                     }
                 }
-                
+
                 if(!_found)
                 {
                     logger.error("Could not allocate memory for image");
@@ -357,91 +356,100 @@ namespace wolf
                 return S_OK;
             }
             
-            HRESULT _create_image_view()
-            {
-                if(this->_view)
-                {
-                    vkDestroyImageView(this->_gDevice->vk_device, this->_view, nullptr );
-                    this->_view = 0;
-                }
-                
-                const VkImageViewCreateInfo _image_view_create_info =
-                {
-                    VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,             // Type
-                    nullptr,                                              // Next
-                    0,                                                    // Flags
-                    this->_image,                                         // Image
-                    this->_image_view_type,                               // ViewType
-                    this->_format,                                        // Format
-                    {                                                     // Components
-                        VK_COMPONENT_SWIZZLE_R,                                 // VkComponentSwizzle         r
-                        VK_COMPONENT_SWIZZLE_G,                                 // VkComponentSwizzle         g
-                        VK_COMPONENT_SWIZZLE_B,                                 // VkComponentSwizzle         b
-                        VK_COMPONENT_SWIZZLE_A                                  // VkComponentSwizzle         a
-                    },
-                    {                                                     // SubresourceRange
-                        VK_IMAGE_ASPECT_COLOR_BIT,                              // VkImageAspectFlags         aspectMask
-                        0,                                                      // uint32_t                   baseMipLevel
-                        1,                                                      // uint32_t                   levelCount
-                        0,                                                      // uint32_t                   baseArrayLayer
-                        this->_layer_count                                      // uint32_t                   layerCount
-                    }
-                };
-                
-                auto _hr = vkCreateImageView( this->_gDevice->vk_device,
-                                             &_image_view_create_info,
-                                             nullptr,
-                                             &this->_view);
-                if(_hr)
-                {
-                    V(S_FALSE, "creating image view", this->_name, false, true);
-                    return S_FALSE;
-                }
-                
-                return S_OK;
-            }
+			HRESULT _create_image_view()
+			{
+				if (this->_image_view.view)
+				{
+					vkDestroyImageView(this->_gDevice->vk_device, this->_image_view.view, nullptr);
+					this->_image_view.view = 0;
+				}
+
+				const VkImageViewCreateInfo _image_view_create_info =
+				{
+					VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,             // Type
+					nullptr,                                              // Next
+					0,                                                    // Flags
+					this->_image_view.image,                              // Image
+					this->_image_view_type,                               // ViewType
+					this->_format,                                        // Format
+					{                                                     // Components
+						VK_COMPONENT_SWIZZLE_R,                                 // VkComponentSwizzle         r
+						VK_COMPONENT_SWIZZLE_G,                                 // VkComponentSwizzle         g
+						VK_COMPONENT_SWIZZLE_B,                                 // VkComponentSwizzle         b
+						VK_COMPONENT_SWIZZLE_A                                  // VkComponentSwizzle         a
+					},
+					{                                                     // SubresourceRange
+						this->_buffer_type,										// aspectMask
+						0,                                                      // baseMipLevel
+						1,                                                      // levelCount
+						0,                                                      // baseArrayLayer
+						this->_layer_count                                      // layerCount
+					}
+				};
+
+				auto _hr = vkCreateImageView(
+					this->_gDevice->vk_device,
+					&_image_view_create_info,
+					nullptr,
+					&this->_image_view.view);
+				if (_hr)
+				{
+					V(S_FALSE, "creating image view", this->_name, false, true);
+					return S_FALSE;
+				}
+
+				return S_OK;
+			}
             
-            HRESULT _create_sampler()
-            {
-                const VkSamplerCreateInfo _sampler_create_info =
-                {
-                    VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,                // Type
-                    nullptr,                                              // Next
-                    0,                                                    // Flags
-                    VK_FILTER_LINEAR,                                     // MagFilter
-                    VK_FILTER_LINEAR,                                     // MinFilter
-                    VK_SAMPLER_MIPMAP_MODE_LINEAR,                        // MipmapMode
-                    VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeU
-                    VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeV
-                    VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeW
-                    0.0f,                                                 // MipLodBias
-                    VK_TRUE,                                              // AnisotropyEnable
-                    8.0f,                                                 // MaxAnisotropy
-                    VK_FALSE,                                             // CompareEnable
-                    VK_COMPARE_OP_NEVER,                                  // CompareOp
-                    0.0f,                                                 // MinLod
-                    0.0f,                                                 // MaxLod
-                    VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE,                   // BorderColor
-                    VK_FALSE                                              // UnnormalizedCoordinates
-                };
-                
-                auto _hr = vkCreateSampler( this->_gDevice->vk_device,
-                                           &_sampler_create_info,
-                                           nullptr,
-                                           &this->_sampler);
-                if (_hr)
-                {
-                    V(S_FALSE, "creating sampler", this->_name, false, true);
-                    return S_FALSE;
-                }
-                
-                return S_OK;
-            }
+			HRESULT _create_sampler()
+			{
+				const VkSamplerCreateInfo _sampler_create_info =
+				{
+					VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,                // Type
+					nullptr,                                              // Next
+					0,                                                    // Flags
+					VK_FILTER_LINEAR,                                     // MagFilter
+					VK_FILTER_LINEAR,                                     // MinFilter
+					VK_SAMPLER_MIPMAP_MODE_LINEAR,                        // MipmapMode
+					VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeU
+					VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeV
+					VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeW
+					0.0f,                                                 // MipLodBias
+					VK_TRUE,                                              // AnisotropyEnable
+					8.0f,                                                 // MaxAnisotropy
+					VK_FALSE,                                             // CompareEnable
+					VK_COMPARE_OP_NEVER,                                  // CompareOp
+					0.0f,                                                 // MinLod
+					0.0f,                                                 // MaxLod
+					VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE,                   // BorderColor
+					VK_FALSE                                              // UnnormalizedCoordinates
+				};
+
+				auto _hr = vkCreateSampler(
+					this->_gDevice->vk_device,
+					&_sampler_create_info,
+					nullptr,
+					&this->_sampler);
+				if (_hr)
+				{
+					V(S_FALSE, "creating sampler", this->_name, false, true);
+					return S_FALSE;
+				}
+
+				return S_OK;
+			}
             
 			VkFormat _gli_format_to_vulkan_format(_In_ gli::format pFormat)
 			{
 				//direct map to vulkan formats
 				return (VkFormat)pFormat;
+			}
+
+			void _create_descriptor_image_info()
+			{
+				this->_desc_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+				this->_desc_image_info.sampler = this->_sampler;
+				this->_desc_image_info.imageView = this->_image_view.view;
 			}
 
             HRESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
@@ -460,7 +468,8 @@ namespace wolf
                     return _hResult;
                 }
 
-                auto _hr = vkMapMemory(this->_gDevice->vk_device,
+                auto _hr = vkMapMemory(
+					this->_gDevice->vk_device,
                     this->_staging_buffer.get_memory(),
                     0,
                     _data_size,
@@ -488,7 +497,8 @@ namespace wolf
                     _data_size                                          // Size
                 };
 
-                vkFlushMappedMemoryRanges(this->_gDevice->vk_device,
+                vkFlushMappedMemoryRanges(
+					this->_gDevice->vk_device,
                     1,
                     &_flush_range);
                 vkUnmapMemory(this->_gDevice->vk_device,
@@ -496,101 +506,101 @@ namespace wolf
 
 
                 //create command buffer
-                w_command_buffers _command_buffer;
+                w_command_buffer _command_buffer;
                 _command_buffer.load(this->_gDevice, 1);
                 auto _cmd = _command_buffer.get_command_at(0);
 
                 _command_buffer.begin(0, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-                {
-                    VkImageSubresourceRange _image_subresource_range =
-                    {
-                        VK_IMAGE_ASPECT_COLOR_BIT,                      // AspectMask
-                        0,                                              // BaseMipLevel
-                        1,                                              // LevelCount
-                        0,                                              // BaseArrayLayer
-                        this->_layer_count                              // LayerCount
-                    };
+				{
+					VkImageSubresourceRange _image_subresource_range =
+					{
+						this->_buffer_type,								// AspectMask
+						0,                                              // BaseMipLevel
+						1,                                              // LevelCount
+						0,                                              // BaseArrayLayer
+						this->_layer_count                              // LayerCount
+					};
 
-                    VkImageMemoryBarrier _image_memory_barrier_from_undefined_to_transfer_dst =
-                    {
-                        VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,         // Type
-                        nullptr,                                        // Next
-                        0,                                              // SrcAccessMask
-                        VK_ACCESS_TRANSFER_WRITE_BIT,                   // DstAccessMask
-                        VK_IMAGE_LAYOUT_UNDEFINED,                      // OldLayout
-                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,           // NewLayout
-                        VK_QUEUE_FAMILY_IGNORED,                        // SrcQueueFamilyIndex
-                        VK_QUEUE_FAMILY_IGNORED,                        // DstQueueFamilyIndex
-                        this->_image,                                   // image
-                        _image_subresource_range                        // SubresourceRange
-                    };
+					VkImageMemoryBarrier _image_memory_barrier_from_undefined_to_transfer_dst =
+					{
+						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,         // Type
+						nullptr,                                        // Next
+						0,                                              // SrcAccessMask
+						VK_ACCESS_TRANSFER_WRITE_BIT,                   // DstAccessMask
+						VK_IMAGE_LAYOUT_UNDEFINED,                      // OldLayout
+						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,           // NewLayout
+						VK_QUEUE_FAMILY_IGNORED,                        // SrcQueueFamilyIndex
+						VK_QUEUE_FAMILY_IGNORED,                        // DstQueueFamilyIndex
+						this->_image_view.image,                        // image
+						_image_subresource_range                        // SubresourceRange
+					};
 
-                    vkCmdPipelineBarrier(_cmd,
-                        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                        VK_PIPELINE_STAGE_TRANSFER_BIT,
-                        0,
-                        0,
-                        nullptr,
-                        0,
-                        nullptr,
-                        1,
-                        &_image_memory_barrier_from_undefined_to_transfer_dst);
+					vkCmdPipelineBarrier(_cmd,
+						VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						0,
+						0,
+						nullptr,
+						0,
+						nullptr,
+						1,
+						&_image_memory_barrier_from_undefined_to_transfer_dst);
 
-                    VkBufferImageCopy _buffer_image_copy_info =
-                    {
-                        0,                                    // BufferOffset
-                        0,                                    // BufferRowLength
-                        0,                                    // BufferImageHeight
-                        {                                     // ImageSubresource
-                            VK_IMAGE_ASPECT_COLOR_BIT,        // AspectMask
-                            0,                                // MipLevel
-                            0,                                // BaseArrayLayer
-                            1                                 // LayerCount
-                        },
-                        {                                     // ImageOffset
-                            0,                                // X
-                            0,                                // Y
-                            0                                 // Z
-                        },
-                        {                                     // ImageExtent
-                            this->_width,                     // Width
-                            this->_height,                    // Height
-                            1                                 // Depth
-                        }
-                    };
+					VkBufferImageCopy _buffer_image_copy_info =
+					{
+						0,                                    // BufferOffset
+						0,                                    // BufferRowLength
+						0,                                    // BufferImageHeight
+						{                                     // ImageSubresource
+							this->_buffer_type,				  // AspectMask
+							0,                                // MipLevel
+							0,                                // BaseArrayLayer
+							this->_layer_count                // LayerCount
+						},
+						{                                     // ImageOffset
+							0,                                // X
+							0,                                // Y
+							0                                 // Z
+						},
+						{                                     // ImageExtent
+							this->_width,                     // Width
+							this->_height,                    // Height
+							1                                 // Depth
+						}
+					};
 
-                    vkCmdCopyBufferToImage(_cmd,
-                        this->_staging_buffer.get_handle(),
-                        this->_image,
-                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                        1,
-                        &_buffer_image_copy_info);
+					vkCmdCopyBufferToImage(_cmd,
+						this->_staging_buffer.get_handle(),
+						this->_image_view.image,
+						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+						1,
+						&_buffer_image_copy_info);
 
-                    VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
-                    {
-                        VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
-                        nullptr,                                            // Next
-                        VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
-                        VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
-                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
-                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
-                        VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
-                        VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
-                        this->_image,                                       // Image
-                        _image_subresource_range                            // SubresourceRange
-                    };
-                    vkCmdPipelineBarrier(_cmd,
-                        VK_PIPELINE_STAGE_TRANSFER_BIT,
-                        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-                        0,
-                        0,
-                        nullptr,
-                        0,
-                        nullptr,
-                        1,
-                        &_image_memory_barrier_from_transfer_to_shader_read);
+					VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
+					{
+						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
+						nullptr,                                            // Next
+						VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
+						VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
+						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
+						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
+						VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
+						VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
+						this->_image_view.image,                            // Image
+						_image_subresource_range                            // SubresourceRange
+					};
+					vkCmdPipelineBarrier(_cmd,
+						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+						0,
+						0,
+						nullptr,
+						0,
+						nullptr,
+						1,
+						&_image_memory_barrier_from_transfer_to_shader_read);
 
-                }
+				}
                 _command_buffer.end(0);
 
                 // Submit command buffer and copy data from staging buffer to a vertex buffer
@@ -685,7 +695,7 @@ namespace wolf
 
 
 				//create command buffer
-				w_command_buffers _command_buffer;
+				w_command_buffer _command_buffer;
 				_command_buffer.load(this->_gDevice, 1);
 				auto _cmd = _command_buffer.get_command_at(0);
 
@@ -693,11 +703,11 @@ namespace wolf
 				{
 					VkImageSubresourceRange _image_subresource_range =
 					{
-						VK_IMAGE_ASPECT_COLOR_BIT,                      // AspectMask
+						this->_buffer_type,								// AspectMask
 						0,                                              // BaseMipLevel
 						1,                                              // LevelCount
 						0,                                              // BaseArrayLayer
-						1                                               // LayerCount
+						this->_layer_count                              // LayerCount
 					};
 
 					VkImageMemoryBarrier _image_memory_barrier_from_undefined_to_transfer_dst =
@@ -710,7 +720,7 @@ namespace wolf
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,           // NewLayout
 						VK_QUEUE_FAMILY_IGNORED,                        // SrcQueueFamilyIndex
 						VK_QUEUE_FAMILY_IGNORED,                        // DstQueueFamilyIndex
-						this->_image,                                   // image
+						this->_image_view.image,                        // image
 						_image_subresource_range                        // SubresourceRange
 					};
 
@@ -736,10 +746,10 @@ namespace wolf
 							0,                                    // BufferRowLength
 							0,                                    // BufferImageHeight
 							{                                     // ImageSubresource
-								VK_IMAGE_ASPECT_COLOR_BIT,        // AspectMask
+								this->_buffer_type,				  // AspectMask
 								0,                                // MipLevel
 								i,                                // BaseArrayLayer
-								1                                 // LayerCount
+								this->_layer_count                // LayerCount
 							},
 							{                                     // ImageOffset
 								0,                                // X
@@ -760,7 +770,7 @@ namespace wolf
 
 					vkCmdCopyBufferToImage(_cmd,
 						this->_staging_buffer.get_handle(),
-						this->_image,
+						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 						static_cast<uint32_t>(_buffer_copy_regions.size()),
 						_buffer_copy_regions.data());
@@ -775,7 +785,7 @@ namespace wolf
 						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
 						VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
 						VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
-						this->_image,                                       // Image
+						this->_image_view.image,                            // Image
 						_image_subresource_range                            // SubresourceRange
 					};
 					vkCmdPipelineBarrier(_cmd,
@@ -837,7 +847,7 @@ namespace wolf
                 if (!this->_is_staging) return S_FALSE;
                 
                 //create command buffer
-                w_command_buffers _command_buffer;
+                w_command_buffer _command_buffer;
                 _command_buffer.load(this->_gDevice, 1);
                 auto _cmd = _command_buffer.get_command_at(0);
 
@@ -845,11 +855,11 @@ namespace wolf
                 {
                     VkImageSubresourceRange _image_subresource_range =
                     {
-                        VK_IMAGE_ASPECT_COLOR_BIT,                      // AspectMask
+                        this->_buffer_type,							    // AspectMask
                         0,                                              // BaseMipLevel
                         1,                                              // LevelCount
                         0,                                              // BaseArrayLayer
-                        1                                               // LayerCount
+                        this->_layer_count                              // LayerCount
                     };
 
                     VkImageMemoryBarrier _image_memory_barrier_from_undefined_to_transfer_dst =
@@ -862,7 +872,7 @@ namespace wolf
                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,           // NewLayout
                         VK_QUEUE_FAMILY_IGNORED,                        // SrcQueueFamilyIndex
                         VK_QUEUE_FAMILY_IGNORED,                        // DstQueueFamilyIndex
-                        this->_image,                                   // image
+						this->_image_view.image,                        // image
                         _image_subresource_range                        // SubresourceRange
                     };
 
@@ -883,10 +893,10 @@ namespace wolf
                         0,                                    // BufferRowLength
                         0,                                    // BufferImageHeight
                         {                                     // ImageSubresource
-                            VK_IMAGE_ASPECT_COLOR_BIT,        // AspectMask
+                            this->_buffer_type,				  // AspectMask
                             0,                                // MipLevel
                             0,                                // BaseArrayLayer
-                            1                                 // LayerCount
+                            this->_layer_count                // LayerCount
                         },
                         {                                     // ImageOffset
                             0,                                // X
@@ -902,7 +912,7 @@ namespace wolf
 
                     vkCmdCopyBufferToImage(_cmd,
                         this->_staging_buffer.get_handle(),
-                        this->_image,
+						this->_image_view.image,
                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                         1,
                         &_buffer_image_copy_info);
@@ -917,7 +927,7 @@ namespace wolf
                         VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
                         VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
                         VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
-                        this->_image,                                       // Image
+                        this->_image_view.image,                            // Image
                         _image_subresource_range                            // SubresourceRange
                     };
                     vkCmdPipelineBarrier(_cmd,
@@ -973,11 +983,6 @@ namespace wolf
 
                 return S_OK;
             }
-
-            const VkDescriptorImageInfo get_descriptor_info() const
-            {
-                return this->_image_info;
-            }
             
             ULONG release()
             {
@@ -991,20 +996,24 @@ namespace wolf
                 }
                 
                 //release view
-                if(this->_view)
-                {
-                    vkDestroyImageView(this->_gDevice->vk_device, this->_view, nullptr );
-                    this->_view = 0;
-                }
+				if (this->_image_view.view)
+				{
+					vkDestroyImageView(
+						this->_gDevice->vk_device,
+						this->_image_view.view,
+						nullptr);
+					this->_image_view.view = 0;
+				}
                 
                 //release image
-                if (this->_image)
-                {
-                    vkDestroyImage(this->_gDevice->vk_device,
-                                   this->_image,
-                                   nullptr);
-                    this->_image= 0;
-                }
+				if (this->_image_view.image)
+				{
+					vkDestroyImage(
+						this->_gDevice->vk_device,
+						this->_image_view.image,
+						nullptr);
+					this->_image_view.image = 0;
+				}
                 
                 //release memory
                 if( this->_memory)
@@ -1029,6 +1038,11 @@ namespace wolf
                  
 #pragma region Getters
             
+			const VkDescriptorImageInfo get_descriptor_info() const
+			{
+				return this->_desc_image_info;
+			}
+
             const uint32_t get_width() const
             {
                 return this->_width;
@@ -1043,15 +1057,10 @@ namespace wolf
             {
                 return this->_sampler;
             }
-           
-            VkImage get_image() const
+                       
+            w_image_view get_image_view() const
             {
-                return this->_image;
-            }
-            
-            VkImageView get_image_view() const
-            {
-                return this->_view;
+                return this->_image_view;
             }
             
             VkImageType get_image_type() const
@@ -1083,11 +1092,21 @@ namespace wolf
 				this->_format = pFormat;
 			}
 
-			void set_image_view_type(_In_ w_image_view_type pImageViewType)
+			void set_buffer_type(_In_ w_texture_buffer_type pBufferType)
+			{
+#ifdef __VULKAN__
+				this->_buffer_type = (VkImageAspectFlagBits)pBufferType;
+#else
+
+
+#endif
+			}
+
+			void set_view_type(_In_ w_texture_view_type pViewType)
 			{
 
 #ifdef __VULKAN__
-				this->_image_view_type = (VkImageViewType)pImageViewType;
+				this->_image_view_type = (VkImageViewType)pViewType;
 
 #else
 
@@ -1108,14 +1127,14 @@ namespace wolf
             bool                                            _is_staging;
             void*                                           _staging_buffer_memory_pointer;
             w_buffer                                        _staging_buffer;
-            VkImage                                         _image;
-            VkImageView                                     _view;
+			w_image_view									_image_view;
+			VkImageAspectFlags								_buffer_type;
             VkSampler                                       _sampler;
             VkDeviceMemory                                  _memory;
             VkFormat                                        _format;
             VkImageType                                     _image_type;
             VkImageViewType                                 _image_view_type;
-            VkDescriptorImageInfo                           _image_info;
+            VkDescriptorImageInfo                           _desc_image_info;
         };
     }
 }
@@ -1128,7 +1147,7 @@ w_texture* w_texture::default_texture = nullptr;
 w_texture::w_texture() : 
     _pimp(new w_texture_pimp())
 {
-	_super::set_class_name("w_texture_2d");
+	_super::set_class_name("w_texture");
 }
 
 w_texture::~w_texture()
@@ -1137,9 +1156,9 @@ w_texture::~w_texture()
 }
 
 HRESULT w_texture::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const bool& pIsStaging,
-    _In_ const uint32_t& pWidth,
-    _In_ const uint32_t& pHeight)
+	_In_ const uint32_t& pWidth,
+	_In_ const uint32_t& pHeight,
+    _In_ const bool& pIsStaging)
 {
     if (!this->_pimp) return S_FALSE;
     return this->_pimp->load(pGDevice, 
@@ -1149,12 +1168,12 @@ HRESULT w_texture::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 }
 
 HRESULT w_texture::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags,
     _In_ const uint32_t& pWidth,
-    _In_ const uint32_t& pHeight)
+    _In_ const uint32_t& pHeight,
+	_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
 {
     if (!this->_pimp) return S_FALSE;
-    return this->_pimp->load(pGDevice, pMemoryPropertyFlags, pWidth, pHeight);
+    return this->_pimp->load(pGDevice, pWidth, pHeight, pMemoryPropertyFlags);
 }
 
 HRESULT w_texture::initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
@@ -1353,18 +1372,11 @@ VkSampler w_texture::get_sampler() const
     return this->_pimp->get_sampler();
 }
 
-//get image handle
-VkImage w_texture::get_image() const
+//get image and view resources
+w_image_view w_texture::get_image_view() const
 {
-    if(!this->_pimp) return 0;
-    return this->_pimp->get_image();
-}
-
-//get image view resource
-VkImageView w_texture::get_image_view() const
-{
-    if(!this->_pimp) return 0;
-    return this->_pimp->get_image_view();
+	if (!this->_pimp) return w_image_view();
+	return this->_pimp->get_image_view();
 }
 
 //get image type
@@ -1410,10 +1422,16 @@ void w_texture::set_format(_In_ VkFormat pFormat)
 	return this->_pimp->set_format(pFormat);
 }
 
-void w_texture::set_image_view_type(_In_ w_image_view_type pImageViewType)
+void w_texture::set_buffer_type(_In_ w_texture_buffer_type pBufferType)
 {
 	if (!this->_pimp) return;
-	return this->_pimp->set_image_view_type(pImageViewType);
+	return this->_pimp->set_buffer_type(pBufferType);
+}
+
+void w_texture::set_view_type(_In_ w_texture_view_type pViewType)
+{
+	if (!this->_pimp) return;
+	return this->_pimp->set_view_type(pViewType);
 }
 
 #pragma endregion

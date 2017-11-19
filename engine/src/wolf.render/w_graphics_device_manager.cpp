@@ -2,7 +2,7 @@
 #include "w_graphics_device_manager.h"
 #include <w_logger.h>
 #include <w_convert.h>
-#include "w_graphics/w_command_buffers.h"
+#include "w_graphics/w_command_buffer.h"
 #include "w_graphics/w_texture.h"
 #include "w_graphics/w_shader.h"
 #include <signal.h>
@@ -23,44 +23,6 @@ using namespace wolf::graphics;
 ComPtr<IDXGIFactory4>	w_graphics_device::dx_dxgi_factory = nullptr;
 #elif defined(__VULKAN__)
 VkInstance w_graphics_device::vk_instance = NULL;
-
-VkAttachmentDescription	w_graphics_device::w_render_pass_attachments::color_attachment_description =
-{
-    0,								        // Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
-    VkFormat::VK_FORMAT_B8G8R8A8_UNORM,     // Format of an image used for the attachment.
-    VK_SAMPLE_COUNT_1_BIT,                  // Number of samples of the image; The value greater than 1 means multisampling.
-    VK_ATTACHMENT_LOAD_OP_CLEAR,            // Specifies what to do with the image�s contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
-    VK_ATTACHMENT_STORE_OP_STORE,           // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
-    VK_ATTACHMENT_LOAD_OP_DONT_CARE,        // The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
-    VK_ATTACHMENT_STORE_OP_DONT_CARE,       // The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
-    VK_IMAGE_LAYOUT_UNDEFINED,              // The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
-    VK_IMAGE_LAYOUT_PRESENT_SRC_KHR         // The layout the driver will automatically transition the given image into at the end of a render pass.
-};
-
-VkAttachmentReference w_graphics_device::w_render_pass_attachments::color_attachment_reference =
-{
-    0,                                                                  // Attachment
-    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL                            // The layout of attachment
-};
-
-VkAttachmentDescription	w_graphics_device::w_render_pass_attachments::depth_attachment_description =
-{
-	0,								        // Additional properties of attachment.Currently, only an aliasing flag is available, which informs the driver that the attachment shares the same physical memory with another attachment.
-	VK_FORMAT_D32_SFLOAT_S8_UINT,           // Format of an image used for the attachment.
-	VK_SAMPLE_COUNT_1_BIT,                  // Number of samples of the image; The value greater than 1 means multisampling.
-	VK_ATTACHMENT_LOAD_OP_CLEAR,            // Specifies what to do with the images contents at the beginning of a render pass, whether we want them to be cleared, preserved, or we don�t care about them (as we will overwrite them all). Here we want to clear the image to the specified value. This parameter also refers to depth part of depth/stencil images.
-    VK_ATTACHMENT_STORE_OP_STORE,           // Informs the driver what to do with the image�s contents after the render pass (after a subpass in which the image was used for the last time). Here we want the contents of the image to be preserved after the render pass as we intend to display them on screen. This parameter also refers to the depth part of depth/stencil images.
-    VK_ATTACHMENT_LOAD_OP_DONT_CARE,        // The same as loadOp but for the stencil part of depth/stencil images; for color attachments it is ignored.
-    VK_ATTACHMENT_STORE_OP_DONT_CARE,       // The same as storeOp but for the stencil part of depth/stencil images; for color attachments this parameter is ignored.
-    VK_IMAGE_LAYOUT_UNDEFINED,              // The layout the given attachment will have when the render pass starts (what the layout image is provided with by the application).
-    VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL         // The layout the driver will automatically transition the given image into at the end of a render pass.
-};
-
-VkAttachmentReference w_graphics_device::w_render_pass_attachments::depth_attachment_reference =
-{
-    1,                                                                  // Attachment
-    VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL                    // The layout of attachment
-};
 
 std::vector<VkSubpassDependency> w_graphics_device::defaults::vk_default_subpass_dependencies =
 {
@@ -831,7 +793,7 @@ namespace wolf
 					VK_KHR_SURFACE_EXTENSION_NAME,
 				};
 
-				if (!this->_config.off_screen.enable)
+				if (!this->_config.off_screen_mode)
 				{
 					// Enable surface extensions depending on OS
 #if defined(__ANDROID)
@@ -1303,7 +1265,7 @@ namespace wolf
                     }
 
 
-					if (!this->_config.off_screen.enable)
+					if (!this->_config.off_screen_mode)
 					{
 						auto _win = this->_windows_info.find(static_cast<int>(i));
 						if (_win != this->_windows_info.end())
@@ -1472,16 +1434,11 @@ namespace wolf
 					else
 					{
 						w_output_presentation_window _out_window;
-						_out_window.width = this->_config.off_screen.width;
-						_out_window.height = this->_config.off_screen.height;
-						_out_window.aspect_ratio = (float)this->_config.off_screen.width / (float)this->_config.off_screen.height;
+						_out_window.width = 0;
+						_out_window.height = 0;
+						_out_window.aspect_ratio = 0.0f;
 						_out_window.index = -1;
-						_out_window.vk_swap_chain_selected_format.format = this->_config.off_screen.swap_chain_format;
-						_out_window.vk_swap_chain_selected_format.colorSpace = this->_config.off_screen.swap_chain_color_space;
 						_gDevice->output_presentation_windows.push_back(_out_window);
-
-						_create_depth_stencil_buffer(_gDevice, 0);
-						_create_fences(_gDevice, 0);
 					}
 
 					//get queues (graphics and present may be the same)
@@ -1498,7 +1455,7 @@ namespace wolf
                     //present
 					if (_gDevice->vk_compute_queue.index != UINT32_MAX)
 					{
-						if (!this->_config.off_screen.enable)
+						if (!this->_config.off_screen_mode)
 						{
 							vkGetDeviceQueue(_gDevice->vk_device,
 								_gDevice->vk_present_queue.index,
@@ -1919,7 +1876,8 @@ namespace wolf
 
 				auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
 				if (!_vk_presentation_surface) return;
-				
+
+
 				for (size_t j = 0; j < pGDevice->vk_queue_family_properties.size(); ++j)
 				{
 					//check if this device support presentation
@@ -2142,7 +2100,7 @@ namespace wolf
 				_swap_chain_create_info.presentMode = _swap_chain_present_mode;
 				_swap_chain_create_info.oldSwapchain = VK_NULL_HANDLE;
 				_swap_chain_create_info.clipped = VK_TRUE;
-				_swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+				_swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;/*this->_config.can_sample_from_swap_chain_color_attachment ? (VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT) : */
 				_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 				_swap_chain_create_info.queueFamilyIndexCount = 1;
 				_swap_chain_create_info.pQueueFamilyIndices = &_queue_family;
@@ -2228,7 +2186,7 @@ namespace wolf
 					w_image_view _image_view;
 					_image_view.image = _swap_chain_images[j];
 
-					_hr = vkCreateImageView(pGDevice->vk_device,
+					auto _hr = vkCreateImageView(pGDevice->vk_device,
 						&_color_image_view,
 						nullptr,
 						&_image_view.view);
@@ -2266,6 +2224,11 @@ namespace wolf
 			std::map<int, std::vector<w_window_info>> get_output_windows_info() const
 			{
 				return this->_windows_info;
+			}
+
+			w_graphics_device_manager_configs get_graphics_device_manager_configs() const
+			{
+				return this->_config;
 			}
 
 #pragma endregion
@@ -2858,6 +2821,11 @@ void w_graphics_device_manager::_wait_for_previous_frame(_In_ const std::shared_
 
 HRESULT w_graphics_device_manager::prepare()
 {
+	if (!this->_pimp) return S_FALSE;
+	
+	auto _config = this->_pimp->get_graphics_device_manager_configs();
+	if (_config.off_screen_mode) return S_OK;
+
     for (size_t i = 0; i < this->graphics_devices.size(); ++i)
     {
         auto _gDevice = this->graphics_devices[i];
@@ -2903,166 +2871,171 @@ HRESULT w_graphics_device_manager::prepare()
     return S_OK;
 }
 
-HRESULT w_graphics_device_manager::submit()
-{
-	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
-	{
-		auto _gDevice = this->graphics_devices[i];
-
-        if (_gDevice->_is_released) continue;
-        
-#ifdef __DX12__
-		if (_gDevice->dx_device_removed)
-		{
-			on_device_lost();
-			continue;
-		}
-#endif
-
-		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
-		{
-			auto _output_window = &(_gDevice->output_presentation_windows[j]);
-
-#ifdef __DX12__
-
-			_wait_for_previous_frame(_gDevice, j);
-
-			/*
-				Command list allocators can only be reset when the associated
-				command lists have finished execution on the GPU; apps should use
-				fences to determine GPU execution progress.
-			*/
-			auto _hr = _output_window->dx_command_allocator_pool->Reset();
-			if (FAILED(_hr)) return S_FALSE;
-
-			/*
-				However, when ExecuteCommandList() is called on a particular command
-				list, that command list can then be reset at any time and must be before
-				re-recording.
-			*/
-			_hr = _output_window->dx_command_list->Reset(_output_window->dx_command_allocator_pool.Get(), _output_window->dx_pipeline_state.Get());
-			if (FAILED(_hr)) return S_FALSE;
-
-			D3D12_RESOURCE_BARRIER	_barrier = {};
-			_barrier.Flags = D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE;
-			_barrier.Transition.pResource = _output_window->dx_swap_chain_image_views[_output_window->dx_swap_chain_image_index];
-			_barrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT;
-			_barrier.Transition.StateAfter = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
-			_barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-			_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE::D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-
-            _output_window->dx_command_list->ResourceBarrier(1, &_barrier);
-
-			//get the swap chan target image view (render target view) for current frame buffer
-			auto _render_target_view_handle = _output_window->dx_render_target_view_heap->GetCPUDescriptorHandleForHeapStart();
-			auto _render_target_view_desc_size = _gDevice->dx_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-			if (_output_window->dx_swap_chain_image_index == 1)
-			{
-				_render_target_view_handle.ptr += _render_target_view_desc_size;
-			}
-
-			//no need to clear render target views
-			if (_output_window->force_to_clear_color_times > 0)
-			{
-				//clear the first swap chain image view
-                _output_window->force_to_clear_color_times--;
-
-				//set the back buffer render target
-                _output_window->dx_command_list->OMSetRenderTargets(1, &_render_target_view_handle, FALSE, NULL);
-
-				float _clear_color[4] =
-				{
-					static_cast<float>(_output_window->clear_color.r / 255.0f),
-					static_cast<float>(_output_window->clear_color.g / 255.0f),
-					static_cast<float>(_output_window->clear_color.b / 255.0f),
-					static_cast<float>(_output_window->clear_color.a / 255.0f)
-				};
-                _output_window->dx_command_list->ClearRenderTargetView(_render_target_view_handle, _clear_color, 0, NULL);
-			}
-
-			//change the state of back buffer to transition into the presentation
-			_barrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
-			_barrier.Transition.StateAfter = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT;
-
-			//store barrier to command list
-            _output_window->dx_command_list->ResourceBarrier(1, &_barrier);
-
-			//close command list
-			_hr = _output_window->dx_command_list->Close();
-			if (FAILED(_hr)) return S_FALSE;
-
-#elif defined(__VULKAN__)
-
-			//wait for image to be available and draw
-			//VkSubmitInfo _submit_info = {};
-			//_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
-			//_submit_info.waitSemaphoreCount = 1;
-			//_submit_info.pWaitSemaphores = &_output_window->vk_image_is_available_semaphore;
-
-			//_submit_info.signalSemaphoreCount = 1;
-			//_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore;
-
-			////this is the stage where the queue should wait on the semaphore (it doesn't have to wait with drawing)
-			//VkPipelineStageFlags _wait_dst_stage_mask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-			//_submit_info.pWaitDstStageMask = &_wait_dst_stage_mask;
-   //         
-   //         //sort and get all avaiable commands buffers pointers
-   //         std::vector<w_command_buffers*> _sorted_command_buffers;
-   //         for (auto _iter =  _output_window->command_buffers.begin();
-   //              _iter !=  _output_window->command_buffers.end(); ++_iter)
-   //         {
-   //             _sorted_command_buffers.push_back(_iter->second);
-   //         }
-   //         std::sort(_sorted_command_buffers.begin(), _sorted_command_buffers.end(),
-   //                   [](_In_ w_command_buffers* a, _In_ w_command_buffers* b)
-   //                   {
-   //                       return a && b ? a->get_order() < b->get_order() : true;
-   //                   });
-
-   //         std::vector<VkCommandBuffer> _command_buffers;
-   //         for (auto _iter : _sorted_command_buffers)
-   //         {
-   //             if(_iter && _iter->get_enable())
-   //             {
-   //                 auto _cmds = _iter->get_commands();
-   //                 _command_buffers.push_back(_cmds[_output_window->vk_swap_chain_image_index]);
-   //             }
-   //         }
-   //         _sorted_command_buffers.clear();
-   //         
-   //         auto _size = _command_buffers.size();
-   //         if (_size)
-   //         {
-   //             //submit them
-   //             _submit_info.commandBufferCount = static_cast<uint32_t>(_size);
-   //             _submit_info.pCommandBuffers = _command_buffers.data();
-   //         
-   //             _command_buffers.clear();
-   //         }
-   //         
-			////submit queue
-			//auto _hr = vkQueueSubmit(
-			//	_gDevice->vk_present_queue.queue,
-			//	1,
-			//	&_submit_info,
-			//	VK_NULL_HANDLE);
-			//if (_hr)
-			//{
-			//	logger.error("error on submitting queue of graphics device: " +
-			//		_gDevice->device_name + " and presentation window: " + std::to_string(j));
-			//	release();
-			//	std::exit(EXIT_FAILURE);
-			//}
-#endif
-		}
-	}
-
-	return S_OK;
-}
+//HRESULT w_graphics_device_manager::submit()
+//{
+//	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
+//	{
+//		auto _gDevice = this->graphics_devices[i];
+//
+//        if (_gDevice->_is_released) continue;
+//        
+//#ifdef __DX12__
+//		if (_gDevice->dx_device_removed)
+//		{
+//			on_device_lost();
+//			continue;
+//		}
+//#endif
+//
+//		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
+//		{
+//			auto _output_window = &(_gDevice->output_presentation_windows[j]);
+//
+//#ifdef __DX12__
+//
+//			_wait_for_previous_frame(_gDevice, j);
+//
+//			/*
+//				Command list allocators can only be reset when the associated
+//				command lists have finished execution on the GPU; apps should use
+//				fences to determine GPU execution progress.
+//			*/
+//			auto _hr = _output_window->dx_command_allocator_pool->Reset();
+//			if (FAILED(_hr)) return S_FALSE;
+//
+//			/*
+//				However, when ExecuteCommandList() is called on a particular command
+//				list, that command list can then be reset at any time and must be before
+//				re-recording.
+//			*/
+//			_hr = _output_window->dx_command_list->Reset(_output_window->dx_command_allocator_pool.Get(), _output_window->dx_pipeline_state.Get());
+//			if (FAILED(_hr)) return S_FALSE;
+//
+//			D3D12_RESOURCE_BARRIER	_barrier = {};
+//			_barrier.Flags = D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE;
+//			_barrier.Transition.pResource = _output_window->dx_swap_chain_image_views[_output_window->dx_swap_chain_image_index];
+//			_barrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT;
+//			_barrier.Transition.StateAfter = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
+//			_barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+//			_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE::D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+//
+//            _output_window->dx_command_list->ResourceBarrier(1, &_barrier);
+//
+//			//get the swap chan target image view (render target view) for current frame buffer
+//			auto _render_target_view_handle = _output_window->dx_render_target_view_heap->GetCPUDescriptorHandleForHeapStart();
+//			auto _render_target_view_desc_size = _gDevice->dx_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+//			if (_output_window->dx_swap_chain_image_index == 1)
+//			{
+//				_render_target_view_handle.ptr += _render_target_view_desc_size;
+//			}
+//
+//			//no need to clear render target views
+//			if (_output_window->force_to_clear_color_times > 0)
+//			{
+//				//clear the first swap chain image view
+//                _output_window->force_to_clear_color_times--;
+//
+//				//set the back buffer render target
+//                _output_window->dx_command_list->OMSetRenderTargets(1, &_render_target_view_handle, FALSE, NULL);
+//
+//				float _clear_color[4] =
+//				{
+//					static_cast<float>(_output_window->clear_color.r / 255.0f),
+//					static_cast<float>(_output_window->clear_color.g / 255.0f),
+//					static_cast<float>(_output_window->clear_color.b / 255.0f),
+//					static_cast<float>(_output_window->clear_color.a / 255.0f)
+//				};
+//                _output_window->dx_command_list->ClearRenderTargetView(_render_target_view_handle, _clear_color, 0, NULL);
+//			}
+//
+//			//change the state of back buffer to transition into the presentation
+//			_barrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
+//			_barrier.Transition.StateAfter = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT;
+//
+//			//store barrier to command list
+//            _output_window->dx_command_list->ResourceBarrier(1, &_barrier);
+//
+//			//close command list
+//			_hr = _output_window->dx_command_list->Close();
+//			if (FAILED(_hr)) return S_FALSE;
+//
+//#elif defined(__VULKAN__)
+//
+//			//wait for image to be available and draw
+//			//VkSubmitInfo _submit_info = {};
+//			//_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+//
+//			//_submit_info.waitSemaphoreCount = 1;
+//			//_submit_info.pWaitSemaphores = &_output_window->vk_image_is_available_semaphore;
+//
+//			//_submit_info.signalSemaphoreCount = 1;
+//			//_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore;
+//
+//			////this is the stage where the queue should wait on the semaphore (it doesn't have to wait with drawing)
+//			//VkPipelineStageFlags _wait_dst_stage_mask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+//			//_submit_info.pWaitDstStageMask = &_wait_dst_stage_mask;
+//   //         
+//   //         //sort and get all avaiable commands buffers pointers
+//   //         std::vector<w_command_buffers*> _sorted_command_buffers;
+//   //         for (auto _iter =  _output_window->command_buffers.begin();
+//   //              _iter !=  _output_window->command_buffers.end(); ++_iter)
+//   //         {
+//   //             _sorted_command_buffers.push_back(_iter->second);
+//   //         }
+//   //         std::sort(_sorted_command_buffers.begin(), _sorted_command_buffers.end(),
+//   //                   [](_In_ w_command_buffers* a, _In_ w_command_buffers* b)
+//   //                   {
+//   //                       return a && b ? a->get_order() < b->get_order() : true;
+//   //                   });
+//
+//   //         std::vector<VkCommandBuffer> _command_buffers;
+//   //         for (auto _iter : _sorted_command_buffers)
+//   //         {
+//   //             if(_iter && _iter->get_enable())
+//   //             {
+//   //                 auto _cmds = _iter->get_commands();
+//   //                 _command_buffers.push_back(_cmds[_output_window->vk_swap_chain_image_index]);
+//   //             }
+//   //         }
+//   //         _sorted_command_buffers.clear();
+//   //         
+//   //         auto _size = _command_buffers.size();
+//   //         if (_size)
+//   //         {
+//   //             //submit them
+//   //             _submit_info.commandBufferCount = static_cast<uint32_t>(_size);
+//   //             _submit_info.pCommandBuffers = _command_buffers.data();
+//   //         
+//   //             _command_buffers.clear();
+//   //         }
+//   //         
+//			////submit queue
+//			//auto _hr = vkQueueSubmit(
+//			//	_gDevice->vk_present_queue.queue,
+//			//	1,
+//			//	&_submit_info,
+//			//	VK_NULL_HANDLE);
+//			//if (_hr)
+//			//{
+//			//	logger.error("error on submitting queue of graphics device: " +
+//			//		_gDevice->device_name + " and presentation window: " + std::to_string(j));
+//			//	release();
+//			//	std::exit(EXIT_FAILURE);
+//			//}
+//#endif
+//		}
+//	}
+//
+//	return S_OK;
+//}
 
 HRESULT w_graphics_device_manager::present()
 {
+	if (!this->_pimp) return S_FALSE;
+
+	auto _config = this->_pimp->get_graphics_device_manager_configs();
+	if (_config.off_screen_mode) return S_OK;
+
     for (size_t i = 0; i < this->graphics_devices.size(); ++i)
     {
         auto _gDevice = this->graphics_devices[i];

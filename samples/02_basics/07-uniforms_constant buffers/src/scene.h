@@ -15,9 +15,9 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffers.h>
+#include <w_graphics/w_command_buffer.h>
 #include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffers.h>
+#include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
@@ -69,9 +69,9 @@ private:
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
 
 
-	wolf::graphics::w_command_buffers                               _draw_command_buffers;
+	wolf::graphics::w_command_buffer                                _draw_command_buffers;
 	wolf::graphics::w_render_pass                                   _draw_render_pass;
-	wolf::graphics::w_frame_buffers                                 _draw_frame_buffers;
+	wolf::graphics::w_frame_buffer                                  _draw_frame_buffers;
 
 
 	wolf::graphics::w_fences                                        _draw_fence;

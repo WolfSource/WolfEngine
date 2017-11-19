@@ -43,7 +43,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "07-uniforms_constant buffer
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_texture_arrays.Win32", "02_basics\08-texture_arrays\builds\mvsc\08_texture_arrays.Win32.vcxproj", "{635BEAE1-93CC-4C0A-A6FD-E3D0F74AFDDD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09-offscreen_rendering.Win32", "03-advances\09-offscreen rendering\builds\mvsc\09-offscreen_rendering.Win32.vcxproj", "{B2418F5C-55E4-4720-92E7-0A271B75B285}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09-render_to_target.Win32", "03-advances\09-render to target\builds\mvsc\09-render_to_target.Win32.vcxproj", "{B2418F5C-55E4-4720-92E7-0A271B75B285}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

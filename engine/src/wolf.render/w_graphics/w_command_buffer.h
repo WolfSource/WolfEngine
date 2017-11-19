@@ -6,8 +6,8 @@
 	Description		 : Command buffers
 	Comment          : 
 */
-#ifndef __W_COMMAND_BUFFERS_H__
-#define __W_COMMAND_BUFFERS_H__
+#ifndef __W_COMMAND_BUFFER_H__
+#define __W_COMMAND_BUFFER_H__
 
 #include "w_graphics_device_manager.h"
 
@@ -15,12 +15,12 @@ namespace wolf
 {
 	namespace graphics
 	{        
-        class w_command_buffers_pimp;
-        class w_command_buffers : public system::w_object
+        class w_command_buffer_pimp;
+        class w_command_buffer : public system::w_object
         {
         public:
-            W_EXP w_command_buffers();
-            W_EXP ~w_command_buffers();
+            W_EXP w_command_buffer();
+            W_EXP ~w_command_buffer();
             
             /*
                 pGDevice = graphices device, 
@@ -73,7 +73,7 @@ namespace wolf
             
         private:
             typedef system::w_object            _super;
-            w_command_buffers_pimp*             _pimp;                               
+            w_command_buffer_pimp*              _pimp;                               
         };
 
 	}

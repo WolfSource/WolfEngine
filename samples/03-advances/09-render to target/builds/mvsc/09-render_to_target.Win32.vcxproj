@@ -37,8 +37,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B2418F5C-55E4-4720-92E7-0A271B75B285}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>_09-offscreen_rendering</RootNamespace>
-    <ProjectName>09-offscreen_rendering.Win32</ProjectName>
+    <RootNamespace>_09-render_to_texture</RootNamespace>
+    <ProjectName>09-render_to_target.Win32</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

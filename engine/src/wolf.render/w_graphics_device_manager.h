@@ -227,14 +227,6 @@ namespace wolf
                 W_EXP static VkPipelineMultisampleStateCreateInfo         vk_default_pipeline_multisample_state_create_info;
             };
 
-            struct w_render_pass_attachments
-            {
-                W_EXP static VkAttachmentDescription                      color_attachment_description;
-                W_EXP static VkAttachmentReference                        color_attachment_reference;
-                W_EXP static VkAttachmentDescription                      depth_attachment_description;
-                W_EXP static VkAttachmentReference                        depth_attachment_reference;
-            };  
-
             struct w_blend_states
             {
                 W_EXP static VkPipelineColorBlendAttachmentState          blend_none;
@@ -276,8 +268,6 @@ namespace wolf
 			W_EXP virtual void on_suspend();
             //Prepare frame on all graphics devices
             W_EXP virtual HRESULT prepare();
-			//Submit command buffers on all graphics devices
-			W_EXP virtual HRESULT submit();
 			//Present on all graphics devices
 			W_EXP virtual HRESULT present();
 			//Release all resources
@@ -372,15 +362,8 @@ namespace wolf
             std::vector<D3D_FEATURE_LEVEL>	hardware_feature_levels = { D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_1 };
 #endif
             bool debug_gpu = false;
-			struct w_off_screen
-			{
-				bool enable = false;
-				bool vsync = false;
-				uint32_t width = 800;
-				uint32_t height = 600;
-				VkFormat swap_chain_format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
-				VkColorSpaceKHR swap_chain_color_space = VkColorSpaceKHR::VK_COLORSPACE_SRGB_NONLINEAR_KHR;
-			} off_screen;
+			//used for compute mode
+			bool off_screen_mode = false;
         };
 
         struct w_viewport : 

@@ -7,12 +7,6 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp">
-      <Filter>w_graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffers.cpp">
-      <Filter>w_graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
@@ -70,18 +64,21 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_imgui.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffer.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_export.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_render_pch.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h">
-      <Filter>w_graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h">
-      <Filter>w_graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffers.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.h">
@@ -139,6 +136,18 @@
       <Filter>w_graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_imgui.h">
+      <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.h">
+      <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffer.h">
+      <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.h">
+      <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_attachment_desc.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
   </ItemGroup>

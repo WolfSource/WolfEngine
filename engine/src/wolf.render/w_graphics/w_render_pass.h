@@ -11,6 +11,7 @@
 #define __W_RENDER_PASS_H__
 
 #include "w_graphics_device_manager.h"
+#include "w_attachment_desc.h"
 
 namespace wolf
 {
@@ -26,7 +27,7 @@ namespace wolf
             W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,
-                _In_ const std::vector<VkAttachmentDescription>& pAttachmentDescriptions,
+                _In_ const std::vector<w_attachment_desc>& pAttachmentsDescriptions,
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions = nullptr,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
 

@@ -24,9 +24,8 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 #endif
 
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
-	_config.off_screen.enable = true;
-	_config.off_screen.vsync = false;
+	_config.debug_gpu = false;
+	_config.off_screen_mode = false;
 	w_game::set_graphics_device_manager_configs(_config);
 	w_game::set_fixed_time_step(false);
 }
@@ -74,14 +73,14 @@ void scene::load()
 	this->_viewport_scissor.extent.height = _screen_size.y;
 
 	//initialize depth attachment
-	auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
-	_depth_attachment.format = _output_window->vk_depth_buffer_format;
-
+	w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+	w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+	
 	//define attachments which has color and depth for render pass
-	std::vector<VkAttachmentDescription> _attachment_descriptions =
+	std::vector<w_attachment_desc> _attachment_descriptions =
 	{
-		w_graphics_device::w_render_pass_attachments::color_attachment_description,
-		_depth_attachment,
+		_color,
+		_depth
 	};
 
 	//create render pass
@@ -102,7 +101,8 @@ void scene::load()
 		_output_window->vk_swap_chain_image_views,
 		&_output_window->vk_depth_buffer_image_view,
 		_screen_size,
-		1);
+		1,
+		true);
 	if (_hr == S_FALSE)
 	{
 		release();
@@ -126,6 +126,11 @@ void scene::load()
 
 	//create two primary command buffers for clearing screen
 	auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+	if (!_swap_chain_image_size)
+	{
+		//for offscreen rendering
+		_swap_chain_image_size = 2;
+	}
 	_hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
 	if (_hr == S_FALSE)
 	{
