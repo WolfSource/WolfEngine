@@ -96,13 +96,9 @@ void scene::load()
 
 	//create frame buffers
 	auto _render_pass_handle = this->_draw_render_pass.get_handle();
-	_hr = this->_draw_frame_buffers.load(_gDevice,
-		_render_pass_handle,
-		_output_window->vk_swap_chain_image_views,
-		&_output_window->vk_depth_buffer_image_view,
-		_screen_size,
-		1,
-		true);
+    _hr = this->_draw_frame_buffers.load(_gDevice,
+        _render_pass_handle,
+        _output_window);
 	if (_hr == S_FALSE)
 	{
 		release();

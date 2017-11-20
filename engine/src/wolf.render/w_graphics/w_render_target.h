@@ -36,7 +36,7 @@ namespace wolf
 				_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags);
             
             //flush staging buffer
-            W_EXP HRESULT flush_staging_data();
+            W_EXP HRESULT flush_staging_data(_In_ size_t pBufferIndex);
       
             //save texture as bitmap file
             W_EXP HRESULT save_to_file(_In_z_ const char* pFileName);

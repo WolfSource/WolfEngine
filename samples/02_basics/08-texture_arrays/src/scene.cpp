@@ -23,7 +23,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -98,10 +98,7 @@ void scene::load()
 	auto _render_pass_handle = this->_draw_render_pass.get_handle();
 	_hr = this->_draw_frame_buffers.load(_gDevice,
 		_render_pass_handle,
-		_output_window->vk_swap_chain_image_views,
-		&_output_window->vk_depth_buffer_image_view,
-		_screen_size,
-		1);
+		_output_window);
 	if (_hr == S_FALSE)
 	{
 		release();
@@ -193,7 +190,7 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	this->_texture.set_view_type(w_texture_view_type::W_TEXTURE_VIEW_TYPE_2D);
+	this->_texture.set_view_type(w_texture_view_type::W_TEXTURE_VIEW_TYPE_2D_ARRAY);
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 

@@ -749,7 +749,7 @@ namespace wolf
 								this->_buffer_type,				  // AspectMask
 								0,                                // MipLevel
 								i,                                // BaseArrayLayer
-								this->_layer_count                // LayerCount
+								1                                 // LayerCount
 							},
 							{                                     // ImageOffset
 								0,                                // X
