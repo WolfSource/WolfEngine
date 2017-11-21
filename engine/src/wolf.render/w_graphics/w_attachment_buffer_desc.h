@@ -2,7 +2,7 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : w_attachment_desc.h
+	Name			 : w_attachment_buffer_desc.h
 	Description		 : Attachment buffer description
 	Comment          : 
 */
@@ -33,12 +33,13 @@ namespace wolf
 				@param attachment, index of attachment
 				@param layout, The layout of given attachment
 		*/
-		struct w_attachment_desc
+		struct w_attachment_buffer_desc
 		{
 			VkAttachmentDescription desc;
 			VkAttachmentReference ref;
+			VkMemoryPropertyFlags memory_flag = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
-			w_attachment_desc(_In_ w_texture_buffer_type pType = w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER)
+			w_attachment_buffer_desc(_In_ w_texture_buffer_type pType = w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER)
 			{
 				switch (pType)
 				{

@@ -6,7 +6,7 @@
     <ProjectGuid>2aa80aee-0fb4-42d9-b334-5f7c53282213</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>PySideTest.py</StartupFile>
-    <SearchPath>..\..\..\..\..\bin\x64\Release\Win32\</SearchPath>
+    <SearchPath>..\..\..\..\..\bin\x64\Debug\Win32\</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>TestPyWolf</Name>

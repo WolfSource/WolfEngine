@@ -75,66 +75,88 @@ namespace wolf
 				_In_ const VkRenderPass pRenderPass,
 				_In_ std::vector<std::vector<w_texture*>> pBufferAttachmentsGroup)
 			{
-                const std::string _trace_info = this->_name + "::load";
+				const std::string _trace_info = this->_name + "::load";
 
-                if (!pRenderPass)
-                {
-                    V(S_FALSE, "inorder to create frame buffer, the render pass can not be NULL", _trace_info, 3, false);
-                    return S_FALSE;
-                }
+				if (!pRenderPass)
+				{
+					V(S_FALSE, "inorder to create frame buffer, the render pass can not be NULL", _trace_info, 3, false);
+					return S_FALSE;
+				}
 
 				this->_gDevice = pGDevice;
 
+				HRESULT _hr = S_OK;
 				auto _size = pBufferAttachmentsGroup.size();
+				for (auto& _frame_buffer_iter : pBufferAttachmentsGroup)
+				{
+					VkFramebuffer _frame_buffer = 0;
+					uint32_t _width = 0;
+					uint32_t _height = 0;
+					size_t _size = _frame_buffer_iter.size();
+					if (!_size) continue;
 
-                for (auto& _frame_buffer_iter : pBufferAttachmentsGroup)
-                {
-                    VkFramebuffer _frame_buffer = 0;
+					//get size of first width and height
+					auto _t = _frame_buffer_iter[0];
+					if (_t)
+					{
+						_width = _t->get_width();
+						_height = _t->get_height();
+					}
 
-                    for (auto& _attach_iter : _frame_buffer_iter)
-                    {
-                        if (!_attach_iter)
-                        {
-                            V(S_FALSE, "an attachment can not be NULL", _trace_info, 3, false);
-                            continue;
-                        }
+					//check size of these attachments
+					for (size_t i = 1; i < _size; ++i)
+					{
+						_t = _frame_buffer_iter[0];
+						if (_t && (_t->get_width() != _width || _t->get_height() != _height))
+						{
+							_hr = S_FALSE;
+							V(_hr, "Size of frame buffer's attachments are not equal", _trace_info, 3, false);
+							break;
+						}
+					}
 
-                        std::vector<VkImageView> _attachments;
-                        _attachments.push_back(_attach_iter->get_image_view().view);
+					if (_hr == S_FALSE) break;
 
-                        ////if need depth add depth
-                        //if (pDepthAttachment)
-                        //{
-                        //    _attachments.push_back(pDepthAttachment->view);//depth
-                        //}
+					std::vector<VkImageView> _attachments;
+					for (auto& _attach_iter : _frame_buffer_iter)
+					{
+						if (!_attach_iter)
+						{
+							_hr = S_FALSE;
+							V(_hr, "an attachment can not be NULL", _trace_info, 3, false);
+							break;
+						}
 
-                        //VkFramebufferCreateInfo _framebuffer_create_info =
-                        //{
-                        //    VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,  // Type
-                        //    nullptr,                                    // Next
-                        //    0,                                          // Flags
-                        //    pRenderPass,								// Render pass
-                        //    static_cast<uint32_t>(_attachments.size()), // AttachmentCount
-                        //    _attachments.data(),						// Attachments
-                        //    pFrameSize.x,                               // Width
-                        //    pFrameSize.y,                               // Height
-                        //    pNumberOfLayers								// Layers
-                        //};
+						_attachments.push_back(_attach_iter->get_image_view().view);
+					}
 
-                        //auto _hr = vkCreateFramebuffer(this->_gDevice->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
-                        //if (_hr != VK_SUCCESS)
-                        //{
-                        //    V(S_FALSE, "creating frame buffer for graphics device: " + this->_gDevice->device_name +
-                        //        " ID:" + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
-                        //    return S_FALSE;
-                        //}
+					VkFramebufferCreateInfo _framebuffer_create_info =
+					{
+						VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,  // Type
+						nullptr,                                    // Next
+						0,                                          // Flags
+						pRenderPass,								// Render pass
+						static_cast<uint32_t>(_attachments.size()), // AttachmentCount
+						_attachments.data(),						// Attachments
+						_width,										// Width
+						_height,									// Height
+						this->_layer_count  						// Layers
+					};
 
-                        _attachments.clear();
-                    }
-                    this->_buffers.push_back(_frame_buffer);
-                }
+					auto _hr = vkCreateFramebuffer(this->_gDevice->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
+					if (_hr != VK_SUCCESS)
+					{
+						V(S_FALSE, "creating frame buffer for graphics device: " + this->_gDevice->device_name +
+							" ID:" + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
+						return S_FALSE;
+					}
 
-				return S_OK;
+					_attachments.clear();
+
+					this->_buffers.push_back(_frame_buffer);
+				}
+
+				return _hr;
 			}
             
             ULONG release()
@@ -157,7 +179,7 @@ namespace wolf
                 return pIndex >= this->_buffers.size() ? 0 : this->_buffers.at(pIndex);
             }
 
-            const size_t get_frame_buffers_size() const
+            const size_t get_count() const
             {
                 return this->_buffers.size();
             }
@@ -208,22 +230,16 @@ HRESULT w_frame_buffer::load(
         pPresentationWindow);
 }
 
-//HRESULT w_frame_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-//	_In_ const VkRenderPass pRenderPass,
-//	_In_ std::vector<w_image_view> pImageViewAttachments,
-//	_In_ w_image_view* pDepthAttachment,
-//	_In_ const w_point_t& pFrameSize,
-//	_In_ uint32_t pNumberOfLayers)
-//{
-//	if (!this->_pimp) return S_FALSE;
-//	return this->_pimp->load(
-//		pGDevice,
-//		pRenderPass,
-//		pImageViewAttachments,
-//		pDepthAttachment,
-//		pFrameSize,
-//		pNumberOfLayers);
-//}
+HRESULT w_frame_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const VkRenderPass pRenderPass,
+	_In_ std::vector<std::vector<w_texture*>> pBufferAttachmentsGroup)
+{
+	if (!this->_pimp) return S_FALSE;
+	return this->_pimp->load(
+		pGDevice,
+		pRenderPass,
+		pBufferAttachmentsGroup);
+}
 
 ULONG w_frame_buffer::release()
 {
@@ -242,10 +258,10 @@ const VkFramebuffer w_frame_buffer::get_frame_buffer_at(_In_ size_t pIndex) cons
     return this->_pimp->get_frame_buffer_at(pIndex);
 }
 
-const size_t w_frame_buffer::get_frame_buffers_size() const
+const size_t w_frame_buffer::get_count() const
 {
     if(!this->_pimp) return 0;
-    return this->_pimp->get_frame_buffers_size();
+    return this->_pimp->get_count();
 }
 
 #pragma endregion

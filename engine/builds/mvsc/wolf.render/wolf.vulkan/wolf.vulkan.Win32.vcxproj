@@ -208,7 +208,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_attachment_desc.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_attachment_buffer_desc.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_imgui.h" />

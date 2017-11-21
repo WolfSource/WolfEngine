@@ -17,7 +17,7 @@ namespace wolf
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,
-                _In_ const std::vector<w_attachment_desc> pAttachmentsDescriptions,
+                _In_ const std::vector<w_attachment_buffer_desc> pAttachmentBufferDescriptions,
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
             {
@@ -29,16 +29,16 @@ namespace wolf
                 std::vector<VkSubpassDescription> _subpass_descriptions;
                 std::vector<VkSubpassDependency> _subpass_dependencies;
 
-				w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-				w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
-				if (!pAttachmentsDescriptions.size())
+				w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+				w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+				if (!pAttachmentBufferDescriptions.size())
 				{
 					_attachment_descriptions.push_back(_color.desc);
 					_attachment_descriptions.push_back(_depth.desc);
 				}
 				else
 				{
-					for (auto _iter : pAttachmentsDescriptions)
+					for (auto _iter : pAttachmentBufferDescriptions)
 					{
 						_attachment_descriptions.push_back(_iter.desc);
 					}
@@ -257,7 +257,7 @@ w_render_pass::~w_render_pass()
 HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ const w_viewport& pViewPort,
 	_In_ const w_viewport_scissor& pViewPortScissor,
-	_In_ const std::vector<w_attachment_desc>& pAttachmentsDescriptions,
+	_In_ const std::vector<w_attachment_buffer_desc>& pAttachmentBuffersDescriptions,
 	_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
 	_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 {
@@ -266,7 +266,7 @@ HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDev
 		pGDevice,
 		pViewPort,
 		pViewPortScissor,
-		pAttachmentsDescriptions,
+		pAttachmentBuffersDescriptions,
 		pSubpassDescriptions,
 		pSubpassDependencies);
 }

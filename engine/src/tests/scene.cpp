@@ -72,16 +72,12 @@ void scene::load()
 	this->_viewport_scissor.extent.width = _screen_size.x;
 	this->_viewport_scissor.extent.height = _screen_size.y;
 
-	//initialize depth attachment
-	w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-	w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+	//initialize attachment buffers
+	w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+	w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
 	
 	//define attachments which has color and depth for render pass
-	std::vector<w_attachment_desc> _attachment_descriptions =
-	{
-		_color,
-		_depth
-	};
+	std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
 
 	//create render pass
 	auto _hr = this->_draw_render_pass.load(_gDevice,

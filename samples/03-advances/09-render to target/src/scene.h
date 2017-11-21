@@ -22,12 +22,12 @@
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_mesh.h>
-#include <w_graphics/w_texture.h>
+#include <w_graphics/w_uniform.h>
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-#include <w_graphics/w_uniform.h>
+#include <w_graphics/w_render_target.h>
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -64,7 +64,6 @@ public:
 
 private:
 	HRESULT build_draw_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-	HRESULT build_quad_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
@@ -74,16 +73,8 @@ private:
 	wolf::graphics::w_render_pass                                   _draw_render_pass;
 	wolf::graphics::w_frame_buffer                                  _draw_frame_buffers;
 
-	wolf::graphics::w_command_buffer                                _quad_command_buffers;
-	wolf::graphics::w_render_pass                                   _quad_render_pass;
-	wolf::graphics::w_frame_buffer                                  _quad_frame_buffers;
-
-
 	wolf::graphics::w_fences                                        _draw_fence;
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
-
-	wolf::graphics::w_fences                                        _quad_fence;
-	wolf::graphics::w_semaphore                                     _quad_semaphore;
 
 
 	wolf::graphics::w_shader                                        _shader;
@@ -92,14 +83,25 @@ private:
     wolf::graphics::w_mesh											_mesh;
     wolf::graphics::w_texture										_texture;
 
+	struct u0
+	{
+		glm::mat4 wvp;
+	};
+	wolf::graphics::w_uniform<u0>                                   _u0;
+
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    struct u0
-    {
-        glm::mat4 wvp;
-    };
-    wolf::graphics::w_uniform<u0>                                   _u0;
+
+	//render targets
+	wolf::graphics::w_render_target                                 _rt;
+	//render target command buffer
+	wolf::graphics::w_command_buffer                                _rt_command_buffer;
+	//render target fence
+	wolf::graphics::w_fences                                        _rt_fence;
+	//render target semaphore
+	wolf::graphics::w_semaphore                                     _rt_semaphore;
+
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
 

@@ -1,6 +1,5 @@
 #include "w_render_pch.h"
 #include "w_render_target.h"
-#include "w_command_buffer.h"
 #include "w_render_pass.h"
 #include "w_frame_buffer.h"
 #include "w_texture.h"
@@ -18,100 +17,143 @@ namespace wolf
             {
             }
 
-            ~w_render_target_pimp()
-            {
-                release();
-            }
-
             HRESULT load(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ wolf::graphics::w_viewport pViewPort,
-                _In_ wolf::graphics::w_viewport_scissor pViewportScissor,
-                _In_ std::vector<wolf::graphics::w_attachment_desc> pAttachmentsDescriptions,
-                _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
+                _In_ w_viewport pViewPort,
+                _In_ w_viewport_scissor pViewportScissor,
+                _In_ std::vector<w_attachment_buffer_desc> pAttachmentBuffersDescriptions,
+				_In_ const size_t& pCount)
             {
                 const std::string _trace_info = this->_name + "::load";
 
                 this->_gDevice = pGDevice;
+				this->_viewport = pViewPort;
+				this->_viewport_scissor = pViewportScissor;
 
-                HRESULT _hr = S_OK;
-                int _depth_buffer_index = -1;
-                //check for attachment and create texture buffer for them
-                for (size_t i = 0; i < pAttachmentsDescriptions.size(); ++i)
-                {
-                    auto _attachment = pAttachmentsDescriptions[i];
-                    auto _texture_buffer = new (std::nothrow) w_texture();
-                    if (!_texture_buffer)
-                    {
-                        _hr = S_FALSE;
-                        V(_hr, "allocating memory for texture", _trace_info, 3, false);
-                        break;
-                    }
+				HRESULT _hr = S_OK;
+				std::vector<std::vector<w_texture*>> _frame_buffers_attachments;
+				for (size_t i = 0; i < pCount; ++i)
+				{
+					std::vector<w_texture*> __attachments;
+					//check for attachment and create texture buffer for them
+					for (size_t i = 0; i < pAttachmentBuffersDescriptions.size(); ++i)
+					{
+						auto _attachment = &pAttachmentBuffersDescriptions[i];
+						auto _texture_buffer = new (std::nothrow) w_texture();
+						if (!_texture_buffer)
+						{
+							_hr = S_FALSE;
+							V(_hr, "allocating memory for texture", _trace_info, 3, false);
+							break;
+						}
 
-                    if (_attachment.ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
-                    {
-                        //create color
-                        _texture_buffer->set_buffer_type(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-                    }
-                    else if (_attachment.ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
-                    {
-                        //create depth
-                        _texture_buffer->set_buffer_type(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
-                        _depth_buffer_index = i;
-                    }
+						if (_attachment->ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+						{
+							//color
+							_attachment->desc.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+							_texture_buffer->set_buffer_type(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+							_texture_buffer->set_usage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
+						}
+						else if (_attachment->ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+						{
+							//depth
+							_texture_buffer->set_buffer_type(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+							_texture_buffer->set_usage(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
+						}
 
-                    auto _hr = _texture_buffer->load(pGDevice, pViewPort.width, pViewPort.height, pMemoryPropertyFlags);
-                    if (_hr == S_FALSE)
-                    {
-                        V(S_FALSE, "loading texture", _trace_info, 3, false);
-                        break;
-                    }
+						_texture_buffer->set_format(_attachment->desc.format);
+						//_texture_buffer->set_usage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
+						auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, _attachment->memory_flag);
+						if (_hr == S_FALSE)
+						{
+							V(S_FALSE, "loading texture", _trace_info, 3, false);
+							break;
+						}
+						_hr = _texture_buffer->load();
+						if (_hr == S_FALSE)
+						{
+							V(S_FALSE, "initializing texture", _trace_info, 3, false);
+							break;
+						}
 
-                    this->_attachment_buffers.push_back(_texture_buffer);
-                }
+						__attachments.push_back(_texture_buffer);
+						//store in global vector
+						this->_attachment_buffers.push_back(_texture_buffer);
+					}
+					_frame_buffers_attachments.push_back(__attachments);
+				}
 
-                if (_hr == S_FALSE)
-                {
-                    release();
-                    return S_FALSE;
-                }
+				if (_hr == S_FALSE)
+				{
+					release();
+					return S_FALSE;
+				}
 
+				//create render pass
+				_hr = this->_render_pass.load(pGDevice,
+					pViewPort,
+					pViewportScissor,
+					pAttachmentBuffersDescriptions);
+				if (_hr == S_FALSE)
+				{
+					release();
+					V(S_FALSE, "loading render pass", _trace_info, 3, false);
+					return S_FALSE;
+				}
 
-                //create render pass
-                _hr = this->_render_pass.load(pGDevice,
-                    pViewPort,
-                    pViewportScissor,
-                    pAttachmentsDescriptions);
-                if (_hr == S_FALSE)
-                {
-                    release();
-                    V(S_FALSE, "loading render pass", _trace_info, 3, false);
-                    return S_FALSE;
-                }
+                //create frame buffers
+                auto _render_pass_handle = this->_render_pass.get_handle();
+				_hr = this->_frame_buffers.load(
+					pGDevice,
+					_render_pass_handle,
+					_frame_buffers_attachments);
+				if (_hr == S_FALSE)
+				{
+					release();
+					V(S_FALSE, "creating frame buffers", _trace_info, 3, false);
+					return S_FALSE;
+				}
 
-                ////create frame buffers
-                //auto _render_pass_handle = this->_render_pass.get_handle();
-                //_hr = this->_frame_buffers.load(pGDevice,
-                //	_render_pass_handle,
-                //	{ this->_color_buffer.get_image_view() },
-                //    _depth_buffer_index == -1 ? nullptr : &this->_depth_buffer.get_image_view(),
-                //	//frame buffer size
-                //	{
-                //		pViewPort.width,
-                //		pViewPort.height
-                //	},
-                //	1);
-
-                //if (_hr == S_FALSE)
-                //{
-                //	release();
-                //	V(S_FALSE, "creating frame buffers", _trace_info, 3, true);
-                //}
+				_frame_buffers_attachments.clear();
 
                 return S_OK;
             }
 
-            HRESULT flush_staging_data(_In_ size_t pIndex)
+			HRESULT record_command_buffer(_In_ wolf::graphics::w_command_buffer* pCommandBuffer, _In_ w_color pClearColor, _In_ const float& pClearDepth, _In_ const UINT&  pClearStencil)
+			{
+				const std::string _trace_info = this->_name + "::record_command_buffer";
+
+				if (!pCommandBuffer) return S_FALSE;
+
+				auto _cmd_size = pCommandBuffer->get_commands_size();
+				if (_cmd_size != this->_frame_buffers.get_count())
+				{
+					V(S_FALSE, "parameter count mismatch. Number of command buffers must equal to number of frame buffers", _trace_info, 3, false);
+					return S_FALSE;
+				}
+				for (uint32_t i = 0; i < _cmd_size; ++i)
+				{
+					pCommandBuffer->begin(i);
+					{
+						auto _cmd = pCommandBuffer->get_command_at(i);
+						auto _frame_buffer_handle = this->_frame_buffers.get_frame_buffer_at(i);
+
+						this->_render_pass.begin(_cmd,
+							_frame_buffer_handle,
+							pClearColor,
+							pClearDepth,
+							pClearStencil);
+						{
+							//To Do draw
+						}
+						this->_render_pass.end(_cmd);
+					}
+					pCommandBuffer->end(i);
+				}
+				return S_OK;
+			}
+
+            HRESULT flush_staging_buffer(_In_ size_t pIndex)
             {
                 if (pIndex >= this->_attachment_buffers.size()) return S_FALSE;
                 
@@ -120,13 +162,30 @@ namespace wolf
                 
                 return _texture_buffer->flush_staging_data();
             }
+
+			HRESULT flush_all_staging_buffers()
+			{
+				HRESULT _hr = S_OK;
+				for (auto _buffer : this->_attachment_buffers)
+				{
+					if (!_buffer || _buffer->flush_staging_data() == S_FALSE)
+					{
+						_hr = S_FALSE;
+						break;
+					}
+				}
+				return _hr;
+			}
             
             ULONG release()
             {
-                for (auto _buffer : this->_attachment_buffers)
-                {
-                    SAFE_RELEASE(_buffer);
-                }
+				for (auto _buffer : this->_attachment_buffers)
+				{
+					SAFE_RELEASE(_buffer);
+				}
+				this->_attachment_buffers.clear();
+				this->_frame_buffers.release();
+				this->_render_pass.release();
                 this->_gDevice = nullptr;
                 
                 return 0;
@@ -134,55 +193,85 @@ namespace wolf
                  
 #pragma region Getters
             
-           /* const uint32_t get_width() const
+            const uint32_t get_width() const
             {
-                return this->_width;
+                return this->_viewport.width;
             }
             
             const uint32_t get_height() const
             {
-                return this->_height;
+				return this->_viewport.height;
             }
             
-            VkSampler get_sampler() const
+            VkSampler get_sampler(_In_ size_t pBufferIndex) const
             {
-                return this->_sampler;
-            }
-           
-            VkImage get_image() const
-            {
-                return this->_image;
-            }
-            
-            VkImageView get_image_view() const
-            {
-                return this->_view;
-            }
-            
-            VkImageType get_image_type() const
-            {
-                return this->_image_type;
-            }
-            
-            VkImageViewType get_image_view_type() const
-            {
-                return this->_image_view_type;
-            }
-            
-            VkFormat get_format() const
-            {
-                return this->_format;
-            }
-            
-            void* get_pointer_to_staging_data()
-            {
-                return this->_is_staging ? this->_staging_buffer_memory_pointer : nullptr;
-            }
+				if (pBufferIndex >= this->_attachment_buffers.size()) return 0;
 
-			const VkDescriptorImageInfo get_descriptor_info() const
+				auto _t = this->_attachment_buffers.at(pBufferIndex);
+				if (_t) return _t->get_sampler();
+
+				return 0();
+            }
+                       
+            w_image_view get_image_view(_In_ size_t pBufferIndex) const
+            {
+				if (pBufferIndex >= this->_attachment_buffers.size()) return w_image_view();
+
+				auto _t = this->_attachment_buffers.at(pBufferIndex);
+				if (_t) return _t->get_image_view();
+
+				return w_image_view();
+            }
+            
+            VkImageType get_image_type(_In_ size_t pBufferIndex) const
+            {
+				if (pBufferIndex >= this->_attachment_buffers.size()) return VkImageType::VK_IMAGE_TYPE_END_RANGE;
+
+				auto _t = this->_attachment_buffers.at(pBufferIndex);
+				if (_t) return _t->get_image_type();
+
+				return VkImageType::VK_IMAGE_TYPE_END_RANGE;
+            }
+            
+			VkImageViewType get_image_view_type(_In_ size_t pBufferIndex) const
 			{
-				return this->_desc_image_info;
-			}*/
+				if (pBufferIndex >= this->_attachment_buffers.size()) return VkImageViewType::VK_IMAGE_VIEW_TYPE_END_RANGE;
+
+				auto _t = this->_attachment_buffers.at(pBufferIndex);
+				if (_t) return _t->get_image_view_type();
+
+				return VkImageViewType::VK_IMAGE_VIEW_TYPE_END_RANGE;
+			}
+
+			void* get_pointer_to_staging_data_of_attachment(_In_ size_t pBufferIndex)
+			{
+				if (pBufferIndex >= this->_attachment_buffers.size()) return nullptr;
+
+				auto _t = this->_attachment_buffers.at(pBufferIndex);
+				if (_t) return _t->get_pointer_to_staging_data();
+
+				return nullptr;
+			}
+
+			const VkFormat get_attachment_format(_In_ size_t pBufferIndex) const
+			{
+				if (pBufferIndex >= this->_attachment_buffers.size()) return VkFormat::VK_FORMAT_UNDEFINED;
+
+				auto _t = this->_attachment_buffers.at(pBufferIndex);
+				if (_t) return _t->get_format();
+
+				return VkFormat::VK_FORMAT_UNDEFINED;
+			}
+
+			const VkDescriptorImageInfo get_attachment_descriptor_info(_In_ size_t pBufferIndex) const
+			{
+				if (pBufferIndex >= this->_attachment_buffers.size()) return VkDescriptorImageInfo();
+
+				auto _t = this->_attachment_buffers.at(pBufferIndex);
+				if (_t) return _t->get_descriptor_info();
+
+				return VkDescriptorImageInfo();
+			}
 
 #pragma endregion
               
@@ -190,8 +279,10 @@ namespace wolf
             
             std::string													_name;
             std::shared_ptr<w_graphics_device>							_gDevice;
-			wolf::graphics::w_render_pass                               _render_pass;
-			wolf::graphics::w_frame_buffer                              _frame_buffers;
+			w_viewport													_viewport;
+			w_viewport_scissor											_viewport_scissor;
+			w_render_pass												_render_pass;
+			w_frame_buffer												_frame_buffers;
 			std::vector<wolf::graphics::w_texture*>						_attachment_buffers;	
         };
     }
@@ -210,41 +301,46 @@ w_render_target::~w_render_target()
 	release();
 }
 
-HRESULT w_render_target::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const uint32_t& pWidth,
-	_In_ const uint32_t& pHeight,
-	_In_ VkFormat pFormat,
-	_In_ const bool& pIsStaging)
+HRESULT w_render_target::load(
+	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ w_viewport pViewPort,
+	_In_ w_viewport_scissor pViewportScissor,
+	_In_ std::vector<w_attachment_buffer_desc> pAttachmentBuffersDescriptions,
+	_In_ const size_t& pCount)
 {
 	if (!this->_pimp) return S_FALSE;
-	/*return this->_pimp->load(pGDevice,
-		pWidth,
-		pHeight,
-		pFormat,
-		pIsStaging ? (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);*/
-	return S_OK;
+	return this->_pimp->load(
+		pGDevice,
+		pViewPort,
+		pViewportScissor,
+		pAttachmentBuffersDescriptions,
+		pCount);
 }
 
-HRESULT w_render_target::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const uint32_t& pWidth,
-	_In_ const uint32_t& pHeight,
-	_In_ VkFormat pFormat,
-	_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
+HRESULT w_render_target::record_command_buffer(
+	_In_ w_command_buffer* pCommandBuffer,
+	_In_ w_color pClearColor,
+	_In_ const float& pClearDepth,
+	_In_ const UINT&  pClearStencil)
 {
 	if (!this->_pimp) return S_FALSE;
-	//return this->_pimp->load(
-	//	pGDevice,
-	//	pWidth,
-	//	pHeight,
-	//	pFormat,
-	//	pMemoryPropertyFlags);
-	return S_OK;
+	return this->_pimp->record_command_buffer(
+		pCommandBuffer,
+		pClearColor,
+		pClearDepth,
+		pClearStencil);
 }
 
-HRESULT w_render_target::flush_staging_data(_In_ size_t pBufferIndex)
+HRESULT w_render_target::flush_staging_buffer(_In_ size_t pBufferIndex)
 {
     if (!this->_pimp) return S_FALSE;
-    return this->_pimp->flush_staging_data(pBufferIndex);
+    return this->_pimp->flush_staging_buffer(pBufferIndex);
+}
+
+HRESULT w_render_target::flush_all_staging_buffers()
+{
+	if (!this->_pimp) return S_FALSE;
+	return this->_pimp->flush_all_staging_buffers();
 }
 
 HRESULT w_render_target::save_to_file(_In_z_ const char* pFilename)
@@ -280,54 +376,56 @@ ULONG w_render_target::release()
 
 const uint32_t w_render_target::get_width() const
 {
-    if(!this->_pimp) return 0;
-	return 0;// this->_pimp->get_width();
+	if (!this->_pimp) return 0;
+	return this->_pimp->get_width();
 }
 
 const uint32_t w_render_target::get_height() const
 {
-    if(!this->_pimp) return 0;
-	return 0;// this->_pimp->get_height();
+	if (!this->_pimp) return 0;
+	return this->_pimp->get_height();
 }
 
-//get sampler of image
-VkSampler w_render_target::get_sampler() const
+VkSampler w_render_target::get_sampler(_In_ size_t pBufferIndex) const
 {
-    if(!this->_pimp) return 0;
-	return 0;// this->_pimp->get_sampler();
+	if (!this->_pimp) return 0;
+	return this->_pimp->get_sampler(pBufferIndex);
 }
 
-//get image handle
-VkImage w_render_target::get_image() const
+w_image_view w_render_target::get_image_view(_In_ size_t pBufferIndex) const
 {
-    if(!this->_pimp) return 0;
-	return 0;// this->_pimp->get_image();
+	if (!this->_pimp) return w_image_view();
+	return this->_pimp->get_image_view(pBufferIndex);
 }
 
-//get image view resource
-VkImageView w_render_target::get_image_view() const
+VkImageType w_render_target::get_image_type(_In_ size_t pBufferIndex) const
 {
-    if(!this->_pimp) return 0;
-	return 0;// this->_pimp->get_image_view();
+	if (!this->_pimp) return VkImageType::VK_IMAGE_TYPE_END_RANGE;
+	return this->_pimp->get_image_type(pBufferIndex);
 }
 
-//get image format
-VkFormat w_render_target::get_format() const
+VkImageViewType w_render_target::get_image_view_type(_In_ size_t pBufferIndex) const
 {
-    if(!this->_pimp) return VkFormat::VK_FORMAT_UNDEFINED;
-	return VkFormat::VK_FORMAT_UNDEFINED;// this->_pimp->get_format();
+	if (!this->_pimp) return VkImageViewType::VK_IMAGE_VIEW_TYPE_END_RANGE;
+	return this->_pimp->get_image_view_type(pBufferIndex);
 }
 
-const VkDescriptorImageInfo w_render_target::get_descriptor_info() const
-{
-    if(!this->_pimp) return VkDescriptorImageInfo();
-	return VkDescriptorImageInfo();// this->_pimp->get_descriptor_info();
-}
-
-void* w_render_target::get_pointer_to_staging_data()
+void* w_render_target::get_pointer_to_staging_data_of_attachment(_In_ size_t pBufferIndex)
 {
 	if (!this->_pimp) return nullptr;
-	return nullptr;// this->_pimp->get_pointer_to_staging_data();
+	return this->_pimp->get_pointer_to_staging_data_of_attachment(pBufferIndex);
+}
+
+const VkFormat w_render_target::get_attachment_format(_In_ size_t pBufferIndex) const
+{
+	if (!this->_pimp) return VkFormat::VK_FORMAT_UNDEFINED;
+	return this->_pimp->get_attachment_format(pBufferIndex);
+}
+
+const VkDescriptorImageInfo w_render_target::get_attachment_descriptor_info(_In_ size_t pBufferIndex) const
+{
+	if (!this->_pimp) return VkDescriptorImageInfo();
+	return this->_pimp->get_attachment_descriptor_info(pBufferIndex);
 }
 
 #pragma endregion

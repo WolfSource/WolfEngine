@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "scene.h"
+#include <w_graphics/w_attachment_buffer_desc.h>
 
 using namespace std;
 using namespace wolf;
@@ -67,22 +68,19 @@ void scene::load()
     this->_viewport_scissor.extent.width = _screen_size.x;
     this->_viewport_scissor.extent.height = _screen_size.y;
     
-    //initialize attachments
-	w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-	w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+    //initialize attachment buffers
+	w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+	w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
 
-	//define color and depth attachments for render pass
-	std::vector<w_attachment_desc> _attachment_descriptions =
-	{
-		_color,
-		_depth
-	};
+	//define color and depth buffers for render pass
+	std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
     
     //create render pass
-    auto _hr = this->_draw_render_pass.load(_gDevice,
-                                            _viewport,
-                                            _viewport_scissor,
-                                            _attachment_descriptions);
+	auto _hr = this->_draw_render_pass.load(
+		_gDevice,
+		_viewport,
+		_viewport_scissor,
+		_attachment_descriptions);
     if (_hr == S_FALSE)
     {
         release();
@@ -91,9 +89,10 @@ void scene::load()
     
     //create frame buffers
      auto _render_pass_handle = this->_draw_render_pass.get_handle();
-    _hr = this->_draw_frame_buffers.load(_gDevice,
-                                         _render_pass_handle,
-                                         _output_window);
+	 _hr = this->_draw_frame_buffers.load(
+		 _gDevice,
+		 _render_pass_handle,
+		 _output_window);
     if (_hr == S_FALSE)
     {
         release();
@@ -134,14 +133,15 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
     {
         this->_draw_command_buffers.begin(i);
         {
+			auto _cmd = this->_draw_command_buffers.get_command_at(i);
             auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
             
-            auto _cmd = this->_draw_command_buffers.get_command_at(i);
-            this->_draw_render_pass.begin(_cmd,
-                                          _frame_buffer_handle,
-                                          w_color::CORNFLOWER_BLUE(),
-                                          1.0f,
-                                          0.0f);
+			this->_draw_render_pass.begin(
+				_cmd,
+				_frame_buffer_handle,
+				w_color::CORNFLOWER_BLUE(),
+				1.0f,
+				0.0f);
             {
                 //place your draw code
             }

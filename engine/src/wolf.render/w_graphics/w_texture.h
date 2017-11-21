@@ -43,26 +43,29 @@ namespace wolf
 			W_EXP w_texture();
 			W_EXP virtual ~w_texture();
 
-            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t& pWidth = 32,
                 _In_ const uint32_t& pHeight = 32,
 				_In_ const bool& pIsStaging = false);
             
-            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t& pWidth,
                 _In_ const uint32_t& pHeight,
 				_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags);
             
-			//Load texture2D from file
-			W_EXP HRESULT initialize_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
-            //Load texture2D from memory in format of RGBA
-            W_EXP HRESULT initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData);
-            //Load texture2D from memory in format of RGB
-            W_EXP HRESULT initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBAData);
-            //Load texture2D from memory, all channels have same byte
-            W_EXP HRESULT initialize_texture_from_memory_all_channels_same(_In_ uint8_t pData);
-            //Load texture2D from w_color
-            W_EXP HRESULT initialize_texture_from_memory_color(_In_ w_color pColor);
+			//Load texture
+			W_EXP HRESULT load();
+
+			//Load texture from file
+			W_EXP HRESULT load_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
+            //Load texture from memory in format of RGBA
+            W_EXP HRESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData);
+            //Load texture from memory in format of RGB
+            W_EXP HRESULT load_texture_from_memory_rgb(_In_ uint8_t* pRGBAData);
+            //Load texture from memory, all channels have same byte
+            W_EXP HRESULT load_texture_from_memory_all_channels_same(_In_ uint8_t pData);
+            //Load texture from w_color
+            W_EXP HRESULT load_texture_from_memory_color(_In_ w_color pColor);
             /*
                 copy data to texture
                 if this is a staging buffer, do not use this function because it will cause memory leaks,
@@ -96,7 +99,9 @@ namespace wolf
             W_EXP const uint32_t get_width() const;
             //get height of image
             W_EXP const uint32_t get_height() const;
-            //get sampler of image
+			//get image usage
+			W_EXP const VkImageUsageFlags get_usage() const;
+			//get sampler of image
             W_EXP VkSampler get_sampler() const;
             //get image and view resources
             W_EXP w_image_view get_image_view() const;
@@ -117,6 +122,8 @@ namespace wolf
 
 			//set image format
 			W_EXP void set_format(_In_ VkFormat pFormat);
+			//set image usage
+			W_EXP void set_usage(_In_ VkImageUsageFlags pUsage);
 			//set buffer type
 			W_EXP void set_buffer_type(_In_ w_texture_buffer_type pBufferType);
 			//set image view type

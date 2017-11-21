@@ -72,16 +72,12 @@ void scene::load()
 	this->_viewport_scissor.extent.width = _screen_size.x;
 	this->_viewport_scissor.extent.height = _screen_size.y;
 
-	//initialize attachments
-	w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-	w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+	//initialize attachment buffers
+	w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+	w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
 
-	//define color and depth attachments for render pass
-	std::vector<w_attachment_desc> _attachment_descriptions =
-	{
-		_color,
-		_depth
-	};
+	//define color and depth buffers for render pass
+	std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
 
 	//create render pass
 	auto _hr = this->_draw_render_pass.load(_gDevice,
@@ -180,7 +176,7 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     //load texture
-    _hr = this->_texture.load(_gDevice);
+    _hr = this->_texture.initialize(_gDevice);
     if (_hr == S_FALSE)
     {
         release();
@@ -195,7 +191,7 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     //load texture from file
-    _hr = this->_texture.initialize_texture_2D_from_file(_content_path_dir + L"textures/logo.dds", true);
+    _hr = this->_texture.load_texture_2D_from_file(_content_path_dir + L"textures/logo.dds", true);
     if (_hr == S_FALSE)
     {
         release();

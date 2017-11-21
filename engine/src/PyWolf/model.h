@@ -305,7 +305,7 @@ private:
         wolf::graphics::w_buffer                                lod_levels_buffers;
         
         wolf::graphics::w_pipeline                              pipeline;
-        wolf::graphics::w_command_buffers                       command_buffers;
+        wolf::graphics::w_command_buffer                        command_buffers;
         VkSemaphore                                             semaphore = 0;
 
         void release()

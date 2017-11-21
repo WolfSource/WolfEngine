@@ -30,12 +30,9 @@ namespace wolf
                 _In_ const VkRenderPass pRenderPass,
                 _In_ w_output_presentation_window* pPresentationWindow);
 
-			//W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-			//	_In_ const VkRenderPass pRenderPass,
-			//	_In_ std::vector<w_image_view> pImageViewAttachments,
-			//	_In_ w_image_view* pDepthAttachment,
-			//	_In_ const w_point_t& pFrameSize,
-			//	_In_ uint32_t pNumberOfLayers);
+			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ const VkRenderPass pRenderPass,
+				_In_ std::vector<std::vector<w_texture*>> pBufferAttachmentsGroup);
 
 			W_EXP virtual ULONG release() override;
 
@@ -43,7 +40,7 @@ namespace wolf
 #pragma region Getters
 
 			W_EXP const VkFramebuffer get_frame_buffer_at(_In_ size_t pIndex) const;
-			W_EXP const size_t get_frame_buffers_size() const;
+			W_EXP const size_t get_count() const;
 
 #pragma endregion
 

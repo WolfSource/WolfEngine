@@ -25,12 +25,13 @@ namespace wolf
 				_layer_count(1),
 				_sampler(0),
 				_memory(0),
+				_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT),
 				_is_staging(false),
 				_staging_buffer_memory_pointer(nullptr),
 				_format(VK_FORMAT_R8G8B8A8_UNORM),
 				_image_type(VkImageType::VK_IMAGE_TYPE_2D),
 				_image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D),
-				_buffer_type(VK_IMAGE_ASPECT_COLOR_BIT)
+				_buffer_type(VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT)
 			{
 			}
 
@@ -39,7 +40,7 @@ namespace wolf
                 release();
             }
 
-            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
+            HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t pWidth, 
 				_In_ const uint32_t pHeight, 
                 _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
@@ -57,7 +58,37 @@ namespace wolf
                 return S_OK;
             }
 
-			HRESULT initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
+			HRESULT load()
+			{
+				auto _hr = _create_image();
+				if (_hr == S_FALSE) return S_FALSE;
+
+				_hr = _allocate_memory();
+				if (_hr == S_FALSE) return S_FALSE;
+
+				//bind to memory
+				if (vkBindImageMemory(this->_gDevice->vk_device,
+					this->_image_view.image,
+					this->_memory,
+					0))
+				{
+					V(S_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_name +
+						" ID: " + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
+					return S_FALSE;
+				}
+
+				_hr = _create_image_view();
+				if (_hr == S_FALSE) return S_FALSE;
+
+				_hr = _create_sampler();
+				if (_hr == S_FALSE) return S_FALSE;
+				
+				_create_descriptor_image_info();
+
+				return S_OK;
+			}
+
+			HRESULT load_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
 			{
 				using namespace std;
 				using namespace system::io;
@@ -221,7 +252,7 @@ namespace wolf
 				return S_OK;
 			}
 
-            HRESULT initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData)
+            HRESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData)
             {
                 auto _hr = _create_image();
                 if (_hr == S_FALSE) return S_FALSE;
@@ -272,13 +303,13 @@ namespace wolf
 					this->_layer_count,												// ArrayLayers
 					VK_SAMPLE_COUNT_1_BIT,											// Samples
 					VK_IMAGE_TILING_OPTIMAL,										// Tiling
-					VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,   // Usage
+					this->_usage,													// Usage
 					VK_SHARING_MODE_EXCLUSIVE,										// SharingMode
 					0,																// QueueFamilyIndexCount
 					nullptr,														// QueueFamilyIndices
 					VK_IMAGE_LAYOUT_UNDEFINED										// InitialLayout
 				};
-
+								
 				//release the previous image
 				if (this->_image_view.image)
 				{
@@ -1053,6 +1084,11 @@ namespace wolf
                 return this->_height;
             }
             
+			const VkImageUsageFlags get_usage() const
+			{
+				return this->_usage;
+			}
+
             VkSampler get_sampler() const
             {
                 return this->_sampler;
@@ -1114,6 +1150,11 @@ namespace wolf
 #endif
 			}
 
+			void set_usage(_In_ VkImageUsageFlags pUsage)
+			{
+				this->_usage = pUsage;
+			}
+
 #pragma endregion
 
         private:
@@ -1122,6 +1163,7 @@ namespace wolf
             std::shared_ptr<w_graphics_device>              _gDevice;
             uint32_t                                        _width;
             uint32_t                                        _height;
+			VkImageUsageFlags								_usage;
             uint32_t                                        _layer_count;
             VkMemoryPropertyFlags                           _memory_property_flags;
             bool                                            _is_staging;
@@ -1155,40 +1197,46 @@ w_texture::~w_texture()
 	release();
 }
 
-HRESULT w_texture::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ const uint32_t& pWidth,
 	_In_ const uint32_t& pHeight,
     _In_ const bool& pIsStaging)
 {
     if (!this->_pimp) return S_FALSE;
-    return this->_pimp->load(pGDevice, 
+    return this->_pimp->initialize(pGDevice,
         pWidth,
         pHeight,
         pIsStaging ? (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 }
 
-HRESULT w_texture::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const uint32_t& pWidth,
     _In_ const uint32_t& pHeight,
 	_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
 {
     if (!this->_pimp) return S_FALSE;
-    return this->_pimp->load(pGDevice, pWidth, pHeight, pMemoryPropertyFlags);
+    return this->_pimp->initialize(pGDevice, pWidth, pHeight, pMemoryPropertyFlags);
 }
 
-HRESULT w_texture::initialize_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
+HRESULT w_texture::load()
+{
+	if (!this->_pimp) return S_FALSE;
+	return this->_pimp->load();
+}
+
+HRESULT w_texture::load_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
 {
     if(!this->_pimp) return S_FALSE;
-    return this->_pimp->initialize_texture_2D_from_file(pPath, pIsAbsolutePath);
+    return this->_pimp->load_texture_2D_from_file(pPath, pIsAbsolutePath);
 }
 
-HRESULT w_texture::initialize_texture_from_memory_rgba(_In_ uint8_t* pRGBAData)
+HRESULT w_texture::load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData)
 {
     if (!this->_pimp) return S_FALSE;
-    return this->_pimp->initialize_texture_from_memory_rgba(pRGBAData);
+    return this->_pimp->load_texture_from_memory_rgba(pRGBAData);
 }
 
-HRESULT w_texture::initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBData)
+HRESULT w_texture::load_texture_from_memory_rgb(_In_ uint8_t* pRGBData)
 {
     if (!this->_pimp) return S_FALSE;
     
@@ -1210,10 +1258,10 @@ HRESULT w_texture::initialize_texture_from_memory_rgb(_In_ uint8_t* pRGBData)
         _rgba[j] = pRGBData[j];
     }
 
-    return this->_pimp->initialize_texture_from_memory_rgba(_rgba);
+    return this->_pimp->load_texture_from_memory_rgba(_rgba);
 }
 
-HRESULT w_texture::initialize_texture_from_memory_all_channels_same(_In_ uint8_t pData)
+HRESULT w_texture::load_texture_from_memory_all_channels_same(_In_ uint8_t pData)
 {
     if (!this->_pimp) return S_FALSE;
 
@@ -1227,12 +1275,12 @@ HRESULT w_texture::initialize_texture_from_memory_all_channels_same(_In_ uint8_t
     if (!_rgba) return S_FALSE;
 
     std::memset(_rgba, pData, _length);
-    auto _hr = this->_pimp->initialize_texture_from_memory_rgba(_rgba);
+    auto _hr = this->_pimp->load_texture_from_memory_rgba(_rgba);
     free(_rgba);
     return _hr;
 }
 
-HRESULT w_texture::initialize_texture_from_memory_color(_In_ w_color pColor)
+HRESULT w_texture::load_texture_from_memory_color(_In_ w_color pColor)
 {
     if (!this->_pimp) return S_FALSE;
 
@@ -1252,7 +1300,7 @@ HRESULT w_texture::initialize_texture_from_memory_color(_In_ w_color pColor)
         _rgba[i + 2] = pColor.b;
         _rgba[i + 3] = pColor.a;
     }
-    auto _hr = this->_pimp->initialize_texture_from_memory_rgba(_rgba);
+    auto _hr = this->_pimp->load_texture_from_memory_rgba(_rgba);
     free(_rgba);
     return _hr;
 }
@@ -1288,13 +1336,13 @@ HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics
         return S_FALSE;
     }
 
-    auto _hr = _texture->load(pGDevice);
+    auto _hr = _texture->initialize(pGDevice);
     if (_hr == S_FALSE)
     {
         SAFE_RELEASE(_texture);
         return S_FALSE;
     }
-    _hr = _texture->initialize_texture_2D_from_file(pPath, true);
+    _hr = _texture->load_texture_2D_from_file(pPath, true);
     if (_hr == S_FALSE)
     {
         SAFE_RELEASE(_texture);
@@ -1365,7 +1413,12 @@ const uint32_t w_texture::get_height() const
     return this->_pimp->get_height();
 }
 
-//get sampler of image
+const VkImageUsageFlags w_texture::get_usage() const
+{
+	if (!this->_pimp) return 0;
+	return this->_pimp->get_usage();
+}
+
 VkSampler w_texture::get_sampler() const
 {
     if(!this->_pimp) return 0;
@@ -1420,6 +1473,12 @@ void w_texture::set_format(_In_ VkFormat pFormat)
 {
 	if (!this->_pimp) return;
 	return this->_pimp->set_format(pFormat);
+}
+
+void w_texture::set_usage(_In_ VkImageUsageFlags pUsage)
+{
+	if (!this->_pimp) return;
+	return this->_pimp->set_usage(pUsage);
 }
 
 void w_texture::set_buffer_type(_In_ w_texture_buffer_type pBufferType)

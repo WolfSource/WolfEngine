@@ -15,9 +15,9 @@
 #include <w_framework/w_model.h>
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_uniform.h>
-#include <w_graphics/w_command_buffers.h>
+#include <w_graphics/w_command_buffer.h>
 #include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffers.h>
+#include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_quad.h>
 #include <w_memory.h>
@@ -92,13 +92,13 @@ private:
     wolf::content_pipeline::w_first_person_camera                  _camera;
     bool                                                           _show_gui;
 
-    wolf::graphics::w_command_buffers                              _draw_command_buffers;
+    wolf::graphics::w_command_buffer                               _draw_command_buffers;
     wolf::graphics::w_render_pass                                  _draw_render_pass;
-    wolf::graphics::w_frame_buffers                                _draw_frame_buffers;
+    wolf::graphics::w_frame_buffer                                 _draw_frame_buffers;
 
-    wolf::graphics::w_command_buffers                              _gui_command_buffers;
+    wolf::graphics::w_command_buffer                               _gui_command_buffers;
     wolf::graphics::w_render_pass                                  _gui_render_pass;
-    wolf::graphics::w_frame_buffers                                _gui_frame_buffers;
+    wolf::graphics::w_frame_buffer                                 _gui_frame_buffers;
 
 
     w_point_t                                                      _screen_size;
@@ -110,7 +110,7 @@ private:
     struct render_thread_context
     {
         wolf::system::w_thread                                     thread;
-        wolf::graphics::w_command_buffers                          secondary_command_buffers;
+        wolf::graphics::w_command_buffer                           secondary_command_buffers;
         size_t                                                     batch_size;
         void release()
         {

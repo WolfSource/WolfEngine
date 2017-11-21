@@ -141,37 +141,35 @@ void scene::load()
     this->_viewport_scissor.extent.width = _screen_size.x;
     this->_viewport_scissor.extent.height = _screen_size.y;
 
-    auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
-    _depth_attachment.format = _output_window->vk_depth_buffer_format;
+	//initialize depth attachment
+	w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+	w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
 
-    std::vector<VkAttachmentDescription> _attachments =
-    {
-        w_graphics_device::w_render_pass_attachments::color_attachment_description,
-        _depth_attachment,
-    };
+	//define attachments which has color and depth for render pass
+	std::vector<w_attachment_desc> _attachment_descriptions =
+	{
+		_color,
+		_depth
+	};
 
-    //create draw render pass
-    auto _hr = this->_draw_render_pass.load(
-        _gDevice,
-        _viewport,
-        _viewport_scissor,
-        _attachments);
-
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error on creating render pass");
-        release();
-        w_game::exiting = true;
-        return;
-    }
+	//create render pass
+	auto _hr = this->_draw_render_pass.load(_gDevice,
+		_viewport,
+		_viewport_scissor,
+		_attachment_descriptions);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating render pass", _trace, 3, true);
+	}
 
     // Color attachments
     // Don't clear the framebuffer (like the renderpass from the example does)
-    _attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+	_attachment_descriptions[0].desc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
 
     //Depth attachment
-    _attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    _attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    _attachment_descriptions[1].desc.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    _attachment_descriptions[1].desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 
     VkAttachmentReference colorReference = {};
     colorReference.attachment = 0;
@@ -185,7 +183,7 @@ void scene::load()
         _gDevice,
         _viewport,
         _viewport_scissor,
-        _attachments);
+		_attachment_descriptions);
 
     if (_hr == S_FALSE)
     {
@@ -208,10 +206,7 @@ void scene::load()
     //create frame buffers
     _hr = this->_draw_frame_buffers.load(_gDevice,
         _render_pass_handle,
-        _output_window->vk_swap_chain_image_views,
-        &_output_window->vk_depth_buffer_image_view,
-        _screen_size,
-        1);
+        _output_window);
     if (_hr == S_FALSE)
     {
         logger.error("Error on creating draw frame buffers");
@@ -223,10 +218,7 @@ void scene::load()
     auto _gui_render_pass_handle = this->_gui_render_pass.get_handle();
     _hr = this->_gui_frame_buffers.load(_gDevice,
         _gui_render_pass_handle,
-        _output_window->vk_swap_chain_image_views,
-        &_output_window->vk_depth_buffer_image_view,
-        _screen_size,
-        1);
+        _output_window);
     if (_hr == S_FALSE)
     {
         logger.error("Error on creating gui frame buffers");

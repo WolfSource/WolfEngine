@@ -2100,7 +2100,7 @@ namespace wolf
 				_swap_chain_create_info.presentMode = _swap_chain_present_mode;
 				_swap_chain_create_info.oldSwapchain = VK_NULL_HANDLE;
 				_swap_chain_create_info.clipped = VK_TRUE;
-				_swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;/*this->_config.can_sample_from_swap_chain_color_attachment ? (VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT) : */
+				_swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 				_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 				_swap_chain_create_info.queueFamilyIndexCount = 1;
 				_swap_chain_create_info.pQueueFamilyIndices = &_queue_family;

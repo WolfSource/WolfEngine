@@ -147,7 +147,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_attachment_desc.h">
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_attachment_buffer_desc.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
   </ItemGroup>

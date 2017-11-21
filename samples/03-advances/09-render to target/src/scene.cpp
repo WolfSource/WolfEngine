@@ -72,16 +72,14 @@ void scene::load()
 	this->_viewport_scissor.extent.width = _screen_size.x;
 	this->_viewport_scissor.extent.height = _screen_size.y;
 
-	//initialize depth attachment
-	auto _depth_attachment = w_graphics_device::w_render_pass_attachments::depth_attachment_description;
-	_depth_attachment.format = _output_window->vk_depth_buffer_format;
+	//initialize buffer attachments
+	w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+	w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
 
-	//define attachments which has color and depth for render pass
-	std::vector<VkAttachmentDescription> _attachment_descriptions =
-	{
-		w_graphics_device::w_render_pass_attachments::color_attachment_description,
-		_depth_attachment,
-	};
+	_depth.desc.format = _output_window->vk_depth_buffer_format;
+
+	//define color and depth attachments for render pass
+	std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
 
 	//create render pass
 	auto _hr = this->_draw_render_pass.load(_gDevice,
@@ -98,10 +96,7 @@ void scene::load()
 	auto _render_pass_handle = this->_draw_render_pass.get_handle();
 	_hr = this->_draw_frame_buffers.load(_gDevice,
 		_render_pass_handle,
-		_output_window->vk_swap_chain_image_views,
-		&_output_window->vk_depth_buffer_image_view,
-		_screen_size,
-		1);
+		_output_window);
 
 	if (_hr == S_FALSE)
 	{
@@ -125,65 +120,7 @@ void scene::load()
 		V(S_FALSE, "creating draw fence", _trace_info, 3, true);
 	}
 
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	_hr = this->_quad_render_pass.load(_gDevice,
-		_viewport,
-		_viewport_scissor,
-		_attachment_descriptions);
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "creating render pass", _trace_info, 3, true);
-	}
-
-	//create frame buffers
-	_render_pass_handle = this->_quad_render_pass.get_handle();
-	_hr = this->_quad_frame_buffers.load(_gDevice,
-		_render_pass_handle,
-		_output_window->vk_swap_chain_image_views,
-		&_output_window->vk_depth_buffer_image_view,
-		_screen_size,
-		1,
-		true);
-
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "creating frame buffers", _trace_info, 3, true);
-	}
-
-	//create semaphore create info
-	_hr = this->_quad_semaphore.initialize(_gDevice);
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "creating quad semaphore", _trace_info, 3, true);
-	}
-
-	//Fence for render sync
-	_hr = this->_quad_fence.initialize(_gDevice);
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "creating quad fence", _trace_info, 3, true);
-	}
-
 	auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
-	_hr = this->_quad_command_buffers.load(_gDevice, _swap_chain_image_size);
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "creating quad command buffers", _trace_info, 3, true);
-	}
-
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 	//create two primary command buffers for clearing screen
 	_hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
 	if (_hr == S_FALSE)
@@ -191,6 +128,44 @@ void scene::load()
 		release();
 		V(S_FALSE, "creating draw command buffers", _trace_info, 3, true);
 	}
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	//create two command buffers for render target
+	_hr = this->_rt_command_buffer.load(_gDevice, _swap_chain_image_size);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading quad command buffers", _trace_info, 3, true);
+	}
+
+	_hr = this->_rt.load(_gDevice, this->_viewport, this->_viewport_scissor, _attachment_descriptions, _swap_chain_image_size);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading render target", _trace_info, 3, true);
+	}
+
+	//create semaphore for syncing
+	_hr = this->_rt_semaphore.initialize(_gDevice);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating quad semaphore", _trace_info, 3, true);
+	}
+
+	//create fence for syncing
+	_hr = this->_rt_fence.initialize(_gDevice);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating quad fence", _trace_info, 3, true);
+	}
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #ifdef WIN32
 	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/03-advances/09-render to target/src/content/";
@@ -219,14 +194,14 @@ void scene::load()
 	}
 
 	//load texture
-	_hr = this->_texture.load(_gDevice);
+	_hr = this->_texture.initialize(_gDevice);
 	if (_hr == S_FALSE)
 	{
 		release();
 		V(S_FALSE, "loading texture", _trace_info, 3, true);
 	}
 	//load texture from file
-	_hr = this->_texture.initialize_texture_2D_from_file(content_path + L"../Logo.jpg", true);
+	_hr = this->_texture.load_texture_2D_from_file(content_path + L"../Logo.jpg", true);
 	if (_hr == S_FALSE)
 	{
 		release();
@@ -263,7 +238,7 @@ void scene::load()
 	_shader_param.index = 0;
 	_shader_param.type = w_shader_binding_type::SAMPLER;
 	_shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
-	_shader_param.image_info = this->_quad_frame_buffers.get_descriptor_info(0);
+	_shader_param.image_info = this->_rt.get_attachment_descriptor_info(0);//attachment 0 is color
 	_shader_params.push_back(_shader_param);
 
 	_shader_param.index = 1;
@@ -340,8 +315,12 @@ void scene::load()
 		V(S_FALSE, "loading mesh", _trace_info, 3, true);
 	}
 
-	build_quad_command_buffers(_gDevice);
 	build_draw_command_buffers(_gDevice);
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	this->_rt.record_command_buffer(&this->_rt_command_buffer, w_color::CYAN(), 1.0f, 0);
 }
 
 HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -378,36 +357,6 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
 	return _hr;
 }
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//The following codes have been added for this project
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-HRESULT scene::build_quad_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
-{
-	const std::string _trace_info = this->name + "::build_quad_command_buffers";
-	HRESULT _hr = S_OK;
-
-	auto _size = this->_quad_command_buffers.get_commands_size();
-	for (uint32_t i = 0; i < _size; ++i)
-	{
-		this->_quad_command_buffers.begin(i);
-		{
-			auto _frame_buffer_handle = this->_quad_frame_buffers.get_frame_buffer_at(i);
-
-			auto _cmd = this->_quad_command_buffers.get_command_at(i);
-			this->_quad_render_pass.begin(_cmd,
-				_frame_buffer_handle,
-				w_color::CYAN(),
-				1.0f,
-				0.0f);
-			{
-			}
-			this->_quad_render_pass.end(_cmd);
-		}
-		this->_quad_command_buffers.end(i);
-	}
-	return _hr;
-}
-
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
 	if (w_game::exiting) return;
@@ -438,21 +387,23 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	auto _cmd = this->_quad_command_buffers.get_command_at(_frame_index);
-	//reset quad fence
-	this->_quad_fence.reset();
+	auto _cmd = this->_rt_command_buffer.get_command_at(_frame_index);
+	
+	//reset render target fence
+	this->_rt_fence.reset();
+	
 	if (_gDevice->submit(
 		{ _cmd },
 		_gDevice->vk_graphics_queue,
 		&_wait_dst_stage_mask[0],
 		_wait_semaphors,
-		{ *this->_quad_semaphore.get() },
-		this->_quad_fence) == S_FALSE)
+		{ *this->_rt_semaphore.get() },
+		this->_rt_fence) == S_FALSE)
 	{
 		V(S_FALSE, "submiting queue for drawing quad", _trace_info, 3, true);
 	}
 	// Wait for fence to signal that all command buffers are ready
-	this->_quad_fence.wait();
+	this->_rt_fence.wait();
 
 	 _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	//reset draw fence
@@ -461,7 +412,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		{ _cmd },
 		_gDevice->vk_graphics_queue,
 		&_wait_dst_stage_mask[0],
-		{ *this->_quad_semaphore.get() },
+		{ *this->_rt_semaphore.get() },
 		{ *_output_window->vk_rendering_done_semaphore.get() },
 		this->_draw_fence) == S_FALSE)
 	{
@@ -470,6 +421,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	// Wait for fence to signal that all command buffers are ready
 	this->_draw_fence.wait();
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
 	//clear all wait semaphores
 	_wait_semaphors.clear();
 
@@ -508,12 +462,10 @@ ULONG scene::release()
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
-	this->_quad_fence.release();
-	this->_quad_semaphore.release();
-
-	this->_quad_command_buffers.release();
-	this->_quad_render_pass.release();
-	this->_quad_frame_buffers.release();
+	this->_rt_fence.release();
+	this->_rt_semaphore.release();
+	this->_rt_command_buffer.release();
+	this->_rt.release();
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
 

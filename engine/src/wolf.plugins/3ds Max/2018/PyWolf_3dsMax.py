@@ -10,8 +10,8 @@ import datetime
 #import shutil
 
 #append search path for PyWolf
-#PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
-PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32"
+PyWolfPath = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Release\\Win32"
+#PyWolfPath = "F:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Release\\Win32"
 
 if PyWolfPath != "" and (not PyWolfPath in sys.path):
 	sys.path.append(PyWolfPath)
