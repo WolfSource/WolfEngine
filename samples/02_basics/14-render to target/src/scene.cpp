@@ -168,9 +168,9 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #ifdef WIN32
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/03-advances/09-render to target/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/14-render to target/src/content/";
 #elif defined(__APPLE__)
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/03-advances/09-render to target/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/14-render to target/src/content/";
 #endif // WIN32
 
 	//loading vertex shaders
@@ -192,25 +192,6 @@ void scene::load()
 		release();
 		V(S_FALSE, "loading fragment shader", _trace_info, 3, true);
 	}
-
-	//load texture
-	_hr = this->_texture.initialize(_gDevice);
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "loading texture", _trace_info, 3, true);
-	}
-	//load texture from file
-	_hr = this->_texture.load_texture_2D_from_file(content_path + L"../Logo.jpg", true);
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "loading Logo.jpg texture", _trace_info, 3, true);
-	}
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//load vertex shader uniform
 	_hr = this->_u0.load(_gDevice);
@@ -238,7 +219,12 @@ void scene::load()
 	_shader_param.index = 0;
 	_shader_param.type = w_shader_binding_type::SAMPLER;
 	_shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	_shader_param.image_info = this->_rt.get_attachment_descriptor_info(0);//attachment 0 is color
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	_shader_params.push_back(_shader_param);
 
 	_shader_param.index = 1;
@@ -253,8 +239,6 @@ void scene::load()
 		release();
 		V(S_FALSE, "setting shader binding param", _trace_info, 3, true);
 	}
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//loading pipeline cache
 	std::string _pipeline_cache_name = "pipeline_cache";
@@ -302,7 +286,6 @@ void scene::load()
 		2
 	};
 
-	this->_mesh.set_texture(&this->_texture);
 	_hr = this->_mesh.load(_gDevice,
 		_vertex_data.data(),
 		static_cast<uint32_t>(_vertex_data.size() * sizeof(float)),
@@ -316,11 +299,6 @@ void scene::load()
 	}
 
 	build_draw_command_buffers(_gDevice);
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	this->_rt.record_command_buffer(&this->_rt_command_buffer, w_color::CYAN(), 1.0f, 0);
 }
 
 HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -362,6 +340,20 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	if (w_game::exiting) return;
 	const std::string _trace_info = this->name + "::update";
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	auto _time = pGameTime.get_total_seconds();
+	auto _clear_color = w_color();
+	_clear_color.r = static_cast<uint8_t>((float)(std::sin(_time)) * 255.0f);
+	_clear_color.g = static_cast<uint8_t>((float)(std::cos(_time)) * 255.0f);
+	_clear_color.b = 155;
+	_clear_color.a = 255;
+
+	this->_rt.record_command_buffer(&this->_rt_command_buffer, nullptr, _clear_color, 1.0f, 0);
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	w_game::update(pGameTime);
 }
 
@@ -382,7 +374,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
 
-
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -392,6 +383,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	//reset render target fence
 	this->_rt_fence.reset();
 	
+	//submit command buffer of render target
 	if (_gDevice->submit(
 		{ _cmd },
 		_gDevice->vk_graphics_queue,
@@ -402,8 +394,16 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	{
 		V(S_FALSE, "submiting queue for drawing quad", _trace_info, 3, true);
 	}
-	// Wait for fence to signal that all command buffers are ready
+	// Wait for fence to signal that command buffer done
 	this->_rt_fence.wait();
+
+
+	auto _ptr = this->_rt.get_pointer_to_staging_data_of_attachment(0);
+	if (_ptr)
+	{
+		w_texture::save_jpg_to_file("c:\\wolf\\AA.jpg", this->_rt.get_width(), this->_rt.get_height(), _ptr, 4, 100);
+	}
+
 
 	 _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	//reset draw fence
@@ -418,7 +418,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	{
 		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true);
 	}
-	// Wait for fence to signal that all command buffers are ready
+	// Wait for fence to signal main command buffers done their job
 	this->_draw_fence.wait();
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -455,8 +455,6 @@ ULONG scene::release()
 	this->_pipeline.release();
 
 	this->_mesh.release();
-    this->_texture.release();
-
 	this->_u0.release();
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++

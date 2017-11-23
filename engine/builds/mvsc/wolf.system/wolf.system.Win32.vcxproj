@@ -284,6 +284,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\stb_image.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\stb_image_write.h" />
     <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />

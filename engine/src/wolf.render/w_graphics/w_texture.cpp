@@ -8,7 +8,9 @@
 #include <gli/gli.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
 
 namespace wolf
 {
@@ -577,6 +579,31 @@ namespace wolf
 						1,
 						&_image_memory_barrier_from_undefined_to_transfer_dst);
 
+					VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
+					{
+						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
+						nullptr,                                            // Next
+						VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
+						VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
+						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
+						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
+						VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
+						VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
+						this->_image_view.image,                            // Image
+						_image_subresource_range                            // SubresourceRange
+					};
+					vkCmdPipelineBarrier(_cmd,
+						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+						0,
+						0,
+						nullptr,
+						0,
+						nullptr,
+						1,
+						&_image_memory_barrier_from_transfer_to_shader_read);
+
+					//execute copy to image
 					VkBufferImageCopy _buffer_image_copy_info =
 					{
 						0,                                    // BufferOffset
@@ -606,30 +633,6 @@ namespace wolf
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 						1,
 						&_buffer_image_copy_info);
-
-					VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
-					{
-						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
-						nullptr,                                            // Next
-						VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
-						VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
-						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
-						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
-						VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
-						VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
-						this->_image_view.image,                            // Image
-						_image_subresource_range                            // SubresourceRange
-					};
-					vkCmdPipelineBarrier(_cmd,
-						VK_PIPELINE_STAGE_TRANSFER_BIT,
-						VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-						0,
-						0,
-						nullptr,
-						0,
-						nullptr,
-						1,
-						&_image_memory_barrier_from_transfer_to_shader_read);
 
 				}
                 _command_buffer.end(0);
@@ -745,7 +748,7 @@ namespace wolf
 					{
 						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,         // Type
 						nullptr,                                        // Next
-						0,                                              // SrcAccessMask
+						VK_IMAGE_LAYOUT_UNDEFINED,                      // SrcAccessMask
 						VK_ACCESS_TRANSFER_WRITE_BIT,                   // DstAccessMask
 						VK_IMAGE_LAYOUT_UNDEFINED,                      // OldLayout
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,           // NewLayout
@@ -765,7 +768,32 @@ namespace wolf
 						nullptr,
 						1,
 						&_image_memory_barrier_from_undefined_to_transfer_dst);
+					
+					VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
+					{
+						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
+						nullptr,                                            // Next
+						VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
+						VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
+						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
+						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
+						VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
+						VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
+						this->_image_view.image,                            // Image
+						_image_subresource_range                            // SubresourceRange
+					};
+					vkCmdPipelineBarrier(_cmd,
+						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+						0,
+						0,
+						nullptr,
+						0,
+						nullptr,
+						1,
+						&_image_memory_barrier_from_transfer_to_shader_read);
 
+					//execute copy to image
 					std::vector<VkBufferImageCopy> _buffer_copy_regions;
 					size_t offset = 0;
 
@@ -806,30 +834,6 @@ namespace wolf
 						static_cast<uint32_t>(_buffer_copy_regions.size()),
 						_buffer_copy_regions.data());
 
-					VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
-					{
-						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
-						nullptr,                                            // Next
-						VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
-						VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
-						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
-						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
-						VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
-						VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
-						this->_image_view.image,                            // Image
-						_image_subresource_range                            // SubresourceRange
-					};
-					vkCmdPipelineBarrier(_cmd,
-						VK_PIPELINE_STAGE_TRANSFER_BIT,
-						VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-						0,
-						0,
-						nullptr,
-						0,
-						nullptr,
-						1,
-						&_image_memory_barrier_from_transfer_to_shader_read);
-
 				}
 				_command_buffer.end(0);
 
@@ -869,6 +873,201 @@ namespace wolf
 					//release staging buffer
 					this->_staging_buffer.release();
 				}
+
+				return S_OK;
+			}
+
+			HRESULT read_data_from_texture_2D(_In_ const void** pRGBA)
+			{
+				if (this->_is_staging)
+				{
+					*pRGBA = this->_staging_buffer_memory_pointer;
+					return S_OK;
+				}
+
+				auto _data_size = this->_width * this->_height * 4;
+				
+				auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
+				if (_hResult == S_FALSE)
+				{
+					return _hResult;
+				}
+
+				_hResult = this->_staging_buffer.bind();
+				if (_hResult == S_FALSE)
+				{
+					return _hResult;
+				}
+
+				//auto _hr = vkMapMemory(
+				//	this->_gDevice->vk_device,
+				//	this->_staging_buffer.get_memory(),
+				//	0,
+				//	_data_size,
+				//	0,
+				//	&this->_staging_buffer_memory_pointer);
+
+				//if (_hr)
+				//{
+				//	V(S_FALSE, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
+				//		this->_gDevice->device_name + " ID: " + std::to_string(this->_gDevice->device_id),
+				//		this->_name,
+				//		3,
+				//		false);
+				//	return S_FALSE;
+				//}
+
+				//VkMappedMemoryRange _flush_range =
+				//{
+				//	VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,              // Type
+				//	nullptr,                                            // Next
+				//	this->_staging_buffer.get_memory(),                       // Memory
+				//	0,                                                  // Offset
+				//	_data_size                                          // Size
+				//};
+
+				//vkFlushMappedMemoryRanges(
+				//	this->_gDevice->vk_device,
+				//	1,
+				//	&_flush_range);
+				//vkUnmapMemory(this->_gDevice->vk_device,
+				//	this->_staging_buffer.get_memory());
+
+
+				//create command buffer
+				w_command_buffer _command_buffer;
+				_command_buffer.load(this->_gDevice, 1);
+				auto _cmd = _command_buffer.get_command_at(0);
+
+				_command_buffer.begin(0, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+				{
+					VkImageSubresourceRange _image_subresource_range =
+					{
+						this->_buffer_type,								// AspectMask
+						0,                                              // BaseMipLevel
+						1,                                              // LevelCount
+						0,                                              // BaseArrayLayer
+						this->_layer_count                              // LayerCount
+					};
+
+					VkImageMemoryBarrier _image_memory_barrier_from_undefined_to_transfer =
+					{
+						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,         // Type
+						nullptr,                                        // Next
+						VK_IMAGE_LAYOUT_UNDEFINED,						// SrcAccessMask
+						VK_ACCESS_TRANSFER_WRITE_BIT,                   // DstAccessMask
+						VK_IMAGE_LAYOUT_UNDEFINED,						// OldLayout
+						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,			// NewLayout
+						VK_QUEUE_FAMILY_IGNORED,                        // SrcQueueFamilyIndex
+						VK_QUEUE_FAMILY_IGNORED,                        // DstQueueFamilyIndex
+						this->_image_view.image,                        // image
+						_image_subresource_range                        // SubresourceRange
+					};
+
+					vkCmdPipelineBarrier(_cmd,
+						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						0,
+						0,
+						nullptr,
+						0,
+						nullptr,
+						1,
+						&_image_memory_barrier_from_undefined_to_transfer);
+
+					VkBufferImageCopy _buffer_image_copy_info =
+					{
+						0,                                    // BufferOffset
+						0,                                    // BufferRowLength
+						0,                                    // BufferImageHeight
+						{                                     // ImageSubresource
+							this->_buffer_type,				  // AspectMask
+							0,                                // MipLevel
+							0,                                // BaseArrayLayer
+							this->_layer_count                // LayerCount
+						},
+						{                                     // ImageOffset
+							0,                                // X
+							0,                                // Y
+							0                                 // Z
+						},
+						{                                     // ImageExtent
+							this->_width,                     // Width
+							this->_height,                    // Height
+							1                                 // Depth
+						}
+					};
+
+					vkCmdCopyImageToBuffer(_cmd,
+						this->_image_view.image,
+						VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+						this->_staging_buffer.get_handle(),
+						1,
+						&_buffer_image_copy_info);
+
+					VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
+					{
+						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
+						nullptr,                                            // Next
+						VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
+						VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
+						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
+						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
+						VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
+						VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
+						this->_image_view.image,                            // Image
+						_image_subresource_range                            // SubresourceRange
+					};
+					vkCmdPipelineBarrier(_cmd,
+						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+						0,
+						0,
+						nullptr,
+						0,
+						nullptr,
+						1,
+						&_image_memory_barrier_from_transfer_to_shader_read);
+
+				}
+				_command_buffer.end(0);
+
+				//// Submit command buffer and copy data from staging buffer to a vertex buffer
+				//VkSubmitInfo _submit_info =
+				//{
+				//	VK_STRUCTURE_TYPE_SUBMIT_INFO,        // Type
+				//	nullptr,                              // Next
+				//	0,                                    // WaitSemaphoreCount
+				//	nullptr,                              // WaitSemaphores
+				//	nullptr,                              // WaitDstStageMask;
+				//	1,                                    // CommandBufferCount
+				//	&_cmd,                                // CommandBuffers
+				//	0,                                    // SignalSemaphoreCount
+				//	nullptr                               // SignalSemaphores
+				//};
+
+				//_hr = vkQueueSubmit(this->_gDevice->vk_graphics_queue.queue, 1, &_submit_info, VK_NULL_HANDLE);
+				//if (_hr)
+				//{
+				//	V(S_FALSE, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
+				//		this->_gDevice->device_name + " ID: " + std::to_string(this->_gDevice->device_id),
+				//		this->_name,
+				//		3,
+				//		false);
+
+				//	_command_buffer.release();
+				//	return S_FALSE;
+				//}
+				//vkDeviceWaitIdle(this->_gDevice->vk_device);
+
+				////release command buffer
+				//_command_buffer.release();
+
+				//if (!this->_is_staging)
+				//{
+				//	//release staging buffer
+				//	this->_staging_buffer.release();
+				//}
 
 				return S_OK;
 			}
@@ -1374,6 +1573,31 @@ void w_texture::write_bitmap_to_file(
         fwrite(pData, 1, pWidth * pHeight * 3, f);
         fclose(f);
     }
+}
+
+HRESULT w_texture::save_png_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pStrideInBytes)
+{
+	return stbi_write_png(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pStrideInBytes) == 1 ? S_OK : S_FALSE;
+}
+
+HRESULT w_texture::save_bmp_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount)
+{
+	return stbi_write_bmp(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? S_OK : S_FALSE;
+}
+
+HRESULT w_texture::save_tga_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount)
+{
+	return stbi_write_tga(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? S_OK : S_FALSE;
+}
+
+HRESULT w_texture::save_hdr_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData, _In_ int pCompCount)
+{
+	return stbi_write_hdr(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? S_OK : S_FALSE;
+}
+
+HRESULT w_texture::save_jpg_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pQuality)
+{
+	return stbi_write_jpg(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pQuality) == 1 ? S_OK : S_FALSE;
 }
 
 ULONG w_texture::release()

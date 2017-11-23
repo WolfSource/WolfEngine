@@ -119,7 +119,12 @@ namespace wolf
                 return S_OK;
             }
 
-			HRESULT record_command_buffer(_In_ wolf::graphics::w_command_buffer* pCommandBuffer, _In_ w_color pClearColor, _In_ const float& pClearDepth, _In_ const UINT&  pClearStencil)
+			HRESULT record_command_buffer(
+				_In_ wolf::graphics::w_command_buffer* pCommandBuffer,
+				_In_ std::function<HRESULT(void)> pDrawFunction,
+				_In_ w_color pClearColor, 
+				_In_ const float& pClearDepth, 
+				_In_ const UINT&  pClearStencil)
 			{
 				const std::string _trace_info = this->_name + "::record_command_buffer";
 
@@ -131,6 +136,8 @@ namespace wolf
 					V(S_FALSE, "parameter count mismatch. Number of command buffers must equal to number of frame buffers", _trace_info, 3, false);
 					return S_FALSE;
 				}
+
+				HRESULT _hr = S_OK;
 				for (uint32_t i = 0; i < _cmd_size; ++i)
 				{
 					pCommandBuffer->begin(i);
@@ -144,13 +151,16 @@ namespace wolf
 							pClearDepth,
 							pClearStencil);
 						{
-							//To Do draw
+							if (pDrawFunction)
+							{
+								_hr = pDrawFunction();
+							}
 						}
 						this->_render_pass.end(_cmd);
 					}
 					pCommandBuffer->end(i);
 				}
-				return S_OK;
+				return _hr;
 			}
 
             HRESULT flush_staging_buffer(_In_ size_t pIndex)
@@ -319,6 +329,7 @@ HRESULT w_render_target::load(
 
 HRESULT w_render_target::record_command_buffer(
 	_In_ w_command_buffer* pCommandBuffer,
+	_In_ std::function<HRESULT(void)> pFunction,
 	_In_ w_color pClearColor,
 	_In_ const float& pClearDepth,
 	_In_ const UINT&  pClearStencil)
@@ -326,6 +337,7 @@ HRESULT w_render_target::record_command_buffer(
 	if (!this->_pimp) return S_FALSE;
 	return this->_pimp->record_command_buffer(
 		pCommandBuffer,
+		pFunction,
 		pClearColor,
 		pClearDepth,
 		pClearStencil);

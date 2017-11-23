@@ -81,7 +81,6 @@ private:
 	wolf::graphics::w_pipeline                                      _pipeline;
 
     wolf::graphics::w_mesh											_mesh;
-    wolf::graphics::w_texture										_texture;
 
 	struct u0
 	{

@@ -43,7 +43,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "07-uniforms_constant buffer
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_texture_arrays.Win32", "02_basics\08-texture_arrays\builds\mvsc\08_texture_arrays.Win32.vcxproj", "{635BEAE1-93CC-4C0A-A6FD-E3D0F74AFDDD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09-render_to_target.Win32", "03-advances\09-render to target\builds\mvsc\09-render_to_target.Win32.vcxproj", "{B2418F5C-55E4-4720-92E7-0A271B75B285}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "14-render_to_target.Win32", "02_basics\14-render to target\builds\mvsc\14-render_to_target.Win32.vcxproj", "{B2418F5C-55E4-4720-92E7-0A271B75B285}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -210,6 +210,6 @@ Global
 		{EBEE7034-CADC-432C-9505-5A98981ABCA2} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
 		{E20043E2-C0EB-4E19-BD17-CD13FAC1ED84} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
 		{635BEAE1-93CC-4C0A-A6FD-E3D0F74AFDDD} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
-		{B2418F5C-55E4-4720-92E7-0A271B75B285} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
+		{B2418F5C-55E4-4720-92E7-0A271B75B285} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
 	EndGlobalSection
 EndGlobal

@@ -13,6 +13,7 @@
 #include "w_graphics_device_manager.h"
 #include "w_command_buffer.h"
 #include "w_attachment_buffer_desc.h"
+#include <functional>
 
 namespace wolf
 {
@@ -33,6 +34,7 @@ namespace wolf
 				_In_ const size_t& pCount);
             
 			W_EXP HRESULT record_command_buffer(_In_ w_command_buffer* pCommandBuffer,
+				_In_ std::function<HRESULT(void)> pFunction,
 				_In_ w_color pClearColor = w_color::PURPLE(), 
 				_In_ const float& pClearDepth = 1.0f, 
 				_In_ const UINT&  pClearStencil = 0);

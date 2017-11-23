@@ -90,6 +90,50 @@ namespace wolf
                 _In_ const uint8_t* pData,
                 _In_ const int& pWidth, const int& pHeight);
 
+			/*
+				save png image file
+				@param pFileName, path of file
+				@param pSize, size of file (width, height)
+				@param pData, pointer to rgba data
+				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
+				@param pStrideInBytes, stride of pixel's structure inf bytes
+			*/
+			W_EXP static HRESULT save_png_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pComp, _In_ int pStrideInBytes = 4 * sizeof(uint8_t));
+			/*
+				save bmp image file
+				@param pFileName, path of file
+				@param pSize, size of file (width, height)
+				@param pData, pointer to rgba data
+				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
+			*/
+			W_EXP static HRESULT save_bmp_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pComp);
+			/*
+				save tga image file
+				@param pFileName, path of file
+				@param pSize, size of file (width, height)
+				@param pData, pointer to rgba data
+				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
+				@param pQuality, Quality(1 - 100)
+			*/
+			W_EXP static HRESULT save_tga_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pComp);
+			/*
+				save hdr image file
+				@param pFileName, path of file
+				@param pSize, size of file (width, height)
+				@param pData, pointer to rgba data
+				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
+			*/
+			W_EXP static HRESULT save_hdr_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData ,_In_ int pCompCount);
+			/*
+				save jpg image file
+				@param pFileName, path of file
+				@param pSize, size of file (width, height)
+				@param pData, pointer to rgba data
+				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
+				@param pQuality, Quality(1 - 100)
+			*/
+			W_EXP static HRESULT save_jpg_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount, _In_ int pQuality);
+
             //release all shared textures
             W_EXP ULONG static release_shared_textures();
 

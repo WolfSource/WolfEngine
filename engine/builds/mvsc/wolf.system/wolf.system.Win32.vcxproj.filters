@@ -772,6 +772,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\gli\core\workaround.hpp">
       <Filter>gli\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\stb_image_write.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
