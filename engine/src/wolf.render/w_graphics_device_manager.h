@@ -145,6 +145,8 @@ namespace wolf
 			//Synchronization objects
             w_semaphore								vk_swap_chain_image_is_available_semaphore;
             w_semaphore								vk_rendering_done_semaphore;
+
+            bool                                    vk_blitting_supported;
 #endif
 
         private:
@@ -173,9 +175,6 @@ namespace wolf
 			uint32_t                    _device_id = 0;
 			std::string                 _device_name = "unknown";
 			uint32_t					_device_vendor_id = 0;
-#ifdef __VULKAN__
-			VkFormatProperties			_format_properties;
-#endif
 		};
 		
 		//contains graphics device which performs primitive-based rendering
@@ -196,12 +195,14 @@ namespace wolf
 
             std::vector<w_output_presentation_window>               output_presentation_windows;
             
+            //draw primitive(s) and instances using vertex & index buffer
             W_EXP void draw(_In_ VkCommandBuffer pCommandBuffer,
                             _In_ uint32_t        pVertexCount,
                             _In_ uint32_t        pInstanceCount,
                             _In_ uint32_t        pFirstVertex,
                             _In_ uint32_t        pFirstInstance);
             
+            //submit command buffer
             W_EXP HRESULT submit(_In_ const std::vector<VkCommandBuffer>&   pCommandBuffers,
                                  _In_ const w_queue&                        pQueue,
                                  _In_ const VkPipelineStageFlags*           pWaitDstStageMask,
@@ -209,6 +210,13 @@ namespace wolf
                                  _In_ std::vector<VkSemaphore>              pSignalForSemaphores,
                                  _In_ w_fences&                             pFence);
             
+            /*
+                capture color buffer of swap chain and make them accessable by CPU, 
+                you must enable cpu_access flag before creating graphics device
+                @param pWindowIndex, index of output presentation window
+            */
+            W_EXP void* capture(_In_ size_t pWindowIndex = 0);
+
 			w_device_info*												device_info = nullptr;
 
 #ifdef __DX12__
@@ -330,7 +338,6 @@ namespace wolf
                                                   uint32_t pTypeBits,
                                                   VkFlags pRequirementsFlags,
                                                   uint32_t* pTypeIndex);
-
             W_EXP static VkFormat find_supported_format(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const std::vector<VkFormat>& pFormatCandidates,

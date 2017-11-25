@@ -209,6 +209,56 @@ HRESULT w_graphics_device::submit(_In_ const std::vector<VkCommandBuffer>&  pCom
     return S_OK;
 }
 
+void* w_graphics_device::capture(_In_ size_t pWindowIndex)
+{
+    if (pWindowIndex >= this->output_presentation_windows.size())
+    {
+        logger.error("Index of output presentation window is out of range");
+        return nullptr;
+    }
+    const std::string _trace_info = "w_graphics_device::capture";
+
+    auto _output_window = this->output_presentation_windows.at(pWindowIndex);
+
+    //create destination image in order to get data of swap chain's image and later allow access from cpu
+    VkImageCreateInfo _imgage_create_info = {};
+    _imgage_create_info.imageType = VK_IMAGE_TYPE_2D;
+    _imgage_create_info.format = VK_FORMAT_R8G8B8A8_UNORM;
+    _imgage_create_info.extent.width = _output_window.width;
+    _imgage_create_info.extent.height = _output_window.height;
+    _imgage_create_info.extent.depth = 1;
+    _imgage_create_info.arrayLayers = 1;
+    _imgage_create_info.mipLevels = 1;
+    _imgage_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    _imgage_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
+    _imgage_create_info.tiling = VK_IMAGE_TILING_LINEAR;
+    _imgage_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+    
+    //create the destination image
+    VkImage _dst_image = 0;
+    auto _hr = vkCreateImage(
+        this->vk_device,
+        &_imgage_create_info,
+        nullptr,
+        &_dst_image);
+    if (_hr)
+    {
+        V(S_FALSE,
+            "creating destination image for graphics device" + this->device_info->get_device_name() +
+            " ID:" + std::to_string(this->device_info->get_device_id()),
+            _trace_info,
+            3,
+            false);
+        //first release it
+        vkDestroyImage(
+            this->vk_device,
+            _dst_image,
+            nullptr);
+        return nullptr;
+    }
+
+}
+
 w_output_presentation_window w_graphics_device::main_window()
 {
     if (this->output_presentation_windows.size() > 0)
@@ -2175,43 +2225,72 @@ namespace wolf
 					std::exit(EXIT_FAILURE);
 				}
 
-				for (size_t j = 0; j < _swap_chain_images.size(); ++j)
-				{
-					VkImageViewCreateInfo _color_image_view = {};
+                for (size_t j = 0; j < _swap_chain_images.size(); ++j)
+                {
+                    VkImageViewCreateInfo _color_image_view = {};
 
-					_color_image_view.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-					_color_image_view.pNext = nullptr;
-					_color_image_view.flags = 0;
-					_color_image_view.image = _swap_chain_images[j];
-					_color_image_view.viewType = VK_IMAGE_VIEW_TYPE_2D;
-					_color_image_view.format = _output_presentation_window->vk_swap_chain_selected_format.format;
-					_color_image_view.components.r = VK_COMPONENT_SWIZZLE_R;
-					_color_image_view.components.g = VK_COMPONENT_SWIZZLE_G;
-					_color_image_view.components.b = VK_COMPONENT_SWIZZLE_B;
-					_color_image_view.components.a = VK_COMPONENT_SWIZZLE_A;
-					_color_image_view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-					_color_image_view.subresourceRange.baseMipLevel = 0;
-					_color_image_view.subresourceRange.levelCount = 1;
-					_color_image_view.subresourceRange.baseArrayLayer = 0;
-					_color_image_view.subresourceRange.layerCount = 1;
+                    _color_image_view.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+                    _color_image_view.pNext = nullptr;
+                    _color_image_view.flags = 0;
+                    _color_image_view.image = _swap_chain_images[j];
+                    _color_image_view.viewType = VK_IMAGE_VIEW_TYPE_2D;
+                    _color_image_view.format = _output_presentation_window->vk_swap_chain_selected_format.format;
+                    _color_image_view.components.r = VK_COMPONENT_SWIZZLE_R;
+                    _color_image_view.components.g = VK_COMPONENT_SWIZZLE_G;
+                    _color_image_view.components.b = VK_COMPONENT_SWIZZLE_B;
+                    _color_image_view.components.a = VK_COMPONENT_SWIZZLE_A;
+                    _color_image_view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                    _color_image_view.subresourceRange.baseMipLevel = 0;
+                    _color_image_view.subresourceRange.levelCount = 1;
+                    _color_image_view.subresourceRange.baseArrayLayer = 0;
+                    _color_image_view.subresourceRange.layerCount = 1;
 
-					w_image_view _image_view;
-					_image_view.image = _swap_chain_images[j];
+                    w_image_view _image_view;
+                    _image_view.image = _swap_chain_images[j];
 
-					auto _hr = vkCreateImageView(pGDevice->vk_device,
-						&_color_image_view,
-						nullptr,
-						&_image_view.view);
-					if (_hr)
-					{
-						logger.error("error on creating image view total available images of swap chain for graphics device: " +
-							_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-						release();
-						std::exit(EXIT_FAILURE);
-					}
+                    auto _hr = vkCreateImageView(pGDevice->vk_device,
+                        &_color_image_view,
+                        nullptr,
+                        &_image_view.view);
+                    if (_hr)
+                    {
+                        logger.error("error on creating image view total available images of swap chain for graphics device: " +
+                            _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                        release();
+                        std::exit(EXIT_FAILURE);
+                    }
 
-					_output_presentation_window->vk_swap_chain_image_views.push_back(_image_view);
-				}
+                    _output_presentation_window->vk_swap_chain_image_views.push_back(_image_view);
+
+                    //check whether blitting is supported or not
+
+                    VkFormatProperties _format_properties;
+                    // Check for whether blitting is supported from optimal or linear image
+                    vkGetPhysicalDeviceFormatProperties(
+                        pGDevice->vk_physical_device,
+                        _output_presentation_window->vk_swap_chain_selected_format.format,
+                        &_format_properties);
+                    if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
+                    {
+                        logger.warning("Blitting feature not supported from optimal tiled image for graphics device: " +
+                            _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                        _output_presentation_window->vk_blitting_supported = false;
+                    }
+                    if (_output_presentation_window->vk_blitting_supported)
+                    {
+                        // Check if the device supports blitting to linear images 
+                        vkGetPhysicalDeviceFormatProperties(
+                            pGDevice->vk_physical_device,
+                            VK_FORMAT_R8G8B8A8_UNORM,
+                            &_format_properties);
+                        if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
+                        {
+                            logger.warning("Blitting feature not supported from linear tiled image for graphics device: " +
+                                _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+                            _output_presentation_window->vk_blitting_supported = false;
+                        }
+                    }
+                }
 #endif //__DX12__ __VULKAN__
 			}
 
@@ -3218,7 +3297,6 @@ VkFormat w_graphics_device_manager::find_supported_format(
     VkFormat _selected_format = VkFormat::VK_FORMAT_UNDEFINED;
     for (auto& _format : pFormatCandidates)
     {
-
         VkFormatProperties _properties;
         vkGetPhysicalDeviceFormatProperties(pGDevice->vk_physical_device, _format, &_properties);
         if (pImageTiling == VK_IMAGE_TILING_LINEAR &&
