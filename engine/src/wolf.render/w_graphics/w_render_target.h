@@ -39,11 +39,6 @@ namespace wolf
 				_In_ const float& pClearDepth = 1.0f, 
 				_In_ const UINT&  pClearStencil = 0);
 
-            //flush staging buffer
-            W_EXP HRESULT flush_staging_buffer(_In_ size_t pBufferIndex);
-			//flush all staging buffers
-			W_EXP HRESULT flush_all_staging_buffers();
-
             //save texture as bitmap file
             W_EXP HRESULT save_to_file(_In_z_ const char* pFileName);
 
@@ -64,13 +59,11 @@ namespace wolf
 			W_EXP VkImageType get_image_type(_In_ size_t pBufferIndex) const;
 			//get image view type render target's buffer
 			W_EXP VkImageViewType get_image_view_type(_In_ size_t pBufferIndex) const;
-			//get pointer to the staging data
-			W_EXP void* get_pointer_to_staging_data_of_attachment(_In_ size_t pBufferIndex);
 			//get format of attached buffer
 			W_EXP const VkFormat get_attachment_format(_In_ size_t pBufferIndex) const;
 			//get description info of attached buffer
 			W_EXP const VkDescriptorImageInfo get_attachment_descriptor_info(_In_ size_t pBufferIndex) const;
-            
+
 #pragma endregion
 			
 		private:

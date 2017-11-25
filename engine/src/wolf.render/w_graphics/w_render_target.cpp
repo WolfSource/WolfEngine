@@ -162,30 +162,6 @@ namespace wolf
 				}
 				return _hr;
 			}
-
-            HRESULT flush_staging_buffer(_In_ size_t pIndex)
-            {
-                if (pIndex >= this->_attachment_buffers.size()) return S_FALSE;
-                
-                auto _texture_buffer = this->_attachment_buffers.at(pIndex);
-                if (!_texture_buffer) return S_FALSE;
-                
-                return _texture_buffer->flush_staging_data();
-            }
-
-			HRESULT flush_all_staging_buffers()
-			{
-				HRESULT _hr = S_OK;
-				for (auto _buffer : this->_attachment_buffers)
-				{
-					if (!_buffer || _buffer->flush_staging_data() == S_FALSE)
-					{
-						_hr = S_FALSE;
-						break;
-					}
-				}
-				return _hr;
-			}
             
             ULONG release()
             {
@@ -251,16 +227,6 @@ namespace wolf
 				if (_t) return _t->get_image_view_type();
 
 				return VkImageViewType::VK_IMAGE_VIEW_TYPE_END_RANGE;
-			}
-
-			void* get_pointer_to_staging_data_of_attachment(_In_ size_t pBufferIndex)
-			{
-				if (pBufferIndex >= this->_attachment_buffers.size()) return nullptr;
-
-				auto _t = this->_attachment_buffers.at(pBufferIndex);
-				if (_t) return _t->get_pointer_to_staging_data();
-
-				return nullptr;
 			}
 
 			const VkFormat get_attachment_format(_In_ size_t pBufferIndex) const
@@ -343,18 +309,6 @@ HRESULT w_render_target::record_command_buffer(
 		pClearStencil);
 }
 
-HRESULT w_render_target::flush_staging_buffer(_In_ size_t pBufferIndex)
-{
-    if (!this->_pimp) return S_FALSE;
-    return this->_pimp->flush_staging_buffer(pBufferIndex);
-}
-
-HRESULT w_render_target::flush_all_staging_buffers()
-{
-	if (!this->_pimp) return S_FALSE;
-	return this->_pimp->flush_all_staging_buffers();
-}
-
 HRESULT w_render_target::save_to_file(_In_z_ const char* pFilename)
 {
 //    short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)pWidth, (short)pHeight, 1, 24 };
@@ -420,12 +374,6 @@ VkImageViewType w_render_target::get_image_view_type(_In_ size_t pBufferIndex) c
 {
 	if (!this->_pimp) return VkImageViewType::VK_IMAGE_VIEW_TYPE_END_RANGE;
 	return this->_pimp->get_image_view_type(pBufferIndex);
-}
-
-void* w_render_target::get_pointer_to_staging_data_of_attachment(_In_ size_t pBufferIndex)
-{
-	if (!this->_pimp) return nullptr;
-	return this->_pimp->get_pointer_to_staging_data_of_attachment(pBufferIndex);
 }
 
 const VkFormat w_render_target::get_attachment_format(_In_ size_t pBufferIndex) const

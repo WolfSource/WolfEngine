@@ -317,7 +317,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     const size_t _length = this->_texture.get_width() * this->_texture.get_height();
-    auto _px = (uint8_t*)this->_texture.get_pointer_to_staging_data();
+    auto _px = (uint8_t*)this->_texture.read_data_of_texture();
     tbb::parallel_for(tbb::blocked_range<size_t>(0, _length), [&](const tbb::blocked_range<size_t>& pRange)
     {
         for (size_t i = pRange.begin(); i < pRange.end(); ++i)

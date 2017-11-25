@@ -151,6 +151,33 @@ namespace wolf
             bool									_is_released = false;
 		};
         
+		struct w_device_info
+		{
+		public:
+			w_device_info(_In_ const uint32_t& pDeviceID, _In_ const uint32_t& pDeviceVendorID, _In_z_ const char*  pDeviceName)
+			{
+				this->_device_id = pDeviceID;
+				this->_device_vendor_id = pDeviceVendorID;
+				this->_device_name = pDeviceName;
+			}
+
+			const uint32_t              get_device_id() const { return this->_device_id; }
+			const std::string           get_device_name() const { return this->_device_name; }
+			const uint32_t				get_device_vendor_id() const { return this->_device_vendor_id; }
+
+#ifdef __VULKAN__
+			VkPhysicalDeviceFeatures*   device_features = nullptr;
+			std::vector<const char*>    device_extensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+#endif
+		private:
+			uint32_t                    _device_id = 0;
+			std::string                 _device_name = "unknown";
+			uint32_t					_device_vendor_id = 0;
+#ifdef __VULKAN__
+			VkFormatProperties			_format_properties;
+#endif
+		};
+		
 		//contains graphics device which performs primitive-based rendering
 		class w_graphics_device
 		{
@@ -182,6 +209,8 @@ namespace wolf
                                  _In_ std::vector<VkSemaphore>              pSignalForSemaphores,
                                  _In_ w_fences&                             pFence);
             
+			w_device_info*												device_info = nullptr;
+
 #ifdef __DX12__
 
 			static ComPtr<IDXGIFactory4>							dx_dxgi_factory;
@@ -201,8 +230,6 @@ namespace wolf
             VkPhysicalDeviceFeatures                                    vk_physical_device_features;
             VkPhysicalDeviceMemoryProperties                            vk_physical_device_memory_properties;
             
-            std::vector<const char*>                                    vk_device_extensions;
-
             std::vector<VkQueueFamilyProperties>                        vk_queue_family_properties;
             std::vector<VkBool32>                                       vk_queue_family_supports_present;
 			
@@ -234,11 +261,7 @@ namespace wolf
             };
 
 #endif //__DX12__ __VULKAN__
-            
-            std::string                                             device_name;
-			UINT													device_id;
-			UINT													device_vendor_id;
-                        
+                                    
 		private:
             //prevent copying
             w_graphics_device(w_graphics_device const&);
@@ -276,27 +299,7 @@ namespace wolf
 			//convert DPIs to pixels
             W_EXP static const float convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI);
 
-            struct w_device_features_extensions
-            {
-            public:
-                w_device_features_extensions(_In_ const UINT& pDeviceID, _In_z_ const char*  pDeviceName)
-                {
-                    this->_device_id = pDeviceID;
-                    this->_device_name = pDeviceName;
-                }
-
-                UINT                        get_device_id() const   { return this->_device_id; }
-                const char*                 get_device_name() const { return this->_device_name; }
-
-#ifdef __VULKAN__
-                VkPhysicalDeviceFeatures*   device_features;
-                std::vector<const char*>    device_extensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-#endif
-            private:
-                UINT                        _device_id = 0;
-                const char*                 _device_name = "unknown";
-            };
-            wolf::system::w_signal<void(w_device_features_extensions&)> on_device_features_fetched;
+            wolf::system::w_signal<void(w_device_info**)> on_device_info_fetched;
 
 #pragma region Getters
 			//Get the main graphics device, this is first and the primary device.

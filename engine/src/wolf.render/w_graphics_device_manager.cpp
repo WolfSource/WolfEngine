@@ -148,10 +148,19 @@ vk_command_allocator_pool(0)
 
 const std::string w_graphics_device::print_info()
 {
-    return std::string(
-                       "graphics device: " + this->device_name +
-                       " ID:" + std::to_string(this->device_id) +
-                       " VendorID:" + std::to_string(this->device_vendor_id));
+	std::string _device_name = "";
+	uint32_t _device_id = 0, _device_vendor_id = 0;
+
+	if (this->device_info)
+	{
+		_device_name = this->device_info->get_device_name();
+		_device_id = this->device_info->get_device_id();
+		_device_vendor_id = this->device_info->get_device_id();
+	}
+	return std::string(
+		"graphics device: " + _device_name +
+		" ID:" + std::to_string(_device_id) +
+		" VendorID:" + std::to_string(_device_vendor_id));
 }
 
 void w_graphics_device::draw(_In_ VkCommandBuffer pCommandBuffer,
@@ -190,7 +199,7 @@ HRESULT w_graphics_device::submit(_In_ const std::vector<VkCommandBuffer>&  pCom
     if (vkQueueSubmit(pQueue.queue, 1, &_submit_info, *(pFence.get())))
     {
         V(S_FALSE,
-          "submiting queue for graphics device" + this->device_name + " ID:" + std::to_string(this->device_id),
+          "submiting queue for graphics device" + this->device_info->get_device_name() + " ID:" + std::to_string(this->device_info->get_device_id()),
           _trace_info,
           3,
           false);
@@ -402,7 +411,7 @@ namespace wolf
 			}
 
 			void enumerate_devices(_Inout_  std::vector<std::shared_ptr<w_graphics_device>>& pGraphicsDevices,
-				_In_ wolf::system::w_signal<void(w_graphics_device_manager::w_device_features_extensions&)>* pOnDeviceFeaturesFetched)
+				_In_ wolf::system::w_signal<void(w_device_info**)>* pOnDeviceFeaturesFetched)
 			{
 #ifdef __DX12__
 
@@ -756,9 +765,7 @@ namespace wolf
 				uint32_t _extension_count = 0;
 
 				//get available extensions count
-				auto _hr =
-
-					vkEnumerateInstanceExtensionProperties(nullptr,
+				auto _hr = vkEnumerateInstanceExtensionProperties(nullptr,
 						&_extension_count,
 						nullptr);
 				if (_hr)
@@ -1053,25 +1060,30 @@ namespace wolf
 
 					//create a shared graphics device for this GPU
 					auto _gDevice = std::make_shared<w_graphics_device>();
-					_gDevice->device_name = _device_name;
-					_gDevice->device_id = _device_id;
-					_gDevice->device_vendor_id = _device_vendor_id;
 					_gDevice->vk_physical_device = _gpus[i];
 
                     //get device features
                     vkGetPhysicalDeviceFeatures(_gpus[i], &_gDevice->vk_physical_device_features);
 
                     //call event callback for changing device extensions and features from user
-                    w_graphics_device_manager::w_device_features_extensions _features_extensions(_device_id, _device_name.c_str());
-                    _features_extensions.device_features = &_gDevice->vk_physical_device_features;
+                    auto _device_info = new (std::nothrow) w_device_info(_device_id, _device_vendor_id, _device_name.c_str());
+					if (!_device_info)
+					{
+						logger.write(_msg);
+						_msg.clear();
+						logger.error("could not find allocate memory for device_info.");
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+					_device_info->device_features = &_gDevice->vk_physical_device_features;
 
                     if (pOnDeviceFeaturesFetched)
                     {
-                        (*pOnDeviceFeaturesFetched)(_features_extensions);
+                        (*pOnDeviceFeaturesFetched)(&_device_info);
                     }
-
+					
                     //swap device extensions with user defined extentions
-                    _gDevice->vk_device_extensions.swap(_features_extensions.device_extensions);
+                    _gDevice->device_info = _device_info;
 
 					//get memory properties from the physical device or GPU
 					vkGetPhysicalDeviceMemoryProperties(_gpus[i], &_gDevice->vk_physical_device_memory_properties);
@@ -1219,22 +1231,22 @@ namespace wolf
 					_queue_info.pQueuePriorities = _queue_priorities;
 
 					//create device info
-					VkDeviceCreateInfo _device_info = {};
-					_device_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-					_device_info.pNext = nullptr;
-					_device_info.queueCreateInfoCount = 1;
-					_device_info.pQueueCreateInfos = &_queue_info;
-					_device_info.enabledLayerCount = 0;
-					_device_info.ppEnabledLayerNames = nullptr;
-					_device_info.pEnabledFeatures = &_gDevice->vk_physical_device_features;
-					if (_gDevice->vk_device_extensions.size())
+					VkDeviceCreateInfo _create_device_info = {};
+					_create_device_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+					_create_device_info.pNext = nullptr;
+					_create_device_info.queueCreateInfoCount = 1;
+					_create_device_info.pQueueCreateInfos = &_queue_info;
+					_create_device_info.enabledLayerCount = 0;
+					_create_device_info.ppEnabledLayerNames = nullptr;
+					_create_device_info.pEnabledFeatures = &_gDevice->vk_physical_device_features;
+					if (_gDevice->device_info->device_extensions.size())
 					{
-						_device_info.enabledExtensionCount = static_cast<uint32_t>(_gDevice->vk_device_extensions.size());
-						_device_info.ppEnabledExtensionNames = _gDevice->vk_device_extensions.data();
+						_create_device_info.enabledExtensionCount = static_cast<uint32_t>(_gDevice->device_info->device_extensions.size());
+						_create_device_info.ppEnabledExtensionNames = _gDevice->device_info->device_extensions.data();
 					}
 
 					//create device
-					_hr = vkCreateDevice(_gpus[i], &_device_info, nullptr, &_gDevice->vk_device);
+					_hr = vkCreateDevice(_gpus[i], &_create_device_info, nullptr, &_gDevice->vk_device);
 					if (_hr)
 					{
 						logger.write(_msg);
@@ -1870,8 +1882,8 @@ namespace wolf
 				_output_presentation_window->dx_swap_chain_image_index = _output_presentation_window->dx_swap_chain->GetCurrentBackBufferIndex();
 
 #elif defined(__VULKAN__)
-				auto _device_name = pGDevice->device_name;
-				auto _device_id = pGDevice->device_id;
+				auto _device_name = pGDevice->device_info->get_device_name();
+				auto _device_id = pGDevice->device_info->get_device_id();
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 				auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
@@ -2084,7 +2096,7 @@ namespace wolf
 
 				//the FIFO present mode is guaranteed by the spec to be supported
 				VkPresentModeKHR _swap_chain_present_mode = (_output_presentation_window && _output_presentation_window->v_sync) ? VK_PRESENT_MODE_FIFO_KHR : VK_PRESENT_MODE_IMMEDIATE_KHR;
-
+				
 				uint32_t _queue_family = 0;
 				VkSwapchainCreateInfoKHR _swap_chain_create_info = {};
 				_swap_chain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -2251,13 +2263,13 @@ namespace wolf
             
 			void _create_depth_stencil_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex)
 			{
-                auto _device_id = pGDevice->device_id;
+                auto _device_id = pGDevice->device_info->get_device_id();
                 auto _window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
 #ifdef __DX12__ 
                 
 #elif defined(__VULKAN__)
-                auto _device_name = pGDevice->device_name;
+                auto _device_name = pGDevice->device_info->get_device_name();
 
 				VkImageCreateInfo _depth_stencil_image_create_info = {};
 				const VkFormat _depth_format = w_graphics_device_manager::find_supported_format(
@@ -2424,8 +2436,8 @@ namespace wolf
 				_output_presentation_window->dx_fence_value = 1;
 
 #elif defined(__VULKAN__)
-				auto _device_name = pGDevice->device_name;
-				auto _device_id = pGDevice->device_id;
+				auto _device_name = pGDevice->device_info->get_device_name();
+				auto _device_id = pGDevice->device_info->get_device_id();
 				auto _output_presentation_window = &(pGDevice->output_presentation_windows.at(pOutputPresentationWindowIndex));
 
                 //create semaphores fro this graphics device
@@ -2711,7 +2723,7 @@ void w_graphics_device_manager::initialize(_In_ std::map<int, std::vector<w_wind
 {
     //store information of windows for the first time
     this->_pimp->set_output_windows_info(pOutputWindowsInfo);
-    this->_pimp->enumerate_devices(this->graphics_devices, &this->on_device_features_fetched);
+    this->_pimp->enumerate_devices(this->graphics_devices, &this->on_device_info_fetched);
     
     //If there is no associated graphics device
     if (this->graphics_devices.size() == 0)
@@ -3097,7 +3109,7 @@ HRESULT w_graphics_device_manager::present()
                 }
                 
                 logger.error("error on presenting queue of graphics device: " +
-                             _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id) +
+                             _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()) +
                              " and presentation window: " + std::to_string(j));
                 release();
                 std::exit(EXIT_FAILURE);
@@ -3107,7 +3119,7 @@ HRESULT w_graphics_device_manager::present()
             if (_hr)
             {
                 logger.error("error on wait idle queue of graphics device: " +
-                    _gDevice->device_name + " and presentation window: " + std::to_string(j));
+                    _gDevice->device_info->get_device_name() + " and presentation window: " + std::to_string(j));
                 release();
                 std::exit(EXIT_FAILURE);
             }

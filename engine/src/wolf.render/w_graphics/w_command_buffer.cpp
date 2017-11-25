@@ -38,8 +38,8 @@ namespace wolf
                     if (_hr)
                     {
                         V(S_FALSE, "creating vulkan command pool for graphics device :" + 
-                            this->_gDevice->device_name +
-                            " ID: " + std::to_string(this->_gDevice->device_id),
+                            this->_gDevice->device_info->get_device_name() +
+                            " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
                             this->_name, 3,
                             false);
 
@@ -80,8 +80,8 @@ namespace wolf
                 if (_hr)
                 {
                     V(S_FALSE, "creating vulkan command buffers for graphics device :" + 
-                        this->_gDevice->device_name +
-                      " ID: " + std::to_string(this->_gDevice->device_id),
+                        this->_gDevice->device_info->get_device_name() +
+                      " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
                     
@@ -91,27 +91,27 @@ namespace wolf
                 return S_OK;
             }
             
-            HRESULT begin(_In_ size_t pCommandBufferIndex, _In_ VkCommandBufferUsageFlags pFlags)
-            {
-                if  (pCommandBufferIndex >= this->_commands.size()) return S_FALSE;
-                
-                //prepare data for recording command buffers
-                const VkCommandBufferBeginInfo _command_buffer_begin_info =
-                {
-                    VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,        //Type;
-                    nullptr,                                            //Next
-                    pFlags,//VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT,       // Flags
-                    nullptr,
-                };
-                
-                auto _hr = vkBeginCommandBuffer(this->_commands.at(pCommandBufferIndex), &_command_buffer_begin_info );
-                V(_hr, L"begining command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
-                  L" ID: " + std::to_wstring(this->_gDevice->device_id),
-                  this->_name, 3,
-                  false);
-                
-                return _hr == VK_SUCCESS ? S_OK : S_FALSE;
-            }
+			HRESULT begin(_In_ size_t pCommandBufferIndex, _In_ VkCommandBufferUsageFlags pFlags)
+			{
+				if (pCommandBufferIndex >= this->_commands.size()) return S_FALSE;
+
+				//prepare data for recording command buffers
+				const VkCommandBufferBeginInfo _command_buffer_begin_info =
+				{
+					VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,        //Type;
+					nullptr,                                            //Next
+					pFlags,												// Flags
+					nullptr,
+				};
+
+				auto _hr = vkBeginCommandBuffer(this->_commands.at(pCommandBufferIndex), &_command_buffer_begin_info);
+				V(_hr, L"begining command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+					L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
+					this->_name, 3,
+					false);
+
+				return _hr == VK_SUCCESS ? S_OK : S_FALSE;
+			}
             
             HRESULT begin_all(_In_ VkCommandBufferUsageFlags pFlags)
             {
@@ -132,8 +132,8 @@ namespace wolf
                 if  (pCommandBufferIndex >= this->_commands.size()) return S_FALSE;
                 
                 auto _hr = vkEndCommandBuffer(this->_commands.at(pCommandBufferIndex));
-                V(_hr, L"ending command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
-                  L" ID: " + std::to_wstring(this->_gDevice->device_id),
+                V(_hr, L"ending command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+                  L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                   this->_name, 3,
                   false);
                 
@@ -163,8 +163,8 @@ namespace wolf
                 auto _hr = vkEndCommandBuffer(_cmd);
                 if (_hr)
                 {
-                    V(S_FALSE, L"ending command buffer buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
-                      L" ID: " + std::to_wstring(this->_gDevice->device_id),
+                    V(S_FALSE, L"ending command buffer buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+                      L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
                     
@@ -185,8 +185,8 @@ namespace wolf
                 _hr = vkCreateFence(this->_gDevice->vk_device, &_fence_create_info, nullptr, &_fence);
                 if (_hr)
                 {
-                    V(S_FALSE, L"creating fence for command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
-                      L" ID: " + std::to_wstring(this->_gDevice->device_id),
+                    V(S_FALSE, L"creating fence for command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+                      L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
                     return S_FALSE;
@@ -199,8 +199,8 @@ namespace wolf
                                     _fence);
                 if (_hr)
                 {
-                    V(S_FALSE, L"submiting queue for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_name) +
-                      L" ID: " + std::to_wstring(this->_gDevice->device_id),
+                    V(S_FALSE, L"submiting queue for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+                      L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
                     return S_FALSE;

@@ -72,9 +72,11 @@ namespace wolf
                 instead use "get_pointer_to_staging_data" function
             */
             W_EXP HRESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA);
-            /*
-                flush staging buffer
-            */
+			
+			//read texture's data
+			W_EXP void* read_data_of_texture();
+
+            //flush staging buffer
             W_EXP HRESULT flush_staging_data();
 
             //release all resources
@@ -157,9 +159,7 @@ namespace wolf
             W_EXP VkFormat get_format() const;
             //get write descriptor image info
             W_EXP const VkDescriptorImageInfo get_descriptor_info() const;
-            //get pointer to the staging data
-            W_EXP void* get_pointer_to_staging_data();
-            
+
 #pragma endregion
 
 #pragma region Setters

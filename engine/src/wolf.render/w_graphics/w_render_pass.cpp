@@ -98,8 +98,8 @@ namespace wolf
                     nullptr,
                     &this->_render_pass);
                 V(_hr, L"creating render pass for graphics device: " +
-                    std::wstring(this->_gDevice->device_name.begin(), this->_gDevice->device_name.end()) +
-                    L" ID:" + std::to_wstring(this->_gDevice->device_id), this->_name, 3, false);
+					wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+                    L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
 				
                 return _hr ? S_FALSE : S_OK;
             }

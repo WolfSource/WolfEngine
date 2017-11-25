@@ -163,7 +163,7 @@ namespace wolf
                 if (_hr)
                 {
                     V(S_FALSE, "creating pipeline for graphics device: " +
-                        this->_gDevice->device_name + " ID:" + std::to_string(this->_gDevice->device_id),
+                        this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name, 3, false);
                     return S_FALSE;
                 }
@@ -202,7 +202,7 @@ namespace wolf
                 if (_hr)
                 {
                     V(S_FALSE, "creating compute pipeline layout for graphics device: " +
-                        this->_gDevice->device_name + " ID:" + std::to_string(this->_gDevice->device_id),
+                        this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name, 3, false);
                     return S_FALSE;
                 }
@@ -241,7 +241,7 @@ namespace wolf
                 if (_hr)
                 {
                     V(S_FALSE, "creating compute pipeline for graphics device: " +
-                        this->_gDevice->device_name + " ID:" + std::to_string(this->_gDevice->device_id),
+                        this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name, 3, false);
                     return S_FALSE;
                 }
@@ -562,7 +562,7 @@ VkPipelineLayout w_pipeline::create_pipeline_layout(_In_ const std::shared_ptr<w
     if (_hr)
     {
         V(S_FALSE, "creating pipeline layout for graphics device: " +
-            pGDevice->device_name + " ID:" + std::to_string(pGDevice->device_id), "w_pipeline", 3, false);
+            pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
         return 0;
     }
     return _pipeline_layout;
@@ -579,7 +579,7 @@ HRESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_
     if (_hr)
     {
         V(S_FALSE, "Error on creating pipeline cache with graphics device: " +
-            pGDevice->device_name + " ID:" + std::to_string(pGDevice->device_id), "w_pipeline", 3, false);
+            pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
         return S_FALSE;
     }
 

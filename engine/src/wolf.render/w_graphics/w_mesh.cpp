@@ -402,7 +402,7 @@ namespace wolf
                 if(pBuffer.load(this->_gDevice, pBufferSize, pBufferUsageFlag, pMemoryFlags))
                 {
                     V(S_FALSE, "loading memory of buffer for graphics device: " +
-                          _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
+                          _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
                           this->_name, 3, false);
                     
                     return S_FALSE;
@@ -417,7 +417,7 @@ namespace wolf
                     if(_hr == S_FALSE)
                     {
                         V(S_FALSE, "setting data to vertex buffer's memory staging for graphics device: " +
-                          _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
+                          _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
                           this->_name, 3, false);
                     
                         return S_FALSE;
@@ -429,7 +429,7 @@ namespace wolf
                 if(_hr == S_FALSE)
                 {
                     V(S_FALSE, "binding to vertex buffer's memory for graphics device: " +
-                      _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id),
+                      _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
                       this->_name, 3, false);
                     
                     return S_FALSE;

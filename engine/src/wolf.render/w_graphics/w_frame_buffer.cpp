@@ -58,8 +58,8 @@ namespace wolf
                     auto _hr = vkCreateFramebuffer(pGDevice->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
                     if (_hr != VK_SUCCESS)
                     {
-                        V(S_FALSE, "creating frame buffer for graphics device: " + pGDevice->device_name +
-                            " ID:" + std::to_string(pGDevice->device_id), _trace_info, 3, false);
+                        V(S_FALSE, "creating frame buffer for graphics device: " + pGDevice->device_info->get_device_name() +
+                            " ID:" + std::to_string(pGDevice->device_info->get_device_id()), _trace_info, 3, false);
                         return S_FALSE;
                     }
 
@@ -146,8 +146,8 @@ namespace wolf
 					auto _hr = vkCreateFramebuffer(this->_gDevice->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
 					if (_hr != VK_SUCCESS)
 					{
-						V(S_FALSE, "creating frame buffer for graphics device: " + this->_gDevice->device_name +
-							" ID:" + std::to_string(this->_gDevice->device_id), this->_name, 3, false);
+						V(S_FALSE, "creating frame buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
+							" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
 						return S_FALSE;
 					}
 

@@ -398,11 +398,11 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	this->_rt_fence.wait();
 
 
-	auto _ptr = this->_rt.get_pointer_to_staging_data_of_attachment(0);
+	/*auto _ptr = this->_rt.get_pointer_to_staging_data_of_attachment(0);
 	if (_ptr)
 	{
 		w_texture::save_jpg_to_file("c:\\wolf\\AA.jpg", this->_rt.get_width(), this->_rt.get_height(), _ptr, 4, 100);
-	}
+	}*/
 
 
 	 _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
