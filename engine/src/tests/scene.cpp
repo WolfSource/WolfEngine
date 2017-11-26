@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "scene.h"
+#include <tbb/parallel_for.h>
 
 using namespace std;
 using namespace wolf;
@@ -24,7 +25,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 #endif
 
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	_config.off_screen_mode = false;
 	w_game::set_graphics_device_manager_configs(_config);
 	w_game::set_fixed_time_step(false);
@@ -284,7 +285,19 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     //reset draw fence
     this->_draw_fence.reset();
 
-	return w_game::render(pGameTime);
+	auto _hr = w_game::render(pGameTime);
+
+    uint8_t* _data = nullptr;
+    auto _result = _gDevice->capture(0, &_data);
+    if (_result == S_OK)
+    {
+    /*    auto _slice_pitch = _output_window->width * _output_window->height;
+        for (size_t i = 0; i < _slice_pitch; ++i)
+        {
+            logger.write(std::to_string(_data[i]));
+        }*/
+    }
+    return _hr;
 }
 
 void scene::on_window_resized(_In_ UINT pIndex)

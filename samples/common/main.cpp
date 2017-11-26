@@ -75,6 +75,7 @@ int main(int pArgc, const char * pArgv[])
     _window_info.is_full_screen = false;
     _window_info.v_sync_enable = false;
     _window_info.swap_chain_format = 44;//using vulkan as render api
+    _window_info.cpu_access_swap_chain_buffer = true;
 
 #ifdef __WIN32
     _window_info.hwnd = sWindow->get_HWND();

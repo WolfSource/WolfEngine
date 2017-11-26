@@ -209,54 +209,456 @@ HRESULT w_graphics_device::submit(_In_ const std::vector<VkCommandBuffer>&  pCom
     return S_OK;
 }
 
-void* w_graphics_device::capture(_In_ size_t pWindowIndex)
+HRESULT w_graphics_device::capture(_In_ size_t pWindowIndex, _Inout_ uint8_t** pPixelsData)
 {
+    HRESULT _return_result = S_OK;
+
     if (pWindowIndex >= this->output_presentation_windows.size())
     {
+        _return_result = S_FALSE;
         logger.error("Index of output presentation window is out of range");
-        return nullptr;
+        return _return_result;
     }
     const std::string _trace_info = "w_graphics_device::capture";
-
     auto _output_window = this->output_presentation_windows.at(pWindowIndex);
+    
+    VkImage _src_image = _output_window.vk_swap_chain_image_views[_output_window.vk_swap_chain_image_index].image;
+    VkImage _dst_image = 0;
+    VkDeviceMemory _dst_image_memory = 0;
+    VkCommandBuffer _copy_cmd = 0;
+    VkFence _copy_fence = 0;
+    bool _command_buffer_began = false;
 
     //create destination image in order to get data of swap chain's image and later allow access from cpu
-    VkImageCreateInfo _imgage_create_info = {};
-    _imgage_create_info.imageType = VK_IMAGE_TYPE_2D;
-    _imgage_create_info.format = VK_FORMAT_R8G8B8A8_UNORM;
-    _imgage_create_info.extent.width = _output_window.width;
-    _imgage_create_info.extent.height = _output_window.height;
-    _imgage_create_info.extent.depth = 1;
-    _imgage_create_info.arrayLayers = 1;
-    _imgage_create_info.mipLevels = 1;
-    _imgage_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    _imgage_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
-    _imgage_create_info.tiling = VK_IMAGE_TILING_LINEAR;
-    _imgage_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-    
+    VkImageCreateInfo _image_create_info = {};
+    _image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    _image_create_info.imageType = VK_IMAGE_TYPE_2D;
+    _image_create_info.format = _output_window.vk_swap_chain_selected_format.format;
+    _image_create_info.extent.width = _output_window.width;
+    _image_create_info.extent.height = _output_window.height;
+    _image_create_info.extent.depth = 1;
+    _image_create_info.arrayLayers = 1;
+    _image_create_info.mipLevels = 1;
+    _image_create_info.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
+    _image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
+    _image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
+    _image_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+
     //create the destination image
-    VkImage _dst_image = 0;
     auto _hr = vkCreateImage(
         this->vk_device,
-        &_imgage_create_info,
+        &_image_create_info,
         nullptr,
         &_dst_image);
     if (_hr)
     {
-        V(S_FALSE,
+        _return_result = S_FALSE;
+        V(_return_result,
             "creating destination image for graphics device" + this->device_info->get_device_name() +
             " ID:" + std::to_string(this->device_info->get_device_id()),
             _trace_info,
             3,
             false);
-        //first release it
+        goto clean_up;
+    }
+
+
+    {
+        //get memory requirements
+        VkMemoryRequirements _mem_requirements;
+        vkGetImageMemoryRequirements(this->vk_device, _dst_image, &_mem_requirements);
+
+        uint32_t _mem_type_index;
+        w_graphics_device_manager::memory_type_from_properties(
+            this->vk_physical_device_memory_properties,
+            _mem_requirements.memoryTypeBits,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            &_mem_type_index);
+
+        //allocate memory info
+        VkMemoryAllocateInfo _mem_alloc_info = {};
+        _mem_alloc_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        _mem_alloc_info.allocationSize = _mem_requirements.size;
+        _mem_alloc_info.memoryTypeIndex = _mem_type_index;
+
+        //allocate memory in host
+        _hr = vkAllocateMemory(this->vk_device, &_mem_alloc_info, nullptr, &_dst_image_memory);
+        if (_hr)
+        {
+            _return_result = S_FALSE;
+            V(_return_result,
+                "creating destination image for graphics device" + this->device_info->get_device_name() +
+                " ID:" + std::to_string(this->device_info->get_device_id()),
+                _trace_info,
+                3,
+                false);
+
+            goto clean_up;
+        }
+    }
+
+    //bind to image memory
+    _hr = vkBindImageMemory(this->vk_device, _dst_image, _dst_image_memory, 0);
+    if (_hr)
+    {
+        _return_result = S_FALSE;
+        V(_return_result,
+            "creating destination image for graphics device" + this->device_info->get_device_name() +
+            " ID:" + std::to_string(this->device_info->get_device_id()),
+            _trace_info,
+            3,
+            false);
+
+        goto clean_up;
+    }
+
+    {
+        // create command buffer on primary
+        VkCommandBufferAllocateInfo _copy_cmd_buf_allocate_info = {};
+        _copy_cmd_buf_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        _copy_cmd_buf_allocate_info.commandPool = this->vk_command_allocator_pool;
+        _copy_cmd_buf_allocate_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        _copy_cmd_buf_allocate_info.commandBufferCount = 1;
+        _hr = vkAllocateCommandBuffers(this->vk_device, &_copy_cmd_buf_allocate_info, &_copy_cmd);
+        if (_hr)
+        {
+            _return_result = S_FALSE;
+            V(_return_result,
+                "allocating buffer for copy command buffer for" + this->device_info->get_device_name() +
+                " ID:" + std::to_string(this->device_info->get_device_id()),
+                _trace_info,
+                3,
+                false);
+
+            goto clean_up;
+        }
+
+        //begin command buffer
+        VkCommandBufferBeginInfo _copy_cmd_buff_info = {};
+        _copy_cmd_buff_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        _hr = vkBeginCommandBuffer(_copy_cmd, &_copy_cmd_buff_info);
+        _command_buffer_began = true;
+        if (_hr)
+        {
+            _return_result = S_FALSE;
+            V(_return_result,
+                "beginning copy command buffer for" + this->device_info->get_device_name() +
+                " ID:" + std::to_string(this->device_info->get_device_id()),
+                _trace_info,
+                3,
+                false);
+
+            goto clean_up;
+        }
+    }
+
+    const auto _sub_res_range = VkImageSubresourceRange
+    {
+        VK_IMAGE_ASPECT_COLOR_BIT,
+        0,
+        1,
+        0,
+        1
+    };
+
+    {
+        //transition destination image to transfer destination layout
+        VkImageMemoryBarrier _imb_undefined_to_dst_transfer= {};
+        _imb_undefined_to_dst_transfer.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        _imb_undefined_to_dst_transfer.srcAccessMask = 0;
+        _imb_undefined_to_dst_transfer.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        _imb_undefined_to_dst_transfer.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
+        _imb_undefined_to_dst_transfer.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        _imb_undefined_to_dst_transfer.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        _imb_undefined_to_dst_transfer.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        _imb_undefined_to_dst_transfer.image = _dst_image;
+        _imb_undefined_to_dst_transfer.subresourceRange = _sub_res_range;
+
+        vkCmdPipelineBarrier(
+            _copy_cmd,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,
+            0,
+            nullptr,
+            0,
+            nullptr,
+            1,
+            &_imb_undefined_to_dst_transfer);
+
+        //transition swapchain image from present to transfer source layout
+        VkImageMemoryBarrier _imb_memory_to_transfer_read = {};
+        _imb_memory_to_transfer_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        _imb_memory_to_transfer_read.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+        _imb_memory_to_transfer_read.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        _imb_memory_to_transfer_read.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        _imb_memory_to_transfer_read.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        _imb_memory_to_transfer_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        _imb_memory_to_transfer_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        _imb_memory_to_transfer_read.image = _src_image;
+        _imb_memory_to_transfer_read.subresourceRange = _sub_res_range;
+        
+        vkCmdPipelineBarrier(
+            _copy_cmd,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,
+            0,
+            nullptr,
+            0,
+            nullptr,
+            1,
+            &_imb_memory_to_transfer_read);
+
+    }
+
+    if (_output_window.vk_bliting_supported)
+    {
+        // apply bliting
+        VkOffset3D _src_offset =
+        {
+            _output_window.width,   //x
+            _output_window.height,  //y
+            1                       //z
+        };
+
+        VkImageBlit _image_blit_region = {};
+        _image_blit_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        _image_blit_region.srcSubresource.layerCount = 1;
+        _image_blit_region.srcOffsets[1] = _src_offset;
+        _image_blit_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        _image_blit_region.dstSubresource.layerCount = 1;
+        _image_blit_region.dstOffsets[1] = _src_offset;
+
+        // apply blit command
+        vkCmdBlitImage(
+            _copy_cmd,
+            _src_image, 
+            VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+            _dst_image,
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            1,
+            &_image_blit_region,
+            VK_FILTER_NEAREST);
+    }
+    else
+    {
+        // apply image copy
+        VkImageCopy _image_copy_region = {};
+        _image_copy_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        _image_copy_region.srcSubresource.layerCount = 1;
+        _image_copy_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        _image_copy_region.dstSubresource.layerCount = 1;
+        _image_copy_region.extent.width = _output_window.width;
+        _image_copy_region.extent.height = _output_window.height;
+        _image_copy_region.extent.depth = 1;
+
+        //Apply copy region command
+        vkCmdCopyImage(
+            _copy_cmd,
+            _src_image,
+            VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+            _dst_image,
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+            1,
+            &_image_copy_region);
+    }
+
+
+    {
+        VkImageMemoryBarrier _imb_transfer_write_to_memory_read = {};
+        _imb_transfer_write_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        _imb_transfer_write_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        _imb_transfer_write_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+        _imb_transfer_write_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        _imb_transfer_write_to_memory_read.newLayout = VK_IMAGE_LAYOUT_GENERAL;
+        _imb_transfer_write_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        _imb_transfer_write_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        _imb_transfer_write_to_memory_read.image = _dst_image;
+        _imb_transfer_write_to_memory_read.subresourceRange = _sub_res_range;
+
+        vkCmdPipelineBarrier(
+            _copy_cmd,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,
+            0,
+            nullptr,
+            0,
+            nullptr,
+            1,
+            &_imb_transfer_write_to_memory_read);
+
+        VkImageMemoryBarrier _imb_transfer_read_to_memory_read = {};
+        _imb_transfer_read_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        _imb_transfer_read_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+        _imb_transfer_read_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+        _imb_transfer_read_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        _imb_transfer_read_to_memory_read.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        _imb_transfer_read_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        _imb_transfer_read_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        _imb_transfer_read_to_memory_read.image = _src_image;
+        _imb_transfer_read_to_memory_read.subresourceRange = _sub_res_range;
+
+        vkCmdPipelineBarrier(
+            _copy_cmd,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            VK_PIPELINE_STAGE_TRANSFER_BIT,
+            0,
+            0,
+            nullptr,
+            0,
+            nullptr,
+            1,
+            &_imb_transfer_read_to_memory_read);
+
+        _hr = vkEndCommandBuffer(_copy_cmd);
+        if (_hr)
+        {
+            _return_result = S_FALSE;
+            V(_return_result,
+                "ending copy command buffer for" + this->device_info->get_device_name() +
+                " ID:" + std::to_string(this->device_info->get_device_id()),
+                _trace_info,
+                3,
+                false);
+
+            goto clean_up;
+        }
+        _command_buffer_began = false;
+
+        //execute command buffer
+        VkSubmitInfo _submit_info = {};
+        _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        _submit_info.pCommandBuffers = &_copy_cmd;
+
+        // Create fence to ensure that the command buffer has finished executing
+        VkFenceCreateInfo _fence_info = {};
+        _fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        _fence_info.flags = 0;
+
+        _hr = vkCreateFence(this->vk_device, &_fence_info, nullptr, &_copy_fence);
+        if (_hr)
+        {
+            _return_result = S_FALSE;
+            V(_return_result,
+                "creating fence of copy command buffer for" + this->device_info->get_device_name() +
+                " ID:" + std::to_string(this->device_info->get_device_id()),
+                _trace_info,
+                3,
+                false);
+
+            goto clean_up;
+        }
+
+        //Submit to the queue
+        _hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _copy_fence);
+        if (_hr)
+        {
+            _return_result = S_FALSE;
+            V(_return_result,
+                "submiting copy command buffer to queue for" + this->device_info->get_device_name() +
+                " ID:" + std::to_string(this->device_info->get_device_id()),
+                _trace_info,
+                3,
+                false);
+
+            goto clean_up;
+        }
+        // Wait for the fence to signal that command buffer has finished executing
+        _hr = vkWaitForFences(this->vk_device, 1, &_copy_fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
+        if (_hr)
+        {
+            _return_result = S_FALSE;
+            V(_return_result,
+                "submiting copy command buffer to queue for" + this->device_info->get_device_name() +
+                " ID:" + std::to_string(this->device_info->get_device_id()),
+                _trace_info,
+                3,
+                false);
+
+            goto clean_up;
+        }
+
+        VkImageSubresource _sub_resource = {};
+        _sub_resource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        VkSubresourceLayout _sub_resource_layout;
+        vkGetImageSubresourceLayout(this->vk_device, _dst_image, &_sub_resource, &_sub_resource_layout);
+
+        //Map the memory
+        const char* _data;
+
+        vkMapMemory(this->vk_device, _dst_image_memory, 0, VK_WHOLE_SIZE, 0, (void**)&_data);
+        _data += _sub_resource_layout.offset;
+
+        std::vector<char> _pixels;
+        for (uint32_t y = 0; y < _output_window.height; y++)
+        {
+            auto row = (unsigned int*)_data;
+            for (uint32_t x = 0; x < _output_window.width; x++)
+            {
+                auto _c = (char*)row;
+                _pixels.push_back(_c[0]);
+                _pixels.push_back(_c[1]);
+                _pixels.push_back(_c[2]);
+                _pixels.push_back(_c[3]);
+                row++;
+            }
+            _data += _sub_resource_layout.rowPitch;
+        }
+        vkUnmapMemory(this->vk_device, _dst_image_memory);
+
+        w_texture::save_bmp_to_file(
+            "c:\\Wolf\\a.bmp",
+            _output_window.width,
+            _output_window.height,
+            _pixels.data(),
+            3);
+    }
+
+clean_up:
+    _src_image = nullptr;
+    if (_dst_image_memory)
+    {
+        vkFreeMemory(this->vk_device, _dst_image_memory, nullptr);
+    }
+    if (_dst_image)
+    {
         vkDestroyImage(
             this->vk_device,
             _dst_image,
             nullptr);
-        return nullptr;
+    }
+    if (_copy_cmd)
+    {
+        if (_command_buffer_began)
+        {
+            _hr = vkEndCommandBuffer(_copy_cmd);
+            if (_hr)
+            {
+                V(S_FALSE,
+                    "ending copy command buffer for" + this->device_info->get_device_name() +
+                    " ID:" + std::to_string(this->device_info->get_device_id()),
+                    _trace_info,
+                    3,
+                    false);
+            }
+        }
+        vkFreeCommandBuffers(
+            this->vk_device,
+            this->vk_command_allocator_pool,
+            1,
+            &_copy_cmd
+        );
+    }
+    //release fence
+    if (_copy_fence)
+    {
+        vkDestroyFence(this->vk_device, _copy_fence, nullptr);
     }
 
+
+    return _return_result;
 }
 
 w_output_presentation_window w_graphics_device::main_window()
@@ -1343,6 +1745,7 @@ namespace wolf
 								_out_window.index = static_cast<int>(j);
 								_out_window.vk_swap_chain_selected_format.format = (VkFormat)_window.swap_chain_format;
 								_out_window.vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+                                _out_window.cpu_access_to_swapchain_buffer = _window.cpu_access_swap_chain_buffer;
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
 
@@ -2162,7 +2565,11 @@ namespace wolf
 				_swap_chain_create_info.presentMode = _swap_chain_present_mode;
 				_swap_chain_create_info.oldSwapchain = VK_NULL_HANDLE;
 				_swap_chain_create_info.clipped = VK_TRUE;
-				_swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+                _swap_chain_create_info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+                if (_output_presentation_window && _output_presentation_window->cpu_access_to_swapchain_buffer)
+                {
+                    _swap_chain_create_info.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+                }
 				_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 				_swap_chain_create_info.queueFamilyIndexCount = 1;
 				_swap_chain_create_info.pQueueFamilyIndices = &_queue_family;
@@ -2274,9 +2681,9 @@ namespace wolf
                     {
                         logger.warning("Blitting feature not supported from optimal tiled image for graphics device: " +
                             _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                        _output_presentation_window->vk_blitting_supported = false;
+                        _output_presentation_window->vk_bliting_supported = false;
                     }
-                    if (_output_presentation_window->vk_blitting_supported)
+                    if (_output_presentation_window->vk_bliting_supported)
                     {
                         // Check if the device supports blitting to linear images 
                         vkGetPhysicalDeviceFormatProperties(
@@ -2287,7 +2694,7 @@ namespace wolf
                         {
                             logger.warning("Blitting feature not supported from linear tiled image for graphics device: " +
                                 _device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-                            _output_presentation_window->vk_blitting_supported = false;
+                            _output_presentation_window->vk_bliting_supported = false;
                         }
                     }
                 }
@@ -3333,13 +3740,6 @@ const ULONG w_graphics_device_manager::get_number_of_graphics_devices() const
 	return static_cast<ULONG>(this->graphics_devices.size());
 }
 
-w_color w_graphics_device_manager::get_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
-	_In_ size_t pOutputPresentationWindowIndex) const
-{
-	auto _output_presentation_window = &(this->graphics_devices[pGraphicsDeviceIndex]->output_presentation_windows[pOutputPresentationWindowIndex]);
-	return _output_presentation_window->clear_color;
-}
-
 #ifdef	__DX11_X__
 concurrency::accelerator_view w_graphics_device_manager::get_camp_accelerator_view(const CPP_AMP_DEVICE_TYPE pCppAMPDeviceType, ID3D11Device1* pDevice)
 {
@@ -3415,20 +3815,6 @@ void w_graphics_device_manager::set_graphics_device_manager_configs(_In_ const w
 	{
 		this->_pimp->set_graphics_device_manager_configs(pConfig);
 	}
-}
-
-void w_graphics_device_manager::set_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
-	_In_ size_t pOutputPresentationWindowIndex, _In_ w_color pClearColor)
-{
-	auto _output_presentation_window = &(this->graphics_devices[pGraphicsDeviceIndex]->output_presentation_windows[pOutputPresentationWindowIndex]);
-	_output_presentation_window->clear_color = pClearColor;
-
-	//set how many images need to be refresh
-#ifdef __DX12__
-	_output_presentation_window->force_to_clear_color_times = _output_presentation_window->dx_swap_chain_image_views.size();
-#elif defined(__VULKAN__)
-	_output_presentation_window->force_to_clear_color_times = static_cast<int>(_output_presentation_window->vk_swap_chain_image_views.size());
-#endif
 }
 
 #pragma endregion

@@ -397,14 +397,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	// Wait for fence to signal that command buffer done
 	this->_rt_fence.wait();
 
-
-	/*auto _ptr = this->_rt.get_pointer_to_staging_data_of_attachment(0);
-	if (_ptr)
-	{
-		w_texture::save_jpg_to_file("c:\\wolf\\AA.jpg", this->_rt.get_width(), this->_rt.get_height(), _ptr, 4, 100);
-	}*/
-
-
 	 _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	//reset draw fence
 	this->_draw_fence.reset();
@@ -427,7 +419,12 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	//clear all wait semaphores
 	_wait_semaphors.clear();
 
-	return w_game::render(pGameTime);
+    auto _hr = w_game::render(pGameTime);
+
+    uint8_t* _data = nullptr;
+    auto _result = _gDevice->capture(0, &_data);
+
+    return _hr;
 }
 
 void scene::on_window_resized(_In_ UINT pIndex)

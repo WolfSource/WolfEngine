@@ -134,7 +134,8 @@ struct w_window_info
 #endif
     
     //BGRA8Unorm for DirectX12 is "87" and for VULKAN is 44
-	UINT				swap_chain_format = 44;
+	uint32_t			swap_chain_format = 44;
+    bool                cpu_access_swap_chain_buffer = false;
 };
 
 #if defined(__WIN32) || (defined(__linux) && !defined(__ANDROID))

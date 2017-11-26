@@ -106,9 +106,8 @@ namespace wolf
 #endif
                       
 			bool									v_sync = true;
-			w_color                                 clear_color = w_color::CORNFLOWER_BLUE();
-			int										force_to_clear_color_times;
-                        
+            bool                                    cpu_access_to_swapchain_buffer = false;
+
 #ifdef __DX12__		
 			DXGI_FORMAT								dx_swap_chain_selected_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
 			ComPtr<IDXGISwapChain3>					dx_swap_chain;
@@ -146,7 +145,7 @@ namespace wolf
             w_semaphore								vk_swap_chain_image_is_available_semaphore;
             w_semaphore								vk_rendering_done_semaphore;
 
-            bool                                    vk_blitting_supported;
+            bool                                    vk_bliting_supported = true;
 #endif
 
         private:
@@ -214,8 +213,10 @@ namespace wolf
                 capture color buffer of swap chain and make them accessable by CPU, 
                 you must enable cpu_access flag before creating graphics device
                 @param pWindowIndex, index of output presentation window
+                @param pPixelsData, captured data
+                @return S_OK or S_FALSE
             */
-            W_EXP void* capture(_In_ size_t pWindowIndex = 0);
+            W_EXP HRESULT capture(_In_ size_t pWindowIndex, _Inout_ uint8_t** pPixelsData);
 
 			w_device_info*												device_info = nullptr;
 
@@ -314,8 +315,6 @@ namespace wolf
             W_EXP std::shared_ptr<w_graphics_device> get_graphics_device() const;
 			//Returns number of available graphics devices
             W_EXP const ULONG get_number_of_graphics_devices() const;
-            W_EXP w_color get_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
-				_In_ size_t pOutputPresentationWindowIndex) const;
 
 //#ifdef __DX11__
 //            //Get DPI
@@ -328,8 +327,6 @@ namespace wolf
 
 #pragma region Setters
 			W_EXP void set_graphics_device_manager_configs(_In_ const w_graphics_device_manager_configs& pConfig);
-			W_EXP void set_output_window_clear_color(_In_ size_t pGraphicsDeviceIndex,
-				_In_ size_t pOutputPresentationWindowIndex, _In_ w_color pClearColor);
 #pragma endregion
 
 
