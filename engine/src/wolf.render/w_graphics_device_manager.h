@@ -20,6 +20,7 @@
 #include <w_window.h>
 #include <w_color.h>
 #include <w_signal.h>
+#include <w_point.h>
 #include <map>
 #include <mutex>
 #include <vector>
@@ -131,6 +132,7 @@ namespace wolf
 #elif defined(__VULKAN__)
             VkSurfaceKHR                            vk_presentation_surface = 0;
             VkSurfaceFormatKHR                      vk_swap_chain_selected_format;
+			VkImageLayout							vk_swap_chain_images_layout = VkImageLayout::VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 			VkSwapchainKHR                          vk_swap_chain = 0;
             std::vector<w_image_view>				vk_swap_chain_image_views;
             uint32_t								vk_swap_chain_image_index = 0;
@@ -145,7 +147,6 @@ namespace wolf
             w_semaphore								vk_swap_chain_image_is_available_semaphore;
             w_semaphore								vk_rendering_done_semaphore;
 
-            bool                                    vk_bliting_supported = true;
 #endif
 
         private:
@@ -210,13 +211,30 @@ namespace wolf
                                  _In_ w_fences&                             pFence);
             
             /*
-                capture color buffer of swap chain and make them accessable by CPU, 
-                you must enable cpu_access flag before creating graphics device
-                @param pWindowIndex, index of output presentation window
-                @param pPixelsData, captured data
-                @return S_OK or S_FALSE
+                capture image buffer's data and save to D-RAM and make it accessable by CPU, 
+				for capturing last presented swap chain image's buffer, use "w_graphics_device::capture_presented_swap_chain_buffer" function
+                The source buffer must be created with  VK_IMAGE_USAGE_TRANSFER_SRC_BIT flag
+                @param pSourceImage, inputed source image
+				@param pSourceImageLayout, inputed source image layout
+				@param pWidth, width of inputed source image
+				@param pHeight, height of inputed source image
+                @param pOnPixelsDataCaptured, raised when pixels just mapped to RAM and become accessable by CPU. (inputs are: const w_point_t Width_Height, const uint8_t* Pixels and outsput is void) 
+                @return S_OK means function did succesfully and S_FALSE means function failed
             */
-            W_EXP HRESULT capture(_In_ size_t pWindowIndex, _Inout_ uint8_t** pPixelsData);
+			W_EXP HRESULT capture(
+				_In_ VkImage pSourceImage,
+				_In_ VkFormat pSourceImageFormat,
+				_In_ VkImageLayout pSourceImageLayout,
+				_In_ const uint32_t& pWidth,
+				_In_ const uint32_t& pHeight,
+				_In_ system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured);
+
+			/*
+				capture last presented swap chain image buffer's data and save to the D-RAM and make it accessable by CPU,
+				make sure set true to w_window_info::cpu_access_swap_chain_buffer flag before creating graphics device
+				@return S_OK means function did succesfully and S_FALSE means function failed
+			*/
+			W_EXP HRESULT capture_presented_swap_chain_buffer(_In_ system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured);
 
 			w_device_info*												device_info = nullptr;
 
@@ -305,10 +323,11 @@ namespace wolf
 			//Release all resources
 			W_EXP ULONG release() override;
 
+
 			//convert DPIs to pixels
             W_EXP static const float convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI);
 
-            wolf::system::w_signal<void(w_device_info**)> on_device_info_fetched;
+            system::w_signal<void(w_device_info**)> on_device_info_fetched;
 
 #pragma region Getters
 			//Get the main graphics device, this is first and the primary device.

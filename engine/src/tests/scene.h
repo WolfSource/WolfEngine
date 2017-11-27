@@ -60,6 +60,8 @@ public:
 	ULONG release() override;
 
 private:
+	wolf::system::w_signal<void(const w_point_t, const uint8_t*)> on_pixels_data_captured_signal;
+	
 	HRESULT build_draw_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
 
 	wolf::graphics::w_viewport                                      _viewport;

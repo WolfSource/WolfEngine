@@ -379,13 +379,13 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	auto _cmd = this->_rt_command_buffer.get_command_at(_frame_index);
-	
+
 	//reset render target fence
 	this->_rt_fence.reset();
-	
+
 	//submit command buffer of render target
 	if (_gDevice->submit(
-		{ _cmd },
+	{ _cmd },
 		_gDevice->vk_graphics_queue,
 		&_wait_dst_stage_mask[0],
 		_wait_semaphors,
@@ -397,11 +397,11 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	// Wait for fence to signal that command buffer done
 	this->_rt_fence.wait();
 
-	 _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
+	_cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	//reset draw fence
 	this->_draw_fence.reset();
 	if (_gDevice->submit(
-		{ _cmd },
+	{ _cmd },
 		_gDevice->vk_graphics_queue,
 		&_wait_dst_stage_mask[0],
 		{ *this->_rt_semaphore.get() },
@@ -415,16 +415,11 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	
+
 	//clear all wait semaphores
 	_wait_semaphors.clear();
 
-    auto _hr = w_game::render(pGameTime);
-
-    uint8_t* _data = nullptr;
-    auto _result = _gDevice->capture(0, &_data);
-
-    return _hr;
+	return w_game::render(pGameTime);
 }
 
 void scene::on_window_resized(_In_ UINT pIndex)

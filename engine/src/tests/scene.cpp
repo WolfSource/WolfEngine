@@ -10,7 +10,7 @@ using namespace wolf::graphics;
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
 	w_game(pRunningDirectory, pAppName)
 {
-    using namespace wolf;
+	using namespace wolf;
 
 	auto _running_dir = pRunningDirectory;
 
@@ -25,10 +25,16 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 #endif
 
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	_config.off_screen_mode = false;
 	w_game::set_graphics_device_manager_configs(_config);
 	w_game::set_fixed_time_step(false);
+
+	this->on_pixels_data_captured_signal += [&](_In_ const w_point_t pSize, _In_ const uint8_t* pPixels)->void
+	{
+		
+		//w_texture::save_bmp_to_file("c:\\wolf\\a.bmp", pSize.x, pSize.y, pPixels, 4);
+	};
 }
 
 scene::~scene()
@@ -77,6 +83,8 @@ void scene::load()
 	w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
 	w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
 	
+	_color.desc.format = _output_window->vk_swap_chain_selected_format.format;
+
 	//define attachments which has color and depth for render pass
 	std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
 
@@ -274,30 +282,33 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	_submit_info.pSignalSemaphores = _output_window->vk_rendering_done_semaphore.get(); //signal to end the render
 
 	// Submit to queue
-    auto _fence = this->_draw_fence.get();
+	auto _fence = this->_draw_fence.get();
 	if (vkQueueSubmit(_gDevice->vk_graphics_queue.queue, 1, &_submit_info, *_fence))
 	{
 		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true);
 		return S_FALSE;
 	}
 	// Wait for fence to signal that all command buffers are ready
-    this->_draw_fence.wait();
-    //reset draw fence
-    this->_draw_fence.reset();
+	this->_draw_fence.wait();
+	//reset draw fence
+	this->_draw_fence.reset();
 
 	auto _hr = w_game::render(pGameTime);
 
-    uint8_t* _data = nullptr;
-    auto _result = _gDevice->capture(0, &_data);
-    if (_result == S_OK)
-    {
-    /*    auto _slice_pitch = _output_window->width * _output_window->height;
-        for (size_t i = 0; i < _slice_pitch; ++i)
-        {
-            logger.write(std::to_string(_data[i]));
-        }*/
-    }
-    return _hr;
+	auto _result = _gDevice->capture(
+		_output_window->vk_swap_chain_image_views[_output_window->vk_swap_chain_image_index].image,
+		_output_window->vk_swap_chain_selected_format.format,
+		_output_window->vk_swap_chain_images_layout,
+		_output_window->width,
+		_output_window->height,
+		on_pixels_data_captured_signal);
+	if (_result == S_FALSE)
+	{
+		logger.error("something went wrong on capturing data from swap chain's buffer");
+	}
+	logger.write(std::to_string(pGameTime.get_frames_per_second()));
+
+	return _hr;
 }
 
 void scene::on_window_resized(_In_ UINT pIndex)
