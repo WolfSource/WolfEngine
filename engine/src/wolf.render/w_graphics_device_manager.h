@@ -132,7 +132,6 @@ namespace wolf
 #elif defined(__VULKAN__)
             VkSurfaceKHR                            vk_presentation_surface = 0;
             VkSurfaceFormatKHR                      vk_swap_chain_selected_format;
-			VkImageLayout							vk_swap_chain_images_layout = VkImageLayout::VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 			VkSwapchainKHR                          vk_swap_chain = 0;
             std::vector<w_image_view>				vk_swap_chain_image_views;
             uint32_t								vk_swap_chain_image_index = 0;
@@ -146,6 +145,19 @@ namespace wolf
 			//Synchronization objects
             w_semaphore								vk_swap_chain_image_is_available_semaphore;
             w_semaphore								vk_rendering_done_semaphore;
+
+
+            //Required objects for sharing swap chain's buffer with CPU
+            struct shared_objs_between_cpu_gpu
+            {
+                VkImage                                 destination_image = 0;
+                VkDeviceMemory                          destination_image_memory = 0;
+                VkCommandBuffer                         copy_command_buffer = 0;
+                VkFence                                 copy_fence = 0;
+                bool                                    command_buffer_began = false;
+            };
+            shared_objs_between_cpu_gpu*                objs_between_cpu_gpu = nullptr;
+            bool                                        bliting_supported_by_swap_chain = true;
 
 #endif
 
@@ -234,7 +246,9 @@ namespace wolf
 				make sure set true to w_window_info::cpu_access_swap_chain_buffer flag before creating graphics device
 				@return S_OK means function did succesfully and S_FALSE means function failed
 			*/
-			W_EXP HRESULT capture_presented_swap_chain_buffer(_In_ system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured);
+            W_EXP HRESULT capture_presented_swap_chain_buffer(
+                _In_ const uint32_t& pOutputPresentationWindowIndex,
+                _In_ wolf::system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured);
 
 			w_device_info*												device_info = nullptr;
 

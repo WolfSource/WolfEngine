@@ -32,7 +32,6 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 	this->on_pixels_data_captured_signal += [&](_In_ const w_point_t pSize, _In_ const uint8_t* pPixels)->void
 	{
-		
 		//w_texture::save_bmp_to_file("c:\\wolf\\a.bmp", pSize.x, pSize.y, pPixels, 4);
 	};
 }
@@ -295,7 +294,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 	auto _hr = w_game::render(pGameTime);
 
-	auto _result = _gDevice->capture(
+	/*auto _result = _gDevice->capture(
 		_output_window->vk_swap_chain_image_views[_output_window->vk_swap_chain_image_index].image,
 		_output_window->vk_swap_chain_selected_format.format,
 		_output_window->vk_swap_chain_images_layout,
@@ -305,7 +304,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	if (_result == S_FALSE)
 	{
 		logger.error("something went wrong on capturing data from swap chain's buffer");
-	}
+	}*/
 	logger.write(std::to_string(pGameTime.get_frames_per_second()));
 
 	return _hr;
