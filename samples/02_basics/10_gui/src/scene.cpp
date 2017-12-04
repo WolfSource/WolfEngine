@@ -133,7 +133,14 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, nullptr, nullptr);
+	w_imgui::load(_gDevice,
+#ifdef __WIN32
+                  _output_window->hwnd,
+#endif
+                  _screen_size,
+                  _render_pass_handle,
+                  nullptr,
+                  nullptr);
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
@@ -174,8 +181,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	sFPS = pGameTime.get_frames_per_second();
+    
+    sFPS = wolf::inputs_manager.mouse.pos_y;// pGameTime.get_frames_per_second();
 	sElapsedTimeInSec = pGameTime.get_elapsed_seconds();
 	sTotalTimeTimeInSec = pGameTime.get_total_seconds();
 

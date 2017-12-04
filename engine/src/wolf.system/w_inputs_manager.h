@@ -80,7 +80,7 @@ namespace wolf
                 _In_ bool pMouseMiddleButtonDown,
                 _In_ bool pMouseMiddleButtonUp,
                 _In_ float pMouseWheel,
-                _In_ w_point_f pMouseMove,
+                _In_ w_point_f* pMouseMove,
                 _In_ unsigned short pKeyDown,
                 _In_ unsigned short pKeyUp
 #endif

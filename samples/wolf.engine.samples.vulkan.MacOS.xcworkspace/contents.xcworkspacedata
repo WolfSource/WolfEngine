@@ -60,6 +60,9 @@
          location = "group:02_basics/09_multi_textures_sampling/builds/xcode/09_multi_textures_sampling.xcodeproj">
       </FileRef>
       <FileRef
+         location = "group:02_basics/10_gui/builds/xcode/10_gui.xcodeproj">
+      </FileRef>
+      <FileRef
          location = "group:02_basics/11_pipelines/builds/xcode/11_pipelines.xcodeproj">
       </FileRef>
       <FileRef

@@ -19,7 +19,8 @@ namespace wolf
             w_imgui_pimp() :
                 _gDevice(nullptr),
                 _vertex_buffer(nullptr),
-                _index_buffer(nullptr)
+                _index_buffer(nullptr),
+                _font_texture(nullptr)
             {
             }
 

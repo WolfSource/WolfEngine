@@ -118,7 +118,7 @@ HRESULT w_inputs_manager::update(
     _In_ bool pMouseMiddleButtonDown,
     _In_ bool pMouseMiddleButtonUp,
     _In_ float pMouseWheel,
-    _In_ w_point_f pMouseMove,
+    _In_ w_point_f* pMouseMove,
     _In_ unsigned short pKeyDown,
     _In_ unsigned short pKeyUp)
 {
@@ -177,11 +177,14 @@ HRESULT w_inputs_manager::update(
     }
     
     this->mouse.wheel += pMouseWheel;
-    this->mouse.last_pos_x = this->mouse.pos_x;
-    this->mouse.last_pos_y = this->mouse.pos_y;
-    this->mouse.pos_x = static_cast<signed short>(pMouseMove.x);
-    this->mouse.pos_y = static_cast<signed short>(pMouseMove.y);
- 
+    
+    if (pMouseMove)
+    {
+        this->mouse.last_pos_x = this->mouse.pos_x;
+        this->mouse.last_pos_y = this->mouse.pos_y;
+        this->mouse.pos_x = static_cast<signed short>(pMouseMove->x);
+        this->mouse.pos_y = static_cast<signed short>(pMouseMove->y);
+    }
     return S_OK;
 }
 

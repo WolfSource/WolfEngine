@@ -11,8 +11,6 @@
 		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
 		2C4639531EA55A3700A16595 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639511EA55A3700A16595 /* Assets.xcassets */; };
 		2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639551EA55A6C00A16595 /* Main.storyboard */; };
-		2C6844371F9E491800AEAB30 /* shader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C6844331F9E491800AEAB30 /* shader.vert */; };
-		2C68443A1F9E491800AEAB30 /* shader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C6844361F9E491800AEAB30 /* shader.frag */; };
 		2CB69EDB1F62DDF60068D1E6 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69ED81F62DDF60068D1E6 /* ViewController.mm */; };
 		2CB69EDE1F62E1BF0068D1E6 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */; };
 		2CB69EE11F62E53C0068D1E6 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE01F62E53C0068D1E6 /* MoltenVK.framework */; };
@@ -28,12 +26,10 @@
 		2C13839E1F5096DE00D5283B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../../common/main.m; sourceTree = "<group>"; };
 		2C1383A01F50971300D5283B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../common/AppDelegate.h; sourceTree = "<group>"; };
 		2C1383A11F50971300D5283B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../common/AppDelegate.m; sourceTree = "<group>"; };
-		2C2803471E61C73600048A80 /* 11_pipelines.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 11_pipelines.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 11_pipelines/Assets.xcassets; sourceTree = "<group>"; };
-		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 11_pipelines/Info.plist; sourceTree = "<group>"; };
-		2C4639561EA55A6C00A16595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = 11_pipelines/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		2C6844331F9E491800AEAB30 /* shader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = ../../src/content/shaders/shader.vert; sourceTree = "<group>"; };
-		2C6844361F9E491800AEAB30 /* shader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.frag; path = ../../src/content/shaders/shader.frag; sourceTree = "<group>"; };
+		2C2803471E61C73600048A80 /* 10_gui.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 10_gui.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 10_gui/Assets.xcassets; sourceTree = "<group>"; };
+		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 10_gui/Info.plist; sourceTree = "<group>"; };
+		2C4639561EA55A6C00A16595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = 10_gui/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2CB69ED71F62DDF60068D1E6 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../common/ViewController.h; sourceTree = "<group>"; };
 		2CB69ED81F62DDF60068D1E6 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../common/ViewController.mm; sourceTree = "<group>"; };
 		2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../src/scene.cpp; sourceTree = "<group>"; };
@@ -68,7 +64,6 @@
 		2C28033E1E61C73600048A80 = {
 			isa = PBXGroup;
 			children = (
-				2C68443B1F9E493100AEAB30 /* content */,
 				2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */,
 				2CB69EDD1F62E1BF0068D1E6 /* scene.h */,
 				2CB69ED71F62DDF60068D1E6 /* ViewController.h */,
@@ -87,7 +82,7 @@
 		2C2803481E61C73600048A80 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2C2803471E61C73600048A80 /* 11_pipelines.app */,
+				2C2803471E61C73600048A80 /* 10_gui.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -98,24 +93,7 @@
 				2C13839E1F5096DE00D5283B /* main.m */,
 			);
 			name = "Supporting Files";
-			path = 11_pipelines;
-			sourceTree = "<group>";
-		};
-		2C68443B1F9E493100AEAB30 /* content */ = {
-			isa = PBXGroup;
-			children = (
-				2C68443C1F9E494000AEAB30 /* shaders */,
-			);
-			name = content;
-			sourceTree = "<group>";
-		};
-		2C68443C1F9E494000AEAB30 /* shaders */ = {
-			isa = PBXGroup;
-			children = (
-				2C6844361F9E491800AEAB30 /* shader.frag */,
-				2C6844331F9E491800AEAB30 /* shader.vert */,
-			);
-			name = shaders;
+			path = 10_gui;
 			sourceTree = "<group>";
 		};
 		2CB69EDF1F62E53B0068D1E6 /* Frameworks */ = {
@@ -135,9 +113,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2C2803461E61C73600048A80 /* 11_pipelines */ = {
+		2C2803461E61C73600048A80 /* 10_gui */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "11_pipelines" */;
+			buildConfigurationList = 2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "10_gui" */;
 			buildPhases = (
 				2C2803431E61C73600048A80 /* Sources */,
 				2C2803441E61C73600048A80 /* Frameworks */,
@@ -147,9 +125,9 @@
 			);
 			dependencies = (
 			);
-			name = 11_pipelines;
-			productName = 11_pipelines;
-			productReference = 2C2803471E61C73600048A80 /* 11_pipelines.app */;
+			name = 10_gui;
+			productName = 10_gui;
+			productReference = 2C2803471E61C73600048A80 /* 10_gui.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -168,7 +146,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2C2803421E61C73600048A80 /* Build configuration list for PBXProject "11_pipelines" */;
+			buildConfigurationList = 2C2803421E61C73600048A80 /* Build configuration list for PBXProject "10_gui" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -181,7 +159,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2C2803461E61C73600048A80 /* 11_pipelines */,
+				2C2803461E61C73600048A80 /* 10_gui */,
 			);
 		};
 /* End PBXProject section */
@@ -191,8 +169,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C68443A1F9E491800AEAB30 /* shader.frag in Resources */,
-				2C6844371F9E491800AEAB30 /* shader.vert in Resources */,
 				2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */,
 				2C4639531EA55A3700A16595 /* Assets.xcassets in Resources */,
 			);
@@ -348,7 +324,7 @@
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/11_pipelines/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/10_gui/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.01.02;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -377,7 +353,7 @@
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/11_pipelines/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/10_gui/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.01.02;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -387,7 +363,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2C2803421E61C73600048A80 /* Build configuration list for PBXProject "11_pipelines" */ = {
+		2C2803421E61C73600048A80 /* Build configuration list for PBXProject "10_gui" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C2803591E61C73600048A80 /* Debug */,
@@ -396,7 +372,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "11_pipelines" */ = {
+		2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "10_gui" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C28035C1E61C73600048A80 /* Debug */,

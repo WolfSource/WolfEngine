@@ -14,6 +14,9 @@ static NSView*                                      sSampleView;
 static CVDisplayLinkRef                             sDisplayLink;
 static scene*                                       sScene;
 static std::map<int, std::vector<w_window_info>>    sWindowInfo;
+static NSRect                                       sWindowRect;
+static int                                          sScreenWidth;
+static int                                          sScreenHeight;
 
 //called from c++
 void init_window(struct w_window_info& pInfo)
@@ -71,11 +74,15 @@ void init_window(struct w_window_info& pInfo)
 {
     [super viewWillAppear];
     
+    NSRect _screen_frame = [[NSScreen mainScreen] frame];
+    sScreenWidth = (int)_screen_frame.size.width;
+    sScreenHeight = (int)_screen_frame.size.height;
+    
     CGSize _size = self.view.bounds.size;
     NSWindow* _window = self.view.window;
     NSRect _frame = [_window contentRectForFrameRect: _window.frame];
-    NSRect _new_frame = [_window frameRectForContentRect: NSMakeRect(_frame.origin.x, _frame.origin.y, _size.width, _size.height)];
-    [_window setFrame: _new_frame display: YES animate: _window.isVisible];
+    sWindowRect = [_window frameRectForContentRect: NSMakeRect(_frame.origin.x, _frame.origin.y, _size.width, _size.height)];
+    [_window setFrame: sWindowRect display: YES animate: _window.isVisible];
     [_window center];
 }
 
@@ -130,14 +137,14 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 - (void)keyDown:(NSEvent*)event
 {
     unsigned short _code = [event keyCode];
-    wolf::inputs_manager.update(false, false, false, false, false, false, 0, w_point_f(), _code, 0);
+    wolf::inputs_manager.update(false, false, false, false, false, false, 0, nullptr, _code, 0);
 }
 
 //on key down
 - (void)keyUp:(NSEvent*)event
 {
     unsigned short _code = [event keyCode];
-    wolf::inputs_manager.update(false, false, false, false, false, false, 0, w_point_f(), 0, _code);
+    wolf::inputs_manager.update(false, false, false, false, false, false, 0, nullptr, 0, _code);
 }
 
 // accept first mouse events
@@ -149,21 +156,32 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 - (void)mouseDown:(NSEvent *)theEvent
 {
     NSPoint _touch_point = [NSEvent mouseLocation];
-    //logger.write(std::to_string(float(_touchPoint.x)));
+    NSUInteger _pressed_btn = [NSEvent pressedMouseButtons];
     
+    wolf::inputs_manager.update(true, false, false, false, false, false, 0, nullptr, 0, 0);
 }
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    NSPoint _touchPoint = [NSEvent mouseLocation];
-    //logger.write(std::to_string(float(_touchPoint.x)));
+    NSPoint _touch_point = [NSEvent mouseLocation];
+    NSUInteger _released_btn = [NSEvent pressedMouseButtons];
     
+    wolf::inputs_manager.update(false, true, false, false, false, false, 0, nullptr, 0, 0);
 }
 
 - (void)mouseMoved:(NSEvent *)event
 {
-    NSPoint _touchPoint = [NSEvent mouseLocation];
-    //logger.write(std::to_string(float(_touchPoint.x)));
+    NSPoint _touch_point = [NSEvent mouseLocation];
+    
+    w_point_f _pos;
+    _pos.x = _touch_point.x - ( (sScreenWidth / 2) - (sWindowRect.size.width / 2) );
+    //Need to Fix
+    _pos.y = 804 - _touch_point.y;// ( (sScreenHeight / 2) + (sWindowRect.size.height / 2) ) + sWindowRect.origin.y - _touch_point.y;
+    
+    if(_pos.x < 0) _pos.x = 0;
+    if(_pos.y < 0) _pos.y = 0;
+    
+    wolf::inputs_manager.update(false, false, false, false, false, false, 0, &_pos, 0, 0);
     
     [super mouseMoved: event];
 }
