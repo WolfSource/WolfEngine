@@ -33,17 +33,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02_shader.Win32", "02_basic
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03_vertex_buffer.Win32", "02_basics\03_vertex_buffer\builds\mvsc\03_vertex_buffer.Win32.vcxproj", "{91744D0E-F654-415B-9956-AF0494A0ED96}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "04_index_buffer.Win32", "02_basics\04-index buffer\builds\mvsc\04_index_buffer.Win32.vcxproj", "{25A5E3FB-975E-46EE-9E1B-3D132E95ADD5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "04_index_buffer.Win32", "02_basics\04_index_buffer\builds\mvsc\04_index_buffer.Win32.vcxproj", "{25A5E3FB-975E-46EE-9E1B-3D132E95ADD5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "05_texture.Win32", "02_basics\05-texture\builds\mvsc\05_texture.Win32.vcxproj", "{2CC2F4CE-01B8-4F95-87F9-4900B6932F1C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "05_texture.Win32", "02_basics\05_texture\builds\mvsc\05_texture.Win32.vcxproj", "{2CC2F4CE-01B8-4F95-87F9-4900B6932F1C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "06_staging_buffer.Win32", "02_basics\06-staging buffer\builds\mvsc\06_staging_buffer.Win32.vcxproj", "{EBEE7034-CADC-432C-9505-5A98981ABCA2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "06_staging_buffer.Win32", "02_basics\06_staging_buffer\builds\mvsc\06_staging_buffer.Win32.vcxproj", "{EBEE7034-CADC-432C-9505-5A98981ABCA2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "07-uniforms_constant buffers.Win32", "02_basics\07-uniforms_constant buffers\builds\mvsc\07-uniforms_constant buffers.Win32.vcxproj", "{E20043E2-C0EB-4E19-BD17-CD13FAC1ED84}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "07-uniforms_constant buffers.Win32", "02_basics\07_uniforms_constant_buffers\builds\mvsc\07_uniforms_constant_buffers.Win32.vcxproj", "{E20043E2-C0EB-4E19-BD17-CD13FAC1ED84}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_texture_arrays.Win32", "02_basics\08-texture_arrays\builds\mvsc\08_texture_arrays.Win32.vcxproj", "{635BEAE1-93CC-4C0A-A6FD-E3D0F74AFDDD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_texture_arrays.Win32", "02_basics\08_texture_arrays\builds\mvsc\08_texture_arrays.Win32.vcxproj", "{635BEAE1-93CC-4C0A-A6FD-E3D0F74AFDDD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "14-render_to_target.Win32", "02_basics\14-render to target\builds\mvsc\14-render_to_target.Win32.vcxproj", "{B2418F5C-55E4-4720-92E7-0A271B75B285}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "14-render_to_target.Win32", "02_basics\14_render_to_target\builds\mvsc\14_render_to_target.Win32.vcxproj", "{B2418F5C-55E4-4720-92E7-0A271B75B285}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -119,22 +119,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.render/w_graphics_device_manager.cpp"
-            timestampString = "514727798.60577"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "848"
-            endingLineNumber = "848"
-            landmarkName = "enumerate_devices(_Inout_ std::vector&lt;std::shared_ptr&lt;w_graphics_device&gt;&gt;&amp; pGraphicsDevices, _In_ wolf::system::w_signal&lt;void(w_graphics_device_manager::w_device_features_extensions&amp;)&gt;* pOnDeviceFeaturesFetched)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "../../src/wolf.content_pipeline/collada/c_parser.cpp"
             timestampString = "515055732.440764"
             startingColumnNumber = "9223372036854775807"
@@ -228,11 +212,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "530463334.786263"
+            timestampString = "533733242.033266"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "332"
-            endingLineNumber = "332">
+            startingLineNumber = "334"
+            endingLineNumber = "334"
+            landmarkName = "scene::release()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -288,11 +274,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "530463334.786652"
+            timestampString = "533733242.034165"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "332"
-            endingLineNumber = "332">
+            startingLineNumber = "334"
+            endingLineNumber = "334"
+            landmarkName = "scene::release()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -302,11 +290,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "530463334.790027"
+            timestampString = "533733242.034921"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "332"
-            endingLineNumber = "332">
+            startingLineNumber = "334"
+            endingLineNumber = "334"
+            landmarkName = "scene::release()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

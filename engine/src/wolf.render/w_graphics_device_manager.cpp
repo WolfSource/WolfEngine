@@ -343,16 +343,16 @@ HRESULT w_graphics_device::capture(
         goto clean_up;
     }
 
-    const auto _sub_res_range = VkImageSubresourceRange
     {
-        VK_IMAGE_ASPECT_COLOR_BIT,
-        0,
-        1,
-        0,
-        1
-    };
-
-    {
+        const auto _sub_res_range = VkImageSubresourceRange
+        {
+            VK_IMAGE_ASPECT_COLOR_BIT,
+            0,
+            1,
+            0,
+            1
+        };
+        
 		// create command buffer on primary
 		VkCommandBufferAllocateInfo _copy_cmd_buf_allocate_info = {};
 		_copy_cmd_buf_allocate_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -491,6 +491,15 @@ HRESULT w_graphics_device::capture(
 
 
 	{
+        const auto _sub_res_range = VkImageSubresourceRange
+        {
+            VK_IMAGE_ASPECT_COLOR_BIT,
+            0,
+            1,
+            0,
+            1
+        };
+        
 		//transition from transfer write to memory read for destination image
 		VkImageMemoryBarrier _imb_transfer_write_to_memory_read = {};
 		_imb_transfer_write_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -823,150 +832,158 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
                 &_image_copy_region);
         }
 
-        //
-        //	{
-        //		//transition from transfer write to memory read for destination image
-        //		VkImageMemoryBarrier _imb_transfer_write_to_memory_read = {};
-        //		_imb_transfer_write_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        //		_imb_transfer_write_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        //		_imb_transfer_write_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-        //		_imb_transfer_write_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-        //		_imb_transfer_write_to_memory_read.newLayout = VK_IMAGE_LAYOUT_GENERAL;
-        //		_imb_transfer_write_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        //		_imb_transfer_write_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        //		_imb_transfer_write_to_memory_read.image = _dst_image;
-        //		_imb_transfer_write_to_memory_read.subresourceRange = _sub_res_range;
-        //
-        //		vkCmdPipelineBarrier(
-        //			_copy_cmd,
-        //			VK_PIPELINE_STAGE_TRANSFER_BIT,
-        //			VK_PIPELINE_STAGE_TRANSFER_BIT,
-        //			0,
-        //			0,
-        //			nullptr,
-        //			0,
-        //			nullptr,
-        //			1,
-        //			&_imb_transfer_write_to_memory_read);
-        //
-        //		//transition from trasfer read to memory read for source image
-        //		VkImageMemoryBarrier _imb_transfer_read_to_memory_read = {};
-        //		_imb_transfer_read_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        //		_imb_transfer_read_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-        //		_imb_transfer_read_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-        //		_imb_transfer_read_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-        //		_imb_transfer_read_to_memory_read.newLayout = pSourceImageLayout;
-        //		_imb_transfer_read_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        //		_imb_transfer_read_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        //		_imb_transfer_read_to_memory_read.image = pSourceImage;
-        //		_imb_transfer_read_to_memory_read.subresourceRange = _sub_res_range;
-        //
-        //		vkCmdPipelineBarrier(
-        //			_copy_cmd,
-        //			VK_PIPELINE_STAGE_TRANSFER_BIT,
-        //			VK_PIPELINE_STAGE_TRANSFER_BIT,
-        //			0,
-        //			0,
-        //			nullptr,
-        //			0,
-        //			nullptr,
-        //			1,
-        //			&_imb_transfer_read_to_memory_read);
-        //
-        //		_hr = vkEndCommandBuffer(_copy_cmd);
-        //		if (_hr)
-        //		{
-        //			_return_result = S_FALSE;
-        //			V(_return_result,
-        //				"ending copy command buffer for" + this->device_info->get_device_name() +
-        //				" ID:" + std::to_string(this->device_info->get_device_id()),
-        //				_trace_info,
-        //				3,
-        //				false);
-        //
-        //			goto clean_up;
-        //		}
-        //		_command_buffer_began = false;
-        //
-        //		// Create fence to ensure that the command buffer has finished executing
-        //		VkFenceCreateInfo _fence_info = {};
-        //		_fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-        //		_fence_info.flags = 0;
-        //
-        //		_hr = vkCreateFence(this->vk_device, &_fence_info, nullptr, &_copy_fence);
-        //		if (_hr)
-        //		{
-        //			_return_result = S_FALSE;
-        //			V(_return_result,
-        //				"creating fence of copy command buffer for" + this->device_info->get_device_name() +
-        //				" ID:" + std::to_string(this->device_info->get_device_id()),
-        //				_trace_info,
-        //				3,
-        //				false);
-        //
-        //			goto clean_up;
-        //		}
-        //
-        //		//execute command buffer
-        //		VkSubmitInfo _submit_info = {};
-        //		_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        //		_submit_info.pCommandBuffers = &_copy_cmd;
-        //		_submit_info.commandBufferCount = 1;
-        //
-        //		//Submit to the queue
-        //		_hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _copy_fence);
-        //		if (_hr)
-        //		{
-        //			_return_result = S_FALSE;
-        //			V(_return_result,
-        //				"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
-        //				" ID:" + std::to_string(this->device_info->get_device_id()),
-        //				_trace_info,
-        //				3,
-        //				false);
-        //
-        //			goto clean_up;
-        //		}
-        //		// Wait for the fence to signal that command buffer has finished executing
-        //		_hr = vkWaitForFences(this->vk_device, 1, &_copy_fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
-        //		if (_hr)
-        //		{
-        //			_return_result = S_FALSE;
-        //			V(_return_result,
-        //				"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
-        //				" ID:" + std::to_string(this->device_info->get_device_id()),
-        //				_trace_info,
-        //				3,
-        //				false);
-        //
-        //			goto clean_up;
-        //		}
-        //
-        //		VkImageSubresource _sub_resource = {};
-        //		_sub_resource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        //		VkSubresourceLayout _sub_resource_layout;
-        //		vkGetImageSubresourceLayout(this->vk_device, _dst_image, &_sub_resource, &_sub_resource_layout);
-        //
-        //		//Map the memory
-        //		const uint8_t* _data;
-        //		w_point_t _size;
-        //		_size.x = pWidth;
-        //		_size.y = pHeight;
-        //
-        //		vkMapMemory(this->vk_device, _dst_image_memory, 0, VK_WHOLE_SIZE, 0, (void**)&_data);
-        //		_data += _sub_resource_layout.offset;
-        //		pOnPixelsDataCaptured.emit(_size, _data);
-        //		vkUnmapMemory(this->vk_device, _dst_image_memory);
-        //
-        //		_data = nullptr;
-        //	}
-        //
+        {
+            //transition from transfer write to memory read for destination image
+            VkImageMemoryBarrier _imb_transfer_write_to_memory_read = {};
+            _imb_transfer_write_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+            _imb_transfer_write_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            _imb_transfer_write_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+            _imb_transfer_write_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+            _imb_transfer_write_to_memory_read.newLayout = VK_IMAGE_LAYOUT_GENERAL;
+            _imb_transfer_write_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+            _imb_transfer_write_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+            _imb_transfer_write_to_memory_read.image = _objs_ptr->destination_image;
+            _imb_transfer_write_to_memory_read.subresourceRange = _sub_res_range;
+        
+            vkCmdPipelineBarrier(
+                _objs_ptr->copy_command_buffer,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                0,
+                0,
+                nullptr,
+                0,
+                nullptr,
+                1,
+                &_imb_transfer_write_to_memory_read);
+        
+            //transition from trasfer read to memory read for source image
+            VkImageMemoryBarrier _imb_transfer_read_to_memory_read = {};
+            _imb_transfer_read_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+            _imb_transfer_read_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+            _imb_transfer_read_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+            _imb_transfer_read_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+            _imb_transfer_read_to_memory_read.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+            _imb_transfer_read_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+            _imb_transfer_read_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+            _imb_transfer_read_to_memory_read.image = _src_image;
+            _imb_transfer_read_to_memory_read.subresourceRange = _sub_res_range;
+        
+            vkCmdPipelineBarrier(
+                 _objs_ptr->copy_command_buffer,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                0,
+                0,
+                nullptr,
+                0,
+                nullptr,
+                1,
+                &_imb_transfer_read_to_memory_read);
+        
+            _hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
+            if (_hr)
+            {
+                _return_result = S_FALSE;
+                V(_return_result,
+                  "ending copy command buffer for" + this->device_info->get_device_name() +
+                  " ID:" + std::to_string(this->device_info->get_device_id()),
+                  _trace_info,
+                  3,
+                  false);
+        
+                goto clean_up;
+            }
+            _objs_ptr->command_buffer_began = false;
+        
+            // Create fence to ensure that the command buffer has finished executing
+            VkFenceCreateInfo _fence_info = {};
+            _fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+            _fence_info.flags = 0;
+        
+            _hr = vkCreateFence(this->vk_device, &_fence_info, nullptr, &_objs_ptr->copy_fence);
+            if (_hr)
+            {
+                _return_result = S_FALSE;
+                V(_return_result,
+                  "creating fence of copy command buffer for" + this->device_info->get_device_name() +
+                  " ID:" + std::to_string(this->device_info->get_device_id()),
+                  _trace_info,
+                  3,
+                  false);
+                goto clean_up;
+            }
+        
+            //execute command buffer
+            VkSubmitInfo _submit_info = {};
+            _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+            _submit_info.pCommandBuffers = &_objs_ptr->copy_command_buffer;
+            _submit_info.commandBufferCount = 1;
+        
+            //Submit to the queue
+            _hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _objs_ptr->copy_fence);
+             if (_hr)
+             {
+                 _return_result = S_FALSE;
+                 V(_return_result,
+                     "submiting copy command buffer to queue for" + this->device_info->get_device_name() +
+                     " ID:" + std::to_string(this->device_info->get_device_id()),
+                     _trace_info,
+                     3,
+                     false);
+        
+                 goto clean_up;
+             }
+             // Wait for the fence to signal that command buffer has finished executing
+             _hr = vkWaitForFences(this->vk_device, 1, &_objs_ptr->copy_fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
+             if (_hr)
+             {
+                 _return_result = S_FALSE;
+                 V(_return_result,
+                     "submiting copy command buffer to queue for" + this->device_info->get_device_name() +
+                     " ID:" + std::to_string(this->device_info->get_device_id()),
+                     _trace_info,
+                     3,
+                     false);
+        
+                 goto clean_up;
+             }
+        
+             VkImageSubresource _sub_resource = {};
+             _sub_resource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+             VkSubresourceLayout _sub_resource_layout;
+             vkGetImageSubresourceLayout(this->vk_device, _objs_ptr->destination_image, &_sub_resource, &_sub_resource_layout);
+        
+             //Map the memory
+             const uint8_t* _data;
+             w_point_t _size;
+             _size.x = _output_window->width;
+             _size.y = _output_window->height;
+        
+             vkMapMemory(this->vk_device, _objs_ptr->destination_image_memory, 0, VK_WHOLE_SIZE, 0, (void**)&_data);
+             _data += _sub_resource_layout.offset;
+             pOnPixelsDataCaptured.emit(_size, _data);
+             vkUnmapMemory(this->vk_device, _objs_ptr->destination_image_memory);
+        
+             _data = nullptr;
+        }
     }
 
 clean_up:
     if (_objs_ptr->command_buffer_began)
     {
-
+        _hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
+        if (_hr)
+        {
+            _return_result = S_FALSE;
+            V(_return_result,
+              "ending copy command buffer for" + this->device_info->get_device_name() +
+              " ID:" + std::to_string(this->device_info->get_device_id()),
+              _trace_info,
+              3,
+              false);
+        }
+        _objs_ptr->command_buffer_began = false;
     }
     return _return_result;
 }

@@ -129,32 +129,15 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 //on key down
 - (void)keyDown:(NSEvent*)event
 {
-    switch ([event keyCode])
-    {
-        case 0x02:
-            // D key pressed
-            break;
-        case 0x03:
-            // F key pressed
-            break;
-            // etc.
-    }
-    //wolf::system::w_inputs_manager:: inputs_manager::
+    unsigned short _code = [event keyCode];
+    wolf::inputs_manager.update(false, false, false, false, false, false, 0, w_point_f(), _code, 0);
 }
 
 //on key down
 - (void)keyUp:(NSEvent*)event
 {
-    switch ([event keyCode])
-    {
-        case 0x02:
-            // D key pressed
-            break;
-        case 0x03:
-            // F key pressed
-            break;
-            // etc.
-    }
+    unsigned short _code = [event keyCode];
+    wolf::inputs_manager.update(false, false, false, false, false, false, 0, w_point_f(), 0, _code);
 }
 
 // accept first mouse events
@@ -165,7 +148,7 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
-    NSPoint _touchPoint = [NSEvent mouseLocation];
+    NSPoint _touch_point = [NSEvent mouseLocation];
     //logger.write(std::to_string(float(_touchPoint.x)));
     
 }

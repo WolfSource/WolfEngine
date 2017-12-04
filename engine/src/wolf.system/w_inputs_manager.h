@@ -16,6 +16,8 @@
 
 #ifdef __WIN32
 #include <Windows.h>
+#else
+#include "w_point.h"
 #endif
 
 #include "w_system_export.h"
@@ -59,14 +61,26 @@ namespace wolf
 
             WSYS_EXP void reset();
 
-#ifdef __WIN32
             WSYS_EXP HRESULT update(
+#ifdef __WIN32
                 _In_ const HWND pHWND,
                 _In_ const UINT pMessage,
                 _In_ const WPARAM pWParam,
-                _In_ const LPARAM pLParam);
-
+                _In_ const LPARAM pLParam
+#else
+                _In_ bool pMouseLeftButtonDown,
+                _In_ bool pMouseLeftButtonUp,
+                _In_ bool pMouseRightButtonDown,
+                _In_ bool pMouseRightButtonUp,
+                _In_ bool pMouseMiddleButtonDown,
+                _In_ bool pMouseMiddleButtonUp,
+                _In_ float pMouseWheel,
+                _In_ w_point_f pMouseMove,
+                _In_ unsigned short pKeyDown,
+                _In_ unsigned short pKeyUp
 #endif
+                                    );
+
             WSYS_EXP std::vector<bool> is_keys_pressed(_In_ std::initializer_list<int> pKeys);
             WSYS_EXP std::vector<bool> is_keys_released(_In_ std::initializer_list<int> pKeys);
         };

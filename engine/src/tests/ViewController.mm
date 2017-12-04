@@ -52,7 +52,6 @@ void init_window(struct w_window_info& pInfo)
 #elif defined __iOS__
     sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String,
                        "test.wolf.engine.metal.iOS");
-    
 #endif
     
     
@@ -64,6 +63,8 @@ void init_window(struct w_window_info& pInfo)
     w_window_info _window_info;
     _window_info.width = 800;
     _window_info.height = 600;
+    _window_info.swap_chain_format = 38;//VK_FORMAT_R8G8B8A8_SNORM
+    _window_info.cpu_access_swap_chain_buffer = true;
     _window_info.window = nullptr;
     
     //call init_window from objective-c and get the pointer to the window
@@ -102,7 +103,6 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 
 @end
 
-
 @implementation DemoView
 
 //Indicates that the view wants to draw using the backing layer instead of using drawRect:
@@ -115,9 +115,84 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 -(CALayer*) makeBackingLayer
 {
     CALayer* layer = [self.class.layerClass layer];
-    CGSize viewScale = [self convertSizeToBacking: CGSizeMake(1.0, 1.0)];
-    layer.contentsScale = MIN(viewScale.width, viewScale.height);
+    //CGSize viewScale = [self convertSizeToBacking: CGSizeMake(1.0, 1.0)];
+    //layer.contentsScale = MIN(viewScale.width, viewScale.height);
     return layer;
+}
+
+//allow mouse position tracking
+- (void) viewWillMoveToWindow:(NSWindow *)newWindow
+{
+    // Setup a new tracking area when the view is added to the window.
+    NSTrackingArea* trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options: (NSTrackingActiveAlways | NSTrackingInVisibleRect |
+                                                                                                NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved) owner:self userInfo:nil];
+    [self addTrackingArea:trackingArea];
+}
+
+//allow keydown and keyup override to catch keycode
+-(BOOL) acceptsFirstResponder
+{
+    return YES;
+}
+
+//on key down
+- (void)keyDown:(NSEvent*)event
+{
+    unsigned short _code = [event keyCode];
+    wolf::inputs_manager.update(false, false, false, false, false, false, 0, w_point_f(), _code, 0);
+    switch ([event keyCode])
+    {
+        case 0x02:
+            // D key pressed
+            break;
+        case 0x03:
+            // F key pressed
+            break;
+            // etc.
+    }
+}
+
+//on key down
+- (void)keyUp:(NSEvent*)event
+{
+    switch ([event keyCode])
+    {
+        case 0x02:
+            // D key pressed
+            break;
+        case 0x03:
+            // F key pressed
+            break;
+            // etc.
+    }
+}
+
+// accept first mouse events
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+{
+    return YES;
+}
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    NSPoint _touchPoint = [NSEvent mouseLocation];
+    //logger.write(std::to_string(float(_touchPoint.x)));
+    
+}
+
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    NSPoint _touchPoint = [NSEvent mouseLocation];
+    //logger.write(std::to_string(float(_touchPoint.x)));
+    
+}
+
+- (void)mouseMoved:(NSEvent *)event
+{
+    NSPoint _touchPoint = [NSEvent mouseLocation];
+    //logger.write(std::to_string(float(_touchPoint.x)));
+    
+    [super mouseMoved: event];
 }
 
 @end

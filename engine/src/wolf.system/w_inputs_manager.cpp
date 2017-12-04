@@ -50,43 +50,43 @@ HRESULT w_inputs_manager::update(
     {
     case WM_LBUTTONDOWN:
         this->mouse.left_button_pressed = true;
-        return true;
+        return S_OK;
     case WM_LBUTTONUP:
         this->mouse.left_button_pressed = false;
         this->mouse.left_button_released = true;
-        return true;
+        return S_OK;
     case WM_RBUTTONDOWN:
         this->mouse.right_button_pressed = true;
-        return true;
+        return S_OK;
     case WM_RBUTTONUP:
         this->mouse.right_button_pressed = false;
         this->mouse.right_button_released = true;
-        return true;
+        return S_OK;
     case WM_MBUTTONDOWN:
         this->mouse.middle_button_pressed = true;
-        return true;
+        return S_OK;
     case WM_MBUTTONUP:
         this->mouse.middle_button_pressed = false;
         this->mouse.middle_button_released = true;
-        return true;
+        return S_OK;
     case WM_MOUSEWHEEL:
         this->mouse.wheel += GET_WHEEL_DELTA_WPARAM(pWParam) > 0 ? +1.0f : -1.0f;
-        return true;
+        return S_OK;
     case WM_MOUSEMOVE:
         this->mouse.last_pos_x = this->mouse.pos_x;
         this->mouse.last_pos_y = this->mouse.pos_y;
         this->mouse.pos_x = static_cast<signed short>(pLParam);
         this->mouse.pos_y = static_cast<signed short>(pLParam >> 16);
-        return true;
+        return S_OK;
     case WM_KEYDOWN:
         this->keyboard.keys_pressed.insert((int)pWParam);
-        return true;
+        return S_OK;
     case WM_KEYUP:
     {
         auto _value = (int)pWParam;
         this->keyboard.keys_pressed.erase(_value);
         this->keyboard.keys_released.insert(_value);
-        return true;
+        return S_OK;
     }
     case WM_CHAR:
         // You can also use ToAscii()+GetKeyboardState() to retrieve characters.
@@ -94,9 +94,86 @@ HRESULT w_inputs_manager::update(
         {
             this->keyboard.inputed_chars.push_back((unsigned short)pWParam);
         }
-        return true;
+        return S_OK;
     }
-    return 0;
+    return S_FALSE;
+}
+
+#else
+
+HRESULT w_inputs_manager::update(
+    _In_ bool pMouseLeftButtonDown,
+    _In_ bool pMouseLeftButtonUp,
+    _In_ bool pMouseRightButtonDown,
+    _In_ bool pMouseRightButtonUp,
+    _In_ bool pMouseMiddleButtonDown,
+    _In_ bool pMouseMiddleButtonUp,
+    _In_ float pMouseWheel,
+    _In_ w_point_f pMouseMove,
+    _In_ unsigned short pKeyDown,
+    _In_ unsigned short pKeyUp)
+{
+    if (this->mouse.left_button_released) this->mouse.left_button_released = false;
+    if (this->mouse.middle_button_released) this->mouse.middle_button_released = false;
+    if (this->mouse.right_button_released) this->mouse.right_button_released = false;
+    
+    this->keyboard.inputed_chars.clear();
+    this->keyboard.keys_released.clear();
+    
+    if(pKeyDown)
+    {
+        this->keyboard.keys_pressed.insert((int)pKeyDown);
+        return S_OK;
+    }
+    if(pKeyUp)
+    {
+        auto _value = (int)pKeyUp;
+        this->keyboard.keys_pressed.erase(_value);
+        this->keyboard.keys_released.insert(_value);
+        return S_OK;
+    }
+    
+    if(pMouseLeftButtonDown)
+    {
+        this->mouse.left_button_pressed = pMouseLeftButtonDown;
+        return S_OK;
+    }
+    if(pMouseLeftButtonUp)
+    {
+        this->mouse.left_button_pressed = false;
+        this->mouse.left_button_released = true;
+        return S_OK;
+    }
+    if(pMouseRightButtonDown)
+    {
+        this->mouse.right_button_pressed = true;
+        return S_OK;
+    }
+    if(pMouseRightButtonUp)
+    {
+        this->mouse.right_button_pressed = false;
+        this->mouse.right_button_released = true;
+        return S_OK;
+    }
+    if(pMouseMiddleButtonDown)
+    {
+        this->mouse.middle_button_pressed = true;
+        return S_OK;
+    }
+    if(pMouseMiddleButtonUp)
+    {
+        this->mouse.middle_button_pressed = false;
+        this->mouse.middle_button_released = true;
+        return S_OK;
+    }
+    
+    this->mouse.wheel += pMouseWheel;
+    this->mouse.last_pos_x = this->mouse.pos_x;
+    this->mouse.last_pos_y = this->mouse.pos_y;
+    this->mouse.pos_x = static_cast<signed short>(pMouseMove.x);
+    this->mouse.pos_y = static_cast<signed short>(pMouseMove.y);
+ 
+    return S_OK;
 }
 
 #endif

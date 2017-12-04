@@ -196,7 +196,7 @@ namespace wolf
 				auto _t = this->_attachment_buffers.at(pBufferIndex);
 				if (_t) return _t->get_sampler();
 
-				return 0();
+				return 0;
             }
                        
             w_image_view get_image_view(_In_ size_t pBufferIndex) const
