@@ -160,15 +160,10 @@ void scene::load()
         V(S_FALSE, "loading texture", _trace_info, 3, true);
     }
 	
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	this->_texture.set_view_type(w_texture_view_type::W_TEXTURE_VIEW_TYPE_2D_ARRAY);
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+	
     //load texture from file
-    _hr = this->_texture.load_texture_2D_from_file(_content_path_dir + L"textures/logo.dds", true);
+    _hr = this->_texture.load_texture_2D_from_file(_content_path_dir + L"textures/Smoke_Logo.dds", true);
     if (_hr == S_FALSE)
     {
         release();
@@ -254,10 +249,10 @@ void scene::load()
 		V(S_FALSE, "loading mesh", _trace_info, 3, true);
 	}
 
-	build_draw_command_buffers(_gDevice);
+	_build_draw_command_buffers(_gDevice);
 }
 
-HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
 	const std::string _trace_info = this->name + "::build_draw_command_buffers";
 	HRESULT _hr = S_OK;

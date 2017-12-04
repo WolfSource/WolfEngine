@@ -15,20 +15,30 @@ w_inputs_manager::~w_inputs_manager()
 
 void w_inputs_manager::reset()
 {
-    this->mouse.left_button_pressed = false;
-    this->mouse.left_button_released = false;
-    this->mouse.middle_button_pressed = false;
-    this->mouse.middle_button_released = false;
-    this->mouse.right_button_pressed = false;
-    this->mouse.right_button_released = false;
-    this->mouse.wheel = 0;
-    this->mouse.pos_x = 0;
-    this->mouse.pos_y = 0;
-    this->mouse.last_pos_x = 0;
-    this->mouse.last_pos_y = 0;
-    this->keyboard.keys_pressed.clear();
-    this->keyboard.keys_released.clear();
-    this->keyboard.inputed_chars.clear();
+	reset_keyboard_buffers();
+	reset_mouse_buffers();
+}
+
+void w_inputs_manager::reset_keyboard_buffers()
+{
+	this->keyboard.keys_pressed.clear();
+	this->keyboard.keys_released.clear();
+	this->keyboard.inputed_chars.clear();
+}
+
+void w_inputs_manager::reset_mouse_buffers()
+{
+	this->mouse.left_button_pressed = false;
+	this->mouse.left_button_released = false;
+	this->mouse.middle_button_pressed = false;
+	this->mouse.middle_button_released = false;
+	this->mouse.right_button_pressed = false;
+	this->mouse.right_button_released = false;
+	this->mouse.wheel = 0;
+	this->mouse.pos_x = 0;
+	this->mouse.pos_y = 0;
+	this->mouse.last_pos_x = 0;
+	this->mouse.last_pos_y = 0;
 }
 
 #ifdef __WIN32
@@ -89,7 +99,6 @@ HRESULT w_inputs_manager::update(
         return S_OK;
     }
     case WM_CHAR:
-        // You can also use ToAscii()+GetKeyboardState() to retrieve characters.
         if (pWParam > 0 && pWParam < 0x10000)
         {
             this->keyboard.inputed_chars.push_back((unsigned short)pWParam);

@@ -27,8 +27,10 @@
     <None Include="..\..\src\content\shaders\shader.vert">
       <Filter>content\shaders</Filter>
     </None>
-    <None Include="..\..\src\content\textures\test.ktx">
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\src\content\textures\logo.dds">
       <Filter>content\textures</Filter>
-    </None>
+    </Image>
   </ItemGroup>
 </Project>

@@ -109,7 +109,10 @@ bool w_game::run(_In_ map<int, vector<w_window_info>> pOutputWindowsInfo)
             render(this->_game_time);
         }
     });
- 
+	
+	//reset keyboard buffers for next cycle
+	inputs_manager.reset_keyboard_buffers();
+
     return !this->exiting;
 }
 

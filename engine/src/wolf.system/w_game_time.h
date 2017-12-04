@@ -77,18 +77,18 @@ namespace wolf
 #pragma region Getters
 
 			// Get elapsed time since the previous Update call.
-			UINT64 get_elapsed_ticks() const									{ return this->_elapsed_ticks; }
+			uint64_t get_elapsed_ticks() const									{ return this->_elapsed_ticks; }
 			double get_elapsed_seconds() const									{ return ticks_to_seconds(this->_elapsed_ticks); }
 
 			// Get total time since the start of the program.
-			UINT64 get_total_ticks() const										{ return this->_total_ticks; }
+			uint64_t get_total_ticks() const									{ return this->_total_ticks; }
 			double get_total_seconds() const									{ return ticks_to_seconds(this->_total_ticks); }
 
 			// Get total number of updates since start of the program.
-			UINT32 get_frame_count() const										{ return this->_frame_count; }
+			uint32_t get_frame_count() const									{ return this->_frame_count; }
 
 			// Get the current framerate.
-			UINT32 get_frames_per_second() const								{ return this->_fps; }
+			uint32_t get_frames_per_second() const								{ return this->_fps; }
 
 			bool get_fixed_time_step() const									{ return this->_fixed_time_step; }
 
@@ -100,16 +100,16 @@ namespace wolf
 			void set_fixed_time_step(bool pValue)								{ this->_fixed_time_step = pValue; }
 
 			// Set how often to call Update when in fixed timestep mode.
-			void set_target_elapsed_ticks(UINT64 pValue)						{ this->_target_elapsed_ticks = pValue; }
+			void set_target_elapsed_ticks(uint64_t pValue)						{ this->_target_elapsed_ticks = pValue; }
 			void set_target_elapsed_seconds(double pValue)						{ this->_target_elapsed_ticks = seconds_to_ticks(pValue); }
 
 #pragma endregion
 
 			// Integer format represents time using 10,000,000 ticks per second.
-			static const UINT64 TICKS_PER_SECOND = 10000000;
+			static const uint64_t TICKS_PER_SECOND = 10000000;
 
-			static double ticks_to_seconds(UINT64 pTicks)						{ return static_cast<double>(pTicks) / TICKS_PER_SECOND; }
-			static UINT64 seconds_to_ticks(double pSeconds)						{ return static_cast<UINT64>(pSeconds * TICKS_PER_SECOND); }
+			static double ticks_to_seconds(uint64_t pTicks)						{ return static_cast<double>(pTicks) / TICKS_PER_SECOND; }
+			static uint64_t seconds_to_ticks(double pSeconds)					{ return static_cast<uint64_t>(pSeconds * TICKS_PER_SECOND); }
 
 			void reset()
 			{
@@ -169,7 +169,7 @@ namespace wolf
 						small deviations down to zero to leave things running smoothly.
 					*/
 
-					if (std::abs(static_cast<INT64>(_time_delta - this->_target_elapsed_ticks)) < TICKS_PER_SECOND / 4000)
+					if (std::abs(static_cast<int64_t>(_time_delta - this->_target_elapsed_ticks)) < TICKS_PER_SECOND / 4000)
 					{
 						_time_delta = this->_target_elapsed_ticks;
 					}
@@ -201,7 +201,7 @@ namespace wolf
 				this->_frames_this_second += (this->_frame_count - _last_frame_count);
 
 #if defined(__WIN32) || defined(__UWP)
-				const auto _one_sec = static_cast<UINT64>(this->_frequency.QuadPart);
+				const auto _one_sec = static_cast<uint64_t>(this->_frequency.QuadPart);
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 				const auto _one_sec = 1;
 #endif
@@ -260,24 +260,24 @@ namespace wolf
 			LARGE_INTEGER _last_time;
 
 #else
-			INT64	_last_time;
+			int64_t	_last_time;
 #endif
-			UINT64 _max_delta;
+			uint64_t _max_delta;
 
 			// Derived timing data uses a canonical tick format.
-			UINT64 _elapsed_ticks;
-			UINT64 _total_ticks;
-			UINT64 _left_over_ticks;
+			uint64_t _elapsed_ticks;
+			uint64_t _total_ticks;
+			uint64_t _left_over_ticks;
 
 			// Members for tracking the framerate.
-			UINT32 _frame_count;
-			UINT32 _fps;
-			UINT32 _frames_this_second;
-			UINT64 _seconds_counter;
+			uint32_t _frame_count;
+			uint32_t _fps;
+			uint32_t _frames_this_second;
+			uint64_t _seconds_counter;
 
 			// Members for configuring fixed timestep mode.
 			bool _fixed_time_step;
-			UINT64 _target_elapsed_ticks;
+			uint64_t _target_elapsed_ticks;
 		};
 	}
 }

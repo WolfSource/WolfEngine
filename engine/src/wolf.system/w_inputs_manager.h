@@ -59,7 +59,12 @@ namespace wolf
                 std::vector<unsigned short> inputed_chars;
             } keyboard;
 
+			//reset all buffers
             WSYS_EXP void reset();
+			//reset only keyboard buffers
+			WSYS_EXP void reset_keyboard_buffers();
+			//reset only mouse buffers
+			WSYS_EXP void reset_mouse_buffers();
 
             WSYS_EXP HRESULT update(
 #ifdef __WIN32

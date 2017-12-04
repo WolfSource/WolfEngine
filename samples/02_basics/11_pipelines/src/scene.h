@@ -23,6 +23,7 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_texture.h>
+#include <w_graphics/w_imgui.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -56,7 +57,8 @@ public:
 	ULONG release() override;
 
 private:
-	HRESULT build_draw_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+	HRESULT _build_draw_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+	HRESULT _build_gui_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
@@ -72,6 +74,13 @@ private:
 
 	wolf::graphics::w_shader                                        _shader;
     
+	//for gui
+	wolf::graphics::w_command_buffer                                _gui_command_buffers;
+	wolf::graphics::w_render_pass                                   _gui_render_pass;
+	wolf::graphics::w_frame_buffer                                  _gui_frame_buffers;
+	wolf::graphics::w_fences                                        _gui_fence;
+	wolf::graphics::w_semaphore                                     _gui_semaphore;
+
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -283,10 +283,10 @@ void scene::load()
 		V(S_FALSE, "loading mesh", _trace_info, 3, true);
 	}
 
-	build_draw_command_buffers(_gDevice);
+	_build_draw_command_buffers(_gDevice);
 }
 
-HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
 	const std::string _trace_info = this->name + "::build_draw_command_buffers";
 	HRESULT _hr = S_OK;
@@ -342,13 +342,19 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //is W key pressed
-    auto _pressed = wolf::inputs_manager.is_keys_pressed({/* W */0x0D});
-    if (_pressed.size() && _pressed[0])
+    //Press W key to switch between wireframe and solid mode
+	short _w_key_code;
+#ifdef __WIN32
+	_w_key_code = 87;
+#else
+	_w_key_code = 13;
+#endif
+    auto _keys = wolf::inputs_manager.is_keys_released({ _w_key_code });
+    if (_keys.size() && _keys[0])
     {
-        //show wireframe
+        //change pipeline
         this->_show_wireframe = !this->_show_wireframe;
-        build_draw_command_buffers(get_graphics_device());
+        _build_draw_command_buffers(get_graphics_device());
     }
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -38,7 +38,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 #elif defined(__APPLE__)
         _path = "/Users/pooyaeimandar/Documents/a.bmp";
 #endif
-		w_texture::save_bmp_to_file(_path.c_str(), pSize.x, pSize.y, pPixels, 4);
+		//w_texture::save_bmp_to_file(_path.c_str(), pSize.x, pSize.y, pPixels, 4);
 	};
 }
 

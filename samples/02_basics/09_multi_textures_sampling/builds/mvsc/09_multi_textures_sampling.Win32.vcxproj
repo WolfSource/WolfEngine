@@ -33,10 +33,12 @@
   <ItemGroup>
     <None Include="..\..\src\content\shaders\shader.frag" />
     <None Include="..\..\src\content\shaders\shader.vert" />
-    <None Include="..\..\src\content\textures\test.ktx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\src\content\textures\smoke_logo.dds" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{635BEAE1-93CC-4C0A-A6FD-E3D0F74AFDDD}</ProjectGuid>
+    <ProjectGuid>{5C8FDF16-48F3-48D8-9730-5780B42F769A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>_09_multi_textures_sampling</RootNamespace>
     <ProjectName>09_multi_textures_sampling.Win32</ProjectName>

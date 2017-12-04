@@ -3,7 +3,7 @@
     Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website			 : http://WolfSource.io
     Name			 : imgui_imp.h
-    Description		 : implementation of imgui in wolf engine
+    Description		 : implementation of imgui(https://github.com/ocornut/imgui) in wolf engine
     Comment          :
 */
 
