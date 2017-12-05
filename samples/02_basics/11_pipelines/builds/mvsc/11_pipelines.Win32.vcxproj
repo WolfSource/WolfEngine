@@ -30,10 +30,6 @@
     <ClInclude Include="..\..\..\..\common\pch.h" />
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\src\content\shaders\shader.frag" />
-    <None Include="..\..\src\content\shaders\shader.vert" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CBAC9BBD-3BEB-4F6C-9EE0-FB099894EC9D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

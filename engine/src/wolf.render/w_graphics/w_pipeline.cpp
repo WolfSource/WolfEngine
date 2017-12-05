@@ -26,6 +26,7 @@ namespace wolf
                 _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
                 _In_ const std::string& pPipelineCacheName,
 				_In_ const std::vector<VkDynamicState>& pDynamicStates,
+                _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges,
                 _In_ const UINT& pTessellationPatchControlPoints,
                 _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
                 _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo,
@@ -61,6 +62,7 @@ namespace wolf
                     pPrimitiveTopology,
                     pShaderDescriptorSetLayoutBinding,
                     pDynamicStates,
+                    pPushConstantRanges,
                     &_vertex_input_state_create_info,
                     &_input_assembly_state_create_info,
                     &_pipeline_dynamic_state_create_info);
@@ -310,6 +312,7 @@ namespace wolf
                 _In_ const VkPrimitiveTopology pPrimitiveTopology,
                 _In_ const VkDescriptorSetLayout* const pDescriptorSetLayoutBinding,
                 _In_ const std::vector<VkDynamicState>& pDynamicStates,
+                _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges,
                 _Out_ VkPipelineVertexInputStateCreateInfo** pVertexInputStateCreateInfo,
                 _Out_ VkPipelineInputAssemblyStateCreateInfo** pInputAssemblyStateCreateInfo,
                 _Out_ VkPipelineDynamicStateCreateInfo** pDynamicStateCreateInfo)
@@ -423,15 +426,16 @@ namespace wolf
 				}
 				*pDynamicStateCreateInfo = _dys_ptr;
 
+                uint32_t  _push_constant_range_count = pPushConstantRanges.size();
                 VkPipelineLayoutCreateInfo _pipeline_layout_create_info =
                 {
-                    VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,                          // Type
-                    nullptr,                                                                // Next
-                    0,                                                                      // Flags
-                    static_cast<uint32_t>(pDescriptorSetLayoutBinding == nullptr ? 0 : 1),       // SetLayoutCount
-                    pDescriptorSetLayoutBinding == nullptr ? nullptr : pDescriptorSetLayoutBinding,  // SetLayouts
-                    0,                                                                      // PushConstantRangeCount
-                    nullptr                                                                 // PushConstantRanges
+                    VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,                                      // Type
+                    nullptr,                                                                            // Next
+                    0,                                                                                  // Flags
+                    static_cast<uint32_t>(pDescriptorSetLayoutBinding == nullptr ? 0 : 1),              // SetLayoutCount
+                    pDescriptorSetLayoutBinding == nullptr ? nullptr : pDescriptorSetLayoutBinding,     // SetLayouts
+                    _push_constant_range_count,                                                         // PushConstantRangeCount
+                    _push_constant_range_count ? pPushConstantRanges.data() : nullptr                   // PushConstantRanges
                 };
 
                 return _pipeline_layout_create_info;
@@ -471,6 +475,7 @@ HRESULT w_pipeline::load(
     _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
     _In_ const std::string& pPipelineCacheName,
 	_In_ const std::vector<VkDynamicState>& pDynamicStates,
+    _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges,
     _In_ const UINT& pTessellationPatchControlPoints,
     _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
     _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo,
@@ -491,6 +496,7 @@ HRESULT w_pipeline::load(
         pViewPortsScissors,
 		pPipelineCacheName,
         pDynamicStates,
+        pPushConstantRanges,
         pTessellationPatchControlPoints,
         pPipelineRasterizationStateCreateInfo,
         pPipelineMultiSampleStateCreateInfo,

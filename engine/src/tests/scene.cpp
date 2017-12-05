@@ -202,6 +202,7 @@ void scene::load()
 		{ this->_draw_render_pass.get_viewport_scissor() },
 		_pipeline_cache_name,
 		_dynamic_states,
+        {},
 		0,
 		nullptr,
 		nullptr,

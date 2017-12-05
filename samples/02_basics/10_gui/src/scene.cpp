@@ -147,7 +147,7 @@ void scene::load()
 
 HRESULT scene::_build_gui_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
-	const std::string _trace_info = this->name + "::build_draw_command_buffers";
+	const std::string _trace_info = this->name + "::build_gui_command_buffers";
 	HRESULT _hr = S_OK;
 
 	auto _size = this->_gui_command_buffers.get_commands_size();
@@ -182,7 +182,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    sFPS = wolf::inputs_manager.mouse.pos_y;// pGameTime.get_frames_per_second();
+    sFPS = pGameTime.get_frames_per_second();
 	sElapsedTimeInSec = pGameTime.get_elapsed_seconds();
 	sTotalTimeTimeInSec = pGameTime.get_total_seconds();
 
@@ -291,7 +291,11 @@ bool scene::_update_gui()
 		return false;
 	}
 
-	ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n", sFPS, sElapsedTimeInSec, sTotalTimeTimeInSec);
+	ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n", 
+        sFPS, 
+        sElapsedTimeInSec, 
+        sTotalTimeTimeInSec, 
+        wolf::inputs_manager.mouse.pos_x, wolf::inputs_manager.mouse.pos_y);
 	ImGui::End();
 
 	return true;

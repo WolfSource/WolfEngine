@@ -34,6 +34,7 @@ namespace wolf
                                _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
                                _In_ const std::string& pPipelineCacheName = "pipeline_cache",
 							   _In_ const std::vector<VkDynamicState>& pDynamicStates = {},
+                               _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges = {},
                                _In_ const UINT& pTessellationPatchControlPoints = 0,
                                _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo = nullptr,
                                _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo = nullptr,

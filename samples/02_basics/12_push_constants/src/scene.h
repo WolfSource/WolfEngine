@@ -80,14 +80,7 @@ private:
 	wolf::graphics::w_render_pass                                   _gui_render_pass;
 	wolf::graphics::w_frame_buffer                                  _gui_frame_buffers;
 
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //The following codes have been added for this project
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    bool                                                            _show_wireframe;
-	wolf::graphics::w_pipeline                                      _solid_pipeline;
-    wolf::graphics::w_pipeline                                      _wireframe_pipeline;
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+	wolf::graphics::w_pipeline                                      _pipeline;
     
     wolf::graphics::w_mesh											_mesh;
     wolf::graphics::w_texture										_texture;

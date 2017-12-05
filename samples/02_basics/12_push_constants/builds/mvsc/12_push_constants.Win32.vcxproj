@@ -18,11 +18,27 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\common\main.cpp" />
+    <ClCompile Include="..\..\..\..\common\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\common\pch.h" />
+    <ClInclude Include="..\..\src\scene.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\content\shaders\shader.frag" />
+    <None Include="..\..\src\content\shaders\shader.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1FB16A54-81A5-4D5D-B0F6-03E65AE824E6}</ProjectGuid>
+    <ProjectGuid>{F7B9C1F0-0628-4FE5-B8EC-1B5BC298E217}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>_02_Textured_Quad.DX11_X_Win32</RootNamespace>
-    <ProjectName>02_Textured_Quad.DX11_X.Win32</ProjectName>
+    <RootNamespace>_05_texture</RootNamespace>
+    <ProjectName>12_push_constants.Win32</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -44,7 +60,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -64,10 +80,10 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)\..\..\bin\$(Platform)\$(Configuration)\Win32\</OutDir>
+    <OutDir>$(SolutionDir)\..\bin\$(Platform)\$(Configuration)\Win32\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)\..\..\bin\$(Platform)\$(Configuration)\Win32\</OutDir>
+    <OutDir>$(SolutionDir)\..\bin\$(Platform)\$(Configuration)\Win32\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -103,39 +119,38 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../engine/src/wolf.system;$(SolutionDir)/../../engine/src/wolf.directX;$(SolutionDir)/../../engine/src/wolf.content_pipeline;$(SolutionDir)/../../engine/dependencies/boost/include;$(SolutionDir)../../engine/dependencies/TBB/tbb44_20160526oss/win/include;$(SolutionDir)/../../engine/dependencies/glm-master;$(SolutionDir)/../../engine/dependencies/rapidxml-1.13;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_UNICODE;UNICODE;__DX11_X__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/dependencies/msgpack/include/;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/include/;$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../../engine/dependencies/boost/lib/x64/;$(SolutionDir)/../../engine/dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14;$(VULKAN_SDK)/lib/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wolf.system.win32.lib;wolf.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../engine/src/wolf.system;$(SolutionDir)/../../engine/src/wolf.directX;$(SolutionDir)/../../engine/src/wolf.content_pipeline;$(SolutionDir)/../../engine/dependencies/boost/include;$(SolutionDir)../../engine/dependencies/TBB/tbb44_20160526oss/win/include;$(SolutionDir)/../../engine/dependencies/glm-master;$(SolutionDir)/../../engine/dependencies/rapidxml-1.13;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_UNICODE;UNICODE;__DX11_X__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../engine/dependencies/msgpack/include/;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/include/;$(SolutionDir)/../engine/src/wolf.system/;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(ProjectDir)/../../src/;$(ProjectDir)/../../../../common/;$(VULKAN_SDK)/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__WIN32;WIN32;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../../engine/dependencies/boost/lib/x64/;$(SolutionDir)/../../engine/dependencies/TBB/tbb44_20160526oss/win/lib/intel64/vc14/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wolf.system.win32.lib;wolf.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/$(Platform)/$(Configuration)/Win32;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14;$(VULKAN_SDK)/lib/</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AssemblyDebug>false</AssemblyDebug>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="scene.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="scene.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
