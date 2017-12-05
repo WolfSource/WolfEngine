@@ -111,12 +111,12 @@ HRESULT w_inputs_manager::update(
 #else
 
 HRESULT w_inputs_manager::update(
-    _In_ bool pMouseLeftButtonDown,
-    _In_ bool pMouseLeftButtonUp,
-    _In_ bool pMouseRightButtonDown,
-    _In_ bool pMouseRightButtonUp,
-    _In_ bool pMouseMiddleButtonDown,
-    _In_ bool pMouseMiddleButtonUp,
+    _In_ bool* pMouseLeftButtonDown,
+    _In_ bool* pMouseLeftButtonUp,
+    _In_ bool* pMouseRightButtonDown,
+    _In_ bool* pMouseRightButtonUp,
+    _In_ bool* pMouseMiddleButtonDown,
+    _In_ bool* pMouseMiddleButtonUp,
     _In_ float pMouseWheel,
     _In_ w_point_f* pMouseMove,
     _In_ unsigned short pKeyDown,
@@ -132,48 +132,42 @@ HRESULT w_inputs_manager::update(
     if(pKeyDown)
     {
         this->keyboard.keys_pressed.insert((int)pKeyDown);
-        return S_OK;
     }
-    if(pKeyUp)
+    else if(pKeyUp)
     {
         auto _value = (int)pKeyUp;
         this->keyboard.keys_pressed.erase(_value);
         this->keyboard.keys_released.insert(_value);
-        return S_OK;
     }
     
-    if(pMouseLeftButtonDown)
+    if(pMouseLeftButtonDown && *pMouseLeftButtonDown)
     {
-        this->mouse.left_button_pressed = pMouseLeftButtonDown;
-        return S_OK;
+        this->mouse.left_button_pressed = true;
     }
-    if(pMouseLeftButtonUp)
+    else if(pMouseLeftButtonUp && *pMouseLeftButtonUp)
     {
         this->mouse.left_button_pressed = false;
         this->mouse.left_button_released = true;
-        return S_OK;
     }
-    if(pMouseRightButtonDown)
+    
+    if(pMouseRightButtonDown && *pMouseRightButtonDown)
     {
         this->mouse.right_button_pressed = true;
-        return S_OK;
     }
-    if(pMouseRightButtonUp)
+    else if(pMouseRightButtonUp && *pMouseRightButtonUp)
     {
         this->mouse.right_button_pressed = false;
         this->mouse.right_button_released = true;
-        return S_OK;
     }
-    if(pMouseMiddleButtonDown)
+    
+    if(pMouseMiddleButtonDown && *pMouseMiddleButtonDown)
     {
         this->mouse.middle_button_pressed = true;
-        return S_OK;
     }
-    if(pMouseMiddleButtonUp)
+    else if(pMouseMiddleButtonUp && *pMouseMiddleButtonUp)
     {
         this->mouse.middle_button_pressed = false;
         this->mouse.middle_button_released = true;
-        return S_OK;
     }
     
     this->mouse.wheel += pMouseWheel;

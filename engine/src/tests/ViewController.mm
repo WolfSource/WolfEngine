@@ -139,7 +139,7 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 - (void)keyDown:(NSEvent*)event
 {
     unsigned short _code = [event keyCode];
-    wolf::inputs_manager.update(false, false, false, false, false, false, 0, nullptr, _code, 0);
+   // wolf::inputs_manager.update(false, false, false, false, false, false, 0, nullptr, _code, 0);
     switch ([event keyCode])
     {
         case 0x02:

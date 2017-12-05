@@ -73,12 +73,12 @@ namespace wolf
                 _In_ const WPARAM pWParam,
                 _In_ const LPARAM pLParam
 #else
-                _In_ bool pMouseLeftButtonDown,
-                _In_ bool pMouseLeftButtonUp,
-                _In_ bool pMouseRightButtonDown,
-                _In_ bool pMouseRightButtonUp,
-                _In_ bool pMouseMiddleButtonDown,
-                _In_ bool pMouseMiddleButtonUp,
+                _In_ bool* pMouseLeftButtonDown,
+                _In_ bool* pMouseLeftButtonUp,
+                _In_ bool* pMouseRightButtonDown,
+                _In_ bool* pMouseRightButtonUp,
+                _In_ bool* pMouseMiddleButtonDown,
+                _In_ bool* pMouseMiddleButtonUp,
                 _In_ float pMouseWheel,
                 _In_ w_point_f* pMouseMove,
                 _In_ unsigned short pKeyDown,

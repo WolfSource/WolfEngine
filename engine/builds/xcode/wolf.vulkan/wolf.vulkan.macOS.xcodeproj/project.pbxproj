@@ -30,7 +30,6 @@
 		2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C598C6D1FA27CC10055D215 /* w_fences.cpp */; };
 		2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
-		2C70799A1EACE705003784A2 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
 		2C736BBE1ECA1EB600624CC7 /* w_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BBC1ECA1EB600624CC7 /* w_model.h */; };
 		2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC71ECB710900624CC7 /* w_uniform.h */; };
 		2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */; };
@@ -52,6 +51,8 @@
 		2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E91ED9F7CC007B70B8 /* imgui.cpp */; };
 		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
 		2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */; };
+		2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
+		2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
 		2CFFAC6F1FCEAA400020A112 /* w_frame_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC681FCEAA3F0020A112 /* w_frame_buffer.h */; };
 		2CFFAC701FCEAA400020A112 /* w_command_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */; };
@@ -108,6 +109,7 @@
 		2CA945E91ED9F7CC007B70B8 /* imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui.cpp; path = ../../../src/wolf.render/imgui/imgui.cpp; sourceTree = "<group>"; };
 		2CA945EA1ED9F7CC007B70B8 /* imgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui.h; path = ../../../src/wolf.render/imgui/imgui.h; sourceTree = "<group>"; };
 		2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_demo.cpp; path = ../../../src/wolf.render/imgui/imgui_demo.cpp; sourceTree = "<group>"; };
+		2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
 		2CFFAC671FCEAA3F0020A112 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/w_graphics/w_render_target.h; sourceTree = "<group>"; };
 		2CFFAC681FCEAA3F0020A112 /* w_frame_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_frame_buffer.h; path = ../../../src/wolf.render/w_graphics/w_frame_buffer.h; sourceTree = "<group>"; };
 		2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffer.h; path = ../../../src/wolf.render/w_graphics/w_command_buffer.h; sourceTree = "<group>"; };
@@ -122,8 +124,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
+				2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
-				2C70799A1EACE705003784A2 /* MoltenVK.framework in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
 				2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
@@ -212,6 +215,7 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */,
 				2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */,
 				2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */,
 				2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */,
