@@ -70,7 +70,7 @@ namespace wolf
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 
 				reset();
-				this->_max_delta = 313918;
+				this->_max_delta = 313918.0;
 #endif
 			}
 
@@ -78,7 +78,7 @@ namespace wolf
 
 			// Get elapsed time since the previous Update call.
 			uint64_t get_elapsed_ticks() const									{ return this->_elapsed_ticks; }
-			double get_elapsed_seconds() const									{ return ticks_to_seconds(this->_elapsed_ticks); }
+			double get_elapsed_seconds() const                                  { return ticks_to_seconds(this->_elapsed_ticks); }
 
 			// Get total time since the start of the program.
 			uint64_t get_total_ticks() const									{ return this->_total_ticks; }
@@ -106,14 +106,14 @@ namespace wolf
 #pragma endregion
 
 			// Integer format represents time using 10,000,000 ticks per second.
-			static const uint64_t TICKS_PER_SECOND = 10000000;
+			static constexpr double TICKS_PER_SECOND = 10000000;
 
-			static double ticks_to_seconds(uint64_t pTicks)						{ return static_cast<double>(pTicks) / TICKS_PER_SECOND; }
+			static double ticks_to_seconds(uint64_t pTicks)						{ return (double)pTicks / TICKS_PER_SECOND; }
 			static uint64_t seconds_to_ticks(double pSeconds)					{ return static_cast<uint64_t>(pSeconds * TICKS_PER_SECOND); }
 
 			void reset()
 			{
-				this->_last_time = get_time();
+				this->_last_time = _get_time();
 
 				this->_left_over_ticks = 0;
 				this->_fps = 0;
@@ -126,16 +126,16 @@ namespace wolf
 			void tick(const TUpdate& pUpdate)
 			{
 				// Query the current time.
-				auto _current_time = get_time();
+				auto _current_time = _get_time();
 
 #if defined(__WIN32) || defined(__UWP)
 				auto _time_delta = _current_time.QuadPart - this->_last_time.QuadPart;
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 				auto _time_delta = _current_time - this->_last_time;
 #endif
-
-				this->_last_time = _current_time;
-				this->_seconds_counter += _time_delta;
+                
+                this->_last_time = _current_time;
+				this->_seconds_counter += (uint64_t)_time_delta;
 
 				// Clamp excessively large time deltas (e.g. after paused in the debugger).
 				if (_time_delta > this->_max_delta)
@@ -189,8 +189,8 @@ namespace wolf
 				else
 				{
 					// Variable timestep update logic.
-					this->_elapsed_ticks = _time_delta;
-					this->_total_ticks += _time_delta;
+					this->_elapsed_ticks = (uint64_t)_time_delta;
+					this->_total_ticks += (uint64_t)_time_delta;
 					this->_left_over_ticks = 0;
 					this->_frame_count++;
 
@@ -234,22 +234,22 @@ namespace wolf
 
 #if defined(__WIN32) || defined(__UWP)
 			//get current time in second
-			LARGE_INTEGER get_time()
+			LARGE_INTEGER _get_time()
 			{
 				LARGE_INTEGER _time;
 				if (!QueryPerformanceCounter(&_time))
 				{
-					V(S_FALSE, "query performance on get_time method pf w_game_time", this->_name, 3, true);
+					V(S_FALSE, "query performance on _get_time method of w_game_time", this->_name, 3, true);
 				}
 				return _time;
 			}
 #else
-			INT64 get_time()
+			double _get_time()
 			{
 				struct timespec _now;
 				clock_gettime(CLOCK_MONOTONIC, &_now);
-				auto _nano_sconds = static_cast<INT64>(_now.tv_sec * 1000000000LL + _now.tv_nsec);
-				return  _nano_sconds / 1000000000LL;
+				auto _sconds = (double)_now.tv_sec  + (double)_now.tv_nsec / 1000000000.0;
+				return  _sconds;
 			}
 #endif
 
@@ -260,9 +260,9 @@ namespace wolf
 			LARGE_INTEGER _last_time;
 
 #else
-			int64_t	_last_time;
+			double	_last_time;
 #endif
-			uint64_t _max_delta;
+			double _max_delta;
 
 			// Derived timing data uses a canonical tick format.
 			uint64_t _elapsed_ticks;
