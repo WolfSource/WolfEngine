@@ -89,40 +89,48 @@ Programming, you can order it from <a href="http://www.packtpub.com/directx-11-1
 <table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="01_async" width="256" height="192"/>
       <p>01_async</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="01_async" width="256" height="192"/>
+      <p>async programming with wolf</p>
     </td>
     <td>
+       <p>02_thread</p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="02_thread" width="256" height="192"/>
-      <p>02_thread</p>
+      <p>creating threads in wolf</p>
     </td>
     <td>
+       <p>03_signal</p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="03_signal" width="256" height="192"/>
-      <p>03_signal</p>
+      <p>Signaling between threads</p>
     </td>
   </tr>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="04_timer" width="256" height="192"/>
       <p>04_timer</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="04_timer" width="256" height="192"/>
+      <p>Creating timer in wolf</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="05_window" width="256" height="192"/>
       <p>05_window</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="05_window" width="256" height="192"/>
+      <p>Creating Window</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="06_Lua" width="256" height="192"/>
       <p>06_Lua</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="06_Lua" width="256" height="192"/>
+      <p>Using lua scripts in wolf</p>
     </td>
   </tr>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="07_xml" width="256" height="192"/>
       <p>07_xml</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="07_xml" width="256" height="192"/>
+      <p>Parsing and writing xml files</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="08_json" width="256" height="192"/>
       <p>08_json</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="08_json" width="256" height="192"/>
+      <p>Parsing and writing json files</p>
     </td>
   </tr>
 </table>
