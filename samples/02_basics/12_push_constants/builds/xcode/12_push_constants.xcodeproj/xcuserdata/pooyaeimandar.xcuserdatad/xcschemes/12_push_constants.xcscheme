@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C2803461E61C73600048A80"
-               BuildableName = "11_pipelines.app"
-               BlueprintName = "11_pipelines"
-               ReferencedContainer = "container:11_pipelines.xcodeproj">
+               BuildableName = "12_push_constants.app"
+               BlueprintName = "12_push_constants"
+               ReferencedContainer = "container:12_push_constants.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,9 +34,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "11_pipelines.app"
-            BlueprintName = "11_pipelines"
-            ReferencedContainer = "container:11_pipelines.xcodeproj">
+            BuildableName = "12_push_constants.app"
+            BlueprintName = "12_push_constants"
+            ReferencedContainer = "container:12_push_constants.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "11_pipelines.app"
-            BlueprintName = "11_pipelines"
-            ReferencedContainer = "container:11_pipelines.xcodeproj">
+            BuildableName = "12_push_constants.app"
+            BlueprintName = "12_push_constants"
+            ReferencedContainer = "container:12_push_constants.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "11_pipelines.app"
-            BlueprintName = "11_pipelines"
-            ReferencedContainer = "container:11_pipelines.xcodeproj">
+            BuildableName = "12_push_constants.app"
+            BlueprintName = "12_push_constants"
+            ReferencedContainer = "container:12_push_constants.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

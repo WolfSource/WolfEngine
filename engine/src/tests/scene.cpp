@@ -28,7 +28,8 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 	_config.debug_gpu = false;
 	_config.off_screen_mode = false;
 	w_game::set_graphics_device_manager_configs(_config);
-	w_game::set_fixed_time_step(false);
+	//w_game::set_fixed_time_step(true);
+    //w_game::set_fixed_fps(60);
 
 	this->on_pixels_data_captured_signal += [&](_In_ const w_point_t pSize, _In_ const uint8_t* pPixels)->void
 	{
@@ -256,6 +257,10 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	});
 
 	const std::string _trace_info = this->name + "::update";
+    
+    logger.write(std::to_string(pGameTime.get_frames_per_second()));
+    logger.write(std::to_string(pGameTime.get_elapsed_seconds()));
+    logger.write(std::to_string(pGameTime.get_total_seconds()));
 }
 
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
@@ -308,7 +313,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	{
 		logger.error("something went wrong on capturing data from swap chain's buffer");
 	}
-	logger.write(std::to_string(pGameTime.get_frames_per_second()));
+	//logger.write(std::to_string(pGameTime.get_frames_per_second()));
 
 	return _hr;
 }

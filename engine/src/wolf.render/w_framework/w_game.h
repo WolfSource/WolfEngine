@@ -44,9 +44,12 @@ namespace wolf
 
 #pragma region Setters
 
-			W_EXP void set_fixed_time_step(_In_ bool pValue) { this->_game_time.set_fixed_time_step(pValue); }
-			W_EXP void set_target_elapsed_ticks(_In_ UINT64 pValue) { this->_game_time.set_target_elapsed_ticks(10000000 / pValue); }
-			W_EXP void set_target_elapsed_seconds(_In_ double pValue) { this->_game_time.set_target_elapsed_seconds(1.0 / pValue); }
+			W_EXP void set_fixed_time_step(_In_ bool pValue)        { this->_game_time.set_fixed_time_step(pValue); }
+			W_EXP void set_fixed_fps(_In_ double pValue)
+            {
+                this->_game_time.set_fixed_time_step(true);
+                this->_game_time.set_target_elapsed_seconds(1.0 / pValue);
+            }
 
 #pragma endregion
 

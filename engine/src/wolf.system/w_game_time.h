@@ -135,7 +135,7 @@ namespace wolf
 #endif
                 
                 this->_last_time = _current_time;
-				this->_seconds_counter += (uint64_t)_time_delta;
+				this->_seconds_counter += _time_delta;
 
 				// Clamp excessively large time deltas (e.g. after paused in the debugger).
 				if (_time_delta > this->_max_delta)
@@ -203,7 +203,7 @@ namespace wolf
 #if defined(__WIN32) || defined(__UWP)
 				const auto _one_sec = static_cast<uint64_t>(this->_frequency.QuadPart);
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
-				const auto _one_sec = 1;
+				const auto _one_sec = 1.0;
 #endif
 
 				if (this->_seconds_counter >= _one_sec)
@@ -223,7 +223,7 @@ namespace wolf
 					}
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
-					this->_seconds_counter %= _one_sec;
+					this->_seconds_counter = ((uint64_t)this->_seconds_counter % (uint64_t)_one_sec);
 #endif
 				}
 			}
@@ -273,7 +273,7 @@ namespace wolf
 			uint32_t _frame_count;
 			uint32_t _fps;
 			uint32_t _frames_this_second;
-			uint64_t _seconds_counter;
+			double _seconds_counter;
 
 			// Members for configuring fixed timestep mode.
 			bool _fixed_time_step;
