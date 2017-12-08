@@ -168,9 +168,9 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #ifdef WIN32
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/14_render_to_target/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/13_render_to_target/src/content/";
 #elif defined(__APPLE__)
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/14_render_to_target/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/13_render_to_target/src/content/";
 #endif // WIN32
 
 	//loading vertex shaders

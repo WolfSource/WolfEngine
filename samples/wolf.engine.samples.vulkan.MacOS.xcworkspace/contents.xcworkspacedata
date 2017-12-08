@@ -69,7 +69,7 @@
          location = "group:02_basics/12_push_constants/builds/xcode/12_push_constants.xcodeproj">
       </FileRef>
       <FileRef
-         location = "group:02_basics/14_render_to_target/builds/xcode/14_render_to_target.xcodeproj">
+         location = "group:02_basics/13_render_to_target/builds/xcode/13_render_to_target.xcodeproj">
       </FileRef>
    </Group>
 </Workspace>

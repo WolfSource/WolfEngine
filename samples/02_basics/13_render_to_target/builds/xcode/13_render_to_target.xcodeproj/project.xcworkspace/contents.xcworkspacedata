@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:14_render_to_target.xcodeproj">
+      location = "self:13_render_to_target.xcodeproj">
    </FileRef>
 </Workspace>
