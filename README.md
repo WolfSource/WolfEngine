@@ -85,76 +85,44 @@ Programming, you can order it from <a href="http://www.packtpub.com/directx-11-1
 <h2><a id="user-content-samples" class="anchor" href="#samples" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Samples</h2>
 
 <!-- Screenshots -->
-<h2>01-Initialize</h2>
+<h2>01_system</h2>
 <table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/01-window/view.jpg" alt="01_window/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 01-window</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="01_async" width="256" height="192"/>
+      <p>01_async</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/02-multiple_windows/view.jpg" alt="02_multiple_windows/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 02-multiple_windows</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="02_thread" width="256" height="192"/>
+      <p>02_thread</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/03-scene/view.jpg" alt="03_scene/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 03-scene</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="03_signal" width="256" height="192"/>
+      <p>03_signal</p>
     </td>
   </tr>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/04-one_scene_multiple_windows/view.jpg" alt="04_one_scene_multiple_windows/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 04-one_scene_multiple_windows</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="04_timer" width="256" height="192"/>
+      <p>04_timer</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/01-Initialize/05-multiple_scenes_multiple_windows/view.jpg" alt="05_multiple_scenes_multiple_windows/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 05-multiple_scenes_multiple_windows</p>
-    </td>
-  </tr>
-</table>
-
-<h2>02-GUI</h2>
-<table>
-  <tr>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/02-GUI/01-widget/view.jpg" alt="01-widget/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 01-widget</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="05_window" width="256" height="192"/>
+      <p>05_window</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/02-GUI/02-gui%20from%20xml/view.jpg" alt="02-gui from xml/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 02-gui from xml</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="06_Lua" width="256" height="192"/>
+      <p>06_Lua</p>
     </td>
   </tr>
-</table>
-
-<h2>03-Direct2D</h2>
-<table>
   <tr>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/03-Direct2D/01-shapes/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 01-shapes</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="07_xml" width="256" height="192"/>
+      <p>07_xml</p>
     </td>
     <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/03-Direct2D/02-geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 02-geometries</p>
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/03-Direct2D/03-animated_geometries/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 03-animated_geometries</p>
-    </td>
-  </tr>
-</table>
-
-<h2>05-Buffers</h2>
-<table>
-  <tr>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/05-Buffers/01-quad/view.jpg" alt="01-shapes/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 01-quad</p>
-    </td>
-    <td>
-      <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/0.5.0.0/samples/windows/05-Buffers/02-textured_quad/view.jpg" alt="02-geometries/view.jpg" width="256" height="192"/>
-      <p><b>Win32</b>: 02-textured_quad</p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="08_json" width="256" height="192"/>
+      <p>08_json</p>
     </td>
   </tr>
 </table>
