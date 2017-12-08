@@ -91,7 +91,7 @@ Programming, you can order it from <a href="http://www.packtpub.com/directx-11-1
     <td>
       <p>01_async</p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="01_async" width="256" height="192"/>
-      <p>async programming with wolf</p>
+      <p>async programming in wolf</p>
     </td>
     <td>
        <p>02_thread</p>
