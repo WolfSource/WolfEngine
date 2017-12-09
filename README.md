@@ -17,11 +17,11 @@ Wolf Engine is written in C++ and supports Python and Lua as an embedded script 
 
 ### Vulkan runs on OSX and IOS via Metal wrapper(MoltenVK)
 
-|                |    Windows    |      Ubuntu      |       OSX      |      IOS      |     Android   |
-|----------------|:-------------:|:----------------:|:--------------:|:-------------:|:-------------:|
-| Vulkan         |    complete   |    in progress   |    complete    |  in progress  |  in progress  |
-| DircetX 12     |  not started  |      N/A         |       N/A      |      N/A      |     N/A       |
-| DircetX 11     |    complete   |      N/A         |       N/A      |      N/A      |     N/A       |
+|                |   Windows   | Universal Windows Platfrom |     Ubuntu     |      OSX      |      IOS      |    Android    |
+|----------------|:-----------:|:--------------------------:|:--------------:|:-------------:|:-------------:|:-------------:|
+| Vulkan         |   complete  |            N/A             |   in progress  |    complete   |  in progress  |  in progress  |
+| DircetX 12     | not started |         not started        |       N/A      |      N/A      |     N/A       |     N/A       |
+| DircetX 11     |   complete  |         not started        |       N/A      |      N/A      |     N/A       |     N/A       |
 
 
 <!--Projects-->
