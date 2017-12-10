@@ -89,125 +89,125 @@ Programming, you can order it from <a href="http://www.packtpub.com/directx-11-1
 <table>
   <tr>
     <td>
-      <p>01_async</p>
+      <p><b>01_async</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="01_async" width="256" height="192"/>
       <p>Async programming in wolf</p>
     </td>
     <td>
-       <p>02_thread</p>
+       <p><b>02_thread</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="02_thread" width="256" height="192"/>
       <p>Creating threads in wolf</p>
     </td>
     <td>
-       <p>03_signal</p>
+       <p><b>03_signal</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="03_signal" width="256" height="192"/>
       <p>Signaling between threads</p>
     </td>
   </tr>
   <tr>
     <td>
-      <p>04_timer</p>
+      <p><b>04_timer</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="04_timer" width="256" height="192"/>
       <p>Creating timer in wolf</p>
     </td>
     <td>
-      <p>05_window</p>
+      <p><b>05_window</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="05_window" width="256" height="192"/>
       <p>Creating Window</p>
     </td>
     <td>
-      <p>06_Lua</p>
+      <p><b>06_Lua</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="06_Lua" width="256" height="192"/>
       <p>Using lua scripts in wolf</p>
     </td>
   </tr>
   <tr>
     <td>
-      <p>07_xml</p>
+      <p><b>07_xml</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="07_xml" width="256" height="192"/>
       <p>Parsing and writing xml files</p>
     </td>
     <td>
-      <p>08_json</p>
+      <p><b>08_json</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="08_json" width="256" height="192"/>
       <p>Parsing and writing json files</p>
     </td>
   </tr>
 </table>
 
-<h2>02_basics</h2>
+<h2><b>02_basics</b></h2>
 <table>
   <tr>
     <td>
-      <p>01_clear</p>
+      <p><b>01_clear</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/01_clear/view.jpg" alt="01_clear" width="256" height="192"/>
       <p>Clearing buffers of swap chain</p>
     </td>
     <td>
-       <p>02_shader</p>
+       <p><b>02_shader</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/02_shader/view.jpg" alt="02_shader" width="256" height="192"/>
       <p>Loading and using shaders</p>
     </td>
     <td>
-       <p>03_vertex_buffer</p>
+       <p><b>03_vertex_buffer</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/03_vertex_buffer/view.jpg" alt="03_vertex_buffer" width="256" height="192"/>
       <p>Drawing using vertex buffer</p>
     </td>
   </tr>
   <tr>
     <td>
-      <p>04_index_buffer</p>
+      <p><b>04_index_buffer</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/03_vertex_buffer/view.jpg" alt="04_index_buffer" width="256" height="192"/>
       <p>Drawing using vertex and index buffers</p>
     </td>
     <td>
-      <p>05_texture</p>
+      <p><b>05_texture</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/05_texture/view.jpg" alt="05_texture" width="256" height="192"/>
       <p>Loading texture</p>
     </td>
     <td>
-      <p>06_staging_buffer</p>
+      <p><b>06_staging_buffer</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/06_staging_buffer/view.jpg" alt="06_staging_buffer" width="256" height="192"/>
       <p>Creating staging buffer</p>
     </td>
   </tr>
   <tr>
     <td>
-      <p>07_uniforms_constant_buffers</p>
+      <p><b>07_uniforms_constant_buffers</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/05_texture/view.jpg" alt="07_uniforms_constant_buffers" width="256" height="192"/>
       <p>Using constant buffer</p>
     </td>
     <td>
-      <p>08_texture_arrays</p>
+      <p><b>08_texture_arrays</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/08_texture_arrays/view.jpg" alt="08_texture_arrays" width="256" height="192"/>
       <p>Sampling array of textures in shader</p>
     </td>
     <td>
-      <p>09_multi_textures_sampling</p>
+      <p><b>09_multi_textures_sampling</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/09_multi_textures_sampling/view.jpg" alt="09_multi_textures_sampling" width="256" height="192"/>
       <p>Sampling multiple textures in shader</p>
     </td>
   </tr>
   <tr>
     <td>
-      <p>10_gui</p>
+      <p><b>10_gui</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/10_gui/view.jpg" alt="07_uniforms_constant_buffers" width="256" height="192"/>
       <p>Using IMGUI for GUI</p>
     </td>
     <td>
-      <p>11_pipelines</p>
+      <p>11_pipelines</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/11_pipelines/view.jpg" alt="08_texture_arrays" width="256" height="192"/>
       <p>Switching between pipelines</p>
     </td>
     <td>
-      <p>12_push_constants</p>
+      <p><b>12_push_constants</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/12_push_constants/view.jpg" alt="09_multi_textures_sampling" width="256" height="192"/>
       <p>Using push constants in shader</p>
     </td>
   </tr>
   <tr>
     <td>
-      <p>13_render_to_target</p>
+      <p><b>13_render_to_target</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/13_render_to_target/view.jpg" alt="13_render_to_target" width="256" height="192"/>
       <p>Drawing to render target</p>
     </td>
