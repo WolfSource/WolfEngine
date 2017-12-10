@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "scene.h"
 #include <tbb/parallel_for.h>
+#include <w_content_manager.h>
 
 using namespace std;
 using namespace wolf;
@@ -58,6 +59,17 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
 
 void scene::load()
 {
+    //using namespace wolf::content_pipeline;
+    //auto _scene = w_content_manager::load<w_cpipeline_scene>(L"F:\\github\\WolfSource\\Wolf.Engine\\content\\models\\wolf.wscene");
+    //if (_scene)
+    //{
+    //    //convert to wscene
+    //    //std::vector<w_cpipeline_scene> _scenes = { *_scene };
+    //    //w_content_manager::save_wolf_scenes_to_file(_scenes,
+    //    //    L"F:\\github\\WolfSource\\Wolf.Engine\\content\\models\\wolf.wscene");
+    //    //_scene.clear();
+    //}
+
 	defer(nullptr, [&](...)
 	{
 		w_game::load();
