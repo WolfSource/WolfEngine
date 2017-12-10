@@ -195,7 +195,7 @@ Programming, you can order it from <a href="http://www.packtpub.com/directx-11-1
       <p>Using IMGUI for GUI</p>
     </td>
     <td>
-      <p>11_pipelines</b></p>
+      <p><b>11_pipelines</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/11_pipelines/view.jpg" alt="08_texture_arrays" width="256" height="192"/>
       <p>Switching between pipelines</p>
     </td>
