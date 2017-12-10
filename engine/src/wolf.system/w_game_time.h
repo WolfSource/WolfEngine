@@ -219,7 +219,7 @@ namespace wolf
 					}
 					else
 					{
-						this->_seconds_counter %= this->_frequency.QuadPart;
+						this->_seconds_counter = (uint64_t)this->_seconds_counter % this->_frequency.QuadPart;
 					}
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
