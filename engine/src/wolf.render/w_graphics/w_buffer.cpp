@@ -173,7 +173,7 @@ namespace wolf
 
             void* map()
             {
-                const std::string _trace = this->_name + "map";
+                const std::string _trace_info = this->_name + "map";
 
                 //we can not access to VRAM, but we can copy our data to DRAM
                 if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return nullptr;
@@ -193,7 +193,7 @@ namespace wolf
                     this->_mapped = nullptr;
                     V(S_FALSE, "mapping data to to vertex buffer's memory " +
                         _gDevice->print_info(),
-                        _trace, 3, false);
+                        _trace_info, 3, false);
 
                     return nullptr;
                 }

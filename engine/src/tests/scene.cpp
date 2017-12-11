@@ -2,10 +2,12 @@
 #include "scene.h"
 #include <tbb/parallel_for.h>
 #include <w_content_manager.h>
+#include <w_media_core.h>    
 
 using namespace std;
 using namespace wolf;
 using namespace wolf::system;
+using namespace wolf::framework;
 using namespace wolf::graphics;
 
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
@@ -29,8 +31,6 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 	_config.debug_gpu = false;
 	_config.off_screen_mode = false;
 	w_game::set_graphics_device_manager_configs(_config);
-	//w_game::set_fixed_time_step(true);
-    //w_game::set_fixed_fps(60);
 
 	this->on_pixels_data_captured_signal += [&](_In_ const w_point_t pSize, _In_ const uint8_t* pPixels)->void
 	{
@@ -70,6 +70,14 @@ void scene::load()
     //    //_scene.clear();
     //}
 
+    w_media_core::register_all();
+    w_media_core _media_core;
+    auto _hr = _media_core.open_stream_server("rtsp://127.0.0.1:8554/live.sdp", "rtsp", AV_CODEC_ID_H264, 60, AV_PIX_FMT_YUV420P);
+    if (_hr == S_FALSE)
+    {
+        logger.error("error");
+    }
+
 	defer(nullptr, [&](...)
 	{
 		w_game::load();
@@ -107,7 +115,7 @@ void scene::load()
 	std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
 
 	//create render pass
-	auto _hr = this->_draw_render_pass.load(_gDevice,
+	_hr = this->_draw_render_pass.load(_gDevice,
 		_viewport,
 		_viewport_scissor,
 		_attachment_descriptions);

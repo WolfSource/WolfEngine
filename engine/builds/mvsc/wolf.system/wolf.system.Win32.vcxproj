@@ -290,6 +290,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager.h" />

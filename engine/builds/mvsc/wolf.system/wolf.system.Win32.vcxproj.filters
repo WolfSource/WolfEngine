@@ -773,6 +773,7 @@
       <Filter>gli\core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\stb_image_write.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

@@ -64,8 +64,21 @@ namespace wolf
 			//Make sure to call ffmpeg::ReleaseMF(); once before releasing any instance
             WMC_EXP virtual ~w_media_core();
 
-			//Open a media with ffmpeg
-            WMC_EXP HRESULT open_media(std::wstring pMediaPath, int64_t pSeekToFrame = 0, bool pEnableLogging = true);
+			//Open a media 
+            WMC_EXP HRESULT open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame = 0);
+
+            /*
+                Open a stream server
+                This function will wait for function to established connection, 
+                therfore it will block the current thread,
+                make sure do not call this function in main thread
+            */
+            WMC_EXP HRESULT open_stream_server(
+                _In_z_ const char* pURL,
+                _In_z_ const char* const pFormatName,
+                _In_ const AVCodecID& pCodecID,
+                _In_ const int64_t& pFrameRate,
+                _In_ const AVPixelFormat& pPixelFormat);
 
 			//Convert specific milliseconds to frame number
             WMC_EXP int64_t time_to_frame(int64_t pMilliSecond);
