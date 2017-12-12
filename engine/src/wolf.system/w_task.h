@@ -23,10 +23,7 @@
 #include <future>
 #include <functional>
 #include "w_system_export.h"
-
-#if defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 #include "w_std.h"
-#endif
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
@@ -40,10 +37,10 @@ namespace wolf
 		{
 		public:
 #if defined(__WIN32) || defined(__UWP)
-			WSYS_EXP static void execute_async_ppl(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack = nullptr);
+			WSYS_EXP static void execute_async_ppl(_In_ const std::function<HRESULT(void)>& pTaskWork, _In_ const std::function<void(HRESULT)>& pCallBack = nullptr);
 #endif
-			WSYS_EXP static void execute_async(_In_ const std::function<void(void)>& pTaskWork, _In_ const std::function<void(void)>& pCallBack = nullptr);
-			WSYS_EXP static void execute_deferred(_In_ const std::function<void(void)>& pTaskWork);
+			WSYS_EXP static void execute_async(_In_ const std::function<HRESULT(void)>& pTaskWork, _In_ const std::function<void(HRESULT)>& pCallBack = nullptr);
+			WSYS_EXP static void execute_deferred(_In_ const std::function<HRESULT(void)>& pTaskWork);
 			//wait only work for deferred task
 			WSYS_EXP static std::future_status wait_for(_In_ const long long pMilliSeconds);
 			//wait only work for deferred task
@@ -55,7 +52,7 @@ namespace wolf
 			WSYS_EXP static void get();
 
 		private:
-			static std::future<void> _deferred;
+			static std::future<HRESULT> _deferred;
 		};
 	}
 }
@@ -69,16 +66,16 @@ namespace tbb
 	class Task : public tbb::task
 	{
 	public:
-		WSYS_EXP Task(_In_ std::function<void(void)>& pTaskWork)
+		WSYS_EXP Task(_In_ std::function<HRESULT(void)>& pTaskWork)
 		{
 			this->_task_work = pTaskWork;
 		}
-		WSYS_EXP Task(_In_ std::function<void(void)>& pTaskWork, _In_ tbb::priority_t pPriority)
+		WSYS_EXP Task(_In_ std::function<HRESULT(void)>& pTaskWork, _In_ tbb::priority_t pPriority)
 		{
 			this->_task_work = pTaskWork;
 			this->set_group_priority(pPriority);
 		}
-		WSYS_EXP Task(_In_ std::function<void(void)>& pTaskWork, _In_ std::function<void(void)>& pCallBack, _In_ tbb::priority_t pPriority)
+		WSYS_EXP Task(_In_ std::function<HRESULT(void)>& pTaskWork, _In_ std::function<void(HRESULT)>& pCallBack, _In_ tbb::priority_t pPriority)
 		{
 			this->_task_work = pTaskWork;
 			this->_call_back = pCallBack;
@@ -87,22 +84,23 @@ namespace tbb
 		
 		WSYS_EXP tbb::task* execute()
 		{
+            HRESULT _hr;
 			if (_task_work)
 			{
-				_task_work();
+                _hr = _task_work();
 			}
 
 			if (_call_back)
 			{
-				_call_back();
+				_call_back(_hr);
 			}
 
 			return NULL;
 		}
 
 	private:
-		std::function<void(void)> _task_work;
-		std::function<void(void)> _call_back;
+		std::function<HRESULT(void)> _task_work;
+		std::function<void(HRESULT)> _call_back;
 	};
 }
 

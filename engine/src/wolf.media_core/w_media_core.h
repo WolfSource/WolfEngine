@@ -18,7 +18,9 @@
 #include <stdint.h>
 #include <memory>
 #include <array>
+#include <w_signal.h>
 
+#pragma warning(disable:4996)//for deprecated ffmpeg objects
 extern "C"
 {
     #include <libavcodec\avcodec.h>
@@ -54,10 +56,27 @@ namespace wolf
 		class w_media_core : public system::w_object
 		{
 		public:
+
+            struct w_stream_connection_info
+            {
+                const char*         url;
+                AVFormatContext*    context;
+                AVStream*           stream;
+            };
+            struct w_stream_frame_info
+            {
+                AVPicture*      picture = nullptr;
+                uint32_t        width = 0;
+                uint32_t        height = 0;
+                long long       index = 0;
+                long long       stream_duration = 0.0;
+                long long       frame_duration = 0.0;
+            };
+
 			//Must be call once before using class
             WMC_EXP static void register_all();
-			//Must be call once after releasing this class
-            WMC_EXP static void release_all();
+			//Must be call once for shuting statics objects down 
+            WMC_EXP static void shut_down();
             
 			//Make sure to call ffmpeg::InitializeMF(); once before creating instance
             WMC_EXP w_media_core();
@@ -68,17 +87,31 @@ namespace wolf
             WMC_EXP HRESULT open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame = 0);
 
             /*
-                Open a stream server
-                This function will wait for function to established connection, 
-                therfore it will block the current thread,
-                make sure do not call this function in main thread
+                Open a stream server in async mode
+                This function will wait for client to make a connection
+                For testing, use ffplay, e.g. ./ffplay -rtsp_flags listen -i rtsp://127.0.0.1:8554/live.sdp
+                @param pURL, the connection url
+                @param pFormatName, format of streaming, e.g. "rtsp", "udp"
+                @param pCodecID, codec of streaming, e.g. "AV_CODEC_ID_H264"
+                @param pFrameRate, streaming frame rate, e.g. "25", "60"
+                @param pPixelFormat, streaming pixel format, e.g. "AV_PIX_FMT_YUV420P"
+                @param pWidth, frame width
+                @param pHeight, frame height
+                @param pOnConnectionEstablished, rised when connection esablished. The argument is w_stream_connection_info  
+                @param pOnFillingVideoFrameBuffer, rised for each filling video frame buffer. The argument is w_stream_frame_info
+                @param pOnConnectionLost, rised when connection lost. The argument is w_stream_connection_info
             */
-            WMC_EXP HRESULT open_stream_server(
+            WMC_EXP void open_stream_server_async(
                 _In_z_ const char* pURL,
-                _In_z_ const char* const pFormatName,
+                _In_z_ const char* pFormatName,
                 _In_ const AVCodecID& pCodecID,
                 _In_ const int64_t& pFrameRate,
-                _In_ const AVPixelFormat& pPixelFormat);
+                _In_ const AVPixelFormat& pPixelFormat,
+                _In_ const uint32_t& pWidth,
+                _In_ const uint32_t& pHeight,
+                _In_ system::w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
+                _In_ system::w_signal<void(const w_stream_frame_info&)>& pOnUpdatingStreamVideoFrame,
+                _In_ system::w_signal<void(const char*)>& pOnConnectionLost);
 
 			//Convert specific milliseconds to frame number
             WMC_EXP int64_t time_to_frame(int64_t pMilliSecond);
@@ -114,8 +147,11 @@ namespace wolf
 			//Read all data in to the memory, make sure the capacity size of video and audio chuck is equal 
             WMC_EXP HRESULT buffer_to_memory(wolf::system::w_memory& pVideoMemory, wolf::system::w_memory& pAudioMemory);
 
-			//Release resources
+			//release all resources
             WMC_EXP ULONG release();
+
+            //release media resources
+            WMC_EXP ULONG release_media();
 
 #pragma region Getters
 

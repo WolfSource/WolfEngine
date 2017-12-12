@@ -10,6 +10,10 @@ using namespace wolf::system;
 using namespace wolf::framework;
 using namespace wolf::graphics;
 
+static float _time = 0;
+static std::once_flag _once;
+static SwsContext* ctx = nullptr;
+static auto _frames = new uint8_t[1280 * 720 * 4];
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
 	w_game(pRunningDirectory, pAppName)
 {
@@ -41,6 +45,8 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
         _path = "/Users/pooyaeimandar/Documents/a.bmp";
 #endif
 		//w_texture::save_bmp_to_file(_path.c_str(), pSize.x, pSize.y, pPixels, 4);
+
+        std::memcpy(_frames, pPixels, 1280 * 720 * 4 * sizeof(uint8_t));
 	};
 }
 
@@ -57,6 +63,11 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
 	w_game::initialize(pOutputWindowsInfo);
 }
 
+w_signal<void(const w_media_core::w_stream_connection_info&)> _connection_established;
+w_signal<void(const w_media_core::w_stream_frame_info&)> _filling_stream_frame_buffer;
+w_signal<void(const char*)> _connection_lost;
+static w_media_core _media_core;
+
 void scene::load()
 {
     //using namespace wolf::content_pipeline;
@@ -70,13 +81,66 @@ void scene::load()
     //    //_scene.clear();
     //}
 
-    w_media_core::register_all();
-    w_media_core _media_core;
-    auto _hr = _media_core.open_stream_server("rtsp://127.0.0.1:8554/live.sdp", "rtsp", AV_CODEC_ID_H264, 60, AV_PIX_FMT_YUV420P);
-    if (_hr == S_FALSE)
+    _connection_established += [](const w_media_core::w_stream_connection_info&)->void
     {
-        logger.error("error");
-    }
+        logger.write("Connection Established");
+    };
+    _filling_stream_frame_buffer += [](const w_media_core::w_stream_frame_info& pFrameInfo)->void
+    {
+        if (_frames)
+        {
+            const uint32_t _w = 1280;
+            const uint32_t _h = 720;
+
+            std::call_once(_once, [&]()
+            {
+                ctx = sws_getContext(
+                    _w, _h,
+                    AV_PIX_FMT_RGBA, _w, _h,
+                    AV_PIX_FMT_YUV420P, 0, 0, 0, 0);
+            });
+
+            int _line_size[1] = { 4 * _w }; // RGBA stride
+            sws_scale(ctx, &_frames, _line_size, 0, _h, pFrameInfo.picture->data, pFrameInfo.picture->linesize);
+        }
+
+        //int x, y;
+
+        ////Y
+        //for (y = 0; y < pFrameInfo.height; y++)
+        //{
+        //    for (x = 0; x < pFrameInfo.width; x++)
+        //    {
+        //        pFrameInfo.picture->data[0][y * pFrameInfo.picture->linesize[0] + x] = x + y + pFrameInfo.index * 3;
+        //    }
+        //}
+        ////Cb and Cr
+        //for (y = 0; y < pFrameInfo.height / 2; y++)
+        //{
+        //    for (x = 0; x < pFrameInfo.width / 2; x++)
+        //    {
+        //        pFrameInfo.picture->data[1][y * pFrameInfo.picture->linesize[1] + x] = 128 + y + pFrameInfo.index * 2;
+        //        pFrameInfo.picture->data[2][y * pFrameInfo.picture->linesize[2] + x] = 64 + x + pFrameInfo.index * 5;
+        //    }
+        //}
+    };
+    _connection_lost += [](const char* pURL)->void
+    {
+        logger.write("Connection Lost");
+    };
+
+    w_media_core::register_all();
+    _media_core.open_stream_server_async(
+        "rtsp://127.0.0.1:8554/live.sdp", 
+        "rtsp", 
+        AV_CODEC_ID_H264, 
+        60,
+        AV_PIX_FMT_YUV420P,//AV_PIX_FMT_YUYV422
+        1280,
+        720,
+        _connection_established,
+        _filling_stream_frame_buffer,
+        _connection_lost);
 
 	defer(nullptr, [&](...)
 	{
@@ -115,7 +179,7 @@ void scene::load()
 	std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
 
 	//create render pass
-	_hr = this->_draw_render_pass.load(_gDevice,
+	auto _hr = this->_draw_render_pass.load(_gDevice,
 		_viewport,
 		_viewport_scissor,
 		_attachment_descriptions);
@@ -165,9 +229,6 @@ void scene::load()
 		V(S_FALSE, "creating draw command buffers", _trace_info, 3, true);
 	}
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 #ifdef WIN32
 	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/02_shader/src/content/";
 #elif defined(__APPLE__)
@@ -233,15 +294,16 @@ void scene::load()
 		release();
 		V(S_FALSE, "creating pipeline", _trace_info, 3, true);
 	}
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	build_draw_command_buffers(_gDevice);
 }
 
 HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
+    auto _clear_color = w_color();
+    _clear_color.r = static_cast<uint8_t>((float)(std::sin(_time)) * 255.0f);
+    _clear_color.g = static_cast<uint8_t>((float)(std::cos(_time)) * 255.0f);
+    _clear_color.b = 155;
+    _clear_color.a = 255;
+
 	auto _size = this->_draw_command_buffers.get_commands_size();
 	for (uint32_t i = 0; i < _size; ++i)
 	{
@@ -253,7 +315,7 @@ HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_
 			auto _cmd = this->_draw_command_buffers.get_command_at(i);
 			this->_draw_render_pass.begin(_cmd,
 				_frame_buffer_handle,
-				w_color::CORNFLOWER_BLUE(),
+                _clear_color,
 				1.0f,
 				0);
 			{
@@ -278,9 +340,9 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 	const std::string _trace_info = this->name + "::update";
     
-    logger.write(std::to_string(pGameTime.get_frames_per_second()));
-    logger.write(std::to_string(pGameTime.get_elapsed_seconds()));
-    logger.write(std::to_string(pGameTime.get_total_seconds()));
+    //logger.write(std::to_string(pGameTime.get_frames_per_second()));
+    //logger.write(std::to_string(pGameTime.get_elapsed_seconds()));
+    //logger.write(std::to_string(pGameTime.get_total_seconds()));
 }
 
 HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
@@ -292,6 +354,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _gDevice = this->graphics_devices[0];
 	auto _output_window = &(_gDevice->output_presentation_windows[0]);
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
+
+    _time = pGameTime.get_total_seconds();
+    build_draw_command_buffers(_gDevice);
 
 	//add wait semaphores
 	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
@@ -335,6 +400,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	}
 	//logger.write(std::to_string(pGameTime.get_frames_per_second()));
 
+    _wait_semaphors.clear();
+
 	return _hr;
 }
 
@@ -359,14 +426,11 @@ ULONG scene::release()
 	this->_draw_render_pass.release();
 	this->_draw_frame_buffers.release();
 
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	this->_shader.release();
+    this->_shader.release();
 	this->_pipeline.release();
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
+    //_media_core.stop_streaming();
+    w_media_core::shut_down();
 
 	return w_game::release();
 }

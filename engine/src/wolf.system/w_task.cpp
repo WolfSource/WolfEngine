@@ -3,32 +3,36 @@
 
 using namespace wolf::system;
 
-std::future<void> w_task::_deferred;
+std::future<HRESULT> w_task::_deferred;
 
 #if defined(__WIN32) || defined(__UWP)
 
-void w_task::execute_async_ppl(_In_ const std::function<void(void)>& pTaskWork,
-    _In_ const std::function<void(void)>& pCallBack)
+void w_task::execute_async_ppl(_In_ const std::function<HRESULT(void)>& pTaskWork,
+    _In_ const std::function<void(HRESULT)>& pCallBack)
 {
-	concurrency::create_task(pTaskWork).then(pCallBack);
+    concurrency::create_task(pTaskWork).then([&](HRESULT pHR)
+    {
+        pCallBack(pHR);
+    });
 }
 
 #endif
 
-void w_task::execute_async(_In_ const std::function<void(void)>& pTaskWork, 
-    _In_ const std::function<void(void)>& pCallBack)
+void w_task::execute_async(_In_ const std::function<HRESULT(void)>& pTaskWork, 
+    _In_ const std::function<void(HRESULT)>& pCallBack)
 {
 	_deferred = std::async(std::launch::async, [pTaskWork, pCallBack]()
 	{
-		pTaskWork();
-		if (pCallBack)
-		{
-			pCallBack();
-		}
+		auto _hr = pTaskWork();
+        if (pCallBack)
+        {
+            pCallBack(_hr);
+        }
+        return _hr;
 	});
 }
 
-void w_task::execute_deferred(_In_ const std::function<void(void)>& pTaskWork)
+void w_task::execute_deferred(_In_ const std::function<HRESULT(void)>& pTaskWork)
 {
 	_deferred = std::async(std::launch::deferred, pTaskWork);
 }

@@ -4,6 +4,7 @@
 #include <wrl/client.h>
 #include <iomanip>      // For std::hex
 #include <codecvt>      // For Unicode conversions
+#include <w_task.h>
 
 using namespace wolf;
 using namespace wolf::system;
@@ -44,13 +45,13 @@ namespace wolf
             w_media_core_pimp() :
                 _name("w_media_core"),
                 _is_media_open(false),
-                _is_released(false),
                 _av_format_ctx(nullptr),
                 _av_packet(nullptr),
                 _audio_convert(nullptr),
                 _stream(nullptr),
                 _stream_output_ctx(nullptr),
-                _stream_frame(nullptr)
+                _stream_frame(nullptr),
+                _frame_max_delay_in_ms(1000)
             {
                 this->_name = "w_ffmpeg";
 
@@ -66,19 +67,12 @@ namespace wolf
 #endif
             }
 
-            ~w_media_core_pimp()
-            {
-                release();
-            }
-
             HRESULT open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame)
             {
                 if (pMediaPath.empty()) return S_FALSE;
 
-                release();
-
-                this->_is_released = false;
-
+                release_media();
+                
                 std::memset(&this->_video_codec, 0, sizeof(w_codec));
                 std::memset(&this->_audio_codec, 0, sizeof(w_codec));
 
@@ -91,7 +85,7 @@ namespace wolf
 
                 this->_is_media_open = false;
                 {
-                    this->_full_path = wolf::system::convert::to_utf8(pMediaPath).c_str();
+                    this->_media_full_path = wolf::system::convert::to_utf8(pMediaPath).c_str();
 
                     //Output the message
                     std::wstring msg = L"Media from following path \"" + pMediaPath + L"\" is going to decode";
@@ -104,11 +98,11 @@ namespace wolf
 
 
                     //Open file
-                    if (avformat_open_input(&_av_format_ctx, this->_full_path.c_str(), NULL, NULL) != 0)
+                    if (avformat_open_input(&_av_format_ctx, this->_media_full_path.c_str(), NULL, NULL) != 0)
                     {
                         hr = S_FALSE;
                         V(hr, L"openning file", this->_name);
-                        release();
+                        release_media();
                         return hr;
                     }
 
@@ -117,7 +111,7 @@ namespace wolf
                     {
                         hr = S_FALSE;
                         V(hr, L"finding file stream information", this->_name);
-                        release();
+                        release_media();
                         return hr;
                     }
 
@@ -150,8 +144,8 @@ namespace wolf
 
                     if (!hasVideoStream && !hasAudioStream)
                     {
-                        logger.user("File " + this->_full_path + " did not load");
-                        release();
+                        logger.user("File " + this->_media_full_path + " did not load");
+                        release_media();
                         return S_FALSE;
                     }
 
@@ -191,7 +185,7 @@ namespace wolf
                     if (FAILED(hr) || objectType == MF_OBJECT_TYPE::MF_OBJECT_INVALID || pSource == nullptr)
                     {
                         logger.error(L"Invalid object type, creating object from source for source resolver");
-                        release();
+                        release_media();
                         return S_FALSE;
                     }
 
@@ -256,7 +250,7 @@ namespace wolf
                         {
                             hr = S_FALSE;
                             V(hr, L"unsupported codec for video", this->_name);
-                            release();
+                            release_media();
                             return hr;
                         }
 
@@ -265,7 +259,7 @@ namespace wolf
                         {
                             hr = S_FALSE;
                             V(hr, L"could not open video codec", this->_name);
-                            release();
+                            release_media();
                             return hr;
                         }
 
@@ -279,12 +273,12 @@ namespace wolf
                         auto height = get_video_frame_height();
 
                         //Create destination avFrame
-                        this->_av_Frame.reset(av_frame_alloc());
-                        av_frame_unref(this->_av_Frame.get()); // avcodec_get_frame_defaults deprecated function
+                        this->_av_frame.reset(av_frame_alloc());
+                        av_frame_unref(this->_av_frame.get()); // avcodec_get_frame_defaults deprecated function
 
                                                                //This time we need BGRA for directX
                         avpicture_alloc(
-                            (AVPicture*) this->_av_Frame.get(),
+                            (AVPicture*) this->_av_frame.get(),
                             AV_PIX_FMT_BGRA,
                             width,
                             height);
@@ -308,7 +302,7 @@ namespace wolf
                         {
                             hr = S_FALSE;
                             V(hr, L"unsupported codec for audio", this->_name);
-                            release();
+                            release_media();
                             return hr;
                         }
 
@@ -316,7 +310,7 @@ namespace wolf
                         {
                             hr = S_FALSE;
                             V(hr, L"could not open audio codec", this->_name);
-                            release();
+                            release_media();
                             return hr;
                         }
                         _audio_codec.avFrame = av_frame_alloc();//avcodec_alloc_frame deprecated function
@@ -366,119 +360,222 @@ namespace wolf
                 return S_OK;
             }
 
-            HRESULT open_stream_server(
+            void open_stream_server_async(
                 _In_z_ const char* pURL,
-                _In_z_ const char* const pFormatName,
+                _In_z_ const char* pFormatName,
                 _In_ const AVCodecID& pCodecID,
                 _In_ const int64_t& pFrameRate,
-                _In_ const AVPixelFormat& pPixelFormat)
+                _In_ const AVPixelFormat& pPixelFormat,
+                _In_ const uint32_t& pWidth,
+                _In_ const uint32_t& pHeight,
+                _In_ system::w_signal<void(const w_media_core::w_stream_connection_info&)>& pOnConnectionEstablished,
+                _In_ system::w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
+                _In_ system::w_signal<void(const char*)>& pOnConnectionLost)
             {
-                const std::string _trace_info = this->_name + "open_stream_server";
+#ifdef __WIN32
+                w_task::execute_async_ppl(
+#else
+                w_task::execute_async(
+#endif
+                    [this, 
+                    pURL, 
+                    pFormatName, 
+                    pCodecID, 
+                    pFrameRate, 
+                    pPixelFormat,
+                    pWidth,
+                    pHeight,
+                    pOnConnectionEstablished,
+                    pOnFillingVideoFrameBuffer,
+                    pOnConnectionLost]() -> HRESULT
+                {
+                    const std::string _trace_info = this->_name + "open_stream_server";
 
-                //create output context
-                avformat_alloc_output_context2(&this->_stream_output_ctx, NULL, pFormatName, pURL);
-                if (!this->_stream_output_ctx)
-                {
-                    V(S_FALSE, L"allocating output context for streaming", _trace_info, 3);
-                    return S_FALSE;
-                }
-                if (!this->_stream_output_ctx->oformat)
-                {
-                    V(S_FALSE, L"creating output streaming format : " + system::convert::string_to_wstring(pFormatName),
-                        _trace_info, 3);
-                    //_release_stream();
-                    return S_FALSE;
-                }
-
-                //find the encoder
-                auto _stream_video_codec = avcodec_find_encoder(pCodecID);
-                if (!_stream_video_codec)
-                {
-                    V(S_FALSE, L"finding encoder for codec id: " +
-                        system::convert::string_to_wstring(avcodec_get_name(pCodecID)),
-                        _trace_info, 3);
-                    //_release_stream();
-                    return S_FALSE;
-                }
-                else
-                {
-                    this->_stream = avformat_new_stream(this->_stream_output_ctx, _stream_video_codec);
-                    if (!this->_stream)
+                    //create output context
+                    avformat_alloc_output_context2(&this->_stream_output_ctx, NULL, pFormatName, pURL);
+                    if (!this->_stream_output_ctx)
                     {
-                        V(S_FALSE, L"allocating stream", _trace_info, 3);
-                        //_release_stream();
+                        V(S_FALSE, L"allocating output context for streaming", _trace_info, 3);
+                        return S_FALSE;
+                    }
+                    if (!this->_stream_output_ctx->oformat)
+                    {
+                        V(S_FALSE, L"creating output streaming format : " + system::convert::string_to_wstring(pFormatName),
+                            _trace_info, 3);
+                        _release_stream_server();
+                        return S_FALSE;
+                    }
+
+                    //find the encoder
+                    auto _stream_video_codec = avcodec_find_encoder(pCodecID);
+                    if (!_stream_video_codec)
+                    {
+                        V(S_FALSE, L"finding encoder for codec id: " +
+                            system::convert::string_to_wstring(avcodec_get_name(pCodecID)),
+                            _trace_info, 3);
+                        _release_stream_server();
                         return S_FALSE;
                     }
                     else
                     {
-                        this->_stream->id = this->_stream_output_ctx->nb_streams - 1;
-                        this->_stream->time_base.den = this->_stream->pts.den = 90000;
-                        this->_stream->time_base.num = this->_stream->pts.num = 1;
-
-                        auto _bit_rate = 5000 * 1000; //5000 kbps * 1000
-
-                        this->_stream->codec->codec_id = pCodecID;
-                        this->_stream->codec->bit_rate = _bit_rate;
-                        this->_stream->codec->bit_rate_tolerance = _bit_rate;
-                        this->_stream->codec->rc_max_rate = _bit_rate;
-                        this->_stream->codec->width = 1280;
-                        this->_stream->codec->height = 720;
-                        this->_stream->codec->time_base.den = pFrameRate;
-                        this->_stream->codec->time_base.num = 1;
-                        this->_stream->codec->gop_size = 12; //emit one intra frame every twelve frames at most
-                        this->_stream->codec->pix_fmt = pPixelFormat;
-                    }
-                }
-
-                //now open video stream
-                AVCodecContext* _codec = this->_stream->codec;
-                //open the codec
-                if (avcodec_open2(_codec, _stream_video_codec, NULL))
-                {
-                    V(S_FALSE, L"opening video codec", _trace_info, 3);
-                    //_release_stream();
-                    return S_FALSE;
-                }
-                else
-                {
-                    //allocate and init a re-usable frame */
-                    this->_stream_frame = av_frame_alloc();
-                    if (!this->_stream_frame)
-                    {
-                        V(S_FALSE, L"allocating video stream frame", _trace_info, 3);
-                        //_release_stream();
-                        return S_FALSE;
-                    }
-                    else
-                    {
-                        this->_stream_frame->format = _codec->pix_fmt;
-                        this->_stream_frame->width = _codec->width;
-                        this->_stream_frame->height = _codec->height;
-
-                        //Allocate the encoded raw picture.
-                        if (avpicture_alloc(&this->_stream_dst_picture, _codec->pix_fmt, _codec->width, _codec->height) < 0)
+                        this->_stream = avformat_new_stream(this->_stream_output_ctx, _stream_video_codec);
+                        if (!this->_stream)
                         {
-                            V(S_FALSE, L"allocating video stream picture", _trace_info, 3);
-                            //_release_stream();
+                            V(S_FALSE, L"allocating stream", _trace_info, 3);
+                            _release_stream_server();
                             return S_FALSE;
                         }
                         else
                         {
-                            //copy data and linesize picture pointers to frame
-                            *((AVPicture*)this->_stream_frame) = this->_stream_dst_picture;
+                            this->_stream->id = this->_stream_output_ctx->nb_streams - 1;
+                            this->_stream->time_base.den = this->_stream->pts.den = 90000;
+                            this->_stream->time_base.num = this->_stream->pts.num = 1;
+
+                            auto _bit_rate = 5000 * 1000; //5000 kbps * 1000
+
+                            this->_stream->codec->codec_id = pCodecID;
+                            this->_stream->codec->bit_rate = _bit_rate;
+                            this->_stream->codec->bit_rate_tolerance = _bit_rate;
+                            this->_stream->codec->rc_max_rate = _bit_rate;
+                            this->_stream->codec->width = static_cast<int>(pWidth);
+                            this->_stream->codec->height = static_cast<int>(pHeight);
+                            this->_stream->codec->time_base.den = pFrameRate;
+                            this->_stream->codec->time_base.num = 1;
+                            this->_stream->codec->gop_size = 12; //emit one intra frame every twelve frames at most
+                            this->_stream->codec->pix_fmt = pPixelFormat;
                         }
                     }
-                }
 
-                if (avformat_write_header(this->_stream_output_ctx, NULL) != 0)
-                {
-                    V(S_FALSE, L"connecting to server " + system::convert::string_to_wstring(pURL), _trace_info, 3);
-                    //_release_stream();
-                    return S_FALSE;
-                }
+                    AVPicture  _stream_dst_picture = {};
+                    //now open video stream
+                    //open the codec
+                    if (avcodec_open2(this->_stream->codec, _stream_video_codec, NULL))
+                    {
+                        V(S_FALSE, L"opening video codec", _trace_info, 3);
+                        _release_stream_server();
+                        return S_FALSE;
+                    }
+                    else
+                    {
+                        //allocate and init a re-usable frame */
+                        this->_stream_frame = av_frame_alloc();
+                        if (!this->_stream_frame)
+                        {
+                            V(S_FALSE, L"allocating video stream frame", _trace_info, 3);
+                            _release_stream_server();
+                            return S_FALSE;
+                        }
+                        else
+                        {
+                            auto _width = this->_stream->codec->width;
+                            auto _height = this->_stream->codec->height;
 
-                //rise OnStreamingStarted event
-                return S_OK;
+                            this->_stream_frame->format = this->_stream->codec->pix_fmt;
+                            this->_stream_frame->width = _width;
+                            this->_stream_frame->height = _height;
+
+                            //Allocate the encoded raw picture.
+                            if (avpicture_alloc(&_stream_dst_picture, this->_stream->codec->pix_fmt, _width, _height) < 0)
+                            {
+                                V(S_FALSE, L"allocating video stream picture", _trace_info, 3);
+                                _release_stream_server();
+                                return S_FALSE;
+                            }
+                            else
+                            {
+                                //copy data and linesize picture pointers to frame
+                                *((AVPicture*)this->_stream_frame) = _stream_dst_picture;
+                            }
+                        }
+                    }
+
+                    if (avformat_write_header(this->_stream_output_ctx, NULL) != 0)
+                    {
+                        V(S_FALSE, L"connecting to server " + system::convert::string_to_wstring(pURL), _trace_info, 3);
+                        _release_stream_server();
+                        return S_FALSE;
+                    }
+
+                    //on connection established
+                    w_media_core::w_stream_connection_info _con_info;
+                    _con_info.url = pURL;
+                    _con_info.context = this->_stream_output_ctx;
+                    _con_info.stream = this->_stream;
+                    
+                    w_media_core::w_stream_frame_info _frame_info = {};
+                    _frame_info.picture = &_stream_dst_picture;
+                    _frame_info.width = static_cast<uint32_t>(this->_stream->codec->width);
+                    _frame_info.height = static_cast<uint32_t>(this->_stream->codec->height);
+
+                    int _got_packet = 0;
+                    AVPacket _packet = { 0 };
+                    pOnConnectionEstablished.emit(_con_info);
+                    {
+                        auto _start_send_time = std::chrono::system_clock::now();
+                        while (this->_stream)
+                        {
+                            auto _start_frame_time = std::chrono::system_clock::now();
+
+#pragma region Preparing Packets
+
+                            _frame_info.index++;
+
+                            pOnFillingVideoFrameBuffer.emit(_frame_info);
+
+                            //init packet
+                            av_init_packet(&_packet);
+
+                            //encode the image
+                            this->_stream_frame->pts = _frame_info.index;
+                            if (avcodec_encode_video2(this->_stream->codec, &_packet, this->_stream_frame, &_got_packet) < 0)
+                            {
+                                V(S_FALSE, "encoding video frame", _trace_info, 3);
+                            }
+                            else
+                            {
+                                if (_got_packet)
+                                {
+                                    _packet.stream_index = this->_stream->index;
+                                    _packet.pts = av_rescale_q_rnd(
+                                        _packet.pts,
+                                        this->_stream->codec->time_base,
+                                        this->_stream->time_base,
+                                        AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+                                    if (av_write_frame(this->_stream_output_ctx, &_packet) < 0)
+                                    {
+                                        V(S_FALSE, "while writing video frame", _trace_info, 3);
+                                    }
+                                }
+                            }
+#pragma endregion
+
+                            auto _now = std::chrono::system_clock::now();
+                            _frame_info.stream_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_send_time).count();
+                            _frame_info.frame_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_frame_time).count();
+                            if (_frame_info.frame_duration > _frame_max_delay_in_ms)
+                            {
+                                logger.write(std::to_string(_frame_info.frame_duration));
+                                V(S_FALSE, "streaming delay is greater than max frame delay", _trace_info, 3);
+                                break;
+                            }
+                            else
+                            {
+                                std::this_thread::sleep_for(std::chrono::milliseconds((long)(1000.0 / (double)pFrameRate - (double)_frame_info.frame_duration)));
+                            }
+
+                            //free packet
+                            av_free_packet(&_packet);
+                        }
+                    }
+                    //free dst picture
+                    av_free(_stream_dst_picture.data[0]);
+                    //release stream server resources
+                    _release_stream_server();
+                    //on connection lost
+                    pOnConnectionLost.emit(pURL);
+
+                    return S_OK;
+                });
             }
 
             int64_t time_to_frame(_In_ int64_t pMilliSecond)
@@ -689,11 +786,11 @@ namespace wolf
                                 this->_video_codec.avFrame->linesize,
                                 0,
                                 height,
-                                this->_av_Frame->data,
-                                this->_av_Frame->linesize);
+                                this->_av_frame->data,
+                                this->_av_frame->linesize);
 
                             //copy data to the destination
-                            auto _frame = (uint8_t*)(this->_av_Frame->data[0]);
+                            auto _frame = (uint8_t*)(this->_av_frame->data[0]);
                             if (_frame)
                             {
                                 auto _size = width * height;
@@ -911,15 +1008,15 @@ namespace wolf
                             this->_video_codec.avFrame->linesize,
                             0,
                             height,
-                            this->_av_Frame->data,
-                            this->_av_Frame->linesize);
+                            this->_av_frame->data,
+                            this->_av_frame->linesize);
 
                         const size_t _rowPitch = width * 4; // 4 bytes of RGBA
                         const size_t _rowCount = height;
                         const size_t _slicePitch = _rowPitch * _rowCount;
 
                         //copy data to the destination
-                        auto _frame = (uint8_t*)(this->_av_Frame->data[0]);
+                        auto _frame = (uint8_t*)(this->_av_frame->data[0]);
                         if (_frame)
                         {
                             auto _size = width * height;
@@ -1034,18 +1131,10 @@ namespace wolf
                 return hr;
             }
 
-            ULONG release()
+            ULONG release_media()
             {
-                if (this->_is_released) return 1;
+                this->_media_full_path.clear();
 
-                this->_full_path.clear();
-
-                this->_audio_frame_volume_db = 0;
-
-                //if (this->videoCodec.avCodec)
-                //{
-                //av_free(this->videoCodec.avCodec);
-                //}
                 if (this->_video_codec.avCodecCtx)
                 {
                     avcodec_close(_video_codec.avCodecCtx);
@@ -1055,11 +1144,7 @@ namespace wolf
                     av_free(this->_video_codec.avFrame);
                 }
 
-
-                //if (this->audioCodec.avCodec)
-                //{
-                //av_free(this->audioCodec.avCodec);
-                //}
+                this->_audio_frame_volume_db = 0;
                 if (this->_audio_codec.avCodecCtx)
                 {
                     avcodec_close(_audio_codec.avCodecCtx);
@@ -1068,15 +1153,13 @@ namespace wolf
                 {
                     av_free(this->_audio_codec.avFrame);
                 }
-
-                //avcodec_free(&frame);
-
-                //Release directX frame
-                if (this->_av_Frame)
+                
+                //release av frame
+                if (this->_av_frame)
                 {
-                    auto getdstFrame = this->_av_Frame.get();
+                    auto getdstFrame = this->_av_frame.get();
                     av_frame_free(&getdstFrame);
-                    this->_av_Frame.release();
+                    this->_av_frame.release();
                 }
 
                 if (this->_down_sample_avFrame)
@@ -1086,13 +1169,13 @@ namespace wolf
                     this->_down_sample_avFrame.release();
                 }
 
-                //Free the packet
+                //free the packet
                 if (this->_av_packet)
                 {
                     av_free_packet(this->_av_packet);
                 }
 
-                //Free the video format context
+                //free the video format context
                 if (this->_av_format_ctx)
                 {
                     avformat_close_input(&this->_av_format_ctx);
@@ -1104,7 +1187,6 @@ namespace wolf
                     swr_free(&this->_audio_convert);
                 }
 
-                this->_is_released = true;
                 return 0;
             }
 
@@ -1117,7 +1199,7 @@ namespace wolf
 
             const char* get_media_path() const
             {
-                return this->_full_path.c_str();
+                return this->_media_full_path.c_str();
             }
 
             w_time_span get_duration_time() const
@@ -1243,9 +1325,28 @@ namespace wolf
             }
 
 #pragma endregion
-
-
+            
         private:
+
+            ULONG _release_stream_server()
+            {
+                //release objects related to stream
+                if (this->_stream)
+                {
+                    avcodec_close(this->_stream->codec);
+                }
+                if (this->_stream_frame)
+                {
+                    av_frame_free(&this->_stream_frame);
+                }
+                if (this->_stream_output_ctx)
+                {
+                    avformat_free_context(this->_stream_output_ctx);
+                }
+
+                return 0;
+            }
+
             //Copy audio frame to the buffer
             HRESULT _copy_audio_frame_to(uint8_t* pBuffer, int& pBufferSize)
             {
@@ -1327,9 +1428,8 @@ namespace wolf
             }
 
             std::string                                 _name;
-            bool										_is_released;
 
-            std::unique_ptr<AVFrame>					_av_Frame;
+            std::unique_ptr<AVFrame>					_av_frame;
             std::unique_ptr<AVFrame>					_down_sample_avFrame;
 
             bool										_is_media_open;
@@ -1341,7 +1441,7 @@ namespace wolf
             int											_audio_out_channels_layout;
             int											_video_stream_index;
             int											_audio_stream_index;
-            std::string									_full_path;
+            std::string									_media_full_path;
 
             wolf::system::w_time_span					_duration_time;
             wolf::system::w_time_span					_elapsed_time;
@@ -1358,7 +1458,7 @@ namespace wolf
             AVStream*                                   _stream;
             AVFormatContext*                            _stream_output_ctx;
             AVFrame*                                    _stream_frame;
-            AVPicture                                   _stream_dst_picture;
+            double                                      _frame_max_delay_in_ms;
         };
     }
 }
@@ -1390,14 +1490,32 @@ HRESULT w_media_core::open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pS
     return this->_pimp ? this->_pimp->open_media(pMediaPath, pSeekToFrame) : S_FALSE;
 }
 
-HRESULT w_media_core::open_stream_server(
-        _In_z_ const char* pURL,
-        _In_z_ const char* const pFormatName,
-        _In_ const AVCodecID& pCodecID,
-        _In_ const int64_t& pFrameRate,
-        _In_ const AVPixelFormat& pPixelFormat)
+void w_media_core::open_stream_server_async(
+    _In_z_ const char* pURL,
+    _In_z_ const char* pFormatName,
+    _In_ const AVCodecID& pCodecID,
+    _In_ const int64_t& pFrameRate,
+    _In_ const AVPixelFormat& pPixelFormat,
+    _In_ const uint32_t& pWidth,
+    _In_ const uint32_t& pHeight,
+    _In_ system::w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
+    _In_ system::w_signal<void(const w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
+    _In_ system::w_signal<void(const char*)>& pOnConnectionLost)
 {
-    return this->_pimp ? this->_pimp->open_stream_server(pURL, pFormatName, pCodecID, pFrameRate, pPixelFormat) : S_FALSE;
+    if (this->_pimp)
+    {
+        this->_pimp->open_stream_server_async(
+            pURL,
+            pFormatName,
+            pCodecID,
+            pFrameRate,
+            pPixelFormat,
+            pWidth,
+            pHeight,
+            pOnConnectionEstablished,
+            pOnFillingVideoFrameBuffer,
+            pOnConnectionLost);
+    }
 }
 
 int64_t w_media_core::time_to_frame(int64_t pMilliSecond)
@@ -1433,11 +1551,16 @@ HRESULT w_media_core::buffer_to_memory(w_memory& pVideoMemory, w_memory& pAudioM
 ULONG w_media_core::release()
 {
     if (this->get_is_released()) return 1;
-    SAFE_RELEASE(this->_pimp);
+    this->_pimp->release_media();
     return _super::release();
 }
 
-void w_media_core::release_all()
+ULONG w_media_core::release_media()
+{
+    return this->_pimp ? this->_pimp->release_media() : 1;
+}
+
+void w_media_core::shut_down()
 {
 	std::call_once(onceRelease, []()
 	{
