@@ -46,11 +46,13 @@ namespace wolf
             W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t& pWidth = 32,
                 _In_ const uint32_t& pHeight = 32,
+                _In_ const uint32_t& pMipMapLevels = 1,
 				_In_ const bool& pIsStaging = false);
             
             W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t& pWidth,
                 _In_ const uint32_t& pHeight,
+                _In_ const uint32_t& pMipMapLevels,
 				_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags);
             
 			//Load texture

@@ -25,6 +25,8 @@ namespace wolf
 				_width(0),
 				_height(0),
 				_layer_count(1),
+                _generate_mip_maps(false),
+                _mip_map_levels(1),
 				_sampler(0),
 				_memory(0),
 				_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT),
@@ -44,13 +46,15 @@ namespace wolf
 
             HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t pWidth, 
-				_In_ const uint32_t pHeight, 
+				_In_ const uint32_t pHeight,
+                _In_ const bool pGenerateMipMaps,
                 _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
             {
                 this->_gDevice = pGDevice;
                 this->_memory_property_flags = pMemoryPropertyFlags;
                 this->_width = pWidth;
                 this->_height = pHeight;
+                this->_generate_mip_maps = pGenerateMipMaps;
                 
                 if (pMemoryPropertyFlags & VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT ||
                     pMemoryPropertyFlags & VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
@@ -158,7 +162,7 @@ namespace wolf
 
 						this->_width = _gli_tex_2D_array->extent().x;
 						this->_height = _gli_tex_2D_array->extent().y;
-						this->_layer_count = _gli_tex_2D_array->layers();
+						this->_layer_count = (uint32_t)_gli_tex_2D_array->layers();
 						this->_format = _gli_format_to_vulkan_format(_gli_tex_2D_array->format());
 					}
 
@@ -289,6 +293,11 @@ namespace wolf
 
 			HRESULT _create_image()
 			{
+                //generate number of mip maps
+                if (this->_generate_mip_maps)
+                {
+                    this->_mip_map_levels = std::floor(std::log2(std::max(this->_width, this->_height))) + 1;
+                }
 				const VkImageCreateInfo _image_create_info =
 				{
 					VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,							// Type;
@@ -301,7 +310,7 @@ namespace wolf
 						this->_height,												// Height
 						1															// Depth
 					},
-					1,																// MipLevels
+					this->_mip_map_levels ,											// MipLevels
 					this->_layer_count,												// ArrayLayers
 					VK_SAMPLE_COUNT_1_BIT,											// Samples
 					VK_IMAGE_TILING_OPTIMAL,										// Tiling
@@ -674,6 +683,17 @@ namespace wolf
                     this->_staging_buffer.release();
                 }
 
+                if (_copy_mip_maps(_command_buffer) == S_FALSE)
+                {
+                    V(S_FALSE, "copying mip maps data to texture buffer on graphics device: " +
+                      this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
+                      this->_name,
+                      3,
+                      false);
+                    
+                    return S_FALSE;
+                }
+                
                 return S_OK;
             }
             
@@ -865,18 +885,81 @@ namespace wolf
 				}
 				vkDeviceWaitIdle(this->_gDevice->vk_device);
 
-				//release command buffer
-				_command_buffer.release();
-
 				if (!this->_is_staging)
 				{
 					//release staging buffer
 					this->_staging_buffer.release();
 				}
-
+                
+                if (this->_generate_mip_maps)
+                {
+                    if (_copy_mip_maps(_command_buffer) == S_FALSE)
+                    {
+                        V(S_FALSE, "copying mip maps data to texture buffer on graphics device: " +
+                          this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
+                          this->_name,
+                          3,
+                          false);
+                        
+                        return S_FALSE;
+                    }
+                }
+                
+                //release command buffer
+                _command_buffer.release();
+                
 				return S_OK;
 			}
 
+            HRESULT _copy_mip_maps(_In_ w_command_buffer& pCmd)
+            {
+                const std::string _trace_info = "w_texture::_copy_mip_maps";
+                
+                bool _bliting_supported = true;
+                
+                //check whether blitting is supported or not
+                VkFormatProperties _format_properties;
+                // Check for whether blitting is supported from optimal image
+                vkGetPhysicalDeviceFormatProperties(this->_gDevice->vk_physical_device,
+                                                    this->_format,
+                                                    &_format_properties);
+                if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
+                {
+                    logger.warning("Blitting feature not supported from optimal tiled image for graphics device: " +
+                                   this->_gDevice->device_info->get_device_name() +
+                                   " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()) +
+                                   " and following format: " + std::to_string(this->_format));
+                    _bliting_supported = false;
+                }
+                if (_bliting_supported)
+                {
+                    // Check for whether blitting is supported for linear image
+                    if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
+                    {
+                        logger.warning("Blitting feature not supported from linear tiled image for graphics device: " +
+                                       this->_gDevice->device_info->get_device_name() +
+                                       " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()) +
+                                       " and following format: " + std::to_string(this->_format));
+                        _bliting_supported = false;
+                    }
+                }
+                
+//                if (_bliting_supported)
+//                {
+//                    for (auto i = 1; i < this->_mip_map_levels; ++i)
+//                    {
+//                        VkImageBlit _image_blit = {};
+//
+//                    }
+//                }
+//                else
+//                {
+//
+//                }
+                
+                return S_OK;
+            }
+            
 			void* read_data_from_texture()
 			{
 				if (this->_is_staging)
@@ -1028,16 +1111,6 @@ namespace wolf
 						this->_staging_buffer.get_handle(),
 						1,
 						&_buffer_image_copy_info);
-
-
-					VkMappedMemoryRange _flush_range =
-					{
-						VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,              // Type
-						nullptr,                                            // Next
-						this->_staging_buffer.get_memory(),                 // Memory
-						0,                                                  // Offset
-						_data_size                                          // Size
-					};
 
 					this->_staging_buffer.flush(_data_size);
 				}
@@ -1374,6 +1447,8 @@ namespace wolf
             uint32_t                                        _height;
 			VkImageUsageFlags								_usage;
             uint32_t                                        _layer_count;
+            uint32_t                                        _mip_map_levels;
+            bool                                            _generate_mip_maps;
             VkMemoryPropertyFlags                           _memory_property_flags;
             bool                                            _is_staging;
             void*                                           _staging_buffer_memory_pointer;
@@ -1409,22 +1484,25 @@ w_texture::~w_texture()
 HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ const uint32_t& pWidth,
 	_In_ const uint32_t& pHeight,
+    _In_ const uint32_t& pMipMapLevels,
     _In_ const bool& pIsStaging)
 {
     if (!this->_pimp) return S_FALSE;
     return this->_pimp->initialize(pGDevice,
         pWidth,
         pHeight,
+        pMipMapLevels,
         pIsStaging ? (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 }
 
 HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const uint32_t& pWidth,
     _In_ const uint32_t& pHeight,
+    _In_ const uint32_t& pMipMapLevels,
 	_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
 {
     if (!this->_pimp) return S_FALSE;
-    return this->_pimp->initialize(pGDevice, pWidth, pHeight, pMemoryPropertyFlags);
+    return this->_pimp->initialize(pGDevice, pWidth, pHeight, pMipMapLevels, pMemoryPropertyFlags);
 }
 
 HRESULT w_texture::load()
@@ -1457,7 +1535,7 @@ HRESULT w_texture::load_texture_from_memory_rgb(_In_ uint8_t* pRGBData)
     auto _rgba = (uint8_t*)malloc(_width * _height * 4);
     if (!_rgba) return S_FALSE;
     
-    size_t _count = _width * _height;
+    int _count = (int)(_width * _height);
     for (int i = _count; --i; _rgba += 4, pRGBData += 3) 
     {
         *(uint32_t*)(void*)_rgba = *(const uint32_t*)(const void*)pRGBData;

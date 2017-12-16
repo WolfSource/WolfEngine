@@ -33,7 +33,7 @@
 		2C326D151EA5539000AEC380 /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
 		2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
-		2C8C83711E61CA6800A33C70 /* 08_json */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 08_json; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C8C83711E61CA6800A33C70 /* 09_memory */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 09_memory; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C91879A1F518E9B0021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../../../engine/dependencies/luaJIT/lib/osx/x64/debug/libluajit.dylib; sourceTree = "<group>"; };
 		2C91879C1F5191500021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../../../engine/dependencies/luaJIT/lib/osx/debug/libluajit.dylib; sourceTree = "<group>"; };
 		2CB495BD1E6469BC000B94F6 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/main.cpp; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 		2C8C83721E61CA6800A33C70 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2C8C83711E61CA6800A33C70 /* 08_json */,
+				2C8C83711E61CA6800A33C70 /* 09_memory */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,9 +92,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2C8C83701E61CA6800A33C70 /* 08_json */ = {
+		2C8C83701E61CA6800A33C70 /* 09_memory */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "08_json" */;
+			buildConfigurationList = 2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "09_memory" */;
 			buildPhases = (
 				2C8C836D1E61CA6800A33C70 /* Sources */,
 				2C8C836E1E61CA6800A33C70 /* Frameworks */,
@@ -104,9 +104,9 @@
 			);
 			dependencies = (
 			);
-			name = 08_json;
-			productName = 08_json;
-			productReference = 2C8C83711E61CA6800A33C70 /* 08_json */;
+			name = 09_memory;
+			productName = 09_memory;
+			productReference = 2C8C83711E61CA6800A33C70 /* 09_memory */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -125,7 +125,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "08_json" */;
+			buildConfigurationList = 2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "09_memory" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -137,7 +137,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2C8C83701E61CA6800A33C70 /* 08_json */,
+				2C8C83701E61CA6800A33C70 /* 09_memory */,
 			);
 		};
 /* End PBXProject section */
@@ -303,7 +303,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "08_json" */ = {
+		2C8C836C1E61CA6800A33C70 /* Build configuration list for PBXProject "09_memory" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C8C83761E61CA6800A33C70 /* Debug */,
@@ -312,7 +312,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "08_json" */ = {
+		2C8C83781E61CA6800A33C70 /* Build configuration list for PBXNativeTarget "09_memory" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C8C83791E61CA6800A33C70 /* Debug */,

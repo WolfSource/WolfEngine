@@ -217,7 +217,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "339"
             endingLineNumber = "339"
-            landmarkName = "scene::release()"
+            landmarkName = "scene::build_draw_command_buffers(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -279,7 +279,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "339"
             endingLineNumber = "339"
-            landmarkName = "scene::release()"
+            landmarkName = "scene::build_draw_command_buffers(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -295,7 +295,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "339"
             endingLineNumber = "339"
-            landmarkName = "scene::release()"
+            landmarkName = "scene::build_draw_command_buffers(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -11,6 +11,7 @@
 		2C1383A61F509AC700D5283B /* w_lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1383A41F509AC700D5283B /* w_lua.h */; };
 		2C41F9271ED34FAE007012E4 /* w_point.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9251ED34FAE007012E4 /* w_point.h */; };
 		2C41F9281ED34FAE007012E4 /* w_rectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9261ED34FAE007012E4 /* w_rectangle.h */; };
+		2C4990401FDF312F00E656B2 /* w_memory_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49903F1FDF312E00E656B2 /* w_memory_pool.h */; };
 		2C6521941FD4AF5B0030A053 /* coord.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C65215D1FD4AF550030A053 /* coord.hpp */; };
 		2C6521951FD4AF5B0030A053 /* filter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C6521621FD4AF560030A053 /* filter.hpp */; };
 		2C6521961FD4AF5B0030A053 /* clear.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C6521721FD4AF570030A053 /* clear.hpp */; };
@@ -291,6 +292,7 @@
 		2C1383A41F509AC700D5283B /* w_lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_lua.h; path = ../../../src/wolf.system/w_lua.h; sourceTree = "<group>"; };
 		2C41F9251ED34FAE007012E4 /* w_point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_point.h; path = ../../../src/wolf.system/w_point.h; sourceTree = "<group>"; };
 		2C41F9261ED34FAE007012E4 /* w_rectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_rectangle.h; path = ../../../src/wolf.system/w_rectangle.h; sourceTree = "<group>"; };
+		2C49903F1FDF312E00E656B2 /* w_memory_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_memory_pool.h; path = ../../../src/wolf.system/w_memory_pool.h; sourceTree = "<group>"; };
 		2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
 		2C65215D1FD4AF550030A053 /* coord.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = coord.hpp; path = ../../../src/wolf.system/gli/core/coord.hpp; sourceTree = "<group>"; };
@@ -1166,6 +1168,7 @@
 				2CFFAD3C1FCEAE480020A112 /* stb_image_write.h */,
 				2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */,
 				2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */,
+				2C49903F1FDF312E00E656B2 /* w_memory_pool.h */,
 				2CEE64041F48E147003177C0 /* w_signal.h */,
 				2CEE64051F48E147003177C0 /* w_thread_pool.cpp */,
 				2CEE64061F48E147003177C0 /* w_thread_pool.h */,
@@ -1335,6 +1338,7 @@
 				2C6523441FD4B0930030A053 /* matrix_operation.hpp in Headers */,
 				2C65234B1FD4B0930030A053 /* spline.hpp in Headers */,
 				2C6521DC1FD4AF7D0030A053 /* target.hpp in Headers */,
+				2C4990401FDF312F00E656B2 /* w_memory_pool.h in Headers */,
 				2C6523691FD4B0930030A053 /* range.hpp in Headers */,
 				2C6521EC1FD4AF7D0030A053 /* load.hpp in Headers */,
 				2C6521F01FD4AF7D0030A053 /* save_dds.hpp in Headers */,

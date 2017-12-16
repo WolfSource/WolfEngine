@@ -2,7 +2,9 @@
 #include "scene.h"
 #include <tbb/parallel_for.h>
 #include <w_content_manager.h>
+#ifdef __WIN32
 #include <w_media_core.h>    
+#endif
 
 using namespace std;
 using namespace wolf;
@@ -11,9 +13,12 @@ using namespace wolf::framework;
 using namespace wolf::graphics;
 
 static float _time = 0;
+#ifdef __WIN32
 static std::once_flag _once;
 static SwsContext* ctx = nullptr;
 static auto _frames = new uint8_t[1280 * 720 * 4];
+#endif
+
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
 	w_game(pRunningDirectory, pAppName)
 {
@@ -46,7 +51,9 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 #endif
 		//w_texture::save_bmp_to_file(_path.c_str(), pSize.x, pSize.y, pPixels, 4);
 
+#ifdef __WIN32
         std::memcpy(_frames, pPixels, 1280 * 720 * 4 * sizeof(uint8_t));
+#endif
 	};
 }
 
@@ -63,10 +70,12 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
 	w_game::initialize(pOutputWindowsInfo);
 }
 
+#ifdef __WIN32
 w_signal<void(const w_media_core::w_stream_connection_info&)> _connection_established;
 w_signal<void(const w_media_core::w_stream_frame_info&)> _filling_stream_frame_buffer;
 w_signal<void(const char*)> _connection_lost;
 static w_media_core _media_core;
+#endif
 
 void scene::load()
 {
@@ -81,6 +90,7 @@ void scene::load()
     //    //_scene.clear();
     //}
 
+#ifdef __WIN32
     _connection_established += [](const w_media_core::w_stream_connection_info&)->void
     {
         logger.write("Connection Established");
@@ -141,7 +151,8 @@ void scene::load()
         _connection_established,
         _filling_stream_frame_buffer,
         _connection_lost);
-
+#endif
+    
 	defer(nullptr, [&](...)
 	{
 		w_game::load();
@@ -429,8 +440,10 @@ ULONG scene::release()
     this->_shader.release();
 	this->_pipeline.release();
 	
+#ifdef __WIN32
     //_media_core.stop_streaming();
     w_media_core::shut_down();
-
+#endif
+    
 	return w_game::release();
 }

@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
-               BuildableName = "08_json"
-               BlueprintName = "08_json"
-               ReferencedContainer = "container:08_json.xcodeproj">
+               BuildableName = "09_memory"
+               BlueprintName = "09_memory"
+               ReferencedContainer = "container:09_memory.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,9 +34,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
-            BuildableName = "08_json"
-            BlueprintName = "08_json"
-            ReferencedContainer = "container:08_json.xcodeproj">
+            BuildableName = "09_memory"
+            BlueprintName = "09_memory"
+            ReferencedContainer = "container:09_memory.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
-            BuildableName = "08_json"
-            BlueprintName = "08_json"
-            ReferencedContainer = "container:08_json.xcodeproj">
+            BuildableName = "09_memory"
+            BlueprintName = "09_memory"
+            ReferencedContainer = "container:09_memory.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C8C83701E61CA6800A33C70"
-            BuildableName = "08_json"
-            BlueprintName = "08_json"
-            ReferencedContainer = "container:08_json.xcodeproj">
+            BuildableName = "09_memory"
+            BlueprintName = "09_memory"
+            ReferencedContainer = "container:09_memory.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:07_xml.xcodeproj">
+      location = "self:08_json.xcodeproj">
    </FileRef>
 </Workspace>

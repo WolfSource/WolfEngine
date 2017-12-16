@@ -28,6 +28,9 @@
       <FileRef
          location = "group:01_system/08_json/builds/xcode/08_json.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:01_system/09_memory/builds/xcode/09_memory.xcodeproj">
+      </FileRef>
    </Group>
    <Group
       location = "container:"
