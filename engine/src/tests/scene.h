@@ -19,14 +19,8 @@
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_semaphore.h>
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//The following codes have been added for this project
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-#include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
+#include <w_graphics/w_imgui.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -62,28 +56,20 @@ public:
 private:
 	wolf::system::w_signal<void(const w_point_t, const uint8_t*)> on_pixels_data_captured_signal;
 	
-	HRESULT build_draw_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+	HRESULT _build_gui_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+    bool															_update_gui();
 
-	wolf::graphics::w_viewport                                      _viewport;
-	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
+    wolf::graphics::w_viewport                                      _viewport;
+    wolf::graphics::w_viewport_scissor                              _viewport_scissor;
 
-
-	wolf::graphics::w_command_buffer                                _draw_command_buffers;
-	wolf::graphics::w_render_pass                                   _draw_render_pass;
-	wolf::graphics::w_frame_buffer                                  _draw_frame_buffers;
-
-
-	wolf::graphics::w_fences                                        _draw_fence;
-	wolf::graphics::w_semaphore                                     _draw_semaphore;
-
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	wolf::graphics::w_shader                                        _shader;
-	wolf::graphics::w_pipeline                                      _pipeline;
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //The following codes have been added for this project
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++
+    wolf::graphics::w_command_buffer                                _gui_command_buffers;
+    wolf::graphics::w_render_pass                                   _gui_render_pass;
+    wolf::graphics::w_frame_buffer                                  _gui_frame_buffers;
+    wolf::graphics::w_fences                                        _gui_fence;
+    wolf::graphics::w_semaphore                                     _gui_semaphore;
 
 };
 #endif
