@@ -446,10 +446,15 @@ namespace wolf
                         }
                     }
 
+                    AVDictionary* _av_dic = NULL; // "create" an empty dictionary
+                    //av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
+                    av_dict_set(&_av_dic, "rtsp_transport", "udp", 0); // add an entry
+                    av_dict_set(&_av_dic, "timeout", "-1", 0); // add an entry
+
                     AVPicture  _stream_dst_picture = {};
                     //now open video stream
                     //open the codec
-                    if (avcodec_open2(this->_stream->codec, _stream_video_codec, NULL))
+                    if (avcodec_open2(this->_stream->codec, _stream_video_codec, &_av_dic))
                     {
                         V(S_FALSE, L"opening video codec", _trace_info, 3);
                         _release_stream_server();

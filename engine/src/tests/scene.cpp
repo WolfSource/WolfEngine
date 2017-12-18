@@ -27,7 +27,7 @@ static float _time = 0;
 #ifdef __WIN32
 static std::once_flag _once;
 static SwsContext* ctx = nullptr;
-static auto _frames = new uint8_t[1280 * 720 * 4];
+static auto _frames = new uint8_t[640 * 480 * 4];
 #endif
 
 static uint32_t sFPS = 0;
@@ -77,7 +77,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 		//w_texture::save_bmp_to_file(_path.c_str(), pSize.x, pSize.y, pPixels, 4);
 
 #ifdef __WIN32
-        std::memcpy(_frames, pPixels, 1280 * 720 * 4 * sizeof(uint8_t));
+        std::memcpy(_frames, pPixels, 640 * 480 * 4 * sizeof(uint8_t));
 #endif
 	};
 }
@@ -275,8 +275,8 @@ void scene::load()
     {
         if (_frames)
         {
-            const uint32_t _w = 1280;
-            const uint32_t _h = 720;
+            const uint32_t _w = 640;
+            const uint32_t _h = 480;
 
             std::call_once(_once, [&]()
             {
@@ -297,13 +297,13 @@ void scene::load()
 
     w_media_core::register_all();
     _media_core.open_stream_server_async(
-        "rtsp://172.16.5.11:8554/live.sdp", 
+        "rtsp://172.16.4.207:8554/live.sdp", 
         "rtsp", 
         AV_CODEC_ID_H264, 
-        60,
+        30,
         AV_PIX_FMT_YUV420P,//AV_PIX_FMT_YUYV422
-        1280,
-        720,
+        640,
+        480,
         _connection_established,
         _filling_stream_frame_buffer,
         _connection_lost);
