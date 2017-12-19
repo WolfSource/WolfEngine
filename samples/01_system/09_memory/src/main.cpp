@@ -19,12 +19,6 @@ WOLF_MAIN()
     const wchar_t* _name = L"09_memory";
     WOLF_INIT(_name);
 
-    struct my_struct
-    {
-        int         number;
-        std::string name;
-    };
-
     size_t _length = 10;
 
     w_memory_pool _memory;
@@ -44,6 +38,11 @@ WOLF_MAIN()
     }
 
     //re-allocate larger memory with new data type
+    struct my_struct
+    {
+        int         number;
+        std::string name;
+    };
     _length = 20;
     auto _new_f = (my_struct*)_memory.realloc(_length * sizeof(my_struct));
     for (size_t i = 0; i < _length; ++i)

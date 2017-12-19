@@ -20,6 +20,7 @@
 
 #include "w_ireleasable.h"
 #include "w_system_export.h"
+#include "w_std.h"
 
 #ifdef __GNUC__
 #pragma GCC visibility push(default)

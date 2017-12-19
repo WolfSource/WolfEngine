@@ -173,7 +173,7 @@ namespace wolf
 
             void* map()
             {
-                const std::string _trace_info = this->_name + "map";
+                const std::string _trace_info = this->_name + "::map";
 
                 //we can not access to VRAM, but we can copy our data to DRAM
                 if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return nullptr;

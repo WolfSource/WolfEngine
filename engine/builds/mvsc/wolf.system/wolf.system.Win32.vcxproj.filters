@@ -20,6 +20,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\glm\detail\glm.cpp">
       <Filter>glm\detail</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\w_network.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
@@ -774,6 +775,7 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\stb_image_write.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

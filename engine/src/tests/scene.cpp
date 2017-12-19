@@ -25,9 +25,13 @@ using namespace wolf::graphics;
 
 static float _time = 0;
 #ifdef __WIN32
+
+#define W 1280
+#define H 720
+
 static std::once_flag _once;
 static SwsContext* ctx = nullptr;
-static auto _frames = new uint8_t[640 * 480 * 4];
+static auto _frames = new uint8_t[W * H * 4];
 #endif
 
 static uint32_t sFPS = 0;
@@ -77,7 +81,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 		//w_texture::save_bmp_to_file(_path.c_str(), pSize.x, pSize.y, pPixels, 4);
 
 #ifdef __WIN32
-        std::memcpy(_frames, pPixels, 640 * 480 * 4 * sizeof(uint8_t));
+        std::memcpy(_frames, pPixels, W * H * 4 * sizeof(uint8_t));
 #endif
 	};
 }
@@ -275,19 +279,16 @@ void scene::load()
     {
         if (_frames)
         {
-            const uint32_t _w = 640;
-            const uint32_t _h = 480;
-
             std::call_once(_once, [&]()
             {
                 ctx = sws_getContext(
-                    _w, _h,
-                    AV_PIX_FMT_RGBA, _w, _h,
+                    W, H,
+                    AV_PIX_FMT_RGBA, W, H,
                     AV_PIX_FMT_YUV420P, 0, 0, 0, 0);
             });
 
-            int _line_size[1] = { 4 * _w }; // RGBA stride
-            sws_scale(ctx, &_frames, _line_size, 0, _h, pFrameInfo.picture->data, pFrameInfo.picture->linesize);
+            int _line_size[1] = { 4 * W }; // RGBA stride
+            sws_scale(ctx, &_frames, _line_size, 0, H, pFrameInfo.picture->data, pFrameInfo.picture->linesize);
         }
     };
     _connection_lost += [](const char* pURL)->void
@@ -297,13 +298,13 @@ void scene::load()
 
     w_media_core::register_all();
     _media_core.open_stream_server_async(
-        "rtsp://172.16.4.207:8554/live.sdp", 
+        "rtsp://172.16.4.207:8554/live.sdp",//"rtsp://172.16.5.11:8554/live.sdp",
         "rtsp", 
-        AV_CODEC_ID_H264, 
-        30,
-        AV_PIX_FMT_YUV420P,//AV_PIX_FMT_YUYV422
-        640,
-        480,
+        AV_CODEC_ID_H265,
+        60,
+        AV_PIX_FMT_YUV420P,
+        W,
+        H,
         _connection_established,
         _filling_stream_frame_buffer,
         _connection_lost);

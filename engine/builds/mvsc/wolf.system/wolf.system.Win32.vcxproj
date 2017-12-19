@@ -27,6 +27,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_logger.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_lua.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_memory.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_network.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_object.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_system_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -291,6 +292,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager.h" />
@@ -580,7 +582,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/luaJIT/include/;$(SolutionDir)/../..//dependencies/nanomsg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/tbb/oss/windows/include;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../..//dependencies/nanomsg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;__LUA__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
@@ -592,7 +594,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x64/debug/;$(SolutionDir)/../../dependencies/nanomsg/lib/debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../dependencies/nanomsg/lib/vc14/x64/debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>nanomsg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

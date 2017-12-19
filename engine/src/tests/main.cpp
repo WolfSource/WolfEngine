@@ -46,8 +46,8 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	//Initialize window 720p
 	sWindow = make_unique<w_window>();
     sWindow->set_id(0);
-    sWindow->set_width(640);
-	sWindow->set_height(480);
+    sWindow->set_width(1280);
+	sWindow->set_height(720);
     //sWindow->set_position();
 	sWindow->initialize(_msg_proc_func);
 
