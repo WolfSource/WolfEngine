@@ -17,6 +17,7 @@
 #include "w_object.h"
 #include "w_signal.h"
 
+
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
 #endif
@@ -37,7 +38,9 @@ namespace wolf
                 _In_z_ const char* pURL, 
                 _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
 
-            WSYS_EXP HRESULT setup_one_way_puller();
+            WSYS_EXP HRESULT setup_one_way_puller(
+				_In_z_ const char* pURL,
+				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
 
             WSYS_EXP ULONG release();
 
