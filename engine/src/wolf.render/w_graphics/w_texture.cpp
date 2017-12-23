@@ -37,6 +37,7 @@ namespace wolf
 				_image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D),
 				_buffer_type(VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT)
 			{
+                this->_desc_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			}
 
             ~w_texture_pimp()
@@ -227,9 +228,6 @@ namespace wolf
 				_hr = _create_image_view();
 				if (_hr == S_FALSE) return S_FALSE;
 
-				_hr = _create_sampler();
-				if (_hr == S_FALSE) return S_FALSE;
-
 
 				//copy data to texture
 				if (_rgba)
@@ -253,6 +251,9 @@ namespace wolf
 					return S_FALSE;
 				}
 
+                _hr = _create_sampler();
+                if (_hr == S_FALSE) return S_FALSE;
+                
 				_create_descriptor_image_info();
 
 				return S_OK;
@@ -279,11 +280,11 @@ namespace wolf
 
                 _hr = _create_image_view();
                 if (_hr == S_FALSE) return S_FALSE;
-
-                _hr = _create_sampler();
-                if (_hr == S_FALSE) return S_FALSE;
                 
                 _hr = copy_data_to_texture_2D(pRGBAData);
+                if (_hr == S_FALSE) return S_FALSE;
+                
+                _hr = _create_sampler();
                 if (_hr == S_FALSE) return S_FALSE;
                 
 				_create_descriptor_image_info();
@@ -489,7 +490,6 @@ namespace wolf
 
 			void _create_descriptor_image_info()
 			{
-				this->_desc_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 				this->_desc_image_info.sampler = this->_sampler;
 				this->_desc_image_info.imageView = this->_image_view.view;
 			}
@@ -909,8 +909,8 @@ namespace wolf
                 _command_buffer.release();
                 
 				return S_OK;
-			}
-
+            }
+            
             HRESULT _copy_mip_maps(_In_ w_command_buffer& pCmd)
             {
                 const std::string _trace_info = "w_texture::_copy_mip_maps";
@@ -944,18 +944,130 @@ namespace wolf
                     }
                 }
                 
-//                if (_bliting_supported)
-//                {
-//                    for (auto i = 1; i < this->_mip_map_levels; ++i)
-//                    {
-//                        VkImageBlit _image_blit = {};
-//
-//                    }
-//                }
-//                else
-//                {
-//
-//                }
+                //create command buffer
+                w_command_buffer _command_buffer;
+                _command_buffer.load(this->_gDevice, 1);
+                auto _cmd = _command_buffer.get_command_at(0);
+                
+                if (_bliting_supported)
+                {
+                    for (auto i = 1; i < this->_mip_map_levels; ++i)
+                    {
+                        VkImageBlit _image_blit = {};
+                        
+                        //source
+                        _image_blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                        _image_blit.srcSubresource.layerCount = 1;
+                        _image_blit.srcSubresource.mipLevel = i-1;
+                        _image_blit.srcOffsets[1].x = int32_t(this->_width >> (i - 1));
+                        _image_blit.srcOffsets[1].y = int32_t(this->_height >> (i - 1));
+                        _image_blit.srcOffsets[1].z = 1;
+
+                        //destination
+                        _image_blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                        _image_blit.dstSubresource.layerCount = 1;
+                        _image_blit.dstSubresource.mipLevel = i;
+                        _image_blit.dstOffsets[1].x = int32_t(this->_width >> i);
+                        _image_blit.dstOffsets[1].y = int32_t(this->_height >> i);
+                        _image_blit.dstOffsets[1].z = 1;
+                        
+                        VkImageSubresourceRange _mip_sub_range = {};
+                        _mip_sub_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                        _mip_sub_range.baseMipLevel = i;
+                        _mip_sub_range.levelCount = 1;
+                        _mip_sub_range.layerCount = 1;
+                        
+                        // Put barrier inside setup command buffer
+                        VkImageMemoryBarrier _source_image_memory_barrier = {};
+                        _source_image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+                        _source_image_memory_barrier.pNext = nullptr;
+                        _source_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+                        _source_image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+                        _source_image_memory_barrier.image = this->_image_view.image;
+                        _source_image_memory_barrier.subresourceRange = _mip_sub_range;
+                        
+                        w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_source_image_memory_barrier);
+
+                        vkCmdPipelineBarrier(
+                                _cmd,
+                                VK_IMAGE_LAYOUT_UNDEFINED,
+                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                0,
+                                0, nullptr,
+                                0, nullptr,
+                                1,
+                                &_source_image_memory_barrier);
+                        
+                        //now blit from previous mip map level
+                        vkCmdBlitImage(
+                                _cmd,
+                                this->_image_view.image,
+                                VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                this->_image_view.image,
+                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                1,
+                                &_image_blit,
+                                VK_FILTER_LINEAR);
+                        
+                        //transiton current mip level to transfer source for read in next iteration
+                        VkImageMemoryBarrier _dst_image_memory_barrier = {};
+                        _dst_image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+                        _dst_image_memory_barrier.pNext = nullptr;
+                        _dst_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+                        _dst_image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+                        _dst_image_memory_barrier.image = this->_image_view.image;
+                        _dst_image_memory_barrier.subresourceRange = _mip_sub_range;
+                        
+                        w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_dst_image_memory_barrier);
+                        
+                        vkCmdPipelineBarrier(
+                                _cmd,
+                                VK_PIPELINE_STAGE_HOST_BIT,
+                                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                0,
+                                0, nullptr,
+                                0, nullptr,
+                                1,
+                                &_dst_image_memory_barrier);
+                        
+                    }
+                    
+                    VkImageSubresourceRange _mip_maps_subresource_range =
+                    {
+                        this->_buffer_type,                             // AspectMask
+                        0,                                              // BaseMipLevel
+                        this->_mip_map_levels,                          // LevelCount
+                        0,                                              // BaseArrayLayer
+                        this->_layer_count                              // LayerCount
+                    };
+                    
+                    //Now all mip layers are in TRANSFER_SRC layout, so transition all to SHADER_READ
+                    VkImageMemoryBarrier _image_memory_barrier = {};
+                    _image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+                    _image_memory_barrier.pNext = nullptr;
+                    _image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+                    _image_memory_barrier.newLayout = this->_desc_image_info.imageLayout;
+                    _image_memory_barrier.image = this->_image_view.image;
+                    _image_memory_barrier.subresourceRange = _mip_maps_subresource_range;
+                    
+                    w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
+                    
+                    vkCmdPipelineBarrier(
+                            _cmd,
+                            VK_PIPELINE_STAGE_HOST_BIT,
+                            VK_PIPELINE_STAGE_TRANSFER_BIT,
+                            0,
+                            0, nullptr,
+                            0, nullptr,
+                            1,
+                            &_image_memory_barrier);
+                    
+                    //VulkanExampleBase::flushCommandBuffer(blitCmd, queue, true);
+                }
+                else
+                {
+                    //do it with cpu(ffmpeg) or render targets
+                }
                 
                 return S_OK;
             }

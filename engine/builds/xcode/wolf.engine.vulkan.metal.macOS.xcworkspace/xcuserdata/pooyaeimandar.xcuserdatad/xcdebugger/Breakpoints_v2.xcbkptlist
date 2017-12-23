@@ -212,12 +212,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "534320238.107361"
+            timestampString = "535659639.749921"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
-            landmarkName = "scene::build_draw_command_buffers(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice)"
+            startingLineNumber = "341"
+            endingLineNumber = "341"
+            landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -274,12 +274,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "534320238.108067"
+            timestampString = "535659639.750139"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
-            landmarkName = "scene::build_draw_command_buffers(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice)"
+            startingLineNumber = "341"
+            endingLineNumber = "341"
+            landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -290,12 +290,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
-            timestampString = "534320238.108537"
+            timestampString = "535659639.750196"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
-            landmarkName = "scene::build_draw_command_buffers(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice)"
+            startingLineNumber = "341"
+            endingLineNumber = "341"
+            landmarkName = "scene::load()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

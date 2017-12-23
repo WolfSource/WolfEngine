@@ -4015,6 +4015,98 @@ VkResult w_graphics_device_manager::memory_type_from_properties(
     return VkResult::VK_INCOMPLETE;
 }
 
+void w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_Inout_ VkImageMemoryBarrier& pImageMemoryBarrier)
+{
+    //Set source access mask which controls actions that have to be finished on the old layout before it will be transitioned to the new layout
+    switch (pImageMemoryBarrier.oldLayout)
+    {
+        default:
+            break;
+        case VK_IMAGE_LAYOUT_UNDEFINED:
+            /*
+                Image layout is undefined
+                No flags required, listed only for completeness
+            */
+            pImageMemoryBarrier.srcAccessMask = 0;
+            break;
+            
+        case VK_IMAGE_LAYOUT_PREINITIALIZED:
+            /*
+                Only valid as initial layout for linear images, preserves memory contents
+                Make sure host writes have been finished
+            */
+            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
+            break;
+            
+        case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+            //Make sure any writes to the color buffer have been finished
+            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+            break;
+            
+        case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+            //Make sure any writes to the depth/stencil buffer have been finished
+            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+            break;
+            
+        case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+            //Make sure any reads from the image have been finished
+            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+            break;
+            
+        case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+            // Image is a transfer destination
+            // Make sure any writes to the image have been finished
+            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            break;
+            
+        case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+            //Make sure any shader reads from the image have been finished
+            pImageMemoryBarrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            break;
+    }
+    
+    // Set destination access mask which controls the dependency for the new image layout
+    switch (pImageMemoryBarrier.newLayout)
+    {
+        default:
+            break;
+        case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+            /*
+                Image will be used as a transfer destination
+                Make sure any writes to the image have been finished
+            */
+            pImageMemoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+            break;
+            
+        case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+            /*
+                Image will be used as a transfer source
+                Make sure any reads from the image have been finished
+            */
+            pImageMemoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+            break;
+            
+        case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+            //Make sure any writes to the color buffer have been finished
+            pImageMemoryBarrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+            break;
+            
+        case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+            //Make sure any writes to depth/stencil buffer have been finished
+            pImageMemoryBarrier.dstAccessMask = pImageMemoryBarrier.dstAccessMask | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+            break;
+            
+        case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+            //Make sure any writes to the image have been finished
+            if (pImageMemoryBarrier.srcAccessMask == 0)
+            {
+                pImageMemoryBarrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
+            }
+            pImageMemoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            break;
+    }
+}
+
 VkFormat w_graphics_device_manager::find_supported_format(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const std::vector<VkFormat>& pFormatCandidates,

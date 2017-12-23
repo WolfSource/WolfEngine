@@ -215,6 +215,8 @@
 		2C7BC4451F51A320009F0C6E /* rapidxml_utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4411F51A320009F0C6E /* rapidxml_utils.hpp */; };
 		2C7BC4461F51A320009F0C6E /* rapidxml.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4421F51A320009F0C6E /* rapidxml.hpp */; };
 		2C91879F1F5191720021C8FA /* libluajit.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C91879E1F5191720021C8FA /* libluajit.dylib */; };
+		2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C94BC241FEE5C62007338F7 /* w_network.cpp */; };
+		2C94BC271FEE5C62007338F7 /* w_network.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C94BC251FEE5C62007338F7 /* w_network.h */; };
 		2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */; };
 		2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */; };
 		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
@@ -654,6 +656,8 @@
 		2C7BC4411F51A320009F0C6E /* rapidxml_utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml_utils.hpp; path = ../../../src/wolf.system/rapidxml/rapidxml_utils.hpp; sourceTree = "<group>"; };
 		2C7BC4421F51A320009F0C6E /* rapidxml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = rapidxml.hpp; path = ../../../src/wolf.system/rapidxml/rapidxml.hpp; sourceTree = "<group>"; };
 		2C91879E1F5191720021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../dependencies/luaJIT/lib/osx/debug/libluajit.dylib; sourceTree = "<group>"; };
+		2C94BC241FEE5C62007338F7 /* w_network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_network.cpp; path = ../../../src/wolf.system/w_network.cpp; sourceTree = "<group>"; };
+		2C94BC251FEE5C62007338F7 /* w_network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_network.h; path = ../../../src/wolf.system/w_network.h; sourceTree = "<group>"; };
 		2C98996B1E9B512F002FE161 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../src/wolf.system/stb_image.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE5BAF51E64307D005E0F45 /* glm_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extention.h; path = ../../../src/wolf.system/glm_extention.h; sourceTree = "<group>"; };
@@ -1189,6 +1193,8 @@
 				2CE5BAFD1E64307D005E0F45 /* w_logger.h */,
 				2C1383A31F509AC700D5283B /* w_lua.cpp */,
 				2C1383A41F509AC700D5283B /* w_lua.h */,
+				2C94BC241FEE5C62007338F7 /* w_network.cpp */,
+				2C94BC251FEE5C62007338F7 /* w_network.h */,
 				2CE5BAFE1E64307D005E0F45 /* w_object.cpp */,
 				2CE5BAFF1E64307D005E0F45 /* w_object.h */,
 				2CE5BB001E64307D005E0F45 /* w_std.h */,
@@ -1325,6 +1331,7 @@
 				2CFD410A1F52007B00BF9A65 /* filewritestream.h in Headers */,
 				2C6521E51FD4AF7D0030A053 /* view.hpp in Headers */,
 				2C6522601FD4AFD50030A053 /* _swizzle_func.hpp in Headers */,
+				2C94BC271FEE5C62007338F7 /* w_network.h in Headers */,
 				2C6521EB1FD4AF7D0030A053 /* generate_mipmaps.hpp in Headers */,
 				2C6523C51FD4B0D70030A053 /* vector_relational.h in Headers */,
 				2CFD41121F52007B00BF9A65 /* rapidjson.h in Headers */,
@@ -1621,6 +1628,7 @@
 				2CE5BB1D1E64307D005E0F45 /* w_task.cpp in Sources */,
 				2CE5BB171E64307D005E0F45 /* w_object.cpp in Sources */,
 				2CE5BB151E64307D005E0F45 /* w_logger.cpp in Sources */,
+				2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */,
 				2CE5BB1B1E64307D005E0F45 /* w_system_pch.cpp in Sources */,
 				2C65225A1FD4AFD50030A053 /* glm.cpp in Sources */,
 				2CEE64141F48EEFB003177C0 /* w_inputs_manager.cpp in Sources */,

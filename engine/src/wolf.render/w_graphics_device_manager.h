@@ -373,6 +373,8 @@ namespace wolf
                 _In_ const std::vector<VkFormat>& pFormatCandidates,
                 _In_ VkImageTiling pImageTiling,
                 _In_ VkFormatFeatureFlags pFormatFeatureFlags);
+            
+            W_EXP static void set_src_dst_masks_of_image_barrier(_Inout_ VkImageMemoryBarrier& pImageMemoryBarrier);
 #endif
                         
 		protected:

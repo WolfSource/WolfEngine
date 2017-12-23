@@ -38,6 +38,7 @@ static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
 
+#ifdef __WIN32
 static std::atomic<bool> left_button_pressed = false;
 static std::atomic<bool> left_button_released = false;
 static std::atomic<bool> middle_button_pressed = false;
@@ -47,6 +48,7 @@ static std::atomic<bool> right_button_released = false;
 //float                    wheel;
 static std::atomic<int> MousePosX = 0;
 static std::atomic<int> MousePosY = 0;
+#endif
 
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
 	w_game(pRunningDirectory, pAppName)
@@ -104,7 +106,6 @@ w_signal<void(const w_media_core::w_stream_connection_info&)> _connection_establ
 w_signal<void(const w_media_core::w_stream_frame_info&)> _filling_stream_frame_buffer;
 w_signal<void(const char*)> _connection_lost;
 static w_media_core _media_core;
-#endif
 
 static void recieveIO()
 {
@@ -251,6 +252,7 @@ static void recieveIO()
     closesocket(ClientSocket);
     WSACleanup();
 }
+#endif
 
 void scene::load()
 {
