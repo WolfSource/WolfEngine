@@ -9,8 +9,13 @@ using namespace wolf::graphics;
 static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//The following codes have been added for this project
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
 static float sPush = true;
 static float sPushConstantColorEdit[4] = { 0.4f, 0.7f, 0.0f, 1.0f };
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
     w_game(pRunningDirectory, pAppName)
@@ -426,7 +431,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&_wait_dst_stage_mask[0],
 		_wait_semaphors,
 		{ *_output_window->vk_rendering_done_semaphore.get() },
-		this->_draw_fence) == S_FALSE)
+		&this->_draw_fence) == S_FALSE)
 	{
 		V(S_FALSE, "submiting queue for drawing", _trace_info, 3, true);
 	}
@@ -476,6 +481,9 @@ ULONG scene::release()
 	return w_game::release();
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//The following codes have been added for this project
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
 bool scene::_update_gui()
 {
     //Setting Style
@@ -514,3 +522,5 @@ bool scene::_update_gui()
 
     return true;
 }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++

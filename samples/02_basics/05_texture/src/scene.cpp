@@ -23,7 +23,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -334,7 +334,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&_wait_dst_stage_mask[0],
 		_wait_semaphors,
 		{ *_output_window->vk_rendering_done_semaphore.get() },
-		this->_draw_fence) == S_FALSE)
+		&this->_draw_fence) == S_FALSE)
 	{
 		V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true);
 	}

@@ -55,7 +55,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "13_render_to_target.Win32",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09_memory.Win32", "01_system\09_memory\builds\mvsc\09_memory.Win32.vcxproj", "{CEB689FE-CFE2-492C-ADF3-AB904DCFAAE0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_networking_one_way_server.Win32", "01_system\10_networking_one_way_server\builds\mvsc\10_networking_one_way_server.Win32.vcxproj", "{78C9EF42-37B2-4A2D-90BE-B3A734BF96F3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_networking_one_way_pusher.Win32", "01_system\10_networking_one_way_pusher\builds\mvsc\10_networking_one_way_pusher.Win32.vcxproj", "{78C9EF42-37B2-4A2D-90BE-B3A734BF96F3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "14_mipmaps.Win32", "02_basics\14_mipmaps\builds\mvsc\14_mipmaps.Win32.vcxproj", "{ABEB4A87-D449-456F-9CC7-BF5C527D4278}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -249,6 +251,14 @@ Global
 		{78C9EF42-37B2-4A2D-90BE-B3A734BF96F3}.Release|x64.Build.0 = Release|x64
 		{78C9EF42-37B2-4A2D-90BE-B3A734BF96F3}.Release|x86.ActiveCfg = Release|Win32
 		{78C9EF42-37B2-4A2D-90BE-B3A734BF96F3}.Release|x86.Build.0 = Release|Win32
+		{ABEB4A87-D449-456F-9CC7-BF5C527D4278}.Debug|x64.ActiveCfg = Debug|x64
+		{ABEB4A87-D449-456F-9CC7-BF5C527D4278}.Debug|x64.Build.0 = Debug|x64
+		{ABEB4A87-D449-456F-9CC7-BF5C527D4278}.Debug|x86.ActiveCfg = Debug|Win32
+		{ABEB4A87-D449-456F-9CC7-BF5C527D4278}.Debug|x86.Build.0 = Debug|Win32
+		{ABEB4A87-D449-456F-9CC7-BF5C527D4278}.Release|x64.ActiveCfg = Release|x64
+		{ABEB4A87-D449-456F-9CC7-BF5C527D4278}.Release|x64.Build.0 = Release|x64
+		{ABEB4A87-D449-456F-9CC7-BF5C527D4278}.Release|x86.ActiveCfg = Release|Win32
+		{ABEB4A87-D449-456F-9CC7-BF5C527D4278}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -277,5 +287,6 @@ Global
 		{B2418F5C-55E4-4720-92E7-0A271B75B285} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
 		{CEB689FE-CFE2-492C-ADF3-AB904DCFAAE0} = {7741F09D-E859-412C-A94D-5F25017E6F20}
 		{78C9EF42-37B2-4A2D-90BE-B3A734BF96F3} = {7741F09D-E859-412C-A94D-5F25017E6F20}
+		{ABEB4A87-D449-456F-9CC7-BF5C527D4278} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
 	EndGlobalSection
 EndGlobal

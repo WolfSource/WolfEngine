@@ -33,7 +33,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9EC0C7D7-3C2D-4B84-ACAB-19287E8BC0FC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>_05_texture</RootNamespace>
+    <RootNamespace>_10_gui</RootNamespace>
     <ProjectName>10_gui.Win32</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>

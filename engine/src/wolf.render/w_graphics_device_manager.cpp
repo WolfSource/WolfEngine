@@ -177,18 +177,18 @@ void w_graphics_device::draw(_In_ VkCommandBuffer pCommandBuffer,
 }
 
 HRESULT w_graphics_device::submit(_In_ const std::vector<VkCommandBuffer>&  pCommandBuffers,
-                                  _In_ const w_queue&                       pQueue,
-                                  _In_ const VkPipelineStageFlags*          pWaitDstStageMask,
-                                  _In_ std::vector<VkSemaphore>             pWaitForSemaphores,
-                                  _In_ std::vector<VkSemaphore>             pSignalForSemaphores,
-                                  _In_ w_fences&                            pFence)
+	_In_ const w_queue&                       pQueue,
+	_In_ const VkPipelineStageFlags*          pWaitDstStageMask,
+	_In_ std::vector<VkSemaphore>             pWaitForSemaphores,
+	_In_ std::vector<VkSemaphore>             pSignalForSemaphores,
+	_In_ w_fences*                            pFence)
 {
-    const std::string _trace_info = "w_graphics_device::submit";
-    
-    VkSubmitInfo _submit_info = {};
-    _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    _submit_info.commandBufferCount = static_cast<uint32_t>(pCommandBuffers.size());
-    _submit_info.pCommandBuffers = pCommandBuffers.data();
+	const std::string _trace_info = "w_graphics_device::submit";
+
+	VkSubmitInfo _submit_info = {};
+	_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	_submit_info.commandBufferCount = static_cast<uint32_t>(pCommandBuffers.size());
+	_submit_info.pCommandBuffers = pCommandBuffers.data();
 	if (pWaitDstStageMask)
 	{
 		_submit_info.pWaitDstStageMask = pWaitDstStageMask;
@@ -203,18 +203,35 @@ HRESULT w_graphics_device::submit(_In_ const std::vector<VkCommandBuffer>&  pCom
 		_submit_info.signalSemaphoreCount = static_cast<uint32_t>(pSignalForSemaphores.size());;
 		_submit_info.pSignalSemaphores = pSignalForSemaphores.data();
 	}
-    // Submit to queue
-    if (vkQueueSubmit(pQueue.queue, 1, &_submit_info, *(pFence.get())))
-    {
-        V(S_FALSE,
-          "submiting queue for graphics device" + this->device_info->get_device_name() + " ID:" + std::to_string(this->device_info->get_device_id()),
-          _trace_info,
-          3,
-          false);
-        return S_FALSE;
-    }
-    
-    return S_OK;
+
+	VkFence _fence = pFence ? *(pFence->get()) : 0;
+
+	// Submit to queue
+	if (vkQueueSubmit(pQueue.queue, 1, &_submit_info, _fence))
+	{
+		V(S_FALSE,
+			"submiting queue for graphics device" + this->device_info->get_device_name() + 
+			" ID:" + std::to_string(this->device_info->get_device_id()),
+			_trace_info,
+			3,
+			false);
+		return S_FALSE;
+	}
+	if (_fence == 0)
+	{
+		if (vkQueueWaitIdle(pQueue.queue))
+		{
+			V(S_FALSE,
+				"waiting for queue for graphics device" + this->device_info->get_device_name() +
+				" ID:" + std::to_string(this->device_info->get_device_id()),
+				_trace_info,
+				3,
+				false);
+			return S_FALSE;
+		}
+	}
+
+	return S_OK;
 }
 
 HRESULT w_graphics_device::capture(
@@ -1747,23 +1764,27 @@ namespace wolf
 
 				for (size_t i = 0; i < _gpu_count; ++i)
 				{
-					VkPhysicalDeviceProperties _device_properties;
-
-					vkGetPhysicalDeviceProperties(_gpus[i], &_device_properties);
-					auto _device_name = std::string(_device_properties.deviceName);
-					auto _device_id = _device_properties.deviceID;
-					auto _device_vendor_id = _device_properties.vendorID;
-
-					_msg += "\t\t\t\t\t\tDevice Name: " + _device_name + "\r\n";
-					_msg += "\t\t\t\t\t\tDevice ID: " + std::to_string(_device_id) + "\r\n";
-					_msg += "\t\t\t\t\t\tDevice Vendor: " + std::to_string(_device_vendor_id) + "\r\n";
-					_msg += "\t\t\t\t\t\tAPI Version: " + std::to_string(_device_properties.apiVersion >> 22) + "." +
-						std::to_string((_device_properties.apiVersion >> 12) & 0x3ff) + "." +
-						std::to_string(_device_properties.apiVersion & 0xfff) + "\r\n";
-					_msg += "\t\t\t\t\t\tDriver Version: " + std::to_string(_device_properties.driverVersion) + "\r\n";
+					auto _device_properties = new (std::nothrow) VkPhysicalDeviceProperties();
+					if (!_device_properties)
+					{
+						_msg += "Error on allocating memory for device properties";
+						logger.write(_msg);
+						_msg.clear();
+						release();
+						std::exit(EXIT_FAILURE);
+					}
+					vkGetPhysicalDeviceProperties(_gpus[i], _device_properties);
+					
+					_msg += "\t\t\t\t\t\tDevice Name: " + std::string(_device_properties->deviceName) + "\r\n";
+					_msg += "\t\t\t\t\t\tDevice ID: " + std::to_string(_device_properties->deviceID) + "\r\n";
+					_msg += "\t\t\t\t\t\tDevice Vendor: " + std::to_string(_device_properties->vendorID) + "\r\n";
+					_msg += "\t\t\t\t\t\tAPI Version: " + std::to_string(_device_properties->apiVersion >> 22) + "." +
+						std::to_string((_device_properties->apiVersion >> 12) & 0x3ff) + "." +
+						std::to_string(_device_properties->apiVersion & 0xfff) + "\r\n";
+					_msg += "\t\t\t\t\t\tDriver Version: " + std::to_string(_device_properties->driverVersion) + "\r\n";
 					_msg += "\t\t\t\t\t\tDevice Type: ";
 
-					switch (_device_properties.deviceType)
+					switch (_device_properties->deviceType)
 					{
 					case VK_PHYSICAL_DEVICE_TYPE_OTHER:
 						_msg += "VK_PHYSICAL_DEVICE_TYPE_OTHER";
@@ -1789,113 +1810,109 @@ namespace wolf
 					}
 
 					_msg += "\r\n\t\t\t\t\t\tPhysical Device Limits:";
-					_msg += "\r\n\t\t\t\t\t\t\tbufferImageGranularity: " + std::to_string(_device_properties.limits.bufferImageGranularity);
-					_msg += "\r\n\t\t\t\t\t\t\tdiscreteQueuePriorities: " + std::to_string(_device_properties.limits.discreteQueuePriorities);
-					_msg += "\r\n\t\t\t\t\t\t\tframebufferColorSampleCounts: " + std::to_string(_device_properties.limits.framebufferColorSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tframebufferDepthSampleCounts: " + std::to_string(_device_properties.limits.framebufferDepthSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tframebufferNoAttachmentsSampleCounts: " + std::to_string(_device_properties.limits.framebufferNoAttachmentsSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tframebufferStencilSampleCounts: " + std::to_string(_device_properties.limits.framebufferStencilSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tlineWidthGranularity: " + std::to_string(_device_properties.limits.lineWidthGranularity);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxBoundDescriptorSets: " + std::to_string(_device_properties.limits.maxBoundDescriptorSets);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxClipDistances: " + std::to_string(_device_properties.limits.maxClipDistances);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxColorAttachments: " + std::to_string(_device_properties.limits.maxColorAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxCombinedClipAndCullDistances: " + std::to_string(_device_properties.limits.maxCombinedClipAndCullDistances);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxComputeSharedMemorySize: " + std::to_string(_device_properties.limits.maxComputeSharedMemorySize);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxComputeWorkGroupInvocations: " + std::to_string(_device_properties.limits.maxComputeWorkGroupInvocations);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxCullDistances: " + std::to_string(_device_properties.limits.maxCullDistances);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetInputAttachments: " + std::to_string(_device_properties.limits.maxDescriptorSetInputAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetSampledImages: " + std::to_string(_device_properties.limits.maxDescriptorSetSampledImages);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetSamplers: " + std::to_string(_device_properties.limits.maxDescriptorSetSamplers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffers: " + std::to_string(_device_properties.limits.maxDescriptorSetStorageBuffers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffersDynamic: " + std::to_string(_device_properties.limits.maxDescriptorSetStorageBuffersDynamic);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDrawIndexedIndexValue: " + std::to_string(_device_properties.limits.maxDrawIndexedIndexValue);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDrawIndirectCount: " + std::to_string(_device_properties.limits.maxDrawIndirectCount);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentCombinedOutputResources: " + std::to_string(_device_properties.limits.maxFragmentCombinedOutputResources);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentDualSrcAttachments: " + std::to_string(_device_properties.limits.maxFragmentDualSrcAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentInputComponents: " + std::to_string(_device_properties.limits.maxFragmentInputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentOutputAttachments: " + std::to_string(_device_properties.limits.maxFragmentOutputAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFramebufferWidth: " + std::to_string(_device_properties.limits.maxFramebufferWidth);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFramebufferHeight: " + std::to_string(_device_properties.limits.maxFramebufferHeight);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFramebufferLayers: " + std::to_string(_device_properties.limits.maxFramebufferLayers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryInputComponents: " + std::to_string(_device_properties.limits.maxGeometryInputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryOutputComponents: " + std::to_string(_device_properties.limits.maxGeometryOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryOutputVertices: " + std::to_string(_device_properties.limits.maxGeometryOutputVertices);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryShaderInvocations: " + std::to_string(_device_properties.limits.maxGeometryShaderInvocations);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryTotalOutputComponents: " + std::to_string(_device_properties.limits.maxGeometryTotalOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageArrayLayers: " + std::to_string(_device_properties.limits.maxImageArrayLayers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimension1D: " + std::to_string(_device_properties.limits.maxImageDimension1D);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimension2D: " + std::to_string(_device_properties.limits.maxImageDimension2D);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimension3D: " + std::to_string(_device_properties.limits.maxImageDimension3D);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimensionCube: " + std::to_string(_device_properties.limits.maxImageDimensionCube);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxInterpolationOffset: " + std::to_string(_device_properties.limits.maxInterpolationOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxMemoryAllocationCount: " + std::to_string(_device_properties.limits.maxMemoryAllocationCount);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorInputAttachments: " + std::to_string(_device_properties.limits.maxPerStageDescriptorInputAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSampledImages: " + std::to_string(_device_properties.limits.maxPerStageDescriptorSampledImages);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSamplers: " + std::to_string(_device_properties.limits.maxPerStageDescriptorSamplers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageBuffers: " + std::to_string(_device_properties.limits.maxPerStageDescriptorStorageBuffers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageImages: " + std::to_string(_device_properties.limits.maxPerStageDescriptorStorageImages);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorUniformBuffers: " + std::to_string(_device_properties.limits.maxPerStageDescriptorUniformBuffers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageResources: " + std::to_string(_device_properties.limits.maxPerStageResources);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPushConstantsSize: " + std::to_string(_device_properties.limits.maxPushConstantsSize);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxSampleMaskWords: " + std::to_string(_device_properties.limits.maxSampleMaskWords);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxSamplerAllocationCount: " + std::to_string(_device_properties.limits.maxSamplerAllocationCount);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxSamplerAnisotropy: " + std::to_string(_device_properties.limits.maxSamplerAnisotropy);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxSamplerLodBias: " + std::to_string(_device_properties.limits.maxSamplerLodBias);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxStorageBufferRange: " + std::to_string(_device_properties.limits.maxStorageBufferRange);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlPerPatchOutputComponents: " + std::to_string(_device_properties.limits.maxTessellationControlPerPatchOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexInputComponents: " + std::to_string(_device_properties.limits.maxTessellationControlPerVertexInputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexOutputComponents: " + std::to_string(_device_properties.limits.maxTessellationControlPerVertexOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlTotalOutputComponents: " + std::to_string(_device_properties.limits.maxTessellationControlTotalOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationInputComponents: " + std::to_string(_device_properties.limits.maxTessellationEvaluationInputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationOutputComponents: " + std::to_string(_device_properties.limits.maxTessellationEvaluationOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationGenerationLevel: " + std::to_string(_device_properties.limits.maxTessellationGenerationLevel);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationPatchSize: " + std::to_string(_device_properties.limits.maxTessellationPatchSize);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTexelBufferElements: " + std::to_string(_device_properties.limits.maxTexelBufferElements);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTexelGatherOffset: " + std::to_string(_device_properties.limits.maxTexelGatherOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTexelOffset: " + std::to_string(_device_properties.limits.maxTexelOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxUniformBufferRange: " + std::to_string(_device_properties.limits.maxUniformBufferRange);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputAttributeOffset: " + std::to_string(_device_properties.limits.maxVertexInputAttributeOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputAttributes: " + std::to_string(_device_properties.limits.maxVertexInputAttributes);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputBindingStride: " + std::to_string(_device_properties.limits.maxVertexInputBindingStride);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputBindings: " + std::to_string(_device_properties.limits.maxVertexInputBindings);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexOutputComponents: " + std::to_string(_device_properties.limits.maxVertexOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxViewports: " + std::to_string(_device_properties.limits.maxViewports);
-					_msg += "\r\n\t\t\t\t\t\t\tminInterpolationOffset: " + std::to_string(_device_properties.limits.minInterpolationOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tminMemoryMapAlignment: " + std::to_string(_device_properties.limits.minMemoryMapAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tminStorageBufferOffsetAlignment: " + std::to_string(_device_properties.limits.minStorageBufferOffsetAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tminTexelBufferOffsetAlignment: " + std::to_string(_device_properties.limits.minTexelBufferOffsetAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tminTexelGatherOffset: " + std::to_string(_device_properties.limits.minTexelGatherOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tminTexelOffset: " + std::to_string(_device_properties.limits.minTexelOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tminUniformBufferOffsetAlignment: " + std::to_string(_device_properties.limits.minUniformBufferOffsetAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tmipmapPrecisionBits: " + std::to_string(_device_properties.limits.mipmapPrecisionBits);
-					_msg += "\r\n\t\t\t\t\t\t\tnonCoherentAtomSize: " + std::to_string(_device_properties.limits.nonCoherentAtomSize);
-					_msg += "\r\n\t\t\t\t\t\t\toptimalBufferCopyOffsetAlignment: " + std::to_string(_device_properties.limits.optimalBufferCopyOffsetAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\toptimalBufferCopyRowPitchAlignment: " + std::to_string(_device_properties.limits.optimalBufferCopyRowPitchAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tpointSizeGranularity: " + std::to_string(_device_properties.limits.pointSizeGranularity);
-					_msg += "\r\n\t\t\t\t\t\t\tsampledImageColorSampleCounts: " + std::to_string(_device_properties.limits.sampledImageColorSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tsampledImageDepthSampleCounts: " + std::to_string(_device_properties.limits.sampledImageDepthSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tsampledImageIntegerSampleCounts: " + std::to_string(_device_properties.limits.sampledImageIntegerSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tsampledImageStencilSampleCounts: " + std::to_string(_device_properties.limits.sampledImageStencilSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tsparseAddressSpaceSize: " + std::to_string(_device_properties.limits.sparseAddressSpaceSize);
-					_msg += "\r\n\t\t\t\t\t\t\tstandardSampleLocations: " + std::to_string(_device_properties.limits.standardSampleLocations);
-					_msg += "\r\n\t\t\t\t\t\t\tstorageImageSampleCounts: " + std::to_string(_device_properties.limits.storageImageSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tstrictLines: " + std::to_string(_device_properties.limits.strictLines);
-					_msg += "\r\n\t\t\t\t\t\t\tsubPixelInterpolationOffsetBits: " + std::to_string(_device_properties.limits.subPixelInterpolationOffsetBits);
-					_msg += "\r\n\t\t\t\t\t\t\tsubPixelPrecisionBits: " + std::to_string(_device_properties.limits.subPixelPrecisionBits);
-					_msg += "\r\n\t\t\t\t\t\t\tsubTexelPrecisionBits: " + std::to_string(_device_properties.limits.subTexelPrecisionBits);
-					_msg += "\r\n\t\t\t\t\t\t\ttimestampComputeAndGraphics: " + std::to_string(_device_properties.limits.timestampComputeAndGraphics);
-					_msg += "\r\n\t\t\t\t\t\t\ttimestampPeriod: " + std::to_string(_device_properties.limits.timestampPeriod);
-					_msg += "\r\n\t\t\t\t\t\t\tviewportSubPixelBits: " + std::to_string(_device_properties.limits.viewportSubPixelBits);
+					_msg += "\r\n\t\t\t\t\t\t\tbufferImageGranularity: " + std::to_string(_device_properties->limits.bufferImageGranularity);
+					_msg += "\r\n\t\t\t\t\t\t\tdiscreteQueuePriorities: " + std::to_string(_device_properties->limits.discreteQueuePriorities);
+					_msg += "\r\n\t\t\t\t\t\t\tframebufferColorSampleCounts: " + std::to_string(_device_properties->limits.framebufferColorSampleCounts);
+					_msg += "\r\n\t\t\t\t\t\t\tframebufferDepthSampleCounts: " + std::to_string(_device_properties->limits.framebufferDepthSampleCounts);
+					_msg += "\r\n\t\t\t\t\t\t\tframebufferNoAttachmentsSampleCounts: " + std::to_string(_device_properties->limits.framebufferNoAttachmentsSampleCounts);
+					_msg += "\r\n\t\t\t\t\t\t\tframebufferStencilSampleCounts: " + std::to_string(_device_properties->limits.framebufferStencilSampleCounts);
+					_msg += "\r\n\t\t\t\t\t\t\tlineWidthGranularity: " + std::to_string(_device_properties->limits.lineWidthGranularity);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxBoundDescriptorSets: " + std::to_string(_device_properties->limits.maxBoundDescriptorSets);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxClipDistances: " + std::to_string(_device_properties->limits.maxClipDistances);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxColorAttachments: " + std::to_string(_device_properties->limits.maxColorAttachments);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxCombinedClipAndCullDistances: " + std::to_string(_device_properties->limits.maxCombinedClipAndCullDistances);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxComputeSharedMemorySize: " + std::to_string(_device_properties->limits.maxComputeSharedMemorySize);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxComputeWorkGroupInvocations: " + std::to_string(_device_properties->limits.maxComputeWorkGroupInvocations);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxCullDistances: " + std::to_string(_device_properties->limits.maxCullDistances);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetInputAttachments: " + std::to_string(_device_properties->limits.maxDescriptorSetInputAttachments);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetSampledImages: " + std::to_string(_device_properties->limits.maxDescriptorSetSampledImages);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetSamplers: " + std::to_string(_device_properties->limits.maxDescriptorSetSamplers);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffers: " + std::to_string(_device_properties->limits.maxDescriptorSetStorageBuffers);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffersDynamic: " + std::to_string(_device_properties->limits.maxDescriptorSetStorageBuffersDynamic);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxDrawIndexedIndexValue: " + std::to_string(_device_properties->limits.maxDrawIndexedIndexValue);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxDrawIndirectCount: " + std::to_string(_device_properties->limits.maxDrawIndirectCount);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentCombinedOutputResources: " + std::to_string(_device_properties->limits.maxFragmentCombinedOutputResources);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentDualSrcAttachments: " + std::to_string(_device_properties->limits.maxFragmentDualSrcAttachments);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentInputComponents: " + std::to_string(_device_properties->limits.maxFragmentInputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentOutputAttachments: " + std::to_string(_device_properties->limits.maxFragmentOutputAttachments);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxFramebufferWidth: " + std::to_string(_device_properties->limits.maxFramebufferWidth);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxFramebufferHeight: " + std::to_string(_device_properties->limits.maxFramebufferHeight);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxFramebufferLayers: " + std::to_string(_device_properties->limits.maxFramebufferLayers);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryInputComponents: " + std::to_string(_device_properties->limits.maxGeometryInputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryOutputComponents: " + std::to_string(_device_properties->limits.maxGeometryOutputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryOutputVertices: " + std::to_string(_device_properties->limits.maxGeometryOutputVertices);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryShaderInvocations: " + std::to_string(_device_properties->limits.maxGeometryShaderInvocations);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryTotalOutputComponents: " + std::to_string(_device_properties->limits.maxGeometryTotalOutputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxImageArrayLayers: " + std::to_string(_device_properties->limits.maxImageArrayLayers);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimension1D: " + std::to_string(_device_properties->limits.maxImageDimension1D);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimension2D: " + std::to_string(_device_properties->limits.maxImageDimension2D);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimension3D: " + std::to_string(_device_properties->limits.maxImageDimension3D);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimensionCube: " + std::to_string(_device_properties->limits.maxImageDimensionCube);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxInterpolationOffset: " + std::to_string(_device_properties->limits.maxInterpolationOffset);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxMemoryAllocationCount: " + std::to_string(_device_properties->limits.maxMemoryAllocationCount);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorInputAttachments: " + std::to_string(_device_properties->limits.maxPerStageDescriptorInputAttachments);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSampledImages: " + std::to_string(_device_properties->limits.maxPerStageDescriptorSampledImages);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSamplers: " + std::to_string(_device_properties->limits.maxPerStageDescriptorSamplers);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageBuffers: " + std::to_string(_device_properties->limits.maxPerStageDescriptorStorageBuffers);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageImages: " + std::to_string(_device_properties->limits.maxPerStageDescriptorStorageImages);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorUniformBuffers: " + std::to_string(_device_properties->limits.maxPerStageDescriptorUniformBuffers);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageResources: " + std::to_string(_device_properties->limits.maxPerStageResources);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxPushConstantsSize: " + std::to_string(_device_properties->limits.maxPushConstantsSize);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxSampleMaskWords: " + std::to_string(_device_properties->limits.maxSampleMaskWords);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxSamplerAllocationCount: " + std::to_string(_device_properties->limits.maxSamplerAllocationCount);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxSamplerAnisotropy: " + std::to_string(_device_properties->limits.maxSamplerAnisotropy);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxSamplerLodBias: " + std::to_string(_device_properties->limits.maxSamplerLodBias);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxStorageBufferRange: " + std::to_string(_device_properties->limits.maxStorageBufferRange);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlPerPatchOutputComponents: " + std::to_string(_device_properties->limits.maxTessellationControlPerPatchOutputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexInputComponents: " + std::to_string(_device_properties->limits.maxTessellationControlPerVertexInputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexOutputComponents: " + std::to_string(_device_properties->limits.maxTessellationControlPerVertexOutputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlTotalOutputComponents: " + std::to_string(_device_properties->limits.maxTessellationControlTotalOutputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationInputComponents: " + std::to_string(_device_properties->limits.maxTessellationEvaluationInputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationOutputComponents: " + std::to_string(_device_properties->limits.maxTessellationEvaluationOutputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationGenerationLevel: " + std::to_string(_device_properties->limits.maxTessellationGenerationLevel);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationPatchSize: " + std::to_string(_device_properties->limits.maxTessellationPatchSize);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTexelBufferElements: " + std::to_string(_device_properties->limits.maxTexelBufferElements);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTexelGatherOffset: " + std::to_string(_device_properties->limits.maxTexelGatherOffset);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxTexelOffset: " + std::to_string(_device_properties->limits.maxTexelOffset);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxUniformBufferRange: " + std::to_string(_device_properties->limits.maxUniformBufferRange);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputAttributeOffset: " + std::to_string(_device_properties->limits.maxVertexInputAttributeOffset);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputAttributes: " + std::to_string(_device_properties->limits.maxVertexInputAttributes);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputBindingStride: " + std::to_string(_device_properties->limits.maxVertexInputBindingStride);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputBindings: " + std::to_string(_device_properties->limits.maxVertexInputBindings);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexOutputComponents: " + std::to_string(_device_properties->limits.maxVertexOutputComponents);
+					_msg += "\r\n\t\t\t\t\t\t\tmaxViewports: " + std::to_string(_device_properties->limits.maxViewports);
+					_msg += "\r\n\t\t\t\t\t\t\tminInterpolationOffset: " + std::to_string(_device_properties->limits.minInterpolationOffset);
+					_msg += "\r\n\t\t\t\t\t\t\tminMemoryMapAlignment: " + std::to_string(_device_properties->limits.minMemoryMapAlignment);
+					_msg += "\r\n\t\t\t\t\t\t\tminStorageBufferOffsetAlignment: " + std::to_string(_device_properties->limits.minStorageBufferOffsetAlignment);
+					_msg += "\r\n\t\t\t\t\t\t\tminTexelBufferOffsetAlignment: " + std::to_string(_device_properties->limits.minTexelBufferOffsetAlignment);
+					_msg += "\r\n\t\t\t\t\t\t\tminTexelGatherOffset: " + std::to_string(_device_properties->limits.minTexelGatherOffset);
+					_msg += "\r\n\t\t\t\t\t\t\tminTexelOffset: " + std::to_string(_device_properties->limits.minTexelOffset);
+					_msg += "\r\n\t\t\t\t\t\t\tminUniformBufferOffsetAlignment: " + std::to_string(_device_properties->limits.minUniformBufferOffsetAlignment);
+					_msg += "\r\n\t\t\t\t\t\t\tmipmapPrecisionBits: " + std::to_string(_device_properties->limits.mipmapPrecisionBits);
+					_msg += "\r\n\t\t\t\t\t\t\tnonCoherentAtomSize: " + std::to_string(_device_properties->limits.nonCoherentAtomSize);
+					_msg += "\r\n\t\t\t\t\t\t\toptimalBufferCopyOffsetAlignment: " + std::to_string(_device_properties->limits.optimalBufferCopyOffsetAlignment);
+					_msg += "\r\n\t\t\t\t\t\t\toptimalBufferCopyRowPitchAlignment: " + std::to_string(_device_properties->limits.optimalBufferCopyRowPitchAlignment);
+					_msg += "\r\n\t\t\t\t\t\t\tpointSizeGranularity: " + std::to_string(_device_properties->limits.pointSizeGranularity);
+					_msg += "\r\n\t\t\t\t\t\t\tsampledImageColorSampleCounts: " + std::to_string(_device_properties->limits.sampledImageColorSampleCounts);
+					_msg += "\r\n\t\t\t\t\t\t\tsampledImageDepthSampleCounts: " + std::to_string(_device_properties->limits.sampledImageDepthSampleCounts);
+					_msg += "\r\n\t\t\t\t\t\t\tsampledImageIntegerSampleCounts: " + std::to_string(_device_properties->limits.sampledImageIntegerSampleCounts);
+					_msg += "\r\n\t\t\t\t\t\t\tsampledImageStencilSampleCounts: " + std::to_string(_device_properties->limits.sampledImageStencilSampleCounts);
+					_msg += "\r\n\t\t\t\t\t\t\tsparseAddressSpaceSize: " + std::to_string(_device_properties->limits.sparseAddressSpaceSize);
+					_msg += "\r\n\t\t\t\t\t\t\tstandardSampleLocations: " + std::to_string(_device_properties->limits.standardSampleLocations);
+					_msg += "\r\n\t\t\t\t\t\t\tstorageImageSampleCounts: " + std::to_string(_device_properties->limits.storageImageSampleCounts);
+					_msg += "\r\n\t\t\t\t\t\t\tstrictLines: " + std::to_string(_device_properties->limits.strictLines);
+					_msg += "\r\n\t\t\t\t\t\t\tsubPixelInterpolationOffsetBits: " + std::to_string(_device_properties->limits.subPixelInterpolationOffsetBits);
+					_msg += "\r\n\t\t\t\t\t\t\tsubPixelPrecisionBits: " + std::to_string(_device_properties->limits.subPixelPrecisionBits);
+					_msg += "\r\n\t\t\t\t\t\t\tsubTexelPrecisionBits: " + std::to_string(_device_properties->limits.subTexelPrecisionBits);
+					_msg += "\r\n\t\t\t\t\t\t\ttimestampComputeAndGraphics: " + std::to_string(_device_properties->limits.timestampComputeAndGraphics);
+					_msg += "\r\n\t\t\t\t\t\t\ttimestampPeriod: " + std::to_string(_device_properties->limits.timestampPeriod);
+					_msg += "\r\n\t\t\t\t\t\t\tviewportSubPixelBits: " + std::to_string(_device_properties->limits.viewportSubPixelBits);
 
 					//create a shared graphics device for this GPU
 					auto _gDevice = std::make_shared<w_graphics_device>();
 					_gDevice->vk_physical_device = _gpus[i];
 
-                    //get device features
-                    vkGetPhysicalDeviceFeatures(_gpus[i], &_gDevice->vk_physical_device_features);
-
-                    //call event callback for changing device extensions and features from user
-                    auto _device_info = new (std::nothrow) w_device_info(_device_id, _device_vendor_id, _device_name.c_str());
+					auto _device_info = new (std::nothrow) w_device_info(_device_properties);
 					if (!_device_info)
 					{
 						logger.write(_msg);
@@ -1906,6 +1923,10 @@ namespace wolf
 					}
 					_device_info->device_features = &_gDevice->vk_physical_device_features;
 
+                    //get device features
+                    vkGetPhysicalDeviceFeatures(_gpus[i], &_gDevice->vk_physical_device_features);
+
+                    //call event callback for changing device extensions and features from user
                     if (pOnDeviceFeaturesFetched)
                     {
                         (*pOnDeviceFeaturesFetched)(&_device_info);
@@ -2100,7 +2121,7 @@ namespace wolf
                     if (_hr)
                     {
                         logger.error("error on creating vulkan command pool for graphics device: " +
-                                     _device_name + " ID:" + std::to_string(_device_id));
+                                     std::string(_device_properties->deviceName) + " ID:" + std::to_string(_device_properties->deviceID));
                         release();
                         std::exit(EXIT_FAILURE);
                     }

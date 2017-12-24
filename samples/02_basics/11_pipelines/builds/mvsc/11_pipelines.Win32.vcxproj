@@ -33,7 +33,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CBAC9BBD-3BEB-4F6C-9EE0-FB099894EC9D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>_05_texture</RootNamespace>
+    <RootNamespace>_11_pipelines</RootNamespace>
     <ProjectName>11_pipelines.Win32</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>

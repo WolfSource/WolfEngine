@@ -37,7 +37,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F7B9C1F0-0628-4FE5-B8EC-1B5BC298E217}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>_05_texture</RootNamespace>
+    <RootNamespace>_12_push_constants</RootNamespace>
     <ProjectName>12_push_constants.Win32</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>

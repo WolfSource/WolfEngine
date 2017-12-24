@@ -4,6 +4,7 @@
 #include <w_io.h>
 #include "w_buffer.h"
 #include "w_command_buffer.h"
+#include <map>
 
 #include <gli/gli.hpp>
 
@@ -25,9 +26,8 @@ namespace wolf
 				_width(0),
 				_height(0),
 				_layer_count(1),
-                _generate_mip_maps(false),
-                _mip_map_levels(1),
-				_sampler(0),
+				_generate_mip_maps(false),
+				_mip_map_levels(1),
 				_memory(0),
 				_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT),
 				_is_staging(false),
@@ -35,9 +35,9 @@ namespace wolf
 				_format(VK_FORMAT_R8G8B8A8_UNORM),
 				_image_type(VkImageType::VK_IMAGE_TYPE_2D),
 				_image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D),
-				_buffer_type(VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT)
+				_buffer_type(VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT),
+				_image_layout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
 			{
-                this->_desc_image_info.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			}
 
             ~w_texture_pimp()
@@ -56,7 +56,12 @@ namespace wolf
                 this->_width = pWidth;
                 this->_height = pHeight;
                 this->_generate_mip_maps = pGenerateMipMaps;
-                
+				if (this->_generate_mip_maps)
+				{
+					//add VK_IMAGE_USAGE_TRANSFER_SRC_BIT flag to image's usage
+					this->_usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+				}
+
                 if (pMemoryPropertyFlags & VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT ||
                     pMemoryPropertyFlags & VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
                 {
@@ -90,8 +95,6 @@ namespace wolf
 				_hr = _create_sampler();
 				if (_hr == S_FALSE) return S_FALSE;
 				
-				_create_descriptor_image_info();
-
 				return S_OK;
 			}
 
@@ -254,8 +257,6 @@ namespace wolf
                 _hr = _create_sampler();
                 if (_hr == S_FALSE) return S_FALSE;
                 
-				_create_descriptor_image_info();
-
 				return S_OK;
 			}
 
@@ -287,8 +288,6 @@ namespace wolf
                 _hr = _create_sampler();
                 if (_hr == S_FALSE) return S_FALSE;
                 
-				_create_descriptor_image_info();
-
                 return S_OK;
             }
 
@@ -297,7 +296,7 @@ namespace wolf
                 //generate number of mip maps
                 if (this->_generate_mip_maps)
                 {
-                    this->_mip_map_levels = std::floor(std::log2(std::max(this->_width, this->_height))) + 1;
+                    this->_mip_map_levels = static_cast<uint32_t>(std::floor(std::log2(std::max(this->_width, this->_height))) + 1);
                 }
 				const VkImageCreateInfo _image_create_info =
 				{
@@ -446,38 +445,39 @@ namespace wolf
             
 			HRESULT _create_sampler()
 			{
-				const VkSamplerCreateInfo _sampler_create_info =
-				{
-					VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,                // Type
-					nullptr,                                              // Next
-					0,                                                    // Flags
-					VK_FILTER_LINEAR,                                     // MagFilter
-					VK_FILTER_LINEAR,                                     // MinFilter
-					VK_SAMPLER_MIPMAP_MODE_LINEAR,                        // MipmapMode
-					VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeU
-					VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeV
-					VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT,              // AddressModeW
-					0.0f,                                                 // MipLodBias
-					VK_TRUE,                                              // AnisotropyEnable
-					8.0f,                                                 // MaxAnisotropy
-					VK_FALSE,                                             // CompareEnable
-					VK_COMPARE_OP_NEVER,                                  // CompareOp
-					0.0f,                                                 // MinLod
-					0.0f,                                                 // MaxLod
-					VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE,                   // BorderColor
-					VK_FALSE                                              // UnnormalizedCoordinates
-				};
+				VkSamplerCreateInfo _sampler_create_info = {};
+				_sampler_create_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+				_sampler_create_info.pNext = nullptr;
+				_sampler_create_info.flags = 0;
+				_sampler_create_info.magFilter = VK_FILTER_LINEAR;
+				_sampler_create_info.minFilter = VK_FILTER_LINEAR;
+				_sampler_create_info.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+				_sampler_create_info.addressModeU = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+				_sampler_create_info.addressModeV = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+				_sampler_create_info.addressModeW = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+				_sampler_create_info.mipLodBias = 0.0f;
+				_sampler_create_info.compareOp = VK_COMPARE_OP_NEVER;
+				_sampler_create_info.compareEnable = VK_FALSE;
+				_sampler_create_info.minLod = 0.0f;
+				_sampler_create_info.maxLod = 0.0f;
+				_sampler_create_info.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+				_sampler_create_info.maxAnisotropy = 1.0;
+				_sampler_create_info.anisotropyEnable = VK_FALSE;
+				_sampler_create_info.unnormalizedCoordinates = VK_FALSE;
+
+				VkSampler __sampler = 0;
 
 				auto _hr = vkCreateSampler(
 					this->_gDevice->vk_device,
 					&_sampler_create_info,
 					nullptr,
-					&this->_sampler);
+					&__sampler);
 				if (_hr)
 				{
-					V(S_FALSE, "creating sampler", this->_name, false, true);
+					V(S_FALSE, "creating sampler without mip map and anisotropy", this->_name, false, true);
 					return S_FALSE;
 				}
+				this->_samplers.insert({ w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY, __sampler });
 
 				return S_OK;
 			}
@@ -488,14 +488,10 @@ namespace wolf
 				return (VkFormat)pFormat;
 			}
 
-			void _create_descriptor_image_info()
-			{
-				this->_desc_image_info.sampler = this->_sampler;
-				this->_desc_image_info.imageView = this->_image_view.view;
-			}
-
             HRESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
             {
+				const std::string _trace_info = "w_texture::copy_data_to_texture_2D";
+
                 auto _data_size = this->_width * this->_height * 4;
 
                 auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
@@ -510,15 +506,13 @@ namespace wolf
                     return _hResult;
                 }
 
-                auto _hr = vkMapMemory(
+                if(vkMapMemory(
 					this->_gDevice->vk_device,
                     this->_staging_buffer.get_memory(),
                     0,
                     _data_size,
                     0,
-                    &this->_staging_buffer_memory_pointer);
-
-                if (_hr)
+                    &this->_staging_buffer_memory_pointer))
                 {
                     V(S_FALSE, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
                         this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
@@ -563,30 +557,28 @@ namespace wolf
 						this->_layer_count                              // LayerCount
 					};
 
-					VkImageMemoryBarrier _image_memory_barrier_from_undefined_to_transfer_dst =
-					{
-						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,         // Type
-						nullptr,                                        // Next
-						0,                                              // SrcAccessMask
-						VK_ACCESS_TRANSFER_WRITE_BIT,                   // DstAccessMask
-						VK_IMAGE_LAYOUT_UNDEFINED,                      // OldLayout
-						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,           // NewLayout
-						VK_QUEUE_FAMILY_IGNORED,                        // SrcQueueFamilyIndex
-						VK_QUEUE_FAMILY_IGNORED,                        // DstQueueFamilyIndex
-						this->_image_view.image,                        // image
-						_image_subresource_range                        // SubresourceRange
-					};
+					VkImageMemoryBarrier _image_memory_barrier = {};
+					_image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+					_image_memory_barrier.pNext = nullptr;
+					_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+					_image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+					_image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+					_image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+					_image_memory_barrier.image = this->_image_view.image;
+					_image_memory_barrier.subresourceRange = _image_subresource_range;
+
+					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
 					vkCmdPipelineBarrier(_cmd,
-						VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_TRANSFER_BIT,
 						0,
 						0,
 						nullptr,
 						0,
 						nullptr,
 						1,
-						&_image_memory_barrier_from_undefined_to_transfer_dst);
+						&_image_memory_barrier);
 
 					//execute copy to image
 					VkBufferImageCopy _buffer_image_copy_info =
@@ -619,86 +611,71 @@ namespace wolf
 						1,
 						&_buffer_image_copy_info);
 
-					VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
-					{
-						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
-						nullptr,                                            // Next
-						VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
-						VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
-						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
-						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
-						VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
-						VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
-						this->_image_view.image,                            // Image
-						_image_subresource_range                            // SubresourceRange
-					};
+					_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+					_image_memory_barrier.newLayout = this->_generate_mip_maps ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL :
+						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
+
 					vkCmdPipelineBarrier(_cmd,
-						VK_PIPELINE_STAGE_TRANSFER_BIT,
-						VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
 						0,
 						nullptr,
 						0,
 						nullptr,
 						1,
-						&_image_memory_barrier_from_transfer_to_shader_read);
+						&_image_memory_barrier);
 
 				}
                 _command_buffer.end(0);
+				auto _hr = this->_gDevice->submit(
+					{ _cmd },
+					this->_gDevice->vk_graphics_queue,
+					nullptr,
+					{},
+					{},
+					nullptr);
+				
+				_command_buffer.release();
 
-                // Submit command buffer and copy data from staging buffer to a vertex buffer
-                VkSubmitInfo _submit_info =
-                {
-                        VK_STRUCTURE_TYPE_SUBMIT_INFO,        // Type
-                        nullptr,                              // Next
-                        0,                                    // WaitSemaphoreCount
-                        nullptr,                              // WaitSemaphores
-                        nullptr,                              // WaitDstStageMask;
-                        1,                                    // CommandBufferCount
-                        &_cmd,                                // CommandBuffers
-                        0,                                    // SignalSemaphoreCount
-                        nullptr                               // SignalSemaphores
-                };
-
-                _hr = vkQueueSubmit(this->_gDevice->vk_graphics_queue.queue, 1, &_submit_info, VK_NULL_HANDLE);
-                if (_hr)
-                {
-                    V(S_FALSE, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
-                        this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
-                        this->_name,
-                        3,
-                        false);
-
-                    _command_buffer.release();
-                    return S_FALSE;
-                }
-                vkDeviceWaitIdle(this->_gDevice->vk_device);
-
-                //release command buffer
-                _command_buffer.release();
-
+				if (_hr == S_FALSE)
+				{
+					V(S_FALSE,
+						"submit commad buffer for generating mipmaps for graphics device" + this->_gDevice->device_info->get_device_name() +
+						" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
+						_trace_info,
+						3,
+						false);
+					return S_FALSE;
+				}
+				
                 if (!this->_is_staging)
                 {
                     //release staging buffer
                     this->_staging_buffer.release();
                 }
 
-                if (_copy_mip_maps(_command_buffer) == S_FALSE)
-                {
-                    V(S_FALSE, "copying mip maps data to texture buffer on graphics device: " +
-                      this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
-                      this->_name,
-                      3,
-                      false);
-                    
-                    return S_FALSE;
-                }
-                
+				if (this->_generate_mip_maps)
+				{
+					if (_copy_mip_maps() == S_FALSE)
+					{
+						V(S_FALSE, "copying mip maps data to texture buffer on graphics device: " +
+							this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
+							this->_name,
+							3,
+							false);
+						return S_FALSE;
+					}
+				}
+
                 return S_OK;
             }
             
 			HRESULT copy_data_to_texture_2D_array(_In_ const gli::texture2d_array& pTextureArrayRGBA)
 			{				
+				const std::string _trace_info = "w_texture::copy_data_to_texture_2D_array";
+
 				auto _data_size = static_cast<uint32_t>(pTextureArrayRGBA.size());
 
 				auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
@@ -713,14 +690,12 @@ namespace wolf
 					return _hResult;
 				}
 
-				auto _hr = vkMapMemory(this->_gDevice->vk_device,
+				if(vkMapMemory(this->_gDevice->vk_device,
 					this->_staging_buffer.get_memory(),
 					0,
 					_data_size,
 					0,
-					&this->_staging_buffer_memory_pointer);
-
-				if (_hr)
+					&this->_staging_buffer_memory_pointer))
 				{
 					V(S_FALSE, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
 						this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
@@ -764,56 +739,30 @@ namespace wolf
 						this->_layer_count                              // LayerCount
 					};
 
-					VkImageMemoryBarrier _image_memory_barrier_from_undefined_to_transfer_dst =
-					{
-						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,         // Type
-						nullptr,                                        // Next
-						VK_IMAGE_LAYOUT_UNDEFINED,                      // SrcAccessMask
-						VK_ACCESS_TRANSFER_WRITE_BIT,                   // DstAccessMask
-						VK_IMAGE_LAYOUT_UNDEFINED,                      // OldLayout
-						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,           // NewLayout
-						VK_QUEUE_FAMILY_IGNORED,                        // SrcQueueFamilyIndex
-						VK_QUEUE_FAMILY_IGNORED,                        // DstQueueFamilyIndex
-						this->_image_view.image,                        // image
-						_image_subresource_range                        // SubresourceRange
-					};
+					VkImageMemoryBarrier _image_memory_barrier = {};
+					_image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+					_image_memory_barrier.pNext = nullptr;
+					_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+					_image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+					_image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+					_image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+					_image_memory_barrier.image = this->_image_view.image;
+					_image_memory_barrier.subresourceRange = _image_subresource_range;
+
+					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
 					vkCmdPipelineBarrier(_cmd,
-						VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-						VK_PIPELINE_STAGE_TRANSFER_BIT,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
 						0,
 						nullptr,
 						0,
 						nullptr,
 						1,
-						&_image_memory_barrier_from_undefined_to_transfer_dst);
+						&_image_memory_barrier);
 					
-					VkImageMemoryBarrier _image_memory_barrier_from_transfer_to_shader_read =
-					{
-						VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,             // Type
-						nullptr,                                            // Next
-						VK_ACCESS_TRANSFER_WRITE_BIT,                       // SrcAccessMask
-						VK_ACCESS_SHADER_READ_BIT,                          // DstAccessMask
-						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,               // OldLayout
-						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,           // NewLayout
-						VK_QUEUE_FAMILY_IGNORED,                            // SrcQueueFamilyIndex
-						VK_QUEUE_FAMILY_IGNORED,                            // DstQueueFamilyIndex
-						this->_image_view.image,                            // Image
-						_image_subresource_range                            // SubresourceRange
-					};
-					vkCmdPipelineBarrier(_cmd,
-						VK_PIPELINE_STAGE_TRANSFER_BIT,
-						VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-						0,
-						0,
-						nullptr,
-						0,
-						nullptr,
-						1,
-						&_image_memory_barrier_from_transfer_to_shader_read);
-
-					//execute copy to image
+#pragma region copy all textures to buffer
 					std::vector<VkBufferImageCopy> _buffer_copy_regions;
 					size_t offset = 0;
 
@@ -853,26 +802,37 @@ namespace wolf
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 						static_cast<uint32_t>(_buffer_copy_regions.size()),
 						_buffer_copy_regions.data());
+#pragma endregion
+
+					// After all textures have been copied, change layout to VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+					_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+					_image_memory_barrier.newLayout = this->_image_layout;
+					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
+
+					vkCmdPipelineBarrier(_cmd,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+						0,
+						0,
+						nullptr,
+						0,
+						nullptr,
+						1,
+						&_image_memory_barrier);
 
 				}
 				_command_buffer.end(0);
 
-				// Submit command buffer and copy data from staging buffer to a vertex buffer
-				VkSubmitInfo _submit_info =
-				{
-					VK_STRUCTURE_TYPE_SUBMIT_INFO,        // Type
-					nullptr,                              // Next
-					0,                                    // WaitSemaphoreCount
-					nullptr,                              // WaitSemaphores
-					nullptr,                              // WaitDstStageMask;
-					1,                                    // CommandBufferCount
-					&_cmd,                                // CommandBuffers
-					0,                                    // SignalSemaphoreCount
-					nullptr                               // SignalSemaphores
-				};
-
-				_hr = vkQueueSubmit(this->_gDevice->vk_graphics_queue.queue, 1, &_submit_info, VK_NULL_HANDLE);
-				if (_hr)
+				auto _hr = this->_gDevice->submit(
+					{ _cmd },
+					this->_gDevice->vk_graphics_queue,
+					nullptr,
+					{},
+					{},
+					nullptr);
+				//release command buffer
+				_command_buffer.release();
+				if (_hr == S_FALSE)
 				{
 					V(S_FALSE, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
 						this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
@@ -880,10 +840,8 @@ namespace wolf
 						3,
 						false);
 
-					_command_buffer.release();
 					return S_FALSE;
 				}
-				vkDeviceWaitIdle(this->_gDevice->vk_device);
 
 				if (!this->_is_staging)
 				{
@@ -891,9 +849,9 @@ namespace wolf
 					this->_staging_buffer.release();
 				}
                 
-                if (this->_generate_mip_maps)
+               /* if (this->_generate_mip_maps)
                 {
-                    if (_copy_mip_maps(_command_buffer) == S_FALSE)
+                    if (_copy_mip_maps() == S_FALSE)
                     {
                         V(S_FALSE, "copying mip maps data to texture buffer on graphics device: " +
                           this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
@@ -903,15 +861,12 @@ namespace wolf
                         
                         return S_FALSE;
                     }
-                }
-                
-                //release command buffer
-                _command_buffer.release();
-                
+                }*/
+                               
 				return S_OK;
             }
             
-            HRESULT _copy_mip_maps(_In_ w_command_buffer& pCmd)
+            HRESULT _copy_mip_maps()
             {
                 const std::string _trace_info = "w_texture::_copy_mip_maps";
                 
@@ -944,126 +899,149 @@ namespace wolf
                     }
                 }
                 
-                //create command buffer
-                w_command_buffer _command_buffer;
-                _command_buffer.load(this->_gDevice, 1);
-                auto _cmd = _command_buffer.get_command_at(0);
+				//create command buffer
+				w_command_buffer _command_buffer;
+				_command_buffer.load(this->_gDevice, 1);
+				_command_buffer.begin(0);
+				auto _cmd = _command_buffer.get_command_at(0);
                 
-                if (_bliting_supported)
-                {
-                    for (auto i = 1; i < this->_mip_map_levels; ++i)
-                    {
-                        VkImageBlit _image_blit = {};
-                        
-                        //source
-                        _image_blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-                        _image_blit.srcSubresource.layerCount = 1;
-                        _image_blit.srcSubresource.mipLevel = i-1;
-                        _image_blit.srcOffsets[1].x = int32_t(this->_width >> (i - 1));
-                        _image_blit.srcOffsets[1].y = int32_t(this->_height >> (i - 1));
-                        _image_blit.srcOffsets[1].z = 1;
+				if (_bliting_supported)
+				{
+					for (auto i = 1; i < this->_mip_map_levels; ++i)
+					{
+						VkImageBlit _image_blit = {};
 
-                        //destination
-                        _image_blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-                        _image_blit.dstSubresource.layerCount = 1;
-                        _image_blit.dstSubresource.mipLevel = i;
-                        _image_blit.dstOffsets[1].x = int32_t(this->_width >> i);
-                        _image_blit.dstOffsets[1].y = int32_t(this->_height >> i);
-                        _image_blit.dstOffsets[1].z = 1;
-                        
-                        VkImageSubresourceRange _mip_sub_range = {};
-                        _mip_sub_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-                        _mip_sub_range.baseMipLevel = i;
-                        _mip_sub_range.levelCount = 1;
-                        _mip_sub_range.layerCount = 1;
-                        
-                        // Put barrier inside setup command buffer
-                        VkImageMemoryBarrier _source_image_memory_barrier = {};
-                        _source_image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-                        _source_image_memory_barrier.pNext = nullptr;
-                        _source_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-                        _source_image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-                        _source_image_memory_barrier.image = this->_image_view.image;
-                        _source_image_memory_barrier.subresourceRange = _mip_sub_range;
-                        
-                        w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_source_image_memory_barrier);
+						//source
+						_image_blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+						_image_blit.srcSubresource.layerCount = 1;
+						_image_blit.srcSubresource.mipLevel = i - 1;
+						_image_blit.srcOffsets[1].x = int32_t(this->_width >> (i - 1));
+						_image_blit.srcOffsets[1].y = int32_t(this->_height >> (i - 1));
+						_image_blit.srcOffsets[1].z = 1;
 
-                        vkCmdPipelineBarrier(
-                                _cmd,
-                                VK_IMAGE_LAYOUT_UNDEFINED,
-                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                0,
-                                0, nullptr,
-                                0, nullptr,
-                                1,
-                                &_source_image_memory_barrier);
-                        
-                        //now blit from previous mip map level
-                        vkCmdBlitImage(
-                                _cmd,
-                                this->_image_view.image,
-                                VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                this->_image_view.image,
-                                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                1,
-                                &_image_blit,
-                                VK_FILTER_LINEAR);
-                        
-                        //transiton current mip level to transfer source for read in next iteration
-                        VkImageMemoryBarrier _dst_image_memory_barrier = {};
-                        _dst_image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-                        _dst_image_memory_barrier.pNext = nullptr;
-                        _dst_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-                        _dst_image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-                        _dst_image_memory_barrier.image = this->_image_view.image;
-                        _dst_image_memory_barrier.subresourceRange = _mip_sub_range;
-                        
-                        w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_dst_image_memory_barrier);
-                        
-                        vkCmdPipelineBarrier(
-                                _cmd,
-                                VK_PIPELINE_STAGE_HOST_BIT,
-                                VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                0,
-                                0, nullptr,
-                                0, nullptr,
-                                1,
-                                &_dst_image_memory_barrier);
-                        
-                    }
-                    
-                    VkImageSubresourceRange _mip_maps_subresource_range =
-                    {
-                        this->_buffer_type,                             // AspectMask
-                        0,                                              // BaseMipLevel
-                        this->_mip_map_levels,                          // LevelCount
-                        0,                                              // BaseArrayLayer
-                        this->_layer_count                              // LayerCount
-                    };
-                    
-                    //Now all mip layers are in TRANSFER_SRC layout, so transition all to SHADER_READ
-                    VkImageMemoryBarrier _image_memory_barrier = {};
-                    _image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-                    _image_memory_barrier.pNext = nullptr;
-                    _image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-                    _image_memory_barrier.newLayout = this->_desc_image_info.imageLayout;
-                    _image_memory_barrier.image = this->_image_view.image;
-                    _image_memory_barrier.subresourceRange = _mip_maps_subresource_range;
-                    
-                    w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
-                    
-                    vkCmdPipelineBarrier(
-                            _cmd,
-                            VK_PIPELINE_STAGE_HOST_BIT,
-                            VK_PIPELINE_STAGE_TRANSFER_BIT,
-                            0,
-                            0, nullptr,
-                            0, nullptr,
-                            1,
-                            &_image_memory_barrier);
-                    
-                    //VulkanExampleBase::flushCommandBuffer(blitCmd, queue, true);
-                }
+						//destination
+						_image_blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+						_image_blit.dstSubresource.layerCount = 1;
+						_image_blit.dstSubresource.mipLevel = i;
+						_image_blit.dstOffsets[1].x = int32_t(this->_width >> i);
+						_image_blit.dstOffsets[1].y = int32_t(this->_height >> i);
+						_image_blit.dstOffsets[1].z = 1;
+
+						VkImageSubresourceRange _mip_sub_range = {};
+						_mip_sub_range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+						_mip_sub_range.baseMipLevel = i;
+						_mip_sub_range.levelCount = 1;
+						_mip_sub_range.layerCount = 1;
+
+						// Put barrier inside setup command buffer
+						VkImageMemoryBarrier _source_image_memory_barrier = {};
+						_source_image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+						_source_image_memory_barrier.pNext = nullptr;
+						_source_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+						_source_image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+						_source_image_memory_barrier.image = this->_image_view.image;
+						_source_image_memory_barrier.subresourceRange = _mip_sub_range;
+
+						w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_source_image_memory_barrier);
+
+						vkCmdPipelineBarrier(
+							_cmd,
+							VK_PIPELINE_STAGE_TRANSFER_BIT,
+							VK_PIPELINE_STAGE_HOST_BIT,
+							0,
+							0, nullptr,
+							0, nullptr,
+							1,
+							&_source_image_memory_barrier);
+
+						//now blit from previous mip map level
+						vkCmdBlitImage(
+							_cmd,
+							this->_image_view.image,
+							VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+							this->_image_view.image,
+							VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+							1,
+							&_image_blit,
+							VK_FILTER_LINEAR);
+
+						//transiton current mip level to transfer source for read in next iteration
+						VkImageMemoryBarrier _dst_image_memory_barrier = {};
+						_dst_image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+						_dst_image_memory_barrier.pNext = nullptr;
+						_dst_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+						_dst_image_memory_barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+						_dst_image_memory_barrier.image = this->_image_view.image;
+						_dst_image_memory_barrier.subresourceRange = _mip_sub_range;
+
+						w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_dst_image_memory_barrier);
+
+						vkCmdPipelineBarrier(
+							_cmd,
+							VK_PIPELINE_STAGE_HOST_BIT,
+							VK_PIPELINE_STAGE_TRANSFER_BIT,
+							0,
+							0, nullptr,
+							0, nullptr,
+							1,
+							&_dst_image_memory_barrier);
+
+					}
+
+					VkImageSubresourceRange _mip_maps_subresource_range =
+					{
+						this->_buffer_type,                             // AspectMask
+						0,                                              // BaseMipLevel
+						this->_mip_map_levels,                          // LevelCount
+						0,                                              // BaseArrayLayer
+						this->_layer_count                              // LayerCount
+					};
+
+					//Now all mip layers are in TRANSFER_SRC layout, so transition all to SHADER_READ
+					VkImageMemoryBarrier _image_memory_barrier = {};
+					_image_memory_barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+					_image_memory_barrier.pNext = nullptr;
+					_image_memory_barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+					_image_memory_barrier.newLayout = this->_image_layout;
+					_image_memory_barrier.image = this->_image_view.image;
+					_image_memory_barrier.subresourceRange = _mip_maps_subresource_range;
+
+					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
+
+					vkCmdPipelineBarrier(
+						_cmd,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+						0,
+						0, nullptr,
+						0, nullptr,
+						1,
+						&_image_memory_barrier);
+
+
+					_command_buffer.end(0);
+
+					auto _hr = this->_gDevice->submit(
+						{ _cmd },
+						this->_gDevice->vk_graphics_queue,
+						nullptr,
+						{},
+						{},
+						nullptr);
+					//release command buffer
+					_command_buffer.release();
+
+					if (_hr == S_FALSE)
+					{
+						V(S_FALSE,
+							"submit commad buffer for generating mipmaps for graphics device" + this->_gDevice->device_info->get_device_name() +
+							" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
+							_trace_info,
+							3,
+							false);
+						return S_FALSE;
+					}
+				}
                 else
                 {
                     //do it with cpu(ffmpeg) or render targets
@@ -1417,13 +1395,18 @@ namespace wolf
             ULONG release()
             {
                 //release sampler
-                if(this->_sampler)
-                {
-                    vkDestroySampler(this->_gDevice->vk_device,
-                                     this->_sampler,
-                                     nullptr);
-                    this->_sampler = 0;
-                }
+				for (auto _iter : this->_samplers)
+				{
+					auto _sampler = _iter.second;
+					if (_sampler)
+					{
+						vkDestroySampler(this->_gDevice->vk_device,
+							_sampler,
+							nullptr);
+						_sampler = 0;
+					}
+				}
+				this->_samplers.clear();
                 
                 //release view
 				if (this->_image_view.view)
@@ -1468,9 +1451,15 @@ namespace wolf
                  
 #pragma region Getters
             
-			const VkDescriptorImageInfo get_descriptor_info() const
+			const VkDescriptorImageInfo get_descriptor_info(_In_ w_sampler_type pSamplerType) const
 			{
-				return this->_desc_image_info;
+				VkDescriptorImageInfo  _desc_image_info = {};
+
+				_desc_image_info.imageView = this->_image_view.view;
+				_desc_image_info.imageLayout = this->_image_layout;
+				_desc_image_info.sampler = get_sampler(pSamplerType);
+
+				return _desc_image_info;
 			}
 
             const uint32_t get_width() const
@@ -1488,9 +1477,14 @@ namespace wolf
 				return this->_usage;
 			}
 
-            VkSampler get_sampler() const
+            VkSampler get_sampler(_In_ w_sampler_type pSamplerType) const
             {
-                return this->_sampler;
+				auto _find = this->_samplers.find(pSamplerType);
+				if (_find != this->_samplers.end())
+				{
+					return _find->second;
+				}
+                return 0;
             }
                        
             w_image_view get_image_view() const
@@ -1567,12 +1561,12 @@ namespace wolf
             w_buffer                                        _staging_buffer;
 			w_image_view									_image_view;
 			VkImageAspectFlags								_buffer_type;
-            VkSampler                                       _sampler;
+			std::map<w_sampler_type, VkSampler>				_samplers;
             VkDeviceMemory                                  _memory;
             VkFormat                                        _format;
             VkImageType                                     _image_type;
             VkImageViewType                                 _image_view_type;
-            VkDescriptorImageInfo                           _desc_image_info;
+			VkImageLayout									_image_layout;
         };
     }
 }
@@ -1593,28 +1587,41 @@ w_texture::~w_texture()
 	release();
 }
 
+
+HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const bool& pGenerateMipMapsLevels,
+	_In_ const bool& pIsStaging)
+{
+	if (!this->_pimp) return S_FALSE;
+	return this->_pimp->initialize(pGDevice,
+		32,
+		32,
+		pGenerateMipMapsLevels,
+		pIsStaging ? (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+}
+
 HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ const uint32_t& pWidth,
 	_In_ const uint32_t& pHeight,
-    _In_ const uint32_t& pMipMapLevels,
+	_In_ const bool& pGenerateMipMapsLevels,
     _In_ const bool& pIsStaging)
 {
     if (!this->_pimp) return S_FALSE;
     return this->_pimp->initialize(pGDevice,
         pWidth,
         pHeight,
-        pMipMapLevels,
+		pGenerateMipMapsLevels,
         pIsStaging ? (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 }
 
 HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const uint32_t& pWidth,
     _In_ const uint32_t& pHeight,
-    _In_ const uint32_t& pMipMapLevels,
+	_In_ const bool& pGenerateMipMapsLevels,
 	_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
 {
     if (!this->_pimp) return S_FALSE;
-    return this->_pimp->initialize(pGDevice, pWidth, pHeight, pMipMapLevels, pMemoryPropertyFlags);
+    return this->_pimp->initialize(pGDevice, pWidth, pHeight, pGenerateMipMapsLevels, pMemoryPropertyFlags);
 }
 
 HRESULT w_texture::load()

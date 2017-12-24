@@ -168,25 +168,28 @@ namespace wolf
 		struct w_device_info
 		{
 		public:
-			w_device_info(_In_ const uint32_t& pDeviceID, _In_ const uint32_t& pDeviceVendorID, _In_z_ const char*  pDeviceName)
+			w_device_info(_In_ VkPhysicalDeviceProperties* pDeviceProperties)
 			{
-				this->_device_id = pDeviceID;
-				this->_device_vendor_id = pDeviceVendorID;
-				this->_device_name = pDeviceName;
+				this->_device_properties = pDeviceProperties;
 			}
 
-			const uint32_t              get_device_id() const { return this->_device_id; }
-			const std::string           get_device_name() const { return this->_device_name; }
-			const uint32_t				get_device_vendor_id() const { return this->_device_vendor_id; }
+			const uint32_t              get_device_id() const { return this->_device_properties->deviceID; }
+			const std::string           get_device_name() const { return this->_device_properties->deviceName; }
+			const uint32_t				get_device_vendor_id() const { return this->_device_properties->vendorID; }
 
 #ifdef __VULKAN__
 			VkPhysicalDeviceFeatures*   device_features = nullptr;
 			std::vector<const char*>    device_extensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+			
 #endif
+
+			void release()
+			{
+				SAFE_DELETE(this->_device_properties);
+			}
+
 		private:
-			uint32_t                    _device_id = 0;
-			std::string                 _device_name = "unknown";
-			uint32_t					_device_vendor_id = 0;
+			VkPhysicalDeviceProperties*  _device_properties;
 		};
 		
 		//contains graphics device which performs primitive-based rendering
@@ -220,7 +223,7 @@ namespace wolf
                                  _In_ const VkPipelineStageFlags*           pWaitDstStageMask,
                                  _In_ std::vector<VkSemaphore>              pWaitForSemaphores,
                                  _In_ std::vector<VkSemaphore>              pSignalForSemaphores,
-                                 _In_ w_fences&                             pFence);
+                                 _In_ w_fences*                             pFence);
             
             /*
                 capture image buffer's data and save to D-RAM and make it accessable by CPU, 

@@ -255,7 +255,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
                      &_wait_dst_stage_mask[0],
                      _wait_semaphors,
                      { *_output_window->vk_rendering_done_semaphore.get() },
-                     this->_draw_fence) == S_FALSE)
+                     &this->_draw_fence) == S_FALSE)
     {
         V(S_FALSE, "submiting queue for drawing gui", _trace_info, 3, true);
     }
