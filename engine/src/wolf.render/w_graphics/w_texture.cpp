@@ -89,12 +89,12 @@ namespace wolf
 					return S_FALSE;
 				}
 
-				_hr = _create_image_view();
-				if (_hr == S_FALSE) return S_FALSE;
-
 				_hr = _create_sampler();
 				if (_hr == S_FALSE) return S_FALSE;
 				
+				_hr = _create_image_view();
+				if (_hr == S_FALSE) return S_FALSE;
+
 				return S_OK;
 			}
 
@@ -228,10 +228,6 @@ namespace wolf
 					return S_FALSE;
 				}
 
-				_hr = _create_image_view();
-				if (_hr == S_FALSE) return S_FALSE;
-
-
 				//copy data to texture
 				if (_rgba)
 				{
@@ -257,6 +253,9 @@ namespace wolf
                 _hr = _create_sampler();
                 if (_hr == S_FALSE) return S_FALSE;
                 
+				_hr = _create_image_view();
+				if (_hr == S_FALSE) return S_FALSE;
+
 				return S_OK;
 			}
 
@@ -278,9 +277,6 @@ namespace wolf
 						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
 					return S_FALSE;
 				}
-
-                _hr = _create_image_view();
-                if (_hr == S_FALSE) return S_FALSE;
                 
                 _hr = copy_data_to_texture_2D(pRGBAData);
                 if (_hr == S_FALSE) return S_FALSE;
@@ -288,6 +284,9 @@ namespace wolf
                 _hr = _create_sampler();
                 if (_hr == S_FALSE) return S_FALSE;
                 
+				_hr = _create_image_view();
+				if (_hr == S_FALSE) return S_FALSE;
+
                 return S_OK;
             }
 
@@ -423,8 +422,8 @@ namespace wolf
 					{                                                     // SubresourceRange
 						this->_buffer_type,										// aspectMask
 						0,                                                      // baseMipLevel
-						1,                                                      // levelCount
-						0,                                                      // baseArrayLayer
+						this->_mip_map_levels,                                  // levelCount
+						0,														// baseArrayLayer
 						this->_layer_count                                      // layerCount
 					}
 				};
@@ -464,9 +463,10 @@ namespace wolf
 				_sampler_create_info.maxAnisotropy = 1.0;
 				_sampler_create_info.anisotropyEnable = VK_FALSE;
 				_sampler_create_info.unnormalizedCoordinates = VK_FALSE;
-
+								
 				VkSampler __sampler = 0;
 
+				//create sampler without mipmap and anistropy
 				auto _hr = vkCreateSampler(
 					this->_gDevice->vk_device,
 					&_sampler_create_info,
@@ -474,10 +474,61 @@ namespace wolf
 					&__sampler);
 				if (_hr)
 				{
-					V(S_FALSE, "creating sampler without mip map and anisotropy", this->_name, false, true);
+					V(S_FALSE, "creating sampler without mip map and without anisotropy", this->_name, false, true);
 					return S_FALSE;
 				}
 				this->_samplers.insert({ w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY, __sampler });
+
+				//create sampler with mipmap and without anistropy
+				__sampler = 0;
+				_sampler_create_info.maxLod = static_cast<float>(this->_mip_map_levels);
+				_hr = vkCreateSampler(
+					this->_gDevice->vk_device,
+					&_sampler_create_info,
+					nullptr,
+					&__sampler);
+				if (_hr)
+				{
+					V(S_FALSE, "creating sampler with mip map and without anisotropy", this->_name, false, true);
+					return S_FALSE;
+				}
+				this->_samplers.insert({ w_sampler_type::MIPMAP_AND_NO_ANISOTROPY, __sampler });
+
+				//create sampler with mipmap and anistropy
+				__sampler = 0;
+				if (this->_gDevice->device_info->device_features->samplerAnisotropy)
+				{
+					_sampler_create_info.maxAnisotropy = this->_gDevice->device_info->device_properties->limits.maxSamplerAnisotropy;
+					_sampler_create_info.anisotropyEnable = VK_TRUE;
+
+					_hr = vkCreateSampler(
+						this->_gDevice->vk_device,
+						&_sampler_create_info,
+						nullptr,
+						&__sampler);
+					if (_hr)
+					{
+						V(S_FALSE, "creating sampler with mip map and with anisotropy", this->_name, false, true);
+						return S_FALSE;
+					}
+
+					this->_samplers.insert({ w_sampler_type::MIPMAP_AND_ANISOTROPY, __sampler });
+
+					//create sampler with no mipmap and anistropy
+					__sampler = 0;
+					_sampler_create_info.maxLod = 0;					
+					_hr = vkCreateSampler(
+						this->_gDevice->vk_device,
+						&_sampler_create_info,
+						nullptr,
+						&__sampler);
+					if (_hr)
+					{
+						V(S_FALSE, "creating sampler without mip map and with anisotropy", this->_name, false, true);
+						return S_FALSE;
+					}
+					this->_samplers.insert({ w_sampler_type::NO_MIPMAP_AND_ANISOTROPY, __sampler });
+				}
 
 				return S_OK;
 			}
@@ -1507,6 +1558,11 @@ namespace wolf
                 return this->_format;
             }
             
+			const uint32_t get_mip_maps_level() const
+			{
+				return this->_mip_map_levels;
+			}
+
 #pragma endregion
               
 #pragma region Setters
@@ -1856,10 +1912,10 @@ const VkImageUsageFlags w_texture::get_usage() const
 	return this->_pimp->get_usage();
 }
 
-VkSampler w_texture::get_sampler() const
+VkSampler w_texture::get_sampler(_In_ w_sampler_type pSamplerType) const
 {
     if(!this->_pimp) return 0;
-    return this->_pimp->get_sampler();
+    return this->_pimp->get_sampler(pSamplerType);
 }
 
 //get image and view resources
@@ -1890,10 +1946,16 @@ VkFormat w_texture::get_format() const
     return this->_pimp->get_format();
 }
 
-const VkDescriptorImageInfo w_texture::get_descriptor_info() const
+const VkDescriptorImageInfo w_texture::get_descriptor_info(_In_ w_sampler_type pSamplerType) const
 {
     if(!this->_pimp) return VkDescriptorImageInfo();
-    return this->_pimp->get_descriptor_info();
+    return this->_pimp->get_descriptor_info(pSamplerType);
+}
+
+const uint32_t w_texture::get_mip_maps_level() const
+{
+	if (!this->_pimp) return 0;
+	return this->_pimp->get_mip_maps_level();
 }
 
 #pragma endregion

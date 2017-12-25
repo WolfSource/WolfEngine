@@ -1076,7 +1076,7 @@ ULONG w_graphics_device::release()
 		auto _output_window = &(this->output_presentation_windows.at(i));
        
         //release shared objects between cpu and gpu
-#pragma region Release Shared Objs CPU-GPU
+#pragma region Release Shared Objs CPU-GPU Mapping
         if (_output_window->objs_between_cpu_gpu)
         {
             auto _shared_obj = _output_window->objs_between_cpu_gpu;
@@ -1172,6 +1172,8 @@ ULONG w_graphics_device::release()
                          nullptr);
     this->vk_command_allocator_pool = 0;
     
+	SAFE_RELEASE(this->device_info);
+
 	//release vulkan resources
 	vkDestroyDevice(this->vk_device, nullptr);
     
@@ -1912,7 +1914,7 @@ namespace wolf
 					auto _gDevice = std::make_shared<w_graphics_device>();
 					_gDevice->vk_physical_device = _gpus[i];
 
-					auto _device_info = new (std::nothrow) w_device_info(_device_properties);
+					auto _device_info = new (std::nothrow) w_device_info();
 					if (!_device_info)
 					{
 						logger.write(_msg);
@@ -1921,6 +1923,7 @@ namespace wolf
 						release();
 						std::exit(EXIT_FAILURE);
 					}
+					_device_info->device_properties = _device_properties;
 					_device_info->device_features = &_gDevice->vk_physical_device_features;
 
                     //get device features

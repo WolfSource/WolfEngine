@@ -9,8 +9,8 @@ using namespace wolf::graphics;
 static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
-static float sPush = true;
-static float sPushConstantColorEdit[4] = { 0.4f, 0.7f, 0.0f, 1.0f };
+static int sTextureLOD = 0;
+static int sTextureMaxLOD = 0;
 
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
     w_game(pRunningDirectory, pAppName)
@@ -29,7 +29,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 #ifdef __WIN32
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = true;
+    _config.debug_gpu = false;
     w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -175,9 +175,9 @@ void scene::load()
     }
 
 #ifdef WIN32
-    auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/12_push_constants/src/content/";
+    auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/14_mipmaps/src/content/";
 #elif defined(__APPLE__)
-    auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/12_push_constants/src/content/";
+    auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/14_mipmaps/src/content/";
 #endif // WIN32
 
     //loading vertex shaders
@@ -223,19 +223,57 @@ void scene::load()
         V(S_FALSE, "loading Logo.jpg texture", _trace_info, 3, true);
     }
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	sTextureMaxLOD = this->_texture.get_mip_maps_level();
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	//load vertex shader uniform
+	_hr = this->_u0.load(_gDevice);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading vertex shader uniform", _trace_info, 3, true);
+	}
+
+	//update uniform's data
+	this->_u0.data.texture_lod = 1;
+	_hr = this->_u0.update();
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "updating uniform", _trace_info, 3, true);
+	}
+
     //just we need vertex position color
     this->_mesh.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_UV);
 
-    w_shader_binding_param _shader_param;
-    _shader_param.index = 0;
-    _shader_param.type = w_shader_binding_type::SAMPLER;
-    _shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
-    _shader_param.image_info = this->_texture.get_descriptor_info();
+	std::vector<w_shader_binding_param> _shader_params;
 
-    _hr = this->_shader.set_shader_binding_params(
-    {
-        _shader_param
-    });
+    w_shader_binding_param _shader_param;
+	_shader_param.index = 0;
+	_shader_param.type = w_shader_binding_type::UNIFORM;
+	_shader_param.stage = w_shader_stage::VERTEX_SHADER;
+	_shader_param.buffer_info = this->_u0.get_descriptor_info();
+	_shader_params.push_back(_shader_param);
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	auto _image_descriptor_info = this->_texture.get_descriptor_info(w_sampler_type::MIPMAP_AND_ANISOTROPY);
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	_shader_param.index = 1;
+	_shader_param.type = w_shader_binding_type::SAMPLER2D;
+	_shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
+	_shader_param.image_info = _image_descriptor_info;
+	_shader_params.push_back(_shader_param);
+
+    _hr = this->_shader.set_shader_binding_params(_shader_params);
     if (_hr == S_FALSE)
     {
         release();
@@ -250,11 +288,6 @@ void scene::load()
         _pipeline_cache_name.clear();
     }
 
-    VkPushConstantRange _push_constants_buffer_range;
-    _push_constants_buffer_range.offset = 0;
-    _push_constants_buffer_range.size = static_cast<uint32_t>(4 * sizeof(float));
-    _push_constants_buffer_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
     auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
     _hr = this->_pipeline.load(_gDevice,
         this->_mesh.get_vertex_binding_attributes(),
@@ -263,10 +296,7 @@ void scene::load()
         this->_shader.get_shader_stages(),
         _descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
         { this->_viewport },
-        { this->_viewport_scissor },
-        "pipeline_cache",
-        {},
-        { _push_constants_buffer_range });
+        { this->_viewport_scissor });
     if (_hr == S_FALSE)
     {
         release();
@@ -307,6 +337,8 @@ void scene::load()
         release();
         V(S_FALSE, "loading mesh", _trace_info, 3, true);
     }
+
+	_build_draw_command_buffers(_gDevice);
 }
 
 HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -329,14 +361,6 @@ HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics
                 0.0f);
             {
                 auto _description_set = this->_shader.get_descriptor_set();
-				
-				vkCmdPushConstants(
-                    _cmd,
-                    this->_pipeline.get_layout_handle(),
-                    VK_SHADER_STAGE_VERTEX_BIT,
-                    0,
-                    static_cast<uint32_t>(4 * sizeof(float)),
-                    &sPushConstantColorEdit);
                 
                 this->_pipeline.bind(_cmd, &_description_set);
 
@@ -390,6 +414,22 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         _update_gui();
     });
     
+	//we must update uniform
+	bool _update_uniform = false;
+	if (this->_u0.data.texture_lod != sTextureLOD)
+	{
+		this->_u0.data.texture_lod = sTextureLOD;
+		_update_uniform = true;
+	}
+
+	if (_update_uniform)
+	{
+		if (this->_u0.update() == S_FALSE)
+		{
+			V(S_FALSE, "updating uniform", _trace_info, 3, false);
+		}
+	}
+
 	w_game::update(pGameTime);
 }
 
@@ -402,12 +442,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _gDevice = this->graphics_devices[0];
 	auto _output_window = &(_gDevice->output_presentation_windows[0]);
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
-
-    if (sPush)
-    {
-        _build_draw_command_buffers(_gDevice);
-        sPush = false;
-    }
 
     _build_gui_command_buffers(_gDevice);
 
@@ -476,6 +510,8 @@ ULONG scene::release()
 	this->_mesh.release();
     this->_texture.release();
 
+	this->_u0.release();
+
 	return w_game::release();
 }
 
@@ -511,9 +547,9 @@ bool scene::_update_gui()
         sTotalTimeTimeInSec,
         wolf::inputs_manager.mouse.pos_x, wolf::inputs_manager.mouse.pos_y);
 
-    if (ImGui::ColorEdit4("Pick Color", sPushConstantColorEdit))
+    if (ImGui::SliderInt("Texture LOD", &sTextureLOD, 0, sTextureMaxLOD))
     {
-        sPush = true;
+		//logger.write("uniform");
     }
 
     ImGui::End();
@@ -521,5 +557,4 @@ bool scene::_update_gui()
     return true;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-//The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++

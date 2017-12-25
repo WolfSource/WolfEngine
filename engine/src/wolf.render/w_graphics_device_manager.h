@@ -168,16 +168,16 @@ namespace wolf
 		struct w_device_info
 		{
 		public:
-			w_device_info(_In_ VkPhysicalDeviceProperties* pDeviceProperties)
+			w_device_info()
 			{
-				this->_device_properties = pDeviceProperties;
 			}
 
-			const uint32_t              get_device_id() const { return this->_device_properties->deviceID; }
-			const std::string           get_device_name() const { return this->_device_properties->deviceName; }
-			const uint32_t				get_device_vendor_id() const { return this->_device_properties->vendorID; }
+			const uint32_t              get_device_id() const { return this->device_properties->deviceID; }
+			const std::string           get_device_name() const { return this->device_properties->deviceName; }
+			const uint32_t				get_device_vendor_id() const { return this->device_properties->vendorID; }
 
 #ifdef __VULKAN__
+			VkPhysicalDeviceProperties* device_properties = nullptr;
 			VkPhysicalDeviceFeatures*   device_features = nullptr;
 			std::vector<const char*>    device_extensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 			
@@ -185,11 +185,10 @@ namespace wolf
 
 			void release()
 			{
-				SAFE_DELETE(this->_device_properties);
+				this->device_features = nullptr;
+				SAFE_DELETE(this->device_properties);
+				device_extensions.clear();
 			}
-
-		private:
-			VkPhysicalDeviceProperties*  _device_properties;
 		};
 		
 		//contains graphics device which performs primitive-based rendering

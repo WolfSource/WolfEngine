@@ -217,7 +217,7 @@ void scene::load()
 
 	w_shader_binding_param _shader_param;
 	_shader_param.index = 0;
-	_shader_param.type = w_shader_binding_type::SAMPLER;
+	_shader_param.type = w_shader_binding_type::SAMPLER2D;
 	_shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project

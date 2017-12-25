@@ -23,7 +23,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -195,7 +195,7 @@ void scene::load()
 
     w_shader_binding_param _shader_param;
     _shader_param.index = 0;
-    _shader_param.type = w_shader_binding_type::SAMPLER;
+    _shader_param.type = w_shader_binding_type::SAMPLER2D;
     _shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
     _shader_param.image_info = this->_texture.get_descriptor_info();
     _shader_params.push_back(_shader_param);

@@ -139,14 +139,14 @@ namespace wolf
                 //binding 0 for font's image
                 _param.index = 0;
                 _param.stage = w_shader_stage::FRAGMENT_SHADER;
-                _param.type = w_shader_binding_type::SAMPLER;
+                _param.type = w_shader_binding_type::SAMPLER2D;
                 _param.image_info = this->_font_texture->get_descriptor_info();
                 _shader_params.push_back(_param);
 
                 //binding 1 for icon's image
                 _param.index = 1;
                 _param.stage = w_shader_stage::FRAGMENT_SHADER;
-                _param.type = w_shader_binding_type::SAMPLER;
+                _param.type = w_shader_binding_type::SAMPLER2D;
                 _param.image_info = this->_images_texture ? this->_images_texture->get_descriptor_info() 
                     : w_texture::default_texture->get_descriptor_info();
                 _shader_params.push_back(_param);
@@ -154,7 +154,7 @@ namespace wolf
                 //binding 2 for media player's data
                 _param.index = 2;
                 _param.stage = w_shader_stage::FRAGMENT_SHADER;
-                _param.type = w_shader_binding_type::SAMPLER;
+                _param.type = w_shader_binding_type::SAMPLER2D;
                 _param.image_info = this->_media_player_texture ? this->_media_player_texture->get_descriptor_info()
                     : w_texture::default_texture->get_descriptor_info();
                 _shader_params.push_back(_param);

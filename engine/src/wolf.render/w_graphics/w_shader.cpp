@@ -292,7 +292,7 @@ namespace wolf
                     });
                 }
                 break;
-                case w_shader_binding_type::SAMPLER:
+                case w_shader_binding_type::SAMPLER2D:
                 {
                     pWriteDescriptorSets.push_back(
                     {
@@ -308,6 +308,44 @@ namespace wolf
                     });
                 }
                 break;
+				case w_shader_binding_type::IMAGE:
+				{
+					//Don't need sampler for IMAGE 
+					auto _binding_param = pBindingParam;
+					_binding_param.image_info.sampler = 0;
+					pWriteDescriptorSets.push_back(
+					{
+						VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
+						nullptr,                                        // Next
+						pDescriptoSet,                                  // DstSet
+						pBindingParam.index,                            // DstBinding
+						0,                                              // DstArrayElement
+						1,                                              // DescriptorCount
+						VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,				// DescriptorType
+						&pBindingParam.image_info,                      // ImageInfo
+						nullptr,
+					});
+				}
+				break;
+				case w_shader_binding_type::SAMPLER:
+				{
+					//Don't need image view for SAMPLER
+					auto _binding_param = pBindingParam;
+					_binding_param.image_info.imageView = 0;
+					pWriteDescriptorSets.push_back(
+					{
+						VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,         // Type
+						nullptr,                                        // Next
+						pDescriptoSet,                                  // DstSet
+						_binding_param.index,                            // DstBinding
+						0,                                              // DstArrayElement
+						1,                                              // DescriptorCount
+						VK_DESCRIPTOR_TYPE_SAMPLER,						// DescriptorType
+						&_binding_param.image_info,                     // ImageInfo
+						nullptr,
+					});
+				}
+				break;
                 }
             }
 
@@ -343,7 +381,9 @@ namespace wolf
                 _In_    const w_shader_binding_param& pParam,
                 _Inout_ uint32_t& pNumberOfUniforms,
                 _Inout_ uint32_t& pNumberOfStorages,
-                _Inout_ uint32_t& pNumberOfSamplers,
+                _Inout_ uint32_t& pNumberOfSampler2Ds,
+				_Inout_ uint32_t& pNumberOfSamplers,
+				_Inout_ uint32_t& pNumberOfImages,
                 _Inout_ std::vector<VkDescriptorSetLayoutBinding>& pDescriptorSetLayoutBindings)
             {
                 switch (pParam.type)
@@ -374,9 +414,9 @@ namespace wolf
                     });
                 }
                 break;
-                case SAMPLER:
+                case SAMPLER2D:
                 {
-                    pNumberOfSamplers++;
+					pNumberOfSampler2Ds++;
                     pDescriptorSetLayoutBindings.push_back(
                     {
                         pParam.index,                                       // Binding
@@ -387,6 +427,32 @@ namespace wolf
                     });
                 }
                 break;
+				case IMAGE:
+				{
+					pNumberOfImages++;
+					pDescriptorSetLayoutBindings.push_back(
+					{
+						pParam.index,                                       // Binding
+						VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,					// DescriptorType
+						1,                                                  // DescriptorCount
+						(VkShaderStageFlags)pParam.stage,                   // StageFlags
+						nullptr                                             // ImmutableSamplers
+					});
+				}
+				break;
+				case SAMPLER:
+				{
+					pNumberOfSamplers++;
+					pDescriptorSetLayoutBindings.push_back(
+					{
+						pParam.index,                                       // Binding
+						VK_DESCRIPTOR_TYPE_SAMPLER,							// DescriptorType
+						1,                                                  // DescriptorCount
+						(VkShaderStageFlags)pParam.stage,                   // StageFlags
+						nullptr                                             // ImmutableSamplers
+					});
+				}
+				break;
                 }
             }
 
@@ -454,7 +520,9 @@ namespace wolf
 
                 uint32_t _number_of_uniforms = 0;
                 uint32_t _number_of_storages = 0;
-                uint32_t _number_of_samplers = 0;
+                uint32_t _number_of_sampler2ds = 0;
+				uint32_t _number_of_images = 0;
+				uint32_t _number_of_samplers = 0;
 
                 std::vector<VkDescriptorSetLayoutBinding> _layout_bindings;
                 std::vector<VkDescriptorSetLayoutBinding> _compute_layout_bindings;
@@ -467,16 +535,20 @@ namespace wolf
                             _iter,
                             _number_of_uniforms,
                             _number_of_storages,
-                            _number_of_samplers,
+                            _number_of_sampler2ds,
+							_number_of_samplers,
+							_number_of_images,
                             _compute_layout_bindings);
                     }
                     else
                     {
                         _create_descriptor_layout_bindings(
                             _iter,
-                            _number_of_uniforms,
-                            _number_of_storages,
-                            _number_of_samplers,
+							_number_of_uniforms,
+							_number_of_storages,
+							_number_of_sampler2ds,
+							_number_of_samplers,
+							_number_of_images,
                             _layout_bindings);
                     }
                 }
@@ -498,14 +570,30 @@ namespace wolf
                         _number_of_storages                                 // DescriptorCount
                     });
                 }
-                if (_number_of_samplers)
+                if (_number_of_sampler2ds)
                 {
                     _descriptor_pool_sizes.push_back(
                     {
                         VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,          // Type
-                        _number_of_samplers                                 // DescriptorCount
+                        _number_of_sampler2ds                               // DescriptorCount
                     });
                 }
+				if (_number_of_samplers)
+				{
+					_descriptor_pool_sizes.push_back(
+					{
+						VK_DESCRIPTOR_TYPE_SAMPLER,							// Type
+						_number_of_samplers                                 // DescriptorCount
+					});
+				}
+				if (_number_of_images)
+				{
+					_descriptor_pool_sizes.push_back(
+					{
+						VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE,					// Type
+						_number_of_images                                   // DescriptorCount
+					});
+				}
 
                 if (_descriptor_pool_sizes.size())
                 {

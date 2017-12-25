@@ -15,8 +15,10 @@
 
 enum w_shader_binding_type
 {
-    SAMPLER = 0,
+    SAMPLER2D = 0,
+	SAMPLER,
     UNIFORM,
+	IMAGE,
     STORAGE
 };
 

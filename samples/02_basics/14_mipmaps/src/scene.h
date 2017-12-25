@@ -24,6 +24,7 @@
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_texture.h>
 #include <w_graphics/w_imgui.h>
+#include <w_graphics/w_uniform.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -84,6 +85,13 @@ private:
     
     wolf::graphics::w_mesh											_mesh;
     wolf::graphics::w_texture										_texture;
+
+	struct U0
+	{
+		float	texture_lod;
+		int 	sampler_index;
+	};
+	wolf::graphics::w_uniform<U0>                                   _u0;
 };
 
 #endif
