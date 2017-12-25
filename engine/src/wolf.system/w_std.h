@@ -36,6 +36,10 @@
 #define _In_z_
 #endif
 
+#ifndef _In_opt_z_
+#define _In_opt_z_
+#endif
+
 #ifndef _Out_
 #define _Out_
 #endif
@@ -46,6 +50,14 @@
 
 #ifndef _Inout_
 #define _Inout_
+#endif
+
+#ifndef _Inout_z_
+#define _Inout_z_
+#endif
+
+#ifndef _Inout_opt_z_
+#define _Inout_opt_z_
 #endif
 
 #ifdef __cplusplus

@@ -74,5 +74,8 @@
       <FileRef
          location = "group:02_basics/13_render_to_target/builds/xcode/13_render_to_target.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:02_basics/14_mipmaps/builds/xcode/14_mipmaps.xcodeproj">
+      </FileRef>
    </Group>
 </Workspace>

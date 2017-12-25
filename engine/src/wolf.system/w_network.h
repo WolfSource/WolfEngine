@@ -17,7 +17,6 @@
 #include "w_object.h"
 #include "w_signal.h"
 
-
 #ifdef __GNUC__
 #pragma GCC visibility push(default)
 #endif
@@ -58,7 +57,7 @@ namespace wolf
                 @param pBuffer, the buffer which will be received 
                 @return, number of bytes received 
             */
-            WSYS_EXP static int receive(_In_ const int& pSocketID, _In_opt_z_ char** pBuffer);
+            WSYS_EXP static int receive(_In_ const int& pSocketID, _Inout_z_ char** pBuffer);
 
 		private:
             typedef system::w_object            _super;

@@ -217,6 +217,7 @@
 		2C91879F1F5191720021C8FA /* libluajit.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C91879E1F5191720021C8FA /* libluajit.dylib */; };
 		2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C94BC241FEE5C62007338F7 /* w_network.cpp */; };
 		2C94BC271FEE5C62007338F7 /* w_network.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C94BC251FEE5C62007338F7 /* w_network.h */; };
+		2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C94BC281FF1A0E9007338F7 /* libnanomsg.a */; };
 		2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */; };
 		2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */; };
 		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
@@ -658,6 +659,7 @@
 		2C91879E1F5191720021C8FA /* libluajit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libluajit.dylib; path = ../../../dependencies/luaJIT/lib/osx/debug/libluajit.dylib; sourceTree = "<group>"; };
 		2C94BC241FEE5C62007338F7 /* w_network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_network.cpp; path = ../../../src/wolf.system/w_network.cpp; sourceTree = "<group>"; };
 		2C94BC251FEE5C62007338F7 /* w_network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_network.h; path = ../../../src/wolf.system/w_network.h; sourceTree = "<group>"; };
+		2C94BC281FF1A0E9007338F7 /* libnanomsg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnanomsg.a; path = ../../../dependencies/nanomsg/lib/osx/debug/libnanomsg.a; sourceTree = "<group>"; };
 		2C98996B1E9B512F002FE161 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../src/wolf.system/stb_image.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE5BAF51E64307D005E0F45 /* glm_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extention.h; path = ../../../src/wolf.system/glm_extention.h; sourceTree = "<group>"; };
@@ -734,6 +736,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */,
 				2C91879F1F5191720021C8FA /* libluajit.dylib in Frameworks */,
 				2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */,
 				2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */,
@@ -1227,6 +1230,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C94BC281FF1A0E9007338F7 /* libnanomsg.a */,
 				2C91879E1F5191720021C8FA /* libluajit.dylib */,
 				2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */,
 				2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */,
@@ -1775,8 +1779,10 @@
 					"$(SRCROOT)/../../../src/wolf.system/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
+					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
 				);
 				LIBRARY_SEARCH_PATHS = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/debug/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1802,7 +1808,13 @@
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
 				);
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
+					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
+					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
+				);
 				LIBRARY_SEARCH_PATHS = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/release/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
