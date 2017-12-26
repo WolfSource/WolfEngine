@@ -18,8 +18,17 @@ WOLF_MAIN()
 {
     const wchar_t* _name = L"10_networking_one_way_pusher";
     WOLF_INIT(_name);
-
-   
+    
+    w_signal<void(const int&)> on_connection_established;
+    on_connection_established += [](const int& pSocket)
+    {
+        logger.write("pusher launched with socket ID: " + std::to_string(pSocket));
+    };
+    
+    w_network _pusher;
+    _pusher.setup_one_way_pusher("http://127.0.0.1:1234", on_connection_established);
+    
+    _pusher.release();
     
     logger.release();
 

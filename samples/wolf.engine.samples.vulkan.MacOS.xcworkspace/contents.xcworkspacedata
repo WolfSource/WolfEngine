@@ -31,6 +31,9 @@
       <FileRef
          location = "group:01_system/09_memory/builds/xcode/09_memory.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:01_system/10_networking_one_way_pusher/builds/xcode/10_networking_one_way_pusher.xcodeproj">
+      </FileRef>
    </Group>
    <Group
       location = "container:"
