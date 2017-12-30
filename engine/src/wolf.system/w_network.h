@@ -26,13 +26,14 @@ namespace wolf
 	namespace system
 	{
         class w_network_pimp;
-		class w_network : wolf::system::w_object
+		class w_network : w_object
 		{
 		public:
 
             WSYS_EXP w_network();
             WSYS_EXP ~w_network();
 
+            
             WSYS_EXP HRESULT setup_one_way_pusher(
                 _In_z_ const char* pURL, 
                 _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
@@ -41,6 +42,24 @@ namespace wolf
 				_In_z_ const char* pURL,
 				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
 
+            WSYS_EXP HRESULT setup_two_way_server(
+                _In_z_ const char* pURL,
+                _In_ const int& pReceiveTime,
+                _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
+
+            WSYS_EXP HRESULT setup_two_way_client(
+                _In_z_ const char* pURL,
+                _In_ const int& pReceiveTime,
+                _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
+            
+            WSYS_EXP HRESULT setup_broadcast_publisher_server(
+                _In_z_ const char* pURL,
+                _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
+            
+            WSYS_EXP HRESULT setup_broadcast_subscription_client(
+                _In_z_ const char* pURL,
+                _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
+            
             WSYS_EXP ULONG release();
 
             /*

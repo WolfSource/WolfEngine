@@ -49,13 +49,20 @@ namespace wolf
                     (*i)(std::forward<Args>(pArgs)...);
                 }
             }
+            
+            w_signal& operator = (w_slot pSlot)
+            {
+                this->_slots.clear();
+                this->_slots.push_back(pSlot);
+                return *this;
+            }
 
             w_signal& operator += (w_slot pSlot)
             {
                 this->_slots.push_back(pSlot);
                 return *this;
             }
-
+            
             w_signal& operator -= (w_slot pSlot)
             {
                 for (auto i = this->_slots.begin(); i != this->_slots.end(); ++i)

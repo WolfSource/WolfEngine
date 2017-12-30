@@ -34,6 +34,9 @@
       <FileRef
          location = "group:01_system/10_networking_one_way_pusher/builds/xcode/10_networking_one_way_pusher.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:01_system/11_networking_one_way_puller/builds/xcode/11_networking_one_way_puller.xcodeproj">
+      </FileRef>
    </Group>
    <Group
       location = "container:"
