@@ -31,10 +31,10 @@
   <ItemGroup>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C61F2BB9-C541-4358-A616-EBC90546392D}</ProjectGuid>
+    <ProjectGuid>{73F3F091-E424-4F6C-81D9-9BDF96F5F4A7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>_11_networking_one_way_puller</RootNamespace>
-    <ProjectName>11_networking_one_way_puller.Win32</ProjectName>
+    <RootNamespace>_12_networking_two_way_server</RootNamespace>
+    <ProjectName>12_networking_two_way_server.Win32</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

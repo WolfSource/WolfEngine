@@ -4,6 +4,7 @@
 	Website			 : http://WolfSource.io
 	Name			 : main.cpp
 	Description		 : This sample shows how to create one way server side pusher in Wolf Engine
+					   make sure launch 10_networking_one_way_pusher simultaneously	
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
 */
 
