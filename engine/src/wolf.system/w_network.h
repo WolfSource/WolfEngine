@@ -78,6 +78,9 @@ namespace wolf
             */
             WSYS_EXP static int receive(_In_ const int& pSocketID, _Inout_z_ char** pBuffer);
 
+			//free message buffer
+			WSYS_EXP static ULONG free_buffer(_In_z_ char* pBuffer);
+
 		private:
             typedef system::w_object            _super;
             w_network_pimp*                     _pimp;

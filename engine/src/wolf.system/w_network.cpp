@@ -138,7 +138,7 @@ HRESULT w_network::setup_two_way_client(
     return S_FALSE;
 }
 
-WSYS_EXP HRESULT w_network::setup_broadcast_publisher_server(
+HRESULT w_network::setup_broadcast_publisher_server(
     _In_z_ const char* pURL,
     _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
 {
@@ -146,7 +146,7 @@ WSYS_EXP HRESULT w_network::setup_broadcast_publisher_server(
     return this->_pimp->initialize(pURL, AF_SP, NN_PUB, false, pOnBindEstablishedCallback);
 }
 
-WSYS_EXP HRESULT w_network::setup_broadcast_subscription_client(
+HRESULT w_network::setup_broadcast_subscription_client(
     _In_z_ const char* pURL,
     _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
 {
@@ -156,6 +156,17 @@ WSYS_EXP HRESULT w_network::setup_broadcast_subscription_client(
         return this->_pimp->set_socket_option(NN_SUB, NN_SUB_SUBSCRIBE, 0, 0);
     }
     return S_FALSE;
+}
+
+ULONG w_network::free_buffer(_In_z_ char* pBuffer)
+{
+	const std::string _trace_info = "w_network::free_buffer";
+	if (nn_freemsg(pBuffer) < 0)
+	{
+		V(S_FALSE, "free buffer", _trace_info, 3);
+		return S_FALSE;
+	}
+	return S_OK;
 }
 
 ULONG w_network::release()

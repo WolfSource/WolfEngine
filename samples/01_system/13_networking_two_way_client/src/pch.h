@@ -17,5 +17,6 @@
 #include <wolf.h>
 #include <w_network.h>
 #include <w_thread.h>
+#include <w_time_span.h>
 
 #endif
