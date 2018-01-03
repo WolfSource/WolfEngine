@@ -2,7 +2,7 @@
 #include "w_xml.h"
 #include "rapidxml/rapidxml_print.hpp"
 #include <fstream>
-#include <w_convert.h>
+#include "w_convert.h"
 
 using namespace wolf::system;
 using namespace rapidxml;

@@ -281,7 +281,7 @@ void w_window::run(std::function<void(void)> const pFunc)
 }
 
 #elif defined(__linux) && !defined(__ANDROID)
-void w_window::run(std::function<void(void)>& pFunc)
+void w_window::run(std::function<void(void)> const pFunc)
 {
     xcb_generic_event_t* _e = nullptr;
     while(!this->_close)
