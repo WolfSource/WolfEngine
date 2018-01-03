@@ -1304,5 +1304,11 @@
     <Text Include="..\..\..\src\wolf.system\gli\version.txt">
       <Filter>gli</Filter>
     </Text>
+    <Text Include="..\..\..\src\wolf.system\rapidjson\license.txt">
+      <Filter>rapidjson</Filter>
+    </Text>
+    <Text Include="..\..\..\src\wolf.system\rapidxml\license.txt">
+      <Filter>rapidxml</Filter>
+    </Text>
   </ItemGroup>
 </Project>

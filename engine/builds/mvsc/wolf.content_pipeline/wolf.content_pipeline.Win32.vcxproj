@@ -156,7 +156,11 @@
     <ProjectGuid>{1C266BC7-AF7E-43E2-9CC9-4F6954295928}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Wolf_ContentPipeline_Win32</RootNamespace>
+<<<<<<< Updated upstream
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+=======
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+>>>>>>> Stashed changes
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

@@ -2358,6 +2358,9 @@ namespace wolf
                     }
 
 					pGraphicsDevices.push_back(_gDevice);
+
+					//TODO: We must handle other GPUs
+					break;
 				}
 #endif //__DX12__, __VULKAN__
 			}
