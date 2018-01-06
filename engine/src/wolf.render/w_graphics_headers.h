@@ -36,7 +36,7 @@ using Microsoft::WRL::ComPtr;
 		#endif
 	#endif
 
-    #if defined(__IOS__) || defined(__APPLE__)
+    #if defined(__iOS__) || defined(__APPLE__)
 
 #ifdef __iOS__
         #ifndef VK_USE_PLATFORM_IOS_MVK
