@@ -150,6 +150,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_attachment_buffer_desc.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_headers.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_framework">

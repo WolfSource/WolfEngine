@@ -341,6 +341,9 @@
     <None Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.inl">
       <Filter>directXmesh</Filter>
     </None>
+    <None Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\LICENSE">
+      <Filter>amd\amd_tootle</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\src\wolf.content_pipeline\directXmesh\ReadMe.txt">

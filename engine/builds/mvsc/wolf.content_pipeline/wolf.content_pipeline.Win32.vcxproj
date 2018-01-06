@@ -147,6 +147,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\LICENSE" />
     <None Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.inl" />
   </ItemGroup>
   <ItemGroup>
