@@ -20,7 +20,7 @@
 #endif
 #endif
 
-#ifdef _LINUX
+#ifdef __linux
 #define __cdecl
 #define _isnan(x) isnan(x)
 #define _finite(x) finite(x)

@@ -262,27 +262,27 @@ namespace glm
             std::atof(pResult[8].c_str()), std::atof(pResult[9].c_str()), std::atof(pResult[10].c_str()), std::atof(pResult[11].c_str()),
             std::atof(pResult[12].c_str()), std::atof(pResult[13].c_str()), std::atof(pResult[14].c_str()), std::atof(pResult[15].c_str()));
     }
+   
+    inline std::vector<glm::mat4x4> to_matrix_array(_In_ float pFloats[], _In_ const  int& pLenghtOfFloats,  _In_ const int pArraySize = 16, _In_ const int pRowSize = 4)
+   {
+         std::vector<glm::mat4x4> _mats;
 
-    inline std::vector<glm::mat4x4> to_matrix_array(_In_ float pFloats[], _In_ const int pArraySize = 16, _In_ const int pRowSize = 4)
+        for (size_t j = 0; j < pLenghtOfFloats; j += pArraySize)
+        {
+	glm::mat4x4 _mat;
+	for (int i = 0; i < pArraySize; i += pRowSize)
 	{
-		std::vector<glm::mat4x4> _mats;
-
-        auto _size = static_cast<size_t>(W_ARRAY_SIZE(pFloats));
-		for (size_t j = 0; j < _size; j += pArraySize)
-		{
-			glm::mat4x4 _mat;
-			for (int i = 0; i < pArraySize; i += pRowSize)
-			{
-				auto _index = i / 4;
-				_mat[_index][0] = pFloats[i + j];
-				_mat[_index][1] = pFloats[i + 1 + j];
-				_mat[_index][2] = pFloats[i + 2 + j];
-				_mat[_index][3] = pFloats[i + 3 + j];
-			}
-			_mats.push_back(_mat);
-		}
-		return _mats;
+                                   auto _index = i / 4;
+		_mat[_index][0] = pFloats[i + j];
+		_mat[_index][1] = pFloats[i + 1 + j];
+		_mat[_index][2] = pFloats[i + 2 + j];
+		_mat[_index][3] = pFloats[i + 3 + j];
 	}
+	_mats.push_back(_mat);
+        }
+        
+        return _mats;
+    }
     
     inline glm::vec3 rotation_from_angle_axis(_In_ const float pAxisX, _In_ const float pAxisY, _In_ const float pAxisZ, _In_ const float pAngleDegree)
     {
