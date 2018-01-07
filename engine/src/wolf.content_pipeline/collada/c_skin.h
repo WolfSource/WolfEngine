@@ -88,7 +88,7 @@ namespace wolf
 						{
 							continue;
 						}
-						_result = glm::to_matrix_array(_source->float_array.data());
+						_result = glm::to_matrix_array(_source->float_array.data(), _source->float_array.size());
 					}
 					return _result;
 				}
