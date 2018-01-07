@@ -20,12 +20,6 @@
 #endif
 #endif
 
-#ifdef __linux
-#define __cdecl
-#define _isnan(x) isnan(x)
-#define _finite(x) finite(x)
-#endif
-
 #include <vector>
 #include <map>
 #include <list>
@@ -52,6 +46,12 @@
 
 #include <w_logger.h>
 #include <w_ireleasable.h>
+
+#ifdef __linux
+#define __cdecl
+#define _isnan(x) std::isnan(x)
+#define _finite(x) finite(x)
+#endif
 
 #ifdef __WIN32
 

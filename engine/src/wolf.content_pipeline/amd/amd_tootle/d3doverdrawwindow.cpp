@@ -7,6 +7,8 @@
 #include "d3doverdrawwindow.h"
 #include "fit.h"
 
+#ifdef __WIN32
+
 typedef struct _VERTEX
 {
     float x, y, z;
@@ -890,3 +892,6 @@ FitClusters(void)
         m_fClusterSize.push_back(fSize);
     }
 }
+
+
+#endif //__WIN32

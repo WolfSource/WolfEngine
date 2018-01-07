@@ -10,14 +10,14 @@
 #define JRTEPSILON 0.00001f
 
 #include "w_cpipeline_pch.h"
+#include <w_std.h>
 
-//#include <iostream>
+//#ifdef __WIN32
+//    typedef unsigned __int64 UINT64;
+//#else
+//   typedef unsigned long long UINT64;
+//#endif
 
-#ifdef __WIN32
-    typedef unsigned __int64 UINT64;
-#else
-    typedef unsigned long long UINT64;
-#endif
 typedef unsigned int UINT;
 typedef unsigned short USHORT;
 typedef unsigned char UBYTE;

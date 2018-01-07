@@ -1,6 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f1" displayName="amd" projectFiles="true" kind="ROOT">
+      <logicalFolder name="f1"
+                     displayName="amd_tootle"
+                     projectFiles="true"
+                     kind="ROOT">
+        <logicalFolder name="f1" displayName="include" projectFiles="true" kind="ROOT">
+          <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/include/tootlelib.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f2"
+                       displayName="RayTracer"
+                       projectFiles="true"
+                       kind="ROOT">
+          <logicalFolder name="f1" displayName="JRT" projectFiles="true" kind="ROOT">
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTBoundingBox.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTBoundingBox.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCamera.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCamera.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCommon.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCore.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCore.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCoreUtils.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCoreUtils.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTH2KDTreeBuilder.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTH2KDTreeBuilder.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTHeuristicKDTreeBuilder.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTHeuristicKDTreeBuilder.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTree.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTree.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTreeBuilder.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTreeBuilder.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTMesh.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTMesh.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTOrthoCamera.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTOrthoCamera.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTPPMImage.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTPPMImage.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTTriangleIntersection.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTTriangleIntersection.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="f2" displayName="Math" projectFiles="true" kind="ROOT">
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JML.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLFuncs.cpp</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLFuncs.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLMatrix.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLSSEVec.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLScalar.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec2.h</itemPath>
+            <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec3.h</itemPath>
+          </logicalFolder>
+          <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/TootleRaytracer.cpp</itemPath>
+          <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/TootleRaytracer.h</itemPath>
+        </logicalFolder>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/LICENSE</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/Stripifier.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/Stripifier.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/aligned_malloc.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/aligned_malloc.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/bbox.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/cloud.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/clustering.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/clustering.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/color.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/d3doverdrawwindow.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/d3doverdrawwindow.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/d3dwindow.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/d3dwm.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/d3dwm.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/feedback.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/feedback.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/fit.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/fit.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/gdiwindow.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/gdiwm.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/gdiwm.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/heap.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/heap.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/matrix.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/mesh.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/option.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/overdraw.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/overdraw.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/quaternion.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/scalar.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/soup.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/soup.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/souptomesh.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/souptomesh.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/tootlelib.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/triorder.cpp</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/triorder.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/vector.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/viewpoints.h</itemPath>
+        <itemPath>../../../src/wolf.content_pipeline/amd/amd_tootle/window.h</itemPath>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="f2" displayName="cameras" projectFiles="true" kind="ROOT">
+      <itemPath>../../../src/wolf.content_pipeline/cameras/w_camera.cpp</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/cameras/w_camera.h</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/cameras/w_first_person_camera.cpp</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/cameras/w_first_person_camera.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f3" displayName="collada" projectFiles="true" kind="ROOT">
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_animation.h</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_bone.cpp</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_bone.h</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_extra.h</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_node.cpp</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_node.h</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_obj.h</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_parser.cpp</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_parser.h</itemPath>
+      <itemPath>../../../src/wolf.content_pipeline/collada/c_skin.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
                    projectFiles="false"
@@ -12,8 +125,18 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>../../../src/wolf.content_pipeline/w_bounding.cpp</itemPath>
+    <itemPath>../../../src/wolf.content_pipeline/w_bounding.h</itemPath>
+    <itemPath>../../../src/wolf.content_pipeline/w_content_manager.h</itemPath>
+    <itemPath>../../../src/wolf.content_pipeline/w_cpipeline_export.h</itemPath>
+    <itemPath>../../../src/wolf.content_pipeline/w_cpipeline_model.cpp</itemPath>
+    <itemPath>../../../src/wolf.content_pipeline/w_cpipeline_model.h</itemPath>
     <itemPath>../../../src/wolf.content_pipeline/w_cpipeline_pch.cpp</itemPath>
     <itemPath>../../../src/wolf.content_pipeline/w_cpipeline_pch.h</itemPath>
+    <itemPath>../../../src/wolf.content_pipeline/w_cpipeline_scene.cpp</itemPath>
+    <itemPath>../../../src/wolf.content_pipeline/w_cpipeline_scene.h</itemPath>
+    <itemPath>../../../src/wolf.content_pipeline/w_cpipeline_structs.h</itemPath>
+    <itemPath>../../../src/wolf.content_pipeline/w_vertex_declaration.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -24,9 +147,15 @@
         <rebuildPropChanged>true</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <architecture>2</architecture>
+          <standard>10</standard>
+          <commandlineTool>clang</commandlineTool>
+        </cTool>
         <ccTool>
           <architecture>2</architecture>
           <standard>11</standard>
+          <commandlineTool>clang++</commandlineTool>
           <incDir>
             <pElem>../../../src/wolf.system</pElem>
             <pElem>../../../src/wolf.content_pipeline</pElem>
@@ -45,6 +174,7 @@
             <pElem>../../../dependencies/tbb/oss/linux/lib/intel64/gcc4.7/</pElem>
             <pElem>../../../dependencies/msgpack/lib/linux/x64/debug</pElem>
           </linkerAddLib>
+          <commandlineTool>clang++</commandlineTool>
           <linkerLibItems>
             <linkerOptionItem>-ltbb_debug</linkerOptionItem>
             <linkerOptionItem>-ltbbmalloc_debug</linkerOptionItem>
@@ -52,12 +182,517 @@
           </linkerLibItems>
         </linkerTool>
       </compileType>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/LICENSE"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTBoundingBox.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTBoundingBox.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCamera.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCamera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCommon.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCore.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCore.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCoreUtils.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCoreUtils.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTH2KDTreeBuilder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTH2KDTreeBuilder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTHeuristicKDTreeBuilder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTHeuristicKDTreeBuilder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTree.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTree.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTreeBuilder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTreeBuilder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTMesh.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTMesh.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTOrthoCamera.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTOrthoCamera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTPPMImage.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTPPMImage.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTTriangleIntersection.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTTriangleIntersection.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JML.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLFuncs.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLFuncs.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLMatrix.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLSSEVec.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLScalar.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec2.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec3.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/TootleRaytracer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/TootleRaytracer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/Stripifier.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/Stripifier.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/aligned_malloc.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/aligned_malloc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/bbox.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/cloud.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/clustering.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/clustering.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/color.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3doverdrawwindow.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3doverdrawwindow.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3dwindow.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3dwm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3dwm.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/feedback.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/feedback.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/fit.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/fit.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/gdiwindow.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/gdiwm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/gdiwm.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/heap.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/heap.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/include/tootlelib.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/matrix.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/mesh.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/option.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/overdraw.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/overdraw.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/quaternion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/scalar.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/soup.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/soup.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/souptomesh.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/souptomesh.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/tootlelib.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/triorder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/triorder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/vector.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/viewpoints.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/window.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/cameras/w_camera.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/cameras/w_camera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/cameras/w_first_person_camera.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/cameras/w_first_person_camera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_animation.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_bone.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_bone.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_extra.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_node.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_node.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_obj.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_parser.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_parser.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_skin.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_bounding.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_bounding.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_content_manager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_export.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_model.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_model.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../src/wolf.content_pipeline/w_cpipeline_pch.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
       <item path="../../../src/wolf.content_pipeline/w_cpipeline_pch.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_scene.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_scene.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_structs.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_vertex_declaration.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -85,12 +720,517 @@
         <archiverTool>
         </archiverTool>
       </compileType>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/LICENSE"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTBoundingBox.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTBoundingBox.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCamera.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCamera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCommon.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCore.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCore.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCoreUtils.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCoreUtils.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTH2KDTreeBuilder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTH2KDTreeBuilder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTHeuristicKDTreeBuilder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTHeuristicKDTreeBuilder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTree.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTree.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTreeBuilder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTreeBuilder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTMesh.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTMesh.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTOrthoCamera.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTOrthoCamera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTPPMImage.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTPPMImage.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTTriangleIntersection.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTTriangleIntersection.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JML.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLFuncs.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLFuncs.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLMatrix.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLSSEVec.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLScalar.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec2.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec3.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/TootleRaytracer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/TootleRaytracer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/Stripifier.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/Stripifier.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/aligned_malloc.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/aligned_malloc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/bbox.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/cloud.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/clustering.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/clustering.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/color.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3doverdrawwindow.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3doverdrawwindow.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3dwindow.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3dwm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/d3dwm.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/feedback.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/feedback.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/fit.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/fit.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/gdiwindow.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/gdiwm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/gdiwm.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/heap.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/heap.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/include/tootlelib.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/matrix.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/mesh.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/option.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/overdraw.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/overdraw.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/quaternion.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/scalar.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/soup.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/soup.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/souptomesh.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/souptomesh.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/tootlelib.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/triorder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/triorder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/vector.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/viewpoints.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/amd/amd_tootle/window.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/cameras/w_camera.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/cameras/w_camera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/cameras/w_first_person_camera.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/cameras/w_first_person_camera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_animation.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_bone.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_bone.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_extra.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_node.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_node.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_obj.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_parser.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_parser.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/collada/c_skin.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_bounding.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_bounding.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_content_manager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_export.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_model.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_model.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../src/wolf.content_pipeline/w_cpipeline_pch.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
       <item path="../../../src/wolf.content_pipeline/w_cpipeline_pch.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_scene.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_scene.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_cpipeline_structs.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.content_pipeline/w_vertex_declaration.h"
             ex="false"
             tool="3"
             flavor2="0">

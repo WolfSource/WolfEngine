@@ -6,6 +6,8 @@
 #ifndef D3DOVERDRAWWINDOW_H
 #define D3DOVERDRAWWINDOW_H
 
+#ifdef __WIN32
+
 #define NUM_QUERIES 100
 
 #include "d3dwindow.h"
@@ -95,5 +97,7 @@ private:
 
     bool m_bCullCCW; // if true, cull counter-clockwise faces, otherwise, cull clockwise faces
 };
+
+#endif //__WIN32
 
 #endif

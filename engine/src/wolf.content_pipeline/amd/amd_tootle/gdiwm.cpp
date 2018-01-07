@@ -6,6 +6,9 @@
 #include "w_cpipeline_pch.h"
 #include <cstdio>
 #include "gdiwm.h"
+
+#ifdef __WIN32
+
 #include "gdiwindow.h"
 
 static WNDCLASSEX GDIWMClass;
@@ -354,3 +357,5 @@ void GDIWMMainLoop(void)
         if (msg.message == WM_QUIT) { return; }
     }
 }
+
+#endif //__WIN32

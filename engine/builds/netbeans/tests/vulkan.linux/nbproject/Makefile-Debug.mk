@@ -34,10 +34,7 @@ include Makefile
 OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
-OBJECTFILES= \
-	${OBJECTDIR}/_ext/3ea124ea/main.o \
-	${OBJECTDIR}/_ext/3ea124ea/pch.o \
-	${OBJECTDIR}/_ext/3ea124ea/scene.o
+OBJECTFILES=
 
 
 # C Compiler Flags
@@ -62,22 +59,7 @@ LDLIBSOPTIONS=-L../../../../../bin/x64/Debug/GNU-Linux -L../../../../../../../Vu
 
 ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/vulkan.linux: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/vulkan.linux ${OBJECTFILES} ${LDLIBSOPTIONS}
-
-${OBJECTDIR}/_ext/3ea124ea/main.o: ../../../../src/tests/vulkan.linux/main.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/3ea124ea
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/ -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -I../../../../src/tests/vulkan.linux -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3ea124ea/main.o ../../../../src/tests/vulkan.linux/main.cpp
-
-${OBJECTDIR}/_ext/3ea124ea/pch.o: ../../../../src/tests/vulkan.linux/pch.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/3ea124ea
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/ -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -I../../../../src/tests/vulkan.linux -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3ea124ea/pch.o ../../../../src/tests/vulkan.linux/pch.cpp
-
-${OBJECTDIR}/_ext/3ea124ea/scene.o: ../../../../src/tests/vulkan.linux/scene.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/3ea124ea
-	${RM} "$@.d"
-	$(COMPILE.cc) -g -D__VULKAN__ -I../../../../dependencies/rapidxml -I../../../../src/wolf.system -I../../../../src/wolf.render/ -I../../../../../../../VulkanSDK/1.0.42.0/x86_64/include -I../../../../src/tests/vulkan.linux -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/3ea124ea/scene.o ../../../../src/tests/vulkan.linux/scene.cpp
+	${LINK.c} -o ${CND_DISTDIR}/../../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/vulkan.linux ${OBJECTFILES} ${LDLIBSOPTIONS}
 
 # Subprojects
 .build-subprojects:

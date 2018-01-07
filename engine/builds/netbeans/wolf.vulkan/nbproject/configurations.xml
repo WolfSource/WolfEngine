@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f1" displayName="imgui" projectFiles="true">
+      <itemPath>../../../src/wolf.render/imgui/LICENSE</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/README.md</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/imconfig.h</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/imgui.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/imgui.h</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/imgui_demo.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/imgui_draw.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/imgui_internal.h</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/stb_rect_pack.h</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/stb_textedit.h</itemPath>
+      <itemPath>../../../src/wolf.render/imgui/stb_truetype.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f2"
+                   displayName="masked_occlusion_culling"
+                   projectFiles="true"
+                   kind="ROOT">
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/CompilerSpecific.inl</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/CullingThreadpool.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/CullingThreadpool.h</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/FrameRecorder.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/FrameRecorder.h</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCulling.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCulling.h</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCullingAVX2.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCullingAVX512.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCullingCommon.inl</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/README.md</itemPath>
+      <itemPath>../../../src/wolf.render/masked_occlusion_culling/license.txt</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f3"
+                   displayName="w_framework"
+                   projectFiles="true"
+                   kind="ROOT">
+      <itemPath>../../../src/wolf.render/w_framework/w_bounding_frustum.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_framework/w_bounding_frustum.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_framework/w_game.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_framework/w_game.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_framework/w_model.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f4"
+                   displayName="w_graphics"
+                   projectFiles="true"
+                   kind="ROOT">
+      <itemPath>../../../src/wolf.render/w_graphics/w_attachment_buffer_desc.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_buffer.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_buffer.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_command_buffer.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_command_buffer.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_fences.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_fences.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_frame_buffer.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_frame_buffer.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_imgui.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_imgui.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_mesh.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_mesh.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_pipeline.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_pipeline.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_quad.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_queue.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_queue.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_render_pass.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_render_pass.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_render_target.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_render_target.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_semaphore.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_semaphore.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_shader.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_shader.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_texture.cpp</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_texture.h</itemPath>
+      <itemPath>../../../src/wolf.render/w_graphics/w_uniform.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+    <itemPath>../../../src/wolf.render/w_graphics_device_manager.cpp</itemPath>
+    <itemPath>../../../src/wolf.render/w_graphics_device_manager.h</itemPath>
+    <itemPath>../../../src/wolf.render/w_graphics_headers.h</itemPath>
+    <itemPath>../../../src/wolf.render/w_render_export.h</itemPath>
+    <itemPath>../../../src/wolf.render/w_render_pch.cpp</itemPath>
+    <itemPath>../../../src/wolf.render/w_render_pch.h</itemPath>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="2">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>true</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>2</architecture>
+          <standard>10</standard>
+          <commandlineTool>clang</commandlineTool>
+        </cTool>
+        <ccTool>
+          <architecture>2</architecture>
+          <standard>11</standard>
+          <commandlineTool>clang++</commandlineTool>
+          <incDir>
+            <pElem>../../../src/wolf.system</pElem>
+            <pElem>../../../src/wolf.render</pElem>
+            <pElem>../../../src/wolf.content_pipeline</pElem>
+            <pElem>../../../dependencies/tbb/oss/linux/include</pElem>
+            <pElem>../../../dependencies/msgpack/include</pElem>
+            <pElem>../../../../../../VulkanSDK/1.0.65.0/x86_64/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>GLM_FORCE_DEPTH_ZERO_TO_ONE</Elem>
+            <Elem>_DEBUG</Elem>
+            <Elem>__VULKAN__</Elem>
+            <Elem>__WOLF_RENDER__</Elem>
+          </preprocessorList>
+        </ccTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/../../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/libwolf.vulkan.${CND_DLIB_EXT}</output>
+          <linkerAddLib>
+            <pElem>../../../../../../VulkanSDK/1.0.65.0/x86_64/lib</pElem>
+            <pElem>../../../dependencies/tbb/oss/linux/lib/intel64/gcc4.7</pElem>
+            <pElem>../../../dependencies/msgpack/lib/linux/x64/debug</pElem>
+          </linkerAddLib>
+          <commandlineTool>clang++</commandlineTool>
+          <linkerLibItems>
+            <linkerOptionItem>-lxcb</linkerOptionItem>
+            <linkerOptionItem>-lmsgpackc</linkerOptionItem>
+            <linkerOptionItem>-lvulkan</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+      <item path="../../../src/wolf.render/imgui/LICENSE"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/README.md"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imconfig.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui_demo.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui_draw.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui_internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/stb_rect_pack.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/stb_textedit.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/stb_truetype.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/CompilerSpecific.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/CullingThreadpool.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/CullingThreadpool.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/FrameRecorder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/FrameRecorder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCulling.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool>
+          <commandlineTool>clang++</commandlineTool>
+          <commandLine>-msse4.2</commandLine>
+        </ccTool>
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCulling.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCullingAVX2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool>
+          <commandlineTool></commandlineTool>
+          <commandLine>-mavx2 -mfma</commandLine>
+        </ccTool>
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCullingAVX512.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool>
+          <commandLine>-march=skylake-avx512</commandLine>
+        </ccTool>
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCullingCommon.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/README.md"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/license.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_bounding_frustum.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_bounding_frustum.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_game.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_game.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_model.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_attachment_buffer_desc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_buffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_buffer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_command_buffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_command_buffer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_fences.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_fences.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_frame_buffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_frame_buffer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_imgui.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_imgui.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_mesh.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_mesh.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_pipeline.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_pipeline.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_quad.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_queue.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_queue.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_render_pass.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_render_pass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_render_target.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_render_target.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_semaphore.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_semaphore.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_shader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_shader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_texture.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_texture.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_uniform.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics_device_manager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics_device_manager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics_headers.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_render_export.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_render_pch.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_render_pch.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="2">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="../../../src/wolf.render/imgui/LICENSE"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/README.md"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imconfig.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui_demo.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui_draw.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/imgui_internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/stb_rect_pack.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/stb_textedit.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/imgui/stb_truetype.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/CompilerSpecific.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/CullingThreadpool.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/CullingThreadpool.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/FrameRecorder.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/FrameRecorder.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCulling.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCulling.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCullingAVX2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCullingAVX512.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/MaskedOcclusionCullingCommon.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/README.md"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/masked_occlusion_culling/license.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_bounding_frustum.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_bounding_frustum.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_game.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_game.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_framework/w_model.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_attachment_buffer_desc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_buffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_buffer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_command_buffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_command_buffer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_fences.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_fences.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_frame_buffer.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_frame_buffer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_imgui.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_imgui.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_mesh.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_mesh.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_pipeline.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_pipeline.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_quad.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_queue.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_queue.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_render_pass.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_render_pass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_render_target.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_render_target.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_semaphore.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_semaphore.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_shader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_shader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_texture.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_texture.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics/w_uniform.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics_device_manager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics_device_manager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_graphics_headers.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_render_export.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_render_pch.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../src/wolf.render/w_render_pch.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

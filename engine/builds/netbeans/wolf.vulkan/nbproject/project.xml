@@ -3,24 +3,21 @@
     <type>org.netbeans.modules.cnd.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>test.vulkan.linux</name>
+            <name>wolf.vulkan</name>
             <c-extensions/>
-            <cpp-extensions/>
-            <header-extensions/>
+            <cpp-extensions>cpp</cpp-extensions>
+            <header-extensions>h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
-            <make-dep-projects>
-                <make-dep-project>../../wolf.system</make-dep-project>
-                <make-dep-project>../../wolf.render</make-dep-project>
-            </make-dep-projects>
+            <make-dep-projects/>
             <sourceRootList/>
             <confList>
                 <confElem>
                     <name>Debug</name>
-                    <type>1</type>
+                    <type>2</type>
                 </confElem>
                 <confElem>
                     <name>Release</name>
-                    <type>1</type>
+                    <type>2</type>
                 </confElem>
             </confList>
             <formatting>

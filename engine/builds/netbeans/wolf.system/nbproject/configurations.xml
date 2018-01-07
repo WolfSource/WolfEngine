@@ -461,10 +461,15 @@
         <rebuildPropChanged>true</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <architecture>2</architecture>
+          <standard>10</standard>
+          <commandlineTool>clang</commandlineTool>
+        </cTool>
         <ccTool>
           <architecture>2</architecture>
           <standard>11</standard>
-          <commandlineTool>g++</commandlineTool>
+          <commandlineTool>clang++</commandlineTool>
           <incDir>
             <pElem>../../../src/wolf.system</pElem>
             <pElem>../../../dependencies/luaJIT/include</pElem>
@@ -510,7 +515,7 @@
             <pElem>../../../dependencies/msgpack/lib/linux/x64/debug</pElem>
             <pElem>../../../dependencies/nanomsg/lib/linux/x64/debug</pElem>
           </linkerAddLib>
-          <commandlineTool>g++</commandlineTool>
+          <commandlineTool>clang++</commandlineTool>
           <linkerLibItems>
             <linkerOptionItem>-lxcb</linkerOptionItem>
             <linkerOptionItem>-ltbb_debug</linkerOptionItem>
@@ -2421,6 +2426,9 @@
             ex="false"
             tool="1"
             flavor2="0">
+        <ccTool>
+          <commandlineTool></commandlineTool>
+        </ccTool>
       </item>
       <item path="../../../src/wolf.system/w_inputs_manager.h"
             ex="false"
@@ -2599,6 +2607,12 @@
         <packType>Tar</packType>
         <output>${CND_DISTDIR}/../../../../bin/x64/${CND_CONF}/${CND_PLATFORM}/package/libwolf.system.so.tar</output>
         <packFileList>
+          <packFileListElem type="File"
+                            to="${PACKAGE_TOP_DIR}lib/${OUTPUT_BASENAME}"
+                            from="${OUTPUT_PATH}"
+                            perm="644"
+                            owner="root"
+                            group="bin"/>
           <packFileListElem type="File"
                             to="${PACKAGE_TOP_DIR}lib/${OUTPUT_BASENAME}"
                             from="${OUTPUT_PATH}"

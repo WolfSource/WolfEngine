@@ -12,11 +12,6 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
-    <itemPath>../../../../src/tests/vulkan.linux/main.cpp</itemPath>
-    <itemPath>../../../../src/tests/vulkan.linux/pch.cpp</itemPath>
-    <itemPath>../../../../src/tests/vulkan.linux/pch.h</itemPath>
-    <itemPath>../../../../src/tests/vulkan.linux/scene.cpp</itemPath>
-    <itemPath>../../../../src/tests/vulkan.linux/scene.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -81,31 +76,6 @@
           </makeArtifact>
         </requiredProjects>
       </compileType>
-      <item path="../../../../src/tests/vulkan.linux/main.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../../src/tests/vulkan.linux/pch.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../../src/tests/vulkan.linux/pch.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../../src/tests/vulkan.linux/scene.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../../src/tests/vulkan.linux/scene.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -127,31 +97,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="../../../../src/tests/vulkan.linux/main.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../../src/tests/vulkan.linux/pch.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../../src/tests/vulkan.linux/pch.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../../src/tests/vulkan.linux/scene.cpp"
-            ex="false"
-            tool="1"
-            flavor2="0">
-      </item>
-      <item path="../../../../src/tests/vulkan.linux/scene.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>

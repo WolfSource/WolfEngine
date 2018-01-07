@@ -296,6 +296,8 @@ namespace wolf
 
                 float get_bezier_key(float pTime, _Out_ bool& pContainsAnimation)
                 {
+                    using namespace std;
+                    
                     pContainsAnimation = true;
 
                     auto _time_index = get_time_index(pTime);
@@ -305,9 +307,9 @@ namespace wolf
 
                     auto _delta_time = std::abs(pTime - _time_1) / (_time_2 - _time_1);
                     auto s = glm::vec4(
-                        std::powf(_delta_time, 3.0f),
-                        std::powf(_delta_time, 2),
-                        std::powf(_delta_time, 1),
+                        powf(_delta_time, 3.0f),
+                        powf(_delta_time, 2),
+                        powf(_delta_time, 1),
                         1);
 
                     auto _p0 = this->keys[_time_index];

@@ -24,10 +24,6 @@ Comment          :
 #include <map>
 #include "w_inputs_manager.h"
 
-#if defined(__MAYA)
-#include <maya/MGlobal.h>
-#endif
-
 inline std::string get_date_time()
 {
     char _buffer[256] = "DD-MM-YY HH:MM:SS";
