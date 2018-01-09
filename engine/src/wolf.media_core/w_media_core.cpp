@@ -21,6 +21,9 @@ static const __int64_t MF_ONE_SEC = 10000000;
 static const long MF_ONE_MSEC = 1000;
 static std::once_flag onceInit;
 
+using namespace wolf;
+using namespace wolf::system;
+
 namespace wolf
 {
     namespace framework
@@ -1478,7 +1481,6 @@ namespace wolf
     }
 }
 
-using namespace wolf::system;
 using namespace wolf::framework;
 
 w_media_core::w_media_core() :_pimp(new w_media_core_pimp())
