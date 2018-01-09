@@ -8,7 +8,7 @@ using namespace wolf::system;
 HRESULT tootle::apply(
     _In_ const std::vector<wolf::content_pipeline::w_vertex_data>& pVerticesData,
     _In_ const std::vector<float>& pVerticesPosition,
-    _Inout_ std::vector<UINT>& pIndicesData)
+    _Inout_ std::vector<uint32_t>& pIndicesData)
 {
     TootleSettings _settings;
     _settings.nClustering = 0;

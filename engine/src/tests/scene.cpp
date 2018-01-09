@@ -520,7 +520,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     return _gDevice->capture_presented_swap_chain_buffer(0, on_pixels_data_captured_signal);
 }
 
-void scene::on_window_resized(_In_ UINT pIndex)
+void scene::on_window_resized(_In_ uint32_t pIndex)
 {
 	w_game::on_window_resized(pIndex);
 }
