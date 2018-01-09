@@ -6,19 +6,19 @@ using namespace wolf::system;
 
 #pragma region Constants
 
-const INT64 TICKS_PER_MILLISECOND = 10000;
+const int64_t TICKS_PER_MILLISECOND = 10000;
 const double MILLI_SECONDS_PER_TICK = 1.0 / TICKS_PER_MILLISECOND;
 
-const INT64 TICKS_PER_SECOND = TICKS_PER_MILLISECOND * 1000;
+const int64_t TICKS_PER_SECOND = TICKS_PER_MILLISECOND * 1000;
 const double SECONDS_PER_TICK = 1.0 / TICKS_PER_SECOND;
 
-const INT64 TICKS_PER_MINUTE = TICKS_PER_SECOND * 60;
+const int64_t TICKS_PER_MINUTE = TICKS_PER_SECOND * 60;
 const double MINUTES_PER_TICK = 1.0 / TICKS_PER_MINUTE;
 
-const INT64 TICKS_PER_HOUR = TICKS_PER_MINUTE * 60;
+const int64_t TICKS_PER_HOUR = TICKS_PER_MINUTE * 60;
 const double HOURS_PER_TICK = 1.0 / TICKS_PER_HOUR;
 
-const INT64 TICKS_PER_DAY = TICKS_PER_HOUR * 24;
+const int64_t TICKS_PER_DAY = TICKS_PER_HOUR * 24;
 const double DAYS_PER_TICK = 1.0 / TICKS_PER_DAY;
 
 const int MILLIS_PER_SECOND = 1000;
@@ -26,11 +26,11 @@ const int MILLIS_PER_MINUTE = MILLIS_PER_SECOND * 60;
 const int MILLIS_PER_HOUR = MILLIS_PER_MINUTE * 60;
 const int MILLIS_PER_DAY = MILLIS_PER_HOUR * 24;
 
-const INT64 MaxSeconds = _I64_MAX / TICKS_PER_SECOND;
-const INT64 MinSeconds = _I64_MIN / TICKS_PER_SECOND;
+const int64_t MaxSeconds = _I64_MAX / TICKS_PER_SECOND;
+const int64_t MinSeconds = _I64_MIN / TICKS_PER_SECOND;
 
-const INT64 MaxMilliSeconds = _I64_MAX / TICKS_PER_MILLISECOND;
-const INT64 MinMilliSeconds = _I64_MIN / TICKS_PER_MILLISECOND;
+const int64_t MaxMilliSeconds = _I64_MAX / TICKS_PER_MILLISECOND;
+const int64_t MinMilliSeconds = _I64_MIN / TICKS_PER_MILLISECOND;
 
 //const INT64 TicksPerTenthSecond = TICKS_PER_MILLISECOND * 100;
 
@@ -45,7 +45,7 @@ w_time_span::w_time_span(bool pOverFlow) : _ticks(0), _overflowed(pOverFlow)
     
 }
 
-w_time_span::w_time_span(INT64 pTicks) : _ticks(pTicks)
+w_time_span::w_time_span(int64_t pTicks) : _ticks(pTicks)
 {
 }
 
@@ -56,8 +56,8 @@ w_time_span::w_time_span(int pHours, int pMinutes, int pSeconds)
 
 w_time_span::w_time_span(int pDays, int pHours, int pMinutes, int pSeconds, int pMilliseconds)
 {
-	INT64 totalMilliSeconds = (static_cast<INT64>(pDays) * 3600 * 24 +
-		static_cast<INT64>(pHours) * 3600 + static_cast<INT64>(pMinutes) * 60 + pSeconds) * 1000 + pMilliseconds;
+	int64_t totalMilliSeconds = (static_cast<int64_t>(pDays) * 3600 * 24 +
+		static_cast<int64_t>(pHours) * 3600 + static_cast<int64_t>(pMinutes) * 60 + pSeconds) * 1000 + pMilliseconds;
 
 	if (totalMilliSeconds > MaxMilliSeconds || totalMilliSeconds < MinMilliSeconds)
 	{
@@ -65,7 +65,7 @@ w_time_span::w_time_span(int pDays, int pHours, int pMinutes, int pSeconds, int 
         this->_overflowed = true;
         return;
 	}
-	this->_ticks = static_cast<INT64>(totalMilliSeconds) * TICKS_PER_MILLISECOND;
+	this->_ticks = static_cast<int64_t>(totalMilliSeconds) * TICKS_PER_MILLISECOND;
 }
 
 w_time_span::~w_time_span()
@@ -121,7 +121,7 @@ wstring w_time_span::to_wstring()
 
 w_time_span w_time_span::zero()
 { 
-	return w_time_span((INT64)0);
+	return w_time_span((int64_t)0);
 }
 
 w_time_span w_time_span::now()
@@ -144,12 +144,12 @@ w_time_span w_time_span::now()
 
 w_time_span w_time_span::min_value()
 { 
-	return w_time_span((INT64)_I64_MIN);
+	return w_time_span((int64_t)_I64_MIN);
 }
 
 w_time_span w_time_span::max_value()
 { 
-	return w_time_span((INT64)_I64_MAX);
+	return w_time_span((int64_t)_I64_MAX);
 }
 
 w_time_span w_time_span::from_days(double pValue)
@@ -177,7 +177,7 @@ w_time_span w_time_span::from_seconds(double pValue)
 	return _interval(pValue, MILLIS_PER_SECOND);
 }
 
-w_time_span w_time_span::from_ticks(INT64 pValue)
+w_time_span w_time_span::from_ticks(int64_t pValue)
 {
 	return w_time_span(pValue);
 }
@@ -241,14 +241,14 @@ w_time_span w_time_span::_interval(double pValue, int pScale)
         _t_overflow._overflowed = true;
         return _t_overflow;
 	}
-	return w_time_span(static_cast<INT64>(millis) * TICKS_PER_MILLISECOND);
+	return w_time_span(static_cast<int64_t>(millis) * TICKS_PER_MILLISECOND);
 }
 
-INT64 w_time_span::_time_to_ticks(int pHour, int pMinute, int pSecond)
+int64_t w_time_span::_time_to_ticks(int pHour, int pMinute, int pSecond)
 {
 	// totalSeconds is bounded by 2^31 * 2^12 + 2^31 * 2^8 + 2^31,
 	// which is less than 2^44, meaning we won't overflow totalSeconds.
-	long totalSeconds = static_cast<INT64>(pHour) * 3600 + static_cast<INT64>(pMinute) * 60 + static_cast<INT64>(pSecond);
+	long totalSeconds = static_cast<int64_t>(pHour) * 3600 + static_cast<int64_t>(pMinute) * 60 + static_cast<int64_t>(pSecond);
 	if (totalSeconds > MaxSeconds || totalSeconds < MinSeconds)
 	{
 		//ArgumentOutOfRangeException: Overflow TimeSpan too long
@@ -264,7 +264,7 @@ bool w_time_span::get_has_overflowed() const
     return this->_overflowed;
 }
 
-INT64 w_time_span::get_ticks() const
+int64_t w_time_span::get_ticks() const
 { 
 	return this->_ticks; 
 }

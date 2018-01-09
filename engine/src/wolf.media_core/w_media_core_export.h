@@ -7,10 +7,15 @@
 	Comment          :
 */
 
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifndef __W_MEDIA_CORE_EXPORT_H__
 #define __W_MEDIA_CORE_EXPORT_H__
 
-#ifdef _WIN32
+#if defined(__WIN32) || defined(__UWP)
 
 #ifndef WMC_EXP
 
@@ -20,8 +25,16 @@
 		#define WMC_EXP __declspec(dllimport)
 	#endif
 
-#endif // !1
+#endif
 
+
+#elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
+
+#ifndef WMC_EXP
+#define WMC_EXP //dump
 #endif
 
 #endif
+
+#endif //__W_MEDIA_CORE_EXPORT_H__
+

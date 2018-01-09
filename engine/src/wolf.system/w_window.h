@@ -102,8 +102,8 @@ struct w_window_info
 {
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
 
-	UINT                width = 800;
-	UINT                height = 600;
+	uint32_t                width = 800;
+	uint32_t                height = 600;
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__)
 #ifndef __APPLE__
@@ -209,9 +209,9 @@ public:
     //Get ID of window
     WSYS_EXP const uint32_t get_id() const;
     //Get absolute width of window
-	WSYS_EXP UINT get_width() const;
+	WSYS_EXP uint32_t get_width() const;
 	//Get absolute height of window
-	WSYS_EXP UINT get_height() const;
+	WSYS_EXP uint32_t get_height() const;
 	//Get fixed time step of game time
 	WSYS_EXP bool get_fixed_time_step() const;
 	//Get windows is full screen

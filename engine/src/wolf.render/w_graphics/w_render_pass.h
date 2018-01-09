@@ -37,7 +37,7 @@ namespace wolf
                 _In_ const VkFramebuffer& pFrameBuffer,
                 _In_ const w_color& pClearColor,
                 _In_ const float&   pClearDepth = 1.0f,
-                _In_ const UINT&    pClearStencil = 0,
+                _In_ const uint32_t&    pClearStencil = 0,
                 _In_ const VkSubpassContents& pSubpassContents = VK_SUBPASS_CONTENTS_INLINE);
 
             W_EXP void begin(

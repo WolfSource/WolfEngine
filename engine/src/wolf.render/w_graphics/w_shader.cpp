@@ -149,7 +149,7 @@ namespace wolf
                 if (_compute_write_descriptor_sets.size())
                 {
                     vkUpdateDescriptorSets(this->_gDevice->vk_device,
-                        static_cast<UINT32>(_compute_write_descriptor_sets.size()),
+                        static_cast<uint32_t>(_compute_write_descriptor_sets.size()),
                         _compute_write_descriptor_sets.data(),
                         0,
                         nullptr);
@@ -159,7 +159,7 @@ namespace wolf
                 if (_write_descriptor_sets.size())
                 {
                     vkUpdateDescriptorSets(this->_gDevice->vk_device,
-                        static_cast<UINT32>(_write_descriptor_sets.size()),
+                        static_cast<uint32_t>(_write_descriptor_sets.size()),
                         _write_descriptor_sets.data(),
                         0,
                         nullptr);
@@ -466,7 +466,7 @@ namespace wolf
                     VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,        // Type
                     nullptr,                                                    // Next
                     0,                                                          // Flags
-                    static_cast<UINT32>(pDescriptorSetLayoutBinding.size()),    // BindingCount
+                    static_cast<uint32_t>(pDescriptorSetLayoutBinding.size()),    // BindingCount
                     pDescriptorSetLayoutBinding.data()                          // Bindings
                 };
                 

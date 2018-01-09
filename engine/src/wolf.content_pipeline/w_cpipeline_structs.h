@@ -26,7 +26,7 @@ namespace wolf
             float		    tangent[3];
             float		    binormal[3];
             float		    color[4];
-            UINT	        vertex_index;
+            uint32_t	        vertex_index;
 
             MSGPACK_DEFINE(position, normal, uv, vertex_index);
         };

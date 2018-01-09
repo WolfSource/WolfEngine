@@ -35,8 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/_ext/56252444/main.o \
-	${OBJECTDIR}/_ext/56252444/pch.o
+	${OBJECTDIR}/_ext/a83248dc/w_media_core.o \
+	${OBJECTDIR}/_ext/a83248dc/w_media_core_pch.o
 
 
 # C Compiler Flags
@@ -57,21 +57,21 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/netbeans
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libwolf.media_core.${CND_DLIB_EXT}
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/netbeans: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libwolf.media_core.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/netbeans ${OBJECTFILES} ${LDLIBSOPTIONS}
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libwolf.media_core.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
 
-${OBJECTDIR}/_ext/56252444/main.o: ../../src/main.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
+${OBJECTDIR}/_ext/a83248dc/w_media_core.o: ../../../src/wolf.media_core/w_media_core.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/a83248dc
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/main.o ../../src/main.cpp
+	$(COMPILE.cc) -O2 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/a83248dc/w_media_core.o ../../../src/wolf.media_core/w_media_core.cpp
 
-${OBJECTDIR}/_ext/56252444/pch.o: ../../src/pch.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/56252444
+${OBJECTDIR}/_ext/a83248dc/w_media_core_pch.o: ../../../src/wolf.media_core/w_media_core_pch.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/a83248dc
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/56252444/pch.o ../../src/pch.cpp
+	$(COMPILE.cc) -O2 -fPIC  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/a83248dc/w_media_core_pch.o ../../../src/wolf.media_core/w_media_core_pch.cpp
 
 # Subprojects
 .build-subprojects:

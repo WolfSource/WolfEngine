@@ -37,7 +37,7 @@ namespace wolf
 				_In_ std::function<HRESULT(void)> pFunction,
 				_In_ w_color pClearColor = w_color::PURPLE(), 
 				_In_ const float& pClearDepth = 1.0f, 
-				_In_ const UINT&  pClearStencil = 0);
+				_In_ const uint32_t&  pClearStencil = 0);
 
             //save texture as bitmap file
             W_EXP HRESULT save_to_file(_In_z_ const char* pFileName);

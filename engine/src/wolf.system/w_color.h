@@ -119,10 +119,10 @@ struct w_color
     static w_color to_color(_In_ const std::array<float, 4>& pValue)
     {
         return w_color(
-            static_cast<UINT>(pValue[0] * 255.0f),
-            static_cast<UINT>(pValue[1] * 255.0f),
-            static_cast<UINT>(pValue[2] * 255.0f),
-            static_cast<UINT>(pValue[3] * 255.0f));
+            static_cast<unsigned char >(pValue[0] * 255.0f),
+            static_cast<unsigned char >(pValue[1] * 255.0f),
+            static_cast<unsigned char >(pValue[2] * 255.0f),
+            static_cast<unsigned char >(pValue[3] * 255.0f));
     }
 
     static w_color ALICE_BLUE() { return w_color::from_hex(0xFFF0F8FF); }

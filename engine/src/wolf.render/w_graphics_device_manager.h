@@ -75,7 +75,7 @@ namespace wolf
 				return 1;
 			}
 
-			UINT											index = 0;
+			uint32_t											index = 0;
 			bool											is_full_screen = false;
 			float											aspect_ratio = 0;
 
@@ -327,7 +327,7 @@ namespace wolf
 			W_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
 
 			//Called when corresponding window resized
-			W_EXP virtual void on_window_resized(_In_ UINT pIndex);
+			W_EXP virtual void on_window_resized(_In_ uint32_t pIndex);
 			//Called when any graphics device lost
 			W_EXP virtual void on_device_lost();
 			//Called when the APP suspends. It provides a hint to the driver that the APP is entering an idle state and that temporary buffers can be reclaimed for use by other apps.

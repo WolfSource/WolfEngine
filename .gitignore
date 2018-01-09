@@ -1,3 +1,4 @@
+*.wLog
 /bin/Build/
 /bin/x64/
 /docs/extra/
@@ -51,3 +52,6 @@
 /engine/builds/netbeans/tests/vulkan.linux/build/
 /engine/builds/netbeans/tests/vulkan.linux/dist/
 /engine/builds/netbeans/wolf.content_pipeline/build/
+/engine/builds/netbeans/wolf.media_core/build/
+/samples/01_system/01_async/builds/netbeans/01_async/build/
+/samples/01_system/01_async/builds/netbeans/01_async/dist/

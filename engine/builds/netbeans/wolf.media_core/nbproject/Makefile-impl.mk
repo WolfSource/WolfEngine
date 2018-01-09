@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=netbeans
+PROJECTNAME=wolf.media_core
 
 # Active Configuration
 DEFAULTCONF=Debug

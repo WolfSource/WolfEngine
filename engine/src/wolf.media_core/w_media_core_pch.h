@@ -11,7 +11,8 @@
 #ifndef __W_MEDIA_CORE_PCH_H__
 #define __W_MEDIA_CORE_PCH_H__
 
-#pragma comment(lib, "D3D11.lib")
+#ifdef __WIN32
+
 #pragma comment(lib, "Shlwapi.lib")
 #pragma comment(lib, "avfilter.lib")
 #pragma comment(lib, "avdevice.lib")
@@ -22,14 +23,12 @@
 #pragma comment(lib, "avformat.lib")
 #pragma comment(lib, "avutil.lib")
 
-#include "w_target_ver.h"
-
-#ifdef __WIN32
-
 #pragma comment(lib, "Mf.lib")//for MFCreateSourceResolver
 #pragma comment(lib, "Mfplat.lib")//for MFCreateSourceResolver
 #pragma comment(lib, "Mfuuid.lib")//Read information of file in windows
 
+
+#include "w_target_ver.h"
 #include <mfidl.h>//Read information of file in windows
 #include <mfapi.h>
 

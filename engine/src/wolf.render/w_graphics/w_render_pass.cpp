@@ -108,7 +108,7 @@ namespace wolf
                 _In_ const VkFramebuffer& pFrameBuffer,
                 _In_ const w_color& pClearColor,
                 _In_ const float&   pClearDepth,
-                _In_ const UINT&    pClearStencil,
+                _In_ const uint32_t&    pClearStencil,
                 _In_ const VkSubpassContents& pSubpassContents)
             {
                 std::array<VkClearValue, 2> _clear_values = {};
@@ -275,7 +275,7 @@ void w_render_pass::begin(_In_ const VkCommandBuffer& pCommandBuffer,
            _In_ const VkFramebuffer& pFrameBuffer,
            _In_ const w_color& pClearColor,
            _In_ const float&   pClearDepth,
-           _In_ const UINT&    pClearStencil,
+           _In_ const uint32_t&    pClearStencil,
            _In_ const VkSubpassContents& pSubpassContents)
 {
     if(!this->_pimp) return;

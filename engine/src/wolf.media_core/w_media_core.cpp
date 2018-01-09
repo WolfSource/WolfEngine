@@ -1,19 +1,25 @@
 #include "w_media_core_pch.h"
 #include "w_media_core.h"
-#include <io.h>
-#include <wrl/client.h>
 #include <iomanip>      // For std::hex
 #include <codecvt>      // For Unicode conversions
 #include <w_task.h>
+#include "w_std.h"
 
-using namespace wolf;
-using namespace wolf::system;
-using namespace wolf::framework;
+#ifdef __WIN32
 
+#include <io.h>
+#include <wrl/client.h>
 static const MFTIME MF_ONE_SEC = 10000000;
-static const LONG MF_ONE_MSEC = 1000;
-static std::once_flag onceInit;
 static std::once_flag onceRelease;
+
+#else
+
+static const __int64_t MF_ONE_SEC = 10000000;
+
+#endif
+
+static const long MF_ONE_MSEC = 1000;
+static std::once_flag onceInit;
 
 namespace wolf
 {
@@ -656,6 +662,8 @@ namespace wolf
                 return _hr;
             }
             
+#ifdef __WIN32
+            
             HRESULT buffer_video_to_memory(
                 _In_ wolf::system::w_memory& pVideoMemory, 
                 _In_ UINT pDownSampling)
@@ -1135,7 +1143,9 @@ namespace wolf
 
                 return hr;
             }
-
+  
+#endif
+            
             ULONG release_media()
             {
                 this->_media_full_path.clear();
@@ -1468,6 +1478,9 @@ namespace wolf
     }
 }
 
+using namespace wolf::system;
+using namespace wolf::framework;
+
 w_media_core::w_media_core() :_pimp(new w_media_core_pimp())
 {
     _super::set_class_name("w_media_core");
@@ -1486,7 +1499,10 @@ void w_media_core::register_all()
 		av_register_all();
         avcodec_register_all();
         avformat_network_init();
+        
+#ifdef __WIN32
 		MFStartup(MF_VERSION);
+#endif
 	});
 }
 
@@ -1538,6 +1554,8 @@ int w_media_core::seek_frame(int64_t pFrame)
     return this->_pimp ? this->_pimp->seek_frame(pFrame) : -3;
 }
 
+#ifdef __WIN32
+
 HRESULT w_media_core::buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, UINT pDownSampling)
 {
     return this->_pimp ? this->_pimp->buffer_video_to_memory(pVideoMemory, pDownSampling) : S_FALSE;
@@ -1553,6 +1571,8 @@ HRESULT w_media_core::buffer_to_memory(w_memory& pVideoMemory, w_memory& pAudioM
     return this->_pimp ? this->_pimp->buffer_to_memory(pVideoMemory, pAudioMemory) : S_FALSE;
 }
 
+#endif
+
 ULONG w_media_core::release()
 {
     if (this->get_is_released()) return 1;
@@ -1567,10 +1587,12 @@ ULONG w_media_core::release_media()
 
 void w_media_core::shut_down()
 {
+#ifdef __WIN32
 	std::call_once(onceRelease, []()
 	{
 		MFShutdown();
 	});
+#endif
 }
 
 #pragma region Getters

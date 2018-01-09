@@ -28,7 +28,7 @@ namespace wolf
 	{
 		struct w_vertex_index
 		{
-            UINT		        vertex_index;
+            uint32_t		        vertex_index;
 			std::vector<float>	vertex;
 			std::vector<float>	texture;
 			std::vector<float>	normal;
@@ -83,7 +83,7 @@ namespace wolf
             float	        position[3];
             float	        rotation[3];
             float	        scale = 1.0f;
-            UINT            texture_sampler_index = 0;
+            uint32_t            texture_sampler_index = 0;
 
             MSGPACK_DEFINE(name, position, rotation, scale, texture_sampler_index);
         };
@@ -98,7 +98,7 @@ namespace wolf
 			{
 				//posX, posY, posZ
 				std::vector<w_vertex_data>		vertices;
-				std::vector<UINT>               indices;
+				std::vector<uint32_t>               indices;
 				//c_material*						material;
 				//std::vector<c_effect*>			effects;
 				std::string		                textures_path;

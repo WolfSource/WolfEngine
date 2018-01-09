@@ -66,35 +66,37 @@ extern "C" {
 
 	enum HRESULT : uint8_t { S_OK = 0, S_FALSE = 1, E_INVALIDARG = 2, E_OUTOFMEMORY = 3};
 	
-	typedef unsigned char			BYTE;
-	typedef __uint32_t				UINT, *PUINT;
-	typedef int8_t                  INT8, *PINT8;
-	typedef int16_t                 INT16, *PINT16;
-	typedef int32_t                 INT32, *PINT32;
-	typedef __int64_t				INT64;
-    typedef INT64                   LONG_PTR;
-
-    typedef unsigned char			UINT8, *PUINT8;
-	typedef unsigned short			UINT16, *PUINT16;
-	typedef __uint32_t              UINT32, *PUINT32;
-	typedef __uint64_t				UINT64, *PUINT64;
-    typedef UINT64                  UINT_PTR;
-    
-    typedef UINT_PTR                WPARAM;
-    typedef LONG_PTR                LPARAM;
-    typedef LONG_PTR                LRESULT;
-
-	typedef unsigned long			ULONG, *PULONG;
-	typedef unsigned short			USHORT, *PUSHORT;
-	typedef unsigned char			UCHAR, *PUCHAR;
-
-	typedef signed int				LONG32, *PLONG32;
-	typedef unsigned int			ULONG32, *PULONG32;
-	typedef unsigned int			DWORD32, *PDWORD32;
-
-
-	typedef unsigned long			DWORD;
+                  typedef unsigned char			UCHAR, *PUCHAR;
+                  typedef unsigned long			ULONG , *PULONG;
+                  typedef unsigned short			USHORT, *PUSHORT;
+                  typedef unsigned int			                  ULONG32, *PULONG32;
+                  typedef unsigned int			                  DWORD32, *PDWORD32;
+                  typedef signed int				LONG32, *PLONG32;
+        	typedef unsigned long			DWORD;
 	typedef unsigned short			WORD;
+        	typedef unsigned char			BYTE;
+                
+
+                //	typedef __uint32_t				UINT, *PUINT;
+//	typedef int8_t                  INT8, *PINT8;
+//	typedef int16_t                 INT16, *PINT16;
+//	typedef int32_t                 INT32, *PINT32;
+//	typedef __int64_t				INT64;
+//    typedef INT64                   LONG_PTR;
+//
+//    typedef unsigned char			UINT8, *PUINT8;
+//	typedef unsigned short			UINT16, *PUINT16;
+//	typedef __uint32_t              UINT32, *PUINT32;
+//	typedef __uint64_t				UINT64, *PUINT64;
+//    typedef UINT64                  UINT_PTR;
+//    
+//                  typedef UINT_PTR                WPARAM;
+//                  typedef LONG_PTR                LPARAM;
+//                  typedef LONG_PTR                LRESULT;
+
+
+
+
 
  
 

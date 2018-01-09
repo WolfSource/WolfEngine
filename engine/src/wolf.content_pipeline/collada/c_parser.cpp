@@ -1185,7 +1185,7 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pN
 		else if (_node_name == "p")
 		{
             //wolf::system::convert::find_all_numbers_then_convert_to<float>(_float_array_str, _source->float_array);
-			wolf::system::convert::find_all_numbers_then_convert_to<UINT>(_child->value(), _triangles->indices);
+			wolf::system::convert::find_all_numbers_then_convert_to<uint32_t>(_child->value(), _triangles->indices);
 		}
 	}
 

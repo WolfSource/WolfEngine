@@ -10,9 +10,14 @@
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/w_task.h</file>
         </group>
         <group>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/w_logger.h</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/w_convert.h</file>
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/w_color.h</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/w_io.h</file>
+            <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/w_system_export.h</file>
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/w_system_pch.h</file>
             <file>file:/home/pooyaeimandar/github/Wolf.Engine/engine/src/wolf.system/glm_extention.h</file>
         </group>
+        <group name="Wolf.Engine"/>
     </open-files>
 </project-private>

@@ -20,15 +20,18 @@
 #include <array>
 #include <w_signal.h>
 
+#ifdef __WIN32
 #pragma warning(disable:4996)//for deprecated ffmpeg objects
+#endif
+
 extern "C"
 {
-    #include <libavcodec\avcodec.h>
-    #include <libavformat\avformat.h>
-    #include <libswscale\swscale.h>
-    #include "libswresample\swresample.h"
-    #include <libavutil\imgutils.h>
-    #include <libavutil\samplefmt.h>
+    #include <libavcodec/avcodec.h>
+    #include <libavformat/avformat.h>
+    #include <libswscale/swscale.h>
+    #include <libswresample/swresample.h>
+    #include <libavutil/imgutils.h>
+    #include <libavutil/samplefmt.h>
 }
 
 #if defined(__1080p__)
@@ -138,6 +141,9 @@ namespace wolf
 			*/
             WMC_EXP int seek_frame_milliSecond(int64_t pMilliSecond);
 
+#ifdef __WIN32
+            
+            //TODO: change wolf::system::w_memory with wolf::system::w_memory_pool
 			//Store video frame data in to the memory
             WMC_EXP HRESULT buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, UINT pDownSampling = 1);
 
@@ -147,6 +153,7 @@ namespace wolf
 			//Read all data in to the memory, make sure the capacity size of video and audio chuck is equal 
             WMC_EXP HRESULT buffer_to_memory(wolf::system::w_memory& pVideoMemory, wolf::system::w_memory& pAudioMemory);
 
+#endif
 			//release all resources
             WMC_EXP ULONG release();
 

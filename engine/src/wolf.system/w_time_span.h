@@ -35,7 +35,7 @@ namespace wolf
 		public:
 			WSYS_EXP w_time_span();
             WSYS_EXP w_time_span(bool pOverFlow);
-			WSYS_EXP w_time_span(INT64 pTicks);
+			WSYS_EXP w_time_span(int64_t pTicks);
 			WSYS_EXP w_time_span(int pHours, int pMinutes, int pSeconds);
 			WSYS_EXP w_time_span(int pDays, int pHours, int pMinutes, int pSeconds, int pMilliseconds = 0);
 			WSYS_EXP ~w_time_span();
@@ -70,7 +70,7 @@ namespace wolf
 			//Create timespan from seconds
 			WSYS_EXP static w_time_span from_seconds(double pValue);
 			//Create timespan from ticks
-			WSYS_EXP static w_time_span from_ticks(INT64 pValue);
+			WSYS_EXP static w_time_span from_ticks(int64_t pValue);
 			//Create timespan from string in the format of "00:00:00:00:000"
 			WSYS_EXP static w_time_span from_string(std::string pValue);
 
@@ -79,7 +79,7 @@ namespace wolf
             //Returns he overflow status
             WSYS_EXP bool get_has_overflowed() const;
 			//Returns total ticks
-			WSYS_EXP INT64 get_ticks() const;
+			WSYS_EXP int64_t get_ticks() const;
 			//Returns days
 			WSYS_EXP int get_days() const;
 			//Returns hours
@@ -105,10 +105,10 @@ namespace wolf
 
 		private:
 			static w_time_span _interval(double pValue, int pScale);
-			static INT64 _time_to_ticks(int pHour, int pMinute, int pSecond);
+			static int64_t _time_to_ticks(int pHour, int pMinute, int pSecond);
             
             bool    _overflowed;
-			INT64   _ticks;
+			int64_t   _ticks;
 		};
 
 		inline bool operator == (const w_time_span& pLeft, const w_time_span& pRight)

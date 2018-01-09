@@ -75,7 +75,7 @@ namespace amd
         static HRESULT apply(
             _In_ const std::vector<wolf::content_pipeline::w_vertex_data>& pVerticesData,
             _In_ const std::vector<float>& pVerticesPosition,
-            _Inout_ std::vector<UINT>& pIndicesData);
+            _Inout_ std::vector<uint32_t>& pIndicesData);
 
     private:
         static void DisplayTootleErrorMessage(_In_ const TootleResult& pResult);

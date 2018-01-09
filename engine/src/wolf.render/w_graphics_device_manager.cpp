@@ -2997,7 +2997,7 @@ namespace wolf
 					_swap_chain_create_info.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 				}
 
-				UINT _queue_family_indices[2] =
+				uint32_t _queue_family_indices[2] =
 				{
 					pGDevice->vk_graphics_queue.index,
 					pGDevice->vk_present_queue.index,
@@ -3619,7 +3619,7 @@ void w_graphics_device_manager::on_suspend()
 #endif
 }
 
-void w_graphics_device_manager::on_window_resized(_In_ UINT pIndex)
+void w_graphics_device_manager::on_window_resized(_In_ uint32_t pIndex)
 {
 	if (pIndex >= this->graphics_devices.size()) return;
 
@@ -3937,7 +3937,7 @@ HRESULT w_graphics_device_manager::present()
             {
                 if (_hr == VK_ERROR_OUT_OF_DATE_KHR || _hr == VK_SUBOPTIMAL_KHR)
                 {
-                    on_window_resized(static_cast<UINT>(j));
+                    on_window_resized(static_cast<uint32_t>(j));
                     return S_FALSE;
                 }
                 

@@ -92,7 +92,7 @@ namespace wolf
 
 			struct c_triangles
 			{
-				std::vector<UINT> indices;
+				std::vector<uint32_t> indices;
 				std::vector<c_semantic*> semantics;
 				std::string material_name;
 

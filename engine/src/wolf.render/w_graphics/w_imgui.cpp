@@ -7,7 +7,7 @@
 
 using namespace wolf::graphics;
 
-static INT64  g_Time = 0;
+static int64_t  g_Time = 0;
 
 namespace wolf
 {
@@ -104,7 +104,7 @@ namespace wolf
                 uint8_t* _font_data = nullptr;
                 int _texture_width, _texture_height;
                 _io.Fonts->GetTexDataAsRGBA32(&_font_data, &_texture_width, &_texture_height);
-                UINT _upload_size = _texture_width * _texture_height * 4 * sizeof(uint8_t);
+                uint32_t _upload_size = _texture_width * _texture_height * 4 * sizeof(uint8_t);
 
                 if (_font_texture)
                 {
@@ -255,7 +255,7 @@ namespace wolf
                 VkPipelineDynamicStateCreateInfo dynamicState = {};
                 dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
                 dynamicState.pDynamicStates = dynamicStateEnables.data();
-                dynamicState.dynamicStateCount = (UINT)dynamicStateEnables.size();
+                dynamicState.dynamicStateCount = (uint32_t)dynamicStateEnables.size();
 
                 auto _shader_stages = this->_shader.get_shader_stages();
 
@@ -273,7 +273,7 @@ namespace wolf
                 pipelineCreateInfo.pViewportState = &viewportState;
                 pipelineCreateInfo.pDepthStencilState = &depthStencilState;
                 pipelineCreateInfo.pDynamicState = &dynamicState;
-                pipelineCreateInfo.stageCount = static_cast<UINT>(_shader_stages->size());
+                pipelineCreateInfo.stageCount = static_cast<uint32_t>(_shader_stages->size());
                 pipelineCreateInfo.pStages = _shader_stages->data();
 
                 // Vertex bindings an attributes based on ImGui vertex definition
@@ -338,8 +338,8 @@ namespace wolf
                 if (!_im_draw_data || !_im_draw_data->CmdListsCount) return S_OK;
 
                 // Note: Alignment is done inside buffer creation
-                UINT _vertex_buffer_size = _im_draw_data->TotalVtxCount * sizeof(ImDrawVert);
-                UINT _index_buffer_size = _im_draw_data->TotalIdxCount * sizeof(ImDrawIdx);
+                uint32_t _vertex_buffer_size = _im_draw_data->TotalVtxCount * sizeof(ImDrawVert);
+                uint32_t _index_buffer_size = _im_draw_data->TotalIdxCount * sizeof(ImDrawIdx);
                 
                 // Update buffers only if vertex or index count has been changed compared to current buffer size
                 HRESULT _hr;

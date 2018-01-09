@@ -185,7 +185,7 @@ namespace wolf
 				return _super::release();
 			}
             
-            UINT32 get_size()
+            uint32_t get_size()
             {
                 return this->_buffer.get_size();
             }

@@ -156,7 +156,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 
         std::vector<w_vertex_data> _vertices_data;
         std::vector<float> _vertices_positions;
-        std::vector<UINT> _indices_data;// (_faces * 3 * 2, -1);
+        std::vector<uint32_t> _indices_data;// (_faces * 3 * 2, -1);
         
         //read vertices and indices
         w_vertex_data _vertex;

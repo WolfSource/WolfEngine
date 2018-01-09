@@ -160,7 +160,7 @@ namespace wolf
                     V(_hr, "binding staging index buffer", this->_name, 3);
                 }
 
-                return _copy_DRAM_to_VRAM(pVerticesSize, this->_indices_count * sizeof(UINT));
+                return _copy_DRAM_to_VRAM(pVerticesSize, this->_indices_count * sizeof(uint32_t));
             }
 
             HRESULT draw(_In_ const VkCommandBuffer& pCommandBuffer, 
@@ -218,12 +218,12 @@ namespace wolf
                 return this->_index_buffer.get_handle();
             }
    
-            const UINT get_vertices_count() const
+            const uint32_t get_vertices_count() const
             {
                 return this->_vertices_count;
             }
             
-            const UINT get_indices_count() const
+            const uint32_t get_indices_count() const
             {
                 return this->_indices_count;
             }
@@ -344,8 +344,8 @@ namespace wolf
         private:
             
             HRESULT _copy_DRAM_to_VRAM(
-                _In_ const UINT pVerticesSize,
-                _In_ const UINT pIndicesSize)
+                _In_ const uint32_t pVerticesSize,
+                _In_ const uint32_t pIndicesSize)
             {
                 //create one command buffer 
                 if (!this->_copy_command_buffer)

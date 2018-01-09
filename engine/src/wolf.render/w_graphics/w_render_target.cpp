@@ -124,7 +124,7 @@ namespace wolf
 				_In_ std::function<HRESULT(void)> pDrawFunction,
 				_In_ w_color pClearColor, 
 				_In_ const float& pClearDepth, 
-				_In_ const UINT&  pClearStencil)
+				_In_ const uint32_t&  pClearStencil)
 			{
 				const std::string _trace_info = this->_name + "::record_command_buffer";
 
@@ -298,7 +298,7 @@ HRESULT w_render_target::record_command_buffer(
 	_In_ std::function<HRESULT(void)> pFunction,
 	_In_ w_color pClearColor,
 	_In_ const float& pClearDepth,
-	_In_ const UINT&  pClearStencil)
+	_In_ const uint32_t&  pClearStencil)
 {
 	if (!this->_pimp) return S_FALSE;
 	return this->_pimp->record_command_buffer(

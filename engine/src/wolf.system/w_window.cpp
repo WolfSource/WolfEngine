@@ -503,12 +503,12 @@ const uint32_t w_window::get_id() const
     return this->_id;
 }
 
-UINT w_window::get_width() const
+uint32_t w_window::get_width() const
 {
 	return this->_screen_width;
 }
 
-UINT w_window::get_height() const
+uint32_t w_window::get_height() const
 {
 	return this->_screen_height;
 }

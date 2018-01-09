@@ -16,6 +16,7 @@
 
 #include <vector>
 #include <codecvt>
+#include <string.h>
 
 #if	defined(__WIN32) || defined(__UWP)
 

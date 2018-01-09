@@ -251,7 +251,7 @@ namespace wolf
                 return 0;
             }
             
-            const UINT32 get_size() const
+            const uint32_t get_size() const
             {
                 return this->_size;
             }
@@ -284,7 +284,7 @@ namespace wolf
         private:
             std::string                                         _name;
             std::shared_ptr<w_graphics_device>                  _gDevice;
-            UINT32                                              _size;
+            uint32_t                                              _size;
             void*                                               _mapped;
             
 #ifdef __VULKAN__
@@ -385,7 +385,7 @@ ULONG w_buffer::release()
 
 #pragma region Getters
 
-const UINT32 w_buffer::get_size() const
+const uint32_t w_buffer::get_size() const
 {
     if(!this->_pimp) return 0;
     
