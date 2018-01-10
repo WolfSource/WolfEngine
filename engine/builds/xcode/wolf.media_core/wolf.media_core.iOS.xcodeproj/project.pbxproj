@@ -1,0 +1,363 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C4CD2CC1E8A71850090EE0A /* glm_extention.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2A31E8A71850090EE0A /* glm_extention.h */; };
+		2C4CD2CE1E8A71850090EE0A /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2A51E8A71850090EE0A /* w_color.h */; };
+		2C4CD2CF1E8A71850090EE0A /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2A61E8A71850090EE0A /* w_convert.h */; };
+		2C4CD2D21E8A71850090EE0A /* w_event.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2A91E8A71850090EE0A /* w_event.h */; };
+		2C4CD2D31E8A71850090EE0A /* w_game_time.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2AA1E8A71850090EE0A /* w_game_time.h */; };
+		2C4CD2D41E8A71850090EE0A /* w_io.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2AB1E8A71850090EE0A /* w_io.h */; };
+		2C4CD2D51E8A71850090EE0A /* w_ireleasable.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2AC1E8A71850090EE0A /* w_ireleasable.h */; };
+		2C4CD2D81E8A71850090EE0A /* w_logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD2AF1E8A71850090EE0A /* w_logger.cpp */; };
+		2C4CD2D91E8A71850090EE0A /* w_logger.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2B01E8A71850090EE0A /* w_logger.h */; };
+		2C4CD2DE1E8A71850090EE0A /* w_object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD2B51E8A71850090EE0A /* w_object.cpp */; };
+		2C4CD2DF1E8A71850090EE0A /* w_object.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2B61E8A71850090EE0A /* w_object.h */; };
+		2C4CD2E31E8A71850090EE0A /* w_std.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2BA1E8A71850090EE0A /* w_std.h */; };
+		2C4CD2E41E8A71850090EE0A /* w_system_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2BB1E8A71850090EE0A /* w_system_export.h */; };
+		2C4CD2E51E8A71850090EE0A /* w_system_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD2BC1E8A71850090EE0A /* w_system_pch.cpp */; };
+		2C4CD2E61E8A71850090EE0A /* w_system_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2BD1E8A71850090EE0A /* w_system_pch.h */; };
+		2C4CD2E81E8A71850090EE0A /* w_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD2BF1E8A71850090EE0A /* w_task.cpp */; };
+		2C4CD2E91E8A71850090EE0A /* w_task.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2C01E8A71850090EE0A /* w_task.h */; };
+		2C4CD2EC1E8A71850090EE0A /* w_time_span.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD2C31E8A71850090EE0A /* w_time_span.cpp */; };
+		2C4CD2ED1E8A71850090EE0A /* w_time_span.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2C41E8A71850090EE0A /* w_time_span.h */; };
+		2C4CD2EE1E8A71850090EE0A /* w_timer_callback.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2C51E8A71850090EE0A /* w_timer_callback.h */; };
+		2C4CD2EF1E8A71850090EE0A /* w_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2C61E8A71850090EE0A /* w_timer.h */; };
+		2C4CD2F01E8A71850090EE0A /* w_window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD2C71E8A71850090EE0A /* w_window.cpp */; };
+		2C4CD2F11E8A71850090EE0A /* w_window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2C81E8A71850090EE0A /* w_window.h */; };
+		2C4CD2F21E8A71850090EE0A /* w_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CD2C91E8A71850090EE0A /* w_xml.cpp */; };
+		2C4CD2F31E8A71850090EE0A /* w_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CD2CA1E8A71850090EE0A /* w_xml.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2C4CD2941E8A71450090EE0A /* libwolf.media_core.iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwolf.media_core.iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C4CD2A31E8A71850090EE0A /* glm_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extention.h; path = ../../../src/wolf.system/glm_extention.h; sourceTree = "<group>"; };
+		2C4CD2A51E8A71850090EE0A /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
+		2C4CD2A61E8A71850090EE0A /* w_convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_convert.h; path = ../../../src/wolf.system/w_convert.h; sourceTree = "<group>"; };
+		2C4CD2A91E8A71850090EE0A /* w_event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_event.h; path = ../../../src/wolf.system/w_event.h; sourceTree = "<group>"; };
+		2C4CD2AA1E8A71850090EE0A /* w_game_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game_time.h; path = ../../../src/wolf.system/w_game_time.h; sourceTree = "<group>"; };
+		2C4CD2AB1E8A71850090EE0A /* w_io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_io.h; path = ../../../src/wolf.system/w_io.h; sourceTree = "<group>"; };
+		2C4CD2AC1E8A71850090EE0A /* w_ireleasable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_ireleasable.h; path = ../../../src/wolf.system/w_ireleasable.h; sourceTree = "<group>"; };
+		2C4CD2AF1E8A71850090EE0A /* w_logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_logger.cpp; path = ../../../src/wolf.system/w_logger.cpp; sourceTree = "<group>"; };
+		2C4CD2B01E8A71850090EE0A /* w_logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_logger.h; path = ../../../src/wolf.system/w_logger.h; sourceTree = "<group>"; };
+		2C4CD2B51E8A71850090EE0A /* w_object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_object.cpp; path = ../../../src/wolf.system/w_object.cpp; sourceTree = "<group>"; };
+		2C4CD2B61E8A71850090EE0A /* w_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_object.h; path = ../../../src/wolf.system/w_object.h; sourceTree = "<group>"; };
+		2C4CD2BA1E8A71850090EE0A /* w_std.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_std.h; path = ../../../src/wolf.system/w_std.h; sourceTree = "<group>"; };
+		2C4CD2BB1E8A71850090EE0A /* w_system_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_system_export.h; path = ../../../src/wolf.system/w_system_export.h; sourceTree = "<group>"; };
+		2C4CD2BC1E8A71850090EE0A /* w_system_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_system_pch.cpp; path = ../../../src/wolf.system/w_system_pch.cpp; sourceTree = "<group>"; };
+		2C4CD2BD1E8A71850090EE0A /* w_system_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_system_pch.h; path = ../../../src/wolf.system/w_system_pch.h; sourceTree = "<group>"; };
+		2C4CD2BF1E8A71850090EE0A /* w_task.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_task.cpp; path = ../../../src/wolf.system/w_task.cpp; sourceTree = "<group>"; };
+		2C4CD2C01E8A71850090EE0A /* w_task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_task.h; path = ../../../src/wolf.system/w_task.h; sourceTree = "<group>"; };
+		2C4CD2C31E8A71850090EE0A /* w_time_span.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_time_span.cpp; path = ../../../src/wolf.system/w_time_span.cpp; sourceTree = "<group>"; };
+		2C4CD2C41E8A71850090EE0A /* w_time_span.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_time_span.h; path = ../../../src/wolf.system/w_time_span.h; sourceTree = "<group>"; };
+		2C4CD2C51E8A71850090EE0A /* w_timer_callback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timer_callback.h; path = ../../../src/wolf.system/w_timer_callback.h; sourceTree = "<group>"; };
+		2C4CD2C61E8A71850090EE0A /* w_timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timer.h; path = ../../../src/wolf.system/w_timer.h; sourceTree = "<group>"; };
+		2C4CD2C71E8A71850090EE0A /* w_window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_window.cpp; path = ../../../src/wolf.system/w_window.cpp; sourceTree = "<group>"; };
+		2C4CD2C81E8A71850090EE0A /* w_window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_window.h; path = ../../../src/wolf.system/w_window.h; sourceTree = "<group>"; };
+		2C4CD2C91E8A71850090EE0A /* w_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_xml.cpp; path = ../../../src/wolf.system/w_xml.cpp; sourceTree = "<group>"; };
+		2C4CD2CA1E8A71850090EE0A /* w_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_xml.h; path = ../../../src/wolf.system/w_xml.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2C4CD2911E8A71450090EE0A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2C4CD28B1E8A71450090EE0A = {
+			isa = PBXGroup;
+			children = (
+				2C4CD2A31E8A71850090EE0A /* glm_extention.h */,
+				2C4CD2A51E8A71850090EE0A /* w_color.h */,
+				2C4CD2A61E8A71850090EE0A /* w_convert.h */,
+				2C4CD2A91E8A71850090EE0A /* w_event.h */,
+				2C4CD2AA1E8A71850090EE0A /* w_game_time.h */,
+				2C4CD2AB1E8A71850090EE0A /* w_io.h */,
+				2C4CD2AC1E8A71850090EE0A /* w_ireleasable.h */,
+				2C4CD2AF1E8A71850090EE0A /* w_logger.cpp */,
+				2C4CD2B01E8A71850090EE0A /* w_logger.h */,
+				2C4CD2B51E8A71850090EE0A /* w_object.cpp */,
+				2C4CD2B61E8A71850090EE0A /* w_object.h */,
+				2C4CD2BA1E8A71850090EE0A /* w_std.h */,
+				2C4CD2BB1E8A71850090EE0A /* w_system_export.h */,
+				2C4CD2BC1E8A71850090EE0A /* w_system_pch.cpp */,
+				2C4CD2BD1E8A71850090EE0A /* w_system_pch.h */,
+				2C4CD2BF1E8A71850090EE0A /* w_task.cpp */,
+				2C4CD2C01E8A71850090EE0A /* w_task.h */,
+				2C4CD2C31E8A71850090EE0A /* w_time_span.cpp */,
+				2C4CD2C41E8A71850090EE0A /* w_time_span.h */,
+				2C4CD2C51E8A71850090EE0A /* w_timer_callback.h */,
+				2C4CD2C61E8A71850090EE0A /* w_timer.h */,
+				2C4CD2C71E8A71850090EE0A /* w_window.cpp */,
+				2C4CD2C81E8A71850090EE0A /* w_window.h */,
+				2C4CD2C91E8A71850090EE0A /* w_xml.cpp */,
+				2C4CD2CA1E8A71850090EE0A /* w_xml.h */,
+				2C4CD2951E8A71450090EE0A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2C4CD2951E8A71450090EE0A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2C4CD2941E8A71450090EE0A /* libwolf.media_core.iOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2C4CD2921E8A71450090EE0A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C4CD2E41E8A71850090EE0A /* w_system_export.h in Headers */,
+				2C4CD2CF1E8A71850090EE0A /* w_convert.h in Headers */,
+				2C4CD2E31E8A71850090EE0A /* w_std.h in Headers */,
+				2C4CD2ED1E8A71850090EE0A /* w_time_span.h in Headers */,
+				2C4CD2EF1E8A71850090EE0A /* w_timer.h in Headers */,
+				2C4CD2D41E8A71850090EE0A /* w_io.h in Headers */,
+				2C4CD2F11E8A71850090EE0A /* w_window.h in Headers */,
+				2C4CD2EE1E8A71850090EE0A /* w_timer_callback.h in Headers */,
+				2C4CD2CC1E8A71850090EE0A /* glm_extention.h in Headers */,
+				2C4CD2E61E8A71850090EE0A /* w_system_pch.h in Headers */,
+				2C4CD2CE1E8A71850090EE0A /* w_color.h in Headers */,
+				2C4CD2F31E8A71850090EE0A /* w_xml.h in Headers */,
+				2C4CD2D21E8A71850090EE0A /* w_event.h in Headers */,
+				2C4CD2D91E8A71850090EE0A /* w_logger.h in Headers */,
+				2C4CD2E91E8A71850090EE0A /* w_task.h in Headers */,
+				2C4CD2D31E8A71850090EE0A /* w_game_time.h in Headers */,
+				2C4CD2D51E8A71850090EE0A /* w_ireleasable.h in Headers */,
+				2C4CD2DF1E8A71850090EE0A /* w_object.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		2C4CD2931E8A71450090EE0A /* wolf.media_core.iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2C4CD29F1E8A71450090EE0A /* Build configuration list for PBXNativeTarget "wolf.media_core.iOS" */;
+			buildPhases = (
+				2C4CD2901E8A71450090EE0A /* Sources */,
+				2C4CD2911E8A71450090EE0A /* Frameworks */,
+				2C4CD2921E8A71450090EE0A /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = wolf.media_core.iOS;
+			productName = wolf.media_core.iOS;
+			productReference = 2C4CD2941E8A71450090EE0A /* libwolf.media_core.iOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2C4CD28C1E8A71450090EE0A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = WolfSource.io;
+				TargetAttributes = {
+					2C4CD2931E8A71450090EE0A = {
+						CreatedOnToolsVersion = 8.3;
+						DevelopmentTeam = J2WEUYPJ98;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2C4CD28F1E8A71450090EE0A /* Build configuration list for PBXProject "wolf.media_core.iOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2C4CD28B1E8A71450090EE0A;
+			productRefGroup = 2C4CD2951E8A71450090EE0A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2C4CD2931E8A71450090EE0A /* wolf.media_core.iOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2C4CD2901E8A71450090EE0A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C4CD2F01E8A71850090EE0A /* w_window.cpp in Sources */,
+				2C4CD2E81E8A71850090EE0A /* w_task.cpp in Sources */,
+				2C4CD2DE1E8A71850090EE0A /* w_object.cpp in Sources */,
+				2C4CD2E51E8A71850090EE0A /* w_system_pch.cpp in Sources */,
+				2C4CD2EC1E8A71850090EE0A /* w_time_span.cpp in Sources */,
+				2C4CD2D81E8A71850090EE0A /* w_logger.cpp in Sources */,
+				2C4CD2F21E8A71850090EE0A /* w_xml.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2C4CD29D1E8A71450090EE0A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.system/w_system_pch.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+					"__VULKAN__=1",
+					"__iOS__=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/glm/ $(SRCROOT)/../../../dependencies/rapidxml/ $(SRCROOT)/../../../dependencies/tbb/oss/osx/";
+			};
+			name = Debug;
+		};
+		2C4CD29E1E8A71450090EE0A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.system/w_system_pch.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__VULKAN__=1",
+					"__iOS__=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/glm/ $(SRCROOT)/../../../dependencies/rapidxml/ $(SRCROOT)/../../../dependencies/tbb/oss/osx/";
+			};
+			name = Release;
+		};
+		2C4CD2A01E8A71450090EE0A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2C4CD2A11E8A71450090EE0A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2C4CD28F1E8A71450090EE0A /* Build configuration list for PBXProject "wolf.media_core.iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C4CD29D1E8A71450090EE0A /* Debug */,
+				2C4CD29E1E8A71450090EE0A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2C4CD29F1E8A71450090EE0A /* Build configuration list for PBXNativeTarget "wolf.media_core.iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C4CD2A01E8A71450090EE0A /* Debug */,
+				2C4CD2A11E8A71450090EE0A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2C4CD28C1E8A71450090EE0A /* Project object */;
+}

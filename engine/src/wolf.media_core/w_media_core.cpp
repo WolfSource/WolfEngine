@@ -1,8 +1,10 @@
 #include "w_media_core_pch.h"
 #include "w_media_core.h"
+#include <cmath>
 #include <iomanip>      // For std::hex
 #include <codecvt>      // For Unicode conversions
 #include <w_task.h>
+#include <w_thread.h>
 #include "w_std.h"
 
 #ifdef __WIN32
@@ -158,8 +160,7 @@ namespace wolf
                         return S_FALSE;
                     }
 
-                    //Get a pointer to the stream of video & audio 
-                    //Get a pointer to the codec context of video & audio 
+                    //Get a pointer to the stream of video & audio
                     if (hasVideoStream)
                     {
                         _video_codec.avStream = _av_format_ctx->streams[this->_video_stream_index];
@@ -222,7 +223,7 @@ namespace wolf
 
                     this->_duration_time = w_time_span::from_milliseconds(duration);
 #else
-                    auto _duration_seconds = static_cast<double>(videoCodec.avStream->duration) * static_cast<double>(ticksPerFrame) / static_cast<double>(avr.den);
+                    auto _duration_seconds = static_cast<double>(this->_video_codec.avStream->duration) / AV_TIME_BASE;
                     this->_duration_time = w_time_span::from_seconds(_duration_seconds);
 #endif
 #pragma endregion
@@ -245,7 +246,7 @@ namespace wolf
                     }
 
                     //Set total frames
-                    this->_duration_video_frames = static_cast<byte>(std::round(((double)this->_duration_time.get_milliseconds() * this->_frame_rate) / 1000.0));
+                    this->_duration_video_frames = static_cast<uint8_t>(std::round(((double)this->_duration_time.get_milliseconds() * this->_frame_rate) / 1000.0));
                     this->_remained_video_frames = this->_duration_video_frames;
                     this->_elapsed_video_frames = 0;
 
@@ -634,7 +635,7 @@ namespace wolf
                 }
 
                 //Wait one cycle
-                Sleep(0);
+                w_thread::sleep_current_thread(0);
 
                 //Seek the audio
                 if (this->_video_stream_index > -1)
@@ -1434,14 +1435,14 @@ namespace wolf
                 this->_remained_time = this->_duration_time - this->_elapsed_time;
 
                 //If we just finished
-                this->_elapsed_video_frames = static_cast<byte>(((float)this->_elapsed_time.get_milliseconds() * this->_frame_rate) / 1000.0);
+                this->_elapsed_video_frames = static_cast<uint8_t>(((float)this->_elapsed_time.get_milliseconds() * this->_frame_rate) / 1000.0);
                 if (this->_elapsed_time == this->_duration_time)
                 {
                     this->_remained_video_frames = 0;
                 }
                 else
                 {
-                    this->_remained_video_frames = static_cast<byte>(this->_frame_rate - (float)this->_elapsed_video_frames);
+                    this->_remained_video_frames = static_cast<uint8_t>(this->_frame_rate - (float)this->_elapsed_video_frames);
                 }
             }
 
@@ -1466,9 +1467,9 @@ namespace wolf
             wolf::system::w_time_span					_remained_time;
 
             size_t										_total_video_frames;
-            byte										_duration_video_frames;
-            byte										_elapsed_video_frames;
-            byte										_remained_video_frames;
+            uint8_t										_duration_video_frames;
+            uint8_t										_elapsed_video_frames;
+            uint8_t										_remained_video_frames;
 
             float										_frame_rate;
             double										_audio_frame_volume_db;

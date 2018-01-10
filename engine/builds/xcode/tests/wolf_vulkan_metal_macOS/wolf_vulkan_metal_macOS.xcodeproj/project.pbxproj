@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0F36A220062FB2001CB2DF /* libwolf.media_core.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F36A320062FB2001CB2DF /* libwolf.media_core.macOS.dylib */; };
 		2C3C81A21EB7B7CE00E3906E /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C3C81A01EB7B7CE00E3906E /* pch.cpp */; };
 		2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib */; };
 		2C620F951E617F81005DFB10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C620F941E617F81005DFB10 /* Assets.xcassets */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C0F36A320062FB2001CB2DF /* libwolf.media_core.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libwolf.media_core.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C38D9581E796CA200EE8595 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2C3C81A01EB7B7CE00E3906E /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../../../src/tests/pch.cpp; sourceTree = "<group>"; };
 		2C3C81A11EB7B7CE00E3906E /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../../../src/tests/pch.h; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C0F36A220062FB2001CB2DF /* libwolf.media_core.macOS.dylib in Frameworks */,
 				2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */,
 				2CCE632A1FD5E4C600EC0BB5 /* MoltenVK.framework in Frameworks */,
 				2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
@@ -127,6 +130,7 @@
 		2C620FAB1E61804B005DFB10 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C0F36A320062FB2001CB2DF /* libwolf.media_core.macOS.dylib */,
 				2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */,
 				2CA945CD1ED4DE9C007B70B8 /* libwolf.gui.macOS.dylib */,
 				2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib */,
