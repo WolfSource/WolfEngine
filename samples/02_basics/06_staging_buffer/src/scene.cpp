@@ -377,7 +377,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	return w_game::render(pGameTime);
 }
 
-void scene::on_window_resized(_In_ UINT pIndex)
+void scene::on_window_resized(_In_ uint32_t pIndex)
 {
 	w_game::on_window_resized(pIndex);
 }
