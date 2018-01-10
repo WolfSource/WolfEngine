@@ -59,3 +59,13 @@
 /engine/builds/netbeans/wolf.media_core/build/
 /samples/01_system/01_async/builds/netbeans/01_async/build/
 /samples/01_system/01_async/builds/netbeans/01_async/dist/
+/samples/01_system/02_thread/builds/netbeans/02_thread/dist/
+/samples/01_system/02_thread/builds/netbeans/02_thread/build/
+/samples/01_system/03_signal/builds/netbeans/03_signal/build/
+/samples/01_system/03_signal/builds/netbeans/03_signal/dist/
+/samples/01_system/04_timer/builds/netbeans/04_timer/build/
+/samples/01_system/04_timer/builds/netbeans/04_timer/dist/
+/samples/01_system/05_window/builds/netbeans/05_window/build/
+/samples/01_system/05_window/builds/netbeans/05_window/dist/
+/samples/01_system/06_lua/builds/netbeans/06_lua/build/
+/samples/01_system/06_lua/builds/netbeans/06_lua/dist/

@@ -22,18 +22,20 @@ int c_function_bind(lua_State* pState)
 //Entry point of program 
 WOLF_MAIN()
 {
-    const wchar_t* _name = L"06_lua";
+    const wchar_t* _name = L"_06_lua.lua";
     WOLF_INIT(_name);
 
 	logger.write(L"Wolf initialized");
 
 #ifdef __WIN32
     auto _route = L"../../../../content/scripts/samples/";
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) 
     auto _route = L"/../../../../../content/scripts/samples/";
+ #elif defined(__linux) 
+    auto _route = L"/../../../../../../content/scripts/samples/";   
 #endif
     
-    std::wstring _path = wolf::system::io::get_current_directory() + _route + _name + L".lua";
+    std::wstring _path = wolf::system::io::get_current_directory() + _route+ _name;
     if (w_lua::load_file(_path.c_str()) == S_OK)
     {
         //bind lua function named "bind" to c function, the script will call "bind" from a function named "action"

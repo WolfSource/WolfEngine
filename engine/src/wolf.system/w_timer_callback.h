@@ -15,11 +15,7 @@
 #define __W_TIMER_CALLBACK_H__
 
 #include "w_timer.h"
-#include <thread>
-
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
+#include "w_thread.h"
 
 namespace wolf
 {
@@ -34,11 +30,7 @@ namespace wolf
 			template <class T>
 			void do_sync(int pIntervalMilliSeconds, T&& pFunc)
 			{
-				w_game_time _time;
-				while (_time.get_total_seconds() * 1000 < pIntervalMilliSeconds)
-				{
-					_time.tick([]() {});
-				}
+				w_thread::sleep_current_thread(pIntervalMilliSeconds);
 				pFunc();
 			}
 
@@ -47,11 +39,7 @@ namespace wolf
 			{
 				std::thread  t([pIntervalMilliSeconds, pFunc]()
 				{
-					w_game_time _time;
-					while (_time.get_total_seconds() * 1000 < pIntervalMilliSeconds)
-					{
-						_time.tick([]() {});
-					}
+					w_thread::sleep_current_thread(pIntervalMilliSeconds);
 					pFunc();
 				});
 				t.detach();
@@ -59,8 +47,5 @@ namespace wolf
 		};
 	}
 }
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif //__W_TIMER_CALLBACK_H__

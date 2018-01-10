@@ -346,7 +346,7 @@ namespace wolf
 			inline HRESULT get_is_file(_In_z_ const char* pPath)
 			{
 				struct stat _stat;
-				auto _result = stat(pPath, &_stat);
+                                                                	auto _result = stat(pPath, &_stat);
 				return _result == -1 ? S_FALSE : S_OK;
 			}
 

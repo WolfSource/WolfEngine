@@ -65,11 +65,11 @@ HRESULT w_lua::load_file(const wchar_t* pPath)
 {
 	_last_error.clear();
 
-	auto _utf8_path = wolf::system::convert::to_utf8(pPath);
+                	auto _utf8_path = wolf::system::convert::to_utf8(pPath);
 #if defined(__WIN32) || defined(__UWP)
     auto _is_exists = wolf::system::io::get_is_file(pPath);
 #else
-    auto _c_str = wolf::system::convert::wstring_to_string(pPath).c_str();
+   auto _c_str = wolf::system::convert::wstring_to_string(pPath).c_str();
     auto _is_exists = wolf::system::io::get_is_file(_c_str);
 #endif
     
