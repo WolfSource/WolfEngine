@@ -73,6 +73,9 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
@@ -151,6 +154,9 @@
       <Filter>w_graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_headers.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.h">
+      <Filter>w_graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_framework">

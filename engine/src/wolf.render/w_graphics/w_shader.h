@@ -88,7 +88,7 @@ namespace wolf
 
 #pragma endregion
 
-#pragma region Getters
+#pragma region Setters
             
             W_EXP HRESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
 

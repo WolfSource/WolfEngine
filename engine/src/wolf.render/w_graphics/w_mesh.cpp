@@ -282,6 +282,7 @@ namespace wolf
                     _attr.push_back(w_vertex_attribute::Vec3);
                     break;
                 case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES:
+					//TODO: Skinned
                     /*_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
                     _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
                     _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec2);

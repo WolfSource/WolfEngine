@@ -162,8 +162,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\wolf.render\dllmain.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.cpp" />
@@ -176,21 +182,70 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffer.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_imgui.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_pipeline.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_queue.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_render_pass.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_semaphore.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_shader.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_texture.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_frame_buffer.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_imgui.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_pipeline.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_queue.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_render_pass.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_semaphore.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_shader.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_texture.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableEnhancedInstructionSet>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_render_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -220,6 +275,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_semaphore.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shader.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_uniform.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_texture.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
