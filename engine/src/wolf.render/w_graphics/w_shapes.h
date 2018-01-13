@@ -12,6 +12,7 @@
 
 #include "w_graphics_device_manager.h"
 #include <w_bounding.h>
+#include <w_time_span.h>
 
 namespace wolf
 {
@@ -28,7 +29,9 @@ namespace wolf
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
 
 			//add bounding box
-			W_EXP HRESULT add_bounding_box(_In_ const wolf::content_pipeline::w_bounding_box& pBBox);
+            W_EXP HRESULT add_bounding_box(_In_ wolf::content_pipeline::w_bounding_box& pBoundingBox,
+                                           _In_ const w_color& pColor,
+                                           _In_ const wolf::system::w_time_span& pLifeTime);
 
 			W_EXP ULONG release();
 

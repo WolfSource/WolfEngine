@@ -12,6 +12,7 @@
 
 #include "w_cpipeline_export.h"
 #include <vector>
+#include <array>
 #include <glm/vec3.hpp>
 #include <msgpack.hpp>
 
@@ -41,6 +42,7 @@ namespace wolf
             WCP_EXP w_containment_type contains(_In_ const glm::vec3& pPoint);
             WCP_EXP w_containment_type contains(_In_ const w_bounding_box& pBox);
             WCP_EXP w_containment_type contains(_In_ const w_bounding_sphere& pSphere);
+            WCP_EXP void get_corners(_Inout_ std::array<glm::vec3, 8>& pCorners);
 
             MSGPACK_DEFINE(min, max, position, rotation);
         };

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2C06C2431F6ECE320022AB0C /* w_quad.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C06C2421F6ECE320022AB0C /* w_quad.h */; };
+		2C0F36A6200A6C00001CB2DF /* w_shapes.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0F36A4200A6BFF001CB2DF /* w_shapes.h */; };
+		2C0F36A7200A6C00001CB2DF /* w_shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F36A5200A6BFF001CB2DF /* w_shapes.cpp */; };
 		2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1B3FF51E97DC6500512959 /* w_shader.cpp */; };
 		2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1B3FF61E97DC6500512959 /* w_shader.h */; };
 		2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C29CD1C1EB3344000BEFF54 /* w_game.cpp */; };
@@ -64,6 +66,8 @@
 
 /* Begin PBXFileReference section */
 		2C06C2421F6ECE320022AB0C /* w_quad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_quad.h; path = ../../../src/wolf.render/w_graphics/w_quad.h; sourceTree = "<group>"; };
+		2C0F36A4200A6BFF001CB2DF /* w_shapes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shapes.h; path = ../../../src/wolf.render/w_graphics/w_shapes.h; sourceTree = "<group>"; };
+		2C0F36A5200A6BFF001CB2DF /* w_shapes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_shapes.cpp; path = ../../../src/wolf.render/w_graphics/w_shapes.cpp; sourceTree = "<group>"; };
 		2C1B3FF51E97DC6500512959 /* w_shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_shader.cpp; path = ../../../src/wolf.render/w_graphics/w_shader.cpp; sourceTree = "<group>"; };
 		2C1B3FF61E97DC6500512959 /* w_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shader.h; path = ../../../src/wolf.render/w_graphics/w_shader.h; sourceTree = "<group>"; };
 		2C29CD1C1EB3344000BEFF54 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_framework/w_game.cpp; sourceTree = "<group>"; };
@@ -141,6 +145,8 @@
 		2C1B3FF31E97DC5300512959 /* w_graphics */ = {
 			isa = PBXGroup;
 			children = (
+				2C0F36A5200A6BFF001CB2DF /* w_shapes.cpp */,
+				2C0F36A4200A6BFF001CB2DF /* w_shapes.h */,
 				2CFFAC6B1FCEAA3F0020A112 /* w_attachment_buffer_desc.h */,
 				2CFFAC6D1FCEAA400020A112 /* w_command_buffer.cpp */,
 				2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */,
@@ -266,6 +272,7 @@
 				2C8D5B6E1F4F98D1000BCB87 /* w_imgui.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 				2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */,
+				2C0F36A6200A6C00001CB2DF /* w_shapes.h in Headers */,
 				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
 				2C736BBE1ECA1EB600624CC7 /* w_model.h in Headers */,
 				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
@@ -350,6 +357,7 @@
 				2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */,
 				2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */,
 				2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */,
+				2C0F36A7200A6C00001CB2DF /* w_shapes.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

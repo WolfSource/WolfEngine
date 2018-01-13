@@ -124,6 +124,34 @@ w_containment_type w_bounding_box::contains(_In_ const w_bounding_sphere& pSpher
     return w_containment_type::INTERSECTS;
 }
 
+void w_bounding_box::get_corners(_Inout_ std::array<glm::vec3, 8>& pCorners)
+{
+    pCorners[0].x = this->min[0];
+    pCorners[0].y = this->max[1];
+    pCorners[0].z = this->max[2];
+    pCorners[1].x = this->max[0];
+    pCorners[1].y = this->max[1];
+    pCorners[1].z = this->max[2];
+    pCorners[2].x = this->max[0];
+    pCorners[2].y = this->min[1];
+    pCorners[2].z = this->max[2];
+    pCorners[3].x = this->min[0];
+    pCorners[3].y = this->min[1];
+    pCorners[3].z = this->max[2];
+    pCorners[4].x = this->min[0];
+    pCorners[4].y = this->max[1];
+    pCorners[4].z = this->min[2];
+    pCorners[5].x = this->max[0];
+    pCorners[5].y = this->max[1];
+    pCorners[5].z = this->min[2];
+    pCorners[6].x = this->max[0];
+    pCorners[6].y = this->min[1];
+    pCorners[6].z = this->min[2];
+    pCorners[7].x = this->min[0];
+    pCorners[7].y = this->min[1];
+    pCorners[7].z = this->min[2];
+}
+
 #pragma endregion
 
 #pragma region bounding sphere

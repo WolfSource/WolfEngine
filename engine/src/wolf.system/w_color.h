@@ -27,7 +27,7 @@
 
 struct w_color
 {
-    unsigned char r, g, b, a;
+    uint8_t r, g, b, a;
 
     w_color() :
         r(0),
@@ -38,7 +38,7 @@ struct w_color
     }
 
     //r(0-255),g(0-255),b(0-255),a(0-255)
-    w_color(unsigned char pR, unsigned char pG, unsigned char pB, unsigned char pA) :
+    w_color(uint8_t pR, uint8_t pG, uint8_t pB, uint8_t pA) :
         r(pR),
         g(pG),
         b(pB),
@@ -47,7 +47,7 @@ struct w_color
     }
 
     //rgba(0-255)
-    w_color(unsigned char pRGBA) :
+    w_color(uint8_t pRGBA) :
         r(pRGBA),
         g(pRGBA),
         b(pRGBA),
@@ -60,7 +60,7 @@ struct w_color
     {
         std::stringstream _sstrream(pValue);
 
-        unsigned char _r = 0, _g = 0, _b = 0, _a = 0;
+        uint8_t _r = 0, _g = 0, _b = 0, _a = 0;
         int i = 0;
         char _c;
         std::string _number;
@@ -111,7 +111,7 @@ struct w_color
     }
 
     //convert hex color to w_color
-    static unsigned int to_hex(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+    static unsigned int to_hex(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
     {
         return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
     }
@@ -119,10 +119,10 @@ struct w_color
     static w_color to_color(_In_ const std::array<float, 4>& pValue)
     {
         return w_color(
-            static_cast<unsigned char>(pValue[0] * 255.0f),
-            static_cast<unsigned char>(pValue[1] * 255.0f),
-            static_cast<unsigned char>(pValue[2] * 255.0f),
-            static_cast<unsigned char>(pValue[3] * 255.0f));
+            static_cast<uint8_t>(pValue[0] * 255.0f),
+            static_cast<uint8_t>(pValue[1] * 255.0f),
+            static_cast<uint8_t>(pValue[2] * 255.0f),
+            static_cast<uint8_t>(pValue[3] * 255.0f));
     }
 
     static w_color ALICE_BLUE() { return w_color::from_hex(0xFFF0F8FF); }
