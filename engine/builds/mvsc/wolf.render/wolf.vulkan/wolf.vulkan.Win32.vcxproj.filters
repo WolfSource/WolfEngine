@@ -25,9 +25,6 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp">
       <Filter>w_framework</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.cpp">
-      <Filter>w_framework</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
@@ -106,9 +103,6 @@
       <Filter>w_graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h">
-      <Filter>w_framework</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.h">
       <Filter>w_framework</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imconfig.h">
@@ -325,6 +319,12 @@
     </None>
     <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl">
       <Filter>masked_occlusion_culling</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\shape.frag">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\..\..\..\content\shaders\shape.vert">
+      <Filter>content\shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

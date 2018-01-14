@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "scene.h"
+#include <glm_extention.h>
 
 using namespace std;
 using namespace wolf;
@@ -9,8 +10,6 @@ using namespace wolf::graphics;
 static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
-static int sTextureLOD = 0;
-static int sTextureMaxLOD = 0;
 
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
     w_game(pRunningDirectory, pAppName)
@@ -173,172 +172,30 @@ void scene::load()
         release();
         V(S_FALSE, "creating draw command buffers for gui", _trace_info, 3, true);
     }
-
-#ifdef WIN32
-    auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/14_mipmaps/src/content/";
-#elif defined(__APPLE__)
-    auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/02_basics/14_mipmaps/src/content/";
-#endif // WIN32
-
-    //loading vertex shaders
-    _hr = this->_shader.load(_gDevice,
-        _content_path_dir + L"shaders/shader.vert.spv",
-        w_shader_stage::VERTEX_SHADER);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "loading vertex shader", _trace_info, 3, true);
-    }
-
-    //loading fragment shader
-    _hr = this->_shader.load(_gDevice,
-        _content_path_dir + L"shaders/shader.frag.spv",
-        w_shader_stage::FRAGMENT_SHADER);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "loading fragment shader", _trace_info, 3, true);
-    }
-
-    //load texture
-    _hr = this->_texture.initialize(
-		_gDevice, 
-		//++++++++++++++++++++++++++++++++++++++++++++++++++++
-		//The following codes have been added for this project
-		//++++++++++++++++++++++++++++++++++++++++++++++++++++
-		true
-		//++++++++++++++++++++++++++++++++++++++++++++++++++++
-		//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "loading texture", _trace_info, 3, true);
-    }
-    //load texture from file
-    _hr = this->_texture.load_texture_2D_from_file(content_path + L"../Logo.jpg", true);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "loading Logo.jpg texture", _trace_info, 3, true);
-    }
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	sTextureMaxLOD = this->_texture.get_mip_maps_level();
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	//load vertex shader uniform
-	_hr = this->_u0.load(_gDevice);
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "loading vertex shader uniform", _trace_info, 3, true);
-	}
-
-	//update uniform's data
-	this->_u0.data.texture_lod = 1;
-	_hr = this->_u0.update();
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "updating uniform", _trace_info, 3, true);
-	}
-
-    //just we need vertex position color
-    this->_mesh.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_UV);
-
-	std::vector<w_shader_binding_param> _shader_params;
-
-    w_shader_binding_param _shader_param;
-	_shader_param.index = 0;
-	_shader_param.type = w_shader_binding_type::UNIFORM;
-	_shader_param.stage = w_shader_stage::VERTEX_SHADER;
-	_shader_param.buffer_info = this->_u0.get_descriptor_info();
-	_shader_params.push_back(_shader_param);
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	auto _image_descriptor_info = this->_texture.get_descriptor_info(w_sampler_type::MIPMAP_AND_ANISOTROPY);
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	_shader_param.index = 1;
-	_shader_param.type = w_shader_binding_type::SAMPLER2D;
-	_shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
-	_shader_param.image_info = _image_descriptor_info;
-	_shader_params.push_back(_shader_param);
-
-    _hr = this->_shader.set_shader_binding_params(_shader_params);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "setting shader binding param", _trace_info, 3, true);
-    }
-
-    //loading pipeline cache
-    std::string _pipeline_cache_name = "pipeline_cache";
-    if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
-    {
-        logger.error("could not create pipeline cache");
-        _pipeline_cache_name.clear();
-    }
-
-    auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
-    _hr = this->_pipeline.load(_gDevice,
-        this->_mesh.get_vertex_binding_attributes(),
-        VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-        this->_draw_render_pass.get_handle(),
-        this->_shader.get_shader_stages(),
-        _descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
-        { this->_viewport },
-        { this->_viewport_scissor });
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "creating solid pipeline", _trace_info, 3, true);
-    }
-
-    std::vector<float> _vertex_data =
-    {
-        -0.7f, -0.7f,	0.0f,		//pos0
-         0.0f,  0.0f,               //uv0
-        -0.7f,  0.7f,	0.0f,		//pos1
-         0.0f,  1.0f,               //uv1
-         0.7f,  0.7f,	0.0f,		//pos2
-         1.0f,  1.0f,           	//uv2
-         0.7f, -0.7f,	0.0f,		//pos3
-         1.0f,  0.0f,               //uv3
-    };
-
-    std::vector<uint32_t> _index_data =
-    {
-        0,
-        1,
-        3,
-        3,
-        1,
-        2
-    };
-
-    this->_mesh.set_texture(&this->_texture);
-    _hr = this->_mesh.load(_gDevice,
-        _vertex_data.data(),
-        static_cast<uint32_t>(_vertex_data.size() * sizeof(float)),
-        static_cast<uint32_t>(_vertex_data.size()),
-        _index_data.data(),
-        static_cast<uint32_t>(_index_data.size()));
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "loading mesh", _trace_info, 3, true);
-    }
-
+	
 	_build_draw_command_buffers(_gDevice);
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	_hr = this->_shapes.load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating draw command buffers for gui", _trace_info, 3, true);
+	}
+
+	this->_bounding_box.min[0] = -3.0f;
+	this->_bounding_box.min[1] = -3.0f;
+	this->_bounding_box.min[2] = -3.0f;
+
+	this->_bounding_box.max[0] = 3.0f;
+	this->_bounding_box.max[1] = 3.0f;
+	this->_bounding_box.max[2] = 3.0f;
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
 HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -360,15 +217,12 @@ HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics
                 1.0f,
                 0.0f);
             {
-                auto _description_set = this->_shader.get_descriptor_set();
-                
-                this->_pipeline.bind(_cmd, &_description_set);
-
-                _hr = this->_mesh.draw(_cmd, nullptr, 0, false);
-                if (_hr == S_FALSE)
-                {
-                    V(S_FALSE, "drawing mesh", _trace_info, 3, false);
-                }
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//The following codes have been added for this project
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				this->_shapes.add_bounding_box(this->_bounding_box, w_color::YELLOW(), w_time_span::zero());
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
+				//++++++++++++++++++++++++++++++++++++++++++++++++++++
             }
             this->_draw_render_pass.end(_cmd);
         }
@@ -414,22 +268,6 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         _update_gui();
     });
     
-	//we must update uniform
-	bool _update_uniform = false;
-	if (this->_u0.data.texture_lod != sTextureLOD)
-	{
-		this->_u0.data.texture_lod = sTextureLOD;
-		_update_uniform = true;
-	}
-
-	if (_update_uniform)
-	{
-		if (this->_u0.update() == S_FALSE)
-		{
-			V(S_FALSE, "updating uniform", _trace_info, 3, false);
-		}
-	}
-
 	w_game::update(pGameTime);
 }
 
@@ -503,21 +341,11 @@ ULONG scene::release()
     this->_gui_frame_buffers.release();
     w_imgui::release();
 
-	this->_shader.release();
-
-    this->_pipeline.release();
-    
-	this->_mesh.release();
-    this->_texture.release();
-
-	this->_u0.release();
+	this->_shapes.release();
 
 	return w_game::release();
 }
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//The following codes have been added for this project
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
 bool scene::_update_gui()
 {
     //Setting Style
@@ -547,14 +375,7 @@ bool scene::_update_gui()
         sTotalTimeTimeInSec,
         wolf::inputs_manager.mouse.pos_x, wolf::inputs_manager.mouse.pos_y);
 
-    if (ImGui::SliderInt("Texture LOD", &sTextureLOD, 0, sTextureMaxLOD))
-    {
-		//logger.write("uniform");
-    }
-
     ImGui::End();
 
     return true;
 }
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//++++++++++++++++++++++++++++++++++++++++++++++++++++

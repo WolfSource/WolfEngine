@@ -83,7 +83,7 @@ namespace wolf
             float	        position[3];
             float	        rotation[3];
             float	        scale = 1.0f;
-            uint32_t            texture_sampler_index = 0;
+            uint32_t        texture_sampler_index = 0;
 
             MSGPACK_DEFINE(name, position, rotation, scale, texture_sampler_index);
         };
@@ -98,11 +98,11 @@ namespace wolf
 			{
 				//posX, posY, posZ
 				std::vector<w_vertex_data>		vertices;
-				std::vector<uint32_t>               indices;
-				//c_material*						material;
-				//std::vector<c_effect*>			effects;
+				std::vector<uint32_t>           indices;
+				//c_material*					material;
+				//std::vector<c_effect*>		effects;
 				std::string		                textures_path;
-				w_bounding_box		            bounding_box;
+				wolf::system::w_bounding_box	bounding_box;
 
                 void release()
                 {
@@ -139,7 +139,7 @@ namespace wolf
             /*
                 bounding boxe of mesh
             */
-            WCP_EXP w_bounding_box* get_bounding_box(_In_ const size_t& pIndex);
+            WCP_EXP wolf::system::w_bounding_box* get_bounding_box(_In_ const size_t& pIndex);
             WCP_EXP size_t get_lods_count();
             WCP_EXP w_cpipeline_model* get_lod_at(_In_ size_t pIndex);
             WCP_EXP size_t get_convex_hulls_count();
@@ -196,7 +196,7 @@ namespace wolf
             std::vector<w_cpipeline_model>                          _lods;
             std::vector<w_cpipeline_model>                          _convex_hulls;
 			std::vector<w_instance_info>							_instances_info;
-            w_bounding_box                                          _bounding_box;
+			wolf::system::w_bounding_box                            _bounding_box;
 
 			std::vector<w_mesh>								    	_meshes;
 

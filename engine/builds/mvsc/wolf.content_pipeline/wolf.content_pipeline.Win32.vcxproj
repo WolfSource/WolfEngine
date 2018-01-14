@@ -56,7 +56,6 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshOptimize.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshUtil.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\dllmain.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_bounding.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -132,7 +131,6 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshP.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\scoped.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_bounding.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_export.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />

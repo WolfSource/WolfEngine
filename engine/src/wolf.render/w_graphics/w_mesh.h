@@ -83,7 +83,8 @@ namespace wolf
             W_EXP HRESULT draw(_In_ const VkCommandBuffer& pCommandBuffer,
                 _In_ const VkBuffer& pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
-                _In_ const bool& pIndirectDraw);
+                _In_ const bool& pIndirectDraw,
+				_In_ const uint32_t& pVertexOffset = 0);
 
 			//release all resources
 			W_EXP virtual ULONG release() override;

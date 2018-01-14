@@ -142,7 +142,6 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle.cpp">
       <Filter>amd</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_bounding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.h">
@@ -335,7 +334,6 @@
       <Filter>amd</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_bounding.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.inl">

@@ -11,6 +11,8 @@
 #define __W_SHAPES_H__
 
 #include "w_graphics_device_manager.h"
+#include "w_render_pass.h"
+#include "w_frame_buffer.h"
 #include <w_bounding.h>
 #include <w_time_span.h>
 
@@ -26,12 +28,16 @@ namespace wolf
 			W_EXP virtual ~w_shapes();
 
 			//load shapes render
-			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
+			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ const wolf::graphics::w_render_pass& pRenderPass,
+				_In_ const wolf::graphics::w_viewport& pViewport,
+				_In_ const wolf::graphics::w_viewport_scissor& pViewportScissor);
 
 			//add bounding box
-            W_EXP HRESULT add_bounding_box(_In_ wolf::content_pipeline::w_bounding_box& pBoundingBox,
-                                           _In_ const w_color& pColor,
-                                           _In_ const wolf::system::w_time_span& pLifeTime);
+            W_EXP HRESULT add_bounding_box(
+				_In_ wolf::system::w_bounding_box& pBoundingBox,
+                _In_ const w_color& pColor,
+                _In_ const wolf::system::w_time_span& pLifeTime);
 
 			W_EXP ULONG release();
 

@@ -10,7 +10,7 @@
 #ifndef __W_BOUNDING_H__
 #define __W_BOUNDING_H__
 
-#include "w_cpipeline_export.h"
+#include "w_system_export.h"
 #include <vector>
 #include <array>
 #include <glm/vec3.hpp>
@@ -18,7 +18,7 @@
 
 namespace wolf
 {
-	namespace content_pipeline
+	namespace system
 	{
         enum w_containment_type { DISJOINT, INTERSECTS, CONTAINS };
 
@@ -36,13 +36,13 @@ namespace wolf
             //used for rendering and masked occulusion culling
             std::vector<float>      vertices;
 
-            WCP_EXP void generate_vertices_indices();
-            WCP_EXP void merge(_In_ _In_ const w_bounding_box& pAdditional);
-            WCP_EXP bool intersects(_In_ const w_bounding_box& pBox);
-            WCP_EXP w_containment_type contains(_In_ const glm::vec3& pPoint);
-            WCP_EXP w_containment_type contains(_In_ const w_bounding_box& pBox);
-            WCP_EXP w_containment_type contains(_In_ const w_bounding_sphere& pSphere);
-            WCP_EXP void get_corners(_Inout_ std::array<glm::vec3, 8>& pCorners);
+			WSYS_EXP void generate_vertices_indices();
+			WSYS_EXP void merge(_In_ _In_ const w_bounding_box& pAdditional);
+			WSYS_EXP bool intersects(_In_ const w_bounding_box& pBox);
+			WSYS_EXP w_containment_type contains(_In_ const glm::vec3& pPoint);
+			WSYS_EXP w_containment_type contains(_In_ const w_bounding_box& pBox);
+			WSYS_EXP w_containment_type contains(_In_ const w_bounding_sphere& pSphere);
+			WSYS_EXP void get_corners(_Inout_ std::array<glm::vec3, 8>& pCorners);
 
             MSGPACK_DEFINE(min, max, position, rotation);
         };
@@ -52,10 +52,10 @@ namespace wolf
             float center[3];
             float radius;
 
-            WCP_EXP void merge(_In_ const w_bounding_sphere& pAdditional);
-            WCP_EXP void create_from_bounding_box(_In_ const w_bounding_box& pBox);
-            WCP_EXP bool intersects(_In_ const w_bounding_sphere& pSphere);
-            WCP_EXP bool intersects(_In_ const w_bounding_box& pBox);
+			WSYS_EXP void merge(_In_ const w_bounding_sphere& pAdditional);
+			WSYS_EXP void create_from_bounding_box(_In_ const w_bounding_box& pBox);
+			WSYS_EXP bool intersects(_In_ const w_bounding_sphere& pSphere);
+			WSYS_EXP bool intersects(_In_ const w_bounding_box& pBox);
 
             MSGPACK_DEFINE(center, radius);
         };

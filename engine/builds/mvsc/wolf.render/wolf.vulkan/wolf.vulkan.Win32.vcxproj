@@ -182,10 +182,6 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.cpp">
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </EnableEnhancedInstructionSet>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
@@ -258,7 +254,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_bounding_frustum.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
@@ -323,6 +318,8 @@
     <None Include="..\..\..\..\..\content\shaders\compute\indirect_draw.vert" />
     <None Include="..\..\..\..\..\content\shaders\imgui.frag" />
     <None Include="..\..\..\..\..\content\shaders\imgui.vert" />
+    <None Include="..\..\..\..\..\content\shaders\shape.frag" />
+    <None Include="..\..\..\..\..\content\shaders\shape.vert" />
     <None Include="..\..\..\..\..\content\shaders\static_instancing_y_up.vert" />
     <None Include="..\..\..\..\..\content\shaders\static_instancing_z_up.vert" />
     <None Include="..\..\..\..\..\content\shaders\tessellation\tessellation.frag" />

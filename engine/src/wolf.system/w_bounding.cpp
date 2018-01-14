@@ -1,7 +1,8 @@
-#include "w_cpipeline_pch.h"
+#include "w_system_pch.h"
 #include "w_bounding.h"
+#include <glm/glm.hpp>
 
-using namespace wolf::content_pipeline;
+using namespace wolf::system;
 
 #pragma region bounding box
 

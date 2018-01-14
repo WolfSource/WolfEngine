@@ -15,6 +15,7 @@
 #include "w_cpipeline_model.h"
 #include "cameras/w_camera.h"
 #include <msgpack.hpp>
+#include <w_bounding.h>
 
 namespace wolf
 {
@@ -28,8 +29,8 @@ namespace wolf
 			
 			WCP_EXP void add_model(_In_ w_cpipeline_model* pModel);
             WCP_EXP void add_models(_Inout_ std::vector<w_cpipeline_model*>& pModel);
-            WCP_EXP void add_boundary(_In_ w_bounding_sphere* pBoundary);
-            WCP_EXP void add_boundaries(_Inout_ std::vector<w_bounding_sphere*>& pBoundaries);
+            WCP_EXP void add_boundary(_In_ wolf::system::w_bounding_sphere* pBoundary);
+            WCP_EXP void add_boundaries(_Inout_ std::vector<wolf::system::w_bounding_sphere*>& pBoundaries);
             WCP_EXP void add_camera(_In_ w_camera* pCamera);
 			WCP_EXP void add_camera(_In_z_ const std::string& pName, _In_ const glm::vec3 pTransform, _In_ const glm::vec3 pInterest);
             
@@ -39,7 +40,7 @@ namespace wolf
 			WCP_EXP void get_models_by_id(const std::string& pID, _Inout_ std::vector<w_cpipeline_model*>& pModels);
             WCP_EXP void get_all_models(_Inout_ std::vector<w_cpipeline_model*>& pModels);
             
-            WCP_EXP void get_boundaries(_Inout_ std::vector<w_bounding_sphere*>& pBoundaries);
+            WCP_EXP void get_boundaries(_Inout_ std::vector<wolf::system::w_bounding_sphere*>& pBoundaries);
 
 			//Get first camera if avaible, else create a default one
 			WCP_EXP void get_first_camera(_Inout_ w_camera& pCamera);
@@ -64,11 +65,11 @@ namespace wolf
 #pragma endregion
 
 		private:
-            std::string                         _name;
-			std::vector<w_camera>		        _cameras;
-            std::vector<w_cpipeline_model>		_models;
-            std::vector<w_bounding_sphere>		_boundaries;
-            bool                                _z_up;
+            std::string										_name;
+			std::vector<w_camera>							_cameras;
+            std::vector<w_cpipeline_model>					_models;
+            std::vector<wolf::system::w_bounding_sphere>	_boundaries;
+            bool											_z_up;
 		};
 	}
 }

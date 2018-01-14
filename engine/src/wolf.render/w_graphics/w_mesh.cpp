@@ -166,7 +166,8 @@ namespace wolf
             HRESULT draw(_In_ const VkCommandBuffer& pCommandBuffer, 
                 _In_ const VkBuffer& pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
-                _In_ const bool& pIndrectDraw)
+                _In_ const bool& pIndrectDraw,
+				_In_ const uint32_t pVertexOffset)
             {
                 VkDeviceSize _offsets[1] = { 0 };
 
@@ -192,11 +193,11 @@ namespace wolf
                 {
 					if (_draw_indexed)
 					{
-						vkCmdDrawIndexed(pCommandBuffer, this->_indices_count, pInstancesCount + 1, 0, 0, 0);
+						vkCmdDrawIndexed(pCommandBuffer, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
 					}
 					else
 					{
-						vkCmdDraw(pCommandBuffer, this->_vertices_count, pInstancesCount + 1, 0, 0);
+						vkCmdDraw(pCommandBuffer, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
 					}
                 }
 
@@ -508,9 +509,10 @@ HRESULT w_mesh::update_dynamic_buffer(
 HRESULT w_mesh::draw(_In_ const VkCommandBuffer& pCommandBuffer,
 	_In_ const VkBuffer& pInstanceHandle,
 	_In_ const uint32_t& pInstancesCount,
-	_In_ const bool& pIndirectDraw)
+	_In_ const bool& pIndirectDraw,
+	_In_ const uint32_t& pVertexOffset)
 {
-	return this->_pimp ? this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw) : S_FALSE;
+	return this->_pimp ? this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw, pVertexOffset) : S_FALSE;
 }
 
 ULONG w_mesh::release()
