@@ -173,8 +173,6 @@ void scene::load()
         V(S_FALSE, "creating draw command buffers for gui", _trace_info, 3, true);
     }
 	
-	_build_draw_command_buffers(_gDevice);
-
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -198,7 +196,9 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
-HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_draw_command_buffers(
+    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+    _In_ const wolf::system::w_game_time& pGameTime)
 {
     const std::string _trace_info = this->name + "::build_draw_command_buffers";
     HRESULT _hr = S_OK;
@@ -221,6 +221,7 @@ HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics
 				//The following codes have been added for this project
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				this->_shapes.add_bounding_box(this->_bounding_box, w_color::YELLOW(), w_time_span::zero());
+                this->_shapes.draw(_cmd, pGameTime);
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
             }
@@ -282,7 +283,8 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
 
     _build_gui_command_buffers(_gDevice);
-
+    _build_draw_command_buffers(_gDevice, pGameTime);
+    
 	//add wait semaphores
 	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
 	auto _draw_command_buffer = this->_draw_command_buffers.get_command_at(_frame_index);

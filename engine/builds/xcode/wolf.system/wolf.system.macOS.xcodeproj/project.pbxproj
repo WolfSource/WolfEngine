@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C0F36AA200BC74C001CB2DF /* w_bounding.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0F36A8200BC74C001CB2DF /* w_bounding.h */; };
+		2C0F36AB200BC74C001CB2DF /* w_bounding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */; };
 		2C1383A51F509AC700D5283B /* w_lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A31F509AC700D5283B /* w_lua.cpp */; };
 		2C1383A61F509AC700D5283B /* w_lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1383A41F509AC700D5283B /* w_lua.h */; };
 		2C41F9271ED34FAE007012E4 /* w_point.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9251ED34FAE007012E4 /* w_point.h */; };
@@ -291,6 +293,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C0F36A8200BC74C001CB2DF /* w_bounding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_bounding.h; path = ../../../src/wolf.system/w_bounding.h; sourceTree = "<group>"; };
+		2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_bounding.cpp; path = ../../../src/wolf.system/w_bounding.cpp; sourceTree = "<group>"; };
 		2C1383A31F509AC700D5283B /* w_lua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_lua.cpp; path = ../../../src/wolf.system/w_lua.cpp; sourceTree = "<group>"; };
 		2C1383A41F509AC700D5283B /* w_lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_lua.h; path = ../../../src/wolf.system/w_lua.h; sourceTree = "<group>"; };
 		2C41F9251ED34FAE007012E4 /* w_point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_point.h; path = ../../../src/wolf.system/w_point.h; sourceTree = "<group>"; };
@@ -1172,6 +1176,8 @@
 				2C6521F41FD4AFA20030A053 /* glm */,
 				2CFD40F11F51FF9300BF9A65 /* rapidjson */,
 				2C7BC43E1F51A2FB009F0C6E /* rapidxml */,
+				2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */,
+				2C0F36A8200BC74C001CB2DF /* w_bounding.h */,
 				2CFFAD3C1FCEAE480020A112 /* stb_image_write.h */,
 				2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */,
 				2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */,
@@ -1539,6 +1545,7 @@
 				2CFD412D1F5200D500BF9A65 /* ieee754.h in Headers */,
 				2C65236A1FD4B0930030A053 /* fast_trigonometry.hpp in Headers */,
 				2C6523711FD4B0930030A053 /* vector_query.hpp in Headers */,
+				2C0F36AA200BC74C001CB2DF /* w_bounding.h in Headers */,
 				2CFD412F1F5200D500BF9A65 /* meta.h in Headers */,
 				2C65236C1FD4B0930030A053 /* optimum_pow.hpp in Headers */,
 				2C6522441FD4AFD50030A053 /* type_int.hpp in Headers */,
@@ -1633,6 +1640,7 @@
 				2CE5BB171E64307D005E0F45 /* w_object.cpp in Sources */,
 				2CE5BB151E64307D005E0F45 /* w_logger.cpp in Sources */,
 				2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */,
+				2C0F36AB200BC74C001CB2DF /* w_bounding.cpp in Sources */,
 				2CE5BB1B1E64307D005E0F45 /* w_system_pch.cpp in Sources */,
 				2C65225A1FD4AFD50030A053 /* glm.cpp in Sources */,
 				2CEE64141F48EEFB003177C0 /* w_inputs_manager.cpp in Sources */,
@@ -1679,6 +1687,7 @@
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/debug/",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1697,6 +1706,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1740,6 +1750,7 @@
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/release/",
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/release/",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1753,6 +1764,7 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1763,12 +1775,14 @@
 		2CD6172F1E59DA3E006FC5DC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/debug/",
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -1780,6 +1794,7 @@
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
 					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/debug/";
@@ -1790,12 +1805,14 @@
 		2CD617301E59DA3E006FC5DC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
-					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
+					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/release/",
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/release/",
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -1807,6 +1824,7 @@
 					"$(SRCROOT)/../../../src/wolf.system/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",

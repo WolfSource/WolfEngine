@@ -28,13 +28,15 @@ namespace wolf
 				const std::string _trace_info = this->_name + "::load";
 
 				this->_gDevice = pGDevice;
-				const float dump_vertex_data[64] = { 0 };
+                
+                const uint32_t _size = 84;
+				const float dump_vertex_data[_size] = { 0 };
 
 				this->_shapes_drawer.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_COLOR);
 				auto _hr = this->_shapes_drawer.load(
 					this->_gDevice,
 					&dump_vertex_data[0],
-					static_cast<uint32_t>(64 * sizeof(float)),
+					static_cast<uint32_t>(_size * sizeof(float)),
 					(uint32_t)64,
 					nullptr,
 					0,
@@ -277,7 +279,7 @@ namespace wolf
 
 				//go through our active shapes and retire any shapes that have expired to the cache list.
 				bool _resort = false;
-				for (int i = this->_active_shapes.size() - 1; i >= 0; i--)
+				for (int i = (int)this->_active_shapes.size() - 1; i >= 0; i--)
 				{
 					auto _shape = this->_active_shapes[i];
 					_shape->life_time -= wolf::system::w_time_span::from_seconds(pGameTime.get_total_seconds());
@@ -446,6 +448,7 @@ namespace wolf
     }
 }
 
+using namespace wolf::system;
 using namespace wolf::graphics;
 
 w_shapes::w_shapes() : _pimp(new w_shapes_pimp())
@@ -459,18 +462,26 @@ w_shapes::~w_shapes()
 }
 
 HRESULT w_shapes::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-	_In_ const wolf::graphics::w_render_pass& pRenderPass,
-	_In_ const wolf::graphics::w_viewport& pViewport,
-	_In_ const wolf::graphics::w_viewport_scissor& pViewportScissor)
+	_In_ const w_render_pass& pRenderPass,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor)
 {
 	return (!this->_pimp) ? S_FALSE : this->_pimp->load(pGDevice, pRenderPass, pViewport, pViewportScissor);
 }
 
-HRESULT w_shapes::add_bounding_box(_In_ wolf::system::w_bounding_box& pBoundingBox,
-                                   _In_ const w_color& pColor,
-                                   _In_ const wolf::system::w_time_span& pLifeTime)
+HRESULT w_shapes::add_bounding_box(_In_ w_bounding_box& pBoundingBox,
+    _In_ const w_color& pColor,
+    _In_ const w_time_span& pLifeTime)
 {
 	return (!this->_pimp) ? S_FALSE : this->_pimp->add_bounding_box(pBoundingBox, pColor, pLifeTime);
+}
+
+
+HRESULT w_shapes::draw(
+    _In_ VkCommandBuffer pCommandBuffer,
+    _In_ const w_game_time pGameTime)
+{
+    return (!this->_pimp) ? S_FALSE : this->_pimp->draw(pCommandBuffer, pGameTime);
 }
 
 ULONG w_shapes::release()

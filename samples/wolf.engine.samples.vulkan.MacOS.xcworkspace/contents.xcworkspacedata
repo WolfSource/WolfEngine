@@ -89,5 +89,8 @@
       <FileRef
          location = "group:02_basics/14_mipmaps/builds/xcode/14_mipmaps.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:02_basics/15_shapes/builds/xcode/15_shapes.xcodeproj">
+      </FileRef>
    </Group>
 </Workspace>

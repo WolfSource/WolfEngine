@@ -11,8 +11,6 @@
 		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
 		2C4639531EA55A3700A16595 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639511EA55A3700A16595 /* Assets.xcassets */; };
 		2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639551EA55A6C00A16595 /* Main.storyboard */; };
-		2C6844371F9E491800AEAB30 /* shader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C6844331F9E491800AEAB30 /* shader.vert */; };
-		2C68443A1F9E491800AEAB30 /* shader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C6844361F9E491800AEAB30 /* shader.frag */; };
 		2CB69EDB1F62DDF60068D1E6 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69ED81F62DDF60068D1E6 /* ViewController.mm */; };
 		2CB69EDE1F62E1BF0068D1E6 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */; };
 		2CB69EE11F62E53C0068D1E6 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE01F62E53C0068D1E6 /* MoltenVK.framework */; };
@@ -32,8 +30,6 @@
 		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 15_shapes/Assets.xcassets; sourceTree = "<group>"; };
 		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 15_shapes/Info.plist; sourceTree = "<group>"; };
 		2C4639561EA55A6C00A16595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = 15_shapes/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		2C6844331F9E491800AEAB30 /* shader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = ../../src/content/shaders/shader.vert; sourceTree = "<group>"; };
-		2C6844361F9E491800AEAB30 /* shader.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = shader.frag; path = ../../src/content/shaders/shader.frag; sourceTree = "<group>"; };
 		2CB69ED71F62DDF60068D1E6 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../common/ViewController.h; sourceTree = "<group>"; };
 		2CB69ED81F62DDF60068D1E6 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../common/ViewController.mm; sourceTree = "<group>"; };
 		2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../src/scene.cpp; sourceTree = "<group>"; };
@@ -69,7 +65,6 @@
 		2C28033E1E61C73600048A80 = {
 			isa = PBXGroup;
 			children = (
-				2C68443B1F9E493100AEAB30 /* content */,
 				2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */,
 				2CB69EDD1F62E1BF0068D1E6 /* scene.h */,
 				2CB69ED71F62DDF60068D1E6 /* ViewController.h */,
@@ -100,23 +95,6 @@
 			);
 			name = "Supporting Files";
 			path = 15_shapes;
-			sourceTree = "<group>";
-		};
-		2C68443B1F9E493100AEAB30 /* content */ = {
-			isa = PBXGroup;
-			children = (
-				2C68443C1F9E494000AEAB30 /* shaders */,
-			);
-			name = content;
-			sourceTree = "<group>";
-		};
-		2C68443C1F9E494000AEAB30 /* shaders */ = {
-			isa = PBXGroup;
-			children = (
-				2C6844361F9E491800AEAB30 /* shader.frag */,
-				2C6844331F9E491800AEAB30 /* shader.vert */,
-			);
-			name = shaders;
 			sourceTree = "<group>";
 		};
 		2CB69EDF1F62E53B0068D1E6 /* Frameworks */ = {
@@ -193,8 +171,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C68443A1F9E491800AEAB30 /* shader.frag in Resources */,
-				2C6844371F9E491800AEAB30 /* shader.vert in Resources */,
 				2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */,
 				2C4639531EA55A3700A16595 /* Assets.xcassets in Resources */,
 			);
@@ -338,7 +314,15 @@
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
 					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/lib/osx/debug/",
+					"$(SRCROOT)/../../../../../engine/dependencies/msgpack/lib/debug/",
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"__VULKAN__=1",
+					"MSGPACK_USE_CPP03=1",
+					"MSGPACK_DISABLE_LEGACY_NIL=1",
+					"$(inherited)",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../../src/",
@@ -346,6 +330,7 @@
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
 					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/include",
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../../../engine/dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",
@@ -366,7 +351,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
-					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/lib/osx/debug/",
+					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/lib/osx/release/",
+					"$(SRCROOT)/../../../../../engine/dependencies/msgpack/lib/release/",
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
 				);
 				HEADER_SEARCH_PATHS = (
@@ -375,6 +361,7 @@
 					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
 					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/include",
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/Molten/MoltenVK/include",
+					"$(SRCROOT)/../../../../../engine/dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",

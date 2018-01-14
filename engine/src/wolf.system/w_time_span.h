@@ -22,10 +22,6 @@
 #include "w_std.h"
 #endif
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
-
 namespace wolf
 {
 	namespace system
@@ -34,10 +30,10 @@ namespace wolf
 		{
 		public:
 			WSYS_EXP w_time_span();
-            WSYS_EXP w_time_span(bool pOverFlow);
-			WSYS_EXP w_time_span(int64_t pTicks);
-			WSYS_EXP w_time_span(int pHours, int pMinutes, int pSeconds);
-			WSYS_EXP w_time_span(int pDays, int pHours, int pMinutes, int pSeconds, int pMilliseconds = 0);
+            WSYS_EXP w_time_span(_In_ bool pOverFlow);
+			WSYS_EXP w_time_span(_In_ int64_t pTicks);
+			WSYS_EXP w_time_span(_In_ int pHours, _In_ int pMinutes, _In_ int pSeconds);
+			WSYS_EXP w_time_span(_In_ int pDays, _In_ int pHours, _In_ int pMinutes, _In_ int pSeconds, _In_ int pMilliseconds = 0);
 			WSYS_EXP ~w_time_span();
 
 			//Add two timespans with each other
@@ -103,6 +99,74 @@ namespace wolf
 
 #pragma endregion
 
+            w_time_span& operator -= (const w_time_span& pRight)
+            {
+                auto t1 = this->get_ticks();
+                auto t2 = pRight.get_ticks();
+                auto result =  t1 - t2;
+                // Overflow if signs of operands was different and result's
+                // sign was opposite from the first argument's sign.
+                // >> 63 gives the sign bit (either 64 1's or 64 0's).
+                if ((t1 >> 63 != t2 >> 63) && (t1 >> 63 != result >> 63))
+                {
+                    //overflow TimeSpan too long
+                    this->_overflowed = true;
+                }
+                else
+                {
+                    this->_ticks = result;
+                }
+                return *this;
+            }
+            
+            friend w_time_span operator - (w_time_span& pLeft, const w_time_span& pRight)
+            {
+                auto _t = pLeft;
+                _t-= pRight;
+                return _t;
+            }
+            
+            friend w_time_span operator + (w_time_span& pLeft, w_time_span& pRight)
+            {
+                return pLeft.add(pRight);
+            }
+            
+            w_time_span& operator += (const w_time_span& pRight)
+            {
+                this->add(pRight);
+                return *this;
+            }
+            
+            friend bool operator < (const w_time_span& pLeft, const w_time_span& pRight)
+            {
+                return pLeft.get_ticks() < pRight.get_ticks();
+            }
+            
+            bool operator <= (const w_time_span& pRight)
+            {
+                return this->get_ticks() <= pRight.get_ticks();
+            }
+            
+            friend bool operator > (const w_time_span& pLeft, const w_time_span& pRight)
+            {
+                return pLeft.get_ticks() > pRight.get_ticks();
+            }
+            
+            bool operator >= (const w_time_span& pRight)
+            {
+                return this->get_ticks() >= pRight.get_ticks();
+            }
+            
+            friend bool operator == (const w_time_span& pLeft, const w_time_span& pRight)
+            {
+                return pLeft.get_ticks() == pRight.get_ticks();
+            }
+            
+            friend bool operator != (const w_time_span& pLeft, const w_time_span& pRight)
+            {
+                return !(pLeft == pRight);
+            }
+            
 		private:
 			static w_time_span _interval(double pValue, int pScale);
 			static int64_t _time_to_ticks(int pHour, int pMinute, int pSecond);
@@ -110,75 +174,7 @@ namespace wolf
             bool    _overflowed;
 			int64_t   _ticks;
 		};
-
-		inline bool operator == (const w_time_span& pLeft, const w_time_span& pRight)
-		{
-			return pLeft.get_ticks() == pRight.get_ticks();
-		}
-		
-		inline bool operator != (const w_time_span& pLeft, const w_time_span& pRight)
-		{
-			return !(pLeft == pRight);
-		}
-
-		inline w_time_span operator - (w_time_span& pLeft, w_time_span& pRight)
-		{
-			auto t1 = pLeft.get_ticks();
-			auto t2 = pRight.get_ticks();
-			auto result =  t1 - t2;
-			// Overflow if signs of operands was different and result's
-			// sign was opposite from the first argument's sign.
-			// >> 63 gives the sign bit (either 64 1's or 64 0's).
-			if ((t1 >> 63 != t2 >> 63) && (t1 >> 63 != result >> 63))
-			{
-                //overflow TimeSpan too long
-                w_time_span _t_overflow(true);
-                return _t_overflow;
-			}
-			return w_time_span(result);
-		}
-
-		inline w_time_span operator -= (w_time_span& pLeft, w_time_span& pRight)
-		{
-			pLeft = pLeft - pRight;
-			return pLeft;
-		}
-
-		inline w_time_span operator + (w_time_span& pLeft, w_time_span& pRight)
-		{
-			return pLeft.add(pRight);
-		}
-
-		inline w_time_span operator += (w_time_span& pLeft, w_time_span& pRight)
-		{
-			pLeft = pLeft + pRight;
-			return pLeft;
-		}
-
-		inline bool operator < (w_time_span& pLeft, w_time_span& pRight)
-		{
-			return pLeft.get_ticks() < pRight.get_ticks();
-		}
-
-		inline bool operator <= (w_time_span& pLeft, w_time_span& pRight)
-		{
-			return pLeft.get_ticks() <= pRight.get_ticks();
-		}
-
-		inline bool operator > (w_time_span& pLeft, w_time_span& pRight)
-		{
-			return pLeft.get_ticks() > pRight.get_ticks();
-		}
-
-		inline bool operator >= (w_time_span& pLeft, w_time_span& pRight)
-		{
-			return pLeft.get_ticks() >= pRight.get_ticks();
-		}
 	}
 }
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif //__W_TIME_SPAN_H__

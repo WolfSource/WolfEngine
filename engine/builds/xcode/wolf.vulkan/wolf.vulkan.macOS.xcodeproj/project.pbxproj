@@ -39,8 +39,6 @@
 		2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA31E5F1E80000E71B5 /* libc++.tbd */; };
 		2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA51E5F1E86000E71B5 /* Metal.framework */; };
 		2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */; };
-		2C8D5B641F4F98B5000BCB87 /* w_bounding_frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B611F4F98B5000BCB87 /* w_bounding_frustum.cpp */; };
-		2C8D5B651F4F98B5000BCB87 /* w_bounding_frustum.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B621F4F98B5000BCB87 /* w_bounding_frustum.h */; };
 		2C8D5B6D1F4F98D1000BCB87 /* w_imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B691F4F98D1000BCB87 /* w_imgui.cpp */; };
 		2C8D5B6E1F4F98D1000BCB87 /* w_imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B6A1F4F98D1000BCB87 /* w_imgui.h */; };
 		2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899631E97EA74002FE161 /* w_mesh.cpp */; };
@@ -99,8 +97,6 @@
 		2C860FA31E5F1E80000E71B5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		2C860FA51E5F1E86000E71B5 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		2C860FA71E5F1E8C000E71B5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		2C8D5B611F4F98B5000BCB87 /* w_bounding_frustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_bounding_frustum.cpp; path = ../../../src/wolf.render/w_framework/w_bounding_frustum.cpp; sourceTree = "<group>"; };
-		2C8D5B621F4F98B5000BCB87 /* w_bounding_frustum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_bounding_frustum.h; path = ../../../src/wolf.render/w_framework/w_bounding_frustum.h; sourceTree = "<group>"; };
 		2C8D5B691F4F98D1000BCB87 /* w_imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_imgui.cpp; path = ../../../src/wolf.render/w_graphics/w_imgui.cpp; sourceTree = "<group>"; };
 		2C8D5B6A1F4F98D1000BCB87 /* w_imgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_imgui.h; path = ../../../src/wolf.render/w_graphics/w_imgui.h; sourceTree = "<group>"; };
 		2C9899631E97EA74002FE161 /* w_mesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_mesh.cpp; path = ../../../src/wolf.render/w_graphics/w_mesh.cpp; sourceTree = "<group>"; };
@@ -183,8 +179,6 @@
 		2C29CD131EB3339E00BEFF54 /* w_framework */ = {
 			isa = PBXGroup;
 			children = (
-				2C8D5B611F4F98B5000BCB87 /* w_bounding_frustum.cpp */,
-				2C8D5B621F4F98B5000BCB87 /* w_bounding_frustum.h */,
 				2C736BBC1ECA1EB600624CC7 /* w_model.h */,
 				2C29CD1C1EB3344000BEFF54 /* w_game.cpp */,
 				2C29CD1D1EB3344000BEFF54 /* w_game.h */,
@@ -268,7 +262,6 @@
 				2CFFAC701FCEAA400020A112 /* w_command_buffer.h in Headers */,
 				2CFFAC721FCEAA400020A112 /* w_attachment_buffer_desc.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
-				2C8D5B651F4F98B5000BCB87 /* w_bounding_frustum.h in Headers */,
 				2C8D5B6E1F4F98D1000BCB87 /* w_imgui.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 				2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */,
@@ -344,7 +337,6 @@
 				2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */,
 				2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */,
 				2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */,
-				2C8D5B641F4F98B5000BCB87 /* w_bounding_frustum.cpp in Sources */,
 				2C410E6B1EAE111A003F2E84 /* w_pipeline.cpp in Sources */,
 				2C598C681FA268740055D215 /* w_queue.cpp in Sources */,
 				2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */,
@@ -481,6 +473,7 @@
 		2C69E9B51E5EC2CB00F15C44 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
@@ -507,6 +500,7 @@
 		2C69E9B61E5EC2CB00F15C44 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;

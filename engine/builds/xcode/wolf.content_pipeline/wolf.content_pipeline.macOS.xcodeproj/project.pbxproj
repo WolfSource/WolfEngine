@@ -28,8 +28,6 @@
 		2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */; };
 		2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */; };
 		2C736BC61ECA1EE400624CC7 /* w_cpipeline_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */; };
-		2C8D5AB21F4F7FED000BCB87 /* w_bounding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AAF1F4F7FED000BCB87 /* w_bounding.cpp */; };
-		2C8D5AB31F4F7FED000BCB87 /* w_bounding.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AB01F4F7FED000BCB87 /* w_bounding.h */; };
 		2C8D5AB41F4F7FED000BCB87 /* w_cpipeline_structs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */; };
 		2C8D5ABB1F4F8074000BCB87 /* w_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AB71F4F8074000BCB87 /* w_camera.cpp */; };
 		2C8D5ABC1F4F8074000BCB87 /* w_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AB81F4F8074000BCB87 /* w_camera.h */; };
@@ -129,8 +127,6 @@
 		2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_model.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_model.h; sourceTree = "<group>"; };
 		2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_scene.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_scene.cpp; sourceTree = "<group>"; };
 		2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_scene.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_scene.h; sourceTree = "<group>"; };
-		2C8D5AAF1F4F7FED000BCB87 /* w_bounding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_bounding.cpp; path = ../../../src/wolf.content_pipeline/w_bounding.cpp; sourceTree = "<group>"; };
-		2C8D5AB01F4F7FED000BCB87 /* w_bounding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_bounding.h; path = ../../../src/wolf.content_pipeline/w_bounding.h; sourceTree = "<group>"; };
 		2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_structs.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_structs.h; sourceTree = "<group>"; };
 		2C8D5AB71F4F8074000BCB87 /* w_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_camera.cpp; path = ../../../src/wolf.content_pipeline/cameras/w_camera.cpp; sourceTree = "<group>"; };
 		2C8D5AB81F4F8074000BCB87 /* w_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_camera.h; path = ../../../src/wolf.content_pipeline/cameras/w_camera.h; sourceTree = "<group>"; };
@@ -373,8 +369,6 @@
 				2C8D5ABF1F4F8506000BCB87 /* amd */,
 				2C8D5AB61F4F805D000BCB87 /* cameras */,
 				2C4CCAFB1EB0F50D00E0A422 /* collada */,
-				2C8D5AAF1F4F7FED000BCB87 /* w_bounding.cpp */,
-				2C8D5AB01F4F7FED000BCB87 /* w_bounding.h */,
 				2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */,
 				2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */,
 				2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */,
@@ -417,7 +411,6 @@
 				2C8D5B081F4F8656000BCB87 /* JMLFuncs.h in Headers */,
 				2C8D5B4F1F4F8AC1000BCB87 /* overdraw.h in Headers */,
 				2C8D5B061F4F8656000BCB87 /* JML.h in Headers */,
-				2C8D5AB31F4F7FED000BCB87 /* w_bounding.h in Headers */,
 				2C8D5B4B1F4F8AC1000BCB87 /* matrix.h in Headers */,
 				2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */,
 				2C8D5AF31F4F8641000BCB87 /* JRTKDTree.h in Headers */,
@@ -547,7 +540,6 @@
 				2C8D5AEC1F4F8641000BCB87 /* JRTCoreUtils.cpp in Sources */,
 				2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */,
 				2C8D5B271F4F89B2000BCB87 /* clustering.cpp in Sources */,
-				2C8D5AB21F4F7FED000BCB87 /* w_bounding.cpp in Sources */,
 				2C8D5B2F1F4F89B2000BCB87 /* feedback.cpp in Sources */,
 				2C736BC31ECA1EE400624CC7 /* w_cpipeline_model.cpp in Sources */,
 				2C8D5AF81F4F8641000BCB87 /* JRTOrthoCamera.cpp in Sources */,
@@ -581,7 +573,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -640,7 +632,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;

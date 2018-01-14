@@ -14,6 +14,7 @@
 #include "w_render_pass.h"
 #include "w_frame_buffer.h"
 #include <w_bounding.h>
+#include <w_game_time.h>
 #include <w_time_span.h>
 
 namespace wolf
@@ -39,6 +40,11 @@ namespace wolf
                 _In_ const w_color& pColor,
                 _In_ const wolf::system::w_time_span& pLifeTime);
 
+            //draw all shapes
+            W_EXP HRESULT draw(
+                _In_ VkCommandBuffer pCommandBuffer,
+                _In_ const wolf::system::w_game_time pGameTime);
+            
 			W_EXP ULONG release();
 
 		private:

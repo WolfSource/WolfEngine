@@ -141,7 +141,7 @@ namespace wolf
                 if (pVerticesCount != this->_vertices_count ||
                     pIndicesCount != this->_indices_count)
                 {
-                    V(S_FALSE, "Size of vertex or index buffer does not match.", this->_name, 2);
+                    V(S_FALSE, "size of vertex or index buffer does not match.", this->_name, 2);
                     return S_FALSE;
                 }
 
