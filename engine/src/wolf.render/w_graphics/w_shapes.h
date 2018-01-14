@@ -25,7 +25,8 @@ namespace wolf
 		class w_shapes : public system::w_object
 		{
 		public:
-			W_EXP w_shapes();
+            W_EXP w_shapes(_In_ wolf::system::w_bounding_box& pBoundingBox, _In_ const w_color& pColor);
+            
 			W_EXP virtual ~w_shapes();
 
 			//load shapes render
@@ -33,12 +34,6 @@ namespace wolf
 				_In_ const wolf::graphics::w_render_pass& pRenderPass,
 				_In_ const wolf::graphics::w_viewport& pViewport,
 				_In_ const wolf::graphics::w_viewport_scissor& pViewportScissor);
-
-			//add bounding box
-            W_EXP HRESULT add_bounding_box(
-				_In_ wolf::system::w_bounding_box& pBoundingBox,
-                _In_ const w_color& pColor,
-                _In_ const wolf::system::w_time_span& pLifeTime);
 
             //draw all shapes
             W_EXP HRESULT draw(
