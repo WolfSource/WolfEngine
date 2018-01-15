@@ -36,7 +36,7 @@ namespace wolf
             */
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
-                _In_ const uint32_t  pVerticesSize,
+                _In_ const uint32_t  pVerticesSizeInBytes,
                 _In_ const uint32_t pVerticesCount,
                 _In_ const uint32_t* const pIndicesData,
                 _In_ const uint32_t pIndicesCount,
@@ -62,7 +62,7 @@ namespace wolf
                 //create a buffers hosted into the DRAM named staging buffers
                 if (_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                     pVerticesData,
-                    pVerticesSize,
+					pVerticesSizeInBytes,
                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                     this->_stagings_buffers.vertices) == S_FALSE)
                 {
@@ -84,7 +84,7 @@ namespace wolf
                 // create VRAM buffers
                 if (_create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                     nullptr,
-                    pVerticesSize,
+                    pVerticesSizeInBytes,
                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                     this->_vertex_buffer) == S_FALSE)
                 {
@@ -103,7 +103,7 @@ namespace wolf
                     }
                 }
 
-                if (_copy_DRAM_to_VRAM(pVerticesSize, _indices_size) == S_FALSE)
+                if (_copy_DRAM_to_VRAM(pVerticesSizeInBytes, _indices_size) == S_FALSE)
                 {
                     return S_FALSE;
                 }
@@ -397,11 +397,11 @@ namespace wolf
              */
             HRESULT _create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag,
                                    _In_ const void* const pBufferData,
-                                   _In_ uint32_t pBufferSize,
+                                   _In_ uint32_t pBufferSizeInBytes,
                                    _In_ const VkMemoryPropertyFlags pMemoryFlags,
                                    _Inout_ w_buffer& pBuffer)
             {
-                if(pBuffer.load(this->_gDevice, pBufferSize, pBufferUsageFlag, pMemoryFlags))
+                if(pBuffer.load(this->_gDevice, pBufferSizeInBytes, pBufferUsageFlag, pMemoryFlags))
                 {
                     V(S_FALSE, "loading memory of buffer for graphics device: " +
                           _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),

@@ -65,7 +65,7 @@ namespace wolf
 			//initialize and load mesh
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const void* const pVerticesData,
-                               _In_ const uint32_t  pVerticesSize,
+                               _In_ const uint32_t  pVerticesSizeInBytes,
                                _In_ const uint32_t pVerticesCount,
                                _In_ const uint32_t* const pIndicesData,
                                _In_ const uint32_t pIndicesCount,

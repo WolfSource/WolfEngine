@@ -13,7 +13,7 @@ namespace wolf
             w_buffer_pimp() :
                 _name("w_buffer::"),
                 _gDevice(nullptr),
-                _size(0),
+				_size_in_bytes(0),
                 _handle(0),
                 _memory(0),
                 _mapped(nullptr)
@@ -21,7 +21,7 @@ namespace wolf
             }
             
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const uint32_t pBufferSize,
+                _In_ const uint32_t pBufferSizeInBytes,
                 _In_ const VkBufferUsageFlags pUsageFlags,
                 _In_ const VkMemoryPropertyFlags pMemoryFlags)
             {
@@ -29,15 +29,15 @@ namespace wolf
 
                 this->_usage_flags = pUsageFlags;
                 this->_memory_flags = pMemoryFlags;
-                this->_size = pBufferSize;
+                this->_size_in_bytes = pBufferSizeInBytes;
 
                 const VkBufferCreateInfo _buffer_create_info =
                 {
                     VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,             // Type
                     nullptr,                                          // Next
                     0,                                                // Flags
-                    (VkDeviceSize)this->_size,                        // Size
-                    this->_usage_flags,                                           // Usage
+                    (VkDeviceSize)this->_size_in_bytes,               // Size
+                    this->_usage_flags,                               // Usage
                     VK_SHARING_MODE_EXCLUSIVE,                        // SharingMode
                     0,                                                // QueueFamilyIndexCount
                     nullptr                                           // QueueFamilyIndices
@@ -83,7 +83,7 @@ namespace wolf
                         {
                             this->_descriptor_info.buffer = this->_handle;
                             this->_descriptor_info.offset = 0;
-                            this->_descriptor_info.range = this->_size;
+                            this->_descriptor_info.range = this->_size_in_bytes;
 
                             return S_OK;
                         }
@@ -110,7 +110,7 @@ namespace wolf
                 if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return S_FALSE;
 
                 if (map() == nullptr) return S_FALSE;
-                memcpy(this->_mapped, pData, (size_t)_size);
+                memcpy(this->_mapped, pData, (size_t)this->_size_in_bytes);
 
                 if (flush(VK_WHOLE_SIZE, 0) == S_FALSE) return S_FALSE;
 
@@ -147,7 +147,7 @@ namespace wolf
 
                 auto _copy_cmd = _copy_command_buffer.get_command_at(0);
                 VkBufferCopy _copy_region = {};
-                _copy_region.size = this->_size;
+                _copy_region.size = this->_size_in_bytes;
                 vkCmdCopyBuffer(
                     _copy_cmd,
                     this->_handle,
@@ -223,7 +223,7 @@ namespace wolf
             
             ULONG release()
             {
-                this->_size = 0;
+                this->_size_in_bytes = 0;
                 this->_name.clear();
                 
                 unmap();
@@ -253,7 +253,7 @@ namespace wolf
             
             const uint32_t get_size() const
             {
-                return this->_size;
+                return this->_size_in_bytes;
             }
             
             const VkBufferUsageFlags get_usage_flags() const
@@ -284,7 +284,7 @@ namespace wolf
         private:
             std::string                                         _name;
             std::shared_ptr<w_graphics_device>                  _gDevice;
-            uint32_t                                              _size;
+            uint32_t                                            _size_in_bytes;
             void*                                               _mapped;
             
 #ifdef __VULKAN__
@@ -323,13 +323,13 @@ HRESULT w_buffer::load_as_staging(_In_ const std::shared_ptr<w_graphics_device>&
 }
 
 HRESULT w_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                       _In_ const uint32_t pBufferSize,
+                       _In_ const uint32_t pBufferSizeInBytes,
                        _In_ const VkBufferUsageFlags pUsageFlags,
                        _In_ const VkMemoryPropertyFlags pMemoryFlags)
 {
     if(!this->_pimp) return S_FALSE;
     
-    return this->_pimp->load(pGDevice, pBufferSize, pUsageFlags, pMemoryFlags);
+    return this->_pimp->load(pGDevice, pBufferSizeInBytes, pUsageFlags, pMemoryFlags);
 }
 
 HRESULT w_buffer::bind()

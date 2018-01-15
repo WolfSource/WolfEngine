@@ -28,7 +28,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 #ifdef __WIN32
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = false;
+    _config.debug_gpu = true;
     w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -177,28 +177,94 @@ void scene::load()
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	_hr = this->_shapes.load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	//Add Line
+	this->_shape_line = new (std::nothrow) w_shapes(
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(3.0f, 3.0f, 3.0f),
+		w_color::RED());
+	if (!this->_shape_line)
+	{
+		release();
+		V(S_FALSE, "allocating memory for shape(line)", _trace_info, 3, true);
+	}
+	_hr = this->_shape_line->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 	if (_hr == S_FALSE)
 	{
 		release();
-		V(S_FALSE, "creating draw command buffers for gui", _trace_info, 3, true);
+		V(S_FALSE, "loading shape(line)", _trace_info, 3, true);
 	}
 
-	this->_bounding_box.min[0] = -3.0f;
-	this->_bounding_box.min[1] = -3.0f;
-	this->_bounding_box.min[2] = -3.0f;
+	//Add Triangle
+	this->_shape_triangle = new (std::nothrow) w_shapes(
+		glm::vec3(-1.0f, 0.0f, 0.0f),
+		glm::vec3(1.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 2.0f, 0.0f),
+		w_color::GREEN());
+	if (!this->_shape_triangle)
+	{
+		release();
+		V(S_FALSE, "allocating memory for shape(triangle)", _trace_info, 3, true);
+	}
+	_hr = this->_shape_triangle->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading shape(triangle)", _trace_info, 3, true);
+	}
 
-	this->_bounding_box.max[0] = 3.0f;
-	this->_bounding_box.max[1] = 3.0f;
-	this->_bounding_box.max[2] = 3.0f;
+	//Add Bounding Box
+	w_bounding_box _bounding_box;
 
+	_bounding_box.min[0] = -3.0f;
+	_bounding_box.min[1] = -3.0f;
+	_bounding_box.min[2] = -3.0f;
+
+	_bounding_box.max[0] = 3.0f;
+	_bounding_box.max[1] = 3.0f;
+	_bounding_box.max[2] = 3.0f;
+
+	this->_shape_box = new (std::nothrow) w_shapes(_bounding_box, w_color::YELLOW());
+	if (!this->_shape_box)
+	{
+		release();
+		V(S_FALSE, "allocating memory for shape(box)", _trace_info, 3, true);
+	}
+	_hr = this->_shape_box->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading shape(box)", _trace_info, 3, true);
+	}
+
+	//Add Bounding Sphere
+	w_bounding_sphere _bounding_sphere;
+
+	_bounding_sphere.center[0] = 0.0f;
+	_bounding_sphere.center[1] = 0.0f;
+	_bounding_sphere.center[2] = 0.0f;
+
+	_bounding_sphere.radius = 3.0f;
+
+	const uint32_t _sphere_resolution = 30;
+	this->_shape_sphere = new (std::nothrow) w_shapes(_bounding_sphere, w_color::PURPLE(), _sphere_resolution);
+	if (!this->_shape_sphere)
+	{
+		release();
+		V(S_FALSE, "allocating memory for shape(sphere)", _trace_info, 3, true);
+	}
+	_hr = this->_shape_sphere->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading shape(sphere)", _trace_info, 3, true);
+	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	_build_draw_command_buffers(_gDevice);
 }
 
-HRESULT scene::_build_draw_command_buffers(
-    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const wolf::system::w_game_time& pGameTime)
+HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
     const std::string _trace_info = this->name + "::build_draw_command_buffers";
     HRESULT _hr = S_OK;
@@ -220,8 +286,10 @@ HRESULT scene::_build_draw_command_buffers(
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//The following codes have been added for this project
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				this->_shapes.add_bounding_box(this->_bounding_box, w_color::YELLOW(), w_time_span::zero());
-                this->_shapes.draw(_cmd, pGameTime);
+				this->_shape_line->draw(_cmd);
+				this->_shape_triangle->draw(_cmd);
+                this->_shape_box->draw(_cmd);
+				this->_shape_sphere->draw(_cmd);
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
             }
@@ -269,6 +337,32 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         _update_gui();
     });
     
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	auto _angle = (float)pGameTime.get_total_seconds();
+	auto _eye = glm::vec3((float)std::cos(_angle * .5f), 0.5f, (float)std::sin(_angle * 0.5f)) * 12.0f;
+	auto _up = glm::vec3(0, -1, 0);
+	auto _look_at = glm::vec3(0, 0, 0);
+
+	auto _world = glm::mat4(1);//identity
+	auto _view = glm::lookAtRH(_eye, _look_at, _up);
+	auto _projection = glm::perspectiveRH(
+		45.0f * glm::pi<float>() / 180.0f,
+		this->_viewport.width / this->_viewport.height, 
+		0.1f, 
+		1000.0f);
+
+	auto _wvp = _projection * _view * _world;
+
+	this->_shape_line->update(_wvp);
+	this->_shape_triangle->update(_wvp);
+	this->_shape_box->update(_wvp);
+	this->_shape_sphere->update(_wvp);
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	w_game::update(pGameTime);
 }
 
@@ -283,7 +377,6 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
 
     _build_gui_command_buffers(_gDevice);
-    _build_draw_command_buffers(_gDevice, pGameTime);
     
 	//add wait semaphores
 	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
@@ -343,7 +436,17 @@ ULONG scene::release()
     this->_gui_frame_buffers.release();
     w_imgui::release();
 
-	this->_shapes.release();
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
+	SAFE_RELEASE(this->_shape_line);
+	SAFE_RELEASE(this->_shape_triangle);
+	SAFE_RELEASE(this->_shape_box);
+	SAFE_RELEASE(this->_shape_sphere);
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	return w_game::release();
 }
@@ -371,7 +474,7 @@ bool scene::_update_gui()
         return false;
     }
 
-    ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
+    ImGui::Text("Press Esc to exit\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
         sFPS,
         sElapsedTimeInSec,
         sTotalTimeTimeInSec,

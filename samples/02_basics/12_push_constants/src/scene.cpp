@@ -507,7 +507,7 @@ bool scene::_update_gui()
         return false;
     }
 
-    ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
+    ImGui::Text("Press Esc to exit\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
         sFPS,
         sElapsedTimeInSec,
         sTotalTimeTimeInSec,

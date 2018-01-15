@@ -29,7 +29,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 #ifdef __WIN32
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = false;
+    _config.debug_gpu = true;
     w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -541,7 +541,7 @@ bool scene::_update_gui()
         return false;
     }
 
-    ImGui::Text("FPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
+    ImGui::Text("Press Esc to exit\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
         sFPS,
         sElapsedTimeInSec,
         sTotalTimeTimeInSec,

@@ -548,7 +548,7 @@ bool scene::_update_gui()
         return false;
     }
 
-    ImGui::Text("Prees \"W\" to toggle wireframe.\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
+    ImGui::Text("Press Esc to exit\r\nPrees \"W\" to toggle wireframe.\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
         sFPS,
         sElapsedTimeInSec,
         sTotalTimeTimeInSec,

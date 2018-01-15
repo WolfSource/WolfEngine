@@ -349,11 +349,16 @@ namespace wolf
                 {
                     SAFE_RELEASE(this->_vertex_buffer);
                     
+					//vertex bufer as property host visible memory
                     this->_vertex_buffer = new wolf::graphics::w_buffer();
-                    _hr = this->_vertex_buffer->load_as_staging(this->_gDevice, _vertex_buffer_size);
+					_hr = this->_vertex_buffer->load(
+						this->_gDevice, 
+						_vertex_buffer_size, 
+						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
                     if (_hr == S_FALSE)
                     {
-                        V(_hr, "loading staging index buffer", this->_name);
+                        V(_hr, "loading staging vertex buffer", this->_name);
                         return _hr;
                     }
                     _hr = this->_vertex_buffer->bind();
@@ -370,10 +375,14 @@ namespace wolf
                     SAFE_RELEASE(this->_index_buffer);
 
                     this->_index_buffer = new wolf::graphics::w_buffer();
-                    _hr = this->_index_buffer->load_as_staging(this->_gDevice, _index_buffer_size);
+					_hr = this->_index_buffer->load(
+						this->_gDevice,
+						_index_buffer_size,
+						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
                     if (_hr == S_FALSE)
                     {
-                        V(_hr, "loading staging vertex buffer", this->_name);
+                        V(_hr, "loading staging index buffer", this->_name);
                         return _hr;
                     }
                     _hr = this->_index_buffer->bind();

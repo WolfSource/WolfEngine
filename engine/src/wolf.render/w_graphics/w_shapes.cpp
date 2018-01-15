@@ -4,7 +4,6 @@
 #include "w_pipeline.h"
 #include "w_shader.h"
 #include "w_uniform.h"
-#include "w_command_buffer.h"
 
 namespace wolf
 {
@@ -13,12 +12,80 @@ namespace wolf
 		class w_shapes_pimp
 		{
 		public:
-			w_shapes_pimp(_In_ wolf::system::w_bounding_box& pBoundingBox, _In_ const w_color& pColor) :
+			//create line shape 
+			w_shapes_pimp(_In_ const glm::vec3& pA, _In_ const glm::vec3& pB, _In_ const w_color& pColor):
+				_shape_type(shape_type::LINE),
+				_color(pColor),
+				_bounding_box(nullptr),
+				_bounding_sphere(nullptr),
 				_name("w_shapes"),
-				_gDevice(nullptr),
-                _bounding_box(pBoundingBox),
-                _shape_type(shape_type::BOX)
+				_gDevice(nullptr)
 			{
+				this->_points.push_back(pA);
+				this->_points.push_back(pB);
+			}
+
+			//create triangle shape
+			w_shapes_pimp(_In_ const glm::vec3& pA, _In_ const glm::vec3& pB, _In_ const glm::vec3& pC, _In_ const w_color& pColor) :
+				_shape_type(shape_type::TRIANGLE),
+				_color(pColor),
+				_bounding_box(nullptr),
+				_bounding_sphere(nullptr),
+				_name("w_shapes"),
+				_gDevice(nullptr)
+			{
+				this->_points.push_back(pA);
+				this->_points.push_back(pB);
+				this->_points.push_back(pC);
+			}
+
+			//create circle shape
+			w_shapes_pimp(_In_ const glm::vec3& pCenter, _In_ const float& pRadius, _In_ const w_color& pColor, _In_ const w_plan& pPlan) :
+				_shape_type(shape_type::CIRCLE),
+				_color(pColor),
+				_bounding_box(nullptr),
+				_bounding_sphere(nullptr),
+				_name("w_shapes"),
+				_gDevice(nullptr)
+			{
+
+			}
+
+			//create box shape
+			w_shapes_pimp(_In_ const wolf::system::w_bounding_box& pBoundingBox, _In_ const w_color& pColor) :
+				_shape_type(shape_type::BOX),
+				_color(pColor),
+				_bounding_sphere(nullptr),
+				_name("w_shapes"),
+				_gDevice(nullptr)
+			{
+				this->_bounding_box = new (std::nothrow) wolf::system::w_bounding_box();
+				if (!this->_bounding_box)
+				{
+					V(S_FALSE, "allocating memory for w_bounding_box in w_shapes", this->_name, 3, false);
+					return;
+				}
+				std::memcpy(&this->_bounding_box->min[0], &pBoundingBox.min[0], 3 * sizeof(float));
+				std::memcpy(&this->_bounding_box->max[0], &pBoundingBox.max[0], 3 * sizeof(float));
+			}
+
+			//create sphere shape
+			w_shapes_pimp(_In_ const wolf::system::w_bounding_sphere& pBoundingSphere, _In_ const w_color& pColor, _In_ const uint32_t& pResolution) :
+				_shape_type(shape_type::SPHERE),
+				_color(pColor),
+				_bounding_box(nullptr),
+				_sphere_resolution(pResolution),
+				_name("w_shapes"),
+				_gDevice(nullptr)
+			{
+				this->_bounding_sphere = new (std::nothrow) wolf::system::w_bounding_sphere();
+				if (!this->_bounding_sphere)
+				{
+					V(S_FALSE, "allocating memory for _bounding_sphere in w_shapes", this->_name, 3, false);
+					return;
+				}
+				std::memcpy(&this->_bounding_sphere->center[0], &pBoundingSphere.center[0], 3 * sizeof(float));
+				this->_bounding_sphere->radius = pBoundingSphere.radius;
 			}
 
 			HRESULT load(
@@ -30,23 +97,35 @@ namespace wolf
 				const std::string _trace_info = this->_name + "::load";
 
 				this->_gDevice = pGDevice;
-                
-                std::vector<float> _vertices;
-                switch(_shape_type)
-                {
-                    case shape_type::BOX:
-                        _generate_bounding_box_vertices(_vertices);
-                    break;
-                };
 
-				this->_shape_drawer.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_COLOR);
+				std::vector<float> _vertices;
+				switch (_shape_type)
+				{
+				case shape_type::LINE:
+					_generate_line_vertices(_vertices);
+					break;
+				case shape_type::TRIANGLE:
+					_generate_triangle_vertices(_vertices);
+					break;
+				case shape_type::BOX:
+					_generate_bounding_box_vertices(_vertices);
+					break;
+				case shape_type::SPHERE:
+					_generate_bounding_sphere_vertices(_vertices);
+					break;
+				};
+
+				this->_shape_drawer.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION);
 				auto _hr = this->_shape_drawer.load(
 					this->_gDevice,
 					_vertices.data(),
 					static_cast<uint32_t>(_vertices.size() * sizeof(float)),
-					(uint32_t)64,
+					static_cast<uint32_t>(_vertices.size()),
 					nullptr,
 					0);
+
+				_vertices.clear();
+
 				if (_hr == S_FALSE)
 				{
 					release();
@@ -56,7 +135,7 @@ namespace wolf
 
 				//loading vertex shaders
 				_hr = this->_shader.load(_gDevice,
-					content_path + L"shaders/shader.vert.spv",
+					content_path + L"shaders/shape.vert.spv",
 					w_shader_stage::VERTEX_SHADER);
 				if (_hr == S_FALSE)
 				{
@@ -67,7 +146,7 @@ namespace wolf
 
 				//loading fragment shader
 				_hr = this->_shader.load(_gDevice,
-					content_path + L"shaders/shader.frag.spv",
+					content_path + L"shaders/shape.frag.spv",
 					w_shader_stage::FRAGMENT_SHADER);
 				if (_hr == S_FALSE)
 				{
@@ -81,7 +160,14 @@ namespace wolf
 				if (_hr == S_FALSE)
 				{
 					release();
-					V(S_FALSE, "loading vertex shader uniform", _trace_info, 3, true);
+					V(S_FALSE, "loading WorldViewProjection uniform", _trace_info, 3, true);
+				}
+				
+				_hr = this->_u1.load(_gDevice);
+				if (_hr == S_FALSE)
+				{
+					release();
+					V(S_FALSE, "loading color uniform", _trace_info, 3, true);
 				}
 
 				std::vector<w_shader_binding_param> _shader_params;
@@ -91,6 +177,12 @@ namespace wolf
 				_shader_param.type = w_shader_binding_type::UNIFORM;
 				_shader_param.stage = w_shader_stage::VERTEX_SHADER;
 				_shader_param.buffer_info = this->_u0.get_descriptor_info();
+				_shader_params.push_back(_shader_param);
+
+				_shader_param.index = 1;
+				_shader_param.type = w_shader_binding_type::UNIFORM;
+				_shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
+				_shader_param.buffer_info = this->_u1.get_descriptor_info();
 				_shader_params.push_back(_shader_param);
 
 				_hr = this->_shader.set_shader_binding_params(_shader_params);
@@ -124,122 +216,58 @@ namespace wolf
 					return S_FALSE;
 				}
 
+				return set_color(this->_color);
+			}
+
+			HRESULT update(_In_ const glm::mat4& pWorldViewProjection)
+			{
+				const std::string _trace_info = this->_name + "::update";
+
+				//we must update uniform
+				this->_u0.data.wvp = pWorldViewProjection;
+				auto _hr = this->_u0.update();
+				if (_hr == S_FALSE)
+				{
+					V(S_FALSE, "updating uniform WorldViewProjection", _trace_info, 3, false);
+					return S_FALSE;
+				}
 				return S_OK;
 			}
 
-			HRESULT draw(_In_ VkCommandBuffer pCommandBuffer,
-				_In_ const wolf::system::w_game_time pGameTime)
+			HRESULT set_color(_In_ w_color pColor)
+			{
+				const std::string _trace_info = this->_name + "::set_color";
+
+				this->_color = pColor;
+
+				//we must update uniform
+				this->_u1.data.color.r = this->_color.r / 255.0f;
+				this->_u1.data.color.g = this->_color.g / 255.0f;
+				this->_u1.data.color.b = this->_color.b / 255.0f;
+				this->_u1.data.color.a = this->_color.a / 255.0f;
+
+				auto _hr = this->_u1.update();
+				if (_hr == S_FALSE)
+				{
+					V(S_FALSE, "updating uniform color", _trace_info, 3, false);
+					return S_FALSE;
+				}
+				return S_OK;
+			}
+
+			HRESULT draw(_In_ VkCommandBuffer pCommandBuffer)
 			{
 				const std::string _trace_info = this->_name + "::draw";
 
-//                //we must update uniform
-//                this->_u0.data.wvp = glm::mat4(1);//identity
-//                auto _hr = this->_u0.update();
-//                if (_hr == S_FALSE)
-//                {
-//                    V(S_FALSE, "updating uniform", _trace_info, 3, false);
-//                    return S_FALSE;
-//                }
-//
-//                //Calculate the total number of vertices of active shapes
-//                int _vertex_count = 0;
-//                for (auto shape : this->_active_shapes)
-//                {
-//                    _vertex_count += shape->line_count * 2;
-//                }
-//
-//                //If we have some vertices to draw
-//                if (_vertex_count > 0)
-//                {
-//                    // Make sure our array is large enough
-//                    if (_vertices.size() < _vertex_count)
-//                    {
-//                        //resize buffer
-//                        _vertices.resize(_vertex_count * 2);
-//                    }
-//
-//                    // Now go through the shapes again to move the vertices to our array
-//                    int _line_count = 0;
-//                    int _vert_index = 0;
-//                    for (auto shape : this->_active_shapes)
-//                    {
-//                        _line_count += shape->line_count;
-//                        int _shape_verts = shape->line_count * 2;
-//                        for (int i = 0; i < _shape_verts; i++, _vert_index += 7)
-//                        {
-//                            _vertices[_vert_index] = shape->vertices[i]->data[0];
-//                            _vertices[_vert_index + 1] = shape->vertices[i]->data[1];
-//                            _vertices[_vert_index + 2] = shape->vertices[i]->data[2];
-//                            _vertices[_vert_index + 3] = shape->vertices[i]->data[3];
-//                            _vertices[_vert_index + 4] = shape->vertices[i]->data[4];
-//                            _vertices[_vert_index + 5] = shape->vertices[i]->data[5];
-//                            _vertices[_vert_index + 6] = shape->vertices[i]->data[6];
-//                            _vertices[_vert_index + 7] = shape->vertices[i]->data[7];
-//                        }
-//                    }
-//
-//                    auto _description_set = this->_shader.get_descriptor_set();
-//                    this->_pipeline.bind(pCommandBuffer, &_description_set);
-//
-//                    /*
-//                        We draw in a loop because the Reach profile only supports 65,535 primitives. While it's
-//                        not incredibly likely, if a game tries to render more than 65,535 lines we don't want to
-//                        crash. We handle this by doing a loop and drawing as many lines as we can at a time, capped
-//                        at our limit. We then move ahead in our vertex array and draw the next set of lines.
-//                    */
-//                    int _vertex_offset = 0;
-//                    while (_line_count > 0)
-//                    {
-//                        //figure out how many lines we're going to draw
-//                        int _lines_to_draw = std::min(_line_count, 65535);
-//
-//                        // Draw the lines
-//                        this->_shapes_drawer.update_dynamic_buffer(
-//                            this->_gDevice,
-//                            this->_vertices.data(),
-//                            sizeof(vertex_position_color),
-//                            _lines_to_draw,
-//                            nullptr,
-//                            0);
-//
-//                        _hr = this->_shapes_drawer.draw(pCommandBuffer, nullptr, 0, false, _vertex_offset);
-//                        if (_hr == S_FALSE)
-//                        {
-//                            V(S_FALSE, "drawing mesh", _trace_info, 3, false);
-//                        }
-//
-//                        //move our vertex offset ahead based on the lines we drew
-//                        _vertex_offset += _lines_to_draw * 2;
-//
-//                        //remove these lines from our total line count
-//                        _line_count -= _lines_to_draw;
-//                    }
-//                }
-//
-//                //go through our active shapes and retire any shapes that have expired to the cache list.
-//                bool _resort = false;
-//                for (int i = (int)this->_active_shapes.size() - 1; i >= 0; i--)
-//                {
-//                    auto _shape = this->_active_shapes[i];
-//                    _shape->life_time -= wolf::system::w_time_span::from_seconds(pGameTime.get_total_seconds());
-//                    if (_shape->life_time <= wolf::system::w_time_span::zero())
-//                    {
-//                        this->_cached_shapes.push_back(_shape);
-//                        this->_active_shapes.erase(this->_active_shapes.begin() + i);
-//                        _resort = true;
-//                    }
-//                }
-//
-//                //if we move any shapes around, we need to resort the cached list to ensure that the smallest shapes are first in the list.
-//                if (_resort)
-//                {
-//                    std::sort(this->_cached_shapes.begin(), this->_cached_shapes.end(), [](_In_ const shape* pS1, _In_ const shape* pS2)
-//                    {
-//                        return pS1 && pS2 && pS1->vertices.size() > pS2->vertices.size();
-//                    });
-//                }
+				auto _description_set = this->_shader.get_descriptor_set();
+				this->_pipeline.bind(pCommandBuffer, &_description_set);
 
-                return S_OK;//_hr;
+				if (this->_shape_drawer.draw(pCommandBuffer, nullptr, 0, false, 0) == S_FALSE)
+				{
+					V(S_FALSE, "drawing shape", _trace_info, 3, false);
+					return S_FALSE;
+				}
+				return S_OK;;
 			}
             
 			void release()
@@ -251,74 +279,259 @@ namespace wolf
 				this->_pipeline.release();
 				this->_u0.release();
 
+				_points.clear();
+				SAFE_DELETE(this->_bounding_box);
+				SAFE_DELETE(this->_bounding_sphere);
+
 				this->_gDevice = nullptr;
 			}
 
         private:
-            void _generate_bounding_box_vertices(_Inout_ std::vector<float>& pVertices)
-            {
-                std::array<glm::vec3, 8> _corners;
-                this->_bounding_box.get_corners(_corners);
-                
-//                //Fill in the vertices for the bottom of the box
-//                _shape->vertices[0] = new (std::nothrow) vertex_position_color(_corners[0], pColor);
-//                if (!_shape->vertices[0]) return S_FALSE;
-//                _shape->vertices[1] = new (std::nothrow) vertex_position_color(_corners[1], pColor);
-//                if (!_shape->vertices[1]) return S_FALSE;
-//                _shape->vertices[2] = new (std::nothrow) vertex_position_color(_corners[1], pColor);
-//                if (!_shape->vertices[2]) return S_FALSE;
-//                _shape->vertices[3] = new (std::nothrow) vertex_position_color(_corners[2], pColor);
-//                if (!_shape->vertices[3]) return S_FALSE;
-//                _shape->vertices[4] = new (std::nothrow) vertex_position_color(_corners[2], pColor);
-//                if (!_shape->vertices[4]) return S_FALSE;
-//                _shape->vertices[5] = new (std::nothrow) vertex_position_color(_corners[3], pColor);
-//                if (!_shape->vertices[5]) return S_FALSE;
-//                _shape->vertices[6] = new (std::nothrow) vertex_position_color(_corners[3], pColor);
-//                if (!_shape->vertices[6]) return S_FALSE;
-//                _shape->vertices[7] = new (std::nothrow) vertex_position_color(_corners[0], pColor);
-//                if (!_shape->vertices[7]) return S_FALSE;
-                
-                //                //Fill in the vertices for the top of the box
-                //                _shape->vertices[8] = new (std::nothrow) vertex_position_color(_corners[4], pColor);
-                //                if (!_shape->vertices[8]) return S_FALSE;
-                //                _shape->vertices[9] = new (std::nothrow) vertex_position_color(_corners[5], pColor);
-                //                if (!_shape->vertices[9]) return S_FALSE;
-                //                _shape->vertices[10] = new (std::nothrow) vertex_position_color(_corners[5], pColor);
-                //                if (!_shape->vertices[10]) return S_FALSE;
-                //                _shape->vertices[11] = new (std::nothrow) vertex_position_color(_corners[6], pColor);
-                //                if (!_shape->vertices[11]) return S_FALSE;
-                //                _shape->vertices[12] = new (std::nothrow) vertex_position_color(_corners[6], pColor);
-                //                if (!_shape->vertices[12]) return S_FALSE;
-                //                _shape->vertices[13] = new (std::nothrow) vertex_position_color(_corners[7], pColor);
-                //                if (!_shape->vertices[13]) return S_FALSE;
-                //                _shape->vertices[14] = new (std::nothrow) vertex_position_color(_corners[7], pColor);
-                //                if (!_shape->vertices[14]) return S_FALSE;
-                //                _shape->vertices[15] = new (std::nothrow) vertex_position_color(_corners[4], pColor);
-                //                if (!_shape->vertices[15]) return S_FALSE;
-                //
-                //                //Fill in the vertices for the vertical sides of the box
-                //                _shape->vertices[16] = new (std::nothrow) vertex_position_color(_corners[0], pColor);
-                //                if (!_shape->vertices[16]) return S_FALSE;
-                //                _shape->vertices[17] = new (std::nothrow) vertex_position_color(_corners[4], pColor);
-                //                if (!_shape->vertices[17]) return S_FALSE;
-                //                _shape->vertices[18] = new (std::nothrow) vertex_position_color(_corners[1], pColor);
-                //                if (!_shape->vertices[18]) return S_FALSE;
-                //                _shape->vertices[19] = new (std::nothrow) vertex_position_color(_corners[5], pColor);
-                //                if (!_shape->vertices[19]) return S_FALSE;
-                //                _shape->vertices[20] = new (std::nothrow) vertex_position_color(_corners[2], pColor);
-                //                if (!_shape->vertices[20]) return S_FALSE;
-                //                _shape->vertices[21] = new (std::nothrow) vertex_position_color(_corners[6], pColor);
-                //                if (!_shape->vertices[21]) return S_FALSE;
-                //                _shape->vertices[22] = new (std::nothrow) vertex_position_color(_corners[3], pColor);
-                //                if (!_shape->vertices[22]) return S_FALSE;
-                //                _shape->vertices[23] = new (std::nothrow) vertex_position_color(_corners[7], pColor);
-                //                if (!_shape->vertices[23]) return S_FALSE;
-            }
+			void _generate_line_vertices(_Inout_ std::vector<float>& pVertices)
+			{
+				if (this->_points.size() < 2) return;
+
+				uint32_t _index = 0;
+				const size_t _offset = 3;//3 floats for pos
+				pVertices.resize(2 * _offset);//2 vertices
+
+#pragma region fill in the vertices for the line
+
+				std::memcpy(&pVertices[_index], &this->_points[0], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &this->_points[1], _offset * sizeof(float));
+				
+#pragma endregion
+
+			}
+
+			void _generate_triangle_vertices(_Inout_ std::vector<float>& pVertices)
+			{
+				if (this->_points.size() < 3) return;
+
+				uint32_t _index = 0;
+				const size_t _offset = 3;//3 floats for pos
+				pVertices.resize(6 * _offset);//6 vertices 
+				
+#pragma region fill in the vertices for the triangle
+
+				std::memcpy(&pVertices[_index], &this->_points[0], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &this->_points[1], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &this->_points[1], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &this->_points[2], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &this->_points[2], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &this->_points[0], _offset * sizeof(float));
+
+#pragma endregion
+
+			}
+
+			void _generate_bounding_box_vertices(_Inout_ std::vector<float>& pVertices)
+			{
+				if (!this->_bounding_box) return;
+
+				std::array<glm::vec3, 8> _corners;
+				this->_bounding_box->get_corners(_corners);
+
+				uint32_t _index = 0;
+				const size_t _offset = 3;//3 floats for pos
+				pVertices.resize(24 * _offset);//24 vertices 
+				
+#pragma region fill in the vertices for the bottom of the box
+
+				std::memcpy(&pVertices[_index], &_corners[0], _offset * sizeof(float));
+				_index += _offset;
+				
+				std::memcpy(&pVertices[_index], &_corners[1], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[1], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[2], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[2], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[3], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[3], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[0], _offset * sizeof(float));
+				_index += _offset;
+
+#pragma endregion
+
+#pragma region fill in the vertices for the top of the box
+
+				std::memcpy(&pVertices[_index], &_corners[4], _offset * sizeof(float));
+				_index += _offset;
+				
+				std::memcpy(&pVertices[_index], &_corners[5], _offset * sizeof(float));
+				_index += _offset;
+				
+				std::memcpy(&pVertices[_index], &_corners[5], _offset * sizeof(float));
+				_index += _offset;
+				
+				std::memcpy(&pVertices[_index], &_corners[6], _offset * sizeof(float));
+				_index += _offset;
+				
+				std::memcpy(&pVertices[_index], &_corners[6], _offset * sizeof(float));
+				_index += _offset;
+				
+				std::memcpy(&pVertices[_index], &_corners[7], _offset * sizeof(float));
+				_index += _offset;
+				
+				std::memcpy(&pVertices[_index], &_corners[7], _offset * sizeof(float));
+				_index += _offset;
+				
+				std::memcpy(&pVertices[_index], &_corners[4], _offset * sizeof(float));
+				_index += _offset;
+
+#pragma endregion
+
+#pragma region fill in the vertices for the sides of the box
+
+				std::memcpy(&pVertices[_index], &_corners[0], _offset * sizeof(float));
+				_index += _offset;
+				
+				std::memcpy(&pVertices[_index], &_corners[4], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[1], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[5], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[2], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[6], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[3], _offset * sizeof(float));
+				_index += _offset;
+
+				std::memcpy(&pVertices[_index], &_corners[7], _offset * sizeof(float));
+
+#pragma endregion
+
+			}
             
+			void _generate_bounding_sphere_vertices(_Inout_ std::vector<float>& pVertices)
+			{
+				if (!this->_bounding_sphere) return;
+
+				const size_t _offset = 3;//3 floats for pos
+				auto _sphere_line_count = (this->_sphere_resolution + 1) * 3;
+				pVertices.resize(_sphere_line_count * 2 * _offset);
+
+				const auto _two_pi = glm::two_pi<float>();
+				//compute our step around each circle
+				auto _step = _two_pi / (float)this->_sphere_resolution;
+
+				//used to track the index into our vertex array
+				size_t _index = 0;
+
+				//create the loop on the XY plane
+				for (float i = 0.0f; i < _two_pi; i += _step)
+				{
+					pVertices[_index] = std::cos(i)	* this->_bounding_sphere->radius + this->_bounding_sphere->center[0];
+					pVertices[_index + 1] = std::sin(i) * this->_bounding_sphere->radius + this->_bounding_sphere->center[1];
+					pVertices[_index + 2] = 0.0f * this->_bounding_sphere->radius + this->_bounding_sphere->center[2];
+					_index += _offset;
+
+					pVertices[_index] = std::cos(i + _step) * this->_bounding_sphere->radius + this->_bounding_sphere->center[0];
+					pVertices[_index + 1] = std::sin(i + _step) * this->_bounding_sphere->radius + this->_bounding_sphere->center[1];
+					pVertices[_index + 2] = 0.0f * this->_bounding_sphere->radius + this->_bounding_sphere->center[2];
+					_index += _offset;
+				}
+
+				//create the loop on the XZ plane
+				for (float i = 0.0f; i < _two_pi; i += _step)
+				{
+					pVertices[_index] = std::cos(i) * this->_bounding_sphere->radius + this->_bounding_sphere->center[0];
+					pVertices[_index + 1] = 0.0f * this->_bounding_sphere->radius + this->_bounding_sphere->center[1];
+					pVertices[_index + 2] = std::sin(i) * this->_bounding_sphere->radius + this->_bounding_sphere->center[2];
+					_index += _offset;
+
+					pVertices[_index] = std::cos(i + _step) * this->_bounding_sphere->radius + this->_bounding_sphere->center[0];
+					pVertices[_index + 1] = 0.0f * this->_bounding_sphere->radius + this->_bounding_sphere->center[1];
+					pVertices[_index + 2] = std::sin(i + _step) * this->_bounding_sphere->radius + this->_bounding_sphere->center[2];
+					_index += _offset;
+				}
+
+				//create the loop on the YZ plane
+				for (float i = 0.0f; i < _two_pi; i += _step)
+				{
+					pVertices[_index] = 0.0f * this->_bounding_sphere->radius + this->_bounding_sphere->center[0];
+					pVertices[_index + 1] = std::cos(i) * this->_bounding_sphere->radius + this->_bounding_sphere->center[1];
+					pVertices[_index + 2] = std::sin(i) * this->_bounding_sphere->radius + this->_bounding_sphere->center[2];
+					_index += _offset;
+
+					pVertices[_index] = 0.0f * this->_bounding_sphere->radius + this->_bounding_sphere->center[0];
+					pVertices[_index + 1] = std::cos(i + _step) * this->_bounding_sphere->radius + this->_bounding_sphere->center[1];
+					pVertices[_index + 2] = std::sin(i + _step) * this->_bounding_sphere->radius + this->_bounding_sphere->center[2];
+					_index += _offset;
+				}
+			}
+
+			void _generate_bounding_frustum_vertices(_Inout_ std::vector<float>& pVertices)
+			{
+				//frustum.GetCorners(corners);
+
+				//// Fill in the vertices for the bottom of the frustum
+				//shape.Vertices[0] = new VertexPositionColor(corners[0], color);
+				//shape.Vertices[1] = new VertexPositionColor(corners[1], color);
+				//shape.Vertices[2] = new VertexPositionColor(corners[1], color);
+				//shape.Vertices[3] = new VertexPositionColor(corners[2], color);
+				//shape.Vertices[4] = new VertexPositionColor(corners[2], color);
+				//shape.Vertices[5] = new VertexPositionColor(corners[3], color);
+				//shape.Vertices[6] = new VertexPositionColor(corners[3], color);
+				//shape.Vertices[7] = new VertexPositionColor(corners[0], color);
+
+				//// Fill in the vertices for the top of the frustum
+				//shape.Vertices[8] = new VertexPositionColor(corners[4], color);
+				//shape.Vertices[9] = new VertexPositionColor(corners[5], color);
+				//shape.Vertices[10] = new VertexPositionColor(corners[5], color);
+				//shape.Vertices[11] = new VertexPositionColor(corners[6], color);
+				//shape.Vertices[12] = new VertexPositionColor(corners[6], color);
+				//shape.Vertices[13] = new VertexPositionColor(corners[7], color);
+				//shape.Vertices[14] = new VertexPositionColor(corners[7], color);
+				//shape.Vertices[15] = new VertexPositionColor(corners[4], color);
+
+				//// Fill in the vertices for the vertical sides of the frustum
+				//shape.Vertices[16] = new VertexPositionColor(corners[0], color);
+				//shape.Vertices[17] = new VertexPositionColor(corners[4], color);
+				//shape.Vertices[18] = new VertexPositionColor(corners[1], color);
+				//shape.Vertices[19] = new VertexPositionColor(corners[5], color);
+				//shape.Vertices[20] = new VertexPositionColor(corners[2], color);
+				//shape.Vertices[21] = new VertexPositionColor(corners[6], color);
+				//shape.Vertices[22] = new VertexPositionColor(corners[3], color);
+				//shape.Vertices[23] = new VertexPositionColor(corners[7], color);
+			}
+
+
             enum shape_type
             {
-                BOX
+				LINE, TRIANGLE, CIRCLE, BOX, SPHERE
             } _shape_type;
+
 			std::string                                             _name;
 			std::shared_ptr<w_graphics_device>                      _gDevice;
 			w_mesh													_shape_drawer;
@@ -330,9 +543,19 @@ namespace wolf
 				glm::mat4	wvp;
 			};
 			wolf::graphics::w_uniform<U0>                           _u0;
-            
-            wolf::system::w_bounding_box                            _bounding_box;
 
+			struct U1
+			{
+				glm::vec4	color;
+			};
+			wolf::graphics::w_uniform<U1>                           _u1;
+
+            
+            wolf::system::w_bounding_box*                           _bounding_box;
+			wolf::system::w_bounding_sphere*                        _bounding_sphere;
+			uint32_t												_sphere_resolution;
+			std::vector<glm::vec3>									_points;
+			w_color													_color;
         };
     }
 }
@@ -340,10 +563,34 @@ namespace wolf
 using namespace wolf::system;
 using namespace wolf::graphics;
 
-w_shapes::w_shapes(_In_ wolf::system::w_bounding_box& pBoundingBox, _In_ const w_color& pColor) :
+//create line shape 
+w_shapes::w_shapes(_In_ const glm::vec3& pA, _In_ const glm::vec3& pB, _In_ const w_color& pColor) :
+	_pimp(new w_shapes_pimp(pA, pB, pColor))
+{
+	_super::set_class_name("w_shapes");
+}
+
+w_shapes::w_shapes(
+	_In_ const glm::vec3& pA,
+	_In_ const glm::vec3& pB,
+	_In_ const glm::vec3& pC,
+	_In_ const w_color& pColor) :
+	_pimp(new w_shapes_pimp(pA, pB, pC, pColor))
+{
+	_super::set_class_name("w_shapes");
+}
+
+w_shapes::w_shapes(_In_ const wolf::system::w_bounding_box& pBoundingBox, _In_ const w_color& pColor) :
     _pimp(new w_shapes_pimp(pBoundingBox, pColor))
 {
     _super::set_class_name("w_shapes");
+}
+
+//create bounding sphere shape 
+w_shapes::w_shapes(_In_ const wolf::system::w_bounding_sphere& pBoundingSphere, _In_ const w_color& pColor, _In_ const uint32_t& pResolution) :
+	_pimp(new w_shapes_pimp(pBoundingSphere, pColor, pResolution))
+{
+	_super::set_class_name("w_shapes");
 }
 
 w_shapes::~w_shapes()
@@ -359,11 +606,14 @@ HRESULT w_shapes::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	return (!this->_pimp) ? S_FALSE : this->_pimp->load(pGDevice, pRenderPass, pViewport, pViewportScissor);
 }
 
-HRESULT w_shapes::draw(
-    _In_ VkCommandBuffer pCommandBuffer,
-    _In_ const w_game_time pGameTime)
+HRESULT w_shapes::update(_In_ const glm::mat4& pWorldViewProjection)
 {
-    return (!this->_pimp) ? S_FALSE : this->_pimp->draw(pCommandBuffer, pGameTime);
+	return (!this->_pimp) ? S_FALSE : this->_pimp->update(pWorldViewProjection);
+}
+
+HRESULT w_shapes::draw(_In_ VkCommandBuffer pCommandBuffer)
+{
+    return (!this->_pimp) ? S_FALSE : this->_pimp->draw(pCommandBuffer);
 }
 
 ULONG w_shapes::release()

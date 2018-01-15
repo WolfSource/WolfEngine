@@ -56,9 +56,7 @@ public:
 	ULONG release() override;
 
 private:
-	HRESULT _build_draw_command_buffers(
-        _In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-        _In_ const wolf::system::w_game_time& pGameTime);
+	HRESULT _build_draw_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
 	HRESULT _build_gui_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
     bool	_update_gui();
 
@@ -82,8 +80,12 @@ private:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	wolf::graphics::w_shapes										_shapes;
-	wolf::system::w_bounding_box									_bounding_box;
+	
+	wolf::graphics::w_shapes*										_shape_line;
+	wolf::graphics::w_shapes*										_shape_triangle;
+	wolf::graphics::w_shapes*										_shape_box;
+	wolf::graphics::w_shapes*										_shape_sphere;
+
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };
