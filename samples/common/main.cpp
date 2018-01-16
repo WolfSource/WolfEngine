@@ -3,7 +3,7 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : main.cpp
-	Description		 : This sample shows how to create a scene in Wolf Engine
+	Description		 : This sample shows how to create shapes in Wolf Engine. This sample ported from from Microsoft XNA Community Game Platform Sample
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
 */
 

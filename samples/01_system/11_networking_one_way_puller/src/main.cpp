@@ -4,7 +4,7 @@
 	Website			 : http://WolfSource.io
 	Name			 : main.cpp
 	Description		 : This sample shows how to create one way client side puller in Wolf Engine
-					   make sure launch 11_networking_one_way_puller simultaneously
+					   make sure launch 11_networking_one_way_pusher simultaneously
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/wolfengine/
 */
 

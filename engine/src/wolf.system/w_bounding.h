@@ -14,6 +14,7 @@
 #include <vector>
 #include <array>
 #include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 #include <msgpack.hpp>
 
 namespace wolf
@@ -36,6 +37,8 @@ namespace wolf
             //used for rendering and masked occulusion culling
             std::vector<float>      vertices;
 
+			WSYS_EXP static w_bounding_box create_from_bounding_sphere(_In_ const w_bounding_sphere& pBoundingSphere);
+
 			WSYS_EXP void generate_vertices_indices();
 			WSYS_EXP void merge(_In_ _In_ const w_bounding_box& pAdditional);
 			WSYS_EXP bool intersects(_In_ const w_bounding_box& pBox);
@@ -52,13 +55,28 @@ namespace wolf
             float center[3];
             float radius;
 
+			WSYS_EXP static w_bounding_sphere create_from_bounding_box(_In_ const w_bounding_box& pBoundingBox);
+
 			WSYS_EXP void merge(_In_ const w_bounding_sphere& pAdditional);
-			WSYS_EXP void create_from_bounding_box(_In_ const w_bounding_box& pBox);
 			WSYS_EXP bool intersects(_In_ const w_bounding_sphere& pSphere);
 			WSYS_EXP bool intersects(_In_ const w_bounding_box& pBox);
 
             MSGPACK_DEFINE(center, radius);
         };
+
+		struct w_bounding_frustum
+		{
+			WSYS_EXP std::array<glm::vec4, 6> get_plans() const;
+			WSYS_EXP void update(_In_ const glm::mat4& pMatrix);
+			WSYS_EXP bool intersects(_In_ const w_bounding_sphere& pSphere);
+			WSYS_EXP bool intersects(_In_ const w_bounding_box& pBox);
+
+			MSGPACK_DEFINE(_planes);
+
+		private:
+			enum w_frustum_side { LEFT = 0, RIGHT = 1, TOP = 2, BOTTOM = 3, BACK = 4, FRONT = 5 };
+			float _planes[6][4];//6 plans with 4 floats(w,x,y,z)
+		};
 	}
 }
 

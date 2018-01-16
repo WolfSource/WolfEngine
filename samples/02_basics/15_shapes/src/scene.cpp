@@ -212,6 +212,25 @@ void scene::load()
 		V(S_FALSE, "loading shape(triangle)", _trace_info, 3, true);
 	}
 
+	//Add Circle
+	this->_shape_circle = new (std::nothrow) w_shapes(
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		2.0f,
+		w_color::ORANGE(),
+		wolf::graphics::w_plan::XY, 
+		30.0f);
+	if (!this->_shape_circle)
+	{
+		release();
+		V(S_FALSE, "allocating memory for shape(circle)", _trace_info, 3, true);
+	}
+	_hr = this->_shape_circle->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "loading shape(circle)", _trace_info, 3, true);
+	}
+
 	//Add Bounding Box
 	w_bounding_box _bounding_box;
 
@@ -288,6 +307,7 @@ HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				this->_shape_line->draw(_cmd);
 				this->_shape_triangle->draw(_cmd);
+				this->_shape_circle->draw(_cmd);
                 this->_shape_box->draw(_cmd);
 				this->_shape_sphere->draw(_cmd);
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -358,6 +378,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 	this->_shape_line->update(_wvp);
 	this->_shape_triangle->update(_wvp);
+	this->_shape_circle->update(_wvp);
 	this->_shape_box->update(_wvp);
 	this->_shape_sphere->update(_wvp);
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -442,6 +463,7 @@ ULONG scene::release()
 	
 	SAFE_RELEASE(this->_shape_line);
 	SAFE_RELEASE(this->_shape_triangle);
+	SAFE_RELEASE(this->_shape_circle);
 	SAFE_RELEASE(this->_shape_box);
 	SAFE_RELEASE(this->_shape_sphere);
 

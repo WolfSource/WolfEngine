@@ -40,15 +40,18 @@ namespace wolf
 			}
 
 			//create circle shape
-			w_shapes_pimp(_In_ const glm::vec3& pCenter, _In_ const float& pRadius, _In_ const w_color& pColor, _In_ const w_plan& pPlan) :
+			w_shapes_pimp(_In_ const glm::vec3& pCenter, _In_ const float& pRadius, _In_ const w_color& pColor, _In_ const w_plan& pPlan, _In_ const uint32_t& pResolution) :
 				_shape_type(shape_type::CIRCLE),
 				_color(pColor),
 				_bounding_box(nullptr),
 				_bounding_sphere(nullptr),
+				_circle_resolution(pResolution),
+				_circle_center(pCenter),
+				_circle_radius(pRadius),
+				_circle_plan(pPlan),
 				_name("w_shapes"),
 				_gDevice(nullptr)
 			{
-
 			}
 
 			//create box shape
@@ -106,6 +109,9 @@ namespace wolf
 					break;
 				case shape_type::TRIANGLE:
 					_generate_triangle_vertices(_vertices);
+					break;
+				case shape_type::CIRCLE:
+					_generate_circle_vertices(_vertices);
 					break;
 				case shape_type::BOX:
 					_generate_bounding_box_vertices(_vertices);
@@ -491,41 +497,65 @@ namespace wolf
 				}
 			}
 
-			void _generate_bounding_frustum_vertices(_Inout_ std::vector<float>& pVertices)
+			void _generate_circle_vertices(_Inout_ std::vector<float>& pVertices)
 			{
-				//frustum.GetCorners(corners);
+				const size_t _offset = 3;//3 floats for pos
+				auto _circle_line_count = this->_circle_resolution + 1;
+				pVertices.resize(_circle_line_count * 2 * _offset);
 
-				//// Fill in the vertices for the bottom of the frustum
-				//shape.Vertices[0] = new VertexPositionColor(corners[0], color);
-				//shape.Vertices[1] = new VertexPositionColor(corners[1], color);
-				//shape.Vertices[2] = new VertexPositionColor(corners[1], color);
-				//shape.Vertices[3] = new VertexPositionColor(corners[2], color);
-				//shape.Vertices[4] = new VertexPositionColor(corners[2], color);
-				//shape.Vertices[5] = new VertexPositionColor(corners[3], color);
-				//shape.Vertices[6] = new VertexPositionColor(corners[3], color);
-				//shape.Vertices[7] = new VertexPositionColor(corners[0], color);
+				const auto _two_pi = glm::two_pi<float>();
+				//compute our step around each circle
+				auto _step = _two_pi / (float)this->_circle_resolution;
 
-				//// Fill in the vertices for the top of the frustum
-				//shape.Vertices[8] = new VertexPositionColor(corners[4], color);
-				//shape.Vertices[9] = new VertexPositionColor(corners[5], color);
-				//shape.Vertices[10] = new VertexPositionColor(corners[5], color);
-				//shape.Vertices[11] = new VertexPositionColor(corners[6], color);
-				//shape.Vertices[12] = new VertexPositionColor(corners[6], color);
-				//shape.Vertices[13] = new VertexPositionColor(corners[7], color);
-				//shape.Vertices[14] = new VertexPositionColor(corners[7], color);
-				//shape.Vertices[15] = new VertexPositionColor(corners[4], color);
+				//used to track the index into our vertex array
+				size_t _index = 0;
 
-				//// Fill in the vertices for the vertical sides of the frustum
-				//shape.Vertices[16] = new VertexPositionColor(corners[0], color);
-				//shape.Vertices[17] = new VertexPositionColor(corners[4], color);
-				//shape.Vertices[18] = new VertexPositionColor(corners[1], color);
-				//shape.Vertices[19] = new VertexPositionColor(corners[5], color);
-				//shape.Vertices[20] = new VertexPositionColor(corners[2], color);
-				//shape.Vertices[21] = new VertexPositionColor(corners[6], color);
-				//shape.Vertices[22] = new VertexPositionColor(corners[3], color);
-				//shape.Vertices[23] = new VertexPositionColor(corners[7], color);
+				switch (this->_circle_plan)
+				{
+				case wolf::graphics::XY:
+					for (float i = 0.0f; i < _two_pi; i += _step)
+					{
+						pVertices[_index] = std::cos(i)	* this->_circle_radius + this->_circle_center[0];
+						pVertices[_index + 1] = std::sin(i) * this->_circle_radius + this->_circle_center[1];
+						pVertices[_index + 2] = 0.0f * this->_circle_radius + this->_circle_center[2];
+						_index += _offset;
+
+						pVertices[_index] = std::cos(i + _step) * this->_circle_radius + this->_circle_center[0];
+						pVertices[_index + 1] = std::sin(i + _step) * this->_circle_radius + this->_circle_center[1];
+						pVertices[_index + 2] = 0.0f * this->_circle_radius + this->_circle_center[2];
+						_index += _offset;
+					}
+					break;
+				case wolf::graphics::XZ:
+					for (float i = 0.0f; i < _two_pi; i += _step)
+					{
+						pVertices[_index] = std::cos(i) * this->_circle_radius + this->_circle_center[0];
+						pVertices[_index + 1] = 0.0f * this->_circle_radius + this->_circle_center[1];
+						pVertices[_index + 2] = std::sin(i) * this->_circle_radius + this->_circle_center[2];
+						_index += _offset;
+
+						pVertices[_index] = std::cos(i + _step) * this->_circle_radius + this->_circle_center[0];
+						pVertices[_index + 1] = 0.0f * this->_circle_radius + this->_circle_center[1];
+						pVertices[_index + 2] = std::sin(i + _step) * this->_circle_radius + this->_circle_center[2];
+						_index += _offset;
+					}
+					break;
+				case wolf::graphics::YZ:
+					for (float i = 0.0f; i < _two_pi; i += _step)
+					{
+						pVertices[_index] = 0.0f * this->_circle_radius + this->_circle_center[0];
+						pVertices[_index + 1] = std::cos(i) * this->_circle_radius + this->_circle_center[1];
+						pVertices[_index + 2] = std::sin(i) * this->_circle_radius + this->_circle_center[2];
+						_index += _offset;
+
+						pVertices[_index] = 0.0f * this->_circle_radius + this->_circle_center[0];
+						pVertices[_index + 1] = std::cos(i + _step) * this->_circle_radius + this->_circle_center[1];
+						pVertices[_index + 2] = std::sin(i + _step) * this->_circle_radius + this->_circle_center[2];
+						_index += _offset;
+					}
+					break;
+				}
 			}
-
 
             enum shape_type
             {
@@ -556,6 +586,11 @@ namespace wolf
 			uint32_t												_sphere_resolution;
 			std::vector<glm::vec3>									_points;
 			w_color													_color;
+
+			uint32_t												_circle_resolution;
+			glm::vec3												_circle_center;
+			float													_circle_radius;
+			w_plan													_circle_plan;
         };
     }
 }
@@ -564,7 +599,10 @@ using namespace wolf::system;
 using namespace wolf::graphics;
 
 //create line shape 
-w_shapes::w_shapes(_In_ const glm::vec3& pA, _In_ const glm::vec3& pB, _In_ const w_color& pColor) :
+w_shapes::w_shapes(
+	_In_ const glm::vec3& pA, 
+	_In_ const glm::vec3& pB, 
+	_In_ const w_color& pColor) :
 	_pimp(new w_shapes_pimp(pA, pB, pColor))
 {
 	_super::set_class_name("w_shapes");
@@ -576,6 +614,16 @@ w_shapes::w_shapes(
 	_In_ const glm::vec3& pC,
 	_In_ const w_color& pColor) :
 	_pimp(new w_shapes_pimp(pA, pB, pC, pColor))
+{
+	_super::set_class_name("w_shapes");
+}
+
+w_shapes::w_shapes(_In_ const glm::vec3& pCenter,
+	_In_ const float& pRadius,
+	_In_ const w_color& pColor,
+	_In_ const w_plan& pPlan,
+	_In_ const uint32_t& pResolution) :
+	_pimp(new w_shapes_pimp(pCenter, pRadius, pColor, pPlan, pResolution))
 {
 	_super::set_class_name("w_shapes");
 }

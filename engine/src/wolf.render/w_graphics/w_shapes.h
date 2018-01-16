@@ -29,18 +29,42 @@ namespace wolf
 		{
 		public:
 			//create line shape 
-			W_EXP w_shapes(_In_ const glm::vec3& pA, _In_ const glm::vec3& pB, _In_ const w_color& pColor);
+			W_EXP w_shapes(
+				_In_ const glm::vec3& pA, 
+				_In_ const glm::vec3& pB, 
+				_In_ const w_color& pColor);
+			
 			//create triangle shape 
-			W_EXP w_shapes(_In_ const glm::vec3& pA, _In_ const glm::vec3& pB, _In_ const glm::vec3& pC, _In_ const w_color& pColor);
+			W_EXP w_shapes(
+				_In_ const glm::vec3& pA, 
+				_In_ const glm::vec3& pB, 
+				_In_ const glm::vec3& pC, 
+				_In_ const w_color& pColor);
+			
+			//create circle shape 
+			W_EXP w_shapes(
+				_In_ const glm::vec3& pCenter,
+				_In_ const float& pRadius,
+				_In_ const w_color& pColor,
+				_In_ const w_plan& pPlan,
+				_In_ const uint32_t& pResolution = 30);
+
 			//create bounding box shape 
-			W_EXP w_shapes(_In_ const wolf::system::w_bounding_box& pBoundingBox, _In_ const w_color& pColor);
+			W_EXP w_shapes(
+				_In_ const wolf::system::w_bounding_box& pBoundingBox, 
+				_In_ const w_color& pColor);
+			
 			//create bounding sphere shape 
-			W_EXP w_shapes(_In_ const wolf::system::w_bounding_sphere& pBoundingSphere, _In_ const w_color& pColor, _In_ const uint32_t& pResolution = 30);
+			W_EXP w_shapes(
+				_In_ const wolf::system::w_bounding_sphere& pBoundingSphere, 
+				_In_ const w_color& pColor, 
+				_In_ const uint32_t& pResolution = 30);
 
 			W_EXP virtual ~w_shapes();
 
 			//load shapes render
-			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+			W_EXP HRESULT load(
+				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const wolf::graphics::w_render_pass& pRenderPass,
 				_In_ const wolf::graphics::w_viewport& pViewport,
 				_In_ const wolf::graphics::w_viewport_scissor& pViewportScissor);

@@ -31,7 +31,7 @@
   <ItemGroup>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{64CB8EA9-5A23-4B74-8CF2-FFD06A783B74}</ProjectGuid>
+    <ProjectGuid>{9FEA0CA8-DBE4-4944-9DAC-611A058664BD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>_14_networking_broadcast_publisher</RootNamespace>
     <ProjectName>14_networking_broadcast_publisher.Win32</ProjectName>

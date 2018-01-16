@@ -6,6 +6,24 @@ using namespace wolf::system;
 
 #pragma region bounding box
 
+w_bounding_box w_bounding_box::create_from_bounding_sphere(_In_ const w_bounding_sphere& pBoundingSphere)
+{
+	const size_t x = 0;
+	const size_t y = 1;
+	const size_t z = 2;
+
+	w_bounding_box _box;
+
+	_box.min[x] = pBoundingSphere.center[x] - pBoundingSphere.radius;
+	_box.min[y] = pBoundingSphere.center[y] - pBoundingSphere.radius;
+	_box.min[z] = pBoundingSphere.center[z] - pBoundingSphere.radius;
+	_box.max[x] = pBoundingSphere.center[x] + pBoundingSphere.radius;
+	_box.max[y] = pBoundingSphere.center[y] + pBoundingSphere.radius;
+	_box.max[z] = pBoundingSphere.center[z] + pBoundingSphere.radius;
+
+	return _box;
+}
+
 void w_bounding_box::generate_vertices_indices()
 {
     if (vertices.size()) vertices.clear();
@@ -157,6 +175,25 @@ void w_bounding_box::get_corners(_Inout_ std::array<glm::vec3, 8>& pCorners)
 
 #pragma region bounding sphere
 
+w_bounding_sphere w_bounding_sphere::create_from_bounding_box(_In_ const w_bounding_box& pBoundingBox)
+{
+	w_bounding_sphere _sphere;
+
+	glm::vec3 _in_min(pBoundingBox.min[0], pBoundingBox.min[1], pBoundingBox.min[2]);
+	glm::vec3 _in_max(pBoundingBox.max[0], pBoundingBox.max[1], pBoundingBox.max[2]);
+
+	//apply lerp to calculate center
+	const float _lerp_amount = 0.5f;
+	_sphere.center[0] = _in_min.x + ((_in_max.x - _in_min.x) * _lerp_amount);
+	_sphere.center[1] = _in_min.y + ((_in_max.y - _in_min.y) * _lerp_amount);
+	_sphere.center[2] = _in_min.z + ((_in_max.z - _in_min.z) * _lerp_amount);
+
+	auto _num = glm::distance(_in_min, _in_max);
+	_sphere.radius = _num * 0.5f;
+
+	return _sphere;
+}
+
 void w_bounding_sphere::merge(_In_ const w_bounding_sphere& pAdditional)
 {
     glm::vec3 _addi_center = glm::vec3(
@@ -192,21 +229,6 @@ void w_bounding_sphere::merge(_In_ const w_bounding_sphere& pAdditional)
     this->center[2] = _center.z;
 }
 
-void w_bounding_sphere::create_from_bounding_box(_In_ const w_bounding_box& pBox)
-{
-    glm::vec3 _in_min(pBox.min[0], pBox.min[1], pBox.min[2]);
-    glm::vec3 _in_max(pBox.max[0], pBox.max[1], pBox.max[2]);
-    
-    //apply lerp to calculate center
-    const float _lerp_amount = 0.5f;
-    this->center[0] = _in_min.x + ((_in_max.x - _in_min.x) * _lerp_amount);
-    this->center[1] = _in_min.y + ((_in_max.y - _in_min.y) * _lerp_amount);
-    this->center[2] = _in_min.z + ((_in_max.z - _in_min.z) * _lerp_amount);
-
-    auto _num = glm::distance(_in_min, _in_max);
-    this->radius = _num * 0.5f;
-}
-
 bool w_bounding_sphere::intersects(_In_ const w_bounding_sphere& pSphere)
 {
     auto _dis_x = this->center[0] - pSphere.center[0];
@@ -232,6 +254,107 @@ bool w_bounding_sphere::intersects(_In_ const w_bounding_box& pBox)
 
     auto _num = _dis.x * _dis.x + _dis.y * _dis.y + _dis.z * _dis.z;
     return _num <= this->radius * this->radius;
+}
+
+#pragma endregion
+
+#pragma region bounding frustum
+
+std::array<glm::vec4, 6> w_bounding_frustum::get_plans() const
+{
+	const size_t x = 0;
+	const size_t y = 1;
+	const size_t z = 2;
+	const size_t w = 3;
+
+	std::array<glm::vec4, 6> _array = 
+	{
+		glm::vec4(this->_planes[LEFT][x], this->_planes[LEFT][y], this->_planes[LEFT][z], this->_planes[LEFT][w]),
+		glm::vec4(this->_planes[RIGHT][x], this->_planes[RIGHT][y], this->_planes[RIGHT][z], this->_planes[RIGHT][w]),
+		glm::vec4(this->_planes[TOP][x], this->_planes[TOP][y], this->_planes[TOP][z], this->_planes[TOP][w]),
+		glm::vec4(this->_planes[BOTTOM][x], this->_planes[BOTTOM][y], this->_planes[BOTTOM][z], this->_planes[BOTTOM][w]),
+		glm::vec4(this->_planes[BACK][x], this->_planes[BACK][y], this->_planes[BACK][z], this->_planes[BACK][w]),
+		glm::vec4(this->_planes[FRONT][x], this->_planes[FRONT][y], this->_planes[FRONT][z], this->_planes[FRONT][w])
+	};
+
+	return _array;
+}
+
+void w_bounding_frustum::update(_In_ const glm::mat4& pMatrix)
+{
+	const size_t x = 0;
+	const size_t y = 1;
+	const size_t z = 2;
+	const size_t w = 3;
+
+	this->_planes[LEFT][x] = pMatrix[0].w + pMatrix[0].x;
+	this->_planes[LEFT][y] = pMatrix[1].w + pMatrix[1].x;
+	this->_planes[LEFT][z] = pMatrix[2].w + pMatrix[2].x;
+	this->_planes[LEFT][w] = pMatrix[3].w + pMatrix[3].x;
+
+	this->_planes[RIGHT][x] = pMatrix[0].w - pMatrix[0].x;
+	this->_planes[RIGHT][y] = pMatrix[1].w - pMatrix[1].x;
+	this->_planes[RIGHT][z] = pMatrix[2].w - pMatrix[2].x;
+	this->_planes[RIGHT][w] = pMatrix[3].w - pMatrix[3].x;
+
+	this->_planes[TOP][x] = pMatrix[0].w + pMatrix[0].y;
+	this->_planes[TOP][y] = pMatrix[1].w + pMatrix[1].y;
+	this->_planes[TOP][z] = pMatrix[2].w + pMatrix[2].y;
+	this->_planes[TOP][w] = pMatrix[3].w + pMatrix[3].y;
+
+	this->_planes[BOTTOM][x] = pMatrix[0].w - pMatrix[0].y;
+	this->_planes[BOTTOM][y] = pMatrix[1].w - pMatrix[1].y;
+	this->_planes[BOTTOM][z] = pMatrix[2].w - pMatrix[2].y;
+	this->_planes[BOTTOM][w] = pMatrix[3].w - pMatrix[3].y;
+
+	this->_planes[BACK][x] = pMatrix[0].w - pMatrix[0].z;
+	this->_planes[BACK][y] = pMatrix[1].w - pMatrix[1].z;
+	this->_planes[BACK][z] = pMatrix[2].w - pMatrix[2].z;
+	this->_planes[BACK][w] = pMatrix[3].w - pMatrix[3].z;
+
+	this->_planes[FRONT][x] = pMatrix[0].w + pMatrix[0].z;
+	this->_planes[FRONT][y] = pMatrix[1].w + pMatrix[1].z;
+	this->_planes[FRONT][z] = pMatrix[2].w + pMatrix[2].z;
+	this->_planes[FRONT][w] = pMatrix[3].w + pMatrix[3].z;
+
+	for (size_t i = 0; i < 6; ++i)
+	{
+		auto _norm = glm::normalize(
+			glm::vec4(
+				this->_planes[i][x],
+				this->_planes[i][y],
+				this->_planes[i][z],
+				this->_planes[i][w]));
+
+		this->_planes[i][x] = _norm.x;
+		this->_planes[i][y] = _norm.y;
+		this->_planes[i][z] = _norm.z;
+		this->_planes[i][w] = _norm.w;
+	}
+}
+
+bool w_bounding_frustum::intersects(_In_ const w_bounding_sphere& pSphere)
+{
+	const size_t x = 0;
+	const size_t y = 1;
+	const size_t z = 2;
+	const size_t w = 3;
+
+	for (auto i = 0; i < 6; ++i)
+	{
+		if ((_planes[i][x] * pSphere.center[x]) +
+			(_planes[i][y] * pSphere.center[y]) +
+			(_planes[i][z] * pSphere.center[z]) + _planes[i][w] <= -pSphere.radius)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool w_bounding_frustum::intersects(_In_ const w_bounding_box& pBox)
+{
+	return intersects(w_bounding_sphere::create_from_bounding_box(pBox));
 }
 
 #pragma endregion
