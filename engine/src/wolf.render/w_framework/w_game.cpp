@@ -30,14 +30,6 @@ w_game::~w_game()
 void w_game::initialize(_In_ map<int, vector<w_window_info>> pOutputWindowsInfo)
 {	
 	w_graphics_device_manager::initialize(pOutputWindowsInfo);
-
-	//initialize sprite batch
-	//auto _gDevice = get_graphics_device();
-
-#ifdef __DX11_X__
-	this->sprite_batch = make_unique<w_sprite_batch>(_gDevice);
-	this->sprite_batch->load();
-#endif
 }
 
 void w_game::load()

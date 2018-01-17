@@ -29,7 +29,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 #ifdef __WIN32
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = true;
+    _config.debug_gpu = false;
     w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -338,10 +338,10 @@ void scene::load()
         V(S_FALSE, "loading mesh", _trace_info, 3, true);
     }
 
-	_build_draw_command_buffers(_gDevice);
+	_build_draw_command_buffers();
 }
 
-HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_draw_command_buffers()
 {
     const std::string _trace_info = this->name + "::build_draw_command_buffers";
     HRESULT _hr = S_OK;
@@ -377,7 +377,7 @@ HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics
     return _hr;
 }
 
-HRESULT scene::_build_gui_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_gui_command_buffers()
 {
     const std::string _trace_info = this->name + "::build_gui_command_buffers";
     HRESULT _hr = S_OK;
@@ -443,7 +443,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _output_window = &(_gDevice->output_presentation_windows[0]);
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
 
-    _build_gui_command_buffers(_gDevice);
+    _build_gui_command_buffers();
 
 	//add wait semaphores
 	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };

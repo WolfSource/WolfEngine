@@ -5,31 +5,34 @@ using namespace wolf::system;
 
 std::future<HRESULT> w_task::_deferred;
 
+void w_task::execute_async(
+	_In_ const std::function<HRESULT(void)>& pTaskWork, 
+    _In_ const std::function<void(HRESULT)>& pCallBack)
+{
+
 #if defined(__WIN32) || defined(__UWP)
 
-void w_task::execute_async_ppl(_In_ const std::function<HRESULT(void)>& pTaskWork,
-    _In_ const std::function<void(HRESULT)>& pCallBack)
-{
-    concurrency::create_task(pTaskWork).then([&](HRESULT pHR)
-    {
-        pCallBack(pHR);
-    });
-}
+	concurrency::create_task(pTaskWork).then([pCallBack](HRESULT pHR)
+	{
+		if (pCallBack)
+		{
+			pCallBack(pHR);
+		}
+	});
 
-#endif
+#else
 
-void w_task::execute_async(_In_ const std::function<HRESULT(void)>& pTaskWork, 
-    _In_ const std::function<void(HRESULT)>& pCallBack)
-{
-	_deferred = std::async(std::launch::async, [pTaskWork, pCallBack]()
+	std::async(std::launch::async, [pTaskWork, pCallBack]()
 	{
 		auto _hr = pTaskWork();
-        if (pCallBack)
-        {
-            pCallBack(_hr);
-        }
-        return _hr;
+		if (pCallBack)
+		{
+			pCallBack(_hr);
+		}
+		return _hr;
 	});
+
+#endif
 }
 
 void w_task::execute_deferred(_In_ const std::function<HRESULT(void)>& pTaskWork)

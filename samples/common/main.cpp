@@ -24,14 +24,8 @@ static void release()
 	release_shared_data_over_all_instances();
 }
 
-//Entry point of program 
-#ifdef __WIN32
-int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, int pCmdshow)
-#elif defined(__linux) || defined(__APPLE__) 
-int main(int pArgc, const char * pArgv[])
-#endif
+WOLF_MAIN()
 {
-
 #ifdef __WIN32
     auto _msg_proc_func = [](HWND pHWND, UINT pMsg, WPARAM pWParam, LPARAM pLParam) -> HRESULT
     {

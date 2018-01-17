@@ -58,8 +58,8 @@ public:
 	ULONG release() override;
 
 private:
-	HRESULT _build_draw_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-	HRESULT _build_gui_command_buffers(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+	HRESULT _build_draw_command_buffers();
+	HRESULT _build_gui_command_buffers();
     bool	_update_gui();
 
 	wolf::graphics::w_viewport                                      _viewport;

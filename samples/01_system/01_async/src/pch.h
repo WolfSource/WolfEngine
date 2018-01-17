@@ -16,5 +16,6 @@
 
 #include <wolf.h>
 #include <w_task.h>
+#include <w_thread.h>
 
 #endif

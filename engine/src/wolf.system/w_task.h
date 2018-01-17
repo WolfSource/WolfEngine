@@ -36,9 +36,6 @@ namespace wolf
 		class w_task
 		{
 		public:
-#if defined(__WIN32) || defined(__UWP)
-			WSYS_EXP static void execute_async_ppl(_In_ const std::function<HRESULT(void)>& pTaskWork, _In_ const std::function<void(HRESULT)>& pCallBack = nullptr);
-#endif
 			WSYS_EXP static void execute_async(_In_ const std::function<HRESULT(void)>& pTaskWork, _In_ const std::function<void(HRESULT)>& pCallBack = nullptr);
 			WSYS_EXP static void execute_deferred(_In_ const std::function<HRESULT(void)>& pTaskWork);
 			//wait only work for deferred task

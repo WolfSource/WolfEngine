@@ -123,10 +123,10 @@ void scene::load()
         V(S_FALSE, "creating draw command buffers", _trace_info, 3, true);
     }
     
-    _build_draw_command_buffers(_gDevice);
+    _build_draw_command_buffers();
 }
 
-HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_draw_command_buffers()
 {
     auto _size = this->_draw_command_buffers.get_commands_size();
     for (uint32_t i = 0; i < _size; ++i)

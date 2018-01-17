@@ -23,7 +23,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -256,10 +256,10 @@ void scene::load()
 		V(S_FALSE, "loading mesh", _trace_info, 3, true);
 	}
 
-	_build_draw_command_buffers(_gDevice);
+	_build_draw_command_buffers();
 }
 
-HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_draw_command_buffers()
 {
 	const std::string _trace_info = this->name + "::build_draw_command_buffers";
 	HRESULT _hr = S_OK;

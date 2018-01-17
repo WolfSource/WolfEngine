@@ -306,7 +306,7 @@ void scene::load()
     }
 }
 
-HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_draw_command_buffers()
 {
     const std::string _trace_info = this->name + "::build_draw_command_buffers";
     HRESULT _hr = S_OK;
@@ -355,7 +355,7 @@ HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics
     return _hr;
 }
 
-HRESULT scene::_build_gui_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_gui_command_buffers()
 {
     const std::string _trace_info = this->name + "::build_gui_command_buffers";
     HRESULT _hr = S_OK;
@@ -407,11 +407,11 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
     if (sPush)
     {
-        _build_draw_command_buffers(_gDevice);
+        _build_draw_command_buffers();
         sPush = false;
     }
 
-    _build_gui_command_buffers(_gDevice);
+    _build_gui_command_buffers();
 
 	//add wait semaphores
 	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };

@@ -298,10 +298,10 @@ void scene::load()
 		V(S_FALSE, "loading mesh", _trace_info, 3, true);
 	}
 
-	build_draw_command_buffers(_gDevice);
+	build_draw_command_buffers();
 }
 
-HRESULT scene::build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::build_draw_command_buffers()
 {
 	const std::string _trace_info = this->name + "::build_draw_command_buffers";
 	HRESULT _hr = S_OK;

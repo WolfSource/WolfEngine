@@ -25,12 +25,12 @@ WOLF_MAIN()
     //execute async task in standard c++
     w_task::execute_async([]()-> HRESULT
     {
-        logger.write("async task 01 done");
+        logger.write("async task 01 started");
         return S_OK;
 
     }, [](HRESULT pHR)-> void
     {
-        logger.write("async task 02 done");
+        logger.write("async task 01 completed");
     });
 
     //define deferred task
@@ -44,7 +44,7 @@ WOLF_MAIN()
         return S_OK;
 
     });
-    //main thread will wait for only 1 sec and then continue
+    //deferred wait for only 1 sec and then continue
     auto _status = w_task::wait_for(std::chrono::seconds(1).count());
     //check status of deferred task
     switch (_status)
@@ -67,11 +67,11 @@ WOLF_MAIN()
     {
         logger.write("deferred task 02 started");
         //wait for 1 sec
-        std::this_thread::sleep_for(1s);
+        w_thread::sleep_current_thread(1000);
         logger.write("deferred task 02 done");
         return S_OK;
     });
-    //main thread will block until deferred task done
+    //deferred will block until deferred task done
     w_task::wait();
 
     logger.write("all done");

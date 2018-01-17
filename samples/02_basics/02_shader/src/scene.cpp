@@ -186,11 +186,12 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	_build_draw_command_buffers(_gDevice);
+	_build_draw_command_buffers();
 }
 
-HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+HRESULT scene::_build_draw_command_buffers()
 {
+	auto _gDevice = this->get_graphics_device();
 	auto _size = this->_draw_command_buffers.get_commands_size();
 	for (uint32_t i = 0; i < _size; ++i)
 	{
@@ -209,7 +210,7 @@ HRESULT scene::_build_draw_command_buffers(_In_ const std::shared_ptr<w_graphics
                 //The following codes have been added for this project
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 this->_pipeline.bind(_cmd, nullptr);
-                pGDevice->draw(_cmd, 3, 1, 0, 0 );
+				_gDevice->draw(_cmd, 3, 1, 0, 0 );
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 			}

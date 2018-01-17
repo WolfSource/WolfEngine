@@ -268,7 +268,7 @@ void scene::load()
     //}
 
 #ifdef __WIN32
-    w_task::execute_async_ppl([]() -> HRESULT
+    w_task::execute_async([]() -> HRESULT
     {
         recieveIO();
         return S_OK;

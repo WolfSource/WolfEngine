@@ -382,11 +382,7 @@ namespace wolf
                 _In_ system::w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
                 _In_ system::w_signal<void(const char*)>& pOnConnectionLost)
             {
-#ifdef __WIN32
-                w_task::execute_async_ppl(
-#else
                 w_task::execute_async(
-#endif
                     [this, 
                     pURL, 
                     pFormatName, 

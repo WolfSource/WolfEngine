@@ -2359,8 +2359,12 @@ namespace wolf
 
 					pGraphicsDevices.push_back(_gDevice);
 
-					//TODO: We must handle other GPUs
-					break;
+					//each window for each gpu
+					if (this->_windows_info.size() == pGraphicsDevices.size())
+					{
+						break;
+					}
+
 				}
 #endif //__DX12__, __VULKAN__
 			}
@@ -2858,33 +2862,6 @@ namespace wolf
 					_surface_capabilities.supportedUsageFlags = 159;
 				}
 
-				//get the count of present modes
-				uint32_t _present_mode_count;
-				_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
-					_vk_presentation_surface,
-					&_present_mode_count, nullptr);
-				if (_hr)
-				{
-					logger.error("error on getting vulkan present mode(s) count for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//get present modes
-				std::vector<VkPresentModeKHR> _present_modes(_present_mode_count);
-				_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
-					_vk_presentation_surface,
-					&_present_mode_count,
-					_present_modes.data());
-				if (_hr)
-				{
-					logger.error("error on getting vulkan present mode(s) for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
 				//width and height are either both 0xFFFFFFFF, or both not 0xFFFFFFFF.
 				VkExtent2D _swap_chain_extent;
 				if (_surface_capabilities.currentExtent.width == 0xFFFFFFFF)
@@ -2971,8 +2948,84 @@ namespace wolf
 				auto _image_extend = _surface_capabilities.currentExtent;
 
 
-				//the FIFO present mode is guaranteed by the spec to be supported
-				VkPresentModeKHR _swap_chain_present_mode = _output_presentation_window->v_sync ? VK_PRESENT_MODE_FIFO_KHR : VK_PRESENT_MODE_IMMEDIATE_KHR;
+				//get the count of present modes
+				uint32_t _present_mode_count;
+				_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
+					_vk_presentation_surface,
+					&_present_mode_count, nullptr);
+				if (_hr)
+				{
+					logger.error("error on getting vulkan present mode(s) count for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//get present modes
+				std::vector<VkPresentModeKHR> _avaiable_present_modes(_present_mode_count);
+				_hr = vkGetPhysicalDeviceSurfacePresentModesKHR(pGDevice->vk_physical_device,
+					_vk_presentation_surface,
+					&_present_mode_count,
+					_avaiable_present_modes.data());
+				if (_hr)
+				{
+					logger.error("error on getting vulkan present mode(s) for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				if (_avaiable_present_modes.size() == 0)
+				{
+					logger.error("no avaiable present mode founded for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//select present mode
+				/*
+					VK_PRESENT_MODE_IMMEDIATE_KHR:		The presentation engine does not wait for a vertical blanking period to 
+															update the current image, meaning this mode may result in visible tearing. 
+															No internal queuing of presentation requests is needed, as the requests are 
+															applied immediately.
+					VK_PRESENT_MODE_MAILBOX_KHR:		The presentation engine waits for the next vertical blanking period to update 
+															the current image. Tearing cannot be observed. An internal single-entry queue 
+															is used to hold pending presentation requests. If the queue is full when a new 
+															presentation request is received, the new request replaces the existing entry, 
+															and any images associated with the prior entry become available for re-use by 
+															the application. One request is removed from the queue and processed during each 
+															vertical blanking period in which the queue is non-empty.
+					VK_PRESENT_MODE_FIFO_KHR:			The presentation engine waits for the next vertical blanking period to update the current image. 
+															Tearing cannot be observed. An internal queue is used to hold pending presentation requests. 
+															New requests are appended to the end of the queue, and one request is removed from the beginning 
+															of the queue and processed during each vertical blanking period in which the queue is non-empty. 
+															This is the only value of presentMode that is required to be supported.
+					VK_PRESENT_MODE_FIFO_RELAXED_KHR:	The presentation engine generally waits for the next vertical blanking period to update 
+															the current image. If a vertical blanking period has already passed since the last update 
+															of the current image then the presentation engine does not wait for another vertical blanking 
+															period for the update, meaning this mode may result in visible tearing in this case. 
+															This mode is useful for reducing visual stutter with an application that will mostly present 
+															a new image before the next vertical blanking period, but may occasionally be late, and present 
+															a new image just after the next vertical blanking period. An internal queue is used to hold pending 
+															presentation requests. New requests are appended to the end of the queue, and one request is removed 
+															from the beginning of the queue and processed during or after each vertical blanking period in which 
+															the queue is non-empty.
+				*/
+
+				std::vector<VkPresentModeKHR> _desired_present_modes;
+				if (_output_presentation_window->v_sync)
+				{
+					_desired_present_modes.push_back(VK_PRESENT_MODE_FIFO_KHR);
+					_desired_present_modes.push_back(VK_PRESENT_MODE_FIFO_RELAXED_KHR);
+					_desired_present_modes.push_back(VK_PRESENT_MODE_MAILBOX_KHR);
+				}
+				else
+				{
+					_desired_present_modes.push_back(VK_PRESENT_MODE_IMMEDIATE_KHR);
+				}
+
+				auto _present_mode = _select_present_mode(_desired_present_modes, _avaiable_present_modes);
 				
 				VkSwapchainCreateInfoKHR _swap_chain_create_info = {};
 				_swap_chain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -2985,7 +3038,7 @@ namespace wolf
 				_swap_chain_create_info.preTransform = _pre_transform;
 				_swap_chain_create_info.compositeAlpha = _composite_alpha;
 				_swap_chain_create_info.imageArrayLayers = 1;
-				_swap_chain_create_info.presentMode = _swap_chain_present_mode;
+				_swap_chain_create_info.presentMode = _present_mode;
 				_swap_chain_create_info.oldSwapchain = VK_NULL_HANDLE;
 				_swap_chain_create_info.clipped = VK_TRUE;//Discard rendering outside of the surface area
 				_swap_chain_create_info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -3462,6 +3515,30 @@ namespace wolf
                     std::exit(EXIT_FAILURE);
                 }
             }
+
+			static VkPresentModeKHR _select_present_mode(
+				_In_ std::vector<VkPresentModeKHR> pDesiredPresentModes,
+				_In_ std::vector<VkPresentModeKHR> pAvaiablePresentModes)
+			{
+				VkPresentModeKHR _selected = pAvaiablePresentModes.size() > 0 ? pAvaiablePresentModes[0] :
+					VkPresentModeKHR::VK_PRESENT_MODE_FIFO_KHR;
+				bool _found = false;
+				for (auto& _desired : pDesiredPresentModes)
+				{
+					for (auto& _avaiable : pAvaiablePresentModes)
+					{
+						if (_desired == _avaiable)
+						{
+							_found = true;
+							break;
+						}
+					}
+
+					if (_found) break;
+				}
+
+				return _selected;
+			}
 
 #ifdef __UWP
 			// This method determines the rotation between the display device's native Orientation and the current display orientation.
