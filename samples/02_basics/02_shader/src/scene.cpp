@@ -164,9 +164,8 @@ void scene::load()
 	}
 
 	//just we need vertex position
-	w_vertex_binding_attributes _vba;
-	_vba.declaration = w_vertex_declaration::VERTEX_POSITION;
-
+	w_vertex_binding_attributes _vba(w_vertex_declaration::VERTEX_POSITION);
+	
 	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(_gDevice,
 		_vba,

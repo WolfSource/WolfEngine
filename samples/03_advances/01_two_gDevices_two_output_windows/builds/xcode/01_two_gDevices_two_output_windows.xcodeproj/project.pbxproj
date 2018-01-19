@@ -26,10 +26,10 @@
 		2C13839E1F5096DE00D5283B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../../common/main.m; sourceTree = "<group>"; };
 		2C1383A01F50971300D5283B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../common/AppDelegate.h; sourceTree = "<group>"; };
 		2C1383A11F50971300D5283B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../common/AppDelegate.m; sourceTree = "<group>"; };
-		2C2803471E61C73600048A80 /* 01_two_gDevice_two_output_windows.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 01_two_gDevice_two_output_windows.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 01_two_gDevice_two_output_windows/Assets.xcassets; sourceTree = "<group>"; };
-		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 01_two_gDevice_two_output_windows/Info.plist; sourceTree = "<group>"; };
-		2C4639561EA55A6C00A16595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = 01_two_gDevice_two_output_windows/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2C2803471E61C73600048A80 /* 01_two_gDevices_two_output_windows.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 01_two_gDevices_two_output_windows.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 01_two_gDevices_two_output_windows/Assets.xcassets; sourceTree = "<group>"; };
+		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 01_two_gDevices_two_output_windows/Info.plist; sourceTree = "<group>"; };
+		2C4639561EA55A6C00A16595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = 01_two_gDevices_two_output_windows/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2CB69ED71F62DDF60068D1E6 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../common/ViewController.h; sourceTree = "<group>"; };
 		2CB69ED81F62DDF60068D1E6 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../common/ViewController.mm; sourceTree = "<group>"; };
 		2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../src/scene.cpp; sourceTree = "<group>"; };
@@ -83,7 +83,7 @@
 		2C2803481E61C73600048A80 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2C2803471E61C73600048A80 /* 01_two_gDevice_two_output_windows.app */,
+				2C2803471E61C73600048A80 /* 01_two_gDevices_two_output_windows.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -94,7 +94,7 @@
 				2C13839E1F5096DE00D5283B /* main.m */,
 			);
 			name = "Supporting Files";
-			path = 01_two_gDevice_two_output_windows;
+			path = 01_two_gDevices_two_output_windows;
 			sourceTree = "<group>";
 		};
 		2CB69EDF1F62E53B0068D1E6 /* Frameworks */ = {
@@ -115,9 +115,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2C2803461E61C73600048A80 /* 01_two_gDevice_two_output_windows */ = {
+		2C2803461E61C73600048A80 /* 01_two_gDevices_two_output_windows */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "01_two_gDevice_two_output_windows" */;
+			buildConfigurationList = 2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "01_two_gDevices_two_output_windows" */;
 			buildPhases = (
 				2C2803431E61C73600048A80 /* Sources */,
 				2C2803441E61C73600048A80 /* Frameworks */,
@@ -127,9 +127,9 @@
 			);
 			dependencies = (
 			);
-			name = 01_two_gDevice_two_output_windows;
-			productName = 01_two_gDevice_two_output_windows;
-			productReference = 2C2803471E61C73600048A80 /* 01_two_gDevice_two_output_windows.app */;
+			name = 01_two_gDevices_two_output_windows;
+			productName = 01_two_gDevices_two_output_windows;
+			productReference = 2C2803471E61C73600048A80 /* 01_two_gDevices_two_output_windows.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -148,7 +148,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2C2803421E61C73600048A80 /* Build configuration list for PBXProject "01_two_gDevice_two_output_windows" */;
+			buildConfigurationList = 2C2803421E61C73600048A80 /* Build configuration list for PBXProject "01_two_gDevices_two_output_windows" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -161,7 +161,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2C2803461E61C73600048A80 /* 01_two_gDevice_two_output_windows */,
+				2C2803461E61C73600048A80 /* 01_two_gDevices_two_output_windows */,
 			);
 		};
 /* End PBXProject section */
@@ -335,7 +335,7 @@
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/01_two_gDevice_two_output_windows/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/01_two_gDevices_two_output_windows/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.01.02;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -366,7 +366,7 @@
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",
 				);
-				INFOPLIST_FILE = "$(SRCROOT)/01_two_gDevice_two_output_windows/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/01_two_gDevices_two_output_windows/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.01.02;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -376,7 +376,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2C2803421E61C73600048A80 /* Build configuration list for PBXProject "01_two_gDevice_two_output_windows" */ = {
+		2C2803421E61C73600048A80 /* Build configuration list for PBXProject "01_two_gDevices_two_output_windows" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C2803591E61C73600048A80 /* Debug */,
@@ -385,7 +385,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "01_two_gDevice_two_output_windows" */ = {
+		2C28035B1E61C73600048A80 /* Build configuration list for PBXNativeTarget "01_two_gDevices_two_output_windows" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C28035C1E61C73600048A80 /* Debug */,

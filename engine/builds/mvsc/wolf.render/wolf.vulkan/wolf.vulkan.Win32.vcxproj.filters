@@ -102,9 +102,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_uniform.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h">
-      <Filter>w_framework</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>

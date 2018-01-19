@@ -18,7 +18,8 @@ namespace wolf
                 _gDevice(nullptr),
                 _copy_command_buffer(nullptr),
                 _vertices_count(0),
-                _indices_count(0)
+                _indices_count(0),
+				_vertex_binding_attributes(w_vertex_declaration::NOT_DEFINED)
             {
         
             }
@@ -246,71 +247,6 @@ namespace wolf
             void set_texture(_In_ w_texture* pTexture)
             {
                 this->_texture = pTexture;
-            }
-
-            void set_vertex_binding_attributes(_In_ const w_vertex_declaration& pVertexBindingAttributes)
-            {
-                if (pVertexBindingAttributes == w_vertex_declaration::NOT_DEFINED) return;
-
-                std::vector<w_vertex_attribute> _attr;
-
-                switch (pVertexBindingAttributes)
-                {
-                case w_vertex_declaration::USER_DEFINED:
-                    break;
-                case w_vertex_declaration::VERTEX_POSITION:
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    break;
-                case w_vertex_declaration::VERTEX_POSITION_COLOR:
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec4);
-                    break;
-                case w_vertex_declaration::VERTEX_POSITION_NORMAL_COLOR:
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec4);
-                    break;
-                case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV:
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec2);
-                    break;
-                case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec2);
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    break;
-                case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES:
-					//TODO: Skinned
-                    /*_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
-                    _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
-                    _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec2);
-                    _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
-                    _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);*/
-                    break;
-                case w_vertex_declaration::VERTEX_POSITION_UV:
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec2);
-                    break;
-                case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
-                    _attr.push_back(w_vertex_attribute::Vec3);
-                    _attr.push_back(w_vertex_attribute::Vec2);
-                    _attr.push_back(w_vertex_attribute::Vec4);
-                    break;
-                }
-
-                //clear binding attributes
-                for (auto& _iter : this->_vertex_binding_attributes.binding_attributes)
-                {
-                    _iter.second.clear();
-                }
-                this->_vertex_binding_attributes.binding_attributes.clear();
-
-                //create new binding attributes
-                this->_vertex_binding_attributes.declaration = pVertexBindingAttributes;
-                this->_vertex_binding_attributes.binding_attributes[0] = _attr;
             }
 
             void set_vertex_binding_attributes(_In_ const w_vertex_binding_attributes& pVertexBindingAttributes)
@@ -553,7 +489,7 @@ w_texture* w_mesh::get_texture() const
 
 const w_vertex_binding_attributes w_mesh::get_vertex_binding_attributes() const
 {
-    if (!this->_pimp) return w_vertex_binding_attributes();
+    if (!this->_pimp) return w_vertex_binding_attributes(w_vertex_declaration::NOT_DEFINED);
     return this->_pimp->get_vertex_binding_attributes();
 }
 
@@ -565,12 +501,6 @@ void w_mesh::set_texture(_In_ w_texture* pTexture)
 {
     if (!this->_pimp) return;
     this->_pimp->set_texture(pTexture);
-}
-
-void w_mesh::set_vertex_binding_attributes(_In_ const w_vertex_declaration& pVertexBindingAttributes)
-{
-    if (!this->_pimp) return;
-    this->_pimp->set_vertex_binding_attributes(pVertexBindingAttributes);
 }
 
 void w_mesh::set_vertex_binding_attributes(_In_ const w_vertex_binding_attributes& pVertexBindingAttributes)

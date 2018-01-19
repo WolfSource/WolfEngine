@@ -233,11 +233,14 @@ namespace wolf
             
             ULONG release()
             {
-                vkFreeCommandBuffers(this->_gDevice->vk_device,
-                                     this->_gDevice->vk_command_allocator_pool,
-                                     static_cast<uint32_t>(_commands.size()),
-                                     _commands.data());
-                
+				if (this->_gDevice)
+				{
+					vkFreeCommandBuffers(this->_gDevice->vk_device,
+						this->_gDevice->vk_command_allocator_pool,
+						static_cast<uint32_t>(_commands.size()),
+						_commands.data());
+				}
+
                 this->_commands.clear();
                 this->_counts = 0;
                 this->_enable = false;

@@ -52,6 +52,72 @@ namespace wolf
         {
             w_vertex_declaration                                    declaration = w_vertex_declaration::NOT_DEFINED;
             std::map<uint32_t, std::vector<w_vertex_attribute>>     binding_attributes;
+
+			w_vertex_binding_attributes(_In_ const w_vertex_declaration& pDeclaration)
+			{
+				this->declaration = pDeclaration;
+
+				std::vector<w_vertex_attribute> _attr;
+				switch (this->declaration)
+				{
+				case w_vertex_declaration::USER_DEFINED:
+					break;
+				case w_vertex_declaration::VERTEX_POSITION:
+					_attr.push_back(w_vertex_attribute::Vec3);
+					break;
+				case w_vertex_declaration::VERTEX_POSITION_COLOR:
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec4);
+					break;
+				case w_vertex_declaration::VERTEX_POSITION_NORMAL_COLOR:
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec4);
+					break;
+				case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV:
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec2);
+					break;
+				case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec2);
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec3);
+					break;
+				case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES:
+					//TODO: Skinned
+					/*_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
+					_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
+					_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec2);
+					_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
+					_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);*/
+					break;
+				case w_vertex_declaration::VERTEX_POSITION_UV:
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec2);
+					break;
+				case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
+					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec2);
+					_attr.push_back(w_vertex_attribute::Vec4);
+					break;
+				}
+
+				//assign new binding attributes
+				for (auto& _iter : this->binding_attributes)
+				{
+					_iter.second.clear();
+				}
+				this->binding_attributes.clear();
+				this->binding_attributes[0] = _attr;
+			}
+
+			w_vertex_binding_attributes(_In_ const  std::map<uint32_t, std::vector<w_vertex_attribute>>& pDeclaration)
+			{
+				this->binding_attributes = pDeclaration;
+			}
         };
 
         class w_mesh_pimp;
@@ -103,7 +169,6 @@ namespace wolf
 #pragma region Setters
 		
             W_EXP void set_texture(_In_ w_texture* pTexture);
-            W_EXP void set_vertex_binding_attributes(_In_ const w_vertex_declaration& pVertexBindingAttributes);
             W_EXP void set_vertex_binding_attributes(_In_ const w_vertex_binding_attributes& pVertexBindingAttributes);
 
 #pragma endregion	

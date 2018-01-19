@@ -226,6 +226,8 @@ ULONG scene::release()
     //release draw's objects
 	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 	{
+		if (this->graphics_devices[i] == nullptr) continue;
+		
 		this->_draw_fence[i].release();
 		this->_draw_semaphore[i].release();
 

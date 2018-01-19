@@ -75,7 +75,7 @@ private:
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
 
 	wolf::graphics::w_shader                                        _shader;
-    
+
 	//for gui
 	wolf::graphics::w_command_buffer                                _gui_command_buffers;
 	wolf::graphics::w_render_pass                                   _gui_render_pass;

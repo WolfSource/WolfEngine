@@ -28,11 +28,11 @@ namespace wolf
 
         struct w_bounding_box
         {
-            float           min[3];
-            float           max[3];
+			float           min[3] = { 0,0,0 };
+            float           max[3] = { 0,0,0 };
             
-            float	        position[3];
-            float	        rotation[3];
+			float	        position[3] = { 0,0,0 };
+            float	        rotation[3] = { 0,0,0 };;
             
             //used for rendering and masked occulusion culling
             std::vector<float>      vertices;

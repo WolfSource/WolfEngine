@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:01_two_gDevice_two_output_windows.xcodeproj">
+      location = "self:02_model.xcodeproj">
    </FileRef>
 </Workspace>

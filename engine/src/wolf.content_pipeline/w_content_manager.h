@@ -15,6 +15,7 @@
 #include <string>
 #include <w_io.h>
 #include "collada/c_parser.h"
+#include "w_cpipeline_scene.h"
 #include <msgpack.hpp>
 
 namespace wolf

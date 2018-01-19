@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C2803461E61C73600048A80"
-               BuildableName = "01_two_gDevice_two_output_windows.app"
-               BlueprintName = "01_two_gDevice_two_output_windows"
+               BuildableName = "01_two_gDevices_two_output_windows.app"
+               BlueprintName = "01_two_gDevices_two_output_windows"
                ReferencedContainer = "container:01_two_gDevice_two_output_windows.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -34,8 +34,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "01_two_gDevice_two_output_windows.app"
-            BlueprintName = "01_two_gDevice_two_output_windows"
+            BuildableName = "01_two_gDevices_two_output_windows.app"
+            BlueprintName = "01_two_gDevices_two_output_windows"
             ReferencedContainer = "container:01_two_gDevice_two_output_windows.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -58,8 +58,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "01_two_gDevice_two_output_windows.app"
-            BlueprintName = "01_two_gDevice_two_output_windows"
+            BuildableName = "01_two_gDevices_two_output_windows.app"
+            BlueprintName = "01_two_gDevices_two_output_windows"
             ReferencedContainer = "container:01_two_gDevice_two_output_windows.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -77,8 +77,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C2803461E61C73600048A80"
-            BuildableName = "01_two_gDevice_two_output_windows.app"
-            BlueprintName = "01_two_gDevice_two_output_windows"
+            BuildableName = "01_two_gDevices_two_output_windows.app"
+            BlueprintName = "01_two_gDevices_two_output_windows"
             ReferencedContainer = "container:01_two_gDevice_two_output_windows.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
