@@ -63,28 +63,28 @@ namespace wolf
 				case w_vertex_declaration::USER_DEFINED:
 					break;
 				case w_vertex_declaration::VERTEX_POSITION:
-					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec3);//position
 					break;
 				case w_vertex_declaration::VERTEX_POSITION_COLOR:
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec4);
+					_attr.push_back(w_vertex_attribute::Vec3);//position
+					_attr.push_back(w_vertex_attribute::Vec4);//color
 					break;
 				case w_vertex_declaration::VERTEX_POSITION_NORMAL_COLOR:
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec4);
+					_attr.push_back(w_vertex_attribute::Vec3);//position
+					_attr.push_back(w_vertex_attribute::Vec3);//normal
+					_attr.push_back(w_vertex_attribute::Vec4);//color
 					break;
 				case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV:
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec2);
+					_attr.push_back(w_vertex_attribute::Vec3);//position
+					_attr.push_back(w_vertex_attribute::Vec3);//normal
+					_attr.push_back(w_vertex_attribute::Vec2);//texture coordinate
 					break;
 				case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec2);
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec3);
+					_attr.push_back(w_vertex_attribute::Vec3);//position
+					_attr.push_back(w_vertex_attribute::Vec3);//normal
+					_attr.push_back(w_vertex_attribute::Vec2);//texture coordinate
+					_attr.push_back(w_vertex_attribute::Vec3);//tangent
+					_attr.push_back(w_vertex_attribute::Vec3);//binormal
 					break;
 				case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_WEIGHT_INDICES:
 					//TODO: Skinned
@@ -95,13 +95,13 @@ namespace wolf
 					_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);*/
 					break;
 				case w_vertex_declaration::VERTEX_POSITION_UV:
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec2);
+					_attr.push_back(w_vertex_attribute::Vec3);//position
+					_attr.push_back(w_vertex_attribute::Vec2);//texture coordinate
 					break;
 				case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
-					_attr.push_back(w_vertex_attribute::Vec3);
-					_attr.push_back(w_vertex_attribute::Vec2);
-					_attr.push_back(w_vertex_attribute::Vec4);
+					_attr.push_back(w_vertex_attribute::Vec3);//position
+					_attr.push_back(w_vertex_attribute::Vec2);//texture coordinate
+					_attr.push_back(w_vertex_attribute::Vec4);//color
 					break;
 				}
 

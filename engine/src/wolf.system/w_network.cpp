@@ -264,7 +264,7 @@ HRESULT w_network::setup_broadcast_subscriptore(
 	{
 		_socket_options->socket_level = NN_SUB;
 		_socket_options->option = NN_SUB_SUBSCRIBE;
-		_socket_options->option_value = "";
+		_socket_options->option_value = (void*)"";
 		_socket_options->option_value_length = 0;
 	}
 	else
