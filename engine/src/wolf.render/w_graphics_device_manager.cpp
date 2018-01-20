@@ -287,7 +287,7 @@ HRESULT w_graphics_device::capture(
     _image_create_info.extent.depth = 1;
     _image_create_info.arrayLayers = 1;
     _image_create_info.mipLevels = 1;
-    _image_create_info.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
+    _image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     _image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
     _image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
     _image_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
@@ -345,6 +345,7 @@ HRESULT w_graphics_device::capture(
         }
     }
 
+	//TODO: this must do once over instnace
     //bind to image memory
     _hr = vkBindImageMemory(this->vk_device, _dst_image, _dst_image_memory, 0);
     if (_hr)
@@ -698,311 +699,300 @@ clean_up:
 }
 
 HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
-    _In_ const uint32_t& pOutputPresentationWindowIndex,
-    _In_ wolf::system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured)
+	_In_ const uint32_t& pOutputPresentationWindowIndex,
+	_In_ wolf::system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured)
 {
-    if (pOutputPresentationWindowIndex >= this->output_presentation_windows.size()) return S_FALSE;
+	if (pOutputPresentationWindowIndex >= this->output_presentation_windows.size()) return S_FALSE;
 
-    HRESULT _return_result = S_OK;
-    const std::string _trace_info = "w_graphics_device::capture_presented_swap_chain_buffer";
-    auto _output_window = &(this->output_presentation_windows.at(pOutputPresentationWindowIndex));
-    if (!_output_window) return S_FALSE;
+	HRESULT _return_result = S_OK;
+	const std::string _trace_info = "w_graphics_device::capture_presented_swap_chain_buffer";
+	auto _output_window = &(this->output_presentation_windows.at(pOutputPresentationWindowIndex));
+	if (!_output_window) return S_FALSE;
 
-    auto _objs_ptr = _output_window->objs_between_cpu_gpu;
-    if (!_objs_ptr) return S_FALSE;
+	auto _objs_ptr = _output_window->objs_between_cpu_gpu;
+	if (!_objs_ptr) return S_FALSE;
 
-    //source image is swap chain last presented buffer
-    auto _src_image = _output_window->vk_swap_chain_image_views[_output_window->vk_swap_chain_image_index].image;
-    //bind to image memory
-    auto _hr = vkBindImageMemory(this->vk_device, _objs_ptr->destination_image, _objs_ptr->destination_image_memory, 0);
-    if (_hr)
-    {
-        V(_return_result,
-            "binding to destination image for graphics device" + this->device_info->get_device_name() +
-            " ID:" + std::to_string(this->device_info->get_device_id()),
-            _trace_info,
-            3,
-            false);
-        return S_FALSE;
-    }
+	//source image is swap chain last presented buffer
+	auto _src_image = _output_window->vk_swap_chain_image_views[_output_window->vk_swap_chain_image_index].image;
 
-    const auto _sub_res_range = VkImageSubresourceRange
-    {
-        VK_IMAGE_ASPECT_COLOR_BIT,
-        0,
-        1,
-        0,
-        1
-    };
+	const auto _sub_res_range = VkImageSubresourceRange
+	{
+		VK_IMAGE_ASPECT_COLOR_BIT,
+		0,
+		1,
+		0,
+		1
+	};
 
-    //begin command buffer
-    VkCommandBufferBeginInfo _copy_cmd_buff_info = {};
-    _copy_cmd_buff_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    _hr = vkBeginCommandBuffer(_objs_ptr->copy_command_buffer, &_copy_cmd_buff_info);
-    _objs_ptr->command_buffer_began = true;
+	//begin command buffer
+	VkCommandBufferBeginInfo _copy_cmd_buff_info = {};
+	_copy_cmd_buff_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	auto _hr = vkBeginCommandBuffer(_objs_ptr->copy_command_buffer, &_copy_cmd_buff_info);
+	_objs_ptr->command_buffer_began = true;
 
-    if (_hr)
-    {
-        V(_return_result,
-            "beginning copy command buffer for graphics device" + this->device_info->get_device_name() +
-            " ID:" + std::to_string(this->device_info->get_device_id()),
-            _trace_info,
-            3,
-            false);
-        goto clean_up;
-    }
+	if (_hr)
+	{
+		V(_return_result,
+			"beginning copy command buffer for graphics device" + this->device_info->get_device_name() +
+			" ID:" + std::to_string(this->device_info->get_device_id()),
+			_trace_info,
+			3,
+			false);
+		goto clean_up;
+	}
 
-    {
-        //transition from memory to transfer write for destination image
-        VkImageMemoryBarrier _imb_undefined_to_dst_transfer = {};
-        _imb_undefined_to_dst_transfer.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        _imb_undefined_to_dst_transfer.srcAccessMask = 0;
-        _imb_undefined_to_dst_transfer.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        _imb_undefined_to_dst_transfer.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-        _imb_undefined_to_dst_transfer.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-        _imb_undefined_to_dst_transfer.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        _imb_undefined_to_dst_transfer.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        _imb_undefined_to_dst_transfer.image = _objs_ptr->destination_image;
-        _imb_undefined_to_dst_transfer.subresourceRange = _sub_res_range;
+	{
+		//transition from memory to transfer write for destination image
+		VkImageMemoryBarrier _imb_undefined_to_dst_transfer = {};
+		_imb_undefined_to_dst_transfer.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		_imb_undefined_to_dst_transfer.srcAccessMask = 0;
+		_imb_undefined_to_dst_transfer.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		_imb_undefined_to_dst_transfer.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		_imb_undefined_to_dst_transfer.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		_imb_undefined_to_dst_transfer.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		_imb_undefined_to_dst_transfer.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		_imb_undefined_to_dst_transfer.image = _objs_ptr->destination_image;
+		_imb_undefined_to_dst_transfer.subresourceRange = _sub_res_range;
 
-        vkCmdPipelineBarrier(
-            _objs_ptr->copy_command_buffer,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            0,
-            0,
-            nullptr,
-            0,
-            nullptr,
-            1,
-            &_imb_undefined_to_dst_transfer);
+		vkCmdPipelineBarrier(
+			_objs_ptr->copy_command_buffer,
+			VK_PIPELINE_STAGE_TRANSFER_BIT,
+			VK_PIPELINE_STAGE_TRANSFER_BIT,
+			0,
+			0,
+			nullptr,
+			0,
+			nullptr,
+			1,
+			&_imb_undefined_to_dst_transfer);
 
-        //transition from memory read to transfer read for source image
-        VkImageMemoryBarrier _imb_memory_to_transfer_read = {};
-        _imb_memory_to_transfer_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        _imb_memory_to_transfer_read.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-        _imb_memory_to_transfer_read.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-        _imb_memory_to_transfer_read.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-        _imb_memory_to_transfer_read.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-        _imb_memory_to_transfer_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        _imb_memory_to_transfer_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        _imb_memory_to_transfer_read.image = _src_image;
-        _imb_memory_to_transfer_read.subresourceRange = _sub_res_range;
+		//transition from memory read to transfer read for source image
+		VkImageMemoryBarrier _imb_memory_to_transfer_read = {};
+		_imb_memory_to_transfer_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		_imb_memory_to_transfer_read.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+		_imb_memory_to_transfer_read.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+		_imb_memory_to_transfer_read.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		_imb_memory_to_transfer_read.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+		_imb_memory_to_transfer_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		_imb_memory_to_transfer_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		_imb_memory_to_transfer_read.image = _src_image;
+		_imb_memory_to_transfer_read.subresourceRange = _sub_res_range;
 
-        vkCmdPipelineBarrier(
-            _objs_ptr->copy_command_buffer,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            VK_PIPELINE_STAGE_TRANSFER_BIT,
-            0,
-            0,
-            nullptr,
-            0,
-            nullptr,
-            1,
-            &_imb_memory_to_transfer_read);
+		vkCmdPipelineBarrier(
+			_objs_ptr->copy_command_buffer,
+			VK_PIPELINE_STAGE_TRANSFER_BIT,
+			VK_PIPELINE_STAGE_TRANSFER_BIT,
+			0,
+			0,
+			nullptr,
+			0,
+			nullptr,
+			1,
+			&_imb_memory_to_transfer_read);
 
-        if (_output_window->bliting_supported_by_swap_chain)
-        {
-            // apply bliting
-            VkOffset3D _src_offset =
-            {
-                (int32_t)_output_window->width,	    //x
-                (int32_t)_output_window->height,	//y
-                1					                //z
-            };
+		if (_output_window->bliting_supported_by_swap_chain)
+		{
+			// apply bliting
+			VkOffset3D _src_offset =
+			{
+				(int32_t)_output_window->width,	    //x
+				(int32_t)_output_window->height,	//y
+				1					                //z
+			};
 
-            VkImageBlit _image_blit_region = {};
-            _image_blit_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            _image_blit_region.srcSubresource.layerCount = 1;
-            _image_blit_region.srcOffsets[1] = _src_offset;
-            _image_blit_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            _image_blit_region.dstSubresource.layerCount = 1;
-            _image_blit_region.dstOffsets[1] = _src_offset;
+			VkImageBlit _image_blit_region = {};
+			_image_blit_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			_image_blit_region.srcSubresource.layerCount = 1;
+			_image_blit_region.srcOffsets[1] = _src_offset;
+			_image_blit_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			_image_blit_region.dstSubresource.layerCount = 1;
+			_image_blit_region.dstOffsets[1] = _src_offset;
 
-            // apply blit command
-            vkCmdBlitImage(
-                _objs_ptr->copy_command_buffer,
-                _src_image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                _objs_ptr->destination_image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                1,
-                &_image_blit_region,
-                VK_FILTER_NEAREST);
-        }
-        else
-        {
-            // apply image copy
-            VkImageCopy _image_copy_region = {};
-            _image_copy_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            _image_copy_region.srcSubresource.layerCount = 1;
-            _image_copy_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            _image_copy_region.dstSubresource.layerCount = 1;
-            _image_copy_region.extent.width = _output_window->width;
-            _image_copy_region.extent.height = _output_window->height;
-            _image_copy_region.extent.depth = 1;
+			// apply blit command
+			vkCmdBlitImage(
+				_objs_ptr->copy_command_buffer,
+				_src_image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+				_objs_ptr->destination_image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+				1,
+				&_image_blit_region,
+				VK_FILTER_NEAREST);
+		}
+		else
+		{
+			// apply image copy
+			VkImageCopy _image_copy_region = {};
+			_image_copy_region.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			_image_copy_region.srcSubresource.layerCount = 1;
+			_image_copy_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			_image_copy_region.dstSubresource.layerCount = 1;
+			_image_copy_region.extent.width = _output_window->width;
+			_image_copy_region.extent.height = _output_window->height;
+			_image_copy_region.extent.depth = 1;
 
-            //Apply copy region command
-            vkCmdCopyImage(
-                _objs_ptr->copy_command_buffer,
-                _src_image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                _objs_ptr->destination_image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                1,
-                &_image_copy_region);
-        }
+			//Apply copy region command
+			vkCmdCopyImage(
+				_objs_ptr->copy_command_buffer,
+				_src_image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+				_objs_ptr->destination_image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+				1,
+				&_image_copy_region);
+		}
 
-        {
-            //transition from transfer write to memory read for destination image
-            VkImageMemoryBarrier _imb_transfer_write_to_memory_read = {};
-            _imb_transfer_write_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-            _imb_transfer_write_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-            _imb_transfer_write_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-            _imb_transfer_write_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-            _imb_transfer_write_to_memory_read.newLayout = VK_IMAGE_LAYOUT_GENERAL;
-            _imb_transfer_write_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-            _imb_transfer_write_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-            _imb_transfer_write_to_memory_read.image = _objs_ptr->destination_image;
-            _imb_transfer_write_to_memory_read.subresourceRange = _sub_res_range;
-        
-            vkCmdPipelineBarrier(
-                _objs_ptr->copy_command_buffer,
-                VK_PIPELINE_STAGE_TRANSFER_BIT,
-                VK_PIPELINE_STAGE_TRANSFER_BIT,
-                0,
-                0,
-                nullptr,
-                0,
-                nullptr,
-                1,
-                &_imb_transfer_write_to_memory_read);
-        
-            //transition from trasfer read to memory read for source image
-            VkImageMemoryBarrier _imb_transfer_read_to_memory_read = {};
-            _imb_transfer_read_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-            _imb_transfer_read_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-            _imb_transfer_read_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-            _imb_transfer_read_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-            _imb_transfer_read_to_memory_read.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-            _imb_transfer_read_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-            _imb_transfer_read_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-            _imb_transfer_read_to_memory_read.image = _src_image;
-            _imb_transfer_read_to_memory_read.subresourceRange = _sub_res_range;
-        
-            vkCmdPipelineBarrier(
-                 _objs_ptr->copy_command_buffer,
-                VK_PIPELINE_STAGE_TRANSFER_BIT,
-                VK_PIPELINE_STAGE_TRANSFER_BIT,
-                0,
-                0,
-                nullptr,
-                0,
-                nullptr,
-                1,
-                &_imb_transfer_read_to_memory_read);
-        
-            _hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
-            if (_hr)
-            {
-                _return_result = S_FALSE;
-                V(_return_result,
-                  "ending copy command buffer for" + this->device_info->get_device_name() +
-                  " ID:" + std::to_string(this->device_info->get_device_id()),
-                  _trace_info,
-                  3,
-                  false);
-        
-                goto clean_up;
-            }
-            _objs_ptr->command_buffer_began = false;
-        
-            // Create fence to ensure that the command buffer has finished executing
-            VkFenceCreateInfo _fence_info = {};
-            _fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-            _fence_info.flags = 0;
-        
-            _hr = vkCreateFence(this->vk_device, &_fence_info, nullptr, &_objs_ptr->copy_fence);
-            if (_hr)
-            {
-                _return_result = S_FALSE;
-                V(_return_result,
-                  "creating fence of copy command buffer for" + this->device_info->get_device_name() +
-                  " ID:" + std::to_string(this->device_info->get_device_id()),
-                  _trace_info,
-                  3,
-                  false);
-                goto clean_up;
-            }
-        
-            //execute command buffer
-            VkSubmitInfo _submit_info = {};
-            _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-            _submit_info.pCommandBuffers = &_objs_ptr->copy_command_buffer;
-            _submit_info.commandBufferCount = 1;
-        
-            //Submit to the queue
-            _hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _objs_ptr->copy_fence);
-             if (_hr)
-             {
-                 _return_result = S_FALSE;
-                 V(_return_result,
-                     "submiting copy command buffer to queue for" + this->device_info->get_device_name() +
-                     " ID:" + std::to_string(this->device_info->get_device_id()),
-                     _trace_info,
-                     3,
-                     false);
-        
-                 goto clean_up;
-             }
-             // Wait for the fence to signal that command buffer has finished executing
-             _hr = vkWaitForFences(this->vk_device, 1, &_objs_ptr->copy_fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
-             if (_hr)
-             {
-                 _return_result = S_FALSE;
-                 V(_return_result,
-                     "submiting copy command buffer to queue for" + this->device_info->get_device_name() +
-                     " ID:" + std::to_string(this->device_info->get_device_id()),
-                     _trace_info,
-                     3,
-                     false);
-        
-                 goto clean_up;
-             }
-        
-             VkImageSubresource _sub_resource = {};
-             _sub_resource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-             VkSubresourceLayout _sub_resource_layout;
-             vkGetImageSubresourceLayout(this->vk_device, _objs_ptr->destination_image, &_sub_resource, &_sub_resource_layout);
-        
-             //Map the memory
-             const uint8_t* _data;
-             w_point_t _size;
-             _size.x = _output_window->width;
-             _size.y = _output_window->height;
-        
-             vkMapMemory(this->vk_device, _objs_ptr->destination_image_memory, 0, VK_WHOLE_SIZE, 0, (void**)&_data);
-             _data += _sub_resource_layout.offset;
-             pOnPixelsDataCaptured.emit(_size, _data);
-             vkUnmapMemory(this->vk_device, _objs_ptr->destination_image_memory);
-        
-             _data = nullptr;
-        }
-    }
+		{
+			//transition from transfer write to memory read for destination image
+			VkImageMemoryBarrier _imb_transfer_write_to_memory_read = {};
+			_imb_transfer_write_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			_imb_transfer_write_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			_imb_transfer_write_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+			_imb_transfer_write_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+			_imb_transfer_write_to_memory_read.newLayout = VK_IMAGE_LAYOUT_GENERAL;
+			_imb_transfer_write_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			_imb_transfer_write_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			_imb_transfer_write_to_memory_read.image = _objs_ptr->destination_image;
+			_imb_transfer_write_to_memory_read.subresourceRange = _sub_res_range;
+
+			vkCmdPipelineBarrier(
+				_objs_ptr->copy_command_buffer,
+				VK_PIPELINE_STAGE_TRANSFER_BIT,
+				VK_PIPELINE_STAGE_TRANSFER_BIT,
+				0,
+				0,
+				nullptr,
+				0,
+				nullptr,
+				1,
+				&_imb_transfer_write_to_memory_read);
+
+			//transition from trasfer read to memory read for source image
+			VkImageMemoryBarrier _imb_transfer_read_to_memory_read = {};
+			_imb_transfer_read_to_memory_read.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			_imb_transfer_read_to_memory_read.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+			_imb_transfer_read_to_memory_read.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+			_imb_transfer_read_to_memory_read.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+			_imb_transfer_read_to_memory_read.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+			_imb_transfer_read_to_memory_read.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			_imb_transfer_read_to_memory_read.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			_imb_transfer_read_to_memory_read.image = _src_image;
+			_imb_transfer_read_to_memory_read.subresourceRange = _sub_res_range;
+
+			vkCmdPipelineBarrier(
+				_objs_ptr->copy_command_buffer,
+				VK_PIPELINE_STAGE_TRANSFER_BIT,
+				VK_PIPELINE_STAGE_TRANSFER_BIT,
+				0,
+				0,
+				nullptr,
+				0,
+				nullptr,
+				1,
+				&_imb_transfer_read_to_memory_read);
+
+			_hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
+			if (_hr)
+			{
+				_return_result = S_FALSE;
+				V(_return_result,
+					"ending copy command buffer for" + this->device_info->get_device_name() +
+					" ID:" + std::to_string(this->device_info->get_device_id()),
+					_trace_info,
+					3,
+					false);
+
+				goto clean_up;
+			}
+			_objs_ptr->command_buffer_began = false;
+
+			// Create fence to ensure that the command buffer has finished executing
+			VkFenceCreateInfo _fence_info = {};
+			_fence_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+			_fence_info.flags = 0;
+
+			_hr = vkCreateFence(this->vk_device, &_fence_info, nullptr, &_objs_ptr->copy_fence);
+			if (_hr)
+			{
+				_return_result = S_FALSE;
+				V(_return_result,
+					"creating fence of copy command buffer for" + this->device_info->get_device_name() +
+					" ID:" + std::to_string(this->device_info->get_device_id()),
+					_trace_info,
+					3,
+					false);
+				goto clean_up;
+			}
+
+			//execute command buffer
+			VkSubmitInfo _submit_info = {};
+			_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+			_submit_info.pCommandBuffers = &_objs_ptr->copy_command_buffer;
+			_submit_info.commandBufferCount = 1;
+
+			//Submit to the queue
+			_hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _objs_ptr->copy_fence);
+			if (_hr)
+			{
+				_return_result = S_FALSE;
+				V(_return_result,
+					"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
+					" ID:" + std::to_string(this->device_info->get_device_id()),
+					_trace_info,
+					3,
+					false);
+
+				goto clean_up;
+			}
+			// Wait for the fence to signal that command buffer has finished executing
+			_hr = vkWaitForFences(this->vk_device, 1, &_objs_ptr->copy_fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
+			if (_hr)
+			{
+				_return_result = S_FALSE;
+				V(_return_result,
+					"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
+					" ID:" + std::to_string(this->device_info->get_device_id()),
+					_trace_info,
+					3,
+					false);
+
+				goto clean_up;
+			}
+
+			VkImageSubresource _sub_resource = {};
+			_sub_resource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			VkSubresourceLayout _sub_resource_layout;
+			vkGetImageSubresourceLayout(this->vk_device, _objs_ptr->destination_image, &_sub_resource, &_sub_resource_layout);
+
+			//Map the memory
+			const uint8_t* _data;
+			w_point_t _size;
+			_size.x = _output_window->width;
+			_size.y = _output_window->height;
+
+			vkMapMemory(this->vk_device, _objs_ptr->destination_image_memory, 0, VK_WHOLE_SIZE, 0, (void**)&_data);
+			_data += _sub_resource_layout.offset;
+			pOnPixelsDataCaptured.emit(_size, _data);
+			vkUnmapMemory(this->vk_device, _objs_ptr->destination_image_memory);
+
+			_data = nullptr;
+		}
+	}
 
 clean_up:
-    if (_objs_ptr->command_buffer_began)
-    {
-        _hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
-        if (_hr)
-        {
-            _return_result = S_FALSE;
-            V(_return_result,
-              "ending copy command buffer for" + this->device_info->get_device_name() +
-              " ID:" + std::to_string(this->device_info->get_device_id()),
-              _trace_info,
-              3,
-              false);
-        }
-        _objs_ptr->command_buffer_began = false;
-    }
-    return _return_result;
+	if (_objs_ptr->command_buffer_began)
+	{
+		_hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
+		if (_hr)
+		{
+			_return_result = S_FALSE;
+			V(_return_result,
+				"ending copy command buffer for" + this->device_info->get_device_name() +
+				" ID:" + std::to_string(this->device_info->get_device_id()),
+				_trace_info,
+				3,
+				false);
+		}
+		_objs_ptr->command_buffer_began = false;
+	}
+	
+	return _return_result;
 }
 
 w_output_presentation_window w_graphics_device::main_window()
@@ -1183,10 +1173,6 @@ ULONG w_graphics_device::release()
 }
 
 #pragma region w_graphics_device_manager
-
-#ifdef __GNUC__
-#pragma GCC visibility push(hidden)
-#endif
 
 #pragma region w_graphics_device_manager private implementation
 
@@ -3416,8 +3402,8 @@ namespace wolf
                     release();
                     std::exit(EXIT_FAILURE);
                 }
-
-                auto _objs_ptr = _output_window->objs_between_cpu_gpu;
+				
+				auto _objs_ptr = _output_window->objs_between_cpu_gpu;
 
                 //check whether blitting is supported or not
                 VkFormatProperties _format_properties;
@@ -3453,7 +3439,7 @@ namespace wolf
                 _image_create_info.extent.depth = 1;
                 _image_create_info.arrayLayers = 1;
                 _image_create_info.mipLevels = 1;
-                _image_create_info.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
+                _image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
                 _image_create_info.samples = VK_SAMPLE_COUNT_1_BIT;
                 _image_create_info.tiling = VK_IMAGE_TILING_LINEAR;
                 _image_create_info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
@@ -3514,6 +3500,16 @@ namespace wolf
                     release();
                     std::exit(EXIT_FAILURE);
                 }
+
+				//bind to image memory
+				_hr = vkBindImageMemory(pGDevice->vk_device, _objs_ptr->destination_image, _objs_ptr->destination_image_memory, 0);
+				if (_hr)
+				{
+					logger.error("binding to destination image  for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id) + " and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
             }
 
 			static VkPresentModeKHR _select_present_mode(
@@ -3606,10 +3602,6 @@ namespace wolf
 
 #pragma endregion
 
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
-
 w_graphics_device_manager::w_graphics_device_manager() : _pimp(new w_graphics_device_manager_pimp())
 {
 	_super::set_class_name("w_graphics_device_manager_pimp");// typeid(this).name());
@@ -3661,14 +3653,14 @@ void w_graphics_device_manager::_load_shared_resources()
 
 void w_graphics_device_manager::on_device_lost()
 {
-	logger.write(L"Graphics device is going to reset");
+	logger.write(L"Graphics device is reseting");
 	
 	auto _windows_info = this->_pimp->get_output_windows_info();
 	release();
 	this->_pimp = new w_graphics_device_manager_pimp();
 	initialize(_windows_info);
 	
-	logger.write(L"Graphics device reseted successfully");
+	logger.write(L"Graphics device reset successfully");
 }
 
 void w_graphics_device_manager::on_suspend()

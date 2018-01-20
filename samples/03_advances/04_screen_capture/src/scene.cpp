@@ -14,6 +14,7 @@ using namespace wolf::content_pipeline;
 static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
+static bool sCapture = false;
 
 static float random_float(_In_ const float& a, _In_ const float& b)
 {
@@ -39,13 +40,24 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 
 #ifdef __WIN32
     w_graphics_device_manager_configs _config;
-    _config.debug_gpu = false;
+    _config.debug_gpu = true;
     w_game::set_graphics_device_manager_configs(_config);
 #endif
 
     w_game::set_fixed_time_step(false);
-
 	this->_mesh = nullptr;
+
+	this->on_pixels_captured_signal += [&](_In_ const w_point_t pSize, _In_ const uint8_t* pPixels)->void
+	{
+		std::string _path;
+		auto _current_path = wolf::system::io::get_current_directory();
+#if defined(__WIN32) || defined(__UWP)
+		_path = wolf::system::convert::wstring_to_string(_current_path);
+#else
+		_path = _current_path;
+#endif
+		w_texture::save_bmp_to_file((_path + "/captured.bmp").c_str(), pSize.x, pSize.y, pPixels, 4);
+	};
 }
 
 scene::~scene()
@@ -93,6 +105,9 @@ void scene::load()
     //initialize attachment buffers
     w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
     w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+
+	//make sure use output presentation window format
+	_color.desc.format = _output_window->vk_swap_chain_selected_format.format;
 
     //define color and depth buffers for render pass
     std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
@@ -479,9 +494,6 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		0.1f, 
 		1000.0f);
 	
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	this->_u0.data.view = _view;
 	this->_u0.data.projection = _projection;
 	auto _hr = this->_u0.update();
@@ -489,9 +501,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	{
 		V(S_FALSE, "updating uniform ViewProjection", _trace_info, 3, false);
 	}
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+	
 	w_game::update(pGameTime);
 }
 
@@ -506,11 +516,11 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
 
 	w_imgui::render();
-    
+
 	//add wait semaphores
 	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
 	auto _draw_command_buffer = this->_draw_command_buffers.get_command_at(_frame_index);
-    auto _gui_command_buffer = w_imgui::get_command_buffer_at(_frame_index);
+	auto _gui_command_buffer = w_imgui::get_command_buffer_at(_frame_index);
 
 	const VkPipelineStageFlags _wait_dst_stage_mask[] =
 	{
@@ -534,7 +544,29 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	//clear all wait semaphores
 	_wait_semaphors.clear();
 
-	return w_game::render(pGameTime);
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	if (w_game::render(pGameTime) == S_FALSE)
+	{
+		V(S_FALSE, "presenting to graphics device", _trace_info, 3, true);
+	}
+	
+	if (sCapture)
+	{
+		sCapture = false;
+		//capture outputs of graphics device
+		if (_gDevice->capture_presented_swap_chain_buffer(0, this->on_pixels_captured_signal) == S_FALSE)
+		{
+			V(S_FALSE, "capturing graphics device", _trace_info, 3);
+			return S_FALSE;
+		}
+	}
+
+	return S_OK;
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
 void scene::on_window_resized(_In_ uint32_t pIndex)
@@ -566,13 +598,8 @@ ULONG scene::release()
 	this->_shader.release();
 	SAFE_RELEASE(this->_mesh);
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	this->_u0.release();
 	this->_instances_buffer.release();
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	return w_game::release();
 }
@@ -605,6 +632,12 @@ bool scene::_update_gui()
         sElapsedTimeInSec,
         sTotalTimeTimeInSec,
         wolf::inputs_manager.mouse.pos_x, wolf::inputs_manager.mouse.pos_y);
+
+	if (ImGui::Button("Capture"))
+	{
+		sCapture = true;
+
+	}
 
     ImGui::End();
 

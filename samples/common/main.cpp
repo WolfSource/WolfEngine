@@ -68,7 +68,13 @@ WOLF_MAIN()
     _window_info.height = 600;
     _window_info.is_full_screen = false;
     _window_info.v_sync_enable = false;
-    _window_info.swap_chain_format = 44;//using vulkan as render api
+    _window_info.swap_chain_format = 37;//VK_FORMAT_R8G8B8A8_UNORM in vulkan api
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	_window_info.cpu_access_swap_chain_buffer = true;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #ifdef __WIN32
     _window_info.hwnd = sWindow->get_HWND();

@@ -109,6 +109,9 @@ namespace wolf
 				w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
 				_color.desc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
 
+				//make sure use output presentation window format
+				_color.desc.format = pOutputPresentationWindow->vk_swap_chain_selected_format.format;
+
 				//do not clear frame buffer
 				w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
 				_depth.desc.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
