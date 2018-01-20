@@ -60,7 +60,6 @@ public:
 	ULONG release() override;
 
 private:
-	HRESULT															_build_gui_command_buffers();
 	bool															_update_gui();
 	
 	wolf::graphics::w_viewport                                      _viewport;

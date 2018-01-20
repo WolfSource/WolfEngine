@@ -15,8 +15,6 @@ out gl_PerVertex
   vec4 gl_Position;
 };
 
-layout(location = 0) out vec2 o_uv;
-
 void main() 
 {
     gl_Position = u0.wvp * vec4(i_position, 1.0);

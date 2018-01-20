@@ -4,6 +4,9 @@
 #include "w_shader.h"
 #include "w_render_pass.h"
 #include "w_pipeline.h"
+#include "w_command_buffer.h"
+#include "w_render_pass.h"
+#include "w_frame_buffer.h"
 
 using namespace wolf::graphics;
 
@@ -24,22 +27,24 @@ namespace wolf
             {
             }
 
-            HRESULT load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-#ifdef __WIN32
-                _In_ HWND pHWND,
-#endif
-                _In_ const w_point_t& pScreenSize,
-                _In_ VkRenderPass& pRenderPass,
+            HRESULT load(
+				_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+                _In_ const w_output_presentation_window* pOutputPresentationWindow,
+                _In_ const w_viewport& pViewport,
+				_In_ const w_viewport_scissor& pViewportScissor,
                 _In_ w_texture* pIconTexture,
                 _In_ w_texture** pStagingMediaTexture,
                 _In_ const char* pFontPath,
                 _In_ const float& pFontPixelSize)
             {
+				const std::string _trace_info = this->_name + "::load";
+
 #ifdef __WIN32
-                this->_hwnd = pHWND;
+                this->_hwnd = pOutputPresentationWindow->hwnd;
 #endif
                 this->_gDevice = pGDevice;
-                this->_screen_size = pScreenSize;
+                this->_screen_size.x = pOutputPresentationWindow->width;
+				this->_screen_size.y = pOutputPresentationWindow->height;
                 this->_images_texture = pIconTexture;
                 this->_media_player_texture = pStagingMediaTexture ? *pStagingMediaTexture : nullptr;
 
@@ -100,6 +105,52 @@ namespace wolf
 
                 using namespace wolf::graphics;
 
+				//initialize attachment buffers
+				w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+				_color.desc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+
+				//do not clear frame buffer
+				w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+				_depth.desc.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+				_depth.desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+
+				//define color and depth buffers for render pass
+				std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
+
+				//create render pass
+				auto __hr = this->_render_pass.load(_gDevice,
+					pViewport,
+					pViewportScissor,
+					_attachment_descriptions);
+				if (__hr == S_FALSE)
+				{
+					V(S_FALSE, "creating render pass", _trace_info, 3);
+					release();
+					return S_FALSE;
+				}
+				_attachment_descriptions.clear();
+
+
+				//Create frame buffer
+				auto _render_pass_handle = this->_render_pass.get_handle();
+				__hr = this->_frame_buffers.load(_gDevice,
+					_render_pass_handle,
+					pOutputPresentationWindow);
+				if (__hr == S_FALSE)
+				{
+					release();
+					V(S_FALSE, "creating frame buffers", _trace_info, 3);
+					return S_FALSE;
+				}
+
+				__hr = this->_command_buffers.load(_gDevice, pOutputPresentationWindow->vk_swap_chain_image_views.size());
+				if (__hr == S_FALSE)
+				{
+					release();
+					V(S_FALSE, "creating command buffers", _trace_info, 3);
+					return S_FALSE;
+				}
+
                 // Create fonts texture
                 uint8_t* _font_data = nullptr;
                 int _texture_width, _texture_height;
@@ -119,16 +170,18 @@ namespace wolf
                 _font_texture->load_texture_from_memory_rgba(
                     _texture_data.data());
 
-                auto __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
+                __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
                 if (__hr != S_OK)
                 {
-                    V(__hr, "loading vertex shader", this->_name);
+                    V(__hr, "loading vertex shader", _trace_info, 3);
+					release();
                     return S_FALSE;
                 }
                 __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.frag.spv", w_shader_stage::FRAGMENT_SHADER);
                 if (__hr != S_OK)
                 {
-                    V(__hr, "loading fragment shader", this->_name);
+                    V(__hr, "loading fragment shader", _trace_info, 3);
+					release();
                     return S_FALSE;
                 }
 
@@ -182,7 +235,8 @@ namespace wolf
                 this->_pipeline_layout = w_pipeline::create_pipeline_layout(_gDevice, &_pipeline_layout_create_info);
                 if (!this->_pipeline_layout)
                 {
-                    V(S_FALSE, "creating pipeline layout", this->_name);
+                    V(S_FALSE, "creating pipeline layout", _trace_info, 3);
+					release();
                     return S_FALSE;
                 }
                 // Pipeline cache
@@ -262,7 +316,7 @@ namespace wolf
                 VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
                 pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
                 pipelineCreateInfo.layout = this->_pipeline_layout;
-                pipelineCreateInfo.renderPass = pRenderPass;
+                pipelineCreateInfo.renderPass = _render_pass_handle;
                 pipelineCreateInfo.flags = 0;
                 pipelineCreateInfo.basePipelineIndex = -1;
                 pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
@@ -328,103 +382,14 @@ namespace wolf
                     &pipelineCreateInfo,
                     nullptr,
                     &this->_pipeline);
+				if (_hr == S_FALSE)
+				{
+					V(S_FALSE, "creating graphics pipeline", _trace_info);
+					release();
+					return S_FALSE;
+				}
 
                 return _hr == VK_SUCCESS ? S_OK : S_FALSE;
-            }
-
-            HRESULT update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass)
-            {
-                ImDrawData* _im_draw_data = ImGui::GetDrawData();
-                if (!_im_draw_data || !_im_draw_data->CmdListsCount) return S_OK;
-
-                // Note: Alignment is done inside buffer creation
-                uint32_t _vertex_buffer_size = _im_draw_data->TotalVtxCount * sizeof(ImDrawVert);
-                uint32_t _index_buffer_size = _im_draw_data->TotalIdxCount * sizeof(ImDrawIdx);
-                
-                // Update buffers only if vertex or index count has been changed compared to current buffer size
-                HRESULT _hr;
-
-                //Vertex buffer
-                if (!this->_vertex_buffer || this->_vertex_buffer->get_size() != _vertex_buffer_size)
-                {
-                    SAFE_RELEASE(this->_vertex_buffer);
-                    
-					//vertex bufer as property host visible memory
-                    this->_vertex_buffer = new wolf::graphics::w_buffer();
-					_hr = this->_vertex_buffer->load(
-						this->_gDevice, 
-						_vertex_buffer_size, 
-						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-                    if (_hr == S_FALSE)
-                    {
-                        V(_hr, "loading staging vertex buffer", this->_name);
-                        return _hr;
-                    }
-                    _hr = this->_vertex_buffer->bind();
-                    if (_hr == S_FALSE)
-                    {
-                        V(_hr, "binding staging vertex buffer", this->_name);
-                        return _hr;
-                    }
-                }
-
-                // Index buffer
-                if (!this->_index_buffer || this->_index_buffer->get_size() != _index_buffer_size)
-                {
-                    SAFE_RELEASE(this->_index_buffer);
-
-                    this->_index_buffer = new wolf::graphics::w_buffer();
-					_hr = this->_index_buffer->load(
-						this->_gDevice,
-						_index_buffer_size,
-						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-                    if (_hr == S_FALSE)
-                    {
-                        V(_hr, "loading staging index buffer", this->_name);
-                        return _hr;
-                    }
-                    _hr = this->_index_buffer->bind();
-                    if (_hr == S_FALSE)
-                    {
-                        V(_hr, "binding staging index buffer", this->_name);
-                        return _hr;
-                    }
-                }
-
-                ImDrawVert* vtxDst = (ImDrawVert*)this->_vertex_buffer->map();
-                ImDrawIdx* idxDst = (ImDrawIdx*)this->_index_buffer->map();
-
-                for (int n = 0; n < _im_draw_data->CmdListsCount; n++)
-                {
-                    const ImDrawList* cmd_list = _im_draw_data->CmdLists[n];
-                    memcpy(vtxDst, cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
-                    memcpy(idxDst, cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
-                    vtxDst += cmd_list->VtxBuffer.Size;
-                    idxDst += cmd_list->IdxBuffer.Size;
-                }
-
-                _hr = this->_vertex_buffer->flush();
-                if (_hr == S_FALSE)
-                {
-                    V(_hr, "flushing staging index buffer", this->_name);
-                    return _hr;
-                }
-                _hr = this->_index_buffer->flush();
-                if (_hr == S_FALSE)
-                {
-                    V(_hr, "flushing staging index buffer", this->_name);
-                    return _hr;
-                }
-
-                this->_vertex_buffer->unmap();
-                this->_index_buffer->unmap();
-
-                vtxDst = nullptr;
-                idxDst = nullptr;
-
-                return S_OK;
             }
 
             void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
@@ -486,114 +451,33 @@ namespace wolf
                 ImGui::Render();
             }
 
-            void render(_In_ VkCommandBuffer pCommandBuffer)
+			HRESULT render()
             {
-                ImGuiIO& _io = ImGui::GetIO();
+				const std::string _trace_info = this->_name + "::render";
+				HRESULT _hr = S_OK;
 
-                ImDrawData* imDrawData = ImGui::GetDrawData();
-                if (!imDrawData || !imDrawData->CmdListsCount) return;
-                
-                auto _descriptor_set = this->_shader.get_descriptor_set();
-                vkCmdBindDescriptorSets(
-                    pCommandBuffer,
-                    VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    this->_pipeline_layout,
-                    0,
-                    1,
-                    &_descriptor_set,
-                    0,
-                    nullptr);
-                vkCmdBindPipeline(pCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
-
-                // Bind vertex and index buffer
-                auto _vertex_buffer_handle = this->_vertex_buffer->get_handle();
-                auto _index_buffer_handle = this->_index_buffer->get_handle();
-
-                VkDeviceSize offsets[1] = { 0 };
-                vkCmdBindVertexBuffers(pCommandBuffer, 0, 1, &_vertex_buffer_handle, offsets);
-                vkCmdBindIndexBuffer(pCommandBuffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT16);
-
-                VkViewport viewport;
-                viewport.x = 0;
-                viewport.y = 0;
-                viewport.width = ImGui::GetIO().DisplaySize.x;
-                viewport.height = ImGui::GetIO().DisplaySize.y;
-                viewport.minDepth = 0.0f;
-                viewport.maxDepth = 1.0f;
-                vkCmdSetViewport(pCommandBuffer, 0, 1, &viewport);
-
-                // Render commands
-                bool _need_to_update_push = true;
-                int _last_texture_id = 0;
-
-                int32_t vertexOffset = 0;
-                int32_t indexOffset = 0;
-                for (int32_t i = 0; i < imDrawData->CmdListsCount; i++)
-                {
-                    const ImDrawList* cmd_list = imDrawData->CmdLists[i];
-                    for (int32_t j = 0; j < cmd_list->CmdBuffer.Size; j++)
-                    {
-                        const ImDrawCmd* _draw_cmds = &cmd_list->CmdBuffer[j];
-                        const char* _tex_id = static_cast<char*>(_draw_cmds->TextureId);
-                        if (_tex_id == nullptr)
-                        {
-                            //font
-                            _push_constant_block.image_index = 0;
-                            if (_last_texture_id != 0)
-                            {
-                                _last_texture_id = 0;
-                                _need_to_update_push = true;
-                            }
-                        }
-                        else if(strcmp(_tex_id, "#i") == 0)
-                        {
-                            _push_constant_block.image_index = 1;
-                            if (_last_texture_id != 1)
-                            {
-                                _last_texture_id = 1;
-                                _need_to_update_push = true;
-                            }
-                        }
-                        else if (strcmp(_tex_id, "#s") == 0)
-                        {
-                            _push_constant_block.image_index = 2;
-                            if (_last_texture_id != 2)
-                            {
-                                _last_texture_id = 2;
-                                _need_to_update_push = true;
-                            }
-                        }
-
-                        if (_need_to_update_push)
-                        {
-                            _push_constant_block.scale[0] = 2.0f / _io.DisplaySize.x;
-                            _push_constant_block.scale[1] = 2.0f / _io.DisplaySize.y;
-                            _push_constant_block.translate[0] = -1.0f;
-                            _push_constant_block.translate[1] = -1.0f;
-
-                            vkCmdPushConstants(
-                                pCommandBuffer,
-                                this->_pipeline_layout,
-                                VK_SHADER_STAGE_VERTEX_BIT,
-                                0,
-                                sizeof(_push_constant_block),
-                                &_push_constant_block);
-
-                            _need_to_update_push = false;
-                        }
-
-
-                        VkRect2D scissorRect;
-                        scissorRect.offset.x = std::max((int32_t)(_draw_cmds->ClipRect.x), 0);
-                        scissorRect.offset.y = std::max((int32_t)(_draw_cmds->ClipRect.y), 0);
-                        scissorRect.extent.width = (uint32_t)(_draw_cmds->ClipRect.z - _draw_cmds->ClipRect.x);
-                        scissorRect.extent.height = (uint32_t)(_draw_cmds->ClipRect.w - _draw_cmds->ClipRect.y);
-                        vkCmdSetScissor(pCommandBuffer, 0, 1, &scissorRect);
-                        vkCmdDrawIndexed(pCommandBuffer, _draw_cmds->ElemCount, 1, indexOffset, vertexOffset, 0);
-                        indexOffset += _draw_cmds->ElemCount;
-                    }
-                    vertexOffset += cmd_list->VtxBuffer.Size;
-                }
+				auto _size = this->_command_buffers.get_commands_size();
+				for (uint32_t i = 0; i < _size; ++i)
+				{
+					this->_command_buffers.begin(i);
+					{
+						auto _cmd = this->_command_buffers.get_command_at(i);
+						this->_render_pass.begin(_cmd, this->_frame_buffers.get_frame_buffer_at(i));
+						{
+							if (_update_buffers() == S_OK)
+							{
+								_draw(_cmd);
+							}
+							else
+							{
+								_hr = S_FALSE;
+							}
+						}
+						this->_render_pass.end(_cmd);
+					}
+					this->_command_buffers.end(i);
+				}
+				return _hr;
             }
 
             ULONG release()
@@ -618,6 +502,9 @@ namespace wolf
 
                 _shader.release();
 
+				this->_command_buffers.release();
+				this->_render_pass.release();
+				this->_frame_buffers.release();
 
 #ifdef __WIN32
                 this->_hwnd = NULL;
@@ -637,6 +524,12 @@ namespace wolf
             {
                 return this->_screen_size.y;
             }
+
+			VkCommandBuffer get_command_buffer_at(_In_ const uint32_t pFrameIndex) const
+			{
+				return this->_command_buffers.get_command_at(pFrameIndex);
+			}
+
 #pragma endregion
 
 #pragma region Setters
@@ -652,6 +545,211 @@ namespace wolf
 #pragma endregion
 
         private:
+			HRESULT _update_buffers()
+			{
+				ImDrawData* _im_draw_data = ImGui::GetDrawData();
+				if (!_im_draw_data || !_im_draw_data->CmdListsCount) return S_OK;
+
+				// Note: Alignment is done inside buffer creation
+				uint32_t _vertex_buffer_size = _im_draw_data->TotalVtxCount * sizeof(ImDrawVert);
+				uint32_t _index_buffer_size = _im_draw_data->TotalIdxCount * sizeof(ImDrawIdx);
+
+				// Update buffers only if vertex or index count has been changed compared to current buffer size
+				HRESULT _hr;
+
+				//Vertex buffer
+				if (!this->_vertex_buffer || this->_vertex_buffer->get_size() != _vertex_buffer_size)
+				{
+					SAFE_RELEASE(this->_vertex_buffer);
+
+					//vertex bufer as property host visible memory
+					this->_vertex_buffer = new wolf::graphics::w_buffer();
+					_hr = this->_vertex_buffer->load(
+						this->_gDevice,
+						_vertex_buffer_size,
+						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+					if (_hr == S_FALSE)
+					{
+						V(_hr, "loading staging vertex buffer", this->_name);
+						return _hr;
+					}
+					_hr = this->_vertex_buffer->bind();
+					if (_hr == S_FALSE)
+					{
+						V(_hr, "binding staging vertex buffer", this->_name);
+						return _hr;
+					}
+				}
+
+				// Index buffer
+				if (!this->_index_buffer || this->_index_buffer->get_size() != _index_buffer_size)
+				{
+					SAFE_RELEASE(this->_index_buffer);
+
+					this->_index_buffer = new wolf::graphics::w_buffer();
+					_hr = this->_index_buffer->load(
+						this->_gDevice,
+						_index_buffer_size,
+						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+					if (_hr == S_FALSE)
+					{
+						V(_hr, "loading staging index buffer", this->_name);
+						return _hr;
+					}
+					_hr = this->_index_buffer->bind();
+					if (_hr == S_FALSE)
+					{
+						V(_hr, "binding staging index buffer", this->_name);
+						return _hr;
+					}
+				}
+
+				ImDrawVert* vtxDst = (ImDrawVert*)this->_vertex_buffer->map();
+				ImDrawIdx* idxDst = (ImDrawIdx*)this->_index_buffer->map();
+
+				for (int n = 0; n < _im_draw_data->CmdListsCount; n++)
+				{
+					const ImDrawList* cmd_list = _im_draw_data->CmdLists[n];
+					memcpy(vtxDst, cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
+					memcpy(idxDst, cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
+					vtxDst += cmd_list->VtxBuffer.Size;
+					idxDst += cmd_list->IdxBuffer.Size;
+				}
+
+				_hr = this->_vertex_buffer->flush();
+				if (_hr == S_FALSE)
+				{
+					V(_hr, "flushing staging index buffer", this->_name);
+					return _hr;
+				}
+				_hr = this->_index_buffer->flush();
+				if (_hr == S_FALSE)
+				{
+					V(_hr, "flushing staging index buffer", this->_name);
+					return _hr;
+				}
+
+				this->_vertex_buffer->unmap();
+				this->_index_buffer->unmap();
+
+				vtxDst = nullptr;
+				idxDst = nullptr;
+
+				return S_OK;
+			}
+
+			void _draw(_In_ VkCommandBuffer pCommandBuffer)
+			{
+				ImGuiIO& _io = ImGui::GetIO();
+
+				ImDrawData* imDrawData = ImGui::GetDrawData();
+				if (!imDrawData || !imDrawData->CmdListsCount) return;
+
+				auto _descriptor_set = this->_shader.get_descriptor_set();
+				vkCmdBindDescriptorSets(
+					pCommandBuffer,
+					VK_PIPELINE_BIND_POINT_GRAPHICS,
+					this->_pipeline_layout,
+					0,
+					1,
+					&_descriptor_set,
+					0,
+					nullptr);
+				vkCmdBindPipeline(pCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
+
+				// Bind vertex and index buffer
+				auto _vertex_buffer_handle = this->_vertex_buffer->get_handle();
+				auto _index_buffer_handle = this->_index_buffer->get_handle();
+
+				VkDeviceSize offsets[1] = { 0 };
+				vkCmdBindVertexBuffers(pCommandBuffer, 0, 1, &_vertex_buffer_handle, offsets);
+				vkCmdBindIndexBuffer(pCommandBuffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT16);
+
+				VkViewport viewport;
+				viewport.x = 0;
+				viewport.y = 0;
+				viewport.width = ImGui::GetIO().DisplaySize.x;
+				viewport.height = ImGui::GetIO().DisplaySize.y;
+				viewport.minDepth = 0.0f;
+				viewport.maxDepth = 1.0f;
+				vkCmdSetViewport(pCommandBuffer, 0, 1, &viewport);
+
+				// Render commands
+				bool _need_to_update_push = true;
+				int _last_texture_id = 0;
+
+				int32_t vertexOffset = 0;
+				int32_t indexOffset = 0;
+				for (int32_t i = 0; i < imDrawData->CmdListsCount; i++)
+				{
+					const ImDrawList* cmd_list = imDrawData->CmdLists[i];
+					for (int32_t j = 0; j < cmd_list->CmdBuffer.Size; j++)
+					{
+						const ImDrawCmd* _draw_cmds = &cmd_list->CmdBuffer[j];
+						const char* _tex_id = static_cast<char*>(_draw_cmds->TextureId);
+						if (_tex_id == nullptr)
+						{
+							//font
+							_push_constant_block.image_index = 0;
+							if (_last_texture_id != 0)
+							{
+								_last_texture_id = 0;
+								_need_to_update_push = true;
+							}
+						}
+						else if (strcmp(_tex_id, "#i") == 0)
+						{
+							_push_constant_block.image_index = 1;
+							if (_last_texture_id != 1)
+							{
+								_last_texture_id = 1;
+								_need_to_update_push = true;
+							}
+						}
+						else if (strcmp(_tex_id, "#s") == 0)
+						{
+							_push_constant_block.image_index = 2;
+							if (_last_texture_id != 2)
+							{
+								_last_texture_id = 2;
+								_need_to_update_push = true;
+							}
+						}
+
+						if (_need_to_update_push)
+						{
+							_push_constant_block.scale[0] = 2.0f / _io.DisplaySize.x;
+							_push_constant_block.scale[1] = 2.0f / _io.DisplaySize.y;
+							_push_constant_block.translate[0] = -1.0f;
+							_push_constant_block.translate[1] = -1.0f;
+
+							vkCmdPushConstants(
+								pCommandBuffer,
+								this->_pipeline_layout,
+								VK_SHADER_STAGE_VERTEX_BIT,
+								0,
+								sizeof(_push_constant_block),
+								&_push_constant_block);
+
+							_need_to_update_push = false;
+						}
+
+
+						VkRect2D scissorRect;
+						scissorRect.offset.x = std::max((int32_t)(_draw_cmds->ClipRect.x), 0);
+						scissorRect.offset.y = std::max((int32_t)(_draw_cmds->ClipRect.y), 0);
+						scissorRect.extent.width = (uint32_t)(_draw_cmds->ClipRect.z - _draw_cmds->ClipRect.x);
+						scissorRect.extent.height = (uint32_t)(_draw_cmds->ClipRect.w - _draw_cmds->ClipRect.y);
+						vkCmdSetScissor(pCommandBuffer, 0, 1, &scissorRect);
+						vkCmdDrawIndexed(pCommandBuffer, _draw_cmds->ElemCount, 1, indexOffset, vertexOffset, 0);
+						indexOffset += _draw_cmds->ElemCount;
+					}
+					vertexOffset += cmd_list->VtxBuffer.Size;
+				}
+			}
+
             std::string                                         _name;
             std::shared_ptr<wolf::graphics::w_graphics_device>  _gDevice;
 
@@ -676,6 +774,11 @@ namespace wolf
                 float translate[2];
                 int image_index;
             } _push_constant_block;
+
+			//for rendering
+			w_command_buffer										_command_buffers;
+			w_render_pass											_render_pass;
+			w_frame_buffer											_frame_buffers;
         };
     }
 }
@@ -685,37 +788,29 @@ using namespace wolf::graphics;
 bool w_imgui::_is_released = false;
 w_imgui_pimp* w_imgui::_pimp = nullptr;
 
-HRESULT w_imgui::load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-#ifdef __WIN32
-    _In_ HWND pHWND,
-#endif
-    _In_ const w_point_t& pScreenSize,
-    _In_ VkRenderPass& pRenderPass,
-    _In_ w_texture* pIconTexture,
-    _In_ w_texture** pStagingMediaTexture,
-    _In_ const char* pFontPath,
-    _In_ const float& pFontPixelSize)
+HRESULT w_imgui::load(
+	_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+	_In_ const w_output_presentation_window* pOutputPresentationWindow,
+	_In_ const w_viewport& pViewport,
+	_In_ const w_viewport_scissor& pViewportScissor,
+	_In_ w_texture* pIconTexture,
+	_In_ w_texture** pStagingMediaTexture,
+	_In_ const char* pFontPath,
+	_In_ const float& pFontPixelSize)
 {
 	if (!_pimp)
 	{
 		_pimp = new w_imgui_pimp();
 	}
-    return _pimp->load(
-                       pGDevice,
-#ifdef __WIN32
-                       pHWND,
-#endif
-                       pScreenSize,
-                       pRenderPass,
-                       pIconTexture,
-                       pStagingMediaTexture,
-                       pFontPath,
-                       pFontPixelSize);
-}
-
-HRESULT w_imgui::update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass)
-{
-    return _pimp ? _pimp->update_buffers(pRenderPass) : S_FALSE;
+	return _pimp->load(
+		pGDevice,
+		pOutputPresentationWindow,
+		pViewport,
+		pViewportScissor,
+		pIconTexture,
+		pStagingMediaTexture,
+		pFontPath,
+		pFontPixelSize);
 }
 
 void w_imgui::new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
@@ -724,10 +819,10 @@ void w_imgui::new_frame(_In_ const float& pDeltaTime, _In_ const std::function<v
     _pimp->new_frame(pDeltaTime, pMakeGuiWork);
 }
 
-void w_imgui::render(_In_ VkCommandBuffer pCommandBuffer)
+void w_imgui::render()
 {
     if (!_pimp) return;
-    _pimp->render(pCommandBuffer);
+    _pimp->render();
 }
 
 ULONG w_imgui::release()
@@ -749,6 +844,11 @@ uint32_t w_imgui::get_width()
 uint32_t w_imgui::get_height()
 {
     return _pimp ? _pimp->get_height() : 0;
+}
+
+VkCommandBuffer w_imgui::get_command_buffer_at(_In_ const uint32_t pFrameIndex)
+{
+	return _pimp ? _pimp->get_command_buffer_at(pFrameIndex) : nullptr;
 }
 
 #pragma endregion

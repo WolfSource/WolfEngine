@@ -396,50 +396,14 @@ void scene::load()
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    w_imgui::load(_gDevice,
-#ifdef __WIN32
-        _output_window->hwnd,
-#endif
-        _screen_size,
-        _render_pass_handle,
-        nullptr,
-        nullptr);
+	w_imgui::load(
+		_gDevice,
+		_output_window,
+		this->_viewport,
+		this->_viewport_scissor,
+		nullptr);
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
-}
-
-HRESULT scene::_build_gui_command_buffers(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
-{
-    auto _clear_color = w_color();
-    _clear_color.r = static_cast<uint8_t>((float)(std::sin(_time)) * 255.0f);
-    _clear_color.g = static_cast<uint8_t>((float)(std::cos(_time)) * 255.0f);
-    _clear_color.b = 155;
-    _clear_color.a = 255;
-
-    const std::string _trace_info = this->name + "::build_gui_command_buffers";
-    HRESULT _hr = S_OK;
-
-    auto _size = this->_gui_command_buffers.get_commands_size();
-    for (uint32_t i = 0; i < _size; ++i)
-    {
-        this->_gui_command_buffers.begin(i);
-        {
-            auto _cmd = this->_gui_command_buffers.get_command_at(i);
-            this->_gui_render_pass.begin(_cmd, this->_gui_frame_buffers.get_frame_buffer_at(i), _clear_color);
-            {
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                //The following codes have been added for this project
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                w_imgui::update_buffers(this->_gui_render_pass);
-                w_imgui::render(_cmd);
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-            }
-            this->_gui_render_pass.end(_cmd);
-        }
-        this->_gui_command_buffers.end(i);
-    }
-    return _hr;
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
@@ -486,11 +450,11 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     auto _output_window = &(_gDevice->output_presentation_windows[0]);
     auto _frame_index = _output_window->vk_swap_chain_image_index;
 
-    _build_gui_command_buffers(_gDevice);
+	w_imgui::render();
 
     //add wait semaphores
     std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
-    auto _cmd = this->_gui_command_buffers.get_command_at(_frame_index);
+    auto _cmd = w_imgui::get_command_buffer_at(_frame_index);
 
     const VkPipelineStageFlags _wait_dst_stage_mask[] =
     {

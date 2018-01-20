@@ -57,7 +57,6 @@ public:
 
 private:
 	HRESULT _build_draw_command_buffers();
-	HRESULT _build_gui_command_buffers();
     bool	_update_gui();
 
 	wolf::graphics::w_viewport                                      _viewport;
@@ -71,11 +70,6 @@ private:
 
 	wolf::graphics::w_fences                                        _draw_fence;
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
-    
-	//for gui
-	wolf::graphics::w_command_buffer                                _gui_command_buffers;
-	wolf::graphics::w_render_pass                                   _gui_render_pass;
-	wolf::graphics::w_frame_buffer                                  _gui_frame_buffers;
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project

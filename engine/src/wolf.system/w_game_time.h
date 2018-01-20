@@ -66,7 +66,7 @@ namespace wolf
 				}
 
 				// Initialize max delta to 1/10 of a second.
-				this->_max_delta = this->_frequency.QuadPart / 10;
+				this->_max_delta = (double)(this->_frequency.QuadPart / 10);
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 
 				reset();

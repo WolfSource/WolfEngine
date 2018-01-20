@@ -28,7 +28,7 @@ namespace wolf
             W_EXP HRESULT load(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const VkRenderPass pRenderPass,
-                _In_ w_output_presentation_window* pPresentationWindow);
+                _In_ const w_output_presentation_window* pPresentationWindow);
 
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const VkRenderPass pRenderPass,

@@ -46,26 +46,25 @@ namespace wolf
                 }
             };
 
-            static W_EXP HRESULT load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-#ifdef __WIN32
-                _In_ HWND pHWND,
-#endif
-                _In_ const w_point_t& pScreenSize,
-                _In_ VkRenderPass& pRenderPass,
+            static W_EXP HRESULT load(
+				_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+				_In_ const w_output_presentation_window* pOutputPresentationWindow,
+                _In_ const w_viewport& pViewport,
+				_In_ const w_viewport_scissor& pViewportScissor,
                 _In_ w_texture* pIconTexture,
                 _In_ w_texture** pStagingMediaTexture = nullptr,
                 _In_ const char* pFontPath = nullptr,
                 _In_ const float& pFontPixelSize = 15.0f);
 
-            static W_EXP HRESULT update_buffers(_In_ wolf::graphics::w_render_pass& pRenderPass);
             static W_EXP void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork);
-            static W_EXP void render(_In_ VkCommandBuffer pCommandBuffer);
+            static W_EXP void render();
             static W_EXP ULONG release();
 
 #pragma region Getters
 
             static W_EXP uint32_t get_width();
             static W_EXP uint32_t get_height();
+			static W_EXP VkCommandBuffer get_command_buffer_at(_In_ const uint32_t pFrameIndex);
 
 #pragma endregion
 

@@ -117,6 +117,7 @@ namespace wolf
 			w_vertex_binding_attributes(_In_ const  std::map<uint32_t, std::vector<w_vertex_attribute>>& pDeclaration)
 			{
 				this->binding_attributes = pDeclaration;
+				this->declaration = w_vertex_declaration::USER_DEFINED;
 			}
         };
 

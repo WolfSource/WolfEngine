@@ -100,21 +100,6 @@ void scene::load()
 		release();
 		V(S_FALSE, "creating render pass", _trace_info, 3, true);
 	}
-    //create render pass for gui
-    //do not clear frame buffer
-    _attachment_descriptions[0].desc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-    _attachment_descriptions[1].desc.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    _attachment_descriptions[1].desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-
-    _hr = this->_gui_render_pass.load(_gDevice,
-        _viewport,
-        _viewport_scissor,
-        _attachment_descriptions);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "creating render pass for gui", _trace_info, 3, true);
-    }
 
 	//create frame buffers
 	auto _draw_render_pass_handle = this->_draw_render_pass.get_handle();
@@ -126,16 +111,6 @@ void scene::load()
 		release();
 		V(S_FALSE, "creating frame buffers", _trace_info, 3, true);
 	}
-    //create frame buffers for gui
-    auto _gui_render_pass_handle = this->_gui_render_pass.get_handle();
-    _hr = this->_gui_frame_buffers.load(_gDevice,
-        _gui_render_pass_handle,
-        _output_window);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "creating frame buffers for gui", _trace_info, 3, true);
-    }
 
 	//create semaphore
 	_hr = this->_draw_semaphore.initialize(_gDevice);
@@ -154,14 +129,12 @@ void scene::load()
 	}
 
     //load imgui
-    w_imgui::load(_gDevice,
-#ifdef __WIN32
-        _output_window->hwnd,
-#endif
-        _screen_size,
-        _gui_render_pass_handle,
-        nullptr,
-        nullptr);
+	w_imgui::load(
+		_gDevice,
+		_output_window,
+		this->_viewport,
+		this->_viewport_scissor,
+		nullptr);
 
 	//create two primary command buffers for clearing screen
 	auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
@@ -171,13 +144,6 @@ void scene::load()
 		release();
 		V(S_FALSE, "creating draw command buffers", _trace_info, 3, true);
 	}
-
-    _hr = this->_gui_command_buffers.load(_gDevice, _swap_chain_image_size);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "creating draw command buffers for gui", _trace_info, 3, true);
-    }
 
 #ifdef WIN32
 	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/02_basics/05_texture/src/content/";
@@ -382,29 +348,6 @@ HRESULT scene::_build_draw_command_buffers()
 	return _hr;
 }
 
-HRESULT scene::_build_gui_command_buffers()
-{
-    const std::string _trace_info = this->name + "::build_gui_command_buffers";
-    HRESULT _hr = S_OK;
-
-    auto _size = this->_gui_command_buffers.get_commands_size();
-    for (uint32_t i = 0; i < _size; ++i)
-    {
-        this->_gui_command_buffers.begin(i);
-        {
-            auto _cmd = this->_gui_command_buffers.get_command_at(i);
-            this->_gui_render_pass.begin(_cmd, this->_gui_frame_buffers.get_frame_buffer_at(i));
-            {
-                w_imgui::update_buffers(this->_gui_render_pass);
-                w_imgui::render(_cmd);
-            }
-            this->_gui_render_pass.end(_cmd);
-        }
-        this->_gui_command_buffers.end(i);
-    }
-    return _hr;
-}
-
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
 	if (w_game::exiting) return;
@@ -452,12 +395,12 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _output_window = &(_gDevice->output_presentation_windows[0]);
 	auto _frame_index = _output_window->vk_swap_chain_image_index;
 
-    _build_gui_command_buffers();
+	w_imgui::render();
 
 	//add wait semaphores
 	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
 	auto _draw_command_buffer = this->_draw_command_buffers.get_command_at(_frame_index);
-    auto _gui_command_buffer = this->_gui_command_buffers.get_command_at(_frame_index);
+	auto _gui_command_buffer = w_imgui::get_command_buffer_at(_frame_index);
 
 	const VkPipelineStageFlags _wait_dst_stage_mask[] =
 	{
@@ -508,10 +451,6 @@ ULONG scene::release()
 	this->_draw_render_pass.release();
 	this->_draw_frame_buffers.release();
 
-    //release gui's objects
-    this->_gui_command_buffers.release();
-    this->_gui_render_pass.release();
-    this->_gui_frame_buffers.release();
     w_imgui::release();
 
 	this->_shader.release();

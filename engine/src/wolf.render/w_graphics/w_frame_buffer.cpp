@@ -17,7 +17,7 @@ namespace wolf
             HRESULT load(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const VkRenderPass pRenderPass,
-                _In_ w_output_presentation_window* pPresentationWindow)
+                _In_ const w_output_presentation_window* pPresentationWindow)
             {
                 const std::string _trace_info = this->_name + "::load";
 
@@ -221,7 +221,7 @@ w_frame_buffer::~w_frame_buffer()
 HRESULT w_frame_buffer::load(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const VkRenderPass pRenderPass,
-    _In_ w_output_presentation_window* pPresentationWindow)
+    _In_ const w_output_presentation_window* pPresentationWindow)
 {
     if (!this->_pimp) return S_FALSE;
     return this->_pimp->load(

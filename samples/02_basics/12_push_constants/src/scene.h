@@ -58,7 +58,6 @@ public:
 
 private:
 	HRESULT _build_draw_command_buffers();
-	HRESULT _build_gui_command_buffers();
     bool	_update_gui();
 
 	wolf::graphics::w_viewport                                      _viewport;
@@ -74,13 +73,7 @@ private:
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
 
 	wolf::graphics::w_shader                                        _shader;
-    
-	//for gui
-	wolf::graphics::w_command_buffer                                _gui_command_buffers;
-	wolf::graphics::w_render_pass                                   _gui_render_pass;
-	wolf::graphics::w_frame_buffer                                  _gui_frame_buffers;
-
-	wolf::graphics::w_pipeline                                      _pipeline;
+    wolf::graphics::w_pipeline                                      _pipeline;
     
     wolf::graphics::w_mesh											_mesh;
     wolf::graphics::w_texture										_texture;
