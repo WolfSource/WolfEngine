@@ -17,9 +17,9 @@
 
  /*!
   * \file FrameRecorder.h
-  * \brief Masked occlusion culling recorder class (set ENABLE_RECORDER to 1 to enable)
+  * \brief Masked occlusion culling recorder class (set MOC_RECORDER_ENABLE to 1 to enable)
   *
-  * Masked occlusion culling recorder class (To enable, set ENABLE_RECORDER to 1 in MaskedOcclusionCulling.h)
+  * Masked occlusion culling recorder class (To enable, set MOC_RECORDER_ENABLE to 1 in MaskedOcclusionCulling.h)
   *
   * Enables gathering and storing all triangle rendering and all testing calls and their results to a file, for
   * later playback and performance testing.
@@ -38,22 +38,45 @@
 
 #include "MaskedOcclusionCulling.h"
 
-#if ENABLE_RECORDER
+#ifndef MOC_RECORDER_USE_STDIO_FILE
+/*!
+ * Whether to use FILE or std::ofstream/istream for file access (to avoid compatibility issues in some environments)
+ */
+#define MOC_RECORDER_USE_STDIO_FILE         1
+#endif
 
+#if MOC_RECORDER_ENABLE
+
+#if MOC_RECORDER_USE_STDIO_FILE
+#include <stdio.h>
+#else
 #include <fstream>
+#endif
+
 #include <mutex>
-#include <vector>
 
 class FrameRecorder
 {
-	std::ofstream       mOutStream;
+#if MOC_RECORDER_USE_STDIO_FILE
+    FILE *              mOutFile;
+#else
+    std::ofstream       mOutStream;
+#endif
 
 protected:
 	friend class MaskedOcclusionCulling;
+#if MOC_RECORDER_USE_STDIO_FILE
+    FrameRecorder( FILE *& outFile, const MaskedOcclusionCulling & moc );
+#else
 	FrameRecorder( std::ofstream && outStream, const MaskedOcclusionCulling & moc );
+#endif
 
 public:
-	~FrameRecorder( );
+    ~FrameRecorder( );
+
+protected:
+    void Write( const void * buffer, size_t size );
+    void WriteTriangleRecording( MaskedOcclusionCulling::CullingResult cullingResult, const float *inVtx, const unsigned int *inTris, int nTris, const float *modelToClipMatrix, MaskedOcclusionCulling::ClipPlanes clipPlaneMask, MaskedOcclusionCulling::BackfaceWinding bfWinding, const MaskedOcclusionCulling::VertexLayout & vtxLayout );
 
 public:
     void RecordClearBuffer( );
@@ -61,6 +84,36 @@ public:
 	void RecordTestRect( MaskedOcclusionCulling::CullingResult cullingResult, float xmin, float ymin, float xmax, float ymax, float wmin );
 	void RecordTestTriangles( MaskedOcclusionCulling::CullingResult cullingResult, const float *inVtx, const unsigned int *inTris, int nTris, const float *modelToClipMatrix, MaskedOcclusionCulling::ClipPlanes clipPlaneMask, MaskedOcclusionCulling::BackfaceWinding bfWinding, const MaskedOcclusionCulling::VertexLayout &vtxLayout );
 };
+
+#if MOC_RECORDER_ENABLE_PLAYBACK
+#include <vector>
+
+#if 0 // For future use - in case all vector uses below need conversion to custom allocator
+template <class T>
+struct MOCVectorAllocator
+{
+    const MaskedOcclusionCulling::pfnAlignedAlloc   m_alloc;
+    const MaskedOcclusionCulling::pfnAlignedFree    m_free;
+    typedef T value_type;
+    MOCVectorAllocator( ) = delete;
+    MOCVectorAllocator( MaskedOcclusionCulling::pfnAlignedAlloc alloc, MaskedOcclusionCulling::pfnAlignedFree free ) noexcept : m_alloc( alloc ), m_free( free ) { }
+    template <class U> constexpr MOCVectorAllocator( const MOCVectorAllocator<U>& c ) noexcept : m_alloc( c.m_alloc ), m_free( c.m_free ) {}
+    T* allocate( std::size_t n )
+    {
+        if( n > std::size_t( -1 ) / sizeof( T ) ) throw std::bad_alloc( );
+        if( auto p = static_cast<T*>( m_alloc( 64, n * sizeof( T ) ) ) ) return p;
+        throw std::bad_alloc( );
+    }
+    void deallocate( T* p, std::size_t ) noexcept
+    {
+        m_free( p );
+    }
+};
+template <class T, class U>
+inline bool operator==( const MOCVectorAllocator<T>&, const MOCVectorAllocator<U>& ) { return true; }
+template <class T, class U>
+inline bool operator!=( const MOCVectorAllocator<T>&, const MOCVectorAllocator<U>& ) { return false; }
+#endif
 
 struct FrameRecording
 {
@@ -122,4 +175,6 @@ struct FrameRecording
 	static bool Load( const char * inputFilePath, FrameRecording & outRecording );
 };
 
-#endif // #if ENABLE_RECORDER
+#endif // #if MOC_RECORDER_ENABLE_PLAYBACK
+
+#endif // #if MOC_RECORDER_ENABLE

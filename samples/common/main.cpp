@@ -68,7 +68,7 @@ WOLF_MAIN()
     _window_info.height = 600;
     _window_info.is_full_screen = false;
     _window_info.v_sync_enable = false;
-    _window_info.swap_chain_format = 37;//VK_FORMAT_R8G8B8A8_UNORM in vulkan api
+	_window_info.swap_chain_format = 44;//VK_FORMAT_B8G8A8A8_UNORM in vulkan api
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++

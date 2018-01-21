@@ -241,7 +241,7 @@ namespace wolf
 				_In_ VkImageLayout pSourceImageLayout,
 				_In_ const uint32_t& pWidth,
 				_In_ const uint32_t& pHeight,
-				_In_ system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured);
+				_In_ system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
 
 			/*
 				capture last presented swap chain image buffer's data and save to the D-RAM and make it accessable by CPU,
@@ -250,7 +250,7 @@ namespace wolf
 			*/
             W_EXP HRESULT capture_presented_swap_chain_buffer(
                 _In_ const uint32_t& pOutputPresentationWindowIndex,
-                _In_ wolf::system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured);
+                _In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
 
 			w_device_info*												device_info = nullptr;
 

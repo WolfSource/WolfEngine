@@ -240,7 +240,7 @@ HRESULT w_graphics_device::capture(
 	_In_ VkImageLayout pSourceImageLayout,
 	_In_ const uint32_t& pWidth, 
 	_In_ const uint32_t& pHeight, 
-	_In_ wolf::system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured)
+	_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured)
 {
     HRESULT _return_result = S_OK;
 
@@ -641,7 +641,7 @@ HRESULT w_graphics_device::capture(
 		vkGetImageSubresourceLayout(this->vk_device, _dst_image, &_sub_resource, &_sub_resource_layout);
 
 		//Map the memory
-		const uint8_t* _data;
+		uint8_t* _data;
 		w_point_t _size;
 		_size.x = pWidth;
 		_size.y = pHeight;
@@ -700,7 +700,7 @@ clean_up:
 
 HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 	_In_ const uint32_t& pOutputPresentationWindowIndex,
-	_In_ wolf::system::w_signal<void(const w_point_t, const uint8_t*)>& pOnPixelsDataCaptured)
+	_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured)
 {
 	if (pOutputPresentationWindowIndex >= this->output_presentation_windows.size()) return S_FALSE;
 
@@ -961,7 +961,7 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			vkGetImageSubresourceLayout(this->vk_device, _objs_ptr->destination_image, &_sub_resource, &_sub_resource_layout);
 
 			//Map the memory
-			const uint8_t* _data;
+			uint8_t* _data;
 			w_point_t _size;
 			_size.x = _output_window->width;
 			_size.y = _output_window->height;
@@ -2818,6 +2818,12 @@ namespace wolf
 					//use the default one
 					if (!_find_format)
 					{
+						logger.error("preferred swap chain format \'" + 
+							std::to_string(_output_presentation_window->vk_swap_chain_selected_format.format) + 
+							"\' not found for graphics device: " +
+							_device_name + " ID:" + std::to_string(_device_id) +
+							" and presentation window: " + std::to_string(pOutputPresentationWindowIndex));
+
 						_output_presentation_window->vk_swap_chain_selected_format = _output_presentation_window->vk_surface_formats[0];
 					}
 				}

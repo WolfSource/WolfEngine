@@ -54,7 +54,7 @@ public:
 	ULONG release() override;
 
 private:
-	wolf::system::w_signal<void(const w_point_t, const uint8_t*)> on_pixels_data_captured_signal;
+	wolf::system::w_signal<void(const w_point_t, uint8_t*)> on_pixels_data_captured_signal;
     bool															_update_gui();
 
     wolf::graphics::w_viewport                                      _viewport;

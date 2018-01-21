@@ -18,10 +18,6 @@
 #include <w_game_time.h>
 #include <map>
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
-
 namespace wolf
 {
 	namespace framework
@@ -83,9 +79,5 @@ namespace wolf
 		};
 	}
 }
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif

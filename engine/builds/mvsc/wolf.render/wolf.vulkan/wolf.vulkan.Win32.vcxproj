@@ -186,6 +186,7 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_model.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
@@ -255,6 +256,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_attachment_buffer_desc.h" />
@@ -263,7 +265,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_imgui.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_pipeline.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_quad.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_queue.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_render_pass.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.h" />
@@ -329,6 +330,9 @@
     <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\wolf.content_pipeline\wolf.content_pipeline.Win32.vcxproj">
+      <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295928}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\wolf.system\wolf.system.Win32.vcxproj">
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
     </ProjectReference>

@@ -13,9 +13,11 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 ////////////////////////////////////////////////////////////////////////////////
-#include <w_render_pch.h>
 #include <assert.h>
 #include "CullingThreadpool.h"
+
+#define SAFE_DELETE(X) {if (X != nullptr) delete X; X = nullptr;}
+#define SAFE_DELETE_ARRAY(X) {if (X != nullptr) delete[] X; X = nullptr;}
 
 template<class T> CullingThreadpool::StateData<T>::StateData(unsigned int maxJobs) :
 	mMaxJobs(maxJobs),
@@ -430,7 +432,7 @@ void CullingThreadpool::ClearBuffer()
 
 void CullingThreadpool::RenderTriangles(const float *inVtx, const unsigned int *inTris, int nTris, BackfaceWinding bfWinding, ClipPlanes clipPlaneMask)
 {
-#if ENABLE_RECORDER != 0
+#if MOC_RECORDER_ENABLE != 0
     mMOC->RecordRenderTriangles( inVtx, inTris, nTris, mCurrentMatrix, clipPlaneMask, bfWinding, *mVertexLayouts.GetData( ) );
 #endif
 
@@ -463,8 +465,8 @@ CullingThreadpool::CullingResult CullingThreadpool::TestTriangles(const float *i
 	return mMOC->TestTriangles(inVtx, inTris, nTris, mCurrentMatrix, bfWinding, clipPlaneMask, *mVertexLayouts.GetData());
 }
 
-void CullingThreadpool::ComputePixelDepthBuffer(float *depthData)
+void CullingThreadpool::ComputePixelDepthBuffer(float *depthData, bool flipY)
 {
 	Flush();
-	mMOC->ComputePixelDepthBuffer(depthData);
+	mMOC->ComputePixelDepthBuffer(depthData, flipY);
 }

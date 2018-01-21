@@ -98,7 +98,7 @@ private:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	wolf::system::w_signal<void(const w_point_t, const uint8_t*)> on_pixels_captured_signal;
+	wolf::system::w_signal<void(const w_point_t, uint8_t*)> on_pixels_captured_signal;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

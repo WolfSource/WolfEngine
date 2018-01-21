@@ -48,7 +48,7 @@ namespace wolf
 				_frames_this_second(0),
 				_seconds_counter(0),
 				_fixed_time_step(false),
-				_target_elapsed_ticks(TICKS_PER_SECOND / 60)
+				_target_elapsed_ticks((uint64_t)(TICKS_PER_SECOND / 60))
 			{
 				this->_name = "game_time";
 

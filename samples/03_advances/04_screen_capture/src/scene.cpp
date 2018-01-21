@@ -47,7 +47,7 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
     w_game::set_fixed_time_step(false);
 	this->_mesh = nullptr;
 
-	this->on_pixels_captured_signal += [&](_In_ const w_point_t pSize, _In_ const uint8_t* pPixels)->void
+	this->on_pixels_captured_signal += [&](_In_ const w_point_t pSize, _In_ uint8_t* pPixels)->void
 	{
 		std::string _path;
 		auto _current_path = wolf::system::io::get_current_directory();
@@ -56,6 +56,21 @@ scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wst
 #else
 		_path = _current_path;
 #endif
+
+#pragma region Convert BGRA to RGBA
+		//some gpu does not support RGBA, so we used BGRA as default format fo swap chain 
+		for (size_t i = 0; i < pSize.x * pSize.y * 4; i += 4)
+		{
+			auto _r = pPixels[i];
+			auto _b = pPixels[i + 2];
+
+			pPixels[i] = _b;//R
+			pPixels[i + 1] = pPixels[i + 1];//G
+			pPixels[i + 2] = _r;//B
+			pPixels[i + 3] = pPixels[i + 3];//A
+		}
+#pragma endregion
+
 		w_texture::save_bmp_to_file((_path + "/captured.bmp").c_str(), pSize.x, pSize.y, pPixels, 4);
 	};
 }
@@ -550,8 +565,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	if (w_game::render(pGameTime) == S_FALSE)
 	{
 		V(S_FALSE, "presenting to graphics device", _trace_info, 3, true);
-	}
-	
+	}	
 	if (sCapture)
 	{
 		sCapture = false;
@@ -562,9 +576,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 			return S_FALSE;
 		}
 	}
-
 	return S_OK;
-
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }

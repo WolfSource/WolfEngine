@@ -13,14 +13,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 ////////////////////////////////////////////////////////////////////////////////
-#include <w_render_pch.h>
 #include <string.h>
 #include <assert.h>
 #include <float.h>
 #include "MaskedOcclusionCulling.h"
 #include "CompilerSpecific.inl"
 
-#if ENABLE_RECORDER
+#if MOC_RECORDER_ENABLE
 #include "FrameRecorder.h"
 #endif
 
