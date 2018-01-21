@@ -122,6 +122,7 @@ namespace wolf
 #pragma region Getters
 
 			WCP_EXP std::string get_name() const									{ return this->_name; }
+            WCP_EXP bool get_is_all_sub_meshes_use_same_texture() const             { return this->_all_sub_meshes_use_same_texture;}
             WCP_EXP std::string set_instance_geometry_name()                        { return this->_instanced_geo_name; }
 			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
             WCP_EXP size_t get_instances_count() const                              { return this->_instances_info.size(); }
@@ -202,6 +203,8 @@ namespace wolf
 
 			std::vector<collada::c_bone*>							_skeleton;
 			std::vector<std::string>								_bone_names;
+            
+            bool                                                    _all_sub_meshes_use_same_texture;
 
           
 		};

@@ -43,7 +43,7 @@ namespace wolf
 				else if (_vertex_binding_attributes.declaration == w_vertex_declaration::USER_DEFINED &&
 					_batch_vertices.size() == 0)
 				{
-					V(S_FALSE, "do not use this this class for \'w_vertex_declaration::USER_DEFINED\' type, instead you can use low level classes such as \'w_mesh\' and \'w_buffer\'. See \'03_advances::03_instancing\' sample. Model \'" + this->_model_name + "\'", _trace_info, 3);
+					V(S_FALSE, "do not use this class when \'w_vertex_declaration::USER_DEFINED\' type used, instead you can use low level classes such as \'w_mesh\' and \'w_buffer\' for drawing model. See \'03_advances::03_instancing\' sample. Model \'" + this->_model_name + "\'", _trace_info, 3);
 					return S_FALSE;
 				}
 
@@ -85,7 +85,9 @@ namespace wolf
 						_vertex_binding_attributes,
 						_base_vertex_index,
 						this->_batch_vertices,
-						this->_batch_indices);
+						this->_batch_indices,
+                        this->_merged_bounding_box,
+                        this->_sub_meshes_bounding_box);
 				}
 
 					//create first lod information
@@ -151,10 +153,38 @@ namespace wolf
 				_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
 				_Inout_ uint32_t& pBaseVertex,
 				_Inout_ std::vector<float>& pBatchVertices,
-				_Inout_ std::vector<uint32_t>& pBatchIndices)
+				_Inout_ std::vector<uint32_t>& pBatchIndices,
+                _Inout_ w_bounding_box& pMergedBoundingBox,
+                _Inout_ std::vector<w_bounding_box>& pSubMeshBoundingBoxes)
 			{
+                int _texture_index = 0;
+                std::map<std::string, int> _textures_index;
 				for (auto& _mesh_data : pModelMeshes)
 				{
+                    int _uv_index = 0;
+                    if (pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_UV_INDEX ||
+                        pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_UV_INDEX_COLOR ||
+                        pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX ||
+                        pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL ||
+                        pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES)
+                        
+                        
+                    {
+                        auto _find = _textures_index.find(_mesh_data->textures_path);
+                        if (_textures_index.empty() && _find == _textures_index.end())
+                        {
+                            _uv_index =_texture_index;
+                            _textures_index.insert({ _mesh_data->textures_path, _texture_index++ });
+                        }
+                        else
+                        {
+                            _uv_index =_find->second;
+                        }
+                    }
+                    
+                    pMergedBoundingBox.merge(_mesh_data->bounding_box);
+                    pSubMeshBoundingBoxes.push_back(_mesh_data->bounding_box);
+                    
 					for (size_t i = 0; i < _mesh_data->indices.size(); ++i)
 					{
 						pBatchIndices.push_back(pBaseVertex + _mesh_data->indices[i]);
@@ -221,6 +251,27 @@ namespace wolf
 						}
 						break;
 					}
+                    case w_vertex_declaration::VERTEX_POSITION_UV_INDEX:
+                        {
+                            for (auto& _data : _mesh_data->vertices)
+                            {
+                                auto _pos = _data.position;
+                                auto _uv = _data.uv;
+                                
+                                //position
+                                pBatchVertices.push_back(_pos[0]);
+                                pBatchVertices.push_back(_pos[1]);
+                                pBatchVertices.push_back(_pos[2]);
+                                
+                                //uv
+                                pBatchVertices.push_back(_uv[0]);
+                                pBatchVertices.push_back(_uv[1]);
+                                pBatchVertices.push_back(_uv_index);
+                                
+                                pBaseVertex++;
+                            }
+                            break;
+                    }
 					case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
 					{
 						for (auto& _data : _mesh_data->vertices)
@@ -248,6 +299,35 @@ namespace wolf
 						}
 						break;
 					}
+                    case w_vertex_declaration::VERTEX_POSITION_UV_INDEX_COLOR:
+                        {
+                            for (auto& _data : _mesh_data->vertices)
+                            {
+                                auto _pos = _data.position;
+                                auto _uv = _data.uv;
+                                auto _color = _data.color;
+                                
+                                //position
+                                pBatchVertices.push_back(_pos[0]);
+                                pBatchVertices.push_back(_pos[1]);
+                                pBatchVertices.push_back(_pos[2]);
+                                
+                                //uv
+                                pBatchVertices.push_back(_uv[0]);
+                                pBatchVertices.push_back(_uv[1]);
+                                pBatchVertices.push_back(_uv_index);
+    
+                                
+                                //color
+                                pBatchVertices.push_back(_color[0]);
+                                pBatchVertices.push_back(_color[1]);
+                                pBatchVertices.push_back(_color[2]);
+                                pBatchVertices.push_back(_color[3]);
+                                
+                                pBaseVertex++;
+                            }
+                            break;
+                        }
 					case w_vertex_declaration::VERTEX_POSITION_NORMAL_COLOR:
 						for (auto& _data : _mesh_data->vertices)
 						{
@@ -298,6 +378,31 @@ namespace wolf
 							pBaseVertex++;
 						}
 						break;
+                    case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX:
+                            for (auto& _data : _mesh_data->vertices)
+                            {
+                                auto _pos = _data.position;
+                                auto _nor = _data.normal;
+                                auto _uv = _data.uv;
+                                
+                                //position
+                                pBatchVertices.push_back(_pos[0]);
+                                pBatchVertices.push_back(_pos[1]);
+                                pBatchVertices.push_back(_pos[2]);
+                                
+                                //normal
+                                pBatchVertices.push_back(_nor[0]);
+                                pBatchVertices.push_back(_nor[1]);
+                                pBatchVertices.push_back(_nor[2]);
+                                
+                                //uv
+                                pBatchVertices.push_back(_uv[0]);
+                                pBatchVertices.push_back(_uv[1]);
+                                pBatchVertices.push_back(_uv_index);
+                                
+                                pBaseVertex++;
+                            }
+                            break;
 					case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
 						for (auto& _data : _mesh_data->vertices)
 						{
@@ -334,6 +439,43 @@ namespace wolf
 							pBaseVertex++;
 						}
 						break;
+                    case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL:
+                        for (auto& _data : _mesh_data->vertices)
+                            {
+                                auto _pos = _data.position;
+                                auto _nor = _data.normal;
+                                auto _uv = _data.uv;
+                                auto _tangent = _data.tangent;
+                                auto _binormal = _data.binormal;
+                                
+                                //position
+                                pBatchVertices.push_back(_pos[0]);
+                                pBatchVertices.push_back(_pos[1]);
+                                pBatchVertices.push_back(_pos[2]);
+                                
+                                //normal
+                                pBatchVertices.push_back(_nor[0]);
+                                pBatchVertices.push_back(_nor[1]);
+                                pBatchVertices.push_back(_nor[2]);
+                                
+                                //uv
+                                pBatchVertices.push_back(_uv[0]);
+                                pBatchVertices.push_back(_uv[1]);
+                                pBatchVertices.push_back(_uv_index);
+                                
+                                //tangent
+                                pBatchVertices.push_back(_tangent[0]);
+                                pBatchVertices.push_back(_tangent[1]);
+                                pBatchVertices.push_back(_tangent[2]);
+                                
+                                //binormal
+                                pBatchVertices.push_back(_binormal[0]);
+                                pBatchVertices.push_back(_binormal[1]);
+                                pBatchVertices.push_back(_binormal[2]);
+                                
+                                pBaseVertex++;
+                            }
+                            break;
 					case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
 						for (auto& _data : _mesh_data->vertices)
 						{
@@ -382,8 +524,58 @@ namespace wolf
 							pBaseVertex++;
 						}
 						break;
+                        case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
+                            for (auto& _data : _mesh_data->vertices)
+                            {
+                                auto _pos = _data.position;
+                                auto _nor = _data.normal;
+                                auto _uv = _data.uv;
+                                auto _tangent = _data.tangent;
+                                auto _binormal = _data.binormal;
+                                auto _blend_weight = _data.blend_weight;
+                                auto _blend_indices = _data.blend_indices;
+                                
+                                //position
+                                pBatchVertices.push_back(_pos[0]);
+                                pBatchVertices.push_back(_pos[1]);
+                                pBatchVertices.push_back(_pos[2]);
+                                
+                                //normal
+                                pBatchVertices.push_back(_nor[0]);
+                                pBatchVertices.push_back(_nor[1]);
+                                pBatchVertices.push_back(_nor[2]);
+                                
+                                //uv
+                                pBatchVertices.push_back(_uv[0]);
+                                pBatchVertices.push_back(_uv[1]);
+                                pBatchVertices.push_back(_uv_index);
+                                
+                                //tangent
+                                pBatchVertices.push_back(_tangent[0]);
+                                pBatchVertices.push_back(_tangent[1]);
+                                pBatchVertices.push_back(_tangent[2]);
+                                
+                                //binormal
+                                pBatchVertices.push_back(_binormal[0]);
+                                pBatchVertices.push_back(_binormal[1]);
+                                pBatchVertices.push_back(_binormal[2]);
+                                
+                                //blend_weight
+                                pBatchVertices.push_back(_blend_weight[0]);
+                                pBatchVertices.push_back(_blend_weight[1]);
+                                pBatchVertices.push_back(_blend_weight[2]);
+                                
+                                //blend_indices
+                                pBatchVertices.push_back(_blend_indices[0]);
+                                pBatchVertices.push_back(_blend_indices[1]);
+                                pBatchVertices.push_back(_blend_indices[2]);
+                                
+                                pBaseVertex++;
+                            }
+                            break;
 					};
 				}
+                _textures_index.clear();
 			}
 
 			std::shared_ptr<w_graphics_device> 		_gDevice;
@@ -406,6 +598,8 @@ namespace wolf
 			w_bounding_box							_merged_bounding_box;
 			//sub bounding boxes for all meshes
 			std::vector<w_bounding_box>				_sub_meshes_bounding_box;
+            
+            std::vector<std::string>                _textures;
 		};
 	}
 }

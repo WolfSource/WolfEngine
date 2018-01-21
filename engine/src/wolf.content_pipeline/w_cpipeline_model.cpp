@@ -16,7 +16,8 @@ w_cpipeline_model::w_cpipeline_model() :
 	_last_animation_time(0),
 	_frame_overlap(0),
 	_overlapping(false),
-	_overlapping_start_time(false)
+	_overlapping_start_time(false),
+    _all_sub_meshes_use_same_texture(true)
 {
 }
 
@@ -41,8 +42,10 @@ w_cpipeline_model* w_cpipeline_model::create_model(
     _model->set_transform(pTransform);
     _model->update_world();
 
-	//std::string _messages;
-
+    //used to find out weather all sub meshes used from same texture or not
+    _model->_all_sub_meshes_use_same_texture = true;
+    std::set<std::string> _texture_paths_temps;
+    
     for (auto _triangle : pGeometry.triangles)
     {
         //find indices
@@ -294,7 +297,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
                         if (_nor.size()) std::memcpy(&_vertex.normal[0], _nor.data(), 3 * sizeof(float));
                         if (_tex.size()) std::memcpy(&_vertex.uv[0], _tex.data(), 2 * sizeof(float));
 
-                        _vertex_index = _vertices_data.size();
+                        _vertex_index = (uint32_t)_vertices_data.size();
                         _vertex.vertex_index = _vertex_index + 1;
 
                         if (pAMDTootleOptimizing)
@@ -334,7 +337,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
             {
                 w_vertex_data _vertex_data;
                 std::memset(&_vertex_data, 0, sizeof(_vertex_data));
-                _vertex_data.vertex_index = _vertices_data.size() + i + 1;
+                _vertex_data.vertex_index = (uint32_t)(_vertices_data.size() + i + 1);
                 _vertices_data.push_back(_vertex_data);
             }
         }
@@ -363,6 +366,19 @@ w_cpipeline_model* w_cpipeline_model::create_model(
                 if (_image_iter != sLibraryImages.end())
                 {
                     _mesh->textures_path = _image_iter->second;
+                    
+                    if (_model->_all_sub_meshes_use_same_texture)
+                    {
+                        //check weather all meshes used from same texture or not
+                        auto _find = _texture_paths_temps.find(_mesh->textures_path);
+                        //if model contains at least two different textures
+                        if (_texture_paths_temps.size() && _find == _texture_paths_temps.end())
+                        {
+                            _model->_all_sub_meshes_use_same_texture = false;
+                        }
+                        //store it for next check
+                        _texture_paths_temps.insert(_mesh->textures_path);
+                    }
                 }
             }
         }
@@ -378,7 +394,6 @@ w_cpipeline_model* w_cpipeline_model::create_model(
         _mesh->bounding_box.max[1] = _max_vertex[1];
         _mesh->bounding_box.max[2] = _max_vertex[2];
 
-        
         //The transform of bounding box is same as model
         std::memcpy(&_mesh->bounding_box.position[0], &pTransform.position[0], 3 * sizeof(float));
         std::memcpy(&_mesh->bounding_box.rotation[0], &pTransform.rotation[0], 3 * sizeof(float));
@@ -390,13 +405,16 @@ w_cpipeline_model* w_cpipeline_model::create_model(
         if (_vertices_positions.size() > 0) _vertices_positions.clear();
         if (_indices_data.size() > 0) _indices_data.clear();
     }
-
+    
+    //clear _texture_paths_temps
+    _texture_paths_temps.clear();
+    
 	if (_model)
 	{
 		_model->_skeleton.swap(pBones);
 	}
     
-	//logger.warning(_messages);
+    //logger.warning(_messages);
 	//_messages.clear();
 
 	return _model;

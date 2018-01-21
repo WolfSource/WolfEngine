@@ -30,16 +30,26 @@ namespace wolf
             VERTEX_POSITION_COLOR,
 			//Float3 + Float2
             VERTEX_POSITION_UV,
+            //Float3 + Float3
+            VERTEX_POSITION_UV_INDEX,
 			//Float3 + Float2 + Float4
             VERTEX_POSITION_UV_COLOR,
+            //Float3 + Float3 + Float4
+            VERTEX_POSITION_UV_INDEX_COLOR,
 			//Float3 + Float3 + Float4
             VERTEX_POSITION_NORMAL_COLOR,
 			//Float3 + Float3 + Float2
             VERTEX_POSITION_NORMAL_UV,
+            //Float3 + Float3 + Float3
+            VERTEX_POSITION_NORMAL_UV_INDEX,
 			//Float3 + Float3 + Float2 + Float3 + Float3
             VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL,
+            //Float3 + Float3 + Float3 + Float3 + Float3
+            VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL,
 			//Float3 + Float3 + Float2 + Float3 + Float3 + Float3 + Float3
             VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES,
+            //Float3 + Float3 + Float3 + Float3 + Float3 + Float3 + Float3
+            VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES
         };
 
         enum w_vertex_attribute : uint32_t
@@ -81,6 +91,11 @@ namespace wolf
 					_attr.push_back(w_vertex_attribute::Vec3);//normal
 					_attr.push_back(w_vertex_attribute::Vec2);//texture coordinate
 					break;
+                case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX:
+                        _attr.push_back(w_vertex_attribute::Vec3);//position
+                        _attr.push_back(w_vertex_attribute::Vec3);//normal
+                        _attr.push_back(w_vertex_attribute::Vec3);//texture coordinate with index of texture
+                        break;
 				case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
 					_attr.push_back(w_vertex_attribute::Vec3);//position
 					_attr.push_back(w_vertex_attribute::Vec3);//normal
@@ -88,6 +103,13 @@ namespace wolf
 					_attr.push_back(w_vertex_attribute::Vec3);//tangent
 					_attr.push_back(w_vertex_attribute::Vec3);//binormal
 					break;
+                case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL:
+                        _attr.push_back(w_vertex_attribute::Vec3);//position
+                        _attr.push_back(w_vertex_attribute::Vec3);//normal
+                        _attr.push_back(w_vertex_attribute::Vec3);//texture coordinate with index of texture
+                        _attr.push_back(w_vertex_attribute::Vec3);//tangent
+                        _attr.push_back(w_vertex_attribute::Vec3);//binormal
+                        break;
 				case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
 					//TODO: Skinned
 					/*_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
@@ -95,16 +117,33 @@ namespace wolf
 					_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec2);
 					_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
 					_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);*/
-					break;
+                        break;
+                case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
+                        //TODO: Skinned
+                        /*_v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
+                         _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
+                         _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec2);
+                         _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);
+                         _v.attributes.push_back(w_mesh::w_vertex_attribute::Vec3);*/
+                        break;
 				case w_vertex_declaration::VERTEX_POSITION_UV:
 					_attr.push_back(w_vertex_attribute::Vec3);//position
 					_attr.push_back(w_vertex_attribute::Vec2);//texture coordinate
 					break;
+                case w_vertex_declaration::VERTEX_POSITION_UV_INDEX:
+                        _attr.push_back(w_vertex_attribute::Vec3);//position
+                        _attr.push_back(w_vertex_attribute::Vec3);//texture coordinate with index of texture
+                        break;
 				case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
 					_attr.push_back(w_vertex_attribute::Vec3);//position
 					_attr.push_back(w_vertex_attribute::Vec2);//texture coordinate
 					_attr.push_back(w_vertex_attribute::Vec4);//color
 					break;
+                case w_vertex_declaration::VERTEX_POSITION_UV_INDEX_COLOR:
+                        _attr.push_back(w_vertex_attribute::Vec3);//position
+                        _attr.push_back(w_vertex_attribute::Vec3);//texture coordinate with index of texture
+                        _attr.push_back(w_vertex_attribute::Vec4);//color
+                        break;
 				}
 
 				//assign new binding attributes

@@ -4,7 +4,7 @@
 	Website			 : http://WolfSource.io
 	Name			 : w_model.h
 	Description		 : The main class of model
-	Comment          :
+	Comment          : For best performance, we use one texture for all meshes
 */
 
 #if _MSC_VER > 1000
@@ -34,9 +34,9 @@ namespace wolf
 				_In_ wolf::graphics::w_vertex_binding_attributes pVertexBindingAttributes);
 			W_EXP virtual ~w_model();
 
-			//part of loading which can be called from any thread
+			//first part of loading process which can be call from any thread
 			HRESULT pre_load(_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
-			//part of loading which must be called from only main thread
+			//final part of loading process which must be call from main thread
 			HRESULT post_load();
 
 			//direct draw 
