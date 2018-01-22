@@ -80,7 +80,7 @@ private:
 	wolf::graphics::w_shapes*										_shape_circle;
 	wolf::graphics::w_shapes*										_shape_box;
 	wolf::graphics::w_shapes*										_shape_sphere;
-
+	wolf::graphics::w_shapes*										_shape_coordinate_axis;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

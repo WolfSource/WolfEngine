@@ -60,6 +60,9 @@ namespace wolf
 				_In_ const w_color& pColor, 
 				_In_ const uint32_t& pResolution = 30);
 
+			//create coordinate system axis
+			W_EXP w_shapes(_In_ const w_color& pColor);
+
 			W_EXP virtual ~w_shapes();
 
 			//load shapes render

@@ -13,7 +13,10 @@ namespace wolf
 		{
 		public:
 			//create line shape 
-			w_shapes_pimp(_In_ const glm::vec3& pA, _In_ const glm::vec3& pB, _In_ const w_color& pColor):
+			w_shapes_pimp(
+				_In_ const glm::vec3& pA, 
+				_In_ const glm::vec3& pB, 
+				_In_ const w_color& pColor):
 				_shape_type(shape_type::LINE),
 				_color(pColor),
 				_bounding_box(nullptr),
@@ -26,7 +29,11 @@ namespace wolf
 			}
 
 			//create triangle shape
-			w_shapes_pimp(_In_ const glm::vec3& pA, _In_ const glm::vec3& pB, _In_ const glm::vec3& pC, _In_ const w_color& pColor) :
+			w_shapes_pimp(
+				_In_ const glm::vec3& pA, 
+				_In_ const glm::vec3& pB, 
+				_In_ const glm::vec3& pC, 
+				_In_ const w_color& pColor) :
 				_shape_type(shape_type::TRIANGLE),
 				_color(pColor),
 				_bounding_box(nullptr),
@@ -40,7 +47,12 @@ namespace wolf
 			}
 
 			//create circle shape
-			w_shapes_pimp(_In_ const glm::vec3& pCenter, _In_ const float& pRadius, _In_ const w_color& pColor, _In_ const w_plan& pPlan, _In_ const uint32_t& pResolution) :
+			w_shapes_pimp(
+				_In_ const glm::vec3& pCenter, 
+				_In_ const float& pRadius, 
+				_In_ const w_color& pColor, 
+				_In_ const w_plan& pPlan, 
+				_In_ const uint32_t& pResolution) :
 				_shape_type(shape_type::CIRCLE),
 				_color(pColor),
 				_bounding_box(nullptr),
@@ -55,7 +67,9 @@ namespace wolf
 			}
 
 			//create box shape
-			w_shapes_pimp(_In_ const wolf::system::w_bounding_box& pBoundingBox, _In_ const w_color& pColor) :
+			w_shapes_pimp(
+				_In_ const wolf::system::w_bounding_box& pBoundingBox, 
+				_In_ const w_color& pColor) :
 				_shape_type(shape_type::BOX),
 				_color(pColor),
 				_bounding_sphere(nullptr),
@@ -73,7 +87,10 @@ namespace wolf
 			}
 
 			//create sphere shape
-			w_shapes_pimp(_In_ const wolf::system::w_bounding_sphere& pBoundingSphere, _In_ const w_color& pColor, _In_ const uint32_t& pResolution) :
+			w_shapes_pimp(
+				_In_ const wolf::system::w_bounding_sphere& pBoundingSphere, 
+				_In_ const w_color& pColor, 
+				_In_ const uint32_t& pResolution) :
 				_shape_type(shape_type::SPHERE),
 				_color(pColor),
 				_bounding_box(nullptr),
@@ -89,6 +106,17 @@ namespace wolf
 				}
 				std::memcpy(&this->_bounding_sphere->center[0], &pBoundingSphere.center[0], 3 * sizeof(float));
 				this->_bounding_sphere->radius = pBoundingSphere.radius;
+			}
+
+			//create axis
+			w_shapes_pimp(_In_ const w_color& pColor) :
+				_shape_type(shape_type::AXIS),
+				_color(pColor),
+				_bounding_box(nullptr),
+				_bounding_sphere(nullptr),
+				_name("w_shapes"),
+				_gDevice(nullptr)
+			{
 			}
 
 			HRESULT load(
@@ -118,6 +146,9 @@ namespace wolf
 					break;
 				case shape_type::SPHERE:
 					_generate_bounding_sphere_vertices(_vertices);
+					break;
+				case shape_type::AXIS:
+					_generate_axis_vertices(_vertices);
 					break;
 				};
 
@@ -340,7 +371,6 @@ namespace wolf
 				std::memcpy(&pVertices[_index], &this->_points[0], _offset * sizeof(float));
 
 #pragma endregion
-
 			}
 
 			void _generate_bounding_box_vertices(_Inout_ std::vector<float>& pVertices)
@@ -557,9 +587,129 @@ namespace wolf
 				}
 			}
 
+			void _generate_axis_vertices(_Inout_ std::vector<float>& pVertices)
+			{
+				uint32_t _index = 0;
+				const size_t _offset = 3;//3 floats for pos
+				pVertices.resize(18 * _offset);//18 vertices 
+
+#pragma region fill in the vertices for X axis
+				
+				glm::vec3 _point(0);
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 5.0f;
+				_point.y = 0.0f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				//again Right(1,0,0) * 5
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 4.5f;
+				_point.y = 0.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 5.0f;
+				_point.y = 0.0f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 4.5f;
+				_point.y = -0.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+#pragma endregion
+
+#pragma region fill in the vertices for Y axis
+				
+				_point.x = 0.0f;
+				_point.y = 0.0f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = 0.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				//again Up(0,1,0) * 5
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.5f;
+				_point.y = 4.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = 0.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = -0.5f;
+				_point.y = 4.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+#pragma endregion
+
+#pragma region fill in the vertices for Z axis
+
+				_point.x = 0.0f;
+				_point.y = 0.0f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = -5.0f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				//again Forward(0,0,-1) * 5
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = 0.5f;
+				_point.z = -4.5f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = 0.0f;
+				_point.z = -5.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = -0.5f;
+				_point.z = -4.5f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+#pragma endregion
+
+			}
+
             enum shape_type
             {
-				LINE, TRIANGLE, CIRCLE, BOX, SPHERE
+				LINE, TRIANGLE, CIRCLE, BOX, SPHERE, AXIS
             } _shape_type;
 
 			std::string                                             _name;
@@ -628,15 +778,26 @@ w_shapes::w_shapes(_In_ const glm::vec3& pCenter,
 	_super::set_class_name("w_shapes");
 }
 
-w_shapes::w_shapes(_In_ const wolf::system::w_bounding_box& pBoundingBox, _In_ const w_color& pColor) :
+w_shapes::w_shapes(
+	_In_ const w_bounding_box& pBoundingBox, 
+	_In_ const w_color& pColor) :
     _pimp(new w_shapes_pimp(pBoundingBox, pColor))
 {
     _super::set_class_name("w_shapes");
 }
 
 //create bounding sphere shape 
-w_shapes::w_shapes(_In_ const wolf::system::w_bounding_sphere& pBoundingSphere, _In_ const w_color& pColor, _In_ const uint32_t& pResolution) :
+w_shapes::w_shapes(
+	_In_ const w_bounding_sphere& pBoundingSphere, 
+	_In_ const w_color& pColor, 
+	_In_ const uint32_t& pResolution) :
 	_pimp(new w_shapes_pimp(pBoundingSphere, pColor, pResolution))
+{
+	_super::set_class_name("w_shapes");
+}
+
+w_shapes::w_shapes(_In_ const w_color& pColor) :
+	_pimp(new w_shapes_pimp(pColor))
 {
 	_super::set_class_name("w_shapes");
 }

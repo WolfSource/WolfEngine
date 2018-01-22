@@ -611,7 +611,7 @@ w_model::w_model(
 	_In_ w_vertex_binding_attributes pVertexBindingAttributes) :
 	_pimp(new w_model_pimp(pContentPipelineModel, pVertexBindingAttributes))
 {
-
+	_super::set_class_name("w_model");
 }
 
 w_model::~w_model()
