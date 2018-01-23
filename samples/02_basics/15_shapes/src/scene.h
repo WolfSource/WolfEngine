@@ -73,14 +73,12 @@ private:
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++	
 	wolf::graphics::w_shapes*										_shape_line;
 	wolf::graphics::w_shapes*										_shape_triangle;
 	wolf::graphics::w_shapes*										_shape_circle;
 	wolf::graphics::w_shapes*										_shape_box;
 	wolf::graphics::w_shapes*										_shape_sphere;
-	wolf::graphics::w_shapes*										_shape_coordinate_axis;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

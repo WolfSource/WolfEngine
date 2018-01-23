@@ -13,6 +13,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 ////////////////////////////////////////////////////////////////////////////////
+#include "w_render_pch.h"
 #include <vector>
 #include <string.h>
 #include <assert.h>

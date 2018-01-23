@@ -13,6 +13,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 ////////////////////////////////////////////////////////////////////////////////
+#include "w_render_pch.h"
 #include "FrameRecorder.h"
 
 #if MOC_RECORDER_ENABLE

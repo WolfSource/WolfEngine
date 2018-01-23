@@ -4,7 +4,7 @@
 	Website			 : http://WolfSource.io
 	Name			 : w_shapes.h
 	Description		 : A class which is responsible to render shapes
-	Comment          : TODO: Add instancing for shape
+	Comment          : 
 */
 
 #ifndef __W_SHAPES_H__

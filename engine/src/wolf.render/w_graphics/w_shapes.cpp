@@ -591,7 +591,7 @@ namespace wolf
 			{
 				uint32_t _index = 0;
 				const size_t _offset = 3;//3 floats for pos
-				pVertices.resize(18 * _offset);//18 vertices 
+				pVertices.resize(34 * _offset);//28 vertices 
 
 #pragma region fill in the vertices for X axis
 				
@@ -627,6 +627,31 @@ namespace wolf
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 
+				//create X
+				_point.x = 5.5f;
+				_point.y = -0.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 6.0f;
+				_point.y = 0.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 6.0f;
+				_point.y = -0.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 5.5f;
+				_point.y = 0.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
 #pragma endregion
 
 #pragma region fill in the vertices for Y axis
@@ -638,7 +663,7 @@ namespace wolf
 				_index += _offset;
 
 				_point.x = 0.0f;
-				_point.y = 0.5f;
+				_point.y = 5.0f;
 				_point.z = 0.0f;
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
@@ -654,7 +679,7 @@ namespace wolf
 				_index += _offset;
 
 				_point.x = 0.0f;
-				_point.y = 0.5f;
+				_point.y = 5.0f;
 				_point.z = 0.0f;
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
@@ -665,6 +690,42 @@ namespace wolf
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 
+				//create Y
+				_point.x = 0.0f;
+				_point.y = 5.9f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = -0.3f;
+				_point.y = 6.3f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = 5.9f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.3f;
+				_point.y = 6.3f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = 5.9f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = 5.5f;
+				_point.z = 0.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
 #pragma endregion
 
 #pragma region fill in the vertices for Z axis
@@ -676,30 +737,67 @@ namespace wolf
 				_index += _offset;
 
 				_point.x = 0.0f;
-				_point.y = -5.0f;
-				_point.z = 0.0f;
+				_point.y = 0.0f;
+				_point.z = 5.0f;
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 
-				//again Forward(0,0,-1) * 5
+				//again (0,0,1) * 5
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 
 				_point.x = 0.0f;
 				_point.y = 0.5f;
-				_point.z = -4.5f;
+				_point.z = 4.5f;
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 
 				_point.x = 0.0f;
 				_point.y = 0.0f;
-				_point.z = -5.0f;
+				_point.z = 5.0f;
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 
 				_point.x = 0.0f;
 				_point.y = -0.5f;
-				_point.z = -4.5f;
+				_point.z = 4.5f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				//create Z
+				_point.x = 0.0f;
+				_point.y = 0.5f;
+				_point.z = 5.5f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = 0.5f;
+				_point.z = 6.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = -0.5f;
+				_point.z = 5.5f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = -0.5f;
+				_point.z = 6.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = 0.5f;
+				_point.z = 6.0f;
+				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
+				_index += _offset;
+
+				_point.x = 0.0f;
+				_point.y = -0.5f;
+				_point.z = 5.5f;
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 

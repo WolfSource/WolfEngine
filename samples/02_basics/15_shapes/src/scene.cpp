@@ -243,19 +243,6 @@ void scene::load()
 		release();
 		V(S_FALSE, "loading shape(sphere)", _trace_info, 3, true);
 	}
-
-	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
-	if (!this->_shape_coordinate_axis)
-	{
-		release();
-		V(S_FALSE, "allocating memory for shape(coordinate axis)", _trace_info, 3, true);
-	}
-	_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "loading shape(coordinate axis)", _trace_info, 3, true);
-	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -289,7 +276,6 @@ HRESULT scene::_build_draw_command_buffers()
 				this->_shape_circle->draw(_cmd);
                 this->_shape_box->draw(_cmd);
 				this->_shape_sphere->draw(_cmd);
-				this->_shape_coordinate_axis->draw(_cmd);
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
             }
@@ -319,7 +305,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	auto _angle = (float)pGameTime.get_total_seconds();
-	auto _eye = glm::vec3((float)std::cos(_angle * .5f), 0.5f, (float)std::sin(_angle * 0.5f)) * 12.0f;
+	auto _eye = glm::vec3((float)std::cos(_angle * 0.5f), 0.5f, (float)std::sin(_angle * 0.5f)) * 15.0f;
 	auto _up = glm::vec3(0, -1, 0);
 	auto _look_at = glm::vec3(0, 0, 0);
 
@@ -338,7 +324,6 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	this->_shape_circle->update(_wvp);
 	this->_shape_box->update(_wvp);
 	this->_shape_sphere->update(_wvp);
-	this->_shape_coordinate_axis->update(_wvp);
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -421,7 +406,6 @@ ULONG scene::release()
 	SAFE_RELEASE(this->_shape_circle);
 	SAFE_RELEASE(this->_shape_box);
 	SAFE_RELEASE(this->_shape_sphere);
-	SAFE_RELEASE(this->_shape_coordinate_axis);
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++

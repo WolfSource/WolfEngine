@@ -9,26 +9,4 @@
     <ClInclude Include="..\..\..\..\common\pch.h" />
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Filter Include="content">
-      <UniqueIdentifier>{f52f7395-a0e1-4980-a70b-cf87065d5dfa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="content\shaders">
-      <UniqueIdentifier>{1400f46a-47e6-4b22-95b0-c589ade641a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="content\models">
-      <UniqueIdentifier>{9448f997-58aa-4b90-be9b-c7275cdb351c}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\src\content\shaders\shader.frag">
-      <Filter>content\shaders</Filter>
-    </None>
-    <None Include="..\..\src\content\shaders\shader.vert">
-      <Filter>content\shaders</Filter>
-    </None>
-    <None Include="..\..\..\02_model\src\content\models\teapot.DAE">
-      <Filter>content\models</Filter>
-    </None>
-  </ItemGroup>
 </Project>
