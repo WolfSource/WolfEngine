@@ -22,6 +22,10 @@
 
 #if defined(__WIN32) || defined(__UWP)
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #ifdef __DX12__
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")

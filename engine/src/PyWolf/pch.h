@@ -14,13 +14,13 @@
 #ifndef __PCH_H__
 #define __PCH_H__
 
+
 #include <boost/python.hpp>
-#include <wolf.h>
-#include <w_window.h>
-#include <w_task.h>
-#include "scene.h"
+
 #include <tbb/atomic.h>
-#include <tbb/compat/condition_variable>
-#include <w_content_manager.h>
+
+//from wolf::system namespaces
+#include <wolf.h>
+#include <w_bounding.h>
 
 #endif //__PCH_H__

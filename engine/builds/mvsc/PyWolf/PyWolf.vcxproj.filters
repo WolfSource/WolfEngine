@@ -2,13 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\..\src\pyWolf\main.cpp" />
-    <ClCompile Include="..\..\..\src\pyWolf\scene.cpp" />
-    <ClCompile Include="..\..\..\src\pyWolf\model.cpp" />
     <ClCompile Include="..\..\..\src\pyWolf\pch.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\pyWolf\model.h" />
-    <ClInclude Include="..\..\..\src\pyWolf\scene.h" />
     <ClInclude Include="..\..\..\src\pyWolf\pch.h" />
   </ItemGroup>
 </Project>

@@ -778,6 +778,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_boost_python_helper.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

@@ -8,10 +8,6 @@
 // - ImFont
 // - Default font data
 
-#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
-#define _CRT_SECURE_NO_WARNINGS
-#endif
-
 #pragma region Added for Wolf Engine by Pooya
 #include "w_render_pch.h"
 #pragma endregion

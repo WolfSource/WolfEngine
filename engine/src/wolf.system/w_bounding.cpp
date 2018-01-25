@@ -24,48 +24,55 @@ w_bounding_box w_bounding_box::create_from_bounding_sphere(_In_ const w_bounding
 	return _box;
 }
 
-void w_bounding_box::generate_vertices_indices()
+void w_bounding_box::generate_vertices()
 {
-    if (vertices.size()) vertices.clear();
-    vertices =
-    {
-        min[0], min[1], min[2],
-        min[0], max[1], min[2],
-        max[0], max[1], min[2],
-        max[0], max[1], min[2],
-        max[0], min[1], min[2],
-        min[0], min[1], min[2],
-        min[0], min[1], max[2],
-        max[0], min[1], max[2],
-        max[0], max[1], max[2],
-        max[0], max[1], max[2],
-        min[0], max[1], max[2],
-        min[0], min[1], max[2],
-        min[0], min[1], min[2],
-        max[0], min[1], min[2],
-        max[0], min[1], max[2],
-        max[0], min[1], max[2],
-        min[0], min[1], max[2],
-        min[0], min[1], min[2],
-        max[0], min[1], min[2],
-        max[0], max[1], min[2],
-        max[0], max[1], max[2],
-        max[0], max[1], max[2],
-        max[0], min[1], max[2],
-        max[0], min[1], min[2],
-        max[0], max[1], min[2],
-        min[0], max[1], min[2],
-        min[0], max[1], max[2],
-        min[0], max[1], max[2],
-        max[0], max[1], max[2],
-        max[0], max[1], min[2],
-        min[0], max[1], min[2],
-        min[0], min[1], min[2],
-        min[0], min[1], max[2],
-        min[0], min[1], max[2],
-        min[0], max[1], max[2],
-        min[0], max[1], min[2]
-    };
+	vertices[0] = min[0]; vertices[1] = min[1]; vertices[2] = min[2];
+	vertices[3] = min[0]; vertices[4] = max[1]; vertices[5] = min[2];
+	vertices[6] = max[0]; vertices[7] = max[1]; vertices[8] = min[2];
+
+	vertices[9] = max[0]; vertices[10] = max[1]; vertices[11] = min[2];
+	vertices[12] = max[0]; vertices[13] = min[1]; vertices[14] = min[2];
+	vertices[15] = min[0]; vertices[16] = min[1]; vertices[17] = min[2];
+	
+	vertices[18] = min[0]; vertices[19] = min[1]; vertices[20] = max[2];
+	vertices[21] = max[0]; vertices[22] = min[1]; vertices[23] = max[2];
+	vertices[24] = max[0]; vertices[25] = max[1]; vertices[26] = max[2];
+	
+	vertices[27] = max[0]; vertices[28] = max[1]; vertices[29] = max[2];
+	vertices[30] = min[0]; vertices[31] = max[1]; vertices[32] = max[2];
+	vertices[33] = min[0]; vertices[34] = min[1]; vertices[35] = max[2];
+
+	vertices[36] = min[0]; vertices[37] = min[1]; vertices[38] = min[2];
+	vertices[39] = max[0]; vertices[40] = min[1]; vertices[41] = min[2];
+	vertices[42] = max[0]; vertices[43] = min[1]; vertices[44] = max[2];
+	
+	vertices[45] = max[0]; vertices[46] = min[1]; vertices[47] = max[2];
+	vertices[48] = min[0]; vertices[49] = min[1]; vertices[50] = max[2];
+	vertices[51] = min[0]; vertices[52] = min[1]; vertices[53] = min[2];
+	
+	vertices[54] = max[0]; vertices[55] = min[1]; vertices[56] = min[2];
+	vertices[57] = max[0]; vertices[58] = max[1]; vertices[59] = min[2];
+	vertices[60] = max[0]; vertices[61] = max[1]; vertices[62] = max[2];
+
+	vertices[63] = max[0]; vertices[64] = max[1]; vertices[65] = max[2];
+	vertices[66] = max[0]; vertices[67] = min[1]; vertices[68] = max[2];
+	vertices[69] = max[0]; vertices[70] = min[1]; vertices[71] = min[2];
+
+	vertices[72] = max[0]; vertices[73] = max[1]; vertices[74] = min[2];
+	vertices[75] = min[0]; vertices[76] = max[1]; vertices[77] = min[2];
+	vertices[78] = min[0]; vertices[79] = max[1]; vertices[80] = max[2];
+
+	vertices[81] = min[0]; vertices[82] = max[1]; vertices[83] = max[2];
+	vertices[84] = max[0]; vertices[85] = max[1]; vertices[86] = max[2];
+	vertices[87] = max[0]; vertices[88] = max[1]; vertices[89] = min[2];
+
+	vertices[90] = min[0]; vertices[91] = max[1]; vertices[92] = min[2];
+	vertices[93] = min[0]; vertices[94] = min[1]; vertices[95] = min[2];
+	vertices[96] = min[0]; vertices[97] = min[1]; vertices[98] = max[2];
+	
+	vertices[99] = min[0]; vertices[100] = min[1]; vertices[101] = max[2];
+	vertices[102] = min[0]; vertices[103] = max[1]; vertices[104] = max[2];
+	vertices[105] = min[0]; vertices[106] = max[1]; vertices[107] = min[2];
 }
 
 void w_bounding_box::merge(_In_ _In_ const w_bounding_box& pAdditional)
