@@ -8,6 +8,6 @@
     <ClInclude Include="..\..\src\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\content\scripts\samples\01_system-06_lua.lua" />
+    <None Include="..\..\..\..\..\content\scripts\samples\_06_lua.lua" />
   </ItemGroup>
 </Project>
