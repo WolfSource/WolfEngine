@@ -15,6 +15,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
+#include <w_render_export.h>
+
 /*!
  *  \file MaskedOcclusionCulling.h
  *  \brief Masked Occlusion Culling
@@ -260,20 +262,20 @@ public:
 	/*!
 	 * \brief Creates a new object with default state, no z buffer attached/allocated.
 	 */
-	static MaskedOcclusionCulling *Create();
+	W_EXP static MaskedOcclusionCulling *Create();
 	
 	/*!
 	 * \brief Creates a new object with default state, no z buffer attached/allocated.
 	 * \param alignedAlloc Pointer to a callback function used when allocating memory
 	 * \param alignedFree Pointer to a callback function used when freeing memory
 	 */
-	static MaskedOcclusionCulling *Create(pfnAlignedAlloc alignedAlloc, pfnAlignedFree alignedFree);
+	W_EXP static MaskedOcclusionCulling *Create(pfnAlignedAlloc alignedAlloc, pfnAlignedFree alignedFree);
 
 	/*!
 	 * \brief Destroys an object and frees the z buffer memory. Note that you cannot 
 	 * use the delete operator, and should rather use this function to free up memory.
 	 */
-	static void Destroy(MaskedOcclusionCulling *moc);
+	W_EXP static void Destroy(MaskedOcclusionCulling *moc);
 
 	/*!
 	 * \brief Sets the resolution of the hierarchical depth buffer. This function will
@@ -283,7 +285,7 @@ public:
 	 * \param witdh The width of the buffer in pixels, must be a multiple of 8
 	 * \param height The height of the buffer in pixels, must be a multiple of 4
 	 */
-	virtual void SetResolution(unsigned int width, unsigned int height) = 0;
+	W_EXP virtual void SetResolution(unsigned int width, unsigned int height) = 0;
 
 	/*!
 	* \brief Gets the resolution of the hierarchical depth buffer. 
@@ -291,7 +293,7 @@ public:
 	* \param witdh Output: The width of the buffer in pixels
 	* \param height Output: The height of the buffer in pixels
 	*/
-	virtual void GetResolution(unsigned int &width, unsigned int &height) const = 0;
+	W_EXP virtual void GetResolution(unsigned int &width, unsigned int &height) const = 0;
 
 	/*!
 	 * \brief Returns the tile size for the current implementation.
@@ -305,24 +307,24 @@ public:
 	 * \param outBinHeight Output: The height of the single bin in pixels (except for the 
 	 *        bottommost bin height, which is extended to resolution height)
 	 */
-	virtual void ComputeBinWidthHeight(unsigned int nBinsW, unsigned int nBinsH, unsigned int & outBinWidth, unsigned int & outBinHeight) = 0;
+	W_EXP virtual void ComputeBinWidthHeight(unsigned int nBinsW, unsigned int nBinsH, unsigned int & outBinWidth, unsigned int & outBinHeight) = 0;
 
 	/*!
 	 * \brief Sets the distance for the near clipping plane. Default is nearDist = 0.
 	 *
 	 * \param nearDist The distance to the near clipping plane, given as clip space w
 	 */
-	virtual void SetNearClipPlane(float nearDist) = 0;
+	W_EXP virtual void SetNearClipPlane(float nearDist) = 0;
 
 	/*!
 	* \brief Gets the distance for the near clipping plane. 
 	*/
-	virtual float GetNearClipPlane() const = 0;
+	W_EXP virtual float GetNearClipPlane() const = 0;
 
 	/*!
 	 * \brief Clears the hierarchical depth buffer.
 	 */
-	virtual void ClearBuffer() = 0;
+	W_EXP virtual void ClearBuffer() = 0;
 
 	/*! 
 	 * \brief Renders a mesh of occluder triangles and updates the hierarchical z buffer
@@ -355,7 +357,7 @@ public:
 	 * \return Will return VIEW_CULLED if all triangles are either outside the frustum or
 	 *         backface culled, returns VISIBLE otherwise.
 	 */
-	virtual CullingResult RenderTriangles(const float *inVtx, const unsigned int *inTris, int nTris, const float *modelToClipMatrix = nullptr, BackfaceWinding bfWinding = BACKFACE_CW, ClipPlanes clipPlaneMask = CLIP_PLANE_ALL, const VertexLayout &vtxLayout = VertexLayout(16, 4, 12)) = 0;
+	W_EXP virtual CullingResult RenderTriangles(const float *inVtx, const unsigned int *inTris, int nTris, const float *modelToClipMatrix = nullptr, BackfaceWinding bfWinding = BACKFACE_CW, ClipPlanes clipPlaneMask = CLIP_PLANE_ALL, const VertexLayout &vtxLayout = VertexLayout(16, 4, 12)) = 0;
 
 	/*!
 	 * \brief Occlusion query for a rectangle with a given depth. The rectangle is given 
@@ -374,7 +376,7 @@ public:
 	 *         if the rectangle is occluded by a previously rendered  object, or VIEW_CULLED
 	 *         if the rectangle is outside the view frustum.
 	 */
-	virtual CullingResult TestRect(float xmin, float ymin, float xmax, float ymax, float wmin) const = 0;
+	W_EXP virtual CullingResult TestRect(float xmin, float ymin, float xmax, float ymax, float wmin) const = 0;
 
 	/*!
 	 * \brief This function is similar to RenderTriangles(), but performs an occlusion
@@ -410,7 +412,7 @@ public:
 	 *         if the mesh is occluded by a previously rendered object, or VIEW_CULLED if all
 	 *         triangles are entirely outside the view frustum or backface culled.
 	 */
-	virtual CullingResult TestTriangles(const float *inVtx, const unsigned int *inTris, int nTris, const float *modelToClipMatrix = nullptr, BackfaceWinding bfWinding = BACKFACE_CW, ClipPlanes clipPlaneMask = CLIP_PLANE_ALL, const VertexLayout &vtxLayout = VertexLayout(16, 4, 12)) = 0;
+	W_EXP virtual CullingResult TestTriangles(const float *inVtx, const unsigned int *inTris, int nTris, const float *modelToClipMatrix = nullptr, BackfaceWinding bfWinding = BACKFACE_CW, ClipPlanes clipPlaneMask = CLIP_PLANE_ALL, const VertexLayout &vtxLayout = VertexLayout(16, 4, 12)) = 0;
 
 	/*!
 	 * \brief Perform input assembly, clipping , projection, triangle setup, and write
@@ -447,7 +449,7 @@ public:
 	 *        and will not be binned / rasterized. You may use BACKFACE_NONE to disable culling
 	 *        for double sided geometry
 	 */
-	virtual void BinTriangles(const float *inVtx, const unsigned int *inTris, int nTris, TriList *triLists, unsigned int nBinsW, unsigned int nBinsH, const float *modelToClipMatrix = nullptr, BackfaceWinding bfWinding = BACKFACE_CW, ClipPlanes clipPlaneMask = CLIP_PLANE_ALL, const VertexLayout &vtxLayout = VertexLayout(16, 4, 12)) = 0;
+	W_EXP virtual void BinTriangles(const float *inVtx, const unsigned int *inTris, int nTris, TriList *triLists, unsigned int nBinsW, unsigned int nBinsH, const float *modelToClipMatrix = nullptr, BackfaceWinding bfWinding = BACKFACE_CW, ClipPlanes clipPlaneMask = CLIP_PLANE_ALL, const VertexLayout &vtxLayout = VertexLayout(16, 4, 12)) = 0;
 
 	/*!
 	 * \brief Renders all occluder triangles in a trilist. This function can be used in
@@ -467,7 +469,7 @@ public:
 	 *          lastColBinWidth = width - (nBinsW-1)*binWidth;
 	 *          lastRowBinHeight = height - (nBinsH-1)*binHeight;
 	 */
-	virtual void RenderTrilist(const TriList &triList, const ScissorRect *scissor) = 0;
+	W_EXP virtual void RenderTrilist(const TriList &triList, const ScissorRect *scissor) = 0;
 
 	/*!
 	 * \brief Creates a per-pixel depth buffer from the hierarchical z buffer representation.
@@ -478,18 +480,18 @@ public:
 	 * \param depthData Pointer to memory where the per-pixel depth data is written. Must
 	 *        hold storage for atleast width*height elements as set by setResolution.
 	 */
-	virtual void ComputePixelDepthBuffer(float *depthData, bool flipY) = 0;
+	W_EXP virtual void ComputePixelDepthBuffer(float *depthData, bool flipY) = 0;
 	
 	/*!
 	 * \brief Fetch occlusion culling statistics, returns zeroes if ENABLE_STATS define is
 	 *        not defined. The statistics can be used for profiling or debugging.
 	 */
-	virtual OcclusionCullingStatistics GetStatistics() = 0;
+	W_EXP virtual OcclusionCullingStatistics GetStatistics() = 0;
 
 	/*!
 	 * \brief Returns the implementation (CPU instruction set) version of this object.
 	 */
-	virtual Implementation GetImplementation() = 0;
+	W_EXP virtual Implementation GetImplementation() = 0;
 
 	/*!
 	 * \brief Utility function for transforming vertices and outputting them to an (x,y,z,w)
@@ -508,12 +510,12 @@ public:
 	 *        as compactly in memory as possible. Note that for this function, the
 	 *        w-component is assumed to be 1.0.
 	 */
-	static void TransformVertices(const float *mtx, const float *inVtx, float *xfVtx, unsigned int nVtx, const VertexLayout &vtxLayout = VertexLayout(12, 4, 8));
+	W_EXP static void TransformVertices(const float *mtx, const float *inVtx, float *xfVtx, unsigned int nVtx, const VertexLayout &vtxLayout = VertexLayout(12, 4, 8));
 
 	/*!
 	 * \brief Get used memory alloc/free callbacks.
      */
-    void GetAllocFreeCallback( pfnAlignedAlloc & allocCallback, pfnAlignedFree & freeCallback ) { allocCallback = mAlignedAllocCallback, freeCallback = mAlignedFreeCallback; }
+	W_EXP void GetAllocFreeCallback( pfnAlignedAlloc & allocCallback, pfnAlignedFree & freeCallback ) { allocCallback = mAlignedAllocCallback, freeCallback = mAlignedFreeCallback; }
 
 #if MOC_RECORDER_ENABLE
     /*!
@@ -529,12 +531,12 @@ public:
 	 * \param outputFilePath Pointer to name of the output file. 
 	 * \return 'true' if recording was started successfully, 'false' otherwise (file access error).
 	 */
-    bool RecorderStart( const char * outputFilePath ) const;
+	W_EXP bool RecorderStart( const char * outputFilePath ) const;
 
     /*!
 	 * \brief Stop recording, flush output and release used memory.
 	 */
-    void RecorderStop( ) const;
+	W_EXP void RecorderStop( ) const;
 
     /*!
 	 * \brief Manually record triangles. This is called automatically from MaskedOcclusionCulling::RenderTriangles 
@@ -568,7 +570,7 @@ public:
     // 
     // merge the binned data back into original layout; in this case, call it manually from your Threadpool implementation (already added to CullingThreadpool).
     // If recording is not enabled, calling this function will do nothing.
-    void RecordRenderTriangles( const float *inVtx, const unsigned int *inTris, int nTris, const float *modelToClipMatrix = nullptr, ClipPlanes clipPlaneMask = CLIP_PLANE_ALL, BackfaceWinding bfWinding = BACKFACE_CW, const VertexLayout &vtxLayout = VertexLayout( 16, 4, 12 ), CullingResult cullingResult = (CullingResult)-1 );
+	W_EXP void RecordRenderTriangles( const float *inVtx, const unsigned int *inTris, int nTris, const float *modelToClipMatrix = nullptr, ClipPlanes clipPlaneMask = CLIP_PLANE_ALL, BackfaceWinding bfWinding = BACKFACE_CW, const VertexLayout &vtxLayout = VertexLayout( 16, 4, 12 ), CullingResult cullingResult = (CullingResult)-1 );
 #endif // #if MOC_RECORDER_ENABLE
 
 protected:

@@ -24,41 +24,41 @@ static int initialize(unsigned int pIntHWND, const char* pAppName, const char* p
     sHWND = (HWND)pIntHWND;
     sHINSTANCE = (HINSTANCE)GetModuleHandle(NULL);
     
-    wolf::system::w_task::execute_async([&]()
-    {
-		if (sScene)
-		{
-			SAFE_RELEASE(sScene);
-		}
-        sScene = new scene(_running_dir, _app_name);
-        
-        //create window info and add it to the map
-        sWindowInfo.width = 640;
-        sWindowInfo.height = 480;
-        sWindowInfo.is_full_screen = false;
-        sWindowInfo.v_sync_enable = false;
-        sWindowInfo.swap_chain_format = 44;//using vulkan as render api
-        sWindowInfo.hwnd = sHWND;
-        sWindowInfo.hInstance = sHINSTANCE;
+  //  wolf::system::w_task::execute_async([&]()
+  //  {
+		//if (sScene)
+		//{
+		//	SAFE_RELEASE(sScene);
+		//}
+  //      sScene = new scene(_running_dir, _app_name);
+  //      
+  //      //create window info and add it to the map
+  //      sWindowInfo.width = 640;
+  //      sWindowInfo.height = 480;
+  //      sWindowInfo.is_full_screen = false;
+  //      sWindowInfo.v_sync_enable = false;
+  //      sWindowInfo.swap_chain_format = 44;//using vulkan as render api
+  //      sWindowInfo.hwnd = sHWND;
+  //      sWindowInfo.hInstance = sHINSTANCE;
 
-        std::map<int, std::vector<w_window_info>> _windows_info = { { 0,{ sWindowInfo } } };
-        while (true)
-        {
-			if (sExiting == DLL_EXIT_STATE::EXITING)
-			{
-				SAFE_RELEASE(sScene);
-				break;
-			}
-			sScene->run(_windows_info);
-        }
-        _windows_info.clear();
-		
-		//notify for 
-		{
-			tbb::interface5::unique_lock<tbb::mutex> _lock(sExitingMutex);
-			sExitingCV.notify_all();
-		}
-    });
+  //      std::map<int, std::vector<w_window_info>> _windows_info = { { 0,{ sWindowInfo } } };
+  //      while (true)
+  //      {
+		//	if (sExiting == DLL_EXIT_STATE::EXITING)
+		//	{
+		//		SAFE_RELEASE(sScene);
+		//		break;
+		//	}
+		//	sScene->run(_windows_info);
+  //      }
+  //      _windows_info.clear();
+		//
+		////notify for 
+		//{
+		//	tbb::interface5::unique_lock<tbb::mutex> _lock(sExitingMutex);
+		//	sExitingCV.notify_all();
+		//}
+  //  });
 
     return 0;
 }

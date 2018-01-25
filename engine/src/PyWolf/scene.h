@@ -12,17 +12,15 @@
 
 #include <w_cpipeline_scene.h>
 #include <w_framework/w_game.h>
-#include <w_framework/w_model.h>
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_uniform.h>
 #include <w_graphics/w_command_buffer.h>
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_quad.h>
 #include <w_memory.h>
 
-#include <cameras/w_first_person_camera.h>
+#include <w_framework/w_first_person_camera.h>
 #include <w_point.h>
 
 #include "model.h"
@@ -89,7 +87,7 @@ private:
     wolf::graphics::w_viewport                                      _viewport;
     wolf::graphics::w_viewport_scissor                              _viewport_scissor;
 
-    wolf::content_pipeline::w_first_person_camera                  _camera;
+    wolf::framework::w_first_person_camera						   _camera;
     bool                                                           _show_gui;
 
     wolf::graphics::w_command_buffer                               _draw_command_buffers;

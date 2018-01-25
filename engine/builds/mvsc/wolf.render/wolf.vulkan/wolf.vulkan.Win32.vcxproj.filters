@@ -73,7 +73,7 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_model.cpp">
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.cpp">
       <Filter>w_framework</Filter>
     </ClCompile>
   </ItemGroup>
@@ -148,7 +148,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h">
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h">
       <Filter>w_framework</Filter>
     </ClInclude>
   </ItemGroup>

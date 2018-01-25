@@ -4,6 +4,7 @@
 
 using namespace wolf;
 using namespace wolf::system;
+using namespace wolf::framework;
 using namespace wolf::graphics;
 using namespace wolf::content_pipeline;
 
@@ -12,10 +13,10 @@ using namespace wolf::content_pipeline;
 model::model() : 
     _mesh(nullptr),
     _shader(nullptr),
-    _loaded(false)
+    _loaded(false),
+	_vertex_binding_attributes(w_vertex_declaration::USER_DEFINED)
 {
     //define vertex binding attributes
-    this->_vertex_binding_attributes.declaration = w_vertex_declaration::USER_DEFINED;
     this->_vertex_binding_attributes.binding_attributes[0] = { Vec3, Vec3, Vec2 }; //position, normal, uv per vertex
     this->_vertex_binding_attributes.binding_attributes[1] = { Vec3, Vec3 }; // position, rotation per instance
 }
@@ -805,26 +806,26 @@ HRESULT model::_load_pipelines(_In_ w_render_pass& pRenderPass)
 
     auto _descriptor_set_layout_binding = this->_shader->get_descriptor_set_layout();
 
-    auto _hr = vs.pipeline.load(
-        this->_gDevice,
-        this->_vertex_binding_attributes,
-        VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-        pRenderPass.get_handle(),
-        _shader->get_shader_stages(),
-        &_descriptor_set_layout_binding,
-        { pRenderPass.get_viewport() }, //viewports
-        { pRenderPass.get_viewport_scissor() }, //viewports scissor
-        "model_pipeline_cache",
-        _dynamic_states,
-        0,
-        nullptr,
-        nullptr,
-        true);//depth
-    if (_hr)
-    {
-        V(S_FALSE, "creating vertex pipeline for " + this->_full_name, _trace);
-        return S_FALSE;
-    }
+    //auto _hr = vs.pipeline.load(
+    //    this->_gDevice,
+    //    this->_vertex_binding_attributes,
+    //    VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+    //    pRenderPass.get_handle(),
+    //    _shader->get_shader_stages(),
+    //    &_descriptor_set_layout_binding,
+    //    { pRenderPass.get_viewport() }, //viewports
+    //    { pRenderPass.get_viewport_scissor() }, //viewports scissor
+    //    "model_pipeline_cache",
+    //    _dynamic_states,
+    //    0,
+    //    nullptr,
+    //    nullptr,
+    //    true);//depth
+    //if (_hr)
+    //{
+    //    V(S_FALSE, "creating vertex pipeline for " + this->_full_name, _trace);
+    //    return S_FALSE;
+    //}
     auto _compute_descriptor_set_layout_binding = this->_shader->get_compute_descriptor_set_layout();
     auto _compute_shader_stage = this->_shader->get_compute_shader_stage();
 
@@ -1115,7 +1116,7 @@ void model::indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer)
 
 }
 
-HRESULT model::submit_compute_shader(_In_ const wolf::content_pipeline::w_first_person_camera* pCamera)
+HRESULT model::submit_compute_shader(_In_ const wolf::framework::w_first_person_camera* pCamera)
 {
     HRESULT _hr = S_OK;
 

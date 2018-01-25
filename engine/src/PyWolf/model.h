@@ -17,7 +17,7 @@
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_render_pass.h>
-#include <cameras/w_first_person_camera.h>
+#include <w_framework/w_first_person_camera.h>
 #include "masked_occlusion_culling/CullingThreadpool.h"
 
 #define MAX_LOD_LEVEL 2
@@ -38,14 +38,14 @@ public:
     HRESULT post_load(_In_ wolf::graphics::w_render_pass& pRenderPass);
 
     bool pre_update(
-        _In_    wolf::content_pipeline::w_first_person_camera pCamera,
+        _In_    wolf::framework::w_first_person_camera pCamera,
         _In_    CullingThreadpool* sMOC);
 
     bool post_update(_Inout_ CullingThreadpool* sMOC, _Inout_ uint32_t& pAllVisibleModels);
 
     void indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer);
 
-    HRESULT submit_compute_shader(_In_ const wolf::content_pipeline::w_first_person_camera* pCamera);
+    HRESULT submit_compute_shader(_In_ const wolf::framework::w_first_person_camera* pCamera);
 
     void set_always_visible();
 
@@ -77,7 +77,7 @@ private:
         _In_ const std::vector<wolf::content_pipeline::w_cpipeline_model::w_mesh*>& pModelMeshes,
         _Inout_ uint32_t& pBaseVertex);
 
-    void _add_data_for_masked_occlusion_culling(_In_ const wolf::content_pipeline::w_bounding_box& pBoundingBox);
+    void _add_data_for_masked_occlusion_culling(_In_ const wolf::system::w_bounding_box& pBoundingBox);
     void _add_data_for_masked_occlusion_culling(_In_ wolf::content_pipeline::w_cpipeline_model* pConvexHull);
 
     HRESULT _load_shader();
@@ -126,7 +126,7 @@ private:
         }
     };
     std::vector<moc_data>                                       _mocs;
-    wolf::content_pipeline::w_bounding_sphere                   _root_bounding_sphere;
+    wolf::system::w_bounding_sphere								_root_bounding_sphere;
 
     struct lod
     {

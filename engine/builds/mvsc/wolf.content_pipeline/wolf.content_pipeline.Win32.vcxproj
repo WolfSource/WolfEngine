@@ -48,9 +48,8 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\Stripifier.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\tootlelib.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\triorder.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\cameras\w_camera.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\cameras\w_first_person_camera.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_node.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_parser.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshOptimize.cpp" />
@@ -119,10 +118,9 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\vector.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\viewpoints.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\window.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\cameras\w_camera.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\cameras\w_first_person_camera.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_animation.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_extra.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_node.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_obj.h" />
@@ -172,7 +170,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>

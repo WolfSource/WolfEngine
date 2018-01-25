@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -182,11 +182,11 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_model.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
@@ -255,8 +255,8 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_model.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_attachment_buffer_desc.h" />

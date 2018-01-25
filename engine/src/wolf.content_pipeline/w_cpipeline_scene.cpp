@@ -44,14 +44,14 @@ void w_cpipeline_scene::add_boundaries(_Inout_ std::vector<w_bounding_sphere*>& 
     }
 }
 
-void w_cpipeline_scene::add_camera(_In_ w_camera* pCamera)
+void w_cpipeline_scene::add_camera(_In_ c_camera* pCamera)
 {
     this->_cameras.push_back(*pCamera);
 }
 
 void w_cpipeline_scene::add_camera(_In_z_ const std::string& pID, _In_ const glm::vec3 pTranslate, _In_ const glm::vec3 pInterest)
 {
-    auto _camera = new w_camera();
+    auto _camera = new c_camera();
     _camera->set_name(pID);
     _camera->set_aspect_ratio(800.0f / 600.0f);
     _camera->set_translate(pTranslate);
@@ -114,14 +114,14 @@ void w_cpipeline_scene::get_boundaries(_Inout_ std::vector<w_bounding_sphere*>& 
     }
 }
 
-void w_cpipeline_scene::get_first_camera(_Inout_ w_camera& pCamera)
+void w_cpipeline_scene::get_first_camera(_Inout_ c_camera& pCamera)
 {
     if (this->_cameras.size() == 0) return;
 
     pCamera = this->_cameras[0];
 }
 
-void w_cpipeline_scene::get_cameras_by_index(_In_ const size_t pIndex, _Inout_ w_camera** pCamera)
+void w_cpipeline_scene::get_cameras_by_index(_In_ const size_t pIndex, _Inout_ c_camera** pCamera)
 {
     if (pIndex < this->_cameras.size())
     {
@@ -129,7 +129,7 @@ void w_cpipeline_scene::get_cameras_by_index(_In_ const size_t pIndex, _Inout_ w
     }
 }
 
-void w_cpipeline_scene::get_cameras_by_id(const std::string& pID, _Inout_ std::vector<w_camera*>& pCameras)
+void w_cpipeline_scene::get_cameras_by_id(const std::string& pID, _Inout_ std::vector<c_camera*>& pCameras)
 {
 	for (size_t i = 0; i < this->_cameras.size(); ++i)
 	{

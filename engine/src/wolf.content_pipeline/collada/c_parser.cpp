@@ -265,7 +265,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
     if (!pXNode) return;
 
     //get instance cameras
-    w_camera* _camera = nullptr;
+    c_camera* _camera = nullptr;
     for (auto _child_0 = pXNode->first_node(); _child_0 != nullptr; _child_0 = _child_0->next_sibling())
     {
         auto _node_name_0 = _get_node_name(_child_0);
@@ -279,7 +279,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
             std::string _camera_id;
             _get_node_attribute_value(_child_0, "id", _camera_id);
             
-            _camera = new w_camera();
+            _camera = new c_camera();
             _camera->set_name(_camera_id);
             
             for (auto _child_1 = _child_0->first_node(); _child_1 != nullptr; _child_1 = _child_1->next_sibling())
@@ -1518,7 +1518,7 @@ HRESULT c_parser::_create_scene(
     {
         for (auto _iter : sLibraryCameras)
         {
-            auto _camera = new w_camera(_iter.second);
+            auto _camera = new c_camera(_iter.second);
             if (sZ_Up)
             {
                 //make transform change

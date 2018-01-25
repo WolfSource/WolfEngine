@@ -5,7 +5,7 @@
 #include <imgui/imgui.h>
 #include <w_graphics/w_imgui.h>
 #include "masked_occlusion_culling/CullingThreadpool.h"
-#include <cameras/w_camera.h>
+#include <collada/c_camera.h>
 #include <mutex>
 #include <w_task.h>
 #include <w_thread.h>
@@ -71,9 +71,9 @@ scene::~scene()
 
 void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
 {
-    this->on_device_features_fetched += [](w_graphics_device_manager::w_device_features_extensions& pDeviceFeaturesExtensions)
-    {
-        auto _fe = pDeviceFeaturesExtensions.device_features;
+    //this->on_device_features_fetched += [](w_graphics_device_manager::w_device_features_extensions& pDeviceFeaturesExtensions)
+    //{
+      //  auto _fe = pDeviceFeaturesExtensions.device_features;
         //if (_fe && (*_fe).tessellationShader == VK_FALSE)
         //{
         //    logger.write("Tesselation not supported for graphics device:" +
@@ -81,8 +81,8 @@ void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWin
         //        " ID:" + std::to_string(pDeviceFeaturesExtensions.get_device_id()));
         //}
         // Fill mode non solid is required for wireframe display
-        (*_fe).fillModeNonSolid = VK_TRUE;
-    };
+      //  (*_fe).fillModeNonSolid = VK_TRUE;
+    //};
     // TODO: Add your pre-initialization logic here
     w_game::initialize(pOutputWindowsInfo);
 
@@ -115,217 +115,217 @@ void scene::load()
 {
     const std::string _trace = this->name + "::load";
 
-    auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows[0]);
-    _screen_size.x = _output_window->width;
-    _screen_size.y = _output_window->height;
-
-    w_game::load();
-
-#ifdef DEBUG_MASKED_OCCLUSION_CULLING
-    {
-        size_t _size = sMediaPlayerWidth * sMediaPlayerHeight;
-        sMOCPerPixelZBuffer = (float*)malloc(_size * sizeof(float));
-        sMOCTonemapDepthImage = (uint8_t*)malloc(_size * 4 * sizeof(uint8_t));
-    }
-#endif
-
-    this->_viewport.y = 0;
-    this->_viewport.width = static_cast<float>(_screen_size.x);
-    this->_viewport.height = static_cast<float>(_screen_size.y);
-    this->_viewport.minDepth = 0;
-    this->_viewport.maxDepth = 1;
-
-    this->_viewport_scissor.offset.x = 0;
-    this->_viewport_scissor.offset.y = 0;
-    this->_viewport_scissor.extent.width = _screen_size.x;
-    this->_viewport_scissor.extent.height = _screen_size.y;
-
-	//initialize depth attachment
-	w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-	w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
-
-	//define attachments which has color and depth for render pass
-	std::vector<w_attachment_desc> _attachment_descriptions =
-	{
-		_color,
-		_depth
-	};
-
-	//create render pass
-	auto _hr = this->_draw_render_pass.load(_gDevice,
-		_viewport,
-		_viewport_scissor,
-		_attachment_descriptions);
-	if (_hr == S_FALSE)
-	{
-		release();
-		V(S_FALSE, "creating render pass", _trace, 3, true);
-	}
-
-    // Color attachments
-    // Don't clear the framebuffer (like the renderpass from the example does)
-	_attachment_descriptions[0].desc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-
-    //Depth attachment
-    _attachment_descriptions[1].desc.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    _attachment_descriptions[1].desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-
-    VkAttachmentReference colorReference = {};
-    colorReference.attachment = 0;
-    colorReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-    VkAttachmentReference depthReference = {};
-    depthReference.attachment = 1;
-    depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
-    _hr = this->_gui_render_pass.load(
-        _gDevice,
-        _viewport,
-        _viewport_scissor,
-		_attachment_descriptions);
-
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error on creating render pass");
-        release();
-        w_game::exiting = true;
-        return;
-    }
-
-    auto _render_pass_handle = this->_draw_render_pass.get_handle();
-
-    //create pipeline_cache for drawing models
-    std::string _pipeline_cache_name = "model_pipeline_cache";
-    if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
-    {
-        logger.error("Could not create pipeline cache");
-        _pipeline_cache_name.clear();
-    }
-
-    //create frame buffers
-    _hr = this->_draw_frame_buffers.load(_gDevice,
-        _render_pass_handle,
-        _output_window);
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error on creating draw frame buffers");
-        release();
-        exit(1);
-    }
-
-    //create gui frame buffers
-    auto _gui_render_pass_handle = this->_gui_render_pass.get_handle();
-    _hr = this->_gui_frame_buffers.load(_gDevice,
-        _gui_render_pass_handle,
-        _output_window);
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error on creating gui frame buffers");
-        release();
-        exit(1);
-    }
-
-    VkSemaphoreCreateInfo _semaphore_create_info = {};
-    _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-    if (vkCreateSemaphore(_gDevice->vk_device,
-        &_semaphore_create_info,
-        nullptr,
-        &gui_semaphore))
-    {
-        logger.error("Error on creating semaphore for gui command buffer");
-        release();
-        exit(1);
-    }
-
-    //Fence for render sync
-    VkFenceCreateInfo _fence_create_info = {};
-    _fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    _fence_create_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
-    if (vkCreateFence(
-        _gDevice->vk_device,
-        &_fence_create_info,
-        nullptr,
-        &this->_draw_fence))
-    {
-        V(S_FALSE, "creating draw fence", _trace);
-        release();
-        exit(1);
-    }
-
-
-    auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
-
-    //load primary command buffer
-    _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error on creating command buffers");
-        release();
-        exit(1);
-    }
-
-
-    auto _thread_pool_size = w_thread::get_number_of_hardware_thread_contexts();
-    this->_render_thread_pool.resize(_thread_pool_size);
-    logger.write("Size of thread pool is " + std::to_string(_thread_pool_size));
-    sRenderingThreads = _thread_pool_size;
-
-    for (size_t i = 0; i < _thread_pool_size; ++i)
-    {
-        this->_render_thread_pool[i] = new (std::nothrow) render_thread_context();
-        if (!this->_render_thread_pool[i])
-        {
-            logger.error("Could not allocate memory for thread context: " + std::to_string(i));
-            continue;
-        }
-        _hr = this->_render_thread_pool[i]->secondary_command_buffers.load(
-            _gDevice,
-            _swap_chain_image_size,
-            VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_SECONDARY,
-            true,
-            &_gDevice->vk_present_queue);
-        if (_hr == S_FALSE)
-        {
-            logger.error("Error on creating draw command buffer for thread " + std::to_string(i));
-            release();
-            exit(1);
-        }
-    }
-
-    //load icon's texture
-    w_texture* _icon_images = new w_texture();
-    _icon_images->load(_gDevice);
-    _icon_images->initialize_texture_2D_from_file(L"textures/gui/icons.png");
-
-    auto _font_path = wolf::system::convert::wstring_to_string(content_path) + "fonts/arial.ttf";
-    _hr = w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _icon_images, nullptr, _font_path.c_str());
-	if (_hr == S_FALSE)
-	{
-		logger.error("Error on loading imgui");
-		release();
-		exit(1);
-	}
-
-    _hr = this->_gui_command_buffers.load(_gDevice, _output_window->vk_swap_chain_image_views.size());
-    if (_hr == S_FALSE)
-    {
-        logger.error("Error on creating gui command buffers");
-        release();
-        exit(1);
-    }
-
-    float _near_plan = 0.1f, far_plan = 5000;
-    this->_camera.set_near_plan(_near_plan);
-    sMOCThreadPool->SetNearClipPlane(_near_plan);
-
-    this->_camera.set_aspect_ratio((float)_screen_size.x / (float)_screen_size.y);
-    sMOCThreadPool->SetResolution(_screen_size.x, _screen_size.y);
-
-    this->_camera.update_view();
-    this->_camera.update_projection();
+//    auto _gDevice = this->graphics_devices[0];
+//    auto _output_window = &(_gDevice->output_presentation_windows[0]);
+//    _screen_size.x = _output_window->width;
+//    _screen_size.y = _output_window->height;
+//
+//    w_game::load();
+//
+//#ifdef DEBUG_MASKED_OCCLUSION_CULLING
+//    {
+//        size_t _size = sMediaPlayerWidth * sMediaPlayerHeight;
+//        sMOCPerPixelZBuffer = (float*)malloc(_size * sizeof(float));
+//        sMOCTonemapDepthImage = (uint8_t*)malloc(_size * 4 * sizeof(uint8_t));
+//    }
+//#endif
+//
+//    this->_viewport.y = 0;
+//    this->_viewport.width = static_cast<float>(_screen_size.x);
+//    this->_viewport.height = static_cast<float>(_screen_size.y);
+//    this->_viewport.minDepth = 0;
+//    this->_viewport.maxDepth = 1;
+//
+//    this->_viewport_scissor.offset.x = 0;
+//    this->_viewport_scissor.offset.y = 0;
+//    this->_viewport_scissor.extent.width = _screen_size.x;
+//    this->_viewport_scissor.extent.height = _screen_size.y;
+//
+//	//initialize depth attachment
+//	w_attachment_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
+//	w_attachment_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
+//
+//	//define attachments which has color and depth for render pass
+//	std::vector<w_attachment_desc> _attachment_descriptions =
+//	{
+//		_color,
+//		_depth
+//	};
+//
+//	//create render pass
+//	auto _hr = this->_draw_render_pass.load(_gDevice,
+//		_viewport,
+//		_viewport_scissor,
+//		_attachment_descriptions);
+//	if (_hr == S_FALSE)
+//	{
+//		release();
+//		V(S_FALSE, "creating render pass", _trace, 3, true);
+//	}
+//
+//    // Color attachments
+//    // Don't clear the framebuffer (like the renderpass from the example does)
+//	_attachment_descriptions[0].desc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+//
+//    //Depth attachment
+//    _attachment_descriptions[1].desc.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+//    _attachment_descriptions[1].desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+//
+//    VkAttachmentReference colorReference = {};
+//    colorReference.attachment = 0;
+//    colorReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+//
+//    VkAttachmentReference depthReference = {};
+//    depthReference.attachment = 1;
+//    depthReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+//
+//    _hr = this->_gui_render_pass.load(
+//        _gDevice,
+//        _viewport,
+//        _viewport_scissor,
+//		_attachment_descriptions);
+//
+//    if (_hr == S_FALSE)
+//    {
+//        logger.error("Error on creating render pass");
+//        release();
+//        w_game::exiting = true;
+//        return;
+//    }
+//
+//    auto _render_pass_handle = this->_draw_render_pass.get_handle();
+//
+//    //create pipeline_cache for drawing models
+//    std::string _pipeline_cache_name = "model_pipeline_cache";
+//    if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+//    {
+//        logger.error("Could not create pipeline cache");
+//        _pipeline_cache_name.clear();
+//    }
+//
+//    //create frame buffers
+//    _hr = this->_draw_frame_buffers.load(_gDevice,
+//        _render_pass_handle,
+//        _output_window);
+//    if (_hr == S_FALSE)
+//    {
+//        logger.error("Error on creating draw frame buffers");
+//        release();
+//        exit(1);
+//    }
+//
+//    //create gui frame buffers
+//    auto _gui_render_pass_handle = this->_gui_render_pass.get_handle();
+//    _hr = this->_gui_frame_buffers.load(_gDevice,
+//        _gui_render_pass_handle,
+//        _output_window);
+//    if (_hr == S_FALSE)
+//    {
+//        logger.error("Error on creating gui frame buffers");
+//        release();
+//        exit(1);
+//    }
+//
+//    VkSemaphoreCreateInfo _semaphore_create_info = {};
+//    _semaphore_create_info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+//
+//    if (vkCreateSemaphore(_gDevice->vk_device,
+//        &_semaphore_create_info,
+//        nullptr,
+//        &gui_semaphore))
+//    {
+//        logger.error("Error on creating semaphore for gui command buffer");
+//        release();
+//        exit(1);
+//    }
+//
+//    //Fence for render sync
+//    VkFenceCreateInfo _fence_create_info = {};
+//    _fence_create_info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+//    _fence_create_info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+//
+//    if (vkCreateFence(
+//        _gDevice->vk_device,
+//        &_fence_create_info,
+//        nullptr,
+//        &this->_draw_fence))
+//    {
+//        V(S_FALSE, "creating draw fence", _trace);
+//        release();
+//        exit(1);
+//    }
+//
+//
+//    auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+//
+//    //load primary command buffer
+//    _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
+//    if (_hr == S_FALSE)
+//    {
+//        logger.error("Error on creating command buffers");
+//        release();
+//        exit(1);
+//    }
+//
+//
+//    auto _thread_pool_size = w_thread::get_number_of_hardware_thread_contexts();
+//    this->_render_thread_pool.resize(_thread_pool_size);
+//    logger.write("Size of thread pool is " + std::to_string(_thread_pool_size));
+//    sRenderingThreads = _thread_pool_size;
+//
+//    for (size_t i = 0; i < _thread_pool_size; ++i)
+//    {
+//        this->_render_thread_pool[i] = new (std::nothrow) render_thread_context();
+//        if (!this->_render_thread_pool[i])
+//        {
+//            logger.error("Could not allocate memory for thread context: " + std::to_string(i));
+//            continue;
+//        }
+//        _hr = this->_render_thread_pool[i]->secondary_command_buffers.load(
+//            _gDevice,
+//            _swap_chain_image_size,
+//            VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_SECONDARY,
+//            true,
+//            &_gDevice->vk_present_queue);
+//        if (_hr == S_FALSE)
+//        {
+//            logger.error("Error on creating draw command buffer for thread " + std::to_string(i));
+//            release();
+//            exit(1);
+//        }
+//    }
+//
+//    //load icon's texture
+//    w_texture* _icon_images = new w_texture();
+//    _icon_images->load(_gDevice);
+//    _icon_images->initialize_texture_2D_from_file(L"textures/gui/icons.png");
+//
+//    auto _font_path = wolf::system::convert::wstring_to_string(content_path) + "fonts/arial.ttf";
+//    _hr = w_imgui::load(_gDevice, _output_window->hwnd, _screen_size, _render_pass_handle, _icon_images, nullptr, _font_path.c_str());
+//	if (_hr == S_FALSE)
+//	{
+//		logger.error("Error on loading imgui");
+//		release();
+//		exit(1);
+//	}
+//
+//    _hr = this->_gui_command_buffers.load(_gDevice, _output_window->vk_swap_chain_image_views.size());
+//    if (_hr == S_FALSE)
+//    {
+//        logger.error("Error on creating gui command buffers");
+//        release();
+//        exit(1);
+//    }
+//
+//    float _near_plan = 0.1f, far_plan = 5000;
+//    this->_camera.set_near_plan(_near_plan);
+//    sMOCThreadPool->SetNearClipPlane(_near_plan);
+//
+//    this->_camera.set_aspect_ratio((float)_screen_size.x / (float)_screen_size.y);
+//    sMOCThreadPool->SetResolution(_screen_size.x, _screen_size.y);
+//
+//    this->_camera.update_view();
+//    this->_camera.update_projection();
 
 	sRecordDrawCommandBuffer = true;
 }
@@ -517,8 +517,7 @@ HRESULT scene::_build_gui_command_buffer(_In_ const std::shared_ptr<w_graphics_d
             this->_gui_render_pass.begin(_cmd, this->_gui_frame_buffers.get_frame_buffer_at(i));
             {
                 //make sure render all gui before loading gui_render
-                w_imgui::update_buffers(this->_gui_render_pass);
-                w_imgui::render(_cmd);
+                w_imgui::render();
             }
             this->_gui_render_pass.end(_cmd);
         }

@@ -24,31 +24,31 @@ namespace wolf
             NOT_DEFINED,
 			//User defined
             USER_DEFINED,
-			//Float3
+			//Position(Float3)
             VERTEX_POSITION,
-			//Float3 + Float4
+			//Position(Float3) + Color(Float4)
             VERTEX_POSITION_COLOR,
-			//Float3 + Float2
+			//Position(Float3) + UV(Float2)
             VERTEX_POSITION_UV,
-            //Float3 + Float3
+            //Position(Float3) + Float3
             VERTEX_POSITION_UV_INDEX,
-			//Float3 + Float2 + Float4
+			//Position(Float3) + Float2 + Float4
             VERTEX_POSITION_UV_COLOR,
-            //Float3 + Float3 + Float4
+            //Position(Float3) + Float3 + Float4
             VERTEX_POSITION_UV_INDEX_COLOR,
-			//Float3 + Float3 + Float4
+			//Position(Float3) + Float3 + Float4
             VERTEX_POSITION_NORMAL_COLOR,
-			//Float3 + Float3 + Float2
+			//Position(Float3) + Float3 + Float2
             VERTEX_POSITION_NORMAL_UV,
-            //Float3 + Float3 + Float3
+            //Position(Float3) + Float3 + Float3
             VERTEX_POSITION_NORMAL_UV_INDEX,
-			//Float3 + Float3 + Float2 + Float3 + Float3
+			//Position(Float3) + Float3 + Float2 + Float3 + Float3
             VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL,
-            //Float3 + Float3 + Float3 + Float3 + Float3
+            //Position(Float3) + Float3 + Float3 + Float3 + Float3
             VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL,
-			//Float3 + Float3 + Float2 + Float3 + Float3 + Float3 + Float3
+			//Position(Float3) + Float3 + Float2 + Float3 + Float3 + Float3 + Float3
             VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES,
-            //Float3 + Float3 + Float3 + Float3 + Float3 + Float3 + Float3
+            //Position(Float3) + Float3 + Float3 + Float3 + Float3 + Float3 + Float3
             VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES
         };
 
