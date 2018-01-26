@@ -12,7 +12,6 @@
 		2C0F36A7200A6C00001CB2DF /* w_shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F36A5200A6BFF001CB2DF /* w_shapes.cpp */; };
 		2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1B3FF51E97DC6500512959 /* w_shader.cpp */; };
 		2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1B3FF61E97DC6500512959 /* w_shader.h */; };
-		2C284CE820153485006C8C64 /* w_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C284CE720153485006C8C64 /* w_model.cpp */; };
 		2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C29CD1C1EB3344000BEFF54 /* w_game.cpp */; };
 		2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C29CD1D1EB3344000BEFF54 /* w_game.h */; };
 		2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */; };
@@ -33,7 +32,6 @@
 		2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C598C6D1FA27CC10055D215 /* w_fences.cpp */; };
 		2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
-		2C736BBE1ECA1EB600624CC7 /* w_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BBC1ECA1EB600624CC7 /* w_model.h */; };
 		2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC71ECB710900624CC7 /* w_uniform.h */; };
 		2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */; };
 		2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C7F0DA51EAD348600F0C700 /* w_render_pass.h */; };
@@ -69,7 +67,6 @@
 		2C0F36A5200A6BFF001CB2DF /* w_shapes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_shapes.cpp; path = ../../../src/wolf.render/w_graphics/w_shapes.cpp; sourceTree = "<group>"; };
 		2C1B3FF51E97DC6500512959 /* w_shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_shader.cpp; path = ../../../src/wolf.render/w_graphics/w_shader.cpp; sourceTree = "<group>"; };
 		2C1B3FF61E97DC6500512959 /* w_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shader.h; path = ../../../src/wolf.render/w_graphics/w_shader.h; sourceTree = "<group>"; };
-		2C284CE720153485006C8C64 /* w_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_model.cpp; path = ../../../src/wolf.render/w_framework/w_model.cpp; sourceTree = "<group>"; };
 		2C29CD1C1EB3344000BEFF54 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_framework/w_game.cpp; sourceTree = "<group>"; };
 		2C29CD1D1EB3344000BEFF54 /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/w_framework/w_game.h; sourceTree = "<group>"; };
 		2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.content_pipeline.macOS.dylib; sourceTree = "<group>"; };
@@ -92,7 +89,6 @@
 		2C598C6D1FA27CC10055D215 /* w_fences.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_fences.cpp; path = ../../../src/wolf.render/w_graphics/w_fences.cpp; sourceTree = "<group>"; };
 		2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		2C736BBC1ECA1EB600624CC7 /* w_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_model.h; path = ../../../src/wolf.render/w_framework/w_model.h; sourceTree = "<group>"; };
 		2C736BC71ECB710900624CC7 /* w_uniform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_uniform.h; path = ../../../src/wolf.render/w_graphics/w_uniform.h; sourceTree = "<group>"; };
 		2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_pass.cpp; path = ../../../src/wolf.render/w_graphics/w_render_pass.cpp; sourceTree = "<group>"; };
 		2C7F0DA51EAD348600F0C700 /* w_render_pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_pass.h; path = ../../../src/wolf.render/w_graphics/w_render_pass.h; sourceTree = "<group>"; };
@@ -181,8 +177,6 @@
 		2C29CD131EB3339E00BEFF54 /* w_framework */ = {
 			isa = PBXGroup;
 			children = (
-				2C284CE720153485006C8C64 /* w_model.cpp */,
-				2C736BBC1ECA1EB600624CC7 /* w_model.h */,
 				2C29CD1C1EB3344000BEFF54 /* w_game.cpp */,
 				2C29CD1D1EB3344000BEFF54 /* w_game.h */,
 			);
@@ -270,7 +264,6 @@
 				2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */,
 				2C0F36A6200A6C00001CB2DF /* w_shapes.h in Headers */,
 				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
-				2C736BBE1ECA1EB600624CC7 /* w_model.h in Headers */,
 				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -335,7 +328,6 @@
 				2C598C631FA235460055D215 /* w_semaphore.cpp in Sources */,
 				2CA945EB1ED9F7CC007B70B8 /* imgui_draw.cpp in Sources */,
 				2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */,
-				2C284CE820153485006C8C64 /* w_model.cpp in Sources */,
 				2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */,
 				2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */,
 				2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */,

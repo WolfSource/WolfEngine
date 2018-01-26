@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49EED8201A7C6800EF7AFB /* c_camera.h */; };
+		2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C49EED9201A7C6800EF7AFB /* c_camera.cpp */; };
 		2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFC1EB0F54400E0A422 /* c_animation.h */; };
 		2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */; };
 		2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFE1EB0F54400E0A422 /* c_bone.h */; };
@@ -29,10 +31,6 @@
 		2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */; };
 		2C736BC61ECA1EE400624CC7 /* w_cpipeline_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */; };
 		2C8D5AB41F4F7FED000BCB87 /* w_cpipeline_structs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */; };
-		2C8D5ABB1F4F8074000BCB87 /* w_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AB71F4F8074000BCB87 /* w_camera.cpp */; };
-		2C8D5ABC1F4F8074000BCB87 /* w_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AB81F4F8074000BCB87 /* w_camera.h */; };
-		2C8D5ABD1F4F8074000BCB87 /* w_first_person_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AB91F4F8074000BCB87 /* w_first_person_camera.cpp */; };
-		2C8D5ABE1F4F8074000BCB87 /* w_first_person_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5ABA1F4F8074000BCB87 /* w_first_person_camera.h */; };
 		2C8D5AC31F4F8549000BCB87 /* amd_tootle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AC11F4F8549000BCB87 /* amd_tootle.cpp */; };
 		2C8D5AC41F4F8549000BCB87 /* amd_tootle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AC21F4F8549000BCB87 /* amd_tootle.h */; };
 		2C8D5ACA1F4F861C000BCB87 /* TootleRaytracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AC81F4F861C000BCB87 /* TootleRaytracer.cpp */; };
@@ -106,6 +104,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C49EED8201A7C6800EF7AFB /* c_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_camera.h; path = ../../../src/wolf.content_pipeline/collada/c_camera.h; sourceTree = "<group>"; };
+		2C49EED9201A7C6800EF7AFB /* c_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_camera.cpp; path = ../../../src/wolf.content_pipeline/collada/c_camera.cpp; sourceTree = "<group>"; };
 		2C4CCAFC1EB0F54400E0A422 /* c_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_animation.h; path = ../../../src/wolf.content_pipeline/collada/c_animation.h; sourceTree = "<group>"; };
 		2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_bone.cpp; path = ../../../src/wolf.content_pipeline/collada/c_bone.cpp; sourceTree = "<group>"; };
 		2C4CCAFE1EB0F54400E0A422 /* c_bone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_bone.h; path = ../../../src/wolf.content_pipeline/collada/c_bone.h; sourceTree = "<group>"; };
@@ -128,10 +128,6 @@
 		2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_scene.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_scene.cpp; sourceTree = "<group>"; };
 		2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_scene.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_scene.h; sourceTree = "<group>"; };
 		2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_structs.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_structs.h; sourceTree = "<group>"; };
-		2C8D5AB71F4F8074000BCB87 /* w_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_camera.cpp; path = ../../../src/wolf.content_pipeline/cameras/w_camera.cpp; sourceTree = "<group>"; };
-		2C8D5AB81F4F8074000BCB87 /* w_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_camera.h; path = ../../../src/wolf.content_pipeline/cameras/w_camera.h; sourceTree = "<group>"; };
-		2C8D5AB91F4F8074000BCB87 /* w_first_person_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_first_person_camera.cpp; path = ../../../src/wolf.content_pipeline/cameras/w_first_person_camera.cpp; sourceTree = "<group>"; };
-		2C8D5ABA1F4F8074000BCB87 /* w_first_person_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_first_person_camera.h; path = ../../../src/wolf.content_pipeline/cameras/w_first_person_camera.h; sourceTree = "<group>"; };
 		2C8D5AC11F4F8549000BCB87 /* amd_tootle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = amd_tootle.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle.cpp; sourceTree = "<group>"; };
 		2C8D5AC21F4F8549000BCB87 /* amd_tootle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = amd_tootle.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle.h; sourceTree = "<group>"; };
 		2C8D5AC81F4F861C000BCB87 /* TootleRaytracer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TootleRaytracer.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/TootleRaytracer.cpp; sourceTree = "<group>"; };
@@ -221,6 +217,8 @@
 		2C4CCAFB1EB0F50D00E0A422 /* collada */ = {
 			isa = PBXGroup;
 			children = (
+				2C49EED9201A7C6800EF7AFB /* c_camera.cpp */,
+				2C49EED8201A7C6800EF7AFB /* c_camera.h */,
 				2C4CCAFC1EB0F54400E0A422 /* c_animation.h */,
 				2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */,
 				2C4CCAFE1EB0F54400E0A422 /* c_bone.h */,
@@ -233,17 +231,6 @@
 				2C4CCB071EB0F54400E0A422 /* c_skin.h */,
 			);
 			name = collada;
-			sourceTree = "<group>";
-		};
-		2C8D5AB61F4F805D000BCB87 /* cameras */ = {
-			isa = PBXGroup;
-			children = (
-				2C8D5AB71F4F8074000BCB87 /* w_camera.cpp */,
-				2C8D5AB81F4F8074000BCB87 /* w_camera.h */,
-				2C8D5AB91F4F8074000BCB87 /* w_first_person_camera.cpp */,
-				2C8D5ABA1F4F8074000BCB87 /* w_first_person_camera.h */,
-			);
-			name = cameras;
 			sourceTree = "<group>";
 		};
 		2C8D5ABF1F4F8506000BCB87 /* amd */ = {
@@ -367,7 +354,6 @@
 			isa = PBXGroup;
 			children = (
 				2C8D5ABF1F4F8506000BCB87 /* amd */,
-				2C8D5AB61F4F805D000BCB87 /* cameras */,
 				2C4CCAFB1EB0F50D00E0A422 /* collada */,
 				2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */,
 				2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */,
@@ -454,18 +440,17 @@
 				2C8D5AF11F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.h in Headers */,
 				2C8D5B321F4F89B2000BCB87 /* fit.h in Headers */,
 				2C8D5B0B1F4F8656000BCB87 /* JMLSSEVec.h in Headers */,
-				2C8D5ABE1F4F8074000BCB87 /* w_first_person_camera.h in Headers */,
 				2C8D5AE91F4F8641000BCB87 /* JRTCommon.h in Headers */,
 				2C8D5AC41F4F8549000BCB87 /* amd_tootle.h in Headers */,
 				2C8D5B501F4F8AC1000BCB87 /* quaternion.h in Headers */,
 				2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */,
 				2C8D5B531F4F8AC1000BCB87 /* soup.h in Headers */,
 				2C8D5B0A1F4F8656000BCB87 /* JMLScalar.h in Headers */,
+				2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */,
 				2C8D5AE61F4F8641000BCB87 /* JRTBoundingBox.h in Headers */,
 				2C4CCB0F1EB0F54400E0A422 /* c_node.h in Headers */,
 				2C8D5B5A1F4F8AC2000BCB87 /* triorder.h in Headers */,
 				2C8D5AED1F4F8641000BCB87 /* JRTCoreUtils.h in Headers */,
-				2C8D5ABC1F4F8074000BCB87 /* w_camera.h in Headers */,
 				2C8D5B5D1F4F8AC2000BCB87 /* window.h in Headers */,
 				2C8D5AF91F4F8641000BCB87 /* JRTOrthoCamera.h in Headers */,
 			);
@@ -530,6 +515,7 @@
 			files = (
 				2C8D5AFA1F4F8641000BCB87 /* JRTPPMImage.cpp in Sources */,
 				2C8D5AFC1F4F8641000BCB87 /* JRTTriangleIntersection.cpp in Sources */,
+				2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */,
 				2C8D5ACA1F4F861C000BCB87 /* TootleRaytracer.cpp in Sources */,
 				2C8D5B101F4F8817000BCB87 /* aligned_malloc.cpp in Sources */,
 				2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */,
@@ -546,7 +532,6 @@
 				2C8D5AF61F4F8641000BCB87 /* JRTMesh.cpp in Sources */,
 				2C8D5AEE1F4F8641000BCB87 /* JRTH2KDTreeBuilder.cpp in Sources */,
 				2C8D5B581F4F8AC2000BCB87 /* tootlelib.cpp in Sources */,
-				2C8D5ABB1F4F8074000BCB87 /* w_camera.cpp in Sources */,
 				2C8D5B561F4F8AC2000BCB87 /* Stripifier.cpp in Sources */,
 				2C8D5AEA1F4F8641000BCB87 /* JRTCore.cpp in Sources */,
 				2C8D5B311F4F89B2000BCB87 /* fit.cpp in Sources */,
@@ -557,7 +542,6 @@
 				2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */,
 				2C8D5AE51F4F8641000BCB87 /* JRTBoundingBox.cpp in Sources */,
 				2C8D5B521F4F8AC1000BCB87 /* soup.cpp in Sources */,
-				2C8D5ABD1F4F8074000BCB87 /* w_first_person_camera.cpp in Sources */,
 				2C8D5B4E1F4F8AC1000BCB87 /* overdraw.cpp in Sources */,
 				2C8D5AE71F4F8641000BCB87 /* JRTCamera.cpp in Sources */,
 				2C8D5B591F4F8AC2000BCB87 /* triorder.cpp in Sources */,

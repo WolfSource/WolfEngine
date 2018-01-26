@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:pyWolf/pyWolf.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:tests/wolf_vulkan_metal_macOS/wolf_vulkan_metal_macOS.xcodeproj">
    </FileRef>
    <FileRef
