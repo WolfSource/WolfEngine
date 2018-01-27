@@ -14,7 +14,7 @@ namespace pywolf
         using namespace wolf::system;
         using namespace boost::python;
 
-        //export w_bounding_box class
+        //export w_game_time class
         class_<w_game_time>("w_game_time", init<>())
             .def_readonly("TICKS_PER_SECOND", &w_game_time::py_TICKS_PER_SECOND, "Total ticks per one second")
             .def("ticks_to_seconds", &w_game_time::py_ticks_to_seconds, "Convert ticks to seconds")

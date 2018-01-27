@@ -41,10 +41,6 @@
 #include <agile.h>
 #endif
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
-
 #ifdef __WIN32
 struct w_enumerate_screens
 {
@@ -252,9 +248,5 @@ private:
 };
 
 #endif //__WIN32 && __linux
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif //__W_WINDOW_H__

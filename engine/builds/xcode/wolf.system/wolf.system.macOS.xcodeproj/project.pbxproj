@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C043238201D00D4009FB7EA /* w_game_time_py.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C043234201D00D4009FB7EA /* w_game_time_py.h */; };
+		2C043239201D00D4009FB7EA /* w_inputs_manager_py.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C043235201D00D4009FB7EA /* w_inputs_manager_py.h */; };
+		2C04323A201D00D4009FB7EA /* w_logger_py.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C043236201D00D4009FB7EA /* w_logger_py.h */; };
+		2C04323B201D00D4009FB7EA /* w_color_py.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C043237201D00D4009FB7EA /* w_color_py.h */; };
+		2C04323D201D1BC7009FB7EA /* w_timer_py.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C04323C201D1BC7009FB7EA /* w_timer_py.h */; };
 		2C0F36AA200BC74C001CB2DF /* w_bounding.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0F36A8200BC74C001CB2DF /* w_bounding.h */; };
 		2C0F36AB200BC74C001CB2DF /* w_bounding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */; };
 		2C1383A51F509AC700D5283B /* w_lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A31F509AC700D5283B /* w_lua.cpp */; };
@@ -297,6 +302,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C043234201D00D4009FB7EA /* w_game_time_py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game_time_py.h; path = ../../../src/wolf.system/w_game_time_py.h; sourceTree = "<group>"; };
+		2C043235201D00D4009FB7EA /* w_inputs_manager_py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_inputs_manager_py.h; path = ../../../src/wolf.system/w_inputs_manager_py.h; sourceTree = "<group>"; };
+		2C043236201D00D4009FB7EA /* w_logger_py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_logger_py.h; path = ../../../src/wolf.system/w_logger_py.h; sourceTree = "<group>"; };
+		2C043237201D00D4009FB7EA /* w_color_py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color_py.h; path = ../../../src/wolf.system/w_color_py.h; sourceTree = "<group>"; };
+		2C04323C201D1BC7009FB7EA /* w_timer_py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_timer_py.h; path = ../../../src/wolf.system/w_timer_py.h; sourceTree = "<group>"; };
 		2C0F36A8200BC74C001CB2DF /* w_bounding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_bounding.h; path = ../../../src/wolf.system/w_bounding.h; sourceTree = "<group>"; };
 		2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_bounding.cpp; path = ../../../src/wolf.system/w_bounding.cpp; sourceTree = "<group>"; };
 		2C1383A31F509AC700D5283B /* w_lua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_lua.cpp; path = ../../../src/wolf.system/w_lua.cpp; sourceTree = "<group>"; };
@@ -1189,10 +1199,13 @@
 				2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */,
 				2C0F36A8200BC74C001CB2DF /* w_bounding.h */,
 				2C903440201BCC1E002A8056 /* w_bounding_py.h */,
+				2CE5BAF61E64307D005E0F45 /* w_color.h */,
+				2C043237201D00D4009FB7EA /* w_color_py.h */,
 				2C49EEDC201A7F2800EF7AFB /* w_boost_python_helper.h */,
 				2CFFAD3C1FCEAE480020A112 /* stb_image_write.h */,
 				2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */,
 				2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */,
+				2C043235201D00D4009FB7EA /* w_inputs_manager_py.h */,
 				2C49903F1FDF312E00E656B2 /* w_memory_pool.h */,
 				2CEE64041F48E147003177C0 /* w_signal.h */,
 				2CEE64051F48E147003177C0 /* w_thread_pool.cpp */,
@@ -1205,13 +1218,14 @@
 				2C41F9261ED34FAE007012E4 /* w_rectangle.h */,
 				2C98996B1E9B512F002FE161 /* stb_image.h */,
 				2CE5BAF51E64307D005E0F45 /* glm_extention.h */,
-				2CE5BAF61E64307D005E0F45 /* w_color.h */,
 				2CE5BAF71E64307D005E0F45 /* w_convert.h */,
 				2CE5BAF91E64307D005E0F45 /* w_game_time.h */,
+				2C043234201D00D4009FB7EA /* w_game_time_py.h */,
 				2CE5BAFA1E64307D005E0F45 /* w_io.h */,
 				2CE5BAFB1E64307D005E0F45 /* w_ireleasable.h */,
 				2CE5BAFC1E64307D005E0F45 /* w_logger.cpp */,
 				2CE5BAFD1E64307D005E0F45 /* w_logger.h */,
+				2C043236201D00D4009FB7EA /* w_logger_py.h */,
 				2C1383A31F509AC700D5283B /* w_lua.cpp */,
 				2C1383A41F509AC700D5283B /* w_lua.h */,
 				2C94BC241FEE5C62007338F7 /* w_network.cpp */,
@@ -1228,6 +1242,7 @@
 				2CE5BB071E64307D005E0F45 /* w_time_span.h */,
 				2CE5BB081E64307D005E0F45 /* w_timer_callback.h */,
 				2CE5BB091E64307D005E0F45 /* w_timer.h */,
+				2C04323C201D1BC7009FB7EA /* w_timer_py.h */,
 				2CE5BB0A1E64307D005E0F45 /* w_window.cpp */,
 				2CE5BB0B1E64307D005E0F45 /* w_window.h */,
 				2CE5BB0C1E64307D005E0F45 /* w_xml.cpp */,
@@ -1379,6 +1394,7 @@
 				2CFD41331F5200D500BF9A65 /* strfunc.h in Headers */,
 				2C65224D1FD4AFD50030A053 /* _vectorize.hpp in Headers */,
 				2C65236B1FD4B0930030A053 /* compatibility.hpp in Headers */,
+				2C043239201D00D4009FB7EA /* w_inputs_manager_py.h in Headers */,
 				2C6523A81FD4B0B40030A053 /* constants.hpp in Headers */,
 				2CFD41101F52007B00BF9A65 /* pointer.h in Headers */,
 				2C6523A11FD4B0B30030A053 /* integer.hpp in Headers */,
@@ -1405,6 +1421,7 @@
 				2CE5BB181E64307D005E0F45 /* w_object.h in Headers */,
 				2C65223E1FD4AFD50030A053 /* type_mat2x4.hpp in Headers */,
 				2C6523AF1FD4B0B40030A053 /* type_aligned.hpp in Headers */,
+				2C04323D201D1BC7009FB7EA /* w_timer_py.h in Headers */,
 				2C65228D1FD4AFFC0030A053 /* mat2x4.hpp in Headers */,
 				2C65225F1FD4AFD50030A053 /* precision.hpp in Headers */,
 				2C6523641FD4B0930030A053 /* dual_quaternion.hpp in Headers */,
@@ -1424,6 +1441,7 @@
 				2C6522511FD4AFD50030A053 /* func_common.hpp in Headers */,
 				2C6521CF1FD4AF7D0030A053 /* save_kmg.hpp in Headers */,
 				2CEE640F1F48E147003177C0 /* w_thread.h in Headers */,
+				2C04323A201D00D4009FB7EA /* w_logger_py.h in Headers */,
 				2C6521961FD4AF5B0030A053 /* clear.hpp in Headers */,
 				2C6523751FD4B0930030A053 /* matrix_decompose.hpp in Headers */,
 				2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */,
@@ -1466,6 +1484,7 @@
 				2C6522871FD4AFFC0030A053 /* mat2x3.hpp in Headers */,
 				2C65235A1FD4B0930030A053 /* wrap.hpp in Headers */,
 				2C6521DA1FD4AF7D0030A053 /* texture1d_array.hpp in Headers */,
+				2C04323B201D00D4009FB7EA /* w_color_py.h in Headers */,
 				2C6521CB1FD4AF7D0030A053 /* make_texture.hpp in Headers */,
 				2C98996C1E9B512F002FE161 /* stb_image.h in Headers */,
 				2CFD41081F52007B00BF9A65 /* encodings.h in Headers */,
@@ -1480,6 +1499,7 @@
 				2C6523551FD4B0930030A053 /* scalar_relational.hpp in Headers */,
 				2C65225B1FD4AFD50030A053 /* _swizzle.hpp in Headers */,
 				2C6523C11FD4B0D70030A053 /* geometric.h in Headers */,
+				2C043238201D00D4009FB7EA /* w_game_time_py.h in Headers */,
 				2C6522451FD4AFD50030A053 /* type_float.hpp in Headers */,
 				2C65224A1FD4AFD50030A053 /* type_mat2x3.hpp in Headers */,
 				2CE5BB191E64307D005E0F45 /* w_std.h in Headers */,

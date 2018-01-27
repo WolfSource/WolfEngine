@@ -20,10 +20,6 @@
 #include <string>
 #include "w_std.h"
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
-
 namespace wolf
 {
 	namespace system
@@ -69,9 +65,5 @@ namespace wolf
 		};
 	}
 }
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif //__W_XML_H__

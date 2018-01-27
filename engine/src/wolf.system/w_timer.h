@@ -16,10 +16,6 @@
 
 #include "w_game_time.h"
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
-
 namespace wolf
 {
 	namespace system
@@ -74,8 +70,8 @@ namespace wolf
 	}
 }
 
-#ifdef __GNUC__
-#pragma GCC visibility pop
+#ifdef __PYTHON__
+#include "w_timer_py.h"
 #endif
 
 #endif //__W_TIMER_H__

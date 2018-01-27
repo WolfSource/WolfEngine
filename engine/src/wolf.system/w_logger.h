@@ -1,4 +1,4 @@
-﻿/*
+/*
     Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website			 : http://WolfSource.io
@@ -74,13 +74,13 @@ namespace wolf
             WSYS_EXP void print_buffer(_In_z_ const std::wstring pMsg);
             //Clear screen and all buffered messages
             WSYS_EXP void clear_buffer();
-            //flush the output stream
+            //Flush the output stream
             WSYS_EXP void flush();
-            //get the buffer of messages
+            //Get the buffer of messages
             WSYS_EXP std::vector<std::wstring> get_buffer();
-            //Write and output message
+            //Write an output message
             WSYS_EXP void write(_In_z_ std::string pMsg, _In_z_ const std::string pState = "Info");
-            //Write and output message
+            //Write an output message
             WSYS_EXP void write(_In_z_ std::wstring pMsg, _In_z_ const std::wstring pState = L"Info");
             //Write an output user message 
             WSYS_EXP void user(_In_z_ const std::wstring pMsg);
@@ -101,6 +101,23 @@ namespace wolf
             WSYS_EXP bool get_is_open() const;
 #pragma endregion
 
+#ifdef __PYTHON__
+            bool py_initialize(const std::wstring pAppName, const std::wstring pLogPath) { return initialize(pAppName, pLogPath); }
+            boost::python::list py_get_buffer()
+            {
+                boost::python::list _list;
+                auto _buffers = get_buffer();
+                for (auto& _buffer : _buffers)
+                {
+                    _list.append(_buffer);
+                }
+                return _list;
+            }
+            void py_write(const std::wstring pMsg, const std::wstring pState) { return write(pMsg, pState); }
+            void py_user(const std::wstring pMsg) { return user(pMsg); }
+            void py_warning(const std::wstring pMsg) { return warning(pMsg); }
+            void py_error(const std::wstring pMsg) { return error(pMsg); }
+#endif
         private:
             //Prevent copying
             w_logger(w_logger const&);
@@ -201,10 +218,8 @@ inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...)
 }
 #endif //defined(__WIN32) || defined(__UWP) || defined(__MAYA)
 
-
 #ifdef __PYTHON__
 #include "w_logger_py.h"
 #endif
-
 
 #endif //__W_LOGGER_H__
