@@ -1,10 +1,10 @@
 ﻿/*
-Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
-Website			 : http://WolfSource.io
-Name			 : w_logger.h
-Description		 : a logger class which is shared over all dlls
-Comment          :
+    Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
+    Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
+    Website			 : http://WolfSource.io
+    Name			 : w_logger.h
+    Description		 : a logger class which is shared over all dlls
+    Comment          :
 */
 
 #if _MSC_VER > 1000
@@ -49,10 +49,6 @@ inline std::wstring get_date_timeW()
     _msg.clear();
     return _wmsg;
 }
-
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
 
 namespace wolf
 {
@@ -113,14 +109,7 @@ namespace wolf
             w_logger_pimp* _pimp;
         };
     }
-}
 
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
-
-namespace wolf
-{
     extern WSYS_EXP system::w_logger logger;
     extern WSYS_EXP std::wstring content_path;
     extern WSYS_EXP system::w_inputs_manager inputs_manager;
@@ -129,12 +118,12 @@ namespace wolf
 }
 
 /*
-Validate HResult and write in to the log file
-pHR							= Status
-pMSG						= the log message
-pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
-pTerminateAll				= abort appilcation. Strongly not recommended, please make sure release all your resources before aborting Wolf.Engine
-pCheckForLastDirectXError	= check last error of GPU API
+    Validate HResult and write in to the log file
+    pHR							= Status
+    pMSG						= the log message
+    pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
+    pTerminateAll				= abort appilcation. Strongly not recommended, please make sure release all your resources before aborting Wolf.Engine
+    pCheckForLastDirectXError	= check last error of GPU API
 */
 inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
     std::string pTraceClass = "Undefined trace", unsigned char pLogType = 0,
@@ -180,12 +169,12 @@ inline void V(int pHR, std::wstring pMSG = L"Undefined Error",
 }
 
 /*
-Validate HResult and write in to the log file
-pHR						= Status
-pMSG						= the log message
-pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
-pExitNow					= abort application
-pCheckForLastDirectXError	= check last error of GPU API
+    Validate HResult and write in to the log file
+    pHR						= Status
+    pMSG						= the log message
+    pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
+    pExitNow					= abort application
+    pCheckForLastDirectXError	= check last error of GPU API
 */
 inline void V(HRESULT pHR, std::string pMSG = "Undefined Error",
     std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
@@ -211,5 +200,11 @@ inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...)
 #endif
 }
 #endif //defined(__WIN32) || defined(__UWP) || defined(__MAYA)
+
+
+#ifdef __PYTHON__
+#include "w_logger_py.h"
+#endif
+
 
 #endif //__W_LOGGER_H__

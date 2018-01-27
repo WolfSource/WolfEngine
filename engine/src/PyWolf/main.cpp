@@ -131,13 +131,20 @@ using namespace wolf::system;
 
 BOOST_PYTHON_MODULE(pyWolf)
 {
-	//specify that this module is actually a package
-	object _package = scope();
-	_package.attr("__path__") = "pyWolf";
+    //export wolf::system classes to pyWolf.system scope
+    {
+        struct system {};
+        scope _system = class_<system>("system");
+        
+        pywolf::w_bounding_py_export();
+        pywolf::w_color_py_export();
+        pywolf::w_game_time_py_export();
+        pywolf::w_inputs_manager_py_export();
+    }
 
-	//export from wolf::system classes
-	pywolf::w_bounding_py_export();
-
+    //global scope
+    def("bounding_box_from_bounding_sphere", w_bounding_box::create_from_bounding_sphere);
+    def("bounding_sphere_from_bounding_box", w_bounding_sphere::create_from_bounding_box);
 
  //   def("initialize", initialize);
  //   def("load_scene", load_scene);

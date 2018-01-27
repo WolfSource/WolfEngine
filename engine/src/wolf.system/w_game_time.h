@@ -27,10 +27,7 @@
 #include <exception>
 #include "w_logger.h"
 
-
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
+#include "w_boost_python_helper.h"
 
 namespace wolf
 {
@@ -228,6 +225,14 @@ namespace wolf
 				}
 			}
 
+#ifdef __PYTHON__
+
+            double py_TICKS_PER_SECOND = TICKS_PER_SECOND;
+            double py_ticks_to_seconds(uint64_t pTicks) { return  ticks_to_seconds(pTicks); }
+            uint64_t py_seconds_to_ticks(double pSeconds) { return ticks_to_seconds(pSeconds); }
+            static void py_tick(wolf::system::w_game_time& pSelf, boost::python::object pObject) { return pSelf.tick(pObject); }
+#endif
+
 		private:
 			std::string _name;
 
@@ -282,8 +287,9 @@ namespace wolf
 	}
 }
 
-#ifdef __GNUC__
-#pragma GCC visibility pop
+#ifdef __PYTHON__
+#include "w_game_time_py.h"
 #endif
+
 
 #endif //__W_GAME_TIME_H__

@@ -21,6 +21,9 @@
 
 //from wolf::system namespaces
 #include <wolf.h>
-#include <w_bounding_py.h>
+#include <w_bounding.h>
+#include <w_color.h>
+#include <w_game_time.h>
+#include <w_inputs_manager.h>
 
 #endif //__PCH_H__

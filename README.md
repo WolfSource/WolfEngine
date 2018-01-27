@@ -174,7 +174,7 @@ Programming, you can order it from <a href="http://www.packtpub.com/directx-11-1
   <tr>
     <td>
       <p><b>07_uniforms_constant_buffers</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/05_texture/view.jpg" alt="07_uniforms_constant_buffers" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/05_texture/view.png" alt="07_uniforms_constant_buffers" width="256" height="192"/>
       <p>Using constant buffer</p>
     </td>
     <td>

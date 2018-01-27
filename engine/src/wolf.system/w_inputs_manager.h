@@ -2,8 +2,8 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : w_input.h
-	Description		 : User input
+	Name			 : w_inputs_manager.h
+	Description		 : Handling user inputs
 	Comment          : 
 */
 
@@ -23,9 +23,7 @@
 #include "w_system_export.h"
 #include <set>
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default) //The classes/structs below are exported
-#endif
+#include "w_boost_python_helper.h"
 
 namespace wolf
 {
@@ -57,6 +55,36 @@ namespace wolf
                 std::set<int>               keys_pressed;
                 std::set<int>               keys_released;
                 std::vector<unsigned short> inputed_chars;
+
+#ifdef __PYTHON__
+                boost::python::list py_get_keys_pressed()
+                {
+                    boost::python::list _list;
+                    for (auto _iter : keys_pressed)
+                    {
+                        _list.append(_iter);
+                    }
+                    return _list;
+                }
+                boost::python::list py_get_keys_released()
+                {
+                    boost::python::list _list;
+                    for (auto _iter : keys_released)
+                    {
+                        _list.append(_iter);
+                    }
+                    return _list;
+                }
+                boost::python::list py_get_inputed_chars()
+                {
+                    boost::python::list _list;
+                    for (auto _iter : inputed_chars)
+                    {
+                        _list.append(_iter);
+                    }
+                    return _list;
+                }
+#endif
             } keyboard;
 
 			//reset all buffers
@@ -92,8 +120,10 @@ namespace wolf
 
     }
 }
-#ifdef __GNUC__
-#pragma GCC visibility pop
+
+
+#ifdef __PYTHON__
+#include "w_inputs_manager_py.h"
 #endif
 
 

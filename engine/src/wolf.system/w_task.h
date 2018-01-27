@@ -54,7 +54,7 @@ namespace wolf
 	}
 }
 
-#if !defined(__ANDROID) && !defined(__iOS__)
+#if !defined(__ANDROID) && !defined(__iOS__) && !defined(__PYTHON__)
 
 #include <tbb/task.h>
 
