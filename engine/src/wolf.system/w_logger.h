@@ -101,23 +101,6 @@ namespace wolf
             WSYS_EXP bool get_is_open() const;
 #pragma endregion
 
-#ifdef __PYTHON__
-            bool py_initialize(const std::wstring pAppName, const std::wstring pLogPath) { return initialize(pAppName, pLogPath); }
-            boost::python::list py_get_buffer()
-            {
-                boost::python::list _list;
-                auto _buffers = get_buffer();
-                for (auto& _buffer : _buffers)
-                {
-                    _list.append(_buffer);
-                }
-                return _list;
-            }
-            void py_write(const std::wstring pMsg, const std::wstring pState) { return write(pMsg, pState); }
-            void py_user(const std::wstring pMsg) { return user(pMsg); }
-            void py_warning(const std::wstring pMsg) { return warning(pMsg); }
-            void py_error(const std::wstring pMsg) { return error(pMsg); }
-#endif
         private:
             //Prevent copying
             w_logger(w_logger const&);
@@ -217,9 +200,5 @@ inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...)
 #endif
 }
 #endif //defined(__WIN32) || defined(__UWP) || defined(__MAYA)
-
-#ifdef __PYTHON__
-#include "python_exporter/w_logger_py.h"
-#endif
 
 #endif //__W_LOGGER_H__

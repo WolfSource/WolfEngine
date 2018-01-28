@@ -99,14 +99,16 @@ struct w_enumerate_screens
     }
 #endif
 
-#ifdef __PYTHON__
+#if defined(__PYTHON__)
     boost::python::list py_screens()
     {
         boost::python::list _list;
+#ifndef __APPLE__
         for (auto& _iter : screens)
         {
             _list.append(_iter);
         }
+#endif
         return _list;
     }
 #endif

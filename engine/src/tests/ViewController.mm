@@ -14,7 +14,7 @@
 static NSView*                                      sSampleView;
 static CVDisplayLinkRef                             sDisplayLink;
 static scene*                                       sScene;
-static std::map<int, std::vector<w_window_info>>    sWindowInfo;
+static std::map<int, w_window_info>    sWindowInfo;
 
 //called from c++
 void init_window(struct w_window_info& pInfo)
@@ -54,8 +54,6 @@ void init_window(struct w_window_info& pInfo)
                        "test.wolf.engine.metal.iOS");
 #endif
     
-    
-    
     //pass the view to the sample code
     sSampleView = self.view;
     
@@ -69,7 +67,7 @@ void init_window(struct w_window_info& pInfo)
     
     //call init_window from objective-c and get the pointer to the window
     init_window(_window_info);
-    sWindowInfo.insert( { 0,{ _window_info } } ) ;
+    sWindowInfo.insert( { 0, _window_info  } ) ;
                        
     CVDisplayLinkCreateWithActiveCGDisplays(&sDisplayLink);
     CVDisplayLinkSetOutputCallback(sDisplayLink, &DisplayLinkCallback, nullptr);

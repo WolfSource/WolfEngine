@@ -129,6 +129,8 @@ BOOL APIENTRY DllMain(_In_ HMODULE pHModule, _In_ DWORD pULReasonForCall, _In_ L
 using namespace boost::python;
 using namespace wolf::system;
 
+#include <python_exporter/w_logger_py.h>
+
 BOOST_PYTHON_MODULE(pyWolf)
 {
     //export wolf::system classes to pyWolf.system scope
@@ -150,12 +152,8 @@ BOOST_PYTHON_MODULE(pyWolf)
     //global scope
     def("bounding_box_from_bounding_sphere", w_bounding_box::create_from_bounding_sphere);
     def("bounding_sphere_from_bounding_box", w_bounding_sphere::create_from_bounding_box);
+
     pywolf::w_logger_py_export();
- //   def("initialize", initialize);
- //   def("load_scene", load_scene);
-	//def("set_camera_position", set_camera_position);
-	//def("set_camera_lookat", set_camera_lookat);
-	//def("remove_all_models", remove_all_models);
- //   def("release", release);
- //   def("release_shared_data_over_all_instances", release_shared_data_over_all_instances);
+
+    def("release_shared_data_over_all_instances", wolf::release_shared_data_over_all_instances);
 }

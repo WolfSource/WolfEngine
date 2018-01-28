@@ -23,7 +23,6 @@
 #include <wolf.h>
 #include <w_bounding.h>
 #include <w_color.h>
-#include <w_game_time.h>
 #include <w_timer.h>
 #include <w_timer_callback.h>
 #include <w_inputs_manager.h>
