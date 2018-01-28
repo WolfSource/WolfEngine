@@ -189,6 +189,8 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="18_networking_bus_node0" width="256" height="192"/>
       <p>Add first node to Bus</p>
     </td>
+  </tr>
+<tr>
     <td>
       <p><b>19_networking_bus_node1</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="19_networking_bus_node1" width="256" height="192"/>
