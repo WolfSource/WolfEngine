@@ -6,7 +6,8 @@ Wolf Engine
 <p>The&nbsp;<b>Wolf Engine</b>&nbsp;is the next
 generation of&nbsp;<a href="https://persianengine.codeplex.com/">Persian Game Engine</a>&nbsp;which is a
 cross-platform open source game engine created by&nbsp;<a href="http://pooyaeimandar.com/">Pooya Eimandar</a>.
-The Wolf is a comprehensive set of C++ open source libraries for rendering and supports Python and Lua as an embedded script languages.</p>
+The Wolf is a comprehensive set of C++ open source libraries for rendering and supports <b>Lua</b> as an embedded script language and <b>Python</b> as a binding language.</p>
+<p><b>pyWolf</b> is set of Python bindings for Wolf.Engine which works with Python 2.7</p>
 
 <!--Getting strated-->
 <h2><a id="user-content-whatsnew" class="anchor" href="#whatsnew" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Getting Started</h2>
@@ -69,8 +70,8 @@ about Wolf Engine on <a href="https://github.com/PooyaEimandar/Wolf.Engine/issue
 I provided a dedicated blog for gpu programming, make sure check it out at <a href="http://wolfsource.io">WolfSource.io</a>.
 </p>
 <p>
-Additionally, in case you are interested, I've written a book with the focus on DirectX 11.1 Game
-Programming, you can order it from <a href="http://www.packtpub.com/directx-11-1-game-programming/book">PackT Publishing</a>.
+Additionally, in case you are interested, I've written a book with the focus on <b>DirectX 11.1 Game
+Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-11-1-game-programming/book">PackT Publishing</a>.
 </p>
 
 <!--Road map on Trello-->
@@ -131,6 +132,67 @@ Programming, you can order it from <a href="http://www.packtpub.com/directx-11-1
       <p><b>08_json</b></p>
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="08_json" width="256" height="192"/>
       <p>Parsing and writing json files</p>
+    </td>
+    <td>
+      <p><b>09_memory</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="09_memory" width="256" height="192"/>
+      <p>Handling memory in Wolf</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p><b>10_networking_one_way_pusher</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="10_networking_one_way_pusher" width="256" height="192"/>
+      <p>Create one way pusher application</p>
+    </td>
+    <td>
+      <p><b>11_networking_one_way_puller</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="11_networking_one_way_puller" width="256" height="192"/>
+      <p>Create one way puller application</p>
+    </td>
+    <td>
+      <p><b>12_networking_two_way_server</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="12_networking_two_way_server" width="256" height="192"/>
+      <p>Create two way server app</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p><b>13_networking_two_way_client</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="13_networking_two_way_client" width="256" height="192"/>
+      <p>Create two way client app</p>
+    </td>
+    <td>
+      <p><b>14_networking_broadcast_publisher</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="14_networking_broadcast_publisher" width="256" height="192"/>
+      <p>Create broadcast publisher</p>
+    </td>
+    <td>
+      <p><b>15_networking_broadcast_subscriptore</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="15_networking_broadcast_subscriptore" width="256" height="192"/>
+      <p>Create broadcast subscriptore</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p><b>16_networking_survey_server</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="16_networking_survey_server" width="256" height="192"/>
+      <p>Create networking survey server</p>
+    </td>
+    <td>
+      <p><b>17_networking_survey_client</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="17_networking_survey_client" width="256" height="192"/>
+      <p>Create networking survey client</p>
+    </td>
+    <td>
+      <p><b>18_networking_bus_node0</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="18_networking_bus_node0" width="256" height="192"/>
+      <p>Add first node to Bus</p>
+    </td>
+    <td>
+      <p><b>19_networking_bus_node1</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/01_system/view.jpg" alt="19_networking_bus_node1" width="256" height="192"/>
+      <p>Add second node to Bus</p>
     </td>
   </tr>
 </table>
