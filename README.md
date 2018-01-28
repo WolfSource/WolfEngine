@@ -275,5 +275,22 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
       <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/13_render_to_target/view.jpg" alt="13_render_to_target" width="256" height="192"/>
       <p>Drawing to render target</p>
     </td>
+    <td>
+      <p><b>14_mipmaps</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/14_mipmaps/view.jpg" alt="14_mipmaps" width="256" height="192"/>
+      <p>Generate texture mipmaps at runtime</p>
+    </td>
+    <td>
+      <p><b>15_shapes</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/15_shapes/view.jpg" alt="15_shapes" width="256" height="192"/>
+      <p>Drawing 3D shapes</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p><b>16_coordinate_system</b></p>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/16_coordinate_system/view.jpg" alt="16_coordinate_system" width="256" height="192"/>
+      <p>Show coordinate system of Wolf</p>
+    </td>
   </tr>
 </table>
