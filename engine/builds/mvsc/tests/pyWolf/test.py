@@ -41,4 +41,20 @@ if __name__ == '__main__':
     _l1 = _keyboard.get_keys_released()
     _l2 = _keyboard.get_inputed_chars()
 
+    _timer0 = pyWolf.system.w_timer()
+    _timer0.start()
     print "pyWolf"
+    print "pyWolf"
+    print _timer0.get_seconds()
+    _timer0.reset()
+
+    _ts = pyWolf.system.w_time_span()
+    _ts.now()
+    print _ts.to_string()
+
+
+    _enum_screens = pyWolf.system.w_enumerate_screens()
+    _scrs = _enum_screens.get_screens()
+
+
+    _window = pyWolf.system.w_window_info()

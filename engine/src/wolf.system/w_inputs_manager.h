@@ -23,7 +23,7 @@
 #include "w_system_export.h"
 #include <set>
 
-#include "w_boost_python_helper.h"
+#include "python_exporter/w_boost_python_helper.h"
 
 namespace wolf
 {
@@ -123,7 +123,7 @@ namespace wolf
 
 
 #ifdef __PYTHON__
-#include "w_inputs_manager_py.h"
+#include "python_exporter/w_inputs_manager_py.h"
 #endif
 
 

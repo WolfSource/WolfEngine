@@ -75,7 +75,6 @@ namespace wolf
 				return 1;
 			}
 
-			uint32_t											index = 0;
 			bool											is_full_screen = false;
 			float											aspect_ratio = 0;
 
@@ -201,13 +200,10 @@ namespace wolf
             //print info
             W_EXP const std::string print_info();
 
-			//get the first and the primary window which was created with this device
-			W_EXP w_output_presentation_window main_window();
-                        
             //release all resources
             W_EXP ULONG release();
 
-            std::vector<w_output_presentation_window>               output_presentation_windows;
+            w_output_presentation_window               output_presentation_windows;
             
             //draw primitive(s) and instances using vertex & index buffer
             W_EXP void draw(_In_ VkCommandBuffer pCommandBuffer,
@@ -248,9 +244,7 @@ namespace wolf
 				make sure set true to w_window_info::cpu_access_swap_chain_buffer flag before creating graphics device
 				@return S_OK means function did succesfully and S_FALSE means function failed
 			*/
-            W_EXP HRESULT capture_presented_swap_chain_buffer(
-                _In_ const uint32_t& pOutputPresentationWindowIndex,
-                _In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
+            W_EXP HRESULT capture_presented_swap_chain_buffer(_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
 
 			w_device_info*												device_info = nullptr;
 
@@ -324,7 +318,7 @@ namespace wolf
             W_EXP virtual ~w_graphics_device_manager();
                         
 			//Initialize graphics devices
-			W_EXP virtual void initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo) = 0;
+			W_EXP virtual void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) = 0;
 
 			//Called when corresponding window resized
 			W_EXP virtual void on_window_resized(_In_ uint32_t pIndex);
@@ -389,7 +383,7 @@ namespace wolf
             
             void _load_shared_resources();
 
-			void _wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ size_t pOutputPresentationWindowIndex);
+			void _wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
             
             typedef  system::w_object                           _super;
             w_graphics_device_manager_pimp*                     _pimp;

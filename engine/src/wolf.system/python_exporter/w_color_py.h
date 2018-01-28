@@ -1,10 +1,10 @@
 /*
-Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
-Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
-Website			 : http://WolfSource.io
-Name			 : w_color_py.h
-Description		 : The python exporter for w_color class
-Comment          :
+    Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
+    Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
+    Website			 : http://WolfSource.io
+    Name			 : w_color_py.h
+    Description		 : The python exporter for w_color class
+    Comment          :
 */
 
 namespace pywolf
@@ -165,6 +165,6 @@ namespace pywolf
             .def("WHITE_SMOKE", &w_color::py_WHITE_SMOKE, "WHITE_SMOKE")
             .def("YELLOW", &w_color::py_YELLOW, "YELLOW")
             .def("YELLOW_GREEN", &w_color::py_YELLOW_GREEN, "YELLOW_GREEN")
-            ;
+        ;
     }
 }

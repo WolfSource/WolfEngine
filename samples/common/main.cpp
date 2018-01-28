@@ -84,14 +84,12 @@ WOLF_MAIN()
     _window_info.xcb_window = sWindow->get_xcb_window(),
 #endif
 
-    std::map<int, std::vector<w_window_info>> _windows_info = { {0, {_window_info} } };
-    std::function<void(void)> _run_func = [&]()->void
+    std::map<int, w_window_info> _windows_info = { {0, _window_info } };
+    //run the main loop of window
+    sWindow->run([&]()->void
     {
         sScene->run(_windows_info);
-    };
-
-    //run the main loop of window
-    sWindow->run(_run_func);
+    });
 
     //release all
     _windows_info.clear();

@@ -22,6 +22,8 @@
 #include "w_std.h"
 #endif
 
+#include "python_exporter/w_boost_python_helper.h"
+
 namespace wolf
 {
 	namespace system
@@ -49,42 +51,42 @@ namespace wolf
 
 			//Returns timespan with zero value
 			WSYS_EXP static w_time_span zero();
-			//Create timespan from now
+			//Returns timespan from now
 			WSYS_EXP static w_time_span now();
 			//Returns timespan with minimum value
 			WSYS_EXP static w_time_span min_value();
 			//Returns timespan with maximum value
 			WSYS_EXP static w_time_span max_value();
-			//Create timeSpan from days
+			//Returns timeSpan from days
 			WSYS_EXP static w_time_span from_days(double pValue);
-			//Create timeSpan from hours
+			//Returns timeSpan from hours
 			WSYS_EXP static w_time_span from_hours(double pValue);
-			//Create timeSpan from milliSeconds
+			//Returns timeSpan from milliSeconds
 			WSYS_EXP static w_time_span from_milliseconds(double pValue);
-			//Create timeSpan from minutes
+			//Returns timeSpan from minutes
 			WSYS_EXP static w_time_span from_minutes(double pValue);
-			//Create timespan from seconds
+			//Returns timespan from seconds
 			WSYS_EXP static w_time_span from_seconds(double pValue);
-			//Create timespan from ticks
+			//Returns timespan from ticks
 			WSYS_EXP static w_time_span from_ticks(int64_t pValue);
-			//Create timespan from string in the format of "00:00:00:00:000"
+			//Returns timespan from string in the format of "00:00:00:00:000"
 			WSYS_EXP static w_time_span from_string(std::string pValue);
 
 #pragma region Getters
 
-            //Returns he overflow status
+            //Returns the overflow status
             WSYS_EXP bool get_has_overflowed() const;
 			//Returns total ticks
 			WSYS_EXP int64_t get_ticks() const;
-			//Returns days
+			//Returns total days
 			WSYS_EXP int get_days() const;
-			//Returns hours
+			//Returns total hours
 			WSYS_EXP int get_hours() const;
-			//Returns milliseconds
+			//Returns total milliseconds
 			WSYS_EXP int get_milliseconds() const;
-			//Returns minutes
+			//Returns total minutes
 			WSYS_EXP int get_minutes() const;
-			//Returns seconds
+			//Returns total seconds
 			WSYS_EXP int get_seconds() const;
 			//Returns total days
 			WSYS_EXP double get_total_days() const;
@@ -167,6 +169,31 @@ namespace wolf
                 return !(pLeft == pRight);
             }
             
+
+#ifdef __PYTHON__
+            void py_set_ticks(int64_t pTicks) { this->_ticks = pTicks; }
+            void py_set_hours_min_secs(int pHours, int pMinutes, int pSeconds)
+            {
+                this->_ticks = _time_to_ticks(pHours, pMinutes, pSeconds);
+            }
+            void py_set_days_hours_mins_secs_millisecs(int pDays, int pHours, int pMinutes, int pSeconds, int pMilliseconds)
+            {
+                w_time_span _t_s(pDays, pHours, pMinutes, pSeconds, pMilliseconds);
+                this->_ticks = _t_s.get_ticks();
+            }
+            void py_zero() { this->_ticks = 0; }
+            void py_now() { this->_ticks = w_time_span::now().get_ticks(); }
+            void py_min_value() { this->_ticks = w_time_span::min_value().get_ticks(); };
+            void py_max_value() { this->_ticks = w_time_span::max_value().get_ticks(); };
+            void py_from_days(double pValue) { this->_ticks =  w_time_span::from_days(pValue).get_ticks(); };
+            void py_from_hours(double pValue) { this->_ticks = w_time_span::from_hours(pValue).get_ticks(); };
+            void py_from_milliseconds(double pValue) { this->_ticks = w_time_span::from_milliseconds(pValue).get_ticks(); };
+            void py_from_minutes(double pValue) { this->_ticks = w_time_span::from_minutes(pValue).get_ticks(); };
+            void py_from_seconds(double pValue) { this->_ticks = w_time_span::from_seconds(pValue).get_ticks(); };
+            void py_from_ticks(double pValue) { this->_ticks = pValue; };
+            void py_from_string(std::string pValue) { this->from_string(pValue); };
+#endif
+
 		private:
 			static w_time_span _interval(double pValue, int pScale);
 			static int64_t _time_to_ticks(int pHour, int pMinute, int pSecond);
@@ -176,5 +203,9 @@ namespace wolf
 		};
 	}
 }
+
+#ifdef __PYTHON__
+#include "python_exporter/w_time_span_py.h"
+#endif
 
 #endif //__W_TIME_SPAN_H__

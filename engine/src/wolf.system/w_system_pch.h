@@ -86,10 +86,10 @@
 //Java Native Interface library
 #include <jni.h>
 #include <android/asset_manager.h>
-#include "w_std.h"
 
 #endif
 
+#include "w_std.h"
 #include "w_logger.h"
 
 #endif //__W_SYSTEM_PCH_H__

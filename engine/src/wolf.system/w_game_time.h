@@ -27,7 +27,7 @@
 #include <exception>
 #include "w_logger.h"
 
-#include "w_boost_python_helper.h"
+#include "python_exporter/w_boost_python_helper.h"
 
 namespace wolf
 {
@@ -230,7 +230,7 @@ namespace wolf
             double py_TICKS_PER_SECOND = TICKS_PER_SECOND;
             double py_ticks_to_seconds(uint64_t pTicks) { return  ticks_to_seconds(pTicks); }
             uint64_t py_seconds_to_ticks(double pSeconds) { return ticks_to_seconds(pSeconds); }
-            static void py_tick(wolf::system::w_game_time& pSelf, boost::python::object pObject) { return pSelf.tick(pObject); }
+            static void py_tick(w_game_time& pSelf, boost::python::object pObject) { return pSelf.tick(pObject); }
 #endif
 
 		private:
@@ -288,7 +288,7 @@ namespace wolf
 }
 
 #ifdef __PYTHON__
-#include "w_game_time_py.h"
+#include "python_exporter/w_game_time_py.h"
 #endif
 
 

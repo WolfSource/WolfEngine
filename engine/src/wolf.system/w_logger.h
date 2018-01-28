@@ -219,7 +219,7 @@ inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...)
 #endif //defined(__WIN32) || defined(__UWP) || defined(__MAYA)
 
 #ifdef __PYTHON__
-#include "w_logger_py.h"
+#include "python_exporter/w_logger_py.h"
 #endif
 
 #endif //__W_LOGGER_H__

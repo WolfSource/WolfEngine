@@ -37,7 +37,7 @@ namespace wolf
 			template <class T>
 			void do_async(int pIntervalMilliSeconds, T&& pFunc)
 			{
-				std::thread  t([pIntervalMilliSeconds, pFunc]()
+				std::thread  t([pIntervalMilliSeconds, &pFunc]()
 				{
 					w_thread::sleep_current_thread(pIntervalMilliSeconds);
 					pFunc();

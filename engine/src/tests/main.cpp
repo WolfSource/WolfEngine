@@ -62,19 +62,16 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
     _window_info.cpu_access_swap_chain_buffer = true;
 
 	//call init_window from objective-c and get the pointer to the window
-	std::map<int, std::vector<w_window_info>> _windows_info;
-	_windows_info.insert({ 0,{ _window_info } });
+	std::map<int, w_window_info> _windows_info;
+	_windows_info.insert({ 0, _window_info });
 
 	//Initialize and run scene
     auto _running_dir = wolf::system::io::get_current_directory();
 	sScene = make_unique<scene>(_running_dir, L"wolf.engine.vulkan.test");
-	std::function<void(void)> _run_func = [&_windows_info]()->void
-	{
-		sScene->run(_windows_info);
-	};
-
-	sWindow->run(_run_func);
-
+	sWindow->run([&_windows_info]()->void
+    {
+        sScene->run(_windows_info);
+    });
 	//release all
 	release();
 

@@ -20,7 +20,7 @@
 #include <string>
 #include <sstream>
 #include <array>
-#include "w_boost_python_helper.h"
+#include "python_exporter/w_boost_python_helper.h"
 
 struct w_color
 {
@@ -456,7 +456,7 @@ inline bool operator != (const w_color& lValue, const w_color& rValue)
 }
 
 #ifdef __PYTHON__
-#include "w_color_py.h"
+#include "python_exporter/w_color_py.h"
 #endif
 
 #endif // __W_COLOR_H__

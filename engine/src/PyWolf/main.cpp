@@ -140,7 +140,11 @@ BOOST_PYTHON_MODULE(pyWolf)
         pywolf::w_color_py_export();
         pywolf::w_game_time_py_export();
         pywolf::w_timer_py_export();
+        pywolf::w_time_span_py_export();
         pywolf::w_inputs_manager_py_export();
+        pywolf::w_point_py_export();
+        pywolf::w_rectangle_py_export();
+        pywolf::w_window_py_export();
     }
 
     //global scope

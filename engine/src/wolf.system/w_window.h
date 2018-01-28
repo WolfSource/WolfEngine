@@ -31,9 +31,11 @@
 #include <memory>
 #include "w_object.h"
 #include "w_game_time.h"
+#include "w_rectangle.h"
 #include <functional>
 #include <vector>
 #include <string>
+#include <chrono>
 
 #ifdef __UWP
 #include <wrl.h>
@@ -41,57 +43,75 @@
 #include <agile.h>
 #endif
 
-#ifdef __WIN32
+#include "python_exporter/w_boost_python_helper.h"
+
 struct w_enumerate_screens
 {
-	std::vector<RECT>   screens;
-	RECT                combined;
+#ifdef __WIN32
+	std::vector<w_rectangle>   screens;
+	//RECT                combined;
 
 	static BOOL CALLBACK w_enumerate_screens_callback(HMONITOR pHScreen, HDC pHDC, LPRECT pLRect, LPARAM pLParam)
 	{
 		auto _this = reinterpret_cast<w_enumerate_screens*>(pLParam);
-		_this->screens.push_back(*pLRect);
-		UnionRect(&_this->combined, &_this->combined, pLRect);
+        if (pLRect)
+        {
+            w_rectangle _rc;
+            _rc.left = pLRect->left;
+            _rc.right = pLRect->right;
+            _rc.top = pLRect->top;
+            _rc.bottom = pLRect->bottom;
+            _this->screens.push_back(_rc);
+        }
+		//UnionRect(&_this->combined, &_this->combined, pLRect);
 		return TRUE;
 	}
 
 	w_enumerate_screens()
 	{
-		SetRectEmpty(&this->combined);
+		//SetRectEmpty(&this->combined);
 		EnumDisplayMonitors(0, 0, w_enumerate_screens_callback, (LPARAM)this);
 	}
-};
-#elif defined(__linux) && !defined(__ANDROID)
 
-#ifndef __ANDROID
-struct w_enumerate_screens
-{
-	std::vector<xcb_screen_t*>   screens;
-        
-	w_enumerate_screens()
-	{
-            //get the screen number(s)
-            int _screen_num = -1;
-            xcb_connection_t* _con = xcb_connect (NULL, &_screen_num);
-           
-            const xcb_setup_t* _setup = xcb_get_setup (_con);
-  
-            //get screens
-            xcb_screen_iterator_t _iter = xcb_setup_roots_iterator(_setup);  
+#elif defined(__linux)
 
-            //iterator all
-            for (size_t i = 0; i <= _screen_num; ++i) 
-            {
-                screens.push_back(_iter.data);
-                xcb_screen_next (&_iter);
-            }
-            
-            xcb_disconnect(_con);
+    std::vector<xcb_screen_t*>   screens;
+    w_enumerate_screens()
+    {
+        //get the screen number(s)
+        int _screen_num = -1;
+        xcb_connection_t* _con = xcb_connect(NULL, &_screen_num);
+
+        const xcb_setup_t* _setup = xcb_get_setup(_con);
+
+        //get screens
+        xcb_screen_iterator_t _iter = xcb_setup_roots_iterator(_setup);
+
+        //iterator all
+        for (size_t i = 0; i <= _screen_num; ++i)
+        {
+            //TODO: convert to w_rectangle
+            screens.push_back(_iter.data);
+            xcb_screen_next(&_iter);
         }
-};
+
+        xcb_disconnect(_con);
+    }
 #endif
 
+#ifdef __PYTHON__
+    boost::python::list py_screens()
+    {
+        boost::python::list _list;
+        for (auto& _iter : screens)
+        {
+            _list.append(_iter);
+        }
+        return _list;
+    }
 #endif
+
+};
 
 //Store the information of window
 struct w_window_info
@@ -132,6 +152,28 @@ struct w_window_info
     //BGRA8Unorm for DirectX12 is "87" and for VULKAN is 44
 	uint32_t			swap_chain_format = 44;
     bool                cpu_access_swap_chain_buffer = false;
+
+#ifdef __PYTHON__
+
+    void py_set_win_id(boost::python::object pWinID)
+    {
+#ifdef __WIN32
+        boost::python::extract<unsigned int> _hwnd_int(pWinID);
+        if (_hwnd_int.check())
+        {
+            this->hwnd = (HWND)_hwnd_int();
+        }
+#elif defined(__APPLE__)
+        //return boost::python::object(window);
+#elif defined(__linux)
+        //return boost::python::object(xcb_window);
+#else
+        //return boost::python::object();
+#endif
+    }
+
+#endif
+
 };
 
 #if defined(__WIN32) || (defined(__linux) && !defined(__ANDROID))
@@ -149,8 +191,157 @@ public:
         //Initialize 
 	WSYS_EXP HRESULT initialize();
 #endif
-        //Run the main loop
-	WSYS_EXP void run(std::function<void(void)> pFunc);
+    //Run the main loop
+    template <class T>
+    void run(T&& pFunc)
+    {
+#ifdef __WIN32
+        MSG msg;
+        std::memset(&msg, 0, sizeof(msg));
+
+        while (true)
+        {
+            auto _start = std::chrono::high_resolution_clock::now();
+            // Handle the windows messages.
+            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+                continue;
+            }
+            if (this->_close)
+            {
+                break;
+            }
+            pFunc();
+
+            auto _end = std::chrono::high_resolution_clock::now();
+            auto _delta = std::chrono::duration<double, std::milli>(_end - _start).count();
+            if (this->_id != -1)
+            {
+                wolf::windows_frame_time_in_sec.at((uint32_t)this->_id) = (float)_delta / 1000.0f;
+            }
+        }
+
+#elif defined(__linux) && !defined(__ANDROID)
+        
+        xcb_generic_event_t* _e = nullptr;
+        while (!this->_close)
+        {
+            while (_e = xcb_poll_for_event(this->_xcb_con)) //xcb_wait_for_event
+            {
+                switch (_e->response_type & ~0x80)
+                {
+                case XCB_CLIENT_MESSAGE:
+                {
+                    if ((*(xcb_client_message_event_t*)_e).data.data32[0] == (*this->_atom_wm_delete_window).atom)
+                    {
+                        this->_close = true;
+                    }
+                    break;
+                }
+                case XCB_DESTROY_NOTIFY:
+                {
+                    this->_close = true;
+                    break;
+                }
+                case XCB_EXPOSE:
+                {
+                    auto _ev = (xcb_expose_event_t*)_e;
+                    //this->_window = _ev->window;
+                    this->_screen_posX = _ev->x;
+                    this->_screen_posY = _ev->y;
+                    this->_screen_width = _ev->width;
+                    this->_screen_height = _ev->height;
+
+                    break;
+                }
+                case XCB_BUTTON_PRESS:
+                {
+                    auto _ev = (xcb_button_press_event_t *)_e;
+                    switch (_ev->detail)
+                    {
+                    case 4:
+                    {
+                        //printf ("Wheel Button up in window %ld, at coordinates (%d,%d)\n",
+                        //ev->event, ev->event_x, ev->event_y);
+                        break;
+                    }
+                    case 5:
+                    {
+                        //printf ("Wheel Button down in window %ld, at coordinates (%d,%d)\n",
+                        //ev->event, ev->event_x, ev->event_y);
+                        break;
+                    }
+                    default:
+                    {
+                        //printf ("Button %d pressed in window %ld, at coordinates (%d,%d)\n",
+                        //ev->detail, ev->event, ev->event_x, ev->event_y);
+                    }
+                    }
+                    break;
+                }
+                case XCB_BUTTON_RELEASE:
+                {
+                    auto _ev = (xcb_button_release_event_t*)_e;
+                    //print_modifiers(ev->state);
+                    //printf ("Button %d released in window %ld, at coordinates (%d,%d)\n",
+                    //ev->detail, ev->event, ev->event_x, ev->event_y);
+                    break;
+                }
+                case XCB_MOTION_NOTIFY:
+                {
+                    auto _ev = (xcb_motion_notify_event_t*)_e;
+                    //printf ("Mouse moved in window %ld, at coordinates (%d,%d)\n",
+                    //ev->event, ev->event_x, ev->event_y);
+                    break;
+                }
+                case XCB_ENTER_NOTIFY:
+                {
+                    auto _ev = (xcb_enter_notify_event_t*)_e;
+                    //printf ("Mouse entered window %ld, at coordinates (%d,%d)\n",
+                    //ev->event, ev->event_x, ev->event_y);
+                    break;
+                }
+                case XCB_LEAVE_NOTIFY:
+                {
+                    auto _ev = (xcb_leave_notify_event_t*)_e;
+                    //printf ("Mouse left window %ld, at coordinates (%d,%d)\n",
+                    //ev->event, ev->event_x, ev->event_y);
+                    break;
+                }
+                case XCB_KEY_PRESS:
+                {
+                    auto _ev = (xcb_key_press_event_t *)_e;
+                    //print_modifiers(ev->state);
+                    //printf ("Key pressed %c in window %ld\n", ev->detail, ev->event);
+                    break;
+                }
+                case XCB_KEY_RELEASE:
+                {
+                    auto _ev = (xcb_key_release_event_t *)_e;
+                    //print_modifiers(ev->state);
+                    //printf ("Key released %d in window %ld\n", ev->detail, ev->event);
+                    break;
+                }
+                default:
+                {
+                    //Unknown event type, ignore it
+                    //printf("Unknown event: %d\n", e->response_type);
+                    break;
+                }
+                }
+                //free the generic event
+                free(_e);
+
+                if (this->_close) break;
+            }
+
+            pFunc();
+        }
+#endif
+    }
+
 	//Exit from main loop and close current window
 	WSYS_EXP void close();
 
@@ -248,5 +439,10 @@ private:
 };
 
 #endif //__WIN32 && __linux
+
+
+#ifdef __PYTHON__
+#include "python_exporter/w_window_py.h"
+#endif
 
 #endif //__W_WINDOW_H__

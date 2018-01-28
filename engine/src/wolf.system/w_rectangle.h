@@ -16,9 +16,7 @@
 
 #include "w_std.h"
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default) //The classes/structs below are exported
-#endif
+#include "python_exporter/w_boost_python_helper.h"
 
 struct w_rectangle
 {
@@ -27,10 +25,6 @@ struct w_rectangle
     long right;
     long bottom;
 };
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 inline bool operator == (const w_rectangle& lValue, const w_rectangle& rValue)
 {
@@ -41,5 +35,9 @@ inline bool operator != (const w_rectangle& lValue, const w_rectangle& rValue)
 {
     return !(lValue == rValue);
 }
+
+#ifdef __PYTHON__
+#include "python_exporter/w_rectangle_py.h"
+#endif
 
 #endif // __W_RECTANGLE_H__

@@ -21,13 +21,11 @@
 #include <tbb/memory_pool.h>
 
 #define __1KB__ 1024
-#define __1MB__ 1048576
-#define __1GB__ 1073741824
+#define __1MB__ 1024 * __1KB__
+#define __1GB__ 1024 * __1MB__
+#define __1TB__ 1024 * __1GB__
+#define __1PB__ 1024 * __1TB__
 
-
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
 
 namespace wolf
 {
@@ -53,7 +51,7 @@ namespace wolf
                 return this->_ptr;
             }
 
-            //Allocate block of memory (in bytes)
+            //Re-allocate block of memory (in bytes)
             void* realloc(_In_ size_t pSizeInBytes)
             {
                 this->_size_in_bytes = pSizeInBytes;
@@ -77,11 +75,13 @@ namespace wolf
                 return 0;
             }
 
+            //Get pointer to start of memory
             void* get_start_ptr()
             {
                 return this->_ptr;
             }
 
+            //Get total size of memory in bytes
             const size_t get_size_in_bytes() const
             {
                 return this->_size_in_bytes;
@@ -99,9 +99,5 @@ namespace wolf
 		};
 	}
 }
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif //__W_MEMORY_FIXED_POOL_H__

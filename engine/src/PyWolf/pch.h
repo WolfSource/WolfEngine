@@ -25,6 +25,11 @@
 #include <w_color.h>
 #include <w_game_time.h>
 #include <w_timer.h>
+#include <w_timer_callback.h>
 #include <w_inputs_manager.h>
+#include <w_time_span.h>
+#include <w_point.h>
+#include <w_rectangle.h>
+#include <w_window.h>
 
 #endif //__PCH_H__

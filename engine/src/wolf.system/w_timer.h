@@ -71,7 +71,7 @@ namespace wolf
 }
 
 #ifdef __PYTHON__
-#include "w_timer_py.h"
+#include "python_exporter/w_timer_py.h"
 #endif
 
 #endif //__W_TIMER_H__

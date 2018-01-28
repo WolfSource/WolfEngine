@@ -24,10 +24,7 @@
 #include <functional>
 #include "w_system_export.h"
 #include "w_std.h"
-
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
+#include "python_exporter/w_boost_python_helper.h"
 
 namespace wolf
 {
@@ -102,9 +99,5 @@ namespace tbb
 }
 
 #endif//__WIN32 || __UWP
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif //__W_TASK_H__

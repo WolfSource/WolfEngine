@@ -15,10 +15,7 @@
 #define __W_POINT_H__
 
 #include "w_std.h"
-
-#ifdef __GNUC__
-#pragma GCC visibility push(default) //The classes/structs below are exported
-#endif
+#include "python_exporter/w_boost_python_helper.h"
 
 struct w_point
 {
@@ -37,10 +34,6 @@ struct w_point_t
     uint32_t x;
     uint32_t y;
 };
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 inline bool operator == (const w_point& lValue, const w_point& rValue)
 {
@@ -71,4 +64,9 @@ inline bool operator != (const w_point_t& lValue, const w_point_t& rValue)
 {
     return !(lValue == rValue);
 }
+
+#ifdef __PYTHON__
+#include "python_exporter/w_point_py.h"
+#endif
+
 #endif // __W_POINT_H__

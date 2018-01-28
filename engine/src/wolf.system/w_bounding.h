@@ -16,7 +16,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <msgpack.hpp>
-#include "w_boost_python_helper.h"
+#include "python_exporter/w_boost_python_helper.h"
 
 namespace wolf
 {
@@ -172,7 +172,7 @@ namespace wolf
 }
 
 #ifdef __PYTHON__
-#include "w_bounding_py.h"
+#include "python_exporter/w_bounding_py.h"
 #endif
 
 #endif

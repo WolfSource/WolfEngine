@@ -94,7 +94,7 @@ scene::~scene()
 	release();
 }
 
-void scene::initialize(_In_ std::map<int, std::vector<w_window_info>> pOutputWindowsInfo)
+void scene::initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo)
 {
 	// TODO: Add your pre-initialization logic here
 
@@ -320,7 +320,7 @@ void scene::load()
     const std::string _trace_info = this->name + "::load";
 
     auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows[0]);
+    auto _output_window = &(_gDevice->output_presentation_windows);
 
     w_point_t _screen_size;
     _screen_size.x = _output_window->width;
@@ -447,7 +447,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     const std::string _trace_info = this->name + "::render";
 
     auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows[0]);
+    auto _output_window = &(_gDevice->output_presentation_windows);
     auto _frame_index = _output_window->vk_swap_chain_image_index;
 
 	w_imgui::render();
@@ -481,7 +481,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
     auto _hr = w_game::render(pGameTime);
 
-    return _gDevice->capture_presented_swap_chain_buffer(0, on_pixels_data_captured_signal);
+    return _gDevice->capture_presented_swap_chain_buffer(on_pixels_data_captured_signal);
 }
 
 void scene::on_window_resized(_In_ uint32_t pIndex)

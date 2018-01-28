@@ -7,7 +7,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_lua.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_memory.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_system_pch.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\w_tcp_client.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_time_span.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_window.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_xml.cpp" />
@@ -41,7 +40,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_system_pch.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_target_ver.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_task.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_tcp_client.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_time_span.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_timer.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_timer_callback.h" />
@@ -778,12 +776,39 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_boost_python_helper.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_bounding_py.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_color_py.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_game_time_py.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager_py.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\w_logger_py.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_boost_python_helper.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_bounding_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_color_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_game_time_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_inputs_manager_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_logger_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_timer_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_point_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_rectangle_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_time_span_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_window_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -821,6 +846,9 @@
     </Filter>
     <Filter Include="gli\core">
       <UniqueIdentifier>{b1fa6346-6a07-4efb-831a-5f80393dce33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="python_exporter">
+      <UniqueIdentifier>{96333abc-f95e-48bb-b7ba-04c03329a341}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

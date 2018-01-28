@@ -18,6 +18,7 @@
 
 #include <Windows.h>
 #include <limits.h>
+#include <stdint.h>
 
 #else
 
