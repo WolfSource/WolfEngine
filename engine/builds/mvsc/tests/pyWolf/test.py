@@ -57,4 +57,12 @@ if __name__ == '__main__':
     _scrs = _enum_screens.get_screens()
 
 
-    _window = pyWolf.system.w_window_info()
+    _window_info = pyWolf.system.w_window_info()
+    _info = (0, _window_info)
+    _game = pyWolf.framework.w_game("D:\\", "Pooya");
+    _game.run(_info)
+
+    pyWolf.logger_initialize("Pooya", "D:\\")
+    pyWolf.logger_write("Hello I'm pyWolf", "Info")
+    pyWolf.logger_error("Fatal")
+    pyWolf.logger_release()

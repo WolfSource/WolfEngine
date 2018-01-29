@@ -7,12 +7,21 @@
 	Comment          :
 */
 
+#ifdef __PYTHON__
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef __W_BOUNDING_PY_H__
+#define __W_BOUNDING_PY_H__
+
 namespace pywolf
 {
     static void w_bounding_py_export()
     {
-        using namespace wolf::system;
         using namespace boost::python;
+        using namespace wolf::system;
         
         //define w_containment_type enum
         enum_<w_containment_type>("w_containment_type")
@@ -60,3 +69,7 @@ namespace pywolf
             ;
     }
 }
+
+#endif//__W_BOUNDING_PY_H__
+
+#endif//__PYTHON__

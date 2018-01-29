@@ -59,7 +59,6 @@ namespace wolf
 		class w_media_core : public system::w_object
 		{
 		public:
-
             struct w_stream_connection_info
             {
                 const char*         url;

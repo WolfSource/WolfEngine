@@ -149,10 +149,38 @@ BOOST_PYTHON_MODULE(pyWolf)
         pywolf::w_window_py_export();
     }
 
+    //export wolf::content_pipeline classes to pyWolf.content_pipeline scope
+    {
+
+
+    }
+
+    //export wolf::media_core classes to pyWolf.media_core scope
+    {
+
+
+    }
+
+    //export wolf::graphics classes to pyWolf.graphics scope
+    {
+        //struct graphics {};
+        //scope _graphics = class_<graphics>("graphics");
+        
+    }
+
+    //export wolf::framework classes to pyWolf.framework scope
+    {
+        struct framework {};
+        scope _framework = class_<framework>("framework");
+
+        pywolf::w_game_py_export();
+
+    }
+
     //global scope
     def("bounding_box_from_bounding_sphere", w_bounding_box::create_from_bounding_sphere);
     def("bounding_sphere_from_bounding_box", w_bounding_sphere::create_from_bounding_box);
-
+    //export logger in global scope
     pywolf::w_logger_py_export();
 
     def("release_shared_data_over_all_instances", wolf::release_shared_data_over_all_instances);

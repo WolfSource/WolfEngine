@@ -2,17 +2,26 @@
     Project          : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source           : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website          : http://WolfSource.io
-    Name             : w_task.h
+    Name             : w_window_py.h
     Description      : The python exporter for w_window class and relative structs
     Comment          :
  */
+
+#ifdef __PYTHON__
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef __W_WINDOW_PY_H__
+#define __W_WINDOW_PY_H__
 
 namespace pywolf
 {
     static void w_window_py_export()
     {
-        using namespace wolf::system;
         using namespace boost::python;
+        using namespace wolf::system;
         
         //export w_enumerate_screens class
         class_<w_enumerate_screens>("w_enumerate_screens", init<>())
@@ -34,3 +43,6 @@ namespace pywolf
     }
 }
 
+#endif//__W_WINDOW_PY_H__
+
+#endif//__PYTHON__

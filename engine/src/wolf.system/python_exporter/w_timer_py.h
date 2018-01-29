@@ -7,12 +7,22 @@
     Comment          :
  */
 
+#ifdef __PYTHON__
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef __W_TIMER_PY_H__
+#define __W_TIMER_PY_H__
+
 namespace pywolf
 {
     static void w_timer_py_export()
     {
-        using namespace wolf::system;
         using namespace boost::python;
+        using namespace wolf::system;
+        
         
         //export w_timer class
         class_<w_timer>("w_timer", init<>())
@@ -25,3 +35,6 @@ namespace pywolf
     }
 }
 
+#endif//__W_TIMER_PY_H__
+
+#endif//__PYTHON__

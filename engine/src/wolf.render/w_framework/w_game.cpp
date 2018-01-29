@@ -108,7 +108,7 @@ bool w_game::run(_In_ map<int, w_window_info> pOutputWindowsInfo)
     return !this->exiting;
 }
 
-void w_game::exit(_In_ const int pExitCode)
+void w_game::exit(_In_ const int& pExitCode)
 {
     std::exit(pExitCode);
 }

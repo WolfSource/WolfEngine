@@ -442,9 +442,6 @@ private:
 
 #endif //__WIN32 && __linux
 
-
-#ifdef __PYTHON__
 #include "python_exporter/w_window_py.h"
-#endif
 
 #endif //__W_WINDOW_H__

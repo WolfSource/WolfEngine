@@ -18,6 +18,8 @@
 #include <w_game_time.h>
 #include <map>
 
+#include <python_exporter/w_boost_python_helper.h>
+
 namespace wolf
 {
 	namespace framework
@@ -33,15 +35,15 @@ namespace wolf
 
 			//This will run the main loop cycle of the game
 			W_EXP bool run(_In_ std::map<int, w_window_info> pOutputWindowsInfo);
-			W_EXP void exit(_In_ const int pExitCode = 0);
+			W_EXP void exit(_In_ const int& pExitCode = 0);
 
 			//Release all resources
 			W_EXP ULONG release() override;
 
 #pragma region Setters
 
-			W_EXP void set_fixed_time_step(_In_ bool pValue)        { this->_game_time.set_fixed_time_step(pValue); }
-			W_EXP void set_fixed_fps(_In_ double pValue)
+			W_EXP void set_fixed_time_step(_In_ const bool& pValue)     { this->_game_time.set_fixed_time_step(pValue); }
+			W_EXP void set_fixed_fps(_In_ const double& pValue)
             {
                 this->_game_time.set_fixed_time_step(true);
                 this->_game_time.set_target_elapsed_seconds(1.0 / pValue);
@@ -79,5 +81,7 @@ namespace wolf
 		};
 	}
 }
+
+#include "python_exporter/w_game_py.h"
 
 #endif

@@ -121,10 +121,6 @@ namespace wolf
     }
 }
 
-
-#ifdef __PYTHON__
 #include "python_exporter/w_inputs_manager_py.h"
-#endif
-
 
 #endif //__W_INPUT_H__

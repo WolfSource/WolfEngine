@@ -7,13 +7,22 @@
     Comment          :
 */
 
+#ifdef __PYTHON__
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef __W_INPUTS_MANAGER_PY_H__
+#define __W_INPUTS_MANAGER_PY_H__
+
 namespace pywolf
 {
     static void w_inputs_manager_py_export()
     {
-        using namespace wolf::system;
         using namespace boost::python;
-
+        using namespace wolf::system;
+        
         //export w_bounding_box class
         class_<w_inputs_manager::w_mouse>("w_mouse", init<>())
             .def_readonly("left_button_pressed", &w_inputs_manager::w_mouse::left_button_pressed, "left button pressed status")
@@ -37,3 +46,7 @@ namespace pywolf
             ;
     }
 }
+
+#endif//__W_INPUTS_MANAGER_PY_H__
+
+#endif//__PYTHON__

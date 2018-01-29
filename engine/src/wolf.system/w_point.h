@@ -65,8 +65,6 @@ inline bool operator != (const w_point_t& lValue, const w_point_t& rValue)
     return !(lValue == rValue);
 }
 
-#ifdef __PYTHON__
 #include "python_exporter/w_point_py.h"
-#endif
 
 #endif // __W_POINT_H__

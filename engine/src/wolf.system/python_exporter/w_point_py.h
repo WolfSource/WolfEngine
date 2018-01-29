@@ -2,18 +2,27 @@
     Project          : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source           : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website          : http://WolfSource.io
-    Name             : w_point.h
+    Name             : w_point_py.h
     Description      : The python exporter for w_point structs
     Comment          :
  */
+
+#ifdef __PYTHON__
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef __W_POINT_PY_H__
+#define __W_POINT_PY_H__
 
 namespace pywolf
 {
     static void w_point_py_export()
     {
-        using namespace wolf::system;
         using namespace boost::python;
-
+        using namespace wolf::system;
+        
         class_<w_point>("w_point", init<>())
             .def_readwrite("x", &w_point::x, "x")
             .def_readwrite("y", &w_point::y, "y")
@@ -31,3 +40,6 @@ namespace pywolf
     }
 }
 
+#endif//__W_POINT_PY_H__
+
+#endif//__PYTHON__

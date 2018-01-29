@@ -29,10 +29,6 @@
 #include "w_graphics/w_semaphore.h"
 #include "w_graphics/w_fences.h"
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
-
 namespace wolf
 {
 	namespace graphics
@@ -105,64 +101,61 @@ namespace wolf
 			DirectX::XMFLOAT4X4								orientation_transform_3D;
 #endif
                       
-			bool									v_sync = true;
-            bool                                    cpu_access_to_swapchain_buffer = false;
+			bool									        v_sync = true;
+            bool                                            cpu_access_to_swapchain_buffer = false;
 
 #ifdef __DX12__		
-			DXGI_FORMAT								dx_swap_chain_selected_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
-			ComPtr<IDXGISwapChain3>					dx_swap_chain;
+			DXGI_FORMAT								        dx_swap_chain_selected_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
+			ComPtr<IDXGISwapChain3>					        dx_swap_chain;
 
-			std::vector<ID3D12Resource*>			dx_swap_chain_image_views;
-			uint32_t								dx_swap_chain_image_index = 0;
+			std::vector<ID3D12Resource*>			        dx_swap_chain_image_views;
+			uint32_t								        dx_swap_chain_image_index = 0;
 
-			ComPtr<ID3D12DescriptorHeap>			dx_render_target_view_heap;
-			UINT									dx_render_target_descriptor_size = 0;
+			ComPtr<ID3D12DescriptorHeap>			        dx_render_target_view_heap;
+			UINT									        dx_render_target_descriptor_size = 0;
 
-			ComPtr<ID3D12CommandAllocator>			dx_command_allocator_pool;
-			ComPtr<ID3D12CommandQueue>				dx_command_queue;
-			ComPtr<ID3D12GraphicsCommandList>		dx_command_list;
-			ComPtr<ID3D12PipelineState>				dx_pipeline_state;
+			ComPtr<ID3D12CommandAllocator>			        dx_command_allocator_pool;
+			ComPtr<ID3D12CommandQueue>				        dx_command_queue;
+			ComPtr<ID3D12GraphicsCommandList>		        dx_command_list;
+			ComPtr<ID3D12PipelineState>				        dx_pipeline_state;
 
 			//Synchronization objects.
-			HANDLE									dx_fence_event = 0;
-			ComPtr<ID3D12Fence>						dx_fence;
-			UINT64									dx_fence_value = 0;
+			HANDLE									        dx_fence_event = 0;
+			ComPtr<ID3D12Fence>						        dx_fence;
+			UINT64									        dx_fence_value = 0;
 
 #elif defined(__VULKAN__)
-            VkSurfaceKHR                            vk_presentation_surface = 0;
-            VkSurfaceFormatKHR                      vk_swap_chain_selected_format;
-			VkSwapchainKHR                          vk_swap_chain = 0;
-            std::vector<w_image_view>				vk_swap_chain_image_views;
-            uint32_t								vk_swap_chain_image_index = 0;
+            VkSurfaceKHR                                    vk_presentation_surface = 0;
+            VkSurfaceFormatKHR                              vk_swap_chain_selected_format;
+			VkSwapchainKHR                                  vk_swap_chain = 0;
+            std::vector<w_image_view>				        vk_swap_chain_image_views;
+            uint32_t								        vk_swap_chain_image_index = 0;
             
-            std::vector<VkSurfaceFormatKHR>			vk_surface_formats;
+            std::vector<VkSurfaceFormatKHR>			        vk_surface_formats;
                         
-            VkFormat								vk_depth_buffer_format = VkFormat::VK_FORMAT_UNDEFINED;
-            w_image_view							vk_depth_buffer_image_view;
-            VkDeviceMemory							vk_depth_buffer_memory = 0;
+            VkFormat								        vk_depth_buffer_format = VkFormat::VK_FORMAT_UNDEFINED;
+            w_image_view							        vk_depth_buffer_image_view;
+            VkDeviceMemory							        vk_depth_buffer_memory = 0;
             
 			//Synchronization objects
-            w_semaphore								vk_swap_chain_image_is_available_semaphore;
-            w_semaphore								vk_rendering_done_semaphore;
-
+            w_semaphore								        vk_swap_chain_image_is_available_semaphore;
+            w_semaphore								        vk_rendering_done_semaphore;
 
             //Required objects for sharing swap chain's buffer with CPU
             struct shared_objs_between_cpu_gpu
             {
-                VkImage                                 destination_image = 0;
-                VkDeviceMemory                          destination_image_memory = 0;
-                VkCommandBuffer                         copy_command_buffer = 0;
-                VkFence                                 copy_fence = 0;
-                bool                                    command_buffer_began = false;
-            };
-            shared_objs_between_cpu_gpu*                objs_between_cpu_gpu = nullptr;
-            bool                                        bliting_supported_by_swap_chain = true;
-
+                VkImage                                     destination_image = 0;
+                VkDeviceMemory                              destination_image_memory = 0;
+                VkCommandBuffer                             copy_command_buffer = 0;
+                VkFence                                     copy_fence = 0;
+                bool                                        command_buffer_began = false;
+            };shared_objs_between_cpu_gpu*                  objs_between_cpu_gpu = nullptr;
+            bool                                            bliting_supported_by_swap_chain = true;
 #endif
 
         private:
-            bool									_is_released = false;
-		};
+            bool									        _is_released = false;
+        };
         
 		struct w_device_info
 		{
@@ -261,40 +254,40 @@ namespace wolf
 			ComPtr<ID3D12Device>									dx_device;
 
 #elif defined(__VULKAN__)
-            static VkInstance                                           vk_instance;
+            static VkInstance                                               vk_instance;
                         
-            VkPhysicalDevice                                            vk_physical_device;
-            VkPhysicalDeviceFeatures                                    vk_physical_device_features;
-            VkPhysicalDeviceMemoryProperties                            vk_physical_device_memory_properties;
+            VkPhysicalDevice                                                vk_physical_device;
+            VkPhysicalDeviceFeatures                                        vk_physical_device_features;
+            VkPhysicalDeviceMemoryProperties                                vk_physical_device_memory_properties;
             
-            std::vector<VkQueueFamilyProperties>                        vk_queue_family_properties;
-            std::vector<VkBool32>                                       vk_queue_family_supports_present;
+            std::vector<VkQueueFamilyProperties>                            vk_queue_family_properties;
+            std::vector<VkBool32>                                           vk_queue_family_supports_present;
 			
-            w_queue                                                     vk_graphics_queue;
-            w_queue                                                     vk_present_queue;
-            w_queue                                                     vk_compute_queue;
-            w_queue                                                     vk_transfer_queue;
-            w_queue                                                     vk_sparse_queue;
+            w_queue                                                         vk_graphics_queue;
+            w_queue                                                         vk_present_queue;
+            w_queue                                                         vk_compute_queue;
+            w_queue                                                         vk_transfer_queue;
+            w_queue                                                         vk_sparse_queue;
 
-            VkDevice                                                    vk_device;
+            VkDevice                                                        vk_device;
 
-            VkCommandPool                                               vk_command_allocator_pool;
+            VkCommandPool                                                   vk_command_allocator_pool;
                         
             //static pipeline defaults
 			struct defaults
             {
-                W_EXP static std::vector<VkSubpassDependency>             vk_default_subpass_dependencies;
-                W_EXP static VkPipelineLayoutCreateInfo                   vk_default_pipeline_layout_create_info;
-                W_EXP static VkPipelineVertexInputStateCreateInfo         vk_default_pipeline_vertex_input_state_create_info;
-                W_EXP static VkPipelineInputAssemblyStateCreateInfo       vk_default_pipeline_input_assembly_state_create_info;
-                W_EXP static VkPipelineRasterizationStateCreateInfo       vk_default_pipeline_rasterization_state_create_info;
-                W_EXP static VkPipelineMultisampleStateCreateInfo         vk_default_pipeline_multisample_state_create_info;
+                W_EXP static std::vector<VkSubpassDependency>               vk_default_subpass_dependencies;
+                W_EXP static VkPipelineLayoutCreateInfo                     vk_default_pipeline_layout_create_info;
+                W_EXP static VkPipelineVertexInputStateCreateInfo           vk_default_pipeline_vertex_input_state_create_info;
+                W_EXP static VkPipelineInputAssemblyStateCreateInfo         vk_default_pipeline_input_assembly_state_create_info;
+                W_EXP static VkPipelineRasterizationStateCreateInfo         vk_default_pipeline_rasterization_state_create_info;
+                W_EXP static VkPipelineMultisampleStateCreateInfo           vk_default_pipeline_multisample_state_create_info;
             };
 
             struct w_blend_states
             {
-                W_EXP static VkPipelineColorBlendAttachmentState          blend_none;
-                W_EXP static VkPipelineColorBlendAttachmentState          premulitplied_alpha;
+                W_EXP static VkPipelineColorBlendAttachmentState            blend_none;
+                W_EXP static VkPipelineColorBlendAttachmentState            premulitplied_alpha;
             };
 
 #endif //__DX12__ __VULKAN__
@@ -304,8 +297,8 @@ namespace wolf
             w_graphics_device(w_graphics_device const&);
             w_graphics_device& operator= (w_graphics_device const&);
             
-            bool                                                    _is_released;
-            std::string                                             _name;
+            bool                                                            _is_released;
+            std::string                                                     _name;
 		};
 
         //forward declaration
@@ -448,11 +441,5 @@ namespace wolf
         
 	}
 }
-
-//#endif
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif

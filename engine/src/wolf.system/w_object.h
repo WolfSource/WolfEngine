@@ -22,10 +22,6 @@
 #include "w_system_export.h"
 #include "w_std.h"
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
-
 enum LOAD_STATE { NOTLOADED, LOADING, LOADED };
 
 namespace wolf
@@ -62,9 +58,5 @@ namespace wolf
 		};
 	}
 }
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif //__W_OBJECT_H__

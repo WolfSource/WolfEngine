@@ -31,4 +31,8 @@
 #include <w_rectangle.h>
 #include <w_window.h>
 
+//from wolf::framework namespaces
+#include <w_framework/w_game.h>
+#include <w_framework/w_first_person_camera.h>
+
 #endif //__PCH_H__

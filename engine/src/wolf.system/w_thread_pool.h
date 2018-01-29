@@ -17,10 +17,6 @@
 #include "w_thread.h"
 #include <vector>
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
-
 namespace wolf
 {
 	namespace system
@@ -50,9 +46,5 @@ namespace wolf
         };
 	}
 }
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif //__W_THREAD_H__

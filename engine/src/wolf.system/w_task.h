@@ -24,7 +24,6 @@
 #include <functional>
 #include "w_system_export.h"
 #include "w_std.h"
-#include "python_exporter/w_boost_python_helper.h"
 
 namespace wolf
 {

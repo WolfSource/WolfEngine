@@ -151,6 +151,9 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h">
       <Filter>w_framework</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_game_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_framework">
@@ -176,6 +179,9 @@
     </Filter>
     <Filter Include="w_graphics">
       <UniqueIdentifier>{602f206c-1517-4b06-9a9b-74c0c9d081fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="python_exporter">
+      <UniqueIdentifier>{a564a5e6-ceaa-448b-ae65-65924a12ba6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

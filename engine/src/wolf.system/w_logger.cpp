@@ -127,8 +127,6 @@ namespace wolf
                 }
                 auto _log_file_path = _log_directory + io::get_unique_name() + ".wLog";
 #endif
-
-
                 std::wstring _created_time = L"\t\"Time\"             : \"" + get_date_timeW() + L"\",\r\n";
                 std::wstring _app_name = L"\t\"Application Name\" : \"" + pAppName + L"\",\r\n";
                 

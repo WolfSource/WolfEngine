@@ -7,6 +7,8 @@
 	Comment          :
 */
 
+#ifdef __PYTHON__
+
 #if _MSC_VER > 1000
 #pragma once
 #endif
@@ -18,6 +20,7 @@
 
 namespace pywolf
 {
+    bool py_initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath) { return wolf::logger.initialize(pAppName, pLogPath); }
     boost::python::list py_get_buffer()
     {
         boost::python::list _list;
@@ -36,22 +39,27 @@ namespace pywolf
     void py_warning(const std::wstring pMsg) { wolf::logger.warning(pMsg); }
     void py_error(const std::wstring pMsg) { wolf::logger.error(pMsg); }
     bool py_get_is_open() { return wolf::logger.get_is_open(); }
-    
+    unsigned long py_release() { return wolf::logger.release(); }
+
     static void w_logger_py_export()
     {
-        using namespace wolf::system;
         using namespace boost::python;
+        using namespace wolf::system;
         
-        def("get_buffer", &py_get_buffer);
-        def("print_buffer", &py_print_buffer);
-        def("clear_buffer", &py_clear_buffer);
-        def("flush", &py_flush);
-        def("write", &py_write);
-        def("user", &py_user);
-        def("warning", &py_warning);
-        def("error", &py_error);
-        def("get_is_open", &py_get_is_open);
+        def("logger_initialize", &py_initialize);
+        def("logger_get_buffer", &py_get_buffer);
+        def("logger_print_buffer", &py_print_buffer);
+        def("logger_clear_buffer", &py_clear_buffer);
+        def("logger_flush", &py_flush);
+        def("logger_write", &py_write);
+        def("logger_user", &py_user);
+        def("logger_warning", &py_warning);
+        def("logger_error", &py_error);
+        def("logger_get_is_open", &py_get_is_open);
+        def("logger_release", &py_release);
     }
 }
 
-#endif
+#endif//__W_LOGGER_PY_H__
+
+#endif //__PYTHON__

@@ -25,7 +25,6 @@ namespace wolf
 		class w_content_manager : public wolf::system::w_object
 		{
 		public:
-
 			template<class T>
             static T* load(std::wstring pAssetPath)
             {

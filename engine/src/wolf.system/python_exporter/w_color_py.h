@@ -7,13 +7,22 @@
     Comment          :
 */
 
+#ifdef __PYTHON__
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef __W_COLOR_PY_H__
+#define __W_COLOR_PY_H__
+
 namespace pywolf
 {
     static void w_color_py_export()
     {
-        using namespace wolf::system;
         using namespace boost::python;
-
+        using namespace wolf::system;
+        
         //export w_bounding_box class
         class_<w_color>("w_color", init<>())
             .def_readwrite("r", &w_color::r, "Red channel(0-255)")
@@ -168,3 +177,7 @@ namespace pywolf
         ;
     }
 }
+
+#endif//__W_COLOR_PY_H__
+
+#endif //__PYTHON__

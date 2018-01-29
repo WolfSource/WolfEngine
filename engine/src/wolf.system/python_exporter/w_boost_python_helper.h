@@ -2,10 +2,12 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : w_boost_python.h
+	Name			 : w_boost_python_helper.h
 	Description		 : The main header of wolf.engine
 	Comment          :
 */
+
+#ifdef __PYTHON__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -13,8 +15,6 @@
 
 #ifndef __W_BOOST_PYTHON_HELPER_H__
 #define __W_BOOST_PYTHON_HELPER_H__
-
-#ifdef __PYTHON__
 
 #include <boost/python.hpp>
 
@@ -94,8 +94,6 @@ inline void w_boost_extract_tuple(
 	p13 = _13; p14 = _14; p15 = _15; p16 = _16;
 }
 
-#endif //__PYTHON__
-
 #endif //__W_BOOST_PYTHON_HELPER_H__
 
-
+#endif //__PYTHON__

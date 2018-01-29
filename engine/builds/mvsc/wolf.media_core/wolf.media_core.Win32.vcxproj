@@ -19,14 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Wolf.System\Wolf.System.Win32\Wolf.System.Win32.vcxproj">
-      <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\wolf.system\wolf.system.Win32.vcxproj">
-      <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.media_core\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.media_core\w_media_core.cpp" />
     <ClCompile Include="..\..\..\src\wolf.media_core\w_media_core_pch.cpp">
@@ -39,6 +31,11 @@
     <ClInclude Include="..\..\..\src\wolf.media_core\w_media_core_export.h" />
     <ClInclude Include="..\..\..\src\wolf.media_core\w_media_core_pch.h" />
     <ClInclude Include="..\..\..\src\wolf.media_core\w_target_ver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\wolf.system\wolf.system.Win32.vcxproj">
+      <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1C266BC7-AF7E-43E2-9CC9-4F6954295929}</ProjectGuid>

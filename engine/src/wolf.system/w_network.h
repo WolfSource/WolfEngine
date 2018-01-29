@@ -18,10 +18,6 @@
 #include "w_signal.h"
 #include <initializer_list>
 
-#ifdef __GNUC__
-#pragma GCC visibility push(default)
-#endif
-
 namespace wolf
 {
 	namespace system
@@ -190,10 +186,5 @@ namespace wolf
 		};
 	}
 }
-
-
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
 
 #endif //__W_NETWORK_H__
