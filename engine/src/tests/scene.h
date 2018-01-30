@@ -30,7 +30,7 @@ public:
 
 	/*
         Allows the game to perform any initialization and it needs to before starting to run.
-        Calling Game::Initialize() will enumerate through any components and initialize them as well.
+        Calling w_game::Initialize() will enumerate through any components and initialize them as well.
         The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
 	*/
 	void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) override;

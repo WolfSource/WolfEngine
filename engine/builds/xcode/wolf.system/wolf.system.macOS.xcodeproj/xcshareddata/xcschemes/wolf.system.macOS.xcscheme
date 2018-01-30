@@ -62,6 +62,34 @@
                ReferencedContainer = "container:../tests/wolf_vulkan_metal_macOS/wolf_vulkan_metal_macOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
+               BuildableName = "pyWolf.so"
+               BlueprintName = "pyWolf"
+               ReferencedContainer = "container:../pyWolf/pyWolf.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
+               BuildableName = "libwolf.media_core.macOS.dylib"
+               BlueprintName = "wolf.media_core.macOS"
+               ReferencedContainer = "container:../wolf.media_core/wolf.media_core.macOS.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

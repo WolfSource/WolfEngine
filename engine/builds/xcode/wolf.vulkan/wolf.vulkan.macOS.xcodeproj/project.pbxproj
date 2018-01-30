@@ -11,6 +11,11 @@
 		2C0F36A7200A6C00001CB2DF /* w_shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F36A5200A6BFF001CB2DF /* w_shapes.cpp */; };
 		2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1B3FF51E97DC6500512959 /* w_shader.cpp */; };
 		2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1B3FF61E97DC6500512959 /* w_shader.h */; };
+		2C299C7F201F9110003C80F7 /* w_first_person_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C299C7D201F9110003C80F7 /* w_first_person_camera.cpp */; };
+		2C299C80201F9110003C80F7 /* w_first_person_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C299C7E201F9110003C80F7 /* w_first_person_camera.h */; };
+		2C299C89201F9ACC003C80F7 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C84201F92C5003C80F7 /* Python.framework */; };
+		2C299C8C201F9BFE003C80F7 /* w_game_py.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C299C8B201F9BFE003C80F7 /* w_game_py.h */; };
+		2C299C8E201FA4F9003C80F7 /* libboost_python-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */; };
 		2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C29CD1C1EB3344000BEFF54 /* w_game.cpp */; };
 		2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C29CD1D1EB3344000BEFF54 /* w_game.h */; };
 		2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */; };
@@ -65,6 +70,11 @@
 		2C0F36A5200A6BFF001CB2DF /* w_shapes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_shapes.cpp; path = ../../../src/wolf.render/w_graphics/w_shapes.cpp; sourceTree = "<group>"; };
 		2C1B3FF51E97DC6500512959 /* w_shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_shader.cpp; path = ../../../src/wolf.render/w_graphics/w_shader.cpp; sourceTree = "<group>"; };
 		2C1B3FF61E97DC6500512959 /* w_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_shader.h; path = ../../../src/wolf.render/w_graphics/w_shader.h; sourceTree = "<group>"; };
+		2C299C7D201F9110003C80F7 /* w_first_person_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_first_person_camera.cpp; path = ../../../src/wolf.render/w_framework/w_first_person_camera.cpp; sourceTree = "<group>"; };
+		2C299C7E201F9110003C80F7 /* w_first_person_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_first_person_camera.h; path = ../../../src/wolf.render/w_framework/w_first_person_camera.h; sourceTree = "<group>"; };
+		2C299C84201F92C5003C80F7 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
+		2C299C8B201F9BFE003C80F7 /* w_game_py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game_py.h; path = ../../../src/wolf.render/python_exporter/w_game_py.h; sourceTree = "<group>"; };
+		2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_python-mt.a"; path = "../../../dependencies/boost/lib/osx/debug/libboost_python-mt.a"; sourceTree = "<group>"; };
 		2C29CD1C1EB3344000BEFF54 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_framework/w_game.cpp; sourceTree = "<group>"; };
 		2C29CD1D1EB3344000BEFF54 /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/w_framework/w_game.h; sourceTree = "<group>"; };
 		2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.content_pipeline.macOS.dylib; sourceTree = "<group>"; };
@@ -120,6 +130,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C299C8E201FA4F9003C80F7 /* libboost_python-mt.a in Frameworks */,
+				2C299C89201F9ACC003C80F7 /* Python.framework in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
 				2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
@@ -171,9 +183,19 @@
 			name = w_graphics;
 			sourceTree = "<group>";
 		};
+		2C299C8A201F9BEB003C80F7 /* python_exporter */ = {
+			isa = PBXGroup;
+			children = (
+				2C299C8B201F9BFE003C80F7 /* w_game_py.h */,
+			);
+			name = python_exporter;
+			sourceTree = "<group>";
+		};
 		2C29CD131EB3339E00BEFF54 /* w_framework */ = {
 			isa = PBXGroup;
 			children = (
+				2C299C7D201F9110003C80F7 /* w_first_person_camera.cpp */,
+				2C299C7E201F9110003C80F7 /* w_first_person_camera.h */,
 				2C29CD1C1EB3344000BEFF54 /* w_game.cpp */,
 				2C29CD1D1EB3344000BEFF54 /* w_game.h */,
 			);
@@ -183,6 +205,7 @@
 		2C69E9A01E5EC2CB00F15C44 = {
 			isa = PBXGroup;
 			children = (
+				2C299C8A201F9BEB003C80F7 /* python_exporter */,
 				2CA945DB1ED9F5B9007B70B8 /* imgui */,
 				2C29CD131EB3339E00BEFF54 /* w_framework */,
 				2C1B3FF31E97DC5300512959 /* w_graphics */,
@@ -209,6 +232,8 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */,
+				2C299C84201F92C5003C80F7 /* Python.framework */,
 				2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */,
 				2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */,
 				2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */,
@@ -256,9 +281,11 @@
 				2CFFAC721FCEAA400020A112 /* w_attachment_buffer_desc.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
 				2C8D5B6E1F4F98D1000BCB87 /* w_imgui.h in Headers */,
+				2C299C8C201F9BFE003C80F7 /* w_game_py.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 				2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */,
 				2C0F36A6200A6C00001CB2DF /* w_shapes.h in Headers */,
+				2C299C80201F9110003C80F7 /* w_first_person_camera.h in Headers */,
 				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
 				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
 			);
@@ -339,6 +366,7 @@
 				2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */,
 				2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */,
 				2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */,
+				2C299C7F201F9110003C80F7 /* w_first_person_camera.cpp in Sources */,
 				2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */,
 				2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */,
 				2C0F36A7200A6C00001CB2DF /* w_shapes.cpp in Sources */,
@@ -472,11 +500,20 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/w_render_pch.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					__VULKAN__,
+					MSGPACK_USE_CPP03,
+					MSGPACK_DISABLE_LEGACY_NIL,
+					__PYTHON__,
+					BOOST_PYTHON_STATIC_LIB,
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
@@ -488,7 +525,10 @@
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 					"$(SRCROOT)/../../src/wolf.render",
+					"$(SRCROOT)/../../../dependencies/boost/include/",
+					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
 				);
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/boost/lib/osx/debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -503,6 +543,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -516,7 +557,10 @@
 					"$(SRCROOT)/../../../src/wolf.render",
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
+					"$(SRCROOT)/../../../dependencies/boost/include/",
+					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
 				);
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/boost/lib/osx/debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

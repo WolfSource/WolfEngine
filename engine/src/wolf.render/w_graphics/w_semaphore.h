@@ -7,6 +7,10 @@
 	Comment          :
 */
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifndef __W_SWMAPHORE_H__
 #define __W_SWMAPHORE_H__
 
@@ -32,7 +36,7 @@ namespace wolf
 #ifdef __VULKAN__
             VkSemaphore     _semaphore = 0;
 #elif defined(__DX12__)
-            ComPtr<?>      _semaphore = nullptr;
+            //ComPtr<?>      _semaphore = nullptr;
 #endif
         };
 	}
