@@ -314,7 +314,7 @@ namespace wolf
 			W_EXP virtual void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) = 0;
 
 			//Called when corresponding window resized
-			W_EXP virtual void on_window_resized(_In_ uint32_t pIndex);
+			W_EXP virtual void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex);
 			//Called when any graphics device lost
 			W_EXP virtual void on_device_lost();
 			//Called when the APP suspends. It provides a hint to the driver that the APP is entering an idle state and that temporary buffers can be reclaimed for use by other apps.

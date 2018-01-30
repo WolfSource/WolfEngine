@@ -42,7 +42,7 @@ public:
     HRESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
     
     //This is called when the window game should resized. pIndex is the index of window.
-    void on_window_resized(_In_ uint32_t pIndex) override;
+    void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex) override;
     
     //This is called when the we lost graphics device.
     void on_device_lost() override;

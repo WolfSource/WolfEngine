@@ -6,19 +6,21 @@ using namespace std;
 //using namespace wolf::graphics;
 using namespace wolf::framework;
 
-w_game::w_game(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
+w_game::w_game(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
 	exiting(false),
     _app_name(pAppName)
 {
 	_super::set_class_name("w_game");
+	content_path = pContentPath;
+
 	this->load_state = LOAD_STATE::NOTLOADED;
 
     if (!logger.get_is_open())
     {
 #ifdef __UWP
-        logger.initialize(this->_app_name);
+        logger.initialize(pLogPath);
 #else
-        logger.initialize(this->_app_name, pRunningDirectory);
+        logger.initialize(pLogPath, pLogPath);
 #endif
     }
 }
@@ -73,7 +75,7 @@ HRESULT w_game::render(_In_ const wolf::system::w_game_time& pGameTime)
     return w_graphics_device_manager::present();
 }
 
-bool w_game::run(_In_ map<int, w_window_info> pOutputWindowsInfo)
+bool w_game::run(_In_ map<int, w_window_info>& pOutputWindowsInfo)
 {
 	if (this->load_state == LOAD_STATE::NOTLOADED)
 	{

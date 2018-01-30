@@ -203,9 +203,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     return w_game::render(pGameTime);
 }
 
-void scene::on_window_resized(_In_ uint32_t pIndex)
+void scene::on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex)
 {
-    w_game::on_window_resized(pIndex);
+    w_game::on_window_resized(pGraphicsDeviceIndex);
 }
 
 void scene::on_device_lost()

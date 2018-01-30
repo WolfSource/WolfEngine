@@ -3579,7 +3579,7 @@ w_graphics_device_manager::w_graphics_device_manager() : _pimp(new w_graphics_de
 {
 	_super::set_class_name("w_graphics_device_manager_pimp");// typeid(this).name());
    
-#ifdef __WIN32
+#if defined(__WIN32) && !defined(__PYTHON__)
     auto _hr = CoInitialize(NULL);
 	V(_hr, L"CoInitialize already been called", _super::name, 3, false);
 #endif
@@ -3661,11 +3661,11 @@ void w_graphics_device_manager::on_suspend()
 #endif
 }
 
-void w_graphics_device_manager::on_window_resized(_In_ uint32_t pIndex)
+void w_graphics_device_manager::on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex)
 {
-    if (pIndex >= this->graphics_devices.size()) return;
+    if (pGraphicsDeviceIndex >= this->graphics_devices.size()) return;
 
-    auto _gDevice = this->graphics_devices.at(pIndex);
+    auto _gDevice = this->graphics_devices.at(pGraphicsDeviceIndex);
     auto _window = _gDevice->output_presentation_windows;
     _wait_for_previous_frame(_gDevice);
     this->_pimp->create_or_resize_swap_chain(_gDevice);
@@ -4042,7 +4042,7 @@ ULONG w_graphics_device_manager::release()
     FreeVulkan();
 #endif
     
-#ifdef __WIN32
+#if defined(__WIN32) && !defined(__PYTHON__)
 	CoUninitialize();
 #endif
 

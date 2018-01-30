@@ -25,7 +25,7 @@
 class scene : public wolf::framework::w_game
 {
 public:
-	scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName);
+	scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName);
 	virtual ~scene();
 
 	/*
@@ -45,7 +45,7 @@ public:
 	HRESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
 
 	//This is called when the window game should resized. pIndex is the index of window.
-	void on_window_resized(_In_ uint32_t pIndex) override;
+	void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex) override;
 
 	//This is called when the we lost graphics device.
 	void on_device_lost() override;

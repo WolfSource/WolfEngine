@@ -12,7 +12,7 @@
     <Name>pyWolf</Name>
     <RootNamespace>pyWolf</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +24,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="test.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\pyWolf\pyWolf.vcxproj">
+      <Name>pyWolf</Name>
+      <Project>{f112e686-6e52-42c4-8785-41205d68e4e1}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

@@ -50,22 +50,10 @@ static std::atomic<int> MousePosX = 0;
 static std::atomic<int> MousePosY = 0;
 #endif
 
-scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
-	w_game(pRunningDirectory, pAppName)
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
+	w_game(pContentPath, pLogPath, pAppName)
 {
 	using namespace wolf;
-
-	auto _running_dir = pRunningDirectory;
-
-#if defined(__WIN32) || defined(__UWP)
-	content_path = _running_dir + L"../../../../content/";
-#elif defined(__APPLE__)
-	content_path = _running_dir + L"/../../../../../content/";
-#elif defined(__linux)
-	error
-#elif defined(__ANDROID)
-	error
-#endif
 
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = false;
@@ -484,9 +472,9 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     return _gDevice->capture_presented_swap_chain_buffer(on_pixels_data_captured_signal);
 }
 
-void scene::on_window_resized(_In_ uint32_t pIndex)
+void scene::on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex)
 {
-	w_game::on_window_resized(pIndex);
+	w_game::on_window_resized(pGraphicsDeviceIndex);
 }
 
 void scene::on_device_lost()

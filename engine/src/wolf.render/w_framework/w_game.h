@@ -28,13 +28,12 @@ namespace wolf
 		class w_game : public wolf::graphics::w_graphics_device_manager
 		{
 		public:
-            W_EXP w_game(_In_z_ const std::wstring& pRunningDirectory,
-                         _In_z_ const std::wstring& pAppName = L"Wolf.Engine");
+            W_EXP w_game(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName = L"Wolf.Engine");
             
 			W_EXP virtual ~w_game();
 
 			//This will run the main loop cycle of the game
-			W_EXP bool run(_In_ std::map<int, w_window_info> pOutputWindowsInfo);
+			W_EXP bool run(_In_ std::map<int, w_window_info>& pOutputWindowsInfo);
 			W_EXP void exit(_In_ const int& pExitCode = 0);
 
 			//Release all resources
