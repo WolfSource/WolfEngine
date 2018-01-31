@@ -26,8 +26,7 @@ namespace wolf
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 						 _In_z_ const std::wstring& pShaderBinaryPath,
                          _In_ const w_shader_stage pShaderStage,
-                         _In_z_ const char* pMainFunctionName,
-                         _In_ const bool pIsCompueteShader)
+                         _In_z_ const char* pMainFunctionName)
             {
                 this->_gDevice = pGDevice;
                 
@@ -97,7 +96,7 @@ namespace wolf
                 
                 _pipeline_shader_stage_info.stage = (VkShaderStageFlagBits)pShaderStage;
                 
-                if (pIsCompueteShader)
+                if (pShaderStage == w_shader_stage::COMPUTE_SHADER)
                 {
                     this->_compute_shader_stage = _pipeline_shader_stage_info;
                 }
@@ -670,13 +669,12 @@ w_shader::~w_shader()
 HRESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_z_ const std::wstring& pShaderBinaryPath,
 	_In_ const w_shader_stage pShaderStage,
-	_In_z_ const char* pMainFunctionName,
-	_In_ const bool pIsComputeShader)
+	_In_z_ const char* pMainFunctionName)
 {
 	if (!this->_pimp) return S_FALSE;
 
 	_super::load_state = LOAD_STATE::LOADING;
-	auto _hr = this->_pimp->load(pGDevice, pShaderBinaryPath, pShaderStage, pMainFunctionName, pIsComputeShader);
+	auto _hr = this->_pimp->load(pGDevice, pShaderBinaryPath, pShaderStage, pMainFunctionName);
 	_super::load_state = LOAD_STATE::LOADED;
 
 	return _hr;
@@ -826,7 +824,7 @@ HRESULT w_shader::load_shader(_In_ const std::shared_ptr<w_graphics_device>& pGD
     }
     if (!pComputeShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pComputeShaderPath, w_shader_stage::COMPUTE_SHADER, pMainFunctionName, true) == S_FALSE)
+        if (_shader->load(pGDevice, pComputeShaderPath, w_shader_stage::COMPUTE_SHADER, pMainFunctionName) == S_FALSE)
         {
             return S_FALSE;
         }

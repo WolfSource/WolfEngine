@@ -46,9 +46,12 @@ void init_window(struct w_window_info& pInfo)
     //back the view with a layer created by the makeBackingLayer method.
     self.view.wantsLayer = YES;
     
-#if defined __APPLE__
+    //Initialize and content path and logPath
     auto _running_dir = wolf::system::io::get_current_directory();
-    sScene = new scene(_running_dir, L"test.wolf.engine.metal.macOS");
+    std::wstring _content_path = _running_dir + L"/../../../../../content/";
+    
+#if defined __APPLE__
+    sScene = new scene(_content_path, _running_dir , L"test.wolf.engine.metal.macOS");
 #elif defined __iOS__
     sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String,
                        "test.wolf.engine.metal.iOS");

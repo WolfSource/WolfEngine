@@ -47,7 +47,7 @@ namespace wolf
             VkImageView                         view = 0;
 #endif
         };
-
+        
 		//Output window which handles all 3d resources for output renderer
 		struct w_output_presentation_window
 		{

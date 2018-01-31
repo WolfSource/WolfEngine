@@ -7,6 +7,10 @@
 	Comment          :
 */
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifndef __W_SHADER_H__
 #define __W_SHADER_H__
 
@@ -67,8 +71,7 @@ namespace wolf
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 							   _In_z_ const std::wstring& pShaderBinaryPath,
 				               _In_ const w_shader_stage pShaderStage,
-                               _In_z_ const char* pMainFunctionName = "main",
-                               _In_ const bool pIsComputeShader = false);
+                               _In_z_ const char* pMainFunctionName = "main");
             
             W_EXP void update_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
 

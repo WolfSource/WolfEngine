@@ -7,12 +7,17 @@
 	Comment          : Wolf used encoding texture with two channel based on http://devkk.net/index.php?tag=articles&id=24
 */
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifndef __W_TEXTURE_2D_H__
 #define __W_TEXTURE_2D_H__
 
 #include "w_graphics_device_manager.h"
 #include <w_logger.h>
 #include <w_io.h>
+#include <python_exporter/w_boost_python_helper.h>
 
 namespace wolf
 {
@@ -97,9 +102,11 @@ namespace wolf
             W_EXP virtual ULONG release() override;
 
             //load texture and store it into the shared
-            W_EXP static HRESULT load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
-                                                         _In_z_ std::wstring pPath,
-                                                        _Inout_ w_texture** pPointerToTexture);            
+            W_EXP static HRESULT load_to_shared_textures(
+                _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_z_ std::wstring pPath,
+                _Inout_ w_texture** pPointerToTexture);
+            
             //save texture as bitmap file
             W_EXP static void write_bitmap_to_file(
                 _In_z_ const char* pFilename,
@@ -202,4 +209,6 @@ namespace wolf
     }
 }
 
-#endif
+#include "python_exporter/w_texture_py.h"
+
+#endif//__W_TEXTURE_2D_H__

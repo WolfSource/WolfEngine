@@ -233,7 +233,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "339"
             endingLineNumber = "339"
-            landmarkName = "_copy_DRAM_to_VRAM( _In_ const UINT pVerticesSize, _In_ const UINT pIndicesSize)"
+            landmarkName = "_create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag, _In_ const void* const pBufferData, _In_ uint32_t pBufferSizeInBytes, _In_ const VkMemoryPropertyFlags pMemoryFlags, _Inout_ w_buffer&amp; pBuffer)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -249,7 +249,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "334"
             endingLineNumber = "334"
-            landmarkName = "_copy_DRAM_to_VRAM( _In_ const UINT pVerticesSize, _In_ const UINT pIndicesSize)"
+            landmarkName = "_create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag, _In_ const void* const pBufferData, _In_ uint32_t pBufferSizeInBytes, _In_ const VkMemoryPropertyFlags pMemoryFlags, _Inout_ w_buffer&amp; pBuffer)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -791,23 +791,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "175"
             endingLineNumber = "175"
-            landmarkName = "_create_descriptor_pool(_In_ const std::vector&lt;VkDescriptorPoolSize&gt; pDescriptorPoolSize)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
-            timestampString = "516655300.056674"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
-            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_z_ const std::wstring&amp; pShaderBinaryPath, _In_ const w_shader_stage pShaderStage, _In_z_ const char* pMainFunctionName)"
+            landmarkName = "release()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -823,23 +807,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "392"
             endingLineNumber = "392"
-            landmarkName = "class w_shader_pimp"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
-            timestampString = "516657245.0935"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
-            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_z_ const std::wstring&amp; pShaderBinaryPath, _In_ const w_shader_stage pShaderStage, _In_z_ const char* pMainFunctionName)"
+            landmarkName = "_create_descriptor_layout_bindings( _In_ const w_shader_binding_param&amp; pParam, _Inout_ uint32_t&amp; pNumberOfUniforms, _Inout_ uint32_t&amp; pNumberOfStorages, _Inout_ uint32_t&amp; pNumberOfSampler2Ds, _Inout_ uint32_t&amp; pNumberOfSamplers, _Inout_ uint32_t&amp; pNumberOfImages, _Inout_ std::vector&lt;VkDescriptorSetLayoutBinding&gt;&amp; pDescriptorSetLayoutBindings)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -855,23 +823,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "270"
             endingLineNumber = "270"
-            landmarkName = "_prepare_shader_params()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.render/w_graphics/w_shader.cpp"
-            timestampString = "516657296.569445"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
-            landmarkName = "load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_z_ const std::wstring&amp; pShaderBinaryPath, _In_ const w_shader_stage pShaderStage, _In_z_ const char* pMainFunctionName)"
+            landmarkName = "_create_write_descriptor_sets( _In_ const w_shader_binding_param&amp; pBindingParam, _In_ const VkDescriptorSet&amp; pDescriptoSet, _Inout_ std::vector&lt;VkWriteDescriptorSet&gt;&amp; pWriteDescriptorSets)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -887,7 +839,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "343"
             endingLineNumber = "343"
-            landmarkName = "_prepare_shader_params()"
+            landmarkName = "_create_write_descriptor_sets( _In_ const w_shader_binding_param&amp; pBindingParam, _In_ const VkDescriptorSet&amp; pDescriptoSet, _Inout_ std::vector&lt;VkWriteDescriptorSet&gt;&amp; pWriteDescriptorSets)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -902,9 +854,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "681"
-            endingLineNumber = "681"
-            landmarkName = "w_mesh::load(_In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_ const void* const pVerticesData, _In_ const UINT pVerticesSize, _In_ const UINT pVerticesCount, _In_ const UINT* const pIndicesData, _In_ const UINT pIndicesCount, _In_ w_shader* pShader, _In_ const w_render_pass* pRenderPass, _In_ const std::string&amp; pPipelineCacheName, _In_ const bool pZUp, _In_ const bool pUseDynamicBuffer)"
-            landmarkType = "7">
+            endingLineNumber = "681">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -918,9 +868,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "694"
-            endingLineNumber = "694"
-            landmarkName = "w_mesh::update_dynamic_buffer( _In_ const std::shared_ptr&lt;w_graphics_device&gt;&amp; pGDevice, _In_ const void* const pVerticesData, _In_ const UINT pVerticesSize, _In_ const UINT pVerticesCount, _In_ const UINT* const pIndicesData, _In_ const UINT pIndicesCount)"
-            landmarkType = "7">
+            endingLineNumber = "694">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

@@ -202,7 +202,17 @@ namespace pywolf
 		{
 			if (!this->_wrapper) return;
 			this->_wrapper->set_device_lost_callback(pFunc);
-		}
+        }
+        void set_fixed_time_step(_In_ const bool& pValue)
+        {
+            if (!this->_wrapper) return;
+            this->_wrapper->set_fixed_time_step(pValue);
+        }
+        void set_fixed_fps(_In_ const double& pValue)
+        {
+            if (!this->_wrapper) return;
+            this->_wrapper->set_fixed_fps(pValue);
+        }
 #pragma endregion
 
 #pragma region Python Wrappers
@@ -237,6 +247,8 @@ namespace pywolf
 			.def("set_post_render_callback", &py_game::py_set_post_render_callback, "set a callback function which rises after rendering")
 			.def("set_window_resized_callback", &py_game::py_set_window_resized_callback, "set a callback function which rises on window resizing")
 			.def("set_device_lost_callback", &py_game::py_set_device_lost_callback, "set a callback function which rises on device losting")
+            .def("set_fixed_time_step", &py_game::set_fixed_time_step, "set fixed time step")
+            .def("set_fixed_fps", &py_game::set_fixed_fps, "set fixed frame per seconds")
 			;
 	}
 }
