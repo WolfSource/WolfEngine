@@ -256,6 +256,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_game_py.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_graphics_device_manager_py.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />

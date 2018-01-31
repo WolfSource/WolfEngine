@@ -154,6 +154,9 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_game_py.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_graphics_device_manager_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_framework">

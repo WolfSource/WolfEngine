@@ -74,7 +74,6 @@ namespace wolf
 		private:
 			typedef	 wolf::graphics::w_graphics_device_manager      _super;
 			wolf::system::w_game_time                               _game_time;
-
 			std::wstring                                            _app_name;
 
 		};

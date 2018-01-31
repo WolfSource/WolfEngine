@@ -61,8 +61,13 @@ class scene(QWidget):
   
         #initialize game
         _map_info = (0, _window_info)
-        while not  self.__exiting:
+        while True:
+            if self.__exiting:
+                self._game.exit()
+                break
             self._game.run(_map_info)
+
+        print "Exited"
 
     def showEvent(self, event):
         #run in another thread
@@ -71,15 +76,14 @@ class scene(QWidget):
 
     def closeEvent(self, event):
         self.__exiting = True
-        self._game.exit()
         event.accept()
 
 if __name__ == '__main__':
 
     # Create a Qt application
     app = QApplication(sys.argv)
-    scene = scene("E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\content\\",
-                   "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32",
+    scene = scene("D:\\github\\WolfSource\\Wolf.Engine\\content\\",
+                   "D:\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32",
                    "pyWolf.test")
     scene.resize(800, 600)
     scene.setWindowTitle('Wolf.Engine')

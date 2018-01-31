@@ -434,6 +434,35 @@ namespace wolf
                 this->extent.width = 800;
                 this->extent.height = 600;
             }
+            
+
+#ifdef __PYTHON__
+            w_point py_get_offset() const
+            {
+                auto _point = w_point();
+                _point.x = this->offset.x;
+                _point.y = this->offset.y;
+                return _point;
+            }
+            void py_set_offset(_In_ const int32_t& pX, _In_ const int32_t& pY)
+            {
+                this->offset.x = pX;
+                this->offset.y = pY;
+            }
+
+            w_point_t py_get_extent() const
+            {
+                auto _point = w_point_t();
+                _point.x = this->extent.width;
+                _point.y = this->extent.height;
+                return _point;
+            }
+            void py_set_extent(_In_ const uint32_t& pWidth, _In_ const uint32_t& pHeight)
+            {
+                this->extent.width = pWidth;
+                this->extent.height = pHeight;
+            }
+#endif
         };
 #endif
         
@@ -441,5 +470,7 @@ namespace wolf
         
 	}
 }
+
+#include "python_exporter/w_graphics_device_manager_py.h"
 
 #endif
