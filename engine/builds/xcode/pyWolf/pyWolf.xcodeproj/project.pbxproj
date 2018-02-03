@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C299C932022EEF8003C80F7 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE0753B201A836B0078B239 /* libwolf.vulkan.macOS.dylib */; };
 		2CE07531201A83540078B239 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE0752E201A83540078B239 /* pch.cpp */; };
 		2CE07532201A83540078B239 /* pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE0752F201A83540078B239 /* pch.h */; };
 		2CE07533201A83540078B239 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE07530201A83540078B239 /* main.cpp */; };
@@ -36,6 +37,7 @@
 				2CE0753F201B12F50078B239 /* Python.framework in Frameworks */,
 				2CE0753D201A85630078B239 /* libboost_python-mt.a in Frameworks */,
 				2CE07536201A836B0078B239 /* libwolf.system.macOS.dylib in Frameworks */,
+				2C299C932022EEF8003C80F7 /* libwolf.vulkan.macOS.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +274,7 @@
 					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
 					"$(SRCROOT)/../../../dependencies/msgpack/lib/debug/",
 					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -282,6 +285,7 @@
 					"DEBUG=1",
 					__PYTHON__,
 					BOOST_PYTHON_STATIC_LIB,
+					__VULKAN__,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
@@ -295,6 +299,7 @@
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../dependencies/boost/include/",
 					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
@@ -321,6 +326,7 @@
 					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/release/",
 					"$(SRCROOT)/../../../dependencies/msgpack/lib/release/",
 					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -334,6 +340,7 @@
 					"$(SRCROOT)/../../../dependencies/rapidjson",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
 				);
 				INSTALL_PATH = /usr/local/lib;
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";

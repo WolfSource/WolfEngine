@@ -70,18 +70,18 @@ namespace wolf
                 _In_ const uint32_t& pWidth,
                 _In_ const uint32_t& pHeight,
 				_In_ const bool& pGenerateMipMapsLevels,
-				_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags);
+				_In_ const w_memory_property_flags pMemoryPropertyFlags);
             
 			//Load texture
 			W_EXP HRESULT load();
 
 			//Load texture from file
 			W_EXP HRESULT load_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
-            //Load texture from memory in format of RGBA
+            //Load texture from memory in the format of RGBA
             W_EXP HRESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData);
-            //Load texture from memory in format of RGB
-            W_EXP HRESULT load_texture_from_memory_rgb(_In_ uint8_t* pRGBAData);
-            //Load texture from memory, all channels have same byte
+            //Load texture from memory in the format of RGB
+            W_EXP HRESULT load_texture_from_memory_rgb(_In_ uint8_t* pRGBData);
+            //Load texture from memory, all channels will have same byte
             W_EXP HRESULT load_texture_from_memory_all_channels_same(_In_ uint8_t pData);
             //Load texture from w_color
             W_EXP HRESULT load_texture_from_memory_color(_In_ w_color pColor);
@@ -106,56 +106,50 @@ namespace wolf
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_z_ std::wstring pPath,
                 _Inout_ w_texture** pPointerToTexture);
-            
-            //save texture as bitmap file
-            W_EXP static void write_bitmap_to_file(
-                _In_z_ const char* pFilename,
-                _In_ const uint8_t* pData,
-                _In_ const int& pWidth, const int& pHeight);
-
+        
 			/*
 				save png image file
-				@param pFileName, path of file
+				@param pFilePath, path of file
 				@param pSize, size of file (width, height)
 				@param pData, pointer to rgba data
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				@param pStrideInBytes, stride of pixel's structure inf bytes
 			*/
-			W_EXP static HRESULT save_png_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pComp, _In_ int pStrideInBytes = 4 * sizeof(uint8_t));
+			W_EXP static HRESULT save_png_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pComp, _In_ int pStrideInBytes = 4 * sizeof(uint8_t));
 			/*
 				save bmp image file
-				@param pFileName, path of file
+				@param pFilePath, path of file
 				@param pSize, size of file (width, height)
 				@param pData, pointer to rgba data
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 			*/
-			W_EXP static HRESULT save_bmp_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pComp);
+			W_EXP static HRESULT save_bmp_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pComp);
 			/*
 				save tga image file
-				@param pFileName, path of file
+				@param pFilePath, path of file
 				@param pSize, size of file (width, height)
 				@param pData, pointer to rgba data
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				@param pQuality, Quality(1 - 100)
 			*/
-			W_EXP static HRESULT save_tga_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pComp);
+			W_EXP static HRESULT save_tga_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pComp);
 			/*
 				save hdr image file
-				@param pFileName, path of file
+				@param pFilePath, path of file
 				@param pSize, size of file (width, height)
 				@param pData, pointer to rgba data
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 			*/
-			W_EXP static HRESULT save_hdr_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData ,_In_ int pCompCount);
+			W_EXP static HRESULT save_hdr_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData ,_In_ int pCompCount);
 			/*
 				save jpg image file
-				@param pFileName, path of file
+				@param pFilePath, path of file
 				@param pSize, size of file (width, height)
 				@param pData, pointer to rgba data
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				@param pQuality, Quality(1 - 100)
 			*/
-			W_EXP static HRESULT save_jpg_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount, _In_ int pQuality);
+			W_EXP static HRESULT save_jpg_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount, _In_ int pQuality);
 
             //release all shared textures
             W_EXP ULONG static release_shared_textures();
@@ -199,7 +193,7 @@ namespace wolf
 #pragma region
 
             W_EXP static w_texture*                               default_texture;
-
+            
 		private:
 			typedef system::w_object						_super;
             w_texture_pimp*                                 _pimp;

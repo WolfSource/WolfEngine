@@ -4,7 +4,7 @@
 	Website			 : http://WolfSource.io
 	Name			 : w_graphics_header.h
 	Description		 : The include header for graphics devices. Wolf.Engine supports two render APIs, the first one is DirectX 12 
-						which supports both Windows 10 and Universal Windows P(UWP) and the second one is Vulkan which supports
+						which supports both Windows 10 and Universal Windows Platform(UWP) and the second one is Vulkan which supports
 						Windows, Linux, Android and OSX/IOS(with MoltenVK)  
 	Comment          :
 */
@@ -59,10 +59,6 @@ using Microsoft::WRL::ComPtr;
 	#endif
 #endif
 
-#ifdef __ANDROID
-using std::size_t;
-#endif
-
 #if defined(__linux) ||  defined(__APPLE__) || defined(__ANDROID)
 #include <w_std.h>
 #endif
@@ -71,16 +67,24 @@ using std::size_t;
 #define DEFAULT_FENCE_TIMEOUT 1000000000
 #endif
 
-enum w_memory_property_flag_bits
+namespace wolf
 {
-#ifdef __VULKAN__
-    W_MEMORY_PROPERTY_DEVICE_LOCAL_BIT = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-    W_MEMORY_PROPERTY_HOST_VISIBLE_BIT = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-    W_MEMORY_PROPERTY_HOST_COHERENT_BIT = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-    W_MEMORY_PROPERTY_HOST_CACHED_BIT = VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
-    W_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT,
-    W_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM = VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM
-#endif
-};
+    namespace graphics
+    {
+        typedef enum w_memory_property_flag_bits
+        {
+        #ifdef __VULKAN__
+            W_MEMORY_PROPERTY_DEVICE_LOCAL_BIT = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            W_MEMORY_PROPERTY_HOST_VISIBLE_BIT = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+            W_MEMORY_PROPERTY_HOST_COHERENT_BIT = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            W_MEMORY_PROPERTY_HOST_CACHED_BIT = VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+            W_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT,
+            W_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM = VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM
+        #endif
+        } w_memory_property_flag_bits;
+
+        typedef uint32_t w_memory_property_flags;
+    }
+}
 
 #endif

@@ -19,12 +19,12 @@
 #include <boost/python.hpp>
 
 template<typename T>
-inline boost::python::tuple w_boost_wrap_array(T* array_, size_t size_)
+inline boost::python::list w_boost_wrap_array(T* array_, size_t size_)
 {
 	boost::python::list _list;
 	for (int i = 0; i < size_; ++i)
 		_list.append(array_[i]);
-	return boost::python::tuple(_list);
+	return _list;
 }
 
 template<typename T1, typename T2>

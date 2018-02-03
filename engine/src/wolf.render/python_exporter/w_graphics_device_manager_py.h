@@ -14,6 +14,9 @@
 
 namespace pywolf
 {
+    //it will be declared in w_graphics_device_manager.cpp
+    static std::vector<std::shared_ptr<wolf::graphics::w_graphics_device>>  py_graphics_devices;
+
     static void w_graphics_device_manager_py_export()
     {
         using namespace boost::python;

@@ -169,7 +169,6 @@ namespace wolf
                 return !(pLeft == pRight);
             }
             
-
 #ifdef __PYTHON__
             void py_set_ticks(int64_t pTicks) { this->_ticks = pTicks; }
             void py_set_hours_min_secs(int pHours, int pMinutes, int pSeconds)
@@ -181,17 +180,6 @@ namespace wolf
                 w_time_span _t_s(pDays, pHours, pMinutes, pSeconds, pMilliseconds);
                 this->_ticks = _t_s.get_ticks();
             }
-            void py_zero() { this->_ticks = 0; }
-            void py_now() { this->_ticks = w_time_span::now().get_ticks(); }
-            void py_min_value() { this->_ticks = w_time_span::min_value().get_ticks(); };
-            void py_max_value() { this->_ticks = w_time_span::max_value().get_ticks(); };
-            void py_from_days(double pValue) { this->_ticks =  w_time_span::from_days(pValue).get_ticks(); };
-            void py_from_hours(double pValue) { this->_ticks = w_time_span::from_hours(pValue).get_ticks(); };
-            void py_from_milliseconds(double pValue) { this->_ticks = w_time_span::from_milliseconds(pValue).get_ticks(); };
-            void py_from_minutes(double pValue) { this->_ticks = w_time_span::from_minutes(pValue).get_ticks(); };
-            void py_from_seconds(double pValue) { this->_ticks = w_time_span::from_seconds(pValue).get_ticks(); };
-            void py_from_ticks(double pValue) { this->_ticks = pValue; };
-            void py_from_string(std::string pValue) { this->from_string(pValue); };
 #endif
 
 		private:

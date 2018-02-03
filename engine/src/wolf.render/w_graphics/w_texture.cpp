@@ -49,7 +49,7 @@ namespace wolf
                 _In_ const uint32_t pWidth, 
 				_In_ const uint32_t pHeight,
                 _In_ const bool pGenerateMipMaps,
-                _In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
+                _In_ const w_memory_property_flags pMemoryPropertyFlags)
             {
                 this->_gDevice = pGDevice;
                 this->_memory_property_flags = pMemoryPropertyFlags;
@@ -62,8 +62,8 @@ namespace wolf
 					this->_usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 				}
 
-                if (pMemoryPropertyFlags & VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT ||
-                    pMemoryPropertyFlags & VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+                if (pMemoryPropertyFlags & w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_VISIBLE_BIT ||
+                    pMemoryPropertyFlags & w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_COHERENT_BIT)
                 {
                     this->_is_staging = true;
                 }
@@ -1653,7 +1653,9 @@ HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGD
 		32,
 		32,
 		pGenerateMipMapsLevels,
-		pIsStaging ? (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        pIsStaging ? (w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                      w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_COHERENT_BIT) :
+                      w_memory_property_flag_bits::W_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 }
 
 HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -1667,14 +1669,16 @@ HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGD
         pWidth,
         pHeight,
 		pGenerateMipMapsLevels,
-        pIsStaging ? (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        pIsStaging ? (w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                      w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_COHERENT_BIT) :
+                      w_memory_property_flag_bits::W_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 }
 
 HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const uint32_t& pWidth,
     _In_ const uint32_t& pHeight,
 	_In_ const bool& pGenerateMipMapsLevels,
-	_In_ const VkMemoryPropertyFlags pMemoryPropertyFlags)
+	_In_ const w_memory_property_flags pMemoryPropertyFlags)
 {
     if (!this->_pimp) return S_FALSE;
     return this->_pimp->initialize(pGDevice, pWidth, pHeight, pGenerateMipMapsLevels, pMemoryPropertyFlags);
@@ -1823,50 +1827,50 @@ HRESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics
     return S_OK;
 }
 
-void w_texture::write_bitmap_to_file(
-    _In_z_ const char* pFilename,
-    _In_ const uint8_t* pData,
-    _In_ const int& pWidth, const int& pHeight)
+//void w_texture::write_bitmap_to_file(
+//    _In_z_ const char* pFilename,
+//    _In_ const uint8_t* pData,
+//    _In_ const int& pWidth, const int& pHeight)
+//{
+//    short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)pWidth, (short)pHeight, 1, 24 };
+//    FILE *f;
+//    
+//#ifdef __WIN32
+//    if (!fopen_s(&f, pFilename, "wb"))
+//#else
+//    f = fopen(pFilename, "wb");
+//    if (!f)
+//#endif
+//    {
+//        fwrite(header, 1, sizeof(header), f);
+//        fwrite(pData, 1, pWidth * pHeight * 3, f);
+//        fclose(f);
+//    }
+//}
+
+HRESULT w_texture::save_png_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pStrideInBytes)
 {
-    short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)pWidth, (short)pHeight, 1, 24 };
-    FILE *f;
-    
-#ifdef __WIN32
-    if (!fopen_s(&f, pFilename, "wb"))
-#else
-    f = fopen(pFilename, "wb");
-    if (!f)
-#endif
-    {
-        fwrite(header, 1, sizeof(header), f);
-        fwrite(pData, 1, pWidth * pHeight * 3, f);
-        fclose(f);
-    }
+	return stbi_write_png(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pStrideInBytes) == 1 ? S_OK : S_FALSE;
 }
 
-HRESULT w_texture::save_png_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pStrideInBytes)
+HRESULT w_texture::save_bmp_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount)
 {
-	return stbi_write_png(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pStrideInBytes) == 1 ? S_OK : S_FALSE;
+	return stbi_write_bmp(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? S_OK : S_FALSE;
 }
 
-HRESULT w_texture::save_bmp_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount)
+HRESULT w_texture::save_tga_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount)
 {
-	return stbi_write_bmp(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? S_OK : S_FALSE;
+	return stbi_write_tga(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? S_OK : S_FALSE;
 }
 
-HRESULT w_texture::save_tga_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount)
+HRESULT w_texture::save_hdr_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData, _In_ int pCompCount)
 {
-	return stbi_write_tga(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? S_OK : S_FALSE;
+	return stbi_write_hdr(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? S_OK : S_FALSE;
 }
 
-HRESULT w_texture::save_hdr_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData, _In_ int pCompCount)
+HRESULT w_texture::save_jpg_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pQuality)
 {
-	return stbi_write_hdr(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? S_OK : S_FALSE;
-}
-
-HRESULT w_texture::save_jpg_to_file(_In_z_ const char* pFileName, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pQuality)
-{
-	return stbi_write_jpg(pFileName, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pQuality) == 1 ? S_OK : S_FALSE;
+	return stbi_write_jpg(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pQuality) == 1 ? S_OK : S_FALSE;
 }
 
 ULONG w_texture::release()
@@ -1987,3 +1991,4 @@ void w_texture::set_view_type(_In_ w_texture_view_type pViewType)
 }
 
 #pragma endregion
+

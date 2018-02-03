@@ -334,7 +334,7 @@ namespace wolf
 
 #pragma region Getters
 			//Get the main graphics device, this is first and the primary device.
-            W_EXP std::shared_ptr<w_graphics_device> get_graphics_device() const;
+            W_EXP std::shared_ptr<w_graphics_device> get_graphics_device(_In_ const size_t& pGraphicsDeviceIndex) const;
 			//Returns number of available graphics devices
             W_EXP const ULONG get_number_of_graphics_devices() const;
 

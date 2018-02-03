@@ -4199,10 +4199,9 @@ VkFormat w_graphics_device_manager::find_supported_format(
 
 #pragma region Getters
 
-//Get the main graphics device, this is first and the primary device.
-std::shared_ptr<w_graphics_device> w_graphics_device_manager::get_graphics_device() const
+std::shared_ptr<w_graphics_device> w_graphics_device_manager::get_graphics_device(_In_ const size_t& pGraphicsDeviceIndex) const
 {
-	return this->graphics_devices.size() > 0 ? this->graphics_devices.at(0) : nullptr;
+	return pGraphicsDeviceIndex < this->graphics_devices.size() ? this->graphics_devices.at(pGraphicsDeviceIndex) : nullptr;
 }
 
 //Returns number of available graphics devices
@@ -4378,5 +4377,9 @@ void w_graphics_device_manager::set_graphics_device_manager_configs(_In_ const w
 //}
 
 #pragma endregion
+
+#ifdef __PYTHON__
+std::vector<std::shared_ptr<wolf::graphics::w_graphics_device>> pywolf::py_graphics_devices;
+#endif
 
 #endif

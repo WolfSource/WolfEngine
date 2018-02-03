@@ -65,6 +65,10 @@
 extern "C" {
 #endif
 
+#ifdef __ANDROID
+    using std::size_t;
+#endif
+
 	enum HRESULT : uint8_t { S_OK = 0, S_FALSE = 1, E_INVALIDARG = 2, E_OUTOFMEMORY = 3};
 	
     typedef unsigned char			UCHAR, *PUCHAR;

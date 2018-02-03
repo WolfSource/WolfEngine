@@ -54,23 +54,23 @@ namespace wolf
 #ifdef __PYTHON__
 
 			//min
-			boost::python::tuple py_get_min() { return w_boost_wrap_array(this->min, 3); }
+			boost::python::list py_get_min() { return w_boost_wrap_array(this->min, 3); }
 			void py_set_min(_In_ boost::python::tuple pValue) { w_boost_extract_tuple(this->min[0], this->min[1], this->min[2], pValue); }
 
 			//max
-			boost::python::tuple py_get_max() { return w_boost_wrap_array(this->max, 3); }
+			boost::python::list py_get_max() { return w_boost_wrap_array(this->max, 3); }
 			void py_set_max(_In_ boost::python::tuple pValue) { w_boost_extract_tuple(this->max[0], this->max[1], this->max[2], pValue); }
 
 			//position
-			boost::python::tuple py_get_position() { return w_boost_wrap_array(this->position, 3); }
+			boost::python::list py_get_position() { return w_boost_wrap_array(this->position, 3); }
 			void py_set_position(_In_ boost::python::tuple pValue) { w_boost_extract_tuple(this->position[0], this->position[1], this->position[2], pValue); }
 
 			//rotation
-			boost::python::tuple py_get_rotation() { return w_boost_wrap_array(this->rotation, 3); }
+			boost::python::list py_get_rotation() { return w_boost_wrap_array(this->rotation, 3); }
 			void py_set_rotation(_In_ boost::python::tuple pValue) { w_boost_extract_tuple(this->rotation[0], this->rotation[1], this->rotation[2], pValue); }
 
 			//vertices
-			boost::python::tuple py_get_vertices() { return w_boost_wrap_array(this->vertices, 108); }
+			boost::python::list py_get_vertices() { return w_boost_wrap_array(this->vertices, 108); }
 
 			//corners
 			boost::python::list py_get_corners()
@@ -115,7 +115,7 @@ namespace wolf
 
 #ifdef __PYTHON__
 			//center
-			boost::python::tuple py_get_center() { return w_boost_wrap_array(this->center, 3); }
+			boost::python::list py_get_center() { return w_boost_wrap_array(this->center, 3); }
 			void py_set_center(_In_ boost::python::tuple pValue) { w_boost_extract_tuple(this->center[0], this->center[1], this->center[2], pValue); }
 
 			//radius

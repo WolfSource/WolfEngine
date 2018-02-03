@@ -21,10 +21,10 @@ static std::once_flag _once;
 
 namespace pywolf
 {
-	class wrapper_game : public wolf::framework::w_game
+	class py_game : public wolf::framework::w_game
 	{
 	public:
-		wrapper_game(
+		py_game(
 			_In_z_ const std::wstring& pContentPath, 
 			_In_z_ const std::wstring& pLogPath, 
 			_In_z_ const std::wstring& pAppName) :
@@ -40,11 +40,30 @@ namespace pywolf
 		{
 		}
 
-		bool run(_In_ std::map<int, w_window_info>& pOutputWindowsInfo)
-		{
-			return _super::run(pOutputWindowsInfo);
-		}
-		
+        bool run(_In_ boost::python::tuple& pOutputWindowsInfo)
+        {
+            auto _len = len(pOutputWindowsInfo);
+            if ((_len % 2) != 0) return false;
+            
+            std::map<int, w_window_info> _output_windows_info;
+            //nedded just for initialize time
+            std::call_once(_once, [&]()
+                           {
+                               for (auto i = 0; i < _len; i += 2)
+                               {
+                                   boost::python::extract<int> _k(pOutputWindowsInfo[i]);
+                                   boost::python::extract<w_window_info> _v(pOutputWindowsInfo[i + 1]);
+                                   if (_k.check() && _v.check())
+                                   {
+                                       _output_windows_info[_k()] = _v();
+                                   }
+                               }
+                           });
+            auto _result= _super::run(_output_windows_info);
+            _output_windows_info.clear();
+            return _result;
+        }
+        
 		ULONG release() override 
 		{
 			if (_super::get_is_released()) return 1;
@@ -65,6 +84,11 @@ namespace pywolf
 		{
 			if (this->_on_pre_init_callback) this->_on_pre_init_callback();
 			_super::initialize(pOutputWindowsInfo);
+            //allow graphics devices to access within this dll for python
+            for (size_t i = 0; i < this->graphics_devices.size(); ++i)
+            {
+                pywolf::py_graphics_devices.push_back(this->graphics_devices[i]);
+            }
 			if (this->_on_post_init_callback) this->_on_post_init_callback();
 		}
 		void load() override
@@ -104,6 +128,8 @@ namespace pywolf
 		void set_post_render_callback(_In_ std::function<void(bool)>& pFunc) { this->_on_post_render_callback = pFunc; }
 		void set_window_resized_callback(_In_ std::function<void(uint32_t)>& pFunc) { this->_on_window_resized_callback = pFunc; }
 		void set_device_lost_callback(_In_ std::function<void(void)>& pFunc) { this->_on_device_lost_callback = pFunc; }
+        void set_fixed_time_step(_In_ const bool& pValue) { _super::set_fixed_time_step(pValue); }
+        void set_fixed_fps(_In_ const double& pValue) { _super::set_fixed_fps(pValue); }
 #pragma endregion
 
 	private:
@@ -118,137 +144,26 @@ namespace pywolf
 		std::function<void(void)> _on_device_lost_callback;
 	};
 
-	class py_game
-	{
-	public:
-		py_game(
-			_In_z_ const std::wstring& pContentPath,
-			_In_z_ const std::wstring& pLogPath,
-			_In_z_ const std::wstring& pAppName) :
-			_wrapper(new wrapper_game(pContentPath, pLogPath, pAppName))
-		{
-		}
-		~py_game()
-		{
-			exit();
-		}
-
-		void run(_In_ boost::python::tuple& pOutputWindowsInfo)
-		{
-			auto _len = len(pOutputWindowsInfo);
-			if (!this->_wrapper || (_len % 2) != 0) return;
-
-			std::map<int, w_window_info> _output_windows_info;
-			//nedded just for initialize time
-			std::call_once(_once, [&]()
-			{
-				for (auto i = 0; i < _len; i += 2)
-				{
-					boost::python::extract<int> _k(pOutputWindowsInfo[i]);
-					boost::python::extract<w_window_info> _v(pOutputWindowsInfo[i + 1]);
-					if (_k.check() && _v.check())
-					{
-						_output_windows_info[_k()] = _v();
-					}
-				}
-			});
-			this->_wrapper->run(_output_windows_info);
-			_output_windows_info.clear();
-		}
-		void exit()
-		{
-			if (!this->_wrapper) return;
-			this->_wrapper->release();
-			SAFE_DELETE(this->_wrapper);
-		}
-
-#pragma region Setters
-		void set_pre_init_callback(_In_ std::function<void(void)> pFunc)
-		{
-			if (!this->_wrapper) return;
-			this->_wrapper->set_pre_init_callback(pFunc);
-		}
-		void set_post_init_callback(_In_ std::function<void(void)> pFunc)
-		{
-			if (!this->_wrapper) return;
-			this->_wrapper->set_post_init_callback(pFunc);
-		}
-		void set_load_callback(_In_ std::function<void(void)> pFunc)
-		{
-			if (!this->_wrapper) return;
-			this->_wrapper->set_load_callback(pFunc);
-		}
-		void set_update_callback(_In_ std::function<void(wolf::system::w_game_time)> pFunc)
-		{
-			if (!this->_wrapper) return;
-			this->_wrapper->set_update_callback(pFunc);
-		}
-		void set_pre_render_callback(_In_ std::function<void(wolf::system::w_game_time)> pFunc)
-		{
-			if (!this->_wrapper) return;
-			this->_wrapper->set_pre_render_callback(pFunc);
-		}
-		void set_post_render_callback(_In_ std::function<void(bool)> pFunc)
-		{
-			if (!this->_wrapper) return;
-			this->_wrapper->set_post_render_callback(pFunc);
-		}
-		void set_window_resized_callback(_In_ std::function<void(uint32_t)> pFunc)
-		{
-			if (!this->_wrapper) return;
-			this->_wrapper->set_window_resized_callback(pFunc);
-		}
-		void set_device_lost_callback(_In_ std::function<void(void)> pFunc)
-		{
-			if (!this->_wrapper) return;
-			this->_wrapper->set_device_lost_callback(pFunc);
-        }
-        void set_fixed_time_step(_In_ const bool& pValue)
-        {
-            if (!this->_wrapper) return;
-            this->_wrapper->set_fixed_time_step(pValue);
-        }
-        void set_fixed_fps(_In_ const double& pValue)
-        {
-            if (!this->_wrapper) return;
-            this->_wrapper->set_fixed_fps(pValue);
-        }
-#pragma endregion
-
-#pragma region Python Wrappers
-		static void py_set_pre_init_callback(_In_ py_game& pSelf, _In_ boost::python::object pObject) { pSelf.set_pre_init_callback(pObject); }
-		static void py_set_post_init_callback(_In_ py_game& pSelf, _In_ boost::python::object pObject) { pSelf.set_post_init_callback(pObject); }
-		static void py_set_load_callback(_In_ py_game& pSelf, _In_ boost::python::object pObject) { pSelf.set_load_callback(pObject); }
-		static void py_set_update_callback(_In_ py_game& pSelf, _In_ boost::python::object pObject) { pSelf.set_update_callback(pObject); }
-		static void py_set_pre_render_callback(_In_ py_game& pSelf, _In_ boost::python::object pObject) { pSelf.set_pre_render_callback(pObject); }
-		static void py_set_post_render_callback(_In_ py_game& pSelf, _In_ boost::python::object pObject) { pSelf.set_post_render_callback(pObject); }
-		static void py_set_window_resized_callback(_In_ py_game& pSelf, _In_ boost::python::object pObject) { pSelf.set_window_resized_callback(pObject); }
-		static void py_set_device_lost_callback(_In_ py_game& pSelf, _In_ boost::python::object pObject) { pSelf.set_device_lost_callback(pObject); }
-#pragma endregion
-
-	private:
-		wrapper_game * _wrapper;
-	};
-
 	static void w_game_py_export()
 	{
 		using namespace boost::python;
 		using namespace wolf::framework;
 
 		//export w_game class
-		class_<py_game>("w_game", init<std::wstring, std::wstring, std::wstring>())
+        class_<py_game, boost::noncopyable>("w_game", init<std::wstring, std::wstring, std::wstring>())
 			.def("run", &py_game::run, "This will run the main loop cycle of the game")
-			.def("exit", &py_game::exit, "release all resources and exit")
-			.def("set_pre_init_callback", &py_game::py_set_pre_init_callback, "set a callback function which rises before initializing graphics device(s)")
-			.def("set_post_init_callback", &py_game::py_set_post_init_callback, "set a callback function which rises after initializing graphics device(s)")
-			.def("set_load_callback", &py_game::py_set_load_callback, "set a callback function which rises on loading")
-			.def("set_update_callback", &py_game::py_set_update_callback, "set a callback function which rises on updating")
-			.def("set_pre_render_callback", &py_game::py_set_pre_render_callback, "set a callback function which rises before rendering")
-			.def("set_post_render_callback", &py_game::py_set_post_render_callback, "set a callback function which rises after rendering")
-			.def("set_window_resized_callback", &py_game::py_set_window_resized_callback, "set a callback function which rises on window resizing")
-			.def("set_device_lost_callback", &py_game::py_set_device_lost_callback, "set a callback function which rises on device losting")
+			.def("exit", &py_game::release, "release all resources and exit")
+			.def("set_pre_init_callback", &py_game::set_pre_init_callback, "set a callback function which rises before initializing graphics device(s)")
+			.def("set_post_init_callback", &py_game::set_post_init_callback, "set a callback function which rises after initializing graphics device(s)")
+			.def("set_load_callback", &py_game::set_load_callback, "set a callback function which rises on loading")
+			.def("set_update_callback", &py_game::set_update_callback, "set a callback function which rises on updating")
+			.def("set_pre_render_callback", &py_game::set_pre_render_callback, "set a callback function which rises before rendering")
+			.def("set_post_render_callback", &py_game::set_post_render_callback, "set a callback function which rises after rendering")
+			.def("set_window_resized_callback", &py_game::set_window_resized_callback, "set a callback function which rises on window resizing")
+			.def("set_device_lost_callback", &py_game::set_device_lost_callback, "set a callback function which rises on device losting")
             .def("set_fixed_time_step", &py_game::set_fixed_time_step, "set fixed time step")
             .def("set_fixed_fps", &py_game::set_fixed_fps, "set fixed frame per seconds")
+            .def("set_graphics_device_manager_configs", &py_game::set_graphics_device_manager_configs, "set configuration for graphics device manager")
 			;
 	}
 }
