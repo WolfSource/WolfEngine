@@ -14,7 +14,7 @@
 <p>A commercial license is available for those that are not comfortable with GPL v3 terms. The commercial license is a paid per-user license that allows you to distribute your application under your own terms for more information please contact us: "contact{at}wolfsource{dot}io"</p>
 
 ## Third Party Licenses
-<p>Boost.Python used for building pyWolf.</p>
+<p><b>boost.python</b></p>
 <pre>
 Boost Software License - Version 1.0 - August 17th, 2003
 
@@ -41,7 +41,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 </pre>
 
-<p>luaJit</p>
+<p><b>luaJit</b></p>
 <pre>
 Copyright © 2005-2017 Mike Pall
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -49,7 +49,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 </pre>
 
-<p>ffmpeg used for building wolf::media_core.</p>
+<p>ffmpeg</p>
 <pre>
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
@@ -727,7 +727,7 @@ Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
 </pre>
 
-<p>Intel® TBB</p>
+<p><b>Intel® TBB</b></p>
 <pre>
                                  Apache License
                            Version 2.0, January 2004
@@ -955,7 +955,7 @@ IN THE SOFTWARE.
 "nanomsg" is a trademark of Martin Sustrik
 </pre>
 
-<p>msgpack-c</p>
+<p><b>msgpack-c</b></p>
 <pre>
 Copyright (C) 2008-2015 FURUHASHI Sadayuki
 
@@ -964,7 +964,7 @@ Copyright (C) 2008-2015 FURUHASHI Sadayuki
    http://www.boost.org/LICENSE_1_0.txt)
 </pre>
 
-<p>imgui</p>
+<p><b>imgui</b></p>
 <pre>
 The MIT License (MIT)
 Copyright (c) 2014-2017 Omar Cornut and ImGui contributors
