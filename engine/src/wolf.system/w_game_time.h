@@ -229,7 +229,7 @@ namespace wolf
             double py_TICKS_PER_SECOND = TICKS_PER_SECOND;
             double py_ticks_to_seconds(uint64_t pTicks) { return  ticks_to_seconds(pTicks); }
             uint64_t py_seconds_to_ticks(double pSeconds) { return ticks_to_seconds(pSeconds); }
-            static void py_tick(w_game_time& pSelf, boost::python::object pObject) { return pSelf.tick(pObject); }
+            static void py_tick(w_game_time& pSelf, boost::python::object pFunc) { return pSelf.tick(pFunc); }
 #endif
 
 		private:

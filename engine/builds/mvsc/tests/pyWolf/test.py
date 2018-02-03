@@ -6,7 +6,7 @@
 #if pyWolfPath != "" and (not pyWolfPath in sys.path):
     #sys.path.append(pyWolfPath)
 
-import sys, ctypes, threading, pyWolf 
+import sys, ctypes, threading, pyWolf
 from PySide import QtGui, QtCore
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -27,6 +27,20 @@ class scene(QWidget):
         print "pre_init"
 
     def post_init(self):
+        _len = 512 * 512
+        _size = 4 * _len
+
+        _texture_data = _size * [None]
+        index = 0
+        for i in xrange(_len):
+            _texture_data[index] = 255
+            _texture_data[index + 1] = 0
+            _texture_data[index + 2] = 0
+            _texture_data[index + 3] = 255
+            index = index + 4
+
+        _t = pyWolf.graphics.w_texture.save_bmp_to_file("D:\github\WolfSource\Wolf.Engine\Logo00.bmp", 512, 512, _texture_data, 4 )
+        print type(_t)
         print "post_init"
 
     def load(self):

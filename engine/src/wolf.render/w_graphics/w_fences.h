@@ -7,18 +7,22 @@
 	Comment          :
 */
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifndef __W_FENCES_H__
 #define __W_FENCES_H__
 
-#include <w_graphics_headers.h>
-#include <w_render_export.h>
+#include "w_graphics_device_manager.h"
 
 namespace wolf
 {
 	namespace graphics
 	{
-        struct w_fences
+        class w_fences
         {
+		public:
             //initialize fence
             W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t pNumberOfFences = 1);
             //wait for all fence
@@ -45,5 +49,7 @@ namespace wolf
         };
 	}
 }
+
+#include "python_exporter/w_fences_py.h"
 
 #endif

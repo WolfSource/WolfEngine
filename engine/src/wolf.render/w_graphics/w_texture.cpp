@@ -1553,9 +1553,9 @@ namespace wolf
                 return this->_image_view_type;
             }
             
-            VkFormat get_format() const
+            w_format get_format() const
             {
-                return this->_format;
+                return (w_format)this->_format;
             }
             
 			const uint32_t get_mip_maps_level() const
@@ -1642,7 +1642,6 @@ w_texture::~w_texture()
 {
 	release();
 }
-
 
 HRESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ const bool& pGenerateMipMapsLevels,
@@ -1944,10 +1943,10 @@ VkImageViewType w_texture::get_image_view_type() const
 }
 
 //get image format
-VkFormat w_texture::get_format() const
+w_format w_texture::get_format() const
 {
-    if(!this->_pimp) return VkFormat::VK_FORMAT_UNDEFINED;
-    return this->_pimp->get_format();
+	if (!this->_pimp) return w_format::W_FORMAT_UNDEFINED;
+	return this->_pimp->get_format();
 }
 
 const VkDescriptorImageInfo w_texture::get_descriptor_info(_In_ w_sampler_type pSamplerType) const

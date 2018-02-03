@@ -60,7 +60,7 @@ namespace wolf
 			//get image view type render target's buffer
 			W_EXP VkImageViewType get_image_view_type(_In_ size_t pBufferIndex) const;
 			//get format of attached buffer
-			W_EXP const VkFormat get_attachment_format(_In_ size_t pBufferIndex) const;
+			W_EXP const w_format get_attachment_format(_In_ size_t pBufferIndex) const;
 			//get description info of attached buffer
 			W_EXP const VkDescriptorImageInfo get_attachment_descriptor_info(_In_ size_t pBufferIndex) const;
 

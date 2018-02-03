@@ -229,14 +229,14 @@ namespace wolf
 				return VkImageViewType::VK_IMAGE_VIEW_TYPE_END_RANGE;
 			}
 
-			const VkFormat get_attachment_format(_In_ size_t pBufferIndex) const
+			const w_format get_attachment_format(_In_ size_t pBufferIndex) const
 			{
-				if (pBufferIndex >= this->_attachment_buffers.size()) return VkFormat::VK_FORMAT_UNDEFINED;
+				if (pBufferIndex >= this->_attachment_buffers.size()) return w_format::W_FORMAT_UNDEFINED;
 
 				auto _t = this->_attachment_buffers.at(pBufferIndex);
 				if (_t) return _t->get_format();
 
-				return VkFormat::VK_FORMAT_UNDEFINED;
+				return w_format::W_FORMAT_UNDEFINED;
 			}
 
 			const VkDescriptorImageInfo get_attachment_descriptor_info(_In_ size_t pBufferIndex) const
@@ -376,9 +376,9 @@ VkImageViewType w_render_target::get_image_view_type(_In_ size_t pBufferIndex) c
 	return this->_pimp->get_image_view_type(pBufferIndex);
 }
 
-const VkFormat w_render_target::get_attachment_format(_In_ size_t pBufferIndex) const
+const w_format w_render_target::get_attachment_format(_In_ size_t pBufferIndex) const
 {
-	if (!this->_pimp) return VkFormat::VK_FORMAT_UNDEFINED;
+	if (!this->_pimp) return w_format::W_FORMAT_UNDEFINED;
 	return this->_pimp->get_attachment_format(pBufferIndex);
 }
 

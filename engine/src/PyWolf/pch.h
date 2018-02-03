@@ -35,4 +35,8 @@
 #include <w_framework/w_game.h>
 #include <w_framework/w_first_person_camera.h>
 
+//from wolf::graphics namespaces
+#include <w_graphics/w_texture.h>
+#include <w_graphics/w_fences.h>
+
 #endif //__PCH_H__

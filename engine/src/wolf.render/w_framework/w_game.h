@@ -18,8 +18,6 @@
 #include <w_game_time.h>
 #include <map>
 
-#include <python_exporter/w_boost_python_helper.h>
-
 namespace wolf
 {
 	namespace framework

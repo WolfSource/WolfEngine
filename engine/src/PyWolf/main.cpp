@@ -166,7 +166,10 @@ BOOST_PYTHON_MODULE(pyWolf)
         struct graphics {};
         scope _graphics = class_<graphics>("graphics");
 
-        pywolf::w_graphics_device_manager_py_export();        
+        pywolf::w_graphics_device_manager_py_export();  
+		pywolf::w_fences_py_export();
+		pywolf::w_texture_py_export();
+
     }
 
     //export wolf::framework classes to pyWolf.framework scope

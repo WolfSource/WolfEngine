@@ -17,7 +17,6 @@
 #include "w_graphics_device_manager.h"
 #include <w_logger.h>
 #include <w_io.h>
-#include <python_exporter/w_boost_python_helper.h>
 
 namespace wolf
 {
@@ -115,7 +114,7 @@ namespace wolf
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				@param pStrideInBytes, stride of pixel's structure inf bytes
 			*/
-			W_EXP static HRESULT save_png_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pComp, _In_ int pStrideInBytes = 4 * sizeof(uint8_t));
+			W_EXP static HRESULT save_png_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pStrideInBytes = 4 * sizeof(uint8_t));
 			/*
 				save bmp image file
 				@param pFilePath, path of file
@@ -123,7 +122,7 @@ namespace wolf
 				@param pData, pointer to rgba data
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 			*/
-			W_EXP static HRESULT save_bmp_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pComp);
+			W_EXP static HRESULT save_bmp_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount);
 			/*
 				save tga image file
 				@param pFilePath, path of file
@@ -132,7 +131,7 @@ namespace wolf
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				@param pQuality, Quality(1 - 100)
 			*/
-			W_EXP static HRESULT save_tga_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pComp);
+			W_EXP static HRESULT save_tga_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount);
 			/*
 				save hdr image file
 				@param pFilePath, path of file
@@ -171,7 +170,7 @@ namespace wolf
             //get image view type
             W_EXP VkImageViewType get_image_view_type() const;
             //get image format
-            W_EXP VkFormat get_format() const;
+            W_EXP w_format get_format() const;
             //get write descriptor image info
             W_EXP const VkDescriptorImageInfo get_descriptor_info(_In_ w_sampler_type pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
 			//get number of mip maps levels

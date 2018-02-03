@@ -157,6 +157,12 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_graphics_device_manager_py.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_texture_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_fences_py.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_framework">
