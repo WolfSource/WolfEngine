@@ -70,6 +70,6 @@ namespace wolf
 	}
 }
 
-#include "python_exporter/w_timer_py.h"
+#include "python_exporter/py_timer.h"
 
 #endif //__W_TIMER_H__

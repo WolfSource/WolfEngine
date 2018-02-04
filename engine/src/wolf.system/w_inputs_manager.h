@@ -121,6 +121,6 @@ namespace wolf
     }
 }
 
-#include "python_exporter/w_inputs_manager_py.h"
+#include "python_exporter/py_inputs_manager.h"
 
 #endif //__W_INPUT_H__

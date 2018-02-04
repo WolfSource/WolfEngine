@@ -92,3 +92,31 @@ ULONG w_fences::release()
 
     return 0;
 }
+
+#ifdef __PYTHON__
+
+//Must declare here 
+using namespace pywolf;
+
+py_fences::py_fences() : _graphics_device_index(-1)
+{
+}
+
+bool py_fences::py_initialize(_In_ const uint32_t& pGDeviceIndex, _In_ const uint32_t pNumberOfFences)
+{
+	if (pGDeviceIndex >= pywolf::py_graphics_devices.size()) return false;
+	this->_graphics_device_index = pGDeviceIndex;
+	return this->initialize(pywolf::py_graphics_devices[pGDeviceIndex], pNumberOfFences) == S_OK;
+}
+
+bool py_fences::py_wait(_In_ uint64_t pTimeOut)
+{
+	return wait(pTimeOut) == S_OK;
+}
+
+bool py_fences::py_reset()
+{
+	return reset() == S_OK;
+}
+
+#endif

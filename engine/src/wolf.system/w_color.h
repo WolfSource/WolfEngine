@@ -455,6 +455,6 @@ inline bool operator != (const w_color& lValue, const w_color& rValue)
     return !(lValue == rValue);
 }
 
-#include "python_exporter/w_color_py.h"
+#include "python_exporter/py_color.h"
 
 #endif // __W_COLOR_H__

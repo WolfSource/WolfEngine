@@ -286,6 +286,6 @@ namespace wolf
 	}
 }
 
-#include "python_exporter/w_game_time_py.h"
+#include "python_exporter/py_game_time.h"
 
 #endif //__W_GAME_TIME_H__

@@ -2,22 +2,22 @@
     Project          : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source           : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website          : http://WolfSource.io
-    Name             : w_graphics_device_manager_py.h
+    Name             : py_graphics_device_manager.h
     Description      : The python exporter for w_graphics_device_manager class and structs
     Comment          :
  */
 
 #ifdef __PYTHON__
 
-#ifndef __W_GRAPHICS_DEVICE_MANAGER_PY_H__
-#define __W_GRAPHICS_DEVICE_MANAGER_PY_H__
+#ifndef __PY_GRAPHICS_DEVICE_MANAGER_H__
+#define __PY_GRAPHICS_DEVICE_MANAGER_H__
 
 namespace pywolf
 {
 	//it will be declared in w_graphics_device_manager.cpp
 	static std::vector<std::shared_ptr<wolf::graphics::w_graphics_device>>  py_graphics_devices;
 
-	static void w_graphics_device_manager_py_export()
+	static void py_graphics_device_manager_export()
 	{
 		using namespace boost::python;
 		using namespace wolf::graphics;
@@ -277,6 +277,6 @@ namespace pywolf
 	}
 }
 
-#endif//__W_GAME_PY_H__
+#endif//__PY_GRAPHICS_DEVICE_MANAGER_H__
 
 #endif//__PYTHON__

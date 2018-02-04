@@ -2,7 +2,7 @@
     Project          : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source           : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website          : http://WolfSource.io
-    Name             : w_time_span_py.h
+    Name             : py_time_span.h
     Description      : The python exporter for w_time_span class
     Comment          :
  */
@@ -13,12 +13,12 @@
 #pragma once
 #endif
 
-#ifndef __W_TIME_SPAN_PY_H__
-#define __W_TIME_SPAN_PY_H__
+#ifndef __PY_TIME_SPAN_H__
+#define __PY_TIME_SPAN_H__
 
 namespace pywolf
 {
-    static void w_time_span_py_export()
+    static void py_time_span_export()
     {
         using namespace boost::python;
         using namespace wolf::system;

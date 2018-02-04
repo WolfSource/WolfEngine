@@ -2,7 +2,7 @@
     Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website			 : http://WolfSource.io
-    Name			 : w_inputs_manager_py.h
+    Name			 : py_inputs_manager.h
     Description		 : The python exporter for w_inputs_manager class
     Comment          :
 */
@@ -13,12 +13,12 @@
 #pragma once
 #endif
 
-#ifndef __W_INPUTS_MANAGER_PY_H__
-#define __W_INPUTS_MANAGER_PY_H__
+#ifndef __PY_INPUTS_MANAGER_H__
+#define __PY_INPUTS_MANAGER_H__
 
 namespace pywolf
 {
-    static void w_inputs_manager_py_export()
+    static void py_inputs_manager_export()
     {
         using namespace boost::python;
         using namespace wolf::system;

@@ -37,6 +37,7 @@
 
 //from wolf::graphics namespaces
 #include <w_graphics/w_texture.h>
+#include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_fences.h>
 
 #endif //__PCH_H__

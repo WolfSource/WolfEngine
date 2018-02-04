@@ -171,6 +171,6 @@ namespace wolf
 	}
 }
 
-#include "python_exporter/w_bounding_py.h"
+#include "python_exporter/py_bounding.h"
 
 #endif

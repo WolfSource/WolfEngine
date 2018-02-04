@@ -36,6 +36,6 @@ inline bool operator != (const w_rectangle& lValue, const w_rectangle& rValue)
     return !(lValue == rValue);
 }
 
-#include "python_exporter/w_rectangle_py.h"
+#include "python_exporter/py_rectangle.h"
 
 #endif // __W_RECTANGLE_H__

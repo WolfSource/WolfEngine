@@ -2,7 +2,7 @@
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
-	Name			 : w_logger_py.h
+	Name			 : py_logger.h
 	Description		 : The python exporter for w_logger class
 	Comment          :
 */
@@ -13,8 +13,8 @@
 #pragma once
 #endif
 
-#ifndef __W_LOGGER_PY_H__
-#define __W_LOGGER_PY_H__
+#ifndef __PY_LOGGER_H__
+#define __PY_LOGGER_H__
 
 #include <boost/python.hpp>
 
@@ -41,7 +41,7 @@ namespace pywolf
     bool py_get_is_open() { return wolf::logger.get_is_open(); }
     unsigned long py_release() { return wolf::logger.release(); }
 
-    static void w_logger_py_export()
+    static void py_logger_export()
     {
         using namespace boost::python;
         using namespace wolf::system;

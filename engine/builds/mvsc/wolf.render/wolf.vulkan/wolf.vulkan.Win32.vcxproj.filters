@@ -151,16 +151,22 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h">
       <Filter>w_framework</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_game_py.h">
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_texture.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_graphics_device_manager_py.h">
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_graphics_device_manager.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_texture_py.h">
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_game.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\w_fences_py.h">
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_fences.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_semaphore.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_command_buffer.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
   </ItemGroup>

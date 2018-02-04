@@ -2,7 +2,7 @@
     Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website			 : http://WolfSource.io
-    Name			 : w_game_time_py.h
+    Name			 : py_game_time.h
     Description		 : The python exporter for w_game_time class
     Comment          :
 */
@@ -13,12 +13,12 @@
 #pragma once
 #endif
 
-#ifndef __W_GAME_TIME_PY_H__
-#define __W_GAME_TIME_PY_H__
+#ifndef __PY_GAME_TIME_H__
+#define __PY_GAME_TIME_H__
 
 namespace pywolf
 {
-    static void w_game_time_py_export()
+    static void py_game_time_export()
     {
         using namespace boost::python;
         using namespace wolf::system;

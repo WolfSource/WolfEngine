@@ -45,3 +45,21 @@ ULONG w_semaphore::release()
 
     return 0;
 }
+
+#ifdef __PYTHON__
+
+//Must declare here 
+using namespace pywolf;
+
+py_semaphore::py_semaphore() : _graphics_device_index(-1)
+{
+}
+
+bool py_semaphore::py_initialize(_In_ const uint32_t& pGDeviceIndex)
+{
+	if (pGDeviceIndex >= pywolf::py_graphics_devices.size()) return false;
+	this->_graphics_device_index = pGDeviceIndex;
+	return this->initialize(pywolf::py_graphics_devices[pGDeviceIndex]) == S_OK;
+}
+
+#endif

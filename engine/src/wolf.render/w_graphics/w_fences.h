@@ -14,7 +14,8 @@
 #ifndef __W_FENCES_H__
 #define __W_FENCES_H__
 
-#include "w_graphics_device_manager.h"
+#include <w_graphics_headers.h>
+#include <w_render_export.h>
 
 namespace wolf
 {
@@ -35,7 +36,7 @@ namespace wolf
             W_EXP VkFence* get_all();
             //get number of fences
             W_EXP uint32_t get_count();
-            //release resources of fence
+            //release resources of all fences
             W_EXP ULONG release();
         private:
             
@@ -50,6 +51,6 @@ namespace wolf
 	}
 }
 
-#include "python_exporter/w_fences_py.h"
+#include "python_exporter/py_fences.h"
 
 #endif

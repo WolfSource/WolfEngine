@@ -78,6 +78,6 @@ namespace wolf
 	}
 }
 
-#include "python_exporter/w_game_py.h"
+#include "python_exporter/py_game.h"
 
 #endif

@@ -79,4 +79,6 @@ namespace wolf
 	}
 }
 
+#include "python_exporter/py_command_buffer.h"
+
 #endif

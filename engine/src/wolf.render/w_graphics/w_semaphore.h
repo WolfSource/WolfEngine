@@ -42,4 +42,6 @@ namespace wolf
 	}
 }
 
+#include "python_exporter/py_semaphore.h"
+
 #endif

@@ -2,15 +2,15 @@
     Project          : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source           : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website          : http://WolfSource.io
-    Name             : w_game_py.h
+    Name             : py_game.h
     Description      : The python exporter for w_game class
     Comment          :
  */
 
 #ifdef __PYTHON__
 
-#ifndef __W_GAME_PY_H__
-#define __W_GAME_PY_H__
+#ifndef __PY_GAME_H__
+#define __PY_GAME_H__
 
 #include <python_exporter/w_boost_python_helper.h>
 #include <map>
@@ -164,7 +164,7 @@ namespace pywolf
 		std::function<void(void)> _on_device_lost_callback;
 	};
 
-	static void w_game_py_export()
+	static void py_game_export()
 	{
 		//export w_game class
 		class_<py_game, boost::noncopyable>("w_game", init<std::wstring, std::wstring, std::wstring>())
@@ -185,6 +185,6 @@ namespace pywolf
 	}
 }
 
-#endif//__W_GAME_PY_H__
+#endif//__PY_GAME_H__
 
 #endif//__PYTHON__

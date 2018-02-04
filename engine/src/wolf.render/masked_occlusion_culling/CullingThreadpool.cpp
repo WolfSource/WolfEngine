@@ -17,8 +17,8 @@
 #include <assert.h>
 #include "CullingThreadpool.h"
 
-#define SAFE_DELETE(X) {if (X != nullptr) delete X; X = nullptr;}
-#define SAFE_DELETE_ARRAY(X) {if (X != nullptr) delete[] X; X = nullptr;}
+//#define SAFE_DELETE(X) {if (X != nullptr) delete X; X = nullptr;}
+//#define SAFE_DELETE_ARRAY(X) {if (X != nullptr) delete[] X; X = nullptr;}
 
 template<class T> CullingThreadpool::StateData<T>::StateData(unsigned int maxJobs) :
 	mMaxJobs(maxJobs),

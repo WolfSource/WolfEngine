@@ -2,7 +2,7 @@
     Project          : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source           : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website          : http://WolfSource.io
-    Name             : w_rectangle_py.h
+    Name             : py_rectangle.h
     Description      : The python exporter for w_rectangle structs
     Comment          :
  */
@@ -13,12 +13,12 @@
 #pragma once
 #endif
 
-#ifndef __W_RECTANGLE_PY_H__
-#define __W_RECTANGLE_PY_H__
+#ifndef __PY_RECTANGLE_H__
+#define __PY_RECTANGLE_H__
 
 namespace pywolf
 {
-    static void w_rectangle_py_export()
+    static void py_rectangle_export()
     {
         using namespace boost::python;
         using namespace wolf::system;

@@ -192,6 +192,6 @@ namespace wolf
 	}
 }
 
-#include "python_exporter/w_time_span_py.h"
+#include "python_exporter/py_time_span.h"
 
 #endif //__W_TIME_SPAN_H__

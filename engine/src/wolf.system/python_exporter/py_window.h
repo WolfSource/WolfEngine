@@ -2,7 +2,7 @@
     Project          : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source           : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website          : http://WolfSource.io
-    Name             : w_window_py.h
+    Name             : py_window.h
     Description      : The python exporter for w_window class and relative structs
     Comment          :
  */
@@ -13,12 +13,12 @@
 #pragma once
 #endif
 
-#ifndef __W_WINDOW_PY_H__
-#define __W_WINDOW_PY_H__
+#ifndef __PY_WINDOW_H__
+#define __PY_WINDOW_H__
 
 namespace pywolf
 {
-    static void w_window_py_export()
+    static void py_window_export()
     {
         using namespace boost::python;
         using namespace wolf::system;
@@ -43,6 +43,6 @@ namespace pywolf
     }
 }
 
-#endif//__W_WINDOW_PY_H__
+#endif//__PY_WINDOW_H__
 
 #endif//__PYTHON__

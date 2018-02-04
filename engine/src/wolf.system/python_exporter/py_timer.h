@@ -2,7 +2,7 @@
     Project          : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source           : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website          : http://WolfSource.io
-    Name             : w_timer_py.h
+    Name             : py_timer.h
     Description      : The python exporter for w_timer class
     Comment          :
  */
@@ -13,12 +13,12 @@
 #pragma once
 #endif
 
-#ifndef __W_TIMER_PY_H__
-#define __W_TIMER_PY_H__
+#ifndef __PY_TIMER_H__
+#define __PY_TIMER_H__
 
 namespace pywolf
 {
-    static void w_timer_py_export()
+    static void py_timer_export()
     {
         using namespace boost::python;
         using namespace wolf::system;

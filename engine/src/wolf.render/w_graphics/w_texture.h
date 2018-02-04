@@ -202,6 +202,6 @@ namespace wolf
     }
 }
 
-#include "python_exporter/w_texture_py.h"
+#include "python_exporter/py_texture.h"
 
 #endif//__W_TEXTURE_2D_H__

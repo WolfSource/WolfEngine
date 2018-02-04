@@ -471,6 +471,6 @@ namespace wolf
 	}
 }
 
-#include "python_exporter/w_graphics_device_manager_py.h"
+#include "python_exporter/py_graphics_device_manager.h"
 
 #endif
