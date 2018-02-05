@@ -22,8 +22,8 @@ namespace pywolf
 	{
 	public:
 		W_EXP py_fences();
-		W_EXP bool py_initialize(_In_ const uint32_t& pGDeviceIndex, _In_ const uint32_t pNumberOfFences);
-		W_EXP bool py_wait(_In_ uint64_t pTimeOut);
+		W_EXP bool py_initialize(_In_ const uint32_t& pGDeviceIndex, _In_ const uint32_t& pNumberOfFences);
+		W_EXP bool py_wait(_In_ uint64_t& pTimeOut);
 		W_EXP bool py_reset();
 
 	private:

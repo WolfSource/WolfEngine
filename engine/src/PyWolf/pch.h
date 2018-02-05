@@ -39,5 +39,6 @@
 #include <w_graphics/w_texture.h>
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_fences.h>
+#include <w_graphics/w_command_buffer.h>
 
 #endif //__PCH_H__

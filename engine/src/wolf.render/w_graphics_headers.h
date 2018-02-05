@@ -73,18 +73,35 @@ namespace wolf
     {
         typedef enum w_memory_property_flag_bits
         {
-        #ifdef __VULKAN__
+#ifdef __VULKAN__
             W_MEMORY_PROPERTY_DEVICE_LOCAL_BIT = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
             W_MEMORY_PROPERTY_HOST_VISIBLE_BIT = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
             W_MEMORY_PROPERTY_HOST_COHERENT_BIT = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
             W_MEMORY_PROPERTY_HOST_CACHED_BIT = VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
             W_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT,
             W_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM = VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM
-        #endif
+#endif
         } w_memory_property_flag_bits;
-
         typedef uint32_t w_memory_property_flags;
 
+        typedef enum w_command_buffer_level
+        {
+#ifdef __VULKAN__
+            W_COMMAND_BUFFER_LEVEL_PRIMARY = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+            W_COMMAND_BUFFER_LEVEL_SECONDARY = VK_COMMAND_BUFFER_LEVEL_SECONDARY
+#endif
+        } w_command_buffer_level;
+        
+        typedef enum w_command_buffer_usage_flag_bits
+        {
+#ifdef __VULKAN__
+            W_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
+            W_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
+            W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT
+#endif
+        } w_command_buffer_usage_flag_bits;
+        typedef uint32_t w_command_buffer_usage_flags;
+        
 		typedef enum w_format 
 		{
 #ifdef __VULKAN__

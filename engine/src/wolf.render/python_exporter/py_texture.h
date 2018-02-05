@@ -35,7 +35,7 @@ namespace pywolf
 		{
 			if (pGDeviceIndex >= pywolf::py_graphics_devices.size()) return false;
 			this->_graphics_device_index = pGDeviceIndex;
-			return this->initialize(
+            return _super::initialize(
 				pywolf::py_graphics_devices[pGDeviceIndex],
 				pWidth,
 				pHeight,
@@ -54,7 +54,7 @@ namespace pywolf
 				_data[i] = boost::python::extract<uint8_t>(pRGBAData[i]);
 			}
 
-			auto _hr = this->load_texture_from_memory_rgba(&_data[0]);
+            auto _hr = _super::load_texture_from_memory_rgba(&_data[0]);
 			SAFE_DELETE_ARRAY(_data);
 			return _hr;
 		}
@@ -70,7 +70,7 @@ namespace pywolf
 				_data[i] = boost::python::extract<uint8_t>(pRGBData[i]);
 			}
 
-			auto _hr = this->load_texture_from_memory_rgb(&_data[0]);
+            auto _hr = _super::load_texture_from_memory_rgb(&_data[0]);
 			SAFE_DELETE_ARRAY(_data);
 			return _hr;
 		}
@@ -86,7 +86,7 @@ namespace pywolf
 				_data[i] = boost::python::extract<uint8_t>(pRGBData[i]);
 			}
 
-			auto _hr = this->copy_data_to_texture_2D(&_data[0]);
+            auto _hr = _super::copy_data_to_texture_2D(&_data[0]);
 			SAFE_DELETE_ARRAY(_data);
 			return _hr;
 		}
@@ -110,7 +110,7 @@ namespace pywolf
 
 		bool py_flush_staging_data()
 		{
-			return this->flush_staging_data() == S_OK;
+            return _super::flush_staging_data() == S_OK;
 		}
 
 		//const VkImageUsageFlags get_usage() const;
@@ -158,7 +158,7 @@ namespace pywolf
 			{
 				_data[i] = boost::python::extract<uint8_t>(pData[i]);
 			}
-			auto _hr = save_png_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount, pStrideInBytes);
+            auto _hr = _super::save_png_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount, pStrideInBytes);
 			SAFE_DELETE_ARRAY(_data);
 			return _hr == S_OK;
 		}
@@ -178,7 +178,7 @@ namespace pywolf
 			{
 				_data[i] = boost::python::extract<uint8_t>(pData[i]);
 			}
-			auto _hr = save_bmp_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
+            auto _hr = _super::save_bmp_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
 			SAFE_DELETE_ARRAY(_data);
 			return _hr == S_OK;
 		}
@@ -198,7 +198,7 @@ namespace pywolf
 			{
 				_data[i] = boost::python::extract<uint8_t>(pData[i]);
 			}
-			auto _hr = save_tga_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
+            auto _hr = _super::save_tga_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
 			SAFE_DELETE_ARRAY(_data);
 			return _hr == S_OK;
 		}
@@ -218,7 +218,7 @@ namespace pywolf
 			{
 				_data[i] = boost::python::extract<float>(pData[i]);
 			}
-			auto _hr = save_hdr_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
+            auto _hr = _super::save_hdr_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
 			SAFE_DELETE_ARRAY(_data);
 			return _hr == S_OK;
 		}
@@ -239,7 +239,7 @@ namespace pywolf
 			{
 				_data[i] = boost::python::extract<uint8_t>(pData[i]);
 			}
-			auto _hr = save_jpg_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount, pQuality);
+            auto _hr = _super::save_jpg_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount, pQuality);
 			SAFE_DELETE_ARRAY(_data);
 			return _hr == S_OK;
 		}
@@ -247,6 +247,7 @@ namespace pywolf
 #pragma endregion
 
 	private:
+        typedef  w_texture _super;
 		short    _graphics_device_index;
 	};
 

@@ -14,10 +14,7 @@
 		2C299C7F201F9110003C80F7 /* w_first_person_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C299C7D201F9110003C80F7 /* w_first_person_camera.cpp */; };
 		2C299C80201F9110003C80F7 /* w_first_person_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C299C7E201F9110003C80F7 /* w_first_person_camera.h */; };
 		2C299C89201F9ACC003C80F7 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C84201F92C5003C80F7 /* Python.framework */; };
-		2C299C8C201F9BFE003C80F7 /* w_game_py.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C299C8B201F9BFE003C80F7 /* w_game_py.h */; };
 		2C299C8E201FA4F9003C80F7 /* libboost_python-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */; };
-		2C299C902022523B003C80F7 /* w_graphics_device_manager_py.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C299C8F2022523B003C80F7 /* w_graphics_device_manager_py.h */; };
-		2C299C922022648E003C80F7 /* w_texture_py.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C299C912022648E003C80F7 /* w_texture_py.h */; };
 		2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C29CD1C1EB3344000BEFF54 /* w_game.cpp */; };
 		2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C29CD1D1EB3344000BEFF54 /* w_game.h */; };
 		2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */; };
@@ -58,6 +55,13 @@
 		2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */; };
 		2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
 		2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */; };
+		2CDD136A202781FB002B1AAC /* py_render_pass.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1363202781FB002B1AAC /* py_render_pass.h */; };
+		2CDD136B202781FB002B1AAC /* py_fences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1364202781FB002B1AAC /* py_fences.h */; };
+		2CDD136C202781FB002B1AAC /* py_command_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1365202781FB002B1AAC /* py_command_buffer.h */; };
+		2CDD136D202781FB002B1AAC /* py_graphics_device_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1366202781FB002B1AAC /* py_graphics_device_manager.h */; };
+		2CDD136E202781FB002B1AAC /* py_semaphore.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1367202781FB002B1AAC /* py_semaphore.h */; };
+		2CDD136F202781FB002B1AAC /* py_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1368202781FB002B1AAC /* py_texture.h */; };
+		2CDD1370202781FB002B1AAC /* py_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1369202781FB002B1AAC /* py_game.h */; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
 		2CFFAC6F1FCEAA400020A112 /* w_frame_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC681FCEAA3F0020A112 /* w_frame_buffer.h */; };
 		2CFFAC701FCEAA400020A112 /* w_command_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */; };
@@ -75,10 +79,7 @@
 		2C299C7D201F9110003C80F7 /* w_first_person_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_first_person_camera.cpp; path = ../../../src/wolf.render/w_framework/w_first_person_camera.cpp; sourceTree = "<group>"; };
 		2C299C7E201F9110003C80F7 /* w_first_person_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_first_person_camera.h; path = ../../../src/wolf.render/w_framework/w_first_person_camera.h; sourceTree = "<group>"; };
 		2C299C84201F92C5003C80F7 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
-		2C299C8B201F9BFE003C80F7 /* w_game_py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game_py.h; path = ../../../src/wolf.render/python_exporter/w_game_py.h; sourceTree = "<group>"; };
 		2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_python-mt.a"; path = "../../../dependencies/boost/lib/osx/debug/libboost_python-mt.a"; sourceTree = "<group>"; };
-		2C299C8F2022523B003C80F7 /* w_graphics_device_manager_py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_graphics_device_manager_py.h; path = ../../../src/wolf.render/python_exporter/w_graphics_device_manager_py.h; sourceTree = "<group>"; };
-		2C299C912022648E003C80F7 /* w_texture_py.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_texture_py.h; path = ../../../src/wolf.render/python_exporter/w_texture_py.h; sourceTree = "<group>"; };
 		2C29CD1C1EB3344000BEFF54 /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_framework/w_game.cpp; sourceTree = "<group>"; };
 		2C29CD1D1EB3344000BEFF54 /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/w_framework/w_game.h; sourceTree = "<group>"; };
 		2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.content_pipeline.macOS.dylib; sourceTree = "<group>"; };
@@ -120,6 +121,13 @@
 		2CA945EA1ED9F7CC007B70B8 /* imgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui.h; path = ../../../src/wolf.render/imgui/imgui.h; sourceTree = "<group>"; };
 		2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_demo.cpp; path = ../../../src/wolf.render/imgui/imgui_demo.cpp; sourceTree = "<group>"; };
 		2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
+		2CDD1363202781FB002B1AAC /* py_render_pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_render_pass.h; path = ../../../src/wolf.render/python_exporter/py_render_pass.h; sourceTree = "<group>"; };
+		2CDD1364202781FB002B1AAC /* py_fences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_fences.h; path = ../../../src/wolf.render/python_exporter/py_fences.h; sourceTree = "<group>"; };
+		2CDD1365202781FB002B1AAC /* py_command_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_command_buffer.h; path = ../../../src/wolf.render/python_exporter/py_command_buffer.h; sourceTree = "<group>"; };
+		2CDD1366202781FB002B1AAC /* py_graphics_device_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_graphics_device_manager.h; path = ../../../src/wolf.render/python_exporter/py_graphics_device_manager.h; sourceTree = "<group>"; };
+		2CDD1367202781FB002B1AAC /* py_semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_semaphore.h; path = ../../../src/wolf.render/python_exporter/py_semaphore.h; sourceTree = "<group>"; };
+		2CDD1368202781FB002B1AAC /* py_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_texture.h; path = ../../../src/wolf.render/python_exporter/py_texture.h; sourceTree = "<group>"; };
+		2CDD1369202781FB002B1AAC /* py_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_game.h; path = ../../../src/wolf.render/python_exporter/py_game.h; sourceTree = "<group>"; };
 		2CFFAC671FCEAA3F0020A112 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/w_graphics/w_render_target.h; sourceTree = "<group>"; };
 		2CFFAC681FCEAA3F0020A112 /* w_frame_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_frame_buffer.h; path = ../../../src/wolf.render/w_graphics/w_frame_buffer.h; sourceTree = "<group>"; };
 		2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffer.h; path = ../../../src/wolf.render/w_graphics/w_command_buffer.h; sourceTree = "<group>"; };
@@ -190,9 +198,13 @@
 		2C299C8A201F9BEB003C80F7 /* python_exporter */ = {
 			isa = PBXGroup;
 			children = (
-				2C299C8B201F9BFE003C80F7 /* w_game_py.h */,
-				2C299C8F2022523B003C80F7 /* w_graphics_device_manager_py.h */,
-				2C299C912022648E003C80F7 /* w_texture_py.h */,
+				2CDD1365202781FB002B1AAC /* py_command_buffer.h */,
+				2CDD1364202781FB002B1AAC /* py_fences.h */,
+				2CDD1369202781FB002B1AAC /* py_game.h */,
+				2CDD1366202781FB002B1AAC /* py_graphics_device_manager.h */,
+				2CDD1367202781FB002B1AAC /* py_semaphore.h */,
+				2CDD1368202781FB002B1AAC /* py_texture.h */,
+				2CDD1363202781FB002B1AAC /* py_render_pass.h */,
 			);
 			name = python_exporter;
 			sourceTree = "<group>";
@@ -270,7 +282,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C299C902022523B003C80F7 /* w_graphics_device_manager_py.h in Headers */,
 				2C598C651FA2387B0055D215 /* w_graphics_headers.h in Headers */,
 				2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */,
 				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
@@ -282,19 +293,24 @@
 				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
 				2CFFAC6F1FCEAA400020A112 /* w_frame_buffer.h in Headers */,
 				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
+				2CDD136C202781FB002B1AAC /* py_command_buffer.h in Headers */,
+				2CDD136B202781FB002B1AAC /* py_fences.h in Headers */,
+				2CDD1370202781FB002B1AAC /* py_game.h in Headers */,
 				2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */,
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
 				2CFFAC701FCEAA400020A112 /* w_command_buffer.h in Headers */,
 				2CFFAC721FCEAA400020A112 /* w_attachment_buffer_desc.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
-				2C299C922022648E003C80F7 /* w_texture_py.h in Headers */,
+				2CDD136F202781FB002B1AAC /* py_texture.h in Headers */,
 				2C8D5B6E1F4F98D1000BCB87 /* w_imgui.h in Headers */,
-				2C299C8C201F9BFE003C80F7 /* w_game_py.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 				2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */,
 				2C0F36A6200A6C00001CB2DF /* w_shapes.h in Headers */,
+				2CDD136A202781FB002B1AAC /* py_render_pass.h in Headers */,
 				2C299C80201F9110003C80F7 /* w_first_person_camera.h in Headers */,
+				2CDD136E202781FB002B1AAC /* py_semaphore.h in Headers */,
 				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
+				2CDD136D202781FB002B1AAC /* py_graphics_device_manager.h in Headers */,
 				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

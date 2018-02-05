@@ -19,7 +19,7 @@ namespace wolf
             
             HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
                 _In_ const size_t& pCount,
-                _In_ const VkCommandBufferLevel& pLevel,
+                _In_ const w_command_buffer_level& pLevel,
                 _In_ const bool& pCreateCommandPool,
                 _In_ const w_queue* pCommandPoolQueue)
             {
@@ -70,7 +70,7 @@ namespace wolf
                 _command_buffer_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
                 _command_buffer_info.pNext = nullptr;
                 _command_buffer_info.commandPool = this->_gDevice->vk_command_allocator_pool;
-                _command_buffer_info.level = pLevel;
+                _command_buffer_info.level = (VkCommandBufferLevel)pLevel;
                 _command_buffer_info.commandBufferCount = static_cast<uint32_t>(this->_counts);
                 
                 
@@ -91,7 +91,7 @@ namespace wolf
                 return S_OK;
             }
             
-			HRESULT begin(_In_ size_t pCommandBufferIndex, _In_ VkCommandBufferUsageFlags pFlags)
+			HRESULT begin(_In_ const size_t& pCommandBufferIndex, _In_ w_command_buffer_usage_flags pFlags)
 			{
 				if (pCommandBufferIndex >= this->_commands.size()) return S_FALSE;
 
@@ -100,7 +100,7 @@ namespace wolf
 				{
 					VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,        //Type;
 					nullptr,                                            //Next
-					pFlags,												// Flags
+					(VkCommandBufferUsageFlags)pFlags,					// Flags
 					nullptr,
 				};
 
@@ -113,7 +113,7 @@ namespace wolf
 				return _hr == VK_SUCCESS ? S_OK : S_FALSE;
 			}
             
-            HRESULT begin_all(_In_ VkCommandBufferUsageFlags pFlags)
+            HRESULT begin_all(_In_ w_command_buffer_usage_flags pFlags)
             {
                 HRESULT _result = S_OK;
                 for (size_t i = 0; i < this->_commands.size(); ++i)
@@ -154,7 +154,7 @@ namespace wolf
                 return _result;
             }
             
-            HRESULT flush(_In_ size_t pCommandBufferIndex)
+            HRESULT flush(_In_ const size_t& pCommandBufferIndex)
             {
                 if  (pCommandBufferIndex >= this->_commands.size()) return S_FALSE;
                 
@@ -319,7 +319,7 @@ w_command_buffer::~w_command_buffer()
 
 HRESULT w_command_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const size_t& pCount,
-    _In_ const VkCommandBufferLevel& pLevel,
+    _In_ const w_command_buffer_level& pLevel,
     _In_ const bool& pCreateCommandPool,
     _In_ const w_queue* pCommandPoolQueue)
 {
@@ -328,13 +328,13 @@ HRESULT w_command_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pG
     return this->_pimp->load(pGDevice, pCount, pLevel, pCreateCommandPool, pCommandPoolQueue);
 }
 
-HRESULT w_command_buffer::begin(_In_ const size_t pCommandBufferIndex, _In_ const VkCommandBufferUsageFlags pFlags)
+HRESULT w_command_buffer::begin(_In_ const size_t& pCommandBufferIndex, _In_ const w_command_buffer_usage_flags pFlags)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->begin(pCommandBufferIndex, pFlags);
 }
 
-HRESULT w_command_buffer::begin_all(_In_ const VkCommandBufferUsageFlags pFlags)
+HRESULT w_command_buffer::begin_all(_In_ const w_command_buffer_usage_flags pFlags)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->begin_all(pFlags);
@@ -352,7 +352,7 @@ HRESULT w_command_buffer::end_all()
     return this->_pimp->end_all();
 }
 
-HRESULT w_command_buffer::flush(_In_ const size_t pCommandBufferIndex)
+HRESULT w_command_buffer::flush(_In_ const size_t& pCommandBufferIndex)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->flush(pCommandBufferIndex);

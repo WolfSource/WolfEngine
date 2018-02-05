@@ -24,21 +24,23 @@ namespace wolf
             
             /*
                 pGDevice = graphices device, 
-                pCount = count of command buffers to be created, 
+                pCount = count of command buffers to be created,
+                pLevel = primary or secondary level of thread execution
                 pCreateCommandPool = create seperated command pool,
                 pCommandPoolQueue = if pCreateCommandPool set true, then use this w_queue_index for creating command pool
             */
             W_EXP HRESULT load(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
                 _In_ const size_t& pCount, 
-                _In_ const VkCommandBufferLevel& pLevel = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+                _In_ const w_command_buffer_level& pLevel = W_COMMAND_BUFFER_LEVEL_PRIMARY,
                 _In_ const bool& pCreateCommandPool = false,
                 _In_ const w_queue* pCommandPoolQueue = nullptr);
             
-            W_EXP HRESULT begin(_In_ const size_t pCommandBufferIndex,
-                                _In_ const VkCommandBufferUsageFlags pFlags = VkCommandBufferUsageFlagBits::VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
+            //begin command buffer
+            W_EXP HRESULT begin(_In_ const size_t& pCommandBufferIndex,
+                                _In_ const w_command_buffer_usage_flags pFlags = w_command_buffer_usage_flag_bits::W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
             
-            W_EXP HRESULT begin_all(_In_ const VkCommandBufferUsageFlags pFlags = VkCommandBufferUsageFlagBits::VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
+            W_EXP HRESULT begin_all(_In_ const w_command_buffer_usage_flags pFlags = w_command_buffer_usage_flag_bits::W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
             
             W_EXP HRESULT end(_In_ const size_t pCommandBufferIndex);
             W_EXP HRESULT end_all();
@@ -46,12 +48,13 @@ namespace wolf
             /*
                 Flushing the command buffer will also submit it to the queue and uses a fence to ensure that command has been executed before returning
             */
-            W_EXP HRESULT flush(_In_ const size_t pCommandBufferIndex);
+            W_EXP HRESULT flush(_In_ const size_t& pCommandBufferIndex);
             /*
                 Flushing all command buffers will also submit these commands buffers to the queue and uses a fence to ensure that all commands have been executed before returning
              */
             W_EXP HRESULT flush_all();
             
+            //release all resources
             W_EXP ULONG release() override;
             
 #pragma region Getters
