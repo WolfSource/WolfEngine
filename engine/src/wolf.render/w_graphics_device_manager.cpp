@@ -703,14 +703,12 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 {
 	HRESULT _return_result = S_OK;
 	const std::string _trace_info = "w_graphics_device::capture_presented_swap_chain_buffer";
-	auto _output_window = &(this->output_presentation_windows);
-	if (!_output_window) return S_FALSE;
 
-	auto _objs_ptr = _output_window->objs_between_cpu_gpu;
+	auto _objs_ptr = this->output_presentation_window.objs_between_cpu_gpu;
 	if (!_objs_ptr) return S_FALSE;
 
 	//source image is swap chain last presented buffer
-	auto _src_image = _output_window->vk_swap_chain_image_views[_output_window->vk_swap_chain_image_index].image;
+	auto _src_image = this->output_presentation_window.vk_swap_chain_image_views[this->output_presentation_window.vk_swap_chain_image_index].image;
 
 	const auto _sub_res_range = VkImageSubresourceRange
 	{
@@ -787,14 +785,14 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			1,
 			&_imb_memory_to_transfer_read);
 
-		if (_output_window->bliting_supported_by_swap_chain)
+		if (this->output_presentation_window.bliting_supported_by_swap_chain)
 		{
 			// apply bliting
 			VkOffset3D _src_offset =
 			{
-				(int32_t)_output_window->width,	    //x
-				(int32_t)_output_window->height,	//y
-				1					                //z
+				(int32_t)this->output_presentation_window.width, //x
+				(int32_t)this->output_presentation_window.height,//y
+				1												 //z
 			};
 
 			VkImageBlit _image_blit_region = {};
@@ -822,8 +820,8 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			_image_copy_region.srcSubresource.layerCount = 1;
 			_image_copy_region.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			_image_copy_region.dstSubresource.layerCount = 1;
-			_image_copy_region.extent.width = _output_window->width;
-			_image_copy_region.extent.height = _output_window->height;
+			_image_copy_region.extent.width = this->output_presentation_window.width;
+			_image_copy_region.extent.height = this->output_presentation_window.height;
 			_image_copy_region.extent.depth = 1;
 
 			//Apply copy region command
@@ -960,8 +958,8 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			//Map the memory
 			uint8_t* _data;
 			w_point_t _size;
-			_size.x = _output_window->width;
-			_size.y = _output_window->height;
+			_size.x = this->output_presentation_window.width;
+			_size.y = this->output_presentation_window.height;
 
 			vkMapMemory(this->vk_device, _objs_ptr->destination_image_memory, 0, VK_WHOLE_SIZE, 0, (void**)&_data);
 			_data += _sub_resource_layout.offset;
@@ -1046,15 +1044,12 @@ ULONG w_graphics_device::release()
     //wait for device to become IDLE
     vkDeviceWaitIdle(this->vk_device);
 
-    //release all output presentation windows
-
-    auto _output_window = &(this->output_presentation_windows);
 
     //release shared objects between cpu and gpu
 #pragma region Release Shared Objs CPU-GPU Mapping
-    if (_output_window->objs_between_cpu_gpu)
+    if (this->output_presentation_window.objs_between_cpu_gpu)
     {
-        auto _shared_obj = _output_window->objs_between_cpu_gpu;
+        auto _shared_obj = this->output_presentation_window.objs_between_cpu_gpu;
         //release objects destination image memory
         if (_shared_obj->destination_image_memory)
         {
@@ -1101,34 +1096,34 @@ ULONG w_graphics_device::release()
 #pragma endregion
 
     //release semaphores
-    _output_window->vk_rendering_done_semaphore.release();
-    _output_window->vk_swap_chain_image_is_available_semaphore.release();
+    this->output_presentation_window.vk_rendering_done_semaphore.release();
+    this->output_presentation_window.vk_swap_chain_image_is_available_semaphore.release();
 
     //release all image view of swap chains
-    for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
-    {
-        //release both image and view,
-        vkDestroyImageView(this->vk_device,
-            _output_window->vk_swap_chain_image_views[i].view,
-            nullptr);
-        _output_window->vk_swap_chain_image_views[i].view = 0;
-        _output_window->vk_swap_chain_image_views[i].image = 0;
-    }
-    _output_window->vk_swap_chain_image_views.clear();
+	for (size_t i = 0; i < this->output_presentation_window.vk_swap_chain_image_views.size(); ++i)
+	{
+		//release both image and view,
+		vkDestroyImageView(this->vk_device,
+			this->output_presentation_window.vk_swap_chain_image_views[i].view,
+			nullptr);
+		this->output_presentation_window.vk_swap_chain_image_views[i].view = 0;
+		this->output_presentation_window.vk_swap_chain_image_views[i].image = 0;
+	}
+	this->output_presentation_window.vk_swap_chain_image_views.clear();
 
     //release swap chain
     vkDestroySwapchainKHR(this->vk_device,
-        _output_window->vk_swap_chain,
+		this->output_presentation_window.vk_swap_chain,
         nullptr);
-    _output_window->vk_swap_chain = 0;
+	this->output_presentation_window.vk_swap_chain = 0;
 
     //release the surface
     vkDestroySurfaceKHR(w_graphics_device::vk_instance,
-        _output_window->vk_presentation_surface,
+		this->output_presentation_window.vk_presentation_surface,
         nullptr);
-    _output_window->vk_presentation_surface = 0;
+	this->output_presentation_window.vk_presentation_surface = 0;
 
-    this->output_presentation_windows.release();
+	this->output_presentation_window.release();
 
     this->vk_queue_family_properties.clear();
     this->vk_queue_family_supports_present.clear();
@@ -2254,7 +2249,7 @@ namespace wolf
                             }
 #endif
 
-                            _gDevice->output_presentation_windows = _out_window;
+                            _gDevice->output_presentation_window = _out_window;
 
                             create_or_resize_swap_chain(_gDevice);
                             _create_depth_stencil_buffer(_gDevice);
@@ -2267,7 +2262,7 @@ namespace wolf
 						_out_window.width = 0;
 						_out_window.height = 0;
 						_out_window.aspect_ratio = 0.0f;
-						_gDevice->output_presentation_windows = _out_window;
+						_gDevice->output_presentation_window = _out_window;
 					}
 
 					//get queues (graphics and present may be the same)
@@ -2707,7 +2702,7 @@ namespace wolf
 #elif defined(__VULKAN__)
 				auto _device_name = pGDevice->device_info->get_device_name();
 				auto _device_id = pGDevice->device_info->get_device_id();
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows);
+				auto _output_presentation_window = &(pGDevice->output_presentation_window);
 
 				if (!_output_presentation_window) return;
 				auto _vk_presentation_surface = _output_presentation_window->vk_presentation_surface;
@@ -3168,7 +3163,7 @@ namespace wolf
 			void _create_depth_stencil_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 			{
                 auto _device_id = pGDevice->device_info->get_device_id();
-                auto _window = &(pGDevice->output_presentation_windows);
+                auto _window = &(pGDevice->output_presentation_window);
 
 #ifdef __DX12__ 
                 
@@ -3337,7 +3332,7 @@ namespace wolf
 #elif defined(__VULKAN__)
 				auto _device_name = pGDevice->device_info->get_device_name();
 				auto _device_id = pGDevice->device_info->get_device_id();
-				auto _output_presentation_window = &(pGDevice->output_presentation_windows);
+				auto _output_presentation_window = &(pGDevice->output_presentation_window);
 
                 //create semaphores fro this graphics device
                 if (_output_presentation_window->vk_swap_chain_image_is_available_semaphore.initialize(pGDevice) == S_FALSE)
@@ -3359,7 +3354,7 @@ namespace wolf
             
             void _create_shared_objects_between_cpu_gpu(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
             {
-                auto _output_window = &(pGDevice->output_presentation_windows);
+                auto _output_window = &(pGDevice->output_presentation_window);
                 if (!_output_window) return;
 
                 const std::string _trace_info = "w_graphics_device::_create_shared_objects_between_cpu_gpu";
@@ -3666,7 +3661,7 @@ void w_graphics_device_manager::on_window_resized(_In_ const uint32_t& pGraphics
     if (pGraphicsDeviceIndex >= this->graphics_devices.size()) return;
 
     auto _gDevice = this->graphics_devices.at(pGraphicsDeviceIndex);
-    auto _window = _gDevice->output_presentation_windows;
+    auto _window = _gDevice->output_presentation_window;
     _wait_for_previous_frame(_gDevice);
     this->_pimp->create_or_resize_swap_chain(_gDevice);
 }
@@ -3723,7 +3718,7 @@ HRESULT w_graphics_device_manager::prepare()
         }
 #endif
 
-        auto _output_window = &(_gDevice->output_presentation_windows);
+        auto _output_window = &(_gDevice->output_presentation_window);
 
 #ifdef __DX12__
 
@@ -3928,7 +3923,7 @@ HRESULT w_graphics_device_manager::present()
         }
 #endif
 
-        auto _present_window = &(_gDevice->output_presentation_windows);
+        auto _present_window = &(_gDevice->output_presentation_window);
 
 #ifdef __DX12__
 

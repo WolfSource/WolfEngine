@@ -40,5 +40,7 @@
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_fences.h>
 #include <w_graphics/w_command_buffer.h>
+#include <w_graphics/w_render_pass.h>
+//#include <w_graphics/w_frame_buffer.h>
 
 #endif //__PCH_H__

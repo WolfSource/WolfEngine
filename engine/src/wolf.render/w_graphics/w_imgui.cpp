@@ -136,9 +136,7 @@ namespace wolf
 
 				//Create frame buffer
 				auto _render_pass_handle = this->_render_pass.get_handle();
-				__hr = this->_frame_buffers.load(_gDevice,
-					_render_pass_handle,
-					pOutputPresentationWindow);
+				__hr = this->_frame_buffers.load(_gDevice, _render_pass_handle);
 				if (__hr == S_FALSE)
 				{
 					release();

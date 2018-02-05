@@ -16,8 +16,7 @@ namespace wolf
             
             HRESULT load(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const VkRenderPass pRenderPass,
-                _In_ const w_output_presentation_window* pPresentationWindow)
+                _In_ const VkRenderPass pRenderPass)
             {
                 const std::string _trace_info = this->_name + "::load";
 
@@ -28,19 +27,21 @@ namespace wolf
                 }
 
                 this->_gDevice = pGDevice;
-
+				auto _window = &(this->_gDevice->output_presentation_window);
+				if (!_window) return S_FALSE;
+				
                 VkFramebuffer _frame_buffer = 0;
                 std::vector<VkImageView> _attachments;
 
-                auto _size = pPresentationWindow->vk_swap_chain_image_views.size();
+                auto _size = _window->vk_swap_chain_image_views.size();
                 for (size_t i = 0; i < _size; ++i)
                 {
                     _attachments.clear();
 
                     //color
-                    _attachments.push_back(pPresentationWindow->vk_swap_chain_image_views[i].view);
+                    _attachments.push_back(_window->vk_swap_chain_image_views[i].view);
                     //depth
-                    _attachments.push_back(pPresentationWindow->vk_depth_buffer_image_view.view);
+                    _attachments.push_back(_window->vk_depth_buffer_image_view.view);
 
                     VkFramebufferCreateInfo _framebuffer_create_info =
                     {
@@ -50,8 +51,8 @@ namespace wolf
                         pRenderPass,								// Render pass
                         static_cast<uint32_t>(_attachments.size()), // AttachmentCount
                         _attachments.data(),						// Attachments
-                        pPresentationWindow->width,                 // Width
-                        pPresentationWindow->height,                // Height
+						_window->width,                 // Width
+						_window->height,                // Height
                         this->_layer_count						    // Layers
                     };
 
@@ -219,15 +220,13 @@ w_frame_buffer::~w_frame_buffer()
 }
 
 HRESULT w_frame_buffer::load(
-    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const VkRenderPass pRenderPass,
-    _In_ const w_output_presentation_window* pPresentationWindow)
+	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const VkRenderPass pRenderPass)
 {
-    if (!this->_pimp) return S_FALSE;
-    return this->_pimp->load(
-        pGDevice,
-        pRenderPass,
-        pPresentationWindow);
+	if (!this->_pimp) return S_FALSE;
+	return this->_pimp->load(
+		pGDevice,
+		pRenderPass);
 }
 
 HRESULT w_frame_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,

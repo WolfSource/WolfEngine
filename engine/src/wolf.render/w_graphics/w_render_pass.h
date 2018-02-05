@@ -31,7 +31,6 @@ namespace wolf
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions = nullptr,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
 
-
             W_EXP void begin(
                 _In_ const VkCommandBuffer& pCommandBuffer,
                 _In_ const VkFramebuffer& pFrameBuffer,
@@ -71,5 +70,7 @@ namespace wolf
         };
     }
 }
+
+#include "python_exporter/py_render_pass.h"
 
 #endif

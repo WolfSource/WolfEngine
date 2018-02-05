@@ -196,7 +196,7 @@ namespace wolf
             //release all resources
             W_EXP ULONG release();
 
-            w_output_presentation_window               output_presentation_windows;
+            w_output_presentation_window               output_presentation_window;
             
             //draw primitive(s) and instances using vertex & index buffer
             W_EXP void draw(_In_ VkCommandBuffer pCommandBuffer,

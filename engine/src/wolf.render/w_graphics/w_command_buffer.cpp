@@ -12,7 +12,6 @@ namespace wolf
             w_command_buffer_pimp() :
                 _name("w_command_buffer"),
                 _enable(true),
-                _order(0),
                 _command_pool(0)
             {
             }
@@ -91,7 +90,7 @@ namespace wolf
                 return S_OK;
             }
             
-			HRESULT begin(_In_ const size_t& pCommandBufferIndex, _In_ w_command_buffer_usage_flags pFlags)
+			HRESULT begin(_In_ const size_t& pCommandBufferIndex, _In_ const w_command_buffer_usage_flags pFlags)
 			{
 				if (pCommandBufferIndex >= this->_commands.size()) return S_FALSE;
 
@@ -113,7 +112,7 @@ namespace wolf
 				return _hr == VK_SUCCESS ? S_OK : S_FALSE;
 			}
             
-            HRESULT begin_all(_In_ w_command_buffer_usage_flags pFlags)
+            HRESULT begin_all(_In_ const w_command_buffer_usage_flags pFlags)
             {
                 HRESULT _result = S_OK;
                 for (size_t i = 0; i < this->_commands.size(); ++i)
@@ -127,7 +126,7 @@ namespace wolf
                 return _result;
             }
             
-            HRESULT end(_In_ size_t pCommandBufferIndex)
+            HRESULT end(_In_ const size_t& pCommandBufferIndex)
             {
                 if  (pCommandBufferIndex >= this->_commands.size()) return S_FALSE;
                 
@@ -244,7 +243,6 @@ namespace wolf
                 this->_commands.clear();
                 this->_counts = 0;
                 this->_enable = false;
-                this->_order = 0;
                 this->_gDevice = nullptr;
                 
                 return 0;
@@ -255,11 +253,6 @@ namespace wolf
             bool get_enable() const
             {
                 return this->_enable;
-            }
-            
-            int get_order() const
-            {
-                return this->_order;
             }
             
             const VkCommandBuffer* get_commands() const
@@ -276,14 +269,9 @@ namespace wolf
             
 #pragma region Setters
             
-            void set_enable(_In_ bool pEnable)
+            void set_enable(_In_ const bool& pEnable)
             {
                 this->_enable = pEnable;
-            }
-            
-            void set_order(_In_ bool pOrder)
-            {
-                this->_order = pOrder;
             }
             
 #pragma endregion
@@ -298,7 +286,6 @@ namespace wolf
 #endif
             
             bool                                                _enable;
-            int                                                 _order;
             size_t                                              _counts;
         };
     }
@@ -340,7 +327,7 @@ HRESULT w_command_buffer::begin_all(_In_ const w_command_buffer_usage_flags pFla
     return this->_pimp->begin_all(pFlags);
 }
 
-HRESULT w_command_buffer::end(_In_ const size_t pCommandBufferIndex)
+HRESULT w_command_buffer::end(_In_ const size_t& pCommandBufferIndex)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->end(pCommandBufferIndex);
@@ -382,14 +369,7 @@ bool w_command_buffer::get_enable() const
     return this->_pimp->get_enable();
 }
 
-int  w_command_buffer::get_order() const
-{
-    if (!_pimp) return 0;
-    
-    return this->_pimp->get_order();
-}
-
-const VkCommandBuffer w_command_buffer::get_command_at(_In_ const size_t pIndex) const
+const VkCommandBuffer w_command_buffer::get_command_at(_In_ const size_t& pIndex) const
 {
     if (!_pimp) return 0;
     
@@ -418,19 +398,11 @@ const size_t w_command_buffer::get_commands_size() const
 
 #pragma region Setters
 
-void w_command_buffer::set_enable(_In_ const bool pEnable)
+void w_command_buffer::set_enable(_In_ const bool& pEnable)
 {
     if(this->_pimp)
     {
         this->_pimp->set_enable(pEnable);
-    }
-}
-
-void w_command_buffer::set_order(_In_ bool pOrder)
-{
-    if(this->_pimp)
-    {
-        this->_pimp->set_order(pOrder);
     }
 }
 

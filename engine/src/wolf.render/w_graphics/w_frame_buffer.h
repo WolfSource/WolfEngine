@@ -25,15 +25,17 @@ namespace wolf
 			W_EXP w_frame_buffer();
 			W_EXP virtual ~w_frame_buffer();
             
+			//load frame buffer
             W_EXP HRESULT load(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const VkRenderPass pRenderPass,
-                _In_ const w_output_presentation_window* pPresentationWindow);
+                _In_ const VkRenderPass pRenderPass);
 
+			//load frame buffer
 			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const VkRenderPass pRenderPass,
 				_In_ std::vector<std::vector<w_texture*>> pBufferAttachmentsGroup);
 
+			//release all resources
 			W_EXP virtual ULONG release() override;
 
 
@@ -55,5 +57,7 @@ namespace wolf
 		};
 	}
 }
+
+#include "python_exporter/py_frame_buffer.h"
 
 #endif

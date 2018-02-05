@@ -308,7 +308,7 @@ void scene::load()
     const std::string _trace_info = this->name + "::load";
 
     auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows);
+    auto _output_window = &(_gDevice->output_presentation_window);
 
     w_point_t _screen_size;
     _screen_size.x = _output_window->width;
@@ -347,9 +347,7 @@ void scene::load()
 
     //create frame buffers
     auto _render_pass_handle = this->_gui_render_pass.get_handle();
-    _hr = this->_gui_frame_buffers.load(_gDevice,
-        _render_pass_handle,
-        _output_window);
+    _hr = this->_gui_frame_buffers.load(_gDevice, _render_pass_handle);
     if (_hr == S_FALSE)
     {
         release();
@@ -435,7 +433,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     const std::string _trace_info = this->name + "::render";
 
     auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows);
+    auto _output_window = &(_gDevice->output_presentation_window);
     auto _frame_index = _output_window->vk_swap_chain_image_index;
 
 	w_imgui::render();

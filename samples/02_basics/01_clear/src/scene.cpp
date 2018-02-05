@@ -49,7 +49,7 @@ void scene::load()
     const std::string _trace_info = this->name + "::load";
     
     auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows);
+    auto _output_window = &(_gDevice->output_presentation_window);
     
     w_point_t _screen_size;
     _screen_size.x =  _output_window->width;
