@@ -17,7 +17,6 @@
 #include <w_framework/w_game.h>
 #include <w_graphics/w_command_buffer.h>
 #include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_imgui.h>
@@ -65,7 +64,6 @@ private:
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     wolf::graphics::w_command_buffer                                _gui_command_buffers;
     wolf::graphics::w_render_pass                                   _gui_render_pass;
-    wolf::graphics::w_frame_buffer                                  _gui_frame_buffers;
     wolf::graphics::w_fences                                        _gui_fence;
     wolf::graphics::w_semaphore                                     _gui_semaphore;
 

@@ -6,7 +6,6 @@
 #include "w_pipeline.h"
 #include "w_command_buffer.h"
 #include "w_render_pass.h"
-#include "w_frame_buffer.h"
 
 using namespace wolf::graphics;
 
@@ -132,17 +131,6 @@ namespace wolf
 					return S_FALSE;
 				}
 				_attachment_descriptions.clear();
-
-
-				//Create frame buffer
-				auto _render_pass_handle = this->_render_pass.get_handle();
-				__hr = this->_frame_buffers.load(_gDevice, _render_pass_handle);
-				if (__hr == S_FALSE)
-				{
-					release();
-					V(S_FALSE, "creating frame buffers", _trace_info, 3);
-					return S_FALSE;
-				}
 
 				__hr = this->_command_buffers.load(_gDevice, pOutputPresentationWindow->vk_swap_chain_image_views.size());
 				if (__hr == S_FALSE)
@@ -317,7 +305,7 @@ namespace wolf
                 VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
                 pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
                 pipelineCreateInfo.layout = this->_pipeline_layout;
-                pipelineCreateInfo.renderPass = _render_pass_handle;
+                pipelineCreateInfo.renderPass = this->_render_pass.get_handle();
                 pipelineCreateInfo.flags = 0;
                 pipelineCreateInfo.basePipelineIndex = -1;
                 pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
@@ -463,7 +451,7 @@ namespace wolf
 					this->_command_buffers.begin(i);
 					{
 						auto _cmd = this->_command_buffers.get_command_at(i);
-						this->_render_pass.begin(_cmd, this->_frame_buffers.get_frame_buffer_at(i));
+						this->_render_pass.begin(i, _cmd);
 						{
 							if (_update_buffers() == S_OK)
 							{
@@ -505,7 +493,6 @@ namespace wolf
 
 				this->_command_buffers.release();
 				this->_render_pass.release();
-				this->_frame_buffers.release();
 
 #ifdef __WIN32
                 this->_hwnd = NULL;
@@ -779,7 +766,6 @@ namespace wolf
 			//for rendering
 			w_command_buffer										_command_buffers;
 			w_render_pass											_render_pass;
-			w_frame_buffer											_frame_buffers;
         };
     }
 }

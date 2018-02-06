@@ -14,6 +14,7 @@
 <p>A commercial license is available for those that are not comfortable with GPL v3 terms. The commercial license is a paid per-user license that allows you to distribute your application under your own terms for more information please contact us: "contact{at}wolfsource{dot}io"</p>
 
 ## Third Party Licenses
+<p>The following sets forth attribution notices for third party software that may be contained in portions of the Wolf Engine. Thanks for the open source community for all of their contributions.</p>
 <p><b>boost.python</b></p>
 <pre>
 Boost Software License - Version 1.0 - August 17th, 2003

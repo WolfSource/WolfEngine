@@ -345,15 +345,6 @@ void scene::load()
         V(S_FALSE, "creating render pass for gui", _trace_info, 3, true);
     }
 
-    //create frame buffers
-    auto _render_pass_handle = this->_gui_render_pass.get_handle();
-    _hr = this->_gui_frame_buffers.load(_gDevice, _render_pass_handle);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "creating frame buffers for gui", _trace_info, 3, true);
-    }
-
     //create semaphore create info
     _hr = this->_gui_semaphore.initialize(_gDevice);
     if (_hr == S_FALSE)
@@ -489,7 +480,6 @@ ULONG scene::release()
 
     this->_gui_command_buffers.release();
     this->_gui_render_pass.release();
-    this->_gui_frame_buffers.release();
 
     w_imgui::release();
 

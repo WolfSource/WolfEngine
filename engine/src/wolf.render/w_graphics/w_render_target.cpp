@@ -1,7 +1,6 @@
 #include "w_render_pch.h"
 #include "w_render_target.h"
 #include "w_render_pass.h"
-#include "w_frame_buffer.h"
 #include "w_texture.h"
 
 namespace wolf
@@ -93,24 +92,12 @@ namespace wolf
 				_hr = this->_render_pass.load(pGDevice,
 					pViewPort,
 					pViewportScissor,
-					pAttachmentBuffersDescriptions);
+					pAttachmentBuffersDescriptions,
+                    _frame_buffers_attachments);
 				if (_hr == S_FALSE)
 				{
 					release();
 					V(S_FALSE, "loading render pass", _trace_info, 3, false);
-					return S_FALSE;
-				}
-
-                //create frame buffers
-                auto _render_pass_handle = this->_render_pass.get_handle();
-				_hr = this->_frame_buffers.load(
-					pGDevice,
-					_render_pass_handle,
-					_frame_buffers_attachments);
-				if (_hr == S_FALSE)
-				{
-					release();
-					V(S_FALSE, "creating frame buffers", _trace_info, 3, false);
 					return S_FALSE;
 				}
 
@@ -131,7 +118,7 @@ namespace wolf
 				if (!pCommandBuffer) return S_FALSE;
 
 				auto _cmd_size = pCommandBuffer->get_commands_size();
-				if (_cmd_size != this->_frame_buffers.get_count())
+				if (_cmd_size != this->_render_pass.get_number_of_frame_buffers())
 				{
 					V(S_FALSE, "parameter count mismatch. Number of command buffers must equal to number of frame buffers", _trace_info, 3, false);
 					return S_FALSE;
@@ -143,10 +130,9 @@ namespace wolf
 					pCommandBuffer->begin(i);
 					{
 						auto _cmd = pCommandBuffer->get_command_at(i);
-						auto _frame_buffer_handle = this->_frame_buffers.get_frame_buffer_at(i);
-
-						this->_render_pass.begin(_cmd,
-							_frame_buffer_handle,
+						this->_render_pass.begin(
+                            i,
+                            _cmd,
 							pClearColor,
 							pClearDepth,
 							pClearStencil);
@@ -170,7 +156,6 @@ namespace wolf
 					SAFE_RELEASE(_buffer);
 				}
 				this->_attachment_buffers.clear();
-				this->_frame_buffers.release();
 				this->_render_pass.release();
                 this->_gDevice = nullptr;
                 
@@ -258,7 +243,6 @@ namespace wolf
 			w_viewport													_viewport;
 			w_viewport_scissor											_viewport_scissor;
 			w_render_pass												_render_pass;
-			w_frame_buffer												_frame_buffers;
 			std::vector<wolf::graphics::w_texture*>						_attachment_buffers;	
         };
     }

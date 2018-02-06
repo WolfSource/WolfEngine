@@ -16,7 +16,6 @@
 
 #include "w_graphics_device_manager.h"
 #include "w_render_pass.h"
-#include "w_frame_buffer.h"
 #include <w_bounding.h>
 #include <w_game_time.h>
 #include <w_time_span.h>

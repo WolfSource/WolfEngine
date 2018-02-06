@@ -35,12 +35,19 @@ namespace pywolf
 
 		//}
 
+        bool py_load()
+        {
+            return true;
+        }
+        
 		bool py_begin()
 		{
+            return true;
 		}
 
 		bool py_end()
 		{
+            return true;
 		}
 
 	private:
@@ -82,7 +89,7 @@ namespace pywolf
 
 		//export w_texture class
 		class_<py_render_pass, boost::noncopyable>("w_render_pass")
-			//.def("load", &py_render_pass::py_load, "load render pass")
+			.def("load", &py_render_pass::py_load, "load render pass")
 			.def("release", &py_render_pass::release, "release")
 			;
 	}

@@ -171,7 +171,6 @@ BOOST_PYTHON_MODULE(pyWolf)
 		pywolf::py_semaphore_export();
 		pywolf::py_texture_export();
         pywolf::py_command_buffer_export();
-		//pywolf::py_frame_buffer_export();
     }
 
     //export wolf::framework classes to pyWolf.framework scope

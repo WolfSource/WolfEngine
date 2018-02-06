@@ -24,25 +24,31 @@ namespace wolf
             W_EXP w_render_pass();
             W_EXP virtual ~w_render_pass();
 
-            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            //load render pass
+            W_EXP HRESULT load(
+                _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,
                 _In_ const std::vector<w_attachment_buffer_desc>& pAttachmentsBuffersDescriptions,
+                _In_ std::vector<std::vector<w_texture*>> pBufferAttachmentsGroup = {},
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions = nullptr,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
 
+            //begin render pass
             W_EXP void begin(
+                _In_ const uint32_t& pFrameBufferIndex,
                 _In_ const VkCommandBuffer& pCommandBuffer,
-                _In_ const VkFramebuffer& pFrameBuffer,
                 _In_ const w_color& pClearColor,
-                _In_ const float&   pClearDepth = 1.0f,
-                _In_ const uint32_t&    pClearStencil = 0,
+                _In_ const float& pClearDepth = 1.0f,
+                _In_ const uint32_t& pClearStencil = 0,
                 _In_ const VkSubpassContents& pSubpassContents = VK_SUBPASS_CONTENTS_INLINE);
 
+            //begin render pass
             W_EXP void begin(
-                _In_ const VkCommandBuffer& pCommandBuffer,
-                _In_ const VkFramebuffer& pFrameBuffer);
+                _In_ const uint32_t& pFrameBufferIndex,
+                _In_ const VkCommandBuffer& pCommandBuffer);
 
+            //end render pass
             W_EXP void end(_In_ VkCommandBuffer& pCommandBuffer);
 
             //release all resources
@@ -54,7 +60,8 @@ namespace wolf
             W_EXP const VkRenderPass get_handle() const;
             W_EXP w_viewport get_viewport() const;
             W_EXP w_viewport_scissor get_viewport_scissor() const;
-
+            W_EXP const size_t get_number_of_frame_buffers() const;
+            
 #pragma endregion
 
 #pragma region Setters

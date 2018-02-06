@@ -10,17 +10,22 @@ namespace wolf
         public:
             w_render_pass_pimp() :
                 _name("w_render_pass"),
-                _render_pass(0)
+                _render_pass(0),
+                _layer_count(1)
             {
             }
-
-            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            
+            HRESULT load(
+                _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,
                 _In_ const std::vector<w_attachment_buffer_desc> pAttachmentBufferDescriptions,
+                _In_ std::vector<std::vector<w_texture*>> pBufferAttachmentsGroup,
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
             {
+                const std::string _trace_info = this->_name + "::load";
+                
                 this->_gDevice = pGDevice;
                 this->_viewport = pViewPort;
                 this->_viewport_scissor = pViewPortScissor;
@@ -97,20 +102,77 @@ namespace wolf
                     &_render_pass_create_info,
                     nullptr,
                     &this->_render_pass);
-                V(_hr, L"creating render pass for graphics device: " +
-					wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-                    L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-				
-                return _hr ? S_FALSE : S_OK;
+                if (_hr)
+                {
+                    V(S_FALSE, L"creating render pass for graphics device: " +
+                      wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+                      L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+                    return S_FALSE;
+                }
+                
+                //create frame buffer
+                VkFramebuffer _frame_buffer = 0;
+                std::vector<VkImageView> _attachments;
+                
+                auto _window = &pGDevice->output_presentation_window;
+                auto _size = pGDevice->output_presentation_window.vk_swap_chain_image_views.size();
+                for (size_t i = 0; i < _size; ++i)
+                {
+                    _attachments.clear();
+                    
+                    //color
+                    _attachments.push_back(_window->vk_swap_chain_image_views[i].view);
+                    //depth
+                    _attachments.push_back(_window->vk_depth_buffer_image_view.view);
+                    
+                    VkFramebufferCreateInfo _framebuffer_create_info =
+                    {
+                        VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,  // Type
+                        nullptr,                                    // Next
+                        0,                                          // Flags
+                        this->_render_pass,                         // Render pass
+                        static_cast<uint32_t>(_attachments.size()), // AttachmentCount
+                        _attachments.data(),                        // Attachments
+                        _window->width,                             // Width
+                        _window->height,                            // Height
+                        this->_layer_count                          // Layers
+                    };
+                    
+                    auto _hr = vkCreateFramebuffer(pGDevice->vk_device, &_framebuffer_create_info, nullptr, &_frame_buffer);
+                    if (_hr)
+                    {
+                        V(S_FALSE, "creating frame buffer for graphics device: " + pGDevice->device_info->get_device_name() +
+                          " ID:" + std::to_string(pGDevice->device_info->get_device_id()), _trace_info, 3, false);
+                        return S_FALSE;
+                    }
+                    
+                    this->_frame_buffers.push_back(_frame_buffer);
+                    
+                    _attachments.clear();
+                }
+                
+                return S_OK;
             }
 
-            void begin(_In_ const VkCommandBuffer& pCommandBuffer,
-                _In_ const VkFramebuffer& pFrameBuffer,
+            void begin(
+                _In_ const uint32_t& pFrameBufferIndex,
+                _In_ const VkCommandBuffer& pCommandBuffer,
                 _In_ const w_color& pClearColor,
-                _In_ const float&   pClearDepth,
-                _In_ const uint32_t&    pClearStencil,
+                _In_ const float& pClearDepth,
+                _In_ const uint32_t& pClearStencil,
                 _In_ const VkSubpassContents& pSubpassContents)
             {
+                const std::string _trace_info = this->_name + "::begin";
+                
+                if (pFrameBufferIndex >= this->_frame_buffers.size())
+                {
+                    V(S_FALSE,
+                      "parameter count mismatch, index of frame buffer does not match with index of command buffer for graphics device: " +
+                      this->_gDevice->device_info->get_device_name() +
+                      " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
+                      _trace_info, 3, false);
+                    return;
+                }
                 std::array<VkClearValue, 2> _clear_values = {};
                 _clear_values[0].color = 
                 {
@@ -127,7 +189,7 @@ namespace wolf
                     VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,               // Type
                     nullptr,                                                // Next
                     this->_render_pass,                                     // RenderPass
-                    pFrameBuffer,                                           // Framebuffer
+                    this->_frame_buffers[pFrameBufferIndex],                // Framebuffer
                     {                                                       // RenderArea
                         {
                             static_cast<int32_t>(this->_viewport.x),        // X
@@ -144,15 +206,28 @@ namespace wolf
                 vkCmdBeginRenderPass(pCommandBuffer, &_render_pass_begin_info, pSubpassContents);
             }
 
-            void begin(_In_ const VkCommandBuffer& pCommandBuffer,
-                _In_ const VkFramebuffer& pFrameBuffer)
+            void begin(
+                _In_ const uint32_t& pFrameBufferIndex,
+                _In_ const VkCommandBuffer& pCommandBuffer)
             {
+                const std::string _trace_info = this->_name + "::begin";
+                
+                if (pFrameBufferIndex >= this->_frame_buffers.size())
+                {
+                    V(S_FALSE,
+                      "mismatch between index of frame buffer and index of command buffer for graphics device: " +
+                      this->_gDevice->device_info->get_device_name() +
+                      " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
+                      _trace_info, 3, false);
+                    return;
+                }
+                
                 VkRenderPassBeginInfo _render_pass_begin_info =
                 {
                     VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,               // Type
                     nullptr,                                                // Next
                     this->_render_pass,                                     // RenderPass
-                    pFrameBuffer,                                           // Framebuffer
+                     this->_frame_buffers[pFrameBufferIndex],               // Framebuffer
                     {                                                       // RenderArea
                         {
                             static_cast<int32_t>(this->_viewport.x),        // X
@@ -179,6 +254,11 @@ namespace wolf
 
             ULONG release()
             {
+                for ( auto _iter :  this->_frame_buffers )
+                {
+                    vkDestroyFramebuffer(this->_gDevice->vk_device, _iter, nullptr);
+                    _iter = 0;
+                }
                 if (this->_render_pass)
                 {
                     vkDestroyRenderPass(this->_gDevice->vk_device,
@@ -187,7 +267,7 @@ namespace wolf
                     this->_render_pass = nullptr;
                 }
                 this->_gDevice = nullptr;
-
+                
                 return 0;
             }
 
@@ -207,7 +287,12 @@ namespace wolf
             {
                 return this->_viewport_scissor;
             }
-			
+        
+            const size_t get_number_of_frame_buffers() const
+            {
+                     return this->_frame_buffers.size();
+            }
+            
 #pragma endregion
 
 #pragma region Setters
@@ -226,18 +311,14 @@ namespace wolf
 
 #pragma endregion
 
-#pragma region Setters
-
-
-
-#pragma endregion
-
         private:
             std::string                                     _name;
             std::shared_ptr<w_graphics_device>              _gDevice;
             VkRenderPass                                    _render_pass;
             w_viewport                                      _viewport;
             w_viewport_scissor                              _viewport_scissor;
+            std::vector<VkFramebuffer>                      _frame_buffers;
+            uint32_t                                        _layer_count;
         };
     }
 }
@@ -258,6 +339,7 @@ HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDev
 	_In_ const w_viewport& pViewPort,
 	_In_ const w_viewport_scissor& pViewPortScissor,
 	_In_ const std::vector<w_attachment_buffer_desc>& pAttachmentBuffersDescriptions,
+    _In_ std::vector<std::vector<w_texture*>> pBufferAttachmentsGroup,
 	_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
 	_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 {
@@ -267,33 +349,37 @@ HRESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDev
 		pViewPort,
 		pViewPortScissor,
 		pAttachmentBuffersDescriptions,
+        pBufferAttachmentsGroup,
 		pSubpassDescriptions,
 		pSubpassDependencies);
 }
 
-void w_render_pass::begin(_In_ const VkCommandBuffer& pCommandBuffer,
-           _In_ const VkFramebuffer& pFrameBuffer,
-           _In_ const w_color& pClearColor,
-           _In_ const float&   pClearDepth,
-           _In_ const uint32_t&    pClearStencil,
-           _In_ const VkSubpassContents& pSubpassContents)
+void w_render_pass::begin(
+    _In_ const uint32_t& pFrameBufferIndex,
+    _In_ const VkCommandBuffer& pCommandBuffer,
+    _In_ const w_color& pClearColor,
+    _In_ const float&  pClearDepth,
+    _In_ const uint32_t&  pClearStencil,
+    _In_ const VkSubpassContents& pSubpassContents)
 {
     if(!this->_pimp) return;
-    this->_pimp->begin(pCommandBuffer,
-                              pFrameBuffer,
-                              pClearColor,
-                              pClearDepth,
-                              pClearStencil,
-                              pSubpassContents);
+    this->_pimp->begin(
+        pFrameBufferIndex,
+        pCommandBuffer,
+        pClearColor,
+        pClearDepth,
+        pClearStencil,
+        pSubpassContents);
 }
 
-void w_render_pass::begin(_In_ const VkCommandBuffer& pCommandBuffer,
-    _In_ const VkFramebuffer& pFrameBuffer)
+void w_render_pass::begin(
+    _In_ const uint32_t& pFrameBufferIndex,
+    _In_ const VkCommandBuffer& pCommandBuffer)
 {
     if (!this->_pimp) return;
     this->_pimp->begin(
-        pCommandBuffer,
-        pFrameBuffer);
+        pFrameBufferIndex,
+        pCommandBuffer);
 }
 
 void w_render_pass::end(_In_ VkCommandBuffer& pCommandBuffer)
@@ -329,6 +415,12 @@ w_viewport_scissor w_render_pass::get_viewport_scissor() const
 {
     if (!this->_pimp) return w_viewport_scissor();
     return this->_pimp->get_viewport_scissor();
+}
+
+const size_t w_render_pass::get_number_of_frame_buffers() const
+{
+    if (!this->_pimp) return 0;
+    return this->_pimp->get_number_of_frame_buffers();
 }
 
 #pragma endregion

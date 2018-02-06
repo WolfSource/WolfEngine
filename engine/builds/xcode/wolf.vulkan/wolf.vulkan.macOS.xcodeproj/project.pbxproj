@@ -63,7 +63,6 @@
 		2CDD136F202781FB002B1AAC /* py_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1368202781FB002B1AAC /* py_texture.h */; };
 		2CDD1370202781FB002B1AAC /* py_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1369202781FB002B1AAC /* py_game.h */; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
-		2CFFAC6F1FCEAA400020A112 /* w_frame_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC681FCEAA3F0020A112 /* w_frame_buffer.h */; };
 		2CFFAC701FCEAA400020A112 /* w_command_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */; };
 		2CFFAC711FCEAA400020A112 /* w_frame_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6A1FCEAA3F0020A112 /* w_frame_buffer.cpp */; };
 		2CFFAC721FCEAA400020A112 /* w_attachment_buffer_desc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC6B1FCEAA3F0020A112 /* w_attachment_buffer_desc.h */; };
@@ -129,7 +128,6 @@
 		2CDD1368202781FB002B1AAC /* py_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_texture.h; path = ../../../src/wolf.render/python_exporter/py_texture.h; sourceTree = "<group>"; };
 		2CDD1369202781FB002B1AAC /* py_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_game.h; path = ../../../src/wolf.render/python_exporter/py_game.h; sourceTree = "<group>"; };
 		2CFFAC671FCEAA3F0020A112 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/w_graphics/w_render_target.h; sourceTree = "<group>"; };
-		2CFFAC681FCEAA3F0020A112 /* w_frame_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_frame_buffer.h; path = ../../../src/wolf.render/w_graphics/w_frame_buffer.h; sourceTree = "<group>"; };
 		2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffer.h; path = ../../../src/wolf.render/w_graphics/w_command_buffer.h; sourceTree = "<group>"; };
 		2CFFAC6A1FCEAA3F0020A112 /* w_frame_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_frame_buffer.cpp; path = ../../../src/wolf.render/w_graphics/w_frame_buffer.cpp; sourceTree = "<group>"; };
 		2CFFAC6B1FCEAA3F0020A112 /* w_attachment_buffer_desc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_attachment_buffer_desc.h; path = ../../../src/wolf.render/w_graphics/w_attachment_buffer_desc.h; sourceTree = "<group>"; };
@@ -167,7 +165,6 @@
 				2CFFAC6D1FCEAA400020A112 /* w_command_buffer.cpp */,
 				2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */,
 				2CFFAC6A1FCEAA3F0020A112 /* w_frame_buffer.cpp */,
-				2CFFAC681FCEAA3F0020A112 /* w_frame_buffer.h */,
 				2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */,
 				2CFFAC671FCEAA3F0020A112 /* w_render_target.h */,
 				2C598C661FA268730055D215 /* w_queue.cpp */,
@@ -291,7 +288,6 @@
 				2C598C691FA268740055D215 /* w_queue.h in Headers */,
 				2C598C611FA231280055D215 /* w_semaphore.h in Headers */,
 				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
-				2CFFAC6F1FCEAA400020A112 /* w_frame_buffer.h in Headers */,
 				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
 				2CDD136C202781FB002B1AAC /* py_command_buffer.h in Headers */,
 				2CDD136B202781FB002B1AAC /* py_fences.h in Headers */,
