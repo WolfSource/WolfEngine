@@ -16,16 +16,11 @@
 
 namespace pywolf
 {
-	using namespace wolf::graphics;
-
-	class py_semaphore : public w_semaphore
+	class py_semaphore : public wolf::graphics::w_semaphore
 	{
 	public:
 		W_EXP py_semaphore();
-		W_EXP bool py_initialize(_In_ const uint32_t& pGDeviceIndex);
-
-	private:
-		short    _graphics_device_index;
+		W_EXP bool py_initialize(_In_ boost::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
 	};
 
 	static void py_semaphore_export()
@@ -38,6 +33,7 @@ namespace pywolf
 			.def("initialize", &py_semaphore::py_initialize, "initialize semaphore")
 			.def("release", &py_semaphore::release, "release resources of semaphore")
 			;
+
 	}
 }
 

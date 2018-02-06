@@ -17,7 +17,6 @@
 #include <w_framework/w_game.h>
 #include <w_graphics/w_command_buffer.h>
 #include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffer.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -58,9 +57,7 @@ private:
     
     
     wolf::graphics::w_command_buffer                                _draw_command_buffers;
-    wolf::graphics::w_render_pass                                   _draw_render_pass;
-    wolf::graphics::w_frame_buffer                                  _draw_frame_buffers;
-    
+    wolf::graphics::w_render_pass                                   _draw_render_pass;    
     
     wolf::graphics::w_fences                                        _draw_fence;
     wolf::graphics::w_semaphore                                     _draw_semaphore;

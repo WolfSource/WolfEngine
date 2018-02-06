@@ -12,11 +12,10 @@
 #ifndef __PY_GRAPHICS_DEVICE_MANAGER_H__
 #define __PY_GRAPHICS_DEVICE_MANAGER_H__
 
+#include <python_exporter/w_boost_python_helper.h>
+
 namespace pywolf
 {
-	//it will be declared in w_graphics_device_manager.cpp
-	static std::vector<std::shared_ptr<wolf::graphics::w_graphics_device>>  py_graphics_devices;
-
 	static void py_graphics_device_manager_export()
 	{
 		using namespace boost::python;
@@ -42,6 +41,12 @@ namespace pywolf
 		class_<w_viewport_scissor>("w_viewport_scissor", init<>())
 			.add_property("offset", &w_viewport_scissor::py_get_offset, &w_viewport_scissor::py_set_offset, "offset")
 			.add_property("extent", &w_viewport_scissor::py_get_extent, &w_viewport_scissor::py_set_extent, "extent")
+			;
+
+		//export w_graphics_device class
+		class_<w_graphics_device, boost::noncopyable>("w_graphics_device")
+			.def("get_info", &w_graphics_device::get_info, "print graphics device information")
+			.def("release", &w_graphics_device::release, "release all resources of graphics device")
 			;
 
 		//define w_format enum

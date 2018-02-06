@@ -36,7 +36,7 @@ namespace pywolf
 		using namespace wolf::graphics;
 
 		//export w_fences class
-		class_<py_fences, boost::noncopyable>("py_fences")
+		class_<py_fences, boost::noncopyable>("w_fences")
 			.def("initialize", &py_fences::py_initialize, "initialize fence")
 			.def("wait", &py_fences::py_wait, "wait for all fence")
 			.def("reset", &py_fences::py_reset, "reset all fences")

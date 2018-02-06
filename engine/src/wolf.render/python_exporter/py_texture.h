@@ -33,14 +33,15 @@ namespace pywolf
 			_In_ const bool& pGenerateMipMapsLevels,
 			_In_ const w_memory_property_flags pMemoryPropertyFlags)
 		{
-			if (pGDeviceIndex >= pywolf::py_graphics_devices.size()) return false;
+			/*if (pGDeviceIndex >= pywolf::py_graphics_devices.size()) return false;
 			this->_graphics_device_index = pGDeviceIndex;
             return _super::initialize(
 				pywolf::py_graphics_devices[pGDeviceIndex],
 				pWidth,
 				pHeight,
 				pGenerateMipMapsLevels,
-				pMemoryPropertyFlags) == S_OK;
+				pMemoryPropertyFlags) == S_OK;*/
+			return true;
 		}
 
 		bool py_load_texture_from_memory_rgba(_In_ boost::python::list pRGBAData)
@@ -127,8 +128,7 @@ namespace pywolf
 			_In_ size_t pGDeviceIndex,
 			_In_z_ std::wstring pPath)
 		{
-			//py_texture* _texture = nullptr;
-			w_texture* _texture = nullptr;
+			/*w_texture* _texture = nullptr;
 			if (pGDeviceIndex >= pywolf::py_graphics_devices.size()) return false;
 			auto _hr = load_to_shared_textures(
 				pywolf::py_graphics_devices[pGDeviceIndex],
@@ -138,7 +138,7 @@ namespace pywolf
 			{
 				SAFE_DELETE(_texture);
 				return false;
-			}
+			}*/
 			return true;
 		}
 

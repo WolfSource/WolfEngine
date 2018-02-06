@@ -327,18 +327,22 @@ void scene::load()
     this->_viewport_scissor.extent.width = _screen_size.x;
     this->_viewport_scissor.extent.height = _screen_size.y;
 
-    //initialize attachment buffers
-    w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-    w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
-
-    //define color and depth buffers for render pass
-    std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
+	//define color and depth as an attachments buffers for render pass
+	std::vector<std::vector<w_image_view>> _render_pass_attachments;
+	for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
+	{
+		_render_pass_attachments.push_back
+		(
+			//COLOR										  , DEPTH
+			{ _output_window->vk_swap_chain_image_views[i], _output_window->vk_depth_buffer_image_view }
+		);
+	}
 
     //create render pass
     auto _hr = this->_gui_render_pass.load(_gDevice,
         _viewport,
         _viewport_scissor,
-        _attachment_descriptions);
+		_render_pass_attachments);
     if (_hr == S_FALSE)
     {
         release();

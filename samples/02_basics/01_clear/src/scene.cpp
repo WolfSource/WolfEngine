@@ -10,17 +10,9 @@ using namespace wolf::graphics;
 scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
 	w_game(pRunningDirectory, pAppName)
 {
-	auto _running_dir = pRunningDirectory;
-
-#if defined(__WIN32) || defined(__UWP)
-	content_path = _running_dir + L"../../../../content/";
-#elif defined(__APPLE__)
-	content_path = _running_dir + L"/../../../../../content/";
-#elif defined(__linux)
-	error
-#elif defined(__ANDROID)
-	error
-#endif
+	w_graphics_device_manager_configs _config;
+	_config.debug_gpu = false;
+	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
 }
@@ -68,37 +60,29 @@ void scene::load()
     this->_viewport_scissor.extent.width = _screen_size.x;
     this->_viewport_scissor.extent.height = _screen_size.y;
     
-    //initialize attachment buffers
-	w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-	w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
-
-	//define color and depth buffers for render pass
-	std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
+	//define color and depth as an attachments buffers for render pass
+	std::vector<std::vector<w_image_view>> _render_pass_attachments;
+	for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
+	{
+		_render_pass_attachments.push_back
+		(
+			//COLOR										  , DEPTH
+			{ _output_window->vk_swap_chain_image_views[i], _output_window->vk_depth_buffer_image_view }
+		);
+	}
     
     //create render pass
 	auto _hr = this->_draw_render_pass.load(
 		_gDevice,
 		_viewport,
 		_viewport_scissor,
-		_attachment_descriptions);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "creating render pass", _trace_info, 3, true);
-    }
-    
-    //create frame buffers
-     auto _render_pass_handle = this->_draw_render_pass.get_handle();
-	 _hr = this->_draw_frame_buffers.load(
-		 _gDevice,
-		 _render_pass_handle,
-		 _output_window);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "creating frame buffers", _trace_info, 3, true);
-    }
-    
+		_render_pass_attachments);
+	if (_hr == S_FALSE)
+	{
+		release();
+		V(S_FALSE, "creating render pass", _trace_info, 3, true);
+	}
+
     //create semaphore create info
     _hr = this->_draw_semaphore.initialize(_gDevice);
     if (_hr == S_FALSE)
@@ -133,19 +117,16 @@ HRESULT scene::_build_draw_command_buffers()
     {
         this->_draw_command_buffers.begin(i);
         {
-			auto _cmd = this->_draw_command_buffers.get_command_at(i);
-            auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
-            
 			this->_draw_render_pass.begin(
-				_cmd,
-				_frame_buffer_handle,
+				i,
+				&this->_draw_command_buffers,
 				w_color::CORNFLOWER_BLUE(),
 				1.0f,
 				0.0f);
             {
                 //place your draw code
             }
-            this->_draw_render_pass.end(_cmd);
+            this->_draw_render_pass.end(&this->_draw_command_buffers);
         }
         this->_draw_command_buffers.end(i);
     }
@@ -170,7 +151,7 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
     const std::string _trace_info = this->name + "::render";
 
     auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows);
+    auto _output_window = &(_gDevice->output_presentation_window);
     auto _frame_index = _output_window->vk_swap_chain_image_index;
     
     //add wait semaphores
@@ -222,7 +203,6 @@ ULONG scene::release()
     
     this->_draw_command_buffers.release();
     this->_draw_render_pass.release();
-    this->_draw_frame_buffers.release();
 
 	return w_game::release();
 }

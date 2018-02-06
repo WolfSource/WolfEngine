@@ -91,7 +91,10 @@ namespace pywolf
 			//allow graphics devices to access within this dll for python
 			for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 			{
-				pywolf::py_graphics_devices.push_back(this->graphics_devices[i]);
+				//wolf::logger.write(std::to_string(this->graphics_devices[i].use_count()));
+				//pywolf::py_graphics_devices.push_back(this->graphics_devices[i]);
+				//wolf::logger.write(std::to_string(this->graphics_devices[i].use_count()));
+				//wolf::logger.write(std::to_string(pywolf::py_graphics_devices[i].use_count()));
 			}
 			if (this->_on_post_init_callback) this->_on_post_init_callback();
 		}
@@ -152,6 +155,17 @@ namespace pywolf
 		void set_fixed_fps(_In_ const double& pValue) { _super::set_fixed_fps(pValue); }
 #pragma endregion
 
+#pragma region Getters
+
+		boost::shared_ptr<w_graphics_device> py_get_graphics_device(_In_ const size_t& pGraphicsDeviceIndex) const
+		{
+			auto _gDevice = get_graphics_device(pGraphicsDeviceIndex);
+			if (_gDevice) return std_shared_ptr_to_boost_shared_ptr<w_graphics_device>(_gDevice);
+			return nullptr;
+		}
+
+#pragma endregion
+
 	private:
 		typedef w_game _super;
 		std::function<void(void)> _on_pre_init_callback;
@@ -181,7 +195,12 @@ namespace pywolf
 			.def("set_fixed_time_step", &py_game::set_fixed_time_step, "set fixed time step")
 			.def("set_fixed_fps", &py_game::set_fixed_fps, "set fixed frame per seconds")
 			.def("set_graphics_device_manager_configs", &py_game::set_graphics_device_manager_configs, "set configuration for graphics device manager")
+			.def("get_number_of_graphics_devices", &py_game::get_number_of_graphics_devices, "Get number of available graphics devices")
+			.def("get_graphics_device", &py_game::py_get_graphics_device, "Get the graphics device")
 			;
+
+		register_ptr_to_python< boost::shared_ptr<w_graphics_device>>();
+
 	}
 }
 
