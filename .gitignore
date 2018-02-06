@@ -10,7 +10,7 @@
 /samples/.vs/*
 /engine/builds/mvsc/.vs/*
 /engine/dependencies/*
-!/engine/dependencies/*.7z
+!/engine/dependencies/*.zip
 
 # Prerequisites 
 *.c
