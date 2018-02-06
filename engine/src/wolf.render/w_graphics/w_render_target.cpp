@@ -16,16 +16,16 @@ namespace wolf
             {
             }
 
-            HRESULT load(
-                _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ w_viewport pViewPort,
-                _In_ w_viewport_scissor pViewportScissor,
-                _In_ std::vector<w_attachment_buffer_desc> pAttachmentBuffersDescriptions,
+			HRESULT load(
+				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ w_viewport pViewPort,
+				_In_ w_viewport_scissor pViewportScissor,
+				_In_ std::vector<w_image_view> pAttachments,
 				_In_ const size_t& pCount)
-            {
-                const std::string _trace_info = this->_name + "::load";
+			{
+				const std::string _trace_info = this->_name + "::load";
 
-                this->_gDevice = pGDevice;
+				this->_gDevice = pGDevice;
 				this->_viewport = pViewPort;
 				this->_viewport_scissor = pViewportScissor;
 
@@ -35,9 +35,9 @@ namespace wolf
 				{
 					std::vector<w_texture*> __attachments;
 					//check for attachment and create texture buffer for them
-					for (size_t i = 0; i < pAttachmentBuffersDescriptions.size(); ++i)
+					for (size_t i = 0; i < pAttachments.size(); ++i)
 					{
-						auto _attachment = &pAttachmentBuffersDescriptions[i];
+						auto _attachment = pAttachments[i];
 						auto _texture_buffer = new (std::nothrow) w_texture();
 						if (!_texture_buffer)
 						{
@@ -46,23 +46,23 @@ namespace wolf
 							break;
 						}
 
-						if (_attachment->ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+						if (_attachment.attachment_desc.ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
 						{
 							//color
-							_attachment->desc.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+							_attachment.attachment_desc.desc.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 							_texture_buffer->set_buffer_type(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
 							_texture_buffer->set_usage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
 						}
-						else if (_attachment->ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+						else if (_attachment.attachment_desc.ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
 						{
 							//depth
 							_texture_buffer->set_buffer_type(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
 							_texture_buffer->set_usage(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
 						}
 
-						_texture_buffer->set_format(_attachment->desc.format);
+						_texture_buffer->set_format(_attachment.attachment_desc.desc.format);
 						//_texture_buffer->set_usage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
-						auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, _attachment->memory_flag);
+						auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, _attachment.attachment_desc.memory_flag);
 						if (_hr == S_FALSE)
 						{
 							V(S_FALSE, "loading texture", _trace_info, 3, false);
@@ -92,8 +92,7 @@ namespace wolf
 				_hr = this->_render_pass.load(pGDevice,
 					pViewPort,
 					pViewportScissor,
-					pAttachmentBuffersDescriptions,
-                    _frame_buffers_attachments);
+					{ pAttachments });
 				if (_hr == S_FALSE)
 				{
 					release();
@@ -103,8 +102,8 @@ namespace wolf
 
 				_frame_buffers_attachments.clear();
 
-                return S_OK;
-            }
+				return S_OK;
+			}
 
 			HRESULT record_command_buffer(
 				_In_ wolf::graphics::w_command_buffer* pCommandBuffer,
@@ -129,10 +128,9 @@ namespace wolf
 				{
 					pCommandBuffer->begin(i);
 					{
-						auto _cmd = pCommandBuffer->get_command_at(i);
 						this->_render_pass.begin(
                             i,
-                            _cmd,
+							pCommandBuffer,
 							pClearColor,
 							pClearDepth,
 							pClearStencil);
@@ -142,7 +140,7 @@ namespace wolf
 								_hr = pDrawFunction();
 							}
 						}
-						this->_render_pass.end(_cmd);
+						this->_render_pass.end(pCommandBuffer);
 					}
 					pCommandBuffer->end(i);
 				}
@@ -265,7 +263,7 @@ HRESULT w_render_target::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ w_viewport pViewPort,
 	_In_ w_viewport_scissor pViewportScissor,
-	_In_ std::vector<w_attachment_buffer_desc> pAttachmentBuffersDescriptions,
+	_In_ std::vector<w_image_view> pAttachments,
 	_In_ const size_t& pCount)
 {
 	if (!this->_pimp) return S_FALSE;
@@ -273,7 +271,7 @@ HRESULT w_render_target::load(
 		pGDevice,
 		pViewPort,
 		pViewportScissor,
-		pAttachmentBuffersDescriptions,
+		pAttachments,
 		pCount);
 }
 

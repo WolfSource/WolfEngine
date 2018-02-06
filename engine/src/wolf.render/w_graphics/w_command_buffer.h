@@ -39,15 +39,10 @@ namespace wolf
             //begin command buffer
             W_EXP HRESULT begin(_In_ const size_t& pCommandBufferIndex,
                                 _In_ const w_command_buffer_usage_flags pFlags = w_command_buffer_usage_flag_bits::W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
-            //begin all command buffers
-            W_EXP HRESULT begin_all(_In_ const w_command_buffer_usage_flags pFlags = w_command_buffer_usage_flag_bits::W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
             
 			//end command buffer
             W_EXP HRESULT end(_In_ const size_t& pCommandBufferIndex);
 			
-			//end all command buffers
-			W_EXP HRESULT end_all();
-            
             //Flushing the command buffer will also submit it to the queue and uses a fence to ensure that command has been executed before returning
             W_EXP HRESULT flush(_In_ const size_t& pCommandBufferIndex);
             
@@ -59,16 +54,16 @@ namespace wolf
             
 #pragma region Getters
             
-            W_EXP bool get_enable() const;
             W_EXP const VkCommandBuffer* get_commands() const;
             W_EXP const VkCommandBuffer get_command_at(_In_ const size_t& pIndex) const;
+			W_EXP const VkCommandBuffer get_active_command() const;
             W_EXP const size_t get_commands_size() const;
             
 #pragma endregion
             
 #pragma region Setters
             
-            W_EXP void set_enable(_In_ const bool& pEnable);
+            W_EXP void set_active_command(_In_ const uint32_t& pindex);
             
 #pragma endregion
             

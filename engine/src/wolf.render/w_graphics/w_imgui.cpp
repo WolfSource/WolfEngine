@@ -26,111 +26,111 @@ namespace wolf
             {
             }
 
-            HRESULT load(
+			HRESULT load(
 				_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
-                _In_ const w_output_presentation_window* pOutputPresentationWindow,
-                _In_ const w_viewport& pViewport,
+				_In_ const w_output_presentation_window* pOutputPresentationWindow,
+				_In_ const w_viewport& pViewport,
 				_In_ const w_viewport_scissor& pViewportScissor,
-                _In_ w_texture* pIconTexture,
-                _In_ w_texture** pStagingMediaTexture,
-                _In_ const char* pFontPath,
-                _In_ const float& pFontPixelSize)
-            {
+				_In_ w_texture* pIconTexture,
+				_In_ w_texture** pStagingMediaTexture,
+				_In_ const char* pFontPath,
+				_In_ const float& pFontPixelSize)
+			{
 				const std::string _trace_info = this->_name + "::load";
 
 #ifdef __WIN32
-                this->_hwnd = pOutputPresentationWindow->hwnd;
+				this->_hwnd = pOutputPresentationWindow->hwnd;
 #endif
-                this->_gDevice = pGDevice;
-                this->_screen_size.x = pOutputPresentationWindow->width;
+				this->_gDevice = pGDevice;
+				this->_screen_size.x = pOutputPresentationWindow->width;
 				this->_screen_size.y = pOutputPresentationWindow->height;
-                this->_images_texture = pIconTexture;
-                this->_media_player_texture = pStagingMediaTexture ? *pStagingMediaTexture : nullptr;
+				this->_images_texture = pIconTexture;
+				this->_media_player_texture = pStagingMediaTexture ? *pStagingMediaTexture : nullptr;
 
 #pragma region Set Style
-                //Color scheme
-                ImGuiStyle& style = ImGui::GetStyle();
-                style.Colors[ImGuiCol_TitleBg] = ImVec4(0.0f, 0.0f, 1.0f, 0.6f);
-                style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.9098039215686275f, 0.4431372549019608f, 0.3254901960784314f, 1.0f);
-                style.Colors[ImGuiCol_MenuBarBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.4f);
-                style.Colors[ImGuiCol_Header] = ImVec4(0.0f, 1.0f, 0.0f, 0.4f);
-                style.Colors[ImGuiCol_CheckMark] = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
-                //Dimensions
-                ImGuiIO& _io = ImGui::GetIO();
-                _io.DisplaySize = ImVec2((float)this->_screen_size.x, (float)this->_screen_size.y);
-                _io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+				//Color scheme
+				ImGuiStyle& style = ImGui::GetStyle();
+				style.Colors[ImGuiCol_TitleBg] = ImVec4(0.0f, 0.0f, 1.0f, 0.6f);
+				style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.9098039215686275f, 0.4431372549019608f, 0.3254901960784314f, 1.0f);
+				style.Colors[ImGuiCol_MenuBarBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.4f);
+				style.Colors[ImGuiCol_Header] = ImVec4(0.0f, 1.0f, 0.0f, 0.4f);
+				style.Colors[ImGuiCol_CheckMark] = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+				//Dimensions
+				ImGuiIO& _io = ImGui::GetIO();
+				_io.DisplaySize = ImVec2((float)this->_screen_size.x, (float)this->_screen_size.y);
+				_io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
-                if (pFontPath)
-                {
-                    _io.Fonts->AddFontFromFileTTF(pFontPath, pFontPixelSize);
-                }
+				if (pFontPath)
+				{
+					_io.Fonts->AddFontFromFileTTF(pFontPath, pFontPixelSize);
+				}
 
 #pragma endregion
 
 
 #ifdef __WIN32
-                _io.ImeWindowHandle = this->_hwnd;
+				_io.ImeWindowHandle = this->_hwnd;
 
 #pragma region Set Key Maps
-                /*
-                    Keyboard mapping.
-                    ImGui will use those indices to peek into the io.KeyDown[] array that
-                    we will update during the application lifetime.
-                 */
-                _io.KeyMap[ImGuiKey_Tab] = VK_TAB;
-                _io.KeyMap[ImGuiKey_LeftArrow] = VK_LEFT;
-                _io.KeyMap[ImGuiKey_RightArrow] = VK_RIGHT;
-                _io.KeyMap[ImGuiKey_UpArrow] = VK_UP;
-                _io.KeyMap[ImGuiKey_DownArrow] = VK_DOWN;
-                _io.KeyMap[ImGuiKey_PageUp] = VK_PRIOR;
-                _io.KeyMap[ImGuiKey_PageDown] = VK_NEXT;
-                _io.KeyMap[ImGuiKey_Home] = VK_HOME;
-                _io.KeyMap[ImGuiKey_End] = VK_END;
-                _io.KeyMap[ImGuiKey_Delete] = VK_DELETE;
-                _io.KeyMap[ImGuiKey_Backspace] = VK_BACK;
-                _io.KeyMap[ImGuiKey_Enter] = VK_RETURN;
-                _io.KeyMap[ImGuiKey_Escape] = VK_ESCAPE;
+				/*
+					Keyboard mapping.
+					ImGui will use those indices to peek into the io.KeyDown[] array that
+					we will update during the application lifetime.
+				 */
+				_io.KeyMap[ImGuiKey_Tab] = VK_TAB;
+				_io.KeyMap[ImGuiKey_LeftArrow] = VK_LEFT;
+				_io.KeyMap[ImGuiKey_RightArrow] = VK_RIGHT;
+				_io.KeyMap[ImGuiKey_UpArrow] = VK_UP;
+				_io.KeyMap[ImGuiKey_DownArrow] = VK_DOWN;
+				_io.KeyMap[ImGuiKey_PageUp] = VK_PRIOR;
+				_io.KeyMap[ImGuiKey_PageDown] = VK_NEXT;
+				_io.KeyMap[ImGuiKey_Home] = VK_HOME;
+				_io.KeyMap[ImGuiKey_End] = VK_END;
+				_io.KeyMap[ImGuiKey_Delete] = VK_DELETE;
+				_io.KeyMap[ImGuiKey_Backspace] = VK_BACK;
+				_io.KeyMap[ImGuiKey_Enter] = VK_RETURN;
+				_io.KeyMap[ImGuiKey_Escape] = VK_ESCAPE;
 #pragma endregion
 
 #endif
-                _io.KeyMap[ImGuiKey_A] = 'A';
-                _io.KeyMap[ImGuiKey_C] = 'C';
-                _io.KeyMap[ImGuiKey_V] = 'V';
-                _io.KeyMap[ImGuiKey_X] = 'X';
-                _io.KeyMap[ImGuiKey_Y] = 'Y';
-                _io.KeyMap[ImGuiKey_Z] = 'Z';
+				_io.KeyMap[ImGuiKey_A] = 'A';
+				_io.KeyMap[ImGuiKey_C] = 'C';
+				_io.KeyMap[ImGuiKey_V] = 'V';
+				_io.KeyMap[ImGuiKey_X] = 'X';
+				_io.KeyMap[ImGuiKey_Y] = 'Y';
+				_io.KeyMap[ImGuiKey_Z] = 'Z';
 
-                _io.RenderDrawListsFn = NULL;
+				_io.RenderDrawListsFn = NULL;
 
-                using namespace wolf::graphics;
+				using namespace wolf::graphics;
+
+				std::vector<std::vector<w_image_view>> _attachments =
+				{
+					{ pOutputPresentationWindow->vk_swap_chain_image_views[0], pOutputPresentationWindow->vk_depth_buffer_image_view },
+					{ pOutputPresentationWindow->vk_swap_chain_image_views[1], pOutputPresentationWindow->vk_depth_buffer_image_view },
+				};
 
 				//initialize attachment buffers
-				w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-				_color.desc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-
+				_attachments[0][0].attachment_desc.desc.loadOp = _attachments[1][0].attachment_desc.desc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
 				//make sure use output presentation window format
-				_color.desc.format = pOutputPresentationWindow->vk_swap_chain_selected_format.format;
+				_attachments[0][0].attachment_desc.desc.format = _attachments[1][0].attachment_desc.desc.format = pOutputPresentationWindow->vk_swap_chain_selected_format.format;
 
 				//do not clear frame buffer
-				w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
-				_depth.desc.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-				_depth.desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-
-				//define color and depth buffers for render pass
-				std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
-
+				_attachments[1][0].attachment_desc.desc.loadOp = _attachments[1][1].attachment_desc.desc.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+				_attachments[1][0].attachment_desc.desc.storeOp = _attachments[1][1].attachment_desc.desc.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+				
 				//create render pass
 				auto __hr = this->_render_pass.load(_gDevice,
 					pViewport,
 					pViewportScissor,
-					_attachment_descriptions);
+					_attachments);
 				if (__hr == S_FALSE)
 				{
 					V(S_FALSE, "creating render pass", _trace_info, 3);
 					release();
 					return S_FALSE;
 				}
-				_attachment_descriptions.clear();
+				_attachments.clear();
 
 				__hr = this->_command_buffers.load(_gDevice, pOutputPresentationWindow->vk_swap_chain_image_views.size());
 				if (__hr == S_FALSE)
@@ -140,237 +140,237 @@ namespace wolf
 					return S_FALSE;
 				}
 
-                // Create fonts texture
-                uint8_t* _font_data = nullptr;
-                int _texture_width, _texture_height;
-                _io.Fonts->GetTexDataAsRGBA32(&_font_data, &_texture_width, &_texture_height);
-                uint32_t _upload_size = _texture_width * _texture_height * 4 * sizeof(uint8_t);
+				// Create fonts texture
+				uint8_t* _font_data = nullptr;
+				int _texture_width, _texture_height;
+				_io.Fonts->GetTexDataAsRGBA32(&_font_data, &_texture_width, &_texture_height);
+				uint32_t _upload_size = _texture_width * _texture_height * 4 * sizeof(uint8_t);
 
-                if (_font_texture)
-                {
-                    SAFE_RELEASE(this->_font_texture);
-                }
-                this->_font_texture = new w_texture();
-                this->_font_texture->initialize(_gDevice,
-                    static_cast<uint32_t>(_texture_width),
-                    static_cast<uint32_t>(_texture_height),
+				if (_font_texture)
+				{
+					SAFE_RELEASE(this->_font_texture);
+				}
+				this->_font_texture = new w_texture();
+				this->_font_texture->initialize(_gDevice,
+					static_cast<uint32_t>(_texture_width),
+					static_cast<uint32_t>(_texture_height),
 					false);
-                std::vector<uint8_t> _texture_data(_font_data, _font_data + _upload_size);
-                _font_texture->load_texture_from_memory_rgba(
-                    _texture_data.data());
+				std::vector<uint8_t> _texture_data(_font_data, _font_data + _upload_size);
+				_font_texture->load_texture_from_memory_rgba(
+					_texture_data.data());
 
-                __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
-                if (__hr != S_OK)
-                {
-                    V(__hr, "loading vertex shader", _trace_info, 3);
+				__hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
+				if (__hr != S_OK)
+				{
+					V(__hr, "loading vertex shader", _trace_info, 3);
 					release();
-                    return S_FALSE;
-                }
-                __hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.frag.spv", w_shader_stage::FRAGMENT_SHADER);
-                if (__hr != S_OK)
-                {
-                    V(__hr, "loading fragment shader", _trace_info, 3);
+					return S_FALSE;
+				}
+				__hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.frag.spv", w_shader_stage::FRAGMENT_SHADER);
+				if (__hr != S_OK)
+				{
+					V(__hr, "loading fragment shader", _trace_info, 3);
 					release();
-                    return S_FALSE;
-                }
+					return S_FALSE;
+				}
 
-                std::vector<w_shader_binding_param> _shader_params;
+				std::vector<w_shader_binding_param> _shader_params;
 
-                w_shader_binding_param _param;
+				w_shader_binding_param _param;
 
-                //binding 0 for font's image
-                _param.index = 0;
-                _param.stage = w_shader_stage::FRAGMENT_SHADER;
-                _param.type = w_shader_binding_type::SAMPLER2D;
-                _param.image_info = this->_font_texture->get_descriptor_info();
-                _shader_params.push_back(_param);
+				//binding 0 for font's image
+				_param.index = 0;
+				_param.stage = w_shader_stage::FRAGMENT_SHADER;
+				_param.type = w_shader_binding_type::SAMPLER2D;
+				_param.image_info = this->_font_texture->get_descriptor_info();
+				_shader_params.push_back(_param);
 
-                //binding 1 for icon's image
-                _param.index = 1;
-                _param.stage = w_shader_stage::FRAGMENT_SHADER;
-                _param.type = w_shader_binding_type::SAMPLER2D;
-                _param.image_info = this->_images_texture ? this->_images_texture->get_descriptor_info() 
-                    : w_texture::default_texture->get_descriptor_info();
-                _shader_params.push_back(_param);
-                
-                //binding 2 for media player's data
-                _param.index = 2;
-                _param.stage = w_shader_stage::FRAGMENT_SHADER;
-                _param.type = w_shader_binding_type::SAMPLER2D;
-                _param.image_info = this->_media_player_texture ? this->_media_player_texture->get_descriptor_info()
-                    : w_texture::default_texture->get_descriptor_info();
-                _shader_params.push_back(_param);
+				//binding 1 for icon's image
+				_param.index = 1;
+				_param.stage = w_shader_stage::FRAGMENT_SHADER;
+				_param.type = w_shader_binding_type::SAMPLER2D;
+				_param.image_info = this->_images_texture ? this->_images_texture->get_descriptor_info()
+					: w_texture::default_texture->get_descriptor_info();
+				_shader_params.push_back(_param);
 
-                this->_shader.set_shader_binding_params(_shader_params);
+				//binding 2 for media player's data
+				_param.index = 2;
+				_param.stage = w_shader_stage::FRAGMENT_SHADER;
+				_param.type = w_shader_binding_type::SAMPLER2D;
+				_param.image_info = this->_media_player_texture ? this->_media_player_texture->get_descriptor_info()
+					: w_texture::default_texture->get_descriptor_info();
+				_shader_params.push_back(_param);
 
-                auto _descriptor_set_layout = this->_shader.get_descriptor_set_layout();
+				this->_shader.set_shader_binding_params(_shader_params);
 
-                // Push constants for UI rendering parameters
-                VkPushConstantRange _push_constant_range =
-                {
-                    VK_SHADER_STAGE_VERTEX_BIT,
-                    0,
-                    sizeof(push_constant_block)
-                };
+				auto _descriptor_set_layout = this->_shader.get_descriptor_set_layout();
+
+				// Push constants for UI rendering parameters
+				VkPushConstantRange _push_constant_range =
+				{
+					VK_SHADER_STAGE_VERTEX_BIT,
+					0,
+					sizeof(push_constant_block)
+				};
 
 
-                VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
-                _pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-                _pipeline_layout_create_info.setLayoutCount = 1;
-                _pipeline_layout_create_info.pSetLayouts = &_descriptor_set_layout;
-                _pipeline_layout_create_info.pushConstantRangeCount = 1;
-                _pipeline_layout_create_info.pPushConstantRanges = &_push_constant_range;
+				VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
+				_pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+				_pipeline_layout_create_info.setLayoutCount = 1;
+				_pipeline_layout_create_info.pSetLayouts = &_descriptor_set_layout;
+				_pipeline_layout_create_info.pushConstantRangeCount = 1;
+				_pipeline_layout_create_info.pPushConstantRanges = &_push_constant_range;
 
-                this->_pipeline_layout = w_pipeline::create_pipeline_layout(_gDevice, &_pipeline_layout_create_info);
-                if (!this->_pipeline_layout)
-                {
-                    V(S_FALSE, "creating pipeline layout", _trace_info, 3);
+				this->_pipeline_layout = w_pipeline::create_pipeline_layout(_gDevice, &_pipeline_layout_create_info);
+				if (!this->_pipeline_layout)
+				{
+					V(S_FALSE, "creating pipeline layout", _trace_info, 3);
 					release();
-                    return S_FALSE;
-                }
-                // Pipeline cache
-                VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
-                pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-                auto _hr = vkCreatePipelineCache(
-                    _gDevice->vk_device,
-                    &pipelineCacheCreateInfo,
-                    nullptr,
-                    &this->_pipeline_cache);
+					return S_FALSE;
+				}
+				// Pipeline cache
+				VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
+				pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+				auto _hr = vkCreatePipelineCache(
+					_gDevice->vk_device,
+					&pipelineCacheCreateInfo,
+					nullptr,
+					&this->_pipeline_cache);
 
-                // Setup graphics pipeline for UI rendering
-                VkPipelineInputAssemblyStateCreateInfo inputAssemblyState =
-                {
-                    VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-                    nullptr,
-                    0,
-                    VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-                    VK_FALSE
-                };
-                VkPipelineRasterizationStateCreateInfo rasterizationState = {};
-                rasterizationState.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-                rasterizationState.polygonMode = VK_POLYGON_MODE_FILL;
-                rasterizationState.cullMode = VK_CULL_MODE_NONE;
-                rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-                rasterizationState.depthClampEnable = VK_FALSE;
-                rasterizationState.lineWidth = 1.0f;
+				// Setup graphics pipeline for UI rendering
+				VkPipelineInputAssemblyStateCreateInfo inputAssemblyState =
+				{
+					VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+					nullptr,
+					0,
+					VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+					VK_FALSE
+				};
+				VkPipelineRasterizationStateCreateInfo rasterizationState = {};
+				rasterizationState.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+				rasterizationState.polygonMode = VK_POLYGON_MODE_FILL;
+				rasterizationState.cullMode = VK_CULL_MODE_NONE;
+				rasterizationState.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+				rasterizationState.depthClampEnable = VK_FALSE;
+				rasterizationState.lineWidth = 1.0f;
 
-                // Enable blending
-                VkPipelineColorBlendAttachmentState blendAttachmentState{};
-                blendAttachmentState.blendEnable = VK_TRUE;
-                blendAttachmentState.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-                blendAttachmentState.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-                blendAttachmentState.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-                blendAttachmentState.colorBlendOp = VK_BLEND_OP_ADD;
-                blendAttachmentState.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-                blendAttachmentState.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-                blendAttachmentState.alphaBlendOp = VK_BLEND_OP_ADD;
+				// Enable blending
+				VkPipelineColorBlendAttachmentState blendAttachmentState{};
+				blendAttachmentState.blendEnable = VK_TRUE;
+				blendAttachmentState.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+				blendAttachmentState.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+				blendAttachmentState.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+				blendAttachmentState.colorBlendOp = VK_BLEND_OP_ADD;
+				blendAttachmentState.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+				blendAttachmentState.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+				blendAttachmentState.alphaBlendOp = VK_BLEND_OP_ADD;
 
-                VkPipelineColorBlendStateCreateInfo colorBlendState = {};
-                colorBlendState.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-                colorBlendState.attachmentCount = 1;
-                colorBlendState.pAttachments = &blendAttachmentState;
+				VkPipelineColorBlendStateCreateInfo colorBlendState = {};
+				colorBlendState.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+				colorBlendState.attachmentCount = 1;
+				colorBlendState.pAttachments = &blendAttachmentState;
 
-                VkPipelineDepthStencilStateCreateInfo depthStencilState = {};
-                depthStencilState.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-                depthStencilState.depthTestEnable = VK_FALSE;
-                depthStencilState.depthWriteEnable = VK_FALSE;
-                depthStencilState.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
-                depthStencilState.front = depthStencilState.back;
-                depthStencilState.back.compareOp = VK_COMPARE_OP_ALWAYS;
+				VkPipelineDepthStencilStateCreateInfo depthStencilState = {};
+				depthStencilState.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+				depthStencilState.depthTestEnable = VK_FALSE;
+				depthStencilState.depthWriteEnable = VK_FALSE;
+				depthStencilState.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+				depthStencilState.front = depthStencilState.back;
+				depthStencilState.back.compareOp = VK_COMPARE_OP_ALWAYS;
 
-                VkPipelineViewportStateCreateInfo viewportState = {};
-                viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-                viewportState.viewportCount = 1;
-                viewportState.scissorCount = 1;
-                viewportState.flags = 0;
+				VkPipelineViewportStateCreateInfo viewportState = {};
+				viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+				viewportState.viewportCount = 1;
+				viewportState.scissorCount = 1;
+				viewportState.flags = 0;
 
-                VkPipelineMultisampleStateCreateInfo multisampleState = {};
-                multisampleState.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-                multisampleState.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-                multisampleState.flags = 0;
+				VkPipelineMultisampleStateCreateInfo multisampleState = {};
+				multisampleState.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+				multisampleState.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+				multisampleState.flags = 0;
 
-                std::vector<VkDynamicState> dynamicStateEnables =
-                {
-                    VK_DYNAMIC_STATE_VIEWPORT,
-                    VK_DYNAMIC_STATE_SCISSOR
-                };
+				std::vector<VkDynamicState> dynamicStateEnables =
+				{
+					VK_DYNAMIC_STATE_VIEWPORT,
+					VK_DYNAMIC_STATE_SCISSOR
+				};
 
-                VkPipelineDynamicStateCreateInfo dynamicState = {};
-                dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-                dynamicState.pDynamicStates = dynamicStateEnables.data();
-                dynamicState.dynamicStateCount = (uint32_t)dynamicStateEnables.size();
+				VkPipelineDynamicStateCreateInfo dynamicState = {};
+				dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+				dynamicState.pDynamicStates = dynamicStateEnables.data();
+				dynamicState.dynamicStateCount = (uint32_t)dynamicStateEnables.size();
 
-                auto _shader_stages = this->_shader.get_shader_stages();
+				auto _shader_stages = this->_shader.get_shader_stages();
 
-                VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
-                pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-                pipelineCreateInfo.layout = this->_pipeline_layout;
-                pipelineCreateInfo.renderPass = this->_render_pass.get_handle();
-                pipelineCreateInfo.flags = 0;
-                pipelineCreateInfo.basePipelineIndex = -1;
-                pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
-                pipelineCreateInfo.pInputAssemblyState = &inputAssemblyState;
-                pipelineCreateInfo.pRasterizationState = &rasterizationState;
-                pipelineCreateInfo.pColorBlendState = &colorBlendState;
-                pipelineCreateInfo.pMultisampleState = &multisampleState;
-                pipelineCreateInfo.pViewportState = &viewportState;
-                pipelineCreateInfo.pDepthStencilState = &depthStencilState;
-                pipelineCreateInfo.pDynamicState = &dynamicState;
-                pipelineCreateInfo.stageCount = static_cast<uint32_t>(_shader_stages->size());
-                pipelineCreateInfo.pStages = _shader_stages->data();
+				VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
+				pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+				pipelineCreateInfo.layout = this->_pipeline_layout;
+				pipelineCreateInfo.renderPass = this->_render_pass.get_handle();
+				pipelineCreateInfo.flags = 0;
+				pipelineCreateInfo.basePipelineIndex = -1;
+				pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
+				pipelineCreateInfo.pInputAssemblyState = &inputAssemblyState;
+				pipelineCreateInfo.pRasterizationState = &rasterizationState;
+				pipelineCreateInfo.pColorBlendState = &colorBlendState;
+				pipelineCreateInfo.pMultisampleState = &multisampleState;
+				pipelineCreateInfo.pViewportState = &viewportState;
+				pipelineCreateInfo.pDepthStencilState = &depthStencilState;
+				pipelineCreateInfo.pDynamicState = &dynamicState;
+				pipelineCreateInfo.stageCount = static_cast<uint32_t>(_shader_stages->size());
+				pipelineCreateInfo.pStages = _shader_stages->data();
 
-                // Vertex bindings an attributes based on ImGui vertex definition
-                std::vector<VkVertexInputBindingDescription> _vertex_binding_descriptions =
-                {
-                    {
-                        0,                                                                                        // Binding
-                        sizeof(ImDrawVert),                                                                       // Stride
-                        VK_VERTEX_INPUT_RATE_VERTEX                                                               // InputRate
-                    }
-                };
-                std::vector<VkVertexInputAttributeDescription> _vertex_attribute_descriptions =
-                {
-                    {
-                        0,                                                                          // Location
-                        _vertex_binding_descriptions[0].binding,                                             // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                                    // Format
-                        offsetof(ImDrawVert, pos)                                                   // Offset
-                    },
-                    {
-                        1,                                                                          // Location
-                        _vertex_binding_descriptions[0].binding,                                             // Binding
-                        VK_FORMAT_R32G32_SFLOAT,                                                    // Format
-                        offsetof(ImDrawVert, uv)                                                   // Offset
-                    },
-                    {
-                        2,                                                                          // Location
-                        _vertex_binding_descriptions[0].binding,                                             // Binding
-                        VK_FORMAT_R8G8B8A8_UNORM,                                                    // Format
-                        offsetof(ImDrawVert, col)                                                   // Offset
-                    },
-                };
-                VkPipelineVertexInputStateCreateInfo _vertex_input_state_create_info =
-                {
-                    VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,    // Type
-                    nullptr,                                                      // Next
-                    0,                                                            // Flags
-                    static_cast<uint32_t>(_vertex_binding_descriptions.size()),   // VertexBindingDescriptionCount
-                    _vertex_binding_descriptions.size() ?
-                    &_vertex_binding_descriptions[0] : nullptr,                   // VertexBindingDescriptions
-                    static_cast<uint32_t>(_vertex_attribute_descriptions.size()), // VertexAttributeDescriptionCount
-                    _vertex_attribute_descriptions.size() ?
-                    &_vertex_attribute_descriptions[0] : nullptr                  // VertexAttributeDescriptions
-                };
+				// Vertex bindings an attributes based on ImGui vertex definition
+				std::vector<VkVertexInputBindingDescription> _vertex_binding_descriptions =
+				{
+					{
+						0,                                                                                        // Binding
+						sizeof(ImDrawVert),                                                                       // Stride
+						VK_VERTEX_INPUT_RATE_VERTEX                                                               // InputRate
+					}
+				};
+				std::vector<VkVertexInputAttributeDescription> _vertex_attribute_descriptions =
+				{
+					{
+						0,                                                                          // Location
+						_vertex_binding_descriptions[0].binding,                                             // Binding
+						VK_FORMAT_R32G32_SFLOAT,                                                    // Format
+						offsetof(ImDrawVert, pos)                                                   // Offset
+					},
+					{
+						1,                                                                          // Location
+						_vertex_binding_descriptions[0].binding,                                             // Binding
+						VK_FORMAT_R32G32_SFLOAT,                                                    // Format
+						offsetof(ImDrawVert, uv)                                                   // Offset
+					},
+					{
+						2,                                                                          // Location
+						_vertex_binding_descriptions[0].binding,                                             // Binding
+						VK_FORMAT_R8G8B8A8_UNORM,                                                    // Format
+						offsetof(ImDrawVert, col)                                                   // Offset
+					},
+				};
+				VkPipelineVertexInputStateCreateInfo _vertex_input_state_create_info =
+				{
+					VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,    // Type
+					nullptr,                                                      // Next
+					0,                                                            // Flags
+					static_cast<uint32_t>(_vertex_binding_descriptions.size()),   // VertexBindingDescriptionCount
+					_vertex_binding_descriptions.size() ?
+					&_vertex_binding_descriptions[0] : nullptr,                   // VertexBindingDescriptions
+					static_cast<uint32_t>(_vertex_attribute_descriptions.size()), // VertexAttributeDescriptionCount
+					_vertex_attribute_descriptions.size() ?
+					&_vertex_attribute_descriptions[0] : nullptr                  // VertexAttributeDescriptions
+				};
 
-                pipelineCreateInfo.pVertexInputState = &_vertex_input_state_create_info;
+				pipelineCreateInfo.pVertexInputState = &_vertex_input_state_create_info;
 
-                _hr = vkCreateGraphicsPipelines(
-                    pGDevice->vk_device,
-                    this->_pipeline_cache,
-                    1,
-                    &pipelineCreateInfo,
-                    nullptr,
-                    &this->_pipeline);
+				_hr = vkCreateGraphicsPipelines(
+					pGDevice->vk_device,
+					this->_pipeline_cache,
+					1,
+					&pipelineCreateInfo,
+					nullptr,
+					&this->_pipeline);
 				if (_hr == S_FALSE)
 				{
 					V(S_FALSE, "creating graphics pipeline", _trace_info);
@@ -378,8 +378,8 @@ namespace wolf
 					return S_FALSE;
 				}
 
-                return _hr == VK_SUCCESS ? S_OK : S_FALSE;
-            }
+				return _hr == VK_SUCCESS ? S_OK : S_FALSE;
+			}
 
             void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
             {
@@ -450,19 +450,18 @@ namespace wolf
 				{
 					this->_command_buffers.begin(i);
 					{
-						auto _cmd = this->_command_buffers.get_command_at(i);
-						this->_render_pass.begin(i, _cmd);
+						this->_render_pass.begin(i, &this->_command_buffers);
 						{
 							if (_update_buffers() == S_OK)
 							{
-								_draw(_cmd);
+								_draw(this->_command_buffers.get_active_command());
 							}
 							else
 							{
 								_hr = S_FALSE;
 							}
 						}
-						this->_render_pass.end(_cmd);
+						this->_render_pass.end(&this->_command_buffers);
 					}
 					this->_command_buffers.end(i);
 				}

@@ -26,10 +26,6 @@
 
 using namespace wolf::system;
 
-#ifdef __GNUC__
-#pragma GCC visibility push(hidden)
-#endif
-
 namespace wolf
 {
     namespace system
@@ -316,10 +312,6 @@ namespace wolf
     }
 }
 
-#ifdef __GNUC__
-#pragma GCC visibility pop
-#endif
-
 w_logger::w_logger() : _pimp(new w_logger_pimp())
 {
 
@@ -424,7 +416,7 @@ bool w_logger::get_is_open() const
 
 #pragma endregion
 
-//Declaration of extern logger as shared
+//Declaration of extern objects as shared
 
 #ifdef __WIN32
 #pragma data_seg (".shared")

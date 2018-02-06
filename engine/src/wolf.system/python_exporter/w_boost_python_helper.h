@@ -18,6 +18,16 @@
 
 #include <boost/python.hpp>
 
+template<class T> std::shared_ptr<T> boost_shared_ptr_to_std_shared_ptr(boost::shared_ptr<T>& pPointer) 
+{
+	return std::shared_ptr<T>(pPointer.get(), [pPointer](...) mutable { pPointer.reset(); });
+}
+
+template<class T> boost::shared_ptr<T> std_shared_ptr_to_boost_shared_ptr(std::shared_ptr<T>& pPointer)
+{
+	return boost::shared_ptr<T>(pPointer.get(), [pPointer](...) mutable { pPointer.reset(); });
+}
+
 template<typename T>
 inline boost::python::list w_boost_wrap_array(T* array_, size_t size_)
 {
@@ -28,14 +38,14 @@ inline boost::python::list w_boost_wrap_array(T* array_, size_t size_)
 }
 
 template<typename T1, typename T2>
-inline void w_boost_extract_tuple(T1& p1, boost::python::tuple pTuple)
+inline void w_boost_extract_tuple(T1& p1, boost::python::tuple& pTuple)
 {
 	boost::python::extract<T1> _1(pTuple[0]);
 	p1 = _1;
 }
 
 template<typename T1, typename T2>
-inline void w_boost_extract_tuple(T1& p1, T2& p2, boost::python::tuple pTuple)
+inline void w_boost_extract_tuple(T1& p1, T2& p2, boost::python::tuple& pTuple)
 {
 	boost::python::extract<T1> _1(pTuple[0]);
 	boost::python::extract<T2> _2(pTuple[1]);
@@ -43,7 +53,7 @@ inline void w_boost_extract_tuple(T1& p1, T2& p2, boost::python::tuple pTuple)
 }
 
 template<typename T1, typename T2, typename T3>
-inline void w_boost_extract_tuple(T1& p1, T2& p2, T3& p3, boost::python::tuple pTuple)
+inline void w_boost_extract_tuple(T1& p1, T2& p2, T3& p3, boost::python::tuple& pTuple)
 {
     boost::python::extract<T1> _1(pTuple[0]);
     boost::python::extract<T2> _2(pTuple[1]);
@@ -52,7 +62,7 @@ inline void w_boost_extract_tuple(T1& p1, T2& p2, T3& p3, boost::python::tuple p
 }
 
 template<typename T1, typename T2, typename T3>
-inline void w_boost_extract_tuple(T1& p1, T2& p2, T3& p3, T3& p4, boost::python::tuple pTuple)
+inline void w_boost_extract_tuple(T1& p1, T2& p2, T3& p3, T3& p4, boost::python::tuple& pTuple)
 {
 	boost::python::extract<T1> _1(pTuple[0]);
 	boost::python::extract<T2> _2(pTuple[1]);
@@ -67,7 +77,7 @@ inline void w_boost_extract_tuple(
 	T1& p5, T2& p6, T3& p7, T3& p8,
 	T1& p9, T2& p10, T3& p11, T3& p12,
 	T1& p13, T2& p14, T3& p15, T3& p16,
-	boost::python::tuple pTuple)
+	boost::python::tuple& pTuple)
 {
 	boost::python::extract<T1> _1(pTuple[0]);
 	boost::python::extract<T2> _2(pTuple[1]);

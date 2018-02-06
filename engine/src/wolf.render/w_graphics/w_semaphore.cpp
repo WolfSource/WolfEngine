@@ -51,15 +51,20 @@ ULONG w_semaphore::release()
 //Must declare here 
 using namespace pywolf;
 
-py_semaphore::py_semaphore() : _graphics_device_index(-1)
+py_semaphore::py_semaphore()
 {
 }
 
-bool py_semaphore::py_initialize(_In_ const uint32_t& pGDeviceIndex)
+bool py_semaphore::py_initialize(_In_ boost::shared_ptr<w_graphics_device>& pGDevice)
 {
-	if (pGDeviceIndex >= pywolf::py_graphics_devices.size()) return false;
-	this->_graphics_device_index = pGDeviceIndex;
-	return this->initialize(pywolf::py_graphics_devices[pGDeviceIndex]) == S_OK;
+	if (!pGDevice.get()) return false;
+	auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+
+	auto _hr = this->initialize(_gDevice);
+	//reset local shared_ptr
+	_gDevice.reset();
+
+	return _hr == S_OK;
 }
 
 #endif

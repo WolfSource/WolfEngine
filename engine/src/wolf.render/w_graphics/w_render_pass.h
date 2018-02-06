@@ -10,8 +10,7 @@
 #ifndef __W_RENDER_PASS_H__
 #define __W_RENDER_PASS_H__
 
-#include "w_graphics_device_manager.h"
-#include "w_attachment_buffer_desc.h"
+#include "w_command_buffer.h"
 
 namespace wolf
 {
@@ -24,20 +23,19 @@ namespace wolf
             W_EXP w_render_pass();
             W_EXP virtual ~w_render_pass();
 
-            //load render pass
+            //load render pass which contains frame buffers
             W_EXP HRESULT load(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,
-                _In_ const std::vector<w_attachment_buffer_desc>& pAttachmentsBuffersDescriptions,
-                _In_ std::vector<std::vector<w_texture*>> pBufferAttachmentsGroup = {},
+				_In_ std::vector<std::vector<w_image_view>> pAttachments,
                 _In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions = nullptr,
                 _In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
 
             //begin render pass
             W_EXP void begin(
                 _In_ const uint32_t& pFrameBufferIndex,
-                _In_ const VkCommandBuffer& pCommandBuffer,
+                _In_ const w_command_buffer* pCommandBuffer,
                 _In_ const w_color& pClearColor,
                 _In_ const float& pClearDepth = 1.0f,
                 _In_ const uint32_t& pClearStencil = 0,
@@ -46,10 +44,10 @@ namespace wolf
             //begin render pass
             W_EXP void begin(
                 _In_ const uint32_t& pFrameBufferIndex,
-                _In_ const VkCommandBuffer& pCommandBuffer);
+                _In_ const w_command_buffer* pCommandBuffer);
 
             //end render pass
-            W_EXP void end(_In_ VkCommandBuffer& pCommandBuffer);
+            W_EXP void end(_In_ const w_command_buffer* pCommandBuffer);
 
             //release all resources
             W_EXP virtual ULONG release() override;

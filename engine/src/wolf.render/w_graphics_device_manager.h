@@ -40,12 +40,82 @@ namespace wolf
         struct w_buffer;
         class  w_pipeline;
         
+		/*
+			For Vulkan
+				attachment description contains:
+				@param flags, Flags
+				@param format, Format of an image used for the attachment
+				@param samples, Number of samples of the image; The value greater than 1 means multisampling
+				@param loadOp, Specifies what to do with the image(s) contents at the beginning of a render pass.
+				@param storeOp, Informs the driver what to do with the image(s) content(s) after the render pass.
+				@param stencilLoadOp, The same as loadOp but for the stencil part of depth/stencil images, please note that for color attachments this parameter will be ignored
+				@param stencilStoreOp, The same as storeOp but for the stencil part of depth/stencil images, please note that for color attachments this parameter will be ignored
+				@param initialLayout, The layout of given attachment when the render pass starts
+				@param finalLayout, The layout that driver will automatically transite the given image into at the end of a render pass
+				attachment reference contains:
+				@param attachment, index of attachment
+				@param layout, The layout of given attachment
+		*/
+		struct w_attachment_buffer_desc
+		{
+			VkAttachmentDescription desc;
+			VkAttachmentReference ref;
+			VkMemoryPropertyFlags memory_flag = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+			static w_attachment_buffer_desc create_color_desc_buffer()
+			{
+				w_attachment_buffer_desc _buffer_desc = { 0 };
+				
+				//init description
+				_buffer_desc.desc.flags = 0;
+				_buffer_desc.desc.format = VkFormat::VK_FORMAT_B8G8R8A8_UNORM;
+				_buffer_desc.desc.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
+				_buffer_desc.desc.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
+				_buffer_desc.desc.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
+				_buffer_desc.desc.stencilLoadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+				_buffer_desc.desc.stencilStoreOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_DONT_CARE;
+				_buffer_desc.desc.initialLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
+				_buffer_desc.desc.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+				//init reference
+				_buffer_desc.ref.attachment = 0;
+				_buffer_desc.ref.layout = VkImageLayout::VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+				return _buffer_desc;
+			}
+
+			static w_attachment_buffer_desc create_depth_desc_buffer()
+			{
+				w_attachment_buffer_desc _buffer_desc = { 0 };
+
+				_buffer_desc.desc.flags = 0;
+				_buffer_desc.desc.format = VkFormat::VK_FORMAT_D32_SFLOAT_S8_UINT;
+				_buffer_desc.desc.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
+				_buffer_desc.desc.loadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_CLEAR;
+				_buffer_desc.desc.storeOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_STORE;
+				_buffer_desc.desc.stencilLoadOp = VkAttachmentLoadOp::VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+				_buffer_desc.desc.stencilStoreOp = VkAttachmentStoreOp::VK_ATTACHMENT_STORE_OP_DONT_CARE;
+				_buffer_desc.desc.initialLayout = VkImageLayout::VK_IMAGE_LAYOUT_UNDEFINED;
+				_buffer_desc.desc.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+				//init reference
+				_buffer_desc.ref.attachment = 1;
+				_buffer_desc.ref.layout = VkImageLayout::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+				return _buffer_desc;
+			}
+		};
+
         struct w_image_view
         {
 #ifdef __VULKAN__
             VkImage                             image = 0;
             VkImageView                         view = 0;
 #endif
+
+			uint32_t							width = 0;
+			uint32_t							height = 0;
+			w_attachment_buffer_desc			attachment_desc;
         };
         
 		//Output window which handles all 3d resources for output renderer
@@ -188,10 +258,10 @@ namespace wolf
 		{
 			friend class w_graphics_device_manager;
 		public:
-            w_graphics_device();
+			W_EXP w_graphics_device();
 
-            //print info
-            W_EXP const std::string print_info();
+            //get graphics device information
+            W_EXP const std::string get_info();
 
             //release all resources
             W_EXP ULONG release();
@@ -333,10 +403,10 @@ namespace wolf
             system::w_signal<void(w_device_info**)> on_device_info_fetched;
 
 #pragma region Getters
-			//Get the main graphics device, this is first and the primary device.
+			//Get the graphics device
             W_EXP std::shared_ptr<w_graphics_device> get_graphics_device(_In_ const size_t& pGraphicsDeviceIndex) const;
-			//Returns number of available graphics devices
-            W_EXP const ULONG get_number_of_graphics_devices() const;
+			//Get number of available graphics devices
+            W_EXP const size_t get_number_of_graphics_devices() const;
 
 //#ifdef __DX11__
 //            //Get DPI
@@ -472,5 +542,4 @@ namespace wolf
 }
 
 #include "python_exporter/py_graphics_device_manager.h"
-
 #endif

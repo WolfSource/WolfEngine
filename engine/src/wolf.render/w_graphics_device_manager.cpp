@@ -146,7 +146,7 @@ vk_command_allocator_pool(0)
 {
 }
 
-const std::string w_graphics_device::print_info()
+const std::string w_graphics_device::get_info()
 {
 	std::string _device_name = "";
 	uint32_t _device_id = 0, _device_vendor_id = 0;
@@ -3102,6 +3102,9 @@ namespace wolf
                         std::exit(EXIT_FAILURE);
                     }
 
+					_image_view.width = _output_presentation_window->width;
+					_image_view.height = _output_presentation_window->height;
+					_image_view.attachment_desc = w_attachment_buffer_desc::create_color_desc_buffer();
                     _output_presentation_window->vk_swap_chain_image_views.push_back(_image_view);
                 }
 
@@ -3298,6 +3301,11 @@ namespace wolf
 					release();
 					std::exit(EXIT_FAILURE);
 				}
+
+
+				_window->vk_depth_buffer_image_view.width = _window->width;
+				_window->vk_depth_buffer_image_view.height = _window->height;
+				_window->vk_depth_buffer_image_view.attachment_desc = w_attachment_buffer_desc::create_depth_desc_buffer();
 #endif
 			}
             
@@ -4199,10 +4207,9 @@ std::shared_ptr<w_graphics_device> w_graphics_device_manager::get_graphics_devic
 	return pGraphicsDeviceIndex < this->graphics_devices.size() ? this->graphics_devices.at(pGraphicsDeviceIndex) : nullptr;
 }
 
-//Returns number of available graphics devices
-const ULONG w_graphics_device_manager::get_number_of_graphics_devices() const
+const size_t w_graphics_device_manager::get_number_of_graphics_devices() const
 {
-	return static_cast<ULONG>(this->graphics_devices.size());
+	return this->graphics_devices.size();
 }
 
 #ifdef	__DX11_X__
@@ -4283,8 +4290,6 @@ void w_graphics_device_manager::set_graphics_device_manager_configs(_In_ const w
 }
 
 #pragma endregion
-
-#pragma region w_graphics_device
 
 #ifdef	__DX12__
 //void w_graphics_device::create_blend_state(
@@ -4370,11 +4375,5 @@ void w_graphics_device_manager::set_graphics_device_manager_configs(_In_ const w
 //
 //	this->context->OMSetBlendState(this->_alpha_blend.Get(), _blend_factor.data(), pSampleMask);
 //}
-
-#pragma endregion
-
-#ifdef __PYTHON__
-std::vector<std::shared_ptr<wolf::graphics::w_graphics_device>> pywolf::py_graphics_devices;
-#endif
 
 #endif

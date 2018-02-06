@@ -11,7 +11,7 @@ namespace wolf
         public:
             w_command_buffer_pimp() :
                 _name("w_command_buffer"),
-                _enable(true),
+				_active_command_index(-1),
                 _command_pool(0)
             {
             }
@@ -86,7 +86,7 @@ namespace wolf
                     
                     return S_FALSE;
                 }
-                
+
                 return S_OK;
             }
             
@@ -104,28 +104,19 @@ namespace wolf
 				};
 
 				auto _hr = vkBeginCommandBuffer(this->_commands.at(pCommandBufferIndex), &_command_buffer_begin_info);
-				V(_hr, L"begining command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-					L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
-					this->_name, 3,
-					false);
+				if (_hr != VK_SUCCESS)
+				{
+					V(S_FALSE, L"begining command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+						L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
+						this->_name, 3,
+						false);
+					return S_FALSE;
+				}
 
-				return _hr == VK_SUCCESS ? S_OK : S_FALSE;
+				this->_active_command_index = pCommandBufferIndex;
+				return S_OK;
 			}
-            
-            HRESULT begin_all(_In_ const w_command_buffer_usage_flags pFlags)
-            {
-                HRESULT _result = S_OK;
-                for (size_t i = 0; i < this->_commands.size(); ++i)
-                {
-                    if(begin(i, pFlags) == S_FALSE)
-                    {
-                        _result =  S_FALSE;
-                        break;
-                    }
-                }
-                return _result;
-            }
-            
+                        
             HRESULT end(_In_ const size_t& pCommandBufferIndex)
             {
                 if  (pCommandBufferIndex >= this->_commands.size()) return S_FALSE;
@@ -135,22 +126,9 @@ namespace wolf
                   L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                   this->_name, 3,
                   false);
-                
+                //reset index of active command buffer
+				this->_active_command_index = -1;
                 return _hr == VK_SUCCESS ? S_OK : S_FALSE;
-            }
-            
-            HRESULT end_all()
-            {
-                HRESULT _result = S_OK;
-                for (size_t i = 0; i < this->_commands.size(); ++i)
-                {
-                    if(end(i) == S_FALSE)
-                    {
-                        _result =  S_FALSE;
-                        break;
-                    }
-                }
-                return _result;
             }
             
             HRESULT flush(_In_ const size_t& pCommandBufferIndex)
@@ -242,7 +220,6 @@ namespace wolf
 
                 this->_commands.clear();
                 this->_counts = 0;
-                this->_enable = false;
                 this->_gDevice = nullptr;
                 
                 return 0;
@@ -250,10 +227,10 @@ namespace wolf
             
 #pragma region Getters
 
-            bool get_enable() const
-            {
-                return this->_enable;
-            }
+			const VkCommandBuffer get_active_command() const
+			{
+				return this->_commands.at(this->_active_command_index);
+			}
             
             const VkCommandBuffer* get_commands() const
             {
@@ -269,10 +246,11 @@ namespace wolf
             
 #pragma region Setters
             
-            void set_enable(_In_ const bool& pEnable)
-            {
-                this->_enable = pEnable;
-            }
+			void set_active_command(_In_ const uint32_t& pIndex)
+			{
+				if (pIndex >= this->_commands.size()) return;
+				this->_active_command_index = pIndex;
+			}
             
 #pragma endregion
             
@@ -285,7 +263,7 @@ namespace wolf
             VkCommandPool                                       _command_pool;
 #endif
             
-            bool                                                _enable;
+            int													_active_command_index;
             size_t                                              _counts;
         };
     }
@@ -321,22 +299,10 @@ HRESULT w_command_buffer::begin(_In_ const size_t& pCommandBufferIndex, _In_ con
     return this->_pimp->begin(pCommandBufferIndex, pFlags);
 }
 
-HRESULT w_command_buffer::begin_all(_In_ const w_command_buffer_usage_flags pFlags)
-{
-    if(!this->_pimp) return S_FALSE;
-    return this->_pimp->begin_all(pFlags);
-}
-
 HRESULT w_command_buffer::end(_In_ const size_t& pCommandBufferIndex)
 {
     if(!this->_pimp) return S_FALSE;
     return this->_pimp->end(pCommandBufferIndex);
-}
-
-HRESULT w_command_buffer::end_all()
-{
-    if(!this->_pimp) return S_FALSE;
-    return this->_pimp->end_all();
 }
 
 HRESULT w_command_buffer::flush(_In_ const size_t& pCommandBufferIndex)
@@ -362,11 +328,10 @@ ULONG w_command_buffer::release()
 
 #pragma region Getters
 
-bool w_command_buffer::get_enable() const
+const VkCommandBuffer w_command_buffer::get_active_command() const
 {
-    if (!_pimp) return 0;
-    
-    return this->_pimp->get_enable();
+	if (!_pimp) return 0;
+	return this->_pimp->get_active_command();
 }
 
 const VkCommandBuffer w_command_buffer::get_command_at(_In_ const size_t& pIndex) const
@@ -398,12 +363,10 @@ const size_t w_command_buffer::get_commands_size() const
 
 #pragma region Setters
 
-void w_command_buffer::set_enable(_In_ const bool& pEnable)
+void w_command_buffer::set_active_command(_In_ const uint32_t& pIndex)
 {
-    if(this->_pimp)
-    {
-        this->_pimp->set_enable(pEnable);
-    }
+	if (!_pimp) return;
+	this->_pimp->set_active_command(pIndex);
 }
 
 #pragma endregion

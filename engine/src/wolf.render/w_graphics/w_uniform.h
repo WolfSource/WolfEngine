@@ -63,7 +63,7 @@ namespace wolf
                     if (_hr == S_FALSE)
                     {
                         V(_hr, "loading host visible buffer " +
-                            _gDevice->print_info(),
+                            _gDevice->get_info(),
                             _trace,
                             3);
                         return _hr;
@@ -79,7 +79,7 @@ namespace wolf
                     if (_hr == S_FALSE)
                     {
                         V(_hr, "loading device buffer " +
-                            _gDevice->print_info(),
+                            _gDevice->get_info(),
                             _trace,
                             3);
                         return _hr;
@@ -93,7 +93,7 @@ namespace wolf
                     if (_hr == S_FALSE)
                     {
                         V(_hr, "loading staging buffer " +
-                            _gDevice->print_info(),
+                            _gDevice->get_info(),
                             _trace,
                             3);
                         return _hr;
@@ -103,7 +103,7 @@ namespace wolf
                     if (_hr == S_FALSE)
                     {
                         V(_hr, "binding device buffer " +
-                            _gDevice->print_info(),
+                            _gDevice->get_info(),
                             _trace,
                             3);
                         return _hr;
@@ -114,7 +114,7 @@ namespace wolf
                 if (_hr == S_FALSE)
                 {
                     V(_hr, "binding buffer " +
-                        _gDevice->print_info(),
+                        _gDevice->get_info(),
                         _trace,
                         3);
                     return _hr;
@@ -133,7 +133,7 @@ namespace wolf
                 {
                     _hr = this->_buffer.set_data(&this->data);
                     V(_hr, "setting to host visible buffer " +
-                        _gDevice->print_info(),
+                        _gDevice->get_info(),
                         _trace,
                         3);
                 }
@@ -150,7 +150,7 @@ namespace wolf
                     {
                         _hr = S_FALSE;
                         V(_hr, "begining command buffer " +
-                            _gDevice->print_info(),
+                            _gDevice->get_info(),
                             _trace,
                             3);
                     }
@@ -160,7 +160,7 @@ namespace wolf
 
                     _hr = this->_staging_buffer.copy_to(this->_buffer);
                     V(_hr, "copy staging buffer to device buffer " +
-                        _gDevice->print_info(),
+                        _gDevice->get_info(),
                         _trace,
                         3);
                 }

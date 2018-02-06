@@ -30,7 +30,7 @@ namespace wolf
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ w_viewport pViewPort,
 				_In_ w_viewport_scissor pViewportScissor,
-				_In_ std::vector<w_attachment_buffer_desc> pAttachmentBuffersDescriptions,
+				_In_ std::vector<w_image_view> pAttachments,
 				_In_ const size_t& pCount);
             
 			W_EXP HRESULT record_command_buffer(_In_ w_command_buffer* pCommandBuffer,

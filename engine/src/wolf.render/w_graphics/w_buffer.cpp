@@ -129,7 +129,7 @@ namespace wolf
                 if (_hr != S_OK)
                 {
                     V(S_FALSE, "loading command buffer " +
-                        _gDevice->print_info(),
+                        _gDevice->get_info(),
                         _trace,
                         3);
                     return _hr;
@@ -139,7 +139,7 @@ namespace wolf
                 if (_hr != S_OK)
                 {
                     V(S_FALSE, "begining command buffer " +
-                        _gDevice->print_info(),
+                        _gDevice->get_info(),
                         _trace,
                         3);
                     return _hr;
@@ -160,7 +160,7 @@ namespace wolf
                 {
                     V(S_FALSE,
                         "flushing command buffer" +
-                        _gDevice->print_info(),
+                        _gDevice->get_info(),
                         _trace,
                         3);
                     return _hr;
@@ -192,7 +192,7 @@ namespace wolf
                 {
                     this->_mapped = nullptr;
                     V(S_FALSE, "mapping data to to vertex buffer's memory " +
-                        _gDevice->print_info(),
+                        _gDevice->get_info(),
                         _trace_info, 3, false);
 
                     return nullptr;
