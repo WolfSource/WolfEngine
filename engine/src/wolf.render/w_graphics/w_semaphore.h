@@ -31,6 +31,10 @@ namespace wolf
             //release resources of semaphore
             W_EXP ULONG release();
             
+#ifdef __PYTHON__
+			W_EXP bool py_initialize(_In_ boost::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+#endif
+
         private:
             std::shared_ptr<wolf::graphics::w_graphics_device>      _gDevice = nullptr;
 #ifdef __VULKAN__

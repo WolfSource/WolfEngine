@@ -1,4 +1,5 @@
 #include "w_render_pch.h"
+#include "w_graphics_device_manager.h"
 #include "w_command_buffer.h"
 #include <w_convert.h>
 
@@ -11,7 +12,7 @@ namespace wolf
         public:
             w_command_buffer_pimp() :
                 _name("w_command_buffer"),
-				_active_command_index(-1),
+				_active_command_index(0),
                 _command_pool(0)
             {
             }
@@ -126,8 +127,6 @@ namespace wolf
                   L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                   this->_name, 3,
                   false);
-                //reset index of active command buffer
-				this->_active_command_index = -1;
                 return _hr == VK_SUCCESS ? S_OK : S_FALSE;
             }
             
@@ -263,12 +262,11 @@ namespace wolf
             VkCommandPool                                       _command_pool;
 #endif
             
-            int													_active_command_index;
+			uint32_t    										_active_command_index;
             size_t                                              _counts;
         };
     }
 }
-
 
 using namespace wolf::graphics;
 
@@ -370,3 +368,43 @@ void w_command_buffer::set_active_command(_In_ const uint32_t& pIndex)
 }
 
 #pragma endregion
+
+#ifdef __PYTHON__
+
+using namespace pywolf;
+
+bool w_command_buffer::py_load(
+	_In_ boost::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+	_In_ const size_t& pCount,
+	_In_ const w_command_buffer_level& pLevel)
+{
+	if (!pGDevice.get()) return false;
+	auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+
+	auto _hr = load(_gDevice, pCount, pLevel);
+
+	_gDevice.reset();
+	return _hr == S_OK;
+}
+
+bool w_command_buffer::py_begin(_In_ const size_t& pCommandBufferIndex, _In_ const w_command_buffer_usage_flags pFlags)
+{ 
+	return begin(pCommandBufferIndex, pFlags) == S_OK; 
+}
+
+bool w_command_buffer::py_end(_In_ const size_t& pCommandBufferIndex)
+{ 
+	return end(pCommandBufferIndex) == S_OK; 
+}
+
+bool w_command_buffer::py_flush(_In_ const size_t& pCommandBufferIndex)
+{ 
+	return flush(pCommandBufferIndex) == S_OK; 
+}
+
+bool w_command_buffer::py_flush_all()
+{ 
+	return flush_all() == S_OK; 
+}
+
+#endif

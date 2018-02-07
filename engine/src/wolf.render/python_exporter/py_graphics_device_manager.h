@@ -43,10 +43,44 @@ namespace pywolf
 			.add_property("extent", &w_viewport_scissor::py_get_extent, &w_viewport_scissor::py_set_extent, "extent")
 			;
 
+		//export w_output_presentation_window class
+		class_<w_output_presentation_window, boost::noncopyable>("w_output_presentation_window")
+			.add_property("swap_chain_image_is_available_semaphore", &w_output_presentation_window::swap_chain_image_is_available_semaphore, "semaphore for checking whether swap chain's image is available or not")
+			.add_property("rendering_done_semaphore", &w_output_presentation_window::rendering_done_semaphore, "semaphore for signaling, when all rendering is done")
+			.add_property("swap_chain_image_index", &w_output_presentation_window::swap_chain_image_index, "swap chain image index")
+			;
+
 		//export w_graphics_device class
 		class_<w_graphics_device, boost::noncopyable>("w_graphics_device")
 			.def("get_info", &w_graphics_device::get_info, "print graphics device information")
-			.def("release", &w_graphics_device::release, "release all resources of graphics device")
+			.def("get_number_of_swap_chains", &w_graphics_device::get_number_of_swap_chains, "get number of swap chain buffers")
+			.def("draw", &w_graphics_device::py_draw, "draw primitive(s) and instances using vertex & index buffer")
+			.def("submit", &w_graphics_device::py_submit, "submit command buffer")
+			.add_property("output_presentation_window", &w_graphics_device::py_get_output_presentation_window, "get shared pointer to the output presentation window structure")
+			;
+
+		//define w_pipeline_stage_flag_bits enum
+		enum_<w_pipeline_stage_flag_bits>("w_pipeline_stage_flag_bits")
+			.value("W_PIPELINE_STAGE_TOP_OF_PIPE_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_TOP_OF_PIPE_BIT)
+			.value("W_PIPELINE_STAGE_DRAW_INDIRECT_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_DRAW_INDIRECT_BIT)
+			.value("W_PIPELINE_STAGE_VERTEX_INPUT_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_VERTEX_INPUT_BIT)
+			.value("W_PIPELINE_STAGE_VERTEX_SHADER_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_VERTEX_SHADER_BIT)
+			.value("W_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT)
+			.value("W_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT)
+			.value("W_PIPELINE_STAGE_GEOMETRY_SHADER_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_GEOMETRY_SHADER_BIT)
+			.value("W_PIPELINE_STAGE_FRAGMENT_SHADER_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
+			.value("W_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT)
+			.value("W_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
+			.value("W_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+			.value("W_PIPELINE_STAGE_COMPUTE_SHADER_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_COMPUTE_SHADER_BIT)
+			.value("W_PIPELINE_STAGE_TRANSFER_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_TRANSFER_BIT)
+			.value("W_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT)
+			.value("W_PIPELINE_STAGE_HOST_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_HOST_BIT)
+			.value("W_PIPELINE_STAGE_ALL_GRAPHICS_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_ALL_GRAPHICS_BIT)
+			.value("W_PIPELINE_STAGE_ALL_COMMANDS_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_ALL_COMMANDS_BIT)
+			.value("W_PIPELINE_STAGE_COMMAND_PROCESS_BIT_NVX", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_COMMAND_PROCESS_BIT_NVX)
+			.value("W_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM)
+			.export_values()
 			;
 
 		//define w_format enum
@@ -279,6 +313,10 @@ namespace pywolf
 			.value("W_FORMAT_G16_B16_R16_3PLANE_444_UNORM_KHR", w_format::W_FORMAT_G16_B16_R16_3PLANE_444_UNORM_KHR)
 			.export_values()
 			;
+
+
+
+			register_ptr_to_python< boost::shared_ptr<w_output_presentation_window>>();
 	}
 }
 

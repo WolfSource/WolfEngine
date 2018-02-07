@@ -95,27 +95,29 @@ ULONG w_fences::release()
 
 #ifdef __PYTHON__
 
-//Must declare here 
-using namespace pywolf;
-
-py_fences::py_fences() : _graphics_device_index(-1)
+bool w_fences::py_initialize(_In_ boost::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ const uint32_t& pNumberOfFences)
 {
+	//create render pass attchaments
+	if (!pGDevice.get()) return false;
+	
+	auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+	auto _hr = this->initialize(_gDevice, pNumberOfFences);
+	_gDevice.reset();
+	
+	return _hr == S_OK;
 }
 
-bool py_fences::py_initialize(_In_ const uint32_t& pGDeviceIndex, _In_ const uint32_t& pNumberOfFences)
-{
-	//if (pGDeviceIndex >= pywolf::py_graphics_devices.size()) return false;
-	//this->_graphics_device_index = pGDeviceIndex;
-	//return this->initialize(pywolf::py_graphics_devices[pGDeviceIndex], pNumberOfFences) == S_OK;
-	return true;
-}
-
-bool py_fences::py_wait(_In_ uint64_t& pTimeOut)
+bool w_fences::py_wait_for(_In_ uint64_t& pTimeOut)
 {
 	return wait(pTimeOut) == S_OK;
 }
 
-bool py_fences::py_reset()
+bool w_fences::py_wait()
+{
+	return wait() == S_OK;
+}
+
+bool w_fences::py_reset()
 {
 	return reset() == S_OK;
 }

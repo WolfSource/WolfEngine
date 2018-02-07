@@ -18,30 +18,19 @@ namespace pywolf
 {
 	using namespace wolf::graphics;
 
-	class py_fences : public w_fences
-	{
-	public:
-		W_EXP py_fences();
-		W_EXP bool py_initialize(_In_ const uint32_t& pGDeviceIndex, _In_ const uint32_t& pNumberOfFences);
-		W_EXP bool py_wait(_In_ uint64_t& pTimeOut);
-		W_EXP bool py_reset();
-
-	private:
-		short    _graphics_device_index;
-	};
-
 	static void py_fences_export()
 	{
 		using namespace boost::python;
 		using namespace wolf::graphics;
 
 		//export w_fences class
-		class_<py_fences, boost::noncopyable>("w_fences")
-			.def("initialize", &py_fences::py_initialize, "initialize fence")
-			.def("wait", &py_fences::py_wait, "wait for all fence")
-			.def("reset", &py_fences::py_reset, "reset all fences")
-			.def("get_count", &py_fences::get_count, "get number of fences")
-			.def("release", &py_fences::release, "release resources of all fences")
+		class_<w_fences, boost::noncopyable>("w_fences")
+			.def("initialize", &w_fences::py_initialize, "initialize fence")
+			.def("wait_for", &w_fences::py_wait_for, "wait for all fence for the timeout period in units of nanoseconds. e.g for arguman \'numpy.iinfo(numpy.uint64).max\'")
+			.def("wait", &w_fences::py_wait, "wait for all fence with maximum timeout")
+			.def("reset", &w_fences::py_reset, "reset all fences")
+			.def("get_count", &w_fences::get_count, "get number of fences")
+			.def("release", &w_fences::release, "release resources of all fences")
 			;
 	}
 }

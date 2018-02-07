@@ -163,45 +163,84 @@ const std::string w_graphics_device::get_info()
 		" VendorID:" + std::to_string(_device_vendor_id));
 }
 
-void w_graphics_device::draw(_In_ VkCommandBuffer pCommandBuffer,
-                             _In_ uint32_t        pVertexCount,
-                             _In_ uint32_t        pInstanceCount,
-                             _In_ uint32_t        pFirstVertex,
-                             _In_ uint32_t        pFirstInstance)
+const size_t w_graphics_device::get_number_of_swap_chains()
 {
+	return this->output_presentation_window.vk_swap_chain_image_views.size();
+}
+
+HRESULT w_graphics_device::draw(_In_ const w_command_buffer*	pCommandBuffer,
+                             _In_ const uint32_t&				pVertexCount,
+                             _In_ const uint32_t&				pInstanceCount,
+                             _In_ const uint32_t&				pFirstVertex,
+                             _In_ const uint32_t&				pFirstInstance)
+{
+	if (!pCommandBuffer) return S_FALSE;
 #ifdef __VULKAN__
-    vkCmdDraw( pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance );
+    vkCmdDraw( pCommandBuffer->get_active_command(), pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance );
 #elif defined(__DX12__)
     
 #endif
+	return S_OK;
 }
 
-HRESULT w_graphics_device::submit(_In_ const std::vector<VkCommandBuffer>&  pCommandBuffers,
+HRESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer*>& pCommandBuffers,
 	_In_ const w_queue&                       pQueue,
-	_In_ const VkPipelineStageFlags*          pWaitDstStageMask,
-	_In_ std::vector<VkSemaphore>             pWaitForSemaphores,
-	_In_ std::vector<VkSemaphore>             pSignalForSemaphores,
+	_In_ const w_pipeline_stage_flags*        pWaitDstStageMask,
+	_In_ std::vector<w_semaphore>             pWaitForSemaphores,
+	_In_ std::vector<w_semaphore>             pSignalForSemaphores,
 	_In_ w_fences*                            pFence)
 {
 	const std::string _trace_info = "w_graphics_device::submit";
 
+	auto _size = static_cast<uint32_t>(pCommandBuffers.size());
+	if (!_size) return S_FALSE;
+	
+	HRESULT _hr = S_OK;
+	std::vector<VkCommandBuffer> _cmds(_size);
+	for (size_t i = 0; i < _size; ++i)
+	{
+		if (pCommandBuffers[i])
+		{
+			_cmds[i] = pCommandBuffers[i]->get_active_command();
+		}
+	}
+
 	VkSubmitInfo _submit_info = {};
 	_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	_submit_info.commandBufferCount = static_cast<uint32_t>(pCommandBuffers.size());
-	_submit_info.pCommandBuffers = pCommandBuffers.data();
+	_submit_info.commandBufferCount = _size;
+	_submit_info.pCommandBuffers = _cmds.data();
+
+	_cmds.clear();
+	
 	if (pWaitDstStageMask)
 	{
-		_submit_info.pWaitDstStageMask = pWaitDstStageMask;
+		_submit_info.pWaitDstStageMask = (VkPipelineStageFlags*)pWaitDstStageMask;
 	}
-	if (pWaitForSemaphores.size())
+
+	_size = static_cast<uint32_t>(pWaitForSemaphores.size());
+	std::vector<VkSemaphore> _wait_semaphors;
+	if (_size)
 	{
-		_submit_info.waitSemaphoreCount = static_cast<uint32_t>(pWaitForSemaphores.size());
-		_submit_info.pWaitSemaphores = pWaitForSemaphores.data();
+		_wait_semaphors.resize(_size);
+		for (size_t i = 0; i < _size; ++i)
+		{
+			_wait_semaphors[i] = *pWaitForSemaphores[i].get();
+		}
+		_submit_info.waitSemaphoreCount = _size;
+		_submit_info.pWaitSemaphores = _wait_semaphors.data();
 	}
-	if (pSignalForSemaphores.size())
+
+	_size = static_cast<uint32_t>(pSignalForSemaphores.size());
+	std::vector<VkSemaphore> _signal_semaphors;
+	if (_size)
 	{
-		_submit_info.signalSemaphoreCount = static_cast<uint32_t>(pSignalForSemaphores.size());;
-		_submit_info.pSignalSemaphores = pSignalForSemaphores.data();
+		_signal_semaphors.resize(_size);
+		for (size_t i = 0; i < _size; ++i)
+		{
+			_signal_semaphors[i] = *pSignalForSemaphores[i].get();
+		}
+		_submit_info.signalSemaphoreCount = _size;
+		_submit_info.pSignalSemaphores = _signal_semaphors.data();
 	}
 
 	VkFence _fence = pFence ? *(pFence->get()) : 0;
@@ -209,29 +248,36 @@ HRESULT w_graphics_device::submit(_In_ const std::vector<VkCommandBuffer>&  pCom
 	// Submit to queue
 	if (vkQueueSubmit(pQueue.queue, 1, &_submit_info, _fence))
 	{
-		V(S_FALSE,
+		_hr = S_FALSE;
+		V(_hr,
 			"submiting queue for graphics device" + this->device_info->get_device_name() + 
 			" ID:" + std::to_string(this->device_info->get_device_id()),
 			_trace_info,
 			3,
 			false);
-		return S_FALSE;
+		goto submit_clear;
 	}
 	if (_fence == 0)
 	{
 		if (vkQueueWaitIdle(pQueue.queue))
 		{
-			V(S_FALSE,
+			_hr = S_FALSE;
+			V(_hr,
 				"waiting for queue for graphics device" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
 				_trace_info,
 				3,
 				false);
-			return S_FALSE;
+			goto submit_clear;
 		}
 	}
 
-	return S_OK;
+submit_clear:
+	_cmds.clear();
+	_wait_semaphors.clear();
+	_signal_semaphors.clear();
+
+	return _hr;
 }
 
 HRESULT w_graphics_device::capture(
@@ -708,7 +754,7 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 	if (!_objs_ptr) return S_FALSE;
 
 	//source image is swap chain last presented buffer
-	auto _src_image = this->output_presentation_window.vk_swap_chain_image_views[this->output_presentation_window.vk_swap_chain_image_index].image;
+	auto _src_image = this->output_presentation_window.vk_swap_chain_image_views[this->output_presentation_window.swap_chain_image_index].image;
 
 	const auto _sub_res_range = VkImageSubresourceRange
 	{
@@ -1096,8 +1142,8 @@ ULONG w_graphics_device::release()
 #pragma endregion
 
     //release semaphores
-    this->output_presentation_window.vk_rendering_done_semaphore.release();
-    this->output_presentation_window.vk_swap_chain_image_is_available_semaphore.release();
+    this->output_presentation_window.rendering_done_semaphore.release();
+    this->output_presentation_window.swap_chain_image_is_available_semaphore.release();
 
     //release all image view of swap chains
 	for (size_t i = 0; i < this->output_presentation_window.vk_swap_chain_image_views.size(); ++i)
@@ -3343,14 +3389,14 @@ namespace wolf
 				auto _output_presentation_window = &(pGDevice->output_presentation_window);
 
                 //create semaphores fro this graphics device
-                if (_output_presentation_window->vk_swap_chain_image_is_available_semaphore.initialize(pGDevice) == S_FALSE)
+                if (_output_presentation_window->swap_chain_image_is_available_semaphore.initialize(pGDevice) == S_FALSE)
                 {
                     logger.error("error on creating image_is_available semaphore for graphics device: " +
                                  _device_name + " ID:" + std::to_string(_device_id));
                     release();
                     std::exit(EXIT_FAILURE);
                 }
-                if (_output_presentation_window->vk_rendering_done_semaphore.initialize(pGDevice) == S_FALSE)
+                if (_output_presentation_window->rendering_done_semaphore.initialize(pGDevice) == S_FALSE)
                 {
 					logger.error("error on creating rendering_is_done semaphore for graphics device: " +
 						_device_name + " ID:" + std::to_string(_device_id));
@@ -3733,13 +3779,13 @@ HRESULT w_graphics_device_manager::prepare()
         _wait_for_previous_frame(_gDevice, j);
 
 #elif defined(__VULKAN__)
-        auto _semaphore = _output_window->vk_swap_chain_image_is_available_semaphore.get();
+        auto _semaphore = _output_window->swap_chain_image_is_available_semaphore.get();
         auto _hr = vkAcquireNextImageKHR(_gDevice->vk_device,
             _output_window->vk_swap_chain,
             UINT64_MAX,
             *_semaphore,
             VK_NULL_HANDLE,
-            &_output_window->vk_swap_chain_image_index);
+            &_output_window->swap_chain_image_index);
 
         if (_hr != VK_SUCCESS && _hr != VK_SUBOPTIMAL_KHR)
         {
@@ -3963,10 +4009,10 @@ HRESULT w_graphics_device_manager::present()
 
         _present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
         _present_info.waitSemaphoreCount = 1;
-        _present_info.pWaitSemaphores = _present_window->vk_rendering_done_semaphore.get();
+        _present_info.pWaitSemaphores = _present_window->rendering_done_semaphore.get();
         _present_info.swapchainCount = 1;
         _present_info.pSwapchains = &_present_window->vk_swap_chain;
-        _present_info.pImageIndices = &_present_window->vk_swap_chain_image_index;
+        _present_info.pImageIndices = &_present_window->swap_chain_image_index;
 
         auto _hr = vkQueuePresentKHR(_gDevice->vk_present_queue.queue,
             &_present_info);

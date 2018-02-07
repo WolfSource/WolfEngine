@@ -10,6 +10,7 @@
 #ifndef __W_RENDER_PASS_H__
 #define __W_RENDER_PASS_H__
 
+#include "w_graphics_device_manager.h"
 #include "w_command_buffer.h"
 
 namespace wolf

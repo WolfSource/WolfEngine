@@ -51,16 +51,12 @@ ULONG w_semaphore::release()
 //Must declare here 
 using namespace pywolf;
 
-py_semaphore::py_semaphore()
-{
-}
-
-bool py_semaphore::py_initialize(_In_ boost::shared_ptr<w_graphics_device>& pGDevice)
+bool w_semaphore::py_initialize(_In_ boost::shared_ptr<w_graphics_device>& pGDevice)
 {
 	if (!pGDevice.get()) return false;
 	auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
-	auto _hr = this->initialize(_gDevice);
+	auto _hr = initialize(_gDevice);
 	//reset local shared_ptr
 	_gDevice.reset();
 

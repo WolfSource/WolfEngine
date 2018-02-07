@@ -28,6 +28,11 @@
 #include "w_graphics/w_queue.h"
 #include "w_graphics/w_semaphore.h"
 #include "w_graphics/w_fences.h"
+#include "w_graphics/w_command_buffer.h"
+
+#ifdef __PYTHON__
+#include <boost/make_shared.hpp>
+#endif
 
 namespace wolf
 {
@@ -199,7 +204,7 @@ namespace wolf
             VkSurfaceFormatKHR                              vk_swap_chain_selected_format;
 			VkSwapchainKHR                                  vk_swap_chain = 0;
             std::vector<w_image_view>				        vk_swap_chain_image_views;
-            uint32_t								        vk_swap_chain_image_index = 0;
+            uint32_t								        swap_chain_image_index = 0;
             
             std::vector<VkSurfaceFormatKHR>			        vk_surface_formats;
                         
@@ -208,8 +213,8 @@ namespace wolf
             VkDeviceMemory							        vk_depth_buffer_memory = 0;
             
 			//Synchronization objects
-            w_semaphore								        vk_swap_chain_image_is_available_semaphore;
-            w_semaphore								        vk_rendering_done_semaphore;
+            w_semaphore								        swap_chain_image_is_available_semaphore;
+            w_semaphore								        rendering_done_semaphore;
 
             //Required objects for sharing swap chain's buffer with CPU
             struct shared_objs_between_cpu_gpu
@@ -262,6 +267,8 @@ namespace wolf
 
             //get graphics device information
             W_EXP const std::string get_info();
+			//get number of swap chains
+			W_EXP const size_t get_number_of_swap_chains();
 
             //release all resources
             W_EXP ULONG release();
@@ -269,19 +276,19 @@ namespace wolf
             w_output_presentation_window               output_presentation_window;
             
             //draw primitive(s) and instances using vertex & index buffer
-            W_EXP void draw(_In_ VkCommandBuffer pCommandBuffer,
-                            _In_ uint32_t        pVertexCount,
-                            _In_ uint32_t        pInstanceCount,
-                            _In_ uint32_t        pFirstVertex,
-                            _In_ uint32_t        pFirstInstance);
+            W_EXP HRESULT draw(_In_ const w_command_buffer*	pCommandBuffer,
+                            _In_ const uint32_t&			pVertexCount,
+                            _In_ const uint32_t&			pInstanceCount,
+                            _In_ const uint32_t&			pFirstVertex,
+                            _In_ const uint32_t&			pFirstInstance);
             
             //submit command buffer
-            W_EXP HRESULT submit(_In_ const std::vector<VkCommandBuffer>&   pCommandBuffers,
-                                 _In_ const w_queue&                        pQueue,
-                                 _In_ const VkPipelineStageFlags*           pWaitDstStageMask,
-                                 _In_ std::vector<VkSemaphore>              pWaitForSemaphores,
-                                 _In_ std::vector<VkSemaphore>              pSignalForSemaphores,
-                                 _In_ w_fences*                             pFence);
+            W_EXP HRESULT submit(_In_ const std::vector<const w_command_buffer*>&	pCommandBuffers,
+                                 _In_ const w_queue&								pQueue,
+                                 _In_ const w_pipeline_stage_flags*					pWaitDstStageMask,
+                                 _In_ std::vector<w_semaphore> 						pWaitForSemaphores,
+                                 _In_ std::vector<w_semaphore> 						pSignalForSemaphores,
+                                 _In_ w_fences*										pFence);
             
             /*
                 capture image buffer's data and save to D-RAM and make it accessable by CPU, 
@@ -361,7 +368,94 @@ namespace wolf
             };
 
 #endif //__DX12__ __VULKAN__
-                                    
+                         
+
+#ifdef __PYTHON__
+
+			boost::shared_ptr<w_output_presentation_window> py_get_output_presentation_window()
+			{
+				return boost::make_shared<w_output_presentation_window>(this->output_presentation_window);
+			}
+
+			bool py_draw(
+				_In_ const w_command_buffer&	pCommandBuffer,
+				_In_ const uint32_t&			pVertexCount,
+				_In_ const uint32_t&			pInstanceCount,
+				_In_ const uint32_t&			pFirstVertex,
+				_In_ const uint32_t&			pFirstInstance)
+			{
+				return draw(&pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance) == S_OK;
+			}
+
+			bool py_submit(
+				_In_ boost::python::list	pCommandBuffers,
+				_In_ boost::python::list	pWaitDstStageMask,
+				_In_ boost::python::list	pWaitForSemaphores,
+				_In_ boost::python::list	pSignalForSemaphores,
+				_In_ w_fences&				pFence)
+			{
+				std::vector<const w_command_buffer*> _cmds;
+				//get command buffers
+				for (size_t i = 0; i < len(pCommandBuffers); ++i)
+				{
+					boost::python::extract<w_command_buffer> _cmd(pCommandBuffers[i]);
+					if (_cmd.check())
+					{
+						auto _c = &(_cmd());
+						_cmds.push_back(_c);
+					}
+				}
+
+				std::vector<w_pipeline_stage_flags> _pipeline_stage_flags;
+				//get wait dst stage mask
+				for (size_t i = 0; i < len(pWaitDstStageMask); ++i)
+				{
+					boost::python::extract<w_pipeline_stage_flags> _stage(pWaitDstStageMask[i]);
+					if (_stage.check())
+					{
+						_pipeline_stage_flags.push_back(_stage());
+					}
+				}
+
+				std::vector<w_semaphore> _wait_smaphores;
+				//get wait semaphores
+				for (size_t i = 0; i < len(pWaitForSemaphores); ++i)
+				{
+					boost::python::extract<w_semaphore> _wait(pWaitForSemaphores[i]);
+					if (_wait.check())
+					{
+						_wait_smaphores.push_back(_wait());
+					}
+				}
+
+				std::vector<w_semaphore> _signal_smaphores;
+				//get wait semaphores
+				for (size_t i = 0; i < len(pSignalForSemaphores); ++i)
+				{
+					boost::python::extract<w_semaphore> _sig(pSignalForSemaphores[i]);
+					if (_sig.check())
+					{
+						_signal_smaphores.push_back(_sig());
+					}
+				}
+
+				auto _result = submit(
+					_cmds,
+					this->vk_graphics_queue,
+					_pipeline_stage_flags.data(),
+					_wait_smaphores,
+					_signal_smaphores,
+					&pFence) == S_OK;
+
+				_cmds.clear();
+				_pipeline_stage_flags.clear();
+				_wait_smaphores.clear();
+				_signal_smaphores.clear();
+
+				return _result;
+			}
+#endif
+
 		private:
             //prevent copying
             w_graphics_device(w_graphics_device const&);

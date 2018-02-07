@@ -26,8 +26,8 @@ namespace wolf
 		public:
             //initialize fence
             W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t pNumberOfFences = 1);
-            //wait for all fence
-            W_EXP HRESULT wait(_In_ uint64_t pTimeOut = VK_TIMEOUT);
+            //wait for all fence for the timeout period in units of nanoseconds
+            W_EXP HRESULT wait(_In_ uint64_t pTimeOut = UINT64_MAX - 1);
             //reset all fences
             W_EXP HRESULT reset();
             //get pointer to the first fence
@@ -38,6 +38,13 @@ namespace wolf
             W_EXP uint32_t get_count();
             //release resources of all fences
             W_EXP ULONG release();
+
+#ifdef __PYTHON__
+			W_EXP bool py_initialize(_In_ boost::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ const uint32_t& pNumberOfFences);
+			W_EXP bool py_wait_for(_In_ uint64_t& pTimeOut);
+			W_EXP bool py_wait();
+			W_EXP bool py_reset();
+#endif
         private:
             
             std::shared_ptr<w_graphics_device> _gDevice;

@@ -17,6 +17,7 @@
 #define __W_BOOST_PYTHON_HELPER_H__
 
 #include <boost/python.hpp>
+#include <boost/make_shared.hpp>
 
 template<class T> std::shared_ptr<T> boost_shared_ptr_to_std_shared_ptr(boost::shared_ptr<T>& pPointer) 
 {

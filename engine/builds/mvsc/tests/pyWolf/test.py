@@ -7,10 +7,10 @@ screen_width = 800
 screen_height = 600
 
 class scene(QWidget):
-    def __init__(self, ContentPath, LogPath, AppName, parent = None):
+    def __init__(self, pContentPath, pLogPath, pAppName, parent = None):
         super(scene, self).__init__(parent)
         self.__exiting = False
-        self._game = pyWolf.framework.w_game(ContentPath, LogPath, AppName)
+        self._game = pyWolf.framework.w_game(pContentPath, pLogPath, pAppName)
         self._game.set_pre_init_callback(self.pre_init)
         self._game.set_post_init_callback(self.post_init)
         self._game.set_load_callback(self.load)
@@ -37,43 +37,100 @@ class scene(QWidget):
 
     def load(self):
         #initialize viewport
-        self._viewport.y = 0;
-        self._viewport.width = screen_width;
-        self._viewport.height = screen_height;
-        self._viewport.minDepth = 0;
-        self._viewport.maxDepth = 1;
+        self._viewport.y = 0
+        self._viewport.width = screen_width
+        self._viewport.height = screen_height
+        self._viewport.minDepth = 0
+        self._viewport.maxDepth = 1
         
         #initialize scissor of viewport
-        self._viewport_scissor.offset.x = 0;
-        self._viewport_scissor.offset.y = 0;
-        self._viewport_scissor.extent.width = screen_width;
-        self._viewport_scissor.extent.height = screen_height;
+        self._viewport_scissor.offset.x = 0
+        self._viewport_scissor.offset.y = 0
+        self._viewport_scissor.extent.width = screen_width
+        self._viewport_scissor.extent.height = screen_height
 
         #load render pass which contains frame buffers
         _hr = self._draw_render_pass.load(self._gDevice, self._viewport, self._viewport_scissor)
         if _hr == False:
             print "Error on loading render pass"
+            return
 
         #create one semaphore for drawing
         _hr = self._draw_semaphore.initialize(self._gDevice)
         if _hr == False:
             print "Error on initializing semaphore"
+            return
 
-        ##create one fence for drawing
-        #_hr = self.__draw_fence.initialize(0, 1)
-        #if _hr == False:
-        #    print "Error on initializing fence(s)"
+        #create one fence for drawing
+        _hr = self._draw_fence.initialize(self._gDevice, 1)
+        if _hr == False:
+            print "Error on initializing fence(s)"
+            return
 
-        print "scene loaded"
+        #create one fence for drawing
+        number_of_swap_chains = self._gDevice.get_number_of_swap_chains()
+        _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.W_COMMAND_BUFFER_LEVEL_PRIMARY)
+        if _hr == False:
+            print "Error on initializing draw command buffer(s)"
+            return
 
-    def update(self, GameTime):
-        print GameTime.get_total_seconds()
+        _hr = self.build_command_buffers()
+        if _hr == False:
+            print "Error on building draw command buffer(s)"
+            return
+        
+        print "scene loaded successfully"
+
+    def build_command_buffers(self):
+        _hr = True
+        _size = self._draw_command_buffers.get_commands_size()
+        for i in xrange(_size):
+            _hr = self._draw_command_buffers.begin(i, pyWolf.graphics.w_command_buffer_usage_flag_bits.W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
+            if _hr == False:
+                print "Error on begining command buffer: " + str(i)
+                break
+            
+            self._draw_render_pass.begin(i, self._draw_command_buffers, pyWolf.system.w_color.CORNFLOWER_BLUE(), 1.0, 0)
+            #place your draw code
+            self._draw_render_pass.end(self._draw_command_buffers)
+            
+            _hr = self._draw_command_buffers.end(i)
+            if _hr == False:
+                print "Error on ending command buffer: " + str(i)
+                break
+
+        return _hr
+
+    def update(self, pGameTime):
+        print "fps: " + str(pGameTime.get_frames_per_second())
     
-    def pre_render(self, GameTime):
-        print "pre_render"
+    def pre_render(self, pGameTime):
+        _output_window = self._gDevice.output_presentation_window
+        _frame_index = _output_window.swap_chain_image_index
+
+        self._draw_command_buffers.set_active_command(_frame_index)
+
+        _wait_dst_stage_mask = [ pyWolf.graphics.w_pipeline_stage_flag_bits.W_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT ]
+        _wait_semaphores = [ _output_window.swap_chain_image_is_available_semaphore ]
+        _signal_semaphores = [ _output_window.rendering_done_semaphore ]
+        _cmd_buffers = [self._draw_command_buffers]       
+
+        #reset draw fence
+        self._draw_fence.reset()
+        _hr = self._gDevice.submit(_cmd_buffers, _wait_dst_stage_mask, _wait_semaphores, _signal_semaphores, self._draw_fence)
+        if _hr == False:
+            print "Error on submit to graphics device"
+            return 
+
+        _hr = self._draw_fence.wait()
+        if _hr == False:
+            print "Error on waiting for draw fence"
+            return 
+
     
-    def post_render(self, SuccessfullyRendered):
-        print "post_render"
+    def post_render(self, pSuccessfullyRendered):
+        if pSuccessfullyRendered == False:
+            print "Rendered Unsuccessfully"
     
     def run(self):
         #run game
@@ -97,12 +154,11 @@ class scene(QWidget):
         _map_info = (0, _window_info)
         while True:
             if self.__exiting:
-                self._game.exit()
+                self.release()
                 break
             self._game.run(_map_info)
-        
-        self.release()
-        print "Exited"
+
+        print "Game exited"
 
     def showEvent(self, event):
         #run in another thread
@@ -114,18 +170,26 @@ class scene(QWidget):
         event.accept()
 
     def release(self):
+        self._draw_fence.release()
+        self._draw_fence = None
+        
+        self._draw_semaphore.release()
+        self._draw_semaphore = None
+        
+        self._draw_command_buffers.release()
+        self._draw_command_buffers = None
+
         self._draw_render_pass.release()
         self._draw_render_pass = None
-        self._draw_semaphore = None
+
+        self._game.exit()
         self._game = None
         self._gDevice = None
         self._viewport = None
         self._viewport_scissor = None
-        self._draw_command_buffers = None
-        self._draw_fence = None
+        
         
 if __name__ == '__main__':
-
     # Create a Qt application
     app = QApplication(sys.argv)
     scene = scene("E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\content\\",
@@ -136,4 +200,3 @@ if __name__ == '__main__':
     scene.show()
 
     sys.exit(app.exec_())
-
