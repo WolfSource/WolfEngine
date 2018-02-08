@@ -5,9 +5,9 @@ _script_path = os.path.realpath(__file__)
 pyWolfPath = os.path.dirname(_script_path)
 
 if sys.platform == "linux" or sys.platform == "linux2":
-    print "Linux"
+    print "Linux not tested yet"
 elif sys.platform == "darwin":
-    print "OS X"
+    print "OS X not tested yet"
 elif sys.platform == "win32":
     pyWolfPath =  pyWolfPath + "\\..\\..\\..\\..\\bin\\x64\\Debug\\Win32\\"
 
@@ -208,9 +208,9 @@ class scene(QWidget):
 if __name__ == '__main__':
     # Create a Qt application
     app = QApplication(sys.argv)
-    scene = scene("E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\content\\",
-                   "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\bin\\x64\\Debug\\Win32\\",
-                   "py_01_clear")
+    scene = scene(pyWolfPath + "..\\..\\..\\..\\content\\",
+                  pyWolfPath,
+                  "py_01_clear")
     scene.resize(screen_width, screen_height)
     scene.setWindowTitle('Wolf.Engine')
     scene.show()

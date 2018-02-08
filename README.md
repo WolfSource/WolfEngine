@@ -204,7 +204,7 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
   <tr>
     <td>
       <p><b>01_clear</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/01_clear/view.png" alt="01_clear" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/01_clear/doc/view.png" alt="01_clear" width="256" height="192"/>
       <p>Clearing buffers of swap chain</p>
     </td>
     <td>

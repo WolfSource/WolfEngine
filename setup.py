@@ -24,8 +24,7 @@ for dep in deps:
     if os.path.isfile(_path_file + '/' + deps[dep] ):
         print (dep + ' verified successfully')
     else: 
-        print 'error found for ' + dep
-        break
+        print 'could not find \'' + deps_pre_path + '/' + dep + '/' + deps[dep] + '\''
 print "exiting..."
 quit()
 
