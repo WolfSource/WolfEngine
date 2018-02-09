@@ -12,6 +12,7 @@ environment:
 
 init:
   - "%PYTHON%\\python.exe --version"
+  - echo "%VulkanSDK%
  
 install:
   # python requirements needed to ubpack deps
