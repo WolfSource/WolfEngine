@@ -43,6 +43,12 @@ namespace pywolf
 			.add_property("extent", &w_viewport_scissor::py_get_extent, &w_viewport_scissor::py_set_extent, "extent")
 			;
 
+		//export w_descriptor_buffer_info class
+		class_<w_descriptor_buffer_info>("w_descriptor_buffer_info", init<>());
+
+		//export w_descriptor_image_info class
+		class_<w_descriptor_image_info>("w_descriptor_image_info", init<>());
+
 		//export w_output_presentation_window class
 		class_<w_output_presentation_window, boost::noncopyable>("w_output_presentation_window")
 			.add_property("swap_chain_image_is_available_semaphore", &w_output_presentation_window::swap_chain_image_is_available_semaphore, "semaphore for checking whether swap chain's image is available or not")
@@ -62,6 +68,17 @@ namespace pywolf
 			.add_property("compute_queue", &w_graphics_device::vk_compute_queue, "get compute queue")
 			.add_property("transfer_queue", &w_graphics_device::vk_transfer_queue, "get transfer queue")
 			.add_property("sparse_queue", &w_graphics_device::vk_sparse_queue, "get sparse queue")
+			;
+
+		//define w_memory_property_flag_bits enum
+		enum_<w_memory_property_flag_bits>("w_memory_property_flag_bits")
+			.value("W_MEMORY_PROPERTY_DEVICE_LOCAL_BIT", w_memory_property_flag_bits::W_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
+			.value("W_MEMORY_PROPERTY_HOST_VISIBLE_BIT", w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+			.value("W_MEMORY_PROPERTY_HOST_COHERENT_BIT", w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+			.value("W_MEMORY_PROPERTY_HOST_CACHED_BIT", w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_CACHED_BIT)
+			.value("W_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT", w_memory_property_flag_bits::W_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT)
+			.value("W_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM", w_memory_property_flag_bits::W_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM)
+			.export_values()
 			;
 
 		//define w_pipeline_stage_flag_bits enum

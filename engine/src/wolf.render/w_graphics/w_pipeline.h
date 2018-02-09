@@ -11,6 +11,7 @@
 #define __W_PIEPELINE_H__
 
 #include "w_graphics_device_manager.h"
+#include "w_shader.h"
 #include "w_mesh.h"
 
 namespace wolf
@@ -27,11 +28,10 @@ namespace wolf
             W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
                                _In_ const VkPrimitiveTopology pPrimitiveTopology,
-                               _In_ const VkRenderPass pRenderPass,
-                               _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
-                               _In_ const VkDescriptorSetLayout* pShaderDescriptorSetLayoutBinding,
-                               _In_ const std::vector<w_viewport>& pViewPorts,
-                               _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
+                               _In_ const w_render_pass* pRenderPassBinding,
+                               _In_ const w_shader* pShaderBinding,
+							   _In_ const std::vector<w_viewport>& pViewPorts,
+							   _In_ const std::vector<w_viewport_scissor>& pViewPortScissors,
                                _In_ const std::string& pPipelineCacheName = "pipeline_cache",
 							   _In_ const std::vector<VkDynamicState>& pDynamicStates = {},
                                _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges = {},

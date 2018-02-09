@@ -34,9 +34,9 @@ public:
 	virtual ~scene();
 
 	/*
-	Allows the game to perform any initialization and it needs to before starting to run.
-	Calling Game::Initialize() will enumerate through any components and initialize them as well.
-	The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
+		Allows the game to perform any initialization and it needs to before starting to run.
+		Calling Game::Initialize() will enumerate through any components and initialize them as well.
+		The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
 	*/
 	void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) override;
 
@@ -50,7 +50,7 @@ public:
 	W_RESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
 
 	//This is called when the window game should resized. pIndex is the index of window.
-	void on_window_resized(_In_ const uint32_t& pIndex) override;
+	void on_window_resized(_In_ const uint32_t& pIndex, _In_ const w_point& pNewSizeOfWindow) override;
 
 	//This is called when the we lost graphics device.
 	void on_device_lost() override;
@@ -59,7 +59,7 @@ public:
 	ULONG release() override;
 
 private:
-	HRESULT _build_draw_command_buffers();
+	W_RESULT _build_draw_command_buffers();
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;

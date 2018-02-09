@@ -71,6 +71,25 @@ namespace wolf
 {
     namespace graphics
     {
+		struct w_descriptor_buffer_info : 
+#ifdef __VULKAN__
+			public VkDescriptorBufferInfo
+#endif
+		{
+
+			ULONG release()
+			{
+
+			}
+		};
+
+		struct w_descriptor_image_info :
+#ifdef __VULKAN__
+			public VkDescriptorImageInfo
+#endif
+		{
+		};
+		
         typedef enum w_memory_property_flag_bits
         {
 #ifdef __VULKAN__

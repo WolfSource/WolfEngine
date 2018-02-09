@@ -66,11 +66,12 @@ BOOST_PYTHON_MODULE(pyWolf)
         scope _graphics = class_<graphics>("graphics");
 
         pywolf::py_graphics_device_manager_export();  
+		pywolf::py_command_buffer_export();
 		pywolf::py_queue_export();
 		pywolf::py_fences_export();
 		pywolf::py_semaphore_export();
-        pywolf::py_command_buffer_export();
 		pywolf::py_render_pass_export();
+		pywolf::py_shader_export();
 		pywolf::py_texture_export();
     }
 

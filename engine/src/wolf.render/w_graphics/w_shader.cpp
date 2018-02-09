@@ -89,7 +89,7 @@ namespace wolf
                 }
                 
                 //create pipeline shader stage
-                VkPipelineShaderStageCreateInfo _pipeline_shader_stage_info = {};
+				w_pipeline_shader_stage_create_info _pipeline_shader_stage_info = {};
                 _pipeline_shader_stage_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
                 _pipeline_shader_stage_info.module = _shader_module;
                 _pipeline_shader_stage_info.pName = pMainFunctionName;
@@ -116,55 +116,10 @@ namespace wolf
                 
                 if (_prepare_shader_params() == W_FALSE) return W_FALSE;
                 
-                update_shader_binding_params(this->_shader_binding_params);
+                _update_shader_binding_params(this->_shader_binding_params);
                 return W_OK;
             }
             
-            void update_shader_binding_params(_In_ std::vector<w_shader_binding_param>& pShaderBindingParams)
-            {
-                std::vector<VkWriteDescriptorSet> _write_descriptor_sets;
-                std::vector<VkWriteDescriptorSet> _compute_write_descriptor_sets;
-
-                //seperated write descriptor for compute shader and other shader stages
-                for (auto& _iter : pShaderBindingParams)
-                {
-                    if (_iter.stage == w_shader_stage::COMPUTE_SHADER)
-                    {
-                        _create_write_descriptor_sets(
-                            _iter,
-                            this->_compute_descriptor_set,
-                            _compute_write_descriptor_sets);
-                    }
-                    else
-                    {
-                        _create_write_descriptor_sets(
-                            _iter,
-                            this->_descriptor_set,
-                            _write_descriptor_sets);
-                    }
-                }
-
-                //update descriptor sets of compute shader stage
-                if (_compute_write_descriptor_sets.size())
-                {
-                    vkUpdateDescriptorSets(this->_gDevice->vk_device,
-                        static_cast<uint32_t>(_compute_write_descriptor_sets.size()),
-                        _compute_write_descriptor_sets.data(),
-                        0,
-                        nullptr);
-                }
-
-                //update descriptor sets of all shader stages except compute shader
-                if (_write_descriptor_sets.size())
-                {
-                    vkUpdateDescriptorSets(this->_gDevice->vk_device,
-                        static_cast<uint32_t>(_write_descriptor_sets.size()),
-                        _write_descriptor_sets.data(),
-                        0,
-                        nullptr);
-                }
-            }
-
             ULONG release()
             {
                 this->_shader_stages.clear();
@@ -211,12 +166,12 @@ namespace wolf
             
 #pragma region Getters
 
-            const std::vector<VkPipelineShaderStageCreateInfo>* get_shader_stages() const
+            const std::vector<w_pipeline_shader_stage_create_info>* get_shader_stages() const
             {
                 return &(this->_shader_stages);
             }
             
-            const VkPipelineShaderStageCreateInfo get_compute_shader_stage() const
+            const w_pipeline_shader_stage_create_info get_compute_shader_stage() const
             {
                 return this->_compute_shader_stage;
             }
@@ -249,7 +204,51 @@ namespace wolf
 #pragma endregion
 
         private:
-            
+			void _update_shader_binding_params(_In_ std::vector<w_shader_binding_param>& pShaderBindingParams)
+			{
+				std::vector<VkWriteDescriptorSet> _write_descriptor_sets;
+				std::vector<VkWriteDescriptorSet> _compute_write_descriptor_sets;
+
+				//seperated write descriptor for compute shader and other shader stages
+				for (auto& _iter : pShaderBindingParams)
+				{
+					if (_iter.stage == w_shader_stage::COMPUTE_SHADER)
+					{
+						_create_write_descriptor_sets(
+							_iter,
+							this->_compute_descriptor_set,
+							_compute_write_descriptor_sets);
+					}
+					else
+					{
+						_create_write_descriptor_sets(
+							_iter,
+							this->_descriptor_set,
+							_write_descriptor_sets);
+					}
+				}
+
+				//update descriptor sets of compute shader stage
+				if (_compute_write_descriptor_sets.size())
+				{
+					vkUpdateDescriptorSets(this->_gDevice->vk_device,
+						static_cast<uint32_t>(_compute_write_descriptor_sets.size()),
+						_compute_write_descriptor_sets.data(),
+						0,
+						nullptr);
+				}
+
+				//update descriptor sets of all shader stages except compute shader
+				if (_write_descriptor_sets.size())
+				{
+					vkUpdateDescriptorSets(this->_gDevice->vk_device,
+						static_cast<uint32_t>(_write_descriptor_sets.size()),
+						_write_descriptor_sets.data(),
+						0,
+						nullptr);
+				}
+			}
+
             void _create_write_descriptor_sets(
                 _In_ const w_shader_binding_param& pBindingParam,
                 _In_ const VkDescriptorSet& pDescriptoSet,
@@ -639,8 +638,8 @@ namespace wolf
             
             std::string                                             _name;
             std::shared_ptr<w_graphics_device>                      _gDevice;
-            std::vector<VkPipelineShaderStageCreateInfo>            _shader_stages;
-            VkPipelineShaderStageCreateInfo                         _compute_shader_stage;
+            std::vector<w_pipeline_shader_stage_create_info>        _shader_stages;
+			w_pipeline_shader_stage_create_info						_compute_shader_stage;
             std::vector<VkShaderModule>                             _shader_modules;
             VkDescriptorPool                                        _descriptor_pool;
             VkDescriptorSetLayout                                   _descriptor_set_layout;
@@ -680,12 +679,6 @@ W_RESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	return _hr;
 }
 
-void w_shader::update_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
-{
-    if (!this->_pimp) return;
-    return this->_pimp->update_shader_binding_params(pShaderBindingParams);
-}
-
 ULONG w_shader::release()
 {
     if (_super::get_is_released()) return 1;
@@ -698,16 +691,20 @@ ULONG w_shader::release()
 
 #pragma region Getters
 
-const std::vector<VkPipelineShaderStageCreateInfo>* w_shader::get_shader_stages() const
+const std::vector<w_pipeline_shader_stage_create_info>* w_shader::get_shader_stages() const
 {
     if(!this->_pimp) return nullptr;
     return this->_pimp->get_shader_stages();
 }
 
 
-const VkPipelineShaderStageCreateInfo w_shader::get_compute_shader_stage() const
+const w_pipeline_shader_stage_create_info w_shader::get_compute_shader_stage() const
 {
-    if (!this->_pimp) return VkPipelineShaderStageCreateInfo();
+	if (!this->_pimp)
+	{
+		w_pipeline_shader_stage_create_info _shader_stage_create_info = {};
+		return _shader_stage_create_info;
+	}
     return this->_pimp->get_compute_shader_stage();
 }
 

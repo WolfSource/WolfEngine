@@ -19,11 +19,10 @@ namespace wolf
             W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
                 _In_ const VkPrimitiveTopology pPrimitiveTopology,
-                _In_ const VkRenderPass pRenderPass,
-                _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
-                _In_ const VkDescriptorSetLayout* const pShaderDescriptorSetLayoutBinding,
-                _In_ const std::vector<w_viewport>& pViewPorts,
-                _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
+				_In_ const w_render_pass* pRenderPassBinding,
+				_In_ const w_shader* pShaderBinding,
+				_In_ const std::vector<w_viewport>& pViewPorts,
+				_In_ const std::vector<w_viewport_scissor>& pViewPortScissors,
                 _In_ const std::string& pPipelineCacheName,
 				_In_ const std::vector<VkDynamicState>& pDynamicStates,
                 _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges,
@@ -34,33 +33,48 @@ namespace wolf
                 _In_ const VkPipelineColorBlendAttachmentState pBlendState,
                 _In_ const std::array<float, 4> pBlendColors)
             {
+				const std::string _trace_info = this->_name + "::load";
+
                 this->_gDevice = pGDevice;
 
                 if (pVertexBindingAttributes.declaration == w_vertex_declaration::NOT_DEFINED)
                 {
-                    logger.error("Vertex type not defined");
-                    return W_FALSE;
+					V(W_FALSE, L"vertex type not defined. Graphics device: " +
+						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					return W_FALSE;
                 }
-
-                if (!pShaderStages)
+                if (!pShaderBinding)
                 {
-                    logger.error("Shader stages could not be nullptr");
+					V(W_FALSE, L"shader can not be nullptr. Graphics device: " +
+						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
                     return W_FALSE;
                 }
-                if (!pRenderPass)
-                {
-                    logger.error("Render pass could not be nullptr");
-                    return W_FALSE;
-                }
+				if (!pShaderBinding->get_shader_stages())
+				{
+					V(W_FALSE, L"shader stages can not be nullptr. Graphics device: " +
+						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					return W_FALSE;
+				}
+				if (!pRenderPassBinding)
+				{
+					V(W_FALSE, L"render pass can not be nullptr. Graphics device: " +
+						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					return W_FALSE;
+				}
 
                 VkPipelineVertexInputStateCreateInfo* _vertex_input_state_create_info = nullptr;
                 VkPipelineInputAssemblyStateCreateInfo* _input_assembly_state_create_info = nullptr;
                 VkPipelineDynamicStateCreateInfo* _pipeline_dynamic_state_create_info = nullptr;
 
+				const auto _shader_descriptor_set_layout = pShaderBinding->get_descriptor_set_layout();
                 auto _pipeline_layout_create_info = _generate_pipeline_layout_create_info(
                     pVertexBindingAttributes,
                     pPrimitiveTopology,
-                    pShaderDescriptorSetLayoutBinding,
+					_shader_descriptor_set_layout ? &_shader_descriptor_set_layout : nullptr,
                     pDynamicStates,
                     pPushConstantRanges,
                     &_vertex_input_state_create_info,
@@ -71,14 +85,13 @@ namespace wolf
                 //create viewports and scissors
                 const VkPipelineViewportStateCreateInfo _viewport_state_create_info =
                 {
-
                     VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,                  // Type
                     nullptr,                                                                // Next
                     0,                                                                      // Flags
                     static_cast<uint32_t>(pViewPorts.size()),                               // ViewportCount
                     pViewPorts.data(),                                                      // Viewports
-                    static_cast<uint32_t>(pViewPortsScissors.size()),                      // ScissorCount
-                    pViewPortsScissors.data()  // Scissors
+                    static_cast<uint32_t>(pViewPortScissors.size()),                        // ScissorCount
+					pViewPortScissors.data()  // Scissors
                 };
 
                 //create blend state
@@ -107,13 +120,15 @@ namespace wolf
                     _depth_stencil_state.back.failOp = VK_STENCIL_OP_KEEP;
                     _depth_stencil_state.back.passOp = VK_STENCIL_OP_KEEP;
                 }
+
+				const auto _shader_stages = pShaderBinding->get_shader_stages();
                 VkGraphicsPipelineCreateInfo _pipeline_create_info;
                 _pipeline_create_info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
                 _pipeline_create_info.pNext = nullptr;
                 _pipeline_create_info.flags = 0;
-                _pipeline_create_info.stageCount = static_cast<uint32_t>((*pShaderStages).size());
-                _pipeline_create_info.pStages = (*pShaderStages).data();
-
+				_pipeline_create_info.stageCount = static_cast<uint32_t>(_shader_stages->size());
+				_pipeline_create_info.pStages = _shader_stages->data();
+				
                 _pipeline_create_info.pVertexInputState =
                     _vertex_input_state_create_info == nullptr ?
                     &(w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info) :
@@ -149,7 +164,7 @@ namespace wolf
                 _pipeline_create_info.pDynamicState = _pipeline_dynamic_state_create_info == nullptr ? nullptr : _pipeline_dynamic_state_create_info;
                 _pipeline_create_info.pViewportState = &_viewport_state_create_info;
                 _pipeline_create_info.layout = this->_pipeline_layout;
-                _pipeline_create_info.renderPass = pRenderPass;
+                _pipeline_create_info.renderPass = pRenderPassBinding->get_handle();
                 _pipeline_create_info.subpass = 0;
                 _pipeline_create_info.basePipelineHandle = 0;
                 _pipeline_create_info.basePipelineIndex = -1;
@@ -470,11 +485,10 @@ W_RESULT w_pipeline::load(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
     _In_ const VkPrimitiveTopology pPrimitiveTopology,
-    _In_ const VkRenderPass pRenderPass,
-    _In_ const std::vector<VkPipelineShaderStageCreateInfo>* pShaderStages,
-    _In_ const VkDescriptorSetLayout* pShaderDescriptorSetLayoutBinding,
-    _In_ const std::vector<w_viewport>& pViewPorts,
-    _In_ const std::vector<w_viewport_scissor>& pViewPortsScissors,
+	_In_ const w_render_pass* pRenderPassBinding,
+	_In_ const w_shader* pShaderBinding,
+	_In_ const std::vector<w_viewport>& pViewPorts,
+	_In_ const std::vector<w_viewport_scissor>& pViewPortScissors,
     _In_ const std::string& pPipelineCacheName,
 	_In_ const std::vector<VkDynamicState>& pDynamicStates,
     _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges,
@@ -491,11 +505,10 @@ W_RESULT w_pipeline::load(
         pGDevice,
         pVertexBindingAttributes,
         pPrimitiveTopology,
-        pRenderPass,
-        pShaderStages,
-        pShaderDescriptorSetLayoutBinding,
-        pViewPorts,
-        pViewPortsScissors,
+		pRenderPassBinding,
+		pShaderBinding,
+		pViewPorts,
+		pViewPortScissors,
 		pPipelineCacheName,
         pDynamicStates,
         pPushConstantRanges,

@@ -241,9 +241,8 @@ namespace wolf
 				_hr = this->_pipeline.load(_gDevice,
 					this->_shape_drawer.get_vertex_binding_attributes(),
 					VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
-					pRenderPass.get_handle(),
-					this->_shader.get_shader_stages(),
-					_descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
+					&pRenderPass,
+					&this->_shader,
 					{ pViewport },
 					{ pViewportScissor });
 				if (_hr == W_FALSE)

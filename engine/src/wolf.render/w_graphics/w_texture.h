@@ -158,7 +158,7 @@ namespace wolf
 			//get image usage
 			W_EXP const VkImageUsageFlags get_usage() const;
 			//get sampler of image
-            W_EXP VkSampler get_sampler(_In_ w_sampler_type pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
+            W_EXP VkSampler get_sampler(_In_ const w_sampler_type& pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
             //get image and view resources
             W_EXP w_image_view get_image_view() const;
             //get image type
@@ -168,7 +168,7 @@ namespace wolf
             //get image format
             W_EXP w_format get_format() const;
             //get write descriptor image info
-            W_EXP const VkDescriptorImageInfo get_descriptor_info(_In_ w_sampler_type pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
+            W_EXP const w_descriptor_image_info get_descriptor_info(_In_ const w_sampler_type& pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
 			//get number of mip maps levels
 			W_EXP const uint32_t get_mip_maps_level() const;
 

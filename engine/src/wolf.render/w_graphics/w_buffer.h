@@ -3,7 +3,7 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_buffer
-	Description		 : buffer
+	Description		 : graphics buffer
 	Comment          : 
 */
 
@@ -52,7 +52,7 @@ namespace wolf
             W_EXP const VkMemoryPropertyFlags         get_memory_flags() const;
             W_EXP const VkBuffer                      get_handle() const;
             W_EXP const VkDeviceMemory                get_memory() const;
-            W_EXP const VkDescriptorBufferInfo        get_descriptor_info() const;
+            W_EXP const w_descriptor_buffer_info      get_descriptor_info() const;
 
 #pragma endregion
             

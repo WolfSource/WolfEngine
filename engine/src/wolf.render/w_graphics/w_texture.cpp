@@ -1518,9 +1518,9 @@ namespace wolf
                  
 #pragma region Getters
             
-			const VkDescriptorImageInfo get_descriptor_info(_In_ w_sampler_type pSamplerType) const
+			const w_descriptor_image_info get_descriptor_info(_In_ const w_sampler_type& pSamplerType) const
 			{
-				VkDescriptorImageInfo  _desc_image_info = {};
+				w_descriptor_image_info  _desc_image_info = {};
 
 				_desc_image_info.imageView = this->_image_view.view;
 				_desc_image_info.imageLayout = this->_image_layout;
@@ -1917,7 +1917,7 @@ const VkImageUsageFlags w_texture::get_usage() const
 	return this->_pimp->get_usage();
 }
 
-VkSampler w_texture::get_sampler(_In_ w_sampler_type pSamplerType) const
+VkSampler w_texture::get_sampler(_In_ const w_sampler_type& pSamplerType) const
 {
     if(!this->_pimp) return 0;
     return this->_pimp->get_sampler(pSamplerType);
@@ -1951,9 +1951,15 @@ w_format w_texture::get_format() const
 	return this->_pimp->get_format();
 }
 
-const VkDescriptorImageInfo w_texture::get_descriptor_info(_In_ w_sampler_type pSamplerType) const
+const w_descriptor_image_info w_texture::get_descriptor_info(_In_ const w_sampler_type& pSamplerType) const
 {
-    if(!this->_pimp) return VkDescriptorImageInfo();
+	if (!this->_pimp)
+	{
+		w_descriptor_image_info _image_info;
+		_image_info.imageView = 0;
+		_image_info.sampler = 0;
+		return _image_info;
+	}
     return this->_pimp->get_descriptor_info(pSamplerType);
 }
 

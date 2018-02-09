@@ -146,13 +146,11 @@ void scene::load()
 	//just we need vertex position
 	w_vertex_binding_attributes _vba(w_vertex_declaration::VERTEX_POSITION);
 	
-	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(_gDevice,
 		_vba,
 		VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-		this->_draw_render_pass.get_handle(),
-		this->_shader.get_shader_stages(),
-		_descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
+		&this->_draw_render_pass,
+		&this->_shader,
 		{ this->_viewport },
 		{ this->_viewport_scissor });
 
@@ -242,9 +240,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	return w_game::render(pGameTime);
 }
 
-void scene::on_window_resized(_In_ const uint32_t& pIndex)
+void scene::on_window_resized(_In_ const uint32_t& pIndex, _In_ const w_point& pNewSizeOfWindow)
 {
-	w_game::on_window_resized(pIndex);
+	w_game::on_window_resized(pIndex, pNewSizeOfWindow);
 }
 
 void scene::on_device_lost()

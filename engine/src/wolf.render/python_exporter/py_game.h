@@ -88,14 +88,6 @@ namespace pywolf
 		{
 			if (this->_on_pre_init_callback) this->_on_pre_init_callback();
 			_super::initialize(pOutputWindowsInfo);
-			//allow graphics devices to access within this dll for python
-			for (size_t i = 0; i < this->graphics_devices.size(); ++i)
-			{
-				//wolf::logger.write(std::to_string(this->graphics_devices[i].use_count()));
-				//pywolf::py_graphics_devices.push_back(this->graphics_devices[i]);
-				//wolf::logger.write(std::to_string(this->graphics_devices[i].use_count()));
-				//wolf::logger.write(std::to_string(pywolf::py_graphics_devices[i].use_count()));
-			}
 			if (this->_on_post_init_callback) this->_on_post_init_callback();
 		}
 		void load() override

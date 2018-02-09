@@ -276,7 +276,7 @@ namespace wolf
                 return this->_memory;
             }
             
-            const VkDescriptorBufferInfo get_descriptor_info() const
+            const w_descriptor_buffer_info get_descriptor_info() const
             {
                 return this->_descriptor_info;
             }
@@ -292,7 +292,7 @@ namespace wolf
             VkDeviceMemory                                      _memory;
             VkMemoryPropertyFlags                               _memory_flags;
             VkBufferUsageFlags                                  _usage_flags;
-            VkDescriptorBufferInfo                              _descriptor_info;
+			w_descriptor_buffer_info                            _descriptor_info;
 #endif
             
         };
@@ -420,10 +420,16 @@ const VkDeviceMemory w_buffer::get_memory() const
     return this->_pimp->get_memory();
 }
 
-const VkDescriptorBufferInfo w_buffer::get_descriptor_info() const
+const w_descriptor_buffer_info w_buffer::get_descriptor_info() const
 {
-    if (!this->_pimp) return VkDescriptorBufferInfo();
-
+	if (!this->_pimp)
+	{
+		w_descriptor_buffer_info _buffer_info;
+		_buffer_info.buffer = 0;
+		_buffer_info.offset = 0;
+		_buffer_info.range = 0;
+		return _buffer_info;
+	}
     return this->_pimp->get_descriptor_info();
 }
 

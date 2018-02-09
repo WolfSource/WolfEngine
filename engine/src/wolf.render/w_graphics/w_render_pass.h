@@ -70,6 +70,64 @@ namespace wolf
 
 #pragma endregion
 
+#ifdef __PYTHON__
+
+			bool py_load(
+				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ const w_viewport& pViewPort,
+				_In_ const w_viewport_scissor& pViewPortScissor)
+			{
+				//create render pass attchaments
+				if (!pGDevice.get()) return false;
+				//boost::shared to std::shared
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+
+				//TODO: export w_image_view to python and make the following code, editable from python
+				std::vector<std::vector<w_image_view>> _render_pass_attachments;
+				for (size_t i = 0; i < _gDevice->output_presentation_window.vk_swap_chain_image_views.size(); ++i)
+				{
+					_render_pass_attachments.push_back
+					(
+						//COLOR										  , DEPTH
+						{ _gDevice->output_presentation_window.vk_swap_chain_image_views[i], _gDevice->output_presentation_window.vk_depth_buffer_image_view }
+					);
+				}
+				if (!_render_pass_attachments.size()) return false;
+
+				auto _hr = load(
+					_gDevice,
+					pViewPort,
+					pViewPortScissor,
+					_render_pass_attachments);
+
+				//reset local shared_ptr
+				_gDevice.reset();
+
+				return _hr == W_OK;
+		}
+
+			void py_begin(
+				_In_ const uint32_t& pFrameBufferIndex,
+				_In_ const w_command_buffer& pCommandBuffer,
+				_In_ const w_color& pClearColor,
+				_In_ const float& pClearDepth,
+				_In_ const uint32_t& pClearStencil)
+			{
+				begin(
+					pFrameBufferIndex,
+					&pCommandBuffer,
+					pClearColor,
+					pClearDepth,
+					pClearStencil);
+			}
+
+			void py_end(_In_ const w_command_buffer& pCommandBuffer)
+			{
+				end(&pCommandBuffer);
+			}
+
+#endif
+
         private:
             typedef system::w_object						_super;
             w_render_pass_pimp*                             _pimp;
