@@ -17,13 +17,14 @@ build:
   project: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln
   verbosity: minimal
 ignore:
-    - *.md
-    - .gitattributes
-    - .gitignore
-    - Logo.jpg
-    - setup.py
     - content/*
     - docs/*
     - samples/*
     - utilities
+    - .gitattributes
+    - .gitignore
+    - LICENSE.md
+    - Logo.jpg
+    - README.md
+    - setup.py
 
