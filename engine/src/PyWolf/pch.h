@@ -14,13 +14,14 @@
 #ifndef __PCH_H__
 #define __PCH_H__
 
+#include <tbb/atomic.h>
+#include <wolf.h>
+
+#ifdef __PYTHON__
 
 #include <boost/python.hpp>
 
-#include <tbb/atomic.h>
-
 //from wolf::system namespaces
-#include <wolf.h>
 #include <w_bounding.h>
 #include <w_color.h>
 #include <w_timer.h>
@@ -43,5 +44,7 @@
 #include <w_graphics/w_command_buffer.h>
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_texture.h>
+
+#endif //__PYTHON__
 
 #endif //__PCH_H__
