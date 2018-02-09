@@ -1,4 +1,4 @@
-# Wolf Engine [![GPL v3 licensed](https://img.shields.io/cran/l/devtools.svg)](LICENSE)
+# Wolf Engine [![Build status](https://ci.appveyor.com/api/projects/status/nrk0kn83tp1n47h3/branch/master?svg=true)](https://ci.appveyor.com/project/PooyaEimandar/wolf-engine/branch/master) [![GPL v3 licensed](https://img.shields.io/cran/l/devtools.svg)](LICENSE)
 <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg" width="256" height="256" alt="WolfSource"/>
 <p><b>Welcome to the Wolf Engine source code.</b></p> 
 <p>The&nbsp;<b>Wolf Engine</b>&nbsp;is the next
