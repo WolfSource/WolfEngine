@@ -8,6 +8,7 @@ environment:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.14"
       PYTHON_ARCH: "64"
+ matrix:
   exclude:
     - platform: x86
       configuration: Debug
