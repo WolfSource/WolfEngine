@@ -15,7 +15,7 @@ install:
 
     .\VulkanSDK.exe /S
 # python requirements needed to ubpack deps
-  - "%PYTHON%\\python.exe c:\\projects\\wolf-engine\\setup.py"
+- "%PYTHON%\\python.exe c:\\projects\\wolf-engine\\setup.py"
 init:
   - "%PYTHON%\\python.exe --version"
   - echo "%VulkanSDK%
