@@ -12,8 +12,18 @@ install:
     # python requirements needed to ubpack deps
     - "%PYTHON%\\python.exe c:\\projects\\wolf-engine\\setup.py"
 init:
-  - "%PYTHON%\\python.exe --version"
+    - "%PYTHON%\\python.exe --version"
 build:
   project: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln
   verbosity: minimal
+ignore:
+    - *.md
+    - .gitattributes
+    - .gitignore
+    - Logo.jpg
+    - setup.py
+    - content/*
+    - docs/*
+    - samples/*
+    - utilities
 
