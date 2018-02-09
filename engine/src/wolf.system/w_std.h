@@ -68,9 +68,7 @@ extern "C" {
 #ifdef __ANDROID
     using std::size_t;
 #endif
-
-	enum HRESULT : uint8_t { S_OK = 0, S_FALSE = 1, E_INVALIDARG = 2, E_OUTOFMEMORY = 3};
-	
+		
     typedef unsigned char			UCHAR, *PUCHAR;
     typedef unsigned long			ULONG , *PULONG;
     typedef unsigned short			USHORT, *PUSHORT;
@@ -145,4 +143,15 @@ namespace std
 
 #endif//ANDROID && __linux && __APPLE__
 
-#endif//__W_BASETSD_H__
+#ifdef __cplusplus
+extern "C" 
+{
+#endif
+	enum W_RESULT : uint8_t { W_OK = 0, W_FALSE, W_INVALIDARG, W_OUTOFMEMORY, W_INVALID_FILE_ATTRIBUTES };
+#ifdef __cplusplus
+}//extern "C"
+#endif
+
+#include "python_exporter/py_std.h"
+
+#endif//__W_STD_H__

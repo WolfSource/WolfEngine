@@ -16,7 +16,6 @@
 
 #if defined(__WIN32)
 
-#include <Windows.h>
 #include <fileapi.h>
 #include <io.h>
 
@@ -36,6 +35,7 @@
 
 #endif //__WIN32
 
+#include "w_std.h"
 #include "w_convert.h"
 #include <memory>
 #include <string>
@@ -130,7 +130,7 @@ namespace wolf
 #endif //__WIN32
 
 			//check whether a file does exist or not
-			inline HRESULT get_is_file(_In_z_ const char* pPath)
+			inline W_RESULT get_is_file(_In_z_ const char* pPath)
 			{
 				//On Windows
 				FILE* _file = nullptr;
@@ -138,22 +138,22 @@ namespace wolf
 				if (_file)
 				{
 					fclose(_file);
-					return S_OK;
+					return W_OK;
 				}
-				return S_FALSE;
+				return W_FALSE;
 			}
 
 			//check whether a file does exist or not
-			inline HRESULT get_is_file(_In_z_ const wchar_t* pPath)
+			inline W_RESULT get_is_file(_In_z_ const wchar_t* pPath)
 			{
 				FILE* _file = nullptr;
 				_wfopen_s(&_file, pPath, L"r");
 				if (_file)
 				{
 					fclose(_file);
-					return S_OK;
+					return W_OK;
 				}
-				return S_FALSE;
+				return W_FALSE;
 			}
 
 			//get size of file
@@ -174,46 +174,46 @@ namespace wolf
 			/*
 				Check whether a directory does exist or not
 				returns:
-						S_OK	: Directory exists
-						S_FALSE : Directory does not exist
+						W_OK	: Directory exists
+						W_FALSE : Directory does not exist
 						-1		: INVALID_FILE_ATTRIBUTES. Something is wrong with the path
 			*/
-			inline HRESULT get_is_directory(_In_z_ const char* pPath)
+			inline W_RESULT get_is_directory(_In_z_ const char* pPath)
 			{
 				DWORD _file_attr = GetFileAttributesA(pPath);
 
-				if (_file_attr == INVALID_FILE_ATTRIBUTES) return INVALID_FILE_ATTRIBUTES;
-				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return S_OK;
-				return S_FALSE;
+				if (_file_attr == INVALID_FILE_ATTRIBUTES) return W_INVALID_FILE_ATTRIBUTES;
+				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return W_OK;
+				return W_FALSE;
 			}
 
 			/*
 				Check whether a directory does exist or not
 				returns:
-						S_OK	: Directory exists
-						S_FALSE : Directory not exists
+						W_OK	: Directory exists
+						W_FALSE : Directory not exists
 						-1		: INVALID_FILE_ATTRIBUTES. Something is wrong with the path
 			*/
-			inline HRESULT get_is_directoryW(_In_z_ const wchar_t* pPath)
+			inline W_RESULT get_is_directoryW(_In_z_ const wchar_t* pPath)
 			{
 				DWORD _file_attr = GetFileAttributesW(pPath);
-				if (_file_attr == INVALID_FILE_ATTRIBUTES) return INVALID_FILE_ATTRIBUTES;
-				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return S_OK;
-				return S_FALSE;
+				if (_file_attr == INVALID_FILE_ATTRIBUTES) return W_INVALID_FILE_ATTRIBUTES;
+				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return W_OK;
+				return W_FALSE;
 			}
 
 			//create directory
-			inline HRESULT create_directoryW(_In_ const wchar_t* pPath)
+			inline W_RESULT create_directoryW(_In_ const wchar_t* pPath)
 			{
 				if (CreateDirectoryW(pPath, NULL) || ERROR_ALREADY_EXISTS == GetLastError())
 				{
-					return S_OK;
+					return W_OK;
 				}
-				return S_FALSE;
+				return W_FALSE;
 			}
 
 			//create directory
-			inline HRESULT create_directory(_In_z_ const char* pPath)
+			inline W_RESULT create_directory(_In_z_ const char* pPath)
 			{
 				auto _str = std::string(pPath);
 				auto _wstr = create_directoryW(std::wstring(_str.begin(), _str.end()).c_str());
@@ -236,7 +236,7 @@ namespace wolf
 			inline void read_binary_fileW(_In_z_ const wchar_t* pPath, _Inout_ std::vector<uint8_t>& pData,
 				_Out_ int& pFileState)
 			{
-				if (get_is_file(pPath) == S_FALSE)
+				if (get_is_file(pPath) == W_FALSE)
 				{
 					pFileState = -1;
 					return;
@@ -343,11 +343,11 @@ namespace wolf
 			}
 #endif          
 			//check whether a file does exist or not
-			inline HRESULT get_is_file(_In_z_ const char* pPath)
+			inline W_RESULT get_is_file(_In_z_ const char* pPath)
 			{
 				struct stat _stat;
-                                                                	auto _result = stat(pPath, &_stat);
-				return _result == -1 ? S_FALSE : S_OK;
+				auto _result = stat(pPath, &_stat);
+				return _result == -1 ? W_FALSE : W_OK;
 			}
 
 			//check size of file
@@ -361,24 +361,24 @@ namespace wolf
 			/*
 				Check whether a directory does exist or not
 				returns:
-						S_OK	: Directory exists
-						S_FALSE : Directory does not exist
+						W_OK	: Directory exists
+						W_FALSE : Directory does not exist
 			*/
-			inline HRESULT get_is_directory(_In_z_ const char* pPath)
+			inline W_RESULT get_is_directory(_In_z_ const char* pPath)
 			{
 				struct stat _stat;
 				if (stat(pPath, &_stat) == 0 && S_ISDIR(_stat.st_mode))
 				{
-					return S_OK;
+					return W_OK;
 				}
-				return S_FALSE;
+				return W_FALSE;
 			}
 
 			//create a directory
-			inline HRESULT create_directory(_In_z_ std::string pPath, mode_t pMode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
+			inline W_RESULT create_directory(_In_z_ std::string pPath, mode_t pMode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
 			{
 				struct stat _stat;
-				HRESULT  _hr = S_OK;
+				W_RESULT _hr = W_OK;
 
 				auto _path = pPath.c_str();
 				if (stat(_path, &_stat) != 0)
@@ -386,13 +386,13 @@ namespace wolf
 					//Directory does not exist, so make it. EEXIST for race condition
 					if (mkdir(_path, pMode) != 0 && errno != EEXIST)
 					{
-						_hr = S_FALSE;
+						_hr = W_FALSE;
 					}
 				}
 				else if (!S_ISDIR(_stat.st_mode))
 				{
 					errno = ENOTDIR;
-					_hr = S_FALSE;
+					_hr = W_FALSE;
 				}
 
 				return _hr;

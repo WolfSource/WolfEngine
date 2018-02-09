@@ -25,11 +25,11 @@ namespace wolf
         {
 		public:
             //initialize fence
-            W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t pNumberOfFences = 1);
+            W_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t pNumberOfFences = 1);
             //wait for all fence for the timeout period in units of nanoseconds
-            W_EXP HRESULT wait(_In_ uint64_t pTimeOut = UINT64_MAX - 1);
+            W_EXP W_RESULT wait(_In_ uint64_t pTimeOut = UINT64_MAX - 1);
             //reset all fences
-            W_EXP HRESULT reset();
+            W_EXP W_RESULT reset();
             //get pointer to the first fence
             W_EXP VkFence* get();
             //get all fences

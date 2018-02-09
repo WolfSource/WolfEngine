@@ -36,7 +36,7 @@ namespace wolf
 
             }
 
-            HRESULT initialize(
+			W_RESULT initialize(
 				_In_z_ const char* pURL,
                 _In_ const int& pDomain,
                 _In_ const int& pProtocol,
@@ -50,8 +50,8 @@ namespace wolf
 				this->_socket = nn_socket(pDomain, pProtocol);
 				if (this->_socket < 0)
 				{
-					V(S_FALSE, "creating socket", _trace_info, 3);
-					return S_FALSE;
+					V(W_FALSE, "creating socket", _trace_info, 3);
+					return W_FALSE;
 				}
                 
 				//set socket option
@@ -66,16 +66,16 @@ namespace wolf
 					//on bind, which used for server
 					if (nn_bind(this->_socket, pURL) < 0)
 					{
-						V(S_FALSE, "binding to " + std::string(pURL), _trace_info, 3);
-						return S_FALSE;
+						V(W_FALSE, "binding to " + std::string(pURL), _trace_info, 3);
+						return W_FALSE;
 					}
 					break;
 				case w_socket_connection_type::CONNECT:
 					//on conneect, which used for client
 					if (nn_connect(this->_socket, pURL) < 0)
 					{
-						V(S_FALSE, "connecting to " + std::string(pURL), _trace_info, 3);
-						return S_FALSE;
+						V(W_FALSE, "connecting to " + std::string(pURL), _trace_info, 3);
+						return W_FALSE;
 					}
 					break;
 
@@ -86,20 +86,20 @@ namespace wolf
 				{
 					if (nn_connect(this->_socket, con) < 0)
 					{
-						V(S_FALSE, "connecting to " + std::string(con), _trace_info, 3);
-						return S_FALSE;
+						V(W_FALSE, "connecting to " + std::string(con), _trace_info, 3);
+						return W_FALSE;
 					}
 				}
 
 				//rise on connect or bind
 				pOnConnectOrBindEstablished(this->_socket);
-                return S_OK;
+                return W_OK;
             }
             
             //http://nanomsg.org/v0.1/nn_setsockopt.3.html
-            HRESULT set_socket_option(_In_ w_socket_options* pSocketOption)
+			W_RESULT set_socket_option(_In_ w_socket_options* pSocketOption)
             {
-				if (!pSocketOption) return S_FALSE;
+				if (!pSocketOption) return W_FALSE;
 				
                 const std::string _trace_info = this->_name + "::set_socket_option";
                 if(nn_setsockopt(
@@ -109,11 +109,11 @@ namespace wolf
 					pSocketOption->option_value,
 					pSocketOption->option_value_length) < 0)
                 {
-                    V(S_FALSE, "setting socket option. Level: " + std::to_string(pSocketOption->socket_level) +
+                    V(W_FALSE, "setting socket option. Level: " + std::to_string(pSocketOption->socket_level) +
                       " Option:" + std::to_string(pSocketOption->option), _trace_info, 3);
-                    return S_FALSE;
+                    return W_FALSE;
                 }
-                return S_OK;
+                return W_OK;
             }
             
             int release()
@@ -139,11 +139,11 @@ w_network::~w_network()
     release();
 }
 
-HRESULT w_network::setup_one_way_pusher(
+W_RESULT w_network::setup_one_way_pusher(
     _In_z_ const char* pURL,
 	_In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
     return this->_pimp->initialize(
 		pURL, 
 		AF_SP, NN_PUSH, 
@@ -152,11 +152,11 @@ HRESULT w_network::setup_one_way_pusher(
 		nullptr);
 }
 
-HRESULT w_network::setup_one_way_puller(
+W_RESULT w_network::setup_one_way_puller(
 	_In_z_ const char* pURL,
 	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
     return this->_pimp->initialize(
 		pURL, 
 		AF_SP, 
@@ -166,12 +166,12 @@ HRESULT w_network::setup_one_way_puller(
 		nullptr);
 }
 
-HRESULT w_network::setup_two_way_server(
+W_RESULT w_network::setup_two_way_server(
     _In_z_ const char* pURL,
     _In_ int pReceiveTime,
     _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
 	
 	const std::string _trace_info = "w_network::setup_two_way_server";
 
@@ -185,7 +185,7 @@ HRESULT w_network::setup_two_way_server(
 	}
 	else
 	{
-		V(S_FALSE, "allocating memory for socket option", _trace_info, 3);
+		V(W_FALSE, "allocating memory for socket option", _trace_info, 3);
 	}
 	auto _hr = this->_pimp->initialize(
 		pURL, 
@@ -201,12 +201,12 @@ HRESULT w_network::setup_two_way_server(
     return _hr;
 }
 
-HRESULT w_network::setup_two_way_client(
+W_RESULT w_network::setup_two_way_client(
     _In_z_ const char* pURL,
     _In_ int pReceiveTime,
     _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
 
 	const std::string _trace_info = "w_network::setup_two_way_client";
     
@@ -220,7 +220,7 @@ HRESULT w_network::setup_two_way_client(
 	}
 	else
 	{
-		V(S_FALSE, "allocating memory for socket option", _trace_info, 3);
+		V(W_FALSE, "allocating memory for socket option", _trace_info, 3);
 	}
 
 	auto _hr = this->_pimp->initialize(
@@ -237,11 +237,11 @@ HRESULT w_network::setup_two_way_client(
     return _hr;
 }
 
-HRESULT w_network::setup_broadcast_publisher(
+W_RESULT w_network::setup_broadcast_publisher(
     _In_z_ const char* pURL,
     _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
     return this->_pimp->initialize(
 		pURL, 
 		AF_SP, 
@@ -251,11 +251,11 @@ HRESULT w_network::setup_broadcast_publisher(
 		nullptr);
 }
 
-HRESULT w_network::setup_broadcast_subscriptore(
+W_RESULT w_network::setup_broadcast_subscriptore(
     _In_z_ const char* pURL,
     _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
 	
 	const std::string _trace_info = "w_network::setup_broadcast_subscriptore";
 
@@ -269,7 +269,7 @@ HRESULT w_network::setup_broadcast_subscriptore(
 	}
 	else
 	{
-		V(S_FALSE, "allocating memory for socket option", _trace_info, 3);
+		V(W_FALSE, "allocating memory for socket option", _trace_info, 3);
 	}
 
 	auto _hr = this->_pimp->initialize(
@@ -286,11 +286,11 @@ HRESULT w_network::setup_broadcast_subscriptore(
     return _hr;
 }
 
-HRESULT w_network::setup_survey_server(
+W_RESULT w_network::setup_survey_server(
 	_In_z_ const char* pURL,
 	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
 {
-	if (!this->_pimp) return S_FALSE;
+	if (!this->_pimp) return W_FALSE;
 	return this->_pimp->initialize(
 		pURL, 
 		AF_SP, 
@@ -300,11 +300,11 @@ HRESULT w_network::setup_survey_server(
 		nullptr);
 }
 
-HRESULT w_network::setup_survey_client(
+W_RESULT w_network::setup_survey_client(
 	_In_z_ const char* pURL,
 	_In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
 {
-	if (!this->_pimp) return S_FALSE;
+	if (!this->_pimp) return W_FALSE;
 	return this->_pimp->initialize(
 		pURL, 
 		AF_SP, 
@@ -314,13 +314,13 @@ HRESULT w_network::setup_survey_client(
 		nullptr);
 }
 
-HRESULT w_network::setup_bus_node(
+W_RESULT w_network::setup_bus_node(
 	_In_z_ const char* pURL,
 	_In_ int pReceiveTime,
 	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
 	_In_ std::initializer_list<const char*> pConnectURLs)
 {
-	if (!this->_pimp) return S_FALSE;
+	if (!this->_pimp) return W_FALSE;
 
 	const std::string _trace_info = "w_network::setup_bus_node";
 
@@ -334,7 +334,7 @@ HRESULT w_network::setup_bus_node(
 	}
 	else
 	{
-		V(S_FALSE, "allocating memory for socket option", _trace_info, 3);
+		V(W_FALSE, "allocating memory for socket option", _trace_info, 3);
 	}
 
 	auto _hr = this->_pimp->initialize(
@@ -354,14 +354,14 @@ HRESULT w_network::setup_bus_node(
 
 ULONG w_network::free_buffer(_In_z_ char* pBuffer)
 {
-	if (!pBuffer) return S_OK;
+	if (!pBuffer) return W_OK;
 	const std::string _trace_info = "w_network::free_buffer";
 	if (nn_freemsg(pBuffer) < 0)
 	{
-		V(S_FALSE, "free buffer", _trace_info, 3);
-		return S_FALSE;
+		V(W_FALSE, "free buffer", _trace_info, 3);
+		return W_FALSE;
 	}
-	return S_OK;
+	return W_OK;
 }
 
 w_network_error w_network::get_last_error()

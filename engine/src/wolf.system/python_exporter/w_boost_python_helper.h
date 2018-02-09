@@ -9,10 +9,6 @@
 
 #ifdef __PYTHON__
 
-#if _MSC_VER > 1000
-#pragma once
-#endif
-
 #ifndef __W_BOOST_PYTHON_HELPER_H__
 #define __W_BOOST_PYTHON_HELPER_H__
 

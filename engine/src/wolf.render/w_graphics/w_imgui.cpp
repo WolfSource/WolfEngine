@@ -26,7 +26,7 @@ namespace wolf
             {
             }
 
-			HRESULT load(
+			W_RESULT load(
 				_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
 				_In_ const w_output_presentation_window* pOutputPresentationWindow,
 				_In_ const w_viewport& pViewport,
@@ -124,20 +124,20 @@ namespace wolf
 					pViewport,
 					pViewportScissor,
 					_attachments);
-				if (__hr == S_FALSE)
+				if (__hr == W_FALSE)
 				{
-					V(S_FALSE, "creating render pass", _trace_info, 3);
+					V(W_FALSE, "creating render pass", _trace_info, 3);
 					release();
-					return S_FALSE;
+					return W_FALSE;
 				}
 				_attachments.clear();
 
 				__hr = this->_command_buffers.load(_gDevice, pOutputPresentationWindow->vk_swap_chain_image_views.size());
-				if (__hr == S_FALSE)
+				if (__hr == W_FALSE)
 				{
 					release();
-					V(S_FALSE, "creating command buffers", _trace_info, 3);
-					return S_FALSE;
+					V(W_FALSE, "creating command buffers", _trace_info, 3);
+					return W_FALSE;
 				}
 
 				// Create fonts texture
@@ -160,18 +160,18 @@ namespace wolf
 					_texture_data.data());
 
 				__hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage::VERTEX_SHADER);
-				if (__hr != S_OK)
+				if (__hr != W_OK)
 				{
 					V(__hr, "loading vertex shader", _trace_info, 3);
 					release();
-					return S_FALSE;
+					return W_FALSE;
 				}
 				__hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.frag.spv", w_shader_stage::FRAGMENT_SHADER);
-				if (__hr != S_OK)
+				if (__hr != W_OK)
 				{
 					V(__hr, "loading fragment shader", _trace_info, 3);
 					release();
-					return S_FALSE;
+					return W_FALSE;
 				}
 
 				std::vector<w_shader_binding_param> _shader_params;
@@ -224,9 +224,9 @@ namespace wolf
 				this->_pipeline_layout = w_pipeline::create_pipeline_layout(_gDevice, &_pipeline_layout_create_info);
 				if (!this->_pipeline_layout)
 				{
-					V(S_FALSE, "creating pipeline layout", _trace_info, 3);
+					V(W_FALSE, "creating pipeline layout", _trace_info, 3);
 					release();
-					return S_FALSE;
+					return W_FALSE;
 				}
 				// Pipeline cache
 				VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
@@ -371,14 +371,14 @@ namespace wolf
 					&pipelineCreateInfo,
 					nullptr,
 					&this->_pipeline);
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
-					V(S_FALSE, "creating graphics pipeline", _trace_info);
+					V(W_FALSE, "creating graphics pipeline", _trace_info);
 					release();
-					return S_FALSE;
+					return W_FALSE;
 				}
 
-				return _hr == VK_SUCCESS ? S_OK : S_FALSE;
+				return _hr == VK_SUCCESS ? W_OK : W_FALSE;
 			}
 
             void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
@@ -440,10 +440,10 @@ namespace wolf
                 ImGui::Render();
             }
 
-			HRESULT render()
+			W_RESULT render()
             {
 				const std::string _trace_info = this->_name + "::render";
-				HRESULT _hr = S_OK;
+				W_RESULT _hr = W_OK;
 
 				auto _size = this->_command_buffers.get_commands_size();
 				for (uint32_t i = 0; i < _size; ++i)
@@ -452,13 +452,13 @@ namespace wolf
 					{
 						this->_render_pass.begin(i, &this->_command_buffers);
 						{
-							if (_update_buffers() == S_OK)
+							if (_update_buffers() == W_OK)
 							{
 								_draw(this->_command_buffers.get_active_command());
 							}
 							else
 							{
-								_hr = S_FALSE;
+								_hr = W_FALSE;
 							}
 						}
 						this->_render_pass.end(&this->_command_buffers);
@@ -532,17 +532,17 @@ namespace wolf
 #pragma endregion
 
         private:
-			HRESULT _update_buffers()
+			W_RESULT _update_buffers()
 			{
 				ImDrawData* _im_draw_data = ImGui::GetDrawData();
-				if (!_im_draw_data || !_im_draw_data->CmdListsCount) return S_OK;
+				if (!_im_draw_data || !_im_draw_data->CmdListsCount) return W_OK;
 
 				// Note: Alignment is done inside buffer creation
 				uint32_t _vertex_buffer_size = _im_draw_data->TotalVtxCount * sizeof(ImDrawVert);
 				uint32_t _index_buffer_size = _im_draw_data->TotalIdxCount * sizeof(ImDrawIdx);
 
 				// Update buffers only if vertex or index count has been changed compared to current buffer size
-				HRESULT _hr;
+				W_RESULT _hr;
 
 				//Vertex buffer
 				if (!this->_vertex_buffer || this->_vertex_buffer->get_size() != _vertex_buffer_size)
@@ -556,13 +556,13 @@ namespace wolf
 						_vertex_buffer_size,
 						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-					if (_hr == S_FALSE)
+					if (_hr == W_FALSE)
 					{
 						V(_hr, "loading staging vertex buffer", this->_name);
 						return _hr;
 					}
 					_hr = this->_vertex_buffer->bind();
-					if (_hr == S_FALSE)
+					if (_hr == W_FALSE)
 					{
 						V(_hr, "binding staging vertex buffer", this->_name);
 						return _hr;
@@ -580,13 +580,13 @@ namespace wolf
 						_index_buffer_size,
 						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
 						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-					if (_hr == S_FALSE)
+					if (_hr == W_FALSE)
 					{
 						V(_hr, "loading staging index buffer", this->_name);
 						return _hr;
 					}
 					_hr = this->_index_buffer->bind();
-					if (_hr == S_FALSE)
+					if (_hr == W_FALSE)
 					{
 						V(_hr, "binding staging index buffer", this->_name);
 						return _hr;
@@ -606,13 +606,13 @@ namespace wolf
 				}
 
 				_hr = this->_vertex_buffer->flush();
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					V(_hr, "flushing staging index buffer", this->_name);
 					return _hr;
 				}
 				_hr = this->_index_buffer->flush();
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					V(_hr, "flushing staging index buffer", this->_name);
 					return _hr;
@@ -624,7 +624,7 @@ namespace wolf
 				vtxDst = nullptr;
 				idxDst = nullptr;
 
-				return S_OK;
+				return W_OK;
 			}
 
 			void _draw(_In_ VkCommandBuffer pCommandBuffer)
@@ -774,7 +774,7 @@ using namespace wolf::graphics;
 bool w_imgui::_is_released = false;
 w_imgui_pimp* w_imgui::_pimp = nullptr;
 
-HRESULT w_imgui::load(
+W_RESULT w_imgui::load(
 	_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
 	_In_ const w_output_presentation_window* pOutputPresentationWindow,
 	_In_ const w_viewport& pViewport,

@@ -68,7 +68,7 @@ namespace wolf
 			W_EXP virtual ~w_shader();
 
 			//Create shader from binary file
-			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+			W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 							   _In_z_ const std::wstring& pShaderBinaryPath,
 				               _In_ const w_shader_stage pShaderStage,
                                _In_z_ const char* pMainFunctionName = "main");
@@ -93,11 +93,11 @@ namespace wolf
 
 #pragma region Setters
             
-            W_EXP HRESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
+            W_EXP W_RESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
 
 #pragma endregion
 
-            W_EXP static HRESULT load_shader(
+            W_EXP static W_RESULT load_shader(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_z_ const std::string& pName,
                 _In_z_ const std::wstring& pVertexShaderPath,

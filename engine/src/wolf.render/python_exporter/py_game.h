@@ -108,11 +108,11 @@ namespace pywolf
 			if (this->_on_update_callback) this->_on_update_callback(pGameTime);
 			_super::update(pGameTime);
 		}
-		HRESULT render(_In_ const wolf::system::w_game_time& pGameTime) override
+		W_RESULT render(_In_ const wolf::system::w_game_time& pGameTime) override
 		{
 			if (this->_on_pre_render_callback) this->_on_pre_render_callback(pGameTime);
 			auto _hr = _super::render(pGameTime);
-			if (this->_on_post_render_callback) this->_on_post_render_callback(_hr == S_OK);
+			if (this->_on_post_render_callback) this->_on_post_render_callback(_hr == W_OK);
 			return _hr;
 		}
 		void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex) override

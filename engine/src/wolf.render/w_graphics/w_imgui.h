@@ -46,7 +46,7 @@ namespace wolf
                 }
             };
 
-            static W_EXP HRESULT load(
+            static W_EXP W_RESULT load(
 				_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
 				_In_ const w_output_presentation_window* pOutputPresentationWindow,
                 _In_ const w_viewport& pViewport,

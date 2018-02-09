@@ -20,7 +20,7 @@ namespace wolf
             {
             }
             
-            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t pBufferSizeInBytes,
                 _In_ const VkBufferUsageFlags pUsageFlags,
                 _In_ const VkMemoryPropertyFlags pMemoryFlags)
@@ -49,9 +49,9 @@ namespace wolf
                     &this->_handle);
                 if (_hr)
                 {
-                    V(S_FALSE, "w_buffer", "creating buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
+                    V(W_FALSE, "w_buffer", "creating buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
                         " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), 3, false);
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
                 VkMemoryRequirements _buffer_memory_requirements;
@@ -85,50 +85,50 @@ namespace wolf
                             this->_descriptor_info.offset = 0;
                             this->_descriptor_info.range = this->_size_in_bytes;
 
-                            return S_OK;
+                            return W_OK;
                         }
                     }
                 }
                 logger.error("Could not create buffer, because proposed memory property not found.");
 
-                return S_FALSE;
+                return W_FALSE;
             }
             
-            HRESULT bind()
+            W_RESULT bind()
             {
                 return vkBindBufferMemory(this->_gDevice->vk_device,
                     this->_handle,
                     this->_memory,
-                    0) == VK_SUCCESS ? S_OK : S_FALSE;
+                    0) == VK_SUCCESS ? W_OK : W_FALSE;
 
             }
 
             //Set data to DRAM
-            HRESULT set_data(_In_ const void* const pData)
+            W_RESULT set_data(_In_ const void* const pData)
             {
                 //we can not access to VRAM, but we can copy our data to DRAM
-                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return S_FALSE;
+                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return W_FALSE;
 
-                if (map() == nullptr) return S_FALSE;
+                if (map() == nullptr) return W_FALSE;
                 memcpy(this->_mapped, pData, (size_t)this->_size_in_bytes);
 
-                if (flush(VK_WHOLE_SIZE, 0) == S_FALSE) return S_FALSE;
+                if (flush(VK_WHOLE_SIZE, 0) == W_FALSE) return W_FALSE;
 
                 unmap();
 
-                return S_OK;
+                return W_OK;
             }
             
-            HRESULT copy_to(_In_ w_buffer& pDestinationBuffer)
+            W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer)
             {
                 const std::string _trace = this->_name + "copy_to";
                 
                 //create one command buffer
                 w_command_buffer _copy_command_buffer;
                 auto _hr = _copy_command_buffer.load(this->_gDevice, 1);
-                if (_hr != S_OK)
+                if (_hr != W_OK)
                 {
-                    V(S_FALSE, "loading command buffer " +
+                    V(W_FALSE, "loading command buffer " +
                         _gDevice->get_info(),
                         _trace,
                         3);
@@ -136,9 +136,9 @@ namespace wolf
                 }
 
                 _hr = _copy_command_buffer.begin(0);
-                if (_hr != S_OK)
+                if (_hr != W_OK)
                 {
-                    V(S_FALSE, "begining command buffer " +
+                    V(W_FALSE, "begining command buffer " +
                         _gDevice->get_info(),
                         _trace,
                         3);
@@ -156,9 +156,9 @@ namespace wolf
                     &_copy_region);
 
                 _hr = _copy_command_buffer.flush(0);
-                if (_hr != S_OK)
+                if (_hr != W_OK)
                 {
-                    V(S_FALSE,
+                    V(W_FALSE,
                         "flushing command buffer" +
                         _gDevice->get_info(),
                         _trace,
@@ -168,7 +168,7 @@ namespace wolf
 
                 _copy_command_buffer.release();
 
-                return S_OK;
+                return W_OK;
             }
 
             void* map()
@@ -191,7 +191,7 @@ namespace wolf
                 if (_hr)
                 {
                     this->_mapped = nullptr;
-                    V(S_FALSE, "mapping data to to vertex buffer's memory " +
+                    V(W_FALSE, "mapping data to to vertex buffer's memory " +
                         _gDevice->get_info(),
                         _trace_info, 3, false);
 
@@ -210,7 +210,7 @@ namespace wolf
                 }
             }
 
-            HRESULT flush(VkDeviceSize pSize, VkDeviceSize pOffset)
+            W_RESULT flush(VkDeviceSize pSize, VkDeviceSize pOffset)
             {
                 VkMappedMemoryRange _mapped_range = {};
                 _mapped_range.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
@@ -218,7 +218,7 @@ namespace wolf
                 _mapped_range.offset = pOffset;
                 _mapped_range.size = pSize;
 
-                return vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range) == VK_SUCCESS ? S_OK : S_FALSE;
+                return vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range) == VK_SUCCESS ? W_OK : W_FALSE;
             }
             
             ULONG release()
@@ -311,10 +311,10 @@ w_buffer::~w_buffer()
     release();
 }
 
-HRESULT w_buffer::load_as_staging(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+W_RESULT w_buffer::load_as_staging(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                   _In_ const uint32_t pBufferSize)
 {
-    if(!this->_pimp) return S_FALSE;
+    if(!this->_pimp) return W_FALSE;
     
     return this->_pimp->load(pGDevice,
                              pBufferSize,
@@ -322,33 +322,33 @@ HRESULT w_buffer::load_as_staging(_In_ const std::shared_ptr<w_graphics_device>&
                              VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 }
 
-HRESULT w_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+W_RESULT w_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                        _In_ const uint32_t pBufferSizeInBytes,
                        _In_ const VkBufferUsageFlags pUsageFlags,
                        _In_ const VkMemoryPropertyFlags pMemoryFlags)
 {
-    if(!this->_pimp) return S_FALSE;
+    if(!this->_pimp) return W_FALSE;
     
     return this->_pimp->load(pGDevice, pBufferSizeInBytes, pUsageFlags, pMemoryFlags);
 }
 
-HRESULT w_buffer::bind()
+W_RESULT w_buffer::bind()
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
 
     return this->_pimp->bind();
 }
 
-HRESULT w_buffer::set_data(_In_ const void* const pData)
+W_RESULT w_buffer::set_data(_In_ const void* const pData)
 {
-    if(!this->_pimp) return S_FALSE;
+    if(!this->_pimp) return W_FALSE;
     
     return this->_pimp->set_data(pData);
 }
 
-HRESULT w_buffer::copy_to(_In_ w_buffer& pDestinationBuffer)
+W_RESULT w_buffer::copy_to(_In_ w_buffer& pDestinationBuffer)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
 
     return this->_pimp->copy_to(pDestinationBuffer);
 }
@@ -367,9 +367,9 @@ void w_buffer::unmap()
     this->_pimp->unmap();
 }
 
-HRESULT w_buffer::flush(VkDeviceSize pSize, VkDeviceSize pOffset)
+W_RESULT w_buffer::flush(VkDeviceSize pSize, VkDeviceSize pOffset)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
 
     return this->_pimp->flush(pSize, pOffset);
 }

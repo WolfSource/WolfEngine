@@ -16,7 +16,7 @@ namespace wolf
             {
             }
 
-			HRESULT load(
+			W_RESULT load(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ w_viewport pViewPort,
 				_In_ w_viewport_scissor pViewportScissor,
@@ -29,7 +29,7 @@ namespace wolf
 				this->_viewport = pViewPort;
 				this->_viewport_scissor = pViewportScissor;
 
-				HRESULT _hr = S_OK;
+				W_RESULT _hr = W_OK;
 				std::vector<std::vector<w_texture*>> _frame_buffers_attachments;
 				for (size_t i = 0; i < pCount; ++i)
 				{
@@ -41,7 +41,7 @@ namespace wolf
 						auto _texture_buffer = new (std::nothrow) w_texture();
 						if (!_texture_buffer)
 						{
-							_hr = S_FALSE;
+							_hr = W_FALSE;
 							V(_hr, "allocating memory for texture", _trace_info, 3, false);
 							break;
 						}
@@ -63,15 +63,15 @@ namespace wolf
 						_texture_buffer->set_format(_attachment.attachment_desc.desc.format);
 						//_texture_buffer->set_usage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
 						auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, _attachment.attachment_desc.memory_flag);
-						if (_hr == S_FALSE)
+						if (_hr == W_FALSE)
 						{
-							V(S_FALSE, "loading texture", _trace_info, 3, false);
+							V(W_FALSE, "loading texture", _trace_info, 3, false);
 							break;
 						}
 						_hr = _texture_buffer->load();
-						if (_hr == S_FALSE)
+						if (_hr == W_FALSE)
 						{
-							V(S_FALSE, "initializing texture", _trace_info, 3, false);
+							V(W_FALSE, "initializing texture", _trace_info, 3, false);
 							break;
 						}
 
@@ -82,10 +82,10 @@ namespace wolf
 					_frame_buffers_attachments.push_back(__attachments);
 				}
 
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					release();
-					return S_FALSE;
+					return W_FALSE;
 				}
 
 				//create render pass
@@ -93,37 +93,37 @@ namespace wolf
 					pViewPort,
 					pViewportScissor,
 					{ pAttachments });
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					release();
-					V(S_FALSE, "loading render pass", _trace_info, 3, false);
-					return S_FALSE;
+					V(W_FALSE, "loading render pass", _trace_info, 3, false);
+					return W_FALSE;
 				}
 
 				_frame_buffers_attachments.clear();
 
-				return S_OK;
+				return W_OK;
 			}
 
-			HRESULT record_command_buffer(
+			W_RESULT record_command_buffer(
 				_In_ wolf::graphics::w_command_buffer* pCommandBuffer,
-				_In_ std::function<HRESULT(void)> pDrawFunction,
+				_In_ std::function<W_RESULT(void)> pDrawFunction,
 				_In_ w_color pClearColor, 
 				_In_ const float& pClearDepth, 
 				_In_ const uint32_t&  pClearStencil)
 			{
 				const std::string _trace_info = this->_name + "::record_command_buffer";
 
-				if (!pCommandBuffer) return S_FALSE;
+				if (!pCommandBuffer) return W_FALSE;
 
 				auto _cmd_size = pCommandBuffer->get_commands_size();
 				if (_cmd_size != this->_render_pass.get_number_of_frame_buffers())
 				{
-					V(S_FALSE, "parameter count mismatch. Number of command buffers must equal to number of frame buffers", _trace_info, 3, false);
-					return S_FALSE;
+					V(W_FALSE, "parameter count mismatch. Number of command buffers must equal to number of frame buffers", _trace_info, 3, false);
+					return W_FALSE;
 				}
 
-				HRESULT _hr = S_OK;
+				W_RESULT _hr = W_OK;
 				for (uint32_t i = 0; i < _cmd_size; ++i)
 				{
 					pCommandBuffer->begin(i);
@@ -259,14 +259,14 @@ w_render_target::~w_render_target()
 	release();
 }
 
-HRESULT w_render_target::load(
+W_RESULT w_render_target::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ w_viewport pViewPort,
 	_In_ w_viewport_scissor pViewportScissor,
 	_In_ std::vector<w_image_view> pAttachments,
 	_In_ const size_t& pCount)
 {
-	if (!this->_pimp) return S_FALSE;
+	if (!this->_pimp) return W_FALSE;
 	return this->_pimp->load(
 		pGDevice,
 		pViewPort,
@@ -275,14 +275,14 @@ HRESULT w_render_target::load(
 		pCount);
 }
 
-HRESULT w_render_target::record_command_buffer(
+W_RESULT w_render_target::record_command_buffer(
 	_In_ w_command_buffer* pCommandBuffer,
-	_In_ std::function<HRESULT(void)> pFunction,
+	_In_ std::function<W_RESULT(void)> pFunction,
 	_In_ w_color pClearColor,
 	_In_ const float& pClearDepth,
 	_In_ const uint32_t&  pClearStencil)
 {
-	if (!this->_pimp) return S_FALSE;
+	if (!this->_pimp) return W_FALSE;
 	return this->_pimp->record_command_buffer(
 		pCommandBuffer,
 		pFunction,
@@ -291,7 +291,7 @@ HRESULT w_render_target::record_command_buffer(
 		pClearStencil);
 }
 
-HRESULT w_render_target::save_to_file(_In_z_ const char* pFilename)
+W_RESULT w_render_target::save_to_file(_In_z_ const char* pFilename)
 {
 //    short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)pWidth, (short)pHeight, 1, 24 };
 //    FILE *f;
@@ -308,7 +308,7 @@ HRESULT w_render_target::save_to_file(_In_z_ const char* pFilename)
 //        fclose(f);
 //    }
 
-	return S_OK;
+	return W_OK;
 }
 
 ULONG w_render_target::release()

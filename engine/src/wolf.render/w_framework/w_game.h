@@ -66,7 +66,7 @@ namespace wolf
 			//Update the game logic
 			W_EXP virtual void update(_In_ const system::w_game_time& pGameTime);
 			//Submit comand buffers on all graphics devices
-			W_EXP virtual HRESULT render(_In_ const system::w_game_time& pGameTime);
+			W_EXP virtual W_RESULT render(_In_ const system::w_game_time& pGameTime);
 
 			bool													exiting;
 		private:

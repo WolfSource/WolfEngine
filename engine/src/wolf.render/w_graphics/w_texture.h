@@ -55,53 +55,49 @@ namespace wolf
 			W_EXP w_texture();
 			W_EXP virtual ~w_texture();
 
-			W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-				_In_ const bool& pGenerateMipMapsLevels = false,
-				_In_ const bool& pIsStaging = false);
-
-            W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t& pWidth,
                 _In_ const uint32_t& pHeight,
-				_In_ const bool& pGenerateMipMapsLevels,
+				_In_ const bool& pGenerateMipMapsLevels = false,
 				_In_ const bool& pIsStaging = false);
             
-            W_EXP HRESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t& pWidth,
                 _In_ const uint32_t& pHeight,
 				_In_ const bool& pGenerateMipMapsLevels,
 				_In_ const w_memory_property_flags pMemoryPropertyFlags);
             
 			//Load texture
-			W_EXP HRESULT load();
+			W_EXP W_RESULT load();
 
 			//Load texture from file
-			W_EXP HRESULT load_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
+			W_EXP W_RESULT load_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
             //Load texture from memory in the format of RGBA
-            W_EXP HRESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData);
+            W_EXP W_RESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData);
             //Load texture from memory in the format of RGB
-            W_EXP HRESULT load_texture_from_memory_rgb(_In_ uint8_t* pRGBData);
+            W_EXP W_RESULT load_texture_from_memory_rgb(_In_ uint8_t* pRGBData);
             //Load texture from memory, all channels will have same byte
-            W_EXP HRESULT load_texture_from_memory_all_channels_same(_In_ uint8_t pData);
+            W_EXP W_RESULT load_texture_from_memory_all_channels_same(_In_ uint8_t pData);
             //Load texture from w_color
-            W_EXP HRESULT load_texture_from_memory_color(_In_ w_color pColor);
+            W_EXP W_RESULT load_texture_from_memory_color(_In_ w_color pColor);
             /*
                 copy data to texture
                 if this is a staging buffer, do not use this function because it will cause memory leaks,
                 instead use "get_pointer_to_staging_data" function
             */
-            W_EXP HRESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA);
+            W_EXP W_RESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA);
 			
 			//read texture's data
 			W_EXP void* read_data_of_texture();
 
             //flush staging buffer
-            W_EXP HRESULT flush_staging_data();
+            W_EXP W_RESULT flush_staging_data();
 
             //release all resources
             W_EXP virtual ULONG release() override;
 
             //load texture and store it into the shared
-            W_EXP static HRESULT load_to_shared_textures(
+            W_EXP static W_RESULT load_to_shared_textures(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_z_ std::wstring pPath,
                 _Inout_ w_texture** pPointerToTexture);
@@ -114,7 +110,7 @@ namespace wolf
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				@param pStrideInBytes, stride of pixel's structure inf bytes
 			*/
-			W_EXP static HRESULT save_png_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pStrideInBytes = 4 * sizeof(uint8_t));
+			W_EXP static W_RESULT save_png_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pStrideInBytes = 4 * sizeof(uint8_t));
 			/*
 				save bmp image file
 				@param pFilePath, path of file
@@ -122,7 +118,7 @@ namespace wolf
 				@param pData, pointer to rgba data
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 			*/
-			W_EXP static HRESULT save_bmp_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount);
+			W_EXP static W_RESULT save_bmp_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount);
 			/*
 				save tga image file
 				@param pFilePath, path of file
@@ -131,7 +127,7 @@ namespace wolf
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				@param pQuality, Quality(1 - 100)
 			*/
-			W_EXP static HRESULT save_tga_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount);
+			W_EXP static W_RESULT save_tga_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount);
 			/*
 				save hdr image file
 				@param pFilePath, path of file
@@ -139,7 +135,7 @@ namespace wolf
 				@param pData, pointer to rgba data
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 			*/
-			W_EXP static HRESULT save_hdr_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData ,_In_ int pCompCount);
+			W_EXP static W_RESULT save_hdr_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData ,_In_ int pCompCount);
 			/*
 				save jpg image file
 				@param pFilePath, path of file
@@ -148,7 +144,7 @@ namespace wolf
 				@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				@param pQuality, Quality(1 - 100)
 			*/
-			W_EXP static HRESULT save_jpg_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount, _In_ int pQuality);
+			W_EXP static W_RESULT save_jpg_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData,_In_ int pCompCount, _In_ int pQuality);
 
             //release all shared textures
             W_EXP ULONG static release_shared_textures();

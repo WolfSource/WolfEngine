@@ -14,7 +14,7 @@ void w_lua::_VL(int pHR)
 	if (pHR)
 	{
 		_last_error = "lua: " + std::string(lua_tostring(_lua, -1));
-		V(S_FALSE, _last_error, "w_lua", 3);
+		V(W_FALSE, _last_error, "w_lua", 3);
 		lua_pop(_lua, 1);
 	}
 }
@@ -58,14 +58,14 @@ void w_lua::_incompatible_type_for_variable(const char* pVariableName, const cha
 	}
 
 	_last_error = _msg;
-	V(S_FALSE, _last_error, "w_lua", 2);
+	V(W_FALSE, _last_error, "w_lua", 2);
 }
 
-HRESULT w_lua::load_file(const wchar_t* pPath)
+W_RESULT w_lua::load_file(const wchar_t* pPath)
 {
 	_last_error.clear();
 
-                	auto _utf8_path = wolf::system::convert::to_utf8(pPath);
+    auto _utf8_path = wolf::system::convert::to_utf8(pPath);
 #if defined(__WIN32) || defined(__UWP)
     auto _is_exists = wolf::system::io::get_is_file(pPath);
 #else
@@ -73,10 +73,10 @@ HRESULT w_lua::load_file(const wchar_t* pPath)
     auto _is_exists = wolf::system::io::get_is_file(_c_str);
 #endif
     
-    if (_is_exists == S_FALSE)
+    if (_is_exists == W_FALSE)
     {
         _last_error = "lua: lua file not exists on following path: " + _utf8_path;
-        return S_FALSE;
+        return W_FALSE;
     }
     
 	//initialize lua
@@ -84,7 +84,7 @@ HRESULT w_lua::load_file(const wchar_t* pPath)
 	if (!_lua)
 	{
 		_VL(1);
-		return S_FALSE;
+		return W_FALSE;
 	}
 	luaL_openlibs(_lua);
 
@@ -93,20 +93,20 @@ HRESULT w_lua::load_file(const wchar_t* pPath)
 	if (_hr)
 	{
 		_VL(_hr);
-		return S_FALSE;
+		return W_FALSE;
 	}
-	return S_OK;
+	return W_OK;
 }
 
-HRESULT w_lua::run()
+W_RESULT w_lua::run()
 {
 	int _hr = lua_pcall(_lua, 0, LUA_MULTRET, 0);
 	if (_hr)
 	{
 		_VL(_hr);
-		return S_FALSE;
+		return W_FALSE;
 	}
-	return S_OK;
+	return W_OK;
 }
 
 void w_lua::bind_to_cfunction(lua_CFunction pFunc, const char* pLuaFunctionName)
@@ -147,7 +147,7 @@ ULONG w_lua::release()
 	return 0;
 }
 
-HRESULT w_lua::set_lua_path(_In_z_ const char* pPath)
+W_RESULT w_lua::set_lua_path(_In_z_ const char* pPath)
 {
 	lua_getglobal(_lua, "package");
 	lua_getfield(_lua, -1, "path"); // get field "path" from table at top of stack (-1)
@@ -158,5 +158,5 @@ HRESULT w_lua::set_lua_path(_In_z_ const char* pPath)
 	lua_pushstring(_lua, cur_path.c_str()); // push the new one
 	lua_setfield(_lua, -2, "path"); // set the field "path" in table at -2 with value at top of stack
 	lua_pop(_lua, 1); // get rid of package table from top of stack
-	return S_OK;
+	return W_OK;
 }

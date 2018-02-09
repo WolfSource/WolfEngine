@@ -4,9 +4,9 @@
 
 using namespace wolf::graphics;
 
-HRESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t pNumberOfFences)
+W_RESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t pNumberOfFences)
 {
-    HRESULT _hr = S_OK;
+    W_RESULT _hr = W_OK;
     
     this->_gDevice = pGDevice;
 
@@ -29,8 +29,8 @@ HRESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDe
                       nullptr,
                       &_fence))
         {
-            V(S_FALSE, "creating fence", "w_fence", 3, false);
-            _hr = S_FALSE;
+            V(W_FALSE, "creating fence", "w_fence", 3, false);
+            _hr = W_FALSE;
         }
         else
         {
@@ -44,16 +44,16 @@ HRESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDe
     return _hr;
 }
 
-HRESULT w_fences::wait(_In_ uint64_t pTimeOut)
+W_RESULT w_fences::wait(_In_ uint64_t pTimeOut)
 {
-    return vkWaitForFences(this->_gDevice->vk_device, 1, this->_fences.data(), VK_TRUE, pTimeOut) == VkResult::VK_SUCCESS ? S_OK : S_FALSE;
+    return vkWaitForFences(this->_gDevice->vk_device, 1, this->_fences.data(), VK_TRUE, pTimeOut) == VkResult::VK_SUCCESS ? W_OK : W_FALSE;
 }
 
-HRESULT w_fences::reset()
+W_RESULT w_fences::reset()
 {
     //reset fence
 #ifdef __VULKAN__
-    return vkResetFences(this->_gDevice->vk_device, 1, this->_fences.data()) == VkResult::VK_SUCCESS ? S_OK : S_FALSE;
+    return vkResetFences(this->_gDevice->vk_device, 1, this->_fences.data()) == VkResult::VK_SUCCESS ? W_OK : W_FALSE;
 #elif defined(__DX12__)
     
 #endif
@@ -104,22 +104,22 @@ bool w_fences::py_initialize(_In_ boost::shared_ptr<wolf::graphics::w_graphics_d
 	auto _hr = this->initialize(_gDevice, pNumberOfFences);
 	_gDevice.reset();
 	
-	return _hr == S_OK;
+	return _hr == W_OK;
 }
 
 bool w_fences::py_wait_for(_In_ uint64_t& pTimeOut)
 {
-	return wait(pTimeOut) == S_OK;
+	return wait(pTimeOut) == W_OK;
 }
 
 bool w_fences::py_wait()
 {
-	return wait() == S_OK;
+	return wait() == W_OK;
 }
 
 bool w_fences::py_reset()
 {
-	return reset() == S_OK;
+	return reset() == W_OK;
 }
 
 #endif

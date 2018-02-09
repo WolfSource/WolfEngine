@@ -245,6 +245,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\vec4.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_std.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_boost_python_helper.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_bounding.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_color.h" />
@@ -596,7 +597,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/tbb/oss/windows/include;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/nanomsg/include;$(SolutionDir)/../../dependencies/msgpack/include/;$(SolutionDir)/../../dependencies/boost/include/;C:/Python27/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDLL;WIN32;__WIN32;UNICODE;_UNICODE;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;__LUA__;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;BOOST_PYTHON_STATIC_LIB;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;__PYTHON__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDLL;WIN32;__WIN32;UNICODE;_UNICODE;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;__LUA__;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;BOOST_PYTHON_STATIC_LIB;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>

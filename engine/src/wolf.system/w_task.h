@@ -32,8 +32,8 @@ namespace wolf
 		class w_task
 		{
 		public:
-			WSYS_EXP static void execute_async(_In_ const std::function<HRESULT(void)>& pTaskWork, _In_ const std::function<void(HRESULT)>& pCallBack = nullptr);
-			WSYS_EXP static void execute_deferred(_In_ const std::function<HRESULT(void)>& pTaskWork);
+			WSYS_EXP static void execute_async(_In_ const std::function<W_RESULT(void)>& pTaskWork, _In_ const std::function<void(W_RESULT)>& pCallBack = nullptr);
+			WSYS_EXP static void execute_deferred(_In_ const std::function<W_RESULT(void)>& pTaskWork);
 			//wait only work for deferred task
 			WSYS_EXP static std::future_status wait_for(_In_ const long long pMilliSeconds);
 			//wait only work for deferred task
@@ -45,7 +45,7 @@ namespace wolf
 			WSYS_EXP static void get();
 
 		private:
-			static std::future<HRESULT> _deferred;
+			static std::future<W_RESULT> _deferred;
 		};
 	}
 }
@@ -59,16 +59,16 @@ namespace tbb
 	class Task : public tbb::task
 	{
 	public:
-		WSYS_EXP Task(_In_ std::function<HRESULT(void)>& pTaskWork)
+		WSYS_EXP Task(_In_ std::function<W_RESULT(void)>& pTaskWork)
 		{
 			this->_task_work = pTaskWork;
 		}
-		WSYS_EXP Task(_In_ std::function<HRESULT(void)>& pTaskWork, _In_ tbb::priority_t pPriority)
+		WSYS_EXP Task(_In_ std::function<W_RESULT(void)>& pTaskWork, _In_ tbb::priority_t pPriority)
 		{
 			this->_task_work = pTaskWork;
 			this->set_group_priority(pPriority);
 		}
-		WSYS_EXP Task(_In_ std::function<HRESULT(void)>& pTaskWork, _In_ std::function<void(HRESULT)>& pCallBack, _In_ tbb::priority_t pPriority)
+		WSYS_EXP Task(_In_ std::function<W_RESULT(void)>& pTaskWork, _In_ std::function<void(W_RESULT)>& pCallBack, _In_ tbb::priority_t pPriority)
 		{
 			this->_task_work = pTaskWork;
 			this->_call_back = pCallBack;
@@ -77,7 +77,7 @@ namespace tbb
 		
 		WSYS_EXP tbb::task* execute()
 		{
-            HRESULT _hr;
+            W_RESULT _hr;
 			if (_task_work)
 			{
                 _hr = _task_work();
@@ -92,8 +92,8 @@ namespace tbb
 		}
 
 	private:
-		std::function<HRESULT(void)> _task_work;
-		std::function<void(HRESULT)> _call_back;
+		std::function<W_RESULT(void)> _task_work;
+		std::function<void(W_RESULT)> _call_back;
 	};
 }
 

@@ -66,20 +66,21 @@ namespace wolf
 			//create coordinate system axis
 			W_EXP w_shapes(_In_ const w_color& pColor);
 
+			//destructor of w_shapes
 			W_EXP virtual ~w_shapes();
 
 			//load shapes render
-			W_EXP HRESULT load(
+			W_EXP W_RESULT load(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const wolf::graphics::w_render_pass& pRenderPass,
 				_In_ const wolf::graphics::w_viewport& pViewport,
 				_In_ const wolf::graphics::w_viewport_scissor& pViewportScissor);
 
 			//update uniform of shape
-			W_EXP HRESULT update(_In_ const glm::mat4& pWorldViewProjection);
+			W_EXP W_RESULT update(_In_ const glm::mat4& pWorldViewProjection);
 
             //draw shape
-            W_EXP HRESULT draw(_In_ VkCommandBuffer pCommandBuffer);
+            W_EXP W_RESULT draw(_In_ const w_command_buffer* pCommandBuffer);
             
 			W_EXP ULONG release();
 

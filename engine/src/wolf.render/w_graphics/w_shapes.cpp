@@ -79,7 +79,7 @@ namespace wolf
 				this->_bounding_box = new (std::nothrow) wolf::system::w_bounding_box();
 				if (!this->_bounding_box)
 				{
-					V(S_FALSE, "allocating memory for w_bounding_box in w_shapes", this->_name, 3, false);
+					V(W_FALSE, "allocating memory for w_bounding_box in w_shapes", this->_name, 3, false);
 					return;
 				}
 				std::memcpy(&this->_bounding_box->min[0], &pBoundingBox.min[0], 3 * sizeof(float));
@@ -101,7 +101,7 @@ namespace wolf
 				this->_bounding_sphere = new (std::nothrow) wolf::system::w_bounding_sphere();
 				if (!this->_bounding_sphere)
 				{
-					V(S_FALSE, "allocating memory for _bounding_sphere in w_shapes", this->_name, 3, false);
+					V(W_FALSE, "allocating memory for _bounding_sphere in w_shapes", this->_name, 3, false);
 					return;
 				}
 				std::memcpy(&this->_bounding_sphere->center[0], &pBoundingSphere.center[0], 3 * sizeof(float));
@@ -119,7 +119,7 @@ namespace wolf
 			{
 			}
 
-			HRESULT load(
+			W_RESULT load(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const wolf::graphics::w_render_pass& pRenderPass,
 				_In_ const wolf::graphics::w_viewport& pViewport,
@@ -163,48 +163,48 @@ namespace wolf
 
 				_vertices.clear();
 
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					release();
-					V(S_FALSE, "loading mesh", _trace_info, 3, true);
-					return S_FALSE;
+					V(W_FALSE, "loading mesh", _trace_info, 3, true);
+					return W_FALSE;
 				}
 
 				//loading vertex shaders
 				_hr = this->_shader.load(_gDevice,
 					content_path + L"shaders/shape.vert.spv",
 					w_shader_stage::VERTEX_SHADER);
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					release();
-					V(S_FALSE, "loading vertex shader", _trace_info, 3, true);
-					return S_FALSE;
+					V(W_FALSE, "loading vertex shader", _trace_info, 3, true);
+					return W_FALSE;
 				}
 
 				//loading fragment shader
 				_hr = this->_shader.load(_gDevice,
 					content_path + L"shaders/shape.frag.spv",
 					w_shader_stage::FRAGMENT_SHADER);
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					release();
-					V(S_FALSE, "loading fragment shader", _trace_info, 3, true);
-					return S_FALSE;
+					V(W_FALSE, "loading fragment shader", _trace_info, 3, true);
+					return W_FALSE;
 				}
 
 				//load vertex shader uniform
 				_hr = this->_u0.load(_gDevice);
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					release();
-					V(S_FALSE, "loading WorldViewProjection uniform", _trace_info, 3, true);
+					V(W_FALSE, "loading WorldViewProjection uniform", _trace_info, 3, true);
 				}
 				
 				_hr = this->_u1.load(_gDevice);
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					release();
-					V(S_FALSE, "loading color uniform", _trace_info, 3, true);
+					V(W_FALSE, "loading color uniform", _trace_info, 3, true);
 				}
 
 				std::vector<w_shader_binding_param> _shader_params;
@@ -223,15 +223,15 @@ namespace wolf
 				_shader_params.push_back(_shader_param);
 
 				_hr = this->_shader.set_shader_binding_params(_shader_params);
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					release();
-					V(S_FALSE, "setting shader binding param", _trace_info, 3, true);
+					V(W_FALSE, "setting shader binding param", _trace_info, 3, true);
 				}
 
 				//loading pipeline cache
 				std::string _pipeline_cache_name = "line_pipeline_cache";
-				if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+				if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == W_FALSE)
 				{
 					logger.error("could not create pipeline cache for w_shapes: line_pipeline_cache");
 					_pipeline_cache_name.clear();
@@ -246,32 +246,32 @@ namespace wolf
 					_descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
 					{ pViewport },
 					{ pViewportScissor });
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
 					release();
-					V(S_FALSE, "creating solid pipeline", _trace_info, 3, true);
-					return S_FALSE;
+					V(W_FALSE, "creating solid pipeline", _trace_info, 3, true);
+					return W_FALSE;
 				}
 
 				return set_color(this->_color);
 			}
 
-			HRESULT update(_In_ const glm::mat4& pWorldViewProjection)
+			W_RESULT update(_In_ const glm::mat4& pWorldViewProjection)
 			{
 				const std::string _trace_info = this->_name + "::update";
 
 				//we must update uniform
 				this->_u0.data.wvp = pWorldViewProjection;
 				auto _hr = this->_u0.update();
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
-					V(S_FALSE, "updating uniform WorldViewProjection", _trace_info, 3, false);
-					return S_FALSE;
+					V(W_FALSE, "updating uniform WorldViewProjection", _trace_info, 3, false);
+					return W_FALSE;
 				}
-				return S_OK;
+				return W_OK;
 			}
 
-			HRESULT set_color(_In_ w_color pColor)
+			W_RESULT set_color(_In_ w_color pColor)
 			{
 				const std::string _trace_info = this->_name + "::set_color";
 
@@ -284,27 +284,27 @@ namespace wolf
 				this->_u1.data.color.a = this->_color.a / 255.0f;
 
 				auto _hr = this->_u1.update();
-				if (_hr == S_FALSE)
+				if (_hr == W_FALSE)
 				{
-					V(S_FALSE, "updating uniform color", _trace_info, 3, false);
-					return S_FALSE;
+					V(W_FALSE, "updating uniform color", _trace_info, 3, false);
+					return W_FALSE;
 				}
-				return S_OK;
+				return W_OK;
 			}
 
-			HRESULT draw(_In_ VkCommandBuffer pCommandBuffer)
+			W_RESULT draw(_In_ const w_command_buffer* pCommandBuffer)
 			{
 				const std::string _trace_info = this->_name + "::draw";
 
 				auto _description_set = this->_shader.get_descriptor_set();
 				this->_pipeline.bind(pCommandBuffer, &_description_set);
 
-				if (this->_shape_drawer.draw(pCommandBuffer, nullptr, 0, false, 0) == S_FALSE)
+				if (this->_shape_drawer.draw(pCommandBuffer, nullptr, 0, false, 0) == W_FALSE)
 				{
-					V(S_FALSE, "drawing shape", _trace_info, 3, false);
-					return S_FALSE;
+					V(W_FALSE, "drawing shape", _trace_info, 3, false);
+					return W_FALSE;
 				}
-				return S_OK;;
+				return W_OK;;
 			}
             
 			void release()
@@ -905,22 +905,23 @@ w_shapes::~w_shapes()
     release();
 }
 
-HRESULT w_shapes::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+W_RESULT w_shapes::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ const w_render_pass& pRenderPass,
 	_In_ const w_viewport& pViewport,
 	_In_ const w_viewport_scissor& pViewportScissor)
 {
-	return (!this->_pimp) ? S_FALSE : this->_pimp->load(pGDevice, pRenderPass, pViewport, pViewportScissor);
+	return (!this->_pimp) ? W_FALSE : this->_pimp->load(pGDevice, pRenderPass, pViewport, pViewportScissor);
 }
 
-HRESULT w_shapes::update(_In_ const glm::mat4& pWorldViewProjection)
+W_RESULT w_shapes::update(_In_ const glm::mat4& pWorldViewProjection)
 {
-	return (!this->_pimp) ? S_FALSE : this->_pimp->update(pWorldViewProjection);
+	return (!this->_pimp) ? W_FALSE : this->_pimp->update(pWorldViewProjection);
 }
 
-HRESULT w_shapes::draw(_In_ VkCommandBuffer pCommandBuffer)
+W_RESULT w_shapes::draw(_In_ const w_command_buffer* pCommandBuffer)
 {
-    return (!this->_pimp) ? S_FALSE : this->_pimp->draw(pCommandBuffer);
+	if (!this->_pimp || !pCommandBuffer) return W_FALSE;
+	return this->_pimp->draw(pCommandBuffer);
 }
 
 ULONG w_shapes::release()

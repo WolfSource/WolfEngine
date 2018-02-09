@@ -30,7 +30,7 @@ namespace wolf
                 c_parser() : sZ_Up(true) {}
 				virtual ~c_parser() {};
 
-				WCP_EXP HRESULT parse_collada_from_file(
+				WCP_EXP W_RESULT parse_collada_from_file(
                     _In_z_ const std::wstring& pFilePath, 
                     _Inout_ wolf::content_pipeline::w_cpipeline_scene* pScene,
 					_In_ const bool& pAMDTootleOptimizing = true,
@@ -38,7 +38,7 @@ namespace wolf
                     _In_ const bool& pFind_LODs_BBs = true);
 
 			private:
-				HRESULT		                                _process_xml_node(_In_ rapidxml::xml_node<>* pXNode);
+				W_RESULT	                                _process_xml_node(_In_ rapidxml::xml_node<>* pXNode);
                 void                                        _get_library_cameras(_In_ rapidxml::xml_node<>* pXNode);
                 void                                        _get_library_effects(_In_ rapidxml::xml_node<>* pXNode);
                 void                                        _get_library_materials(_In_ rapidxml::xml_node<>* pXNode);
@@ -68,7 +68,7 @@ namespace wolf
                     _Inout_ c_node** pNode,
                     _Inout_ w_cpipeline_model** pModel);
                 
-				HRESULT		                                _create_scene(
+				W_RESULT	                                _create_scene(
                     _Inout_ w_cpipeline_scene* pScene,
                     _In_ const bool& pAMDTootleOptimizing,
                     _In_ const bool& pInvertNormals,

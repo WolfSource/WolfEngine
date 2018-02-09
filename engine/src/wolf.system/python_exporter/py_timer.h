@@ -9,10 +9,6 @@
 
 #ifdef __PYTHON__
 
-#if _MSC_VER > 1000
-#pragma once
-#endif
-
 #ifndef __PY_TIMER_H__
 #define __PY_TIMER_H__
 

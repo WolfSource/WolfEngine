@@ -16,7 +16,7 @@ namespace wolf
             {
             }
 
-            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
                 _In_ const VkPrimitiveTopology pPrimitiveTopology,
                 _In_ const VkRenderPass pRenderPass,
@@ -39,18 +39,18 @@ namespace wolf
                 if (pVertexBindingAttributes.declaration == w_vertex_declaration::NOT_DEFINED)
                 {
                     logger.error("Vertex type not defined");
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
                 if (!pShaderStages)
                 {
                     logger.error("Shader stages could not be nullptr");
-                    return S_FALSE;
+                    return W_FALSE;
                 }
                 if (!pRenderPass)
                 {
                     logger.error("Render pass could not be nullptr");
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
                 VkPipelineVertexInputStateCreateInfo* _vertex_input_state_create_info = nullptr;
@@ -164,16 +164,16 @@ namespace wolf
                     &this->_pipeline);
                 if (_hr)
                 {
-                    V(S_FALSE, "creating pipeline for graphics device: " +
+                    V(W_FALSE, "creating pipeline for graphics device: " +
                         this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name, 3, false);
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
-                return S_OK;
+                return W_OK;
             }
 
-            HRESULT load_compute(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_RESULT load_compute(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
                 _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
                 _In_ const uint32_t& pSpecializationData,
@@ -203,10 +203,10 @@ namespace wolf
 
                 if (_hr)
                 {
-                    V(S_FALSE, "creating compute pipeline layout for graphics device: " +
+                    V(W_FALSE, "creating compute pipeline layout for graphics device: " +
                         this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name, 3, false);
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
                 // Create pipeline		
@@ -242,30 +242,32 @@ namespace wolf
 
                 if (_hr)
                 {
-                    V(S_FALSE, "creating compute pipeline for graphics device: " +
+                    V(W_FALSE, "creating compute pipeline for graphics device: " +
                         this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name, 3, false);
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
-                return S_OK;
+                return W_OK;
             }
 
-            void bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)
-            {
-                if (pDescriptorSet)
-                {
-                    vkCmdBindDescriptorSets(pCommandBuffer,
-                        VK_PIPELINE_BIND_POINT_GRAPHICS,
-                        this->_pipeline_layout,
-                        0,
-                        1,
-                        pDescriptorSet,
-                        0,
-                        nullptr);
-                }
-                vkCmdBindPipeline(pCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
-            }
+			void bind(_In_ const w_command_buffer* pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)
+			{
+				auto _cmd = pCommandBuffer->get_active_command();
+				if (pDescriptorSet)
+				{
+					vkCmdBindDescriptorSets(_cmd,
+						VK_PIPELINE_BIND_POINT_GRAPHICS,
+						this->_pipeline_layout,
+						0,
+						1,
+						pDescriptorSet,
+						0,
+						nullptr);
+				}
+				vkCmdBindPipeline(_cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
+				_cmd = nullptr;
+			}
 
             ULONG release()
             {
@@ -317,7 +319,7 @@ namespace wolf
                 _Out_ VkPipelineInputAssemblyStateCreateInfo** pInputAssemblyStateCreateInfo,
                 _Out_ VkPipelineDynamicStateCreateInfo** pDynamicStateCreateInfo)
             {
-                HRESULT _hr = S_OK;
+                W_RESULT _hr = W_OK;
 
                 using namespace wolf::content_pipeline;
 
@@ -464,7 +466,7 @@ w_pipeline::~w_pipeline()
 	release();
 }
 
-HRESULT w_pipeline::load(
+W_RESULT w_pipeline::load(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
     _In_ const VkPrimitiveTopology pPrimitiveTopology,
@@ -483,7 +485,7 @@ HRESULT w_pipeline::load(
     _In_ const VkPipelineColorBlendAttachmentState pBlendState,
     _In_ const std::array<float, 4> pBlendColors)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
 
     return this->_pimp->load(
         pGDevice,
@@ -505,7 +507,7 @@ HRESULT w_pipeline::load(
         pBlendColors);
 }
 
-HRESULT w_pipeline::load_compute(
+W_RESULT w_pipeline::load_compute(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
     _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
@@ -513,7 +515,7 @@ HRESULT w_pipeline::load_compute(
     _In_ const std::string& pPipelineCacheName,
     _In_ const std::vector<VkPushConstantRange> pPushConstantRanges)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
 
     return this->_pimp->load_compute(
         pGDevice,
@@ -524,10 +526,11 @@ HRESULT w_pipeline::load_compute(
         pPushConstantRanges);
 }
 
-void w_pipeline::bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)
+W_RESULT w_pipeline::bind(_In_ const w_command_buffer* pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)
 {
-    if (!this->_pimp) return;
-    return this->_pimp->bind(pCommandBuffer, pDescriptorSet);
+    if (!this->_pimp || !pCommandBuffer) return W_FALSE;
+    this->_pimp->bind(pCommandBuffer, pDescriptorSet);
+	return W_OK;
 }
 
 ULONG w_pipeline::release()
@@ -567,14 +570,14 @@ VkPipelineLayout w_pipeline::create_pipeline_layout(_In_ const std::shared_ptr<w
         &_pipeline_layout);
     if (_hr)
     {
-        V(S_FALSE, "creating pipeline layout for graphics device: " +
+        V(W_FALSE, "creating pipeline layout for graphics device: " +
             pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
         return 0;
     }
     return _pipeline_layout;
 }
 
-HRESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+W_RESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_z_ const std::string& pPipelineCacheName)
 {
     VkPipelineCache _pipeline_cache;
@@ -584,9 +587,9 @@ HRESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_
     auto _hr = vkCreatePipelineCache(pGDevice->vk_device, &_pipeline_cache_create_info, nullptr, &_pipeline_cache);
     if (_hr)
     {
-        V(S_FALSE, "Error on creating pipeline cache with graphics device: " +
+        V(W_FALSE, "Error on creating pipeline cache with graphics device: " +
             pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
-        return S_FALSE;
+        return W_FALSE;
     }
 
     auto _old_pipline_cache = get_pipeline_cache(pPipelineCacheName);
@@ -598,7 +601,7 @@ HRESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_
 
     w_pipeline_pimp::pipeline_caches[pPipelineCacheName] = _pipeline_cache;
     
-    return S_OK;
+    return W_OK;
 }
 
 VkPipelineCache w_pipeline::get_pipeline_cache(_In_z_ const std::string& pPipelineCacheName)

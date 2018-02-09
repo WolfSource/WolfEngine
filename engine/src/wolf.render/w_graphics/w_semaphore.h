@@ -27,7 +27,7 @@ namespace wolf
             //get pointer to semaphore
             W_EXP VkSemaphore* get();
             //initialize semaphore
-            W_EXP HRESULT initialize(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
+            W_EXP W_RESULT initialize(const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice);
             //release resources of semaphore
             W_EXP ULONG release();
             

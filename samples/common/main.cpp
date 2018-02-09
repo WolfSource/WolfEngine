@@ -31,8 +31,27 @@ WOLF_MAIN()
     {
 		switch (pMsg)
 		{
-		case WM_CREATE:
+		case WM_SIZE:
 		{
+			if (sScene)
+			{
+				//check which window resized
+				if (pHWND == sWindow->get_HWND())
+				{
+					//get new width and height
+					auto _width = (int)LOWORD(pLParam);
+					auto _height = (int)HIWORD(pLParam);
+
+					sWindow->set_width(_width);
+					sWindow->set_width(_height);
+
+					w_point _new_size;
+					_new_size.x = _width;
+					_new_size.y = _height;
+
+					sScene->on_window_resized(0, _new_size);
+				}
+			}
 		}
 		break;
 		//close window on KeyUp event of Escape button
@@ -44,6 +63,12 @@ WOLF_MAIN()
 			}
 		}
 		break;
+		case WM_QUIT:
+		case WM_CLOSE:
+		{
+			sWindow->close();
+		}
+		break;
 		}
 
 		auto _result = inputs_manager.update(pHWND, pMsg, pWParam, pLParam);
@@ -53,11 +78,24 @@ WOLF_MAIN()
     };
 #endif
 
-    //Initialize scene & window
+	//Initialize and content path and logPath
 	auto _running_dir = wolf::system::io::get_current_directory();
-	sScene = make_unique<scene>(_running_dir, L"wolf.vulkan.sample");
+	std::wstring _content_path;
+#if defined(__WIN32) || defined(__UWP)
+	_content_path = _running_dir + L"../../../../content/";
+#elif defined(__APPLE__)
+	_content_path = _running_dir + L"/../../../../../content/";
+#elif defined(__linux)
+	error
+#elif defined(__ANDROID)
+	error
+#endif
+
+	sScene = make_unique<scene>(_content_path, _running_dir, L"wolf.vulkan.sample");
     sWindow = make_unique<w_window>();
+
 #ifdef __WIN32
+	sWindow->enable_tiled(true);
     sWindow->initialize(_msg_proc_func);
 #else 
     sWindow->initialize();
@@ -72,7 +110,7 @@ WOLF_MAIN()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	_window_info.cpu_access_swap_chain_buffer = true;
+	_window_info.cpu_access_swap_chain_buffer = false;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -84,6 +122,7 @@ WOLF_MAIN()
     _window_info.xcb_window = sWindow->get_xcb_window(),
 #endif
 
+	//window info for first graphics device
     std::map<int, w_window_info> _windows_info = { {0, _window_info } };
     //run the main loop of window
     sWindow->run([&]()->void

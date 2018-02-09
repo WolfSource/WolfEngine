@@ -191,7 +191,7 @@ public:
 	WSYS_EXP HRESULT initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction);
 #elif defined(__linux)
         //Initialize 
-	WSYS_EXP HRESULT initialize();
+	WSYS_EXP W_RESULT initialize();
 #endif
     //Run the main loop
     template <class T>
@@ -355,6 +355,18 @@ public:
 #ifdef __WIN32
 	//Set class name of window 
 	WSYS_EXP void set_class_name(_In_ LPWSTR pValue);
+	//enable tiled
+	WSYS_EXP void enable_tiled(_In_ const bool& pValue);
+	//Set window caption
+	WSYS_EXP void set_caption(_In_ LPWSTR pValue);
+	//Set to enable border of window before creating window
+	WSYS_EXP void enable_border(_In_ const bool& pValue);
+	//Enable dialog dialog frame
+	WSYS_EXP void enable_dialog_frame(_In_ const bool& pValue);
+	//Set to enable system menu before creating window
+	WSYS_EXP void enable_system_menu(_In_ const bool& pValue);
+	//Set to enable caption
+	WSYS_EXP void enable_caption(_In_ const bool& pValue);
 #endif
     
     //Set ID of window
@@ -422,6 +434,7 @@ private:
 	HINSTANCE                                       _hInstance;
 	HWND                                            _hwnd;
     HDC                                             _hdc;
+	DWORD											_window_style;
 #elif defined(__linux) && !defined(__ANDROID)
     xcb_connection_t*                               _xcb_con;
     xcb_screen_t*                                   _xcb_screen;

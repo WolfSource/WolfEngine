@@ -38,7 +38,7 @@ namespace wolf
                 _In_ pGDevice : Graphics Device
                 _In_ pHostVisible : True means host memory of uniform's buffer in DRAM, otherwise host memory in VRAM
             */
-			HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+			W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const bool& pHostVisible = false)
 			{
                 const std::string _trace = this->name + "update";
@@ -51,7 +51,7 @@ namespace wolf
                 this->_gDevice = pGDevice;
                 
                 //create uniform buffer
-                HRESULT _hr = S_OK;
+                W_RESULT _hr = W_OK;
 
                 if (this->_host_visible)
                 {
@@ -60,7 +60,7 @@ namespace wolf
                         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-                    if (_hr == S_FALSE)
+                    if (_hr == W_FALSE)
                     {
                         V(_hr, "loading host visible buffer " +
                             _gDevice->get_info(),
@@ -76,7 +76,7 @@ namespace wolf
                         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
                     
-                    if (_hr == S_FALSE)
+                    if (_hr == W_FALSE)
                     {
                         V(_hr, "loading device buffer " +
                             _gDevice->get_info(),
@@ -90,7 +90,7 @@ namespace wolf
                         _buffer_size,
                         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-                    if (_hr == S_FALSE)
+                    if (_hr == W_FALSE)
                     {
                         V(_hr, "loading staging buffer " +
                             _gDevice->get_info(),
@@ -100,7 +100,7 @@ namespace wolf
                     }
 
                     _hr = this->_staging_buffer.bind();
-                    if (_hr == S_FALSE)
+                    if (_hr == W_FALSE)
                     {
                         V(_hr, "binding device buffer " +
                             _gDevice->get_info(),
@@ -111,7 +111,7 @@ namespace wolf
                 }
                 
                 _hr = this->_buffer.bind();
-                if (_hr == S_FALSE)
+                if (_hr == W_FALSE)
                 {
                     V(_hr, "binding buffer " +
                         _gDevice->get_info(),
@@ -123,11 +123,11 @@ namespace wolf
                 return _hr;
             }
 
-            HRESULT update()
+            W_RESULT update()
             {
                 const std::string _trace = this->name + "update";
 
-                HRESULT _hr = S_OK;
+                W_RESULT _hr = W_OK;
 
                 if (this->_host_visible)
                 {
@@ -148,7 +148,7 @@ namespace wolf
                     }
                     else
                     {
-                        _hr = S_FALSE;
+                        _hr = W_FALSE;
                         V(_hr, "begining command buffer " +
                             _gDevice->get_info(),
                             _trace,
@@ -156,7 +156,7 @@ namespace wolf
                     }
                     this->_staging_buffer.unmap();
 
-                    if (_hr == S_FALSE) return _hr;
+                    if (_hr == W_FALSE) return _hr;
 
                     _hr = this->_staging_buffer.copy_to(this->_buffer);
                     V(_hr, "copy staging buffer to device buffer " +

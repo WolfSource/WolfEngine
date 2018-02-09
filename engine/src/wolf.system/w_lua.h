@@ -22,8 +22,8 @@ namespace wolf
 		class w_lua
 		{
 		public:
-			WSYS_EXP static HRESULT			load_file(const wchar_t* pPath);
-			WSYS_EXP static HRESULT			run();
+			WSYS_EXP static W_RESULT		load_file(const wchar_t* pPath);
+			WSYS_EXP static W_RESULT		run();
 			/*
 				lua_CFunction		: the c function binder for lua
 				pLuaFunctionName	: how function will be named in Lua
@@ -55,7 +55,7 @@ namespace wolf
 
 			//get the global variable in lua script
 			template <typename T>
-			static HRESULT					get_global_variable(const char* pVariableName, T& pValue);
+			static W_RESULT					get_global_variable(const char* pVariableName, T& pValue);
 
 #pragma endregion
 
@@ -63,9 +63,9 @@ namespace wolf
 
 			//set the global variable in lua script
 			template <typename T>
-			static HRESULT					set_global_variable(const char* pVariableName, const T pValue);
+			static W_RESULT					set_global_variable(const char* pVariableName, const T pValue);
 			//set lua path
-			WSYS_EXP static HRESULT			set_lua_path(_In_z_ const char* pPath);
+			WSYS_EXP static W_RESULT		set_lua_path(_In_z_ const char* pPath);
 
 #pragma endregion
 
@@ -75,18 +75,18 @@ namespace wolf
 			*/
 
 			//validate lua result
-			WSYS_EXP static void				_VL(int pHR);
+			WSYS_EXP static void			_VL(int pHR);
 			//log the error for incompatible requsted type for lua variable
-			WSYS_EXP static void				_incompatible_type_for_variable(const char* pVariableName, const char* pRequestedType, int pOriginalType);
+			WSYS_EXP static void			_incompatible_type_for_variable(const char* pVariableName, const char* pRequestedType, int pOriginalType);
 
 			//the lua state
-			WSYS_EXP static lua_State*			_lua;
+			WSYS_EXP static lua_State*		_lua;
 			//the last error
-			WSYS_EXP static std::string			_last_error;
+			WSYS_EXP static std::string		_last_error;
 			//name of lua function
-			WSYS_EXP static std::string			_function_name;
+			WSYS_EXP static std::string		_function_name;
 			//number of input parameters for lua function
-			WSYS_EXP static unsigned char		_function_number_input_parameters;
+			WSYS_EXP static unsigned char	_function_number_input_parameters;
 		};
 
 #pragma region Templates
@@ -191,7 +191,7 @@ namespace wolf
 			get value from lua variable
 		*/
 		template <typename T>
-		HRESULT w_lua::get_global_variable(const char* pVariableName, _Inout_ T& pValue)
+		W_RESULT w_lua::get_global_variable(const char* pVariableName, _Inout_ T& pValue)
 		{
 			lua_getglobal(_lua, pVariableName);
 			if (lua_isnil(_lua, -1))
@@ -201,7 +201,7 @@ namespace wolf
 				w_sprintf(_msg, _length, "%s is null\n", pVariableName);
 				_last_error = _msg;
 
-				return S_FALSE;
+				return W_FALSE;
 			}
 			else
 			{
@@ -214,7 +214,7 @@ namespace wolf
 				}
 			}
 
-			return S_OK;
+			return W_OK;
 		}
 
 #pragma endregion
@@ -350,7 +350,7 @@ namespace wolf
 		}
 
 		template <typename T>
-		HRESULT	w_lua::set_global_variable(const char* pVariableName, const T pValue)
+		W_RESULT	w_lua::set_global_variable(const char* pVariableName, const T pValue)
 		{
 			lua_getglobal(_lua, pVariableName);
 			if (lua_isnil(_lua, -1))
@@ -360,7 +360,7 @@ namespace wolf
 				w_sprintf(_msg, _lenght, "%s is null\n", pVariableName);
 				_last_error = _msg;
 
-				return S_FALSE;
+				return W_FALSE;
 			}
 			else
 			{
@@ -380,7 +380,7 @@ namespace wolf
 				}
 			}
             
-            return S_OK;
+            return W_OK;
 		}
 
 		/*

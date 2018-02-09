@@ -143,7 +143,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:/Python27/include;$(VULKAN_SDK)/include;$(SolutionDir)/../../src/pyWolf;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.media_core;$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../dependencies/tbb/oss/windows/include;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/msgpack/include;$(SolutionDir)/../../dependencies/boost/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;BOOST_PYTHON_STATIC_LIB;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;__PYTHON__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;BOOST_PYTHON_STATIC_LIB;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>

@@ -118,21 +118,21 @@ namespace wolf
 }
 
 /*
-    Validate HResult and write in to the log file
+    Validate W_RESULT and write in to the log file
     pHR							= Status
     pMSG						= the log message
     pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
     pTerminateAll				= abort appilcation. Strongly not recommended, please make sure release all your resources before aborting Wolf.Engine
     pCheckForLastDirectXError	= check last error of GPU API
 */
-inline void V(HRESULT pHR, std::wstring pMSG = L"Undefined message",
+inline void V(W_RESULT pHR, std::wstring pMSG = L"Undefined message",
     std::string pTraceClass = "Undefined trace", unsigned char pLogType = 0,
     bool pTerminateAll = false)
 {
     using namespace std;
     using namespace wolf;
 
-    if (pHR == S_OK) return;
+    if (pHR == W_OK) return;
 
     auto _wstr_trace = std::wstring(pTraceClass.begin(), pTraceClass.end());
     wstring _errorMsg = L"Error on " + pMSG + L" with the following error info : " + L"Trace info " + _wstr_trace + L".";
@@ -165,18 +165,18 @@ inline void V(int pHR, std::wstring pMSG = L"Undefined Error",
     std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
     bool pExitNow = false)
 {
-    V(pHR == 0 ? S_OK : S_FALSE, pMSG, pTraceClass, pLogType, pExitNow);
+    V(pHR == 0 ? W_OK : W_FALSE, pMSG, pTraceClass, pLogType, pExitNow);
 }
 
 /*
-    Validate HResult and write in to the log file
+    Validate W_RESULT and write in to the log file
     pHR						= Status
     pMSG						= the log message
     pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
     pExitNow					= abort application
     pCheckForLastDirectXError	= check last error of GPU API
 */
-inline void V(HRESULT pHR, std::string pMSG = "Undefined Error",
+inline void V(W_RESULT pHR, std::string pMSG = "Undefined Error",
     std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
     bool pExitNow = false)
 {

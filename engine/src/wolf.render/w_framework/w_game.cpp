@@ -43,7 +43,7 @@ void w_game::update(_In_ const wolf::system::w_game_time& pGameTime)
 	W_UNUSED(pGameTime);
 }
 
-HRESULT w_game::render(_In_ const wolf::system::w_game_time& pGameTime)
+W_RESULT w_game::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
 #ifdef	__DX11__
     
@@ -98,7 +98,7 @@ bool w_game::run(_In_ map<int, w_window_info>& pOutputWindowsInfo)
 
     this->_game_time.tick([&]()
     {
-        if (w_graphics_device_manager::prepare() == S_OK)
+        if (w_graphics_device_manager::prepare() == W_OK)
         {
             render(this->_game_time);
         }

@@ -30,7 +30,7 @@ namespace wolf
 				pCreateCommandPool = create seperated command pool,
 				pCommandPoolQueue = if pCreateCommandPool set true, then use this w_queue_index for creating command pool
 			*/
-			W_EXP HRESULT load(
+			W_EXP W_RESULT load(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const size_t& pCount,
 				_In_ const w_command_buffer_level& pLevel = W_COMMAND_BUFFER_LEVEL_PRIMARY,
@@ -38,17 +38,17 @@ namespace wolf
 				_In_ const w_queue* pCommandPoolQueue = nullptr);
 
 			//begin command buffer
-			W_EXP HRESULT begin(_In_ const size_t& pCommandBufferIndex,
+			W_EXP W_RESULT begin(_In_ const size_t& pCommandBufferIndex,
 				_In_ const w_command_buffer_usage_flags pFlags = w_command_buffer_usage_flag_bits::W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
 
 			//end command buffer
-			W_EXP HRESULT end(_In_ const size_t& pCommandBufferIndex);
+			W_EXP W_RESULT end(_In_ const size_t& pCommandBufferIndex);
 
 			//Flushing the command buffer will also submit it to the queue and uses a fence to ensure that command has been executed before returning
-			W_EXP HRESULT flush(_In_ const size_t& pCommandBufferIndex);
+			W_EXP W_RESULT flush(_In_ const size_t& pCommandBufferIndex);
 
 			//Flushing all command buffers will also submit these commands buffers to the queue and uses a fence to ensure that all commands have been executed before returning
-			W_EXP HRESULT flush_all();
+			W_EXP W_RESULT flush_all();
 
 			//release all resources
 			W_EXP ULONG release() override;

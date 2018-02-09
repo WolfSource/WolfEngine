@@ -17,14 +17,14 @@ w_xml::~w_xml()
 }
 
 #if defined(__WIN32) || defined(__UWP)
-HRESULT w_xml::save(_In_z_ const wchar_t* pPath,
+W_RESULT w_xml::save(_In_z_ const wchar_t* pPath,
 #else
-HRESULT w_xml::save(_In_z_ const char* pPath,
+W_RESULT w_xml::save(_In_z_ const char* pPath,
 #endif
     _In_ const bool& pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment)
 {
 	std::wofstream _file(pPath);
-	if (!_file) return S_FALSE;
+	if (!_file) return W_FALSE;
 
 	if (pUTF_8)
 	{
@@ -59,7 +59,7 @@ HRESULT w_xml::save(_In_z_ const char* pPath,
 	
 	_doc.clear();
 
-	return S_OK;
+	return W_OK;
 }
 
 void w_xml::_write_element(_In_ w_xml_data& pData, _In_ xml_document<wchar_t>& pDoc, _Inout_ xml_node<wchar_t>** pParentNode)

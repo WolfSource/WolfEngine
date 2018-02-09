@@ -9,10 +9,6 @@
 
 #ifdef __PYTHON__
 
-#if _MSC_VER > 1000
-#pragma once
-#endif
-
 #ifndef __PY_POINT_H__
 #define __PY_POINT_H__
 

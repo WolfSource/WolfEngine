@@ -25,7 +25,7 @@ namespace wolf
             W_EXP virtual ~w_render_pass();
 
             //load render pass which contains frame buffers
-            W_EXP HRESULT load(
+            W_EXP W_RESULT load(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_viewport& pViewPort,
                 _In_ const w_viewport_scissor& pViewPortScissor,

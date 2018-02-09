@@ -56,7 +56,7 @@ namespace pywolf
 			//reset local shared_ptr
 			_gDevice.reset();
 
-			return _hr == S_OK;
+			return _hr == W_OK;
 		}
 
 		void py_begin(

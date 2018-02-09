@@ -35,7 +35,7 @@ namespace wolf
                     * delete DRAM buffer
                     * use VRAM buffer for rendering
             */
-            HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
                 _In_ const uint32_t  pVerticesSizeInBytes,
                 _In_ const uint32_t pVerticesCount,
@@ -50,7 +50,7 @@ namespace wolf
 
                 if (pVerticesCount == 0 || pVerticesData == nullptr)
                 {
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
                 bool _there_is_no_index_buffer = false;
@@ -65,9 +65,9 @@ namespace wolf
                     pVerticesData,
 					pVerticesSizeInBytes,
                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                    this->_stagings_buffers.vertices) == S_FALSE)
+                    this->_stagings_buffers.vertices) == W_FALSE)
                 {
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
                 if (!_there_is_no_index_buffer)
@@ -76,9 +76,9 @@ namespace wolf
                         pIndicesData,
                         _indices_size,
                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                        this->_stagings_buffers.indices) == S_FALSE)
+                        this->_stagings_buffers.indices) == W_FALSE)
                     {
-                        return S_FALSE;
+                        return W_FALSE;
                     }
                 }
 
@@ -87,9 +87,9 @@ namespace wolf
                     nullptr,
                     pVerticesSizeInBytes,
                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                    this->_vertex_buffer) == S_FALSE)
+                    this->_vertex_buffer) == W_FALSE)
                 {
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
                 if (!_there_is_no_index_buffer)
@@ -98,15 +98,15 @@ namespace wolf
                         nullptr,
                         _indices_size,
                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                        this->_index_buffer) == S_FALSE)
+                        this->_index_buffer) == W_FALSE)
                     {
-                        return S_FALSE;
+                        return W_FALSE;
                     }
                 }
 
-                if (_copy_DRAM_to_VRAM(pVerticesSizeInBytes, _indices_size) == S_FALSE)
+                if (_copy_DRAM_to_VRAM(pVerticesSizeInBytes, _indices_size) == W_FALSE)
                 {
-                    return S_FALSE;
+                    return W_FALSE;
                 }
 
                 if (!pUseDynamicBuffer)
@@ -124,10 +124,10 @@ namespace wolf
                     this->_texture = w_texture::default_texture;
                 }
 
-                return S_OK;
+                return W_OK;
             }
 
-            HRESULT update_dynamic_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_RESULT update_dynamic_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
                 _In_ const uint32_t pVerticesSize,
                 _In_ const uint32_t pVerticesCount,
@@ -136,14 +136,14 @@ namespace wolf
             {
                 if (!this->_dynamic_buffer)
                 {
-                    V(S_FALSE, "updating none dynamic buffer.", this->_name, 2);
-                    return S_FALSE;
+                    V(W_FALSE, "updating none dynamic buffer.", this->_name, 2);
+                    return W_FALSE;
                 }
                 if (pVerticesCount != this->_vertices_count ||
                     pIndicesCount != this->_indices_count)
                 {
-                    V(S_FALSE, "size of vertex or index buffer does not match.", this->_name, 2);
-                    return S_FALSE;
+                    V(W_FALSE, "size of vertex or index buffer does not match.", this->_name, 2);
+                    return W_FALSE;
                 }
 
                 auto _hr = this->_stagings_buffers.vertices.set_data(pVerticesData);
@@ -164,7 +164,8 @@ namespace wolf
                 return _copy_DRAM_to_VRAM(pVerticesSize, this->_indices_count * sizeof(uint32_t));
             }
 
-            HRESULT draw(_In_ const VkCommandBuffer& pCommandBuffer, 
+            W_RESULT draw(
+				_In_ const w_command_buffer* pCommandBuffer, 
                 _In_ const VkBuffer& pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
                 _In_ const bool& pIndrectDraw,
@@ -173,13 +174,14 @@ namespace wolf
                 VkDeviceSize _offsets[1] = { 0 };
 
                 auto _vertex_buffer_handle = this->_vertex_buffer.get_handle();
-				if (!_vertex_buffer_handle) return S_FALSE;
+				if (!_vertex_buffer_handle) return W_FALSE;
 				
-                vkCmdBindVertexBuffers(pCommandBuffer, 0, 1, &_vertex_buffer_handle, _offsets);
+				auto _cmd = pCommandBuffer->get_active_command();
+                vkCmdBindVertexBuffers(_cmd, 0, 1, &_vertex_buffer_handle, _offsets);
 
                 if (pInstanceHandle)
                 {
-                    vkCmdBindVertexBuffers(pCommandBuffer, 1, 1, &pInstanceHandle, _offsets);
+                    vkCmdBindVertexBuffers(_cmd, 1, 1, &pInstanceHandle, _offsets);
                 }
 
 				bool _draw_indexed = false;
@@ -187,25 +189,26 @@ namespace wolf
 				if (_index_buffer_handle)
 				{
 					_draw_indexed = true;
-					vkCmdBindIndexBuffer(pCommandBuffer, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
+					vkCmdBindIndexBuffer(_cmd, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
 				}
 
                 if (!pIndrectDraw)
                 {
 					if (_draw_indexed)
 					{
-						vkCmdDrawIndexed(pCommandBuffer, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
+						vkCmdDrawIndexed(_cmd, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
 					}
 					else
 					{
-						vkCmdDraw(pCommandBuffer, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
+						vkCmdDraw(_cmd, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
 					}
                 }
 
+				_cmd = nullptr;
                 _vertex_buffer_handle = nullptr;
                 _index_buffer_handle = nullptr;
 
-				return S_OK;
+				return W_OK;
             }
 
 #pragma region Getters
@@ -281,7 +284,7 @@ namespace wolf
 
         private:
             
-            HRESULT _copy_DRAM_to_VRAM(
+            W_RESULT _copy_DRAM_to_VRAM(
                 _In_ const uint32_t pVerticesSize,
                 _In_ const uint32_t pIndicesSize)
             {
@@ -325,13 +328,13 @@ namespace wolf
                     SAFE_DELETE(this->_copy_command_buffer);
                 }
 
-                return S_OK;
+                return W_OK;
             }
             
             /*
                 Create buffers for rendering.
              */
-            HRESULT _create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag,
+            W_RESULT _create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag,
                                    _In_ const void* const pBufferData,
                                    _In_ uint32_t pBufferSizeInBytes,
                                    _In_ const VkMemoryPropertyFlags pMemoryFlags,
@@ -339,41 +342,41 @@ namespace wolf
             {
                 if(pBuffer.load(this->_gDevice, pBufferSizeInBytes, pBufferUsageFlag, pMemoryFlags))
                 {
-                    V(S_FALSE, "loading memory of buffer for graphics device: " +
+                    V(W_FALSE, "loading memory of buffer for graphics device: " +
                           _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
                           this->_name, 3, false);
                     
-                    return S_FALSE;
+                    return W_FALSE;
                 }
                 
                 
-                HRESULT _hr;
+                W_RESULT _hr;
                 //we can not access to VRAM, but we can copy our data to DRAM
                 if (!(pMemoryFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT))
                 {
                     _hr = pBuffer.set_data(pBufferData);
-                    if(_hr == S_FALSE)
+                    if(_hr == W_FALSE)
                     {
-                        V(S_FALSE, "setting data to vertex buffer's memory staging for graphics device: " +
+                        V(W_FALSE, "setting data to vertex buffer's memory staging for graphics device: " +
                           _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
                           this->_name, 3, false);
                     
-                        return S_FALSE;
+                        return W_FALSE;
                     }
                 }
                 
                 //bind to it
                 _hr = pBuffer.bind();
-                if(_hr == S_FALSE)
+                if(_hr == W_FALSE)
                 {
-                    V(S_FALSE, "binding to vertex buffer's memory for graphics device: " +
+                    V(W_FALSE, "binding to vertex buffer's memory for graphics device: " +
                       _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
                       this->_name, 3, false);
                     
-                    return S_FALSE;
+                    return W_FALSE;
                 }
                 
-                return S_OK;
+                return W_OK;
             }
             
             std::string                                         _name;
@@ -405,7 +408,7 @@ w_mesh::~w_mesh()
 	release();
 }
 
-HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+W_RESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const void* const pVerticesData,
                     _In_  const uint32_t  pVerticesSize,
                      _In_ const uint32_t pVerticesCount,
@@ -413,7 +416,7 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const uint32_t pIndicesCount,
                      _In_ const bool pUseDynamicBuffer)
 {
-    if (!this->_pimp) return S_FALSE;
+    if (!this->_pimp) return W_FALSE;
     
     return this->_pimp->load(
         pGDevice,
@@ -425,7 +428,7 @@ HRESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
         pUseDynamicBuffer);
 }
 
-HRESULT w_mesh::update_dynamic_buffer(
+W_RESULT w_mesh::update_dynamic_buffer(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const void* const pVerticesData,
     _In_ const uint32_t pVerticesSize,
@@ -439,16 +442,18 @@ HRESULT w_mesh::update_dynamic_buffer(
         pVerticesSize,
         pVerticesCount,
         pIndicesData,
-        pIndicesCount) : S_FALSE;
+        pIndicesCount) : W_FALSE;
 }
 
-HRESULT w_mesh::draw(_In_ const VkCommandBuffer& pCommandBuffer,
+W_RESULT w_mesh::draw(
+	_In_ const w_command_buffer* pCommandBuffer,
 	_In_ const VkBuffer& pInstanceHandle,
 	_In_ const uint32_t& pInstancesCount,
 	_In_ const bool& pIndirectDraw,
 	_In_ const uint32_t& pVertexOffset)
 {
-	return this->_pimp ? this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw, pVertexOffset) : S_FALSE;
+	if (!this->_pimp || !pCommandBuffer) return W_FALSE;
+	return this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw, pVertexOffset);
 }
 
 ULONG w_mesh::release()

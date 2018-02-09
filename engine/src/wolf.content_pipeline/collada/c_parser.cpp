@@ -10,14 +10,14 @@ using namespace wolf::content_pipeline::collada;
 
 const char* c_parser::_trace_class_name = "w_collada_parser";
 
-HRESULT c_parser::parse_collada_from_file(
+W_RESULT c_parser::parse_collada_from_file(
     _In_z_ const std::wstring& pFilePath, 
     _Inout_ w_cpipeline_scene* pScene,
     _In_ const bool& pAMDTootleOptimizing,
     _In_ const bool& pInvertNormals,
     _In_ const bool& pFindLODs)
 {
-	auto _hr = S_OK;
+	auto _hr = W_OK;
 
 #if defined(__WIN32) || defined(__UWP)
     auto _path = pFilePath;
@@ -42,7 +42,7 @@ HRESULT c_parser::parse_collada_from_file(
 	}
 	catch (...)
 	{
-		_hr = S_FALSE;
+		_hr = W_FALSE;
         V(_hr, L"Could not parse collada file on following path : " + pFilePath, _trace_class_name, 3);
 	}
 
@@ -63,9 +63,9 @@ HRESULT c_parser::parse_collada_from_file(
 	return _hr;
 }
 
-HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
+W_RESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 {
-    if (!pXNode) return S_FALSE;
+    if (!pXNode) return W_FALSE;
 
 	//get the name of node
 	auto _node_name = _get_node_name(pXNode);
@@ -79,7 +79,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	if (_parent)
 	{
 		_parent_node_name = _get_node_name(_parent);
-		if (_parent_node_name == sSkipChildrenOfThisNode) return S_OK;
+		if (_parent_node_name == sSkipChildrenOfThisNode) return W_OK;
 	}
 
 	if (_node_name == "collada")
@@ -90,14 +90,14 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 		if (_attr && 0 != std::strcmp(_attr->value(), "http://www.collada.org/2005/11/COLLADASchema"))
 		{
 			logger.error(L"Collada file does not have standard COLLADA header");
-			return S_FALSE;
+			return W_FALSE;
 		}
 
 		_attr = pXNode->first_attribute("version", 0, false);
 		if (_attr && 0 != std::strcmp(_attr->value(), "1.4.1"))
 		{
 			logger.error(L"Collada file does not have standard COLLADA header");
-			return S_FALSE;
+			return W_FALSE;
 		}
 #pragma endregion
 	}
@@ -124,14 +124,14 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
                 _str.clear();
             }
         }
-        return S_OK;
+        return W_OK;
 	}
 	else if (_node_name == "library_cameras")
 	{
 		//we don't need basic information of camera, such as near plan, far plan and etc
 		sSkipChildrenOfThisNode = _node_name;
         _get_library_cameras(pXNode);
-		return S_OK;
+		return W_OK;
 	}
 	else if (_node_name == "library_lights")
 	{
@@ -141,19 +141,19 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	{
         sSkipChildrenOfThisNode = _node_name;
         _get_library_effects(pXNode);
-        return S_OK;
+        return W_OK;
 	}
 	else if (_node_name == "library_materials")
 	{
         sSkipChildrenOfThisNode = _node_name;
         _get_library_materials(pXNode);
-        return S_OK;
+        return W_OK;
 	}
     else if (_node_name == "library_images")
     {
         sSkipChildrenOfThisNode = _node_name;
         _get_library_images(pXNode);
-        return S_OK;
+        return W_OK;
     }
 	else if (_node_name == "library_geometries")
 	{
@@ -257,7 +257,7 @@ HRESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 		_process_xml_node(_child);
 	}
 
-	return S_OK;
+	return W_OK;
 }
 
 void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
@@ -1192,7 +1192,7 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pN
 	pGeometry.triangles.push_back(_triangles);
 }
 
-HRESULT c_parser::_create_scene(
+W_RESULT c_parser::_create_scene(
     _Inout_ w_cpipeline_scene* pScene,
     _In_ const bool& pAMDTootleOptimizing,
     _In_ const bool& pInvertNormals, 
@@ -1536,7 +1536,7 @@ HRESULT c_parser::_create_scene(
 
     pScene->set_coordiante_system(sZ_Up);
     
-	return S_OK;
+	return W_OK;
 }
 
 void c_parser::_iterate_over_nodes(

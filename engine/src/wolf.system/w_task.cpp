@@ -3,16 +3,16 @@
 
 using namespace wolf::system;
 
-std::future<HRESULT> w_task::_deferred;
+std::future<W_RESULT> w_task::_deferred;
 
 void w_task::execute_async(
-	_In_ const std::function<HRESULT(void)>& pTaskWork, 
-    _In_ const std::function<void(HRESULT)>& pCallBack)
+	_In_ const std::function<W_RESULT(void)>& pTaskWork, 
+    _In_ const std::function<void(W_RESULT)>& pCallBack)
 {
 
 #if defined(__WIN32) || defined(__UWP)
 
-	concurrency::create_task(pTaskWork).then([pCallBack](HRESULT pHR)
+	concurrency::create_task(pTaskWork).then([pCallBack](W_RESULT pHR)
 	{
 		if (pCallBack)
 		{
@@ -35,7 +35,7 @@ void w_task::execute_async(
 #endif
 }
 
-void w_task::execute_deferred(_In_ const std::function<HRESULT(void)>& pTaskWork)
+void w_task::execute_deferred(_In_ const std::function<W_RESULT(void)>& pTaskWork)
 {
 	_deferred = std::async(std::launch::deferred, pTaskWork);
 }

@@ -86,7 +86,7 @@ namespace wolf
             WMC_EXP virtual ~w_media_core();
 
 			//Open a media 
-            WMC_EXP HRESULT open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame = 0);
+            WMC_EXP W_RESULT open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame = 0);
 
             /*
                 Open a stream server in async mode
@@ -144,13 +144,13 @@ namespace wolf
             
             //TODO: change wolf::system::w_memory with wolf::system::w_memory_pool
 			//Store video frame data in to the memory
-            WMC_EXP HRESULT buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, UINT pDownSampling = 1);
+            WMC_EXP W_RESULT buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, UINT pDownSampling = 1);
 
 			//Store audio frame data in to the memory
-            WMC_EXP HRESULT buffer_audio_to_memory(wolf::system::w_memory& pAudioMemory, double& pAudioFrameVolumeDB);
+            WMC_EXP W_RESULT buffer_audio_to_memory(wolf::system::w_memory& pAudioMemory, double& pAudioFrameVolumeDB);
 
 			//Read all data in to the memory, make sure the capacity size of video and audio chuck is equal 
-            WMC_EXP HRESULT buffer_to_memory(wolf::system::w_memory& pVideoMemory, wolf::system::w_memory& pAudioMemory);
+            WMC_EXP W_RESULT buffer_to_memory(wolf::system::w_memory& pVideoMemory, wolf::system::w_memory& pAudioMemory);
 
 #endif
 			//release all resources

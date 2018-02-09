@@ -23,25 +23,25 @@ namespace wolf
             W_EXP w_buffer();
             W_EXP ~w_buffer();
             
-            W_EXP HRESULT load_as_staging(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_EXP W_RESULT load_as_staging(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                           _In_ const uint32_t pBufferSize);
             
-            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                          _In_ const uint32_t pBufferSize,
                          _In_ const VkBufferUsageFlags pUsage,
                          _In_ const VkMemoryPropertyFlags pMemoryFlags);
             
-            W_EXP HRESULT bind();
+            W_EXP W_RESULT bind();
 
-            W_EXP HRESULT set_data(_In_ const void* const pData);          
+            W_EXP W_RESULT set_data(_In_ const void* const pData);          
             
-            W_EXP HRESULT copy_to(_In_ w_buffer& pDestinationBuffer);
+            W_EXP W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer);
 
             W_EXP void* map();
             
             W_EXP void unmap();
             
-            W_EXP HRESULT flush(VkDeviceSize pSize = VK_WHOLE_SIZE, VkDeviceSize pOffset = 0);
+            W_EXP W_RESULT flush(VkDeviceSize pSize = VK_WHOLE_SIZE, VkDeviceSize pOffset = 0);
 
             W_EXP ULONG release() override;
             

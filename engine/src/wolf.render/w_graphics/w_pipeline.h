@@ -24,7 +24,7 @@ namespace wolf
 			W_EXP w_pipeline();
 			W_EXP virtual ~w_pipeline();
 
-            W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+            W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
                                _In_ const VkPrimitiveTopology pPrimitiveTopology,
                                _In_ const VkRenderPass pRenderPass,
@@ -42,7 +42,7 @@ namespace wolf
                                _In_ const VkPipelineColorBlendAttachmentState pBlendState = w_graphics_device::w_blend_states::premulitplied_alpha,
                                _In_ const std::array<float,4> pBlendColors = { 0.0f, 0.0f, 0.0f, 0.0f });
             
-            W_EXP HRESULT load_compute(
+            W_EXP W_RESULT load_compute(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
                 _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
@@ -50,7 +50,7 @@ namespace wolf
                 _In_ const std::string& pPipelineCacheName = "",
                 _In_ const std::vector<VkPushConstantRange> pPushConstantRanges = {});
 
-            W_EXP void bind(_In_ const VkCommandBuffer& pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet);
+            W_EXP W_RESULT bind(_In_ const w_command_buffer* pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet);
 
             //release all resources
             W_EXP virtual ULONG release() override;
@@ -66,7 +66,7 @@ namespace wolf
             W_EXP static VkPipelineLayout create_pipeline_layout(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo);
 
-            W_EXP static HRESULT create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
+            W_EXP static W_RESULT create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
                 _In_z_ const std::string& pPipelineCacheName);
             
             W_EXP static VkPipelineCache get_pipeline_cache(_In_z_ const std::string& pPipelineCacheName);

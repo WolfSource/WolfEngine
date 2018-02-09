@@ -168,22 +168,22 @@ const size_t w_graphics_device::get_number_of_swap_chains()
 	return this->output_presentation_window.vk_swap_chain_image_views.size();
 }
 
-HRESULT w_graphics_device::draw(_In_ const w_command_buffer*	pCommandBuffer,
+W_RESULT w_graphics_device::draw(_In_ const w_command_buffer*	pCommandBuffer,
                              _In_ const uint32_t&				pVertexCount,
                              _In_ const uint32_t&				pInstanceCount,
                              _In_ const uint32_t&				pFirstVertex,
                              _In_ const uint32_t&				pFirstInstance)
 {
-	if (!pCommandBuffer) return S_FALSE;
+	if (!pCommandBuffer) return W_FALSE;
 #ifdef __VULKAN__
     vkCmdDraw( pCommandBuffer->get_active_command(), pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance );
 #elif defined(__DX12__)
     
 #endif
-	return S_OK;
+	return W_OK;
 }
 
-HRESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer*>& pCommandBuffers,
+W_RESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer*>& pCommandBuffers,
 	_In_ const w_queue&                       pQueue,
 	_In_ const w_pipeline_stage_flags*        pWaitDstStageMask,
 	_In_ std::vector<w_semaphore>             pWaitForSemaphores,
@@ -193,9 +193,9 @@ HRESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer*
 	const std::string _trace_info = "w_graphics_device::submit";
 
 	auto _size = static_cast<uint32_t>(pCommandBuffers.size());
-	if (!_size) return S_FALSE;
+	if (!_size) return W_FALSE;
 	
-	HRESULT _hr = S_OK;
+	W_RESULT _hr = W_OK;
 	std::vector<VkCommandBuffer> _cmds(_size);
 	for (size_t i = 0; i < _size; ++i)
 	{
@@ -248,7 +248,7 @@ HRESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer*
 	// Submit to queue
 	if (vkQueueSubmit(pQueue.queue, 1, &_submit_info, _fence))
 	{
-		_hr = S_FALSE;
+		_hr = W_FALSE;
 		V(_hr,
 			"submiting queue for graphics device" + this->device_info->get_device_name() + 
 			" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -261,7 +261,7 @@ HRESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer*
 	{
 		if (vkQueueWaitIdle(pQueue.queue))
 		{
-			_hr = S_FALSE;
+			_hr = W_FALSE;
 			V(_hr,
 				"waiting for queue for graphics device" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -280,7 +280,7 @@ submit_clear:
 	return _hr;
 }
 
-HRESULT w_graphics_device::capture(
+W_RESULT w_graphics_device::capture(
 	_In_ VkImage pSourceImage, 
 	_In_ VkFormat pSourceImageFormat, 
 	_In_ VkImageLayout pSourceImageLayout,
@@ -288,7 +288,7 @@ HRESULT w_graphics_device::capture(
 	_In_ const uint32_t& pHeight, 
 	_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured)
 {
-    HRESULT _return_result = S_OK;
+    W_RESULT _return_result = W_OK;
 
     const std::string _trace_info = "w_graphics_device::capture";
     
@@ -346,7 +346,7 @@ HRESULT w_graphics_device::capture(
         &_dst_image);
     if (_hr)
     {
-        _return_result = S_FALSE;
+        _return_result = W_FALSE;
         V(_return_result,
             "creating destination image for graphics device" + this->device_info->get_device_name() +
             " ID:" + std::to_string(this->device_info->get_device_id()),
@@ -379,7 +379,7 @@ HRESULT w_graphics_device::capture(
         _hr = vkAllocateMemory(this->vk_device, &_mem_alloc_info, nullptr, &_dst_image_memory);
         if (_hr)
         {
-            _return_result = S_FALSE;
+            _return_result = W_FALSE;
             V(_return_result,
                 "creating destination image for graphics device" + this->device_info->get_device_name() +
                 " ID:" + std::to_string(this->device_info->get_device_id()),
@@ -396,7 +396,7 @@ HRESULT w_graphics_device::capture(
     _hr = vkBindImageMemory(this->vk_device, _dst_image, _dst_image_memory, 0);
     if (_hr)
     {
-        _return_result = S_FALSE;
+        _return_result = W_FALSE;
         V(_return_result,
             "binding to destination image for graphics device" + this->device_info->get_device_name() +
             " ID:" + std::to_string(this->device_info->get_device_id()),
@@ -426,7 +426,7 @@ HRESULT w_graphics_device::capture(
 		_hr = vkAllocateCommandBuffers(this->vk_device, &_copy_cmd_buf_allocate_info, &_copy_cmd);
 		if (_hr)
 		{
-			_return_result = S_FALSE;
+			_return_result = W_FALSE;
 			V(_return_result,
 				"allocating buffer for copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -444,7 +444,7 @@ HRESULT w_graphics_device::capture(
 		_command_buffer_began = true;
 		if (_hr)
 		{
-			_return_result = S_FALSE;
+			_return_result = W_FALSE;
 			V(_return_result,
 				"beginning copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -615,7 +615,7 @@ HRESULT w_graphics_device::capture(
 		_hr = vkEndCommandBuffer(_copy_cmd);
 		if (_hr)
 		{
-			_return_result = S_FALSE;
+			_return_result = W_FALSE;
 			V(_return_result,
 				"ending copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -635,7 +635,7 @@ HRESULT w_graphics_device::capture(
 		_hr = vkCreateFence(this->vk_device, &_fence_info, nullptr, &_copy_fence);
 		if (_hr)
 		{
-			_return_result = S_FALSE;
+			_return_result = W_FALSE;
 			V(_return_result,
 				"creating fence of copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -656,7 +656,7 @@ HRESULT w_graphics_device::capture(
 		_hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _copy_fence);
 		if (_hr)
 		{
-			_return_result = S_FALSE;
+			_return_result = W_FALSE;
 			V(_return_result,
 				"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -670,7 +670,7 @@ HRESULT w_graphics_device::capture(
 		_hr = vkWaitForFences(this->vk_device, 1, &_copy_fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
 		if (_hr)
 		{
-			_return_result = S_FALSE;
+			_return_result = W_FALSE;
 			V(_return_result,
 				"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -719,7 +719,7 @@ clean_up:
             _hr = vkEndCommandBuffer(_copy_cmd);
             if (_hr)
             {
-                V(S_FALSE,
+                V(W_FALSE,
                     "ending copy command buffer for" + this->device_info->get_device_name() +
                     " ID:" + std::to_string(this->device_info->get_device_id()),
                     _trace_info,
@@ -744,14 +744,14 @@ clean_up:
     return _return_result;
 }
 
-HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
+W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 	_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured)
 {
-	HRESULT _return_result = S_OK;
+	W_RESULT _return_result = W_OK;
 	const std::string _trace_info = "w_graphics_device::capture_presented_swap_chain_buffer";
 
 	auto _objs_ptr = this->output_presentation_window.objs_between_cpu_gpu;
-	if (!_objs_ptr) return S_FALSE;
+	if (!_objs_ptr) return W_FALSE;
 
 	//source image is swap chain last presented buffer
 	auto _src_image = this->output_presentation_window.vk_swap_chain_image_views[this->output_presentation_window.swap_chain_image_index].image;
@@ -931,7 +931,7 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			_hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
 			if (_hr)
 			{
-				_return_result = S_FALSE;
+				_return_result = W_FALSE;
 				V(_return_result,
 					"ending copy command buffer for" + this->device_info->get_device_name() +
 					" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -951,7 +951,7 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			_hr = vkCreateFence(this->vk_device, &_fence_info, nullptr, &_objs_ptr->copy_fence);
 			if (_hr)
 			{
-				_return_result = S_FALSE;
+				_return_result = W_FALSE;
 				V(_return_result,
 					"creating fence of copy command buffer for" + this->device_info->get_device_name() +
 					" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -971,7 +971,7 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			_hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _objs_ptr->copy_fence);
 			if (_hr)
 			{
-				_return_result = S_FALSE;
+				_return_result = W_FALSE;
 				V(_return_result,
 					"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
 					" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -985,7 +985,7 @@ HRESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			_hr = vkWaitForFences(this->vk_device, 1, &_objs_ptr->copy_fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
 			if (_hr)
 			{
-				_return_result = S_FALSE;
+				_return_result = W_FALSE;
 				V(_return_result,
 					"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
 					" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -1022,7 +1022,7 @@ clean_up:
 		_hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
 		if (_hr)
 		{
-			_return_result = S_FALSE;
+			_return_result = W_FALSE;
 			V(_return_result,
 				"ending copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -1034,6 +1034,86 @@ clean_up:
 	}
 	
 	return _return_result;
+}
+
+void w_graphics_device::_clean_swap_chain()
+{
+	//release shared objects between cpu and gpu
+#pragma region Release Shared Objs CPU-GPU Mapping
+	if (this->output_presentation_window.objs_between_cpu_gpu)
+	{
+		auto _shared_obj = this->output_presentation_window.objs_between_cpu_gpu;
+		//release objects destination image memory
+		if (_shared_obj->destination_image_memory)
+		{
+			vkFreeMemory(this->vk_device, _shared_obj->destination_image_memory, nullptr);
+		}
+		//release destination image
+		if (_shared_obj->destination_image)
+		{
+			vkDestroyImage(
+				this->vk_device,
+				_shared_obj->destination_image,
+				nullptr);
+		}
+		//release command buffer
+		if (_shared_obj->copy_command_buffer)
+		{
+			if (_shared_obj->command_buffer_began)
+			{
+				auto _hr = vkEndCommandBuffer(_shared_obj->copy_command_buffer);
+				if (_hr)
+				{
+					V(W_FALSE,
+						"ending remained copy command buffer between CPU-GPU for" + this->device_info->get_device_name() +
+						" ID:" + std::to_string(this->device_info->get_device_id()),
+						"w_graphics_device::release",
+						3,
+						false);
+				}
+				_shared_obj->command_buffer_began = false;
+			}
+			vkFreeCommandBuffers(
+				this->vk_device,
+				this->vk_command_allocator_pool,
+				1,
+				&_shared_obj->copy_command_buffer
+			);
+		}
+		//release fence
+		if (_shared_obj->copy_fence)
+		{
+			vkDestroyFence(this->vk_device, _shared_obj->copy_fence, nullptr);
+		}
+	}
+#pragma endregion
+
+	//release all image view of swap chains
+	for (size_t i = 0; i < this->output_presentation_window.vk_swap_chain_image_views.size(); ++i)
+	{
+		//release both color image and view,
+		vkDestroyImageView(
+			this->vk_device,
+			this->output_presentation_window.vk_swap_chain_image_views[i].view,
+			nullptr);
+		this->output_presentation_window.vk_swap_chain_image_views[i].view = 0;
+		this->output_presentation_window.vk_swap_chain_image_views[i].image = 0;
+	}
+	this->output_presentation_window.vk_swap_chain_image_views.clear();
+
+	//release depth image and view,
+	vkDestroyImageView(
+		this->vk_device,
+		this->output_presentation_window.vk_depth_buffer_image_view.view,
+		nullptr);
+	this->output_presentation_window.vk_depth_buffer_image_view.view = 0;
+	this->output_presentation_window.vk_depth_buffer_image_view.image = 0;
+
+	//release swap chain
+	vkDestroySwapchainKHR(this->vk_device,
+		this->output_presentation_window.vk_swap_chain,
+		nullptr);
+	this->output_presentation_window.vk_swap_chain = 0;
 }
 
 ULONG w_graphics_device::release()
@@ -1090,86 +1170,15 @@ ULONG w_graphics_device::release()
     //wait for device to become IDLE
     vkDeviceWaitIdle(this->vk_device);
 
-
-    //release shared objects between cpu and gpu
-#pragma region Release Shared Objs CPU-GPU Mapping
-    if (this->output_presentation_window.objs_between_cpu_gpu)
-    {
-        auto _shared_obj = this->output_presentation_window.objs_between_cpu_gpu;
-        //release objects destination image memory
-        if (_shared_obj->destination_image_memory)
-        {
-            vkFreeMemory(this->vk_device, _shared_obj->destination_image_memory, nullptr);
-        }
-        //release destination image
-        if (_shared_obj->destination_image)
-        {
-            vkDestroyImage(
-                this->vk_device,
-                _shared_obj->destination_image,
-                nullptr);
-        }
-        //release command buffer
-        if (_shared_obj->copy_command_buffer)
-        {
-            if (_shared_obj->command_buffer_began)
-            {
-                auto _hr = vkEndCommandBuffer(_shared_obj->copy_command_buffer);
-                if (_hr)
-                {
-                    V(S_FALSE,
-                        "ending remained copy command buffer between CPU-GPU for" + this->device_info->get_device_name() +
-                        " ID:" + std::to_string(this->device_info->get_device_id()),
-                        "w_graphics_device::release",
-                        3,
-                        false);
-                }
-                _shared_obj->command_buffer_began = false;
-            }
-            vkFreeCommandBuffers(
-                this->vk_device,
-                this->vk_command_allocator_pool,
-                1,
-                &_shared_obj->copy_command_buffer
-            );
-        }
-        //release fence
-        if (_shared_obj->copy_fence)
-        {
-            vkDestroyFence(this->vk_device, _shared_obj->copy_fence, nullptr);
-        }
-    }
-#pragma endregion
-
-    //release semaphores
-    this->output_presentation_window.rendering_done_semaphore.release();
-    this->output_presentation_window.swap_chain_image_is_available_semaphore.release();
-
-    //release all image view of swap chains
-	for (size_t i = 0; i < this->output_presentation_window.vk_swap_chain_image_views.size(); ++i)
-	{
-		//release both image and view,
-		vkDestroyImageView(this->vk_device,
-			this->output_presentation_window.vk_swap_chain_image_views[i].view,
-			nullptr);
-		this->output_presentation_window.vk_swap_chain_image_views[i].view = 0;
-		this->output_presentation_window.vk_swap_chain_image_views[i].image = 0;
-	}
-	this->output_presentation_window.vk_swap_chain_image_views.clear();
-
-    //release swap chain
-    vkDestroySwapchainKHR(this->vk_device,
-		this->output_presentation_window.vk_swap_chain,
-        nullptr);
-	this->output_presentation_window.vk_swap_chain = 0;
-
-    //release the surface
-    vkDestroySurfaceKHR(w_graphics_device::vk_instance,
-		this->output_presentation_window.vk_presentation_surface,
-        nullptr);
-	this->output_presentation_window.vk_presentation_surface = 0;
+	_clean_swap_chain();
 
 	this->output_presentation_window.release();
+
+	//release the surface
+	vkDestroySurfaceKHR(w_graphics_device::vk_instance,
+		this->output_presentation_window.vk_presentation_surface,
+		nullptr);
+	this->output_presentation_window.vk_presentation_surface = 0;
 
     this->vk_queue_family_properties.clear();
     this->vk_queue_family_supports_present.clear();
@@ -1272,7 +1281,7 @@ namespace wolf
 			{
 #ifdef __DX12__
 
-				HRESULT _hr = S_FALSE;
+				W_RESULT _hr = W_FALSE;
 
 				std::wstring _msg;
 				_msg += L"++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\t\t\t\t\tDirectX API version: 12";
@@ -1456,7 +1465,7 @@ namespace wolf
 
 						DXGI_ADAPTER_DESC1 _adapter_desc = {};
 						auto _hr = _adapter->GetDesc1(&_adapter_desc);
-						if (_hr != S_OK)
+						if (_hr != W_OK)
 						{
 							logger.write(_msg);
 							_msg.clear();
@@ -1523,7 +1532,7 @@ namespace wolf
 							_adapter.Get(),
 							_selected_feature_level,
 							IID_PPV_ARGS(&_gDevice->dx_device));
-						if (_hr != S_OK)
+						if (_hr != W_OK)
 						{
 							logger.write(_msg);
 							_msg.clear();
@@ -2297,8 +2306,7 @@ namespace wolf
 
                             _gDevice->output_presentation_window = _out_window;
 
-                            create_or_resize_swap_chain(_gDevice);
-                            _create_depth_stencil_buffer(_gDevice);
+							create_swap_chain(_gDevice);
                             _create_fences(_gDevice);
                         }
 					}
@@ -2373,7 +2381,7 @@ namespace wolf
 #endif //__DX12__, __VULKAN__
 			}
 
-			void create_or_resize_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+			void create_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 			{
 #ifdef __DX12__
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
@@ -2392,7 +2400,7 @@ namespace wolf
 				_output_presentation_window->force_to_clear_color_times = _desired_number_of_swapchain_images;
 
 
-				HRESULT _hr = S_FALSE;
+				W_RESULT _hr = W_FALSE;
 #ifdef __WIN32
 
 				if (_output_presentation_window->dx_swap_chain != nullptr)
@@ -2601,7 +2609,7 @@ namespace wolf
 						pGDevice->dx_device_removed = true;
 						return;
 					}
-					else if (_hr != S_OK)
+					else if (_hr != W_OK)
 					{
 						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
 							+ _device_name L" ID:" + std::to_wstring(_device_id));
@@ -2775,7 +2783,7 @@ namespace wolf
 					}
 				}
 
-				V(pGDevice->vk_present_queue.index == UINT32_MAX ? S_FALSE : S_OK,
+				V(pGDevice->vk_present_queue.index == UINT32_MAX ? W_FALSE : W_OK,
 					L"could not find queue family which supports presentation for graphics device: " +
 					std::wstring(_device_name.begin(), _device_name.end()) + L" ID:" + std::to_wstring(_device_id),
 					this->_name, 2);
@@ -3154,6 +3162,144 @@ namespace wolf
                     _output_presentation_window->vk_swap_chain_image_views.push_back(_image_view);
                 }
 
+#pragma region Create Depth Buffer
+
+				VkImageCreateInfo _depth_stencil_image_create_info = {};
+				const VkFormat _depth_format = w_graphics_device_manager::find_supported_format(
+					pGDevice,
+					{ VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+					VK_IMAGE_TILING_OPTIMAL,
+					VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+				if (_depth_format == VkFormat::VK_FORMAT_UNDEFINED)
+				{
+					logger.error("Depth format not supported for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				_output_presentation_window->vk_depth_buffer_format = _depth_format;
+
+				//define depth stencil image description
+				_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+				_depth_stencil_image_create_info.pNext = nullptr;
+				_depth_stencil_image_create_info.imageType = VK_IMAGE_TYPE_2D;
+				_depth_stencil_image_create_info.format = _depth_format;
+				_depth_stencil_image_create_info.extent.width = _output_presentation_window->width;
+				_depth_stencil_image_create_info.extent.height = _output_presentation_window->height;
+				_depth_stencil_image_create_info.extent.depth = 1;
+				_depth_stencil_image_create_info.mipLevels = 1;
+				_depth_stencil_image_create_info.arrayLayers = 1;
+				_depth_stencil_image_create_info.samples = NUM_SAMPLES;
+				_depth_stencil_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+				_depth_stencil_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+				_depth_stencil_image_create_info.queueFamilyIndexCount = 0;
+				_depth_stencil_image_create_info.pQueueFamilyIndices = nullptr;
+				_depth_stencil_image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+				_depth_stencil_image_create_info.flags = 0;
+
+				VkMemoryAllocateInfo _mem_alloc = {};
+				_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+				_mem_alloc.pNext = nullptr;
+				_mem_alloc.allocationSize = 0;
+				_mem_alloc.memoryTypeIndex = 0;
+
+				//Create image of depth stencil
+				_hr = vkCreateImage(pGDevice->vk_device,
+					&_depth_stencil_image_create_info,
+					nullptr,
+					&_output_presentation_window->vk_depth_buffer_image_view.image);
+				if (_hr)
+				{
+					logger.error("error on creating depth buffer for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				VkMemoryRequirements _mem_reqs;
+				vkGetImageMemoryRequirements(pGDevice->vk_device,
+					_output_presentation_window->vk_depth_buffer_image_view.image,
+					&_mem_reqs);
+
+				_mem_alloc.allocationSize = _mem_reqs.size;
+
+				//use the memory properties to determine the type of memory required
+				_hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
+					_mem_reqs.memoryTypeBits,
+					0, // No Requirements
+					&_mem_alloc.memoryTypeIndex);
+				if (_hr)
+				{
+					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//allocate memory
+				_hr = vkAllocateMemory(pGDevice->vk_device,
+					&_mem_alloc,
+					nullptr,
+					&_output_presentation_window->vk_depth_buffer_memory);
+				if (_hr)
+				{
+					logger.error("error on allocating memory for depth buffer image for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//bind memory
+				_hr = vkBindImageMemory(pGDevice->vk_device,
+					_output_presentation_window->vk_depth_buffer_image_view.image,
+					_output_presentation_window->vk_depth_buffer_memory,
+					0);
+				if (_hr)
+				{
+					logger.error("error on binding to memory for depth buffer image for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+				//create depth stencil buffer image view
+				VkImageViewCreateInfo _depth_stencil_view_info = {};
+				_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+				_depth_stencil_view_info.pNext = nullptr;
+				_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+				_depth_stencil_view_info.image = _output_presentation_window->vk_depth_buffer_image_view.image;
+				_depth_stencil_view_info.format = _depth_format;
+				_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
+				_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
+				_depth_stencil_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
+				_depth_stencil_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
+				_depth_stencil_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+				_depth_stencil_view_info.subresourceRange.baseMipLevel = 0;
+				_depth_stencil_view_info.subresourceRange.levelCount = 1;
+				_depth_stencil_view_info.subresourceRange.baseArrayLayer = 0;
+				_depth_stencil_view_info.subresourceRange.layerCount = 1;
+				_depth_stencil_view_info.flags = 0;
+
+				_hr = vkCreateImageView(pGDevice->vk_device,
+					&_depth_stencil_view_info,
+					nullptr,
+					&_output_presentation_window->vk_depth_buffer_image_view.view);
+				if (_hr)
+				{
+					logger.error("error on creating image view for depth buffer image for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
+
+
+				_output_presentation_window->vk_depth_buffer_image_view.width = _output_presentation_window->width;
+				_output_presentation_window->vk_depth_buffer_image_view.height = _output_presentation_window->height;
+				_output_presentation_window->vk_depth_buffer_image_view.attachment_desc = w_attachment_buffer_desc::create_depth_desc_buffer();
+
+#pragma endregion
+
                 //create required objects for accessing swap chain buffer by CPU
                 if (_output_presentation_window->cpu_access_to_swapchain_buffer)
                 {
@@ -3208,153 +3354,7 @@ namespace wolf
 #pragma endregion
 
 		private:
-            
-			void _create_depth_stencil_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
-			{
-                auto _device_id = pGDevice->device_info->get_device_id();
-                auto _window = &(pGDevice->output_presentation_window);
-
-#ifdef __DX12__ 
-                
-#elif defined(__VULKAN__)
-                auto _device_name = pGDevice->device_info->get_device_name();
-
-				VkImageCreateInfo _depth_stencil_image_create_info = {};
-				const VkFormat _depth_format = w_graphics_device_manager::find_supported_format(
-                    pGDevice,
-                    { VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
-                    VK_IMAGE_TILING_OPTIMAL,
-                    VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
-                if (_depth_format == VkFormat::VK_FORMAT_UNDEFINED)
-                {
-                    logger.error("Depth format not supported for graphics device: " +
-                        _device_name + " ID:" + std::to_string(_device_id));
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
-
-                _window->vk_depth_buffer_format = _depth_format;
-
-				//define depth stencil image description
-				_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-				_depth_stencil_image_create_info.pNext = nullptr;
-				_depth_stencil_image_create_info.imageType = VK_IMAGE_TYPE_2D;
-				_depth_stencil_image_create_info.format = _depth_format;
-				_depth_stencil_image_create_info.extent.width = _window->width;
-				_depth_stencil_image_create_info.extent.height = _window->height;
-				_depth_stencil_image_create_info.extent.depth = 1;
-				_depth_stencil_image_create_info.mipLevels = 1;
-				_depth_stencil_image_create_info.arrayLayers = 1;
-				_depth_stencil_image_create_info.samples = NUM_SAMPLES;
-				_depth_stencil_image_create_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-				_depth_stencil_image_create_info.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-				_depth_stencil_image_create_info.queueFamilyIndexCount = 0;
-				_depth_stencil_image_create_info.pQueueFamilyIndices = nullptr;
-				_depth_stencil_image_create_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-				_depth_stencil_image_create_info.flags = 0;
-
-				VkMemoryAllocateInfo _mem_alloc = {};
-				_mem_alloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-				_mem_alloc.pNext = nullptr;
-				_mem_alloc.allocationSize = 0;
-				_mem_alloc.memoryTypeIndex = 0;
-
-				//Create image of depth stencil
-				auto _hr = vkCreateImage(pGDevice->vk_device,
-					&_depth_stencil_image_create_info,
-					nullptr,
-					&_window->vk_depth_buffer_image_view.image);
-				if (_hr)
-				{
-					logger.error("error on creating depth buffer for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) );
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				VkMemoryRequirements _mem_reqs;
-				vkGetImageMemoryRequirements(pGDevice->vk_device,
-					_window->vk_depth_buffer_image_view.image,
-					&_mem_reqs);
-
-				_mem_alloc.allocationSize = _mem_reqs.size;
-
-				//use the memory properties to determine the type of memory required
-				_hr = w_graphics_device_manager::memory_type_from_properties(pGDevice->vk_physical_device_memory_properties,
-					_mem_reqs.memoryTypeBits,
-					0, // No Requirements
-					&_mem_alloc.memoryTypeIndex);
-				if (_hr)
-				{
-					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//allocate memory
-				_hr = vkAllocateMemory(pGDevice->vk_device,
-					&_mem_alloc,
-					nullptr,
-					&_window->vk_depth_buffer_memory);
-				if (_hr)
-				{
-					logger.error("error on allocating memory for depth buffer image for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//bind memory
-				_hr = vkBindImageMemory(pGDevice->vk_device,
-					_window->vk_depth_buffer_image_view.image,
-					_window->vk_depth_buffer_memory,
-					0);
-				if (_hr)
-				{
-					logger.error("error on binding to memory for depth buffer image for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-				//create depth stencil buffer image view
-				VkImageViewCreateInfo _depth_stencil_view_info = {};
-				_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-				_depth_stencil_view_info.pNext = nullptr;
-				_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-				_depth_stencil_view_info.image = _window->vk_depth_buffer_image_view.image;
-				_depth_stencil_view_info.format = _depth_format;
-				_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
-				_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
-				_depth_stencil_view_info.components.b = VK_COMPONENT_SWIZZLE_B;
-				_depth_stencil_view_info.components.a = VK_COMPONENT_SWIZZLE_A;
-				_depth_stencil_view_info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-				_depth_stencil_view_info.subresourceRange.baseMipLevel = 0;
-				_depth_stencil_view_info.subresourceRange.levelCount = 1;
-				_depth_stencil_view_info.subresourceRange.baseArrayLayer = 0;
-				_depth_stencil_view_info.subresourceRange.layerCount = 1;
-				_depth_stencil_view_info.flags = 0;
-
-				_hr = vkCreateImageView(pGDevice->vk_device,
-					&_depth_stencil_view_info,
-					nullptr,
-					&_window->vk_depth_buffer_image_view.view);
-				if (_hr)
-				{
-					logger.error("error on creating image view for depth buffer image for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
-					release();
-					std::exit(EXIT_FAILURE);
-				}
-
-
-				_window->vk_depth_buffer_image_view.width = _window->width;
-				_window->vk_depth_buffer_image_view.height = _window->height;
-				_window->vk_depth_buffer_image_view.attachment_desc = w_attachment_buffer_desc::create_depth_desc_buffer();
-#endif
-			}
-            
+                        
 			void _create_fences(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 			{
 #ifdef __DX12__ 
@@ -3389,14 +3389,14 @@ namespace wolf
 				auto _output_presentation_window = &(pGDevice->output_presentation_window);
 
                 //create semaphores fro this graphics device
-                if (_output_presentation_window->swap_chain_image_is_available_semaphore.initialize(pGDevice) == S_FALSE)
+                if (_output_presentation_window->swap_chain_image_is_available_semaphore.initialize(pGDevice) == W_FALSE)
                 {
                     logger.error("error on creating image_is_available semaphore for graphics device: " +
                                  _device_name + " ID:" + std::to_string(_device_id));
                     release();
                     std::exit(EXIT_FAILURE);
                 }
-                if (_output_presentation_window->rendering_done_semaphore.initialize(pGDevice) == S_FALSE)
+                if (_output_presentation_window->rendering_done_semaphore.initialize(pGDevice) == W_FALSE)
                 {
 					logger.error("error on creating rendering_is_done semaphore for graphics device: " +
 						_device_name + " ID:" + std::to_string(_device_id));
@@ -3662,15 +3662,16 @@ void w_graphics_device_manager::initialize(_In_ std::map<int, w_window_info> pOu
 
 void w_graphics_device_manager::_load_shared_resources()
 {
-    auto _gDevice = this->graphics_devices.at(0);
+	auto _gDevice = this->graphics_devices.at(0);
 
-    std::wstring _path = content_path + L"../logo.jpg";
-    w_texture* _default = nullptr;
-    if (w_texture::load_to_shared_textures(_gDevice, _path, &_default) == S_OK)
-    {
-        w_texture::default_texture = _default;
-    }
-    _default = nullptr;
+	std::vector<uint8_t> _logo_64 = { 255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,239,239,239,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,125,125,125,41,41,41,69,69,69,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,170,170,170,64,64,64,14,14,14,70,70,70,219,219,219,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,91,91,91,0,0,0,0,0,0,0,0,0,138,138,138,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,177,177,177,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,200,200,200,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,251,251,251,62,62,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,229,229,229,254,254,254,254,254,254,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,201,201,201,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,3,3,3,205,205,205,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,67,67,67,0,0,0,0,0,0,100,100,100,145,145,145,48,48,48,0,0,0,53,53,53,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,65,65,65,0,0,0,0,0,0,1,1,1,96,96,96,75,75,75,1,1,1,0,0,0,5,5,5,217,217,217,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,152,152,152,0,0,0,7,7,7,155,155,155,255,255,255,255,255,255,255,255,255,58,58,58,0,0,0,185,185,185,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,251,251,251,12,12,12,1,1,1,13,13,13,216,216,216,255,255,255,254,254,254,149,149,149,0,0,0,0,0,0,39,39,39,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,226,226,226,0,0,0,57,57,57,220,220,220,255,255,255,255,255,255,255,255,255,255,255,255,219,219,219,0,0,0,89,89,89,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,197,197,197,0,0,0,0,0,0,170,170,170,255,255,255,255,255,255,255,255,255,254,254,254,212,212,212,43,43,43,0,0,0,148,148,148,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,19,19,19,51,51,51,255,255,255,255,255,255,255,255,255,253,253,253,255,255,255,254,254,254,255,255,255,14,14,16,3,3,3,254,254,254,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,133,133,133,0,0,0,26,26,26,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,252,252,252,60,60,60,0,0,0,254,254,254,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,113,113,113,0,0,0,251,251,251,255,255,255,255,255,255,254,254,254,255,255,255,254,254,254,255,255,255,254,254,254,78,78,80,0,0,0,215,215,215,222,222,222,236,236,236,251,251,251,207,207,207,178,178,178,207,207,207,210,210,210,254,254,254,255,255,255,243,243,243,71,71,71,0,0,0,79,79,79,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,0,0,0,126,126,126,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,22,22,22,138,138,138,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,132,132,132,0,0,0,22,22,22,0,0,0,12,12,12,24,24,24,1,1,1,0,0,0,0,0,0,0,0,0,54,54,54,49,49,49,15,15,15,1,1,1,0,0,0,115,115,115,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,199,199,199,152,152,152,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,214,214,214,81,81,81,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,187,187,187,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,170,170,170,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,206,206,206,194,194,194,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,254,254,254,249,249,249,15,15,15,0,0,2,1,1,3,0,0,2,1,1,3,0,0,2,1,1,3,0,0,2,0,0,2,1,1,3,0,0,2,1,1,3,0,0,0,9,9,9,240,240,240,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,214,214,214,241,241,241,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,250,250,250,255,255,255,254,254,254,255,255,255,255,255,255,86,86,86,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,1,1,3,0,0,2,0,0,2,1,1,1,63,63,63,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255 };
+	w_texture::default_texture = new w_texture();
+	w_texture::default_texture->initialize(_gDevice, 64, 64);
+	if (w_texture::default_texture->load_texture_from_memory_rgb(_logo_64.data()) == W_FALSE)
+	{
+		logger.error("Error on creating logo texture from memory");
+	}
+	_logo_64.clear();
 }
 
 void w_graphics_device_manager::on_device_lost()
@@ -3700,7 +3701,7 @@ void w_graphics_device_manager::on_suspend()
 		auto _hr = _gDevice->dx_device.As(&_dxgi_device);
 		if (FAILED(_hr))
 		{
-			V(S_FALSE, "getting dxgi device from d3d11device for graphics device: " + _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id) + , this->name, 2);
+			V(W_FALSE, "getting dxgi device from d3d11device for graphics device: " + _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id) + , this->name, 2);
 		}
 		else
 		{
@@ -3710,14 +3711,20 @@ void w_graphics_device_manager::on_suspend()
 #endif
 }
 
-void w_graphics_device_manager::on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex)
+void w_graphics_device_manager::on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow)
 {
-    if (pGraphicsDeviceIndex >= this->graphics_devices.size()) return;
+	if (pGraphicsDeviceIndex >= this->graphics_devices.size()) return;
 
-    auto _gDevice = this->graphics_devices.at(pGraphicsDeviceIndex);
-    auto _window = _gDevice->output_presentation_window;
-    _wait_for_previous_frame(_gDevice);
-    this->_pimp->create_or_resize_swap_chain(_gDevice);
+	auto _gDevice = this->graphics_devices.at(pGraphicsDeviceIndex);
+	auto _window = &_gDevice->output_presentation_window;
+
+	_window->width = pNewSizeOfWindow.x;
+	_window->height = pNewSizeOfWindow.y;
+
+	_wait_for_previous_frame(_gDevice);
+
+	_gDevice->_clean_swap_chain();
+	this->_pimp->create_swap_chain(_gDevice);
 }
 
 void w_graphics_device_manager::_wait_for_previous_frame(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
@@ -3748,15 +3755,17 @@ void w_graphics_device_manager::_wait_for_previous_frame(_In_ const std::shared_
 
 	_output_presentation_window->dx_swap_chain_image_index = _output_presentation_window->dx_swap_chain->GetCurrentBackBufferIndex();
 
+#else
+	vkDeviceWaitIdle(pGDevice->vk_device);
 #endif
 }
 
-HRESULT w_graphics_device_manager::prepare()
+W_RESULT w_graphics_device_manager::prepare()
 {
-	if (!this->_pimp) return S_FALSE;
+	if (!this->_pimp) return W_FALSE;
 	
 	auto _config = this->_pimp->get_graphics_device_manager_configs();
-	if (_config.off_screen_mode) return S_OK;
+	if (_config.off_screen_mode) return W_OK;
 
     for (size_t i = 0; i < this->graphics_devices.size(); ++i)
     {
@@ -3797,10 +3806,10 @@ HRESULT w_graphics_device_manager::prepare()
 #endif
     }
 
-    return S_OK;
+    return W_OK;
 }
 
-//HRESULT w_graphics_device_manager::submit()
+//W_RESULT w_graphics_device_manager::submit()
 //{
 //	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
 //	{
@@ -3830,7 +3839,7 @@ HRESULT w_graphics_device_manager::prepare()
 //				fences to determine GPU execution progress.
 //			*/
 //			auto _hr = _output_window->dx_command_allocator_pool->Reset();
-//			if (FAILED(_hr)) return S_FALSE;
+//			if (FAILED(_hr)) return W_FALSE;
 //
 //			/*
 //				However, when ExecuteCommandList() is called on a particular command
@@ -3838,7 +3847,7 @@ HRESULT w_graphics_device_manager::prepare()
 //				re-recording.
 //			*/
 //			_hr = _output_window->dx_command_list->Reset(_output_window->dx_command_allocator_pool.Get(), _output_window->dx_pipeline_state.Get());
-//			if (FAILED(_hr)) return S_FALSE;
+//			if (FAILED(_hr)) return W_FALSE;
 //
 //			D3D12_RESOURCE_BARRIER	_barrier = {};
 //			_barrier.Flags = D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -3886,7 +3895,7 @@ HRESULT w_graphics_device_manager::prepare()
 //
 //			//close command list
 //			_hr = _output_window->dx_command_list->Close();
-//			if (FAILED(_hr)) return S_FALSE;
+//			if (FAILED(_hr)) return W_FALSE;
 //
 //#elif defined(__VULKAN__)
 //
@@ -3955,15 +3964,15 @@ HRESULT w_graphics_device_manager::prepare()
 //		}
 //	}
 //
-//	return S_OK;
+//	return W_OK;
 //}
 
-HRESULT w_graphics_device_manager::present()
+W_RESULT w_graphics_device_manager::present()
 {
-	if (!this->_pimp) return S_FALSE;
+	if (!this->_pimp) return W_FALSE;
 
 	auto _config = this->_pimp->get_graphics_device_manager_configs();
-	if (_config.off_screen_mode) return S_OK;
+	if (_config.off_screen_mode) return W_OK;
 
     for (size_t i = 0; i < this->graphics_devices.size(); ++i)
     {
@@ -4001,7 +4010,7 @@ HRESULT w_graphics_device_manager::present()
                 + _gDevice->device_name);
             // If the device was removed for any reason, a new device and swap chain will need to be created.
             _gDevice->dx_device_removed = true;
-            return S_FALSE;
+            return W_FALSE;
         }
 
 #elif defined(__VULKAN__)
@@ -4020,8 +4029,12 @@ HRESULT w_graphics_device_manager::present()
         {
             if (_hr == VK_ERROR_OUT_OF_DATE_KHR || _hr == VK_SUBOPTIMAL_KHR)
             {
-                on_window_resized(static_cast<uint32_t>(i));
-                return S_FALSE;
+				//resize it agian
+				w_point _new_win_size;
+				_new_win_size.x = _present_window->width;
+				_new_win_size.y = _present_window->height;
+                on_window_resized(static_cast<uint32_t>(i), _new_win_size);
+                return W_FALSE;
             }
 
             logger.error("error on presenting queue of graphics device: " +
@@ -4041,7 +4054,7 @@ HRESULT w_graphics_device_manager::present()
 #endif
     }
     
-    return S_OK;
+    return W_OK;
 }
 
 ULONG w_graphics_device_manager::release()

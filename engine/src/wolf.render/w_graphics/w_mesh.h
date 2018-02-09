@@ -171,7 +171,7 @@ namespace wolf
 			W_EXP virtual ~w_mesh();
 
 			//initialize and load mesh
-			W_EXP HRESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+			W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const void* const pVerticesData,
                                _In_ const uint32_t  pVerticesSizeInBytes,
                                _In_ const uint32_t pVerticesCount,
@@ -180,7 +180,7 @@ namespace wolf
                                _In_ bool pUseDynamicBuffer = false);
             
             //update data of vertices and indices
-            W_EXP HRESULT update_dynamic_buffer(
+            W_EXP W_RESULT update_dynamic_buffer(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
                 _In_ const uint32_t pVerticesSize,
@@ -188,7 +188,8 @@ namespace wolf
                 _In_ const uint32_t* const pIndicesData,
                 _In_ const uint32_t pIndicesCount);
 
-            W_EXP HRESULT draw(_In_ const VkCommandBuffer& pCommandBuffer,
+            W_EXP W_RESULT draw(
+				_In_ const w_command_buffer* pCommandBuffer,
                 _In_ const VkBuffer& pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
                 _In_ const bool& pIndirectDraw,

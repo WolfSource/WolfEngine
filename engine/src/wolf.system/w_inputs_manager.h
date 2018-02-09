@@ -94,7 +94,7 @@ namespace wolf
 			//reset only mouse buffers
 			WSYS_EXP void reset_mouse_buffers();
 
-            WSYS_EXP HRESULT update(
+            WSYS_EXP W_RESULT update(
 #ifdef __WIN32
                 _In_ const HWND pHWND,
                 _In_ const UINT pMessage,

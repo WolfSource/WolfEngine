@@ -26,21 +26,21 @@ namespace wolf
 			W_EXP w_render_target();
 			W_EXP virtual ~w_render_target();
 
-			W_EXP HRESULT load(
+			W_EXP W_RESULT load(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ w_viewport pViewPort,
 				_In_ w_viewport_scissor pViewportScissor,
 				_In_ std::vector<w_image_view> pAttachments,
 				_In_ const size_t& pCount);
             
-			W_EXP HRESULT record_command_buffer(_In_ w_command_buffer* pCommandBuffer,
-				_In_ std::function<HRESULT(void)> pFunction,
+			W_EXP W_RESULT record_command_buffer(_In_ w_command_buffer* pCommandBuffer,
+				_In_ std::function<W_RESULT(void)> pFunction,
 				_In_ w_color pClearColor = w_color::PURPLE(), 
 				_In_ const float& pClearDepth = 1.0f, 
 				_In_ const uint32_t&  pClearStencil = 0);
 
             //save texture as bitmap file
-            W_EXP HRESULT save_to_file(_In_z_ const char* pFileName);
+            W_EXP W_RESULT save_to_file(_In_z_ const char* pFileName);
 
 			//release all resources
 			W_EXP virtual ULONG release() override;

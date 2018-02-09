@@ -14,6 +14,7 @@ w_window::w_window() :
 #ifdef __WIN32
     _hInstance(NULL),
     _hwnd(NULL),
+	_window_style(WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP),
 #elif defined(__linux) && !defined(__ANDROID)
     _xcb_con(nullptr),
     _xcb_screen(nullptr),
@@ -132,7 +133,7 @@ HRESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> 
 		WS_EX_APPWINDOW,
 		this->_class_name.c_str(),
 		this->_class_name.c_str(),
-		WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
+		this->_window_style,
 		this->_screen_posX,
 		this->_screen_posY,
 		this->_screen_width,
@@ -157,12 +158,12 @@ HRESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> 
 	// Hide/Show the mouse cursor.
 	ShowCursor(true);
         
-        return S_OK;
+        return W_OK;
 }
 
 #elif defined(__linux) && !defined(__ANDROID)
 
-HRESULT w_window::initialize()
+W_RESULT w_window::initialize()
 {
     //open the connection to the X server
     this->_xcb_con = xcb_connect (NULL, NULL);
@@ -170,7 +171,7 @@ HRESULT w_window::initialize()
     auto _setup = xcb_get_setup(this->_xcb_con);
     //get the default screen
     auto _iter_screen = xcb_setup_roots_iterator (_setup);
-    if (!_iter_screen.data) return S_FALSE;
+    if (!_iter_screen.data) return W_FALSE;
     
     this->_xcb_screen = _iter_screen.data;
     
@@ -244,7 +245,7 @@ HRESULT w_window::initialize()
     
     xcb_flush(this->_xcb_con);
   
-    return S_OK;
+    return W_OK;
 }
 
 #endif
@@ -288,6 +289,75 @@ void w_window::set_class_name(_In_ LPWSTR pValue)
 {
 	this->_class_name = pValue;
 }
+
+void w_window::set_caption(_In_ LPWSTR pValue)
+{
+	this->_class_name = pValue;
+	SetWindowText(this->_hwnd, pValue);
+}
+
+void w_window::enable_tiled(_In_ const bool& pValue)
+{
+	if (pValue)
+	{
+		this->_window_style |= WS_TILEDWINDOW;
+	}
+	else
+	{
+		this->_window_style &= ~WS_TILEDWINDOW;
+	}
+}
+
+void w_window::enable_border(_In_ const bool& pValue)
+{
+	if (pValue)
+	{
+		this->_window_style |= WS_BORDER;
+	}
+	else
+	{
+		this->_window_style &= ~WS_BORDER;
+	}
+}
+
+void w_window::enable_dialog_frame(_In_ const bool& pValue)
+{
+	if (pValue)
+	{
+		this->_window_style |= WS_DLGFRAME;
+	}
+	else
+	{
+		this->_window_style &= ~WS_DLGFRAME;
+	}
+}
+
+void w_window::enable_system_menu(_In_ const bool& pValue)
+{
+	if (pValue)
+	{
+		this->_window_style |= WS_SYSMENU;
+	}
+	else
+	{
+		this->_window_style &= ~WS_SYSMENU;
+	}
+}
+
+void w_window::enable_caption(_In_ const bool& pValue)
+{
+	if (pValue)
+	{
+		this->_window_style |= WS_CAPTION;
+		this->_window_style |= WS_BORDER;
+		this->_window_style |= WS_DLGFRAME;
+	}
+	else
+	{
+		this->_window_style &= ~WS_CAPTION;
+	}
+}
+
 #endif
 
 void w_window::set_id(_In_ const uint32_t& pValue)

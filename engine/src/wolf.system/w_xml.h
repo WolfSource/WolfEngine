@@ -44,9 +44,9 @@ namespace wolf
 			WSYS_EXP ~w_xml();
 
 #if defined(__WIN32) || defined(__UWP)
-            WSYS_EXP static HRESULT save(_In_z_ const wchar_t* pPath,
+            WSYS_EXP static W_RESULT save(_In_z_ const wchar_t* pPath,
 #else
-            WSYS_EXP static HRESULT save(_In_z_ const char* pPath,
+            WSYS_EXP static W_RESULT save(_In_z_ const char* pPath,
 #endif
                 _In_ const bool& pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment = L"");
 

@@ -132,7 +132,11 @@ namespace wolf
 			{
 				if (this->_is_released) return 0;
 				this->_is_released = true;
-                                
+                   
+				//release semaphores
+				this->rendering_done_semaphore.release();
+				this->swap_chain_image_is_available_semaphore.release();
+
 #ifdef __WIN32
 				this->hwnd = NULL;
 				this->hInstance = NULL;
@@ -276,14 +280,14 @@ namespace wolf
             w_output_presentation_window               output_presentation_window;
             
             //draw primitive(s) and instances using vertex & index buffer
-            W_EXP HRESULT draw(_In_ const w_command_buffer*	pCommandBuffer,
+            W_EXP W_RESULT draw(_In_ const w_command_buffer*	pCommandBuffer,
                             _In_ const uint32_t&			pVertexCount,
                             _In_ const uint32_t&			pInstanceCount,
                             _In_ const uint32_t&			pFirstVertex,
                             _In_ const uint32_t&			pFirstInstance);
             
             //submit command buffer
-            W_EXP HRESULT submit(_In_ const std::vector<const w_command_buffer*>&	pCommandBuffers,
+            W_EXP W_RESULT submit(_In_ const std::vector<const w_command_buffer*>&	pCommandBuffers,
                                  _In_ const w_queue&								pQueue,
                                  _In_ const w_pipeline_stage_flags*					pWaitDstStageMask,
                                  _In_ std::vector<w_semaphore> 						pWaitForSemaphores,
@@ -299,9 +303,9 @@ namespace wolf
 				@param pWidth, width of inputed source image
 				@param pHeight, height of inputed source image
                 @param pOnPixelsDataCaptured, raised when pixels just mapped to RAM and become accessable by CPU. (inputs are: const w_point_t Width_Height, const uint8_t* Pixels and outsput is void) 
-                @return S_OK means function did succesfully and S_FALSE means function failed
+                @return W_OK means function did succesfully and W_FALSE means function failed
             */
-			W_EXP HRESULT capture(
+			W_EXP W_RESULT capture(
 				_In_ VkImage pSourceImage,
 				_In_ VkFormat pSourceImageFormat,
 				_In_ VkImageLayout pSourceImageLayout,
@@ -312,9 +316,9 @@ namespace wolf
 			/*
 				capture last presented swap chain image buffer's data and save to the D-RAM and make it accessable by CPU,
 				make sure set true to w_window_info::cpu_access_swap_chain_buffer flag before creating graphics device
-				@return S_OK means function did succesfully and S_FALSE means function failed
+				@return W_OK means function did succesfully and W_FALSE means function failed
 			*/
-            W_EXP HRESULT capture_presented_swap_chain_buffer(_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
+            W_EXP W_RESULT capture_presented_swap_chain_buffer(_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
 
 			w_device_info*												device_info = nullptr;
 
@@ -384,11 +388,12 @@ namespace wolf
 				_In_ const uint32_t&			pFirstVertex,
 				_In_ const uint32_t&			pFirstInstance)
 			{
-				return draw(&pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance) == S_OK;
+				return draw(&pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance) == W_OK;
 			}
 
 			bool py_submit(
 				_In_ boost::python::list	pCommandBuffers,
+				_In_ const w_queue&			pQueue,
 				_In_ boost::python::list	pWaitDstStageMask,
 				_In_ boost::python::list	pWaitForSemaphores,
 				_In_ boost::python::list	pSignalForSemaphores,
@@ -441,11 +446,11 @@ namespace wolf
 
 				auto _result = submit(
 					_cmds,
-					this->vk_graphics_queue,
+					pQueue,
 					_pipeline_stage_flags.data(),
 					_wait_smaphores,
 					_signal_smaphores,
-					&pFence) == S_OK;
+					&pFence) == W_OK;
 
 				_cmds.clear();
 				_pipeline_stage_flags.clear();
@@ -457,10 +462,12 @@ namespace wolf
 #endif
 
 		private:
-            //prevent copying
+			//prevent copying
             w_graphics_device(w_graphics_device const&);
             w_graphics_device& operator= (w_graphics_device const&);
             
+			void _clean_swap_chain();
+
             bool                                                            _is_released;
             std::string                                                     _name;
 		};
@@ -478,15 +485,15 @@ namespace wolf
 			W_EXP virtual void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) = 0;
 
 			//Called when corresponding window resized
-			W_EXP virtual void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex);
+			W_EXP virtual void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow);
 			//Called when any graphics device lost
 			W_EXP virtual void on_device_lost();
 			//Called when the APP suspends. It provides a hint to the driver that the APP is entering an idle state and that temporary buffers can be reclaimed for use by other apps.
 			W_EXP virtual void on_suspend();
             //Prepare frame on all graphics devices
-            W_EXP virtual HRESULT prepare();
+            W_EXP virtual W_RESULT prepare();
 			//Present on all graphics devices
-			W_EXP virtual HRESULT present();
+			W_EXP virtual W_RESULT present();
 			//Release all resources
 			W_EXP ULONG release() override;
 

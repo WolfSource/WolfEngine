@@ -38,10 +38,10 @@ namespace wolf
 		{
 #if	defined(__WIN32) || defined(__UWP)
 
-			inline HRESULT chars_to_GUID(const std::wstring& pStr, GUID& pGUID)
+			inline W_RESULT chars_to_GUID(const std::wstring& pStr, GUID& pGUID)
 			{
 				LPOLESTR guid = W2OLE((wchar_t*)pStr.c_str());
-				auto hr = S_OK;
+				auto hr = W_RESULT::W_OK;
 				CLSIDFromString(guid, (LPCLSID)&pGUID);
 				return hr;
 			}

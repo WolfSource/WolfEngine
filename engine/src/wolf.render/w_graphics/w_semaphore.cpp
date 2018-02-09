@@ -9,7 +9,7 @@ VkSemaphore* w_semaphore::get()
     return &this->_semaphore;
 }
 
-HRESULT w_semaphore::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
+W_RESULT w_semaphore::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 {
     this->_gDevice = pGDevice;
 
@@ -23,13 +23,13 @@ HRESULT w_semaphore::initialize(_In_ const std::shared_ptr<w_graphics_device>& p
                           nullptr,
                           &this->_semaphore))
     {
-        V(S_FALSE, "creating semaphore", "w_semaphore", 3, false);
-        return S_FALSE;
+        V(W_FALSE, "creating semaphore", "w_semaphore", 3, false);
+        return W_FALSE;
     }
 #else
     
 #endif
-    return S_OK;
+    return W_OK;
 }
 
 ULONG w_semaphore::release()
@@ -60,7 +60,7 @@ bool w_semaphore::py_initialize(_In_ boost::shared_ptr<w_graphics_device>& pGDev
 	//reset local shared_ptr
 	_gDevice.reset();
 
-	return _hr == S_OK;
+	return _hr == W_OK;
 }
 
 #endif

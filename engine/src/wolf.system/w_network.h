@@ -115,41 +115,41 @@ namespace wolf
             WSYS_EXP ~w_network();
 
             
-            WSYS_EXP HRESULT setup_one_way_pusher(
+            WSYS_EXP W_RESULT setup_one_way_pusher(
                 _In_z_ const char* pURL, 
                 _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
 
-            WSYS_EXP HRESULT setup_one_way_puller(
+            WSYS_EXP W_RESULT setup_one_way_puller(
 				_In_z_ const char* pURL,
 				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
 
-            WSYS_EXP HRESULT setup_two_way_server(
+            WSYS_EXP W_RESULT setup_two_way_server(
                 _In_z_ const char* pURL,
                 _In_ int pReceiveTime,
                 _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
 
-            WSYS_EXP HRESULT setup_two_way_client(
+            WSYS_EXP W_RESULT setup_two_way_client(
                 _In_z_ const char* pURL,
                 _In_ int pReceiveTime,
                 _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
             
-            WSYS_EXP HRESULT setup_broadcast_publisher(
+            WSYS_EXP W_RESULT setup_broadcast_publisher(
                 _In_z_ const char* pURL,
                 _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
             
-            WSYS_EXP HRESULT setup_broadcast_subscriptore(
+            WSYS_EXP W_RESULT setup_broadcast_subscriptore(
                 _In_z_ const char* pURL,
                 _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
             
-			WSYS_EXP HRESULT setup_survey_server(
+			WSYS_EXP W_RESULT setup_survey_server(
 				_In_z_ const char* pURL,
 				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
 
-			WSYS_EXP HRESULT setup_survey_client(
+			WSYS_EXP W_RESULT setup_survey_client(
 				_In_z_ const char* pURL,
 				_In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
 
-			WSYS_EXP HRESULT setup_bus_node(
+			WSYS_EXP W_RESULT setup_bus_node(
 				_In_z_ const char* pBindURL,
 				_In_ int pReceiveTime,
 				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
