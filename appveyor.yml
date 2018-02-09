@@ -6,7 +6,7 @@ configuration: Debug
 
 environment:
   matrix:  
-	- PYTHON: "C:\\Python27-x64"
+    - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.x" # currently 2.7.9
       PYTHON_ARCH: "64"
 
