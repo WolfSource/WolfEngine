@@ -1,5 +1,4 @@
-
-Wolf Engine
+# Wolf Engine [![GPL v3 licensed](https://img.shields.io/cran/l/devtools.svg](LICENSE)
 ===========
 <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg" width="256" height="256" alt="WolfSource"/>
 <p><b>Welcome to the Wolf Engine source code.</b></p> 
