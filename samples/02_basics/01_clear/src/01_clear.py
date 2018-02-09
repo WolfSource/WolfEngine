@@ -133,7 +133,7 @@ class scene(QWidget):
 
         #reset draw fence
         self._draw_fence.reset()
-        _hr = self._gDevice.submit(_cmd_buffers, _wait_dst_stage_mask, _wait_semaphores, _signal_semaphores, self._draw_fence)
+        _hr = self._gDevice.submit(_cmd_buffers, self._gDevice.graphics_queue, _wait_dst_stage_mask, _wait_semaphores, _signal_semaphores, self._draw_fence)
         if _hr == False:
             print "Error on submit to graphics device"
             return 
