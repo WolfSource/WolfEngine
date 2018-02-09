@@ -36,7 +36,7 @@ BOOST_PYTHON_MODULE(pyWolf)
     {
         struct system {};
         scope _system = class_<system>("system");
-        
+      
         pywolf::py_bounding_export();
         pywolf::py_color_export();
         pywolf::py_game_time_export();

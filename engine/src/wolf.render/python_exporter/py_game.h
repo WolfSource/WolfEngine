@@ -115,10 +115,10 @@ namespace pywolf
 			if (this->_on_post_render_callback) this->_on_post_render_callback(_hr == W_OK);
 			return _hr;
 		}
-		void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex) override
+		void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow) override
 		{
-			_super::on_window_resized(pGraphicsDeviceIndex);
-			if (this->_on_window_resized_callback) this->_on_window_resized_callback(pGraphicsDeviceIndex);
+			_super::on_window_resized(pGraphicsDeviceIndex, pNewSizeOfWindow);
+			if (this->_on_window_resized_callback) this->_on_window_resized_callback(pGraphicsDeviceIndex, pNewSizeOfWindow);
 		}
 		void on_device_lost() override
 		{
@@ -145,7 +145,7 @@ namespace pywolf
 		void set_post_render_callback(_In_ std::function<void(bool)> pFunc) { this->_on_post_render_callback = pFunc; }
 		static void py_set_post_render_callback(_In_ py_game& pGame, _In_ boost::python::object pFunc) { pGame.set_post_render_callback(pFunc); }
 
-		void set_window_resized_callback(_In_ std::function<void(uint32_t)> pFunc) { this->_on_window_resized_callback = pFunc; }
+		void set_window_resized_callback(_In_ std::function<void(uint32_t, w_point)> pFunc) { this->_on_window_resized_callback = pFunc; }
 		static void py_set_window_resized_callback(_In_ py_game& pGame, _In_ boost::python::object pFunc) { pGame.set_window_resized_callback(pFunc); }
 
 		void set_device_lost_callback(_In_ std::function<void(void)> pFunc) { this->_on_device_lost_callback = pFunc; }
@@ -174,7 +174,7 @@ namespace pywolf
 		std::function<void(wolf::system::w_game_time)> _on_update_callback;
 		std::function<void(wolf::system::w_game_time)> _on_pre_render_callback;
 		std::function<void(bool)> _on_post_render_callback;
-		std::function<void(uint32_t)> _on_window_resized_callback;
+		std::function<void(uint32_t, w_point)> _on_window_resized_callback;
 		std::function<void(void)> _on_device_lost_callback;
 	};
 

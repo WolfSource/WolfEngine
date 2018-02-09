@@ -4,7 +4,6 @@ platform: x64
 configuration: Debug
 
 environment:
-  VULKAN_SDK: c:\\projects\\wolf-engine\\engine\\dependencies\\vulkan\\
   matrix:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.x" # currently 2.7.9

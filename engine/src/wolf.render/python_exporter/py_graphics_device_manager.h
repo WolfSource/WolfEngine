@@ -57,6 +57,11 @@ namespace pywolf
 			.def("draw", &w_graphics_device::py_draw, "draw primitive(s) and instances using vertex & index buffer")
 			.def("submit", &w_graphics_device::py_submit, "submit command buffer")
 			.add_property("output_presentation_window", &w_graphics_device::py_get_output_presentation_window, "get shared pointer to the output presentation window structure")
+			.add_property("graphics_queue", &w_graphics_device::vk_graphics_queue, "get graphics queue")
+			.add_property("present_queue", &w_graphics_device::vk_present_queue, "get present queue")
+			.add_property("compute_queue", &w_graphics_device::vk_compute_queue, "get compute queue")
+			.add_property("transfer_queue", &w_graphics_device::vk_transfer_queue, "get transfer queue")
+			.add_property("sparse_queue", &w_graphics_device::vk_sparse_queue, "get sparse queue")
 			;
 
 		//define w_pipeline_stage_flag_bits enum
