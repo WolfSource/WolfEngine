@@ -1,11 +1,12 @@
 # Wolf Engine [![GPL v3 licensed](https://img.shields.io/cran/l/devtools.svg)](https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md) 
-<b>pyWolf</b> [![BSD 3-Clause(Revised)licensed](https://img.shields.io/pypi/l/Django.svg)](https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md) 
 <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg" width="256" height="256" alt="WolfSource"/>
 <p><b>Welcome to the Wolf Engine source code.</b></p> 
 <p>The&nbsp;<b>Wolf Engine</b>&nbsp;is the next
 generation of&nbsp;<a href="https://persianengine.codeplex.com/">Persian Game Engine</a>&nbsp;which is a
 cross-platform open source game engine created by&nbsp;<a href="http://pooyaeimandar.com/">Pooya Eimandar</a>.
 The Wolf is a comprehensive set of C++ open source libraries for rendering and supports <b>Lua</b> as an embedded script language and <b>Python</b> as a binding language.</p>
+
+<!-- pyWolf [![BSD 3-Clause(Revised)licensed](https://img.shields.io/pypi/l/Django.svg)](https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md) --> 
 <p><b>pyWolf</b> is set of Python bindings for Wolf.Engine which works with Python 2.7</p>
 
 <!--Getting strated-->
