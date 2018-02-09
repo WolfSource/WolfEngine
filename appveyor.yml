@@ -7,7 +7,6 @@ matrix:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.14"
       PYTHON_ARCH: "64"
-	  
     exclude:
     - platform: x86
       configuration: Debug
@@ -15,7 +14,6 @@ matrix:
       configuration: Release
     - platform: x64
       configuration: Release
-	  
 install:
     # python requirements needed to ubpack deps
     - "%PYTHON%\\python.exe c:\\projects\\wolf-engine\\setup.py"
