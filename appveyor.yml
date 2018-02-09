@@ -16,15 +16,14 @@ init:
 build:
   project: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln
   verbosity: minimal
-ignore:
-    - content/
-    - docs/
-    - samples/
-    - utilities
+skip_commits:
+  files:
+    - content/*
+    - docs/*
+    - samples/*
+    - utilities/*
     - .gitattributes
     - .gitignore
-    - LICENSE.md
+    - *.md
     - Logo.jpg
-    - README.md
-    - setup.py
 
