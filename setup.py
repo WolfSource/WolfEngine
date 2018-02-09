@@ -1,4 +1,4 @@
-import os, zipfile
+import os, sys, platform, zipfile
 
 _script_path = os.path.realpath(__file__)
 
@@ -13,6 +13,11 @@ deps = {
     'vulkan':'SPIRVExtension.vsix',
 }
 
+print 'system info:'
+print platform.platform()
+print platform.processor()
+print platform.architecture()
+print sys.version
 print 'make wolf\'s dependencies ready'
 for dep in deps:
     print 'uncompressing ' + dep
