@@ -4,20 +4,19 @@ platform: x64
 configuration: Debug
 
 environment:
-  VULKAN_SDK: c:\VulkanSDK\1.0.65.1
+  VULKAN_SDK: c:\\projects\\wolf-engine\\engine\\dependencies\\vulkan\\
   matrix:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.x" # currently 2.7.9
       PYTHON_ARCH: "64"
+	  
 install:
-- cmd: >-
-    curl --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.0.65.1/windows/VulkanSDK-1.0.65.1-Installer.exe
+    # python requirements needed to ubpack deps
+    - "%PYTHON%\\python.exe c:\\projects\\wolf-engine\\setup.py"
 
-    .\VulkanSDK.exe /S
-# python requirements needed to ubpack deps
-- "%PYTHON%\\python.exe c:\\projects\\wolf-engine\\setup.py"
 init:
   - "%PYTHON%\\python.exe --version"
+  
 build:
   project: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln
   verbosity: minimal
