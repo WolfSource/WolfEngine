@@ -25,5 +25,5 @@ skip_commits:
     - .gitattributes
     - .gitignore
     - Logo.jpg
-    - **/*.md
+    - /**/*.md
 
