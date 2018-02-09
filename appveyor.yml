@@ -18,7 +18,6 @@ install:
 - "%PYTHON%\\python.exe c:\\projects\\wolf-engine\\setup.py"
 init:
   - "%PYTHON%\\python.exe --version"
-  - echo "%VulkanSDK%
 build:
   project: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln
   verbosity: minimal
