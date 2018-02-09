@@ -18,5 +18,5 @@ install:
   - "%PYTHON%\\python.exe c:\\projects\\wolf-engine\\setup.py"
 
 build:
-  project: wolf.engine.vulkan.Win32.sln
+  project: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln
 
