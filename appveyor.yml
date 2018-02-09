@@ -15,8 +15,8 @@ init:
   - "%PYTHON%\\python.exe --version"
  
 install:
-  # python requirements needed to create distribution
-  - "%PYTHON%\\python.exe c:\projects\Wolf.Engine\setup.py"
+  # python requirements needed to ubpack deps
+  - "%PYTHON%\\python.exe c:\\projects\\Wolf.Engine\\setup.py"
 
 build:
   project: wolf.engine.vulkan.Win32.sln
