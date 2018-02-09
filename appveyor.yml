@@ -11,12 +11,11 @@ environment:
       PYTHON_ARCH: "64"
 
 init:
-  - "ECHO %PYTHON% %PYTHON_ARCH% %MSVC_VERSION%"
   - "%PYTHON%\\python.exe --version"
  
 install:
   # python requirements needed to ubpack deps
-  - "%PYTHON%\\python.exe c:\\projects\\Wolf.Engine\\setup.py"
+  - "%PYTHON%\\python.exe c:\\projects\\wolf.engine\\setup.py"
 
 build:
   project: wolf.engine.vulkan.Win32.sln
