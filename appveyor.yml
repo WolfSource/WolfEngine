@@ -4,7 +4,6 @@ platform: x64
 configuration: Debug
 
 matrix:
-    fast_finish: true
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.14"
       PYTHON_ARCH: "64"
