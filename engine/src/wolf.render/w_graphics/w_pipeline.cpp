@@ -131,12 +131,12 @@ namespace wolf
 				
                 _pipeline_create_info.pVertexInputState =
                     _vertex_input_state_create_info == nullptr ?
-                    &(w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info) :
+                    &(w_graphics_device::defaults_states::pipelines::vertex_input_create_info) :
                     _vertex_input_state_create_info;
 
                 _pipeline_create_info.pInputAssemblyState =
                     _input_assembly_state_create_info == nullptr ?
-                    &(w_graphics_device::defaults::vk_default_pipeline_input_assembly_state_create_info) :
+                    &(w_graphics_device::defaults_states::pipelines::input_assembly_create_info) :
                     _input_assembly_state_create_info;
 
 
@@ -154,10 +154,10 @@ namespace wolf
                 }
 
                 _pipeline_create_info.pRasterizationState = pPipelineRasterizationStateCreateInfo == nullptr ?
-                    &(w_graphics_device::defaults::vk_default_pipeline_rasterization_state_create_info) : pPipelineRasterizationStateCreateInfo;
+                    &(w_graphics_device::defaults_states::pipelines::rasterization_create_info) : pPipelineRasterizationStateCreateInfo;
 
                 _pipeline_create_info.pMultisampleState = pPipelineMultiSampleStateCreateInfo == nullptr ?
-                    &(w_graphics_device::defaults::vk_default_pipeline_multisample_state_create_info) : pPipelineMultiSampleStateCreateInfo;
+                    &(w_graphics_device::defaults_states::pipelines::multisample_create_info) : pPipelineMultiSampleStateCreateInfo;
 
                 _pipeline_create_info.pDepthStencilState = pEnableDepthStencilState ? &_depth_stencil_state : nullptr;
                 _pipeline_create_info.pColorBlendState = &_color_blend_state_create_info;
@@ -189,8 +189,7 @@ namespace wolf
             }
 
             W_RESULT load_compute(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
-                _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
+                _In_ const w_shader* pShaderBinding,
                 _In_ const uint32_t& pSpecializationData,
                 _In_ const std::string& pPipelineCacheName,
                 _In_ const std::vector<VkPushConstantRange> pPushConstantRanges)
@@ -199,8 +198,7 @@ namespace wolf
 
                 auto _pipeline_cache = w_pipeline::get_pipeline_cache(pPipelineCacheName);
 
-                std::vector<VkDescriptorSetLayout> _descriptor_set_layouts = { pDescriptorSetLayouts };
-
+                std::vector<VkDescriptorSetLayout> _descriptor_set_layouts = { pShaderBinding->get_compute_descriptor_set_layout() };
                 auto _push_const_size = pPushConstantRanges.size();
 
                 VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
@@ -229,7 +227,7 @@ namespace wolf
                 _compute_pipeline_create_info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
                 _compute_pipeline_create_info.layout = this->_pipeline_layout;
                 _compute_pipeline_create_info.flags = 0;
-                _compute_pipeline_create_info.stage = pComputeShaderStage;
+                _compute_pipeline_create_info.stage = pShaderBinding->get_compute_shader_stage();
 
                 // Use specialization constants to pass max. level of detail (determined by no. of meshes)
                 VkSpecializationMapEntry specializationEntry{};
@@ -482,61 +480,62 @@ w_pipeline::~w_pipeline()
 }
 
 W_RESULT w_pipeline::load(
-    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
-    _In_ const VkPrimitiveTopology pPrimitiveTopology,
+	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
+	_In_ const w_primitive_topology pPrimitiveTopology,
 	_In_ const w_render_pass* pRenderPassBinding,
 	_In_ const w_shader* pShaderBinding,
 	_In_ const std::vector<w_viewport>& pViewPorts,
 	_In_ const std::vector<w_viewport_scissor>& pViewPortScissors,
-    _In_ const std::string& pPipelineCacheName,
-	_In_ const std::vector<VkDynamicState>& pDynamicStates,
-    _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges,
-    _In_ const uint32_t& pTessellationPatchControlPoints,
-    _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
-    _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo,
-    _In_ const bool pEnableDepthStencilState,
-    _In_ const VkPipelineColorBlendAttachmentState pBlendState,
-    _In_ const std::array<float, 4> pBlendColors)
+	_In_ const std::string& pPipelineCacheName,
+	_In_ const std::vector<w_dynamic_state>& pDynamicStates,
+	_In_ const std::vector<w_push_constant_range>& pPushConstantRanges,
+	_In_ const uint32_t& pTessellationPatchControlPoints,
+	_In_ const w_pipeline_rasterization_state_create_info* const pPipelineRasterizationStateCreateInfo,
+	_In_ const w_pipeline_multisample_state_create_info* const pPipelineMultisampleStateCreateInfo,
+	_In_ const bool pEnableDepthStencilState,
+	_In_ const w_pipeline_color_blend_attachment_state pBlendState,
+	_In_ const std::array<float, 4> pBlendColors)
 {
-    if (!this->_pimp) return W_FALSE;
+	if (!this->_pimp) return W_FALSE;
 
-    return this->_pimp->load(
-        pGDevice,
-        pVertexBindingAttributes,
-        pPrimitiveTopology,
-		pRenderPassBinding,
-		pShaderBinding,
-		pViewPorts,
-		pViewPortScissors,
-		pPipelineCacheName,
-        pDynamicStates,
-        pPushConstantRanges,
-        pTessellationPatchControlPoints,
-        pPipelineRasterizationStateCreateInfo,
-        pPipelineMultiSampleStateCreateInfo,
-        pEnableDepthStencilState,
-        pBlendState,
-        pBlendColors);
+	//return this->_pimp->load(
+	//	pGDevice,
+	//	pVertexBindingAttributes,
+	//	pPrimitiveTopology,
+	//	pRenderPassBinding,
+	//	pShaderBinding,
+	//	pViewPorts,
+	//	pViewPortScissors,
+	//	pPipelineCacheName,
+	//	pDynamicStates,
+	//	pPushConstantRanges,
+	//	pTessellationPatchControlPoints,
+	//	pPipelineRasterizationStateCreateInfo,
+	//	pPipelineMultiSampleStateCreateInfo,
+	//	pEnableDepthStencilState,
+	//	pBlendState,
+	//	pBlendColors);
+	return W_OK;
 }
 
-W_RESULT w_pipeline::load_compute(
-    _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
-    _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
-    _In_ const uint32_t& pSpecializationData,
-    _In_ const std::string& pPipelineCacheName,
-    _In_ const std::vector<VkPushConstantRange> pPushConstantRanges)
+//load pipeline for compute stage
+W_EXP W_RESULT w_pipeline::load_compute(
+	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const w_shader* pShaderBinding,
+	_In_ const uint32_t& pSpecializationData,
+	_In_ const std::string& pPipelineCacheName,
+	_In_ const std::vector<w_push_constant_range> pPushConstantRanges)
 {
     if (!this->_pimp) return W_FALSE;
 
-    return this->_pimp->load_compute(
-        pGDevice,
-        pComputeShaderStage,
-        pDescriptorSetLayouts,
-        pSpecializationData,
-        pPipelineCacheName,
-        pPushConstantRanges);
+	return W_OK;
+  //  return this->_pimp->load_compute(
+  //      pGDevice,
+		//pShaderBinding,
+  //      pSpecializationData,
+  //      pPipelineCacheName,
+  //      pPushConstantRanges);
 }
 
 W_RESULT w_pipeline::bind(_In_ const w_command_buffer* pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)
@@ -572,22 +571,22 @@ const VkPipelineLayout w_pipeline::get_layout_handle() const
 #pragma endregion
 
 VkPipelineLayout w_pipeline::create_pipeline_layout(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo)
+	_In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo)
 {
-    //create pipeline layout
-    VkPipelineLayout _pipeline_layout = 0;
-    auto _hr = vkCreatePipelineLayout(pGDevice->vk_device,
-        pPipelineLayoutCreateInfo == nullptr ?
-        &(w_graphics_device::defaults::vk_default_pipeline_layout_create_info) : pPipelineLayoutCreateInfo,
-        nullptr,
-        &_pipeline_layout);
-    if (_hr)
-    {
-        V(W_FALSE, "creating pipeline layout for graphics device: " +
-            pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
-        return 0;
-    }
-    return _pipeline_layout;
+	//create pipeline layout
+	VkPipelineLayout _pipeline_layout = 0;
+	auto _hr = vkCreatePipelineLayout(pGDevice->vk_device,
+		pPipelineLayoutCreateInfo == nullptr ?
+		&(w_graphics_device::defaults_states::pipelines::layout_create_info) : pPipelineLayoutCreateInfo,
+		nullptr,
+		&_pipeline_layout);
+	if (_hr)
+	{
+		V(W_FALSE, "creating pipeline layout for graphics device: " +
+			pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
+		return 0;
+	}
+	return _pipeline_layout;
 }
 
 W_RESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,

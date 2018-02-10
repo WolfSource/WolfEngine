@@ -7,6 +7,8 @@
 #include "w_graphics/w_shader.h"
 #include <signal.h>
 
+static std::once_flag _graphics_device_static_constructor;
+
 #ifdef __DX12__
 #include <w_directX_helper.h>
 #elif defined(__APPLE__)
@@ -17,6 +19,7 @@ using namespace std;
 using namespace wolf::system;
 using namespace wolf::graphics;
 
+
 #define NUM_SAMPLES     VK_SAMPLE_COUNT_1_BIT
 
 #ifdef __DX12__
@@ -24,7 +27,7 @@ ComPtr<IDXGIFactory4>	w_graphics_device::dx_dxgi_factory = nullptr;
 #elif defined(__VULKAN__)
 VkInstance w_graphics_device::vk_instance = NULL;
 
-std::vector<VkSubpassDependency> w_graphics_device::defaults::vk_default_subpass_dependencies =
+std::vector<VkSubpassDependency> w_graphics_device::defaults_states::vk_default_subpass_dependencies =
 {
     {
         VK_SUBPASS_EXTERNAL,																// uint32_t                       srcSubpass
@@ -46,104 +49,94 @@ std::vector<VkSubpassDependency> w_graphics_device::defaults::vk_default_subpass
     }
 };
 
-VkPipelineLayoutCreateInfo w_graphics_device::defaults::vk_default_pipeline_layout_create_info
-{
-    VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,                      // Type
-    nullptr,                                                            // Next
-    0,                                                                  // Flags
-    0,                                                                  // SetLayoutCount
-    nullptr,                                                            // SetLayouts
-    0,                                                                  // PushConstantRangeCount
-    nullptr                                                             // PushConstantRanges
-};
+w_pipeline_layout_create_info w_graphics_device::defaults_states::pipelines::layout_create_info;
+w_pipeline_vertex_input_state_create_info w_graphics_device::defaults_states::pipelines::vertex_input_create_info;
+w_pipeline_input_assembly_state_create_info w_graphics_device::defaults_states::pipelines::input_assembly_create_info;
+w_pipeline_rasterization_state_create_info w_graphics_device::defaults_states::pipelines::rasterization_create_info;
+w_pipeline_multisample_state_create_info w_graphics_device::defaults_states::pipelines::multisample_create_info;
 
-VkPipelineVertexInputStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_vertex_input_state_create_info =
-{
-        VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,      // Type
-        nullptr,                                                        // Next
-        0,                                                              // Flags
-        0,                                                              // Count of vertex binding descriptions
-        nullptr,                                                        // Vertex binding descriptions
-        0,                                                              // Count of vertex attribute descriptions
-        nullptr                                                         // Vertex attribute descriptions
-};
-     
-VkPipelineInputAssemblyStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_input_assembly_state_create_info = 
-{
-        VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,    // Type
-        nullptr,                                                        // Next
-        0,                                                              // Flags
-        VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,                            // Topology
-        VK_FALSE                                                        // Enable restart primitive
-};
-
-VkPipelineRasterizationStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_rasterization_state_create_info = 
-{
-        VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,     // Type
-        nullptr,                                                        // Next
-        0,                                                              // flags
-        VK_FALSE,                                                       // depthClampEnable
-        VK_FALSE,                                                       // rasterizerDiscardEnable
-        VK_POLYGON_MODE_FILL,                                           // polygonMode
-        VK_CULL_MODE_BACK_BIT,                                          // cullMode
-		VK_FRONT_FACE_COUNTER_CLOCKWISE,                                // frontFace
-        VK_FALSE,                                                       // depthBiasEnable
-        0.0f,                                                           // depthBiasConstantFactor
-        0.0f,                                                           // depthBiasClamp
-        0.0f,                                                           // depthBiasSlopeFactor
-        1.0f                                                            // lineWidth
-};
-
-VkPipelineMultisampleStateCreateInfo w_graphics_device::defaults::vk_default_pipeline_multisample_state_create_info = 
-{
-      VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,         // Type
-      nullptr,                                                          // Next
-      0,                                                                // flags
-      VK_SAMPLE_COUNT_1_BIT,                                            // rasterizationSamples
-      VK_FALSE,                                                         // sampleShadingEnable
-      1.0f,                                                             // minSampleShading
-      nullptr,                                                          // pSampleMask
-      VK_FALSE,                                                         // alphaToCoverageEnable
-      VK_FALSE                                                          // alphaToOneEnable
-};
-
-VkPipelineColorBlendAttachmentState w_graphics_device::w_blend_states::blend_none = 
-{
-      VK_FALSE,                                                         // blendEnable
-      VK_BLEND_FACTOR_ONE,                                              // srcColorBlendFactor
-      VK_BLEND_FACTOR_ZERO,                                             // dstColorBlendFactor
-      VK_BLEND_OP_ADD,                                                  // colorBlendOp
-      VK_BLEND_FACTOR_ONE,                                              // srcAlphaBlendFactor
-      VK_BLEND_FACTOR_ZERO,                                             // DstAlphaBlendFactor
-      VK_BLEND_OP_ADD,                                                  // AlphaBlendOp
-      VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |             // ColorWriteMask
-      VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
-};
-
-VkPipelineColorBlendAttachmentState w_graphics_device::w_blend_states::premulitplied_alpha =
-{
-    VK_TRUE,                                                            // blendEnable
-    VK_BLEND_FACTOR_ONE,                                                // srcColorBlendFactor
-    VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,                                // dstColorBlendFactor
-    VK_BLEND_OP_ADD,                                                    // colorBlendOp
-    VK_BLEND_FACTOR_ONE,                                                // srcAlphaBlendFactor
-    VK_BLEND_FACTOR_ZERO,                                               // DstAlphaBlendFactor
-    VK_BLEND_OP_ADD,                                                    // AlphaBlendOp
-    VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |               // ColorWriteMask
-    VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
-};
+w_pipeline_color_blend_attachment_state w_graphics_device::defaults_states::blend_states::none;
+w_pipeline_color_blend_attachment_state w_graphics_device::defaults_states::blend_states::premulitplied_alpha;
 
 #endif
 
-w_graphics_device::w_graphics_device():
-_is_released(false), _name("w_graphics_device")
+w_graphics_device::w_graphics_device() :
+	_is_released(false), _name("w_graphics_device")
 
 #ifdef __VULKAN__
-,
-vk_device(0),
-vk_command_allocator_pool(0)
+	,
+	vk_device(0),
+	vk_command_allocator_pool(0)
 #endif
 {
+	std::call_once(_graphics_device_static_constructor, []()
+	{
+		//static constructor blend states
+		defaults_states::blend_states::none.blendEnable = VK_FALSE;
+		defaults_states::blend_states::none.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+		defaults_states::blend_states::none.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+		defaults_states::blend_states::none.colorBlendOp = VK_BLEND_OP_ADD;
+		defaults_states::blend_states::none.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+		defaults_states::blend_states::none.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+		defaults_states::blend_states::none.alphaBlendOp = VK_BLEND_OP_ADD;
+		defaults_states::blend_states::none.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+
+		defaults_states::blend_states::premulitplied_alpha.blendEnable = VK_TRUE;
+		defaults_states::blend_states::premulitplied_alpha.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+		defaults_states::blend_states::premulitplied_alpha.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+		defaults_states::blend_states::premulitplied_alpha.colorBlendOp = VK_BLEND_OP_ADD;
+		defaults_states::blend_states::premulitplied_alpha.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+		defaults_states::blend_states::premulitplied_alpha.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+		defaults_states::blend_states::premulitplied_alpha.alphaBlendOp = VK_BLEND_OP_ADD;
+		defaults_states::blend_states::premulitplied_alpha.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+
+		defaults_states::pipelines::layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		defaults_states::pipelines::layout_create_info.pNext = nullptr;
+		defaults_states::pipelines::layout_create_info.flags = 0;
+		defaults_states::pipelines::layout_create_info.setLayoutCount = 0;
+		defaults_states::pipelines::layout_create_info.pSetLayouts = nullptr;
+		defaults_states::pipelines::layout_create_info.pushConstantRangeCount  = 0;
+		defaults_states::pipelines::layout_create_info.pPushConstantRanges = nullptr;
+
+		defaults_states::pipelines::vertex_input_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+		defaults_states::pipelines::vertex_input_create_info.pNext = nullptr;
+		defaults_states::pipelines::vertex_input_create_info.flags = 0;
+		defaults_states::pipelines::vertex_input_create_info.vertexBindingDescriptionCount = 0;
+		defaults_states::pipelines::vertex_input_create_info.pVertexBindingDescriptions = nullptr;
+		defaults_states::pipelines::vertex_input_create_info.vertexAttributeDescriptionCount = 0;
+		defaults_states::pipelines::vertex_input_create_info.pVertexAttributeDescriptions = nullptr;
+		
+		defaults_states::pipelines::input_assembly_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+		defaults_states::pipelines::input_assembly_create_info.pNext = nullptr;
+		defaults_states::pipelines::input_assembly_create_info.flags = 0;
+		defaults_states::pipelines::input_assembly_create_info.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		defaults_states::pipelines::input_assembly_create_info.primitiveRestartEnable = VK_FALSE;
+		
+		defaults_states::pipelines::rasterization_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+		defaults_states::pipelines::rasterization_create_info.pNext = nullptr;
+		defaults_states::pipelines::rasterization_create_info.flags = 0;
+		defaults_states::pipelines::rasterization_create_info.depthClampEnable = VK_FALSE;
+		defaults_states::pipelines::rasterization_create_info.rasterizerDiscardEnable = VK_FALSE;
+		defaults_states::pipelines::rasterization_create_info.polygonMode = VK_POLYGON_MODE_FILL;
+		defaults_states::pipelines::rasterization_create_info.cullMode = VK_CULL_MODE_BACK_BIT;
+		defaults_states::pipelines::rasterization_create_info.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+		defaults_states::pipelines::rasterization_create_info.depthBiasEnable = VK_FALSE;
+		defaults_states::pipelines::rasterization_create_info.depthBiasConstantFactor = 0.0f;
+		defaults_states::pipelines::rasterization_create_info.depthBiasClamp = 0.0f;
+		defaults_states::pipelines::rasterization_create_info.depthBiasSlopeFactor = 0.0f;
+		defaults_states::pipelines::rasterization_create_info.lineWidth = 1.0f;
+
+		defaults_states::pipelines::multisample_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+		defaults_states::pipelines::multisample_create_info.pNext = nullptr;
+		defaults_states::pipelines::multisample_create_info.flags = 0;
+		defaults_states::pipelines::multisample_create_info.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		defaults_states::pipelines::multisample_create_info.sampleShadingEnable = VK_FALSE;
+		defaults_states::pipelines::multisample_create_info.minSampleShading = 1.0f;
+		defaults_states::pipelines::multisample_create_info.pSampleMask = nullptr;
+		defaults_states::pipelines::multisample_create_info.alphaToCoverageEnable = VK_FALSE;
+		defaults_states::pipelines::multisample_create_info.alphaToOneEnable = VK_FALSE;
+
+	});
 }
 
 const std::string w_graphics_device::get_info()

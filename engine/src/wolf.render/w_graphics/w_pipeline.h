@@ -25,31 +25,33 @@ namespace wolf
 			W_EXP w_pipeline();
 			W_EXP virtual ~w_pipeline();
 
-            W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                               _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
-                               _In_ const VkPrimitiveTopology pPrimitiveTopology,
-                               _In_ const w_render_pass* pRenderPassBinding,
-                               _In_ const w_shader* pShaderBinding,
-							   _In_ const std::vector<w_viewport>& pViewPorts,
-							   _In_ const std::vector<w_viewport_scissor>& pViewPortScissors,
-                               _In_ const std::string& pPipelineCacheName = "pipeline_cache",
-							   _In_ const std::vector<VkDynamicState>& pDynamicStates = {},
-                               _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges = {},
-                               _In_ const uint32_t& pTessellationPatchControlPoints = 0,
-                               _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo = nullptr,
-                               _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo = nullptr,
-                               _In_ const bool pEnableDepthStencilState = true,
-                               _In_ const VkPipelineColorBlendAttachmentState pBlendState = w_graphics_device::w_blend_states::premulitplied_alpha,
-                               _In_ const std::array<float,4> pBlendColors = { 0.0f, 0.0f, 0.0f, 0.0f });
-            
+            W_EXP W_RESULT load(
+				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
+                _In_ const w_primitive_topology pPrimitiveTopology,
+                _In_ const w_render_pass* pRenderPassBinding,
+                _In_ const w_shader* pShaderBinding,
+				_In_ const std::vector<w_viewport>& pViewPorts,
+				_In_ const std::vector<w_viewport_scissor>& pViewPortScissors,
+                _In_ const std::string& pPipelineCacheName = "pipeline_cache",
+				_In_ const std::vector<w_dynamic_state>& pDynamicStates = {},
+                _In_ const std::vector<w_push_constant_range>& pPushConstantRanges = {},
+                _In_ const uint32_t& pTessellationPatchControlPoints = 0,
+                _In_ const w_pipeline_rasterization_state_create_info* const pPipelineRasterizationStateCreateInfo = nullptr,
+                _In_ const w_pipeline_multisample_state_create_info* const pPipelineMultisampleStateCreateInfo = nullptr,
+                _In_ const bool pEnableDepthStencilState = true,
+                _In_ const w_pipeline_color_blend_attachment_state pBlendState = w_graphics_device::defaults_states::blend_states::premulitplied_alpha,
+                _In_ const std::array<float,4> pBlendColors = { 0.0f, 0.0f, 0.0f, 0.0f });
+
+            //load pipeline for compute stage
             W_EXP W_RESULT load_compute(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const VkPipelineShaderStageCreateInfo& pComputeShaderStage,
-                _In_ const VkDescriptorSetLayout& pDescriptorSetLayouts,
+				_In_ const w_shader* pShaderBinding,
                 _In_ const uint32_t& pSpecializationData,
-                _In_ const std::string& pPipelineCacheName = "",
-                _In_ const std::vector<VkPushConstantRange> pPushConstantRanges = {});
-
+                _In_ const std::string& pPipelineCacheName = "compute_pipeline_cache",
+                _In_ const std::vector<w_push_constant_range> pPushConstantRanges = {});
+			
+			//bind to pipeline
             W_EXP W_RESULT bind(_In_ const w_command_buffer* pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet);
 
             //release all resources
@@ -65,13 +67,37 @@ namespace wolf
 
             W_EXP static VkPipelineLayout create_pipeline_layout(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo);
-
+			//create pipeline cache
             W_EXP static W_RESULT create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
-                _In_z_ const std::string& pPipelineCacheName);
-            
+                _In_z_ const std::string& pPipelineCacheName);            
             W_EXP static VkPipelineCache get_pipeline_cache(_In_z_ const std::string& pPipelineCacheName);
-            
+            //release all pipeline caches
             W_EXP static ULONG release_all_pipeline_caches(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
+
+#ifdef __PYTHON__
+
+			bool py_load(
+				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
+				_In_ const w_primitive_topology pPrimitiveTopology,
+				_In_ const w_render_pass* pRenderPassBinding,
+				_In_ const w_shader* pShaderBinding,
+				_In_ const boost::python::list pViewPorts,
+				_In_ const boost::python::list pViewPortScissors,
+				_In_ const std::string& pPipelineCacheName,
+				_In_ const boost::python::list pDynamicStates,
+				_In_ const boost::python::list pPushConstantRanges,
+				_In_ const uint32_t& pTessellationPatchControlPoints,
+				_In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
+				_In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo,
+				_In_ const bool pEnableDepthStencilState,
+				_In_ const VkPipelineColorBlendAttachmentState pBlendState,
+				_In_ const boost::python::list pBlendColors)
+			{
+				return true;
+			}
+
+#endif
 
         private:
 			typedef system::w_object						_super;
@@ -79,5 +105,7 @@ namespace wolf
         };
     }
 }
+
+#include "python_exporter/py_pipeline.h"
 
 #endif

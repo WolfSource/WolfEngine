@@ -71,6 +71,13 @@ namespace wolf
 {
     namespace graphics
     {
+		struct w_push_constant_range : 
+#ifdef __VULKAN__
+			public VkPushConstantRange
+#endif
+		{
+		};
+
 		struct w_descriptor_buffer_info : 
 #ifdef __VULKAN__
 			public VkDescriptorBufferInfo
@@ -86,6 +93,48 @@ namespace wolf
 		struct w_descriptor_image_info :
 #ifdef __VULKAN__
 			public VkDescriptorImageInfo
+#endif
+		{
+		};
+		
+		struct w_pipeline_layout_create_info :
+#ifdef __VULKAN__
+			VkPipelineLayoutCreateInfo
+#endif
+		{
+		};
+
+		struct w_pipeline_vertex_input_state_create_info :
+#ifdef __VULKAN__
+			VkPipelineVertexInputStateCreateInfo
+#endif
+		{
+		};
+
+		struct w_pipeline_input_assembly_state_create_info :
+#ifdef __VULKAN__
+			VkPipelineInputAssemblyStateCreateInfo
+#endif
+		{
+		};
+
+		struct w_pipeline_rasterization_state_create_info :
+#ifdef __VULKAN__
+			public VkPipelineRasterizationStateCreateInfo
+#endif
+		{
+		};
+
+		struct w_pipeline_multisample_state_create_info :
+#ifdef __VULKAN__
+			public VkPipelineMultisampleStateCreateInfo
+#endif
+		{
+		};
+
+		struct w_pipeline_color_blend_attachment_state :
+#ifdef __VULKAN__
+			public VkPipelineColorBlendAttachmentState
 #endif
 		{
 		};
@@ -146,6 +195,49 @@ namespace wolf
 #endif
 		} w_pipeline_stage_flag_bits;
 		typedef uint32_t w_pipeline_stage_flags;
+
+		typedef enum w_dynamic_state
+		{
+#ifdef __VULKAN__
+			W_DYNAMIC_STATE_VIEWPORT = VK_DYNAMIC_STATE_VIEWPORT,
+			W_DYNAMIC_STATE_SCISSOR = VK_DYNAMIC_STATE_SCISSOR,
+			W_DYNAMIC_STATE_LINE_WIDTH = VK_DYNAMIC_STATE_LINE_WIDTH,
+			W_DYNAMIC_STATE_DEPTH_BIAS = VK_DYNAMIC_STATE_DEPTH_BIAS,
+			W_DYNAMIC_STATE_BLEND_CONSTANTS = VK_DYNAMIC_STATE_BLEND_CONSTANTS,
+			W_DYNAMIC_STATE_DEPTH_BOUNDS = VK_DYNAMIC_STATE_DEPTH_BOUNDS,
+			W_DYNAMIC_STATE_STENCIL_COMPARE_MASK = VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK,
+			W_DYNAMIC_STATE_STENCIL_WRITE_MASK = VK_DYNAMIC_STATE_STENCIL_WRITE_MASK,
+			W_DYNAMIC_STATE_STENCIL_REFERENCE = VK_DYNAMIC_STATE_STENCIL_REFERENCE,
+			W_DYNAMIC_STATE_VIEWPORT_W_SCALING_NV = VK_DYNAMIC_STATE_VIEWPORT_W_SCALING_NV,
+			W_DYNAMIC_STATE_DISCARD_RECTANGLE_EXT = VK_DYNAMIC_STATE_DISCARD_RECTANGLE_EXT,
+			W_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT = VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT,
+			W_DYNAMIC_STATE_BEGIN_RANGE = VK_DYNAMIC_STATE_BEGIN_RANGE,
+			W_DYNAMIC_STATE_END_RANGE = VK_DYNAMIC_STATE_END_RANGE,
+			W_DYNAMIC_STATE_RANGE_SIZE = VK_DYNAMIC_STATE_RANGE_SIZE,
+			W_DYNAMIC_STATE_MAX_ENUM = VK_DYNAMIC_STATE_MAX_ENUM
+#endif
+		} w_dynamic_state;
+
+		typedef enum w_primitive_topology 
+		{
+#ifdef __VULKAN__
+			W_PRIMITIVE_TOPOLOGY_POINT_LIST = VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
+			W_PRIMITIVE_TOPOLOGY_LINE_LIST = VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
+			W_PRIMITIVE_TOPOLOGY_LINE_STRIP = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP,
+			W_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+			W_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
+			W_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN,
+			W_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY = VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY,
+			W_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY,
+			W_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY,
+			W_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY,
+			W_PRIMITIVE_TOPOLOGY_PATCH_LIST = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST,
+			W_PRIMITIVE_TOPOLOGY_BEGIN_RANGE = VK_PRIMITIVE_TOPOLOGY_BEGIN_RANGE,
+			W_PRIMITIVE_TOPOLOGY_END_RANGE = VK_PRIMITIVE_TOPOLOGY_END_RANGE,
+			W_PRIMITIVE_TOPOLOGY_RANGE_SIZE = VK_PRIMITIVE_TOPOLOGY_RANGE_SIZE,
+			W_PRIMITIVE_TOPOLOGY_MAX_ENUM = VK_PRIMITIVE_TOPOLOGY_MAX_ENUM
+#endif
+		} w_primitive_topology;
 
 		typedef enum w_format 
 		{

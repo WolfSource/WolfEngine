@@ -355,21 +355,27 @@ namespace wolf
             VkCommandPool                                                   vk_command_allocator_pool;
                         
             //static pipeline defaults
-			struct defaults
+			struct defaults_states
             {
                 W_EXP static std::vector<VkSubpassDependency>               vk_default_subpass_dependencies;
-                W_EXP static VkPipelineLayoutCreateInfo                     vk_default_pipeline_layout_create_info;
-                W_EXP static VkPipelineVertexInputStateCreateInfo           vk_default_pipeline_vertex_input_state_create_info;
-                W_EXP static VkPipelineInputAssemblyStateCreateInfo         vk_default_pipeline_input_assembly_state_create_info;
-                W_EXP static VkPipelineRasterizationStateCreateInfo         vk_default_pipeline_rasterization_state_create_info;
-                W_EXP static VkPipelineMultisampleStateCreateInfo           vk_default_pipeline_multisample_state_create_info;
+                
+				struct pipelines
+				{
+					W_EXP static w_pipeline_layout_create_info                  layout_create_info;
+					W_EXP static w_pipeline_vertex_input_state_create_info      vertex_input_create_info;
+					W_EXP static w_pipeline_input_assembly_state_create_info    input_assembly_create_info;
+					W_EXP static w_pipeline_rasterization_state_create_info     rasterization_create_info;
+					W_EXP static w_pipeline_multisample_state_create_info       multisample_create_info;
+				};
+				
+				struct blend_states
+				{
+					W_EXP static w_pipeline_color_blend_attachment_state        none;
+					W_EXP static w_pipeline_color_blend_attachment_state        premulitplied_alpha;
+				};
             };
 
-            struct w_blend_states
-            {
-                W_EXP static VkPipelineColorBlendAttachmentState            blend_none;
-                W_EXP static VkPipelineColorBlendAttachmentState            premulitplied_alpha;
-            };
+
 
 #endif //__DX12__ __VULKAN__
             
