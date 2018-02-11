@@ -22,7 +22,7 @@ The Wolf is a comprehensive set of C++ open source libraries for rendering and s
 
 | APIs/Platforms |   Windows   | Universal Windows Platfrom |     Ubuntu     |      OSX      |      IOS      |    Android    |
 |----------------|:-----------:|:--------------------------:|:--------------:|:-------------:|:-------------:|:-------------:|
-| Vulkan         |   [![Build status](https://ci.appveyor.com/api/projects/status/nrk0kn83tp1n47h3/branch/master?svg=true)](https://ci.appveyor.com/project/PooyaEimandar/wolf-engine/branch/master)  |            N/A             |   in progress  |    complete   |  in progress  |  in progress  |
+| Vulkan         |   [![Build status](https://ci.appveyor.com/api/projects/status/nrk0kn83tp1n47h3/branch/master?svg=true)](https://ci.appveyor.com/project/PooyaEimandar/wolf-engine/branch/master)  |            N/A             |   in progress  |    [![Build Status](https://travis-ci.org/WolfSource/Wolf.Engine.svg?branch=master)](https://travis-ci.org/WolfSource/Wolf.Engine)   |  in progress  |  in progress  |
 | DircetX 12     | not started |         not started        |       N/A      |      N/A      |     N/A       |     N/A       |
 | DircetX 11     |   complete  |         not started        |       N/A      |      N/A      |     N/A       |     N/A       |
 
