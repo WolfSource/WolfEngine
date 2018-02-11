@@ -1,16 +1,14 @@
 sudo: required
-os: osx
-osx_image: xcode9.3beta
 
-before_install:
-  - brew update
-  - brew install python
-    
 matrix:
   include:
-    - language: python
-      python: 2.7
-      script:
-        - python --version
-        - python ($TRAVIS_BUILD_DIR)/setup.py
+    - os: osx
+      osx_image: xcode9.3beta
+      language: cpp
+      compiler: clang
+        
+before_install:
+  - sudo chmod +x ($TRAVIS_BUILD_DIR)/setup_deps.sh
+  - ($TRAVIS_BUILD_DIR)/setup_deps.sh
+
 
