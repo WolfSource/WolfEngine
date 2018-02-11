@@ -8,7 +8,11 @@ matrix:
       compiler: clang
         
 before_install:
-  - sudo chmod +x ($TRAVIS_BUILD_DIR)/setup_deps.sh
-  - ($TRAVIS_BUILD_DIR)/setup_deps.sh
+  - ls
+  - echo $TRAVIS_BUILD_DIR
+  - cd $TRAVIS_BUILD_DIR
+  - ls
+  - sudo chmod +x ./setup_deps.sh
+  - ./setup_deps.sh
 
 
