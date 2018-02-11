@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "make wolf\'s dependencies ready"
-cd ../engine/dependencies/
+echo "make wolf's dependencies ready"
+cd ./engine/dependencies/
 
 keys=(
 boost 
