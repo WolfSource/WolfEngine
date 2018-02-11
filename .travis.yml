@@ -1,8 +1,10 @@
 sudo: required
-os: linux
+os: osx
+#osx_image: xcode9.2
 matrix:
   include:
     - language: python
       python: 2.7.14
       script:
         - python --version
+        - python ($TRAVIS_BUILD_DIR)/setup.py
