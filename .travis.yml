@@ -4,7 +4,7 @@ osx_image: xcode9.3beta
 matrix:
   include:
     - language: python
-      python: 2.7.14
+      python: 2.7
       script:
         - python --version
         - python ($TRAVIS_BUILD_DIR)/setup.py
