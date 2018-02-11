@@ -36,6 +36,7 @@ skip_commits:
     - .gitattributes
     - .gitignore
     - .travis.yml
+    - build.sh
     - Logo.jpg
     - /**/*.md
 
