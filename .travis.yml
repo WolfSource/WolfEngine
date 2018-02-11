@@ -6,13 +6,7 @@ matrix:
       osx_image: xcode9.3beta
       language: cpp
       compiler: clang
-        
-before_install:
-  - ls
-  - echo $TRAVIS_BUILD_DIR
-  - cd $TRAVIS_BUILD_DIR
-  - ls
-  - sudo chmod +x ./setup_deps.sh
-  - ./setup_deps.sh
+
+script: ./setup_deps.sh
 
 
