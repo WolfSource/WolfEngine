@@ -17,7 +17,7 @@ W_RESULT c_parser::parse_collada_from_file(
     _In_ const bool& pInvertNormals,
     _In_ const bool& pFindLODs)
 {
-	auto _hr = W_OK;
+	auto _hr = W_PASSED;
 
 #if defined(__WIN32) || defined(__UWP)
     auto _path = pFilePath;
@@ -42,7 +42,7 @@ W_RESULT c_parser::parse_collada_from_file(
 	}
 	catch (...)
 	{
-		_hr = W_FALSE;
+		_hr = W_FAILED;
         V(_hr, L"Could not parse collada file on following path : " + pFilePath, _trace_class_name, 3);
 	}
 
@@ -65,7 +65,7 @@ W_RESULT c_parser::parse_collada_from_file(
 
 W_RESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 {
-    if (!pXNode) return W_FALSE;
+    if (!pXNode) return W_FAILED;
 
 	//get the name of node
 	auto _node_name = _get_node_name(pXNode);
@@ -79,7 +79,7 @@ W_RESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	if (_parent)
 	{
 		_parent_node_name = _get_node_name(_parent);
-		if (_parent_node_name == sSkipChildrenOfThisNode) return W_OK;
+		if (_parent_node_name == sSkipChildrenOfThisNode) return W_PASSED;
 	}
 
 	if (_node_name == "collada")
@@ -90,14 +90,14 @@ W_RESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 		if (_attr && 0 != std::strcmp(_attr->value(), "http://www.collada.org/2005/11/COLLADASchema"))
 		{
 			logger.error(L"Collada file does not have standard COLLADA header");
-			return W_FALSE;
+			return W_FAILED;
 		}
 
 		_attr = pXNode->first_attribute("version", 0, false);
 		if (_attr && 0 != std::strcmp(_attr->value(), "1.4.1"))
 		{
 			logger.error(L"Collada file does not have standard COLLADA header");
-			return W_FALSE;
+			return W_FAILED;
 		}
 #pragma endregion
 	}
@@ -124,14 +124,14 @@ W_RESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
                 _str.clear();
             }
         }
-        return W_OK;
+        return W_PASSED;
 	}
 	else if (_node_name == "library_cameras")
 	{
 		//we don't need basic information of camera, such as near plan, far plan and etc
 		sSkipChildrenOfThisNode = _node_name;
         _get_library_cameras(pXNode);
-		return W_OK;
+		return W_PASSED;
 	}
 	else if (_node_name == "library_lights")
 	{
@@ -141,19 +141,19 @@ W_RESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 	{
         sSkipChildrenOfThisNode = _node_name;
         _get_library_effects(pXNode);
-        return W_OK;
+        return W_PASSED;
 	}
 	else if (_node_name == "library_materials")
 	{
         sSkipChildrenOfThisNode = _node_name;
         _get_library_materials(pXNode);
-        return W_OK;
+        return W_PASSED;
 	}
     else if (_node_name == "library_images")
     {
         sSkipChildrenOfThisNode = _node_name;
         _get_library_images(pXNode);
-        return W_OK;
+        return W_PASSED;
     }
 	else if (_node_name == "library_geometries")
 	{
@@ -257,7 +257,7 @@ W_RESULT c_parser::_process_xml_node(_In_ rapidxml::xml_node<>* pXNode)
 		_process_xml_node(_child);
 	}
 
-	return W_OK;
+	return W_PASSED;
 }
 
 void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
@@ -1536,7 +1536,7 @@ W_RESULT c_parser::_create_scene(
 
     pScene->set_coordiante_system(sZ_Up);
     
-	return W_OK;
+	return W_PASSED;
 }
 
 void c_parser::_iterate_over_nodes(

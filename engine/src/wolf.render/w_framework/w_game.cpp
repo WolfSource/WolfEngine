@@ -98,7 +98,7 @@ bool w_game::run(_In_ map<int, w_window_info>& pOutputWindowsInfo)
 
     this->_game_time.tick([&]()
     {
-        if (w_graphics_device_manager::prepare() == W_OK)
+        if (w_graphics_device_manager::prepare() == W_PASSED)
         {
             render(this->_game_time);
         }

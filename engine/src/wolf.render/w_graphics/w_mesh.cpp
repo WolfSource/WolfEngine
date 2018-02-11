@@ -50,7 +50,7 @@ namespace wolf
 
                 if (pVerticesCount == 0 || pVerticesData == nullptr)
                 {
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
                 bool _there_is_no_index_buffer = false;
@@ -65,9 +65,9 @@ namespace wolf
                     pVerticesData,
 					pVerticesSizeInBytes,
                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                    this->_stagings_buffers.vertices) == W_FALSE)
+                    this->_stagings_buffers.vertices) == W_FAILED)
                 {
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
                 if (!_there_is_no_index_buffer)
@@ -76,9 +76,9 @@ namespace wolf
                         pIndicesData,
                         _indices_size,
                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                        this->_stagings_buffers.indices) == W_FALSE)
+                        this->_stagings_buffers.indices) == W_FAILED)
                     {
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                 }
 
@@ -87,9 +87,9 @@ namespace wolf
                     nullptr,
                     pVerticesSizeInBytes,
                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                    this->_vertex_buffer) == W_FALSE)
+                    this->_vertex_buffer) == W_FAILED)
                 {
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
                 if (!_there_is_no_index_buffer)
@@ -98,15 +98,15 @@ namespace wolf
                         nullptr,
                         _indices_size,
                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                        this->_index_buffer) == W_FALSE)
+                        this->_index_buffer) == W_FAILED)
                     {
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                 }
 
-                if (_copy_DRAM_to_VRAM(pVerticesSizeInBytes, _indices_size) == W_FALSE)
+                if (_copy_DRAM_to_VRAM(pVerticesSizeInBytes, _indices_size) == W_FAILED)
                 {
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
                 if (!pUseDynamicBuffer)
@@ -124,7 +124,7 @@ namespace wolf
                     this->_texture = w_texture::default_texture;
                 }
 
-                return W_OK;
+                return W_PASSED;
             }
 
             W_RESULT update_dynamic_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -136,14 +136,14 @@ namespace wolf
             {
                 if (!this->_dynamic_buffer)
                 {
-                    V(W_FALSE, "updating none dynamic buffer.", this->_name, 2);
-                    return W_FALSE;
+                    V(W_FAILED, "updating none dynamic buffer.", this->_name, 2);
+                    return W_FAILED;
                 }
                 if (pVerticesCount != this->_vertices_count ||
                     pIndicesCount != this->_indices_count)
                 {
-                    V(W_FALSE, "size of vertex or index buffer does not match.", this->_name, 2);
-                    return W_FALSE;
+                    V(W_FAILED, "size of vertex or index buffer does not match.", this->_name, 2);
+                    return W_FAILED;
                 }
 
                 auto _hr = this->_stagings_buffers.vertices.set_data(pVerticesData);
@@ -174,7 +174,7 @@ namespace wolf
                 VkDeviceSize _offsets[1] = { 0 };
 
                 auto _vertex_buffer_handle = this->_vertex_buffer.get_handle();
-				if (!_vertex_buffer_handle) return W_FALSE;
+				if (!_vertex_buffer_handle) return W_FAILED;
 				
 				auto _cmd = pCommandBuffer->get_active_command();
                 vkCmdBindVertexBuffers(_cmd, 0, 1, &_vertex_buffer_handle, _offsets);
@@ -208,7 +208,7 @@ namespace wolf
                 _vertex_buffer_handle = nullptr;
                 _index_buffer_handle = nullptr;
 
-				return W_OK;
+				return W_PASSED;
             }
 
 #pragma region Getters
@@ -328,7 +328,7 @@ namespace wolf
                     SAFE_DELETE(this->_copy_command_buffer);
                 }
 
-                return W_OK;
+                return W_PASSED;
             }
             
             /*
@@ -342,11 +342,11 @@ namespace wolf
             {
                 if(pBuffer.load(this->_gDevice, pBufferSizeInBytes, pBufferUsageFlag, pMemoryFlags))
                 {
-                    V(W_FALSE, "loading memory of buffer for graphics device: " +
+                    V(W_FAILED, "loading memory of buffer for graphics device: " +
                           _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
                           this->_name, 3, false);
                     
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 
                 
@@ -355,28 +355,28 @@ namespace wolf
                 if (!(pMemoryFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT))
                 {
                     _hr = pBuffer.set_data(pBufferData);
-                    if(_hr == W_FALSE)
+                    if(_hr == W_FAILED)
                     {
-                        V(W_FALSE, "setting data to vertex buffer's memory staging for graphics device: " +
+                        V(W_FAILED, "setting data to vertex buffer's memory staging for graphics device: " +
                           _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
                           this->_name, 3, false);
                     
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                 }
                 
                 //bind to it
                 _hr = pBuffer.bind();
-                if(_hr == W_FALSE)
+                if(_hr == W_FAILED)
                 {
-                    V(W_FALSE, "binding to vertex buffer's memory for graphics device: " +
+                    V(W_FAILED, "binding to vertex buffer's memory for graphics device: " +
                       _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
                       this->_name, 3, false);
                     
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 
-                return W_OK;
+                return W_PASSED;
             }
             
             std::string                                         _name;
@@ -416,7 +416,7 @@ W_RESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const uint32_t pIndicesCount,
                      _In_ const bool pUseDynamicBuffer)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
     
     return this->_pimp->load(
         pGDevice,
@@ -442,7 +442,7 @@ W_RESULT w_mesh::update_dynamic_buffer(
         pVerticesSize,
         pVerticesCount,
         pIndicesData,
-        pIndicesCount) : W_FALSE;
+        pIndicesCount) : W_FAILED;
 }
 
 W_RESULT w_mesh::draw(
@@ -452,7 +452,7 @@ W_RESULT w_mesh::draw(
 	_In_ const bool& pIndirectDraw,
 	_In_ const uint32_t& pVertexOffset)
 {
-	if (!this->_pimp || !pCommandBuffer) return W_FALSE;
+	if (!this->_pimp || !pCommandBuffer) return W_FAILED;
 	return this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw, pVertexOffset);
 }
 

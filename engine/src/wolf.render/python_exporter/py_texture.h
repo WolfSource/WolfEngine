@@ -40,7 +40,7 @@ namespace pywolf
 				pWidth,
 				pHeight,
 				pGenerateMipMapsLevels,
-				pMemoryPropertyFlags) == W_OK;*/
+				pMemoryPropertyFlags) == W_PASSED;*/
 			return true;
 		}
 
@@ -111,7 +111,7 @@ namespace pywolf
 
 		bool py_flush_staging_data()
 		{
-            return _super::flush_staging_data() == W_OK;
+            return _super::flush_staging_data() == W_PASSED;
 		}
 
 		//const VkImageUsageFlags get_usage() const;
@@ -134,7 +134,7 @@ namespace pywolf
 				pywolf::py_graphics_devices[pGDeviceIndex],
 				pPath,
 				&_texture);
-			if (_hr != W_OK)
+			if (_hr != W_PASSED)
 			{
 				SAFE_DELETE(_texture);
 				return false;
@@ -160,7 +160,7 @@ namespace pywolf
 			}
             auto _hr = _super::save_png_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount, pStrideInBytes);
 			SAFE_DELETE_ARRAY(_data);
-			return _hr == W_OK;
+			return _hr == W_PASSED;
 		}
 
 		static bool py_save_bmp_to_file(
@@ -180,7 +180,7 @@ namespace pywolf
 			}
             auto _hr = _super::save_bmp_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
 			SAFE_DELETE_ARRAY(_data);
-			return _hr == W_OK;
+			return _hr == W_PASSED;
 		}
 
 		static bool py_save_tga_to_file(
@@ -200,7 +200,7 @@ namespace pywolf
 			}
             auto _hr = _super::save_tga_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
 			SAFE_DELETE_ARRAY(_data);
-			return _hr == W_OK;
+			return _hr == W_PASSED;
 		}
 
 		static bool py_save_hdr_to_file(
@@ -220,7 +220,7 @@ namespace pywolf
 			}
             auto _hr = _super::save_hdr_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
 			SAFE_DELETE_ARRAY(_data);
-			return _hr == W_OK;
+			return _hr == W_PASSED;
 		}
 
 		static bool py_save_jpg_to_file(
@@ -241,7 +241,7 @@ namespace pywolf
 			}
             auto _hr = _super::save_jpg_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount, pQuality);
 			SAFE_DELETE_ARRAY(_data);
-			return _hr == W_OK;
+			return _hr == W_PASSED;
 		}
 
 #pragma endregion

@@ -67,16 +67,16 @@ namespace wolf
                 {
                     this->_is_staging = true;
                 }
-                return W_OK;
+                return W_PASSED;
             }
 
 			W_RESULT load()
 			{
 				auto _hr = _create_image();
-				if (_hr == W_FALSE) return W_FALSE;
+				if (_hr == W_FAILED) return W_FAILED;
 
 				_hr = _allocate_memory();
-				if (_hr == W_FALSE) return W_FALSE;
+				if (_hr == W_FAILED) return W_FAILED;
 
 				//bind to memory
 				if (vkBindImageMemory(this->_gDevice->vk_device,
@@ -84,18 +84,18 @@ namespace wolf
 					this->_memory,
 					0))
 				{
-					V(W_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
+					V(W_FAILED, "binding VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
 						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				_hr = _create_sampler();
-				if (_hr == W_FALSE) return W_FALSE;
+				if (_hr == W_FAILED) return W_FAILED;
 				
 				_hr = _create_image_view();
-				if (_hr == W_FALSE) return W_FALSE;
+				if (_hr == W_FAILED) return W_FAILED;
 
-				return W_OK;
+				return W_PASSED;
 			}
 
 			W_RESULT load_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
@@ -116,11 +116,11 @@ namespace wolf
 				std::string _str = wolf::system::convert::wstring_to_string(_path);
 #endif
 
-				if (W_FALSE == system::io::get_is_file(_str.c_str()))
+				if (W_FAILED == system::io::get_is_file(_str.c_str()))
 				{
 					wstring msg = L"could not find the texture file: ";
-					V(W_FALSE, msg + _path, this->_name, 3);
-					return W_FALSE;
+					V(W_FAILED, msg + _path, this->_name, 3);
+					return W_FAILED;
 				}
 
 				std::string _g_path;
@@ -189,32 +189,32 @@ namespace wolf
 				else
 				{
 					logger.error(L"Format not supported yet for following file: " + _path);
-					return W_FALSE;
+					return W_FAILED;
 				}
 				
 				if (this->_width == 0 || this->_height == 0)
 				{
 					wstring msg = L"Width or Height of texture file is zero: ";
-					V(W_FALSE, msg + _path, this->_name, 3);
+					V(W_FAILED, msg + _path, this->_name, 3);
 					if (_rgba) free(_rgba);
 					release();
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				auto _hr = _create_image();
-				if (_hr == W_FALSE)
+				if (_hr == W_FAILED)
 				{
 					if (_rgba) free(_rgba);
 					release();
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				_hr = _allocate_memory();
-				if (_hr == W_FALSE)
+				if (_hr == W_FAILED)
 				{
 					if (_rgba) free(_rgba);
 					release();
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				//bind to memory
@@ -223,49 +223,49 @@ namespace wolf
 					this->_memory,
 					0))
 				{
-					V(W_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
+					V(W_FAILED, "binding VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
 						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				//copy data to texture
 				if (_rgba)
 				{
 					_hr = copy_data_to_texture_2D(_rgba);
-					if (_hr == W_FALSE) return W_FALSE;
+					if (_hr == W_FAILED) return W_FAILED;
 
 					free(_rgba);
 				}
 				else if (_gli_tex_2D_array)
 				{
 					_hr = copy_data_to_texture_2D_array(*_gli_tex_2D_array);
-					if (_hr == W_FALSE) return W_FALSE;
+					if (_hr == W_FAILED) return W_FAILED;
 					SAFE_DELETE(_gli_tex_2D_array);
 				}
 				else
 				{
 					wstring msg = L"texture file is corrupted: ";
-					V(W_FALSE, msg + _path, this->_name, 3);
+					V(W_FAILED, msg + _path, this->_name, 3);
 					release();
-					return W_FALSE;
+					return W_FAILED;
 				}
 
                 _hr = _create_sampler();
-                if (_hr == W_FALSE) return W_FALSE;
+                if (_hr == W_FAILED) return W_FAILED;
                 
 				_hr = _create_image_view();
-				if (_hr == W_FALSE) return W_FALSE;
+				if (_hr == W_FAILED) return W_FAILED;
 
-				return W_OK;
+				return W_PASSED;
 			}
 
             W_RESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData)
             {
                 auto _hr = _create_image();
-                if (_hr == W_FALSE) return W_FALSE;
+                if (_hr == W_FAILED) return W_FAILED;
 
                 _hr = _allocate_memory();
-                if (_hr == W_FALSE) return W_FALSE;
+                if (_hr == W_FAILED) return W_FAILED;
 
                 //bind to memory
 				if (vkBindImageMemory(this->_gDevice->vk_device,
@@ -273,21 +273,21 @@ namespace wolf
 					this->_memory,
 					0))
 				{
-					V(W_FALSE, "binding VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
+					V(W_FAILED, "binding VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
 						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-					return W_FALSE;
+					return W_FAILED;
 				}
                 
                 _hr = copy_data_to_texture_2D(pRGBAData);
-                if (_hr == W_FALSE) return W_FALSE;
+                if (_hr == W_FAILED) return W_FAILED;
                 
                 _hr = _create_sampler();
-                if (_hr == W_FALSE) return W_FALSE;
+                if (_hr == W_FAILED) return W_FAILED;
                 
 				_hr = _create_image_view();
-				if (_hr == W_FALSE) return W_FALSE;
+				if (_hr == W_FAILED) return W_FAILED;
 
-                return W_OK;
+                return W_PASSED;
             }
 
 			W_RESULT _create_image()
@@ -337,12 +337,12 @@ namespace wolf
 					&this->_image_view.image);
 				if (_hr)
 				{
-					V(W_FALSE, "creating VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
+					V(W_FAILED, "creating VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
 						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 
-				return W_OK;
+				return W_PASSED;
 			}
             
             W_RESULT _allocate_memory()
@@ -391,10 +391,10 @@ namespace wolf
                 if(!_found)
                 {
                     logger.error("Could not allocate memory for image");
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 
-                return W_OK;
+                return W_PASSED;
             }
             
 			W_RESULT _create_image_view()
@@ -435,11 +435,11 @@ namespace wolf
 					&this->_image_view.view);
 				if (_hr)
 				{
-					V(W_FALSE, "creating image view", this->_name, false, true);
-					return W_FALSE;
+					V(W_FAILED, "creating image view", this->_name, false, true);
+					return W_FAILED;
 				}
 
-				return W_OK;
+				return W_PASSED;
 			}
             
 			W_RESULT _create_sampler()
@@ -474,8 +474,8 @@ namespace wolf
 					&__sampler);
 				if (_hr)
 				{
-					V(W_FALSE, "creating sampler without mip map and without anisotropy", this->_name, false, true);
-					return W_FALSE;
+					V(W_FAILED, "creating sampler without mip map and without anisotropy", this->_name, false, true);
+					return W_FAILED;
 				}
 				this->_samplers.insert({ w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY, __sampler });
 
@@ -489,8 +489,8 @@ namespace wolf
 					&__sampler);
 				if (_hr)
 				{
-					V(W_FALSE, "creating sampler with mip map and without anisotropy", this->_name, false, true);
-					return W_FALSE;
+					V(W_FAILED, "creating sampler with mip map and without anisotropy", this->_name, false, true);
+					return W_FAILED;
 				}
 				this->_samplers.insert({ w_sampler_type::MIPMAP_AND_NO_ANISOTROPY, __sampler });
 
@@ -508,8 +508,8 @@ namespace wolf
 						&__sampler);
 					if (_hr)
 					{
-						V(W_FALSE, "creating sampler with mip map and with anisotropy", this->_name, false, true);
-						return W_FALSE;
+						V(W_FAILED, "creating sampler with mip map and with anisotropy", this->_name, false, true);
+						return W_FAILED;
 					}
 
 					this->_samplers.insert({ w_sampler_type::MIPMAP_AND_ANISOTROPY, __sampler });
@@ -524,13 +524,13 @@ namespace wolf
 						&__sampler);
 					if (_hr)
 					{
-						V(W_FALSE, "creating sampler without mip map and with anisotropy", this->_name, false, true);
-						return W_FALSE;
+						V(W_FAILED, "creating sampler without mip map and with anisotropy", this->_name, false, true);
+						return W_FAILED;
 					}
 					this->_samplers.insert({ w_sampler_type::NO_MIPMAP_AND_ANISOTROPY, __sampler });
 				}
 
-				return W_OK;
+				return W_PASSED;
 			}
             
 			VkFormat _gli_format_to_vulkan_format(_In_ gli::format pFormat)
@@ -561,13 +561,13 @@ namespace wolf
                 auto _data_size = this->_width * this->_height * 4;
 
                 auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
-                if (_hResult == W_FALSE)
+                if (_hResult == W_FAILED)
                 {
                     return _hResult;
                 }
 
                 _hResult = this->_staging_buffer.bind();
-                if (_hResult == W_FALSE)
+                if (_hResult == W_FAILED)
                 {
                     return _hResult;
                 }
@@ -580,12 +580,12 @@ namespace wolf
                     0,
                     &this->_staging_buffer_memory_pointer))
                 {
-                    V(W_FALSE, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
+                    V(W_FAILED, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
                         this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name,
                         3,
                         false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
                 memcpy(this->_staging_buffer_memory_pointer, pRGBA, (size_t)_data_size);
@@ -706,15 +706,15 @@ namespace wolf
 				
 				_command_buffer.release();
 
-				if (_hr == W_FALSE)
+				if (_hr == W_FAILED)
 				{
-					V(W_FALSE,
+					V(W_FAILED,
 						"submit commad buffer for generating mipmaps for graphics device" + this->_gDevice->device_info->get_device_name() +
 						" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
 						_trace_info,
 						3,
 						false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 				
                 if (!this->_is_staging)
@@ -725,18 +725,18 @@ namespace wolf
 
 				if (this->_generate_mip_maps)
 				{
-					if (_copy_mip_maps() == W_FALSE)
+					if (_copy_mip_maps() == W_FAILED)
 					{
-						V(W_FALSE, "copying mip maps data to texture buffer on graphics device: " +
+						V(W_FAILED, "copying mip maps data to texture buffer on graphics device: " +
 							this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
 							this->_name,
 							3,
 							false);
-						return W_FALSE;
+						return W_FAILED;
 					}
 				}
 
-                return W_OK;
+                return W_PASSED;
             }
             
 			W_RESULT copy_data_to_texture_2D_array(_In_ const gli::texture2d_array& pTextureArrayRGBA)
@@ -746,13 +746,13 @@ namespace wolf
 				auto _data_size = static_cast<uint32_t>(pTextureArrayRGBA.size());
 
 				auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
-				if (_hResult == W_FALSE)
+				if (_hResult == W_FAILED)
 				{
 					return _hResult;
 				}
 
 				_hResult = this->_staging_buffer.bind();
-				if (_hResult == W_FALSE)
+				if (_hResult == W_FAILED)
 				{
 					return _hResult;
 				}
@@ -764,12 +764,12 @@ namespace wolf
 					0,
 					&this->_staging_buffer_memory_pointer))
 				{
-					V(W_FALSE, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
+					V(W_FAILED, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
 						this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
 						this->_name,
 						3,
 						false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				memcpy(this->_staging_buffer_memory_pointer, pTextureArrayRGBA.data(), (size_t)_data_size);
@@ -899,15 +899,15 @@ namespace wolf
 					nullptr);
 				//release command buffer
 				_command_buffer.release();
-				if (_hr == W_FALSE)
+				if (_hr == W_FAILED)
 				{
-					V(W_FALSE, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
+					V(W_FAILED, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
 						this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
 						this->_name,
 						3,
 						false);
 
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				if (!this->_is_staging)
@@ -918,19 +918,19 @@ namespace wolf
                 
                /* if (this->_generate_mip_maps)
                 {
-                    if (_copy_mip_maps() == W_FALSE)
+                    if (_copy_mip_maps() == W_FAILED)
                     {
-                        V(W_FALSE, "copying mip maps data to texture buffer on graphics device: " +
+                        V(W_FAILED, "copying mip maps data to texture buffer on graphics device: " +
                           this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
                           this->_name,
                           3,
                           false);
                         
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                 }*/
                                
-				return W_OK;
+				return W_PASSED;
             }
             
             W_RESULT _copy_mip_maps()
@@ -1098,15 +1098,15 @@ namespace wolf
 					//release command buffer
 					_command_buffer.release();
 
-					if (_hr == W_FALSE)
+					if (_hr == W_FAILED)
 					{
-						V(W_FALSE,
+						V(W_FAILED,
 							"submit commad buffer for generating mipmaps for graphics device" + this->_gDevice->device_info->get_device_name() +
 							" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
 							_trace_info,
 							3,
 							false);
-						return W_FALSE;
+						return W_FAILED;
 					}
 				}
                 else
@@ -1114,7 +1114,7 @@ namespace wolf
                     //do it with cpu(ffmpeg) or render targets
                 }
                 
-                return W_OK;
+                return W_PASSED;
             }
             
 			void* read_data_from_texture()
@@ -1127,13 +1127,13 @@ namespace wolf
 				auto _data_size = this->_width * this->_height * 4;
 				
 				auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
-				if (_hResult == W_FALSE)
+				if (_hResult == W_FAILED)
 				{
 					return nullptr;
 				}
 
 				_hResult = this->_staging_buffer.bind();
-				if (_hResult == W_FALSE)
+				if (_hResult == W_FAILED)
 				{
 					return nullptr;
 				}
@@ -1148,12 +1148,12 @@ namespace wolf
 
 				//if (_hr)
 				//{
-				//	V(W_FALSE, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
+				//	V(W_FAILED, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
 				//		this->_gDevice->device_name + " ID: " + std::to_string(this->_gDevice->device_id),
 				//		this->_name,
 				//		3,
 				//		false);
-				//	return W_FALSE;
+				//	return W_FAILED;
 				//}
 
 				//VkMappedMemoryRange _flush_range =
@@ -1290,7 +1290,7 @@ namespace wolf
 				auto _hr = vkQueueSubmit(this->_gDevice->vk_graphics_queue.queue, 1, &_submit_info, VK_NULL_HANDLE);
 				if (_hr)
 				{
-					V(W_FALSE, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
+					V(W_FAILED, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
 						this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
 						this->_name,
 						3,
@@ -1319,7 +1319,7 @@ namespace wolf
 
             W_RESULT flush_staging_data()
             {
-                if (!this->_is_staging) return W_FALSE;
+                if (!this->_is_staging) return W_FAILED;
                 
                 //create command buffer
                 w_command_buffer _command_buffer;
@@ -1436,14 +1436,14 @@ namespace wolf
                 auto _vhr = vkQueueSubmit(this->_gDevice->vk_graphics_queue.queue, 1, &_submit_info, VK_NULL_HANDLE);
                 if (_vhr)
                 {
-                    V(W_FALSE, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
+                    V(W_FAILED, "Could submit map memory and upload texture data to a staging buffer on graphics device: " +
                         this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name,
                         3,
                         false);
 
                     _command_buffer.release();
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 vkDeviceWaitIdle(this->_gDevice->vk_device);
 
@@ -1456,7 +1456,7 @@ namespace wolf
                     this->_staging_buffer.release();
                 }
 
-                return W_OK;
+                return W_PASSED;
             }
             
             ULONG release()
@@ -1665,7 +1665,7 @@ W_RESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pG
 	_In_ const bool& pGenerateMipMapsLevels,
     _In_ const bool& pIsStaging)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
     return this->_pimp->initialize(pGDevice,
         pWidth,
         pHeight,
@@ -1681,39 +1681,39 @@ W_RESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pG
 	_In_ const bool& pGenerateMipMapsLevels,
 	_In_ const w_memory_property_flags pMemoryPropertyFlags)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
     return this->_pimp->initialize(pGDevice, pWidth, pHeight, pGenerateMipMapsLevels, pMemoryPropertyFlags);
 }
 
 W_RESULT w_texture::load()
 {
-	if (!this->_pimp) return W_FALSE;
+	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->load();
 }
 
 W_RESULT w_texture::load_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath)
 {
-    if(!this->_pimp) return W_FALSE;
+    if(!this->_pimp) return W_FAILED;
     return this->_pimp->load_texture_2D_from_file(pPath, pIsAbsolutePath);
 }
 
 W_RESULT w_texture::load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
     return this->_pimp->load_texture_from_memory_rgba(pRGBAData);
 }
 
 W_RESULT w_texture::load_texture_from_memory_rgb(_In_ uint8_t* pRGBData)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
     
     const auto _width = this->_pimp->get_width();
     const auto _height = this->_pimp->get_height();
 
-    if (_width == 0 || _height == 0) return W_FALSE;
+    if (_width == 0 || _height == 0) return W_FAILED;
     
     auto _rgba = (uint8_t*)malloc(_width * _height * 4);
-    if (!_rgba) return W_FALSE;
+    if (!_rgba) return W_FAILED;
     
     int _count = (int)(_width * _height);
     for (int i = _count; --i; _rgba += 4, pRGBData += 3) 
@@ -1730,16 +1730,16 @@ W_RESULT w_texture::load_texture_from_memory_rgb(_In_ uint8_t* pRGBData)
 
 W_RESULT w_texture::load_texture_from_memory_all_channels_same(_In_ uint8_t pData)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
 
     const auto _width = this->_pimp->get_width();
     const auto _height = this->_pimp->get_height();
 
-    if (_width == 0 || _height == 0) return W_FALSE;
+    if (_width == 0 || _height == 0) return W_FAILED;
 
     auto _length = _width * _height * 4;
     auto _rgba = (uint8_t*)malloc(_length * sizeof(uint8_t));
-    if (!_rgba) return W_FALSE;
+    if (!_rgba) return W_FAILED;
 
     std::memset(_rgba, pData, _length);
     auto _hr = this->_pimp->load_texture_from_memory_rgba(_rgba);
@@ -1749,16 +1749,16 @@ W_RESULT w_texture::load_texture_from_memory_all_channels_same(_In_ uint8_t pDat
 
 W_RESULT w_texture::load_texture_from_memory_color(_In_ w_color pColor)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
 
     const auto _width = this->_pimp->get_width();
     const auto _height = this->_pimp->get_height();
 
-    if (_width == 0 || _height == 0) return W_FALSE;
+    if (_width == 0 || _height == 0) return W_FAILED;
 
     auto _length = _width * _height * 4;
     auto _rgba = (uint8_t*)malloc(_length * sizeof(uint8_t));
-    if (!_rgba) return W_FALSE;
+    if (!_rgba) return W_FAILED;
 
     for (size_t i = 0; i < _length; i += 4)
     {
@@ -1774,7 +1774,7 @@ W_RESULT w_texture::load_texture_from_memory_color(_In_ w_color pColor)
 
 W_RESULT w_texture::copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
     return this->_pimp->copy_data_to_texture_2D(pRGBA);
 }
 
@@ -1786,7 +1786,7 @@ void* w_texture::read_data_of_texture()
 
 W_RESULT w_texture::flush_staging_data()
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
     return this->_pimp->flush_staging_data();
 }
 
@@ -1799,33 +1799,33 @@ W_RESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphic
     if (_iter != _shared.end())
     {
         *pPointerToTexture = _shared[pPath];
-        return W_OK;
+        return W_PASSED;
     }
 
     auto _texture = new (std::nothrow) w_texture();
     if (!_texture)
     {
         logger.error(L"Could not perform allocation for shared texture: " + pPath);
-        return W_FALSE;
+        return W_FAILED;
     }
 
     auto _hr = _texture->initialize(pGDevice, 32, 32);
-    if (_hr == W_FALSE)
+    if (_hr == W_FAILED)
     {
         SAFE_RELEASE(_texture);
-        return W_FALSE;
+        return W_FAILED;
     }
     _hr = _texture->load_texture_2D_from_file(pPath, true);
-    if (_hr == W_FALSE)
+    if (_hr == W_FAILED)
     {
         SAFE_RELEASE(_texture);
-        return W_FALSE;
+        return W_FAILED;
     }
 
     _shared[pPath] = _texture;
     *pPointerToTexture = _texture;
 
-    return W_OK;
+    return W_PASSED;
 }
 
 //void w_texture::write_bitmap_to_file(
@@ -1851,27 +1851,27 @@ W_RESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphic
 
 W_RESULT w_texture::save_png_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pStrideInBytes)
 {
-	return stbi_write_png(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pStrideInBytes) == 1 ? W_OK : W_FALSE;
+	return stbi_write_png(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pStrideInBytes) == 1 ? W_PASSED : W_FAILED;
 }
 
 W_RESULT w_texture::save_bmp_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount)
 {
-	return stbi_write_bmp(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? W_OK : W_FALSE;
+	return stbi_write_bmp(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? W_PASSED : W_FAILED;
 }
 
 W_RESULT w_texture::save_tga_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount)
 {
-	return stbi_write_tga(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? W_OK : W_FALSE;
+	return stbi_write_tga(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? W_PASSED : W_FAILED;
 }
 
 W_RESULT w_texture::save_hdr_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData, _In_ int pCompCount)
 {
-	return stbi_write_hdr(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? W_OK : W_FALSE;
+	return stbi_write_hdr(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData) == 1 ? W_PASSED : W_FAILED;
 }
 
 W_RESULT w_texture::save_jpg_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pQuality)
 {
-	return stbi_write_jpg(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pQuality) == 1 ? W_OK : W_FALSE;
+	return stbi_write_jpg(pFilePath, static_cast<int>(pWidth), static_cast<int>(pHeight), pCompCount, pData, pQuality) == 1 ? W_PASSED : W_FAILED;
 }
 
 ULONG w_texture::release()

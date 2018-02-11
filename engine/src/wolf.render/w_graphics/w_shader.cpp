@@ -48,7 +48,7 @@ namespace wolf
 #else
 						logger.error("Shader on following path: " + _path + " not exists.");
 #endif
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                     if(_file_state == -2)
                     {
@@ -57,7 +57,7 @@ namespace wolf
 #else
 						logger.error("Shader on following path: " + _path + " exists but could not open.");
 #endif
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                 }
                 
@@ -79,13 +79,13 @@ namespace wolf
                 if(_hr)
                 {
 #if defined(__WIN32) || defined(__UWP)
-					V(W_FALSE, L"creating shader module for shader on following path: " + _path,
+					V(W_FAILED, L"creating shader module for shader on following path: " + _path,
 						this->_name, 3, false);
 #else
-					V(W_FALSE, "creating shader module for shader on following path: " + _path,
+					V(W_FAILED, "creating shader module for shader on following path: " + _path,
 						this->_name, 3, false);
 #endif
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 
                 //create pipeline shader stage
@@ -107,17 +107,17 @@ namespace wolf
                 this->_shader_modules.push_back(_shader_module);
                 
 				
-                return W_OK;
+                return W_PASSED;
             }
             
             W_RESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
             {
                 this->_shader_binding_params.swap(pShaderBindingParams);
                 
-                if (_prepare_shader_params() == W_FALSE) return W_FALSE;
+                if (_prepare_shader_params() == W_FAILED) return W_FAILED;
                 
                 _update_shader_binding_params(this->_shader_binding_params);
-                return W_OK;
+                return W_PASSED;
             }
             
             ULONG release()
@@ -367,12 +367,12 @@ namespace wolf
                                                   &this->_descriptor_pool);
                 if(_hr)
                 {
-                    V(W_FALSE, "creating descriptor pool for graphics device: " + this->_gDevice->device_info->get_device_name() +
+                    V(W_FAILED, "creating descriptor pool for graphics device: " + this->_gDevice->device_info->get_device_name() +
                       " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 
-                return W_OK;
+                return W_PASSED;
             }
             
             void _create_descriptor_layout_bindings(
@@ -474,19 +474,19 @@ namespace wolf
                                                        &pDescriptorSetLyout);
                 if(_hr)
                 {
-                    V(W_FALSE, "creating descriptor set layout for graphics device :" +
+                    V(W_FAILED, "creating descriptor set layout for graphics device :" +
                         this->_gDevice->device_info->get_device_name() +
                       " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
                     
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 
                 if(!this->_descriptor_pool)
                 {
                     logger.error("Descriptor pool not exists");
-                    return W_FALSE;
+                    return W_FAILED;
                     
                 }
                 VkDescriptorSetAllocateInfo _descriptor_set_allocate_info =
@@ -503,18 +503,18 @@ namespace wolf
                                                &pDescriptorSet);
                 if(_hr)
                 {
-                    V(W_FALSE, "creating descriptor set for graphics device :" + this->_gDevice->device_info->get_device_name() +
+                    V(W_FAILED, "creating descriptor set for graphics device :" + this->_gDevice->device_info->get_device_name() +
                       " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
-                return W_OK;
+                return W_PASSED;
             }
             
             W_RESULT _prepare_shader_params()
             {
-                W_RESULT _hr = W_OK;
+                W_RESULT _hr = W_PASSED;
 
                 uint32_t _number_of_uniforms = 0;
                 uint32_t _number_of_storages = 0;
@@ -598,11 +598,11 @@ namespace wolf
                     _hr = _create_descriptor_pool(
                         _descriptor_pool_sizes,
                         _compute_layout_bindings.size() ? 2 : 1);
-                    if (_hr == W_FALSE)
+                    if (_hr == W_FAILED)
                     {
                         logger.error("Error on creating shader descriptor pool for mesh: " +
                             this->_name);
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                 }
 
@@ -612,11 +612,11 @@ namespace wolf
                         _layout_bindings, 
                         this->_descriptor_set, 
                         this->_descriptor_set_layout);
-                    if (_hr == W_FALSE)
+                    if (_hr == W_FAILED)
                     {
                         logger.error("Error on creating shader descriptor pool for mesh: " +
                             this->_name);
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                 }
                 if (_compute_layout_bindings.size())
@@ -625,11 +625,11 @@ namespace wolf
                         _compute_layout_bindings, 
                         this->_compute_descriptor_set, 
                         this->_compute_descriptor_set_layout);
-                    if (_hr == W_FALSE)
+                    if (_hr == W_FAILED)
                     {
                         logger.error("Error on creating shader descriptor pool for mesh: " +
                             this->_name);
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                 }
 
@@ -670,7 +670,7 @@ W_RESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ const w_shader_stage pShaderStage,
 	_In_z_ const char* pMainFunctionName)
 {
-	if (!this->_pimp) return W_FALSE;
+	if (!this->_pimp) return W_FAILED;
 
 	_super::load_state = LOAD_STATE::LOADING;
 	auto _hr = this->_pimp->load(pGDevice, pShaderBinaryPath, pShaderStage, pMainFunctionName);
@@ -744,7 +744,7 @@ const std::vector<w_shader_binding_param> w_shader::get_shader_binding_params() 
 
 W_RESULT w_shader::set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
     return this->_pimp->set_shader_binding_params(pShaderBindingParams);
 }
 
@@ -773,7 +773,7 @@ W_RESULT w_shader::load_shader(_In_ const std::shared_ptr<w_graphics_device>& pG
         if (_shader != nullptr)
         {
             *pShader = _shader;
-            return W_OK;
+            return W_PASSED;
         }
     }
 
@@ -781,58 +781,58 @@ W_RESULT w_shader::load_shader(_In_ const std::shared_ptr<w_graphics_device>& pG
     if (!_shader)
     {
         logger.error("Could not perform allocation for shared shader name: " + pName);
-        return W_FALSE;
+        return W_FAILED;
     }
 
     if (!pVertexShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pVertexShaderPath, w_shader_stage::VERTEX_SHADER, pMainFunctionName) == W_FALSE)
+        if (_shader->load(pGDevice, pVertexShaderPath, w_shader_stage::VERTEX_SHADER, pMainFunctionName) == W_FAILED)
         {
-            return W_FALSE;
+            return W_FAILED;
         }
     }
     if (!pTessellationControlShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pTessellationControlShaderPath, w_shader_stage::TESSELATION_CONTROL, pMainFunctionName) == W_FALSE)
+        if (_shader->load(pGDevice, pTessellationControlShaderPath, w_shader_stage::TESSELATION_CONTROL, pMainFunctionName) == W_FAILED)
         {
-            return W_FALSE;
+            return W_FAILED;
         }
     }
     if (!pTessellationEvaluationShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pTessellationEvaluationShaderPath, w_shader_stage::TESSELATION_EVALUATION, pMainFunctionName) == W_FALSE)
+        if (_shader->load(pGDevice, pTessellationEvaluationShaderPath, w_shader_stage::TESSELATION_EVALUATION, pMainFunctionName) == W_FAILED)
         {
-            return W_FALSE;
+            return W_FAILED;
         }
     }
     if (!pGeometryShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pGeometryShaderPath, w_shader_stage::GEOMETRY_SHADER, pMainFunctionName) == W_FALSE)
+        if (_shader->load(pGDevice, pGeometryShaderPath, w_shader_stage::GEOMETRY_SHADER, pMainFunctionName) == W_FAILED)
         {
-            return W_FALSE;
+            return W_FAILED;
         }
     }
     if (!pFragmentShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pFragmentShaderPath, w_shader_stage::FRAGMENT_SHADER, pMainFunctionName) == W_FALSE)
+        if (_shader->load(pGDevice, pFragmentShaderPath, w_shader_stage::FRAGMENT_SHADER, pMainFunctionName) == W_FAILED)
         {
-            return W_FALSE;
+            return W_FAILED;
         }
     }
     if (!pComputeShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pComputeShaderPath, w_shader_stage::COMPUTE_SHADER, pMainFunctionName) == W_FALSE)
+        if (_shader->load(pGDevice, pComputeShaderPath, w_shader_stage::COMPUTE_SHADER, pMainFunctionName) == W_FAILED)
         {
-            return W_FALSE;
+            return W_FAILED;
         }
     }
 
     //set shader params
     if (pShaderBindingParams.size())
     {
-        if (_shader->set_shader_binding_params(pShaderBindingParams) == W_FALSE)
+        if (_shader->set_shader_binding_params(pShaderBindingParams) == W_FAILED)
         {
-            return W_FALSE;
+            return W_FAILED;
         }
     }
 
@@ -843,7 +843,7 @@ W_RESULT w_shader::load_shader(_In_ const std::shared_ptr<w_graphics_device>& pG
 
     *pShader = _shader;
 
-    return W_OK;
+    return W_PASSED;
 }
 
 w_shader* w_shader::get_shader_from_shared(_In_z_ const std::string& pName)

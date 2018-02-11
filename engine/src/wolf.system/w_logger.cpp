@@ -105,7 +105,7 @@ namespace wolf
                 auto _log_directory = pLogPath + L"\\Log\\";
                 auto _log_directory_cstr = _log_directory.c_str();
                 //if directory of log is not existed
-                if (io::get_is_directoryW(_log_directory_cstr) != W_OK)
+                if (io::get_is_directoryW(_log_directory_cstr) != W_PASSED)
                 {
                     //Create the directory of log inside the root directory
                     io::create_directoryW(_log_directory_cstr);
@@ -116,7 +116,7 @@ namespace wolf
                 auto _log_directory = wolf::system::convert::wstring_to_string(pLogPath) + "/Log/";
                 auto _log_directory_cstr = _log_directory.c_str();
                 //if directory of log is not existed
-                if (io::get_is_directory(_log_directory_cstr) != W_OK)
+                if (io::get_is_directory(_log_directory_cstr) != W_PASSED)
                 {
                     //Create the directory of log inside the root directory
                     io::create_directory(_log_directory_cstr);

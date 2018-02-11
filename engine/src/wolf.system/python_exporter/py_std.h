@@ -21,10 +21,11 @@ namespace pywolf
 		using namespace boost::python;
 		//define W_RESULT enum
 		enum_<W_RESULT>("W_RESULT")
-			.value("W_OK", W_RESULT::W_OK)
-			.value("W_FALSE", W_RESULT::W_FALSE)
+			.value("W_OK", W_RESULT::W_PASSED)
+			.value("W_FALSE", W_RESULT::W_FAILED)
 			.value("W_INVALIDARG", W_RESULT::W_INVALIDARG)
 			.value("W_OUTOFMEMORY", W_RESULT::W_OUTOFMEMORY)
+            .value("W_INVALID_FILE_ATTRIBUTES", W_RESULT::W_INVALID_FILE_ATTRIBUTES)
 			.export_values()
 			;
 	}

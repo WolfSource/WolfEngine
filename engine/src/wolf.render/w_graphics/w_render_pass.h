@@ -103,7 +103,7 @@ namespace wolf
 				//reset local shared_ptr
 				_gDevice.reset();
 
-				return _hr == W_OK;
+				return _hr == W_PASSED;
 		}
 
 			void py_begin(

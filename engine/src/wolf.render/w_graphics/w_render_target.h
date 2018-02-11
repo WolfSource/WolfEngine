@@ -12,7 +12,6 @@
 
 #include "w_graphics_device_manager.h"
 #include "w_command_buffer.h"
-#include "w_attachment_buffer_desc.h"
 #include <functional>
 
 namespace wolf

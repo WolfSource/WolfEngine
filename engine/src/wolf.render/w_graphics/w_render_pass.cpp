@@ -27,10 +27,10 @@ namespace wolf
 
 				if (!pAttachments.size())
 				{
-					V(W_FALSE, L"attachments not defined for render pass of graphics device: " +
+					V(W_FAILED, L"attachments not defined for render pass of graphics device: " +
 						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
 						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				this->_gDevice = pGDevice;
@@ -75,7 +75,7 @@ namespace wolf
 
 				if (!pSubpassDependencies)
 				{
-					_subpass_dependencies = w_graphics_device::defaults::vk_default_subpass_dependencies;
+                    _subpass_dependencies = w_graphics_device::defaults_states::vk_default_subpass_dependencies;
 				}
 				else
 				{
@@ -104,14 +104,14 @@ namespace wolf
 					&this->_render_pass);
 				if (_hr)
 				{
-					V(W_FALSE, L"creating render pass for graphics device: " +
+					V(W_FAILED, L"creating render pass for graphics device: " +
 						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
 						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				//create frame buffers
-				W_RESULT __hr = W_OK;
+				W_RESULT __hr = W_PASSED;
 				std::vector<VkImageView> _frame_buffer_attachments;
 				for (auto& _attach : pAttachments)
 				{
@@ -127,7 +127,7 @@ namespace wolf
 					{
 						if (_width != _iter.width || _height != _iter.height)
 						{
-							__hr = W_FALSE;
+							__hr = W_FAILED;
 							V(__hr, L"width and height of all attachments must be same. creating frame buffers for graphics device: " +
 								wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
 								L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
@@ -135,7 +135,7 @@ namespace wolf
 						}
 					}
 
-					if (__hr == W_FALSE) break;
+					if (__hr == W_FAILED) break;
 
 					VkFramebufferCreateInfo _framebuffer_create_info =
 					{
@@ -158,7 +158,7 @@ namespace wolf
 					}
 					else
 					{
-						__hr = W_FALSE;
+						__hr = W_FAILED;
 						V(__hr, "creating frame buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
 							" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
 						break;
@@ -183,7 +183,7 @@ namespace wolf
 
 				if (pFrameBufferIndex >= this->_frame_buffers.size())
 				{
-					V(W_FALSE,
+					V(W_FAILED,
 						"parameter count mismatch, index of frame buffer does not match with index of command buffer for graphics device: " +
 						this->_gDevice->device_info->get_device_name() +
 						" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
@@ -239,7 +239,7 @@ namespace wolf
 
 				if (pFrameBufferIndex >= this->_frame_buffers.size())
 				{
-					V(W_FALSE,
+					V(W_FAILED,
 						"mismatch between index of frame buffer and index of command buffer for graphics device: " +
 						this->_gDevice->device_info->get_device_name() +
 						" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
@@ -370,7 +370,7 @@ W_RESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDe
 	_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
 	_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 {
-	if (!this->_pimp) return W_FALSE;
+	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->load(
 		pGDevice,
 		pViewPort,

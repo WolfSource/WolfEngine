@@ -41,7 +41,7 @@ namespace wolf
 			inline W_RESULT chars_to_GUID(const std::wstring& pStr, GUID& pGUID)
 			{
 				LPOLESTR guid = W2OLE((wchar_t*)pStr.c_str());
-				auto hr = W_RESULT::W_OK;
+				auto hr = W_RESULT::W_PASSED;
 				CLSIDFromString(guid, (LPCLSID)&pGUID);
 				return hr;
 			}

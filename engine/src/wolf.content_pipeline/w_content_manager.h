@@ -34,7 +34,7 @@ namespace wolf
                 auto _path = wolf::system::convert::wstring_to_string(pAssetPath);
                 auto _file_exists = wolf::system::io::get_is_file(_path.c_str());
 #endif
-                if (_file_exists == W_FALSE)
+                if (_file_exists == W_FAILED)
                 {
                     logger.error(L"File asset not available on following path : " + pAssetPath);
                     return nullptr;
@@ -62,7 +62,7 @@ namespace wolf
                         _name.clear();
                         _type.clear();
 
-                        if (_hr == W_OK)
+                        if (_hr == W_PASSED)
                         {
                             return _scene;
                         }
@@ -73,7 +73,7 @@ namespace wolf
                     {
                         std::vector<w_cpipeline_scene> _scenes;
                         auto _hr = load_wolf_scenes_from_file(_scenes, pAssetPath);
-                        if (_hr == W_OK && _scenes.size())
+                        if (_hr == W_PASSED && _scenes.size())
                         {
                             //make a deep copy from first element
                             auto _scene = new w_cpipeline_scene(_scenes[0]);
@@ -107,7 +107,7 @@ namespace wolf
                     logger.error("Error on creating saving wolf scene file on following path: " + _path);
 #endif
                     _file.close();
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 _file << _sbuffer.rdbuf();
                 _file.flush();
@@ -115,7 +115,7 @@ namespace wolf
 
                 _sbuffer.clear();
 
-                return W_OK;
+                return W_PASSED;
             }
 
             static W_RESULT load_wolf_scenes_from_file(_In_ std::vector<w_cpipeline_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
@@ -135,7 +135,7 @@ namespace wolf
                     logger.error("Error on opening wolf scene file from following path: " + _path);
 #endif
                     _file.close();
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 std::string _str((std::istreambuf_iterator<char>(_file)),
                     std::istreambuf_iterator<char>());
@@ -148,7 +148,7 @@ namespace wolf
                 auto _obj = _msg.get();
                 _obj.convert(pScenePacks);
 
-                return W_OK;
+                return W_PASSED;
             }
 
 		private:

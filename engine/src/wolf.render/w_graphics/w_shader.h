@@ -146,7 +146,7 @@ namespace wolf
 				//reset local shared_ptr
 				_gDevice.reset();
 
-				return _hr == W_OK;
+				return _hr == W_PASSED;
 			}
 			
 			boost::python::list py_get_shader_binding_params()
@@ -190,7 +190,7 @@ namespace wolf
 
 				if (_shader_binding_params.size())
 				{
-					return set_shader_binding_params(_shader_binding_params) == W_OK;
+					return set_shader_binding_params(_shader_binding_params) == W_PASSED;
 				}
 				return false;
 			}
@@ -242,7 +242,7 @@ namespace wolf
 				//reset local shared_ptr
 				_gDevice.reset();
 
-				return _hr == W_OK;
+				return _hr == W_PASSED;
 			}
 #endif
 

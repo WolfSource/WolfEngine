@@ -51,7 +51,7 @@ namespace wolf
                 this->_gDevice = pGDevice;
                 
                 //create uniform buffer
-                W_RESULT _hr = W_OK;
+                W_RESULT _hr = W_PASSED;
 
                 if (this->_host_visible)
                 {
@@ -60,7 +60,7 @@ namespace wolf
                         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-                    if (_hr == W_FALSE)
+                    if (_hr == W_FAILED)
                     {
                         V(_hr, "loading host visible buffer " +
                             _gDevice->get_info(),
@@ -76,7 +76,7 @@ namespace wolf
                         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
                     
-                    if (_hr == W_FALSE)
+                    if (_hr == W_FAILED)
                     {
                         V(_hr, "loading device buffer " +
                             _gDevice->get_info(),
@@ -90,7 +90,7 @@ namespace wolf
                         _buffer_size,
                         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-                    if (_hr == W_FALSE)
+                    if (_hr == W_FAILED)
                     {
                         V(_hr, "loading staging buffer " +
                             _gDevice->get_info(),
@@ -100,7 +100,7 @@ namespace wolf
                     }
 
                     _hr = this->_staging_buffer.bind();
-                    if (_hr == W_FALSE)
+                    if (_hr == W_FAILED)
                     {
                         V(_hr, "binding device buffer " +
                             _gDevice->get_info(),
@@ -111,7 +111,7 @@ namespace wolf
                 }
                 
                 _hr = this->_buffer.bind();
-                if (_hr == W_FALSE)
+                if (_hr == W_FAILED)
                 {
                     V(_hr, "binding buffer " +
                         _gDevice->get_info(),
@@ -127,7 +127,7 @@ namespace wolf
             {
                 const std::string _trace = this->name + "update";
 
-                W_RESULT _hr = W_OK;
+                W_RESULT _hr = W_PASSED;
 
                 if (this->_host_visible)
                 {
@@ -148,7 +148,7 @@ namespace wolf
                     }
                     else
                     {
-                        _hr = W_FALSE;
+                        _hr = W_FAILED;
                         V(_hr, "begining command buffer " +
                             _gDevice->get_info(),
                             _trace,
@@ -156,7 +156,7 @@ namespace wolf
                     }
                     this->_staging_buffer.unmap();
 
-                    if (_hr == W_FALSE) return _hr;
+                    if (_hr == W_FAILED) return _hr;
 
                     _hr = this->_staging_buffer.copy_to(this->_buffer);
                     V(_hr, "copy staging buffer to device buffer " +

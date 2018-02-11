@@ -201,7 +201,7 @@ namespace wolf
 				w_sprintf(_msg, _length, "%s is null\n", pVariableName);
 				_last_error = _msg;
 
-				return W_FALSE;
+				return W_FAILED;
 			}
 			else
 			{
@@ -214,7 +214,7 @@ namespace wolf
 				}
 			}
 
-			return W_OK;
+			return W_PASSED;
 		}
 
 #pragma endregion
@@ -360,7 +360,7 @@ namespace wolf
 				w_sprintf(_msg, _lenght, "%s is null\n", pVariableName);
 				_last_error = _msg;
 
-				return W_FALSE;
+				return W_FAILED;
 			}
 			else
 			{
@@ -380,7 +380,7 @@ namespace wolf
 				}
 			}
             
-            return W_OK;
+            return W_PASSED;
 		}
 
 		/*

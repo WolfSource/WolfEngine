@@ -132,7 +132,7 @@ inline void V(W_RESULT pHR, std::wstring pMSG = L"Undefined message",
     using namespace std;
     using namespace wolf;
 
-    if (pHR == W_OK) return;
+    if (pHR == W_PASSED) return;
 
     auto _wstr_trace = std::wstring(pTraceClass.begin(), pTraceClass.end());
     wstring _errorMsg = L"Error on " + pMSG + L" with the following error info : " + L"Trace info " + _wstr_trace + L".";
@@ -165,7 +165,7 @@ inline void V(int pHR, std::wstring pMSG = L"Undefined Error",
     std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
     bool pExitNow = false)
 {
-    V(pHR == 0 ? W_OK : W_FALSE, pMSG, pTraceClass, pLogType, pExitNow);
+    V(pHR == 0 ? W_PASSED : W_FAILED, pMSG, pTraceClass, pLogType, pExitNow);
 }
 
 /*

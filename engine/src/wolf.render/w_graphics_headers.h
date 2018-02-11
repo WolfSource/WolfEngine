@@ -83,11 +83,6 @@ namespace wolf
 			public VkDescriptorBufferInfo
 #endif
 		{
-
-			ULONG release()
-			{
-
-			}
 		};
 
 		struct w_descriptor_image_info :

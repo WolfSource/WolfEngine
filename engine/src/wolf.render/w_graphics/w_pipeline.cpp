@@ -39,31 +39,31 @@ namespace wolf
 
                 if (pVertexBindingAttributes.declaration == w_vertex_declaration::NOT_DEFINED)
                 {
-					V(W_FALSE, L"vertex type not defined. Graphics device: " +
+					V(W_FAILED, L"vertex type not defined. Graphics device: " +
 						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
 						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-					return W_FALSE;
+					return W_FAILED;
                 }
                 if (!pShaderBinding)
                 {
-					V(W_FALSE, L"shader can not be nullptr. Graphics device: " +
+					V(W_FAILED, L"shader can not be nullptr. Graphics device: " +
 						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
 						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 				if (!pShaderBinding->get_shader_stages())
 				{
-					V(W_FALSE, L"shader stages can not be nullptr. Graphics device: " +
+					V(W_FAILED, L"shader stages can not be nullptr. Graphics device: " +
 						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
 						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 				if (!pRenderPassBinding)
 				{
-					V(W_FALSE, L"render pass can not be nullptr. Graphics device: " +
+					V(W_FAILED, L"render pass can not be nullptr. Graphics device: " +
 						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
 						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 
                 VkPipelineVertexInputStateCreateInfo* _vertex_input_state_create_info = nullptr;
@@ -179,13 +179,13 @@ namespace wolf
                     &this->_pipeline);
                 if (_hr)
                 {
-                    V(W_FALSE, "creating pipeline for graphics device: " +
+                    V(W_FAILED, "creating pipeline for graphics device: " +
                         this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name, 3, false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
-                return W_OK;
+                return W_PASSED;
             }
 
             W_RESULT load_compute(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -216,10 +216,10 @@ namespace wolf
 
                 if (_hr)
                 {
-                    V(W_FALSE, "creating compute pipeline layout for graphics device: " +
+                    V(W_FAILED, "creating compute pipeline layout for graphics device: " +
                         this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name, 3, false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
                 // Create pipeline		
@@ -255,13 +255,13 @@ namespace wolf
 
                 if (_hr)
                 {
-                    V(W_FALSE, "creating compute pipeline for graphics device: " +
+                    V(W_FAILED, "creating compute pipeline for graphics device: " +
                         this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
                         this->_name, 3, false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
-                return W_OK;
+                return W_PASSED;
             }
 
 			void bind(_In_ const w_command_buffer* pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)
@@ -332,7 +332,7 @@ namespace wolf
                 _Out_ VkPipelineInputAssemblyStateCreateInfo** pInputAssemblyStateCreateInfo,
                 _Out_ VkPipelineDynamicStateCreateInfo** pDynamicStateCreateInfo)
             {
-                W_RESULT _hr = W_OK;
+                W_RESULT _hr = W_PASSED;
 
                 using namespace wolf::content_pipeline;
 
@@ -497,7 +497,7 @@ W_RESULT w_pipeline::load(
 	_In_ const w_pipeline_color_blend_attachment_state pBlendState,
 	_In_ const std::array<float, 4> pBlendColors)
 {
-	if (!this->_pimp) return W_FALSE;
+	if (!this->_pimp) return W_FAILED;
 
 	//return this->_pimp->load(
 	//	pGDevice,
@@ -516,7 +516,7 @@ W_RESULT w_pipeline::load(
 	//	pEnableDepthStencilState,
 	//	pBlendState,
 	//	pBlendColors);
-	return W_OK;
+	return W_PASSED;
 }
 
 //load pipeline for compute stage
@@ -527,9 +527,9 @@ W_EXP W_RESULT w_pipeline::load_compute(
 	_In_ const std::string& pPipelineCacheName,
 	_In_ const std::vector<w_push_constant_range> pPushConstantRanges)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
 
-	return W_OK;
+	return W_PASSED;
   //  return this->_pimp->load_compute(
   //      pGDevice,
 		//pShaderBinding,
@@ -540,9 +540,9 @@ W_EXP W_RESULT w_pipeline::load_compute(
 
 W_RESULT w_pipeline::bind(_In_ const w_command_buffer* pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)
 {
-    if (!this->_pimp || !pCommandBuffer) return W_FALSE;
+    if (!this->_pimp || !pCommandBuffer) return W_FAILED;
     this->_pimp->bind(pCommandBuffer, pDescriptorSet);
-	return W_OK;
+	return W_PASSED;
 }
 
 ULONG w_pipeline::release()
@@ -582,7 +582,7 @@ VkPipelineLayout w_pipeline::create_pipeline_layout(_In_ const std::shared_ptr<w
 		&_pipeline_layout);
 	if (_hr)
 	{
-		V(W_FALSE, "creating pipeline layout for graphics device: " +
+		V(W_FAILED, "creating pipeline layout for graphics device: " +
 			pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
 		return 0;
 	}
@@ -599,9 +599,9 @@ W_RESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics
     auto _hr = vkCreatePipelineCache(pGDevice->vk_device, &_pipeline_cache_create_info, nullptr, &_pipeline_cache);
     if (_hr)
     {
-        V(W_FALSE, "Error on creating pipeline cache with graphics device: " +
+        V(W_FAILED, "Error on creating pipeline cache with graphics device: " +
             pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
-        return W_FALSE;
+        return W_FAILED;
     }
 
     auto _old_pipline_cache = get_pipeline_cache(pPipelineCacheName);
@@ -613,7 +613,7 @@ W_RESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics
 
     w_pipeline_pimp::pipeline_caches[pPipelineCacheName] = _pipeline_cache;
     
-    return W_OK;
+    return W_PASSED;
 }
 
 VkPipelineCache w_pipeline::get_pipeline_cache(_In_z_ const std::string& pPipelineCacheName)

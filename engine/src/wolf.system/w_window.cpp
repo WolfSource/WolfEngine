@@ -158,7 +158,7 @@ HRESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> 
 	// Hide/Show the mouse cursor.
 	ShowCursor(true);
         
-        return W_OK;
+    return W_PASSED;
 }
 
 #elif defined(__linux) && !defined(__ANDROID)
@@ -171,7 +171,7 @@ W_RESULT w_window::initialize()
     auto _setup = xcb_get_setup(this->_xcb_con);
     //get the default screen
     auto _iter_screen = xcb_setup_roots_iterator (_setup);
-    if (!_iter_screen.data) return W_FALSE;
+    if (!_iter_screen.data) return W_FAILED;
     
     this->_xcb_screen = _iter_screen.data;
     
@@ -245,7 +245,7 @@ W_RESULT w_window::initialize()
     
     xcb_flush(this->_xcb_con);
   
-    return W_OK;
+    return W_PASSED;
 }
 
 #endif

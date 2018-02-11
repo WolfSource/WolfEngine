@@ -37,19 +37,19 @@ namespace wolf
                         &this->_command_pool);
                     if (_hr)
                     {
-                        V(W_FALSE, "creating vulkan command pool for graphics device :" + 
+                        V(W_FAILED, "creating vulkan command pool for graphics device :" + 
                             this->_gDevice->device_info->get_device_name() +
                             " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
                             this->_name, 3,
                             false);
 
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                 }
 
                 this->_counts = pCount;
                 
-                if (!this->_counts) return W_FALSE;
+                if (!this->_counts) return W_FAILED;
                 this->_gDevice = pGDevice;
                 
                 //if we have an existing command buffers
@@ -79,21 +79,21 @@ namespace wolf
                                                     this->_commands.data());
                 if (_hr)
                 {
-                    V(W_FALSE, "creating vulkan command buffers for graphics device :" + 
+                    V(W_FAILED, "creating vulkan command buffers for graphics device :" + 
                         this->_gDevice->device_info->get_device_name() +
                       " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
                     
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
-                return W_OK;
+                return W_PASSED;
             }
             
 			W_RESULT begin(_In_ const size_t& pCommandBufferIndex, _In_ const w_command_buffer_usage_flags pFlags)
 			{
-				if (pCommandBufferIndex >= this->_commands.size()) return W_FALSE;
+				if (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
 
 				//prepare data for recording command buffers
 				const VkCommandBufferBeginInfo _command_buffer_begin_info =
@@ -107,44 +107,44 @@ namespace wolf
 				auto _hr = vkBeginCommandBuffer(this->_commands.at(pCommandBufferIndex), &_command_buffer_begin_info);
 				if (_hr != VK_SUCCESS)
 				{
-					V(W_FALSE, L"begining command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+					V(W_FAILED, L"begining command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
 						L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
 						this->_name, 3,
 						false);
-					return W_FALSE;
+					return W_FAILED;
 				}
 
 				this->_active_command_index = pCommandBufferIndex;
-				return W_OK;
+				return W_PASSED;
 			}
                         
             W_RESULT end(_In_ const size_t& pCommandBufferIndex)
             {
-                if  (pCommandBufferIndex >= this->_commands.size()) return W_FALSE;
+                if  (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
                 
                 auto _hr = vkEndCommandBuffer(this->_commands.at(pCommandBufferIndex));
                 V(_hr, L"ending command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
                   L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                   this->_name, 3,
                   false);
-                return _hr == VK_SUCCESS ? W_OK : W_FALSE;
+                return _hr == VK_SUCCESS ? W_PASSED : W_FAILED;
             }
             
             W_RESULT flush(_In_ const size_t& pCommandBufferIndex)
             {
-                if  (pCommandBufferIndex >= this->_commands.size()) return W_FALSE;
+                if  (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
                 
                 auto _cmd = this->_commands.at(pCommandBufferIndex);
                 
                 auto _hr = vkEndCommandBuffer(_cmd);
                 if (_hr)
                 {
-                    V(W_FALSE, L"ending command buffer buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+                    V(W_FAILED, L"ending command buffer buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
                       L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
                     
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 
                 VkSubmitInfo _submit_info = {};
@@ -161,11 +161,11 @@ namespace wolf
                 _hr = vkCreateFence(this->_gDevice->vk_device, &_fence_create_info, nullptr, &_fence);
                 if (_hr)
                 {
-                    V(W_FALSE, L"creating fence for command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+                    V(W_FAILED, L"creating fence for command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
                       L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                 
                 // Submit to the queue
@@ -175,11 +175,11 @@ namespace wolf
                                     _fence);
                 if (_hr)
                 {
-                    V(W_FALSE, L"submiting queue for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
+                    V(W_FAILED, L"submiting queue for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
                       L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                       this->_name, 3,
                       false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
                     
                 // Wait for the fence to signal that command buffer has finished executing
@@ -190,17 +190,17 @@ namespace wolf
                                       DEFAULT_FENCE_TIMEOUT);
                 vkDestroyFence(this->_gDevice->vk_device, _fence, nullptr);
                 
-                return W_OK;
+                return W_PASSED;
             }
             
             W_RESULT flush_all()
             {
-                W_RESULT _result = W_OK;
+                W_RESULT _result = W_PASSED;
                 for (size_t i = 0; i < this->_commands.size(); ++i)
                 {
-                    if(flush(i) == W_FALSE)
+                    if(flush(i) == W_FAILED)
                     {
-                        _result =  W_FALSE;
+                        _result =  W_FAILED;
                         break;
                     }
                 }
@@ -286,32 +286,32 @@ W_RESULT w_command_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& p
     _In_ const bool& pCreateCommandPool,
     _In_ const w_queue* pCommandPoolQueue)
 {
-    if(!this->_pimp) return W_FALSE;
+    if(!this->_pimp) return W_FAILED;
     
     return this->_pimp->load(pGDevice, pCount, pLevel, pCreateCommandPool, pCommandPoolQueue);
 }
 
 W_RESULT w_command_buffer::begin(_In_ const size_t& pCommandBufferIndex, _In_ const w_command_buffer_usage_flags pFlags)
 {
-    if(!this->_pimp) return W_FALSE;
+    if(!this->_pimp) return W_FAILED;
     return this->_pimp->begin(pCommandBufferIndex, pFlags);
 }
 
 W_RESULT w_command_buffer::end(_In_ const size_t& pCommandBufferIndex)
 {
-    if(!this->_pimp) return W_FALSE;
+    if(!this->_pimp) return W_FAILED;
     return this->_pimp->end(pCommandBufferIndex);
 }
 
 W_RESULT w_command_buffer::flush(_In_ const size_t& pCommandBufferIndex)
 {
-    if(!this->_pimp) return W_FALSE;
+    if(!this->_pimp) return W_FAILED;
     return this->_pimp->flush(pCommandBufferIndex);
 }
 
 W_RESULT w_command_buffer::flush_all()
 {
-    if(!this->_pimp) return W_FALSE;
+    if(!this->_pimp) return W_FAILED;
     return this->_pimp->flush_all();
 }
 
@@ -384,27 +384,27 @@ bool w_command_buffer::py_load(
 	auto _hr = load(_gDevice, pCount, pLevel);
 
 	_gDevice.reset();
-	return _hr == W_OK;
+	return _hr == W_PASSED;
 }
 
 bool w_command_buffer::py_begin(_In_ const size_t& pCommandBufferIndex, _In_ const w_command_buffer_usage_flags pFlags)
 { 
-	return begin(pCommandBufferIndex, pFlags) == W_OK; 
+	return begin(pCommandBufferIndex, pFlags) == W_PASSED; 
 }
 
 bool w_command_buffer::py_end(_In_ const size_t& pCommandBufferIndex)
 { 
-	return end(pCommandBufferIndex) == W_OK; 
+	return end(pCommandBufferIndex) == W_PASSED; 
 }
 
 bool w_command_buffer::py_flush(_In_ const size_t& pCommandBufferIndex)
 { 
-	return flush(pCommandBufferIndex) == W_OK; 
+	return flush(pCommandBufferIndex) == W_PASSED; 
 }
 
 bool w_command_buffer::py_flush_all()
 { 
-	return flush_all() == W_OK; 
+	return flush_all() == W_PASSED; 
 }
 
 #endif

@@ -80,7 +80,7 @@ namespace wolf
 
             W_RESULT open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame)
             {
-                if (pMediaPath.empty()) return W_FALSE;
+                if (pMediaPath.empty()) return W_FAILED;
 
                 release_media();
                 
@@ -103,7 +103,7 @@ namespace wolf
                     logger.user(msg);
                     msg.clear();
 
-                    W_RESULT hr = W_OK;
+                    W_RESULT hr = W_PASSED;
                     // Open video file
                     bool containVideo = true, containAudio = true;
 
@@ -111,7 +111,7 @@ namespace wolf
                     //Open file
                     if (avformat_open_input(&_av_format_ctx, this->_media_full_path.c_str(), NULL, NULL) != 0)
                     {
-                        hr = W_FALSE;
+                        hr = W_FAILED;
                         V(hr, L"openning file", this->_name);
                         release_media();
                         return hr;
@@ -120,7 +120,7 @@ namespace wolf
                     // Retrieve stream information
                     if (avformat_find_stream_info(_av_format_ctx, NULL) < 0)
                     {
-                        hr = W_FALSE;
+                        hr = W_FAILED;
                         V(hr, L"finding file stream information", this->_name);
                         release_media();
                         return hr;
@@ -142,13 +142,13 @@ namespace wolf
 
                     if (this->_video_stream_index <= -1)
                     {
-                        hr = W_FALSE;
+                        hr = W_FAILED;
                         hasVideoStream = false;
                         V(hr, L"finding stream of video, media file does not have any video frame", this->_name);
                     }
                     if (this->_audio_stream_index <= -1)
                     {
-                        hr = W_FALSE;
+                        hr = W_FAILED;
                         hasAudioStream = false;
                         V(hr, L"finding stream of audio, media file does not have any audio frame", this->_name);
                     }
@@ -157,7 +157,7 @@ namespace wolf
                     {
                         logger.user("File " + this->_media_full_path + " did not load");
                         release_media();
-                        return W_FALSE;
+                        return W_FAILED;
                     }
 
                     //Get a pointer to the stream of video & audio
@@ -196,7 +196,7 @@ namespace wolf
                     {
                         logger.error(L"Invalid object type, creating object from source for source resolver");
                         release_media();
-                        return W_FALSE;
+                        return W_FAILED;
                     }
 
                     hr = (W_RESULT)pSource.Get()->QueryInterface(IID_PPV_ARGS(&source));
@@ -258,7 +258,7 @@ namespace wolf
                         _video_codec.avCodec = avcodec_find_decoder(_video_codec.avCodecCtx->codec_id);
                         if (_video_codec.avCodec == NULL)
                         {
-                            hr = W_FALSE;
+                            hr = W_FAILED;
                             V(hr, L"unsupported codec for video", this->_name);
                             release_media();
                             return hr;
@@ -267,7 +267,7 @@ namespace wolf
                         //Open codec
                         if (avcodec_open2(_video_codec.avCodecCtx, _video_codec.avCodec, NULL) < 0)
                         {
-                            hr = W_FALSE;
+                            hr = W_FAILED;
                             V(hr, L"could not open video codec", this->_name);
                             release_media();
                             return hr;
@@ -310,7 +310,7 @@ namespace wolf
                         _audio_codec.avCodec = avcodec_find_decoder(_audio_codec.avCodecCtx->codec_id);
                         if (_audio_codec.avCodec == NULL)
                         {
-                            hr = W_FALSE;
+                            hr = W_FAILED;
                             V(hr, L"unsupported codec for audio", this->_name);
                             release_media();
                             return hr;
@@ -318,7 +318,7 @@ namespace wolf
 
                         if (avcodec_open2(_audio_codec.avCodecCtx, _audio_codec.avCodec, NULL) < 0)
                         {
-                            hr = W_FALSE;
+                            hr = W_FAILED;
                             V(hr, L"could not open audio codec", this->_name);
                             release_media();
                             return hr;
@@ -367,7 +367,7 @@ namespace wolf
                     pMediaPath.clear();
                     this->_is_media_open = true;
                 }
-                return W_OK;
+                return W_PASSED;
             }
 
             void open_stream_server_async(
@@ -401,35 +401,35 @@ namespace wolf
                     avformat_alloc_output_context2(&this->_stream_output_ctx, NULL, pFormatName, pURL);
                     if (!this->_stream_output_ctx)
                     {
-                        V(W_FALSE, L"allocating output context for streaming", _trace_info, 3);
-                        return W_FALSE;
+                        V(W_FAILED, L"allocating output context for streaming", _trace_info, 3);
+                        return W_FAILED;
                     }
                     if (!this->_stream_output_ctx->oformat)
                     {
-                        V(W_FALSE, L"creating output streaming format : " + system::convert::string_to_wstring(pFormatName),
+                        V(W_FAILED, L"creating output streaming format : " + system::convert::string_to_wstring(pFormatName),
                             _trace_info, 3);
                         _release_stream_server();
-                        return W_FALSE;
+                        return W_FAILED;
                     }
 
                     //find the encoder
                     auto _stream_video_codec = avcodec_find_encoder(pCodecID);
                     if (!_stream_video_codec)
                     {
-                        V(W_FALSE, L"finding encoder for codec id: " +
+                        V(W_FAILED, L"finding encoder for codec id: " +
                             system::convert::string_to_wstring(avcodec_get_name(pCodecID)),
                             _trace_info, 3);
                         _release_stream_server();
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                     else
                     {
                         this->_stream = avformat_new_stream(this->_stream_output_ctx, _stream_video_codec);
                         if (!this->_stream)
                         {
-                            V(W_FALSE, L"allocating stream", _trace_info, 3);
+                            V(W_FAILED, L"allocating stream", _trace_info, 3);
                             _release_stream_server();
-                            return W_FALSE;
+                            return W_FAILED;
                         }
                         else
                         {
@@ -462,9 +462,9 @@ namespace wolf
                     //open the codec
                     if (avcodec_open2(this->_stream->codec, _stream_video_codec, &_av_dic))
                     {
-                        V(W_FALSE, L"opening video codec", _trace_info, 3);
+                        V(W_FAILED, L"opening video codec", _trace_info, 3);
                         _release_stream_server();
-                        return W_FALSE;
+                        return W_FAILED;
                     }
                     else
                     {
@@ -472,9 +472,9 @@ namespace wolf
                         this->_stream_frame = av_frame_alloc();
                         if (!this->_stream_frame)
                         {
-                            V(W_FALSE, L"allocating video stream frame", _trace_info, 3);
+                            V(W_FAILED, L"allocating video stream frame", _trace_info, 3);
                             _release_stream_server();
-                            return W_FALSE;
+                            return W_FAILED;
                         }
                         else
                         {
@@ -488,9 +488,9 @@ namespace wolf
                             //Allocate the encoded raw picture.
                             if (avpicture_alloc(&_stream_dst_picture, this->_stream->codec->pix_fmt, _width, _height) < 0)
                             {
-                                V(W_FALSE, L"allocating video stream picture", _trace_info, 3);
+                                V(W_FAILED, L"allocating video stream picture", _trace_info, 3);
                                 _release_stream_server();
-                                return W_FALSE;
+                                return W_FAILED;
                             }
                             else
                             {
@@ -502,9 +502,9 @@ namespace wolf
 
                     if (avformat_write_header(this->_stream_output_ctx, NULL) != 0)
                     {
-                        V(W_FALSE, L"connecting to server " + system::convert::string_to_wstring(pURL), _trace_info, 3);
+                        V(W_FAILED, L"connecting to server " + system::convert::string_to_wstring(pURL), _trace_info, 3);
                         _release_stream_server();
-                        return W_FALSE;
+                        return W_FAILED;
                     }
 
                     //on connection established
@@ -540,7 +540,7 @@ namespace wolf
                             this->_stream_frame->pts = _frame_info.index;
                             if (avcodec_encode_video2(this->_stream->codec, &_packet, this->_stream_frame, &_got_packet) < 0)
                             {
-                                V(W_FALSE, "encoding video frame", _trace_info, 3);
+                                V(W_FAILED, "encoding video frame", _trace_info, 3);
                             }
                             else
                             {
@@ -554,7 +554,7 @@ namespace wolf
                                         AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
                                     if (av_write_frame(this->_stream_output_ctx, &_packet) < 0)
                                     {
-                                        V(W_FALSE, "while writing video frame", _trace_info, 3);
+                                        V(W_FAILED, "while writing video frame", _trace_info, 3);
                                     }
                                 }
                             }
@@ -566,7 +566,7 @@ namespace wolf
                             if (_frame_info.frame_duration > _frame_max_delay_in_ms)
                             {
                                 logger.write(std::to_string(_frame_info.frame_duration));
-                                V(W_FALSE, "streaming delay is greater than max frame delay", _trace_info, 3);
+                                V(W_FAILED, "streaming delay is greater than max frame delay", _trace_info, 3);
                                 break;
                             }
                             else
@@ -585,7 +585,7 @@ namespace wolf
                     //on connection lost
                     pOnConnectionLost.emit(pURL);
 
-                    return W_OK;
+                    return W_PASSED;
                 });
             }
 
@@ -668,7 +668,7 @@ namespace wolf
                 _In_ wolf::system::w_memory& pVideoMemory, 
                 _In_ UINT pDownSampling)
             {
-                W_RESULT hr = W_OK;
+                W_RESULT hr = W_PASSED;
 
                 auto width = get_video_frame_width();
                 auto height = get_video_frame_height();
@@ -685,7 +685,7 @@ namespace wolf
                         auto result = avcodec_decode_video2(this->_video_codec.avCodecCtx, this->_video_codec.avFrame, &gotFrame, this->_av_packet);
                         if (result < 0)
                         {
-                            hr = W_FALSE;
+                            hr = W_FAILED;
                             V(hr, L"decoding video frame", this->_name);
                             return hr;
                         }
@@ -777,14 +777,14 @@ namespace wolf
                                     else
                                     {
                                         logger.error(L"Could not cast allocated memory for video");
-                                        hr = W_FALSE;
+                                        hr = W_FAILED;
                                     }
 
                                 }
                                 else
                                 {
                                     logger.error(L"Could not allocate memory for video");
-                                    hr = W_FALSE;
+                                    hr = W_FAILED;
                                 }
 
                                 _frame = nullptr;
@@ -826,14 +826,14 @@ namespace wolf
                                     else
                                     {
                                         logger.error(L"Could not cast allocated memory for video");
-                                        hr = W_FALSE;
+                                        hr = W_FAILED;
                                     }
 
                                 }
                                 else
                                 {
                                     logger.error(L"Could not allocate memory for video");
-                                    hr = W_FALSE;
+                                    hr = W_FAILED;
                                 }
 
                                 _frame = nullptr;
@@ -855,7 +855,7 @@ namespace wolf
 
             W_RESULT buffer_audio_to_memory(wolf::system::w_memory& pAudioMemory, double& pAudioFrameVolumeDB)
             {
-                W_RESULT hr = W_OK;
+                W_RESULT hr = W_PASSED;
 
                 auto width = get_video_frame_width();
                 auto height = get_video_frame_height();
@@ -873,7 +873,7 @@ namespace wolf
                         auto result = avcodec_decode_audio4(this->_audio_codec.avCodecCtx, this->_audio_codec.avFrame, &gotFrame, this->_av_packet);
                         if (result < 0)
                         {
-                            auto hr = W_FALSE;
+                            auto hr = W_FAILED;
                             V(hr, L"decoding audio frame", this->_name);
                             return hr;
                         }
@@ -932,13 +932,13 @@ namespace wolf
                             else
                             {
                                 logger.error(L"Could not cast allocated memory for audio");
-                                hr = W_FALSE;
+                                hr = W_FAILED;
                             }
                         }
                         else
                         {
                             logger.error(L"Could not allocate memory for audio");
-                            hr = W_FALSE;
+                            hr = W_FAILED;
                         }
 
 #pragma endregion
@@ -954,7 +954,7 @@ namespace wolf
 
             W_RESULT buffer_to_memory(wolf::system::w_memory& pVideoMemory, wolf::system::w_memory& pAudioMemory)
             {
-                W_RESULT hr = W_OK;
+                W_RESULT hr = W_PASSED;
 
                 auto width = get_video_frame_width();
                 auto height = get_video_frame_height();
@@ -973,7 +973,7 @@ namespace wolf
                         auto result = avcodec_decode_video2(this->_video_codec.avCodecCtx, this->_video_codec.avFrame, &gotVideoFrame, this->_av_packet);
                         if (result < 0)
                         {
-                            hr = W_FALSE;
+                            hr = W_FAILED;
                             V(hr, L"decoding video frame", this->_name);
                             return hr;
                         }
@@ -1053,14 +1053,14 @@ namespace wolf
                                 else
                                 {
                                     logger.error(L"Could not cast allocated memory for video");
-                                    hr = W_FALSE;
+                                    hr = W_FAILED;
                                 }
 
                             }
                             else
                             {
                                 logger.error(L"Could not allocate memory for video");
-                                hr = W_FALSE;
+                                hr = W_FAILED;
                             }
 
                             _frame = nullptr;
@@ -1079,7 +1079,7 @@ namespace wolf
                         auto result = avcodec_decode_audio4(_audio_codec.avCodecCtx, _audio_codec.avFrame, &gotAudioFrame, _av_packet);
                         if (result < 0)
                         {
-                            auto hr = W_FALSE;
+                            auto hr = W_FAILED;
                             V(hr, L"decoding audio frame", this->_name);
                             return hr;
                         }
@@ -1125,13 +1125,13 @@ namespace wolf
                             else
                             {
                                 logger.error("Could not cast allocated memory for audio");
-                                hr = W_FALSE;
+                                hr = W_FAILED;
                             }
                         }
                         else
                         {
                             logger.error("Could not allocate memory for audio");
-                            hr = W_FALSE;
+                            hr = W_FAILED;
                         }
 
 #pragma endregion
@@ -1365,13 +1365,13 @@ namespace wolf
             //Copy audio frame to the buffer
             W_RESULT _copy_audio_frame_to(uint8_t* pBuffer, int& pBufferSize)
             {
-                if (this->_audio_stream_index <= -1) return W_OK;
+                if (this->_audio_stream_index <= -1) return W_PASSED;
 
                 int frameFinished = 0;
                 auto result = avcodec_decode_audio4(this->_audio_codec.avCodecCtx, this->_audio_codec.avFrame, &frameFinished, _av_packet);
                 if (result < 0)
                 {
-                    auto hr = W_FALSE;
+                    auto hr = W_FAILED;
                     V(hr, L"decoding audio frame", this->_name);
                     return hr;
                 }
@@ -1390,7 +1390,7 @@ namespace wolf
                 }
                 this->_audio_codec.pts *= av_q2d(this->_audio_codec.avStream->time_base);
 
-                if (!frameFinished) return W_FALSE;
+                if (!frameFinished) return W_FAILED;
 
                 _update_clock(this->_audio_codec);
                 _update_time(this->_audio_codec.clock);
@@ -1402,7 +1402,7 @@ namespace wolf
                     (const uint8_t **)this->_audio_codec.avFrame->data,
                     this->_audio_codec.avFrame->nb_samples);
 
-                return W_OK;
+                return W_PASSED;
             }
 
             void _update_clock(w_codec& pCodec)
@@ -1507,7 +1507,7 @@ void w_media_core::register_all()
 
 W_RESULT w_media_core::open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame)
 {
-    return this->_pimp ? this->_pimp->open_media(pMediaPath, pSeekToFrame) : W_FALSE;
+    return this->_pimp ? this->_pimp->open_media(pMediaPath, pSeekToFrame) : W_FAILED;
 }
 
 void w_media_core::open_stream_server_async(
@@ -1557,17 +1557,17 @@ int w_media_core::seek_frame(int64_t pFrame)
 
 W_RESULT w_media_core::buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, UINT pDownSampling)
 {
-    return this->_pimp ? this->_pimp->buffer_video_to_memory(pVideoMemory, pDownSampling) : W_FALSE;
+    return this->_pimp ? this->_pimp->buffer_video_to_memory(pVideoMemory, pDownSampling) : W_FAILED;
 }
 
 W_RESULT w_media_core::buffer_audio_to_memory(w_memory& pAudioMemory, double& pAudioFrameVolumeDB)
 {
-    return this->_pimp ? this->_pimp->buffer_audio_to_memory(pAudioMemory, pAudioFrameVolumeDB) : W_FALSE;
+    return this->_pimp ? this->_pimp->buffer_audio_to_memory(pAudioMemory, pAudioFrameVolumeDB) : W_FAILED;
 }
 
 W_RESULT w_media_core::buffer_to_memory(w_memory& pVideoMemory, w_memory& pAudioMemory)
 {
-    return this->_pimp ? this->_pimp->buffer_to_memory(pVideoMemory, pAudioMemory) : W_FALSE;
+    return this->_pimp ? this->_pimp->buffer_to_memory(pVideoMemory, pAudioMemory) : W_FAILED;
 }
 
 #endif

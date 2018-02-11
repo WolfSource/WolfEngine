@@ -14,7 +14,7 @@ void w_lua::_VL(int pHR)
 	if (pHR)
 	{
 		_last_error = "lua: " + std::string(lua_tostring(_lua, -1));
-		V(W_FALSE, _last_error, "w_lua", 3);
+		V(W_FAILED, _last_error, "w_lua", 3);
 		lua_pop(_lua, 1);
 	}
 }
@@ -58,7 +58,7 @@ void w_lua::_incompatible_type_for_variable(const char* pVariableName, const cha
 	}
 
 	_last_error = _msg;
-	V(W_FALSE, _last_error, "w_lua", 2);
+	V(W_FAILED, _last_error, "w_lua", 2);
 }
 
 W_RESULT w_lua::load_file(const wchar_t* pPath)
@@ -73,10 +73,10 @@ W_RESULT w_lua::load_file(const wchar_t* pPath)
     auto _is_exists = wolf::system::io::get_is_file(_c_str);
 #endif
     
-    if (_is_exists == W_FALSE)
+    if (_is_exists == W_FAILED)
     {
         _last_error = "lua: lua file not exists on following path: " + _utf8_path;
-        return W_FALSE;
+        return W_FAILED;
     }
     
 	//initialize lua
@@ -84,7 +84,7 @@ W_RESULT w_lua::load_file(const wchar_t* pPath)
 	if (!_lua)
 	{
 		_VL(1);
-		return W_FALSE;
+		return W_FAILED;
 	}
 	luaL_openlibs(_lua);
 
@@ -93,9 +93,9 @@ W_RESULT w_lua::load_file(const wchar_t* pPath)
 	if (_hr)
 	{
 		_VL(_hr);
-		return W_FALSE;
+		return W_FAILED;
 	}
-	return W_OK;
+	return W_PASSED;
 }
 
 W_RESULT w_lua::run()
@@ -104,9 +104,9 @@ W_RESULT w_lua::run()
 	if (_hr)
 	{
 		_VL(_hr);
-		return W_FALSE;
+		return W_FAILED;
 	}
-	return W_OK;
+	return W_PASSED;
 }
 
 void w_lua::bind_to_cfunction(lua_CFunction pFunc, const char* pLuaFunctionName)
@@ -158,5 +158,5 @@ W_RESULT w_lua::set_lua_path(_In_z_ const char* pPath)
 	lua_pushstring(_lua, cur_path.c_str()); // push the new one
 	lua_setfield(_lua, -2, "path"); // set the field "path" in table at -2 with value at top of stack
 	lua_pop(_lua, 1); // get rid of package table from top of stack
-	return W_OK;
+	return W_PASSED;
 }

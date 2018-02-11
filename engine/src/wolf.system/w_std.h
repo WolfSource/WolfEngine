@@ -147,7 +147,7 @@ namespace std
 extern "C" 
 {
 #endif
-	enum W_RESULT : uint8_t { W_OK = 0, W_FALSE, W_INVALIDARG, W_OUTOFMEMORY, W_INVALID_FILE_ATTRIBUTES };
+	enum W_RESULT : uint8_t { W_PASSED = 0, W_FAILED, W_INVALIDARG, W_OUTOFMEMORY, W_INVALID_FILE_ATTRIBUTES };
 #ifdef __cplusplus
 }//extern "C"
 #endif

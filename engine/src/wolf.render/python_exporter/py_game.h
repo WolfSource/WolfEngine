@@ -104,7 +104,7 @@ namespace pywolf
 		{
 			if (this->_on_pre_render_callback) this->_on_pre_render_callback(pGameTime);
 			auto _hr = _super::render(pGameTime);
-			if (this->_on_post_render_callback) this->_on_post_render_callback(_hr == W_OK);
+			if (this->_on_post_render_callback) this->_on_post_render_callback(_hr == W_PASSED);
 			return _hr;
 		}
 		void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow) override

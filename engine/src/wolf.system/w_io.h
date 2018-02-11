@@ -138,9 +138,9 @@ namespace wolf
 				if (_file)
 				{
 					fclose(_file);
-					return W_OK;
+					return W_PASSED;
 				}
-				return W_FALSE;
+				return W_FAILED;
 			}
 
 			//check whether a file does exist or not
@@ -151,9 +151,9 @@ namespace wolf
 				if (_file)
 				{
 					fclose(_file);
-					return W_OK;
+					return W_PASSED;
 				}
-				return W_FALSE;
+				return W_FAILED;
 			}
 
 			//get size of file
@@ -174,8 +174,8 @@ namespace wolf
 			/*
 				Check whether a directory does exist or not
 				returns:
-						W_OK	: Directory exists
-						W_FALSE : Directory does not exist
+						W_PASSED	: Directory exists
+						W_FAILED : Directory does not exist
 						-1		: INVALID_FILE_ATTRIBUTES. Something is wrong with the path
 			*/
 			inline W_RESULT get_is_directory(_In_z_ const char* pPath)
@@ -183,23 +183,23 @@ namespace wolf
 				DWORD _file_attr = GetFileAttributesA(pPath);
 
 				if (_file_attr == INVALID_FILE_ATTRIBUTES) return W_INVALID_FILE_ATTRIBUTES;
-				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return W_OK;
-				return W_FALSE;
+				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return W_PASSED;
+				return W_FAILED;
 			}
 
 			/*
 				Check whether a directory does exist or not
 				returns:
-						W_OK	: Directory exists
-						W_FALSE : Directory not exists
+						W_PASSED	: Directory exists
+						W_FAILED : Directory not exists
 						-1		: INVALID_FILE_ATTRIBUTES. Something is wrong with the path
 			*/
 			inline W_RESULT get_is_directoryW(_In_z_ const wchar_t* pPath)
 			{
 				DWORD _file_attr = GetFileAttributesW(pPath);
 				if (_file_attr == INVALID_FILE_ATTRIBUTES) return W_INVALID_FILE_ATTRIBUTES;
-				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return W_OK;
-				return W_FALSE;
+				if (_file_attr == FILE_ATTRIBUTE_DIRECTORY) return W_PASSED;
+				return W_FAILED;
 			}
 
 			//create directory
@@ -207,9 +207,9 @@ namespace wolf
 			{
 				if (CreateDirectoryW(pPath, NULL) || ERROR_ALREADY_EXISTS == GetLastError())
 				{
-					return W_OK;
+					return W_PASSED;
 				}
-				return W_FALSE;
+				return W_FAILED;
 			}
 
 			//create directory
@@ -236,7 +236,7 @@ namespace wolf
 			inline void read_binary_fileW(_In_z_ const wchar_t* pPath, _Inout_ std::vector<uint8_t>& pData,
 				_Out_ int& pFileState)
 			{
-				if (get_is_file(pPath) == W_FALSE)
+				if (get_is_file(pPath) == W_FAILED)
 				{
 					pFileState = -1;
 					return;
@@ -347,7 +347,7 @@ namespace wolf
 			{
 				struct stat _stat;
 				auto _result = stat(pPath, &_stat);
-				return _result == -1 ? W_FALSE : W_OK;
+				return _result == -1 ? W_FAILED : W_PASSED;
 			}
 
 			//check size of file
@@ -361,24 +361,24 @@ namespace wolf
 			/*
 				Check whether a directory does exist or not
 				returns:
-						W_OK	: Directory exists
-						W_FALSE : Directory does not exist
+						W_PASSED	: Directory exists
+						W_FAILED : Directory does not exist
 			*/
 			inline W_RESULT get_is_directory(_In_z_ const char* pPath)
 			{
 				struct stat _stat;
 				if (stat(pPath, &_stat) == 0 && S_ISDIR(_stat.st_mode))
 				{
-					return W_OK;
+					return W_PASSED;
 				}
-				return W_FALSE;
+				return W_FAILED;
 			}
 
 			//create a directory
 			inline W_RESULT create_directory(_In_z_ std::string pPath, mode_t pMode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
 			{
 				struct stat _stat;
-				W_RESULT _hr = W_OK;
+				W_RESULT _hr = W_PASSED;
 
 				auto _path = pPath.c_str();
 				if (stat(_path, &_stat) != 0)
@@ -386,13 +386,13 @@ namespace wolf
 					//Directory does not exist, so make it. EEXIST for race condition
 					if (mkdir(_path, pMode) != 0 && errno != EEXIST)
 					{
-						_hr = W_FALSE;
+						_hr = W_FAILED;
 					}
 				}
 				else if (!S_ISDIR(_stat.st_mode))
 				{
 					errno = ENOTDIR;
-					_hr = W_FALSE;
+					_hr = W_FAILED;
 				}
 
 				return _hr;

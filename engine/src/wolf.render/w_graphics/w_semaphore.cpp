@@ -23,13 +23,13 @@ W_RESULT w_semaphore::initialize(_In_ const std::shared_ptr<w_graphics_device>& 
                           nullptr,
                           &this->_semaphore))
     {
-        V(W_FALSE, "creating semaphore", "w_semaphore", 3, false);
-        return W_FALSE;
+        V(W_FAILED, "creating semaphore", "w_semaphore", 3, false);
+        return W_FAILED;
     }
 #else
     
 #endif
-    return W_OK;
+    return W_PASSED;
 }
 
 ULONG w_semaphore::release()
@@ -60,7 +60,7 @@ bool w_semaphore::py_initialize(_In_ boost::shared_ptr<w_graphics_device>& pGDev
 	//reset local shared_ptr
 	_gDevice.reset();
 
-	return _hr == W_OK;
+	return _hr == W_PASSED;
 }
 
 #endif

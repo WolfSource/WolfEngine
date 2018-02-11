@@ -5,7 +5,7 @@
 using namespace amd;
 using namespace wolf::system;
 
-HRESULT tootle::apply(
+W_RESULT tootle::apply(
     _In_ const std::vector<wolf::content_pipeline::w_vertex_data>& pVerticesData,
     _In_ const std::vector<float>& pVerticesPosition,
     _Inout_ std::vector<uint32_t>& pIndicesData)
@@ -52,7 +52,7 @@ HRESULT tootle::apply(
     if (_result != TOOTLE_OK)
     {
         DisplayTootleErrorMessage(_result);
-        return S_FALSE;
+        return W_FAILED;
     }
 
     // measure input VCache efficiency
@@ -61,7 +61,7 @@ HRESULT tootle::apply(
     if (_result != TOOTLE_OK)
     {
         DisplayTootleErrorMessage(_result);
-        return S_FALSE;
+        return W_FAILED;
     }
 
     if (_settings.bMeasureOverdraw)
@@ -82,7 +82,7 @@ HRESULT tootle::apply(
         if (_result != TOOTLE_OK)
         {
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
     }
 
@@ -141,7 +141,7 @@ HRESULT tootle::apply(
         if (_result != TOOTLE_OK)
         {
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
 
         _stats.fOptimizeVCacheTime = timer.get_seconds();
@@ -159,7 +159,7 @@ HRESULT tootle::apply(
         if (_result != TOOTLE_OK)
         {
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
 
         _stats.fClusterMeshTime = timer.get_seconds();
@@ -182,7 +182,7 @@ HRESULT tootle::apply(
         if (_result != TOOTLE_OK)
         {
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
 
         _stats.fVCacheClustersTime = timer.get_seconds();
@@ -203,7 +203,7 @@ HRESULT tootle::apply(
         if (_result != TOOTLE_OK)
         {
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
 
         _stats.fOptimizeOverdrawTime = timer.get_seconds();
@@ -230,7 +230,7 @@ HRESULT tootle::apply(
         {
             // an error detected
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
 
         _stats.fOptimizeVCacheAndClusterMeshTime = timer.get_seconds();
@@ -260,7 +260,7 @@ HRESULT tootle::apply(
         {
             // an error detected
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
 
         _stats.fOptimizeOverdrawTime = timer.get_seconds();
@@ -291,7 +291,7 @@ HRESULT tootle::apply(
         if (_result != TOOTLE_OK)
         {
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
 
         _stats.fTootleOptimizeTime = timer.get_seconds();
@@ -321,7 +321,7 @@ HRESULT tootle::apply(
         if (_result != TOOTLE_OK)
         {
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
 
         _stats.fTootleFastOptimizeTime = timer.get_seconds();
@@ -345,7 +345,7 @@ HRESULT tootle::apply(
     if (_result != TOOTLE_OK)
     {
         DisplayTootleErrorMessage(_result);
-        return S_FALSE;
+        return W_FAILED;
     }
 
     if (_settings.bMeasureOverdraw)
@@ -368,7 +368,7 @@ HRESULT tootle::apply(
         if (_result != TOOTLE_OK)
         {
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
     }
 
@@ -420,7 +420,7 @@ HRESULT tootle::apply(
         if (_result != TOOTLE_OK)
         {
             DisplayTootleErrorMessage(_result);
-            return S_FALSE;
+            return W_FAILED;
         }
 
         _stats.fOptimizeVertexMemoryTime = timer.get_seconds();
@@ -443,7 +443,7 @@ HRESULT tootle::apply(
 
     _print.clear();
 
-    return S_OK;
+    return W_PASSED;
 }
 
 void tootle::DisplayTootleErrorMessage(_In_ const TootleResult& pResult)

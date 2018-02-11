@@ -303,7 +303,7 @@ namespace wolf
 				@param pWidth, width of inputed source image
 				@param pHeight, height of inputed source image
                 @param pOnPixelsDataCaptured, raised when pixels just mapped to RAM and become accessable by CPU. (inputs are: const w_point_t Width_Height, const uint8_t* Pixels and outsput is void) 
-                @return W_OK means function did succesfully and W_FALSE means function failed
+                @return W_PASSED means function did succesfully and W_FAILED means function failed
             */
 			W_EXP W_RESULT capture(
 				_In_ VkImage pSourceImage,
@@ -316,7 +316,7 @@ namespace wolf
 			/*
 				capture last presented swap chain image buffer's data and save to the D-RAM and make it accessable by CPU,
 				make sure set true to w_window_info::cpu_access_swap_chain_buffer flag before creating graphics device
-				@return W_OK means function did succesfully and W_FALSE means function failed
+				@return W_PASSED means function did succesfully and W_FAILED means function failed
 			*/
             W_EXP W_RESULT capture_presented_swap_chain_buffer(_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
 
@@ -357,7 +357,7 @@ namespace wolf
             //static pipeline defaults
 			struct defaults_states
             {
-                W_EXP static std::vector<VkSubpassDependency>               vk_default_subpass_dependencies;
+                W_EXP static std::vector<VkSubpassDependency>                   vk_default_subpass_dependencies;
                 
 				struct pipelines
 				{
@@ -394,7 +394,7 @@ namespace wolf
 				_In_ const uint32_t&			pFirstVertex,
 				_In_ const uint32_t&			pFirstInstance)
 			{
-				return draw(&pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance) == W_OK;
+				return draw(&pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance) == W_PASSED;
 			}
 
 			bool py_submit(
@@ -456,7 +456,7 @@ namespace wolf
 					_pipeline_stage_flags.data(),
 					_wait_smaphores,
 					_signal_smaphores,
-					&pFence) == W_OK;
+					&pFence) == W_PASSED;
 
 				_cmds.clear();
 				_pipeline_stage_flags.clear();

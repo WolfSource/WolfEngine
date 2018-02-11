@@ -423,7 +423,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
-    if (w_game::exiting) return W_OK;
+    if (w_game::exiting) return W_PASSED;
 
     const std::string _trace_info = this->name + "::render";
 

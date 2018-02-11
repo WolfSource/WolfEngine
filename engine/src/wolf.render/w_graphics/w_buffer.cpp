@@ -49,9 +49,9 @@ namespace wolf
                     &this->_handle);
                 if (_hr)
                 {
-                    V(W_FALSE, "w_buffer", "creating buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
+                    V(W_FAILED, "w_buffer", "creating buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
                         " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), 3, false);
-                    return W_FALSE;
+                    return W_FAILED;
                 }
 
                 VkMemoryRequirements _buffer_memory_requirements;
@@ -85,13 +85,13 @@ namespace wolf
                             this->_descriptor_info.offset = 0;
                             this->_descriptor_info.range = this->_size_in_bytes;
 
-                            return W_OK;
+                            return W_PASSED;
                         }
                     }
                 }
                 logger.error("Could not create buffer, because proposed memory property not found.");
 
-                return W_FALSE;
+                return W_FAILED;
             }
             
             W_RESULT bind()
@@ -99,7 +99,7 @@ namespace wolf
                 return vkBindBufferMemory(this->_gDevice->vk_device,
                     this->_handle,
                     this->_memory,
-                    0) == VK_SUCCESS ? W_OK : W_FALSE;
+                    0) == VK_SUCCESS ? W_PASSED : W_FAILED;
 
             }
 
@@ -107,16 +107,16 @@ namespace wolf
             W_RESULT set_data(_In_ const void* const pData)
             {
                 //we can not access to VRAM, but we can copy our data to DRAM
-                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return W_FALSE;
+                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return W_FAILED;
 
-                if (map() == nullptr) return W_FALSE;
+                if (map() == nullptr) return W_FAILED;
                 memcpy(this->_mapped, pData, (size_t)this->_size_in_bytes);
 
-                if (flush(VK_WHOLE_SIZE, 0) == W_FALSE) return W_FALSE;
+                if (flush(VK_WHOLE_SIZE, 0) == W_FAILED) return W_FAILED;
 
                 unmap();
 
-                return W_OK;
+                return W_PASSED;
             }
             
             W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer)
@@ -126,9 +126,9 @@ namespace wolf
                 //create one command buffer
                 w_command_buffer _copy_command_buffer;
                 auto _hr = _copy_command_buffer.load(this->_gDevice, 1);
-                if (_hr != W_OK)
+                if (_hr != W_PASSED)
                 {
-                    V(W_FALSE, "loading command buffer " +
+                    V(W_FAILED, "loading command buffer " +
                         _gDevice->get_info(),
                         _trace,
                         3);
@@ -136,9 +136,9 @@ namespace wolf
                 }
 
                 _hr = _copy_command_buffer.begin(0);
-                if (_hr != W_OK)
+                if (_hr != W_PASSED)
                 {
-                    V(W_FALSE, "begining command buffer " +
+                    V(W_FAILED, "begining command buffer " +
                         _gDevice->get_info(),
                         _trace,
                         3);
@@ -156,9 +156,9 @@ namespace wolf
                     &_copy_region);
 
                 _hr = _copy_command_buffer.flush(0);
-                if (_hr != W_OK)
+                if (_hr != W_PASSED)
                 {
-                    V(W_FALSE,
+                    V(W_FAILED,
                         "flushing command buffer" +
                         _gDevice->get_info(),
                         _trace,
@@ -168,7 +168,7 @@ namespace wolf
 
                 _copy_command_buffer.release();
 
-                return W_OK;
+                return W_PASSED;
             }
 
             void* map()
@@ -191,7 +191,7 @@ namespace wolf
                 if (_hr)
                 {
                     this->_mapped = nullptr;
-                    V(W_FALSE, "mapping data to to vertex buffer's memory " +
+                    V(W_FAILED, "mapping data to to vertex buffer's memory " +
                         _gDevice->get_info(),
                         _trace_info, 3, false);
 
@@ -218,7 +218,7 @@ namespace wolf
                 _mapped_range.offset = pOffset;
                 _mapped_range.size = pSize;
 
-                return vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range) == VK_SUCCESS ? W_OK : W_FALSE;
+                return vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mapped_range) == VK_SUCCESS ? W_PASSED : W_FAILED;
             }
             
             ULONG release()
@@ -314,7 +314,7 @@ w_buffer::~w_buffer()
 W_RESULT w_buffer::load_as_staging(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                   _In_ const uint32_t pBufferSize)
 {
-    if(!this->_pimp) return W_FALSE;
+    if(!this->_pimp) return W_FAILED;
     
     return this->_pimp->load(pGDevice,
                              pBufferSize,
@@ -327,28 +327,28 @@ W_RESULT w_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                        _In_ const VkBufferUsageFlags pUsageFlags,
                        _In_ const VkMemoryPropertyFlags pMemoryFlags)
 {
-    if(!this->_pimp) return W_FALSE;
+    if(!this->_pimp) return W_FAILED;
     
     return this->_pimp->load(pGDevice, pBufferSizeInBytes, pUsageFlags, pMemoryFlags);
 }
 
 W_RESULT w_buffer::bind()
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
 
     return this->_pimp->bind();
 }
 
 W_RESULT w_buffer::set_data(_In_ const void* const pData)
 {
-    if(!this->_pimp) return W_FALSE;
+    if(!this->_pimp) return W_FAILED;
     
     return this->_pimp->set_data(pData);
 }
 
 W_RESULT w_buffer::copy_to(_In_ w_buffer& pDestinationBuffer)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
 
     return this->_pimp->copy_to(pDestinationBuffer);
 }
@@ -369,7 +369,7 @@ void w_buffer::unmap()
 
 W_RESULT w_buffer::flush(VkDeviceSize pSize, VkDeviceSize pOffset)
 {
-    if (!this->_pimp) return W_FALSE;
+    if (!this->_pimp) return W_FAILED;
 
     return this->_pimp->flush(pSize, pOffset);
 }

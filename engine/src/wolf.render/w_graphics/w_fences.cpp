@@ -6,7 +6,7 @@ using namespace wolf::graphics;
 
 W_RESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t pNumberOfFences)
 {
-    W_RESULT _hr = W_OK;
+    W_RESULT _hr = W_PASSED;
     
     this->_gDevice = pGDevice;
 
@@ -29,8 +29,8 @@ W_RESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGD
                       nullptr,
                       &_fence))
         {
-            V(W_FALSE, "creating fence", "w_fence", 3, false);
-            _hr = W_FALSE;
+            V(W_FAILED, "creating fence", "w_fence", 3, false);
+            _hr = W_FAILED;
         }
         else
         {
@@ -46,14 +46,14 @@ W_RESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGD
 
 W_RESULT w_fences::wait(_In_ uint64_t pTimeOut)
 {
-    return vkWaitForFences(this->_gDevice->vk_device, 1, this->_fences.data(), VK_TRUE, pTimeOut) == VkResult::VK_SUCCESS ? W_OK : W_FALSE;
+    return vkWaitForFences(this->_gDevice->vk_device, 1, this->_fences.data(), VK_TRUE, pTimeOut) == VkResult::VK_SUCCESS ? W_PASSED : W_FAILED;
 }
 
 W_RESULT w_fences::reset()
 {
     //reset fence
 #ifdef __VULKAN__
-    return vkResetFences(this->_gDevice->vk_device, 1, this->_fences.data()) == VkResult::VK_SUCCESS ? W_OK : W_FALSE;
+    return vkResetFences(this->_gDevice->vk_device, 1, this->_fences.data()) == VkResult::VK_SUCCESS ? W_PASSED : W_FAILED;
 #elif defined(__DX12__)
     
 #endif
@@ -104,22 +104,22 @@ bool w_fences::py_initialize(_In_ boost::shared_ptr<wolf::graphics::w_graphics_d
 	auto _hr = this->initialize(_gDevice, pNumberOfFences);
 	_gDevice.reset();
 	
-	return _hr == W_OK;
+	return _hr == W_PASSED;
 }
 
 bool w_fences::py_wait_for(_In_ uint64_t& pTimeOut)
 {
-	return wait(pTimeOut) == W_OK;
+	return wait(pTimeOut) == W_PASSED;
 }
 
 bool w_fences::py_wait()
 {
-	return wait() == W_OK;
+	return wait() == W_PASSED;
 }
 
 bool w_fences::py_reset()
 {
-	return reset() == W_OK;
+	return reset() == W_PASSED;
 }
 
 #endif

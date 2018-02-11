@@ -24,7 +24,7 @@ W_RESULT w_xml::save(_In_z_ const char* pPath,
     _In_ const bool& pUTF_8, _In_ wolf::system::w_xml_data& pData, _In_z_ const std::wstring pPreComment)
 {
 	std::wofstream _file(pPath);
-	if (!_file) return W_FALSE;
+	if (!_file) return W_FAILED;
 
 	if (pUTF_8)
 	{
@@ -59,7 +59,7 @@ W_RESULT w_xml::save(_In_z_ const char* pPath,
 	
 	_doc.clear();
 
-	return W_OK;
+	return W_PASSED;
 }
 
 void w_xml::_write_element(_In_ w_xml_data& pData, _In_ xml_document<wchar_t>& pDoc, _Inout_ xml_node<wchar_t>** pParentNode)

@@ -72,7 +72,7 @@ namespace amd
     class tootle
     {
     public:
-        static HRESULT apply(
+        static W_RESULT apply(
             _In_ const std::vector<wolf::content_pipeline::w_vertex_data>& pVerticesData,
             _In_ const std::vector<float>& pVerticesPosition,
             _Inout_ std::vector<uint32_t>& pIndicesData);

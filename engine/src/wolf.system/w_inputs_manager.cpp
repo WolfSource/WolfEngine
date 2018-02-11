@@ -60,52 +60,52 @@ W_RESULT w_inputs_manager::update(
     {
     case WM_LBUTTONDOWN:
         this->mouse.left_button_pressed = true;
-        return W_OK;
+        return W_PASSED;
     case WM_LBUTTONUP:
         this->mouse.left_button_pressed = false;
         this->mouse.left_button_released = true;
-        return W_OK;
+        return W_PASSED;
     case WM_RBUTTONDOWN:
         this->mouse.right_button_pressed = true;
-        return W_OK;
+        return W_PASSED;
     case WM_RBUTTONUP:
         this->mouse.right_button_pressed = false;
         this->mouse.right_button_released = true;
-        return W_OK;
+        return W_PASSED;
     case WM_MBUTTONDOWN:
         this->mouse.middle_button_pressed = true;
-        return W_OK;
+        return W_PASSED;
     case WM_MBUTTONUP:
         this->mouse.middle_button_pressed = false;
         this->mouse.middle_button_released = true;
-        return W_OK;
+        return W_PASSED;
     case WM_MOUSEWHEEL:
         this->mouse.wheel += GET_WHEEL_DELTA_WPARAM(pWParam) > 0 ? +1.0f : -1.0f;
-        return W_OK;
+        return W_PASSED;
     case WM_MOUSEMOVE:
         this->mouse.last_pos_x = this->mouse.pos_x;
         this->mouse.last_pos_y = this->mouse.pos_y;
         this->mouse.pos_x = static_cast<signed short>(pLParam);
         this->mouse.pos_y = static_cast<signed short>(pLParam >> 16);
-        return W_OK;
+        return W_PASSED;
     case WM_KEYDOWN:
         this->keyboard.keys_pressed.insert((int)pWParam);
-        return W_OK;
+        return W_PASSED;
     case WM_KEYUP:
     {
         auto _value = (int)pWParam;
         this->keyboard.keys_pressed.erase(_value);
         this->keyboard.keys_released.insert(_value);
-        return W_OK;
+        return W_PASSED;
     }
     case WM_CHAR:
         if (pWParam > 0 && pWParam < 0x10000)
         {
             this->keyboard.inputed_chars.push_back((unsigned short)pWParam);
         }
-        return W_OK;
+        return W_PASSED;
     }
-    return W_FALSE;
+    return W_FAILED;
 }
 
 #else
@@ -179,7 +179,7 @@ W_RESULT w_inputs_manager::update(
         this->mouse.pos_x = static_cast<signed short>(pMouseMove->x);
         this->mouse.pos_y = static_cast<signed short>(pMouseMove->y);
     }
-    return W_OK;
+    return W_PASSED;
 }
 
 #endif

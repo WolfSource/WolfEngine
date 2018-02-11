@@ -167,13 +167,13 @@ W_RESULT w_graphics_device::draw(_In_ const w_command_buffer*	pCommandBuffer,
                              _In_ const uint32_t&				pFirstVertex,
                              _In_ const uint32_t&				pFirstInstance)
 {
-	if (!pCommandBuffer) return W_FALSE;
+	if (!pCommandBuffer) return W_FAILED;
 #ifdef __VULKAN__
     vkCmdDraw( pCommandBuffer->get_active_command(), pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance );
 #elif defined(__DX12__)
     
 #endif
-	return W_OK;
+	return W_PASSED;
 }
 
 W_RESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer*>& pCommandBuffers,
@@ -186,9 +186,9 @@ W_RESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer
 	const std::string _trace_info = "w_graphics_device::submit";
 
 	auto _size = static_cast<uint32_t>(pCommandBuffers.size());
-	if (!_size) return W_FALSE;
+	if (!_size) return W_FAILED;
 	
-	W_RESULT _hr = W_OK;
+	W_RESULT _hr = W_PASSED;
 	std::vector<VkCommandBuffer> _cmds(_size);
 	for (size_t i = 0; i < _size; ++i)
 	{
@@ -241,7 +241,7 @@ W_RESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer
 	// Submit to queue
 	if (vkQueueSubmit(pQueue.queue, 1, &_submit_info, _fence))
 	{
-		_hr = W_FALSE;
+		_hr = W_FAILED;
 		V(_hr,
 			"submiting queue for graphics device" + this->device_info->get_device_name() + 
 			" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -254,7 +254,7 @@ W_RESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer
 	{
 		if (vkQueueWaitIdle(pQueue.queue))
 		{
-			_hr = W_FALSE;
+			_hr = W_FAILED;
 			V(_hr,
 				"waiting for queue for graphics device" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -281,7 +281,7 @@ W_RESULT w_graphics_device::capture(
 	_In_ const uint32_t& pHeight, 
 	_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured)
 {
-    W_RESULT _return_result = W_OK;
+    W_RESULT _return_result = W_PASSED;
 
     const std::string _trace_info = "w_graphics_device::capture";
     
@@ -339,7 +339,7 @@ W_RESULT w_graphics_device::capture(
         &_dst_image);
     if (_hr)
     {
-        _return_result = W_FALSE;
+        _return_result = W_FAILED;
         V(_return_result,
             "creating destination image for graphics device" + this->device_info->get_device_name() +
             " ID:" + std::to_string(this->device_info->get_device_id()),
@@ -372,7 +372,7 @@ W_RESULT w_graphics_device::capture(
         _hr = vkAllocateMemory(this->vk_device, &_mem_alloc_info, nullptr, &_dst_image_memory);
         if (_hr)
         {
-            _return_result = W_FALSE;
+            _return_result = W_FAILED;
             V(_return_result,
                 "creating destination image for graphics device" + this->device_info->get_device_name() +
                 " ID:" + std::to_string(this->device_info->get_device_id()),
@@ -389,7 +389,7 @@ W_RESULT w_graphics_device::capture(
     _hr = vkBindImageMemory(this->vk_device, _dst_image, _dst_image_memory, 0);
     if (_hr)
     {
-        _return_result = W_FALSE;
+        _return_result = W_FAILED;
         V(_return_result,
             "binding to destination image for graphics device" + this->device_info->get_device_name() +
             " ID:" + std::to_string(this->device_info->get_device_id()),
@@ -419,7 +419,7 @@ W_RESULT w_graphics_device::capture(
 		_hr = vkAllocateCommandBuffers(this->vk_device, &_copy_cmd_buf_allocate_info, &_copy_cmd);
 		if (_hr)
 		{
-			_return_result = W_FALSE;
+			_return_result = W_FAILED;
 			V(_return_result,
 				"allocating buffer for copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -437,7 +437,7 @@ W_RESULT w_graphics_device::capture(
 		_command_buffer_began = true;
 		if (_hr)
 		{
-			_return_result = W_FALSE;
+			_return_result = W_FAILED;
 			V(_return_result,
 				"beginning copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -608,7 +608,7 @@ W_RESULT w_graphics_device::capture(
 		_hr = vkEndCommandBuffer(_copy_cmd);
 		if (_hr)
 		{
-			_return_result = W_FALSE;
+			_return_result = W_FAILED;
 			V(_return_result,
 				"ending copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -628,7 +628,7 @@ W_RESULT w_graphics_device::capture(
 		_hr = vkCreateFence(this->vk_device, &_fence_info, nullptr, &_copy_fence);
 		if (_hr)
 		{
-			_return_result = W_FALSE;
+			_return_result = W_FAILED;
 			V(_return_result,
 				"creating fence of copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -649,7 +649,7 @@ W_RESULT w_graphics_device::capture(
 		_hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _copy_fence);
 		if (_hr)
 		{
-			_return_result = W_FALSE;
+			_return_result = W_FAILED;
 			V(_return_result,
 				"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -663,7 +663,7 @@ W_RESULT w_graphics_device::capture(
 		_hr = vkWaitForFences(this->vk_device, 1, &_copy_fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
 		if (_hr)
 		{
-			_return_result = W_FALSE;
+			_return_result = W_FAILED;
 			V(_return_result,
 				"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -712,7 +712,7 @@ clean_up:
             _hr = vkEndCommandBuffer(_copy_cmd);
             if (_hr)
             {
-                V(W_FALSE,
+                V(W_FAILED,
                     "ending copy command buffer for" + this->device_info->get_device_name() +
                     " ID:" + std::to_string(this->device_info->get_device_id()),
                     _trace_info,
@@ -740,11 +740,11 @@ clean_up:
 W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 	_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured)
 {
-	W_RESULT _return_result = W_OK;
+	W_RESULT _return_result = W_PASSED;
 	const std::string _trace_info = "w_graphics_device::capture_presented_swap_chain_buffer";
 
 	auto _objs_ptr = this->output_presentation_window.objs_between_cpu_gpu;
-	if (!_objs_ptr) return W_FALSE;
+	if (!_objs_ptr) return W_FAILED;
 
 	//source image is swap chain last presented buffer
 	auto _src_image = this->output_presentation_window.vk_swap_chain_image_views[this->output_presentation_window.swap_chain_image_index].image;
@@ -924,7 +924,7 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			_hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
 			if (_hr)
 			{
-				_return_result = W_FALSE;
+				_return_result = W_FAILED;
 				V(_return_result,
 					"ending copy command buffer for" + this->device_info->get_device_name() +
 					" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -944,7 +944,7 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			_hr = vkCreateFence(this->vk_device, &_fence_info, nullptr, &_objs_ptr->copy_fence);
 			if (_hr)
 			{
-				_return_result = W_FALSE;
+				_return_result = W_FAILED;
 				V(_return_result,
 					"creating fence of copy command buffer for" + this->device_info->get_device_name() +
 					" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -964,7 +964,7 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			_hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _objs_ptr->copy_fence);
 			if (_hr)
 			{
-				_return_result = W_FALSE;
+				_return_result = W_FAILED;
 				V(_return_result,
 					"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
 					" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -978,7 +978,7 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			_hr = vkWaitForFences(this->vk_device, 1, &_objs_ptr->copy_fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
 			if (_hr)
 			{
-				_return_result = W_FALSE;
+				_return_result = W_FAILED;
 				V(_return_result,
 					"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
 					" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -1015,7 +1015,7 @@ clean_up:
 		_hr = vkEndCommandBuffer(_objs_ptr->copy_command_buffer);
 		if (_hr)
 		{
-			_return_result = W_FALSE;
+			_return_result = W_FAILED;
 			V(_return_result,
 				"ending copy command buffer for" + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
@@ -1057,7 +1057,7 @@ void w_graphics_device::_clean_swap_chain()
 				auto _hr = vkEndCommandBuffer(_shared_obj->copy_command_buffer);
 				if (_hr)
 				{
-					V(W_FALSE,
+					V(W_FAILED,
 						"ending remained copy command buffer between CPU-GPU for" + this->device_info->get_device_name() +
 						" ID:" + std::to_string(this->device_info->get_device_id()),
 						"w_graphics_device::release",
@@ -1274,7 +1274,7 @@ namespace wolf
 			{
 #ifdef __DX12__
 
-				W_RESULT _hr = W_FALSE;
+				W_RESULT _hr = W_FAILED;
 
 				std::wstring _msg;
 				_msg += L"++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\t\t\t\t\tDirectX API version: 12";
@@ -1458,7 +1458,7 @@ namespace wolf
 
 						DXGI_ADAPTER_DESC1 _adapter_desc = {};
 						auto _hr = _adapter->GetDesc1(&_adapter_desc);
-						if (_hr != W_OK)
+						if (_hr != W_PASSED)
 						{
 							logger.write(_msg);
 							_msg.clear();
@@ -1525,7 +1525,7 @@ namespace wolf
 							_adapter.Get(),
 							_selected_feature_level,
 							IID_PPV_ARGS(&_gDevice->dx_device));
-						if (_hr != W_OK)
+						if (_hr != W_PASSED)
 						{
 							logger.write(_msg);
 							_msg.clear();
@@ -2393,7 +2393,7 @@ namespace wolf
 				_output_presentation_window->force_to_clear_color_times = _desired_number_of_swapchain_images;
 
 
-				W_RESULT _hr = W_FALSE;
+				W_RESULT _hr = W_FAILED;
 #ifdef __WIN32
 
 				if (_output_presentation_window->dx_swap_chain != nullptr)
@@ -2602,7 +2602,7 @@ namespace wolf
 						pGDevice->dx_device_removed = true;
 						return;
 					}
-					else if (_hr != W_OK)
+					else if (_hr != W_PASSED)
 					{
 						logger.error(L"Error on resizing swap chain, unknown error for graphics device: "
 							+ _device_name L" ID:" + std::to_wstring(_device_id));
@@ -2776,7 +2776,7 @@ namespace wolf
 					}
 				}
 
-				V(pGDevice->vk_present_queue.index == UINT32_MAX ? W_FALSE : W_OK,
+				V(pGDevice->vk_present_queue.index == UINT32_MAX ? W_FAILED : W_PASSED,
 					L"could not find queue family which supports presentation for graphics device: " +
 					std::wstring(_device_name.begin(), _device_name.end()) + L" ID:" + std::to_wstring(_device_id),
 					this->_name, 2);
@@ -3382,14 +3382,14 @@ namespace wolf
 				auto _output_presentation_window = &(pGDevice->output_presentation_window);
 
                 //create semaphores fro this graphics device
-                if (_output_presentation_window->swap_chain_image_is_available_semaphore.initialize(pGDevice) == W_FALSE)
+                if (_output_presentation_window->swap_chain_image_is_available_semaphore.initialize(pGDevice) == W_FAILED)
                 {
                     logger.error("error on creating image_is_available semaphore for graphics device: " +
                                  _device_name + " ID:" + std::to_string(_device_id));
                     release();
                     std::exit(EXIT_FAILURE);
                 }
-                if (_output_presentation_window->rendering_done_semaphore.initialize(pGDevice) == W_FALSE)
+                if (_output_presentation_window->rendering_done_semaphore.initialize(pGDevice) == W_FAILED)
                 {
 					logger.error("error on creating rendering_is_done semaphore for graphics device: " +
 						_device_name + " ID:" + std::to_string(_device_id));
@@ -3660,7 +3660,7 @@ void w_graphics_device_manager::_load_shared_resources()
 	std::vector<uint8_t> _logo_64 = { 255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,239,239,239,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,125,125,125,41,41,41,69,69,69,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,170,170,170,64,64,64,14,14,14,70,70,70,219,219,219,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,91,91,91,0,0,0,0,0,0,0,0,0,138,138,138,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,177,177,177,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,200,200,200,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,251,251,251,62,62,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,229,229,229,254,254,254,254,254,254,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,201,201,201,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,3,3,3,205,205,205,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,67,67,67,0,0,0,0,0,0,100,100,100,145,145,145,48,48,48,0,0,0,53,53,53,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,65,65,65,0,0,0,0,0,0,1,1,1,96,96,96,75,75,75,1,1,1,0,0,0,5,5,5,217,217,217,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,152,152,152,0,0,0,7,7,7,155,155,155,255,255,255,255,255,255,255,255,255,58,58,58,0,0,0,185,185,185,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,251,251,251,12,12,12,1,1,1,13,13,13,216,216,216,255,255,255,254,254,254,149,149,149,0,0,0,0,0,0,39,39,39,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,226,226,226,0,0,0,57,57,57,220,220,220,255,255,255,255,255,255,255,255,255,255,255,255,219,219,219,0,0,0,89,89,89,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,197,197,197,0,0,0,0,0,0,170,170,170,255,255,255,255,255,255,255,255,255,254,254,254,212,212,212,43,43,43,0,0,0,148,148,148,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,19,19,19,51,51,51,255,255,255,255,255,255,255,255,255,253,253,253,255,255,255,254,254,254,255,255,255,14,14,16,3,3,3,254,254,254,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,133,133,133,0,0,0,26,26,26,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,252,252,252,60,60,60,0,0,0,254,254,254,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,113,113,113,0,0,0,251,251,251,255,255,255,255,255,255,254,254,254,255,255,255,254,254,254,255,255,255,254,254,254,78,78,80,0,0,0,215,215,215,222,222,222,236,236,236,251,251,251,207,207,207,178,178,178,207,207,207,210,210,210,254,254,254,255,255,255,243,243,243,71,71,71,0,0,0,79,79,79,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,0,0,0,126,126,126,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,22,22,22,138,138,138,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,132,132,132,0,0,0,22,22,22,0,0,0,12,12,12,24,24,24,1,1,1,0,0,0,0,0,0,0,0,0,54,54,54,49,49,49,15,15,15,1,1,1,0,0,0,115,115,115,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,199,199,199,152,152,152,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,214,214,214,81,81,81,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,187,187,187,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,170,170,170,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,206,206,206,194,194,194,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,254,254,254,249,249,249,15,15,15,0,0,2,1,1,3,0,0,2,1,1,3,0,0,2,1,1,3,0,0,2,0,0,2,1,1,3,0,0,2,1,1,3,0,0,0,9,9,9,240,240,240,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,254,254,254,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,214,214,214,241,241,241,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,250,250,250,255,255,255,254,254,254,255,255,255,255,255,255,86,86,86,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,1,1,3,0,0,2,0,0,2,1,1,1,63,63,63,255,255,255,255,255,255,255,255,255,255,255,255,254,254,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255 };
 	w_texture::default_texture = new w_texture();
 	w_texture::default_texture->initialize(_gDevice, 64, 64);
-	if (w_texture::default_texture->load_texture_from_memory_rgb(_logo_64.data()) == W_FALSE)
+	if (w_texture::default_texture->load_texture_from_memory_rgb(_logo_64.data()) == W_FAILED)
 	{
 		logger.error("Error on creating logo texture from memory");
 	}
@@ -3694,7 +3694,7 @@ void w_graphics_device_manager::on_suspend()
 		auto _hr = _gDevice->dx_device.As(&_dxgi_device);
 		if (FAILED(_hr))
 		{
-			V(W_FALSE, "getting dxgi device from d3d11device for graphics device: " + _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id) + , this->name, 2);
+			V(W_FAILED, "getting dxgi device from d3d11device for graphics device: " + _gDevice->device_name + " ID:" + std::to_string(_gDevice->device_id) + , this->name, 2);
 		}
 		else
 		{
@@ -3755,10 +3755,10 @@ void w_graphics_device_manager::_wait_for_previous_frame(_In_ const std::shared_
 
 W_RESULT w_graphics_device_manager::prepare()
 {
-	if (!this->_pimp) return W_FALSE;
+	if (!this->_pimp) return W_FAILED;
 	
 	auto _config = this->_pimp->get_graphics_device_manager_configs();
-	if (_config.off_screen_mode) return W_OK;
+	if (_config.off_screen_mode) return W_PASSED;
 
     for (size_t i = 0; i < this->graphics_devices.size(); ++i)
     {
@@ -3799,7 +3799,7 @@ W_RESULT w_graphics_device_manager::prepare()
 #endif
     }
 
-    return W_OK;
+    return W_PASSED;
 }
 
 //W_RESULT w_graphics_device_manager::submit()
@@ -3832,7 +3832,7 @@ W_RESULT w_graphics_device_manager::prepare()
 //				fences to determine GPU execution progress.
 //			*/
 //			auto _hr = _output_window->dx_command_allocator_pool->Reset();
-//			if (FAILED(_hr)) return W_FALSE;
+//			if (FAILED(_hr)) return W_FAILED;
 //
 //			/*
 //				However, when ExecuteCommandList() is called on a particular command
@@ -3840,7 +3840,7 @@ W_RESULT w_graphics_device_manager::prepare()
 //				re-recording.
 //			*/
 //			_hr = _output_window->dx_command_list->Reset(_output_window->dx_command_allocator_pool.Get(), _output_window->dx_pipeline_state.Get());
-//			if (FAILED(_hr)) return W_FALSE;
+//			if (FAILED(_hr)) return W_FAILED;
 //
 //			D3D12_RESOURCE_BARRIER	_barrier = {};
 //			_barrier.Flags = D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -3888,7 +3888,7 @@ W_RESULT w_graphics_device_manager::prepare()
 //
 //			//close command list
 //			_hr = _output_window->dx_command_list->Close();
-//			if (FAILED(_hr)) return W_FALSE;
+//			if (FAILED(_hr)) return W_FAILED;
 //
 //#elif defined(__VULKAN__)
 //
@@ -3957,15 +3957,15 @@ W_RESULT w_graphics_device_manager::prepare()
 //		}
 //	}
 //
-//	return W_OK;
+//	return W_PASSED;
 //}
 
 W_RESULT w_graphics_device_manager::present()
 {
-	if (!this->_pimp) return W_FALSE;
+	if (!this->_pimp) return W_FAILED;
 
 	auto _config = this->_pimp->get_graphics_device_manager_configs();
-	if (_config.off_screen_mode) return W_OK;
+	if (_config.off_screen_mode) return W_PASSED;
 
     for (size_t i = 0; i < this->graphics_devices.size(); ++i)
     {
@@ -4003,7 +4003,7 @@ W_RESULT w_graphics_device_manager::present()
                 + _gDevice->device_name);
             // If the device was removed for any reason, a new device and swap chain will need to be created.
             _gDevice->dx_device_removed = true;
-            return W_FALSE;
+            return W_FAILED;
         }
 
 #elif defined(__VULKAN__)
@@ -4027,7 +4027,7 @@ W_RESULT w_graphics_device_manager::present()
 				_new_win_size.x = _present_window->width;
 				_new_win_size.y = _present_window->height;
                 on_window_resized(static_cast<uint32_t>(i), _new_win_size);
-                return W_FALSE;
+                return W_FAILED;
             }
 
             logger.error("error on presenting queue of graphics device: " +
@@ -4047,7 +4047,7 @@ W_RESULT w_graphics_device_manager::present()
 #endif
     }
     
-    return W_OK;
+    return W_PASSED;
 }
 
 ULONG w_graphics_device_manager::release()
