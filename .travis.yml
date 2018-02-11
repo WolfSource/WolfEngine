@@ -9,6 +9,6 @@ matrix:
       language: cpp
       compiler: clang
       xcode_workspace: ./engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xworkspace
-      xcode_scheme: wolf_vulkan_metal_macOS
+      xcode_scheme: wolf.system.macOS
 
 
