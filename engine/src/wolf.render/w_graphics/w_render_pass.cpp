@@ -1,5 +1,6 @@
 #include "w_render_pch.h"
 #include "w_render_pass.h"
+#include <assert.h>
 
 namespace wolf
 {

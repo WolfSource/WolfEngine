@@ -13,7 +13,6 @@
 		2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1B3FF61E97DC6500512959 /* w_shader.h */; };
 		2C299C7F201F9110003C80F7 /* w_first_person_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C299C7D201F9110003C80F7 /* w_first_person_camera.cpp */; };
 		2C299C80201F9110003C80F7 /* w_first_person_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C299C7E201F9110003C80F7 /* w_first_person_camera.h */; };
-		2C299C89201F9ACC003C80F7 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C84201F92C5003C80F7 /* Python.framework */; };
 		2C299C8E201FA4F9003C80F7 /* libboost_python-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */; };
 		2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C29CD1C1EB3344000BEFF54 /* w_game.cpp */; };
 		2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C29CD1D1EB3344000BEFF54 /* w_game.h */; };
@@ -34,6 +33,7 @@
 		2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C598C6C1FA27CC10055D215 /* w_fences.h */; };
 		2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C598C6D1FA27CC10055D215 /* w_fences.cpp */; };
 		2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */; };
+		2C6E681E2030F49000CA3673 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C84201F92C5003C80F7 /* Python.framework */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
 		2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC71ECB710900624CC7 /* w_uniform.h */; };
 		2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */; };
@@ -142,8 +142,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C6E681E2030F49000CA3673 /* Python.framework in Frameworks */,
 				2C299C8E201FA4F9003C80F7 /* libboost_python-mt.a in Frameworks */,
-				2C299C89201F9ACC003C80F7 /* Python.framework in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
 				2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
@@ -535,7 +535,6 @@
 					__VULKAN__,
 					MSGPACK_USE_CPP03,
 					MSGPACK_DISABLE_LEGACY_NIL,
-					__PYTHON__,
 					BOOST_PYTHON_STATIC_LIB,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;

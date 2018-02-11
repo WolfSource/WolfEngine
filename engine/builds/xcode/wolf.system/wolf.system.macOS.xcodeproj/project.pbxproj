@@ -1852,7 +1852,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					DEBUG,
-					__PYTHON__,
 					BOOST_PYTHON_STATIC_LIB,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
