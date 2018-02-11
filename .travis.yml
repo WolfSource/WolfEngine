@@ -1,8 +1,7 @@
 sudo: required
 
 script: 
-      ./setup_deps.sh
-      xcodebuild clean build -workspace ./engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xcworkspace -scheme wolf.system.macOS -sdk macosx10.13 -configuration Debug
+      ./build.sh
 
 matrix:
   include:
