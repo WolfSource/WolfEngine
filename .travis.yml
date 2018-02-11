@@ -1,7 +1,6 @@
 sudo: required
 
-install: 
-    ./setup_deps.sh
+script: ./setup_deps.sh
 
 matrix:
   include:
