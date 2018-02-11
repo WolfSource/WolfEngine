@@ -31,3 +31,6 @@ for i in "${!keys[@]}"; do
      echo "${keys[$i]} verified successfully"
    fi
 done
+
+xcodebuild clean build -workspace ./engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xcworkspace -scheme wolf_vulkan_metal_macOS -sdk macosx10.13 -configuration Debug
+
