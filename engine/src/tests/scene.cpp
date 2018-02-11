@@ -259,7 +259,7 @@ void scene::load()
     w_task::execute_async([]() -> W_RESULT
     {
         recieveIO();
-        return W_OK;
+        return W_PASSED;
     });
     _connection_established += [](const w_media_core::w_stream_connection_info&)->void
     {
