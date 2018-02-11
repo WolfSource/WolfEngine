@@ -24,7 +24,6 @@ SPIRVExtension.vsix)
 for i in "${!keys[@]}"; do
    echo "uncompressing ${keys[$i]}.zip"
    unzip -q "${keys[$i]}.zip"
-   echo "verifying " ${keys[$i]}
    if [ ! -f ./${keys[$i]}/${values[$i]} ]; then
      echo "could not find ${keys[$i]}/${values[$i]}"
    else
@@ -33,4 +32,4 @@ for i in "${!keys[@]}"; do
 done
 
 echo "start building Wolf"
-xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xcworkspace -scheme wolf_vulkan_metal_macOS -sdk macosx10.13 -configuration Debug
+xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xcworkspace -scheme wolf.system.macOS -sdk macosx10.13 -configuration Debug
