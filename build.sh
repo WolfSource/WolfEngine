@@ -32,4 +32,4 @@ for i in "${!keys[@]}"; do
 done
 
 echo "start building Wolf"
-xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xcworkspace -scheme wolf.system.macOS -sdk macosx10.13 -configuration Debug
+xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xcworkspace -scheme wolf.system.macOS -sdk macosx10.12 -configuration Debug
