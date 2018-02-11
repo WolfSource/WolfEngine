@@ -343,35 +343,35 @@ void scene::load()
         _viewport,
         _viewport_scissor,
 		_render_pass_attachments);
-    if (_hr == W_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(W_FALSE, "creating render pass for gui", _trace_info, 3, true);
+        V(W_FAILED, "creating render pass for gui", _trace_info, 3, true);
     }
 
     //create semaphore create info
     _hr = this->_gui_semaphore.initialize(_gDevice);
-    if (_hr == W_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(W_FALSE, "creating semaphore for gui", _trace_info, 3, true);
+        V(W_FAILED, "creating semaphore for gui", _trace_info, 3, true);
     }
 
     //Fence for syncing
     _hr = this->_gui_fence.initialize(_gDevice);
-    if (_hr == W_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(W_FALSE, "creating fence for gui", _trace_info, 3, true);
+        V(W_FAILED, "creating fence for gui", _trace_info, 3, true);
     }
 
     //create two primary command buffers for clearing screen
     auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
     _hr = this->_gui_command_buffers.load(_gDevice, _swap_chain_image_size);
-    if (_hr == W_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(W_FALSE, "creating command buffers for gui", _trace_info, 3, true);
+        V(W_FAILED, "creating command buffers for gui", _trace_info, 3, true);
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -449,9 +449,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
  //       &_wait_dst_stage_mask[0],
 	//	{ _output_window->swap_chain_image_is_available_semaphore },
  //       { _output_window->rendering_done_semaphore },
- //       &this->_gui_fence) == W_FALSE)
+ //       &this->_gui_fence) == W_FAILED)
  //   {
- //       V(W_FALSE, "submiting queue for drawing gui", _trace_info, 3, true);
+ //       V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
  //   }
  //   // Wait for fence to signal that all command buffers are ready
  //   this->_gui_fence.wait();
