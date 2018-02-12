@@ -283,7 +283,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"DEBUG=1",
-					__PYTHON__,
 					BOOST_PYTHON_STATIC_LIB,
 					__VULKAN__,
 				);

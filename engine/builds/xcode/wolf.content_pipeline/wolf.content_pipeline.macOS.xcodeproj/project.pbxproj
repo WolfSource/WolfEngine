@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C07D51D20319496005E7D14 /* libmsgpackc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C07D51C20319496005E7D14 /* libmsgpackc.a */; };
 		2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49EED8201A7C6800EF7AFB /* c_camera.h */; };
 		2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C49EED9201A7C6800EF7AFB /* c_camera.cpp */; };
 		2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFC1EB0F54400E0A422 /* c_animation.h */; };
@@ -101,6 +100,7 @@
 		2C8D5B5C1F4F8AC2000BCB87 /* viewpoints.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */; };
 		2C8D5B5D1F4F8AC2000BCB87 /* window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B4A1F4F8AC1000BCB87 /* window.h */; };
 		2C8D5B601F4F8AF2000BCB87 /* tootlelib.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */; };
+		2CDF24802031984900BD3DE5 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -200,6 +200,7 @@
 		2C8D5B4A1F4F8AC1000BCB87 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = window.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/window.h; sourceTree = "<group>"; };
 		2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tootlelib.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/include/tootlelib.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.content_pipeline.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,7 +208,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C07D51D20319496005E7D14 /* libmsgpackc.a in Frameworks */,
+				2CDF24802031984900BD3DE5 /* libmsgpackc.2.0.0.dylib in Frameworks */,
 				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -382,6 +383,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */,
 				2C07D51C20319496005E7D14 /* libmsgpackc.a */,
 				2C6844311F9E3FA700AEAB30 /* libmsgpackc.2.0.0.dylib */,
 				2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */,
@@ -670,7 +672,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
+				FRAMEWORK_SEARCH_PATHS = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -680,7 +683,7 @@
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -691,7 +694,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

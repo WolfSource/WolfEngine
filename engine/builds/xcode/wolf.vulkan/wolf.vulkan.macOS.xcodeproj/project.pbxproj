@@ -32,7 +32,6 @@
 		2C598C691FA268740055D215 /* w_queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C598C671FA268740055D215 /* w_queue.h */; };
 		2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C598C6C1FA27CC10055D215 /* w_fences.h */; };
 		2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C598C6D1FA27CC10055D215 /* w_fences.cpp */; };
-		2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
 		2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC71ECB710900624CC7 /* w_uniform.h */; };
 		2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */; };
@@ -130,6 +129,8 @@
 		2CDD13732030257B002B1AAC /* py_queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_queue.h; path = ../../../src/wolf.render/python_exporter/py_queue.h; sourceTree = "<group>"; };
 		2CDD13742030257B002B1AAC /* py_pipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_pipeline.h; path = ../../../src/wolf.render/python_exporter/py_pipeline.h; sourceTree = "<group>"; };
 		2CDD13752030257B002B1AAC /* py_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_shader.h; path = ../../../src/wolf.render/python_exporter/py_shader.h; sourceTree = "<group>"; };
+		2CDF247B2031967F00BD3DE5 /* libmsgpackc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmsgpackc.a; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.a; sourceTree = "<group>"; };
+		2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2CFFAC671FCEAA3F0020A112 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/w_graphics/w_render_target.h; sourceTree = "<group>"; };
 		2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffer.h; path = ../../../src/wolf.render/w_graphics/w_command_buffer.h; sourceTree = "<group>"; };
 		2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_target.cpp; path = ../../../src/wolf.render/w_graphics/w_render_target.cpp; sourceTree = "<group>"; };
@@ -146,7 +147,6 @@
 				2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
-				2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
 				2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */,
 				2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */,
@@ -248,6 +248,8 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */,
+				2CDF247B2031967F00BD3DE5 /* libmsgpackc.a */,
 				2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */,
 				2C299C84201F92C5003C80F7 /* Python.framework */,
 				2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */,
