@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C0F368D20062258001CB2DF /* libswresample.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368820062258001CB2DF /* libswresample.2.dylib */; };
-		2C0F368E20062258001CB2DF /* libavcodec.57.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368920062258001CB2DF /* libavcodec.57.dylib */; };
-		2C0F368F20062258001CB2DF /* libavformat.57.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368A20062258001CB2DF /* libavformat.57.dylib */; };
-		2C0F369020062258001CB2DF /* libswscale.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368B20062258001CB2DF /* libswscale.4.dylib */; };
-		2C0F369120062258001CB2DF /* libavutil.55.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368C20062258001CB2DF /* libavutil.55.dylib */; };
+		2C07D514203192E1005E7D14 /* libavcodec.57.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368920062258001CB2DF /* libavcodec.57.dylib */; };
+		2C07D515203192E1005E7D14 /* libavdevice.57.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F369C20062C1F001CB2DF /* libavdevice.57.dylib */; };
+		2C07D516203192E1005E7D14 /* libavfilter.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F369D20062C1F001CB2DF /* libavfilter.6.dylib */; };
+		2C07D517203192E1005E7D14 /* libavformat.57.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368A20062258001CB2DF /* libavformat.57.dylib */; };
+		2C07D518203192E1005E7D14 /* libavutil.55.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368C20062258001CB2DF /* libavutil.55.dylib */; };
+		2C07D519203192E1005E7D14 /* libpostproc.54.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F369E20062C1F001CB2DF /* libpostproc.54.dylib */; };
+		2C07D51A203192E1005E7D14 /* libswresample.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368820062258001CB2DF /* libswresample.2.dylib */; };
+		2C07D51B203192E1005E7D14 /* libswscale.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F368B20062258001CB2DF /* libswscale.4.dylib */; };
 		2C0F36972006226B001CB2DF /* w_media_core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F36922006226B001CB2DF /* w_media_core.cpp */; };
 		2C0F36982006226B001CB2DF /* w_media_core_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0F36932006226B001CB2DF /* w_media_core_export.h */; };
 		2C0F36992006226B001CB2DF /* w_media_core.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0F36942006226B001CB2DF /* w_media_core.h */; };
 		2C0F369A2006226B001CB2DF /* w_media_core_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0F36952006226B001CB2DF /* w_media_core_pch.h */; };
 		2C0F369B2006226B001CB2DF /* w_media_core_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F36962006226B001CB2DF /* w_media_core_pch.cpp */; };
-		2C0F369F20062C1F001CB2DF /* libavdevice.57.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F369C20062C1F001CB2DF /* libavdevice.57.dylib */; };
-		2C0F36A020062C1F001CB2DF /* libavfilter.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F369D20062C1F001CB2DF /* libavfilter.6.dylib */; };
-		2C0F36A120062C1F001CB2DF /* libpostproc.54.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0F369E20062C1F001CB2DF /* libpostproc.54.dylib */; };
 		2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */; };
 /* End PBXBuildFile section */
 
@@ -46,14 +46,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C0F369F20062C1F001CB2DF /* libavdevice.57.dylib in Frameworks */,
-				2C0F36A020062C1F001CB2DF /* libavfilter.6.dylib in Frameworks */,
-				2C0F36A120062C1F001CB2DF /* libpostproc.54.dylib in Frameworks */,
-				2C0F368E20062258001CB2DF /* libavcodec.57.dylib in Frameworks */,
-				2C0F368F20062258001CB2DF /* libavformat.57.dylib in Frameworks */,
-				2C0F369120062258001CB2DF /* libavutil.55.dylib in Frameworks */,
-				2C0F368D20062258001CB2DF /* libswresample.2.dylib in Frameworks */,
-				2C0F369020062258001CB2DF /* libswscale.4.dylib in Frameworks */,
+				2C07D514203192E1005E7D14 /* libavcodec.57.dylib in Frameworks */,
+				2C07D515203192E1005E7D14 /* libavdevice.57.dylib in Frameworks */,
+				2C07D516203192E1005E7D14 /* libavfilter.6.dylib in Frameworks */,
+				2C07D517203192E1005E7D14 /* libavformat.57.dylib in Frameworks */,
+				2C07D518203192E1005E7D14 /* libavutil.55.dylib in Frameworks */,
+				2C07D519203192E1005E7D14 /* libpostproc.54.dylib in Frameworks */,
+				2C07D51A203192E1005E7D14 /* libswresample.2.dylib in Frameworks */,
+				2C07D51B203192E1005E7D14 /* libswscale.4.dylib in Frameworks */,
 				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -314,7 +314,7 @@
 					"$(SRCROOT)/../../../dependencies/ffmpeg/include/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include",
 				);
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/ffmpeg/bin/osx/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -346,7 +346,7 @@
 					"$(SRCROOT)/../../../dependencies/ffmpeg/include/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include",
 				);
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/ffmpeg/bin/osx/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
