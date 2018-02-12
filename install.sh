@@ -32,4 +32,10 @@ for i in "${!keys[@]}"; do
 done
 
 echo "start building Wolf"
-xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xcworkspace -scheme wolf_vulkan_metal_macOS -sdk macosx10.13 -configuration Debug
+case "$OSTYPE" in
+  darwin*)  xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xcworkspace -scheme wolf_vulkan_metal_macOS -sdk macosx10.13 -configuration Debug ;; 
+  linux*)   echo "LINUX" ;;
+  *)        echo "OS: $OSTYPE" ;;
+esac
+
+

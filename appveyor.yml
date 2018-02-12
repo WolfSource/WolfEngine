@@ -21,7 +21,7 @@ matrix:
 
 install:
     # python requirements needed to ubpack deps
-    - "%PYTHON%\\python.exe c:\\projects\\wolf-engine\\setup.py"
+    - cmd: ./install.cmd
 init:
     - "%PYTHON%\\python.exe --version"
 build:
@@ -36,7 +36,7 @@ skip_commits:
     - .gitattributes
     - .gitignore
     - .travis.yml
-    - build.sh
+    - install.sh
     - Logo.jpg
     - /**/*.md
 
