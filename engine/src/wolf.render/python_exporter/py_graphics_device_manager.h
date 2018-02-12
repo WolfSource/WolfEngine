@@ -43,14 +43,9 @@ namespace pywolf
 			.add_property("extent", &w_viewport_scissor::py_get_extent, &w_viewport_scissor::py_set_extent, "extent")
 			;
 
-		//export w_descriptor_buffer_info class
-		class_<w_descriptor_buffer_info>("w_descriptor_buffer_info", init<>());
-
-		//export w_descriptor_image_info class
-		class_<w_descriptor_image_info>("w_descriptor_image_info", init<>());
-
 		//export w_output_presentation_window class
 		class_<w_output_presentation_window, boost::noncopyable>("w_output_presentation_window")
+			.add_property("swap_chain_image_index", &w_output_presentation_window::swap_chain_image_index, "get swap chain image index")
 			.add_property("swap_chain_image_is_available_semaphore", &w_output_presentation_window::swap_chain_image_is_available_semaphore, "semaphore for checking whether swap chain's image is available or not")
 			.add_property("rendering_done_semaphore", &w_output_presentation_window::rendering_done_semaphore, "semaphore for signaling, when all rendering is done")
 			.add_property("width", &w_output_presentation_window::width, "get width of presentation window")
@@ -73,6 +68,33 @@ namespace pywolf
 			.add_property("transfer_queue", &w_graphics_device::vk_transfer_queue, "get transfer queue")
 			.add_property("sparse_queue", &w_graphics_device::vk_sparse_queue, "get sparse queue")
 			;
+
+		//export w_push_constant_range class
+		class_<w_push_constant_range, boost::noncopyable>("w_push_constant_range", init<>());
+
+		//export w_descriptor_buffer_info class
+		class_<w_descriptor_buffer_info, boost::noncopyable>("w_descriptor_buffer_info", init<>());
+
+		//export w_descriptor_image_info class
+		class_<w_descriptor_image_info, boost::noncopyable>("w_descriptor_image_info", init<>());
+
+		//export w_pipeline_layout_create_info struct
+		class_<w_pipeline_layout_create_info, boost::noncopyable>("w_pipeline_layout_create_info");
+
+		//export w_pipeline_vertex_input_state_create_info struct
+		class_<w_pipeline_vertex_input_state_create_info, boost::noncopyable>("w_pipeline_vertex_input_state_create_info");
+
+		//export w_pipeline_input_assembly_state_create_info struct
+		class_<w_pipeline_input_assembly_state_create_info, boost::noncopyable>("w_pipeline_input_assembly_state_create_info");
+
+		//export w_pipeline_rasterization_state_create_info struct
+		class_<w_pipeline_rasterization_state_create_info, boost::noncopyable>("w_pipeline_rasterization_state_create_info");
+
+		//export w_pipeline_multisample_state_create_info struct
+		class_<w_pipeline_multisample_state_create_info, boost::noncopyable>("w_pipeline_multisample_state_create_info");
+
+		//export w_pipeline_color_blend_attachment_state struct
+		class_<w_pipeline_color_blend_attachment_state, boost::noncopyable>("w_pipeline_color_blend_attachment_state");
 
 		//define w_memory_property_flag_bits enum
 		enum_<w_memory_property_flag_bits>("w_memory_property_flag_bits")
@@ -106,6 +128,47 @@ namespace pywolf
 			.value("W_PIPELINE_STAGE_ALL_COMMANDS_BIT", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_ALL_COMMANDS_BIT)
 			.value("W_PIPELINE_STAGE_COMMAND_PROCESS_BIT_NVX", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_COMMAND_PROCESS_BIT_NVX)
 			.value("W_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM)
+			.export_values()
+			;
+
+		//define w_dynamic_state enum
+		enum_<w_dynamic_state>("w_dynamic_state")
+			.value("W_DYNAMIC_STATE_VIEWPORT", w_dynamic_state::W_DYNAMIC_STATE_VIEWPORT)
+			.value("W_DYNAMIC_STATE_SCISSOR", w_dynamic_state::W_DYNAMIC_STATE_SCISSOR)
+			.value("W_DYNAMIC_STATE_LINE_WIDTH", w_dynamic_state::W_DYNAMIC_STATE_LINE_WIDTH)
+			.value("W_DYNAMIC_STATE_DEPTH_BIAS", w_dynamic_state::W_DYNAMIC_STATE_DEPTH_BIAS)
+			.value("W_DYNAMIC_STATE_BLEND_CONSTANTS", w_dynamic_state::W_DYNAMIC_STATE_BLEND_CONSTANTS)
+			.value("W_DYNAMIC_STATE_DEPTH_BOUNDS", w_dynamic_state::W_DYNAMIC_STATE_DEPTH_BOUNDS)
+			.value("W_DYNAMIC_STATE_STENCIL_COMPARE_MASK", w_dynamic_state::W_DYNAMIC_STATE_STENCIL_COMPARE_MASK)
+			.value("W_DYNAMIC_STATE_STENCIL_WRITE_MASK", w_dynamic_state::W_DYNAMIC_STATE_STENCIL_WRITE_MASK)
+			.value("W_DYNAMIC_STATE_STENCIL_REFERENCE", w_dynamic_state::W_DYNAMIC_STATE_STENCIL_REFERENCE)
+			.value("W_DYNAMIC_STATE_VIEWPORT_W_SCALING_NV", w_dynamic_state::W_DYNAMIC_STATE_VIEWPORT_W_SCALING_NV)
+			.value("W_DYNAMIC_STATE_DISCARD_RECTANGLE_EXT", w_dynamic_state::W_DYNAMIC_STATE_DISCARD_RECTANGLE_EXT)
+			.value("W_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT", w_dynamic_state::W_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT)
+			.value("W_DYNAMIC_STATE_BEGIN_RANGE", w_dynamic_state::W_DYNAMIC_STATE_BEGIN_RANGE)
+			.value("W_DYNAMIC_STATE_END_RANGE", w_dynamic_state::W_DYNAMIC_STATE_END_RANGE)
+			.value("W_DYNAMIC_STATE_RANGE_SIZE", w_dynamic_state::W_DYNAMIC_STATE_RANGE_SIZE)
+			.value("W_DYNAMIC_STATE_MAX_ENUM", w_dynamic_state::W_DYNAMIC_STATE_MAX_ENUM)
+			.export_values()
+			;
+
+		//define w_primitive_topology enum
+		enum_<w_primitive_topology>("w_primitive_topology")
+			.value("W_PRIMITIVE_TOPOLOGY_POINT_LIST", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_POINT_LIST)
+			.value("W_PRIMITIVE_TOPOLOGY_LINE_LIST", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_LINE_LIST)
+			.value("W_PRIMITIVE_TOPOLOGY_LINE_STRIP", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_LINE_STRIP)
+			.value("W_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
+			.value("W_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP)
+			.value("W_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN)
+			.value("W_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY)
+			.value("W_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY)
+			.value("W_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY)
+			.value("W_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY)
+			.value("W_PRIMITIVE_TOPOLOGY_PATCH_LIST", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_PATCH_LIST)
+			.value("W_PRIMITIVE_TOPOLOGY_BEGIN_RANGE", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_BEGIN_RANGE)
+			.value("W_PRIMITIVE_TOPOLOGY_END_RANGE", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_END_RANGE)
+			.value("W_PRIMITIVE_TOPOLOGY_RANGE_SIZE", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_RANGE_SIZE)
+			.value("W_PRIMITIVE_TOPOLOGY_MAX_ENUM", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_MAX_ENUM)
 			.export_values()
 			;
 

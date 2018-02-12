@@ -1406,7 +1406,7 @@ namespace wolf
 							_out_window.width = _window.width;
 							_out_window.height = _window.height;
 							_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
-							_out_window.v_sync = _window.v_sync_enable;
+							_out_window.v_sync = _window.v_sync;
 							_out_window.is_full_screen = _window.is_full_screen;
 #ifdef __WIN32
 							_out_window.hwnd = _window.hwnd;
@@ -1565,7 +1565,7 @@ namespace wolf
 								_out_window.width = _window.width;
 								_out_window.height = _window.height;
 								_out_window.aspect_ratio = (float)_window.width / (float)_window.height;
-								_out_window.v_sync = _window.v_sync_enable;
+								_out_window.v_sync = _window.v_sync;
 								_out_window.is_full_screen = _window.is_full_screen;
 #ifdef __WIN32
 								_out_window.hwnd = _window.hwnd;
