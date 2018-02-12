@@ -57,7 +57,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	_window_info.height = sWindow->get_height();
 	_window_info.hwnd = sWindow->get_HWND();
 	_window_info.hInstance = sWindow->get_HINSTANCE();
-    _window_info.v_sync_enable = false;
+    _window_info.v_sync = false;
 	_window_info.swap_chain_format = 37;//VK_FORMAT_R8G8B8A8_UNORM
     _window_info.cpu_access_swap_chain_buffer = true;
 
