@@ -33,7 +33,6 @@
 		2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C598C6C1FA27CC10055D215 /* w_fences.h */; };
 		2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C598C6D1FA27CC10055D215 /* w_fences.cpp */; };
 		2C6844301F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */; };
-		2C6E681E2030F49000CA3673 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C84201F92C5003C80F7 /* Python.framework */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
 		2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC71ECB710900624CC7 /* w_uniform.h */; };
 		2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */; };
@@ -142,7 +141,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C6E681E2030F49000CA3673 /* Python.framework in Frameworks */,
 				2C299C8E201FA4F9003C80F7 /* libboost_python-mt.a in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
 				2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */,
