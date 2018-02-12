@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2C04327E201F908C009FB7EA /* w_boost_python_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C043273201F908B009FB7EA /* w_boost_python_helper.h */; };
+		2C07D51320318B20005E7D14 /* libluajit-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C07D51220318B20005E7D14 /* libluajit-static.a */; };
 		2C0F36AA200BC74C001CB2DF /* w_bounding.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C0F36A8200BC74C001CB2DF /* w_bounding.h */; };
 		2C0F36AB200BC74C001CB2DF /* w_bounding.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */; };
 		2C1383A51F509AC700D5283B /* w_lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A31F509AC700D5283B /* w_lua.cpp */; };
@@ -219,7 +220,6 @@
 		2C7BC4441F51A320009F0C6E /* rapidxml_print.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4401F51A320009F0C6E /* rapidxml_print.hpp */; };
 		2C7BC4451F51A320009F0C6E /* rapidxml_utils.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4411F51A320009F0C6E /* rapidxml_utils.hpp */; };
 		2C7BC4461F51A320009F0C6E /* rapidxml.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C7BC4421F51A320009F0C6E /* rapidxml.hpp */; };
-		2C91879F1F5191720021C8FA /* libluajit.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C91879E1F5191720021C8FA /* libluajit.dylib */; };
 		2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C94BC241FEE5C62007338F7 /* w_network.cpp */; };
 		2C94BC271FEE5C62007338F7 /* w_network.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C94BC251FEE5C62007338F7 /* w_network.h */; };
 		2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C94BC281FF1A0E9007338F7 /* libnanomsg.a */; };
@@ -307,6 +307,7 @@
 
 /* Begin PBXFileReference section */
 		2C043273201F908B009FB7EA /* w_boost_python_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_boost_python_helper.h; path = ../../../src/wolf.system/python_exporter/w_boost_python_helper.h; sourceTree = "<group>"; };
+		2C07D51220318B20005E7D14 /* libluajit-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libluajit-static.a"; path = "../../../dependencies/luaJIT/lib/osx/debug/libluajit-static.a"; sourceTree = "<group>"; };
 		2C0F36A8200BC74C001CB2DF /* w_bounding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_bounding.h; path = ../../../src/wolf.system/w_bounding.h; sourceTree = "<group>"; };
 		2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_bounding.cpp; path = ../../../src/wolf.system/w_bounding.cpp; sourceTree = "<group>"; };
 		2C1383A31F509AC700D5283B /* w_lua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_lua.cpp; path = ../../../src/wolf.system/w_lua.cpp; sourceTree = "<group>"; };
@@ -766,10 +767,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C07D51320318B20005E7D14 /* libluajit-static.a in Frameworks */,
 				2C299C88201F9A28003C80F7 /* Python.framework in Frameworks */,
 				2C49EED7201A7C1600EF7AFB /* libboost_python-mt.a in Frameworks */,
 				2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */,
-				2C91879F1F5191720021C8FA /* libluajit.dylib in Frameworks */,
 				2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */,
 				2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */,
 			);
@@ -1283,6 +1284,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C07D51220318B20005E7D14 /* libluajit-static.a */,
 				2C49EED6201A7C1600EF7AFB /* libboost_python-mt.a */,
 				2C49EED4201A60A900EF7AFB /* Python.framework */,
 				2C94BC281FF1A0E9007338F7 /* libnanomsg.a */,
@@ -1841,7 +1843,6 @@
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
-					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
 					"$(SRCROOT)/../../../dependencies/msgpack/lib/debug/",
 					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
 				);
@@ -1868,6 +1869,7 @@
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/debug/",
 					"$(SRCROOT)/../../../dependencies/boost/lib/osx/debug",
+					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
