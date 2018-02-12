@@ -53,10 +53,12 @@ WOLF_MAIN()
     Document _doc;
 
     auto _buffer = new char[_size];
-    memcpy(&_buffer[0], _str, _size);
-    if (_doc.ParseInsitu(_buffer).HasParseError())
+    memcpy(&_buffer[0], &_str[0], _size);
+
+	auto _parse = &_doc.Parse<rapidjson::kParseStopWhenDoneFlag>(_buffer);
+    if (_parse->HasParseError())
     {
-        logger.error("error on parsing json");
+        logger.error("error on parsing json. error code: " + _parse->GetParseError());
     }
     else
     {

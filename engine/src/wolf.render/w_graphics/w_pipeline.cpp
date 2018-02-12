@@ -18,19 +18,19 @@ namespace wolf
 
             W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
-                _In_ const VkPrimitiveTopology pPrimitiveTopology,
+                _In_ const w_primitive_topology pPrimitiveTopology,
 				_In_ const w_render_pass* pRenderPassBinding,
 				_In_ const w_shader* pShaderBinding,
 				_In_ const std::vector<w_viewport>& pViewPorts,
 				_In_ const std::vector<w_viewport_scissor>& pViewPortScissors,
                 _In_ const std::string& pPipelineCacheName,
-				_In_ const std::vector<VkDynamicState>& pDynamicStates,
-                _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges,
+				_In_ const std::vector<w_dynamic_state>& pDynamicStates,
+                _In_ const std::vector<w_push_constant_range>& pPushConstantRanges,
                 _In_ const uint32_t& pTessellationPatchControlPoints,
-                _In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
-                _In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultiSampleStateCreateInfo,
+                _In_ const w_pipeline_rasterization_state_create_info* const pPipelineRasterizationStateCreateInfo,
+                _In_ const w_pipeline_multisample_state_create_info* const pPipelineMultiSampleStateCreateInfo,
                 _In_ const bool pEnableDepthStencilState,
-                _In_ const VkPipelineColorBlendAttachmentState pBlendState,
+                _In_ const w_pipeline_color_blend_attachment_state pBlendState,
                 _In_ const std::array<float, 4> pBlendColors)
             {
 				const std::string _trace_info = this->_name + "::load";
@@ -192,7 +192,7 @@ namespace wolf
                 _In_ const w_shader* pShaderBinding,
                 _In_ const uint32_t& pSpecializationData,
                 _In_ const std::string& pPipelineCacheName,
-                _In_ const std::vector<VkPushConstantRange> pPushConstantRanges)
+                _In_ const std::vector<w_push_constant_range> pPushConstantRanges)
             {
                 this->_gDevice = pGDevice;
 
@@ -206,7 +206,7 @@ namespace wolf
                 _pipeline_layout_create_info.setLayoutCount = static_cast<uint32_t>(_descriptor_set_layouts.size());
                 _pipeline_layout_create_info.pSetLayouts = _descriptor_set_layouts.data();
                 _pipeline_layout_create_info.pushConstantRangeCount = _push_const_size;
-                _pipeline_layout_create_info.pPushConstantRanges = _push_const_size ? pPushConstantRanges.data() : nullptr;
+                _pipeline_layout_create_info.pPushConstantRanges = _push_const_size ? (VkPushConstantRange*)pPushConstantRanges.data() : nullptr;
 
                 auto _hr = vkCreatePipelineLayout(
                     pGDevice->vk_device,
@@ -324,10 +324,10 @@ namespace wolf
 
             const VkPipelineLayoutCreateInfo _generate_pipeline_layout_create_info(
                 _In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
-                _In_ const VkPrimitiveTopology pPrimitiveTopology,
+                _In_ const w_primitive_topology pPrimitiveTopology,
                 _In_ const VkDescriptorSetLayout* const pDescriptorSetLayoutBinding,
-                _In_ const std::vector<VkDynamicState>& pDynamicStates,
-                _In_ const std::vector<VkPushConstantRange>& pPushConstantRanges,
+                _In_ const std::vector<w_dynamic_state>& pDynamicStates,
+                _In_ const std::vector<w_push_constant_range>& pPushConstantRanges,
                 _Out_ VkPipelineVertexInputStateCreateInfo** pVertexInputStateCreateInfo,
                 _Out_ VkPipelineInputAssemblyStateCreateInfo** pInputAssemblyStateCreateInfo,
                 _Out_ VkPipelineDynamicStateCreateInfo** pDynamicStateCreateInfo)
@@ -419,7 +419,7 @@ namespace wolf
                 _vas_ptr->sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
                 _vas_ptr->pNext = nullptr;
                 _vas_ptr->flags = 0;
-                _vas_ptr->topology = pPrimitiveTopology;
+                _vas_ptr->topology = (VkPrimitiveTopology)pPrimitiveTopology;
                 _vas_ptr->primitiveRestartEnable = VK_FALSE;
                 *pInputAssemblyStateCreateInfo = _vas_ptr;
 
@@ -432,7 +432,7 @@ namespace wolf
 				if (_dynamic_state_count)
 				{
 					_dys_ptr->dynamicStateCount = _dynamic_state_count;
-					_dys_ptr->pDynamicStates = pDynamicStates.data();
+					_dys_ptr->pDynamicStates = (VkDynamicState*)pDynamicStates.data();
 				}
 				else
 				{
@@ -492,31 +492,30 @@ W_RESULT w_pipeline::load(
 	_In_ const std::vector<w_push_constant_range>& pPushConstantRanges,
 	_In_ const uint32_t& pTessellationPatchControlPoints,
 	_In_ const w_pipeline_rasterization_state_create_info* const pPipelineRasterizationStateCreateInfo,
-	_In_ const w_pipeline_multisample_state_create_info* const pPipelineMultisampleStateCreateInfo,
+	_In_ const w_pipeline_multisample_state_create_info* const pPipelineMultiSampleStateCreateInfo,
 	_In_ const bool pEnableDepthStencilState,
 	_In_ const w_pipeline_color_blend_attachment_state pBlendState,
 	_In_ const std::array<float, 4> pBlendColors)
 {
 	if (!this->_pimp) return W_FAILED;
 
-	//return this->_pimp->load(
-	//	pGDevice,
-	//	pVertexBindingAttributes,
-	//	pPrimitiveTopology,
-	//	pRenderPassBinding,
-	//	pShaderBinding,
-	//	pViewPorts,
-	//	pViewPortScissors,
-	//	pPipelineCacheName,
-	//	pDynamicStates,
-	//	pPushConstantRanges,
-	//	pTessellationPatchControlPoints,
-	//	pPipelineRasterizationStateCreateInfo,
-	//	pPipelineMultiSampleStateCreateInfo,
-	//	pEnableDepthStencilState,
-	//	pBlendState,
-	//	pBlendColors);
-	return W_PASSED;
+	return this->_pimp->load(
+		pGDevice,
+		pVertexBindingAttributes,
+		pPrimitiveTopology,
+		pRenderPassBinding,
+		pShaderBinding,
+		pViewPorts,
+		pViewPortScissors,
+		pPipelineCacheName,
+		pDynamicStates,
+		pPushConstantRanges,
+		pTessellationPatchControlPoints,
+		pPipelineRasterizationStateCreateInfo,
+		pPipelineMultiSampleStateCreateInfo,
+		pEnableDepthStencilState,
+		pBlendState,
+		pBlendColors);
 }
 
 //load pipeline for compute stage
@@ -527,15 +526,14 @@ W_EXP W_RESULT w_pipeline::load_compute(
 	_In_ const std::string& pPipelineCacheName,
 	_In_ const std::vector<w_push_constant_range> pPushConstantRanges)
 {
-    if (!this->_pimp) return W_FAILED;
+	if (!this->_pimp) return W_FAILED;
 
-	return W_PASSED;
-  //  return this->_pimp->load_compute(
-  //      pGDevice,
-		//pShaderBinding,
-  //      pSpecializationData,
-  //      pPipelineCacheName,
-  //      pPushConstantRanges);
+	return this->_pimp->load_compute(
+		pGDevice,
+		pShaderBinding,
+		pSpecializationData,
+		pPipelineCacheName,
+		pPushConstantRanges);
 }
 
 W_RESULT w_pipeline::bind(_In_ const w_command_buffer* pCommandBuffer, _In_ VkDescriptorSet* pDescriptorSet)

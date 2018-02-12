@@ -88,10 +88,10 @@ namespace wolf
 				_In_ const boost::python::list pDynamicStates,
 				_In_ const boost::python::list pPushConstantRanges,
 				_In_ const uint32_t& pTessellationPatchControlPoints,
-				_In_ const VkPipelineRasterizationStateCreateInfo* const pPipelineRasterizationStateCreateInfo,
-				_In_ const VkPipelineMultisampleStateCreateInfo* const pPipelineMultisampleStateCreateInfo,
+				_In_ const w_pipeline_rasterization_state_create_info* const pPipelineRasterizationStateCreateInfo,
+				_In_ const w_pipeline_multisample_state_create_info* const pPipelineMultiSampleStateCreateInfo,
 				_In_ const bool pEnableDepthStencilState,
-				_In_ const VkPipelineColorBlendAttachmentState pBlendState,
+				_In_ const w_pipeline_color_blend_attachment_state pBlendState,
 				_In_ const boost::python::list pBlendColors)
 			{
 				return true;

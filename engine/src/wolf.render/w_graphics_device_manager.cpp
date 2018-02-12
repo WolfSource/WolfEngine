@@ -2155,13 +2155,11 @@ namespace wolf
                             _out_window.vk_swap_chain_selected_format.format = (VkFormat)_window.swap_chain_format;
                             _out_window.vk_swap_chain_selected_format.colorSpace = VkColorSpaceKHR::VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
                             _out_window.cpu_access_to_swapchain_buffer = _window.cpu_access_swap_chain_buffer;
+							_out_window.double_buffering = _window.double_buffering;
+							_out_window.v_sync = _window.v_sync;
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
-
-#if defined(__WIN32) || defined(__linux) 
-                            _out_window.v_sync = _window.v_sync_enable;
-#endif
-
+							
 #ifdef __WIN32
                             _out_window.hwnd = _window.hwnd;
                             _out_window.hInstance = _window.hInstance == NULL ? (HINSTANCE)GetModuleHandle(NULL) : _window.hInstance;
@@ -2901,9 +2899,7 @@ namespace wolf
 
 				}
 
-				auto _desired_number_of_swapchain_images = _surface_capabilities.minImageCount + 1;
-
-
+				auto _desired_number_of_swapchain_images = _surface_capabilities.minImageCount;
 				/*
 					Determine the number of VkImage's to use in the swap chain.
 					We need to acquire only 1 presentable image at at time.
@@ -2917,11 +2913,28 @@ namespace wolf
 					_desired_number_of_swapchain_images = _surface_capabilities.maxImageCount;
 				}
 
+				if (_desired_number_of_swapchain_images == 0)
+				{
+					logger.error("The images count of surface capabilities and swap chain is zero, for graphics device: " +
+						_device_name + " ID:" + std::to_string(_device_id));
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 				if (_desired_number_of_swapchain_images < 2)
 				{
-					logger.warning("The images count of surface capabilities and swap chain is less than two.");
+					if (_output_presentation_window->double_buffering)
+					{
+						logger.warning("Double buffering for swap chain forced by user, for graphics device: " +
+							_device_name + " ID:" + std::to_string(_device_id));
+						_desired_number_of_swapchain_images = 2;
+					}
 				}
 
+				logger.user(
+					"Desired number of swapchain image(s) is " +
+					std::to_string(_desired_number_of_swapchain_images) +
+					", for graphics device: " +
+					_device_name + " ID:" + std::to_string(_device_id));
 
 				//Find a supported composite alpha format
 				VkCompositeAlphaFlagBitsKHR _composite_alpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
@@ -2952,7 +2965,14 @@ namespace wolf
 				}
 
 				auto _image_extend = _surface_capabilities.currentExtent;
-
+				if (_image_extend.width != _output_presentation_window->width)
+				{
+					_output_presentation_window->width = _image_extend.width;
+				}
+				if (_image_extend.height != _output_presentation_window->height)
+				{
+					_output_presentation_window->height = _image_extend.height;
+				}
 
 				//get the count of present modes
 				uint32_t _present_mode_count;

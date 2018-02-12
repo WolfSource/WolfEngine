@@ -23,25 +23,25 @@ WOLF_MAIN()
     logger.write(L"Wolf initialized");
 
     //execute async task in standard c++
-    w_task::execute_async([]()-> HRESULT
+    w_task::execute_async([]()-> W_RESULT
     {
         logger.write("async task 01 started");
-        return S_OK;
+        return W_PASSED;
 
-    }, [](HRESULT pHR)-> void
+    }, [](W_RESULT pHR)-> void
     {
         logger.write("async task 01 completed");
     });
 
     //define deferred task
-    w_task::execute_deferred([]()-> HRESULT
+    w_task::execute_deferred([]()-> W_RESULT
     {
 
         logger.write("deferred task 01 started");
         //wait for 5 sec
         std::this_thread::sleep_for(5s);
         logger.write("deferred task 01 done");
-        return S_OK;
+        return W_PASSED;
 
     });
     //deferred wait for only 1 sec and then continue
@@ -63,13 +63,13 @@ WOLF_MAIN()
     }
 
     //create another deferred task
-    w_task::execute_deferred([]()-> HRESULT
+    w_task::execute_deferred([]()-> W_RESULT
     {
         logger.write("deferred task 02 started");
         //wait for 1 sec
         w_thread::sleep_current_thread(1000);
         logger.write("deferred task 02 done");
-        return S_OK;
+        return W_PASSED;
     });
     //deferred will block until deferred task done
     w_task::wait();

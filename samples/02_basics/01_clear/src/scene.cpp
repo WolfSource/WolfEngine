@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "scene.h"
-#include <w_graphics/w_attachment_buffer_desc.h>
 
 using namespace std;
 using namespace wolf;
@@ -11,7 +10,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -77,34 +76,34 @@ void scene::load()
 		_viewport,
 		_viewport_scissor,
 		_render_pass_attachments);
-	if (_hr == W_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FALSE, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED, "creating render pass", _trace_info, 3, true);
 	}
 
     //create semaphore create info
     _hr = this->_draw_semaphore.initialize(_gDevice);
-    if (_hr == W_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(W_FALSE, "creating semaphore for draw command buffer", _trace_info, 3, true);
+        V(W_FAILED, "creating semaphore for draw command buffer", _trace_info, 3, true);
     }
     
     _hr = this->_draw_fence.initialize(_gDevice);
-    if (_hr == W_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(W_FALSE, "creating fence for draw command buffer", _trace_info, 3, true);
+        V(W_FAILED, "creating fence for draw command buffer", _trace_info, 3, true);
     }
     
     //create two primary command buffers for clearing screen
     auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
     _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
-    if (_hr == W_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(W_FALSE, "creating draw command buffers", _trace_info, 3, true);
+        V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
     }
     
     _build_draw_command_buffers();
@@ -132,7 +131,7 @@ HRESULT scene::_build_draw_command_buffers()
         this->_draw_command_buffers.end(i);
     }
 	_cmd = nullptr;
-    return W_OK;
+    return W_PASSED;
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
@@ -151,7 +150,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
-	if (w_game::exiting) return W_OK;
+	if (w_game::exiting) return W_PASSED;
 
 	const std::string _trace_info = this->name + "::render";
 
@@ -174,9 +173,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&_wait_dst_stage_mask[0], //destination masks
 		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
 		{ _output_window->rendering_done_semaphore },//signal semaphores
-		&this->_draw_fence) == W_FALSE)
+		&this->_draw_fence) == W_FAILED)
 	{
-		V(W_FALSE, "submiting queue for drawing gui", _trace_info, 3, true);
+		V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
 	}
 	// Wait for fence to signal that all command buffers are ready
 	this->_draw_fence.wait();

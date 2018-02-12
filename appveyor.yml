@@ -21,7 +21,7 @@ matrix:
 
 install:
     # python requirements needed to ubpack deps
-    - cmd: ./init.cmd
+    - cmd: ./install.cmd
 init:
     - "%PYTHON%\\python.exe --version"
 build:

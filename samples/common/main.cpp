@@ -95,7 +95,7 @@ WOLF_MAIN()
     sWindow = make_unique<w_window>();
 
 #ifdef __WIN32
-	sWindow->enable_tiled(true);
+	//sWindow->enable_tiled(true);
     sWindow->initialize(_msg_proc_func);
 #else 
     sWindow->initialize();

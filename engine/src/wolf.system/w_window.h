@@ -125,7 +125,7 @@ struct w_window_info
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__)
 #ifndef __APPLE__
-	bool                v_sync_enable = true;
+	bool                v_sync = true;
 #endif
     bool				is_full_screen = false;
 #endif
@@ -154,6 +154,7 @@ struct w_window_info
     //BGRA8Unorm for DirectX12 is "87" and for VULKAN is 44
 	uint32_t			swap_chain_format = 44;
     bool                cpu_access_swap_chain_buffer = false;
+	bool				double_buffering = true;
 
 #ifdef __PYTHON__
 

@@ -44,12 +44,17 @@ WOLF_MAIN()
         std::string name;
     };
     _length = 20;
-    auto _new_f = (my_struct*)_memory.realloc(_length * sizeof(my_struct));
-    for (size_t i = 0; i < _length; ++i)
-    {
-        _new_f[i].number = 100 + i;
-        _new_f[i].name = "Ryan " + std::to_string(i);
-    }
+
+	//TODO: Check access violation on some machines
+    auto _new_f = static_cast<my_struct*>(_memory.realloc(_length * sizeof(my_struct)));
+	if (_new_f)
+	{
+		for (size_t i = 0; i < _length; ++i)
+		{
+			_new_f[i].number = 100 + i;
+			_new_f[i].name = "Ryan " + std::to_string(i);
+		}
+	}
 
     //output new data
     for (size_t i = 0; i < _length; ++i)

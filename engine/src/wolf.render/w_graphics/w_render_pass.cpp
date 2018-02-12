@@ -42,7 +42,7 @@ namespace wolf
 				std::vector<VkSubpassDescription> _subpass_descriptions;
 				std::vector<VkSubpassDependency> _subpass_dependencies;
 
-				//assign first frame buffer attachmen description
+				//assign first frame buffer attachment description
 				for (auto _iter : pAttachments[0])
 				{
 					_attachment_descriptions.push_back(_iter.attachment_desc.desc);

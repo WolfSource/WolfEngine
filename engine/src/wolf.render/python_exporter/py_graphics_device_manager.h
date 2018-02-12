@@ -53,7 +53,11 @@ namespace pywolf
 		class_<w_output_presentation_window, boost::noncopyable>("w_output_presentation_window")
 			.add_property("swap_chain_image_is_available_semaphore", &w_output_presentation_window::swap_chain_image_is_available_semaphore, "semaphore for checking whether swap chain's image is available or not")
 			.add_property("rendering_done_semaphore", &w_output_presentation_window::rendering_done_semaphore, "semaphore for signaling, when all rendering is done")
-			.add_property("swap_chain_image_index", &w_output_presentation_window::swap_chain_image_index, "swap chain image index")
+			.add_property("width", &w_output_presentation_window::width, "get width of presentation window")
+			.add_property("height", &w_output_presentation_window::height, "get height of presentation window")
+			.add_property("v_sync", &w_output_presentation_window::v_sync, "get status of v-sync")
+			.add_property("cpu_access_to_swapchain_buffer", &w_output_presentation_window::cpu_access_to_swapchain_buffer, "get whether cpu allowed to access swap chain")
+			.add_property("double_buffering", &w_output_presentation_window::double_buffering, "get statis of double buffering")
 			;
 
 		//export w_graphics_device class

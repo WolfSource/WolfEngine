@@ -182,6 +182,7 @@ namespace wolf
                       
 			bool									        v_sync = true;
             bool                                            cpu_access_to_swapchain_buffer = false;
+			bool											double_buffering = true;
 
 #ifdef __DX12__		
 			DXGI_FORMAT								        dx_swap_chain_selected_format = DXGI_FORMAT::DXGI_FORMAT_UNKNOWN;
