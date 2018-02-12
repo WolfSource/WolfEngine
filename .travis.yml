@@ -1,7 +1,7 @@
 sudo: required
 
 script: 
-      ./install.sh
+      ./init.sh
 
 matrix:
   include:

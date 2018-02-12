@@ -21,7 +21,7 @@ matrix:
 
 install:
     # python requirements needed to ubpack deps
-    - cmd: ./install.cmd
+    - cmd: ./init.cmd
 init:
     - "%PYTHON%\\python.exe --version"
 build:
@@ -36,7 +36,7 @@ skip_commits:
     - .gitattributes
     - .gitignore
     - .travis.yml
-    - install.sh
+    - init.sh
     - Logo.jpg
     - /**/*.md
 
