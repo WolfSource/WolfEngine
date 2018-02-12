@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C07D51D20319496005E7D14 /* libmsgpackc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C07D51C20319496005E7D14 /* libmsgpackc.a */; };
 		2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49EED8201A7C6800EF7AFB /* c_camera.h */; };
 		2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C49EED9201A7C6800EF7AFB /* c_camera.cpp */; };
 		2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFC1EB0F54400E0A422 /* c_animation.h */; };
@@ -25,7 +26,6 @@
 		2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */; };
 		2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */; };
 		2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */; };
-		2C6844321F9E3FA700AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6844311F9E3FA700AEAB30 /* libmsgpackc.2.0.0.dylib */; };
 		2C736BC31ECA1EE400624CC7 /* w_cpipeline_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */; };
 		2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */; };
 		2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */; };
@@ -104,6 +104,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C07D51C20319496005E7D14 /* libmsgpackc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmsgpackc.a; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.a; sourceTree = "<group>"; };
 		2C49EED8201A7C6800EF7AFB /* c_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_camera.h; path = ../../../src/wolf.content_pipeline/collada/c_camera.h; sourceTree = "<group>"; };
 		2C49EED9201A7C6800EF7AFB /* c_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_camera.cpp; path = ../../../src/wolf.content_pipeline/collada/c_camera.cpp; sourceTree = "<group>"; };
 		2C4CCAFC1EB0F54400E0A422 /* c_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_animation.h; path = ../../../src/wolf.content_pipeline/collada/c_animation.h; sourceTree = "<group>"; };
@@ -206,8 +207,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C07D51D20319496005E7D14 /* libmsgpackc.a in Frameworks */,
 				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */,
-				2C6844321F9E3FA700AEAB30 /* libmsgpackc.2.0.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +382,7 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C07D51C20319496005E7D14 /* libmsgpackc.a */,
 				2C6844311F9E3FA700AEAB30 /* libmsgpackc.2.0.0.dylib */,
 				2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */,
 			);
@@ -678,7 +680,7 @@
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
