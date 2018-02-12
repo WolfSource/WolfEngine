@@ -25,7 +25,7 @@ namespace pywolf
 
 		//export w_pipeline class
 		class_<w_pipeline, boost::noncopyable>("w_shader")
-			//.def("load", &w_pipeline::py_load, "load pipeline")
+			.def("load", &w_pipeline::py_load, "load pipeline")
 			//.def("load_compute", &w_pipeline::load_compute, "load compute pipeline")
 			//.def("bind", &w_pipeline::bind, "bind to pipeline")
 			//.def("release", &w_pipeline::release, "get shader stages")

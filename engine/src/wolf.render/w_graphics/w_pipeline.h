@@ -80,20 +80,24 @@ namespace wolf
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
 				_In_ const w_primitive_topology pPrimitiveTopology,
-				_In_ const w_render_pass* pRenderPassBinding,
-				_In_ const w_shader* pShaderBinding,
+				_In_ const w_render_pass& pRenderPassBinding,
+				_In_ const w_shader& pShaderBinding,
 				_In_ const boost::python::list pViewPorts,
 				_In_ const boost::python::list pViewPortScissors,
 				_In_ const std::string& pPipelineCacheName,
 				_In_ const boost::python::list pDynamicStates,
 				_In_ const boost::python::list pPushConstantRanges,
 				_In_ const uint32_t& pTessellationPatchControlPoints,
-				_In_ const w_pipeline_rasterization_state_create_info* const pPipelineRasterizationStateCreateInfo,
-				_In_ const w_pipeline_multisample_state_create_info* const pPipelineMultiSampleStateCreateInfo,
+				_In_ const w_pipeline_rasterization_state_create_info& const pPipelineRasterizationStateCreateInfo,
+				_In_ const w_pipeline_multisample_state_create_info& const pPipelineMultiSampleStateCreateInfo,
 				_In_ const bool pEnableDepthStencilState,
-				_In_ const w_pipeline_color_blend_attachment_state pBlendState,
+				_In_ const w_pipeline_color_blend_attachment_state& pBlendState,
 				_In_ const boost::python::list pBlendColors)
 			{
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+
+
+				_gDevice.reset();
 				return true;
 			}
 
