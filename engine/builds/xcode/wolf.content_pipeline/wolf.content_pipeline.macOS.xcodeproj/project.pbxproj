@@ -100,7 +100,7 @@
 		2C8D5B5C1F4F8AC2000BCB87 /* viewpoints.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */; };
 		2C8D5B5D1F4F8AC2000BCB87 /* window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B4A1F4F8AC1000BCB87 /* window.h */; };
 		2C8D5B601F4F8AF2000BCB87 /* tootlelib.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */; };
-		2CDF24802031984900BD3DE5 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */; };
+		2CDF248220319AF500BD3DE5 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -208,7 +208,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CDF24802031984900BD3DE5 /* libmsgpackc.2.0.0.dylib in Frameworks */,
+				2CDF248220319AF500BD3DE5 /* libmsgpackc.2.0.0.dylib in Frameworks */,
 				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -672,8 +672,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -683,7 +683,7 @@
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
