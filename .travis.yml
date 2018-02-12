@@ -1,7 +1,10 @@
 sudo: required
 
+before_install:
+  - chmod +x install.sh
+
 script: 
-      ./init.sh
+      ./install.sh
 
 matrix:
   include:
