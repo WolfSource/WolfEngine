@@ -124,9 +124,7 @@ struct w_window_info
 	uint32_t                height = 600;
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__)
-#ifndef __APPLE__
 	bool                v_sync = true;
-#endif
     bool				is_full_screen = false;
 #endif
 
