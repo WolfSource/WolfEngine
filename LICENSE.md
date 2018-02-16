@@ -12,7 +12,7 @@
 ## Commercial
 <p>A commercial license is available for those that are not comfortable with GPL v3 terms. The commercial license is a paid per-user license that allows you to distribute your application under your own terms for more information please contact us: "contact{at}wolfsource{dot}io"</p>
 
-##pyWolf
+## pyWolf
 <p>pyWolf, python binding for Wolf.Engine, is provided under the terms of <a href="https://www.gnu.org/licenses/lgpl-3.0">LGPL v3</a>.</p>
 
 ## Third Party Licenses
