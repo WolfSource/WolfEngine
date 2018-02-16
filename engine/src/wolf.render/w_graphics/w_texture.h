@@ -24,20 +24,20 @@ namespace wolf
 	{
 		enum w_texture_buffer_type
 		{
-			W_TEXTURE_COLOR_BUFFER = 1,
-			W_TEXTURE_DEPTH_BUFFER = 2,
-			W_TEXTURE_STENCIL_BUFFER = 4,
+			COLOR = 1,
+			DEPTH = 2,
+			STENCIL = 4,
 		};
 
 		enum w_texture_view_type 
 		{
-			W_TEXTURE_VIEW_TYPE_1D = 0,
-			W_TEXTURE_VIEW_TYPE_2D = 1,
-			W_TEXTURE_VIEW_TYPE_3D = 2,
-			W_TEXTURE_VIEW_TYPE_CUBE = 3,
-			W_TEXTURE_VIEW_TYPE_1D_ARRAY = 4,
-			W_TEXTURE_VIEW_TYPE_2D_ARRAY = 5,
-			W_TEXTURE_VIEW_TYPE_CUBE_ARRAY = 6,
+			_1D = 0,
+			_2D = 1,
+			_3D = 2,
+			CUBE = 3,
+			_1D_ARRAY = 4,
+			_2D_ARRAY = 5,
+			CUBE_ARRAY = 6,
 		};
 			
 		enum w_sampler_type

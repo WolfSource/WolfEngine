@@ -106,8 +106,8 @@ namespace wolf
 
 				std::vector<std::vector<w_image_view>> _attachments =
 				{
-					{ pOutputPresentationWindow->vk_swap_chain_image_views[0], pOutputPresentationWindow->vk_depth_buffer_image_view },
-					{ pOutputPresentationWindow->vk_swap_chain_image_views[1], pOutputPresentationWindow->vk_depth_buffer_image_view },
+					{ pOutputPresentationWindow->swap_chain_image_views[0], pOutputPresentationWindow->depth_buffer_image_view },
+					{ pOutputPresentationWindow->swap_chain_image_views[1], pOutputPresentationWindow->depth_buffer_image_view },
 				};
 
 				//initialize attachment buffers
@@ -132,7 +132,7 @@ namespace wolf
 				}
 				_attachments.clear();
 
-				__hr = this->_command_buffers.load(_gDevice, pOutputPresentationWindow->vk_swap_chain_image_views.size());
+				__hr = this->_command_buffers.load(_gDevice, pOutputPresentationWindow->swap_chain_image_views.size());
 				if (__hr == W_FAILED)
 				{
 					release();

@@ -45,6 +45,8 @@
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_texture.h>
+#include <w_graphics/w_mesh.h>
+#include <w_graphics/w_pipeline.h>
 
 #endif //__PYTHON__
 

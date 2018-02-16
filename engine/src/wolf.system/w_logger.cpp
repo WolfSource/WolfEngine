@@ -193,7 +193,7 @@ namespace wolf
 
             void write(_In_z_ std::wstring pMsg, _In_z_ const std::wstring pState)
             {
-                pMsg = L"\t\t\"" + get_date_timeW() + L"\"" + L": {\"msg\":\"" + (pMsg.empty() ? L"NULL" : pMsg) + L"\",\"state\":\"" + pState + L"\"},\r\n";
+                pMsg = L"\t\t\"" + get_date_timeW() + L"\"" + L": {\"state\":\"" + pState + L"\", \"msg\":\"" + (pMsg.empty() ? L"NULL" : pMsg) + L"\"},\r\n";
 
 #if defined(__WIN32) || defined(__UWP)
                 OutputDebugString(pMsg.c_str());

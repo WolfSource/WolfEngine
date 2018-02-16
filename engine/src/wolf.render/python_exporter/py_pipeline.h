@@ -25,14 +25,14 @@ namespace pywolf
 
 		//export w_pipeline class
 		class_<w_pipeline, boost::noncopyable>("w_pipeline")
-			//.def("load", &w_pipeline::py_load, "load pipeline")
-			//.def("load_compute", &w_pipeline::load_compute, "load compute pipeline")
-			//.def("bind", &w_pipeline::bind, "bind to pipeline")
-			//.def("release", &w_pipeline::release, "get shader stages")
-			//.def("create_pipeline_cache", w_pipeline::create_pipeline_cache, "create pipeline cache")
-			//.staticmethod("create_pipeline_cache")
-			//.def("release_all_pipeline_caches", w_pipeline::release_all_pipeline_caches, "release all pipeline caches")
-			//.staticmethod("release_all_pipeline_caches")
+			.def("load", &w_pipeline::py_load, "load pipeline")
+			.def("load_compute", &w_pipeline::py_load_compute, "load pipeline for computing")
+			.def("bind", &w_pipeline::py_bind, "bind to pipeline")
+			.def("release", &w_pipeline::release, "get shader stages")
+			.def("create_pipeline_cache", w_pipeline::py_create_pipeline_cache, "create pipeline cache")
+			.staticmethod("create_pipeline_cache")
+			.def("release_all_pipeline_caches", w_pipeline::py_release_all_pipeline_caches, "release all pipeline caches")
+			.staticmethod("release_all_pipeline_caches")
 			;
 	}
 }

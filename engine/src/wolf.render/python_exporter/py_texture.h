@@ -258,21 +258,21 @@ namespace pywolf
 
 		//define w_texture_buffer_type enum
 		enum_<w_texture_buffer_type>("w_texture_buffer_type")
-			.value("W_TEXTURE_COLOR_BUFFER", w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER)
-			.value("W_TEXTURE_DEPTH_BUFFER", w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER)
-			.value("W_TEXTURE_STENCIL_BUFFER", w_texture_buffer_type::W_TEXTURE_STENCIL_BUFFER)
+			.value("COLOR", w_texture_buffer_type::COLOR)
+			.value("DEPTH", w_texture_buffer_type::DEPTH)
+			.value("STENCIL", w_texture_buffer_type::STENCIL)
 			.export_values()
 			;
 
 		//define w_texture_view_type enum
 		enum_<w_texture_view_type>("w_texture_buffer_type")
-			.value("W_TEXTURE_VIEW_TYPE_1D", w_texture_view_type::W_TEXTURE_VIEW_TYPE_1D)
-			.value("W_TEXTURE_VIEW_TYPE_2D", w_texture_view_type::W_TEXTURE_VIEW_TYPE_2D)
-			.value("W_TEXTURE_VIEW_TYPE_3D", w_texture_view_type::W_TEXTURE_VIEW_TYPE_3D)
-			.value("W_TEXTURE_VIEW_TYPE_CUBE", w_texture_view_type::W_TEXTURE_VIEW_TYPE_CUBE)
-			.value("W_TEXTURE_VIEW_TYPE_1D_ARRAY", w_texture_view_type::W_TEXTURE_VIEW_TYPE_1D_ARRAY)
-			.value("W_TEXTURE_VIEW_TYPE_2D_ARRAY", w_texture_view_type::W_TEXTURE_VIEW_TYPE_2D_ARRAY)
-			.value("W_TEXTURE_VIEW_TYPE_CUBE_ARRAY", w_texture_view_type::W_TEXTURE_VIEW_TYPE_CUBE_ARRAY)
+			.value("_1D", w_texture_view_type::_1D)
+			.value("_2D", w_texture_view_type::_2D)
+			.value("_3D", w_texture_view_type::_3D)
+			.value("CUBE", w_texture_view_type::CUBE)
+			.value("_1D_ARRAY", w_texture_view_type::_1D_ARRAY)
+			.value("_2D_ARRAY", w_texture_view_type::_2D_ARRAY)
+			.value("CUBE_ARRAY", w_texture_view_type::CUBE_ARRAY)
 			.export_values()
 			;
 

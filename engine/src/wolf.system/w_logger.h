@@ -135,7 +135,7 @@ inline void V(W_RESULT pHR, std::wstring pMSG = L"Undefined message",
     if (pHR == W_PASSED) return;
 
     auto _wstr_trace = std::wstring(pTraceClass.begin(), pTraceClass.end());
-    wstring _errorMsg = L"Error on " + pMSG + L" with the following error info : " + L"Trace info " + _wstr_trace + L".";
+    wstring _errorMsg = pMSG + L" with the following error info : " + L"Trace info " + _wstr_trace + L".";
     
     switch (pLogType)
     {

@@ -60,7 +60,8 @@ namespace wolf
             W_EXP w_viewport get_viewport() const;
             W_EXP w_viewport_scissor get_viewport_scissor() const;
             W_EXP const size_t get_number_of_frame_buffers() const;
-            
+			W_EXP const bool get_depth_stencil_enabled() const;
+
 #pragma endregion
 
 #pragma region Setters
@@ -75,22 +76,35 @@ namespace wolf
 			bool py_load(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const w_viewport& pViewPort,
-				_In_ const w_viewport_scissor& pViewPortScissor)
+				_In_ const w_viewport_scissor& pViewPortScissor,
+				_In_ boost::python::list pAttachments)
 			{
 				//create render pass attchaments
 				if (!pGDevice.get()) return false;
-				//boost::shared to std::shared
+
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
-				//TODO: export w_image_view to python and make the following code, editable from python
 				std::vector<std::vector<w_image_view>> _render_pass_attachments;
-				for (size_t i = 0; i < _gDevice->output_presentation_window.vk_swap_chain_image_views.size(); ++i)
+				for (size_t i = 0; i < len(pAttachments); ++i)
 				{
-					_render_pass_attachments.push_back
-					(
-						//COLOR										  , DEPTH
-						{ _gDevice->output_presentation_window.vk_swap_chain_image_views[i], _gDevice->output_presentation_window.vk_depth_buffer_image_view }
-					);
+					boost::python::extract<boost::python::list> _att(pAttachments[i]);
+					if (_att.check())
+					{
+						std::vector<w_image_view> _image_views;
+						auto _1_att = _att();
+						for (size_t j = 0; j < len(_1_att); j++)
+						{
+							boost::python::extract<w_image_view> _image_view(_1_att[j]);
+							if (_image_view.check())
+							{
+								_image_views.push_back(_image_view());
+							}
+						}
+						if (_image_views.size())
+						{
+							_render_pass_attachments.push_back(_image_views);
+						}
+					}
 				}
 				if (!_render_pass_attachments.size()) return false;
 
@@ -104,7 +118,7 @@ namespace wolf
 				_gDevice.reset();
 
 				return _hr == W_PASSED;
-		}
+			}
 
 			void py_begin(
 				_In_ const uint32_t& pFrameBufferIndex,

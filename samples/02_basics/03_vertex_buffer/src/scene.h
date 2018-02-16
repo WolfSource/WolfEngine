@@ -17,7 +17,6 @@
 #include <w_framework/w_game.h>
 #include <w_graphics/w_command_buffer.h>
 #include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
@@ -32,13 +31,13 @@
 class scene : public wolf::framework::w_game
 {
 public:
-	scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName);
+	scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName);
 	virtual ~scene();
 
 	/*
-	Allows the game to perform any initialization and it needs to before starting to run.
-	Calling Game::Initialize() will enumerate through any components and initialize them as well.
-	The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
+		Allows the game to perform any initialization and it needs to before starting to run.
+		Calling Game::Initialize() will enumerate through any components and initialize them as well.
+		The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
 	*/
 	void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) override;
 
@@ -49,10 +48,10 @@ public:
 	void update(_In_ const wolf::system::w_game_time& pGameTime) override;
 
 	//This is called when the game should draw itself.
-	HRESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
+	W_RESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
 
-	//This is called when the window game should resized. pIndex is the index of window.
-	void on_window_resized(_In_ uint32_t pIndex) override;
+	//This is called when the window game should resized
+	void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow) override;
 
 	//This is called when the we lost graphics device.
 	void on_device_lost() override;
@@ -61,7 +60,7 @@ public:
 	ULONG release() override;
 
 private:
-	HRESULT _build_draw_command_buffers();
+	W_RESULT _build_draw_command_buffers();
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
@@ -69,9 +68,7 @@ private:
 
 	wolf::graphics::w_command_buffer                                _draw_command_buffers;
 	wolf::graphics::w_render_pass                                   _draw_render_pass;
-	wolf::graphics::w_frame_buffer                                  _draw_frame_buffers;
-
-
+	
 	wolf::graphics::w_fences                                        _draw_fence;
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
 

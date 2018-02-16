@@ -60,12 +60,12 @@ void scene::load()
 
 	//define color and depth as an attachments buffers for render pass
 	std::vector<std::vector<w_image_view>> _render_pass_attachments;
-	for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
+	for (size_t i = 0; i < _output_window->swap_chain_image_views.size(); ++i)
 	{
 		_render_pass_attachments.push_back
 		(
-			//COLOR										  , DEPTH
-			{ _output_window->vk_swap_chain_image_views[i], _output_window->vk_depth_buffer_image_view }
+			//COLOR									   , DEPTH
+			{ _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
 		);
 	}
 
@@ -75,35 +75,35 @@ void scene::load()
 		_viewport,
 		_viewport_scissor,
 		_render_pass_attachments);
-	if (_hr == W_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FALSE, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED, "creating render pass", _trace_info, 3, true);
 	}
 
 	//create semaphore create info
-    _hr = this->_draw_semaphore.initialize(_gDevice);
-    if (_hr == W_FALSE)
-    {
-        release();
-        V(W_FALSE, "creating draw semaphore", _trace_info, 3, true);
-    }
-    
-	//Fence for render sync
-    _hr = this->_draw_fence.initialize(_gDevice);
-	if (_hr == W_FALSE)
+	_hr = this->_draw_semaphore.initialize(_gDevice);
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FALSE, "creating draw fence", _trace_info, 3, true);
+		V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
+	}
+
+	//Fence for render sync
+	_hr = this->_draw_fence.initialize(_gDevice);
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED, "creating draw fence", _trace_info, 3, true);
 	}
 
 	//create two primary command buffers for clearing screen
-	auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+	auto _swap_chain_image_size = _output_window->swap_chain_image_views.size();
 	_hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
-	if (_hr == W_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FALSE, "creating draw command buffers", _trace_info, 3, true);
+		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -119,20 +119,20 @@ void scene::load()
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.vert.spv",
 		w_shader_stage::VERTEX_SHADER);
-	if (_hr == W_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FALSE, "loading vertex shader", _trace_info, 3, true);
+		V(W_FAILED, "loading vertex shader", _trace_info, 3, true);
 	}
 
 	//loading fragment shader
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.frag.spv",
 		w_shader_stage::FRAGMENT_SHADER);
-	if (_hr == W_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FALSE, "loading fragment shader", _trace_info, 3, true);
+		V(W_FAILED, "loading fragment shader", _trace_info, 3, true);
 	}
 
 	//loading pipeline cache
@@ -144,20 +144,20 @@ void scene::load()
 	}
 
 	//just we need vertex position
-	w_vertex_binding_attributes _vba(w_vertex_declaration::VERTEX_POSITION);
-	
+	w_vertex_binding_attributes _vba(w_vertex_declaration::NOT_DEFINED);
+
 	_hr = this->_pipeline.load(_gDevice,
 		_vba,
-		VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+		w_primitive_topology::TRIANGLE_LIST,
 		&this->_draw_render_pass,
 		&this->_shader,
 		{ this->_viewport },
 		{ this->_viewport_scissor });
 
-	if (_hr == W_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FALSE, "creating pipeline", _trace_info, 3, true);
+		V(W_FAILED, "creating pipeline", _trace_info, 3, true);
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -185,7 +185,7 @@ W_RESULT scene::_build_draw_command_buffers()
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 //The following codes have been added for this project
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                this->_pipeline.bind(_cmd, nullptr);
+                this->_pipeline.bind(_cmd);
 				_gDevice->draw(_cmd, 3, 1, 0, 0 );
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -194,7 +194,7 @@ W_RESULT scene::_build_draw_command_buffers()
 		}
 		this->_draw_command_buffers.end(i);
 	}
-	return W_OK;
+	return W_PASSED;
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
@@ -207,7 +207,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
-	if (w_game::exiting) return W_OK;
+	if (w_game::exiting) return W_PASSED;
 
 	const std::string _trace_info = this->name + "::render";
 
@@ -217,7 +217,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 	const w_pipeline_stage_flags _wait_dst_stage_mask[] =
 	{
-		w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
 
 	//set active command buffer
@@ -230,9 +230,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&_wait_dst_stage_mask[0], //destination masks
 		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
 		{ _output_window->rendering_done_semaphore }, //signal semaphores
-		&this->_draw_fence) == W_FALSE)
+		&this->_draw_fence) == W_FAILED)
 	{
-		V(W_FALSE, "submiting queue for drawing gui", _trace_info, 3, true);
+		V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
 	}
 	// Wait for fence to signal that all command buffers are ready
 	this->_draw_fence.wait();

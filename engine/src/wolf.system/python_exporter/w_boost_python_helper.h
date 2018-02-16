@@ -26,7 +26,7 @@ template<class T> boost::shared_ptr<T> std_shared_ptr_to_boost_shared_ptr(std::s
 }
 
 template<typename T>
-inline boost::python::list w_boost_wrap_array(T* array_, size_t size_)
+inline boost::python::list boost_wrap_array(T* array_, size_t size_)
 {
 	boost::python::list _list;
 	for (int i = 0; i < size_; ++i)
@@ -35,14 +35,14 @@ inline boost::python::list w_boost_wrap_array(T* array_, size_t size_)
 }
 
 template<typename T1, typename T2>
-inline void w_boost_extract_tuple(T1& p1, boost::python::tuple& pTuple)
+inline void boost_extract_tuple(T1& p1, boost::python::tuple& pTuple)
 {
 	boost::python::extract<T1> _1(pTuple[0]);
 	p1 = _1;
 }
 
 template<typename T1, typename T2>
-inline void w_boost_extract_tuple(T1& p1, T2& p2, boost::python::tuple& pTuple)
+inline void boost_extract_tuple(T1& p1, T2& p2, boost::python::tuple& pTuple)
 {
 	boost::python::extract<T1> _1(pTuple[0]);
 	boost::python::extract<T2> _2(pTuple[1]);
@@ -50,7 +50,7 @@ inline void w_boost_extract_tuple(T1& p1, T2& p2, boost::python::tuple& pTuple)
 }
 
 template<typename T1, typename T2, typename T3>
-inline void w_boost_extract_tuple(T1& p1, T2& p2, T3& p3, boost::python::tuple& pTuple)
+inline void boost_extract_tuple(T1& p1, T2& p2, T3& p3, boost::python::tuple& pTuple)
 {
     boost::python::extract<T1> _1(pTuple[0]);
     boost::python::extract<T2> _2(pTuple[1]);
@@ -59,7 +59,7 @@ inline void w_boost_extract_tuple(T1& p1, T2& p2, T3& p3, boost::python::tuple& 
 }
 
 template<typename T1, typename T2, typename T3>
-inline void w_boost_extract_tuple(T1& p1, T2& p2, T3& p3, T3& p4, boost::python::tuple& pTuple)
+inline void boost_extract_tuple(T1& p1, T2& p2, T3& p3, T3& p4, boost::python::tuple& pTuple)
 {
 	boost::python::extract<T1> _1(pTuple[0]);
 	boost::python::extract<T2> _2(pTuple[1]);
@@ -69,7 +69,7 @@ inline void w_boost_extract_tuple(T1& p1, T2& p2, T3& p3, T3& p4, boost::python:
 }
 
 template<typename T1, typename T2, typename T3>
-inline void w_boost_extract_tuple(
+inline void boost_extract_tuple(
 	T1& p1, T2& p2, T3& p3, T3& p4,
 	T1& p5, T2& p6, T3& p7, T3& p8,
 	T1& p9, T2& p10, T3& p11, T3& p12,

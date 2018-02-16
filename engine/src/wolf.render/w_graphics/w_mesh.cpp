@@ -515,3 +515,59 @@ void w_mesh::set_vertex_binding_attributes(_In_ const w_vertex_binding_attribute
 }
 
 #pragma endregion
+
+#ifdef __PYTHON__
+
+boost::python::dict w_vertex_binding_attributes::py_get_binding_attributes()
+{
+	boost::python::dict _dictionary;
+	for (auto _iter = binding_attributes.begin(); _iter != binding_attributes.end(); ++_iter)
+	{
+		boost::python::list _list;
+		for (auto& _v : _iter->second)
+		{
+			_list.append(_v);
+		}
+		_dictionary[_iter->first] = _list;
+	}
+	return _dictionary;
+}
+
+void w_vertex_binding_attributes::py_set_binding_attributes(_In_ boost::python::dict& pDic)
+{
+	binding_attributes.clear();
+	boost::python::list keys = pDic.keys();
+	for (int i = 0; i < len(keys); ++i)
+	{
+		boost::python::extract<uint32_t> _extracted_key(keys[i]);
+		if (!_extracted_key.check())
+		{
+			logger.error("Key invalid for py_get_binding_attributes. type was not uint32_t");
+			continue;
+		}
+
+		auto _key = _extracted_key();
+		boost::python::extract<boost::python::list> _extracted_val(pDic[_key]);
+		if (!_extracted_val.check())
+		{
+			logger.error("Value invalid for py_get_binding_attributes. type was not list");
+			continue;
+		}
+
+		auto _list = _extracted_val();
+		std::vector<w_vertex_attribute> _values;
+		for (size_t j = 0; j < len(_list); ++j)
+		{
+			boost::python::extract<w_vertex_attribute> _v(_list[j]);
+			if (!_v.check())
+			{
+				logger.error("Value of list is not type of \"w_vertex_attribute\" for py_get_binding_attributes");
+				continue;
+			}
+			_values.push_back(_v());
+		}
+		binding_attributes[_key] = _values;
+	}
+}
+
+#endif

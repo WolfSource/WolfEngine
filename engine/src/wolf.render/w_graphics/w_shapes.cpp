@@ -240,7 +240,7 @@ namespace wolf
 				auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 				_hr = this->_pipeline.load(_gDevice,
 					this->_shape_drawer.get_vertex_binding_attributes(),
-					w_primitive_topology::W_PRIMITIVE_TOPOLOGY_LINE_LIST,
+					w_primitive_topology::LINE_LIST,
 					&pRenderPass,
 					&this->_shader,
 					{ pViewport },
@@ -295,8 +295,7 @@ namespace wolf
 			{
 				const std::string _trace_info = this->_name + "::draw";
 
-				auto _description_set = this->_shader.get_descriptor_set();
-				this->_pipeline.bind(pCommandBuffer, &_description_set);
+				this->_pipeline.bind(pCommandBuffer);
 
 				if (this->_shape_drawer.draw(pCommandBuffer, nullptr, 0, false, 0) == W_FAILED)
 				{

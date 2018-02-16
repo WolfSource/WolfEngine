@@ -66,11 +66,17 @@ class scene(QWidget):
         self._viewport_scissor.extent.height = screen_height
 
         #load render pass which contains frame buffers
-        _hr = self._draw_render_pass.load(self._gDevice, self._viewport, self._viewport_scissor)
+        _render_pass_attachments = []
+        _output_window = self._gDevice.output_presentation_window
+        for _iter in _output_window.swap_chain_image_views:
+            # COLOR                                 #DEPTH
+            _render_pass_attachments.append([_iter, _output_window.depth_buffer_image_view])
+
+        _hr = self._draw_render_pass.load(self._gDevice, self._viewport, self._viewport_scissor, _render_pass_attachments)
         if _hr == False:
             print "Error on loading render pass"
             return
-
+        
         #create one semaphore for drawing
         _hr = self._draw_semaphore.initialize(self._gDevice)
         if _hr == False:
@@ -85,7 +91,7 @@ class scene(QWidget):
 
         #create one fence for drawing
         number_of_swap_chains = self._gDevice.get_number_of_swap_chains()
-        _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.W_COMMAND_BUFFER_LEVEL_PRIMARY)
+        _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.PRIMARY)
         if _hr == False:
             print "Error on initializing draw command buffer(s)"
             return
@@ -101,7 +107,7 @@ class scene(QWidget):
         _hr = True
         _size = self._draw_command_buffers.get_commands_size()
         for i in xrange(_size):
-            _hr = self._draw_command_buffers.begin(i, pyWolf.graphics.w_command_buffer_usage_flag_bits.W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
+            _hr = self._draw_command_buffers.begin(i, pyWolf.graphics.w_command_buffer_usage_flag_bits.SIMULTANEOUS_USE_BIT)
             if _hr == False:
                 print "Error on begining command buffer: " + str(i)
                 break
@@ -126,7 +132,7 @@ class scene(QWidget):
 
         self._draw_command_buffers.set_active_command(_frame_index)
 
-        _wait_dst_stage_mask = [ pyWolf.graphics.w_pipeline_stage_flag_bits.W_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT ]
+        _wait_dst_stage_mask = [ pyWolf.graphics.w_pipeline_stage_flag_bits.COLOR_ATTACHMENT_OUTPUT_BIT ]
         _wait_semaphores = [ _output_window.swap_chain_image_is_available_semaphore ]
         _signal_semaphores = [ _output_window.rendering_done_semaphore ]
         _cmd_buffers = [self._draw_command_buffers]       

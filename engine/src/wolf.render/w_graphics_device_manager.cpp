@@ -158,7 +158,7 @@ const std::string w_graphics_device::get_info()
 
 const size_t w_graphics_device::get_number_of_swap_chains()
 {
-	return this->output_presentation_window.vk_swap_chain_image_views.size();
+	return this->output_presentation_window.swap_chain_image_views.size();
 }
 
 W_RESULT w_graphics_device::draw(_In_ const w_command_buffer*	pCommandBuffer,
@@ -747,7 +747,7 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 	if (!_objs_ptr) return W_FAILED;
 
 	//source image is swap chain last presented buffer
-	auto _src_image = this->output_presentation_window.vk_swap_chain_image_views[this->output_presentation_window.swap_chain_image_index].image;
+	auto _src_image = this->output_presentation_window.swap_chain_image_views[this->output_presentation_window.swap_chain_image_index].image;
 
 	const auto _sub_res_range = VkImageSubresourceRange
 	{
@@ -1082,25 +1082,25 @@ void w_graphics_device::_clean_swap_chain()
 #pragma endregion
 
 	//release all image view of swap chains
-	for (size_t i = 0; i < this->output_presentation_window.vk_swap_chain_image_views.size(); ++i)
+	for (size_t i = 0; i < this->output_presentation_window.swap_chain_image_views.size(); ++i)
 	{
 		//release both color image and view,
 		vkDestroyImageView(
 			this->vk_device,
-			this->output_presentation_window.vk_swap_chain_image_views[i].view,
+			this->output_presentation_window.swap_chain_image_views[i].view,
 			nullptr);
-		this->output_presentation_window.vk_swap_chain_image_views[i].view = 0;
-		this->output_presentation_window.vk_swap_chain_image_views[i].image = 0;
+		this->output_presentation_window.swap_chain_image_views[i].view = 0;
+		this->output_presentation_window.swap_chain_image_views[i].image = 0;
 	}
-	this->output_presentation_window.vk_swap_chain_image_views.clear();
+	this->output_presentation_window.swap_chain_image_views.clear();
 
 	//release depth image and view,
 	vkDestroyImageView(
 		this->vk_device,
-		this->output_presentation_window.vk_depth_buffer_image_view.view,
+		this->output_presentation_window.depth_buffer_image_view.view,
 		nullptr);
-	this->output_presentation_window.vk_depth_buffer_image_view.view = 0;
-	this->output_presentation_window.vk_depth_buffer_image_view.image = 0;
+	this->output_presentation_window.depth_buffer_image_view.view = 0;
+	this->output_presentation_window.depth_buffer_image_view.image = 0;
 
 	//release swap chain
 	vkDestroySwapchainKHR(this->vk_device,
@@ -3172,7 +3172,7 @@ namespace wolf
 					_image_view.width = _output_presentation_window->width;
 					_image_view.height = _output_presentation_window->height;
 					_image_view.attachment_desc = w_attachment_buffer_desc::create_color_desc_buffer();
-                    _output_presentation_window->vk_swap_chain_image_views.push_back(_image_view);
+                    _output_presentation_window->swap_chain_image_views.push_back(_image_view);
                 }
 
 #pragma region Create Depth Buffer
@@ -3191,7 +3191,7 @@ namespace wolf
 					std::exit(EXIT_FAILURE);
 				}
 
-				_output_presentation_window->vk_depth_buffer_format = _depth_format;
+				_output_presentation_window->depth_buffer_format = (w_format)_depth_format;
 
 				//define depth stencil image description
 				_depth_stencil_image_create_info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -3221,7 +3221,7 @@ namespace wolf
 				_hr = vkCreateImage(pGDevice->vk_device,
 					&_depth_stencil_image_create_info,
 					nullptr,
-					&_output_presentation_window->vk_depth_buffer_image_view.image);
+					&_output_presentation_window->depth_buffer_image_view.image);
 				if (_hr)
 				{
 					logger.error("error on creating depth buffer for graphics device: " +
@@ -3232,7 +3232,7 @@ namespace wolf
 
 				VkMemoryRequirements _mem_reqs;
 				vkGetImageMemoryRequirements(pGDevice->vk_device,
-					_output_presentation_window->vk_depth_buffer_image_view.image,
+					_output_presentation_window->depth_buffer_image_view.image,
 					&_mem_reqs);
 
 				_mem_alloc.allocationSize = _mem_reqs.size;
@@ -3254,7 +3254,7 @@ namespace wolf
 				_hr = vkAllocateMemory(pGDevice->vk_device,
 					&_mem_alloc,
 					nullptr,
-					&_output_presentation_window->vk_depth_buffer_memory);
+					&_output_presentation_window->depth_buffer_memory);
 				if (_hr)
 				{
 					logger.error("error on allocating memory for depth buffer image for graphics device: " +
@@ -3265,8 +3265,8 @@ namespace wolf
 
 				//bind memory
 				_hr = vkBindImageMemory(pGDevice->vk_device,
-					_output_presentation_window->vk_depth_buffer_image_view.image,
-					_output_presentation_window->vk_depth_buffer_memory,
+					_output_presentation_window->depth_buffer_image_view.image,
+					_output_presentation_window->depth_buffer_memory,
 					0);
 				if (_hr)
 				{
@@ -3281,7 +3281,7 @@ namespace wolf
 				_depth_stencil_view_info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 				_depth_stencil_view_info.pNext = nullptr;
 				_depth_stencil_view_info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-				_depth_stencil_view_info.image = _output_presentation_window->vk_depth_buffer_image_view.image;
+				_depth_stencil_view_info.image = _output_presentation_window->depth_buffer_image_view.image;
 				_depth_stencil_view_info.format = _depth_format;
 				_depth_stencil_view_info.components.r = VK_COMPONENT_SWIZZLE_R;
 				_depth_stencil_view_info.components.g = VK_COMPONENT_SWIZZLE_G;
@@ -3297,7 +3297,7 @@ namespace wolf
 				_hr = vkCreateImageView(pGDevice->vk_device,
 					&_depth_stencil_view_info,
 					nullptr,
-					&_output_presentation_window->vk_depth_buffer_image_view.view);
+					&_output_presentation_window->depth_buffer_image_view.view);
 				if (_hr)
 				{
 					logger.error("error on creating image view for depth buffer image for graphics device: " +
@@ -3307,9 +3307,9 @@ namespace wolf
 				}
 
 
-				_output_presentation_window->vk_depth_buffer_image_view.width = _output_presentation_window->width;
-				_output_presentation_window->vk_depth_buffer_image_view.height = _output_presentation_window->height;
-				_output_presentation_window->vk_depth_buffer_image_view.attachment_desc = w_attachment_buffer_desc::create_depth_desc_buffer();
+				_output_presentation_window->depth_buffer_image_view.width = _output_presentation_window->width;
+				_output_presentation_window->depth_buffer_image_view.height = _output_presentation_window->height;
+				_output_presentation_window->depth_buffer_image_view.attachment_desc = w_attachment_buffer_desc::create_depth_desc_buffer();
 
 #pragma endregion
 

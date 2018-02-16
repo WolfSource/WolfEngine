@@ -10,7 +10,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -61,12 +61,12 @@ void scene::load()
     
 	//define color and depth as an attachments buffers for render pass
 	std::vector<std::vector<w_image_view>> _render_pass_attachments;
-	for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
+	for (size_t i = 0; i < _output_window->swap_chain_image_views.size(); ++i)
 	{
 		_render_pass_attachments.push_back
 		(
 			//COLOR										  , DEPTH
-			{ _output_window->vk_swap_chain_image_views[i], _output_window->vk_depth_buffer_image_view }
+			{ _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
 		);
 	}
     
@@ -98,7 +98,7 @@ void scene::load()
     }
     
     //create two primary command buffers for clearing screen
-    auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+    auto _swap_chain_image_size = _output_window->swap_chain_image_views.size();
     _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
     if (_hr == W_FAILED)
     {
@@ -160,7 +160,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 	const w_pipeline_stage_flags _wait_dst_stage_mask[] =
 	{
-		w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
 
 	//set active command buffer

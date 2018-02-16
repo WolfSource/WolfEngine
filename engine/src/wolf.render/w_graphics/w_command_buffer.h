@@ -33,13 +33,13 @@ namespace wolf
 			W_EXP W_RESULT load(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const size_t& pCount,
-				_In_ const w_command_buffer_level& pLevel = W_COMMAND_BUFFER_LEVEL_PRIMARY,
+				_In_ const w_command_buffer_level& pLevel = w_command_buffer_level::PRIMARY,
 				_In_ const bool& pCreateCommandPool = false,
 				_In_ const w_queue* pCommandPoolQueue = nullptr);
 
 			//begin command buffer
 			W_EXP W_RESULT begin(_In_ const size_t& pCommandBufferIndex,
-				_In_ const w_command_buffer_usage_flags pFlags = w_command_buffer_usage_flag_bits::W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
+				_In_ const w_command_buffer_usage_flags pFlags = w_command_buffer_usage_flag_bits::SIMULTANEOUS_USE_BIT);
 
 			//end command buffer
 			W_EXP W_RESULT end(_In_ const size_t& pCommandBufferIndex);

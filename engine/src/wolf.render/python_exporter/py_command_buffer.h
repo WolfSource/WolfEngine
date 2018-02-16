@@ -23,16 +23,16 @@ namespace pywolf
 	{
 		//export w_command_buffer_level enum
 		enum_<w_command_buffer_level>("w_command_buffer_level")
-			.value("W_COMMAND_BUFFER_LEVEL_PRIMARY", w_command_buffer_level::W_COMMAND_BUFFER_LEVEL_PRIMARY)
-			.value("W_COMMAND_BUFFER_LEVEL_SECONDARY", w_command_buffer_level::W_COMMAND_BUFFER_LEVEL_SECONDARY)
+			.value("PRIMARY", w_command_buffer_level::PRIMARY)
+			.value("SECONDARY", w_command_buffer_level::SECONDARY)
 			.export_values()
 			;
 
 		//export w_command_buffer_usage_flag_bits enum
 		enum_<w_command_buffer_usage_flag_bits>("w_command_buffer_usage_flag_bits")
-			.value("W_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT", w_command_buffer_usage_flag_bits::W_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT)
-			.value("W_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT", w_command_buffer_usage_flag_bits::W_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT)
-			.value("W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT", w_command_buffer_usage_flag_bits::W_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)
+			.value("ONE_TIME_SUBMIT_BIT", w_command_buffer_usage_flag_bits::ONE_TIME_SUBMIT_BIT)
+			.value("RENDER_PASS_CONTINUE_BIT", w_command_buffer_usage_flag_bits::RENDER_PASS_CONTINUE_BIT)
+			.value("SIMULTANEOUS_USE_BIT", w_command_buffer_usage_flag_bits::SIMULTANEOUS_USE_BIT)
 			.export_values()
 			;
 

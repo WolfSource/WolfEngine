@@ -63,13 +63,13 @@ namespace wolf
 		*/
 		struct w_attachment_buffer_desc
 		{
-			VkAttachmentDescription desc;
-			VkAttachmentReference ref;
-			VkMemoryPropertyFlags memory_flag = VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+			w_attachment_description desc;
+			w_attachment_reference ref;
+			w_memory_property_flags memory_flag = w_memory_property_flag_bits::DEVICE_LOCAL_BIT;
 
 			static w_attachment_buffer_desc create_color_desc_buffer()
 			{
-				w_attachment_buffer_desc _buffer_desc = { 0 };
+				w_attachment_buffer_desc _buffer_desc = {};
 				
 				//init description
 				_buffer_desc.desc.flags = 0;
@@ -91,7 +91,7 @@ namespace wolf
 
 			static w_attachment_buffer_desc create_depth_desc_buffer()
 			{
-				w_attachment_buffer_desc _buffer_desc = { 0 };
+				w_attachment_buffer_desc _buffer_desc = {};
 
 				_buffer_desc.desc.flags = 0;
 				_buffer_desc.desc.format = VkFormat::VK_FORMAT_D32_SFLOAT_S8_UINT;
@@ -208,14 +208,14 @@ namespace wolf
             VkSurfaceKHR                                    vk_presentation_surface = 0;
             VkSurfaceFormatKHR                              vk_swap_chain_selected_format;
 			VkSwapchainKHR                                  vk_swap_chain = 0;
-            std::vector<w_image_view>				        vk_swap_chain_image_views;
+            std::vector<w_image_view>				        swap_chain_image_views;
             uint32_t								        swap_chain_image_index = 0;
             
             std::vector<VkSurfaceFormatKHR>			        vk_surface_formats;
                         
-            VkFormat								        vk_depth_buffer_format = VkFormat::VK_FORMAT_UNDEFINED;
-            w_image_view							        vk_depth_buffer_image_view;
-            VkDeviceMemory							        vk_depth_buffer_memory = 0;
+            w_format								        depth_buffer_format = w_format::UNDEFINED;
+            w_image_view							        depth_buffer_image_view;
+            VkDeviceMemory							        depth_buffer_memory = 0;
             
 			//Synchronization objects
             w_semaphore								        swap_chain_image_is_available_semaphore;
@@ -231,6 +231,14 @@ namespace wolf
                 bool                                        command_buffer_began = false;
             };shared_objs_between_cpu_gpu*                  objs_between_cpu_gpu = nullptr;
             bool                                            bliting_supported_by_swap_chain = true;
+#endif
+
+
+#ifdef __PYTHON__
+			boost::python::list py_get_swap_chain_image_views()
+			{
+				return boost_wrap_array(swap_chain_image_views.data(), swap_chain_image_views.size());
+			}
 #endif
 
         private:

@@ -386,7 +386,7 @@ namespace wolf
             {
                 switch (pParam.type)
                 {
-                case UNIFORM:
+				case w_shader_binding_type::UNIFORM:
                 {
                     pNumberOfUniforms++;
                     pDescriptorSetLayoutBindings.push_back(
@@ -399,7 +399,7 @@ namespace wolf
                     });
                 }
                 break;
-                case STORAGE:
+                case w_shader_binding_type::STORAGE:
                 {
                     pNumberOfStorages++;
                     pDescriptorSetLayoutBindings.push_back(
@@ -412,7 +412,7 @@ namespace wolf
                     });
                 }
                 break;
-                case SAMPLER2D:
+                case w_shader_binding_type::SAMPLER2D:
                 {
 					pNumberOfSampler2Ds++;
                     pDescriptorSetLayoutBindings.push_back(
@@ -425,7 +425,7 @@ namespace wolf
                     });
                 }
                 break;
-				case IMAGE:
+				case w_shader_binding_type::IMAGE:
 				{
 					pNumberOfImages++;
 					pDescriptorSetLayoutBindings.push_back(
@@ -438,7 +438,7 @@ namespace wolf
 					});
 				}
 				break;
-				case SAMPLER:
+				case w_shader_binding_type::SAMPLER:
 				{
 					pNumberOfSamplers++;
 					pDescriptorSetLayoutBindings.push_back(

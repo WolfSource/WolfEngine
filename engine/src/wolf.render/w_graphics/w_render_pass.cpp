@@ -12,7 +12,8 @@ namespace wolf
             w_render_pass_pimp() :
                 _name("w_render_pass"),
                 _render_pass(0),
-                _layer_count(1)
+                _layer_count(1),
+				_depth_stencil_enabled(false)
             {
             }
             
@@ -48,11 +49,13 @@ namespace wolf
 					_attachment_descriptions.push_back(_iter.attachment_desc.desc);
 				}
 
+				this->_depth_stencil_enabled = false;
 				if (!pSubpassDescriptions)
 				{
 					auto _color_buffer_desc = w_attachment_buffer_desc::create_color_desc_buffer();
 					auto _depth_buffer_desc = w_attachment_buffer_desc::create_depth_desc_buffer();
 
+					this->_depth_stencil_enabled = true;
 					VkSubpassDescription _subpass_description =
 					{
 						0,
@@ -72,6 +75,17 @@ namespace wolf
 				else
 				{
 					_subpass_descriptions = *pSubpassDescriptions;
+
+					//check attachments for depth stencil
+					for (auto& _sub_pass : _subpass_descriptions)
+					{
+						if (_sub_pass.pDepthStencilAttachment && _sub_pass.pDepthStencilAttachment->layout)
+						{
+							//contains depth stencil attachment
+							this->_depth_stencil_enabled = true;
+							break;
+						}
+					}
 				}
 
 				if (!pSubpassDependencies)
@@ -321,6 +335,11 @@ namespace wolf
 			{
 				return this->_frame_buffers.size();
 			}
+
+			const bool get_depth_stencil_enabled() const
+			{
+				return this->_depth_stencil_enabled;
+			}
             
 #pragma endregion
 
@@ -348,6 +367,7 @@ namespace wolf
             w_viewport_scissor                              _viewport_scissor;
             std::vector<VkFramebuffer>                      _frame_buffers;
             uint32_t                                        _layer_count;
+			bool											_depth_stencil_enabled;
         };
     }
 }
@@ -448,6 +468,11 @@ const size_t w_render_pass::get_number_of_frame_buffers() const
 {
     if (!this->_pimp) return 0;
     return this->_pimp->get_number_of_frame_buffers();
+}
+
+const bool w_render_pass::get_depth_stencil_enabled() const
+{
+	return this->_pimp ? this->_pimp->get_depth_stencil_enabled() : false;
 }
 
 #pragma endregion

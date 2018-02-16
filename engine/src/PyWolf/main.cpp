@@ -61,11 +61,11 @@ BOOST_PYTHON_MODULE(pyWolf)
     }
 
     //export wolf::graphics classes to pyWolf.graphics scope
-    {
-        struct graphics {};
-        scope _graphics = class_<graphics>("graphics");
+	{
+		struct graphics {};
+		scope _graphics = class_<graphics>("graphics");
 
-        pywolf::py_graphics_device_manager_export();  
+		pywolf::py_graphics_device_manager_export();
 		pywolf::py_command_buffer_export();
 		pywolf::py_queue_export();
 		pywolf::py_fences_export();
@@ -73,7 +73,9 @@ BOOST_PYTHON_MODULE(pyWolf)
 		pywolf::py_render_pass_export();
 		pywolf::py_shader_export();
 		pywolf::py_texture_export();
-    }
+		pywolf::py_mesh_export();
+		pywolf::py_pipeline_export();
+	}
 
     //export wolf::framework classes to pyWolf.framework scope
     {

@@ -62,8 +62,8 @@ namespace wolf
 					this->_usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 				}
 
-                if (pMemoryPropertyFlags & w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_VISIBLE_BIT ||
-                    pMemoryPropertyFlags & w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+                if (pMemoryPropertyFlags & w_memory_property_flag_bits::HOST_VISIBLE_BIT ||
+                    pMemoryPropertyFlags & w_memory_property_flag_bits::HOST_COHERENT_BIT)
                 {
                     this->_is_staging = true;
                 }
@@ -1670,9 +1670,9 @@ W_RESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pG
         pWidth,
         pHeight,
 		pGenerateMipMapsLevels,
-        pIsStaging ? (w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                      w_memory_property_flag_bits::W_MEMORY_PROPERTY_HOST_COHERENT_BIT) :
-                      w_memory_property_flag_bits::W_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        pIsStaging ? (w_memory_property_flag_bits::HOST_VISIBLE_BIT |
+                      w_memory_property_flag_bits::HOST_COHERENT_BIT) :
+                      w_memory_property_flag_bits::DEVICE_LOCAL_BIT);
 }
 
 W_RESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -1947,7 +1947,7 @@ VkImageViewType w_texture::get_image_view_type() const
 //get image format
 w_format w_texture::get_format() const
 {
-	if (!this->_pimp) return w_format::W_FORMAT_UNDEFINED;
+	if (!this->_pimp) return w_format::UNDEFINED;
 	return this->_pimp->get_format();
 }
 

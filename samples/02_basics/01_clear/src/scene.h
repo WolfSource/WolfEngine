@@ -40,7 +40,7 @@ public:
     //This is called when the game should draw itself.
     W_RESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
     
-    //This is called when the window game should resized. pIndex is the index of window.
+    //This is called when the window game should resized.
     void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow) override;
     
     //This is called when the we lost graphics device.

@@ -65,9 +65,11 @@ namespace wolf
             w_vertex_declaration                                    declaration = w_vertex_declaration::NOT_DEFINED;
             std::map<uint32_t, std::vector<w_vertex_attribute>>     binding_attributes;
 
+			w_vertex_binding_attributes() {}
 			w_vertex_binding_attributes(_In_ const w_vertex_declaration& pDeclaration)
 			{
 				this->declaration = pDeclaration;
+				if (pDeclaration == w_vertex_declaration::NOT_DEFINED) return;
 
 				std::vector<w_vertex_attribute> _attr;
 				switch (this->declaration)
@@ -154,12 +156,17 @@ namespace wolf
 				this->binding_attributes.clear();
 				this->binding_attributes[0] = _attr;
 			}
-
 			w_vertex_binding_attributes(_In_ const  std::map<uint32_t, std::vector<w_vertex_attribute>>& pDeclaration)
 			{
 				this->binding_attributes = pDeclaration;
 				this->declaration = w_vertex_declaration::USER_DEFINED;
 			}
+
+#ifdef __PYTHON__
+
+			W_EXP boost::python::dict py_get_binding_attributes();
+			W_EXP void py_set_binding_attributes(_In_ boost::python::dict& pDic);
+#endif
         };
 
         class w_mesh_pimp;
@@ -220,7 +227,10 @@ namespace wolf
             typedef		system::w_object                        _super;
             w_mesh_pimp*                                        _pimp;              
 		};
+
 	}
 }
+
+#include "python_exporter/py_mesh.h"
 
 #endif
