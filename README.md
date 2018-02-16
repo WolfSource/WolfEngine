@@ -1,4 +1,4 @@
-# Wolf Engine [![GPL v3 licensed](https://img.shields.io/cran/l/devtools.svg)](https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md) 
+# Wolf Engine [![GPL v3 licensed](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md) 
 <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg" width="256" height="256" alt="WolfSource"/>
 <p><b>Welcome to the Wolf Engine source code.</b></p> 
 <p>The&nbsp;<b>Wolf Engine</b>&nbsp;is the next
@@ -7,7 +7,7 @@ cross-platform open source game engine created by&nbsp;<a href="http://pooyaeima
 The Wolf is a comprehensive set of C++ open source libraries for rendering and supports <b>Lua</b> as an embedded script language and <b>Python</b> as a binding language.</p>
 
 <!--pyWolf-->
-# pyWolf [![MIT licensed](https://img.shields.io/bower/l/bootstrap.svg)](https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md)
+# pyWolf [![LGPL licensed](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md)
 <p><b>pyWolf</b> is set of Python bindings for Wolf.Engine which works with Python 2.7</p>
 
 <!--Getting strated-->
