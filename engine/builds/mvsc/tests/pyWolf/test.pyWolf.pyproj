@@ -3,16 +3,17 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b56554ef-cd84-4c54-a039-a6a70040a00a</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
+    <ProjectHome>
+    </ProjectHome>
     <StartupFile>test.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>pyWolf</Name>
+    <Name>test.pyWolf</Name>
     <RootNamespace>pyWolf</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

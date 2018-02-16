@@ -507,7 +507,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccProvider>SAK</SccProvider>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>WolfSystemWin32</RootNamespace>
+    <RootNamespace>pyWolfSystemWin32</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -568,7 +568,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;RAPIDJSON_ENDIAN;_DEBUG;_WINDOWS;_USRDLL;WOLFSYSTEMWIN32_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;RAPIDJSON_ENDIAN;_DEBUG;_WINDOWS;_USRDLL;PYWOLFSYSTEMWIN32_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -584,7 +584,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;RAPIDJSON_ENDIAN;NDEBUG;_WINDOWS;_USRDLL;WOLFSYSTEMWIN32_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;RAPIDJSON_ENDIAN;NDEBUG;_WINDOWS;_USRDLL;PYWOLFSYSTEMWIN32_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -596,8 +596,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/tbb/oss/windows/include;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/nanomsg/include;$(SolutionDir)/../../dependencies/msgpack/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDLL;WIN32;__WIN32;UNICODE;_UNICODE;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;__LUA__;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/tbb/oss/windows/include;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/nanomsg/include;$(SolutionDir)/../../dependencies/msgpack/include/;$(SolutionDir)/../../dependencies/boost/include/;C:/Python27/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;__WIN32;UNICODE;_UNICODE;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;__LUA__;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;BOOST_PYTHON_STATIC_LIB;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;__PYTHON__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -609,8 +609,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../dependencies/nanomsg/lib/windows/x64/debug/;$(SolutionDir)/../../dependencies/msgpack/lib/windows/x64/debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>advapi32.lib;nanomsg.lib;ws2_32.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../dependencies/nanomsg/lib/windows/x64/debug/;$(SolutionDir)/../../dependencies/msgpack/lib/windows/x64/debug/;$(SolutionDir)/../../dependencies/boost/lib/windows/;C:\Python27\libs\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>advapi32.lib;nanomsg.lib;ws2_32.lib;mswsock.lib;python27.lib;libboost_python-vc141-mt-gd-x64-1_66.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

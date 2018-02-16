@@ -86,9 +86,6 @@ BOOST_PYTHON_MODULE(pyWolf)
 
     }
 
-    //global scope
-    def("bounding_box_from_bounding_sphere", w_bounding_box::create_from_bounding_sphere);
-    def("bounding_sphere_from_bounding_box", w_bounding_sphere::create_from_bounding_box);
     //export logger in global scope
     pywolf::py_logger_export();
 

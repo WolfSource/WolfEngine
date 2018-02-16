@@ -29,16 +29,10 @@
     <ClInclude Include="..\..\..\src\pyWolf\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\wolf.content_pipeline\wolf.content_pipeline.Win32.vcxproj">
-      <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295928}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\wolf.media_core\wolf.media_core.Win32.vcxproj">
-      <Project>{1c266bc7-af7e-43e2-9cc9-4f6954295929}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\wolf.render\wolf.vulkan\wolf.vulkan.Win32.vcxproj">
+    <ProjectReference Include="..\wolf.render\wolf.vulkan\pyWolf.vulkan.Win32.vcxproj">
       <Project>{be11c662-e8ca-4083-a5b2-f380a96a20c2}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\wolf.system\wolf.system.Win32.vcxproj">
+    <ProjectReference Include="..\wolf.system\pyWolf.system.Win32.vcxproj">
       <Project>{c7eafc1c-9cfd-4c25-8ae9-c1373dd5df35}</Project>
     </ProjectReference>
   </ItemGroup>
@@ -143,7 +137,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:/Python27/include;$(SolutionDir)/../../dependencies/vulkan/Include/;$(SolutionDir)/../../src/pyWolf;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../src/wolf.media_core;$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../dependencies/tbb/oss/windows/include;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/msgpack/include;$(SolutionDir)/../../dependencies/boost/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;BOOST_PYTHON_STATIC_LIB;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;_UNICODE;UNICODE;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;BOOST_PYTHON_STATIC_LIB;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;__PYTHON__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -154,7 +148,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>C:/Python27/libs/;$(SolutionDir)/../../dependencies/vulkan/Lib/;$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x64/debug/;$(SolutionDir)/../../dependencies/boost/lib/windows/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:/Python27/libs/;$(SolutionDir)/../../dependencies/vulkan/Lib/;$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x64/debug/;$(SolutionDir)/../../dependencies/boost/lib/windows/;$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/Win32/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;python27.lib;libboost_python-vc141-mt-gd-x64-1_66.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -44,6 +44,8 @@ namespace pywolf
             .def("contains_point", &w_bounding_box::py_contains_point, "check weather this bounding box contains a point")
             .def("contains_bounding_box", &w_bounding_box::py_contains_bounding_box, "check weather bounding box contains a bounding box")
             .def("get_corners", &w_bounding_box::py_get_corners, "get corners points")
+			.def("create_from_bounding_sphere", &w_bounding_box::create_from_bounding_sphere, "create bounding box from bounding sphere")
+			.staticmethod("create_from_bounding_sphere")
             ;
         
         //export w_bounding_sphere class
@@ -54,6 +56,8 @@ namespace pywolf
             .def("py_set_radius", &w_bounding_sphere::py_set_radius, "set radius of bounding sphere")
             .def("merge", &w_bounding_sphere::merge, "merge with another bounding sphere")
             .def("intersects", &w_bounding_sphere::intersects_bounding_sphere, "check weather this bounding sphere intersects with another bounding sphere")
+			.def("create_from_bounding_box", &w_bounding_sphere::create_from_bounding_box, "create bounding sphere from bounding box")
+			.staticmethod("create_from_bounding_box")
             ;
 
 		//export w_bounding_frustum class
