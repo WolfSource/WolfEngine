@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:tests/test_vulkan_macOS/test_vulkan_macOS.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:wolf.content_pipeline/wolf.content_pipeline.macOS.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:wolf.media_core/wolf.media_core.macOS.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:wolf.system/wolf.system.macOS.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:wolf.vulkan/wolf.vulkan.macOS.xcodeproj">
+   </FileRef>
+</Workspace>

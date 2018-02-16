@@ -329,12 +329,12 @@ void scene::load()
 
 	//define color and depth as an attachments buffers for render pass
 	std::vector<std::vector<w_image_view>> _render_pass_attachments;
-	for (size_t i = 0; i < _output_window->vk_swap_chain_image_views.size(); ++i)
+	for (size_t i = 0; i < _output_window->swap_chain_image_views.size(); ++i)
 	{
 		_render_pass_attachments.push_back
 		(
-			//COLOR										  , DEPTH
-			{ _output_window->vk_swap_chain_image_views[i], _output_window->vk_depth_buffer_image_view }
+			//COLOR									   , DEPTH
+			{ _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
 		);
 	}
 
@@ -366,7 +366,7 @@ void scene::load()
     }
 
     //create two primary command buffers for clearing screen
-    auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+    auto _swap_chain_image_size = _output_window->swap_chain_image_views.size();
     _hr = this->_gui_command_buffers.load(_gDevice, _swap_chain_image_size);
     if (_hr == W_FAILED)
     {

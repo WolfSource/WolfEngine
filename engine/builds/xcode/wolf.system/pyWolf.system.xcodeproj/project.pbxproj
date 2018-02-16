@@ -16,6 +16,7 @@
 		2C41F9271ED34FAE007012E4 /* w_point.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9251ED34FAE007012E4 /* w_point.h */; };
 		2C41F9281ED34FAE007012E4 /* w_rectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9261ED34FAE007012E4 /* w_rectangle.h */; };
 		2C4990401FDF312F00E656B2 /* w_memory_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49903F1FDF312E00E656B2 /* w_memory_pool.h */; };
+		2C49EED7201A7C1600EF7AFB /* libboost_python-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C49EED6201A7C1600EF7AFB /* libboost_python-mt.a */; };
 		2C6521941FD4AF5B0030A053 /* coord.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C65215D1FD4AF550030A053 /* coord.hpp */; };
 		2C6521951FD4AF5B0030A053 /* filter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C6521621FD4AF560030A053 /* filter.hpp */; };
 		2C6521961FD4AF5B0030A053 /* clear.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C6521721FD4AF570030A053 /* clear.hpp */; };
@@ -234,6 +235,7 @@
 		2CDD1360202781D9002B1AAC /* py_window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1356202781D8002B1AAC /* py_window.h */; };
 		2CDD1361202781D9002B1AAC /* py_point.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1357202781D8002B1AAC /* py_point.h */; };
 		2CDD1362202781D9002B1AAC /* py_bounding.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1358202781D8002B1AAC /* py_bounding.h */; };
+		2CDF24862036FFBA00BD3DE5 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C49EED4201A60A900EF7AFB /* Python.framework */; };
 		2CDF24882037011D00BD3DE5 /* py_std.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDF24872037011D00BD3DE5 /* py_std.h */; };
 		2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF51E64307D005E0F45 /* glm_extention.h */; };
 		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
@@ -767,7 +769,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CDF24862036FFBA00BD3DE5 /* Python.framework in Frameworks */,
 				2C07D51320318B20005E7D14 /* libluajit-static.a in Frameworks */,
+				2C49EED7201A7C1600EF7AFB /* libboost_python-mt.a in Frameworks */,
 				2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */,
 				2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */,
 				2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */,
@@ -1751,7 +1755,10 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -1823,29 +1830,35 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
+				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.system/w_system_pch.h";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
-				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
+				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					DEBUG,
 					BOOST_PYTHON_STATIC_LIB,
+					__PYTHON__,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system/",
+					"$(SRCROOT)/../../../dependencies/boost/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
+					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/debug/",
+					"$(SRCROOT)/../../../dependencies/boost/lib/osx/debug/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
 				);
@@ -1861,25 +1874,31 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
+				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.system/w_system_pch.h";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __PYTHON__;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system/",
+					"$(SRCROOT)/../../../dependencies/boost/include/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
+					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/release/",
+					"$(SRCROOT)/../../../dependencies/boost/lib/osx/release/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
 				);

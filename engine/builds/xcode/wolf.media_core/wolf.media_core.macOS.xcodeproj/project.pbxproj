@@ -224,10 +224,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
-					"$(SRCROOT)/../../../src/wolf.system",
-				);
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -276,10 +273,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
-					"$(SRCROOT)/../../../src/wolf.system",
-				);
+				HEADER_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
@@ -293,7 +287,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = (
+				FRAMEWORK_SEARCH_PATHS = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
 					"$(SRCROOT)/../../../dependencies/ffmpeg/bin/osx/",
 				);
@@ -308,13 +303,15 @@
 					__WOLF_MEDIA_CORE__,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = (
+				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.media_core",
 					"$(SRCROOT)/../../../dependencies/ffmpeg/include/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include",
 				);
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/ffmpeg/bin/osx/";
+				LIBRARY_SEARCH_PATHS = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/ffmpeg/bin/osx/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -326,7 +323,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = (
+				FRAMEWORK_SEARCH_PATHS = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
 					"$(SRCROOT)/../../../dependencies/ffmpeg/bin/osx/",
 				);
@@ -340,13 +338,15 @@
 				);
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = (
+				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.media_core",
 					"$(SRCROOT)/../../../dependencies/ffmpeg/include/",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include",
 				);
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/ffmpeg/bin/osx/";
+				LIBRARY_SEARCH_PATHS = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/ffmpeg/bin/osx/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

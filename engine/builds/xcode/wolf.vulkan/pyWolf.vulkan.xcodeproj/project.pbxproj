@@ -64,6 +64,7 @@
 		2CDD13772030257B002B1AAC /* py_pipeline.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD13742030257B002B1AAC /* py_pipeline.h */; };
 		2CDD13782030257B002B1AAC /* py_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD13752030257B002B1AAC /* py_shader.h */; };
 		2CDF24842036F78500BD3DE5 /* py_mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDF24832036F78500BD3DE5 /* py_mesh.h */; };
+		2CDF24852036FFB000BD3DE5 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C84201F92C5003C80F7 /* Python.framework */; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
 		2CFFAC701FCEAA400020A112 /* w_command_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */; };
 		2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */; };
@@ -144,6 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CDF24852036FFB000BD3DE5 /* Python.framework in Frameworks */,
 				2C299C8E201FA4F9003C80F7 /* libboost_python-mt.a in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
 				2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */,
@@ -515,10 +517,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -531,6 +533,7 @@
 					MSGPACK_USE_CPP03,
 					MSGPACK_DISABLE_LEGACY_NIL,
 					BOOST_PYTHON_STATIC_LIB,
+					__PYTHON__,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
@@ -544,9 +547,10 @@
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 					"$(SRCROOT)/../../src/wolf.render",
+					"$(SRCROOT)/../../../dependencies/boost/include/",
+					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
 				);
-				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/boost/lib/osx/debug";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/boost/lib/osx/debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -558,7 +562,11 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
+				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
