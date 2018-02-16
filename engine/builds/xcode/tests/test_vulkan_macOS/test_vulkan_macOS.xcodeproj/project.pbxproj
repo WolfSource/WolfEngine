@@ -284,7 +284,6 @@
 					__VULKAN__,
 					MSGPACK_USE_CPP03,
 					MSGPACK_DISABLE_LEGACY_NIL,
-					__PYTHON__,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -368,7 +367,7 @@
 				);
 				INFOPLIST_FILE = test_vulkan_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "WolfSource.io.wolf-vulkan-metal-macOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "WolfSource.io.test-vulkan-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -395,7 +394,7 @@
 				);
 				INFOPLIST_FILE = test_vulkan_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "WolfSource.io.wolf-vulkan-metal-macOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "WolfSource.io.test-vulkan-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
