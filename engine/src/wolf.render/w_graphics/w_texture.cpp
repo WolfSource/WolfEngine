@@ -542,19 +542,22 @@ namespace wolf
             W_RESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
             {
 				/*
-					//just for test
-					std::string _msg = "std::vector<uint8_t> _logo_64 = {";
-					for (size_t i = 0; i < this->_width * this->_height; i += 4)
+				//just for test
+				//std::string _msg = "std::map<int, uint8_t> _logo_data = {";
+				std::string _msg = "std::vector<int> _black = {";
+				for (size_t i = 0; i < this->_width * this->_height * 4; ++i)
+				{
+					if (pRGBA[i] == 0)
 					{
-						_msg += (std::to_string(pRGBA[i])) + ",";//R
-						_msg += (std::to_string(pRGBA[i + 1])) + ",";//G
-						_msg += (std::to_string(pRGBA[i + 2])) + ",";//B
-						//skip A
+						//_msg += "{" + std::to_string(i) + "," + std::to_string(pRGBA[i]) + "},";
+						_msg += std::to_string(i) + ",";
 					}
-
-					logger.write(_msg);
-					_msg.clear();
+				}
+				_msg += "}";
+				logger.write(_msg);
+				_msg.clear();
 				*/
+				
 
 				const std::string _trace_info = "w_texture::copy_data_to_texture_2D";
 

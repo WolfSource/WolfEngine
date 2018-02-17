@@ -206,7 +206,7 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
     </td>
     <td>
        <p><b>02_shader</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/02_shader/view.png" alt="02_shader" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/02_shader/doc/view.png" alt="02_shader" width="256" height="192"/>
       <p>Loading and using shaders</p>
     </td>
     <td>

@@ -89,11 +89,31 @@ class scene(QWidget):
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #The following codes have been added for this project
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #loading vertex shader
         _content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/02_shader/src/content/"
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER, "main")
         if _hr == False:
             print "Error on loading vertex shader"
             return
+
+        #loading fragment shader
+        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER, "main")
+        if _hr == False: 
+            print "Error on loading fragment shader"
+            return
+
+        #loading pipeline cache
+        _pipeline_cache_name = "pipeline_cache";
+        _hr = self._pipeline.create_pipeline_cache(self._gDevice, _pipeline_cache_name)
+        if _hr == False:
+            print "Error on creating pipeline cache"
+
+         #create pipeline
+        _vba = pyWolf.graphics.w_vertex_binding_attributes
+        _hr = self._pipeline.boost_load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [ self._viewport ], [ self._viewport_scissor ], _pipeline_cache_name)
+        if _hr == False:
+            print "Error on creating pipeline"
+
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
         _hr = self.build_command_buffers()
