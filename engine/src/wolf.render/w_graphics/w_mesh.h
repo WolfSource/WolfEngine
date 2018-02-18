@@ -19,7 +19,7 @@ namespace wolf
 {
 	namespace graphics
 	{        
-        enum w_vertex_declaration
+        typedef enum w_vertex_declaration
         {
             NOT_DEFINED,
 			//User defined
@@ -50,15 +50,15 @@ namespace wolf
             VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES,
             //Position(Float3) + Float3 + Float3 + Float3 + Float3 + Float3 + Float3
             VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES
-        };
+        } w_vertex_declaration;
 
-        enum w_vertex_attribute : uint32_t
+		typedef enum w_vertex_attribute : uint32_t
         {
             Float = 4,
             Vec2 = 4 * 2,
             Vec3 = 4 * 3,
             Vec4 = 4 * 4,
-        };
+        } w_vertex_attribute;
 
         struct w_vertex_binding_attributes
         {

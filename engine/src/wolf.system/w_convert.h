@@ -149,6 +149,16 @@ namespace wolf
 				return wstring_to_string(wstr);
 			}
 
+			//copy string to const char*
+			inline char* copy_string_to_const_char_ptr(_In_z_ const std::string& pStr)
+			{
+				auto _size = pStr.size();
+				auto _ptr = (char*)malloc((_size + 1) * sizeof(char));
+				memcpy(_ptr, &pStr[0], _size * sizeof(char));
+				_ptr[_size] = '\0';
+				return _ptr;
+			}
+
             inline bool has_string_start_with(_In_z_ const std::string& pString, _In_z_ const std::string pStartWith)
             {
                 return strncmp(pStartWith.c_str(), pString.c_str(), pStartWith.size()) == 0;

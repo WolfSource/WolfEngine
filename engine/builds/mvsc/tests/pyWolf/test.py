@@ -24,6 +24,11 @@ class scene(QWidget):
         self._draw_render_pass = pyWolf.graphics.w_render_pass()
         self._draw_fence = pyWolf.graphics.w_fences()
         self._draw_semaphore = pyWolf.graphics.w_semaphore()
+
+        _config = pyWolf.graphics.w_graphics_device_manager_configs()
+        _config.debug_gpu = True
+        self._game.set_graphics_device_manager_configs(_config)
+
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #The following codes have been added for this project
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -65,42 +70,42 @@ class scene(QWidget):
         _hr = self._draw_render_pass.load(self._gDevice, self._viewport, self._viewport_scissor, _render_pass_attachments)
         if _hr == False:
             print "Error on loading render pass"
-            return
+            sys.exit(1)
 
         #create one semaphore for drawing
         _hr = self._draw_semaphore.initialize(self._gDevice)
         if _hr == False:
             print "Error on initializing semaphore"
-            return
+            sys.exit(1)
 
         #create one fence for drawing
         _hr = self._draw_fence.initialize(self._gDevice, 1)
         if _hr == False:
             print "Error on initializing fence(s)"
-            return
+            sys.exit(1)
 
         #create one fence for drawing
         number_of_swap_chains = self._gDevice.get_number_of_swap_chains()
         _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.PRIMARY)
         if _hr == False:
             print "Error on initializing draw command buffer(s)"
-            return
+            sys.exit(1)
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #The following codes have been added for this project
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #loading vertex shader
-        _content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/02_shader/src/content/"
+        _content_path_dir = "D:/github/WolfSource/Wolf.Engine/samples/02_basics/02_shader/src/content/"
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER, "main")
         if _hr == False:
             print "Error on loading vertex shader"
-            return
+            sys.exit(1)
 
         #loading fragment shader
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER, "main")
         if _hr == False: 
             print "Error on loading fragment shader"
-            return
+            sys.exit(1)
 
         #loading pipeline cache
         _pipeline_cache_name = "pipeline_cache";
@@ -109,17 +114,18 @@ class scene(QWidget):
             print "Error on creating pipeline cache"
 
          #create pipeline
-        _vba = pyWolf.graphics.w_vertex_binding_attributes
-        _hr = self._pipeline.boost_load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [ self._viewport ], [ self._viewport_scissor ], _pipeline_cache_name)
+        _vba = pyWolf.graphics.w_vertex_binding_attributes()
+        _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name)
         if _hr == False:
             print "Error on creating pipeline"
+            sys.exit(1)
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
         _hr = self.build_command_buffers()
         if _hr == False:
             print "Error on building draw command buffer(s)"
-            return
+            sys.exit(1)
         
         print "scene loaded successfully"
 
@@ -133,7 +139,11 @@ class scene(QWidget):
                 break
             
             self._draw_render_pass.begin(i, self._draw_command_buffers, pyWolf.system.w_color.CORNFLOWER_BLUE(), 1.0, 0)
+            
             #place your draw code
+            self._pipeline.bind(self._draw_command_buffers)
+            self._gDevice.draw(self._draw_command_buffers, 3, 1, 0, 0)
+
             self._draw_render_pass.end(self._draw_command_buffers)
             
             _hr = self._draw_command_buffers.end(i)
@@ -223,6 +233,17 @@ class scene(QWidget):
 
         self._draw_render_pass.release()
         self._draw_render_pass = None
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+#The following codes have been added for this project
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+        self._shader.release()
+        self._shader = None
+
+        self._pipeline.release()
+        self._pipeline = None
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         self._game.exit()
         self._game = None

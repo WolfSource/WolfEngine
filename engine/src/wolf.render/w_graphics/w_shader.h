@@ -82,7 +82,7 @@ namespace wolf
 			W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 							   _In_z_ const std::wstring& pShaderBinaryPath,
 				               _In_ const w_shader_stage pShaderStage,
-                               _In_z_ const char* pMainFunctionName = "main");
+                               _In_z_ const std::string& pMainFunctionName = "main");
 
 			//release all resources
 			W_EXP virtual ULONG release() override;
@@ -120,7 +120,7 @@ namespace wolf
                 _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
                 _In_ const bool pStoreToSharedShaders,
                 _Inout_ w_shader** pShader,
-                _In_z_ const char* pMainFunctionName = "main");
+                _In_z_ const std::string& pMainFunctionName = "main");
             
             W_EXP static w_shader* get_shader_from_shared(_In_z_ const std::string& pName);
             W_EXP static ULONG release_shared_shaders();

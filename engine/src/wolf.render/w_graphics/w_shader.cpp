@@ -18,7 +18,8 @@ namespace wolf
                 _descriptor_set_layout(0),
                 _compute_descriptor_set_layout(0),
                 _descriptor_set(0),
-                _compute_descriptor_set(0)
+                _compute_descriptor_set(0),
+				_entry_point_name(nullptr)
             {
                 
             }
@@ -26,7 +27,7 @@ namespace wolf
             W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 						 _In_z_ const std::wstring& pShaderBinaryPath,
                          _In_ const w_shader_stage pShaderStage,
-                         _In_z_ const char* pMainFunctionName)
+                         _In_z_ const std::string& pMainFunctionName)
             {
                 this->_gDevice = pGDevice;
                 
@@ -92,10 +93,11 @@ namespace wolf
 				w_pipeline_shader_stage_create_info _pipeline_shader_stage_info = {};
                 _pipeline_shader_stage_info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
                 _pipeline_shader_stage_info.module = _shader_module;
-                _pipeline_shader_stage_info.pName = pMainFunctionName;
-                
-                _pipeline_shader_stage_info.stage = (VkShaderStageFlagBits)pShaderStage;
-                
+				_pipeline_shader_stage_info.stage = (VkShaderStageFlagBits)pShaderStage;
+
+				this->_entry_point_name = wolf::system::convert::copy_string_to_const_char_ptr(pMainFunctionName);
+				_pipeline_shader_stage_info.pName = this->_entry_point_name;
+
                 if (pShaderStage == w_shader_stage::COMPUTE_SHADER)
                 {
                     this->_compute_shader_stage = _pipeline_shader_stage_info;
@@ -160,6 +162,10 @@ namespace wolf
                     nullptr);
                 this->_descriptor_pool = 0;
 
+				if (this->_entry_point_name)
+				{
+					free(this->_entry_point_name);
+				}
 
                 return 0;
             }
@@ -647,6 +653,7 @@ namespace wolf
             VkDescriptorSet                                         _descriptor_set;
             VkDescriptorSet                                         _compute_descriptor_set;
             std::vector<w_shader_binding_param>                     _shader_binding_params;
+			char*													_entry_point_name;
         };
     }
 }
@@ -668,7 +675,7 @@ w_shader::~w_shader()
 W_RESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_z_ const std::wstring& pShaderBinaryPath,
 	_In_ const w_shader_stage pShaderStage,
-	_In_z_ const char* pMainFunctionName)
+	_In_z_ const std::string& pMainFunctionName)
 {
 	if (!this->_pimp) return W_FAILED;
 
@@ -761,7 +768,7 @@ W_RESULT w_shader::load_shader(_In_ const std::shared_ptr<w_graphics_device>& pG
     _In_ const std::vector<w_shader_binding_param> pShaderBindingParams,
     _In_ const bool pStoreToSharedShaders,
     _Inout_ w_shader** pShader,
-    _In_z_ const char* pMainFunctionName)
+    _In_z_ const std::string& pMainFunctionName)
 {
     //check already exists
     w_shader* _shader = nullptr;
