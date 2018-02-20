@@ -418,7 +418,7 @@ bool w_logger::get_is_open() const
 
 //Declaration of extern objects as shared
 
-#ifdef __WIN32
+#if defined(__WIN32) && !defined(__STATIC_LIB)
 #pragma data_seg (".shared")
 #endif
 
@@ -434,7 +434,7 @@ void wolf::release_shared_data_over_all_instances()
     windows_frame_time_in_sec.clear();
 }
 
-#ifdef __WIN32
+#if defined(__WIN32) && !defined(__STATIC_LIB)
 #pragma data_seg ()
 #pragma comment(linker,"/SECTION:.shared,RWS")
 #endif

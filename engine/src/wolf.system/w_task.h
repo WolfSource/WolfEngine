@@ -3,7 +3,7 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_task.h
-	Description		 : A task class based Intel tbb task
+	Description		 : A task class
 	Comment          :
 */
 

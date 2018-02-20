@@ -14,7 +14,7 @@
 #ifndef __W_SYSTEM_EXPORT_H__
 #define __W_SYSTEM_EXPORT_H__
 
-#if defined(__WIN32) || defined(__UWP)
+#if (defined(__WIN32) || defined(__UWP)) && !defined(__WOLF_SYSTEM_STATIC_LIB)
 
 #ifndef WSYS_EXP
 
@@ -26,8 +26,7 @@
 
 #endif
 
-
-#elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
+#else
 
 #ifndef WSYS_EXP
 #define WSYS_EXP //dump

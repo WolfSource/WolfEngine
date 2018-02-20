@@ -31,13 +31,13 @@ namespace wolf
 			WSYS_EXP w_memory();
 			WSYS_EXP ~w_memory();
 
-			WSYS_EXP bool	malloc(size_t pSize);
-			WSYS_EXP bool	allocate(size_t pSize, uint8_t pAlignment);
-			WSYS_EXP void*	read(size_t p_memory_address);
-			WSYS_EXP void	write(size_t p_memory_address, void* pValue);
-			WSYS_EXP size_t	get_address() const;
-			WSYS_EXP void	clear();
-			WSYS_EXP void	free();
+			WSYS_EXP bool	Malloc(size_t pSize);
+			WSYS_EXP bool	Allocate(size_t pSize, uint8_t pAlignment);
+			WSYS_EXP void*	Read(size_t p_memory_address);
+			WSYS_EXP void	Write(size_t p_memory_address, void* pValue);
+			WSYS_EXP size_t	Get_address() const;
+			WSYS_EXP void	Clear();
+			WSYS_EXP void	Free();
 
 			// _1KB = 10424 B, make sure change size of MAX_PTR_ALLOCS
 			static const size_t _1KB() { return 1024; }

@@ -38,14 +38,6 @@
     sprintf_s((s_), (l_), (f_), __VA_ARGS__)
 #endif
 
-#ifdef _DEBUG
-	#pragma comment(lib, "tbb_debug.lib") 
-	#pragma comment(lib, "tbbmalloc_debug.lib") 
-#else
-	#pragma comment(lib, "tbb.lib")
-	#pragma comment(lib, "tbbmalloc.lib") 
-#endif
-
 #include "w_target_ver.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
@@ -79,7 +71,6 @@
 #if defined(__WIN32) || defined(__UWP)
 
 #include <tchar.h>
-#include <tbb/scalable_allocator.h>
 
 #elif defined(__ANDROID)
 

@@ -4,6 +4,7 @@
 *.idb
 *.pdb
 *.ipch
+*.res
 /bin/Build/
 /bin/x64/
 /docs/extra/
