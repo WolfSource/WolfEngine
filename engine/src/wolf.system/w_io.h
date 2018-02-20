@@ -16,7 +16,7 @@
 
 #if defined(__WIN32)
 
-#include <fileapi.h>
+//#include <fileapi.h>
 #include <io.h>
 
 #elif defined(__UWP)
@@ -246,7 +246,7 @@ namespace wolf
 #if (_WIN32_WINNT >= 0x0602 /*_WIN32_WINNT_WIN8*/)
 				ScopedHandle _hFile(safe_handle(CreateFile2(pPath, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, nullptr)));
 #else
-				ScopedHandle _hFile(safe_handle(CreateFileW(_path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)));
+				ScopedHandle _hFile(safe_handle(CreateFileW(pPath, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)));
 #endif //(_WIN32_WINNT >= 0x0602 /*_WIN32_WINNT_WIN8*/)
 
 				if (!_hFile)

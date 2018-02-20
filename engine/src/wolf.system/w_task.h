@@ -50,53 +50,53 @@ namespace wolf
 	}
 }
 
-#if !defined(__ANDROID) && !defined(__iOS__) && !defined(__PYTHON__)
-
-#include <tbb/task.h>
-
-namespace tbb
-{
-	class Task : public tbb::task
-	{
-	public:
-		WSYS_EXP Task(_In_ std::function<W_RESULT(void)>& pTaskWork)
-		{
-			this->_task_work = pTaskWork;
-		}
-		WSYS_EXP Task(_In_ std::function<W_RESULT(void)>& pTaskWork, _In_ tbb::priority_t pPriority)
-		{
-			this->_task_work = pTaskWork;
-			this->set_group_priority(pPriority);
-		}
-		WSYS_EXP Task(_In_ std::function<W_RESULT(void)>& pTaskWork, _In_ std::function<void(W_RESULT)>& pCallBack, _In_ tbb::priority_t pPriority)
-		{
-			this->_task_work = pTaskWork;
-			this->_call_back = pCallBack;
-			this->set_group_priority(pPriority);
-		}
-		
-		WSYS_EXP tbb::task* execute()
-		{
-            W_RESULT _hr;
-			if (_task_work)
-			{
-                _hr = _task_work();
-			}
-
-			if (_call_back)
-			{
-				_call_back(_hr);
-			}
-
-			return NULL;
-		}
-
-	private:
-		std::function<W_RESULT(void)> _task_work;
-		std::function<void(W_RESULT)> _call_back;
-	};
-}
-
-#endif//__WIN32 || __UWP
+//#if !defined(__ANDROID) && !defined(__iOS__) && !defined(__PYTHON__)
+//
+//#include <tbb/task.h>
+//
+//namespace tbb
+//{
+//	class Task : public tbb::task
+//	{
+//	public:
+//		WSYS_EXP Task(_In_ std::function<W_RESULT(void)>& pTaskWork)
+//		{
+//			this->_task_work = pTaskWork;
+//		}
+//		WSYS_EXP Task(_In_ std::function<W_RESULT(void)>& pTaskWork, _In_ tbb::priority_t pPriority)
+//		{
+//			this->_task_work = pTaskWork;
+//			this->set_group_priority(pPriority);
+//		}
+//		WSYS_EXP Task(_In_ std::function<W_RESULT(void)>& pTaskWork, _In_ std::function<void(W_RESULT)>& pCallBack, _In_ tbb::priority_t pPriority)
+//		{
+//			this->_task_work = pTaskWork;
+//			this->_call_back = pCallBack;
+//			this->set_group_priority(pPriority);
+//		}
+//		
+//		WSYS_EXP tbb::task* execute()
+//		{
+//            W_RESULT _hr;
+//			if (_task_work)
+//			{
+//                _hr = _task_work();
+//			}
+//
+//			if (_call_back)
+//			{
+//				_call_back(_hr);
+//			}
+//
+//			return NULL;
+//		}
+//
+//	private:
+//		std::function<W_RESULT(void)> _task_work;
+//		std::function<void(W_RESULT)> _call_back;
+//	};
+//}
+//
+//#endif//__WIN32 || __UWP
 
 #endif //__W_TASK_H__

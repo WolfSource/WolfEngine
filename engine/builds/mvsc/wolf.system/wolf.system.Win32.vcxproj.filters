@@ -1350,4 +1350,7 @@
       <Filter>rapidxml</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
+  </ItemGroup>
 </Project>

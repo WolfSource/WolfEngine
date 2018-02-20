@@ -17,9 +17,6 @@
 #include "w_system_export.h"
 #include "w_std.h"
 
-#define TBB_PREVIEW_MEMORY_POOL 1
-#include <tbb/memory_pool.h>
-
 #define __1KB__ 1024
 #define __1MB__ 1024 * __1KB__
 #define __1GB__ 1024 * __1MB__
@@ -40,37 +37,31 @@ namespace wolf
 
             ~w_memory_pool()
             {
-                free();
+                release();
             }
 
             //Allocate block of memory (in bytes)
-            void* malloc(_In_ size_t pSizeInBytes)
+            void* alloc(_In_ size_t pSizeInBytes)
             {
                 this->_size_in_bytes = pSizeInBytes;
-                this->_ptr = this->_pool.malloc(pSizeInBytes);
+                this->_ptr = malloc(pSizeInBytes);
                 return this->_ptr;
             }
 
             //Re-allocate block of memory (in bytes)
-            void* realloc(_In_ size_t pSizeInBytes)
+            void* re_alloc(_In_ size_t pSizeInBytes)
             {
                 this->_size_in_bytes = pSizeInBytes;
-                this->_ptr = this->_pool.realloc(this->_ptr, pSizeInBytes);
+                this->_ptr = realloc(this->_ptr, pSizeInBytes);
                 return this->_ptr;
-            }
-
-            //Reset pool to reuse its memory (free all objects at once)
-            void recycle()
-            {
-                this->_pool.recycle();
             }
             
             //Discard all allocated memory
-            ULONG free()
+            ULONG release()
             {
                 if (this->_is_released) return 1;
 
-                this->_pool.free(this->_ptr);
+                free(this->_ptr);
                 this->_is_released = true;
                 return 0;
             }
@@ -92,8 +83,7 @@ namespace wolf
             w_memory_pool(w_memory_pool const&);
             w_memory_pool& operator= (w_memory_pool const&);
 
-            void*                                            _ptr = nullptr;
-            tbb::memory_pool<tbb::scalable_allocator<char>> _pool;
+            void*                                           _ptr = nullptr;
             size_t                                          _size_in_bytes = 0;
             bool                                            _is_released = false;
 		};
