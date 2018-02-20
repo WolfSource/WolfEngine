@@ -758,11 +758,11 @@ namespace wolf
                             auto _frame = (uint8_t*)(this->_down_sample_avFrame->data[0]);
                             if (_frame)
                             {
-                                _hr = pVideoMemory.allocate(sizeof(w_video_frame_down_sample_data), std::alignment_of<w_video_frame_down_sample_data>::value);
+                                _hr = pVideoMemory.Allocate(sizeof(w_video_frame_down_sample_data), std::alignment_of<w_video_frame_down_sample_data>::value);
                                 if (_hr)
                                 {
-                                    auto _address = pVideoMemory.get_address() - 1;
-                                    auto _memory = pVideoMemory.read(_address);
+                                    auto _address = pVideoMemory.Get_address() - 1;
+                                    auto _memory = pVideoMemory.Read(_address);
 
                                     auto _videoFrameData = static_cast<w_video_frame_down_sample_data*>(_memory);
                                     if (_videoFrameData)
@@ -807,11 +807,11 @@ namespace wolf
                             if (_frame)
                             {
                                 auto _size = width * height;
-                                _hr = pVideoMemory.allocate(4 * _size, std::alignment_of<int>::value);
+                                _hr = pVideoMemory.Allocate(4 * _size, std::alignment_of<int>::value);
                                 if (_hr)
                                 {
-                                    auto _address = pVideoMemory.get_address() - 1;
-                                    auto _memory = pVideoMemory.read(_address);
+                                    auto _address = pVideoMemory.Get_address() - 1;
+                                    auto _memory = pVideoMemory.Read(_address);
 
                                     auto _data = static_cast<int*>(_memory);
                                     if (_data)
@@ -899,11 +899,11 @@ namespace wolf
                         _update_clock(this->_audio_codec);
                         _update_time(this->_audio_codec.clock);
 
-                        auto _hr = pAudioMemory.allocate(sizeof(w_audio_frame_data), std::alignment_of<w_audio_frame_data>::value);
+                        auto _hr = pAudioMemory.Allocate(sizeof(w_audio_frame_data), std::alignment_of<w_audio_frame_data>::value);
                         if (_hr)
                         {
-                            auto _address = pAudioMemory.get_address() - 1;
-                            auto _memory = pAudioMemory.read(_address);
+                            auto _address = pAudioMemory.Get_address() - 1;
+                            auto _memory = pAudioMemory.Read(_address);
 
                             auto _frame = new (_memory) w_audio_frame_data();
                             if (_frame)
@@ -1033,12 +1033,12 @@ namespace wolf
                         if (_frame)
                         {
                             auto _size = width * height;
-                            auto _hr = pVideoMemory.allocate(sizeof(int) * _size,
+                            auto _hr = pVideoMemory.Allocate(sizeof(int) * _size,
                                 std::alignment_of<int>::value);
                             if (_hr)
                             {
-                                auto _address = pVideoMemory.get_address() - 1;
-                                auto _memory = pVideoMemory.read(_address);
+                                auto _address = pVideoMemory.Get_address() - 1;
+                                auto _memory = pVideoMemory.Read(_address);
 
                                 auto _videoFrameData = static_cast<int*>(_memory);
                                 if (_videoFrameData)
@@ -1105,11 +1105,11 @@ namespace wolf
                         _update_clock(this->_audio_codec);
                         _update_time(this->_audio_codec.clock);
 
-                        auto _hr = pAudioMemory.allocate(sizeof(w_audio_frame_data), std::alignment_of<w_audio_frame_data>::value);
+                        auto _hr = pAudioMemory.Allocate(sizeof(w_audio_frame_data), std::alignment_of<w_audio_frame_data>::value);
                         if (_hr)
                         {
-                            auto _address = pAudioMemory.get_address() - 1;
-                            auto _memory = pAudioMemory.read(_address);
+                            auto _address = pAudioMemory.Get_address() - 1;
+                            auto _memory = pAudioMemory.Read(_address);
 
                             auto _frame = new (_memory) w_audio_frame_data();
                             if (_frame)
