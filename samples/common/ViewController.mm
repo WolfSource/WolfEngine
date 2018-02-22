@@ -13,7 +13,7 @@ using namespace wolf::system;
 static NSView*                                      sSampleView;
 static CVDisplayLinkRef                             sDisplayLink;
 static scene*                                       sScene;
-static std::map<int, std::vector<w_window_info>>    sWindowInfo;
+static std::map<int, w_window_info>                 sWindowInfo;
 static NSRect                                       sWindowRect;
 static int                                          sScreenWidth;
 static int                                          sScreenHeight;
@@ -52,7 +52,11 @@ void init_window(struct w_window_info& pInfo)
     sSampleView = self.view;
     
     std::string _root_dir = [NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String + std::string("../../../");
-    sScene = new scene(wolf::system::convert::string_to_wstring(_root_dir), L"wolf.vulkan.sample");
+    std::string _content_path = _root_dir +  "/../../../../../content/";
+    
+    sScene = new scene(wolf::system::convert::string_to_wstring(_content_path),
+                       wolf::system::convert::string_to_wstring(_root_dir),
+                       L"wolf.vulkan.sample");
     
     //initialize the information of window
     w_window_info _window_info;
@@ -62,7 +66,7 @@ void init_window(struct w_window_info& pInfo)
     
     //call init_window from objective-c and get the pointer to the window
     init_window(_window_info);
-    sWindowInfo.insert( { 0,{ _window_info } } ) ;
+    sWindowInfo.insert( { 0, _window_info  } ) ;
     
     CVDisplayLinkCreateWithActiveCGDisplays(&sDisplayLink);
     CVDisplayLinkSetOutputCallback(sDisplayLink, &DisplayLinkCallback, nullptr);
@@ -175,7 +179,7 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
 - (void)mouseUp:(NSEvent *)theEvent
 {
     NSPoint _touch_point = [NSEvent mouseLocation];
-    NSUInteger _masked_btn = [NSEvent pressedMouseButtons];
+    //NSUInteger _masked_btn = [NSEvent pressedMouseButtons];
     
     w_point_f _pos;
     _pos.x = _touch_point.x - ( (sScreenWidth / 2) - (sWindowRect.size.width / 2) );

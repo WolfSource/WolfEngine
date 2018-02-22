@@ -56,8 +56,8 @@ namespace wolf
 			W_EXP virtual ~w_texture();
 
             W_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const uint32_t& pWidth,
-                _In_ const uint32_t& pHeight,
+                _In_ const uint32_t& pWidth = 32,
+                _In_ const uint32_t& pHeight = 32,
 				_In_ const bool& pGenerateMipMapsLevels = false,
 				_In_ const bool& pIsStaging = false);
             
