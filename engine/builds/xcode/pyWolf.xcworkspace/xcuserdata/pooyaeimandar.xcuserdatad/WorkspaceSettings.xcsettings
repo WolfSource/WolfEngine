@@ -5,11 +5,11 @@
 	<key>BuildLocationStyle</key>
 	<string>CustomLocation</string>
 	<key>CustomBuildIntermediatesPath</key>
-	<string>../../../../bin/Build/macOS/Intermediates</string>
+	<string>../../../bin/Build/macOS/Intermediates</string>
 	<key>CustomBuildLocationType</key>
 	<string>RelativeToWorkspace</string>
 	<key>CustomBuildProductsPath</key>
-	<string>../../../../bin/Build/macOS/Products</string>
+	<string>../../../bin/Build/macOS/Products</string>
 	<key>DerivedDataLocationStyle</key>
 	<string>Default</string>
 	<key>IssueFilterStyle</key>
