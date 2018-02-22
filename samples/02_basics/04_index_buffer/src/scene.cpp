@@ -9,12 +9,10 @@ using namespace wolf::graphics;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
 	w_game(pContentPath, pLogPath, pAppName)
 {
-#ifdef __WIN32
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
-#endif
-
+    
 	w_game::set_fixed_time_step(false);
 }
 
@@ -202,10 +200,10 @@ void scene::load()
 	_build_draw_command_buffers();
 }
 
-HRESULT scene::_build_draw_command_buffers()
+W_RESULT scene::_build_draw_command_buffers()
 {
 	const std::string _trace_info = this->name + "::build_draw_command_buffers";
-	HRESULT _hr = S_OK;
+	W_RESULT _hr = W_PASSED;
 
 	auto _gDevice = this->get_graphics_device(0);
 	auto _size = this->_draw_command_buffers.get_commands_size();

@@ -221,8 +221,6 @@
 		2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C94BC241FEE5C62007338F7 /* w_network.cpp */; };
 		2C94BC271FEE5C62007338F7 /* w_network.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C94BC251FEE5C62007338F7 /* w_network.h */; };
 		2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C94BC281FF1A0E9007338F7 /* libnanomsg.a */; };
-		2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */; };
-		2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */; };
 		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
 		2CDD1359202781D9002B1AAC /* py_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD134F202781D8002B1AAC /* py_color.h */; };
 		2CDD135A202781D9002B1AAC /* py_game_time.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1350202781D8002B1AAC /* py_game_time.h */; };
@@ -769,8 +767,6 @@
 			files = (
 				2C07D51320318B20005E7D14 /* libluajit-static.a in Frameworks */,
 				2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */,
-				2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */,
-				2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1832,7 +1828,6 @@
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
 					"$(inherited)",
 					DEBUG,
-					BOOST_PYTHON_STATIC_LIB,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";

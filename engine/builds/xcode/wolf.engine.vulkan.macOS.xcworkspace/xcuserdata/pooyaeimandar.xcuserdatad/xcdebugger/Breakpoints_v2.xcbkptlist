@@ -889,37 +889,5 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/tests/ViewController.mm"
-            timestampString = "538945195.107808"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
-            landmarkName = "DisplayLinkCallback(CVDisplayLinkRef pDisplayLink, const CVTimeStamp* pNow, const CVTimeStamp* pOutputTime, CVOptionFlags pFlagsIn, CVOptionFlags* pFlagsOut, void* pScene)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../src/tests/scene.cpp"
-            timestampString = "540484203.94135"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
-            landmarkName = "scene::scene(_In_z_ const std::wstring&amp; pContentPath, _In_z_ const std::wstring&amp; pLogPath, _In_z_ const std::wstring&amp; pAppName)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

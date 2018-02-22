@@ -13,7 +13,6 @@
 		2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1B3FF61E97DC6500512959 /* w_shader.h */; };
 		2C299C7F201F9110003C80F7 /* w_first_person_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C299C7D201F9110003C80F7 /* w_first_person_camera.cpp */; };
 		2C299C80201F9110003C80F7 /* w_first_person_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C299C7E201F9110003C80F7 /* w_first_person_camera.h */; };
-		2C299C8E201FA4F9003C80F7 /* libboost_python-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */; };
 		2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C29CD1C1EB3344000BEFF54 /* w_game.cpp */; };
 		2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C29CD1D1EB3344000BEFF54 /* w_game.h */; };
 		2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C29CD261EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib */; };
@@ -144,7 +143,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C299C8E201FA4F9003C80F7 /* libboost_python-mt.a in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
 				2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
@@ -530,7 +528,6 @@
 					__VULKAN__,
 					MSGPACK_USE_CPP03,
 					MSGPACK_DISABLE_LEGACY_NIL,
-					BOOST_PYTHON_STATIC_LIB,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
@@ -572,7 +569,6 @@
 					"$(SRCROOT)/../../../dependencies/glm/",
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
 					"$(SRCROOT)/../../../dependencies/boost/include/",
-					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
 				);
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/boost/lib/osx/debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -36,7 +36,7 @@ WOLF_MAIN()
 #endif
     
     std::wstring _path = wolf::system::io::get_current_directory() + _route+ _name;
-    if (w_lua::load_file(_path.c_str()) == S_OK)
+    if (w_lua::load_file(_path.c_str()) == W_PASSED)
     {
         //bind lua function named "bind" to c function, the script will call "bind" from a function named "action"
         w_lua::bind_to_cfunction(c_function_bind, "bind");

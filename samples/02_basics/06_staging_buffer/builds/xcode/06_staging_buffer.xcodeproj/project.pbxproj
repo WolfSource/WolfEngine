@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
 		2C2B08F61FD1E11D0036E134 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B08F51FD1E11D0036E134 /* Assets.xcassets */; };
-		2C2B08F81FD1E12D0036E134 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B08F71FD1E12D0036E134 /* Info.plist */; };
 		2C2B08FA1FD1E13F0036E134 /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B08F91FD1E13F0036E134 /* Base.lproj */; };
 		2C2B08FC1FD1E15D0036E134 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2B08FB1FD1E15D0036E134 /* main.m */; };
 		2C2B08FF1FD1E3B30036E134 /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2B08FE1FD1E3B30036E134 /* libtbb_debug.dylib */; };
@@ -171,7 +170,7 @@
 		2C28033F1E61C73600048A80 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = WolfSource.io;
 				TargetAttributes = {
 					2C2803461E61C73600048A80 = {
@@ -206,7 +205,6 @@
 			files = (
 				2C2B09051FD1E43F0036E134 /* shader.frag in Resources */,
 				2C2B08F61FD1E11D0036E134 /* Assets.xcassets in Resources */,
-				2C2B08F81FD1E12D0036E134 /* Info.plist in Resources */,
 				2C2B08FA1FD1E13F0036E134 /* Base.lproj in Resources */,
 				2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */,
 				2C2B09041FD1E43F0036E134 /* shader.vert in Resources */,

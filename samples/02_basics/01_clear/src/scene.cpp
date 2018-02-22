@@ -16,7 +16,6 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	w_game::set_fixed_time_step(false);
 }
 
-
 scene::~scene()
 {
 	//release all resources
@@ -109,7 +108,7 @@ void scene::load()
     _build_draw_command_buffers();
 }
 
-HRESULT scene::_build_draw_command_buffers()
+W_RESULT scene::_build_draw_command_buffers()
 {
     auto _size = this->_draw_command_buffers.get_commands_size();
 	auto _cmd = &this->_draw_command_buffers;
@@ -144,8 +143,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         w_game::update(pGameTime);
     });
 
-	OutputDebugString((std::to_wstring(pGameTime.get_frames_per_second()) + L"\r\n").c_str());
-	//wolf::logger.write(std::to_string(pGameTime.get_frames_per_second()));
+	wolf::logger.write(std::to_string(pGameTime.get_frames_per_second()));
 }
 
 W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)

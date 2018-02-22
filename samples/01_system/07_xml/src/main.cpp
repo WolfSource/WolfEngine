@@ -65,7 +65,7 @@ WOLF_MAIN()
     const char* _path = "test.xml";
 #endif
     
-    if(w_xml::save(_path, _save_as_utf8, _root, L"<!-- Sample XML -->") == S_OK)
+    if(w_xml::save(_path, _save_as_utf8, _root, L"<!-- Sample XML -->") == W_PASSED)
     {
             //Successfully saved, now load it again
             std::ifstream _file("test.xml");

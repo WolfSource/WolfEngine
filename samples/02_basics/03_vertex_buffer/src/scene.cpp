@@ -9,12 +9,10 @@ using namespace wolf::graphics;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
 	w_game(pContentPath, pLogPath, pAppName)
 {
-#ifdef __WIN32
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
-#endif
-
+    
 	w_game::set_fixed_time_step(false);
 }
 
@@ -70,7 +68,6 @@ void scene::load()
 			{ _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
 		);
 	}
-
 
 	//create render pass
 	auto _hr = this->_draw_render_pass.load(

@@ -50,7 +50,7 @@ public:
     ULONG release() override;
     
 private:
-    HRESULT _build_draw_command_buffers();
+    W_RESULT _build_draw_command_buffers();
     
     wolf::graphics::w_viewport                                      _viewport;
     wolf::graphics::w_viewport_scissor                              _viewport_scissor;

@@ -137,7 +137,7 @@ void scene::load()
 
 	//loading pipeline cache
 	std::string _pipeline_cache_name = "pipeline_cache";
-	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == W_FAILED)
 	{
 		logger.error("could not create pipeline cache");
 		_pipeline_cache_name.clear();
