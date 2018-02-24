@@ -10,7 +10,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -58,16 +58,16 @@ void scene::load()
 	this->_viewport_scissor.extent.width = _screen_size.x;
 	this->_viewport_scissor.extent.height = _screen_size.y;
 
-    //define color and depth as an attachments buffers for render pass
-    std::vector<std::vector<w_image_view>> _render_pass_attachments;
-    for (size_t i = 0; i < _output_window->swap_chain_image_views.size(); ++i)
-    {
-        _render_pass_attachments.push_back
-        (
-         //COLOR                                       , DEPTH
-         { _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
-         );
-    }
+	//define color and depth as an attachments buffers for render pass
+	std::vector<std::vector<w_image_view>> _render_pass_attachments;
+	for (size_t i = 0; i < _output_window->swap_chain_image_views.size(); ++i)
+	{
+		_render_pass_attachments.push_back
+		(
+			//COLOR									   , DEPTH
+			{ _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
+		);
+	}
     
     //create render pass
     auto _hr = this->_draw_render_pass.load(
@@ -249,12 +249,12 @@ W_RESULT scene::_build_draw_command_buffers()
     {
         this->_draw_command_buffers.begin(i);
         {
-            this->_draw_render_pass.begin(
-                                          i,
-                                          _cmd,
-                                          w_color::CORNFLOWER_BLUE(),
-                                          1.0f,
-                                          0.0f);
+			this->_draw_render_pass.begin(
+				i,
+				_cmd,
+				w_color::CORNFLOWER_BLUE(),
+				1.0f,
+				0.0f);
             {
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 //The following codes have been added for this project

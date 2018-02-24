@@ -70,7 +70,7 @@ namespace wolf
                 VkPipelineDynamicStateCreateInfo* _pipeline_dynamic_state_create_info = nullptr;
 
 				auto _shader_des_set = pShaderBinding->get_descriptor_set();
-				this->_shader_descriptor_set = _shader_des_set  ? &_shader_des_set : nullptr;
+				this->_shader_descriptor_set = _shader_des_set  ? _shader_des_set : nullptr;
 				
 				const auto _shader_descriptor_set_layout = pShaderBinding->get_descriptor_set_layout();
                 auto _pipeline_layout_create_info = _generate_pipeline_layout_create_info(
@@ -277,7 +277,7 @@ namespace wolf
 						this->_pipeline_layout,
 						0,
 						1,
-						_shader_descriptor_set,
+						&this->_shader_descriptor_set,
 						0,
 						nullptr);
 				}
@@ -466,7 +466,7 @@ namespace wolf
             std::shared_ptr<w_graphics_device>              _gDevice;
             VkPipeline                                      _pipeline;
             VkPipelineLayout                                _pipeline_layout;
-			VkDescriptorSet*								_shader_descriptor_set;
+			VkDescriptorSet									_shader_descriptor_set;
         };
     }
 }

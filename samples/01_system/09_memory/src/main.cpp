@@ -22,7 +22,7 @@ WOLF_MAIN()
     size_t _length = 10;
 
     w_memory_pool _memory;
-    _memory.malloc(_length * sizeof(float));
+    _memory.alloc(_length * sizeof(float));
 
     //get pointer to start of memory
     auto _f = (float*)_memory.get_start_ptr();
@@ -46,7 +46,7 @@ WOLF_MAIN()
     _length = 20;
 
 	//TODO: Check access violation on some machines
-    auto _new_f = static_cast<my_struct*>(_memory.realloc(_length * sizeof(my_struct)));
+    auto _new_f = static_cast<my_struct*>(_memory.re_alloc(_length * sizeof(my_struct)));
 	if (_new_f)
 	{
 		for (size_t i = 0; i < _length; ++i)
