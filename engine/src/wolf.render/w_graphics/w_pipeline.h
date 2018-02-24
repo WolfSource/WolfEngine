@@ -90,7 +90,78 @@ namespace wolf
 				_In_ const w_pipeline_rasterization_state_create_info& pPipelineRasterizationStateCreateInfo,
 				_In_ const w_pipeline_multisample_state_create_info& pPipelineMultiSampleStateCreateInfo,
 				_In_ const w_pipeline_color_blend_attachment_state& pBlendState,
-				_In_ const w_color& pBlendColors);
+				_In_ const w_color& pBlendColors)
+			{
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+
+				//get viewports
+				std::vector<w_viewport> _viewports;
+				for (size_t i = 0; i < len(pViewPorts); ++i)
+				{
+					boost::python::extract<w_viewport> _vp(pViewPorts[i]);
+					if (_vp.check())
+					{
+						_viewports.push_back(_vp());
+					}
+				}
+
+				//get viewport scissor
+				std::vector<w_viewport_scissor> _viewport_scissor;
+				for (size_t i = 0; i < len(pViewPortScissors); ++i)
+				{
+					boost::python::extract<w_viewport_scissor> _vp(pViewPortScissors[i]);
+					if (_vp.check())
+					{
+						_viewport_scissor.push_back(_vp());
+					}
+				}
+
+				//get dynamic states
+				std::vector<w_dynamic_state> _dynamic_states;
+				for (size_t i = 0; i < len(pDynamicStates); ++i)
+				{
+					boost::python::extract<w_dynamic_state> _d(pDynamicStates[i]);
+					if (_d.check())
+					{
+						_dynamic_states.push_back(_d());
+					}
+				}
+
+				//get push constant range
+				std::vector<w_push_constant_range> _push_consts;
+				for (size_t i = 0; i < len(pPushConstantRanges); ++i)
+				{
+					boost::python::extract<w_push_constant_range> _p(pPushConstantRanges[i]);
+					if (_p.check())
+					{
+						_push_consts.push_back(_p());
+					}
+				}
+
+				auto _hr = load(_gDevice,
+					pVertexBindingAttributes,
+					pPrimitiveTopology,
+					&pRenderPassBinding,
+					&pShaderBinding,
+					_viewports,
+					_viewport_scissor,
+					pPipelineCacheName,
+					_dynamic_states,
+					_push_consts,
+					pTessellationPatchControlPoints,
+					&pPipelineRasterizationStateCreateInfo,
+					&pPipelineMultiSampleStateCreateInfo,
+					pBlendState,
+					pBlendColors);
+
+				_viewports.clear();
+				_viewport_scissor.clear();
+				_dynamic_states.clear();
+				_push_consts.clear();
+
+				_gDevice.reset();
+				return _hr == W_PASSED;
+			}
 
 			bool py_load_min_arg(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
@@ -147,15 +218,55 @@ namespace wolf
 				_In_ const w_shader& pShaderBinding,
 				_In_ const uint32_t& pSpecializationData,
 				_In_ const std::string& pPipelineCacheName,
-				_In_ const boost::python::list pPushConstantRanges);
+				_In_ const boost::python::list pPushConstantRanges)
+			{
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
-			W_EXP bool py_bind(_In_ const w_command_buffer& pCommandBuffer);
+				//get push constant range
+				std::vector<w_push_constant_range> _push_consts;
+				for (size_t i = 0; i < len(pPushConstantRanges); ++i)
+				{
+					boost::python::extract<w_push_constant_range> _p(pPushConstantRanges[i]);
+					if (_p.check())
+					{
+						_push_consts.push_back(_p());
+					}
+				}
+
+				auto _hr = load_compute(_gDevice,
+					&pShaderBinding,
+					pSpecializationData,
+					pPipelineCacheName,
+					_push_consts);
+
+				_push_consts.clear();
+
+				_gDevice.reset();
+				return _hr == W_PASSED;
+			}
+
+			W_EXP bool py_bind(_In_ const w_command_buffer& pCommandBuffer)
+			{
+				return bind(&pCommandBuffer) == W_PASSED;
+			}
 
 			W_EXP static bool py_create_pipeline_cache(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
-				_In_z_ const std::string& pPipelineCacheName);
+				_In_z_ const std::string& pPipelineCacheName)
+			{
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+				auto _hr = create_pipeline_cache(_gDevice, pPipelineCacheName);
+				_gDevice.reset();
+				return _hr == W_PASSED;
+			}
 			
-			W_EXP static ULONG py_release_all_pipeline_caches(_In_ boost::shared_ptr<w_graphics_device>& pGDevice);
+			W_EXP static ULONG py_release_all_pipeline_caches(_In_ boost::shared_ptr<w_graphics_device>& pGDevice)
+			{
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+				auto _hr = release_all_pipeline_caches(_gDevice);
+				_gDevice.reset();
+				return _hr;
+			}
 #endif
 
         private:

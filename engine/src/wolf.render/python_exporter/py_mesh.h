@@ -52,8 +52,23 @@ namespace pywolf
 
 		//export w_vertex_binding_attributes struct
 		class_<w_vertex_binding_attributes, boost::noncopyable>("w_vertex_binding_attributes")
+			.def(init<const w_vertex_declaration&>())
+			.def(init<boost::python::dict>())
 			.def_readwrite("declaration", &w_vertex_binding_attributes::declaration, "declaration")
 			.add_property("binding_attributes", &w_vertex_binding_attributes::py_get_binding_attributes, &w_vertex_binding_attributes::py_set_binding_attributes, "binding attributes")
+			;
+
+		//export w_mesh struct
+		class_<w_mesh, boost::noncopyable>("w_mesh")
+			.def("load", &w_mesh::py_load, "load mesh")
+			.def("draw", &w_mesh::py_draw, "draw vertices")
+			.def("release", &w_mesh::release, "release")
+			.def("get_vertices_count", &w_mesh::get_vertices_count, "get vertices count")
+			.def("get_indices_count", &w_mesh::get_vertices_count, "get indices count")
+			.def("get_texture", &w_mesh::get_texture, return_value_policy<manage_new_object>())
+			.def("get_vertex_binding_attributes", &w_mesh::get_vertex_binding_attributes, "get vertex binding attributes")
+			.def("set_vertex_binding_attributes", &w_mesh::set_vertex_binding_attributes, "set vertex binding attributes")
+			.def("set_texture", &w_mesh::py_set_texture, "set texture")
 			;
 	}
 }

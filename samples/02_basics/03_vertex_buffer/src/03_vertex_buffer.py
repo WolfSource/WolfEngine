@@ -42,14 +42,15 @@ class scene(QWidget):
         self._draw_fence = pyWolf.graphics.w_fences()
         self._draw_semaphore = pyWolf.graphics.w_semaphore()
 
+        self._shader = pyWolf.graphics.w_shader()
+        self._pipeline = pyWolf.graphics.w_pipeline()
+
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #The following codes have been added for this project
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        self._shader = pyWolf.graphics.w_shader()
-        self._pipeline = pyWolf.graphics.w_pipeline()
+        self._mesh = pyWolf.graphics.w_mesh()
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
-
         _config = pyWolf.graphics.w_graphics_device_manager_configs()
         _config.debug_gpu = False
         self._game.set_graphics_device_manager_configs(_config)
@@ -124,17 +125,37 @@ class scene(QWidget):
             print "Error on loading fragment shader"
             sys.exit(1)
 
+        #just we need vertex position color
+        _vba = pyWolf.graphics.w_vertex_binding_attributes(pyWolf.graphics.w_vertex_declaration.VERTEX_POSITION_COLOR)
+        self._mesh.set_vertex_binding_attributes(_vba);
+
         #loading pipeline cache
         _pipeline_cache_name = "pipeline_cache";
         _hr = self._pipeline.create_pipeline_cache(self._gDevice, _pipeline_cache_name)
         if _hr == False:
             print "Error on creating pipeline cache"
 
-         #create pipeline
-        _vba = pyWolf.graphics.w_vertex_binding_attributes()
-        _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name)
+        #create pipeline
+        _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_STRIP, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name)
         if _hr == False:
             print "Error on creating pipeline"
+            sys.exit(1)
+
+        _vertex_data = [
+		    -0.7, -0.7,	0.0,		#pos0
+		     1.0,  0.0,	0.0, 1.0,   #color0
+		    -0.7,  0.7,	0.0,		#pos1
+		     1.0,  1.0,	1.0, 1.0,   #color1
+		     0.7, -0.7,	0.0,		#pos2
+		     0.0,  0.0,	0.0, 1.0,   #color2
+		     0.7,  0.7,	0.0,		#pos3
+		     0.0,  1.0,	0.0, 1.0	#color3
+        ]
+
+        #create mesh
+        _hr = self._mesh.load(self._gDevice, _vertex_data, [], False)
+        if _hr == False:
+            print "Error on loading mesh"
             sys.exit(1)
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -159,7 +180,7 @@ class scene(QWidget):
             
             #place your draw code
             self._pipeline.bind(self._draw_command_buffers)
-            self._gDevice.draw(self._draw_command_buffers, 3, 1, 0, 0)
+            self._mesh.draw(self._draw_command_buffers, 0, False, 0)
 
             self._draw_render_pass.end(self._draw_command_buffers)
             
@@ -251,14 +272,17 @@ class scene(QWidget):
         self._draw_render_pass.release()
         self._draw_render_pass = None
 
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
-#The following codes have been added for this project
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
         self._shader.release()
         self._shader = None
 
         self._pipeline.release()
         self._pipeline = None
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+#The following codes have been added for this project
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+        self._mesh.release()
+        self._mesh = None
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -268,13 +292,12 @@ class scene(QWidget):
         self._viewport = None
         self._viewport_scissor = None
         
-        
 if __name__ == '__main__':
     # Create a Qt application
     app = QApplication(sys.argv)
     scene = scene(pyWolfPath + "..\\..\\..\\..\\content\\",
                   pyWolfPath,
-                  "py_02_shader")
+                  "py_03_vertex_buffer")
     scene.resize(screen_width, screen_height)
     scene.setWindowTitle('Wolf.Engine')
     scene.show()

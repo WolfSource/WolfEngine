@@ -17,7 +17,6 @@
 #include <w_framework/w_game.h>
 #include <w_graphics/w_command_buffer.h>
 #include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>

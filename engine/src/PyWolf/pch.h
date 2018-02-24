@@ -14,7 +14,6 @@
 #ifndef __PCH_H__
 #define __PCH_H__
 
-#include <tbb/atomic.h>
 #include <wolf.h>
 
 #ifdef __PYTHON__

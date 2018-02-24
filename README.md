@@ -25,6 +25,7 @@ The Wolf is a comprehensive set of C++ open source libraries for rendering and s
 | Vulkan         |   [![Build status](https://ci.appveyor.com/api/projects/status/nrk0kn83tp1n47h3/branch/master?svg=true)](https://ci.appveyor.com/project/PooyaEimandar/wolf-engine/branch/master)  |            N/A             |   in progress  |    [![Build Status](https://travis-ci.org/WolfSource/Wolf.Engine.svg?branch=master)](https://travis-ci.org/WolfSource/Wolf.Engine)   |  in progress  |  in progress  |
 | DircetX 12     | not started |         not started        |       N/A      |      N/A      |     N/A       |     N/A       |
 | DircetX 11     |   complete  |         not started        |       N/A      |      N/A      |     N/A       |     N/A       |
+| pyWolf	     |   complete  |         not started        |   not started  |    complete   |     N/A       |     N/A       |
 
 
 <!--Projects-->
@@ -211,14 +212,14 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
     </td>
     <td>
        <p><b>03_vertex_buffer</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/03_vertex_buffer/view.png" alt="03_vertex_buffer" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/03_vertex_buffer/doc/view.png" alt="03_vertex_buffer" width="256" height="192"/>
       <p>Drawing using vertex buffer</p>
     </td>
   </tr>
   <tr>
     <td>
       <p><b>04_index_buffer</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/03_vertex_buffer/view.png" alt="04_index_buffer" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/03_vertex_buffer/doc/view.png" alt="04_index_buffer" width="256" height="192"/>
       <p>Drawing using vertex and index buffers</p>
     </td>
     <td>

@@ -165,6 +165,7 @@ namespace wolf
 				if (this->_entry_point_name)
 				{
 					free(this->_entry_point_name);
+					this->_entry_point_name = nullptr;
 				}
 
                 return 0;

@@ -1,7 +1,7 @@
 #include "pch.h"
 
 enum DLL_EXIT_STATE { RUNNING, EXITING, EXITED};
-static tbb::atomic<DLL_EXIT_STATE> sDLLExitState;
+static std::atomic<DLL_EXIT_STATE> sDLLExitState;
 
 #if defined(__WIN32) || defined (__UWP)
 

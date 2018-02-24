@@ -161,8 +161,13 @@ namespace wolf
 				this->binding_attributes = pDeclaration;
 				this->declaration = w_vertex_declaration::USER_DEFINED;
 			}
-
+			
 #ifdef __PYTHON__
+			w_vertex_binding_attributes(_In_ boost::python::dict pDeclaration)
+			{
+				py_set_binding_attributes(pDeclaration);
+			}
+
 			boost::python::dict py_get_binding_attributes()
 			{
 				boost::python::dict _dictionary;
@@ -187,7 +192,7 @@ namespace wolf
 					boost::python::extract<uint32_t> _extracted_key(keys[i]);
 					if (!_extracted_key.check())
 					{
-						logger.error("Key invalid for py_get_binding_attributes. type was not uint32_t");
+						logger.error("invalid key for py_get_binding_attributes. type was not uint32_t");
 						continue;
 					}
 
@@ -195,7 +200,7 @@ namespace wolf
 					boost::python::extract<boost::python::list> _extracted_val(pDic[_key]);
 					if (!_extracted_val.check())
 					{
-						logger.error("Value invalid for py_get_binding_attributes. type was not list");
+						logger.error("invalid key for py_get_binding_attributes. type was not list");
 						continue;
 					}
 
@@ -225,7 +230,7 @@ namespace wolf
             W_EXP w_mesh();
 			W_EXP virtual ~w_mesh();
 
-			//initialize and load mesh
+			//load mesh
 			W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const void* const pVerticesData,
                                _In_ const uint32_t  pVerticesSizeInBytes,
@@ -243,6 +248,7 @@ namespace wolf
                 _In_ const uint32_t* const pIndicesData,
                 _In_ const uint32_t pIndicesCount);
 
+			//draw vertices
             W_EXP W_RESULT draw(
 				_In_ const w_command_buffer* pCommandBuffer,
                 _In_ const VkBuffer& pInstanceHandle,
@@ -270,6 +276,72 @@ namespace wolf
             W_EXP void set_vertex_binding_attributes(_In_ const w_vertex_binding_attributes& pVertexBindingAttributes);
 
 #pragma endregion	
+
+#ifdef __PYTHON__
+
+			bool py_load(
+				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ boost::python::list pVerticesData,
+				_In_ boost::python::list pIndicesData,
+				_In_ bool pUseDynamicBuffer)
+			{
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+
+				//get vertices data
+				std::vector<float> _vertices;
+				for (size_t i = 0; i < len(pVerticesData); ++i)
+				{
+					boost::python::extract<float> _v(pVerticesData[i]);
+					if (_v.check())
+					{
+						_vertices.push_back(_v());
+					}
+				}
+
+				//get indices data
+				std::vector<uint32_t> _indices;
+				for (size_t i = 0; i < len(pIndicesData); ++i)
+				{
+					boost::python::extract<uint32_t> _i(pIndicesData[i]);
+					if (_i.check())
+					{
+						_indices.push_back(_i());
+					}
+				}
+
+				const void* const _v_data = _vertices.data();
+				auto _hr = load(_gDevice,
+					_v_data,
+					static_cast<uint32_t>(_vertices.size() * sizeof(float)),
+					static_cast<uint32_t>(_vertices.size()),
+					_indices.data(),
+					static_cast<uint32_t>(_indices.size()),
+					pUseDynamicBuffer);
+
+				_gDevice.reset();
+				return _hr == W_PASSED;
+			}
+
+			bool py_draw(
+				_In_ const w_command_buffer& pCommandBuffer,
+				/*TODO: need this _In_ const VkBuffer& pInstanceHandle,*/
+				_In_ const uint32_t& pInstancesCount,
+				_In_ const bool& pIndirectDraw,
+				_In_ const uint32_t& pVertexOffset)
+			{
+				return  draw(
+					&pCommandBuffer,
+					nullptr,//ToDo : pInstanceHandle
+					pInstancesCount,
+					pIndirectDraw,
+					pVertexOffset) == W_PASSED;
+			}
+
+			void py_set_texture(_In_ w_texture& pTexture)
+			{
+				set_texture(&pTexture);
+			}
+#endif
 
 		private:
             typedef		system::w_object                        _super;
