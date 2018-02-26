@@ -1,4 +1,4 @@
-# Wolf Engine [![GPL v3 licensed](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md) 
+# Wolf Engine © 2014-2018 Pooya Eimandar [![GPL v3 licensed](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/WolfSource/Wolf.Engine/blob/master/LICENSE.md) 
 <img src="https://raw.githubusercontent.com/PooyaEimandar/Wolf.Engine/master/Logo.jpg" width="256" height="256" alt="WolfSource"/>
 <p><b>Welcome to the Wolf Engine source code.</b></p> 
 <p>The&nbsp;<b>Wolf Engine</b>&nbsp;is the next

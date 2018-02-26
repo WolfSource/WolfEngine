@@ -1,6 +1,6 @@
 # License of Wolf.Engine
 
-<p><b>Wolf.Engine is offered using a dual-license model: GPL and Commercial.</b></p>
+<p><b>Wolf.Engine © 2014-2018 Pooya Eimandar, is offered using a dual-license model: GPL and Commercial.</b></p>
 
 ## GPL v3 (Open Source)
 <p>Free and Open Source Software (FOSS) is software that comes with a license that gives users certain rights. In particular the right to use the software, to modify it, to obtain its source, and to pass it on (under the same terms). Notice that the term "<b>free</b>" is about <b>rights</b>, <b>not money</b>. The Free Software Foundation, the creator of the GNU GPL, speaks of free in this context as in "<b>free speech</b>", not as in "<b>no cost</b>".</p>
