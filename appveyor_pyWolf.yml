@@ -4,8 +4,7 @@ platform: x64
 configuration: Debug
 
 environment:
-  wolf_engine_vulkan_win32: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln
-  pyWolf_win32: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\pyWolf.Win32.sln
+  solution_name: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\pyWolf.Win32.sln
   matrix:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.14"
@@ -27,7 +26,7 @@ init:
     - "%PYTHON%\\python.exe --version"
 build:
   verbosity: minimal
-  project: "%wolf_engine_vulkan_win32%"
+  project: "%solution_name%"
   
 skip_commits:
   files:
@@ -38,6 +37,7 @@ skip_commits:
     - .gitattributes
     - .gitignore
     - .travis.yml
+    - appveyor_vulkan.yml
     - install.sh
     - Logo.jpg
     - /**/*.md

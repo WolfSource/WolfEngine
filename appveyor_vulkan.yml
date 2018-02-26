@@ -37,6 +37,7 @@ skip_commits:
     - .gitattributes
     - .gitignore
     - .travis.yml
+    - appveyor_pyWolf.yml
     - install.sh
     - Logo.jpg
     - /**/*.md
