@@ -51,17 +51,16 @@ namespace wolf
 							//color
 							_attachment.attachment_desc.desc.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 							_texture_buffer->set_buffer_type(w_texture_buffer_type::COLOR);
-							_texture_buffer->set_usage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
+							_texture_buffer->set_usage_flags(w_image_usage_flag_bits::COLOR_ATTACHMENT_BIT | w_image_usage_flag_bits::SAMPLED_BIT);
 						}
 						else if (_attachment.attachment_desc.ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
 						{
 							//depth
 							_texture_buffer->set_buffer_type(w_texture_buffer_type::DEPTH);
-							_texture_buffer->set_usage(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
+							_texture_buffer->set_usage_flags(w_image_usage_flag_bits::DEPTH_STENCIL_ATTACHMENT_BIT | w_image_usage_flag_bits::SAMPLED_BIT);
 						}
 
 						_texture_buffer->set_format((w_format)_attachment.attachment_desc.desc.format);
-						//_texture_buffer->set_usage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
 						auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, _attachment.attachment_desc.memory_flag);
 						if (_hr == W_FAILED)
 						{

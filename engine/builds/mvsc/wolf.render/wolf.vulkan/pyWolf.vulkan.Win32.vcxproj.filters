@@ -175,6 +175,9 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_mesh.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_uniform.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_framework">

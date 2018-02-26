@@ -27,10 +27,16 @@ class scene(QWidget):
         self._draw_render_pass = pyWolf.graphics.w_render_pass()
         self._draw_fence = pyWolf.graphics.w_fences()
         self._draw_semaphore = pyWolf.graphics.w_semaphore()
-
         self._shader = pyWolf.graphics.w_shader()
         self._pipeline = pyWolf.graphics.w_pipeline()
         self._mesh = pyWolf.graphics.w_mesh()
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+#The following codes have been added for this project
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         _config = pyWolf.graphics.w_graphics_device_manager_configs()
         _config.debug_gpu = False
@@ -91,7 +97,8 @@ class scene(QWidget):
             sys.exit(1)
 
         #loading vertex shader
-        _content_path_dir = "D:/github/WolfSource/Wolf.Engine/samples/02_basics/03_vertex_buffer/src/content/"
+        #_content_path_dir = "D:/github/WolfSource/Wolf.Engine/samples/02_basics/03_vertex_buffer/src/content/"
+        _content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/03_vertex_buffer/src/content/"
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER, "main")
         if _hr == False:
             print "Error on loading vertex shader"

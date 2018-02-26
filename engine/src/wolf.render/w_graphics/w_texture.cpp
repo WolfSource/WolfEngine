@@ -1976,7 +1976,7 @@ void w_texture::set_format(_In_ w_format pFormat)
 	return this->_pimp->set_format(pFormat);
 }
 
-void w_texture::set_usage(_In_ w_image_usage_flags pUsageFlags)
+void w_texture::set_usage_flags(_In_ w_image_usage_flags pUsageFlags)
 {
 	if (!this->_pimp) return;
 	return this->_pimp->set_usage_flags(pUsageFlags);

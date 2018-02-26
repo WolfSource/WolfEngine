@@ -209,4 +209,6 @@ namespace wolf
 	}
 }
 
+#include "python_exporter/py_uniform.h"
+
 #endif

@@ -67,6 +67,9 @@ namespace pywolf
 		//export w_descriptor_buffer_info class
 		class_<w_descriptor_buffer_info, boost::noncopyable>("w_descriptor_buffer_info", init<>());
 
+		//export w_sampler class
+		class_<w_sampler, boost::noncopyable>("w_sampler", init<>());
+
 		//export w_descriptor_image_info class
 		class_<w_descriptor_image_info, boost::noncopyable>("w_descriptor_image_info", init<>());
 
@@ -164,6 +167,18 @@ namespace pywolf
 			.export_values()
 			;
 
+		//define w_image_type enum
+		enum_<w_image_type>("w_image_type")
+			.value("_1D", w_image_type::_1D_TYPE)
+			.value("_2D", w_image_type::_2D_TYPE)
+			.value("_3D", w_image_type::_3D_TYPE)
+			.value("BEGIN_RANGE", w_image_type::W_IMAGE_TYPE_BEGIN_RANGE)
+			.value("END_RANGE", w_image_type::W_IMAGE_TYPE_END_RANGE)
+			.value("RANGE_SIZE", w_image_type::W_IMAGE_TYPE_RANGE_SIZE)
+			.value("MAX_ENUM", w_image_type::W_IMAGE_TYPE_MAX_ENUM)
+			.export_values()
+			;
+
 		//define w_image_view_type enum
 		enum_<w_image_view_type>("w_image_view_type")
 			.value("_1D", w_image_view_type::_1D)
@@ -177,6 +192,20 @@ namespace pywolf
 			.value("W_IMAGE_VIEW_TYPE_END_RANGE", w_image_view_type::W_IMAGE_VIEW_TYPE_END_RANGE)
 			.value("W_IMAGE_VIEW_TYPE_MAX_ENUM", w_image_view_type::W_IMAGE_VIEW_TYPE_MAX_ENUM)
 			.value("W_IMAGE_VIEW_TYPE_RANGE_SIZE", w_image_view_type::W_IMAGE_VIEW_TYPE_RANGE_SIZE)
+			.export_values()
+			;
+
+		//define w_image_usage_flag_bits enum
+		enum_<w_image_usage_flag_bits>("w_image_usage_flag_bits")
+			.value("TRANSFER_SRC_BIT", w_image_usage_flag_bits::TRANSFER_SRC_BIT)
+			.value("TRANSFER_DST_BIT", w_image_usage_flag_bits::TRANSFER_DST_BIT)
+			.value("SAMPLED_BIT", w_image_usage_flag_bits::SAMPLED_BIT)
+			.value("STORAGE_BIT", w_image_usage_flag_bits::STORAGE_BIT)
+			.value("COLOR_ATTACHMENT_BIT", w_image_usage_flag_bits::COLOR_ATTACHMENT_BIT)
+			.value("DEPTH_STENCIL_ATTACHMENT_BIT", w_image_usage_flag_bits::DEPTH_STENCIL_ATTACHMENT_BIT)
+			.value("TRANSIENT_ATTACHMENT_BIT", w_image_usage_flag_bits::TRANSIENT_ATTACHMENT_BIT)
+			.value("INPUT_ATTACHMENT_BIT", w_image_usage_flag_bits::INPUT_ATTACHMENT_BIT)
+			.value("MAX_ENUM", w_image_usage_flag_bits::W_IMAGE_USAGE_FLAG_BITS_MAX_ENUM)
 			.export_values()
 			;
 
