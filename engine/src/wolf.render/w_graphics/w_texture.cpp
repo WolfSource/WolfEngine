@@ -29,12 +29,12 @@ namespace wolf
 				_generate_mip_maps(false),
 				_mip_map_levels(1),
 				_memory(0),
-				_usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT),
+				_usage_flags(w_image_usage_flag_bits::TRANSFER_DST_BIT | w_image_usage_flag_bits::SAMPLED_BIT),
 				_is_staging(false),
 				_staging_buffer_memory_pointer(nullptr),
-				_format(VK_FORMAT_R8G8B8A8_UNORM),
-				_image_type(VkImageType::VK_IMAGE_TYPE_2D),
-				_image_view_type(VkImageViewType::VK_IMAGE_VIEW_TYPE_2D),
+				_format(w_format::R8G8B8A8_UNORM),
+				_image_type(w_image_type::_2D_TYPE),
+				_image_view_type(w_image_view_type::_2D),
 				_buffer_type(VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT),
 				_image_layout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
 			{
@@ -59,7 +59,7 @@ namespace wolf
 				if (this->_generate_mip_maps)
 				{
 					//add VK_IMAGE_USAGE_TRANSFER_SRC_BIT flag to image's usage
-					this->_usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+					this->_usage_flags |= w_image_usage_flag_bits::TRANSFER_SRC_BIT;
 				}
 
                 if (pMemoryPropertyFlags & w_memory_property_flag_bits::HOST_VISIBLE_BIT ||
@@ -167,7 +167,7 @@ namespace wolf
 						this->_width = _gli_tex_2D_array->extent().x;
 						this->_height = _gli_tex_2D_array->extent().y;
 						this->_layer_count = (uint32_t)_gli_tex_2D_array->layers();
-						this->_format = _gli_format_to_vulkan_format(_gli_tex_2D_array->format());
+						this->_format = _gli_format_to_wolf_format(_gli_tex_2D_array->format());
 					}
 
 					_g_path.clear();
@@ -302,8 +302,8 @@ namespace wolf
 					VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,							// Type;
 					nullptr,														// Next
 					0,																// Flags
-					this->_image_type,												// ImageType
-					this->_format,													// Format
+					(VkImageType)this->_image_type,								    // ImageType
+					(VkFormat)this->_format,									    // Format
 					{																// Extent
 						this->_width,												// Width
 						this->_height,												// Height
@@ -313,7 +313,7 @@ namespace wolf
 					this->_layer_count,												// ArrayLayers
 					VK_SAMPLE_COUNT_1_BIT,											// Samples
 					VK_IMAGE_TILING_OPTIMAL,										// Tiling
-					this->_usage,													// Usage
+					this->_usage_flags,												// Usage
 					VK_SHARING_MODE_EXCLUSIVE,										// SharingMode
 					0,																// QueueFamilyIndexCount
 					nullptr,														// QueueFamilyIndices
@@ -411,8 +411,8 @@ namespace wolf
 					nullptr,                                              // Next
 					0,                                                    // Flags
 					this->_image_view.image,                              // Image
-					this->_image_view_type,                               // ViewType
-					this->_format,                                        // Format
+					(VkImageViewType)this->_image_view_type,              // ViewType
+					(VkFormat)this->_format,                              // Format
 					{                                                     // Components
 						VK_COMPONENT_SWIZZLE_R,                                 // VkComponentSwizzle         r
 						VK_COMPONENT_SWIZZLE_G,                                 // VkComponentSwizzle         g
@@ -464,79 +464,78 @@ namespace wolf
 				_sampler_create_info.anisotropyEnable = VK_FALSE;
 				_sampler_create_info.unnormalizedCoordinates = VK_FALSE;
 								
-				VkSampler __sampler = 0;
-
 				//create sampler without mipmap and anistropy
+				w_sampler _no_mip_map_no_anisotropy_sampler;
 				auto _hr = vkCreateSampler(
 					this->_gDevice->vk_device,
 					&_sampler_create_info,
 					nullptr,
-					&__sampler);
+					&_no_mip_map_no_anisotropy_sampler.data);
 				if (_hr)
 				{
 					V(W_FAILED, "creating sampler without mip map and without anisotropy", this->_name, false, true);
 					return W_FAILED;
 				}
-				this->_samplers.insert({ w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY, __sampler });
+				this->_samplers.insert({ w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY, _no_mip_map_no_anisotropy_sampler });
 
 				//create sampler with mipmap and without anistropy
-				__sampler = 0;
+				w_sampler _mip_map_no_anisotropy_sampler;
 				_sampler_create_info.maxLod = static_cast<float>(this->_mip_map_levels);
 				_hr = vkCreateSampler(
 					this->_gDevice->vk_device,
 					&_sampler_create_info,
 					nullptr,
-					&__sampler);
+					&_mip_map_no_anisotropy_sampler.data);
 				if (_hr)
 				{
 					V(W_FAILED, "creating sampler with mip map and without anisotropy", this->_name, false, true);
 					return W_FAILED;
 				}
-				this->_samplers.insert({ w_sampler_type::MIPMAP_AND_NO_ANISOTROPY, __sampler });
+				this->_samplers.insert({ w_sampler_type::MIPMAP_AND_NO_ANISOTROPY, _mip_map_no_anisotropy_sampler });
 
 				//create sampler with mipmap and anistropy
-				__sampler = 0;
 				if (this->_gDevice->device_info->device_features->samplerAnisotropy)
 				{
 					_sampler_create_info.maxAnisotropy = this->_gDevice->device_info->device_properties->limits.maxSamplerAnisotropy;
 					_sampler_create_info.anisotropyEnable = VK_TRUE;
 
+					w_sampler _mip_map_anisotropy_sampler;
 					_hr = vkCreateSampler(
 						this->_gDevice->vk_device,
 						&_sampler_create_info,
 						nullptr,
-						&__sampler);
+						&_mip_map_anisotropy_sampler.data);
 					if (_hr)
 					{
 						V(W_FAILED, "creating sampler with mip map and with anisotropy", this->_name, false, true);
 						return W_FAILED;
 					}
 
-					this->_samplers.insert({ w_sampler_type::MIPMAP_AND_ANISOTROPY, __sampler });
+					this->_samplers.insert({ w_sampler_type::MIPMAP_AND_ANISOTROPY, _mip_map_anisotropy_sampler });
 
 					//create sampler with no mipmap and anistropy
-					__sampler = 0;
+					w_sampler _no_mip_map_anisotropy_sampler;
 					_sampler_create_info.maxLod = 0;					
 					_hr = vkCreateSampler(
 						this->_gDevice->vk_device,
 						&_sampler_create_info,
 						nullptr,
-						&__sampler);
+						&_no_mip_map_anisotropy_sampler.data);
 					if (_hr)
 					{
 						V(W_FAILED, "creating sampler without mip map and with anisotropy", this->_name, false, true);
 						return W_FAILED;
 					}
-					this->_samplers.insert({ w_sampler_type::NO_MIPMAP_AND_ANISOTROPY, __sampler });
+					this->_samplers.insert({ w_sampler_type::NO_MIPMAP_AND_ANISOTROPY, _no_mip_map_anisotropy_sampler });
 				}
 
 				return W_PASSED;
 			}
             
-			VkFormat _gli_format_to_vulkan_format(_In_ gli::format pFormat)
+			w_format _gli_format_to_wolf_format(_In_ gli::format pFormat)
 			{
 				//direct map to vulkan formats
-				return (VkFormat)pFormat;
+				return (w_format)pFormat;
 			}
 
             W_RESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
@@ -946,7 +945,7 @@ namespace wolf
                 VkFormatProperties _format_properties;
                 // Check for whether blitting is supported for src
                 vkGetPhysicalDeviceFormatProperties(this->_gDevice->vk_physical_device,
-                                                    this->_format,
+                                                    (VkFormat)this->_format,
                                                     &_format_properties);
                 if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
                 {
@@ -1468,12 +1467,12 @@ namespace wolf
 				for (auto _iter : this->_samplers)
 				{
 					auto _sampler = _iter.second;
-					if (_sampler)
+					if (_sampler.data)
 					{
 						vkDestroySampler(this->_gDevice->vk_device,
-							_sampler,
+							_sampler.data,
 							nullptr);
-						_sampler = 0;
+						_sampler.data = nullptr;
 					}
 				}
 				this->_samplers.clear();
@@ -1523,11 +1522,13 @@ namespace wolf
             
 			const w_descriptor_image_info get_descriptor_info(_In_ const w_sampler_type& pSamplerType) const
 			{
+				auto _sampler = get_sampler(pSamplerType);
+				
 				w_descriptor_image_info  _desc_image_info = {};
 
 				_desc_image_info.imageView = this->_image_view.view;
 				_desc_image_info.imageLayout = this->_image_layout;
-				_desc_image_info.sampler = get_sampler(pSamplerType);
+				_desc_image_info.sampler = _sampler.data;
 
 				return _desc_image_info;
 			}
@@ -1542,19 +1543,19 @@ namespace wolf
                 return this->_height;
             }
             
-			const VkImageUsageFlags get_usage() const
+			const w_image_usage_flags get_usage_flags() const
 			{
-				return this->_usage;
+				return this->_usage_flags;
 			}
 
-            VkSampler get_sampler(_In_ w_sampler_type pSamplerType) const
+            w_sampler get_sampler(_In_ w_sampler_type pSamplerType) const
             {
 				auto _find = this->_samplers.find(pSamplerType);
 				if (_find != this->_samplers.end())
 				{
 					return _find->second;
 				}
-                return 0;
+                return w_sampler();
             }
                        
             w_image_view get_image_view() const
@@ -1562,12 +1563,12 @@ namespace wolf
                 return this->_image_view;
             }
             
-            VkImageType get_image_type() const
+			w_image_type get_image_type() const
             {
                 return this->_image_type;
             }
             
-            VkImageViewType get_image_view_type() const
+            w_image_view_type get_image_view_type() const
             {
                 return this->_image_view_type;
             }
@@ -1586,7 +1587,7 @@ namespace wolf
               
 #pragma region Setters
 
-			void set_format(_In_ VkFormat pFormat)
+			void set_format(_In_ w_format pFormat)
 			{
 				this->_format = pFormat;
 			}
@@ -1601,21 +1602,14 @@ namespace wolf
 #endif
 			}
 
-			void set_view_type(_In_ w_texture_view_type pViewType)
+			void set_view_type(_In_ w_image_view_type pViewType)
 			{
-
-#ifdef __VULKAN__
-				this->_image_view_type = (VkImageViewType)pViewType;
-
-#else
-
-
-#endif
+				this->_image_view_type = pViewType;
 			}
 
-			void set_usage(_In_ VkImageUsageFlags pUsage)
+			void set_usage_flags(_In_ w_image_usage_flags pUsageFlags)
 			{
-				this->_usage = pUsage;
+				this->_usage_flags = pUsageFlags;
 			}
 
 #pragma endregion
@@ -1626,7 +1620,7 @@ namespace wolf
             std::shared_ptr<w_graphics_device>              _gDevice;
             uint32_t                                        _width;
             uint32_t                                        _height;
-			VkImageUsageFlags								_usage;
+			w_image_usage_flags								_usage_flags;
             uint32_t                                        _layer_count;
             uint32_t                                        _mip_map_levels;
             bool                                            _generate_mip_maps;
@@ -1636,11 +1630,11 @@ namespace wolf
             w_buffer                                        _staging_buffer;
 			w_image_view									_image_view;
 			VkImageAspectFlags								_buffer_type;
-			std::map<w_sampler_type, VkSampler>				_samplers;
+			std::map<w_sampler_type, w_sampler>				_samplers;
             VkDeviceMemory                                  _memory;
-            VkFormat                                        _format;
-            VkImageType                                     _image_type;
-            VkImageViewType                                 _image_view_type;
+            w_format                                        _format;
+			w_image_type                                    _image_type;
+            w_image_view_type                               _image_view_type;
 			VkImageLayout									_image_layout;
         };
     }
@@ -1914,15 +1908,15 @@ const uint32_t w_texture::get_height() const
     return this->_pimp->get_height();
 }
 
-const VkImageUsageFlags w_texture::get_usage() const
+const w_image_usage_flags w_texture::get_usage_flags() const
 {
 	if (!this->_pimp) return 0;
-	return this->_pimp->get_usage();
+	return this->_pimp->get_usage_flags();
 }
 
-VkSampler w_texture::get_sampler(_In_ const w_sampler_type& pSamplerType) const
+w_sampler w_texture::get_sampler(_In_ const w_sampler_type& pSamplerType) const
 {
-    if(!this->_pimp) return 0;
+	if(!this->_pimp) return w_sampler();
     return this->_pimp->get_sampler(pSamplerType);
 }
 
@@ -1934,16 +1928,16 @@ w_image_view w_texture::get_image_view() const
 }
 
 //get image type
-VkImageType w_texture::get_image_type() const
+w_image_type w_texture::get_image_type() const
 {
-    if(!this->_pimp) return VkImageType::VK_IMAGE_TYPE_1D;
+    if(!this->_pimp) return w_image_type::W_IMAGE_TYPE_END_RANGE;
     return this->_pimp->get_image_type();
 }
 
 //get image view type
-VkImageViewType w_texture::get_image_view_type() const
+w_image_view_type w_texture::get_image_view_type() const
 {
-    if(!this->_pimp) return VkImageViewType::VK_IMAGE_VIEW_TYPE_1D;
+    if(!this->_pimp) return w_image_view_type::_1D;
     return this->_pimp->get_image_view_type();
 }
 
@@ -1976,16 +1970,16 @@ const uint32_t w_texture::get_mip_maps_level() const
 
 #pragma region Setters
 
-void w_texture::set_format(_In_ VkFormat pFormat)
+void w_texture::set_format(_In_ w_format pFormat)
 {
 	if (!this->_pimp) return;
 	return this->_pimp->set_format(pFormat);
 }
 
-void w_texture::set_usage(_In_ VkImageUsageFlags pUsage)
+void w_texture::set_usage(_In_ w_image_usage_flags pUsageFlags)
 {
 	if (!this->_pimp) return;
-	return this->_pimp->set_usage(pUsage);
+	return this->_pimp->set_usage_flags(pUsageFlags);
 }
 
 void w_texture::set_buffer_type(_In_ w_texture_buffer_type pBufferType)
@@ -1994,7 +1988,7 @@ void w_texture::set_buffer_type(_In_ w_texture_buffer_type pBufferType)
 	return this->_pimp->set_buffer_type(pBufferType);
 }
 
-void w_texture::set_view_type(_In_ w_texture_view_type pViewType)
+void w_texture::set_view_type(_In_ w_image_view_type pViewType)
 {
 	if (!this->_pimp) return;
 	return this->_pimp->set_view_type(pViewType);

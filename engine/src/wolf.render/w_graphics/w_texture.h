@@ -28,25 +28,14 @@ namespace wolf
 			DEPTH = 2,
 			STENCIL = 4,
 		};
-
-		enum w_texture_view_type 
-		{
-			_1D = 0,
-			_2D = 1,
-			_3D = 2,
-			CUBE = 3,
-			_1D_ARRAY = 4,
-			_2D_ARRAY = 5,
-			CUBE_ARRAY = 6,
-		};
 			
-		enum w_sampler_type
+		typedef enum w_sampler_type
 		{
 			NO_MIPMAP_AND_NO_ANISOTROPY = 0,
 			NO_MIPMAP_AND_ANISOTROPY,
 			MIPMAP_AND_NO_ANISOTROPY,
 			MIPMAP_AND_ANISOTROPY
-		};
+		} w_sampler_type;
 
         class w_texture_pimp;
 		class w_texture : public system::w_object
@@ -156,15 +145,15 @@ namespace wolf
             //get height of image
             W_EXP const uint32_t get_height() const;
 			//get image usage
-			W_EXP const VkImageUsageFlags get_usage() const;
+			W_EXP const w_image_usage_flags get_usage_flags() const;
 			//get sampler of image
-            W_EXP VkSampler get_sampler(_In_ const w_sampler_type& pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
+            W_EXP w_sampler get_sampler(_In_ const w_sampler_type& pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
             //get image and view resources
             W_EXP w_image_view get_image_view() const;
             //get image type
-            W_EXP VkImageType get_image_type() const;
+            W_EXP w_image_type get_image_type() const;
             //get image view type
-            W_EXP VkImageViewType get_image_view_type() const;
+            W_EXP w_image_view_type get_image_view_type() const;
             //get image format
             W_EXP w_format get_format() const;
             //get write descriptor image info
@@ -177,13 +166,13 @@ namespace wolf
 #pragma region Setters
 
 			//set image format
-			W_EXP void set_format(_In_ VkFormat pFormat);
+			W_EXP void set_format(_In_ w_format pFormat);
 			//set image usage
-			W_EXP void set_usage(_In_ VkImageUsageFlags pUsage);
+			W_EXP void set_usage(_In_ w_image_usage_flags pUsage);
 			//set buffer type
 			W_EXP void set_buffer_type(_In_ w_texture_buffer_type pBufferType);
 			//set image view type
-			W_EXP void set_view_type(_In_ w_texture_view_type pViewType);
+			W_EXP void set_view_type(_In_ w_image_view_type pViewType);
 
 #pragma region
 

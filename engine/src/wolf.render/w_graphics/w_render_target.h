@@ -51,13 +51,13 @@ namespace wolf
 			//get height of render target
 			W_EXP const uint32_t get_height() const;		
 			//get sampler of render target's buffers
-			W_EXP VkSampler get_sampler(_In_ size_t pBufferIndex) const;
+			W_EXP w_sampler get_sampler(_In_ size_t pBufferIndex) const;
 			//get image view handles of render target's buffers
 			W_EXP w_image_view get_image_view(_In_ size_t pBufferIndex) const;
 			//get image format of render target's buffers
-			W_EXP VkImageType get_image_type(_In_ size_t pBufferIndex) const;
+			W_EXP w_image_type get_image_type(_In_ size_t pBufferIndex) const;
 			//get image view type render target's buffer
-			W_EXP VkImageViewType get_image_view_type(_In_ size_t pBufferIndex) const;
+			W_EXP w_image_view_type get_image_view_type(_In_ size_t pBufferIndex) const;
 			//get format of attached buffer
 			W_EXP const w_format get_attachment_format(_In_ size_t pBufferIndex) const;
 			//get description info of attached buffer

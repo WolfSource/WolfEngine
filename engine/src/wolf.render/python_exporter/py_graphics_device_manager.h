@@ -164,6 +164,22 @@ namespace pywolf
 			.export_values()
 			;
 
+		//define w_image_view_type enum
+		enum_<w_image_view_type>("w_image_view_type")
+			.value("_1D", w_image_view_type::_1D)
+			.value("_2D", w_image_view_type::_2D)
+			.value("_3D", w_image_view_type::_3D)
+			.value("CUBE", w_image_view_type::CUBE)
+			.value("_1D_ARRAY", w_image_view_type::_1D_ARRAY)
+			.value("_2D_ARRAY", w_image_view_type::_2D_ARRAY)
+			.value("CUBE_ARRAY", w_image_view_type::CUBE_ARRAY)
+			.value("W_IMAGE_VIEW_TYPE_BEGIN_RANGE", w_image_view_type::W_IMAGE_VIEW_TYPE_BEGIN_RANGE)
+			.value("W_IMAGE_VIEW_TYPE_END_RANGE", w_image_view_type::W_IMAGE_VIEW_TYPE_END_RANGE)
+			.value("W_IMAGE_VIEW_TYPE_MAX_ENUM", w_image_view_type::W_IMAGE_VIEW_TYPE_MAX_ENUM)
+			.value("W_IMAGE_VIEW_TYPE_RANGE_SIZE", w_image_view_type::W_IMAGE_VIEW_TYPE_RANGE_SIZE)
+			.export_values()
+			;
+
 		//define w_format enum
 		enum_<w_format>("w_format")
 			.value("UNDEFINED", w_format::UNDEFINED)

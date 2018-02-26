@@ -60,7 +60,7 @@ namespace wolf
 							_texture_buffer->set_usage(VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
 						}
 
-						_texture_buffer->set_format(_attachment.attachment_desc.desc.format);
+						_texture_buffer->set_format((w_format)_attachment.attachment_desc.desc.format);
 						//_texture_buffer->set_usage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
 						auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, _attachment.attachment_desc.memory_flag);
 						if (_hr == W_FAILED)
@@ -172,14 +172,14 @@ namespace wolf
 				return this->_viewport.height;
             }
             
-            VkSampler get_sampler(_In_ size_t pBufferIndex) const
+            w_sampler get_sampler(_In_ size_t pBufferIndex) const
             {
-				if (pBufferIndex >= this->_attachment_buffers.size()) return 0;
+				if (pBufferIndex >= this->_attachment_buffers.size()) return w_sampler();
 
 				auto _t = this->_attachment_buffers.at(pBufferIndex);
 				if (_t) return _t->get_sampler();
 
-				return 0;
+				return w_sampler();
             }
                        
             w_image_view get_image_view(_In_ size_t pBufferIndex) const
@@ -192,24 +192,24 @@ namespace wolf
 				return w_image_view();
             }
             
-            VkImageType get_image_type(_In_ size_t pBufferIndex) const
+            w_image_type get_image_type(_In_ size_t pBufferIndex) const
             {
-				if (pBufferIndex >= this->_attachment_buffers.size()) return VkImageType::VK_IMAGE_TYPE_END_RANGE;
+				if (pBufferIndex >= this->_attachment_buffers.size()) return w_image_type::W_IMAGE_TYPE_END_RANGE;
 
 				auto _t = this->_attachment_buffers.at(pBufferIndex);
 				if (_t) return _t->get_image_type();
 
-				return VkImageType::VK_IMAGE_TYPE_END_RANGE;
+				return w_image_type::W_IMAGE_TYPE_END_RANGE;
             }
             
-			VkImageViewType get_image_view_type(_In_ size_t pBufferIndex) const
+			w_image_view_type get_image_view_type(_In_ size_t pBufferIndex) const
 			{
-				if (pBufferIndex >= this->_attachment_buffers.size()) return VkImageViewType::VK_IMAGE_VIEW_TYPE_END_RANGE;
+				if (pBufferIndex >= this->_attachment_buffers.size()) return w_image_view_type::W_IMAGE_VIEW_TYPE_END_RANGE;
 
 				auto _t = this->_attachment_buffers.at(pBufferIndex);
 				if (_t) return _t->get_image_view_type();
 
-				return VkImageViewType::VK_IMAGE_VIEW_TYPE_END_RANGE;
+				return w_image_view_type::W_IMAGE_VIEW_TYPE_END_RANGE;
 			}
 
 			const w_format get_attachment_format(_In_ size_t pBufferIndex) const
@@ -334,9 +334,9 @@ const uint32_t w_render_target::get_height() const
 	return this->_pimp->get_height();
 }
 
-VkSampler w_render_target::get_sampler(_In_ size_t pBufferIndex) const
+w_sampler w_render_target::get_sampler(_In_ size_t pBufferIndex) const
 {
-	if (!this->_pimp) return 0;
+	if (!this->_pimp) return w_sampler();
 	return this->_pimp->get_sampler(pBufferIndex);
 }
 
@@ -346,15 +346,15 @@ w_image_view w_render_target::get_image_view(_In_ size_t pBufferIndex) const
 	return this->_pimp->get_image_view(pBufferIndex);
 }
 
-VkImageType w_render_target::get_image_type(_In_ size_t pBufferIndex) const
+w_image_type w_render_target::get_image_type(_In_ size_t pBufferIndex) const
 {
-	if (!this->_pimp) return VkImageType::VK_IMAGE_TYPE_END_RANGE;
+	if (!this->_pimp) return w_image_type::W_IMAGE_TYPE_END_RANGE;
 	return this->_pimp->get_image_type(pBufferIndex);
 }
 
-VkImageViewType w_render_target::get_image_view_type(_In_ size_t pBufferIndex) const
+w_image_view_type w_render_target::get_image_view_type(_In_ size_t pBufferIndex) const
 {
-	if (!this->_pimp) return VkImageViewType::VK_IMAGE_VIEW_TYPE_END_RANGE;
+	if (!this->_pimp) return w_image_view_type::W_IMAGE_VIEW_TYPE_END_RANGE;
 	return this->_pimp->get_image_view_type(pBufferIndex);
 }
 

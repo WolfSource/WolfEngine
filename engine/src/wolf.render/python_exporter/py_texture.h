@@ -264,18 +264,6 @@ namespace pywolf
 			.export_values()
 			;
 
-		//define w_texture_view_type enum
-		enum_<w_texture_view_type>("w_texture_buffer_type")
-			.value("_1D", w_texture_view_type::_1D)
-			.value("_2D", w_texture_view_type::_2D)
-			.value("_3D", w_texture_view_type::_3D)
-			.value("CUBE", w_texture_view_type::CUBE)
-			.value("_1D_ARRAY", w_texture_view_type::_1D_ARRAY)
-			.value("_2D_ARRAY", w_texture_view_type::_2D_ARRAY)
-			.value("CUBE_ARRAY", w_texture_view_type::CUBE_ARRAY)
-			.export_values()
-			;
-
 		//define w_sampler_type enum
 		enum_<w_sampler_type>("w_sampler_type")
 			.value("NO_MIPMAP_AND_NO_ANISOTROPY", w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY)
