@@ -8,8 +8,8 @@ environment:
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.14"
       PYTHON_ARCH: "64"
-    - wolf_engine_vulkan_win32: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln
-    - pyWolf_win32: c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\pyWolf.Win32.sln
+    - wolf_engine_vulkan_win32: "c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\wolf.engine.vulkan.Win32.sln"
+    - pyWolf_win32: "c:\\projects\\wolf-engine\\engine\\builds\\mvsc\\pyWolf.Win32.sln"
 	
 matrix:
   fast_finish: true
