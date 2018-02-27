@@ -16,6 +16,8 @@
 
 namespace pywolf
 {
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(load_texture_2D_from_file_overloads, w_texture::load_texture_2D_from_file, 1, 2)
+		
 	static void py_texture_export()
 	{
 		using namespace boost::python;
@@ -40,14 +42,14 @@ namespace pywolf
 
 		//export w_texture class
 		class_<w_texture, boost::noncopyable>("w_texture")
-			.def("initialize", &w_texture::py_initialize_simple, "initialize texture")
-			.def("initialize", &w_texture::py_initialize_advanced, "initialize texture")
+			.def("initialize", &w_texture::py_initialize, "initialize texture")
+			.def("initialize_as_staging", &w_texture::py_initialize_as_staging, "initialize as staging texture")
 			.def("load", &w_texture::load, "load texture")
-			.def("load_texture_2D_from_file", &w_texture::load_texture_2D_from_file, "load texture2D from file")
+			.def("load_texture_2D_from_file", &w_texture::load_texture_2D_from_file, load_texture_2D_from_file_overloads())
 			.def("load_texture_from_memory_rgba", &w_texture::py_load_texture_from_memory_rgba, "Load texture from memory in the format of RGBA")
 			.def("load_texture_from_memory_rgb", &w_texture::py_load_texture_from_memory_rgb, "Load texture from memory in the format of RGB")
-			.def("load_texture_from_memory_all_channels_same", &w_texture::load_texture_from_memory_all_channels_same, "Load texture from memory, all channels will have same byte")
-			.def("load_texture_from_memory_color", &w_texture::load_texture_from_memory_color, "Load texture from w_color")
+			.def("load_texture_from_memory_all_channels_same", &w_texture::py_load_texture_from_memory_all_channels_same, "Load texture from memory, all channels will have same byte")
+			.def("load_texture_from_memory_color", &w_texture::py_load_texture_from_memory_color, "Load texture from w_color")
 			.def("copy_data_to_texture_2D", &w_texture::py_copy_data_to_texture_2D, "copy data to texture, if this is a staging buffer, do not use this function because it will cause memory leaks, instead use \"get_pointer_to_staging_data\" function")
 			.def("read_data_of_texture", &w_texture::py_read_data_of_texture, "read texture's data")
 			.def("flush_staging_data", &w_texture::py_flush_staging_data, "flush staging buffer")

@@ -73,14 +73,14 @@ namespace wolf
 
 #ifdef __PYTHON__
 
-			bool py_load(
+			W_RESULT py_load(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const w_viewport& pViewPort,
 				_In_ const w_viewport_scissor& pViewPortScissor,
 				_In_ boost::python::list pAttachments)
 			{
 				//create render pass attchaments
-				if (!pGDevice.get()) return false;
+				if (!pGDevice.get()) return W_FAILED;
 
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
@@ -106,7 +106,7 @@ namespace wolf
 						}
 					}
 				}
-				if (!_render_pass_attachments.size()) return false;
+				if (!_render_pass_attachments.size()) return W_FAILED;
 
 				auto _hr = load(
 					_gDevice,
@@ -117,7 +117,7 @@ namespace wolf
 				//reset local shared_ptr
 				_gDevice.reset();
 
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
 			void py_begin(

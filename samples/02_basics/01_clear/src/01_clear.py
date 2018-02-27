@@ -73,19 +73,19 @@ class scene(QWidget):
             _render_pass_attachments.append([_iter, _output_window.depth_buffer_image_view])
 
         _hr = self._draw_render_pass.load(self._gDevice, self._viewport, self._viewport_scissor, _render_pass_attachments)
-        if _hr == False:
+        if _hr:
             print "Error on loading render pass"
             return
         
         #create one semaphore for drawing
         _hr = self._draw_semaphore.initialize(self._gDevice)
-        if _hr == False:
+        if _hr:
             print "Error on initializing semaphore"
             return
 
         #create one fence for drawing
-        _hr = self._draw_fence.initialize(self._gDevice, 1)
-        if _hr == False:
+        _hr = self._draw_fence.initialize(self._gDevice)
+        if _hr:
             print "Error on initializing fence(s)"
             return
 
@@ -145,7 +145,7 @@ class scene(QWidget):
             return 
 
         _hr = self._draw_fence.wait()
-        if _hr == False:
+        if _hr:
             print "Error on waiting for draw fence"
             return 
 

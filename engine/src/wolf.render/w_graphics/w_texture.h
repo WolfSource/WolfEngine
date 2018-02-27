@@ -60,7 +60,7 @@ namespace wolf
 			W_EXP W_RESULT load();
 
 			//Load texture from file
-			W_EXP W_RESULT load_texture_2D_from_file(_In_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
+			W_EXP W_RESULT load_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
             //Load texture from memory in the format of RGBA
             W_EXP W_RESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData);
             //Load texture from memory in the format of RGB
@@ -179,24 +179,23 @@ namespace wolf
             W_EXP static w_texture*                               default_texture;
             
 #ifdef __PYTHON__
-
-			bool py_initialize_simple(
+			
+			bool py_initialize_as_staging(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const uint32_t& pWidth,
 				_In_ const uint32_t& pHeight,
-				_In_ const bool& pGenerateMipMapsLevels,
-				_In_ const bool& pIsStaging)
+				_In_ const bool& pGenerateMipMapsLevels)
 			{
 				if (!pGDevice.get()) return false;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
-				auto _hr = initialize(_gDevice, pWidth, pHeight, pGenerateMipMapsLevels, pIsStaging);
+				auto _hr = initialize(_gDevice, pWidth, pHeight, pGenerateMipMapsLevels, true);
 
 				_gDevice.reset();
 				return _hr == W_PASSED;
 			}
 
-			bool py_initialize_advanced(
+			bool py_initialize(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const uint32_t& pWidth,
 				_In_ const uint32_t& pHeight,
@@ -242,6 +241,16 @@ namespace wolf
 				auto _hr = load_texture_from_memory_rgb(&_data[0]);
 				SAFE_DELETE_ARRAY(_data);
 				return _hr;
+			}
+
+			bool py_load_texture_from_memory_all_channels_same(_In_ uint8_t pData)
+			{
+				return load_texture_from_memory_all_channels_same(pData) == W_PASSED;
+			}
+			
+			bool py_load_texture_from_memory_color(_In_ w_color pColor)
+			{
+				return load_texture_from_memory_color(pColor) == W_PASSED;
 			}
 
 			bool py_copy_data_to_texture_2D(_In_ boost::python::list  pRGBData)

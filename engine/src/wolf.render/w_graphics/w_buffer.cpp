@@ -107,7 +107,7 @@ namespace wolf
             W_RESULT set_data(_In_ const void* const pData)
             {
                 //we can not access to VRAM, but we can copy our data to DRAM
-                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return W_FAILED;
+                if (this->_memory_flags & w_memory_property_flag_bits::DEVICE_LOCAL_BIT) return W_FAILED;
 
                 if (map() == nullptr) return W_FAILED;
                 memcpy(this->_mapped, pData, (size_t)this->_size_in_bytes);
@@ -176,7 +176,7 @@ namespace wolf
                 const std::string _trace_info = this->_name + "::map";
 
                 //we can not access to VRAM, but we can copy our data to DRAM
-                if (this->_memory_flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) return nullptr;
+                if (this->_memory_flags & w_memory_property_flag_bits::DEVICE_LOCAL_BIT) return nullptr;
 
                 auto _size = this->get_size();
                 auto _memory = this->get_memory();
@@ -261,7 +261,7 @@ namespace wolf
                 return this->_usage_flags;
             }
             
-            const VkMemoryPropertyFlags get_memory_flags() const
+            const w_memory_property_flags get_memory_flags() const
             {
                 return this->_memory_flags;
             }
@@ -290,7 +290,7 @@ namespace wolf
 #ifdef __VULKAN__
             VkBuffer                                            _handle;
             VkDeviceMemory                                      _memory;
-            VkMemoryPropertyFlags                               _memory_flags;
+            w_memory_property_flags                             _memory_flags;
             VkBufferUsageFlags                                  _usage_flags;
 			w_descriptor_buffer_info                            _descriptor_info;
 #endif
@@ -325,7 +325,7 @@ W_RESULT w_buffer::load_as_staging(_In_ const std::shared_ptr<w_graphics_device>
 W_RESULT w_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                        _In_ const uint32_t pBufferSizeInBytes,
                        _In_ const VkBufferUsageFlags pUsageFlags,
-                       _In_ const VkMemoryPropertyFlags pMemoryFlags)
+                       _In_ const w_memory_property_flags pMemoryFlags)
 {
     if(!this->_pimp) return W_FAILED;
     
@@ -399,9 +399,9 @@ const VkBufferUsageFlags w_buffer::get_usage_flags() const
     return this->_pimp->get_usage_flags();
 }
 
-const VkMemoryPropertyFlags w_buffer::get_memory_flags() const
+const w_memory_property_flags w_buffer::get_memory_flags() const
 {
-    if(!this->_pimp) return VkMemoryPropertyFlagBits::VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+    if(!this->_pimp) return w_memory_property_flag_bits::DEVICE_LOCAL_BIT;
     
     return this->_pimp->get_memory_flags();
 }

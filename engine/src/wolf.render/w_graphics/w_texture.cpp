@@ -196,7 +196,11 @@ namespace wolf
 				{
 					wstring msg = L"Width or Height of texture file is zero: ";
 					V(W_FAILED, msg + _path, this->_name, 3);
-					if (_rgba) free(_rgba);
+					if (_rgba)
+					{
+						free(_rgba);
+						_rgba = nullptr;
+					}
 					release();
 					return W_FAILED;
 				}
@@ -204,7 +208,11 @@ namespace wolf
 				auto _hr = _create_image();
 				if (_hr == W_FAILED)
 				{
-					if (_rgba) free(_rgba);
+					if (_rgba)
+					{
+						free(_rgba);
+						_rgba = nullptr;
+					}
 					release();
 					return W_FAILED;
 				}
@@ -212,7 +220,11 @@ namespace wolf
 				_hr = _allocate_memory();
 				if (_hr == W_FAILED)
 				{
-					if (_rgba) free(_rgba);
+					if (_rgba)
+					{
+						free(_rgba);
+						_rgba = nullptr;
+					}
 					release();
 					return W_FAILED;
 				}

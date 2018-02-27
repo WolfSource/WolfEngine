@@ -171,15 +171,15 @@ namespace wolf
 				return this->_viewport.height;
             }
             
-            w_sampler get_sampler(_In_ size_t pBufferIndex) const
-            {
+			w_sampler get_sampler(_In_ size_t pBufferIndex) const
+			{
 				if (pBufferIndex >= this->_attachment_buffers.size()) return w_sampler();
 
 				auto _t = this->_attachment_buffers.at(pBufferIndex);
 				if (_t) return _t->get_sampler();
 
 				return w_sampler();
-            }
+			}
                        
             w_image_view get_image_view(_In_ size_t pBufferIndex) const
             {

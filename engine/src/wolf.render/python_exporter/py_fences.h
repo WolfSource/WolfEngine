@@ -18,6 +18,9 @@ namespace pywolf
 {
 	using namespace wolf::graphics;
 
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(initialize_overloads, w_fences::py_initialize, 1, 2)
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(wait_overloads, w_fences::wait, 0, 1)
+
 	static void py_fences_export()
 	{
 		using namespace boost::python;
@@ -25,10 +28,9 @@ namespace pywolf
 
 		//export w_fences class
 		class_<w_fences, boost::noncopyable>("w_fences")
-			.def("initialize", &w_fences::py_initialize, "initialize fence")
-			.def("wait_for", &w_fences::py_wait_for, "wait for all fence for the timeout period in units of nanoseconds. e.g for arguman \'numpy.iinfo(numpy.uint64).max\'")
-			.def("wait", &w_fences::py_wait, "wait for all fence with maximum timeout")
-			.def("reset", &w_fences::py_reset, "reset all fences")
+			.def("initialize", &w_fences::py_initialize, initialize_overloads())
+			.def("wait", &w_fences::wait, wait_overloads())
+			.def("reset", &w_fences::reset, "reset all fences")
 			.def("get_count", &w_fences::get_count, "get number of fences")
 			.def("release", &w_fences::release, "release resources of all fences")
 			;

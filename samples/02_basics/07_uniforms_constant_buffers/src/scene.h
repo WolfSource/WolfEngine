@@ -17,7 +17,6 @@
 #include <w_framework/w_game.h>
 #include <w_graphics/w_command_buffer.h>
 #include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
@@ -51,7 +50,7 @@ public:
 	void update(_In_ const wolf::system::w_game_time& pGameTime) override;
 
 	//This is called when the game should draw itself.
-	HRESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
+	W_RESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
 
 	//This is called when the window game should resized.
 	void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow) override;
@@ -68,12 +67,9 @@ private:
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
 
-
 	wolf::graphics::w_command_buffer                                _draw_command_buffers;
 	wolf::graphics::w_render_pass                                   _draw_render_pass;
-	wolf::graphics::w_frame_buffer                                  _draw_frame_buffers;
-
-
+	
 	wolf::graphics::w_fences                                        _draw_fence;
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
 

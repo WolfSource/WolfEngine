@@ -87,6 +87,7 @@ BOOST_PYTHON_MODULE(pyWolf)
     }
 
     //export logger in global scope
+	pywolf::py_std_export();
     pywolf::py_logger_export();
 
     def("release_shared_data_over_all_instances", wolf::release_shared_data_over_all_instances);

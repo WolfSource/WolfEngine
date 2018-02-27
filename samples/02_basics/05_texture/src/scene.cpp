@@ -141,7 +141,7 @@ void scene::load()
     if (_hr == W_FAILED)
     {
         release();
-        V(W_FAILED, "loading texture", _trace_info, 3, true);
+        V(W_FAILED, "initializing texture", _trace_info, 3, true);
     }
     //load texture from file
     _hr = this->_texture.load_texture_2D_from_file(content_path + L"../Logo.jpg", true);

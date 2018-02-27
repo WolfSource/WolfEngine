@@ -64,14 +64,14 @@ namespace pywolf
 		//export w_push_constant_range class
 		class_<w_push_constant_range, boost::noncopyable>("w_push_constant_range", init<>());
 
-		//export w_descriptor_buffer_info class
-		class_<w_descriptor_buffer_info, boost::noncopyable>("w_descriptor_buffer_info", init<>());
-
 		//export w_sampler class
 		class_<w_sampler, boost::noncopyable>("w_sampler", init<>());
 
+		//export w_descriptor_buffer_info class
+		class_<w_descriptor_buffer_info, boost::noncopyable>("w_descriptor_buffer_info", init<>());
+
 		//export w_descriptor_image_info class
-		class_<w_descriptor_image_info, boost::noncopyable>("w_descriptor_image_info", init<>());
+		class_<w_descriptor_image_info>("w_descriptor_image_info", init<>());
 
 		//export w_pipeline_layout_create_info struct
 		class_<w_pipeline_layout_create_info, boost::noncopyable>("w_pipeline_layout_create_info", init<>());

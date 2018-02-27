@@ -23,13 +23,15 @@ namespace wolf
             W_EXP w_buffer();
             W_EXP ~w_buffer();
             
-            W_EXP W_RESULT load_as_staging(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                                          _In_ const uint32_t pBufferSize);
+            W_EXP W_RESULT load_as_staging(
+				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const uint32_t pBufferSize);
             
-            W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                         _In_ const uint32_t pBufferSize,
-                         _In_ const VkBufferUsageFlags pUsage,
-                         _In_ const VkMemoryPropertyFlags pMemoryFlags);
+            W_EXP W_RESULT load(
+				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+                _In_ const uint32_t pBufferSize,
+                _In_ const VkBufferUsageFlags pUsage,
+                _In_ const w_memory_property_flags pMemoryFlags);
             
             W_EXP W_RESULT bind();
 
@@ -47,14 +49,39 @@ namespace wolf
             
 #pragma region Getters
             
-            W_EXP const uint32_t                        get_size() const;
+            W_EXP const uint32_t                      get_size() const;
             W_EXP const VkBufferUsageFlags            get_usage_flags() const;
-            W_EXP const VkMemoryPropertyFlags         get_memory_flags() const;
+            W_EXP const w_memory_property_flags       get_memory_flags() const;
             W_EXP const VkBuffer                      get_handle() const;
             W_EXP const VkDeviceMemory                get_memory() const;
             W_EXP const w_descriptor_buffer_info      get_descriptor_info() const;
 
 #pragma endregion
+
+#ifdef __PYTHON__
+
+			W_RESULT py_set_data(_In_ boost::python::list pData)
+			{
+				//get vertices data
+				std::vector<float> _data;
+				for (size_t i = 0; i < len(pData); ++i)
+				{
+					boost::python::extract<float> _d(pData[i]);
+					if (_d.check())
+					{
+						_data.push_back(_d());
+					}
+				}
+
+				W_RESULT _hr = W_FAILED;
+				if (_data.size())
+				{
+					_hr = set_data(_data.data());
+				}
+				return _hr;
+			}
+
+#endif
             
         private:
             typedef system::w_object            _super;

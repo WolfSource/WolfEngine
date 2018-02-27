@@ -40,10 +40,17 @@ namespace wolf
             W_EXP ULONG release();
 
 #ifdef __PYTHON__
-			W_EXP bool py_initialize(_In_ boost::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ const uint32_t& pNumberOfFences);
-			W_EXP bool py_wait_for(_In_ uint64_t& pTimeOut);
-			W_EXP bool py_wait();
-			W_EXP bool py_reset();
+			W_RESULT py_initialize(_In_ boost::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ const uint32_t& pNumberOfFences = 1)
+			{
+				//create render pass attchaments
+				if (!pGDevice.get()) return W_FAILED;
+
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+				auto _hr = initialize(_gDevice, pNumberOfFences);
+				_gDevice.reset();
+
+				return _hr;
+			}
 #endif
         private:
             

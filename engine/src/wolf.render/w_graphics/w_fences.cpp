@@ -92,34 +92,3 @@ ULONG w_fences::release()
 
     return 0;
 }
-
-#ifdef __PYTHON__
-
-bool w_fences::py_initialize(_In_ boost::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice, _In_ const uint32_t& pNumberOfFences)
-{
-	//create render pass attchaments
-	if (!pGDevice.get()) return false;
-	
-	auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
-	auto _hr = this->initialize(_gDevice, pNumberOfFences);
-	_gDevice.reset();
-	
-	return _hr == W_PASSED;
-}
-
-bool w_fences::py_wait_for(_In_ uint64_t& pTimeOut)
-{
-	return wait(pTimeOut) == W_PASSED;
-}
-
-bool w_fences::py_wait()
-{
-	return wait() == W_PASSED;
-}
-
-bool w_fences::py_reset()
-{
-	return reset() == W_PASSED;
-}
-
-#endif

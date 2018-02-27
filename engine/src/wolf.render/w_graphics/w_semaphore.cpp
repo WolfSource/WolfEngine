@@ -45,22 +45,3 @@ ULONG w_semaphore::release()
 
     return 0;
 }
-
-#ifdef __PYTHON__
-
-//Must declare here 
-using namespace pywolf;
-
-bool w_semaphore::py_initialize(_In_ boost::shared_ptr<w_graphics_device>& pGDevice)
-{
-	if (!pGDevice.get()) return false;
-	auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
-
-	auto _hr = initialize(_gDevice);
-	//reset local shared_ptr
-	_gDevice.reset();
-
-	return _hr == W_PASSED;
-}
-
-#endif

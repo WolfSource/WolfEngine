@@ -34,7 +34,7 @@ class scene(QWidget):
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #The following codes have been added for this project
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+        self._texture = pyWolf.graphics.w_texture()
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -73,7 +73,7 @@ class scene(QWidget):
             _render_pass_attachments.append([_iter, _output_window.depth_buffer_image_view])
 
         _hr = self._draw_render_pass.load(self._gDevice, self._viewport, self._viewport_scissor, _render_pass_attachments)
-        if _hr == False:
+        if _hr:
             print "Error on loading render pass"
             sys.exit(1)
 
@@ -97,8 +97,8 @@ class scene(QWidget):
             sys.exit(1)
 
         #loading vertex shader
-        #_content_path_dir = "D:/github/WolfSource/Wolf.Engine/samples/02_basics/03_vertex_buffer/src/content/"
-        _content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/03_vertex_buffer/src/content/"
+        _content_path_dir = "D:/github/WolfSource/Wolf.Engine/samples/02_basics/05_texture/src/content/"
+        #_content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/05_texture/src/content/"
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER, "main")
         if _hr == False:
             print "Error on loading vertex shader"
@@ -110,10 +110,33 @@ class scene(QWidget):
             print "Error on loading fragment shader"
             sys.exit(1)
 
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #The following codes have been added for this project
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        _hr = self._texture.initialize(self._gDevice, 32, 32, False, pyWolf.graphics.w_memory_property_flag_bits.DEVICE_LOCAL_BIT)
+        if _hr == False:
+            print "initializing texture"
+        
+        #load texture from file
+        self._texture.load_texture_2D_from_file("D:\\github\\WolfSource\\Wolf.Engine\\Logo.jpg")
+        if _hr == W_FAILED:
+            print "loading texture"
+
         #just we need vertex position color
-        _vba = pyWolf.graphics.w_vertex_binding_attributes(pyWolf.graphics.w_vertex_declaration.VERTEX_POSITION_COLOR)
+        _vba = pyWolf.graphics.w_vertex_binding_attributes(pyWolf.graphics.w_vertex_declaration.VERTEX_POSITION_UV)
         self._mesh.set_vertex_binding_attributes(_vba);
 
+        _shader_param = pyWolf.graphics.w_shader_binding_param()
+        _shader_param.index = 0
+        _shader_param.type = pyWolf.graphics.w_shader_binding_type.SAMPLER2D
+        _shader_param.stage = pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER
+        _shader_param.image_info = self._texture.get_descriptor_info(pyWolf.graphics.w_sampler_type.NO_MIPMAP_AND_NO_ANISOTROPY)
+        _hr = self._shader.set_shader_binding_params( [_shader_param])
+        if _hr == False:
+            print "Set shader binding params"
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        
         #loading pipeline cache
         _pipeline_cache_name = "pipeline_cache";
         _hr = self._pipeline.create_pipeline_cache(self._gDevice, _pipeline_cache_name)
@@ -126,30 +149,26 @@ class scene(QWidget):
             print "Error on creating pipeline"
             sys.exit(1)
 
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
-#The following codes have been added for this project
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
         _vertex_data = [
 		    -0.7, -0.7,	0.0,		#pos0
-		     1.0,  0.0,	0.0, 1.0,   #color0
+		     0.0,  0.0,             #uv0
 		    -0.7,  0.7,	0.0,		#pos1
-		     1.0,  1.0,	1.0, 1.0,   #color1
+		     0.0,  1.0,             #uv1
 		     0.7,  0.7,	0.0,		#pos2
-		     0.0,  1.0,	0.0, 1.0,   #color2
-		     0.7, -0.7,	0.0,		#pos3
-		     0.0,  0.0,	0.0, 1.0	#color3
+		     1.0,  1.0,          	#uv2
+             0.7, -0.7,	0.0,		#pos3
+             1.0,  0.0,             #uv3
         ]
 
         _index_data = [ 0,1,3,3,1,2 ]
 
         #create mesh
+        self._mesh.set_texture(self._texture)
         _hr = self._mesh.load(self._gDevice, _vertex_data, _index_data, False)
         if _hr == False:
             print "Error on loading mesh"
             sys.exit(1)
 
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
         _hr = self.build_command_buffers()
         if _hr == False:
             print "Error on building draw command buffer(s)"
@@ -270,6 +289,14 @@ class scene(QWidget):
 
         self._mesh.release()
         self._mesh = None
+
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #The following codes have been added for this project
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        self._texture.release()
+        self._texture = None
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         self._game.exit()
         self._game = None
