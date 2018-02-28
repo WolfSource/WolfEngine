@@ -33,20 +33,15 @@ def randi(pMin, pMax):
     return randint(pMin, pMax)
 
 import TBB
+from TBB import *
 
-class tbb_job:
-    def __init__(self, pixels, start_index, stop_index):
-        self._pixels = pixels
-        self._start_index = start_index
-        self._stop_index = stop_index
-        
-    def __call__(self):
-        for i in xrange(self._start_index, self._stop_index):
-            _j = i * 4
-            self._pixels[_j + 0] = randi(0, 255)#R
-            self._pixels[_j + 1] = randi(0, 255)#G
-            self._pixels[_j + 2] = randi(0, 255)#B
-            self._pixels[_j + 3] = randi(0, 255)#A
+pixels = None
+
+def job(i):
+    pixels[i + 0] = randi(0, 255)#R
+    pixels[i + 1] = randi(0, 255)#G
+    pixels[i + 2] = randi(0, 255)#B
+    pixels[i + 3] = randi(0, 255)#A
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -165,7 +160,7 @@ class scene(QWidget):
             
         #just we need vertex position color
         _vba = pyWolf.graphics.w_vertex_binding_attributes(pyWolf.graphics.w_vertex_declaration.VERTEX_POSITION_UV)
-        self._mesh.set_vertex_binding_attributes(_vba);
+        self._mesh.set_vertex_binding_attributes(_vba)
 
         _shader_param = pyWolf.graphics.w_shader_binding_param()
         _shader_param.index = 0
@@ -179,7 +174,7 @@ class scene(QWidget):
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         
         #loading pipeline cache
-        _pipeline_cache_name = "pipeline_cache";
+        _pipeline_cache_name = "pipeline_cache"
         _hr = self._pipeline.create_pipeline_cache(self._gDevice, _pipeline_cache_name)
         if _hr:
             print "Error on creating pipeline cache"
@@ -247,22 +242,18 @@ class scene(QWidget):
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         _length = self._texture.get_width() * self._texture.get_height()
-        _px = self._texture.read_data_of_texture()
+        global pixels 
+        pixels = self._texture.read_data_of_texture()
             
-        _length_over_4 = _length / 4
-        _pool = TBB.task_group()
-        for i in xrange(4):
-            _start_index = i * _length_over_4
-            _stop_index = _start_index + _length_over_4
-            b = tbb_job(_px, _start_index, _stop_index)
-            _pool.run(b) 
-
-        _pool.wait()
- 
+        _pool = Pool(4)
+        _pool.map(job, range(0, _length * 4, 4), chunksize=4)
         #update texture staging buffer
-        _hr = self._texture.copy_data_to_texture_2D(_px)
+        _hr = self._texture.copy_data_to_texture_2D(pixels)
         if _hr:
             print "Error on copy data to texture 2D"
+
+        _pool.terminate()
+        _pool.join()
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
     
