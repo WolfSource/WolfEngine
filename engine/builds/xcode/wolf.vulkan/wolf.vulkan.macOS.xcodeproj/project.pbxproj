@@ -64,9 +64,9 @@
 		2CDD13782030257B002B1AAC /* py_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD13752030257B002B1AAC /* py_shader.h */; };
 		2CDF24842036F78500BD3DE5 /* py_mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDF24832036F78500BD3DE5 /* py_mesh.h */; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
-		2CFFAC701FCEAA400020A112 /* w_command_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */; };
+		2CFFAC701FCEAA400020A112 /* w_command_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */; };
 		2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */; };
-		2CFFAC741FCEAA400020A112 /* w_command_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6D1FCEAA400020A112 /* w_command_buffer.cpp */; };
+		2CFFAC741FCEAA400020A112 /* w_command_buffers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6D1FCEAA400020A112 /* w_command_buffers.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -133,9 +133,9 @@
 		2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2CDF24832036F78500BD3DE5 /* py_mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_mesh.h; path = ../../../src/wolf.render/python_exporter/py_mesh.h; sourceTree = "<group>"; };
 		2CFFAC671FCEAA3F0020A112 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/w_graphics/w_render_target.h; sourceTree = "<group>"; };
-		2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffer.h; path = ../../../src/wolf.render/w_graphics/w_command_buffer.h; sourceTree = "<group>"; };
+		2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffers.h; path = ../../../src/wolf.render/w_graphics/w_command_buffers.h; sourceTree = "<group>"; };
 		2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_target.cpp; path = ../../../src/wolf.render/w_graphics/w_render_target.cpp; sourceTree = "<group>"; };
-		2CFFAC6D1FCEAA400020A112 /* w_command_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_command_buffer.cpp; path = ../../../src/wolf.render/w_graphics/w_command_buffer.cpp; sourceTree = "<group>"; };
+		2CFFAC6D1FCEAA400020A112 /* w_command_buffers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_command_buffers.cpp; path = ../../../src/wolf.render/w_graphics/w_command_buffers.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,8 +161,8 @@
 			children = (
 				2C0F36A5200A6BFF001CB2DF /* w_shapes.cpp */,
 				2C0F36A4200A6BFF001CB2DF /* w_shapes.h */,
-				2CFFAC6D1FCEAA400020A112 /* w_command_buffer.cpp */,
-				2CFFAC691FCEAA3F0020A112 /* w_command_buffer.h */,
+				2CFFAC6D1FCEAA400020A112 /* w_command_buffers.cpp */,
+				2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */,
 				2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */,
 				2CFFAC671FCEAA3F0020A112 /* w_render_target.h */,
 				2C598C661FA268730055D215 /* w_queue.cpp */,
@@ -301,7 +301,7 @@
 				2CDD1370202781FB002B1AAC /* py_game.h in Headers */,
 				2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */,
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
-				2CFFAC701FCEAA400020A112 /* w_command_buffer.h in Headers */,
+				2CFFAC701FCEAA400020A112 /* w_command_buffers.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
 				2CDF24842036F78500BD3DE5 /* py_mesh.h in Headers */,
 				2CDD136F202781FB002B1AAC /* py_texture.h in Headers */,
@@ -387,7 +387,7 @@
 				2C598C681FA268740055D215 /* w_queue.cpp in Sources */,
 				2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */,
 				2C8D5B6D1F4F98D1000BCB87 /* w_imgui.cpp in Sources */,
-				2CFFAC741FCEAA400020A112 /* w_command_buffer.cpp in Sources */,
+				2CFFAC741FCEAA400020A112 /* w_command_buffers.cpp in Sources */,
 				2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */,
 				2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */,
 				2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */,
