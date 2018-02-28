@@ -192,7 +192,7 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.cpp">
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
     </ClCompile>
@@ -249,7 +249,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_command_buffer.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_fences.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_graphics_device_manager.h" />
@@ -264,7 +264,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_imgui.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.h" />

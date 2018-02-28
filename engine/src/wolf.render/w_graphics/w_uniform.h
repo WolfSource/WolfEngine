@@ -11,7 +11,7 @@
 #define __W_SHADER_BUFFER_H__
 
 #include "w_graphics_device_manager.h"
-#include <w_graphics/w_command_buffer.h>
+#include <w_graphics/w_command_buffers.h>
 #include "w_buffer.h"
 
 namespace wolf

@@ -71,6 +71,7 @@ namespace wolf
 {
     namespace graphics
     {
+
 		struct w_attachment_description :
 #ifdef __VULKAN__
 			public VkAttachmentDescription

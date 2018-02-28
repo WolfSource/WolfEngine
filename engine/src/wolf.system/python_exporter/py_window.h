@@ -12,7 +12,7 @@
 #ifndef __PY_WINDOW_H__
 #define __PY_WINDOW_H__
 
-namespace pywolf
+namespace pyWolf
 {
     static void py_window_export()
     {

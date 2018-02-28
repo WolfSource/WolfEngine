@@ -291,7 +291,7 @@ namespace wolf
 				return W_PASSED;
 			}
 
-			W_RESULT draw(_In_ const w_command_buffer* pCommandBuffer)
+			W_RESULT draw(_In_ const w_command_buffers* pCommandBuffer)
 			{
 				const std::string _trace_info = this->_name + "::draw";
 
@@ -916,7 +916,7 @@ W_RESULT w_shapes::update(_In_ const glm::mat4& pWorldViewProjection)
 	return (!this->_pimp) ? W_FAILED : this->_pimp->update(pWorldViewProjection);
 }
 
-W_RESULT w_shapes::draw(_In_ const w_command_buffer* pCommandBuffer)
+W_RESULT w_shapes::draw(_In_ const w_command_buffers* pCommandBuffer)
 {
 	if (!this->_pimp || !pCommandBuffer) return W_FAILED;
 	return this->_pimp->draw(pCommandBuffer);

@@ -12,7 +12,7 @@
 #ifndef __PY_GAME_TIME_H__
 #define __PY_GAME_TIME_H__
 
-namespace pywolf
+namespace pyWolf
 {
     static void py_game_time_export()
     {

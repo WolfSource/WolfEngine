@@ -14,7 +14,7 @@
 
 #include <boost/python.hpp>
 
-namespace pywolf
+namespace pyWolf
 {
     bool py_initialize(_In_z_ const std::wstring pAppName, _In_z_ const std::wstring pLogPath) { return wolf::logger.initialize(pAppName, pLogPath); }
     boost::python::list py_get_buffer()

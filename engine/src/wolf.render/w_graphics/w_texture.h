@@ -18,6 +18,10 @@
 #include <w_logger.h>
 #include <w_io.h>
 
+#ifdef __PYTHON__
+#include "w_std.h"
+#endif
+
 namespace wolf
 {
 	namespace graphics
@@ -180,41 +184,41 @@ namespace wolf
             
 #ifdef __PYTHON__
 			
-			bool py_initialize_as_staging(
+			W_RESULT py_initialize_as_staging(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const uint32_t& pWidth,
 				_In_ const uint32_t& pHeight,
 				_In_ const bool& pGenerateMipMapsLevels)
 			{
-				if (!pGDevice.get()) return false;
+				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
 				auto _hr = initialize(_gDevice, pWidth, pHeight, pGenerateMipMapsLevels, true);
 
 				_gDevice.reset();
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			bool py_initialize(
+			W_RESULT py_initialize(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
-				_In_ const uint32_t& pWidth,
-				_In_ const uint32_t& pHeight,
-				_In_ const bool& pGenerateMipMapsLevels,
-				_In_ const w_memory_property_flags pMemoryPropertyFlags)
+				_In_ const uint32_t& pWidth = 32,
+				_In_ const uint32_t& pHeight = 32,
+				_In_ const bool& pGenerateMipMapsLevels = false,
+				_In_ const w_memory_property_flags pMemoryPropertyFlags = w_memory_property_flag_bits::DEVICE_LOCAL_BIT)
 			{
-				if (!pGDevice.get()) return false;
+				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
 				auto _hr = initialize(_gDevice, pWidth, pHeight, pGenerateMipMapsLevels, pMemoryPropertyFlags);
 
 				_gDevice.reset();
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			bool py_load_texture_from_memory_rgba(_In_ boost::python::list pRGBAData)
+			W_RESULT py_load_texture_from_memory_rgba(_In_ boost::python::list pRGBAData)
 			{
 				auto _len = len(pRGBAData);
-				if (!_len) return false;
+				if (!_len) return W_FAILED;
 
 				auto _data = new uint8_t[_len];
 				for (size_t i = 0; i < _len; ++i)
@@ -227,10 +231,10 @@ namespace wolf
 				return _hr;
 			}
 
-			bool py_load_texture_from_memory_rgb(_In_ boost::python::list  pRGBData)
+			W_RESULT py_load_texture_from_memory_rgb(_In_ boost::python::list  pRGBData)
 			{
 				auto _len = len(pRGBData);
-				if (!_len) return false;
+				if (!_len) return W_FAILED;
 
 				auto _data = new uint8_t[_len];
 				for (size_t i = 0; i < _len; ++i)
@@ -242,72 +246,37 @@ namespace wolf
 				SAFE_DELETE_ARRAY(_data);
 				return _hr;
 			}
-
-			bool py_load_texture_from_memory_all_channels_same(_In_ uint8_t pData)
+						
+			W_RESULT py_copy_data_to_texture_2D(_In_ pyWolf::vector_uint8_t pRGBData)
 			{
-				return load_texture_from_memory_all_channels_same(pData) == W_PASSED;
+				if (!pRGBData.size()) return W_FAILED;
+				return copy_data_to_texture_2D(pRGBData.data());
+			}
+
+			pyWolf::vector_uint8_t py_read_data_of_texture()
+			{
+				auto _size = get_width() * get_height() * 4;
+				if (_size)
+				{
+					auto _data = (uint8_t*)read_data_of_texture();
+					if (_data)
+					{
+						std::vector<uint8_t> _v(_size);
+						memcpy(&_v[0], _data, _size);
+
+						return _v;
+					}
+				}
+				return std::vector<uint8_t>();
 			}
 			
-			bool py_load_texture_from_memory_color(_In_ w_color pColor)
-			{
-				return load_texture_from_memory_color(pColor) == W_PASSED;
-			}
-
-			bool py_copy_data_to_texture_2D(_In_ boost::python::list  pRGBData)
-			{
-				auto _len = len(pRGBData);
-				if (!_len) return false;
-
-				auto _data = new uint8_t[_len];
-				for (size_t i = 0; i < _len; ++i)
-				{
-					_data[i] = boost::python::extract<uint8_t>(pRGBData[i]);
-				}
-
-				auto _hr = copy_data_to_texture_2D(&_data[0]);
-				SAFE_DELETE_ARRAY(_data);
-				return _hr;
-			}
-
-			boost::python::list py_read_data_of_texture()
-			{
-				boost::python::list _list;
-				uint8_t* _data = (uint8_t*)this->read_data_of_texture();
-				auto _w = this->get_width();
-				auto _h = this->get_height();
-
-				for (size_t i = 0; i < _w * _h; i += 4)
-				{
-					_list.append(_data[i]);
-					_list.append(_data[i + 1]);
-					_list.append(_data[i + 2]);
-					_list.append(_data[i + 3]);
-				}
-				return _list;
-			}
-
-			bool py_flush_staging_data()
-			{
-				return flush_staging_data() == W_PASSED;
-			}
-
-			w_sampler py_get_sampler(_In_ const w_sampler_type& pSamplerType)
-			{
-				return get_sampler(pSamplerType);
-			}
-
-			w_descriptor_image_info py_get_descriptor_info(_In_ const w_sampler_type& pSamplerType)
-			{
-				return get_descriptor_info(pSamplerType);
-			}
-
-			static bool py_load_to_shared_textures(
+			static W_RESULT py_load_to_shared_textures(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_z_ std::wstring pPath)
 			{
 				w_texture* _texture = nullptr;
 
-				if (!pGDevice.get()) return false;
+				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
 				auto _hr = load_to_shared_textures(
@@ -320,22 +289,22 @@ namespace wolf
 				if (_hr != W_PASSED)
 				{
 					SAFE_DELETE(_texture);
-					return false;
+					return W_FAILED;
 				}
 
-				return true;
+				return W_PASSED;
 			}
 
-			static bool py_save_png_to_file(
+			static W_RESULT py_save_png_to_file(
 				_In_z_ std::string pFilePath,
 				_In_ uint32_t pWidth,
 				_In_ uint32_t pHeight,
 				_In_ boost::python::list pData,
 				_In_ int pCompCount,
-				_In_ int pStrideInBytes)
+				_In_ int pStrideInBytes = 4 * sizeof(uint8_t))
 			{
 				auto _len = len(pData);
-				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return false;
+				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return W_FAILED;
 
 				auto _data = new uint8_t[_len];
 				for (size_t i = 0; i < _len; ++i)
@@ -344,10 +313,10 @@ namespace wolf
 				}
 				auto _hr = save_png_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount, pStrideInBytes);
 				SAFE_DELETE_ARRAY(_data);
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			static bool py_save_bmp_to_file(
+			static W_RESULT py_save_bmp_to_file(
 				_In_z_ std::string pFilePath,
 				_In_ uint32_t pWidth,
 				_In_ uint32_t pHeight,
@@ -355,7 +324,7 @@ namespace wolf
 				_In_ int pCompCount)
 			{
 				auto _len = len(pData);
-				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return false;
+				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return W_FAILED;
 
 				auto _data = new uint8_t[_len];
 				for (size_t i = 0; i < _len; ++i)
@@ -364,10 +333,10 @@ namespace wolf
 				}
 				auto _hr = save_bmp_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
 				SAFE_DELETE_ARRAY(_data);
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			static bool py_save_tga_to_file(
+			static W_RESULT py_save_tga_to_file(
 				_In_z_ std::string pFilePath,
 				_In_ uint32_t pWidth,
 				_In_ uint32_t pHeight,
@@ -375,7 +344,7 @@ namespace wolf
 				_In_ int pCompCount)
 			{
 				auto _len = len(pData);
-				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return false;
+				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return W_FAILED;
 
 				auto _data = new uint8_t[_len];
 				for (size_t i = 0; i < _len; ++i)
@@ -384,10 +353,10 @@ namespace wolf
 				}
 				auto _hr = save_tga_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
 				SAFE_DELETE_ARRAY(_data);
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			static bool py_save_hdr_to_file(
+			static W_RESULT py_save_hdr_to_file(
 				_In_z_ std::string pFilePath,
 				_In_ uint32_t pWidth,
 				_In_ uint32_t pHeight,
@@ -395,7 +364,7 @@ namespace wolf
 				_In_ int pCompCount)
 			{
 				auto _len = len(pData);
-				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return false;
+				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return W_FAILED;
 
 				auto _data = new float[_len];
 				for (size_t i = 0; i < _len; ++i)
@@ -404,10 +373,10 @@ namespace wolf
 				}
 				auto _hr = save_hdr_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount);
 				SAFE_DELETE_ARRAY(_data);
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			static bool py_save_jpg_to_file(
+			static W_RESULT py_save_jpg_to_file(
 				_In_z_ std::string pFilePath,
 				_In_ uint32_t pWidth,
 				_In_ uint32_t pHeight,
@@ -416,7 +385,7 @@ namespace wolf
 				_In_ int pQuality)
 			{
 				auto _len = len(pData);
-				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return false;
+				if (pFilePath.empty() || pWidth == 0 || pHeight == 0 || _len == 0) return W_FAILED;
 
 				auto _data = new float[_len];
 				for (size_t i = 0; i < _len; ++i)
@@ -425,7 +394,7 @@ namespace wolf
 				}
 				auto _hr = save_jpg_to_file(pFilePath.c_str(), pWidth, pHeight, &_data[0], pCompCount, pQuality);
 				SAFE_DELETE_ARRAY(_data);
-				return _hr == W_PASSED;
+				return _hr;
 			}
 #endif
 

@@ -37,15 +37,15 @@ BOOST_PYTHON_MODULE(pyWolf)
         struct system {};
         scope _system = class_<system>("system");
       
-        pywolf::py_bounding_export();
-        pywolf::py_color_export();
-        pywolf::py_game_time_export();
-        pywolf::py_timer_export();
-        pywolf::py_time_span_export();
-        pywolf::py_inputs_manager_export();
-        pywolf::py_point_export();
-        pywolf::py_rectangle_export();
-        pywolf::py_window_export();
+        pyWolf::py_bounding_export();
+        pyWolf::py_color_export();
+        pyWolf::py_game_time_export();
+        pyWolf::py_timer_export();
+        pyWolf::py_time_span_export();
+        pyWolf::py_inputs_manager_export();
+        pyWolf::py_point_export();
+        pyWolf::py_rectangle_export();
+        pyWolf::py_window_export();
     }
 
     //export wolf::content_pipeline classes to pyWolf.content_pipeline scope
@@ -65,16 +65,16 @@ BOOST_PYTHON_MODULE(pyWolf)
 		struct graphics {};
 		scope _graphics = class_<graphics>("graphics");
 
-		pywolf::py_graphics_device_manager_export();
-		pywolf::py_command_buffer_export();
-		pywolf::py_queue_export();
-		pywolf::py_fences_export();
-		pywolf::py_semaphore_export();
-		pywolf::py_render_pass_export();
-		pywolf::py_shader_export();
-		pywolf::py_texture_export();
-		pywolf::py_mesh_export();
-		pywolf::py_pipeline_export();
+		pyWolf::py_graphics_device_manager_export();
+		pyWolf::py_command_buffer_export();
+		pyWolf::py_queue_export();
+		pyWolf::py_fences_export();
+		pyWolf::py_semaphore_export();
+		pyWolf::py_render_pass_export();
+		pyWolf::py_shader_export();
+		pyWolf::py_texture_export();
+		pyWolf::py_mesh_export();
+		pyWolf::py_pipeline_export();
 	}
 
     //export wolf::framework classes to pyWolf.framework scope
@@ -82,13 +82,13 @@ BOOST_PYTHON_MODULE(pyWolf)
         struct framework {};
         scope _framework = class_<framework>("framework");
 
-        pywolf::py_game_export();
+        pyWolf::py_game_export();
 
     }
 
     //export logger in global scope
-	pywolf::py_std_export();
-    pywolf::py_logger_export();
+	pyWolf::py_std_export();
+    pyWolf::py_logger_export();
 
     def("release_shared_data_over_all_instances", wolf::release_shared_data_over_all_instances);
 }

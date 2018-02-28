@@ -80,7 +80,7 @@ namespace wolf
 			W_EXP W_RESULT update(_In_ const glm::mat4& pWorldViewProjection);
 
             //draw shape
-            W_EXP W_RESULT draw(_In_ const w_command_buffer* pCommandBuffer);
+            W_EXP W_RESULT draw(_In_ const w_command_buffers* pCommandBuffer);
             
 			W_EXP ULONG release();
 

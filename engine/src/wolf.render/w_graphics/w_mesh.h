@@ -250,7 +250,7 @@ namespace wolf
 
 			//draw vertices
             W_EXP W_RESULT draw(
-				_In_ const w_command_buffer* pCommandBuffer,
+				_In_ const w_command_buffers* pCommandBuffer,
                 _In_ const VkBuffer& pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
                 _In_ const bool& pIndirectDraw,
@@ -279,12 +279,13 @@ namespace wolf
 
 #ifdef __PYTHON__
 
-			bool py_load(
+			W_RESULT py_load(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ boost::python::list pVerticesData,
 				_In_ boost::python::list pIndicesData,
-				_In_ bool pUseDynamicBuffer)
+				_In_ bool pUseDynamicBuffer = false)
 			{
+				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
 				//get vertices data
@@ -319,22 +320,22 @@ namespace wolf
 					pUseDynamicBuffer);
 
 				_gDevice.reset();
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			bool py_draw(
-				_In_ const w_command_buffer& pCommandBuffer,
+			W_RESULT py_draw(
+				_In_ const w_command_buffers& pCommandBuffer,
 				/*TODO: need this _In_ const VkBuffer& pInstanceHandle,*/
 				_In_ const uint32_t& pInstancesCount,
 				_In_ const bool& pIndirectDraw,
-				_In_ const uint32_t& pVertexOffset)
+				_In_ const uint32_t& pVertexOffset = 0)
 			{
 				return  draw(
 					&pCommandBuffer,
 					nullptr,//ToDo : pInstanceHandle
 					pInstancesCount,
 					pIndirectDraw,
-					pVertexOffset) == W_PASSED;
+					pVertexOffset);
 			}
 
 			void py_set_texture(_In_ w_texture& pTexture)

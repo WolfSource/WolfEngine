@@ -20,7 +20,7 @@
 
 static std::once_flag _once;
 
-namespace pywolf
+namespace pyWolf
 {
 	using namespace boost::python;
 	using namespace wolf::framework;

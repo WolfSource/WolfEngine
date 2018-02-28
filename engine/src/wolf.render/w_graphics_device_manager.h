@@ -28,7 +28,7 @@
 #include "w_graphics/w_queue.h"
 #include "w_graphics/w_semaphore.h"
 #include "w_graphics/w_fences.h"
-#include "w_graphics/w_command_buffer.h"
+#include "w_graphics/w_command_buffers.h"
 
 #ifdef __PYTHON__
 #include <boost/make_shared.hpp>
@@ -289,14 +289,14 @@ namespace wolf
             w_output_presentation_window               output_presentation_window;
             
             //draw primitive(s) and instances using vertex & index buffer
-            W_EXP W_RESULT draw(_In_ const w_command_buffer*	pCommandBuffer,
+            W_EXP W_RESULT draw(_In_ const w_command_buffers*	pCommandBuffer,
                             _In_ const uint32_t&			pVertexCount,
                             _In_ const uint32_t&			pInstanceCount,
                             _In_ const uint32_t&			pFirstVertex,
                             _In_ const uint32_t&			pFirstInstance);
             
             //submit command buffer
-            W_EXP W_RESULT submit(_In_ const std::vector<const w_command_buffer*>&	pCommandBuffers,
+            W_EXP W_RESULT submit(_In_ const std::vector<const w_command_buffers*>&	pCommandBuffers,
                                  _In_ const w_queue&								pQueue,
                                  _In_ const w_pipeline_stage_flags*					pWaitDstStageMask,
                                  _In_ std::vector<w_semaphore> 						pWaitForSemaphores,
@@ -396,17 +396,17 @@ namespace wolf
 				return boost::make_shared<w_output_presentation_window>(this->output_presentation_window);
 			}
 
-			bool py_draw(
-				_In_ const w_command_buffer&	pCommandBuffer,
+			W_RESULT py_draw(
+				_In_ const w_command_buffers&	pCommandBuffer,
 				_In_ const uint32_t&			pVertexCount,
 				_In_ const uint32_t&			pInstanceCount,
 				_In_ const uint32_t&			pFirstVertex,
 				_In_ const uint32_t&			pFirstInstance)
 			{
-				return draw(&pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance) == W_PASSED;
+				return draw(&pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance);
 			}
 
-			bool py_submit(
+			W_RESULT py_submit(
 				_In_ boost::python::list	pCommandBuffers,
 				_In_ const w_queue&			pQueue,
 				_In_ boost::python::list	pWaitDstStageMask,
@@ -414,11 +414,11 @@ namespace wolf
 				_In_ boost::python::list	pSignalForSemaphores,
 				_In_ w_fences&				pFence)
 			{
-				std::vector<const w_command_buffer*> _cmds;
+				std::vector<const w_command_buffers*> _cmds;
 				//get command buffers
 				for (size_t i = 0; i < len(pCommandBuffers); ++i)
 				{
-					boost::python::extract<w_command_buffer> _cmd(pCommandBuffers[i]);
+					boost::python::extract<w_command_buffers> _cmd(pCommandBuffers[i]);
 					if (_cmd.check())
 					{
 						auto _c = &(_cmd());
@@ -465,7 +465,7 @@ namespace wolf
 					_pipeline_stage_flags.data(),
 					_wait_smaphores,
 					_signal_smaphores,
-					&pFence) == W_PASSED;
+					&pFence);
 
 				_cmds.clear();
 				_pipeline_stage_flags.clear();

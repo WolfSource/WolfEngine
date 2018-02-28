@@ -186,7 +186,7 @@ namespace wolf
 
 			void begin(
 				_In_ const uint32_t& pFrameBufferIndex,
-				_In_ const w_command_buffer* pCommandBuffer,
+				_In_ const w_command_buffers* pCommandBuffer,
 				_In_ const w_color& pClearColor,
 				_In_ const float& pClearDepth,
 				_In_ const uint32_t& pClearStencil,
@@ -239,14 +239,14 @@ namespace wolf
 				};
 
 				auto _cmd = pCommandBuffer->get_active_command();
-				vkCmdBeginRenderPass(_cmd, &_render_pass_begin_info, pSubpassContents);
-				vkCmdSetViewport(_cmd, 0, 1, &this->_viewport);
-				vkCmdSetScissor(_cmd, 0, 1, &this->_viewport_scissor);
+				vkCmdBeginRenderPass(_cmd.data, &_render_pass_begin_info, pSubpassContents);
+				vkCmdSetViewport(_cmd.data, 0, 1, &this->_viewport);
+				vkCmdSetScissor(_cmd.data, 0, 1, &this->_viewport_scissor);
 			}
 
 			void begin(
 				_In_ const uint32_t& pFrameBufferIndex,
-				_In_ const w_command_buffer* pCommandBuffer)
+				_In_ const w_command_buffers* pCommandBuffer)
 			{
 				assert(pCommandBuffer != nullptr);
 
@@ -283,16 +283,16 @@ namespace wolf
 				};
 
 				auto _cmd = pCommandBuffer->get_active_command();
-				vkCmdBeginRenderPass(_cmd, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
-				vkCmdSetViewport(_cmd, 0, 1, &this->_viewport);
-				vkCmdSetScissor(_cmd, 0, 1, &this->_viewport_scissor);
+				vkCmdBeginRenderPass(_cmd.data, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
+				vkCmdSetViewport(_cmd.data, 0, 1, &this->_viewport);
+				vkCmdSetScissor(_cmd.data, 0, 1, &this->_viewport_scissor);
 			}
 
 
-			void end(_In_ const w_command_buffer* pCommandBuffer)
+			void end(_In_ const w_command_buffers* pCommandBuffer)
 			{
 				auto _cmd = pCommandBuffer->get_active_command();
-				vkCmdEndRenderPass(_cmd);
+				vkCmdEndRenderPass(_cmd.data);
 			}
 
             ULONG release()
@@ -403,7 +403,7 @@ W_RESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDe
 
 void w_render_pass::begin(
     _In_ const uint32_t& pFrameBufferIndex,
-    _In_ const w_command_buffer* pCommandBuffer,
+    _In_ const w_command_buffers* pCommandBuffer,
     _In_ const w_color& pClearColor,
     _In_ const float&  pClearDepth,
     _In_ const uint32_t&  pClearStencil,
@@ -421,7 +421,7 @@ void w_render_pass::begin(
 
 void w_render_pass::begin(
     _In_ const uint32_t& pFrameBufferIndex,
-    _In_ const w_command_buffer* pCommandBuffer)
+    _In_ const w_command_buffers* pCommandBuffer)
 {
     if (!this->_pimp) return;
     this->_pimp->begin(
@@ -429,7 +429,7 @@ void w_render_pass::begin(
         pCommandBuffer);
 }
 
-void w_render_pass::end(_In_ const w_command_buffer* pCommandBuffer)
+void w_render_pass::end(_In_ const w_command_buffers* pCommandBuffer)
 {
     if(!this->_pimp) return;
     this->_pimp->end(pCommandBuffer);

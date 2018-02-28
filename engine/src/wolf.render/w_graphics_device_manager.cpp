@@ -2,7 +2,7 @@
 #include "w_graphics_device_manager.h"
 #include <w_logger.h>
 #include <w_convert.h>
-#include "w_graphics/w_command_buffer.h"
+#include "w_graphics/w_command_buffers.h"
 #include "w_graphics/w_texture.h"
 #include "w_graphics/w_shader.h"
 #include <signal.h>
@@ -161,7 +161,7 @@ const size_t w_graphics_device::get_number_of_swap_chains()
 	return this->output_presentation_window.swap_chain_image_views.size();
 }
 
-W_RESULT w_graphics_device::draw(_In_ const w_command_buffer*	pCommandBuffer,
+W_RESULT w_graphics_device::draw(_In_ const w_command_buffers*	pCommandBuffer,
                              _In_ const uint32_t&				pVertexCount,
                              _In_ const uint32_t&				pInstanceCount,
                              _In_ const uint32_t&				pFirstVertex,
@@ -169,14 +169,14 @@ W_RESULT w_graphics_device::draw(_In_ const w_command_buffer*	pCommandBuffer,
 {
 	if (!pCommandBuffer) return W_FAILED;
 #ifdef __VULKAN__
-    vkCmdDraw( pCommandBuffer->get_active_command(), pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance );
+    vkCmdDraw( pCommandBuffer->get_active_command().data, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance );
 #elif defined(__DX12__)
     
 #endif
 	return W_PASSED;
 }
 
-W_RESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer*>& pCommandBuffers,
+W_RESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffers*>& pCommandBuffers,
 	_In_ const w_queue&                       pQueue,
 	_In_ const w_pipeline_stage_flags*        pWaitDstStageMask,
 	_In_ std::vector<w_semaphore>             pWaitForSemaphores,
@@ -194,7 +194,7 @@ W_RESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer
 	{
 		if (pCommandBuffers[i])
 		{
-			_cmds[i] = pCommandBuffers[i]->get_active_command();
+			_cmds[i] = pCommandBuffers[i]->get_active_command().data;
 		}
 	}
 

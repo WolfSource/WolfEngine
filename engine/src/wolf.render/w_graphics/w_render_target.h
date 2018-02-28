@@ -11,7 +11,7 @@
 #define __W_RENDER_TARGET_H__
 
 #include "w_graphics_device_manager.h"
-#include "w_command_buffer.h"
+#include "w_command_buffers.h"
 #include <functional>
 
 namespace wolf
@@ -32,7 +32,7 @@ namespace wolf
 				_In_ std::vector<w_image_view> pAttachments,
 				_In_ const size_t& pCount);
             
-			W_EXP W_RESULT record_command_buffer(_In_ w_command_buffer* pCommandBuffer,
+			W_EXP W_RESULT record_command_buffer(_In_ w_command_buffers* pCommandBuffer,
 				_In_ std::function<W_RESULT(void)> pFunction,
 				_In_ w_color pClearColor = w_color::PURPLE(), 
 				_In_ const float& pClearDepth = 1.0f, 

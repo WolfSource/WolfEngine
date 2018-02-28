@@ -14,15 +14,19 @@
 
 #include <python_exporter/w_boost_python_helper.h>
 
-namespace pywolf
+namespace pyWolf
 {
-	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(load_texture_2D_from_file_overloads, w_texture::load_texture_2D_from_file, 1, 2)
+	using namespace boost::python;
+	using namespace wolf::graphics;
+
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_texture_py_initialize_overloads, w_texture::py_initialize, 1, 5)
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_texture_load_texture_2D_from_file_overloads, w_texture::load_texture_2D_from_file, 1, 2)
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_texture_get_sampler_overloads, w_texture::get_sampler, 0, 1)
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_texture_get_descriptor_info_overloads, w_texture::get_descriptor_info, 0, 1)
+	BOOST_PYTHON_FUNCTION_OVERLOADS(w_texture_py_save_png_to_file_overloads, w_texture::py_save_png_to_file, 5, 6)
 		
 	static void py_texture_export()
 	{
-		using namespace boost::python;
-		using namespace wolf::graphics;
-
 		//define w_texture_buffer_type enum
 		enum_<w_texture_buffer_type>("w_texture_buffer_type")
 			.value("COLOR", w_texture_buffer_type::COLOR)
@@ -42,27 +46,27 @@ namespace pywolf
 
 		//export w_texture class
 		class_<w_texture, boost::noncopyable>("w_texture")
-			.def("initialize", &w_texture::py_initialize, "initialize texture")
+			.def("initialize", &w_texture::py_initialize, w_texture_py_initialize_overloads())
 			.def("initialize_as_staging", &w_texture::py_initialize_as_staging, "initialize as staging texture")
 			.def("load", &w_texture::load, "load texture")
-			.def("load_texture_2D_from_file", &w_texture::load_texture_2D_from_file, load_texture_2D_from_file_overloads())
+			.def("load_texture_2D_from_file", &w_texture::load_texture_2D_from_file, w_texture_load_texture_2D_from_file_overloads())
 			.def("load_texture_from_memory_rgba", &w_texture::py_load_texture_from_memory_rgba, "Load texture from memory in the format of RGBA")
 			.def("load_texture_from_memory_rgb", &w_texture::py_load_texture_from_memory_rgb, "Load texture from memory in the format of RGB")
-			.def("load_texture_from_memory_all_channels_same", &w_texture::py_load_texture_from_memory_all_channels_same, "Load texture from memory, all channels will have same byte")
-			.def("load_texture_from_memory_color", &w_texture::py_load_texture_from_memory_color, "Load texture from w_color")
+			.def("load_texture_from_memory_all_channels_same", &w_texture::load_texture_from_memory_all_channels_same, "Load texture from memory, all channels will have same byte")
+			.def("load_texture_from_memory_color", &w_texture::load_texture_from_memory_color, "Load texture from w_color")
 			.def("copy_data_to_texture_2D", &w_texture::py_copy_data_to_texture_2D, "copy data to texture, if this is a staging buffer, do not use this function because it will cause memory leaks, instead use \"get_pointer_to_staging_data\" function")
 			.def("read_data_of_texture", &w_texture::py_read_data_of_texture, "read texture's data")
-			.def("flush_staging_data", &w_texture::py_flush_staging_data, "flush staging buffer")
+			.def("flush_staging_data", &w_texture::flush_staging_data, "flush staging buffer")
 			.def("release", &w_texture::release, "release all resources")
 			.def("get_width", &w_texture::get_width, "get width of image")
 			.def("get_height", &w_texture::get_height, "get height of image")
 			.def("get_usage_flags", &w_texture::get_usage_flags, "get usage flags")
-			.def("get_sampler", &w_texture::py_get_sampler, "get sampler")
+			.def("get_sampler", &w_texture::get_sampler, w_texture_get_sampler_overloads())
 			.def("get_image_view", &w_texture::get_image_view, "get image view")
 			.def("get_image_type", &w_texture::get_image_type, "get image type")
 			.def("get_image_type", &w_texture::get_image_view_type, "get image view type")
 			.def("get_format", &w_texture::get_format, "get image format")
-			.def("get_descriptor_info", &w_texture::py_get_descriptor_info, "get descriptor_info")
+			.def("get_descriptor_info", &w_texture::get_descriptor_info, w_texture_get_descriptor_info_overloads())
 			.def("get_mip_maps_level", &w_texture::get_mip_maps_level, "get number of mip maps levels")
 			.def("set_format", &w_texture::set_format, "set format")
 			.def("set_usage_flags", &w_texture::set_usage_flags, "set usage flags")
@@ -72,7 +76,7 @@ namespace pywolf
 			.staticmethod("load_to_shared_textures")
 			.def("release_shared_textures", &w_texture::release_shared_textures, "release all shared textures")
 			.staticmethod("release_shared_textures")
-			.def("save_png_to_file", &w_texture::py_save_png_to_file, "save png image file")
+			.def("save_png_to_file", &w_texture::py_save_png_to_file, w_texture_py_save_png_to_file_overloads())
 			.staticmethod("save_png_to_file")
 			.def("save_bmp_to_file", &w_texture::py_save_bmp_to_file, "save bmp image file")
 			.staticmethod("save_bmp_to_file")

@@ -13,12 +13,16 @@
 #define __PY_STD_H__
 
 #include "python_exporter/w_boost_python_helper.h"
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
-namespace pywolf
+namespace pyWolf
 {
+	typedef std::vector<uint8_t> vector_uint8_t;
+
 	static void py_std_export()
 	{
 		using namespace boost::python;
+
 		//define W_RESULT enum
 		enum_<W_RESULT>("W_RESULT")
 			.value("W_PASSED", W_RESULT::W_PASSED)
@@ -28,6 +32,10 @@ namespace pywolf
             .value("W_INVALID_FILE_ATTRIBUTES", W_RESULT::W_INVALID_FILE_ATTRIBUTES)
 			.export_values()
 			;
+
+		//export vector of uint8_t
+		class_<vector_uint8_t>("vector_uint8_t")
+			.def(vector_indexing_suite<vector_uint8_t>());
 	}
 }
 

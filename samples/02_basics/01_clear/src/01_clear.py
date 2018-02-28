@@ -36,7 +36,7 @@ class scene(QWidget):
         self._gDevice = None
         self._viewport = pyWolf.graphics.w_viewport()
         self._viewport_scissor = pyWolf.graphics.w_viewport_scissor()
-        self._draw_command_buffers = pyWolf.graphics.w_command_buffer()
+        self._draw_command_buffers = pyWolf.graphics.w_command_buffers()
         self._draw_render_pass = pyWolf.graphics.w_render_pass()
         self._draw_fence = pyWolf.graphics.w_fences()
         self._draw_semaphore = pyWolf.graphics.w_semaphore()
@@ -92,23 +92,23 @@ class scene(QWidget):
         #create one fence for drawing
         number_of_swap_chains = self._gDevice.get_number_of_swap_chains()
         _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.PRIMARY)
-        if _hr == False:
+        if _hr:
             print "Error on initializing draw command buffer(s)"
             return
 
         _hr = self.build_command_buffers()
-        if _hr == False:
+        if _hr:
             print "Error on building draw command buffer(s)"
             return
         
         print "scene loaded successfully"
 
     def build_command_buffers(self):
-        _hr = True
+        _hr = pyWolf.W_PASSED
         _size = self._draw_command_buffers.get_commands_size()
         for i in xrange(_size):
             _hr = self._draw_command_buffers.begin(i, pyWolf.graphics.w_command_buffer_usage_flag_bits.SIMULTANEOUS_USE_BIT)
-            if _hr == False:
+            if _hr:
                 print "Error on begining command buffer: " + str(i)
                 break
             
@@ -117,7 +117,7 @@ class scene(QWidget):
             self._draw_render_pass.end(self._draw_command_buffers)
             
             _hr = self._draw_command_buffers.end(i)
-            if _hr == False:
+            if _hr:
                 print "Error on ending command buffer: " + str(i)
                 break
 
@@ -140,7 +140,7 @@ class scene(QWidget):
         #reset draw fence
         self._draw_fence.reset()
         _hr = self._gDevice.submit(_cmd_buffers, self._gDevice.graphics_queue, _wait_dst_stage_mask, _wait_semaphores, _signal_semaphores, self._draw_fence)
-        if _hr == False:
+        if _hr:
             print "Error on submit to graphics device"
             return 
 

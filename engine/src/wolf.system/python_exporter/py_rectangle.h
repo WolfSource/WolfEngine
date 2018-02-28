@@ -12,7 +12,7 @@
 #ifndef __PY_RECTANGLE_H__
 #define __PY_RECTANGLE_H__
 
-namespace pywolf
+namespace pyWolf
 {
     static void py_rectangle_export()
     {

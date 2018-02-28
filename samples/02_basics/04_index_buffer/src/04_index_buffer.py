@@ -37,7 +37,7 @@ class scene(QWidget):
         self._gDevice = None
         self._viewport = pyWolf.graphics.w_viewport()
         self._viewport_scissor = pyWolf.graphics.w_viewport_scissor()
-        self._draw_command_buffers = pyWolf.graphics.w_command_buffer()
+        self._draw_command_buffers = pyWolf.graphics.w_command_buffers()
         self._draw_render_pass = pyWolf.graphics.w_render_pass()
         self._draw_fence = pyWolf.graphics.w_fences()
         self._draw_semaphore = pyWolf.graphics.w_semaphore()
@@ -81,39 +81,39 @@ class scene(QWidget):
             _render_pass_attachments.append([_iter, _output_window.depth_buffer_image_view])
 
         _hr = self._draw_render_pass.load(self._gDevice, self._viewport, self._viewport_scissor, _render_pass_attachments)
-        if _hr == False:
+        if _hr:
             print "Error on loading render pass"
             sys.exit(1)
 
         #create one semaphore for drawing
         _hr = self._draw_semaphore.initialize(self._gDevice)
-        if _hr == False:
+        if _hr:
             print "Error on initializing semaphore"
             sys.exit(1)
 
         #create one fence for drawing
         _hr = self._draw_fence.initialize(self._gDevice, 1)
-        if _hr == False:
+        if _hr:
             print "Error on initializing fence(s)"
             sys.exit(1)
 
         #create one fence for drawing
         number_of_swap_chains = self._gDevice.get_number_of_swap_chains()
         _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.PRIMARY)
-        if _hr == False:
+        if _hr:
             print "Error on initializing draw command buffer(s)"
             sys.exit(1)
 
         #loading vertex shader
         _content_path_dir = _script_dir + "/../../03_vertex_buffer/src/content/"
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER, "main")
-        if _hr == False:
+        if _hr:
             print "Error on loading vertex shader"
             sys.exit(1)
 
         #loading fragment shader
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER, "main")
-        if _hr == False: 
+        if _hr: 
             print "Error on loading fragment shader"
             sys.exit(1)
 
@@ -124,12 +124,12 @@ class scene(QWidget):
         #loading pipeline cache
         _pipeline_cache_name = "pipeline_cache";
         _hr = self._pipeline.create_pipeline_cache(self._gDevice, _pipeline_cache_name)
-        if _hr == False:
+        if _hr:
             print "Error on creating pipeline cache"
 
         #create pipeline
         _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name)
-        if _hr == False:
+        if _hr:
             print "Error on creating pipeline"
             sys.exit(1)
 
@@ -150,26 +150,26 @@ class scene(QWidget):
         _index_data = [ 0,1,3,3,1,2 ]
 
         #create mesh
-        _hr = self._mesh.load(self._gDevice, _vertex_data, _index_data, False)
-        if _hr == False:
+        _hr = self._mesh.load(self._gDevice, _vertex_data, _index_data)
+        if _hr:
             print "Error on loading mesh"
             sys.exit(1)
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
         _hr = self.build_command_buffers()
-        if _hr == False:
+        if _hr:
             print "Error on building draw command buffer(s)"
             sys.exit(1)
         
         print "scene loaded successfully"
 
     def build_command_buffers(self):
-        _hr = True
+        _hr = pyWolf.W_PASSED
         _size = self._draw_command_buffers.get_commands_size()
         for i in xrange(_size):
             _hr = self._draw_command_buffers.begin(i, pyWolf.graphics.w_command_buffer_usage_flag_bits.SIMULTANEOUS_USE_BIT)
-            if _hr == False:
+            if _hr:
                 print "Error on begining command buffer: " + str(i)
                 break
             
@@ -177,12 +177,12 @@ class scene(QWidget):
             
             #place your draw code
             self._pipeline.bind(self._draw_command_buffers)
-            self._mesh.draw(self._draw_command_buffers, 0, False, 0)
+            self._mesh.draw(self._draw_command_buffers, 0, False)
 
             self._draw_render_pass.end(self._draw_command_buffers)
             
             _hr = self._draw_command_buffers.end(i)
-            if _hr == False:
+            if _hr:
                 print "Error on ending command buffer: " + str(i)
                 break
 
@@ -205,12 +205,12 @@ class scene(QWidget):
         #reset draw fence
         self._draw_fence.reset()
         _hr = self._gDevice.submit(_cmd_buffers, self._gDevice.graphics_queue, _wait_dst_stage_mask, _wait_semaphores, _signal_semaphores, self._draw_fence)
-        if _hr == False:
+        if _hr:
             print "Error on submit to graphics device"
             return 
 
         _hr = self._draw_fence.wait()
-        if _hr == False:
+        if _hr:
             print "Error on waiting for draw fence"
             return 
 
@@ -289,7 +289,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     scene = scene(pyWolfPath + "..\\..\\..\\..\\content\\",
                   pyWolfPath,
-                  "py_03_vertex_buffer")
+                  "py_04_index_buffer")
     scene.resize(screen_width, screen_height)
     scene.setWindowTitle('Wolf.Engine')
     scene.show()

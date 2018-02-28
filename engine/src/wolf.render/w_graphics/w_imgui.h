@@ -64,7 +64,7 @@ namespace wolf
 
             static W_EXP uint32_t get_width();
             static W_EXP uint32_t get_height();
-			static W_EXP VkCommandBuffer get_command_buffer_at(_In_ const uint32_t pFrameIndex);
+			static W_EXP w_command_buffer get_command_buffer_at(_In_ const uint32_t pFrameIndex);
 
 #pragma endregion
 

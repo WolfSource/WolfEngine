@@ -12,7 +12,7 @@
 #ifndef __PY_TIMER_H__
 #define __PY_TIMER_H__
 
-namespace pywolf
+namespace pyWolf
 {
     static void py_timer_export()
     {

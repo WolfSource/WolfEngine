@@ -14,15 +14,16 @@
 
 #include <python_exporter/w_boost_python_helper.h>
 
-namespace pywolf
+namespace pyWolf
 {
+	using namespace boost::python;
 	using namespace wolf::graphics;
+
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_shader_load_overloads, w_shader::py_load, 3, 4)
+	BOOST_PYTHON_FUNCTION_OVERLOADS(w_shader_load_shader_overloads, w_shader::py_load_shader, 9, 10)		
 
 	static void py_shader_export()
 	{
-		using namespace boost::python;
-		using namespace wolf::graphics;
-
 		//define w_shader_binding_type enum
 		enum_<w_shader_binding_type>("w_shader_binding_type")
 			.value("SAMPLER2D", w_shader_binding_type::SAMPLER2D)
@@ -58,13 +59,13 @@ namespace pywolf
 
 		//export w_shader class
 		class_<w_shader, boost::noncopyable>("w_shader")
-			.def("load", &w_shader::py_load, "load shader from binary file")
+			.def("load", &w_shader::py_load, w_shader_load_overloads())
 			.def("release", &w_shader::release, "release all resources")
 			.def("get_shader_binding_params", &w_shader::py_get_shader_binding_params, "get shader binding params")
 			.def("get_shader_stages", &w_shader::py_get_shader_stages, "get shader stages")
 			.def("get_compute_shader_stage", &w_shader::get_compute_shader_stage, "get compute shader stage")
 			.def("set_shader_binding_params", &w_shader::py_set_shader_binding_params, "set and update shader binding params")
-			.def("load_shader", w_shader::py_load_shader, "load shader to shared shaders")
+			.def("load_shader", w_shader::py_load_shader, w_shader_load_shader_overloads())
 			.staticmethod("load_shader")
 			;
 	}

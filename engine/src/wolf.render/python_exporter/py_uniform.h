@@ -14,7 +14,7 @@
 
 #include <python_exporter/w_boost_python_helper.h>
 
-namespace pywolf
+namespace pyWolf
 {
 	using namespace boost::python;
 	using namespace wolf::graphics;

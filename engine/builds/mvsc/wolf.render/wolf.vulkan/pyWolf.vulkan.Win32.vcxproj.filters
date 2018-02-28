@@ -61,9 +61,6 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.cpp">
-      <Filter>w_graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
@@ -71,6 +68,9 @@
       <Filter>w_framework</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_semaphore.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -129,9 +129,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.h">
-      <Filter>w_graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_headers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.h">
       <Filter>w_graphics</Filter>
@@ -149,9 +146,6 @@
       <Filter>python_exporter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_fences.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_command_buffer.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_render_pass.h">
@@ -177,6 +171,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_uniform.h">
       <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_command_buffers.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h">
+      <Filter>w_graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

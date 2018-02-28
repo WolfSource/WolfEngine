@@ -12,7 +12,7 @@
 #ifndef __PY_TIME_SPAN_H__
 #define __PY_TIME_SPAN_H__
 
-namespace pywolf
+namespace pyWolf
 {
     static void py_time_span_export()
     {

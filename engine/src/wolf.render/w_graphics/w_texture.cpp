@@ -3,7 +3,7 @@
 #include <w_convert.h>
 #include <w_io.h>
 #include "w_buffer.h"
-#include "w_command_buffer.h"
+#include "w_command_buffers.h"
 #include <map>
 
 #include <gli/gli.hpp>
@@ -622,7 +622,7 @@ namespace wolf
 
 
                 //create command buffer
-                w_command_buffer _command_buffer;
+                w_command_buffers _command_buffer;
                 _command_buffer.load(this->_gDevice, 1);
                 auto _cmd = _command_buffer.get_command_at(0);
 
@@ -649,7 +649,7 @@ namespace wolf
 
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
-					vkCmdPipelineBarrier(_cmd,
+					vkCmdPipelineBarrier(_cmd.data,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_TRANSFER_BIT,
 						0,
@@ -684,7 +684,7 @@ namespace wolf
 						}
 					};
 
-					vkCmdCopyBufferToImage(_cmd,
+					vkCmdCopyBufferToImage(_cmd.data,
 						this->_staging_buffer.get_handle(),
 						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -696,7 +696,7 @@ namespace wolf
 						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
-					vkCmdPipelineBarrier(_cmd,
+					vkCmdPipelineBarrier(_cmd.data,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
@@ -805,7 +805,7 @@ namespace wolf
 
 
 				//create command buffer
-				w_command_buffer _command_buffer;
+				w_command_buffers _command_buffer;
 				_command_buffer.load(this->_gDevice, 1);
 				auto _cmd = _command_buffer.get_command_at(0);
 
@@ -832,7 +832,7 @@ namespace wolf
 
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
-					vkCmdPipelineBarrier(_cmd,
+					vkCmdPipelineBarrier(_cmd.data,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
@@ -877,7 +877,7 @@ namespace wolf
 						offset += pTextureArrayRGBA[i][0].size();
 					}
 
-					vkCmdCopyBufferToImage(_cmd,
+					vkCmdCopyBufferToImage(_cmd.data,
 						this->_staging_buffer.get_handle(),
 						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -890,7 +890,7 @@ namespace wolf
 					_image_memory_barrier.newLayout = this->_image_layout;
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
-					vkCmdPipelineBarrier(_cmd,
+					vkCmdPipelineBarrier(_cmd.data,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
@@ -981,7 +981,7 @@ namespace wolf
                 }
                 
 				//create command buffer
-				w_command_buffer _command_buffer;
+				w_command_buffers _command_buffer;
 				_command_buffer.load(this->_gDevice, 1);
 				_command_buffer.begin(0);
 				auto _cmd = _command_buffer.get_command_at(0);
@@ -1026,7 +1026,7 @@ namespace wolf
 						w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_source_image_memory_barrier);
 
 						vkCmdPipelineBarrier(
-							_cmd,
+							_cmd.data,
 							VK_PIPELINE_STAGE_TRANSFER_BIT,
 							VK_PIPELINE_STAGE_HOST_BIT,
 							0,
@@ -1037,7 +1037,7 @@ namespace wolf
 
 						//now blit from previous mip map level
 						vkCmdBlitImage(
-							_cmd,
+							_cmd.data,
 							this->_image_view.image,
 							VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 							this->_image_view.image,
@@ -1058,7 +1058,7 @@ namespace wolf
 						w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_dst_image_memory_barrier);
 
 						vkCmdPipelineBarrier(
-							_cmd,
+							_cmd.data,
 							VK_PIPELINE_STAGE_HOST_BIT,
 							VK_PIPELINE_STAGE_TRANSFER_BIT,
 							0,
@@ -1090,7 +1090,7 @@ namespace wolf
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
 					vkCmdPipelineBarrier(
-						_cmd,
+						_cmd.data,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
@@ -1188,7 +1188,7 @@ namespace wolf
 
 
 				//create command buffer
-				w_command_buffer _command_buffer;
+				w_command_buffers _command_buffer;
 				_command_buffer.load(this->_gDevice, 1);
 				auto _cmd = _command_buffer.get_command_at(0);
 
@@ -1216,7 +1216,7 @@ namespace wolf
 						this->_image_view.image,                        // image
 						_image_subresource_range                        // SubresourceRange
 					};
-					vkCmdPipelineBarrier(_cmd,
+					vkCmdPipelineBarrier(_cmd.data,
 						VK_PIPELINE_STAGE_TRANSFER_BIT,
 						VK_PIPELINE_STAGE_TRANSFER_BIT,
 						0,
@@ -1240,7 +1240,7 @@ namespace wolf
 						this->_image_view.image,                            // Image
 						_image_subresource_range                            // SubresourceRange
 					};
-					vkCmdPipelineBarrier(_cmd,
+					vkCmdPipelineBarrier(_cmd.data,
 						VK_PIPELINE_STAGE_TRANSFER_BIT,
 						VK_PIPELINE_STAGE_TRANSFER_BIT,
 						0,
@@ -1276,7 +1276,7 @@ namespace wolf
 
 					// execute copy command
 					vkCmdCopyImageToBuffer(
-						_cmd,
+						_cmd.data,
 						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 						this->_staging_buffer.get_handle(),
@@ -1296,7 +1296,7 @@ namespace wolf
 					nullptr,                              // WaitSemaphores
 					nullptr,                              // WaitDstStageMask;
 					1,                                    // CommandBufferCount
-					&_cmd,                                // CommandBuffers
+					&_cmd.data,                           // CommandBuffers
 					0,                                    // SignalSemaphoreCount
 					nullptr                               // SignalSemaphores
 				};
@@ -1336,7 +1336,7 @@ namespace wolf
                 if (!this->_is_staging) return W_FAILED;
                 
                 //create command buffer
-                w_command_buffer _command_buffer;
+                w_command_buffers _command_buffer;
                 _command_buffer.load(this->_gDevice, 1);
                 auto _cmd = _command_buffer.get_command_at(0);
 
@@ -1365,7 +1365,7 @@ namespace wolf
                         _image_subresource_range                        // SubresourceRange
                     };
 
-                    vkCmdPipelineBarrier(_cmd,
+                    vkCmdPipelineBarrier(_cmd.data,
                         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                         VK_PIPELINE_STAGE_TRANSFER_BIT,
                         0,
@@ -1399,7 +1399,7 @@ namespace wolf
                         }
                     };
 
-                    vkCmdCopyBufferToImage(_cmd,
+                    vkCmdCopyBufferToImage(_cmd.data,
                         this->_staging_buffer.get_handle(),
 						this->_image_view.image,
                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -1419,7 +1419,7 @@ namespace wolf
                         this->_image_view.image,                            // Image
                         _image_subresource_range                            // SubresourceRange
                     };
-                    vkCmdPipelineBarrier(_cmd,
+                    vkCmdPipelineBarrier(_cmd.data,
                         VK_PIPELINE_STAGE_TRANSFER_BIT,
                         VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
                         0,
@@ -1442,7 +1442,7 @@ namespace wolf
                     nullptr,                              // WaitSemaphores
                     nullptr,                              // WaitDstStageMask;
                     1,                                    // CommandBufferCount
-                    &_cmd,                                // CommandBuffers
+                    &_cmd.data,                           // CommandBuffers
                     0,                                    // SignalSemaphoreCount
                     nullptr                               // SignalSemaphores
                 };

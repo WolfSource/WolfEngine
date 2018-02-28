@@ -51,7 +51,7 @@ namespace wolf
                 _In_ const std::vector<w_push_constant_range> pPushConstantRanges = {});
 			
 			//bind to pipeline
-            W_EXP W_RESULT bind(_In_ const w_command_buffer* pCommandBuffer);
+            W_EXP W_RESULT bind(_In_ const w_command_buffers* pCommandBuffer);
 
             //release all resources
             W_EXP virtual ULONG release() override;
@@ -75,7 +75,7 @@ namespace wolf
 
 #ifdef __PYTHON__
 
-			W_EXP bool py_load(
+			W_RESULT py_load(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
 				_In_ const w_primitive_topology& pPrimitiveTopology,
@@ -92,6 +92,7 @@ namespace wolf
 				_In_ const w_pipeline_color_blend_attachment_state& pBlendState,
 				_In_ const w_color& pBlendColors)
 			{
+				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
 				//get viewports
@@ -160,10 +161,10 @@ namespace wolf
 				_push_consts.clear();
 
 				_gDevice.reset();
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			bool py_load_min_arg(
+			W_RESULT py_load_min_arg(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
 				_In_ const w_primitive_topology& pPrimitiveTopology,
@@ -173,6 +174,7 @@ namespace wolf
 				_In_ const boost::python::list pViewPortScissors,
 				_In_ const std::string& pPipelineCacheName)
 			{
+				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
 				//get viewports
@@ -210,16 +212,17 @@ namespace wolf
 				_viewport_scissor.clear();
 
 				_gDevice.reset();
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			W_EXP bool py_load_compute(
+			W_RESULT py_load_compute(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const w_shader& pShaderBinding,
 				_In_ const uint32_t& pSpecializationData,
 				_In_ const std::string& pPipelineCacheName,
 				_In_ const boost::python::list pPushConstantRanges)
 			{
+				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
 				//get push constant range
@@ -242,26 +245,28 @@ namespace wolf
 				_push_consts.clear();
 
 				_gDevice.reset();
-				return _hr == W_PASSED;
+				return _hr;
 			}
 
-			W_EXP bool py_bind(_In_ const w_command_buffer& pCommandBuffer)
+			W_RESULT py_bind(_In_ const w_command_buffers& pCommandBuffer)
 			{
-				return bind(&pCommandBuffer) == W_PASSED;
+				return bind(&pCommandBuffer);
 			}
 
-			W_EXP static bool py_create_pipeline_cache(
+			static W_RESULT py_create_pipeline_cache(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_z_ const std::string& pPipelineCacheName)
 			{
+				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 				auto _hr = create_pipeline_cache(_gDevice, pPipelineCacheName);
 				_gDevice.reset();
-				return _hr == W_PASSED;
+				return _hr;
 			}
 			
 			W_EXP static ULONG py_release_all_pipeline_caches(_In_ boost::shared_ptr<w_graphics_device>& pGDevice)
 			{
+				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 				auto _hr = release_all_pipeline_caches(_gDevice);
 				_gDevice.reset();

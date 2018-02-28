@@ -105,7 +105,7 @@ namespace wolf
 			}
 
 			W_RESULT record_command_buffer(
-				_In_ wolf::graphics::w_command_buffer* pCommandBuffer,
+				_In_ wolf::graphics::w_command_buffers* pCommandBuffer,
 				_In_ std::function<W_RESULT(void)> pDrawFunction,
 				_In_ w_color pClearColor, 
 				_In_ const float& pClearDepth, 
@@ -275,7 +275,7 @@ W_RESULT w_render_target::load(
 }
 
 W_RESULT w_render_target::record_command_buffer(
-	_In_ w_command_buffer* pCommandBuffer,
+	_In_ w_command_buffers* pCommandBuffer,
 	_In_ std::function<W_RESULT(void)> pFunction,
 	_In_ w_color pClearColor,
 	_In_ const float& pClearDepth,

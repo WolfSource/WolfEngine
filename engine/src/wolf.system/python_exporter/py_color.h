@@ -12,7 +12,7 @@
 #ifndef __PY_COLOR_H__
 #define __PY_COLOR_H__
 
-namespace pywolf
+namespace pyWolf
 {
     static void py_color_export()
     {

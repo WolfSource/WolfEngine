@@ -1,7 +1,7 @@
 #include "w_render_pch.h"
 #include "w_mesh.h"
 #include "w_buffer.h"
-#include "w_command_buffer.h"
+#include "w_command_buffers.h"
 #include "w_uniform.h"
 
 using namespace wolf::graphics;
@@ -165,7 +165,7 @@ namespace wolf
             }
 
             W_RESULT draw(
-				_In_ const w_command_buffer* pCommandBuffer, 
+				_In_ const w_command_buffers* pCommandBuffer, 
                 _In_ const VkBuffer& pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
                 _In_ const bool& pIndrectDraw,
@@ -177,11 +177,11 @@ namespace wolf
 				if (!_vertex_buffer_handle) return W_FAILED;
 				
 				auto _cmd = pCommandBuffer->get_active_command();
-                vkCmdBindVertexBuffers(_cmd, 0, 1, &_vertex_buffer_handle, _offsets);
+                vkCmdBindVertexBuffers(_cmd.data, 0, 1, &_vertex_buffer_handle, _offsets);
 
                 if (pInstanceHandle)
                 {
-                    vkCmdBindVertexBuffers(_cmd, 1, 1, &pInstanceHandle, _offsets);
+                    vkCmdBindVertexBuffers(_cmd.data, 1, 1, &pInstanceHandle, _offsets);
                 }
 
 				bool _draw_indexed = false;
@@ -189,22 +189,22 @@ namespace wolf
 				if (_index_buffer_handle)
 				{
 					_draw_indexed = true;
-					vkCmdBindIndexBuffer(_cmd, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
+					vkCmdBindIndexBuffer(_cmd.data, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
 				}
 
                 if (!pIndrectDraw)
                 {
 					if (_draw_indexed)
 					{
-						vkCmdDrawIndexed(_cmd, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
+						vkCmdDrawIndexed(_cmd.data, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
 					}
 					else
 					{
-						vkCmdDraw(_cmd, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
+						vkCmdDraw(_cmd.data, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
 					}
                 }
 
-				_cmd = nullptr;
+				_cmd.data = nullptr;
                 _vertex_buffer_handle = nullptr;
                 _index_buffer_handle = nullptr;
 
@@ -291,7 +291,7 @@ namespace wolf
                 //create one command buffer 
                 if (!this->_copy_command_buffer)
                 {
-                    this->_copy_command_buffer = new w_command_buffer();
+                    this->_copy_command_buffer = new w_command_buffers();
                     _copy_command_buffer->load(this->_gDevice, 1);
                 }
 
@@ -303,7 +303,7 @@ namespace wolf
                     VkBufferCopy _copy_region = {};
                     _copy_region.size = pVerticesSize;
                     vkCmdCopyBuffer(
-                        _copy_cmd,
+                        _copy_cmd.data,
                         _stagings_buffers.vertices.get_handle(),
                         this->_vertex_buffer.get_handle(),
                         1,
@@ -314,12 +314,14 @@ namespace wolf
                         // Index buffer
                         _copy_region.size = pIndicesSize;
                         vkCmdCopyBuffer(
-                            _copy_cmd,
+                            _copy_cmd.data,
                             _stagings_buffers.indices.get_handle(),
                             this->_index_buffer.get_handle(),
                             1,
                             &_copy_region);
                     }
+
+					_copy_cmd.data = nullptr;
                 }
 
                 this->_copy_command_buffer->flush(0);
@@ -388,7 +390,7 @@ namespace wolf
             w_texture*                                          _texture;
             w_vertex_binding_attributes                         _vertex_binding_attributes;
             bool                                                _dynamic_buffer;
-            w_command_buffer*                                   _copy_command_buffer;
+            w_command_buffers*                                   _copy_command_buffer;
             struct
             {
                 w_buffer vertices;
@@ -446,7 +448,7 @@ W_RESULT w_mesh::update_dynamic_buffer(
 }
 
 W_RESULT w_mesh::draw(
-	_In_ const w_command_buffer* pCommandBuffer,
+	_In_ const w_command_buffers* pCommandBuffer,
 	_In_ const VkBuffer& pInstanceHandle,
 	_In_ const uint32_t& pInstancesCount,
 	_In_ const bool& pIndirectDraw,

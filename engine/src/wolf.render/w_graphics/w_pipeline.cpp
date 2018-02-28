@@ -267,12 +267,12 @@ namespace wolf
                 return W_PASSED;
             }
 
-			void bind(_In_ const w_command_buffer* pCommandBuffer)
+			void bind(_In_ const w_command_buffers* pCommandBuffer)
 			{
 				auto _cmd = pCommandBuffer->get_active_command();
 				if (this->_shader_descriptor_set)
 				{
-					vkCmdBindDescriptorSets(_cmd,
+					vkCmdBindDescriptorSets(_cmd.data,
 						VK_PIPELINE_BIND_POINT_GRAPHICS,
 						this->_pipeline_layout,
 						0,
@@ -281,8 +281,8 @@ namespace wolf
 						0,
 						nullptr);
 				}
-				vkCmdBindPipeline(_cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
-				_cmd = nullptr;
+				vkCmdBindPipeline(_cmd.data, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
+				_cmd.data = nullptr;
 			}
 
             ULONG release()
@@ -540,7 +540,7 @@ W_EXP W_RESULT w_pipeline::load_compute(
 		pPushConstantRanges);
 }
 
-W_RESULT w_pipeline::bind(_In_ const w_command_buffer* pCommandBuffer)
+W_RESULT w_pipeline::bind(_In_ const w_command_buffers* pCommandBuffer)
 {
     if (!this->_pimp || !pCommandBuffer) return W_FAILED;
     this->_pimp->bind(pCommandBuffer);

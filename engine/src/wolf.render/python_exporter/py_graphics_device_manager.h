@@ -14,7 +14,7 @@
 
 #include <python_exporter/w_boost_python_helper.h>
 
-namespace pywolf
+namespace pyWolf
 {
 	static void py_graphics_device_manager_export()
 	{
@@ -68,7 +68,7 @@ namespace pywolf
 		class_<w_sampler, boost::noncopyable>("w_sampler", init<>());
 
 		//export w_descriptor_buffer_info class
-		class_<w_descriptor_buffer_info, boost::noncopyable>("w_descriptor_buffer_info", init<>());
+		class_<w_descriptor_buffer_info>("w_descriptor_buffer_info", init<>());
 
 		//export w_descriptor_image_info class
 		class_<w_descriptor_image_info>("w_descriptor_image_info", init<>());

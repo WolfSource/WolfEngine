@@ -1,7 +1,7 @@
 #include "w_render_pch.h"
 #include "w_buffer.h"
 #include <w_convert.h>
-#include "w_command_buffer.h"
+#include "w_command_buffers.h"
 
 namespace wolf
 {
@@ -124,7 +124,7 @@ namespace wolf
                 const std::string _trace = this->_name + "copy_to";
                 
                 //create one command buffer
-                w_command_buffer _copy_command_buffer;
+                w_command_buffers _copy_command_buffer;
                 auto _hr = _copy_command_buffer.load(this->_gDevice, 1);
                 if (_hr != W_PASSED)
                 {
@@ -149,7 +149,7 @@ namespace wolf
                 VkBufferCopy _copy_region = {};
                 _copy_region.size = this->_size_in_bytes;
                 vkCmdCopyBuffer(
-                    _copy_cmd,
+                    _copy_cmd.data,
                     this->_handle,
                     pDestinationBuffer.get_handle(),
                     1,
@@ -158,6 +158,7 @@ namespace wolf
                 _hr = _copy_command_buffer.flush(0);
                 if (_hr != W_PASSED)
                 {
+					_copy_cmd.data = nullptr;
                     V(W_FAILED,
                         "flushing command buffer" +
                         _gDevice->get_info(),
@@ -167,6 +168,7 @@ namespace wolf
                 }
 
                 _copy_command_buffer.release();
+				_copy_cmd.data = nullptr;
 
                 return W_PASSED;
             }

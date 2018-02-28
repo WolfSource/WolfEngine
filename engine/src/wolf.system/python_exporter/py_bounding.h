@@ -12,7 +12,7 @@
 #ifndef __PY_BOUNDING_H__
 #define __PY_BOUNDING_H__
 
-namespace pywolf
+namespace pyWolf
 {
     static void py_bounding_export()
     {

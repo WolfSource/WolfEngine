@@ -127,13 +127,13 @@ namespace wolf
 
 #ifdef __PYTHON__
 
-			bool py_load(
+			W_RESULT py_load(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_z_ const std::wstring& pShaderBinaryPath,
 				_In_ const w_shader_stage& pShaderStage,
-				_In_z_ const std::string& pMainFunctionName)
+				_In_z_ const std::string& pMainFunctionName = "main")
 			{
-				if (!pGDevice.get()) return false;
+				if (!pGDevice.get()) return W_FAILED;
 				//boost::shared to std::shared
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
@@ -146,7 +146,7 @@ namespace wolf
 				//reset local shared_ptr
 				_gDevice.reset();
 
-				return _hr == W_PASSED;
+				return _hr;
 			}
 			
 			boost::python::list py_get_shader_binding_params()
@@ -175,7 +175,7 @@ namespace wolf
 				return _list;
 			}
 
-			bool py_set_shader_binding_params(_In_ boost::python::list pShaderBindingParams)
+			W_RESULT py_set_shader_binding_params(_In_ boost::python::list pShaderBindingParams)
 			{
 				std::vector<w_shader_binding_param> _shader_binding_params;
 				//get command buffers
@@ -190,12 +190,12 @@ namespace wolf
 
 				if (_shader_binding_params.size())
 				{
-					return set_shader_binding_params(_shader_binding_params) == W_PASSED;
+					return set_shader_binding_params(_shader_binding_params);
 				}
-				return false;
+				return W_FAILED;
 			}
 
-			W_EXP static bool py_load_shader(
+			static W_RESULT py_load_shader(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_z_ const std::string& pName,
 				_In_z_ const std::wstring& pVertexShaderPath,
@@ -205,9 +205,9 @@ namespace wolf
 				_In_z_ const std::wstring& pFragmentShaderPath,
 				_In_z_ const std::wstring& pComputeShaderPath,
 				_In_ boost::python::list pShaderBindingParams,
-				_In_z_ std::string& pMainFunctionName)
+				_In_z_ const std::string& pMainFunctionName = "main")
 			{
-				if (!pGDevice.get()) return false;
+				if (!pGDevice.get()) return W_FAILED;
 				//boost::shared to std::shared
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
 
@@ -242,7 +242,7 @@ namespace wolf
 				//reset local shared_ptr
 				_gDevice.reset();
 
-				return _hr == W_PASSED;
+				return _hr;
 			}
 #endif
 

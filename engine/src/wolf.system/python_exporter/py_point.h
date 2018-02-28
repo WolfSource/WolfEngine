@@ -12,7 +12,7 @@
 #ifndef __PY_POINT_H__
 #define __PY_POINT_H__
 
-namespace pywolf
+namespace pyWolf
 {
     static void py_point_export()
     {

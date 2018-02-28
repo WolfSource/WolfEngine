@@ -11,7 +11,7 @@
 #define __W_RENDER_PASS_H__
 
 #include "w_graphics_device_manager.h"
-#include "w_command_buffer.h"
+#include "w_command_buffers.h"
 
 namespace wolf
 {
@@ -36,7 +36,7 @@ namespace wolf
             //begin render pass
             W_EXP void begin(
                 _In_ const uint32_t& pFrameBufferIndex,
-                _In_ const w_command_buffer* pCommandBuffer,
+                _In_ const w_command_buffers* pCommandBuffer,
                 _In_ const w_color& pClearColor,
                 _In_ const float& pClearDepth = 1.0f,
                 _In_ const uint32_t& pClearStencil = 0,
@@ -45,10 +45,10 @@ namespace wolf
             //begin render pass
             W_EXP void begin(
                 _In_ const uint32_t& pFrameBufferIndex,
-                _In_ const w_command_buffer* pCommandBuffer);
+                _In_ const w_command_buffers* pCommandBuffer);
 
             //end render pass
-            W_EXP void end(_In_ const w_command_buffer* pCommandBuffer);
+            W_EXP void end(_In_ const w_command_buffers* pCommandBuffer);
 
             //release all resources
             W_EXP virtual ULONG release() override;
@@ -122,10 +122,10 @@ namespace wolf
 
 			void py_begin(
 				_In_ const uint32_t& pFrameBufferIndex,
-				_In_ const w_command_buffer& pCommandBuffer,
+				_In_ const w_command_buffers& pCommandBuffer,
 				_In_ const w_color& pClearColor,
-				_In_ const float& pClearDepth,
-				_In_ const uint32_t& pClearStencil)
+				_In_ const float& pClearDepth = 1.0f,
+				_In_ const uint32_t& pClearStencil = 0)
 			{
 				begin(
 					pFrameBufferIndex,
@@ -135,7 +135,7 @@ namespace wolf
 					pClearStencil);
 			}
 
-			void py_end(_In_ const w_command_buffer& pCommandBuffer)
+			void py_end(_In_ const w_command_buffers& pCommandBuffer)
 			{
 				end(&pCommandBuffer);
 			}

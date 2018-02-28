@@ -4,7 +4,7 @@
 #include "w_shader.h"
 #include "w_render_pass.h"
 #include "w_pipeline.h"
-#include "w_command_buffer.h"
+#include "w_command_buffers.h"
 #include "w_render_pass.h"
 
 using namespace wolf::graphics;
@@ -454,7 +454,7 @@ namespace wolf
 						{
 							if (_update_buffers() == W_PASSED)
 							{
-								_draw(this->_command_buffers.get_active_command());
+								_draw(this->_command_buffers.get_active_command().data);
 							}
 							else
 							{
@@ -512,7 +512,7 @@ namespace wolf
                 return this->_screen_size.y;
             }
 
-			VkCommandBuffer get_command_buffer_at(_In_ const uint32_t pFrameIndex) const
+			w_command_buffer get_command_buffer_at(_In_ const uint32_t pFrameIndex) const
 			{
 				return this->_command_buffers.get_command_at(pFrameIndex);
 			}
@@ -763,7 +763,7 @@ namespace wolf
             } _push_constant_block;
 
 			//for rendering
-			w_command_buffer										_command_buffers;
+			w_command_buffers										_command_buffers;
 			w_render_pass											_render_pass;
         };
     }
@@ -832,9 +832,9 @@ uint32_t w_imgui::get_height()
     return _pimp ? _pimp->get_height() : 0;
 }
 
-VkCommandBuffer w_imgui::get_command_buffer_at(_In_ const uint32_t pFrameIndex)
+w_command_buffer w_imgui::get_command_buffer_at(_In_ const uint32_t pFrameIndex)
 {
-	return _pimp ? _pimp->get_command_buffer_at(pFrameIndex) : nullptr;
+	return _pimp ? _pimp->get_command_buffer_at(pFrameIndex) : w_command_buffer();
 }
 
 #pragma endregion

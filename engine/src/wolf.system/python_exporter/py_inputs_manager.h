@@ -12,7 +12,7 @@
 #ifndef __PY_INPUTS_MANAGER_H__
 #define __PY_INPUTS_MANAGER_H__
 
-namespace pywolf
+namespace pyWolf
 {
     static void py_inputs_manager_export()
     {

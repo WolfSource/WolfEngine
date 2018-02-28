@@ -14,13 +14,16 @@
 
 #include <python_exporter/w_boost_python_helper.h>
 
-namespace pywolf
+namespace pyWolf
 {
+	using namespace boost::python;
+	using namespace wolf::graphics;
+
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_mesh_py_load_overloads, w_mesh::py_load, 3, 4)
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_mesh_py_draw_overloads, w_mesh::py_draw, 3, 4)
+	
 	static void py_mesh_export()
 	{
-		using namespace boost::python;
-		using namespace wolf::graphics;
-
 		//define w_vertex_declaration enum
 		enum_<w_vertex_declaration>("w_vertex_declaration")
 			.value("NOT_DEFINED", w_vertex_declaration::NOT_DEFINED)
@@ -60,8 +63,8 @@ namespace pywolf
 
 		//export w_mesh struct
 		class_<w_mesh, boost::noncopyable>("w_mesh")
-			.def("load", &w_mesh::py_load, "load mesh")
-			.def("draw", &w_mesh::py_draw, "draw vertices")
+			.def("load", &w_mesh::py_load, w_mesh_py_load_overloads())
+			.def("draw", &w_mesh::py_draw, w_mesh_py_draw_overloads())
 			.def("release", &w_mesh::release, "release")
 			.def("get_vertices_count", &w_mesh::get_vertices_count, "get vertices count")
 			.def("get_indices_count", &w_mesh::get_vertices_count, "get indices count")
