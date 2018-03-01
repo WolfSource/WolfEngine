@@ -27,9 +27,13 @@ namespace wolf
             WSYS_EXP w_thread_pool();
             WSYS_EXP ~w_thread_pool();
 
-            WSYS_EXP void allocate(_In_ const size_t& pSize);
+			//allocate thread pool with number of threads
+            WSYS_EXP void allocate(_In_ const size_t& pNumberOfThreads);
+			//wait for specific thread to be done
             WSYS_EXP void wait_for(_In_ const size_t& pThreadIndex);
+			//wait for all threads
             WSYS_EXP void wait_all();
+			//release all resources
             WSYS_EXP void release();
 
 #pragma region Getters
@@ -37,7 +41,9 @@ namespace wolf
 #pragma endregion
 
 #pragma region Setters
+			//add jobs for specific thread
             WSYS_EXP void add_jobs_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::vector<std::function<void()>>& pJobs);
+			//add a job for specific thread
             WSYS_EXP void add_job_for_thread(_In_ const size_t& pThreadIndex, _In_ const std::function<void()>& pJob);
 #pragma endregion
 

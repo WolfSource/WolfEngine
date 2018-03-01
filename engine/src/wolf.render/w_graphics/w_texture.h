@@ -20,6 +20,7 @@
 
 #ifdef __PYTHON__
 #include "w_std.h"
+#include "w_thread_pool.h"
 #endif
 
 namespace wolf
@@ -261,15 +262,51 @@ namespace wolf
 					auto _data = (uint8_t*)read_data_of_texture();
 					if (_data)
 					{
+						using namespace wolf::system;
+						
 						std::vector<uint8_t> _v(_size);
-						memcpy(&_v[0], _data, _size);
+
+						//get number of cpu cores
+						auto _number_of_cpu_cores = w_thread::get_number_of_hardware_thread_contexts();
+						//get chuck size
+						auto _chuck_size = (int)(_size / _number_of_cpu_cores);
+						//must be added to last chuck
+						auto _add_to_last_chuck = _size % _number_of_cpu_cores;
+
+						if (_chuck_size > 1)
+						{
+							w_thread_pool _thread_pool;
+							_thread_pool.allocate(_number_of_cpu_cores);
+
+							for (size_t i = 0; i < _number_of_cpu_cores; ++i)
+							{
+								auto _index = i * _chuck_size;
+								auto _size = _chuck_size;
+
+								if (_add_to_last_chuck && i == _number_of_cpu_cores - 1)
+								{
+									_size += _add_to_last_chuck;
+								}
+
+								_thread_pool.add_job_for_thread(i, [&, _index, _size]()->void
+								{
+									memcpy(&_v[_index], &_data[_index], _size);
+								});
+							}
+							_thread_pool.wait_all();
+							_thread_pool.release();
+						}
+						else
+						{
+							memcpy(&_v[0], &_data[0], _size);
+						}
 
 						return _v;
 					}
 				}
 				return std::vector<uint8_t>();
 			}
-			
+		
 			static W_RESULT py_load_to_shared_textures(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_z_ std::wstring pPath)

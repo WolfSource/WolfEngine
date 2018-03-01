@@ -98,7 +98,7 @@ namespace pyWolf
 			.value("HOST_COHERENT_BIT", w_memory_property_flag_bits::HOST_COHERENT_BIT)
 			.value("HOST_CACHED_BIT", w_memory_property_flag_bits::HOST_CACHED_BIT)
 			.value("LAZILY_ALLOCATED_BIT", w_memory_property_flag_bits::LAZILY_ALLOCATED_BIT)
-			.value("FLAG_BITS_MAX_ENUM", w_memory_property_flag_bits::W_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM)
+			.value("FLAG_BITS_MAX_ENUM", w_memory_property_flag_bits::MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM)
 			.export_values()
 			;
 
@@ -122,7 +122,7 @@ namespace pyWolf
 			.value("ALL_GRAPHICS_BIT", w_pipeline_stage_flag_bits::ALL_GRAPHICS_BIT)
 			.value("ALL_COMMANDS_BIT", w_pipeline_stage_flag_bits::ALL_COMMANDS_BIT)
 			.value("COMMAND_PROCESS_BIT_NVX", w_pipeline_stage_flag_bits::COMMAND_PROCESS_BIT_NVX)
-			.value("MAX_ENUM", w_pipeline_stage_flag_bits::W_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM)
+			.value("MAX_ENUM", w_pipeline_stage_flag_bits::PIPELINE_STAGE_FLAG_BITS_MAX_ENUM)
 			.export_values()
 			;
 
@@ -140,10 +140,10 @@ namespace pyWolf
 			.value("VIEWPORT_W_SCALING_NV", w_dynamic_state::VIEWPORT_W_SCALING_NV)
 			.value("DISCARD_RECTANGLE_EXT", w_dynamic_state::DISCARD_RECTANGLE_EXT)
 			.value("SAMPLE_LOCATIONS_EXT", w_dynamic_state::SAMPLE_LOCATIONS_EXT)
-			.value("BEGIN_RANGE", w_dynamic_state::W_DYNAMIC_STATE_BEGIN_RANGE)
-			.value("END_RANGE", w_dynamic_state::W_DYNAMIC_STATE_END_RANGE)
-			.value("RANGE_SIZE", w_dynamic_state::W_DYNAMIC_STATE_RANGE_SIZE)
-			.value("MAX_ENUM", w_dynamic_state::W_DYNAMIC_STATE_MAX_ENUM)
+			.value("BEGIN_RANGE", w_dynamic_state::DYNAMIC_STATE_BEGIN_RANGE)
+			.value("END_RANGE", w_dynamic_state::DYNAMIC_STATE_END_RANGE)
+			.value("RANGE_SIZE", w_dynamic_state::DYNAMIC_STATE_RANGE_SIZE)
+			.value("MAX_ENUM", w_dynamic_state::DYNAMIC_STATE_MAX_ENUM)
 			.export_values()
 			;
 
@@ -160,10 +160,10 @@ namespace pyWolf
 			.value("TRIANGLE_LIST_WITH_ADJACENCY", w_primitive_topology::TRIANGLE_LIST_WITH_ADJACENCY)
 			.value("TRIANGLE_STRIP_WITH_ADJACENCY", w_primitive_topology::TRIANGLE_STRIP_WITH_ADJACENCY)
 			.value("PATCH_LIST", w_primitive_topology::PATCH_LIST)
-			.value("BEGIN_RANGE", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_BEGIN_RANGE)
-			.value("END_RANGE", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_END_RANGE)
-			.value("RANGE_SIZE", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_RANGE_SIZE)
-			.value("MAX_ENUM", w_primitive_topology::W_PRIMITIVE_TOPOLOGY_MAX_ENUM)
+			.value("BEGIN_RANGE", w_primitive_topology::PRIMITIVE_TOPOLOGY_BEGIN_RANGE)
+			.value("END_RANGE", w_primitive_topology::PRIMITIVE_TOPOLOGY_END_RANGE)
+			.value("RANGE_SIZE", w_primitive_topology::PRIMITIVE_TOPOLOGY_RANGE_SIZE)
+			.value("MAX_ENUM", w_primitive_topology::PRIMITIVE_TOPOLOGY_MAX_ENUM)
 			.export_values()
 			;
 
@@ -172,10 +172,10 @@ namespace pyWolf
 			.value("_1D", w_image_type::_1D_TYPE)
 			.value("_2D", w_image_type::_2D_TYPE)
 			.value("_3D", w_image_type::_3D_TYPE)
-			.value("BEGIN_RANGE", w_image_type::W_IMAGE_TYPE_BEGIN_RANGE)
-			.value("END_RANGE", w_image_type::W_IMAGE_TYPE_END_RANGE)
-			.value("RANGE_SIZE", w_image_type::W_IMAGE_TYPE_RANGE_SIZE)
-			.value("MAX_ENUM", w_image_type::W_IMAGE_TYPE_MAX_ENUM)
+			.value("BEGIN_RANGE", w_image_type::IMAGE_TYPE_BEGIN_RANGE)
+			.value("END_RANGE", w_image_type::IMAGE_TYPE_END_RANGE)
+			.value("RANGE_SIZE", w_image_type::IMAGE_TYPE_RANGE_SIZE)
+			.value("MAX_ENUM", w_image_type::IMAGE_TYPE_MAX_ENUM)
 			.export_values()
 			;
 
@@ -188,24 +188,24 @@ namespace pyWolf
 			.value("_1D_ARRAY", w_image_view_type::_1D_ARRAY)
 			.value("_2D_ARRAY", w_image_view_type::_2D_ARRAY)
 			.value("CUBE_ARRAY", w_image_view_type::CUBE_ARRAY)
-			.value("W_IMAGE_VIEW_TYPE_BEGIN_RANGE", w_image_view_type::W_IMAGE_VIEW_TYPE_BEGIN_RANGE)
-			.value("W_IMAGE_VIEW_TYPE_END_RANGE", w_image_view_type::W_IMAGE_VIEW_TYPE_END_RANGE)
-			.value("W_IMAGE_VIEW_TYPE_MAX_ENUM", w_image_view_type::W_IMAGE_VIEW_TYPE_MAX_ENUM)
-			.value("W_IMAGE_VIEW_TYPE_RANGE_SIZE", w_image_view_type::W_IMAGE_VIEW_TYPE_RANGE_SIZE)
+			.value("W_IMAGE_VIEW_TYPE_BEGIN_RANGE", w_image_view_type::IMAGE_VIEW_TYPE_BEGIN_RANGE)
+			.value("W_IMAGE_VIEW_TYPE_END_RANGE", w_image_view_type::IMAGE_VIEW_TYPE_END_RANGE)
+			.value("W_IMAGE_VIEW_TYPE_MAX_ENUM", w_image_view_type::IMAGE_VIEW_TYPE_MAX_ENUM)
+			.value("W_IMAGE_VIEW_TYPE_RANGE_SIZE", w_image_view_type::IMAGE_VIEW_TYPE_RANGE_SIZE)
 			.export_values()
 			;
 
 		//define w_image_usage_flag_bits enum
 		enum_<w_image_usage_flag_bits>("w_image_usage_flag_bits")
-			.value("TRANSFER_SRC_BIT", w_image_usage_flag_bits::TRANSFER_SRC_BIT)
-			.value("TRANSFER_DST_BIT", w_image_usage_flag_bits::TRANSFER_DST_BIT)
-			.value("SAMPLED_BIT", w_image_usage_flag_bits::SAMPLED_BIT)
-			.value("STORAGE_BIT", w_image_usage_flag_bits::STORAGE_BIT)
-			.value("COLOR_ATTACHMENT_BIT", w_image_usage_flag_bits::COLOR_ATTACHMENT_BIT)
-			.value("DEPTH_STENCIL_ATTACHMENT_BIT", w_image_usage_flag_bits::DEPTH_STENCIL_ATTACHMENT_BIT)
-			.value("TRANSIENT_ATTACHMENT_BIT", w_image_usage_flag_bits::TRANSIENT_ATTACHMENT_BIT)
-			.value("INPUT_ATTACHMENT_BIT", w_image_usage_flag_bits::INPUT_ATTACHMENT_BIT)
-			.value("MAX_ENUM", w_image_usage_flag_bits::W_IMAGE_USAGE_FLAG_BITS_MAX_ENUM)
+			.value("TRANSFER_SRC_BIT", w_image_usage_flag_bits::IMAGE_USAGE_TRANSFER_SRC_BIT)
+			.value("TRANSFER_DST_BIT", w_image_usage_flag_bits::IMAGE_USAGE_TRANSFER_DST_BIT)
+			.value("SAMPLED_BIT", w_image_usage_flag_bits::IMAGE_USAGE_SAMPLED_BIT)
+			.value("STORAGE_BIT", w_image_usage_flag_bits::IMAGE_USAGE_STORAGE_BIT)
+			.value("COLOR_ATTACHMENT_BIT", w_image_usage_flag_bits::IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
+			.value("DEPTH_STENCIL_ATTACHMENT_BIT", w_image_usage_flag_bits::IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT)
+			.value("TRANSIENT_ATTACHMENT_BIT", w_image_usage_flag_bits::IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT)
+			.value("INPUT_ATTACHMENT_BIT", w_image_usage_flag_bits::IMAGE_USAGE_INPUT_ATTACHMENT_BIT)
+			.value("MAX_ENUM", w_image_usage_flag_bits::IMAGE_USAGE_FLAG_BITS_MAX_ENUM)
 			.export_values()
 			;
 

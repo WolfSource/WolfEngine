@@ -30,7 +30,7 @@ namespace wolf
             W_EXP W_RESULT load(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t pBufferSize,
-                _In_ const VkBufferUsageFlags pUsage,
+                _In_ const w_buffer_usage_flags pUsage,
                 _In_ const w_memory_property_flags pMemoryFlags);
             
             W_EXP W_RESULT bind();
@@ -50,7 +50,7 @@ namespace wolf
 #pragma region Getters
             
             W_EXP const uint32_t                      get_size() const;
-            W_EXP const VkBufferUsageFlags            get_usage_flags() const;
+            W_EXP const w_buffer_usage_flags          get_usage_flags() const;
             W_EXP const w_memory_property_flags       get_memory_flags() const;
             W_EXP const VkBuffer                      get_handle() const;
             W_EXP const VkDeviceMemory                get_memory() const;
@@ -90,5 +90,7 @@ namespace wolf
 
 	}
 }
+
+#include "python_exporter/py_buffer.h"
 
 #endif

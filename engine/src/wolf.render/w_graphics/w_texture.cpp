@@ -29,7 +29,7 @@ namespace wolf
 				_generate_mip_maps(false),
 				_mip_map_levels(1),
 				_memory(0),
-				_usage_flags(w_image_usage_flag_bits::TRANSFER_DST_BIT | w_image_usage_flag_bits::SAMPLED_BIT),
+				_usage_flags(w_image_usage_flag_bits::IMAGE_USAGE_TRANSFER_DST_BIT | w_image_usage_flag_bits::IMAGE_USAGE_SAMPLED_BIT),
 				_is_staging(false),
 				_staging_buffer_memory_pointer(nullptr),
 				_format(w_format::R8G8B8A8_UNORM),
@@ -59,7 +59,7 @@ namespace wolf
 				if (this->_generate_mip_maps)
 				{
 					//add VK_IMAGE_USAGE_TRANSFER_SRC_BIT flag to image's usage
-					this->_usage_flags |= w_image_usage_flag_bits::TRANSFER_SRC_BIT;
+					this->_usage_flags |= w_image_usage_flag_bits::IMAGE_USAGE_TRANSFER_SRC_BIT;
 				}
 
                 if (pMemoryPropertyFlags & w_memory_property_flag_bits::HOST_VISIBLE_BIT ||
@@ -1942,7 +1942,7 @@ w_image_view w_texture::get_image_view() const
 //get image type
 w_image_type w_texture::get_image_type() const
 {
-    if(!this->_pimp) return w_image_type::W_IMAGE_TYPE_END_RANGE;
+    if(!this->_pimp) return w_image_type::IMAGE_TYPE_END_RANGE;
     return this->_pimp->get_image_type();
 }
 

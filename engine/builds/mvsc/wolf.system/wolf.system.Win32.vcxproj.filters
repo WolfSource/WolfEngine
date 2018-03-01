@@ -776,42 +776,6 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_boost_python_helper.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_bounding.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_color.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_game_time.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_inputs_manager.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_logger.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_point.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_rectangle.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_time_span.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_timer.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_window.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_std.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -849,9 +813,6 @@
     </Filter>
     <Filter Include="gli\core">
       <UniqueIdentifier>{b1fa6346-6a07-4efb-831a-5f80393dce33}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="python_exporter">
-      <UniqueIdentifier>{96333abc-f95e-48bb-b7ba-04c03329a341}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

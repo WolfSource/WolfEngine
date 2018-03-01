@@ -249,6 +249,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_fences.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_game.h" />

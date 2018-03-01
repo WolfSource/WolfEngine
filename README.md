@@ -233,14 +233,14 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
     </td>
     <td>
       <p><b>06_staging_buffer</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/06_staging_buffer/doc/view.png" alt="06_staging_buffer" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/06_staging_buffer/doc/view.jpg" alt="06_staging_buffer" width="256" height="192"/>
       <p>Creating staging buffer</p>
     </td>
   </tr>
   <tr>
     <td>
       <p><b>07_uniforms_constant_buffers</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/05_texture/view.png" alt="07_uniforms_constant_buffers" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/05_texture/doc/view.png" alt="07_uniforms_constant_buffers" width="256" height="192"/>
       <p>Using constant buffer</p>
     </td>
     <td>

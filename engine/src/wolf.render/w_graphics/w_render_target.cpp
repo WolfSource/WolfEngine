@@ -51,13 +51,13 @@ namespace wolf
 							//color
 							_attachment.attachment_desc.desc.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 							_texture_buffer->set_buffer_type(w_texture_buffer_type::COLOR);
-							_texture_buffer->set_usage_flags(w_image_usage_flag_bits::COLOR_ATTACHMENT_BIT | w_image_usage_flag_bits::SAMPLED_BIT);
+							_texture_buffer->set_usage_flags(w_image_usage_flag_bits::IMAGE_USAGE_COLOR_ATTACHMENT_BIT | w_image_usage_flag_bits::IMAGE_USAGE_SAMPLED_BIT);
 						}
 						else if (_attachment.attachment_desc.ref.layout == VkImageLayout::VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
 						{
 							//depth
 							_texture_buffer->set_buffer_type(w_texture_buffer_type::DEPTH);
-							_texture_buffer->set_usage_flags(w_image_usage_flag_bits::DEPTH_STENCIL_ATTACHMENT_BIT | w_image_usage_flag_bits::SAMPLED_BIT);
+							_texture_buffer->set_usage_flags(w_image_usage_flag_bits::IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | w_image_usage_flag_bits::IMAGE_USAGE_SAMPLED_BIT);
 						}
 
 						_texture_buffer->set_format((w_format)_attachment.attachment_desc.desc.format);
@@ -193,22 +193,22 @@ namespace wolf
             
             w_image_type get_image_type(_In_ size_t pBufferIndex) const
             {
-				if (pBufferIndex >= this->_attachment_buffers.size()) return w_image_type::W_IMAGE_TYPE_END_RANGE;
+				if (pBufferIndex >= this->_attachment_buffers.size()) return w_image_type::IMAGE_TYPE_END_RANGE;
 
 				auto _t = this->_attachment_buffers.at(pBufferIndex);
 				if (_t) return _t->get_image_type();
 
-				return w_image_type::W_IMAGE_TYPE_END_RANGE;
+				return w_image_type::IMAGE_TYPE_END_RANGE;
             }
             
 			w_image_view_type get_image_view_type(_In_ size_t pBufferIndex) const
 			{
-				if (pBufferIndex >= this->_attachment_buffers.size()) return w_image_view_type::W_IMAGE_VIEW_TYPE_END_RANGE;
+				if (pBufferIndex >= this->_attachment_buffers.size()) return w_image_view_type::IMAGE_VIEW_TYPE_END_RANGE;
 
 				auto _t = this->_attachment_buffers.at(pBufferIndex);
 				if (_t) return _t->get_image_view_type();
 
-				return w_image_view_type::W_IMAGE_VIEW_TYPE_END_RANGE;
+				return w_image_view_type::IMAGE_VIEW_TYPE_END_RANGE;
 			}
 
 			const w_format get_attachment_format(_In_ size_t pBufferIndex) const
@@ -347,13 +347,13 @@ w_image_view w_render_target::get_image_view(_In_ size_t pBufferIndex) const
 
 w_image_type w_render_target::get_image_type(_In_ size_t pBufferIndex) const
 {
-	if (!this->_pimp) return w_image_type::W_IMAGE_TYPE_END_RANGE;
+	if (!this->_pimp) return w_image_type::IMAGE_TYPE_END_RANGE;
 	return this->_pimp->get_image_type(pBufferIndex);
 }
 
 w_image_view_type w_render_target::get_image_view_type(_In_ size_t pBufferIndex) const
 {
-	if (!this->_pimp) return w_image_view_type::W_IMAGE_VIEW_TYPE_END_RANGE;
+	if (!this->_pimp) return w_image_view_type::IMAGE_VIEW_TYPE_END_RANGE;
 	return this->_pimp->get_image_view_type(pBufferIndex);
 }
 

@@ -61,9 +61,6 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.cpp">
-      <Filter>w_graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
@@ -71,6 +68,9 @@
       <Filter>w_framework</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_semaphore.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -126,9 +126,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_render_target.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.h">
-      <Filter>w_graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_headers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_shapes.h">
       <Filter>w_graphics</Filter>
@@ -136,41 +133,11 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h">
       <Filter>w_framework</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_texture.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_graphics_device_manager.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_game.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_fences.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_command_buffer.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_render_pass.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_semaphore.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_semaphore.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_queue.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_shader.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_pipeline.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_mesh.h">
-      <Filter>python_exporter</Filter>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h">
+      <Filter>w_graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -197,9 +164,6 @@
     </Filter>
     <Filter Include="w_graphics">
       <UniqueIdentifier>{602f206c-1517-4b06-9a9b-74c0c9d081fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="python_exporter">
-      <UniqueIdentifier>{a564a5e6-ceaa-448b-ae65-65924a12ba6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

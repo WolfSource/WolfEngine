@@ -191,10 +191,7 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.cpp">
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </EnableEnhancedInstructionSet>
-    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
@@ -247,21 +244,10 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_command_buffer.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_fences.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_game.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_graphics_device_manager.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_mesh.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_pipeline.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_queue.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_render_pass.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_semaphore.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_shader.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_texture.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffer.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_imgui.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_mesh.h" />
