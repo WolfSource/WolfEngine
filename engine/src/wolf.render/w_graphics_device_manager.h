@@ -540,9 +540,10 @@ namespace wolf
 
 #ifdef __VULKAN__
             W_EXP static VkResult memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
-                                                  uint32_t pTypeBits,
-                                                  VkFlags pRequirementsFlags,
-                                                  uint32_t* pTypeIndex);
+                uint32_t pTypeBits,
+				uint32_t pRequirementsFlags,
+                uint32_t* pTypeIndex);
+
             W_EXP static VkFormat find_supported_format(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const std::vector<VkFormat>& pFormatCandidates,

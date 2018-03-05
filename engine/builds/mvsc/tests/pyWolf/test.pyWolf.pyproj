@@ -13,8 +13,8 @@
     <Name>test.pyWolf</Name>
     <RootNamespace>pyWolf</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
-    <InterpreterId>Global|VisualStudio|Intel Python 2.7</InterpreterId>
+    <EnableNativeCodeDebugging>True</EnableNativeCodeDebugging>
+    <InterpreterId>Global|VisualStudio|Intel Python 2</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,7 +35,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="Global|VisualStudio|Intel Python 2.7" />
+    <InterpreterReference Include="Global|VisualStudio|Intel Python 2" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

@@ -22,13 +22,13 @@ namespace wolf
             
             W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t pBufferSizeInBytes,
-                _In_ const VkBufferUsageFlags pUsageFlags,
-                _In_ const VkMemoryPropertyFlags pMemoryFlags)
+                _In_ const w_buffer_usage_flags pUsageFlags,
+                _In_ const w_memory_property_flags pMemoryPropertyFlags)
             {
                 this->_gDevice = pGDevice;
 
                 this->_usage_flags = pUsageFlags;
-                this->_memory_flags = pMemoryFlags;
+                this->_memory_property_flags = pMemoryPropertyFlags;
                 this->_size_in_bytes = pBufferSizeInBytes;
 
                 const VkBufferCreateInfo _buffer_create_info =
@@ -37,7 +37,7 @@ namespace wolf
                     nullptr,                                          // Next
                     0,                                                // Flags
                     (VkDeviceSize)this->_size_in_bytes,               // Size
-                    this->_usage_flags,                               // Usage
+                    (VkBufferUsageFlags)this->_usage_flags,           // Usage
                     VK_SHARING_MODE_EXCLUSIVE,                        // SharingMode
                     0,                                                // QueueFamilyIndexCount
                     nullptr                                           // QueueFamilyIndices
@@ -60,38 +60,43 @@ namespace wolf
                     &_buffer_memory_requirements);
 
                 VkPhysicalDeviceMemoryProperties _memory_properties;
-                vkGetPhysicalDeviceMemoryProperties(this->_gDevice->vk_physical_device,
-                    &_memory_properties);
+                vkGetPhysicalDeviceMemoryProperties(this->_gDevice->vk_physical_device, &_memory_properties);
 
-                for (uint32_t i = 0; i < _memory_properties.memoryTypeCount; ++i)
-                {
-                    if ((_buffer_memory_requirements.memoryTypeBits & (1 << i)) &&
-                        (_memory_properties.memoryTypes[i].propertyFlags & this->_memory_flags))
-                    {
+				uint32_t _mem_index = 0;
+				if (w_graphics_device_manager::memory_type_from_properties(
+					_memory_properties,
+					_buffer_memory_requirements.memoryTypeBits,
+					_memory_property_flags,
+					&_mem_index))
+				{
+					V(W_FAILED, "finding memory index of buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
+						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					return W_FAILED;
+				}
 
-                        VkMemoryAllocateInfo _memory_allocate_info =
-                        {
-                            VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO, // Type
-                            nullptr,                                // Next
-                            _buffer_memory_requirements.size,       // AllocationSize
-                            i                                       // MemoryTypeIndex
-                        };
-                        if (vkAllocateMemory(this->_gDevice->vk_device,
-                            &_memory_allocate_info,
-                            nullptr,
-                            &this->_memory) == VK_SUCCESS)
-                        {
-                            this->_descriptor_info.buffer = this->_handle;
-                            this->_descriptor_info.offset = 0;
-                            this->_descriptor_info.range = this->_size_in_bytes;
+				VkMemoryAllocateInfo _memory_allocate_info =
+				{
+					VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO, // Type
+					nullptr,                                // Next
+					_buffer_memory_requirements.size,       // AllocationSize
+					_mem_index                              // MemoryTypeIndex
+				};
+				if (vkAllocateMemory(this->_gDevice->vk_device,
+					&_memory_allocate_info,
+					nullptr,
+					&this->_memory))
+				{
+					
+					V(W_FAILED, "Allocating memory of buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
+						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					return W_FAILED;
+				}
 
-                            return W_PASSED;
-                        }
-                    }
-                }
-                logger.error("Could not create buffer, because proposed memory property not found.");
-
-                return W_FAILED;
+				this->_descriptor_info.buffer = this->_handle;
+				this->_descriptor_info.offset = 0;
+				this->_descriptor_info.range = this->_size_in_bytes;
+				
+                return W_PASSED;
             }
             
             W_RESULT bind()
@@ -107,7 +112,7 @@ namespace wolf
             W_RESULT set_data(_In_ const void* const pData)
             {
                 //we can not access to VRAM, but we can copy our data to DRAM
-                if (this->_memory_flags & w_memory_property_flag_bits::DEVICE_LOCAL_BIT) return W_FAILED;
+                if (this->_memory_property_flags & w_memory_property_flag_bits::DEVICE_LOCAL_BIT) return W_FAILED;
 
                 if (map() == nullptr) return W_FAILED;
                 memcpy(this->_mapped, pData, (size_t)this->_size_in_bytes);
@@ -178,7 +183,7 @@ namespace wolf
                 const std::string _trace_info = this->_name + "::map";
 
                 //we can not access to VRAM, but we can copy our data to DRAM
-                if (this->_memory_flags & w_memory_property_flag_bits::DEVICE_LOCAL_BIT) return nullptr;
+                if (this->_memory_property_flags & w_memory_property_flag_bits::DEVICE_LOCAL_BIT) return nullptr;
 
                 auto _size = this->get_size();
                 auto _memory = this->get_memory();
@@ -265,7 +270,7 @@ namespace wolf
             
             const w_memory_property_flags get_memory_flags() const
             {
-                return this->_memory_flags;
+                return this->_memory_property_flags;
             }
             
             const VkBuffer get_handle() const
@@ -292,8 +297,8 @@ namespace wolf
 #ifdef __VULKAN__
             VkBuffer                                            _handle;
             VkDeviceMemory                                      _memory;
-            w_memory_property_flags                             _memory_flags;
-            VkBufferUsageFlags                                  _usage_flags;
+            w_memory_property_flags                             _memory_property_flags;
+			w_buffer_usage_flags                                _usage_flags;
 			w_descriptor_buffer_info                            _descriptor_info;
 #endif
             
@@ -326,7 +331,7 @@ W_RESULT w_buffer::load_as_staging(_In_ const std::shared_ptr<w_graphics_device>
 
 W_RESULT w_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                        _In_ const uint32_t pBufferSizeInBytes,
-                       _In_ const VkBufferUsageFlags pUsageFlags,
+                       _In_ const w_buffer_usage_flags pUsageFlags,
                        _In_ const w_memory_property_flags pMemoryFlags)
 {
     if(!this->_pimp) return W_FAILED;

@@ -70,11 +70,11 @@ void scene::load()
 	}
     
     //create render pass
-    auto _hr = this->_draw_render_pass.load(
-                                            _gDevice,
-                                            _viewport,
-                                            _viewport_scissor,
-                                            _render_pass_attachments);
+	auto _hr = this->_draw_render_pass.load(
+		_gDevice,
+		_viewport,
+		_viewport_scissor,
+		_render_pass_attachments);
     if (_hr == W_FAILED)
     {
         release();
@@ -179,13 +179,13 @@ void scene::load()
 		_pipeline_cache_name.clear();
 	}
 
-    _hr = this->_pipeline.load(_gDevice,
-                               this->_mesh.get_vertex_binding_attributes(),
-                               w_primitive_topology::TRIANGLE_LIST,
-                               &this->_draw_render_pass,
-                               &this->_shader,
-                               { this->_viewport },
-                               { this->_viewport_scissor });
+	_hr = this->_pipeline.load(_gDevice,
+		this->_mesh.get_vertex_binding_attributes(),
+		w_primitive_topology::TRIANGLE_LIST,
+		&this->_draw_render_pass,
+		&this->_shader,
+		{ this->_viewport },
+		{ this->_viewport_scissor });
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -256,17 +256,12 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
             {
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                //The following codes have been added for this project
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 this->_pipeline.bind(_cmd);
                 _hr = this->_mesh.draw(_cmd, nullptr, 0, false);
                 if (_hr == W_FAILED)
                 {
                     V(W_FAILED, "drawing mesh", _trace_info, 3, false);
                 }
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                //++++++++++++++++++++++++++++++++++++++++++++++++++++
             }
             this->_draw_render_pass.end(_cmd);
         }

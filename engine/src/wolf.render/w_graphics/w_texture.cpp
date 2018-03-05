@@ -23,8 +23,6 @@ namespace wolf
 			w_texture_pimp() :
 				_name("w_texture"),
 				_gDevice(nullptr),
-				_width(0),
-				_height(0),
 				_layer_count(1),
 				_generate_mip_maps(false),
 				_mip_map_levels(1),
@@ -53,8 +51,8 @@ namespace wolf
             {
                 this->_gDevice = pGDevice;
                 this->_memory_property_flags = pMemoryPropertyFlags;
-                this->_width = pWidth;
-                this->_height = pHeight;
+                this->_image_view.width = pWidth;
+                this->_image_view.height = pHeight;
                 this->_generate_mip_maps = pGenerateMipMaps;
 				if (this->_generate_mip_maps)
 				{
@@ -62,8 +60,8 @@ namespace wolf
 					this->_usage_flags |= w_image_usage_flag_bits::IMAGE_USAGE_TRANSFER_SRC_BIT;
 				}
 
-                if (pMemoryPropertyFlags & w_memory_property_flag_bits::HOST_VISIBLE_BIT ||
-                    pMemoryPropertyFlags & w_memory_property_flag_bits::HOST_COHERENT_BIT)
+                if (this->_memory_property_flags & w_memory_property_flag_bits::HOST_VISIBLE_BIT ||
+					this->_memory_property_flags & w_memory_property_flag_bits::HOST_COHERENT_BIT)
                 {
                     this->_is_staging = true;
                 }
@@ -164,8 +162,8 @@ namespace wolf
 					{
 						_gli_tex_2D_array = new gli::texture2d_array(_gli_tex);
 
-						this->_width = _gli_tex_2D_array->extent().x;
-						this->_height = _gli_tex_2D_array->extent().y;
+						this->_image_view.width = _gli_tex_2D_array->extent().x;
+						this->_image_view.height = _gli_tex_2D_array->extent().y;
 						this->_layer_count = (uint32_t)_gli_tex_2D_array->layers();
 						this->_format = _gli_format_to_wolf_format(_gli_tex_2D_array->format());
 					}
@@ -180,8 +178,8 @@ namespace wolf
 
 					_rgba = stbi_load(_g_path.c_str(), &__width, &__height, &__comp, STBI_rgb_alpha);
 
-					this->_width = __width;
-					this->_height = __height;
+					this->_image_view.width = __width;
+					this->_image_view.height = __height;
 					this->_layer_count = 1;
 
 					_g_path.clear();
@@ -192,7 +190,7 @@ namespace wolf
 					return W_FAILED;
 				}
 				
-				if (this->_width == 0 || this->_height == 0)
+				if (this->_image_view.width == 0 || this->_image_view.height == 0)
 				{
 					wstring msg = L"Width or Height of texture file is zero: ";
 					V(W_FAILED, msg + _path, this->_name, 3);
@@ -307,7 +305,7 @@ namespace wolf
                 //generate number of mip maps
                 if (this->_generate_mip_maps)
                 {
-                    this->_mip_map_levels = static_cast<uint32_t>(std::floor(std::log2(std::max(this->_width, this->_height))) + 1);
+                    this->_mip_map_levels = static_cast<uint32_t>(std::floor(std::log2(std::max(this->_image_view.width, this->_image_view.height))) + 1);
                 }
 				const VkImageCreateInfo _image_create_info =
 				{
@@ -317,15 +315,15 @@ namespace wolf
 					(VkImageType)this->_image_type,								    // ImageType
 					(VkFormat)this->_format,									    // Format
 					{																// Extent
-						this->_width,												// Width
-						this->_height,												// Height
+						this->_image_view.width,									// Width
+						this->_image_view.height,									// Height
 						1															// Depth
 					},
 					this->_mip_map_levels ,											// MipLevels
 					this->_layer_count,												// ArrayLayers
 					VK_SAMPLE_COUNT_1_BIT,											// Samples
 					VK_IMAGE_TILING_OPTIMAL,										// Tiling
-					this->_usage_flags,												// Usage
+					(VkImageUsageFlags)this->_usage_flags,							// Usage
 					VK_SHARING_MODE_EXCLUSIVE,										// SharingMode
 					0,																// QueueFamilyIndexCount
 					nullptr,														// QueueFamilyIndices
@@ -357,57 +355,55 @@ namespace wolf
 				return W_PASSED;
 			}
             
-            W_RESULT _allocate_memory()
-            {
-                //release the old one
-                if (this->_memory)
-                {
-                    vkFreeMemory(this->_gDevice->vk_device, this->_memory, nullptr);
-                }
-                
-                VkMemoryRequirements _image_memory_requirements;
-                vkGetImageMemoryRequirements(
+			W_RESULT _allocate_memory()
+			{
+				//release the old one
+				if (this->_memory)
+				{
+					vkFreeMemory(this->_gDevice->vk_device, this->_memory, nullptr);
+				}
+
+				VkMemoryRequirements _image_memory_requirements;
+				vkGetImageMemoryRequirements(
 					this->_gDevice->vk_device,
 					this->_image_view.image,
-                    &_image_memory_requirements);
-                
-                VkPhysicalDeviceMemoryProperties _memory_properties;
-                vkGetPhysicalDeviceMemoryProperties( this->_gDevice->vk_physical_device, &_memory_properties);
-                
-                bool _found = false;
-                for( uint32_t i = 0; i < _memory_properties.memoryTypeCount; ++i )
-                {
-                    if( (_image_memory_requirements.memoryTypeBits & (1 << i)) &&
-                       (_memory_properties.memoryTypes[i].propertyFlags & this->_memory_property_flags) )
-                    {
-                        
-                        const VkMemoryAllocateInfo _memory_allocate_info =
-                        {
-                            VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,     // Type
-                            nullptr,                                    // Next
-                            _image_memory_requirements.size,            // AllocationSize
-                            i                                           // MemoryTypeIndex
-                        };
-                        
-                        if( vkAllocateMemory(this->_gDevice->vk_device,
-                                             &_memory_allocate_info,
-                                             nullptr,
-                                             &this->_memory) == VK_SUCCESS )
-                        {
-                            _found = true;
-                            break;
-                        }
-                    }
-                }
+					&_image_memory_requirements);
 
-                if(!_found)
-                {
-                    logger.error("Could not allocate memory for image");
-                    return W_FAILED;
-                }
-                
-                return W_PASSED;
-            }
+				VkPhysicalDeviceMemoryProperties _memory_properties;
+				vkGetPhysicalDeviceMemoryProperties(this->_gDevice->vk_physical_device, &_memory_properties);
+
+				uint32_t _mem_index = 0;
+				if (w_graphics_device_manager::memory_type_from_properties(
+					_memory_properties,
+					_image_memory_requirements.memoryTypeBits,
+					(VkMemoryPropertyFlags)this->_memory_property_flags,
+					&_mem_index))
+				{
+					V(W_FAILED, "finding memory index of Image for graphics device: " + this->_gDevice->device_info->get_device_name() +
+						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					return W_FAILED;
+				}
+
+				const VkMemoryAllocateInfo _memory_allocate_info =
+				{
+					VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,     // Type
+					nullptr,                                    // Next
+					_image_memory_requirements.size,            // AllocationSize
+					_mem_index                                  // MemoryTypeIndex
+				};
+
+				if (vkAllocateMemory(this->_gDevice->vk_device,
+					&_memory_allocate_info,
+					nullptr,
+					&this->_memory))
+				{
+					V(W_FAILED, "allocating memory for Image for graphics device: " + this->_gDevice->device_info->get_device_name() +
+						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					return W_FAILED;
+				}
+
+				return W_PASSED;
+			}
             
 			W_RESULT _create_image_view()
 			{
@@ -450,6 +446,9 @@ namespace wolf
 					V(W_FAILED, "creating image view", this->_name, false, true);
 					return W_FAILED;
 				}
+
+				this->_image_view.width = this->_image_view.width;
+				this->_image_view.height = this->_image_view.height;
 
 				return W_PASSED;
 			}
@@ -572,7 +571,7 @@ namespace wolf
 
 				const std::string _trace_info = "w_texture::copy_data_to_texture_2D";
 
-                auto _data_size = this->_width * this->_height * 4;
+                auto _data_size = this->_image_view.width * this->_image_view.height * 4;
 
                 auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
                 if (_hResult == W_FAILED)
@@ -678,8 +677,8 @@ namespace wolf
 							0                                 // Z
 						},
 						{                                     // ImageExtent
-							this->_width,                     // Width
-							this->_height,                    // Height
+							this->_image_view.width,          // Width
+							this->_image_view.height,         // Height
 							1                                 // Depth
 						}
 					};
@@ -866,8 +865,8 @@ namespace wolf
 								0                                 // Z
 							},
 							{                                     // ImageExtent
-								this->_width,                     // Width
-								this->_height,                    // Height
+								this->_image_view.width,          // Width
+								this->_image_view.height,         // Height
 								1                                 // Depth
 							}
 						};
@@ -996,16 +995,16 @@ namespace wolf
 						_image_blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 						_image_blit.srcSubresource.layerCount = 1;
 						_image_blit.srcSubresource.mipLevel = i - 1;
-						_image_blit.srcOffsets[1].x = int32_t(this->_width >> (i - 1));
-						_image_blit.srcOffsets[1].y = int32_t(this->_height >> (i - 1));
+						_image_blit.srcOffsets[1].x = int32_t(this->_image_view.width >> (i - 1));
+						_image_blit.srcOffsets[1].y = int32_t(this->_image_view.height >> (i - 1));
 						_image_blit.srcOffsets[1].z = 1;
 
 						//destination
 						_image_blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 						_image_blit.dstSubresource.layerCount = 1;
 						_image_blit.dstSubresource.mipLevel = i;
-						_image_blit.dstOffsets[1].x = int32_t(this->_width >> i);
-						_image_blit.dstOffsets[1].y = int32_t(this->_height >> i);
+						_image_blit.dstOffsets[1].x = int32_t(this->_image_view.width >> i);
+						_image_blit.dstOffsets[1].y = int32_t(this->_image_view.height >> i);
 						_image_blit.dstOffsets[1].z = 1;
 
 						VkImageSubresourceRange _mip_sub_range = {};
@@ -1138,7 +1137,7 @@ namespace wolf
 					return this->_staging_buffer_memory_pointer;
 				}
 
-				auto _data_size = this->_width * this->_height * 4;
+				auto _data_size = this->_image_view.width * this->_image_view.height * 4;
 				
 				auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
 				if (_hResult == W_FAILED)
@@ -1268,8 +1267,8 @@ namespace wolf
 							0                                 // Z
 						},
 						{                                     // ImageExtent
-							this->_width,                     // Width
-							this->_height,                    // Height
+							this->_image_view.width,          // Width
+							this->_image_view.height,         // Height
 							1                                 // Depth
 						}
 					};
@@ -1316,7 +1315,7 @@ namespace wolf
 				vkDeviceWaitIdle(this->_gDevice->vk_device);
 
 				auto _ptr = (uint8_t*)this->_staging_buffer.map();
-				for (size_t i = 0; i < this->_width * this->_height; i++)
+				for (size_t i = 0; i < this->_image_view.width * this->_image_view.height; i++)
 				{
 					logger.write(std::to_string(_ptr[i]));
 				}
@@ -1393,8 +1392,8 @@ namespace wolf
                             0                                 // Z
                         },
                         {                                     // ImageExtent
-                            this->_width,                     // Width
-                            this->_height,                    // Height
+                            this->_image_view.width,          // Width
+                            this->_image_view.height,         // Height
                             1                                 // Depth
                         }
                     };
@@ -1547,12 +1546,12 @@ namespace wolf
 
             const uint32_t get_width() const
             {
-                return this->_width;
+                return this->_image_view.width;
             }
             
             const uint32_t get_height() const
             {
-                return this->_height;
+                return this->_image_view.height;
             }
             
 			const w_image_usage_flags get_usage_flags() const
@@ -1630,13 +1629,11 @@ namespace wolf
             
             std::string                                     _name;
             std::shared_ptr<w_graphics_device>              _gDevice;
-            uint32_t                                        _width;
-            uint32_t                                        _height;
 			w_image_usage_flags								_usage_flags;
             uint32_t                                        _layer_count;
             uint32_t                                        _mip_map_levels;
             bool                                            _generate_mip_maps;
-            VkMemoryPropertyFlags                           _memory_property_flags;
+            w_memory_property_flags                         _memory_property_flags;
             bool                                            _is_staging;
             void*                                           _staging_buffer_memory_pointer;
             w_buffer                                        _staging_buffer;
@@ -1771,7 +1768,7 @@ W_RESULT w_texture::load_texture_from_memory_color(_In_ w_color pColor)
 
     for (size_t i = 0; i < _length; i += 4)
     {
-        _rgba[i + 0] = pColor.r;
+        _rgba[i] = pColor.r;
         _rgba[i + 1] = pColor.g;
         _rgba[i + 2] = pColor.b;
         _rgba[i + 3] = pColor.a;

@@ -15,7 +15,7 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffer.h>
+#include <w_graphics/w_command_buffers.h>
 #include <w_graphics/w_render_pass.h>
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_shader.h>
@@ -33,13 +33,13 @@
 class scene : public wolf::framework::w_game
 {
 public:
-	scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName);
+	scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName);
 	virtual ~scene();
 
 	/*
-	Allows the game to perform any initialization and it needs to before starting to run.
-	Calling Game::Initialize() will enumerate through any components and initialize them as well.
-	The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
+		Allows the game to perform any initialization and it needs to before starting to run.
+		Calling Game::Initialize() will enumerate through any components and initialize them as well.
+		The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
 	*/
 	void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) override;
 
@@ -62,12 +62,12 @@ public:
 	ULONG release() override;
 
 private:
-	HRESULT _build_draw_command_buffers();
+	W_RESULT _build_draw_command_buffers();
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
 
-	wolf::graphics::w_command_buffer                                _draw_command_buffers;
+	wolf::graphics::w_command_buffers                               _draw_command_buffers;
 	wolf::graphics::w_render_pass                                   _draw_render_pass;
 	
 	wolf::graphics::w_fences                                        _draw_fence;

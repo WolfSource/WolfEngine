@@ -4167,18 +4167,18 @@ ULONG w_graphics_device_manager::release()
 VkResult w_graphics_device_manager::memory_type_from_properties(
         VkPhysicalDeviceMemoryProperties pMemoryProperties,
         uint32_t pTypeBits,
-        VkFlags pRequirementsFlags,
+        uint32_t pRequirementsFlags,
         uint32_t* pTypeIndex)
 {
     // Search mem types to find first index with those properties
-    for (size_t i = 0; i <  pMemoryProperties.memoryTypeCount; ++i) 
+    for (uint32_t i = 0; i <  pMemoryProperties.memoryTypeCount; ++i)
     {
         if ((pTypeBits & 1) == 1) 
         {
             // Type is available, does it match user properties?
             if ((pMemoryProperties.memoryTypes[i].propertyFlags & pRequirementsFlags) == pRequirementsFlags)
             {
-                *pTypeIndex =  static_cast<uint32_t>(i);
+                *pTypeIndex =  i;
                 return VkResult::VK_SUCCESS;
             }
         }

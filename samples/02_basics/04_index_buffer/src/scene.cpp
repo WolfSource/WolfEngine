@@ -220,17 +220,12 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				//The following codes have been added for this project
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				this->_pipeline.bind(_cmd);
 				_hr = this->_mesh.draw(_cmd, nullptr, 0, false);
 				if (_hr == W_FAILED)
 				{
 					V(W_FAILED, "drawing mesh", _trace_info, 3, false);
 				}
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 			}
 			this->_draw_render_pass.end(_cmd);
 		}

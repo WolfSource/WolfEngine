@@ -115,8 +115,8 @@ class scene(QWidget):
             sys.exit(1)
 
         #loading vertex shader
-        #_content_path_dir = "D:/github/WolfSource/Wolf.Engine/samples/02_basics/05_texture/src/content/"
-        _content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/05_texture/src/content/"
+        _content_path_dir = "D:/github/WolfSource/Wolf.Engine/samples/02_basics/05_texture/src/content/"
+        #_content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/05_texture/src/content/"
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER)
         if _hr:
             print "Error on loading vertex shader"
