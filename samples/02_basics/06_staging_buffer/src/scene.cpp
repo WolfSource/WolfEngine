@@ -147,8 +147,8 @@ void scene::load()
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    const auto _width = 512;
-    const auto _height = 512;
+    const auto _width = 640;
+    const auto _height = 480;
 
     //load texture as staging buffer
     _hr = this->_texture.initialize(_gDevice, _width, _height, false, true);
@@ -294,7 +294,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         for (size_t i = pRange.begin(); i < pRange.end(); ++i)
         {
             auto _j = i * 4;
-            _px[_j + 0] = randi(0, 255);//R
+            _px[_j] = randi(0, 255);//R
             _px[_j + 1] = randi(0, 255);//G
             _px[_j + 2] = randi(0, 255);//B
             _px[_j + 3] = randi(0, 255);//A
