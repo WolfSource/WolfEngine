@@ -71,6 +71,12 @@ namespace wolf
 {
     namespace graphics
     {
+		struct w_device_memory
+		{
+#ifdef __VULKAN__
+			VkDeviceMemory handle = 0;
+#endif
+		};
 
 		struct w_attachment_description :
 #ifdef __VULKAN__
@@ -103,7 +109,7 @@ namespace wolf
 		struct w_sampler
 		{
 #ifdef __VULKAN__
-			VkSampler data = nullptr;
+			VkSampler handle = nullptr;
 #endif
 		};
 

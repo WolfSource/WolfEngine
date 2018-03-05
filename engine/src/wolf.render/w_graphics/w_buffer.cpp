@@ -15,7 +15,6 @@ namespace wolf
                 _gDevice(nullptr),
 				_size_in_bytes(0),
                 _handle(0),
-                _memory(0),
                 _mapped(nullptr)
             {
             }
@@ -84,7 +83,7 @@ namespace wolf
 				if (vkAllocateMemory(this->_gDevice->vk_device,
 					&_memory_allocate_info,
 					nullptr,
-					&this->_memory))
+					&this->_memory.handle))
 				{
 					
 					V(W_FAILED, "Allocating memory of buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
@@ -103,7 +102,7 @@ namespace wolf
             {
                 return vkBindBufferMemory(this->_gDevice->vk_device,
                     this->_handle,
-                    this->_memory,
+                    this->_memory.handle,
                     0) == VK_SUCCESS ? W_PASSED : W_FAILED;
 
             }
@@ -154,7 +153,7 @@ namespace wolf
                 VkBufferCopy _copy_region = {};
                 _copy_region.size = this->_size_in_bytes;
                 vkCmdCopyBuffer(
-                    _copy_cmd.data,
+                    _copy_cmd.handle,
                     this->_handle,
                     pDestinationBuffer.get_handle(),
                     1,
@@ -163,7 +162,7 @@ namespace wolf
                 _hr = _copy_command_buffer.flush(0);
                 if (_hr != W_PASSED)
                 {
-					_copy_cmd.data = nullptr;
+					_copy_cmd.handle = nullptr;
                     V(W_FAILED,
                         "flushing command buffer" +
                         _gDevice->get_info(),
@@ -173,7 +172,7 @@ namespace wolf
                 }
 
                 _copy_command_buffer.release();
-				_copy_cmd.data = nullptr;
+				_copy_cmd.handle = nullptr;
 
                 return W_PASSED;
             }
@@ -189,7 +188,7 @@ namespace wolf
                 auto _memory = this->get_memory();
 
                 auto _hr = vkMapMemory(this->_gDevice->vk_device,
-                    _memory,
+                    _memory.handle,
                     0,
                     _size,
                     0,
@@ -212,7 +211,7 @@ namespace wolf
             {
                 if (this->_mapped)
                 {
-                    vkUnmapMemory(this->_gDevice->vk_device, _memory);
+                    vkUnmapMemory(this->_gDevice->vk_device, _memory.handle);
                     this->_mapped = nullptr;
                 }
             }
@@ -221,7 +220,7 @@ namespace wolf
             {
                 VkMappedMemoryRange _mapped_range = {};
                 _mapped_range.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-                _mapped_range.memory = this->_memory;
+                _mapped_range.memory = this->_memory.handle;
                 _mapped_range.offset = pOffset;
                 _mapped_range.size = pSize;
 
@@ -244,13 +243,13 @@ namespace wolf
                     this->_handle = 0;
                 }
                 
-                if(this->_memory)
+                if(this->_memory.handle)
                 {
                     vkFreeMemory(this->_gDevice->vk_device,
-                                 this->_memory,
+                                 this->_memory.handle,
                                  nullptr);
                     
-                    this->_memory = 0;
+                    this->_memory.handle = 0;
                 }
 
                 this->_gDevice = nullptr;
@@ -278,7 +277,7 @@ namespace wolf
                 return this->_handle;
             }
             
-            const VkDeviceMemory get_memory() const
+            const w_device_memory get_memory() const
             {
                 return this->_memory;
             }
@@ -294,13 +293,11 @@ namespace wolf
             uint32_t                                            _size_in_bytes;
             void*                                               _mapped;
             
-#ifdef __VULKAN__
             VkBuffer                                            _handle;
-            VkDeviceMemory                                      _memory;
+			w_device_memory                                     _memory;
             w_memory_property_flags                             _memory_property_flags;
 			w_buffer_usage_flags                                _usage_flags;
 			w_descriptor_buffer_info                            _descriptor_info;
-#endif
             
         };
     }
@@ -420,9 +417,9 @@ const VkBuffer w_buffer::get_handle() const
     return this->_pimp->get_handle();
 }
 
-const VkDeviceMemory w_buffer::get_memory() const
+const w_device_memory w_buffer::get_memory() const
 {
-    if(!this->_pimp) return 0;
+    if(!this->_pimp) return w_device_memory();
     
     return this->_pimp->get_memory();
 }

@@ -59,7 +59,7 @@ namespace wolf
 					std::vector<VkCommandBuffer> _cmds(_size);
 					for (size_t i = 0; i < _size; ++i)
 					{
-						_cmds[i] = std::move(_commands[i].data);
+						_cmds[i] = std::move(_commands[i].handle);
 					}
 					vkFreeCommandBuffers(this->_gDevice->vk_device,
 						this->_gDevice->vk_command_allocator_pool,
@@ -101,7 +101,7 @@ namespace wolf
 
 				for (size_t i = 0; i < this->_counts; ++i)
 				{
-					this->_commands[i].data = std::move(_cmds[i]);
+					this->_commands[i].handle = std::move(_cmds[i]);
 				}
 				_cmds.clear();
                 return W_PASSED;
@@ -120,7 +120,7 @@ namespace wolf
 					nullptr,
 				};
 
-				auto _hr = vkBeginCommandBuffer(this->_commands.at(pCommandBufferIndex).data, &_command_buffer_begin_info);
+				auto _hr = vkBeginCommandBuffer(this->_commands.at(pCommandBufferIndex).handle, &_command_buffer_begin_info);
 				if (_hr != VK_SUCCESS)
 				{
 					V(W_FAILED, L"begining command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
@@ -138,7 +138,7 @@ namespace wolf
             {
                 if  (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
                 
-                auto _hr = vkEndCommandBuffer(this->_commands.at(pCommandBufferIndex).data);
+                auto _hr = vkEndCommandBuffer(this->_commands.at(pCommandBufferIndex).handle);
                 V(_hr, L"ending command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
                   L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
                   this->_name, 3,
@@ -152,7 +152,7 @@ namespace wolf
                 
                 auto _cmd = this->_commands.at(pCommandBufferIndex);
                 
-                auto _hr = vkEndCommandBuffer(_cmd.data);
+                auto _hr = vkEndCommandBuffer(_cmd.handle);
                 if (_hr)
                 {
                     V(W_FAILED, L"ending command buffer buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
@@ -166,7 +166,7 @@ namespace wolf
                 VkSubmitInfo _submit_info = {};
                 _submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
                 _submit_info.commandBufferCount = 1;
-                _submit_info.pCommandBuffers = &_cmd.data;
+                _submit_info.pCommandBuffers = &_cmd.handle;
                     
                 // Create fence to ensure that the command buffer has finished executing
                 VkFenceCreateInfo _fence_create_info = {};
@@ -230,7 +230,7 @@ namespace wolf
 					std::vector<VkCommandBuffer> _cmds(this->_commands.size());
 					for (size_t i = 0; i < this->_commands.size(); ++i)
 					{
-						_cmds[i] = std::move(this->_commands[i].data);
+						_cmds[i] = std::move(this->_commands[i].handle);
 					}
 					vkFreeCommandBuffers(this->_gDevice->vk_device,
 						this->_gDevice->vk_command_allocator_pool,

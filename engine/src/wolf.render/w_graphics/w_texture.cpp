@@ -481,7 +481,7 @@ namespace wolf
 					this->_gDevice->vk_device,
 					&_sampler_create_info,
 					nullptr,
-					&_no_mip_map_no_anisotropy_sampler.data);
+					&_no_mip_map_no_anisotropy_sampler.handle);
 				if (_hr)
 				{
 					V(W_FAILED, "creating sampler without mip map and without anisotropy", this->_name, false, true);
@@ -496,7 +496,7 @@ namespace wolf
 					this->_gDevice->vk_device,
 					&_sampler_create_info,
 					nullptr,
-					&_mip_map_no_anisotropy_sampler.data);
+					&_mip_map_no_anisotropy_sampler.handle);
 				if (_hr)
 				{
 					V(W_FAILED, "creating sampler with mip map and without anisotropy", this->_name, false, true);
@@ -515,7 +515,7 @@ namespace wolf
 						this->_gDevice->vk_device,
 						&_sampler_create_info,
 						nullptr,
-						&_mip_map_anisotropy_sampler.data);
+						&_mip_map_anisotropy_sampler.handle);
 					if (_hr)
 					{
 						V(W_FAILED, "creating sampler with mip map and with anisotropy", this->_name, false, true);
@@ -531,7 +531,7 @@ namespace wolf
 						this->_gDevice->vk_device,
 						&_sampler_create_info,
 						nullptr,
-						&_no_mip_map_anisotropy_sampler.data);
+						&_no_mip_map_anisotropy_sampler.handle);
 					if (_hr)
 					{
 						V(W_FAILED, "creating sampler without mip map and with anisotropy", this->_name, false, true);
@@ -585,9 +585,10 @@ namespace wolf
                     return _hResult;
                 }
 
+				auto _mem_handle = this->_staging_buffer.get_memory().handle;
                 if(vkMapMemory(
 					this->_gDevice->vk_device,
-                    this->_staging_buffer.get_memory(),
+					_mem_handle,
                     0,
                     _data_size,
                     0,
@@ -607,7 +608,7 @@ namespace wolf
                 {
                     VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,              // Type
                     nullptr,                                            // Next
-                    this->_staging_buffer.get_memory(),                 // Memory
+					_mem_handle,										// Memory
                     0,                                                  // Offset
                     _data_size                                          // Size
                 };
@@ -616,8 +617,7 @@ namespace wolf
 					this->_gDevice->vk_device,
                     1,
                     &_flush_range);
-                vkUnmapMemory(this->_gDevice->vk_device,
-                    this->_staging_buffer.get_memory());
+                vkUnmapMemory(this->_gDevice->vk_device, _mem_handle);
 
 
                 //create command buffer
@@ -648,7 +648,7 @@ namespace wolf
 
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
-					vkCmdPipelineBarrier(_cmd.data,
+					vkCmdPipelineBarrier(_cmd.handle,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_TRANSFER_BIT,
 						0,
@@ -683,7 +683,7 @@ namespace wolf
 						}
 					};
 
-					vkCmdCopyBufferToImage(_cmd.data,
+					vkCmdCopyBufferToImage(_cmd.handle,
 						this->_staging_buffer.get_handle(),
 						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -695,7 +695,7 @@ namespace wolf
 						VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
-					vkCmdPipelineBarrier(_cmd.data,
+					vkCmdPipelineBarrier(_cmd.handle,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,//VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
@@ -770,8 +770,9 @@ namespace wolf
 					return _hResult;
 				}
 
+				auto _mem_handle = this->_staging_buffer.get_memory().handle;
 				if(vkMapMemory(this->_gDevice->vk_device,
-					this->_staging_buffer.get_memory(),
+					_mem_handle,
 					0,
 					_data_size,
 					0,
@@ -791,7 +792,7 @@ namespace wolf
 				{
 					VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,              // Type
 					nullptr,                                            // Next
-					this->_staging_buffer.get_memory(),                       // Memory
+					_mem_handle,										// Memory
 					0,                                                  // Offset
 					_data_size                                          // Size
 				};
@@ -799,8 +800,7 @@ namespace wolf
 				vkFlushMappedMemoryRanges(this->_gDevice->vk_device,
 					1,
 					&_flush_range);
-				vkUnmapMemory(this->_gDevice->vk_device,
-					this->_staging_buffer.get_memory());
+				vkUnmapMemory(this->_gDevice->vk_device, _mem_handle);
 
 
 				//create command buffer
@@ -831,7 +831,7 @@ namespace wolf
 
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
-					vkCmdPipelineBarrier(_cmd.data,
+					vkCmdPipelineBarrier(_cmd.handle,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
@@ -876,7 +876,7 @@ namespace wolf
 						offset += pTextureArrayRGBA[i][0].size();
 					}
 
-					vkCmdCopyBufferToImage(_cmd.data,
+					vkCmdCopyBufferToImage(_cmd.handle,
 						this->_staging_buffer.get_handle(),
 						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -889,7 +889,7 @@ namespace wolf
 					_image_memory_barrier.newLayout = this->_image_layout;
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
-					vkCmdPipelineBarrier(_cmd.data,
+					vkCmdPipelineBarrier(_cmd.handle,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
@@ -1025,7 +1025,7 @@ namespace wolf
 						w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_source_image_memory_barrier);
 
 						vkCmdPipelineBarrier(
-							_cmd.data,
+							_cmd.handle,
 							VK_PIPELINE_STAGE_TRANSFER_BIT,
 							VK_PIPELINE_STAGE_HOST_BIT,
 							0,
@@ -1036,7 +1036,7 @@ namespace wolf
 
 						//now blit from previous mip map level
 						vkCmdBlitImage(
-							_cmd.data,
+							_cmd.handle,
 							this->_image_view.image,
 							VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 							this->_image_view.image,
@@ -1057,7 +1057,7 @@ namespace wolf
 						w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_dst_image_memory_barrier);
 
 						vkCmdPipelineBarrier(
-							_cmd.data,
+							_cmd.handle,
 							VK_PIPELINE_STAGE_HOST_BIT,
 							VK_PIPELINE_STAGE_TRANSFER_BIT,
 							0,
@@ -1089,7 +1089,7 @@ namespace wolf
 					w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_image_memory_barrier);
 
 					vkCmdPipelineBarrier(
-						_cmd.data,
+						_cmd.handle,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
 						0,
@@ -1215,7 +1215,7 @@ namespace wolf
 						this->_image_view.image,                        // image
 						_image_subresource_range                        // SubresourceRange
 					};
-					vkCmdPipelineBarrier(_cmd.data,
+					vkCmdPipelineBarrier(_cmd.handle,
 						VK_PIPELINE_STAGE_TRANSFER_BIT,
 						VK_PIPELINE_STAGE_TRANSFER_BIT,
 						0,
@@ -1239,7 +1239,7 @@ namespace wolf
 						this->_image_view.image,                            // Image
 						_image_subresource_range                            // SubresourceRange
 					};
-					vkCmdPipelineBarrier(_cmd.data,
+					vkCmdPipelineBarrier(_cmd.handle,
 						VK_PIPELINE_STAGE_TRANSFER_BIT,
 						VK_PIPELINE_STAGE_TRANSFER_BIT,
 						0,
@@ -1275,7 +1275,7 @@ namespace wolf
 
 					// execute copy command
 					vkCmdCopyImageToBuffer(
-						_cmd.data,
+						_cmd.handle,
 						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 						this->_staging_buffer.get_handle(),
@@ -1295,7 +1295,7 @@ namespace wolf
 					nullptr,                              // WaitSemaphores
 					nullptr,                              // WaitDstStageMask;
 					1,                                    // CommandBufferCount
-					&_cmd.data,                           // CommandBuffers
+					&_cmd.handle,                         // CommandBuffers
 					0,                                    // SignalSemaphoreCount
 					nullptr                               // SignalSemaphores
 				};
@@ -1364,7 +1364,7 @@ namespace wolf
                         _image_subresource_range                        // SubresourceRange
                     };
 
-                    vkCmdPipelineBarrier(_cmd.data,
+                    vkCmdPipelineBarrier(_cmd.handle,
                         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                         VK_PIPELINE_STAGE_TRANSFER_BIT,
                         0,
@@ -1398,7 +1398,7 @@ namespace wolf
                         }
                     };
 
-                    vkCmdCopyBufferToImage(_cmd.data,
+                    vkCmdCopyBufferToImage(_cmd.handle,
                         this->_staging_buffer.get_handle(),
 						this->_image_view.image,
                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -1418,7 +1418,7 @@ namespace wolf
                         this->_image_view.image,                            // Image
                         _image_subresource_range                            // SubresourceRange
                     };
-                    vkCmdPipelineBarrier(_cmd.data,
+                    vkCmdPipelineBarrier(_cmd.handle,
                         VK_PIPELINE_STAGE_TRANSFER_BIT,
                         VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
                         0,
@@ -1441,7 +1441,7 @@ namespace wolf
                     nullptr,                              // WaitSemaphores
                     nullptr,                              // WaitDstStageMask;
                     1,                                    // CommandBufferCount
-                    &_cmd.data,                           // CommandBuffers
+                    &_cmd.handle,                           // CommandBuffers
                     0,                                    // SignalSemaphoreCount
                     nullptr                               // SignalSemaphores
                 };
@@ -1478,12 +1478,12 @@ namespace wolf
 				for (auto _iter : this->_samplers)
 				{
 					auto _sampler = _iter.second;
-					if (_sampler.data)
+					if (_sampler.handle)
 					{
 						vkDestroySampler(this->_gDevice->vk_device,
-							_sampler.data,
+							_sampler.handle,
 							nullptr);
-						_sampler.data = nullptr;
+						_sampler.handle = nullptr;
 					}
 				}
 				this->_samplers.clear();
@@ -1539,7 +1539,7 @@ namespace wolf
 
 				_desc_image_info.imageView = this->_image_view.view;
 				_desc_image_info.imageLayout = this->_image_layout;
-				_desc_image_info.sampler = _sampler.data;
+				_desc_image_info.sampler = _sampler.handle;
 
 				return _desc_image_info;
 			}

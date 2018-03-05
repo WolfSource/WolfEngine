@@ -454,7 +454,7 @@ namespace wolf
 						{
 							if (_update_buffers() == W_PASSED)
 							{
-								_draw(this->_command_buffers.get_active_command().data);
+								_draw(this->_command_buffers.get_active_command().handle);
 							}
 							else
 							{

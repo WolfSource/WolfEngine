@@ -20,7 +20,7 @@ namespace wolf
 		struct w_command_buffer
 		{
 #ifdef __VULKAN__
-			VkCommandBuffer	data = 0;
+			VkCommandBuffer	handle = 0;
 #endif
 		};
 

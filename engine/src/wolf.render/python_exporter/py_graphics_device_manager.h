@@ -54,6 +54,9 @@ namespace pyWolf
 			.def("create_depth_desc_buffer", &w_attachment_buffer_desc::create_depth_desc_buffer, "create depth desc buffer")
 			.staticmethod("create_depth_desc_buffer")
 			;
+		
+		//export w_device_memory class
+		class_<w_device_memory, boost::noncopyable>("w_device_memory", init<>());
 
 		//export w_attachment_description class
 		class_<w_attachment_description, boost::noncopyable>("w_attachment_description", init<>());

@@ -272,7 +272,7 @@ namespace wolf
 				auto _cmd = pCommandBuffer->get_active_command();
 				if (this->_shader_descriptor_set)
 				{
-					vkCmdBindDescriptorSets(_cmd.data,
+					vkCmdBindDescriptorSets(_cmd.handle,
 						VK_PIPELINE_BIND_POINT_GRAPHICS,
 						this->_pipeline_layout,
 						0,
@@ -281,8 +281,8 @@ namespace wolf
 						0,
 						nullptr);
 				}
-				vkCmdBindPipeline(_cmd.data, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
-				_cmd.data = nullptr;
+				vkCmdBindPipeline(_cmd.handle, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
+				_cmd.handle = nullptr;
 			}
 
             ULONG release()

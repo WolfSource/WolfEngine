@@ -169,7 +169,7 @@ W_RESULT w_graphics_device::draw(_In_ const w_command_buffers*	pCommandBuffer,
 {
 	if (!pCommandBuffer) return W_FAILED;
 #ifdef __VULKAN__
-    vkCmdDraw( pCommandBuffer->get_active_command().data, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance );
+    vkCmdDraw( pCommandBuffer->get_active_command().handle, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance );
 #elif defined(__DX12__)
     
 #endif
@@ -194,7 +194,7 @@ W_RESULT w_graphics_device::submit(_In_ const std::vector<const w_command_buffer
 	{
 		if (pCommandBuffers[i])
 		{
-			_cmds[i] = pCommandBuffers[i]->get_active_command().data;
+			_cmds[i] = pCommandBuffers[i]->get_active_command().handle;
 		}
 	}
 

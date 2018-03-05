@@ -239,9 +239,9 @@ namespace wolf
 				};
 
 				auto _cmd = pCommandBuffer->get_active_command();
-				vkCmdBeginRenderPass(_cmd.data, &_render_pass_begin_info, pSubpassContents);
-				vkCmdSetViewport(_cmd.data, 0, 1, &this->_viewport);
-				vkCmdSetScissor(_cmd.data, 0, 1, &this->_viewport_scissor);
+				vkCmdBeginRenderPass(_cmd.handle, &_render_pass_begin_info, pSubpassContents);
+				vkCmdSetViewport(_cmd.handle, 0, 1, &this->_viewport);
+				vkCmdSetScissor(_cmd.handle, 0, 1, &this->_viewport_scissor);
 			}
 
 			void begin(
@@ -283,16 +283,16 @@ namespace wolf
 				};
 
 				auto _cmd = pCommandBuffer->get_active_command();
-				vkCmdBeginRenderPass(_cmd.data, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
-				vkCmdSetViewport(_cmd.data, 0, 1, &this->_viewport);
-				vkCmdSetScissor(_cmd.data, 0, 1, &this->_viewport_scissor);
+				vkCmdBeginRenderPass(_cmd.handle, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
+				vkCmdSetViewport(_cmd.handle, 0, 1, &this->_viewport);
+				vkCmdSetScissor(_cmd.handle, 0, 1, &this->_viewport_scissor);
 			}
 
 
 			void end(_In_ const w_command_buffers* pCommandBuffer)
 			{
 				auto _cmd = pCommandBuffer->get_active_command();
-				vkCmdEndRenderPass(_cmd.data);
+				vkCmdEndRenderPass(_cmd.handle);
 			}
 
             ULONG release()

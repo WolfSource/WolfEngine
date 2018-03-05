@@ -16,6 +16,11 @@ namespace wolf
 {
 	namespace graphics
 	{        
+		struct w_buffer_handle
+		{
+			VkBuffer handle = 0;
+		};
+
         class w_buffer_pimp;
         class w_buffer : public system::w_object
         {
@@ -33,9 +38,7 @@ namespace wolf
                 _In_ const w_buffer_usage_flags pUsage,
                 _In_ const w_memory_property_flags pMemoryFlags);
             
-            W_EXP W_RESULT bind();
-
-            W_EXP W_RESULT set_data(_In_ const void* const pData);          
+            W_EXP W_RESULT bind();    
             
             W_EXP W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer);
 
@@ -53,8 +56,14 @@ namespace wolf
             W_EXP const w_buffer_usage_flags          get_usage_flags() const;
             W_EXP const w_memory_property_flags       get_memory_flags() const;
             W_EXP const VkBuffer                      get_handle() const;
-            W_EXP const VkDeviceMemory                get_memory() const;
+            W_EXP const w_device_memory               get_memory() const;
             W_EXP const w_descriptor_buffer_info      get_descriptor_info() const;
+
+#pragma endregion
+
+#pragma region Setters
+
+			W_EXP W_RESULT set_data(_In_ const void* const pData);
 
 #pragma endregion
 

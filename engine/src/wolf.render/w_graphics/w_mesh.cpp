@@ -177,11 +177,11 @@ namespace wolf
 				if (!_vertex_buffer_handle) return W_FAILED;
 				
 				auto _cmd = pCommandBuffer->get_active_command();
-                vkCmdBindVertexBuffers(_cmd.data, 0, 1, &_vertex_buffer_handle, _offsets);
+                vkCmdBindVertexBuffers(_cmd.handle, 0, 1, &_vertex_buffer_handle, _offsets);
 
                 if (pInstanceHandle)
                 {
-                    vkCmdBindVertexBuffers(_cmd.data, 1, 1, &pInstanceHandle, _offsets);
+                    vkCmdBindVertexBuffers(_cmd.handle, 1, 1, &pInstanceHandle, _offsets);
                 }
 
 				bool _draw_indexed = false;
@@ -189,22 +189,22 @@ namespace wolf
 				if (_index_buffer_handle)
 				{
 					_draw_indexed = true;
-					vkCmdBindIndexBuffer(_cmd.data, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
+					vkCmdBindIndexBuffer(_cmd.handle, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
 				}
 
                 if (!pIndrectDraw)
                 {
 					if (_draw_indexed)
 					{
-						vkCmdDrawIndexed(_cmd.data, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
+						vkCmdDrawIndexed(_cmd.handle, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
 					}
 					else
 					{
-						vkCmdDraw(_cmd.data, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
+						vkCmdDraw(_cmd.handle, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
 					}
                 }
 
-				_cmd.data = nullptr;
+				_cmd.handle = nullptr;
                 _vertex_buffer_handle = nullptr;
                 _index_buffer_handle = nullptr;
 
@@ -303,7 +303,7 @@ namespace wolf
                     VkBufferCopy _copy_region = {};
                     _copy_region.size = pVerticesSize;
                     vkCmdCopyBuffer(
-                        _copy_cmd.data,
+                        _copy_cmd.handle,
                         _stagings_buffers.vertices.get_handle(),
                         this->_vertex_buffer.get_handle(),
                         1,
@@ -314,14 +314,14 @@ namespace wolf
                         // Index buffer
                         _copy_region.size = pIndicesSize;
                         vkCmdCopyBuffer(
-                            _copy_cmd.data,
+                            _copy_cmd.handle,
                             _stagings_buffers.indices.get_handle(),
                             this->_index_buffer.get_handle(),
                             1,
                             &_copy_region);
                     }
 
-					_copy_cmd.data = nullptr;
+					_copy_cmd.handle = nullptr;
                 }
 
                 this->_copy_command_buffer->flush(0);
