@@ -15,10 +15,6 @@ namespace wolf
                 _name("w_shader"),
                 _gDevice(nullptr),
                 _descriptor_pool(0),
-                _descriptor_set_layout(0),
-                _compute_descriptor_set_layout(0),
-                _descriptor_set(0),
-                _compute_descriptor_set(0),
 				_entry_point_name(nullptr)
             {
                 
@@ -136,24 +132,24 @@ namespace wolf
                 }
 
                 //release descriptor set layout
-                if (this->_descriptor_set_layout)
+                if (this->_descriptor_set_layout.handle)
                 {
                     vkDestroyDescriptorSetLayout(this->_gDevice->vk_device,
-                        this->_descriptor_set_layout,
+                        this->_descriptor_set_layout.handle,
                         nullptr);
-                    this->_descriptor_set_layout = 0;
+                    this->_descriptor_set_layout.handle = 0;
                 }
-                this->_descriptor_set = 0;
+                this->_descriptor_set.handle = 0;
 
                 //release descriptor set layout
-                if (this->_compute_descriptor_set_layout)
+                if (this->_compute_descriptor_set_layout.handle)
                 {
                     vkDestroyDescriptorSetLayout(this->_gDevice->vk_device,
-                        this->_compute_descriptor_set_layout,
+                        this->_compute_descriptor_set_layout.handle,
                         nullptr);
-                    this->_compute_descriptor_set_layout = 0;
+                    this->_compute_descriptor_set_layout.handle = 0;
                 }
-                this->_compute_descriptor_set = 0;
+                this->_compute_descriptor_set.handle = 0;
 
 
                 //destroy descriptor pool
@@ -183,22 +179,22 @@ namespace wolf
                 return this->_compute_shader_stage;
             }
 
-            const VkDescriptorSet get_descriptor_set() const
+            const w_descriptor_set get_descriptor_set() const
             {
                 return this->_descriptor_set;
             }
 
-            const VkDescriptorSet get_compute_descriptor_set() const
+            const w_descriptor_set get_compute_descriptor_set() const
             {
                 return this->_compute_descriptor_set;
             }
 
-            const VkDescriptorSetLayout get_descriptor_set_layout() const
+            const w_descriptor_set_layout get_descriptor_set_layout() const
             {
                 return this->_descriptor_set_layout;
             }
 
-            const VkDescriptorSetLayout get_compute_descriptor_set_layout() const
+            const w_descriptor_set_layout get_compute_descriptor_set_layout() const
             {
                 return this->_compute_descriptor_set_layout;
             }
@@ -223,14 +219,14 @@ namespace wolf
 					{
 						_create_write_descriptor_sets(
 							_iter,
-							this->_compute_descriptor_set,
+							this->_compute_descriptor_set.handle,
 							_compute_write_descriptor_sets);
 					}
 					else
 					{
 						_create_write_descriptor_sets(
 							_iter,
-							this->_descriptor_set,
+							this->_descriptor_set.handle,
 							_write_descriptor_sets);
 					}
 				}
@@ -617,8 +613,8 @@ namespace wolf
                 {
                     _hr = _create_descriptor_set_layout_binding(
                         _layout_bindings, 
-                        this->_descriptor_set, 
-                        this->_descriptor_set_layout);
+                        this->_descriptor_set.handle, 
+                        this->_descriptor_set_layout.handle);
                     if (_hr == W_FAILED)
                     {
                         logger.error("Error on creating shader descriptor pool for mesh: " +
@@ -630,8 +626,8 @@ namespace wolf
                 {
                     _hr = _create_descriptor_set_layout_binding(
                         _compute_layout_bindings, 
-                        this->_compute_descriptor_set, 
-                        this->_compute_descriptor_set_layout);
+                        this->_compute_descriptor_set.handle, 
+                        this->_compute_descriptor_set_layout.handle);
                     if (_hr == W_FAILED)
                     {
                         logger.error("Error on creating shader descriptor pool for mesh: " +
@@ -649,10 +645,10 @@ namespace wolf
 			w_pipeline_shader_stage_create_info						_compute_shader_stage;
             std::vector<VkShaderModule>                             _shader_modules;
             VkDescriptorPool                                        _descriptor_pool;
-            VkDescriptorSetLayout                                   _descriptor_set_layout;
-            VkDescriptorSetLayout                                   _compute_descriptor_set_layout;
-            VkDescriptorSet                                         _descriptor_set;
-            VkDescriptorSet                                         _compute_descriptor_set;
+            w_descriptor_set_layout                                 _descriptor_set_layout;
+            w_descriptor_set_layout                                 _compute_descriptor_set_layout;
+			w_descriptor_set                                        _descriptor_set;
+			w_descriptor_set                                        _compute_descriptor_set;
             std::vector<w_shader_binding_param>                     _shader_binding_params;
 			char*													_entry_point_name;
         };
@@ -716,27 +712,27 @@ const w_pipeline_shader_stage_create_info w_shader::get_compute_shader_stage() c
     return this->_pimp->get_compute_shader_stage();
 }
 
-const VkDescriptorSet w_shader::get_descriptor_set() const
+const w_descriptor_set w_shader::get_descriptor_set() const
 {
-    if(!this->_pimp) return VkDescriptorSet();
+    if(!this->_pimp) return w_descriptor_set();
     return this->_pimp->get_descriptor_set();
 }
 
-const VkDescriptorSet w_shader::get_compute_descriptor_set() const
+const w_descriptor_set w_shader::get_compute_descriptor_set() const
 {
-    if (!this->_pimp) return VkDescriptorSet();
+    if (!this->_pimp) return w_descriptor_set();
     return this->_pimp->get_compute_descriptor_set();
 }
 
-const VkDescriptorSetLayout w_shader::get_descriptor_set_layout() const
+const w_descriptor_set_layout w_shader::get_descriptor_set_layout() const
 {
-    if(!this->_pimp) return VkDescriptorSetLayout();
+    if(!this->_pimp) return w_descriptor_set_layout();
     return this->_pimp->get_descriptor_set_layout();
 }
 
-const VkDescriptorSetLayout w_shader::get_compute_descriptor_set_layout() const
+const w_descriptor_set_layout w_shader::get_compute_descriptor_set_layout() const
 {
-    if (!this->_pimp) return VkDescriptorSetLayout();
+    if (!this->_pimp) return w_descriptor_set_layout();
     return this->_pimp->get_compute_descriptor_set_layout();
 }
 

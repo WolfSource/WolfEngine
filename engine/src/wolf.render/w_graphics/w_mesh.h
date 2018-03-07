@@ -251,7 +251,7 @@ namespace wolf
 			//draw vertices
             W_EXP W_RESULT draw(
 				_In_ const w_command_buffers* pCommandBuffer,
-                _In_ const VkBuffer& pInstanceHandle,
+                _In_ const w_buffer_handle* pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
                 _In_ const bool& pIndirectDraw,
 				_In_ const uint32_t& pVertexOffset = 0);
@@ -261,8 +261,8 @@ namespace wolf
 
 #pragma region Getters
             
-            W_EXP VkBuffer                                                  get_vertex_buffer_handle() const;
-            W_EXP VkBuffer                                                  get_index_buffer_handle() const;
+            W_EXP w_buffer_handle                                           get_vertex_buffer_handle() const;
+            W_EXP w_buffer_handle                                           get_index_buffer_handle() const;
             W_EXP const uint32_t                                            get_vertices_count() const;
             W_EXP const uint32_t                                            get_indices_count() const;
             W_EXP w_texture*                                                get_texture() const;
@@ -325,14 +325,14 @@ namespace wolf
 
 			W_RESULT py_draw(
 				_In_ const w_command_buffers& pCommandBuffer,
-				/*TODO: need this _In_ const VkBuffer& pInstanceHandle,*/
+				_In_ const w_buffer_handle* pInstanceHandle,
 				_In_ const uint32_t& pInstancesCount,
 				_In_ const bool& pIndirectDraw,
 				_In_ const uint32_t& pVertexOffset = 0)
 			{
 				return  draw(
 					&pCommandBuffer,
-					nullptr,//ToDo : pInstanceHandle
+					pInstanceHandle,
 					pInstancesCount,
 					pIndirectDraw,
 					pVertexOffset);

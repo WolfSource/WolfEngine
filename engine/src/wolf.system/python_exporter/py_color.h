@@ -19,7 +19,7 @@ namespace pyWolf
         using namespace boost::python;
         using namespace wolf::system;
         
-        //export w_bounding_box class
+        //export w_color struct
         class_<w_color>("w_color", init<>())
             .def_readwrite("r", &w_color::r, "Red channel(0-255)")
             .def_readwrite("g", &w_color::g, "Green channel(0-255)")

@@ -75,6 +75,7 @@ BOOST_PYTHON_MODULE(pyWolf)
 		pyWolf::py_texture_export();
 		pyWolf::py_mesh_export();
 		pyWolf::py_pipeline_export();
+		pyWolf::py_uniform_export();
 	}
 
     //export wolf::framework classes to pyWolf.framework scope
@@ -88,6 +89,7 @@ BOOST_PYTHON_MODULE(pyWolf)
 
     //export logger in global scope
 	pyWolf::py_std_export();
+	pyWolf::py_glm_export();
     pyWolf::py_logger_export();
 
     def("release_shared_data_over_all_instances", wolf::release_shared_data_over_all_instances);

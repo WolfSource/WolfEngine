@@ -248,13 +248,13 @@ namespace wolf
 				return _hr;
 			}
 						
-			W_RESULT py_copy_data_to_texture_2D(_In_ pyWolf::vector_uint8_t pRGBData)
+			W_RESULT py_copy_data_to_texture_2D(_In_ pyWolf::w_vector_uint8_t pRGBData)
 			{
 				if (!pRGBData.size()) return W_FAILED;
 				return copy_data_to_texture_2D(pRGBData.data());
 			}
 
-			pyWolf::vector_uint8_t py_read_data_of_texture()
+			pyWolf::w_vector_uint8_t py_read_data_of_texture()
 			{
 				auto _size = get_width() * get_height() * 4;
 				if (_size)

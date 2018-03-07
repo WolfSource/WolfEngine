@@ -71,6 +71,27 @@ namespace wolf
 {
     namespace graphics
     {
+		struct w_descriptor_set
+		{
+#ifdef __VULKAN__
+			VkDescriptorSet handle = 0;
+#endif
+		};
+
+		struct w_descriptor_set_layout
+		{
+#ifdef __VULKAN__
+			VkDescriptorSetLayout handle = 0;
+#endif
+		};
+		
+		struct w_buffer_handle
+		{
+#ifdef __VULKAN__
+			VkBuffer handle = 0;
+#endif
+		};
+
 		struct w_device_memory
 		{
 #ifdef __VULKAN__

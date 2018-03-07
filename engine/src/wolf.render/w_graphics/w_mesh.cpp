@@ -166,26 +166,26 @@ namespace wolf
 
             W_RESULT draw(
 				_In_ const w_command_buffers* pCommandBuffer, 
-                _In_ const VkBuffer& pInstanceHandle,
+                _In_ const w_buffer_handle* pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
                 _In_ const bool& pIndrectDraw,
 				_In_ const uint32_t pVertexOffset)
             {
                 VkDeviceSize _offsets[1] = { 0 };
 
-                auto _vertex_buffer_handle = this->_vertex_buffer.get_handle();
+                auto _vertex_buffer_handle = this->_vertex_buffer.get_buffer_handle().handle;
 				if (!_vertex_buffer_handle) return W_FAILED;
 				
 				auto _cmd = pCommandBuffer->get_active_command();
                 vkCmdBindVertexBuffers(_cmd.handle, 0, 1, &_vertex_buffer_handle, _offsets);
 
-                if (pInstanceHandle)
+                if (pInstanceHandle && pInstanceHandle->handle)
                 {
-                    vkCmdBindVertexBuffers(_cmd.handle, 1, 1, &pInstanceHandle, _offsets);
+                    vkCmdBindVertexBuffers(_cmd.handle, 1, 1, &pInstanceHandle->handle, _offsets);
                 }
 
 				bool _draw_indexed = false;
-                auto _index_buffer_handle = this->_index_buffer.get_handle();
+                auto _index_buffer_handle = this->_index_buffer.get_buffer_handle().handle;
 				if (_index_buffer_handle)
 				{
 					_draw_indexed = true;
@@ -213,14 +213,14 @@ namespace wolf
 
 #pragma region Getters
 
-            VkBuffer get_vertex_buffer_handle() const
+            w_buffer_handle get_vertex_buffer_handle() const
             {
-                return this->_vertex_buffer.get_handle();
+                return this->_vertex_buffer.get_buffer_handle();
             }
             
-            VkBuffer get_index_buffer_handle() const
+			w_buffer_handle get_index_buffer_handle() const
             {
-                return this->_index_buffer.get_handle();
+                return this->_index_buffer.get_buffer_handle();
             }
    
             const uint32_t get_vertices_count() const
@@ -304,8 +304,8 @@ namespace wolf
                     _copy_region.size = pVerticesSize;
                     vkCmdCopyBuffer(
                         _copy_cmd.handle,
-                        _stagings_buffers.vertices.get_handle(),
-                        this->_vertex_buffer.get_handle(),
+                        _stagings_buffers.vertices.get_buffer_handle().handle,
+                        this->_vertex_buffer.get_buffer_handle().handle,
                         1,
                         &_copy_region);
 
@@ -315,8 +315,8 @@ namespace wolf
                         _copy_region.size = pIndicesSize;
                         vkCmdCopyBuffer(
                             _copy_cmd.handle,
-                            _stagings_buffers.indices.get_handle(),
-                            this->_index_buffer.get_handle(),
+                            _stagings_buffers.indices.get_buffer_handle().handle,
+                            this->_index_buffer.get_buffer_handle().handle,
                             1,
                             &_copy_region);
                     }
@@ -449,7 +449,7 @@ W_RESULT w_mesh::update_dynamic_buffer(
 
 W_RESULT w_mesh::draw(
 	_In_ const w_command_buffers* pCommandBuffer,
-	_In_ const VkBuffer& pInstanceHandle,
+	_In_ const w_buffer_handle* pInstanceHandle,
 	_In_ const uint32_t& pInstancesCount,
 	_In_ const bool& pIndirectDraw,
 	_In_ const uint32_t& pVertexOffset)
@@ -469,14 +469,14 @@ ULONG w_mesh::release()
 
 #pragma region Getters
 
-VkBuffer w_mesh::get_vertex_buffer_handle() const
+w_buffer_handle w_mesh::get_vertex_buffer_handle() const
 {
-    return this->_pimp ? this->_pimp->get_vertex_buffer_handle() : VK_NULL_HANDLE;
+    return this->_pimp ? this->_pimp->get_vertex_buffer_handle() : w_buffer_handle();
 }
 
-VkBuffer w_mesh::get_index_buffer_handle() const
+w_buffer_handle w_mesh::get_index_buffer_handle() const
 {
-    return this->_pimp ? this->_pimp->get_index_buffer_handle() : VK_NULL_HANDLE;
+    return this->_pimp ? this->_pimp->get_index_buffer_handle() : w_buffer_handle();
 }
 
 const uint32_t w_mesh::get_vertices_count() const

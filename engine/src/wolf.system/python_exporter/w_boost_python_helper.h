@@ -14,6 +14,7 @@
 
 #include <boost/python.hpp>
 #include <boost/make_shared.hpp>
+#include <vector>
 
 template<class T> std::shared_ptr<T> boost_shared_ptr_to_std_shared_ptr(boost::shared_ptr<T>& pPointer) 
 {
@@ -23,6 +24,26 @@ template<class T> std::shared_ptr<T> boost_shared_ptr_to_std_shared_ptr(boost::s
 template<class T> boost::shared_ptr<T> std_shared_ptr_to_boost_shared_ptr(std::shared_ptr<T>& pPointer)
 {
 	return boost::shared_ptr<T>(pPointer.get(), [pPointer](...) mutable { pPointer.reset(); });
+}
+
+template<typename T> bool boost_list_to_std_vector(boost::python::list& pList, std::vector<T>& pVector)
+{
+	bool _hr = true;
+	for (size_t i = 0; i < len(pList); ++i)
+	{
+		boost::python::extract<T> _data(pList[i]);
+		if (_data.check())
+		{
+			pVector.push_back(_data());
+		}
+		else
+		{
+			_hr = false;
+			break;
+		}
+	}
+
+	return _hr;
 }
 
 template<typename T>

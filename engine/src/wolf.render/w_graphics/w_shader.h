@@ -93,11 +93,11 @@ namespace wolf
             W_EXP const std::vector<w_pipeline_shader_stage_create_info>* get_shader_stages() const;
             W_EXP const w_pipeline_shader_stage_create_info get_compute_shader_stage() const;
             
-            W_EXP const VkDescriptorSet get_descriptor_set() const;           
-            W_EXP const VkDescriptorSet get_compute_descriptor_set() const;
+            W_EXP const w_descriptor_set get_descriptor_set() const;
+            W_EXP const w_descriptor_set get_compute_descriptor_set() const;
 
-            W_EXP const VkDescriptorSetLayout get_descriptor_set_layout() const;
-            W_EXP const VkDescriptorSetLayout get_compute_descriptor_set_layout() const;
+            W_EXP const w_descriptor_set_layout get_descriptor_set_layout() const;
+            W_EXP const w_descriptor_set_layout get_compute_descriptor_set_layout() const;
 
 #pragma endregion
 

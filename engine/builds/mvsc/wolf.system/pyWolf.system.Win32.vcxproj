@@ -245,6 +245,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\vec4.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_glm.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_std.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_boost_python_helper.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_bounding.h" />

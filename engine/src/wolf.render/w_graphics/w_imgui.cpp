@@ -217,7 +217,7 @@ namespace wolf
 				VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
 				_pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 				_pipeline_layout_create_info.setLayoutCount = 1;
-				_pipeline_layout_create_info.pSetLayouts = &_descriptor_set_layout;
+				_pipeline_layout_create_info.pSetLayouts = &_descriptor_set_layout.handle;
 				_pipeline_layout_create_info.pushConstantRangeCount = 1;
 				_pipeline_layout_create_info.pPushConstantRanges = &_push_constant_range;
 
@@ -641,14 +641,14 @@ namespace wolf
 					this->_pipeline_layout,
 					0,
 					1,
-					&_descriptor_set,
+					&_descriptor_set.handle,
 					0,
 					nullptr);
 				vkCmdBindPipeline(pCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
 
 				// Bind vertex and index buffer
-				auto _vertex_buffer_handle = this->_vertex_buffer->get_handle();
-				auto _index_buffer_handle = this->_index_buffer->get_handle();
+				auto _vertex_buffer_handle = this->_vertex_buffer->get_buffer_handle().handle;
+				auto _index_buffer_handle = this->_index_buffer->get_buffer_handle().handle;
 
 				VkDeviceSize offsets[1] = { 0 };
 				vkCmdBindVertexBuffers(pCommandBuffer, 0, 1, &_vertex_buffer_handle, offsets);

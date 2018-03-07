@@ -69,10 +69,10 @@ namespace wolf
                 VkPipelineInputAssemblyStateCreateInfo* _input_assembly_state_create_info = nullptr;
                 VkPipelineDynamicStateCreateInfo* _pipeline_dynamic_state_create_info = nullptr;
 
-				auto _shader_des_set = pShaderBinding->get_descriptor_set();
+				auto _shader_des_set = pShaderBinding->get_descriptor_set().handle;
 				this->_shader_descriptor_set = _shader_des_set  ? _shader_des_set : nullptr;
 				
-				const auto _shader_descriptor_set_layout = pShaderBinding->get_descriptor_set_layout();
+				const auto _shader_descriptor_set_layout = pShaderBinding->get_descriptor_set_layout().handle;
                 auto _pipeline_layout_create_info = _generate_pipeline_layout_create_info(
                     pVertexBindingAttributes,
                     pPrimitiveTopology,
@@ -201,7 +201,7 @@ namespace wolf
 
                 auto _pipeline_cache = w_pipeline::get_pipeline_cache(pPipelineCacheName);
 
-                std::vector<VkDescriptorSetLayout> _descriptor_set_layouts = { pShaderBinding->get_compute_descriptor_set_layout() };
+                std::vector<VkDescriptorSetLayout> _descriptor_set_layouts = { pShaderBinding->get_compute_descriptor_set_layout().handle };
                 auto _push_const_size = pPushConstantRanges.size();
 
                 VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};

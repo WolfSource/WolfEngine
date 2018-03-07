@@ -20,7 +20,7 @@ namespace pyWolf
 	using namespace wolf::graphics;
 
 	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_mesh_py_load_overloads, w_mesh::py_load, 3, 4)
-	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_mesh_py_draw_overloads, w_mesh::py_draw, 3, 4)
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(w_mesh_py_draw_overloads, w_mesh::py_draw, 4, 5)
 	
 	static void py_mesh_export()
 	{

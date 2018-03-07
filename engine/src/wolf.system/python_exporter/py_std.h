@@ -17,7 +17,8 @@
 
 namespace pyWolf
 {
-	typedef std::vector<uint8_t> vector_uint8_t;
+	typedef std::vector<uint8_t> w_vector_uint8_t;
+	typedef std::vector<float> w_vector_float;
 
 	static void py_std_export()
 	{
@@ -34,8 +35,13 @@ namespace pyWolf
 			;
 
 		//export vector of uint8_t
-		class_<vector_uint8_t>("vector_uint8_t")
-			.def(vector_indexing_suite<vector_uint8_t>());
+		class_<w_vector_uint8_t>("w_vector_uint8_t")
+			.def(vector_indexing_suite<w_vector_uint8_t>());
+
+		//export vector of float
+		class_<w_vector_float>("w_vector_float")
+			.def(vector_indexing_suite<w_vector_float>());
+
 	}
 }
 

@@ -46,6 +46,9 @@
 #include <w_graphics/w_texture.h>
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_pipeline.h>
+#include <w_graphics/w_uniform.h>
+
+#include <python_exporter/py_glm.h>
 
 #endif //__PYTHON__
 

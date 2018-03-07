@@ -683,8 +683,9 @@ namespace wolf
 						}
 					};
 
+					auto _staging_buffer_handle = this->_staging_buffer.get_buffer_handle();
 					vkCmdCopyBufferToImage(_cmd.handle,
-						this->_staging_buffer.get_handle(),
+						_staging_buffer_handle.handle,
 						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 						1,
@@ -876,8 +877,9 @@ namespace wolf
 						offset += pTextureArrayRGBA[i][0].size();
 					}
 
+					auto _staging_buffer_handle = this->_staging_buffer.get_buffer_handle();
 					vkCmdCopyBufferToImage(_cmd.handle,
-						this->_staging_buffer.get_handle(),
+						_staging_buffer_handle.handle,
 						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 						static_cast<uint32_t>(_buffer_copy_regions.size()),
@@ -1273,12 +1275,13 @@ namespace wolf
 						}
 					};
 
+					auto _staging_buffer_handle = this->_staging_buffer.get_buffer_handle();
 					// execute copy command
 					vkCmdCopyImageToBuffer(
 						_cmd.handle,
 						this->_image_view.image,
 						VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-						this->_staging_buffer.get_handle(),
+						_staging_buffer_handle.handle,
 						1,
 						&_buffer_image_copy_info);
 
@@ -1398,8 +1401,9 @@ namespace wolf
                         }
                     };
 
+					auto _staging_buffer_handle = this->_staging_buffer.get_buffer_handle();
                     vkCmdCopyBufferToImage(_cmd.handle,
-                        this->_staging_buffer.get_handle(),
+						_staging_buffer_handle.handle,
 						this->_image_view.image,
                         VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                         1,
