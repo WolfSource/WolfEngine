@@ -46,23 +46,13 @@
 		2C9899701E9B51D6002FE161 /* w_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996E1E9B51D6002FE161 /* w_texture.h */; };
 		2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899711E9BF6A3002FE161 /* w_buffer.cpp */; };
 		2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9899721E9BF6A3002FE161 /* w_buffer.h */; };
+		2CA5D84A2050A6270062AD2A /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5D8492050A6270062AD2A /* vulkan.framework */; };
+		2CA5D84B2050A78A0062AD2A /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */; };
 		2CA945EB1ED9F7CC007B70B8 /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */; };
 		2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E91ED9F7CC007B70B8 /* imgui.cpp */; };
 		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
 		2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */; };
-		2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C38D9561E7964BA00EE8595 /* MoltenVK.framework */; };
 		2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */; };
-		2CDD136A202781FB002B1AAC /* py_render_pass.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1363202781FB002B1AAC /* py_render_pass.h */; };
-		2CDD136B202781FB002B1AAC /* py_fences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1364202781FB002B1AAC /* py_fences.h */; };
-		2CDD136C202781FB002B1AAC /* py_command_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1365202781FB002B1AAC /* py_command_buffer.h */; };
-		2CDD136D202781FB002B1AAC /* py_graphics_device_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1366202781FB002B1AAC /* py_graphics_device_manager.h */; };
-		2CDD136E202781FB002B1AAC /* py_semaphore.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1367202781FB002B1AAC /* py_semaphore.h */; };
-		2CDD136F202781FB002B1AAC /* py_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1368202781FB002B1AAC /* py_texture.h */; };
-		2CDD1370202781FB002B1AAC /* py_game.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1369202781FB002B1AAC /* py_game.h */; };
-		2CDD13762030257B002B1AAC /* py_queue.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD13732030257B002B1AAC /* py_queue.h */; };
-		2CDD13772030257B002B1AAC /* py_pipeline.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD13742030257B002B1AAC /* py_pipeline.h */; };
-		2CDD13782030257B002B1AAC /* py_shader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD13752030257B002B1AAC /* py_shader.h */; };
-		2CDF24842036F78500BD3DE5 /* py_mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDF24832036F78500BD3DE5 /* py_mesh.h */; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
 		2CFFAC701FCEAA400020A112 /* w_command_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */; };
 		2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */; };
@@ -114,24 +104,14 @@
 		2C98996E1E9B51D6002FE161 /* w_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_texture.h; path = ../../../src/wolf.render/w_graphics/w_texture.h; sourceTree = "<group>"; };
 		2C9899711E9BF6A3002FE161 /* w_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_buffer.cpp; path = ../../../src/wolf.render/w_graphics/w_buffer.cpp; sourceTree = "<group>"; };
 		2C9899721E9BF6A3002FE161 /* w_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_buffer.h; path = ../../../src/wolf.render/w_graphics/w_buffer.h; sourceTree = "<group>"; };
+		2CA5D8492050A6270062AD2A /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../dependencies/vulkan/Mac/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
 		2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_draw.cpp; path = ../../../src/wolf.render/imgui/imgui_draw.cpp; sourceTree = "<group>"; };
 		2CA945E91ED9F7CC007B70B8 /* imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui.cpp; path = ../../../src/wolf.render/imgui/imgui.cpp; sourceTree = "<group>"; };
 		2CA945EA1ED9F7CC007B70B8 /* imgui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = imgui.h; path = ../../../src/wolf.render/imgui/imgui.h; sourceTree = "<group>"; };
 		2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_demo.cpp; path = ../../../src/wolf.render/imgui/imgui_demo.cpp; sourceTree = "<group>"; };
 		2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
-		2CDD1363202781FB002B1AAC /* py_render_pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_render_pass.h; path = ../../../src/wolf.render/python_exporter/py_render_pass.h; sourceTree = "<group>"; };
-		2CDD1364202781FB002B1AAC /* py_fences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_fences.h; path = ../../../src/wolf.render/python_exporter/py_fences.h; sourceTree = "<group>"; };
-		2CDD1365202781FB002B1AAC /* py_command_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_command_buffer.h; path = ../../../src/wolf.render/python_exporter/py_command_buffer.h; sourceTree = "<group>"; };
-		2CDD1366202781FB002B1AAC /* py_graphics_device_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_graphics_device_manager.h; path = ../../../src/wolf.render/python_exporter/py_graphics_device_manager.h; sourceTree = "<group>"; };
-		2CDD1367202781FB002B1AAC /* py_semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_semaphore.h; path = ../../../src/wolf.render/python_exporter/py_semaphore.h; sourceTree = "<group>"; };
-		2CDD1368202781FB002B1AAC /* py_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_texture.h; path = ../../../src/wolf.render/python_exporter/py_texture.h; sourceTree = "<group>"; };
-		2CDD1369202781FB002B1AAC /* py_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_game.h; path = ../../../src/wolf.render/python_exporter/py_game.h; sourceTree = "<group>"; };
-		2CDD13732030257B002B1AAC /* py_queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_queue.h; path = ../../../src/wolf.render/python_exporter/py_queue.h; sourceTree = "<group>"; };
-		2CDD13742030257B002B1AAC /* py_pipeline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_pipeline.h; path = ../../../src/wolf.render/python_exporter/py_pipeline.h; sourceTree = "<group>"; };
-		2CDD13752030257B002B1AAC /* py_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_shader.h; path = ../../../src/wolf.render/python_exporter/py_shader.h; sourceTree = "<group>"; };
 		2CDF247B2031967F00BD3DE5 /* libmsgpackc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmsgpackc.a; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.a; sourceTree = "<group>"; };
 		2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
-		2CDF24832036F78500BD3DE5 /* py_mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_mesh.h; path = ../../../src/wolf.render/python_exporter/py_mesh.h; sourceTree = "<group>"; };
 		2CFFAC671FCEAA3F0020A112 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/w_graphics/w_render_target.h; sourceTree = "<group>"; };
 		2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffers.h; path = ../../../src/wolf.render/w_graphics/w_command_buffers.h; sourceTree = "<group>"; };
 		2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_target.cpp; path = ../../../src/wolf.render/w_graphics/w_render_target.cpp; sourceTree = "<group>"; };
@@ -143,8 +123,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CA5D84B2050A78A0062AD2A /* libmsgpackc.2.0.0.dylib in Frameworks */,
+				2CA5D84A2050A6270062AD2A /* vulkan.framework in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
-				2CCE632B1FD5E68B00EC0BB5 /* MoltenVK.framework in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
@@ -190,24 +171,6 @@
 			name = w_graphics;
 			sourceTree = "<group>";
 		};
-		2C299C8A201F9BEB003C80F7 /* python_exporter */ = {
-			isa = PBXGroup;
-			children = (
-				2CDF24832036F78500BD3DE5 /* py_mesh.h */,
-				2CDD13742030257B002B1AAC /* py_pipeline.h */,
-				2CDD13732030257B002B1AAC /* py_queue.h */,
-				2CDD13752030257B002B1AAC /* py_shader.h */,
-				2CDD1365202781FB002B1AAC /* py_command_buffer.h */,
-				2CDD1364202781FB002B1AAC /* py_fences.h */,
-				2CDD1369202781FB002B1AAC /* py_game.h */,
-				2CDD1366202781FB002B1AAC /* py_graphics_device_manager.h */,
-				2CDD1367202781FB002B1AAC /* py_semaphore.h */,
-				2CDD1368202781FB002B1AAC /* py_texture.h */,
-				2CDD1363202781FB002B1AAC /* py_render_pass.h */,
-			);
-			name = python_exporter;
-			sourceTree = "<group>";
-		};
 		2C29CD131EB3339E00BEFF54 /* w_framework */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,7 +185,6 @@
 		2C69E9A01E5EC2CB00F15C44 = {
 			isa = PBXGroup;
 			children = (
-				2C299C8A201F9BEB003C80F7 /* python_exporter */,
 				2CA945DB1ED9F5B9007B70B8 /* imgui */,
 				2C29CD131EB3339E00BEFF54 /* w_framework */,
 				2C1B3FF31E97DC5300512959 /* w_graphics */,
@@ -249,6 +211,7 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CA5D8492050A6270062AD2A /* vulkan.framework */,
 				2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */,
 				2CDF247B2031967F00BD3DE5 /* libmsgpackc.a */,
 				2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */,
@@ -283,37 +246,26 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CDD13782030257B002B1AAC /* py_shader.h in Headers */,
 				2C598C651FA2387B0055D215 /* w_graphics_headers.h in Headers */,
 				2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */,
 				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
-				2CDD13762030257B002B1AAC /* py_queue.h in Headers */,
 				2C9899661E97EA74002FE161 /* w_mesh.h in Headers */,
 				2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */,
 				2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */,
-				2CDD13772030257B002B1AAC /* py_pipeline.h in Headers */,
 				2C598C691FA268740055D215 /* w_queue.h in Headers */,
 				2C598C611FA231280055D215 /* w_semaphore.h in Headers */,
 				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
 				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
-				2CDD136C202781FB002B1AAC /* py_command_buffer.h in Headers */,
-				2CDD136B202781FB002B1AAC /* py_fences.h in Headers */,
-				2CDD1370202781FB002B1AAC /* py_game.h in Headers */,
 				2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */,
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
 				2CFFAC701FCEAA400020A112 /* w_command_buffers.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
-				2CDF24842036F78500BD3DE5 /* py_mesh.h in Headers */,
-				2CDD136F202781FB002B1AAC /* py_texture.h in Headers */,
 				2C8D5B6E1F4F98D1000BCB87 /* w_imgui.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 				2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */,
 				2C0F36A6200A6C00001CB2DF /* w_shapes.h in Headers */,
-				2CDD136A202781FB002B1AAC /* py_render_pass.h in Headers */,
 				2C299C80201F9110003C80F7 /* w_first_person_camera.h in Headers */,
-				2CDD136E202781FB002B1AAC /* py_semaphore.h in Headers */,
 				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
-				2CDD136D202781FB002B1AAC /* py_graphics_device_manager.h in Headers */,
 				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -515,8 +467,8 @@
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/macOS/Frameworks",
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -532,18 +484,14 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
+					"(SRCROOT)/../../../dependencies/vulkan/Mac/include",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.render",
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",
-					"$(SRCROOT)/../../../dependencies/glm/",
-					"$(SRCROOT)/../../../dependencies/rapidxml/",
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
-					"$(SRCROOT)/../../src/wolf.render",
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/boost/lib/osx/debug";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -570,7 +518,7 @@
 					"$(SRCROOT)/../../../dependencies/rapidxml/",
 					"$(SRCROOT)/../../../dependencies/boost/include/",
 				);
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/boost/lib/osx/debug";
+				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

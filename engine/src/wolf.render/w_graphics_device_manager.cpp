@@ -1617,7 +1617,7 @@ namespace wolf
 
 				// Use second parameter as NULL to return the layer count
 				vkEnumerateInstanceLayerProperties(&_instance_layer_count, nullptr);
-
+                
 				VkLayerProperties* _layer_property = nullptr;
 				vkEnumerateInstanceLayerProperties(&_instance_layer_count, _layer_property);
 

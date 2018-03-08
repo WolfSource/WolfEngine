@@ -63,6 +63,13 @@
             ReferencedContainer = "container:02_shader.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "VK_ICD_FILENAMES"
+            value = "$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/macOS/etc/vulkan/icd.d/MoltenVK_icd.json"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
