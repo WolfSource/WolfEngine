@@ -71,5 +71,23 @@
       <FileRef
          location = "group:02_basics/02_shader/builds/xcode/02_shader.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:02_basics/03_vertex_buffer/builds/xcode/03_vertex_buffer.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:02_basics/04_index_buffer/builds/xcode/04_index_buffer.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:02_basics/05_texture/builds/xcode/05_texture.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:02_basics/06_staging_buffer/builds/xcode/06_staging_buffer.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:02_basics/07_uniforms_constant_buffers/builds/xcode/07_uniforms_constant_buffers.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:02_basics/08_texture_arrays/builds/xcode/08_texture_arrays.xcodeproj">
+      </FileRef>
    </Group>
 </Workspace>

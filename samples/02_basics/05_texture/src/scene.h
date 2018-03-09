@@ -36,9 +36,9 @@ public:
 	virtual ~scene();
 
 	/*
-	Allows the game to perform any initialization and it needs to before starting to run.
-	Calling Game::Initialize() will enumerate through any components and initialize them as well.
-	The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
+        Allows the game to perform any initialization and it needs to before starting to run.
+        Calling Game::Initialize() will enumerate through any components and initialize them as well.
+        The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
 	*/
 	void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) override;
 
@@ -65,10 +65,11 @@ private:
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
-	
+
+
 	wolf::graphics::w_command_buffers                               _draw_command_buffers;
 	wolf::graphics::w_render_pass                                   _draw_render_pass;
-	
+
 	wolf::graphics::w_fences                                        _draw_fence;
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
 

@@ -317,7 +317,8 @@
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/macOS/Frameworks",
 				);
-				HEADER_SEARCH_PATHS = (
+				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(PROJECT_DIR)/../../src/",
 					"$(PROJECT_DIR)/../../../../common/",
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/macOS/include",
@@ -327,7 +328,7 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/01_clear/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.01.60.16;
+				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.Metal.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -338,23 +339,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
-					"$(SRCROOT)/../../../../../engine/dependencies/luaJIT/lib/osx/debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
-				);
-				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../../src/",
-					"$(PROJECT_DIR)/../../../../common/",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/macOS/include",
-					"$(SRCROOT)/../../../../../engine/src/wolf.system",
-					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
-					"$(SRCROOT)/../../../../../engine/src/wolf.render",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(SRCROOT)/01_clear/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.01.60.16;
+				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.Metal.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

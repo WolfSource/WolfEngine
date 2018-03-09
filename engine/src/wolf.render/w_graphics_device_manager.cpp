@@ -1280,7 +1280,7 @@ namespace wolf
 				_msg += L"++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\t\t\t\t\tDirectX API version: 12";
 
 				UINT _dxgi_factory_flags = 0;
-#ifdef _DEBUG
+                
 				if (this->_config.debug_gpu)
 				{
 					/*
@@ -1299,7 +1299,6 @@ namespace wolf
 						logger.warning(L"Could not enable the debug layer for DirectX 12");
 					}
 				}
-#endif
 
 				_hr = CreateDXGIFactory2(_dxgi_factory_flags, IID_PPV_ARGS(&w_graphics_device::dx_dxgi_factory));
 				if (FAILED(_hr))
@@ -1677,10 +1676,12 @@ namespace wolf
 #endif
 				}
 
+#if !defined(__APPLE__) && !defined(__iOS__)
                 if (this->_config.debug_gpu)
                 {
                     _vk_instance_enabled_extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
                 }
+#endif
 
                 VkInstanceCreateInfo _instance_create_info = {};
                 _instance_create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -1691,6 +1692,8 @@ namespace wolf
                     _instance_create_info.enabledExtensionCount = (uint32_t)_vk_instance_enabled_extensions.size();
                     _instance_create_info.ppEnabledExtensionNames = _vk_instance_enabled_extensions.data();
                 }
+                
+#if !defined(__APPLE__) && !defined(__iOS__)
                 if (this->_config.debug_gpu)
                 {
                     const char* _validation_layer_names[] =
@@ -1711,7 +1714,7 @@ namespace wolf
                     _instance_create_info.enabledLayerCount = (uint32_t)W_ARRAY_SIZE(_validation_layer_names);
                     _instance_create_info.ppEnabledLayerNames = _validation_layer_names;
                 }
-
+#endif
                 //create Vulkan instance
                 _hr = vkCreateInstance(&_instance_create_info, nullptr, &w_graphics_device::vk_instance);
                 _vk_instance_enabled_extensions.clear();
@@ -1725,6 +1728,7 @@ namespace wolf
                 }
 
 
+#if !defined(__APPLE__) && !defined(__iOS__)
                 if (this->_config.debug_gpu)
                 {
                     // Set what type of debug message should be report
@@ -1750,6 +1754,7 @@ namespace wolf
                         logger.error("Could not create debug callback for vulkan");
                     }
                 }
+#endif
 
 
 				//Enumerate physical devices
@@ -3328,9 +3333,10 @@ namespace wolf
 				//release all windows info
 				this->_windows_info.clear();
 				this->_name = "";
+                
                 if (this->_config.debug_gpu)
                 {
-#ifdef __VULKAN__
+#if defined(__VULKAN__) && !defined(__APPLE__) && !defined(__iOS__)
                     sDestroyDebugReportCallback(w_graphics_device::vk_instance, MsgCallback, nullptr);
 #endif
                 }
