@@ -36,19 +36,14 @@ namespace wolf
             //begin render pass
             W_EXP void begin(
                 _In_ const uint32_t& pFrameBufferIndex,
-                _In_ const w_command_buffers* pCommandBuffer,
+                _In_ const w_command_buffer& pCommandBuffer,
                 _In_ const w_color& pClearColor,
                 _In_ const float& pClearDepth = 1.0f,
                 _In_ const uint32_t& pClearStencil = 0,
                 _In_ const VkSubpassContents& pSubpassContents = VK_SUBPASS_CONTENTS_INLINE);
 
-            //begin render pass
-            W_EXP void begin(
-                _In_ const uint32_t& pFrameBufferIndex,
-                _In_ const w_command_buffers* pCommandBuffer);
-
             //end render pass
-            W_EXP void end(_In_ const w_command_buffers* pCommandBuffer);
+            W_EXP void end(_In_ const w_command_buffer& pCommandBuffer);
 
             //release all resources
             W_EXP virtual ULONG release() override;

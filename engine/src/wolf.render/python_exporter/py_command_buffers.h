@@ -51,9 +51,7 @@ namespace pyWolf
 			.def("release", &w_command_buffers::release, "release all resources")
 			.def("get_commands", &w_command_buffers::py_get_commands, "get command buffers")
 			.def("get_command_at", &w_command_buffers::get_command_at, "get command buffer at")
-			.def("get_active_command", &w_command_buffers::get_active_command, "get active command buffer")
 			.def("get_commands_size", &w_command_buffers::get_commands_size, "get command buffer size")
-			.def("set_active_command", &w_command_buffers::set_active_command, "set active command buffer")
 			;
 	}
 }

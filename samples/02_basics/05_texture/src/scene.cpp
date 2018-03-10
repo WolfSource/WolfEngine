@@ -243,10 +243,10 @@ W_RESULT scene::_build_draw_command_buffers()
     
     auto _gDevice = this->get_graphics_device(0);
     auto _size = this->_draw_command_buffers.get_commands_size();
-    auto _cmd = &this->_draw_command_buffers;
     
     for (uint32_t i = 0; i < _size; ++i)
     {
+		auto _cmd = this->_draw_command_buffers.get_command_at(i);
         this->_draw_command_buffers.begin(i);
         {
 			this->_draw_render_pass.begin(
@@ -280,37 +280,37 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
-    if (w_game::exiting) return W_PASSED;
-    
-    const std::string _trace_info = this->name + "::render";
-    
-    auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_window);
-    auto _frame_index = _output_window->swap_chain_image_index;
-    
-    const w_pipeline_stage_flags _wait_dst_stage_mask[] =
-    {
-        w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
-    };
-    
-    //set active command buffer
-    this->_draw_command_buffers.set_active_command(_frame_index);
-    //reset draw fence
-    this->_draw_fence.reset();
-    if (_gDevice->submit(
-                         { &this->_draw_command_buffers },//command buffers
-                         _gDevice->vk_graphics_queue, //graphics queue
-                         &_wait_dst_stage_mask[0], //destination masks
-                         { _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
-                         { _output_window->rendering_done_semaphore }, //signal semaphores
-                         &this->_draw_fence) == W_FAILED)
-    {
-        V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
-    }
-    // Wait for fence to signal that all command buffers are ready
-    this->_draw_fence.wait();
-    
-    return w_game::render(pGameTime);
+	if (w_game::exiting) return W_PASSED;
+
+	const std::string _trace_info = this->name + "::render";
+
+	auto _gDevice = this->graphics_devices[0];
+	auto _output_window = &(_gDevice->output_presentation_window);
+	auto _frame_index = _output_window->swap_chain_image_index;
+
+	const w_pipeline_stage_flags _wait_dst_stage_mask[] =
+	{
+		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
+	};
+
+	//set active command buffer
+	auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
+	//reset draw fence
+	this->_draw_fence.reset();
+	if (_gDevice->submit(
+		{ &_cmd },//command buffers
+		_gDevice->vk_graphics_queue, //graphics queue
+		&_wait_dst_stage_mask[0], //destination masks
+		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
+		{ _output_window->rendering_done_semaphore }, //signal semaphores
+		&this->_draw_fence) == W_FAILED)
+	{
+		V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
+	}
+	// Wait for fence to signal that all command buffers are ready
+	this->_draw_fence.wait();
+	
+	return w_game::render(pGameTime);
 }
 
 void scene::on_window_resized(_In_ const uint32_t& pIndex, _In_ const w_point& pNewSizeOfWindow)

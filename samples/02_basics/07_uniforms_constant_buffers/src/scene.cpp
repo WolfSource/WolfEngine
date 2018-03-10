@@ -261,10 +261,10 @@ W_RESULT scene::_build_draw_command_buffers()
 
 	auto _gDevice = this->get_graphics_device(0);
 	auto _size = this->_draw_command_buffers.get_commands_size();
-	auto _cmd = &this->_draw_command_buffers;
-
+	
 	for (uint32_t i = 0; i < _size; ++i)
 	{
+		auto _cmd = this->_draw_command_buffers.get_command_at(i);
 		this->_draw_command_buffers.begin(i);
 		{
 			this->_draw_render_pass.begin(
@@ -321,11 +321,11 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	};
 
 	//set active command buffer
-	this->_draw_command_buffers.set_active_command(_frame_index);
+	auto _cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	//reset draw fence
 	this->_draw_fence.reset();
 	if (_gDevice->submit(
-		{ &this->_draw_command_buffers },//command buffers
+		{ &_cmd },//command buffers
 		_gDevice->vk_graphics_queue, //graphics queue
 		&_wait_dst_stage_mask[0], //destination masks
 		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores

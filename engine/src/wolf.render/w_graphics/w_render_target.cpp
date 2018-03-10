@@ -105,17 +105,19 @@ namespace wolf
 			}
 
 			W_RESULT record_command_buffer(
-				_In_ wolf::graphics::w_command_buffers* pCommandBuffer,
+				_In_ wolf::graphics::w_command_buffers* pCommandBuffers,
 				_In_ std::function<W_RESULT(void)> pDrawFunction,
 				_In_ w_color pClearColor, 
 				_In_ const float& pClearDepth, 
 				_In_ const uint32_t&  pClearStencil)
 			{
+				if (!pCommandBuffers) return W_FAILED;
+				
 				const std::string _trace_info = this->_name + "::record_command_buffer";
 
-				if (!pCommandBuffer) return W_FAILED;
+				if (!pCommandBuffers) return W_FAILED;
 
-				auto _cmd_size = pCommandBuffer->get_commands_size();
+				auto _cmd_size = pCommandBuffers->get_commands_size();
 				if (_cmd_size != this->_render_pass.get_number_of_frame_buffers())
 				{
 					V(W_FAILED, "parameter count mismatch. Number of command buffers must equal to number of frame buffers", _trace_info, 3, false);
@@ -125,11 +127,12 @@ namespace wolf
 				W_RESULT _hr = W_PASSED;
 				for (uint32_t i = 0; i < _cmd_size; ++i)
 				{
-					pCommandBuffer->begin(i);
+					pCommandBuffers->begin(i);
 					{
+						auto _cmd = pCommandBuffers->get_command_at(i);
 						this->_render_pass.begin(
                             i,
-							pCommandBuffer,
+							_cmd,
 							pClearColor,
 							pClearDepth,
 							pClearStencil);
@@ -139,9 +142,9 @@ namespace wolf
 								_hr = pDrawFunction();
 							}
 						}
-						this->_render_pass.end(pCommandBuffer);
+						this->_render_pass.end(_cmd);
 					}
-					pCommandBuffer->end(i);
+					pCommandBuffers->end(i);
 				}
 				return _hr;
 			}

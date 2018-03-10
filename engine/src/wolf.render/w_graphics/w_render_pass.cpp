@@ -186,14 +186,12 @@ namespace wolf
 
 			void begin(
 				_In_ const uint32_t& pFrameBufferIndex,
-				_In_ const w_command_buffers* pCommandBuffer,
+				_In_ const w_command_buffer pCommandBuffer,
 				_In_ const w_color& pClearColor,
 				_In_ const float& pClearDepth,
 				_In_ const uint32_t& pClearStencil,
 				_In_ const VkSubpassContents& pSubpassContents)
 			{
-				assert(pCommandBuffer != nullptr);
-
 				const std::string _trace_info = this->_name + "::begin";
 
 				if (pFrameBufferIndex >= this->_frame_buffers.size())
@@ -205,7 +203,7 @@ namespace wolf
 						_trace_info, 3, false);
 					return;
 				}
-				
+
 
 				std::array<VkClearValue, 2> _clear_values = {};
 				_clear_values[0].color =
@@ -238,61 +236,15 @@ namespace wolf
 					_clear_values.data()                                    // ClearValues
 				};
 
-				auto _cmd = pCommandBuffer->get_active_command();
-				vkCmdBeginRenderPass(_cmd.handle, &_render_pass_begin_info, pSubpassContents);
-				vkCmdSetViewport(_cmd.handle, 0, 1, &this->_viewport);
-				vkCmdSetScissor(_cmd.handle, 0, 1, &this->_viewport_scissor);
+				auto _cmd = pCommandBuffer.handle;
+				vkCmdBeginRenderPass(_cmd, &_render_pass_begin_info, pSubpassContents);
+				vkCmdSetViewport(_cmd, 0, 1, &this->_viewport);
+				vkCmdSetScissor(_cmd, 0, 1, &this->_viewport_scissor);
 			}
 
-			void begin(
-				_In_ const uint32_t& pFrameBufferIndex,
-				_In_ const w_command_buffers* pCommandBuffer)
+			void end(_In_ const w_command_buffer pCommandBuffer)
 			{
-				assert(pCommandBuffer != nullptr);
-
-				const std::string _trace_info = this->_name + "::begin";
-
-				if (pFrameBufferIndex >= this->_frame_buffers.size())
-				{
-					V(W_FAILED,
-						"mismatch between index of frame buffer and index of command buffer for graphics device: " +
-						this->_gDevice->device_info->get_device_name() +
-						" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
-						_trace_info, 3, false);
-					return;
-				}
-
-				VkRenderPassBeginInfo _render_pass_begin_info =
-				{
-					VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,               // Type
-					nullptr,                                                // Next
-					this->_render_pass,                                     // RenderPass
-					 this->_frame_buffers[pFrameBufferIndex],               // Framebuffer
-					{                                                       // RenderArea
-						{
-							static_cast<int32_t>(this->_viewport.x),        // X
-							static_cast<int32_t>(this->_viewport.y)         // Y
-						},
-						{
-							static_cast<uint32_t>(this->_viewport.width),   // Width
-							static_cast<uint32_t>(this->_viewport.height),  // Height
-						}
-					},
-					0,														// ClearValueCount
-					nullptr													// ClearValues
-				};
-
-				auto _cmd = pCommandBuffer->get_active_command();
-				vkCmdBeginRenderPass(_cmd.handle, &_render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
-				vkCmdSetViewport(_cmd.handle, 0, 1, &this->_viewport);
-				vkCmdSetScissor(_cmd.handle, 0, 1, &this->_viewport_scissor);
-			}
-
-
-			void end(_In_ const w_command_buffers* pCommandBuffer)
-			{
-				auto _cmd = pCommandBuffer->get_active_command();
-				vkCmdEndRenderPass(_cmd.handle);
+				vkCmdEndRenderPass(pCommandBuffer.handle);
 			}
 
             ULONG release()
@@ -403,7 +355,7 @@ W_RESULT w_render_pass::load(_In_ const std::shared_ptr<w_graphics_device>& pGDe
 
 void w_render_pass::begin(
     _In_ const uint32_t& pFrameBufferIndex,
-    _In_ const w_command_buffers* pCommandBuffer,
+    _In_ const w_command_buffer& pCommandBuffer,
     _In_ const w_color& pClearColor,
     _In_ const float&  pClearDepth,
     _In_ const uint32_t&  pClearStencil,
@@ -419,17 +371,7 @@ void w_render_pass::begin(
         pSubpassContents);
 }
 
-void w_render_pass::begin(
-    _In_ const uint32_t& pFrameBufferIndex,
-    _In_ const w_command_buffers* pCommandBuffer)
-{
-    if (!this->_pimp) return;
-    this->_pimp->begin(
-        pFrameBufferIndex,
-        pCommandBuffer);
-}
-
-void w_render_pass::end(_In_ const w_command_buffers* pCommandBuffer)
+void w_render_pass::end(_In_ const w_command_buffer& pCommandBuffer)
 {
     if(!this->_pimp) return;
     this->_pimp->end(pCommandBuffer);

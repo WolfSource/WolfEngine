@@ -289,19 +289,21 @@ namespace wolf
             w_output_presentation_window               output_presentation_window;
             
             //draw primitive(s) and instances using vertex & index buffer
-            W_EXP W_RESULT draw(_In_ const w_command_buffers*	pCommandBuffer,
-                            _In_ const uint32_t&			pVertexCount,
-                            _In_ const uint32_t&			pInstanceCount,
-                            _In_ const uint32_t&			pFirstVertex,
-                            _In_ const uint32_t&			pFirstInstance);
+            W_EXP W_RESULT draw(
+				_In_ const w_command_buffer&	pCommandBuffer,
+                _In_ const uint32_t&			pVertexCount,
+                _In_ const uint32_t&			pInstanceCount,
+                _In_ const uint32_t&			pFirstVertex,
+                _In_ const uint32_t&			pFirstInstance);
             
             //submit command buffer
-            W_EXP W_RESULT submit(_In_ const std::vector<const w_command_buffers*>&	pCommandBuffers,
-                                 _In_ const w_queue&								pQueue,
-                                 _In_ const w_pipeline_stage_flags*					pWaitDstStageMask,
-                                 _In_ std::vector<w_semaphore> 						pWaitForSemaphores,
-                                 _In_ std::vector<w_semaphore> 						pSignalForSemaphores,
-                                 _In_ w_fences*										pFence);
+            W_EXP W_RESULT submit(
+				_In_ const std::vector<const w_command_buffer*>&	pCommandBuffers,
+                _In_ const w_queue&									pQueue,
+                _In_ const w_pipeline_stage_flags*					pWaitDstStageMask,
+                _In_ std::vector<w_semaphore> 						pWaitForSemaphores,
+                _In_ std::vector<w_semaphore> 						pSignalForSemaphores,
+                _In_ w_fences*										pFence);
             
             /*
                 capture image buffer's data and save to D-RAM and make it accessable by CPU, 

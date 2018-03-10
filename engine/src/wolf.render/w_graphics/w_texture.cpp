@@ -711,7 +711,7 @@ namespace wolf
                 _command_buffer.end(0);
 
 				auto _hr = this->_gDevice->submit(
-					{ &_command_buffer },
+					{ &_cmd },
 					this->_gDevice->vk_graphics_queue,
 					nullptr,
 					{},
@@ -906,7 +906,7 @@ namespace wolf
 				_command_buffer.end(0);
 
 				auto _hr = this->_gDevice->submit(
-					{ &_command_buffer },
+					{ &_cmd },
 					this->_gDevice->vk_graphics_queue,
 					nullptr,
 					{},
@@ -1104,7 +1104,7 @@ namespace wolf
 					_command_buffer.end(0);
 
 					auto _hr = this->_gDevice->submit(
-						{ &_command_buffer },
+						{ &_cmd },
 						this->_gDevice->vk_graphics_queue,
 						nullptr,
 						{},

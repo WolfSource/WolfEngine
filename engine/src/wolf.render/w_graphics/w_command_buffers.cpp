@@ -12,7 +12,6 @@ namespace wolf
         public:
             w_command_buffer_pimp() :
                 _name("w_command_buffer"),
-				_active_command_index(0),
                 _command_pool(0)
             {
             }
@@ -130,7 +129,6 @@ namespace wolf
 					return W_FAILED;
 				}
 
-				this->_active_command_index = pCommandBufferIndex;
 				return W_PASSED;
 			}
                         
@@ -247,11 +245,6 @@ namespace wolf
             }
             
 #pragma region Getters
-
-			const w_command_buffer get_active_command() const
-			{
-				return this->_commands.at(this->_active_command_index);
-			}
             
             const w_command_buffer* get_commands() const
             {
@@ -264,17 +257,7 @@ namespace wolf
             }
             
 #pragma endregion 
-            
-#pragma region Setters
-            
-			void set_active_command(_In_ const uint32_t& pIndex)
-			{
-				if (pIndex >= this->_commands.size()) return;
-				this->_active_command_index = pIndex;
-			}
-            
-#pragma endregion
-            
+                        
         private:
             std::string                                         _name;
             std::shared_ptr<w_graphics_device>                  _gDevice;
@@ -282,7 +265,6 @@ namespace wolf
 			std::vector<w_command_buffer>                       _commands;
 			VkCommandPool                                       _command_pool;
             
-			uint32_t    										_active_command_index;
             size_t                                              _counts;
         };
     }
@@ -364,12 +346,6 @@ const w_command_buffer w_command_buffers::get_command_at(_In_ const size_t& pInd
 	return _cmds[pIndex];
 }
 
-const w_command_buffer w_command_buffers::get_active_command() const
-{
-	if (!_pimp) return w_command_buffer();
-	return this->_pimp->get_active_command();
-}
-
 const size_t w_command_buffers::get_commands_size() const
 {
     if (!_pimp) return 0;
@@ -379,12 +355,3 @@ const size_t w_command_buffers::get_commands_size() const
 
 #pragma endregion
 
-#pragma region Setters
-
-void w_command_buffers::set_active_command(_In_ const uint32_t& pIndex)
-{
-	if (!_pimp) return;
-	this->_pimp->set_active_command(pIndex);
-}
-
-#pragma endregion

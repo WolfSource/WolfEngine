@@ -3,6 +3,7 @@
 layout(set=0, binding=0) uniform sampler2DArray t_sampler_array;
 
 layout(location = 0) in vec2 i_uv;
+layout(location = 1) in float i_time;
 
 layout(location = 0) out vec4 o_color;
 
@@ -12,7 +13,7 @@ void main()
 	vec4 _c1 =  texture( t_sampler_array, vec3(i_uv, 0) );
 
 	//get the color of second texture
-    vec4 _c2 =  texture( t_sampler_array, vec3(i_uv, 1) );
+    vec4 _c2 =  texture( t_sampler_array, vec3(i_uv.x + i_time, i_uv.y - i_time, 1) );
     
 	//blend the two colors together and apply gamma value
 	const float _gamma = 2.0;

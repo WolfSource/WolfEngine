@@ -245,24 +245,24 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
     </td>
     <td>
       <p><b>08_texture_arrays</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/08_texture_arrays/view.jpg" alt="08_texture_arrays" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/08_texture_arrays/doc/view.png" alt="08_texture_arrays" width="256" height="192"/>
       <p>Sampling array of textures in shader</p>
     </td>
     <td>
       <p><b>09_multi_textures_sampling</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/09_multi_textures_sampling/view.jpg" alt="09_multi_textures_sampling" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/09_multi_textures_sampling/doc/view.png" alt="09_multi_textures_sampling" width="256" height="192"/>
       <p>Sampling multiple textures in shader</p>
     </td>
   </tr>
   <tr>
     <td>
       <p><b>10_gui</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/10_gui/view.jpg" alt="07_uniforms_constant_buffers" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/10_gui/doc/view.png" alt="07_uniforms_constant_buffers" width="256" height="192"/>
       <p>Using IMGUI for GUI</p>
     </td>
     <td>
       <p><b>11_pipelines</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/11_pipelines/view.jpg" alt="08_texture_arrays" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/11_pipelines/doc/view.png" alt="08_texture_arrays" width="256" height="192"/>
       <p>Switching between pipelines</p>
     </td>
     <td>

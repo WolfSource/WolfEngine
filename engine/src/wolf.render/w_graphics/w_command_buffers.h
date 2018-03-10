@@ -65,17 +65,9 @@ namespace wolf
 
 			W_EXP const w_command_buffer* get_commands() const;
 			W_EXP const w_command_buffer get_command_at(_In_ const size_t& pIndex) const;
-			W_EXP const w_command_buffer get_active_command() const;
 			W_EXP const size_t get_commands_size() const;
 
 #pragma endregion
-
-#pragma region Setters
-
-			W_EXP void set_active_command(_In_ const uint32_t& pindex);
-
-#pragma endregion
-
 
 #ifdef __PYTHON__
 			W_RESULT py_load(

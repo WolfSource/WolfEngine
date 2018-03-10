@@ -111,7 +111,7 @@ namespace wolf
 				};
 
 				//initialize attachment buffers
-				_attachments[0][0].attachment_desc.desc.loadOp = _attachments[1][0].attachment_desc.desc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+				_attachments[0][0].attachment_desc.desc.loadOp = _attachments[1][0].attachment_desc.desc.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 				//make sure use output presentation window format
 				_attachments[0][0].attachment_desc.desc.format = _attachments[1][0].attachment_desc.desc.format = pOutputPresentationWindow->vk_swap_chain_selected_format.format;
 
@@ -441,7 +441,7 @@ namespace wolf
             }
 
 			W_RESULT render()
-            {
+			{
 				const std::string _trace_info = this->_name + "::render";
 				W_RESULT _hr = W_PASSED;
 
@@ -450,23 +450,28 @@ namespace wolf
 				{
 					this->_command_buffers.begin(i);
 					{
-						this->_render_pass.begin(i, &this->_command_buffers);
+						auto _cmd = this->_command_buffers.get_command_at(i);
+						this->_render_pass.begin(
+							i,
+							_cmd,
+							w_color::TRANSPARENT_());
 						{
 							if (_update_buffers() == W_PASSED)
 							{
-								_draw(this->_command_buffers.get_active_command().handle);
+								auto _cmd = this->_command_buffers.get_command_at(i);
+								_draw(_cmd.handle);
 							}
 							else
 							{
 								_hr = W_FAILED;
 							}
 						}
-						this->_render_pass.end(&this->_command_buffers);
+						this->_render_pass.end(_cmd);
 					}
 					this->_command_buffers.end(i);
 				}
 				return _hr;
-            }
+			}
 
             ULONG release()
             {
@@ -514,9 +519,8 @@ namespace wolf
 
 			w_command_buffer get_command_buffer_at(_In_ const uint32_t pFrameIndex) const
 			{
-				return this->_command_buffers.get_command_at(pFrameIndex);
+				return _command_buffers.get_command_at(pFrameIndex);
 			}
-
 #pragma endregion
 
 #pragma region Setters

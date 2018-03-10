@@ -165,23 +165,25 @@ namespace wolf
             }
 
             W_RESULT draw(
-				_In_ const w_command_buffers* pCommandBuffer, 
+				_In_ const w_command_buffer& pCommandBuffer,
                 _In_ const w_buffer_handle* pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
                 _In_ const bool& pIndrectDraw,
 				_In_ const uint32_t pVertexOffset)
             {
+				if (!pCommandBuffer.handle) return W_FAILED;
+
                 VkDeviceSize _offsets[1] = { 0 };
 
                 auto _vertex_buffer_handle = this->_vertex_buffer.get_buffer_handle().handle;
 				if (!_vertex_buffer_handle) return W_FAILED;
 				
-				auto _cmd = pCommandBuffer->get_active_command();
-                vkCmdBindVertexBuffers(_cmd.handle, 0, 1, &_vertex_buffer_handle, _offsets);
+				auto _cmd = pCommandBuffer.handle;
+                vkCmdBindVertexBuffers(_cmd, 0, 1, &_vertex_buffer_handle, _offsets);
 
                 if (pInstanceHandle && pInstanceHandle->handle)
                 {
-                    vkCmdBindVertexBuffers(_cmd.handle, 1, 1, &pInstanceHandle->handle, _offsets);
+                    vkCmdBindVertexBuffers(_cmd, 1, 1, &pInstanceHandle->handle, _offsets);
                 }
 
 				bool _draw_indexed = false;
@@ -189,22 +191,22 @@ namespace wolf
 				if (_index_buffer_handle)
 				{
 					_draw_indexed = true;
-					vkCmdBindIndexBuffer(_cmd.handle, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
+					vkCmdBindIndexBuffer(_cmd, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
 				}
 
                 if (!pIndrectDraw)
                 {
 					if (_draw_indexed)
 					{
-						vkCmdDrawIndexed(_cmd.handle, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
+						vkCmdDrawIndexed(_cmd, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
 					}
 					else
 					{
-						vkCmdDraw(_cmd.handle, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
+						vkCmdDraw(_cmd, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
 					}
                 }
 
-				_cmd.handle = nullptr;
+				_cmd = nullptr;
                 _vertex_buffer_handle = nullptr;
                 _index_buffer_handle = nullptr;
 
@@ -448,13 +450,13 @@ W_RESULT w_mesh::update_dynamic_buffer(
 }
 
 W_RESULT w_mesh::draw(
-	_In_ const w_command_buffers* pCommandBuffer,
+	_In_ const w_command_buffer& pCommandBuffer,
 	_In_ const w_buffer_handle* pInstanceHandle,
 	_In_ const uint32_t& pInstancesCount,
 	_In_ const bool& pIndirectDraw,
 	_In_ const uint32_t& pVertexOffset)
 {
-	if (!this->_pimp || !pCommandBuffer) return W_FAILED;
+	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw, pVertexOffset);
 }
 
