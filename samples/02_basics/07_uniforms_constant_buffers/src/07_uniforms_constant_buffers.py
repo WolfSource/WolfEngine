@@ -112,7 +112,7 @@ class scene(QWidget):
             sys.exit(1)
 
         #loading vertex shader
-        _content_path_dir = _script_dir + "/../../07_uniforms_constant_buffers/src/content/"
+        _content_path_dir = _script_dir + "/content/"
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER)
         if _hr:
             print "Error on loading vertex shader"
@@ -127,29 +127,29 @@ class scene(QWidget):
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        _hr = self._texture.initialize(self._gDevice, 8, 8, False, pyWolf.graphics.w_memory_property_flag_bits.HOST_VISIBLE_BIT or pyWolf.graphics.w_memory_property_flag_bits.HOST_COHERENT_BIT)
+        _hr = self._texture.initialize(self._gDevice, 8, 8, False, False)
         if _hr:
             print "Error on initializing texture"
         
         #load texture from file
         _hr = self._texture.load_texture_2D_from_file(_content_path_dir + "../../../../../Logo.jpg", True)
         if _hr:
-            print "Error on loading Logo.jpg texture"
-            release()
+            print "Error on loading " + _content_path_dir + "../../../../../Logo.jpg"
+            self.release()
             sys.exit(1)
         
         #load shader uniform
         _hr = self._u0.load(self._gDevice, 16 * 4)
         if _hr:
             print "Error on loading vertex shader uniform"
-            release()
+            self.release()
             sys.exit(1)
     
         #update shader uniform
         _hr = self._u0.update(self._wvp)
         if _hr:
             print "Error on updating vertex shader uniform"
-            release()
+            self.release()
             sys.exit(1)
 
         #just we need vertex position color
@@ -185,6 +185,7 @@ class scene(QWidget):
         _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name)
         if _hr:
             print "Error on creating pipeline"
+            self.release()
             sys.exit(1)
 
         _vertex_data = [
@@ -205,11 +206,13 @@ class scene(QWidget):
         _hr = self._mesh.load(self._gDevice, _vertex_data, _index_data, False)
         if _hr:
             print "Error on loading mesh"
+            self.release()
             sys.exit(1)
 
         _hr = self.build_command_buffers()
         if _hr:
             print "Error on building draw command buffer(s)"
+            self.release()
             sys.exit(1)
         
         print "scene loaded successfully"
@@ -361,7 +364,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     scene = scene(pyWolfPath + "..\\..\\..\\..\\content\\",
                   pyWolfPath,
-                  "py_05_texture")
+                  "py_07_uniforms_constant_buffers")
     scene.resize(screen_width, screen_height)
     scene.setWindowTitle('Wolf.Engine')
     scene.show()

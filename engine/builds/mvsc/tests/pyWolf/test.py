@@ -80,21 +80,21 @@ class scene(QWidget):
         _hr = self._draw_render_pass.load(self._gDevice, self._viewport, self._viewport_scissor, _render_pass_attachments)
         if _hr:
             print "Error on loading render pass"
-            release()
+            self.release()
             sys.exit(1)
 
         #create one semaphore for drawing
         _hr = self._draw_semaphore.initialize(self._gDevice)
         if _hr:
             print "Error on initializing semaphore"
-            release()
+            self.release()
             sys.exit(1)
 
         #create one fence for drawing
         _hr = self._draw_fence.initialize(self._gDevice, 1)
         if _hr:
             print "Error on initializing fence(s)"
-            release()
+            self.release()
             sys.exit(1)
 
         #create one fence for drawing
@@ -102,51 +102,51 @@ class scene(QWidget):
         _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.PRIMARY)
         if _hr:
             print "Error on initializing draw command buffer(s)"
-            release()
+            self.release()
             sys.exit(1)
 
         #loading vertex shader
-        #_content_path_dir = "D:/github/WolfSource/Wolf.Engine/samples/02_basics/07_uniforms_constant_buffers/src/content/"
-        _content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/07_uniforms_constant_buffers/src/content/"
+        _content_path_dir = "D:/github/WolfSource/Wolf.Engine/samples/02_basics/07_uniforms_constant_buffers/src/content/"
+        #_content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/07_uniforms_constant_buffers/src/content/"
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER)
         if _hr:
             print "Error on loading vertex shader"
-            release()
+            self.release()
             sys.exit(1)
 
         #loading fragment shader
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER)
         if _hr: 
             print "Error on loading fragment shader"
-            release()
+            self.release()
             sys.exit(1)
 
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        _hr = self._texture.initialize(self._gDevice, 8, 8, False, pyWolf.graphics.w_memory_property_flag_bits.HOST_VISIBLE_BIT or pyWolf.graphics.w_memory_property_flag_bits.HOST_COHERENT_BIT)
+        _hr = self._texture.initialize(self._gDevice, 8, 8, False, False)
         if _hr:
             print "Error on initializing texture"
         
         #load texture from file
-        _hr = self._texture.load_texture_2D_from_file("E:\SourceCode\github\WolfSource\Wolf.Engine\Logo.jpg", True)
+        _hr = self._texture.load_texture_2D_from_file("D:\\github\\WolfSource\\Wolf.Engine\\Logo.jpg", True)
         if _hr:
             print "Error on loading Logo.jpg texture"
-            release()
+            self.release()
             sys.exit(1)
         
         #load shader uniform
         _hr = self._u0.load(self._gDevice, 16 * 4)
         if _hr:
             print "Error on loading vertex shader uniform"
-            release()
+            self.release()
             sys.exit(1)
     
         #update shader uniform
         _hr = self._u0.update(self._wvp)
         if _hr:
             print "Error on updating vertex shader uniform"
-            release()
+            self.release()
             sys.exit(1)
 
         #just we need vertex position color
@@ -182,7 +182,7 @@ class scene(QWidget):
         _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name)
         if _hr:
             print "Error on creating pipeline"
-            release()
+            self.release()
             sys.exit(1)
 
         _vertex_data = [
@@ -203,13 +203,13 @@ class scene(QWidget):
         _hr = self._mesh.load(self._gDevice, _vertex_data, _index_data, False)
         if _hr:
             print "Error on loading mesh"
-            release()
+            self.release()
             sys.exit(1)
 
         _hr = self.build_command_buffers()
         if _hr:
             print "Error on building draw command buffer(s)"
-            release()
+            self.release()
             sys.exit(1)
         
         print "scene loaded successfully"
