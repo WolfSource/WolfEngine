@@ -240,7 +240,7 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
   <tr>
     <td>
       <p><b>07_uniforms_constant_buffers</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/07_uniforms_constant_buffers/doc/view.gif" alt="07_uniforms_constant_buffers" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/07_uniforms_constant_buffers/doc/view.png" alt="07_uniforms_constant_buffers" width="256" height="192"/>
       <p>Using constant buffer</p>
     </td>
     <td>
