@@ -61,7 +61,7 @@ namespace wolf
 			//get format of attached buffer
 			W_EXP const w_format get_attachment_format(_In_ size_t pBufferIndex) const;
 			//get description info of attached buffer
-			W_EXP const VkDescriptorImageInfo get_attachment_descriptor_info(_In_ size_t pBufferIndex) const;
+			W_EXP const w_descriptor_image_info get_attachment_descriptor_info(_In_ const size_t& pBufferIndex) const;
 
 #pragma endregion
 			

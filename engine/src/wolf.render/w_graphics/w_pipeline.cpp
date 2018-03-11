@@ -323,6 +323,26 @@ namespace wolf
 
 #pragma endregion
 
+#pragma region Setters
+
+			void set_push_constant_buffer(
+				_In_ const w_command_buffer&	pCommandBuffer,
+				_In_ w_shader_stage				pStageFlags,
+				_In_ const uint32_t&			pOffset,
+				_In_ const uint32_t&			pSize,
+				_In_ const void*				pValues)
+			{
+				vkCmdPushConstants(
+					pCommandBuffer.handle,
+					this->_pipeline_layout,
+					(VkShaderStageFlags)pStageFlags,
+					0,
+					pSize,
+					pValues);
+			}
+
+#pragma endregion
+
             static std::map<std::string, VkPipelineCache> pipeline_caches;
 
         private:
@@ -568,6 +588,21 @@ const VkPipelineLayout w_pipeline::get_layout_handle() const
 {
     if(!this->_pimp) return 0;
     return this->_pimp->get_layout_handle();
+}
+
+#pragma endregion
+
+#pragma region Setters
+
+void w_pipeline::set_push_constant_buffer(
+	_In_ const w_command_buffer&	pCommandBuffer,
+	_In_ const w_shader_stage		pStageFlags,
+	_In_ const uint32_t&			pOffset,
+	_In_ const uint32_t&			pSize,
+	_In_ const void*				pValues)
+{
+	if (!this->_pimp) return;
+	return this->_pimp->set_push_constant_buffer(pCommandBuffer, pStageFlags, pOffset, pSize, pValues);
 }
 
 #pragma endregion

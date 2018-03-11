@@ -11,10 +11,10 @@ namespace wolf
         {
         public:
 			w_render_target_pimp() :
-                _name("w_render_target"),
-                _gDevice(nullptr)
-            {
-            }
+				_name("w_render_target"),
+				_gDevice(nullptr)
+			{
+			}
 
 			W_RESULT load(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
@@ -224,14 +224,16 @@ namespace wolf
 				return w_format::UNDEFINED;
 			}
 
-			const VkDescriptorImageInfo get_attachment_descriptor_info(_In_ size_t pBufferIndex) const
+			const w_descriptor_image_info get_attachment_descriptor_info(_In_ size_t pBufferIndex) const
 			{
-				if (pBufferIndex >= this->_attachment_buffers.size()) return VkDescriptorImageInfo();
+				if (pBufferIndex >= this->_attachment_buffers.size()) return w_descriptor_image_info();
 
 				auto _t = this->_attachment_buffers.at(pBufferIndex);
-				if (_t) return _t->get_descriptor_info();
-
-				return VkDescriptorImageInfo();
+				if (_t)
+				{
+					return _t->get_descriptor_info();
+				}
+				return w_descriptor_image_info();
 			}
 
 #pragma endregion
@@ -366,9 +368,9 @@ const w_format w_render_target::get_attachment_format(_In_ size_t pBufferIndex) 
 	return this->_pimp->get_attachment_format(pBufferIndex);
 }
 
-const VkDescriptorImageInfo w_render_target::get_attachment_descriptor_info(_In_ size_t pBufferIndex) const
+const w_descriptor_image_info w_render_target::get_attachment_descriptor_info(_In_ const size_t& pBufferIndex) const
 {
-	if (!this->_pimp) return VkDescriptorImageInfo();
+	if (!this->_pimp) return w_descriptor_image_info();
 	return this->_pimp->get_attachment_descriptor_info(pBufferIndex);
 }
 

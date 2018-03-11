@@ -64,6 +64,17 @@ namespace wolf
             
 #pragma endregion
 
+#pragma region Setters
+
+			W_EXP void set_push_constant_buffer(
+				_In_ const w_command_buffer&	pCommandBuffer,
+				_In_ const w_shader_stage		pStageFlags,
+				_In_ const uint32_t&			pOffset,
+				_In_ const uint32_t&			pSize,
+				_In_ const void*				pValues);
+
+#pragma endregion
+
             W_EXP static VkPipelineLayout create_pipeline_layout(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo);
 			//create pipeline cache

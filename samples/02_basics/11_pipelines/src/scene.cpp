@@ -377,7 +377,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	};
 
 	w_imgui::render();
-	
+
 	//set active command buffer
 	auto _draw_cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	auto _gui_cmd = w_imgui::get_command_buffer_at(_frame_index);
