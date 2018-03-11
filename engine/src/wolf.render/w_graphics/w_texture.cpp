@@ -30,12 +30,12 @@ namespace wolf
 				_usage_flags(w_image_usage_flag_bits::IMAGE_USAGE_TRANSFER_DST_BIT | w_image_usage_flag_bits::IMAGE_USAGE_SAMPLED_BIT),
 				_is_staging(false),
 				_staging_buffer_memory_pointer(nullptr),
-				_format(w_format::R8G8B8A8_UNORM),
 				_image_type(w_image_type::_2D_TYPE),
 				_image_view_type(w_image_view_type::_2D),
 				_buffer_type(VkImageAspectFlagBits::VK_IMAGE_ASPECT_COLOR_BIT),
 				_image_layout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
 			{
+				this->_image_view.attachment_desc.desc.format = VkFormat::VK_FORMAT_R8G8B8A8_UNORM;
 			}
 
             ~w_texture_pimp()
@@ -165,7 +165,7 @@ namespace wolf
 						this->_image_view.width = _gli_tex_2D_array->extent().x;
 						this->_image_view.height = _gli_tex_2D_array->extent().y;
 						this->_layer_count = (uint32_t)_gli_tex_2D_array->layers();
-						this->_format = _gli_format_to_wolf_format(_gli_tex_2D_array->format());
+						this->_image_view.attachment_desc.desc.format = (VkFormat)_gli_format_to_wolf_format(_gli_tex_2D_array->format());
 					}
 
 					_g_path.clear();
@@ -313,7 +313,7 @@ namespace wolf
 					nullptr,														// Next
 					0,																// Flags
 					(VkImageType)this->_image_type,								    // ImageType
-					(VkFormat)this->_format,									    // Format
+					this->_image_view.attachment_desc.desc.format,					// Format
 					{																// Extent
 						this->_image_view.width,									// Width
 						this->_image_view.height,									// Height
@@ -420,7 +420,7 @@ namespace wolf
 					0,                                                    // Flags
 					this->_image_view.image,                              // Image
 					(VkImageViewType)this->_image_view_type,              // ViewType
-					(VkFormat)this->_format,                              // Format
+					this->_image_view.attachment_desc.desc.format,        // Format
 					{                                                     // Components
 						VK_COMPONENT_SWIZZLE_R,                                 // VkComponentSwizzle         r
 						VK_COMPONENT_SWIZZLE_G,                                 // VkComponentSwizzle         g
@@ -954,32 +954,34 @@ namespace wolf
                 
                 bool _bliting_supported = true;
                 
+				auto _format = this->_image_view.attachment_desc.desc.format;
                 //check whether blitting is supported or not
                 VkFormatProperties _format_properties;
                 // Check for whether blitting is supported for src
-                vkGetPhysicalDeviceFormatProperties(this->_gDevice->vk_physical_device,
-                                                    (VkFormat)this->_format,
-                                                    &_format_properties);
-                if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
-                {
-                    logger.warning("Blitting feature not supported from optimal tiled image for graphics device: " +
-                                   this->_gDevice->device_info->get_device_name() +
-                                   " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()) +
-                                   " and following format: " + std::to_string(this->_format));
-                    _bliting_supported = false;
-                }
-                if (_bliting_supported)
-                {
-                    // Check for whether blitting is supported for destination
-                    if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
-                    {
-                        logger.warning("Blitting feature not supported from linear tiled image for graphics device: " +
-                                       this->_gDevice->device_info->get_device_name() +
-                                       " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()) +
-                                       " and following format: " + std::to_string(this->_format));
-                        //_bliting_supported = false;
-                    }
-                }
+                vkGetPhysicalDeviceFormatProperties(
+					this->_gDevice->vk_physical_device,
+                    _format,
+                    &_format_properties);
+				if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
+				{
+					logger.warning("Blitting feature not supported from optimal tiled image for graphics device: " +
+						this->_gDevice->device_info->get_device_name() +
+						" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()) +
+						" and following format: " + std::to_string(_format));
+					_bliting_supported = false;
+				}
+				if (_bliting_supported)
+				{
+					// Check for whether blitting is supported for destination
+					if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
+					{
+						logger.warning("Blitting feature not supported from linear tiled image for graphics device: " +
+							this->_gDevice->device_info->get_device_name() +
+							" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()) +
+							" and following format: " + std::to_string(_format));
+						//_bliting_supported = false;
+					}
+				}
                 
 				//create command buffer
 				w_command_buffers _command_buffer;
@@ -1590,7 +1592,7 @@ namespace wolf
             
             w_format get_format() const
             {
-                return (w_format)this->_format;
+                return (w_format)this->_image_view.attachment_desc.desc.format;
             }
             
 			const uint32_t get_mip_maps_level() const
@@ -1604,7 +1606,7 @@ namespace wolf
 
 			void set_format(_In_ w_format pFormat)
 			{
-				this->_format = pFormat;
+				this->_image_view.attachment_desc.desc.format = (VkFormat)pFormat;
 			}
 
 			void set_buffer_type(_In_ w_texture_buffer_type pBufferType)
@@ -1645,7 +1647,6 @@ namespace wolf
 			VkImageAspectFlags								_buffer_type;
 			std::map<w_sampler_type, w_sampler>				_samplers;
             VkDeviceMemory                                  _memory;
-            w_format                                        _format;
 			w_image_type                                    _image_type;
             w_image_view_type                               _image_view_type;
 			VkImageLayout									_image_layout;

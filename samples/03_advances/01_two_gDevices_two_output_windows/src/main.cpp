@@ -143,14 +143,14 @@ WOLF_MAIN()
 	_window_0_info.width = _window_0_width;
 	_window_0_info.height = _window_0_height;
 	_window_0_info.is_full_screen = false;
-	_window_0_info.v_sync_enable = false;
+	_window_0_info.v_sync = false;
 	_window_0_info.swap_chain_format = 44;//using vulkan as render api
 
 	w_window_info _window_1_info;
 	_window_1_info.width = _window_1_width;
 	_window_1_info.height = _window_1_height;
 	_window_1_info.is_full_screen = false;
-	_window_1_info.v_sync_enable = false;
+	_window_1_info.v_sync = false;
 	_window_1_info.swap_chain_format = 44;//using vulkan as render api
 
 #ifdef __WIN32

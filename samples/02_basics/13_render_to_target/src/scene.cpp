@@ -10,7 +10,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -117,17 +117,11 @@ void scene::load()
 		V(W_FAILED, "loading quad command buffers", _trace_info, 3, true);
 	}
 
-	std::vector<w_image_view> _rt_attachment_buffers =
-	{
-		_output_window->swap_chain_image_views[0],
-		_output_window->depth_buffer_image_view
-	};
-
 	_hr = this->_rt.load(
 		_gDevice, 
 		this->_viewport, 
 		this->_viewport_scissor, 
-		_rt_attachment_buffers,
+		_render_pass_attachments[0],//color and depth
 		_swap_chain_image_size);
 	if (_hr == W_FAILED)
 	{

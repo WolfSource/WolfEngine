@@ -30,14 +30,15 @@ namespace wolf
 				this->_viewport_scissor = pViewportScissor;
 
 				W_RESULT _hr = W_PASSED;
-				std::vector<std::vector<w_texture*>> _frame_buffers_attachments;
+				std::vector<std::vector<w_image_view>> _frame_buffers;
 				for (size_t i = 0; i < pCount; ++i)
 				{
-					std::vector<w_texture*> __attachments;
+					std::vector<w_image_view> _image_views;
 					//check for attachment and create texture buffer for them
 					for (size_t i = 0; i < pAttachments.size(); ++i)
 					{
 						auto _attachment = pAttachments[i];
+
 						auto _texture_buffer = new (std::nothrow) w_texture();
 						if (!_texture_buffer)
 						{
@@ -61,7 +62,7 @@ namespace wolf
 						}
 
 						_texture_buffer->set_format((w_format)_attachment.attachment_desc.desc.format);
-						auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, _attachment.attachment_desc.memory_flag);
+						auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, false, _attachment.attachment_desc.memory_flag);
 						if (_hr == W_FAILED)
 						{
 							V(W_FAILED, "loading texture", _trace_info, 3, false);
@@ -74,32 +75,37 @@ namespace wolf
 							break;
 						}
 
-						__attachments.push_back(_texture_buffer);
+						w_image_view _image_view = _texture_buffer->get_image_view();
+						_image_view.attachment_desc = _attachment.attachment_desc;
+						_image_views.push_back(_image_view);
+
 						//store in global vector
 						this->_attachment_buffers.push_back(_texture_buffer);
 					}
-					_frame_buffers_attachments.push_back(__attachments);
+
+					_frame_buffers.push_back(_image_views);
 				}
 
 				if (_hr == W_FAILED)
 				{
+					_frame_buffers.clear();
 					release();
 					return W_FAILED;
 				}
 
-				//create render pass
 				_hr = this->_render_pass.load(pGDevice,
 					pViewPort,
 					pViewportScissor,
-					{ pAttachments });
+					_frame_buffers);
 				if (_hr == W_FAILED)
 				{
+					_frame_buffers.clear();
 					release();
 					V(W_FAILED, "loading render pass", _trace_info, 3, false);
 					return W_FAILED;
 				}
 
-				_frame_buffers_attachments.clear();
+				_frame_buffers.clear();
 
 				return W_PASSED;
 			}

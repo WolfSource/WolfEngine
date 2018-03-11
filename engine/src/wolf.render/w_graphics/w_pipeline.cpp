@@ -629,6 +629,11 @@ VkPipelineLayout w_pipeline::create_pipeline_layout(_In_ const std::shared_ptr<w
 W_RESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_z_ const std::string& pPipelineCacheName)
 {
+	//pipeline cache already exists
+	auto _old_pipline_cache = get_pipeline_cache(pPipelineCacheName);
+	if (_old_pipline_cache) return W_PASSED;
+	
+
     VkPipelineCache _pipeline_cache;
     VkPipelineCacheCreateInfo _pipeline_cache_create_info = {};
     _pipeline_cache_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
@@ -639,13 +644,6 @@ W_RESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics
         V(W_FAILED, "Error on creating pipeline cache with graphics device: " +
             pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
         return W_FAILED;
-    }
-
-    auto _old_pipline_cache = get_pipeline_cache(pPipelineCacheName);
-    if (_old_pipline_cache)
-    {
-        logger.warning("Pipeline cache " + pPipelineCacheName + "  already exists. The new one will be replaced with old one.");
-        vkDestroyPipelineCache(pGDevice->vk_device, _old_pipline_cache, nullptr);
     }
 
     w_pipeline_pimp::pipeline_caches[pPipelineCacheName] = _pipeline_cache;

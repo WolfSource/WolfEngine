@@ -15,9 +15,8 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffer.h>
+#include <w_graphics/w_command_buffers.h>
 #include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_pipeline.h>
 
@@ -41,7 +40,7 @@ public:
 	void update(_In_ const wolf::system::w_game_time& pGameTime) override;
 
 	//This is called when the game should draw itself.
-	HRESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
+	W_RESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
 
 	//This is called when the window game should resized.
 	void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow) override;
@@ -53,7 +52,7 @@ public:
 	ULONG release() override;
 
 private:
-	HRESULT _build_draw_command_buffers(_In_ const size_t& pGraphicsDeviceIndex);
+	W_RESULT _build_draw_command_buffers(_In_ const size_t& pGraphicsDeviceIndex);
 	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
@@ -62,9 +61,8 @@ private:
 	wolf::graphics::w_viewport                                      _viewport[2];
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor[2];
 	
-	wolf::graphics::w_command_buffer                                _draw_command_buffers[2];
+	wolf::graphics::w_command_buffers                               _draw_command_buffers[2];
 	wolf::graphics::w_render_pass                                   _draw_render_pass[2];
-	wolf::graphics::w_frame_buffer                                  _draw_frame_buffers[2];
 	
 	wolf::graphics::w_fences                                        _draw_fence[2];
 	wolf::graphics::w_semaphore                                     _draw_semaphore[2];

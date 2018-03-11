@@ -257,17 +257,17 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
   <tr>
     <td>
       <p><b>10_gui</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/10_gui/doc/view.png" alt="07_uniforms_constant_buffers" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/10_gui/doc/view.png" alt="10_gui" width="256" height="192"/>
       <p>Using IMGUI for GUI</p>
     </td>
     <td>
       <p><b>11_pipelines</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/11_pipelines/doc/view.png" alt="08_texture_arrays" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/11_pipelines/doc/view.png" alt="11_pipelines" width="256" height="192"/>
       <p>Switching between pipelines</p>
     </td>
     <td>
       <p><b>12_push_constants</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/12_push_constants/view.jpg" alt="09_multi_textures_sampling" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/12_push_constants/doc/view.jpg" alt="12_push_constants" width="256" height="192"/>
       <p>Using push constants in shader</p>
     </td>
   </tr>
@@ -291,7 +291,7 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
   <tr>
     <td>
       <p><b>16_coordinate_system</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/16_coordinate_system/view.jpg" alt="16_coordinate_system" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/16_coordinate_system/doc/view.png" alt="16_coordinate_system" width="256" height="192"/>
       <p>Show coordinate system of Wolf</p>
     </td>
   </tr>

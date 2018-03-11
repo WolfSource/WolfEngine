@@ -15,9 +15,8 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffer.h>
+#include <w_graphics/w_command_buffers.h>
 #include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_frame_buffer.h>
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_shader.h>
@@ -37,7 +36,7 @@
 class scene : public wolf::framework::w_game
 {
 public:
-	scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName);
+	scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName);
 	virtual ~scene();
 
 	/*
@@ -54,7 +53,7 @@ public:
 	void update(_In_ const wolf::system::w_game_time& pGameTime) override;
 
 	//This is called when the game should draw itself.
-	HRESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
+	W_RESULT render(_In_ const wolf::system::w_game_time& pGameTime) override;
 
 	//This is called when the window game should resized. 
 	void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow) override;
@@ -66,16 +65,15 @@ public:
 	ULONG release() override;
 
 private:
-	HRESULT _build_draw_command_buffers();
+	W_RESULT _build_draw_command_buffers();
     bool	_update_gui();
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
 
 
-	wolf::graphics::w_command_buffer                                _draw_command_buffers;
+	wolf::graphics::w_command_buffers                               _draw_command_buffers;
 	wolf::graphics::w_render_pass                                   _draw_render_pass;
-	wolf::graphics::w_frame_buffer                                  _draw_frame_buffers;
 
 
 	wolf::graphics::w_fences                                        _draw_fence;
