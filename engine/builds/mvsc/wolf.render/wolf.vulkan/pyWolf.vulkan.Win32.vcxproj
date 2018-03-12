@@ -254,6 +254,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_fences.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_game.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_graphics_device_manager.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_imgui.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_mesh.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_pipeline.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_queue.h" />

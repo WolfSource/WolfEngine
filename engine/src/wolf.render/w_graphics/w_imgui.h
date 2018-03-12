@@ -70,14 +70,41 @@ namespace wolf
 
 #pragma region Setters
 
-#ifdef __WIN32
-            //static W_EXP void set_HWND();
-#endif 
-            static W_EXP void set_width(_In_ const uint32_t& pWidth);
+			static W_EXP void set_width(_In_ const uint32_t& pWidth);
             static W_EXP void set_height(_In_ const uint32_t& pHeight);
 
 #pragma endregion
 
+#pragma region PYTHON
+
+			static W_RESULT py_load(
+				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ const w_output_presentation_window& pOutputPresentationWindow,
+				_In_ const w_viewport& pViewport,
+				_In_ const w_viewport_scissor& pViewportScissor,
+				_In_ w_texture& pIconTexture,
+				_In_ std::string pFontPath = "",
+				_In_ const float& pFontPixelSize = 15.0f)
+			{
+				if (!pGDevice.get()) return W_FAILED;
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+
+				auto _hr = load(
+					_gDevice, 
+					&pOutputPresentationWindow, 
+					pViewport, 
+					pViewportScissor,
+					&pIconTexture,
+					nullptr,
+					pFontPath.c_str(),
+					pFontPixelSize);
+
+				_gDevice.reset();
+				return _hr;
+
+			}
+
+#pragma endregion
 
         private:
             static bool                                        _is_released;
@@ -85,5 +112,7 @@ namespace wolf
         };
     }
 }
+
+#include "python_exporter/py_imgui.h"
 
 #endif
