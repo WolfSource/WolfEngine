@@ -181,9 +181,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_buffer.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_imgui.h">
-      <Filter>python_exporter</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_framework">

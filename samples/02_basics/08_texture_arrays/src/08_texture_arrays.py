@@ -378,7 +378,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     scene = scene(pyWolfPath + "..\\..\\..\\..\\content\\",
                   pyWolfPath,
-                  "py_07_uniforms_constant_buffers")
+                  "py_08_texture_arrays")
     scene.resize(screen_width, screen_height)
     scene.setWindowTitle('Wolf.Engine')
     scene.show()

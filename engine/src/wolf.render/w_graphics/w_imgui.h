@@ -65,7 +65,7 @@ namespace wolf
             static W_EXP uint32_t get_width();
             static W_EXP uint32_t get_height();
 			static W_EXP w_command_buffer get_command_buffer_at(_In_ const uint32_t pFrameIndex);
-
+			
 #pragma endregion
 
 #pragma region Setters
@@ -112,7 +112,5 @@ namespace wolf
         };
     }
 }
-
-#include "python_exporter/py_imgui.h"
 
 #endif

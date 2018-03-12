@@ -49,7 +49,6 @@ using Microsoft::WRL::ComPtr;
 #endif
 
         #include <vulkan/vulkan.h>
-        //#include <MoltenVK/vk_mvk_moltenvk.h>
         #include <unistd.h>
 
 	#elif defined(__ANDROID)
