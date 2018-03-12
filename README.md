@@ -267,7 +267,7 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
     </td>
     <td>
       <p><b>12_push_constants</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/12_push_constants/doc/view.jpg" alt="12_push_constants" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/12_push_constants/doc/view.png" alt="12_push_constants" width="256" height="192"/>
       <p>Using push constants in shader</p>
     </td>
   </tr>
