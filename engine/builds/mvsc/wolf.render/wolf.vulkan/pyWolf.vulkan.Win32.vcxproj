@@ -105,7 +105,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;__WIN32;__WOLF_RENDER__;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;BOOST_PYTHON_STATIC_LIB;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;__PYTHON__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../dependencies/msgpack/include/;$(SolutionDir)/../../dependencies/vulkan/include/;$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;C:/Python27-x64/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../dependencies/boost/include/;$(SolutionDir)/../../dependencies/msgpack/include/;$(SolutionDir)/../../dependencies/vulkan/Include/;$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;C:/Python27-x64/include</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>w_render_pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>

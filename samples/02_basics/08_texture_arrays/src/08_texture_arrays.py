@@ -161,7 +161,7 @@ class scene(QWidget):
         #load texture from file
         _hr = self._texture.load_texture_2D_from_file(_content_path_dir + "textures/Logo.dds", True)
         if _hr:
-            print "Error on loading " + _content_path_dir + "../../../../../Logo.jpg"
+            print "Error on loading " + _content_path_dir + "textures/Logo.dds"
             self.release()
             sys.exit(1)
         

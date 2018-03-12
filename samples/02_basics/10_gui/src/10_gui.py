@@ -22,6 +22,9 @@ from PySide.QtCore import *
 screen_width = 800
 screen_height = 600
 
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+#The following codes have been added for this project
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
 class gui(QWidget):
     def __init__(self, parent=None):
         super(gui, self).__init__(parent)
@@ -41,7 +44,9 @@ class gui(QWidget):
 
     def updateTime(self):
         self._label.setText(self.debug_text)
-    
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 class scene(QWidget):
     def __init__(self, pContentPath, pLogPath, pAppName, parent = None):
         super(scene, self).__init__(parent)
@@ -145,10 +150,15 @@ class scene(QWidget):
         return _hr
 
     def update(self, pGameTime):
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #The following codes have been added for this project
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #Update label of gui widget
         global _gui
-        _gui.debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\nTotalTime: " + str(pGameTime.get_total_seconds())
-    
+        _gui.debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(pGameTime.get_total_seconds())
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     def pre_render(self, pGameTime):
         _output_window = self._gDevice.output_presentation_window
         _frame_index = _output_window.swap_chain_image_index

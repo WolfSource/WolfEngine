@@ -194,9 +194,8 @@ void scene::load()
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
     
-    //create wireframe pipeline
+	//create wireframe pipeline
     auto _rasterization_states = wolf::graphics::w_graphics_device::defaults_states::pipelines::rasterization_create_info;
     _rasterization_states.polygonMode = VkPolygonMode::VK_POLYGON_MODE_LINE;
     
