@@ -115,26 +115,6 @@ namespace wolf
 				return _hr;
 			}
 
-			void py_begin(
-				_In_ const uint32_t& pFrameBufferIndex,
-				_In_ const w_command_buffers& pCommandBuffer,
-				_In_ const w_color& pClearColor,
-				_In_ const float& pClearDepth = 1.0f,
-				_In_ const uint32_t& pClearStencil = 0)
-			{
-				begin(
-					pFrameBufferIndex,
-					&pCommandBuffer,
-					pClearColor,
-					pClearDepth,
-					pClearStencil);
-			}
-
-			void py_end(_In_ const w_command_buffers& pCommandBuffer)
-			{
-				end(&pCommandBuffer);
-			}
-
 #endif
 
         private:

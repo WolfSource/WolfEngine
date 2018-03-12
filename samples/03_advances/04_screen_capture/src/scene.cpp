@@ -23,28 +23,15 @@ static float random_float(_In_ const float& a, _In_ const float& b)
 	return a + _random * _diff;
 }
 
-scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
-    w_game(pRunningDirectory, pAppName)
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
+    w_game(pContentPath, pLogPath, pAppName)
 {
-    auto _running_dir = pRunningDirectory;
+	w_graphics_device_manager_configs _config;
+	_config.debug_gpu = false;
+	w_game::set_graphics_device_manager_configs(_config);
 
-#if defined(__WIN32) || defined(__UWP)
-    content_path = _running_dir + L"../../../../content/";
-#elif defined(__APPLE__)
-    content_path = _running_dir + L"/../../../../../content/";
-#elif defined(__linux)
-    error
-#elif defined(__ANDROID)
-    error
-#endif
+	w_game::set_fixed_time_step(false);
 
-#ifdef __WIN32
-    w_graphics_device_manager_configs _config;
-    _config.debug_gpu = true;
-    w_game::set_graphics_device_manager_configs(_config);
-#endif
-
-    w_game::set_fixed_time_step(false);
 	this->_mesh = nullptr;
 
 	this->on_pixels_captured_signal += [&](_In_ const w_point_t pSize, _In_ uint8_t* pPixels)->void
@@ -98,7 +85,7 @@ void scene::load()
     const std::string _trace_info = this->name + "::load";
 
     auto _gDevice = this->graphics_devices[0];
-    auto _output_window = &(_gDevice->output_presentation_windows);
+    auto _output_window = &(_gDevice->output_presentation_window);
 
     w_point_t _screen_size;
     _screen_size.x = _output_window->width;
@@ -117,52 +104,42 @@ void scene::load()
     this->_viewport_scissor.extent.width = _screen_size.x;
     this->_viewport_scissor.extent.height = _screen_size.y;
 
-    //initialize attachment buffers
-    w_attachment_buffer_desc _color(w_texture_buffer_type::W_TEXTURE_COLOR_BUFFER);
-    w_attachment_buffer_desc _depth(w_texture_buffer_type::W_TEXTURE_DEPTH_BUFFER);
-
-	//make sure use output presentation window format
-	_color.desc.format = _output_window->vk_swap_chain_selected_format.format;
-
-    //define color and depth buffers for render pass
-    std::vector<w_attachment_buffer_desc> _attachment_descriptions = { _color, _depth };
-
-    //create render pass
-    auto _hr = this->_draw_render_pass.load(_gDevice,
-        _viewport,
-        _viewport_scissor,
-        _attachment_descriptions);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "creating render pass", _trace_info, 3, true);
-    }
-
-	//create frame buffers
-    auto _draw_render_pass_handle = this->_draw_render_pass.get_handle();
-    _hr = this->_draw_frame_buffers.load(_gDevice,
-        _draw_render_pass_handle,
-        _output_window);
-    if (_hr == S_FALSE)
-    {
-        release();
-        V(S_FALSE, "creating frame buffers", _trace_info, 3, true);
-    }
+	//define color and depth as an attachments buffers for render pass
+	std::vector<std::vector<w_image_view>> _render_pass_attachments;
+	for (size_t i = 0; i < _output_window->swap_chain_image_views.size(); ++i)
+	{
+		_render_pass_attachments.push_back
+		(
+			//COLOR									   , DEPTH
+			{ _output_window->swap_chain_image_views[i], _output_window->depth_buffer_image_view }
+		);
+	}
+	//create render pass
+	auto _hr = this->_draw_render_pass.load(
+		_gDevice,
+		_viewport,
+		_viewport_scissor,
+		_render_pass_attachments);
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED, "creating render pass", _trace_info, 3, true);
+	}
 
     //create semaphore
     _hr = this->_draw_semaphore.initialize(_gDevice);
-    if (_hr == S_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(S_FALSE, "creating draw semaphore", _trace_info, 3, true);
+        V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
     }
 
     //Fence for syncing
     _hr = this->_draw_fence.initialize(_gDevice);
-    if (_hr == S_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(S_FALSE, "creating draw fence", _trace_info, 3, true);
+        V(W_FAILED, "creating draw fence", _trace_info, 3, true);
     }
 
     //load imgui
@@ -174,12 +151,12 @@ void scene::load()
         nullptr);
 
     //create two primary command buffers for clearing screen
-    auto _swap_chain_image_size = _output_window->vk_swap_chain_image_views.size();
+    auto _swap_chain_image_size = _output_window->swap_chain_image_views.size();
     _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
-    if (_hr == S_FALSE)
+    if (_hr == W_FAILED)
     {
         release();
-        V(S_FALSE, "creating draw command buffers", _trace_info, 3, true);
+        V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
     }
 	
 	//get path of content folder
@@ -193,28 +170,28 @@ void scene::load()
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.vert.spv",
 		w_shader_stage::VERTEX_SHADER);
-	if (_hr == S_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(S_FALSE, "loading vertex shader", _trace_info, 3, true);
+		V(W_FAILED, "loading vertex shader", _trace_info, 3, true);
 	}
 
 	//loading fragment shader
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.frag.spv",
 		w_shader_stage::FRAGMENT_SHADER);
-	if (_hr == S_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(S_FALSE, "loading fragment shader", _trace_info, 3, true);
+		V(W_FAILED, "loading fragment shader", _trace_info, 3, true);
 	}
 
 	//load vertex shader uniform
 	_hr = this->_u0.load(_gDevice);
-	if (_hr == S_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(S_FALSE, "loading vertex shader uniform", _trace_info, 3, true);
+		V(W_FAILED, "loading vertex shader uniform", _trace_info, 3, true);
 	}
 
 	std::vector<w_shader_binding_param> _shader_params;
@@ -227,15 +204,15 @@ void scene::load()
 	_shader_params.push_back(_shader_param);
 
 	_hr = this->_shader.set_shader_binding_params(_shader_params);
-	if (_hr == S_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(S_FALSE, "setting shader binding param", _trace_info, 3, true);
+		V(W_FAILED, "setting shader binding param", _trace_info, 3, true);
 	}
 
 	//loading pipeline cache
 	std::string _pipeline_cache_name = "pipeline_cache";
-	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == W_FAILED)
 	{
 		logger.error("could not create pipeline cache");
 		_pipeline_cache_name.clear();
@@ -251,22 +228,19 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	w_vertex_binding_attributes _vertex_binding_attributes(_declaration);
-	
-	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(
 		_gDevice,
 		_vertex_binding_attributes,
-		VkPrimitiveTopology::VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-		this->_draw_render_pass.get_handle(),
-		this->_shader.get_shader_stages(),
-		_descriptor_set_layout_binding ? &_descriptor_set_layout_binding : nullptr,
+		w_primitive_topology::TRIANGLE_LIST,
+		&this->_draw_render_pass,
+		&this->_shader,
 		{ this->_viewport },
 		{ this->_viewport_scissor });
 
-	if (_hr == S_FALSE)
+	if (_hr == W_FAILED)
 	{
 		release();
-		V(S_FALSE, "creating pipeline", _trace_info, 3, true);
+		V(W_FAILED, "creating pipeline", _trace_info, 3, true);
 	}
 
 	//load collada scene
@@ -336,14 +310,14 @@ void scene::load()
 						_v_size * sizeof(float),
 						_v_size,
 						_indices.data(),
-						_indices.size()) == S_FALSE)
+						_indices.size()) == W_FAILED)
 					{
-						V(S_FALSE, "loading mesh", _trace_info);
+						V(W_FAILED, "loading mesh", _trace_info);
 					}
 				}
 				else
 				{
-					V(S_FALSE, "allocating memory of mesh", _trace_info);
+					V(W_FAILED, "allocating memory of mesh", _trace_info);
 				}
 
 				//clear resources
@@ -389,37 +363,37 @@ void scene::load()
 				auto _size = (uint32_t)(_vertex_instances_data.size() * sizeof(vertex_instance_data));
 				w_buffer _staging_buffers;
 				_staging_buffers.load_as_staging(_gDevice, _size);
-				if (_staging_buffers.bind() == S_FALSE)
+				if (_staging_buffers.bind() == W_FAILED)
 				{
 					release();
-					V(S_FALSE, "binding to staging buffer of vertex_instance_buffer", _trace_info, 3, true);
+					V(W_FAILED, "binding to staging buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
 
-				if (_staging_buffers.set_data(_vertex_instances_data.data()) == S_FALSE)
+				if (_staging_buffers.set_data(_vertex_instances_data.data()) == W_FAILED)
 				{
 					release();
-					V(S_FALSE, "setting data to staging buffer of vertex_instance_buffer", _trace_info, 3, true);
+					V(W_FAILED, "setting data to staging buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
 
 				if (this->_instances_buffer.load(
 					_gDevice,
 					_size,
 					VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-					VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == S_FALSE)
+					VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
 				{
 					release();
-					V(S_FALSE, "loading device buffer of vertex_instance_buffer", _trace_info, 3, true);
+					V(W_FAILED, "loading device buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
 
-				if (this->_instances_buffer.bind() == S_FALSE)
+				if (this->_instances_buffer.bind() == W_FAILED)
 				{
 					release();
-					V(S_FALSE, "binding to device buffer of vertex_instance_buffer", _trace_info, 3, true);
+					V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
-				if (_staging_buffers.copy_to(this->_instances_buffer) == S_FALSE)
+				if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
 				{
 					release();
-					V(S_FALSE, "copying to device buffer of vertex_instance_buffer", _trace_info, 3, true);
+					V(W_FAILED, "copying to device buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
 				_vertex_instances_data.clear();
 				_staging_buffers.release();
@@ -445,35 +419,34 @@ HRESULT scene::_build_draw_command_buffers()
     HRESULT _hr = S_OK;
 
     auto _size = this->_draw_command_buffers.get_commands_size();
-    for (uint32_t i = 0; i < _size; ++i)
-    {
-        this->_draw_command_buffers.begin(i);
-        {
-            auto _frame_buffer_handle = this->_draw_frame_buffers.get_frame_buffer_at(i);
-
-            auto _cmd = this->_draw_command_buffers.get_command_at(i);
-            this->_draw_render_pass.begin(_cmd,
-                _frame_buffer_handle,
-                w_color::CORNFLOWER_BLUE(),
-                1.0f,
-                0.0f);
-            {
-				auto _description_set = this->_shader.get_descriptor_set();
-				this->_pipeline.bind(_cmd, &_description_set);
+	for (uint32_t i = 0; i < _size; ++i)
+	{
+		this->_draw_command_buffers.begin(i);
+		{
+			auto _cmd = this->_draw_command_buffers.get_command_at(i);
+			this->_draw_render_pass.begin(
+				i,
+				_cmd,
+				w_color::CORNFLOWER_BLUE(),
+				1.0f,
+				0.0f);
+			{
+				this->_pipeline.bind(_cmd);
 				if (this->_mesh)
 				{
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 					//The following codes have been added for this project
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
-					this->_mesh->draw(_cmd, this->_instances_buffer.get_handle(), NUM_INSTANCES, false);
+					auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
+					this->_mesh->draw(_cmd, &_buffer_handle, NUM_INSTANCES, false);
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				}
-            }
-            this->_draw_render_pass.end(_cmd);
-        }
-        this->_draw_command_buffers.end(i);
-    }
+			}
+			this->_draw_render_pass.end(_cmd);
+		}
+		this->_draw_command_buffers.end(i);
+	}
 	
     return _hr;
 }
@@ -512,28 +485,26 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	this->_u0.data.view = _view;
 	this->_u0.data.projection = _projection;
 	auto _hr = this->_u0.update();
-	if (_hr == S_FALSE)
+	if (_hr == W_FAILED)
 	{
-		V(S_FALSE, "updating uniform ViewProjection", _trace_info, 3, false);
+		V(W_FAILED, "updating uniform ViewProjection", _trace_info, 3, false);
 	}
 	
 	w_game::update(pGameTime);
 }
 
-HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
+W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 {
-	if (w_game::exiting) return S_OK;
+	if (w_game::exiting) return W_PASSED;
 
 	const std::string _trace_info = this->name + "::render";
 
 	auto _gDevice = this->graphics_devices[0];
-	auto _output_window = &(_gDevice->output_presentation_windows);
-	auto _frame_index = _output_window->vk_swap_chain_image_index;
+	auto _output_window = &(_gDevice->output_presentation_window);
+	auto _frame_index = _output_window->swap_chain_image_index;
 
 	w_imgui::render();
 
-	//add wait semaphores
-	std::vector<VkSemaphore> _wait_semaphors = { *(_output_window->vk_swap_chain_image_is_available_semaphore.get()) };
 	auto _draw_command_buffer = this->_draw_command_buffers.get_command_at(_frame_index);
 	auto _gui_command_buffer = w_imgui::get_command_buffer_at(_frame_index);
 
@@ -545,45 +516,42 @@ HRESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	//reset draw fence
 	this->_draw_fence.reset();
 	if (_gDevice->submit(
-		{ _draw_command_buffer, _gui_command_buffer },
-		_gDevice->vk_graphics_queue,
-		&_wait_dst_stage_mask[0],
-		_wait_semaphors,
-		{ *_output_window->vk_rendering_done_semaphore.get() },
-		&this->_draw_fence) == S_FALSE)
+		{ &_draw_command_buffer, &_gui_command_buffer },//command buffers
+		_gDevice->vk_graphics_queue, //graphics queue
+		&_wait_dst_stage_mask[0], //destination masks
+		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
+		{ _output_window->rendering_done_semaphore }, //signal semaphores
+		&this->_draw_fence) == W_FAILED)
 	{
-		V(S_FALSE, "submiting queue for drawing", _trace_info, 3, true);
+		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
 	}
 	this->_draw_fence.wait();
-
-	//clear all wait semaphores
-	_wait_semaphors.clear();
-
+	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	if (w_game::render(pGameTime) == S_FALSE)
+	if (w_game::render(pGameTime) == W_FAILED)
 	{
-		V(S_FALSE, "presenting to graphics device", _trace_info, 3, true);
+		V(W_FAILED, "presenting to graphics device", _trace_info, 3, true);
 	}	
 	if (sCapture)
 	{
 		sCapture = false;
 		//capture outputs of graphics device
-		if (_gDevice->capture_presented_swap_chain_buffer(this->on_pixels_captured_signal) == S_FALSE)
+		if (_gDevice->capture_presented_swap_chain_buffer(this->on_pixels_captured_signal) == W_FAILED)
 		{
-			V(S_FALSE, "capturing graphics device", _trace_info, 3);
-			return S_FALSE;
+			V(W_FAILED, "capturing graphics device", _trace_info, 3);
+			return W_FAILED;
 		}
 	}
-	return S_OK;
+	return W_PASSED;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
-void scene::on_window_resized(_In_ uint32_t pIndex)
+void scene::on_window_resized(_In_ const uint32_t& pIndex, _In_ const w_point& pNewSizeOfWindow)
 {
-	w_game::on_window_resized(pIndex);
+	w_game::on_window_resized(pIndex, pNewSizeOfWindow);
 }
 
 void scene::on_device_lost()
@@ -601,7 +569,6 @@ ULONG scene::release()
 
 	this->_draw_command_buffers.release();
 	this->_draw_render_pass.release();
-	this->_draw_frame_buffers.release();
 
     //release gui's objects
     w_imgui::release();

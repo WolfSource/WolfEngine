@@ -585,7 +585,6 @@ void c_parser::_read_visual_scene_nodes(_In_ rapidxml::xml_node<>* pXNode, _Inou
         {
             //create node
             auto _node = new c_node();
-            std::memset(_node, 0, sizeof(c_node));
 
             //get collada attributes
             _get_collada_obj_attribute(_child, _node);
@@ -661,7 +660,6 @@ void c_parser::_get_node_data(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_node*
         {
             //create node
             auto _node = new c_node();
-            std::memset(_node, 0, sizeof(c_node));
 
             //get collada attributes
             _get_collada_obj_attribute(_child, _node);
@@ -955,7 +953,6 @@ void c_parser::_get_bones(_In_ rapidxml::xml_node<>* pXNode, _Inout_ c_bone* pBo
 //void c_parser::_get_nodes()
 //{
 //	auto _node = new c_node();
-//	std::memset(_node, 0, sizeof(_node));
 //
 //	_get_collada_obj_attribute(pXNode, _node);
 //

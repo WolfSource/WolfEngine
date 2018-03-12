@@ -107,12 +107,7 @@ WOLF_MAIN()
     _window_info.is_full_screen = false;
     _window_info.v_sync = false;
 	_window_info.swap_chain_format = 44;//VK_FORMAT_B8G8R8A8_UNORM in vulkan api
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	_window_info.cpu_access_swap_chain_buffer = false;
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #ifdef __WIN32
     _window_info.hwnd = sWindow->get_HWND();

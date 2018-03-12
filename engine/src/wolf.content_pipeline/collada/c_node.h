@@ -36,10 +36,10 @@ namespace wolf
 				glm::vec4				rotation;
 				glm::mat4				transform;
 				/*std::string				instanced_node_name;*/
-				std::string				instanced_geometry_name;
-                std::string				instanced_material_symbol_name;
-                std::string				instanced_material_target_name;
-				std::string				instanced_camera_name;
+				std::string				instanced_geometry_name = "";
+                std::string				instanced_material_symbol_name = "";
+                std::string				instanced_material_target_name = "";
+				std::string				instanced_camera_name = "";
 				std::vector<c_node*>	child_nodes;
 
 			private:

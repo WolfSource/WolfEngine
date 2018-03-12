@@ -130,11 +130,7 @@ void scene::load()
 		release();
 		V(W_FAILED, "loading fragment shader", _trace_info, 3, true);
 	}
-
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+	
 	//load fragment shader uniform
 	_hr = this->_u0.load(_gDevice);
 	if (_hr == W_FAILED)
@@ -151,8 +147,6 @@ void scene::load()
 		release();
 		V(W_FAILED, "updating uniform", _trace_info, 3, true);
 	}
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     //load texture
     _hr = this->_texture.initialize(_gDevice);
@@ -166,9 +160,6 @@ void scene::load()
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	this->_texture.set_view_type(w_image_view_type::_2D_ARRAY);
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
     //load texture from file
     _hr = this->_texture.load_texture_2D_from_file(_content_path_dir + L"textures/logo.dds", true);
     if (_hr == W_FAILED)
@@ -176,6 +167,8 @@ void scene::load()
         release();
         V(W_FAILED, "loading Logo.jpg texture", _trace_info, 3, true);
     }
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//just we need vertex position color
 	this->_mesh.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_UV);

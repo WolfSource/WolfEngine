@@ -171,18 +171,19 @@ class scene(QWidget):
         _hr = pyWolf.W_PASSED
         _size = self._draw_command_buffers.get_commands_size()
         for i in xrange(_size):
-            _hr = self._draw_command_buffers.begin(i, pyWolf.graphics.w_command_buffer_usage_flag_bits.SIMULTANEOUS_USE_BIT)
+            _cmd = self._draw_command_buffers.get_command_at(i)
+            _hr = self._draw_command_buffers.begin(i)
             if _hr:
                 print "Error on begining command buffer: " + str(i)
                 break
             
-            self._draw_render_pass.begin(i, self._draw_command_buffers, pyWolf.system.w_color.CORNFLOWER_BLUE(), 1.0, 0)
+            self._draw_render_pass.begin(i, _cmd, pyWolf.system.w_color.CORNFLOWER_BLUE(), 1.0, 0)
             
             #place your draw code
-            self._pipeline.bind(self._draw_command_buffers)
-            self._mesh.draw(self._draw_command_buffers, 0, False, 0)
+            self._pipeline.bind(_cmd)
+            self._mesh.draw(_cmd, None, 0, False)
 
-            self._draw_render_pass.end(self._draw_command_buffers)
+            self._draw_render_pass.end(_cmd)
             
             _hr = self._draw_command_buffers.end(i)
             if _hr:
@@ -198,12 +199,12 @@ class scene(QWidget):
         _output_window = self._gDevice.output_presentation_window
         _frame_index = _output_window.swap_chain_image_index
 
-        self._draw_command_buffers.set_active_command(_frame_index)
-
         _wait_dst_stage_mask = [ pyWolf.graphics.w_pipeline_stage_flag_bits.COLOR_ATTACHMENT_OUTPUT_BIT ]
         _wait_semaphores = [ _output_window.swap_chain_image_is_available_semaphore ]
         _signal_semaphores = [ _output_window.rendering_done_semaphore ]
-        _cmd_buffers = [self._draw_command_buffers]       
+
+        _cmd = self._draw_command_buffers.get_command_at(_frame_index)
+        _cmd_buffers = [_cmd]       
 
         #reset draw fence
         self._draw_fence.reset()

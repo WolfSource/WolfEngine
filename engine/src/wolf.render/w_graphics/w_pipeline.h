@@ -259,9 +259,9 @@ namespace wolf
 				return _hr;
 			}
 
-			W_RESULT py_bind(_In_ const w_command_buffers& pCommandBuffer)
+			W_RESULT py_bind(_In_ const w_command_buffer& pCommandBuffer)
 			{
-				return bind(&pCommandBuffer);
+				return bind(pCommandBuffer);
 			}
 
 			static W_RESULT py_create_pipeline_cache(

@@ -134,7 +134,6 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 	//load fragment shader uniform
 	_hr = this->_u0.load(_gDevice);
 	if (_hr == W_FAILED)
@@ -164,6 +163,9 @@ void scene::load()
 	
 	this->_texture.set_view_type(w_image_view_type::_2D_ARRAY);
 	
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
     //load texture from file
     _hr = this->_texture.load_texture_2D_from_file(_content_path_dir + L"textures/Smoke_Logo.dds", true);
     if (_hr == W_FAILED)
@@ -171,10 +173,11 @@ void scene::load()
         release();
         V(W_FAILED, "loading Logo.jpg texture", _trace_info, 3, true);
     }
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//just we need vertex position color
 	this->_mesh.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_UV);
-
 
 	std::vector<w_shader_binding_param> _shader_params;
 
@@ -231,15 +234,7 @@ void scene::load()
          1.0f,  0.0f,               //uv3
 	};
 
-    std::vector<uint32_t> _index_data =
-    {
-        0,
-        1,
-        3,
-        3,
-        1,
-        2
-    };
+    std::vector<uint32_t> _index_data = { 0, 1, 3, 3, 1, 2 };
 
     this->_mesh.set_texture(&this->_texture);
 	_hr = this->_mesh.load(_gDevice,

@@ -61,7 +61,6 @@ private:
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
 
-
 	wolf::graphics::w_command_buffers                               _draw_command_buffers;
 	wolf::graphics::w_render_pass                                   _draw_render_pass;
 

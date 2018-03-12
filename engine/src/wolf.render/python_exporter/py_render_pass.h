@@ -18,7 +18,7 @@ namespace pyWolf
 {
 	using namespace wolf::graphics;
 
-	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(render_pass_begin_overloads, w_render_pass::py_begin, 3, 5)
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(render_pass_begin_overloads, w_render_pass::begin, 3, 5)
 
 	static void py_render_pass_export()
 	{
@@ -27,8 +27,8 @@ namespace pyWolf
 		//export w_render_pass class
 		class_<w_render_pass, boost::noncopyable>("w_render_pass")
 			.def("load", &w_render_pass::py_load, "load render pass which contains frame buffers")
-			.def("begin", &w_render_pass::py_begin, render_pass_begin_overloads())
-			.def("end", &w_render_pass::py_end, "end render pass")
+			.def("begin", &w_render_pass::begin, render_pass_begin_overloads())
+			.def("end", &w_render_pass::end, "end render pass")
 			.def("release", &w_render_pass::release, "release")
 			.def("viewport", &w_render_pass::get_viewport, "get viewport")
 			.def("viewport_scissor", &w_render_pass::get_viewport_scissor, "get viewport scissor")

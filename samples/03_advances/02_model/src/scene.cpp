@@ -188,8 +188,6 @@ void scene::load()
 	}
 
 	w_vertex_binding_attributes _vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION);
-	
-	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(
 		_gDevice,
 		_vertex_binding_attributes,

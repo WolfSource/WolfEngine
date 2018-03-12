@@ -399,13 +399,18 @@ namespace wolf
 			}
 
 			W_RESULT py_draw(
-				_In_ const w_command_buffers&	pCommandBuffer,
+				_In_ const w_command_buffer&	pCommandBuffer,
 				_In_ const uint32_t&			pVertexCount,
 				_In_ const uint32_t&			pInstanceCount,
 				_In_ const uint32_t&			pFirstVertex,
 				_In_ const uint32_t&			pFirstInstance)
 			{
-				return draw(&pCommandBuffer, pVertexCount, pInstanceCount, pFirstVertex, pFirstInstance);
+				return draw(
+					pCommandBuffer, 
+					pVertexCount, 
+					pInstanceCount, 
+					pFirstVertex, 
+					pFirstInstance);
 			}
 
 			W_RESULT py_submit(
@@ -416,11 +421,11 @@ namespace wolf
 				_In_ boost::python::list	pSignalForSemaphores,
 				_In_ w_fences&				pFence)
 			{
-				std::vector<const w_command_buffers*> _cmds;
+				std::vector<const w_command_buffer*> _cmds;
 				//get command buffers
 				for (size_t i = 0; i < len(pCommandBuffers); ++i)
 				{
-					boost::python::extract<w_command_buffers> _cmd(pCommandBuffers[i]);
+					boost::python::extract<w_command_buffer> _cmd(pCommandBuffers[i]);
 					if (_cmd.check())
 					{
 						auto _c = &(_cmd());
