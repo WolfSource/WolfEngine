@@ -44,6 +44,7 @@ BOOST_PYTHON_MODULE(pyWolf)
         pyWolf::py_time_span_export();
         pyWolf::py_inputs_manager_export();
         pyWolf::py_point_export();
+		pyWolf::py_plane_export();
         pyWolf::py_rectangle_export();
         pyWolf::py_window_export();
     }

@@ -19,13 +19,9 @@ class gui(QWidget):
         self.debug_text = ""
         self._label = QLabel()
         self._label.setAlignment(Qt.AlignLeft)
-
-        _color_dialog = QColorDialog()
-        _color_dialog.setOptions(QColorDialog.NoButtons)
-
+        
         vbox = QVBoxLayout()
         vbox.addWidget(self._label)
-        vbox.addWidget(_color_dialog)
         
         self.setLayout(vbox)
 

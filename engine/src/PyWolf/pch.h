@@ -28,6 +28,7 @@
 #include <w_inputs_manager.h>
 #include <w_time_span.h>
 #include <w_point.h>
+#include <w_plane.h>
 #include <w_rectangle.h>
 #include <w_window.h>
 

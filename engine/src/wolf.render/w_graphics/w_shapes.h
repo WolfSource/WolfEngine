@@ -17,6 +17,7 @@
 #include "w_graphics_device_manager.h"
 #include "w_render_pass.h"
 #include <w_bounding.h>
+#include <w_plane.h>
 #include <w_game_time.h>
 #include <w_time_span.h>
 #include <glm/mat4x4.hpp>
@@ -25,8 +26,6 @@ namespace wolf
 {
 	namespace graphics
 	{
-		enum w_plan { XY, XZ, YZ };
-
 		class w_shapes_pimp;
 		class w_shapes : public system::w_object
 		{
@@ -49,7 +48,7 @@ namespace wolf
 				_In_ const glm::vec3& pCenter,
 				_In_ const float& pRadius,
 				_In_ const w_color& pColor,
-				_In_ const w_plan& pPlan,
+				_In_ const w_plane& pPlane,
 				_In_ const uint32_t& pResolution = 30);
 
 			//create bounding box shape 
@@ -84,11 +83,56 @@ namespace wolf
             
 			W_EXP ULONG release();
 
+
+#ifdef __PYTHON__
+
+			w_shapes()
+			{
+
+			}
+
+
+			w_shapes(
+				_In_ boost::python::list pA,
+				_In_ boost::python::list pB,
+				_In_ const w_color& pColor)
+			{
+				std::vector<float> _pa;
+				if (!boost_list_to_std_vector(pA, _pa)) return;
+
+				std::vector<float> _pb;
+				if (!boost_list_to_std_vector(pB, _pb)) return;
+
+				w_shapes(glm::vec3(_pa[0], _pa[1], _pa[2]), glm::vec3(_pb[0], _pb[1], _pb[2]), pColor);
+			}
+
+			w_shapes(
+				_In_ boost::python::list pA,
+				_In_ boost::python::list pB,
+				_In_ boost::python::list pC,
+				_In_ const w_color& pColor)
+			{
+
+			}
+
+			w_shapes(
+				_In_ boost::python::list pCenter,
+				_In_ const float& pRadius,
+				_In_ const w_color& pColor,
+				_In_ const w_plane& pPlane,
+				_In_ const uint32_t& pResolution)
+			{
+
+			}
+#endif
+
 		private:
 			typedef	system::w_object                                _super;
 			w_shapes_pimp*                                          _pimp;
 		};
 	}
 }
+
+#include "python_exporter/py_shapes.h"
 
 #endif

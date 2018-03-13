@@ -2,8 +2,8 @@
     Project          : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
     Source           : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
     Website          : http://WolfSource.io
-    Name             : py_command_buffer.h
-    Description      : The python exporter for w_command_buffer class
+    Name             : py_command_buffers.h
+    Description      : The python exporter for w_command_buffers class
     Comment          :
  */
 

@@ -260,6 +260,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_render_pass.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_semaphore.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_shader.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_shapes.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_texture.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_uniform.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h" />

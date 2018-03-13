@@ -815,6 +815,10 @@
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_glm.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\w_plane.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_plane.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

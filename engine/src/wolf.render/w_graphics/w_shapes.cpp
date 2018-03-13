@@ -51,7 +51,7 @@ namespace wolf
 				_In_ const glm::vec3& pCenter, 
 				_In_ const float& pRadius, 
 				_In_ const w_color& pColor, 
-				_In_ const w_plan& pPlan, 
+				_In_ const w_plane& pPlane, 
 				_In_ const uint32_t& pResolution) :
 				_shape_type(shape_type::CIRCLE),
 				_color(pColor),
@@ -60,7 +60,7 @@ namespace wolf
 				_circle_resolution(pResolution),
 				_circle_center(pCenter),
 				_circle_radius(pRadius),
-				_circle_plan(pPlan),
+				_circle_plane(pPlane),
 				_name("w_shapes"),
 				_gDevice(nullptr)
 			{
@@ -538,9 +538,9 @@ namespace wolf
 				//used to track the index into our vertex array
 				size_t _index = 0;
 
-				switch (this->_circle_plan)
+				switch (this->_circle_plane)
 				{
-				case wolf::graphics::XY:
+				case w_plane::XY:
 					for (float i = 0.0f; i < _two_pi; i += _step)
 					{
 						pVertices[_index] = std::cos(i)	* this->_circle_radius + this->_circle_center[0];
@@ -554,7 +554,7 @@ namespace wolf
 						_index += _offset;
 					}
 					break;
-				case wolf::graphics::XZ:
+				case w_plane::XZ:
 					for (float i = 0.0f; i < _two_pi; i += _step)
 					{
 						pVertices[_index] = std::cos(i) * this->_circle_radius + this->_circle_center[0];
@@ -568,7 +568,7 @@ namespace wolf
 						_index += _offset;
 					}
 					break;
-				case wolf::graphics::YZ:
+				case w_plane::YZ:
 					for (float i = 0.0f; i < _two_pi; i += _step)
 					{
 						pVertices[_index] = 0.0f * this->_circle_radius + this->_circle_center[0];
@@ -836,7 +836,7 @@ namespace wolf
 			uint32_t												_circle_resolution;
 			glm::vec3												_circle_center;
 			float													_circle_radius;
-			w_plan													_circle_plan;
+			w_plane													_circle_plane;
         };
     }
 }
@@ -867,7 +867,7 @@ w_shapes::w_shapes(
 w_shapes::w_shapes(_In_ const glm::vec3& pCenter,
 	_In_ const float& pRadius,
 	_In_ const w_color& pColor,
-	_In_ const w_plan& pPlan,
+	_In_ const w_plane& pPlan,
 	_In_ const uint32_t& pResolution) :
 	_pimp(new w_shapes_pimp(pCenter, pRadius, pColor, pPlan, pResolution))
 {

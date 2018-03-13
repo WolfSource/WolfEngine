@@ -246,6 +246,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_glm.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_plane.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_std.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_boost_python_helper.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_bounding.h" />
@@ -307,6 +308,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_plane.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_signal.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_game_time.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_inputs_manager.h" />
