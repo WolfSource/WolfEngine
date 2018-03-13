@@ -358,7 +358,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/include",
+					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/macOS/include",
 					"$(SRCROOT)/../../../../dependencies/msgpack/include",
 					"$(SRCROOT)/../../../../src/wolf.system",
 					"$(SRCROOT)/../../../../src/wolf.render",

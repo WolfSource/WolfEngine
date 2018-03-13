@@ -484,7 +484,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/vulkan/Mac/include",
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/macOS/include",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.render",
