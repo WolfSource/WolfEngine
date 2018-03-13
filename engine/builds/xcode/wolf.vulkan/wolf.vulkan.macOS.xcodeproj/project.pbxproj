@@ -123,13 +123,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CF54B012057DA80000B80E3 /* vulkan.framework in Frameworks */,
 				2CA5D84B2050A78A0062AD2A /* libmsgpackc.2.0.0.dylib in Frameworks */,
-				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
-				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
+				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
+				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
 				2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */,
+				2CF54B012057DA80000B80E3 /* vulkan.framework in Frameworks */,
 				2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
