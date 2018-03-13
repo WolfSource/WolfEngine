@@ -69,11 +69,12 @@ namespace wolf
 			w_vertex_binding_attributes(_In_ const w_vertex_declaration& pDeclaration)
 			{
 				this->declaration = pDeclaration;
-				if (pDeclaration == w_vertex_declaration::NOT_DEFINED) return;
-
+                
 				std::vector<w_vertex_attribute> _attr;
 				switch (this->declaration)
 				{
+                case w_vertex_declaration::NOT_DEFINED:
+                        return;
 				case w_vertex_declaration::USER_DEFINED:
 					break;
 				case w_vertex_declaration::VERTEX_POSITION:
