@@ -37,9 +37,9 @@ namespace wolf
 				_In_ const std::vector<w_dynamic_state>& pDynamicStates = {},
 				_In_ const std::vector<w_push_constant_range>& pPushConstantRanges = {},
 				_In_ const uint32_t& pTessellationPatchControlPoints = 0,
-				_In_ const w_pipeline_rasterization_state_create_info* const pPipelineRasterizationStateCreateInfo = nullptr,
-				_In_ const w_pipeline_multisample_state_create_info* const pPipelineMultisampleStateCreateInfo = nullptr,
-				_In_ const w_pipeline_color_blend_attachment_state pBlendState = w_graphics_device::defaults_states::blend_states::premulitplied_alpha,
+				_In_ const w_pipeline_rasterization_state_create_info& pPipelineRasterizationStateCreateInfo = w_graphics_device::defaults_states::pipelines::rasterization_create_info,
+				_In_ const w_pipeline_multisample_state_create_info& pPipelineMultisampleStateCreateInfo = w_graphics_device::defaults_states::pipelines::multisample_create_info,
+				_In_ const w_pipeline_color_blend_attachment_state& pBlendState = w_graphics_device::defaults_states::blend_states::premulitplied_alpha,
 				_In_ const w_color& pBlendColors = w_color::TRANSPARENT_());
 
             //load pipeline for compute stage
@@ -67,11 +67,11 @@ namespace wolf
 #pragma region Setters
 
 			W_EXP void set_push_constant_buffer(
-				_In_ const w_command_buffer&	pCommandBuffer,
-				_In_ const w_shader_stage		pStageFlags,
-				_In_ const uint32_t&			pOffset,
-				_In_ const uint32_t&			pSize,
-				_In_ const void*				pValues);
+				_In_ const w_command_buffer&		 pCommandBuffer,
+				_In_ const w_shader_stage_flag_bits& pStageFlags,
+				_In_ const uint32_t&				 pOffset,
+				_In_ const uint32_t&				 pSize,
+				_In_ const void*					 pValues);
 
 #pragma endregion
 
@@ -161,8 +161,8 @@ namespace wolf
 					_dynamic_states,
 					_push_consts,
 					pTessellationPatchControlPoints,
-					&pPipelineRasterizationStateCreateInfo,
-					&pPipelineMultiSampleStateCreateInfo,
+					pPipelineRasterizationStateCreateInfo,
+					pPipelineMultiSampleStateCreateInfo,
 					pBlendState,
 					pBlendColors);
 
@@ -175,7 +175,34 @@ namespace wolf
 				return _hr;
 			}
 
-			W_RESULT py_load_min_arg(
+			W_RESULT py_load_min_args_7(
+				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
+				_In_ const w_primitive_topology& pPrimitiveTopology,
+				_In_ const w_render_pass& pRenderPassBinding,
+				_In_ const w_shader& pShaderBinding,
+				_In_ const boost::python::list pViewPorts,
+				_In_ const boost::python::list pViewPortScissors)
+			{
+				return py_load(
+					pGDevice,
+					pVertexBindingAttributes,
+					pPrimitiveTopology,
+					pRenderPassBinding,
+					pShaderBinding,
+					pViewPorts,
+					pViewPortScissors,
+					"pipeline_cache",
+					{},
+					{},
+					0,
+					w_graphics_device::defaults_states::pipelines::rasterization_create_info,
+					w_graphics_device::defaults_states::pipelines::multisample_create_info,
+					w_graphics_device::defaults_states::blend_states::premulitplied_alpha,
+					w_color::TRANSPARENT_());
+			}
+
+			W_RESULT py_load_min_args_8(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
 				_In_ const w_primitive_topology& pPrimitiveTopology,
@@ -185,47 +212,24 @@ namespace wolf
 				_In_ const boost::python::list pViewPortScissors,
 				_In_ const std::string& pPipelineCacheName)
 			{
-				if (!pGDevice.get()) return W_FAILED;
-				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
-
-				//get viewports
-				std::vector<w_viewport> _viewports;
-				for (size_t i = 0; i < len(pViewPorts); ++i)
-				{
-					boost::python::extract<w_viewport> _vp(pViewPorts[i]);
-					if (_vp.check())
-					{
-						_viewports.push_back(_vp());
-					}
-				}
-
-				//get viewport scissor
-				std::vector<w_viewport_scissor> _viewport_scissor;
-				for (size_t i = 0; i < len(pViewPortScissors); ++i)
-				{
-					boost::python::extract<w_viewport_scissor> _vp(pViewPortScissors[i]);
-					if (_vp.check())
-					{
-						_viewport_scissor.push_back(_vp());
-					}
-				}
-
-				auto _hr = load(_gDevice,
+				return py_load(
+					pGDevice,
 					pVertexBindingAttributes,
 					pPrimitiveTopology,
-					&pRenderPassBinding,
-					&pShaderBinding,
-					_viewports,
-					_viewport_scissor,
-					pPipelineCacheName);
-
-				_viewports.clear();
-				_viewport_scissor.clear();
-
-				_gDevice.reset();
-				return _hr;
+					pRenderPassBinding,
+					pShaderBinding,
+					pViewPorts,
+					pViewPortScissors,
+					pPipelineCacheName,
+					{},
+					{},
+					0,
+					w_graphics_device::defaults_states::pipelines::rasterization_create_info,
+					w_graphics_device::defaults_states::pipelines::multisample_create_info,
+					w_graphics_device::defaults_states::blend_states::premulitplied_alpha,
+					w_color::TRANSPARENT_());
 			}
-
+			
 			W_RESULT py_load_compute(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_ const w_shader& pShaderBinding,
@@ -264,6 +268,25 @@ namespace wolf
 				return bind(pCommandBuffer);
 			}
 
+			void py_set_push_constant_buffer(
+				_In_ const w_command_buffer&	pCommandBuffer,
+				_In_ w_shader_stage_flag_bits   pStageFlags,
+				_In_ const uint32_t&			pOffset,
+				_In_ boost::python::list		pValues)
+			{
+				//get push constant range
+				std::vector<float> _push_consts_values;
+				for (size_t i = 0; i < len(pValues); ++i)
+				{
+					boost::python::extract<float> _p(pValues[i]);
+					if (_p.check())
+					{
+						_push_consts_values.push_back(_p());
+					}
+				}
+				set_push_constant_buffer(pCommandBuffer, pStageFlags, pOffset, _push_consts_values.size() * sizeof(float), _push_consts_values.data());
+			}
+
 			static W_RESULT py_create_pipeline_cache(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_z_ const std::string& pPipelineCacheName)
@@ -275,7 +298,7 @@ namespace wolf
 				return _hr;
 			}
 			
-			W_EXP static ULONG py_release_all_pipeline_caches(_In_ boost::shared_ptr<w_graphics_device>& pGDevice)
+			static ULONG py_release_all_pipeline_caches(_In_ boost::shared_ptr<w_graphics_device>& pGDevice)
 			{
 				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);

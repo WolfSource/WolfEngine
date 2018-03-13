@@ -22,7 +22,7 @@ namespace wolf
             
             W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 						 _In_z_ const std::wstring& pShaderBinaryPath,
-                         _In_ const w_shader_stage pShaderStage,
+                         _In_ const w_shader_stage_flag_bits& pShaderStage,
                          _In_z_ const std::string& pMainFunctionName)
             {
                 this->_gDevice = pGDevice;
@@ -94,7 +94,7 @@ namespace wolf
 				this->_entry_point_name = wolf::system::convert::copy_string_to_const_char_ptr(pMainFunctionName);
 				_pipeline_shader_stage_info.pName = this->_entry_point_name;
 
-                if (pShaderStage == w_shader_stage::COMPUTE_SHADER)
+                if (pShaderStage == w_shader_stage_flag_bits::COMPUTE_SHADER)
                 {
                     this->_compute_shader_stage = _pipeline_shader_stage_info;
                 }
@@ -215,7 +215,7 @@ namespace wolf
 				//seperated write descriptor for compute shader and other shader stages
 				for (auto& _iter : pShaderBindingParams)
 				{
-					if (_iter.stage == w_shader_stage::COMPUTE_SHADER)
+					if (_iter.stage == w_shader_stage_flag_bits::COMPUTE_SHADER)
 					{
 						_create_write_descriptor_sets(
 							_iter,
@@ -530,7 +530,7 @@ namespace wolf
 
                 for (auto& _iter : this->_shader_binding_params)
                 {
-                    if (_iter.stage == w_shader_stage::COMPUTE_SHADER)
+                    if (_iter.stage == w_shader_stage_flag_bits::COMPUTE_SHADER)
                     {
                         _create_descriptor_layout_bindings(
                             _iter,
@@ -671,7 +671,7 @@ w_shader::~w_shader()
 
 W_RESULT w_shader::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_z_ const std::wstring& pShaderBinaryPath,
-	_In_ const w_shader_stage pShaderStage,
+	_In_ const w_shader_stage_flag_bits& pShaderStage,
 	_In_z_ const std::string& pMainFunctionName)
 {
 	if (!this->_pimp) return W_FAILED;
@@ -790,42 +790,42 @@ W_RESULT w_shader::load_shader(_In_ const std::shared_ptr<w_graphics_device>& pG
 
     if (!pVertexShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pVertexShaderPath, w_shader_stage::VERTEX_SHADER, pMainFunctionName) == W_FAILED)
+        if (_shader->load(pGDevice, pVertexShaderPath, w_shader_stage_flag_bits::VERTEX_SHADER, pMainFunctionName) == W_FAILED)
         {
             return W_FAILED;
         }
     }
     if (!pTessellationControlShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pTessellationControlShaderPath, w_shader_stage::TESSELATION_CONTROL, pMainFunctionName) == W_FAILED)
+        if (_shader->load(pGDevice, pTessellationControlShaderPath, w_shader_stage_flag_bits::TESSELATION_CONTROL, pMainFunctionName) == W_FAILED)
         {
             return W_FAILED;
         }
     }
     if (!pTessellationEvaluationShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pTessellationEvaluationShaderPath, w_shader_stage::TESSELATION_EVALUATION, pMainFunctionName) == W_FAILED)
+        if (_shader->load(pGDevice, pTessellationEvaluationShaderPath, w_shader_stage_flag_bits::TESSELATION_EVALUATION, pMainFunctionName) == W_FAILED)
         {
             return W_FAILED;
         }
     }
     if (!pGeometryShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pGeometryShaderPath, w_shader_stage::GEOMETRY_SHADER, pMainFunctionName) == W_FAILED)
+        if (_shader->load(pGDevice, pGeometryShaderPath, w_shader_stage_flag_bits::GEOMETRY_SHADER, pMainFunctionName) == W_FAILED)
         {
             return W_FAILED;
         }
     }
     if (!pFragmentShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pFragmentShaderPath, w_shader_stage::FRAGMENT_SHADER, pMainFunctionName) == W_FAILED)
+        if (_shader->load(pGDevice, pFragmentShaderPath, w_shader_stage_flag_bits::FRAGMENT_SHADER, pMainFunctionName) == W_FAILED)
         {
             return W_FAILED;
         }
     }
     if (!pComputeShaderPath.empty())
     {
-        if (_shader->load(pGDevice, pComputeShaderPath, w_shader_stage::COMPUTE_SHADER, pMainFunctionName) == W_FAILED)
+        if (_shader->load(pGDevice, pComputeShaderPath, w_shader_stage_flag_bits::COMPUTE_SHADER, pMainFunctionName) == W_FAILED)
         {
             return W_FAILED;
         }

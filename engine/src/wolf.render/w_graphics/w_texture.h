@@ -59,7 +59,7 @@ namespace wolf
                 _In_ const uint32_t& pWidth,
                 _In_ const uint32_t& pHeight,
 				_In_ const bool& pGenerateMipMapsLevels,
-				_In_ const w_memory_property_flags pMemoryPropertyFlags);
+				_In_ const uint32_t pMemoryPropertyFlags);
             
 			//Load texture
 			W_EXP W_RESULT load();
@@ -150,7 +150,7 @@ namespace wolf
             //get height of image
             W_EXP const uint32_t get_height() const;
 			//get image usage
-			W_EXP const w_image_usage_flags get_usage_flags() const;
+			W_EXP const uint32_t get_usage_flags() const;
 			//get sampler of image
             W_EXP w_sampler get_sampler(_In_ const w_sampler_type& pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
             //get image and view resources
@@ -173,7 +173,7 @@ namespace wolf
 			//set image format
 			W_EXP void set_format(_In_ w_format pFormat);
 			//set image usage
-			W_EXP void set_usage_flags(_In_ w_image_usage_flags pUsage);
+			W_EXP void set_usage_flags(_In_ uint32_t pUsage);
 			//set buffer type
 			W_EXP void set_buffer_type(_In_ w_texture_buffer_type pBufferType);
 			//set image view type
@@ -205,7 +205,7 @@ namespace wolf
 				_In_ const uint32_t& pWidth = 32,
 				_In_ const uint32_t& pHeight = 32,
 				_In_ const bool& pGenerateMipMapsLevels = false,
-				_In_ const w_memory_property_flags pMemoryPropertyFlags = w_memory_property_flag_bits::DEVICE_LOCAL_BIT)
+				_In_ const uint32_t pMemoryPropertyFlags = w_memory_property_flag_bits::DEVICE_LOCAL_BIT)
 			{
 				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);

@@ -197,7 +197,7 @@ void scene::load()
     
 	//create wireframe pipeline
     auto _rasterization_states = wolf::graphics::w_graphics_device::defaults_states::pipelines::rasterization_create_info;
-    _rasterization_states.polygonMode = VkPolygonMode::VK_POLYGON_MODE_LINE;
+    _rasterization_states.set_polygon_mode(w_polygon_mode::LINE);
     
 	_hr = this->_wireframe_pipeline.load(_gDevice,
 		this->_mesh.get_vertex_binding_attributes(),

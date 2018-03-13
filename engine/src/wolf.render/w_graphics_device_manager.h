@@ -65,7 +65,7 @@ namespace wolf
 		{
 			w_attachment_description desc;
 			w_attachment_reference ref;
-			w_memory_property_flags memory_flag = w_memory_property_flag_bits::DEVICE_LOCAL_BIT;
+			uint32_t memory_flag = w_memory_property_flag_bits::DEVICE_LOCAL_BIT;
 
 			static w_attachment_buffer_desc create_color_desc_buffer()
 			{
@@ -300,7 +300,7 @@ namespace wolf
             W_EXP W_RESULT submit(
 				_In_ const std::vector<const w_command_buffer*>&	pCommandBuffers,
                 _In_ const w_queue&									pQueue,
-                _In_ const w_pipeline_stage_flags*					pWaitDstStageMask,
+                _In_ const uint32_t*								pWaitDstStageMask,
                 _In_ std::vector<w_semaphore> 						pWaitForSemaphores,
                 _In_ std::vector<w_semaphore> 						pSignalForSemaphores,
                 _In_ w_fences*										pFence);
@@ -433,11 +433,11 @@ namespace wolf
 					}
 				}
 
-				std::vector<w_pipeline_stage_flags> _pipeline_stage_flags;
+				std::vector<uint32_t> _pipeline_stage_flags;
 				//get wait dst stage mask
 				for (size_t i = 0; i < len(pWaitDstStageMask); ++i)
 				{
-					boost::python::extract<w_pipeline_stage_flags> _stage(pWaitDstStageMask[i]);
+					boost::python::extract<uint32_t> _stage(pWaitDstStageMask[i]);
 					if (_stage.check())
 					{
 						_pipeline_stage_flags.push_back(_stage());

@@ -246,6 +246,13 @@ class scene(QWidget):
 if __name__ == '__main__':
     # Create a Qt application
     _app = QApplication(sys.argv)
+    
+    #Show gui
+    _gui = gui()
+    _gui.resize(screen_width /2, screen_height /2)
+    _gui.setWindowTitle('Wolf.Engine Debug')
+
+    #Init scene
     _scene = scene(pyWolfPath + "..\\..\\..\\..\\content\\",
                   pyWolfPath,
                   "py_10_gui")
@@ -253,10 +260,13 @@ if __name__ == '__main__':
     _scene.setWindowTitle('Wolf.Engine')
     _scene.show()
 
-    #Show gui
+    #Init gui
     _gui = gui()
     _gui.resize(screen_width /2, screen_height /2)
     _gui.setWindowTitle('Wolf.Engine Debug')
+
+    #Show all widgets
+    _scene.show()
     _gui.show()
     
     sys.exit(_app.exec_())

@@ -173,7 +173,7 @@ namespace wolf
 				//loading vertex shaders
 				_hr = this->_shader.load(_gDevice,
 					content_path + L"shaders/shape.vert.spv",
-					w_shader_stage::VERTEX_SHADER);
+					w_shader_stage_flag_bits::VERTEX_SHADER);
 				if (_hr == W_FAILED)
 				{
 					release();
@@ -184,7 +184,7 @@ namespace wolf
 				//loading fragment shader
 				_hr = this->_shader.load(_gDevice,
 					content_path + L"shaders/shape.frag.spv",
-					w_shader_stage::FRAGMENT_SHADER);
+					w_shader_stage_flag_bits::FRAGMENT_SHADER);
 				if (_hr == W_FAILED)
 				{
 					release();
@@ -212,13 +212,13 @@ namespace wolf
 				w_shader_binding_param _shader_param;
 				_shader_param.index = 0;
 				_shader_param.type = w_shader_binding_type::UNIFORM;
-				_shader_param.stage = w_shader_stage::VERTEX_SHADER;
+				_shader_param.stage = w_shader_stage_flag_bits::VERTEX_SHADER;
 				_shader_param.buffer_info = this->_u0.get_descriptor_info();
 				_shader_params.push_back(_shader_param);
 
 				_shader_param.index = 1;
 				_shader_param.type = w_shader_binding_type::UNIFORM;
-				_shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
+				_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
 				_shader_param.buffer_info = this->_u1.get_descriptor_info();
 				_shader_params.push_back(_shader_param);
 

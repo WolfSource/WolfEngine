@@ -47,7 +47,7 @@ namespace wolf
                 _In_ const uint32_t pWidth, 
 				_In_ const uint32_t pHeight,
                 _In_ const bool pGenerateMipMaps,
-                _In_ const w_memory_property_flags pMemoryPropertyFlags)
+                _In_ const uint32_t pMemoryPropertyFlags)
             {
                 this->_gDevice = pGDevice;
                 this->_memory_property_flags = pMemoryPropertyFlags;
@@ -1560,7 +1560,7 @@ namespace wolf
                 return this->_image_view.height;
             }
             
-			const w_image_usage_flags get_usage_flags() const
+			const uint32_t get_usage_flags() const
 			{
 				return this->_usage_flags;
 			}
@@ -1624,7 +1624,7 @@ namespace wolf
 				this->_image_view_type = pViewType;
 			}
 
-			void set_usage_flags(_In_ w_image_usage_flags pUsageFlags)
+			void set_usage_flags(_In_ uint32_t pUsageFlags)
 			{
 				this->_usage_flags = pUsageFlags;
 			}
@@ -1635,11 +1635,11 @@ namespace wolf
             
             std::string                                     _name;
             std::shared_ptr<w_graphics_device>              _gDevice;
-			w_image_usage_flags								_usage_flags;
+			uint32_t										_usage_flags;
             uint32_t                                        _layer_count;
             uint32_t                                        _mip_map_levels;
             bool                                            _generate_mip_maps;
-            w_memory_property_flags                         _memory_property_flags;
+            uint32_t										_memory_property_flags;
             bool                                            _is_staging;
             void*                                           _staging_buffer_memory_pointer;
             w_buffer                                        _staging_buffer;
@@ -1690,7 +1690,7 @@ W_RESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pG
     _In_ const uint32_t& pWidth,
     _In_ const uint32_t& pHeight,
 	_In_ const bool& pGenerateMipMapsLevels,
-	_In_ const w_memory_property_flags pMemoryPropertyFlags)
+	_In_ const uint32_t pMemoryPropertyFlags)
 {
     if (!this->_pimp) return W_FAILED;
     return this->_pimp->initialize(pGDevice, pWidth, pHeight, pGenerateMipMapsLevels, pMemoryPropertyFlags);
@@ -1922,7 +1922,7 @@ const uint32_t w_texture::get_height() const
     return this->_pimp->get_height();
 }
 
-const w_image_usage_flags w_texture::get_usage_flags() const
+const uint32_t w_texture::get_usage_flags() const
 {
 	if (!this->_pimp) return 0;
 	return this->_pimp->get_usage_flags();
@@ -1990,7 +1990,7 @@ void w_texture::set_format(_In_ w_format pFormat)
 	return this->_pimp->set_format(pFormat);
 }
 
-void w_texture::set_usage_flags(_In_ w_image_usage_flags pUsageFlags)
+void w_texture::set_usage_flags(_In_ uint32_t pUsageFlags)
 {
 	if (!this->_pimp) return;
 	return this->_pimp->set_usage_flags(pUsageFlags);

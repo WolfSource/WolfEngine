@@ -16,10 +16,21 @@
 
 namespace pyWolf
 {
+	using namespace boost::python;
+	using namespace wolf::graphics;
+
 	static void py_graphics_device_manager_export()
 	{
-		using namespace boost::python;
-		using namespace wolf::graphics;
+		//define w_shader_stage enum
+		enum_<w_shader_stage_flag_bits>("w_shader_stage_flag_bits")
+			.value("VERTEX_SHADER", w_shader_stage_flag_bits::VERTEX_SHADER)
+			.value("TESSELATION_CONTROL", w_shader_stage_flag_bits::TESSELATION_CONTROL)
+			.value("TESSELATION_EVALUATION", w_shader_stage_flag_bits::TESSELATION_EVALUATION)
+			.value("FRAGMENT_SHADER", w_shader_stage_flag_bits::FRAGMENT_SHADER)
+			.value("GEOMETRY_SHADER", w_shader_stage_flag_bits::GEOMETRY_SHADER)
+			.value("COMPUTE_SHADER", w_shader_stage_flag_bits::COMPUTE_SHADER)
+			.export_values()
+			;
 
 		//export w_graphics_device_manager_configs class
 		class_<w_graphics_device_manager_configs>("w_graphics_device_manager_configs", init<>())
@@ -44,7 +55,6 @@ namespace pyWolf
 			;
 
 		//export w_attachment_buffer_desc class
-		//TODO: Deeper data needed for desc and ref
 		class_<w_attachment_buffer_desc>("w_attachment_buffer_desc", init<>())
 			.def_readwrite("desc", &w_attachment_buffer_desc::desc, "attachment desc")
 			.def_readwrite("ref", &w_attachment_buffer_desc::ref, "attachment reference")
@@ -55,6 +65,40 @@ namespace pyWolf
 			.staticmethod("create_depth_desc_buffer")
 			;
 		
+		//export w_polygon_mode enum
+		enum_<w_polygon_mode>("w_polygon_mode")
+			.value("FILL", w_polygon_mode::FILL)
+			.value("LINE", w_polygon_mode::LINE)
+			.value("POINT", w_polygon_mode::POINT)
+			.value("FILL_RECTANGLE_NV", w_polygon_mode::FILL_RECTANGLE_NV)
+			.value("POLYGON_MODE_BEGIN_RANGE", w_polygon_mode::POLYGON_MODE_BEGIN_RANGE)
+			.value("POLYGON_MODE_END_RANGE", w_polygon_mode::POLYGON_MODE_END_RANGE)
+			.value("POLYGON_MODE_RANGE_SIZE", w_polygon_mode::POLYGON_MODE_RANGE_SIZE)
+			.value("POLYGON_MODE_MAX_ENUM", w_polygon_mode::POLYGON_MODE_MAX_ENUM)
+			.export_values()
+			;
+
+		//export w_cull_mode_flag_bits enum
+		enum_<w_cull_mode_flag_bits>("w_cull_mode_flag_bits")
+			.value("NONE", w_cull_mode_flag_bits::NONE)
+			.value("FRONT_BIT", w_cull_mode_flag_bits::FRONT_BIT)
+			.value("BACK_BIT", w_cull_mode_flag_bits::BACK_BIT)
+			.value("FRONT_AND_BACK", w_cull_mode_flag_bits::FRONT_AND_BACK)
+			.value("CULL_MODE_FLAG_BITS_MAX_ENUM", w_cull_mode_flag_bits::CULL_MODE_FLAG_BITS_MAX_ENUM)
+			.export_values()
+			;
+
+		//export w_cull_mode_flag_bits enum
+		enum_<w_front_face>("w_front_face")
+			.value("COUNTER_CLOCKWISE", w_front_face::COUNTER_CLOCKWISE)
+			.value("CLOCKWISE", w_front_face::CLOCKWISE)
+			.value("FRONT_FACE_BEGIN_RANGE", w_front_face::FRONT_FACE_BEGIN_RANGE)
+			.value("FRONT_FACE_END_RANGE", w_front_face::FRONT_FACE_END_RANGE)
+			.value("FRONT_FACE_RANGE_SIZE", w_front_face::FRONT_FACE_RANGE_SIZE)
+			.value("FRONT_FACE_MAX_ENUM", w_front_face::FRONT_FACE_MAX_ENUM)
+			.export_values()
+			;
+
 		//export w_descriptor_set struct
 		class_<w_descriptor_set, boost::noncopyable>("w_descriptor_set", init<>());
 
@@ -73,8 +117,12 @@ namespace pyWolf
 		//export w_attachment_reference class
 		class_<w_attachment_reference, boost::noncopyable>("w_attachment_reference", init<>());
 		
-		//export w_push_constant_range class
-		class_<w_push_constant_range, boost::noncopyable>("w_push_constant_range", init<>());
+		//export w_push_constant_range struct
+		class_<w_push_constant_range, boost::noncopyable>("w_push_constant_range", init<>())
+			.add_property("shader_stage_flags", &w_push_constant_range::get_shader_stage_flags, &w_push_constant_range::set_shader_stage_flags, "shader stage flags")
+			.add_property("offset", &w_push_constant_range::get_offset, &w_push_constant_range::set_offset, "offset")
+			.add_property("size", &w_push_constant_range::get_size, &w_push_constant_range::set_size, "size")
+			;
 
 		//export w_sampler class
 		class_<w_sampler, boost::noncopyable>("w_sampler", init<>());
@@ -95,7 +143,11 @@ namespace pyWolf
 		class_<w_pipeline_input_assembly_state_create_info, boost::noncopyable>("w_pipeline_input_assembly_state_create_info", init<>());
 
 		//export w_pipeline_rasterization_state_create_info struct
-		class_<w_pipeline_rasterization_state_create_info, boost::noncopyable>("w_pipeline_rasterization_state_create_info", init<>());
+		class_<w_pipeline_rasterization_state_create_info, boost::noncopyable>("w_pipeline_rasterization_state_create_info", init<>())
+			.add_property("polygon_mode", &w_pipeline_rasterization_state_create_info::get_polygon_mode, &w_pipeline_rasterization_state_create_info::set_polygon_mode, "Polygon mode")
+			.add_property("cull_mode", &w_pipeline_rasterization_state_create_info::get_cull_mode, &w_pipeline_rasterization_state_create_info::set_cull_mode, "Cull mode")
+			.add_property("front_face", &w_pipeline_rasterization_state_create_info::get_front_face, &w_pipeline_rasterization_state_create_info::set_front_face, "Front Face")
+			;
 
 		//export w_pipeline_multisample_state_create_info struct
 		class_<w_pipeline_multisample_state_create_info, boost::noncopyable>("w_pipeline_multisample_state_create_info", init<>());
@@ -490,6 +542,24 @@ namespace pyWolf
 				;
 
 			register_ptr_to_python< boost::shared_ptr<w_output_presentation_window>>();
+	}
+
+	static void py_defaults_states_export()
+	{
+		//export w_graphics_device::defaults_states::pipelines struct
+		class_<w_graphics_device::defaults_states::pipelines>("pipelines", init<>())
+			.def_readonly("layout_create_info", &w_graphics_device::defaults_states::pipelines::layout_create_info, "default layout create info")
+			.def_readonly("vertex_input_create_info", &w_graphics_device::defaults_states::pipelines::vertex_input_create_info, "default vertex input create info")
+			.def_readonly("input_assembly_create_info", &w_graphics_device::defaults_states::pipelines::input_assembly_create_info, "default input assembly create info")
+			.def_readonly("rasterization_create_info", &w_graphics_device::defaults_states::pipelines::rasterization_create_info, "default rasterization create info")
+			.def_readonly("multisample_create_info", &w_graphics_device::defaults_states::pipelines::multisample_create_info, "default multisample create info")
+			;
+
+		//export w_graphics_device::defaults_states::blend_states struct
+		class_<w_graphics_device::defaults_states::blend_states>("blend_states", init<>())
+			.def_readonly("none", &w_graphics_device::defaults_states::blend_states::none, "default none blend states")
+			.def_readonly("premulitplied_alpha", &w_graphics_device::defaults_states::blend_states::premulitplied_alpha, "default premulitplied alpha blend states")
+			;
 	}
 }
 

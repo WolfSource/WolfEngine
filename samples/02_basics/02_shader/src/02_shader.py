@@ -113,26 +113,20 @@ class scene(QWidget):
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #loading vertex shader
         _content_path_dir = _script_dir + "/content/"
-        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER, "main")
+        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage_flag_bits.VERTEX_SHADER, "main")
         if _hr:
             print "Error on loading vertex shader"
             sys.exit(1)
 
         #loading fragment shader
-        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER, "main")
+        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage_flag_bits.FRAGMENT_SHADER, "main")
         if _hr: 
             print "Error on loading fragment shader"
             sys.exit(1)
 
-        #loading pipeline cache
-        _pipeline_cache_name = "pipeline_cache";
-        _hr = self._pipeline.create_pipeline_cache(self._gDevice, _pipeline_cache_name)
-        if _hr:
-            print "Error on creating pipeline cache"
-
          #create pipeline
         _vba = pyWolf.graphics.w_vertex_binding_attributes()
-        _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name)
+        _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ])
         if _hr:
             print "Error on creating pipeline"
             sys.exit(1)

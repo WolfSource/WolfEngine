@@ -69,6 +69,7 @@ class scene(QWidget):
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         self._show_wireframe = True
+        self._rebuild_command_buffer = True
         self._solid_pipeline = pyWolf.graphics.w_pipeline()
         self._wireframe_pipeline = pyWolf.graphics.w_pipeline()
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -138,14 +139,14 @@ class scene(QWidget):
 
         #loading vertex shader
         _content_path_dir = _script_dir + "/content/"
-        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER)
+        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage_flag_bits.VERTEX_SHADER)
         if _hr:
             print "Error on loading vertex shader"
             self.release()
             sys.exit(1)
 
         #loading fragment shader
-        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER)
+        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage_flag_bits.FRAGMENT_SHADER)
         if _hr: 
             print "Error on loading fragment shader"
             self.release()
@@ -173,31 +174,46 @@ class scene(QWidget):
         _shader_param_0 = pyWolf.graphics.w_shader_binding_param()
         _shader_param_0.index = 0
         _shader_param_0.type = pyWolf.graphics.w_shader_binding_type.SAMPLER2D
-        _shader_param_0.stage = pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER
+        _shader_param_0.stage = pyWolf.graphics.w_shader_stage_flag_bits.FRAGMENT_SHADER
         _shader_param_0.image_info = self._texture.get_descriptor_info()
 
-        _shader_param_1 = pyWolf.graphics.w_shader_binding_param()
-        _shader_param_1.index = 1
-        _shader_param_1.type = pyWolf.graphics.w_shader_binding_type.UNIFORM
-        _shader_param_1.stage = pyWolf.graphics.w_shader_stage.VERTEX_SHADER
-        _shader_param_1.buffer_info = self._u0.get_descriptor_info()
-
-        _hr = self._shader.set_shader_binding_params( [_shader_param_0, _shader_param_1 ])
+        _hr = self._shader.set_shader_binding_params( [_shader_param_0 ])
         if _hr:
             print "Set shader binding params"
                 
         #loading pipeline cache
         _pipeline_cache_name = "pipeline_cache"
-        _hr = self._pipeline.create_pipeline_cache(self._gDevice, _pipeline_cache_name)
+        _hr = self._solid_pipeline.create_pipeline_cache(self._gDevice, _pipeline_cache_name)
         if _hr:
             print "Error on creating pipeline cache"
 
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #The following codes have been added for this project
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++   
+        _rasterization_states = pyWolf.graphics.w_graphics_device.defaults_states.pipelines.rasterization_create_info
+        _rasterization_states.polygon_mode = pyWolf.graphics.w_polygon_mode.LINE
+
+        _multisample_states = pyWolf.graphics.w_graphics_device.defaults_states.pipelines.multisample_create_info
+        _blend_states = pyWolf.graphics.w_graphics_device.defaults_states.blend_states.premulitplied_alpha
+        
+        _blend_color = pyWolf.system.w_color.TRANSPARENT_()
         #create pipeline
-        _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name)
+        _hr = self._wireframe_pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name, [], [], 0, _rasterization_states, _multisample_states, _blend_states, _blend_color)
         if _hr:
             print "Error on creating pipeline"
             self.release()
             sys.exit(1)
+
+        #create pipeline
+        _rasterization_states.polygon_mode = pyWolf.graphics.w_polygon_mode.FILL
+        _hr = self._solid_pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name, [], [], 0, _rasterization_states, _multisample_states, _blend_states, _blend_color)
+        if _hr:
+            print "Error on creating pipeline"
+            self.release()
+            sys.exit(1)
+
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
         _vertex_data = [
 		    -0.7, -0.7,	0.0,		#pos0
@@ -219,12 +235,6 @@ class scene(QWidget):
             print "Error on loading mesh"
             self.release()
             sys.exit(1)
-
-        _hr = self.build_command_buffers()
-        if _hr:
-            print "Error on building draw command buffer(s)"
-            self.release()
-            sys.exit(1)
         
         print "scene loaded successfully"
 
@@ -240,8 +250,15 @@ class scene(QWidget):
             
             self._draw_render_pass.begin(i, _cmd, pyWolf.system.w_color.CORNFLOWER_BLUE(), 1.0, 0)
             
-            #place your draw code
-            self._pipeline.bind(_cmd)
+            #++++++++++++++++++++++++++++++++++++++++++++++++++++
+            #The following codes have been added for this project
+            #++++++++++++++++++++++++++++++++++++++++++++++++++++
+            if self._show_wireframe:
+                self._wireframe_pipeline.bind(_cmd)
+            else:
+                self._solid_pipeline.bind(_cmd)
+            #++++++++++++++++++++++++++++++++++++++++++++++++++++
+            #++++++++++++++++++++++++++++++++++++++++++++++++++++ 
             self._mesh.draw(_cmd, None, 0, False)
 
             self._draw_render_pass.end(_cmd)
@@ -257,6 +274,13 @@ class scene(QWidget):
         #Update label of gui widget
         global _gui
         _gui.debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(pGameTime.get_total_seconds())
+        if self._rebuild_command_buffer:
+            self._rebuild_command_buffer = False
+            _hr = self.build_command_buffers()
+            if _hr:
+                print "Error on building draw command buffer(s)"
+                self.release()
+                sys.exit(1)
     
     def pre_render(self, pGameTime):
         _output_window = self._gDevice.output_presentation_window
@@ -322,6 +346,19 @@ class scene(QWidget):
         self.__exiting = True
         event.accept()
 
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    #The following codes have been added for this project
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    def keyPressEvent(self, event):
+        _key = event.key()
+        if _key == QtCore.Qt.Key.Key_Escape:
+            self.__exiting = True
+        elif _key == QtCore.Qt.Key.Key_W:
+            self._show_wireframe = not self._show_wireframe
+            self._rebuild_command_buffer = True
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     def release(self):
         self._draw_fence.release()
         self._draw_fence = None
@@ -338,22 +375,17 @@ class scene(QWidget):
         self._shader.release()
         self._shader = None
 
-        self._pipeline.release()
-        self._pipeline = None
+        self._wireframe_pipeline.release()
+        self._wireframe_pipeline = None
+
+        self._solid_pipeline.release()
+        self._solid_pipeline = None
 
         self._mesh.release()
         self._mesh = None
 
         self._texture.release()
         self._texture = None
-
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        #The following codes have been added for this project
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        self._u0.release()
-        self._u0 = None
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
         
         self._game.exit()
         self._game = None
@@ -365,17 +397,21 @@ class scene(QWidget):
 if __name__ == '__main__':
     # Create a Qt application
     _app = QApplication(sys.argv)
+
+    #Init gui
+    _gui = gui()
+    _gui.resize(screen_width /2, screen_height /2)
+    _gui.setWindowTitle('Wolf.Engine Debug')
+    
+    #Init scene
     _scene = scene(pyWolfPath + "..\\..\\..\\..\\content\\",
                   pyWolfPath,
                   "py_11_pipeline")
     _scene.resize(screen_width, screen_height)
     _scene.setWindowTitle('Wolf.Engine')
-    _scene.show()
 
-    #Show gui
-    _gui = gui()
-    _gui.resize(screen_width /2, screen_height /2)
-    _gui.setWindowTitle('Wolf.Engine Debug')
+    #Show all widgets
+    _scene.show()
     _gui.show()
-    
+
     sys.exit(_app.exec_())

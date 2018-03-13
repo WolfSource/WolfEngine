@@ -70,6 +70,61 @@ namespace wolf
 {
     namespace graphics
     {
+		enum w_shader_stage_flag_bits
+		{
+			VERTEX_SHADER = VK_SHADER_STAGE_VERTEX_BIT,
+
+#if defined(__DX12__) || defined(__DX11__)
+			HULL_SHADER,
+			DOMAIN_SHADER,
+			PIXEL_SHADER,
+#elif defined(__VULKAN__)
+			TESSELATION_CONTROL = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT,
+			TESSELATION_EVALUATION = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT,
+			FRAGMENT_SHADER = VK_SHADER_STAGE_FRAGMENT_BIT,
+#endif
+
+			GEOMETRY_SHADER = VK_SHADER_STAGE_GEOMETRY_BIT,
+			COMPUTE_SHADER = VK_SHADER_STAGE_COMPUTE_BIT
+		};
+
+		typedef enum w_polygon_mode
+		{
+#ifdef __VULKAN__
+			FILL = VK_POLYGON_MODE_FILL,
+			LINE = VK_POLYGON_MODE_LINE,
+			POINT = VK_POLYGON_MODE_POINT,
+			FILL_RECTANGLE_NV = VK_POLYGON_MODE_FILL_RECTANGLE_NV,
+			POLYGON_MODE_BEGIN_RANGE = VK_POLYGON_MODE_BEGIN_RANGE,
+			POLYGON_MODE_END_RANGE = VK_POLYGON_MODE_END_RANGE,
+			POLYGON_MODE_RANGE_SIZE = VK_POLYGON_MODE_RANGE_SIZE,
+			POLYGON_MODE_MAX_ENUM = VK_POLYGON_MODE_MAX_ENUM
+#endif
+		} w_polygon_mode;
+
+		typedef enum w_cull_mode_flag_bits 
+		{
+#ifdef __VULKAN__
+			NONE = VK_CULL_MODE_NONE,
+			FRONT_BIT = VK_CULL_MODE_FRONT_BIT,
+			BACK_BIT = VK_CULL_MODE_BACK_BIT,
+			FRONT_AND_BACK = VK_CULL_MODE_FRONT_AND_BACK,
+			CULL_MODE_FLAG_BITS_MAX_ENUM = VK_CULL_MODE_FLAG_BITS_MAX_ENUM
+#endif
+		} w_cull_mode_flag_bits;
+
+		typedef enum w_front_face
+		{
+#ifdef __VULKAN__
+			COUNTER_CLOCKWISE = VK_FRONT_FACE_COUNTER_CLOCKWISE,
+			CLOCKWISE = VK_FRONT_FACE_CLOCKWISE,
+			FRONT_FACE_BEGIN_RANGE = VK_FRONT_FACE_BEGIN_RANGE,
+			FRONT_FACE_END_RANGE = VK_FRONT_FACE_END_RANGE,
+			FRONT_FACE_RANGE_SIZE = VK_FRONT_FACE_RANGE_SIZE,
+			FRONT_FACE_MAX_ENUM = VK_FRONT_FACE_MAX_ENUM
+#endif
+		} w_front_face;		
+
 		struct w_descriptor_set
 		{
 #ifdef __VULKAN__
@@ -111,12 +166,20 @@ namespace wolf
 #endif
 		{
 		};
-
+		
 		struct w_push_constant_range : 
 #ifdef __VULKAN__
 			public VkPushConstantRange
 #endif
 		{
+			uint32_t get_shader_stage_flags() const { return this->stageFlags; }
+			void set_shader_stage_flags(_In_ const uint32_t& pValue) { this->stageFlags = pValue; }
+
+			uint32_t get_offset() { return this->offset; }
+			void set_offset(_In_ const uint32_t& pValue) { this->offset = pValue; }
+
+			uint32_t get_size() { return this->size; }
+			void set_size(_In_ const uint32_t& pValue) { this->size = pValue; }
 		};
 
 		struct w_descriptor_buffer_info : 
@@ -166,6 +229,14 @@ namespace wolf
 			public VkPipelineRasterizationStateCreateInfo
 #endif
 		{
+			w_polygon_mode get_polygon_mode() const { return (w_polygon_mode)this->polygonMode; }
+			void set_polygon_mode(_In_ const w_polygon_mode& pValue) { this->polygonMode = (VkPolygonMode)pValue; }
+
+			w_cull_mode_flag_bits get_cull_mode() { return (w_cull_mode_flag_bits)this->cullMode; }
+			void set_cull_mode(_In_ const w_cull_mode_flag_bits& pValue) { this->cullMode = (VkCullModeFlagBits)pValue; }
+
+			w_front_face get_front_face() { return (w_front_face)this->frontFace; }
+			void set_front_face(_In_ const w_front_face& pValue) { this->frontFace = (VkFrontFace)pValue; }
 		};
 
 		struct w_pipeline_multisample_state_create_info :
@@ -193,7 +264,6 @@ namespace wolf
 			MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM = VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM
 #endif
         } w_memory_property_flag_bits;
-        typedef uint32_t w_memory_property_flags;
 
         typedef enum w_command_buffer_level
         {
@@ -211,7 +281,6 @@ namespace wolf
             SIMULTANEOUS_USE_BIT = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT
 #endif
         } w_command_buffer_usage_flag_bits;
-        typedef uint32_t w_command_buffer_usage_flags;
         
 		typedef enum w_pipeline_stage_flag_bits
 		{
@@ -237,7 +306,6 @@ namespace wolf
 			PIPELINE_STAGE_FLAG_BITS_MAX_ENUM = VK_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM
 #endif
 		} w_pipeline_stage_flag_bits;
-		typedef uint32_t w_pipeline_stage_flags;
 
 		typedef enum w_dynamic_state
 		{
@@ -563,7 +631,6 @@ namespace wolf
 			IMAGE_USAGE_FLAG_BITS_MAX_ENUM = VK_IMAGE_USAGE_FLAG_BITS_MAX_ENUM
 #endif
 		} w_image_usage_flag_bits;
-		typedef uint32_t w_image_usage_flags;
 
 		typedef enum w_buffer_usage_flag_bits
 		{
@@ -580,11 +647,6 @@ namespace wolf
 			BUFFER_USAGE_FLAG_BITS_MAX_ENUM = VK_BUFFER_USAGE_FLAG_BITS_MAX_ENUM
 #endif
 		} w_buffer_usage_flag_bits;
-		typedef uint32_t w_buffer_usage_flags;
-		typedef uint32_t w_buffer_view_create_flags;
-		typedef uint32_t w_image_view_create_flags;
-		typedef uint32_t w_shader_module_create_flags;
-		typedef uint32_t w_pipeline_cache_create_flags;
     }
 }
 

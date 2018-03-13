@@ -47,7 +47,7 @@ namespace wolf
 
 			//begin command buffer
 			W_EXP W_RESULT begin(_In_ const size_t& pCommandBufferIndex,
-				_In_ const w_command_buffer_usage_flags pFlags = w_command_buffer_usage_flag_bits::SIMULTANEOUS_USE_BIT);
+				_In_ const uint32_t pFlags = w_command_buffer_usage_flag_bits::SIMULTANEOUS_USE_BIT);
 
 			//end command buffer
 			W_EXP W_RESULT end(_In_ const size_t& pCommandBufferIndex);

@@ -34,17 +34,6 @@ namespace pyWolf
 			.export_values()
 			;
 
-		//define w_shader_stage enum
-		enum_<w_shader_stage>("w_shader_stage")
-			.value("VERTEX_SHADER", w_shader_stage::VERTEX_SHADER)
-			.value("TESSELATION_CONTROL", w_shader_stage::TESSELATION_CONTROL)
-			.value("TESSELATION_EVALUATION", w_shader_stage::TESSELATION_EVALUATION)
-			.value("FRAGMENT_SHADER", w_shader_stage::FRAGMENT_SHADER)
-			.value("GEOMETRY_SHADER", w_shader_stage::GEOMETRY_SHADER)
-			.value("COMPUTE_SHADER", w_shader_stage::COMPUTE_SHADER)
-			.export_values()
-			;
-
 		//export w_pipeline_shader_stage_create_info class
 		class_<w_pipeline_shader_stage_create_info, boost::noncopyable>("w_pipeline_shader_stage_create_info");
 

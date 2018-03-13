@@ -31,25 +31,6 @@ namespace wolf
 			STORAGE
 		};
 
-		enum w_shader_stage
-		{
-			VERTEX_SHADER = VK_SHADER_STAGE_VERTEX_BIT,
-
-#if defined(__DX12__) || defined(__DX11__)
-			HULL_SHADER,
-			DOMAIN_SHADER,
-			PIXEL_SHADER,
-#elif defined(__VULKAN__)
-			TESSELATION_CONTROL = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT,
-			TESSELATION_EVALUATION = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT,
-			FRAGMENT_SHADER = VK_SHADER_STAGE_FRAGMENT_BIT,
-#endif
-
-			GEOMETRY_SHADER = VK_SHADER_STAGE_GEOMETRY_BIT,
-
-			COMPUTE_SHADER = VK_SHADER_STAGE_COMPUTE_BIT
-		};
-
 		struct w_pipeline_shader_stage_create_info : public
 #ifdef __VULKAN__
 			VkPipelineShaderStageCreateInfo
@@ -63,8 +44,8 @@ namespace wolf
 			uint32_t                    index;
 			//type of shader variable
 			w_shader_binding_type       type;
-			//shader stage usages
-			w_shader_stage              stage;
+			//shader stage flags
+			w_shader_stage_flag_bits    stage;
 			//descriptor buffer info
 			w_descriptor_buffer_info    buffer_info;
 			//descriptor image info
@@ -81,7 +62,7 @@ namespace wolf
 			//load shader from binary file
 			W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 							   _In_z_ const std::wstring& pShaderBinaryPath,
-				               _In_ const w_shader_stage pShaderStage,
+				               _In_ const w_shader_stage_flag_bits& pShaderStage,
                                _In_z_ const std::string& pMainFunctionName = "main");
 
 			//release all resources
@@ -130,7 +111,7 @@ namespace wolf
 			W_RESULT py_load(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
 				_In_z_ const std::wstring& pShaderBinaryPath,
-				_In_ const w_shader_stage& pShaderStage,
+				_In_ const w_shader_stage_flag_bits& pShaderStage,
 				_In_z_ const std::string& pMainFunctionName = "main")
 			{
 				if (!pGDevice.get()) return W_FAILED;

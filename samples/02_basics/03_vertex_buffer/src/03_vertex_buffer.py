@@ -114,13 +114,13 @@ class scene(QWidget):
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #loading vertex shader
         _content_path_dir = _script_dir + "/content/"
-        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER, "main")
+        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage_flag_bits.VERTEX_SHADER, "main")
         if _hr:
             print "Error on loading vertex shader"
             sys.exit(1)
 
         #loading fragment shader
-        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER, "main")
+        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage_flag_bits.FRAGMENT_SHADER, "main")
         if _hr: 
             print "Error on loading fragment shader"
             sys.exit(1)

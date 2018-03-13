@@ -31,18 +31,18 @@ namespace wolf
 
             struct texture_index
             {
-                int         _start_index;
-                w_texture*  _texture;
+                int         start_index;
+                w_texture*  texture;
 
                 texture_index()
                 {
-                    this->_start_index = -1;
-                    this->_texture = nullptr;
+                    this->start_index = -1;
+                    this->texture = nullptr;
                 }
                 texture_index(_In_ int  pStartIndex, _In_ w_texture*  pTexture)
                 {
-                    this->_start_index = pStartIndex;
-                    this->_texture = pTexture;
+                    this->start_index = pStartIndex;
+                    this->texture = pTexture;
                 }
             };
 

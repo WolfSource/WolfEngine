@@ -30,8 +30,8 @@ namespace wolf
             W_EXP W_RESULT load(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t& pBufferSize,
-                _In_ const w_buffer_usage_flags pUsage,
-                _In_ const w_memory_property_flags pMemoryFlags);
+                _In_ const uint32_t& pUsage,
+                _In_ const uint32_t& pMemoryFlags);
             
             W_EXP W_RESULT bind();    
             
@@ -48,8 +48,8 @@ namespace wolf
 #pragma region Getters
             
             W_EXP const uint32_t                      get_size() const;
-            W_EXP const w_buffer_usage_flags          get_usage_flags() const;
-            W_EXP const w_memory_property_flags       get_memory_flags() const;
+            W_EXP const uint32_t					  get_usage_flags() const;
+            W_EXP const uint32_t				      get_memory_flags() const;
             W_EXP const w_buffer_handle               get_buffer_handle() const;
             W_EXP const w_device_memory               get_memory() const;
             W_EXP const w_descriptor_buffer_info      get_descriptor_info() const;
@@ -67,8 +67,8 @@ namespace wolf
 			W_RESULT py_load(
 				_In_ boost::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
 				_In_ const uint32_t& pBufferSize,
-				_In_ const w_buffer_usage_flags pUsage,
-				_In_ const w_memory_property_flags pMemoryFlags)
+				_In_ const uint32_t& pUsage,
+				_In_ const uint32_t& pMemoryFlags)
 			{
 				if (!pGDevice.get()) return W_FAILED;
 				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);

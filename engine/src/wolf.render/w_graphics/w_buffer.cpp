@@ -20,8 +20,8 @@ namespace wolf
             
             W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const uint32_t& pBufferSizeInBytes,
-                _In_ const w_buffer_usage_flags pUsageFlags,
-                _In_ const w_memory_property_flags pMemoryPropertyFlags)
+                _In_ const uint32_t& pUsageFlags,
+                _In_ const uint32_t& pMemoryPropertyFlags)
             {
                 this->_gDevice = pGDevice;
 
@@ -262,12 +262,12 @@ namespace wolf
                 return this->_size_in_bytes;
             }
             
-            const VkBufferUsageFlags get_usage_flags() const
+            const uint32_t get_usage_flags() const
             {
                 return this->_usage_flags;
             }
             
-            const w_memory_property_flags get_memory_flags() const
+            const uint32_t get_memory_flags() const
             {
                 return this->_memory_property_flags;
             }
@@ -294,8 +294,8 @@ namespace wolf
             void*                                               _mapped;            
 			w_buffer_handle                                     _buffer_handle;
 			w_device_memory                                     _memory;
-            w_memory_property_flags                             _memory_property_flags;
-			w_buffer_usage_flags                                _usage_flags;
+			uint32_t											_memory_property_flags;
+			uint32_t											_usage_flags;
 			w_descriptor_buffer_info                            _descriptor_info;
             
         };
@@ -329,8 +329,8 @@ W_RESULT w_buffer::load_as_staging(
 W_RESULT w_buffer::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const uint32_t& pBufferSizeInBytes,
-    _In_ const w_buffer_usage_flags pUsageFlags,
-    _In_ const w_memory_property_flags pMemoryFlags)
+    _In_ const uint32_t& pUsageFlags,
+    _In_ const uint32_t& pMemoryFlags)
 {
     if(!this->_pimp) return W_FAILED;
     
@@ -397,14 +397,14 @@ const uint32_t w_buffer::get_size() const
     return this->_pimp->get_size();
 }
 
-const VkBufferUsageFlags w_buffer::get_usage_flags() const
+const uint32_t w_buffer::get_usage_flags() const
 {
     if(!this->_pimp) return VkBufferUsageFlagBits::VK_BUFFER_USAGE_FLAG_BITS_MAX_ENUM;
     
     return this->_pimp->get_usage_flags();
 }
 
-const w_memory_property_flags w_buffer::get_memory_flags() const
+const uint32_t w_buffer::get_memory_flags() const
 {
     if(!this->_pimp) return w_memory_property_flag_bits::DEVICE_LOCAL_BIT;
     

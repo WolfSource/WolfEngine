@@ -113,14 +113,14 @@ class scene(QWidget):
 
         #loading vertex shader
         _content_path_dir = _script_dir + "/content/"
-        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage.VERTEX_SHADER)
+        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage_flag_bits.VERTEX_SHADER)
         if _hr:
             print "Error on loading vertex shader"
             self.release()
             sys.exit(1)
 
         #loading fragment shader
-        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER)
+        _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.frag.spv", pyWolf.graphics.w_shader_stage_flag_bits.FRAGMENT_SHADER)
         if _hr: 
             print "Error on loading fragment shader"
             self.release()
@@ -167,13 +167,13 @@ class scene(QWidget):
         _shader_param_0 = pyWolf.graphics.w_shader_binding_param()
         _shader_param_0.index = 0
         _shader_param_0.type = pyWolf.graphics.w_shader_binding_type.SAMPLER2D
-        _shader_param_0.stage = pyWolf.graphics.w_shader_stage.FRAGMENT_SHADER
+        _shader_param_0.stage = pyWolf.graphics.w_shader_stage_flag_bits.FRAGMENT_SHADER
         _shader_param_0.image_info = self._texture.get_descriptor_info()
 
         _shader_param_1 = pyWolf.graphics.w_shader_binding_param()
         _shader_param_1.index = 1
         _shader_param_1.type = pyWolf.graphics.w_shader_binding_type.UNIFORM
-        _shader_param_1.stage = pyWolf.graphics.w_shader_stage.VERTEX_SHADER
+        _shader_param_1.stage = pyWolf.graphics.w_shader_stage_flag_bits.VERTEX_SHADER
         _shader_param_1.buffer_info = self._u0.get_descriptor_info()
 
         _hr = self._shader.set_shader_binding_params( [_shader_param_0, _shader_param_1 ])

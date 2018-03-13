@@ -106,7 +106,7 @@ namespace wolf
                 return W_PASSED;
             }
             
-			W_RESULT begin(_In_ const size_t& pCommandBufferIndex, _In_ const w_command_buffer_usage_flags pFlags)
+			W_RESULT begin(_In_ const size_t& pCommandBufferIndex, _In_ const uint32_t pFlags)
 			{
 				if (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
 
@@ -293,7 +293,7 @@ W_RESULT w_command_buffers::load(_In_ const std::shared_ptr<w_graphics_device>& 
     return this->_pimp->load(pGDevice, pCount, pLevel, pCreateCommandPool, pCommandPoolQueue);
 }
 
-W_RESULT w_command_buffers::begin(_In_ const size_t& pCommandBufferIndex, _In_ const w_command_buffer_usage_flags pFlags)
+W_RESULT w_command_buffers::begin(_In_ const size_t& pCommandBufferIndex, _In_ const uint32_t pFlags)
 {
     if(!this->_pimp) return W_FAILED;
     return this->_pimp->begin(pCommandBufferIndex, pFlags);

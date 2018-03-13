@@ -76,6 +76,16 @@ BOOST_PYTHON_MODULE(pyWolf)
 		pyWolf::py_mesh_export();
 		pyWolf::py_pipeline_export();
 		pyWolf::py_uniform_export();
+
+		{
+			struct w_graphics_device {};
+			scope _graphics_device = class_<w_graphics_device>("w_graphics_device");
+
+			struct defaults_states {};
+			scope _defaults_states = class_<defaults_states>("defaults_states");
+
+			pyWolf::py_defaults_states_export();
+		}
 	}
 
     //export wolf::framework classes to pyWolf.framework scope

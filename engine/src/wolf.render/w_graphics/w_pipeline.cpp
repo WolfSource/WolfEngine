@@ -28,9 +28,9 @@ namespace wolf
 				_In_ const std::vector<w_dynamic_state>& pDynamicStates,
                 _In_ const std::vector<w_push_constant_range>& pPushConstantRanges,
                 _In_ const uint32_t& pTessellationPatchControlPoints,
-                _In_ const w_pipeline_rasterization_state_create_info* const pPipelineRasterizationStateCreateInfo,
-                _In_ const w_pipeline_multisample_state_create_info* const pPipelineMultiSampleStateCreateInfo,
-                _In_ const w_pipeline_color_blend_attachment_state pBlendState,
+                _In_ const w_pipeline_rasterization_state_create_info& pPipelineRasterizationStateCreateInfo,
+                _In_ const w_pipeline_multisample_state_create_info& pPipelineMultiSampleStateCreateInfo,
+                _In_ const w_pipeline_color_blend_attachment_state& pBlendState,
                 _In_ const w_color& pBlendColors)
             {
 				const std::string _trace_info = this->_name + "::load";
@@ -156,11 +156,8 @@ namespace wolf
                     _pipeline_create_info.pTessellationState = &_tessellation_state_create_info;
                 }
 
-                _pipeline_create_info.pRasterizationState = pPipelineRasterizationStateCreateInfo == nullptr ?
-                    &(w_graphics_device::defaults_states::pipelines::rasterization_create_info) : pPipelineRasterizationStateCreateInfo;
-
-                _pipeline_create_info.pMultisampleState = pPipelineMultiSampleStateCreateInfo == nullptr ?
-                    &(w_graphics_device::defaults_states::pipelines::multisample_create_info) : pPipelineMultiSampleStateCreateInfo;
+                _pipeline_create_info.pRasterizationState = &pPipelineRasterizationStateCreateInfo;
+				_pipeline_create_info.pMultisampleState = &pPipelineMultiSampleStateCreateInfo;
 
                 _pipeline_create_info.pDepthStencilState = _depth_stencil_enabled ? &_depth_stencil_state : nullptr;
                 _pipeline_create_info.pColorBlendState = &_color_blend_state_create_info;
@@ -326,11 +323,11 @@ namespace wolf
 #pragma region Setters
 
 			void set_push_constant_buffer(
-				_In_ const w_command_buffer&	pCommandBuffer,
-				_In_ w_shader_stage				pStageFlags,
-				_In_ const uint32_t&			pOffset,
-				_In_ const uint32_t&			pSize,
-				_In_ const void*				pValues)
+				_In_ const w_command_buffer&			pCommandBuffer,
+				_In_ const w_shader_stage_flag_bits&	pStageFlags,
+				_In_ const uint32_t&					pOffset,
+				_In_ const uint32_t&					pSize,
+				_In_ const void*						pValues)
 			{
 				vkCmdPushConstants(
 					pCommandBuffer.handle,
@@ -517,9 +514,9 @@ W_RESULT w_pipeline::load(
 	_In_ const std::vector<w_dynamic_state>& pDynamicStates,
 	_In_ const std::vector<w_push_constant_range>& pPushConstantRanges,
 	_In_ const uint32_t& pTessellationPatchControlPoints,
-	_In_ const w_pipeline_rasterization_state_create_info* const pPipelineRasterizationStateCreateInfo,
-	_In_ const w_pipeline_multisample_state_create_info* const pPipelineMultiSampleStateCreateInfo,
-	_In_ const w_pipeline_color_blend_attachment_state pBlendState,
+	_In_ const w_pipeline_rasterization_state_create_info& pPipelineRasterizationStateCreateInfo,
+	_In_ const w_pipeline_multisample_state_create_info& pPipelineMultiSampleStateCreateInfo,
+	_In_ const w_pipeline_color_blend_attachment_state& pBlendState,
 	_In_ const w_color& pBlendColors)
 {
 	if (!this->_pimp) return W_FAILED;
@@ -595,11 +592,11 @@ const VkPipelineLayout w_pipeline::get_layout_handle() const
 #pragma region Setters
 
 void w_pipeline::set_push_constant_buffer(
-	_In_ const w_command_buffer&	pCommandBuffer,
-	_In_ const w_shader_stage		pStageFlags,
-	_In_ const uint32_t&			pOffset,
-	_In_ const uint32_t&			pSize,
-	_In_ const void*				pValues)
+	_In_ const w_command_buffer&			pCommandBuffer,
+	_In_ const w_shader_stage_flag_bits&	pStageFlags,
+	_In_ const uint32_t&					pOffset,
+	_In_ const uint32_t&					pSize,
+	_In_ const void*						pValues)
 {
 	if (!this->_pimp) return;
 	return this->_pimp->set_push_constant_buffer(pCommandBuffer, pStageFlags, pOffset, pSize, pValues);

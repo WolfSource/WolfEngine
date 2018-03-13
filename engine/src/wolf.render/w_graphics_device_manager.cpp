@@ -180,7 +180,7 @@ W_RESULT w_graphics_device::draw(
 W_RESULT w_graphics_device::submit(
 	_In_ const std::vector<const w_command_buffer*>& pCommandBuffers,
 	_In_ const w_queue&                       pQueue,
-	_In_ const w_pipeline_stage_flags*        pWaitDstStageMask,
+	_In_ const uint32_t*					  pWaitDstStageMask,
 	_In_ std::vector<w_semaphore>             pWaitForSemaphores,
 	_In_ std::vector<w_semaphore>             pSignalForSemaphores,
 	_In_ w_fences*                            pFence)

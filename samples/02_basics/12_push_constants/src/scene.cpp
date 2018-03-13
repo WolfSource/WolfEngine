@@ -194,7 +194,7 @@ void scene::load()
 	w_push_constant_range _push_constants_buffer_range;
 	_push_constants_buffer_range.offset = 0;
 	_push_constants_buffer_range.size = static_cast<uint32_t>(4 * sizeof(float));
-	_push_constants_buffer_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	_push_constants_buffer_range.stageFlags = w_shader_stage_flag_bits::VERTEX_SHADER;
 
 	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(_gDevice,
@@ -324,9 +324,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _draw_cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	auto _gui_cmd = w_imgui::get_command_buffer_at(_frame_index);
 
-	const VkPipelineStageFlags _wait_dst_stage_mask[] =
+	const uint32_t _wait_dst_stage_mask[] =
 	{
-		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
 
 	//reset draw fence
