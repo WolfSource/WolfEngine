@@ -301,6 +301,7 @@
 				TargetAttributes = {
 					2C69E9A81E5EC2CB00F15C44 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = J2WEUYPJ98;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -462,6 +463,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
@@ -485,13 +487,19 @@
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/vulkan/Mac/macOS/include",
+					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
 					"$(SRCROOT)/../../../dependencies/msgpack/include/",
+					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.render",
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
+					"$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/debug/",
+					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -500,6 +508,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;

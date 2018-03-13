@@ -178,6 +178,7 @@
 				TargetAttributes = {
 					2C620F871E617F81005DFB10 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = J2WEUYPJ98;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -354,10 +355,16 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../dependencies/vulkan/Mac/macOS/Frameworks";
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				FRAMEWORK_SEARCH_PATHS = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/macOS/Frameworks",
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				HEADER_SEARCH_PATHS = (
+				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/macOS/include",
 					"$(SRCROOT)/../../../../dependencies/msgpack/include",
 					"$(SRCROOT)/../../../../src/wolf.system",
@@ -376,20 +383,11 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
-					"$(SRCROOT)/../../../../dependencies/tbb/oss/osx/lib/",
-				);
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
-					"$(SRCROOT)/../../../../dependencies/msgpack/include",
-					"$(SRCROOT)/../../../../src/wolf.system",
-					"$(SRCROOT)/../../../../src/wolf.render",
-					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
-					"$(SRCROOT)/../../../../dependencies/tbb/oss/osx/include/",
-				);
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = test_vulkan_macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "WolfSource.io.test-vulkan-macOS";

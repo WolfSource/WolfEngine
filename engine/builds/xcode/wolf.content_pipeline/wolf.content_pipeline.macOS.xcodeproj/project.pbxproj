@@ -491,6 +491,7 @@
 				TargetAttributes = {
 					2CD617221E59DA3E006FC5DC = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = J2WEUYPJ98;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -663,6 +664,7 @@
 		2CD6172F1E59DA3E006FC5DC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
@@ -687,6 +689,7 @@
 		2CD617301E59DA3E006FC5DC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
