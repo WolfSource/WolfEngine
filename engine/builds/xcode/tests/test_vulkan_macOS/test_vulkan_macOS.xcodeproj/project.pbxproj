@@ -22,12 +22,12 @@
 		2C736BB81ECA1E6A00624CC7 /* basic.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB41ECA1E6A00624CC7 /* basic.vert */; };
 		2C736BB91ECA1E6A00624CC7 /* static_instancing_y_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */; };
 		2C736BBA1ECA1E6A00624CC7 /* static_instancing_z_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */; };
-		2CA5D84D2050A83A0062AD2A /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5D84C2050A83A0062AD2A /* vulkan.framework */; };
 		2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */; };
 		2CDF24922037223700BD3DE5 /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF24902037223700BD3DE5 /* Base.lproj */; };
 		2CDF24932037223700BD3DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF24912037223700BD3DE5 /* Assets.xcassets */; };
 		2CE21C411E89678F00EEE579 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */; };
 		2CE21C421E89678F00EEE579 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */; };
+		2CF54B022057DA9E000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5D84C2050A83A0062AD2A /* vulkan.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,7 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CA5D84D2050A83A0062AD2A /* vulkan.framework in Frameworks */,
+				2CF54B022057DA9E000B80E3 /* vulkan.framework in Frameworks */,
 				2C0F36A220062FB2001CB2DF /* libwolf.media_core.macOS.dylib in Frameworks */,
 				2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */,
 				2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.macOS.dylib in Frameworks */,

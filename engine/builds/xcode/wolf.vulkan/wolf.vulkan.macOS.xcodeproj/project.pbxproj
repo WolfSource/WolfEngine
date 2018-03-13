@@ -46,13 +46,13 @@
 		2C9899701E9B51D6002FE161 /* w_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996E1E9B51D6002FE161 /* w_texture.h */; };
 		2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899711E9BF6A3002FE161 /* w_buffer.cpp */; };
 		2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9899721E9BF6A3002FE161 /* w_buffer.h */; };
-		2CA5D84A2050A6270062AD2A /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5D8492050A6270062AD2A /* vulkan.framework */; };
 		2CA5D84B2050A78A0062AD2A /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */; };
 		2CA945EB1ED9F7CC007B70B8 /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */; };
 		2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E91ED9F7CC007B70B8 /* imgui.cpp */; };
 		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
 		2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */; };
 		2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */; };
+		2CF54B012057DA80000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5D8492050A6270062AD2A /* vulkan.framework */; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
 		2CFFAC701FCEAA400020A112 /* w_command_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */; };
 		2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */; };
@@ -123,8 +123,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CF54B012057DA80000B80E3 /* vulkan.framework in Frameworks */,
 				2CA5D84B2050A78A0062AD2A /* libmsgpackc.2.0.0.dylib in Frameworks */,
-				2CA5D84A2050A6270062AD2A /* vulkan.framework in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
