@@ -10,7 +10,8 @@ luaJIT
 msgpack 
 nanomsg 
 tbb 
-vulkan)
+vulkan
+vulkan_mac)
 
 values=(
 builds.txt 
@@ -19,7 +20,8 @@ version.txt
 COPYING 
 COPYING 
 version.txt 
-SPIRVExtension.vsix)
+SPIRVExtension.vsix
+COPYING)
 
 for i in "${!keys[@]}"; do
    echo "uncompressing ${keys[$i]}.zip"
@@ -30,6 +32,8 @@ for i in "${!keys[@]}"; do
      echo "${keys[$i]} verified successfully"
    fi
 done
+
+cp -R "./vulkan_mac/Mac" "./vulkan"
 
 echo "start building Wolf"
 case "$OSTYPE" in
