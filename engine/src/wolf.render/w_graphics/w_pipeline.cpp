@@ -156,6 +156,8 @@ namespace wolf
                     _pipeline_create_info.pTessellationState = &_tessellation_state_create_info;
                 }
 
+				auto _render_pass_handle = pRenderPassBinding->get_handle();
+
                 _pipeline_create_info.pRasterizationState = &pPipelineRasterizationStateCreateInfo;
 				_pipeline_create_info.pMultisampleState = &pPipelineMultiSampleStateCreateInfo;
 
@@ -164,7 +166,7 @@ namespace wolf
                 _pipeline_create_info.pDynamicState = _pipeline_dynamic_state_create_info == nullptr ? nullptr : _pipeline_dynamic_state_create_info;
                 _pipeline_create_info.pViewportState = &_viewport_state_create_info;
                 _pipeline_create_info.layout = this->_pipeline_layout;
-                _pipeline_create_info.renderPass = pRenderPassBinding->get_handle();
+                _pipeline_create_info.renderPass = _render_pass_handle.handle;
                 _pipeline_create_info.subpass = 0;
                 _pipeline_create_info.basePipelineHandle = 0;
                 _pipeline_create_info.basePipelineIndex = -1;

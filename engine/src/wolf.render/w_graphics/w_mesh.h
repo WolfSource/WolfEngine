@@ -234,20 +234,20 @@ namespace wolf
 			//load mesh
 			W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                                _In_ const void* const pVerticesData,
-                               _In_ const uint32_t  pVerticesSizeInBytes,
-                               _In_ const uint32_t pVerticesCount,
+                               _In_ const uint32_t&  pVerticesSizeInBytes,
+                               _In_ const uint32_t& pVerticesCount,
                                _In_ const uint32_t* const pIndicesData,
-                               _In_ const uint32_t pIndicesCount,
-                               _In_ bool pUseDynamicBuffer = false);
+                               _In_ const uint32_t& pIndicesCount,
+                               _In_ const bool& pUseDynamicBuffer = false);
             
             //update data of vertices and indices
             W_EXP W_RESULT update_dynamic_buffer(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
-                _In_ const uint32_t pVerticesSize,
-                _In_ const uint32_t pVerticesCount,
+                _In_ const uint32_t& pVerticesSize,
+                _In_ const uint32_t& pVerticesCount,
                 _In_ const uint32_t* const pIndicesData,
-                _In_ const uint32_t pIndicesCount);
+                _In_ const uint32_t& pIndicesCount);
 
 			//draw vertices
             W_EXP W_RESULT draw(
@@ -319,6 +319,52 @@ namespace wolf
 					_indices.data(),
 					static_cast<uint32_t>(_indices.size()),
 					pUseDynamicBuffer);
+
+				_gDevice.reset();
+				return _hr;
+			}
+
+			W_RESULT py_update_dynamic_buffer(
+				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ boost::python::list pVerticesData,
+				_In_ const uint32_t& pVerticesSize,
+				_In_ const uint32_t& pVerticesCount,
+				_In_ boost::python::list pIndicesData,
+				_In_ const uint32_t& pIndicesCount)
+			{
+				if (!pGDevice.get()) return W_FAILED;
+				auto _gDevice = boost_shared_ptr_to_std_shared_ptr<w_graphics_device>(pGDevice);
+
+				//get vertices data
+				std::vector<float> _vertices;
+				for (size_t i = 0; i < len(pVerticesData); ++i)
+				{
+					boost::python::extract<float> _v(pVerticesData[i]);
+					if (_v.check())
+					{
+						_vertices.push_back(_v());
+					}
+				}
+
+				//get indices data
+				std::vector<uint32_t> _indices;
+				for (size_t i = 0; i < len(pIndicesData); ++i)
+				{
+					boost::python::extract<uint32_t> _i(pIndicesData[i]);
+					if (_i.check())
+					{
+						_indices.push_back(_i());
+					}
+				}
+
+				const void* const _v_data = _vertices.data();
+				auto _hr = update_dynamic_buffer(
+					_gDevice,
+					_v_data,
+					static_cast<uint32_t>(_vertices.size() * sizeof(float)),
+					static_cast<uint32_t>(_vertices.size()),
+					_indices.data(),
+					static_cast<uint32_t>(_indices.size()));
 
 				_gDevice.reset();
 				return _hr;

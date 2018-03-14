@@ -302,10 +302,11 @@ namespace wolf
 
 				auto _shader_stages = this->_shader.get_shader_stages();
 
+				auto _render_pass_handle = this->_render_pass.get_handle();
 				VkGraphicsPipelineCreateInfo pipelineCreateInfo = {};
 				pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 				pipelineCreateInfo.layout = this->_pipeline_layout;
-				pipelineCreateInfo.renderPass = this->_render_pass.get_handle();
+				pipelineCreateInfo.renderPass = _render_pass_handle.handle;
 				pipelineCreateInfo.flags = 0;
 				pipelineCreateInfo.basePipelineIndex = -1;
 				pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;

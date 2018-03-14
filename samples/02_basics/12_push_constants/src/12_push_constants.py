@@ -44,7 +44,7 @@ class gui(QWidget):
 
         timer = QTimer(self)
         timer.timeout.connect(self.updateTime)
-        timer.start(30)
+        timer.start(50)
 
     def updateTime(self):
         self._label.setText(self.debug_text)

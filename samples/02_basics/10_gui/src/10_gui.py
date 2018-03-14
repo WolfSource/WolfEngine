@@ -29,25 +29,36 @@ class gui(QWidget):
     def __init__(self, parent=None):
         super(gui, self).__init__(parent)
 
-        self.debug_text = ""
+        self._debug_text = ""
         self._label = QLabel()
         self._label.setAlignment(Qt.AlignLeft)
 
         vbox = QVBoxLayout()
         vbox.addWidget(self._label)
 
-        self.setLayout(vbox)
-
         timer = QTimer(self)
         timer.timeout.connect(self.updateTime)
-        timer.start(1000)
+        timer.start(50)
+        
+        self.setLayout(vbox)
 
+    @QtCore.Slot()
+    def slot(self, str):
+        self._debug_text = str
+        
     def updateTime(self):
-        self._label.setText(self.debug_text)
+        self._label.setText(self._debug_text)
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 class scene(QWidget):
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    #The following codes have been added for this project
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    signal = Signal(str)
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        
     def __init__(self, pContentPath, pLogPath, pAppName, parent = None):
         super(scene, self).__init__(parent)
         self.__exiting = False
@@ -66,7 +77,6 @@ class scene(QWidget):
         self._draw_fence = pyWolf.graphics.w_fences()
         self._draw_semaphore = pyWolf.graphics.w_semaphore()
         
-
     def pre_init(self):
         print "pre_init"
 
@@ -154,8 +164,8 @@ class scene(QWidget):
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #Update label of gui widget
-        global _gui
-        _gui.debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(pGameTime.get_total_seconds())
+        _debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(pGameTime.get_total_seconds())
+        self.signal.emit(_debug_text)
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -258,13 +268,14 @@ if __name__ == '__main__':
                   "py_10_gui")
     _scene.resize(screen_width, screen_height)
     _scene.setWindowTitle('Wolf.Engine')
-    _scene.show()
 
-    #Init gui
-    _gui = gui()
-    _gui.resize(screen_width /2, screen_height /2)
-    _gui.setWindowTitle('Wolf.Engine Debug')
-
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    #The following codes have been added for this project
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    _scene.signal.connect(_gui.slot)
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
     #Show all widgets
     _scene.show()
     _gui.show()

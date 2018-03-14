@@ -172,22 +172,21 @@
       </EnableEnhancedInstructionSet>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.cpp" />
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\CullingThreadpool.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\FrameRecorder.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCulling.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX512.cpp">
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCullingAVX512.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_game.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_occlusion_culling.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
@@ -246,9 +245,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imconfig.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_fences.h" />
@@ -263,8 +259,12 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_shapes.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_texture.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_uniform.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\CullingThreadpool.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\FrameRecorder.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCulling.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_occlusion_culling.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.h" />
@@ -332,8 +332,8 @@
     <None Include="..\..\..\..\..\content\shaders\tessellation\tessellation.vert" />
     <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tesc" />
     <None Include="..\..\..\..\..\content\shaders\tessellation\pass_throught.tese" />
-    <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CompilerSpecific.inl" />
-    <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl" />
+    <None Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\CompilerSpecific.inl" />
+    <None Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\wolf.content_pipeline\pyWolf.content_pipeline.Win32.vcxproj">

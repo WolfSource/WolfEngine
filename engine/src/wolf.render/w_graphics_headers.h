@@ -146,6 +146,13 @@ namespace wolf
 #endif
 		};
 
+		struct w_render_pass_handle
+		{
+#ifdef __VULKAN__
+			VkRenderPass handle = 0;
+#endif
+		};
+
 		struct w_device_memory
 		{
 #ifdef __VULKAN__

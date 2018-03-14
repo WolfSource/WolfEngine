@@ -51,7 +51,7 @@ namespace wolf
 
 #pragma region Getters
 
-            W_EXP const VkRenderPass get_handle() const;
+            W_EXP const w_render_pass_handle get_handle() const;
             W_EXP w_viewport get_viewport() const;
             W_EXP w_viewport_scissor get_viewport_scissor() const;
             W_EXP const size_t get_number_of_frame_buffers() const;

@@ -30,6 +30,7 @@ namespace pyWolf
 			.def("begin", &w_render_pass::begin, render_pass_begin_overloads())
 			.def("end", &w_render_pass::end, "end render pass")
 			.def("release", &w_render_pass::release, "release")
+			.def("get_handle", &w_render_pass::get_handle, "get handle")
 			.def("viewport", &w_render_pass::get_viewport, "get viewport")
 			.def("viewport_scissor", &w_render_pass::get_viewport_scissor, "get viewport scissor")
 			.def("get_number_of_frame_buffers", &w_render_pass::get_number_of_frame_buffers, "get number of frame buffers")

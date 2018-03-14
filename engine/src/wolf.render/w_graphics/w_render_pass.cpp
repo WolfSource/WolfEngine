@@ -11,7 +11,6 @@ namespace wolf
         public:
             w_render_pass_pimp() :
                 _name("w_render_pass"),
-                _render_pass(0),
                 _layer_count(1),
 				_depth_stencil_enabled(false)
             {
@@ -116,7 +115,7 @@ namespace wolf
 				auto _hr = vkCreateRenderPass(this->_gDevice->vk_device,
 					&_render_pass_create_info,
 					nullptr,
-					&this->_render_pass);
+					&this->_render_pass.handle);
 				if (_hr)
 				{
 					V(W_FAILED, L"creating render pass for graphics device: " +
@@ -157,7 +156,7 @@ namespace wolf
 						VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,					// Type
 						nullptr,													// Next
 						0,															// Flags
-						this->_render_pass,											// Render pass
+						this->_render_pass.handle,  								// Render pass
 						static_cast<uint32_t>(_frame_buffer_attachments.size()),	// AttachmentCount
 						_frame_buffer_attachments.data(),							// Attachments
 						_width,														// Width
@@ -220,7 +219,7 @@ namespace wolf
 				{
 					VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,               // Type
 					nullptr,                                                // Next
-					this->_render_pass,                                     // RenderPass
+					this->_render_pass.handle,                              // RenderPass
 					this->_frame_buffers[pFrameBufferIndex],                // Framebuffer
 					{                                                       // RenderArea
 						{
@@ -254,12 +253,12 @@ namespace wolf
 					vkDestroyFramebuffer(this->_gDevice->vk_device, _iter, nullptr);
 					_iter = 0;
 				}
-                if (this->_render_pass)
+                if (this->_render_pass.handle)
                 {
                     vkDestroyRenderPass(this->_gDevice->vk_device,
-                        this->_render_pass,
+                        this->_render_pass.handle,
                         nullptr);
-                    this->_render_pass = nullptr;
+                    this->_render_pass.handle = nullptr;
                 }
                 this->_gDevice = nullptr;
                 
@@ -268,7 +267,7 @@ namespace wolf
 
 #pragma region Getters
 
-            const VkRenderPass get_handle() const
+            const w_render_pass_handle get_handle() const
             {
                 return this->_render_pass;
             }
@@ -314,7 +313,7 @@ namespace wolf
         private:
             std::string                                     _name;
             std::shared_ptr<w_graphics_device>              _gDevice;
-            VkRenderPass                                    _render_pass;
+			w_render_pass_handle                            _render_pass;
             w_viewport                                      _viewport;
             w_viewport_scissor                              _viewport_scissor;
             std::vector<VkFramebuffer>                      _frame_buffers;
@@ -388,9 +387,9 @@ ULONG w_render_pass::release()
 
 #pragma region Getters
 
-const VkRenderPass w_render_pass::get_handle() const
+const w_render_pass_handle w_render_pass::get_handle() const
 {
-    if(!this->_pimp) return 0;
+    if(!this->_pimp) return w_render_pass_handle();
     return this->_pimp->get_handle();
 }
 

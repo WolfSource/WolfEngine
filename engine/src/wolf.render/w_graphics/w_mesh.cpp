@@ -37,11 +37,11 @@ namespace wolf
             */
             W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
-                _In_ const uint32_t  pVerticesSizeInBytes,
-                _In_ const uint32_t pVerticesCount,
+                _In_ const uint32_t&  pVerticesSizeInBytes,
+                _In_ const uint32_t& pVerticesCount,
                 _In_ const uint32_t* const pIndicesData,
-                _In_ const uint32_t pIndicesCount,
-                _In_ const bool pUseDynamicBuffer)
+                _In_ const uint32_t& pIndicesCount,
+                _In_ const bool& pUseDynamicBuffer)
             {
                 this->_gDevice = pGDevice;
                 this->_vertices_count = pVerticesCount;
@@ -129,10 +129,10 @@ namespace wolf
 
             W_RESULT update_dynamic_buffer(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const void* const pVerticesData,
-                _In_ const uint32_t pVerticesSize,
-                _In_ const uint32_t pVerticesCount,
+                _In_ const uint32_t& pVerticesSize,
+                _In_ const uint32_t& pVerticesCount,
                 _In_ const uint32_t* const pIndicesData,
-                _In_ const uint32_t pIndicesCount)
+                _In_ const uint32_t& pIndicesCount)
             {
                 if (!this->_dynamic_buffer)
                 {
@@ -414,11 +414,11 @@ w_mesh::~w_mesh()
 
 W_RESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                      _In_ const void* const pVerticesData,
-                    _In_  const uint32_t  pVerticesSize,
-                     _In_ const uint32_t pVerticesCount,
+                    _In_  const uint32_t&  pVerticesSize,
+                     _In_ const uint32_t& pVerticesCount,
                      _In_ const uint32_t* const pIndicesData,
-                     _In_ const uint32_t pIndicesCount,
-                     _In_ const bool pUseDynamicBuffer)
+                     _In_ const uint32_t& pIndicesCount,
+                     _In_ const bool& pUseDynamicBuffer)
 {
     if (!this->_pimp) return W_FAILED;
     
@@ -435,10 +435,10 @@ W_RESULT w_mesh::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 W_RESULT w_mesh::update_dynamic_buffer(
     _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
     _In_ const void* const pVerticesData,
-    _In_ const uint32_t pVerticesSize,
-    _In_ const uint32_t pVerticesCount,
+    _In_ const uint32_t& pVerticesSize,
+    _In_ const uint32_t& pVerticesCount,
     _In_ const uint32_t* const pIndicesData,
-    _In_ const uint32_t pIndicesCount)
+    _In_ const uint32_t& pIndicesCount)
 {
     return this->_pimp ? this->_pimp->update_dynamic_buffer(
         pGDevice,

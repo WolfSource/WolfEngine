@@ -105,6 +105,9 @@ namespace pyWolf
 		//export w_descriptor_set_layout struct
 		class_<w_descriptor_set_layout, boost::noncopyable>("w_descriptor_set_layout", init<>());
 
+		//export w_render_pass_handle struct
+		class_<w_render_pass_handle, boost::noncopyable>("w_render_pass_handle", init<>());
+
 		//export w_buffer_handle struct
 		class_<w_buffer_handle, boost::noncopyable>("w_buffer_handle", init<>());
 
