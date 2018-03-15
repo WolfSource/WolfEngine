@@ -31,6 +31,8 @@ for i in "${!keys[@]}"; do
    fi
 done
 
+tar -zxvf ./vulkan/macOS.tar.gz
+
 echo "start building Wolf"
 case "$OSTYPE" in
   darwin*)  xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.macOS.xcworkspace -scheme test_vulkan_macOS -sdk macosx10.13 -configuration Debug ;; 

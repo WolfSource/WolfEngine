@@ -12,7 +12,6 @@
 /engine/builds/mvsc/.vs/*
 /engine/dependencies/*
 !/engine/dependencies/*.zip
-!/engine/dependencies/vulkan.framework
 
 # Prerequisites 
 *.c

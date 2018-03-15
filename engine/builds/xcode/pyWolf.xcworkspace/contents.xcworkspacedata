@@ -5,9 +5,6 @@
       location = "group:pyWolf/pyWolf.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:tests/wolf_vulkan_metal_macOS/wolf_vulkan_metal_macOS.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:wolf.content_pipeline/wolf.content_pipeline.macOS.xcodeproj">
    </FileRef>
    <FileRef

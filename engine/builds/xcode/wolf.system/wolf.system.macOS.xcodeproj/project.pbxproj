@@ -1780,8 +1780,8 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system/",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
