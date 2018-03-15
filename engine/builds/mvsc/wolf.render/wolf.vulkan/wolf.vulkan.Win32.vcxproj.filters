@@ -34,21 +34,6 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.cpp">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.cpp">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.cpp">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX512.cpp">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
@@ -72,6 +57,24 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.cpp">
       <Filter>w_graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\CullingThreadpool.cpp">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\FrameRecorder.cpp">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCulling.cpp">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCullingAVX2.cpp">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCullingAVX512.cpp">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_occlusion_culling.cpp">
+      <Filter>w_framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -105,15 +108,6 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CullingThreadpool.h">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\FrameRecorder.h">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCulling.h">
-      <Filter>masked_occlusion_culling</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
@@ -139,6 +133,18 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\CullingThreadpool.h">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\FrameRecorder.h">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCulling.h">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_occlusion_culling.h">
+      <Filter>w_framework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_framework">
@@ -159,11 +165,11 @@
     <Filter Include="content\shaders\compute">
       <UniqueIdentifier>{f292ce56-4fc9-431e-a5d1-51bc9a9ee7a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="masked_occlusion_culling">
-      <UniqueIdentifier>{18495b95-ede0-4812-aaf6-9ac8446435c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="w_graphics">
       <UniqueIdentifier>{602f206c-1517-4b06-9a9b-74c0c9d081fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="w_framework\masked_occlusion_culling">
+      <UniqueIdentifier>{5fa79874-62f5-41eb-84a4-d99f8df51dff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -302,17 +308,17 @@
     <None Include="..\..\..\..\..\content\shaders\compute\cull_lod_2_local_size_x1024.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
-    <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\CompilerSpecific.inl">
-      <Filter>masked_occlusion_culling</Filter>
-    </None>
-    <None Include="..\..\..\..\src\wolf.render\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl">
-      <Filter>masked_occlusion_culling</Filter>
-    </None>
     <None Include="..\..\..\..\..\content\shaders\shape.frag">
       <Filter>content\shaders</Filter>
     </None>
     <None Include="..\..\..\..\..\content\shaders\shape.vert">
       <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\CompilerSpecific.inl">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
+    </None>
+    <None Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCullingCommon.inl">
+      <Filter>w_framework\masked_occlusion_culling</Filter>
     </None>
   </ItemGroup>
 </Project>
