@@ -10,8 +10,7 @@ luaJIT
 msgpack 
 nanomsg 
 tbb 
-vulkan
-vulkan_mac)
+vulkan)
 
 values=(
 builds.txt 
@@ -20,8 +19,7 @@ version.txt
 COPYING 
 COPYING 
 version.txt 
-SPIRVExtension.vsix
-COPYING)
+SPIRVExtension.vsix)
 
 for i in "${!keys[@]}"; do
    echo "uncompressing ${keys[$i]}.zip"
@@ -33,11 +31,9 @@ for i in "${!keys[@]}"; do
    fi
 done
 
-cp -R "./vulkan_mac/Mac" "./vulkan"
-
 echo "start building Wolf"
 case "$OSTYPE" in
-  darwin*)  xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.macOS.xcworkspace -scheme test_vulkan_macOS -sdk macosx10.13 -configuration Debug ;; 
+  darwin*)  cp -R "./vulkan.framework" "./vulkan/Mac/macOS/Frameworks/" ;; xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.macOS.xcworkspace -scheme test_vulkan_macOS -sdk macosx10.13 -configuration Debug ;; 
   linux*)   echo "LINUX" ;;
   *)        echo "OS: $OSTYPE" ;;
 esac
