@@ -474,8 +474,6 @@
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../../bin/Build/macOS/Products/Debug/",
-					"$(SRCROOT)/../../../dependencies/vulkan/Mac/macOS/Frameworks",
 					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
 					"$(SRCROOT)/../../../dependencies/",
 				);
