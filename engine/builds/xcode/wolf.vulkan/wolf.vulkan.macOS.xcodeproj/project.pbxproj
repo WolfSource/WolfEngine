@@ -52,7 +52,7 @@
 		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
 		2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */; };
 		2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */; };
-		2CF54B012057DA80000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5D8492050A6270062AD2A /* vulkan.framework */; };
+		2CF54B04205A19C7000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B03205A19C7000B80E3 /* vulkan.framework */; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
 		2CFFAC701FCEAA400020A112 /* w_command_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */; };
 		2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */; };
@@ -112,6 +112,7 @@
 		2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
 		2CDF247B2031967F00BD3DE5 /* libmsgpackc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmsgpackc.a; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.a; sourceTree = "<group>"; };
 		2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
+		2CF54B03205A19C7000B80E3 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../dependencies/vulkan.framework; sourceTree = "<group>"; };
 		2CFFAC671FCEAA3F0020A112 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/w_graphics/w_render_target.h; sourceTree = "<group>"; };
 		2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffers.h; path = ../../../src/wolf.render/w_graphics/w_command_buffers.h; sourceTree = "<group>"; };
 		2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_target.cpp; path = ../../../src/wolf.render/w_graphics/w_render_target.cpp; sourceTree = "<group>"; };
@@ -123,13 +124,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CF54B04205A19C7000B80E3 /* vulkan.framework in Frameworks */,
 				2CA5D84B2050A78A0062AD2A /* libmsgpackc.2.0.0.dylib in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
 				2C860FA81E5F1E8C000E71B5 /* QuartzCore.framework in Frameworks */,
 				2C860FA61E5F1E86000E71B5 /* Metal.framework in Frameworks */,
-				2CF54B012057DA80000B80E3 /* vulkan.framework in Frameworks */,
 				2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,6 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				2CA5D8492050A6270062AD2A /* vulkan.framework */,
+				2CF54B03205A19C7000B80E3 /* vulkan.framework */,
 				2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */,
 				2CDF247B2031967F00BD3DE5 /* libmsgpackc.a */,
 				2C299C8D201FA4F9003C80F7 /* libboost_python-mt.a */,
@@ -475,6 +477,7 @@
 					"$(SRCROOT)/../../../../bin/Build/macOS/Products/Debug/",
 					"$(SRCROOT)/../../../dependencies/vulkan/Mac/macOS/Frameworks",
 					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
+					"$(SRCROOT)/../../../dependencies/",
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
