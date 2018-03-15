@@ -31,9 +31,11 @@ for i in "${!keys[@]}"; do
    fi
 done
 
+cp -R "./vulkan.framework" "./vulkan/Mac/macOS/Frameworks/"
+
 echo "start building Wolf"
 case "$OSTYPE" in
-  darwin*)  cp -R "./vulkan.framework" "./vulkan/Mac/macOS/Frameworks/" ;; xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.macOS.xcworkspace -scheme test_vulkan_macOS -sdk macosx10.13 -configuration Debug ;; 
+  darwin*)  xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.macOS.xcworkspace -scheme test_vulkan_macOS -sdk macosx10.13 -configuration Debug ;; 
   linux*)   echo "LINUX" ;;
   *)        echo "OS: $OSTYPE" ;;
 esac
