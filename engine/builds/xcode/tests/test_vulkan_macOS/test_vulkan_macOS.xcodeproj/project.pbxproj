@@ -27,7 +27,7 @@
 		2CDF24932037223700BD3DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF24912037223700BD3DE5 /* Assets.xcassets */; };
 		2CE21C411E89678F00EEE579 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */; };
 		2CE21C421E89678F00EEE579 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */; };
-		2CF54B022057DA9E000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5D84C2050A83A0062AD2A /* vulkan.framework */; };
+		2CF54B07205A1FC4000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B06205A1FC4000B80E3 /* vulkan.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +59,7 @@
 		2CDF24912037223700BD3DE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = test_vulkan_macOS/Assets.xcassets; sourceTree = "<group>"; };
 		2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../wolf.system/build/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.vulkan.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.vulkan.macOS.dylib; sourceTree = "<group>"; };
+		2CF54B06205A1FC4000B80E3 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../../dependencies/vulkan.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CF54B022057DA9E000B80E3 /* vulkan.framework in Frameworks */,
+				2CF54B07205A1FC4000B80E3 /* vulkan.framework in Frameworks */,
 				2C0F36A220062FB2001CB2DF /* libwolf.media_core.macOS.dylib in Frameworks */,
 				2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */,
 				2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
@@ -134,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				2CA5D84C2050A83A0062AD2A /* vulkan.framework */,
+				2CF54B06205A1FC4000B80E3 /* vulkan.framework */,
 				2C0F36A320062FB2001CB2DF /* libwolf.media_core.macOS.dylib */,
 				2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */,
 				2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib */,
@@ -358,8 +360,9 @@
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../../dependencies",
 					"$(SRCROOT)/../../../../dependencies/vulkan/Mac/macOS/Frameworks",
-					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
+					"$(SRCROOT)/../../../../dependencies/msgpack/lib/osx/debug",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";

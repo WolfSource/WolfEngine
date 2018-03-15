@@ -52,7 +52,7 @@
 		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
 		2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */; };
 		2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */; };
-		2CF54B04205A19C7000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B03205A19C7000B80E3 /* vulkan.framework */; };
+		2CF54B05205A1FAF000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B03205A19C7000B80E3 /* vulkan.framework */; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
 		2CFFAC701FCEAA400020A112 /* w_command_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */; };
 		2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */; };
@@ -124,7 +124,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CF54B04205A19C7000B80E3 /* vulkan.framework in Frameworks */,
+				2CF54B05205A1FAF000B80E3 /* vulkan.framework in Frameworks */,
 				2CA5D84B2050A78A0062AD2A /* libmsgpackc.2.0.0.dylib in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
@@ -474,8 +474,9 @@
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
 					"$(SRCROOT)/../../../dependencies/",
+					"$(SRCROOT)/../../../dependencies/vulkan/Mac/macOS/Frameworks",
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
