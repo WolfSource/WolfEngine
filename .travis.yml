@@ -19,11 +19,3 @@ matrix:
       xcode_workspace: ./engine/builds/xcode/wolf.engine.vulkan.metal.macOS.xworkspace
       xcode_scheme: test_vulkan_macOS
 
-    - os: osx
-      osx_image: xcode9.3beta
-      language: cpp
-      compiler: clang
-      xcode_workspace: ./engine/builds/xcode/pyWolf.xworkspace
-      xcode_scheme: pyWolf.system
-
-
