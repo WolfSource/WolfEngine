@@ -1284,7 +1284,7 @@
 		2CD617241E59DA3E006FC5DC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */,
+				2CD617231E59DA3E006FC5DC /* libpyWolf.system.macOS.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1650,9 +1650,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		2CD617221E59DA3E006FC5DC /* wolf.system.macOS */ = {
+		2CD617221E59DA3E006FC5DC /* pyWolf.system.macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "wolf.system.macOS" */;
+			buildConfigurationList = 2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "pyWolf.system.macOS" */;
 			buildPhases = (
 				2CD6171F1E59DA3E006FC5DC /* Sources */,
 				2CD617201E59DA3E006FC5DC /* Frameworks */,
@@ -1662,9 +1662,9 @@
 			);
 			dependencies = (
 			);
-			name = wolf.system.macOS;
-			productName = wolf.system;
-			productReference = 2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */;
+			name = pyWolf.system.macOS;
+			productName = pyWolf.system;
+			productReference = 2CD617231E59DA3E006FC5DC /* libpyWolf.system.macOS.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -1695,7 +1695,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2CD617221E59DA3E006FC5DC /* wolf.system.macOS */,
+				2CD617221E59DA3E006FC5DC /* pyWolf.system.macOS */,
 			);
 		};
 /* End PBXProject section */
