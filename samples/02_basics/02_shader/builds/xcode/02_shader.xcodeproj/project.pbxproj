@@ -13,7 +13,6 @@
 		2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639551EA55A6C00A16595 /* Main.storyboard */; };
 		2C6844371F9E491800AEAB30 /* shader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C6844331F9E491800AEAB30 /* shader.vert */; };
 		2C68443A1F9E491800AEAB30 /* shader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C6844361F9E491800AEAB30 /* shader.frag */; };
-		2CA5D852205135CB0062AD2A /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5D851205135CB0062AD2A /* vulkan.framework */; };
 		2CB69EDB1F62DDF60068D1E6 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69ED81F62DDF60068D1E6 /* ViewController.mm */; };
 		2CB69EDE1F62E1BF0068D1E6 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */; };
 		2CB69EE31F62E5470068D1E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE21F62E5470068D1E6 /* QuartzCore.framework */; };
@@ -22,6 +21,7 @@
 		2CB69EEB1F62E80D0068D1E6 /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE81F62E80D0068D1E6 /* libwolf.content_pipeline.macOS.dylib */; };
 		2CB69EEC1F62E80D0068D1E6 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE91F62E80D0068D1E6 /* libwolf.system.macOS.dylib */; };
 		2CB69EED1F62E80D0068D1E6 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EEA1F62E80D0068D1E6 /* libwolf.vulkan.macOS.dylib */; };
+		2CF54B26205BE553000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B25205BE553000B80E3 /* vulkan.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +47,7 @@
 		2CB69EE91F62E80D0068D1E6 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2CB69EEA1F62E80D0068D1E6 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.vulkan.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.vulkan.macOS.dylib; sourceTree = "<group>"; };
 		2CCE63311FD5E76C00EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
+		2CF54B25205BE553000B80E3 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CA5D852205135CB0062AD2A /* vulkan.framework in Frameworks */,
+				2CF54B26205BE553000B80E3 /* vulkan.framework in Frameworks */,
 				2CB69EEB1F62E80D0068D1E6 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2CB69EEC1F62E80D0068D1E6 /* libwolf.system.macOS.dylib in Frameworks */,
 				2CB69EED1F62E80D0068D1E6 /* libwolf.vulkan.macOS.dylib in Frameworks */,
@@ -124,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				2CA5D851205135CB0062AD2A /* vulkan.framework */,
+				2CF54B25205BE553000B80E3 /* vulkan.framework */,
 				2CCE63311FD5E76C00EC0BB5 /* IOSurface.framework */,
 				2CB69EE81F62E80D0068D1E6 /* libwolf.content_pipeline.macOS.dylib */,
 				2CB69EE91F62E80D0068D1E6 /* libwolf.system.macOS.dylib */,
@@ -277,7 +279,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -324,7 +326,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
@@ -339,13 +341,13 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/macOS/Frameworks",
+					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(PROJECT_DIR)/../../src/",
-					"$(PROJECT_DIR)/../../../../common/",
-					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/Mac/macOS/include",
+					"$(PROJECT_DIR)/../../src",
+					"$(PROJECT_DIR)/../../../../common",
+					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/include",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",
@@ -354,6 +356,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.Metal.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -369,6 +372,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.Metal.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};

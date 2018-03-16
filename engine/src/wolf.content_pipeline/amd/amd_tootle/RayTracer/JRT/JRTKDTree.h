@@ -12,7 +12,7 @@
 #include "JRTCore.h"
 
 #if defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
-    #include "../../aligned_malloc.h"
+    #include <w_aligned_malloc.h>
     #define _aligned_malloc aligned_malloc
     #define _aligned_free aligned_free
 #endif

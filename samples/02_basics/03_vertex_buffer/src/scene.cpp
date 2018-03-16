@@ -118,7 +118,7 @@ void scene::load()
 	//loading vertex shaders
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.vert.spv",
-		w_shader_stage::VERTEX_SHADER);
+		w_shader_stage_flag_bits::VERTEX_SHADER);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -128,7 +128,7 @@ void scene::load()
 	//loading fragment shader
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.frag.spv",
-		w_shader_stage::FRAGMENT_SHADER);
+		w_shader_stage_flag_bits::FRAGMENT_SHADER);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -244,7 +244,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _output_window = &(_gDevice->output_presentation_window);
 	auto _frame_index = _output_window->swap_chain_image_index;
 
-	const w_pipeline_stage_flags _wait_dst_stage_mask[] =
+	const uint32_t _wait_dst_stage_mask[] =
 	{
 		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};

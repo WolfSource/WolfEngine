@@ -33,9 +33,11 @@ void init_window(struct w_window_info& pInfo)
 
 + (void)Release
 {
-    if (sScene && !sScene->get_is_released())
+    if (sScene)
     {
+        sScene->exit();
         sScene->release();
+        delete sScene;
     }
     CVDisplayLinkRelease(sDisplayLink);
 }

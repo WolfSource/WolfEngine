@@ -162,7 +162,7 @@ void scene::load()
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		2.0f,
 		w_color::ORANGE(),
-		wolf::graphics::w_plan::XY, 
+		w_plane::XY, 
 		30.0f);
 	if (!this->_shape_circle)
 	{

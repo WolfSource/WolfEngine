@@ -132,7 +132,7 @@ void scene::load()
 	//loading vertex shaders
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.vert.spv",
-		w_shader_stage::VERTEX_SHADER);
+		w_shader_stage_flag_bits::VERTEX_SHADER);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -142,7 +142,7 @@ void scene::load()
 	//loading fragment shader
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.frag.spv",
-		w_shader_stage::FRAGMENT_SHADER);
+		w_shader_stage_flag_bits::FRAGMENT_SHADER);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -170,7 +170,7 @@ void scene::load()
 	w_shader_binding_param _shader_param;
 	_shader_param.index = 0;
 	_shader_param.type = w_shader_binding_type::SAMPLER2D;
-	_shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
+	_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
 	_shader_param.image_info = this->_texture.get_descriptor_info();
 
 	_hr = this->_shader.set_shader_binding_params(
@@ -185,7 +185,7 @@ void scene::load()
 
 	//loading pipeline cache
 	std::string _pipeline_cache_name = "pipeline_cache";
-	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == S_FALSE)
+	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == W_FAILED)
 	{
 		logger.error("could not create pipeline cache");
 		_pipeline_cache_name.clear();
@@ -196,7 +196,6 @@ void scene::load()
 	_push_constants_buffer_range.size = static_cast<uint32_t>(4 * sizeof(float));
 	_push_constants_buffer_range.stageFlags = w_shader_stage_flag_bits::VERTEX_SHADER;
 
-	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(_gDevice,
 		this->_mesh.get_vertex_binding_attributes(),
 		w_primitive_topology::TRIANGLE_LIST,
@@ -267,7 +266,7 @@ W_RESULT scene::_build_draw_command_buffers()
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				this->_pipeline.set_push_constant_buffer(
 					_cmd,
-					w_shader_stage::VERTEX_SHADER,
+					w_shader_stage_flag_bits::VERTEX_SHADER,
 					0, 
 					static_cast<uint32_t>(4 * sizeof(float)), 
 					sPushConstantColorEdit);

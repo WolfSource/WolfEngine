@@ -210,7 +210,7 @@ namespace wolf
 				{
 					VK_SHADER_STAGE_VERTEX_BIT,
 					0,
-					sizeof(push_constant_block)
+					static_cast<uint32_t>(sizeof(this->_push_constant_block))
 				};
 
 
@@ -238,7 +238,7 @@ namespace wolf
 					&this->_pipeline_cache);
 
 				// Setup graphics pipeline for UI rendering
-				VkPipelineInputAssemblyStateCreateInfo inputAssemblyState =
+				VkPipelineInputAssemblyStateCreateInfo _input_assembly_state =
 				{
 					VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
 					nullptr,
@@ -310,7 +310,7 @@ namespace wolf
 				pipelineCreateInfo.flags = 0;
 				pipelineCreateInfo.basePipelineIndex = -1;
 				pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
-				pipelineCreateInfo.pInputAssemblyState = &inputAssemblyState;
+				pipelineCreateInfo.pInputAssemblyState = &_input_assembly_state;
 				pipelineCreateInfo.pRasterizationState = &rasterizationState;
 				pipelineCreateInfo.pColorBlendState = &colorBlendState;
 				pipelineCreateInfo.pMultisampleState = &multisampleState;
@@ -372,7 +372,7 @@ namespace wolf
 					&pipelineCreateInfo,
 					nullptr,
 					&this->_pipeline);
-				if (_hr == W_FAILED)
+				if (_hr)
 				{
 					V(W_FAILED, "creating graphics pipeline", _trace_info);
 					release();
@@ -716,13 +716,18 @@ namespace wolf
 							_push_constant_block.scale[1] = 2.0f / _io.DisplaySize.y;
 							_push_constant_block.translate[0] = -1.0f;
 							_push_constant_block.translate[1] = -1.0f;
-
+                            
 							vkCmdPushConstants(
 								pCommandBuffer,
 								this->_pipeline_layout,
 								VK_SHADER_STAGE_VERTEX_BIT,
 								0,
-								sizeof(_push_constant_block),
+								static_cast<uint32_t>(sizeof(_push_constant_block))
+#if defined(__APPLE__) || defined(__iOS__)
+                                               //ToDO: bug with MoltenVK
+                                               + 4
+#endif
+                                ,
 								&_push_constant_block);
 
 							_need_to_update_push = false;

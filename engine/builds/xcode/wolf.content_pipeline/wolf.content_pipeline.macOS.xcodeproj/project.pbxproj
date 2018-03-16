@@ -67,8 +67,6 @@
 		2C8D5B0B1F4F8656000BCB87 /* JMLSSEVec.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B031F4F8656000BCB87 /* JMLSSEVec.h */; };
 		2C8D5B0C1F4F8656000BCB87 /* JMLVec2.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B041F4F8656000BCB87 /* JMLVec2.h */; };
 		2C8D5B0D1F4F8656000BCB87 /* JMLVec3.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B051F4F8656000BCB87 /* JMLVec3.h */; };
-		2C8D5B101F4F8817000BCB87 /* aligned_malloc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B0E1F4F8817000BCB87 /* aligned_malloc.cpp */; };
-		2C8D5B111F4F8817000BCB87 /* aligned_malloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B0F1F4F8817000BCB87 /* aligned_malloc.h */; };
 		2C8D5B251F4F89B2000BCB87 /* bbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B121F4F89B2000BCB87 /* bbox.h */; };
 		2C8D5B261F4F89B2000BCB87 /* cloud.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B131F4F89B2000BCB87 /* cloud.h */; };
 		2C8D5B271F4F89B2000BCB87 /* clustering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B141F4F89B2000BCB87 /* clustering.cpp */; };
@@ -166,8 +164,6 @@
 		2C8D5B031F4F8656000BCB87 /* JMLSSEVec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMLSSEVec.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLSSEVec.h; sourceTree = "<group>"; };
 		2C8D5B041F4F8656000BCB87 /* JMLVec2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMLVec2.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec2.h; sourceTree = "<group>"; };
 		2C8D5B051F4F8656000BCB87 /* JMLVec3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMLVec3.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec3.h; sourceTree = "<group>"; };
-		2C8D5B0E1F4F8817000BCB87 /* aligned_malloc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = aligned_malloc.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/aligned_malloc.cpp; sourceTree = "<group>"; };
-		2C8D5B0F1F4F8817000BCB87 /* aligned_malloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = aligned_malloc.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/aligned_malloc.h; sourceTree = "<group>"; };
 		2C8D5B121F4F89B2000BCB87 /* bbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bbox.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/bbox.h; sourceTree = "<group>"; };
 		2C8D5B131F4F89B2000BCB87 /* cloud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cloud.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/cloud.h; sourceTree = "<group>"; };
 		2C8D5B141F4F89B2000BCB87 /* clustering.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = clustering.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/clustering.cpp; sourceTree = "<group>"; };
@@ -268,8 +264,6 @@
 				2C8D5B481F4F8AC1000BCB87 /* vector.h */,
 				2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */,
 				2C8D5B4A1F4F8AC1000BCB87 /* window.h */,
-				2C8D5B0E1F4F8817000BCB87 /* aligned_malloc.cpp */,
-				2C8D5B0F1F4F8817000BCB87 /* aligned_malloc.h */,
 				2C8D5B121F4F89B2000BCB87 /* bbox.h */,
 				2C8D5B131F4F89B2000BCB87 /* cloud.h */,
 				2C8D5B141F4F89B2000BCB87 /* clustering.cpp */,
@@ -413,7 +407,6 @@
 				2C8D5B551F4F8AC2000BCB87 /* souptomesh.h in Headers */,
 				2C4CCB101EB0F54400E0A422 /* c_obj.h in Headers */,
 				2C8D5AF51F4F8641000BCB87 /* JRTKDTreeBuilder.h in Headers */,
-				2C8D5B111F4F8817000BCB87 /* aligned_malloc.h in Headers */,
 				2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */,
 				2C8D5B291F4F89B2000BCB87 /* color.h in Headers */,
 				2C8D5AEB1F4F8641000BCB87 /* JRTCore.h in Headers */,
@@ -522,7 +515,6 @@
 				2C8D5AFC1F4F8641000BCB87 /* JRTTriangleIntersection.cpp in Sources */,
 				2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */,
 				2C8D5ACA1F4F861C000BCB87 /* TootleRaytracer.cpp in Sources */,
-				2C8D5B101F4F8817000BCB87 /* aligned_malloc.cpp in Sources */,
 				2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */,
 				2C8D5AC31F4F8549000BCB87 /* amd_tootle.cpp in Sources */,
 				2C8D5AF21F4F8641000BCB87 /* JRTKDTree.cpp in Sources */,

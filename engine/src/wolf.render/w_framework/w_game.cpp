@@ -110,9 +110,10 @@ bool w_game::run(_In_ map<int, w_window_info>& pOutputWindowsInfo)
     return !this->exiting;
 }
 
-void w_game::exit(_In_ const int& pExitCode)
+void w_game::exit()
 {
-    std::exit(pExitCode);
+    //std::exit(pExitCode);
+    this->exiting = true;
 }
 
 ULONG w_game::release()

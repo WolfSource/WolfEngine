@@ -222,8 +222,6 @@
 		2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C94BC241FEE5C62007338F7 /* w_network.cpp */; };
 		2C94BC271FEE5C62007338F7 /* w_network.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C94BC251FEE5C62007338F7 /* w_network.h */; };
 		2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C94BC281FF1A0E9007338F7 /* libnanomsg.a */; };
-		2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */; };
-		2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */; };
 		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
 		2CDD1359202781D9002B1AAC /* py_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD134F202781D8002B1AAC /* py_color.h */; };
 		2CDD135A202781D9002B1AAC /* py_game_time.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1350202781D8002B1AAC /* py_game_time.h */; };
@@ -270,6 +268,9 @@
 		2CEE64111F48E147003177C0 /* wolf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CEE640A1F48E147003177C0 /* wolf.h */; };
 		2CEE64141F48EEFB003177C0 /* w_inputs_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */; };
 		2CEE64151F48EEFB003177C0 /* w_inputs_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */; };
+		2CF54B4D205C6CF2000B80E3 /* w_aligned_malloc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF54B4A205C6CF1000B80E3 /* w_aligned_malloc.cpp */; };
+		2CF54B4E205C6CF2000B80E3 /* w_aligned_malloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF54B4B205C6CF2000B80E3 /* w_aligned_malloc.h */; };
+		2CF54B4F205C6CF2000B80E3 /* w_plane.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF54B4C205C6CF2000B80E3 /* w_plane.h */; };
 		2CFD41051F52007B00BF9A65 /* allocators.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F21F52007B00BF9A65 /* allocators.h */; };
 		2CFD41061F52007B00BF9A65 /* document.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F31F52007B00BF9A65 /* document.h */; };
 		2CFD41071F52007B00BF9A65 /* encodedstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFD40F41F52007B00BF9A65 /* encodedstream.h */; };
@@ -728,6 +729,9 @@
 		2CEE640A1F48E147003177C0 /* wolf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wolf.h; path = ../../../src/wolf.system/wolf.h; sourceTree = "<group>"; };
 		2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_inputs_manager.cpp; path = ../../../src/wolf.system/w_inputs_manager.cpp; sourceTree = "<group>"; };
 		2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_inputs_manager.h; path = ../../../src/wolf.system/w_inputs_manager.h; sourceTree = "<group>"; };
+		2CF54B4A205C6CF1000B80E3 /* w_aligned_malloc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_aligned_malloc.cpp; path = ../../../src/wolf.system/w_aligned_malloc.cpp; sourceTree = "<group>"; };
+		2CF54B4B205C6CF2000B80E3 /* w_aligned_malloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_aligned_malloc.h; path = ../../../src/wolf.system/w_aligned_malloc.h; sourceTree = "<group>"; };
+		2CF54B4C205C6CF2000B80E3 /* w_plane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_plane.h; path = ../../../src/wolf.system/w_plane.h; sourceTree = "<group>"; };
 		2CFD40F21F52007B00BF9A65 /* allocators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = allocators.h; path = ../../../src/wolf.system/rapidjson/allocators.h; sourceTree = "<group>"; };
 		2CFD40F31F52007B00BF9A65 /* document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = document.h; path = ../../../src/wolf.system/rapidjson/document.h; sourceTree = "<group>"; };
 		2CFD40F41F52007B00BF9A65 /* encodedstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encodedstream.h; path = ../../../src/wolf.system/rapidjson/encodedstream.h; sourceTree = "<group>"; };
@@ -771,10 +775,8 @@
 			files = (
 				2CDF24862036FFBA00BD3DE5 /* Python.framework in Frameworks */,
 				2C07D51320318B20005E7D14 /* libluajit-static.a in Frameworks */,
-				2C49EED7201A7C1600EF7AFB /* libboost_python-mt.a in Frameworks */,
 				2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */,
-				2C9617681F4F7AE2005ACEAC /* libtbb_debug.dylib in Frameworks */,
-				2C9617691F4F7AE2005ACEAC /* libtbbmalloc_debug.dylib in Frameworks */,
+				2C49EED7201A7C1600EF7AFB /* libboost_python-mt.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1227,6 +1229,9 @@
 				2C04326D201F9069009FB7EA /* python_exporter */,
 				2CFD40F11F51FF9300BF9A65 /* rapidjson */,
 				2C7BC43E1F51A2FB009F0C6E /* rapidxml */,
+				2CF54B4A205C6CF1000B80E3 /* w_aligned_malloc.cpp */,
+				2CF54B4B205C6CF2000B80E3 /* w_aligned_malloc.h */,
+				2CF54B4C205C6CF2000B80E3 /* w_plane.h */,
 				2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */,
 				2C0F36A8200BC74C001CB2DF /* w_bounding.h */,
 				2CE5BAF61E64307D005E0F45 /* w_color.h */,
@@ -1466,6 +1471,7 @@
 				2C65225D1FD4AFD50030A053 /* type_mat4x4.hpp in Headers */,
 				2C6523B21FD4B0B40030A053 /* bitfield.hpp in Headers */,
 				2C6523491FD4B0930030A053 /* rotate_normalized_axis.hpp in Headers */,
+				2CF54B4F205C6CF2000B80E3 /* w_plane.h in Headers */,
 				2C6522511FD4AFD50030A053 /* func_common.hpp in Headers */,
 				2C6521CF1FD4AF7D0030A053 /* save_kmg.hpp in Headers */,
 				2CEE640F1F48E147003177C0 /* w_thread.h in Headers */,
@@ -1574,6 +1580,7 @@
 				2C6522531FD4AFD50030A053 /* setup.hpp in Headers */,
 				2C6522401FD4AFD50030A053 /* type_vec.hpp in Headers */,
 				2C65219A1FD4AF5B0030A053 /* flip.hpp in Headers */,
+				2CF54B4E205C6CF2000B80E3 /* w_aligned_malloc.h in Headers */,
 				2C6523AA1FD4B0B40030A053 /* matrix_transform.hpp in Headers */,
 				2C6523A41FD4B0B40030A053 /* packing.hpp in Headers */,
 				2C6523721FD4B0930030A053 /* type_trait.hpp in Headers */,
@@ -1671,11 +1678,12 @@
 				TargetAttributes = {
 					2CD617221E59DA3E006FC5DC = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = J2WEUYPJ98;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = 2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.system.macOS" */;
+			buildConfigurationList = 2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "pyWolf.system" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1703,6 +1711,7 @@
 				2CEE640E1F48E147003177C0 /* w_thread.cpp in Sources */,
 				2CEE64101F48E147003177C0 /* wolf.cpp in Sources */,
 				2CE5BB1D1E64307D005E0F45 /* w_task.cpp in Sources */,
+				2CF54B4D205C6CF2000B80E3 /* w_aligned_malloc.cpp in Sources */,
 				2CE5BB171E64307D005E0F45 /* w_object.cpp in Sources */,
 				2CE5BB151E64307D005E0F45 /* w_logger.cpp in Sources */,
 				2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */,
@@ -1766,7 +1775,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -1816,7 +1825,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
@@ -1826,13 +1835,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
-					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib",
+					/Library/Frameworks/Python.framework/Versions/2.7/lib,
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -1847,20 +1857,18 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../src/wolf.system/",
-					"$(SRCROOT)/../../../dependencies/boost/include/",
-					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
-					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
-					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/luaJIT/include",
+					"$(SRCROOT)/../../../dependencies/nanomsg/include",
+					"$(SRCROOT)/../../../dependencies/msgpack/include",
+					"$(SRCROOT)/../../../dependencies/boost/include",
+					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7,
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/debug/",
-					"$(SRCROOT)/../../../dependencies/boost/lib/osx/debug/",
-					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+					"$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/debug",
+					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug",
+					"$(SRCROOT)/../../../dependencies/boost/lib/osx/debug",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1870,14 +1878,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
-					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
-				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1886,22 +1891,7 @@
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../src/wolf.system/",
-					"$(SRCROOT)/../../../dependencies/boost/include/",
-					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
-					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
-					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
-				);
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/release/",
-					"$(SRCROOT)/../../../dependencies/boost/lib/osx/release/",
-					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -1909,7 +1899,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.system.macOS" */ = {
+		2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "pyWolf.system" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2CD6172C1E59DA3E006FC5DC /* Debug */,

@@ -3,7 +3,7 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : scene.h
-	Description		 : The main scene of Wolf Engine
+	Description		 : This sample shows left-hand coordinate system Y-Up in Wolf
 	Comment          : Read more information about this sample on http://wolfsource.io/gpunotes/
 */
 

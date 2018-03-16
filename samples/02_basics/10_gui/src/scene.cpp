@@ -112,12 +112,16 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	w_imgui::load(
+	if(w_imgui::load(
 		_gDevice,
 		_output_window,
 		this->_viewport,
 		this->_viewport_scissor,
-		nullptr);
+		nullptr) == W_FAILED)
+    {
+        release();
+        V(W_FAILED, "loading gui resources", _trace_info, 3, true);
+    }
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 

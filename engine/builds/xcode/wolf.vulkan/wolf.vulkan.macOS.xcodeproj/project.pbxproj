@@ -53,6 +53,14 @@
 		2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945F01EDA8B4F007B70B8 /* imgui_demo.cpp */; };
 		2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */; };
 		2CF54B09205A2A1C000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B08205A2A1C000B80E3 /* vulkan.framework */; };
+		2CF54B17205B977E000B80E3 /* MaskedOcclusionCulling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF54B0B205B977E000B80E3 /* MaskedOcclusionCulling.cpp */; };
+		2CF54B18205B977E000B80E3 /* CullingThreadpool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF54B0C205B977E000B80E3 /* CullingThreadpool.h */; };
+		2CF54B19205B977E000B80E3 /* MaskedOcclusionCullingAVX512.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF54B0D205B977E000B80E3 /* MaskedOcclusionCullingAVX512.cpp */; settings = {COMPILER_FLAGS = "-march=skylake-avx512"; }; };
+		2CF54B1A205B977E000B80E3 /* MaskedOcclusionCulling.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF54B10205B977E000B80E3 /* MaskedOcclusionCulling.h */; };
+		2CF54B1B205B977E000B80E3 /* CullingThreadpool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF54B11205B977E000B80E3 /* CullingThreadpool.cpp */; };
+		2CF54B1C205B977E000B80E3 /* FrameRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF54B12205B977E000B80E3 /* FrameRecorder.h */; };
+		2CF54B1D205B977E000B80E3 /* FrameRecorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF54B14205B977E000B80E3 /* FrameRecorder.cpp */; };
+		2CF54B1E205B977E000B80E3 /* MaskedOcclusionCullingAVX2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF54B16205B977E000B80E3 /* MaskedOcclusionCullingAVX2.cpp */; settings = {COMPILER_FLAGS = "-mavx2 -mfma"; }; };
 		2CFFAC6E1FCEAA400020A112 /* w_render_target.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC671FCEAA3F0020A112 /* w_render_target.h */; };
 		2CFFAC701FCEAA400020A112 /* w_command_buffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */; };
 		2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */; };
@@ -114,6 +122,16 @@
 		2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2CF54B03205A19C7000B80E3 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../dependencies/vulkan.framework; sourceTree = "<group>"; };
 		2CF54B08205A2A1C000B80E3 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../dependencies/vulkan/macOS/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
+		2CF54B0B205B977E000B80E3 /* MaskedOcclusionCulling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaskedOcclusionCulling.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCulling.cpp; sourceTree = "<group>"; };
+		2CF54B0C205B977E000B80E3 /* CullingThreadpool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CullingThreadpool.h; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/CullingThreadpool.h; sourceTree = "<group>"; };
+		2CF54B0D205B977E000B80E3 /* MaskedOcclusionCullingAVX512.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaskedOcclusionCullingAVX512.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingAVX512.cpp; sourceTree = "<group>"; };
+		2CF54B0F205B977E000B80E3 /* CompilerSpecific.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CompilerSpecific.inl; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/CompilerSpecific.inl; sourceTree = "<group>"; };
+		2CF54B10205B977E000B80E3 /* MaskedOcclusionCulling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaskedOcclusionCulling.h; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCulling.h; sourceTree = "<group>"; };
+		2CF54B11205B977E000B80E3 /* CullingThreadpool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CullingThreadpool.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/CullingThreadpool.cpp; sourceTree = "<group>"; };
+		2CF54B12205B977E000B80E3 /* FrameRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FrameRecorder.h; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/FrameRecorder.h; sourceTree = "<group>"; };
+		2CF54B14205B977E000B80E3 /* FrameRecorder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FrameRecorder.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/FrameRecorder.cpp; sourceTree = "<group>"; };
+		2CF54B15205B977E000B80E3 /* MaskedOcclusionCullingCommon.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MaskedOcclusionCullingCommon.inl; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingCommon.inl; sourceTree = "<group>"; };
+		2CF54B16205B977E000B80E3 /* MaskedOcclusionCullingAVX2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaskedOcclusionCullingAVX2.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingAVX2.cpp; sourceTree = "<group>"; };
 		2CFFAC671FCEAA3F0020A112 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/w_graphics/w_render_target.h; sourceTree = "<group>"; };
 		2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffers.h; path = ../../../src/wolf.render/w_graphics/w_command_buffers.h; sourceTree = "<group>"; };
 		2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_target.cpp; path = ../../../src/wolf.render/w_graphics/w_render_target.cpp; sourceTree = "<group>"; };
@@ -176,6 +194,7 @@
 		2C29CD131EB3339E00BEFF54 /* w_framework */ = {
 			isa = PBXGroup;
 			children = (
+				2CF54B0A205B972E000B80E3 /* masked_occlusion_culling */,
 				2C299C7D201F9110003C80F7 /* w_first_person_camera.cpp */,
 				2C299C7E201F9110003C80F7 /* w_first_person_camera.h */,
 				2C29CD1C1EB3344000BEFF54 /* w_game.cpp */,
@@ -243,6 +262,23 @@
 			name = imgui;
 			sourceTree = "<group>";
 		};
+		2CF54B0A205B972E000B80E3 /* masked_occlusion_culling */ = {
+			isa = PBXGroup;
+			children = (
+				2CF54B0F205B977E000B80E3 /* CompilerSpecific.inl */,
+				2CF54B11205B977E000B80E3 /* CullingThreadpool.cpp */,
+				2CF54B0C205B977E000B80E3 /* CullingThreadpool.h */,
+				2CF54B14205B977E000B80E3 /* FrameRecorder.cpp */,
+				2CF54B12205B977E000B80E3 /* FrameRecorder.h */,
+				2CF54B0B205B977E000B80E3 /* MaskedOcclusionCulling.cpp */,
+				2CF54B10205B977E000B80E3 /* MaskedOcclusionCulling.h */,
+				2CF54B16205B977E000B80E3 /* MaskedOcclusionCullingAVX2.cpp */,
+				2CF54B0D205B977E000B80E3 /* MaskedOcclusionCullingAVX512.cpp */,
+				2CF54B15205B977E000B80E3 /* MaskedOcclusionCullingCommon.inl */,
+			);
+			name = masked_occlusion_culling;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -263,13 +299,16 @@
 				2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */,
 				2C38D94F1E79646D00EE8595 /* w_graphics_device_manager.h in Headers */,
 				2CFFAC701FCEAA400020A112 /* w_command_buffers.h in Headers */,
+				2CF54B18205B977E000B80E3 /* CullingThreadpool.h in Headers */,
 				2C9899701E9B51D6002FE161 /* w_texture.h in Headers */,
+				2CF54B1A205B977E000B80E3 /* MaskedOcclusionCulling.h in Headers */,
 				2C8D5B6E1F4F98D1000BCB87 /* w_imgui.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
 				2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */,
 				2C0F36A6200A6C00001CB2DF /* w_shapes.h in Headers */,
 				2C299C80201F9110003C80F7 /* w_first_person_camera.h in Headers */,
 				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
+				2CF54B1C205B977E000B80E3 /* FrameRecorder.h in Headers */,
 				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -338,19 +377,24 @@
 				2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */,
 				2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */,
 				2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */,
+				2CF54B1B205B977E000B80E3 /* CullingThreadpool.cpp in Sources */,
 				2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */,
 				2C38D94E1E79646D00EE8595 /* w_graphics_device_manager.cpp in Sources */,
 				2C410E6B1EAE111A003F2E84 /* w_pipeline.cpp in Sources */,
+				2CF54B17205B977E000B80E3 /* MaskedOcclusionCulling.cpp in Sources */,
 				2C598C681FA268740055D215 /* w_queue.cpp in Sources */,
 				2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */,
 				2C8D5B6D1F4F98D1000BCB87 /* w_imgui.cpp in Sources */,
 				2CFFAC741FCEAA400020A112 /* w_command_buffers.cpp in Sources */,
 				2C38D9501E79646D00EE8595 /* w_obj_c_wrapper.mm in Sources */,
 				2CFFAC731FCEAA400020A112 /* w_render_target.cpp in Sources */,
+				2CF54B1D205B977E000B80E3 /* FrameRecorder.cpp in Sources */,
 				2C1B3FF81E97DC6500512959 /* w_shader.cpp in Sources */,
 				2CA945F11EDA8B4F007B70B8 /* imgui_demo.cpp in Sources */,
+				2CF54B1E205B977E000B80E3 /* MaskedOcclusionCullingAVX2.cpp in Sources */,
 				2C299C7F201F9110003C80F7 /* w_first_person_camera.cpp in Sources */,
 				2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */,
+				2CF54B19205B977E000B80E3 /* MaskedOcclusionCullingAVX512.cpp in Sources */,
 				2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */,
 				2C0F36A7200A6C00001CB2DF /* w_shapes.cpp in Sources */,
 			);
@@ -386,6 +430,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -441,6 +486,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_X86_VECTOR_INSTRUCTIONS = default;
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -523,15 +569,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.render/w_render_pch.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
-					"$(SRCROOT)/../../../src/wolf.system",
-					"$(SRCROOT)/../../../src/wolf.render",
-					"$(SRCROOT)/../../../dependencies/glm/",
-					"$(SRCROOT)/../../../dependencies/rapidxml/",
-					"$(SRCROOT)/../../../dependencies/boost/include/",
-				);
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "";

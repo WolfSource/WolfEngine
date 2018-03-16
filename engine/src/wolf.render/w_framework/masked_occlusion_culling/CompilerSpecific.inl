@@ -51,6 +51,7 @@
 	#include <mm_malloc.h>
 	#include <immintrin.h>
 	#include <new>
+    #include <w_aligned_malloc.h>
 
 	#define FORCE_INLINE inline
 
@@ -62,10 +63,10 @@
 		return idx;
 	}
 
-	FORCE_INLINE void aligned_free(void *ptr)
-	{
-		free(ptr);
-	}
+    FORCE_INLINE void* aligned_alloc(size_t alignment, size_t size)
+    {
+        return aligned_malloc(size, alignment);
+    }
 
 	FORCE_INLINE void __cpuidex(int* cpuinfo, int function, int subfunction)
 	{

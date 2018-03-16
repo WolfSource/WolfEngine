@@ -157,7 +157,7 @@ void scene::load()
 	//loading vertex shaders
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.vert.spv",
-		w_shader_stage::VERTEX_SHADER);
+		w_shader_stage_flag_bits::VERTEX_SHADER);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -167,7 +167,7 @@ void scene::load()
 	//loading fragment shader
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.frag.spv",
-		w_shader_stage::FRAGMENT_SHADER);
+		w_shader_stage_flag_bits::FRAGMENT_SHADER);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -199,7 +199,7 @@ void scene::load()
 	w_shader_binding_param _shader_param;
 	_shader_param.index = 0;
 	_shader_param.type = w_shader_binding_type::SAMPLER2D;
-	_shader_param.stage = w_shader_stage::FRAGMENT_SHADER;
+	_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -210,7 +210,7 @@ void scene::load()
 
 	_shader_param.index = 1;
 	_shader_param.type = w_shader_binding_type::UNIFORM;
-	_shader_param.stage = w_shader_stage::VERTEX_SHADER;
+	_shader_param.stage = w_shader_stage_flag_bits::VERTEX_SHADER;
 	_shader_param.buffer_info = this->_u0.get_descriptor_info();
 	_shader_params.push_back(_shader_param);
 
@@ -229,7 +229,6 @@ void scene::load()
 		_pipeline_cache_name.clear();
 	}
 
-	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(_gDevice,
 		this->_mesh.get_vertex_binding_attributes(),
 		w_primitive_topology::TRIANGLE_LIST,

@@ -2,18 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:pyWolf/pyWolf.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:wolf.content_pipeline/wolf.content_pipeline.macOS.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:wolf.media_core/wolf.media_core.macOS.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:wolf.system/wolf.system.macOS.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:wolf.vulkan/wolf.vulkan.macOS.xcodeproj">
+      location = "group:/Users/pooyaeimandar/Documents/github/WolfSource/Wolf.Engine/engine/builds/xcode/pyWolf/pyWolf.system.xcodeproj">
    </FileRef>
 </Workspace>

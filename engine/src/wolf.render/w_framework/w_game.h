@@ -32,7 +32,7 @@ namespace wolf
 
 			//This will run the main loop cycle of the game
 			W_EXP bool run(_In_ std::map<int, w_window_info>& pOutputWindowsInfo);
-			W_EXP void exit(_In_ const int& pExitCode = 0);
+			W_EXP void exit();
 
 			//Release all resources
 			W_EXP ULONG release() override;

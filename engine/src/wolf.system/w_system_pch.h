@@ -1,4 +1,4 @@
-﻿/*
+/*
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
@@ -52,6 +52,14 @@
 #endif
 
 #endif //defined(__WIN32) || defined(__UWP)
+
+#if defined(_WIN32)    && (defined(_MSC_VER) || defined(__INTEL_COMPILER) || defined(__clang__)) // Windows: MSVC / Intel compiler / clang
+    #define W_FORCE_INLINE __forceinline
+#elif defined(__GNUG__) || defined(__clang__) // G++ or clang
+    #define W_FORCE_INLINE inline
+#else
+    #error Unsupported compiler
+#endif
 
 // C RunTime Header Files
 #include <stdlib.h>
