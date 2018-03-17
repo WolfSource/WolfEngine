@@ -17,7 +17,7 @@
                BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
                BuildableName = "libpyWolf.system.macOS.dylib"
                BlueprintName = "pyWolf.system.macOS"
-               ReferencedContainer = "container:pyWolf.system.xcodeproj">
+               ReferencedContainer = "container:pyWolf.system.macOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -50,7 +50,7 @@
             BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
             BuildableName = "libpyWolf.system.macOS.dylib"
             BlueprintName = "pyWolf.system.macOS"
-            ReferencedContainer = "container:pyWolf.system.xcodeproj">
+            ReferencedContainer = "container:pyWolf.system.macOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -68,7 +68,7 @@
             BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
             BuildableName = "libpyWolf.system.macOS.dylib"
             BlueprintName = "pyWolf.system.macOS"
-            ReferencedContainer = "container:pyWolf.system.xcodeproj">
+            ReferencedContainer = "container:pyWolf.system.macOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
