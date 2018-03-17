@@ -72,7 +72,12 @@ private:
 	wolf::graphics::w_fences                                        _draw_fence;
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
 	
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	wolf::graphics::w_shapes*										_shape_coordinate_axis;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };
 
 #endif

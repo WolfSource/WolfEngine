@@ -195,6 +195,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _up = glm::vec3(0, -1, 0);
 	auto _look_at = glm::vec3(0, 0, 0);
 
+	//todo: load camera for this section
 	auto _world = glm::mat4(1);
 	auto _view = glm::lookAtRH(_eye, _look_at, _up);
 	auto _projection = glm::perspectiveRH(

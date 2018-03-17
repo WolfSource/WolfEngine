@@ -315,8 +315,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	auto _time = pGameTime.get_total_seconds();
 	auto _clear_color = w_color();
-	_clear_color.r = static_cast<uint8_t>((float)(std::sin(_time)) * 255.0f);
-	_clear_color.g = static_cast<uint8_t>((float)(std::cos(_time)) * 255.0f);
+	_clear_color.r = static_cast<uint8_t>((float)(std::abs(std::sin(_time)) * 255.0f));
+	_clear_color.g = static_cast<uint8_t>((float)(std::abs(std::cos(_time)) * 255.0f));
 	_clear_color.b = 155;
 	_clear_color.a = 255;
 
@@ -337,9 +337,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _output_window = &(_gDevice->output_presentation_window);
 	auto _frame_index = _output_window->swap_chain_image_index;
 
-	const VkPipelineStageFlags _wait_dst_stage_mask[] =
+	const uint32_t _wait_dst_stage_mask[] =
 	{
-		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -359,7 +359,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		{ this->_rt_semaphore }, //signal semaphores
 		&this->_rt_fence) == W_FAILED)
 	{
-		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
+		V(W_FAILED, "submiting queue for drawing to render target", _trace_info, 3, true);
 	}
 
 	// Wait for fence to signal that command buffer done

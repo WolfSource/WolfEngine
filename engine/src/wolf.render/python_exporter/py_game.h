@@ -175,7 +175,7 @@ namespace pyWolf
 		//export w_game class
 		class_<py_game, boost::noncopyable>("w_game", init<std::wstring, std::wstring, std::wstring>())
 			.def("run", &py_game::run, "This will run the main loop cycle of the game")
-			.def("exit", &py_game::release, "release all resources and exit")
+			.def("release", &py_game::release, "release all resources and exit")
 			.def("set_pre_init_callback", &py_game::py_set_pre_init_callback, "set a callback function which rises before initializing graphics device(s)")
 			.def("set_post_init_callback", &py_game::py_set_post_init_callback, "set a callback function which rises after initializing graphics device(s)")
 			.def("set_load_callback", &py_game::py_set_load_callback, "set a callback function which rises on loading")

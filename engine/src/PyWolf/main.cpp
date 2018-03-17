@@ -77,6 +77,7 @@ BOOST_PYTHON_MODULE(pyWolf)
 		pyWolf::py_mesh_export();
 		pyWolf::py_pipeline_export();
 		pyWolf::py_uniform_export();
+		pyWolf::py_render_target_export();
 
 		{
 			struct w_graphics_device {};
@@ -104,6 +105,7 @@ BOOST_PYTHON_MODULE(pyWolf)
     pyWolf::py_logger_export();
 
     def("release_shared_data_over_all_instances", wolf::release_shared_data_over_all_instances);
+
 }
 
 #endif

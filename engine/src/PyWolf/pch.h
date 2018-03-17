@@ -48,6 +48,7 @@
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_uniform.h>
+#include <w_graphics/w_render_target.h>
 
 #include <python_exporter/py_glm.h>
 

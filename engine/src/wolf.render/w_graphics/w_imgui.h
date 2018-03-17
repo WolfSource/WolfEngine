@@ -29,22 +29,22 @@ namespace wolf
         {
         public:
 
-            struct texture_index
-            {
-                int         start_index;
-                w_texture*  texture;
+            //struct texture_index
+            //{
+            //    int         start_index;
+            //    w_texture*  texture;
 
-                texture_index()
-                {
-                    this->start_index = -1;
-                    this->texture = nullptr;
-                }
-                texture_index(_In_ int  pStartIndex, _In_ w_texture*  pTexture)
-                {
-                    this->start_index = pStartIndex;
-                    this->texture = pTexture;
-                }
-            };
+            //    texture_index()
+            //    {
+            //        this->start_index = -1;
+            //        this->texture = nullptr;
+            //    }
+            //    texture_index(_In_ int  pStartIndex, _In_ w_texture*  pTexture)
+            //    {
+            //        this->start_index = pStartIndex;
+            //        this->texture = pTexture;
+            //    }
+            //};
 
             static W_EXP W_RESULT load(
 				_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
@@ -56,7 +56,7 @@ namespace wolf
                 _In_ const char* pFontPath = nullptr,
                 _In_ const float& pFontPixelSize = 15.0f);
 
-            static W_EXP void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork);
+            static W_EXP void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pGuiWorkFlow);
             static W_EXP void render();
             static W_EXP ULONG release();
 

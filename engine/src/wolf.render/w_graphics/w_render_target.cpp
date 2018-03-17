@@ -287,7 +287,7 @@ W_RESULT w_render_target::load(
 
 W_RESULT w_render_target::record_command_buffer(
 	_In_ w_command_buffers* pCommandBuffer,
-	_In_ std::function<W_RESULT(void)> pFunction,
+	_In_ std::function<W_RESULT(void)> pDrawFunction,
 	_In_ w_color pClearColor,
 	_In_ const float& pClearDepth,
 	_In_ const uint32_t&  pClearStencil)
@@ -295,31 +295,31 @@ W_RESULT w_render_target::record_command_buffer(
 	if (!this->_pimp) return W_FAILED;
 	return this->_pimp->record_command_buffer(
 		pCommandBuffer,
-		pFunction,
+		pDrawFunction,
 		pClearColor,
 		pClearDepth,
 		pClearStencil);
 }
 
-W_RESULT w_render_target::save_to_file(_In_z_ const char* pFilename)
-{
-//    short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)pWidth, (short)pHeight, 1, 24 };
-//    FILE *f;
-//    
-//#ifdef __WIN32
-//    if (!fopen_s(&f, pFilename, "wb"))
-//#else
-//    f = fopen(pFilename, "wb");
-//    if (!f)
-//#endif
-//    {
-//        fwrite(header, 1, sizeof(header), f);
-//        fwrite(pData, 1, pWidth * pHeight * 3, f);
-//        fclose(f);
-//    }
-
-	return W_PASSED;
-}
+//W_RESULT w_render_target::save_to_file(_In_z_ const char* pFilename)
+//{
+////    short header[] = { 0x4D42, 0, 0, 0, 0, 26, 0, 12, 0, (short)pWidth, (short)pHeight, 1, 24 };
+////    FILE *f;
+////    
+////#ifdef __WIN32
+////    if (!fopen_s(&f, pFilename, "wb"))
+////#else
+////    f = fopen(pFilename, "wb");
+////    if (!f)
+////#endif
+////    {
+////        fwrite(header, 1, sizeof(header), f);
+////        fwrite(pData, 1, pWidth * pHeight * 3, f);
+////        fclose(f);
+////    }
+//
+//	return W_PASSED;
+//}
 
 ULONG w_render_target::release()
 {

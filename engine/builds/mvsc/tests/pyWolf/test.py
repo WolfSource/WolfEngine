@@ -1,6 +1,6 @@
 import sys, os, ctypes, threading, pyWolf
 
-from math import cos
+from math import cos, sin
 
 from PySide import QtGui, QtCore
 from PySide.QtGui import *
@@ -19,7 +19,7 @@ class gui(QWidget):
         self.debug_text = ""
         self._label = QLabel()
         self._label.setAlignment(Qt.AlignLeft)
-        
+
         vbox = QVBoxLayout()
         vbox.addWidget(self._label)
         
@@ -27,7 +27,7 @@ class gui(QWidget):
 
         timer = QTimer(self)
         timer.timeout.connect(self.updateTime)
-        timer.start(30)
+        timer.start(50)
 
     def updateTime(self):
         self._label.setText(self.debug_text)
@@ -51,19 +51,22 @@ class scene(QWidget):
         self._draw_fence = pyWolf.graphics.w_fences()
         self._draw_semaphore = pyWolf.graphics.w_semaphore()
         self._shader = pyWolf.graphics.w_shader()
+        self._pipeline = pyWolf.graphics.w_pipeline()
         self._mesh = pyWolf.graphics.w_mesh()
-        self._texture = pyWolf.graphics.w_texture()
+        self._u0 = pyWolf.graphics.w_uniform()
+        self._wvp = pyWolf.glm.mat4x4_identity()
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        self._push = True
-        self._PushConstantColorEdit = [0.4, 0.7, 0.0, 1.0]
-        self._pipeline = pyWolf.graphics.w_pipeline()
+        self._rt = pyWolf.graphics.w_render_target()
+        self._rt_command_buffers  = pyWolf.graphics.w_command_buffers()
+        self._rt_fence = pyWolf.graphics.w_fences()
+        self._rt_semaphore = pyWolf.graphics.w_semaphore()
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         
         _config = pyWolf.graphics.w_graphics_device_manager_configs()
-        _config.debug_gpu = True
+        _config.debug_gpu = False
         self._game.set_graphics_device_manager_configs(_config)
 
     def pre_init(self):
@@ -123,9 +126,40 @@ class scene(QWidget):
             print "Error on initializing draw command buffer(s)"
             self.release()
             sys.exit(1)
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #The following codes have been added for this project
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        _hr = self._rt_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.PRIMARY)
+        if _hr:
+            print "Error on initializing render target command buffer(s)"
+            self.release()
+            sys.exit(1)
+
+        _hr = self._rt.load(self._gDevice, self._viewport, self._viewport_scissor, _render_pass_attachments[0], number_of_swap_chains)
+        if _hr:
+            print "Error on loading render target"
+            self.release()
+            sys.exit(1)
+
+        #create one semaphore for render target
+        _hr = self._rt_semaphore.initialize(self._gDevice)
+        if _hr:
+            print "Error on initializing semaphore of render target"
+            self.release()
+            sys.exit(1)
+
+        #create one fence for render target
+        _hr = self._rt_fence.initialize(self._gDevice, 1)
+        if _hr:
+            print "Error on initializing fence(s) of render target"
+            self.release()
+            sys.exit(1)
+
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         #loading vertex shader
-        _content_path_dir = "E:\\SourceCode\\github\\WolfSource\\Wolf.Engine\\samples\\02_basics\\12_push_constants\\src\\content\\"
+        _content_path_dir = "E:/SourceCode/github/WolfSource/Wolf.Engine/samples/02_basics/13_render_to_target/src/content/"
         _hr = self._shader.load(self._gDevice, _content_path_dir + "shaders/shader.vert.spv", pyWolf.graphics.w_shader_stage_flag_bits.VERTEX_SHADER)
         if _hr:
             print "Error on loading vertex shader"
@@ -138,22 +172,21 @@ class scene(QWidget):
             print "Error on loading fragment shader"
             self.release()
             sys.exit(1)
-            
-        _hr = self._texture.initialize(self._gDevice, 8, 8, False, False)
-        if _hr:
-            print "Error on initializing texture"
-            self.release()
-            sys.exit(1)
 
-        self._texture.set_view_type(pyWolf.graphics.w_image_view_type._2D_ARRAY)
-	
-        #load texture from file
-        _hr = self._texture.load_texture_2D_from_file(_content_path_dir + "../../../../../Logo.jpg", True)
+        #load shader uniform
+        _hr = self._u0.load(self._gDevice, 16 * 4)
         if _hr:
-            print "Error on loading " + _content_path_dir + "../../../../../Logo.jpg"
+            print "Error on loading vertex shader uniform"
             self.release()
             sys.exit(1)
-        
+    
+        #update shader uniform
+        _hr = self._u0.update(self._wvp)
+        if _hr:
+            print "Error on updating vertex shader uniform"
+            self.release()
+            sys.exit(1)
+            
         #just we need vertex position color
         _vba = pyWolf.graphics.w_vertex_binding_attributes(pyWolf.graphics.w_vertex_declaration.VERTEX_POSITION_UV)
         self._mesh.set_vertex_binding_attributes(_vba)
@@ -162,42 +195,31 @@ class scene(QWidget):
         _shader_param_0.index = 0
         _shader_param_0.type = pyWolf.graphics.w_shader_binding_type.SAMPLER2D
         _shader_param_0.stage = pyWolf.graphics.w_shader_stage_flag_bits.FRAGMENT_SHADER
-        _shader_param_0.image_info = self._texture.get_descriptor_info()
+        _shader_param_0.image_info = self._rt.get_attachment_descriptor_info(0)#attachment 0 is color
 
-        _hr = self._shader.set_shader_binding_params( [_shader_param_0 ])
+        _shader_param_1 = pyWolf.graphics.w_shader_binding_param()
+        _shader_param_1.index = 1
+        _shader_param_1.type = pyWolf.graphics.w_shader_binding_type.UNIFORM
+        _shader_param_1.stage = pyWolf.graphics.w_shader_stage_flag_bits.VERTEX_SHADER
+        _shader_param_1.buffer_info = self._u0.get_descriptor_info()
+
+        _hr = self._shader.set_shader_binding_params( [_shader_param_0, _shader_param_1 ])
         if _hr:
             print "Set shader binding params"
-                
+
         #loading pipeline cache
         _pipeline_cache_name = "pipeline_cache"
         _hr = self._pipeline.create_pipeline_cache(self._gDevice, _pipeline_cache_name)
         if _hr:
             print "Error on creating pipeline cache"
 
- 
-        _rasterization_states = pyWolf.graphics.w_graphics_device.defaults_states.pipelines.rasterization_create_info
-        _multisample_states = pyWolf.graphics.w_graphics_device.defaults_states.pipelines.multisample_create_info
-        _blend_states = pyWolf.graphics.w_graphics_device.defaults_states.blend_states.premulitplied_alpha        
-        _blend_color = pyWolf.system.w_color.TRANSPARENT_()
-
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        #The following codes have been added for this project
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++  
-
-        _push_constant_range = pyWolf.graphics.w_push_constant_range()
-        _push_constant_range.offset = 0 
-        _push_constant_range.size = 4 * 4 # 4 * sizeof(float)
-        _push_constant_range.shader_stage_flags = pyWolf.graphics.w_shader_stage_flag_bits.VERTEX_SHADER
-        
         #create pipeline
-        _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ], _pipeline_cache_name, [], [_push_constant_range], 0, _rasterization_states, _multisample_states, _blend_states, _blend_color)
+        _hr = self._pipeline.load(self._gDevice, _vba, pyWolf.graphics.w_primitive_topology.TRIANGLE_LIST, self._draw_render_pass, self._shader, [self._viewport], [ self._viewport_scissor ])
         if _hr:
             print "Error on creating pipeline"
             self.release()
             sys.exit(1)
 
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
         _vertex_data = [
 		    -0.7, -0.7,	0.0,		#pos0
@@ -213,13 +235,18 @@ class scene(QWidget):
         _index_data = [ 0,1,3,3,1,2 ]
 
         #create mesh
-        self._mesh.set_texture(self._texture)
         _hr = self._mesh.load(self._gDevice, _vertex_data, _index_data, False)
         if _hr:
             print "Error on loading mesh"
             self.release()
             sys.exit(1)
-        
+
+        _hr = self.build_command_buffers()
+        if _hr:
+            print "Error on building command buffers"
+            self.release()
+            sys.exit(1)
+            
         print "scene loaded successfully"
 
     def build_command_buffers(self):
@@ -235,14 +262,11 @@ class scene(QWidget):
             self._draw_render_pass.begin(i, _cmd, pyWolf.system.w_color.CORNFLOWER_BLUE(), 1.0, 0)
             
             self._pipeline.bind(_cmd)
-            #++++++++++++++++++++++++++++++++++++++++++++++++++++
-            #The following codes have been added for this project
-            #++++++++++++++++++++++++++++++++++++++++++++++++++++  
-            self._pipeline.set_push_constant_buffer(_cmd, pyWolf.graphics.w_shader_stage_flag_bits.VERTEX_SHADER, 0, self._PushConstantColorEdit)
-            #++++++++++++++++++++++++++++++++++++++++++++++++++++
-            #++++++++++++++++++++++++++++++++++++++++++++++++++++  
-            self._mesh.draw(_cmd, None, 0, False)
-
+            _hr = self._mesh.draw(_cmd, None, 0, False)
+            if _hr:
+                print "Error on drawing mesh in command buffer: " + str(i)
+                break
+            
             self._draw_render_pass.end(_cmd)
             
             _hr = self._draw_command_buffers.end(i)
@@ -253,34 +277,65 @@ class scene(QWidget):
         return _hr
 
     def update(self, pGameTime):
-        #Update label of gui widget
+        _time = pGameTime.get_total_seconds()
+        #Update label of gui widget	
         global _gui
-        _gui.debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(pGameTime.get_total_seconds())
-    
+        _gui.debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(_time)
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #The following codes have been added for this project
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        _clear_color = pyWolf.system.w_color()
+        _clear_color.r = (int)(abs(sin(_time) * 255))
+        _clear_color.g = (int)(abs(cos(_time) * 255))
+        _clear_color.b = 155
+        _clear_color.a = 255
+
+        self._rt.record_command_buffer(self._rt_command_buffers, None, _clear_color, 1.0, 0)
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
     def pre_render(self, pGameTime):
         _output_window = self._gDevice.output_presentation_window
         _frame_index = _output_window.swap_chain_image_index
 
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        #The following codes have been added for this project
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++  
-        if self._push:
-            self.build_command_buffers()
-            self._push = False
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++  
-
         _wait_dst_stage_mask = [ pyWolf.graphics.w_pipeline_stage_flag_bits.COLOR_ATTACHMENT_OUTPUT_BIT ]
         _wait_semaphores = [ _output_window.swap_chain_image_is_available_semaphore ]
+        _signal_semaphores = [ self._rt_semaphore ]
+        _cmd = self._rt_command_buffers.get_command_at(_frame_index)
+
+        #reset rt fence
+        self._rt_fence.reset()
+        _hr = self._gDevice.submit(
+            [_cmd], 
+            self._gDevice.graphics_queue, 
+            _wait_dst_stage_mask, 
+            _wait_semaphores, 
+            _signal_semaphores, 
+            self._rt_fence)
+        if _hr:
+            print "Error on submiting queue for drawing to render target"
+            return 
+
+        self._rt_fence.wait()
+        if _hr:
+            print "Error on waiting for render target fence"
+            return 
+
+        _wait_semaphores = [self._rt_semaphore]
         _signal_semaphores = [ _output_window.rendering_done_semaphore ]
         _cmd = self._draw_command_buffers.get_command_at(_frame_index)
-        _cmd_buffers = [_cmd]         
 
         #reset draw fence
         self._draw_fence.reset()
-        _hr = self._gDevice.submit(_cmd_buffers, self._gDevice.graphics_queue, _wait_dst_stage_mask, _wait_semaphores, _signal_semaphores, self._draw_fence)
+        _hr = self._gDevice.submit(
+            [_cmd], 
+            self._gDevice.graphics_queue, 
+            _wait_dst_stage_mask, 
+            _wait_semaphores, 
+            _signal_semaphores, 
+            self._draw_fence)
         if _hr:
-            print "Error on submit to graphics device"
+            print "Error on submiting queue for final drawing"
             return 
 
         _hr = self._draw_fence.wait()
@@ -357,15 +412,31 @@ class scene(QWidget):
         self._mesh.release()
         self._mesh = None
 
-        self._texture.release()
-        self._texture = None
+        self._u0.release()
+        self._u0 = None
+
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #The following codes have been added for this project
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        self._rt_fence.release()
+        self._rt_fence = None
+
+        self._rt_semaphore.release()
+        self._rt_semaphore = None
+
+        self._rt_command_buffers.release()
+        self._rt_command_buffers = None
         
-        self._game.exit()
+        self._rt.release()
+        self._rt = None
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        #++++++++++++++++++++++++++++++++++++++++++++++++++++
+        
+        self._game.release()
         self._game = None
         self._gDevice = None
         self._viewport = None
         self._viewport_scissor = None
-
         
 if __name__ == '__main__':
     # Create a Qt application

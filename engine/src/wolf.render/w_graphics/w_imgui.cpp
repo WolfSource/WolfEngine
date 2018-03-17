@@ -382,7 +382,7 @@ namespace wolf
 				return _hr == VK_SUCCESS ? W_PASSED : W_FAILED;
 			}
 
-            void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pMakeGuiWork)
+            void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pGuiWorkFlow)
             {
                 ImGuiIO& _io = ImGui::GetIO();
 
@@ -437,7 +437,7 @@ namespace wolf
                 }
 
                 ImGui::NewFrame();
-                pMakeGuiWork();
+				pGuiWorkFlow();
                 ImGui::Render();
             }
 

@@ -2,7 +2,8 @@ import sys, os
 
 #get path of script
 _script_path = os.path.realpath(__file__)
-pyWolfPath = os.path.dirname(_script_path)
+_script_dir = os.path.dirname(_script_path)
+pyWolfPath = _script_dir
 
 if sys.platform == "linux" or sys.platform == "linux2":
     print "Linux not tested yet"
@@ -15,6 +16,7 @@ if pyWolfPath != "" and (not pyWolfPath in sys.path):
     sys.path.append(pyWolfPath)
 
 import ctypes, threading, pyWolf
+from math import cos
 from PySide import QtGui, QtCore
 from PySide.QtGui import *
 from PySide.QtCore import *
@@ -22,43 +24,27 @@ from PySide.QtCore import *
 screen_width = 800
 screen_height = 600
 
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
-#The following codes have been added for this project
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
 class gui(QWidget):
     def __init__(self, parent=None):
         super(gui, self).__init__(parent)
 
-        self._debug_text = ""
+        self.debug_text = ""
         self._label = QLabel()
         self._label.setAlignment(Qt.AlignLeft)
 
         vbox = QVBoxLayout()
         vbox.addWidget(self._label)
 
-        timer = QTimer(self)
-        timer.timeout.connect(self.updateTime)
-        timer.start(50)
-        
         self.setLayout(vbox)
 
-    @QtCore.Slot()
-    def slot(self, str):
-        self._debug_text = str
-        
-    def updateTime(self):
-        self._label.setText(self._debug_text)
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
-#++++++++++++++++++++++++++++++++++++++++++++++++++++
+        timer = QTimer(self)
+        timer.timeout.connect(self.updateTime)
+        timer.start(30)
 
+    def updateTime(self):
+        self._label.setText(self.debug_text)
+     
 class scene(QWidget):
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++
-    #The following codes have been added for this project
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++
-    signal = Signal(str)
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        
     def __init__(self, pContentPath, pLogPath, pAppName, parent = None):
         super(scene, self).__init__(parent)
         self.__exiting = False
@@ -77,6 +63,10 @@ class scene(QWidget):
         self._draw_fence = pyWolf.graphics.w_fences()
         self._draw_semaphore = pyWolf.graphics.w_semaphore()
         
+        _config = pyWolf.graphics.w_graphics_device_manager_configs()
+        _config.debug_gpu = False
+        self._game.set_graphics_device_manager_configs(_config)
+
     def pre_init(self):
         print "pre_init"
 
@@ -110,26 +100,30 @@ class scene(QWidget):
         _hr = self._draw_render_pass.load(self._gDevice, self._viewport, self._viewport_scissor, _render_pass_attachments)
         if _hr:
             print "Error on loading render pass"
-            return
-        
+            self.release()
+            sys.exit(1)
+
         #create one semaphore for drawing
         _hr = self._draw_semaphore.initialize(self._gDevice)
         if _hr:
             print "Error on initializing semaphore"
-            return
+            self.release()
+            sys.exit(1)
 
         #create one fence for drawing
-        _hr = self._draw_fence.initialize(self._gDevice)
+        _hr = self._draw_fence.initialize(self._gDevice, 1)
         if _hr:
             print "Error on initializing fence(s)"
-            return
+            self.release()
+            sys.exit(1)
 
         #create one fence for drawing
         number_of_swap_chains = self._gDevice.get_number_of_swap_chains()
         _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.PRIMARY)
         if _hr:
             print "Error on initializing draw command buffer(s)"
-            return
+            self.release()
+            sys.exit(1)
 
         _hr = self.build_command_buffers()
         if _hr:
@@ -143,13 +137,13 @@ class scene(QWidget):
         _size = self._draw_command_buffers.get_commands_size()
         for i in xrange(_size):
             _cmd = self._draw_command_buffers.get_command_at(i)
-            _hr = self._draw_command_buffers.begin(i, pyWolf.graphics.w_command_buffer_usage_flag_bits.SIMULTANEOUS_USE_BIT)
+            _hr = self._draw_command_buffers.begin(i)
             if _hr:
                 print "Error on begining command buffer: " + str(i)
                 break
             
             self._draw_render_pass.begin(i, _cmd, pyWolf.system.w_color.CORNFLOWER_BLUE(), 1.0, 0)
-            #place your draw code
+
             self._draw_render_pass.end(_cmd)
             
             _hr = self._draw_command_buffers.end(i)
@@ -164,11 +158,9 @@ class scene(QWidget):
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #Update label of gui widget
-        _debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(pGameTime.get_total_seconds())
-        self.signal.emit(_debug_text)
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        #++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+        global _gui
+        _gui.debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(pGameTime.get_total_seconds())
+    
     def pre_render(self, pGameTime):
         _output_window = self._gDevice.output_presentation_window
         _frame_index = _output_window.swap_chain_image_index
@@ -177,7 +169,7 @@ class scene(QWidget):
         _wait_semaphores = [ _output_window.swap_chain_image_is_available_semaphore ]
         _signal_semaphores = [ _output_window.rendering_done_semaphore ]
         _cmd = self._draw_command_buffers.get_command_at(_frame_index)
-        _cmd_buffers = [_cmd ]       
+        _cmd_buffers = [_cmd]         
 
         #reset draw fence
         self._draw_fence.reset()
@@ -245,39 +237,32 @@ class scene(QWidget):
 
         self._draw_render_pass.release()
         self._draw_render_pass = None
-
-        self._game.exit()
+        
+        self._game.release()
         self._game = None
         self._gDevice = None
         self._viewport = None
         self._viewport_scissor = None
-        
+
         
 if __name__ == '__main__':
     # Create a Qt application
     _app = QApplication(sys.argv)
-    
-    #Show gui
+
+    #Init gui
     _gui = gui()
     _gui.resize(screen_width /2, screen_height /2)
     _gui.setWindowTitle('Wolf.Engine Debug')
-
+    
     #Init scene
     _scene = scene(pyWolfPath + "..\\..\\..\\..\\content\\",
                   pyWolfPath,
-                  "py_10_gui")
+                  "py_11_pipeline")
     _scene.resize(screen_width, screen_height)
     _scene.setWindowTitle('Wolf.Engine')
 
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++
-    #The following codes have been added for this project
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++
-    _scene.signal.connect(_gui.slot)
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++
-    #++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
     #Show all widgets
     _scene.show()
     _gui.show()
-    
+
     sys.exit(_app.exec_())

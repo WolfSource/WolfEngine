@@ -20,6 +20,23 @@ namespace pyWolf
 	typedef std::vector<uint8_t> w_vector_uint8_t;
 	typedef std::vector<float> w_vector_float;
 
+	//static std::wstring py_sprintf(_In_z_ std::wstring pStr, _In_ boost::python::list pList)
+	//{
+	//	const wchar_t* _delimiter = L"<%>";
+	//	for (size_t i = 0; i < len(pList); ++i)
+	//	{
+	//		boost::python::extract<double> _data(pList[i]);
+	//		if (_data.check())
+	//		{
+	//			auto _found = pStr.find(_delimiter);
+	//			if (_found == std::wstring::npos) break;
+	//			
+	//			pStr.replace(_found, 3, std::to_wstring(_data()));
+	//		}
+	//	}
+	//	return pStr;
+	//}
+
 	static void py_std_export()
 	{
 		using namespace boost::python;

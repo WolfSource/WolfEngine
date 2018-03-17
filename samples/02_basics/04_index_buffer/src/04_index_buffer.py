@@ -278,7 +278,7 @@ class scene(QWidget):
         self._mesh.release()
         self._mesh = None
 
-        self._game.exit()
+        self._game.release()
         self._game = None
         self._gDevice = None
         self._viewport = None

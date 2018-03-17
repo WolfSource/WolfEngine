@@ -26,15 +26,14 @@ namespace pyWolf
 			.def(init<boost::python::list, boost::python::list, const w_color&>())
 			.def(init<boost::python::list, boost::python::list, boost::python::list, const w_color&>())
 			.def(init<boost::python::list, const float&, const w_color&, const w_plane&, const uint32_t&>())
-
-			//.def("load", &w_shader::py_load, w_shader_load_overloads())
-			//.def("release", &w_shader::release, "release all resources")
-			//.def("get_shader_binding_params", &w_shader::py_get_shader_binding_params, "get shader binding params")
-			//.def("get_shader_stages", &w_shader::py_get_shader_stages, "get shader stages")
-			//.def("get_compute_shader_stage", &w_shader::get_compute_shader_stage, "get compute shader stage")
-			//.def("set_shader_binding_params", &w_shader::py_set_shader_binding_params, "set and update shader binding params")
-			//.def("load_shader", w_shader::py_load_shader, w_shader_load_shader_overloads())
-			//.staticmethod("load_shader")
+			.def(init<const wolf::system::w_bounding_box&, const w_color&>())
+			.def(init<const wolf::system::w_bounding_sphere&, const w_color&, const uint32_t&>())
+			.def(init<const w_color&>())
+			.def("load", &w_shapes::py_load, "load shape")
+			.def("update", &w_shapes::py_update, "update shape")
+			.def("update", &w_shapes::py_update, "update shape")
+			.def("draw", &w_shapes::draw, "draw shape")
+			.def("release", &w_shapes::release, "release resources of shape")
 			;
 	}
 }

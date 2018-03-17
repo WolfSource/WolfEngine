@@ -254,6 +254,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_pipeline.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_queue.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_render_pass.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_render_target.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_semaphore.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_shader.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\python_exporter\py_shapes.h" />

@@ -347,7 +347,7 @@ class scene(QWidget):
         self._texture.release()
         self._texture = None
 
-        self._game.exit()
+        self._game.release()
         self._game = None
         self._gDevice = None
         self._viewport = None
