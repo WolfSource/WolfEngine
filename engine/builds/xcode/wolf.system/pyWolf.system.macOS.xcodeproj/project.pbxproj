@@ -684,7 +684,7 @@
 		2C94BC251FEE5C62007338F7 /* w_network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_network.h; path = ../../../src/wolf.system/w_network.h; sourceTree = "<group>"; };
 		2C94BC281FF1A0E9007338F7 /* libnanomsg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnanomsg.a; path = ../../../dependencies/nanomsg/lib/osx/debug/libnanomsg.a; sourceTree = "<group>"; };
 		2C98996B1E9B512F002FE161 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../src/wolf.system/stb_image.h; sourceTree = "<group>"; };
-		2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CD617231E59DA3E006FC5DC /* libpyWolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libpyWolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CDD134F202781D8002B1AAC /* py_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_color.h; path = ../../../src/wolf.system/python_exporter/py_color.h; sourceTree = "<group>"; };
 		2CDD1350202781D8002B1AAC /* py_game_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_game_time.h; path = ../../../src/wolf.system/python_exporter/py_game_time.h; sourceTree = "<group>"; };
 		2CDD1351202781D8002B1AAC /* py_rectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_rectangle.h; path = ../../../src/wolf.system/python_exporter/py_rectangle.h; sourceTree = "<group>"; };
@@ -1842,7 +1842,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib",
-					/Library/Frameworks/Python.framework/Versions/2.7/lib,
+					/System/Library/Frameworks/Python.framework/Versions/2.7/lib,
 				);
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -1862,7 +1862,7 @@
 					"$(SRCROOT)/../../../dependencies/nanomsg/include",
 					"$(SRCROOT)/../../../dependencies/msgpack/include",
 					"$(SRCROOT)/../../../dependencies/boost/include",
-					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7,
+					/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7,
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
