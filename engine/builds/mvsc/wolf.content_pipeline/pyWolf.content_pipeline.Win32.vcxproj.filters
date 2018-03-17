@@ -40,9 +40,6 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_scene.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_model.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\aligned_malloc.cpp">
-      <Filter>amd\amd_tootle</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\clustering.cpp">
       <Filter>amd\amd_tootle</Filter>
     </ClCompile>
@@ -167,9 +164,6 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_model.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.h">
       <Filter>directXmesh</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\aligned_malloc.h">
-      <Filter>amd\amd_tootle</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\bbox.h">
       <Filter>amd\amd_tootle</Filter>

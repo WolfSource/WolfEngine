@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\glm\detail\glm.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_aligned_malloc.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_cpu.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\stb_image.h" />
     <ClInclude Include="..\..\..\src\wolf.system\stb_image_write.h" />
     <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_aligned_malloc.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />

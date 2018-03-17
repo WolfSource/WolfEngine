@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\aligned_malloc.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\clustering.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\d3doverdrawwindow.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\d3dwm.cpp" />
@@ -70,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\aligned_malloc.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\bbox.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\cloud.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\clustering.h" />

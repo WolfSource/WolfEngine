@@ -21,6 +21,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\w_network.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_aligned_malloc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
@@ -819,6 +820,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_plane.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\w_aligned_malloc.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
