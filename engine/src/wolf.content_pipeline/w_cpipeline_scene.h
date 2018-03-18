@@ -64,6 +64,12 @@ namespace wolf
 
 #pragma endregion
 
+            
+#ifdef __PYTHON__
+            
+            
+#endif
+            
 		private:
             std::string										_name;
 			std::vector<c_camera>							_cameras;
@@ -73,5 +79,7 @@ namespace wolf
 		};
 	}
 }
+
+#include "python_exporter/py_cpipeline_scene.h"
 
 #endif

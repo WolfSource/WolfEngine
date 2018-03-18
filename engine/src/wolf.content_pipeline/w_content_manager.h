@@ -159,4 +159,6 @@ namespace wolf
 	}
 }
 
+#include "python_exporter/py_content_manager.h"
+
 #endif

@@ -100,6 +100,8 @@
 		2C8D5B5C1F4F8AC2000BCB87 /* viewpoints.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */; };
 		2C8D5B5D1F4F8AC2000BCB87 /* window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B4A1F4F8AC1000BCB87 /* window.h */; };
 		2C8D5B601F4F8AF2000BCB87 /* tootlelib.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */; };
+		2CB6D9BC205F258C00F8B4E9 /* py_content_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB6D9BB205F258C00F8B4E9 /* py_content_manager.h */; };
+		2CB6D9BE205F25F400F8B4E9 /* py_cpipeline_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB6D9BD205F25F400F8B4E9 /* py_cpipeline_scene.h */; };
 		2CDF248220319AF500BD3DE5 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */; };
 /* End PBXBuildFile section */
 
@@ -200,7 +202,9 @@
 		2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = viewpoints.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/viewpoints.h; sourceTree = "<group>"; };
 		2C8D5B4A1F4F8AC1000BCB87 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = window.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/window.h; sourceTree = "<group>"; };
 		2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tootlelib.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/include/tootlelib.h; sourceTree = "<group>"; };
-		2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libpyWolf.content_pipeline.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CB6D9BB205F258C00F8B4E9 /* py_content_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_content_manager.h; path = ../../../src/wolf.content_pipeline/python_exporter/py_content_manager.h; sourceTree = "<group>"; };
+		2CB6D9BD205F25F400F8B4E9 /* py_cpipeline_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_cpipeline_scene.h; path = ../../../src/wolf.content_pipeline/python_exporter/py_cpipeline_scene.h; sourceTree = "<group>"; };
+		2CD617231E59DA3E006FC5DC /* libpyWolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libpyWolf.content_pipeline.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -353,11 +357,21 @@
 			name = include;
 			sourceTree = "<group>";
 		};
+		2CB6D9BA205F255C00F8B4E9 /* python_exporter */ = {
+			isa = PBXGroup;
+			children = (
+				2CB6D9BD205F25F400F8B4E9 /* py_cpipeline_scene.h */,
+				2CB6D9BB205F258C00F8B4E9 /* py_content_manager.h */,
+			);
+			name = python_exporter;
+			sourceTree = "<group>";
+		};
 		2CD6171A1E59DA3E006FC5DC = {
 			isa = PBXGroup;
 			children = (
 				2C8D5ABF1F4F8506000BCB87 /* amd */,
 				2C4CCAFB1EB0F50D00E0A422 /* collada */,
+				2CB6D9BA205F255C00F8B4E9 /* python_exporter */,
 				2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */,
 				2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */,
 				2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */,
@@ -450,7 +464,9 @@
 				2C8D5AE91F4F8641000BCB87 /* JRTCommon.h in Headers */,
 				2C8D5AC41F4F8549000BCB87 /* amd_tootle.h in Headers */,
 				2C8D5B501F4F8AC1000BCB87 /* quaternion.h in Headers */,
+				2CB6D9BE205F25F400F8B4E9 /* py_cpipeline_scene.h in Headers */,
 				2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */,
+				2CB6D9BC205F258C00F8B4E9 /* py_content_manager.h in Headers */,
 				2C8D5B531F4F8AC1000BCB87 /* soup.h in Headers */,
 				2C8D5B0A1F4F8656000BCB87 /* JMLScalar.h in Headers */,
 				2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */,
