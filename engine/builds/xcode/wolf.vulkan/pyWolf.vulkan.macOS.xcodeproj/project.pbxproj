@@ -565,7 +565,7 @@
 					"$(SRCROOT)/../../../src/wolf.render",
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../dependencies/boost/include/",
-					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
+					/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = (
