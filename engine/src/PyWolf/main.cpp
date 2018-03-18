@@ -99,9 +99,16 @@ BOOST_PYTHON_MODULE(pyWolf)
 
     }
 
+    {
+        struct glm {};
+        scope _glm = class_<glm>("glm");
+        
+        pyWolf::py_glm_export();
+        
+    }
+    
     //export logger in global scope
 	pyWolf::py_std_export();
-	pyWolf::py_glm_export();
     pyWolf::py_logger_export();
 
     def("release_shared_data_over_all_instances", wolf::release_shared_data_over_all_instances);

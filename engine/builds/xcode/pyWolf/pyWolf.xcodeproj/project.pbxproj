@@ -7,16 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C299C932022EEF8003C80F7 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE0753B201A836B0078B239 /* libwolf.vulkan.macOS.dylib */; };
+		2C505DC5205E759500A96390 /* libpyWolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C505DC6205E759500A96390 /* libpyWolf.system.macOS.dylib */; };
+		2CB6D9B8205EFB1D00F8B4E9 /* libpyWolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB6D9B9205EFB1D00F8B4E9 /* libpyWolf.vulkan.macOS.dylib */; };
 		2CE07531201A83540078B239 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE0752E201A83540078B239 /* pch.cpp */; };
 		2CE07532201A83540078B239 /* pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE0752F201A83540078B239 /* pch.h */; };
 		2CE07533201A83540078B239 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE07530201A83540078B239 /* main.cpp */; };
-		2CE07536201A836B0078B239 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE0753A201A836B0078B239 /* libwolf.system.macOS.dylib */; };
 		2CE0753D201A85630078B239 /* libboost_python-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE0753C201A85630078B239 /* libboost_python-mt.a */; };
 		2CE0753F201B12F50078B239 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE0753E201B12F50078B239 /* Python.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C505DC6205E759500A96390 /* libpyWolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libpyWolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CB6D9B9205EFB1D00F8B4E9 /* libpyWolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libpyWolf.vulkan.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD617231E59DA3E006FC5DC /* pyWolf.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = pyWolf.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE0752E201A83540078B239 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../../src/pyWolf/pch.cpp; sourceTree = "<group>"; };
 		2CE0752F201A83540078B239 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../../src/pyWolf/pch.h; sourceTree = "<group>"; };
@@ -34,10 +36,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CB6D9B8205EFB1D00F8B4E9 /* libpyWolf.vulkan.macOS.dylib in Frameworks */,
+				2C505DC5205E759500A96390 /* libpyWolf.system.macOS.dylib in Frameworks */,
 				2CE0753F201B12F50078B239 /* Python.framework in Frameworks */,
 				2CE0753D201A85630078B239 /* libboost_python-mt.a in Frameworks */,
-				2CE07536201A836B0078B239 /* libwolf.system.macOS.dylib in Frameworks */,
-				2C299C932022EEF8003C80F7 /* libwolf.vulkan.macOS.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +68,8 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CB6D9B9205EFB1D00F8B4E9 /* libpyWolf.vulkan.macOS.dylib */,
+				2C505DC6205E759500A96390 /* libpyWolf.system.macOS.dylib */,
 				2CE0753E201B12F50078B239 /* Python.framework */,
 				2CE0753C201A85630078B239 /* libboost_python-mt.a */,
 				2CE07538201A836B0078B239 /* libwolf.content_pipeline.macOS.dylib */,
@@ -201,11 +205,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
-					"$(SRCROOT)/../../../src/wolf.system",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -253,11 +254,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
-					"$(SRCROOT)/../../../src/wolf.system",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 			};
@@ -270,13 +268,8 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_EXTENSION = so;
 				EXECUTABLE_PREFIX = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
-					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/debug/",
-					"$(SRCROOT)/../../../dependencies/msgpack/lib/debug/",
-					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
-					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /System/Library/Frameworks/Python.framework/Versions/2.7/lib;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -288,23 +281,21 @@
 					__VULKAN__,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../src/wolf.system/",
-					"$(SRCROOT)/../../../src/wolf.content_pipeline/",
-					"$(SRCROOT)/../../../src/wolf.media_core/",
+				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../../dependencies/vulkan/macOS/macOS/include",
+					"$(SRCROOT)/../../../dependencies/msgpack/include",
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../src/wolf.render",
-					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
-					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../dependencies/boost/include/",
-					/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
-					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
+					/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7/,
 				);
 				INSTALL_PATH = /usr/local/lib;
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
 				LD_RUNPATH_SEARCH_PATHS = "$(INSTALL_PATH)";
-				LIBRARY_SEARCH_PATHS = (
+				LIBRARY_SEARCH_PATHS = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/nanomsg/lib/osx/debug/",
 					"$(SRCROOT)/../../../dependencies/boost/lib/osx/debug",
 				);
@@ -321,31 +312,18 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_EXTENSION = so;
 				EXECUTABLE_PREFIX = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
-					"$(SRCROOT)/../../../dependencies/luaJIT/lib/osx/release/",
-					"$(SRCROOT)/../../../dependencies/msgpack/lib/release/",
-					/Library/Frameworks/Python.framework/Versions/2.7/lib/,
-					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/macOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/pyWolf/pch.h";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../src/wolf.system/",
-					"$(SRCROOT)/../../../dependencies/rapidxml",
-					"$(SRCROOT)/../../../dependencies/rapidjson",
-					"$(SRCROOT)/../../../src/wolf.system",
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
-					"$(SRCROOT)/../../../dependencies/vulkan/Mac/Molten/MoltenVK/include",
-				);
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
 				LD_RUNPATH_SEARCH_PATHS = "$(INSTALL_PATH)";
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../../../dependencies/boost/lib/osx/release";
+				LIBRARY_SEARCH_PATHS = "";
 				MACH_O_TYPE = mh_dylib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";

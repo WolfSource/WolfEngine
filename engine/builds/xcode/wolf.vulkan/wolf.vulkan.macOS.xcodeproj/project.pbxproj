@@ -540,9 +540,9 @@
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/vulkan/macOS/macOS/include",
-					"$(SRCROOT)/../../../dependencies/luaJIT/include/",
-					"$(SRCROOT)/../../../dependencies/msgpack/include/",
-					"$(SRCROOT)/../../../dependencies/nanomsg/include/",
+					"$(SRCROOT)/../../../dependencies/luaJIT/include",
+					"$(SRCROOT)/../../../dependencies/msgpack/include",
+					"$(SRCROOT)/../../../dependencies/nanomsg/include",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.render",
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",

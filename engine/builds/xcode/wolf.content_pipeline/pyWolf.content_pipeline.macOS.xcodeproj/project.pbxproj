@@ -1,0 +1,754 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49EED8201A7C6800EF7AFB /* c_camera.h */; };
+		2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C49EED9201A7C6800EF7AFB /* c_camera.cpp */; };
+		2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFC1EB0F54400E0A422 /* c_animation.h */; };
+		2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */; };
+		2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFE1EB0F54400E0A422 /* c_bone.h */; };
+		2C4CCB0B1EB0F54400E0A422 /* c_extra.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFF1EB0F54400E0A422 /* c_extra.h */; };
+		2C4CCB0E1EB0F54400E0A422 /* c_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB021EB0F54400E0A422 /* c_node.cpp */; };
+		2C4CCB0F1EB0F54400E0A422 /* c_node.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB031EB0F54400E0A422 /* c_node.h */; };
+		2C4CCB101EB0F54400E0A422 /* c_obj.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB041EB0F54400E0A422 /* c_obj.h */; };
+		2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB051EB0F54400E0A422 /* c_parser.cpp */; };
+		2C4CCB121EB0F54400E0A422 /* c_parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB061EB0F54400E0A422 /* c_parser.h */; };
+		2C4CCB131EB0F54400E0A422 /* c_skin.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB071EB0F54400E0A422 /* c_skin.h */; };
+		2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */; };
+		2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */; };
+		2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */; };
+		2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */; };
+		2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */; };
+		2C505DBC205E60CF00A96390 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C505DBB205E60CE00A96390 /* Python.framework */; };
+		2C505DBE205E60E800A96390 /* libboost_python-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C505DBD205E60E800A96390 /* libboost_python-mt.a */; };
+		2C505DBF205E621200A96390 /* libpyWolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C505DC0205E621200A96390 /* libpyWolf.system.macOS.dylib */; };
+		2C736BC31ECA1EE400624CC7 /* w_cpipeline_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */; };
+		2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */; };
+		2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */; };
+		2C736BC61ECA1EE400624CC7 /* w_cpipeline_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */; };
+		2C8D5AB41F4F7FED000BCB87 /* w_cpipeline_structs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */; };
+		2C8D5AC31F4F8549000BCB87 /* amd_tootle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AC11F4F8549000BCB87 /* amd_tootle.cpp */; };
+		2C8D5AC41F4F8549000BCB87 /* amd_tootle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AC21F4F8549000BCB87 /* amd_tootle.h */; };
+		2C8D5ACA1F4F861C000BCB87 /* TootleRaytracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AC81F4F861C000BCB87 /* TootleRaytracer.cpp */; };
+		2C8D5ACB1F4F861C000BCB87 /* TootleRaytracer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AC91F4F861C000BCB87 /* TootleRaytracer.h */; };
+		2C8D5AE51F4F8641000BCB87 /* JRTBoundingBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5ACC1F4F8641000BCB87 /* JRTBoundingBox.cpp */; };
+		2C8D5AE61F4F8641000BCB87 /* JRTBoundingBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5ACD1F4F8641000BCB87 /* JRTBoundingBox.h */; };
+		2C8D5AE71F4F8641000BCB87 /* JRTCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5ACE1F4F8641000BCB87 /* JRTCamera.cpp */; };
+		2C8D5AE81F4F8641000BCB87 /* JRTCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5ACF1F4F8641000BCB87 /* JRTCamera.h */; };
+		2C8D5AE91F4F8641000BCB87 /* JRTCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AD01F4F8641000BCB87 /* JRTCommon.h */; };
+		2C8D5AEA1F4F8641000BCB87 /* JRTCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AD11F4F8641000BCB87 /* JRTCore.cpp */; };
+		2C8D5AEB1F4F8641000BCB87 /* JRTCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AD21F4F8641000BCB87 /* JRTCore.h */; };
+		2C8D5AEC1F4F8641000BCB87 /* JRTCoreUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AD31F4F8641000BCB87 /* JRTCoreUtils.cpp */; };
+		2C8D5AED1F4F8641000BCB87 /* JRTCoreUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AD41F4F8641000BCB87 /* JRTCoreUtils.h */; };
+		2C8D5AEE1F4F8641000BCB87 /* JRTH2KDTreeBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AD51F4F8641000BCB87 /* JRTH2KDTreeBuilder.cpp */; };
+		2C8D5AEF1F4F8641000BCB87 /* JRTH2KDTreeBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AD61F4F8641000BCB87 /* JRTH2KDTreeBuilder.h */; };
+		2C8D5AF01F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AD71F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.cpp */; };
+		2C8D5AF11F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AD81F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.h */; };
+		2C8D5AF21F4F8641000BCB87 /* JRTKDTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AD91F4F8641000BCB87 /* JRTKDTree.cpp */; };
+		2C8D5AF31F4F8641000BCB87 /* JRTKDTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5ADA1F4F8641000BCB87 /* JRTKDTree.h */; };
+		2C8D5AF41F4F8641000BCB87 /* JRTKDTreeBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5ADB1F4F8641000BCB87 /* JRTKDTreeBuilder.cpp */; };
+		2C8D5AF51F4F8641000BCB87 /* JRTKDTreeBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5ADC1F4F8641000BCB87 /* JRTKDTreeBuilder.h */; };
+		2C8D5AF61F4F8641000BCB87 /* JRTMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5ADD1F4F8641000BCB87 /* JRTMesh.cpp */; };
+		2C8D5AF71F4F8641000BCB87 /* JRTMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5ADE1F4F8641000BCB87 /* JRTMesh.h */; };
+		2C8D5AF81F4F8641000BCB87 /* JRTOrthoCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5ADF1F4F8641000BCB87 /* JRTOrthoCamera.cpp */; };
+		2C8D5AF91F4F8641000BCB87 /* JRTOrthoCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AE01F4F8641000BCB87 /* JRTOrthoCamera.h */; };
+		2C8D5AFA1F4F8641000BCB87 /* JRTPPMImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AE11F4F8641000BCB87 /* JRTPPMImage.cpp */; };
+		2C8D5AFB1F4F8641000BCB87 /* JRTPPMImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AE21F4F8641000BCB87 /* JRTPPMImage.h */; };
+		2C8D5AFC1F4F8641000BCB87 /* JRTTriangleIntersection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AE31F4F8641000BCB87 /* JRTTriangleIntersection.cpp */; };
+		2C8D5AFD1F4F8641000BCB87 /* JRTTriangleIntersection.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AE41F4F8641000BCB87 /* JRTTriangleIntersection.h */; };
+		2C8D5B061F4F8656000BCB87 /* JML.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5AFE1F4F8656000BCB87 /* JML.h */; };
+		2C8D5B071F4F8656000BCB87 /* JMLFuncs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5AFF1F4F8656000BCB87 /* JMLFuncs.cpp */; };
+		2C8D5B081F4F8656000BCB87 /* JMLFuncs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B001F4F8656000BCB87 /* JMLFuncs.h */; };
+		2C8D5B091F4F8656000BCB87 /* JMLMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B011F4F8656000BCB87 /* JMLMatrix.h */; };
+		2C8D5B0A1F4F8656000BCB87 /* JMLScalar.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B021F4F8656000BCB87 /* JMLScalar.h */; };
+		2C8D5B0B1F4F8656000BCB87 /* JMLSSEVec.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B031F4F8656000BCB87 /* JMLSSEVec.h */; };
+		2C8D5B0C1F4F8656000BCB87 /* JMLVec2.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B041F4F8656000BCB87 /* JMLVec2.h */; };
+		2C8D5B0D1F4F8656000BCB87 /* JMLVec3.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B051F4F8656000BCB87 /* JMLVec3.h */; };
+		2C8D5B251F4F89B2000BCB87 /* bbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B121F4F89B2000BCB87 /* bbox.h */; };
+		2C8D5B261F4F89B2000BCB87 /* cloud.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B131F4F89B2000BCB87 /* cloud.h */; };
+		2C8D5B271F4F89B2000BCB87 /* clustering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B141F4F89B2000BCB87 /* clustering.cpp */; };
+		2C8D5B281F4F89B2000BCB87 /* clustering.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B151F4F89B2000BCB87 /* clustering.h */; };
+		2C8D5B291F4F89B2000BCB87 /* color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B161F4F89B2000BCB87 /* color.h */; };
+		2C8D5B2F1F4F89B2000BCB87 /* feedback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B1C1F4F89B2000BCB87 /* feedback.cpp */; };
+		2C8D5B301F4F89B2000BCB87 /* feedback.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B1D1F4F89B2000BCB87 /* feedback.h */; };
+		2C8D5B311F4F89B2000BCB87 /* fit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B1E1F4F89B2000BCB87 /* fit.cpp */; };
+		2C8D5B321F4F89B2000BCB87 /* fit.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B1F1F4F89B2000BCB87 /* fit.h */; };
+		2C8D5B361F4F89B2000BCB87 /* heap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B231F4F89B2000BCB87 /* heap.cpp */; };
+		2C8D5B371F4F89B2000BCB87 /* heap.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B241F4F89B2000BCB87 /* heap.h */; };
+		2C8D5B4B1F4F8AC1000BCB87 /* matrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B381F4F8AC1000BCB87 /* matrix.h */; };
+		2C8D5B4C1F4F8AC1000BCB87 /* mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B391F4F8AC1000BCB87 /* mesh.h */; };
+		2C8D5B4D1F4F8AC1000BCB87 /* option.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B3A1F4F8AC1000BCB87 /* option.h */; };
+		2C8D5B4E1F4F8AC1000BCB87 /* overdraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B3B1F4F8AC1000BCB87 /* overdraw.cpp */; };
+		2C8D5B4F1F4F8AC1000BCB87 /* overdraw.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B3C1F4F8AC1000BCB87 /* overdraw.h */; };
+		2C8D5B501F4F8AC1000BCB87 /* quaternion.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B3D1F4F8AC1000BCB87 /* quaternion.h */; };
+		2C8D5B511F4F8AC1000BCB87 /* scalar.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B3E1F4F8AC1000BCB87 /* scalar.h */; };
+		2C8D5B521F4F8AC1000BCB87 /* soup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B3F1F4F8AC1000BCB87 /* soup.cpp */; };
+		2C8D5B531F4F8AC1000BCB87 /* soup.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B401F4F8AC1000BCB87 /* soup.h */; };
+		2C8D5B541F4F8AC1000BCB87 /* souptomesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B411F4F8AC1000BCB87 /* souptomesh.cpp */; };
+		2C8D5B551F4F8AC2000BCB87 /* souptomesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B421F4F8AC1000BCB87 /* souptomesh.h */; };
+		2C8D5B561F4F8AC2000BCB87 /* Stripifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B431F4F8AC1000BCB87 /* Stripifier.cpp */; };
+		2C8D5B571F4F8AC2000BCB87 /* Stripifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B441F4F8AC1000BCB87 /* Stripifier.h */; };
+		2C8D5B581F4F8AC2000BCB87 /* tootlelib.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B451F4F8AC1000BCB87 /* tootlelib.cpp */; };
+		2C8D5B591F4F8AC2000BCB87 /* triorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C8D5B461F4F8AC1000BCB87 /* triorder.cpp */; };
+		2C8D5B5A1F4F8AC2000BCB87 /* triorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B471F4F8AC1000BCB87 /* triorder.h */; };
+		2C8D5B5B1F4F8AC2000BCB87 /* vector.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B481F4F8AC1000BCB87 /* vector.h */; };
+		2C8D5B5C1F4F8AC2000BCB87 /* viewpoints.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */; };
+		2C8D5B5D1F4F8AC2000BCB87 /* window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B4A1F4F8AC1000BCB87 /* window.h */; };
+		2C8D5B601F4F8AF2000BCB87 /* tootlelib.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */; };
+		2CDF248220319AF500BD3DE5 /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2C07D51C20319496005E7D14 /* libmsgpackc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmsgpackc.a; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.a; sourceTree = "<group>"; };
+		2C49EED8201A7C6800EF7AFB /* c_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_camera.h; path = ../../../src/wolf.content_pipeline/collada/c_camera.h; sourceTree = "<group>"; };
+		2C49EED9201A7C6800EF7AFB /* c_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_camera.cpp; path = ../../../src/wolf.content_pipeline/collada/c_camera.cpp; sourceTree = "<group>"; };
+		2C4CCAFC1EB0F54400E0A422 /* c_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_animation.h; path = ../../../src/wolf.content_pipeline/collada/c_animation.h; sourceTree = "<group>"; };
+		2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_bone.cpp; path = ../../../src/wolf.content_pipeline/collada/c_bone.cpp; sourceTree = "<group>"; };
+		2C4CCAFE1EB0F54400E0A422 /* c_bone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_bone.h; path = ../../../src/wolf.content_pipeline/collada/c_bone.h; sourceTree = "<group>"; };
+		2C4CCAFF1EB0F54400E0A422 /* c_extra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_extra.h; path = ../../../src/wolf.content_pipeline/collada/c_extra.h; sourceTree = "<group>"; };
+		2C4CCB021EB0F54400E0A422 /* c_node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_node.cpp; path = ../../../src/wolf.content_pipeline/collada/c_node.cpp; sourceTree = "<group>"; };
+		2C4CCB031EB0F54400E0A422 /* c_node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_node.h; path = ../../../src/wolf.content_pipeline/collada/c_node.h; sourceTree = "<group>"; };
+		2C4CCB041EB0F54400E0A422 /* c_obj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_obj.h; path = ../../../src/wolf.content_pipeline/collada/c_obj.h; sourceTree = "<group>"; };
+		2C4CCB051EB0F54400E0A422 /* c_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_parser.cpp; path = ../../../src/wolf.content_pipeline/collada/c_parser.cpp; sourceTree = "<group>"; };
+		2C4CCB061EB0F54400E0A422 /* c_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_parser.h; path = ../../../src/wolf.content_pipeline/collada/c_parser.h; sourceTree = "<group>"; };
+		2C4CCB071EB0F54400E0A422 /* c_skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_skin.h; path = ../../../src/wolf.content_pipeline/collada/c_skin.h; sourceTree = "<group>"; };
+		2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_pch.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_pch.cpp; sourceTree = "<group>"; };
+		2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_pch.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_pch.h; sourceTree = "<group>"; };
+		2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_content_manager.h; path = ../../../src/wolf.content_pipeline/w_content_manager.h; sourceTree = "<group>"; };
+		2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_export.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_export.h; sourceTree = "<group>"; };
+		2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vertex_declaration.h; path = ../../../src/wolf.content_pipeline/w_vertex_declaration.h; sourceTree = "<group>"; };
+		2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
+		2C505DBB205E60CE00A96390 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
+		2C505DBD205E60E800A96390 /* libboost_python-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_python-mt.a"; path = "../../../dependencies/boost/lib/osx/debug/libboost_python-mt.a"; sourceTree = "<group>"; };
+		2C505DC0205E621200A96390 /* libpyWolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libpyWolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C6844311F9E3FA700AEAB30 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
+		2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_model.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_model.cpp; sourceTree = "<group>"; };
+		2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_model.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_model.h; sourceTree = "<group>"; };
+		2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_scene.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_scene.cpp; sourceTree = "<group>"; };
+		2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_scene.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_scene.h; sourceTree = "<group>"; };
+		2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_structs.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_structs.h; sourceTree = "<group>"; };
+		2C8D5AC11F4F8549000BCB87 /* amd_tootle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = amd_tootle.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle.cpp; sourceTree = "<group>"; };
+		2C8D5AC21F4F8549000BCB87 /* amd_tootle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = amd_tootle.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle.h; sourceTree = "<group>"; };
+		2C8D5AC81F4F861C000BCB87 /* TootleRaytracer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TootleRaytracer.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/TootleRaytracer.cpp; sourceTree = "<group>"; };
+		2C8D5AC91F4F861C000BCB87 /* TootleRaytracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TootleRaytracer.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/TootleRaytracer.h; sourceTree = "<group>"; };
+		2C8D5ACC1F4F8641000BCB87 /* JRTBoundingBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTBoundingBox.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTBoundingBox.cpp; sourceTree = "<group>"; };
+		2C8D5ACD1F4F8641000BCB87 /* JRTBoundingBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTBoundingBox.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTBoundingBox.h; sourceTree = "<group>"; };
+		2C8D5ACE1F4F8641000BCB87 /* JRTCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTCamera.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCamera.cpp; sourceTree = "<group>"; };
+		2C8D5ACF1F4F8641000BCB87 /* JRTCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTCamera.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCamera.h; sourceTree = "<group>"; };
+		2C8D5AD01F4F8641000BCB87 /* JRTCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTCommon.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCommon.h; sourceTree = "<group>"; };
+		2C8D5AD11F4F8641000BCB87 /* JRTCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTCore.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCore.cpp; sourceTree = "<group>"; };
+		2C8D5AD21F4F8641000BCB87 /* JRTCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTCore.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCore.h; sourceTree = "<group>"; };
+		2C8D5AD31F4F8641000BCB87 /* JRTCoreUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTCoreUtils.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCoreUtils.cpp; sourceTree = "<group>"; };
+		2C8D5AD41F4F8641000BCB87 /* JRTCoreUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTCoreUtils.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTCoreUtils.h; sourceTree = "<group>"; };
+		2C8D5AD51F4F8641000BCB87 /* JRTH2KDTreeBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTH2KDTreeBuilder.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTH2KDTreeBuilder.cpp; sourceTree = "<group>"; };
+		2C8D5AD61F4F8641000BCB87 /* JRTH2KDTreeBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTH2KDTreeBuilder.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTH2KDTreeBuilder.h; sourceTree = "<group>"; };
+		2C8D5AD71F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTHeuristicKDTreeBuilder.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTHeuristicKDTreeBuilder.cpp; sourceTree = "<group>"; };
+		2C8D5AD81F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTHeuristicKDTreeBuilder.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTHeuristicKDTreeBuilder.h; sourceTree = "<group>"; };
+		2C8D5AD91F4F8641000BCB87 /* JRTKDTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTKDTree.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTree.cpp; sourceTree = "<group>"; };
+		2C8D5ADA1F4F8641000BCB87 /* JRTKDTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTKDTree.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTree.h; sourceTree = "<group>"; };
+		2C8D5ADB1F4F8641000BCB87 /* JRTKDTreeBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTKDTreeBuilder.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTreeBuilder.cpp; sourceTree = "<group>"; };
+		2C8D5ADC1F4F8641000BCB87 /* JRTKDTreeBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTKDTreeBuilder.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTKDTreeBuilder.h; sourceTree = "<group>"; };
+		2C8D5ADD1F4F8641000BCB87 /* JRTMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTMesh.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTMesh.cpp; sourceTree = "<group>"; };
+		2C8D5ADE1F4F8641000BCB87 /* JRTMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTMesh.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTMesh.h; sourceTree = "<group>"; };
+		2C8D5ADF1F4F8641000BCB87 /* JRTOrthoCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTOrthoCamera.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTOrthoCamera.cpp; sourceTree = "<group>"; };
+		2C8D5AE01F4F8641000BCB87 /* JRTOrthoCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTOrthoCamera.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTOrthoCamera.h; sourceTree = "<group>"; };
+		2C8D5AE11F4F8641000BCB87 /* JRTPPMImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTPPMImage.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTPPMImage.cpp; sourceTree = "<group>"; };
+		2C8D5AE21F4F8641000BCB87 /* JRTPPMImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTPPMImage.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTPPMImage.h; sourceTree = "<group>"; };
+		2C8D5AE31F4F8641000BCB87 /* JRTTriangleIntersection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JRTTriangleIntersection.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTTriangleIntersection.cpp; sourceTree = "<group>"; };
+		2C8D5AE41F4F8641000BCB87 /* JRTTriangleIntersection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JRTTriangleIntersection.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/JRT/JRTTriangleIntersection.h; sourceTree = "<group>"; };
+		2C8D5AFE1F4F8656000BCB87 /* JML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JML.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JML.h; sourceTree = "<group>"; };
+		2C8D5AFF1F4F8656000BCB87 /* JMLFuncs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JMLFuncs.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLFuncs.cpp; sourceTree = "<group>"; };
+		2C8D5B001F4F8656000BCB87 /* JMLFuncs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMLFuncs.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLFuncs.h; sourceTree = "<group>"; };
+		2C8D5B011F4F8656000BCB87 /* JMLMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMLMatrix.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLMatrix.h; sourceTree = "<group>"; };
+		2C8D5B021F4F8656000BCB87 /* JMLScalar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMLScalar.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLScalar.h; sourceTree = "<group>"; };
+		2C8D5B031F4F8656000BCB87 /* JMLSSEVec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMLSSEVec.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLSSEVec.h; sourceTree = "<group>"; };
+		2C8D5B041F4F8656000BCB87 /* JMLVec2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMLVec2.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec2.h; sourceTree = "<group>"; };
+		2C8D5B051F4F8656000BCB87 /* JMLVec3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JMLVec3.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/RayTracer/Math/JMLVec3.h; sourceTree = "<group>"; };
+		2C8D5B121F4F89B2000BCB87 /* bbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bbox.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/bbox.h; sourceTree = "<group>"; };
+		2C8D5B131F4F89B2000BCB87 /* cloud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cloud.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/cloud.h; sourceTree = "<group>"; };
+		2C8D5B141F4F89B2000BCB87 /* clustering.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = clustering.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/clustering.cpp; sourceTree = "<group>"; };
+		2C8D5B151F4F89B2000BCB87 /* clustering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clustering.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/clustering.h; sourceTree = "<group>"; };
+		2C8D5B161F4F89B2000BCB87 /* color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = color.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/color.h; sourceTree = "<group>"; };
+		2C8D5B1C1F4F89B2000BCB87 /* feedback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = feedback.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/feedback.cpp; sourceTree = "<group>"; };
+		2C8D5B1D1F4F89B2000BCB87 /* feedback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = feedback.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/feedback.h; sourceTree = "<group>"; };
+		2C8D5B1E1F4F89B2000BCB87 /* fit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fit.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/fit.cpp; sourceTree = "<group>"; };
+		2C8D5B1F1F4F89B2000BCB87 /* fit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fit.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/fit.h; sourceTree = "<group>"; };
+		2C8D5B231F4F89B2000BCB87 /* heap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = heap.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/heap.cpp; sourceTree = "<group>"; };
+		2C8D5B241F4F89B2000BCB87 /* heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = heap.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/heap.h; sourceTree = "<group>"; };
+		2C8D5B381F4F8AC1000BCB87 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = matrix.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/matrix.h; sourceTree = "<group>"; };
+		2C8D5B391F4F8AC1000BCB87 /* mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mesh.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/mesh.h; sourceTree = "<group>"; };
+		2C8D5B3A1F4F8AC1000BCB87 /* option.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = option.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/option.h; sourceTree = "<group>"; };
+		2C8D5B3B1F4F8AC1000BCB87 /* overdraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = overdraw.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/overdraw.cpp; sourceTree = "<group>"; };
+		2C8D5B3C1F4F8AC1000BCB87 /* overdraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = overdraw.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/overdraw.h; sourceTree = "<group>"; };
+		2C8D5B3D1F4F8AC1000BCB87 /* quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quaternion.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/quaternion.h; sourceTree = "<group>"; };
+		2C8D5B3E1F4F8AC1000BCB87 /* scalar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scalar.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/scalar.h; sourceTree = "<group>"; };
+		2C8D5B3F1F4F8AC1000BCB87 /* soup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = soup.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/soup.cpp; sourceTree = "<group>"; };
+		2C8D5B401F4F8AC1000BCB87 /* soup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = soup.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/soup.h; sourceTree = "<group>"; };
+		2C8D5B411F4F8AC1000BCB87 /* souptomesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = souptomesh.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/souptomesh.cpp; sourceTree = "<group>"; };
+		2C8D5B421F4F8AC1000BCB87 /* souptomesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = souptomesh.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/souptomesh.h; sourceTree = "<group>"; };
+		2C8D5B431F4F8AC1000BCB87 /* Stripifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Stripifier.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/Stripifier.cpp; sourceTree = "<group>"; };
+		2C8D5B441F4F8AC1000BCB87 /* Stripifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Stripifier.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/Stripifier.h; sourceTree = "<group>"; };
+		2C8D5B451F4F8AC1000BCB87 /* tootlelib.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tootlelib.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/tootlelib.cpp; sourceTree = "<group>"; };
+		2C8D5B461F4F8AC1000BCB87 /* triorder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = triorder.cpp; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/triorder.cpp; sourceTree = "<group>"; };
+		2C8D5B471F4F8AC1000BCB87 /* triorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = triorder.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/triorder.h; sourceTree = "<group>"; };
+		2C8D5B481F4F8AC1000BCB87 /* vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vector.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/vector.h; sourceTree = "<group>"; };
+		2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = viewpoints.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/viewpoints.h; sourceTree = "<group>"; };
+		2C8D5B4A1F4F8AC1000BCB87 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = window.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/window.h; sourceTree = "<group>"; };
+		2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tootlelib.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/include/tootlelib.h; sourceTree = "<group>"; };
+		2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libpyWolf.content_pipeline.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2CD617201E59DA3E006FC5DC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C505DBC205E60CF00A96390 /* Python.framework in Frameworks */,
+				2C505DBF205E621200A96390 /* libpyWolf.system.macOS.dylib in Frameworks */,
+				2CDF248220319AF500BD3DE5 /* libmsgpackc.2.0.0.dylib in Frameworks */,
+				2C505DBE205E60E800A96390 /* libboost_python-mt.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2C4CCAFB1EB0F50D00E0A422 /* collada */ = {
+			isa = PBXGroup;
+			children = (
+				2C49EED9201A7C6800EF7AFB /* c_camera.cpp */,
+				2C49EED8201A7C6800EF7AFB /* c_camera.h */,
+				2C4CCAFC1EB0F54400E0A422 /* c_animation.h */,
+				2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */,
+				2C4CCAFE1EB0F54400E0A422 /* c_bone.h */,
+				2C4CCAFF1EB0F54400E0A422 /* c_extra.h */,
+				2C4CCB021EB0F54400E0A422 /* c_node.cpp */,
+				2C4CCB031EB0F54400E0A422 /* c_node.h */,
+				2C4CCB041EB0F54400E0A422 /* c_obj.h */,
+				2C4CCB051EB0F54400E0A422 /* c_parser.cpp */,
+				2C4CCB061EB0F54400E0A422 /* c_parser.h */,
+				2C4CCB071EB0F54400E0A422 /* c_skin.h */,
+			);
+			name = collada;
+			sourceTree = "<group>";
+		};
+		2C8D5ABF1F4F8506000BCB87 /* amd */ = {
+			isa = PBXGroup;
+			children = (
+				2C8D5AC01F4F8521000BCB87 /* amd_tootle */,
+				2C8D5AC11F4F8549000BCB87 /* amd_tootle.cpp */,
+				2C8D5AC21F4F8549000BCB87 /* amd_tootle.h */,
+			);
+			name = amd;
+			sourceTree = "<group>";
+		};
+		2C8D5AC01F4F8521000BCB87 /* amd_tootle */ = {
+			isa = PBXGroup;
+			children = (
+				2C8D5B5E1F4F8AC5000BCB87 /* include */,
+				2C8D5B381F4F8AC1000BCB87 /* matrix.h */,
+				2C8D5B391F4F8AC1000BCB87 /* mesh.h */,
+				2C8D5B3A1F4F8AC1000BCB87 /* option.h */,
+				2C8D5B3B1F4F8AC1000BCB87 /* overdraw.cpp */,
+				2C8D5B3C1F4F8AC1000BCB87 /* overdraw.h */,
+				2C8D5B3D1F4F8AC1000BCB87 /* quaternion.h */,
+				2C8D5B3E1F4F8AC1000BCB87 /* scalar.h */,
+				2C8D5B3F1F4F8AC1000BCB87 /* soup.cpp */,
+				2C8D5B401F4F8AC1000BCB87 /* soup.h */,
+				2C8D5B411F4F8AC1000BCB87 /* souptomesh.cpp */,
+				2C8D5B421F4F8AC1000BCB87 /* souptomesh.h */,
+				2C8D5B431F4F8AC1000BCB87 /* Stripifier.cpp */,
+				2C8D5B441F4F8AC1000BCB87 /* Stripifier.h */,
+				2C8D5B451F4F8AC1000BCB87 /* tootlelib.cpp */,
+				2C8D5B461F4F8AC1000BCB87 /* triorder.cpp */,
+				2C8D5B471F4F8AC1000BCB87 /* triorder.h */,
+				2C8D5B481F4F8AC1000BCB87 /* vector.h */,
+				2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */,
+				2C8D5B4A1F4F8AC1000BCB87 /* window.h */,
+				2C8D5B121F4F89B2000BCB87 /* bbox.h */,
+				2C8D5B131F4F89B2000BCB87 /* cloud.h */,
+				2C8D5B141F4F89B2000BCB87 /* clustering.cpp */,
+				2C8D5B151F4F89B2000BCB87 /* clustering.h */,
+				2C8D5B161F4F89B2000BCB87 /* color.h */,
+				2C8D5B1C1F4F89B2000BCB87 /* feedback.cpp */,
+				2C8D5B1D1F4F89B2000BCB87 /* feedback.h */,
+				2C8D5B1E1F4F89B2000BCB87 /* fit.cpp */,
+				2C8D5B1F1F4F89B2000BCB87 /* fit.h */,
+				2C8D5B231F4F89B2000BCB87 /* heap.cpp */,
+				2C8D5B241F4F89B2000BCB87 /* heap.h */,
+				2C8D5AC51F4F85CE000BCB87 /* RayTracer */,
+			);
+			name = amd_tootle;
+			sourceTree = "<group>";
+		};
+		2C8D5AC51F4F85CE000BCB87 /* RayTracer */ = {
+			isa = PBXGroup;
+			children = (
+				2C8D5AC71F4F8601000BCB87 /* JRT */,
+				2C8D5AC61F4F85F9000BCB87 /* Math */,
+				2C8D5AC81F4F861C000BCB87 /* TootleRaytracer.cpp */,
+				2C8D5AC91F4F861C000BCB87 /* TootleRaytracer.h */,
+			);
+			name = RayTracer;
+			sourceTree = "<group>";
+		};
+		2C8D5AC61F4F85F9000BCB87 /* Math */ = {
+			isa = PBXGroup;
+			children = (
+				2C8D5AFE1F4F8656000BCB87 /* JML.h */,
+				2C8D5AFF1F4F8656000BCB87 /* JMLFuncs.cpp */,
+				2C8D5B001F4F8656000BCB87 /* JMLFuncs.h */,
+				2C8D5B011F4F8656000BCB87 /* JMLMatrix.h */,
+				2C8D5B021F4F8656000BCB87 /* JMLScalar.h */,
+				2C8D5B031F4F8656000BCB87 /* JMLSSEVec.h */,
+				2C8D5B041F4F8656000BCB87 /* JMLVec2.h */,
+				2C8D5B051F4F8656000BCB87 /* JMLVec3.h */,
+			);
+			name = Math;
+			sourceTree = "<group>";
+		};
+		2C8D5AC71F4F8601000BCB87 /* JRT */ = {
+			isa = PBXGroup;
+			children = (
+				2C8D5ACC1F4F8641000BCB87 /* JRTBoundingBox.cpp */,
+				2C8D5ACD1F4F8641000BCB87 /* JRTBoundingBox.h */,
+				2C8D5ACE1F4F8641000BCB87 /* JRTCamera.cpp */,
+				2C8D5ACF1F4F8641000BCB87 /* JRTCamera.h */,
+				2C8D5AD01F4F8641000BCB87 /* JRTCommon.h */,
+				2C8D5AD11F4F8641000BCB87 /* JRTCore.cpp */,
+				2C8D5AD21F4F8641000BCB87 /* JRTCore.h */,
+				2C8D5AD31F4F8641000BCB87 /* JRTCoreUtils.cpp */,
+				2C8D5AD41F4F8641000BCB87 /* JRTCoreUtils.h */,
+				2C8D5AD51F4F8641000BCB87 /* JRTH2KDTreeBuilder.cpp */,
+				2C8D5AD61F4F8641000BCB87 /* JRTH2KDTreeBuilder.h */,
+				2C8D5AD71F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.cpp */,
+				2C8D5AD81F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.h */,
+				2C8D5AD91F4F8641000BCB87 /* JRTKDTree.cpp */,
+				2C8D5ADA1F4F8641000BCB87 /* JRTKDTree.h */,
+				2C8D5ADB1F4F8641000BCB87 /* JRTKDTreeBuilder.cpp */,
+				2C8D5ADC1F4F8641000BCB87 /* JRTKDTreeBuilder.h */,
+				2C8D5ADD1F4F8641000BCB87 /* JRTMesh.cpp */,
+				2C8D5ADE1F4F8641000BCB87 /* JRTMesh.h */,
+				2C8D5ADF1F4F8641000BCB87 /* JRTOrthoCamera.cpp */,
+				2C8D5AE01F4F8641000BCB87 /* JRTOrthoCamera.h */,
+				2C8D5AE11F4F8641000BCB87 /* JRTPPMImage.cpp */,
+				2C8D5AE21F4F8641000BCB87 /* JRTPPMImage.h */,
+				2C8D5AE31F4F8641000BCB87 /* JRTTriangleIntersection.cpp */,
+				2C8D5AE41F4F8641000BCB87 /* JRTTriangleIntersection.h */,
+			);
+			name = JRT;
+			sourceTree = "<group>";
+		};
+		2C8D5B5E1F4F8AC5000BCB87 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		2CD6171A1E59DA3E006FC5DC = {
+			isa = PBXGroup;
+			children = (
+				2C8D5ABF1F4F8506000BCB87 /* amd */,
+				2C4CCAFB1EB0F50D00E0A422 /* collada */,
+				2C8D5AB11F4F7FED000BCB87 /* w_cpipeline_structs.h */,
+				2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */,
+				2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */,
+				2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */,
+				2C736BC21ECA1EE400624CC7 /* w_cpipeline_scene.h */,
+				2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */,
+				2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */,
+				2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */,
+				2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */,
+				2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */,
+				2CD617241E59DA3E006FC5DC /* Products */,
+				2CFA170D1E674C850041A83F /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2CD617241E59DA3E006FC5DC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2CD617231E59DA3E006FC5DC /* libpyWolf.content_pipeline.macOS.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2CFA170D1E674C850041A83F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2C505DC0205E621200A96390 /* libpyWolf.system.macOS.dylib */,
+				2C505DBD205E60E800A96390 /* libboost_python-mt.a */,
+				2C505DBB205E60CE00A96390 /* Python.framework */,
+				2CDF247F2031984900BD3DE5 /* libmsgpackc.2.0.0.dylib */,
+				2C07D51C20319496005E7D14 /* libmsgpackc.a */,
+				2C6844311F9E3FA700AEAB30 /* libmsgpackc.2.0.0.dylib */,
+				2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2CD617211E59DA3E006FC5DC /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C8D5B081F4F8656000BCB87 /* JMLFuncs.h in Headers */,
+				2C8D5B4F1F4F8AC1000BCB87 /* overdraw.h in Headers */,
+				2C8D5B061F4F8656000BCB87 /* JML.h in Headers */,
+				2C8D5B4B1F4F8AC1000BCB87 /* matrix.h in Headers */,
+				2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */,
+				2C8D5AF31F4F8641000BCB87 /* JRTKDTree.h in Headers */,
+				2C8D5B301F4F89B2000BCB87 /* feedback.h in Headers */,
+				2C8D5B511F4F8AC1000BCB87 /* scalar.h in Headers */,
+				2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */,
+				2C8D5B261F4F89B2000BCB87 /* cloud.h in Headers */,
+				2C8D5B571F4F8AC2000BCB87 /* Stripifier.h in Headers */,
+				2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */,
+				2C8D5B551F4F8AC2000BCB87 /* souptomesh.h in Headers */,
+				2C4CCB101EB0F54400E0A422 /* c_obj.h in Headers */,
+				2C8D5AF51F4F8641000BCB87 /* JRTKDTreeBuilder.h in Headers */,
+				2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */,
+				2C8D5B291F4F89B2000BCB87 /* color.h in Headers */,
+				2C8D5AEB1F4F8641000BCB87 /* JRTCore.h in Headers */,
+				2C8D5B091F4F8656000BCB87 /* JMLMatrix.h in Headers */,
+				2C8D5ACB1F4F861C000BCB87 /* TootleRaytracer.h in Headers */,
+				2C8D5B281F4F89B2000BCB87 /* clustering.h in Headers */,
+				2C8D5AFB1F4F8641000BCB87 /* JRTPPMImage.h in Headers */,
+				2C4CCB0B1EB0F54400E0A422 /* c_extra.h in Headers */,
+				2C8D5B4D1F4F8AC1000BCB87 /* option.h in Headers */,
+				2C8D5AFD1F4F8641000BCB87 /* JRTTriangleIntersection.h in Headers */,
+				2C8D5B0C1F4F8656000BCB87 /* JMLVec2.h in Headers */,
+				2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */,
+				2C4CCB121EB0F54400E0A422 /* c_parser.h in Headers */,
+				2C8D5B371F4F89B2000BCB87 /* heap.h in Headers */,
+				2C8D5B5B1F4F8AC2000BCB87 /* vector.h in Headers */,
+				2C8D5B251F4F89B2000BCB87 /* bbox.h in Headers */,
+				2C8D5B4C1F4F8AC1000BCB87 /* mesh.h in Headers */,
+				2C8D5B5C1F4F8AC2000BCB87 /* viewpoints.h in Headers */,
+				2C8D5B601F4F8AF2000BCB87 /* tootlelib.h in Headers */,
+				2C736BC61ECA1EE400624CC7 /* w_cpipeline_scene.h in Headers */,
+				2C8D5B0D1F4F8656000BCB87 /* JMLVec3.h in Headers */,
+				2C8D5AE81F4F8641000BCB87 /* JRTCamera.h in Headers */,
+				2C4CCB131EB0F54400E0A422 /* c_skin.h in Headers */,
+				2C8D5AB41F4F7FED000BCB87 /* w_cpipeline_structs.h in Headers */,
+				2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */,
+				2C8D5AEF1F4F8641000BCB87 /* JRTH2KDTreeBuilder.h in Headers */,
+				2C8D5AF71F4F8641000BCB87 /* JRTMesh.h in Headers */,
+				2C8D5AF11F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.h in Headers */,
+				2C8D5B321F4F89B2000BCB87 /* fit.h in Headers */,
+				2C8D5B0B1F4F8656000BCB87 /* JMLSSEVec.h in Headers */,
+				2C8D5AE91F4F8641000BCB87 /* JRTCommon.h in Headers */,
+				2C8D5AC41F4F8549000BCB87 /* amd_tootle.h in Headers */,
+				2C8D5B501F4F8AC1000BCB87 /* quaternion.h in Headers */,
+				2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */,
+				2C8D5B531F4F8AC1000BCB87 /* soup.h in Headers */,
+				2C8D5B0A1F4F8656000BCB87 /* JMLScalar.h in Headers */,
+				2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */,
+				2C8D5AE61F4F8641000BCB87 /* JRTBoundingBox.h in Headers */,
+				2C4CCB0F1EB0F54400E0A422 /* c_node.h in Headers */,
+				2C8D5B5A1F4F8AC2000BCB87 /* triorder.h in Headers */,
+				2C8D5AED1F4F8641000BCB87 /* JRTCoreUtils.h in Headers */,
+				2C8D5B5D1F4F8AC2000BCB87 /* window.h in Headers */,
+				2C8D5AF91F4F8641000BCB87 /* JRTOrthoCamera.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		2CD617221E59DA3E006FC5DC /* pyWolf.content_pipeline.macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "pyWolf.content_pipeline.macOS" */;
+			buildPhases = (
+				2CD6171F1E59DA3E006FC5DC /* Sources */,
+				2CD617201E59DA3E006FC5DC /* Frameworks */,
+				2CD617211E59DA3E006FC5DC /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = pyWolf.content_pipeline.macOS;
+			productName = pyWolf.content_pipeline;
+			productReference = 2CD617231E59DA3E006FC5DC /* libpyWolf.content_pipeline.macOS.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2CD6171B1E59DA3E006FC5DC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0900;
+				ORGANIZATIONNAME = WolfSource.io;
+				TargetAttributes = {
+					2CD617221E59DA3E006FC5DC = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = J2WEUYPJ98;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "pyWolf.content_pipeline.macOS" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2CD6171A1E59DA3E006FC5DC;
+			productRefGroup = 2CD617241E59DA3E006FC5DC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2CD617221E59DA3E006FC5DC /* pyWolf.content_pipeline.macOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2CD6171F1E59DA3E006FC5DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C8D5AFA1F4F8641000BCB87 /* JRTPPMImage.cpp in Sources */,
+				2C8D5AFC1F4F8641000BCB87 /* JRTTriangleIntersection.cpp in Sources */,
+				2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */,
+				2C8D5ACA1F4F861C000BCB87 /* TootleRaytracer.cpp in Sources */,
+				2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */,
+				2C8D5AC31F4F8549000BCB87 /* amd_tootle.cpp in Sources */,
+				2C8D5AF21F4F8641000BCB87 /* JRTKDTree.cpp in Sources */,
+				2C8D5AF01F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.cpp in Sources */,
+				2C8D5B071F4F8656000BCB87 /* JMLFuncs.cpp in Sources */,
+				2C8D5AEC1F4F8641000BCB87 /* JRTCoreUtils.cpp in Sources */,
+				2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */,
+				2C8D5B271F4F89B2000BCB87 /* clustering.cpp in Sources */,
+				2C8D5B2F1F4F89B2000BCB87 /* feedback.cpp in Sources */,
+				2C736BC31ECA1EE400624CC7 /* w_cpipeline_model.cpp in Sources */,
+				2C8D5AF81F4F8641000BCB87 /* JRTOrthoCamera.cpp in Sources */,
+				2C8D5AF61F4F8641000BCB87 /* JRTMesh.cpp in Sources */,
+				2C8D5AEE1F4F8641000BCB87 /* JRTH2KDTreeBuilder.cpp in Sources */,
+				2C8D5B581F4F8AC2000BCB87 /* tootlelib.cpp in Sources */,
+				2C8D5B561F4F8AC2000BCB87 /* Stripifier.cpp in Sources */,
+				2C8D5AEA1F4F8641000BCB87 /* JRTCore.cpp in Sources */,
+				2C8D5B311F4F89B2000BCB87 /* fit.cpp in Sources */,
+				2C8D5B361F4F89B2000BCB87 /* heap.cpp in Sources */,
+				2C8D5B541F4F8AC1000BCB87 /* souptomesh.cpp in Sources */,
+				2C4CCB0E1EB0F54400E0A422 /* c_node.cpp in Sources */,
+				2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */,
+				2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */,
+				2C8D5AE51F4F8641000BCB87 /* JRTBoundingBox.cpp in Sources */,
+				2C8D5B521F4F8AC1000BCB87 /* soup.cpp in Sources */,
+				2C8D5B4E1F4F8AC1000BCB87 /* overdraw.cpp in Sources */,
+				2C8D5AE71F4F8641000BCB87 /* JRTCamera.cpp in Sources */,
+				2C8D5B591F4F8AC2000BCB87 /* triorder.cpp in Sources */,
+				2C8D5AF41F4F8641000BCB87 /* JRTKDTreeBuilder.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2CD6172C1E59DA3E006FC5DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+					"MSGPACK_USE_CPP03=1",
+					"MSGPACK_DISABLE_LEGACY_NIL=1",
+					BOOST_PYTHON_STATIC_LIB,
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2CD6172D1E59DA3E006FC5DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2CD6172F1E59DA3E006FC5DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
+					/System/Library/Frameworks/Python.framework/Versions/2.7/lib,
+				);
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.content_pipeline/w_cpipeline_pch.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+					"MSGPACK_USE_CPP03=1",
+					"MSGPACK_DISABLE_LEGACY_NIL=1",
+					BOOST_PYTHON_STATIC_LIB,
+					__PYTHON__,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/msgpack/include/",
+					"$(SRCROOT)/../../../dependencies/boost/include",
+					/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7,
+				);
+				LIBRARY_SEARCH_PATHS = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
+					"$(SRCROOT)/../../../dependencies/boost/lib/osx/debug",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				"VALID_ARCHS[sdk=*]" = x86_64;
+			};
+			name = Debug;
+		};
+		2CD617301E59DA3E006FC5DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_ENABLE_CPP_EXCEPTIONS = YES;
+				GCC_ENABLE_CPP_RTTI = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.content_pipeline/w_cpipeline_pch.h";
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				HEADER_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				"VALID_ARCHS[sdk=*]" = x86_64;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "pyWolf.content_pipeline.macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CD6172C1E59DA3E006FC5DC /* Debug */,
+				2CD6172D1E59DA3E006FC5DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "pyWolf.content_pipeline.macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CD6172F1E59DA3E006FC5DC /* Debug */,
+				2CD617301E59DA3E006FC5DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2CD6171B1E59DA3E006FC5DC /* Project object */;
+}

@@ -17,6 +17,8 @@
 		2C41F9281ED34FAE007012E4 /* w_rectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9261ED34FAE007012E4 /* w_rectangle.h */; };
 		2C4990401FDF312F00E656B2 /* w_memory_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49903F1FDF312E00E656B2 /* w_memory_pool.h */; };
 		2C49EED7201A7C1600EF7AFB /* libboost_python-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C49EED6201A7C1600EF7AFB /* libboost_python-mt.a */; };
+		2C505DC3205E6DC000A96390 /* py_glm.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C505DC1205E6DC000A96390 /* py_glm.h */; };
+		2C505DC4205E6DC000A96390 /* py_plane.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C505DC2205E6DC000A96390 /* py_plane.h */; };
 		2C6521941FD4AF5B0030A053 /* coord.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C65215D1FD4AF550030A053 /* coord.hpp */; };
 		2C6521951FD4AF5B0030A053 /* filter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C6521621FD4AF560030A053 /* filter.hpp */; };
 		2C6521961FD4AF5B0030A053 /* clear.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C6521721FD4AF570030A053 /* clear.hpp */; };
@@ -321,6 +323,8 @@
 		2C49EED6201A7C1600EF7AFB /* libboost_python-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_python-mt.a"; path = "../../../dependencies/boost/lib/osx/debug/libboost_python-mt.a"; sourceTree = "<group>"; };
 		2C4EA5921E6AC29C0076465B /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C4EA5931E6AC29C0076465B /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
+		2C505DC1205E6DC000A96390 /* py_glm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_glm.h; path = ../../../src/wolf.system/python_exporter/py_glm.h; sourceTree = "<group>"; };
+		2C505DC2205E6DC000A96390 /* py_plane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_plane.h; path = ../../../src/wolf.system/python_exporter/py_plane.h; sourceTree = "<group>"; };
 		2C65215D1FD4AF550030A053 /* coord.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = coord.hpp; path = ../../../src/wolf.system/gli/core/coord.hpp; sourceTree = "<group>"; };
 		2C65215E1FD4AF550030A053 /* save_ktx.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = save_ktx.inl; path = ../../../src/wolf.system/gli/core/save_ktx.inl; sourceTree = "<group>"; };
 		2C65215F1FD4AF550030A053 /* copy.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = copy.inl; path = ../../../src/wolf.system/gli/core/copy.inl; sourceTree = "<group>"; };
@@ -786,6 +790,8 @@
 		2C04326D201F9069009FB7EA /* python_exporter */ = {
 			isa = PBXGroup;
 			children = (
+				2C505DC1205E6DC000A96390 /* py_glm.h */,
+				2C505DC2205E6DC000A96390 /* py_plane.h */,
 				2CDF24872037011D00BD3DE5 /* py_std.h */,
 				2CDD1358202781D8002B1AAC /* py_bounding.h */,
 				2CDD134F202781D8002B1AAC /* py_color.h */,
@@ -1437,6 +1443,7 @@
 				2CFD41321F5200D500BF9A65 /* stack.h in Headers */,
 				2C6521E81FD4AF7D0030A053 /* dx.hpp in Headers */,
 				2C6523B01FD4B0B40030A053 /* functions.hpp in Headers */,
+				2C505DC3205E6DC000A96390 /* py_glm.h in Headers */,
 				2C65234D1FD4B0930030A053 /* perpendicular.hpp in Headers */,
 				2C6523471FD4B0930030A053 /* matrix_query.hpp in Headers */,
 				2C6522791FD4AFFC0030A053 /* matrix.hpp in Headers */,
@@ -1613,6 +1620,7 @@
 				2C6523AE1FD4B0B40030A053 /* vec1.hpp in Headers */,
 				2C65234C1FD4B0930030A053 /* projection.hpp in Headers */,
 				2C6521D41FD4AF7D0030A053 /* texture.hpp in Headers */,
+				2C505DC4205E6DC000A96390 /* py_plane.h in Headers */,
 				2C6522581FD4AFD50030A053 /* func_trigonometric.hpp in Headers */,
 				2CFD411B1F52009200BF9A65 /* en.h in Headers */,
 				2CFD412D1F5200D500BF9A65 /* ieee754.h in Headers */,
@@ -1840,10 +1848,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib",
-					/System/Library/Frameworks/Python.framework/Versions/2.7/lib,
-				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /System/Library/Frameworks/Python.framework/Versions/2.7/lib;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1858,9 +1863,9 @@
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/msgpack/include",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include",
 					"$(SRCROOT)/../../../dependencies/nanomsg/include",
-					"$(SRCROOT)/../../../dependencies/msgpack/include",
 					"$(SRCROOT)/../../../dependencies/boost/include",
 					/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7,
 				);
@@ -1887,7 +1892,7 @@
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.system/w_system_pch.h";
-				GCC_PREPROCESSOR_DEFINITIONS = __PYTHON__;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";

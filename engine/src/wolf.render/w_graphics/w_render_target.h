@@ -65,7 +65,7 @@ namespace wolf
 
 #pragma endregion
 			
-#pragma region __PYTHON__
+#ifdef __PYTHON__
 
 			W_RESULT py_load(
 				_In_ boost::shared_ptr<w_graphics_device>& pGDevice,
@@ -118,7 +118,7 @@ namespace wolf
 					pClearStencil);
 			}
 
-#pragma endregion
+#endif
 
 		private:
 			typedef system::w_object						_super;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0900"
+   LastUpgradeVersion = "0920"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2C69E9A81E5EC2CB00F15C44"
-               BuildableName = "libwolf.vulkan.macOS.dylib"
-               BlueprintName = "wolf.vulkan.macOS"
-               ReferencedContainer = "container:wolf.vulkan.macOS.xcodeproj">
+               BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
+               BuildableName = "libpyWolf.media_core.macOS.dylib"
+               BlueprintName = "pyWolf.media_core.macOS"
+               ReferencedContainer = "container:pyWolf.media_core.macOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,10 +47,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2C69E9A81E5EC2CB00F15C44"
-            BuildableName = "libwolf.vulkan.macOS.dylib"
-            BlueprintName = "wolf.vulkan.macOS"
-            ReferencedContainer = "container:wolf.vulkan.macOS.xcodeproj">
+            BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
+            BuildableName = "libpyWolf.media_core.macOS.dylib"
+            BlueprintName = "pyWolf.media_core.macOS"
+            ReferencedContainer = "container:pyWolf.media_core.macOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -65,10 +65,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2C69E9A81E5EC2CB00F15C44"
-            BuildableName = "libwolf.vulkan.macOS.dylib"
-            BlueprintName = "wolf.vulkan.macOS"
-            ReferencedContainer = "container:wolf.vulkan.macOS.xcodeproj">
+            BlueprintIdentifier = "2CD617221E59DA3E006FC5DC"
+            BuildableName = "libpyWolf.media_core.macOS.dylib"
+            BlueprintName = "pyWolf.media_core.macOS"
+            ReferencedContainer = "container:pyWolf.media_core.macOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
