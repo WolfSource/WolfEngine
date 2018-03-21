@@ -78,6 +78,7 @@ BOOST_PYTHON_MODULE(pyWolf)
 		pyWolf::py_pipeline_export();
 		pyWolf::py_uniform_export();
 		pyWolf::py_render_target_export();
+		pyWolf::py_shapes_export();
 
 		{
 			struct w_graphics_device {};
@@ -103,14 +104,24 @@ BOOST_PYTHON_MODULE(pyWolf)
         struct glm {};
         scope _glm = class_<glm>("glm");
         
-        pyWolf::py_glm_export();
-        
+		pyWolf::py_glm_export();
     }
     
     //export logger in global scope
 	pyWolf::py_std_export();
     pyWolf::py_logger_export();
 
+	def("rotate", &glm::py_rotate, "perform rotation");
+	def("scale", &glm::py_scale, "perform scale");
+	def("lookAtRH", &glm::py_lookAtRH, "perform lookAt Right Handed");
+	def("lookAtLH", &glm::py_lookAtLH, "perform lookAt Leftt Handed");
+	def("perspectiveRH", &glm::py_perspectiveRH, "perform perspective Right Handed");
+	def("perspectiveLH", &glm::py_perspectiveLH, "perform perspective Left Handed");
+	def("multiply_vectors", &glm::py_multiply_vec2, "perform multiply two 2D vectors");
+	def("multiply_vectors", &glm::py_multiply_vec3, "perform multiply two 3D vectors");
+	def("multiply_vectors", &glm::py_multiply_vec4, "perform multiply two 4D vectors");
+	def("multiply_matrices", &glm::py_multiply_mat3x3, "perform multiply two 3x3 matrices");
+	def("multiply_matrices", &glm::py_multiply_mat4x4, "perform multiply two 4x4 matrices");
     def("release_shared_data_over_all_instances", wolf::release_shared_data_over_all_instances);
 
 }

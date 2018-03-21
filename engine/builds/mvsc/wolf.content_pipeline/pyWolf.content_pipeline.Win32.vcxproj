@@ -127,9 +127,11 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshP.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\scoped.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\python_exporter\py_cpipeline_model.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\python_exporter\py_cpipeline_scene.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_export.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_vertex_struct.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_model.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_scene.h" />
@@ -239,8 +241,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/msgpack/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_CONTENT_PIPELINE__;GLM_FORCE_DEPTH_ZERO_TO_ONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/msgpack/include/;$(SolutionDir)/../../dependencies/boost/include/;C:/Python27-x64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_CONTENT_PIPELINE__;GLM_FORCE_DEPTH_ZERO_TO_ONE;BOOST_PYTHON_STATIC_LIB;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;__PYTHON__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_cpipeline_pch.h</PrecompiledHeaderFile>
       <FunctionLevelLinking>
@@ -250,14 +252,15 @@
       <CompileAs>Default</CompileAs>
       <SDLCheck>true</SDLCheck>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/msgpack/lib/windows/x64/debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>msgpackd.lib;d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/msgpack/lib/windows/x64/debug/;$(SolutionDir)/../../dependencies/boost/lib/windows/;C:\Python27-x64\libs\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>msgpackd.lib;d3d9.lib;python27.lib;libboost_python-vc141-mt-gd-x64-1_66.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

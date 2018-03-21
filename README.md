@@ -279,7 +279,7 @@ Programming</b>, you can order it from <a href="http://www.packtpub.com/directx-
     </td>
     <td>
       <p><b>14_mipmaps</b></p>
-      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/14_mipmaps/view.jpg" alt="14_mipmaps" width="256" height="192"/>
+      <img src="https://raw.githubusercontent.com/WolfSource/Wolf.Engine/master/samples/02_basics/14_mipmaps/doc/view.jpg" alt="14_mipmaps" width="256" height="192"/>
       <p>Generate texture mipmaps at runtime</p>
     </td>
     <td>

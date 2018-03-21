@@ -11,7 +11,7 @@
 #define __AMD_TOOTLE_H__
 
 #include <vector>
-#include <w_cpipeline_structs.h>
+#include <w_vertex_struct.h>
 #include "amd_tootle/include/tootlelib.h"
 
 namespace amd
@@ -73,7 +73,7 @@ namespace amd
     {
     public:
         static W_RESULT apply(
-            _In_ const std::vector<wolf::content_pipeline::w_vertex_data>& pVerticesData,
+            _In_ const std::vector<wolf::content_pipeline::w_vertex_struct>& pVerticesData,
             _In_ const std::vector<float>& pVerticesPosition,
             _Inout_ std::vector<uint32_t>& pIndicesData);
 

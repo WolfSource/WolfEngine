@@ -19,8 +19,9 @@
 #include "collada/c_bone.h"
 #include "collada/c_skin.h"
 #include "collada/c_animation.h"
-#include "w_cpipeline_structs.h"
+#include "w_vertex_struct.h"
 #include "w_bounding.h"
+#include "python_exporter/w_boost_python_helper.h"
 
 namespace wolf
 {
@@ -28,17 +29,17 @@ namespace wolf
 	{
 		struct w_vertex_index
 		{
-            uint32_t		        vertex_index;
-			std::vector<float>	vertex;
-			std::vector<float>	texture;
-			std::vector<float>	normal;
+            uint32_t		    vertex_index;
+			w_vector_float		vertex;
+			w_vector_float		uv;
+			w_vector_float		normal;
 
 			ULONG release()
 			{
 				if (_is_released) return 1;
 
 				vertex.clear();
-				texture.clear();
+				uv.clear();
 				normal.clear();
 
 				this->_is_released = true;
@@ -75,6 +76,70 @@ namespace wolf
 			glm::mat4x4     transform;
 
             MSGPACK_DEFINE(position, rotation, scale);
+
+#ifdef __PYTHON__
+
+			glm::w_vec3		py_get_position() { return glm::w_vec3(this->position[0], this->position[1], this->position[2]); }
+			void			py_set_position(_In_ glm::w_vec3& pValue) { this->position[0] = pValue.get_x(); this->position[1] = pValue.get_y(); this->position[2] = pValue.get_z(); }
+
+			glm::w_vec3		py_get_rotation() { return glm::w_vec3(this->rotation[0], this->rotation[1], this->rotation[2]); }
+			void			py_set_rotation(_In_ glm::w_vec3& pValue) { this->rotation[0] = pValue.get_x(); this->rotation[1] = pValue.get_y(); this->rotation[2] = pValue.get_z(); }
+
+			glm::w_vec3		py_get_scale() { return glm::w_vec3(this->scale[0], this->scale[1], this->scale[2]); }
+			void			py_set_scale(_In_ glm::w_vec3& pValue) { this->scale[0] = pValue.get_x(); this->scale[1] = pValue.get_y(); this->scale[2] = pValue.get_z(); }
+
+			glm::w_mat4x4	py_get_transform() 
+			{
+				auto _mat = glm::w_mat4x4();
+				
+				_mat.set_00(transform[0][0]);
+				_mat.set_01(transform[0][1]);
+				_mat.set_02(transform[0][2]);
+				_mat.set_03(transform[0][3]);
+
+				_mat.set_10(transform[1][0]);
+				_mat.set_11(transform[1][1]);
+				_mat.set_12(transform[1][2]);
+				_mat.set_13(transform[1][3]);
+
+				_mat.set_20(transform[2][0]);
+				_mat.set_21(transform[2][1]);
+				_mat.set_22(transform[2][2]);
+				_mat.set_23(transform[2][3]);
+
+				_mat.set_30(transform[3][0]);
+				_mat.set_31(transform[3][1]);
+				_mat.set_32(transform[3][2]);
+				_mat.set_33(transform[3][3]);
+
+				return _mat;
+			}
+			void			py_set_transform(_In_ glm::w_mat4x4& pValue)
+			{ 
+				this->transform[0][0] = pValue.get_00();
+				this->transform[0][1] = pValue.get_01(); 
+				this->transform[0][2] = pValue.get_02(); 
+				this->transform[0][3] = pValue.get_03();
+
+				this->transform[1][0] = pValue.get_10();
+				this->transform[1][1] = pValue.get_11();
+				this->transform[1][2] = pValue.get_12();
+				this->transform[1][3] = pValue.get_13();
+
+				this->transform[2][0] = pValue.get_20();
+				this->transform[2][1] = pValue.get_21();
+				this->transform[2][2] = pValue.get_22();
+				this->transform[2][3] = pValue.get_23();
+
+				this->transform[3][0] = pValue.get_30();
+				this->transform[3][1] = pValue.get_31();
+				this->transform[3][2] = pValue.get_32();
+				this->transform[3][3] = pValue.get_33();
+
+			}
+
+#endif
+
 		};
 
         WCP_EXP struct w_instance_info
@@ -86,7 +151,50 @@ namespace wolf
             uint32_t        texture_sampler_index = 0;
 
             MSGPACK_DEFINE(name, position, rotation, scale, texture_sampler_index);
+
+#ifdef __PYTHON__
+			glm::w_vec3		py_get_position() { return glm::w_vec3(this->position[0], this->position[1], this->position[2]); }
+			void			py_set_position(_In_ glm::w_vec3& pValue) { this->position[0] = pValue.get_x(); this->position[1] = pValue.get_y(); this->position[2] = pValue.get_z(); }
+
+			glm::w_vec3		py_get_rotation() { return glm::w_vec3(this->rotation[0], this->rotation[1], this->rotation[2]); }
+			void			py_set_rotation(_In_ glm::w_vec3& pValue) { this->rotation[0] = pValue.get_x(); this->rotation[1] = pValue.get_y(); this->rotation[2] = pValue.get_z(); }
+#endif
         };
+
+		WCP_EXP struct w_cpipeline_mesh
+		{
+			//posX, posY, posZ
+			std::vector<w_vertex_struct>		vertices;
+			w_vector_uint32_t					indices;
+			//c_material*						material;
+			//std::vector<c_effect*>			effects;
+			std::string							textures_path;
+			wolf::system::w_bounding_box		bounding_box;
+
+			void release()
+			{
+				this->vertices.clear();
+				this->indices.clear();
+			}
+
+			MSGPACK_DEFINE(vertices, indices, textures_path, bounding_box);
+
+#ifdef __PYTHON__
+
+			boost::python::list					py_get_vertices()
+			{
+				boost::python::list _list;
+				std_vector_to_boost_list(_list, this->vertices);
+				return _list;
+			}
+
+			void								py_set_vertices(_In_ boost::python::list pValue)
+			{
+				this->vertices.clear();
+				boost_list_to_std_vector(pValue, this->vertices);
+			}
+#endif
+		};
 
 		class w_cpipeline_model
 		{
@@ -94,28 +202,7 @@ namespace wolf
 			WCP_EXP w_cpipeline_model();
 			WCP_EXP virtual ~w_cpipeline_model();
 
-			WCP_EXP struct w_mesh
-			{
-				//posX, posY, posZ
-				std::vector<w_vertex_data>		vertices;
-				std::vector<uint32_t>           indices;
-				//c_material*					material;
-				//std::vector<c_effect*>		effects;
-				std::string		                textures_path;
-				wolf::system::w_bounding_box	bounding_box;
-
-                void release()
-                {
-                    this->vertices.clear();
-                    this->indices.clear();
-                }
-
-                MSGPACK_DEFINE(vertices, indices, textures_path, bounding_box);
-			};
-
-            WCP_EXP void add_instance(_In_ const w_instance_info pValue);
-            WCP_EXP void add_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs);
-            WCP_EXP void add_convex_hulls(_Inout_ std::vector<w_cpipeline_model*>& pCHs);
+            WCP_EXP void add_instance(_In_ const w_instance_info& pValue);
 			WCP_EXP void update_world();
 			WCP_EXP void release();
 
@@ -123,26 +210,24 @@ namespace wolf
 
 			WCP_EXP std::string get_name() const									{ return this->_name; }
             WCP_EXP bool get_is_all_sub_meshes_use_same_texture() const             { return this->_all_sub_meshes_use_same_texture;}
-            WCP_EXP std::string set_instance_geometry_name()                        { return this->_instanced_geo_name; }
+            WCP_EXP std::string get_instance_geometry_name()                        { return this->_instanced_geo_name; }
 			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
             WCP_EXP size_t get_instances_count() const                              { return this->_instances_info.size(); }
-            WCP_EXP w_instance_info* get_instance_at(_In_ const size_t pIndex);
+            WCP_EXP w_instance_info* get_instance_at(_In_ const size_t& pIndex);
             WCP_EXP void get_instances(_Inout_ std::vector<w_instance_info>& pInstances);
-            WCP_EXP std::string get_instance_geometry_name() const;
             WCP_EXP size_t get_meshes_count();
-            WCP_EXP void get_meshes(_Inout_ std::vector<w_mesh*>& pMeshes);
+            WCP_EXP void get_meshes(_Inout_ std::vector<w_cpipeline_mesh*>& pMeshes);
             WCP_EXP void get_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs);
+			WCP_EXP size_t get_lods_count();
+			WCP_EXP w_cpipeline_model* get_lod_at(_In_ size_t& pIndex);
             /*
                 convex hulls use for masked occulusion culling.
                 These convex hulls exported from 3D modeling software same as following name: modelname-ch[index]
             */
             WCP_EXP void get_convex_hulls(_Inout_ std::vector<w_cpipeline_model*>& pCHs);
-            /*
-                bounding boxe of mesh
-            */
+            
+			//bounding boxe of mesh
             WCP_EXP wolf::system::w_bounding_box* get_bounding_box(_In_ const size_t& pIndex);
-            WCP_EXP size_t get_lods_count();
-            WCP_EXP w_cpipeline_model* get_lod_at(_In_ size_t pIndex);
             WCP_EXP size_t get_convex_hulls_count();
             WCP_EXP w_cpipeline_model* get_convex_hull_at(_In_ size_t pIndex);
 
@@ -174,6 +259,80 @@ namespace wolf
 
             MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _lods, _convex_hulls, _bounding_box, _meshes);
 
+
+#ifdef __PYTHON__
+
+			boost::python::list py_get_instances()
+			{
+				boost::python::list _list;
+				std::vector<w_instance_info> _instances;
+				get_instances(_instances);
+				if (_instances.size())
+				{
+					std_vector_to_boost_list(_list, _instances);
+				}
+				return _list;
+			}
+
+			boost::python::list py_get_meshes()
+			{
+				boost::python::list _list;
+				std::vector<w_cpipeline_mesh*> _meshes;
+
+				get_meshes(_meshes);
+				auto _size = _meshes.size();
+				if (_size)
+				{
+					for (size_t i = 0; i < _size; ++i)
+					{
+						_list.append(*_meshes[i]);
+					}
+				}
+				return _list;
+			}
+
+			boost::python::list py_get_lods()
+			{
+				boost::python::list _list;
+				std::vector<w_cpipeline_model*> _lods;
+
+				get_lods(_lods);
+				auto _size = _lods.size();
+				if (_size)
+				{
+					for (size_t i = 0; i < _size; ++i)
+					{
+						_list.append(*_lods[i]);
+					}
+				}
+				return _list;
+			}
+
+
+			boost::python::list py_get_convex_hulls()
+			{
+				boost::python::list _list;
+				std::vector<w_cpipeline_model*> _chs;
+
+				get_convex_hulls(_chs);
+				auto _size = _chs.size();
+				if (_size)
+				{
+					for (size_t i = 0; i < _size; ++i)
+					{
+						_list.append(*_chs[i]);
+					}
+				}
+				return _list;
+			}
+
+			wolf::system::w_bounding_box py_get_bounding_box(_In_ const size_t& pIndex)
+			{
+				auto _bbox = get_bounding_box(pIndex);
+				return *_bbox;
+			}
+#endif
+
 		private:
 
             std::string												_name;
@@ -199,7 +358,7 @@ namespace wolf
 			std::vector<w_instance_info>							_instances_info;
 			wolf::system::w_bounding_box                            _bounding_box;
 
-			std::vector<w_mesh>								    	_meshes;
+			std::vector<w_cpipeline_mesh>							_meshes;
 
 			std::vector<collada::c_bone*>							_skeleton;
 			std::vector<std::string>								_bone_names;
@@ -211,5 +370,7 @@ namespace wolf
 
 	}
 }
+
+#include "python_exporter/py_cpipeline_model.h"
 
 #endif

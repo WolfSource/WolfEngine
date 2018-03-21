@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "scene.h"
 #include <w_content_manager.h>
-#include <glm_extention.h>
+#include <glm_extension.h>
 
 using namespace std;
 using namespace wolf;

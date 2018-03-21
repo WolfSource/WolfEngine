@@ -6,7 +6,7 @@ using namespace amd;
 using namespace wolf::system;
 
 W_RESULT tootle::apply(
-    _In_ const std::vector<wolf::content_pipeline::w_vertex_data>& pVerticesData,
+    _In_ const std::vector<wolf::content_pipeline::w_vertex_struct>& pVerticesStruct,
     _In_ const std::vector<float>& pVerticesPosition,
     _Inout_ std::vector<uint32_t>& pIndicesData)
 {
@@ -397,7 +397,7 @@ W_RESULT tootle::apply(
         {
             for (int j = 0; j < 3; j++)
             {
-                const auto& rVertex = pVerticesData[pnIB[i + j]];
+                const auto& rVertex = pVerticesStruct[pnIB[i + j]];
                 pnIBTmp[i + j] = rVertex.vertex_index - 1; // index is off by 1
 
                 // compute the max vertices

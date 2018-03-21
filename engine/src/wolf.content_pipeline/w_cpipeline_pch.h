@@ -42,7 +42,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/compatibility.hpp>
-#include <glm_extention.h>
+#include <glm_extension.h>
 
 #include <w_logger.h>
 #include <w_ireleasable.h>

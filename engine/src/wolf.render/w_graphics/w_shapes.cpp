@@ -898,6 +898,40 @@ w_shapes::w_shapes(_In_ const w_color& pColor) :
 	_super::set_class_name("w_shapes");
 }
 
+#ifdef __PYTHON__
+
+w_shapes::w_shapes(
+	_In_ const glm::w_vec3& pA,
+	_In_ const glm::w_vec3& pB,
+	_In_ const w_color& pColor) :
+	_pimp(new w_shapes_pimp(pA.data(), pB.data(), pColor))
+{
+	_super::set_class_name("w_shapes");
+}
+
+w_shapes::w_shapes(
+	_In_ const glm::w_vec3& pA,
+	_In_ const glm::w_vec3& pB,
+	_In_ const glm::w_vec3& pC,
+	_In_ const w_color& pColor) :
+	_pimp(new w_shapes_pimp(pA.data(), pB.data(), pC.data(), pColor))
+{
+	_super::set_class_name("w_shapes");
+}
+
+w_shapes::w_shapes(
+	_In_ const glm::w_vec3& pCenter,
+	_In_ const float& pRadius,
+	_In_ const w_color& pColor,
+	_In_ const w_plane& pPlan,
+	_In_ const uint32_t& pResolution) :
+	_pimp(new w_shapes_pimp(pCenter.data(), pRadius, pColor, pPlan, pResolution))
+{
+	_super::set_class_name("w_shapes");
+}
+
+#endif
+
 w_shapes::~w_shapes()
 {
     release();

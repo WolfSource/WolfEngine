@@ -75,7 +75,7 @@ ULONG w_cpipeline_scene::release()
 
 #pragma region Getters
 
-void w_cpipeline_scene::get_models_by_index(_In_ const size_t pIndex, _Inout_ w_cpipeline_model** pModel)
+void w_cpipeline_scene::get_model_by_index(_In_ const size_t& pIndex, _Inout_ w_cpipeline_model** pModel)
 {
     if (pIndex < this->_models.size())
     {
@@ -83,7 +83,7 @@ void w_cpipeline_scene::get_models_by_index(_In_ const size_t pIndex, _Inout_ w_
     }
 }
 
-void w_cpipeline_scene::get_models_by_id(const std::string& pID, std::vector<w_cpipeline_model*>& pModels)
+void w_cpipeline_scene::get_model_by_id(_In_z_ const std::string& pID, std::vector<w_cpipeline_model*>& pModels)
 {
 	for (size_t i = 0; i < this->_models.size(); ++i)
 	{
@@ -144,7 +144,7 @@ void w_cpipeline_scene::get_cameras_by_id(const std::string& pID, _Inout_ std::v
 
 #pragma region Setters
 
-void w_cpipeline_scene::set_coordiante_system(_In_ const bool pZUp)
+void w_cpipeline_scene::set_z_up(_In_ const bool& pZUp)
 {
     this->_z_up = pZUp;
 }

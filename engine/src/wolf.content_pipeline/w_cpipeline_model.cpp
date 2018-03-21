@@ -157,12 +157,12 @@ w_cpipeline_model* w_cpipeline_model::create_model(
         //    _faces = (static_cast<uint32_t>(_pos_source->float_array.size()) / _ind) - 2;
         //}
 
-        std::vector<w_vertex_data> _vertices_data;
+		std::vector<w_vertex_struct> _vertices_data;
         std::vector<float> _vertices_positions;
         std::vector<uint32_t> _indices_data;// (_faces * 3 * 2, -1);
         
         //read vertices and indices
-        w_vertex_data _vertex;
+		w_vertex_struct _vertex;
         glm::vec3 _min_vertex;
         glm::vec3 _max_vertex;
 
@@ -324,7 +324,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 #pragma endregion
 
         //sort vertices
-        std::sort(_vertices_data.begin(), _vertices_data.end(), [](_In_ const w_vertex_data pA, _In_ const w_vertex_data pB)
+        std::sort(_vertices_data.begin(), _vertices_data.end(), [](_In_ const w_vertex_struct& pA, _In_ const w_vertex_struct& pB)
         {
             return pA.vertex_index < pB.vertex_index;
         });
@@ -335,7 +335,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
         {
             for (size_t i = 0; i < _round_to_four; ++i)
             {
-                w_vertex_data _vertex_data;
+				w_vertex_struct _vertex_data;
                 std::memset(&_vertex_data, 0, sizeof(_vertex_data));
                 _vertex_data.vertex_index = (uint32_t)(_vertices_data.size() + i + 1);
                 _vertices_data.push_back(_vertex_data);
@@ -354,7 +354,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
             //compute tangent
         }
 
-        auto _mesh = new w_mesh();
+        auto _mesh = new w_cpipeline_mesh();
 
         auto _mat_iter = sLibraryMaterials.find(_triangle->material_name);
         if (_mat_iter != sLibraryMaterials.end())
@@ -420,25 +420,9 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 	return _model;
 }
 
-void w_cpipeline_model::add_instance(_In_ const w_instance_info pValue)
+void w_cpipeline_model::add_instance(_In_ const w_instance_info& pValue)
 {
     this->_instances_info.push_back(pValue);
-}
-
-void w_cpipeline_model::add_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs)
-{
-    for (size_t i = 0; i < pLODs.size(); ++i)
-    {
-        this->_lods.push_back(*pLODs[i]);
-    }
-}
-
-void w_cpipeline_model::add_convex_hulls(_Inout_ std::vector<w_cpipeline_model*>& pCHs)
-{
-    for (size_t i = 0; i < pCHs.size(); ++i)
-    {
-        this->_convex_hulls.push_back(*pCHs[i]);
-    }
 }
 
 void w_cpipeline_model::update_world()
@@ -489,7 +473,7 @@ void w_cpipeline_model::release()
 
 #pragma region Getters
 
-w_instance_info* w_cpipeline_model::get_instance_at(_In_ const size_t pIndex)
+w_instance_info* w_cpipeline_model::get_instance_at(_In_ const size_t& pIndex)
 {
     return pIndex < this->_instances_info.size() ? &this->_instances_info[pIndex] : nullptr;
 }
@@ -502,17 +486,12 @@ void w_cpipeline_model::get_instances(_Inout_ std::vector<w_instance_info>& pIns
     pInstances = this->_instances_info;
 }
 
-std::string w_cpipeline_model::get_instance_geometry_name() const
-{
-    return this->_instanced_geo_name;
-}
-
 size_t w_cpipeline_model::get_meshes_count()
 {
     return  this->_meshes.size();
 }
 
-void w_cpipeline_model::get_meshes(_Inout_ std::vector<w_cpipeline_model::w_mesh*>& pMeshes)
+void w_cpipeline_model::get_meshes(_Inout_ std::vector<w_cpipeline_mesh*>& pMeshes)
 {
     auto _size = this->_meshes.size();
     if (!_size) return;
@@ -555,7 +534,7 @@ size_t w_cpipeline_model::get_lods_count()
     return this->_lods.size();
 }
 
-w_cpipeline_model* w_cpipeline_model::get_lod_at(_In_ size_t pIndex)
+w_cpipeline_model* w_cpipeline_model::get_lod_at(_In_ size_t& pIndex)
 {
     return pIndex < this->_lods.size() ? &this->_lods[pIndex] : nullptr;
 }

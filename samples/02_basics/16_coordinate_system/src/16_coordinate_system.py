@@ -31,10 +31,10 @@ class gui(QWidget):
         self.debug_text = ""
         self._label = QLabel()
         self._label.setAlignment(Qt.AlignLeft)
-
+        
         vbox = QVBoxLayout()
         vbox.addWidget(self._label)
-        
+
         self.setLayout(vbox)
 
         timer = QTimer(self)
@@ -65,7 +65,7 @@ class scene(QWidget):
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        self._shape_coordinate_axis = pyWolf.graphics.w_shapes()
+        self._shape_coordinate_axis = pyWolf.graphics.w_shapes(pyWolf.system.w_color.LIME())
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         
@@ -123,13 +123,6 @@ class scene(QWidget):
             self.release()
             sys.exit(1)
 
-        #create one fence for drawing
-        number_of_swap_chains = self._gDevice.get_number_of_swap_chains()
-        _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.PRIMARY)
-        if _hr:
-            print "Error on initializing draw command buffer(s)"
-            self.release()
-            sys.exit(1)
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -144,6 +137,14 @@ class scene(QWidget):
             sys.exit(1)
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+        #create command buffers for drawing
+        number_of_swap_chains = self._gDevice.get_number_of_swap_chains()
+        _hr = self._draw_command_buffers.load(self._gDevice, number_of_swap_chains, pyWolf.graphics.w_command_buffer_level.PRIMARY)
+        if _hr:
+            print "Error on initializing draw command buffer(s)"
+            self.release()
+            sys.exit(1)
 
         _hr = self.build_command_buffers()
         if _hr:
@@ -164,18 +165,14 @@ class scene(QWidget):
                 break
             
             self._draw_render_pass.begin(i, _cmd, pyWolf.system.w_color.CORNFLOWER_BLUE(), 1.0, 0)
-            
-            self._pipeline.bind(_cmd)
-            _hr = self._mesh.draw(_cmd, None, 0, False)
-            if _hr:
-                print "Error on drawing mesh in command buffer: " + str(i)
-                break
             #++++++++++++++++++++++++++++++++++++++++++++++++++++
             #The following codes have been added for this project
             #++++++++++++++++++++++++++++++++++++++++++++++++++++
             self._shape_coordinate_axis.draw(_cmd)
             #++++++++++++++++++++++++++++++++++++++++++++++++++++
             #++++++++++++++++++++++++++++++++++++++++++++++++++++
+            self._draw_render_pass.end(_cmd)
+            
             _hr = self._draw_command_buffers.end(i)
             if _hr:
                 print "Error on ending command buffer: " + str(i)
@@ -184,20 +181,31 @@ class scene(QWidget):
         return _hr
 
     def update(self, pGameTime):
-        _time = pGameTime.get_total_seconds()
         #Update label of gui widget	
         global _gui
-        _gui.debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(_time)
+        _gui.debug_text = "FPS: " + str(pGameTime.get_frames_per_second()) + "\r\n\r\nFrameTime: " + str(pGameTime.get_elapsed_seconds()) + "\r\n\r\nTotalTime: " + str(pGameTime.get_total_seconds())
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        _clear_color = pyWolf.system.w_color()
-        _clear_color.r = (int)(abs(sin(_time) * 255))
-        _clear_color.g = (int)(abs(cos(_time) * 255))
-        _clear_color.b = 155
-        _clear_color.a = 255
+        _pi = 3.14159265
+        
+        _eye = pyWolf.glm.vec3(5.0, 5.0, 15.0)
+        _up = pyWolf.glm.vec3(0.0, -1.0, 0.0)
+        _look_at = pyWolf.glm.vec3(0.0, 0.0, 0.0)
 
-        self._rt.record_command_buffer(self._rt_command_buffers, None, _clear_color, 1.0, 0)
+        _world = pyWolf.glm.mat4x4()
+        _view = pyWolf.lookAtRH(_eye, _look_at, _up)
+        _projection = pyWolf.perspectiveRH(
+            45.0 * _pi / 180.0,
+            self._viewport.width / self._viewport.height,
+            0.1,
+            1000.0)
+        _vp = pyWolf.multiply_matrices(_projection,_view)
+        _wvp = pyWolf.multiply_matrices(_vp,_world)
+
+        _hr = self._shape_coordinate_axis.update(_wvp)
+        if _hr:
+            print "Error on updating coordinate axis"
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
 	
@@ -207,28 +215,6 @@ class scene(QWidget):
 
         _wait_dst_stage_mask = [ pyWolf.graphics.w_pipeline_stage_flag_bits.COLOR_ATTACHMENT_OUTPUT_BIT ]
         _wait_semaphores = [ _output_window.swap_chain_image_is_available_semaphore ]
-        _signal_semaphores = [ self._rt_semaphore ]
-        _cmd = self._rt_command_buffers.get_command_at(_frame_index)
-
-        #reset rt fence
-        self._rt_fence.reset()
-        _hr = self._gDevice.submit(
-            [_cmd], 
-            self._gDevice.graphics_queue, 
-            _wait_dst_stage_mask, 
-            _wait_semaphores, 
-            _signal_semaphores, 
-            self._rt_fence)
-        if _hr:
-            print "Error on submiting queue for drawing to render target"
-            return 
-
-        self._rt_fence.wait()
-        if _hr:
-            print "Error on waiting for render target fence"
-            return 
-
-        _wait_semaphores = [self._rt_semaphore]
         _signal_semaphores = [ _output_window.rendering_done_semaphore ]
         _cmd = self._draw_command_buffers.get_command_at(_frame_index)
 
@@ -309,33 +295,12 @@ class scene(QWidget):
 
         self._draw_render_pass.release()
         self._draw_render_pass = None
-
-        self._shader.release()
-        self._shader = None
-
-        self._pipeline.release()
-        self._pipeline = None
-
-        self._mesh.release()
-        self._mesh = None
-
-        self._u0.release()
-        self._u0 = None
-
+        
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
-        self._rt_fence.release()
-        self._rt_fence = None
-
-        self._rt_semaphore.release()
-        self._rt_semaphore = None
-
-        self._rt_command_buffers.release()
-        self._rt_command_buffers = None
-        
-        self._rt.release()
-        self._rt = None
+        self._shape_coordinate_axis.release()
+        self._shape_coordinate_axis = None
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         
@@ -344,7 +309,6 @@ class scene(QWidget):
         self._gDevice = None
         self._viewport = None
         self._viewport_scissor = None
-
         
 if __name__ == '__main__':
     # Create a Qt application

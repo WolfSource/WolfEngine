@@ -13,8 +13,7 @@
 #include "w_system_export.h"
 #include <vector>
 #include <array>
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
+#include <glm_extension.h>
 #include <msgpack.hpp>
 #include "python_exporter/w_boost_python_helper.h"
 
@@ -54,20 +53,20 @@ namespace wolf
 #ifdef __PYTHON__
 
 			//min
-			boost::python::list py_get_min() { return boost_wrap_array(this->min, 3); }
-			void py_set_min(_In_ boost::python::tuple pValue) { boost_extract_tuple(this->min[0], this->min[1], this->min[2], pValue); }
+			glm::w_vec3 py_get_min() { return glm::w_vec3(this->min[0], this->min[1], this->min[2]); }
+			void py_set_min(_In_ glm::w_vec3 pValue) { this->min[0] = pValue.get_x(); this->min[1] = pValue.get_y(); this->min[2] = pValue.get_z(); }
 
 			//max
-			boost::python::list py_get_max() { return boost_wrap_array(this->max, 3); }
-			void py_set_max(_In_ boost::python::tuple pValue) { boost_extract_tuple(this->max[0], this->max[1], this->max[2], pValue); }
+			glm::w_vec3 py_get_max() { return glm::w_vec3(this->max[0], this->max[1], this->max[2]); }
+			void py_set_max(_In_ glm::w_vec3 pValue) { this->max[0] = pValue.get_x(); this->max[1] = pValue.get_y(); this->max[2] = pValue.get_z(); }
 
 			//position
-			boost::python::list py_get_position() { return boost_wrap_array(this->position, 3); }
-			void py_set_position(_In_ boost::python::tuple pValue) { boost_extract_tuple(this->position[0], this->position[1], this->position[2], pValue); }
+			glm::w_vec3 py_get_position() { return glm::w_vec3(this->position[0], this->position[1], this->position[2]);}
+			void py_set_position(_In_ glm::w_vec3 pValue) { this->position[0] = pValue.get_x(); this->position[1] = pValue.get_y(); this->position[2] = pValue.get_z(); }
 
 			//rotation
-			boost::python::list py_get_rotation() { return boost_wrap_array(this->rotation, 3); }
-			void py_set_rotation(_In_ boost::python::tuple pValue) { boost_extract_tuple(this->rotation[0], this->rotation[1], this->rotation[2], pValue); }
+			glm::w_vec3 py_get_rotation() { return glm::w_vec3(this->rotation[0], this->rotation[1], this->rotation[2]); }
+			void py_set_rotation(_In_ glm::w_vec3 pValue) { this->rotation[0] = pValue.get_x(); this->rotation[1] = pValue.get_y(); this->rotation[2] = pValue.get_z(); }
 
 			//vertices
 			boost::python::list py_get_vertices() { return boost_wrap_array(this->vertices, 108); }
@@ -115,8 +114,8 @@ namespace wolf
 
 #ifdef __PYTHON__
 			//center
-			boost::python::list py_get_center() { return boost_wrap_array(this->center, 3); }
-			void py_set_center(_In_ boost::python::tuple pValue) { boost_extract_tuple(this->center[0], this->center[1], this->center[2], pValue); }
+			glm::w_vec3 py_get_center() { return glm::w_vec3(this->center[0], this->center[1], this->center[2]); }
+			void py_set_center(_In_ glm::w_vec3 pValue) { this->center[0] = pValue.get_x(); this->center[1] = pValue.get_y(); this->center[2] = pValue.get_z(); }
 
 			//radius
 			float py_get_radius() { return this->radius; }

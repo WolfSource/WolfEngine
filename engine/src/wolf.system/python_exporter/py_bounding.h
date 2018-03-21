@@ -29,14 +29,10 @@ namespace pyWolf
         
         //export w_bounding_box class
         class_<w_bounding_box>("w_bounding_box", init<>())
-            .def("get_min", &w_bounding_box::py_get_min, "get min point of w_bounding_box")
-            .def("set_min", &w_bounding_box::py_set_min, "set min point of w_bounding_box")
-            .def("get_max", &w_bounding_box::py_get_max, "get max point of w_bounding_box")
-            .def("set_max", &w_bounding_box::py_set_max, "set max point of w_bounding_box")
-            .def("get_position", &w_bounding_box::py_get_position, "get position of w_bounding_box")
-            .def("set_position", &w_bounding_box::py_set_position, "set position of w_bounding_box")
-            .def("get_rotation", &w_bounding_box::py_set_rotation, "get rotation of w_bounding_box")
-            .def("set_rotation", &w_bounding_box::py_set_rotation, "set rotation of w_bounding_box")
+            .add_property("min", &w_bounding_box::py_get_min, &w_bounding_box::py_set_min,"get or set min point of w_bounding_box")
+            .add_property("max", &w_bounding_box::py_get_max, &w_bounding_box::py_set_max, "get or set max point of w_bounding_box")
+            .add_property("position", &w_bounding_box::py_get_position, &w_bounding_box::py_set_position, "get or set position of w_bounding_box")
+            .add_property("rotation", &w_bounding_box::py_get_rotation, &w_bounding_box::py_set_rotation, "get or set rotation of w_bounding_box")
             .def("get_vertices", &w_bounding_box::py_get_vertices, "used for rendering to masked occulusion culling buffer")
             .def("generate_vertices", &w_bounding_box::generate_vertices, "generate vertices of this bounding box for rendering")
             .def("merge", &w_bounding_box::merge, "merge with another bounding box")
@@ -50,10 +46,8 @@ namespace pyWolf
         
         //export w_bounding_sphere class
         class_<w_bounding_sphere>("w_bounding_sphere", init<>())
-            .def("get_center", &w_bounding_sphere::py_get_center, "get center point of bounding sphere")
-            .def("set_center", &w_bounding_sphere::py_set_center, "set center point of bounding sphere")
-            .def("py_get_radius", &w_bounding_sphere::py_get_radius, "get radius of bounding sphere")
-            .def("py_set_radius", &w_bounding_sphere::py_set_radius, "set radius of bounding sphere")
+            .add_property("center", &w_bounding_sphere::py_get_center, &w_bounding_sphere::py_set_center, "get or set center point of bounding sphere")
+            .add_property("radius", &w_bounding_sphere::py_get_radius, &w_bounding_sphere::py_set_radius, "get or set radius of bounding sphere")
             .def("merge", &w_bounding_sphere::merge, "merge with another bounding sphere")
             .def("intersects", &w_bounding_sphere::intersects_bounding_sphere, "check weather this bounding sphere intersects with another bounding sphere")
 			.def("create_from_bounding_box", &w_bounding_sphere::create_from_bounding_box, "create bounding sphere from bounding box")

@@ -13,7 +13,7 @@
 #include <vector>
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
-#include <glm_extention.h>
+#include <glm_extension.h>
 #include "c_animation.h"
 
 namespace wolf

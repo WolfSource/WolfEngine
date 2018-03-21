@@ -146,7 +146,7 @@ class scene(QWidget):
             sys.exit(1)
     
         #update shader uniform
-        _hr = self._u0.update(self._wvp)
+        _hr = self._u0.update(self._wvp.to_list())
         if _hr:
             print "Error on updating vertex shader uniform"
             self.release()

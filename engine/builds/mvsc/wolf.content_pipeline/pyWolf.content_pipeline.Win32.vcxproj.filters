@@ -25,6 +25,9 @@
     <Filter Include="amd\amd_tootle\RayTracer\Math">
       <UniqueIdentifier>{4369d90a-b296-4831-abf8-7ad2e4e6d7a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="python_exporter">
+      <UniqueIdentifier>{dbf4fd44-4d46-4868-b3fc-2aa7e0fdba11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp">
@@ -315,10 +318,16 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle.h">
       <Filter>amd</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.h">
       <Filter>collada</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\python_exporter\py_cpipeline_scene.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\python_exporter\py_cpipeline_model.h">
+      <Filter>python_exporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_vertex_struct.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.inl">

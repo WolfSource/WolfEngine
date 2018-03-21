@@ -135,7 +135,6 @@ w_graphics_device::w_graphics_device() :
 		defaults_states::pipelines::multisample_create_info.pSampleMask = nullptr;
 		defaults_states::pipelines::multisample_create_info.alphaToCoverageEnable = VK_FALSE;
 		defaults_states::pipelines::multisample_create_info.alphaToOneEnable = VK_FALSE;
-
 	});
 }
 

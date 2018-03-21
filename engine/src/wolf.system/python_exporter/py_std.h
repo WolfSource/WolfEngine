@@ -17,9 +17,6 @@
 
 namespace pyWolf
 {
-	typedef std::vector<uint8_t> w_vector_uint8_t;
-	typedef std::vector<float> w_vector_float;
-
 	//static std::wstring py_sprintf(_In_z_ std::wstring pStr, _In_ boost::python::list pList)
 	//{
 	//	const wchar_t* _delimiter = L"<%>";

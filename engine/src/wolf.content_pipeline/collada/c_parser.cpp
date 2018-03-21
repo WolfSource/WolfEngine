@@ -1433,13 +1433,13 @@ W_RESULT c_parser::_create_scene(
 
             if (_lods_models.size())
             {
-                _models[_index]->add_lods(_lods_models);
+                _models[_index]->get_lods(_lods_models);
                 _lods_models.clear();
             }
 
             if (_convex_hulls.size())
             {
-                _models[_index]->add_convex_hulls(_convex_hulls);
+                _models[_index]->get_convex_hulls(_convex_hulls);
                 _convex_hulls.clear();
             }
 
@@ -1531,7 +1531,7 @@ W_RESULT c_parser::_create_scene(
         }
     }
 
-    pScene->set_coordiante_system(sZ_Up);
+    pScene->set_z_up(sZ_Up);
     
 	return W_PASSED;
 }

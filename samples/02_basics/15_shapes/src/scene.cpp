@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "scene.h"
-#include <glm_extention.h>
+#include <glm_extension.h>
 
 using namespace std;
 using namespace wolf;

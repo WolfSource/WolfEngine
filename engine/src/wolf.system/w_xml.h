@@ -16,7 +16,6 @@
 
 #include "w_system_export.h"
 #include "rapidxml/rapidxml.hpp"
-#include <vector>
 #include <string>
 #include "w_std.h"
 

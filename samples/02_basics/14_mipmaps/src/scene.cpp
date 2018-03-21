@@ -235,7 +235,6 @@ void scene::load()
         _pipeline_cache_name.clear();
     }
 
-	auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 	_hr = this->_pipeline.load(_gDevice,
 		this->_mesh.get_vertex_binding_attributes(),
 		w_primitive_topology::TRIANGLE_LIST,
@@ -328,15 +327,10 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     });
     
 	//we must update uniform
-	bool _update_uniform = false;
 	if (this->_u0.data.texture_lod != sTextureLOD)
 	{
 		this->_u0.data.texture_lod = sTextureLOD;
-		_update_uniform = true;
-	}
-
-	if (_update_uniform)
-	{
+		//update uniform
 		if (this->_u0.update() == W_FAILED)
 		{
 			V(W_FAILED, "updating uniform", _trace_info, 3, false);

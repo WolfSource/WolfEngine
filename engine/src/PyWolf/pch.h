@@ -49,8 +49,9 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_uniform.h>
 #include <w_graphics/w_render_target.h>
+#include <w_graphics/w_shapes.h>
 
-#include <python_exporter/py_glm.h>
+#include <glm_extension.h>
 
 #endif //__PYTHON__
 

@@ -76,11 +76,16 @@ private:
     wolf::graphics::w_mesh											_mesh;
     wolf::graphics::w_texture										_texture;
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	struct U0
 	{
 		float	texture_lod;
 		int 	sampler_index;
 	};
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	wolf::graphics::w_uniform<U0>                                   _u0;
 };
 

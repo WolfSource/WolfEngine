@@ -23,7 +23,6 @@
 #include <w_point.h>
 #include <map>
 #include <mutex>
-#include <vector>
 #include <array>
 #include "w_graphics/w_queue.h"
 #include "w_graphics/w_semaphore.h"

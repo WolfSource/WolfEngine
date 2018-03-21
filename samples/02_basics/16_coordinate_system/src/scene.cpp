@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "scene.h"
 #include <w_content_manager.h>
-#include <glm_extention.h>
+#include <glm_extension.h>
 
 #define NUM_INSTANCES 10
 
@@ -271,8 +271,13 @@ ULONG scene::release()
     //release gui's objects
     w_imgui::release();
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	SAFE_RELEASE(this->_shape_coordinate_axis);
-	
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	return w_game::release();
 }
 

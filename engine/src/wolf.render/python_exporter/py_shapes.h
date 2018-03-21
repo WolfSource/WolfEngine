@@ -23,14 +23,13 @@ namespace pyWolf
 	{
 		//export w_shapes class
 		class_<w_shapes, boost::noncopyable>("w_shapes")
-			.def(init<boost::python::list, boost::python::list, const w_color&>())
-			.def(init<boost::python::list, boost::python::list, boost::python::list, const w_color&>())
-			.def(init<boost::python::list, const float&, const w_color&, const w_plane&, const uint32_t&>())
+			.def(init<glm::w_vec3, glm::w_vec3, const w_color&>())
+			.def(init<glm::w_vec3, glm::w_vec3, glm::w_vec3, const w_color&>())
+			.def(init<glm::w_vec3, const float&, const w_color&, const w_plane&, const uint32_t&>())
 			.def(init<const wolf::system::w_bounding_box&, const w_color&>())
 			.def(init<const wolf::system::w_bounding_sphere&, const w_color&, const uint32_t&>())
 			.def(init<const w_color&>())
 			.def("load", &w_shapes::py_load, "load shape")
-			.def("update", &w_shapes::py_update, "update shape")
 			.def("update", &w_shapes::py_update, "update shape")
 			.def("draw", &w_shapes::draw, "draw shape")
 			.def("release", &w_shapes::release, "release resources of shape")

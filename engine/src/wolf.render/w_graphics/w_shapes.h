@@ -20,7 +20,7 @@
 #include <w_plane.h>
 #include <w_game_time.h>
 #include <w_time_span.h>
-#include <glm/mat4x4.hpp>
+#include <glm_extension.h>
 
 namespace wolf
 {
@@ -86,75 +86,27 @@ namespace wolf
 
 #ifdef __PYTHON__
 
-			w_shapes()
+			W_EXP w_shapes()
 			{
 			}
 
-			w_shapes(
-				_In_ boost::python::list pA,
-				_In_ boost::python::list pB,
-				_In_ const w_color& pColor)
-			{
-				std::vector<float> _pa;
-				if (!boost_list_to_std_vector(pA, _pa)) return;
+			W_EXP w_shapes(
+				_In_ const glm::w_vec3& pA,
+				_In_ const glm::w_vec3& pB,
+				_In_ const w_color& pColor);
 
-				std::vector<float> _pb;
-				if (!boost_list_to_std_vector(pB, _pb)) return;
+			W_EXP w_shapes(
+				_In_ const glm::w_vec3& pA,
+				_In_ const glm::w_vec3& pB,
+				_In_ const glm::w_vec3& pC,
+				_In_ const w_color& pColor);
 
-				w_shapes(
-					glm::vec3(_pa[0], _pa[1], _pa[2]),
-					glm::vec3(_pb[0], _pb[1], _pb[2]), 
-					pColor);
-
-				_pa.clear();
-				_pb.clear();
-			}
-
-			w_shapes(
-				_In_ boost::python::list pA,
-				_In_ boost::python::list pB,
-				_In_ boost::python::list pC,
-				_In_ const w_color& pColor)
-			{
-				std::vector<float> _pa;
-				if (!boost_list_to_std_vector(pA, _pa)) return;
-
-				std::vector<float> _pb;
-				if (!boost_list_to_std_vector(pB, _pb)) return;
-
-				std::vector<float> _pc;
-				if (!boost_list_to_std_vector(pC, _pc)) return;
-
-				w_shapes(
-					glm::vec3(_pa[0], _pa[1], _pa[2]), 
-					glm::vec3(_pb[0], _pb[1], _pb[2]), 
-					glm::vec3(_pc[0], _pc[1], _pc[2]), 
-					pColor);
-
-				_pa.clear();
-				_pb.clear();
-				_pc.clear();
-			}
-
-			w_shapes(
-				_In_ boost::python::list pCenter,
+			W_EXP w_shapes(
+				_In_ const glm::w_vec3& pCenter,
 				_In_ const float& pRadius,
 				_In_ const w_color& pColor,
 				_In_ const w_plane& pPlane,
-				_In_ const uint32_t& pResolution)
-			{
-				std::vector<float> _center;
-				if (!boost_list_to_std_vector(pCenter, _center)) return;
-				
-				w_shapes(
-					glm::vec3(_center[0], _center[1], _center[2]),
-					pRadius,
-					pColor,
-					pPlane,
-					pResolution);
-
-				_center.clear();
-			}
+				_In_ const uint32_t& pResolution);
 
 			//load shapes render
 			W_RESULT py_load(
@@ -172,38 +124,15 @@ namespace wolf
 					pViewport,
 					pViewportScissor);
 
-				pGDevice.reset();
+				_gDevice.reset();
 
 				return _hr;
 			}
 
 			//update uniform of shape
-			W_RESULT py_update(_In_ boost::python::list pWorldViewProjection)
+			W_RESULT py_update(_In_ glm::w_mat4x4 pWorldViewProjection)
 			{
-				std::vector<float> _mat_data;
-				boost_list_to_std_vector(pWorldViewProjection, _mat_data);
-
-				size_t _i = 0, _j = 0;
-				glm::mat4 _mat;
-				
-				auto _size = _mat_data.size();
-				if (_size > 16) _size = 16;
-
-				for (size_t k = 0; k < _size; ++k)
-				{
-					_mat[_i][_j++] = _mat_data[k];
-					if (_j == 4)
-					{
-						_j = 0;
-						_i++;
-					}
-				}
-
-				auto _hr = update(_mat);
-
-				_mat_data.clear();
-
-				return _hr;
+				return update(pWorldViewProjection.data());
 			}
 
 #endif

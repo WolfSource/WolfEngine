@@ -46,6 +46,14 @@ template<typename T> bool boost_list_to_std_vector(boost::python::list& pList, s
 	return _hr;
 }
 
+template<typename T> void std_vector_to_boost_list(boost::python::list& pList, std::vector<T>& pVector)
+{
+	for (auto _v : pVector)
+	{
+		pList.append(_v);
+	}
+}
+
 template<typename T>
 inline boost::python::list boost_wrap_array(T* array_, size_t size_)
 {

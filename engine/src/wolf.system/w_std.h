@@ -143,14 +143,13 @@ namespace std
 
 #endif//ANDROID && __linux && __APPLE__
 
-#ifdef __cplusplus
-extern "C" 
-{
-#endif
-	enum W_RESULT : uint8_t { W_PASSED = 0, W_FAILED, W_INVALIDARG, W_OUTOFMEMORY, W_INVALID_FILE_ATTRIBUTES };
-#ifdef __cplusplus
-}//extern "C"
-#endif
+enum W_RESULT : uint8_t { W_PASSED = 0, W_FAILED, W_INVALIDARG, W_OUTOFMEMORY, W_INVALID_FILE_ATTRIBUTES };
+
+#include <vector>
+typedef std::vector<uint8_t> w_vector_uint8_t;
+typedef std::vector<uint16_t> w_vector_uint16_t;
+typedef std::vector<uint32_t> w_vector_uint32_t;
+typedef std::vector<float>	w_vector_float;
 
 #include "python_exporter/py_std.h"
 

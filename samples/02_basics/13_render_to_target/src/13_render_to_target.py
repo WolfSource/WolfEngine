@@ -66,7 +66,7 @@ class scene(QWidget):
         self._pipeline = pyWolf.graphics.w_pipeline()
         self._mesh = pyWolf.graphics.w_mesh()
         self._u0 = pyWolf.graphics.w_uniform()
-        self._wvp = pyWolf.glm.mat4x4_identity()
+        self._wvp = pyWolf.glm.mat4x4()
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
         #The following codes have been added for this project
         #++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -193,7 +193,7 @@ class scene(QWidget):
             sys.exit(1)
     
         #update shader uniform
-        _hr = self._u0.update(self._wvp)
+        _hr = self._u0.update(self._wvp.tolist())
         if _hr:
             print "Error on updating vertex shader uniform"
             self.release()
