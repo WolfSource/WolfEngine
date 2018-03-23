@@ -21,7 +21,7 @@ void w_cpipeline_scene::add_model(_In_ w_cpipeline_model* pModel)
     this->_models.push_back(*pModel);
 }
 
-void w_cpipeline_scene::add_models(_Inout_ std::vector<w_cpipeline_model*>& pModel)
+void w_cpipeline_scene::add_models(_In_ std::vector<w_cpipeline_model*>& pModel)
 {
     for (size_t i = 0; i < pModel.size(); ++i)
     {
@@ -36,7 +36,7 @@ void w_cpipeline_scene::add_boundary(_In_ w_bounding_sphere* pBoundary)
     this->_boundaries.push_back(*pBoundary);
 }
 
-void w_cpipeline_scene::add_boundaries(_Inout_ std::vector<w_bounding_sphere*>& pBoundaries)
+void w_cpipeline_scene::add_boundaries(_In_ std::vector<w_bounding_sphere*>& pBoundaries)
 {
     for (size_t i = 0; i < pBoundaries.size(); ++i)
     {
@@ -83,7 +83,7 @@ void w_cpipeline_scene::get_model_by_index(_In_ const size_t& pIndex, _Inout_ w_
     }
 }
 
-void w_cpipeline_scene::get_model_by_id(_In_z_ const std::string& pID, std::vector<w_cpipeline_model*>& pModels)
+void w_cpipeline_scene::get_models_by_id(_In_z_ const std::string& pID, std::vector<w_cpipeline_model*>& pModels)
 {
 	for (size_t i = 0; i < this->_models.size(); ++i)
 	{
@@ -129,7 +129,7 @@ void w_cpipeline_scene::get_cameras_by_index(_In_ const size_t pIndex, _Inout_ c
     }
 }
 
-void w_cpipeline_scene::get_cameras_by_id(const std::string& pID, _Inout_ std::vector<c_camera*>& pCameras)
+void w_cpipeline_scene::get_cameras_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<c_camera*>& pCameras)
 {
 	for (size_t i = 0; i < this->_cameras.size(); ++i)
 	{

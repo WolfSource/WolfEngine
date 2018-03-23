@@ -28,9 +28,9 @@ namespace wolf
 			WCP_EXP virtual ~w_cpipeline_scene();
 			
 			WCP_EXP void add_model(_In_ w_cpipeline_model* pModel);
-            WCP_EXP void add_models(_Inout_ std::vector<w_cpipeline_model*>& pModel);
+            WCP_EXP void add_models(_In_ std::vector<w_cpipeline_model*>& pModel);
             WCP_EXP void add_boundary(_In_ wolf::system::w_bounding_sphere* pBoundary);
-            WCP_EXP void add_boundaries(_Inout_ std::vector<wolf::system::w_bounding_sphere*>& pBoundaries);
+            WCP_EXP void add_boundaries(_In_ std::vector<wolf::system::w_bounding_sphere*>& pBoundaries);
             WCP_EXP void add_camera(_In_ c_camera* pCamera);
 			WCP_EXP void add_camera(_In_z_ const std::string& pName, _In_ const glm::vec3 pTransform, _In_ const glm::vec3 pInterest);
             
@@ -39,14 +39,14 @@ namespace wolf
 #pragma region Getters
 
             WCP_EXP void get_model_by_index(_In_ const size_t& pIndex, _Inout_ w_cpipeline_model** pModel);
-			WCP_EXP void get_model_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<w_cpipeline_model*>& pModels);
+			WCP_EXP void get_models_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<w_cpipeline_model*>& pModels);
             WCP_EXP void get_all_models(_Inout_ std::vector<w_cpipeline_model*>& pModels);
             
             WCP_EXP void get_boundaries(_Inout_ std::vector<wolf::system::w_bounding_sphere*>& pBoundaries);
 
 			//Get first camera if avaible, else create a default one
 			WCP_EXP void get_first_camera(_Inout_ c_camera& pCamera);
-			WCP_EXP void get_cameras_by_id(const std::string& pID, _Inout_ std::vector<c_camera*>& pCameras);
+			WCP_EXP void get_cameras_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<c_camera*>& pCameras);
             WCP_EXP void get_cameras_by_index(const size_t pIndex, _Inout_ c_camera** pCamera);
 
             //Get coordinate system
@@ -66,8 +66,44 @@ namespace wolf
 			MSGPACK_DEFINE(_name, _cameras, _models, _boundaries, _z_up);
             
 #ifdef __PYTHON__
+            void py_add_model(_In_ w_cpipeline_model& pModel)
+            {
+                add_model(&pModel);
+            }
+            void py_add_boundary(_In_ wolf::system::w_bounding_sphere& pBoundary)
+            {
+                add_boundary(&pBoundary);
+            }
+            void py_add_camera_1_arg(_In_ c_camera& pCamera)
+            {
+                add_camera(&pCamera);
+            }
+            void py_add_camera_3_args(_In_z_ const std::string& pName, _In_ const glm::w_vec3 pTransform, _In_ const glm::w_vec3 pInterest)
+            {
+                add_camera(pName, pTransform.data(), pInterest.data());
+            }
+            w_cpipeline_model py_get_model_by_index(_In_ const size_t& pIndex)
+            {
+                w_cpipeline_model* _model = nullptr;
+                
+                get_model_by_index(pIndex, &_model);
+                
+                return *_model;
+            }
             
-            
+            boost::python::list py_get_models_by_id(_In_z_ const std::string& pID)
+            {
+                std::vector<w_cpipeline_model*> _models;
+                
+                get_models_by_id(pID, _models);
+                
+                boost::python::list _list;
+                for (size_t i = 0; i < _models.size(); ++i)
+                {
+                    _list.append(&_models[i]);
+                }
+                return _list;
+            }
 #endif
             
 		private:

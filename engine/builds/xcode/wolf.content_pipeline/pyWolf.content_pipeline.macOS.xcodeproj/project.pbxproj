@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2C4913542064E3A2006036E4 /* w_vertex_struct.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4913532064E3A2006036E4 /* w_vertex_struct.h */; };
 		2C4913562064E3B2006036E4 /* py_cpipeline_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4913552064E3B2006036E4 /* py_cpipeline_model.h */; };
+		2C49135A2064EEAE006036E4 /* py_c_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4913592064EEAE006036E4 /* py_c_camera.h */; };
 		2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49EED8201A7C6800EF7AFB /* c_camera.h */; };
 		2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C49EED9201A7C6800EF7AFB /* c_camera.cpp */; };
 		2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFC1EB0F54400E0A422 /* c_animation.h */; };
@@ -110,6 +111,7 @@
 		2C07D51C20319496005E7D14 /* libmsgpackc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmsgpackc.a; path = ../../../dependencies/msgpack/lib/osx/debug/libmsgpackc.a; sourceTree = "<group>"; };
 		2C4913532064E3A2006036E4 /* w_vertex_struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vertex_struct.h; path = ../../../src/wolf.content_pipeline/w_vertex_struct.h; sourceTree = "<group>"; };
 		2C4913552064E3B2006036E4 /* py_cpipeline_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_cpipeline_model.h; path = ../../../src/wolf.content_pipeline/python_exporter/py_cpipeline_model.h; sourceTree = "<group>"; };
+		2C4913592064EEAE006036E4 /* py_c_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_c_camera.h; path = ../../../src/wolf.content_pipeline/python_exporter/py_c_camera.h; sourceTree = "<group>"; };
 		2C49EED8201A7C6800EF7AFB /* c_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_camera.h; path = ../../../src/wolf.content_pipeline/collada/c_camera.h; sourceTree = "<group>"; };
 		2C49EED9201A7C6800EF7AFB /* c_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_camera.cpp; path = ../../../src/wolf.content_pipeline/collada/c_camera.cpp; sourceTree = "<group>"; };
 		2C4CCAFC1EB0F54400E0A422 /* c_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_animation.h; path = ../../../src/wolf.content_pipeline/collada/c_animation.h; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 		2CB6D9BA205F255C00F8B4E9 /* python_exporter */ = {
 			isa = PBXGroup;
 			children = (
+				2C4913592064EEAE006036E4 /* py_c_camera.h */,
 				2C4913552064E3B2006036E4 /* py_cpipeline_model.h */,
 				2CB6D9BB205F258C00F8B4E9 /* py_content_manager.h */,
 				2CB6D9BD205F25F400F8B4E9 /* py_cpipeline_scene.h */,
@@ -437,6 +440,7 @@
 				2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */,
 				2C8D5B291F4F89B2000BCB87 /* color.h in Headers */,
 				2C8D5AEB1F4F8641000BCB87 /* JRTCore.h in Headers */,
+				2C49135A2064EEAE006036E4 /* py_c_camera.h in Headers */,
 				2C8D5B091F4F8656000BCB87 /* JMLMatrix.h in Headers */,
 				2C8D5ACB1F4F861C000BCB87 /* TootleRaytracer.h in Headers */,
 				2C8D5B281F4F89B2000BCB87 /* clustering.h in Headers */,
