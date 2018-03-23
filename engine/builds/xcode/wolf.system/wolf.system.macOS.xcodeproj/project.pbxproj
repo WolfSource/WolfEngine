@@ -14,6 +14,7 @@
 		2C1383A61F509AC700D5283B /* w_lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1383A41F509AC700D5283B /* w_lua.h */; };
 		2C41F9271ED34FAE007012E4 /* w_point.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9251ED34FAE007012E4 /* w_point.h */; };
 		2C41F9281ED34FAE007012E4 /* w_rectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9261ED34FAE007012E4 /* w_rectangle.h */; };
+		2C4913502064E312006036E4 /* glm_extension.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49134F2064E312006036E4 /* glm_extension.h */; };
 		2C4990401FDF312F00E656B2 /* w_memory_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49903F1FDF312E00E656B2 /* w_memory_pool.h */; };
 		2C6521941FD4AF5B0030A053 /* coord.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C65215D1FD4AF550030A053 /* coord.hpp */; };
 		2C6521951FD4AF5B0030A053 /* filter.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2C6521621FD4AF560030A053 /* filter.hpp */; };
@@ -221,7 +222,6 @@
 		2C94BC271FEE5C62007338F7 /* w_network.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C94BC251FEE5C62007338F7 /* w_network.h */; };
 		2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C94BC281FF1A0E9007338F7 /* libnanomsg.a */; };
 		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
-		2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF51E64307D005E0F45 /* glm_extention.h */; };
 		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
 		2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF71E64307D005E0F45 /* w_convert.h */; };
 		2CE5BB121E64307D005E0F45 /* w_game_time.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF91E64307D005E0F45 /* w_game_time.h */; };
@@ -301,6 +301,7 @@
 		2C1383A41F509AC700D5283B /* w_lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_lua.h; path = ../../../src/wolf.system/w_lua.h; sourceTree = "<group>"; };
 		2C41F9251ED34FAE007012E4 /* w_point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_point.h; path = ../../../src/wolf.system/w_point.h; sourceTree = "<group>"; };
 		2C41F9261ED34FAE007012E4 /* w_rectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_rectangle.h; path = ../../../src/wolf.system/w_rectangle.h; sourceTree = "<group>"; };
+		2C49134F2064E312006036E4 /* glm_extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extension.h; path = ../../../src/wolf.system/glm_extension.h; sourceTree = "<group>"; };
 		2C49903F1FDF312E00E656B2 /* w_memory_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_memory_pool.h; path = ../../../src/wolf.system/w_memory_pool.h; sourceTree = "<group>"; };
 		2C49EED4201A60A900EF7AFB /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
 		2C49EED6201A7C1600EF7AFB /* libboost_python-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_python-mt.a"; path = "../../../dependencies/boost/lib/osx/debug/libboost_python-mt.a"; sourceTree = "<group>"; };
@@ -670,7 +671,6 @@
 		2C94BC281FF1A0E9007338F7 /* libnanomsg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnanomsg.a; path = ../../../dependencies/nanomsg/lib/osx/debug/libnanomsg.a; sourceTree = "<group>"; };
 		2C98996B1E9B512F002FE161 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../src/wolf.system/stb_image.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		2CE5BAF51E64307D005E0F45 /* glm_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extention.h; path = ../../../src/wolf.system/glm_extention.h; sourceTree = "<group>"; };
 		2CE5BAF61E64307D005E0F45 /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
 		2CE5BAF71E64307D005E0F45 /* w_convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_convert.h; path = ../../../src/wolf.system/w_convert.h; sourceTree = "<group>"; };
 		2CE5BAF91E64307D005E0F45 /* w_game_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game_time.h; path = ../../../src/wolf.system/w_game_time.h; sourceTree = "<group>"; };
@@ -1181,6 +1181,7 @@
 				2C6521F41FD4AFA20030A053 /* glm */,
 				2CFD40F11F51FF9300BF9A65 /* rapidjson */,
 				2C7BC43E1F51A2FB009F0C6E /* rapidxml */,
+				2C49134F2064E312006036E4 /* glm_extension.h */,
 				2CF54B1F205BBAC3000B80E3 /* w_aligned_malloc.cpp */,
 				2CF54B20205BBAC3000B80E3 /* w_aligned_malloc.h */,
 				2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */,
@@ -1201,7 +1202,6 @@
 				2CF54B50205C6D21000B80E3 /* w_plane.h */,
 				2C41F9261ED34FAE007012E4 /* w_rectangle.h */,
 				2C98996B1E9B512F002FE161 /* stb_image.h */,
-				2CE5BAF51E64307D005E0F45 /* glm_extention.h */,
 				2CE5BAF71E64307D005E0F45 /* w_convert.h */,
 				2CE5BAF91E64307D005E0F45 /* w_game_time.h */,
 				2CE5BAFA1E64307D005E0F45 /* w_io.h */,
@@ -1407,6 +1407,7 @@
 				2CFD410C1F52007B00BF9A65 /* istreamwrapper.h in Headers */,
 				2C6522821FD4AFFC0030A053 /* vec3.hpp in Headers */,
 				2C6522521FD4AFD50030A053 /* type_vec4.hpp in Headers */,
+				2C4913502064E312006036E4 /* glm_extension.h in Headers */,
 				2C6521971FD4AF5B0030A053 /* storage_linear.hpp in Headers */,
 				2C6522801FD4AFFC0030A053 /* packing.hpp in Headers */,
 				2C6521951FD4AF5B0030A053 /* filter.hpp in Headers */,
@@ -1565,7 +1566,6 @@
 				2C65227C1FD4AFFC0030A053 /* ext.hpp in Headers */,
 				2C65236E1FD4B0930030A053 /* type_aligned.hpp in Headers */,
 				2CFD41051F52007B00BF9A65 /* allocators.h in Headers */,
-				2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */,
 				2C7BC4451F51A320009F0C6E /* rapidxml_utils.hpp in Headers */,
 				2C65219C1FD4AF5B0030A053 /* storage.hpp in Headers */,
 				2C6522561FD4AFD50030A053 /* func_geometric.hpp in Headers */,

@@ -15,6 +15,7 @@
 		2C1383A61F509AC700D5283B /* w_lua.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C1383A41F509AC700D5283B /* w_lua.h */; };
 		2C41F9271ED34FAE007012E4 /* w_point.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9251ED34FAE007012E4 /* w_point.h */; };
 		2C41F9281ED34FAE007012E4 /* w_rectangle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C41F9261ED34FAE007012E4 /* w_rectangle.h */; };
+		2C4913582064E3D0006036E4 /* glm_extension.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4913572064E3D0006036E4 /* glm_extension.h */; };
 		2C4990401FDF312F00E656B2 /* w_memory_pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49903F1FDF312E00E656B2 /* w_memory_pool.h */; };
 		2C49EED7201A7C1600EF7AFB /* libboost_python-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C49EED6201A7C1600EF7AFB /* libboost_python-mt.a */; };
 		2C505DC3205E6DC000A96390 /* py_glm.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C505DC1205E6DC000A96390 /* py_glm.h */; };
@@ -237,7 +238,6 @@
 		2CDD1362202781D9002B1AAC /* py_bounding.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDD1358202781D8002B1AAC /* py_bounding.h */; };
 		2CDF24862036FFBA00BD3DE5 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C49EED4201A60A900EF7AFB /* Python.framework */; };
 		2CDF24882037011D00BD3DE5 /* py_std.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CDF24872037011D00BD3DE5 /* py_std.h */; };
-		2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF51E64307D005E0F45 /* glm_extention.h */; };
 		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
 		2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF71E64307D005E0F45 /* w_convert.h */; };
 		2CE5BB121E64307D005E0F45 /* w_game_time.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF91E64307D005E0F45 /* w_game_time.h */; };
@@ -318,6 +318,7 @@
 		2C1383A41F509AC700D5283B /* w_lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_lua.h; path = ../../../src/wolf.system/w_lua.h; sourceTree = "<group>"; };
 		2C41F9251ED34FAE007012E4 /* w_point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_point.h; path = ../../../src/wolf.system/w_point.h; sourceTree = "<group>"; };
 		2C41F9261ED34FAE007012E4 /* w_rectangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_rectangle.h; path = ../../../src/wolf.system/w_rectangle.h; sourceTree = "<group>"; };
+		2C4913572064E3D0006036E4 /* glm_extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extension.h; path = ../../../src/wolf.system/glm_extension.h; sourceTree = "<group>"; };
 		2C49903F1FDF312E00E656B2 /* w_memory_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_memory_pool.h; path = ../../../src/wolf.system/w_memory_pool.h; sourceTree = "<group>"; };
 		2C49EED4201A60A900EF7AFB /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = System/Library/Frameworks/Python.framework; sourceTree = SDKROOT; };
 		2C49EED6201A7C1600EF7AFB /* libboost_python-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_python-mt.a"; path = "../../../dependencies/boost/lib/osx/debug/libboost_python-mt.a"; sourceTree = "<group>"; };
@@ -700,7 +701,6 @@
 		2CDD1357202781D8002B1AAC /* py_point.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_point.h; path = ../../../src/wolf.system/python_exporter/py_point.h; sourceTree = "<group>"; };
 		2CDD1358202781D8002B1AAC /* py_bounding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_bounding.h; path = ../../../src/wolf.system/python_exporter/py_bounding.h; sourceTree = "<group>"; };
 		2CDF24872037011D00BD3DE5 /* py_std.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = py_std.h; path = ../../../src/wolf.system/python_exporter/py_std.h; sourceTree = "<group>"; };
-		2CE5BAF51E64307D005E0F45 /* glm_extention.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glm_extention.h; path = ../../../src/wolf.system/glm_extention.h; sourceTree = "<group>"; };
 		2CE5BAF61E64307D005E0F45 /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
 		2CE5BAF71E64307D005E0F45 /* w_convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_convert.h; path = ../../../src/wolf.system/w_convert.h; sourceTree = "<group>"; };
 		2CE5BAF91E64307D005E0F45 /* w_game_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game_time.h; path = ../../../src/wolf.system/w_game_time.h; sourceTree = "<group>"; };
@@ -1235,6 +1235,7 @@
 				2C04326D201F9069009FB7EA /* python_exporter */,
 				2CFD40F11F51FF9300BF9A65 /* rapidjson */,
 				2C7BC43E1F51A2FB009F0C6E /* rapidxml */,
+				2C4913572064E3D0006036E4 /* glm_extension.h */,
 				2CF54B4A205C6CF1000B80E3 /* w_aligned_malloc.cpp */,
 				2CF54B4B205C6CF2000B80E3 /* w_aligned_malloc.h */,
 				2CF54B4C205C6CF2000B80E3 /* w_plane.h */,
@@ -1255,7 +1256,6 @@
 				2C41F9251ED34FAE007012E4 /* w_point.h */,
 				2C41F9261ED34FAE007012E4 /* w_rectangle.h */,
 				2C98996B1E9B512F002FE161 /* stb_image.h */,
-				2CE5BAF51E64307D005E0F45 /* glm_extention.h */,
 				2CE5BAF71E64307D005E0F45 /* w_convert.h */,
 				2CE5BAF91E64307D005E0F45 /* w_game_time.h */,
 				2CE5BAFA1E64307D005E0F45 /* w_io.h */,
@@ -1517,6 +1517,7 @@
 				2CFD41111F52007B00BF9A65 /* prettywriter.h in Headers */,
 				2C6522831FD4AFFC0030A053 /* trigonometric.hpp in Headers */,
 				2C6523741FD4B0930030A053 /* extended_min_max.hpp in Headers */,
+				2C4913582064E3D0006036E4 /* glm_extension.h in Headers */,
 				2C65236F1FD4B0930030A053 /* matrix_interpolation.hpp in Headers */,
 				2C6522571FD4AFD50030A053 /* type_mat3x3.hpp in Headers */,
 				2C6522461FD4AFD50030A053 /* func_packing.hpp in Headers */,
@@ -1633,7 +1634,6 @@
 				2C65227C1FD4AFFC0030A053 /* ext.hpp in Headers */,
 				2C65236E1FD4B0930030A053 /* type_aligned.hpp in Headers */,
 				2CFD41051F52007B00BF9A65 /* allocators.h in Headers */,
-				2CE5BB0E1E64307D005E0F45 /* glm_extention.h in Headers */,
 				2C7BC4451F51A320009F0C6E /* rapidxml_utils.hpp in Headers */,
 				2C65219C1FD4AF5B0030A053 /* storage.hpp in Headers */,
 				2C6522561FD4AFD50030A053 /* func_geometric.hpp in Headers */,
