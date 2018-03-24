@@ -16,7 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/matrix.hpp>
 #include <glm/vec3.hpp>
-#include <msgpack.hpp>
+#include <msgpack/msgpack.hpp>
 
 namespace wolf
 {

@@ -22,6 +22,21 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_network.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_aligned_malloc.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\objectc.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\unpack.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\version.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\vrefbuffer.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\zone.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
@@ -778,6 +793,12 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_aligned_malloc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.hpp">
+      <Filter>msgpack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.h">
+      <Filter>msgpack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -815,6 +836,9 @@
     </Filter>
     <Filter Include="gli\core">
       <UniqueIdentifier>{b1fa6346-6a07-4efb-831a-5f80393dce33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="msgpack">
+      <UniqueIdentifier>{8b7e5154-9e5d-4e9d-a115-57396a807a79}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1294,6 +1318,9 @@
     </None>
     <None Include="..\..\..\src\wolf.system\gli\core\view.inl">
       <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\msgpack\ChangeLog">
+      <Filter>msgpack</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -91,8 +91,11 @@ WOLF_MAIN()
 	error
 #endif
 
+	const uint32_t _width = 800, _height = 600;
 	sScene = make_unique<scene>(_content_path, _running_dir, L"wolf.vulkan.sample");
     sWindow = make_unique<w_window>();
+	sWindow->set_width(_width);
+	sWindow->set_height(_height);
 
 #ifdef __WIN32
 	//sWindow->enable_tiled(true);
@@ -102,8 +105,8 @@ WOLF_MAIN()
 #endif
     //create window info and add it to the map
     w_window_info _window_info;
-    _window_info.width = 800;
-    _window_info.height = 600;
+    _window_info.width = _width;
+    _window_info.height = _height;
     _window_info.is_full_screen = false;
     _window_info.v_sync = false;
 	_window_info.swap_chain_format = 44;//VK_FORMAT_B8G8R8A8_UNORM in vulkan api

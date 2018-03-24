@@ -21,6 +21,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\glm\detail\glm.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\objectc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\unpack.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\version.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\vrefbuffer.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\zone.c" />
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_cpu.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
@@ -32,7 +37,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_object.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_system_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -245,6 +250,8 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\vec4.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_std.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\w_boost_python_helper.h" />
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_bounding.h" />
@@ -492,6 +499,7 @@
     <None Include="..\..\..\src\wolf.system\glm\gtx\vector_angle.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\vector_query.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\wrap.inl" />
+    <None Include="..\..\..\src\wolf.system\msgpack\ChangeLog" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\src\wolf.system\gli\version.txt" />
@@ -604,16 +612,18 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/tbb/oss/windows/include;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/nanomsg/include;$(SolutionDir)/../../dependencies/msgpack/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/tbb/oss/windows/include;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/nanomsg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG;__WIN32;__WOLF_SYSTEM_STATIC_LIB;GLM_FORCE_DEPTH_ZERO_TO_ONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>w_system_pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <SDLCheck>true</SDLCheck>
       <Optimization>Disabled</Optimization>
       <CompileAsWinRT>false</CompileAsWinRT>
+      <MinimalRebuild>true</MinimalRebuild>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

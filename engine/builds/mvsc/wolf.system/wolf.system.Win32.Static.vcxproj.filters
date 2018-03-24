@@ -21,6 +21,21 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\w_network.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\objectc.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\unpack.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\version.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\vrefbuffer.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\msgpack\zone.c">
+      <Filter>msgpack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
@@ -812,6 +827,12 @@
     <ClInclude Include="..\..\..\src\wolf.system\python_exporter\py_std.h">
       <Filter>python_exporter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.h">
+      <Filter>msgpack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.hpp">
+      <Filter>msgpack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -852,6 +873,9 @@
     </Filter>
     <Filter Include="python_exporter">
       <UniqueIdentifier>{96333abc-f95e-48bb-b7ba-04c03329a341}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="msgpack">
+      <UniqueIdentifier>{718c7154-eda7-4b0c-b325-3a8b5914819f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1331,6 +1355,9 @@
     </None>
     <None Include="..\..\..\src\wolf.system\gli\core\view.inl">
       <Filter>gli\core</Filter>
+    </None>
+    <None Include="..\..\..\src\wolf.system\msgpack\ChangeLog">
+      <Filter>msgpack</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

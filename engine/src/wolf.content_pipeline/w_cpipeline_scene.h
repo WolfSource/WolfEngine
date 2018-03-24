@@ -14,7 +14,7 @@
 #include <w_object.h>
 #include "w_cpipeline_model.h"
 #include "collada/c_camera.h"
-#include <msgpack.hpp>
+#include <msgpack/msgpack.hpp>
 #include <w_bounding.h>
 
 namespace wolf
