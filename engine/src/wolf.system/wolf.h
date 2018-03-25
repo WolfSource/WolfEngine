@@ -30,9 +30,6 @@ int main(int pArgc, const char * pArgv[])
 
 #endif
 
-#define WOLF_INIT(APP_NAME)																		        \
-wolf::logger.initialize(APP_NAME, wolf::system::io::get_current_directory())
-
 #endif //__WOLF_H__
 
 

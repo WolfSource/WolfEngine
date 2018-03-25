@@ -89,7 +89,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "04_screen_capture.Win32", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "16_coordinate_system.Win32", "02_basics\16_coordinate_system\builds\mvsc\16_coordinate_system.Win32.vcxproj", "{CE7ACA74-68D7-46BE-A244-14BC8ADF05DC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "05_scene.Win32", "03_advances\05_scene\builds\mvsc\05_scene.Win32.vcxproj", "{8DCEDFCD-184D-48C1-B19C-96A96E22D817}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "05_convert_to_wscene.Win32", "03_advances\05_convert_to_wscene\builds\mvsc\05_convert_to_wscene.Win32.vcxproj", "{8DCEDFCD-184D-48C1-B19C-96A96E22D817}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "06_scene.Win32", "03_advances\06_scene\builds\mvsc\06_scene.Win32.vcxproj", "{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -419,6 +421,14 @@ Global
 		{8DCEDFCD-184D-48C1-B19C-96A96E22D817}.Release|x64.Build.0 = Release|x64
 		{8DCEDFCD-184D-48C1-B19C-96A96E22D817}.Release|x86.ActiveCfg = Release|Win32
 		{8DCEDFCD-184D-48C1-B19C-96A96E22D817}.Release|x86.Build.0 = Release|Win32
+		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}.Debug|x64.ActiveCfg = Debug|x64
+		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}.Debug|x64.Build.0 = Debug|x64
+		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}.Debug|x86.ActiveCfg = Debug|Win32
+		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}.Debug|x86.Build.0 = Debug|Win32
+		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}.Release|x64.ActiveCfg = Release|x64
+		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}.Release|x64.Build.0 = Release|x64
+		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}.Release|x86.ActiveCfg = Release|Win32
+		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -464,6 +474,7 @@ Global
 		{713A5D0B-83D2-4627-972D-570768E70F11} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
 		{CE7ACA74-68D7-46BE-A244-14BC8ADF05DC} = {3A3C5124-CCC3-42AD-A2B5-CBBD8BDD7CBB}
 		{8DCEDFCD-184D-48C1-B19C-96A96E22D817} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
+		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {38023155-92FA-450F-B105-E00D9588C53D}

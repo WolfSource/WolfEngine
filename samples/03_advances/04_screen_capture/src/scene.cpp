@@ -169,7 +169,7 @@ void scene::load()
 	//loading vertex shaders
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.vert.spv",
-		w_shader_stage::VERTEX_SHADER);
+		w_shader_stage_flag_bits::VERTEX_SHADER);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -179,7 +179,7 @@ void scene::load()
 	//loading fragment shader
 	_hr = this->_shader.load(_gDevice,
 		_content_path_dir + L"shaders/shader.frag.spv",
-		w_shader_stage::FRAGMENT_SHADER);
+		w_shader_stage_flag_bits::FRAGMENT_SHADER);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -199,7 +199,7 @@ void scene::load()
 	w_shader_binding_param _shader_param;
 	_shader_param.index = 0;
 	_shader_param.type = w_shader_binding_type::UNIFORM;
-	_shader_param.stage = w_shader_stage::VERTEX_SHADER;
+	_shader_param.stage = w_shader_stage_flag_bits::VERTEX_SHADER;
 	_shader_param.buffer_info = this->_u0.get_descriptor_info();
 	_shader_params.push_back(_shader_param);
 
@@ -260,7 +260,7 @@ void scene::load()
 			//load first model
 			if (_model)
 			{
-				std::vector<w_cpipeline_model::w_mesh*> _meshes;
+				std::vector<w_cpipeline_mesh*> _meshes;
 				_model->get_meshes(_meshes);
 
 				w_bounding_box _mesh_bounding_box;
@@ -413,10 +413,10 @@ void scene::load()
 	_build_draw_command_buffers();
 }
 
-HRESULT scene::_build_draw_command_buffers()
+W_RESULT scene::_build_draw_command_buffers()
 {
     const std::string _trace_info = this->name + "::build_draw_command_buffers";
-    HRESULT _hr = S_OK;
+	W_RESULT _hr = W_PASSED;
 
     auto _size = this->_draw_command_buffers.get_commands_size();
 	for (uint32_t i = 0; i < _size; ++i)
