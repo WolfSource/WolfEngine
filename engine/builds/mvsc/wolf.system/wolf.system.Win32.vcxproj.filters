@@ -793,10 +793,10 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_aligned_malloc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.hpp">
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.h">
       <Filter>msgpack</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.h">
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.hpp">
       <Filter>msgpack</Filter>
     </ClInclude>
   </ItemGroup>

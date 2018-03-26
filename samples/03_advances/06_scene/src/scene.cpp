@@ -161,8 +161,17 @@ void scene::load()
 		for (auto _m : _cmodels)
 		{
 			auto _model = new (std::nothrow) model(_m, _vertex_binding_attributes);
-			_model->load(_gDevice, _vertex_shader_path, _fragment_shader_path);
-
+			if (!_model)
+			{
+				V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
+				continue;
+			}
+			_hr = _model->load(_gDevice, _vertex_shader_path, _fragment_shader_path);
+			if (_hr == W_FAILED)
+			{
+				V(W_FAILED, "loading model: " + _m->get_name(), _trace_info, 2);
+				continue;
+			}
 			this->_models.push_back(_model);
 		}
 		_cmodels.clear();

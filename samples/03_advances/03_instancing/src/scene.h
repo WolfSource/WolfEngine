@@ -84,7 +84,6 @@ private:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	
 	struct vertex_instance_data
 	{
 		glm::vec3   pos;

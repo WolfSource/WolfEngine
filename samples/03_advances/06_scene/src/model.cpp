@@ -633,25 +633,27 @@ private:
 
 		return _problem ? S_FALSE : S_OK;
 	}
-
+	
 
 	std::shared_ptr<w_graphics_device> 		_gDevice;
 	std::string                             _name;
-	w_vertex_binding_attributes             _vertex_binding_attributes;
-
 	std::string								_model_name;
+	
 	w_transform_info						_transform;
 	std::vector<w_instance_info>			_instnaces_transforms;
 
-	//model meshes
+#pragma region Mesh Data	
+	//vertex binding attributes
+	w_vertex_binding_attributes             _vertex_binding_attributes;
+	//content pipeline mesh data
 	std::vector<w_cpipeline_mesh*>			_model_meshes;
-
+	//mesh
+	w_mesh*									_mesh;
 	//global bounding box of all meshes
 	w_bounding_box							_merged_bounding_box;
 	//sub bounding boxes for all meshes
 	std::vector<w_bounding_box>				_sub_meshes_bounding_box;
-
-	w_mesh*									_mesh;
+#pragma endregion
 
 	std::vector<std::string>                _textures_paths;
 	std::vector<w_texture*>					_textures;
