@@ -25,6 +25,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
+#include <w_framework/w_first_person_camera.h>
 #include "model.h"
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -73,6 +74,7 @@ private:
 	wolf::graphics::w_fences                                        _draw_fence;
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
 
+	wolf::framework::w_first_person_camera							_first_camera;
 	std::vector<model*>												_models;
 };
 

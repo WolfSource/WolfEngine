@@ -369,14 +369,39 @@ namespace wolf
                     uint32_t _stride = 0;
                     for (auto& _iter : _binding.second)
                     {
-                        _stride += _iter;
+						switch (_iter)
+						{
+						case w_vertex_attribute::W_FLOAT:
+						case w_vertex_attribute::W_TEXTURE_INDEX:
+						case w_vertex_attribute::W_SCALE:
+							_stride += 4;//floats
+							break;
+						case w_vertex_attribute::W_VEC2:
+						case w_vertex_attribute::W_UV:
+							_stride += 8;//floats
+							break;
+						case w_vertex_attribute::W_VEC3:
+						case w_vertex_attribute::W_POS:
+						case w_vertex_attribute::W_ROT:
+						case w_vertex_attribute::W_NORM:
+						case w_vertex_attribute::W_TANGENT:
+						case w_vertex_attribute::W_BINORMAL:
+							_stride += 12;//floats
+							break;
+						case w_vertex_attribute::W_VEC4:
+						case w_vertex_attribute::W_COLOR:
+						case w_vertex_attribute::W_BLEND_WEIGHT:
+						case w_vertex_attribute::W_BLEND_INDICES:
+							_stride += 16;//floats
+							break;
+						}
                     }
 
                     _vertex_binding_descriptions->push_back(
                     {
-                            _binding.first,                                                         // Binding
-                            _stride,                                                                // Stride
-                            (VkVertexInputRate)_binding.first                                       // InputRate => 0 = VK_VERTEX_INPUT_RATE_VERTEX , 1 = VK_VERTEX_INPUT_RATE_INSTANCE                         
+                            _binding.first,                                                     // Binding
+                            _stride,                                                            // Stride
+                            (VkVertexInputRate)_binding.first                                   // InputRate => 0 = VK_VERTEX_INPUT_RATE_VERTEX , 1 = VK_VERTEX_INPUT_RATE_INSTANCE                         
                     });
 
                     uint32_t _offset = 0;
@@ -384,7 +409,9 @@ namespace wolf
                     {
                         switch (_attr)
                         {
-                        case w_vertex_attribute::Float:
+                        case w_vertex_attribute::W_FLOAT:
+						case w_vertex_attribute::W_TEXTURE_INDEX:
+						case w_vertex_attribute::W_SCALE:
                             _vertex_attribute_descriptions->push_back(
                             {
                                 _location_index,                                               // Location
@@ -392,9 +419,10 @@ namespace wolf
                                 VK_FORMAT_R32_SFLOAT,                                          // Format
                                 _offset                                                        // Offset
                             });
-                            _offset += _attr;
+                            _offset += 4;//floats
                             break;
-                        case w_vertex_attribute::Vec2:
+                        case w_vertex_attribute::W_VEC2:
+						case w_vertex_attribute::W_UV:
                             _vertex_attribute_descriptions->push_back(
                             {
                                 _location_index,                                               // Location
@@ -402,9 +430,14 @@ namespace wolf
                                 VK_FORMAT_R32G32_SFLOAT,                                       // Format
                                 _offset                                                        // Offset
                             });
-                            _offset += _attr;
+                            _offset += 8;//floats
                             break;
-                        case w_vertex_attribute::Vec3:
+                        case w_vertex_attribute::W_VEC3:
+						case w_vertex_attribute::W_POS:
+						case w_vertex_attribute::W_ROT:
+						case w_vertex_attribute::W_NORM:
+						case w_vertex_attribute::W_TANGENT:
+						case w_vertex_attribute::W_BINORMAL:
                             _vertex_attribute_descriptions->push_back(
                             {
                                 _location_index,                                               // Location
@@ -412,9 +445,12 @@ namespace wolf
                                 VK_FORMAT_R32G32B32_SFLOAT,                                    // Format
                                 _offset                                                        // Offset
                             });
-                            _offset += _attr;
+                            _offset += 12;//floats
                             break;
-                        case w_vertex_attribute::Vec4:
+                        case w_vertex_attribute::W_VEC4:
+						case w_vertex_attribute::W_COLOR:
+						case w_vertex_attribute::W_BLEND_WEIGHT:
+						case w_vertex_attribute::W_BLEND_INDICES:
                             _vertex_attribute_descriptions->push_back(
                             {
                                 _location_index,                                               // Location
@@ -422,7 +458,7 @@ namespace wolf
                                 VK_FORMAT_R32G32B32A32_SFLOAT,                                 // Format
                                 _offset                                                        // Offset
                             });
-                            _offset += _attr;
+                            _offset += 16;//floats
                             break;
                         }
 

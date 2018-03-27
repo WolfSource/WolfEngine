@@ -143,18 +143,29 @@ void scene::load()
 
 	//set vertex binding attributes
 	std::map<uint32_t, std::vector<w_vertex_attribute>> _vertex_declaration;
-	_vertex_declaration[0] = { Vec3, Vec3 }; //position per each vertex
-	_vertex_declaration[1] = { Vec3, Vec3, Float }; // position, rotation, scale per each instance
+	_vertex_declaration[0] = { W_POS, W_NORM }; //position and normal per each vertex
+	_vertex_declaration[1] = { W_POS, W_ROT, W_SCALE }; // position, rotation, scale per each instance
 	
 	w_vertex_binding_attributes _vertex_binding_attributes(_vertex_declaration);
 
-	auto _vertex_shader_path = _content_path_dir + L"shaders/vertex.vert.spv";
-	auto _fragment_shader_path = _content_path_dir + L"shaders/fragment.vert.spv";
+	auto _vertex_shader_path = _content_path_dir + L"shaders/shader.vert.spv";
+	auto _fragment_shader_path = _content_path_dir + L"shaders/shader.frag.spv";
 	
 	//load collada scene
 	auto _scene = w_content_manager::load<w_cpipeline_scene>(_content_path_dir + L"models/sponza/sponza.wscene");
 	if (_scene)
 	{
+		//get first camera
+		_scene->get_first_camera(this->_first_camera);
+		float _near_plan = 0.1f, far_plan = 5000;
+		this->_first_camera.set_near_plan(_near_plan);
+		this->_first_camera.set_far_plan(far_plan);
+
+		this->_first_camera.update_view();
+		this->_first_camera.update_projection();
+		this->_first_camera.update_frustum();
+
+		//get all models
 		std::vector<w_cpipeline_model*> _cmodels;
 		_scene->get_all_models(_cmodels);
 

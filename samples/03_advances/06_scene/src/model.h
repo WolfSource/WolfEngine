@@ -18,8 +18,6 @@
 #include <w_game_time.h>
 #include <w_cpipeline_model.h>
 #include <w_graphics/w_mesh.h>
-#include <w_graphics/w_uniform.h>
-#include <w_graphics/w_shapes.h>
 #include <w_bounding.h>
 
 class model_pimp;

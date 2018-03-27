@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "model.h"
+#include <w_graphics/w_shader.h>
+#include <w_graphics/w_pipeline.h>
+#include <w_graphics/w_uniform.h>
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -13,12 +16,9 @@ public:
 		_In_ w_vertex_binding_attributes pVertexBindingAttributes) :
 		_vertex_binding_attributes(pVertexBindingAttributes),
 		_name("model"),
-		_mesh(nullptr)
+		_mesh(nullptr),
+		_c_model(pContentPipelineModel)
 	{
-		this->_model_name = pContentPipelineModel->get_name();
-		this->_transform = pContentPipelineModel->get_transform();
-		pContentPipelineModel->get_instances(this->_instnaces_transforms);
-		pContentPipelineModel->get_meshes(this->_model_meshes);
 	}
 
 	W_RESULT load(
@@ -26,93 +26,155 @@ public:
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath)
 	{
-		const std::string _trace_info = this->_name + "::pre_load";
-		
-		if (!pGDevice) return W_FAILED;
-		
+		if (!pGDevice || !_c_model) return W_FAILED;
 		this->_gDevice = pGDevice;
 
-		size_t _meshes_count = this->_model_meshes.size();
+		const std::string _trace_info = this->_name + "::load";
+
+		this->_model_name = _c_model->get_name();
+		this->_transform = _c_model->get_transform();
+
+		std::vector<w_cpipeline_mesh*> _meshes;
+
+		//get all meshes
+		_c_model->get_meshes(_meshes);
+		//get all instances
+		_c_model->get_instances(this->_instnaces_transforms);
+
+		//get size of mesh
+		size_t _meshes_count = _meshes.size();
+		if (!_meshes_count)
+		{
+			V(W_FAILED, "model " + this->_model_name + " does not have any mesh", _trace_info, 2);
+			return W_FAILED;
+		}
+		//prepare vertices and indices
 		uint32_t _base_vertex_index = 0;
+		std::vector<float> _batch_vertices;
+		std::vector<uint32_t> _batch_indices;
 
-		//std::vector<w_cpipeline_model*> _lods;
-		//pCPModel->get_lods(_lods);
+		_store_to_batch(
+			_meshes,
+			_vertex_binding_attributes,
+			_base_vertex_index,
+			_batch_vertices,
+			_batch_indices,
+			this->_merged_bounding_box,
+			this->_sub_meshes_bounding_box,
+			this->_textures_paths);
 
-		//generate masked occlusion culling data from -ch files
-		//auto _size = pCPModel->get_convex_hulls_count();
-		//if (_size)
-		//{
-		//	std::vector<w_cpipeline_model*> _chs;
-		//	pCPModel->get_convex_hulls(_chs);
+		_meshes.clear();
 
-		//	for (auto& _iter : _chs)
-		//	{
-		//		//generate vertices and indices of bounding box
-		//		_add_data_for_masked_occlusion_culling(_iter);
-		//	}
-		//}
-		//else if (_lods.size() > 0)
-		//{
-		//	//if there are no -ch for this model, then use first lod for masked occlusion culling
-		//	_add_data_for_masked_occlusion_culling(_lods[0]);
-		//}
-		//else if (_sub_meshes_count)
-		//{
-		//	//no -ch and no -lod, so generate vertices and indices of model's bounding box
-		//	_model_meshes[0]->bounding_box.generate_vertices_indices();
-		//	_add_data_for_masked_occlusion_culling(_model_meshes[0]->bounding_box);
-		//}
+		//create mesh
+		this->_mesh = new (std::nothrow) w_mesh();
+		if (!this->_mesh)
+		{
+			V(W_FAILED, "allocating memory for w_mesh for model: " + this->_model_name, _trace_info, 2);
+			_batch_vertices.clear();
+			_batch_indices.clear();
+			return W_FAILED;
+		}
+		_mesh->set_vertex_binding_attributes(_vertex_binding_attributes);
+		
+		//load mesh
+		auto _v_size = static_cast<uint32_t>(_batch_vertices.size());
+		auto _i_size = static_cast<uint32_t>(_batch_indices.size());
+		
+		auto _hr = _mesh->load(
+			_gDevice,
+			_batch_vertices.data(),
+			static_cast<uint32_t>(_batch_vertices.size() * sizeof(float)),
+			_v_size,
+			_batch_indices.data(),
+			_i_size);
 
-		//if (_meshes_count)
-		//{
-		//	_store_to_batch(
-		//		_model_meshes,
-		//		_vertex_binding_attributes,
-		//		_base_vertex_index,
-		//		this->_batch_vertices,
-		//		this->_batch_indices,
-		//		this->_merged_bounding_box,
-		//		this->_sub_meshes_bounding_box,
-		//		this->_textures_paths);
-		//}
+		//clear vectors
+		_batch_vertices.clear();
+		_batch_vertices.clear();
 
-		//create first lod information
-		//lod _lod;
-		//_lod.first_index = _batch_indices.size();// First index for this LOD
-		//_lod.index_count = _model_meshes[0]->indices.size();// Index count for this LOD
-		//_lod.distance = _lod_distance_index * _lod_distance_offset;
-		//_lod_distance_index++;
+		if(_hr == W_FAILED)
+		{
+			V(W_FAILED, "loading mesh for model: " + this->_model_name, _trace_info, 2);
+			return W_FAILED;
+		}
 
-		//this->_lod_levels.push_back(_lod);
+		//now create instnace buffer
+		auto _instances_size = this->_instnaces_transforms.size();
+		if (_instances_size)
+		{
+			auto _vertex_dec = _vertex_binding_attributes.binding_attributes.find(1);
+			if (_vertex_dec != _vertex_binding_attributes.binding_attributes.end())
+			{
+				//set instance data
+				uint32_t _size_of_instance_struct = 0;
+				std::vector<float> _instances_data;
 
-		//load texture
-		//w_texture::load_to_shared_textures(this->_gDevice,
-		//	content_path + L"textures/areas/" +
-		//	wolf::system::convert::string_to_wstring(_model_meshes[0]->textures_path), &fs.texture);
+				//first one is ref model
+				for (auto _dec : _vertex_dec->second)
+				{
+					if (_dec == w_vertex_attribute::W_POS)
+					{
+						_instances_data.push_back(this->_transform.position[0]);
+						_instances_data.push_back(this->_transform.position[1]);
+						_instances_data.push_back(this->_transform.position[2]);
+						_size_of_instance_struct += 3;
+					}
+					if (_dec == w_vertex_attribute::W_ROT)
+					{
+						_instances_data.push_back(this->_transform.rotation[0]);
+						_instances_data.push_back(this->_transform.rotation[1]);
+						_instances_data.push_back(this->_transform.rotation[2]);
+						_size_of_instance_struct += 3;
+					}
+					else if (_dec == w_vertex_attribute::W_SCALE)
+					{
+						_instances_data.push_back(this->_transform.scale[0]);
+						_size_of_instance_struct++;
+					}
+				}
+
+				//others are instances
+				for (auto _ins : this->_instnaces_transforms)
+				{
+					for (auto _dec : _vertex_dec->second)
+					{
+						if (_dec == w_vertex_attribute::W_POS)
+						{
+							_instances_data.push_back(_ins.position[0]);
+							_instances_data.push_back(_ins.position[1]);
+							_instances_data.push_back(_ins.position[2]);
+						}
+						if (_dec == w_vertex_attribute::W_ROT)
+						{
+							_instances_data.push_back(_ins.rotation[0]);
+							_instances_data.push_back(_ins.rotation[1]);
+							_instances_data.push_back(_ins.rotation[2]);
+						}
+						else if (_dec == w_vertex_attribute::W_SCALE)
+						{
+							_instances_data.push_back(_ins.scale);
+						}
+					}
+				}
+
+				_hr =_create_instance_buffer(_instances_data, static_cast<uint32_t>((_instances_size + 1) * _size_of_instance_struct));
+				_instances_data.clear();
+
+				if (_hr == W_FAILED)
+				{
+					V(W_FAILED, "creating instance buffer for model: " + this->_model_name, _trace_info, 2);
+					return W_FAILED;
+				}
+			}
+		}
 
 
-	//append load mesh data to big vertices and indices
-	//for (auto& _lod_mesh_data : _lods)
-	//{
-	//	_model_meshes.clear();
-	//	_lod_mesh_data->get_meshes(_model_meshes);
-
-	//	if (_model_meshes.size())
-	//	{
-	//		//create first lod information
-	//		lod _lod;
-	//		_lod.first_index = _batch_indices.size();// First index for this LOD
-	//		_lod.index_count = _model_meshes[0]->indices.size();// Index count for this LOD
-	//		_lod.distance = _lod_distance_index * _lod_distance_offset;
-	//		_lod_distance_index++;
-
-	//		this->_lod_levels.push_back(_lod);
-
-	//		_store_to_batch(_model_meshes, _base_vertex);
-	//	}
-	//}
-
-		this->_model_meshes.clear();
+		//create shader module
+		if (_create_shader_module(pVertexShaderPath, pFragmentShaderPath) == W_FAILED)
+		{
+			V(W_FAILED, "creating shader for model: " + this->_model_name, _trace_info, 2);
+			return W_FAILED;
+		}
 
 		return W_PASSED;
 	}
@@ -186,37 +248,104 @@ private:
 		std::map<std::string, int> _textures_index;
 		for (auto& _mesh_data : pModelMeshes)
 		{
-			int _uv_index = 0;
-			if (pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_UV_INDEX ||
-				pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_UV_INDEX_COLOR ||
-				pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX ||
-				pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL ||
-				pVertexBindingAttributes.declaration == w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES)
+			//check for finding uv index
+			int _texture_uv_index = 0;
+			auto _find = _textures_index.find(_mesh_data->textures_path);
+			if (_textures_index.empty() && _find == _textures_index.end())
 			{
-				auto _find = _textures_index.find(_mesh_data->textures_path);
-				if (_textures_index.empty() && _find == _textures_index.end())
-				{
-					_uv_index = _texture_index;
-					_textures_index.insert({ _mesh_data->textures_path, _texture_index++ });
-					pTexturePathsToBeLoad.push_back(_mesh_data->textures_path);
-				}
-				else
-				{
-					_uv_index = _find->second;
-				}
+				_texture_uv_index = _texture_index;
+				_textures_index.insert({ _mesh_data->textures_path, _texture_index++ });
+				pTexturePathsToBeLoad.push_back(_mesh_data->textures_path);
+			}
+			else
+			{
+				_texture_uv_index = _find->second;
 			}
 
+			//set bounding boxes
 			pMergedBoundingBox.merge(_mesh_data->bounding_box);
 			pSubMeshBoundingBoxes.push_back(_mesh_data->bounding_box);
 
-			for (size_t i = 0; i < _mesh_data->indices.size(); ++i)
+			uint32_t _vertex_offset = 0, _instance_vertex_offset = 0, i = 0;
+
+#pragma region store index buffer
+			for (i = 0; i < _mesh_data->indices.size(); ++i)
 			{
 				pBatchIndices.push_back(pBaseVertex + _mesh_data->indices[i]);
 			}
+#pragma endregion
 
+#pragma region store vertex buffer
+			i = 0;
+			auto _vertex_dec = pVertexBindingAttributes.binding_attributes.find(0);
 			switch (pVertexBindingAttributes.declaration)
 			{
 			default:
+				//user defined, we need to find vertex declaration
+				if (_vertex_dec != pVertexBindingAttributes.binding_attributes.end())
+				{
+					for (auto& _data : _mesh_data->vertices)
+					{
+						for (auto _dec : _vertex_dec->second)
+						{
+							if (_dec == w_vertex_attribute::W_TEXTURE_INDEX)
+							{
+								pBatchVertices.push_back(_texture_uv_index);
+							}
+							if (_dec == w_vertex_attribute::W_UV)
+							{
+								pBatchVertices.push_back(_data.uv[0]);
+								pBatchVertices.push_back(_data.uv[1]);
+							}
+							else if (_dec == w_vertex_attribute::W_POS)
+							{
+								pBatchVertices.push_back(_data.position[0]);
+								pBatchVertices.push_back(_data.position[1]);
+								pBatchVertices.push_back(_data.position[2]);
+							}
+							else if (_dec == w_vertex_attribute::W_NORM)
+							{
+								pBatchVertices.push_back(_data.normal[0]);
+								pBatchVertices.push_back(_data.normal[1]);
+								pBatchVertices.push_back(_data.normal[2]);
+							}
+							else if (_dec == w_vertex_attribute::W_TANGENT)
+							{
+								pBatchVertices.push_back(_data.tangent[0]);
+								pBatchVertices.push_back(_data.tangent[1]);
+								pBatchVertices.push_back(_data.tangent[2]);
+							}
+							else if (_dec == w_vertex_attribute::W_BINORMAL)
+							{
+								pBatchVertices.push_back(_data.binormal[0]);
+								pBatchVertices.push_back(_data.binormal[1]);
+								pBatchVertices.push_back(_data.binormal[2]);
+							}
+							else if (_dec == w_vertex_attribute::W_COLOR)
+							{
+								pBatchVertices.push_back(_data.color[0]);
+								pBatchVertices.push_back(_data.color[1]);
+								pBatchVertices.push_back(_data.color[2]);
+								pBatchVertices.push_back(_data.color[3]);
+							}
+							else if (_dec == w_vertex_attribute::W_BLEND_WEIGHT)
+							{
+								pBatchVertices.push_back(_data.blend_weight[0]);
+								pBatchVertices.push_back(_data.blend_weight[1]);
+								pBatchVertices.push_back(_data.blend_weight[2]);
+								pBatchVertices.push_back(_data.blend_weight[3]);
+							}
+							else if (_dec == w_vertex_attribute::W_BLEND_INDICES)
+							{
+								pBatchVertices.push_back(_data.blend_indices[0]);
+								pBatchVertices.push_back(_data.blend_indices[1]);
+								pBatchVertices.push_back(_data.blend_indices[2]);
+								pBatchVertices.push_back(_data.blend_indices[3]);
+							}
+						}
+						pBaseVertex++;
+					}
+				}
 				break;
 			case w_vertex_declaration::VERTEX_POSITION:
 				for (auto& _data : _mesh_data->vertices)
@@ -283,7 +412,7 @@ private:
 					//uv
 					pBatchVertices.push_back(_uv[0]);
 					pBatchVertices.push_back(_uv[1]);
-					pBatchVertices.push_back(_uv_index);
+					pBatchVertices.push_back(_texture_uv_index);
 
 					pBaseVertex++;
 				}
@@ -328,7 +457,7 @@ private:
 					//uv
 					pBatchVertices.push_back(_uv[0]);
 					pBatchVertices.push_back(_uv[1]);
-					pBatchVertices.push_back(_uv_index);
+					pBatchVertices.push_back(_texture_uv_index);
 
 
 					//color
@@ -410,7 +539,7 @@ private:
 					//uv
 					pBatchVertices.push_back(_uv[0]);
 					pBatchVertices.push_back(_uv[1]);
-					pBatchVertices.push_back(_uv_index);
+					pBatchVertices.push_back(_texture_uv_index);
 
 					pBaseVertex++;
 				}
@@ -473,7 +602,7 @@ private:
 					//uv
 					pBatchVertices.push_back(_uv[0]);
 					pBatchVertices.push_back(_uv[1]);
-					pBatchVertices.push_back(_uv_index);
+					pBatchVertices.push_back(_texture_uv_index);
 
 					//tangent
 					pBatchVertices.push_back(_tangent[0]);
@@ -560,7 +689,7 @@ private:
 					//uv
 					pBatchVertices.push_back(_uv[0]);
 					pBatchVertices.push_back(_uv[1]);
-					pBatchVertices.push_back(_uv_index);
+					pBatchVertices.push_back(_texture_uv_index);
 
 					//tangent
 					pBatchVertices.push_back(_tangent[0]);
@@ -586,11 +715,13 @@ private:
 				}
 				break;
 			};
+#pragma endregion
+
 		}
 		_textures_index.clear();
 	}
 
-	HRESULT _load_textures()
+	W_RESULT _load_textures()
 	{
 		const std::string _trace_info = this->_name + "_load_textures";
 
@@ -624,16 +755,80 @@ private:
 		return _problem ? W_FAILED : W_PASSED;
 	}
 
-	HRESULT _load_buffers()
+	W_RESULT _create_instance_buffer(_In_ const std::vector<float>& pData, _In_ const uint32_t& pSizeOfBuffer)
 	{
-		const std::string _trace_info = this->_name + "_load_buffers";
+		const std::string _trace_info = this->_name + "::_create_instance_buffer";
 
-		bool _problem = false;
+		w_buffer _staging_buffers;
 
+		_staging_buffers.load_as_staging(_gDevice, pSizeOfBuffer);
+		if (_staging_buffers.bind() == W_FAILED)
+		{
+			V(W_FAILED, "binding to staging buffer of vertex_instance_buffer", _trace_info, 2);
+			return W_FAILED;
+		}
 
-		return _problem ? S_FALSE : S_OK;
+		if (_staging_buffers.set_data(pData.data()) == W_FAILED)
+		{
+			V(W_FAILED, "setting data to staging buffer of vertex_instance_buffer", _trace_info, 2);
+			return W_FAILED;
+		}
+
+		if (this->_instances_buffer.load(
+			_gDevice,
+			pSizeOfBuffer,
+			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+		{
+			V(W_FAILED, "loading device buffer of vertex_instance_buffer", _trace_info, 2);
+			return W_FAILED;
+		}
+
+		if (this->_instances_buffer.bind() == W_FAILED)
+		{
+			V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 2);
+			return W_FAILED;
+		}
+		if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
+		{
+			V(W_FAILED, "copying to device buffer of vertex_instance_buffer", _trace_info, 2);
+			return W_FAILED;
+		}
+		_staging_buffers.release();
+
+		return W_PASSED;
 	}
-	
+
+	W_RESULT _create_shader_module(
+		_In_z_ const std::wstring& pVertexShaderPath,
+		_In_z_ const std::wstring& pFragmentShaderPath)
+	{
+		const std::string _trace_info = this->_name + "_create_shader_module";
+
+		//loading vertex shaders
+		auto _hr = this->_shader.load(_gDevice,
+			pVertexShaderPath,
+			w_shader_stage_flag_bits::VERTEX_SHADER);
+		if (_hr == W_FAILED)
+		{
+			this->_shader.release();
+			V(W_FAILED, "loading vertex shader", _trace_info, 2);
+			return W_FAILED;
+		}
+
+		//loading fragment shader
+		_hr = this->_shader.load(_gDevice,
+			pFragmentShaderPath,
+			w_shader_stage_flag_bits::FRAGMENT_SHADER);
+		if (_hr == W_FAILED)
+		{
+			this->_shader.release();
+			V(W_FAILED, "loading fragment shader", _trace_info, 2);
+			return W_FAILED;
+		}
+
+		return W_PASSED;
+	}
 
 	std::shared_ptr<w_graphics_device> 		_gDevice;
 	std::string                             _name;
@@ -642,13 +837,16 @@ private:
 	w_transform_info						_transform;
 	std::vector<w_instance_info>			_instnaces_transforms;
 
+	wolf::graphics::w_shader                _shader;
+	wolf::graphics::w_pipeline              _pipeline;
+
 #pragma region Mesh Data	
 	//vertex binding attributes
 	w_vertex_binding_attributes             _vertex_binding_attributes;
-	//content pipeline mesh data
-	std::vector<w_cpipeline_mesh*>			_model_meshes;
+	w_cpipeline_model*						_c_model;
 	//mesh
 	w_mesh*									_mesh;
+	w_buffer								_instances_buffer;
 	//global bounding box of all meshes
 	w_bounding_box							_merged_bounding_box;
 	//sub bounding boxes for all meshes

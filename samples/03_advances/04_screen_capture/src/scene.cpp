@@ -222,8 +222,8 @@ void scene::load()
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	std::map<uint32_t, std::vector<w_vertex_attribute>> _declaration;
-	_declaration[0] = { Vec3, Vec3 }; //position per each vertex
-	_declaration[1] = { Vec3, Vec3, Float }; // position, rotation, scale per each instance
+	_declaration[0] = { W_VEC3, W_VEC3 }; //position per each vertex
+	_declaration[1] = { W_VEC3, W_VEC3, W_FLOAT }; // position, rotation, scale per each instance
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
