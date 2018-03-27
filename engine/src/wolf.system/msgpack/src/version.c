@@ -1,4 +1,4 @@
-#include "msgpack.h"
+#include <msgpack/msgpack.h>
 
 const char* msgpack_version(void)
 {
