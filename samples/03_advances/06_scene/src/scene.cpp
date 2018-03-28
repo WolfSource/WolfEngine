@@ -18,7 +18,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -148,9 +148,18 @@ void scene::load()
 	
 	w_vertex_binding_attributes _vertex_binding_attributes(_vertex_declaration);
 
-	auto _vertex_shader_path = _content_path_dir + L"shaders/shader.vert.spv";
+	auto _instanced_vertex_shader_path = _content_path_dir + L"shaders/instance.vert.spv";
+	auto _basic_vertex_shader_path = _content_path_dir + L"shaders/basic.vert.spv";
 	auto _fragment_shader_path = _content_path_dir + L"shaders/shader.frag.spv";
 	
+	//create pipeline cache for model
+	std::string _model_pipeline_cache_name = "model_pipeline_cache";
+	if (w_pipeline::create_pipeline_cache(_gDevice, _model_pipeline_cache_name) == W_FAILED)
+	{
+		logger.error("could not create pipeline cache for models");
+		_model_pipeline_cache_name.clear();
+	}
+
 	//load collada scene
 	auto _scene = w_content_manager::load<w_cpipeline_scene>(_content_path_dir + L"models/sponza/sponza.wscene");
 	if (_scene)
@@ -160,6 +169,7 @@ void scene::load()
 		float _near_plan = 0.1f, far_plan = 5000;
 		this->_first_camera.set_near_plan(_near_plan);
 		this->_first_camera.set_far_plan(far_plan);
+		this->_first_camera.set_aspect_ratio(this->_viewport.width / this->_viewport.height);
 
 		this->_first_camera.update_view();
 		this->_first_camera.update_projection();
@@ -177,12 +187,21 @@ void scene::load()
 				V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
 				continue;
 			}
-			_hr = _model->load(_gDevice, _vertex_shader_path, _fragment_shader_path);
+
+			_hr = _model->load(
+				_gDevice, 
+				_model_pipeline_cache_name, 
+				_m->get_instances_count() ? _instanced_vertex_shader_path : _basic_vertex_shader_path,
+				_fragment_shader_path, 
+				this->_draw_render_pass);
 			if (_hr == W_FAILED)
 			{
 				V(W_FAILED, "loading model: " + _m->get_name(), _trace_info, 2);
 				continue;
 			}
+
+			//set view projection
+			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
 			this->_models.push_back(_model);
 		}
 		_cmodels.clear();
@@ -213,7 +232,11 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
-
+				//draw all models
+				for (auto _model : this->_models)
+				{
+					_model->draw(_cmd, false);
+				}
 			}
 			this->_draw_render_pass.end(_cmd);
 		}
@@ -237,6 +260,17 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		_update_gui();
 	});
 
+	w_point_t _screen_size;
+	_screen_size.x = this->_viewport.width;
+	_screen_size.y = this->_viewport.height;
+	if (this->_first_camera.update(pGameTime, _screen_size))
+	{
+		//update view and projection of all models
+		for (auto _model : this->_models)
+		{
+			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
+		}
+	}
 
 	w_game::update(pGameTime);
 }

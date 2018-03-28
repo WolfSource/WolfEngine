@@ -16,9 +16,11 @@
 
 #include "w_graphics_device_manager.h"
 #include <w_game_time.h>
+#include <w_bounding.h>
 #include <w_cpipeline_model.h>
 #include <w_graphics/w_mesh.h>
-#include <w_bounding.h>
+#include <w_graphics/w_command_buffers.h>
+
 
 class model_pimp;
 //Provides basic functions for rendering wolf::content_pipeline::w_cpipeline_model 
@@ -33,16 +35,17 @@ public:
 	//load model resources
 	W_RESULT load(
 		_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+		_In_ const std::string& pPipelineCacheName,
 		_In_z_ const std::wstring& pVertexShaderPath,
-		_In_z_ const std::wstring& pFragmentShaderPath);
+		_In_z_ const std::wstring& pFragmentShaderPath,
+		_In_ const wolf::graphics::w_render_pass& pDrawRenderPass);
 	
-	//direct draw 
-	void draw(_In_ const VkCommandBuffer& pCommandBuffer);
 	/*
+		direct draw to graphics device or indirect draw.
 		Unlike direct drawing function, indirect drawing functions take their draw commands from a
 		buffer object containing information like index count, index offset and number of instances to draw.
 	*/
-	void indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer);
+	W_RESULT draw(_In_ const wolf::graphics::w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectDraw = false);
 
 	//release all resources
 	W_EXP ULONG release() override;
@@ -57,6 +60,7 @@ public:
 
 #pragma region Setters
 
+	void set_view_projection(_In_ const glm::mat4& pView, _In_ const glm::mat4& pProjection);
 
 #pragma endregion
 

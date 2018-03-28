@@ -208,7 +208,6 @@ void scene::load()
 		&this->_shader,
 		{ this->_viewport },
 		{ this->_viewport_scissor });
-
 	if (_hr == W_FAILED)
 	{
 		release();

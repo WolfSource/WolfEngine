@@ -11,4 +11,29 @@
     <ClInclude Include="..\..\src\scene.h" />
     <ClInclude Include="..\..\src\model.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="content">
+      <UniqueIdentifier>{4f308aa5-c0cc-448b-b92c-7eb94b38df1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="content\shaders">
+      <UniqueIdentifier>{d4672da8-e3c2-45ee-af79-e0e75715d388}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="content\models">
+      <UniqueIdentifier>{3a91b57b-c031-40ca-b14c-abd48c8e2e33}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\content\shaders\basic.vert">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\instance.vert">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\shader.frag">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\src\content\models\sponza\sponza.wscene">
+      <Filter>content\models</Filter>
+    </None>
+  </ItemGroup>
 </Project>

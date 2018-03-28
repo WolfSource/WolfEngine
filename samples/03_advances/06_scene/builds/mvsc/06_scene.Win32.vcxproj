@@ -32,6 +32,12 @@
     <ClInclude Include="..\..\src\model.h" />
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\content\models\sponza\sponza.wscene" />
+    <None Include="..\..\src\content\shaders\basic.vert" />
+    <None Include="..\..\src\content\shaders\instance.vert" />
+    <None Include="..\..\src\content\shaders\shader.frag" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

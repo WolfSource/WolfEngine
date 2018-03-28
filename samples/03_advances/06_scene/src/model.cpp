@@ -23,8 +23,10 @@ public:
 
 	W_RESULT load(
 		_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+		_In_z_ const std::string& pPipelineCacheName, 
 		_In_z_ const std::wstring& pVertexShaderPath,
-		_In_z_ const std::wstring& pFragmentShaderPath)
+		_In_z_ const std::wstring& pFragmentShaderPath,
+		_In_ const w_render_pass& pRenderPass)
 	{
 		if (!pGDevice || !_c_model) return W_FAILED;
 		this->_gDevice = pGDevice;
@@ -75,11 +77,11 @@ public:
 			return W_FAILED;
 		}
 		_mesh->set_vertex_binding_attributes(_vertex_binding_attributes);
-		
+
 		//load mesh
 		auto _v_size = static_cast<uint32_t>(_batch_vertices.size());
 		auto _i_size = static_cast<uint32_t>(_batch_indices.size());
-		
+
 		auto _hr = _mesh->load(
 			_gDevice,
 			_batch_vertices.data(),
@@ -92,13 +94,14 @@ public:
 		_batch_vertices.clear();
 		_batch_vertices.clear();
 
-		if(_hr == W_FAILED)
+		if (_hr == W_FAILED)
 		{
 			V(W_FAILED, "loading mesh for model: " + this->_model_name, _trace_info, 2);
 			return W_FAILED;
 		}
 
-		//now create instnace buffer
+#pragma region create instnace buffer
+		
 		auto _instances_size = this->_instnaces_transforms.size();
 		if (_instances_size)
 		{
@@ -157,7 +160,7 @@ public:
 					}
 				}
 
-				_hr =_create_instance_buffer(_instances_data, static_cast<uint32_t>((_instances_size + 1) * _size_of_instance_struct));
+				_hr = _create_instance_buffer(_instances_data, static_cast<uint32_t>((_instances_size + 1) * _size_of_instance_struct));
 				_instances_data.clear();
 
 				if (_hr == W_FAILED)
@@ -167,25 +170,104 @@ public:
 				}
 			}
 		}
+		
+#pragma endregion
 
-
-		//create shader module
+#pragma region create shader module
 		if (_create_shader_module(pVertexShaderPath, pFragmentShaderPath) == W_FAILED)
 		{
 			V(W_FAILED, "creating shader for model: " + this->_model_name, _trace_info, 2);
 			return W_FAILED;
 		}
+#pragma endregion
+
+#pragma region create pipeline
+		if (_create_pipeline(pPipelineCacheName, pRenderPass) == W_FAILED)
+		{
+			V(W_FAILED, "creating pipeline for model: " + this->_model_name, _trace_info, 2);
+			return W_FAILED;
+		}
+#pragma endregion
+
+		//release content pipeline model
+		this->_c_model->release();
+		this->_c_model = nullptr;
 
 		return W_PASSED;
 	}
-		
+
+	W_RESULT draw(_In_ const w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectMode)
+	{
+		const std::string _trace_info = this->_name + "::draw";
+
+		if (!this->_mesh) return W_FAILED;
+
+		//bind pipeline
+		this->_pipeline.bind(pCommandBuffer);
+		auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
+		return this->_mesh->draw(pCommandBuffer, _buffer_handle.handle ? &_buffer_handle : nullptr, this->_instnaces_transforms.size(), pInDirectMode);
+	}
+	
 	void release()
 	{
+		this->_name.clear();
+		this->_model_name.clear();
+
+		this->_instnaces_transforms.clear();
+
+		this->_pipeline.release();
+		this->_shader.release();
+
+		this->_basic_u0.release();
+		this->_instance_u0.release();
+
+		//release mesh resources
+		SAFE_RELEASE(this->_mesh);
+		this->_instances_buffer.release();
+		this->_sub_meshes_bounding_box.clear();
+
 		//release textures
 		this->_textures_paths.clear();
+		for (auto _text : this->_textures)
+		{
+			SAFE_RELEASE(_text);
+		}
+
+		_gDevice = nullptr;
 	}
 
 #pragma region Setters
+
+	void set_view_projection(_In_ const glm::mat4& pView, _In_ const glm::mat4& pProjection)
+	{
+		const std::string _trace_info = this->_name + "::set_view_projection";
+
+		if (this->_instnaces_transforms.size())
+		{
+			this->_instance_u0.data.view = pView;
+			this->_instance_u0.data.projection = pProjection;
+			auto _hr = this->_instance_u0.update();
+			if (_hr == W_FAILED)
+			{
+				V(W_FAILED, "updating instance uniform ViewProjection for model: " + this->_model_name, _trace_info, 3);
+			}
+		}
+		else
+		{
+			auto _position = get_position();
+			auto _rotation = get_rotation();
+			auto _scale = get_scale();
+
+			this->_basic_u0.data.model = glm::translate(_position) * glm::rotate(_rotation) * glm::scale(_scale);
+			this->_basic_u0.data.view = pView;
+			this->_basic_u0.data.projection = pProjection;
+			auto _hr = this->_basic_u0.update();
+			if (_hr == W_FAILED)
+			{
+				V(W_FAILED, "updating basic uniform ViewProjection for model: " + this->_model_name, _trace_info, 3);
+			}
+		}
+	}
 
 #pragma endregion
 
@@ -812,7 +894,7 @@ private:
 		if (_hr == W_FAILED)
 		{
 			this->_shader.release();
-			V(W_FAILED, "loading vertex shader", _trace_info, 2);
+			V(W_FAILED, "loading vertex shader for model: " + this->_model_name, _trace_info, 2);
 			return W_FAILED;
 		}
 
@@ -823,11 +905,66 @@ private:
 		if (_hr == W_FAILED)
 		{
 			this->_shader.release();
-			V(W_FAILED, "loading fragment shader", _trace_info, 2);
+			V(W_FAILED, "loading fragment shader for model: " + this->_model_name, _trace_info, 2);
 			return W_FAILED;
 		}
 
+		std::vector<w_shader_binding_param> _shader_params;
+
+		w_shader_binding_param _shader_param;
+		_shader_param.index = 0;
+		_shader_param.type = w_shader_binding_type::UNIFORM;
+		_shader_param.stage = w_shader_stage_flag_bits::VERTEX_SHADER;
+		
+		//load vertex shader uniform
+		if (this->_instnaces_transforms.size())
+		{
+			_hr = this->_instance_u0.load(_gDevice);
+			if (_hr == W_FAILED)
+			{
+				this->_shader.release();
+				V(W_FAILED, "loading vertex shader instance uniform for model: " + this->_model_name, _trace_info, 2);
+				return W_FAILED;
+			}
+			_shader_param.buffer_info = this->_instance_u0.get_descriptor_info();
+		}
+		else
+		{
+			_hr = this->_basic_u0.load(_gDevice);
+			if (_hr == W_FAILED)
+			{
+				this->_shader.release();
+				V(W_FAILED, "loading vertex shader basic uniform for model: " + this->_model_name, _trace_info, 2);
+				return W_FAILED;
+			}
+			_shader_param.buffer_info = this->_basic_u0.get_descriptor_info();
+		}
+
+		_shader_params.push_back(_shader_param);
+
+		_hr = this->_shader.set_shader_binding_params(_shader_params);
+		if (_hr == W_FAILED)
+		{
+			this->_shader.release();
+			V(W_FAILED, "setting shader binding param for model: " + this->_model_name, _trace_info, 2);
+		}
+		_shader_params.clear();
+
 		return W_PASSED;
+	}
+
+	W_RESULT _create_pipeline(
+		_In_z_ const std::string& pPipelineCacheName,
+		_In_ const w_render_pass& pRenderPass)
+	{
+		return this->_pipeline.load(
+			this->_gDevice,
+			this->_vertex_binding_attributes,
+			w_primitive_topology::TRIANGLE_LIST,
+			&pRenderPass,
+			&this->_shader,
+			{ pRenderPass.get_viewport() },
+			{ pRenderPass.get_viewport_scissor() });
 	}
 
 	std::shared_ptr<w_graphics_device> 		_gDevice;
@@ -855,6 +992,22 @@ private:
 
 	std::vector<std::string>                _textures_paths;
 	std::vector<w_texture*>					_textures;
+
+	//uniform data
+	struct basic_u0
+	{
+		glm::mat4							model;
+		glm::mat4							view;
+		glm::mat4							projection;
+	};
+	wolf::graphics::w_uniform<basic_u0>    _basic_u0;
+
+	struct instance_u0
+	{
+		glm::mat4							view;
+		glm::mat4							projection;
+	};
+	wolf::graphics::w_uniform<instance_u0>  _instance_u0;
 };
 
 model::model(
@@ -871,21 +1024,23 @@ model::~model()
 }
 
 W_RESULT model::load(
-	_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
+	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+	_In_ const std::string& pPipelineCacheName,
 	_In_z_ const std::wstring& pVertexShaderPath,
-	_In_z_ const std::wstring& pFragmentShaderPath)
+	_In_z_ const std::wstring& pFragmentShaderPath,
+	_In_ const w_render_pass& pDrawRenderPass)
 {
-	return (!this->_pimp) ? W_FAILED : this->_pimp->load(pGDevice, pVertexShaderPath, pFragmentShaderPath);
+	return !this->_pimp ? W_FAILED : this->_pimp->load(
+		pGDevice, 
+		pPipelineCacheName, 
+		pVertexShaderPath, 
+		pFragmentShaderPath,
+		pDrawRenderPass);
 }
 
-void model::draw(_In_ const VkCommandBuffer& pCommandBuffer)
+W_RESULT model::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectDraw)
 {
-
-}
-
-void model::indirect_draw(_In_ const VkCommandBuffer& pCommandBuffer)
-{
-
+	return !this->_pimp ? W_FAILED : this->_pimp->draw(pCommandBuffer, pInDirectDraw);
 }
 
 ULONG model::release()
@@ -919,6 +1074,12 @@ glm::vec3 model::get_scale() const
 
 #pragma region Setters
 
-
+void model::set_view_projection(_In_ const glm::mat4& pView, _In_ const glm::mat4& pProjection)
+{
+	if (this->_pimp)
+	{
+		this->_pimp->set_view_projection(pView, pProjection);
+	}
+}
 
 #pragma endregion
