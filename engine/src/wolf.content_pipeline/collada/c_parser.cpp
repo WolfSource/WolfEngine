@@ -14,6 +14,9 @@ W_RESULT c_parser::parse_collada_from_file(
     _In_z_ const std::wstring& pFilePath, 
     _Inout_ w_cpipeline_scene* pScene,
     _In_ const bool& pAMDTootleOptimizing,
+#ifdef __WIN32
+	_In_ const bool& pSimplygonOptimizing,
+#endif
     _In_ const bool& pInvertNormals,
     _In_ const bool& pFindLODs)
 {
@@ -53,6 +56,9 @@ W_RESULT c_parser::parse_collada_from_file(
 	_create_scene(
         pScene,
         pAMDTootleOptimizing,
+#ifdef __WIN32
+		pSimplygonOptimizing,
+#endif
         pInvertNormals,
         pFindLODs);
 
@@ -1192,6 +1198,9 @@ void c_parser::_get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pN
 W_RESULT c_parser::_create_scene(
     _Inout_ w_cpipeline_scene* pScene,
     _In_ const bool& pAMDTootleOptimizing,
+#ifdef __WIN32
+	_In_ const bool& pSimplygonOptimizing,
+#endif
     _In_ const bool& pInvertNormals, 
     _In_ const bool& pFind_LODs_ConvexHulls_Boundaries)
 {
@@ -1200,6 +1209,9 @@ W_RESULT c_parser::_create_scene(
 
     _iterate_over_nodes(
         pAMDTootleOptimizing,
+#ifdef __WIN32
+		pSimplygonOptimizing,
+#endif
         pInvertNormals,
         sNodes,
         _models,
@@ -1213,6 +1225,9 @@ W_RESULT c_parser::_create_scene(
             w_cpipeline_model* _model = nullptr;
             _create_model(
                 pAMDTootleOptimizing,
+#ifdef __WIN32
+				pSimplygonOptimizing,
+#endif
                 pInvertNormals,
                 &pNode,
                 &_model);
@@ -1538,6 +1553,9 @@ W_RESULT c_parser::_create_scene(
 
 void c_parser::_iterate_over_nodes(
     _In_ const bool& pAMDTootleOptimizing,
+#ifdef __WIN32
+	_In_ const bool& pSimplygonOptimizing,
+#endif
     _In_ const bool& pInvertNormals, 
     _Inout_ std::vector<c_node*> pNodes, 
     _Inout_ std::vector<w_cpipeline_model*>& pModels,
@@ -1625,6 +1643,9 @@ void c_parser::_iterate_over_nodes(
                 w_cpipeline_model* _model = nullptr;
                 _create_model(
                     pAMDTootleOptimizing,
+#ifdef __WIN32
+					pSimplygonOptimizing,
+#endif
                     pInvertNormals,
                     &_node,
                     &_model);
@@ -1650,6 +1671,9 @@ void c_parser::_iterate_over_nodes(
                     }
                     _iterate_over_nodes(
                         pAMDTootleOptimizing,
+#ifdef __WIN32
+						pSimplygonOptimizing,
+#endif
                         pInvertNormals,
                         _node->child_nodes,
                         pModels,
@@ -1662,6 +1686,9 @@ void c_parser::_iterate_over_nodes(
 
 void c_parser::_create_model(
     _In_ const bool& pAMDTootleOptimizing,
+#ifdef __WIN32
+	_In_ const bool& pSimplygonOptimizing,
+#endif
     _In_ const bool& pInvertNormals,
     _Inout_ c_node** pNode,
     _Inout_ w_cpipeline_model** pModel)
@@ -1795,6 +1822,9 @@ void c_parser::_create_model(
             sLibraryImages,
             _transform,
             pAMDTootleOptimizing,
+#ifdef __WIN32
+			pSimplygonOptimizing,
+#endif
             sZ_Up,
             pInvertNormals);
 

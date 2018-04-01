@@ -66,17 +66,8 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	_windows_info.insert({ 0, _window_info });
 
 	//Initialize and content path and logPath
-    auto _running_dir = wolf::system::io::get_current_directory();
-	std::wstring _content_path;
-	#if defined(__WIN32) || defined(__UWP)
-		_content_path = _running_dir + L"../../../../content/";
-	#elif defined(__APPLE__)
-	_content_path = _running_dir + L"/../../../../../content/";
-	#elif defined(__linux)
-		error
-	#elif defined(__ANDROID)
-		error
-	#endif
+    auto _running_dir = wolf::system::io::get_current_directoryW();
+	std::wstring _content_path = _running_dir + L"../../../../content/";
 
 	sScene = make_unique<scene>(_content_path, _running_dir,  L"wolf.engine.vulkan.test");
 	sWindow->run([&_windows_info]()->void

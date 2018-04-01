@@ -25,6 +25,12 @@
     <Filter Include="amd\amd_tootle\RayTracer\Math">
       <UniqueIdentifier>{4369d90a-b296-4831-abf8-7ad2e4e6d7a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="simplygon">
+      <UniqueIdentifier>{78b9f695-2f46-42b2-ab35-475e61b3bd76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wavefront">
+      <UniqueIdentifier>{44ef1afd-efd4-4b45-a1ff-2baf706db0b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp">
@@ -132,6 +138,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.cpp">
       <Filter>collada</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDKLoader.cpp">
+      <Filter>simplygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\simplygon\simplygon.cpp">
+      <Filter>simplygon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.cpp">
+      <Filter>wavefront</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -318,6 +333,21 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.h">
       <Filter>collada</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDKLoader.h">
+      <Filter>simplygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDK.h">
+      <Filter>simplygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\simplygon.h">
+      <Filter>simplygon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\tiny_obj_loader.h">
+      <Filter>wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.h">
+      <Filter>wavefront</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

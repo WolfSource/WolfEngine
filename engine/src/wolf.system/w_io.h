@@ -56,7 +56,7 @@ namespace wolf
 
 			//Get the current running directory directory path
 #ifdef __WIN32
-			inline const std::wstring get_current_directory()
+			inline const std::wstring get_current_directoryW()
 			{
 				const int _lenght = 4096;
 				TCHAR _exe_path[_lenght];
@@ -72,8 +72,13 @@ namespace wolf
 				}
 				return _path.replace(_path.begin() + _i + 1, _path.end(), L"");
 			}
+
+			inline const std::string get_current_directory()
+			{
+				return wolf::system::convert::wstring_to_string(get_current_directoryW());
+			}
 #else
-			inline const std::wstring get_current_directory()
+			inline const std::wstring get_current_directoryW()
 			{
 				auto _installed_location_folder = Windows::ApplicationModel::Package::Current->InstalledLocation;
 				return std::wstring(_installed_location_folder->Path->ToString()->Data());

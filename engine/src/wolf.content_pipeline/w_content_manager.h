@@ -17,6 +17,7 @@
 #include "collada/c_parser.h"
 #include "w_cpipeline_scene.h"
 #include <msgpack/msgpack.hpp>
+#include "simplygon/simplygon.h"
 
 namespace wolf
 {
@@ -25,6 +26,7 @@ namespace wolf
 		class w_content_manager : public wolf::system::w_object
 		{
 		public:
+
 			template<class T>
             static T* load(std::wstring pAssetPath)
             {
@@ -56,7 +58,7 @@ namespace wolf
                         _scene->set_name(_name);
 
                         collada::c_parser _parser;
-                        auto _hr = _parser.parse_collada_from_file(pAssetPath, _scene, true, true, true);
+                        auto _hr = _parser.parse_collada_from_file(pAssetPath, _scene, true, true, true, true);
 
                         _extension.clear();
                         _name.clear();
@@ -151,10 +153,15 @@ namespace wolf
                 return W_PASSED;
             }
 
+			static void release()
+			{
+#ifdef __WIN32
+				simplygon::release();
+#endif
+			}
+
 		private:
 			typedef w_object _super;
-
-			
 		};
 	}
 }

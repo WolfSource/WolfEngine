@@ -254,6 +254,9 @@ namespace wolf
                 _In_ std::map<std::string, std::string>& sLibraryImages,
                 _In_ const w_transform_info& pTransform,
                 _In_ const bool& pAMDTootleOptimizing,
+#ifdef __WIN32
+				_In_ const bool& pSimplygonOptimizing,
+#endif
                 _In_ const bool& pZUp,
                 _In_ const bool& pInvertNormal);
 

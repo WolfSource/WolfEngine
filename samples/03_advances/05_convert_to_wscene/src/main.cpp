@@ -20,10 +20,11 @@ using namespace wolf::content_pipeline;
 int main()
 {
 	//set content path directory
+	auto _content_path_dir = wolf::system::io::get_current_directoryW();
 #ifdef WIN32
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/03_advances/06_scene/src/content/";
+	_content_path_dir += L"/../../../../samples/03_advances/06_scene/src/content/";
 #elif defined(__APPLE__)
-	_content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/03_advances/06_scene/src/content/";
+	_content_path_dir += L"/../../../../../samples/03_advances/06_scene/src/content/";
 #endif // WIN32
 
 	//load collada model

@@ -34,6 +34,20 @@ namespace wolf
             WCP_EXP bool update(_In_ const wolf::system::w_game_time& pGameTime,
                 _In_ const w_point_t& pScreenSize);
 
+#pragma region Getters
+
+			float get_rotation_speed() const { return this->_rotation_speed; }
+			float get_movement_speed() const { return this->_movement_speed; }
+
+#pragma endregion
+
+#pragma region Setters
+
+			void set_rotation_speed(_In_ const float& pValue) { this->_rotation_speed = pValue; }
+			void set_movement_speed(_In_ const float& pValue) { this->_movement_speed = pValue; }
+
+#pragma endregion
+
 		private:
             float           _rotation_speed;
             float           _movement_speed;

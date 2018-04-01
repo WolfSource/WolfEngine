@@ -31,9 +31,12 @@ namespace wolf
 				virtual ~c_parser() {};
 
 				WCP_EXP W_RESULT parse_collada_from_file(
-                    _In_z_ const std::wstring& pFilePath, 
-                    _Inout_ wolf::content_pipeline::w_cpipeline_scene* pScene,
+					_In_z_ const std::wstring& pFilePath,
+					_Inout_ wolf::content_pipeline::w_cpipeline_scene* pScene,
 					_In_ const bool& pAMDTootleOptimizing = true,
+#ifdef __WIN32
+					_In_ const bool& pSimplygonOptimizing = true,
+#endif
                     _In_ const bool& pInvertNormals = false,
                     _In_ const bool& pFind_LODs_BBs = true);
 
@@ -55,8 +58,12 @@ namespace wolf
 				void			                            _get_sources(_In_ rapidxml::xml_node<>* pXNode, std::string pID, std::string pName, _Inout_ c_geometry& pGeometry);
 				void			                            _get_vertices(_In_ rapidxml::xml_node<>*, _Inout_ c_geometry& pGeometry);
 				void			                            _get_triangles(_In_ rapidxml::xml_node<>* pXNode, _In_ c_node* pNode, _Inout_ c_geometry& pGeometry);
-                void                                        _iterate_over_nodes(
+                
+				void                                        _iterate_over_nodes(
                                                                 _In_ const bool& pAMDTootleOptimizing,
+#ifdef __WIN32
+																_In_ const bool& pSimplygonOptimizing,
+#endif
                                                                 _In_ const bool& pInvertNormals,
                                                                 _Inout_ std::vector<c_node*> pNodes,
                                                                 _Inout_ std::vector<w_cpipeline_model*>& pModels,
@@ -64,6 +71,9 @@ namespace wolf
                 
                 void                                        _create_model(
                     _In_ const bool& pAMDTootleOptimizing,
+#ifdef __WIN32
+					_In_ const bool& pSimplygonOptimizing,
+#endif
                     _In_ const bool& pInvertNormals,
                     _Inout_ c_node** pNode,
                     _Inout_ w_cpipeline_model** pModel);
@@ -71,6 +81,9 @@ namespace wolf
 				W_RESULT	                                _create_scene(
                     _Inout_ w_cpipeline_scene* pScene,
                     _In_ const bool& pAMDTootleOptimizing,
+#ifdef __WIN32
+					_In_ const bool& pSimplygonOptimizing,
+#endif
                     _In_ const bool& pInvertNormals,
                     _In_ const bool& pFind_LODs_ConvexHulls_Boundaries);
 				void			                            _clear_all_resources();

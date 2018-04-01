@@ -16,7 +16,7 @@ static int width = 512, height = 512;
 
 #define CREATE_WINDOW
 
-extern "C" WINBASEAPI HWND WINAPI GetConsoleWindow();
+//extern "C" WINBASEAPI HWND WINAPI GetConsoleWindow();
 
 int D3DWMOpen(void)
 {

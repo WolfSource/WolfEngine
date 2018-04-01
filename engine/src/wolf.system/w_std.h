@@ -151,6 +151,24 @@ typedef std::vector<uint16_t> w_vector_uint16_t;
 typedef std::vector<uint32_t> w_vector_uint32_t;
 typedef std::vector<float>	w_vector_float;
 
+
+namespace std
+{
+	template<typename T>
+	inline int binary_search_find_index(_In_ std::vector<T>& pV, _In_ const T& pData)
+	{
+		auto _iter = std::lower_bound(pV.begin(), pV.end(), pData);
+		if (_iter == pV.end() || *_iter != pData)
+		{
+			return -1;
+		}
+		else
+		{
+			return std::distance(pV.begin(), _iter);
+		}
+	}
+}
+
 #include "python_exporter/py_std.h"
 
 #endif//__W_STD_H__

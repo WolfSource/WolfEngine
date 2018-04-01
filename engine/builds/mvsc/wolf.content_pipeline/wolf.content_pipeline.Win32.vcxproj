@@ -54,9 +54,12 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshOptimize.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshUtil.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\dllmain.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\simplygon\simplygon.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDKLoader.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">w_cpipeline_pch.h</PrecompiledHeaderFile>
@@ -127,6 +130,11 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshP.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\directXmesh\scoped.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\simplygon.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDK.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDKLoader.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\tiny_obj_loader.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_export.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />
@@ -241,7 +249,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_CONTENT_PIPELINE__;GLM_FORCE_DEPTH_ZERO_TO_ONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>w_cpipeline_pch.h</PrecompiledHeaderFile>
       <FunctionLevelLinking>
       </FunctionLevelLinking>
@@ -259,6 +267,10 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>
+      </AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

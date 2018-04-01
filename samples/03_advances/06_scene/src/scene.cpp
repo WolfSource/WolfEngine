@@ -136,9 +136,9 @@ void scene::load()
 
 	//load collada scene
 #ifdef WIN32
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/03_advances/06_scene/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/06_scene/src/content/";
 #elif defined(__APPLE__)
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/03_advances/06_scene/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/03_advances/06_scene/src/content/";
 #endif // WIN32
 
 	//set vertex binding attributes
@@ -161,15 +161,18 @@ void scene::load()
 	}
 
 	//load collada scene
-	auto _scene = w_content_manager::load<w_cpipeline_scene>(_content_path_dir + L"models/sponza/sponza.wscene");
+	auto _scene = w_content_manager::load<w_cpipeline_scene>(_content_path_dir + L"models/sponza/sponza.DAE");// wscene");
 	if (_scene)
 	{
 		//get first camera
 		_scene->get_first_camera(this->_first_camera);
 		float _near_plan = 0.1f, far_plan = 5000;
+
 		this->_first_camera.set_near_plan(_near_plan);
 		this->_first_camera.set_far_plan(far_plan);
 		this->_first_camera.set_aspect_ratio(this->_viewport.width / this->_viewport.height);
+		this->_first_camera.set_rotation_speed(1.0f);
+		this->_first_camera.set_movement_speed(3000.0f);
 
 		this->_first_camera.update_view();
 		this->_first_camera.update_projection();
