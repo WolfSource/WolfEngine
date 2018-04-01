@@ -130,9 +130,9 @@ void scene::load()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//get path of content folder
 #ifdef WIN32
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../samples/03_advances/02_model/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/02_model/src/content/";
 #elif defined(__APPLE__)
-	auto _content_path_dir = wolf::system::io::get_current_directory() + L"/../../../../../samples/03_advances/02_model/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/03_advances/02_model/src/content/";
 #endif // WIN32
 
 	//loading vertex shaders

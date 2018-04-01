@@ -490,7 +490,3 @@ void simplygon::release()
 	SimplygonSDK::Deinitialize();
 }
 
-bool simplygon::get_is_initialized()
-{
-	return simplygon::is_initialized;
-}

@@ -79,7 +79,7 @@ WOLF_MAIN()
 #endif
 
 	//Initialize and content path and logPath
-	auto _running_dir = wolf::system::io::get_current_directory();
+	auto _running_dir = wolf::system::io::get_current_directoryW();
 	std::wstring _content_path;
 #if defined(__WIN32) || defined(__UWP)
 	_content_path = _running_dir + L"../../../../content/";

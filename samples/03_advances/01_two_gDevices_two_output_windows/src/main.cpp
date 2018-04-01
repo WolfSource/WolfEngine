@@ -74,7 +74,7 @@ WOLF_MAIN()
 #endif
 
 	//Initialize scene & window
-	auto _running_dir = wolf::system::io::get_current_directory();
+	auto _running_dir = wolf::system::io::get_current_directoryW();
 	sScene = make_unique<scene>(_running_dir, L"wolf.vulkan.sample");
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++

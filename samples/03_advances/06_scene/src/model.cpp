@@ -120,19 +120,19 @@ public:
 						_instances_data.push_back(this->_transform.position[0]);
 						_instances_data.push_back(this->_transform.position[1]);
 						_instances_data.push_back(this->_transform.position[2]);
-						_size_of_instance_struct += 3;
+						_size_of_instance_struct += 12;
 					}
 					if (_dec == w_vertex_attribute::W_ROT)
 					{
 						_instances_data.push_back(this->_transform.rotation[0]);
 						_instances_data.push_back(this->_transform.rotation[1]);
 						_instances_data.push_back(this->_transform.rotation[2]);
-						_size_of_instance_struct += 3;
+						_size_of_instance_struct += 12;
 					}
 					else if (_dec == w_vertex_attribute::W_SCALE)
 					{
 						_instances_data.push_back(this->_transform.scale[0]);
-						_size_of_instance_struct++;
+						_size_of_instance_struct += 4;
 					}
 				}
 

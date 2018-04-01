@@ -49,6 +49,7 @@ int main()
 	{
 		printf("scene not found\r\n");
 	}
+	w_content_manager::release();
 	
     return 0;
 }

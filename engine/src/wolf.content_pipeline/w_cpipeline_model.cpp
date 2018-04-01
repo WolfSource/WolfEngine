@@ -318,7 +318,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 			}
 			simplygon_mutex.unlock();
 
-			if (simplygon::get_is_initialized())
+			if (simplygon::is_initialized)
 			{
 				auto _obj_name = system::convert::string_to_wstring(pGeometry.name);
 				auto _obj_path = wolf::system::io::get_current_directoryW() + L"/" + _obj_name + L".obj";

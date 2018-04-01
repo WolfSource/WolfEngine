@@ -12,6 +12,7 @@
 #include <process.h>
 #include <w_logger.h>
 #include "w_vertex_struct.h"
+#include "w_cpipeline_export.h"
 
 namespace simplygon
 {
@@ -45,8 +46,7 @@ namespace simplygon
 	//	_In_ SimplygonSDK::CountedPointer<SimplygonSDK::IScene>& pScene);
 
 
-	void release();
-	bool get_is_initialized();
+	WCP_EXP void release();
 }
 
 #endif //WIN32
