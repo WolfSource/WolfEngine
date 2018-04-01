@@ -11,7 +11,6 @@
 #define __W_CONTENT_MANAGER_H__
 
 #include "w_cpipeline_export.h"
-#include <w_object.h>
 #include <string>
 #include <w_io.h>
 #include "collada/c_parser.h"
@@ -23,7 +22,7 @@ namespace wolf
 {
 	namespace content_pipeline
 	{
-		class w_content_manager : public wolf::system::w_object
+		class w_content_manager
 		{
 		public:
 
@@ -58,7 +57,14 @@ namespace wolf
                         _scene->set_name(_name);
 
                         collada::c_parser _parser;
-                        auto _hr = _parser.parse_collada_from_file(pAssetPath, _scene, true, true, true, true);
+                        auto _hr = _parser.parse_collada_from_file(pAssetPath,
+                                                                   _scene,
+                                                                   true,
+#ifdef __WIN32
+                                                                   true,
+#endif
+                                                                   true,
+                                                                   true);
 
                         _extension.clear();
                         _name.clear();
@@ -158,10 +164,7 @@ namespace wolf
 #ifdef __WIN32
 				simplygon::release();
 #endif
-			}
-
-		private:
-			typedef w_object _super;
+            }
 		};
 	}
 }

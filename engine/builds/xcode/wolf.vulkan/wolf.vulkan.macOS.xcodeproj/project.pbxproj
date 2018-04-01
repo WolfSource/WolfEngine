@@ -46,7 +46,6 @@
 		2C9899701E9B51D6002FE161 /* w_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996E1E9B51D6002FE161 /* w_texture.h */; };
 		2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899711E9BF6A3002FE161 /* w_buffer.cpp */; };
 		2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9899721E9BF6A3002FE161 /* w_buffer.h */; };
-		2CA5D84B2050A78A0062AD2A /* libmsgpackc.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CDF247D2031982100BD3DE5 /* libmsgpackc.2.0.0.dylib */; };
 		2CA945EB1ED9F7CC007B70B8 /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */; };
 		2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E91ED9F7CC007B70B8 /* imgui.cpp */; };
 		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
@@ -144,7 +143,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CF54B09205A2A1C000B80E3 /* vulkan.framework in Frameworks */,
-				2CA5D84B2050A78A0062AD2A /* libmsgpackc.2.0.0.dylib in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2CCE632E1FD5E73000EC0BB5 /* IOSurface.framework in Frameworks */,
@@ -521,10 +519,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../dependencies/vulkan/macOS/macOS/Frameworks",
-					"$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug",
-				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/vulkan/macOS/macOS/Frameworks";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -541,14 +536,13 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../dependencies/vulkan/macOS/macOS/include",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include",
-					"$(SRCROOT)/../../../dependencies/msgpack/include",
 					"$(SRCROOT)/../../../dependencies/nanomsg/include",
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.render",
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/msgpack/lib/osx/debug";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "";
 				"VALID_ARCHS[sdk=*]" = x86_64;

@@ -359,16 +359,12 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../../dependencies/vulkan/macOS/macOS/Frameworks",
-					"$(SRCROOT)/../../../../dependencies/msgpack/lib/osx/debug",
-				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/vulkan/macOS/macOS/Frameworks";
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../dependencies/vulkan/macOS/macOS/include",
-					"$(SRCROOT)/../../../../dependencies/msgpack/include",
 					"$(SRCROOT)/../../../../src/wolf.system",
 					"$(SRCROOT)/../../../../src/wolf.render",
 					"$(SRCROOT)/../../../../src/wolf.content_pipeline",

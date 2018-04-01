@@ -125,7 +125,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "61"
             endingLineNumber = "61"
-            landmarkName = "c_parser::parse_collada_from_file( _In_z_ const std::wstring&amp; pFilePath, _Inout_ w_cpipeline_scene* pScene, _In_ const bool&amp; pAMDTootleOptimizing, _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFindLODs)"
+            landmarkName = "c_parser::parse_collada_from_file( _In_z_ const std::wstring&amp; pFilePath, _Inout_ w_cpipeline_scene* pScene, _In_ const bool&amp; pAMDTootleOptimizing, #ifdef __WIN32 _In_ const bool&amp; pSimplygonOptimizing, #endif _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFindLODs)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -537,7 +537,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1429"
             endingLineNumber = "1429"
-            landmarkName = "c_parser::_create_scene( _Inout_ w_cpipeline_scene* pScene, _In_ const bool&amp; pAMDTootleOptimizing, _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFind_LODs_ConvexHulls_Boundaries)"
+            landmarkName = "c_parser::_create_scene( _Inout_ w_cpipeline_scene* pScene, _In_ const bool&amp; pAMDTootleOptimizing, #ifdef __WIN32 _In_ const bool&amp; pSimplygonOptimizing, #endif _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFind_LODs_ConvexHulls_Boundaries)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -713,7 +713,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1196"
             endingLineNumber = "1196"
-            landmarkName = "c_parser::_create_scene( _Inout_ w_cpipeline_scene* pScene, _In_ const bool&amp; pAMDTootleOptimizing, _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFind_LODs_ConvexHulls_Boundaries)"
+            landmarkName = "c_parser::_get_triangles(_In_ rapidxml::xml_node&lt;&gt;* pXNode, _In_ c_node* pNode, _Inout_ c_geometry&amp; pGeometry)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -729,7 +729,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1407"
             endingLineNumber = "1407"
-            landmarkName = "c_parser::_create_scene( _Inout_ w_cpipeline_scene* pScene, _In_ const bool&amp; pAMDTootleOptimizing, _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFind_LODs_ConvexHulls_Boundaries)"
+            landmarkName = "c_parser::_create_scene( _Inout_ w_cpipeline_scene* pScene, _In_ const bool&amp; pAMDTootleOptimizing, #ifdef __WIN32 _In_ const bool&amp; pSimplygonOptimizing, #endif _In_ const bool&amp; pInvertNormals, _In_ const bool&amp; pFind_LODs_ConvexHulls_Boundaries)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

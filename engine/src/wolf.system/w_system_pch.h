@@ -64,7 +64,6 @@
 
 #include <memory.h>
 #include <cstdlib>
-
 #include <tuple>
 
 #if defined(__WIN32) || defined(__UWP)
