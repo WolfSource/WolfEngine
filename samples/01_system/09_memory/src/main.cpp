@@ -17,7 +17,7 @@ using namespace wolf::system;
 WOLF_MAIN()
 {
     const wchar_t* _name = L"09_memory";
-    WOLF_INIT(_name);
+    logger.initialize(_name, wolf::system::io::get_current_directoryW());
 
     size_t _length = 10;
 

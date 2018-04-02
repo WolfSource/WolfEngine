@@ -46,10 +46,10 @@ namespace pyWolf
 
 		//define w_vertex_attribute enum
 		enum_<w_vertex_attribute>("w_vertex_attribute")
-			.value("Float", w_vertex_attribute::Float)
-			.value("Vec2", w_vertex_attribute::Vec2)
-			.value("Vec3", w_vertex_attribute::Vec3)
-			.value("Vec4", w_vertex_attribute::Vec4)
+			.value("Float", w_vertex_attribute::W_FLOAT)
+			.value("Vec2", w_vertex_attribute::W_VEC2)
+			.value("Vec3", w_vertex_attribute::W_VEC3)
+			.value("Vec4", w_vertex_attribute::W_VEC4)
 			.export_values()
 			;
 

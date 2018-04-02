@@ -23,8 +23,6 @@ void init_window(struct w_window_info& pInfo)
 {
     sSampleView.bounds = CGRectMake(0, 0, pInfo.width, pInfo.height);
     pInfo.window = (void*)CFBridgingRetain(sSampleView);
-    
-    WOLF_INIT(L"01_clear");
 }
 
 @implementation ViewController

@@ -47,7 +47,7 @@ void init_window(struct w_window_info& pInfo)
     self.view.wantsLayer = YES;
     
     //Initialize and content path and logPath
-    auto _running_dir = wolf::system::io::get_current_directory();
+    auto _running_dir = wolf::system::io::get_current_directoryW();
     std::wstring _content_path = _running_dir + L"/../../../../../content/";
     
 #if defined __APPLE__

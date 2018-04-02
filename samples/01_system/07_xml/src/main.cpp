@@ -17,7 +17,7 @@ using namespace wolf::system;
 WOLF_MAIN()
 {
     const wchar_t* _name = L"07_xml";
-    WOLF_INIT(_name);
+    logger.initialize(_name, wolf::system::io::get_current_directoryW());
 
 	logger.write(L"Wolf initialized");
     

@@ -270,6 +270,13 @@
 		2CEE64111F48E147003177C0 /* wolf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CEE640A1F48E147003177C0 /* wolf.h */; };
 		2CEE64141F48EEFB003177C0 /* w_inputs_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */; };
 		2CEE64151F48EEFB003177C0 /* w_inputs_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */; };
+		2CF12DB7207219DD00B94F96 /* msgpack.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF12DB5207219DD00B94F96 /* msgpack.h */; };
+		2CF12DB8207219DD00B94F96 /* msgpack.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2CF12DB6207219DD00B94F96 /* msgpack.hpp */; };
+		2CF12DBF207219F900B94F96 /* version.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CF12DBA207219F900B94F96 /* version.c */; };
+		2CF12DC0207219F900B94F96 /* zone.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CF12DBB207219F900B94F96 /* zone.c */; };
+		2CF12DC1207219F900B94F96 /* unpack.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CF12DBC207219F900B94F96 /* unpack.c */; };
+		2CF12DC2207219F900B94F96 /* objectc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CF12DBD207219F900B94F96 /* objectc.c */; };
+		2CF12DC3207219F900B94F96 /* vrefbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CF12DBE207219F900B94F96 /* vrefbuffer.c */; };
 		2CF54B4D205C6CF2000B80E3 /* w_aligned_malloc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF54B4A205C6CF1000B80E3 /* w_aligned_malloc.cpp */; };
 		2CF54B4E205C6CF2000B80E3 /* w_aligned_malloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF54B4B205C6CF2000B80E3 /* w_aligned_malloc.h */; };
 		2CF54B4F205C6CF2000B80E3 /* w_plane.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF54B4C205C6CF2000B80E3 /* w_plane.h */; };
@@ -733,6 +740,13 @@
 		2CEE640A1F48E147003177C0 /* wolf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wolf.h; path = ../../../src/wolf.system/wolf.h; sourceTree = "<group>"; };
 		2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_inputs_manager.cpp; path = ../../../src/wolf.system/w_inputs_manager.cpp; sourceTree = "<group>"; };
 		2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_inputs_manager.h; path = ../../../src/wolf.system/w_inputs_manager.h; sourceTree = "<group>"; };
+		2CF12DB5207219DD00B94F96 /* msgpack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = msgpack.h; path = ../../../../src/wolf.system/msgpack/msgpack.h; sourceTree = "<group>"; };
+		2CF12DB6207219DD00B94F96 /* msgpack.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = msgpack.hpp; path = ../../../../src/wolf.system/msgpack/msgpack.hpp; sourceTree = "<group>"; };
+		2CF12DBA207219F900B94F96 /* version.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = version.c; path = ../../../../../src/wolf.system/msgpack/src/version.c; sourceTree = "<group>"; };
+		2CF12DBB207219F900B94F96 /* zone.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zone.c; path = ../../../../../src/wolf.system/msgpack/src/zone.c; sourceTree = "<group>"; };
+		2CF12DBC207219F900B94F96 /* unpack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = unpack.c; path = ../../../../../src/wolf.system/msgpack/src/unpack.c; sourceTree = "<group>"; };
+		2CF12DBD207219F900B94F96 /* objectc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = objectc.c; path = ../../../../../src/wolf.system/msgpack/src/objectc.c; sourceTree = "<group>"; };
+		2CF12DBE207219F900B94F96 /* vrefbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vrefbuffer.c; path = ../../../../../src/wolf.system/msgpack/src/vrefbuffer.c; sourceTree = "<group>"; };
 		2CF54B4A205C6CF1000B80E3 /* w_aligned_malloc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_aligned_malloc.cpp; path = ../../../src/wolf.system/w_aligned_malloc.cpp; sourceTree = "<group>"; };
 		2CF54B4B205C6CF2000B80E3 /* w_aligned_malloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_aligned_malloc.h; path = ../../../src/wolf.system/w_aligned_malloc.h; sourceTree = "<group>"; };
 		2CF54B4C205C6CF2000B80E3 /* w_plane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_plane.h; path = ../../../src/wolf.system/w_plane.h; sourceTree = "<group>"; };
@@ -1235,6 +1249,7 @@
 				2C04326D201F9069009FB7EA /* python_exporter */,
 				2CFD40F11F51FF9300BF9A65 /* rapidjson */,
 				2C7BC43E1F51A2FB009F0C6E /* rapidxml */,
+				2CF12DB4207219AE00B94F96 /* msgpack */,
 				2C4913572064E3D0006036E4 /* glm_extension.h */,
 				2CF54B4A205C6CF1000B80E3 /* w_aligned_malloc.cpp */,
 				2CF54B4B205C6CF2000B80E3 /* w_aligned_malloc.h */,
@@ -1293,6 +1308,28 @@
 				2CD617231E59DA3E006FC5DC /* libpyWolf.system.macOS.dylib */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2CF12DB4207219AE00B94F96 /* msgpack */ = {
+			isa = PBXGroup;
+			children = (
+				2CF12DB9207219E100B94F96 /* src */,
+				2CF12DB5207219DD00B94F96 /* msgpack.h */,
+				2CF12DB6207219DD00B94F96 /* msgpack.hpp */,
+			);
+			path = msgpack;
+			sourceTree = "<group>";
+		};
+		2CF12DB9207219E100B94F96 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				2CF12DBD207219F900B94F96 /* objectc.c */,
+				2CF12DBC207219F900B94F96 /* unpack.c */,
+				2CF12DBA207219F900B94F96 /* version.c */,
+				2CF12DBE207219F900B94F96 /* vrefbuffer.c */,
+				2CF12DBB207219F900B94F96 /* zone.c */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
@@ -1413,6 +1450,7 @@
 				2C6521EB1FD4AF7D0030A053 /* generate_mipmaps.hpp in Headers */,
 				2C6523C51FD4B0D70030A053 /* vector_relational.h in Headers */,
 				2CFD41121F52007B00BF9A65 /* rapidjson.h in Headers */,
+				2CF12DB7207219DD00B94F96 /* msgpack.h in Headers */,
 				2C6523571FD4B0930030A053 /* matrix_major_storage.hpp in Headers */,
 				2C6523581FD4B0930030A053 /* transform.hpp in Headers */,
 				2C6523C71FD4B0D70030A053 /* platform.h in Headers */,
@@ -1622,6 +1660,7 @@
 				2C65234C1FD4B0930030A053 /* projection.hpp in Headers */,
 				2C6521D41FD4AF7D0030A053 /* texture.hpp in Headers */,
 				2C505DC4205E6DC000A96390 /* py_plane.h in Headers */,
+				2CF12DB8207219DD00B94F96 /* msgpack.hpp in Headers */,
 				2C6522581FD4AFD50030A053 /* func_trigonometric.hpp in Headers */,
 				2CFD411B1F52009200BF9A65 /* en.h in Headers */,
 				2CFD412D1F5200D500BF9A65 /* ieee754.h in Headers */,
@@ -1714,19 +1753,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CE5BB231E64307D005E0F45 /* w_window.cpp in Sources */,
+				2CF12DC3207219F900B94F96 /* vrefbuffer.c in Sources */,
 				2CEE640C1F48E147003177C0 /* w_thread_pool.cpp in Sources */,
 				2C1383A51F509AC700D5283B /* w_lua.cpp in Sources */,
 				2CEE640E1F48E147003177C0 /* w_thread.cpp in Sources */,
 				2CEE64101F48E147003177C0 /* wolf.cpp in Sources */,
+				2CF12DC1207219F900B94F96 /* unpack.c in Sources */,
 				2CE5BB1D1E64307D005E0F45 /* w_task.cpp in Sources */,
+				2CF12DBF207219F900B94F96 /* version.c in Sources */,
 				2CF54B4D205C6CF2000B80E3 /* w_aligned_malloc.cpp in Sources */,
 				2CE5BB171E64307D005E0F45 /* w_object.cpp in Sources */,
 				2CE5BB151E64307D005E0F45 /* w_logger.cpp in Sources */,
 				2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */,
+				2CF12DC2207219F900B94F96 /* objectc.c in Sources */,
 				2C0F36AB200BC74C001CB2DF /* w_bounding.cpp in Sources */,
 				2CE5BB1B1E64307D005E0F45 /* w_system_pch.cpp in Sources */,
 				2C65225A1FD4AFD50030A053 /* glm.cpp in Sources */,
 				2CEE64141F48EEFB003177C0 /* w_inputs_manager.cpp in Sources */,
+				2CF12DC0207219F900B94F96 /* zone.c in Sources */,
 				2CE5BB1F1E64307D005E0F45 /* w_time_span.cpp in Sources */,
 				2CE5BB251E64307D005E0F45 /* w_xml.cpp in Sources */,
 			);
@@ -1851,8 +1895,8 @@
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /System/Library/Frameworks/Python.framework/Versions/2.7/lib;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.system/w_system_pch.h";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					DEBUG,
@@ -1863,7 +1907,6 @@
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system",
-					"$(SRCROOT)/../../../dependencies/msgpack/include",
 					"$(SRCROOT)/../../../dependencies/luaJIT/include",
 					"$(SRCROOT)/../../../dependencies/nanomsg/include",
 					"$(SRCROOT)/../../../dependencies/boost/include",
@@ -1890,8 +1933,8 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.system/w_system_pch.h";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;

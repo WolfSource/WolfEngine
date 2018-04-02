@@ -18,7 +18,7 @@ using namespace wolf::system;
 WOLF_MAIN()
 {
     const wchar_t* _name = L"16_networking_survey_server";
-    WOLF_INIT(_name);
+    logger.initialize(_name, wolf::system::io::get_current_directoryW());
     
     w_signal<void(const int&)> on_bind_established;
 	on_bind_established += [](const int& pSocketID)

@@ -19,7 +19,7 @@
 		2CB69EE71F62E56D0068D1E6 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE61F62E56D0068D1E6 /* libc++.tbd */; };
 		2CB69EEB1F62E80D0068D1E6 /* libwolf.content_pipeline.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE81F62E80D0068D1E6 /* libwolf.content_pipeline.macOS.dylib */; };
 		2CB69EEC1F62E80D0068D1E6 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE91F62E80D0068D1E6 /* libwolf.system.macOS.dylib */; };
-		2CF54B24205BE539000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B23205BE539000B80E3 /* vulkan.framework */; };
+		2CF12DB0207216FB00B94F96 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B23205BE539000B80E3 /* vulkan.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,7 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CF54B24205BE539000B80E3 /* vulkan.framework in Frameworks */,
+				2CF12DB0207216FB00B94F96 /* vulkan.framework in Frameworks */,
 				2CB69EEC1F62E80D0068D1E6 /* libwolf.system.macOS.dylib in Frameworks */,
 				2CB69EEB1F62E80D0068D1E6 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
 				2CA5D8502050AC990062AD2A /* libwolf.vulkan.macOS.dylib in Frameworks */,

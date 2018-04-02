@@ -330,22 +330,33 @@ namespace wolf
 #elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
 
 #if defined(__linux) || defined(__APPLE__)
-			//get current working directory
-			inline const std::wstring get_current_directory()
-			{
-				char _current_working_dir[4096];
-				if (getcwd(_current_working_dir, sizeof(_current_working_dir)) != NULL)
-				{
-                    return wolf::system::convert::string_to_wstring(_current_working_dir);
-				}
-				return L"";
-			}
+            //get current working directory
+            inline const std::string get_current_directory()
+            {
+                char _current_working_dir[4096];
+                if (getcwd(_current_working_dir, sizeof(_current_working_dir)) != NULL)
+                {
+                    return _current_working_dir;
+                }
+                return "";
+            }
 
+            //get current working directory
+            inline const std::wstring get_current_directoryW()
+            {
+                return wolf::system::convert::string_to_wstring(get_current_directory());
+            }
 			//Get the content directory path 
-			inline const std::wstring get_content_directory()
+			inline const std::wstring get_content_directoryW()
 			{
-				return get_current_directory() + L"Content\\";
+				return get_current_directoryW() + L"Content\\";
 			}
+            
+            //Get the content directory path
+            inline const std::string get_content_directory()
+            {
+                return get_current_directory() + "Content\\";
+            }
 #endif          
 			//check whether a file does exist or not
 			inline W_RESULT get_is_file(_In_z_ const char* pPath)

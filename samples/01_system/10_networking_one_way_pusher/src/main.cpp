@@ -18,7 +18,7 @@ using namespace wolf::system;
 WOLF_MAIN()
 {
     const wchar_t* _name = L"10_networking_one_way_pusher";
-    WOLF_INIT(_name);
+    logger.initialize(_name, wolf::system::io::get_current_directoryW());
     
     w_signal<void(const int&)> on_connection_established;
     on_connection_established += [](const int& pSocketID)

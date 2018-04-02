@@ -16,7 +16,7 @@ using namespace wolf::system;
 
 WOLF_MAIN()
 {
-    WOLF_INIT(L"04_timer");
+    logger.initialize(L"04_timer", wolf::system::io::get_current_directoryW() + L"/Logs/");
 
     //log to output file
     logger.write(L"Wolf initialized");

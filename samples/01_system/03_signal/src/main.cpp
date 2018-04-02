@@ -16,8 +16,7 @@ using namespace wolf::system;
 
 WOLF_MAIN()
 {
-    WOLF_INIT(L"03_signal");
-    
+    logger.initialize(L"03_signal", wolf::system::io::get_current_directoryW());
     //log to output file
     logger.write(L"Wolf initialized");
 
