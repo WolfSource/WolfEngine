@@ -32,7 +32,7 @@ void loop()
 //Entry point of program 
 WOLF_MAIN()
 {
-    WOLF_INIT(L"01_system-05_window");
+	logger.initialize(L"01_system-05_window", wolf::system::io::get_current_directoryW());
 
 	//log to output file
 	logger.write(L"Wolf initialized");

@@ -22,7 +22,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#pragma region Added for Wolf Engine by Pooya
+#pragma region WOLF_ENGINE_EXTENDED
 #include "w_render_pch.h"
 #pragma endregion
 

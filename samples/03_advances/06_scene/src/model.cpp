@@ -66,7 +66,7 @@ public:
 			this->_textures_paths);
 
 		_meshes.clear();
-
+		
 		//create mesh
 		this->_mesh = new (std::nothrow) w_mesh();
 		if (!this->_mesh)
@@ -77,6 +77,18 @@ public:
 			return W_FAILED;
 		}
 		_mesh->set_vertex_binding_attributes(_vertex_binding_attributes);
+		
+		//load all textures
+		if (_load_textures())
+		{
+			//TODO: currently we use one texture per mesh
+			_mesh->set_texture(this->_textures[0]);
+		}
+		else
+		{
+			//set the default texture
+			_mesh->set_texture(w_texture::default_texture);
+		}
 
 		//load mesh
 		auto _v_size = static_cast<uint32_t>(_batch_vertices.size());
@@ -228,10 +240,11 @@ public:
 
 		//release textures
 		this->_textures_paths.clear();
-		for (auto _text : this->_textures)
+		for (auto _t : this->_textures)
 		{
-			SAFE_RELEASE(_text);
+			if (_t) _t->release();
 		}
+		this->_textures.clear();
 
 		_gDevice = nullptr;
 	}
@@ -272,6 +285,11 @@ public:
 #pragma endregion
 
 #pragma region Getters
+
+	std::string get_model_name() const
+	{
+		return this->_model_name;
+	}
 
 	glm::vec3 get_position() const
 	{
@@ -377,7 +395,7 @@ private:
 							if (_dec == w_vertex_attribute::W_UV)
 							{
 								pBatchVertices.push_back(_data.uv[0]);
-								pBatchVertices.push_back(_data.uv[1]);
+								pBatchVertices.push_back(1 - _data.uv[1]);
 							}
 							else if (_dec == w_vertex_attribute::W_POS)
 							{
@@ -815,6 +833,7 @@ private:
 			{
 				if (w_texture::load_to_shared_textures(
 					this->_gDevice,
+					shared::scene_content_path + L"textures/sponza/" + 
 					wolf::system::convert::string_to_wstring(_path),
 					&_texture) == W_PASSED)
 				{
@@ -942,6 +961,13 @@ private:
 
 		_shader_params.push_back(_shader_param);
 
+		_shader_param.index = 1;
+		_shader_param.type = w_shader_binding_type::SAMPLER2D;
+		_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
+		_shader_param.image_info = this->_textures[0]->get_descriptor_info();
+
+		_shader_params.push_back(_shader_param);
+
 		_hr = this->_shader.set_shader_binding_params(_shader_params);
 		if (_hr == W_FAILED)
 		{
@@ -1054,6 +1080,11 @@ ULONG model::release()
 }
 
 #pragma region Getters
+
+std::string model::get_model_name() const
+{
+	return (!this->_pimp) ? "" : this->_pimp->get_model_name();
+}
 
 glm::vec3 model::get_position() const
 {

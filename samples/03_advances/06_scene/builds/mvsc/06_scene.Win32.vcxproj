@@ -38,6 +38,28 @@
     <None Include="..\..\src\content\shaders\instance.vert" />
     <None Include="..\..\src\content\shaders\shader.frag" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\src\content\textures\icons.png" />
+    <Image Include="..\..\src\content\textures\sponza\chain_texture.tga" />
+    <Image Include="..\..\src\content\textures\sponza\chain_texture_ddn.tga" />
+    <Image Include="..\..\src\content\textures\sponza\chain_texture_mask.tga" />
+    <Image Include="..\..\src\content\textures\sponza\spnza_bricks_a_ddn.tga" />
+    <Image Include="..\..\src\content\textures\sponza\spnza_bricks_a_diff.tga" />
+    <Image Include="..\..\src\content\textures\sponza\spnza_bricks_a_spec.tga" />
+    <Image Include="..\..\src\content\textures\sponza\sponza_fabric_blue_diff.tga" />
+    <Image Include="..\..\src\content\textures\sponza\sponza_fabric_diff.tga" />
+    <Image Include="..\..\src\content\textures\sponza\sponza_fabric_green_diff.tga" />
+    <Image Include="..\..\src\content\textures\sponza\sponza_fabric_spec.tga" />
+    <Image Include="..\..\src\content\textures\sponza\sponza_floor_a_diff.tga" />
+    <Image Include="..\..\src\content\textures\sponza\sponza_floor_a_spec.tga" />
+    <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_alpha.jpg" />
+    <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Diff.jpg" />
+    <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Norm.jpg" />
+    <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Spec.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\src\content\fonts\MyriadPro-Regular.ttf" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

@@ -20,13 +20,6 @@
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_pipeline.h>
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//The following codes have been added for this project
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-#include <w_graphics/w_imgui.h>
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 class scene : public wolf::framework::w_game
 {
 public:

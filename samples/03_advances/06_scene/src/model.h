@@ -52,9 +52,10 @@ public:
 
 #pragma region Getters
 
-	glm::vec3 get_position() const;
-	glm::vec3 get_rotation() const;
-	glm::vec3 get_scale() const;
+	std::string get_model_name() const;
+	glm::vec3	get_position() const;
+	glm::vec3	get_rotation() const;
+	glm::vec3	get_scale() const;
 
 #pragma endregion
 

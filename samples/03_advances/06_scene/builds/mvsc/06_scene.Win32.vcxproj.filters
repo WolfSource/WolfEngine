@@ -21,6 +21,15 @@
     <Filter Include="content\models">
       <UniqueIdentifier>{3a91b57b-c031-40ca-b14c-abd48c8e2e33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="content\textures">
+      <UniqueIdentifier>{a5e9f41c-8a63-4c90-8112-eba986f42ef5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="content\textures\sponza">
+      <UniqueIdentifier>{c7e51ac5-d967-4fcb-b349-7fa051992f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="content\fonts">
+      <UniqueIdentifier>{10638239-13be-4ecb-b367-0e60a763f7da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\content\shaders\basic.vert">
@@ -35,5 +44,63 @@
     <None Include="..\..\src\content\models\sponza\sponza.wscene">
       <Filter>content\models</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\src\content\textures\icons.png">
+      <Filter>content\textures</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\chain_texture.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\chain_texture_ddn.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\chain_texture_mask.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\spnza_bricks_a_ddn.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\spnza_bricks_a_diff.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\spnza_bricks_a_spec.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\sponza_fabric_blue_diff.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\sponza_fabric_diff.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\sponza_fabric_green_diff.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\sponza_fabric_spec.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\sponza_floor_a_diff.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\sponza_floor_a_spec.tga">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_alpha.jpg">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Diff.jpg">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Norm.jpg">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+    <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Spec.jpg">
+      <Filter>content\textures\sponza</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\..\src\content\fonts\MyriadPro-Regular.ttf">
+      <Filter>content\fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

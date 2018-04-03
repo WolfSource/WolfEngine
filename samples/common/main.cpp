@@ -91,7 +91,7 @@ WOLF_MAIN()
 	error
 #endif
 
-	const uint32_t _width = 800, _height = 600;
+	const uint32_t _width = 1280, _height = 720;
 	sScene = make_unique<scene>(_content_path, _running_dir, L"wolf.vulkan.sample");
     sWindow = make_unique<w_window>();
 	sWindow->set_width(_width);

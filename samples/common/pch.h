@@ -17,4 +17,9 @@
 #include <wolf.h>
 #include <w_window.h>
 
+namespace shared
+{
+	extern std::wstring	scene_content_path;
+}
+
 #endif

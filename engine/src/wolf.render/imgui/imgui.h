@@ -18,29 +18,21 @@
 
 #define IMGUI_VERSION       "1.53"
 
+
 // Define attributes of all API symbols declarations, e.g. for DLL under Windows.
-#pragma region Added for Wolf Engine by Pooya
 
+#pragma region WOLF_ENGINE_EXTENDED
 #if defined(__WIN32) || defined(__UWP)
-
-#ifndef IMGUI_API
-
-#ifdef __WOLF_RENDER__
-#define IMGUI_API __declspec(dllexport)
-#else
-#define IMGUI_API __declspec(dllimport)
+	#ifndef IMGUI_API
+		#define IMGUI_API __declspec(dllexport)
+	#else
+		#define IMGUI_API __declspec(dllimport)
+	#endif
+#elif defined(__ANDROID) || defined(__linux) || defined(__IOS__) || defined(__APPLE__)
+	#ifndef IMGUI_API
+		#define IMGUI_API //dump
+	#endif
 #endif
-
-#endif
-
-#else
-
-#ifndef IMGUI_API
-#define IMGUI_API
-#endif
-
-#endif
-
 #pragma endregion
 
 // Define assertion handler.
@@ -241,7 +233,7 @@ namespace ImGui
     // Cursor / Layout
     IMGUI_API void          Separator();                                                        // separator, generally horizontal. inside a menu bar or in horizontal layout mode, this becomes a vertical separator.
     IMGUI_API void          SameLine(float pos_x = 0.0f, float spacing_w = -1.0f);              // call between widgets or groups to layout them horizontally
-    IMGUI_API void          NewLine();                                                          // undo a SameLine()
+	IMGUI_API void          NewLine();                                                          // undo a SameLine()
     IMGUI_API void          Spacing();                                                          // add vertical spacing
     IMGUI_API void          Dummy(const ImVec2& size);                                          // add a dummy item of given size
     IMGUI_API void          Indent(float indent_w = 0.0f);                                      // move content position toward the right, by style.IndentSpacing or indent_w if != 0
@@ -539,6 +531,19 @@ namespace ImGui
     IMGUI_API ImGuiContext* GetCurrentContext();
     IMGUI_API void          SetCurrentContext(ImGuiContext* ctx);
 
+#pragma region WOLF_ENGINE_EXTENDED
+	IMGUI_API void          SameLineEx(const ImVec2& pos, float spacing_w = -1.0f);             // call between widgets or groups to layout them horizontally
+	IMGUI_API bool          CollapsingHeaderEx(
+		ImTextureID IconTextureId,
+		const ImVec2& pIconUV0,
+		const ImVec2& pIconUV1,
+		const ImVec4& pTintColor, 
+		const char* pLabel, 
+		bool* p_open, 
+		ImGuiTreeNodeFlags flags = 0);
+#pragma endregion
+
+
 } // namespace ImGui
 
 // Flags for ImGui::Begin()
@@ -749,11 +754,11 @@ enum ImGuiCol_
     ImGuiCol_PlotHistogramHovered,
     ImGuiCol_TextSelectedBg,
     ImGuiCol_ModalWindowDarkening,  // darken entire screen when a modal window is active
-#pragma region Added for Wolf Engine by Pooya
-    ImGuiCol_ImageActive,//added for Wolf Engine
-    ImGuiCol_ImageHovered,//added for Wolf Engine
-#pragma endregion
     ImGuiCol_DragDropTarget,
+#pragma region WOLF_ENGINE_EXTENDED
+	ImGuiCol_ImageButtonActive,
+	ImGuiCol_ImageButtonHovered,
+#pragma endregion
     ImGuiCol_COUNT
 
     // Obsolete names (will be removed)

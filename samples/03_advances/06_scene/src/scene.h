@@ -20,7 +20,6 @@
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_shader.h>
-#include <w_graphics/w_imgui.h>
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
@@ -63,7 +62,6 @@ public:
 
 private:
 	W_RESULT	_build_draw_command_buffers();
-    bool		_update_gui();
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;

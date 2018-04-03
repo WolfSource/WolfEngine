@@ -681,6 +681,12 @@ namespace wolf
                 _file.flush();
                 _file.close();
             }
+
+			//return zero upon success or non-zero value on error.
+			inline int delete_file(_In_z_ const char* pPath)
+			{
+				return std::remove(pPath);
+			}
 		}
 	}
 }

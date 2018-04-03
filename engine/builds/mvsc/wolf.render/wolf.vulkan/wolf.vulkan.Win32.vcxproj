@@ -166,10 +166,6 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp">
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </EnableEnhancedInstructionSet>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\CullingThreadpool.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\FrameRecorder.cpp" />

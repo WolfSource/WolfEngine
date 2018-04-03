@@ -13,7 +13,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#pragma region Added for Wolf Engine by Pooya
+#pragma region WOLF_ENGINE_EXTENDED
 #include "w_render_pch.h"
 #pragma endregion
 
@@ -124,6 +124,8 @@ namespace IMGUI_STB_NAMESPACE
 } // namespace ImGuiStb
 using namespace IMGUI_STB_NAMESPACE;
 #endif
+
+#include "w_render_pch.h"
 
 //-----------------------------------------------------------------------------
 // Style functions

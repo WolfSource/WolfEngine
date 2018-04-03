@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "scene.h"
+#include <w_graphics/w_imgui.h>
 #include <w_content_manager.h>
 #include <glm_extension.h>
 
@@ -9,9 +10,49 @@ using namespace wolf::system;
 using namespace wolf::graphics;
 using namespace wolf::content_pipeline;
 
+#define MAX_SEARCH_LENGHT 256
+static char sSearch[MAX_SEARCH_LENGHT];
 static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
+static ImTextureID sTexID = (void*)("#i");
+static float sWindowWidth = 0;
+static float sWindowHeight = 0;
+static float sUXAnimationSpeed = 1.2f;
+typedef enum collapse_states
+{
+	openned = 0,
+	openning,
+	collapsing,
+	collapsed
+};
+collapse_states sLeftWidgetCollapseState = collapse_states::openned;
+
+static ImVec2 sLeftWidgetControllerSize;
+struct widget_info
+{
+	ImVec2 size;
+	ImVec2 pos;
+};
+
+namespace Colors
+{
+	static ImVec4 White = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+	static ImVec4 WhiteGray = ImVec4(0.835f, 0.835f, 0.835f, 1.0f);
+	static ImVec4 Gray = ImVec4(0.615f, 0.615f, 0.615f, 1.0f);
+	static ImVec4 Black = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+	static ImVec4 Transparent = ImVec4(0.0f, 0.0f, 0.0f, 0.0f);
+	static ImVec4 Orange = ImVec4(1.0f, 0.564f, 0.313f, 1.0f);
+	static ImVec4 LightBlue = ImVec4(0.0f, 0.631f, 0.949f, 1.0f);
+	static ImVec4 Blue = ImVec4(0.0f, 0.490f, 0.949f, 1.0f);
+	static ImVec4 BorderColor = ImVec4(0.4f, 0.392f, 0.388f, 1.0f);
+
+};
+
+static std::vector<model*>* sModelsPtr;
+
+//forward declaration
+bool update_gui();
 
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
 	w_game(pContentPath, pLogPath, pAppName)
@@ -50,9 +91,23 @@ void scene::load()
 	auto _gDevice = this->graphics_devices[0];
 	auto _output_window = &(_gDevice->output_presentation_window);
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+#ifdef WIN32
+	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/06_scene/src/content/";
+#elif defined(__APPLE__)
+	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/03_advances/06_scene/src/content/";
+#endif // WIN32
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	w_point_t _screen_size;
 	_screen_size.x = _output_window->width;
 	_screen_size.y = _output_window->height;
+
+	sWindowWidth = _screen_size.x;
+	sWindowHeight = _screen_size.y;
 
 	//initialize viewport
 	this->_viewport.y = 0;
@@ -105,13 +160,42 @@ void scene::load()
 		V(W_FAILED, "creating draw fence", _trace_info, 3, true);
 	}
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//load gui icon
+	auto _gui_icons = new (std::nothrow) w_texture();
+	if (!_gui_icons)
+	{
+		_gui_icons = nullptr;
+	}
+	else
+	{
+		_hr = _gui_icons->initialize(_gDevice);
+		if (_hr == W_FAILED)
+		{
+			release();
+			V(W_FAILED, "initializing icon", _trace_info, 3, true);
+		}
+
+		_hr = _gui_icons->load_texture_2D_from_file(shared::scene_content_path +
+			L"textures/icons.png", true);
+		if (_hr == W_FAILED)
+		{
+			release();
+			V(W_FAILED, "loading icon", _trace_info, 3, true);
+		}
+	}
+
 	//load imgui
 	w_imgui::load(
 		_gDevice,
 		_output_window,
 		this->_viewport,
 		this->_viewport_scissor,
-		nullptr);
+		_gui_icons);
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//create two primary command buffers for clearing screen
 	auto _swap_chain_image_size = _output_window->swap_chain_image_views.size();
@@ -134,23 +218,20 @@ void scene::load()
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	//load collada scene
-#ifdef WIN32
-	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/06_scene/src/content/";
-#elif defined(__APPLE__)
-	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/03_advances/06_scene/src/content/";
-#endif // WIN32
-
 	//set vertex binding attributes
-	std::map<uint32_t, std::vector<w_vertex_attribute>> _vertex_declaration;
-	_vertex_declaration[0] = { W_POS, W_NORM }; //position and normal per each vertex
-	_vertex_declaration[1] = { W_POS, W_ROT, W_SCALE }; // position, rotation, scale per each instance
-	
-	w_vertex_binding_attributes _vertex_binding_attributes(_vertex_declaration);
+	std::map<uint32_t, std::vector<w_vertex_attribute>> _basic_vertex_declaration;
+	_basic_vertex_declaration[0] = { W_POS, W_NORM, W_UV }; //position ,normal and uv per each vertex
 
-	auto _instanced_vertex_shader_path = _content_path_dir + L"shaders/instance.vert.spv";
-	auto _basic_vertex_shader_path = _content_path_dir + L"shaders/basic.vert.spv";
-	auto _fragment_shader_path = _content_path_dir + L"shaders/shader.frag.spv";
+	std::map<uint32_t, std::vector<w_vertex_attribute>> _instance_vertex_declaration;
+	_instance_vertex_declaration[0] = { W_POS, W_NORM, W_UV }; //position ,normal and uv per each vertex
+	_instance_vertex_declaration[1] = { W_POS, W_ROT, W_SCALE }; // position, rotation, scale per each instance
+	
+	w_vertex_binding_attributes _basic_vertex_binding_attributes(_basic_vertex_declaration);
+	w_vertex_binding_attributes _instance_vertex_binding_attributes(_instance_vertex_declaration);
+
+	auto _instanced_vertex_shader_path = shared::scene_content_path + L"shaders/instance.vert.spv";
+	auto _basic_vertex_shader_path = shared::scene_content_path + L"shaders/basic.vert.spv";
+	auto _fragment_shader_path = shared::scene_content_path + L"shaders/shader.frag.spv";
 	
 	//create pipeline cache for model
 	std::string _model_pipeline_cache_name = "model_pipeline_cache";
@@ -161,7 +242,7 @@ void scene::load()
 	}
 
 	//load collada scene
-	auto _scene = w_content_manager::load<w_cpipeline_scene>(_content_path_dir + L"models/sponza/sponza.wscene");//DAE");
+	auto _scene = w_content_manager::load<w_cpipeline_scene>(shared::scene_content_path + L"models/sponza/sponza.wscene");
 	if (_scene)
 	{
 		//get first camera
@@ -182,9 +263,21 @@ void scene::load()
 		std::vector<w_cpipeline_model*> _cmodels;
 		_scene->get_all_models(_cmodels);
 
+		std::wstring _vertex_shader_path;
 		for (auto _m : _cmodels)
 		{
-			auto _model = new (std::nothrow) model(_m, _vertex_binding_attributes);
+			model* _model = nullptr;
+			if (_m->get_instances_count())
+			{
+				_vertex_shader_path = _instanced_vertex_shader_path;
+				_model = new (std::nothrow) model(_m, _instance_vertex_binding_attributes);
+			}
+			else
+			{
+				_vertex_shader_path = _basic_vertex_shader_path;
+				_model = new (std::nothrow) model(_m, _basic_vertex_binding_attributes);
+			}
+
 			if (!_model)
 			{
 				V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
@@ -194,7 +287,7 @@ void scene::load()
 			_hr = _model->load(
 				_gDevice, 
 				_model_pipeline_cache_name, 
-				_m->get_instances_count() ? _instanced_vertex_shader_path : _basic_vertex_shader_path,
+				_vertex_shader_path,
 				_fragment_shader_path, 
 				this->_draw_render_pass);
 			if (_hr == W_FAILED)
@@ -209,6 +302,11 @@ void scene::load()
 		}
 		_cmodels.clear();
 		_scene->release();
+
+		if (this->_models.size())
+		{
+			sModelsPtr = &(this->_models);
+		}
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -260,7 +358,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 	w_imgui::new_frame(sElapsedTimeInSec, [this]()
 	{
-		_update_gui();
+		update_gui();
 	});
 
 	w_point_t _screen_size;
@@ -340,17 +438,20 @@ ULONG scene::release()
 	{
 		SAFE_RELEASE(_m);
 	}
+	sModelsPtr = nullptr;
 	
-	//release gui's objects
+	//release gui's resources
 	w_imgui::release();
 
 	return w_game::release();
 }
 
-bool scene::_update_gui()
+static void _show_floating_debug_window()
 {
 	//Setting Style
 	ImGuiStyle& _style = ImGui::GetStyle();
+	_style.WindowPadding = ImVec2(5, 0);
+
 	_style.Colors[ImGuiCol_Text].x = 1.0f;
 	_style.Colors[ImGuiCol_Text].y = 1.0f;
 	_style.Colors[ImGuiCol_Text].z = 1.0f;
@@ -367,7 +468,7 @@ bool scene::_update_gui()
 	if (!ImGui::Begin("Wolf.Engine", &_is_open, _window_flags))
 	{
 		ImGui::End();
-		return false;
+		return;
 	}
 
 	ImGui::Text("Press Esc to exit\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
@@ -377,6 +478,300 @@ bool scene::_update_gui()
 		wolf::inputs_manager.mouse.pos_x, wolf::inputs_manager.mouse.pos_y);
 
 	ImGui::End();
+}
+
+widget_info show_left_widget_controller()
+{
+	widget_info _w_i;
+	_w_i.size = ImVec2(sWindowWidth / 40.0f, sWindowHeight / 10.0f);
+	_w_i.pos = ImVec2(0, 0);
+
+#pragma region Setting Style
+	ImGuiStyle& _style = ImGui::GetStyle();
+	_style.WindowPadding = ImVec2(0, 0);
+	_style.WindowRounding = 0;
+	_style.GrabRounding = 0;
+	_style.GrabMinSize = 0;
+	_style.FramePadding = ImVec2(0, 0);
+	_style.ItemSpacing = ImVec2(0, 0);
+	_style.WindowBorderSize = 0.0f;
+	_style.FrameBorderSize = 0.0f;
+	_style.ChildBorderSize = 0;
+
+	//set text color
+	//_style.Colors[ImGuiCol_WindowBg] = Colors::Orange;
+	//_style.Colors[ImGuiCol_ButtonActive] = Colors::Orange;
+	//_style.Colors[ImGuiCol_ImageButtonActive] = Colors::Blue;
+	//_style.Colors[ImGuiCol_ImageButtonHovered] = Colors::LightBlue;
+
+#pragma endregion
+
+	ImGuiWindowFlags _window_flags = 0;
+	_window_flags |= ImGuiWindowFlags_NoTitleBar;
+	_window_flags |= ImGuiWindowFlags_NoResize;
+	_window_flags |= ImGuiWindowFlags_NoMove;
+	_window_flags |= ImGuiWindowFlags_NoScrollbar;
+	_window_flags |= ImGuiWindowFlags_NoCollapse;
+
+	ImGui::SetNextWindowSize(_w_i.size, ImGuiCond_Always);
+	ImGui::SetNextWindowPos(_w_i.pos);
+	if (!ImGui::Begin("Left Controller", 0, _window_flags))
+	{
+		// Early out if the window is collapsed, as an optimization.
+		goto end;
+	}
+
+	ImGui::SetWindowPos(ImVec2(_w_i.pos.x, _w_i.pos.y + 16.0f));
+	if (ImGui::ImageButton(sTexID, ImVec2(32.0f, 32.0f), ImVec2(0, 0.1f), ImVec2(0.133f, 0.233f)))
+	{
+		sLeftWidgetCollapseState = collapse_states::openning;
+	}
+end:
+	ImGui::End();
+
+	return _w_i;
+}
+
+widget_info show_search_widget(widget_info* pRelatedWidgetInfo)
+{
+	float _y_offset = pRelatedWidgetInfo->pos.y + pRelatedWidgetInfo->size.y + 1;
+	widget_info _w_i;
+	_w_i.size = ImVec2(sWindowWidth / 6.095238095238095f, sWindowHeight - _y_offset);
+	_w_i.pos = ImVec2(0, _y_offset);
+
+	if (sLeftWidgetCollapseState == collapse_states::collapsed)
+	{
+		return _w_i;
+	}
+	else if (sLeftWidgetCollapseState == collapse_states::openning)
+	{
+		//already did
+		//sLeftWidgetControllerSize.x += 1.1f * sDeltaTime;
+		sLeftWidgetControllerSize.y = _w_i.size.y;
+	}
+	else if (sLeftWidgetCollapseState == collapse_states::collapsing)
+	{
+		//already did
+		//sLeftWidgetControllerSize.x -= sDeltaTime;
+		sLeftWidgetControllerSize.y = _w_i.size.y;
+	}
+	else
+	{
+		sLeftWidgetControllerSize = _w_i.size;
+	}
+
+#pragma region Setting Style
+	ImGuiStyle& _style = ImGui::GetStyle();
+	_style.WindowPadding = ImVec2(0, -1);
+	_style.WindowRounding = 0;
+	_style.GrabRounding = 0;
+	_style.GrabMinSize = 0;
+	_style.FramePadding = ImVec2(0, 5.0f);
+	_style.ItemSpacing = ImVec2(0, 0.0f);
+	_style.WindowBorderSize = 1.5f;
+	_style.FrameBorderSize = 0.1f;
+	_style.ChildBorderSize = 0;
+
+	//set text color
+	//_style.Colors[ImGuiCol_Text].x = 0.1f;
+	//_style.Colors[ImGuiCol_Text].y = 0.1f;
+	//_style.Colors[ImGuiCol_Text].z = 0.1f;
+	//_style.Colors[ImGuiCol_Text].w = 1.0f;
+
+	//_style.Colors[ImGuiCol_WindowBg] = Colors::Gray;
+	//_style.Colors[ImGuiCol_Header] = Colors::WhiteGray;
+	//_style.Colors[ImGuiCol_HeaderHovered] = Colors::Orange;
+	//_style.Colors[ImGuiCol_TextSelectedBg] = Colors::Orange;
+	//_style.Colors[ImGuiCol_Border] = Colors::BorderColor;
+	//_style.Colors[ImGuiCol_BorderShadow] = Colors::BorderColor;
+	//_style.Colors[ImGuiCol_BorderShadow].w = 0.5f;
+	//_style.Colors[ImGuiCol_Button] = Colors::Transparent;
+	//_style.Colors[ImGuiCol_ButtonHovered] = Colors::Orange;
+	//_style.Colors[ImGuiCol_ButtonActive] = Colors::Blue;
+	//_style.Colors[ImGuiCol_ImageButtonHovered] = Colors::LightBlue;
+	//_style.Colors[ImGuiCol_ImageButtonActive] = Colors::Orange;
+#pragma endregion
+
+	ImGuiWindowFlags _window_flags = 0;
+	_window_flags |= ImGuiWindowFlags_NoTitleBar;
+	_window_flags |= ImGuiWindowFlags_NoResize;
+	_window_flags |= ImGuiWindowFlags_NoMove;
+	_window_flags |= ImGuiWindowFlags_NoCollapse;
+
+	ImGui::SetNextWindowSize(sLeftWidgetControllerSize, ImGuiCond_Always);
+	ImGui::SetNextWindowPos(_w_i.pos);
+	if (!ImGui::Begin("Search", 0, _window_flags))
+	{
+		// Early out if the window is collapsed, as an optimization.
+		goto end;
+	}
+
+	auto _text_box_width = _w_i.size.x / 1.5f;
+	ImGui::SetWindowPos(ImVec2(_w_i.pos.x + 2, _w_i.pos.y + 5));
+
+	auto _serach_color = Colors::Black;
+	_serach_color.w = 0.9f;
+	ImGui::PushStyleColor(ImGuiCol_Header, _serach_color);
+	ImGui::PushItemWidth(_text_box_width);
+	if (ImGui::InputText("", sSearch, MAX_SEARCH_LENGHT, ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		printf("Searched entered");
+	}
+	ImGui::PopItemWidth();
+	ImGui::PopStyleColor();
+
+	ImGui::SameLineEx(ImVec2(_w_i.pos.x + _text_box_width, -3.0f), 7.0f);
+	ImVec2 _icon_size(24.0f, 24.0f);
+	ImGui::PushStyleColor(ImGuiCol_Border, Colors::Transparent);
+	ImGui::PushStyleColor(ImGuiCol_BorderShadow, Colors::Transparent);
+	if (ImGui::ImageButton(sTexID, _icon_size, ImVec2(0.1f, 0.0f), ImVec2(0.2, 0.1), -1.0f, ImVec4(0, 0, 0, 0), Colors::Black))
+	{
+		printf("Searched called");
+	}
+	ImGui::SameLine(0.0f, 7.0f);
+	if (ImGui::ImageButton(sTexID, _icon_size, ImVec2(0.2f, 0.0f), ImVec2(0.3, 0.1), -1.0f, ImVec4(0, 0, 0, 0), Colors::Black))
+	{
+		printf("Searched called");
+	}
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+
+	ImGuiTreeNodeFlags _node_flags =
+		ImGuiTreeNodeFlags_OpenOnArrow |
+		ImGuiTreeNodeFlags_OpenOnDoubleClick |
+		ImGuiTreeNodeFlags_Selected |
+		ImGuiTreeNodeFlags_Leaf |
+		ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+	auto _icon_color = Colors::Black;
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(10, 10));
+	if (ImGui::CollapsingHeaderEx(sTexID, ImVec2(0.3f, 0.0f), ImVec2(0.4f, 0.1f), _icon_color, "Models", false))
+	{
+		if (sModelsPtr)
+		{
+			auto _size = sModelsPtr->size();
+			if (_size)
+			{
+				for (int i = 0; i < _size; ++i)
+				{
+					auto _name = sModelsPtr->at(i)->get_model_name();
+					if (ImGui::TreeNode(_name.c_str()))
+					{
+						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "instance_name");
+						ImGui::TreePop();
+					}
+				}
+
+				//fake
+				if (ImGui::TreeNode("		"))
+				{
+					ImGui::TreePop();
+				}
+			}
+		}
+	}
+	ImGui::PopStyleVar();
+end:
+	ImGui::End();
+
+	return _w_i;
+}
+
+static widget_info show_explorer()
+{
+	widget_info _w_i;
+	_w_i.size = ImVec2(sWindowWidth / 6.095238095238095f, sWindowHeight / 22.5f);
+	_w_i.pos = ImVec2(0, 0);
+
+	if (sLeftWidgetCollapseState == collapse_states::collapsed)
+	{
+		show_left_widget_controller();
+		return _w_i;
+	}
+	else if (sLeftWidgetCollapseState == collapse_states::openning)
+	{
+		sLeftWidgetControllerSize.x += sUXAnimationSpeed * (sElapsedTimeInSec * 1000.0f);
+		sLeftWidgetControllerSize.y = _w_i.size.y;
+
+		if (sLeftWidgetControllerSize.x > _w_i.size.x)
+		{
+			sLeftWidgetCollapseState = collapse_states::openned;
+		}
+	}
+	else if (sLeftWidgetCollapseState == collapse_states::collapsing)
+	{
+		sLeftWidgetControllerSize.x -= sUXAnimationSpeed * (sElapsedTimeInSec * 1000.0f);
+		sLeftWidgetControllerSize.y = _w_i.size.y;
+
+		if (sLeftWidgetControllerSize.x < _w_i.size.x / 4)
+		{
+			sLeftWidgetCollapseState = collapse_states::collapsed;
+		}
+	}
+	else
+	{
+		sLeftWidgetControllerSize = _w_i.size;
+	}
+
+#pragma region Setting Style
+	ImGuiStyle& _style = ImGui::GetStyle();
+	_style.WindowPadding = ImVec2(0, 0);
+	_style.WindowRounding = 0;
+	_style.GrabRounding = 0;
+	_style.GrabMinSize = 0;
+	_style.FramePadding = ImVec2(0, 0);
+	_style.ItemSpacing = ImVec2(0, 0);
+	_style.WindowBorderSize = 0.0f;
+	_style.FrameBorderSize = 0.0f;
+	_style.ChildBorderSize = 0;
+
+	//set text color
+	//_style.Colors[ImGuiCol_Text] = Colors::Black;
+	//_style.Colors[ImGuiCol_WindowBg] = Colors::Orange;
+	//_style.Colors[ImGuiCol_Button] = Colors::Orange;
+	//_style.Colors[ImGuiCol_ButtonHovered] = Colors::Orange;
+	//_style.Colors[ImGuiCol_ButtonActive] = Colors::Blue;
+	//_style.Colors[ImGuiCol_ImageButtonHovered] = Colors::LightBlue;
+	//_style.Colors[ImGuiCol_ImageButtonActive] = Colors::Orange;
+
+#pragma endregion
+
+	ImGuiWindowFlags _window_flags = 0;
+	_window_flags |= ImGuiWindowFlags_NoTitleBar;
+	_window_flags |= ImGuiWindowFlags_NoResize;
+	_window_flags |= ImGuiWindowFlags_NoMove;
+	_window_flags |= ImGuiWindowFlags_NoScrollbar;
+	_window_flags |= ImGuiWindowFlags_NoCollapse;
+
+	ImGui::SetNextWindowSize(sLeftWidgetControllerSize, ImGuiCond_Always);
+	ImGui::SetNextWindowPos(_w_i.pos);
+	if (!ImGui::Begin("Explorer", 0, _window_flags))
+	{
+		// Early out if the window is collapsed, as an optimization.
+		goto end;
+	}
+
+	ImGui::SetWindowPos(ImVec2(10, _w_i.pos.y + (_w_i.size.y / 2) - 8));
+	ImGui::Text("Scene");
+	ImGui::SameLine(0.0f, 0.0f);
+
+	ImVec2 _icon_size(_w_i.size.y - 2.0f, _w_i.size.y - 2.0f);
+	ImGui::SetWindowPos(ImVec2(_w_i.pos.x + _w_i.size.x - 2.9f * _icon_size.x, _w_i.pos.y + 1));
+	if (ImGui::ImageButton(sTexID, _icon_size, ImVec2(0, 0), ImVec2(0.1, 0.1), -1.0f, ImVec4(0, 0, 0, 0), ImVec4(0.3f, 0.3f, 0.3f, 1)))
+	{
+		sLeftWidgetCollapseState = collapse_states::collapsing;
+	}
+end:
+	ImGui::End();
+
+	return _w_i;
+}
+
+static bool update_gui()
+{
+	_show_floating_debug_window();
+	auto _l_w_info = show_explorer();
+	show_search_widget(&_l_w_info);
 
 	return true;
 }

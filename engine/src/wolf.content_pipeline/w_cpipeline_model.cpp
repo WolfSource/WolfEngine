@@ -321,16 +321,19 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 			if (simplygon::is_initialized)
 			{
 				auto _obj_name = system::convert::string_to_wstring(pGeometry.name);
-				auto _obj_path = wolf::system::io::get_current_directoryW() + L"/" + _obj_name + L".obj";
-				auto _obj_remeshed_path = wolf::system::io::get_current_directoryW() + L"/" + _obj_name + L"_remeshed.obj";
-				
-				wavefront::obj::write(_vertices_data, _indices_data, wolf::system::convert::wstring_to_string(_obj_path));
+				auto _obj_path_w = wolf::system::io::get_current_directoryW() + L"/" + _obj_name + L".obj";
+				auto _obj_path = wolf::system::convert::wstring_to_string(_obj_path_w);
+				auto _obj_remeshed_path_w = wolf::system::io::get_current_directoryW() + L"/" + _obj_name + L"_remeshed.obj";
+				auto _obj_remeshed_mtl_path = wolf::system::io::get_current_directory() + "/" + pGeometry.name + "_remeshed.mtl";
+				auto _obj_remeshed_path = wolf::system::convert::wstring_to_string(_obj_remeshed_path_w);
+
+				wavefront::obj::write(_vertices_data, _indices_data, _obj_path);
 
 				//Create a original simplygon scene from current vertices and indices
 				auto _original_scene = simplygon::iSimplygonSDK->CreateScene();
 				if (_original_scene)
 				{
-					if (simplygon::obj_reader(_obj_path, _original_scene) == W_PASSED)
+					if (simplygon::obj_reader(_obj_path_w, _original_scene) == W_PASSED)
 					{
 						//call simplygon for remeshing this scene and copy results to remesh scene
 						auto _remesh_scene = simplygon::iSimplygonSDK->CreateScene();
@@ -338,13 +341,13 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 						{
 							if (simplygon::remeshing(_remesh_scene, _original_scene) == W_PASSED)
 							{
-								if (simplygon::obj_writer(_obj_remeshed_path.c_str(), _remesh_scene) == W_PASSED)
+								if (simplygon::obj_writer(_obj_remeshed_path_w.c_str(), _remesh_scene) == W_PASSED)
 								{
 									if (wavefront::obj::read(
 										_vertices_data, 
 										_indices_data, 
 										_vertices_positions, 
-										wolf::system::convert::wstring_to_string(_obj_remeshed_path)) == W_FAILED)
+										_obj_remeshed_path) == W_FAILED)
 									{
 										V(W_FAILED, "error on wavefront::obj::read " + pGeometry.name, _trace_info, 3);
 									}
@@ -373,6 +376,18 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 				{
 					V(W_FAILED, "could not allocate memory for remesh simplygon object scene for model: " + pGeometry.name, _trace_info, 3);
 				}
+
+				system::io::delete_file(_obj_path.c_str());
+				system::io::delete_file(_obj_remeshed_path.c_str());
+				system::io::delete_file(_obj_remeshed_mtl_path.c_str());
+
+				_obj_path.clear();
+				_obj_path_w.clear();
+
+				_obj_name.clear();
+				_obj_remeshed_path.clear();
+				_obj_remeshed_path_w.clear();
+				_obj_remeshed_mtl_path.clear();
 			}
 			else
 			{

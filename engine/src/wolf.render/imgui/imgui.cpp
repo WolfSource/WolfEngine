@@ -585,7 +585,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#pragma region Added for Wolf Engine by Pooya
+#pragma region WOLF_ENGINE_EXTENDED
 #include "w_render_pch.h"
 #pragma endregion
 
@@ -6503,24 +6503,24 @@ bool ImGui::ImageButton(ImTextureID user_texture_id, const ImVec2& size, const I
     if (bg_col.w > 0.0f)
         window->DrawList->AddRectFilled(image_bb.Min, image_bb.Max, GetColorU32(bg_col));
 
-#pragma region Added for Wolf Engine by Pooya
-    ImU32 tintcol = GetColorU32(tint_col);
-    if (hovered)
-    {
-        if (held)
-        {
-            tintcol = GetColorU32(ImGuiCol_ImageActive);
-        }
-        else
-        {
-            tintcol = GetColorU32(ImGuiCol_ImageHovered);
-        }
-    }
-    else
-    {
-        tintcol = GetColorU32(tint_col);
-    }
-    window->DrawList->AddImage(user_texture_id, image_bb.Min, image_bb.Max, uv0, uv1, tintcol);
+#pragma region WOLF_ENGINE_EXTENDED
+	ImU32 tintcol = GetColorU32(tint_col);
+	if (hovered)
+	{
+		if (held)
+		{
+			tintcol = GetColorU32(ImGuiCol_ImageButtonActive);
+		}
+		else
+		{
+			tintcol = GetColorU32(ImGuiCol_ImageButtonHovered);
+		}
+	}
+	else
+	{
+		tintcol = GetColorU32(tint_col);
+	}
+	window->DrawList->AddImage(user_texture_id, image_bb.Min, image_bb.Max, uv0, uv1, tintcol);
 #pragma endregion
 
     return pressed;
@@ -11760,3 +11760,200 @@ void ImGui::ShowMetricsWindow(bool* p_open)
 #endif
 
 //-----------------------------------------------------------------------------
+
+#pragma region WOLF_ENGINE_EXTENDED
+
+void ImGui::SameLineEx(const ImVec2& pos, float spacing_w)
+{
+	ImGuiWindow* window = GetCurrentWindow();
+	if (window->SkipItems)
+		return;
+
+	ImGuiContext& g = *GImGui;
+	if (pos.x != 0.0f || pos.y != 0.0f)
+	{
+		if (spacing_w < 0.0f) spacing_w = 0.0f;
+		window->DC.CursorPos.x = window->Pos.x - window->Scroll.x + pos.x + spacing_w + window->DC.GroupOffsetX + window->DC.ColumnsOffsetX;
+		window->DC.CursorPos.y = window->DC.CursorPosPrevLine.y + pos.y;
+	}
+	else
+	{
+		if (spacing_w < 0.0f) spacing_w = g.Style.ItemSpacing.x;
+		window->DC.CursorPos.x = window->DC.CursorPosPrevLine.x + spacing_w;
+		window->DC.CursorPos.y = window->DC.CursorPosPrevLine.y;
+	}
+	window->DC.CurrentLineHeight = window->DC.PrevLineHeight;
+	window->DC.CurrentLineTextBaseOffset = window->DC.PrevLineTextBaseOffset;
+}
+
+bool ImGui::TreeNodeBehaviorEx(
+	ImGuiID pID,
+	ImTextureID IconTextureId,
+	const ImVec2& pIconUV0,
+	const ImVec2& pIconUV1,
+	const ImVec4& pTintColor,
+	ImGuiTreeNodeFlags pFlags,
+	const char* pLabel,
+	const char* pLabelEnd)
+{
+	ImGuiWindow* window = GetCurrentWindow();
+	if (window->SkipItems) return false;
+
+	ImGuiContext& g = *GImGui;
+	const ImGuiStyle& style = g.Style;
+	const bool display_frame = (pFlags & ImGuiTreeNodeFlags_Framed) != 0;
+	const ImVec2 padding = (display_frame || (pFlags & ImGuiTreeNodeFlags_FramePadding)) ? style.FramePadding : ImVec2(style.FramePadding.x, 0.0f);
+
+	if (!pLabelEnd)
+	{
+		pLabelEnd = FindRenderedTextEnd(pLabel);
+	}
+	const ImVec2 label_size = CalcTextSize(pLabel, pLabelEnd, false);
+
+	// We vertically grow up to current line height up the typical widget height.
+	const float text_base_offset_y = ImMax(padding.y, window->DC.CurrentLineTextBaseOffset); // Latch before ItemSize changes it
+	const float frame_height = ImMax(ImMin(window->DC.CurrentLineHeight, g.FontSize + style.FramePadding.y * 2), label_size.y + padding.y * 2);
+	ImRect bb = ImRect(window->DC.CursorPos, ImVec2(window->Pos.x + GetContentRegionMax().x, window->DC.CursorPos.y + frame_height));
+	if (display_frame)
+	{
+		// Framed header expand a little outside the default padding
+		bb.Min.x -= (float)(int)(window->WindowPadding.x*0.5f) - 1;
+		bb.Max.x += (float)(int)(window->WindowPadding.x*0.5f) - 1;
+	}
+
+	const float text_offset_x = (g.FontSize + (display_frame ? padding.x * 3 : padding.x * 2));   // Collapser arrow width + Spacing
+	const float text_width = g.FontSize + (label_size.x > 0.0f ? label_size.x + padding.x * 2 : 0.0f);   // Include collapser
+	ItemSize(ImVec2(text_width, frame_height), text_base_offset_y);
+
+	// For regular tree nodes, we arbitrary allow to click past 2 worth of ItemSpacing
+	// (Ideally we'd want to add a flag for the user to specify if we want the hit test to be done up to the right side of the content or not)
+	const ImRect interact_bb = display_frame ? bb : ImRect(bb.Min.x, bb.Min.y, bb.Min.x + text_width + style.ItemSpacing.x * 2, bb.Max.y);
+	bool is_open = TreeNodeBehaviorIsOpen(pID, pFlags);
+	if (!ItemAdd(interact_bb, pID))
+	{
+		if (is_open && !(pFlags & ImGuiTreeNodeFlags_NoTreePushOnOpen))
+			TreePushRawID(pID);
+		return is_open;
+	}
+
+	// Flags that affects opening behavior:
+	// - 0(default) ..................... single-click anywhere to open
+	// - OpenOnDoubleClick .............. double-click anywhere to open
+	// - OpenOnArrow .................... single-click on arrow to open
+	// - OpenOnDoubleClick|OpenOnArrow .. single-click on arrow or double-click anywhere to open
+	ImGuiButtonFlags button_flags = ImGuiButtonFlags_NoKeyModifiers | ((pFlags & ImGuiTreeNodeFlags_AllowItemOverlap) ? ImGuiButtonFlags_AllowItemOverlap : 0);
+	button_flags |= ImGuiButtonFlags_PressedOnDragDropHold;
+	if (pFlags & ImGuiTreeNodeFlags_OpenOnDoubleClick)
+		button_flags |= ImGuiButtonFlags_PressedOnDoubleClick | ((pFlags & ImGuiTreeNodeFlags_OpenOnArrow) ? ImGuiButtonFlags_PressedOnClickRelease : 0);
+
+	bool hovered, held, pressed = ButtonBehavior(interact_bb, pID, &hovered, &held, button_flags);
+	if (pressed && !(pFlags & ImGuiTreeNodeFlags_Leaf))
+	{
+		bool toggled = !(pFlags & (ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick));
+		if (pFlags & ImGuiTreeNodeFlags_OpenOnArrow)
+			toggled |= IsMouseHoveringRect(interact_bb.Min, ImVec2(interact_bb.Min.x + text_offset_x, interact_bb.Max.y));
+		if (pFlags & ImGuiTreeNodeFlags_OpenOnDoubleClick)
+			toggled |= g.IO.MouseDoubleClicked[0];
+		if (g.DragDropActive && is_open) // When using Drag and Drop "hold to open" we keep the node highlighted after opening, but never close it again.
+			toggled = false;
+		if (toggled)
+		{
+			is_open = !is_open;
+			window->DC.StateStorage->SetInt(pID, is_open);
+		}
+	}
+	if (pFlags & ImGuiTreeNodeFlags_AllowItemOverlap)
+		SetItemAllowOverlap();
+
+	// Render
+	const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
+	ImVec2 text_pos = bb.Min + ImVec2(text_offset_x, text_base_offset_y);
+	if (display_frame)
+	{
+		// Framed type
+		RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
+		RenderTriangle(bb.Min + ImVec2(padding.x, text_base_offset_y), is_open ? ImGuiDir_Down : ImGuiDir_Right, 1.0f);
+		if (g.LogEnabled)
+		{
+			// NB: '##' is normally used to hide text (as a library-wide feature), so we need to specify the text range to make sure the ## aren't stripped out here.
+			const char log_prefix[] = "\n##";
+			const char log_suffix[] = "##";
+			LogRenderedText(&text_pos, log_prefix, log_prefix + 3);
+			RenderTextClipped(text_pos, bb.Max, pLabel, pLabelEnd, &label_size);
+			LogRenderedText(&text_pos, log_suffix + 1, log_suffix + 3);
+		}
+		else
+		{
+			auto _start_pos = text_pos;
+			auto _icon_size = frame_height - 5.0f;
+			if (_icon_size > 0)
+			{
+				SameLineEx(ImVec2(_start_pos.x, 3.2f));
+				Image(IconTextureId, ImVec2(_icon_size, _icon_size), pIconUV0, pIconUV1, pTintColor);
+			}
+
+			_start_pos.x += _icon_size + 5;
+			RenderTextClipped(_start_pos, bb.Max, pLabel, pLabelEnd, &label_size);
+		}
+	}
+	else
+	{
+		// Unframed typed for tree nodes
+		if (hovered || (pFlags & ImGuiTreeNodeFlags_Selected))
+			RenderFrame(bb.Min, bb.Max, col, false);
+
+		if (pFlags & ImGuiTreeNodeFlags_Bullet)
+			RenderBullet(bb.Min + ImVec2(text_offset_x * 0.5f, g.FontSize*0.50f + text_base_offset_y));
+		else if (!(pFlags & ImGuiTreeNodeFlags_Leaf))
+			RenderTriangle(bb.Min + ImVec2(padding.x, g.FontSize*0.15f + text_base_offset_y), is_open ? ImGuiDir_Down : ImGuiDir_Right, 0.70f);
+		if (g.LogEnabled)
+			LogRenderedText(&text_pos, ">");
+		RenderText(text_pos, pLabel, pLabelEnd, false);
+	}
+
+	if (is_open && !(pFlags & ImGuiTreeNodeFlags_NoTreePushOnOpen))
+	{
+		TreePushRawID(pID);
+	}
+	return is_open;
+}
+
+bool ImGui::CollapsingHeaderEx(
+	ImTextureID IconTextureId,
+	const ImVec2& pIconUV0,
+	const ImVec2& pIconUV1,
+	const ImVec4& pTintColor,
+	const char* pLabel, 
+	bool* pOpen, 
+	ImGuiTreeNodeFlags pFlags)
+{
+	ImGuiWindow* window = GetCurrentWindow();
+	if (window->SkipItems) return false;
+
+	if (pOpen && !*pOpen) return false;
+
+	ImGuiID _id = window->GetID(pLabel);
+	bool _is_open = TreeNodeBehaviorEx(
+		_id,
+		IconTextureId,
+		pIconUV0,
+		pIconUV1,
+		pTintColor,
+		pFlags | ImGuiTreeNodeFlags_CollapsingHeader | ImGuiTreeNodeFlags_NoTreePushOnOpen | (pOpen ? ImGuiTreeNodeFlags_AllowItemOverlap : 0),
+		pLabel);
+	if (pOpen)
+	{
+		// Create a small overlapping close button // FIXME: We can evolve this into user accessible helpers to add extra buttons on title bars, headers, etc.
+		ImGuiContext& g = *GImGui;
+		float button_sz = g.FontSize * 0.5f;
+		ImGuiItemHoveredDataBackup last_item_backup;
+		if (CloseButton(window->GetID((void*)(intptr_t)(_id + 1)), ImVec2(ImMin(window->DC.LastItemRect.Max.x, window->ClipRect.Max.x) - g.Style.FramePadding.x - button_sz, window->DC.LastItemRect.Min.y + g.Style.FramePadding.y + button_sz), button_sz))
+		{
+			*pOpen = false;
+		}
+		last_item_backup.Restore();
+	}
+	return _is_open;
+}
+
+#pragma endregion

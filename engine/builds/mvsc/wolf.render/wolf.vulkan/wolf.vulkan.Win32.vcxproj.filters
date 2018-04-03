@@ -28,12 +28,6 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_demo.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.cpp">
       <Filter>w_graphics</Filter>
     </ClCompile>
@@ -75,6 +69,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_occlusion_culling.cpp">
       <Filter>w_framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

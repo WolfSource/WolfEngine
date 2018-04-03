@@ -1,5 +1,11 @@
 #include "pch.h"
 #include "scene.h"
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//The following codes have been added for this project
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+#include <w_graphics/w_imgui.h>
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 using namespace std;
 using namespace wolf;
@@ -233,7 +239,7 @@ ULONG scene::release()
 	this->_draw_fence.release();
 	this->_draw_semaphore.release();
 	this->_draw_render_pass.release();
-
+	
 	w_imgui::release();
 
 	return w_game::release();
