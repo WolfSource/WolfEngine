@@ -670,7 +670,24 @@ W_RESULT model_mesh::_create_buffers()
 	});
 
 	//set compute shader batch size
-	//uint32_t _draw_counts = 1 + static_cast<uint32_t>(this->instnaces_transforms.size());
+	uint32_t _draw_counts = 1 + static_cast<uint32_t>(this->instnaces_transforms.size());
+	//find nearest pow of 2 for compute shader local batch size
+	this->_cs.batch_local_size = static_cast<uint32_t>(pow(2, ceil(log(_draw_counts) / log(2))));
+	this->indirect_draws.drawing_commands.resize(this->_cs.batch_local_size);
+
+	this->_cs_out.draw_count = _draw_counts;
+
+	for (uint32_t i = 0; i < _draw_counts; ++i)
+	{
+		this->indirect_draws.drawing_commands[i].instanceCount = 1;
+		this->indirect_draws.drawing_commands[i].firstInstance = i;
+		//firstIndex and indexCount are written by the compute shader
+	}
+
+	//uint32_t _size = (uint32_t)(_draw_counts * sizeof(w_draw_indexed_indirect_command));
+
+
+	return W_PASSED;
 }
 
 W_RESULT model_mesh::_create_instance_buffer(_In_ const std::vector<float>& pData, _In_ const uint32_t& pSizeOfBuffer)

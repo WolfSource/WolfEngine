@@ -41,8 +41,8 @@ namespace wolf
         struct w_graphics_device_manager_configs;
         struct w_viewport;
         struct w_viewport_scissor;
-        struct w_buffer;
-        class  w_pipeline;
+        //struct w_buffer;
+        //class  w_pipeline;
         
 		/*
 			For Vulkan

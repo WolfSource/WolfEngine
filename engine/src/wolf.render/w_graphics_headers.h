@@ -174,6 +174,13 @@ namespace wolf
 		{
 		};
 		
+		struct w_draw_indexed_indirect_command :
+#ifdef __VULKAN__
+			public VkDrawIndexedIndirectCommand
+#endif
+		{
+		};
+
 		struct w_push_constant_range : 
 #ifdef __VULKAN__
 			public VkPushConstantRange

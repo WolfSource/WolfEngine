@@ -10,7 +10,8 @@
 #ifndef __W_BUFFER_H__
 #define __W_BUFFER_H__
 
-#include "w_graphics_device_manager.h"
+#include <w_graphics_headers.h>
+#include <w_render_export.h>
 
 namespace wolf
 {

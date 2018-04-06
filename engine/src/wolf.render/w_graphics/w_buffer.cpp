@@ -1,4 +1,5 @@
 #include "w_render_pch.h"
+#include "w_graphics_device_manager.h"
 #include "w_buffer.h"
 #include <w_convert.h>
 #include "w_command_buffers.h"

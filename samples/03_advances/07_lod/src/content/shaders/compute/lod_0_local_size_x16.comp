@@ -41,7 +41,7 @@ layout (binding = 2) uniform UBO_In
 layout (binding = 3) buffer UBO_Out
 {
 	uint draw_count;
-	uint lod_count[1];
+	uint lod_count;
 } o_ubo;
 
 // Level Of Detail information
@@ -67,7 +67,7 @@ void main()
 	if (idx == 0)
 	{
 		atomicExchange(o_ubo.draw_count, 0);
-		atomicExchange(o_ubo.lod_count[0], 0);
+		atomicExchange(o_ubo.lod_count, 0);
 	}
 	
 	uint _base_index = idx % 4;
@@ -83,7 +83,7 @@ void main()
 		indirect_draws[idx].index_count = lods[0].index_count;
 		
 		// Update stats
-		atomicAdd(o_ubo.lod_count[0], 1);
+		atomicAdd(o_ubo.lod_count, 1);
 	}
 	else
 	{

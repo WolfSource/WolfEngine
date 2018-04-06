@@ -11,12 +11,12 @@
 
 #include <w_graphics_headers.h>
 #include <w_render_export.h>
+#include "w_graphics/w_buffer.h"
 
 namespace wolf
 {
 	namespace graphics
 	{
-
 		struct w_command_buffer
 		{
 #ifdef __VULKAN__
@@ -104,6 +104,13 @@ namespace wolf
 			w_command_buffer_pimp*              _pimp;
 		};
 
+		struct w_indirect_draws_command_buffer
+		{
+			wolf::graphics::w_buffer                                buffer;
+			std::vector<w_draw_indexed_indirect_command>            drawing_commands;
+
+			W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t& pDrawCount);
+		};
 	}
 }
 

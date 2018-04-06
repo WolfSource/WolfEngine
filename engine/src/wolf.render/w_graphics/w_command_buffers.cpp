@@ -355,3 +355,73 @@ const size_t w_command_buffers::get_commands_size() const
 
 #pragma endregion
 
+#pragma region w_indirect_draws_command_buffer
+
+W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t& pDrawCount)
+{
+	const std::string _trace_info = "w_indirect_draws_command_buffer::load";
+
+	if (!this->drawing_commands.size())
+	{
+		V(W_FAILED, "empty indirect drawing commands", _trace_info, 3);
+		return W_FAILED;
+	}
+	if (pDrawCount > this->drawing_commands.size())
+	{
+		V(W_FAILED, "draw count is greater than indirect drawing commands", _trace_info, 3);
+		return W_FAILED;
+	}
+
+	w_buffer _staging_buffer;
+	defer _(nullptr, [&](...)
+	{
+		_staging_buffer.release();
+	});
+
+	uint32_t _size = (uint32_t)(pDrawCount * sizeof(w_draw_indexed_indirect_command));
+	if (_staging_buffer.load_as_staging(pGDevice, _size) == W_FAILED)
+	{
+		V(W_FAILED, "loading staging buffer of indirect_draw_commands", _trace_info, 3);
+		return W_FAILED;
+	}
+
+	if (_staging_buffer.bind() == W_FAILED)
+	{
+		V(W_FAILED, "binding to staging buffer of indirect_draw_commands", _trace_info, 3);
+		return W_FAILED;
+	}
+
+	if (_staging_buffer.set_data(this->drawing_commands.data()) == S_FALSE)
+	{
+		V(W_FAILED, "setting data for staging buffer of indirect_draw_commands", _trace_info, 3);
+		return W_FAILED;
+	}
+
+	//load memory for indirect buffer 
+	if (this->buffer.load(
+		pGDevice,
+		_size,
+		VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+	{
+		V(W_FAILED, "loading staging buffer of indirect_commands_buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+
+	//bind indircet buffer
+	if (this->buffer.bind() == W_FAILED)
+	{
+		V(W_FAILED, "binding to staging buffer of indirect_commands_buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+
+	if (_staging_buffer.copy_to(this->buffer) == W_FAILED)
+	{
+		V(W_FAILED, "copy staging buffer to device buffer of indirect_commands_buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+
+	return W_PASSED;
+}
+
+#pragma endregion

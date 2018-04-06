@@ -23,6 +23,7 @@
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_uniform.h>
+#include "compute_stage.h"
 
 class model_mesh : public wolf::system::w_object
 {
@@ -149,7 +150,11 @@ private:
 
 	bool													_visible;
 
-	
+	wolf::graphics::w_indirect_draws_command_buffer         indirect_draws;
+	wolf::graphics::w_buffer                                indirect_draw_count_buffer;
+
+	compute_stage											_cs;
+	compute_stage_output									_cs_out;
 };
 
 #endif

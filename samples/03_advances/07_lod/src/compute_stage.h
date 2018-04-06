@@ -166,6 +166,12 @@ struct compute_stage
 
 };
 
+struct compute_stage_output
+{
+	uint32_t                                            draw_count;// Total number of indirect draw counts
+	uint32_t                                            lod_level;// LOD level
+};
+
 #endif
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
