@@ -22,11 +22,14 @@ int main()
 	//set content path directory
 	auto _content_path_dir = wolf::system::io::get_current_directoryW();
 #ifdef WIN32
-	_content_path_dir += L"/../../../../samples/03_advances/06_scene/src/content/";
+	_content_path_dir += L"/../../../../content/";
 #elif defined(__APPLE__)
-	_content_path_dir += L"/../../../../../samples/03_advances/06_scene/src/content/";
+	_content_path_dir += L"/../../../../../content/";
 #endif // WIN32
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//load collada model
 	auto _model_dir = _content_path_dir + L"models/sponza/";
 	auto _scene = w_content_manager::load<w_cpipeline_scene>(_model_dir + L"sponza.DAE");
@@ -49,7 +52,9 @@ int main()
 	{
 		printf("scene not found\r\n");
 	}
-	w_content_manager::release();
-	
+	w_content_manager::release();	
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     return 0;
 }

@@ -480,6 +480,22 @@ void w_cpipeline_model::add_instance(_In_ const w_instance_info& pValue)
     this->_instances_info.push_back(pValue);
 }
 
+void w_cpipeline_model::add_lods(_In_ const std::vector<w_cpipeline_model*>& pLODs)
+{
+	for (auto _lod : pLODs)
+	{
+		this->_lods.push_back(*_lod);
+	}
+}
+
+void w_cpipeline_model::add_convex_hulls(_In_ const std::vector<w_cpipeline_model*>& pCHs)
+{
+	for (auto _ch : pCHs)
+	{
+		this->_convex_hulls.push_back(*_ch);
+	}
+}
+
 void w_cpipeline_model::update_world()
 {
 	this->_world = glm::make_wpv_mat(

@@ -203,6 +203,9 @@ namespace wolf
 			WCP_EXP virtual ~w_cpipeline_model();
 
             WCP_EXP void add_instance(_In_ const w_instance_info& pValue);
+			WCP_EXP void add_lods(_In_ const std::vector<w_cpipeline_model*>& pLODs);
+			WCP_EXP void add_convex_hulls(_In_ const std::vector<w_cpipeline_model*>& pCHs);
+
 			WCP_EXP void update_world();
 			WCP_EXP void release();
 

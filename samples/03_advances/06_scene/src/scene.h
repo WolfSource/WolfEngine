@@ -20,12 +20,13 @@
 #include <w_graphics/w_semaphore.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_shader.h>
+#include <w_graphics/w_imgui.h>
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 #include <w_framework/w_first_person_camera.h>
-#include "model.h"
+#include "model_mesh.h"
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -61,7 +62,24 @@ public:
 	ULONG release() override;
 
 private:
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	struct widget_info
+	{
+		ImVec2	size;
+		ImVec2	pos;
+	};
+
 	W_RESULT	_build_draw_command_buffers();
+	void		_show_floating_debug_window();
+	widget_info	_show_left_widget_controller();
+	widget_info	_show_search_widget(_In_ widget_info* pRelatedWidgetInfo);
+	widget_info	_show_explorer();
+	bool    	_update_gui();
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
@@ -72,8 +90,20 @@ private:
 	wolf::graphics::w_fences                                        _draw_fence;
 	wolf::graphics::w_semaphore                                     _draw_semaphore;
 
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	bool															_rebuild_command_buffer;
+	bool															_force_update_camera;
 	wolf::framework::w_first_person_camera							_first_camera;
-	std::vector<model*>												_models;
+	std::vector<model_mesh*>										_models;
+
+	bool															_show_all;
+	bool															_show_all_instances_colors;
+	model_mesh*														_current_selected_model;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };
 
 #endif

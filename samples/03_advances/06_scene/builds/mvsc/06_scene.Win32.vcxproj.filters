@@ -4,12 +4,12 @@
     <ClCompile Include="..\..\..\..\common\main.cpp" />
     <ClCompile Include="..\..\..\..\common\pch.cpp" />
     <ClCompile Include="..\..\src\scene.cpp" />
-    <ClCompile Include="..\..\src\model.cpp" />
+    <ClCompile Include="..\..\src\model_mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\common\pch.h" />
     <ClInclude Include="..\..\src\scene.h" />
-    <ClInclude Include="..\..\src\model.h" />
+    <ClInclude Include="..\..\src\model_mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="content">
@@ -26,9 +26,6 @@
     </Filter>
     <Filter Include="content\textures\sponza">
       <UniqueIdentifier>{c7e51ac5-d967-4fcb-b349-7fa051992f8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="content\fonts">
-      <UniqueIdentifier>{10638239-13be-4ecb-b367-0e60a763f7da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -97,10 +94,5 @@
     <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Spec.jpg">
       <Filter>content\textures\sponza</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="..\..\src\content\fonts\MyriadPro-Regular.ttf">
-      <Filter>content\fonts</Filter>
-    </Font>
   </ItemGroup>
 </Project>

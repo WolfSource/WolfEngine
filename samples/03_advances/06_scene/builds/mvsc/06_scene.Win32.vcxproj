@@ -24,12 +24,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\src\model.cpp" />
+    <ClCompile Include="..\..\src\model_mesh.cpp" />
     <ClCompile Include="..\..\src\scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\common\pch.h" />
-    <ClInclude Include="..\..\src\model.h" />
+    <ClInclude Include="..\..\src\model_mesh.h" />
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
   <ItemGroup>
@@ -56,9 +56,6 @@
     <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Diff.jpg" />
     <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Norm.jpg" />
     <Image Include="..\..\src\content\textures\sponza\TEST-Sponza_Spec.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="..\..\src\content\fonts\MyriadPro-Regular.ttf" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C}</ProjectGuid>

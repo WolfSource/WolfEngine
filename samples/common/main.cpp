@@ -91,11 +91,12 @@ WOLF_MAIN()
 	error
 #endif
 
-	const uint32_t _width = 1280, _height = 720;
+	const uint32_t _width = 1280 + 16, _height = 720 + 39;
 	sScene = make_unique<scene>(_content_path, _running_dir, L"wolf.vulkan.sample");
     sWindow = make_unique<w_window>();
 	sWindow->set_width(_width);
 	sWindow->set_height(_height);
+	sWindow->enable_caption(true);
 
 #ifdef __WIN32
 	//sWindow->enable_tiled(true);
@@ -111,7 +112,7 @@ WOLF_MAIN()
     _window_info.v_sync = false;
 	_window_info.swap_chain_format = 44;//VK_FORMAT_B8G8R8A8_UNORM in vulkan api
 	_window_info.cpu_access_swap_chain_buffer = false;
-
+	
 #ifdef __WIN32
     _window_info.hwnd = sWindow->get_HWND();
     _window_info.hInstance = sWindow->get_HINSTANCE();

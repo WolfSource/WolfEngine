@@ -11,7 +11,7 @@ layout (location = 3) in vec3	i_ins_pos;
 layout (location = 4) in vec3	i_ins_rot;
 layout (location = 5) in float	i_ins_scale;
 
-layout(set = 0, binding = 0) uniform U0
+layout(binding = 0) uniform U0
 {
 	mat4 view;
 	mat4 projection;
@@ -70,7 +70,7 @@ void main()
 	gl_Position = u0.projection * u0.view * _world_pos;
 	o_norm =  normalize( ( vec4(i_norm, 0.0)  * _world_view ).xyz );
 	o_uv = i_uv;
-
+	
 	if (gl_InstanceIndex == 0)
 	{
 		//this is ref model

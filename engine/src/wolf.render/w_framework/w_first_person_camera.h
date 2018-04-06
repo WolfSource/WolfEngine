@@ -17,6 +17,7 @@
 #include "w_cpipeline_export.h"
 #include <w_game_time.h>
 #include <w_point.h>
+#include <w_bounding.h>
 #include <collada/c_camera.h>
 #include <glm/vec2.hpp>
 
@@ -33,6 +34,9 @@ namespace wolf
             //returns true if camera updated
             WCP_EXP bool update(_In_ const wolf::system::w_game_time& pGameTime,
                 _In_ const w_point_t& pScreenSize);
+
+			//focus on a object
+			WCP_EXP void focus(_In_ const system::w_bounding_sphere& pBoundingSphere, _In_ const float& pDistance = 3.0f);
 
 #pragma region Getters
 

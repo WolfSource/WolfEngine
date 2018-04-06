@@ -120,3 +120,20 @@ bool w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
 
     return _updated;
 }
+
+void w_first_person_camera::focus(_In_ const wolf::system::w_bounding_sphere& pBoundingSphere, _In_ const float& pDistance)
+{
+	set_interest(
+		pBoundingSphere.center[0],
+		pBoundingSphere.center[1],
+		pBoundingSphere.center[2]);
+
+	auto _radius = pBoundingSphere.radius * pDistance;
+	set_translate(
+		pBoundingSphere.center[0],
+		pBoundingSphere.center[1] + _radius,
+		pBoundingSphere.center[2] + _radius);
+
+	update_view();
+	update_frustum();
+}
