@@ -3,19 +3,16 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-struct instance_data 
+#define BATCH_SIZE	16
+
+//the structure of instance
+struct vertex_instance_data 
 {
 	vec4	pos;
 };
 
-// instances buffer
-layout (binding = 0, std140) buffer Instances 
-{
-   instance_data instances[];
-};
-
-// VkDrawIndexedIndirectCommand's layout
-struct indexed_indirect_command 
+// w_draw_indexed_indirect_command's layout
+struct draw_indexed_indirect_command 
 {
 	uint	index_count;
 	uint	instance_count;
@@ -24,27 +21,7 @@ struct indexed_indirect_command
 	uint	first_instance;
 };
 
-// multi draw output
-layout (binding = 1, std430) writeonly buffer IndirectDraws
-{
-	indexed_indirect_command indirect_draws[];
-};
-
-// Matrices
-layout (binding = 2) uniform UBO_In
-{
-	vec4	camera_pos;
-	vec4	is_visible[4];
-} i_ubo;
-
-// indirect draw stats
-layout (binding = 3) buffer UBO_Out
-{
-	uint draw_count;
-	uint lod_count;
-} o_ubo;
-
-// Level Of Detail information
+//Level Of Detail layout
 struct LOD
 {
 	uint	first_index;
@@ -52,13 +29,39 @@ struct LOD
 	float	distance;
 	float	padding;
 };
+
+// input instances buffer
+layout (binding = 0, std140) buffer INSTANCES 
+{
+   vertex_instance_data instances[];
+};
+
+// input indirect draws buffer
+layout (binding = 1, std430) writeonly buffer INDIRECT_DRAWS
+{
+	draw_indexed_indirect_command indirect_draws[];
+};
+
+// input uniform
+layout (binding = 2) uniform UBO_IN
+{
+	vec4	camera_pos;
+	vec4	is_visible[BATCH_SIZE / 4];
+} i_ubo;
+
+// output compute shader uniform contains status
+layout (binding = 3) buffer UBO_OUT
+{
+	uint draw_count;
+	uint lod_level;
+} o_ubo;
+
 layout (binding = 4) readonly buffer LODs
 {
 	LOD lods[];
 };
 
-layout (local_size_x = 16) in;
-
+layout (local_size_x = BATCH_SIZE) in;
 void main()
 {
 	uint idx = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
@@ -67,7 +70,7 @@ void main()
 	if (idx == 0)
 	{
 		atomicExchange(o_ubo.draw_count, 0);
-		atomicExchange(o_ubo.lod_count, 0);
+		atomicExchange(o_ubo.lod_level, 0);
 	}
 	
 	uint _base_index = idx % 4;
@@ -83,7 +86,7 @@ void main()
 		indirect_draws[idx].index_count = lods[0].index_count;
 		
 		// Update stats
-		atomicAdd(o_ubo.lod_count, 1);
+		atomicAdd(o_ubo.lod_level, 1);
 	}
 	else
 	{

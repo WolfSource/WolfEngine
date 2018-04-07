@@ -11,7 +11,7 @@ using namespace wolf::content_pipeline;
 model::model(
 	_In_ w_cpipeline_model* pContentPipelineModel,
 	_In_ w_vertex_binding_attributes pVertexBindingAttributes) :
-	model(pContentPipelineModel, pVertexBindingAttributes)
+	_super(pContentPipelineModel, pVertexBindingAttributes)
 {
 	if (this->c_model)
 	{
@@ -57,6 +57,21 @@ W_RESULT model::initialize()
 		&this->sub_meshes_bounding_box,
 		&this->textures_paths);
 
+	uint32_t _lod_distance_index = 1;
+	const uint32_t _lod_distance_offset = 700;
+	lod_info _lod_info;
+
+	if (_meshes.size())
+	{
+		//add first lod
+		_lod_info.first_index = this->tmp_batch_indices.size();// First index for this LOD
+		_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
+		_lod_info.distance = _lod_distance_index * _lod_distance_offset;
+		_lod_distance_index++;
+
+		this->lods_info.push_back(_lod_info);
+	}
+
 	//append all lods to _batch_vertices and _batch_indices
 	std::vector<w_cpipeline_model*> _lods;
 	this->c_model->get_lods(_lods);
@@ -66,6 +81,13 @@ W_RESULT model::initialize()
 		_lod_model->get_meshes(_meshes);
 		if (_meshes.size())
 		{
+			_lod_info.first_index = this->tmp_batch_indices.size();// First index for this LOD
+			_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
+			_lod_info.distance = _lod_distance_index * _lod_distance_offset;
+			_lod_distance_index++;
+
+			this->lods_info.push_back(_lod_info);
+
 			_store_to_batch(
 				_meshes,
 				this->vertex_binding_attributes,
@@ -74,11 +96,15 @@ W_RESULT model::initialize()
 				this->tmp_batch_indices);
 		}
 	}
-	_lods.clear();
 
+	_lods.clear();
 	_meshes.clear();
 }
 
+ULONG model::release()
+{
+	return 0;
+}
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++

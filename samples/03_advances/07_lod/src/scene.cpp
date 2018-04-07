@@ -52,7 +52,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -84,9 +84,9 @@ void scene::load()
 	auto _output_window = &(_gDevice->output_presentation_window);
 
 #ifdef WIN32
-	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/06_scene/src/content/";
+	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/07_lod/src/content/";
 #elif defined(__APPLE__)
-	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/03_advances/06_scene/src/content/";
+	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/03_advances/07_lod/src/content/";
 #endif // WIN32
 	
 	w_point_t _preferred_backbuffer_size;
@@ -206,7 +206,7 @@ void scene::load()
 
 	std::map<uint32_t, std::vector<w_vertex_attribute>> _instance_vertex_declaration;
 	_instance_vertex_declaration[0] = { W_POS, W_NORM, W_UV }; //position ,normal and uv per each vertex
-	_instance_vertex_declaration[1] = { W_POS, W_ROT, W_SCALE }; // position, rotation, scale per each instance
+	_instance_vertex_declaration[1] = { W_POS, W_ROT }; // position, rotation per each instance
 
 	w_vertex_binding_attributes _basic_vertex_binding_attributes(_basic_vertex_declaration);
 	w_vertex_binding_attributes _instance_vertex_binding_attributes(_instance_vertex_declaration);
@@ -500,7 +500,7 @@ void scene::_show_floating_debug_window()
 		for (auto _m : this->_models)
 		{
 			if (!_m) continue;
-			_m->set_visible(this->_show_all);
+			_m->set_global_visiblity(this->_show_all);
 		}
 		this->_rebuild_command_buffer = true;
 	}
@@ -521,10 +521,10 @@ void scene::_show_floating_debug_window()
 		{
 			this->_current_selected_model->set_enable_instances_colors(_checked);
 		}
-		_checked = this->_current_selected_model->get_visible();
+		_checked = this->_current_selected_model->get_global_visiblity();
 		if (ImGui::Checkbox("Visible", &_checked))
 		{
-			this->_current_selected_model->set_visible(_checked);
+			this->_current_selected_model->set_global_visiblity(_checked);
 			this->_rebuild_command_buffer = true;
 		}
 	}

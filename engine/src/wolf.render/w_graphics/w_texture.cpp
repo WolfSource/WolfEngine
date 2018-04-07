@@ -26,7 +26,6 @@ namespace wolf
 				_layer_count(1),
 				_generate_mip_maps(false),
 				_mip_map_levels(1),
-				_memory(0),
 				_usage_flags(w_image_usage_flag_bits::IMAGE_USAGE_TRANSFER_DST_BIT | w_image_usage_flag_bits::IMAGE_USAGE_SAMPLED_BIT),
 				_is_staging(false),
 				_staging_buffer_memory_pointer(nullptr),
@@ -79,7 +78,7 @@ namespace wolf
 				//bind to memory
 				if (vkBindImageMemory(this->_gDevice->vk_device,
 					this->_image_view.image,
-					this->_memory,
+					this->_memory.handle,
 					0))
 				{
 					V(W_FAILED, "binding VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
@@ -107,6 +106,7 @@ namespace wolf
 					_path = content_path + pPath;
 				}
 				auto _ext = get_file_extentionW(_path.c_str());
+				this->_texture_name = get_base_file_nameW(_path.c_str()) + L"." + _ext;
 
 #if defined(__WIN32) || defined(__UWP)
 				std::wstring _str = _path;
@@ -230,7 +230,7 @@ namespace wolf
 				//bind to memory
 				if (vkBindImageMemory(this->_gDevice->vk_device,
 					this->_image_view.image,
-					this->_memory,
+					this->_memory.handle,
 					0))
 				{
 					V(W_FAILED, "binding VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
@@ -271,6 +271,8 @@ namespace wolf
 
             W_RESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData)
             {
+				this->_texture_name = L"texture_from_memory_rgba";
+
                 auto _hr = _create_image();
                 if (_hr == W_FAILED) return W_FAILED;
 
@@ -280,7 +282,7 @@ namespace wolf
                 //bind to memory
 				if (vkBindImageMemory(this->_gDevice->vk_device,
 					this->_image_view.image,
-					this->_memory,
+					this->_memory.handle,
 					0))
 				{
 					V(W_FAILED, "binding VkImage for graphics device: " + this->_gDevice->device_info->get_device_name() +
@@ -358,9 +360,9 @@ namespace wolf
 			W_RESULT _allocate_memory()
 			{
 				//release the old one
-				if (this->_memory)
+				if (this->_memory.handle)
 				{
-					vkFreeMemory(this->_gDevice->vk_device, this->_memory, nullptr);
+					vkFreeMemory(this->_gDevice->vk_device, this->_memory.handle, nullptr);
 				}
 
 				VkMemoryRequirements _image_memory_requirements;
@@ -395,7 +397,7 @@ namespace wolf
 				if (vkAllocateMemory(this->_gDevice->vk_device,
 					&_memory_allocate_info,
 					nullptr,
-					&this->_memory))
+					&this->_memory.handle))
 				{
 					V(W_FAILED, "allocating memory for Image for graphics device: " + this->_gDevice->device_info->get_device_name() +
 						" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
@@ -1515,12 +1517,12 @@ namespace wolf
 				}
                 
                 //release memory
-                if( this->_memory)
+                if( this->_memory.handle)
                 {
                     vkFreeMemory(this->_gDevice->vk_device,
-                                 this->_memory,
+                                 this->_memory.handle,
                                  nullptr);
-                    this->_memory= 0;
+                    this->_memory.handle = 0;
                 }
                 
                 if (this->_is_staging)
@@ -1600,6 +1602,11 @@ namespace wolf
 				return this->_mip_map_levels;
 			}
 
+			const wchar_t* get_texture_name() const
+			{
+				return this->_texture_name.c_str();
+			}
+
 #pragma endregion
               
 #pragma region Setters
@@ -1646,10 +1653,11 @@ namespace wolf
 			w_image_view									_image_view;
 			VkImageAspectFlags								_buffer_type;
 			std::map<w_sampler_type, w_sampler>				_samplers;
-            VkDeviceMemory                                  _memory;
+            w_device_memory                                 _memory;
 			w_image_type                                    _image_type;
             w_image_view_type                               _image_view_type;
 			VkImageLayout									_image_layout;
+			std::wstring									_texture_name;
         };
     }
 }

@@ -11,7 +11,7 @@ model_mesh::model_mesh(
 	vertex_binding_attributes(pVertexBindingAttributes),
 	_name("model"),
 	_mesh(nullptr),
-	_visible(true),
+	_global_visiblity(true),
 	c_model(pContentPipelineModel)
 {
 }
@@ -111,7 +111,7 @@ W_RESULT model_mesh::load(
 
 W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectMode)
 	{
-		if (!this->_visible) return W_PASSED;
+		if (!this->_global_visiblity) return W_PASSED;
 
 		const std::string _trace_info = this->_name + "::draw";
 
@@ -659,23 +659,13 @@ W_RESULT model_mesh::_create_buffers()
 {
 	const std::string _trace_info = this->_name + "::_create_buffers";
 
-	//TODO: later work on one huge buffer instead of creating 4 seperated staging buffers
-	w_buffer _staging_buffers[4];
-	defer _(nullptr, [&](...)
-	{
-		for (size_t i = 0; i < 4; ++i)
-		{
-			_staging_buffers[i].release();
-		}
-	});
-
 	//set compute shader batch size
 	uint32_t _draw_counts = 1 + static_cast<uint32_t>(this->instnaces_transforms.size());
 	//find nearest pow of 2 for compute shader local batch size
 	this->_cs.batch_local_size = static_cast<uint32_t>(pow(2, ceil(log(_draw_counts) / log(2))));
 	this->indirect_draws.drawing_commands.resize(this->_cs.batch_local_size);
 
-	this->_cs_out.draw_count = _draw_counts;
+	this->_cs_out_struct.draw_count = _draw_counts;
 
 	for (uint32_t i = 0; i < _draw_counts; ++i)
 	{
@@ -684,54 +674,412 @@ W_RESULT model_mesh::_create_buffers()
 		//firstIndex and indexCount are written by the compute shader
 	}
 
-	//uint32_t _size = (uint32_t)(_draw_counts * sizeof(w_draw_indexed_indirect_command));
+	//load indirect draws
+	auto _hr = this->indirect_draws.load(this->gDevice, _draw_counts);
+	if (_hr == W_FAILED)
+	{
+		V(W_FAILED, "loading indirect draws command buffer for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
+	}
 
+	_hr = _create_instance_buffers();
+	//create instance buffers
+	if (_hr == W_FAILED)
+	{
+		return W_FAILED;
+	}
+
+	//create compute shader lod buffer
+	_hr = _create_lod_levels_buffer();
+	if (_hr == W_FAILED)
+	{
+		return W_FAILED;
+	}
+
+	//create compute shader output buffer
+	_hr = _create_cs_out_buffer();
+	if (_hr == W_FAILED)
+	{
+		return W_FAILED;
+	}
 
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::_create_instance_buffer(_In_ const std::vector<float>& pData, _In_ const uint32_t& pSizeOfBuffer)
+W_RESULT model_mesh::_create_instance_buffers()
 {
 	const std::string _trace_info = this->_name + "::_create_instance_buffer";
 
-	w_buffer _staging_buffers;
-
-	_staging_buffers.load_as_staging(this->gDevice, pSizeOfBuffer);
-	if (_staging_buffers.bind() == W_FAILED)
+	w_buffer _staging_buffers[2];
+	defer _(nullptr, [&](...)
 	{
-		V(W_FAILED, "binding to staging buffer of vertex_instance_buffer", _trace_info, 2);
-		return W_FAILED;
+		for (size_t i = 0; i < 2; ++i)
+		{
+			if (_staging_buffers[i].get_is_released()) continue;
+			_staging_buffers[i].release();
+		}
+	});
+
+	auto _number_of_instances = this->instnaces_transforms.size();
+	auto _draw_counts = 1 + _number_of_instances;
+
+	std::vector<vertex_instance_data> _vertex_instances_data(_draw_counts);
+	std::vector<compute_instance_data> _compute_instances_data(_draw_counts);
+
+	//first one is ref model
+	int _index = 0;
+	_vertex_instances_data[_index].pos[0] = this->transform.position[0];
+	_vertex_instances_data[_index].pos[1] = this->transform.position[1];
+	_vertex_instances_data[_index].pos[2] = this->transform.position[2];
+
+	_vertex_instances_data[_index].rot[0] = this->transform.rotation[0];
+	_vertex_instances_data[_index].rot[1] = this->transform.rotation[1];
+	_vertex_instances_data[_index].rot[2] = this->transform.rotation[2];
+
+	_compute_instances_data[_index].pos = glm::vec4(
+		this->transform.position[0],
+		this->transform.position[1],
+		this->transform.position[2],
+		1.0f);
+
+	_index++;
+	for (auto _ins : this->instnaces_transforms)
+	{
+		_vertex_instances_data[_index].pos[0] = _ins.position[0];
+		_vertex_instances_data[_index].pos[1] = _ins.position[1];
+		_vertex_instances_data[_index].pos[2] = _ins.position[2];
+
+		_vertex_instances_data[_index].rot[0] = _ins.rotation[0];
+		_vertex_instances_data[_index].rot[1] = _ins.rotation[1];
+		_vertex_instances_data[_index].rot[2] = _ins.rotation[2];
+
+		_compute_instances_data[_index].pos = glm::vec4(
+			_ins.position[0],
+			_ins.position[1],
+			_ins.position[2],
+			1.0f);
+
+		_index++;
 	}
 
-	if (_staging_buffers.set_data(pData.data()) == W_FAILED)
+#pragma region create vertex instances buffer
+	auto _buffer_size = _draw_counts * sizeof(vertex_instance_data);
+	if (_staging_buffers[0].load_as_staging(this->gDevice, _buffer_size) == W_FAILED)
 	{
-		V(W_FAILED, "setting data to staging buffer of vertex_instance_buffer", _trace_info, 2);
+		V(W_FAILED, "loading staging buffer of vertex instances buffer", _trace_info, 3);
 		return W_FAILED;
 	}
-
+	if (_staging_buffers[0].bind() == W_FAILED)
+	{
+		V(W_FAILED, "binding to staging buffer of vertex instances buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+	if (_staging_buffers[0].set_data(_vertex_instances_data.data()) == W_FAILED)
+	{
+		V(W_FAILED, "setting data to staging buffer of vertex instances buffer", _trace_info, 3);
+		return W_FAILED;
+	}
 	if (this->_instances_buffer.load(
 		this->gDevice,
-		pSizeOfBuffer,
+		_buffer_size,
 		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
 	{
-		V(W_FAILED, "loading device buffer of vertex_instance_buffer", _trace_info, 2);
+		V(W_FAILED, "loading device buffer of vertex instances buffer", _trace_info, 2);
 		return W_FAILED;
 	}
-
 	if (this->_instances_buffer.bind() == W_FAILED)
 	{
-		V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 2);
+		V(W_FAILED, "binding to device buffer of vertex instance buffer", _trace_info, 2);
 		return W_FAILED;
 	}
-	if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
+	if (_staging_buffers[0].copy_to(this->_instances_buffer) == W_FAILED)
 	{
-		V(W_FAILED, "copying to device buffer of vertex_instance_buffer", _trace_info, 2);
+		V(W_FAILED, "copying to device buffer of vertex instances buffer", _trace_info, 2);
 		return W_FAILED;
 	}
-	_staging_buffers.release();
+	//release buffer
+	_staging_buffers[0].release();
+#pragma endregion
+
+#pragma region create compute instances buffer
+	_buffer_size = _draw_counts * sizeof(compute_instance_data);
+	if (_staging_buffers[1].load_as_staging(this->gDevice, _buffer_size) == W_FAILED)
+	{
+		V(W_FAILED, "loading staging buffer of compute instances buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+	if (_staging_buffers[1].bind() == W_FAILED)
+	{
+		V(W_FAILED, "binding to staging buffer of compute instances buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+	if (_staging_buffers[1].set_data(_compute_instances_data.data()) == W_FAILED)
+	{
+		V(W_FAILED, "setting data to staging buffer of compute instances buffer", _trace_info, 2);
+		return W_FAILED;
+	}
+	if (this->_cs.instances_buffer.load(
+		this->gDevice,
+		_buffer_size,
+		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+	{
+		V(W_FAILED, "loading device buffer of compute instances buffer", _trace_info, 2);
+		return W_FAILED;
+	}
+	if (_cs.instances_buffer.bind() == W_FAILED)
+	{
+		V(W_FAILED, "binding to device buffer of compute instances buffer", _trace_info, 2);
+		return W_FAILED;
+	}
+	if (_staging_buffers[1].copy_to(_cs.instances_buffer) == W_FAILED)
+	{
+		V(W_FAILED, "copying to device buffer of compute instances buffer", _trace_info, 2);
+		return W_FAILED;
+	}
+	_staging_buffers[1].release();
+#pragma endregion
 
 	return W_PASSED;
+}
+
+W_RESULT model_mesh::_create_lod_levels_buffer()
+{
+	const std::string _trace_info = this->_name + "::_create_lod_levels_buffer";
+
+	w_buffer _staging_buffer;
+	defer _(nullptr, [&](...)
+	{		
+		_staging_buffer.release();
+	});
+
+	auto _size = static_cast<uint32_t>(this->lods_info.size() * sizeof(lod_info));
+	if (_staging_buffer.load_as_staging(this->gDevice, _size) == W_FAILED)
+	{
+		V(W_FAILED, "loading staging buffer for lod levels buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+	if (_staging_buffer.bind() == W_FAILED)
+	{
+		V(W_FAILED, "binding staging buffer for lod levels buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+	if (_staging_buffer.set_data(this->lods_info.data()))
+	{
+		V(W_FAILED, "setting data to staging buffer of lod levels buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+	if (this->_cs.lod_levels_buffer.load(
+		this->gDevice,
+		_size,
+		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+	{
+		V(W_FAILED, "loading data to staging buffer of lod levels buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+	if (this->_cs.lod_levels_buffer.bind() == W_FAILED)
+	{
+		V(W_FAILED, "binding to device buffer of lod levels buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+	if (_staging_buffer.copy_to(this->_cs.lod_levels_buffer) == W_FAILED)
+	{
+		V(W_FAILED, "copy staging buffer to device buffer of lod levels buffer", _trace_info, 3);
+		return W_FAILED;
+	}
+
+	return W_PASSED;
+
+}
+
+W_RESULT model_mesh::_create_cs_out_buffer()
+{
+	const std::string _trace_info = this->_name + "::_create_cs_out_buffer";
+
+	//create buffer of compute stage output
+	auto _size = (uint32_t)sizeof(compute_stage_output);
+	if (this->_cs_out_buffer.load(
+		this->gDevice,
+		_size,
+		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == W_FAILED)
+	{
+		V(W_FAILED, "loading compute shader stage output buffer for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
+	}
+	if (this->_cs_out_buffer.bind() == W_FAILED)
+	{
+		V(W_FAILED, "binding to compute shader stage output buffer for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
+	}
+
+	return W_PASSED;
+}
+
+W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
+	_Inout_ w_shader_binding_param& pShaderBindingParam,
+	_Inout_ std::wstring& pComputeShaderPath)
+{
+	const std::string _trace_info = this->_name + "::_prepare_compute_shader_based_on_batch_local_size";
+
+	auto _lod_level = this->lods_info.size() ? this->lods_info.size() - 1 : 0;
+	pComputeShaderPath = L"lod_" + std::to_wstring(_lod_level) + L"_local_size_x" + std::to_wstring(this->_cs.batch_local_size) + L".comp.spv";
+	
+	auto _hr = W_PASSED;
+	switch (this->_cs.batch_local_size)
+	{
+	default:
+		_hr = W_FAILED;
+		V(_hr, "batch_local_size " + std::to_string(this->_cs.batch_local_size) +
+			" not supported for model: " + this->model_name, _trace_info);
+	case 1:
+		this->_visibilities.resize(1);
+		this->_cs.unifrom_x1 = new w_uniform<compute_unifrom_x1>();
+		if (this->_cs.unifrom_x1->load(this->gDevice) == W_FAILED)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader uniform_x1 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x1->get_descriptor_info();
+		}
+		break;
+	case 2:
+		this->_visibilities.resize(2);
+		this->_cs.unifrom_x2 = new w_uniform<compute_unifrom_x2>();
+		if (this->_cs.unifrom_x2->load(this->gDevice) == W_FAILED)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader unifrom_x2 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x2->get_descriptor_info();
+		}
+		break;
+	case 4:
+		this->_visibilities.resize(4);
+		this->_cs.unifrom_x4 = new w_uniform<compute_unifrom_x4>();
+		if (this->_cs.unifrom_x4->load(this->gDevice) == W_FAILED)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader unifrom_x4 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x4->get_descriptor_info();
+		}
+		break;
+	case 8:
+		this->_visibilities.resize(8);
+		this->_cs.unifrom_x8 = new w_uniform<compute_unifrom_x8>();
+		if (this->_cs.unifrom_x8->load(this->gDevice) == W_FAILED)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader unifrom_x8 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x8->get_descriptor_info();
+		}
+		break;
+	case 16:
+		this->_visibilities.resize(16);
+		this->_cs.unifrom_x16 = new w_uniform<compute_unifrom_x16>();
+		if (this->_cs.unifrom_x16->load(this->gDevice) == W_FAILED)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader unifrom_x16 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x16->get_descriptor_info();
+		}
+		break;
+	case 32:
+		this->_visibilities.resize(32);
+		this->_cs.unifrom_x32 = new w_uniform<compute_unifrom_x32>();
+		if (this->_cs.unifrom_x32->load(this->gDevice) == W_FAILED)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader unifrom_x32 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x32->get_descriptor_info();
+		}
+		break;
+	case 64:
+		this->_visibilities.resize(64);
+		this->_cs.unifrom_x64 = new w_uniform<compute_unifrom_x64>();
+		if (this->_cs.unifrom_x64->load(this->gDevice) == W_FAILED)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader unifrom_x64 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x64->get_descriptor_info();
+		}
+		break;
+	case 128:
+		this->_visibilities.resize(128);
+		this->_cs.unifrom_x128 = new w_uniform<compute_unifrom_x128>();
+		if (this->_cs.unifrom_x128->load(this->gDevice) == W_FAILED)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader uniform_x128 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x128->get_descriptor_info();
+		}
+		break;
+	case 256:
+		this->_visibilities.resize(256);
+		this->_cs.unifrom_x256 = new w_uniform<compute_unifrom_x256>();
+		if (this->_cs.unifrom_x256->load(this->gDevice) == S_FALSE)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader uniform_x256 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x256->get_descriptor_info();
+		}
+		break;
+	case 512:
+		this->_visibilities.resize(512);
+		this->_cs.unifrom_x512 = new w_uniform<compute_unifrom_x512>();
+		if (this->_cs.unifrom_x512->load(this->gDevice) == S_FALSE)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader uniform_x512 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x512->get_descriptor_info();
+		}
+		break;
+	case 1024:
+		this->_visibilities.resize(1024);
+		this->_cs.unifrom_x1024 = new w_uniform<compute_unifrom_x1024>();
+		if (this->_cs.unifrom_x1024->load(this->gDevice) == S_FALSE)
+		{
+			_hr = W_FAILED;
+			V(_hr, "loading compute shader uniform_x512 for " + this->model_name, _trace_info);
+		}
+		else
+		{
+			pShaderBindingParam.buffer_info = this->_cs.unifrom_x1024->get_descriptor_info();
+		}
+		break;
+	}
+
+	return _hr;
 }
 
 W_RESULT model_mesh::_create_shader_modules(
@@ -755,8 +1103,7 @@ W_RESULT model_mesh::_create_shader_modules(
 		_hr = this->_instance_u0.load(this->gDevice);
 		if (_hr == W_FAILED)
 		{
-			this->_shader.release();
-			V(W_FAILED, "loading vertex shader instance uniform for model: " + this->model_name, _trace_info, 2);
+			V(W_FAILED, "loading vertex shader instance uniform for model: " + this->model_name, _trace_info, 3);
 			return W_FAILED;
 		}
 		_shader_param.buffer_info = this->_instance_u0.get_descriptor_info();
@@ -766,8 +1113,7 @@ W_RESULT model_mesh::_create_shader_modules(
 		_hr = this->_basic_u0.load(this->gDevice);
 		if (_hr == W_FAILED)
 		{
-			this->_shader.release();
-			V(W_FAILED, "loading vertex shader basic uniform for model: " + this->model_name, _trace_info, 2);
+			V(W_FAILED, "loading vertex shader basic uniform for model: " + this->model_name, _trace_info, 3);
 			return W_FAILED;
 		}
 		_shader_param.buffer_info = this->_basic_u0.get_descriptor_info();
@@ -779,29 +1125,80 @@ W_RESULT model_mesh::_create_shader_modules(
 	_shader_param.type = w_shader_binding_type::SAMPLER2D;
 	_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
 	_shader_param.image_info = this->_textures[0]->get_descriptor_info();
-
 	_shader_params.push_back(_shader_param);
 
 	//the U1 uniform of fragment shader
 	_hr = this->_u1.load(this->gDevice);
 	if (_hr == W_FAILED)
 	{
-		this->_shader.release();
-		V(W_FAILED, "loading fragment shader uniform for model: " + this->model_name, _trace_info, 2);
+		V(W_FAILED, "loading fragment shader uniform for model: " + this->model_name, _trace_info, 3);
 		return W_FAILED;
 	}
 	_shader_param.index = 2;
 	_shader_param.type = w_shader_binding_type::UNIFORM;
 	_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
 	_shader_param.buffer_info = this->_u1.get_descriptor_info();
-
 	_shader_params.push_back(_shader_param);
 
-	_hr = this->_shader.set_shader_binding_params(_shader_params);
+	_shader_param.index = 0;
+	_shader_param.type = w_shader_binding_type::STORAGE;
+	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+	_shader_param.buffer_info = this->_cs.instances_buffer.get_descriptor_info();
+	_shader_params.push_back(_shader_param);
+
+	_shader_param.index = 1;
+	_shader_param.type = w_shader_binding_type::STORAGE;
+	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+	_shader_param.buffer_info = this->indirect_draws.buffer.get_descriptor_info();
+	_shader_params.push_back(_shader_param);
+
+	_shader_param.index = 2;
+	_shader_param.type = w_shader_binding_type::UNIFORM;
+	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+	
+	std::wstring _compute_shader_path;
+	if (_prepare_cs_path_uniform_based_on_local_size(_shader_param, _compute_shader_path) == W_FAILED)
+	{
+		V(W_FAILED, "getting compute shader uniform and filename path for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
+	}
+	_shader_params.push_back(_shader_param);
+
+	_shader_param.index = 3;
+	_shader_param.type = w_shader_binding_type::STORAGE;
+	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+	_shader_param.buffer_info = this->indirect_draw_count_buffer.get_descriptor_info();
+	_shader_params.push_back(_shader_param);
+
+	_shader_param.index = 4;
+	_shader_param.type = w_shader_binding_type::STORAGE;
+	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+	_shader_param.buffer_info = this->_cs.lod_levels_buffer.get_descriptor_info();
+	_shader_params.push_back(_shader_param);
+
+	//load shaders
+	if (w_shader::load_shader(
+		this->gDevice,
+		"model_mesh_" + wolf::system::convert::wstring_to_string(_compute_shader_path),
+		pVertexShaderPath,
+		L"",
+		L"",
+		L"",
+		pFragmentShaderPath,
+		shared::scene_content_path + L"shaders/compute/" + _compute_shader_path,
+		_shader_params,
+		false,
+		&this->_shader) == W_FAILED)
+	{
+		V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
+	}
+
+	_hr = this->_shader->set_shader_binding_params(_shader_params);
 	if (_hr == W_FAILED)
 	{
-		this->_shader.release();
-		V(W_FAILED, "setting shader binding param for model: " + this->model_name, _trace_info, 2);
+		V(W_FAILED, "setting shader binding param for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
 	}
 	_shader_params.clear();
 
@@ -817,7 +1214,7 @@ W_RESULT model_mesh::_create_pipeline(
 		this->vertex_binding_attributes,
 		w_primitive_topology::TRIANGLE_LIST,
 		&pRenderPass,
-		&this->_shader,
+		this->_shader,
 		{ pRenderPass.get_viewport() },
 		{ pRenderPass.get_viewport_scissor() });
 }
@@ -832,7 +1229,7 @@ ULONG model_mesh::release()
 	this->instnaces_transforms.clear();
 
 	this->_pipeline.release();
-	this->_shader.release();
+	SAFE_RELEASE(this->_shader);
 
 	this->_basic_u0.release();
 	this->_instance_u0.release();
@@ -893,9 +1290,15 @@ bool model_mesh::get_enable_instances_colors() const
 	return this->_u1.data.cmds == 1;
 }
 
-bool model_mesh::get_visible() const
+bool model_mesh::get_global_visiblity() const
 {
-	return this->_visible;
+	return this->_global_visiblity;
+}
+
+bool model_mesh::get_visiblity(_In_ const uint32_t& pModelInstanceIndex) const
+{
+	auto _size = this->_visibilities.size();
+	return pModelInstanceIndex < _size ? this->_visibilities[pModelInstanceIndex] == 1.0f : false;
 }
 
 #pragma endregion
@@ -945,9 +1348,18 @@ void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
 	}
 }
 
-void model_mesh::set_visible(_In_ const bool& pValue)
+void model_mesh::set_global_visiblity(_In_ const bool& pValue)
 {
-	this->_visible = pValue;
+	this->_global_visiblity = pValue ? 1.0f : 0.0f;
+	std::fill(this->_visibilities.begin(), this->_visibilities.end(), this->_global_visiblity);
+}
+
+void model_mesh::set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pModelInstanceIndex)
+{
+	if (pModelInstanceIndex < this->_visibilities.size())
+	{
+		this->_visibilities[pModelInstanceIndex] = pValue ? 1.0f : 0.0f;
+	}
 }
 
 #pragma endregion

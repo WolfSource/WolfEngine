@@ -56,7 +56,8 @@ public:
 	std::vector<wolf::content_pipeline::w_instance_info>	get_instances() const;
 	wolf::system::w_bounding_box get_global_bounding_box() const;
 	bool get_enable_instances_colors() const;
-	bool get_visible() const;
+	bool get_global_visiblity() const;
+	bool get_visiblity(_In_ const uint32_t& pModelInstanceIndex = 0) const;
 
 #pragma endregion
 
@@ -64,7 +65,8 @@ public:
 
 	void set_view_projection(_In_ const glm::mat4& pView, _In_ const glm::mat4& pProjection);
 	void set_enable_instances_colors(_In_ const bool& pEnable);
-	void set_visible(_In_ const bool& pValue);
+	void set_global_visiblity(_In_ const bool& pValue);
+	void set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pModelInstanceIndex = 0);
 
 #pragma endregion
 
@@ -101,15 +103,28 @@ protected:
 
 	wolf::graphics::w_vertex_binding_attributes				vertex_binding_attributes;
 
+	struct lod_info
+	{
+		uint32_t											first_index;
+		uint32_t											index_count;
+		float												distance;
+		float												_padding;
+	};
+	std::vector<lod_info>									lods_info;
 private:
 
-	W_RESULT _load_textures();
-	W_RESULT _create_buffers();
-	W_RESULT _create_instance_buffer(_In_ const std::vector<float>& pData, _In_ const uint32_t& pSizeOfBuffer);
-	W_RESULT _create_shader_modules(
+	W_RESULT	_load_textures();
+	W_RESULT	_create_buffers(); 
+	W_RESULT	_create_instance_buffers();
+	W_RESULT	_create_lod_levels_buffer();
+	W_RESULT	_create_cs_out_buffer();
+	W_RESULT	_prepare_cs_path_uniform_based_on_local_size(
+		_Inout_ wolf::graphics::w_shader_binding_param& pShaderBindingParam,
+		_Inout_ std::wstring& pComputeShaderPath);
+	W_RESULT	_create_shader_modules(
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath);
-	W_RESULT _create_pipeline(
+	W_RESULT	_create_pipeline(
 		_In_z_ const std::string& pPipelineCacheName,
 		_In_ const wolf::graphics::w_render_pass& pRenderPass);
 
@@ -139,22 +154,28 @@ private:
 	};
 	wolf::graphics::w_uniform<u1>							_u1;
 	
-	wolf::graphics::w_shader								_shader;
+	wolf::graphics::w_shader*								_shader;
 	wolf::graphics::w_pipeline								_pipeline;
 
-	//mesh
+	struct vertex_instance_data
+	{
+		glm::vec3   pos;
+		glm::vec3   rot;
+	};
 	wolf::graphics::w_mesh*									_mesh;
 	wolf::graphics::w_buffer								_instances_buffer;
 
 	std::vector<wolf::graphics::w_texture*>					_textures;
-
-	bool													_visible;
-
+	
 	wolf::graphics::w_indirect_draws_command_buffer         indirect_draws;
 	wolf::graphics::w_buffer                                indirect_draw_count_buffer;
 
 	compute_stage											_cs;
-	compute_stage_output									_cs_out;
+	compute_stage_output									_cs_out_struct;
+	wolf::graphics::w_buffer								_cs_out_buffer;
+
+	bool													_global_visiblity;
+	std::vector<float>                                      _visibilities;
 };
 
 #endif

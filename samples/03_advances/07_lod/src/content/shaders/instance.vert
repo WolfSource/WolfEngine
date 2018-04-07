@@ -9,7 +9,6 @@ layout(location = 2) in vec2 i_uv;
 
 layout (location = 3) in vec3	i_ins_pos;
 layout (location = 4) in vec3	i_ins_rot;
-layout (location = 5) in float	i_ins_scale;
 
 layout(binding = 0) uniform U0
 {
@@ -57,7 +56,8 @@ void main()
 	mat3 ry = rotate_over_axis(i_ins_rot.y, vec3( 0.0, 1.0, 0.0));
 	mat3 rz = rotate_over_axis(i_ins_rot.z, vec3( 0.0, 0.0, 1.0));
 
-    mat3 _rot = rx * ry * rz;
+	const float i_ins_scale = 1.0;
+	mat3 _rot = rx * ry * rz;
 	mat4 _world = mat4( _rot[0][0]  * i_ins_scale 		, _rot[0][1]					, _rot[0][2]					, 0.0,
 						_rot[1][0]						, _rot[1][1] * i_ins_scale		, _rot[1][2]					, 0.0,
 						_rot[2][0]						, _rot[2][1]					, _rot[2][2] * i_ins_scale		, 0.0,

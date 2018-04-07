@@ -23,13 +23,6 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_uniform.h>
 
-#pragma pack(push,1)
-struct compute_instance_data
-{
-	glm::vec4   pos;
-};
-#pragma pack(pop)
-
 #pragma region compute uniforms
 
 #pragma pack(push,1)
@@ -120,24 +113,41 @@ struct compute_unifrom_x1024
 };
 #pragma pack(pop)
 
+#pragma endregion
+
+#pragma pack(push,1)
+struct compute_instance_data
+{
+	glm::vec4   pos;
+};
+#pragma pack(pop)
+
+#pragma pack(push,1)
+struct compute_stage_output
+{
+	uint32_t                                            draw_count;// Total number of indirect draw counts
+	uint32_t                                            lod_level;// LOD level
+};
+#pragma pack(pop)
+
 struct compute_stage
 {
 	uint32_t                                                batch_local_size = 1;
 
-	wolf::graphics::w_uniform<compute_unifrom_x1>*          unifrom_x1;
-	wolf::graphics::w_uniform<compute_unifrom_x2>*          unifrom_x2;
-	wolf::graphics::w_uniform<compute_unifrom_x4>*          unifrom_x4;
-	wolf::graphics::w_uniform<compute_unifrom_x8>*          unifrom_x8;
-	wolf::graphics::w_uniform<compute_unifrom_x16>*         unifrom_x16;
-	wolf::graphics::w_uniform<compute_unifrom_x32>*         unifrom_x32;
-	wolf::graphics::w_uniform<compute_unifrom_x64>*         unifrom_x64;
-	wolf::graphics::w_uniform<compute_unifrom_x128>*        unifrom_x128;
-	wolf::graphics::w_uniform<compute_unifrom_x256>*        unifrom_x256;
-	wolf::graphics::w_uniform<compute_unifrom_x512>*        unifrom_x512;
-	wolf::graphics::w_uniform<compute_unifrom_x1024>*       unifrom_x1024;
+	wolf::graphics::w_uniform<compute_unifrom_x1>*          unifrom_x1 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x2>*          unifrom_x2 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x4>*          unifrom_x4 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x8>*          unifrom_x8 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x16>*         unifrom_x16 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x32>*         unifrom_x32 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x64>*         unifrom_x64 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x128>*        unifrom_x128 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x256>*        unifrom_x256 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x512>*        unifrom_x512 = nullptr;
+	wolf::graphics::w_uniform<compute_unifrom_x1024>*       unifrom_x1024 = nullptr;
 
-	wolf::graphics::w_buffer                                instance_buffer;
-	wolf::graphics::w_buffer                                lod_levels_buffers;
+	wolf::graphics::w_buffer                                instances_buffer;
+	wolf::graphics::w_buffer                                lod_levels_buffer;
 
 	wolf::graphics::w_pipeline                              pipeline;
 	wolf::graphics::w_command_buffers                       command_buffers;
@@ -157,19 +167,13 @@ struct compute_stage
 		SAFE_RELEASE(this->unifrom_x512);
 		SAFE_RELEASE(this->unifrom_x1024);
 
-		this->instance_buffer.release();
-		this->lod_levels_buffers.release();
+		this->instances_buffer.release();
+		this->lod_levels_buffer.release();
 		this->pipeline.release();
 		this->command_buffers.release();
 		this->semaphore.release();
 	}
 
-};
-
-struct compute_stage_output
-{
-	uint32_t                                            draw_count;// Total number of indirect draw counts
-	uint32_t                                            lod_level;// LOD level
 };
 
 #endif

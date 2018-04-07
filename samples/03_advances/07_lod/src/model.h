@@ -31,19 +31,8 @@ public:
 	ULONG release();
 
 private:
-
 	typedef	 model_mesh										_super;
 	std::string												_name;
-
-	struct lod_info
-	{
-		uint32_t											first_index;
-		uint32_t											index_count;
-		float												distance;
-		float												_padding;
-	};
-	std::vector<lod_info>									_lods_info;
-
 };
 
 #endif
