@@ -343,6 +343,18 @@ namespace wolf
 #endif
 		} w_dynamic_state;
 
+		typedef enum w_pipeline_bind_point 
+		{
+#ifdef __VULKAN__
+			GRAPHICS = VK_PIPELINE_BIND_POINT_GRAPHICS,
+			COMPUTE = VK_PIPELINE_BIND_POINT_COMPUTE,
+			PIPELINE_BIND_POINT_BEGIN_RANGE = VK_PIPELINE_BIND_POINT_GRAPHICS,
+			PIPELINE_BIND_POINT_END_RANGE = VK_PIPELINE_BIND_POINT_COMPUTE,
+			PIPELINE_BIND_POINT_RANGE_SIZE = (VK_PIPELINE_BIND_POINT_COMPUTE - VK_PIPELINE_BIND_POINT_GRAPHICS + 1),
+			PIPELINE_BIND_POINT_MAX_ENUM = 0x7FFFFFFF
+#endif
+		} w_pipeline_bind_point;
+
 		typedef enum w_primitive_topology 
 		{
 #ifdef __VULKAN__

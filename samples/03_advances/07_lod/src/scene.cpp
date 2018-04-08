@@ -188,17 +188,24 @@ void scene::load()
 		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
 	}
 
-	//loading pipeline cache
-	std::string _pipeline_cache_name = "pipeline_cache";
-	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == W_FAILED)
-	{
-		logger.error("could not create pipeline cache");
-		_pipeline_cache_name.clear();
-	}
-
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	//loading pipeline cache
+	std::string _model_pipeline_cache_name = "model_pipeline_cache";
+	if (w_pipeline::create_pipeline_cache(_gDevice, _model_pipeline_cache_name) == W_FAILED)
+	{
+		logger.error("could not create model pipeline cache");
+		_model_pipeline_cache_name.clear();
+	}
+
+	std::string _model_compute_pipeline_cache_name = "model_compute_pipeline_cache";
+	if (w_pipeline::create_pipeline_cache(_gDevice, _model_compute_pipeline_cache_name) == W_FAILED)
+	{
+		logger.error("could not create model compute pipeline cache");
+		_model_compute_pipeline_cache_name.clear();
+	}
 
 	//set vertex binding attributes
 	std::map<uint32_t, std::vector<w_vertex_attribute>> _basic_vertex_declaration;
@@ -214,14 +221,6 @@ void scene::load()
 	auto _instanced_vertex_shader_path = shared::scene_content_path + L"shaders/instance.vert.spv";
 	auto _basic_vertex_shader_path = shared::scene_content_path + L"shaders/basic.vert.spv";
 	auto _fragment_shader_path = shared::scene_content_path + L"shaders/shader.frag.spv";
-
-	//create pipeline cache for model
-	std::string _model_pipeline_cache_name = "model_pipeline_cache";
-	if (w_pipeline::create_pipeline_cache(_gDevice, _model_pipeline_cache_name) == W_FAILED)
-	{
-		logger.error("could not create pipeline cache for models");
-		_model_pipeline_cache_name.clear();
-	}
 
 	//load collada scene
 	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.wscene");
@@ -277,6 +276,7 @@ void scene::load()
 				_hr = _model->load(
 					_gDevice,
 					_model_pipeline_cache_name,
+					_model_compute_pipeline_cache_name,
 					_vertex_shader_path,
 					_fragment_shader_path,
 					this->_draw_render_pass);

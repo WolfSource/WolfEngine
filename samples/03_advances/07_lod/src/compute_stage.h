@@ -23,6 +23,8 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_uniform.h>
 
+#define MAX_LOD_LEVEL 1
+
 #pragma region compute uniforms
 
 #pragma pack(push,1)
@@ -126,7 +128,7 @@ struct compute_instance_data
 struct compute_stage_output
 {
 	uint32_t                                            draw_count;// Total number of indirect draw counts
-	uint32_t                                            lod_level;// LOD level
+	uint32_t                                            lod_level[MAX_LOD_LEVEL + 1];// LOD level
 };
 #pragma pack(pop)
 
@@ -167,13 +169,24 @@ struct compute_stage
 		SAFE_RELEASE(this->unifrom_x512);
 		SAFE_RELEASE(this->unifrom_x1024);
 
-		this->instances_buffer.release();
-		this->lod_levels_buffer.release();
-		this->pipeline.release();
-		this->command_buffers.release();
+		if (!this->instances_buffer.get_is_released())
+		{
+			this->instances_buffer.release();
+		}
+		if (!this->lod_levels_buffer.get_is_released())
+		{
+			this->lod_levels_buffer.release();
+		}
+		if (!this->pipeline.get_is_released())
+		{
+			this->pipeline.release();
+		}
+		if (!this->command_buffers.get_is_released())
+		{
+			this->command_buffers.release();
+		}
 		this->semaphore.release();
 	}
-
 };
 
 #endif

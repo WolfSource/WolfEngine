@@ -222,7 +222,7 @@ public:
 		if (!this->_mesh) return W_FAILED;
 
 		//bind pipeline
-		this->_pipeline.bind(pCommandBuffer);
+		this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
 		auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
 		return this->_mesh->draw(pCommandBuffer, _buffer_handle.handle ? &_buffer_handle : nullptr, this->_instnaces_transforms.size(), pInDirectMode);
 	}

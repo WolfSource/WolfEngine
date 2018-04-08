@@ -51,7 +51,8 @@ namespace wolf
                 _In_ const std::vector<w_push_constant_range> pPushConstantRanges = {});
 			
 			//bind to pipeline
-            W_EXP W_RESULT bind(_In_ const w_command_buffer& pCommandBuffer);
+            W_EXP W_RESULT bind(_In_ const w_command_buffer& pCommandBuffer, 
+				_In_ const w_pipeline_bind_point& pPipelineBindPoint);
 
             //release all resources
             W_EXP virtual ULONG release() override;

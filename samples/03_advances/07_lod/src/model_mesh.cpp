@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "model_mesh.h"
 
+using namespace wolf;
 using namespace wolf::system;
 using namespace wolf::graphics;
 using namespace wolf::content_pipeline;
@@ -24,6 +25,7 @@ model_mesh::~model_mesh()
 W_RESULT model_mesh::load(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_z_ const std::string& pPipelineCacheName,
+	_In_z_ const std::string& pComputePipelineCacheName,
 	_In_z_ const std::wstring& pVertexShaderPath,
 	_In_z_ const std::wstring& pFragmentShaderPath,
 	_In_ const w_render_pass& pRenderPass)
@@ -52,6 +54,7 @@ W_RESULT model_mesh::load(
 	else
 	{
 		//set the default texture
+		logger.warning("default texture will be used for model: " + this->model_name);
 		_mesh->set_texture(w_texture::default_texture);
 	}
 
@@ -82,22 +85,21 @@ W_RESULT model_mesh::load(
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating buffers for model: " + this->model_name, _trace_info, 2);
 		return W_FAILED;
 	}
 
 #pragma region create shader modules
 	if (_create_shader_modules(pVertexShaderPath, pFragmentShaderPath) == W_FAILED)
 	{
-		V(W_FAILED, "creating shader for model: " + this->model_name, _trace_info, 2);
+		release();
 		return W_FAILED;
 	}
 #pragma endregion
 
 #pragma region create pipeline
-	if (_create_pipeline(pPipelineCacheName, pRenderPass) == W_FAILED)
+	if (_create_pipelines(pPipelineCacheName, pRenderPass) == W_FAILED)
 	{
-		V(W_FAILED, "creating pipeline for model: " + this->model_name, _trace_info, 2);
+		release();
 		return W_FAILED;
 	}
 #pragma endregion
@@ -106,7 +108,203 @@ W_RESULT model_mesh::load(
 	this->c_model->release();
 	this->c_model = nullptr;
 
+	_build_compute_command_buffer();
+
 	return W_PASSED;
+}
+
+W_RESULT model_mesh::_build_compute_command_buffer()
+{
+	const std::string _trace_info = this->name + "::_build_compute_command_buffer";
+
+	if (this->_cs.command_buffers.load(
+		this->gDevice,
+		1,
+		w_command_buffer_level::PRIMARY,
+		true,
+		&gDevice->vk_compute_queue) == W_FAILED)
+	{
+		V(W_FAILED, "creating compute command buffer for " + this->model_name, _trace_info);
+		return W_FAILED;
+	}
+
+	auto _cmd = this->_cs.command_buffers.get_command_at(0);
+	this->_cs.command_buffers.begin(0);
+	{
+		auto _indirect_draws_buffer = this->indirect_draws.buffer.get_buffer_handle();
+		auto _size = this->indirect_draws.buffer.get_descriptor_info().range;
+
+		// Add memory barrier to ensure that the indirect commands have been consumed before the compute shader updates them
+		VkBufferMemoryBarrier _barrier = {};
+		_barrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+		_barrier.buffer = _indirect_draws_buffer.handle;
+		_barrier.size = _size;
+		_barrier.srcAccessMask = VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
+		_barrier.dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+		_barrier.srcQueueFamilyIndex = this->gDevice->vk_graphics_queue.index;
+		_barrier.dstQueueFamilyIndex = this->gDevice->vk_compute_queue.index;
+
+		vkCmdPipelineBarrier(
+			_cmd.handle,
+			VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
+			VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+			0,
+			0, nullptr,
+			1, &_barrier,
+			0, nullptr);
+
+		if (this->_cs.pipeline.bind(_cmd, w_pipeline_bind_point::COMPUTE) == W_FAILED)
+		{
+			this->_cs.command_buffers.end(0);
+			V(W_FAILED, "binding compute command buffer for " + this->model_name, _trace_info);
+			return W_FAILED;
+		}
+
+		vkCmdDispatch(
+			_cmd.handle,
+			(uint32_t)(this->indirect_draws.drawing_commands.size() / this->_cs.batch_local_size),
+			1,
+			1);
+
+		// Add memory barrier to ensure that the compute shader has finished writing the indirect command buffer before it's consumed
+		_barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+		_barrier.dstAccessMask = VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
+		_barrier.buffer = _indirect_draws_buffer.handle;
+		_barrier.size = _size;
+		_barrier.srcQueueFamilyIndex = this->gDevice->vk_compute_queue.index;
+		_barrier.dstQueueFamilyIndex = this->gDevice->vk_graphics_queue.index;
+
+		vkCmdPipelineBarrier(
+			_cmd.handle,
+			VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+			VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT,
+			0,
+			0, nullptr,
+			1, &_barrier,
+			0, nullptr);
+	}
+	this->_cs.command_buffers.end(0);
+
+	return W_PASSED;
+}
+
+W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
+{
+	W_RESULT _hr = W_PASSED;
+	const std::string _trace_info = this->_name + "::submit_compute_shader";
+	
+	switch (this->_cs.batch_local_size)
+	{
+	case 1:
+		this->_cs.unifrom_x1->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x1->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x1->data.is_visible));
+		_hr = this->_cs.unifrom_x1->update();
+		break;
+	case 2:
+		this->_cs.unifrom_x2->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x2->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x2->data.is_visible));
+		_hr = this->_cs.unifrom_x2->update();
+		break;
+	case 4:
+		this->_cs.unifrom_x4->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x4->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x4->data.is_visible));
+		_hr = this->_cs.unifrom_x4->update();
+		break;
+	case 8:
+		this->_cs.unifrom_x8->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x8->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x8->data.is_visible));
+		_hr = this->_cs.unifrom_x8->update();
+		break;
+	case 16:
+		this->_cs.unifrom_x16->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x16->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x16->data.is_visible));
+		_hr = this->_cs.unifrom_x16->update();
+		break;
+	case 32:
+		this->_cs.unifrom_x32->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x32->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x32->data.is_visible));
+		_hr = this->_cs.unifrom_x32->update();
+		break;
+	case 64:
+		this->_cs.unifrom_x64->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x64->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x64->data.is_visible));
+		_hr = this->_cs.unifrom_x64->update();
+		break;
+	case 128:
+		this->_cs.unifrom_x128->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(&this->_cs.unifrom_x128->data.is_visible[0],
+			this->_visibilities.data(), sizeof(this->_cs.unifrom_x128->data.is_visible));
+		_hr = this->_cs.unifrom_x128->update();
+		break;
+	case 256:
+		this->_cs.unifrom_x256->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x256->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x256->data.is_visible));
+		_hr = this->_cs.unifrom_x256->update();
+		break;
+	case 512:
+		this->_cs.unifrom_x512->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x512->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x512->data.is_visible));
+		_hr = this->_cs.unifrom_x512->update();
+		break;
+	case 1024:
+		this->_cs.unifrom_x1024->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		std::memcpy(
+			&this->_cs.unifrom_x1024->data.is_visible[0],
+			this->_visibilities.data(),
+			sizeof(this->_cs.unifrom_x1024->data.is_visible));
+		_hr = this->_cs.unifrom_x1024->update();
+		break;
+	}
+
+	if (_hr == W_FAILED)
+	{
+		V(_hr, "updating compute shader's unifrom for model: " + this->model_name, _trace_info, 3);
+	}
+
+	auto _cmd = this->_cs.command_buffers.get_command_at(0);
+
+	VkSubmitInfo _submit_info = {};
+	_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	_submit_info.commandBufferCount = 1;
+	_submit_info.pCommandBuffers = &_cmd.handle;
+	_submit_info.signalSemaphoreCount = 1;
+	_submit_info.pSignalSemaphores = this->_cs.semaphore.get();
+
+	//execute compute shader on gpu
+	if (vkQueueSubmit(this->gDevice->vk_compute_queue.queue, 1, &_submit_info, 0))
+	{
+		_hr = W_FAILED;
+		V(_hr, "submiting compute shader queue for model: " + this->model_name, _trace_info, 3);
+	}
+
+	return _hr;
 }
 
 W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectMode)
@@ -118,7 +316,7 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 		if (!this->_mesh) return W_FAILED;
 
 		//bind pipeline
-		this->_pipeline.bind(pCommandBuffer);
+		this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
 		auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
 		return this->_mesh->draw(pCommandBuffer, _buffer_handle.handle ? &_buffer_handle : nullptr, this->instnaces_transforms.size(), pInDirectMode);
 	}
@@ -618,6 +816,8 @@ void model_mesh::_store_to_batch(
 	}
 	_textures_index.clear();
 }
+
+#pragma region create methods
 
 W_RESULT model_mesh::_load_textures()
 {
@@ -1167,7 +1367,7 @@ W_RESULT model_mesh::_create_shader_modules(
 	_shader_param.index = 3;
 	_shader_param.type = w_shader_binding_type::STORAGE;
 	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
-	_shader_param.buffer_info = this->indirect_draw_count_buffer.get_descriptor_info();
+	_shader_param.buffer_info = this->_cs_out_buffer.get_descriptor_info();
 	_shader_params.push_back(_shader_param);
 
 	_shader_param.index = 4;
@@ -1205,19 +1405,39 @@ W_RESULT model_mesh::_create_shader_modules(
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::_create_pipeline(
-	_In_z_ const std::string& pPipelineCacheName,
+W_RESULT model_mesh::_create_pipelines(
+	_In_z_ const std::string& pComputePipelineCacheName,
 	_In_ const w_render_pass& pRenderPass)
 {
-	return this->_pipeline.load(
+	const std::string _trace_info = this->_name + "_create_pipelines";
+
+	if (this->_pipeline.load(
 		this->gDevice,
 		this->vertex_binding_attributes,
 		w_primitive_topology::TRIANGLE_LIST,
 		&pRenderPass,
 		this->_shader,
 		{ pRenderPass.get_viewport() },
-		{ pRenderPass.get_viewport_scissor() });
+		{ pRenderPass.get_viewport_scissor() }) == W_FAILED)
+	{
+		V(W_FAILED, "loading drawing pipeline for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
+	}
+
+	if (this->_cs.pipeline.load_compute(
+		this->gDevice,
+		this->_shader,
+		5,
+		pComputePipelineCacheName) == W_FAILED)
+	{
+		V(W_FAILED, "loading computing pipeline for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
+	}
+
+	return W_PASSED;
 }
+
+#pragma endregion
 
 ULONG model_mesh::release()
 {
@@ -1227,6 +1447,12 @@ ULONG model_mesh::release()
 	this->model_name.clear();
 
 	this->instnaces_transforms.clear();
+
+	if (this->c_model)
+	{
+		this->c_model->release();
+		this->c_model = nullptr;
+	}
 
 	this->_pipeline.release();
 	SAFE_RELEASE(this->_shader);
@@ -1247,6 +1473,8 @@ ULONG model_mesh::release()
 		if (_t) _t->release();
 	}
 	this->_textures.clear();
+
+	this->_cs.release();
 
 	this->gDevice = nullptr;
 

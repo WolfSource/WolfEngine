@@ -295,7 +295,7 @@ namespace wolf
 			{
 				const std::string _trace_info = this->_name + "::draw";
 
-				this->_pipeline.bind(pCommandBuffer);
+				this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
 
 				if (this->_shape_drawer.draw(pCommandBuffer, nullptr, 0, false, 0) == W_FAILED)
 				{

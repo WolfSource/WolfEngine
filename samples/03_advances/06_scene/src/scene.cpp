@@ -202,14 +202,6 @@ void scene::load()
 		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
 	}
 
-	//loading pipeline cache
-	std::string _pipeline_cache_name = "pipeline_cache";
-	if (w_pipeline::create_pipeline_cache(_gDevice, _pipeline_cache_name) == W_FAILED)
-	{
-		logger.error("could not create pipeline cache");
-		_pipeline_cache_name.clear();
-	}
-
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -243,7 +235,7 @@ void scene::load()
 	{
 		//get first camera
 		_scene->get_first_camera(this->_first_camera);
-		float _near_plan = 0.1f, far_plan = 5000;
+		float _near_plan = 0.1f, far_plan = 10000;
 
 		this->_first_camera.set_near_plan(_near_plan);
 		this->_first_camera.set_far_plan(far_plan);

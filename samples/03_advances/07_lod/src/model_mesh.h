@@ -37,11 +37,13 @@ public:
 	W_RESULT load(
 		_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
 		_In_z_ const std::string& pPipelineCacheName,
+		_In_z_ const std::string& pComputePipelineCacheName,
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath,
 		_In_ const wolf::graphics::w_render_pass& pRenderPass
 	);
 
+	W_RESULT submit_compute_shader(_In_ const glm::vec3 pCameraPosition);
 	W_RESULT draw(_In_ const wolf::graphics::w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectMode);
 
 	//release all resources
@@ -124,9 +126,11 @@ private:
 	W_RESULT	_create_shader_modules(
 		_In_z_ const std::wstring& pVertexShaderPath,
 		_In_z_ const std::wstring& pFragmentShaderPath);
-	W_RESULT	_create_pipeline(
+	W_RESULT	_create_pipelines(
 		_In_z_ const std::string& pPipelineCacheName,
 		_In_ const wolf::graphics::w_render_pass& pRenderPass);
+	
+	W_RESULT   _build_compute_command_buffer();
 
 	typedef	 wolf::system::w_object							_super;
 
@@ -168,7 +172,6 @@ private:
 	std::vector<wolf::graphics::w_texture*>					_textures;
 	
 	wolf::graphics::w_indirect_draws_command_buffer         indirect_draws;
-	wolf::graphics::w_buffer                                indirect_draw_count_buffer;
 
 	compute_stage											_cs;
 	compute_stage_output									_cs_out_struct;

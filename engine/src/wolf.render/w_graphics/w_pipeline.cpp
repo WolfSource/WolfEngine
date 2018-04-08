@@ -237,7 +237,7 @@ namespace wolf
                 specializationEntry.offset = 0;
                 specializationEntry.size = sizeof(uint32_t);
 
-                uint32_t _specialization_data = pSpecializationData - 1;
+                uint32_t _specialization_data = pSpecializationData;
 
                 VkSpecializationInfo _specialization_info;
                 _specialization_info.mapEntryCount = 1;
@@ -266,13 +266,15 @@ namespace wolf
                 return W_PASSED;
             }
 
-			void bind(_In_ const w_command_buffer& pCommandBuffer)
+			void bind(_In_ const w_command_buffer& pCommandBuffer, 
+				_In_ const w_pipeline_bind_point& pPipelineBindPoint)
 			{
 				auto _cmd = pCommandBuffer.handle;
+				auto _bind_point = (VkPipelineBindPoint)pPipelineBindPoint;
 				if (this->_shader_descriptor_set)
 				{
 					vkCmdBindDescriptorSets(_cmd,
-						VK_PIPELINE_BIND_POINT_GRAPHICS,
+						_bind_point,
 						this->_pipeline_layout,
 						0,
 						1,
@@ -280,7 +282,7 @@ namespace wolf
 						0,
 						nullptr);
 				}
-				vkCmdBindPipeline(_cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, this->_pipeline);
+				vkCmdBindPipeline(_cmd, _bind_point, this->_pipeline);
 				_cmd = nullptr;
 			}
 
@@ -595,10 +597,11 @@ W_EXP W_RESULT w_pipeline::load_compute(
 		pPushConstantRanges);
 }
 
-W_RESULT w_pipeline::bind(_In_ const w_command_buffer& pCommandBuffer)
+W_RESULT w_pipeline::bind(_In_ const w_command_buffer& pCommandBuffer, 
+	_In_ const w_pipeline_bind_point& pPipelineBindPoint)
 {
     if (!this->_pimp) return W_FAILED;
-    this->_pimp->bind(pCommandBuffer);
+    this->_pimp->bind(pCommandBuffer, pPipelineBindPoint);
 	return W_PASSED;
 }
 
