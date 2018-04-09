@@ -302,11 +302,11 @@ W_RESULT scene::_build_draw_command_buffers()
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				if (_show_wireframe)
 				{
-					this->_wireframe_pipeline.bind(_cmd);
+					this->_wireframe_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
 				}
 				else
 				{
-					this->_solid_pipeline.bind(_cmd);
+					this->_solid_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
 				}
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++

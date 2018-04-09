@@ -244,7 +244,7 @@ W_RESULT w_graphics_device::submit(
 	{
 		_hr = W_FAILED;
 		V(_hr,
-			"submiting queue for graphics device" + this->device_info->get_device_name() + 
+			"submiting queue for graphics device " + this->device_info->get_device_name() + 
 			" ID:" + std::to_string(this->device_info->get_device_id()),
 			_trace_info,
 			3,
@@ -257,7 +257,7 @@ W_RESULT w_graphics_device::submit(
 		{
 			_hr = W_FAILED;
 			V(_hr,
-				"waiting for queue for graphics device" + this->device_info->get_device_name() +
+				"waiting for queue for graphics device " + this->device_info->get_device_name() +
 				" ID:" + std::to_string(this->device_info->get_device_id()),
 				_trace_info,
 				3,

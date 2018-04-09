@@ -35,8 +35,11 @@ W_RESULT w_semaphore::initialize(_In_ const std::shared_ptr<w_graphics_device>& 
 ULONG w_semaphore::release()
 {
 #ifdef __VULKAN__
-    vkDestroySemaphore(this->_gDevice->vk_device, this->_semaphore, nullptr);
-    this->_semaphore = 0;
+	if (this->_semaphore)
+	{
+		vkDestroySemaphore(this->_gDevice->vk_device, this->_semaphore, nullptr);
+		this->_semaphore = 0;
+	}
 #else
     
 #endif

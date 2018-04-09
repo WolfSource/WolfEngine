@@ -12,7 +12,8 @@ model_mesh::model_mesh(
 	vertex_binding_attributes(pVertexBindingAttributes),
 	_name("model"),
 	_mesh(nullptr),
-	_global_visiblity(true),
+	_show_only_lod(false),
+	global_visiblity(true),
 	c_model(pContentPipelineModel)
 {
 }
@@ -88,27 +89,39 @@ W_RESULT model_mesh::load(
 		return W_FAILED;
 	}
 
-#pragma region create shader modules
+	//create shader modules
 	if (_create_shader_modules(pVertexShaderPath, pFragmentShaderPath) == W_FAILED)
 	{
 		release();
 		return W_FAILED;
 	}
-#pragma endregion
 
-#pragma region create pipeline
+	//create pipeline
 	if (_create_pipelines(pPipelineCacheName, pRenderPass) == W_FAILED)
 	{
 		release();
 		return W_FAILED;
 	}
-#pragma endregion
 
+	
 	//release content pipeline model
 	this->c_model->release();
 	this->c_model = nullptr;
 
-	_build_compute_command_buffer();
+	//create compute semaphore
+	if (this->_cs.semaphore.initialize(this->gDevice) == W_FAILED)
+	{
+		release();
+		V(W_FAILED, "initializing compute semaphore for model: " + this->model_name, _trace_info, 2);
+		return W_FAILED;
+	}
+	//build compute command buffer
+	if (_build_compute_command_buffer() == W_FAILED)
+	{
+		release();
+		V(W_FAILED, "building compute command buffer for model: " + this->model_name, _trace_info, 2);
+		return W_FAILED;
+	}
 
 	return W_PASSED;
 }
@@ -193,91 +206,96 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
 	W_RESULT _hr = W_PASSED;
 	const std::string _trace_info = this->_name + "::submit_compute_shader";
 	
+	auto _cam_pos = glm::vec4(pCameraPosition, 1.0f);
+	if (this->_show_only_lod)
+	{
+		_cam_pos.x *= 10000;//set camera to far
+	}
 	switch (this->_cs.batch_local_size)
 	{
 	case 1:
-		this->_cs.unifrom_x1->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x1->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x1->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x1->data.is_visible));
 		_hr = this->_cs.unifrom_x1->update();
 		break;
 	case 2:
-		this->_cs.unifrom_x2->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x2->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x2->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x2->data.is_visible));
 		_hr = this->_cs.unifrom_x2->update();
 		break;
 	case 4:
-		this->_cs.unifrom_x4->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x4->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x4->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x4->data.is_visible));
 		_hr = this->_cs.unifrom_x4->update();
 		break;
 	case 8:
-		this->_cs.unifrom_x8->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x8->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x8->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x8->data.is_visible));
 		_hr = this->_cs.unifrom_x8->update();
 		break;
 	case 16:
-		this->_cs.unifrom_x16->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x16->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x16->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x16->data.is_visible));
 		_hr = this->_cs.unifrom_x16->update();
 		break;
 	case 32:
-		this->_cs.unifrom_x32->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x32->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x32->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x32->data.is_visible));
 		_hr = this->_cs.unifrom_x32->update();
 		break;
 	case 64:
-		this->_cs.unifrom_x64->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x64->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x64->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x64->data.is_visible));
 		_hr = this->_cs.unifrom_x64->update();
 		break;
 	case 128:
-		this->_cs.unifrom_x128->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x128->data.camera_pos = _cam_pos;
 		std::memcpy(&this->_cs.unifrom_x128->data.is_visible[0],
-			this->_visibilities.data(), sizeof(this->_cs.unifrom_x128->data.is_visible));
+			this->visibilities.data(), sizeof(this->_cs.unifrom_x128->data.is_visible));
 		_hr = this->_cs.unifrom_x128->update();
 		break;
 	case 256:
-		this->_cs.unifrom_x256->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x256->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x256->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x256->data.is_visible));
 		_hr = this->_cs.unifrom_x256->update();
 		break;
 	case 512:
-		this->_cs.unifrom_x512->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x512->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x512->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x512->data.is_visible));
 		_hr = this->_cs.unifrom_x512->update();
 		break;
 	case 1024:
-		this->_cs.unifrom_x1024->data.camera_pos = glm::vec4(pCameraPosition, 1.0f);
+		this->_cs.unifrom_x1024->data.camera_pos = _cam_pos;
 		std::memcpy(
 			&this->_cs.unifrom_x1024->data.is_visible[0],
-			this->_visibilities.data(),
+			this->visibilities.data(),
 			sizeof(this->_cs.unifrom_x1024->data.is_visible));
 		_hr = this->_cs.unifrom_x1024->update();
 		break;
@@ -298,7 +316,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
 	_submit_info.pSignalSemaphores = this->_cs.semaphore.get();
 
 	//execute compute shader on gpu
-	if (vkQueueSubmit(this->gDevice->vk_compute_queue.queue, 1, &_submit_info, 0))
+	if (vkQueueSubmit(this->gDevice->vk_compute_queue.queue, 1, &_submit_info, 0) == W_FAILED)
 	{
 		_hr = W_FAILED;
 		V(_hr, "submiting compute shader queue for model: " + this->model_name, _trace_info, 3);
@@ -308,18 +326,18 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
 }
 
 W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectMode)
-	{
-		if (!this->_global_visiblity) return W_PASSED;
+{
+	if (!this->global_visiblity) return W_PASSED;
 
-		const std::string _trace_info = this->_name + "::draw";
+	const std::string _trace_info = this->_name + "::draw";
 
-		if (!this->_mesh) return W_FAILED;
+	if (!this->_mesh) return W_FAILED;
 
-		//bind pipeline
-		this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
-		auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
-		return this->_mesh->draw(pCommandBuffer, _buffer_handle.handle ? &_buffer_handle : nullptr, this->instnaces_transforms.size(), pInDirectMode);
-	}
+	//bind pipeline
+	this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
+	auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
+	return this->_mesh->draw(pCommandBuffer, _buffer_handle.handle ? &_buffer_handle : nullptr, this->instnaces_transforms.size(), 0, &this->indirect_draws);
+}
 
 void model_mesh::_store_to_batch(
 	_In_ const std::vector<w_cpipeline_mesh*>& pModelMeshes,
@@ -1135,7 +1153,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		V(_hr, "batch_local_size " + std::to_string(this->_cs.batch_local_size) +
 			" not supported for model: " + this->model_name, _trace_info);
 	case 1:
-		this->_visibilities.resize(1);
+		this->visibilities.resize(1);
 		this->_cs.unifrom_x1 = new w_uniform<compute_unifrom_x1>();
 		if (this->_cs.unifrom_x1->load(this->gDevice) == W_FAILED)
 		{
@@ -1148,7 +1166,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 2:
-		this->_visibilities.resize(2);
+		this->visibilities.resize(2);
 		this->_cs.unifrom_x2 = new w_uniform<compute_unifrom_x2>();
 		if (this->_cs.unifrom_x2->load(this->gDevice) == W_FAILED)
 		{
@@ -1161,7 +1179,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 4:
-		this->_visibilities.resize(4);
+		this->visibilities.resize(4);
 		this->_cs.unifrom_x4 = new w_uniform<compute_unifrom_x4>();
 		if (this->_cs.unifrom_x4->load(this->gDevice) == W_FAILED)
 		{
@@ -1174,7 +1192,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 8:
-		this->_visibilities.resize(8);
+		this->visibilities.resize(8);
 		this->_cs.unifrom_x8 = new w_uniform<compute_unifrom_x8>();
 		if (this->_cs.unifrom_x8->load(this->gDevice) == W_FAILED)
 		{
@@ -1187,7 +1205,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 16:
-		this->_visibilities.resize(16);
+		this->visibilities.resize(16);
 		this->_cs.unifrom_x16 = new w_uniform<compute_unifrom_x16>();
 		if (this->_cs.unifrom_x16->load(this->gDevice) == W_FAILED)
 		{
@@ -1200,7 +1218,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 32:
-		this->_visibilities.resize(32);
+		this->visibilities.resize(32);
 		this->_cs.unifrom_x32 = new w_uniform<compute_unifrom_x32>();
 		if (this->_cs.unifrom_x32->load(this->gDevice) == W_FAILED)
 		{
@@ -1213,7 +1231,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 64:
-		this->_visibilities.resize(64);
+		this->visibilities.resize(64);
 		this->_cs.unifrom_x64 = new w_uniform<compute_unifrom_x64>();
 		if (this->_cs.unifrom_x64->load(this->gDevice) == W_FAILED)
 		{
@@ -1226,7 +1244,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 128:
-		this->_visibilities.resize(128);
+		this->visibilities.resize(128);
 		this->_cs.unifrom_x128 = new w_uniform<compute_unifrom_x128>();
 		if (this->_cs.unifrom_x128->load(this->gDevice) == W_FAILED)
 		{
@@ -1239,7 +1257,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 256:
-		this->_visibilities.resize(256);
+		this->visibilities.resize(256);
 		this->_cs.unifrom_x256 = new w_uniform<compute_unifrom_x256>();
 		if (this->_cs.unifrom_x256->load(this->gDevice) == S_FALSE)
 		{
@@ -1252,7 +1270,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 512:
-		this->_visibilities.resize(512);
+		this->visibilities.resize(512);
 		this->_cs.unifrom_x512 = new w_uniform<compute_unifrom_x512>();
 		if (this->_cs.unifrom_x512->load(this->gDevice) == S_FALSE)
 		{
@@ -1265,7 +1283,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		}
 		break;
 	case 1024:
-		this->_visibilities.resize(1024);
+		this->visibilities.resize(1024);
 		this->_cs.unifrom_x1024 = new w_uniform<compute_unifrom_x1024>();
 		if (this->_cs.unifrom_x1024->load(this->gDevice) == S_FALSE)
 		{
@@ -1520,13 +1538,32 @@ bool model_mesh::get_enable_instances_colors() const
 
 bool model_mesh::get_global_visiblity() const
 {
-	return this->_global_visiblity;
+	return this->global_visiblity;
 }
 
 bool model_mesh::get_visiblity(_In_ const uint32_t& pModelInstanceIndex) const
 {
-	auto _size = this->_visibilities.size();
-	return pModelInstanceIndex < _size ? this->_visibilities[pModelInstanceIndex] == 1.0f : false;
+	auto _size = this->visibilities.size();
+	return pModelInstanceIndex < _size ? this->visibilities[pModelInstanceIndex] == 1.0f : false;
+}
+
+w_semaphore* model_mesh::get_compute_semaphore()
+{
+	return &(this->_cs.semaphore);
+}
+
+compute_stage_output model_mesh::get_result_of_compute_shader()
+{
+	// Get draw count from compute
+	auto _mapped = this->_cs_out_buffer.map();
+	if (_mapped)
+	{
+		memcpy(&this->_cs_out_struct, _mapped, sizeof(compute_stage_output));
+	}
+	this->_cs_out_buffer.unmap();
+	_mapped = nullptr;
+
+	return this->_cs_out_struct;
 }
 
 #pragma endregion
@@ -1578,16 +1615,21 @@ void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
 
 void model_mesh::set_global_visiblity(_In_ const bool& pValue)
 {
-	this->_global_visiblity = pValue ? 1.0f : 0.0f;
-	std::fill(this->_visibilities.begin(), this->_visibilities.end(), this->_global_visiblity);
+	this->global_visiblity = pValue ? 1.0f : 0.0f;
+	std::fill(this->visibilities.begin(), this->visibilities.end(), this->global_visiblity);
 }
 
 void model_mesh::set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pModelInstanceIndex)
 {
-	if (pModelInstanceIndex < this->_visibilities.size())
+	if (pModelInstanceIndex < this->visibilities.size())
 	{
-		this->_visibilities[pModelInstanceIndex] = pValue ? 1.0f : 0.0f;
+		this->visibilities[pModelInstanceIndex] = pValue ? 1.0f : 0.0f;
 	}
+}
+
+void model_mesh::set_show_only_lods(_In_ const bool& pValue)
+{
+	this->_show_only_lod = pValue;
 }
 
 #pragma endregion

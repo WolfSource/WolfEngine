@@ -165,7 +165,7 @@ namespace wolf
                 {
 					_copy_cmd.handle = nullptr;
                     V(W_FAILED,
-                        "flushing command buffer" +
+                        "flushing command buffer of " +
                         _gDevice->get_info(),
                         _trace,
                         3);

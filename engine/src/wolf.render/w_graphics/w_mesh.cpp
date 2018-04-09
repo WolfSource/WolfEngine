@@ -168,8 +168,8 @@ namespace wolf
 				_In_ const w_command_buffer& pCommandBuffer,
                 _In_ const w_buffer_handle* pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
-                _In_ const bool& pIndrectDraw,
-				_In_ const uint32_t pVertexOffset)
+				_In_ const uint32_t pVertexOffset,
+				_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands)
             {
 				if (!pCommandBuffer.handle) return W_FAILED;
 
@@ -194,8 +194,36 @@ namespace wolf
 					vkCmdBindIndexBuffer(_cmd, _index_buffer_handle, 0, VK_INDEX_TYPE_UINT32);
 				}
 
-                if (!pIndrectDraw)
-                {
+				if (pIndirectDrawCommands)
+				{
+					auto _size = static_cast<uint32_t>(sizeof(VkDrawIndexedIndirectCommand));
+					auto _draw_counts = static_cast<uint32_t>(pIndirectDrawCommands->drawing_commands.size());
+					auto _buffer_handle = pIndirectDrawCommands->buffer.get_buffer_handle().handle;
+					if (this->_gDevice->vk_physical_device_features.multiDrawIndirect)
+					{
+						vkCmdDrawIndexedIndirect(
+							pCommandBuffer.handle,
+							_buffer_handle,
+							0,
+							_draw_counts,
+							_size);
+					}
+					else
+					{
+						// If multi draw is not available, we must issue separate draw commands
+						for (auto i = 0; i < _draw_counts; ++i)
+						{
+							vkCmdDrawIndexedIndirect(
+								pCommandBuffer.handle,
+								_buffer_handle,
+								i * _size,
+								1,
+								_size);
+						}
+					}
+				}
+				else
+				{
 					if (_draw_indexed)
 					{
 						vkCmdDrawIndexed(_cmd, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
@@ -453,11 +481,11 @@ W_RESULT w_mesh::draw(
 	_In_ const w_command_buffer& pCommandBuffer,
 	_In_ const w_buffer_handle* pInstanceHandle,
 	_In_ const uint32_t& pInstancesCount,
-	_In_ const bool& pIndirectDraw,
-	_In_ const uint32_t& pVertexOffset)
+	_In_ const uint32_t& pVertexOffset,
+	_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands)
 {
 	if (!this->_pimp) return W_FAILED;
-	return this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pIndirectDraw, pVertexOffset);
+	return this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pVertexOffset, pIndirectDrawCommands);
 }
 
 ULONG w_mesh::release()

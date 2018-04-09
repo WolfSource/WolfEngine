@@ -85,6 +85,7 @@ private:
 	std::vector<model*>												_models;
 
 	bool															_show_all;
+	bool															_show_lods;
 	bool															_show_all_instances_colors;
 	model*															_current_selected_model;
 };

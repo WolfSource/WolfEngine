@@ -13,7 +13,8 @@ namespace wolf
                 _name("w_pipeline"),
                 _pipeline(nullptr),
                 _pipeline_layout(nullptr),
-				_shader_descriptor_set(nullptr)
+				_shader_descriptor_set(nullptr),
+				_compute_shader_descriptor_set(nullptr)
             {
             }
 
@@ -200,13 +201,22 @@ namespace wolf
 
                 auto _pipeline_cache = w_pipeline::get_pipeline_cache(pPipelineCacheName);
 
-                std::vector<VkDescriptorSetLayout> _descriptor_set_layouts = { pShaderBinding->get_compute_descriptor_set_layout().handle };
+				//store compute shader descriptor set
+				auto _shader_des_set = pShaderBinding->get_compute_descriptor_set().handle;
+				this->_compute_shader_descriptor_set = _shader_des_set ? _shader_des_set : nullptr;
+
+                std::vector<VkDescriptorSetLayout> _descriptor_set_layouts;
+				auto _shader_descriptor_set_layout = pShaderBinding->get_compute_descriptor_set_layout().handle;
+				if (_shader_descriptor_set_layout)
+				{
+					_descriptor_set_layouts.push_back(_shader_descriptor_set_layout);
+				}
                 auto _push_const_size = pPushConstantRanges.size();
 
                 VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
                 _pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
                 _pipeline_layout_create_info.setLayoutCount = static_cast<uint32_t>(_descriptor_set_layouts.size());
-                _pipeline_layout_create_info.pSetLayouts = _descriptor_set_layouts.data();
+                _pipeline_layout_create_info.pSetLayouts = _descriptor_set_layouts.size() ? _descriptor_set_layouts.data() : nullptr;
                 _pipeline_layout_create_info.pushConstantRangeCount = _push_const_size;
                 _pipeline_layout_create_info.pPushConstantRanges = _push_const_size ? (VkPushConstantRange*)pPushConstantRanges.data() : nullptr;
 
@@ -271,16 +281,36 @@ namespace wolf
 			{
 				auto _cmd = pCommandBuffer.handle;
 				auto _bind_point = (VkPipelineBindPoint)pPipelineBindPoint;
-				if (this->_shader_descriptor_set)
+
+				if (_bind_point == VkPipelineBindPoint::VK_PIPELINE_BIND_POINT_GRAPHICS)
 				{
-					vkCmdBindDescriptorSets(_cmd,
-						_bind_point,
-						this->_pipeline_layout,
-						0,
-						1,
-						&this->_shader_descriptor_set,
-						0,
-						nullptr);
+					//set descriptor set of shader
+					if (this->_shader_descriptor_set)
+					{
+						vkCmdBindDescriptorSets(_cmd,
+							_bind_point,
+							this->_pipeline_layout,
+							0,
+							1,
+							&this->_shader_descriptor_set,
+							0,
+							nullptr);
+					}
+				}
+				else
+				{
+					//set descriptor set of compute shader
+					if (this->_compute_shader_descriptor_set)
+					{
+						vkCmdBindDescriptorSets(_cmd,
+							_bind_point,
+							this->_pipeline_layout,
+							0,
+							1,
+							&this->_compute_shader_descriptor_set,
+							0,
+							nullptr);
+					}
 				}
 				vkCmdBindPipeline(_cmd, _bind_point, this->_pipeline);
 				_cmd = nullptr;
@@ -524,6 +554,7 @@ namespace wolf
             VkPipeline                                      _pipeline;
             VkPipelineLayout                                _pipeline_layout;
 			VkDescriptorSet									_shader_descriptor_set;
+			VkDescriptorSet									_compute_shader_descriptor_set;
         };
     }
 }

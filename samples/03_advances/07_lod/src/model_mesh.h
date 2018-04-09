@@ -60,6 +60,8 @@ public:
 	bool get_enable_instances_colors() const;
 	bool get_global_visiblity() const;
 	bool get_visiblity(_In_ const uint32_t& pModelInstanceIndex = 0) const;
+	wolf::graphics::w_semaphore* get_compute_semaphore();
+	compute_stage_output get_result_of_compute_shader();
 
 #pragma endregion
 
@@ -69,6 +71,7 @@ public:
 	void set_enable_instances_colors(_In_ const bool& pEnable);
 	void set_global_visiblity(_In_ const bool& pValue);
 	void set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pModelInstanceIndex = 0);
+	void set_show_only_lods(_In_ const bool& pValue);
 
 #pragma endregion
 
@@ -113,6 +116,9 @@ protected:
 		float												_padding;
 	};
 	std::vector<lod_info>									lods_info;
+
+	bool													global_visiblity;
+	std::vector<float>                                      visibilities;
 private:
 
 	W_RESULT	_load_textures();
@@ -131,7 +137,7 @@ private:
 		_In_ const wolf::graphics::w_render_pass& pRenderPass);
 	
 	W_RESULT   _build_compute_command_buffer();
-
+	
 	typedef	 wolf::system::w_object							_super;
 
 	std::string												_name;
@@ -177,8 +183,7 @@ private:
 	compute_stage_output									_cs_out_struct;
 	wolf::graphics::w_buffer								_cs_out_buffer;
 
-	bool													_global_visiblity;
-	std::vector<float>                                      _visibilities;
+	bool													_show_only_lod;
 };
 
 #endif

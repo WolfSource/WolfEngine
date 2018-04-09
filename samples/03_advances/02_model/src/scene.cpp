@@ -328,10 +328,10 @@ W_RESULT scene::_build_draw_command_buffers()
                 1.0f,
                 0.0f);
             {
-				this->_pipeline.bind(_cmd);
+				this->_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
 				if (this->_mesh)
 				{
-					this->_mesh->draw(_cmd, nullptr, 0, false);
+					this->_mesh->draw(_cmd, nullptr, 0);
 				}
 				if (sShowBoundingBox && this->_shape_bounding_box)
 				{

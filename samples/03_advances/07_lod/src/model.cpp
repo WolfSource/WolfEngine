@@ -64,7 +64,7 @@ W_RESULT model::initialize()
 	if (_meshes.size())
 	{
 		//add first lod
-		_lod_info.first_index = this->tmp_batch_indices.size();// First index for this LOD
+		_lod_info.first_index = 0;// this->tmp_batch_indices.size();// First index for this LOD
 		_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
 		_lod_info.distance = _lod_distance_index * _lod_distance_offset;
 		_lod_distance_index++;
@@ -99,6 +99,12 @@ W_RESULT model::initialize()
 
 	_lods.clear();
 	_meshes.clear();
+}
+
+W_RESULT model::update()
+{
+	std::fill(this->visibilities.begin(), this->visibilities.end(), 1.0f);//set visible all for test
+	return W_PASSED;
 }
 
 ULONG model::release()

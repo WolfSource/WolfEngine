@@ -26,6 +26,9 @@ public:
 	virtual ~model();
 
 	W_RESULT initialize();
+	W_RESULT update();
+
+	void show_only_lods(_In_ const bool& pValue);
 
 	//release all resources
 	ULONG release();

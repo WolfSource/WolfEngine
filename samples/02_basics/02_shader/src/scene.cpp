@@ -185,7 +185,7 @@ W_RESULT scene::_build_draw_command_buffers()
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 //The following codes have been added for this project
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-                this->_pipeline.bind(_cmd);
+                this->_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
 				_gDevice->draw(_cmd, 3, 1, 0, 0 );
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++
                 //++++++++++++++++++++++++++++++++++++++++++++++++++++

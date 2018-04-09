@@ -402,14 +402,14 @@ W_RESULT scene::_build_draw_command_buffers()
                 1.0f,
                 0.0f);
             {
-				this->_pipeline.bind(_cmd);
+				this->_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
 				if (this->_mesh)
 				{
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 					//The following codes have been added for this project
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 					auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
-					this->_mesh->draw(_cmd, &_buffer_handle, NUM_INSTANCES, false);
+					this->_mesh->draw(_cmd, &_buffer_handle, NUM_INSTANCES);
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				}

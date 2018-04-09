@@ -41,6 +41,8 @@ static float sTotalTimeTimeInSec = 0;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
 	w_game(pContentPath, pLogPath, pAppName),
 	_current_selected_model(nullptr),
+	_show_all(true),
+	_show_lods(false),
 	_show_all_instances_colors(false),
 	_rebuild_command_buffer(true)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -52,7 +54,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -322,7 +324,7 @@ W_RESULT scene::_build_draw_command_buffers()
 				//draw all models
 				for (auto _model : this->_models)
 				{
-					_model->draw(_cmd, false);
+					_model->draw(_cmd, true);
 				}
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -368,14 +370,12 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		for (auto _model : this->_models)
 		{
 			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
+			_model->update();
 		}
+
+		this->_rebuild_command_buffer = true;
 	}
 
-	if (this->_rebuild_command_buffer)
-	{
-		_build_draw_command_buffers();
-		this->_rebuild_command_buffer = false;
-	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -400,21 +400,55 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	const VkPipelineStageFlags _wait_dst_stage_mask[] =
 	{
 		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 	};
 
 	//reset draw fence
+	std::vector<w_semaphore> _wait_semaphors = { _output_window->swap_chain_image_is_available_semaphore };
+
 	this->_draw_fence.reset();
+		
+	if (this->_rebuild_command_buffer)
+	{
+		auto _camera_pos = this->_first_camera.get_translate();
+
+		//submit compute shader for all visible models
+		std::for_each(this->_models.begin(), this->_models.end(),
+			[&](_In_ model* pModel)
+		{
+			if (pModel)
+			{
+				if (pModel->submit_compute_shader(_camera_pos) == W_PASSED)
+				{
+					auto _semaphore = pModel->get_compute_semaphore();
+					if (_semaphore)
+					{
+						_wait_semaphors.push_back(*_semaphore);
+					}
+				}
+			}
+		});
+
+		_build_draw_command_buffers();
+		this->_rebuild_command_buffer = false;
+	}
+
 	if (_gDevice->submit(
 		{ &_draw_cmd, &_gui_cmd },//command buffers
 		_gDevice->vk_graphics_queue, //graphics queue
 		&_wait_dst_stage_mask[0], //destination masks
-		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
+		_wait_semaphors, //wait semaphores
 		{ _output_window->rendering_done_semaphore }, //signal semaphores
 		&this->_draw_fence) == W_FAILED)
 	{
 		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
 	}
 	this->_draw_fence.wait();
+
+	auto _result = this->_models[0]->get_result_of_compute_shader();
+	logger.write(std::to_string(_result.draw_count));
+	logger.write(std::to_string(_result.lod_level[0]));
+	logger.write(std::to_string(_result.lod_level[1]));
 
 	return w_game::render(pGameTime);
 }
@@ -501,6 +535,16 @@ void scene::_show_floating_debug_window()
 		{
 			if (!_m) continue;
 			_m->set_global_visiblity(this->_show_all);
+		}
+		this->_rebuild_command_buffer = true;
+	}
+	
+	if (ImGui::Checkbox("Show only lod", &this->_show_lods))
+	{
+		for (auto _m : this->_models)
+		{
+			if (!_m) continue;
+			_m->set_show_only_lods(this->_show_lods);
 		}
 		this->_rebuild_command_buffer = true;
 	}

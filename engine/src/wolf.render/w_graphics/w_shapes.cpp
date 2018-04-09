@@ -297,7 +297,7 @@ namespace wolf
 
 				this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
 
-				if (this->_shape_drawer.draw(pCommandBuffer, nullptr, 0, false, 0) == W_FAILED)
+				if (this->_shape_drawer.draw(pCommandBuffer, nullptr, 0) == W_FAILED)
 				{
 					V(W_FAILED, "drawing shape", _trace_info, 3, false);
 					return W_FAILED;

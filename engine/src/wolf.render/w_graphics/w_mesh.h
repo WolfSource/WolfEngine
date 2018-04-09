@@ -265,8 +265,8 @@ namespace wolf
 				_In_ const w_command_buffer& pCommandBuffer,
                 _In_ const w_buffer_handle* pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
-                _In_ const bool& pIndirectDraw,
-				_In_ const uint32_t& pVertexOffset = 0);
+				_In_ const uint32_t& pVertexOffset = 0,
+				_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands = nullptr);
 
 			//release all resources
 			W_EXP virtual ULONG release() override;
@@ -385,7 +385,7 @@ namespace wolf
 				_In_ const w_command_buffer& pCommandBuffer,
 				_In_ const w_buffer_handle* pInstanceHandle,
 				_In_ const uint32_t& pInstancesCount,
-				_In_ const bool& pIndirectDraw,
+				/////////_In_ const bool& pIndirectDraw,
 				_In_ const uint32_t& pVertexOffset = 0)
 			{
 				return  draw(
