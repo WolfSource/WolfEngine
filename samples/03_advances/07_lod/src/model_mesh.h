@@ -44,7 +44,7 @@ public:
 	);
 
 	W_RESULT submit_compute_shader(_In_ const glm::vec3 pCameraPosition);
-	W_RESULT draw(_In_ const wolf::graphics::w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectMode);
+	W_RESULT draw(_In_ const wolf::graphics::w_command_buffer& pCommandBuffer);
 
 	//release all resources
 	ULONG release() override;
@@ -52,10 +52,11 @@ public:
 #pragma region Getters
 
 	std::string												get_model_name() const;
-	glm::vec3 get_position() const;
-	glm::vec3 get_rotation() const;
-	glm::vec3 get_scale() const;
+	glm::vec3												get_position() const;
+	glm::vec3												get_rotation() const;
+	glm::vec3												get_scale() const;
 	std::vector<wolf::content_pipeline::w_instance_info>	get_instances() const;
+	const uint32_t											get_instances_count() const;
 	wolf::system::w_bounding_box get_global_bounding_box() const;
 	bool get_enable_instances_colors() const;
 	bool get_global_visiblity() const;
@@ -158,11 +159,18 @@ private:
 	};
 	wolf::graphics::w_uniform<instance_u0>					_instance_u0;
 
-	struct u1
+	struct U1
+	{
+		float	texture_lod = 0.0f;
+	};
+	wolf::graphics::w_uniform<U1>                           _u1;
+	float													_texture_mip_map_level;
+
+	struct u2
 	{
 		float												cmds = 0;
 	};
-	wolf::graphics::w_uniform<u1>							_u1;
+	wolf::graphics::w_uniform<u2>							_u2;
 	
 	wolf::graphics::w_shader*								_shader;
 	wolf::graphics::w_pipeline								_pipeline;
@@ -184,6 +192,8 @@ private:
 	wolf::graphics::w_buffer								_cs_out_buffer;
 
 	bool													_show_only_lod;
+
+	uint32_t												_selected_lod_index;
 };
 
 #endif

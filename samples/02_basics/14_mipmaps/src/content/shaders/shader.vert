@@ -9,7 +9,6 @@ layout(location = 1) in vec2 i_uv;
 layout(set = 0, binding = 0) uniform U0
 {
 	float	texture_lod;
-	int 	sampler_index;
 } u0;
 
 out gl_PerVertex
@@ -26,5 +25,4 @@ void main()
     gl_Position = vec4(i_position, 1.0);
     o_uv = i_uv;
 	o_texture_lod = u0.texture_lod;
-	o_sampler_index = u0.sampler_index;
 }

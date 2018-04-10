@@ -260,13 +260,30 @@ namespace wolf
                 _In_ const uint32_t* const pIndicesData,
                 _In_ const uint32_t& pIndicesCount);
 
-			//draw vertices
+			/*
+				Draw vertices and indices
+				@param pCommandBuffer, The command buffer
+				@param pInstanceHandle, The memory handle of instnace buffer
+				@param pInstancesCount, Number of instnaces
+				@param pFirstInstance, the index of first instance
+				@param pIndirectDrawCommands, the indirect draw commands buffer
+				@param pVertexOffset, The vertex offset
+				@param pIndexCount, The count of indices for drawing, the default value (-1) will send whole count of index buffer for drawing with indexed buffer
+				@param pFirstIndex, The first index in index buffer for drawing with indexed buffer
+				@param pVertexCount, The count of vertices for drawing without indexed buffer
+				@param pFirstVertex, The first vertex of vertex buffer for drawing without indexed buffer
+			*/
             W_EXP W_RESULT draw(
 				_In_ const w_command_buffer& pCommandBuffer,
                 _In_ const w_buffer_handle* pInstanceHandle,
                 _In_ const uint32_t& pInstancesCount,
+				_In_ const uint32_t& pFirstInstance = 0,
+				_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands = nullptr,
 				_In_ const uint32_t& pVertexOffset = 0,
-				_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands = nullptr);
+				_In_ const int& pIndexCount = -1,
+				_In_ const uint32_t& pFirstIndex = 0,
+				_In_ const int& pVertexCount = -1,
+				_In_ const uint32_t& pFirstVertex = 0);
 
 			//release all resources
 			W_EXP virtual ULONG release() override;

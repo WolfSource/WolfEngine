@@ -35,9 +35,6 @@
     <None Include="..\..\src\content\shaders\shader.frag">
       <Filter>content\shaders</Filter>
     </None>
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x1.comp">
-      <Filter>content\shaders\compute</Filter>
-    </None>
     <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x2.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
@@ -66,9 +63,6 @@
       <Filter>content\shaders\compute</Filter>
     </None>
     <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x1024.comp">
-      <Filter>content\shaders\compute</Filter>
-    </None>
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x1.comp">
       <Filter>content\shaders\compute</Filter>
     </None>
     <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x2.comp">

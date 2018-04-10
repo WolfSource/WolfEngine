@@ -1810,7 +1810,8 @@ W_RESULT w_texture::flush_staging_data()
 }
 
 W_RESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_z_ std::wstring pPath,
+    _In_z_ const std::wstring& pPath,
+	_In_z_ const bool& pGenerateMipMaps,
     _Inout_ w_texture** pPointerToTexture)
 {
     //check if already exists
@@ -1828,7 +1829,7 @@ W_RESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphic
         return W_FAILED;
     }
 
-    auto _hr = _texture->initialize(pGDevice, 32, 32);
+    auto _hr = _texture->initialize(pGDevice, 32, 32, pGenerateMipMaps);
     if (_hr == W_FAILED)
     {
         SAFE_RELEASE(_texture);

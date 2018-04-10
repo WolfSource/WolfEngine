@@ -54,7 +54,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -324,7 +324,7 @@ W_RESULT scene::_build_draw_command_buffers()
 				//draw all models
 				for (auto _model : this->_models)
 				{
-					_model->draw(_cmd, true);
+					_model->draw(_cmd);
 				}
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -445,11 +445,22 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	}
 	this->_draw_fence.wait();
 
-	auto _result = this->_models[0]->get_result_of_compute_shader();
-	logger.write(std::to_string(_result.draw_count));
-	logger.write(std::to_string(_result.lod_level[0]));
-	logger.write(std::to_string(_result.lod_level[1]));
-
+	if (_current_selected_model)
+	{
+		if (_current_selected_model->get_instances_count())
+		{
+			auto _result = _current_selected_model->get_result_of_compute_shader();
+			logger.write(std::to_string(_result.draw_count));
+			logger.write(std::to_string(_result.lod_level[0]));
+			logger.write(std::to_string(_result.lod_level[1]));
+		}
+		else
+		{
+			//logger.write(std::to_string(1);
+			//logger.write(std::to_string(_result.lod_level[0]));
+			//logger.write(std::to_string(_result.lod_level[1]));
+		}
+	}
 	return w_game::render(pGameTime);
 }
 

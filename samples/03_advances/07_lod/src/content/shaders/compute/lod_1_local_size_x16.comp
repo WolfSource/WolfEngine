@@ -54,7 +54,7 @@ layout (binding = 2) uniform UBO_IN
 layout (binding = 3) buffer UBO_OUT
 {
 	uint draw_count;
-	uint lod_level [MAX_LOD_LEVEL + 1];
+	uint lod_levels [MAX_LOD_LEVEL + 1];
 } o_ubo;
 
 layout (binding = 4) readonly buffer LODs
@@ -71,8 +71,8 @@ void main()
 	if (_idx == 0)
 	{
 		atomicExchange(o_ubo.draw_count, 0);
-		atomicExchange(o_ubo.lod_level[0], 0);
-		atomicExchange(o_ubo.lod_level[1], 0);
+		atomicExchange(o_ubo.lod_levels[0], 0);
+		atomicExchange(o_ubo.lod_levels[1], 0);
 	}
 	
 	uint _base_index = _idx % 4;
@@ -97,7 +97,7 @@ void main()
 		indirect_draws[_idx].index_count = lods[_lod_level].index_count;
 
 		// Update stats
-		atomicAdd(o_ubo.lod_level[_lod_level], 1);
+		atomicAdd(o_ubo.lod_levels[_lod_level], 1);
 	}
 	else
 	{

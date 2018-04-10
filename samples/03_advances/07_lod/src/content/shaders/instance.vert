@@ -16,6 +16,11 @@ layout(binding = 0) uniform U0
 	mat4 projection;
 } u0;
 
+layout(binding = 1) uniform U1
+{
+	float	texture_lod;
+} u1;
+
 out gl_PerVertex
 {
   vec4 gl_Position;
@@ -23,7 +28,8 @@ out gl_PerVertex
 
 layout (location = 0) out vec3 o_norm;
 layout (location = 1) out vec2 o_uv;
-layout(location = 2) out vec3 o_color;
+layout(location = 2) out float o_texture_lod;
+layout(location = 3) out vec3 o_color;
 
 mat3 rotate_over_axis(float pAngle, vec3 pAxis)
 {
@@ -70,7 +76,8 @@ void main()
 	gl_Position = u0.projection * u0.view * _world_pos;
 	o_norm =  normalize( ( vec4(i_norm, 0.0)  * _world_view ).xyz );
 	o_uv = i_uv;
-	
+	o_texture_lod = u1.texture_lod;
+
 	if (gl_InstanceIndex == 0)
 	{
 		//this is ref model

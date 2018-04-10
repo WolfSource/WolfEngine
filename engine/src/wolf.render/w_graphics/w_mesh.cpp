@@ -166,10 +166,15 @@ namespace wolf
 
             W_RESULT draw(
 				_In_ const w_command_buffer& pCommandBuffer,
-                _In_ const w_buffer_handle* pInstanceHandle,
-                _In_ const uint32_t& pInstancesCount,
-				_In_ const uint32_t pVertexOffset,
-				_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands)
+				_In_ const w_buffer_handle* pInstanceHandle,
+				_In_ const uint32_t& pInstancesCount,
+				_In_ const uint32_t& pFirstInstance,
+				_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands,
+				_In_ const uint32_t& pVertexOffset,
+				_In_ const int& pIndexCount,
+				_In_ const uint32_t& pFirstIndex,
+				_In_ const int& pVertexCount,
+				_In_ const uint32_t& pFirstVertex)
             {
 				if (!pCommandBuffer.handle) return W_FAILED;
 
@@ -226,13 +231,24 @@ namespace wolf
 				{
 					if (_draw_indexed)
 					{
-						vkCmdDrawIndexed(_cmd, this->_indices_count, pInstancesCount + 1, 0, pVertexOffset, 0);
+						vkCmdDrawIndexed(
+							_cmd,
+							pIndexCount == -1 ? this->_indices_count : static_cast<uint32_t>(pIndexCount),
+							pInstancesCount + 1,
+							pFirstIndex,
+							pVertexOffset,
+							pFirstInstance);
 					}
 					else
 					{
-						vkCmdDraw(_cmd, this->_vertices_count, pInstancesCount + 1, pVertexOffset, 0);
+						vkCmdDraw(
+							_cmd,
+							pVertexCount == -1 ? this->_vertices_count : static_cast<uint32_t>(pVertexCount),
+							pInstancesCount + 1,
+							pFirstVertex,
+							pFirstInstance);
 					}
-                }
+				}
 
 				_cmd = nullptr;
                 _vertex_buffer_handle = nullptr;
@@ -481,11 +497,26 @@ W_RESULT w_mesh::draw(
 	_In_ const w_command_buffer& pCommandBuffer,
 	_In_ const w_buffer_handle* pInstanceHandle,
 	_In_ const uint32_t& pInstancesCount,
+	_In_ const uint32_t& pFirstInstance,
+	_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands,
 	_In_ const uint32_t& pVertexOffset,
-	_In_ const w_indirect_draws_command_buffer* pIndirectDrawCommands)
+	_In_ const int& pIndexCount,
+	_In_ const uint32_t& pFirstIndex,
+	_In_ const int& pVertexCount,
+	_In_ const uint32_t& pFirstVertex)
 {
 	if (!this->_pimp) return W_FAILED;
-	return this->_pimp->draw(pCommandBuffer, pInstanceHandle, pInstancesCount, pVertexOffset, pIndirectDrawCommands);
+	return this->_pimp->draw(
+		pCommandBuffer,
+		pInstanceHandle,
+		pInstancesCount,
+		pFirstInstance,
+		pIndirectDrawCommands,
+		pVertexOffset,
+		pIndexCount,
+		pFirstIndex,
+		pVertexCount,
+		pFirstVertex);
 }
 
 ULONG w_mesh::release()

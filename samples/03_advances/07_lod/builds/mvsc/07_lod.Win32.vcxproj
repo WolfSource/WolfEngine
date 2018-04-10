@@ -37,7 +37,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\content\shaders\basic.vert" />
-    <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x1.comp" />
     <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x1024.comp" />
     <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x128.comp" />
     <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x16.comp" />
@@ -48,7 +47,6 @@
     <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x512.comp" />
     <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x64.comp" />
     <None Include="..\..\src\content\shaders\compute\lod_0_local_size_x8.comp" />
-    <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x1.comp" />
     <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x1024.comp" />
     <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x128.comp" />
     <None Include="..\..\src\content\shaders\compute\lod_1_local_size_x16.comp" />

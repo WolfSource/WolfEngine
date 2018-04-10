@@ -3725,7 +3725,7 @@ void w_graphics_device_manager::_load_shared_resources()
 	_black.clear();
 
 	w_texture::default_texture = new w_texture();
-	w_texture::default_texture->initialize(_gDevice, 48, 48);
+	w_texture::default_texture->initialize(_gDevice, 48, 48, true);
 	if (w_texture::default_texture->load_texture_from_memory_rgba(&_pixels[0]) == W_FAILED)
 	{
 		logger.error("Error on creating texture of logo from memory");

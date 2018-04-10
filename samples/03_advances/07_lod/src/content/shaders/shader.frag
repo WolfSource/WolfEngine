@@ -3,15 +3,16 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout (binding = 1) uniform sampler2D tex_sampler;
-layout (binding = 2) uniform U1
+layout (binding = 2) uniform sampler2D tex_sampler;
+layout (binding = 3) uniform U2
 {
 	float cmds;	 
-} u1;
+} u2;
 
 layout (location = 0) in vec3 i_norm;
 layout (location = 1) in vec2 i_uv;
-layout(location = 2) in vec3 i_color;
+layout (location = 2) in float i_texture_lod;
+layout (location = 3) in vec3 i_color;
 
 layout(location = 0) out vec4 o_color;
 
@@ -33,7 +34,7 @@ vec3 calculate_ambient(vec3 pNormal, vec3 pColor)
 void main() 
 {
 	vec3 _diffuse_color;
-	if (u1.cmds == 1)
+	if (u2.cmds == 1)
 	{
 		_diffuse_color = i_color;
 	}
@@ -41,7 +42,7 @@ void main()
 	{
 		_diffuse_color = vec3(1, 1, 1);
 	}
-	vec4 _texture_color =  texture( tex_sampler, i_uv );
+	vec4 _texture_color =  texture( tex_sampler, i_uv, i_texture_lod);
 	if (_texture_color.a > 0)
 	{
 		_diffuse_color *= _texture_color.rgb;

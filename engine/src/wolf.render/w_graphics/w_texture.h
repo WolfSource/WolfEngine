@@ -93,7 +93,8 @@ namespace wolf
             //load texture and store it into the shared
             W_EXP static W_RESULT load_to_shared_textures(
                 _In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_z_ std::wstring pPath,
+                _In_z_ const std::wstring& pPath,
+				_In_z_ const bool& pGenerateMipMaps,
                 _Inout_ w_texture** pPointerToTexture);
         
 			/*

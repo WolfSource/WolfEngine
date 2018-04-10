@@ -14,7 +14,9 @@ model_mesh::model_mesh(
 	_mesh(nullptr),
 	_show_only_lod(false),
 	global_visiblity(true),
-	c_model(pContentPipelineModel)
+	c_model(pContentPipelineModel),
+	_selected_lod_index(0),
+	_texture_mip_map_level(0.0f)
 {
 }
 
@@ -47,7 +49,7 @@ W_RESULT model_mesh::load(
 	_mesh->set_vertex_binding_attributes(this->vertex_binding_attributes);
 
 	//load all textures
-	if (_load_textures())
+	if (_load_textures() == W_PASSED)
 	{
 		//TODO: currently we use one texture per mesh
 		_mesh->set_texture(this->_textures[0]);
@@ -55,8 +57,9 @@ W_RESULT model_mesh::load(
 	else
 	{
 		//set the default texture
+		this->_textures.push_back(w_texture::default_texture);
 		logger.warning("default texture will be used for model: " + this->model_name);
-		_mesh->set_texture(w_texture::default_texture);
+		_mesh->set_texture(this->_textures[0]);
 	}
 
 	//load mesh
@@ -82,8 +85,7 @@ W_RESULT model_mesh::load(
 		return W_FAILED;
 	}
 
-	_hr = _create_buffers();
-	if (_hr == W_FAILED)
+	if (_create_buffers() == W_FAILED)
 	{
 		release();
 		return W_FAILED;
@@ -103,24 +105,27 @@ W_RESULT model_mesh::load(
 		return W_FAILED;
 	}
 
-	
 	//release content pipeline model
 	this->c_model->release();
 	this->c_model = nullptr;
 
-	//create compute semaphore
-	if (this->_cs.semaphore.initialize(this->gDevice) == W_FAILED)
+	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	if (_number_of_instances)
 	{
-		release();
-		V(W_FAILED, "initializing compute semaphore for model: " + this->model_name, _trace_info, 2);
-		return W_FAILED;
-	}
-	//build compute command buffer
-	if (_build_compute_command_buffer() == W_FAILED)
-	{
-		release();
-		V(W_FAILED, "building compute command buffer for model: " + this->model_name, _trace_info, 2);
-		return W_FAILED;
+		//create compute semaphore
+		if (this->_cs.semaphore.initialize(this->gDevice) == W_FAILED)
+		{
+			release();
+			V(W_FAILED, "initializing compute semaphore for model: " + this->model_name, _trace_info, 2);
+			return W_FAILED;
+		}
+		//build compute command buffer
+		if (_build_compute_command_buffer() == W_FAILED)
+		{
+			release();
+			V(W_FAILED, "building compute command buffer for model: " + this->model_name, _trace_info, 2);
+			return W_FAILED;
+		}
 	}
 
 	return W_PASSED;
@@ -205,12 +210,51 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
 {
 	W_RESULT _hr = W_PASSED;
 	const std::string _trace_info = this->_name + "::submit_compute_shader";
-	
+
 	auto _cam_pos = glm::vec4(pCameraPosition, 1.0f);
 	if (this->_show_only_lod)
 	{
-		_cam_pos.x *= 10000;//set camera to far
+		_cam_pos.x += 10000;//set camera to far
 	}
+
+	auto _distance_to_camera = glm::distance(glm::vec4(get_position(), 1.0f), _cam_pos);
+	const uint32_t _base_offset = 2000;
+	auto _max_mip_map_level = this->_textures[0]->get_mip_maps_level();
+
+	this->_texture_mip_map_level = 0;
+	for (size_t i = 0; i < _max_mip_map_level; ++i)
+	{
+		if (_distance_to_camera <= _base_offset * (i + 1))
+		{
+			this->_texture_mip_map_level = i;
+			break;
+		}
+	}
+
+	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	if (!_number_of_instances)
+	{
+		if (this->lods_info.size())
+		{
+			//find lod index for model which has not instnaces
+			this->_selected_lod_index = this->lods_info.size() - 1;
+			for (uint32_t i = 0; i < this->_selected_lod_index; ++i)
+			{
+				if (_distance_to_camera <= this->lods_info[i].distance)
+				{
+					_selected_lod_index = i;
+					break;
+				}
+			}
+		}
+		else
+		{
+			this->_selected_lod_index = 0;
+		}
+		//return W_FAILED, because we do not want to store compute shader's semaphore for this model
+		return W_FAILED;
+	}
+
 	switch (this->_cs.batch_local_size)
 	{
 	case 1:
@@ -325,7 +369,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
 	return _hr;
 }
 
-W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ const bool& pInDirectMode)
+W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 {
 	if (!this->global_visiblity) return W_PASSED;
 
@@ -333,10 +377,47 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 
 	if (!this->_mesh) return W_FAILED;
 
+	if (this->_texture_mip_map_level != this->_u1.data.texture_lod)
+	{
+		this->_u1.data.texture_lod = this->_texture_mip_map_level;
+		if (this->_u1.update() == W_FAILED)
+		{
+			V(W_FAILED, "updating uniform u1(mipmaps) for model: " + this->model_name, _trace_info, 3);
+		}
+	}
 	//bind pipeline
 	this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
-	auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
-	return this->_mesh->draw(pCommandBuffer, _buffer_handle.handle ? &_buffer_handle : nullptr, this->instnaces_transforms.size(), 0, &this->indirect_draws);
+	if (get_instances_count())
+	{
+		auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
+		return this->_mesh->draw(
+			pCommandBuffer, 
+			&_buffer_handle, 
+			this->instnaces_transforms.size(), 
+			0, 
+			&this->indirect_draws);
+	}
+	else
+	{
+		if (this->_selected_lod_index < this->lods_info.size())
+		{
+			auto _lod_info = &this->lods_info[this->_selected_lod_index];
+			return this->_mesh->draw(
+				pCommandBuffer,
+				nullptr,
+				0,
+				0,
+				nullptr,
+				0,
+				_lod_info->index_count,
+				_lod_info->first_index);
+		}
+		else
+		{
+			V(W_FAILED, "drawing model, lod info is out of range for model: " + this->model_name, _trace_info, 3);
+			return W_FAILED;
+		}
+	}
 }
 
 void model_mesh::_store_to_batch(
@@ -841,6 +922,8 @@ W_RESULT model_mesh::_load_textures()
 {
 	const std::string _trace_info = this->_name + "_load_textures";
 
+	if (!this->textures_paths.size()) return W_FAILED;
+
 	bool _problem = false;
 	for (auto& _path : this->textures_paths)
 	{
@@ -851,6 +934,7 @@ W_RESULT model_mesh::_load_textures()
 				this->gDevice,
 				wolf::content_path + L"models/sponza/sponza/" +
 				wolf::system::convert::string_to_wstring(_path),
+				true,
 				&_texture) == W_PASSED)
 			{
 				this->_textures.push_back(_texture);
@@ -874,11 +958,14 @@ W_RESULT model_mesh::_load_textures()
 }
 
 W_RESULT model_mesh::_create_buffers()
-{
+{	
 	const std::string _trace_info = this->_name + "::_create_buffers";
 
+	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	if (!_number_of_instances) return W_PASSED;
+
 	//set compute shader batch size
-	uint32_t _draw_counts = 1 + static_cast<uint32_t>(this->instnaces_transforms.size());
+	uint32_t _draw_counts = 1 + _number_of_instances;
 	//find nearest pow of 2 for compute shader local batch size
 	this->_cs.batch_local_size = static_cast<uint32_t>(pow(2, ceil(log(_draw_counts) / log(2))));
 	this->indirect_draws.drawing_commands.resize(this->_cs.batch_local_size);
@@ -889,34 +976,30 @@ W_RESULT model_mesh::_create_buffers()
 	{
 		this->indirect_draws.drawing_commands[i].instanceCount = 1;
 		this->indirect_draws.drawing_commands[i].firstInstance = i;
-		//firstIndex and indexCount are written by the compute shader
+		//firstIndex and indexCount are written by the compute shader for models which has at least one instance
 	}
 
 	//load indirect draws
-	auto _hr = this->indirect_draws.load(this->gDevice, _draw_counts);
-	if (_hr == W_FAILED)
+	if (this->indirect_draws.load(this->gDevice, _draw_counts) == W_FAILED)
 	{
 		V(W_FAILED, "loading indirect draws command buffer for model: " + this->model_name, _trace_info, 3);
 		return W_FAILED;
 	}
 
-	_hr = _create_instance_buffers();
 	//create instance buffers
-	if (_hr == W_FAILED)
+	if (_create_instance_buffers() == W_FAILED)
 	{
 		return W_FAILED;
 	}
 
 	//create compute shader lod buffer
-	_hr = _create_lod_levels_buffer();
-	if (_hr == W_FAILED)
+	if (_create_lod_levels_buffer() == W_FAILED)
 	{
 		return W_FAILED;
 	}
 
 	//create compute shader output buffer
-	_hr = _create_cs_out_buffer();
-	if (_hr == W_FAILED)
+	if (_create_cs_out_buffer() == W_FAILED)
 	{
 		return W_FAILED;
 	}
@@ -928,6 +1011,9 @@ W_RESULT model_mesh::_create_instance_buffers()
 {
 	const std::string _trace_info = this->_name + "::_create_instance_buffer";
 
+	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	if (!_number_of_instances) return W_PASSED;
+
 	w_buffer _staging_buffers[2];
 	defer _(nullptr, [&](...)
 	{
@@ -938,7 +1024,6 @@ W_RESULT model_mesh::_create_instance_buffers()
 		}
 	});
 
-	auto _number_of_instances = this->instnaces_transforms.size();
 	auto _draw_counts = 1 + _number_of_instances;
 
 	std::vector<vertex_instance_data> _vertex_instances_data(_draw_counts);
@@ -1066,6 +1151,9 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 {
 	const std::string _trace_info = this->_name + "::_create_lod_levels_buffer";
 
+	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	if (!_number_of_instances) return W_PASSED;
+
 	w_buffer _staging_buffer;
 	defer _(nullptr, [&](...)
 	{		
@@ -1115,6 +1203,9 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 W_RESULT model_mesh::_create_cs_out_buffer()
 {
 	const std::string _trace_info = this->_name + "::_create_cs_out_buffer";
+
+	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	if (!_number_of_instances) return W_PASSED;
 
 	//create buffer of compute stage output
 	auto _size = (uint32_t)sizeof(compute_stage_output);
@@ -1338,78 +1429,116 @@ W_RESULT model_mesh::_create_shader_modules(
 	}
 	_shader_params.push_back(_shader_param);
 
-	//The sampler2D of fragment shader
-	_shader_param.index = 1;
-	_shader_param.type = w_shader_binding_type::SAMPLER2D;
-	_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
-	_shader_param.image_info = this->_textures[0]->get_descriptor_info();
-	_shader_params.push_back(_shader_param);
-
-	//the U1 uniform of fragment shader
+	//The texture lod index
 	_hr = this->_u1.load(this->gDevice);
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "loading fragment shader uniform for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED, "loading vertex shader uniform 1 for model: " + this->model_name, _trace_info, 3);
 		return W_FAILED;
 	}
-	_shader_param.index = 2;
+	_shader_param.index = 1;
 	_shader_param.type = w_shader_binding_type::UNIFORM;
-	_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
+	_shader_param.stage = w_shader_stage_flag_bits::VERTEX_SHADER;
 	_shader_param.buffer_info = this->_u1.get_descriptor_info();
 	_shader_params.push_back(_shader_param);
 
-	_shader_param.index = 0;
-	_shader_param.type = w_shader_binding_type::STORAGE;
-	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
-	_shader_param.buffer_info = this->_cs.instances_buffer.get_descriptor_info();
-	_shader_params.push_back(_shader_param);
-
-	_shader_param.index = 1;
-	_shader_param.type = w_shader_binding_type::STORAGE;
-	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
-	_shader_param.buffer_info = this->indirect_draws.buffer.get_descriptor_info();
-	_shader_params.push_back(_shader_param);
-
+	//The sampler2D of fragment shader
 	_shader_param.index = 2;
-	_shader_param.type = w_shader_binding_type::UNIFORM;
-	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
-	
-	std::wstring _compute_shader_path;
-	if (_prepare_cs_path_uniform_based_on_local_size(_shader_param, _compute_shader_path) == W_FAILED)
+	_shader_param.type = w_shader_binding_type::SAMPLER2D;
+	_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
+	_shader_param.image_info = this->_textures[0]->get_descriptor_info(w_sampler_type::MIPMAP_AND_ANISOTROPY);
+	_shader_params.push_back(_shader_param);
+
+	//the U1 uniform of fragment shader
+	_hr = this->_u2.load(this->gDevice);
+	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "getting compute shader uniform and filename path for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED, "loading fragment shader uniform 2 for model: " + this->model_name, _trace_info, 3);
 		return W_FAILED;
 	}
-	_shader_params.push_back(_shader_param);
-
 	_shader_param.index = 3;
-	_shader_param.type = w_shader_binding_type::STORAGE;
-	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
-	_shader_param.buffer_info = this->_cs_out_buffer.get_descriptor_info();
+	_shader_param.type = w_shader_binding_type::UNIFORM;
+	_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
+	_shader_param.buffer_info = this->_u2.get_descriptor_info();
 	_shader_params.push_back(_shader_param);
 
-	_shader_param.index = 4;
-	_shader_param.type = w_shader_binding_type::STORAGE;
-	_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
-	_shader_param.buffer_info = this->_cs.lod_levels_buffer.get_descriptor_info();
-	_shader_params.push_back(_shader_param);
-
-	//load shaders
-	if (w_shader::load_shader(
-		this->gDevice,
-		"model_mesh_" + wolf::system::convert::wstring_to_string(_compute_shader_path),
-		pVertexShaderPath,
-		L"",
-		L"",
-		L"",
-		pFragmentShaderPath,
-		shared::scene_content_path + L"shaders/compute/" + _compute_shader_path,
-		_shader_params,
-		false,
-		&this->_shader) == W_FAILED)
+	//the following shader parameters will be added for models which have at least one instance
+	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	if (_number_of_instances)
 	{
-		V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
-		return W_FAILED;
+		_shader_param.index = 0;
+		_shader_param.type = w_shader_binding_type::STORAGE;
+		_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+		_shader_param.buffer_info = this->_cs.instances_buffer.get_descriptor_info();
+		_shader_params.push_back(_shader_param);
+
+		_shader_param.index = 1;
+		_shader_param.type = w_shader_binding_type::STORAGE;
+		_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+		_shader_param.buffer_info = this->indirect_draws.buffer.get_descriptor_info();
+		_shader_params.push_back(_shader_param);
+
+		_shader_param.index = 2;
+		_shader_param.type = w_shader_binding_type::UNIFORM;
+		_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+
+		std::wstring _compute_shader_path;
+		if (_prepare_cs_path_uniform_based_on_local_size(_shader_param, _compute_shader_path) == W_FAILED)
+		{
+			V(W_FAILED, "getting compute shader uniform and filename path for model: " + this->model_name, _trace_info, 3);
+			return W_FAILED;
+		}
+		_shader_params.push_back(_shader_param);
+
+		_shader_param.index = 3;
+		_shader_param.type = w_shader_binding_type::STORAGE;
+		_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+		_shader_param.buffer_info = this->_cs_out_buffer.get_descriptor_info();
+		_shader_params.push_back(_shader_param);
+
+		_shader_param.index = 4;
+		_shader_param.type = w_shader_binding_type::STORAGE;
+		_shader_param.stage = w_shader_stage_flag_bits::COMPUTE_SHADER;
+		_shader_param.buffer_info = this->_cs.lod_levels_buffer.get_descriptor_info();
+		_shader_params.push_back(_shader_param);
+
+		//load shaders
+		if (w_shader::load_shader(
+			this->gDevice,
+			"model_mesh_" + wolf::system::convert::wstring_to_string(_compute_shader_path),
+			pVertexShaderPath,
+			L"",
+			L"",
+			L"",
+			pFragmentShaderPath,
+			shared::scene_content_path + L"shaders/compute/" + _compute_shader_path,
+			_shader_params,
+			false,
+			&this->_shader) == W_FAILED)
+		{
+			V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
+			return W_FAILED;
+		}
+	}
+	else
+	{
+		//load shaders
+		if (w_shader::load_shader(
+			this->gDevice,
+			"model_basic_mesh",
+			pVertexShaderPath,
+			L"",
+			L"",
+			L"",
+			pFragmentShaderPath,
+			L"",
+			_shader_params,
+			false,
+			&this->_shader) == W_FAILED)
+		{
+			V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
+			return W_FAILED;
+		}
 	}
 
 	_hr = this->_shader->set_shader_binding_params(_shader_params);
@@ -1442,14 +1571,18 @@ W_RESULT model_mesh::_create_pipelines(
 		return W_FAILED;
 	}
 
-	if (this->_cs.pipeline.load_compute(
-		this->gDevice,
-		this->_shader,
-		5,
-		pComputePipelineCacheName) == W_FAILED)
+	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	if (_number_of_instances)
 	{
-		V(W_FAILED, "loading computing pipeline for model: " + this->model_name, _trace_info, 3);
-		return W_FAILED;
+		if (this->_cs.pipeline.load_compute(
+			this->gDevice,
+			this->_shader,
+			5,
+			pComputePipelineCacheName) == W_FAILED)
+		{
+			V(W_FAILED, "loading computing pipeline for model: " + this->model_name, _trace_info, 3);
+			return W_FAILED;
+		}
 	}
 
 	return W_PASSED;
@@ -1478,6 +1611,7 @@ ULONG model_mesh::release()
 	this->_basic_u0.release();
 	this->_instance_u0.release();
 	this->_u1.release();
+	this->_u2.release();
 
 	//release mesh resources
 	SAFE_RELEASE(this->_mesh);
@@ -1526,6 +1660,11 @@ std::vector<w_instance_info> model_mesh::get_instances() const
 	return this->instnaces_transforms;
 }
 
+const uint32_t model_mesh::get_instances_count() const
+{
+	return static_cast<uint32_t>(this->instnaces_transforms.size());
+}
+
 w_bounding_box model_mesh::get_global_bounding_box() const
 {
 	return this->merged_bounding_box;
@@ -1533,7 +1672,7 @@ w_bounding_box model_mesh::get_global_bounding_box() const
 
 bool model_mesh::get_enable_instances_colors() const
 {
-	return this->_u1.data.cmds == 1;
+	return this->_u2.data.cmds == 1;
 }
 
 bool model_mesh::get_global_visiblity() const
@@ -1605,11 +1744,11 @@ void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
 {
 	const std::string _trace_info = this->_name + "::set_enable_instances_colors";
 
-	this->_u1.data.cmds = pEnable ? 1 : 0;
-	auto _hr = this->_u1.update();
+	this->_u2.data.cmds = pEnable ? 1 : 0;
+	auto _hr = this->_u2.update();
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "updating u1 uniform for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED, "updating uniform u2(cmds) for model: " + this->model_name, _trace_info, 3);
 	}
 }
 
