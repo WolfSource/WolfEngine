@@ -972,18 +972,18 @@ namespace wolf
 						" and following format: " + std::to_string(_format));
 					_bliting_supported = false;
 				}
-				if (_bliting_supported)
-				{
-					// Check for whether blitting is supported for destination
-					if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
-					{
-						logger.warning("Blitting feature not supported from linear tiled image for graphics device: " +
-							this->_gDevice->device_info->get_device_name() +
-							" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()) +
-							" and following format: " + std::to_string(_format));
-						//_bliting_supported = false;
-					}
-				}
+				//if (_bliting_supported)
+				//{
+				//	// Check for whether blitting is supported for destination
+				//	if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
+				//	{
+				//		logger.warning("Blitting feature not supported from linear tiled image for graphics device: " +
+				//			this->_gDevice->device_info->get_device_name() +
+				//			" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()) +
+				//			" and following format: " + std::to_string(_format));
+				//		//_bliting_supported = false;
+				//	}
+				//}
                 
 				//create command buffer
 				w_command_buffers _command_buffer;

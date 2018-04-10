@@ -211,13 +211,9 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
 	W_RESULT _hr = W_PASSED;
 	const std::string _trace_info = this->_name + "::submit_compute_shader";
 
+	auto _model_pos = glm::vec4(get_position(), 1.0f);
 	auto _cam_pos = glm::vec4(pCameraPosition, 1.0f);
-	if (this->_show_only_lod)
-	{
-		_cam_pos.x += 10000;//set camera to far
-	}
-
-	auto _distance_to_camera = glm::distance(glm::vec4(get_position(), 1.0f), _cam_pos);
+	auto _distance_to_camera = glm::distance(_model_pos, _cam_pos);
 	const uint32_t _base_offset = 2000;
 	auto _max_mip_map_level = this->_textures[0]->get_mip_maps_level();
 
@@ -229,6 +225,12 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
 			this->_texture_mip_map_level = i;
 			break;
 		}
+	}
+
+	if (this->_show_only_lod)
+	{
+		_cam_pos.x += 10000;//set camera to far
+		_distance_to_camera = glm::distance(_model_pos, _cam_pos);
 	}
 
 	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
