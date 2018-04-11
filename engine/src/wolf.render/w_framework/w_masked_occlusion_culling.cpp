@@ -21,7 +21,7 @@ namespace wolf
 			{
 			}
 
-			W_RESULT initialize(_In_ uint32_t& pNumberOfWorkerThreads)
+			W_RESULT initialize(_In_ uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging)
 			{
 				//create masked occlusion culling instnace
 				this->_moc = MaskedOcclusionCulling::Create();
@@ -44,6 +44,7 @@ namespace wolf
 					break;
 				}
 
+				this->_enable_debugging = pEnableDebugging;
 				set_number_of_worker_threads(pNumberOfWorkerThreads);
 				suspend_threads();
 
@@ -93,6 +94,17 @@ namespace wolf
 				return W_PASSED;
 			}
 
+			MaskedOcclusionCulling::CullingResult test_triangles_async(
+				_In_ const float* pVertices,
+				_In_ const unsigned int* pTriangles,
+				_In_ int pNumberOfTriangles,
+				_In_ MaskedOcclusionCulling::BackfaceWinding pBackFaceWinding,
+				_In_ MaskedOcclusionCulling::ClipPlanes pClipPlaneMask)
+			{
+				if (!this->_multi_threaded || !this->_moc_thread_pool) return MaskedOcclusionCulling::CullingResult::VISIBLE;
+				return this->_moc_thread_pool->TestTriangles(pVertices, pTriangles, pNumberOfTriangles, pBackFaceWinding, pClipPlaneMask);
+			}
+
 			W_RESULT render_triangles(
 				_In_ const float* pVertices,
 				_In_ const unsigned int* pTriangles,
@@ -104,6 +116,18 @@ namespace wolf
 				if (!this->_moc) return W_FAILED;
 				this->_moc->RenderTriangles(pVertices, pTriangles, pNumberOfTriangles, pModelToClipMatrix, pBackFaceWinding, pClipPlaneMask);
 				return W_PASSED;
+			}
+
+			MaskedOcclusionCulling::CullingResult test_triangles(
+				_In_ const float* pVertices,
+				_In_ const unsigned int* pTriangles,
+				_In_ int pNumberOfTriangles,
+				_In_ const float* pModelToClipMatrix,
+				_In_ MaskedOcclusionCulling::BackfaceWinding pBackFaceWinding,
+				_In_ MaskedOcclusionCulling::ClipPlanes pClipPlaneMask)
+			{
+				if (!this->_moc) return MaskedOcclusionCulling::CullingResult::VISIBLE;
+				return this->_moc->TestTriangles(pVertices, pTriangles, pNumberOfTriangles, pModelToClipMatrix, pBackFaceWinding, pClipPlaneMask);
 			}
 
 			W_RESULT flush()
@@ -196,11 +220,6 @@ namespace wolf
 			void set_multi_threaded(_In_ const bool& pValue)
 			{
 				this->_multi_threaded = pValue;
-			}
-
-			void set_enable_debugging(_In_ const bool& pValue)
-			{
-				this->_enable_debugging = true;
 			}
 
 			W_RESULT set_near_clip(_In_ const float& pValue)
@@ -332,9 +351,9 @@ w_masked_occlusion_culling::~w_masked_occlusion_culling()
 	release();
 }
 
-W_RESULT w_masked_occlusion_culling::initialize(_In_ uint32_t& pNumberOfWorkerThreads)
+W_RESULT w_masked_occlusion_culling::initialize(_In_ uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging)
 {
-	return ((this->_pimp) ? this->_pimp->initialize(pNumberOfWorkerThreads) : W_FAILED);
+	return ((this->_pimp) ? this->_pimp->initialize(pNumberOfWorkerThreads, pEnableDebugging) : W_FAILED);
 }
 
 W_RESULT w_masked_occlusion_culling::suspend_threads()
@@ -362,6 +381,16 @@ W_RESULT w_masked_occlusion_culling::render_triangles_async(
 	return (this->_pimp ? this->_pimp->render_triangles_async(pVertices, pTriangles, pNumberOfTriangles, pBackFaceWinding, pClipPlaneMask) : W_FAILED);
 }
 
+MaskedOcclusionCulling::CullingResult  w_masked_occlusion_culling::test_triangles_async(
+	_In_ const float* pVertices,
+	_In_ const unsigned int* pTriangles,
+	_In_ const int& pNumberOfTriangles,
+	_In_ const MaskedOcclusionCulling::BackfaceWinding& pBackFaceWinding,
+	_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask)
+{
+	return (this->_pimp ? this->_pimp->test_triangles_async(pVertices, pTriangles, pNumberOfTriangles, pBackFaceWinding, pClipPlaneMask) : MaskedOcclusionCulling::CullingResult::VISIBLE);
+}
+
 W_RESULT w_masked_occlusion_culling::render_triangles(
 	_In_ const float* pVertices,
 	_In_ const unsigned int* pTriangles,
@@ -371,6 +400,17 @@ W_RESULT w_masked_occlusion_culling::render_triangles(
 	_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask)
 {
 	return (this->_pimp ? this->_pimp->render_triangles(pVertices, pTriangles, pNumberOfTriangles, pModelToClipMatrix, pBackFaceWinding, pClipPlaneMask) : W_FAILED);
+}
+
+MaskedOcclusionCulling::CullingResult w_masked_occlusion_culling::test_triangles(
+	_In_ const float* pVertices,
+	_In_ const unsigned int* pTriangles,
+	_In_ const int& pNumberOfTriangles,
+	_In_ const float* pModelToClipMatrix,
+	_In_ const MaskedOcclusionCulling::BackfaceWinding& pBackFaceWinding,
+	_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask)
+{
+	return (this->_pimp ? this->_pimp->test_triangles(pVertices, pTriangles, pNumberOfTriangles, pModelToClipMatrix, pBackFaceWinding, pClipPlaneMask) : MaskedOcclusionCulling::CullingResult::VISIBLE);
 }
 
 W_RESULT w_masked_occlusion_culling::flush()
@@ -407,11 +447,6 @@ void w_masked_occlusion_culling::set_number_of_worker_threads(_In_ uint32_t& pNu
 void w_masked_occlusion_culling::set_multi_threaded(_In_ const bool& pValue)
 {
 	if (this->_pimp) this->_pimp->set_multi_threaded(pValue);
-}
-
-void w_masked_occlusion_culling::set_enable_debugging(_In_ const bool& pValue)
-{
-	if (this->_pimp) this->_pimp->set_enable_debugging(pValue);
 }
 
 W_RESULT w_masked_occlusion_culling::set_near_clip(_In_ const float& pValue)

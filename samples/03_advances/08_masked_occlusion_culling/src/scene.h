@@ -72,6 +72,7 @@ private:
 
 	W_RESULT	_build_draw_command_buffers();
 	void		_show_floating_debug_window();
+	void		_show_floating_moc_debug_window();
 	widget_info	_show_left_widget_controller();
 	widget_info	_show_search_widget(_In_ widget_info* pRelatedWidgetInfo);
 	widget_info	_show_explorer();
@@ -89,7 +90,7 @@ private:
 	bool															_rebuild_command_buffer;
 	bool															_force_update_camera;
 	wolf::framework::w_first_person_camera							_first_camera;
-	std::vector<model*>												_models;
+	std::vector<model*>												_scene_models;
 
 	bool															_show_all;
 	bool															_show_all_instances_colors;
@@ -99,7 +100,10 @@ private:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	bool															_show_moc_debug;
 	wolf::framework::w_masked_occlusion_culling						_masked_occlusion_culling;
+	wolf::graphics::w_texture*										_masked_occlusion_culling_debug_frame;
+	std::vector<model*>												_drawable_models;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

@@ -112,7 +112,7 @@ W_RESULT model_mesh::load(
 	this->c_model->release();
 	this->c_model = nullptr;
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (_number_of_instances)
 	{
 		//create compute semaphore
@@ -129,6 +129,11 @@ W_RESULT model_mesh::load(
 			V(W_FAILED, "building compute command buffer for model: " + this->model_name, _trace_info, 2);
 			return W_FAILED;
 		}
+	}
+	else
+	{
+		//we have only one model
+		this->visibilities.resize(1);
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -242,7 +247,7 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
 		_distance_to_camera = glm::distance(_model_pos, _cam_pos);
 	}
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances)
 	{
 		if (this->lods_info.size())
@@ -268,14 +273,6 @@ W_RESULT model_mesh::submit_compute_shader(_In_ const glm::vec3 pCameraPosition)
 
 	switch (this->_cs.batch_local_size)
 	{
-	case 1:
-		this->_cs.unifrom_x1->data.camera_pos = _cam_pos;
-		std::memcpy(
-			&this->_cs.unifrom_x1->data.is_visible[0],
-			this->visibilities.data(),
-			sizeof(this->_cs.unifrom_x1->data.is_visible));
-		_hr = this->_cs.unifrom_x1->update();
-		break;
 	case 2:
 		this->_cs.unifrom_x2->data.camera_pos = _cam_pos;
 		std::memcpy(
@@ -404,7 +401,7 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 		return this->_mesh->draw(
 			pCommandBuffer, 
 			&_buffer_handle, 
-			this->instnaces_transforms.size(), 
+			this->instances_transforms.size(),
 			0, 
 			&this->indirect_draws);
 	}
@@ -979,7 +976,7 @@ W_RESULT model_mesh::_create_buffers()
 {	
 	const std::string _trace_info = this->_name + "::_create_buffers";
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances) return W_PASSED;
 
 	//set compute shader batch size
@@ -1029,7 +1026,7 @@ W_RESULT model_mesh::_create_instance_buffers()
 {
 	const std::string _trace_info = this->_name + "::_create_instance_buffer";
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances) return W_PASSED;
 
 	w_buffer _staging_buffers[2];
@@ -1064,7 +1061,7 @@ W_RESULT model_mesh::_create_instance_buffers()
 		1.0f);
 
 	_index++;
-	for (auto _ins : this->instnaces_transforms)
+	for (auto _ins : this->instances_transforms)
 	{
 		_vertex_instances_data[_index].pos[0] = _ins.position[0];
 		_vertex_instances_data[_index].pos[1] = _ins.position[1];
@@ -1169,7 +1166,7 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 {
 	const std::string _trace_info = this->_name + "::_create_lod_levels_buffer";
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances) return W_PASSED;
 
 	w_buffer _staging_buffer;
@@ -1222,7 +1219,7 @@ W_RESULT model_mesh::_create_cs_out_buffer()
 {
 	const std::string _trace_info = this->_name + "::_create_cs_out_buffer";
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (!_number_of_instances) return W_PASSED;
 
 	//create buffer of compute stage output
@@ -1261,19 +1258,6 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		_hr = W_FAILED;
 		V(_hr, "batch_local_size " + std::to_string(this->_cs.batch_local_size) +
 			" not supported for model: " + this->model_name, _trace_info);
-	case 1:
-		this->visibilities.resize(1);
-		this->_cs.unifrom_x1 = new w_uniform<compute_unifrom_x1>();
-		if (this->_cs.unifrom_x1->load(this->gDevice) == W_FAILED)
-		{
-			_hr = W_FAILED;
-			V(_hr, "loading compute shader uniform_x1 for " + this->model_name, _trace_info);
-		}
-		else
-		{
-			pShaderBindingParam.buffer_info = this->_cs.unifrom_x1->get_descriptor_info();
-		}
-		break;
 	case 2:
 		this->visibilities.resize(2);
 		this->_cs.unifrom_x2 = new w_uniform<compute_unifrom_x2>();
@@ -1425,7 +1409,7 @@ W_RESULT model_mesh::_create_shader_modules(
 	_shader_param.stage = w_shader_stage_flag_bits::VERTEX_SHADER;
 
 	//set U0 uniform of instance vertex shader, which has seperate structure for basic model or instanced models
-	if (this->instnaces_transforms.size())
+	if (this->instances_transforms.size())
 	{
 		_hr = this->_instance_u0.load(this->gDevice);
 		if (_hr == W_FAILED)
@@ -1481,7 +1465,7 @@ W_RESULT model_mesh::_create_shader_modules(
 	_shader_params.push_back(_shader_param);
 
 	//the following shader parameters will be added for models which have at least one instance
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (_number_of_instances)
 	{
 		_shader_param.index = 0;
@@ -1589,7 +1573,7 @@ W_RESULT model_mesh::_create_pipelines(
 		return W_FAILED;
 	}
 
-	auto _number_of_instances = static_cast<uint32_t>(this->instnaces_transforms.size());
+	auto _number_of_instances = static_cast<uint32_t>(this->instances_transforms.size());
 	if (_number_of_instances)
 	{
 		if (this->_cs.pipeline.load_compute(
@@ -1610,12 +1594,10 @@ W_RESULT model_mesh::_create_pipelines(
 
 ULONG model_mesh::release()
 {
-	if (_super::get_is_released()) return 1;
-
 	this->_name.clear();
 	this->model_name.clear();
 
-	this->instnaces_transforms.clear();
+	this->instances_transforms.clear();
 
 	if (this->c_model)
 	{
@@ -1675,12 +1657,12 @@ glm::vec3 model_mesh::get_scale() const
 
 std::vector<w_instance_info> model_mesh::get_instances() const
 {
-	return this->instnaces_transforms;
+	return this->instances_transforms;
 }
 
 const uint32_t model_mesh::get_instances_count() const
 {
-	return static_cast<uint32_t>(this->instnaces_transforms.size());
+	return static_cast<uint32_t>(this->instances_transforms.size());
 }
 
 w_bounding_box model_mesh::get_global_bounding_box() const
@@ -1731,7 +1713,7 @@ void model_mesh::set_view_projection(_In_ const glm::mat4& pView, _In_ const glm
 {
 	const std::string _trace_info = this->_name + "::set_view_projection";
 
-	if (this->instnaces_transforms.size())
+	if (this->instances_transforms.size())
 	{
 		this->_instance_u0.data.view = pView;
 		this->_instance_u0.data.projection = pProjection;

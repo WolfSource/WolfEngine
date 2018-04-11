@@ -23,7 +23,7 @@ void main()
 	}
 	else if(i_uv_image_index.z == 2)
 	{
-		//icons
+		//media
 		o_color = i_color * texture(media_sampler, i_uv_image_index.xy);
 	}
 

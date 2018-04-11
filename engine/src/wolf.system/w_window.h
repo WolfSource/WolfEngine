@@ -125,6 +125,7 @@ struct w_window_info
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__)
 	bool                v_sync = true;
+	bool			    force_to_disable_v_sync = false;
     bool				is_full_screen = false;
 #endif
 

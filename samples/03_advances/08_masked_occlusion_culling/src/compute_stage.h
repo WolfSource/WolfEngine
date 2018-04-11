@@ -28,14 +28,6 @@
 #pragma region compute uniforms
 
 #pragma pack(push,1)
-struct compute_unifrom_x1
-{
-	glm::vec4           camera_pos;
-	glm::vec4	        is_visible;
-};
-#pragma pack(pop)
-
-#pragma pack(push,1)
 struct compute_unifrom_x2
 {
 	glm::vec4           camera_pos;
@@ -136,7 +128,6 @@ struct compute_stage
 {
 	uint32_t                                                batch_local_size = 1;
 
-	wolf::graphics::w_uniform<compute_unifrom_x1>*          unifrom_x1 = nullptr;
 	wolf::graphics::w_uniform<compute_unifrom_x2>*          unifrom_x2 = nullptr;
 	wolf::graphics::w_uniform<compute_unifrom_x4>*          unifrom_x4 = nullptr;
 	wolf::graphics::w_uniform<compute_unifrom_x8>*          unifrom_x8 = nullptr;
@@ -157,7 +148,6 @@ struct compute_stage
 
 	void release()
 	{
-		SAFE_RELEASE(this->unifrom_x1);
 		SAFE_RELEASE(this->unifrom_x2);
 		SAFE_RELEASE(this->unifrom_x4);
 		SAFE_RELEASE(this->unifrom_x8);

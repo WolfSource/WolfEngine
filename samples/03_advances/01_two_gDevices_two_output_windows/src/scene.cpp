@@ -159,9 +159,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 		auto _draw_cmd = this->_draw_command_buffers[i].get_command_at(_frame_index);
 
-		const VkPipelineStageFlags _wait_dst_stage_mask[] =
+		const uint32_t _wait_dst_stage_mask[] =
 		{
-			VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+			w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 		};
 
 		//reset draw fence

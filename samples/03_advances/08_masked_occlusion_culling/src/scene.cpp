@@ -45,7 +45,9 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	_show_all_instances_colors(false),
 	_rebuild_command_buffer(true),
 	_show_all(true),
-	_show_lods(false)
+	_show_lods(false),
+	_masked_occlusion_culling_debug_frame(nullptr),
+	_show_moc_debug(false)
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
@@ -67,12 +69,10 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	{
 		_number_of_cpus = 4;
 	}
-	if (this->_masked_occlusion_culling.initialize(_number_of_cpus) == W_FAILED)
+	if (this->_masked_occlusion_culling.initialize(_number_of_cpus, true) == W_FAILED)
 	{
 		V(W_FAILED, "initializing masked occlusion culling", "scene::scene", 3, true);
 	}
-
-	this->_masked_occlusion_culling.set_enable_debugging(true);
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
@@ -126,6 +126,36 @@ void scene::load()
 	this->_viewport_scissor.offset.y = 0;
 	this->_viewport_scissor.extent.width = _preferred_backbuffer_size.x;
 	this->_viewport_scissor.extent.height = _preferred_backbuffer_size.y;
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	this->_masked_occlusion_culling_debug_frame = new (std::nothrow) w_texture();
+	if (this->_masked_occlusion_culling_debug_frame)
+	{
+		if (this->_masked_occlusion_culling_debug_frame->initialize(
+			_gDevice,
+			_preferred_backbuffer_size.x,
+			_preferred_backbuffer_size.y,
+			false,
+			true) == W_PASSED)
+		{
+			if (this->_masked_occlusion_culling_debug_frame->load_texture_from_memory_all_channels_same(255) == W_FAILED)
+			{
+				V(W_FAILED, "loading texture for masked occlusion culling debug frame", _trace_info, 2);
+			}
+		}
+		else
+		{
+			V(W_FAILED, "initializing texture memory for masked occlusion culling debug frame", _trace_info, 2);
+		}
+	}
+	else
+	{
+		V(W_FAILED, "allocating memory for texture of masked occlusion culling debug frame", _trace_info, 2);
+	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//define color and depth as an attachments buffers for render pass
 	std::vector<std::vector<w_image_view>> _render_pass_attachments;
@@ -189,13 +219,19 @@ void scene::load()
 		}
 	}
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//load imgui
 	w_imgui::load(
 		_gDevice,
 		_output_window,
 		this->_viewport,
 		this->_viewport_scissor,
-		_gui_icons);
+		_gui_icons,
+		&this->_masked_occlusion_culling_debug_frame);
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//create two primary command buffers for clearing screen
 	auto _swap_chain_image_size = _output_window->swap_chain_image_views.size();
@@ -242,7 +278,7 @@ void scene::load()
 	{
 		//get first camera
 		_scene->get_first_camera(this->_first_camera);
-		float _near_plan = 0.1f, far_plan = 5000;
+		float _near_plan = 0.1f, far_plan = 10000;
 
 		this->_first_camera.set_near_plan(_near_plan);
 		this->_first_camera.set_far_plan(far_plan);
@@ -256,7 +292,8 @@ void scene::load()
 
 		this->_masked_occlusion_culling.set_near_clip(_near_plan);
 		this->_masked_occlusion_culling.set_resolution(this->_viewport.width, this->_viewport.height);
-
+		this->_masked_occlusion_culling.suspend_threads();
+		
 		//get all models
 		std::vector<w_cpipeline_model*> _cmodels;
 		_scene->get_all_models(_cmodels);
@@ -264,6 +301,8 @@ void scene::load()
 		std::wstring _vertex_shader_path;
 		for (auto _m : _cmodels)
 		{
+			if (_m->get_name() == "C7233-ins1119_") continue;
+			
 			model* _model = nullptr;
 			if (_m->get_instances_count())
 			{
@@ -304,12 +343,22 @@ void scene::load()
 				}
 			}
 
-			//set view projection
-			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
-			this->_models.push_back(_model);
+			this->_scene_models.push_back(_model);
 		}
 		_cmodels.clear();
 		_scene->release();
+
+		//sort models based on model names
+		if (this->_scene_models.size())
+		{
+			std::sort(
+				this->_scene_models.begin(),
+				this->_scene_models.end(),
+				[](_In_ model* p1, _In_ model* p2)
+			{
+				return p1->get_model_name().compare(p2->get_model_name()) <= 0;
+			});
+		}
 	}
 }
 
@@ -332,7 +381,7 @@ W_RESULT scene::_build_draw_command_buffers()
 				0.0f);
 			{
 				//draw all models
-				for (auto _model : this->_models)
+				for (auto _model : this->_drawable_models)
 				{
 					_model->draw(_cmd);
 				}
@@ -374,14 +423,17 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 	if (this->_force_update_camera)
 	{
+		//clear all models
+		this->_drawable_models.clear();
+
 		this->_force_update_camera = false;
 
-		this->_masked_occlusion_culling.clear_buffer();
 		this->_masked_occlusion_culling.wake_threads();
+		this->_masked_occlusion_culling.clear_buffer();
 
-		//update view and projection of all models
+		//pre update stage for all models
 		bool _need_flush_moc = false;
-		std::for_each(this->_models.begin(), this->_models.end(), [&](_In_ model* pModel)
+		std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
 		{
 			if (pModel && pModel->pre_update(this->_first_camera, this->_masked_occlusion_culling) == W_PASSED)
 			{
@@ -392,10 +444,31 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		if (_need_flush_moc)
 		{
 			this->_masked_occlusion_culling.flush();
-		}
 
+			//post update stage for all models
+			std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
+			{
+				if (pModel && pModel->post_update(this->_masked_occlusion_culling) == W_PASSED)
+				{
+					//add to list of to be render models
+					this->_drawable_models.push_back(pModel);
+				}
+			});
+			this->_rebuild_command_buffer = true;
+
+			if (_show_moc_debug)
+			{
+				auto _moc_debug_depth_frame = this->_masked_occlusion_culling.get_debug_frame(true);
+				if (_moc_debug_depth_frame)
+				{
+					if (this->_masked_occlusion_culling_debug_frame->copy_data_to_texture_2D(_moc_debug_depth_frame) == W_FAILED)
+					{
+						V(W_FAILED, "copying data to texture of masked occlusion culling debug frame", _trace_info, 2);
+					}
+				}
+			}
+		}
 		this->_masked_occlusion_culling.suspend_threads();
-		this->_rebuild_command_buffer = true;
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -419,10 +492,10 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _draw_cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	auto _gui_cmd = w_imgui::get_command_buffer_at(_frame_index);
 
-	const VkPipelineStageFlags _wait_dst_stage_mask[] =
+	const uint32_t _wait_dst_stage_mask[] =
 	{
-		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
+		w_pipeline_stage_flag_bits::COMPUTE_SHADER_BIT,
 	};
 
 	//reset draw fence
@@ -435,7 +508,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		auto _camera_pos = this->_first_camera.get_translate();
 
 		//submit compute shader for all visible models
-		std::for_each(this->_models.begin(), this->_models.end(),
+		std::for_each(this->_drawable_models.begin(), this->_drawable_models.end(),
 			[&](_In_ model* pModel)
 		{
 			if (pModel)
@@ -467,10 +540,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	}
 	this->_draw_fence.wait();
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	if (_current_selected_model)
+	/*if (_current_selected_model)
 	{
 		if (_current_selected_model->get_instances_count())
 		{
@@ -479,9 +549,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 			logger.write(std::to_string(_result.lod_level[0]));
 			logger.write(std::to_string(_result.lod_level[1]));
 		}
-	}
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	}*/
 	return w_game::render(pGameTime);
 }
 
@@ -509,13 +577,18 @@ ULONG scene::release()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	for (auto _m : this->_models)
+	for (auto _m : this->_scene_models)
 	{
 		SAFE_RELEASE(_m);
 	}
+	this->_scene_models.clear();
+	this->_drawable_models.clear();
 	this->_current_selected_model = nullptr;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	this->_masked_occlusion_culling.release();
+	SAFE_DELETE(_masked_occlusion_culling_debug_frame);
 
 	//release gui's resources
 	w_imgui::release();
@@ -559,7 +632,7 @@ void scene::_show_floating_debug_window()
 
 	if (ImGui::Checkbox("Show all", &this->_show_all))
 	{
-		for (auto _m : this->_models)
+		for (auto _m : this->_scene_models)
 		{
 			if (!_m) continue;
 			_m->set_global_visiblity(this->_show_all);
@@ -567,23 +640,26 @@ void scene::_show_floating_debug_window()
 		this->_rebuild_command_buffer = true;
 	}
 	
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	if (ImGui::Checkbox("Show only lod", &this->_show_lods))
 	{
-		for (auto _m : this->_models)
+		for (auto _m : this->_scene_models)
 		{
 			if (!_m) continue;
 			_m->set_show_only_lods(this->_show_lods);
 		}
 		this->_rebuild_command_buffer = true;
 	}
+	
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	ImGui::Checkbox("Show Convex Hulls", &this->_show_moc_debug);
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
 	{
-		for (auto _m : this->_models)
+		for (auto _m : this->_scene_models)
 		{
 			if (!_m) continue;
 			_m->set_enable_instances_colors(this->_show_all_instances_colors);
@@ -608,6 +684,32 @@ void scene::_show_floating_debug_window()
 	ImGui::End();
 
 	return;
+}
+
+void scene::_show_floating_moc_debug_window()
+{
+	if (!this->_show_moc_debug) return;
+
+	ImGuiWindowFlags  _window_flags = 0;;
+	_window_flags |= ImGuiWindowFlags_NoResize;
+	_window_flags |= ImGuiWindowFlags_NoScrollbar;
+	_window_flags |= ImGuiWindowFlags_NoCollapse;
+
+	ImVec2 _image_size(640, 480);
+	ImVec2 _window_size = ImVec2(_image_size.x - 5.0f, _image_size.y + 20.0f);
+
+	ImGui::SetNextWindowSizeConstraints(_window_size, _window_size);
+	ImGui::SetNextWindowContentWidth(_window_size.x);
+	if (!ImGui::Begin("Convex Hulls", 0, _window_flags))
+	{
+		// Early out if the window is collapsed, as an optimization.
+		ImGui::End();
+		return;
+	}
+
+	ImTextureID _tex_id = (void*)("#s");//this texture used as staging texture
+	ImGui::Image(_tex_id, _image_size);
+	ImGui::End();
 }
 
 scene::widget_info scene::_show_left_widget_controller()
@@ -745,13 +847,13 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 	if (ImGui::CollapsingHeaderEx(sTexID, ImVec2(0.3f, 0.0f), ImVec2(0.4f, 0.1f), _icon_color, "Models", &_opened))
 	{
 		//add all models and instances to tree view
-		auto _size = this->_models.size();
+		auto _size = this->_scene_models.size();
 		if (_size)
 		{
 			for (int i = 0; i < _size; ++i)
 			{
 				//create a tree node for model
-				auto _model = this->_models.at(i);
+				auto _model = this->_scene_models.at(i);
 				if (!_model) continue;
 
 				auto _name = _model->get_model_name();
@@ -892,6 +994,7 @@ end:
 bool scene::_update_gui()
 {
 	_show_floating_debug_window();
+	_show_floating_moc_debug_window();
 	auto _l_w_info = _show_explorer();
 	_show_search_widget(&_l_w_info);
 

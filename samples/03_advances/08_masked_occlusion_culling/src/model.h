@@ -39,13 +39,14 @@ private:
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	void add_to_mocs(_In_ const wolf::system::w_bounding_box& pBoundingBox);
+	void _add_to_mocs(_In_ const wolf::system::w_bounding_box& pBoundingBox);
+	void _add_to_mocs(_In_ wolf::content_pipeline::w_cpipeline_model* pConvexHull);
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	typedef	 model_mesh										_super;
-	std::string												_name;
+	typedef	 model_mesh											_super;
+	std::string													_name;
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
@@ -69,6 +70,7 @@ private:
 		}
 	};
 	std::vector<moc_data>                                       _mocs;
+	glm::mat4													_view_projection;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

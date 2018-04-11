@@ -53,13 +53,8 @@ namespace wolf
                 _In_ const uint32_t& pWidth = 32,
                 _In_ const uint32_t& pHeight = 32,
 				_In_ const bool& pGenerateMipMapsLevels = false,
-				_In_ const bool& pIsStaging = false);
-            
-            W_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const uint32_t& pWidth,
-                _In_ const uint32_t& pHeight,
-				_In_ const bool& pGenerateMipMapsLevels,
-				_In_ const uint32_t pMemoryPropertyFlags);
+				_In_ const bool& pHasStagingBuffer = false,
+				_In_ const uint32_t pMemoryPropertyFlags = w_memory_property_flag_bits::DEVICE_LOCAL_BIT);
             
 			//Load texture
 			W_EXP W_RESULT load();

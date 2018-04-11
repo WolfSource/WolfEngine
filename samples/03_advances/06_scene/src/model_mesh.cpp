@@ -856,6 +856,7 @@ private:
 					this->_gDevice,
 					wolf::content_path + L"models/sponza/sponza/" + 
 					wolf::system::convert::string_to_wstring(_path),
+					false,
 					&_texture) == W_PASSED)
 				{
 					this->_textures.push_back(_texture);

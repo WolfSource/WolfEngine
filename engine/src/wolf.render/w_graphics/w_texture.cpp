@@ -42,30 +42,28 @@ namespace wolf
                 release();
             }
 
-            W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const uint32_t pWidth, 
-				_In_ const uint32_t pHeight,
-                _In_ const bool pGenerateMipMaps,
-                _In_ const uint32_t pMemoryPropertyFlags)
-            {
-                this->_gDevice = pGDevice;
-                this->_memory_property_flags = pMemoryPropertyFlags;
-                this->_image_view.width = pWidth;
-                this->_image_view.height = pHeight;
-                this->_generate_mip_maps = pGenerateMipMaps;
+			W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ const uint32_t& pWidth,
+				_In_ const uint32_t& pHeight,
+				_In_ const bool& pGenerateMipMaps,
+				_In_ const bool& pHasStagingBuffer,
+				_In_ const uint32_t& pMemoryPropertyFlags)
+			{
+				this->_gDevice = pGDevice;
+				this->_memory_property_flags = pMemoryPropertyFlags;
+				this->_image_view.width = pWidth;
+				this->_image_view.height = pHeight;
+				this->_generate_mip_maps = pGenerateMipMaps;
 				if (this->_generate_mip_maps)
 				{
 					//add VK_IMAGE_USAGE_TRANSFER_SRC_BIT flag to image's usage
 					this->_usage_flags |= w_image_usage_flag_bits::IMAGE_USAGE_TRANSFER_SRC_BIT;
 				}
 
-                if (this->_memory_property_flags & w_memory_property_flag_bits::HOST_VISIBLE_BIT ||
-					this->_memory_property_flags & w_memory_property_flag_bits::HOST_COHERENT_BIT)
-                {
-                    this->_is_staging = true;
-                }
-                return W_PASSED;
-            }
+				this->_is_staging = pHasStagingBuffer;
+
+				return W_PASSED;
+			}
 
 			W_RESULT load()
 			{
@@ -1678,30 +1676,22 @@ w_texture::~w_texture()
 	release();
 }
 
-W_RESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+W_RESULT w_texture::initialize(
+	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ const uint32_t& pWidth,
 	_In_ const uint32_t& pHeight,
 	_In_ const bool& pGenerateMipMapsLevels,
-    _In_ const bool& pIsStaging)
-{
-    if (!this->_pimp) return W_FAILED;
-    return this->_pimp->initialize(pGDevice,
-        pWidth,
-        pHeight,
-		pGenerateMipMapsLevels,
-        pIsStaging ? (w_memory_property_flag_bits::HOST_VISIBLE_BIT |
-                      w_memory_property_flag_bits::HOST_COHERENT_BIT) :
-                      w_memory_property_flag_bits::DEVICE_LOCAL_BIT);
-}
-
-W_RESULT w_texture::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-    _In_ const uint32_t& pWidth,
-    _In_ const uint32_t& pHeight,
-	_In_ const bool& pGenerateMipMapsLevels,
+	_In_ const bool& pHasStagingBuffer,
 	_In_ const uint32_t pMemoryPropertyFlags)
 {
-    if (!this->_pimp) return W_FAILED;
-    return this->_pimp->initialize(pGDevice, pWidth, pHeight, pGenerateMipMapsLevels, pMemoryPropertyFlags);
+	if (!this->_pimp) return W_FAILED;
+	return this->_pimp->initialize(
+		pGDevice, 
+		pWidth, 
+		pHeight, 
+		pGenerateMipMapsLevels, 
+		pHasStagingBuffer,
+		pMemoryPropertyFlags);
 }
 
 W_RESULT w_texture::load()

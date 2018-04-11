@@ -25,12 +25,19 @@ namespace wolf
 			W_EXP w_masked_occlusion_culling();
 			W_EXP ~w_masked_occlusion_culling();
 
-			W_EXP W_RESULT initialize(_In_ uint32_t& pNumberOfWorkerThreads);
+			W_EXP W_RESULT initialize(_In_ uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging);
 			W_EXP W_RESULT suspend_threads();
 			W_EXP W_RESULT wake_threads();
 			W_EXP W_RESULT clear_buffer();
 			
 			W_EXP W_RESULT render_triangles_async(
+				_In_ const float* pVertices,
+				_In_ const unsigned int* pTriangles,
+				_In_ const int& pNumberOfTriangles,
+				_In_ const MaskedOcclusionCulling::BackfaceWinding& pBackFaceWinding = MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW,
+				_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
+
+			W_EXP MaskedOcclusionCulling::CullingResult test_triangles_async(
 				_In_ const float* pVertices,
 				_In_ const unsigned int* pTriangles,
 				_In_ const int& pNumberOfTriangles,
@@ -45,13 +52,21 @@ namespace wolf
 				_In_ const MaskedOcclusionCulling::BackfaceWinding& pBackFaceWinding = MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW,
 				_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
 			
+			W_EXP MaskedOcclusionCulling::CullingResult test_triangles(
+				_In_ const float* pVertices,
+				_In_ const unsigned int* pTriangles,
+				_In_ const int& pNumberOfTriangles,
+				_In_ const float* pModelToClipMatrix,
+				_In_ const MaskedOcclusionCulling::BackfaceWinding& pBackFaceWinding = MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW,
+				_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
+
 			W_EXP W_RESULT flush();
 
 			W_EXP ULONG release() override;
 
 #pragma region Getters
 
-			uint8_t* get_debug_frame(_In_ bool pFlipY);
+			W_EXP uint8_t* get_debug_frame(_In_ bool pFlipY);
 
 #pragma endregion
 
@@ -59,7 +74,6 @@ namespace wolf
 
 			W_EXP void		set_number_of_worker_threads(_In_ uint32_t& pNumberOfWorkerThreads);
 			W_EXP void		set_multi_threaded(_In_ const bool& pValue);
-			W_EXP void		set_enable_debugging(_In_ const bool& pValue);
 			W_EXP W_RESULT	set_near_clip(_In_ const float& pValue);
 			W_EXP W_RESULT	set_resolution(_In_ const float& pWidth, _In_ const float& pHeight);
 			W_EXP void		set_matrix(_In_ const float* pModelToClipMatrix);

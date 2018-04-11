@@ -117,7 +117,7 @@ protected:
 	std::string												model_name;
 	
 	wolf::content_pipeline::w_transform_info				transform;
-	std::vector<wolf::content_pipeline::w_instance_info>	instnaces_transforms;
+	std::vector<wolf::content_pipeline::w_instance_info>	instances_transforms;
 
 	std::vector<float>										tmp_batch_vertices;
 	std::vector<uint32_t>									tmp_batch_indices;
