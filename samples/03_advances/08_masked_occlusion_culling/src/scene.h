@@ -24,6 +24,13 @@
 #include <w_framework/w_first_person_camera.h>
 #include "model.h"
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//The following codes have been added for this project
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+#include <w_framework/w_masked_occlusion_culling.h>
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 class scene : public wolf::framework::w_game
 {
 public:
@@ -87,11 +94,12 @@ private:
 	bool															_show_all;
 	bool															_show_all_instances_colors;
 	model*															_current_selected_model;
+	bool															_show_lods;
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	bool															_show_lods;
+	wolf::framework::w_masked_occlusion_culling						_masked_occlusion_culling;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

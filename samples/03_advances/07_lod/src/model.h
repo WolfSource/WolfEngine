@@ -1,3 +1,7 @@
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//The following codes have been added for this project
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 /*
 	Project			 : Wolf Engine. Copyright(c) Pooya Eimandar (http://PooyaEimandar.com) . All rights reserved.
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
@@ -37,3 +41,6 @@ private:
 };
 
 #endif
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++

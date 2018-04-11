@@ -67,11 +67,11 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCullingAVX512.cpp">
       <Filter>w_framework\masked_occlusion_culling</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_occlusion_culling.cpp">
-      <Filter>w_framework</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\wolf.render\imgui\imgui_draw.cpp">
       <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_masked_occlusion_culling.cpp">
+      <Filter>w_framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +139,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCulling.h">
       <Filter>w_framework\masked_occlusion_culling</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_occlusion_culling.h">
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_masked_occlusion_culling.h">
       <Filter>w_framework</Filter>
     </ClInclude>
   </ItemGroup>

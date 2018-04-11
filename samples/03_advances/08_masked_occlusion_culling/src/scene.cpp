@@ -2,6 +2,7 @@
 #include "scene.h"
 #include <w_content_manager.h>
 #include <glm_extension.h>
+#include <w_thread.h>
 
 using namespace std;
 using namespace wolf;
@@ -43,13 +44,8 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	_current_selected_model(nullptr),
 	_show_all_instances_colors(false),
 	_rebuild_command_buffer(true),
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	_show_all(true),
 	_show_lods(false)
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
@@ -58,6 +54,27 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 #endif
 
 	w_game::set_fixed_time_step(false);
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	auto _number_of_cpus = w_thread::get_number_of_hardware_thread_contexts();
+	if (_number_of_cpus >= 8)
+	{
+		_number_of_cpus /= 2;
+	}
+	else if (_number_of_cpus == 6)
+	{
+		_number_of_cpus = 4;
+	}
+	if (this->_masked_occlusion_culling.initialize(_number_of_cpus) == W_FAILED)
+	{
+		V(W_FAILED, "initializing masked occlusion culling", "scene::scene", 3, true);
+	}
+
+	this->_masked_occlusion_culling.set_enable_debugging(true);
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
 scene::~scene()
@@ -189,10 +206,6 @@ void scene::load()
 		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
 	}
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 	//loading pipeline cache
 	std::string _model_pipeline_cache_name = "model_pipeline_cache";
 	if (w_pipeline::create_pipeline_cache(_gDevice, _model_pipeline_cache_name) == W_FAILED)
@@ -240,6 +253,9 @@ void scene::load()
 		this->_first_camera.update_view();
 		this->_first_camera.update_projection();
 		this->_first_camera.update_frustum();
+
+		this->_masked_occlusion_culling.set_near_clip(_near_plan);
+		this->_masked_occlusion_culling.set_resolution(this->_viewport.width, this->_viewport.height);
 
 		//get all models
 		std::vector<w_cpipeline_model*> _cmodels;
@@ -295,8 +311,6 @@ void scene::load()
 		_cmodels.clear();
 		_scene->release();
 	}
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
 W_RESULT scene::_build_draw_command_buffers()
@@ -317,16 +331,11 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				//The following codes have been added for this project
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//draw all models
 				for (auto _model : this->_models)
 				{
 					_model->draw(_cmd);
 				}
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 			}
 			this->_draw_render_pass.end(_cmd);
 		}
@@ -345,9 +354,6 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	sElapsedTimeInSec = pGameTime.get_elapsed_seconds();
 	sTotalTimeTimeInSec = pGameTime.get_total_seconds();
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	bool _gui_procceded = false;
 	w_imgui::new_frame(sElapsedTimeInSec, [this, &_gui_procceded]()
 	{
@@ -362,21 +368,38 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
 	}
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 	if (this->_force_update_camera)
 	{
 		this->_force_update_camera = false;
+
+		this->_masked_occlusion_culling.clear_buffer();
+		this->_masked_occlusion_culling.wake_threads();
+
 		//update view and projection of all models
-		for (auto _model : this->_models)
+		bool _need_flush_moc = false;
+		std::for_each(this->_models.begin(), this->_models.end(), [&](_In_ model* pModel)
 		{
-			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
-			_model->update();
+			if (pModel && pModel->pre_update(this->_first_camera, this->_masked_occlusion_culling) == W_PASSED)
+			{
+				_need_flush_moc = true;
+			}
+		});
+
+		if (_need_flush_moc)
+		{
+			this->_masked_occlusion_culling.flush();
 		}
 
+		this->_masked_occlusion_culling.suspend_threads();
 		this->_rebuild_command_buffer = true;
 	}
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	w_game::update(pGameTime);
 }

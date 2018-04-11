@@ -181,7 +181,7 @@
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_occlusion_culling.cpp" />
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_masked_occlusion_culling.cpp" />
     <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.cpp">
       <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </EnableEnhancedInstructionSet>
@@ -241,7 +241,7 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCulling.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_first_person_camera.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_game.h" />
-    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_occlusion_culling.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_masked_occlusion_culling.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_buffer.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_command_buffers.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_fences.h" />

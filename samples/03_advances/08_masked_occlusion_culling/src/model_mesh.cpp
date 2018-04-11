@@ -10,9 +10,6 @@ model_mesh::model_mesh(
 	_In_ w_cpipeline_model* pContentPipelineModel,
 	_In_ w_vertex_binding_attributes pVertexBindingAttributes) :
 	vertex_binding_attributes(pVertexBindingAttributes),
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	_name("model"),
 	_mesh(nullptr),
 	_show_only_lod(false),
@@ -20,8 +17,6 @@ model_mesh::model_mesh(
 	c_model(pContentPipelineModel),
 	_selected_lod_index(0),
 	_texture_mip_map_level(0.0f)
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 {
 }
 
