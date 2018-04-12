@@ -168,13 +168,14 @@ namespace wolf
 			{
 				if (!this->_enable_debugging || !this->_moc_per_pixel_zBuffer || !this->_moc_tone_map_depth_image) return nullptr;
 
-				if (this->_moc_thread_pool)
+				if (this->_multi_threaded && this->_moc_thread_pool)
 				{
 					//Compute a per pixel depth buffer from the hierarchical depth buffer, used for visualization.
 					this->_moc_thread_pool->ComputePixelDepthBuffer(this->_moc_per_pixel_zBuffer, pFlipY);
 				}
 				else if (this->_moc)
 				{
+					logger.warning("3");
 					this->_moc->ComputePixelDepthBuffer(this->_moc_per_pixel_zBuffer, pFlipY);
 				}
 				else
@@ -245,31 +246,30 @@ namespace wolf
 					this->_moc->SetResolution(pWidth, pHeight);
 				}
 
-				if (!this->_enable_debugging || 
+				if (!this->_enable_debugging ||
 					(this->_debug_screen_size.x == pWidth && this->_debug_screen_size.y == pHeight))
 					return W_PASSED;
-				
+
 				this->_debug_screen_size.x = pWidth;
 				this->_debug_screen_size.y = pHeight;
 
 				auto _size = this->_debug_screen_size.x * this->_debug_screen_size.y;
 
-				if (suspend_threads() == W_PASSED)
+				suspend_threads();
+
+				if (this->_moc_per_pixel_zBuffer)
 				{
-					if (this->_moc_per_pixel_zBuffer)
-					{
-						free(this->_moc_per_pixel_zBuffer);
-					}
-					this->_moc_per_pixel_zBuffer = (float*)malloc(_size * sizeof(float));
-
-					if (this->_moc_tone_map_depth_image)
-					{
-						free(this->_moc_tone_map_depth_image);
-					}
-					this->_moc_tone_map_depth_image = (uint8_t*)malloc(_size * 4 * sizeof(uint8_t));
-
-					return wake_threads();
+					free(this->_moc_per_pixel_zBuffer);
 				}
+				this->_moc_per_pixel_zBuffer = (float*)malloc(_size * sizeof(float));
+
+				if (this->_moc_tone_map_depth_image)
+				{
+					free(this->_moc_tone_map_depth_image);
+				}
+				this->_moc_tone_map_depth_image = (uint8_t*)malloc(_size * 4 * sizeof(uint8_t));
+
+				wake_threads();
 
 				return W_FAILED;
 			}
