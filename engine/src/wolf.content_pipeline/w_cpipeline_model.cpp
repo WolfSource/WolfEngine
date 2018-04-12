@@ -311,9 +311,12 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 					_simplygon_sdk = wolf::system::io::get_current_directoryW() + L"..\\..\\..\\..\\engine\\dependencies\\simplygon\\";
 #else
 					//make sure copy simplygon sdk to execute directory
-					_simplygon_sdk = wolf::system::io::get_current_directory();
+					_simplygon_sdk = wolf::system::io::get_current_directoryW();
 #endif
-					simplygon::initialize(_simplygon_sdk);
+					if (simplygon::initialize(_simplygon_sdk) == W_FAILED)
+					{
+						V(W_FAILED, "initializing simplygon SDK", "w_cpipeline_model::create_model", 3);
+					}
 				});
 			}
 			simplygon_mutex.unlock();
@@ -328,7 +331,7 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 				auto _obj_remeshed_path = wolf::system::convert::wstring_to_string(_obj_remeshed_path_w);
 
 				wavefront::obj::write(_vertices_data, _indices_data, _obj_path);
-
+				
 				//Create a original simplygon scene from current vertices and indices
 				auto _original_scene = simplygon::iSimplygonSDK->CreateScene();
 				if (_original_scene)
@@ -343,10 +346,12 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 							{
 								if (simplygon::obj_writer(_obj_remeshed_path_w.c_str(), _remesh_scene) == W_PASSED)
 								{
+									//delete mtl file before loading obj file
+									system::io::delete_file(_obj_remeshed_mtl_path.c_str());
 									if (wavefront::obj::read(
-										_vertices_data, 
-										_indices_data, 
-										_vertices_positions, 
+										_vertices_data,
+										_indices_data,
+										_vertices_positions,
 										_obj_remeshed_path) == W_FAILED)
 									{
 										V(W_FAILED, "error on wavefront::obj::read " + pGeometry.name, _trace_info, 3);
@@ -379,7 +384,6 @@ w_cpipeline_model* w_cpipeline_model::create_model(
 
 				system::io::delete_file(_obj_path.c_str());
 				system::io::delete_file(_obj_remeshed_path.c_str());
-				system::io::delete_file(_obj_remeshed_mtl_path.c_str());
 
 				_obj_path.clear();
 				_obj_path_w.clear();

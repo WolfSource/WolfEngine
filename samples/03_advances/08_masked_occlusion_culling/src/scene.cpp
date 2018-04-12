@@ -60,16 +60,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	auto _number_of_cpus = w_thread::get_number_of_hardware_thread_contexts();
-	if (_number_of_cpus >= 8)
-	{
-		_number_of_cpus /= 2;
-	}
-	else if (_number_of_cpus == 6)
-	{
-		_number_of_cpus = 4;
-	}
-	if (this->_masked_occlusion_culling.initialize(_number_of_cpus, true) == W_FAILED)
+	if (this->_masked_occlusion_culling.initialize(1, true) == W_FAILED)
 	{
 		V(W_FAILED, "initializing masked occlusion culling", "scene::scene", 3, true);
 	}
@@ -292,7 +283,7 @@ void scene::load()
 
 		this->_masked_occlusion_culling.set_near_clip(_near_plan);
 		this->_masked_occlusion_culling.set_resolution(this->_viewport.width, this->_viewport.height);
-		this->_masked_occlusion_culling.suspend_threads();
+		//this->_masked_occlusion_culling.suspend_threads();
 		
 		//get all models
 		std::vector<w_cpipeline_model*> _cmodels;
@@ -300,9 +291,7 @@ void scene::load()
 
 		std::wstring _vertex_shader_path;
 		for (auto _m : _cmodels)
-		{
-			if (_m->get_name() == "C7233-ins1119_") continue;
-			
+		{			
 			model* _model = nullptr;
 			if (_m->get_instances_count())
 			{
@@ -428,7 +417,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 		this->_force_update_camera = false;
 
-		this->_masked_occlusion_culling.wake_threads();
+		//this->_masked_occlusion_culling.wake_threads();
 		this->_masked_occlusion_culling.clear_buffer();
 
 		//pre update stage for all models
@@ -443,7 +432,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 		if (_need_flush_moc)
 		{
-			this->_masked_occlusion_culling.flush();
+			//this->_masked_occlusion_culling.flush();
 
 			//post update stage for all models
 			std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
@@ -468,7 +457,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 				}
 			}
 		}
-		this->_masked_occlusion_culling.suspend_threads();
+		//this->_masked_occlusion_culling.suspend_threads();
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -625,7 +614,7 @@ void scene::_show_floating_debug_window()
 		return;
 	}
 
-	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,W,E,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
+	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec);

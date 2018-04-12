@@ -25,7 +25,7 @@ namespace wolf
 			W_EXP w_masked_occlusion_culling();
 			W_EXP ~w_masked_occlusion_culling();
 
-			W_EXP W_RESULT initialize(_In_ uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging);
+			W_EXP W_RESULT initialize(_In_ const uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging);
 			W_EXP W_RESULT suspend_threads();
 			W_EXP W_RESULT wake_threads();
 			W_EXP W_RESULT clear_buffer();

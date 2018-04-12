@@ -159,7 +159,6 @@ W_RESULT obj::read(
 
 	std::string _err;
 	bool _hr = tinyobj::LoadObj(&attrib, &shapes, nullptr, &_err, pInputFilePath.c_str());
-	
 	if (!_hr)
 	{
 		V(W_FAILED, "error on loading object model: " + pInputFilePath + " with followinf error info: " + _err, _trace_info, 3);
@@ -169,7 +168,7 @@ W_RESULT obj::read(
 	pVerticesData.clear();
 	pIndicesData.clear();
 	pJustVertexPosition.clear();
-
+	logger.write("here 10");
 	for (size_t s = 0; s < shapes.size(); s++)
 	{
 		// Loop over faces(polygon)

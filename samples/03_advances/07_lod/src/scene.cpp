@@ -266,8 +266,7 @@ void scene::load()
 				continue;
 			}
 
-			_hr = _model->initialize();
-			if (_hr == W_FAILED)
+			if (_model->initialize() == W_FAILED)
 			{
 				V(W_FAILED, "initializing model: " + _m->get_name(), _trace_info, 2);
 				continue;
@@ -529,7 +528,7 @@ void scene::_show_floating_debug_window()
 		return;
 	}
 
-	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,W,E,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
+	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec);

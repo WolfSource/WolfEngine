@@ -99,6 +99,8 @@ W_RESULT model::initialize()
 
 	_lods.clear();
 	_meshes.clear();
+
+	return W_PASSED;
 }
 
 W_RESULT model::update()

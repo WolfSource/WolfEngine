@@ -21,7 +21,7 @@ namespace wolf
 			{
 			}
 
-			W_RESULT initialize(_In_ uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging)
+			W_RESULT initialize(_In_ const uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging)
 			{
 				//create masked occlusion culling instnace
 				this->_moc = MaskedOcclusionCulling::Create();
@@ -192,19 +192,12 @@ namespace wolf
 
 #pragma region Setters
 
-			void set_number_of_worker_threads(_In_ uint32_t& pNumberOfWorkerThreads)
+			void set_number_of_worker_threads(_In_ const uint32_t& pNumberOfWorkerThreads)
 			{
-				auto _thread_pool_size = wolf::system::w_thread::get_number_of_hardware_thread_contexts();
-				pNumberOfWorkerThreads %= _thread_pool_size;
-				if (pNumberOfWorkerThreads == 0)
-				{
-					pNumberOfWorkerThreads = 1;
-				}
-
 				if (pNumberOfWorkerThreads > 1)
 				{
 					this->_multi_threaded = true;
-					auto _bin_size = _thread_pool_size / 2;
+					auto _bin_size = pNumberOfWorkerThreads / 2;
 
 					if (this->_moc_thread_pool)
 					{
@@ -212,7 +205,7 @@ namespace wolf
 						delete this->_moc_thread_pool;
 					}
 
-					this->_moc_thread_pool = new CullingThreadpool(_thread_pool_size, _bin_size, _bin_size);
+					this->_moc_thread_pool = new CullingThreadpool(pNumberOfWorkerThreads, _bin_size, _bin_size);
 					this->_moc_thread_pool->SetBuffer(this->_moc);
 				}
 			}
@@ -351,7 +344,7 @@ w_masked_occlusion_culling::~w_masked_occlusion_culling()
 	release();
 }
 
-W_RESULT w_masked_occlusion_culling::initialize(_In_ uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging)
+W_RESULT w_masked_occlusion_culling::initialize(_In_ const uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging)
 {
 	return ((this->_pimp) ? this->_pimp->initialize(pNumberOfWorkerThreads, pEnableDebugging) : W_FAILED);
 }
