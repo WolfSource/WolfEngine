@@ -598,7 +598,7 @@ void scene::_show_floating_debug_window()
 	_style.Colors[ImGuiCol_WindowBg] = Colors::LightBlue;
 
 	ImGuiWindowFlags  _window_flags = 0;;
-	ImGui::SetNextWindowSize(ImVec2(400, 350), ImGuiSetCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(450, 350), ImGuiSetCond_FirstUseEver);
 
 	char _str[30];
 #ifdef __WIN32
@@ -668,6 +668,18 @@ void scene::_show_floating_debug_window()
 			this->_current_selected_model->set_global_visiblity(_checked);
 			this->_rebuild_command_buffer = true;
 		}
+	}
+
+	auto _cam_rot_speed = this->_first_camera.get_rotation_speed();
+	if (ImGui::SliderFloat("Camera Rotation Speed", &_cam_rot_speed, 0.1f, 5.0f))
+	{
+		this->_first_camera.set_rotation_speed(_cam_rot_speed);
+	}
+
+	auto _cam_mov_speed = this->_first_camera.get_movement_speed();
+	if (ImGui::SliderFloat("Camera Movement Speed", &_cam_mov_speed, 100.0f, 10000.0f))
+	{
+		this->_first_camera.set_movement_speed(_cam_mov_speed);
 	}
 
 	ImGui::End();

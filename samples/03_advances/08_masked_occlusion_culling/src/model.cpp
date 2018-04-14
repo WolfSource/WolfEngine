@@ -95,7 +95,7 @@ W_RESULT model::initialize()
 	{
 		std::vector<w_cpipeline_model*> _lods;
 		this->c_model->get_lods(_lods);
-
+		_add_to_mocs(_lods[0]);
 	}
 	//-ch and -lod not found, so we will use default bounding box
 	else if (_number_of_meshes)
