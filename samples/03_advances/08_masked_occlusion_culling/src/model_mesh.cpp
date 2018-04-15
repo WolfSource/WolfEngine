@@ -135,6 +135,16 @@ W_RESULT model_mesh::load(
 		//we have only one model
 		this->visibilities.resize(1);
 	}
+
+	//get bounding sphere
+	auto _get_first_model_bsphere = w_bounding_sphere::create_from_bounding_box(this->sub_meshes_bounding_box.at(0));
+	this->_u1.data.texture_max_mip_maps_max_level = this->_textures[0]->get_mip_maps_level();
+	this->_u1.data.bounding_sphere_radius = _get_first_model_bsphere.radius;
+	if (this->_u1.update() == W_FAILED)
+	{
+		V(W_FAILED, "updating uniform u1(mipmaps) for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
+	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 

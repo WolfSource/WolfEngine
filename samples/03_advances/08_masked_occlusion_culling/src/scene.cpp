@@ -3,6 +3,7 @@
 #include <w_content_manager.h>
 #include <glm_extension.h>
 #include <w_thread.h>
+#include <w_task.h>
 
 using namespace std;
 using namespace wolf;
@@ -47,7 +48,8 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	_show_all(true),
 	_show_lods(false),
 	_masked_occlusion_culling_debug_frame(nullptr),
-	_show_moc_debug(false)
+	_show_moc_debug(false),
+	_searching(false)
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
@@ -829,7 +831,43 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 	ImGui::PushItemWidth(_text_box_width);
 	if (ImGui::InputText("", sSearch, MAX_SEARCH_LENGHT, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		printf("Searched entered");
+		this->_searched_models.clear();
+		if (!this->_searching)
+		{
+			if (sSearch[0] == '\0')
+			{
+				this->_searching = false;
+			}
+			else
+			{
+				this->_searching = true;
+				std::string _lower_search(sSearch);
+				std::transform(_lower_search.begin(), _lower_search.end(), _lower_search.begin(), ::tolower);
+				w_task::execute_async([this, _lower_search]()->W_RESULT
+				{
+					//start seraching areas
+					std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [this, _lower_search](_In_ model* pModel)
+					{
+						if (pModel)
+						{
+							auto _name = pModel->get_model_name();
+							std::transform(_name.begin(), _name.end(), _name.begin(), ::tolower);
+							if (_name.find(_lower_search) != std::string::npos)
+							{
+								this->_searched_models.push_back(pModel);
+							}
+						}
+					});
+
+					return W_PASSED;
+
+				}, [this](W_RESULT pV)
+				{
+					//on callback
+					this->_searching = false;
+				});
+			}
+		}
 	}
 	ImGui::PopItemWidth();
 	ImGui::PopStyleColor();
@@ -848,13 +886,13 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 	if (ImGui::CollapsingHeaderEx(sTexID, ImVec2(0.3f, 0.0f), ImVec2(0.4f, 0.1f), _icon_color, "Models", &_opened))
 	{
 		//add all models and instances to tree view
-		auto _size = this->_scene_models.size();
+		auto _size = this->_searched_models.size();
 		if (_size)
 		{
 			for (int i = 0; i < _size; ++i)
 			{
 				//create a tree node for model
-				auto _model = this->_scene_models.at(i);
+				auto _model = this->_searched_models.at(i);
 				if (!_model) continue;
 
 				auto _name = _model->get_model_name();
@@ -909,6 +947,72 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 			if (ImGui::TreeNode("		"))
 			{
 				ImGui::TreePop();
+			}
+		}
+		else
+		{
+			_size = this->_scene_models.size();
+			if (_size)
+			{
+				for (int i = 0; i < _size; ++i)
+				{
+					//create a tree node for model
+					auto _model = this->_scene_models.at(i);
+					if (!_model) continue;
+
+					auto _name = _model->get_model_name();
+
+					if (ImGui::TreeNode(_name.c_str()))
+					{
+						ImGui::PushStyleColor(ImGuiCol_Header, Colors::Transparent);
+						//The Ref
+						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
+						auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
+						if (ImGui::IsItemClicked(1))
+						{
+							//on right click, focus on ref object
+
+							this->_current_selected_model = _model;
+							auto _position = this->_current_selected_model->get_position();
+							_b_sphere.center[0] = _position[0];
+							_b_sphere.center[1] = _position[1];
+							_b_sphere.center[2] = _position[2];
+
+							this->_first_camera.focus(_b_sphere);
+
+							this->_force_update_camera = true;
+
+						}
+						else if (ImGui::IsItemClicked(0))
+						{
+							//on left click, change debug window
+							this->_current_selected_model = _model;
+						}
+						//create sub tree nodes for all instances of models
+						for (auto& _ins : _model->get_instances())
+						{
+							ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
+							if (ImGui::IsItemClicked(1))
+							{
+								//on right click, focus on object
+								_b_sphere.center[0] = _ins.position[0];
+								_b_sphere.center[1] = _ins.position[1];
+								_b_sphere.center[2] = _ins.position[2];
+
+								this->_first_camera.focus(_b_sphere);
+								this->_force_update_camera = true;
+							}
+						}
+						ImGui::PopStyleColor();
+						ImGui::TreePop();
+					}
+				}
+
+				//fake
+				if (ImGui::TreeNode("		"))
+				{
+					ImGui::TreePop();
+				}
 			}
 		}
 	}

@@ -11,7 +11,7 @@ layout (binding = 3) uniform U2
 
 layout (location = 0) in vec3 i_norm;
 layout (location = 1) in vec2 i_uv;
-layout (location = 2) in float i_texture_mip_map_level;
+layout (location = 2) in flat uint i_texture_mip_map_level;
 layout (location = 3) in vec3 i_color;
 
 layout(location = 0) out vec4 o_color;

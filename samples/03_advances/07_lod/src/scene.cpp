@@ -744,11 +744,16 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 					auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
 					if (ImGui::IsItemClicked(1))
 					{
+						this->_current_selected_model = _model;
+						
+						auto _pos = this->_current_selected_model->get_position();
+						_b_sphere.center[0] = _pos[0];
+						_b_sphere.center[1] = _pos[1];
+						_b_sphere.center[2] = _pos[2];
+
 						//on right click, focus on object
 						this->_first_camera.focus(_b_sphere);
 						this->_force_update_camera = true;
-
-						this->_current_selected_model = _model;
 					}
 					else if (ImGui::IsItemClicked(0))
 					{

@@ -17,7 +17,7 @@ layout(binding = 0) uniform U0
 
 layout(binding = 1) uniform U1
 {
-	float	texture_max_mip_maps;
+	uint	texture_max_mip_maps_max_level;
 	float	bounding_sphere_radius;
 } u1;
 
@@ -28,7 +28,7 @@ out gl_PerVertex
 
 layout (location = 0) out vec3 o_norm;
 layout (location = 1) out vec2 o_uv;
-layout(location = 2) out float o_texture_mip_map_level;
+layout(location = 2) out flat uint o_texture_mip_map_level;
 layout(location = 3) out vec3 o_color;
 
 void main() 
@@ -41,10 +41,10 @@ void main()
 	o_norm =  normalize( ( vec4(i_norm, 0.0)  * _world_view ).xyz );
 	o_uv = i_uv;
 
-	//get texture lod
-	o_texture_mip_map_level = 0;
+	//set texture mip map based on position
+	o_texture_mip_map_level = u1.texture_max_mip_maps_max_level - 1;
 	float _distance_from_cam = distance(u0.camera_pos, vec4(u0.world[3][0], u0.world[3][1], u0.world[3][2], 1.0));
-	for(int i = 0; i < u1.texture_max_mip_maps; ++i)
+	for(int i = 0; i < u1.texture_max_mip_maps_max_level; ++i)
 	{
 		if (_distance_from_cam <= u1.bounding_sphere_radius * (i + 1))
 		{
@@ -52,7 +52,7 @@ void main()
 			break;
 		}
 	}
-	
+
 	if (gl_InstanceIndex == 0)
 	{
 		//this is ref model

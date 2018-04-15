@@ -190,8 +190,8 @@ private:
 
 	struct U1
 	{
-		float	texture_max_mip_maps = 10.0f;
-		float	bounding_sphere_radius = 0.0f;
+		uint32_t	texture_max_mip_maps_max_level = 1;
+		float		bounding_sphere_radius = 0.0f;
 	};
 	wolf::graphics::w_uniform<U1>                           _u1;
 	float													_texture_mip_map_level;
