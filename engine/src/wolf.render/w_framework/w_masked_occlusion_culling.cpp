@@ -175,7 +175,6 @@ namespace wolf
 				}
 				else if (this->_moc)
 				{
-					logger.warning("3");
 					this->_moc->ComputePixelDepthBuffer(this->_moc_per_pixel_zBuffer, pFlipY);
 				}
 				else

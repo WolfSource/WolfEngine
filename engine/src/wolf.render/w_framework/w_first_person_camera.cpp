@@ -130,10 +130,14 @@ void w_first_person_camera::focus(_In_ const wolf::system::w_bounding_sphere& pB
 
 	auto _radius = pBoundingSphere.radius * pDistance;
 	set_translate(
-		pBoundingSphere.center[0],
+		pBoundingSphere.center[0] + _radius,
 		pBoundingSphere.center[1] + _radius,
 		pBoundingSphere.center[2] + _radius);
 
 	update_view();
 	update_frustum();
+
+	//reset mouse rotation and position
+	this->_rotation.x = 0.0f;
+	this->_rotation.y = 0.0f;
 }

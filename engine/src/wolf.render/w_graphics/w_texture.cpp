@@ -61,6 +61,7 @@ namespace wolf
 				}
 
 				this->_is_staging = pHasStagingBuffer;
+				this->_just_initialized = true;
 
 				return W_PASSED;
 			}
@@ -572,18 +573,22 @@ namespace wolf
 				const std::string _trace_info = "w_texture::copy_data_to_texture_2D";
 
                 auto _data_size = this->_image_view.width * this->_image_view.height * 4;
-
-                auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
-                if (_hResult == W_FAILED)
-                {
-                    return _hResult;
-                }
-
-                _hResult = this->_staging_buffer.bind();
-                if (_hResult == W_FAILED)
-                {
-                    return _hResult;
-                }
+				W_RESULT _hr = W_RESULT::W_FAILED;
+				
+				if (this->_just_initialized)
+				{
+					this->_just_initialized = false;
+					_hr = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
+					if (_hr == W_FAILED)
+					{
+						return _hr;
+					}
+					_hr = this->_staging_buffer.bind();
+					if (_hr == W_FAILED)
+					{
+						return _hr;
+					}
+				}
 
 				auto _mem_handle = this->_staging_buffer.get_memory().handle;
                 if(vkMapMemory(
@@ -710,7 +715,7 @@ namespace wolf
 				}
                 _command_buffer.end(0);
 
-				auto _hr = this->_gDevice->submit(
+				_hr = this->_gDevice->submit(
 					{ &_cmd },
 					this->_gDevice->vk_graphics_queue,
 					nullptr,
@@ -1656,6 +1661,7 @@ namespace wolf
             w_image_view_type                               _image_view_type;
 			VkImageLayout									_image_layout;
 			std::wstring									_texture_name;
+			bool											_just_initialized;
         };
     }
 }

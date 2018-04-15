@@ -105,7 +105,7 @@ W_RESULT model::initialize()
 
 W_RESULT model::update()
 {
-	std::fill(this->visibilities.begin(), this->visibilities.end(), 1.0f);//set visible all for test
+	std::fill(this->visibilities.begin(), this->visibilities.end(), glm::vec4(1.0f));//set visible all for test
 	return W_PASSED;
 }
 

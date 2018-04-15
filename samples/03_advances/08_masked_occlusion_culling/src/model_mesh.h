@@ -51,7 +51,7 @@ public:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	W_RESULT submit_compute_shader(_In_ const glm::vec3 pCameraPosition);
+	W_RESULT submit_compute_shader();
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -84,7 +84,11 @@ public:
 
 #pragma region Setters
 
-	void set_view_projection(_In_ const glm::mat4& pView, _In_ const glm::mat4& pProjection);
+	void set_view_projection_position(
+		_In_ const glm::mat4& pView,
+		_In_ const glm::mat4& pProjection,
+		_In_ const glm::vec3& pPosition);
+
 	void set_enable_instances_colors(_In_ const bool& pEnable);
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
@@ -140,7 +144,7 @@ protected:
 	std::vector<lod_info>									lods_info;
 
 	bool													global_visiblity;
-	std::vector<float>                                      visibilities;
+	std::vector<glm::vec4>                                  visibilities;
 private:
 
 	W_RESULT	_load_textures();
@@ -164,12 +168,15 @@ private:
 
 	std::string												_name;
 
+	glm::vec4												_camera_position;
+
 	//uniform data
 	struct basic_u0
 	{
 		glm::mat4											model;
 		glm::mat4											view;
 		glm::mat4											projection;
+		glm::vec4											camera_pos;//w is padding
 	};
 	wolf::graphics::w_uniform<basic_u0>						_basic_u0;
 
@@ -177,12 +184,14 @@ private:
 	{
 		glm::mat4											view;
 		glm::mat4											projection;
+		glm::vec4											camera_pos;//w is padding
 	};
 	wolf::graphics::w_uniform<instance_u0>					_instance_u0;
 
 	struct U1
 	{
-		float	texture_lod = 0.0f;
+		float	texture_max_mip_maps = 10.0f;
+		float	bounding_sphere_radius = 0.0f;
 	};
 	wolf::graphics::w_uniform<U1>                           _u1;
 	float													_texture_mip_map_level;

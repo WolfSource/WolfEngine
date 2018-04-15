@@ -11,7 +11,7 @@ layout (binding = 3) uniform U2
 
 layout (location = 0) in vec3 i_norm;
 layout (location = 1) in vec2 i_uv;
-layout (location = 2) in float i_texture_lod;
+layout (location = 2) in float i_texture_mip_map_level;
 layout (location = 3) in vec3 i_color;
 
 layout(location = 0) out vec4 o_color;
@@ -42,7 +42,7 @@ void main()
 	{
 		_diffuse_color = vec3(1, 1, 1);
 	}
-	vec4 _texture_color =  texture( tex_sampler, i_uv, i_texture_lod);
+	vec4 _texture_color =  texture( tex_sampler, i_uv, i_texture_mip_map_level);
 	if (_texture_color.a > 0)
 	{
 		_diffuse_color *= _texture_color.rgb;

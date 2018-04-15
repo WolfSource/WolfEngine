@@ -502,7 +502,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		{
 			if (pModel)
 			{
-				if (pModel->submit_compute_shader(_camera_pos) == W_PASSED)
+				if (pModel->submit_compute_shader() == W_PASSED)
 				{
 					auto _semaphore = pModel->get_compute_semaphore();
 					if (_semaphore)
@@ -867,11 +867,18 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 					auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
 					if (ImGui::IsItemClicked(1))
 					{
-						//on right click, focus on object
-						this->_first_camera.focus(_b_sphere);
-						this->_force_update_camera = true;
+						//on right click, focus on ref object
 
 						this->_current_selected_model = _model;
+						auto _position = this->_current_selected_model->get_position();
+						_b_sphere.center[0] = _position[0];
+						_b_sphere.center[1] = _position[1];
+						_b_sphere.center[2] = _position[2];
+
+						this->_first_camera.focus(_b_sphere);
+
+						this->_force_update_camera = true;
+
 					}
 					else if (ImGui::IsItemClicked(0))
 					{

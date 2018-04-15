@@ -224,15 +224,12 @@ W_RESULT model::pre_update(_In_ wolf::framework::w_first_person_camera& pCamera,
 {
 	const std::string _trace_info = this->_name + "::update";
 
-	//set visibility to false
-	std::fill(this->visibilities.begin(), this->visibilities.end(), false);
-
 	W_RESULT _hr = W_FAILED;
 	auto _view = pCamera.get_view();
 	auto _projection = pCamera.get_projection();
 	this->_view_projection = _projection * _view;
 	
-	set_view_projection(_view, _projection);
+	set_view_projection_position(_view, _projection, pCamera.get_translate());
 	
 	glm::mat4 _model_to_clip_matrix;
 	//draw root model to Masked Occlusion culling
@@ -331,10 +328,14 @@ W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pM
 		//if at least one of the bounding boxes is visible, break this loop
 		if (_culling_result == MaskedOcclusionCulling::VISIBLE)
 		{
-			this->visibilities[0] = true;
+			this->visibilities[0][0] = 1.0f;
 			_add_to_render_models_queue = W_PASSED;
 			//pVisibleSubModels++;
 			break;
+		}
+		else
+		{
+			this->visibilities[0][0] = 0.0f;
 		}
 	}
 
@@ -378,12 +379,19 @@ W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pM
 				_iter.num_of_tris_for_moc,
 				(float*)(&_model_to_clip_matrix[0]));
 
+			int _indexer = i + 1;
+			int _base_index = _indexer / 4;
+			int _sec_index = _indexer % 4;
 			if (_culling_result == MaskedOcclusionCulling::VISIBLE)
 			{
-				this->visibilities[i + 1] = true;
+				this->visibilities[_base_index][_sec_index] = 1.0f;
 				_add_to_render_models_queue = W_PASSED;
 				//pVisibleSubModels++;
 				break;
+			}
+			else
+			{
+				this->visibilities[_base_index][_sec_index] = 0.0f;
 			}
 		}
 	}

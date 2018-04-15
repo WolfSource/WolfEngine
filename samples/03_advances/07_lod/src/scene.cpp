@@ -288,7 +288,10 @@ void scene::load()
 			}
 
 			//set view projection
-			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
+			_model->set_view_projection_position(
+				this->_first_camera.get_view(),
+				this->_first_camera.get_projection(),
+				this->_first_camera.get_translate());
 			this->_models.push_back(_model);
 		}
 		_cmodels.clear();
@@ -367,7 +370,10 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		//update view and projection of all models
 		for (auto _model : this->_models)
 		{
-			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
+			_model->set_view_projection_position(
+				this->_first_camera.get_view(), 
+				this->_first_camera.get_projection(),
+				this->_first_camera.get_translate());
 			_model->update();
 		}
 
@@ -408,15 +414,13 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		
 	if (this->_rebuild_command_buffer)
 	{
-		auto _camera_pos = this->_first_camera.get_translate();
-
 		//submit compute shader for all visible models
 		std::for_each(this->_models.begin(), this->_models.end(),
 			[&](_In_ model* pModel)
 		{
 			if (pModel)
 			{
-				if (pModel->submit_compute_shader(_camera_pos) == W_PASSED)
+				if (pModel->submit_compute_shader() == W_PASSED)
 				{
 					auto _semaphore = pModel->get_compute_semaphore();
 					if (_semaphore)

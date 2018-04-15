@@ -9,14 +9,16 @@ layout(location = 2) in vec2 i_uv;
 
 layout(binding = 0) uniform U0
 {
-	mat4 world;
-	mat4 view;
-	mat4 projection;
+	mat4	world;
+	mat4	view;
+	mat4	projection;
+	vec4	camera_pos;//w is padding
 } u0;
 
 layout(binding = 1) uniform U1
 {
-	float	texture_lod;
+	float	texture_max_mip_maps;
+	float	bounding_sphere_radius;
 } u1;
 
 out gl_PerVertex
@@ -26,7 +28,7 @@ out gl_PerVertex
 
 layout (location = 0) out vec3 o_norm;
 layout (location = 1) out vec2 o_uv;
-layout(location = 2) out float o_texture_lod;
+layout(location = 2) out float o_texture_mip_map_level;
 layout(location = 3) out vec3 o_color;
 
 void main() 
@@ -38,8 +40,19 @@ void main()
 	gl_Position = u0.projection * u0.view * _world_pos;
 	o_norm =  normalize( ( vec4(i_norm, 0.0)  * _world_view ).xyz );
 	o_uv = i_uv;
-	o_texture_lod = u1.texture_lod;
 
+	//get texture lod
+	o_texture_mip_map_level = 0;
+	float _distance_from_cam = distance(u0.camera_pos, vec4(u0.world[3][0], u0.world[3][1], u0.world[3][2], 1.0));
+	for(int i = 0; i < u1.texture_max_mip_maps; ++i)
+	{
+		if (_distance_from_cam <= u1.bounding_sphere_radius * (i + 1))
+		{
+			o_texture_mip_map_level = i;
+			break;
+		}
+	}
+	
 	if (gl_InstanceIndex == 0)
 	{
 		//this is ref model

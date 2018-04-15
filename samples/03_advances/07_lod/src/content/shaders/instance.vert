@@ -12,13 +12,15 @@ layout (location = 4) in vec3	i_ins_rot;
 
 layout(binding = 0) uniform U0
 {
-	mat4 view;
-	mat4 projection;
+	mat4	view;
+	mat4	projection;
+	vec4	camera_pos;//w is padding
 } u0;
 
 layout(binding = 1) uniform U1
 {
-	float	texture_lod;
+	float	texture_max_mip_maps;
+	float	bounding_sphere_radius;
 } u1;
 
 out gl_PerVertex
@@ -76,7 +78,18 @@ void main()
 	gl_Position = u0.projection * u0.view * _world_pos;
 	o_norm =  normalize( ( vec4(i_norm, 0.0)  * _world_view ).xyz );
 	o_uv = i_uv;
-	o_texture_lod = u1.texture_lod;
+
+	//get texture lod
+	o_texture_lod = 0;
+	float _distance_from_cam = distance(u0.camera_pos, vec4(i_ins_pos, 1.0));
+	for(int i = 0; i < u1.texture_max_mip_maps; ++i)
+	{
+		if (_distance_from_cam <= u1.bounding_sphere_radius * (i + 1))
+		{
+			o_texture_lod = i;
+			break;
+		}
+	}
 
 	if (gl_InstanceIndex == 0)
 	{
