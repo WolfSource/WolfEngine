@@ -147,7 +147,7 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/ffmpeg/lib/windows/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avformat.lib;avcodec.lib;avutil.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shlwapi.lib;avfilter.lib;avdevice.lib;swscale.lib;swresample.lib;postproc.lib;avcodec.lib;avformat.lib;avutil.lib;Mf.lib;Mfplat.lib;Mfuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

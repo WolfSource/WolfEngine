@@ -73,8 +73,9 @@ void main()
 		atomicExchange(o_ubo.lod_levels[0], 0);
 	}
 	
-	uint _base_index = _idx % 4;
-	if (i_ubo.is_visible[_base_index][_idx - _base_index * 4] != 0)
+	uint _base_index = _idx / 4;
+	uint _sec_index = _idx % 4;
+	if (i_ubo.is_visible[_base_index][_sec_index] != 0)
 	{
 		indirect_draws[_idx].instance_count = 1;
 		

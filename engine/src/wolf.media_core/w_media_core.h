@@ -14,7 +14,7 @@
 
 #include <w_object.h>
 #include <w_time_span.h>
-#include "w_memory.h"
+#include "w_memory_pool.h"
 #include <stdint.h>
 #include <memory>
 #include <array>
@@ -34,22 +34,22 @@ extern "C"
     #include <libavutil/samplefmt.h>
 }
 
-#if defined(__1080p__)
-#define VIDEO_FRAME_SIZE					1920 * 1080
-#elif defined (__720p__)
-#define VIDEO_FRAME_SIZE					1280 * 720
-#elif defined (__PAL__)
-#define VIDEO_FRAME_SIZE					720 * 576
-#elif defined (__NTSC__)
-#define VIDEO_FRAME_SIZE					720 * 480
-#elif defined (__480p__)
-#define VIDEO_FRAME_SIZE					640 * 480
-#elif defined (__360p__)
-#define VIDEO_FRAME_SIZE					480 * 360
-#endif
-
-#define VIDEO_FRAME_DOWN_SAMPLE_SIZE		VIDEO_FRAME_SIZE / 2
-#define AUDIO_FRAME_SIZE		            192000// = 1 second of 48khz 32bit audio
+//#if defined(__1080p__)
+//#define VIDEO_FRAME_SIZE					1920 * 1080
+//#elif defined (__720p__)
+//#define VIDEO_FRAME_SIZE					1280 * 720
+//#elif defined (__PAL__)
+//#define VIDEO_FRAME_SIZE					720 * 576
+//#elif defined (__NTSC__)
+//#define VIDEO_FRAME_SIZE					720 * 480
+//#elif defined (__480p__)
+//#define VIDEO_FRAME_SIZE					640 * 480
+//#elif defined (__360p__)
+//#define VIDEO_FRAME_SIZE					480 * 360
+//#endif
+//
+//#define VIDEO_FRAME_DOWN_SAMPLE_SIZE		VIDEO_FRAME_SIZE / 2
+//#define AUDIO_FRAME_SIZE		            192000// = 1 second of 48khz 32bit audio
 
 namespace wolf
 {
@@ -76,7 +76,7 @@ namespace wolf
             };
 
 			//Must be call once before using class
-            WMC_EXP static void register_all();
+            WMC_EXP static void register_all(_In_ const bool& pRegisterNetwork);
 			//Must be call once for shuting statics objects down 
             WMC_EXP static void shut_down();
             
@@ -140,19 +140,16 @@ namespace wolf
 			*/
             WMC_EXP int seek_frame_milliSecond(int64_t pMilliSecond);
 
-#ifdef __WIN32
-            
             //TODO: change wolf::system::w_memory with wolf::system::w_memory_pool
 			//Store video frame data in to the memory
-            WMC_EXP W_RESULT buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, UINT pDownSampling = 1);
+            //WMC_EXP W_RESULT buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, UINT pDownSampling = 1);
 
 			//Store audio frame data in to the memory
-            WMC_EXP W_RESULT buffer_audio_to_memory(wolf::system::w_memory& pAudioMemory, double& pAudioFrameVolumeDB);
+            //WMC_EXP W_RESULT buffer_audio_to_memory(wolf::system::w_memory& pAudioMemory, double& pAudioFrameVolumeDB);
 
 			//Read all data in to the memory, make sure the capacity size of video and audio chuck is equal 
-            WMC_EXP W_RESULT buffer_to_memory(wolf::system::w_memory& pVideoMemory, wolf::system::w_memory& pAudioMemory);
+            //WMC_EXP W_RESULT buffer_to_memory(wolf::system::w_memory& pVideoMemory, wolf::system::w_memory& pAudioMemory);
 
-#endif
 			//release all resources
             WMC_EXP ULONG release();
 

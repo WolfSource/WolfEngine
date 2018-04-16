@@ -82,9 +82,10 @@ void main()
 	//set texture mip map based on position
 	o_texture_mip_map_level = u1.texture_max_mip_maps_max_level - 1;
 	float _distance_from_cam = distance(u0.camera_pos, vec4(i_ins_pos, 1.0));
+	float _bs = u1.bounding_sphere_radius * 10; 
 	for(int i = 0; i < u1.texture_max_mip_maps_max_level; ++i)
 	{
-		if (_distance_from_cam <= u1.bounding_sphere_radius * (i + 1))
+		if (_distance_from_cam <= _bs * (i + 1))
 		{
 			o_texture_mip_map_level = i;
 			break;

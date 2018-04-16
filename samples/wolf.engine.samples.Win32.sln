@@ -97,6 +97,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "07_lod.Win32", "03_advances
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_masked_occlusion_culling.Win32", "03_advances\08_masked_occlusion_culling\builds\mvsc\08_masked_occlusion_culling.Win32.vcxproj", "{890325E2-798E-47D8-9E36-23BB40ADFB30}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01_media_player.Win32", "04_intermediates\01_media_player\builds\mvsc\01_media_player.Win32.vcxproj", "{D07EB02B-7631-441C-9E73-890912BB6FFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -449,6 +451,14 @@ Global
 		{890325E2-798E-47D8-9E36-23BB40ADFB30}.Release|x64.Build.0 = Release|x64
 		{890325E2-798E-47D8-9E36-23BB40ADFB30}.Release|x86.ActiveCfg = Release|Win32
 		{890325E2-798E-47D8-9E36-23BB40ADFB30}.Release|x86.Build.0 = Release|Win32
+		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Debug|x64.ActiveCfg = Debug|x64
+		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Debug|x64.Build.0 = Debug|x64
+		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Debug|x86.ActiveCfg = Debug|Win32
+		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Debug|x86.Build.0 = Debug|Win32
+		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Release|x64.ActiveCfg = Release|x64
+		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Release|x64.Build.0 = Release|x64
+		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Release|x86.ActiveCfg = Release|Win32
+		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -497,6 +507,7 @@ Global
 		{1B52FFDF-2D13-4F8D-B267-6FDC5F03549C} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
 		{3C40F249-084B-4B74-AF90-44703AE16D9C} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
 		{890325E2-798E-47D8-9E36-23BB40ADFB30} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
+		{D07EB02B-7631-441C-9E73-890912BB6FFF} = {8875BCAA-A9A6-4A81-8F6F-AA9EC902AADF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {38023155-92FA-450F-B105-E00D9588C53D}
