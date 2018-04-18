@@ -78,6 +78,8 @@ namespace wolf
                 return this->_size_in_bytes;
             }
 
+			size_t											write_index = 0;
+			size_t											read_index = 0;
         private:
             //Prevent copying
             w_memory_pool(w_memory_pool const&);

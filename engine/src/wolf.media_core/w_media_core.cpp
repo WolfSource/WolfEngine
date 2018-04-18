@@ -137,23 +137,23 @@ namespace wolf
                     this->_video_stream_index = av_find_best_stream(_av_format_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
                     this->_audio_stream_index = av_find_best_stream(_av_format_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, NULL, 0);
 
-                    auto hasAudioStream = true;
-                    auto hasVideoStream = true;
+                    auto _has_audio_stream = true;
+                    auto _has_video_stream = true;
 
                     if (this->_video_stream_index <= -1)
                     {
                         hr = W_FAILED;
-                        hasVideoStream = false;
+						_has_video_stream = false;
                         V(hr, L"finding stream of video, media file does not have any video frame", this->_name);
                     }
                     if (this->_audio_stream_index <= -1)
                     {
                         hr = W_FAILED;
-                        hasAudioStream = false;
+						_has_audio_stream = false;
                         V(hr, L"finding stream of audio, media file does not have any audio frame", this->_name);
                     }
 
-                    if (!hasVideoStream && !hasAudioStream)
+                    if (!_has_video_stream && !_has_audio_stream)
                     {
                         logger.user("File " + this->_media_full_path + " did not load");
                         release_media();
@@ -161,13 +161,13 @@ namespace wolf
                     }
 
                     //Get a pointer to the stream of video & audio
-                    if (hasVideoStream)
+                    if (_has_video_stream)
                     {
                         _video_codec.avStream = _av_format_ctx->streams[this->_video_stream_index];
                         _video_codec.avCodecCtx = _av_format_ctx->streams[this->_video_stream_index]->codec;
                     }
 
-                    if (hasAudioStream)
+                    if (_has_audio_stream)
                     {
                         this->_audio_codec.avStream = _av_format_ctx->streams[this->_audio_stream_index];
                         this->_audio_codec.avCodecCtx = _av_format_ctx->streams[this->_audio_stream_index]->codec;
@@ -232,17 +232,18 @@ namespace wolf
                     this->_remained_time = this->_duration_time;
                     this->_elapsed_time = w_time_span::zero();
 
-                    if (hasVideoStream)
+                    if (_has_video_stream)
                     {
-                        AVRational avr = _video_codec.avCodecCtx->time_base;
-                        auto ticksPerFrame = _video_codec.avCodecCtx->ticks_per_frame;
-                        this->_frame_rate = static_cast<float>(avr.den) / static_cast<float>(avr.num * _video_codec.avCodecCtx->ticks_per_frame);
+                        //AVRational avr = _video_codec.avCodecCtx->time_base;
+                        //auto ticksPerFrame = _video_codec.avCodecCtx->ticks_per_frame;
+						this->_frame_rate = av_q2d(this->_video_codec.avCodecCtx->framerate);// static_cast<float>(avr.den) / static_cast<float>(avr.num * _video_codec.avCodecCtx->ticks_per_frame);
                     }
-                    else if (hasAudioStream)
+                    else if (_has_audio_stream)
                     {
-                        AVRational avr = _audio_codec.avCodecCtx->time_base;
-                        auto ticksPerFrame = _audio_codec.avCodecCtx->ticks_per_frame;
-                        this->_frame_rate = static_cast<float>(avr.den) / static_cast<float>(avr.num * _audio_codec.avCodecCtx->ticks_per_frame);
+                        //AVRational avr = _audio_codec.avCodecCtx->time_base;
+                        //auto ticksPerFrame = _audio_codec.avCodecCtx->ticks_per_frame;
+						//this->_frame_rate = static_cast<float>(avr.den) / static_cast<float>(avr.num * _audio_codec.avCodecCtx->ticks_per_frame);
+						this->_frame_rate = av_q2d(this->_audio_codec.avCodecCtx->framerate);
                     }
 
                     //Set total frames
@@ -253,7 +254,7 @@ namespace wolf
                     this->_total_video_frames = static_cast<size_t>(((double)this->_duration_time.get_total_milliseconds() * this->_frame_rate) / 1000.0);
                     //Find the decoder for the video and audio and also allocate frames for video & audio
 
-                    if (hasVideoStream)
+                    if (_has_video_stream)
                     {
                         _video_codec.avCodec = avcodec_find_decoder(_video_codec.avCodecCtx->codec_id);
                         if (_video_codec.avCodec == NULL)
@@ -305,7 +306,7 @@ namespace wolf
                     }
 
 
-                    if (hasAudioStream)
+                    if (_has_audio_stream)
                     {
                         _audio_codec.avCodec = avcodec_find_decoder(_audio_codec.avCodecCtx->codec_id);
                         if (_audio_codec.avCodec == NULL)
@@ -661,195 +662,141 @@ namespace wolf
 
                 return _hr;
             }
-                        
-//            W_RESULT buffer_video_to_memory(
-//                _In_ wolf::system::w_memory& pVideoMemory, 
-//                _In_ UINT pDownSampling)
-//            {
-//                W_RESULT hr = W_PASSED;
-//
-//                auto width = get_video_frame_width();
-//                auto height = get_video_frame_height();
-//
-//                int gotFrame = 0;
-//                //Start reading
-//                while (!gotFrame && av_read_frame(_av_format_ctx, this->_av_packet) >= 0)
-//                {
-//                    // Is this a packet from the video stream
-//                    if (this->_av_packet->stream_index == this->_video_stream_index)
-//                    {
-//#pragma region read video buffer
-//
-//                        auto result = avcodec_decode_video2(this->_video_codec.avCodecCtx, this->_video_codec.avFrame, &gotFrame, this->_av_packet);
-//                        if (result < 0)
-//                        {
-//                            hr = W_FAILED;
-//                            V(hr, L"decoding video frame", this->_name);
-//                            return hr;
-//                        }
-//
-//                        if (this->_av_packet->dts == AV_NOPTS_VALUE && this->_video_codec.avFrame->opaque && *(uint64_t*) this->_video_codec.avFrame->opaque != AV_NOPTS_VALUE)
-//                        {
-//                            this->_video_codec.pts = *(uint64_t *) this->_video_codec.avFrame->opaque;
-//                        }
-//                        else if (this->_av_packet->dts != AV_NOPTS_VALUE)
-//                        {
-//                            this->_video_codec.pts = this->_av_packet->dts;
-//                        }
-//                        else
-//                        {
-//                            this->_video_codec.pts = 0;
-//                        }
-//                        this->_video_codec.pts *= av_q2d(this->_video_codec.avStream->time_base);
-//
-//                        if (!gotFrame) continue;
-//
-//                        _update_clock(this->_video_codec);
-//                        _update_time(this->_video_codec.clock);
-//
-//#pragma endregion
-//
-//#pragma region Re-Scale and store av frame in to the DirectX format
-//
-//                        //Set the target convert properties
-//                        auto format = (AVPixelFormat)this->_video_codec.avFrame->format;
-//
-//                        auto _des_width = width;
-//                        auto _des_height = height;
-//
-//                        bool _down_sampling = false;
-//                        if (pDownSampling != 0 && pDownSampling != 1)
-//                        {
-//                            _down_sampling = true;
-//                            _des_width /= pDownSampling;
-//                            _des_height /= pDownSampling;
-//                        }
-//
-//                        struct SwsContext* swsContext = sws_getContext(
-//                            width,
-//                            height,
-//                            format,
-//                            _des_width,
-//                            _des_height,
-//                            AV_PIX_FMT_BGRA,
-//                            SWS_BICUBIC,
-//                            NULL,
-//                            NULL,
-//                            NULL);
-//
-//                        const size_t _slice_pitch = _des_width * _des_height * 4;
-//
-//                        bool _hr = false;
-//                        if (_down_sampling)
-//                        {
-//                            //Re-Scale it
-//                            sws_scale(
-//                                swsContext,
-//                                this->_video_codec.avFrame->data,
-//                                this->_video_codec.avFrame->linesize,
-//                                0,
-//                                height,
-//                                this->_down_sample_avFrame->data,
-//                                this->_down_sample_avFrame->linesize);
-//
-//                            //copy data to the destination
-//                            auto _frame = (uint8_t*)(this->_down_sample_avFrame->data[0]);
-//                            if (_frame)
-//                            {
-//                                _hr = pVideoMemory.Allocate(sizeof(w_video_frame_down_sample_data), std::alignment_of<w_video_frame_down_sample_data>::value);
-//                                if (_hr)
-//                                {
-//                                    auto _address = pVideoMemory.Get_address() - 1;
-//                                    auto _memory = pVideoMemory.Read(_address);
-//
-//                                    auto _videoFrameData = static_cast<w_video_frame_down_sample_data*>(_memory);
-//                                    if (_videoFrameData)
-//                                    {
-//                                        //first clear memory
-//                                        std::fill(_videoFrameData->data.begin(), _videoFrameData->data.end(), 0);
-//                                        tbb::parallel_for<size_t>(0, _slice_pitch, 4, [&](size_t i)
-//                                        {
-//                                            _videoFrameData->data.at(i / 4) = (int)((_frame[i + 3] & 0xFF) << 24) | ((_frame[i] & 0xFF) << 16) | ((_frame[i + 1] & 0xFF) << 8) | (_frame[i + 2] & 0xFF);//argb
-//                                        });
-//                                    }
-//                                    else
-//                                    {
-//                                        logger.error(L"Could not cast allocated memory for video");
-//                                        hr = W_FAILED;
-//                                    }
-//
-//                                }
-//                                else
-//                                {
-//                                    logger.error(L"Could not allocate memory for video");
-//                                    hr = W_FAILED;
-//                                }
-//
-//                                _frame = nullptr;
-//                            }
-//                        }
-//                        else
-//                        {
-//                            //Re-Scale it
-//                            sws_scale(
-//                                swsContext,
-//                                this->_video_codec.avFrame->data,
-//                                this->_video_codec.avFrame->linesize,
-//                                0,
-//                                height,
-//                                this->_av_frame->data,
-//                                this->_av_frame->linesize);
-//
-//                            //copy data to the destination
-//                            auto _frame = (uint8_t*)(this->_av_frame->data[0]);
-//                            if (_frame)
-//                            {
-//                                auto _size = width * height;
-//                                _hr = pVideoMemory.Allocate(4 * _size, std::alignment_of<int>::value);
-//                                if (_hr)
-//                                {
-//                                    auto _address = pVideoMemory.Get_address() - 1;
-//                                    auto _memory = pVideoMemory.Read(_address);
-//
-//                                    auto _data = static_cast<int*>(_memory);
-//                                    if (_data)
-//                                    {
-//                                        //first clear memory
-//                                        std::fill(&_data[0], &_data[_size - 1], 0);
-//                                        tbb::parallel_for<size_t>(0, _slice_pitch, 4, [&](size_t i)
-//                                        {
-//                                            _data[i / 4] = (int)((_frame[i + 3] & 0xFF) << 24) | ((_frame[i] & 0xFF) << 16) | ((_frame[i + 1] & 0xFF) << 8) | (_frame[i + 2] & 0xFF);//argb
-//                                        });
-//                                    }
-//                                    else
-//                                    {
-//                                        logger.error(L"Could not cast allocated memory for video");
-//                                        hr = W_FAILED;
-//                                    }
-//
-//                                }
-//                                else
-//                                {
-//                                    logger.error(L"Could not allocate memory for video");
-//                                    hr = W_FAILED;
-//                                }
-//
-//                                _frame = nullptr;
-//                            }
-//                        }
-//
-//                        sws_freeContext(swsContext);
-//
-//#pragma endregion
-//
-//                    }
-//
-//                    //free the packet
-//                    av_free_packet(this->_av_packet);
-//                }
-//
-//                return hr;
-//            }
+                      
+			W_RESULT write_video_frame_to_buffer(
+					wolf::system::w_memory_pool& pMemory,
+					uint32_t pDownSamplingScale,
+					bool pBGRA_or_RGBA)
+			{
+				W_RESULT _hr = W_PASSED;
+
+				auto _width = get_video_frame_width();
+				auto _height = get_video_frame_height();
+
+				int _got_frame = 0;
+				while (!_got_frame && av_read_frame(_av_format_ctx, this->_av_packet) >= 0)
+				{
+					// Is this a packet from the video stream
+					if (this->_av_packet->stream_index == this->_video_stream_index)
+					{
+#pragma region read video frame
+						auto _result = avcodec_decode_video2(this->_video_codec.avCodecCtx, this->_video_codec.avFrame, &_got_frame, this->_av_packet);
+						if (_result < 0)
+						{
+							_hr = W_FAILED;
+							V(_hr, L"decoding video frame", this->_name);
+							return _hr;
+						}
+
+						if (this->_av_packet->dts == AV_NOPTS_VALUE &&
+							this->_video_codec.avFrame->opaque && *(uint64_t*)this->_video_codec.avFrame->opaque != AV_NOPTS_VALUE)
+						{
+							this->_video_codec.pts = *(uint64_t *)this->_video_codec.avFrame->opaque;
+						}
+						else if (this->_av_packet->dts != AV_NOPTS_VALUE)
+						{
+							this->_video_codec.pts = this->_av_packet->dts;
+						}
+						else
+						{
+							this->_video_codec.pts = 0;
+						}
+						this->_video_codec.pts *= av_q2d(this->_video_codec.avStream->time_base);
+						if (!_got_frame) continue;
+
+						_update_clock(this->_video_codec);
+						_update_time(this->_video_codec.clock);
+#pragma endregion
+
+#pragma region store av frame in to the memory buffer
+
+						//Set the target convert properties
+						auto _format = (AVPixelFormat)this->_video_codec.avFrame->format;
+
+						auto _down_sample_width = _width;
+						auto _down_sample_height = _height;
+
+						bool _need_down_sampling = false;
+						if (pDownSamplingScale > 1)
+						{
+							_need_down_sampling = true;
+							_down_sample_width /= pDownSamplingScale;
+							_down_sample_height /= pDownSamplingScale;
+						}
+
+						struct SwsContext* _sws_context = sws_getContext(
+							_width,
+							_height,
+							_format,
+							_down_sample_width,
+							_down_sample_height,
+							pBGRA_or_RGBA ? AV_PIX_FMT_BGRA : AV_PIX_FMT_RGBA,
+							SWS_BICUBIC,
+							NULL,
+							NULL,
+							NULL);
+
+						bool _hr = false;
+						uint8_t* _frame = nullptr;
+						size_t _write_size_in_bytes = 0;
+						if (_need_down_sampling)
+						{
+							//Re-Scale it
+							sws_scale(
+								_sws_context,
+								this->_video_codec.avFrame->data,
+								this->_video_codec.avFrame->linesize,
+								0,
+								_height,
+								this->_down_sample_avFrame->data,
+								this->_down_sample_avFrame->linesize);
+
+							//get frame data
+							_frame = (uint8_t*)(this->_down_sample_avFrame->data[0]);
+							_write_size_in_bytes = 4/*RGBA or BGRA*/ * _down_sample_width * _down_sample_height * sizeof(uint8_t);
+						}
+						else
+						{
+							sws_scale(
+								_sws_context,
+								this->_video_codec.avFrame->data,
+								this->_video_codec.avFrame->linesize,
+								0,
+								_height,
+								this->_av_frame->data,
+								this->_av_frame->linesize);
+
+							//get frame data
+							_frame = (uint8_t*)(this->_av_frame->data[0]);
+							_write_size_in_bytes = 4/*RGBA or BGRA*/ * _width * _height * sizeof(uint8_t);
+						}
+
+						auto _memory_chuck_size_in_bytes = pMemory.get_size_in_bytes();
+						if (_write_size_in_bytes > _memory_chuck_size_in_bytes)
+						{
+							_hr = W_FAILED;
+							V(_hr, L"size of frame bytes is greater than size of memory pool", this->_name);
+							break;
+						}
+
+						auto _memory = (uint8_t*)pMemory.get_start_ptr();
+						if (_memory)
+						{
+							//first clear memory
+							std::memcpy(&_memory[pMemory.write_index], &_frame[0], _write_size_in_bytes);
+							pMemory.write_index = (pMemory.write_index + _write_size_in_bytes) % _memory_chuck_size_in_bytes;
+						}
+						_frame = nullptr;
+						sws_freeContext(_sws_context);
+#pragma endregion
+					}
+
+					//free the packet
+					av_free_packet(this->_av_packet);
+				}
+
+				return _hr;
+			}
 //
 //            W_RESULT buffer_audio_to_memory(wolf::system::w_memory& pAudioMemory, double& pAudioFrameVolumeDB)
 //            {
@@ -1552,11 +1499,14 @@ int w_media_core::seek_frame(int64_t pFrame)
     return this->_pimp ? this->_pimp->seek_frame(pFrame) : -3;
 }
 
-//W_RESULT w_media_core::buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, UINT pDownSampling)
-//{
-//    return this->_pimp ? this->_pimp->buffer_video_to_memory(pVideoMemory, pDownSampling) : W_FAILED;
-//}
-//
+W_RESULT w_media_core::write_video_frame_to_buffer(
+	wolf::system::w_memory_pool& pMemory,
+	uint32_t pDownSamplingScale,
+	bool pBGRA_or_RGBA)
+{
+	return this->_pimp ? this->_pimp->write_video_frame_to_buffer(pMemory, pDownSamplingScale, pBGRA_or_RGBA) : W_FAILED;
+}
+
 //W_RESULT w_media_core::buffer_audio_to_memory(w_memory& pAudioMemory, double& pAudioFrameVolumeDB)
 //{
 //    return this->_pimp ? this->_pimp->buffer_audio_to_memory(pAudioMemory, pAudioFrameVolumeDB) : W_FAILED;

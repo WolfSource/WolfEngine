@@ -59,6 +59,7 @@ namespace wolf
 		class w_media_core : public system::w_object
 		{
 		public:
+			enum w_video_channels { R, G, B, A };
             struct w_stream_connection_info
             {
                 const char*         url;
@@ -140,9 +141,17 @@ namespace wolf
 			*/
             WMC_EXP int seek_frame_milliSecond(int64_t pMilliSecond);
 
-            //TODO: change wolf::system::w_memory with wolf::system::w_memory_pool
-			//Store video frame data in to the memory
-            //WMC_EXP W_RESULT buffer_video_to_memory(wolf::system::w_memory& pVideoMemory, UINT pDownSampling = 1);
+			/*
+				Store video frames data in to the memory pool:
+				@param	pMemory, memory pool for storing
+				@param	pDownSamplingScale, down sampling value, 1 is default value, send greater than 1 for downsampling
+				@param	pBGRA_or_RGBA, Number of samples of the image; The value greater than 1 means multisampling
+				@return W_PASSED when succeeded 
+			*/
+			WMC_EXP W_RESULT write_video_frame_to_buffer(
+				wolf::system::w_memory_pool& pMemory,
+				uint32_t pDownSamplingScale = 1,
+				bool pBGRA_or_RGBA = true);
 
 			//Store audio frame data in to the memory
             //WMC_EXP W_RESULT buffer_audio_to_memory(wolf::system::w_memory& pAudioMemory, double& pAudioFrameVolumeDB);

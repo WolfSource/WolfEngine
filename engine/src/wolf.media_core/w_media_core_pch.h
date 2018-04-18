@@ -22,6 +22,4 @@
 #include <w_logger.h>
 #include <mutex>
 
-#include <tbb/parallel_for.h>
-
 #endif
