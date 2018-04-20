@@ -13,6 +13,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf.media_core.Win32", "wo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test.vulkan.Win32", "tests\vulkan.Win32\test.vulkan.Win32.vcxproj", "{C4AB1F97-2370-486B-A048-53AE0DD1065D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{E724AE8A-3FF8-473F-8540-FCE852E18675}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\CHANGE_LOG.md = ..\..\..\CHANGE_LOG.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

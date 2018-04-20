@@ -27,6 +27,7 @@
 #include "w_graphics/w_queue.h"
 #include "w_graphics/w_semaphore.h"
 #include "w_graphics/w_fences.h"
+#include "w_graphics/w_memory_allocator.h"
 #include "w_graphics/w_command_buffers.h"
 
 #ifdef __PYTHON__
@@ -300,10 +301,11 @@ namespace wolf
             W_EXP W_RESULT submit(
 				_In_ const std::vector<const w_command_buffer*>&	pCommandBuffers,
                 _In_ const w_queue&									pQueue,
-                _In_ const uint32_t*								pWaitDstStageMask,
+				_In_ const std::vector<w_pipeline_stage_flag_bits>&	pWaitDstStageMask,
                 _In_ std::vector<w_semaphore> 						pWaitForSemaphores,
                 _In_ std::vector<w_semaphore> 						pSignalForSemaphores,
-                _In_ w_fences*										pFence);
+                _In_ w_fences*										pFence,
+				_In_ const bool&									pWaitIdleForDone);
             
             /*
                 capture image buffer's data and save to D-RAM and make it accessable by CPU, 
@@ -364,7 +366,7 @@ namespace wolf
             VkDevice                                                        vk_device;
 
             VkCommandPool                                                   vk_command_allocator_pool;
-                        
+            
             //static pipeline defaults
 			struct defaults_states
             {
@@ -390,6 +392,7 @@ namespace wolf
 
 #endif //__DX12__ __VULKAN__
             
+			w_memory_allocator												memory_allocator;
 
 #ifdef __PYTHON__
 

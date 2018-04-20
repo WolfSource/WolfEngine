@@ -379,7 +379,7 @@ W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_grap
 	});
 
 	uint32_t _size = (uint32_t)(pDrawCount * sizeof(w_draw_indexed_indirect_command));
-	if (_staging_buffer.load_as_staging(pGDevice, _size) == W_FAILED)
+	if (_staging_buffer.allocate_as_staging(pGDevice, _size) == W_FAILED)
 	{
 		V(W_FAILED, "loading staging buffer of indirect_draw_commands", _trace_info, 3);
 		return W_FAILED;
@@ -397,12 +397,13 @@ W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_grap
 		return W_FAILED;
 	}
 
-	//load memory for indirect buffer 
-	if (this->buffer.load(
+	//load memory for indirect buffer as seperated memory
+	if (this->buffer.allocate(
 		pGDevice,
 		_size,
 		VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+		w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY,
+		false) == W_FAILED)
 	{
 		V(W_FAILED, "loading staging buffer of indirect_commands_buffer", _trace_info, 3);
 		return W_FAILED;

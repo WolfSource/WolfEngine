@@ -177,12 +177,13 @@ W_RESULT w_graphics_device::draw(
 }
 
 W_RESULT w_graphics_device::submit(
-	_In_ const std::vector<const w_command_buffer*>& pCommandBuffers,
-	_In_ const w_queue&                       pQueue,
-	_In_ const uint32_t*					  pWaitDstStageMask,
-	_In_ std::vector<w_semaphore>             pWaitForSemaphores,
-	_In_ std::vector<w_semaphore>             pSignalForSemaphores,
-	_In_ w_fences*                            pFence)
+	_In_ const std::vector<const w_command_buffer*>&	pCommandBuffers,
+	_In_ const w_queue&									pQueue,
+	_In_ const std::vector<w_pipeline_stage_flag_bits>&	pWaitDstStageMask,
+	_In_ std::vector<w_semaphore>						pWaitForSemaphores,
+	_In_ std::vector<w_semaphore>						pSignalForSemaphores,
+	_In_ w_fences*										pFence,
+	_In_ const bool&									pWaitIdleForDone)
 {
 	const std::string _trace_info = "w_graphics_device::submit";
 
@@ -206,11 +207,9 @@ W_RESULT w_graphics_device::submit(
 
 	_cmds.clear();
 	
-	if (pWaitDstStageMask)
-	{
-		_submit_info.pWaitDstStageMask = (VkPipelineStageFlags*)pWaitDstStageMask;
-	}
-
+	_size = static_cast<uint32_t>(pWaitDstStageMask.size());
+	_submit_info.pWaitDstStageMask = _size ? (VkPipelineStageFlags*)(&pWaitDstStageMask[0]) : nullptr;
+	
 	_size = static_cast<uint32_t>(pWaitForSemaphores.size());
 	std::vector<VkSemaphore> _wait_semaphors;
 	if (_size)
@@ -251,18 +250,18 @@ W_RESULT w_graphics_device::submit(
 			false);
 		goto submit_clear;
 	}
-	if (_fence == 0)
+
+	if (pWaitIdleForDone)
 	{
 		if (vkQueueWaitIdle(pQueue.queue))
 		{
 			_hr = W_FAILED;
 			V(_hr,
-				"waiting for queue for graphics device " + this->device_info->get_device_name() +
-				" ID:" + std::to_string(this->device_info->get_device_id()),
+				"waiting idle queue for graphics device " + this->get_info(),
 				_trace_info,
 				3,
 				false);
-			goto submit_clear;
+				goto submit_clear;
 		}
 	}
 
@@ -645,7 +644,7 @@ W_RESULT w_graphics_device::capture(
 		_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		_submit_info.pCommandBuffers = &_copy_cmd;
 		_submit_info.commandBufferCount = 1;
-
+		
 		//Submit to the queue
 		_hr = vkQueueSubmit(this->vk_graphics_queue.queue, 1, &_submit_info, _copy_fence);
 		if (_hr)
@@ -1163,6 +1162,9 @@ ULONG w_graphics_device::release()
 
     //wait for device to become IDLE
     vkDeviceWaitIdle(this->vk_device);
+
+	//release memory
+	this->memory_allocator.release();
 
 	_clean_swap_chain();
 
@@ -2368,6 +2370,14 @@ namespace wolf
                             0,
                             &_gDevice->vk_sparse_queue.queue);
                     }
+
+					//initialize memory allocator
+					if (_gDevice->memory_allocator.initialize(_gDevice) == W_FAILED)
+					{
+						logger.error("error on initializing graphics device memory allocator.");
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
 					pGraphicsDevices.push_back(_gDevice);
 
@@ -3878,164 +3888,6 @@ W_RESULT w_graphics_device_manager::prepare()
 
     return W_PASSED;
 }
-
-//W_RESULT w_graphics_device_manager::submit()
-//{
-//	for (size_t i = 0; i < this->graphics_devices.size(); ++i)
-//	{
-//		auto _gDevice = this->graphics_devices[i];
-//
-//        if (_gDevice->_is_released) continue;
-//        
-//#ifdef __DX12__
-//		if (_gDevice->dx_device_removed)
-//		{
-//			on_device_lost();
-//			continue;
-//		}
-//#endif
-//
-//		for (size_t j = 0; j < _gDevice->output_presentation_windows.size(); ++j)
-//		{
-//			auto _output_window = &(_gDevice->output_presentation_windows[j]);
-//
-//#ifdef __DX12__
-//
-//			_wait_for_previous_frame(_gDevice, j);
-//
-//			/*
-//				Command list allocators can only be reset when the associated
-//				command lists have finished execution on the GPU; apps should use
-//				fences to determine GPU execution progress.
-//			*/
-//			auto _hr = _output_window->dx_command_allocator_pool->Reset();
-//			if (FAILED(_hr)) return W_FAILED;
-//
-//			/*
-//				However, when ExecuteCommandList() is called on a particular command
-//				list, that command list can then be reset at any time and must be before
-//				re-recording.
-//			*/
-//			_hr = _output_window->dx_command_list->Reset(_output_window->dx_command_allocator_pool.Get(), _output_window->dx_pipeline_state.Get());
-//			if (FAILED(_hr)) return W_FAILED;
-//
-//			D3D12_RESOURCE_BARRIER	_barrier = {};
-//			_barrier.Flags = D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE;
-//			_barrier.Transition.pResource = _output_window->dx_swap_chain_image_views[_output_window->dx_swap_chain_image_index];
-//			_barrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT;
-//			_barrier.Transition.StateAfter = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
-//			_barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-//			_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE::D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-//
-//            _output_window->dx_command_list->ResourceBarrier(1, &_barrier);
-//
-//			//get the swap chan target image view (render target view) for current frame buffer
-//			auto _render_target_view_handle = _output_window->dx_render_target_view_heap->GetCPUDescriptorHandleForHeapStart();
-//			auto _render_target_view_desc_size = _gDevice->dx_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-//			if (_output_window->dx_swap_chain_image_index == 1)
-//			{
-//				_render_target_view_handle.ptr += _render_target_view_desc_size;
-//			}
-//
-//			//no need to clear render target views
-//			if (_output_window->force_to_clear_color_times > 0)
-//			{
-//				//clear the first swap chain image view
-//                _output_window->force_to_clear_color_times--;
-//
-//				//set the back buffer render target
-//                _output_window->dx_command_list->OMSetRenderTargets(1, &_render_target_view_handle, FALSE, NULL);
-//
-//				float _clear_color[4] =
-//				{
-//					static_cast<float>(_output_window->clear_color.r / 255.0f),
-//					static_cast<float>(_output_window->clear_color.g / 255.0f),
-//					static_cast<float>(_output_window->clear_color.b / 255.0f),
-//					static_cast<float>(_output_window->clear_color.a / 255.0f)
-//				};
-//                _output_window->dx_command_list->ClearRenderTargetView(_render_target_view_handle, _clear_color, 0, NULL);
-//			}
-//
-//			//change the state of back buffer to transition into the presentation
-//			_barrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
-//			_barrier.Transition.StateAfter = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT;
-//
-//			//store barrier to command list
-//            _output_window->dx_command_list->ResourceBarrier(1, &_barrier);
-//
-//			//close command list
-//			_hr = _output_window->dx_command_list->Close();
-//			if (FAILED(_hr)) return W_FAILED;
-//
-//#elif defined(__VULKAN__)
-//
-//			//wait for image to be available and draw
-//			//VkSubmitInfo _submit_info = {};
-//			//_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-//
-//			//_submit_info.waitSemaphoreCount = 1;
-//			//_submit_info.pWaitSemaphores = &_output_window->vk_image_is_available_semaphore;
-//
-//			//_submit_info.signalSemaphoreCount = 1;
-//			//_submit_info.pSignalSemaphores = &_output_window->vk_rendering_done_semaphore;
-//
-//			////this is the stage where the queue should wait on the semaphore (it doesn't have to wait with drawing)
-//			//VkPipelineStageFlags _wait_dst_stage_mask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-//			//_submit_info.pWaitDstStageMask = &_wait_dst_stage_mask;
-//   //         
-//   //         //sort and get all avaiable commands buffers pointers
-//   //         std::vector<w_command_buffers*> _sorted_command_buffers;
-//   //         for (auto _iter =  _output_window->command_buffers.begin();
-//   //              _iter !=  _output_window->command_buffers.end(); ++_iter)
-//   //         {
-//   //             _sorted_command_buffers.push_back(_iter->second);
-//   //         }
-//   //         std::sort(_sorted_command_buffers.begin(), _sorted_command_buffers.end(),
-//   //                   [](_In_ w_command_buffers* a, _In_ w_command_buffers* b)
-//   //                   {
-//   //                       return a && b ? a->get_order() < b->get_order() : true;
-//   //                   });
-//
-//   //         std::vector<VkCommandBuffer> _command_buffers;
-//   //         for (auto _iter : _sorted_command_buffers)
-//   //         {
-//   //             if(_iter && _iter->get_enable())
-//   //             {
-//   //                 auto _cmds = _iter->get_commands();
-//   //                 _command_buffers.push_back(_cmds[_output_window->vk_swap_chain_image_index]);
-//   //             }
-//   //         }
-//   //         _sorted_command_buffers.clear();
-//   //         
-//   //         auto _size = _command_buffers.size();
-//   //         if (_size)
-//   //         {
-//   //             //submit them
-//   //             _submit_info.commandBufferCount = static_cast<uint32_t>(_size);
-//   //             _submit_info.pCommandBuffers = _command_buffers.data();
-//   //         
-//   //             _command_buffers.clear();
-//   //         }
-//   //         
-//			////submit queue
-//			//auto _hr = vkQueueSubmit(
-//			//	_gDevice->vk_present_queue.queue,
-//			//	1,
-//			//	&_submit_info,
-//			//	VK_NULL_HANDLE);
-//			//if (_hr)
-//			//{
-//			//	logger.error("error on submitting queue of graphics device: " +
-//			//		_gDevice->device_name + " and presentation window: " + std::to_string(j));
-//			//	release();
-//			//	std::exit(EXIT_FAILURE);
-//			//}
-//#endif
-//		}
-//	}
-//
-//	return W_PASSED;
-//}
 
 W_RESULT w_graphics_device_manager::present()
 {

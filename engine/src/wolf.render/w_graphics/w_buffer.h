@@ -24,36 +24,40 @@ namespace wolf
             W_EXP w_buffer();
             W_EXP ~w_buffer();
             
-            W_EXP W_RESULT load_as_staging(
+            W_EXP W_RESULT allocate_as_staging(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const uint32_t& pBufferSize);
+                _In_ uint32_t& pBufferSize,
+				_In_ const bool& pAllocateFromMemoryPool = true);
             
-            W_EXP W_RESULT load(
+            W_EXP W_RESULT allocate(
 				_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const uint32_t& pBufferSize,
+                _In_ uint32_t& pBufferSize,
                 _In_ const uint32_t& pUsage,
-                _In_ const uint32_t& pMemoryFlags);
+                _In_ const w_memory_usage_flag& pMemoryFlag,
+				_In_ const bool& pAllocateFromMemoryPool = true);
             
+			W_EXP W_RESULT reallocate(_In_ uint32_t& pBufferSizeInBytes);
+
             W_EXP W_RESULT bind();    
             
             W_EXP W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer);
 
             W_EXP void* map();
-            
             W_EXP void unmap();
-            
-            W_EXP W_RESULT flush(VkDeviceSize pSize = VK_WHOLE_SIZE, VkDeviceSize pOffset = 0);
+			W_EXP W_RESULT flush();
+			W_EXP W_RESULT free();
 
             W_EXP ULONG release() override;
             
 #pragma region Getters
             
+			W_EXP const uint32_t					  get_offset() const;
             W_EXP const uint32_t                      get_size() const;
             W_EXP const uint32_t					  get_usage_flags() const;
             W_EXP const uint32_t				      get_memory_flags() const;
             W_EXP const w_buffer_handle               get_buffer_handle() const;
-            W_EXP const w_device_memory               get_memory() const;
             W_EXP const w_descriptor_buffer_info      get_descriptor_info() const;
+			W_EXP const w_device_memory				  get_memory() const;
 
 #pragma endregion
 

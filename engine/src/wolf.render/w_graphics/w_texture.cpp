@@ -552,24 +552,6 @@ namespace wolf
 
             W_RESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA)
             {
-				/*
-				//just for test
-				//std::string _msg = "std::map<int, uint8_t> _logo_data = {";
-				std::string _msg = "std::vector<int> _black = {";
-				for (size_t i = 0; i < this->_width * this->_height * 4; ++i)
-				{
-					if (pRGBA[i] == 0)
-					{
-						//_msg += "{" + std::to_string(i) + "," + std::to_string(pRGBA[i]) + "},";
-						_msg += std::to_string(i) + ",";
-					}
-				}
-				_msg += "}";
-				logger.write(_msg);
-				_msg.clear();
-				*/
-				
-
 				const std::string _trace_info = "w_texture::copy_data_to_texture_2D";
 
                 auto _data_size = this->_image_view.width * this->_image_view.height * 4;
@@ -578,52 +560,39 @@ namespace wolf
 				if (this->_just_initialized)
 				{
 					this->_just_initialized = false;
-					_hr = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
-					if (_hr == W_FAILED)
-					{
-						return _hr;
-					}
-					_hr = this->_staging_buffer.bind();
+					_hr = this->_staging_buffer.allocate_as_staging(this->_gDevice, _data_size);
 					if (_hr == W_FAILED)
 					{
 						return _hr;
 					}
 				}
 
-				auto _mem_handle = this->_staging_buffer.get_memory().handle;
-                if(vkMapMemory(
-					this->_gDevice->vk_device,
-					_mem_handle,
-                    0,
-                    _data_size,
-                    0,
-                    &this->_staging_buffer_memory_pointer))
-                {
-                    V(W_FAILED, "Could not map memory and upload texture data to a staging buffer on graphics device: " +
-                        this->_gDevice->device_info->get_device_name() + " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
-                        this->_name,
-                        3,
-                        false);
-                    return W_FAILED;
-                }
+				this->_staging_buffer_memory_pointer = this->_staging_buffer.map();
+				if (this->_staging_buffer_memory_pointer)
+				{
+					memcpy(this->_staging_buffer_memory_pointer, pRGBA, (size_t)_data_size);
+					_hr = this->_staging_buffer.flush();
+					this->_staging_buffer.unmap();
 
-                memcpy(this->_staging_buffer_memory_pointer, pRGBA, (size_t)_data_size);
-
-                VkMappedMemoryRange _flush_range =
-                {
-                    VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,              // Type
-                    nullptr,                                            // Next
-					_mem_handle,										// Memory
-                    0,                                                  // Offset
-                    _data_size                                          // Size
-                };
-
-                vkFlushMappedMemoryRanges(
-					this->_gDevice->vk_device,
-                    1,
-                    &_flush_range);
-                vkUnmapMemory(this->_gDevice->vk_device, _mem_handle);
-
+					if (_hr == W_FAILED)
+					{
+						V(W_FAILED,
+							"flushing staging memory for graphics device" + this->_gDevice->get_info(),
+							_trace_info,
+							3,
+							false);
+						return W_FAILED;
+					}
+				}
+				else
+				{
+					V(W_FAILED,
+						"mapping staging memory for graphics device" + this->_gDevice->get_info(),
+						_trace_info,
+						3,
+						false);
+					return W_FAILED;
+				}
 
                 //create command buffer
                 w_command_buffers _command_buffer;
@@ -718,10 +687,11 @@ namespace wolf
 				_hr = this->_gDevice->submit(
 					{ &_cmd },
 					this->_gDevice->vk_graphics_queue,
+					{},
+					{},
+					{},
 					nullptr,
-					{},
-					{},
-					nullptr);
+					true);
 				
 				_command_buffer.release();
 
@@ -764,17 +734,17 @@ namespace wolf
 
 				auto _data_size = static_cast<uint32_t>(pTextureArrayRGBA.size());
 
-				auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
+				auto _hResult = this->_staging_buffer.allocate_as_staging(this->_gDevice, _data_size);
 				if (_hResult == W_FAILED)
 				{
 					return _hResult;
 				}
 
-				_hResult = this->_staging_buffer.bind();
-				if (_hResult == W_FAILED)
-				{
-					return _hResult;
-				}
+				//_hResult = this->_staging_buffer.bind();
+				//if (_hResult == W_FAILED)
+				//{
+				//	return _hResult;
+				//}
 
 				auto _mem_handle = this->_staging_buffer.get_memory().handle;
 				if(vkMapMemory(this->_gDevice->vk_device,
@@ -913,10 +883,11 @@ namespace wolf
 				auto _hr = this->_gDevice->submit(
 					{ &_cmd },
 					this->_gDevice->vk_graphics_queue,
+					{},
+					{},
+					{},
 					nullptr,
-					{},
-					{},
-					nullptr);
+					true);
 				//release command buffer
 				_command_buffer.release();
 				if (_hr == W_FAILED)
@@ -1113,10 +1084,11 @@ namespace wolf
 					auto _hr = this->_gDevice->submit(
 						{ &_cmd },
 						this->_gDevice->vk_graphics_queue,
+						{},
+						{},
+						{},
 						nullptr,
-						{},
-						{},
-						nullptr);
+						true);
 					//release command buffer
 					_command_buffer.release();
 
@@ -1148,17 +1120,17 @@ namespace wolf
 
 				auto _data_size = this->_image_view.width * this->_image_view.height * 4;
 				
-				auto _hResult = this->_staging_buffer.load_as_staging(this->_gDevice, _data_size);
+				auto _hResult = this->_staging_buffer.allocate_as_staging(this->_gDevice, _data_size);
 				if (_hResult == W_FAILED)
 				{
 					return nullptr;
 				}
 
-				_hResult = this->_staging_buffer.bind();
-				if (_hResult == W_FAILED)
-				{
-					return nullptr;
-				}
+				//_hResult = this->_staging_buffer.bind();
+				//if (_hResult == W_FAILED)
+				//{
+				//	return nullptr;
+				//}
 
 				//auto _hr = vkMapMemory(
 				//	this->_gDevice->vk_device,
@@ -1292,7 +1264,7 @@ namespace wolf
 						1,
 						&_buffer_image_copy_info);
 
-					this->_staging_buffer.flush(_data_size);
+					this->_staging_buffer.flush();
 				}
 				_command_buffer.end(0);
 

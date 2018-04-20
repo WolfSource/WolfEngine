@@ -106,7 +106,7 @@ namespace wolf
 
 		struct w_indirect_draws_command_buffer
 		{
-			wolf::graphics::w_buffer                                buffer;
+			wolf::graphics::w_buffer								buffer;
 			std::vector<w_draw_indexed_indirect_command>            drawing_commands;
 
 			W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t& pDrawCount);

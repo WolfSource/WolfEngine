@@ -13,16 +13,15 @@ namespace wolf
         class w_mesh_pimp
         {
         public:
-            w_mesh_pimp() :
-                _name("w_mesh"),
-                _gDevice(nullptr),
-                _copy_command_buffer(nullptr),
-                _vertices_count(0),
-                _indices_count(0),
+			w_mesh_pimp() :
+				_name("w_mesh"),
+				_gDevice(nullptr),
+				_copy_command_buffer(nullptr),
+				_vertices_count(0),
+				_indices_count(0),
 				_vertex_binding_attributes(w_vertex_declaration::NOT_DEFINED)
-            {
-        
-            }
+			{
+			}
             
             /*
                 static data such as index buffer or vertex buffer should be stored on device memory
@@ -64,7 +63,7 @@ namespace wolf
                 if (_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                     pVerticesData,
 					pVerticesSizeInBytes,
-                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                    w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY,
                     this->_stagings_buffers.vertices) == W_FAILED)
                 {
                     return W_FAILED;
@@ -75,7 +74,7 @@ namespace wolf
                     if (_create_buffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                         pIndicesData,
                         _indices_size,
-                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+						w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY,
                         this->_stagings_buffers.indices) == W_FAILED)
                     {
                         return W_FAILED;
@@ -86,7 +85,7 @@ namespace wolf
                 if (_create_buffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                     nullptr,
                     pVerticesSizeInBytes,
-                    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+					w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY,
                     this->_vertex_buffer) == W_FAILED)
                 {
                     return W_FAILED;
@@ -97,7 +96,7 @@ namespace wolf
                     if (_create_buffer(VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                         nullptr,
                         _indices_size,
-                        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+						w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY,
                         this->_index_buffer) == W_FAILED)
                     {
                         return W_FAILED;
@@ -149,16 +148,16 @@ namespace wolf
                 auto _hr = this->_stagings_buffers.vertices.set_data(pVerticesData);
                 V(_hr, "updating staging vertex buffer", this->_name, 3);
 
-                _hr = this->_stagings_buffers.vertices.bind();
-                V(_hr, "binding to staging vertex buffer", this->_name, 3);
+                //_hr = this->_stagings_buffers.vertices.bind();
+                //V(_hr, "binding to staging vertex buffer", this->_name, 3);
 
                 if (pIndicesCount && pIndicesData)
                 {
                     _hr = this->_stagings_buffers.indices.set_data(pIndicesData);
                     V(_hr, "updating staging index buffer", this->_name, 3);
 
-                    _hr = this->_stagings_buffers.vertices.bind();
-                    V(_hr, "binding staging index buffer", this->_name, 3);
+                    //_hr = this->_stagings_buffers.vertices.bind();
+                    //V(_hr, "binding staging index buffer", this->_name, 3);
                 }
 
                 return _copy_DRAM_to_VRAM(pVerticesSize, this->_indices_count * sizeof(uint32_t));
@@ -201,7 +200,7 @@ namespace wolf
 
 				if (pIndirectDrawCommands)
 				{
-					auto _size = static_cast<uint32_t>(sizeof(VkDrawIndexedIndirectCommand));
+					auto _size = static_cast<uint32_t>(sizeof(w_draw_indexed_indirect_command));
 					auto _draw_counts = static_cast<uint32_t>(pIndirectDrawCommands->drawing_commands.size());
 					auto _buffer_handle = pIndirectDrawCommands->buffer.get_buffer_handle().handle;
 					if (this->_gDevice->vk_physical_device_features.multiDrawIndirect)
@@ -385,10 +384,10 @@ namespace wolf
             W_RESULT _create_buffer(_In_ const VkBufferUsageFlags pBufferUsageFlag,
                                    _In_ const void* const pBufferData,
                                    _In_ uint32_t pBufferSizeInBytes,
-                                   _In_ const VkMemoryPropertyFlags pMemoryFlags,
+                                   _In_ const w_memory_usage_flag& pMemoryFlag,
                                    _Inout_ w_buffer& pBuffer)
             {
-                if(pBuffer.load(this->_gDevice, pBufferSizeInBytes, pBufferUsageFlag, pMemoryFlags))
+                if(pBuffer.allocate(this->_gDevice, pBufferSizeInBytes, pBufferUsageFlag, pMemoryFlag))
                 {
                     V(W_FAILED, "loading memory of buffer for graphics device: " +
                           _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
@@ -400,7 +399,7 @@ namespace wolf
                 
                 W_RESULT _hr;
                 //we can not access to VRAM, but we can copy our data to DRAM
-                if (!(pMemoryFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT))
+                if (pMemoryFlag != w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY)
                 {
                     _hr = pBuffer.set_data(pBufferData);
                     if(_hr == W_FAILED)
@@ -414,15 +413,15 @@ namespace wolf
                 }
                 
                 //bind to it
-                _hr = pBuffer.bind();
-                if(_hr == W_FAILED)
-                {
-                    V(W_FAILED, "binding to vertex buffer's memory for graphics device: " +
-                      _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
-                      this->_name, 3, false);
-                    
-                    return W_FAILED;
-                }
+                //_hr = pBuffer.bind();
+                //if(_hr == W_FAILED)
+                //{
+                //    V(W_FAILED, "binding to vertex buffer's memory for graphics device: " +
+                //      _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
+                //      this->_name, 3, false);
+                //    
+                //    return W_FAILED;
+                //}
                 
                 return W_PASSED;
             }
@@ -436,7 +435,7 @@ namespace wolf
             w_texture*                                          _texture;
             w_vertex_binding_attributes                         _vertex_binding_attributes;
             bool                                                _dynamic_buffer;
-            w_command_buffers*                                   _copy_command_buffer;
+            w_command_buffers*                                  _copy_command_buffer;
             struct
             {
                 w_buffer vertices;
@@ -522,10 +521,10 @@ W_RESULT w_mesh::draw(
 ULONG w_mesh::release()
 {
     if (this->get_is_released()) return 1;
-    
+	
     SAFE_RELEASE(this->_pimp);
    
-    return _super::release();
+	return _super::release();
 }
 
 #pragma region Getters

@@ -55,10 +55,10 @@ namespace wolf
 
                 if (this->_host_visible)
                 {
-                    _hr = this->_buffer.load(pGDevice,
+                    _hr = this->_buffer.allocate(pGDevice,
                         _buffer_size,
                         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+						w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY);
 
                     if (_hr == W_FAILED)
                     {
@@ -71,10 +71,10 @@ namespace wolf
                 }
                 else
                 {
-                    _hr = this->_buffer.load(_gDevice,
+                    _hr = this->_buffer.allocate(_gDevice,
                         _buffer_size,
                         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+						w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY);
                     
                     if (_hr == W_FAILED)
                     {
@@ -86,10 +86,10 @@ namespace wolf
                     }
 
                     //create staging buffer
-                    _hr = this->_staging_buffer.load(_gDevice,
+                    _hr = this->_staging_buffer.allocate(_gDevice,
                         _buffer_size,
                         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+						w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY);
                     if (_hr == W_FAILED)
                     {
                         V(_hr, "loading staging buffer " +
@@ -99,26 +99,26 @@ namespace wolf
                         return _hr;
                     }
 
-                    _hr = this->_staging_buffer.bind();
-                    if (_hr == W_FAILED)
-                    {
-                        V(_hr, "binding device buffer " +
-                            _gDevice->get_info(),
-                            _trace,
-                            3);
-                        return _hr;
-                    }
+                    //_hr = this->_staging_buffer.bind();
+                    //if (_hr == W_FAILED)
+                    //{
+                    //    V(_hr, "binding device buffer " +
+                    //        _gDevice->get_info(),
+                    //        _trace,
+                    //        3);
+                    //    return _hr;
+                    //}
                 }
                 
-                _hr = this->_buffer.bind();
-                if (_hr == W_FAILED)
-                {
-                    V(_hr, "binding buffer " +
-                        _gDevice->get_info(),
-                        _trace,
-                        3);
-                    return _hr;
-                }
+                //_hr = this->_buffer.bind();
+                //if (_hr == W_FAILED)
+                //{
+                //    V(_hr, "binding buffer " +
+                //        _gDevice->get_info(),
+                //        _trace,
+                //        3);
+                //    return _hr;
+                //}
                                                 
                 return _hr;
             }

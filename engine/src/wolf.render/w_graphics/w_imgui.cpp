@@ -6,6 +6,7 @@
 #include "w_pipeline.h"
 #include "w_command_buffers.h"
 #include "w_render_pass.h"
+#include <glm_extension.h>
 
 using namespace wolf::graphics;
 
@@ -18,13 +19,13 @@ namespace wolf
         class w_imgui_pimp
         {
         public:
-            w_imgui_pimp() :
-                _gDevice(nullptr),
-                _vertex_buffer(nullptr),
-                _index_buffer(nullptr),
-                _font_texture(nullptr)
-            {
-            }
+			w_imgui_pimp() :
+				_gDevice(nullptr),
+				_font_texture(nullptr),
+				_vertex_buffer(nullptr),
+				_index_buffer(nullptr)
+			{
+			}
 
 			W_RESULT load(
 				_In_ const std::shared_ptr<wolf::graphics::w_graphics_device>& pGDevice,
@@ -478,8 +479,8 @@ namespace wolf
             {
                 ImGui::Shutdown();
 
-                SAFE_RELEASE(this->_vertex_buffer);
-                SAFE_RELEASE(this->_index_buffer);
+				SAFE_RELEASE(this->_vertex_buffer);
+				SAFE_RELEASE(this->_index_buffer);
 
                 SAFE_RELEASE(this->_images_texture);
                 SAFE_RELEASE(this->_font_texture);
@@ -539,97 +540,111 @@ namespace wolf
         private:
 			W_RESULT _update_buffers()
 			{
+				const std::string _trace_info = this->_name + "::_update_buffers";
+
 				ImDrawData* _im_draw_data = ImGui::GetDrawData();
 				if (!_im_draw_data || !_im_draw_data->CmdListsCount) return W_PASSED;
 
-				// Note: Alignment is done inside buffer creation
-				uint32_t _vertex_buffer_size = _im_draw_data->TotalVtxCount * sizeof(ImDrawVert);
-				uint32_t _index_buffer_size = _im_draw_data->TotalIdxCount * sizeof(ImDrawIdx);
-
-				// Update buffers only if vertex or index count has been changed compared to current buffer size
-				W_RESULT _hr;
-
 				//Vertex buffer
-				if (!this->_vertex_buffer || this->_vertex_buffer->get_size() != _vertex_buffer_size)
+				uint32_t _vertex_buffer_size = _im_draw_data->TotalVtxCount * sizeof(ImDrawVert);
+				if (!this->_vertex_buffer)
 				{
-					SAFE_RELEASE(this->_vertex_buffer);
+					this->_vertex_buffer = new (std::nothrow) w_buffer();
+					if (!this->_vertex_buffer)
+					{
+						V(W_FAILED, "loading staging vertex buffer", _trace_info, 3);
+						return W_FAILED;
+					}
 
-					//vertex bufer as property host visible memory
-					this->_vertex_buffer = new wolf::graphics::w_buffer();
-					_hr = this->_vertex_buffer->load(
+					//allocate memory for vertex buffer
+					if (this->_vertex_buffer->allocate(
 						this->_gDevice,
 						_vertex_buffer_size,
 						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-					if (_hr == W_FAILED)
+						w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY) == W_FAILED)
 					{
-						V(_hr, "loading staging vertex buffer", this->_name);
-						return _hr;
+						V(W_FAILED, "allocating staging vertex buffer", _trace_info, 3);
+						return W_FAILED;
 					}
-					_hr = this->_vertex_buffer->bind();
-					if (_hr == W_FAILED)
+				}
+				// If need to change reallocate buffer
+				_vertex_buffer_size = std::round_up(_vertex_buffer_size, 4);
+				if (this->_vertex_buffer->get_size() != _vertex_buffer_size)
+				{
+					if (this->_vertex_buffer->reallocate(_vertex_buffer_size) == W_FAILED)
 					{
-						V(_hr, "binding staging vertex buffer", this->_name);
-						return _hr;
+						V(W_FAILED, "reallocating staging vertex buffer", this->_name);
+						return W_FAILED;
 					}
 				}
 
 				// Index buffer
-				if (!this->_index_buffer || this->_index_buffer->get_size() != _index_buffer_size)
+				uint32_t _index_buffer_size = _im_draw_data->TotalIdxCount * sizeof(ImDrawIdx);
+				if (!this->_index_buffer)
 				{
-					SAFE_RELEASE(this->_index_buffer);
+					this->_index_buffer = new (std::nothrow) w_buffer();
+					if (!this->_index_buffer)
+					{
+						V(W_FAILED, "loading staging index buffer", _trace_info, 3);
+						return W_FAILED;
+					}
 
-					this->_index_buffer = new wolf::graphics::w_buffer();
-					_hr = this->_index_buffer->load(
+					//allocate memory for vertex buffer
+					if (this->_index_buffer->allocate(
 						this->_gDevice,
 						_index_buffer_size,
 						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-						VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-					if (_hr == W_FAILED)
+						w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY) == W_FAILED)
 					{
-						V(_hr, "loading staging index buffer", this->_name);
-						return _hr;
-					}
-					_hr = this->_index_buffer->bind();
-					if (_hr == W_FAILED)
-					{
-						V(_hr, "binding staging index buffer", this->_name);
-						return _hr;
+						V(W_FAILED, "allocating staging index buffer", _trace_info, 3);
+						return W_FAILED;
 					}
 				}
+				// If need to change reallocate buffer
+				_index_buffer_size = std::round_up(_index_buffer_size, 4);
+				if (this->_index_buffer->get_size() != _index_buffer_size)
+				{
+					if (this->_index_buffer->reallocate(_index_buffer_size) == W_FAILED)
+					{
+						V(W_FAILED, "reallocating staging index buffer", this->_name);
+						return W_FAILED;
+					}
+				}
+
+				W_RESULT _hr = W_FAILED;
 
 				ImDrawVert* vtxDst = (ImDrawVert*)this->_vertex_buffer->map();
 				ImDrawIdx* idxDst = (ImDrawIdx*)this->_index_buffer->map();
 
-				for (int n = 0; n < _im_draw_data->CmdListsCount; n++)
+				if (vtxDst && idxDst)
 				{
-					const ImDrawList* cmd_list = _im_draw_data->CmdLists[n];
-					memcpy(vtxDst, cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
-					memcpy(idxDst, cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
-					vtxDst += cmd_list->VtxBuffer.Size;
-					idxDst += cmd_list->IdxBuffer.Size;
+					for (int n = 0; n < _im_draw_data->CmdListsCount; n++)
+					{
+						const ImDrawList* cmd_list = _im_draw_data->CmdLists[n];
+						memcpy(vtxDst, cmd_list->VtxBuffer.Data, cmd_list->VtxBuffer.Size * sizeof(ImDrawVert));
+						memcpy(idxDst, cmd_list->IdxBuffer.Data, cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx));
+						vtxDst += cmd_list->VtxBuffer.Size;
+						idxDst += cmd_list->IdxBuffer.Size;
+					}
+
+					_hr = this->_vertex_buffer->flush();
+					this->_vertex_buffer->unmap();
+					if (_hr == W_FAILED)
+					{
+						V(_hr, "flushing staging index buffer", this->_name);
+					}
+					_hr = this->_index_buffer->flush();
+					this->_index_buffer->unmap();
+					if (_hr == W_FAILED)
+					{
+						V(_hr, "flushing staging index buffer", this->_name);
+					}
+
+					vtxDst = nullptr;
+					idxDst = nullptr;
 				}
 
-				_hr = this->_vertex_buffer->flush();
-				if (_hr == W_FAILED)
-				{
-					V(_hr, "flushing staging index buffer", this->_name);
-					return _hr;
-				}
-				_hr = this->_index_buffer->flush();
-				if (_hr == W_FAILED)
-				{
-					V(_hr, "flushing staging index buffer", this->_name);
-					return _hr;
-				}
-
-				this->_vertex_buffer->unmap();
-				this->_index_buffer->unmap();
-
-				vtxDst = nullptr;
-				idxDst = nullptr;
-
-				return W_PASSED;
+				return _hr;
 			}
 
 			void _draw(_In_ VkCommandBuffer pCommandBuffer)

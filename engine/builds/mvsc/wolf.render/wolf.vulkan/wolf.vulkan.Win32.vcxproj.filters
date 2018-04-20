@@ -73,6 +73,9 @@
     <ClCompile Include="..\..\..\..\src\wolf.render\w_framework\w_masked_occlusion_culling.cpp">
       <Filter>w_framework</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\wolf.render\w_graphics\w_memory_allocator.cpp">
+      <Filter>w_graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics_device_manager.h" />
@@ -141,6 +144,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\w_masked_occlusion_culling.h">
       <Filter>w_framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\vk_mem_alloc.h">
+      <Filter>w_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_memory_allocator.h">
+      <Filter>w_graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

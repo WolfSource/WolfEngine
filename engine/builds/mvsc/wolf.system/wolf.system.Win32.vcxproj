@@ -262,7 +262,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\vec3.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\vec4.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp" />
-    <ClInclude Include="..\..\..\src\wolf.system\glm_extention.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\glm_extension.h" />
     <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.h" />
     <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\rapidjson\allocators.h" />
