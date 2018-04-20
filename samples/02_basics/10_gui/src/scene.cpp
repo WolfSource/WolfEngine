@@ -20,7 +20,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -195,9 +195,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 
 	w_imgui::render();
 
-	const VkPipelineStageFlags _wait_dst_stage_mask[] =
+	const uint32_t _wait_dst_stage_mask[] =
 	{
-		VkPipelineStageFlagBits::VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
 
 	auto _draw_cmd = this->_draw_command_buffers.get_command_at(_frame_index);

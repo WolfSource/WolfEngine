@@ -191,12 +191,17 @@ private:
 	{
 		uint32_t	texture_max_mip_maps_max_level = 1;
 		float		bounding_sphere_radius = 0.0f;
+		float		padding_0;
+		float		padding_1;
 	};
 	wolf::graphics::w_uniform<U1>                           _u1;
 
 	struct u2
 	{
 		float												cmds = 0;
+		float												padding_0;
+		float												padding_1;
+		float												padding_2;
 	};
 	wolf::graphics::w_uniform<u2>							_u2;
 	
@@ -225,6 +230,3 @@ private:
 };
 
 #endif
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//++++++++++++++++++++++++++++++++++++++++++++++++++++

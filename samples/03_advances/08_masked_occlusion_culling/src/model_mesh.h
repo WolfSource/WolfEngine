@@ -20,15 +20,10 @@
 #include <w_cpipeline_model.h>
 #include <w_graphics/w_mesh.h>
 #include <w_graphics/w_command_buffers.h>
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//The following codes have been added for this project
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_uniform.h>
 #include "compute_stage.h"
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 class model_mesh : public wolf::system::w_object
 {
@@ -48,13 +43,7 @@ public:
 		_In_ const wolf::graphics::w_render_pass& pRenderPass
 	);
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	W_RESULT submit_compute_shader();
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 	W_RESULT draw(_In_ const wolf::graphics::w_command_buffer& pCommandBuffer);
 
 	//release all resources
@@ -69,16 +58,11 @@ public:
 	wolf::system::w_bounding_box							get_global_bounding_box() const;
 	bool													get_enable_instances_colors() const;
 	std::vector<wolf::content_pipeline::w_instance_info>	get_instances() const;
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	const uint32_t											get_instances_count() const;
 	bool													get_global_visiblity() const;
 	bool													get_visiblity(_In_ const uint32_t& pModelInstanceIndex = 0) const;
 	wolf::graphics::w_semaphore*							get_compute_semaphore();
 	compute_stage_output									get_result_of_compute_shader();
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #pragma endregion
 
@@ -90,20 +74,12 @@ public:
 		_In_ const glm::vec3& pPosition);
 
 	void set_enable_instances_colors(_In_ const bool& pEnable);
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	void set_global_visiblity(_In_ const bool& pValue);
 	void set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pModelInstanceIndex = 0);
 	void set_show_only_lods(_In_ const bool& pValue);
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #pragma endregion
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 protected:
 	static void _store_to_batch(
 		_In_ const std::vector<wolf::content_pipeline::w_cpipeline_mesh*>& pModelMeshes,
@@ -192,13 +168,17 @@ private:
 	{
 		uint32_t	texture_max_mip_maps_max_level = 1;
 		float		bounding_sphere_radius = 0.0f;
+		float		padding_0;
+		float		padding_1;
 	};
 	wolf::graphics::w_uniform<U1>                           _u1;
-	float													_texture_mip_map_level;
 
 	struct u2
 	{
 		float												cmds = 0;
+		float												padding_0;
+		float												padding_1;
+		float												padding_2;
 	};
 	wolf::graphics::w_uniform<u2>							_u2;
 	

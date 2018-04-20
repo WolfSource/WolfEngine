@@ -55,6 +55,7 @@ layout (binding = 3) buffer UBO_OUT
 {
 	uint draw_count;
 	uint lod_levels [MAX_LOD_LEVEL + 1];
+	uint padding;
 } o_ubo;
 
 layout (binding = 4) readonly buffer LODs

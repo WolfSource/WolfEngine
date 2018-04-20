@@ -21,6 +21,8 @@ layout(binding = 1) uniform U1
 {
 	uint	texture_max_mip_maps_max_level;
 	float	bounding_sphere_radius;
+	float	padding_0;
+	float	padding_1;
 } u1;
 
 out gl_PerVertex

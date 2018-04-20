@@ -53,7 +53,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -247,7 +247,7 @@ void scene::load()
 
 		std::wstring _vertex_shader_path;
 		for (auto _m : _cmodels)
-		{
+		{			
 			model* _model = nullptr;
 			if (_m->get_instances_count())
 			{
@@ -401,10 +401,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _draw_cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	auto _gui_cmd = w_imgui::get_command_buffer_at(_frame_index);
 
-	const uint32_t _wait_dst_stage_mask[] =
+	std::vector<w_pipeline_stage_flag_bits> _wait_dst_stage_mask =
 	{
 		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
-		w_pipeline_stage_flag_bits::COMPUTE_SHADER_BIT,
 	};
 
 	//reset draw fence
@@ -435,13 +434,20 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_rebuild_command_buffer = false;
 	}
 
+	//If waitSemaphoreCount is not 0, pWaitDstStageMask must be a pointer to an array of waitSemaphoreCount valid combinations of VkPipelineStageFlagBits values
+	for (size_t i = 0; i < _wait_semaphors.size(); ++i)
+	{
+		_wait_dst_stage_mask.push_back(w_pipeline_stage_flag_bits::COMPUTE_SHADER_BIT);
+	}
+
 	if (_gDevice->submit(
 		{ &_draw_cmd, &_gui_cmd },//command buffers
 		_gDevice->vk_graphics_queue, //graphics queue
-		&_wait_dst_stage_mask[0], //destination masks
+		_wait_dst_stage_mask, //destination masks
 		_wait_semaphors, //wait semaphores
 		{ _output_window->rendering_done_semaphore }, //signal semaphores
-		&this->_draw_fence) == W_FAILED)
+		&this->_draw_fence,
+		false) == W_FAILED)
 	{
 		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
 	}

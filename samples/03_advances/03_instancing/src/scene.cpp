@@ -26,7 +26,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
     w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -333,12 +333,16 @@ void scene::load()
 
 				auto _size = (uint32_t)(_vertex_instances_data.size() * sizeof(vertex_instance_data));
 				w_buffer _staging_buffers;
-				_staging_buffers.load_as_staging(_gDevice, _size);
-				if (_staging_buffers.bind() == W_FAILED)
+				if (_staging_buffers.allocate_as_staging(_gDevice, _size) == W_FAILED)
 				{
 					release();
-					V(W_FAILED, "binding to staging buffer of vertex_instance_buffer", _trace_info, 3, true);
+					V(W_FAILED, "loading staging buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
+				//if (_staging_buffers.bind() == W_FAILED)
+				//{
+				//	release();
+				//	V(W_FAILED, "binding to staging buffer of vertex_instance_buffer", _trace_info, 3, true);
+				//}
 
 				if (_staging_buffers.set_data(_vertex_instances_data.data()) == W_FAILED)
 				{
@@ -346,21 +350,21 @@ void scene::load()
 					V(W_FAILED, "setting data to staging buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
 
-				if (this->_instances_buffer.load(
+				if (this->_instances_buffer.allocate(
 					_gDevice,
 					_size,
 					VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-					VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+					w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 				{
 					release();
 					V(W_FAILED, "loading device buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
 
-				if (this->_instances_buffer.bind() == W_FAILED)
-				{
-					release();
-					V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 3, true);
-				}
+				//if (this->_instances_buffer.bind() == W_FAILED)
+				//{
+				//	release();
+				//	V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 3, true);
+				//}
 				if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
 				{
 					release();
@@ -484,7 +488,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _draw_command_buffer = this->_draw_command_buffers.get_command_at(_frame_index);
     auto _gui_command_buffer = w_imgui::get_command_buffer_at(_frame_index);
 
-	const uint32_t _wait_dst_stage_mask[] =
+	std::vector<w_pipeline_stage_flag_bits> _wait_dst_stage_mask =
 	{
 		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
@@ -494,7 +498,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	if (_gDevice->submit(
 		{ &_draw_command_buffer, &_gui_command_buffer },//command buffers
 		_gDevice->vk_graphics_queue, //graphics queue
-		&_wait_dst_stage_mask[0], //destination masks
+		_wait_dst_stage_mask, //destination masks
 		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
 		{ _output_window->rendering_done_semaphore }, //signal semaphores
 		&this->_draw_fence) == W_FAILED)

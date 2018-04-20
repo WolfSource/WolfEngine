@@ -84,15 +84,17 @@ public:
 		_mesh->set_vertex_binding_attributes(_vertex_binding_attributes);
 		
 		//load all textures
-		if (_load_textures())
+		if (_load_textures() == W_PASSED)
 		{
-			//TODO: currently we use one texture per mesh
+			//TODO: currently we are using one texture per mesh
 			_mesh->set_texture(this->_textures[0]);
 		}
 		else
 		{
 			//set the default texture
-			_mesh->set_texture(w_texture::default_texture);
+			this->_textures.push_back(w_texture::default_texture);
+			wolf::logger.warning("default texture will be used for model: " + this->_model_name);
+			_mesh->set_texture(this->_textures[0]);
 		}
 
 		//load mesh
@@ -177,7 +179,8 @@ public:
 					}
 				}
 
-				_hr = _create_instance_buffer(_instances_data, static_cast<uint32_t>((_instances_size + 1) * _size_of_instance_struct));
+				auto _size_of_buffer = static_cast<uint32_t>((_instances_size + 1) * _size_of_instance_struct);
+				_hr = _create_instance_buffer(_instances_data, _size_of_buffer);
 				_instances_data.clear();
 
 				if (_hr == W_FAILED)
@@ -878,18 +881,18 @@ private:
 		return _problem ? W_FAILED : W_PASSED;
 	}
 
-	W_RESULT _create_instance_buffer(_In_ const std::vector<float>& pData, _In_ const uint32_t& pSizeOfBuffer)
+	W_RESULT _create_instance_buffer(_In_ const std::vector<float>& pData, _In_ uint32_t& pSizeOfBuffer)
 	{
 		const std::string _trace_info = this->_name + "::_create_instance_buffer";
 
 		w_buffer _staging_buffers;
 
-		_staging_buffers.load_as_staging(_gDevice, pSizeOfBuffer);
-		if (_staging_buffers.bind() == W_FAILED)
-		{
-			V(W_FAILED, "binding to staging buffer of vertex_instance_buffer", _trace_info, 2);
-			return W_FAILED;
-		}
+		_staging_buffers.allocate_as_staging(_gDevice, pSizeOfBuffer);
+		//if (_staging_buffers.bind() == W_FAILED)
+		//{
+		//	V(W_FAILED, "binding to staging buffer of vertex_instance_buffer", _trace_info, 2);
+		//	return W_FAILED;
+		//}
 
 		if (_staging_buffers.set_data(pData.data()) == W_FAILED)
 		{
@@ -897,21 +900,21 @@ private:
 			return W_FAILED;
 		}
 
-		if (this->_instances_buffer.load(
+		if (this->_instances_buffer.allocate(
 			_gDevice,
 			pSizeOfBuffer,
 			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+			w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 		{
 			V(W_FAILED, "loading device buffer of vertex_instance_buffer", _trace_info, 2);
 			return W_FAILED;
 		}
 
-		if (this->_instances_buffer.bind() == W_FAILED)
-		{
-			V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 2);
-			return W_FAILED;
-		}
+		//if (this->_instances_buffer.bind() == W_FAILED)
+		//{
+		//	V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 2);
+		//	return W_FAILED;
+		//}
 		if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
 		{
 			V(W_FAILED, "copying to device buffer of vertex_instance_buffer", _trace_info, 2);
@@ -1073,7 +1076,10 @@ private:
 
 	struct u1
 	{
-		float								cmds = 0;
+		float								cmds = 0.0f;
+		float								padding_0 = 0.0f;
+		float								padding_1 = 0.0f;
+		float								padding_2 = 0.0f;
 	};
 	wolf::graphics::w_uniform<u1>			_u1;
 

@@ -53,7 +53,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -62,7 +62,8 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	if (this->_masked_occlusion_culling.initialize(1, true) == W_FAILED)
+	auto _number_of_threads = w_thread::get_number_of_hardware_thread_contexts();
+	if (this->_masked_occlusion_culling.initialize(_number_of_threads, true) == W_FAILED)
 	{
 		V(W_FAILED, "initializing masked occlusion culling", "scene::scene", 3, true);
 	}
@@ -285,7 +286,7 @@ void scene::load()
 
 		this->_masked_occlusion_culling.set_near_clip(_near_plan);
 		this->_masked_occlusion_culling.set_resolution(this->_viewport.width, this->_viewport.height);
-		//this->_masked_occlusion_culling.suspend_threads();
+		this->_masked_occlusion_culling.suspend_threads();
 		
 		//get all models
 		std::vector<w_cpipeline_model*> _cmodels;
@@ -293,7 +294,7 @@ void scene::load()
 
 		std::wstring _vertex_shader_path;
 		for (auto _m : _cmodels)
-		{			
+		{
 			model* _model = nullptr;
 			if (_m->get_instances_count())
 			{
@@ -419,7 +420,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 		this->_force_update_camera = false;
 
-		//this->_masked_occlusion_culling.wake_threads();
+		this->_masked_occlusion_culling.wake_threads();
 		this->_masked_occlusion_culling.clear_buffer();
 
 		//pre update stage for all models
@@ -434,7 +435,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 		if (_need_flush_moc)
 		{
-			//this->_masked_occlusion_culling.flush();
+			this->_masked_occlusion_culling.flush();
 
 			//post update stage for all models
 			std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
@@ -445,7 +446,11 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 					this->_drawable_models.push_back(pModel);
 				}
 			});
-			this->_rebuild_command_buffer = true;
+
+			if (this->_drawable_models.size())
+			{
+				this->_rebuild_command_buffer = true;
+			}
 
 			if (_show_moc_debug)
 			{
@@ -459,7 +464,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 				}
 			}
 		}
-		//this->_masked_occlusion_culling.suspend_threads();
+		this->_masked_occlusion_culling.suspend_threads();
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -483,21 +488,18 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _draw_cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	auto _gui_cmd = w_imgui::get_command_buffer_at(_frame_index);
 
-	const uint32_t _wait_dst_stage_mask[] =
+	std::vector<w_pipeline_stage_flag_bits> _wait_dst_stage_mask =
 	{
 		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
-		w_pipeline_stage_flag_bits::COMPUTE_SHADER_BIT,
 	};
 
 	//reset draw fence
 	std::vector<w_semaphore> _wait_semaphors = { _output_window->swap_chain_image_is_available_semaphore };
 
 	this->_draw_fence.reset();
-		
+	
 	if (this->_rebuild_command_buffer)
 	{
-		auto _camera_pos = this->_first_camera.get_translate();
-
 		//submit compute shader for all visible models
 		std::for_each(this->_drawable_models.begin(), this->_drawable_models.end(),
 			[&](_In_ model* pModel)
@@ -519,28 +521,36 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_rebuild_command_buffer = false;
 	}
 
+	//If waitSemaphoreCount is not 0, pWaitDstStageMask must be a pointer to an array of waitSemaphoreCount valid combinations of VkPipelineStageFlagBits values
+	for (size_t i = 0; i < _wait_semaphors.size(); ++i)
+	{
+		_wait_dst_stage_mask.push_back(w_pipeline_stage_flag_bits::COMPUTE_SHADER_BIT);
+	}
+
 	if (_gDevice->submit(
 		{ &_draw_cmd, &_gui_cmd },//command buffers
 		_gDevice->vk_graphics_queue, //graphics queue
-		&_wait_dst_stage_mask[0], //destination masks
+		_wait_dst_stage_mask, //destination masks
 		_wait_semaphors, //wait semaphores
 		{ _output_window->rendering_done_semaphore }, //signal semaphores
-		&this->_draw_fence) == W_FAILED)
+		&this->_draw_fence,
+		false) == W_FAILED)
 	{
 		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
 	}
+
 	this->_draw_fence.wait();
 
-	/*if (_current_selected_model)
-	{
-		if (_current_selected_model->get_instances_count())
-		{
-			auto _result = _current_selected_model->get_result_of_compute_shader();
-			logger.write(std::to_string(_result.draw_count));
-			logger.write(std::to_string(_result.lod_level[0]));
-			logger.write(std::to_string(_result.lod_level[1]));
-		}
-	}*/
+	//if (_current_selected_model)
+	//{
+	//	if (_current_selected_model->get_instances_count())
+	//	{
+	//		auto _result = _current_selected_model->get_result_of_compute_shader();
+	//		logger.write(std::to_string(_result.draw_count));
+	//		logger.write(std::to_string(_result.lod_level[0]));
+	//		logger.write(std::to_string(_result.lod_level[1]));
+	//	}
+	//}
 	return w_game::render(pGameTime);
 }
 

@@ -362,7 +362,7 @@ void scene::load()
 
 				auto _size = (uint32_t)(_vertex_instances_data.size() * sizeof(vertex_instance_data));
 				w_buffer _staging_buffers;
-				_staging_buffers.load_as_staging(_gDevice, _size);
+				_staging_buffers.allocate_as_staging(_gDevice, _size);
 				if (_staging_buffers.bind() == W_FAILED)
 				{
 					release();
@@ -375,21 +375,21 @@ void scene::load()
 					V(W_FAILED, "setting data to staging buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
 
-				if (this->_instances_buffer.load(
+				if (this->_instances_buffer.allocate(
 					_gDevice,
 					_size,
 					VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-					VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+					w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 				{
 					release();
 					V(W_FAILED, "loading device buffer of vertex_instance_buffer", _trace_info, 3, true);
 				}
 
-				if (this->_instances_buffer.bind() == W_FAILED)
-				{
-					release();
-					V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 3, true);
-				}
+				//if (this->_instances_buffer.bind() == W_FAILED)
+				//{
+				//	release();
+				//	V(W_FAILED, "binding to device buffer of vertex_instance_buffer", _trace_info, 3, true);
+				//}
 				if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
 				{
 					release();

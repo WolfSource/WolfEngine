@@ -168,7 +168,7 @@ W_RESULT obj::read(
 	pVerticesData.clear();
 	pIndicesData.clear();
 	pJustVertexPosition.clear();
-	logger.write("here 10");
+
 	for (size_t s = 0; s < shapes.size(); s++)
 	{
 		// Loop over faces(polygon)

@@ -370,15 +370,15 @@ W_RESULT model_mesh::submit_compute_shader()
 
 	auto _cmd = this->_cs.command_buffers.get_command_at(0);
 
-	VkSubmitInfo _submit_info = {};
-	_submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	_submit_info.commandBufferCount = 1;
-	_submit_info.pCommandBuffers = &_cmd.handle;
-	_submit_info.signalSemaphoreCount = 1;
-	_submit_info.pSignalSemaphores = this->_cs.semaphore.get();
 
-	//execute compute shader on gpu
-	if (vkQueueSubmit(this->gDevice->vk_compute_queue.queue, 1, &_submit_info, 0) == W_FAILED)
+	if (this->gDevice->submit(
+		{ &_cmd },//command buffers
+		this->gDevice->vk_compute_queue, //graphics queue
+		{}, //destination masks
+		{}, //wait semaphores
+		{ this->_cs.semaphore }, //signal semaphores
+		nullptr,
+		false) == W_FAILED)
 	{
 		_hr = W_FAILED;
 		V(_hr, "submiting compute shader queue for model: " + this->model_name, _trace_info, 3);
@@ -399,10 +399,10 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 	this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
 	if (get_instances_count())
 	{
-		auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
+		auto _instance_buffer_handle = this->_instances_buffer.get_buffer_handle();
 		return this->_mesh->draw(
 			pCommandBuffer, 
-			&_buffer_handle, 
+			&_instance_buffer_handle,
 			this->instnaces_transforms.size(), 
 			0, 
 			&this->indirect_draws);
@@ -1083,36 +1083,36 @@ W_RESULT model_mesh::_create_instance_buffers()
 	}
 
 #pragma region create vertex instances buffer
-	auto _buffer_size = _draw_counts * sizeof(vertex_instance_data);
-	if (_staging_buffers[0].load_as_staging(this->gDevice, _buffer_size) == W_FAILED)
+	auto _buffer_size = static_cast<uint32_t>(_draw_counts * sizeof(vertex_instance_data));
+	if (_staging_buffers[0].allocate_as_staging(this->gDevice, _buffer_size) == W_FAILED)
 	{
 		V(W_FAILED, "loading staging buffer of vertex instances buffer", _trace_info, 3);
 		return W_FAILED;
 	}
-	if (_staging_buffers[0].bind() == W_FAILED)
-	{
-		V(W_FAILED, "binding to staging buffer of vertex instances buffer", _trace_info, 3);
-		return W_FAILED;
-	}
+	//if (_staging_buffers[0].bind() == W_FAILED)
+	//{
+	//	V(W_FAILED, "binding to staging buffer of vertex instances buffer", _trace_info, 3);
+	//	return W_FAILED;
+	//}
 	if (_staging_buffers[0].set_data(_vertex_instances_data.data()) == W_FAILED)
 	{
 		V(W_FAILED, "setting data to staging buffer of vertex instances buffer", _trace_info, 3);
 		return W_FAILED;
 	}
-	if (this->_instances_buffer.load(
+	if (this->_instances_buffer.allocate(
 		this->gDevice,
 		_buffer_size,
 		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+		w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 	{
 		V(W_FAILED, "loading device buffer of vertex instances buffer", _trace_info, 2);
 		return W_FAILED;
 	}
-	if (this->_instances_buffer.bind() == W_FAILED)
-	{
-		V(W_FAILED, "binding to device buffer of vertex instance buffer", _trace_info, 2);
-		return W_FAILED;
-	}
+	//if (this->_instances_buffer.bind() == W_FAILED)
+	//{
+	//	V(W_FAILED, "binding to device buffer of vertex instance buffer", _trace_info, 2);
+	//	return W_FAILED;
+	//}
 	if (_staging_buffers[0].copy_to(this->_instances_buffer) == W_FAILED)
 	{
 		V(W_FAILED, "copying to device buffer of vertex instances buffer", _trace_info, 2);
@@ -1124,35 +1124,35 @@ W_RESULT model_mesh::_create_instance_buffers()
 
 #pragma region create compute instances buffer
 	_buffer_size = _draw_counts * sizeof(compute_instance_data);
-	if (_staging_buffers[1].load_as_staging(this->gDevice, _buffer_size) == W_FAILED)
+	if (_staging_buffers[1].allocate_as_staging(this->gDevice, _buffer_size) == W_FAILED)
 	{
 		V(W_FAILED, "loading staging buffer of compute instances buffer", _trace_info, 3);
 		return W_FAILED;
 	}
-	if (_staging_buffers[1].bind() == W_FAILED)
-	{
-		V(W_FAILED, "binding to staging buffer of compute instances buffer", _trace_info, 3);
-		return W_FAILED;
-	}
+	//if (_staging_buffers[1].bind() == W_FAILED)
+	//{
+	//	V(W_FAILED, "binding to staging buffer of compute instances buffer", _trace_info, 3);
+	//	return W_FAILED;
+	//}
 	if (_staging_buffers[1].set_data(_compute_instances_data.data()) == W_FAILED)
 	{
 		V(W_FAILED, "setting data to staging buffer of compute instances buffer", _trace_info, 2);
 		return W_FAILED;
 	}
-	if (this->_cs.instances_buffer.load(
+	if (this->_cs.instances_buffer.allocate(
 		this->gDevice,
 		_buffer_size,
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+		w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 	{
 		V(W_FAILED, "loading device buffer of compute instances buffer", _trace_info, 2);
 		return W_FAILED;
 	}
-	if (_cs.instances_buffer.bind() == W_FAILED)
-	{
-		V(W_FAILED, "binding to device buffer of compute instances buffer", _trace_info, 2);
-		return W_FAILED;
-	}
+	//if (_cs.instances_buffer.bind() == W_FAILED)
+	//{
+	//	V(W_FAILED, "binding to device buffer of compute instances buffer", _trace_info, 2);
+	//	return W_FAILED;
+	//}
 	if (_staging_buffers[1].copy_to(_cs.instances_buffer) == W_FAILED)
 	{
 		V(W_FAILED, "copying to device buffer of compute instances buffer", _trace_info, 2);
@@ -1178,35 +1178,35 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 	});
 
 	auto _size = static_cast<uint32_t>(this->lods_info.size() * sizeof(lod_info));
-	if (_staging_buffer.load_as_staging(this->gDevice, _size) == W_FAILED)
+	if (_staging_buffer.allocate_as_staging(this->gDevice, _size) == W_FAILED)
 	{
 		V(W_FAILED, "loading staging buffer for lod levels buffer", _trace_info, 3);
 		return W_FAILED;
 	}
-	if (_staging_buffer.bind() == W_FAILED)
-	{
-		V(W_FAILED, "binding staging buffer for lod levels buffer", _trace_info, 3);
-		return W_FAILED;
-	}
+	//if (_staging_buffer.bind() == W_FAILED)
+	//{
+	//	V(W_FAILED, "binding staging buffer for lod levels buffer", _trace_info, 3);
+	//	return W_FAILED;
+	//}
 	if (_staging_buffer.set_data(this->lods_info.data()))
 	{
 		V(W_FAILED, "setting data to staging buffer of lod levels buffer", _trace_info, 3);
 		return W_FAILED;
 	}
-	if (this->_cs.lod_levels_buffer.load(
+	if (this->_cs.lod_levels_buffer.allocate(
 		this->gDevice,
 		_size,
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == W_FAILED)
+		w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 	{
 		V(W_FAILED, "loading data to staging buffer of lod levels buffer", _trace_info, 3);
 		return W_FAILED;
 	}
-	if (this->_cs.lod_levels_buffer.bind() == W_FAILED)
-	{
-		V(W_FAILED, "binding to device buffer of lod levels buffer", _trace_info, 3);
-		return W_FAILED;
-	}
+	//if (this->_cs.lod_levels_buffer.bind() == W_FAILED)
+	//{
+	//	V(W_FAILED, "binding to device buffer of lod levels buffer", _trace_info, 3);
+	//	return W_FAILED;
+	//}
 	if (_staging_buffer.copy_to(this->_cs.lod_levels_buffer) == W_FAILED)
 	{
 		V(W_FAILED, "copy staging buffer to device buffer of lod levels buffer", _trace_info, 3);
@@ -1226,20 +1226,20 @@ W_RESULT model_mesh::_create_cs_out_buffer()
 
 	//create buffer of compute stage output
 	auto _size = (uint32_t)sizeof(compute_stage_output);
-	if (this->_cs_out_buffer.load(
+	if (this->_cs_out_buffer.allocate(
 		this->gDevice,
 		_size,
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT) == W_FAILED)
+		w_memory_usage_flag::MEMORY_USAGE_GPU_TO_CPU) == W_FAILED)
 	{
 		V(W_FAILED, "loading compute shader stage output buffer for model: " + this->model_name, _trace_info, 3);
 		return W_FAILED;
 	}
-	if (this->_cs_out_buffer.bind() == W_FAILED)
-	{
-		V(W_FAILED, "binding to compute shader stage output buffer for model: " + this->model_name, _trace_info, 3);
-		return W_FAILED;
-	}
+	//if (this->_cs_out_buffer.bind() == W_FAILED)
+	//{
+	//	V(W_FAILED, "binding to compute shader stage output buffer for model: " + this->model_name, _trace_info, 3);
+	//	return W_FAILED;
+	//}
 
 	return W_PASSED;
 }
