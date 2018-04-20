@@ -155,6 +155,16 @@ namespace std
         
         return glm::vec4(_w, _x, _y, _z);
     }
+
+	inline int round_up(_In_ int pNumToRound, _In_ int pMultiple)
+	{
+		if (pMultiple == 0) return pNumToRound;
+
+		int _reminder = pNumToRound % pMultiple;
+		if (_reminder == 0) return pNumToRound;
+
+		return pNumToRound + pMultiple - _reminder;
+	}
 }
 
 namespace glm

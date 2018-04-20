@@ -127,8 +127,9 @@ struct compute_instance_data
 #pragma pack(push,1)
 struct compute_stage_output
 {
-	uint32_t                                            draw_count = 0;// Total number of indirect draw counts
-	uint32_t                                            lod_level[MAX_LOD_LEVEL + 1] = {0, 0};// LOD level
+	uint32_t											draw_count = 0;// Total number of indirect draw counts
+	uint32_t											lod_level[MAX_LOD_LEVEL + 1] = {0, 0};// LOD level
+	uint32_t											padding;
 };
 #pragma pack(pop)
 

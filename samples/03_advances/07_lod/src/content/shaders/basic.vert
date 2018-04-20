@@ -19,6 +19,8 @@ layout(binding = 1) uniform U1
 {
 	uint	texture_max_mip_maps_max_level;
 	float	bounding_sphere_radius;
+	float	padding_0;
+	float	padding_1;
 } u1;
 
 out gl_PerVertex
@@ -28,8 +30,8 @@ out gl_PerVertex
 
 layout (location = 0) out vec3 o_norm;
 layout (location = 1) out vec2 o_uv;
-layout(location = 2) out flat uint o_texture_mip_map_level;
-layout(location = 3) out vec3 o_color;
+layout (location = 2) out flat uint o_texture_mip_map_level;
+layout (location = 3) out vec3 o_color;
 
 void main() 
 {
