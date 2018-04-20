@@ -6,7 +6,10 @@
 layout (binding = 1) uniform sampler2D tex_sampler;
 layout (binding = 2) uniform U1
 {
-	float cmds;	 
+	float cmds;
+	float padding_0;
+	float padding_1;
+	float padding_2;
 } u1;
 
 layout (location = 0) in vec3 i_norm;

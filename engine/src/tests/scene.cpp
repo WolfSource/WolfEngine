@@ -286,7 +286,7 @@ void scene::load()
         logger.write("Connection Lost");
     };
 
-    w_media_core::register_all();
+    w_media_core::register_all(true);
     _media_core.open_stream_server_async(
         "rtsp://172.16.4.207:8554/live.sdp",//"rtsp://172.16.5.11:8554/live.sdp",
         "rtsp", 
