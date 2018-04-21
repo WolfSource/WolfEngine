@@ -102,6 +102,7 @@ namespace wolf
 				_In_ MaskedOcclusionCulling::ClipPlanes pClipPlaneMask)
 			{
 				if (!this->_multi_threaded || !this->_moc_thread_pool) return MaskedOcclusionCulling::CullingResult::VISIBLE;
+
 				return this->_moc_thread_pool->TestTriangles(pVertices, pTriangles, pNumberOfTriangles, pBackFaceWinding, pClipPlaneMask);
 			}
 
@@ -197,7 +198,7 @@ namespace wolf
 				if (pNumberOfWorkerThreads > 1)
 				{
 					this->_multi_threaded = true;
-					auto _bin_size = pNumberOfWorkerThreads / 2;
+					auto _bin_size = pNumberOfWorkerThreads * 2;
 
 					if (this->_moc_thread_pool)
 					{
@@ -321,13 +322,13 @@ namespace wolf
 				}
 			}
 
-			MaskedOcclusionCulling* _moc;
-			CullingThreadpool*		_moc_thread_pool;
-			bool					_multi_threaded;
-			bool                    _enable_debugging;
-			w_point_t				_debug_screen_size;
-			float*                  _moc_per_pixel_zBuffer;
-			uint8_t*                _moc_tone_map_depth_image;
+			MaskedOcclusionCulling*				_moc;
+			CullingThreadpool*					_moc_thread_pool;
+			bool								_multi_threaded;
+			bool								_enable_debugging;
+			w_point_t							_debug_screen_size;
+			float*								_moc_per_pixel_zBuffer;
+			uint8_t*							_moc_tone_map_depth_image;
 		};
 	}
 }

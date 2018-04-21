@@ -112,7 +112,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/lua/lua;$(SolutionDir)/../../dependencies/ffmpeg/lib/windows/x64;$(SolutionDir)/../../dependencies/nanomsg/lib/vc14/x64/debug;$(SolutionDir)/../../dependencies/vulkan/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/lua/lua;$(SolutionDir)/../../dependencies/ffmpeg/lib/windows/x64;$(SolutionDir)/../../dependencies/nanomsg/lib/vc14/x64/debug;$(SolutionDir)/../../dependencies/vulkan/lib/windows/x64</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;avformat.lib;avcodec.lib;avutil.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
@@ -157,7 +157,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>vulkan-1.lib;avformat.lib;avcodec.lib;avutil.lib;swscale.lib;swresample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AssemblyDebug>false</AssemblyDebug>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/lua/lua;$(SolutionDir)/../../dependencies/ffmpeg/lib/windows/x64;$(SolutionDir)/../../dependencies/nanomsg/lib/vc14/x64/release;$(SolutionDir)/../../dependencies/vulkan/lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/tbb/oss/windows/lib/intel64/vc14;$(SolutionDir)/../../dependencies/lua/lua;$(SolutionDir)/../../dependencies/ffmpeg/lib/windows/x64;$(SolutionDir)/../../dependencies/nanomsg/lib/vc14/x64/release;$(SolutionDir)/../../dependencies/vulkan/lib/windows/x64</AdditionalLibraryDirectories>
       <FullProgramDatabaseFile>false</FullProgramDatabaseFile>
     </Link>
   </ItemDefinitionGroup>

@@ -144,7 +144,7 @@ namespace wolf
 
 				this->_descriptor_info.buffer = this->_buffer_handle.handle;
 				this->_descriptor_info.offset = 0;// this->_memory_allocation_info.offset;
-				this->_descriptor_info.range = this->_memory_allocation_info.size;
+				this->_descriptor_info.range = pBufferSizeInBytes;// this->_memory_allocation_info.size;
 
 				return W_PASSED;
 			}
@@ -351,12 +351,17 @@ namespace wolf
             
             const uint32_t get_size() const
             {
-                return (uint32_t)this->_memory_allocation_info.size;
+				return (uint32_t)this->_descriptor_info.range;// this->_memory_allocation_info.size;
             }
+
+			const uint32_t get_global_offset() const
+			{
+				return (uint32_t)this->_memory_allocation_info.offset;
+			}
 
 			const uint32_t get_offset() const
 			{
-				return (uint32_t)this->_memory_allocation_info.offset;
+				return (uint32_t)this->_descriptor_info.offset;
 			}
 
 			const w_device_memory get_memory() const
@@ -515,6 +520,13 @@ const uint32_t w_buffer::get_size() const
     if(!this->_pimp) return 0;
     
     return this->_pimp->get_size();
+}
+
+const uint32_t w_buffer::get_global_offset() const
+{
+	if (!this->_pimp) return 0;
+
+	return this->_pimp->get_global_offset();
 }
 
 const uint32_t w_buffer::get_offset() const

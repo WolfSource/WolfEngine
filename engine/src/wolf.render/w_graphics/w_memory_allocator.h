@@ -77,7 +77,7 @@ namespace wolf
 			W_EXP ~w_memory_allocator();
 
 			W_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, 
-				_In_ const bool& pPreferredLargeHeapBlockSize = true,
+				_In_ const bool& pPreferredLargeHeapBlockSize = false,
 				_In_ const bool& pUseCustomCpuAllocation_Callbacks = false);
 			W_EXP VmaAllocation* allocate_buffer(_In_ VkBufferCreateInfo pCreateInfo, _In_ const w_memory_usage_flag& pMemoryUsage, 
 				_Inout_ VkBuffer& pBufferHandle, _Inout_ VmaAllocationInfo& pAllocInfo);
