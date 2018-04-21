@@ -15,7 +15,8 @@ model_mesh::model_mesh(
 	_show_only_lod(false),
 	global_visiblity(true),
 	c_model(pContentPipelineModel),
-	_selected_lod_index(0)
+	_selected_lod_index(0),
+	_show_wireframe(false)
 {
 }
 
@@ -384,8 +385,17 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 
 	if (!this->_mesh) return W_FAILED;
 
+	set_view_projection_position(this->view, this->projection, this->camera_position);
+
 	//bind pipeline
-	this->_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
+	if (this->_show_wireframe)
+	{
+		this->_wireframe_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
+	}
+	else
+	{
+		this->_solid_pipeline.bind(pCommandBuffer, w_pipeline_bind_point::GRAPHICS);
+	}
 	if (get_instances_count())
 	{
 		auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
@@ -1518,16 +1528,37 @@ W_RESULT model_mesh::_create_pipelines(
 {
 	const std::string _trace_info = this->_name + "_create_pipelines";
 
-	if (this->_pipeline.load(
+	if (this->_solid_pipeline.load(
 		this->gDevice,
 		this->vertex_binding_attributes,
 		w_primitive_topology::TRIANGLE_LIST,
 		&pRenderPass,
 		this->_shader,
 		{ pRenderPass.get_viewport() },
-		{ pRenderPass.get_viewport_scissor() }) == W_FAILED)
+		{ pRenderPass.get_viewport_scissor() },
+		pComputePipelineCacheName) == W_FAILED)
 	{
 		V(W_FAILED, "loading drawing pipeline for model: " + this->model_name, _trace_info, 3);
+		return W_FAILED;
+	}
+
+	auto _rasterization_states = wolf::graphics::w_graphics_device::defaults_states::pipelines::rasterization_create_info;
+	_rasterization_states.set_polygon_mode(w_polygon_mode::LINE);
+	if (this->_wireframe_pipeline.load(
+		this->gDevice,
+		this->vertex_binding_attributes,
+		w_primitive_topology::TRIANGLE_LIST,
+		&pRenderPass,
+		this->_shader,
+		{ pRenderPass.get_viewport() },
+		{ pRenderPass.get_viewport_scissor() },
+		pComputePipelineCacheName,
+		{},
+		{},
+		0,//Disable tessellation stage
+		_rasterization_states) == W_FAILED)
+	{
+		V(W_FAILED, "loading drawing wireframe pipeline for model: " + this->model_name, _trace_info, 3);
 		return W_FAILED;
 	}
 
@@ -1563,7 +1594,8 @@ ULONG model_mesh::release()
 		this->c_model = nullptr;
 	}
 
-	this->_pipeline.release();
+	this->_solid_pipeline.release();
+	this->_wireframe_pipeline.release();
 	SAFE_RELEASE(this->_shader);
 
 	this->_basic_u0.release();
@@ -1668,6 +1700,10 @@ compute_stage_output model_mesh::get_result_of_compute_shader()
 	return this->_cs_out_struct;
 }
 
+bool model_mesh::get_showing_wireframe() const
+{
+	return this->_show_wireframe;
+}
 #pragma endregion
 
 #pragma region Setters
@@ -1746,6 +1782,11 @@ void model_mesh::set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pMo
 void model_mesh::set_show_only_lods(_In_ const bool& pValue)
 {
 	this->_show_only_lod = pValue;
+}
+
+void model_mesh::set_showing_wireframe(_In_ const bool& pValue)
+{
+	this->_show_wireframe = pValue;
 }
 
 #pragma endregion

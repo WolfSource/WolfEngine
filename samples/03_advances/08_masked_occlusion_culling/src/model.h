@@ -28,7 +28,8 @@ public:
 	virtual ~model();
 
 	W_RESULT initialize();
-	W_RESULT pre_update(_In_ wolf::framework::w_first_person_camera& pCamera, _Inout_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling);
+	W_RESULT pre_update(_In_ wolf::framework::w_first_person_camera& pCamera, 
+		_Inout_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling);
 	W_RESULT post_update(_In_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling);
 
 	//release all resources

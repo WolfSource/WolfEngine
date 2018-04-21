@@ -139,7 +139,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)/../../src;$(ProjectDir)/../../../../common;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/dependencies/vulkan/include;$(SolutionDir)../engine/dependencies/tbb/oss/windows/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/../../src;$(ProjectDir)/../../../../common;$(SolutionDir)/../engine/src/wolf.system;$(SolutionDir)/../engine/src/wolf.content_pipeline;$(SolutionDir)/../engine/src/wolf.render;$(SolutionDir)/../engine/dependencies/vulkan/include;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__WIN32;WIN32;_UNICODE;UNICODE;__VULKAN__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

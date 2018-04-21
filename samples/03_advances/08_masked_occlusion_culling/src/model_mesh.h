@@ -63,6 +63,7 @@ public:
 	bool													get_visiblity(_In_ const uint32_t& pModelInstanceIndex = 0) const;
 	wolf::graphics::w_semaphore*							get_compute_semaphore();
 	compute_stage_output									get_result_of_compute_shader();
+	bool													get_showing_wireframe() const;
 
 #pragma endregion
 
@@ -72,11 +73,11 @@ public:
 		_In_ const glm::mat4& pView,
 		_In_ const glm::mat4& pProjection,
 		_In_ const glm::vec3& pPosition);
-
 	void set_enable_instances_colors(_In_ const bool& pEnable);
 	void set_global_visiblity(_In_ const bool& pValue);
 	void set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pModelInstanceIndex = 0);
 	void set_show_only_lods(_In_ const bool& pValue);
+	void set_showing_wireframe(_In_ const bool& pValue);
 
 #pragma endregion
 
@@ -121,6 +122,11 @@ protected:
 
 	bool													global_visiblity;
 	std::vector<glm::vec4>                                  visibilities;
+
+	glm::mat4												view;
+	glm::mat4												projection;
+	glm::vec3												camera_position;
+
 private:
 
 	W_RESULT	_load_textures();
@@ -183,7 +189,10 @@ private:
 	wolf::graphics::w_uniform<u2>							_u2;
 	
 	wolf::graphics::w_shader*								_shader;
-	wolf::graphics::w_pipeline								_pipeline;
+
+	bool													_show_wireframe;
+	wolf::graphics::w_pipeline                              _solid_pipeline;
+	wolf::graphics::w_pipeline                              _wireframe_pipeline;
 
 	struct vertex_instance_data
 	{

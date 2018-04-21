@@ -422,7 +422,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _draw_cmd = this->_draw_command_buffers.get_command_at(_frame_index);
 	auto _gui_cmd = w_imgui::get_command_buffer_at(_frame_index);
 
-	std::vector<w_pipeline_stage_flag_bits> _wait_dst_stage_mask =
+	const std::vector<w_pipeline_stage_flag_bits> _wait_dst_stage_mask =
 	{
 		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
@@ -435,7 +435,8 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		_wait_dst_stage_mask, //destination masks
 		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
 		{ _output_window->rendering_done_semaphore }, //signal semaphores
-		&this->_draw_fence) == W_FAILED)
+		&this->_draw_fence,
+		false) == W_FAILED)
 	{
 		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
 	}
