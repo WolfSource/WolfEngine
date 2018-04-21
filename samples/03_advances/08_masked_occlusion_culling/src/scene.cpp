@@ -4,6 +4,7 @@
 #include <glm_extension.h>
 #include <w_thread.h>
 #include <w_task.h>
+#include <tbb/parallel_for.h>
 
 using namespace std;
 using namespace wolf;
@@ -49,7 +50,8 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	_show_lods(false),
 	_masked_occlusion_culling_debug_frame(nullptr),
 	_show_moc_debug(false),
-	_searching(false)
+	_searching(false),
+	_show_all_wireframe(false)
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
@@ -425,44 +427,73 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 		//pre update stage for all models
 		bool _need_flush_moc = false;
-		std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
+		tbb::parallel_for(
+			tbb::blocked_range<size_t>(0, this->_scene_models.size()),
+			[&](const tbb::blocked_range<size_t>& pRange)
 		{
-			if (pModel && pModel->pre_update(this->_first_camera, this->_masked_occlusion_culling) == W_PASSED)
+			for (size_t i = pRange.begin(); i < pRange.end(); ++i)
 			{
-				_need_flush_moc = true;
+				if (this->_scene_models[i] &&
+					this->_scene_models[i]->pre_update(this->_first_camera, this->_masked_occlusion_culling) == W_PASSED)
+				{
+					_need_flush_moc = true;
+				}
 			}
 		});
 
+		/*std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
+		{
+			if (pModel &&
+				pModel->pre_update(this->_first_camera, this->_masked_occlusion_culling) == W_PASSED)
+			{
+				_need_flush_moc = true;
+			}
+		});*/
+
 		if (_need_flush_moc)
 		{
-			this->_masked_occlusion_culling.flush();
+			//this->_masked_occlusion_culling.flush();
 
 			//post update stage for all models
-			std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
-			{
-				if (pModel && pModel->post_update(this->_masked_occlusion_culling) == W_PASSED)
-				{
-					//add to list of to be render models
-					this->_drawable_models.push_back(pModel);
-				}
-			});
+			//tbb::parallel_for(
+			//	tbb::blocked_range<size_t>(0, this->_scene_models.size()),
+			//	[&](const tbb::blocked_range<size_t>& pRange)
+			//{
+			//	for (size_t i = pRange.begin(); i < pRange.end(); ++i)
+			//	{
+			//		if (this->_scene_models[i] &&
+			//			this->_scene_models[i]->post_update(this->_masked_occlusion_culling) == W_PASSED)
+			//		{
+			//			this->_drawable_models.push_back(this->_scene_models[i]);
+			//		}
+			//	}
+			//});
+
+			//std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
+			//{
+			//	if (pModel &&
+			//		pModel->post_update(this->_masked_occlusion_culling) == W_PASSED)
+			//	{
+			//		this->_drawable_models.push_back(pModel);
+			//	}
+			//});
 
 			if (this->_drawable_models.size())
 			{
 				this->_rebuild_command_buffer = true;
 			}
 
-			if (_show_moc_debug)
-			{
-				auto _moc_debug_depth_frame = this->_masked_occlusion_culling.get_debug_frame(true);
-				if (_moc_debug_depth_frame)
-				{
-					if (this->_masked_occlusion_culling_debug_frame->copy_data_to_texture_2D(_moc_debug_depth_frame) == W_FAILED)
-					{
-						V(W_FAILED, "copying data to texture of masked occlusion culling debug frame", _trace_info, 2);
-					}
-				}
-			}
+			//if (_show_moc_debug)
+			//{
+			//	auto _moc_debug_depth_frame = this->_masked_occlusion_culling.get_debug_frame(true);
+			//	if (_moc_debug_depth_frame)
+			//	{
+			//		if (this->_masked_occlusion_culling_debug_frame->copy_data_to_texture_2D(_moc_debug_depth_frame) == W_FAILED)
+			//		{
+			//			V(W_FAILED, "copying data to texture of masked occlusion culling debug frame", _trace_info, 2);
+			//		}
+			//	}
+			//}
 		}
 		this->_masked_occlusion_culling.suspend_threads();
 	}
@@ -651,12 +682,7 @@ void scene::_show_floating_debug_window()
 		this->_rebuild_command_buffer = true;
 	}
 	
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	ImGui::Checkbox("Show Convex Hulls", &this->_show_moc_debug);
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
 	{
@@ -664,6 +690,14 @@ void scene::_show_floating_debug_window()
 		{
 			if (!_m) continue;
 			_m->set_enable_instances_colors(this->_show_all_instances_colors);
+		}
+	}
+	if (ImGui::Checkbox("Show all in wireframe mode", &this->_show_all_wireframe))
+	{
+		for (auto _m : this->_scene_models)
+		{
+			if (!_m) continue;
+			_m->set_showing_wireframe(this->_show_all_wireframe);
 		}
 	}
 
@@ -678,6 +712,12 @@ void scene::_show_floating_debug_window()
 		if (ImGui::Checkbox("Visible", &_checked))
 		{
 			this->_current_selected_model->set_global_visiblity(_checked);
+			this->_rebuild_command_buffer = true;
+		}
+		_checked = this->_current_selected_model->get_showing_wireframe();
+		if (ImGui::Checkbox("Wireframe", &_checked))
+		{
+			this->_current_selected_model->set_showing_wireframe(_checked);
 			this->_rebuild_command_buffer = true;
 		}
 	}

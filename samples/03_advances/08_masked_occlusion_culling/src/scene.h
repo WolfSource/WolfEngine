@@ -94,6 +94,7 @@ private:
 
 	bool															_show_all;
 	bool															_show_all_instances_colors;
+	bool															_show_all_wireframe;
 	model*															_current_selected_model;
 	bool															_show_lods;
 

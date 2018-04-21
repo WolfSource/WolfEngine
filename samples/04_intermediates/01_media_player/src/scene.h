@@ -27,7 +27,9 @@
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 #include <w_media_core.h>
+#include <w_memory_pool.h>
 #include <tbb/atomic.h>
+#include <tbb/critical_section.h>
 #include <tbb/compat/condition_variable>
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -66,6 +68,7 @@ public:
 private:
 	W_RESULT _build_draw_command_buffers();
 	void _run_video_buffering_thread();
+	void _buffer_video(_In_ const size_t& pNumberOfFrames);
 
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
@@ -82,19 +85,19 @@ private:
     wolf::graphics::w_mesh											_mesh;
     wolf::graphics::w_texture										_texture;
 
-
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	size_t															_max_buffering_frames;
 
 	wolf::framework::w_media_core									_media_core;
-	bool															_media_loaded;
-	tbb::atomic<bool>												_media_is_buffering;
-	tbb::atomic<bool>												_media_paused;
+	wolf::system::w_game_time										_media_time;
+	wolf::system::w_memory_pool										_media_memory;
 	tbb::mutex														_media_buffer_mutex;
-	tbb::interface5::condition_variable								_media_condition_variable;
-	int64_t															_media_current_frame;
-	uint64_t														_media_total_frames;
+	tbb::interface5::condition_variable								_media_signal_slot;
+
+	tbb::mutex														_media_thread_exit_mutex;
+	tbb::interface5::condition_variable								_media_thread_exited;	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };
