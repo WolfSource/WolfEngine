@@ -95,16 +95,19 @@ private:
 	bool															_show_all;
 	bool															_show_all_instances_colors;
 	bool															_show_all_wireframe;
+	bool															_show_all_bounding_box;
 	model*															_current_selected_model;
 	bool															_show_lods;
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	std::vector<wolf::graphics::w_pipeline_stage_flag_bits>			_wait_dst_stage_mask;
 	bool															_searching;
 	bool															_show_moc_debug;
 	wolf::framework::w_masked_occlusion_culling						_masked_occlusion_culling;
 	wolf::graphics::w_texture*										_masked_occlusion_culling_debug_frame;
+	std::vector<model*>												_visible_models;
 	std::vector<model*>												_drawable_models;
 	std::vector<model*>												_searched_models;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++

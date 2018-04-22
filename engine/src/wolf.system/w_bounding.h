@@ -164,7 +164,6 @@ namespace wolf
 #endif
 
 		private:
-			enum w_frustum_side { LEFT = 0, RIGHT = 1, TOP = 2, BOTTOM = 3, BACK = 4, FRONT = 5 };
 			float _planes[6][4];//6 plans with 4 floats(w,x,y,z)
 		};
 	}

@@ -16,7 +16,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/matrix.hpp>
 #include <glm/vec3.hpp>
+#include <w_bounding.h>
 #include <msgpack/msgpack.hpp>
+
 
 namespace wolf
 {
@@ -62,7 +64,7 @@ namespace wolf
             //Get projection * view matrix of the camera
             WCP_EXP mat4x4_p get_projection_view() const;
             //Get projection matrix of the camera
-            WCP_EXP std::array<glm::vec4, 6> get_frustum_plans() const { return this->_frustum_planes; }
+            WCP_EXP wolf::system::w_bounding_frustum get_frustum() const { return this->_frustum; } const
             //Get position of the camera
             WCP_EXP glm::vec3 get_translate() const { return glm::vec3(this->_translate[0], this->_translate[1], this->_translate[2]); }
             //Get interest of the camera
@@ -101,20 +103,20 @@ namespace wolf
                 _translate, _interest);
 
         protected:
-            c_camera_type               _type;
-            std::string		            _name;
-            std::string                 _camera_target_name;
-            float			            _field_of_view;
-            float			            _aspect_ratio;
-            float			            _near_plane;
-            float			            _far_plane;
-            float		                _up[3];
-            float		                _translate[3];
-            float	    	            _interest[3];
-            mat4x4_p		            _view;
-            mat4x4_p		            _projection;
-            std::array<glm::vec4, 6>    _frustum_planes;
-            bool                        _z_up;
+            c_camera_type							_type;
+            std::string								_name;
+            std::string								_camera_target_name;
+            float									_field_of_view;
+            float									_aspect_ratio;
+            float									_near_plane;
+            float									_far_plane;
+            float									_up[3];
+            float									_translate[3];
+            float	    							_interest[3];
+            mat4x4_p								_view;
+            mat4x4_p								_projection;
+			wolf::system::w_bounding_frustum		_frustum;
+            bool									_z_up;
         };
     }
 }

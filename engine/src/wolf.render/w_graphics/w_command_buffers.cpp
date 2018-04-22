@@ -385,11 +385,11 @@ W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_grap
 		return W_FAILED;
 	}
 
-	if (_staging_buffer.bind() == W_FAILED)
-	{
-		V(W_FAILED, "binding to staging buffer of indirect_draw_commands", _trace_info, 3);
-		return W_FAILED;
-	}
+	//if (_staging_buffer.bind() == W_FAILED)
+	//{
+	//	V(W_FAILED, "binding to staging buffer of indirect_draw_commands", _trace_info, 3);
+	//	return W_FAILED;
+	//}
 
 	if (_staging_buffer.set_data(this->drawing_commands.data()) == S_FALSE)
 	{

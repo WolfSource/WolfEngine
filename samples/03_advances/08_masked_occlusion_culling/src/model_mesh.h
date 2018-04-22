@@ -23,6 +23,7 @@
 #include <w_graphics/w_shader.h>
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_uniform.h>
+#include <w_graphics/w_shapes.h>
 #include "compute_stage.h"
 
 class model_mesh : public wolf::system::w_object
@@ -78,6 +79,7 @@ public:
 	void set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pModelInstanceIndex = 0);
 	void set_show_only_lods(_In_ const bool& pValue);
 	void set_showing_wireframe(_In_ const bool& pValue);
+	void set_show_bounding_box(_In_ const bool& pValue);
 
 #pragma endregion
 
@@ -122,11 +124,7 @@ protected:
 
 	bool													global_visiblity;
 	std::vector<glm::vec4>                                  visibilities;
-
-	glm::mat4												view;
-	glm::mat4												projection;
-	glm::vec3												camera_position;
-
+	
 private:
 
 	W_RESULT	_load_textures();
@@ -144,6 +142,8 @@ private:
 		_In_z_ const std::string& pPipelineCacheName,
 		_In_ const wolf::graphics::w_render_pass& pRenderPass);
 	
+	W_RESULT _create_bounding_box_shapes(_In_ const wolf::graphics::w_render_pass& pRenderPass);
+
 	W_RESULT   _build_compute_command_buffer();
 	
 	typedef	 wolf::system::w_object							_super;
@@ -191,6 +191,8 @@ private:
 	wolf::graphics::w_shader*								_shader;
 
 	bool													_show_wireframe;
+	bool													_show_bounding_box;
+
 	wolf::graphics::w_pipeline                              _solid_pipeline;
 	wolf::graphics::w_pipeline                              _wireframe_pipeline;
 
@@ -213,6 +215,8 @@ private:
 	bool													_show_only_lod;
 
 	uint32_t												_selected_lod_index;
+
+	std::vector<wolf::graphics::w_shapes*>					_shapes;
 };
 
 #endif

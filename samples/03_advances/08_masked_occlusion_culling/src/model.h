@@ -28,6 +28,8 @@ public:
 	virtual ~model();
 
 	W_RESULT initialize();
+
+	bool	 check_is_in_sight(_In_ wolf::system::w_bounding_frustum& pFrustum)const;
 	W_RESULT pre_update(_In_ wolf::framework::w_first_person_camera& pCamera, 
 		_Inout_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling);
 	W_RESULT post_update(_In_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling);

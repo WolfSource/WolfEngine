@@ -276,12 +276,12 @@ std::array<glm::vec4, 6> w_bounding_frustum::get_plans() const
 
 	std::array<glm::vec4, 6> _array = 
 	{
-		glm::vec4(this->_planes[LEFT][x], this->_planes[LEFT][y], this->_planes[LEFT][z], this->_planes[LEFT][w]),
-		glm::vec4(this->_planes[RIGHT][x], this->_planes[RIGHT][y], this->_planes[RIGHT][z], this->_planes[RIGHT][w]),
-		glm::vec4(this->_planes[TOP][x], this->_planes[TOP][y], this->_planes[TOP][z], this->_planes[TOP][w]),
-		glm::vec4(this->_planes[BOTTOM][x], this->_planes[BOTTOM][y], this->_planes[BOTTOM][z], this->_planes[BOTTOM][w]),
-		glm::vec4(this->_planes[BACK][x], this->_planes[BACK][y], this->_planes[BACK][z], this->_planes[BACK][w]),
-		glm::vec4(this->_planes[FRONT][x], this->_planes[FRONT][y], this->_planes[FRONT][z], this->_planes[FRONT][w])
+		glm::vec4(this->_planes[0][x], this->_planes[0][y], this->_planes[0][z], this->_planes[0][w]),
+		glm::vec4(this->_planes[1][x], this->_planes[1][y], this->_planes[1][z], this->_planes[1][w]),
+		glm::vec4(this->_planes[2][x], this->_planes[2][y], this->_planes[2][z], this->_planes[2][w]),
+		glm::vec4(this->_planes[3][x], this->_planes[3][y], this->_planes[3][z], this->_planes[3][w]),
+		glm::vec4(this->_planes[4][x], this->_planes[4][y], this->_planes[4][z], this->_planes[4][w]),
+		glm::vec4(this->_planes[5][x], this->_planes[5][y], this->_planes[5][z], this->_planes[5][w])
 	};
 
 	return _array;
@@ -294,36 +294,36 @@ void w_bounding_frustum::update(_In_ const glm::mat4& pMatrix)
 	const size_t z = 2;
 	const size_t w = 3;
 
-	this->_planes[LEFT][x] = pMatrix[0].w + pMatrix[0].x;
-	this->_planes[LEFT][y] = pMatrix[1].w + pMatrix[1].x;
-	this->_planes[LEFT][z] = pMatrix[2].w + pMatrix[2].x;
-	this->_planes[LEFT][w] = pMatrix[3].w + pMatrix[3].x;
+	this->_planes[0][x] = pMatrix[x][w] + pMatrix[x][z];
+	this->_planes[0][y] = pMatrix[y][w] + pMatrix[y][z];
+	this->_planes[0][z] = pMatrix[z][w] + pMatrix[z][z];
+	this->_planes[0][w] = pMatrix[w][w] + pMatrix[w][z];
 
-	this->_planes[RIGHT][x] = pMatrix[0].w - pMatrix[0].x;
-	this->_planes[RIGHT][y] = pMatrix[1].w - pMatrix[1].x;
-	this->_planes[RIGHT][z] = pMatrix[2].w - pMatrix[2].x;
-	this->_planes[RIGHT][w] = pMatrix[3].w - pMatrix[3].x;
+	this->_planes[1][x] = pMatrix[x][w] - pMatrix[x][z];
+	this->_planes[1][y] = pMatrix[y][w] - pMatrix[y][z];
+	this->_planes[1][z] = pMatrix[z][w] - pMatrix[z][z];
+	this->_planes[1][w] = pMatrix[w][w] - pMatrix[w][z];
 
-	this->_planes[TOP][x] = pMatrix[0].w + pMatrix[0].y;
-	this->_planes[TOP][y] = pMatrix[1].w + pMatrix[1].y;
-	this->_planes[TOP][z] = pMatrix[2].w + pMatrix[2].y;
-	this->_planes[TOP][w] = pMatrix[3].w + pMatrix[3].y;
+	this->_planes[2][x] = pMatrix[x][w] + pMatrix[x][x];
+	this->_planes[2][y] = pMatrix[y][w] + pMatrix[y][x];
+	this->_planes[2][z] = pMatrix[z][w] + pMatrix[z][x];
+	this->_planes[2][w] = pMatrix[w][w] + pMatrix[w][x];
 
-	this->_planes[BOTTOM][x] = pMatrix[0].w - pMatrix[0].y;
-	this->_planes[BOTTOM][y] = pMatrix[1].w - pMatrix[1].y;
-	this->_planes[BOTTOM][z] = pMatrix[2].w - pMatrix[2].y;
-	this->_planes[BOTTOM][w] = pMatrix[3].w - pMatrix[3].y;
+	this->_planes[3][x] = pMatrix[x][w] - pMatrix[x][x];
+	this->_planes[3][y] = pMatrix[y][w] - pMatrix[y][x];
+	this->_planes[3][z] = pMatrix[z][w] - pMatrix[z][x];
+	this->_planes[3][w] = pMatrix[w][w] - pMatrix[w][x];
 
-	this->_planes[BACK][x] = pMatrix[0].w - pMatrix[0].z;
-	this->_planes[BACK][y] = pMatrix[1].w - pMatrix[1].z;
-	this->_planes[BACK][z] = pMatrix[2].w - pMatrix[2].z;
-	this->_planes[BACK][w] = pMatrix[3].w - pMatrix[3].z;
+	this->_planes[4][x] = pMatrix[x][w] - pMatrix[x][y];
+	this->_planes[4][y] = pMatrix[y][w] - pMatrix[y][y];
+	this->_planes[4][z] = pMatrix[z][w] - pMatrix[z][y];
+	this->_planes[4][w] = pMatrix[w][w] - pMatrix[w][y];
 
-	this->_planes[FRONT][x] = pMatrix[0].w + pMatrix[0].z;
-	this->_planes[FRONT][y] = pMatrix[1].w + pMatrix[1].z;
-	this->_planes[FRONT][z] = pMatrix[2].w + pMatrix[2].z;
-	this->_planes[FRONT][w] = pMatrix[3].w + pMatrix[3].z;
-
+	this->_planes[5][x] = pMatrix[x][w] + pMatrix[x][y];
+	this->_planes[5][y] = pMatrix[y][w] + pMatrix[y][y];
+	this->_planes[5][z] = pMatrix[z][w] + pMatrix[z][y];
+	this->_planes[5][w] = pMatrix[w][w] + pMatrix[w][y];
+	
 	for (size_t i = 0; i < 6; ++i)
 	{
 		auto _norm = glm::normalize(
@@ -340,18 +340,30 @@ void w_bounding_frustum::update(_In_ const glm::mat4& pMatrix)
 	}
 }
 
-bool w_bounding_frustum::intersects(_In_ const w_bounding_sphere& pSphere)
+// Check bounding box against frustum planes
+bool w_bounding_frustum::intersects(_In_ const w_bounding_box& pBoundingBox)
 {
-	const size_t x = 0;
-	const size_t y = 1;
-	const size_t z = 2;
-	const size_t w = 3;
+	using namespace glm;
 
-	for (auto i = 0; i < 6; ++i)
+	vec4 _min, _max, _plane;
+	for (int i = 0; i < 6; i++)
 	{
-		if ((_planes[i][x] * pSphere.center[x]) +
-			(_planes[i][y] * pSphere.center[y]) +
-			(_planes[i][z] * pSphere.center[z]) + _planes[i][w] <= -pSphere.radius)
+		_min.x = pBoundingBox.min[0];
+		_min.y = pBoundingBox.min[1];
+		_min.z = pBoundingBox.min[2];
+		_min.w = 1.0f;
+
+		_max.x = pBoundingBox.max[0];
+		_max.y = pBoundingBox.max[1];
+		_max.z = pBoundingBox.max[2];
+		_max.w = 1.0f;
+
+		_plane.x = this->_planes[i][0];
+		_plane.y = this->_planes[i][1];
+		_plane.z = this->_planes[i][2];
+		_plane.w = this->_planes[i][3];
+
+		if (dot(_min, _plane) < 0.0 && dot(_max, _plane) < 0.0)
 		{
 			return false;
 		}
@@ -359,9 +371,9 @@ bool w_bounding_frustum::intersects(_In_ const w_bounding_sphere& pSphere)
 	return true;
 }
 
-bool w_bounding_frustum::intersects(_In_ const w_bounding_box& pBox)
+bool w_bounding_frustum::intersects(_In_ const w_bounding_sphere& pBoundingSphere)
 {
-	return intersects(w_bounding_sphere::create_from_bounding_box(pBox));
+	return intersects(w_bounding_box::create_from_bounding_sphere(pBoundingSphere));
 }
 
 #pragma endregion

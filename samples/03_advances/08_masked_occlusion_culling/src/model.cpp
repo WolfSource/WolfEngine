@@ -219,17 +219,62 @@ void model::_add_to_mocs(_In_  w_cpipeline_model* pConvexHull)
 	}
 }
 
+bool model::check_is_in_sight(_In_ wolf::system::w_bounding_frustum& pFrustum) const
+{
+	const std::string _trace_info = this->_name + "::check_is_in_sight";
+
+	bool _is_in_sight = false;
+	if (!this->sub_meshes_bounding_box.size())
+	{
+		V(W_FAILED, "sub mesh bounding sphere not avaiable for model: " + this->model_name, _trace_info, 3);
+		return _is_in_sight;
+	}
+	w_bounding_box _bounding_box;
+	
+	_bounding_box.min[0] = this->sub_meshes_bounding_box[0].min[0] + this->transform.position[0];
+	_bounding_box.min[1] = this->sub_meshes_bounding_box[0].min[1] + this->transform.position[1];
+	_bounding_box.min[2] = this->sub_meshes_bounding_box[0].min[2] + this->transform.position[2];
+
+	_bounding_box.max[0] = this->sub_meshes_bounding_box[0].max[0] + this->transform.position[0];
+	_bounding_box.max[1] = this->sub_meshes_bounding_box[0].max[1] + this->transform.position[1];
+	_bounding_box.max[2] = this->sub_meshes_bounding_box[0].max[2] + this->transform.position[2];
+
+	if (pFrustum.intersects(_bounding_box))
+	{
+		return true;
+	}
+
+	//for (size_t i = 0; i < this->instances_transforms.size(); ++i)
+	//{
+	//	_bounding_sphere.center[0] = this->instances_transforms[i].position[0];
+	//	_bounding_sphere.center[1] = this->instances_transforms[i].position[1];
+	//	_bounding_sphere.center[2] = this->instances_transforms[i].position[2];
+
+	//	if (pFrustum.intersects(_bounding_sphere))
+	//	{
+	//		_is_in_sight = true;
+	//		break;
+	//	}
+	//}
+	return _is_in_sight;
+}
+
 W_RESULT model::pre_update(_In_ wolf::framework::w_first_person_camera& pCamera,
 	_Inout_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling)
 {
 	const std::string _trace_info = this->_name + "::update";
 
 	W_RESULT _hr = W_FAILED;
-	this->view = pCamera.get_view();
-	this->projection = pCamera.get_projection();
-	this->camera_position = pCamera.get_translate();
-	this->_view_projection = this->projection * this->view;
+
+	auto _view = pCamera.get_view();
+	auto _projection = pCamera.get_projection();
+	auto _camera_position = pCamera.get_translate();
+	this->_view_projection = _projection * _view;
 	
+	set_view_projection_position(_view, _projection, _camera_position);
+
+	return W_PASSED;
+
 	glm::mat4 _model_to_clip_matrix;
 	//draw root model to Masked Occlusion culling
 	for (auto& _iter : this->_mocs)
@@ -307,6 +352,8 @@ W_RESULT model::pre_update(_In_ wolf::framework::w_first_person_camera& pCamera,
 W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling)
 {
 	W_RESULT _add_to_render_models_queue = W_FAILED;
+
+	return W_PASSED;
 
 	glm::mat4 _model_to_clip_matrix;
 	//check bounding boxes of root model from Masked Occlusion culling

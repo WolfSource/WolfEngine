@@ -16,7 +16,8 @@ model_mesh::model_mesh(
 	global_visiblity(true),
 	c_model(pContentPipelineModel),
 	_selected_lod_index(0),
-	_show_wireframe(false)
+	_show_wireframe(false),
+	_show_bounding_box(false)
 {
 }
 
@@ -145,6 +146,9 @@ W_RESULT model_mesh::load(
 		V(W_FAILED, "updating uniform u1(mipmaps) for model: " + this->model_name, _trace_info, 3);
 		return W_FAILED;
 	}
+
+	_create_bounding_box_shapes(pRenderPass);
+
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -385,7 +389,7 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 
 	if (!this->_mesh) return W_FAILED;
 
-	set_view_projection_position(this->view, this->projection, this->camera_position);
+	W_RESULT _hr = W_FAILED;
 
 	//bind pipeline
 	if (this->_show_wireframe)
@@ -399,7 +403,7 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 	if (get_instances_count())
 	{
 		auto _buffer_handle = this->_instances_buffer.get_buffer_handle();
-		return this->_mesh->draw(
+		_hr = this->_mesh->draw(
 			pCommandBuffer, 
 			&_buffer_handle, 
 			this->instances_transforms.size(),
@@ -411,7 +415,7 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 		if (this->_selected_lod_index < this->lods_info.size())
 		{
 			auto _lod_info = &this->lods_info[this->_selected_lod_index];
-			return this->_mesh->draw(
+			_hr = this->_mesh->draw(
 				pCommandBuffer,
 				nullptr,
 				0,
@@ -427,6 +431,28 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 			return W_FAILED;
 		}
 	}
+
+	bool _problem = false;
+	if (_hr == W_FAILED)
+	{
+		V(W_FAILED, "drawing model for model: " + this->model_name, _trace_info, 3);
+		_problem = true;
+	}
+
+	//show bounding box if needed
+	if (this->_show_bounding_box)
+	{
+		for (auto& _shape : this->_shapes)
+		{
+			if (_shape->draw(pCommandBuffer) == W_FAILED)
+			{
+				V(W_FAILED, "drawing shape for model: " + this->model_name, _trace_info, 3);
+				_problem = true;
+			}
+		}
+	}
+
+	return _problem ? W_FAILED : W_PASSED;
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1579,6 +1605,39 @@ W_RESULT model_mesh::_create_pipelines(
 	return W_PASSED;
 }
 
+W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const wolf::graphics::w_render_pass& pRenderPass)
+{
+	const std::string _trace_info = this->_name + "_create_bounding_box_shapes";
+
+	//first create for ref model
+	if (this->sub_meshes_bounding_box.size())
+	{
+		//Add Bounding Box
+		auto _b_box = this->sub_meshes_bounding_box[0];
+		//create shape for root model
+		auto _shape_box = new (std::nothrow) w_shapes(_b_box, w_color::RED());
+		if (!_shape_box)
+		{
+			V(W_FAILED, "allocating memory for shape(box) for mode: " + this->model_name
+				, _trace_info, 3);
+			return W_FAILED;
+		}
+
+		if (_shape_box->load(
+			this->gDevice,
+			pRenderPass,
+			pRenderPass.get_viewport(),
+			pRenderPass.get_viewport_scissor()) == W_FAILED)
+		{
+			V(W_FAILED, "loading shape(box) for model: " + this->model_name,
+				_trace_info, 3);
+			return W_FAILED;
+		}
+
+		this->_shapes.push_back(_shape_box);
+	}
+}
+
 #pragma endregion
 
 ULONG model_mesh::release()
@@ -1617,6 +1676,13 @@ ULONG model_mesh::release()
 	this->_textures.clear();
 
 	this->_cs.release();
+
+	//release shapes
+	for (auto _shape : this->_shapes)
+	{
+		SAFE_RELEASE(_shape);
+	}
+	this->_shapes.clear();
 
 	this->gDevice = nullptr;
 
@@ -1745,6 +1811,27 @@ void model_mesh::set_view_projection_position(
 			V(W_FAILED, "updating basic uniform ViewProjection for model: " + this->model_name, _trace_info, 3);
 		}
 	}
+
+	if (this->_show_bounding_box && this->_shapes.size())
+	{
+		auto _position = glm::vec3(
+			this->transform.position[0],
+			this->transform.position[1],
+			this->transform.position[2]);
+
+		auto _rotation = glm::vec3(
+			this->transform.rotation[0],
+			this->transform.rotation[1],
+			this->transform.rotation[2]);
+
+		auto _scale = glm::vec3(
+			this->transform.scale[0],
+			this->transform.scale[1],
+			this->transform.scale[2]) * glm::vec3(1.1f, 1.0f, 1.1f); //increase scale of bounding
+
+		auto _world = glm::translate(_position) * glm::rotate(_rotation) * glm::scale(_scale);
+		this->_shapes[0]->update(pProjection * pView * _world);
+	}
 }
 
 void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
@@ -1787,6 +1874,11 @@ void model_mesh::set_show_only_lods(_In_ const bool& pValue)
 void model_mesh::set_showing_wireframe(_In_ const bool& pValue)
 {
 	this->_show_wireframe = pValue;
+}
+
+void model_mesh::set_show_bounding_box(_In_ const bool& pValue)
+{
+	this->_show_bounding_box = pValue;
 }
 
 #pragma endregion

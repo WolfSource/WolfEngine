@@ -1534,13 +1534,17 @@ W_RESULT c_parser::_create_scene(
             if (sZ_Up)
             {
                 //make transform change
-                //auto _t = _camera->get_translate();
-                
-                //std::swap(_t.y, _t.z);
-                //_t.z *= -1;
-                //_t.y *= -1;
+                auto _cam_pos = _camera->get_translate();
+				auto _cam_look_at = _camera->get_interest();
 
-                //_camera->set_translate(_t);
+                std::swap(_cam_pos.y, _cam_pos.z);
+				_cam_pos.y *= -1;
+
+				std::swap(_cam_look_at.y, _cam_look_at.z);
+				_cam_look_at.y *= -1;
+
+                _camera->set_translate(_cam_pos);
+				_camera->set_interest(_cam_look_at);
             }
             pScene->add_camera(_camera);
         }
@@ -1775,9 +1779,9 @@ void c_parser::_create_model(
             _transform.position[1] = _node_ptr->translate.z;
             _transform.position[2] = _node_ptr->translate.y;
 
-			_transform.rotation[0] = -_rotation.x;
-            _transform.rotation[1] = -_rotation.z;
-            _transform.rotation[2] = -_rotation.y;
+			_transform.rotation[0] = _rotation.x;
+            _transform.rotation[1] = _rotation.z;
+            _transform.rotation[2] = _rotation.y;
 
         }
         else

@@ -62,12 +62,12 @@ bool w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
         //Q = Up
         if (_result_of_keys[4])
         {
-            _move_vector.y += _move_speed_time;
+            _move_vector.y -= _move_speed_time;
         }
         //Z = Down
         else if (_result_of_keys[5])
         {
-            _move_vector.y -= _move_speed_time;
+            _move_vector.y += _move_speed_time;
         }
 
         _updated = true;
@@ -87,11 +87,11 @@ bool w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
         }
         else if (inputs_manager.mouse.pos_y - inputs_manager.mouse.last_pos_y > 1)
         {
-            this->_rotation.y -= glm::radians(this->_rotation_speed) / 2.0f;
+            this->_rotation.y += glm::radians(this->_rotation_speed) / 2.0f;
         }
         else if (inputs_manager.mouse.pos_y - inputs_manager.mouse.last_pos_y < -1)
         {
-            this->_rotation.y += glm::radians(this->_rotation_speed) / 2.0f;
+            this->_rotation.y -= glm::radians(this->_rotation_speed) / 2.0f;
         }
     }
 
