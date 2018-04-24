@@ -15,7 +15,6 @@
 #define __W_MODEL_H__
 
 #include "model_mesh.h"
-#include <w_framework/w_first_person_camera.h>
 #include <w_framework/w_masked_occlusion_culling.h>
 
 class model : public model_mesh
@@ -29,10 +28,11 @@ public:
 
 	W_RESULT initialize();
 
-	bool	 check_is_in_sight(_In_ wolf::system::w_bounding_frustum& pFrustum)const;
-	W_RESULT pre_update(_In_ wolf::framework::w_first_person_camera& pCamera, 
+	bool	 check_is_in_sight(_In_ wolf::framework::w_first_person_camera* pCamera);
+	W_RESULT pre_update(
+		_In_ const glm::mat4& pProjectionView, 
 		_Inout_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling);
-	W_RESULT post_update(_In_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling);
+	W_RESULT post_update(_In_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling, _In_ long& pVisibleMeshes);
 
 	//release all resources
 	ULONG release();
@@ -73,7 +73,7 @@ private:
 		}
 	};
 	std::vector<moc_data>                                       _mocs;
-	glm::mat4													_view_projection;
+	glm::mat4													_projection_view;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

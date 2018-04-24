@@ -13,7 +13,7 @@ c_camera::c_camera() :
 {
     this->_translate[0] = 0; this->_translate[1] = 7; this->_translate[2] = -27.0f;
     this->_interest[0] = 0; this->_interest[1] = 0; this->_interest[2] = 0;
-    this->_up[0] = 0.0f; this->_up[1] = 1.0f; this->_up[2] = 0.0f;
+    this->_up[0] = 0.0f; this->_up[1] = -1.0f; this->_up[2] = 0.0f;
 
     update_view();
     update_projection();
@@ -31,7 +31,7 @@ void c_camera::update_view()
     const glm::vec3 __target = glm::vec3(this->_interest[0], this->_interest[1], this->_interest[2]);
     const glm::vec3 __up = glm::vec3(this->_up[0], this->_up[1], this->_up[2]);
 
-    this->_view = glm::lookAt(__pos, __target, __up);
+    this->_view = glm::lookAtRH(__pos, __target, __up);
 }
 
 void c_camera::update_projection()
@@ -42,16 +42,16 @@ void c_camera::update_projection()
 	if (this->_aspect_ratio < 1.0f)
 	{
 		// portrait or snap view
-        this->_up[0] = 1.0f; this->_up[1] = 0.0f; this->_up[2] = 0.0f;
+        this->_up[0] = -1.0f; this->_up[1] = 0.0f; this->_up[2] = 0.0f;
 		_fov_angle_y = 120.0f * _pi / 180.0f;
 	}
 	else
 	{
 		// landscape view
-        this->_up[0] = 0.0f; this->_up[1] = 1.0f; this->_up[2] = 0.0f;
+        this->_up[0] = 0.0f; this->_up[1] = -1.0f; this->_up[2] = 0.0f;
     }
 
-   this->_projection = glm::perspective(_fov_angle_y, this->_aspect_ratio, this->_near_plane, this->_far_plane);
+   this->_projection = glm::perspectiveRH(_fov_angle_y, this->_aspect_ratio, this->_near_plane, this->_far_plane);
 }
 
 void c_camera::update_frustum()
@@ -65,6 +65,16 @@ void c_camera::update_frustum()
 mat4x4_p c_camera::get_projection_view() const
 {
     return this->_projection * this->_view;
+}
+
+const glm::vec3 c_camera::get_translate() const
+{
+	return glm::vec3(this->_translate[0], this->_translate[1], this->_translate[2]);
+}
+
+const glm::vec3 c_camera::get_interest() const
+{ 
+	return glm::vec3(this->_interest[0], this->_interest[1], this->_interest[2]); 
 }
 
 #pragma endregion

@@ -24,6 +24,7 @@
 #include <w_graphics/w_pipeline.h>
 #include <w_graphics/w_uniform.h>
 #include <w_graphics/w_shapes.h>
+#include <w_framework/w_first_person_camera.h>
 #include "compute_stage.h"
 
 class model_mesh : public wolf::system::w_object
@@ -45,7 +46,7 @@ public:
 	);
 
 	W_RESULT submit_compute_shader();
-	W_RESULT draw(_In_ const wolf::graphics::w_command_buffer& pCommandBuffer);
+	W_RESULT draw(_In_ const wolf::graphics::w_command_buffer& pCommandBuffer, _In_ const wolf::framework::w_first_person_camera* pCamera);
 
 	//release all resources
 	ULONG release() override;
@@ -143,6 +144,10 @@ private:
 		_In_ const wolf::graphics::w_render_pass& pRenderPass);
 	
 	W_RESULT _create_bounding_box_shapes(_In_ const wolf::graphics::w_render_pass& pRenderPass);
+	wolf::graphics::w_shapes* _create_shape(
+		_In_ const wolf::graphics::w_render_pass& pRenderPass, 
+		_In_ const wolf::system::w_bounding_box& pBoundingBox, 
+		_In_ w_color& pColor);
 
 	W_RESULT   _build_compute_command_buffer();
 	

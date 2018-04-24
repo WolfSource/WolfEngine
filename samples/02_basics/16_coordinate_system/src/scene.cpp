@@ -191,7 +191,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         _update_gui();
     });
     
-	auto _eye = glm::vec3(5.0f, 5.0f, 15.0f);
+	auto _eye = glm::vec3(-10.0f, 5.0f, -20.0f);
 	auto _up = glm::vec3(0, -1, 0);
 	auto _look_at = glm::vec3(0, 0, 0);
 
@@ -202,7 +202,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		45.0f * glm::pi<float>() / 180.0f,
 		this->_viewport.width / this->_viewport.height,
 		0.1f,
-		1000.0f);
+		100.0f);
 
 	auto _wvp = _projection * _view * _world;
 	this->_shape_coordinate_axis->update(_wvp);

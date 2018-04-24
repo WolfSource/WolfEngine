@@ -666,7 +666,7 @@ namespace wolf
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 
-				//again Up(0,1,0) * 5
+				//again Up(0,-1,0) * 5
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 
@@ -740,7 +740,7 @@ namespace wolf
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 
-				//again (0,0,1) * 5
+				//again (0,0,-1) * 5
 				std::memcpy(&pVertices[_index], &_point[0], _offset * sizeof(float));
 				_index += _offset;
 

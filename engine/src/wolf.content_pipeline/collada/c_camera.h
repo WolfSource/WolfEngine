@@ -64,11 +64,11 @@ namespace wolf
             //Get projection * view matrix of the camera
             WCP_EXP mat4x4_p get_projection_view() const;
             //Get projection matrix of the camera
-            WCP_EXP wolf::system::w_bounding_frustum get_frustum() const { return this->_frustum; } const
-            //Get position of the camera
-            WCP_EXP glm::vec3 get_translate() const { return glm::vec3(this->_translate[0], this->_translate[1], this->_translate[2]); }
+			WCP_EXP wolf::system::w_bounding_frustum get_frustum() const { return this->_frustum; } const
+			//Get position of the camera
+			WCP_EXP const glm::vec3 get_translate() const;
             //Get interest of the camera
-            WCP_EXP glm::vec3 get_interest() const { return glm::vec3(this->_interest[0], this->_interest[1], this->_interest[2]); }
+			WCP_EXP const glm::vec3 get_interest() const;
 
 #pragma region 
 

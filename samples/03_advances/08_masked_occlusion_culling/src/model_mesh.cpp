@@ -147,7 +147,10 @@ W_RESULT model_mesh::load(
 		return W_FAILED;
 	}
 
-	_create_bounding_box_shapes(pRenderPass);
+	if (_create_bounding_box_shapes(pRenderPass) == W_FAILED)
+	{
+		V(W_FAILED, "creaing shapes and bounding boxes for model: " + this->model_name, _trace_info, 3);
+	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -246,7 +249,7 @@ W_RESULT model_mesh::submit_compute_shader()
 
 	if (this->_show_only_lod)
 	{
-		_cam_pos.x += 10000;//set camera to far
+		_cam_pos.x += 1000000;//set camera to far
 		_distance_to_camera = glm::distance(_model_pos, _cam_pos);
 	}
 
@@ -381,7 +384,7 @@ W_RESULT model_mesh::submit_compute_shader()
 	return _hr;
 }
 
-W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
+W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ const wolf::framework::w_first_person_camera* pCamera)
 {
 	if (!this->global_visiblity) return W_PASSED;
 
@@ -390,6 +393,14 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 	if (!this->_mesh) return W_FAILED;
 
 	W_RESULT _hr = W_FAILED;
+
+	if (pCamera)
+	{
+		auto _view = pCamera->get_view();
+		auto _projection = pCamera->get_projection();
+		auto _camera_position = pCamera->get_translate();
+		set_view_projection_position(_view, _projection, _camera_position);
+	}
 
 	//bind pipeline
 	if (this->_show_wireframe)
@@ -432,11 +443,11 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 		}
 	}
 
-	bool _problem = false;
+	bool _error = false;
 	if (_hr == W_FAILED)
 	{
 		V(W_FAILED, "drawing model for model: " + this->model_name, _trace_info, 3);
-		_problem = true;
+		_error = true;
 	}
 
 	//show bounding box if needed
@@ -447,12 +458,12 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 			if (_shape->draw(pCommandBuffer) == W_FAILED)
 			{
 				V(W_FAILED, "drawing shape for model: " + this->model_name, _trace_info, 3);
-				_problem = true;
+				_error = true;
 			}
 		}
 	}
 
-	return _problem ? W_FAILED : W_PASSED;
+	return _error ? W_FAILED : W_PASSED;
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1609,33 +1620,98 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const wolf::graphics::w_re
 {
 	const std::string _trace_info = this->_name + "_create_bounding_box_shapes";
 
-	//first create for ref model
+	auto _hr = W_PASSED;
+	//create bounding box from world matrix of ref model and create a shape for it
 	if (this->sub_meshes_bounding_box.size())
 	{
-		//Add Bounding Box
-		auto _b_box = this->sub_meshes_bounding_box[0];
-		//create shape for root model
-		auto _shape_box = new (std::nothrow) w_shapes(_b_box, w_color::RED());
-		if (!_shape_box)
+		//get ref bounding box
+		auto _ref_box = this->sub_meshes_bounding_box[0];
+		auto _min = glm::vec4(_ref_box.min[0], _ref_box.min[1], _ref_box.min[2], 1.0f);
+		auto _max = glm::vec4(_ref_box.max[0], _ref_box.max[1], _ref_box.max[2], 1.0f);
+
+		//clear all bounding boxes and create new aligned 
+		this->sub_meshes_bounding_box.clear();
+
+		//align bounding box to ref model
+		glm::vec3 _position = get_position();
+		glm::vec3 _rotation = get_rotation();
+		glm::vec3 _scale(1.0f);
+
+		auto _transfer_mat = glm::translate(_position) * glm::rotate(_rotation) * glm::scale(_scale);
+		auto _transfer_min = _transfer_mat * _min;
+		auto _transfer_max = _transfer_mat * _max;
+
+		w_bounding_box _aligned;
+		std::memcpy(&_aligned.min[0], &_transfer_min[0], 3 * sizeof(float));
+		std::memcpy(&_aligned.max[0], &_transfer_max[0], 3 * sizeof(float));
+
+
+		this->sub_meshes_bounding_box.push_back(_aligned);
+		auto _shape = _create_shape(pRenderPass, _aligned, w_color::RED());
+		if (_shape)
 		{
-			V(W_FAILED, "allocating memory for shape(box) for mode: " + this->model_name
-				, _trace_info, 3);
-			return W_FAILED;
+			this->_shapes.push_back(_shape);
+		}
+		else
+		{
+			_hr = W_FAILED;
 		}
 
-		if (_shape_box->load(
-			this->gDevice,
-			pRenderPass,
-			pRenderPass.get_viewport(),
-			pRenderPass.get_viewport_scissor()) == W_FAILED)
+		for (auto& ins : this->instances_transforms)
 		{
-			V(W_FAILED, "loading shape(box) for model: " + this->model_name,
-				_trace_info, 3);
-			return W_FAILED;
-		}
+			_position.x = ins.position[0]; _position.y = ins.position[1]; _position.z = ins.position[2];
+			_rotation.x = ins.rotation[0]; _rotation.y = ins.rotation[1]; _rotation.z = ins.rotation[2];
 
-		this->_shapes.push_back(_shape_box);
+			_transfer_mat = glm::translate(_position) * glm::rotate(_rotation) * glm::scale(_scale);
+			_transfer_min = _transfer_mat * _min;
+			_transfer_max = _transfer_mat * _max;
+
+			std::memcpy(&_aligned.min[0], &_transfer_min[0], 3 * sizeof(float));
+			std::memcpy(&_aligned.max[0], &_transfer_max[0], 3 * sizeof(float));
+
+			this->sub_meshes_bounding_box.push_back(_aligned);
+			_shape = _create_shape(pRenderPass, _aligned, w_color::GREEN());
+			if (_shape)
+			{
+				this->_shapes.push_back(_shape);
+			}
+			else
+			{
+				_hr = W_FAILED;
+			}
+		}
 	}
+
+	return _hr;
+}
+
+w_shapes* model_mesh::_create_shape(
+	_In_ const wolf::graphics::w_render_pass& pRenderPass,
+	_In_ const w_bounding_box& pBoundingBox,
+	_In_ w_color& pColor)
+{
+	const std::string _trace_info = this->_name + "_create_shape";
+
+	//create shape for root model
+	auto _shape_box = new (std::nothrow) w_shapes(pBoundingBox, pColor);
+	if (!_shape_box)
+	{
+		V(W_FAILED, "allocating memory for shape(box) for mode: " + this->model_name
+			, _trace_info, 3);
+		return nullptr;
+	}
+
+	if (_shape_box->load(
+		this->gDevice,
+		pRenderPass,
+		pRenderPass.get_viewport(),
+		pRenderPass.get_viewport_scissor()) == W_FAILED)
+	{
+		V(W_FAILED, "loading shape(box) for model: " + this->model_name,
+			_trace_info, 3);
+		return nullptr;
+	}
+	return _shape_box;
 }
 
 #pragma endregion
@@ -1706,10 +1782,10 @@ glm::vec3 model_mesh::get_rotation() const
 	return glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
 }
 
-glm::vec3 model_mesh::get_scale() const
-{
-	return glm::vec3(this->transform.scale[0], this->transform.scale[1], this->transform.scale[2]);
-}
+//glm::vec3 model_mesh::get_scale() const
+//{
+//	return glm::vec3(this->transform.scale[0], this->transform.scale[1], this->transform.scale[2]);
+//}
 
 std::vector<w_instance_info> model_mesh::get_instances() const
 {
@@ -1798,7 +1874,7 @@ void model_mesh::set_view_projection_position(
 	{
 		auto _position = get_position();
 		auto _rotation = get_rotation();
-		auto _scale = get_scale();
+		glm::vec3 _scale(1.0f);
 
 		this->_basic_u0.data.model = glm::translate(_position) * glm::rotate(_rotation) * glm::scale(_scale);
 		this->_basic_u0.data.view = pView;
@@ -1814,23 +1890,11 @@ void model_mesh::set_view_projection_position(
 
 	if (this->_show_bounding_box && this->_shapes.size())
 	{
-		auto _position = glm::vec3(
-			this->transform.position[0],
-			this->transform.position[1],
-			this->transform.position[2]);
-
-		auto _rotation = glm::vec3(
-			this->transform.rotation[0],
-			this->transform.rotation[1],
-			this->transform.rotation[2]);
-
-		auto _scale = glm::vec3(
-			this->transform.scale[0],
-			this->transform.scale[1],
-			this->transform.scale[2]) * glm::vec3(1.1f, 1.0f, 1.1f); //increase scale of bounding
-
-		auto _world = glm::translate(_position) * glm::rotate(_rotation) * glm::scale(_scale);
-		this->_shapes[0]->update(pProjection * pView * _world);
+		auto _world = glm::mat4(1);
+		for (auto _shape : this->_shapes)
+		{
+			_shape->update(pProjection * pView * _world);
+		}
 	}
 }
 

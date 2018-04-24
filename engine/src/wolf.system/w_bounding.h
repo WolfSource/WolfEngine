@@ -129,6 +129,7 @@ namespace wolf
 		{
 			WSYS_EXP std::array<glm::vec4, 6> get_plans() const;
 			WSYS_EXP void update(_In_ const glm::mat4& pMatrix);
+			WSYS_EXP bool intersects(_In_ const glm::vec3& pPoint);
 			WSYS_EXP bool intersects(_In_ const w_bounding_sphere& pSphere);
 			WSYS_EXP bool intersects(_In_ const w_bounding_box& pBox);
 

@@ -147,7 +147,8 @@ namespace wolf
             std::string     name;
             float	        position[3];
             float	        rotation[3];
-            float	        scale = 1.0f;
+            float	        scale[3];
+
             uint32_t        texture_sampler_index = 0;
 
             MSGPACK_DEFINE(name, position, rotation, scale, texture_sampler_index);

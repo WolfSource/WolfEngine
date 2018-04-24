@@ -28,6 +28,7 @@
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 #include <w_framework/w_masked_occlusion_culling.h>
+#include <tbb/concurrent_vector.h>
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -107,9 +108,12 @@ private:
 	bool															_show_moc_debug;
 	wolf::framework::w_masked_occlusion_culling						_masked_occlusion_culling;
 	wolf::graphics::w_texture*										_masked_occlusion_culling_debug_frame;
-	std::vector<model*>												_visible_models;
+	long															_visible_meshes;
+	//tbb::concurrent_vector<model*>									_visible_models;
 	std::vector<model*>												_drawable_models;
 	std::vector<model*>												_searched_models;
+
+	wolf::graphics::w_shapes*										_shape_coordinate_axis;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

@@ -52,7 +52,8 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	_show_moc_debug(false),
 	_searching(false),
 	_show_all_wireframe(false),
-	_show_all_bounding_box(false)
+	_show_all_bounding_box(false),
+	_visible_meshes(0)
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
@@ -65,7 +66,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	auto _number_of_threads = w_thread::get_number_of_hardware_thread_contexts();
+	auto _number_of_threads = 1;// w_thread::get_number_of_hardware_thread_contexts();
 	if (this->_masked_occlusion_culling.initialize(_number_of_threads, true) == W_FAILED)
 	{
 		V(W_FAILED, "initializing masked occlusion culling", "scene::scene", 3, true);
@@ -97,13 +98,13 @@ void scene::load()
 
 	auto _gDevice = this->graphics_devices[0];
 	auto _output_window = &(_gDevice->output_presentation_window);
-	
-	#ifdef WIN32
+
+#ifdef WIN32
 	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/07_lod/src/content/";
 #elif defined(__APPLE__)
 	shared::scene_content_path = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/03_advances/07_lod/src/content/";
 #endif // WIN32
-	
+
 	w_point_t _preferred_backbuffer_size;
 	_preferred_backbuffer_size.x = _output_window->width;
 	_preferred_backbuffer_size.y = _output_window->height;
@@ -289,15 +290,15 @@ void scene::load()
 
 		this->_masked_occlusion_culling.set_near_clip(_near_plan);
 		this->_masked_occlusion_culling.set_resolution(this->_viewport.width, this->_viewport.height);
-		this->_masked_occlusion_culling.suspend_threads();
-		
+		//this->_masked_occlusion_culling.suspend_threads();
+
 		//get all models
 		std::vector<w_cpipeline_model*> _cmodels;
 		_scene->get_all_models(_cmodels);
 
 		std::wstring _vertex_shader_path;
 		for (auto _m : _cmodels)
-		{
+		{			
 			model* _model = nullptr;
 			if (_m->get_instances_count())
 			{
@@ -355,6 +356,21 @@ void scene::load()
 			});
 		}
 	}
+
+	//create coordinate system
+	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
+	if (this->_shape_coordinate_axis)
+	{
+		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+		if (_hr == W_FAILED)
+		{
+			V(W_FAILED, "loading shape coordinate axis", _trace_info, 3);
+		}
+	}
+	else
+	{
+		V(W_FAILED, "allocating memory for shape coordinate axis", _trace_info, 3);
+	}
 }
 
 W_RESULT scene::_build_draw_command_buffers()
@@ -378,8 +394,11 @@ W_RESULT scene::_build_draw_command_buffers()
 				//draw all models
 				for (auto _model : this->_drawable_models)
 				{
-					_model->draw(_cmd);
+					_model->draw(_cmd, &this->_first_camera);
 				}
+
+				//draw coordinate system
+				this->_shape_coordinate_axis->draw(_cmd);
 			}
 			this->_draw_render_pass.end(_cmd);
 		}
@@ -412,86 +431,82 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
 	}
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	if (this->_force_update_camera)
 	{
 		this->_force_update_camera = false;
 
 		//clear all
-		this->_visible_models.clear();
+		this->_visible_meshes = 0;
+		//this->_visible_models.clear();
 		this->_drawable_models.clear();
 
 		//test all bounding boxes of models with camera frustom
-		auto _camera_frustum = this->_first_camera.get_frustum();
 		//tbb::parallel_for(
 		//	tbb::blocked_range<size_t>(0, this->_scene_models.size()),
 		//	[&](const tbb::blocked_range<size_t>& pRange)
 		//{
 		//	for (size_t i = pRange.begin(); i < pRange.end(); ++i)
 		//	{
-		//		if (this->_scene_models[i])// && this->_scene_models[i]->check_is_in_sight(_camera_frustum))
+		//		if (this->_scene_models[i] && this->_scene_models[i]->check_is_in_sight(&this->_first_camera))
 		//		{
 		//			this->_visible_models.push_back(this->_scene_models[i]);
 		//		}
 		//	}
 		//});
 
+		//now check for masked occlusion culling
+		bool _need_post_check = false;
+		//this->_masked_occlusion_culling.wake_threads();
+		this->_masked_occlusion_culling.clear_buffer();
+
+		auto _projection_view = this->_first_camera.get_projection_view();
 		std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
 		{
-			if (pModel && pModel->check_is_in_sight(_camera_frustum))
-			{
-				this->_visible_models.push_back(pModel);
-			}
-		});
-
-
-		//now check for masked occlusion culling
-		bool _need_flush_moc = false;
-		//this->_masked_occlusion_culling.wake_threads();
-		//this->_masked_occlusion_culling.clear_buffer();
-		std::for_each(this->_visible_models.begin(), this->_visible_models.end(), [&](_In_ model* pModel)
-		{
 			if (pModel &&
-				pModel->pre_update(this->_first_camera, this->_masked_occlusion_culling) == W_PASSED)
+				pModel->pre_update(_projection_view, this->_masked_occlusion_culling) == W_PASSED)
 			{
-				_need_flush_moc = true;
+				_need_post_check = true;
 			}
 		});
 
-		if (_need_flush_moc)
+		//this->_masked_occlusion_culling.flush();
+		if (_need_post_check)
 		{
-			this->_masked_occlusion_culling.flush();
-
 			//post update stage for all visible models to find drawable models
-			std::for_each(this->_visible_models.begin(), this->_visible_models.end(), [&](_In_ model* pModel)
+			std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
 			{
 				if (pModel &&
-					pModel->post_update(this->_masked_occlusion_culling) == W_PASSED)
+					pModel->post_update(this->_masked_occlusion_culling, this->_visible_meshes) == W_PASSED)
 				{
 					this->_drawable_models.push_back(pModel);
 				}
 			});
 
-		//	if (_show_moc_debug)
-		//	{
-		//		auto _moc_debug_depth_frame = this->_masked_occlusion_culling.get_debug_frame(true);
-		//		if (_moc_debug_depth_frame)
-		//		{
-		//			if (this->_masked_occlusion_culling_debug_frame->copy_data_to_texture_2D(_moc_debug_depth_frame) == W_FAILED)
-		//			{
-		//				V(W_FAILED, "copying data to texture of masked occlusion culling debug frame", _trace_info, 2);
-		//			}
-		//		}
-		//	}
+			if (_show_moc_debug)
+			{
+				auto _moc_debug_depth_frame = this->_masked_occlusion_culling.get_debug_frame(true);
+				if (_moc_debug_depth_frame)
+				{
+					if (this->_masked_occlusion_culling_debug_frame->copy_data_to_texture_2D(_moc_debug_depth_frame) == W_FAILED)
+					{
+						V(W_FAILED, "copying data to texture of masked occlusion culling debug frame", _trace_info, 2);
+					}
+				}
+			}
 		}
 		this->_rebuild_command_buffer = true;
 		//this->_masked_occlusion_culling.suspend_threads();
+
+		//update shape coordinate
+		auto _world = glm::mat4(1) * glm::scale(glm::vec3(20.0f));
+		auto _wvp = this->_first_camera.get_projection_view() * _world;
+		if (this->_shape_coordinate_axis->update(_wvp) == W_FAILED)
+		{
+			V(W_FAILED, "loading shape coordinate axis", _trace_info, 3);
+		}
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 
 	w_game::update(pGameTime);
 }
@@ -604,7 +619,7 @@ ULONG scene::release()
 	{
 		SAFE_RELEASE(_m);
 	}
-	this->_visible_models.clear();
+	//this->_visible_models.clear();
 	this->_scene_models.clear();
 	this->_drawable_models.clear();
 	this->_current_selected_model = nullptr;
@@ -613,6 +628,8 @@ ULONG scene::release()
 
 	this->_masked_occlusion_culling.release();
 	SAFE_DELETE(_masked_occlusion_culling_debug_frame);
+
+	SAFE_RELEASE(this->_shape_coordinate_axis);
 
 	//release gui's resources
 	w_imgui::release();
@@ -652,11 +669,12 @@ void scene::_show_floating_debug_window()
 	auto _cam_position = this->_first_camera.get_translate();
 	auto _cam_interest = this->_first_camera.get_interest();
 
-	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nTotalVisibleRefModels:%d\r\nCamera Position:%.1f,%.1f,%.1f\r\nCamera LookAt:%.1f,%.1f,%.1f\r\n",
+	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nInFrustumVisibleModels:%d\r\nVisibleMeshes:%d\r\nCamera Position:%.1f,%.1f,%.1f\r\nCamera LookAt:%.1f,%.1f,%.1f\r\n",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec,
-		this->_visible_models.size(),
+		this->_drawable_models.size(),
+		this->_visible_meshes,
 		_cam_position.x, _cam_position.y, _cam_position.z,
 		_cam_interest.x, _cam_interest.y, _cam_interest.z);
 

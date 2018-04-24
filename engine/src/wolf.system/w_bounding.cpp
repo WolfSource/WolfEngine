@@ -340,37 +340,44 @@ void w_bounding_frustum::update(_In_ const glm::mat4& pMatrix)
 	}
 }
 
-// Check bounding box against frustum planes
-bool w_bounding_frustum::intersects(_In_ const w_bounding_box& pBoundingBox)
+bool w_bounding_frustum::intersects(_In_ const glm::vec3& pPoint)
 {
-	using namespace glm;
-
-	vec4 _min, _max, _plane;
-	for (int i = 0; i < 6; i++)
+	glm::vec4 _plane, _point(pPoint, 1.0f);
+	for (size_t i = 0; i < 6; ++i)
 	{
-		_min.x = pBoundingBox.min[0];
-		_min.y = pBoundingBox.min[1];
-		_min.z = pBoundingBox.min[2];
-		_min.w = 1.0f;
-
-		_max.x = pBoundingBox.max[0];
-		_max.y = pBoundingBox.max[1];
-		_max.z = pBoundingBox.max[2];
-		_max.w = 1.0f;
-
 		_plane.x = this->_planes[i][0];
 		_plane.y = this->_planes[i][1];
 		_plane.z = this->_planes[i][2];
 		_plane.w = this->_planes[i][3];
 
-		if (dot(_min, _plane) < 0.0 && dot(_max, _plane) < 0.0)
+		if (glm::dot(_plane, _point) < 0.0f)
 		{
 			return false;
 		}
 	}
+
 	return true;
 }
 
+bool w_bounding_frustum::intersects(_In_ const w_bounding_box& pBoundingBox)
+{
+	using namespace glm;
+
+	auto _b = pBoundingBox;
+
+	std::array<glm::vec3, 8> _corners;
+	_b.get_corners(_corners);
+
+	for (size_t j = 0; j < _corners.size(); ++j)
+	{
+		if (intersects(_corners[j]))
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
 bool w_bounding_frustum::intersects(_In_ const w_bounding_sphere& pBoundingSphere)
 {
 	return intersects(w_bounding_box::create_from_bounding_sphere(pBoundingSphere));

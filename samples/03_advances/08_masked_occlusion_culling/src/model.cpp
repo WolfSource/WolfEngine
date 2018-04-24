@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "model.h"
+#include <tbb/parallel_for.h>
 
 using namespace wolf::system;
 using namespace wolf::graphics;
@@ -219,77 +220,72 @@ void model::_add_to_mocs(_In_  w_cpipeline_model* pConvexHull)
 	}
 }
 
-bool model::check_is_in_sight(_In_ wolf::system::w_bounding_frustum& pFrustum) const
+bool model::check_is_in_sight(_In_ wolf::framework::w_first_person_camera* pCamera)
 {
 	const std::string _trace_info = this->_name + "::check_is_in_sight";
-
-	bool _is_in_sight = false;
+	
+	if (!pCamera)
+	{
+		V(W_FAILED, "camera not avaiable", _trace_info, 3);
+		return false;
+	}
 	if (!this->sub_meshes_bounding_box.size())
 	{
 		V(W_FAILED, "sub mesh bounding sphere not avaiable for model: " + this->model_name, _trace_info, 3);
-		return _is_in_sight;
+		return false;
 	}
-	w_bounding_box _bounding_box;
+
 	
-	_bounding_box.min[0] = this->sub_meshes_bounding_box[0].min[0] + this->transform.position[0];
-	_bounding_box.min[1] = this->sub_meshes_bounding_box[0].min[1] + this->transform.position[1];
-	_bounding_box.min[2] = this->sub_meshes_bounding_box[0].min[2] + this->transform.position[2];
+	tbb::atomic<bool> _found = false;
+	auto _camera_pos = pCamera->get_translate();
+	auto _camera_frustum = pCamera->get_frustum();
 
-	_bounding_box.max[0] = this->sub_meshes_bounding_box[0].max[0] + this->transform.position[0];
-	_bounding_box.max[1] = this->sub_meshes_bounding_box[0].max[1] + this->transform.position[1];
-	_bounding_box.max[2] = this->sub_meshes_bounding_box[0].max[2] + this->transform.position[2];
-
-	if (pFrustum.intersects(_bounding_box))
+	tbb::parallel_for(
+		tbb::blocked_range<size_t>(0, this->sub_meshes_bounding_box.size()),
+		[&](const tbb::blocked_range<size_t>& pRange)
 	{
-		return true;
-	}
+		for (size_t i = pRange.begin(); i < pRange.end(); ++i)
+		{
+			if (_found) break;
+			
+			//if bounding box contains camera or camera frustum contain bounding box means in sight
+			if (_camera_frustum.intersects(this->sub_meshes_bounding_box[i]))
+			{
+				_found = true;
+				break;
+			}
+		}
+	});
 
-	//for (size_t i = 0; i < this->instances_transforms.size(); ++i)
-	//{
-	//	_bounding_sphere.center[0] = this->instances_transforms[i].position[0];
-	//	_bounding_sphere.center[1] = this->instances_transforms[i].position[1];
-	//	_bounding_sphere.center[2] = this->instances_transforms[i].position[2];
-
-	//	if (pFrustum.intersects(_bounding_sphere))
-	//	{
-	//		_is_in_sight = true;
-	//		break;
-	//	}
-	//}
-	return _is_in_sight;
+	return _found.load();
 }
 
-W_RESULT model::pre_update(_In_ wolf::framework::w_first_person_camera& pCamera,
+W_RESULT model::pre_update(
+	_In_ const glm::mat4& pProjectionView,
 	_Inout_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling)
 {
 	const std::string _trace_info = this->_name + "::update";
-
-	W_RESULT _hr = W_FAILED;
-
-	auto _view = pCamera.get_view();
-	auto _projection = pCamera.get_projection();
-	auto _camera_position = pCamera.get_translate();
-	this->_view_projection = _projection * _view;
 	
-	set_view_projection_position(_view, _projection, _camera_position);
-
-	return W_PASSED;
-
+	W_RESULT _hr = W_FAILED;
+	
+	this->_projection_view = pProjectionView;
+	
 	glm::mat4 _model_to_clip_matrix;
 	//draw root model to Masked Occlusion culling
 	for (auto& _iter : this->_mocs)
 	{
 		//world view projection for bounding box of masked occlusion culling
-		_model_to_clip_matrix = this->_view_projection *
+		_model_to_clip_matrix = this->_projection_view *
 			glm::translate(_iter.position) *
 			glm::rotate(_iter.rotation);
 
-		wolf::logger.write("pre updating model " + get_model_name());
-		pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
-		if (pMaskedOcclusionCulling.render_triangles_async(
+		//wolf::logger.write("pre updating model " + get_model_name());
+		//pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
+		if (pMaskedOcclusionCulling.render_triangles(
 			(float*)&_iter.vertices[0],
 			_iter.indices.data(),
-			_iter.num_of_tris_for_moc) == W_PASSED)
+			_iter.num_of_tris_for_moc,
+			(float*)(&_model_to_clip_matrix[0])) == W_PASSED)
 		{
 			_hr = W_PASSED;
 		}
@@ -320,22 +316,23 @@ W_RESULT model::pre_update(_In_ wolf::framework::w_first_person_camera& pCamera,
 			if (this->_mocs.size() == 1)
 			{
 				//use transform of instance model
-				_model_to_clip_matrix = _view_projection * glm::translate(_pos) * glm::rotate(_rot);
+				_model_to_clip_matrix = this->_projection_view * glm::translate(_pos) * glm::rotate(_rot);
 			}
 			else
 			{
 				//find the difference from transform of instance and root
 				_dif_pos = _pos - glm::vec3(this->transform.position[0], this->transform.position[1], this->transform.position[2]);
 				_dif_rot = _rot - glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
-				_model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
+				_model_to_clip_matrix = this->_projection_view * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
 			}
 
-			wolf::logger.write("pre updating ins " + _ins.name);
-			pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
-			if (pMaskedOcclusionCulling.render_triangles_async(
+			//wolf::logger.write("pre updating ins " + _ins.name);
+			//pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
+			if (pMaskedOcclusionCulling.render_triangles(
 				(float*)&_iter.vertices[0],
 				_iter.indices.data(),
-				_iter.num_of_tris_for_moc) == W_PASSED)
+				_iter.num_of_tris_for_moc,
+				(float*)(&_model_to_clip_matrix[0])) == W_PASSED)
 			{
 				_hr = W_PASSED;
 			}
@@ -349,31 +346,30 @@ W_RESULT model::pre_update(_In_ wolf::framework::w_first_person_camera& pCamera,
 	return _hr;
 }
 
-W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling)
+W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pMaskedOcclusionCulling, _In_ long& pVisibleMeshes)
 {
 	W_RESULT _add_to_render_models_queue = W_FAILED;
-
-	return W_PASSED;
-
+	
 	glm::mat4 _model_to_clip_matrix;
 	//check bounding boxes of root model from Masked Occlusion culling
 	MaskedOcclusionCulling::CullingResult _culling_result;
 	for (auto& _iter : this->_mocs)
 	{
-		_model_to_clip_matrix = this->_view_projection * glm::translate(_iter.position) * glm::rotate(_iter.rotation);
-		wolf::logger.write("post updating model" + get_model_name());
-		pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
-		_culling_result = pMaskedOcclusionCulling.test_triangles_async(
+		_model_to_clip_matrix = this->_projection_view * glm::translate(_iter.position) * glm::rotate(_iter.rotation);
+		//wolf::logger.write("post updating model" + get_model_name());
+		//pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
+		_culling_result = pMaskedOcclusionCulling.test_triangles(
 			(float*)&_iter.vertices[0],
 			_iter.indices.data(),
-			_iter.num_of_tris_for_moc);
+			_iter.num_of_tris_for_moc,
+			(float*)(&_model_to_clip_matrix[0]));
 
 		//if at least one of the bounding boxes is visible, break this loop
 		if (_culling_result == MaskedOcclusionCulling::VISIBLE)
 		{
 			this->visibilities[0][0] = 1.0f;
 			_add_to_render_models_queue = W_PASSED;
-			//pVisibleSubModels++;
+			pVisibleMeshes++;
 			break;
 		}
 		else
@@ -404,22 +400,23 @@ W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pM
 			if (this->_mocs.size() == 1)
 			{
 				//use transform of instance model
-				_model_to_clip_matrix = _view_projection * glm::translate(_pos) * glm::rotate(_rot);
+				_model_to_clip_matrix = this->_projection_view * glm::translate(_pos) * glm::rotate(_rot);
 			}
 			else
 			{
 				//find the difference from transform of instance and root
 				_dif_pos = _pos - glm::vec3(this->transform.position[0], this->transform.position[1], this->transform.position[2]);
 				_dif_rot = _rot - glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
-				_model_to_clip_matrix = _view_projection * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
+				_model_to_clip_matrix = this->_projection_view * glm::translate(_iter.position + _dif_pos) * glm::rotate(_iter.rotation + _dif_rot);
 			}
 
-			wolf::logger.write("pre updating ins " + _ins->name);
-			pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
-			_culling_result = pMaskedOcclusionCulling.test_triangles_async(
+			//wolf::logger.write("pre updating ins " + _ins->name);
+			//pMaskedOcclusionCulling.set_matrix((float*)(&_model_to_clip_matrix[0]));
+			_culling_result = pMaskedOcclusionCulling.test_triangles(
 				(float*)&_iter.vertices[0],
 				_iter.indices.data(),
-				_iter.num_of_tris_for_moc);
+				_iter.num_of_tris_for_moc,
+				(float*)(&_model_to_clip_matrix[0]));
 
 			int _indexer = i + 1;
 			int _base_index = _indexer / 4;
@@ -428,7 +425,7 @@ W_RESULT model::post_update(_In_ wolf::framework::w_masked_occlusion_culling& pM
 			{
 				this->visibilities[_base_index][_sec_index] = 1.0f;
 				_add_to_render_models_queue = W_PASSED;
-				//pVisibleSubModels++;
+				pVisibleMeshes++;
 				break;
 			}
 			else
