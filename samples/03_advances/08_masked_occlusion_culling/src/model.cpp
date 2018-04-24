@@ -248,8 +248,10 @@ bool model::check_is_in_sight(_In_ wolf::framework::w_first_person_camera* pCame
 		{
 			if (_found) break;
 			
+			auto _sphere = w_bounding_sphere::create_from_bounding_box(this->sub_meshes_bounding_box[i]);
+			auto _contains = _sphere.contains(_camera_pos);
 			//if bounding box contains camera or camera frustum contain bounding box means in sight
-			if (_camera_frustum.intersects(this->sub_meshes_bounding_box[i]))
+			if (_contains == w_containment_type::CONTAINS ||_camera_frustum.intersects(this->sub_meshes_bounding_box[i]))
 			{
 				_found = true;
 				break;

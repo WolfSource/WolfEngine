@@ -109,7 +109,7 @@ private:
 	wolf::framework::w_masked_occlusion_culling						_masked_occlusion_culling;
 	wolf::graphics::w_texture*										_masked_occlusion_culling_debug_frame;
 	long															_visible_meshes;
-	//tbb::concurrent_vector<model*>									_visible_models;
+	tbb::concurrent_vector<model*>									_visible_models;
 	std::vector<model*>												_drawable_models;
 	std::vector<model*>												_searched_models;
 

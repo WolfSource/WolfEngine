@@ -437,22 +437,22 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 		//clear all
 		this->_visible_meshes = 0;
-		//this->_visible_models.clear();
+		this->_visible_models.clear();
 		this->_drawable_models.clear();
 
 		//test all bounding boxes of models with camera frustom
-		//tbb::parallel_for(
-		//	tbb::blocked_range<size_t>(0, this->_scene_models.size()),
-		//	[&](const tbb::blocked_range<size_t>& pRange)
-		//{
-		//	for (size_t i = pRange.begin(); i < pRange.end(); ++i)
-		//	{
-		//		if (this->_scene_models[i] && this->_scene_models[i]->check_is_in_sight(&this->_first_camera))
-		//		{
-		//			this->_visible_models.push_back(this->_scene_models[i]);
-		//		}
-		//	}
-		//});
+		tbb::parallel_for(
+			tbb::blocked_range<size_t>(0, this->_scene_models.size()),
+			[&](const tbb::blocked_range<size_t>& pRange)
+		{
+			for (size_t i = pRange.begin(); i < pRange.end(); ++i)
+			{
+				if (this->_scene_models[i] && this->_scene_models[i]->check_is_in_sight(&this->_first_camera))
+				{
+					this->_visible_models.push_back(this->_scene_models[i]);
+				}
+			}
+		});
 
 		//now check for masked occlusion culling
 		bool _need_post_check = false;
@@ -460,7 +460,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_masked_occlusion_culling.clear_buffer();
 
 		auto _projection_view = this->_first_camera.get_projection_view();
-		std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
+		std::for_each(this->_visible_models.begin(), this->_visible_models.end(), [&](_In_ model* pModel)
 		{
 			if (pModel &&
 				pModel->pre_update(_projection_view, this->_masked_occlusion_culling) == W_PASSED)
@@ -473,7 +473,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		if (_need_post_check)
 		{
 			//post update stage for all visible models to find drawable models
-			std::for_each(this->_scene_models.begin(), this->_scene_models.end(), [&](_In_ model* pModel)
+			std::for_each(this->_visible_models.begin(), this->_visible_models.end(), [&](_In_ model* pModel)
 			{
 				if (pModel &&
 					pModel->post_update(this->_masked_occlusion_culling, this->_visible_meshes) == W_PASSED)
@@ -669,10 +669,11 @@ void scene::_show_floating_debug_window()
 	auto _cam_position = this->_first_camera.get_translate();
 	auto _cam_interest = this->_first_camera.get_interest();
 
-	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nInFrustumVisibleModels:%d\r\nVisibleMeshes:%d\r\nCamera Position:%.1f,%.1f,%.1f\r\nCamera LookAt:%.1f,%.1f,%.1f\r\n",
+	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nInFrustumVisibleModels:%d\r\nDrawingModels:%d\r\nVisibleMeshes:%d\r\nCamera Position:%.1f,%.1f,%.1f\r\nCamera LookAt:%.1f,%.1f,%.1f\r\n",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec,
+		this->_visible_models.size(),
 		this->_drawable_models.size(),
 		this->_visible_meshes,
 		_cam_position.x, _cam_position.y, _cam_position.z,

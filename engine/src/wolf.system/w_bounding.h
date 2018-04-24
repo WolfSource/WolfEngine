@@ -47,7 +47,7 @@ namespace wolf
 			WSYS_EXP w_containment_type contains(_In_ const w_bounding_box& pBox);
 			WSYS_EXP w_containment_type contains(_In_ const w_bounding_sphere& pSphere);
 			WSYS_EXP void get_corners(_Inout_ std::array<glm::vec3, 8>& pCorners);
-
+			WSYS_EXP glm::vec3 get_center() const;
 			MSGPACK_DEFINE(min, max, position, rotation);
 
 #ifdef __PYTHON__
@@ -109,6 +109,7 @@ namespace wolf
 			WSYS_EXP void merge(_In_ const w_bounding_sphere& pAdditional);
 			WSYS_EXP bool intersects(_In_ const w_bounding_sphere& pSphere);
 			WSYS_EXP bool intersects(_In_ const w_bounding_box& pBox);
+			WSYS_EXP w_containment_type contains(_In_ const glm::vec3& pPoit);
 
 			MSGPACK_DEFINE(center, radius);
 

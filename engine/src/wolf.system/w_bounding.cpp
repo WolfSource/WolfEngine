@@ -178,6 +178,22 @@ void w_bounding_box::get_corners(_Inout_ std::array<glm::vec3, 8>& pCorners)
     pCorners[7].z = this->min[2];
 }
 
+glm::vec3 w_bounding_box::get_center() const
+{
+	//check with center
+	glm::vec3 _center;
+	glm::vec3 _min(this->min[0], this->min[1], this->min[2]);
+	glm::vec3 _max(this->max[0], this->max[1], this->max[2]);
+
+	//apply lerp to calculate center
+	const float _lerp_amount = 0.5f;
+	_center.x = _min.x + ((_max.x - _min.x) * _lerp_amount);
+	_center.y = _min.y + ((_max.y - _min.y) * _lerp_amount);
+	_center.z = _min.z + ((_max.z - _min.z) * _lerp_amount);
+
+	return _center;
+}
+
 #pragma endregion
 
 #pragma region bounding sphere
@@ -261,6 +277,20 @@ bool w_bounding_sphere::intersects(_In_ const w_bounding_box& pBox)
 
     auto _num = _dis.x * _dis.x + _dis.y * _dis.y + _dis.z * _dis.z;
     return _num <= this->radius * this->radius;
+}
+
+w_containment_type w_bounding_sphere::contains(_In_ const glm::vec3& pPoint)
+{
+	float _num3 = pPoint[0] - this->center[0];
+	float _num2 = pPoint[1] - this->center[1];
+	float _num1 = pPoint[2] - this->center[2];
+
+	auto _distance_squared = _num3 * _num3 + _num2 * _num2 + _num1 * _num1;
+	if (_distance_squared >= (this->radius* this->radius))
+	{
+		return w_containment_type::DISJOINT;
+	}
+	return w_containment_type::CONTAINS;
 }
 
 #pragma endregion
@@ -368,6 +398,10 @@ bool w_bounding_frustum::intersects(_In_ const w_bounding_box& pBoundingBox)
 	std::array<glm::vec3, 8> _corners;
 	_b.get_corners(_corners);
 
+	auto _center = pBoundingBox.get_center();
+	if (intersects(_center)) return true;
+
+	//check with corners
 	for (size_t j = 0; j < _corners.size(); ++j)
 	{
 		if (intersects(_corners[j]))
