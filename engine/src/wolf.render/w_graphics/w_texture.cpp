@@ -113,7 +113,7 @@ namespace wolf
 				std::string _str = wolf::system::convert::wstring_to_string(_path);
 #endif
 
-				if (W_FAILED == system::io::get_is_file(_str.c_str()))
+				if (W_FAILED == system::io::get_is_fileW(_str.c_str()))
 				{
 					wstring msg = L"could not find the texture file: ";
 					V(W_FAILED, msg + _path, this->_name, 3);

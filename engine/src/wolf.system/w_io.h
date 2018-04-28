@@ -149,7 +149,7 @@ namespace wolf
 			}
 
 			//check whether a file does exist or not
-			inline W_RESULT get_is_file(_In_z_ const wchar_t* pPath)
+			inline W_RESULT get_is_fileW(_In_z_ const wchar_t* pPath)
 			{
 				FILE* _file = nullptr;
 				_wfopen_s(&_file, pPath, L"r");
@@ -241,7 +241,7 @@ namespace wolf
 			inline void read_binary_fileW(_In_z_ const wchar_t* pPath, _Inout_ std::vector<uint8_t>& pData,
 				_Out_ int& pFileState)
 			{
-				if (get_is_file(pPath) == W_FAILED)
+				if (get_is_fileW(pPath) == W_FAILED)
 				{
 					pFileState = -1;
 					return;
@@ -570,7 +570,7 @@ namespace wolf
 			*/
 			inline const char* read_text_file(_In_z_ const char* pPath, _Out_ int& pState)
 			{
-				if (!get_is_file(pPath))
+				if (get_is_file(pPath) == W_FAILED)
 				{
 					pState = -1;
 					return nullptr;
@@ -599,6 +599,66 @@ namespace wolf
 				}
 
 				auto _source = new char[_filelength + 1];
+				_source[_filelength] = 0;
+
+				unsigned int _i = 0;
+				while (_file.good())
+				{
+					_source[_i] = _file.get();
+					if (!_file.eof())
+					{
+						_i++;
+					}
+				}
+				_source[_i] = 0;
+
+				//close the file
+				_file.close();
+
+				pState = 1;
+				return _source;
+			}
+
+			/*
+				Read text file from root path
+				pState indicates to state of file and the permission status, the first integer value means :
+					 1 means everything is ok
+					-1 means the file could not be found,
+					-2 means file is exist but it might be corrupted
+					-3 means file is empty
+					-4 means could not open file
+			*/
+			inline const wchar_t* read_text_fileW(_In_z_ const wchar_t* pPath, _Out_ int& pState)
+			{
+				if (get_is_fileW(pPath) == W_FAILED)
+				{
+					pState = -1;
+					return nullptr;
+				}
+
+				std::ifstream _file(pPath, std::ios::in);
+				if (!_file)
+				{
+					//file is exist but it might be corrupted
+					pState = -2;
+					return nullptr;
+				}
+				auto _filelength = get_file_sizeW(pPath);
+				if (_filelength == 0)
+				{
+					//file is empty
+					pState = -3;
+					return L"";
+				}
+
+				if (!_file.is_open())
+				{
+					//could not open file
+					pState = -4;
+					return nullptr;
+				}
+
+				auto _source = new wchar_t[_filelength + 1];
 				_source[_filelength] = 0;
 
 				unsigned int _i = 0;

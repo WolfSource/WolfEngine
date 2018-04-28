@@ -114,6 +114,13 @@ private:
 	std::vector<model*>												_searched_models;
 
 	wolf::graphics::w_shapes*										_shape_coordinate_axis;
+
+	bool															_has_camera_animation;
+	bool															_play_camera_anim;
+	long															_current_camera_time;
+	wolf::system::w_game_time										_camera_time;
+	std::vector<glm::vec3>											_camera_anim_positions;
+	std::vector<glm::vec3>											_camera_anim_targets;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

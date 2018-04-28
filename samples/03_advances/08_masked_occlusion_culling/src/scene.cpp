@@ -53,7 +53,10 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	_searching(false),
 	_show_all_wireframe(false),
 	_show_all_bounding_box(false),
-	_visible_meshes(0)
+	_visible_meshes(0),
+	_has_camera_animation(false),
+	_play_camera_anim(false),
+	_current_camera_time(0)
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
@@ -344,6 +347,55 @@ void scene::load()
 		_cmodels.clear();
 		_scene->release();
 
+
+		//check for wcam if exists
+		auto _wcam = wolf::system::convert::wstring_to_string(wolf::content_path) + "models/sponza/camera.wcam";
+		if (wolf::system::io::get_is_file(_wcam.c_str()) == W_RESULT::W_PASSED)
+		{
+			//read camera animation path
+			int _file_status = 1;
+			auto _cam_anim_str = wolf::system::io::read_text_file(_wcam.c_str(), _file_status);
+			if (_file_status == 1)
+			{
+				//read camera animation
+				std::vector<std::string> _ns;
+				wolf::system::convert::split_string(_cam_anim_str, "\n", _ns);
+
+				if (_ns.size())
+				{
+					//the first line is camera positions
+					std::vector<std::string> _poss;
+
+					std::vector<float> _numbers;
+					wolf::system::convert::split_string(_ns[0], "$", _poss);
+					for (size_t i = 0; i < _poss.size(); ++i)
+					{
+						_numbers.clear();
+
+						wolf::system::convert::split_string_then_convert_to<float>(_poss[i], ",", _numbers);
+						this->_camera_anim_positions.push_back(glm::vec3(_numbers[0], _numbers[1], _numbers[2]));
+					}
+
+					//the second line is camera targets
+					_poss.clear();
+					wolf::system::convert::split_string(_ns[1], "$", _poss);
+					for (size_t i = 0; i < _poss.size(); ++i)
+					{
+						_numbers.clear();
+
+						wolf::system::convert::split_string_then_convert_to<float>(_poss[i], ",", _numbers);
+						this->_camera_anim_targets.push_back(glm::vec3(_numbers[0], _numbers[1], _numbers[2]));
+					}
+
+					_poss.clear();
+					_numbers.clear();
+					_ns.clear();
+				}
+
+				this->_has_camera_animation = true;
+			}
+		}
+
 		//sort models based on model names
 		if (this->_scene_models.size())
 		{
@@ -428,7 +480,27 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		w_point_t _screen_size;
 		_screen_size.x = this->_viewport.width;
 		_screen_size.y = this->_viewport.height;
-		this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
+
+		if (!this->_has_camera_animation || !this->_play_camera_anim)
+		{
+			this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
+		}
+	}
+
+	if (this->_has_camera_animation && this->_play_camera_anim)
+	{
+		this->_camera_time.set_fixed_time_step(true);
+		this->_camera_time.set_target_elapsed_seconds(1 / 30.0f);
+		this->_camera_time.tick([this]()
+		{
+			this->_first_camera.set_translate(this->_camera_anim_positions[this->_current_camera_time]);
+			this->_first_camera.set_interest(this->_camera_anim_targets[this->_current_camera_time]);
+			this->_first_camera.update_view();
+			this->_first_camera.update_frustum();
+
+			this->_current_camera_time = (this->_current_camera_time + 1) % this->_camera_anim_positions.size();
+			this->_force_update_camera = true;
+		});
 	}
 
 	if (this->_force_update_camera)
@@ -759,6 +831,11 @@ void scene::_show_floating_debug_window()
 	if (ImGui::SliderFloat("Camera Movement Speed", &_cam_mov_speed, 100.0f, 10000.0f))
 	{
 		this->_first_camera.set_movement_speed(_cam_mov_speed);
+	}
+
+	if (ImGui::Checkbox("Play Camera Animation", &this->_play_camera_anim))
+	{
+		this->_current_camera_time = 0;
 	}
 
 	ImGui::End();
