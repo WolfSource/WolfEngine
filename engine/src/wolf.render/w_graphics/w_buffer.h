@@ -52,7 +52,7 @@ namespace wolf
 #pragma region Getters
             
 			W_EXP const uint32_t					  get_offset() const;
-			W_EXP const uint32_t					  get_global_offset() const;
+			//W_EXP const uint32_t					  get_global_offset() const;
             W_EXP const uint32_t                      get_size() const;
             W_EXP const uint32_t					  get_usage_flags() const;
             W_EXP const uint32_t				      get_memory_flags() const;

@@ -379,17 +379,28 @@ W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_grap
 	});
 
 	uint32_t _size = (uint32_t)(pDrawCount * sizeof(w_draw_indexed_indirect_command));
-	if (_staging_buffer.allocate_as_staging(pGDevice, _size) == W_FAILED)
+	//if (_staging_buffer.allocate_as_staging(pGDevice, _size) == W_FAILED)
+	//{
+	//	V(W_FAILED, "loading staging buffer of indirect_draw_commands", _trace_info, 3);
+	//	return W_FAILED;
+	//}
+
+	if (_staging_buffer.allocate(
+		pGDevice,
+		_size,
+		VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+		w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY,
+		false) == W_FAILED)
 	{
 		V(W_FAILED, "loading staging buffer of indirect_draw_commands", _trace_info, 3);
 		return W_FAILED;
 	}
 
-	//if (_staging_buffer.bind() == W_FAILED)
-	//{
-	//	V(W_FAILED, "binding to staging buffer of indirect_draw_commands", _trace_info, 3);
-	//	return W_FAILED;
-	//}
+	if (_staging_buffer.bind() == W_FAILED)
+	{
+		V(W_FAILED, "binding to staging buffer of indirect_draw_commands", _trace_info, 3);
+		return W_FAILED;
+	}
 
 	if (_staging_buffer.set_data(this->drawing_commands.data()) == S_FALSE)
 	{

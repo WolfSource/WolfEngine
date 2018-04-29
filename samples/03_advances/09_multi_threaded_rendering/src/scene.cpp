@@ -58,7 +58,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	_play_camera_anim(false),
 	_current_camera_time(0)
 {
-#if defined(__WIN32) && defined(DEBUG)
+#ifdef __WIN32
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
@@ -243,32 +243,6 @@ void scene::load()
 		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
 	}
 
-	//read all wscene(s) from content folder
-	_load_scenes_from_folder(wolf::content_path + L"models/sponza/");
-
-	//create coordinate system
-	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
-	if (this->_shape_coordinate_axis)
-	{
-		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
-		if (_hr == W_FAILED)
-		{
-			V(W_FAILED, "loading shape coordinate axis", _trace_info, 3);
-		}
-	}
-	else
-	{
-		V(W_FAILED, "allocating memory for shape coordinate axis", _trace_info, 3);
-	}
-}
-
-W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPath)
-{
-	const std::string _trace_info = this->name + "::_load_scenes_from_folder";
-
-	W_RESULT _hr = W_FAILED;
-	auto _gDevice = this->graphics_devices[0];
-
 	//loading pipeline cache
 	std::string _model_pipeline_cache_name = "model_pipeline_cache";
 	if (w_pipeline::create_pipeline_cache(_gDevice, _model_pipeline_cache_name) == W_FAILED)
@@ -295,158 +269,160 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 	w_vertex_binding_attributes _basic_vertex_binding_attributes(_basic_vertex_declaration);
 	w_vertex_binding_attributes _instance_vertex_binding_attributes(_instance_vertex_declaration);
 
-	const auto _instanced_vertex_shader_path = shared::scene_content_path + L"shaders/instance.vert.spv";
-	const auto _basic_vertex_shader_path = shared::scene_content_path + L"shaders/basic.vert.spv";
-	const auto _fragment_shader_path = shared::scene_content_path + L"shaders/shader.frag.spv";
+	auto _instanced_vertex_shader_path = shared::scene_content_path + L"shaders/instance.vert.spv";
+	auto _basic_vertex_shader_path = shared::scene_content_path + L"shaders/basic.vert.spv";
+	auto _fragment_shader_path = shared::scene_content_path + L"shaders/shader.frag.spv";
 
-	std::vector<std::wstring> _file_names;
-	wolf::system::io::get_files_folders_in_directoryW(pDirectoryPath, _file_names);
-	for (auto& _file_name : _file_names)
+	//load collada scene
+	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.wscene");
+	if (_scene)
 	{
-		if (wolf::system::io::get_file_extentionW(_file_name) != L".wscene") continue;
+		//get first camera
+		_scene->get_first_camera(this->_first_camera);
+		float _near_plan = 0.1f, far_plan = 100000;
 
-		auto _scene = w_content_manager::load<w_cpipeline_scene>(_file_name);
-		if (_scene)
-		{
-			//get first camera
-			_scene->get_first_camera(this->_first_camera);
-			float _near_plan = 0.1f, far_plan = 100000;
+		this->_first_camera.set_near_plan(_near_plan);
+		this->_first_camera.set_far_plan(far_plan);
+		this->_first_camera.set_aspect_ratio(this->_viewport.width / this->_viewport.height);
+		this->_first_camera.set_rotation_speed(1.0f);
+		this->_first_camera.set_movement_speed(3000.0f);
 
-			this->_first_camera.set_near_plan(_near_plan);
-			this->_first_camera.set_far_plan(far_plan);
-			this->_first_camera.set_aspect_ratio(this->_viewport.width / this->_viewport.height);
-			this->_first_camera.set_rotation_speed(1.0f);
-			this->_first_camera.set_movement_speed(3000.0f);
+		this->_first_camera.update_view();
+		this->_first_camera.update_projection();
+		this->_first_camera.update_frustum();
 
-			this->_first_camera.update_view();
-			this->_first_camera.update_projection();
-			this->_first_camera.update_frustum();
+		this->_masked_occlusion_culling.set_near_clip(_near_plan);
+		this->_masked_occlusion_culling.set_resolution(this->_viewport.width, this->_viewport.height);
+		//this->_masked_occlusion_culling.suspend_threads();
 
-			this->_masked_occlusion_culling.set_near_clip(_near_plan);
-			this->_masked_occlusion_culling.set_resolution(this->_viewport.width, this->_viewport.height);
-			//this->_masked_occlusion_culling.suspend_threads();
+		//get all models
+		std::vector<w_cpipeline_model*> _cmodels;
+		_scene->get_all_models(_cmodels);
 
-			//get all models
-			std::vector<w_cpipeline_model*> _cmodels;
-			_scene->get_all_models(_cmodels);
-
-			std::wstring _vertex_shader_path;
-			int index = 0;
-			for (auto _m : _cmodels)
+		std::wstring _vertex_shader_path;
+		for (auto _m : _cmodels)
+		{			
+			model* _model = nullptr;
+			if (_m->get_instances_count())
 			{
-				model* _model = nullptr;
-				if (_m->get_instances_count())
-				{
-					_vertex_shader_path = _instanced_vertex_shader_path;
-					_model = new (std::nothrow) model(_m, _instance_vertex_binding_attributes);
-				}
-				else
-				{
-					_vertex_shader_path = _basic_vertex_shader_path;
-					_model = new (std::nothrow) model(_m, _basic_vertex_binding_attributes);
-				}
+				_vertex_shader_path = _instanced_vertex_shader_path;
+				_model = new (std::nothrow) model(_m, _instance_vertex_binding_attributes);
+			}
+			else
+			{
+				_vertex_shader_path = _basic_vertex_shader_path;
+				_model = new (std::nothrow) model(_m, _basic_vertex_binding_attributes);
+			}
 
-				if (!_model)
-				{
-					V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
-					continue;
-				}
+			if (!_model)
+			{
+				V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
+				continue;
+			}
 
-				_hr = _model->initialize();
+			_hr = _model->initialize();
+			if (_hr == W_FAILED)
+			{
+				V(W_FAILED, "initializing model: " + _m->get_name(), _trace_info, 2);
+				continue;
+			}
+			else
+			{
+				_hr = _model->load(
+					_gDevice,
+					_model_pipeline_cache_name,
+					_model_compute_pipeline_cache_name,
+					_vertex_shader_path,
+					_fragment_shader_path,
+					this->_draw_render_pass);
 				if (_hr == W_FAILED)
 				{
-					V(W_FAILED, "initializing model: " + _m->get_name(), _trace_info, 2);
+					V(W_FAILED, "loading model: " + _m->get_name(), _trace_info, 2);
 					continue;
 				}
-				else
-				{
-					_hr = _model->load(
-						_gDevice,
-						_model_pipeline_cache_name,
-						_model_compute_pipeline_cache_name,
-						_vertex_shader_path,
-						_fragment_shader_path,
-						this->_draw_render_pass);
-					if (_hr == W_FAILED)
-					{
-						V(W_FAILED, "loading model: " + _m->get_name(), _trace_info, 2);
-						continue;
-					}
-				}
-
-				this->_scene_models.push_back(_model);
 			}
-			_cmodels.clear();
-			_scene->release();
-		}
-	}
 
-	//check for wcam if exists
-	auto _wcam = wolf::system::convert::wstring_to_string(pDirectoryPath) + "camera.wcam";
-	if (wolf::system::io::get_is_file(_wcam.c_str()) == W_RESULT::W_PASSED)
-	{
-		//read camera animation path
-		int _file_status = 1;
-		auto _cam_anim_str = wolf::system::io::read_text_file(_wcam.c_str(), _file_status);
-		if (_file_status == 1)
+			this->_scene_models.push_back(_model);
+		}
+		_cmodels.clear();
+		_scene->release();
+
+
+		//check for wcam if exists
+		auto _wcam = wolf::system::convert::wstring_to_string(wolf::content_path) + "models/sponza/camera.wcam";
+		if (wolf::system::io::get_is_file(_wcam.c_str()) == W_RESULT::W_PASSED)
 		{
-			//read camera animation
-			std::vector<std::string> _ns;
-			wolf::system::convert::split_string(_cam_anim_str, "\n", _ns);
-
-			if (_ns.size())
+			//read camera animation path
+			int _file_status = 1;
+			auto _cam_anim_str = wolf::system::io::read_text_file(_wcam.c_str(), _file_status);
+			if (_file_status == 1)
 			{
-				//the first line is camera positions
-				std::vector<std::string> _poss;
+				//read camera animation
+				std::vector<std::string> _ns;
+				wolf::system::convert::split_string(_cam_anim_str, "\n", _ns);
 
-				std::vector<float> _numbers;
-				wolf::system::convert::split_string(_ns[0], "$", _poss);
-				for (size_t i = 0; i < _poss.size(); ++i)
+				if (_ns.size())
 				{
-					_numbers.clear();
+					//the first line is camera positions
+					std::vector<std::string> _poss;
 
-					wolf::system::convert::split_string_then_convert_to<float>(_poss[i], ",", _numbers);
-					this->_camera_anim_positions.push_back(glm::vec3(_numbers[0], _numbers[1], _numbers[2]));
+					std::vector<float> _numbers;
+					wolf::system::convert::split_string(_ns[0], "$", _poss);
+					for (size_t i = 0; i < _poss.size(); ++i)
+					{
+						_numbers.clear();
+
+						wolf::system::convert::split_string_then_convert_to<float>(_poss[i], ",", _numbers);
+						this->_camera_anim_positions.push_back(glm::vec3(_numbers[0], _numbers[1], _numbers[2]));
+					}
+
+					//the second line is camera targets
+					_poss.clear();
+					wolf::system::convert::split_string(_ns[1], "$", _poss);
+					for (size_t i = 0; i < _poss.size(); ++i)
+					{
+						_numbers.clear();
+
+						wolf::system::convert::split_string_then_convert_to<float>(_poss[i], ",", _numbers);
+						this->_camera_anim_targets.push_back(glm::vec3(_numbers[0], _numbers[1], _numbers[2]));
+					}
+
+					_poss.clear();
+					_numbers.clear();
+					_ns.clear();
 				}
 
-				//the second line is camera targets
-				_poss.clear();
-				wolf::system::convert::split_string(_ns[1], "$", _poss);
-				for (size_t i = 0; i < _poss.size(); ++i)
-				{
-					_numbers.clear();
-
-					wolf::system::convert::split_string_then_convert_to<float>(_poss[i], ",", _numbers);
-					this->_camera_anim_targets.push_back(glm::vec3(_numbers[0], _numbers[1], _numbers[2]));
-				}
-
-				_poss.clear();
-				_numbers.clear();
-				_ns.clear();
+				this->_has_camera_animation = true;
 			}
+		}
 
-			this->_has_camera_animation = true;
+		//sort models based on model names
+		if (this->_scene_models.size())
+		{
+			std::sort(
+				this->_scene_models.begin(),
+				this->_scene_models.end(),
+				[](_In_ model* p1, _In_ model* p2)
+			{
+				return p1->get_model_name().compare(p2->get_model_name()) <= 0;
+			});
 		}
 	}
 
-	//sort models based on model names
-	//if (this->_scene_models.size())
-	//{
-	//	std::sort(
-	//		this->_scene_models.begin(),
-	//		this->_scene_models.end(),
-	//		[](_In_ model* p1, _In_ model* p2)
-	//	{
-	//		if (p1 && p2)
-	//		{
-	//			return p1->get_model_name().compare(p2->get_model_name()) <= 0;
-	//		}
-	//		return true;
-	//	});
-	//}
-
-
-	return _hr;
+	//create coordinate system
+	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
+	if (this->_shape_coordinate_axis)
+	{
+		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+		if (_hr == W_FAILED)
+		{
+			V(W_FAILED, "loading shape coordinate axis", _trace_info, 3);
+		}
+	}
+	else
+	{
+		V(W_FAILED, "allocating memory for shape coordinate axis", _trace_info, 3);
+	}
 }
 
 W_RESULT scene::_build_draw_command_buffers()
@@ -552,50 +528,46 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 
 		//now check for masked occlusion culling
 		bool _need_post_check = false;
+		//this->_masked_occlusion_culling.wake_threads();
+		this->_masked_occlusion_culling.clear_buffer();
 
-		if (_visible_models.size())
+		auto _projection_view = this->_first_camera.get_projection_view();
+		std::for_each(this->_visible_models.begin(), this->_visible_models.end(), [&](_In_ model* pModel)
 		{
-			//this->_masked_occlusion_culling.wake_threads();
-			this->_masked_occlusion_culling.clear_buffer();
+			if (pModel &&
+				pModel->pre_update(_projection_view, this->_masked_occlusion_culling) == W_PASSED)
+			{
+				_need_post_check = true;
+			}
+		});
 
-			auto _projection_view = this->_first_camera.get_projection_view();
+		//this->_masked_occlusion_culling.flush();
+		if (_need_post_check)
+		{
+			//post update stage for all visible models to find drawable models
 			std::for_each(this->_visible_models.begin(), this->_visible_models.end(), [&](_In_ model* pModel)
 			{
 				if (pModel &&
-					pModel->pre_update(_projection_view, this->_masked_occlusion_culling) == W_PASSED)
+					pModel->post_update(this->_masked_occlusion_culling, this->_visible_meshes) == W_PASSED)
 				{
-					_need_post_check = true;
+					this->_drawable_models.push_back(pModel);
 				}
 			});
 
-			//this->_masked_occlusion_culling.flush();
-			if (_need_post_check)
+			if (_show_moc_debug)
 			{
-				//post update stage for all visible models to find drawable models
-				std::for_each(this->_visible_models.begin(), this->_visible_models.end(), [&](_In_ model* pModel)
+				auto _moc_debug_depth_frame = this->_masked_occlusion_culling.get_debug_frame(true);
+				if (_moc_debug_depth_frame)
 				{
-					if (pModel &&
-						pModel->post_update(this->_masked_occlusion_culling, this->_visible_meshes) == W_PASSED)
+					if (this->_masked_occlusion_culling_debug_frame->copy_data_to_texture_2D(_moc_debug_depth_frame) == W_FAILED)
 					{
-						this->_drawable_models.push_back(pModel);
-					}
-				});
-
-				if (_show_moc_debug)
-				{
-					auto _moc_debug_depth_frame = this->_masked_occlusion_culling.get_debug_frame(true);
-					if (_moc_debug_depth_frame)
-					{
-						if (this->_masked_occlusion_culling_debug_frame->copy_data_to_texture_2D(_moc_debug_depth_frame) == W_FAILED)
-						{
-							V(W_FAILED, "copying data to texture of masked occlusion culling debug frame", _trace_info, 2);
-						}
+						V(W_FAILED, "copying data to texture of masked occlusion culling debug frame", _trace_info, 2);
 					}
 				}
 			}
-			this->_rebuild_command_buffer = true;
-			//this->_masked_occlusion_culling.suspend_threads();
 		}
+		this->_rebuild_command_buffer = true;
+		//this->_masked_occlusion_culling.suspend_threads();
 
 		//update shape coordinate
 		auto _world = glm::mat4(1) * glm::scale(glm::vec3(20.0f));

@@ -45,6 +45,7 @@
 #include <algorithm>
 #include <iterator>
 #include <sys/stat.h>
+#include <filesystem>
 
 namespace wolf
 {
@@ -528,6 +529,15 @@ namespace wolf
 				return _base_name;
 			}
 
+			inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
+			{
+				pPaths.clear();
+				for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+				{
+					pPaths.push_back(_file_name.path());
+				}
+			}
+			
 			//Get parent directory 
 			inline std::string get_parent_directory(_In_z_ std::string pPath)
 			{

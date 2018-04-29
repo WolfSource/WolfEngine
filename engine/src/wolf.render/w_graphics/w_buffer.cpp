@@ -5,6 +5,8 @@
 #include "w_command_buffers.h"
 #include <glm_extension.h>
 
+static std::mutex _mutex;
+
 namespace wolf
 {
     namespace graphics
@@ -82,7 +84,7 @@ namespace wolf
 						VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,             // Type
 						nullptr,                                          // Next
 						0,                                                // Flags
-						(VkDeviceSize)pBufferSizeInBytes,               // Size
+						(VkDeviceSize)pBufferSizeInBytes,                 // Size
 						(VkBufferUsageFlags)this->_usage_flags,           // Usage
 						VK_SHARING_MODE_EXCLUSIVE,                        // SharingMode
 						0,                                                // QueueFamilyIndexCount
@@ -142,9 +144,10 @@ namespace wolf
 					this->_memory_allocation_info.size = pBufferSizeInBytes;
 				}
 
+				this->_used_memory_size = pBufferSizeInBytes;
 				this->_descriptor_info.buffer = this->_buffer_handle.handle;
 				this->_descriptor_info.offset = 0;// this->_memory_allocation_info.offset;
-				this->_descriptor_info.range = pBufferSizeInBytes;// this->_memory_allocation_info.size;
+				this->_descriptor_info.range = this->_used_memory_size;//this->_memory_allocation_info.size;
 
 				return W_PASSED;
 			}
@@ -178,19 +181,18 @@ namespace wolf
 			}
 
             //Set data to DRAM
-            W_RESULT set_data(_In_ const void* const pData)
-            {
-                //we can not access to VRAM, but we can copy our data to DRAM
-                if (this->_memory_flag == w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) return W_FAILED;
+			W_RESULT set_data(_In_ const void* const pData)
+			{
+				//we can not access to VRAM, but we can copy our data to DRAM
+				if (this->_memory_flag == w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) return W_FAILED;
 
-                if (map() == nullptr) return W_FAILED;
-                memcpy(this->_map_data, pData, (size_t)this->_memory_allocation_info.size);
-                if (flush() == W_FAILED) return W_FAILED;
+				if (map() == nullptr) return W_FAILED;
+				memcpy(this->_map_data, pData, static_cast<size_t>(this->_used_memory_size));// memory_allocation_info.size);
+				auto _hr = flush();
+				unmap();
 
-                unmap();
-
-                return W_PASSED;
-            }
+				return _hr;
+			}
             
             W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer)
             {
@@ -218,11 +220,14 @@ namespace wolf
                     return _hr;
                 }
 
-				auto _dest_buffer = pDestinationBuffer.get_buffer_handle();
-                auto _copy_cmd = _copy_command_buffer.get_command_at(0);
                 VkBufferCopy _copy_region = {};
-                _copy_region.size = this->_memory_allocation_info.size;
-                vkCmdCopyBuffer(
+				_copy_region.srcOffset = 0;// get_offset();
+				_copy_region.dstOffset = 0;// pDestinationBuffer.get_offset();
+                _copy_region.size = this->_used_memory_size;
+
+				auto _copy_cmd = _copy_command_buffer.get_command_at(0);
+				auto _dest_buffer = pDestinationBuffer.get_buffer_handle();
+				vkCmdCopyBuffer(
                     _copy_cmd.handle,
                     this->_buffer_handle.handle,
 					_dest_buffer.handle,
@@ -280,7 +285,14 @@ namespace wolf
 
             void unmap()
             {
-				this->_gDevice->memory_allocator.unmap(this->_memory_allocation);
+				if (this->_allocated_from_pool)
+				{
+					this->_gDevice->memory_allocator.unmap(this->_memory_allocation);
+				}
+				else
+				{
+					vkUnmapMemory(this->_gDevice->vk_device, this->_memory_allocation_info.deviceMemory);
+				}
 				this->_mapped = false;
                 if (this->_map_data)
                 {
@@ -296,7 +308,7 @@ namespace wolf
 					VkMappedMemoryRange _mem_range = { VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE };
 					_mem_range.memory = this->_memory_allocation_info.deviceMemory;
 					_mem_range.offset = this->_memory_allocation_info.offset;
-					_mem_range.size = this->_memory_allocation_info.size;
+					_mem_range.size = this->_used_memory_size;//this->_memory_allocation_info.size
 					return vkFlushMappedMemoryRanges(this->_gDevice->vk_device, 1, &_mem_range) ? W_FAILED : W_PASSED;
 				}
 				return W_PASSED;
@@ -336,6 +348,8 @@ namespace wolf
 					}
 				}
 
+				this->_used_memory_size = 0;
+
 				return W_PASSED;
 			}
 
@@ -351,18 +365,23 @@ namespace wolf
             
             const uint32_t get_size() const
             {
-				return (uint32_t)this->_descriptor_info.range;// this->_memory_allocation_info.size;
+				return (uint32_t)this->_used_memory_size;
             }
 
-			const uint32_t get_global_offset() const
+			const uint32_t get_global_size() const
 			{
-				return (uint32_t)this->_memory_allocation_info.offset;
+				return (uint32_t)this->_memory_allocation_info.size;
 			}
 
 			const uint32_t get_offset() const
 			{
-				return (uint32_t)this->_descriptor_info.offset;
+				return (uint32_t)this->_memory_allocation_info.offset;
 			}
+
+			//const uint32_t get_global_offset() const
+			//{
+			//	return (uint32_t)this->_memory_allocation_info.offset;
+			//}
 
 			const w_device_memory get_memory() const
 			{
@@ -406,6 +425,7 @@ namespace wolf
 			bool												_allocated_from_pool;
 
 			uint32_t											_memory_property_flags;
+			VkDeviceSize										_used_memory_size;
         };
     }
 }
@@ -521,19 +541,19 @@ const uint32_t w_buffer::get_size() const
     
     return this->_pimp->get_size();
 }
-
-const uint32_t w_buffer::get_global_offset() const
-{
-	if (!this->_pimp) return 0;
-
-	return this->_pimp->get_global_offset();
-}
+//
+//const uint32_t w_buffer::get_global_offset() const
+//{
+//	if (!this->_pimp) return 0;
+//
+//	return this->_pimp->get_global_offset();
+//}
 
 const uint32_t w_buffer::get_offset() const
 {
 	if (!this->_pimp) return 0;
 
-	return this->_pimp->get_offset();
+	return  this->_pimp->get_offset();
 }
 
 const uint32_t w_buffer::get_usage_flags() const

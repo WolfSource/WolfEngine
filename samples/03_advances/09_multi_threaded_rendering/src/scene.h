@@ -71,7 +71,6 @@ private:
 		ImVec2	pos;
 	};
 
-	W_RESULT	_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPath);
 	W_RESULT	_build_draw_command_buffers();
 	void		_show_floating_debug_window();
 	void		_show_floating_moc_debug_window();

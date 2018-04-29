@@ -174,7 +174,7 @@ public:
 						}
 						else if (_dec == w_vertex_attribute::W_SCALE)
 						{
-							_instances_data.push_back(_ins.scale);
+							_instances_data.push_back(1.0f);// _ins.scale[0]);
 						}
 					}
 				}

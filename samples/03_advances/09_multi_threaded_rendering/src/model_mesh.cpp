@@ -496,10 +496,7 @@ void model_mesh::_store_to_batch(
 			}
 			else
 			{
-				if (_find != _textures_index.end())
-				{
-					_texture_uv_index = _find->second;
-				}
+				_texture_uv_index = _find->second;
 			}
 		}
 

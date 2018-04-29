@@ -103,10 +103,22 @@ namespace wolf
                     }
                 }
 
-                if (_copy_DRAM_to_VRAM(pVerticesSizeInBytes, _indices_size) == W_FAILED)
-                {
-                    return W_FAILED;
-                }
+				if (_stagings_buffers.vertices.copy_to(this->_vertex_buffer) == W_FAILED)
+				{
+					return W_FAILED;
+				}
+				if (!_there_is_no_index_buffer)
+				{
+					if (_stagings_buffers.indices.copy_to(this->_index_buffer) == W_FAILED)
+					{
+						return W_FAILED;
+					}
+				}
+
+                //if (_copy_DRAM_to_VRAM(pVerticesSizeInBytes, _indices_size) == W_FAILED)
+                //{
+                //    return W_FAILED;
+                //}
 
                 if (!pUseDynamicBuffer)
                 {
@@ -160,7 +172,23 @@ namespace wolf
                     //V(_hr, "binding staging index buffer", this->_name, 3);
                 }
 
-                return _copy_DRAM_to_VRAM(pVerticesSize, this->_indices_count * sizeof(uint32_t));
+				if (_stagings_buffers.vertices.copy_to(this->_vertex_buffer) == W_FAILED)
+				{
+					V(_hr, "copying staging vertex buffer to gpu vertex buffer", this->_name, 3);
+					return W_FAILED;
+				}
+
+				auto _index_count = this->_indices_count * sizeof(uint32_t);
+				if (_index_count)
+				{
+					if (_stagings_buffers.indices.copy_to(this->_index_buffer) == W_FAILED)
+					{
+						V(_hr, "copying staging index buffer to gpu index buffer", this->_name, 3);
+						return W_FAILED;
+					}
+				}
+
+				return W_PASSED;
             }
 
             W_RESULT draw(
@@ -329,54 +357,55 @@ namespace wolf
 
         private:
             
-            W_RESULT _copy_DRAM_to_VRAM(
-                _In_ const uint32_t pVerticesSize,
-                _In_ const uint32_t pIndicesSize)
-            {
-                //create one command buffer 
-                if (!this->_copy_command_buffer)
-                {
-                    this->_copy_command_buffer = new w_command_buffers();
-                    _copy_command_buffer->load(this->_gDevice, 1);
-                }
+     //       W_RESULT _copy_DRAM_to_VRAM(
+     //           _In_ const uint32_t pVerticesSize,
+     //           _In_ const uint32_t pIndicesSize)
+     //       {
+     //           //create one command buffer 
+     //           if (!this->_copy_command_buffer)
+     //           {
+     //               this->_copy_command_buffer = new w_command_buffers();
+     //               _copy_command_buffer->load(this->_gDevice, 1);
+     //           }
 
-                this->_copy_command_buffer->begin(0);
-                {
-                    auto _copy_cmd = _copy_command_buffer->get_command_at(0);
+     //           this->_copy_command_buffer->begin(0);
+     //           {
+     //               auto _copy_cmd = _copy_command_buffer->get_command_at(0);
 
-                    // Vertex buffer
-                    VkBufferCopy _copy_region = {};
-                    _copy_region.size = pVerticesSize;
-                    vkCmdCopyBuffer(
-                        _copy_cmd.handle,
-                        _stagings_buffers.vertices.get_buffer_handle().handle,
-                        this->_vertex_buffer.get_buffer_handle().handle,
-                        1,
-                        &_copy_region);
+     //               // Vertex buffer
+     //               VkBufferCopy _copy_region = {};
+     //               _copy_region.size = pVerticesSize;
 
-                    if (pIndicesSize)
-                    {
-                        // Index buffer
-                        _copy_region.size = pIndicesSize;
-                        vkCmdCopyBuffer(
-                            _copy_cmd.handle,
-                            _stagings_buffers.indices.get_buffer_handle().handle,
-                            this->_index_buffer.get_buffer_handle().handle,
-                            1,
-                            &_copy_region);
-                    }
+     //               vkCmdCopyBuffer(
+     //                   _copy_cmd.handle,
+     //                   _stagings_buffers.vertices.get_buffer_handle().handle,
+     //                   this->_vertex_buffer.get_buffer_handle().handle,
+     //                   1,
+     //                   &_copy_region);
 
-					_copy_cmd.handle = nullptr;
-                }
+     //               if (pIndicesSize)
+     //               {
+     //                   // Index buffer
+     //                   _copy_region.size = pIndicesSize;
+     //                   vkCmdCopyBuffer(
+     //                       _copy_cmd.handle,
+     //                       _stagings_buffers.indices.get_buffer_handle().handle,
+     //                       this->_index_buffer.get_buffer_handle().handle,
+     //                       1,
+     //                       &_copy_region);
+     //               }
 
-                this->_copy_command_buffer->flush(0);
-                if (!this->_dynamic_buffer)
-                {
-                    SAFE_DELETE(this->_copy_command_buffer);
-                }
+					//_copy_cmd.handle = nullptr;
+     //           }
 
-                return W_PASSED;
-            }
+     //           this->_copy_command_buffer->flush(0);
+     //           if (!this->_dynamic_buffer)
+     //           {
+     //               SAFE_DELETE(this->_copy_command_buffer);
+     //           }
+
+     //           return W_PASSED;
+     //       }
             
             /*
                 Create buffers for rendering.
@@ -434,8 +463,8 @@ namespace wolf
             uint32_t                                            _vertices_count;
             w_texture*                                          _texture;
             w_vertex_binding_attributes                         _vertex_binding_attributes;
-            bool                                                _dynamic_buffer;
             w_command_buffers*                                  _copy_command_buffer;
+			bool                                                _dynamic_buffer;
             struct
             {
                 w_buffer vertices;

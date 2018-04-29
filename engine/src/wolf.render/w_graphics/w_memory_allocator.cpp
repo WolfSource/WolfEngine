@@ -71,7 +71,7 @@ namespace wolf
 				return vmaCreateAllocator(&_allocator_info, &this->_allocator) == VkResult::VK_SUCCESS ? W_PASSED : W_FAILED;
 			}
 			
-			VmaAllocation* allocate_buffer(_In_ VkBufferCreateInfo pCreateInfo, _In_ const VmaMemoryUsage& pMemoryUsage, 
+			VmaAllocation* allocate_buffer(_In_ VkBufferCreateInfo pCreateInfo, _In_ const VmaMemoryUsage& pMemoryUsage,
 				_Inout_ VkBuffer& pBufferHandle,
 				_Inout_ VmaAllocationInfo& pAllocInfo)
 			{
