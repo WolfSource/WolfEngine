@@ -63,6 +63,7 @@ private:
 		ImVec2	pos;
 	};
 
+	W_RESULT	_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPath);
 	W_RESULT	_build_draw_command_buffers();
 	void		_show_floating_debug_window();
 	widget_info	_show_left_widget_controller();
@@ -94,6 +95,13 @@ private:
 	bool															_show_lods;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	
+	bool															_has_camera_animation;
+	bool															_play_camera_anim;
+	long															_current_camera_time;
+	wolf::system::w_game_time										_camera_time;
+	std::vector<glm::vec3>											_camera_anim_positions;
+	std::vector<glm::vec3>											_camera_anim_targets;
 };
 
 #endif

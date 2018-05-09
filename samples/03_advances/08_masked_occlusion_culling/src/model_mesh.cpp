@@ -17,7 +17,8 @@ model_mesh::model_mesh(
 	c_model(pContentPipelineModel),
 	_selected_lod_index(0),
 	_show_wireframe(false),
-	_show_bounding_box(false)
+	_show_bounding_box(false),
+	_is_sky(false)
 {
 }
 
@@ -1466,6 +1467,15 @@ W_RESULT model_mesh::_create_shader_modules(
 		V(W_FAILED, "loading fragment shader uniform 2 for model: " + this->model_name, _trace_info, 3);
 		return W_FAILED;
 	}
+	if (this->_is_sky)
+	{
+		this->_u2.data.cmds = 2;
+		auto _hr = this->_u2.update();
+		if (_hr == W_FAILED)
+		{
+			V(W_FAILED, "updating uniform u2(cmds) for sky: " + this->model_name, _trace_info, 3);
+		}
+	}
 	_shader_param.index = 3;
 	_shader_param.type = w_shader_binding_type::UNIFORM;
 	_shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
@@ -1905,11 +1915,14 @@ void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
 {
 	const std::string _trace_info = this->_name + "::set_enable_instances_colors";
 
-	this->_u2.data.cmds = pEnable ? 1 : 0;
-	auto _hr = this->_u2.update();
-	if (_hr == W_FAILED)
+	if (!this->_is_sky)
 	{
-		V(W_FAILED, "updating uniform u2(cmds) for model: " + this->model_name, _trace_info, 3);
+		this->_u2.data.cmds = pEnable ? 1 : 0;
+		auto _hr = this->_u2.update();
+		if (_hr == W_FAILED)
+		{
+			V(W_FAILED, "updating uniform u2(cmds) for model: " + this->model_name, _trace_info, 3);
+		}
 	}
 }
 

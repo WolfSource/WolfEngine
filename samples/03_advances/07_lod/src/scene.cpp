@@ -47,13 +47,16 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	_show_all(true),
-	_show_lods(false)
+	_show_lods(false),
+	_has_camera_animation(false),
+	_play_camera_anim(false),
+	_current_camera_time(0)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -189,9 +192,19 @@ void scene::load()
 		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
 	}
 
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//The following codes have been added for this project
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	_load_scenes_from_folder(wolf::content_path + L"models/sponza/");
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//The following codes have been added for this project
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPath)
+{
+	const std::string _trace_info = this->name + "::_load_scenes_from_folder";
+
+	W_RESULT _hr = W_FAILED;
+	auto _gDevice = this->graphics_devices[0];
 
 	//loading pipeline cache
 	std::string _model_pipeline_cache_name = "model_pipeline_cache";
@@ -219,86 +232,137 @@ void scene::load()
 	w_vertex_binding_attributes _basic_vertex_binding_attributes(_basic_vertex_declaration);
 	w_vertex_binding_attributes _instance_vertex_binding_attributes(_instance_vertex_declaration);
 
-	auto _instanced_vertex_shader_path = shared::scene_content_path + L"shaders/instance.vert.spv";
-	auto _basic_vertex_shader_path = shared::scene_content_path + L"shaders/basic.vert.spv";
-	auto _fragment_shader_path = shared::scene_content_path + L"shaders/shader.frag.spv";
+	const auto _instanced_vertex_shader_path = shared::scene_content_path + L"shaders/instance.vert.spv";
+	const auto _basic_vertex_shader_path = shared::scene_content_path + L"shaders/basic.vert.spv";
+	const auto _fragment_shader_path = shared::scene_content_path + L"shaders/shader.frag.spv";
 
-	//load collada scene
-	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.wscene");
-	if (_scene)
+	std::vector<std::wstring> _file_names;
+	wolf::system::io::get_files_folders_in_directoryW(pDirectoryPath, _file_names);
+	for (auto& _file_name : _file_names)
 	{
-		//get first camera
-		_scene->get_first_camera(this->_first_camera);
-		float _near_plan = 0.1f, far_plan = 5000;
+		if (wolf::system::io::get_file_extentionW(_file_name) != L".wscene") continue;
 
-		this->_first_camera.set_near_plan(_near_plan);
-		this->_first_camera.set_far_plan(far_plan);
-		this->_first_camera.set_aspect_ratio(this->_viewport.width / this->_viewport.height);
-		this->_first_camera.set_rotation_speed(1.0f);
-		this->_first_camera.set_movement_speed(3000.0f);
+		auto _scene = w_content_manager::load<w_cpipeline_scene>(_file_name);
+		if (_scene)
+		{
+			//get first camera
+			_scene->get_first_camera(this->_first_camera);
+			float _near_plan = 0.1f, far_plan = 100000;
 
-		this->_first_camera.update_view();
-		this->_first_camera.update_projection();
-		this->_first_camera.update_frustum();
+			this->_first_camera.set_near_plan(_near_plan);
+			this->_first_camera.set_far_plan(far_plan);
+			this->_first_camera.set_aspect_ratio(this->_viewport.width / this->_viewport.height);
+			this->_first_camera.set_rotation_speed(1.0f);
+			this->_first_camera.set_movement_speed(3000.0f);
 
-		//get all models
-		std::vector<w_cpipeline_model*> _cmodels;
-		_scene->get_all_models(_cmodels);
+			this->_first_camera.update_view();
+			this->_first_camera.update_projection();
+			this->_first_camera.update_frustum();
 
-		std::wstring _vertex_shader_path;
-		for (auto _m : _cmodels)
-		{			
-			model* _model = nullptr;
-			if (_m->get_instances_count())
+			//get all models
+			std::vector<w_cpipeline_model*> _cmodels;
+			_scene->get_all_models(_cmodels);
+
+			std::wstring _vertex_shader_path;
+			int index = 0;
+			for (auto _m : _cmodels)
 			{
-				_vertex_shader_path = _instanced_vertex_shader_path;
-				_model = new (std::nothrow) model(_m, _instance_vertex_binding_attributes);
-			}
-			else
-			{
-				_vertex_shader_path = _basic_vertex_shader_path;
-				_model = new (std::nothrow) model(_m, _basic_vertex_binding_attributes);
-			}
-
-			if (!_model)
-			{
-				V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
-				continue;
-			}
-
-			if (_model->initialize() == W_FAILED)
-			{
-				V(W_FAILED, "initializing model: " + _m->get_name(), _trace_info, 2);
-				continue;
-			}
-			else
-			{
-				_hr = _model->load(
-					_gDevice,
-					_model_pipeline_cache_name,
-					_model_compute_pipeline_cache_name,
-					_vertex_shader_path,
-					_fragment_shader_path,
-					this->_draw_render_pass);
-				if (_hr == W_FAILED)
+				model* _model = nullptr;
+				if (_m->get_instances_count())
 				{
-					V(W_FAILED, "loading model: " + _m->get_name(), _trace_info, 2);
+					_vertex_shader_path = _instanced_vertex_shader_path;
+					_model = new (std::nothrow) model(_m, _instance_vertex_binding_attributes);
+				}
+				else
+				{
+					_vertex_shader_path = _basic_vertex_shader_path;
+					_model = new (std::nothrow) model(_m, _basic_vertex_binding_attributes);
+				}
+
+				if (!_model)
+				{
+					V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
 					continue;
 				}
+
+				_hr = _model->initialize();
+				if (_hr == W_FAILED)
+				{
+					V(W_FAILED, "initializing model: " + _m->get_name(), _trace_info, 2);
+					continue;
+				}
+				else
+				{
+					_hr = _model->load(
+						_gDevice,
+						_model_pipeline_cache_name,
+						_model_compute_pipeline_cache_name,
+						_vertex_shader_path,
+						_fragment_shader_path,
+						this->_draw_render_pass);
+					if (_hr == W_FAILED)
+					{
+						V(W_FAILED, "loading model: " + _m->get_name(), _trace_info, 2);
+						continue;
+					}
+				}
+
+				this->_models.push_back(_model);
+			}
+			_cmodels.clear();
+			_scene->release();
+		}
+	}
+
+	//check for wcam if exists
+	auto _wcam = wolf::system::convert::wstring_to_string(pDirectoryPath) + "camera.wcam";
+	if (wolf::system::io::get_is_file(_wcam.c_str()) == W_RESULT::W_PASSED)
+	{
+		//read camera animation path
+		int _file_status = 1;
+		auto _cam_anim_str = wolf::system::io::read_text_file(_wcam.c_str(), _file_status);
+		if (_file_status == 1)
+		{
+			//read camera animation
+			std::vector<std::string> _ns;
+			wolf::system::convert::split_string(_cam_anim_str, "\n", _ns);
+
+			if (_ns.size())
+			{
+				//the first line is camera positions
+				std::vector<std::string> _poss;
+
+				std::vector<float> _numbers;
+				wolf::system::convert::split_string(_ns[0], "$", _poss);
+				for (size_t i = 0; i < _poss.size(); ++i)
+				{
+					_numbers.clear();
+
+					wolf::system::convert::split_string_then_convert_to<float>(_poss[i], ",", _numbers);
+					this->_camera_anim_positions.push_back(glm::vec3(_numbers[0], _numbers[1], _numbers[2]));
+				}
+
+				//the second line is camera targets
+				_poss.clear();
+				wolf::system::convert::split_string(_ns[1], "$", _poss);
+				for (size_t i = 0; i < _poss.size(); ++i)
+				{
+					_numbers.clear();
+
+					wolf::system::convert::split_string_then_convert_to<float>(_poss[i], ",", _numbers);
+					this->_camera_anim_targets.push_back(glm::vec3(_numbers[0], _numbers[1], _numbers[2]));
+				}
+
+				_poss.clear();
+				_numbers.clear();
+				_ns.clear();
 			}
 
-			//set view projection
-			_model->set_view_projection_position(
-				this->_first_camera.get_view(),
-				this->_first_camera.get_projection(),
-				this->_first_camera.get_translate());
-			this->_models.push_back(_model);
+			this->_has_camera_animation = true;
 		}
-		_cmodels.clear();
-		_scene->release();
 	}
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	return _hr;
 }
 
 W_RESULT scene::_build_draw_command_buffers()
@@ -361,7 +425,27 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		w_point_t _screen_size;
 		_screen_size.x = this->_viewport.width;
 		_screen_size.y = this->_viewport.height;
-		this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
+
+		if (!this->_has_camera_animation || !this->_play_camera_anim)
+		{
+			this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
+		}
+	}
+
+	if (this->_has_camera_animation && this->_play_camera_anim)
+	{
+		this->_camera_time.set_fixed_time_step(true);
+		this->_camera_time.set_target_elapsed_seconds(1 / 30.0f);
+		this->_camera_time.tick([this]()
+		{
+			this->_first_camera.set_translate(this->_camera_anim_positions[this->_current_camera_time]);
+			this->_first_camera.set_interest(this->_camera_anim_targets[this->_current_camera_time]);
+			this->_first_camera.update_view();
+			this->_first_camera.update_frustum();
+
+			this->_current_camera_time = (this->_current_camera_time + 1) % this->_camera_anim_positions.size();
+			this->_force_update_camera = true;
+		});
 	}
 
 	if (this->_force_update_camera)
@@ -456,7 +540,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	if (_current_selected_model)
+	/*if (_current_selected_model)
 	{
 		if (_current_selected_model->get_instances_count())
 		{
@@ -465,7 +549,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 			logger.write(std::to_string(_result.lod_level[0]));
 			logger.write(std::to_string(_result.lod_level[1]));
 		}
-	}
+	}*/
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	return w_game::render(pGameTime);
@@ -589,6 +673,11 @@ void scene::_show_floating_debug_window()
 			this->_current_selected_model->set_global_visiblity(_checked);
 			this->_rebuild_command_buffer = true;
 		}
+	}
+
+	if (this->_has_camera_animation && ImGui::Checkbox("Play Camera Animation", &this->_play_camera_anim))
+	{
+		this->_current_camera_time = 0;
 	}
 
 	ImGui::End();

@@ -2383,7 +2383,7 @@ If providing your own implementation, you need to implement a subset of std::ato
    Every allocation will have its own memory block.
    Define to 1 for debugging purposes only.
    */
-   #define VMA_DEBUG_ALWAYS_DEDICATED_MEMORY (1)
+   #define VMA_DEBUG_ALWAYS_DEDICATED_MEMORY (0)
 #endif
 
 #ifndef VMA_DEBUG_ALIGNMENT

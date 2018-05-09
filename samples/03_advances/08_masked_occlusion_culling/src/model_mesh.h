@@ -81,6 +81,7 @@ public:
 	void set_show_only_lods(_In_ const bool& pValue);
 	void set_showing_wireframe(_In_ const bool& pValue);
 	void set_show_bounding_box(_In_ const bool& pValue);
+	void set_is_sky(_In_ const bool& pValue) { this->_is_sky = pValue; }
 
 #pragma endregion
 
@@ -222,6 +223,9 @@ private:
 	uint32_t												_selected_lod_index;
 
 	std::vector<wolf::graphics::w_shapes*>					_shapes;
+
+
+	bool													_is_sky;
 };
 
 #endif
