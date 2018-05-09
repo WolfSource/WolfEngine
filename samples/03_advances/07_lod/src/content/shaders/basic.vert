@@ -32,6 +32,8 @@ layout (location = 0) out vec3 o_norm;
 layout (location = 1) out vec2 o_uv;
 layout (location = 2) out flat uint o_texture_mip_map_level;
 layout (location = 3) out vec3 o_color;
+layout (location = 4) out vec3 o_camera_pos;
+layout (location = 5) out vec3 o_world_pos;
 
 void main() 
 {
@@ -42,6 +44,8 @@ void main()
 	gl_Position = u0.projection * u0.view * _world_pos;
 	o_norm =  normalize( ( vec4(i_norm, 0.0)  * _world_view ).xyz );
 	o_uv = i_uv;
+	o_camera_pos = u0.camera_pos.xyz;
+	o_world_pos = _world_pos.xyz;
 
 	//set texture mip map based on position
 	o_texture_mip_map_level = u1.texture_max_mip_maps_max_level - 1;

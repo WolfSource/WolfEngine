@@ -30,27 +30,38 @@ int main()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	//load collada model
-	auto _model_dir = _content_path_dir + L"models/sponza/";
-	auto _scene = w_content_manager::load<w_cpipeline_scene>(_model_dir + L"sponza.DAE");
-	if (_scene)
+	//load all collada models
+	auto _models_dir = _content_path_dir + L"models/sponza/";
+	std::vector<std::wstring> _file_names;
+	wolf::system::io::get_files_folders_in_directoryW(_models_dir, _file_names);
+	for (auto& _file_name : _file_names)
 	{
-		//convert collada model to wscene model
-		printf("start converting\r\n");
-		std::vector<w_cpipeline_scene> _scene_packs = { *_scene };
-		if (w_content_manager::save_wolf_scenes_to_file(_scene_packs, _model_dir + L"/sponza.wscene") == W_PASSED)
+		auto _ext = wolf::system::io::get_file_extentionW(_file_name);
+		if (_ext != L".DAE") continue;
+
+		auto _scene = w_content_manager::load<w_cpipeline_scene>(_file_name);
+		if (_scene)
 		{
-			printf("scene converted\r\n");
+			//convert collada model to wscene model
+			auto _dir = wolf::system::io::get_parent_directoryW(_file_name) + L"\\";
+			auto _name = wolf::system::io::get_base_file_nameW(_file_name);
+
+			printf("start converting: %s\r\n", _file_name);
+			std::vector<w_cpipeline_scene> _scene_packs = { *_scene };
+			if (w_content_manager::save_wolf_scenes_to_file(_scene_packs, _dir + _name + L".wscene") == W_PASSED)
+			{
+				printf("scene %s converted\r\n", _name);
+			}
+			else
+			{
+				printf("error on converting %s\r\n", _name);
+			}
+			_scene->release();
 		}
 		else
 		{
-			printf("error on converting\r\n");
+			std::cout << _file_name.c_str() << L"not exists" << std::endl;
 		}
-		_scene->release();
-	}
-	else
-	{
-		printf("scene not found\r\n");
 	}
 	w_content_manager::release();	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
