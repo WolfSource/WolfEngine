@@ -54,7 +54,7 @@ namespace pyWolf
 			.def_readwrite("name", &w_instance_info::name, "get or set name")
 			.add_property("position", &w_instance_info::py_get_position, &w_instance_info::py_set_position, "get or set position")
 			.add_property("rotation", &w_instance_info::py_get_rotation, &w_instance_info::py_set_rotation, "get or set rotation")
-			.def_readwrite("scale", &w_instance_info::scale, "get or set scale")
+			.add_property("scale", &w_instance_info::py_get_scale, &w_instance_info::py_set_scale, "get or set scale")
 			.def_readwrite("texture_sampler_index", &w_instance_info::texture_sampler_index, "get or set texture sampler index")
 			;
 

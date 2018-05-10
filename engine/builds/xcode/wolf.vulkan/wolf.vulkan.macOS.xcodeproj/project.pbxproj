@@ -46,6 +46,11 @@
 		2C9899701E9B51D6002FE161 /* w_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996E1E9B51D6002FE161 /* w_texture.h */; };
 		2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9899711E9BF6A3002FE161 /* w_buffer.cpp */; };
 		2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9899721E9BF6A3002FE161 /* w_buffer.h */; };
+		2C9E7FC920A4D6DB00B9D492 /* w_masked_occlusion_culling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9E7FC720A4D6DB00B9D492 /* w_masked_occlusion_culling.cpp */; };
+		2C9E7FCA20A4D6DB00B9D492 /* w_masked_occlusion_culling.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9E7FC820A4D6DB00B9D492 /* w_masked_occlusion_culling.h */; };
+		2C9E7FCE20A4D72200B9D492 /* w_memory_allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C9E7FCB20A4D72200B9D492 /* w_memory_allocator.cpp */; };
+		2C9E7FCF20A4D72200B9D492 /* vk_mem_alloc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9E7FCC20A4D72200B9D492 /* vk_mem_alloc.h */; };
+		2C9E7FD020A4D72200B9D492 /* w_memory_allocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C9E7FCD20A4D72200B9D492 /* w_memory_allocator.h */; };
 		2CA945EB1ED9F7CC007B70B8 /* imgui_draw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */; };
 		2CA945EE1ED9F7CC007B70B8 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CA945E91ED9F7CC007B70B8 /* imgui.cpp */; };
 		2CA945EF1ED9F7CC007B70B8 /* imgui.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CA945EA1ED9F7CC007B70B8 /* imgui.h */; };
@@ -111,6 +116,12 @@
 		2C98996E1E9B51D6002FE161 /* w_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_texture.h; path = ../../../src/wolf.render/w_graphics/w_texture.h; sourceTree = "<group>"; };
 		2C9899711E9BF6A3002FE161 /* w_buffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_buffer.cpp; path = ../../../src/wolf.render/w_graphics/w_buffer.cpp; sourceTree = "<group>"; };
 		2C9899721E9BF6A3002FE161 /* w_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_buffer.h; path = ../../../src/wolf.render/w_graphics/w_buffer.h; sourceTree = "<group>"; };
+		2C9E7FC620A4D35C00B9D492 /* MaskedOcclusionCullingCommon.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MaskedOcclusionCullingCommon.inl; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingCommon.inl; sourceTree = "<group>"; };
+		2C9E7FC720A4D6DB00B9D492 /* w_masked_occlusion_culling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_masked_occlusion_culling.cpp; path = ../../../src/wolf.render/w_framework/w_masked_occlusion_culling.cpp; sourceTree = "<group>"; };
+		2C9E7FC820A4D6DB00B9D492 /* w_masked_occlusion_culling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_masked_occlusion_culling.h; path = ../../../src/wolf.render/w_framework/w_masked_occlusion_culling.h; sourceTree = "<group>"; };
+		2C9E7FCB20A4D72200B9D492 /* w_memory_allocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_memory_allocator.cpp; path = ../../../src/wolf.render/w_graphics/w_memory_allocator.cpp; sourceTree = "<group>"; };
+		2C9E7FCC20A4D72200B9D492 /* vk_mem_alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vk_mem_alloc.h; path = ../../../src/wolf.render/w_graphics/vk_mem_alloc.h; sourceTree = "<group>"; };
+		2C9E7FCD20A4D72200B9D492 /* w_memory_allocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_memory_allocator.h; path = ../../../src/wolf.render/w_graphics/w_memory_allocator.h; sourceTree = "<group>"; };
 		2CA5D8492050A6270062AD2A /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../dependencies/vulkan/Mac/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
 		2CA945E61ED9F7CC007B70B8 /* imgui_draw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui_draw.cpp; path = ../../../src/wolf.render/imgui/imgui_draw.cpp; sourceTree = "<group>"; };
 		2CA945E91ED9F7CC007B70B8 /* imgui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = imgui.cpp; path = ../../../src/wolf.render/imgui/imgui.cpp; sourceTree = "<group>"; };
@@ -129,7 +140,6 @@
 		2CF54B11205B977E000B80E3 /* CullingThreadpool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CullingThreadpool.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/CullingThreadpool.cpp; sourceTree = "<group>"; };
 		2CF54B12205B977E000B80E3 /* FrameRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FrameRecorder.h; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/FrameRecorder.h; sourceTree = "<group>"; };
 		2CF54B14205B977E000B80E3 /* FrameRecorder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FrameRecorder.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/FrameRecorder.cpp; sourceTree = "<group>"; };
-		2CF54B15205B977E000B80E3 /* MaskedOcclusionCullingCommon.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MaskedOcclusionCullingCommon.inl; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingCommon.inl; sourceTree = "<group>"; };
 		2CF54B16205B977E000B80E3 /* MaskedOcclusionCullingAVX2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaskedOcclusionCullingAVX2.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingAVX2.cpp; sourceTree = "<group>"; };
 		2CFFAC671FCEAA3F0020A112 /* w_render_target.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_target.h; path = ../../../src/wolf.render/w_graphics/w_render_target.h; sourceTree = "<group>"; };
 		2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_command_buffers.h; path = ../../../src/wolf.render/w_graphics/w_command_buffers.h; sourceTree = "<group>"; };
@@ -158,6 +168,7 @@
 		2C1B3FF31E97DC5300512959 /* w_graphics */ = {
 			isa = PBXGroup;
 			children = (
+				2C9E7FCC20A4D72200B9D492 /* vk_mem_alloc.h */,
 				2C0F36A5200A6BFF001CB2DF /* w_shapes.cpp */,
 				2C0F36A4200A6BFF001CB2DF /* w_shapes.h */,
 				2CFFAC6D1FCEAA400020A112 /* w_command_buffers.cpp */,
@@ -172,6 +183,8 @@
 				2C598C5F1FA231280055D215 /* w_semaphore.h */,
 				2C8D5B691F4F98D1000BCB87 /* w_imgui.cpp */,
 				2C8D5B6A1F4F98D1000BCB87 /* w_imgui.h */,
+				2C9E7FCB20A4D72200B9D492 /* w_memory_allocator.cpp */,
+				2C9E7FCD20A4D72200B9D492 /* w_memory_allocator.h */,
 				2C736BC71ECB710900624CC7 /* w_uniform.h */,
 				2C410E691EAE111A003F2E84 /* w_pipeline.cpp */,
 				2C410E6A1EAE111A003F2E84 /* w_pipeline.h */,
@@ -197,6 +210,8 @@
 				2C299C7E201F9110003C80F7 /* w_first_person_camera.h */,
 				2C29CD1C1EB3344000BEFF54 /* w_game.cpp */,
 				2C29CD1D1EB3344000BEFF54 /* w_game.h */,
+				2C9E7FC720A4D6DB00B9D492 /* w_masked_occlusion_culling.cpp */,
+				2C9E7FC820A4D6DB00B9D492 /* w_masked_occlusion_culling.h */,
 			);
 			name = w_framework;
 			sourceTree = "<group>";
@@ -263,6 +278,7 @@
 		2CF54B0A205B972E000B80E3 /* masked_occlusion_culling */ = {
 			isa = PBXGroup;
 			children = (
+				2C9E7FC620A4D35C00B9D492 /* MaskedOcclusionCullingCommon.inl */,
 				2CF54B0F205B977E000B80E3 /* CompilerSpecific.inl */,
 				2CF54B11205B977E000B80E3 /* CullingThreadpool.cpp */,
 				2CF54B0C205B977E000B80E3 /* CullingThreadpool.h */,
@@ -272,7 +288,6 @@
 				2CF54B10205B977E000B80E3 /* MaskedOcclusionCulling.h */,
 				2CF54B16205B977E000B80E3 /* MaskedOcclusionCullingAVX2.cpp */,
 				2CF54B0D205B977E000B80E3 /* MaskedOcclusionCullingAVX512.cpp */,
-				2CF54B15205B977E000B80E3 /* MaskedOcclusionCullingCommon.inl */,
 			);
 			name = masked_occlusion_culling;
 			sourceTree = "<group>";
@@ -291,6 +306,7 @@
 				2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */,
 				2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */,
 				2C598C691FA268740055D215 /* w_queue.h in Headers */,
+				2C9E7FD020A4D72200B9D492 /* w_memory_allocator.h in Headers */,
 				2C598C611FA231280055D215 /* w_semaphore.h in Headers */,
 				2C9899741E9BF6A3002FE161 /* w_buffer.h in Headers */,
 				2C1B3FF91E97DC6500512959 /* w_shader.h in Headers */,
@@ -302,12 +318,14 @@
 				2CF54B1A205B977E000B80E3 /* MaskedOcclusionCulling.h in Headers */,
 				2C8D5B6E1F4F98D1000BCB87 /* w_imgui.h in Headers */,
 				2C38D9511E79646D00EE8595 /* w_render_export.h in Headers */,
+				2C9E7FCA20A4D6DB00B9D492 /* w_masked_occlusion_culling.h in Headers */,
 				2C598C6E1FA27CC10055D215 /* w_fences.h in Headers */,
 				2C0F36A6200A6C00001CB2DF /* w_shapes.h in Headers */,
 				2C299C80201F9110003C80F7 /* w_first_person_camera.h in Headers */,
 				2C29CD1F1EB3344000BEFF54 /* w_game.h in Headers */,
 				2CF54B1C205B977E000B80E3 /* FrameRecorder.h in Headers */,
 				2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */,
+				2C9E7FCF20A4D72200B9D492 /* vk_mem_alloc.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,9 +389,11 @@
 			files = (
 				2C598C631FA235460055D215 /* w_semaphore.cpp in Sources */,
 				2CA945EB1ED9F7CC007B70B8 /* imgui_draw.cpp in Sources */,
+				2C9E7FCE20A4D72200B9D492 /* w_memory_allocator.cpp in Sources */,
 				2C9899731E9BF6A3002FE161 /* w_buffer.cpp in Sources */,
 				2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */,
 				2C29CD1E1EB3344000BEFF54 /* w_game.cpp in Sources */,
+				2C9E7FC920A4D6DB00B9D492 /* w_masked_occlusion_culling.cpp in Sources */,
 				2C9899651E97EA74002FE161 /* w_mesh.cpp in Sources */,
 				2CF54B1B205B977E000B80E3 /* CullingThreadpool.cpp in Sources */,
 				2C38D9521E79646D00EE8595 /* w_render_pch.cpp in Sources */,

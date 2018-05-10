@@ -45,7 +45,12 @@
 #include <algorithm>
 #include <iterator>
 #include <sys/stat.h>
+
+#if (__cplusplus >= 201703L)//c++17
 #include <filesystem>
+#endif
+
+#include <dirent.h>
 
 namespace wolf
 {
@@ -529,14 +534,32 @@ namespace wolf
 				return _base_name;
 			}
 
-			inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
-			{
-				pPaths.clear();
-				for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
-				{
-					pPaths.push_back(_file_name.path());
-				}
-			}
+#if (__cplusplus >= 201703L)
+            inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
+            {
+                pPaths.clear();
+                
+                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+                {
+                    pPaths.push_back(_file_name.path());
+                }
+            }
+#endif
+            inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
+            {
+                pPaths.clear();
+                
+                DIR* _dir;
+                struct dirent* _ent;
+                if ((_dir = opendir(pDirectoryPath.c_str())) != NULL)
+                {
+                    while ((_ent = readdir(_dir)) != NULL)
+                    {
+                        pPaths.push_back(_ent->d_name);
+                    }
+                    closedir(_dir);
+                }
+            }
 			
 			//Get parent directory 
 			inline std::string get_parent_directory(_In_z_ std::string pPath)
@@ -629,6 +652,7 @@ namespace wolf
 				return _source;
 			}
 
+#ifdef __WIN32
 			/*
 				Read text file from root path
 				pState indicates to state of file and the permission status, the first integer value means :
@@ -688,6 +712,7 @@ namespace wolf
 				pState = 1;
 				return _source;
 			}
+#endif
 
 			/*
 				Read binary file and return array of uint8_t

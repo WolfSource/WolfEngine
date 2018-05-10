@@ -3,6 +3,7 @@
 #include "masked_occlusion_culling/CullingThreadpool.h"
 #include <w_thread.h>
 #include <w_point.h>
+#include <cfloat>
 
 namespace wolf
 {

@@ -1,6 +1,7 @@
 #include "w_render_pch.h"
 #include "w_graphics_device_manager.h"
 #include "w_memory_allocator.h"
+#include <w_aligned_malloc.h>
 
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -20,7 +21,7 @@ static void* custom_cpu_allocation(
 	_In_ VkSystemAllocationScope pAllocationScope)
 {
 	assert(pUserData == CUSTOM_CPU_ALLOCATION_CALLBACK_USER_DATA);
-	return _aligned_malloc(pSize, pAlignment);
+	return aligned_malloc(pSize, pAlignment);
 }
 
 static void* custom_cpu_reallocation(
@@ -28,13 +29,19 @@ static void* custom_cpu_reallocation(
 	VkSystemAllocationScope allocationScope)
 {
 	assert(pUserData == CUSTOM_CPU_ALLOCATION_CALLBACK_USER_DATA);
-	return _aligned_realloc(pOriginal, pSize, pAlignment);
+    
+#ifdef __APPLE__
+    aligned_free(pOriginal);
+	return aligned_alloc(pSize, pAlignment);
+#else
+    return _aligned_realloc(pOriginal, pSize, pAlignment);
+#endif
 }
 
 static void custom_cpu_free(void* pUserData, void* pMemory)
 {
 	assert(pUserData == CUSTOM_CPU_ALLOCATION_CALLBACK_USER_DATA);
-	_aligned_free(pMemory);
+	aligned_free(pMemory);
 }
 
 namespace wolf
@@ -215,12 +222,18 @@ VmaAllocation* w_memory_allocator::allocate_image(_In_ VkImageCreateInfo pCreate
 
 void w_memory_allocator::free_buffer(_In_ VmaAllocation* pAllocation, _Inout_ VkBuffer& pBufferHandle)
 {
-	return this->_pimp ? this->_pimp->free_buffer(pAllocation, pBufferHandle) : nullptr;
+	if(this->_pimp)
+    {
+        this->_pimp->free_buffer(pAllocation, pBufferHandle);
+    }
 }
 
 void w_memory_allocator::free_image(_In_ VmaAllocation* pAllocation, _Inout_ VkImage& pImageHandle)
 {
-	return this->_pimp ? this->_pimp->free_image(pAllocation, pImageHandle) : nullptr;
+	if(this->_pimp)
+    {
+        this->_pimp->free_image(pAllocation, pImageHandle);
+    }
 }
 
 W_RESULT w_memory_allocator::bind(_In_ VmaAllocation* pAllocation, _Inout_ VkBuffer& pBufferHandle)

@@ -107,19 +107,23 @@ namespace wolf
 				auto _ext = get_file_extentionW(_path.c_str());
 				this->_texture_name = get_base_file_nameW(_path.c_str()) + L"." + _ext;
 
+                W_RESULT _hr;
+                
 #if defined(__WIN32) || defined(__UWP)
 				std::wstring _str = _path;
+                _hr = system::io::get_is_fileW(_str.c_str());
 #else
 				std::string _str = wolf::system::convert::wstring_to_string(_path);
+                _hr = system::io::get_is_file(_str.c_str());
 #endif
 
-				if (W_FAILED == system::io::get_is_fileW(_str.c_str()))
-				{
-					wstring msg = L"could not find the texture file: ";
-					V(W_FAILED, msg + _path, this->_name, 3);
-					return W_FAILED;
-				}
-
+                if (_hr == W_FAILED)
+                {
+                    wstring msg = L"could not find the texture file: ";
+                    V(W_FAILED, msg + _path, this->_name, 3);
+                    return W_FAILED;
+                }
+                
 				std::string _g_path;
 
 #if defined(__WIN32) || defined(__UWP)
@@ -202,7 +206,7 @@ namespace wolf
 					return W_FAILED;
 				}
 
-				auto _hr = _create_image();
+				_hr = _create_image();
 				if (_hr == W_FAILED)
 				{
 					if (_rgba)

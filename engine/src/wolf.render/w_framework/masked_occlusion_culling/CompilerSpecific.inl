@@ -57,6 +57,10 @@
 	#include <immintrin.h>
 	#include <new>
 
+#ifdef __APPLE__
+    #include <w_aligned_malloc.h>
+#endif
+
 	#define FORCE_INLINE inline
 
 	FORCE_INLINE unsigned long find_clear_lsb(unsigned int *mask)
@@ -67,9 +71,13 @@
 		return idx;
 	}
 
-	FORCE_INLINE void *aligned_alloc(size_t alignment, size_t size)
+	FORCE_INLINE void* aligned_alloc(size_t alignment, size_t size)
 	{
+#ifdef __APPLE__
+        return aligned_malloc(size, alignment);
+#else
 		return memalign(alignment, size);
+#endif
 	}
 
 	FORCE_INLINE void aligned_free(void *ptr)

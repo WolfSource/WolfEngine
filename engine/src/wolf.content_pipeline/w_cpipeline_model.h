@@ -159,6 +159,9 @@ namespace wolf
 
 			glm::w_vec3		py_get_rotation() { return glm::w_vec3(this->rotation[0], this->rotation[1], this->rotation[2]); }
 			void			py_set_rotation(_In_ glm::w_vec3& pValue) { this->rotation[0] = pValue.get_x(); this->rotation[1] = pValue.get_y(); this->rotation[2] = pValue.get_z(); }
+            
+            glm::w_vec3     py_get_scale() { return glm::w_vec3(this->scale[0], this->scale[1], this->scale[2]); }
+            void            py_set_scale(_In_ glm::w_vec3& pValue) { this->scale[0] = pValue.get_x(); this->scale[1] = pValue.get_y(); this->scale[2] = pValue.get_z(); }
 #endif
         };
 
