@@ -46,11 +46,14 @@
 #include <iterator>
 #include <sys/stat.h>
 
-#if (__cplusplus >= 201703L)//c++17
+//on visual studio or a compiler used c++17(except xcode)
+#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L)
 #include <filesystem>
 #endif
 
+#ifndef _MSC_VER
 #include <dirent.h>
+#endif
 
 namespace wolf
 {
@@ -534,7 +537,7 @@ namespace wolf
 				return _base_name;
 			}
 
-#if (__cplusplus >= 201703L)
+#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L)
             inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
             {
                 pPaths.clear();
@@ -545,6 +548,8 @@ namespace wolf
                 }
             }
 #endif
+
+#ifndef _MSC_VER
             inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
             {
                 pPaths.clear();
@@ -560,6 +565,7 @@ namespace wolf
                     closedir(_dir);
                 }
             }
+#endif
 			
 			//Get parent directory 
 			inline std::string get_parent_directory(_In_z_ std::string pPath)

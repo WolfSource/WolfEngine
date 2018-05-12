@@ -1,7 +1,10 @@
 #include "w_render_pch.h"
 #include "w_graphics_device_manager.h"
 #include "w_memory_allocator.h"
+
+#ifndef __WIN32
 #include <w_aligned_malloc.h>
+#endif
 
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -21,7 +24,12 @@ static void* custom_cpu_allocation(
 	_In_ VkSystemAllocationScope pAllocationScope)
 {
 	assert(pUserData == CUSTOM_CPU_ALLOCATION_CALLBACK_USER_DATA);
+
+#ifdef __WIN32
+	return _aligned_malloc(pSize, pAlignment);
+#else
 	return aligned_malloc(pSize, pAlignment);
+#endif
 }
 
 static void* custom_cpu_reallocation(
@@ -29,19 +37,24 @@ static void* custom_cpu_reallocation(
 	VkSystemAllocationScope allocationScope)
 {
 	assert(pUserData == CUSTOM_CPU_ALLOCATION_CALLBACK_USER_DATA);
-    
-#ifdef __APPLE__
-    aligned_free(pOriginal);
-	return aligned_alloc(pSize, pAlignment);
+
+#ifdef __WIN32
+	return _aligned_realloc(pOriginal, pSize, pAlignment);
 #else
-    return _aligned_realloc(pOriginal, pSize, pAlignment);
+	aligned_free(pOriginal);
+	return aligned_alloc(pSize, pAlignment);
 #endif
 }
 
 static void custom_cpu_free(void* pUserData, void* pMemory)
 {
 	assert(pUserData == CUSTOM_CPU_ALLOCATION_CALLBACK_USER_DATA);
+
+#ifdef __WIN32
+	_aligned_free(pMemory);
+#else
 	aligned_free(pMemory);
+#endif
 }
 
 namespace wolf
