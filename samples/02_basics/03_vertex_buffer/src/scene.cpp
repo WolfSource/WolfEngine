@@ -10,7 +10,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
     
 	w_game::set_fixed_time_step(false);
@@ -244,7 +244,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _output_window = &(_gDevice->output_presentation_window);
 	auto _frame_index = _output_window->swap_chain_image_index;
 
-	std::vector<w_pipeline_stage_flag_bits> _wait_dst_stage_mask =
+	const std::vector<w_pipeline_stage_flag_bits> _wait_dst_stage_mask =
 	{
 		w_pipeline_stage_flag_bits::COLOR_ATTACHMENT_OUTPUT_BIT,
 	};
@@ -259,7 +259,8 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		_wait_dst_stage_mask, //destination masks
 		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
 		{ _output_window->rendering_done_semaphore }, //signal semaphores
-		&this->_draw_fence) == W_FAILED)
+		&this->_draw_fence,
+		false) == W_FAILED)
 	{
 		V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
 	}

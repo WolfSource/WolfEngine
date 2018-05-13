@@ -53,11 +53,11 @@ void scene::load()
 	auto _gDevice = this->graphics_devices[0];
 	auto _output_window = &(_gDevice->output_presentation_window);
 
-	if (this->_media_core.open_media(content_path + L"media/Snow_Monkeys_in_Japan_5K.MKV") == W_FAILED)
+	if (this->_media_core.open_media(content_path + L"media/Snow_Monkeys_in_Japan_5K_30sec.MKV") == W_FAILED)
 	{
 		release();
 		V(W_FAILED,
-			L"opening media from following path " + content_path + L"media/Snow_Monkeys_in_Japan_5K.MKV",
+			L"opening media from following path " + content_path + L"media/Snow_Monkeys_in_Japan_5K_30sec.MKV",
 			_trace_info, 3, true);
 	}
 	this->_media_time.set_fixed_time_step(true);

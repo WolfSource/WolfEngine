@@ -738,17 +738,18 @@ namespace wolf
 
 				auto _data_size = static_cast<uint32_t>(pTextureArrayRGBA.size());
 
-				auto _hResult = this->_staging_buffer.allocate_as_staging(this->_gDevice, _data_size);
+				//do not allocate memory from memory pool for 2D array textures
+				auto _hResult = this->_staging_buffer.allocate_as_staging(this->_gDevice, _data_size, false);
 				if (_hResult == W_FAILED)
 				{
 					return _hResult;
 				}
 
-				//_hResult = this->_staging_buffer.bind();
-				//if (_hResult == W_FAILED)
-				//{
-				//	return _hResult;
-				//}
+				_hResult = this->_staging_buffer.bind();
+				if (_hResult == W_FAILED)
+				{
+					return _hResult;
+				}
 
 				auto _mem_handle = this->_staging_buffer.get_memory().handle;
 				if(vkMapMemory(this->_gDevice->vk_device,

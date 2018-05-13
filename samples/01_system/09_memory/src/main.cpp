@@ -41,18 +41,21 @@ WOLF_MAIN()
     struct my_struct
     {
         int         number;
-        std::string name;
+        char		name[256];
     };
     _length = 20;
 
-	//TODO: Check access violation on some machines
-    auto _new_f = static_cast<my_struct*>(_memory.re_alloc(_length * sizeof(my_struct)));
+	auto _new_f = static_cast<my_struct*>(_memory.re_alloc(_length * sizeof(my_struct)));
 	if (_new_f)
 	{
 		for (size_t i = 0; i < _length; ++i)
 		{
 			_new_f[i].number = 100 + i;
-			_new_f[i].name = "Ryan " + std::to_string(i);
+#if defined(_MSC_VER) 
+			sprintf_s(_new_f[i].name, "Ryan %d", i);
+#else
+			sprintf(_new_f[i].name, "Ryan %d", i);
+#endif
 		}
 	}
 

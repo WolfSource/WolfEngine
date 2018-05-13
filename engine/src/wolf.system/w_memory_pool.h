@@ -16,6 +16,7 @@
 
 #include "w_system_export.h"
 #include "w_std.h"
+#include <w_aligned_malloc.h>
 
 #define __1KB__ 1024
 #define __1MB__ 1024 * __1KB__
@@ -41,27 +42,48 @@ namespace wolf
             }
 
             //Allocate block of memory (in bytes)
-            void* alloc(_In_ size_t pSizeInBytes)
+            void* alloc(_In_ size_t pSizeInBytes, _In_ size_t pAlignment = 16)
             {
                 this->_size_in_bytes = pSizeInBytes;
-                this->_ptr = malloc(pSizeInBytes);
+				this->_alignment = pAlignment;
+
+#if defined(__WIN32) || defined(_MSC_VER) 
+                this->_ptr = _aligned_malloc(pSizeInBytes, pAlignment);
+#else
+				this->_ptr = aligned_malloc(pSizeInBytes, pAlignment);
+#endif
                 return this->_ptr;
             }
 
             //Re-allocate block of memory (in bytes)
-            void* re_alloc(_In_ size_t pSizeInBytes)
-            {
-                this->_size_in_bytes = pSizeInBytes;
-                this->_ptr = realloc(this->_ptr, pSizeInBytes);
-                return this->_ptr;
-            }
+			void* re_alloc(_In_ size_t pSizeInBytes, _In_ size_t pAlignment = 16)
+			{
+				this->_size_in_bytes = pSizeInBytes;
+				this->_alignment = pAlignment;
+
+#if defined(__WIN32) || defined(_MSC_VER) 
+				this->_ptr = _aligned_realloc(this->_ptr, pSizeInBytes, pAlignment);
+#else
+				aligned_free(this->_ptr);
+				this->_ptr = aligned_malloc(pSizeInBytes, pAlignment);
+#endif
+				return this->_ptr;
+			}
             
             //Discard all allocated memory
             ULONG release()
             {
                 if (this->_is_released) return 1;
 
-                free(this->_ptr);
+#if defined(__WIN32) || defined(_MSC_VER) 
+				_aligned_free(this->_ptr);
+#else
+				aligned_free(this->_ptr);
+#endif
+				this->_ptr = nullptr;
+				this->_size_in_bytes = 0;
+				this->_alignment = 0;
+
                 this->_is_released = true;
                 return 0;
             }
@@ -78,6 +100,12 @@ namespace wolf
                 return this->_size_in_bytes;
             }
 
+			//Get alignment of memory
+			const size_t get_alignment() const
+			{
+				return this->_alignment;
+			}
+
 			size_t											write_index = 0;
 			size_t											read_index = 0;
         private:
@@ -87,6 +115,7 @@ namespace wolf
 
             void*                                           _ptr = nullptr;
             size_t                                          _size_in_bytes = 0;
+			size_t                                          _alignment = 0;
             bool                                            _is_released = false;
 		};
 	}

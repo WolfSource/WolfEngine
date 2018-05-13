@@ -230,7 +230,8 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		_wait_dst_stage_mask, //destination masks
 		{ _output_window->swap_chain_image_is_available_semaphore }, //wait semaphores
 		{ _output_window->rendering_done_semaphore }, //signal semaphores
-		&this->_draw_fence) == W_FAILED)
+		&this->_draw_fence,
+		false) == W_FAILED)
 	{
 		V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
 	}
