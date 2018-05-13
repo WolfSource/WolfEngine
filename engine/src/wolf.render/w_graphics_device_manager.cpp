@@ -3720,7 +3720,7 @@ void w_graphics_device_manager::_load_shared_resources()
 		logger.error("Could not allocate memory for texture of logo");
 		return;
 	}
-	for (size_t i = 0; i < _size; ++i)
+	for (int i = 0; i < _size; ++i)
 	{
 		auto _iter = _logo_data.find(i);
 		if (_iter != _logo_data.end())
@@ -3798,8 +3798,8 @@ void w_graphics_device_manager::on_window_resized(_In_ const uint32_t& pGraphics
 	auto _gDevice = this->graphics_devices.at(pGraphicsDeviceIndex);
 	auto _window = &_gDevice->output_presentation_window;
 
-	_window->width = pNewSizeOfWindow.x;
-	_window->height = pNewSizeOfWindow.y;
+	_window->width = static_cast<uint32_t>(pNewSizeOfWindow.x);
+	_window->height =  static_cast<uint32_t>(pNewSizeOfWindow.y);
 
 	_wait_for_previous_frame(_gDevice);
 

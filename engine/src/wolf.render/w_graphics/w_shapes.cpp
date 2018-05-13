@@ -237,7 +237,6 @@ namespace wolf
 					_pipeline_cache_name.clear();
 				}
 
-				auto _descriptor_set_layout_binding = this->_shader.get_descriptor_set_layout();
 				_hr = this->_pipeline.load(_gDevice,
 					this->_shape_drawer.get_vertex_binding_attributes(),
 					w_primitive_topology::LINE_LIST,

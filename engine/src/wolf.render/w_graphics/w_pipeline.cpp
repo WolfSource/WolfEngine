@@ -211,7 +211,7 @@ namespace wolf
 				{
 					_descriptor_set_layouts.push_back(_shader_descriptor_set_layout);
 				}
-                auto _push_const_size = pPushConstantRanges.size();
+                auto _push_const_size = static_cast<uint32_t>(pPushConstantRanges.size());
 
                 VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
                 _pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
