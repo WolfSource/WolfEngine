@@ -36,31 +36,33 @@ int main()
 	wolf::system::io::get_files_folders_in_directoryW(_models_dir, _file_names);
 	for (auto& _file_name : _file_names)
 	{
-		auto _ext = wolf::system::io::get_file_extentionW(_file_name);
-		if (_ext != L".DAE") continue;
+		auto _c_str = wolf::system::convert::wstring_to_string(_file_name).c_str();
+
+		auto _dir = wolf::system::io::get_parent_directoryW(_file_name) + L"\\";
+		auto _name = wolf::system::io::get_file_nameW(_file_name);
+		auto _base_name = wolf::system::io::get_base_file_nameW(_name);
+		auto _ext = wolf::system::io::get_file_extentionW(_name);
+
+		if (_ext.empty() || _ext == L"." || _ext == L".wscene") continue;
 
 		auto _scene = w_content_manager::load<w_cpipeline_scene>(_file_name);
 		if (_scene)
 		{
-			//convert collada model to wscene model
-			auto _dir = wolf::system::io::get_parent_directoryW(_file_name) + L"\\";
-			auto _name = wolf::system::io::get_base_file_nameW(_file_name);
-
-			printf("start converting: %s\r\n", _file_name);
+			printf("start converting: %s\r\n", _c_str);
 			std::vector<w_cpipeline_scene> _scene_packs = { *_scene };
-			if (w_content_manager::save_wolf_scenes_to_file(_scene_packs, _dir + _name + L".wscene") == W_PASSED)
+			if (w_content_manager::save_wolf_scenes_to_file(_scene_packs, _dir + _base_name + L".wscene") == W_PASSED)
 			{
-				printf("scene %s converted\r\n", _name);
+				printf("scene %s converted\r\n", _c_str);
 			}
 			else
 			{
-				printf("error on converting %s\r\n", _name);
+				printf("error on converting %s\r\n", _c_str);
 			}
 			_scene->release();
 		}
 		else
 		{
-			std::cout << _file_name.c_str() << L"not exists" << std::endl;
+			printf("file %s not exists\r\n", _c_str);
 		}
 	}
 	w_content_manager::release();	

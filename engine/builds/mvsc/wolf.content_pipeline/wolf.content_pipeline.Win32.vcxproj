@@ -47,6 +47,7 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\Stripifier.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\tootlelib.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\triorder.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_node.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\vector.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\viewpoints.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\window.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_animation.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.h" />
@@ -247,7 +249,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/assimp/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDLL;__WIN32;UNICODE;_UNICODE;__WOLF_CONTENT_PIPELINE__;GLM_FORCE_DEPTH_ZERO_TO_ONE;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -268,8 +270,8 @@
     </Link>
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/assimp/lib/windows/x64/debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d9.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>

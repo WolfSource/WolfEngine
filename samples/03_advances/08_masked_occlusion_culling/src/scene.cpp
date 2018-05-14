@@ -385,7 +385,7 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 					continue;
 				}
 
-				_model->set_is_sky(_m->get_name() == "SK001");
+				_model->set_is_sky(_m->get_name() == "sky");
 				_hr = _model->initialize();
 				if (_hr == W_FAILED)
 				{

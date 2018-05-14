@@ -43,6 +43,8 @@ static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
 
+static std::once_flag _once_flag;
+
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
 	w_game(pContentPath, pLogPath, pAppName),
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -56,7 +58,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 {
 #ifdef __WIN32
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
 #endif
 
@@ -357,7 +359,12 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		_screen_size.y = this->_viewport.height;
 		this->_force_update_camera = this->_first_camera.update(pGameTime, _screen_size);
 	}
-
+	
+	//first time update all models
+	std::call_once(_once_flag, [this]()
+	{
+		this->_force_update_camera = true;
+	});
 	if (this->_force_update_camera)
 	{
 		this->_force_update_camera = false;
@@ -648,7 +655,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 	ImGui::PushItemWidth(_text_box_width);
 	if (ImGui::InputText("", sSearch, MAX_SEARCH_LENGHT, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
-		printf("Searched entered");
+		logger.write("Searching");
 	}
 	ImGui::PopItemWidth();
 	ImGui::PopStyleColor();

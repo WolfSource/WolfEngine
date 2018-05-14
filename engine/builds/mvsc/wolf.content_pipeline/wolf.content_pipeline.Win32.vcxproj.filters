@@ -31,6 +31,9 @@
     <Filter Include="wavefront">
       <UniqueIdentifier>{44ef1afd-efd4-4b45-a1ff-2baf706db0b2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="assimp">
+      <UniqueIdentifier>{926c8109-6f81-4553-97d0-5b293c9a4a0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp">
@@ -147,6 +150,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.cpp">
       <Filter>wavefront</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.cpp">
+      <Filter>assimp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -348,6 +354,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.h">
       <Filter>wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.h">
+      <Filter>assimp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

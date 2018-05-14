@@ -98,7 +98,7 @@ private:
 	bool															_force_update_camera;
 	wolf::framework::w_first_person_camera							_first_camera;
 	std::vector<model_mesh*>										_models;
-
+	
 	bool															_show_all;
 	bool															_show_all_instances_colors;
 	model_mesh*														_current_selected_model;

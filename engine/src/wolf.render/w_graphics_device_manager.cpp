@@ -1112,7 +1112,7 @@ void w_graphics_device::_clean_swap_chain()
 ULONG w_graphics_device::release()
 {
     //release all resources
-    if (this->_is_released) return 0;
+    if (this->_is_released) return 1;
 
     this->_is_released = true;
 

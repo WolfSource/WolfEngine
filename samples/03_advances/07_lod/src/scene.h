@@ -93,6 +93,8 @@ private:
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	bool															_show_lods;
+	bool															_searching;
+	std::vector<model*>												_searched_models;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	

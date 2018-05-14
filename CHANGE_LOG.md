@@ -2,6 +2,7 @@
 - Forward+
 - DirectX 12
 - Realtime Raytracing
+- DEBUG, RELEASE, MinSizeRelease(does not have assimp)
 
 
 # 1.63.1.0 (2018-04-19)

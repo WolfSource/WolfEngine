@@ -31,11 +31,10 @@ namespace wolf
 
                 int                     type = c_node_type::NONE;
 				bool					proceeded = false;
-				glm::vec3				translate;
-				glm::vec3				scale;
-				glm::vec4				rotation;
+				glm::vec3				translate = glm::vec3(0.0f);
+				glm::vec4				rotation = glm::vec4(0.0f);
+				glm::vec3				scale = glm::vec3(1.0f);
 				glm::mat4				transform;
-				/*std::string				instanced_node_name;*/
 				std::string				instanced_geometry_name = "";
                 std::string				instanced_material_symbol_name = "";
                 std::string				instanced_material_target_name = "";

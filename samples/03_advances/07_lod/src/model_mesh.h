@@ -95,6 +95,7 @@ public:
 	void set_global_visiblity(_In_ const bool& pValue);
 	void set_visiblity(_In_ const bool& pValue, _In_ const uint32_t& pModelInstanceIndex = 0);
 	void set_show_only_lods(_In_ const bool& pValue);
+	void set_is_sky(_In_ const bool& pValue)				{ this->_is_sky = pValue; }
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -225,6 +226,7 @@ private:
 	wolf::graphics::w_buffer								_cs_out_buffer;
 
 	bool													_show_only_lod;
+	bool													_is_sky;
 
 	uint32_t												_selected_lod_index;
 };

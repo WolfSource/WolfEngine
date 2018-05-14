@@ -13,10 +13,11 @@
 #include "w_cpipeline_export.h"
 #include <string>
 #include <w_io.h>
-#include "collada/c_parser.h"
-#include "w_cpipeline_scene.h"
+//#include "collada/c_parser.h"
+//#include "w_cpipeline_scene.h"
 #include <msgpack/msgpack.hpp>
 #include "simplygon/simplygon.h"
+#include <assimp/w_assimp.h>
 
 namespace wolf
 {
@@ -27,73 +28,84 @@ namespace wolf
 		public:
 
 			template<class T>
-            static T* load(std::wstring pAssetPath)
-            {
+			static T* load(std::wstring pAssetPath)
+			{
 #if defined(__WIN32) || defined(__UWP)
-                auto _file_exists = wolf::system::io::get_is_fileW(pAssetPath.c_str());
+				auto _file_exists = wolf::system::io::get_is_fileW(pAssetPath.c_str());
 #else
-                auto _path = wolf::system::convert::wstring_to_string(pAssetPath);
-                auto _file_exists = wolf::system::io::get_is_file(_path.c_str());
+				auto _path = wolf::system::convert::wstring_to_string(pAssetPath);
+				auto _file_exists = wolf::system::io::get_is_file(_path.c_str());
 #endif
-                if (_file_exists == W_FAILED)
-                {
-                    logger.error(L"File asset not available on following path : " + pAssetPath);
-                    return nullptr;
-                }
+				if (_file_exists == W_FAILED)
+				{
+					logger.error(L"File asset not available on following path : " + pAssetPath);
+					return nullptr;
+				}
 
-                auto _extension = wolf::system::io::get_file_extentionW(pAssetPath);
-                auto _name = wolf::system::io::get_base_file_name(wolf::system::convert::wstring_to_string(pAssetPath));
+				auto _extension = wolf::system::io::get_file_extentionW(pAssetPath);
+				auto _name = wolf::system::io::get_base_file_name(wolf::system::convert::wstring_to_string(pAssetPath));
 
-                //to lower
-                std::transform(_extension.begin(), _extension.end(), _extension.begin(), ::tolower);
-                std::string _type(typeid(T).name());
+				//to lower
+				std::transform(_extension.begin(), _extension.end(), _extension.begin(), ::tolower);
+				std::string _type(typeid(T).name());
 
-                if (std::is_same<T, wolf::content_pipeline::w_cpipeline_scene>::value)
-                {
-                    if (_extension == L".dae")
-                    {
-                        //load scene from collada file
-                        auto _scene = new w_cpipeline_scene();
-                        _scene->set_name(_name);
+				if (std::is_same<T, wolf::content_pipeline::w_cpipeline_scene>::value)
+				{
+					if (_extension == L".wscene")
+					{
+						std::vector<w_cpipeline_scene> _scenes;
+						auto _hr = load_wolf_scenes_from_file(_scenes, pAssetPath);
+						if (_hr == W_PASSED && _scenes.size())
+						{
+							//make a deep copy from first element
+							auto _scene = new w_cpipeline_scene(_scenes[0]);
+							_scenes.clear();
+							return _scene;
+						}
+						_scenes.clear();
+					}
+					else
+					{
+						return assimp::w_assimp::load(pAssetPath);
 
-                        collada::c_parser _parser;
-                        auto _hr = _parser.parse_collada_from_file(pAssetPath,
-                                                                   _scene,
-                                                                   true,
-#ifdef __WIN32
-                                                                   true,
-#endif
-                                                                   true,
-                                                                   true);
 
-                        _extension.clear();
-                        _name.clear();
-                        _type.clear();
 
-                        if (_hr == W_PASSED)
-                        {
-                            return _scene;
-                        }
 
-                        SAFE_RELEASE(_scene);
-                    }
-                    else if (_extension == L".wscene")
-                    {
-                        std::vector<w_cpipeline_scene> _scenes;
-                        auto _hr = load_wolf_scenes_from_file(_scenes, pAssetPath);
-                        if (_hr == W_PASSED && _scenes.size())
-                        {
-                            //make a deep copy from first element
-                            auto _scene = new w_cpipeline_scene(_scenes[0]);
-                            _scenes.clear();
-                            return _scene;
-                        }
-                        _scenes.clear();
-                    }
-                }
-                logger.error(L"Asset not supported : " + pAssetPath);
-                return nullptr;
-            }
+
+
+
+						//						if (_extension == L".dae")
+						//						{
+						//							//load scene from collada file
+						//							auto _scene = new w_cpipeline_scene();
+						//							_scene->set_name(_name);
+						//
+						//							collada::c_parser _parser;
+						//							auto _hr = _parser.parse_collada_from_file(pAssetPath,
+						//								_scene,
+						//								true,
+						//#ifdef __WIN32
+						//								true,
+						//#endif
+						//								true,
+						//								true);
+						//
+						//							_extension.clear();
+						//							_name.clear();
+						//							_type.clear();
+						//
+						//							if (_hr == W_PASSED)
+						//							{
+						//								return _scene;
+						//							}
+						//
+						//							SAFE_RELEASE(_scene);
+						//						}
+					}
+				}
+				logger.error(L"Type not supported for " + pAssetPath);
+				return nullptr;
+			}
 
             static W_RESULT save_wolf_scenes_to_file(_In_ std::vector<w_cpipeline_scene>& pScenePacks, _In_z_ std::wstring pWolfSceneFilePath)
             {

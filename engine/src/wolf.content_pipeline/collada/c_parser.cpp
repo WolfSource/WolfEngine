@@ -1233,15 +1233,6 @@ W_RESULT c_parser::_create_scene(
                 &_model);
             if (_model)
             {
-                //check scale
-                auto _t = _model->get_transform();
-                if (_t.scale[0] == 0 && _t.scale[1] == 0 && _t.scale[2] == 0)
-                {
-                    _t.scale[0] = 1;
-                    _t.scale[1] = 1;
-                    _t.scale[2] = 1;
-                    _model->set_transform(_t);
-                }
                 _models.push_back(_model);
             }
         }
@@ -1632,6 +1623,10 @@ void c_parser::_iterate_over_nodes(
                     _instance_info.rotation[0] = _rotation.x - glm::radians(90.0f);
                     _instance_info.rotation[1] = _rotation.y;
                     _instance_info.rotation[2] = _rotation.z;
+
+					_instance_info.scale[0] = _node->scale.x;
+					_instance_info.scale[1] = _node->scale.y;
+					_instance_info.scale[2] = _node->scale.z;
                 }
 
                 (*_iter)->add_instance(_instance_info);
@@ -1791,6 +1786,10 @@ void c_parser::_create_model(
             _transform.rotation[0] = _rotation.x - glm::radians(90.0f);
             _transform.rotation[1] = _rotation.y;
             _transform.rotation[2] = _rotation.z;
+
+			_transform.scale[0] = _node_ptr->scale.x;
+			_transform.scale[1] = _node_ptr->scale.z;
+			_transform.scale[2] = _node_ptr->scale.y;
         }
 
         _transform.transform = _node_ptr->transform;

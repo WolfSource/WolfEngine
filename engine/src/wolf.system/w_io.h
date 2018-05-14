@@ -457,6 +457,36 @@ namespace wolf
 				return std::wstring(_str.begin(), _str.end());
 			}
 
+			//Get parent directory 
+			inline std::string get_parent_directory(_In_z_ std::string pPath)
+			{
+				std::string _str;
+				for (int i = (int)pPath.size() - 1; i >= 0; i--)
+				{
+					if (pPath[i] == '\\' || pPath[i] == '/')
+					{
+						_str = pPath.substr(0, i);
+						break;
+					}
+				}
+				return _str;
+			}
+
+			//Get parent directory 
+			inline std::wstring get_parent_directoryW(_In_z_ std::wstring pPath)
+			{
+				std::wstring _str;
+				for (int i = (int)pPath.size() - 1; i >= 0; i--)
+				{
+					if (pPath[i] == '\\' || pPath[i] == '/')
+					{
+						_str = pPath.substr(0, i);
+						break;
+					}
+				}
+				return _str;
+			}
+
 			// pick off .extension in filename, including dot
 			inline std::string get_file_extention(_In_z_ std::string pPath)
 			{
@@ -486,55 +516,33 @@ namespace wolf
 			//Get file name
 			inline std::string get_file_name(_In_z_ std::string pPath)
 			{
-				auto _str0 = pPath;
-				auto _str1 = get_file_extention(pPath);
-				_str0.resize(_str0.size() - _str1.size());
-
-				return _str0;
+				auto _str1 = get_parent_directory(pPath.c_str());
+				if (_str1.empty()) return pPath;
+				return pPath.substr(_str1.size() + 1, pPath.size() - _str1.size());
 			}
 
 			//Get file name
 			inline std::wstring get_file_nameW(_In_z_ std::wstring pPath)
 			{
-				auto _str0 = pPath;
-				auto _str1 = get_file_extentionW(pPath.c_str());
-				_str0.resize(_str0.size() - _str1.size());
-
-				return _str0;
+				auto _str1 = get_parent_directoryW(pPath.c_str());
+				if (_str1.empty()) return pPath;
+				return pPath.substr(_str1.size() + 1, pPath.size() - _str1.size());
 			}
 
 			// pick off stem (base name) in filename before dot
 			inline std::string  get_base_file_name(_In_z_ std::string pPath)
 			{
 				auto _str = get_file_name(pPath);
-				std::string _base_name;
-				for (int i = (int)_str.size() - 1; i >= 0; i--)
-				{
-					if (_str[i] == '\\' || _str[i] == '/')
-					{
-						break;
-					}
-					_base_name += _str[i];
-				}
-				std::reverse(_base_name.begin(), _base_name.end());
-				return _base_name;
+				auto _ext = get_file_extention(pPath);
+				return _str.substr(0, _str.size() - _ext.size());
 			}
 
 			// pick off stem (base name) in filename before dot
 			inline std::wstring  get_base_file_nameW(_In_z_ std::wstring pPath)
 			{
 				auto _str = get_file_nameW(pPath);
-				std::wstring _base_name;
-				for (int i = (int)_str.size() - 1; i >= 0; i--)
-				{
-					if (_str[i] == '\\' || _str[i] == '/')
-					{
-						break;
-					}
-					_base_name += _str[i];
-				}
-				std::reverse(_base_name.begin(), _base_name.end());
-				return _base_name;
+				auto _ext = get_file_extentionW(pPath);
+				return _str.substr(0, _str.size() - _ext.size());
 			}
 
 #if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L)
@@ -567,37 +575,6 @@ namespace wolf
             }
 #endif
 			
-			//Get parent directory 
-			inline std::string get_parent_directory(_In_z_ std::string pPath)
-			{
-				std::string _str;
-				for (int i = (int)pPath.size() - 1; i >= 0; i--)
-				{
-					if (pPath[i] == '\\' || pPath[i] == '/')
-					{
-						_str = pPath.substr(0, i);
-						break;
-					}
-				}
-				return _str;
-			}
-
-			//Get parent directory 
-			inline std::wstring get_parent_directoryW(_In_z_ std::wstring pPath)
-			{
-				std::wstring _str;
-				for (int i = (int)pPath.size() - 1; i >= 0; i--)
-				{
-					if (pPath[i] == '\\' || pPath[i] == '/')
-					{
-						_str = pPath.substr(0, i);
-						break;
-					}
-				}
-				return _str;
-			}
-
-
 			/*
 				Read text file from root path
 				pState indicates to state of file and the permission status, the first integer value means :
