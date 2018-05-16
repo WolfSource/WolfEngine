@@ -44,20 +44,9 @@ void w_cpipeline_scene::add_boundaries(_In_ std::vector<w_bounding_sphere*>& pBo
     }
 }
 
-void w_cpipeline_scene::add_camera(_In_ c_camera* pCamera)
+void w_cpipeline_scene::add_camera(_In_ w_camera* pCamera)
 {
     this->_cameras.push_back(*pCamera);
-}
-
-void w_cpipeline_scene::add_camera(_In_z_ const std::string& pID, _In_ const glm::vec3 pTranslate, _In_ const glm::vec3 pInterest)
-{
-    auto _camera = new c_camera();
-    _camera->set_name(pID);
-    _camera->set_aspect_ratio(800.0f / 600.0f);
-    _camera->set_translate(pTranslate);
-    _camera->set_interest(pInterest);
-
-    this->_cameras.push_back(*_camera);
 }
 
 ULONG w_cpipeline_scene::release()
@@ -83,15 +72,26 @@ void w_cpipeline_scene::get_model_by_index(_In_ const size_t& pIndex, _Inout_ w_
     }
 }
 
-void w_cpipeline_scene::get_models_by_id(_In_z_ const std::string& pID, std::vector<w_cpipeline_model*>& pModels)
+void w_cpipeline_scene::get_models_by_id(_In_z_ const int& pID, std::vector<w_cpipeline_model*>& pModels)
 {
 	for (size_t i = 0; i < this->_models.size(); ++i)
 	{
-		if (this->_models[i].get_name() == pID)
+		if (this->_models[i].get_id() == pID)
 		{
 			pModels.push_back(&this->_models[i]);
 		}
 	}
+}
+
+void w_cpipeline_scene::get_models_by_name(_In_z_ const std::string& pName, std::vector<w_cpipeline_model*>& pModels)
+{
+    for (size_t i = 0; i < this->_models.size(); ++i)
+    {
+        if (this->_models[i].get_name() == pName)
+        {
+            pModels.push_back(&this->_models[i]);
+        }
+    }
 }
 
 void w_cpipeline_scene::get_all_models(_Inout_ std::vector<w_cpipeline_model*>& pModels)
@@ -114,14 +114,14 @@ void w_cpipeline_scene::get_boundaries(_Inout_ std::vector<w_bounding_sphere*>& 
     }
 }
 
-void w_cpipeline_scene::get_first_camera(_Inout_ c_camera& pCamera)
+void w_cpipeline_scene::get_first_camera(_Inout_ w_camera& pCamera)
 {
     if (this->_cameras.size() == 0) return;
 
     pCamera = this->_cameras[0];
 }
 
-void w_cpipeline_scene::get_cameras_by_index(_In_ const size_t pIndex, _Inout_ c_camera** pCamera)
+void w_cpipeline_scene::get_cameras_by_index(_In_ const size_t pIndex, _Inout_ w_camera** pCamera)
 {
     if (pIndex < this->_cameras.size())
     {
@@ -129,7 +129,7 @@ void w_cpipeline_scene::get_cameras_by_index(_In_ const size_t pIndex, _Inout_ c
     }
 }
 
-void w_cpipeline_scene::get_cameras_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<c_camera*>& pCameras)
+void w_cpipeline_scene::get_cameras_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<w_camera*>& pCameras)
 {
 	for (size_t i = 0; i < this->_cameras.size(); ++i)
 	{

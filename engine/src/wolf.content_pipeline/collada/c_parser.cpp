@@ -271,7 +271,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
     if (!pXNode) return;
 
     //get instance cameras
-    c_camera* _camera = nullptr;
+    w_camera* _camera = nullptr;
     for (auto _child_0 = pXNode->first_node(); _child_0 != nullptr; _child_0 = _child_0->next_sibling())
     {
         auto _node_name_0 = _get_node_name(_child_0);
@@ -285,7 +285,7 @@ void c_parser::_get_library_cameras(_In_ rapidxml::xml_node<>* pXNode)
             std::string _camera_id;
             _get_node_attribute_value(_child_0, "id", _camera_id);
             
-            _camera = new c_camera();
+            _camera = new w_camera();
             _camera->set_name(_camera_id);
             
             for (auto _child_1 = _child_0->first_node(); _child_1 != nullptr; _child_1 = _child_1->next_sibling())
@@ -1521,25 +1521,25 @@ W_RESULT c_parser::_create_scene(
     {
         for (auto _iter : sLibraryCameras)
         {
-            auto _camera = new c_camera(_iter.second);
-            if (sZ_Up)
-            {
-                //make transform change
-                auto _cam_pos = _camera->get_translate();
-				auto _cam_look_at = _camera->get_interest();
-
-                std::swap(_cam_pos.y, _cam_pos.z);
-				_cam_pos.y *= -1;
-				_cam_pos.z *= -1;
-
-				std::swap(_cam_look_at.y, _cam_look_at.z);
-				_cam_look_at.y *= -1;
-				_cam_look_at.z *= -1;
-
-                _camera->set_translate(_cam_pos);
-				_camera->set_interest(_cam_look_at);
-            }
-            pScene->add_camera(_camera);
+//            auto _camera = new c_camera(_iter.second);
+//            if (sZ_Up)
+//            {
+//                //make transform change
+//                auto _cam_pos = _camera->get_translate();
+//                auto _cam_look_at = _camera->get_interest();
+//
+//                std::swap(_cam_pos.y, _cam_pos.z);
+//                _cam_pos.y *= -1;
+//                _cam_pos.z *= -1;
+//
+//                std::swap(_cam_look_at.y, _cam_look_at.z);
+//                _cam_look_at.y *= -1;
+//                _cam_look_at.z *= -1;
+//
+//                _camera->set_translate(_cam_pos);
+//                _camera->set_interest(_cam_look_at);
+//            }
+//            pScene->add_camera(_camera);
         }
     }
 
@@ -1569,16 +1569,16 @@ void c_parser::_iterate_over_nodes(
             auto _iter = sLibraryCameras.find(_node->instanced_camera_name);
             if (_iter != sLibraryCameras.end())
             {
-                _iter->second.set_translate(_node->translate);
-                //find target node
-                for (auto __node : pNodes)
-                {
-                    if (__node->c_name == _iter->second.get_camera_target_name())
-                    {
-                        _iter->second.set_interest(__node->translate);
-                        __node->proceeded = true;
-                    }
-                }
+//                _iter->second.set_translate(_node->translate);
+//                //find target node
+//                for (auto __node : pNodes)
+//                {
+//                    if (__node->c_name == _iter->second.get_camera_target_name())
+//                    {
+//                        _iter->second.set_interest(__node->translate);
+//                        __node->proceeded = true;
+//                    }
+//                }
 
                 _node->proceeded = true;
             }
@@ -1798,24 +1798,24 @@ void c_parser::_create_model(
         logger.write("creating model " + _node_ptr->c_name);
 //#endif
 
-        auto _model = w_cpipeline_model::create_model(
-            _g,
-            skin,
-            sBones,
-            sSkeletonNames.data(),
-            sLibraryMaterials,
-            sLibraryEffects,
-            sLibraryImages,
-            _transform,
-            pAMDTootleOptimizing,
-#ifdef __WIN32
-			pSimplygonOptimizing,
-#endif
-            sZ_Up,
-            pInvertNormals);
-
-        _model->set_name(_node_ptr->c_name);
-        _model->set_instance_geometry_name(_node_ptr->instanced_geometry_name);
+//        auto _model = w_cpipeline_model::create_model(
+//            _g,
+//            skin,
+//            sBones,
+//            sSkeletonNames.data(),
+//            sLibraryMaterials,
+//            sLibraryEffects,
+//            sLibraryImages,
+//            _transform,
+//            pAMDTootleOptimizing,
+//#ifdef __WIN32
+//            pSimplygonOptimizing,
+//#endif
+//            sZ_Up,
+//            pInvertNormals);
+//
+//        _model->set_name(_node_ptr->c_name);
+//        _model->set_instance_geometry_name(_node_ptr->instanced_geometry_name);
 
         //_model->set_effects(effects);
         ////_model.Textures = textureInfos;
@@ -1825,7 +1825,7 @@ void c_parser::_create_model(
         ////_model.AnimationContainers.Add("Animation 1", animContainer);
         ////_model.SetAnimation("Animation 1");
 
-        *pModel = _model;
+       // *pModel = _model;
     }
 }
 

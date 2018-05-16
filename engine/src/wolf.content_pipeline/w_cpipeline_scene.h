@@ -13,7 +13,7 @@
 #include "w_cpipeline_export.h"
 #include <w_object.h>
 #include "w_cpipeline_model.h"
-#include "collada/c_camera.h"
+#include "w_camera.h"
 #include <msgpack/msgpack.hpp>
 #include <w_bounding.h>
 
@@ -31,23 +31,23 @@ namespace wolf
             WCP_EXP void add_models(_In_ std::vector<w_cpipeline_model*>& pModel);
             WCP_EXP void add_boundary(_In_ wolf::system::w_bounding_sphere* pBoundary);
             WCP_EXP void add_boundaries(_In_ std::vector<wolf::system::w_bounding_sphere*>& pBoundaries);
-            WCP_EXP void add_camera(_In_ c_camera* pCamera);
-			WCP_EXP void add_camera(_In_z_ const std::string& pName, _In_ const glm::vec3 pTransform, _In_ const glm::vec3 pInterest);
-            
+            WCP_EXP void add_camera(_In_ w_camera* pCamera);
+			
 			WCP_EXP ULONG release();
 
 #pragma region Getters
 
             WCP_EXP void get_model_by_index(_In_ const size_t& pIndex, _Inout_ w_cpipeline_model** pModel);
-			WCP_EXP void get_models_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<w_cpipeline_model*>& pModels);
+			WCP_EXP void get_models_by_id(_In_z_ const int& pID, _Inout_ std::vector<w_cpipeline_model*>& pModels);
+            WCP_EXP void get_models_by_name(_In_z_ const std::string& pName, _Inout_ std::vector<w_cpipeline_model*>& pModels);
             WCP_EXP void get_all_models(_Inout_ std::vector<w_cpipeline_model*>& pModels);
             
             WCP_EXP void get_boundaries(_Inout_ std::vector<wolf::system::w_bounding_sphere*>& pBoundaries);
 
 			//Get first camera if avaible, else create a default one
-			WCP_EXP void get_first_camera(_Inout_ c_camera& pCamera);
-			WCP_EXP void get_cameras_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<c_camera*>& pCameras);
-            WCP_EXP void get_cameras_by_index(const size_t pIndex, _Inout_ c_camera** pCamera);
+			WCP_EXP void get_first_camera(_Inout_ w_camera& pCamera);
+			WCP_EXP void get_cameras_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<w_camera*>& pCameras);
+            WCP_EXP void get_cameras_by_index(const size_t pIndex, _Inout_ w_camera** pCamera);
 
             //Get coordinate system
             WCP_EXP bool get_z_up()                      { return this->_z_up; }
@@ -108,7 +108,7 @@ namespace wolf
             
 		private:
             std::string										_name;
-			std::vector<c_camera>							_cameras;
+			std::vector<w_camera>							_cameras;
             std::vector<w_cpipeline_model>					_models;
             std::vector<wolf::system::w_bounding_sphere>	_boundaries;
             bool											_z_up;

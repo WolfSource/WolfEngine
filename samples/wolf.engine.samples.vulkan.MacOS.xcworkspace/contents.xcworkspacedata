@@ -3,7 +3,7 @@
    version = "1.0">
    <Group
       location = "container:"
-      name = "01-System">
+      name = "01_system">
       <FileRef
          location = "group:01_system/01_async/builds/xcode/01_async.xcodeproj">
       </FileRef>
@@ -64,7 +64,7 @@
    </Group>
    <Group
       location = "container:"
-      name = "02-Basics">
+      name = "02_basics">
       <FileRef
          location = "group:02_basics/01_clear/builds/xcode/01_clear.xcodeproj">
       </FileRef>
@@ -112,6 +112,13 @@
       </FileRef>
       <FileRef
          location = "group:02_basics/16_coordinate_system/builds/xcode/16_coordinate_system.xcodeproj">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "03_advances">
+      <FileRef
+         location = "group:03_advances/02_model/builds/xcode/02_model.xcodeproj">
       </FileRef>
    </Group>
 </Workspace>

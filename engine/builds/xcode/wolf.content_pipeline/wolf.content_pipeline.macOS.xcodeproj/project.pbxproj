@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2C4913522064E33B006036E4 /* w_vertex_struct.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4913512064E33B006036E4 /* w_vertex_struct.h */; };
-		2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C49EED8201A7C6800EF7AFB /* c_camera.h */; };
-		2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C49EED9201A7C6800EF7AFB /* c_camera.cpp */; };
 		2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFC1EB0F54400E0A422 /* c_animation.h */; };
 		2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */; };
 		2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFE1EB0F54400E0A422 /* c_bone.h */; };
@@ -98,6 +96,11 @@
 		2C8D5B5C1F4F8AC2000BCB87 /* viewpoints.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */; };
 		2C8D5B5D1F4F8AC2000BCB87 /* window.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B4A1F4F8AC1000BCB87 /* window.h */; };
 		2C8D5B601F4F8AF2000BCB87 /* tootlelib.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */; };
+		2CE0DABB20AB68E2003BC362 /* w_assimp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE0DAB920AB68E1003BC362 /* w_assimp.cpp */; };
+		2CE0DABC20AB68E2003BC362 /* w_assimp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE0DABA20AB68E2003BC362 /* w_assimp.h */; };
+		2CE0DAC720AC136A003BC362 /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE0DABD20ABF014003BC362 /* libassimp.4.1.0.dylib */; };
+		2CE0DACA20AC1ACE003BC362 /* w_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE0DAC820AC1ACE003BC362 /* w_camera.h */; };
+		2CE0DACB20AC1ACE003BC362 /* w_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE0DAC920AC1ACE003BC362 /* w_camera.cpp */; };
 		2CF12DAD20715BD500B94F96 /* obj.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF12DAA20715BD500B94F96 /* obj.h */; };
 		2CF12DAE20715BD500B94F96 /* obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF12DAB20715BD500B94F96 /* obj.cpp */; };
 		2CF12DAF20715BD500B94F96 /* tiny_obj_loader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF12DAC20715BD500B94F96 /* tiny_obj_loader.h */; };
@@ -105,8 +108,6 @@
 
 /* Begin PBXFileReference section */
 		2C4913512064E33B006036E4 /* w_vertex_struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vertex_struct.h; path = ../../../src/wolf.content_pipeline/w_vertex_struct.h; sourceTree = "<group>"; };
-		2C49EED8201A7C6800EF7AFB /* c_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_camera.h; path = ../../../src/wolf.content_pipeline/collada/c_camera.h; sourceTree = "<group>"; };
-		2C49EED9201A7C6800EF7AFB /* c_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_camera.cpp; path = ../../../src/wolf.content_pipeline/collada/c_camera.cpp; sourceTree = "<group>"; };
 		2C4CCAFC1EB0F54400E0A422 /* c_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_animation.h; path = ../../../src/wolf.content_pipeline/collada/c_animation.h; sourceTree = "<group>"; };
 		2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_bone.cpp; path = ../../../src/wolf.content_pipeline/collada/c_bone.cpp; sourceTree = "<group>"; };
 		2C4CCAFE1EB0F54400E0A422 /* c_bone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_bone.h; path = ../../../src/wolf.content_pipeline/collada/c_bone.h; sourceTree = "<group>"; };
@@ -196,6 +197,13 @@
 		2C8D5B4A1F4F8AC1000BCB87 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = window.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/window.h; sourceTree = "<group>"; };
 		2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tootlelib.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/include/tootlelib.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.content_pipeline.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CE0DAB920AB68E1003BC362 /* w_assimp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_assimp.cpp; path = ../../../src/wolf.content_pipeline/assimp/w_assimp.cpp; sourceTree = "<group>"; };
+		2CE0DABA20AB68E2003BC362 /* w_assimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_assimp.h; path = ../../../src/wolf.content_pipeline/assimp/w_assimp.h; sourceTree = "<group>"; };
+		2CE0DABD20ABF014003BC362 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../dependencies/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
+		2CE0DAC120AC08A2003BC362 /* libassimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libassimp.a; path = ../../../dependencies/assimp/lib/osx/debug/libassimp.a; sourceTree = "<group>"; };
+		2CE0DAC320AC0A66003BC362 /* libIrrXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIrrXML.a; path = ../../../dependencies/assimp/lib/osx/debug/libIrrXML.a; sourceTree = "<group>"; };
+		2CE0DAC820AC1ACE003BC362 /* w_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_camera.h; path = ../../../src/wolf.content_pipeline/w_camera.h; sourceTree = "<group>"; };
+		2CE0DAC920AC1ACE003BC362 /* w_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_camera.cpp; path = ../../../src/wolf.content_pipeline/w_camera.cpp; sourceTree = "<group>"; };
 		2CF12DAA20715BD500B94F96 /* obj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = obj.h; path = ../../../../src/wolf.content_pipeline/wavefront/obj.h; sourceTree = "<group>"; };
 		2CF12DAB20715BD500B94F96 /* obj.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = obj.cpp; path = ../../../../src/wolf.content_pipeline/wavefront/obj.cpp; sourceTree = "<group>"; };
 		2CF12DAC20715BD500B94F96 /* tiny_obj_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tiny_obj_loader.h; path = ../../../../src/wolf.content_pipeline/wavefront/tiny_obj_loader.h; sourceTree = "<group>"; };
@@ -206,6 +214,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CE0DAC720AC136A003BC362 /* libassimp.4.1.0.dylib in Frameworks */,
 				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -216,8 +225,6 @@
 		2C4CCAFB1EB0F50D00E0A422 /* collada */ = {
 			isa = PBXGroup;
 			children = (
-				2C49EED9201A7C6800EF7AFB /* c_camera.cpp */,
-				2C49EED8201A7C6800EF7AFB /* c_camera.h */,
 				2C4CCAFC1EB0F54400E0A422 /* c_animation.h */,
 				2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */,
 				2C4CCAFE1EB0F54400E0A422 /* c_bone.h */,
@@ -350,9 +357,12 @@
 		2CD6171A1E59DA3E006FC5DC = {
 			isa = PBXGroup;
 			children = (
+				2CE0DAB820AB68C7003BC362 /* assimp */,
 				2C8D5ABF1F4F8506000BCB87 /* amd */,
 				2C4CCAFB1EB0F50D00E0A422 /* collada */,
 				2CF12DA920715BAE00B94F96 /* wavefront */,
+				2CE0DAC920AC1ACE003BC362 /* w_camera.cpp */,
+				2CE0DAC820AC1ACE003BC362 /* w_camera.h */,
 				2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */,
 				2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */,
 				2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */,
@@ -376,6 +386,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2CE0DAB820AB68C7003BC362 /* assimp */ = {
+			isa = PBXGroup;
+			children = (
+				2CE0DAB920AB68E1003BC362 /* w_assimp.cpp */,
+				2CE0DABA20AB68E2003BC362 /* w_assimp.h */,
+			);
+			name = assimp;
+			sourceTree = "<group>";
+		};
 		2CF12DA920715BAE00B94F96 /* wavefront */ = {
 			isa = PBXGroup;
 			children = (
@@ -389,6 +408,9 @@
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CE0DAC320AC0A66003BC362 /* libIrrXML.a */,
+				2CE0DAC120AC08A2003BC362 /* libassimp.a */,
+				2CE0DABD20ABF014003BC362 /* libassimp.4.1.0.dylib */,
 				2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */,
 			);
 			name = Frameworks;
@@ -406,8 +428,10 @@
 				2C8D5B061F4F8656000BCB87 /* JML.h in Headers */,
 				2C8D5B4B1F4F8AC1000BCB87 /* matrix.h in Headers */,
 				2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */,
+				2CE0DACA20AC1ACE003BC362 /* w_camera.h in Headers */,
 				2C8D5AF31F4F8641000BCB87 /* JRTKDTree.h in Headers */,
 				2C8D5B301F4F89B2000BCB87 /* feedback.h in Headers */,
+				2CE0DABC20AB68E2003BC362 /* w_assimp.h in Headers */,
 				2C8D5B511F4F8AC1000BCB87 /* scalar.h in Headers */,
 				2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */,
 				2C8D5B261F4F89B2000BCB87 /* cloud.h in Headers */,
@@ -453,7 +477,6 @@
 				2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */,
 				2C8D5B531F4F8AC1000BCB87 /* soup.h in Headers */,
 				2C8D5B0A1F4F8656000BCB87 /* JMLScalar.h in Headers */,
-				2C49EEDA201A7C6800EF7AFB /* c_camera.h in Headers */,
 				2C8D5AE61F4F8641000BCB87 /* JRTBoundingBox.h in Headers */,
 				2C4CCB0F1EB0F54400E0A422 /* c_node.h in Headers */,
 				2CF12DAF20715BD500B94F96 /* tiny_obj_loader.h in Headers */,
@@ -525,9 +548,9 @@
 				2CF12DAE20715BD500B94F96 /* obj.cpp in Sources */,
 				2C8D5AFA1F4F8641000BCB87 /* JRTPPMImage.cpp in Sources */,
 				2C8D5AFC1F4F8641000BCB87 /* JRTTriangleIntersection.cpp in Sources */,
-				2C49EEDB201A7C6800EF7AFB /* c_camera.cpp in Sources */,
 				2C8D5ACA1F4F861C000BCB87 /* TootleRaytracer.cpp in Sources */,
 				2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */,
+				2CE0DABB20AB68E2003BC362 /* w_assimp.cpp in Sources */,
 				2C8D5AC31F4F8549000BCB87 /* amd_tootle.cpp in Sources */,
 				2C8D5AF21F4F8641000BCB87 /* JRTKDTree.cpp in Sources */,
 				2C8D5AF01F4F8641000BCB87 /* JRTHeuristicKDTreeBuilder.cpp in Sources */,
@@ -538,6 +561,7 @@
 				2C8D5B2F1F4F89B2000BCB87 /* feedback.cpp in Sources */,
 				2C736BC31ECA1EE400624CC7 /* w_cpipeline_model.cpp in Sources */,
 				2C8D5AF81F4F8641000BCB87 /* JRTOrthoCamera.cpp in Sources */,
+				2CE0DACB20AC1ACE003BC362 /* w_camera.cpp in Sources */,
 				2C8D5AF61F4F8641000BCB87 /* JRTMesh.cpp in Sources */,
 				2C8D5AEE1F4F8641000BCB87 /* JRTH2KDTreeBuilder.cpp in Sources */,
 				2C8D5B581F4F8AC2000BCB87 /* tootlelib.cpp in Sources */,
@@ -673,16 +697,27 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/assimp/lib/osx/debug/";
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../../src/wolf.content_pipeline/w_cpipeline_pch.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+					"MSGPACK_USE_CPP03=1",
+					"MSGPACK_DISABLE_LEGACY_NIL=1",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
-				"HEADER_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../src/wolf.system";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../dependencies/assimp/include",
+				);
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "";
+				OTHER_CFLAGS = "";
+				"OTHER_CFLAGS[arch=*]" = "";
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"VALID_ARCHS[sdk=*]" = x86_64;
 			};
@@ -704,6 +739,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"VALID_ARCHS[sdk=*]" = x86_64;
 			};

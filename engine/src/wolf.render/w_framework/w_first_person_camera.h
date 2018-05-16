@@ -18,14 +18,14 @@
 #include <w_game_time.h>
 #include <w_point.h>
 #include <w_bounding.h>
-#include <collada/c_camera.h>
+#include <w_camera.h>
 #include <glm/vec2.hpp>
 
 namespace wolf
 {
 	namespace framework
 	{
-		class w_first_person_camera : public content_pipeline::c_camera
+		class w_first_person_camera : public content_pipeline::w_camera
 		{
 		public:
 			WCP_EXP w_first_person_camera();

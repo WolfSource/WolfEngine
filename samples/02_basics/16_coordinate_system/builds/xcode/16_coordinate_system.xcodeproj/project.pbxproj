@@ -66,6 +66,7 @@
 		2C28033E1E61C73600048A80 = {
 			isa = PBXGroup;
 			children = (
+				2CE0DAB720AB6495003BC362 /* 03-advances */,
 				2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */,
 				2CB69EDD1F62E1BF0068D1E6 /* scene.h */,
 				2CB69ED71F62DDF60068D1E6 /* ViewController.h */,
@@ -112,6 +113,14 @@
 				2CB69EE01F62E53C0068D1E6 /* MoltenVK.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2CE0DAB720AB6495003BC362 /* 03-advances */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "03-advances";
+			path = ../../../..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -335,7 +344,7 @@
 					"$(SRCROOT)/../../../../../engine/src/wolf.render",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/16_coordinate_system/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.Metal.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -352,7 +361,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(SRCROOT)/16_coordinate_system/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = Wolf.Engine.Metal.Sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";

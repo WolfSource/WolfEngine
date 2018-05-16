@@ -203,7 +203,8 @@ namespace wolf
 		class w_cpipeline_model
 		{
 		public:
-			WCP_EXP w_cpipeline_model();
+            WCP_EXP w_cpipeline_model();
+			WCP_EXP w_cpipeline_model(_In_ std::vector<w_cpipeline_mesh*>& pModelMeshes);
 			WCP_EXP virtual ~w_cpipeline_model();
 
             WCP_EXP void add_instance(_In_ const w_instance_info& pValue);
@@ -216,6 +217,7 @@ namespace wolf
 #pragma region Getters
 
 			WCP_EXP std::string get_name() const									{ return this->_name; }
+            WCP_EXP int get_id() const                                              { return this->_id; }
             WCP_EXP bool get_is_all_sub_meshes_use_same_texture() const             { return this->_all_sub_meshes_use_same_texture;}
             WCP_EXP std::string get_instance_geometry_name()                        { return this->_instanced_geo_name; }
 			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
@@ -243,6 +245,7 @@ namespace wolf
 #pragma region Setters
 
 			WCP_EXP void set_name(_In_z_ const std::string& pValue);
+            WCP_EXP void set_id(_In_z_ const int& pValue);
             WCP_EXP void set_instance_geometry_name(_In_z_ const std::string& pValue);
 			//WCP_EXP void set_materials(std::vector<c_material*>& pValue);
 			//WCP_EXP void set_effects(std::vector<c_effect*>& pValue);
@@ -252,20 +255,20 @@ namespace wolf
 
 			//access to private members of instance model from static method
 			//class w_cpipeline_model;
-			static w_cpipeline_model* create_model(_In_ collada::c_geometry& pGeometry,
-                _In_ collada::c_skin* pSkin,
-				_In_ std::vector<collada::c_bone*>& pBones, 
-                _In_ std::string pBoneNames [], 
-                _In_ std::map<std::string, std::string>& sLibraryMaterials,
-                _In_ std::map<std::string, std::string>& sLibraryEffects,
-                _In_ std::map<std::string, std::string>& sLibraryImages,
-                _In_ const w_transform_info& pTransform,
-                _In_ const bool& pAMDTootleOptimizing,
-#ifdef __WIN32
-				_In_ const bool& pSimplygonOptimizing,
-#endif
-                _In_ const bool& pZUp,
-                _In_ const bool& pInvertNormal);
+//            static w_cpipeline_model* create_model(_In_ collada::c_geometry& pGeometry,
+//                _In_ collada::c_skin* pSkin,
+//                _In_ std::vector<collada::c_bone*>& pBones, 
+//                _In_ std::string pBoneNames [], 
+//                _In_ std::map<std::string, std::string>& sLibraryMaterials,
+//                _In_ std::map<std::string, std::string>& sLibraryEffects,
+//                _In_ std::map<std::string, std::string>& sLibraryImages,
+//                _In_ const w_transform_info& pTransform,
+//                _In_ const bool& pAMDTootleOptimizing,
+//#ifdef __WIN32
+//                _In_ const bool& pSimplygonOptimizing,
+//#endif
+//                _In_ const bool& pZUp,
+//                _In_ const bool& pInvertNormal);
 
             MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _lods, _convex_hulls, _bounding_box, _meshes);
 
@@ -346,6 +349,7 @@ namespace wolf
 		private:
 
             std::string												_name;
+            int                                                     _id;
             std::string												_instanced_geo_name;
 
 			//std::vector<c_material*>								_materials;

@@ -96,7 +96,7 @@ namespace wolf
                 std::vector<c_node*>			            sNodes;
                 std::string					                sSceneID;
                 std::vector<std::string>		            sSkeletonNames;
-                std::map<std::string, c_camera>             sLibraryCameras;
+                std::map<std::string, w_camera>             sLibraryCameras;
                 std::map<std::string, std::string>          sLibraryMaterials;
                 std::map<std::string, std::string>	        sLibraryEffects;
                 std::map<std::string, std::string>	        sLibraryImages;

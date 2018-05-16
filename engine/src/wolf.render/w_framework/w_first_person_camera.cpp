@@ -102,17 +102,17 @@ bool w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
             glm::rotate(this->_rotation.y, glm::vec3(0.0f, 0.0f, 1.0f));
         auto _vector_transform = _camera_rotation * glm::vec4(_move_vector, 1.0);
 
-        this->_translate[0] += _vector_transform[0];
-        this->_translate[1] += _vector_transform[1];
-        this->_translate[2] += _vector_transform[2];
+        this->_position[0] += _vector_transform[0];
+        this->_position[1] += _vector_transform[1];
+        this->_position[2] += _vector_transform[2];
 
         _vector_transform = _camera_rotation * glm::vec4(1, 0, 0, 0);
-        auto _target = glm::vec3(this->_translate[0], this->_translate[1], this->_translate[2]) + 
+        auto _target = glm::vec3(this->_position[0], this->_position[1], this->_position[2]) +
             glm::vec3(_vector_transform.x, _vector_transform.y, _vector_transform.z);
 
-        this->_interest[0] = _target[0];
-        this->_interest[1] = _target[1];
-        this->_interest[2] = _target[2];
+        this->_look_at[0] = _target[0];
+        this->_look_at[1] = _target[1];
+        this->_look_at[2] = _target[2];
 
         update_view();
         update_frustum();
@@ -123,13 +123,13 @@ bool w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTi
 
 void w_first_person_camera::focus(_In_ const wolf::system::w_bounding_sphere& pBoundingSphere, _In_ const float& pDistance)
 {
-	set_interest(
+	set_look_at(
 		pBoundingSphere.center[0],
 		pBoundingSphere.center[1],
 		pBoundingSphere.center[2]);
 
 	auto _radius = pBoundingSphere.radius * pDistance;
-	set_translate(
+	set_position(
 		pBoundingSphere.center[0] + _radius,
 		pBoundingSphere.center[1] + _radius,
 		pBoundingSphere.center[2] + _radius);
