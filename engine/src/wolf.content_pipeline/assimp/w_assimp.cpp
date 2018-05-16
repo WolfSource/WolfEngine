@@ -25,14 +25,14 @@ static void _iterate_node(_In_ const aiNode* pNode,
         {
             auto _mesh_index = pNode->mMeshes[i];
             
+            aiVector3t<float> _scaling, _rotation, _position;
+            pNode->mTransformation.Decompose(_scaling, _rotation, _position);
+            
             _models.clear();
             _scene->get_models_by_id(_mesh_index, _models);
             if (_models.size())
             {
                 //if we already created a model, so add an instnace for it
-                aiVector3t<float> _scaling, _rotation, _position;
-                pNode->mTransformation.Decompose(_scaling, _rotation, _position);
-                
                 w_instance_info _instance;
                 _instance.name = pNode->mName.C_Str();
                 _instance.position[0] = _position.x; _instance.position[1] = _position.y; _instance.position[2] = _position.z;
@@ -44,10 +44,22 @@ static void _iterate_node(_In_ const aiNode* pNode,
             }
             else
             {
+                //set transform
+                w_transform_info _transform;
+                _transform.position[0] = _position.x; _transform.position[1] = _position.y; _transform.position[2] = _position.z;
+                _transform.rotation[0] = _rotation.x; _transform.rotation[1] = _rotation.y; _transform.rotation[2] = _rotation.z;
+                _transform.scale[0] = _scaling.x; _transform.scale[1] = _scaling.y; _transform.scale[2] = _scaling.z;
+                
                 //could not find in models, we need to create a model
                 std::vector<w_cpipeline_mesh*> _meshes = { pModelMeshes[_mesh_index] };
+                
                 auto _model = new w_cpipeline_model(_meshes);
+                if (pNode->mParent)
+                {
+                    _model->set_name(pNode->mParent->mName.C_Str());
+                }
                 _model->set_id(_mesh_index);
+                _model->set_transform(_transform);
                 _scene->add_model(_model);
             }
         }
@@ -172,7 +184,6 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath)
         
         //finally iterate over all nodes to find models and instances
         _iterate_node(_scene->mRootNode, _model_meshes, &_w_scene);
-        //delete _scene;
         
         return _w_scene;
     }
