@@ -20,13 +20,25 @@ w_first_person_camera::~w_first_person_camera()
 bool w_first_person_camera::update(_In_ const wolf::system::w_game_time& pGameTime, 
     _In_ const w_point_t& pScreenSize)
 {
+    using namespace system;
+    
+#ifdef __WIN32
+    //ascii codes
     const int _W_KEY_CODE = 87;
     const int _S_KEY_CODE = 83;
     const int _D_KEY_CODE = 68;
     const int _A_KEY_CODE = 65;
     const int _Q_KEY_CODE = 81;
     const int _Z_KEY_CODE = 90;
-
+#elif defined(__APPLE__)
+    const int _W_KEY_CODE = kVK_ANSI_W;
+    const int _S_KEY_CODE = kVK_ANSI_S;
+    const int _D_KEY_CODE = kVK_ANSI_D;
+    const int _A_KEY_CODE = kVK_ANSI_A;
+    const int _Q_KEY_CODE = kVK_ANSI_Q;
+    const int _Z_KEY_CODE = kVK_ANSI_Z;
+#endif
+    
     bool _updated = false;
     glm::vec3 _move_vector;
 

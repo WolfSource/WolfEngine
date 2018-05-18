@@ -18,7 +18,12 @@ namespace assimp
 	struct w_assimp
 	{
 	public:
-		WCP_EXP static wolf::content_pipeline::w_cpipeline_scene* load(_In_z_ const std::wstring& pAssetPath);
+		WCP_EXP static wolf::content_pipeline::w_cpipeline_scene* load(_In_z_ const std::wstring& pAssetPath,
+                                                                       _In_ const bool& pOptimizeMeshUsingAMDTootle
+#ifdef __WIN32
+                                                                       ,_In_ const bool& pGenerateLODUsingSimplygon
+#endif
+                                                                       );
 	};
 }
 

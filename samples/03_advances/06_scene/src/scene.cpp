@@ -691,9 +691,9 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 					//The Ref
 					ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
 					auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
-					if (ImGui::IsItemClicked(1))
+					if (ImGui::IsMouseDoubleClicked(0))
 					{
-						//on right click, focus on object
+						//on double click, focus on object
 						this->_first_camera.focus(_b_sphere);
 						this->_force_update_camera = true;
 
@@ -708,9 +708,9 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 					for (auto& _ins : _model->get_instances())
 					{
 						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
-						if (ImGui::IsItemClicked(1))
+                        if (ImGui::IsMouseDoubleClicked(0))
 						{
-							//on right click, focus on object
+							//on double click, focus on object
 							_b_sphere.center[0] = _ins.position[0];
 							_b_sphere.center[1] = _ins.position[1];
 							_b_sphere.center[2] = _ins.position[2];
@@ -799,7 +799,8 @@ scene::widget_info scene::_show_explorer()
 	if (!ImGui::Begin("Scene Explorer", 0, _window_flags))
 	{
 		// Early out if the window is collapsed, as an optimization.
-		goto end;
+        ImGui::End();
+        return _w_i;
 	}
 
 	ImGui::SetWindowPos(ImVec2(10, _w_i.pos.y + (_w_i.size.y / 2) - 8));
@@ -812,9 +813,8 @@ scene::widget_info scene::_show_explorer()
 	{
 		sLeftWidgetCollapseState = collapse_states::collapsing;
 	}
-end:
+    
 	ImGui::End();
-
 	return _w_i;
 }
 

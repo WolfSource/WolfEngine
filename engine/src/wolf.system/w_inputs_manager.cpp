@@ -119,8 +119,8 @@ W_RESULT w_inputs_manager::update(
     _In_ bool* pMouseMiddleButtonUp,
     _In_ float pMouseWheel,
     _In_ w_point_f* pMouseMove,
-    _In_ unsigned short pKeyDown,
-    _In_ unsigned short pKeyUp)
+    _In_ int pKeyDown,
+    _In_ int pKeyUp)
 {
     if (this->mouse.left_button_released) this->mouse.left_button_released = false;
     if (this->mouse.middle_button_released) this->mouse.middle_button_released = false;
@@ -129,13 +129,13 @@ W_RESULT w_inputs_manager::update(
     this->keyboard.inputed_chars.clear();
     this->keyboard.keys_released.clear();
     
-    if(pKeyDown)
+    if(pKeyDown != -1)
     {
-        this->keyboard.keys_pressed.insert((int)pKeyDown);
+        this->keyboard.keys_pressed.insert(pKeyDown);
     }
-    else if(pKeyUp)
+    else if(pKeyUp != -1)
     {
-        auto _value = (int)pKeyUp;
+        auto _value = pKeyUp;
         this->keyboard.keys_pressed.erase(_value);
         this->keyboard.keys_released.insert(_value);
     }

@@ -120,5 +120,17 @@
       <FileRef
          location = "group:03_advances/02_model/builds/xcode/02_model.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:03_advances/03_instancing/builds/xcode/03_instancing.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:03_advances/04_screen_capture/builds/xcode/04_screen_capture.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:03_advances/05_convert_to_wscene/builds/xcode/05_convert_to_wscene.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:03_advances/06_scene/builds/xcode/06_scene.xcodeproj">
+      </FileRef>
    </Group>
 </Workspace>

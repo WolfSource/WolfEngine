@@ -712,6 +712,7 @@
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system",
+					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 					"$(SRCROOT)/../../../dependencies/assimp/include",
 				);
 				LIBRARY_SEARCH_PATHS = "";

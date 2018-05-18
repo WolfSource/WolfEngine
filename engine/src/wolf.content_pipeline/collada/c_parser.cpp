@@ -1542,8 +1542,6 @@ W_RESULT c_parser::_create_scene(
 //            pScene->add_camera(_camera);
         }
     }
-
-    pScene->set_z_up(sZ_Up);
     
 	return W_PASSED;
 }

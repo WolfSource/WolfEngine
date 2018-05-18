@@ -28,7 +28,18 @@ namespace wolf
 		public:
 
 			template<class T>
-			static T* load(std::wstring pAssetPath)
+			static T* load(_In_z_ const std::wstring& pAssetPath,
+                           _In_ const bool& pOptimizeMeshUsingAMDTootle =
+#ifdef __WIN32
+                           true
+#else
+                           false
+#endif
+
+#ifdef __WIN32
+                           , _In_ const bool& pGenerateLODUsingSimplygon = true
+#endif
+            )
 			{
 #if defined(__WIN32) || defined(__UWP)
 				auto _file_exists = wolf::system::io::get_is_fileW(pAssetPath.c_str());
@@ -66,7 +77,13 @@ namespace wolf
 					}
 					else
 					{
-						return assimp::w_assimp::load(pAssetPath);
+						return assimp::w_assimp::load(
+                                                      pAssetPath,
+                                                      pOptimizeMeshUsingAMDTootle
+#ifdef __WIN32
+                                                      ,pGenerateLODUsingSimplygon
+#endif
+                                                      );
 
 
 

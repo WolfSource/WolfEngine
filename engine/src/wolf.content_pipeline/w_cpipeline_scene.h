@@ -21,10 +21,12 @@ namespace wolf
 {
 	namespace content_pipeline
 	{
+        enum w_coordinate_system { LEFT_HANDED = 0, RIGHT_HANDED = 1 };
 		class w_cpipeline_scene
 		{
-		public:
+        public:
 			WCP_EXP w_cpipeline_scene();
+            WCP_EXP w_cpipeline_scene(_In_ const w_coordinate_system& pSourceFileCoordinateSystem, _In_ const glm::vec3& pSourceFileUpVector);
 			WCP_EXP virtual ~w_cpipeline_scene();
 			
 			WCP_EXP void add_model(_In_ w_cpipeline_model* pModel);
@@ -46,24 +48,27 @@ namespace wolf
 
 			//Get first camera if avaible, else create a default one
 			WCP_EXP void get_first_camera(_Inout_ w_camera& pCamera);
-			WCP_EXP void get_cameras_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<w_camera*>& pCameras);
+			WCP_EXP void get_cameras_by_name(_In_z_ const std::string& pName, _Inout_ std::vector<w_camera*>& pCameras);
             WCP_EXP void get_cameras_by_index(const size_t pIndex, _Inout_ w_camera** pCamera);
-
-            //Get coordinate system
-            WCP_EXP bool get_z_up()                      { return this->_z_up; }
             
-            WCP_EXP std::string get_name() const         { return this->_name; }
+            WCP_EXP std::string         get_name() const                            { return this->_name; }
+            WCP_EXP w_coordinate_system get_coordinate_system() const               { return static_cast<w_coordinate_system>(this->_coordinate_system); }
+            WCP_EXP glm::vec3           get_coordinate_system_up_vector() const
+            {
+                return glm::vec3(this->_coordinate_system_up_vector[0],
+                                 this->_coordinate_system_up_vector[1],
+                                 this->_coordinate_system_up_vector[2]);
+            }
 
 #pragma endregion
 
 #pragma region Setters
 
-            WCP_EXP void set_name(_In_z_ std::string& pValue)   { this->_name = pValue; }
-            WCP_EXP void set_z_up(_In_ const bool& pIsLeftHand);
+            WCP_EXP void set_name(_In_z_ const std::string& pValue)   { this->_name = pValue; }
             
 #pragma endregion
 
-			MSGPACK_DEFINE(_name, _cameras, _models, _boundaries, _z_up);
+			MSGPACK_DEFINE(_name, _cameras, _models, _boundaries, _coordinate_system, _coordinate_system_up_vector);
             
 #ifdef __PYTHON__
             void py_add_model(_In_ w_cpipeline_model& pModel)
@@ -111,7 +116,11 @@ namespace wolf
 			std::vector<w_camera>							_cameras;
             std::vector<w_cpipeline_model>					_models;
             std::vector<wolf::system::w_bounding_sphere>	_boundaries;
-            bool											_z_up;
+            
+            //just reperesent the coordinate system of 3D source format
+            bool                                            _coordinate_system;
+             //just reperesent the up vector of 3D source format
+            float                                           _coordinate_system_up_vector[3];
 		};
 	}
 }

@@ -36,13 +36,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 
 	this->on_pixels_captured_signal += [&](_In_ const w_point_t pSize, _In_ uint8_t* pPixels)->void
 	{
-		std::string _path;
-		auto _current_path = wolf::system::io::get_current_directoryW();
-#if defined(__WIN32) || defined(__UWP)
-		_path = wolf::system::convert::wstring_to_string(_current_path);
-#else
-		_path = _current_path;
-#endif
+		auto _path = wolf::system::io::get_current_directory();
 
 #pragma region Convert BGRA to RGBA
 		//some gpu does not support RGBA, so we used BGRA as default format fo swap chain 

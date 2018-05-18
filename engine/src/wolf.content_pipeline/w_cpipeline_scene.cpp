@@ -5,9 +5,17 @@ using namespace std;
 using namespace wolf::system;
 using namespace wolf::content_pipeline;
 
-w_cpipeline_scene::w_cpipeline_scene()
+w_cpipeline_scene::w_cpipeline_scene() : _coordinate_system(false)//false means 0 or LEFT_HANDED
 {
+    this->_coordinate_system_up_vector[0] = 0; this->_coordinate_system_up_vector[1] = 1; this->_coordinate_system_up_vector[2] = 0;
+}
 
+w_cpipeline_scene::w_cpipeline_scene(_In_ const w_coordinate_system& pSourceFileCoordinateSystem, _In_ const glm::vec3& pSourceFileUpVector)
+{
+    this->_coordinate_system = static_cast<bool>(pSourceFileCoordinateSystem);
+    this->_coordinate_system_up_vector[0] = pSourceFileUpVector.x;
+    this->_coordinate_system_up_vector[1] = pSourceFileUpVector.y;
+    this->_coordinate_system_up_vector[2] = pSourceFileUpVector.z;
 }
 
 w_cpipeline_scene::~w_cpipeline_scene()
@@ -129,24 +137,15 @@ void w_cpipeline_scene::get_cameras_by_index(_In_ const size_t pIndex, _Inout_ w
     }
 }
 
-void w_cpipeline_scene::get_cameras_by_id(_In_z_ const std::string& pID, _Inout_ std::vector<w_camera*>& pCameras)
+void w_cpipeline_scene::get_cameras_by_name(_In_z_ const std::string& pName, _Inout_ std::vector<w_camera*>& pCameras)
 {
 	for (size_t i = 0; i < this->_cameras.size(); ++i)
 	{
-		if (this->_cameras[i].get_name() == pID)
+		if (this->_cameras[i].get_name() == pName)
 		{
 			pCameras.push_back(&this->_cameras.at(i));
 		}
 	}
-}
-
-#pragma endregion
-
-#pragma region Setters
-
-void w_cpipeline_scene::set_z_up(_In_ const bool& pZUp)
-{
-    this->_z_up = pZUp;
 }
 
 #pragma endregion

@@ -297,7 +297,7 @@ void scene::load()
 
 
 				auto _b_sphere = w_bounding_sphere::create_from_bounding_box(this->_mesh_bounding_box);
-                this->_distance_from_eye = 100;//_b_sphere.radius; for test
+                this->_distance_from_eye = _b_sphere.radius;
 
 				break;
 			}
