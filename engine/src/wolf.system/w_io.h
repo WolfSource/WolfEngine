@@ -555,6 +555,24 @@ namespace wolf
                     pPaths.push_back(_file_name.path());
                 }
             }
+#elif defined(__APPLE__)
+            //temporary because std::filesystem not supported by xcode yet
+            inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
+            {
+                pPaths.clear();
+                
+                auto _path = wolf::system::convert::wstring_to_string(pDirectoryPath);
+                DIR* _dir;
+                struct dirent* _ent;
+                if ((_dir = opendir(_path.c_str())) != NULL)
+                {
+                    while ((_ent = readdir(_dir)) != NULL)
+                    {
+                        pPaths.push_back(wolf::system::convert::string_to_wstring(_ent->d_name));
+                    }
+                    closedir(_dir);
+                }
+            }
 #endif
 
 #ifndef _MSC_VER

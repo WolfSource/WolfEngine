@@ -246,7 +246,7 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 	{
 		if (wolf::system::io::get_file_extentionW(_file_name) != L".wscene") continue;
 
-		auto _scene = w_content_manager::load<w_cpipeline_scene>(_file_name);
+		auto _scene = w_content_manager::load<w_cpipeline_scene>(pDirectoryPath + _file_name);
 		if (_scene)
 		{
 			//get first camera
@@ -443,8 +443,8 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_camera_time.set_target_elapsed_seconds(1 / 30.0f);
 		this->_camera_time.tick([this]()
 		{
-			this->_first_camera.set_translate(this->_camera_anim_positions[this->_current_camera_time]);
-			this->_first_camera.set_interest(this->_camera_anim_targets[this->_current_camera_time]);
+			this->_first_camera.set_position(this->_camera_anim_positions[this->_current_camera_time]);
+			this->_first_camera.set_look_at(this->_camera_anim_targets[this->_current_camera_time]);
 			this->_first_camera.update_view();
 			this->_first_camera.update_frustum();
 
@@ -468,7 +468,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 			_model->set_view_projection_position(
 				this->_first_camera.get_view(), 
 				this->_first_camera.get_projection(),
-				this->_first_camera.get_translate());
+				this->_first_camera.get_position());
 			_model->update();
 		}
 
@@ -1067,7 +1067,8 @@ scene::widget_info scene::_show_explorer()
 	if (!ImGui::Begin("Scene Explorer", 0, _window_flags))
 	{
 		// Early out if the window is collapsed, as an optimization.
-		goto end;
+        ImGui::End();
+        return _w_i;
 	}
 
 	ImGui::SetWindowPos(ImVec2(10, _w_i.pos.y + (_w_i.size.y / 2) - 8));
@@ -1080,9 +1081,8 @@ scene::widget_info scene::_show_explorer()
 	{
 		sLeftWidgetCollapseState = collapse_states::collapsing;
 	}
-end:
-	ImGui::End();
 
+	ImGui::End();
 	return _w_i;
 }
 

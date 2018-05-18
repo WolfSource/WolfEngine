@@ -132,5 +132,8 @@
       <FileRef
          location = "group:03_advances/06_scene/builds/xcode/06_scene.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:03_advances/07_lod/builds/xcode/07_lod.xcodeproj">
+      </FileRef>
    </Group>
 </Workspace>

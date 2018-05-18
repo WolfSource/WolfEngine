@@ -16,8 +16,8 @@ layout (location = 0) in vec3 i_norm;
 layout (location = 1) in vec2 i_uv;
 layout (location = 2) in flat uint i_texture_mip_map_level;
 layout (location = 3) in vec3 i_color;
-layout (location = 4) out vec3 i_camera_pos;
-layout (location = 5) out vec3 i_world_pos;
+layout (location = 4) in vec3 i_camera_pos;
+layout (location = 5) in vec3 i_world_pos;
 
 layout(location = 0) out vec4 o_color;
 

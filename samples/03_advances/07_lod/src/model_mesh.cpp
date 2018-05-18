@@ -1355,7 +1355,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 	case 256:
 		this->visibilities.resize(256 / 4);
 		this->_cs.unifrom_x256 = new w_uniform<compute_unifrom_x256>();
-		if (this->_cs.unifrom_x256->load(this->gDevice) == S_FALSE)
+		if (this->_cs.unifrom_x256->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
 			V(_hr, "loading compute shader uniform_x256 for " + this->model_name, _trace_info);
@@ -1368,7 +1368,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 	case 512:
 		this->visibilities.resize(512 / 4);
 		this->_cs.unifrom_x512 = new w_uniform<compute_unifrom_x512>();
-		if (this->_cs.unifrom_x512->load(this->gDevice) == S_FALSE)
+		if (this->_cs.unifrom_x512->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
 			V(_hr, "loading compute shader uniform_x512 for " + this->model_name, _trace_info);
@@ -1381,7 +1381,7 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 	case 1024:
 		this->visibilities.resize(1024 / 4);
 		this->_cs.unifrom_x1024 = new w_uniform<compute_unifrom_x1024>();
-		if (this->_cs.unifrom_x1024->load(this->gDevice) == S_FALSE)
+		if (this->_cs.unifrom_x1024->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
 			V(_hr, "loading compute shader uniform_x512 for " + this->model_name, _trace_info);
