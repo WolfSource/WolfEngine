@@ -314,7 +314,6 @@ namespace wolf
 
 w_logger::w_logger() : _pimp(new w_logger_pimp())
 {
-
 }
 
 w_logger::~w_logger()
@@ -355,7 +354,7 @@ void w_logger::flush()
     this->_pimp->flush();
 }
 
-void w_logger::write(_In_z_ std::string pMsg, _In_z_ const std::string pState)
+void w_logger::write(_In_z_ std::string pMsg, _In_z_ const std::string& pState)
 {
     this->_pimp->write(pMsg, pState);
 }

@@ -99,6 +99,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_masked_occlusion_culling
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01_media_player.Win32", "04_intermediates\01_media_player\builds\mvsc\01_media_player.Win32.vcxproj", "{D07EB02B-7631-441C-9E73-890912BB6FFF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "20_fiber.Win32", "01_system\20_fiber\builds\mvsc\20_fiber.Win32.vcxproj", "{90C0809A-4566-425E-891F-FD19F65A60E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -459,6 +461,14 @@ Global
 		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Release|x64.Build.0 = Release|x64
 		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Release|x86.ActiveCfg = Release|Win32
 		{D07EB02B-7631-441C-9E73-890912BB6FFF}.Release|x86.Build.0 = Release|Win32
+		{90C0809A-4566-425E-891F-FD19F65A60E2}.Debug|x64.ActiveCfg = Debug|x64
+		{90C0809A-4566-425E-891F-FD19F65A60E2}.Debug|x64.Build.0 = Debug|x64
+		{90C0809A-4566-425E-891F-FD19F65A60E2}.Debug|x86.ActiveCfg = Debug|Win32
+		{90C0809A-4566-425E-891F-FD19F65A60E2}.Debug|x86.Build.0 = Debug|Win32
+		{90C0809A-4566-425E-891F-FD19F65A60E2}.Release|x64.ActiveCfg = Release|x64
+		{90C0809A-4566-425E-891F-FD19F65A60E2}.Release|x64.Build.0 = Release|x64
+		{90C0809A-4566-425E-891F-FD19F65A60E2}.Release|x86.ActiveCfg = Release|Win32
+		{90C0809A-4566-425E-891F-FD19F65A60E2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -508,6 +518,7 @@ Global
 		{3C40F249-084B-4B74-AF90-44703AE16D9C} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
 		{890325E2-798E-47D8-9E36-23BB40ADFB30} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
 		{D07EB02B-7631-441C-9E73-890912BB6FFF} = {8875BCAA-A9A6-4A81-8F6F-AA9EC902AADF}
+		{90C0809A-4566-425E-891F-FD19F65A60E2} = {7741F09D-E859-412C-A94D-5F25017E6F20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {38023155-92FA-450F-B105-E00D9588C53D}

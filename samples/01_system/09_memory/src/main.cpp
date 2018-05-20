@@ -51,11 +51,7 @@ WOLF_MAIN()
 		for (size_t i = 0; i < _length; ++i)
 		{
 			_new_f[i].number = 100 + i;
-#if defined(_MSC_VER) 
-			sprintf_s(_new_f[i].name, "Ryan %d", i);
-#else
-			sprintf(_new_f[i].name, "Ryan %d", i);
-#endif
+			w_sprintf(_new_f[i].name, "Ryan %d", i);
 		}
 	}
 

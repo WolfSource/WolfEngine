@@ -158,6 +158,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>w_media_core_pch.h</PrecompiledHeaderFile>
       <CompileAsWinRT>false</CompileAsWinRT>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/ffmpeg/lib/windows/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

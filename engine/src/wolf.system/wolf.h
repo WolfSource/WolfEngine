@@ -14,8 +14,7 @@
 #ifndef __WOLF_H__
 #define __WOLF_H__
 
-#include "w_std.h"
-#include "w_logger.h"
+#include "w_system_pch.h"
 #include "w_game_time.h"
 
 #ifdef _WIN32

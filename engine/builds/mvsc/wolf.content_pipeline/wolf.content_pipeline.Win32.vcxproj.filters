@@ -139,9 +139,6 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle.cpp">
       <Filter>amd</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.cpp">
-      <Filter>collada</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDKLoader.cpp">
       <Filter>simplygon</Filter>
     </ClCompile>
@@ -154,6 +151,7 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.cpp">
       <Filter>assimp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.h">
@@ -337,9 +335,6 @@
       <Filter>amd</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.h">
-      <Filter>collada</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDKLoader.h">
       <Filter>simplygon</Filter>
     </ClInclude>
@@ -358,6 +353,7 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.h">
       <Filter>assimp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.inl">

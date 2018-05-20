@@ -79,7 +79,7 @@ namespace wolf
             //Get the buffer of messages
             WSYS_EXP std::vector<std::wstring> get_buffer();
             //Write an output message
-            WSYS_EXP void write(_In_z_ std::string pMsg, _In_z_ const std::string pState = "Info");
+            WSYS_EXP void write(_In_z_ std::string pMsg, _In_z_ const std::string& pState = "Info");
             //Write an output message
             WSYS_EXP void write(_In_z_ std::wstring pMsg, _In_z_ const std::wstring pState = L"Info");
             //Write an output user message 

@@ -648,6 +648,7 @@
       <SDLCheck>true</SDLCheck>
       <CompileAsWinRT>false</CompileAsWinRT>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x64/release;$(SolutionDir)/../../dependencies/nanomsg/lib/windows/x64/release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

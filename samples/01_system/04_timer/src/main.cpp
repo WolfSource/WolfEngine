@@ -37,11 +37,7 @@ WOLF_MAIN()
     auto _time = _timer.get_seconds();
     
     char _buffer[256];
-#if defined(__WIN32) || defined(__UWP)
-    sprintf_s(_buffer, "writing file took: %f (s)", _time);
-#else
-    sprintf(_buffer, "writing file took: %f (s)", _time);
-#endif
+	w_sprintf(_buffer, "writing file took: %f (s)", _time);
     logger.write(_buffer);
         
     _timer.reset();

@@ -49,7 +49,6 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\amd\amd_tootle\triorder.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_node.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\collada\c_parser.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMeshOptimize.cpp" />
@@ -58,6 +57,7 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\simplygon\simplygon.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDKLoader.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_camera.cpp" />
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -123,7 +123,6 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_animation.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_camera.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_extra.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_node.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_obj.h" />
@@ -137,6 +136,7 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDKLoader.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\tiny_obj_loader.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_camera.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_export.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_structs.h" />
@@ -289,6 +289,7 @@
       <Optimization>MaxSpeed</Optimization>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <CompileAsWinRT>false</CompileAsWinRT>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>

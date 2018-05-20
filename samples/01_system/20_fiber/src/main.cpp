@@ -36,61 +36,71 @@ inline void fn( std::string const& pStr, int pSize)
 inline void fn1( boost::fibers::barrier& b)
 {
     auto _id = boost::this_fiber::get_id();
-    logger.write("fiber " + std::to_string(_id)  + ": fn1 entered");
+	ostringstream _buffer;
+	_buffer << _id;
+	auto _id_str = _buffer.str();
+	_buffer.clear();
+
+    logger.write("fiber " + _id_str + ": fn1 entered");
     
     ++value1;
-    logger.write("fiber " + std::to_string(_id)  + ": incremented value1:" + std::to_string(value1));
+    logger.write("fiber " + _id_str + ": incremented value1:" + std::to_string(value1));
     boost::this_fiber::yield();
     
     logger.write("current thread id of fn1: " + std::to_string(w_thread::get_current_thread_id()));
     
-    logger.write("fiber " + std::to_string(_id)  + ": waits for barrier");
+    logger.write("fiber " + _id_str  + ": waits for barrier");
     b.wait();
-    logger.write("fiber " + std::to_string(_id)  + ": passed barrier");
+    logger.write("fiber " + _id_str + ": passed barrier");
     
     ++value1;
-    logger.write("fiber " + std::to_string(_id)  + ": incremented value1:" + std::to_string(value1));
+    logger.write("fiber " + _id_str + ": incremented value1:" + std::to_string(value1));
     boost::this_fiber::yield();
     
     ++value1;
-    logger.write("fiber " + std::to_string(_id)  + ": incremented value1:" + std::to_string(value1));
+    logger.write("fiber " + _id_str + ": incremented value1:" + std::to_string(value1));
     boost::this_fiber::yield();
     
     ++value1;
-    logger.write("fiber " + std::to_string(_id)  + ": incremented value1:" + std::to_string(value1));
+    logger.write("fiber " + _id_str + ": incremented value1:" + std::to_string(value1));
     boost::this_fiber::yield();
     
-    logger.write("fiber " + std::to_string(_id)  + ": fn1 returns");
+    logger.write("fiber " + _id_str + ": fn1 returns");
 }
 
 inline void fn2( boost::fibers::barrier & b)
 {
-    auto _id = boost::this_fiber::get_id();
-    logger.write("fiber " + std::to_string(_id)  + ": fn2 entered");
+	auto _id = boost::this_fiber::get_id();
+	ostringstream _buffer;
+	_buffer << _id;
+	auto _id_str = _buffer.str();
+	_buffer.clear();
+
+    logger.write("fiber " + _id_str + ": fn2 entered");
     
     ++value2;
-    logger.write("fiber " + std::to_string(_id)  + ": incremented value2:" + std::to_string(value2));
+    logger.write("fiber " + _id_str + ": incremented value2:" + std::to_string(value2));
     boost::this_fiber::yield();
     
     ++value2;
-    logger.write("fiber " + std::to_string(_id)  + ": incremented value2:" + std::to_string(value2));
+    logger.write("fiber " + _id_str + ": incremented value2:" + std::to_string(value2));
     boost::this_fiber::yield();
     
     ++value2;
-    logger.write("fiber " + std::to_string(_id)  + ": incremented value2:" + std::to_string(value2));
+    logger.write("fiber " + _id_str + ": incremented value2:" + std::to_string(value2));
     boost::this_fiber::yield();
     
     logger.write("current thread id of fn2: " + std::to_string(w_thread::get_current_thread_id()));
     
-    logger.write("fiber " + std::to_string(_id)  + ": waits for barrier");
+    logger.write("fiber " + _id_str + ": waits for barrier");
     b.wait();
-    logger.write("fiber " + std::to_string(_id)  + ": passed barrier");
+    logger.write("fiber " + _id_str + ": passed barrier");
     
     ++value2;
-    logger.write("fiber " + std::to_string(_id)  + ": incremented value2:" + std::to_string(value2));
+    logger.write("fiber " + _id_str + ": incremented value2:" + std::to_string(value2));
     boost::this_fiber::yield();
     
-    logger.write("fiber " + std::to_string(_id)  + ": fn2 returns");
+    logger.write("fiber " + _id_str + ": fn2 returns");
 }
 
 void whatevah(char me)
@@ -156,13 +166,19 @@ void thread_func( boost::fibers::barrier* b)
 
 void simple_test()
 {
-    try
-    {
-        boost::fibers::fiber _f1( fn, "test", 5);
-        logger.write("fiber id (f1): " + std::to_string(_f1.get_id()));
-        _f1.join();
-        logger.write("done");
-    }
+	try
+	{
+		boost::fibers::fiber _f1(fn, "test", 5);
+
+		ostringstream _buffer;
+		_buffer << _f1.get_id();
+		auto _id_str = _buffer.str();
+		_buffer.clear();
+
+		logger.write("fiber id (f1): " + _id_str);
+		_f1.join();
+		logger.write("done");
+	}
     catch (std::exception const& e)
     {
         logger.write("exception happended: " + std::string(e.what()));

@@ -805,12 +805,7 @@ void scene::_show_floating_debug_window()
 	ImGui::SetNextWindowSize(ImVec2(550, 500), ImGuiSetCond_FirstUseEver);
 
 	char _str[30];
-#ifdef __WIN32
-	sprintf_s(
-#else
-	sprintf(
-#endif
-		_str, "Wolf.Engine v.%d.%d.%d.%d", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+	w_sprintf(_str, "Wolf.Engine v.%d.%d.%d.%d", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
 	bool _is_open = true;
 	if (!ImGui::Begin(_str, &_is_open, _window_flags))
 	{
@@ -1897,7 +1892,7 @@ scene::widget_info scene::_show_right_widget(scene::widget_info* pRelatedWidgetI
 
 	char _avg_str[32];
 	_avg_str[31] = '\0';
-	sprintf(_avg_str, "avg %.3f", abs(_avg));
+	w_sprintf(_avg_str, "avg %.3f", abs(_avg));
 	ImGui::PlotLines("Samples", values, IM_ARRAYSIZE(values), values_offset, _avg_str, -1.0f, 1.0f, ImVec2(0, 80));
 	ImGui::PlotHistogram("Temps", sTimes, _array_time_len, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80));
 
@@ -1929,7 +1924,7 @@ scene::widget_info scene::_show_right_widget(scene::widget_info* pRelatedWidgetI
 
 	float progress_saturated = (progress < 0.0f) ? 0.0f : (progress > 1.0f) ? 1.0f : progress;
 	char buf[32];
-	sprintf(buf, "%d/%d", (int)(progress_saturated * 1753), 1753);
+	w_sprintf(buf, "%d/%d", (int)(progress_saturated * 1753), 1753);
 	ImGui::ProgressBar(progress, ImVec2(0.f, 0.f), buf);
 	ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 	ImGui::Text("Pressures");
