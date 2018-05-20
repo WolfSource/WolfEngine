@@ -1605,8 +1605,8 @@ namespace wolf
 				}
 
 #elif defined(__VULKAN__)
-				auto _vk_major = VK_VERSION_MAJOR(VK_API_VERSION_1_0);
-				auto _vk_minor = VK_VERSION_MINOR(VK_API_VERSION_1_0);
+				auto _vk_major = VK_VERSION_MAJOR(VK_API_VERSION_1_1);
+				auto _vk_minor = VK_VERSION_MINOR(VK_API_VERSION_1_1);
 				auto _vk_patch = VK_VERSION_PATCH(VK_HEADER_VERSION);
 
 				std::string _msg;
@@ -1703,13 +1703,11 @@ namespace wolf
                 {
                     const char* _validation_layer_names[] =
                     {
-                        "VK_LAYER_LUNARG_core_validation",
+                        "VK_LAYER_LUNARG_standard_validation",
 #ifdef __ANDROID
                         "VK_LAYER_GOOGLE_threading",
                         "VK_LAYER_LUNARG_parameter_validation",
-                        "VK_LAYER_LUNARG_device_limits,"
-                        "VK_LAYER_LUNARG_object_tracker",
-                        "VK_LAYER_LUNARG_image",
+                        "VK_LAYER_LUNARG_object_tracker,"
                         "VK_LAYER_LUNARG_core_validation",
                         "VK_LAYER_LUNARG_swapchain",
                         "VK_LAYER_GOOGLE_unique_objects"

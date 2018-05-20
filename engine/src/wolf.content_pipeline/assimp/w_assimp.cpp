@@ -369,7 +369,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
                     //apply amd tootle to it
                     if (pOptimizeMeshUsingAMDTootle)
                     {
-                        amd::tootle::apply(_w_mesh->vertices, _vertices_positions, _w_mesh->indices);
+                        //amd::tootle::apply(_w_mesh->vertices, _vertices_positions, _w_mesh->indices);
                     }
                     
                     _model_meshes.push_back(_w_mesh);

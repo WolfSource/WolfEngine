@@ -56,7 +56,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	using namespace wolf;
 
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	_config.off_screen_mode = false;
 	w_game::set_graphics_device_manager_configs(_config);
 
