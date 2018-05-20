@@ -10,6 +10,7 @@
 #include "pch.h"
 #include <w_thread.h>
 #include <boost/fiber/all.hpp>
+#include <w_timer.h>
 
 //namespaces
 using namespace std;
@@ -96,51 +97,61 @@ void whatevah(char me)
 {
     try
     {
-        std::thread::id my_thread = std::this_thread::get_id(); /*< get ID of initial thread >*/
+        auto _my_thread = w_thread::get_current_thread_id();
         {
-            std::ostringstream buffer;
-            buffer << "fiber " << me << " started on thread " << my_thread << '\n';
-            std::cout << buffer.str() << std::flush;
+            std::ostringstream _buffer;
+            _buffer << "fiber " << me << " started on thread " << _my_thread;
+            logger.write(_buffer.str());
         }
-        for ( unsigned i = 0; i < 10; ++i)/*< loop ten times >*/
+        for ( unsigned i = 0; i < 10; ++i)//loop ten times
         {
-            
-            boost::this_fiber::yield(); /*< yield to other fibers >*/
-            std::thread::id new_thread = std::this_thread::get_id(); /*< get ID of current thread >*/
-            if ( new_thread != my_thread) { /*< test if fiber was migrated to another thread >*/
-                my_thread = new_thread;
-                std::ostringstream buffer;
-                buffer << "fiber " << me << " switched to thread " << my_thread << '\n';
-                std::cout << buffer.str() << std::flush;
+            boost::this_fiber::yield(); // yield to other fibers
+            auto _new_thread = w_thread::get_current_thread_id();
+            if ( _new_thread != _my_thread)
+            {
+                //test if fiber was migrated to another thread
+                _my_thread = _new_thread;
+                std::ostringstream _buffer;
+                _buffer << "fiber " << me << " switched to thread " << _my_thread;
+                logger.write(_buffer.str());
             }
         }
-    } catch ( ... ) {
     }
-    std::unique_lock<std::mutex> lk(mutex_count);
+    catch (...)
+    {
+        logger.write("unhandled error happended");
+    }
+    std::unique_lock<std::mutex> _lk(mutex_count);
     if ( 0 == --fiber_count)
-    { /*< Decrement fiber counter for each completed fiber. >*/
-        lk.unlock();
-        cv_count.notify_all(); /*< Notify all fibers waiting on `cnd_count`. >*/
+    {
+        //Decrement fiber counter for each completed fiber
+        _lk.unlock();
+        cv_count.notify_all(); //Notify all fibers waiting on `cnd_count`
     }
 }
 
-void thread( boost::fibers::barrier* b)
+void thread_func( boost::fibers::barrier* b)
 {
-    std::ostringstream buffer;
-    buffer << "thread started " << std::this_thread::get_id() << std::endl;
-    std::cout << buffer.str() << std::flush;
-    boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >(); /*<
-                                                                                    Install the scheduling algorithm `boost::fibers::algo::shared_work` in order to
-                                                                                    join the work sharing.
-                                                                                    >*/
-    b->wait(); /*< sync with other threads: allow them to start processing >*/
-    std::unique_lock<std::mutex> lk( mutex_count);
-    cv_count.wait( lk, [](){ return 0 == fiber_count; } ); /*<
-                                                             Suspend main fiber and resume worker fibers in the meanwhile.
-                                                             Main fiber gets resumed (e.g returns from `condition_variable_any::wait()`)
-                                                             if all worker fibers are complete.
-                                                             >*/
-    BOOST_ASSERT( 0 == fiber_count);
+    std::ostringstream _buffer;
+    _buffer << "thread started " << w_thread::get_current_thread_id();
+    logger.write(_buffer.str());
+    boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
+    /*
+        Install the scheduling algorithm `boost::fibers::algo::shared_work`
+        in order to join the work sharing.
+    */
+    b->wait(); //sync with other threads: allow them to start processing
+    std::unique_lock<std::mutex> _lk(mutex_count);
+    cv_count.wait( _lk, []()
+    {
+        return 0 == fiber_count;
+    });
+    /*
+        Suspend main fiber and resume worker fibers in the meanwhile.
+        Main fiber gets resumed (e.g returns from `condition_variable_any::wait()`)
+        if all worker fibers are complete.
+    */
+    assert(0 == fiber_count);
 }
 
 void simple_test()
@@ -152,7 +163,7 @@ void simple_test()
         _f1.join();
         logger.write("done");
     }
-    catch ( std::exception const& e)
+    catch (std::exception const& e)
     {
         logger.write("exception happended: " + std::string(e.what()));
     }
@@ -168,8 +179,8 @@ void barrier_sync_test()
     try
     {
         boost::fibers::barrier _fb(2);
-        boost::fibers::fiber _f1( & fn1, std::ref( _fb) );
-        boost::fibers::fiber _f2( & fn2, std::ref( _fb) );
+        boost::fibers::fiber _f1( &fn1, std::ref(_fb));
+        boost::fibers::fiber _f2( &fn2, std::ref(_fb));
         _f1.join();
         _f2.join();
         
@@ -187,7 +198,63 @@ void barrier_sync_test()
 
 void work_sharing()
 {
+    std::ostringstream _buffer;
+    _buffer << "main thread started " << w_thread::get_current_thread_id();
+    logger.write(_buffer.str());
     
+    
+    boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
+    /*
+        Install the scheduling algorithm `boost::fibers::algo::shared_work` in the main thread
+        too, so each new fiber gets launched into the shared pool.
+    */
+
+    for ( char c : std::string("abcdefghijklmnopqrstuvwxyz"))
+    {
+        /*
+            Launch a number of worker fibers; each worker fiber picks up a character
+            that is passed as parameter to fiber-function `whatevah`.
+            Each worker fiber gets detached.
+        */
+        boost::fibers::fiber([c]()
+        {
+            whatevah( c);
+        }).detach();
+        
+        ++fiber_count; //Increment fiber counter for each new fiber
+    }
+    boost::fibers::barrier _b(4);//1(main thread) + 3(other threads)
+    std::thread _threads[] =
+    {
+        //launch a couple of threads that join the work sharing
+        std::thread( thread_func, &_b),
+        std::thread( thread_func, &_b),
+        std::thread( thread_func, &_b)
+    };
+    _b.wait(); //sync with other threads: allow them to start processing
+    {
+        std::unique_lock<std::mutex> _lk( mutex_count);
+        cv_count.wait( _lk, []()
+        {
+            return 0 == fiber_count;
+        } );
+        /*
+            Suspend main fiber and resume worker fibers in the meanwhile.
+            Main fiber gets resumed (e.g returns from `condition_variable_any::wait()`)
+            if all worker fibers are complete.
+        */
+    }
+    /*
+        Releasing lock of mtx_count is required before joining the threads, otherwise
+        the other threads would be blocked inside condition_variable::wait() and
+        would never return (deadlock).
+    */
+    assert( 0 == fiber_count);
+    for ( auto& _t : _threads)
+    {
+        //wait for threads to terminate
+        _t.join();
+    }
 }
 
 WOLF_MAIN()
@@ -198,10 +265,19 @@ WOLF_MAIN()
     //log to output file
     logger.write(L"Wolf initialized");
     
+    w_timer _timer;
+    
     //run tests
     simple_test();
     barrier_sync_test();
+    
+    _timer.start();
     work_sharing();
+    _timer.stop();
+    
+    std::ostringstream _buffer;
+    _buffer << "time is: " << _timer.get_milliseconds();
+    logger.write(_buffer.str());
     
     //output a message to the log file
     logger.write(L"shutting down Wolf");
