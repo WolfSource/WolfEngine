@@ -4,6 +4,7 @@ echo "make wolf's dependencies ready"
 cd ./engine/dependencies/
 
 keys=(
+assimp
 boost 
 ffmpeg 
 luaJIT 
@@ -13,6 +14,7 @@ tbb
 vulkan)
 
 values=(
+version.txt
 builds.txt 
 version.txt 
 version.txt 
