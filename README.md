@@ -29,6 +29,7 @@ The Wolf is a comprehensive set of C++ open source libraries for realtime render
 | Vulkan         |   [![Build status](https://ci.appveyor.com/api/projects/status/nrk0kn83tp1n47h3/branch/master?svg=true)](https://ci.appveyor.com/project/PooyaEimandar/wolf-engine/branch/master)  |            N/A             |   in progress  |    [![Build Status](https://travis-ci.org/WolfSource/Wolf.Engine.svg?branch=master)](https://travis-ci.org/WolfSource/Wolf.Engine)   |  in progress  |  in progress  |
 | DircetX 12     | not started |         not started        |       N/A      |      N/A      |     N/A       |     N/A       |
 | Embree         | not started |         N/A                |   not started  |  not started  |     N/A       |     N/A       |
+| OptiX          | not started |         N/A                |   not started  |  not started  |     N/A       |     N/A       |
 | pyWolf	       |   [![Build status](https://ci.appveyor.com/api/projects/status/5yy8wmj96yao3g0s?svg=true)](https://ci.appveyor.com/project/PooyaEimandar/wolf-engine-7lc14)  |         not started        |   not started  |    [![Build Status](https://travis-ci.org/WolfSource/Wolf.Engine.svg?branch=master)](https://travis-ci.org/WolfSource/Wolf.Engine)    |     N/A       |     N/A       |
 
 
