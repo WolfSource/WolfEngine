@@ -716,7 +716,6 @@
 					"$(SRCROOT)/../../../dependencies/assimp/include",
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/assimp/lib/osx/debug/";
 				OTHER_CFLAGS = "";
 				"OTHER_CFLAGS[arch=*]" = "";
 				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "";
