@@ -367,7 +367,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../../dependencies/vulkan/macOS/macOS/Frameworks",
-					"$(SRCROOT)/../../../dependencies/assimp/lib/osx/debug/",
+					"$(SRCROOT)/../../../../dependencies/assimp/lib/osx/debug/",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
