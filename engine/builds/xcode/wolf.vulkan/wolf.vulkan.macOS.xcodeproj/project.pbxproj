@@ -33,6 +33,7 @@
 		2C598C6F1FA27CC10055D215 /* w_fences.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C598C6D1FA27CC10055D215 /* w_fences.cpp */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.macOS.dylib */; };
 		2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC71ECB710900624CC7 /* w_uniform.h */; };
+		2C766E6C20B343C4000C66F4 /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C766E6B20B343C4000C66F4 /* libassimp.4.1.0.dylib */; };
 		2C7F0DA61EAD348600F0C700 /* w_render_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */; };
 		2C7F0DA71EAD348600F0C700 /* w_render_pass.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C7F0DA51EAD348600F0C700 /* w_render_pass.h */; };
 		2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C860FA31E5F1E80000E71B5 /* libc++.tbd */; };
@@ -103,6 +104,7 @@
 		2C68442F1F9E3F1600AEAB30 /* libmsgpackc.2.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmsgpackc.2.0.0.dylib; path = ../../../dependencies/msgpack/lib/debug/libmsgpackc.2.0.0.dylib; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C736BC71ECB710900624CC7 /* w_uniform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_uniform.h; path = ../../../src/wolf.render/w_graphics/w_uniform.h; sourceTree = "<group>"; };
+		2C766E6B20B343C4000C66F4 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../dependencies/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
 		2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_pass.cpp; path = ../../../src/wolf.render/w_graphics/w_render_pass.cpp; sourceTree = "<group>"; };
 		2C7F0DA51EAD348600F0C700 /* w_render_pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_render_pass.h; path = ../../../src/wolf.render/w_graphics/w_render_pass.h; sourceTree = "<group>"; };
 		2C860FA31E5F1E80000E71B5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -152,6 +154,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C766E6C20B343C4000C66F4 /* libassimp.4.1.0.dylib in Frameworks */,
 				2CF54B09205A2A1C000B80E3 /* vulkan.framework in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.macOS.dylib in Frameworks */,
 				2C29CD271EB3834B00BEFF54 /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
@@ -245,6 +248,7 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C766E6B20B343C4000C66F4 /* libassimp.4.1.0.dylib */,
 				2CA5D8492050A6270062AD2A /* vulkan.framework */,
 				2CF54B03205A19C7000B80E3 /* vulkan.framework */,
 				2CF54B08205A2A1C000B80E3 /* vulkan.framework */,
