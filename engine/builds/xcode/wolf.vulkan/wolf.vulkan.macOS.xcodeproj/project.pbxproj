@@ -569,6 +569,7 @@
 					"$(SRCROOT)/../../../src/wolf.content_pipeline",
 				);
 				LIBRARY_SEARCH_PATHS = "";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/assimp/lib/osx/debug/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "";
 				"VALID_ARCHS[sdk=*]" = x86_64;
