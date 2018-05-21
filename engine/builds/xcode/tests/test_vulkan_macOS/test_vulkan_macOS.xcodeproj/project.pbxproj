@@ -22,12 +22,13 @@
 		2C736BB81ECA1E6A00624CC7 /* basic.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB41ECA1E6A00624CC7 /* basic.vert */; };
 		2C736BB91ECA1E6A00624CC7 /* static_instancing_y_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */; };
 		2C736BBA1ECA1E6A00624CC7 /* static_instancing_z_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */; };
+		2C766E6820B33FAD000C66F4 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C766E6720B33FAD000C66F4 /* vulkan.framework */; };
+		2C766E6A20B33FCD000C66F4 /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C766E6920B33FCD000C66F4 /* libassimp.4.1.0.dylib */; };
 		2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */; };
 		2CDF24922037223700BD3DE5 /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF24902037223700BD3DE5 /* Base.lproj */; };
 		2CDF24932037223700BD3DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF24912037223700BD3DE5 /* Assets.xcassets */; };
 		2CE21C411E89678F00EEE579 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C3F1E89678F00EEE579 /* libwolf.system.macOS.dylib */; };
 		2CE21C421E89678F00EEE579 /* libwolf.vulkan.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C401E89678F00EEE579 /* libwolf.vulkan.macOS.dylib */; };
-		2CF54B07205A1FC4000B80E3 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CF54B06205A1FC4000B80E3 /* vulkan.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,8 @@
 		2C736BB41ECA1E6A00624CC7 /* basic.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.vert; path = ../../../../../content/shaders/basic.vert; sourceTree = "<group>"; };
 		2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = static_instancing_y_up.vert; path = ../../../../../content/shaders/static_instancing_y_up.vert; sourceTree = "<group>"; };
 		2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = static_instancing_z_up.vert; path = ../../../../../content/shaders/static_instancing_z_up.vert; sourceTree = "<group>"; };
+		2C766E6720B33FAD000C66F4 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../../dependencies/vulkan/macOS/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
+		2C766E6920B33FCD000C66F4 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../../dependencies/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
 		2CA5D84C2050A83A0062AD2A /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../../dependencies/vulkan/Mac/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
 		2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
 		2CDF24902037223700BD3DE5 /* Base.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Base.lproj; path = test_vulkan_macOS/Base.lproj; sourceTree = "<group>"; };
@@ -67,7 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CF54B07205A1FC4000B80E3 /* vulkan.framework in Frameworks */,
+				2C766E6A20B33FCD000C66F4 /* libassimp.4.1.0.dylib in Frameworks */,
+				2C766E6820B33FAD000C66F4 /* vulkan.framework in Frameworks */,
 				2C0F36A220062FB2001CB2DF /* libwolf.media_core.macOS.dylib in Frameworks */,
 				2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */,
 				2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.macOS.dylib in Frameworks */,
@@ -134,8 +138,10 @@
 		2C620FAB1E61804B005DFB10 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C766E6920B33FCD000C66F4 /* libassimp.4.1.0.dylib */,
 				2CA5D84C2050A83A0062AD2A /* vulkan.framework */,
 				2CF54B06205A1FC4000B80E3 /* vulkan.framework */,
+				2C766E6720B33FAD000C66F4 /* vulkan.framework */,
 				2C0F36A320062FB2001CB2DF /* libwolf.media_core.macOS.dylib */,
 				2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */,
 				2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.macOS.dylib */,
