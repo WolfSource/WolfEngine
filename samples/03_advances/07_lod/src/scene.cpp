@@ -271,6 +271,7 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 			int index = 0;
 			for (auto _m : _cmodels)
 			{
+                index++;
 				model* _model = nullptr;
 				if (_m->get_instances_count())
 				{
@@ -375,6 +376,7 @@ W_RESULT scene::_build_draw_command_buffers()
 	const std::string _trace_info = this->name + "::build_draw_command_buffers";
 	W_RESULT _hr = W_PASSED;
 
+    shared::total_indirect_draw_calls = 0;
 	auto _size = this->_draw_command_buffers.get_commands_size();
 	for (uint32_t i = 0; i < _size; ++i)
 	{
@@ -621,7 +623,7 @@ void scene::_show_floating_debug_window()
 	ImGui::SetNextWindowSize(ImVec2(400, 350), ImGuiSetCond_FirstUseEver);
 
 	char _str[30];
-	w_sprintf(_str, "Wolf.Engine v.%d.%d.%d.%d", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
+	w_sprintf(_str, 30, "Wolf.Engine v.%d.%d.%d.%d", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
 	bool _is_open = true;
 	if (!ImGui::Begin(_str, &_is_open, _window_flags))
 	{
@@ -948,7 +950,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 						//The Ref
 						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
 						auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
-						if (ImGui::IsItemClicked(1))
+						if (ImGui::IsMouseDoubleClicked(0))
 						{
 							this->_current_selected_model = _model;
 
@@ -970,7 +972,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 						for (auto& _ins : _model->get_instances())
 						{
 							ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
-							if (ImGui::IsItemClicked(1))
+							if (ImGui::IsMouseDoubleClicked(0))
 							{
 								//on right click, focus on object
 								_b_sphere.center[0] = _ins.position[0];

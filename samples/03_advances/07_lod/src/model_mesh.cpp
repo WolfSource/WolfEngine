@@ -401,13 +401,22 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 	if (get_instances_count())
 	{
 		auto _instance_buffer_handle = this->_instances_buffer.get_buffer_handle();
-		return this->_mesh->draw(
-			pCommandBuffer, 
-			&_instance_buffer_handle,
-			this->instnaces_transforms.size(), 
-			0, 
-			&this->indirect_draws);
-	}
+        
+        shared::total_indirect_draw_calls += this->indirect_draws.drawing_commands.size();
+        if (shared::total_indirect_draw_calls < this->gDevice->device_info->device_properties->limits.maxDrawIndirectCount)
+        {
+            return this->_mesh->draw(pCommandBuffer,
+                                     &_instance_buffer_handle,
+                                     static_cast<uint32_t>(this->instnaces_transforms.size()),
+                                     0,
+                                     &this->indirect_draws);
+        }
+        else
+        {
+            logger.error("maximum draw calls reached");
+            return W_FAILED;
+        }
+    }
 	else
 	{
 		if (this->_selected_lod_index < this->lods_info.size())

@@ -384,7 +384,7 @@ W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_grap
 	//	V(W_FAILED, "loading staging buffer of indirect_draw_commands", _trace_info, 3);
 	//	return W_FAILED;
 	//}
-
+    
 	if (_staging_buffer.allocate(
 		pGDevice,
 		_size,

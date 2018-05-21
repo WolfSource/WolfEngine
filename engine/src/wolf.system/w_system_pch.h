@@ -15,8 +15,8 @@
 #define __W_SYSTEM_PCH_H__
                         
 #define WOLF_MAJOR_VERSION 1// Making incompatible API changes.
-#define WOLF_MINOR_VERSION 63// Adding functionality in a backwards - compatible manner.
-#define WOLF_PATCH_VERSION 5// bug fixes
+#define WOLF_MINOR_VERSION 64// Adding functionality in a backwards - compatible manner.
+#define WOLF_PATCH_VERSION 0// bug fixes
 #define WOLF_DEBUG_VERSION 0// for debugging.
 
 #ifndef NOMINMAX
@@ -33,28 +33,27 @@
 
 #if defined(__WIN32) || defined(__UWP)
 
-#ifndef w_sprintf
-#define w_sprintf(s_, l_, f_, ...)                                      \
-    sprintf_s((s_), (l_), (f_), __VA_ARGS__)
-#endif
-
 #include "w_target_ver.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 
 #endif
 
-#else
-
-#ifndef w_sprintf
-#define w_sprintf(s_, l_, f_, ...)                                    \
-    snprintf((s_), (l_), (f_), __VA_ARGS__)
-#endif
-
 #endif //defined(__WIN32) || defined(__UWP)
 
 // C RunTime Header Files
 #include <stdlib.h>
+#include <stdio.h>
+
+#ifndef w_sprintf
+    #ifdef _MSC_VER
+        #define w_sprintf(s_, l_, f_, ...)                                      \
+        sprintf_s((s_), (l_), (f_), __VA_ARGS__)
+    #else
+        #define w_sprintf(s_, l_, f_, ...)                                    \
+        sprintf((s_), (f_), __VA_ARGS__)
+    #endif
+#endif
 
 #ifdef __APPLE__
     #include <malloc/malloc.h>
