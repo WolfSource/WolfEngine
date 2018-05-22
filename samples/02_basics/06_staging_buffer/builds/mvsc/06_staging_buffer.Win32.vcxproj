@@ -135,7 +135,7 @@
       <AdditionalDependencies>wolf.system.win32.lib;wolf.vulkan.win32.lib;vulkan-1.lib;tbb_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>../../../../manifest.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>../../../../../manifest.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,7 +155,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>../../../../manifest.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>../../../../../manifest.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

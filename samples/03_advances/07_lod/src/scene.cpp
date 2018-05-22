@@ -246,7 +246,7 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 	{
 		if (wolf::system::io::get_file_extentionW(_file_name) != L".wscene") continue;
 
-		auto _scene = w_content_manager::load<w_cpipeline_scene>(pDirectoryPath + _file_name);
+		auto _scene = w_content_manager::load<w_cpipeline_scene>(_file_name);
 		if (_scene)
 		{
 			//get first camera

@@ -399,7 +399,7 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 	{
 		auto _view = pCamera->get_view();
 		auto _projection = pCamera->get_projection();
-		auto _camera_position = pCamera->get_translate();
+		auto _camera_position = pCamera->get_position();
 		set_view_projection_position(_view, _projection, _camera_position);
 	}
 

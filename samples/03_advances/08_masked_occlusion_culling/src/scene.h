@@ -74,22 +74,13 @@ private:
 	W_RESULT	_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPath);
 	W_RESULT	_build_draw_command_buffers();
 	
-	/*widget_info	_show_left_widget_controller();
-	widget_info	_show_search_widget(_In_ widget_info* pRelatedWidgetInfo);
-	*/
-
-	widget_info _show_menu(widget_info* pRelatedWidgetInfo);
-	widget_info _show_falcon_icon(widget_info* pRelatedWidgetInfo);
-	widget_info _show_explorer(widget_info* pRelatedWidgetInfo);
-	widget_info _show_left_widget_controller(widget_info* pRelatedWidgetInfo);
-	widget_info _show_search_widget(widget_info* pRelatedWidgetInfo);
-	widget_info _show_right_widget(widget_info* pRelatedWidgetInfo);
-
 	void		_show_floating_debug_window();
 	void		_show_floating_moc_debug_window();
-	
+	widget_info	_show_left_widget_controller();
+	widget_info	_show_search_widget(_In_ widget_info* pRelatedWidgetInfo);
+	widget_info	_show_explorer();
 	bool    	_update_gui();
-	
+
 	wolf::graphics::w_viewport                                      _viewport;
 	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
 
