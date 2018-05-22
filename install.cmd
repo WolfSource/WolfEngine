@@ -4,8 +4,8 @@ setlocal
 echo make wolf's dependencies ready
 cd ./engine/dependencies/
 
-set keys=assimp boost ffmpeg luaJIT msgpack nanomsg tbb vulkan simplygon
-set values=version.txt builds.txt version.txt version.txt COPYING COPYING version.txt SPIRVExtension.vsix SimplygonSDKRuntimeReleasex64.dll
+set keys=assimp boost ffmpeg luaJIT nanomsg tbb vulkan simplygon
+set values=version.txt builds.txt version.txt version.txt COPYING version.txt SPIRVExtension.vsix SimplygonSDKRuntimeReleasex64.dll
 
 set i=0
 (for %%k in (%keys%) do (

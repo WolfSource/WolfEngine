@@ -145,7 +145,7 @@
       <FunctionLevelLinking>
       </FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <PreprocessorDefinitions>_WINDOWS;__WIN32;__WOLF_RENDER__;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;__WIN32;__WOLF_RENDER__;__VULKAN__;GLM_FORCE_DEPTH_ZERO_TO_ONE;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.render;$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../src/wolf.content_pipeline;$(SolutionDir)/../../dependencies/tbb/oss/windows/include/;$(SolutionDir)/../../dependencies/msgpack/include/;$(VULKAN_SDK)/include/</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>

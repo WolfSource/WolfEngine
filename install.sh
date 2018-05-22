@@ -8,7 +8,6 @@ assimp
 boost 
 ffmpeg 
 luaJIT 
-msgpack 
 nanomsg 
 tbb 
 vulkan)
@@ -17,8 +16,7 @@ values=(
 version.txt
 builds.txt 
 version.txt 
-version.txt 
-COPYING 
+version.txt  
 COPYING 
 version.txt 
 SPIRVExtension.vsix)

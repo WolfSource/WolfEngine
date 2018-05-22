@@ -642,7 +642,7 @@
     <ClCompile>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <PreprocessorDefinitions>_WINDLL;__WIN32;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDLL;__WIN32;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/nanomsg/include;$(SolutionDir)/../../dependencies/msgpack/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <SDLCheck>true</SDLCheck>

@@ -5,6 +5,7 @@
 *.pdb
 *.ipch
 *.res
+*.enc
 /bin/Build/
 /bin/x64/
 /docs/extra/
