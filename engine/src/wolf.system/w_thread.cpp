@@ -226,7 +226,7 @@ namespace wolf
                 _action_thread_ptr->action();
                 auto _thread_id = _action_thread_ptr->get_thread_id();
                 _action_thread_ptr->destroy();
-                logger.write("thread with id: " + std::to_string(_thread_id) + " destroyed");
+                logger.write("thread with id: {} destroyed", _thread_id);
             }
             return W_PASSED;
         }

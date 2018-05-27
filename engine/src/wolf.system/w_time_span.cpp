@@ -142,6 +142,32 @@ w_time_span w_time_span::now()
 
 }
 
+std::string w_time_span::date_time_now()
+{
+	char _buffer[256] = "DD-MM-YY HH:MM:SS";
+	struct tm _time;
+	time_t _rawtime;
+	time(&_rawtime);
+
+#if defined(__WIN32) || defined(__UWP)
+	localtime_s(&_time, &_rawtime);
+#elif defined(__ANDROID) || defined(__linux) || defined(__APPLE__)
+	_time = *localtime(&_rawtime);
+#endif
+
+	strftime(_buffer, sizeof(_buffer), "%d-%b-%Y %X%p", &_time);
+
+	return std::string(_buffer);
+}
+
+std::wstring w_time_span::date_time_nowW()
+{
+	std::string _msg = date_time_now();
+	auto _wmsg = std::wstring(_msg.begin(), _msg.end());
+	_msg.clear();
+	return _wmsg;
+}
+
 w_time_span w_time_span::min_value()
 { 
 	return w_time_span((int64_t)_I64_MIN);

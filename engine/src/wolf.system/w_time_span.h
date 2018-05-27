@@ -53,6 +53,10 @@ namespace wolf
 			WSYS_EXP static w_time_span zero();
 			//Returns timespan from now
 			WSYS_EXP static w_time_span now();
+			//Returns date time now in format of "day-month-year hour:min:second"
+			WSYS_EXP static std::string date_time_now();
+			//Returns date time now in format of L"day-month-year hour:min:second"
+			WSYS_EXP static std::wstring date_time_nowW();
 			//Returns timespan with minimum value
 			WSYS_EXP static w_time_span min_value();
 			//Returns timespan with maximum value

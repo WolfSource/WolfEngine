@@ -800,6 +800,8 @@
       <Filter>msgpack</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extension.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\spdlog\spdlog.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\wolf_version.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

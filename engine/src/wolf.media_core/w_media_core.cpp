@@ -99,11 +99,9 @@ namespace wolf
                     this->_media_full_path = wolf::system::convert::to_utf8(pMediaPath).c_str();
 
                     //Output the message
-                    std::wstring msg = L"Media from following path \"" + pMediaPath + L"\" is going to decode";
-                    logger.user(msg);
-                    msg.clear();
-
-                    W_RESULT hr = W_PASSED;
+                    logger.write(L"Media from following path {} is going to decode", pMediaPath);
+                    
+					W_RESULT hr = W_PASSED;
                     // Open video file
                     bool containVideo = true, containAudio = true;
 
@@ -155,7 +153,7 @@ namespace wolf
 
                     if (!_has_video_stream && !_has_audio_stream)
                     {
-                        logger.user("File " + this->_media_full_path + " did not load");
+                        logger.write("File {} did not load", this->_media_full_path);
                         release_media();
                         return W_FAILED;
                     }
@@ -306,64 +304,63 @@ namespace wolf
                     }
 
 
-                    if (_has_audio_stream)
-                    {
-                        _audio_codec.avCodec = avcodec_find_decoder(_audio_codec.avCodecCtx->codec_id);
-                        if (_audio_codec.avCodec == NULL)
-                        {
-                            hr = W_FAILED;
-                            V(hr, L"unsupported codec for audio", this->_name);
-                            release_media();
-                            return hr;
-                        }
+					if (_has_audio_stream)
+					{
+						_audio_codec.avCodec = avcodec_find_decoder(_audio_codec.avCodecCtx->codec_id);
+						if (_audio_codec.avCodec == NULL)
+						{
+							hr = W_FAILED;
+							V(hr, L"unsupported codec for audio", this->_name);
+							release_media();
+							return hr;
+						}
 
-                        if (avcodec_open2(_audio_codec.avCodecCtx, _audio_codec.avCodec, NULL) < 0)
-                        {
-                            hr = W_FAILED;
-                            V(hr, L"could not open audio codec", this->_name);
-                            release_media();
-                            return hr;
-                        }
-                        _audio_codec.avFrame = av_frame_alloc();//avcodec_alloc_frame deprecated function
+						if (avcodec_open2(_audio_codec.avCodecCtx, _audio_codec.avCodec, NULL) < 0)
+						{
+							hr = W_FAILED;
+							V(hr, L"could not open audio codec", this->_name);
+							release_media();
+							return hr;
+						}
+						_audio_codec.avFrame = av_frame_alloc();//avcodec_alloc_frame deprecated function
 
-                        auto audioChannels = get_audio_channels();
-                        auto audioSampleRate = get_audio_sample_rate();
+						auto audioChannels = get_audio_channels();
+						auto audioSampleRate = get_audio_sample_rate();
 
-                        AVSampleFormat out_sample_fmt = AV_SAMPLE_FMT_S16;
-                        uint64_t out_channel_layout = AV_CH_LAYOUT_STEREO;
-                        int64_t audio_in_channel_layout = av_get_default_channel_layout(audioChannels);
-                        this->_audio_out_channels_layout = av_get_channel_layout_nb_channels(out_channel_layout);
+						AVSampleFormat out_sample_fmt = AV_SAMPLE_FMT_S16;
+						uint64_t out_channel_layout = AV_CH_LAYOUT_STEREO;
+						int64_t audio_in_channel_layout = av_get_default_channel_layout(audioChannels);
+						this->_audio_out_channels_layout = av_get_channel_layout_nb_channels(out_channel_layout);
 
-                        //Create swr for converting audio
-                        this->_audio_convert = swr_alloc_set_opts(
-                            this->_audio_convert,
-                            out_channel_layout,
-                            out_sample_fmt,
-                            audioSampleRate,
-                            audio_in_channel_layout,
-                            _audio_codec.avCodecCtx->sample_fmt,
-                            audioSampleRate,
-                            0,
-                            NULL);
-                        swr_init(this->_audio_convert);
-                        //	
-                        //auto le = 1000 / ((double)audioCodec.avFrame->sample_rate * (double)audioCodec.avFrame->nb_samples);
-                        //Logger.Write(std::to_string(audioCodec.avFrame->sample_rate));
-                        //Logger.Write(std::to_string(audioCodec.avFrame->nb_samples));
-                        //Logger.Write(std::to_string(le));
+						//Create swr for converting audio
+						this->_audio_convert = swr_alloc_set_opts(
+							this->_audio_convert,
+							out_channel_layout,
+							out_sample_fmt,
+							audioSampleRate,
+							audio_in_channel_layout,
+							_audio_codec.avCodecCtx->sample_fmt,
+							audioSampleRate,
+							0,
+							NULL);
+						swr_init(this->_audio_convert);
+						//	
+						//auto le = 1000 / ((double)audioCodec.avFrame->sample_rate * (double)audioCodec.avFrame->nb_samples);
+						//Logger.Write(std::to_string(audioCodec.avFrame->sample_rate));
+						//Logger.Write(std::to_string(audioCodec.avFrame->nb_samples));
+						//Logger.Write(std::to_string(le));
 
 
-                        //Seek to the specific time in seconds
-                        if (pSeekToFrame != 0)
-                        {
-                            seek_frame(pSeekToFrame);
-                        }
+						//Seek to the specific time in seconds
+						if (pSeekToFrame != 0)
+						{
+							seek_frame(pSeekToFrame);
+						}
 
-                        //Output the infomation
-                        msg = L"The media decoded successfully with the following information : time: " + this->_duration_time.to_wstring() + L" , fps: " + std::to_wstring(this->_frame_rate);
-                        logger.write(msg);
-                        msg.clear();
-                    }
+						//Output the infomation
+						logger.write(L"The media decoded successfully with the following information : time: {}, fps {}",
+							this->_duration_time.to_wstring(), this->_frame_rate);
+					}
 
                     pMediaPath.clear();
                     this->_is_media_open = true;
@@ -566,7 +563,6 @@ namespace wolf
                             _frame_info.frame_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_frame_time).count();
                             if (_frame_info.frame_duration > _frame_max_delay_in_ms)
                             {
-                                logger.write(std::to_string(_frame_info.frame_duration));
                                 V(W_FAILED, "streaming delay is greater than max frame delay", _trace_info, 3);
                                 break;
                             }

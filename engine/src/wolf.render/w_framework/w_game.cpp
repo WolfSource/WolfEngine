@@ -18,9 +18,9 @@ w_game::w_game(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstrin
     if (!logger.get_is_open())
     {
 #ifdef __UWP
-        logger.initialize(pLogPath);
+        logger.initialize(pAppName);
 #else
-        logger.initialize(pLogPath, pLogPath);
+        logger.initialize(pAppName, pLogPath);
 #endif
     }
 }

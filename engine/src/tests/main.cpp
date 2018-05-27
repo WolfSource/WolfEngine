@@ -11,7 +11,7 @@ static void release()
 {
 	//UNIQUE_RELEASE(sScene);
 	UNIQUE_RELEASE(sWindow);
-    wolf::release_shared_data_over_all_instances();
+    wolf::release_heap_data();
 }
 
 //Entry point of program 

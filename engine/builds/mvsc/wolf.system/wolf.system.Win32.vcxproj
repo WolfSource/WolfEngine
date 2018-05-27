@@ -305,9 +305,11 @@
     <ClInclude Include="..\..\..\src\wolf.system\rapidxml\rapidxml_iterators.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\rapidxml\rapidxml_utils.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\spdlog\spdlog.h" />
     <ClInclude Include="..\..\..\src\wolf.system\stb_image.h" />
     <ClInclude Include="..\..\..\src\wolf.system\stb_image_write.h" />
     <ClInclude Include="..\..\..\src\wolf.system\wolf.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\wolf_version.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_aligned_malloc.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
@@ -614,7 +616,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/nanomsg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDLL;__WIN32;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDLL;__WIN32;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -625,7 +627,8 @@
       <Optimization>Disabled</Optimization>
       <CompileAsWinRT>false</CompileAsWinRT>
       <MinimalRebuild>true</MinimalRebuild>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
