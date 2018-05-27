@@ -1,8 +1,6 @@
 ﻿#ifndef __SIMPLYGONSDKLOADER_H__
 #define __SIMPLYGONSDKLOADER_H__
 
-#ifdef __WIN32
-
 #include "SimplygonSDK.h"
 
 #ifdef _WIN32
@@ -27,7 +25,7 @@ namespace SimplygonSDK
 #endif
 
 	/// Loads and initializes the SDK
-	int Initialize( ISimplygonSDK** pInterfacePtr , LPCTSTR SDKPath = NULL , LPCTSTR LicenseDataText = NULL );
+	int Initialize( ISimplygonSDK **pInterfacePtr , LPCTSTR SDKPath = NULL , LPCTSTR LicenseDataText = NULL );
 
 	/// Deinitializes the SDK, releases the DLL and all allocated memory
 	void Deinitialize();
@@ -44,6 +42,4 @@ namespace SimplygonSDK
 #endif
 	};
 	
-#endif //__WIN32
-
 #endif //__SIMPLYGONSDKLOADER_H__

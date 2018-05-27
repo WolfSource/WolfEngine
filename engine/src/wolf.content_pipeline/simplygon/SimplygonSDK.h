@@ -1,9 +1,8 @@
 #ifndef __SimplygonSDK_h__
 #define __SimplygonSDK_h__
 
-#ifdef __WIN32
-
 #include <string.h>
+
 #include <stdint.h>
 
 /// The version of this header, as a macro definition, for conditional builds.
@@ -13718,6 +13717,120 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the SourceTextures object. The SourceTextures object contains all textures of 
+		 * the the source geometry. 
+		 * @return the current SourceTextures material table 
+		 */
+		virtual	CountedPointer<ITextureTable> GetSourceTextures(  ) = 0;
+
+		/**
+		 * Get the OutputImage object that will receive the image. The current contents of 
+		 * the image will be removed, and the image will be written to the Colors field of 
+		 * the ReImageData object. Either OutputImage or OutputFilePath must be set. If OutputImage 
+		 * is set, then OutputFilePath is ignored. 
+		 * @return the current OutputImage 
+		 */
+		virtual	CountedPointer<IImageData> GetOutputImage(  ) = 0;
+
+		/**
+		 * Set the OutputSRGB flag. If set, output textures are exported in SRGB format. Input 
+		 * texture format is determined by the flag in the corresponding texture node in the 
+		 * material definition. Default is true. 
+		 * @param value the desired IsSRGB flag 
+		 */
+		virtual	void SetOutputSRGB( bool value ) = 0;
+
+		/**
+		 * \deprecated CastMaterials() is deprecated, use RunProcessing() instead.Runs the 
+		 * material casting from SourceGeometry to Geometry. 
+		 */
+		virtual	SGDEPRECATED void CastMaterials(  ) = 0;
+
+		/**
+		 * Set the OutputChannels parameter. This can be set to either: <ul><li>1 (Luminance)</li><li>3 
+		 * (RGB)</li><li>4 (RGBA)</li></ul> 
+		 * @param value is the value to which OutputChannels will be set 
+		 */
+		virtual	void SetOutputChannels( unsigned int value ) = 0;
+
+		/**
+		 * Runs the processing the object is designed for 
+		 */
+		virtual	void RunProcessing(  ) = 0;
+
+		/**
+		 * Set the SourceTextures object. The SourceTextures object contains all textures of 
+		 * the the source geometry. 
+		 * @param value is the texture table to which SourceTextures will be set 
+		 */
+		virtual	void SetSourceTextures( ITextureTable *value ) = 0;
+
+		/**
+		 * Set the SourceMaterials object. The SourceMaterials object contains all materials 
+		 * of the the source geometry. The source geometry must have a "MaterialIds" field 
+		 * that indices the material table. 
+		 * @param value is the material table to which SourceMaterials will be set 
+		 */
+		virtual	void SetSourceMaterials( IMaterialTable *value ) = 0;
+
+		/**
+		 * Get the SourceMaterials object. The SourceMaterials object contains all materials 
+		 * of the the source geometry. The source geometry must have a "MaterialIds" field 
+		 * that indices the material table. 
+		 * @return the current SourceMaterials material table 
+		 */
+		virtual	CountedPointer<IMaterialTable> GetSourceMaterials(  ) = 0;
+
+		/**
+		 * Set the OutputFilePath file path, where the output image will be placed. Note that 
+		 * the extension specified will specify the file format. Please note that only PNG 
+		 * (extension .png) will be able to support all possible bit dephts (such as RGB 16-bit 
+		 * per channel). Either OutputImage or OutputFilePath must be set. If OutputImage is 
+		 * set, then OutputFilePath is ignored. 
+		 * @param value is the string to which OutputFilePath will be set 
+		 */
+		virtual	void SetOutputFilePath( const char * value ) = 0;
+
+		/**
+		 * Get the fill mode The fill mode determines what to do with the pixels that remain 
+		 * unfilled after both the casting and dilation has been performed.<br> Options are: 
+		 * <br> SG_ATLASFILLMODE_NONE = Do not fill remaining pixels <br> SG_ATLASFILLMODE_INTERPOLATE 
+		 * = linearly interpolate the closest samples <br> SG_ATLASFILLMODE_NEARESTNEIGHBOR 
+		 * = use the closest available pixel value without interpolation <br> 
+		 * @return the current fill mode 
+		 */
+		virtual	int GetFillMode(  ) = 0;
+
+		/**
+		 * Get the OutputChannels parameter. This can be set to either: <ul><li>1 (Luminance)</li><li>3 
+		 * (RGB)</li><li>4 (RGBA)</li></ul> 
+		 * @return the current value of OutputChannels 
+		 */
+		virtual	unsigned int GetOutputChannels(  ) = 0;
+
+		/**
+		 * Get which opacity channel to cast. The default value is SG_MATERIAL_CHANNEL_OPACITY. 
+		 * @return the desired normals channel 
+		 */
+		virtual	rstring GetColorType(  ) = 0;
+
+		/**
+		 * Set the fill mode. The fill mode determines what to do with the pixels that remain 
+		 * unfilled after both the casting and dilation has been performed.<br> Options are: 
+		 * <br> SG_ATLASFILLMODE_NONE = Do not fill remaining pixels <br> SG_ATLASFILLMODE_INTERPOLATE 
+		 * = linearly interpolate the closest samples <br> SG_ATLASFILLMODE_NEARESTNEIGHBOR 
+		 * = use the closest available pixel value without interpolation <br> 
+		 * @param value is the mode to which the fill mode will be set 
+		 */
+		virtual	void SetFillMode( int value ) = 0;
+
+		/**
+		 * The type of dithering to use when creating the output object. Use the DitherPattern 
+		 * enum to choose. Default is SG_DITHERPATTERNS_NO_DITHER. 
+		 */
+		virtual	void SetDitherType( unsigned int value ) = 0;
+
+		/**
 		 * Get the OutputSRGB flag. If set, output textures are exported in SRGB format. Input 
 		 * texture format is determined by the flag in the corresponding texture node in the 
 		 * material definition. Default is true. 
@@ -13726,10 +13839,24 @@ namespace SimplygonSDK
 		virtual	bool GetOutputSRGB(  ) = 0;
 
 		/**
-		 * \deprecated CastMaterials() is deprecated, use RunProcessing() instead.Runs the 
-		 * material casting from SourceGeometry to Geometry. 
+		 * Set the DestMaterialId object. If set, only the parts of the destination map that. 
+		 * To disable, set to -1. 
+		 * @param value is the value to which DestMaterialId will be set 
 		 */
-		virtual	SGDEPRECATED void CastMaterials(  ) = 0;
+		virtual	void SetDestMaterialId( rid value ) = 0;
+
+		/**
+		 * The type of dithering to use when creating the output object. Default is SG_DITHERPATTERNS_NO_DITHER. 
+		 */
+		virtual	unsigned int GetDitherType(  ) = 0;
+
+		/**
+		 * Set the OutputBitDepth parameter. This can be either 8 or 16. Please note that this 
+		 * is the bit depth per-channel, so a bit depth of 8 and a OutputChannels value of 
+		 * 3 will result in 8*3 = 24-bit RGB values. 
+		 * @param value is the value to which OutputBitDepth will be set 
+		 */
+		virtual	void SetOutputChannelBitDepth( unsigned int value ) = 0;
 
 		/**
 		 * Clears the processing, and resets all internal states. 
@@ -13744,42 +13871,6 @@ namespace SimplygonSDK
 		virtual	rid GetDestMaterialId(  ) = 0;
 
 		/**
-		 * Get the OutputImage object that will receive the image. The current contents of 
-		 * the image will be removed, and the image will be written to the Colors field of 
-		 * the ReImageData object. Either OutputImage or OutputFilePath must be set. If OutputImage 
-		 * is set, then OutputFilePath is ignored. 
-		 * @return the current OutputImage 
-		 */
-		virtual	CountedPointer<IImageData> GetOutputImage(  ) = 0;
-
-		/**
-		 * Get the SourceMaterials object. The SourceMaterials object contains all materials 
-		 * of the the source geometry. The source geometry must have a "MaterialIds" field 
-		 * that indices the material table. 
-		 * @return the current SourceMaterials material table 
-		 */
-		virtual	CountedPointer<IMaterialTable> GetSourceMaterials(  ) = 0;
-
-		/**
-		 * Set the SourceTextures object. The SourceTextures object contains all textures of 
-		 * the the source geometry. 
-		 * @param value is the texture table to which SourceTextures will be set 
-		 */
-		virtual	void SetSourceTextures( ITextureTable *value ) = 0;
-
-		/**
-		 * Get which opacity channel to cast. The default value is SG_MATERIAL_CHANNEL_OPACITY. 
-		 * @return the desired normals channel 
-		 */
-		virtual	rstring GetColorType(  ) = 0;
-
-		/**
-		 * The type of dithering to use when creating the output object. Use the DitherPattern 
-		 * enum to choose. Default is SG_DITHERPATTERNS_NO_DITHER. 
-		 */
-		virtual	void SetDitherType( unsigned int value ) = 0;
-
-		/**
 		 * Set the MappingImage object. The MappingImage object contains the mapping between 
 		 * the Geometry and SourceGeometry objects. 
 		 * @param value is the mapping image to which MappingImage will be set 
@@ -13787,70 +13878,11 @@ namespace SimplygonSDK
 		virtual	void SetMappingImage( IMappingImage *value ) = 0;
 
 		/**
-		 * Get the SourceTextures object. The SourceTextures object contains all textures of 
-		 * the the source geometry. 
-		 * @return the current SourceTextures material table 
-		 */
-		virtual	CountedPointer<ITextureTable> GetSourceTextures(  ) = 0;
-
-		/**
-		 * Get the OutputChannels parameter. This can be set to either: <ul><li>1 (Luminance)</li><li>3 
-		 * (RGB)</li><li>4 (RGBA)</li></ul> 
-		 * @return the current value of OutputChannels 
-		 */
-		virtual	unsigned int GetOutputChannels(  ) = 0;
-
-		/**
-		 * Get the BakeOpacityInAlpha flag. If set, the total opacity of the baked layers replaces 
-		 * the alpha value in the output texture. 
-		 * @return the current BakeOpacityInAlpha value 
-		 */
-		virtual	bool GetBakeOpacityInAlpha(  ) = 0;
-
-		/**
 		 * Get the MappingImage object. The MappingImage object contains the mapping between 
 		 * the Geometry and SourceGeometry objects. 
 		 * @return the current MappingImage 
 		 */
 		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
-
-		/**
-		 * Get the Dilation value. Where applicable, such as colors and normals, the caster 
-		 * will fill empty pixels surrounding filled pixels with values mixed from the filled 
-		 * ones. This setting sets how many pixels to fill outside the original filled pixels. 
-		 * @return the current value of Dilation 
-		 */
-		virtual	unsigned int GetDilation(  ) = 0;
-
-		/**
-		 * Set the DestMaterialId object. If set, only the parts of the destination map that. 
-		 * To disable, set to -1. 
-		 * @param value is the value to which DestMaterialId will be set 
-		 */
-		virtual	void SetDestMaterialId( rid value ) = 0;
-
-		/**
-		 * Get the OutputBitDepth parameter. This can be either 8 or 16. Please note that this 
-		 * is the bit depth per-channel, so a bit depth of 8 and a OutputChannels value of 
-		 * 3 will result in 8*3 = 24-bit RGB values. 
-		 * @return the current value of OutputBitDepth 
-		 */
-		virtual	unsigned int GetOutputChannelBitDepth(  ) = 0;
-
-		/**
-		 * Set the SourceMaterials object. The SourceMaterials object contains all materials 
-		 * of the the source geometry. The source geometry must have a "MaterialIds" field 
-		 * that indices the material table. 
-		 * @param value is the material table to which SourceMaterials will be set 
-		 */
-		virtual	void SetSourceMaterials( IMaterialTable *value ) = 0;
-
-		/**
-		 * Set the BakeOpacityInAlpha flag. If set, the total opacity of the baked layers replaces 
-		 * the alpha value in the output texture. 
-		 * @param value the new BakeOpacityInAlpha value 
-		 */
-		virtual	void SetBakeOpacityInAlpha( bool value ) = 0;
 
 		/**
 		 * Set the Dilation value. Where applicable, such as colors and normals, the caster 
@@ -13861,35 +13893,20 @@ namespace SimplygonSDK
 		virtual	void SetDilation( unsigned int value ) = 0;
 
 		/**
-		 * Set the OutputChannels parameter. This can be set to either: <ul><li>1 (Luminance)</li><li>3 
-		 * (RGB)</li><li>4 (RGBA)</li></ul> 
-		 * @param value is the value to which OutputChannels will be set 
-		 */
-		virtual	void SetOutputChannels( unsigned int value ) = 0;
-
-		/**
-		 * Set the OutputBitDepth parameter. This can be either 8 or 16. Please note that this 
+		 * Get the OutputBitDepth parameter. This can be either 8 or 16. Please note that this 
 		 * is the bit depth per-channel, so a bit depth of 8 and a OutputChannels value of 
 		 * 3 will result in 8*3 = 24-bit RGB values. 
-		 * @param value is the value to which OutputBitDepth will be set 
+		 * @return the current value of OutputBitDepth 
 		 */
-		virtual	void SetOutputChannelBitDepth( unsigned int value ) = 0;
+		virtual	unsigned int GetOutputChannelBitDepth(  ) = 0;
 
 		/**
-		 * Set the fill mode 
-		 * @param value is the mode to which the fill mode will be set 
+		 * Get the Dilation value. Where applicable, such as colors and normals, the caster 
+		 * will fill empty pixels surrounding filled pixels with values mixed from the filled 
+		 * ones. This setting sets how many pixels to fill outside the original filled pixels. 
+		 * @return the current value of Dilation 
 		 */
-		virtual	void SetFillMode( int value ) = 0;
-
-		/**
-		 * Set the OutputFilePath file path, where the output image will be placed. Note that 
-		 * the extension specified will specify the file format. Please note that only PNG 
-		 * (extension .png) will be able to support all possible bit dephts (such as RGB 16-bit 
-		 * per channel). Either OutputImage or OutputFilePath must be set. If OutputImage is 
-		 * set, then OutputFilePath is ignored. 
-		 * @param value is the string to which OutputFilePath will be set 
-		 */
-		virtual	void SetOutputFilePath( const char * value ) = 0;
+		virtual	unsigned int GetDilation(  ) = 0;
 
 		/**
 		 * Get the OutputFilePath file path, where the output image will be placed. Note that 
@@ -13900,11 +13917,6 @@ namespace SimplygonSDK
 		 * @return the current OutputFilePath 
 		 */
 		virtual	rstring GetOutputFilePath(  ) = 0;
-
-		/**
-		 * Runs the processing the object is designed for 
-		 */
-		virtual	void RunProcessing(  ) = 0;
 
 		/**
 		 * Set the OutputImage object that will receive the image. The current contents of 
@@ -13920,25 +13932,6 @@ namespace SimplygonSDK
 		 * @param value the desired normals channel 
 		 */
 		virtual	void SetColorType( const char * value ) = 0;
-
-		/**
-		 * Get the fill mode 
-		 * @return the current fill mode 
-		 */
-		virtual	int GetFillMode(  ) = 0;
-
-		/**
-		 * The type of dithering to use when creating the output object. Default is SG_DITHERPATTERNS_NO_DITHER. 
-		 */
-		virtual	unsigned int GetDitherType(  ) = 0;
-
-		/**
-		 * Set the OutputSRGB flag. If set, output textures are exported in SRGB format. Input 
-		 * texture format is determined by the flag in the corresponding texture node in the 
-		 * material definition. Default is true. 
-		 * @param value the desired IsSRGB flag 
-		 */
-		virtual	void SetOutputSRGB( bool value ) = 0;
 
 	};
 
@@ -14001,6 +13994,22 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the Dilation value. Where applicable, such as colors and normals, the caster 
+		 * will fill empty pixels surrounding filled pixels with values mixed from the filled 
+		 * ones. This setting sets how many pixels to fill outside the original filled pixels. 
+		 * @return the current value of Dilation 
+		 */
+		virtual	unsigned int GetDilation(  ) = 0;
+
+		/**
+		 * Get the SourceMaterials object. The SourceMaterials object contains all materials 
+		 * of the the source geometry. The source geometry must have a "MaterialIds" field 
+		 * that indices the material table. 
+		 * @return the current SourceMaterials material table 
+		 */
+		virtual	CountedPointer<IMaterialTable> GetSourceMaterials(  ) = 0;
+
+		/**
 		 * Set the SourceTextures object. The SourceTextures object contains all textures of 
 		 * the the source geometry. 
 		 * @param value is the texture table to which SourceTextures will be set 
@@ -14043,19 +14052,18 @@ namespace SimplygonSDK
 		virtual	unsigned int GetOutputChannelBitDepth(  ) = 0;
 
 		/**
-		 * Get the SourceMaterials object. The SourceMaterials object contains all materials 
-		 * of the the source geometry. The source geometry must have a "MaterialIds" field 
-		 * that indices the material table. 
-		 * @return the current SourceMaterials material table 
-		 */
-		virtual	CountedPointer<IMaterialTable> GetSourceMaterials(  ) = 0;
-
-		/**
 		 * Get the DestMaterialId object. If set, only the parts of the destination map that. 
 		 * To disable, set to -1. 
 		 * @return the current value of DestMaterialId 
 		 */
 		virtual	rid GetDestMaterialId(  ) = 0;
+
+		/**
+		 * Set the MappingImage object. The MappingImage object contains the mapping between 
+		 * the Geometry and SourceGeometry objects. 
+		 * @param value is the mapping image to which MappingImage will be set 
+		 */
+		virtual	void SetMappingImage( IMappingImage *value ) = 0;
 
 		/**
 		 * Set which normals channel to cast. The default value is SG_MATERIAL_CHANNEL_NORMALS. 
@@ -14064,11 +14072,11 @@ namespace SimplygonSDK
 		virtual	void SetNormalsChannel( const char * value ) = 0;
 
 		/**
-		 * Set the MappingImage object. The MappingImage object contains the mapping between 
+		 * Get the MappingImage object. The MappingImage object contains the mapping between 
 		 * the Geometry and SourceGeometry objects. 
-		 * @param value is the mapping image to which MappingImage will be set 
+		 * @return the current MappingImage 
 		 */
-		virtual	void SetMappingImage( IMappingImage *value ) = 0;
+		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
 
 		/**
 		 * The type of dithering to use when creating the output object. Default is SG_DITHERPATTERNS_NO_DITHER. 
@@ -14094,19 +14102,19 @@ namespace SimplygonSDK
 		virtual	void SetOutputImage( IImageData *value ) = 0;
 
 		/**
-		 * Get the MappingImage object. The MappingImage object contains the mapping between 
-		 * the Geometry and SourceGeometry objects. 
-		 * @return the current MappingImage 
-		 */
-		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
-
-		/**
 		 * Set the Dilation value. Where applicable, such as colors and normals, the caster 
 		 * will fill empty pixels surrounding filled pixels with values mixed from the filled 
 		 * ones. This setting sets how many pixels to fill outside the original filled pixels. 
 		 * @param value is the value to which Dilation will be set 
 		 */
 		virtual	void SetDilation( unsigned int value ) = 0;
+
+		/**
+		 * Set the OutputChannels parameter. This can be set to either: <ul><li>1 (Luminance)</li><li>3 
+		 * (RGB)</li><li>4 (RGBA)</li></ul> 
+		 * @param value is the value to which OutputChannels will be set 
+		 */
+		virtual	void SetOutputChannels( unsigned int value ) = 0;
 
 		/**
 		 * Get the FlipBackfacingNormals flag. If set, then normals will be flipped if they 
@@ -14143,12 +14151,12 @@ namespace SimplygonSDK
 		virtual	bool GetGenerateTangentSpaceNormals(  ) = 0;
 
 		/**
-		 * Get the Dilation value. Where applicable, such as colors and normals, the caster 
-		 * will fill empty pixels surrounding filled pixels with values mixed from the filled 
-		 * ones. This setting sets how many pixels to fill outside the original filled pixels. 
-		 * @return the current value of Dilation 
+		 * Set the OutputBitDepth parameter. This can be either 8 or 16. Please note that this 
+		 * is the bit depth per-channel, so a bit depth of 8 and a OutputChannels value of 
+		 * 3 will result in 8*3 = 24-bit RGB values. 
+		 * @param value is the value to which OutputBitDepth will be set 
 		 */
-		virtual	unsigned int GetDilation(  ) = 0;
+		virtual	void SetOutputChannelBitDepth( unsigned int value ) = 0;
 
 		/**
 		 * The type of dithering to use when creating the output object. Use the DitherPattern 
@@ -14178,11 +14186,14 @@ namespace SimplygonSDK
 		virtual	bool GetUseMultisampling(  ) = 0;
 
 		/**
-		 * Set the OutputChannels parameter. This can be set to either: <ul><li>1 (Luminance)</li><li>3 
-		 * (RGB)</li><li>4 (RGBA)</li></ul> 
-		 * @param value is the value to which OutputChannels will be set 
+		 * Set the OutputFilePath file path, where the output image will be placed. Note that 
+		 * the extension specified will specify the file format. Please note that only PNG 
+		 * (extension .png) will be able to support all possible bit dephts (such as RGB 16-bit 
+		 * per channel). Either OutputImage or OutputFilePath must be set. If OutputImage is 
+		 * set, then OutputFilePath is ignored. 
+		 * @param value is the string to which OutputFilePath will be set 
 		 */
-		virtual	void SetOutputChannels( unsigned int value ) = 0;
+		virtual	void SetOutputFilePath( const char * value ) = 0;
 
 		/**
 		 * Get the OutputImage object that will receive the image. The current contents of 
@@ -14212,28 +14223,10 @@ namespace SimplygonSDK
 		virtual	void RunProcessing(  ) = 0;
 
 		/**
-		 * Set the OutputBitDepth parameter. This can be either 8 or 16. Please note that this 
-		 * is the bit depth per-channel, so a bit depth of 8 and a OutputChannels value of 
-		 * 3 will result in 8*3 = 24-bit RGB values. 
-		 * @param value is the value to which OutputBitDepth will be set 
-		 */
-		virtual	void SetOutputChannelBitDepth( unsigned int value ) = 0;
-
-		/**
 		 * Get which normals channel to cast. The default value is SG_MATERIAL_CHANNEL_NORMALS. 
 		 * @return the desired normals channel 
 		 */
 		virtual	rstring GetNormalsChannel(  ) = 0;
-
-		/**
-		 * Set the OutputFilePath file path, where the output image will be placed. Note that 
-		 * the extension specified will specify the file format. Please note that only PNG 
-		 * (extension .png) will be able to support all possible bit dephts (such as RGB 16-bit 
-		 * per channel). Either OutputImage or OutputFilePath must be set. If OutputImage is 
-		 * set, then OutputFilePath is ignored. 
-		 * @param value is the string to which OutputFilePath will be set 
-		 */
-		virtual	void SetOutputFilePath( const char * value ) = 0;
 
 		/**
 		 * Get the FlipGreen flag. If set, the green channel is assumed to point along the 
@@ -14311,6 +14304,21 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the RepairOnlyInvalidNormals flag If set, then only those normals that are invalid 
+		 * (backfacing, zero length etc) will be fixed. 
+		 * @return the current value of the RepairOnlyInvalidNormals bool 
+		 */
+		virtual	bool GetRepairOnlyInvalidNormals(  ) = 0;
+
+		/**
+		 * Set the use borders flag mask. Edges with a matching BorderFlag will be "hard". 
+		 * If for example SGBORDER_TEXCOORD0 is being used, all edges with an UV border will 
+		 * be hard shaded. 
+		 * @param value is the value to which the BorderFlagsMask is to be set 
+		 */
+		virtual	void SetBorderFlagsMask( unsigned int value ) = 0;
+
+		/**
 		 * Get the use borders flag mask. Edges with a matching BorderFlag will be "hard". 
 		 * If for example SGBORDER_TEXCOORD0 is being used, all edges with an UV border will 
 		 * be hard shaded. 
@@ -14339,19 +14347,11 @@ namespace SimplygonSDK
 		virtual	void SetGeometry( IGeometryData *value ) = 0;
 
 		/**
-		 * Set the use borders flag mask. Edges with a matching BorderFlag will be "hard". 
-		 * If for example SGBORDER_TEXCOORD0 is being used, all edges with an UV border will 
-		 * be hard shaded. 
-		 * @param value is the value to which the BorderFlagsMask is to be set 
+		 * Get the ScaleByArea flag. If set, the influence of a triangle normal upon the vertex 
+		 * normals is scaled by the area of the triangle. 
+		 * @return the current value of the ScaleByArea bool 
 		 */
-		virtual	void SetBorderFlagsMask( unsigned int value ) = 0;
-
-		/**
-		 * Get the RepairOnlyInvalidNormals flag If set, then only those normals that are invalid 
-		 * (backfacing, zero length etc) will be fixed. 
-		 * @return the current value of the RepairOnlyInvalidNormals bool 
-		 */
-		virtual	bool GetRepairOnlyInvalidNormals(  ) = 0;
+		virtual	bool GetScaleByArea(  ) = 0;
 
 		/**
 		 * Set the RepairOnlyInvalidNormals flag If set, then only those normals that are invalid 
@@ -14361,17 +14361,17 @@ namespace SimplygonSDK
 		virtual	void SetRepairOnlyInvalidNormals( bool value ) = 0;
 
 		/**
-		 * Get the Geometry object. 
-		 * @return the current geometry object 
-		 */
-		virtual	CountedPointer<IGeometryData> GetGeometry(  ) = 0;
-
-		/**
 		 * Set the DetectPrimitiveNormals flag. If set, curvature charts are used to set border 
 		 * edges. 
 		 * @param value to use for DetectPrimitiveNormals 
 		 */
 		virtual	void SetDetectPrimitiveNormals( bool value ) = 0;
+
+		/**
+		 * Get the Geometry object. 
+		 * @return the current geometry object 
+		 */
+		virtual	CountedPointer<IGeometryData> GetGeometry(  ) = 0;
 
 		/**
 		 * Repairs the normals of the geometry. If the geometry has a "ShadingGroupIds" triangle 
@@ -14392,13 +14392,6 @@ namespace SimplygonSDK
 		 * @param value is the value to which HardEdgeAngleInRadians is to be set 
 		 */
 		virtual	void SetHardEdgeAngleInRadians( real value ) = 0;
-
-		/**
-		 * Get the ScaleByArea flag. If set, the influence of a triangle normal upon the vertex 
-		 * normals is scaled by the area of the triangle. 
-		 * @return the current value of the ScaleByArea bool 
-		 */
-		virtual	bool GetScaleByArea(  ) = 0;
 
 		/**
 		 * Set the ScaleByArea flag. If set, the influence of a triangle normal upon the vertex 
@@ -14476,6 +14469,21 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the GenerateScalarDisplacement value. If set to true, the size of the displacement 
+		 * vectors' components in the direction of the interpolated normal are stored in the 
+		 * displacement map, instead of the displacement vectors. 
+		 * @return The current GenerateScalarDisplacement flag 
+		 */
+		virtual	bool GetGenerateScalarDisplacement(  ) = 0;
+
+		/**
+		 * Get the GenerateTangentSpaceDisplacement value. If set, the displacement vectors 
+		 * are transformed into the destination objects' tangent space 
+		 * @return The current GenerateTangentSpaceDisplacement flag 
+		 */
+		virtual	bool GetGenerateTangentSpaceDisplacement(  ) = 0;
+
+		/**
 		 * The type of dithering to use when creating the output object. Default is SG_DITHERPATTERNS_NO_DITHER. 
 		 */
 		virtual	unsigned int GetDitherType(  ) = 0;
@@ -14521,12 +14529,10 @@ namespace SimplygonSDK
 		virtual	void SetOutputFilePath( const char * value ) = 0;
 
 		/**
-		 * Get the GenerateScalarDisplacement value. If set to true, the size of the displacement 
-		 * vectors' components in the direction of the interpolated normal are stored in the 
-		 * displacement map, instead of the displacement vectors. 
-		 * @return The current GenerateScalarDisplacement flag 
+		 * Set the texture coordinate level to use for the tangent space displacement vectors. 
+		 * @param value The desired NormalMapTextureLevel value 
 		 */
-		virtual	bool GetGenerateScalarDisplacement(  ) = 0;
+		virtual	void SetNormalMapTextureLevel( rid value ) = 0;
 
 		/**
 		 * Set the OutputChannels parameter. This can be set to either: <ul><li>1 (Luminance)</li><li>3 
@@ -14542,17 +14548,15 @@ namespace SimplygonSDK
 		virtual	SGDEPRECATED void CastMaterials(  ) = 0;
 
 		/**
-		 * Set the texture coordinate level to use for the tangent space displacement vectors. 
-		 * @param value The desired NormalMapTextureLevel value 
+		 * Get the texture coordinate level to use for the tangent space displacement vectors. 
+		 * @return The current NormalMapTextureLevel value 
 		 */
-		virtual	void SetNormalMapTextureLevel( rid value ) = 0;
+		virtual	rid GetNormalMapTextureLevel(  ) = 0;
 
 		/**
-		 * Get the GenerateTangentSpaceDisplacement value. If set, the displacement vectors 
-		 * are transformed into the destination objects' tangent space 
-		 * @return The current GenerateTangentSpaceDisplacement flag 
+		 * Clears the processing, and resets all internal states. 
 		 */
-		virtual	bool GetGenerateTangentSpaceDisplacement(  ) = 0;
+		virtual	void Clear(  ) = 0;
 
 		/**
 		 * Set the SourceTextures object. The SourceTextures object contains all textures of 
@@ -14587,10 +14591,11 @@ namespace SimplygonSDK
 		virtual	unsigned int GetOutputChannelBitDepth(  ) = 0;
 
 		/**
-		 * Get the texture coordinate level to use for the tangent space displacement vectors. 
-		 * @return The current NormalMapTextureLevel value 
+		 * Get the SourceTextures object. The SourceTextures object contains all textures of 
+		 * the the source geometry. 
+		 * @return the current SourceTextures material table 
 		 */
-		virtual	rid GetNormalMapTextureLevel(  ) = 0;
+		virtual	CountedPointer<ITextureTable> GetSourceTextures(  ) = 0;
 
 		/**
 		 * The type of dithering to use when creating the output object. Use the DitherPattern 
@@ -14660,9 +14665,11 @@ namespace SimplygonSDK
 		virtual	void RunProcessing(  ) = 0;
 
 		/**
-		 * Clears the processing, and resets all internal states. 
+		 * Get the MappingImage object. The MappingImage object contains the mapping between 
+		 * the Geometry and SourceGeometry objects. 
+		 * @return the current MappingImage 
 		 */
-		virtual	void Clear(  ) = 0;
+		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
 
 		/**
 		 * Set the DistanceScaling value. All the delta values are divided by this value before 
@@ -14677,20 +14684,6 @@ namespace SimplygonSDK
 		 * @return The current DistanceScaling value 
 		 */
 		virtual	real GetDistanceScaling(  ) = 0;
-
-		/**
-		 * Get the SourceTextures object. The SourceTextures object contains all textures of 
-		 * the the source geometry. 
-		 * @return the current SourceTextures material table 
-		 */
-		virtual	CountedPointer<ITextureTable> GetSourceTextures(  ) = 0;
-
-		/**
-		 * Get the MappingImage object. The MappingImage object contains the mapping between 
-		 * the Geometry and SourceGeometry objects. 
-		 * @return the current MappingImage 
-		 */
-		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
 
 		/**
 		 * Set the Dilation value. Where applicable, such as colors and normals, the caster 
@@ -14770,10 +14763,11 @@ namespace SimplygonSDK
 		virtual	void SetTexCoordsSetId( rid value ) = 0;
 
 		/**
-		 * Calculates the tangents of a geometry data object. 
-		 * @param geom the geometry object receives new fields, as described in the class description. 
+		 * Calculates the tangents of a tree of scene nodes (only the geometry nodes of course). 
+		 * @param node is the scene node that will have itselfs and its childrens tangents 
+		 * calculated 
 		 */
-		virtual	void CalculateTangents( IGeometryData *geom ) = 0;
+		virtual	void CalculateTangents( ISceneNode *node ) = 0;
 
 		/**
 		 * Sets the tangent calculator type, types listed in SimplygonSDK::TangentSpaceMethod 
@@ -14782,11 +14776,10 @@ namespace SimplygonSDK
 		virtual	void SetTangentCalculatorType( rid type ) = 0;
 
 		/**
-		 * Calculates the tangents of a tree of scene nodes (only the geometry nodes of course). 
-		 * @param node is the scene node that will have itselfs and its childrens tangents 
-		 * calculated 
+		 * Calculates the tangents of a geometry data object. 
+		 * @param geom the geometry object receives new fields, as described in the class description. 
 		 */
-		virtual	void CalculateTangents( ISceneNode *node ) = 0;
+		virtual	void CalculateTangents( IGeometryData *geom ) = 0;
 
 		/**
 		 * Gets the tangent calculator type, types listed in SimplygonSDK::TangentSpaceMethod 
@@ -14918,6 +14911,20 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the UseWelding flag. If set, vertices within each others welding distance will 
+		 * be welded together. 
+		 * @return the current value of UseWelding 
+		 */
+		virtual	bool GetUseWelding(  ) = 0;
+
+		/**
+		 * Set the UseWelding flag. If set, vertices within each others welding distance will 
+		 * be welded together. 
+		 * @param value is the bool to which UseWelding will be set 
+		 */
+		virtual	void SetUseWelding( bool value ) = 0;
+
+		/**
 		 * Set the WeldOnlyObjectBoundary flag. If set, only vertices that are on the boundary 
 		 * between two different objects are considered. Affects both welder and t-junction 
 		 * remover. for the welding. 
@@ -14933,11 +14940,11 @@ namespace SimplygonSDK
 		virtual	bool GetWeldOnlyBorderVertices(  ) = 0;
 
 		/**
-		 * Set the UseWelding flag. If set, vertices within each others welding distance will 
-		 * be welded together. 
-		 * @param value is the bool to which UseWelding will be set 
+		 * Set the number of ProgressivePasses. Minimum is 1, but higher numbers give a better 
+		 * quality, at the expense of longer running time. 
+		 * @param value is the integer to which ProgressivePasses will be set 
 		 */
-		virtual	void SetUseWelding( bool value ) = 0;
+		virtual	void SetProgressivePasses( unsigned int value ) = 0;
 
 		/**
 		 * Set the T-Junction distance, below which, the T-Junctions will be welded 
@@ -14975,31 +14982,17 @@ namespace SimplygonSDK
 		virtual	bool GetWeldOnlyObjectBoundary(  ) = 0;
 
 		/**
-		 * Get the UseWelding flag. If set, vertices within each others welding distance will 
-		 * be welded together. 
-		 * @return the current value of UseWelding 
+		 * Get the number of ProgressivePasses. Minimum is 1, but higher numbers give a better 
+		 * quality, at the expense of longer running time. 
+		 * @return the current value of ProgressivePasses 
 		 */
-		virtual	bool GetUseWelding(  ) = 0;
+		virtual	unsigned int GetProgressivePasses(  ) = 0;
 
 		/**
 		 * Get the T-Junction distance, below which, the T-Junctions will be welded 
 		 * @return the current value of TjuncDist 
 		 */
 		virtual	real GetTjuncDist(  ) = 0;
-
-		/**
-		 * Set the number of ProgressivePasses. Minimum is 1, but higher numbers give a better 
-		 * quality, at the expense of longer running time. 
-		 * @param value is the integer to which ProgressivePasses will be set 
-		 */
-		virtual	void SetProgressivePasses( unsigned int value ) = 0;
-
-		/**
-		 * Get the number of ProgressivePasses. Minimum is 1, but higher numbers give a better 
-		 * quality, at the expense of longer running time. 
-		 * @return the current value of ProgressivePasses 
-		 */
-		virtual	unsigned int GetProgressivePasses(  ) = 0;
 
 		/**
 		 * Set the UseTJunctionRemover flag, if set, t-junctions will be removed. If enabled, 
@@ -15090,6 +15083,24 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * The name of the selection set that contains all of the bones that will be forced 
+		 * to be removed in the BoneLOD process, UNLESS they are locked. If a bone is set to 
+		 * be removed, all its descendants will be removed also. If the name is NULL, then 
+		 * no bones are selected If both ID and Name are set, ID will be used. 
+		 * @param RemoveBoneSelectionSetName the name of the selection set 
+		 */
+		virtual	void SetRemoveBoneSelectionSetName( const char * value ) = 0;
+
+		/**
+		 * The ID of the selection set that contains all of the bones that will be forced to 
+		 * be removed in the BoneLOD process, UNLESS they are locked. If a bone is set to be 
+		 * removed, all its descendants will be removed also. If the ID is -1, then no bones 
+		 * are selected 
+		 * @return the ID of the selection set 
+		 */
+		virtual	rid GetRemoveBoneSelectionSetID(  ) = 0;
+
+		/**
 		 * Decides whether unused bones should be removed. 
 		 * @return value the current flag value 
 		 */
@@ -15148,7 +15159,7 @@ namespace SimplygonSDK
 		 * no bones are selected If both ID and Name are set, ID will be used. 
 		 * @param RemoveBoneSelectionSetName the name of the selection set 
 		 */
-		virtual	void SetRemoveBoneSelectionSetName( const char * value ) = 0;
+		virtual	rstring GetRemoveBoneSelectionSetName(  ) = 0;
 
 		/**
 		 * Enables or disables the bone reduction processing that actually removes bones. Even 
@@ -15194,13 +15205,16 @@ namespace SimplygonSDK
 		virtual	void SetOnScreenSize( unsigned int value ) = 0;
 
 		/**
-		 * The name of the selection set that contains all of the bones that will be forced 
-		 * to be removed in the BoneLOD process, UNLESS they are locked. If a bone is set to 
-		 * be removed, all its descendants will be removed also. If the name is NULL, then 
-		 * no bones are selected If both ID and Name are set, ID will be used. 
-		 * @param RemoveBoneSelectionSetName the name of the selection set 
+		 * Set the flag mask that decides what types of reduction targets will be used <ul> 
+		 * <li>SG_BONEREDUCTIONTARGET_BONECOUNT -> the reducer will stop when the set bone-count 
+		 * has been reached.</li> <li>SG_BONEREDUCTIONTARGET_BONERATIO -> the reducer will 
+		 * stop when the set bone-ratio has been reached.</li> <li>SG_BONEREDUCTIONTARGET_MAXDEVIATION 
+		 * -> the reducer will stop when the set max deviation has been reached.</li> <li>SG_BONEREDUCTIONTARGET_ONSCREENSIZE 
+		 * -> the reducer will stop when the asset will visually pass for the original at the 
+		 * set pixel size.</li> </ul> 
+		 * @param value is the desired value of BoneReductionTargets 
 		 */
-		virtual	rstring GetRemoveBoneSelectionSetName(  ) = 0;
+		virtual	void SetBoneReductionTargets( unsigned int value ) = 0;
 
 		/**
 		 * Set the wanted reduction ratio. The range is 0->1. 
@@ -15284,27 +15298,6 @@ namespace SimplygonSDK
 		 */
 		virtual	void SetRemoveBoneSelectionSetID( rid value ) = 0;
 
-		/**
-		 * The ID of the selection set that contains all of the bones that will be forced to 
-		 * be removed in the BoneLOD process, UNLESS they are locked. If a bone is set to be 
-		 * removed, all its descendants will be removed also. If the ID is -1, then no bones 
-		 * are selected 
-		 * @return the ID of the selection set 
-		 */
-		virtual	rid GetRemoveBoneSelectionSetID(  ) = 0;
-
-		/**
-		 * Set the flag mask that decides what types of reduction targets will be used <ul> 
-		 * <li>SG_BONEREDUCTIONTARGET_BONECOUNT -> the reducer will stop when the set bone-count 
-		 * has been reached.</li> <li>SG_BONEREDUCTIONTARGET_BONERATIO -> the reducer will 
-		 * stop when the set bone-ratio has been reached.</li> <li>SG_BONEREDUCTIONTARGET_MAXDEVIATION 
-		 * -> the reducer will stop when the set max deviation has been reached.</li> <li>SG_BONEREDUCTIONTARGET_ONSCREENSIZE 
-		 * -> the reducer will stop when the asset will visually pass for the original at the 
-		 * set pixel size.</li> </ul> 
-		 * @param value is the desired value of BoneReductionTargets 
-		 */
-		virtual	void SetBoneReductionTargets( unsigned int value ) = 0;
-
 	};
 
 	/**
@@ -15367,6 +15360,19 @@ namespace SimplygonSDK
 				return static_cast<IReductionSettings*>(ptr);
 			return NULL;
 			}
+		/**
+		 * Sets the maximum length of the triangles edges after reduction. Can be used to limit 
+		 * output triangle size. 
+		 * @param value is the new value of MaxEdgeLength 
+		 */
+		virtual	void SetMaxEdgeLength( real value ) = 0;
+
+		/**
+		 * Get the wanted reduction ratio. The range is 0->1. 
+		 * @return the current value of ReductionRatio 
+		 */
+		virtual	real GetTriangleRatio(  ) = 0;
+
 		/**
 		 * Set the importance value of the relevant feature, meaning the relative importance 
 		 * of the specific mesh feature (or disabling an importance entirely by setting it 
@@ -15559,10 +15565,10 @@ namespace SimplygonSDK
 		virtual	void SetInwardMoveMultiplier( real value ) = 0;
 
 		/**
-		 * Get the wanted reduction ratio. The range is 0->1. 
-		 * @return the current value of ReductionRatio 
+		 * Set the wanted triangle count. The range is 0->inf. 
+		 * @param value is the value to which ReductionRatio will be set 
 		 */
-		virtual	real GetTriangleRatio(  ) = 0;
+		virtual	void SetTriangleCount( unsigned int value ) = 0;
 
 		/**
 		 * Selects which SelectionSet should be processed. If set to -1, all geometries in 
@@ -15765,10 +15771,10 @@ namespace SimplygonSDK
 		virtual	void SetEdgeSetImportance( real value ) = 0;
 
 		/**
-		 * Set the wanted triangle count. The range is 0->inf. 
-		 * @param value is the value to which ReductionRatio will be set 
+		 * Get the wanted reduction ratio. The range is 0->inf. 
+		 * @return the current value of TriangleCount 
 		 */
-		virtual	void SetTriangleCount( unsigned int value ) = 0;
+		virtual	unsigned int GetTriangleCount(  ) = 0;
 
 		/**
 		 * Selects which SelectionSet should be processed. If set to -1, all geometries in 
@@ -15783,12 +15789,6 @@ namespace SimplygonSDK
 		 * @param value is the value to which SymmetryOffset will be set 
 		 */
 		virtual	void SetSymmetryOffset( real value ) = 0;
-
-		/**
-		 * Get the wanted reduction ratio. The range is 0->inf. 
-		 * @return the current value of TriangleCount 
-		 */
-		virtual	unsigned int GetTriangleCount(  ) = 0;
 
 		/**
 		 * Set the importance value of the relevant feature, meaning the relative importance 
@@ -15823,19 +15823,19 @@ namespace SimplygonSDK
 		virtual	void SetSkinningImportance( real value ) = 0;
 
 		/**
-		 * Get the UseVertexWeighting value. If set, the reducer will weight the reduction 
-		 * based on the weights in the "VertexWeighting" vertex field. 
-		 * @return the current value of the UseVertexWeights bool 
-		 */
-		virtual	bool GetUseVertexWeights(  ) = 0;
-
-		/**
 		 * Get the importance value of the relevant feature, meaning the relative importance 
 		 * of the specific mesh feature (or disabling an importance entirely by setting it 
 		 * to 0.0). The default importance value is 1. A higher number means higher importance. 
 		 * @return the current value of the importance of the feature 
 		 */
 		virtual	real GetGeometryImportance(  ) = 0;
+
+		/**
+		 * Get the UseVertexWeighting value. If set, the reducer will weight the reduction 
+		 * based on the weights in the "VertexWeighting" vertex field. 
+		 * @return the current value of the UseVertexWeights bool 
+		 */
+		virtual	bool GetUseVertexWeights(  ) = 0;
 
 		/**
 		 * Get the importance value of the relevant feature, meaning the relative importance 
@@ -15852,6 +15852,14 @@ namespace SimplygonSDK
 		 * @return the current value of the importance of the feature 
 		 */
 		virtual	real GetShadingImportance(  ) = 0;
+
+		/**
+		 * Get the importance value of the relevant feature, meaning the relative importance 
+		 * of the specific mesh feature (or disabling an importance entirely by setting it 
+		 * to 0.0). The default importance value is 1. A higher number means higher importance. 
+		 * @return the current value of the importance of the feature 
+		 */
+		virtual	real GetGroupImportance(  ) = 0;
 
 		/**
 		 * Set the flag that specifies how big "freedom" Simplygon has when it comes to altering 
@@ -15879,7 +15887,7 @@ namespace SimplygonSDK
 		 * to 0.0). The default importance value is 1. A higher number means higher importance. 
 		 * @return the current value of the importance of the feature 
 		 */
-		virtual	real GetGroupImportance(  ) = 0;
+		virtual	real GetVertexColorImportance(  ) = 0;
 
 		/**
 		 * Get the importance value of the relevant feature, meaning the relative importance 
@@ -15887,7 +15895,7 @@ namespace SimplygonSDK
 		 * to 0.0). The default importance value is 1. A higher number means higher importance. 
 		 * @return the current value of the importance of the feature 
 		 */
-		virtual	real GetVertexColorImportance(  ) = 0;
+		virtual	real GetEdgeSetImportance(  ) = 0;
 
 		/**
 		 * Set the flag for if the reduction process should store geomorph data in the processed 
@@ -15901,26 +15909,11 @@ namespace SimplygonSDK
 		virtual	void SetGenerateGeomorphData( bool value ) = 0;
 
 		/**
-		 * Get the importance value of the relevant feature, meaning the relative importance 
-		 * of the specific mesh feature (or disabling an importance entirely by setting it 
-		 * to 0.0). The default importance value is 1. A higher number means higher importance. 
-		 * @return the current value of the importance of the feature 
-		 */
-		virtual	real GetEdgeSetImportance(  ) = 0;
-
-		/**
 		 * Get the inward move multiplier, how much the mesh is allowed to shrink its silhouette 
 		 * perimeter 
 		 * @return the current value of InwardMoveMultiplier 
 		 */
 		virtual	real GetInwardMoveMultiplier(  ) = 0;
-
-		/**
-		 * Sets the maximum length of the triangles edges after reduction. Can be used to limit 
-		 * output triangle size. 
-		 * @param value is the new value of MaxEdgeLength 
-		 */
-		virtual	void SetMaxEdgeLength( real value ) = 0;
 
 		/**
 		 * Selects which SelectionSet should be processed. If set to NULL, all geometries in 
@@ -16013,6 +16006,22 @@ namespace SimplygonSDK
 		virtual	bool GetReplaceNormals(  ) = 0;
 
 		/**
+		 * Get the ScaleByArea flag. If set, the influence of a triangle normal upon the vertex 
+		 * normals is scaled by the area of the triangle. 
+		 * @return the current value of the ScaleByArea bool 
+		 */
+		virtual	bool GetScaleByArea(  ) = 0;
+
+		/**
+		 * Set ReplaceTangents flag. If set, it will generate new tangents and bitangents for 
+		 * the Geometry, and if not set, it will keep the new tangents and bitangents from 
+		 * the original normal-set (or not add tangents and bitangents at all if none were 
+		 * present). 
+		 * @param value is the value to which the ReplaceTangents bool is to be set 
+		 */
+		virtual	void SetReplaceTangents( bool value ) = 0;
+
+		/**
 		 * Set HardEdgeAngleInRadians. If the angle between two triangles are above this value, 
 		 * the normals will not be smooth over the edge between those two triangles. Set in 
 		 * radians. 
@@ -16021,11 +16030,11 @@ namespace SimplygonSDK
 		virtual	void SetHardEdgeAngleInRadians( real value ) = 0;
 
 		/**
-		 * Get the ScaleByArea flag. If set, the influence of a triangle normal upon the vertex 
+		 * Set the ScaleByArea flag. If set, the influence of a triangle normal upon the vertex 
 		 * normals is scaled by the area of the triangle. 
-		 * @return the current value of the ScaleByArea bool 
+		 * @param value is the value to which the ScaleByArea bool is to be set 
 		 */
-		virtual	bool GetScaleByArea(  ) = 0;
+		virtual	void SetScaleByArea( bool value ) = 0;
 
 		/**
 		 * Get ReplaceTangents flag. If set, it will generate new tangents and bitangents for 
@@ -16052,11 +16061,11 @@ namespace SimplygonSDK
 		virtual	void SetRepairInvalidNormals( bool value ) = 0;
 
 		/**
-		 * Set the ScaleByArea flag. If set, the influence of a triangle normal upon the vertex 
-		 * normals is scaled by the area of the triangle. 
-		 * @param value is the value to which the ScaleByArea bool is to be set 
+		 * Get the ScaleByAngle flag. If set, the influence of a triangle normal upon the vertex 
+		 * normals is scaled by the angle of the corner at the vertex. 
+		 * @return the current value of the ScaleByAngle bool 
 		 */
-		virtual	void SetScaleByArea( bool value ) = 0;
+		virtual	bool GetScaleByAngle(  ) = 0;
 
 		/**
 		 * Set ReplaceNormals flag. If set, it will generate new normals for the Geometry, 
@@ -16067,22 +16076,6 @@ namespace SimplygonSDK
 		 * @param value is the value to which the ReplaceNormals bool is to be set 
 		 */
 		virtual	void SetReplaceNormals( bool value ) = 0;
-
-		/**
-		 * Get the ScaleByAngle flag. If set, the influence of a triangle normal upon the vertex 
-		 * normals is scaled by the angle of the corner at the vertex. 
-		 * @return the current value of the ScaleByAngle bool 
-		 */
-		virtual	bool GetScaleByAngle(  ) = 0;
-
-		/**
-		 * Set ReplaceTangents flag. If set, it will generate new tangents and bitangents for 
-		 * the Geometry, and if not set, it will keep the new tangents and bitangents from 
-		 * the original normal-set (or not add tangents and bitangents at all if none were 
-		 * present). 
-		 * @param value is the value to which the ReplaceTangents bool is to be set 
-		 */
-		virtual	void SetReplaceTangents( bool value ) = 0;
 
 		/**
 		 * Set the ScaleByAngle flag. If set, the influence of a triangle normal upon the vertex 
@@ -16166,6 +16159,21 @@ namespace SimplygonSDK
 				return static_cast<IMappingImageSettings*>(ptr);
 			return NULL;
 			}
+		/**
+		 * Get the current automatic texture size multiplier. 
+		 * @return the current multiplier 
+		 */
+		virtual	real GetAutomaticTextureSizeMultiplier(  ) = 0;
+
+		/**
+		 * Set the number of input materials used in the original geometry for mapping to multiple 
+		 * output materials. This needs to be set before you can set any specific in-out material 
+		 * mapping. 0 signifies that no in-out material mapping is used, ie. the process will 
+		 * produce one resulting mapping image. 
+		 * @param value is the number of inputs 
+		 */
+		virtual	void SetInputMaterialCount( unsigned int value ) = 0;
+
 		/**
 		 * Get the GenerateMappingImage flag. If set, the remesher will create a mapping image, 
 		 * that maps triangles on the reduced geometry back to triangles on the original geometry. 
@@ -16422,10 +16430,12 @@ namespace SimplygonSDK
 		virtual	void SetUseFullRetexturing( bool value ) = 0;
 
 		/**
-		 * Get the current automatic texture size multiplier. 
-		 * @return the current multiplier 
+		 * Determines which method to use when generating the texture coordinates. SG_TEXCOORDGENERATORTYPE_PARAMETERIZER 
+		 * generate from scratch based on the geometry. SG_TEXCOORDGENERATORTYPE_CHARTAGGREGATOR 
+		 * generate based on the original texture coordinates. 
+		 * @param the desired SG_TEXCOORDGENERATORTYPE_[...] value. 
 		 */
-		virtual	real GetAutomaticTextureSizeMultiplier(  ) = 0;
+		virtual	void SetTexCoordGeneratorType( unsigned int value ) = 0;
 
 		/**
 		 * Only used when the TexCoordGeneratorType is SG_TEXCOORDGENERATORTYPE_PARAMETERIZER_8_1. 
@@ -16571,12 +16581,19 @@ namespace SimplygonSDK
 		virtual	bool GetUseVertexWeights(  ) = 0;
 
 		/**
-		 * Determines which method to use when generating the texture coordinates. SG_TEXCOORDGENERATORTYPE_PARAMETERIZER 
-		 * generate from scratch based on the geometry. SG_TEXCOORDGENERATORTYPE_CHARTAGGREGATOR 
-		 * generate based on the original texture coordinates. 
-		 * @param the desired SG_TEXCOORDGENERATORTYPE_[...] value. 
+		 * Determines which method to use when aggregating the UVs. SG_CHARTAGGREGATORMODE_TEXTURESIZEPROPORTIONS 
+		 * - Aggregated UV charts will be scaled to keep their relative pixel density relative 
+		 * to all other UV charts. The user can still set the size of the output texture maps. 
+		 * SG_CHARTAGGREGATORMODE_SURFACEAREA - Aggregated UV charts will have their size set 
+		 * based on its actual geometrical size. SG_CHARTAGGREGATORMODE_ORIGINALPIXELDENSITY 
+		 * - The combined atlas will be resized to fit each chart so that all charts retain 
+		 * the same amount of pixels as they originally had. This will override any manually 
+		 * set texture size. SG_CHARTAGGREGATORMODE_UVSIZEPROPORTIONS - Aggregated UV charts 
+		 * will have their size set based on its original UV size, disregarding the size of 
+		 * the texture they are used in."); 
+		 * @param the desired SG_CHARTAGGREGATORMODE_[...] value. 
 		 */
-		virtual	void SetTexCoordGeneratorType( unsigned int value ) = 0;
+		virtual	void SetChartAggregatorMode( unsigned int value ) = 0;
 
 		/**
 		 * Set the minimum number of pixels between charts. If called with an id, it will set 
@@ -16597,18 +16614,16 @@ namespace SimplygonSDK
 		 * set texture size. SG_CHARTAGGREGATORMODE_UVSIZEPROPORTIONS - Aggregated UV charts 
 		 * will have their size set based on its original UV size, disregarding the size of 
 		 * the texture they are used in."); 
-		 * @param the desired SG_CHARTAGGREGATORMODE_[...] value. 
+		 * @return the current SG_CHARTAGGREGATORMODE_[...] value. 
 		 */
-		virtual	void SetChartAggregatorMode( unsigned int value ) = 0;
+		virtual	unsigned int GetChartAggregatorMode(  ) = 0;
 
 		/**
-		 * Set the number of input materials used in the original geometry for mapping to multiple 
-		 * output materials. This needs to be set before you can set any specific in-out material 
-		 * mapping. 0 signifies that no in-out material mapping is used, ie. the process will 
-		 * produce one resulting mapping image. 
-		 * @param value is the number of inputs 
+		 * Get the number of input materials set earlier. 0 signifies that no in-out material 
+		 * mapping is used. 
+		 * @return the current value of InputMaterialCount 
 		 */
-		virtual	void SetInputMaterialCount( unsigned int value ) = 0;
+		virtual	unsigned int GetInputMaterialCount(  ) = 0;
 
 		/**
 		 * Gets the GenerateTexCoords flag. If true, generates a new texcoords field at the 
@@ -16626,21 +16641,6 @@ namespace SimplygonSDK
 		 * @return the current GenerateTangents flag 
 		 */
 		virtual	bool GetGenerateTangents(  ) = 0;
-
-		/**
-		 * Determines which method to use when aggregating the UVs. SG_CHARTAGGREGATORMODE_TEXTURESIZEPROPORTIONS 
-		 * - Aggregated UV charts will be scaled to keep their relative pixel density relative 
-		 * to all other UV charts. The user can still set the size of the output texture maps. 
-		 * SG_CHARTAGGREGATORMODE_SURFACEAREA - Aggregated UV charts will have their size set 
-		 * based on its actual geometrical size. SG_CHARTAGGREGATORMODE_ORIGINALPIXELDENSITY 
-		 * - The combined atlas will be resized to fit each chart so that all charts retain 
-		 * the same amount of pixels as they originally had. This will override any manually 
-		 * set texture size. SG_CHARTAGGREGATORMODE_UVSIZEPROPORTIONS - Aggregated UV charts 
-		 * will have their size set based on its original UV size, disregarding the size of 
-		 * the texture they are used in."); 
-		 * @return the current SG_CHARTAGGREGATORMODE_[...] value. 
-		 */
-		virtual	unsigned int GetChartAggregatorMode(  ) = 0;
 
 		/**
 		 * Only used when the TexCoordGeneratorType is SG_TEXCOORDGENERATORTYPE_PARAMETERIZER. 
@@ -16681,13 +16681,6 @@ namespace SimplygonSDK
 		 * @return the current ChartAggregatorKeepOriginalChartProportionsFromChannel value 
 		 */
 		virtual	rstring GetChartAggregatorOriginalChartProportionsChannel(  ) = 0;
-
-		/**
-		 * Get the number of input materials set earlier. 0 signifies that no in-out material 
-		 * mapping is used. 
-		 * @return the current value of InputMaterialCount 
-		 */
-		virtual	unsigned int GetInputMaterialCount(  ) = 0;
 
 	};
 
@@ -16757,6 +16750,19 @@ namespace SimplygonSDK
 				return static_cast<IVisibilitySettings*>(ptr);
 			return NULL;
 			}
+		/**
+		 * If enabled, will remove all the visible triangles that are not occluding any other 
+		 * triangle. It will also remove all non-visible triangles. 
+		 * @param the new RemoveTrianglesThatDontOccludeOtherTriangles flag 
+		 */
+		virtual	void SetRemoveTrianglesNotOccludingOtherTriangles( bool value ) = 0;
+
+		/**
+		 * If set to true, geometry that is not visible will be removed. 
+		 * @param CullOccludedGeometry the new CullOccludedGeometry value 
+		 */
+		virtual	void SetCullOccludedGeometry( bool value ) = 0;
+
 		/**
 		 * OccluderSelectionSetID is the name of the selection set containing all the scene 
 		 * meshes used when computing visibility. If set to NULL, no occluders in the scene 
@@ -16853,13 +16859,6 @@ namespace SimplygonSDK
 		virtual	bool GetUseBackfaceCulling(  ) = 0;
 
 		/**
-		 * If enabled, will remove all the visible triangles that are not occluding any other 
-		 * triangle. It will also remove all non-visible triangles. 
-		 * @param the new RemoveTrianglesThatDontOccludeOtherTriangles flag 
-		 */
-		virtual	void SetRemoveTrianglesNotOccludingOtherTriangles( bool value ) = 0;
-
-		/**
 		 * If enabled, will compute the visibility conservatively - meaning that triangles 
 		 * that are visible will be tagged as visible but some non-visible triangles might 
 		 * also be tagged as visible. If this is turned off, then it is no longer guaranteed 
@@ -16868,6 +16867,13 @@ namespace SimplygonSDK
 		 * @param the new ConservativeMode flag 
 		 */
 		virtual	void SetConservativeMode( bool value ) = 0;
+
+		/**
+		 * Specifies the renderer type when computing visibility ( SG_COMPUTE_VISIBILITY_MODE_[...] 
+		 * ). 
+		 * @return the current ComputeVisibilityMode 
+		 */
+		virtual	unsigned int GetComputeVisibilityMode(  ) = 0;
 
 		/**
 		 * CameraSelectionSetID is the name of the selection set containing all the scene cameras 
@@ -16904,13 +16910,6 @@ namespace SimplygonSDK
 		virtual	void SetVisibilityWeightsPower( real value ) = 0;
 
 		/**
-		 * Specifies the renderer type when computing visibility ( SG_COMPUTE_VISIBILITY_MODE_[...] 
-		 * ). 
-		 * @return the current ComputeVisibilityMode 
-		 */
-		virtual	unsigned int GetComputeVisibilityMode(  ) = 0;
-
-		/**
 		 * If set to true, visibility weights will be used in the reducer. 
 		 * @return the current UseVisibilityWeightsInReducer value 
 		 */
@@ -16922,12 +16921,6 @@ namespace SimplygonSDK
 		 * value 
 		 */
 		virtual	void SetUseVisibilityWeightsInTexcoordGenerator( bool value ) = 0;
-
-		/**
-		 * If set to true, geometry that is not visible will be removed. 
-		 * @param CullOccludedGeometry the new CullOccludedGeometry value 
-		 */
-		virtual	void SetCullOccludedGeometry( bool value ) = 0;
 
 		/**
 		 * Get the ForceVisibilityCalculation if true, visibility weights will definitely be 
@@ -17033,6 +17026,21 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * The settings for the reduction process. 
+		 * @return the reduction settings object associated with the processor 
+		 */
+		virtual	CountedPointer<IReductionSettings> GetReductionSettings(  ) = 0;
+
+		/**
+		 * Get the MappingImage object that is generated if MappingImageSettings::GenerateMappingImage 
+		 * is set. The object is of type IMappingImage. If called with an id, it will fetch 
+		 * that specific mapping image if using multi-material output. A new object is generated 
+		 * for each call to RunProcessing(). 
+		 * @return the generated mappingimage 
+		 */
+		virtual	CountedPointer<IMappingImage> GetMappingImage( rid OutputMaterialId ) = 0;
+
+		/**
 		 * The settings for the normal repair process. 
 		 * @return the normal repair settings object associated with the processor 
 		 */
@@ -17056,36 +17064,10 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IMappingImageSettings> GetMappingImageSettings(  ) = 0;
 
 		/**
-		 * The settings for the reduction process. 
-		 * @return the reduction settings object associated with the processor 
-		 */
-		virtual	CountedPointer<IReductionSettings> GetReductionSettings(  ) = 0;
-
-		/**
 		 * The settings for the bone removal process. 
 		 * @return the bone settings object associated with the processor 
 		 */
 		virtual	CountedPointer<IBoneSettings> GetBoneSettings(  ) = 0;
-
-		/**
-		 * Get the MappingImage object that is generated if MappingImageSettings::GenerateMappingImage 
-		 * is set. The object is of type IMappingImage. If called with an id, it will fetch 
-		 * that specific mapping image if using multi-material output. A new object is generated 
-		 * for each call to RunProcessing(). 
-		 * @return the generated mappingimage 
-		 */
-		virtual	CountedPointer<IMappingImage> GetMappingImage( rid OutputMaterialId ) = 0;
-
-		/**
-		 * Set the scene object to reduce. 
-		 * @param value the scene to reduce 
-		 */
-		virtual	void SetScene( IScene *value ) = 0;
-
-		/**
-		 * Runs the processing the object is designed for 
-		 */
-		virtual	void RunProcessing(  ) = 0;
 
 		/**
 		 * The settings for handling visibility weights. 
@@ -17098,6 +17080,17 @@ namespace SimplygonSDK
 		 * @return the max deviation of the last processing 
 		 */
 		virtual	real GetResultDeviation(  ) = 0;
+
+		/**
+		 * Set the scene object to reduce. 
+		 * @param value the scene to reduce 
+		 */
+		virtual	void SetScene( IScene *value ) = 0;
+
+		/**
+		 * Runs the processing the object is designed for 
+		 */
+		virtual	void RunProcessing(  ) = 0;
 
 		/**
 		 * Set the scene object to reduce. 
@@ -17176,6 +17169,19 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the on-screen rendering size of the geometry. Allowed values are in the range 
+		 * 40 to 4000 pixels. 
+		 * @param value is the value OnScreenSize will be set to 
+		 */
+		virtual	void SetOnScreenSize( unsigned int value ) = 0;
+
+		/**
+		 * Get the surface transfer mode, options are SG_SURFACETRANSFER_FAST and SG_SURFACETRANSFER_ACCURATE 
+		 * @return the current surface transfer mode 
+		 */
+		virtual	rid GetSurfaceTransferMode(  ) = 0;
+
+		/**
 		 * Set the TransferColors flag. If set, vertex color channels will be sampled from 
 		 * the original mesh 
 		 * @param value is the bool to which TransferColors will be set 
@@ -17205,10 +17211,10 @@ namespace SimplygonSDK
 		virtual	void SetMergeBoldness( real value ) = 0;
 
 		/**
-		 * Get the surface transfer mode, options are SG_SURFACETRANSFER_FAST and SG_SURFACETRANSFER_ACCURATE 
-		 * @return the current surface transfer mode 
+		 * Set to true to cap the mesh with user defined cutting planes 
+		 * @param value is the bool UseCuttingPlanes will be set to 
 		 */
-		virtual	rid GetSurfaceTransferMode(  ) = 0;
+		virtual	void SetUseCuttingPlanes( bool value ) = 0;
 
 		/**
 		 * The maximum size in pixels of a generated triangle Any value from 5 pixels and above 
@@ -17263,10 +17269,10 @@ namespace SimplygonSDK
 		virtual	void SetUseClippingGeometryEmptySpaceOverride( bool value ) = 0;
 
 		/**
-		 * Set to true to cap the mesh with user defined cutting planes 
-		 * @param value is the bool UseCuttingPlanes will be set to 
+		 * Get the current value of UseCuttingPlanes 
+		 * @return the current value of UseCuttingPlanes 
 		 */
-		virtual	void SetUseCuttingPlanes( bool value ) = 0;
+		virtual	bool GetUseCuttingPlanes(  ) = 0;
 
 		/**
 		 * The name of the SelectionSet containing the terrain for clipping. If both ID and 
@@ -17291,22 +17297,10 @@ namespace SimplygonSDK
 		virtual	void SetClippingGeometryEmptySpaceOverride( const real *value ) = 0;
 
 		/**
-		 * Get the current value of UseCuttingPlanes 
-		 * @return the current value of UseCuttingPlanes 
-		 */
-		virtual	bool GetUseCuttingPlanes(  ) = 0;
-
-		/**
 		 * Set/Get the normal hard angle cutoff (in radians) 
 		 * @param value is the value to which HardEdgeAngleInRadians will be set 
 		 */
 		virtual	void SetHardEdgeAngleInRadians( real value ) = 0;
-
-		/**
-		 * Get the on-screen merge distance in pixels. 
-		 * @return the current value of MergeDistance 
-		 */
-		virtual	unsigned int GetMergeDistance(  ) = 0;
 
 		/**
 		 * Set/Get the normal hard angle cutoff (in radians) 
@@ -17315,11 +17309,24 @@ namespace SimplygonSDK
 		virtual	real GetHardEdgeAngleInRadians(  ) = 0;
 
 		/**
-		 * Set the on-screen rendering size of the geometry. Allowed values are in the range 
-		 * 40 to 4000 pixels. 
-		 * @param value is the value OnScreenSize will be set to 
+		 * Get the on-screen merge distance in pixels. 
+		 * @return the current value of MergeDistance 
 		 */
-		virtual	void SetOnScreenSize( unsigned int value ) = 0;
+		virtual	unsigned int GetMergeDistance(  ) = 0;
+
+		/**
+		 * Set the TransferNormals flag. If set, the vertex normals channel will be sampled 
+		 * from the original mesh 
+		 * @param value is the value to which TransferNormals will be set 
+		 */
+		virtual	void SetTransferNormals( bool value ) = 0;
+
+		/**
+		 * Get the on-screen rendering size of the geometry. Allowed values are in the range 
+		 * 40 to 4000 pixels. 
+		 * @return the current value of OnScreenSize 
+		 */
+		virtual	unsigned int GetOnScreenSize(  ) = 0;
 
 		/**
 		 * The ID of the SelectionSet containing all the cutting planes that should be used. 
@@ -17330,11 +17337,11 @@ namespace SimplygonSDK
 		virtual	void SetCuttingPlaneSelectionSetID( rid value ) = 0;
 
 		/**
-		 * Get the on-screen rendering size of the geometry. Allowed values are in the range 
-		 * 40 to 4000 pixels. 
-		 * @return the current value of OnScreenSize 
+		 * Set the on-screen merge distance in pixels. Smaller cavities will be removed. This 
+		 * will be capped to the on-screen size of the remeshing. 
+		 * @param value is the value MergeDistance will be set to 
 		 */
-		virtual	unsigned int GetOnScreenSize(  ) = 0;
+		virtual	void SetMergeDistance( unsigned int value ) = 0;
 
 		/**
 		 * Set the surface transfer mode, options are SG_SURFACETRANSFER_FAST and SG_SURFACETRANSFER_ACCURATE 
@@ -17380,18 +17387,11 @@ namespace SimplygonSDK
 		virtual	void SetProcessSelectionSetName( const char * value ) = 0;
 
 		/**
-		 * Set the TransferNormals flag. If set, the vertex normals channel will be sampled 
+		 * Get the TransferNormals flag. If set, the vertex normals channel will be sampled 
 		 * from the original mesh 
-		 * @param value is the value to which TransferNormals will be set 
+		 * @return the current value of the TransferNormals bool 
 		 */
-		virtual	void SetTransferNormals( bool value ) = 0;
-
-		/**
-		 * Set the on-screen merge distance in pixels. Smaller cavities will be removed. This 
-		 * will be capped to the on-screen size of the remeshing. 
-		 * @param value is the value MergeDistance will be set to 
-		 */
-		virtual	void SetMergeDistance( unsigned int value ) = 0;
+		virtual	bool GetTransferNormals(  ) = 0;
 
 		/**
 		 * Set the UseClippingGeometry flag. If set, the terrain selection set along with the 
@@ -17402,11 +17402,18 @@ namespace SimplygonSDK
 		virtual	void SetUseClippingGeometry( bool value ) = 0;
 
 		/**
-		 * Get the TransferNormals flag. If set, the vertex normals channel will be sampled 
-		 * from the original mesh 
-		 * @return the current value of the TransferNormals bool 
+		 * Set the empty space override coordinate. 
+		 * @param value is a pointer to a 3-tuple real which will be copied and used as a marker 
+		 * designating empty space 
 		 */
-		virtual	bool GetTransferNormals(  ) = 0;
+		virtual	void SetEmptySpaceOverride( const real *value ) = 0;
+
+		/**
+		 * Selects which SelectionSet should be processed. If set to -1, all geometries in 
+		 * the scene will be processed. 
+		 * @param value the desired SelectionSet id 
+		 */
+		virtual	void SetProcessSelectionSetID( rid value ) = 0;
 
 		/**
 		 * Selects which SelectionSet should be processed. If set to -1, all geometries in 
@@ -17422,20 +17429,6 @@ namespace SimplygonSDK
 		 * @return the ID of the selection set 
 		 */
 		virtual	rid GetCuttingPlaneSelectionSetID(  ) = 0;
-
-		/**
-		 * Set the empty space override coordinate. 
-		 * @param value is a pointer to a 3-tuple real which will be copied and used as a marker 
-		 * designating empty space 
-		 */
-		virtual	void SetEmptySpaceOverride( const real *value ) = 0;
-
-		/**
-		 * Selects which SelectionSet should be processed. If set to -1, all geometries in 
-		 * the scene will be processed. 
-		 * @param value the desired SelectionSet id 
-		 */
-		virtual	void SetProcessSelectionSetID( rid value ) = 0;
 
 		/**
 		 * The name of the SelectionSet containing all the cutting planes that should be used. 
@@ -17523,6 +17516,20 @@ namespace SimplygonSDK
 		 * call to RunProcessing(). 
 		 * @return the current mappingimage 
 		 */
+		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
+
+		/**
+		 * The settings for the bone removal process. 
+		 * @return the bone settings object 
+		 */
+		virtual	CountedPointer<IBoneSettings> GetBoneSettings(  ) = 0;
+
+		/**
+		 * Get the MappingImage object that is generated if MappingImageSettings::GenerateMappingImage 
+		 * is set. The object is of type IMappingImage. A new object is generated for each 
+		 * call to RunProcessing(). 
+		 * @return the current mappingimage 
+		 */
 		virtual	CountedPointer<IMappingImage> GetMappingImage( rid value ) = 0;
 
 		/**
@@ -17531,10 +17538,10 @@ namespace SimplygonSDK
 		virtual	void Clear(  ) = 0;
 
 		/**
-		 * The settings for the bone removal process. 
-		 * @return the bone settings object 
+		 * The settings for handling visibility weights. 
+		 * @return the visibility settings object associated with the processor 
 		 */
-		virtual	CountedPointer<IBoneSettings> GetBoneSettings(  ) = 0;
+		virtual	CountedPointer<IVisibilitySettings> GetVisibilitySettings(  ) = 0;
 
 		/**
 		 * Get the scene used for remeshing processing. All mesh nodes in the whole scene tree 
@@ -17550,18 +17557,16 @@ namespace SimplygonSDK
 		virtual	SGDEPRECATED void RemeshGeometry(  ) = 0;
 
 		/**
-		 * Get the MappingImage object that is generated if MappingImageSettings::GenerateMappingImage 
-		 * is set. The object is of type IMappingImage. A new object is generated for each 
-		 * call to RunProcessing(). 
-		 * @return the current mappingimage 
-		 */
-		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
-
-		/**
 		 * The settings for the remeshing process. 
 		 * @return the remeshing settings object 
 		 */
 		virtual	CountedPointer<IRemeshingSettings> GetRemeshingSettings(  ) = 0;
+
+		/**
+		 * The settings for the image mapping process. 
+		 * @return the mapping image settings object 
+		 */
+		virtual	CountedPointer<IMappingImageSettings> GetMappingImageSettings(  ) = 0;
 
 		/**
 		 * When called after processing, this returns the id of a new selection set in the 
@@ -17571,10 +17576,9 @@ namespace SimplygonSDK
 		virtual	rid GetResultSelectionSetId(  ) = 0;
 
 		/**
-		 * The settings for the image mapping process. 
-		 * @return the mapping image settings object 
+		 * Runs the processing the object is designed for 
 		 */
-		virtual	CountedPointer<IMappingImageSettings> GetMappingImageSettings(  ) = 0;
+		virtual	void RunProcessing(  ) = 0;
 
 		/**
 		 * Set the scene used for remeshing processing. All mesh nodes in the whole scene tree 
@@ -17582,17 +17586,6 @@ namespace SimplygonSDK
 		 * @param value the scene to process 
 		 */
 		virtual	void SetScene( IScene *value ) = 0;
-
-		/**
-		 * The settings for handling visibility weights. 
-		 * @return the visibility settings object associated with the processor 
-		 */
-		virtual	CountedPointer<IVisibilitySettings> GetVisibilitySettings(  ) = 0;
-
-		/**
-		 * Runs the processing the object is designed for 
-		 */
-		virtual	void RunProcessing(  ) = 0;
 
 	};
 
@@ -17667,6 +17660,23 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Gets a node defined by a path. Please note that the path must contain names for 
+		 * each level to be able to find the specified node. 
+		 * @param path the path of the node to get 
+		 * @return the node associated with path 
+		 */
+		virtual	CountedPointer<ISceneNode> GetNodeFromPath( const char * path ) = 0;
+
+		/**
+		 * Adds a custom data field. To be able to add a field, it must have a name that does 
+		 * not conflict with the existing custom fields. 
+		 * @param base_type is the is the type of the field to be added 
+		 * @param name is the name of the new field 
+		 * @param tuple_size is the tuple size of the new field 
+		 */
+		virtual	CountedPointer<IValueArray> AddCustomField( rid base_type , const char * name , unsigned int tuple_size ) = 0;
+
+		/**
 		 * Get the superior (maximum) extent of the scene 
 		 * @return the maximum extent of the scene@param dest_param a pointer to the destination 
 		 * memory area 
@@ -17729,12 +17739,11 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IGeometryData> GetCombinedGeometry(  ) = 0;
 
 		/**
-		 * Gets a node defined by a path. Please note that the path must contain names for 
-		 * each level to be able to find the specified node. 
-		 * @param path the path of the node to get 
-		 * @return the node associated with path 
+		 * Gets a node defined by an id. 
+		 * @param node_id is the id of the node to get 
+		 * @return the node associated with the id 
 		 */
-		virtual	CountedPointer<ISceneNode> GetNodeFromPath( const char * path ) = 0;
+		virtual	CountedPointer<ISceneNode> GetNodeByGUID( const char * node_id ) = 0;
 
 		/**
 		 * Get the scene radius. 
@@ -17790,11 +17799,11 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IScene> NewCopy(  ) = 0;
 
 		/**
-		 * Gets a node defined by an id. 
+		 * Gets a node defined by an id from the specified node tree. 
 		 * @param node_id is the id of the node to get 
 		 * @return the node associated with the id 
 		 */
-		virtual	CountedPointer<ISceneNode> GetNodeByGUID( const char * node_id ) = 0;
+		virtual	CountedPointer<ISceneNode> GetNodeByGUID( const char * node_id , ISceneNode *node ) = 0;
 
 		/**
 		 * Get the bone table of the scene 
@@ -17814,22 +17823,6 @@ namespace SimplygonSDK
 		 * @return the selection set table 
 		 */
 		virtual	CountedPointer<ISelectionSetTable> GetSelectionSetTable(  ) = 0;
-
-		/**
-		 * Adds a custom data field. To be able to add a field, it must have a name that does 
-		 * not conflict with the existing custom fields. 
-		 * @param base_type is the is the type of the field to be added 
-		 * @param name is the name of the new field 
-		 * @param tuple_size is the tuple size of the new field 
-		 */
-		virtual	CountedPointer<IValueArray> AddCustomField( rid base_type , const char * name , unsigned int tuple_size ) = 0;
-
-		/**
-		 * Gets a node defined by an id from the specified node tree. 
-		 * @param node_id is the id of the node to get 
-		 * @return the node associated with the id 
-		 */
-		virtual	CountedPointer<ISceneNode> GetNodeByGUID( const char * node_id , ISceneNode *node ) = 0;
 
 		/**
 		 * Removes a custom data field. 
@@ -17926,6 +17919,18 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Sets the unique id for this node. 
+		 * @param value is the node id of type string 
+		 */
+		virtual	void SetNodeGUID( const char * value ) = 0;
+
+		/**
+		 * Evaluates the default global transformation of the node, regardless of node animation. 
+		 * @param global_transform the transformation matrix that receives the global transformation 
+		 */
+		virtual	void EvaluateDefaultGlobalTransformation( IMatrix4x4 *global_transform ) = 0;
+
+		/**
 		 * Get the IsFrozen flag. If set, the node will not be modified by processing modules. 
 		 * @return the value of the isFrozen bool 
 		 */
@@ -17995,10 +18000,10 @@ namespace SimplygonSDK
 		virtual	CountedPointer<ISceneNode> GetParent(  ) = 0;
 
 		/**
-		 * Sets the unique id for this node. 
-		 * @param value is the node id of type string 
+		 * Get the inferior (minimum) extent of the node@param dest_param a pointer to the 
+		 * destination memory area 
 		 */
-		virtual	void SetNodeGUID( const char * value ) = 0;
+		virtual	void GetInf( real dest_param[3] ) = 0;
 
 		/**
 		 * Set the IsModified flag. If set, the node is new, copied, or modified by processing 
@@ -18040,10 +18045,10 @@ namespace SimplygonSDK
 		virtual	rstring GetNodeGUID(  ) = 0;
 
 		/**
-		 * Get the inferior (minimum) extent of the node@param dest_param a pointer to the 
-		 * destination memory area 
+		 * Get the number of direct children of this node 
+		 * @return the number of direct children of this node 
 		 */
-		virtual	void GetInf( real dest_param[3] ) = 0;
+		virtual	unsigned int GetChildCount(  ) = 0;
 
 		/**
 		 * Clones this node tree (this node and all the descendants of this node) and returns 
@@ -18064,12 +18069,6 @@ namespace SimplygonSDK
 		 * Removes all children of this node 
 		 */
 		virtual	void RemoveChildren(  ) = 0;
-
-		/**
-		 * Get the number of direct children of this node 
-		 * @return the number of direct children of this node 
-		 */
-		virtual	unsigned int GetChildCount(  ) = 0;
 
 		/**
 		 * Creates a ScenePlane node as a child node to this node. 
@@ -18098,10 +18097,11 @@ namespace SimplygonSDK
 		virtual	CountedPointer<ISceneNode> NewCopy(  ) = 0;
 
 		/**
-		 * Evaluates the default global transformation of the node, regardless of node animation. 
-		 * @param global_transform the transformation matrix that receives the global transformation 
+		 * Calculates the axis-aligned bounding box of the node and all its children. If the 
+		 * node tree contains no geometric data, or all data is hidden, the bounding box is 
+		 * not calcluated, and the method returns false. @returns true if the calculation succeeded 
 		 */
-		virtual	void EvaluateDefaultGlobalTransformation( IMatrix4x4 *global_transform ) = 0;
+		virtual	bool CalculateExtents(  ) = 0;
 
 		/**
 		 * Set the OriginalName parameter which can be used to specify the original name of 
@@ -18110,13 +18110,6 @@ namespace SimplygonSDK
 		 * @param value is a string the name is to be set to 
 		 */
 		virtual	void SetOriginalName( const char * value ) = 0;
-
-		/**
-		 * Calculates the axis-aligned bounding box of the node and all its children. If the 
-		 * node tree contains no geometric data, or all data is hidden, the bounding box is 
-		 * not calcluated, and the method returns false. @returns true if the calculation succeeded 
-		 */
-		virtual	bool CalculateExtents(  ) = 0;
 
 	};
 
@@ -18176,6 +18169,21 @@ namespace SimplygonSDK
 				return static_cast<ISceneNodeCollection*>(ptr);
 			return NULL;
 			}
+		/**
+		 * Finds a named object in the collection. The first object with this name is returned. 
+		 * The search is case-sensitive. 
+		 * @param name is the name of an object in the collection 
+		 * @return the object with the relevant name, or NULL if none is found 
+		 */
+		virtual	CountedPointer<IObject> FindObject( const char * name ) = 0;
+
+		/**
+		 * Finds a named object. 
+		 * @param name is the name of the searched for object 
+		 * @return the found node, or NULL if no mathing node is found 
+		 */
+		virtual	CountedPointer<ISceneNode> FindSceneNode( const char * name ) = 0;
+
 		/**
 		 * Returns true if the object is in the collection 
 		 * @param pobj is an arbitrary node 
@@ -18265,27 +18273,12 @@ namespace SimplygonSDK
 		virtual	rhandle GetFirstItem(  ) = 0;
 
 		/**
-		 * Finds a named object in the collection. The first object with this name is returned. 
-		 * The search is case-sensitive. 
-		 * @param name is the name of an object in the collection 
-		 * @return the object with the relevant name, or NULL if none is found 
-		 */
-		virtual	CountedPointer<IObject> FindObject( const char * name ) = 0;
-
-		/**
 		 * Adds an object object to the collection. The handle refers to the object until it 
 		 * is removed from the collection again. 
 		 * @param obj is the node that is to be added to the collection 
 		 * @return the handle of the added node in the collection 
 		 */
 		virtual	rhandle AddSceneNode( ISceneNode *obj ) = 0;
-
-		/**
-		 * Finds a named object. 
-		 * @param name is the name of the searched for object 
-		 * @return the found node, or NULL if no mathing node is found 
-		 */
-		virtual	CountedPointer<ISceneNode> FindSceneNode( const char * name ) = 0;
 
 		/**
 		 * Returns the object of the next item. 
@@ -18387,15 +18380,26 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Removes all children of this node 
+		 */
+		virtual	void RemoveChildren(  ) = 0;
+
+		/**
+		 * Removes a child from the node. 
+		 * @param child the child to be removed 
+		 */
+		virtual	void RemoveChild( ISceneNode *child ) = 0;
+
+		/**
 		 * Get the superior (maximum) extent of the node@param dest_param a pointer to the 
 		 * destination memory area 
 		 */
 		virtual	void GetSup( real dest_param[3] ) = 0;
 
 		/**
-		 * Removes all children of this node 
+		 * Removes this node from its parent. 
 		 */
-		virtual	void RemoveChildren(  ) = 0;
+		virtual	void RemoveFromParent(  ) = 0;
 
 		/**
 		 * Returns true if the node has the specified child 
@@ -18411,9 +18415,12 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IGeometryData> GetGeometry(  ) = 0;
 
 		/**
-		 * Removes this node from its parent. 
+		 * Deep copies this node tree (this node and all the descendants of this node) and 
+		 * returns the copy top node. Please note that the copy is not added to any scene, 
+		 * and can be added anywhere. 
+		 * @return a new copy of the ISceneNode 
 		 */
-		virtual	void RemoveFromParent(  ) = 0;
+		virtual	CountedPointer<ISceneNode> NewCopy(  ) = 0;
 
 		/**
 		 * Creates a SceneMesh node as a child node to this node. 
@@ -18422,12 +18429,13 @@ namespace SimplygonSDK
 		virtual	CountedPointer<ISceneMesh> CreateChildMesh( IGeometryData *geom ) = 0;
 
 		/**
-		 * Deep copies this node tree (this node and all the descendants of this node) and 
-		 * returns the copy top node. Please note that the copy is not added to any scene, 
-		 * and can be added anywhere. 
-		 * @return a new copy of the ISceneNode 
+		 * Clones this node tree (this node and all the descendants of this node) and returns 
+		 * the cloned top node. Please note that the copy is not added to any scene, and can 
+		 * be added anywhere. Also note that the clone shares all data pointers with the original 
+		 * nodes, such as geometry data objects. 
+		 * @return a new clone of the ISceneNode 
 		 */
-		virtual	CountedPointer<ISceneNode> NewCopy(  ) = 0;
+		virtual	CountedPointer<ISceneNode> NewClone(  ) = 0;
 
 		/**
 		 * Get the OriginalName parameter which can be used to specify the original name of 
@@ -18457,38 +18465,11 @@ namespace SimplygonSDK
 		virtual	bool GetIsFrozen(  ) = 0;
 
 		/**
-		 * Clones this node tree (this node and all the descendants of this node) and returns 
-		 * the cloned top node. Please note that the copy is not added to any scene, and can 
-		 * be added anywhere. Also note that the clone shares all data pointers with the original 
-		 * nodes, such as geometry data objects. 
-		 * @return a new clone of the ISceneNode 
-		 */
-		virtual	CountedPointer<ISceneNode> NewClone(  ) = 0;
-
-		/**
 		 * Calculates the axis-aligned bounding box of the node and all its children. If the 
 		 * node tree contains no geometric data, or all data is hidden, the bounding box is 
 		 * not calcluated, and the method returns false. @returns true if the calculation succeeded 
 		 */
 		virtual	bool CalculateExtents(  ) = 0;
-
-		/**
-		 * Removes a child from the node. 
-		 * @param child the child to be removed 
-		 */
-		virtual	void RemoveChild( ISceneNode *child ) = 0;
-
-		/**
-		 * Finds the first child that has the name 
-		 * @param name the name of the child to look for 
-		 */
-		virtual	CountedPointer<ISceneNode> FindNamedChild( const char * name ) = 0;
-
-		/**
-		 * Get the IsVisible flag. If set, the node is visible. 
-		 * @return the value of the isVisible bool 
-		 */
-		virtual	bool GetIsVisible(  ) = 0;
 
 		/**
 		 * Get the path to this node in the scene. Please note that only paths where each node 
@@ -18504,10 +18485,16 @@ namespace SimplygonSDK
 		virtual	void SetGeometry( IGeometryData *value ) = 0;
 
 		/**
-		 * Creates a ScenePlane node as a child node to this node. 
-		 * @param the values that defines the plane of this node. 
+		 * Finds the first child that has the name 
+		 * @param name the name of the child to look for 
 		 */
-		virtual	CountedPointer<IScenePlane> CreateChildPlane( const real position[3] , const real normal[3] ) = 0;
+		virtual	CountedPointer<ISceneNode> FindNamedChild( const char * name ) = 0;
+
+		/**
+		 * Get the IsVisible flag. If set, the node is visible. 
+		 * @return the value of the isVisible bool 
+		 */
+		virtual	bool GetIsVisible(  ) = 0;
 
 		/**
 		 * Get the scene object of the node 
@@ -18520,6 +18507,12 @@ namespace SimplygonSDK
 		 * @return the parent node 
 		 */
 		virtual	CountedPointer<ISceneNode> GetParent(  ) = 0;
+
+		/**
+		 * Creates a ScenePlane node as a child node to this node. 
+		 * @param the values that defines the plane of this node. 
+		 */
+		virtual	CountedPointer<IScenePlane> CreateChildPlane( const real position[3] , const real normal[3] ) = 0;
 
 		/**
 		 * Get the relative transformation of this node 
@@ -18536,12 +18529,6 @@ namespace SimplygonSDK
 		virtual	void SetOriginalName( const char * value ) = 0;
 
 		/**
-		 * Get the number of direct children of this node 
-		 * @return the number of direct children of this node 
-		 */
-		virtual	unsigned int GetChildCount(  ) = 0;
-
-		/**
 		 * Get the IsVisible flag. If set, the node is visible. 
 		 * @param value is the bool that isVisible is to be set to 
 		 */
@@ -18552,6 +18539,12 @@ namespace SimplygonSDK
 		 * @param value is the bool that isFrozen is to be set to 
 		 */
 		virtual	void SetIsFrozen( bool value ) = 0;
+
+		/**
+		 * Get the number of direct children of this node 
+		 * @return the number of direct children of this node 
+		 */
+		virtual	unsigned int GetChildCount(  ) = 0;
 
 		/**
 		 * Get the IsModified flag. If set, the node is new, copied, or modified by processing 
@@ -18654,6 +18647,18 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the superior (maximum) extent of the node@param dest_param a pointer to the 
+		 * destination memory area 
+		 */
+		virtual	void GetSup( real dest_param[3] ) = 0;
+
+		/**
+		 * Get the relative transformation of this node 
+		 * @return the relative transformation as a 4x4 matrix 
+		 */
+		virtual	CountedPointer<IMatrix4x4> GetRelativeTransform(  ) = 0;
+
+		/**
 		 * Gets the threshold distances associated with the LODs of the LOD group. 
 		 * @return the thresholds of the LODs as a realarray 
 		 */
@@ -18667,10 +18672,12 @@ namespace SimplygonSDK
 		virtual	void SetIsModified( bool value ) = 0;
 
 		/**
-		 * Get the relative transformation of this node 
-		 * @return the relative transformation as a 4x4 matrix 
+		 * Set the OriginalName parameter which can be used to specify the original name of 
+		 * a node, for debugging of merging purposes. This parameter is not copied or cloned, 
+		 * and is not used internally by Simplygon. 
+		 * @param value is a string the name is to be set to 
 		 */
-		virtual	CountedPointer<IMatrix4x4> GetRelativeTransform(  ) = 0;
+		virtual	void SetOriginalName( const char * value ) = 0;
 
 		/**
 		 * Get the scene object of the node 
@@ -18699,10 +18706,10 @@ namespace SimplygonSDK
 		virtual	bool GetIsVisible(  ) = 0;
 
 		/**
-		 * Get the superior (maximum) extent of the node@param dest_param a pointer to the 
-		 * destination memory area 
+		 * Get the number of direct children of this node 
+		 * @return the number of direct children of this node 
 		 */
-		virtual	void GetSup( real dest_param[3] ) = 0;
+		virtual	unsigned int GetChildCount(  ) = 0;
 
 		/**
 		 * Adds a child node to this node. If the child is already a child of another node, 
@@ -18751,10 +18758,10 @@ namespace SimplygonSDK
 		virtual	void RemoveFromParent(  ) = 0;
 
 		/**
-		 * Get the number of direct children of this node 
-		 * @return the number of direct children of this node 
+		 * Get a pointer to the i:th child of this node 
+		 * @param index the local index of the child (0->GetChildCount()-1) 
 		 */
-		virtual	unsigned int GetChildCount(  ) = 0;
+		virtual	CountedPointer<ISceneNode> GetChild( rid index ) = 0;
 
 		/**
 		 * Get the IsFrozen flag. If set, the node will not be modified by processing modules. 
@@ -18799,10 +18806,10 @@ namespace SimplygonSDK
 		virtual	CountedPointer<ISceneNode> GetParent(  ) = 0;
 
 		/**
-		 * Get a pointer to the i:th child of this node 
-		 * @param index the local index of the child (0->GetChildCount()-1) 
+		 * Finds the first child that has the name 
+		 * @param name the name of the child to look for 
 		 */
-		virtual	CountedPointer<ISceneNode> GetChild( rid index ) = 0;
+		virtual	CountedPointer<ISceneNode> FindNamedChild( const char * name ) = 0;
 
 		/**
 		 * Creates a SceneMesh node as a child node to this node. 
@@ -18818,24 +18825,10 @@ namespace SimplygonSDK
 		virtual	bool HasChild( ISceneNode *child ) = 0;
 
 		/**
-		 * Finds the first child that has the name 
-		 * @param name the name of the child to look for 
+		 * Creates a ScenePlane node as a child node to this node. 
+		 * @param the values that defines the plane of this node. 
 		 */
-		virtual	CountedPointer<ISceneNode> FindNamedChild( const char * name ) = 0;
-
-		/**
-		 * Set the OriginalName parameter which can be used to specify the original name of 
-		 * a node, for debugging of merging purposes. This parameter is not copied or cloned, 
-		 * and is not used internally by Simplygon. 
-		 * @param value is a string the name is to be set to 
-		 */
-		virtual	void SetOriginalName( const char * value ) = 0;
-
-		/**
-		 * Get the inferior (minimum) extent of the node@param dest_param a pointer to the 
-		 * destination memory area 
-		 */
-		virtual	void GetInf( real dest_param[3] ) = 0;
+		virtual	CountedPointer<IScenePlane> CreateChildPlane( const real position[3] , const real normal[3] ) = 0;
 
 		/**
 		 * Get the IsVisible flag. If set, the node is visible. 
@@ -18844,10 +18837,10 @@ namespace SimplygonSDK
 		virtual	void SetIsVisible( bool value ) = 0;
 
 		/**
-		 * Creates a ScenePlane node as a child node to this node. 
-		 * @param the values that defines the plane of this node. 
+		 * Get the inferior (minimum) extent of the node@param dest_param a pointer to the 
+		 * destination memory area 
 		 */
-		virtual	CountedPointer<IScenePlane> CreateChildPlane( const real position[3] , const real normal[3] ) = 0;
+		virtual	void GetInf( real dest_param[3] ) = 0;
 
 		/**
 		 * Removes a child from the node. 
@@ -18923,6 +18916,18 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the IsVisible flag. If set, the node is visible. 
+		 * @param value is the bool that isVisible is to be set to 
+		 */
+		virtual	void SetIsVisible( bool value ) = 0;
+
+		/**
+		 * Get the IsVisible flag. If set, the node is visible. 
+		 * @return the value of the isVisible bool 
+		 */
+		virtual	bool GetIsVisible(  ) = 0;
+
+		/**
 		 * Get the IsModified flag. If set, the node is new, copied, or modified by processing 
 		 * modules. This can be useful to track modifications in the scene graph. 
 		 * @return the value of the IsModified bool 
@@ -19026,10 +19031,10 @@ namespace SimplygonSDK
 		virtual	CountedPointer<ISceneMesh> CreateChildMesh( IGeometryData *geom ) = 0;
 
 		/**
-		 * Get the IsVisible flag. If set, the node is visible. 
-		 * @return the value of the isVisible bool 
+		 * Set the IsFrozen flag. If set, the node will not be modified by processing modules. 
+		 * @param value is the bool that isFrozen is to be set to 
 		 */
-		virtual	bool GetIsVisible(  ) = 0;
+		virtual	void SetIsFrozen( bool value ) = 0;
 
 		/**
 		 * Get a pointer to the i:th child of this node 
@@ -19072,12 +19077,6 @@ namespace SimplygonSDK
 		virtual	void CollectAllChildBones( IRidArray *child_bones ) = 0;
 
 		/**
-		 * Get the IsVisible flag. If set, the node is visible. 
-		 * @param value is the bool that isVisible is to be set to 
-		 */
-		virtual	void SetIsVisible( bool value ) = 0;
-
-		/**
 		 * Get the superior (maximum) extent of the node@param dest_param a pointer to the 
 		 * destination memory area 
 		 */
@@ -19094,6 +19093,12 @@ namespace SimplygonSDK
 		 * @param the values that defines the plane of this node. 
 		 */
 		virtual	CountedPointer<IScenePlane> CreateChildPlane( const real position[3] , const real normal[3] ) = 0;
+
+		/**
+		 * Removes a child from the node. 
+		 * @param child the child to be removed 
+		 */
+		virtual	void RemoveChild( ISceneNode *child ) = 0;
 
 		/**
 		 * Get the BoneId 
@@ -19122,18 +19127,6 @@ namespace SimplygonSDK
 		 * @return the value of the OriginalName string 
 		 */
 		virtual	rstring GetOriginalName(  ) = 0;
-
-		/**
-		 * Removes a child from the node. 
-		 * @param child the child to be removed 
-		 */
-		virtual	void RemoveChild( ISceneNode *child ) = 0;
-
-		/**
-		 * Set the IsFrozen flag. If set, the node will not be modified by processing modules. 
-		 * @param value is the bool that isFrozen is to be set to 
-		 */
-		virtual	void SetIsFrozen( bool value ) = 0;
 
 	};
 
@@ -19193,6 +19186,22 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Adds an item to the table. The returned value is the id of the item within the table, 
+		 * which can be used to retrieve the item using GetItem(). 
+		 * @param item is the item that is to be added to the table 
+		 * @return the id of the added item in the table 
+		 */
+		virtual	rid AddItem( IObject *item ) = 0;
+
+		/**
+		 * Gets the number of item id:s in the table. If an item has been removed, using RemoveItem, 
+		 * the id is still counted in this method. GetIdsCount also equals the id that will 
+		 * be applied to the next item added to the table. 
+		 * @return the itemcount of the table 
+		 */
+		virtual	unsigned int GetItemsCount(  ) = 0;
+
+		/**
 		 * Finds the id of an item in the table, using the name. If multiple items have the 
 		 * same name, the first will be returned. If no item was found, the return will be 
 		 * -1. 
@@ -19202,12 +19211,10 @@ namespace SimplygonSDK
 		virtual	rid FindItemId( const char * name ) = 0;
 
 		/**
-		 * Gets the number of item id:s in the table. If an item has been removed, using RemoveItem, 
-		 * the id is still counted in this method. GetIdsCount also equals the id that will 
-		 * be applied to the next item added to the table. 
-		 * @return the itemcount of the table 
+		 * Clears the current table and copies the items from a source table. 
+		 * @param src the table to copy 
 		 */
-		virtual	unsigned int GetItemsCount(  ) = 0;
+		virtual	void Copy( ITable *src ) = 0;
 
 		/**
 		 * Finds a named item in the table. If multiple items have the same name, the first 
@@ -19244,18 +19251,11 @@ namespace SimplygonSDK
 		virtual	rid AddBone( ISceneBone *bone ) = 0;
 
 		/**
-		 * Adds an item to the table. The returned value is the id of the item within the table, 
-		 * which can be used to retrieve the item using GetItem(). 
-		 * @param item is the item that is to be added to the table 
-		 * @return the id of the added item in the table 
+		 * Sets an item in the table. The id must exist in the table. 
+		 * @param id is the id that is to be set 
+		 * @param item is the object set to the id 
 		 */
-		virtual	rid AddItem( IObject *item ) = 0;
-
-		/**
-		 * Clears the current table and copies the items from a source table. 
-		 * @param src the table to copy 
-		 */
-		virtual	void Copy( ITable *src ) = 0;
+		virtual	void SetItem( rid id , IObject *item ) = 0;
 
 		/**
 		 * Finds a bone in the table, using the bone name. If multiple bones have the same 
@@ -19267,27 +19267,6 @@ namespace SimplygonSDK
 		virtual	CountedPointer<ISceneBone> FindBone( const char * name ) = 0;
 
 		/**
-		 * Returns the i:th bone, using the id of the bone 
-		 * @param id is the id of the wanted bone 
-		 * @return the bone corresponding to the id 
-		 */
-		virtual	CountedPointer<ISceneBone> GetBone( rid id ) = 0;
-
-		/**
-		 * Sets an item in the table. The id must exist in the table. 
-		 * @param id is the id that is to be set 
-		 * @param item is the object set to the id 
-		 */
-		virtual	void SetItem( rid id , IObject *item ) = 0;
-
-		/**
-		 * Returns the i:th item, using the id of the item 
-		 * @param id is the id of the requested object 
-		 * @return the found object 
-		 */
-		virtual	CountedPointer<IObject> GetItem( rid id ) = 0;
-
-		/**
 		 * Finds the id of a bone in the table, using the bone name. If multiple bones have 
 		 * the same name, the first will be returned. If the bone was not found, the return 
 		 * will be -1. 
@@ -19295,6 +19274,20 @@ namespace SimplygonSDK
 		 * @return the id of the first matching bone, or -1 if no matches are found 
 		 */
 		virtual	rid FindBoneId( const char * name ) = 0;
+
+		/**
+		 * Returns the i:th bone, using the id of the bone 
+		 * @param id is the id of the wanted bone 
+		 * @return the bone corresponding to the id 
+		 */
+		virtual	CountedPointer<ISceneBone> GetBone( rid id ) = 0;
+
+		/**
+		 * Returns the i:th item, using the id of the item 
+		 * @param id is the id of the requested object 
+		 * @return the found object 
+		 */
+		virtual	CountedPointer<IObject> GetItem( rid id ) = 0;
 
 		/**
 		 * Removes a bone. If GetBone is called with the bone id, the value returned will be 
@@ -19366,6 +19359,19 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the normal of the plane 
+		 * @param vec the new normal 
+		 */
+		virtual	void SetNormal( const real vec[3] ) = 0;
+
+		/**
+		 * Returns true if the node has the specified child 
+		 * @param child the child node to look for 
+		 * @return true if child exists in the scene, otherwise false 
+		 */
+		virtual	bool HasChild( ISceneNode *child ) = 0;
+
+		/**
 		 * Gets the unique id for this node. 
 		 * @return the GUID for this node 
 		 */
@@ -19390,10 +19396,10 @@ namespace SimplygonSDK
 		virtual	void GetInf( real dest_param[3] ) = 0;
 
 		/**
-		 * Set the normal of the plane 
-		 * @param vec the new normal 
+		 * Get the scene object of the node 
+		 * @return the scene object 
 		 */
-		virtual	void SetNormal( const real vec[3] ) = 0;
+		virtual	CountedPointer<IScene> GetScene(  ) = 0;
 
 		/**
 		 * Get the normal of the plane 
@@ -19417,10 +19423,10 @@ namespace SimplygonSDK
 		virtual	CountedPointer<ISceneNode> GetParent(  ) = 0;
 
 		/**
-		 * Get the scene object of the node 
-		 * @return the scene object 
+		 * Get the relative transformation of this node 
+		 * @return the relative transformation as a 4x4 matrix 
 		 */
-		virtual	CountedPointer<IScene> GetScene(  ) = 0;
+		virtual	CountedPointer<IMatrix4x4> GetRelativeTransform(  ) = 0;
 
 		/**
 		 * Removes all children of this node 
@@ -19460,11 +19466,12 @@ namespace SimplygonSDK
 		virtual	void RemoveFromParent(  ) = 0;
 
 		/**
-		 * Returns true if the node has the specified child 
-		 * @param child the child node to look for 
-		 * @return true if child exists in the scene, otherwise false 
+		 * Deep copies this node tree (this node and all the descendants of this node) and 
+		 * returns the copy top node. Please note that the copy is not added to any scene, 
+		 * and can be added anywhere. 
+		 * @return a new copy of the ISceneNode 
 		 */
-		virtual	bool HasChild( ISceneNode *child ) = 0;
+		virtual	CountedPointer<ISceneNode> NewCopy(  ) = 0;
 
 		/**
 		 * Set the IsModified flag. If set, the node is new, copied, or modified by processing 
@@ -19481,12 +19488,10 @@ namespace SimplygonSDK
 		virtual	rstring GetPath(  ) = 0;
 
 		/**
-		 * Deep copies this node tree (this node and all the descendants of this node) and 
-		 * returns the copy top node. Please note that the copy is not added to any scene, 
-		 * and can be added anywhere. 
-		 * @return a new copy of the ISceneNode 
+		 * Evaluates the default global transformation of the node, regardless of node animation. 
+		 * @param global_transform the transformation matrix that receives the global transformation 
 		 */
-		virtual	CountedPointer<ISceneNode> NewCopy(  ) = 0;
+		virtual	void EvaluateDefaultGlobalTransformation( IMatrix4x4 *global_transform ) = 0;
 
 		/**
 		 * Get the IsVisible flag. If set, the node is visible. 
@@ -19515,10 +19520,12 @@ namespace SimplygonSDK
 		virtual	bool GetIsModified(  ) = 0;
 
 		/**
-		 * Get the relative transformation of this node 
-		 * @return the relative transformation as a 4x4 matrix 
+		 * Get the OriginalName parameter which can be used to specify the original name of 
+		 * a node, for debugging of merging purposes. This parameter is not copied or cloned, 
+		 * and is not used internally by Simplygon. 
+		 * @return the value of the OriginalName string 
 		 */
-		virtual	CountedPointer<IMatrix4x4> GetRelativeTransform(  ) = 0;
+		virtual	rstring GetOriginalName(  ) = 0;
 
 		/**
 		 * Finds the first child that has the name 
@@ -19534,24 +19541,10 @@ namespace SimplygonSDK
 		virtual	bool CalculateExtents(  ) = 0;
 
 		/**
-		 * Get the OriginalName parameter which can be used to specify the original name of 
-		 * a node, for debugging of merging purposes. This parameter is not copied or cloned, 
-		 * and is not used internally by Simplygon. 
-		 * @return the value of the OriginalName string 
+		 * Get the number of direct children of this node 
+		 * @return the number of direct children of this node 
 		 */
-		virtual	rstring GetOriginalName(  ) = 0;
-
-		/**
-		 * Evaluates the default global transformation of the node, regardless of node animation. 
-		 * @param global_transform the transformation matrix that receives the global transformation 
-		 */
-		virtual	void EvaluateDefaultGlobalTransformation( IMatrix4x4 *global_transform ) = 0;
-
-		/**
-		 * Creates a SceneMesh node as a child node to this node. 
-		 * @param the geometrydata that will be contained within the childnode 
-		 */
-		virtual	CountedPointer<ISceneMesh> CreateChildMesh( IGeometryData *geom ) = 0;
+		virtual	unsigned int GetChildCount(  ) = 0;
 
 		/**
 		 * Get the position (translation) of the plane 
@@ -19561,10 +19554,16 @@ namespace SimplygonSDK
 		virtual	void GetPosition( real dest_param[3] ) = 0;
 
 		/**
-		 * Get the number of direct children of this node 
-		 * @return the number of direct children of this node 
+		 * Creates a SceneMesh node as a child node to this node. 
+		 * @param the geometrydata that will be contained within the childnode 
 		 */
-		virtual	unsigned int GetChildCount(  ) = 0;
+		virtual	CountedPointer<ISceneMesh> CreateChildMesh( IGeometryData *geom ) = 0;
+
+		/**
+		 * Set the position (translation) of the plane 
+		 * @param vec the new position 
+		 */
+		virtual	void SetPosition( const real vec[3] ) = 0;
 
 		/**
 		 * Get a pointer to the i:th child of this node 
@@ -19577,12 +19576,6 @@ namespace SimplygonSDK
 		 * @param the values that defines the plane of this node. 
 		 */
 		virtual	CountedPointer<IScenePlane> CreateChildPlane( const real position[3] , const real normal[3] ) = 0;
-
-		/**
-		 * Set the position (translation) of the plane 
-		 * @param vec the new position 
-		 */
-		virtual	void SetPosition( const real vec[3] ) = 0;
 
 	};
 
@@ -19653,12 +19646,27 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the parent node of this node 
+		 * @return the parent node 
+		 */
+		virtual	CountedPointer<ISceneNode> GetParent(  ) = 0;
+
+		/**
 		 * Deep copies this node tree (this node and all the descendants of this node) and 
 		 * returns the copy top node. Please note that the copy is not added to any scene, 
 		 * and can be added anywhere. 
 		 * @return a new copy of the ISceneNode 
 		 */
 		virtual	CountedPointer<ISceneNode> NewCopy(  ) = 0;
+
+		/**
+		 * Clones this node tree (this node and all the descendants of this node) and returns 
+		 * the cloned top node. Please note that the copy is not added to any scene, and can 
+		 * be added anywhere. Also note that the clone shares all data pointers with the original 
+		 * nodes, such as geometry data objects. 
+		 * @return a new clone of the ISceneNode 
+		 */
+		virtual	CountedPointer<ISceneNode> NewClone(  ) = 0;
 
 		/**
 		 * Normalized coordinates means that the coordinates are relative to the scene: the 
@@ -19791,18 +19799,20 @@ namespace SimplygonSDK
 		virtual	void SetOrthographicCameraPixelSize( real value ) = 0;
 
 		/**
-		 * Get the parent node of this node 
-		 * @return the parent node 
-		 */
-		virtual	CountedPointer<ISceneNode> GetParent(  ) = 0;
-
-		/**
 		 * Set the OriginalName parameter which can be used to specify the original name of 
 		 * a node, for debugging of merging purposes. This parameter is not copied or cloned, 
 		 * and is not used internally by Simplygon. 
 		 * @param value is a string the name is to be set to 
 		 */
 		virtual	void SetOriginalName( const char * value ) = 0;
+
+		/**
+		 * Get the OriginalName parameter which can be used to specify the original name of 
+		 * a node, for debugging of merging purposes. This parameter is not copied or cloned, 
+		 * and is not used internally by Simplygon. 
+		 * @return the value of the OriginalName string 
+		 */
+		virtual	rstring GetOriginalName(  ) = 0;
 
 		/**
 		 * Finds the first child that has the name 
@@ -19847,13 +19857,10 @@ namespace SimplygonSDK
 		virtual	void AddChild( ISceneNode *child ) = 0;
 
 		/**
-		 * Clones this node tree (this node and all the descendants of this node) and returns 
-		 * the cloned top node. Please note that the copy is not added to any scene, and can 
-		 * be added anywhere. Also note that the clone shares all data pointers with the original 
-		 * nodes, such as geometry data objects. 
-		 * @return a new clone of the ISceneNode 
+		 * Evaluates the default global transformation of the node, regardless of node animation. 
+		 * @param global_transform the transformation matrix that receives the global transformation 
 		 */
-		virtual	CountedPointer<ISceneNode> NewClone(  ) = 0;
+		virtual	void EvaluateDefaultGlobalTransformation( IMatrix4x4 *global_transform ) = 0;
 
 		/**
 		 * Removes all children of this node 
@@ -19886,12 +19893,10 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IScenePlane> CreateChildPlane( const real position[3] , const real normal[3] ) = 0;
 
 		/**
-		 * Get the OriginalName parameter which can be used to specify the original name of 
-		 * a node, for debugging of merging purposes. This parameter is not copied or cloned, 
-		 * and is not used internally by Simplygon. 
-		 * @return the value of the OriginalName string 
+		 * Get the IsVisible flag. If set, the node is visible. 
+		 * @param value is the bool that isVisible is to be set to 
 		 */
-		virtual	rstring GetOriginalName(  ) = 0;
+		virtual	void SetIsVisible( bool value ) = 0;
 
 		/**
 		 * Removes this node from its parent. 
@@ -19911,23 +19916,11 @@ namespace SimplygonSDK
 		virtual	void SetFieldOfView( real value ) = 0;
 
 		/**
-		 * Evaluates the default global transformation of the node, regardless of node animation. 
-		 * @param global_transform the transformation matrix that receives the global transformation 
-		 */
-		virtual	void EvaluateDefaultGlobalTransformation( IMatrix4x4 *global_transform ) = 0;
-
-		/**
 		 * Calculates the axis-aligned bounding box of the node and all its children. If the 
 		 * node tree contains no geometric data, or all data is hidden, the bounding box is 
 		 * not calcluated, and the method returns false. @returns true if the calculation succeeded 
 		 */
 		virtual	bool CalculateExtents(  ) = 0;
-
-		/**
-		 * Get the IsVisible flag. If set, the node is visible. 
-		 * @param value is the bool that isVisible is to be set to 
-		 */
-		virtual	void SetIsVisible( bool value ) = 0;
 
 		/**
 		 * Specifies the camera type. SG_CAMERATYPE_PERSPECTIVE - A regular camera that uses 
@@ -19941,6 +19934,12 @@ namespace SimplygonSDK
 		virtual	void SetCameraType( unsigned int value ) = 0;
 
 		/**
+		 * Set the IsFrozen flag. If set, the node will not be modified by processing modules. 
+		 * @param value is the bool that isFrozen is to be set to 
+		 */
+		virtual	void SetIsFrozen( bool value ) = 0;
+
+		/**
 		 * Specifies the camera type. SG_CAMERATYPE_PERSPECTIVE - A regular camera that uses 
 		 * the FieldOfView. SG_CAMERATYPE_OMNIDIRECTIONAL - An omni directional camera view 
 		 * all directions from its position and ignores the TargetPositions and FieldOfView. 
@@ -19952,23 +19951,17 @@ namespace SimplygonSDK
 		virtual	unsigned int GetCameraType(  ) = 0;
 
 		/**
-		 * Set the IsFrozen flag. If set, the node will not be modified by processing modules. 
-		 * @param value is the bool that isFrozen is to be set to 
+		 * CameraPositions is an IRealArray (with tuple size 3) where each tuple is a 3d camera 
+		 * position. 
+		 * @return the current array of camera positions 
 		 */
-		virtual	void SetIsFrozen( bool value ) = 0;
+		virtual	CountedPointer<IRealArray> GetCameraPositions(  ) = 0;
 
 		/**
 		 * Get the IsFrozen flag. If set, the node will not be modified by processing modules. 
 		 * @return the value of the isFrozen bool 
 		 */
 		virtual	bool GetIsFrozen(  ) = 0;
-
-		/**
-		 * CameraPositions is an IRealArray (with tuple size 3) where each tuple is a 3d camera 
-		 * position. 
-		 * @return the current array of camera positions 
-		 */
-		virtual	CountedPointer<IRealArray> GetCameraPositions(  ) = 0;
 
 	};
 
@@ -20031,6 +20024,19 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the number of items in the set. 
+		 * @return the number of items in the set. 
+		 */
+		virtual	unsigned int GetItemCount(  ) = 0;
+
+		/**
+		 * Returns the node id in the i:th place in the set. 
+		 * @param index is the index of the node id to get from the set. 
+		 * @return the node id at the specified index. 
+		 */
+		virtual	rstring GetItem( unsigned int index ) = 0;
+
+		/**
 		 * Removes an node id from the set. 
 		 * @param NodeId is the node id that is to be removed from to the set. 
 		 */
@@ -20042,23 +20048,10 @@ namespace SimplygonSDK
 		virtual	void Clear(  ) = 0;
 
 		/**
-		 * Returns the node id in the i:th place in the set. 
-		 * @param index is the index of the node id to get from the set. 
-		 * @return the node id at the specified index. 
-		 */
-		virtual	rstring GetItem( unsigned int index ) = 0;
-
-		/**
 		 * Adds a node id to the set. 
 		 * @param NodeId is the node id that is to be added to the set. 
 		 */
 		virtual	void AddItem( const char * NodeId ) = 0;
-
-		/**
-		 * Get the number of items in the set. 
-		 * @return the number of items in the set. 
-		 */
-		virtual	unsigned int GetItemCount(  ) = 0;
 
 	};
 
@@ -20118,6 +20111,20 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Clears the current table and copies the items from a source table. 
+		 * @param src the table to copy 
+		 */
+		virtual	void Copy( ITable *src ) = 0;
+
+		/**
+		 * Adds an item to the table. The returned value is the id of the item within the table, 
+		 * which can be used to retrieve the item using GetItem(). 
+		 * @param item is the item that is to be added to the table 
+		 * @return the id of the added item in the table 
+		 */
+		virtual	rid AddItem( IObject *item ) = 0;
+
+		/**
 		 * Clears the table, and removes all items. If AddItem is called after Clear, the item 
 		 * ids will start over from 0 
 		 */
@@ -20148,12 +20155,11 @@ namespace SimplygonSDK
 		virtual	CountedPointer<ISelectionSet> FindSelectionSet( const char * name ) = 0;
 
 		/**
-		 * Adds an item to the table. The returned value is the id of the item within the table, 
-		 * which can be used to retrieve the item using GetItem(). 
-		 * @param item is the item that is to be added to the table 
-		 * @return the id of the added item in the table 
+		 * Sets an item in the table. The id must exist in the table. 
+		 * @param id is the id that is to be set 
+		 * @param item is the object set to the id 
 		 */
-		virtual	rid AddItem( IObject *item ) = 0;
+		virtual	void SetItem( rid id , IObject *item ) = 0;
 
 		/**
 		 * Returns the i:th item, using the id of the item 
@@ -20163,11 +20169,13 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IObject> GetItem( rid id ) = 0;
 
 		/**
-		 * Sets an item in the table. The id must exist in the table. 
-		 * @param id is the id that is to be set 
-		 * @param item is the object set to the id 
+		 * Finds the id of an item in the table, using the name. If multiple items have the 
+		 * same name, the first will be returned. If no item was found, the return will be 
+		 * -1. 
+		 * @param name is the string that is to be searched for 
+		 * @return the id of the found object, or -1 if no match was found 
 		 */
-		virtual	void SetItem( rid id , IObject *item ) = 0;
+		virtual	rid FindItemId( const char * name ) = 0;
 
 		/**
 		 * Finds the id of a selection set in the table, using the name. If multiple selection 
@@ -20186,13 +20194,11 @@ namespace SimplygonSDK
 		virtual	void RemoveSelectionSet( rid id ) = 0;
 
 		/**
-		 * Finds the id of an item in the table, using the name. If multiple items have the 
-		 * same name, the first will be returned. If no item was found, the return will be 
-		 * -1. 
-		 * @param name is the string that is to be searched for 
-		 * @return the id of the found object, or -1 if no match was found 
+		 * Removes an item, and invalidates the id. The id will not point at a valid item, 
+		 * until Clear is called and new items are added up until the id. 
+		 * @param id the id of the object that should be removed 
 		 */
-		virtual	rid FindItemId( const char * name ) = 0;
+		virtual	void RemoveItem( rid id ) = 0;
 
 		/**
 		 * Returns the number of selection sets in the table 
@@ -20201,25 +20207,12 @@ namespace SimplygonSDK
 		virtual	unsigned int GetSelectionSetCount(  ) = 0;
 
 		/**
-		 * Removes an item, and invalidates the id. The id will not point at a valid item, 
-		 * until Clear is called and new items are added up until the id. 
-		 * @param id the id of the object that should be removed 
-		 */
-		virtual	void RemoveItem( rid id ) = 0;
-
-		/**
 		 * Gets the number of item id:s in the table. If an item has been removed, using RemoveItem, 
 		 * the id is still counted in this method. GetIdsCount also equals the id that will 
 		 * be applied to the next item added to the table. 
 		 * @return the itemcount of the table 
 		 */
 		virtual	unsigned int GetItemsCount(  ) = 0;
-
-		/**
-		 * Clears the current table and copies the items from a source table. 
-		 * @param src the table to copy 
-		 */
-		virtual	void Copy( ITable *src ) = 0;
 
 		/**
 		 * Adds a selection set to the table. The returned value is the id of the selection 
@@ -20286,24 +20279,9 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
-		 * Changes the prefix path (drive, directory) in the texture, with the new one, if 
-		 * the current path matches the current_path_prefix. This method is useful when external 
-		 * textures are placed in a specific folder, which needs to be moved 
-		 * @param current_path_prefix the current prefix path, either relative or absolute 
-		 * @param new_path_prefix the new prefix path 
-		 */
-		virtual	void ChangeTexturePrefixPath( const char * current_path_prefix , const char * new_path_prefix ) = 0;
-
-		/**
 		 * Get the file path of the texture. @returns the texture file name 
 		 */
 		virtual	rstring GetFilePath(  ) = 0;
-
-		/**
-		 * Set the file path of the texture. 
-		 * @param texture_filename the texture file name 
-		 */
-		virtual	void SetFilePath( const char * value ) = 0;
 
 		/**
 		 * Set a named texture image data. If this is defined, it will be used instead of the 
@@ -20313,10 +20291,25 @@ namespace SimplygonSDK
 		virtual	void SetImageData( IImageData *value ) = 0;
 
 		/**
+		 * Changes the prefix path (drive, directory) in the texture, with the new one, if 
+		 * the current path matches the current_path_prefix. This method is useful when external 
+		 * textures are placed in a specific folder, which needs to be moved 
+		 * @param current_path_prefix the current prefix path, either relative or absolute 
+		 * @param new_path_prefix the new prefix path 
+		 */
+		virtual	void ChangeTexturePrefixPath( const char * current_path_prefix , const char * new_path_prefix ) = 0;
+
+		/**
 		 * Get a named texture image data. If this is defined, it will be used instead of the 
 		 * texture file defined in SetFilePath() @returns the texture object 
 		 */
 		virtual	CountedPointer<IImageData> GetImageData(  ) = 0;
+
+		/**
+		 * Set the file path of the texture. 
+		 * @param texture_filename the texture file name 
+		 */
+		virtual	void SetFilePath( const char * value ) = 0;
 
 	};
 
@@ -20375,6 +20368,21 @@ namespace SimplygonSDK
 				return static_cast<ITextureTable*>(ptr);
 			return NULL;
 			}
+		/**
+		 * Clears the current table and copies the items from a source table. 
+		 * @param src the table to copy 
+		 */
+		virtual	void Copy( ITable *src ) = 0;
+
+		/**
+		 * Finds the id of a texture in the table, using the texture name. If multiple textures 
+		 * have the same name, the first will be returned. If the texture was not found, the 
+		 * return will be -1. 
+		 * @param name the texture name to look for 
+		 * @return the texture id if found, -1 otherwise 
+		 */
+		virtual	rid FindTextureId( const char * name ) = 0;
+
 		/**
 		 * Changes the prefix path (drive, directory) of all matching texture paths in all 
 		 * the textures in the table, with the new one. This method is useful when external 
@@ -20482,27 +20490,12 @@ namespace SimplygonSDK
 		virtual	void RemoveItem( rid id ) = 0;
 
 		/**
-		 * Clears the current table and copies the items from a source table. 
-		 * @param src the table to copy 
-		 */
-		virtual	void Copy( ITable *src ) = 0;
-
-		/**
 		 * Adds a texture to the table. The returned value is the id of the texture within 
 		 * the table. 
 		 * @param texture the texture to add into the table 
 		 * @return the texture id of the texture in the table 
 		 */
 		virtual	rid AddTexture( ITexture *texture ) = 0;
-
-		/**
-		 * Finds the id of a texture in the table, using the texture name. If multiple textures 
-		 * have the same name, the first will be returned. If the texture was not found, the 
-		 * return will be -1. 
-		 * @param name the texture name to look for 
-		 * @return the texture id if found, -1 otherwise 
-		 */
-		virtual	rid FindTextureId( const char * name ) = 0;
 
 		/**
 		 * Returns the i:th texture, using the id of the texture 
@@ -20568,6 +20561,18 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Close any open file or stream, release any allocated data. 
+		 */
+		virtual	void Clear(  ) = 0;
+
+		/**
+		 * Set CapToPowerOfTwo. If set, the width and height of the loaded image will be capped 
+		 * to the closest power of two below the size of the image. 
+		 * @param value the desired CapToPowerOfTwo flag 
+		 */
+		virtual	void SetCapToPowerOfTwo( bool value ) = 0;
+
+		/**
 		 * Get MaxHeight. If set to a value above 0, the image that is higher will be rescaled 
 		 * to MaxHeight. 
 		 * @return the current MaxHeight 
@@ -20580,11 +20585,11 @@ namespace SimplygonSDK
 		virtual	bool RunImport(  ) = 0;
 
 		/**
-		 * Set CapToPowerOfTwo. If set, the width and height of the loaded image will be capped 
+		 * Get CapToPowerOfTwo. If set, the width and height of the loaded image will be capped 
 		 * to the closest power of two below the size of the image. 
-		 * @param value the desired CapToPowerOfTwo flag 
+		 * @return the current CapToPowerOfTwo flag 
 		 */
-		virtual	void SetCapToPowerOfTwo( bool value ) = 0;
+		virtual	bool GetCapToPowerOfTwo(  ) = 0;
 
 		/**
 		 * Set the override file extension. This is specified including the dot, eg ".tga" 
@@ -20593,9 +20598,10 @@ namespace SimplygonSDK
 		virtual	void SetExtensionOverride( const char * value ) = 0;
 
 		/**
-		 * Close any open file or stream, release any allocated data. 
+		 * Set the main import file path. This must always be set. 
+		 * @param value the desired main import file path 
 		 */
-		virtual	void Clear(  ) = 0;
+		virtual	void SetImportFilePath( const char * value ) = 0;
 
 		/**
 		 * Set/Get MaxWidth. If set to a value above 0, the image that is wider will be rescaled 
@@ -20605,11 +20611,11 @@ namespace SimplygonSDK
 		virtual	void SetMaxWidth( unsigned int value ) = 0;
 
 		/**
-		 * Get CapToPowerOfTwo. If set, the width and height of the loaded image will be capped 
-		 * to the closest power of two below the size of the image. 
-		 * @return the current CapToPowerOfTwo flag 
+		 * Get MaxWidth. If set to a value above 0, the image that is wider will be rescaled 
+		 * to MaxWidth. 
+		 * @return the current MaxWidth 
 		 */
-		virtual	bool GetCapToPowerOfTwo(  ) = 0;
+		virtual	unsigned int GetMaxWidth(  ) = 0;
 
 		/**
 		 * Set MaxHeight. If set to a value above 0, the image that is higher will be rescaled 
@@ -20646,29 +20652,16 @@ namespace SimplygonSDK
 		virtual	unsigned int GetNumberOfChannels(  ) = 0;
 
 		/**
-		 * Set the main import file path. This must always be set. 
-		 * @param value the desired main import file path 
+		 * Get the main import file path. This must always be set. 
+		 * @return the main import file path 
 		 */
-		virtual	void SetImportFilePath( const char * value ) = 0;
+		virtual	rstring GetImportFilePath(  ) = 0;
 
 		/**
 		 * Get the override file extension. This is specified including the dot, eg ".tga". 
 		 * @return the current override file extension 
 		 */
 		virtual	rstring GetExtensionOverride(  ) = 0;
-
-		/**
-		 * Get MaxWidth. If set to a value above 0, the image that is wider will be rescaled 
-		 * to MaxWidth. 
-		 * @return the current MaxWidth 
-		 */
-		virtual	unsigned int GetMaxWidth(  ) = 0;
-
-		/**
-		 * Get the main import file path. This must always be set. 
-		 * @return the main import file path 
-		 */
-		virtual	rstring GetImportFilePath(  ) = 0;
 
 		/**
 		 * After RunImport(), returns the BitsPerPixel (8bpp-64bpp). If divided by NumberOfChannels, 
@@ -20742,13 +20735,6 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
-		 * Get the mesh path in the scene of the geometry at the specified index. 
-		 * @param GeometryIndex the index of the geometry in the list of mapped geometries. 
-		 * @return the path in the scene of the mesh that has this geometry 
-		 */
-		virtual	rstring GetScenePathOfGeometry( rid GeometryIndex ) = 0;
-
-		/**
 		 * Clear the MappingImageMeshData 
 		 */
 		virtual	void Clear(  ) = 0;
@@ -20758,6 +20744,13 @@ namespace SimplygonSDK
 		 * @return the number of mapped geometries in the mapping image 
 		 */
 		virtual	unsigned int GetMappedGeometriesCount(  ) = 0;
+
+		/**
+		 * Get the mesh path in the scene of the geometry at the specified index. 
+		 * @param GeometryIndex the index of the geometry in the list of mapped geometries. 
+		 * @return the path in the scene of the mesh that has this geometry 
+		 */
+		virtual	rstring GetScenePathOfGeometry( rid GeometryIndex ) = 0;
 
 		/**
 		 * Get the Id of the first triangle of the geometry at the specified index. 
@@ -20840,6 +20833,22 @@ namespace SimplygonSDK
 		virtual	bool LoadGeometryData( IGeometryData *geom , IMaterialTable *materials ) = 0;
 
 		/**
+		 * Creates a previewer with the specified window dimensions. 
+		 * @param _width the window width 
+		 * @param _height the window height 
+		 * @return true if the previewer was successfully created 
+		 */
+		virtual	bool CreatePreviewer( int _width , int _height ) = 0;
+
+		/**
+		 * Loads a scene into the previewer. The material should have a shading network attached 
+		 * to it. 
+		 * @param scene the scene to preview 
+		 * @return true if the scene was successfully loaded 
+		 */
+		virtual	bool LoadGeometryDataWithMaterialShadingNetwork( IScene *_scene ) = 0;
+
+		/**
 		 * Render from each camera view in the camera target direction specified in the selection 
 		 * set with the scene cameras and stores the frame to the file path specified. 
 		 * @param cameraSelectionSetID the ID of the selection set with the scene cameras to 
@@ -20854,22 +20863,6 @@ namespace SimplygonSDK
 		 * @param flag true if render mode should be enabled 
 		 */
 		virtual	void SetRenderWireFrameMode( bool flag ) = 0;
-
-		/**
-		 * Loads a scene into the previewer. The material should have a shading network attached 
-		 * to it. 
-		 * @param scene the scene to preview 
-		 * @return true if the scene was successfully loaded 
-		 */
-		virtual	bool LoadGeometryDataWithMaterialShadingNetwork( IScene *_scene ) = 0;
-
-		/**
-		 * Creates a previewer with the specified window dimensions. 
-		 * @param _width the window width 
-		 * @param _height the window height 
-		 * @return true if the previewer was successfully created 
-		 */
-		virtual	bool CreatePreviewer( int _width , int _height ) = 0;
 
 	};
 
@@ -20938,6 +20931,18 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
 
 		/**
+		 * Get the name of a parameter 
+		 * @return the name of the parameter 
+		 */
+		virtual	rstring GetParameterName( rid parameter_id ) = 0;
+
+		/**
+		 * Get the input count 
+		 * @return the input count 
+		 */
+		virtual	unsigned int GetParameterCount(  ) = 0;
+
+		/**
 		 * Set the default parameter values 
 		 * @param parameter_id is the id of the input to be set. 
 		 * @param r is the value of red to which the default input will be set. 
@@ -20967,18 +20972,6 @@ namespace SimplygonSDK
 		 * @return the Blue default parameter value 
 		 */
 		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
-
-		/**
-		 * Get the input count 
-		 * @return the input count 
-		 */
-		virtual	unsigned int GetParameterCount(  ) = 0;
-
-		/**
-		 * Get the name of a parameter 
-		 * @return the name of the parameter 
-		 */
-		virtual	rstring GetParameterName( rid parameter_id ) = 0;
 
 	};
 
@@ -21037,6 +21030,22 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the default node inputs 
+		 * @param input_id is the id of the input to be fetched. 
+		 * @return the input node 
+		 */
+		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
+
+		/**
+		 * Get if the parameter is inputable. If true, a different node can be set as this 
+		 * parameters value. If false, the parameter can only be set manually and not through 
+		 * a node input. 
+		 * @param param_id is the id of the parameter to be checked. 
+		 * @return true if parameter is inputable, false if it is not 
+		 */
+		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
+
+		/**
 		 * Set the default parameter values 
 		 * @param parameter_id is the id of the input to be set. 
 		 * @param r is the value of red to which the default input will be set. 
@@ -21047,13 +21056,10 @@ namespace SimplygonSDK
 		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
 
 		/**
-		 * Get if the parameter is inputable. If true, a different node can be set as this 
-		 * parameters value. If false, the parameter can only be set manually and not through 
-		 * a node input. 
-		 * @param param_id is the id of the parameter to be checked. 
-		 * @return true if parameter is inputable, false if it is not 
+		 * Get the input count 
+		 * @return the input count 
 		 */
-		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
+		virtual	unsigned int GetParameterCount(  ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -21068,13 +21074,6 @@ namespace SimplygonSDK
 		 * @return the Green default parameter value 
 		 */
 		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
-
-		/**
-		 * Get the default node inputs 
-		 * @param input_id is the id of the input to be fetched. 
-		 * @return the input node 
-		 */
-		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
 
 		/**
 		 * Get the name of a parameter 
@@ -21102,12 +21101,6 @@ namespace SimplygonSDK
 		 * @param input_node is the node to be set as input 
 		 */
 		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
-
-		/**
-		 * Get the input count 
-		 * @return the input count 
-		 */
-		virtual	unsigned int GetParameterCount(  ) = 0;
 
 	};
 
@@ -21165,6 +21158,20 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Alpha default parameter value 
+		 */
+		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Blue default parameter value 
+		 */
+		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+
+		/**
 		 * Gets the TileV value, which is multiplied into the U-coordinate when sampling 
 		 * @return the current value 
 		 */
@@ -21184,11 +21191,11 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
 
 		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Blue default parameter value 
+		 * Sets the path of the texture file for casting. If both this and texture image is 
+		 * set, the casting uses the texture image. 
+		 * @param value is the path the texture will be read from. 
 		 */
-		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+		virtual	void SetTextureName( const char * value ) = 0;
 
 		/**
 		 * Set the name of the texture coordinate level. If not set, the material uses the 
@@ -21212,11 +21219,11 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
 
 		/**
-		 * Sets the path of the texture file for casting. If both this and texture image is 
+		 * Gets the path of the texture file for casting. If both this and texture image is 
 		 * set, the casting uses the texture image. 
-		 * @param value is the path the texture will be read from. 
+		 * @return the path the texture will be read from. 
 		 */
-		virtual	void SetTextureName( const char * value ) = 0;
+		virtual	rstring GetTextureName(  ) = 0;
 
 		/**
 		 * Get the name of the texture coordinate level. If not set, the material uses the 
@@ -21289,13 +21296,6 @@ namespace SimplygonSDK
 		virtual	unsigned int GetParameterCount(  ) = 0;
 
 		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Alpha default parameter value 
-		 */
-		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
-
-		/**
 		 * Sets the TileU value, which is multiplied into the U-coordinate when sampling 
 		 * @param value is the new value 
 		 */
@@ -21306,13 +21306,6 @@ namespace SimplygonSDK
 		 * @return the current value 
 		 */
 		virtual	real GetTileU(  ) = 0;
-
-		/**
-		 * Gets the path of the texture file for casting. If both this and texture image is 
-		 * set, the casting uses the texture image. 
-		 * @return the path the texture will be read from. 
-		 */
-		virtual	rstring GetTextureName(  ) = 0;
 
 		/**
 		 * Sets the TileV value, which is multiplied into the U-coordinate when sampling 
@@ -21379,6 +21372,19 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the component index in the input color that Blue component will be copied from 
+		 * @returns the input component index. Allowed values are 0:R 1:G 2:B 3:A 
+		 */
+		virtual	unsigned int GetBlueComponent(  ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Red default parameter value 
+		 */
+		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
+
+		/**
 		 * Get the input count 
 		 * @return the input count 
 		 */
@@ -21404,10 +21410,10 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
 
 		/**
-		 * Get the component index in the input color that Blue component will be copied from 
-		 * @returns the input component index. Allowed values are 0:R 1:G 2:B 3:A 
+		 * Set the component index in the input color that Alpha component will be copied from 
+		 * @param value the input component index. Allowed values are 0:R 1:G 2:B 3:A 
 		 */
-		virtual	unsigned int GetBlueComponent(  ) = 0;
+		virtual	void SetAlphaComponent( unsigned int value ) = 0;
 
 		/**
 		 * Get the default node inputs 
@@ -21450,12 +21456,6 @@ namespace SimplygonSDK
 		virtual	unsigned int GetRedComponent(  ) = 0;
 
 		/**
-		 * Set the component index in the input color that Alpha component will be copied from 
-		 * @param value the input component index. Allowed values are 0:R 1:G 2:B 3:A 
-		 */
-		virtual	void SetAlphaComponent( unsigned int value ) = 0;
-
-		/**
 		 * Set the default node inputs 
 		 * @param input_id is the id of the input to be set. 
 		 * @param input_node is the node to be set as input 
@@ -21475,19 +21475,6 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Red default parameter value 
-		 */
-		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
-
-		/**
-		 * Set the component index in the input color that Green component will be copied from 
-		 * @param value the input component index. Allowed values are 0:R 1:G 2:B 3:A 
-		 */
-		virtual	void SetGreenComponent( unsigned int value ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Blue default parameter value 
 		 */
 		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
@@ -21498,6 +21485,12 @@ namespace SimplygonSDK
 		 * @return the Alpha default parameter value 
 		 */
 		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
+
+		/**
+		 * Set the component index in the input color that Green component will be copied from 
+		 * @param value the input component index. Allowed values are 0:R 1:G 2:B 3:A 
+		 */
+		virtual	void SetGreenComponent( unsigned int value ) = 0;
 
 	};
 
@@ -21564,6 +21557,12 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
 
 		/**
+		 * Get the name of a parameter 
+		 * @return the name of the parameter 
+		 */
+		virtual	rstring GetParameterName( rid parameter_id ) = 0;
+
+		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Blue default parameter value 
@@ -21578,6 +21577,12 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
 
 		virtual	void SetColor( real r , real g , real b , real a ) = 0;
+
+		/**
+		 * Get the input count 
+		 * @return the input count 
+		 */
+		virtual	unsigned int GetParameterCount(  ) = 0;
 
 		/**
 		 * Set the default parameter values 
@@ -21595,18 +21600,6 @@ namespace SimplygonSDK
 		 * @return the Red default parameter value 
 		 */
 		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
-
-		/**
-		 * Get the input count 
-		 * @return the input count 
-		 */
-		virtual	unsigned int GetParameterCount(  ) = 0;
-
-		/**
-		 * Get the name of a parameter 
-		 * @return the name of the parameter 
-		 */
-		virtual	rstring GetParameterName( rid parameter_id ) = 0;
 
 	};
 
@@ -21666,20 +21659,6 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Green default parameter value 
-		 */
-		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
-
-		/**
-		 * Set the default node inputs 
-		 * @param input_id is the id of the input to be set. 
-		 * @param input_node is the node to be set as input 
-		 */
-		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
-
-		/**
 		 * Get the name of a parameter 
 		 * @return the name of the parameter 
 		 */
@@ -21695,16 +21674,16 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Red default parameter value 
+		 * @return the Green default parameter value 
 		 */
-		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
 
 		/**
-		 * Get the default node inputs 
-		 * @param input_id is the id of the input to be fetched. 
-		 * @return the input node 
+		 * Set the default node inputs 
+		 * @param input_id is the id of the input to be set. 
+		 * @param input_node is the node to be set as input 
 		 */
-		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
+		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
 
 		/**
 		 * Set the default parameter values 
@@ -21717,11 +21696,18 @@ namespace SimplygonSDK
 		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
 
 		/**
+		 * Get the default node inputs 
+		 * @param input_id is the id of the input to be fetched. 
+		 * @return the input node 
+		 */
+		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
+
+		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Blue default parameter value 
+		 * @return the Red default parameter value 
 		 */
-		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
 
 		/**
 		 * Get if the parameter is inputable. If true, a different node can be set as this 
@@ -21731,6 +21717,13 @@ namespace SimplygonSDK
 		 * @return true if parameter is inputable, false if it is not 
 		 */
 		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Blue default parameter value 
+		 */
+		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
 
 		/**
 		 * Get the input count 
@@ -21797,11 +21790,10 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
-		 * Get the default node inputs 
-		 * @param input_id is the id of the input to be fetched. 
-		 * @return the input node 
+		 * Get the name of a parameter 
+		 * @return the name of the parameter 
 		 */
-		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
+		virtual	rstring GetParameterName( rid parameter_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -21811,11 +21803,25 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
 
 		/**
+		 * Get the default node inputs 
+		 * @param input_id is the id of the input to be fetched. 
+		 * @return the input node 
+		 */
+		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
+
+		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Alpha default parameter value 
 		 */
 		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
+
+		/**
+		 * Set the default node inputs 
+		 * @param input_id is the id of the input to be set. 
+		 * @param input_node is the node to be set as input 
+		 */
+		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
 
 		/**
 		 * Get if the parameter is inputable. If true, a different node can be set as this 
@@ -21827,20 +21833,6 @@ namespace SimplygonSDK
 		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
 
 		/**
-		 * Set the default node inputs 
-		 * @param input_id is the id of the input to be set. 
-		 * @param input_node is the node to be set as input 
-		 */
-		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Red default parameter value 
-		 */
-		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
-
-		/**
 		 * Get the input count 
 		 * @return the input count 
 		 */
@@ -21849,9 +21841,9 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Green default parameter value 
+		 * @return the Red default parameter value 
 		 */
-		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
 
 		/**
 		 * Set the default parameter values 
@@ -21864,10 +21856,11 @@ namespace SimplygonSDK
 		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
 
 		/**
-		 * Get the name of a parameter 
-		 * @return the name of the parameter 
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Green default parameter value 
 		 */
-		virtual	rstring GetParameterName( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
 
 	};
 
@@ -21928,6 +21921,22 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the default parameter values 
+		 * @param parameter_id is the id of the input to be set. 
+		 * @param r is the value of red to which the default input will be set. 
+		 * @param g is the value of green to which the default input will be set. 
+		 * @param b is the value of blue to which the default input will be set. 
+		 * @param a is the value of alpha to which the default input will be set. 
+		 */
+		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
+
+		/**
+		 * Get the input count 
+		 * @return the input count 
+		 */
+		virtual	unsigned int GetParameterCount(  ) = 0;
+
+		/**
 		 * Get the name of a parameter 
 		 * @return the name of the parameter 
 		 */
@@ -21957,23 +21966,6 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
 
 		/**
-		 * Set the default parameter values 
-		 * @param parameter_id is the id of the input to be set. 
-		 * @param r is the value of red to which the default input will be set. 
-		 * @param g is the value of green to which the default input will be set. 
-		 * @param b is the value of blue to which the default input will be set. 
-		 * @param a is the value of alpha to which the default input will be set. 
-		 */
-		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
-
-		/**
-		 * Get the default node inputs 
-		 * @param input_id is the id of the input to be fetched. 
-		 * @return the input node 
-		 */
-		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
-
-		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Red default parameter value 
@@ -21981,10 +21973,11 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
 
 		/**
-		 * Get the input count 
-		 * @return the input count 
+		 * Get the default node inputs 
+		 * @param input_id is the id of the input to be fetched. 
+		 * @return the input node 
 		 */
-		virtual	unsigned int GetParameterCount(  ) = 0;
+		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -22059,11 +22052,28 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the default parameter values 
+		 * @param parameter_id is the id of the input to be set. 
+		 * @param r is the value of red to which the default input will be set. 
+		 * @param g is the value of green to which the default input will be set. 
+		 * @param b is the value of blue to which the default input will be set. 
+		 * @param a is the value of alpha to which the default input will be set. 
+		 */
+		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
+
+		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Green default parameter value 
 		 */
 		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Blue default parameter value 
+		 */
+		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -22106,23 +22116,6 @@ namespace SimplygonSDK
 		 * @return the name of the parameter 
 		 */
 		virtual	rstring GetParameterName( rid parameter_id ) = 0;
-
-		/**
-		 * Set the default parameter values 
-		 * @param parameter_id is the id of the input to be set. 
-		 * @param r is the value of red to which the default input will be set. 
-		 * @param g is the value of green to which the default input will be set. 
-		 * @param b is the value of blue to which the default input will be set. 
-		 * @param a is the value of alpha to which the default input will be set. 
-		 */
-		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Blue default parameter value 
-		 */
-		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -22190,6 +22183,20 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the default node inputs 
+		 * @param input_id is the id of the input to be fetched. 
+		 * @return the input node 
+		 */
+		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Blue default parameter value 
+		 */
+		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+
+		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Green default parameter value 
@@ -22208,16 +22215,15 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Blue default parameter value 
+		 * @return the Alpha default parameter value 
 		 */
-		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
 
 		/**
-		 * Get the default node inputs 
-		 * @param input_id is the id of the input to be fetched. 
-		 * @return the input node 
+		 * Get the input count 
+		 * @return the input count 
 		 */
-		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
+		virtual	unsigned int GetParameterCount(  ) = 0;
 
 		/**
 		 * Set the default node inputs 
@@ -22231,12 +22237,6 @@ namespace SimplygonSDK
 		 * @return the name of the parameter 
 		 */
 		virtual	rstring GetParameterName( rid parameter_id ) = 0;
-
-		/**
-		 * Get the input count 
-		 * @return the input count 
-		 */
-		virtual	unsigned int GetParameterCount(  ) = 0;
 
 		/**
 		 * Set the default parameter values 
@@ -22254,13 +22254,6 @@ namespace SimplygonSDK
 		 * @return the Red default parameter value 
 		 */
 		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Alpha default parameter value 
-		 */
-		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
 
 	};
 
@@ -22321,11 +22314,24 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the input count 
+		 * @return the input count 
+		 */
+		virtual	unsigned int GetParameterCount(  ) = 0;
+
+		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Blue default parameter value 
 		 */
 		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Alpha default parameter value 
+		 */
+		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
 
 		/**
 		 * Get if the parameter is inputable. If true, a different node can be set as this 
@@ -22337,11 +22343,11 @@ namespace SimplygonSDK
 		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
 
 		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Alpha default parameter value 
+		 * Set the default node inputs 
+		 * @param input_id is the id of the input to be set. 
+		 * @param input_node is the node to be set as input 
 		 */
-		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
+		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -22357,26 +22363,6 @@ namespace SimplygonSDK
 		virtual	rstring GetParameterName( rid parameter_id ) = 0;
 
 		/**
-		 * Get the input count 
-		 * @return the input count 
-		 */
-		virtual	unsigned int GetParameterCount(  ) = 0;
-
-		/**
-		 * Set the default node inputs 
-		 * @param input_id is the id of the input to be set. 
-		 * @param input_node is the node to be set as input 
-		 */
-		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
-
-		/**
-		 * Get the default node inputs 
-		 * @param input_id is the id of the input to be fetched. 
-		 * @return the input node 
-		 */
-		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
-
-		/**
 		 * Set the default parameter values 
 		 * @param parameter_id is the id of the input to be set. 
 		 * @param r is the value of red to which the default input will be set. 
@@ -22385,6 +22371,13 @@ namespace SimplygonSDK
 		 * @param a is the value of alpha to which the default input will be set. 
 		 */
 		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
+
+		/**
+		 * Get the default node inputs 
+		 * @param input_id is the id of the input to be fetched. 
+		 * @return the input node 
+		 */
+		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -22452,6 +22445,19 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the input count 
+		 * @return the input count 
+		 */
+		virtual	unsigned int GetParameterCount(  ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Green default parameter value 
+		 */
+		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
+
+		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Red default parameter value 
@@ -22496,12 +22502,6 @@ namespace SimplygonSDK
 		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
 
 		/**
-		 * Get the input count 
-		 * @return the input count 
-		 */
-		virtual	unsigned int GetParameterCount(  ) = 0;
-
-		/**
 		 * Get the name of a parameter 
 		 * @return the name of the parameter 
 		 */
@@ -22516,13 +22516,6 @@ namespace SimplygonSDK
 		 * @param a is the value of alpha to which the default input will be set. 
 		 */
 		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Green default parameter value 
-		 */
-		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
 
 	};
 
@@ -22583,6 +22576,22 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the default parameter values 
+		 * @param parameter_id is the id of the input to be set. 
+		 * @param r is the value of red to which the default input will be set. 
+		 * @param g is the value of green to which the default input will be set. 
+		 * @param b is the value of blue to which the default input will be set. 
+		 * @param a is the value of alpha to which the default input will be set. 
+		 */
+		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
+
+		/**
+		 * Get the name of a parameter 
+		 * @return the name of the parameter 
+		 */
+		virtual	rstring GetParameterName( rid parameter_id ) = 0;
+
+		/**
 		 * Get the default node inputs 
 		 * @param input_id is the id of the input to be fetched. 
 		 * @return the input node 
@@ -22605,12 +22614,6 @@ namespace SimplygonSDK
 		virtual	unsigned int GetParameterCount(  ) = 0;
 
 		/**
-		 * Get the name of a parameter 
-		 * @return the name of the parameter 
-		 */
-		virtual	rstring GetParameterName( rid parameter_id ) = 0;
-
-		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Red default parameter value 
@@ -22623,16 +22626,6 @@ namespace SimplygonSDK
 		 * @return the Green default parameter value 
 		 */
 		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
-
-		/**
-		 * Set the default parameter values 
-		 * @param parameter_id is the id of the input to be set. 
-		 * @param r is the value of red to which the default input will be set. 
-		 * @param g is the value of green to which the default input will be set. 
-		 * @param b is the value of blue to which the default input will be set. 
-		 * @param a is the value of alpha to which the default input will be set. 
-		 */
-		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -22715,10 +22708,29 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get if the parameter is inputable. If true, a different node can be set as this 
+		 * parameters value. If false, the parameter can only be set manually and not through 
+		 * a node input. 
+		 * @param param_id is the id of the parameter to be checked. 
+		 * @return true if parameter is inputable, false if it is not 
+		 */
+		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
+
+		/**
 		 * Get the name of a parameter 
 		 * @return the name of the parameter 
 		 */
 		virtual	rstring GetParameterName( rid parameter_id ) = 0;
+
+		/**
+		 * Set the default parameter values 
+		 * @param parameter_id is the id of the input to be set. 
+		 * @param r is the value of red to which the default input will be set. 
+		 * @param g is the value of green to which the default input will be set. 
+		 * @param b is the value of blue to which the default input will be set. 
+		 * @param a is the value of alpha to which the default input will be set. 
+		 */
+		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -22742,29 +22754,10 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
 
 		/**
-		 * Get if the parameter is inputable. If true, a different node can be set as this 
-		 * parameters value. If false, the parameter can only be set manually and not through 
-		 * a node input. 
-		 * @param param_id is the id of the parameter to be checked. 
-		 * @return true if parameter is inputable, false if it is not 
-		 */
-		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
-
-		/**
 		 * Get the input count 
 		 * @return the input count 
 		 */
 		virtual	unsigned int GetParameterCount(  ) = 0;
-
-		/**
-		 * Set the default parameter values 
-		 * @param parameter_id is the id of the input to be set. 
-		 * @param r is the value of red to which the default input will be set. 
-		 * @param g is the value of green to which the default input will be set. 
-		 * @param b is the value of blue to which the default input will be set. 
-		 * @param a is the value of alpha to which the default input will be set. 
-		 */
-		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -22855,6 +22848,22 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
 
 		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Blue default parameter value 
+		 */
+		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+
+		/**
+		 * Get if the parameter is inputable. If true, a different node can be set as this 
+		 * parameters value. If false, the parameter can only be set manually and not through 
+		 * a node input. 
+		 * @param param_id is the id of the parameter to be checked. 
+		 * @return true if parameter is inputable, false if it is not 
+		 */
+		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
+
+		/**
 		 * Get the input count 
 		 * @return the input count 
 		 */
@@ -22880,18 +22889,15 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Blue default parameter value 
+		 * @return the Alpha default parameter value 
 		 */
-		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
 
 		/**
-		 * Get if the parameter is inputable. If true, a different node can be set as this 
-		 * parameters value. If false, the parameter can only be set manually and not through 
-		 * a node input. 
-		 * @param param_id is the id of the parameter to be checked. 
-		 * @return true if parameter is inputable, false if it is not 
+		 * Get the name of a parameter 
+		 * @return the name of the parameter 
 		 */
-		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
+		virtual	rstring GetParameterName( rid parameter_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -22901,24 +22907,11 @@ namespace SimplygonSDK
 		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
 
 		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Alpha default parameter value 
-		 */
-		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
-
-		/**
 		 * Set the default node inputs 
 		 * @param input_id is the id of the input to be set. 
 		 * @param input_node is the node to be set as input 
 		 */
 		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
-
-		/**
-		 * Get the name of a parameter 
-		 * @return the name of the parameter 
-		 */
-		virtual	rstring GetParameterName( rid parameter_id ) = 0;
 
 	};
 
@@ -22983,6 +22976,19 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Red default parameter value 
+		 */
+		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
+
+		/**
+		 * Get the name of a parameter 
+		 * @return the name of the parameter 
+		 */
+		virtual	rstring GetParameterName( rid parameter_id ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Alpha default parameter value 
 		 */
 		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
@@ -23001,12 +23007,6 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
 
 		/**
-		 * Get the name of a parameter 
-		 * @return the name of the parameter 
-		 */
-		virtual	rstring GetParameterName( rid parameter_id ) = 0;
-
-		/**
 		 * Set the default parameter values 
 		 * @param parameter_id is the id of the input to be set. 
 		 * @param r is the value of red to which the default input will be set. 
@@ -23019,9 +23019,16 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Red default parameter value 
+		 * @return the Green default parameter value 
 		 */
-		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Blue default parameter value 
+		 */
+		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
 
 		/**
 		 * Get if the parameter is inputable. If true, a different node can be set as this 
@@ -23038,20 +23045,6 @@ namespace SimplygonSDK
 		 * @param input_node is the node to be set as input 
 		 */
 		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Green default parameter value 
-		 */
-		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Blue default parameter value 
-		 */
-		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
 
 	};
 
@@ -23111,6 +23104,20 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Gets the vertex color index. This is the vertex color field in the geometry which 
+		 * will be used for casting with this node. 
+		 * @return the vertex color set. 
+		 */
+		virtual	rstring GetVertexColorSet(  ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Red default parameter value 
+		 */
+		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
+
+		/**
 		 * DEPRECATED: Use VertexColorSet instead. Sets the vertex color index. This is the 
 		 * vertex color field in the geometry which will be used for casting with this node. 
 		 * @param value vertex color index which will be used. 
@@ -23146,13 +23153,6 @@ namespace SimplygonSDK
 		virtual	void SetVertexColorSet( const char * value ) = 0;
 
 		/**
-		 * Gets the vertex color index. This is the vertex color field in the geometry which 
-		 * will be used for casting with this node. 
-		 * @return the vertex color set. 
-		 */
-		virtual	rstring GetVertexColorSet(  ) = 0;
-
-		/**
 		 * Get the input count 
 		 * @return the input count 
 		 */
@@ -23173,13 +23173,6 @@ namespace SimplygonSDK
 		 * @param a is the value of alpha to which the default input will be set. 
 		 */
 		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Red default parameter value 
-		 */
-		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -23247,6 +23240,23 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the default parameter values 
+		 * @param parameter_id is the id of the input to be set. 
+		 * @param r is the value of red to which the default input will be set. 
+		 * @param g is the value of green to which the default input will be set. 
+		 * @param b is the value of blue to which the default input will be set. 
+		 * @param a is the value of alpha to which the default input will be set. 
+		 */
+		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
+
+		/**
+		 * Get the default node inputs 
+		 * @param input_id is the id of the input to be fetched. 
+		 * @return the input node 
+		 */
+		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
+
+		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
 		 * @return the Alpha default parameter value 
@@ -23275,14 +23285,11 @@ namespace SimplygonSDK
 		virtual	unsigned int GetParameterCount(  ) = 0;
 
 		/**
-		 * Set the default parameter values 
-		 * @param parameter_id is the id of the input to be set. 
-		 * @param r is the value of red to which the default input will be set. 
-		 * @param g is the value of green to which the default input will be set. 
-		 * @param b is the value of blue to which the default input will be set. 
-		 * @param a is the value of alpha to which the default input will be set. 
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Red default parameter value 
 		 */
-		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
+		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -23290,13 +23297,6 @@ namespace SimplygonSDK
 		 * @return the Green default parameter value 
 		 */
 		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Red default parameter value 
-		 */
-		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -23311,13 +23311,6 @@ namespace SimplygonSDK
 		 * @param input_node is the node to be set as input 
 		 */
 		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
-
-		/**
-		 * Get the default node inputs 
-		 * @param input_id is the id of the input to be fetched. 
-		 * @return the input node 
-		 */
-		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
 
 	};
 
@@ -23382,6 +23375,18 @@ namespace SimplygonSDK
 				return static_cast<IShadingCustomNode*>(ptr);
 			return NULL;
 			}
+		virtual	unsigned int GetInputCount(  ) = 0;
+
+		/**
+		 * Set the default parameter values 
+		 * @param parameter_id is the id of the input to be set. 
+		 * @param r is the value of red to which the default input will be set. 
+		 * @param g is the value of green to which the default input will be set. 
+		 * @param b is the value of blue to which the default input will be set. 
+		 * @param a is the value of alpha to which the default input will be set. 
+		 */
+		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
+
 		/**
 		 * Set the default node inputs 
 		 * @param input_id is the id of the input to be set. 
@@ -23412,15 +23417,6 @@ namespace SimplygonSDK
 		 */
 		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
 
-		virtual	unsigned int GetInputCount(  ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Red default parameter value 
-		 */
-		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
-
 		/**
 		 * Get if the parameter is inputable. If true, a different node can be set as this 
 		 * parameters value. If false, the parameter can only be set manually and not through 
@@ -23433,9 +23429,9 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Alpha default parameter value 
+		 * @return the Red default parameter value 
 		 */
-		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
 
 		/**
 		 * Get the input count 
@@ -23444,20 +23440,17 @@ namespace SimplygonSDK
 		virtual	unsigned int GetParameterCount(  ) = 0;
 
 		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Alpha default parameter value 
+		 */
+		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
+
+		/**
 		 * Get the name of a parameter 
 		 * @return the name of the parameter 
 		 */
 		virtual	rstring GetParameterName( rid parameter_id ) = 0;
-
-		/**
-		 * Set the default parameter values 
-		 * @param parameter_id is the id of the input to be set. 
-		 * @param r is the value of red to which the default input will be set. 
-		 * @param g is the value of green to which the default input will be set. 
-		 * @param b is the value of blue to which the default input will be set. 
-		 * @param a is the value of alpha to which the default input will be set. 
-		 */
-		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
 
 	};
 
@@ -23521,6 +23514,15 @@ namespace SimplygonSDK
 				return static_cast<IShadingLayeredBlendNode*>(ptr);
 			return NULL;
 			}
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Green default parameter value 
+		 */
+		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
+
+		virtual	int GetPerInputBlendType( int _input ) = 0;
+
 		virtual	unsigned int GetInputCount(  ) = 0;
 
 		virtual	void SetPerInputBlendType( int _input , int _blendType ) = 0;
@@ -23558,7 +23560,12 @@ namespace SimplygonSDK
 		 */
 		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
 
-		virtual	int GetPerInputBlendType( int _input ) = 0;
+		/**
+		 * Get the default node inputs 
+		 * @param input_id is the id of the input to be fetched. 
+		 * @return the input node 
+		 */
+		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
 
 		virtual	void SetInputCount( unsigned int value ) = 0;
 
@@ -23587,20 +23594,6 @@ namespace SimplygonSDK
 		 * @return true if parameter is inputable, false if it is not 
 		 */
 		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
-
-		/**
-		 * Get the default node inputs 
-		 * @param input_id is the id of the input to be fetched. 
-		 * @return the input node 
-		 */
-		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Green default parameter value 
-		 */
-		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
 
 	};
 
@@ -23660,33 +23653,6 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
-		 * Get the name of a parameter 
-		 * @return the name of the parameter 
-		 */
-		virtual	rstring GetParameterName( rid parameter_id ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Alpha default parameter value 
-		 */
-		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
-
-		/**
-		 * Set the default node inputs 
-		 * @param input_id is the id of the input to be set. 
-		 * @param input_node is the node to be set as input 
-		 */
-		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
-
-		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Green default parameter value 
-		 */
-		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
-
-		/**
 		 * Get if the parameter is inputable. If true, a different node can be set as this 
 		 * parameters value. If false, the parameter can only be set manually and not through 
 		 * a node input. 
@@ -23696,10 +23662,24 @@ namespace SimplygonSDK
 		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
 
 		/**
-		 * Get the input count 
-		 * @return the input count 
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Alpha default parameter value 
 		 */
-		virtual	unsigned int GetParameterCount(  ) = 0;
+		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
+
+		/**
+		 * Get the name of a parameter 
+		 * @return the name of the parameter 
+		 */
+		virtual	rstring GetParameterName( rid parameter_id ) = 0;
+
+		/**
+		 * Set the default node inputs 
+		 * @param input_id is the id of the input to be set. 
+		 * @param input_node is the node to be set as input 
+		 */
+		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
 
 		/**
 		 * Get the default node inputs 
@@ -23711,9 +23691,15 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Red default parameter value 
+		 * @return the Green default parameter value 
 		 */
-		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterGreen( rid parameter_id ) = 0;
+
+		/**
+		 * Get the input count 
+		 * @return the input count 
+		 */
+		virtual	unsigned int GetParameterCount(  ) = 0;
 
 		/**
 		 * Set the default parameter values 
@@ -23724,6 +23710,13 @@ namespace SimplygonSDK
 		 * @param a is the value of alpha to which the default input will be set. 
 		 */
 		virtual	void SetDefaultParameter( rid parameter_id , real r , real g , real b , real a ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Red default parameter value 
+		 */
+		virtual	real GetDefaultParameterRed( rid parameter_id ) = 0;
 
 		/**
 		 * Get the default parameter values 
@@ -23790,6 +23783,20 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get the default node inputs 
+		 * @param input_id is the id of the input to be fetched. 
+		 * @return the input node 
+		 */
+		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
+
+		/**
+		 * Get the default parameter values 
+		 * @param parameter_id is the id of the input to be fetched. 
+		 * @return the Blue default parameter value 
+		 */
+		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+
+		/**
 		 * Get the input count 
 		 * @return the input count 
 		 */
@@ -23812,9 +23819,9 @@ namespace SimplygonSDK
 		/**
 		 * Get the default parameter values 
 		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Blue default parameter value 
+		 * @return the Alpha default parameter value 
 		 */
-		virtual	real GetDefaultParameterBlue( rid parameter_id ) = 0;
+		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
 
 		/**
 		 * Set the default node inputs 
@@ -23824,26 +23831,6 @@ namespace SimplygonSDK
 		virtual	bool SetInput( rid input_id , IShadingNode *input_node ) = 0;
 
 		/**
-		 * Get the default parameter values 
-		 * @param parameter_id is the id of the input to be fetched. 
-		 * @return the Alpha default parameter value 
-		 */
-		virtual	real GetDefaultParameterAlpha( rid parameter_id ) = 0;
-
-		/**
-		 * Get the name of a parameter 
-		 * @return the name of the parameter 
-		 */
-		virtual	rstring GetParameterName( rid parameter_id ) = 0;
-
-		/**
-		 * Get the default node inputs 
-		 * @param input_id is the id of the input to be fetched. 
-		 * @return the input node 
-		 */
-		virtual	CountedPointer<IShadingNode> GetInput( rid input_id ) = 0;
-
-		/**
 		 * Get if the parameter is inputable. If true, a different node can be set as this 
 		 * parameters value. If false, the parameter can only be set manually and not through 
 		 * a node input. 
@@ -23851,6 +23838,12 @@ namespace SimplygonSDK
 		 * @return true if parameter is inputable, false if it is not 
 		 */
 		virtual	bool GetParameterIsInputable( rid param_id ) = 0;
+
+		/**
+		 * Get the name of a parameter 
+		 * @return the name of the parameter 
+		 */
+		virtual	rstring GetParameterName( rid parameter_id ) = 0;
 
 		/**
 		 * Set the default parameter values 
@@ -23922,6 +23915,23 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Get an array of the unique vertex colors used in the material. For the shader to 
+		 * use these vertex colors, they are required to be uploaded as vertex color corresponding 
+		 * to their position in the array. The shader will generate the vertex color variables 
+		 * with the naming convention "vertexcolor_i" (i : the array index of the vertex color). 
+		 * GenerateShader must have been called prior to this call 
+		 * @return the array of vertex colors 
+		 */
+		virtual	CountedPointer<IStringArray> GetShaderInputVertexColors(  ) = 0;
+
+		/**
+		 * Returns a string containing the GLSL vertex shader GenerateShader must have been 
+		 * called prior to this call. Note: If GenerateFullShader is set to false, this code 
+		 * will be empty, as the code generated is only used by the fragment shader. 
+		 */
+		virtual	rstring GetGLSLVertexCode(  ) = 0;
+
+		/**
 		 * Returns the index that is set for the specific input vertex color set. If the vertex 
 		 * color set is not used by the generated shader, the returned value is -1. Note that 
 		 * the vertex color set name must match exactly, including case. 
@@ -23936,11 +23946,10 @@ namespace SimplygonSDK
 		virtual	rstring GetHLSLCode(  ) = 0;
 
 		/**
-		 * Returns a string containing the GLSL vertex shader GenerateShader must have been 
-		 * called prior to this call. Note: If GenerateFullShader is set to false, this code 
-		 * will be empty, as the code generated is only used by the fragment shader. 
+		 * Returns a string containing the GLSL fragment shader GenerateShader must have been 
+		 * called prior to this call 
 		 */
-		virtual	rstring GetGLSLVertexCode(  ) = 0;
+		virtual	rstring GetGLSLFragmentCode(  ) = 0;
 
 		/**
 		 * Sets the material, for which to create a shader 
@@ -23987,10 +23996,14 @@ namespace SimplygonSDK
 		virtual	void SetGenerateTextureSamplerData( bool value ) = 0;
 
 		/**
-		 * Returns a string containing the GLSL fragment shader GenerateShader must have been 
-		 * called prior to this call 
+		 * Get an array of the unique texture paths used in the material. For the shader to 
+		 * use these textures, they are required to be uploaded to the texture channel corresponding 
+		 * to their position in the array. The shader will generate these sampler variables 
+		 * with the naming convention "map_i" (i : the array index of the texture). GenerateShader 
+		 * must have been called prior to this call 
+		 * @return the array of unique texture paths 
 		 */
-		virtual	rstring GetGLSLFragmentCode(  ) = 0;
+		virtual	CountedPointer<IStringArray> GetShaderInputTexturePaths(  ) = 0;
 
 		/**
 		 * Gets the material, for which to create a shader @void the current material to generate 
@@ -24022,29 +24035,15 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IStringArray> GetShaderInputUVSets(  ) = 0;
 
 		/**
-		 * Get an array of the unique texture paths used in the material. For the shader to 
-		 * use these textures, they are required to be uploaded to the texture channel corresponding 
-		 * to their position in the array. The shader will generate these sampler variables 
-		 * with the naming convention "map_i" (i : the array index of the texture). GenerateShader 
-		 * must have been called prior to this call 
-		 * @return the array of unique texture paths 
-		 */
-		virtual	CountedPointer<IStringArray> GetShaderInputTexturePaths(  ) = 0;
-
-		/**
-		 * Get an array of the unique vertex colors used in the material. For the shader to 
-		 * use these vertex colors, they are required to be uploaded as vertex color corresponding 
-		 * to their position in the array. The shader will generate the vertex color variables 
-		 * with the naming convention "vertexcolor_i" (i : the array index of the vertex color). 
-		 * GenerateShader must have been called prior to this call 
-		 * @return the array of vertex colors 
-		 */
-		virtual	CountedPointer<IStringArray> GetShaderInputVertexColors(  ) = 0;
-
-		/**
 		 * Unloads all shader data and resets it. 
 		 */
 		virtual	void UnloadData(  ) = 0;
+
+		/**
+		 * Gets the currently assigned prefix for all global identifiers. 
+		 * @return the currently assigned prefix (default="sg_") 
+		 */
+		virtual	rstring GetIdentifersPrefix(  ) = 0;
 
 		/**
 		 * Generates a shader, given a material that uses shading node networks. To generate 
@@ -24052,12 +24051,6 @@ namespace SimplygonSDK
 		 * @return will return true if the shader could be generated from the material 
 		 */
 		virtual	bool GenerateShaderData(  ) = 0;
-
-		/**
-		 * Gets the currently assigned prefix for all global identifiers. 
-		 * @return the currently assigned prefix (default="sg_") 
-		 */
-		virtual	rstring GetIdentifersPrefix(  ) = 0;
 
 	};
 
@@ -24122,12 +24115,9 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
-		 * Get the MappingImage object that is generated if MappingImageSettings::GenerateMappingImage 
-		 * is set. The object is of type IMappingImage. A new object is generated for each 
-		 * call to RunProcessing(). 
-		 * @return the current mapping image 
+		 * Clears the processing, and resets all internal states. 
 		 */
-		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
+		virtual	void Clear(  ) = 0;
 
 		/**
 		 * The settings for the combining process. 
@@ -24136,20 +24126,23 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IAggregationSettings> GetAggregationSettings(  ) = 0;
 
 		/**
-		 * Clears the processing, and resets all internal states. 
+		 * Get the MappingImage object that is generated if MappingImageSettings::GenerateMappingImage 
+		 * is set. The object is of type IMappingImage. A new object is generated for each 
+		 * call to RunProcessing(). 
+		 * @return the current mapping image 
 		 */
-		virtual	void Clear(  ) = 0;
+		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
+
+		/**
+		 * The settings for the image mapping process. 
+		 * @return the mapping image settings object 
+		 */
+		virtual	CountedPointer<IMappingImageSettings> GetMappingImageSettings(  ) = 0;
 
 		/**
 		 * Runs the processing the object is designed for 
 		 */
 		virtual	void RunProcessing(  ) = 0;
-
-		/**
-		 * The settings for handling visibility weights. 
-		 * @return the visibility settings object associated with the processor 
-		 */
-		virtual	CountedPointer<IVisibilitySettings> GetVisibilitySettings(  ) = 0;
 
 		/**
 		 * Set the scene used for aggregation processing. 
@@ -24158,16 +24151,16 @@ namespace SimplygonSDK
 		virtual	void SetScene( IScene *value ) = 0;
 
 		/**
+		 * The settings for handling visibility weights. 
+		 * @return the visibility settings object associated with the processor 
+		 */
+		virtual	CountedPointer<IVisibilitySettings> GetVisibilitySettings(  ) = 0;
+
+		/**
 		 * Get the scene used for aggregation processing. 
 		 * @return the current scene 
 		 */
 		virtual	CountedPointer<IScene> GetScene(  ) = 0;
-
-		/**
-		 * The settings for the image mapping process. 
-		 * @return the mapping image settings object 
-		 */
-		virtual	CountedPointer<IMappingImageSettings> GetMappingImageSettings(  ) = 0;
 
 	};
 
@@ -24229,6 +24222,22 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Subdivides the geometry based on the tiling texture coords. The cutting frequency 
+		 * "SubdivisionTileSize" is a positive integer multiplier. (i.e. the mesh will be cut 
+		 * each time its U or V texcoords crosses the SubdivisionTileSize). The output UVs 
+		 * will be in the range [(0,0),(SubdivisionTileSize,SubdivisionTileSize)] 
+		 * @return value the current SubdivideGeometryBasedOnUVTiles flag 
+		 */
+		virtual	bool GetSubdivideGeometryBasedOnUVTiles(  ) = 0;
+
+		/**
+		 * The processor will merge all the geometries in the scene into a single geometry 
+		 * if MergeGeometries is enabled. 
+		 * @param value the desired MergeGeometries flag 
+		 */
+		virtual	void SetMergeGeometries( bool value ) = 0;
+
+		/**
 		 * Selects which SelectionSet should be processed. If set to -1, all geometries in 
 		 * the scene will be processed. 
 		 * @param value the desired SelectionSet id 
@@ -24265,13 +24274,10 @@ namespace SimplygonSDK
 		virtual	void SetProcessSelectionSetName( const char * value ) = 0;
 
 		/**
-		 * Subdivides the geometry based on the tiling texture coords. The cutting frequency 
-		 * "SubdivisionTileSize" is a positive integer multiplier. (i.e. the mesh will be cut 
-		 * each time its U or V texcoords crosses the SubdivisionTileSize). The output UVs 
-		 * will be in the range [(0,0),(SubdivisionTileSize,SubdivisionTileSize)] 
-		 * @return value the current SubdivideGeometryBasedOnUVTiles flag 
+		 * The cutting frequency used when SubdivideGeometryBasedOnUVTiles is enabled. 
+		 * @return value the current SubdivisionTileSize value 
 		 */
-		virtual	bool GetSubdivideGeometryBasedOnUVTiles(  ) = 0;
+		virtual	unsigned int GetSubdivisionTileSize(  ) = 0;
 
 		/**
 		 * Selects which SelectionSet should be processed. If set to -1, all geometries in 
@@ -24286,19 +24292,6 @@ namespace SimplygonSDK
 		 * @return the current SelectionSet name 
 		 */
 		virtual	rstring GetProcessSelectionSetName(  ) = 0;
-
-		/**
-		 * The processor will merge all the geometries in the scene into a single geometry 
-		 * if MergeGeometries is enabled. 
-		 * @param value the desired MergeGeometries flag 
-		 */
-		virtual	void SetMergeGeometries( bool value ) = 0;
-
-		/**
-		 * The cutting frequency used when SubdivideGeometryBasedOnUVTiles is enabled. 
-		 * @return value the current SubdivisionTileSize value 
-		 */
-		virtual	unsigned int GetSubdivisionTileSize(  ) = 0;
 
 		/**
 		 * Sets whether the new texture coords should be based on the original texture coords 
@@ -24380,6 +24373,22 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Executes the parameterization of the geometry. 
+		 * @param geom is the geometry which is to be parameterized 
+		 * @param arr is the array where the result is stored 
+		 * @return true if the parameterization succeeds, false otherwise 
+		 */
+		virtual	bool Parameterize( IGeometryData *geom , IRealArray *arr ) = 0;
+
+		/**
+		 * If KeepOriginalChartSizes is enabled: calling GetKeepOriginalChartSizesTextureWidth(int 
+		 * ) and GetKeepOriginalChartSizesTextureHeight() after parameterization will return 
+		 * the final texture sizes 
+		 * @return the current KeepOriginalChartSizesTextureWidth size 
+		 */
+		virtual	unsigned int GetKeepOriginalChartSizesTextureWidth(  ) = 0;
+
+		/**
 		 * Set the automatic_texture_size flag. If true, then texture sizes will be computed 
 		 * for the reduced mesh depending on its pixel size on screen. 
 		 * @param value the desired flag 
@@ -24387,12 +24396,13 @@ namespace SimplygonSDK
 		virtual	void SetUseAutomaticTextureSize( bool value ) = 0;
 
 		/**
-		 * Executes the parameterization of the geometry. 
-		 * @param geom is the geometry which is to be parameterized 
-		 * @param arr is the array where the result is stored 
-		 * @return true if the parameterization succeeds, false otherwise 
+		 * Set the number of input materials used in the original geometry for mapping to multiple 
+		 * output materials. This needs to be set before you can set any specific in-out material 
+		 * mapping. 0 signifies that no in-out material mapping is used, ie. the process will 
+		 * produce one resulting mapping image. 
+		 * @param value is the number of outputs 
 		 */
-		virtual	bool Parameterize( IGeometryData *geom , IRealArray *arr ) = 0;
+		virtual	void SetInputMaterialCount( unsigned int value ) = 0;
 
 		/**
 		 * Set KeepOriginalChartProportionsChannel to an SG_MATERIAL_CHANNEL_[...]. This channel 
@@ -24415,16 +24425,14 @@ namespace SimplygonSDK
 		 * the final texture sizes 
 		 * @return the current KeepOriginalChartSizesTextureWidth size 
 		 */
-		virtual	unsigned int GetKeepOriginalChartSizesTextureWidth(  ) = 0;
+		virtual	unsigned int GetKeepOriginalChartSizesTextureWidth( unsigned int OutputID ) = 0;
 
 		/**
-		 * Set the number of input materials used in the original geometry for mapping to multiple 
-		 * output materials. This needs to be set before you can set any specific in-out material 
-		 * mapping. 0 signifies that no in-out material mapping is used, ie. the process will 
-		 * produce one resulting mapping image. 
-		 * @param value is the number of outputs 
+		 * Get the number of input materials set earlier. 0 signifies that no in-out material 
+		 * mapping is used. 
+		 * @return the current value of InputMaterialCount 
 		 */
-		virtual	void SetInputMaterialCount( unsigned int value ) = 0;
+		virtual	unsigned int GetInputMaterialCount(  ) = 0;
 
 		/**
 		 * Get the width of the texture to use. 
@@ -24512,12 +24520,12 @@ namespace SimplygonSDK
 		virtual	void SetTextureTable( ITextureTable *value ) = 0;
 
 		/**
-		 * If KeepOriginalChartSizes is enabled: calling GetKeepOriginalChartSizesTextureWidth(int 
-		 * ) and GetKeepOriginalChartSizesTextureHeight() after parameterization will return 
+		 * If KeepOriginalChartSizes is enabled: calling GetKeepOriginalChartSizesTextureWidth() 
+		 * and GetKeepOriginalChartSizesTextureHeight() after parameterization will return 
 		 * the final texture sizes 
-		 * @return the current KeepOriginalChartSizesTextureWidth size 
+		 * @return the current KeepOriginalChartSizesTextureHeight size 
 		 */
-		virtual	unsigned int GetKeepOriginalChartSizesTextureWidth( unsigned int OutputID ) = 0;
+		virtual	unsigned int GetKeepOriginalChartSizesTextureHeight( unsigned int OutputID ) = 0;
 
 		/**
 		 * Set the automatic_texture_size flag. If true, then texture sizes will be computed 
@@ -24542,12 +24550,11 @@ namespace SimplygonSDK
 		virtual	void SetInputOutputMaterialMapping( unsigned int InMaterialId , int OutMaterialId ) = 0;
 
 		/**
-		 * If KeepOriginalChartSizes is enabled: calling GetKeepOriginalChartSizesTextureWidth() 
-		 * and GetKeepOriginalChartSizesTextureHeight() after parameterization will return 
-		 * the final texture sizes 
-		 * @return the current KeepOriginalChartSizesTextureHeight size 
+		 * This channel determines which texture channel to look at when determining which 
+		 * chart proportions to keep. The default value is SG_MATERIAL_CHANNEL_DIFFUSE. 
+		 * @return the current ChartAggregatorOriginalChartProportionsChannel value 
 		 */
-		virtual	unsigned int GetKeepOriginalChartSizesTextureHeight( unsigned int OutputID ) = 0;
+		virtual	rstring GetOriginalChartProportionsChannel(  ) = 0;
 
 		/**
 		 * Get the current automatic texture size multiplier. 
@@ -24556,11 +24563,10 @@ namespace SimplygonSDK
 		virtual	real GetAutomaticTextureSizeMultiplier(  ) = 0;
 
 		/**
-		 * This channel determines which texture channel to look at when determining which 
-		 * chart proportions to keep. The default value is SG_MATERIAL_CHANNEL_DIFFUSE. 
-		 * @return the current ChartAggregatorOriginalChartProportionsChannel value 
+		 * Get the UseVertexWeights flag to scale the charts according to their vertex weights. 
+		 * @return flag to using VertexWeights 
 		 */
-		virtual	rstring GetOriginalChartProportionsChannel(  ) = 0;
+		virtual	bool GetUseVertexWeights(  ) = 0;
 
 		/**
 		 * Get the height of the texture to use. 
@@ -24588,11 +24594,10 @@ namespace SimplygonSDK
 		virtual	void SetTextureHeight( unsigned int value ) = 0;
 
 		/**
-		 * Get the number of input materials set earlier. 0 signifies that no in-out material 
-		 * mapping is used. 
-		 * @return the current value of InputMaterialCount 
+		 * Set the width of the texture to use. 
+		 * @return the current value of TextureWidth 
 		 */
-		virtual	unsigned int GetInputMaterialCount(  ) = 0;
+		virtual	void SetTextureWidth( unsigned int id , unsigned int value ) = 0;
 
 		/**
 		 * Get which TexCoord level to get charts from during re-parameterization. If a TexCoordLevelName 
@@ -24617,22 +24622,10 @@ namespace SimplygonSDK
 		virtual	unsigned int GetChartAggregatorMode(  ) = 0;
 
 		/**
-		 * Set the width of the texture to use. 
-		 * @return the current value of TextureWidth 
-		 */
-		virtual	void SetTextureWidth( unsigned int id , unsigned int value ) = 0;
-
-		/**
 		 * Get the width of the texture to use. 
 		 * @param value is the value to which TextureWidth will be set 
 		 */
 		virtual	unsigned int GetTextureWidth(  ) = 0;
-
-		/**
-		 * Set which TexCoord level name to get charts from during re-parameterization. 
-		 * @param TexCoord level 
-		 */
-		virtual	void SetTexCoordLevelName( const char * value ) = 0;
 
 		/**
 		 * Set the height of the texture to use. 
@@ -24641,16 +24634,16 @@ namespace SimplygonSDK
 		virtual	void SetTextureHeight( unsigned int id , unsigned int value ) = 0;
 
 		/**
+		 * Set which TexCoord level name to get charts from during re-parameterization. 
+		 * @param TexCoord level 
+		 */
+		virtual	void SetTexCoordLevelName( const char * value ) = 0;
+
+		/**
 		 * Get the minimum number of pixels between charts. 
 		 * @return the current value of GutterSpace 
 		 */
 		virtual	unsigned int GetGutterSpace(  ) = 0;
-
-		/**
-		 * Get the UseVertexWeights flag to scale the charts according to their vertex weights. 
-		 * @return flag to using VertexWeights 
-		 */
-		virtual	bool GetUseVertexWeights(  ) = 0;
 
 		/**
 		 * Get the minimum number of pixels between charts. 
@@ -24659,18 +24652,10 @@ namespace SimplygonSDK
 		virtual	unsigned int GetGutterSpace( unsigned int id ) = 0;
 
 		/**
-		 * If LockUVRotation is enabled, only the original UV rotation will be used. Otherwise 
-		 * 4 rotations are used (90 degree rotations). 
-		 * @return the current LockUVRotation 
+		 * Set the UseVertexWeights flag to scale the charts according to their vertex weights. 
+		 * @param flag to using VertexWeights 
 		 */
-		virtual	bool GetLockUVRotation(  ) = 0;
-
-		/**
-		 * Set/Get the Separate Overlapping Charts flag. If charts are overlapping in the original 
-		 * texture coords, they will be separated. 
-		 * @param flag to enable/disable Separating Overlapping Charts 
-		 */
-		virtual	void SetSeparateOverlappingCharts( bool value ) = 0;
+		virtual	void SetUseVertexWeights( bool value ) = 0;
 
 		/**
 		 * Determines which method to use when aggregating the UVs. SG_CHARTAGGREGATORMODE_TEXTURESIZEPROPORTIONS 
@@ -24688,10 +24673,18 @@ namespace SimplygonSDK
 		virtual	void SetChartAggregatorMode( unsigned int value ) = 0;
 
 		/**
-		 * Set the UseVertexWeights flag to scale the charts according to their vertex weights. 
-		 * @param flag to using VertexWeights 
+		 * If LockUVRotation is enabled, only the original UV rotation will be used. Otherwise 
+		 * 4 rotations are used (90 degree rotations). 
+		 * @return the current LockUVRotation 
 		 */
-		virtual	void SetUseVertexWeights( bool value ) = 0;
+		virtual	bool GetLockUVRotation(  ) = 0;
+
+		/**
+		 * Set/Get the Separate Overlapping Charts flag. If charts are overlapping in the original 
+		 * texture coords, they will be separated. 
+		 * @param flag to enable/disable Separating Overlapping Charts 
+		 */
+		virtual	void SetSeparateOverlappingCharts( bool value ) = 0;
 
 	};
 
@@ -24753,10 +24746,24 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the SourceTextures object. The SourceTextures object contains all textures of 
+		 * the the source geometry. 
+		 * @param value is the texture table to which SourceTextures will be set 
+		 */
+		virtual	void SetSourceTextures( ITextureTable *value ) = 0;
+
+		/**
 		 * Get the scene used for vertex baking. 
 		 * @return the current top scene node 
 		 */
 		virtual	CountedPointer<IScene> GetScene(  ) = 0;
+
+		/**
+		 * Get the SourceTextures object. The SourceTextures object contains all textures of 
+		 * the the source geometry. 
+		 * @return the current SourceTextures material table 
+		 */
+		virtual	CountedPointer<ITextureTable> GetSourceTextures(  ) = 0;
 
 		/**
 		 * Set the mapping image between original and processed geometry. 
@@ -24796,11 +24803,10 @@ namespace SimplygonSDK
 		virtual	void SetColorSpaceEdgeThreshold( real value ) = 0;
 
 		/**
-		 * Set the SourceTextures object. The SourceTextures object contains all textures of 
-		 * the the source geometry. 
-		 * @param value is the texture table to which SourceTextures will be set 
+		 * Set the name of the channel to bake to vertex. 
+		 * @param value is the name of the channel. 
 		 */
-		virtual	void SetSourceTextures( ITextureTable *value ) = 0;
+		virtual	void SetChannelName( const char * value ) = 0;
 
 		/**
 		 * Set the scene used for vertex baking. 
@@ -24809,10 +24815,11 @@ namespace SimplygonSDK
 		virtual	void SetScene( IScene *value ) = 0;
 
 		/**
-		 * Set the name of the channel to bake to vertex. 
-		 * @param value is the name of the channel. 
+		 * Set the name of the color level field to bake to. If no name is set, it will default 
+		 * to "Color0" 
+		 * @param OutputColorLevelName is the name of the color field level. 
 		 */
-		virtual	void SetChannelName( const char * value ) = 0;
+		virtual	void SetOutputColorLevelName( const char * value ) = 0;
 
 		/**
 		 * Get the name of the color level field to bake to. If no name is set, it will default 
@@ -24820,13 +24827,6 @@ namespace SimplygonSDK
 		 * @return the name of the color field level. 
 		 */
 		virtual	rstring GetOutputColorLevelName(  ) = 0;
-
-		/**
-		 * Set the name of the color level field to bake to. If no name is set, it will default 
-		 * to "Color0" 
-		 * @param OutputColorLevelName is the name of the color field level. 
-		 */
-		virtual	void SetOutputColorLevelName( const char * value ) = 0;
 
 		/**
 		 * Get the color space edge threshold, which will define how many hard color borders 
@@ -24839,13 +24839,6 @@ namespace SimplygonSDK
 		 * Clears the processing, and resets all internal states. 
 		 */
 		virtual	void Clear(  ) = 0;
-
-		/**
-		 * Get the SourceTextures object. The SourceTextures object contains all textures of 
-		 * the the source geometry. 
-		 * @return the current SourceTextures material table 
-		 */
-		virtual	CountedPointer<ITextureTable> GetSourceTextures(  ) = 0;
 
 		/**
 		 * Run baking to vertex. 
@@ -24908,17 +24901,17 @@ namespace SimplygonSDK
 				return static_cast<INormalAnalyzer*>(ptr);
 			return NULL;
 			}
+		virtual	real GetLargestTangentSpaceOrthogonalDeviation(  ) = 0;
+
+		virtual	real GetMeanTangentSpaceOrthogonalDeviation(  ) = 0;
+
 		virtual	void AnalyzeTangentSpace( IGeometryData *geom , rid channelID ) = 0;
 
 		virtual	unsigned int GetBackfacingNormalsCount(  ) = 0;
 
-		virtual	real GetMeanTangentSpaceOrthogonalDeviation(  ) = 0;
-
-		virtual	unsigned int GetNonUnitLenghtNormalsCount(  ) = 0;
-
 		virtual	void AnalyzeNormals( IGeometryData *geom ) = 0;
 
-		virtual	real GetLargestTangentSpaceOrthogonalDeviation(  ) = 0;
+		virtual	unsigned int GetNonUnitLenghtNormalsCount(  ) = 0;
 
 	};
 
@@ -24976,6 +24969,10 @@ namespace SimplygonSDK
 				return static_cast<IUVAnalyzer*>(ptr);
 			return NULL;
 			}
+		virtual	real GetMin2DAreaChartRatio(  ) = 0;
+
+		virtual	real GetMeanStretchChart(  ) = 0;
+
 		virtual	real GetMean3DAreaChartRatio(  ) = 0;
 
 		virtual	real GetMaxLargest3D2DEdgeLengthRatioDisparity(  ) = 0;
@@ -25030,19 +25027,15 @@ namespace SimplygonSDK
 
 		virtual	real GetMean2DAreaChart(  ) = 0;
 
-		virtual	real GetMin2DAreaChartRatio(  ) = 0;
+		virtual	real GetMean2DAreaChartRatio(  ) = 0;
 
 		virtual	rid GetChartCount(  ) = 0;
 
-		virtual	real GetMean2DAreaChartRatio(  ) = 0;
+		virtual	real GetMax3DAreaChart(  ) = 0;
 
 		virtual	real GetTotal2DChartArea(  ) = 0;
 
-		virtual	real GetMeanStretchChart(  ) = 0;
-
 		virtual	real GetMedianStretchChart(  ) = 0;
-
-		virtual	real GetMax3DAreaChart(  ) = 0;
 
 	};
 
@@ -25106,15 +25099,16 @@ namespace SimplygonSDK
 		virtual	void Clear(  ) = 0;
 
 		/**
+		 * Set the main import file path. This must always be set. 
+		 * @param value the desired main import file path 
+		 */
+		virtual	void SetExportFilePath( const char * value ) = 0;
+
+		/**
 		 * Get the main import file path. This must always be set. 
 		 * @return the main import file path 
 		 */
 		virtual	rstring GetExportFilePath(  ) = 0;
-
-		/**
-		 * Runs the import. Note that all parameters must be setup before importing. 
-		 */
-		virtual	bool RunExport(  ) = 0;
 
 		/**
 		 * Set the imported image data. 
@@ -25123,10 +25117,9 @@ namespace SimplygonSDK
 		virtual	void SetImage( IImageData *value ) = 0;
 
 		/**
-		 * Set the main import file path. This must always be set. 
-		 * @param value the desired main import file path 
+		 * Runs the import. Note that all parameters must be setup before importing. 
 		 */
-		virtual	void SetExportFilePath( const char * value ) = 0;
+		virtual	bool RunExport(  ) = 0;
 
 	};
 
@@ -25189,6 +25182,19 @@ namespace SimplygonSDK
 				return static_cast<IAmbientOcclusionCaster*>(ptr);
 			return NULL;
 			}
+		/**
+		 * Get the occlusion multiplier. This is just a basic intensity scaler. Higher is "darker". 
+		 * @return the occlusion multiplier 
+		 */
+		virtual	real GetOcclusionMultiplier(  ) = 0;
+
+		/**
+		 * Get the occlusion falloff, ie. how far away a surface has to be from another surface 
+		 * to generate no occlusion. Only applicable if SimpleOcclusionMode is off. 
+		 * @return the occlusion falloff 
+		 */
+		virtual	real GetOcclusionFalloff(  ) = 0;
+
 		/**
 		 * Set the SourceMaterials object. The SourceMaterials object contains all materials 
 		 * of the the source geometry. The source geometry must have a "MaterialIds" field 
@@ -25330,17 +25336,20 @@ namespace SimplygonSDK
 		virtual	void SetAdditionalSourceScene( IScene *value ) = 0;
 
 		/**
-		 * Get the occlusion falloff, ie. how far away a surface has to be from another surface 
-		 * to generate no occlusion. Only applicable if SimpleOcclusionMode is off. 
-		 * @return the occlusion falloff 
+		 * Set the SimpleOcclusionMode flag. If set, occlusion will not scale with distance, 
+		 * each ray will only be either fully occluded or not at all. Speeds up processing 
+		 * time. 
+		 * @param value the flag to which UseSimpleOcclusionMode will be set 
 		 */
-		virtual	real GetOcclusionFalloff(  ) = 0;
+		virtual	void SetUseSimpleOcclusionMode( bool value ) = 0;
 
 		/**
-		 * Get the occlusion multiplier. This is just a basic intensity scaler. Higher is "darker". 
-		 * @return the occlusion multiplier 
+		 * Get the SimpleOcclusionMode flag. If set, occlusion will not scale with distance, 
+		 * each ray will only be either fully occluded or not at all. Speeds up processing 
+		 * time. 
+		 * @return the current value of UseSimpleOcclusionMode 
 		 */
-		virtual	real GetOcclusionMultiplier(  ) = 0;
+		virtual	bool GetUseSimpleOcclusionMode(  ) = 0;
 
 		/**
 		 * \deprecated CastMaterials() is deprecated, use RunProcessing() instead.Runs the 
@@ -25356,12 +25365,11 @@ namespace SimplygonSDK
 		virtual	void SetOutputChannels( unsigned int value ) = 0;
 
 		/**
-		 * Set the SimpleOcclusionMode flag. If set, occlusion will not scale with distance, 
-		 * each ray will only be either fully occluded or not at all. Speeds up processing 
-		 * time. 
-		 * @param value the flag to which UseSimpleOcclusionMode will be set 
+		 * Get the MappingImage object. The MappingImage object contains the mapping between 
+		 * the Geometry and SourceGeometry objects. 
+		 * @return the current MappingImage 
 		 */
-		virtual	void SetUseSimpleOcclusionMode( bool value ) = 0;
+		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
 
 		/**
 		 * Set the OutputImage object that will receive the image. The current contents of 
@@ -25373,11 +25381,12 @@ namespace SimplygonSDK
 		virtual	void SetOutputImage( IImageData *value ) = 0;
 
 		/**
-		 * Get the MappingImage object. The MappingImage object contains the mapping between 
-		 * the Geometry and SourceGeometry objects. 
-		 * @return the current MappingImage 
+		 * Set the Dilation value. Where applicable, such as colors and normals, the caster 
+		 * will fill empty pixels surrounding filled pixels with values mixed from the filled 
+		 * ones. This setting sets how many pixels to fill outside the original filled pixels. 
+		 * @param value is the value to which Dilation will be set 
 		 */
-		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
+		virtual	void SetDilation( unsigned int value ) = 0;
 
 		/**
 		 * Runs the processing the object is designed for 
@@ -25392,20 +25401,12 @@ namespace SimplygonSDK
 		virtual	void SetColorType( const char * value ) = 0;
 
 		/**
-		 * Set the Dilation value. Where applicable, such as colors and normals, the caster 
+		 * Get the Dilation value. Where applicable, such as colors and normals, the caster 
 		 * will fill empty pixels surrounding filled pixels with values mixed from the filled 
 		 * ones. This setting sets how many pixels to fill outside the original filled pixels. 
-		 * @param value is the value to which Dilation will be set 
+		 * @return the current value of Dilation 
 		 */
-		virtual	void SetDilation( unsigned int value ) = 0;
-
-		/**
-		 * Get the SimpleOcclusionMode flag. If set, occlusion will not scale with distance, 
-		 * each ray will only be either fully occluded or not at all. Speeds up processing 
-		 * time. 
-		 * @return the current value of UseSimpleOcclusionMode 
-		 */
-		virtual	bool GetUseSimpleOcclusionMode(  ) = 0;
+		virtual	unsigned int GetDilation(  ) = 0;
 
 		/**
 		 * Set the OutputFilePath file path, where the output image will be placed. Note that 
@@ -25416,14 +25417,6 @@ namespace SimplygonSDK
 		 * @param value is the string to which OutputFilePath will be set 
 		 */
 		virtual	void SetOutputFilePath( const char * value ) = 0;
-
-		/**
-		 * Get the Dilation value. Where applicable, such as colors and normals, the caster 
-		 * will fill empty pixels surrounding filled pixels with values mixed from the filled 
-		 * ones. This setting sets how many pixels to fill outside the original filled pixels. 
-		 * @return the current value of Dilation 
-		 */
-		virtual	unsigned int GetDilation(  ) = 0;
 
 		/**
 		 * Get the OutputFilePath file path, where the output image will be placed. Note that 
@@ -25499,6 +25492,18 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the scene for the impostor processing. 
+		 * @param value is the scene 
+		 */
+		virtual	void SetScene( IScene *value ) = 0;
+
+		/**
+		 * The MappingImage for the Impostor geometry. 
+		 * @return the MappingImage object associated with the processor 
+		 */
+		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
+
+		/**
 		 * The settings for the the MappingImage. 
 		 * @return the MappingImage settings object associated with the processor 
 		 */
@@ -25516,10 +25521,10 @@ namespace SimplygonSDK
 		virtual	void RunProcessing(  ) = 0;
 
 		/**
-		 * The MappingImage for the Impostor geometry. 
-		 * @return the MappingImage object associated with the processor 
+		 * The Impostor GeometryData. 
+		 * @return the Impostor GeometryData object created by the processor 
 		 */
-		virtual	CountedPointer<IMappingImage> GetMappingImage(  ) = 0;
+		virtual	CountedPointer<IGeometryData> GetImpostorGeometry(  ) = 0;
 
 		/**
 		 * Returns the aspect ratio that the impostor from a certain vector will generate, 
@@ -25532,18 +25537,6 @@ namespace SimplygonSDK
 		 * @return the ImpostorProcessor settings object associated with the processor 
 		 */
 		virtual	CountedPointer<IImpostorSettings> GetImpostorSettings(  ) = 0;
-
-		/**
-		 * Set the scene for the impostor processing. 
-		 * @param value is the scene 
-		 */
-		virtual	void SetScene( IScene *value ) = 0;
-
-		/**
-		 * The Impostor GeometryData. 
-		 * @return the Impostor GeometryData object created by the processor 
-		 */
-		virtual	CountedPointer<IGeometryData> GetImpostorGeometry(  ) = 0;
 
 		virtual	void Clear(  ) = 0;
 
@@ -25605,6 +25598,21 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the UseTightFitting flag. If set, the impostor will exactly conform to the bounds 
+		 * of the geometry. If false, its dimensions will always be diameter*diameter 
+		 * @param value is the value UseTightFitting will be set to 
+		 */
+		virtual	void SetUseTightFitting( bool value ) = 0;
+
+		/**
+		 * Get the view direction. This vector determines how the resulting impostor geometry 
+		 * will be oriented. The billboard will be perpendicular to this vector. 
+		 * @return the current view vector@param dest_param a pointer to the destination memory 
+		 * area 
+		 */
+		virtual	void GetViewDirection( real dest_param[3] ) = 0;
+
+		/**
 		 * Set the depth offset. This determines where the impostor will end up in depth. 0 
 		 * is "center", 1 is "front" and -1 is "back" 
 		 * @param value is the value OnScreenSize will be set to 
@@ -25658,21 +25666,6 @@ namespace SimplygonSDK
 		 * @return the current value of TexCoordPadding 
 		 */
 		virtual	real GetTexCoordPadding(  ) = 0;
-
-		/**
-		 * Get the view direction. This vector determines how the resulting impostor geometry 
-		 * will be oriented. The billboard will be perpendicular to this vector. 
-		 * @return the current view vector@param dest_param a pointer to the destination memory 
-		 * area 
-		 */
-		virtual	void GetViewDirection( real dest_param[3] ) = 0;
-
-		/**
-		 * Set the UseTightFitting flag. If set, the impostor will exactly conform to the bounds 
-		 * of the geometry. If false, its dimensions will always be diameter*diameter 
-		 * @param value is the value UseTightFitting will be set to 
-		 */
-		virtual	void SetUseTightFitting( bool value ) = 0;
 
 		/**
 		 * Get the UseTightFitting flag. If set, the impostor will exactly conform to the bounds 
@@ -25745,6 +25738,18 @@ namespace SimplygonSDK
 				return static_cast<ISurfaceMapper*>(ptr);
 			return NULL;
 			}
+		/**
+		 * Set the destination geometry data 
+		 * @param SceneRoot is the node that is to be set as the top scene node 
+		 */
+		virtual	void SetDestinationGeometry( IGeometryData *value ) = 0;
+
+		/**
+		 * Set the texcoord level in the destination geom to use for the material transfer 
+		 * @param the texcoord level 
+		 */
+		virtual	void SetDestinationTexCoordSet( rid value ) = 0;
+
 		/**
 		 * Set the source geometry data 
 		 * @param SceneRoot is the node that is to be set as the top scene node 
@@ -25830,10 +25835,10 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IScene> GetSourceScene(  ) = 0;
 
 		/**
-		 * Set the destination geometry data 
-		 * @param SceneRoot is the node that is to be set as the top scene node 
+		 * Get the destination geometry data 
+		 * @return the current top scene node 
 		 */
-		virtual	void SetDestinationGeometry( IGeometryData *value ) = 0;
+		virtual	CountedPointer<IGeometryData> GetDestinationGeometry(  ) = 0;
 
 		/**
 		 * Get the search offset. This is how far out from the destination geometry the search 
@@ -25873,23 +25878,11 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IScene> GetDestinationScene(  ) = 0;
 
 		/**
-		 * Get the destination geometry data 
-		 * @return the current top scene node 
-		 */
-		virtual	CountedPointer<IGeometryData> GetDestinationGeometry(  ) = 0;
-
-		/**
 		 * Get the mapping image settings. Currently, the only applicable settings for this 
 		 * mapper is size, gutter, and supersampling settings. 
 		 * @return the mapping image settings object 
 		 */
 		virtual	CountedPointer<IMappingImageSettings> GetMappingImageSettings(  ) = 0;
-
-		/**
-		 * Set the texcoord level in the destination geom to use for the material transfer 
-		 * @param the texcoord level 
-		 */
-		virtual	void SetDestinationTexCoordSet( rid value ) = 0;
 
 	};
 
@@ -25957,17 +25950,6 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
-		 * The settings for the OcclusionMeshProcessor. 
-		 * @return the ImpostorProcessor settings object associated with the processor 
-		 */
-		virtual	CountedPointer<IOcclusionMeshSettings> GetOcclusionMeshSettings(  ) = 0;
-
-		/**
-		 * Clears internal states. 
-		 */
-		virtual	void Clear(  ) = 0;
-
-		/**
 		 * Set the scene used for processing. All mesh nodes in the whole scene tree will be 
 		 * replaced by one proxy mesh. 
 		 * @param value is the scene node to which SceneRoot will be set 
@@ -25980,6 +25962,17 @@ namespace SimplygonSDK
 		 * @return the scene root 
 		 */
 		virtual	CountedPointer<IScene> GetScene(  ) = 0;
+
+		/**
+		 * The settings for the OcclusionMeshProcessor. 
+		 * @return the ImpostorProcessor settings object associated with the processor 
+		 */
+		virtual	CountedPointer<IOcclusionMeshSettings> GetOcclusionMeshSettings(  ) = 0;
+
+		/**
+		 * Clears internal states. 
+		 */
+		virtual	void Clear(  ) = 0;
 
 		/**
 		 * Runs the processing the object is designed for 
@@ -26045,6 +26038,22 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the occlusion mode. This decides if the processor generates an occluder (which 
+		 * is smaller than the original mesh), an ocludee (which is larger), or an output that 
+		 * just tries to match the input. The options are: SG_OCCLUSIONMODE_OCCLUDER, SG_OCCLUSIONMODE_OCLUDEE 
+		 * or SG_OCCLUSIONMODE_STANDARD 
+		 * @param value the desired OcclusionMode 
+		 */
+		virtual	void SetOcclusionMode( unsigned int value ) = 0;
+
+		/**
+		 * Flips the winding of the triangles of the output, making frontfaces backfaces and 
+		 * vice versa. Good for conservative z testing. 
+		 * @return the current value of InvertOutputMesh 
+		 */
+		virtual	bool GetInvertOutputMesh(  ) = 0;
+
+		/**
 		 * Get the OnScreenErrorTolerance. This determines how large of an error that is tolerated, 
 		 * in pixels. Valid range is 1-50. Since this setting is based around the absolute 
 		 * worst-case scenario, you can usually get good results at relatively high tolerances. 
@@ -26060,21 +26069,6 @@ namespace SimplygonSDK
 		virtual	void SetOnScreenSize( unsigned int value ) = 0;
 
 		/**
-		 * Set the occlusion mode. This decides if the processor generates an occluder (which 
-		 * is smaller than the original mesh), an ocludee (which is larger), or an output that 
-		 * just tries to match the input. The options are: SG_OCCLUSIONMODE_OCCLUDER, SG_OCCLUSIONMODE_OCLUDEE 
-		 * or SG_OCCLUSIONMODE_STANDARD 
-		 * @param value the desired OcclusionMode 
-		 */
-		virtual	void SetOcclusionMode( unsigned int value ) = 0;
-
-		/**
-		 * Gets whether to transfer the bone weights and bone ids to the new geometry 
-		 * @return the current value of InvertOutputMesh 
-		 */
-		virtual	bool GetTransferSkinning(  ) = 0;
-
-		/**
 		 * Get the occlusion mode. This decides if the processor generates an occluder (which 
 		 * is smaller than the original mesh), an ocludee (which is larger), or an output that 
 		 * just tries to match the input. The options are: SG_OCCLUSIONMODE_OCCLUDER, SG_OCCLUSIONMODE_OCLUDEE 
@@ -26084,11 +26078,23 @@ namespace SimplygonSDK
 		virtual	unsigned int GetOcclusionMode(  ) = 0;
 
 		/**
-		 * Flips the winding of the triangles of the output, making frontfaces backfaces and 
-		 * vice versa. Good for conservative z testing. 
+		 * Gets whether to transfer the bone weights and bone ids to the new geometry 
 		 * @return the current value of InvertOutputMesh 
 		 */
-		virtual	bool GetInvertOutputMesh(  ) = 0;
+		virtual	bool GetTransferSkinning(  ) = 0;
+
+		/**
+		 * Get the the onscreen size (px) of the output utility mesh. This will determine triangle 
+		 * count and quality. 
+		 * @return the current onscreen size 
+		 */
+		virtual	unsigned int GetOnScreenSize(  ) = 0;
+
+		/**
+		 * Sets whether to transfer the bone weights and bone ids to the new geometry 
+		 * @param value the desired value of InvertOutputMesh 
+		 */
+		virtual	void SetTransferSkinning( bool value ) = 0;
 
 		/**
 		 * Flips the winding of the triangles of the output, making frontfaces backfaces and 
@@ -26098,10 +26104,12 @@ namespace SimplygonSDK
 		virtual	void SetInvertOutputMesh( bool value ) = 0;
 
 		/**
-		 * Sets whether to transfer the bone weights and bone ids to the new geometry 
-		 * @param value the desired value of InvertOutputMesh 
+		 * Sets UseCameras. If set, cameras from the input scene will be used to define what 
+		 * angles the occlusion mesh can be visible from, and optimize the output mesh accordingly. 
+		 * Otherwise, the occlusion mesh will be assumed to be viewable from all directions. 
+		 * @param value the desired value of UseCameras 
 		 */
-		virtual	void SetTransferSkinning( bool value ) = 0;
+		virtual	void SetUseCameras( bool value ) = 0;
 
 		/**
 		 * Get the camera selection set id. This determines the selection set used for the 
@@ -26110,14 +26118,6 @@ namespace SimplygonSDK
 		 * @return the current SelectionSet name 
 		 */
 		virtual	rstring GetCameraSelectionSetName(  ) = 0;
-
-		/**
-		 * Sets UseCameras. If set, cameras from the input scene will be used to define what 
-		 * angles the occlusion mesh can be visible from, and optimize the output mesh accordingly. 
-		 * Otherwise, the occlusion mesh will be assumed to be viewable from all directions. 
-		 * @param value the desired value of UseCameras 
-		 */
-		virtual	void SetUseCameras( bool value ) = 0;
 
 		/**
 		 * Gets UseCameras. If set, cameras from the input scene will be used to define what 
@@ -26140,13 +26140,6 @@ namespace SimplygonSDK
 		 * @return the current CameraSelectionSetId 
 		 */
 		virtual	int GetCameraSelectionSetId(  ) = 0;
-
-		/**
-		 * Get the the onscreen size (px) of the output utility mesh. This will determine triangle 
-		 * count and quality. 
-		 * @return the current onscreen size 
-		 */
-		virtual	unsigned int GetOnScreenSize(  ) = 0;
 
 		/**
 		 * Set the camera selection set name. This determines the selection set used for the 
@@ -26221,22 +26214,22 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
-		 * The settings for the the MappingImage. 
-		 * @return the MappingImage settings object associated with the processor 
-		 */
-		virtual	CountedPointer<IMappingImageSettings> GetMappingImageSettings(  ) = 0;
-
-		/**
 		 * The settings for the ImpostorProcessor. 
 		 * @return the ImpostorProcessor settings object associated with the processor 
 		 */
 		virtual	CountedPointer<IFoliageSettings> GetFoliageSettings(  ) = 0;
 
 		/**
-		 * Set the scene for the impostor processing. 
-		 * @param value is the scene 
+		 * The 
+		 * @return the 
 		 */
-		virtual	void SetScene( IScene *value ) = 0;
+		virtual	int GetFoliageMaterialID(  ) = 0;
+
+		/**
+		 * The settings for the the MappingImage. 
+		 * @return the MappingImage settings object associated with the processor 
+		 */
+		virtual	CountedPointer<IMappingImageSettings> GetMappingImageSettings(  ) = 0;
 
 		/**
 		 * The MappingImage for the Impostor geometry. 
@@ -26245,17 +26238,17 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IMappingImage> GetFoliageMappingImage(  ) = 0;
 
 		/**
+		 * Set the scene for the impostor processing. 
+		 * @param value is the scene 
+		 */
+		virtual	void SetScene( IScene *value ) = 0;
+
+		virtual	void Clear(  ) = 0;
+
+		/**
 		 * Runs the processing the object is designed for 
 		 */
 		virtual	void RunProcessing(  ) = 0;
-
-		/**
-		 * The 
-		 * @return the 
-		 */
-		virtual	int GetFoliageMaterialID(  ) = 0;
-
-		virtual	void Clear(  ) = 0;
 
 	};
 
@@ -26323,80 +26316,23 @@ namespace SimplygonSDK
 		virtual	void SetSeparateFoliageTriangleRatio( float value ) = 0;
 
 		/**
-		 * Is used to separate the trunk from the foliage in a vegetation scene by finding 
-		 * each group of connected triangles in the scene and if the triangle count is below 
-		 * SeparateFoliageTriangleThreshold it is treated as foliage and processed into billboards. 
-		 * The trunk is optimized using reduction. The range is 0->large value. 0 means nothing 
-		 * will be foliage, value larger than the maximum triangle count means everything will 
-		 * be foliage. 
+		 * Determines the maximum billboard count. When this criteria is met, it is not guaranteed 
+		 * that all triangles in the scene have been accurately mapped to a billboard yet. 
+		 * Triangles that have nor been mapped to a billboard within the BillboardMaxDeviation 
+		 * distance will be mapped to an existing billboard that best represents the triangle. 
 		 * @return the current value 
 		 */
-		virtual	unsigned int GetSeparateFoliageTriangleThreshold(  ) = 0;
+		virtual	unsigned int GetBillboardMaxPlaneCount(  ) = 0;
 
 		/**
-		 * If a billboard has multiple disjointed groups of foliage projected onto it with 
-		 * spaces between, BillboardSubdividePlanes can be used to split the billboard into 
-		 * multiple billboards that better encapsulates the projected foliage groups. Subdividing 
-		 * the billboards will increase triangle count for the billboards, but increase useful 
-		 * texture usage (less wasted space) and decrease rendering overdraw. 
-		 * @return the current value 
-		 */
-		virtual	bool GetBillboardSubdividePlanes(  ) = 0;
-
-		/**
-		 * Determines whether to prioritize accurately mapping triangles with higher visibility 
-		 * to billboards. 
-		 * @param value the new value 
-		 */
-		virtual	void SetBillboardUseVisibilityWeights( bool value ) = 0;
-
-		/**
-		 * Determines if the foliage is intended to be viewed from both sides without back 
-		 * face culling. 
-		 * @return the current value 
-		 */
-		virtual	bool GetBillboardTwoSided(  ) = 0;
-
-		/**
-		 * Determines whether to prioritize billboards that are vertical. 
-		 * @return the current value 
-		 */
-		virtual	bool GetBillboardFavorVerticalPlanes(  ) = 0;
-
-		/**
-		 * Is used to separate the trunk from the foliage in a vegetation scene by finding 
-		 * each group of connected triangles in the scene and if the diameter of the group 
-		 * is below (SeparateFoliageSizeThreshold * SceneDiameter) it is treated as foliage 
-		 * and processed into billboards. The trunk is optimized using reduction. The range 
-		 * is 0->large value. 0 means nothing will be foliage, value larger than the scene's 
-		 * diameter means everything will be foliage. 
-		 * @return the current value 
-		 */
-		virtual	real GetSeparateFoliageSizeThreshold(  ) = 0;
-
-		/**
-		 * Determines whether to prioritize billboards that are vertical. 
+		 * Determines whether to prioritize generating vertical billboards which means they 
+		 * will be optimized to be viewed from the side. Otherwise, if the foliage in the input 
+		 * scene is mostly facing upwards/downwards then the generated billboards will also 
+		 * be facing upwards/downwards which makes them not well suited to being viewed from 
+		 * the side. 
 		 * @param value the new value 
 		 */
 		virtual	void SetBillboardFavorVerticalPlanes( bool value ) = 0;
-
-		/**
-		 * Determines if billboards are limited to being planes or allowed to be more complex 
-		 * polygons that follow the shape of the projected geometry. 
-		 * @param value the new value 
-		 */
-		virtual	void SetBillboardAllowConvexPolygons( bool value ) = 0;
-
-		/**
-		 * Determines the maximum distance that triangles are allowed to be moved when initially 
-		 * being projected to billboards. Having a low BillboardMaxDeviation means that more 
-		 * billboards need to be created to represent spatially spread out triangles. Having 
-		 * a large BillboardMaxDeviation means that the tolerance is increased and fewer billboards 
-		 * can be created. 
-		 * @return the current value 
-		 * @param value the new value 
-		 */
-		virtual	void SetBillboardMaxDeviation( float value ) = 0;
 
 		/**
 		 * Determines if billboards are limited to being planes or allowed to be more complex 
@@ -26406,40 +26342,15 @@ namespace SimplygonSDK
 		virtual	bool GetBillboardAllowConvexPolygons(  ) = 0;
 
 		/**
-		 * Determines the vertical angle of the views to generate for the flip book impostor. 
-		 * 0 radians: Looking horizontally at the scene. pi/2 radians: Looking at the scene 
-		 * from above. -pi/2 radians: Looking at the scene from below. 
+		 * Is used to separate the trunk from the foliage in a vegetation scene by finding 
+		 * each group of connected triangles in the scene and if the triangle count is below 
+		 * SeparateFoliageTriangleThreshold it is treated as foliage and processed into billboards. 
+		 * The trunk is optimized using reduction. The range is 0->large value. 0 means nothing 
+		 * will be foliage, value larger than the maximum triangle count means everything will 
+		 * be foliage. 
 		 * @return the current value 
 		 */
-		virtual	float GetFlipbookVerticalAngleInRadians(  ) = 0;
-
-		/**
-		 * If a billboard has multiple disjointed groups of foliage projected onto it with 
-		 * spaces between, BillboardSubdividePlanes can be used to split the billboard into 
-		 * multiple billboards that better encapsulates the projected foliage groups. Subdividing 
-		 * the billboards will increase triangle count for the billboards, but increase useful 
-		 * texture usage (less wasted space) and decrease rendering overdraw. 
-		 * @param value the new value 
-		 */
-		virtual	void SetBillboardSubdividePlanes( bool value ) = 0;
-
-		/**
-		 * Is used to separate the trunk from the foliage in a vegetation scene by comparing 
-		 * each group of connected triangles in the scene with the scene's largest group. If 
-		 * a group's triangle count is below SeparateFoliageTriangleRatio * largestGrouptriangleCount 
-		 * it is treated as foliage and processed into billboards. The trunk is optimized using 
-		 * triangle reduction. The range is 0.0->1.0. 0.0 means nothing will be foliage, 1.0 
-		 * means everything will be foliage. 
-		 * @return the current value 
-		 */
-		virtual	float GetSeparateFoliageTriangleRatio(  ) = 0;
-
-		/**
-		 * Determines if the foliage is intended to be viewed from both sides without back 
-		 * face culling. 
-		 * @param value the new value 
-		 */
-		virtual	void SetBillboardTwoSided( bool value ) = 0;
+		virtual	unsigned int GetSeparateFoliageTriangleThreshold(  ) = 0;
 
 		/**
 		 * Is used to separate the trunk from the foliage in a vegetation scene by finding 
@@ -26453,6 +26364,35 @@ namespace SimplygonSDK
 		virtual	void SetSeparateFoliageAreaThreshold( real value ) = 0;
 
 		/**
+		 * Determines the vertical angle of the views to generate for the flip book impostor. 
+		 * 0 radians: Looking horizontally at the scene. pi/2 radians: Looking at the scene 
+		 * from above. -pi/2 radians: Looking at the scene from below. 
+		 * @return the current value 
+		 */
+		virtual	float GetFlipbookVerticalAngleInRadians(  ) = 0;
+
+		/**
+		 * Determines the number of views generated for the flip book impostor. 
+		 * @return the current value 
+		 */
+		virtual	unsigned int GetFlipbookNumberOfViews(  ) = 0;
+
+		/**
+		 * Determines the maximum billboard count. When this criteria is met, it is not guaranteed 
+		 * that all triangles in the scene have been accurately mapped to a billboard yet. 
+		 * Triangles that have nor been mapped to a billboard within the BillboardMaxDeviation 
+		 * distance will be mapped to an existing billboard that best represents the triangle. 
+		 * @param value the new value 
+		 */
+		virtual	void SetBillboardMaxPlaneCount( unsigned int value ) = 0;
+
+		/**
+		 * Determines the number of views generated for the flip book impostor. 
+		 * @param value the new value 
+		 */
+		virtual	void SetFlipbookNumberOfViews( unsigned int value ) = 0;
+
+		/**
 		 * Is used to separate the trunk from the foliage in a vegetation scene by finding 
 		 * each group of connected triangles in the scene and if the triangle count is below 
 		 * SeparateFoliageTriangleThreshold it is treated as foliage and processed into billboards. 
@@ -26464,13 +26404,29 @@ namespace SimplygonSDK
 		virtual	void SetSeparateFoliageTriangleThreshold( unsigned int value ) = 0;
 
 		/**
-		 * Determines the maximum billboard count. When this criteria is met, it is not guaranteed 
-		 * that all triangles in the scene have been accurately mapped to a billboard yet. 
-		 * Triangles that have nor been mapped to a billboard within the BillboardMaxDeviation 
-		 * distance will be mapped to an existing billboard that best represents the triangle. 
+		 * Determines if the foliage is intended to be viewed from both sides without back 
+		 * face culling. 
+		 * @param value the new value 
+		 */
+		virtual	void SetBillboardTwoSided( bool value ) = 0;
+
+		/**
+		 * Is used to separate the trunk from the foliage in a vegetation scene by comparing 
+		 * each group of connected triangles in the scene with the scene's largest group. If 
+		 * a group's triangle count is below SeparateFoliageTriangleRatio * largestGrouptriangleCount 
+		 * it is treated as foliage and processed into billboards. The trunk is optimized using 
+		 * triangle reduction. The range is 0.0->1.0. 0.0 means nothing will be foliage, 1.0 
+		 * means everything will be foliage. 
 		 * @return the current value 
 		 */
-		virtual	unsigned int GetBillboardMaxPlaneCount(  ) = 0;
+		virtual	float GetSeparateFoliageTriangleRatio(  ) = 0;
+
+		/**
+		 * Determines the triangle reduction ratio for the trunk part that has been separated 
+		 * from the foliage part based on the "separate foliage" settings. 
+		 * @return the current value 
+		 */
+		virtual	float GetBillboardTrunkReductionRatio(  ) = 0;
 
 		/**
 		 * Is used to separate the trunk from the foliage in a vegetation scene by finding 
@@ -26484,6 +26440,16 @@ namespace SimplygonSDK
 		virtual	real GetSeparateFoliageAreaThreshold(  ) = 0;
 
 		/**
+		 * Determines whether to prioritize generating vertical billboards which means they 
+		 * will be optimized to be viewed from the side. Otherwise, if the foliage in the input 
+		 * scene is mostly facing upwards/downwards then the generated billboards will also 
+		 * be facing upwards/downwards which makes them not well suited to being viewed from 
+		 * the side. 
+		 * @return the current value 
+		 */
+		virtual	bool GetBillboardFavorVerticalPlanes(  ) = 0;
+
+		/**
 		 * Determines the vertical angle of the views to generate for the flip book impostor. 
 		 * 0 radians: Looking horizontally at the scene. pi/2 radians: Looking at the scene 
 		 * from above. -pi/2 radians: Looking at the scene from below. 
@@ -26492,13 +26458,49 @@ namespace SimplygonSDK
 		virtual	void SetFlipbookVerticalAngleInRadians( float value ) = 0;
 
 		/**
-		 * Determines the maximum billboard count. When this criteria is met, it is not guaranteed 
-		 * that all triangles in the scene have been accurately mapped to a billboard yet. 
-		 * Triangles that have nor been mapped to a billboard within the BillboardMaxDeviation 
-		 * distance will be mapped to an existing billboard that best represents the triangle. 
+		 * If a billboard has multiple disjointed groups of foliage projected onto it with 
+		 * spaces between, BillboardSubdividePlanes can be used to split the billboard into 
+		 * multiple billboards that better encapsulates the projected foliage groups. Subdividing 
+		 * the billboards will increase triangle count for the billboards, but increase useful 
+		 * texture usage (less wasted space) and decrease rendering overdraw. 
 		 * @param value the new value 
 		 */
-		virtual	void SetBillboardMaxPlaneCount( unsigned int value ) = 0;
+		virtual	void SetBillboardSubdividePlanes( bool value ) = 0;
+
+		/**
+		 * Determines if billboards are limited to being planes or allowed to be more complex 
+		 * polygons that follow the shape of the projected geometry. 
+		 * @param value the new value 
+		 */
+		virtual	void SetBillboardAllowConvexPolygons( bool value ) = 0;
+
+		/**
+		 * Is used to separate the trunk from the foliage in a vegetation scene by finding 
+		 * each group of connected triangles in the scene and if the diameter of the group 
+		 * is below (SeparateFoliageSizeThreshold * SceneDiameter) it is treated as foliage 
+		 * and processed into billboards. The trunk is optimized using reduction. The range 
+		 * is 0->large value. 0 means nothing will be foliage, value larger than the scene's 
+		 * diameter means everything will be foliage. 
+		 * @return the current value 
+		 */
+		virtual	real GetSeparateFoliageSizeThreshold(  ) = 0;
+
+		/**
+		 * If a billboard has multiple disjointed groups of foliage projected onto it with 
+		 * spaces between, BillboardSubdividePlanes can be used to split the billboard into 
+		 * multiple billboards that better encapsulates the projected foliage groups. Subdividing 
+		 * the billboards will increase triangle count for the billboards, but increase useful 
+		 * texture usage (less wasted space) and decrease rendering overdraw. 
+		 * @return the current value 
+		 */
+		virtual	bool GetBillboardSubdividePlanes(  ) = 0;
+
+		/**
+		 * Determines the triangle reduction ratio for the trunk part that has been separated 
+		 * from the foliage part based on the "separate foliage" settings. 
+		 * @param value the new value 
+		 */
+		virtual	void SetBillboardTrunkReductionRatio( float value ) = 0;
 
 		/**
 		 * Is used to separate the trunk from the foliage in a vegetation scene by finding 
@@ -26512,6 +26514,22 @@ namespace SimplygonSDK
 		virtual	void SetSeparateFoliageSizeThreshold( real value ) = 0;
 
 		/**
+		 * Determines if the foliage is intended to be viewed from both sides without back 
+		 * face culling. 
+		 * @return the current value 
+		 */
+		virtual	bool GetBillboardTwoSided(  ) = 0;
+
+		/**
+		 * Determines how many billboards to create. A large BillboardDensity means that more 
+		 * billboards will be created to represent spatially spread out triangles better. Having 
+		 * a low BillboardDensity means that fewer billboards will be created and the distances 
+		 * from original leaves to billboards will get larger. The range is 0->1. 
+		 * @return the current value 
+		 */
+		virtual	float GetBillboardDensity(  ) = 0;
+
+		/**
 		 * Determines whether to prioritize accurately mapping triangles with higher visibility 
 		 * to billboards. 
 		 * @return the current value 
@@ -26519,48 +26537,20 @@ namespace SimplygonSDK
 		virtual	bool GetBillboardUseVisibilityWeights(  ) = 0;
 
 		/**
-		 * Determines the maximum distance that triangles are allowed to be moved when initially 
-		 * being projected to billboards. Having a low BillboardMaxDeviation means that more 
-		 * billboards need to be created to represent spatially spread out triangles. Having 
-		 * a large BillboardMaxDeviation means that the tolerance is increased and fewer billboards 
-		 * can be created. 
-		 * @return the current value 
-		 */
-		virtual	float GetBillboardMaxDeviation(  ) = 0;
-
-		/**
-		 * Determines the number of views generated for the flip book impostor. 
-		 * @return the current value 
-		 */
-		virtual	unsigned int GetFlipbookNumberOfViews(  ) = 0;
-
-		/**
-		 * Determines the maximum distance that triangles are allowed to be moved when initially 
-		 * being projected to billboards based on the scene's size and the intended on screen 
-		 * size of the processed scene. Having a large BillboardOnScreenSize means that more 
-		 * billboards need to be created to represent spatially spread out triangles. Having 
-		 * a low BillboardOnScreenSize means that the tolerance is increased and fewer billboards 
-		 * can be created. 
-		 * @return the current value 
-		 */
-		virtual	unsigned int GetBillboardOnScreenSize(  ) = 0;
-
-		/**
-		 * Determines the maximum distance that triangles are allowed to be moved when initially 
-		 * being projected to billboards based on the scene's size and the intended on screen 
-		 * size of the processed scene. Having a large BillboardOnScreenSize means that more 
-		 * billboards need to be created to represent spatially spread out triangles. Having 
-		 * a low BillboardOnScreenSize means that the tolerance is increased and fewer billboards 
-		 * can be created. 
+		 * Determines how many billboards to create. A large BillboardDensity means that more 
+		 * billboards will be created to represent spatially spread out triangles better. Having 
+		 * a low BillboardDensity means that fewer billboards will be created and the distances 
+		 * from original leaves to billboards will get larger. The range is 0->1. 
 		 * @param value the new value 
 		 */
-		virtual	void SetBillboardOnScreenSize( unsigned int value ) = 0;
+		virtual	void SetBillboardDensity( float value ) = 0;
 
 		/**
-		 * Determines the number of views generated for the flip book impostor. 
+		 * Determines whether to prioritize accurately mapping triangles with higher visibility 
+		 * to billboards. 
 		 * @param value the new value 
 		 */
-		virtual	void SetFlipbookNumberOfViews( unsigned int value ) = 0;
+		virtual	void SetBillboardUseVisibilityWeights( bool value ) = 0;
 
 		/**
 		 * Validates the current settings values. 
@@ -26644,15 +26634,15 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Clears internal states. 
+		 */
+		virtual	void Clear(  ) = 0;
+
+		/**
 		 * The settings for the ShadowMeshProcessor. 
 		 * @return the ShadowMesh settings object associated with the processor 
 		 */
 		virtual	CountedPointer<IShadowMeshSettings> GetShadowMeshSettings(  ) = 0;
-
-		/**
-		 * Clears internal states. 
-		 */
-		virtual	void Clear(  ) = 0;
 
 		/**
 		 * Runs the processing the object is designed for 
@@ -26731,11 +26721,12 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
-		 * Set the onscreen size (px) of the output utility mesh. This will determine triangle 
-		 * count and quality. 
-		 * @param value the desired silhouette fidelity 
+		 * Get the fidelity. This determines how large of an error that is tolerated, in pixels. 
+		 * Valid range is 1-50. Since this setting is based around the absolute worst-case 
+		 * scenario, you can usually get good results at relatively high tolerances. 
+		 * @return the current silhouette fidelity 
 		 */
-		virtual	void SetOnScreenSize( unsigned int value ) = 0;
+		virtual	unsigned int GetOnScreenErrorTolerance(  ) = 0;
 
 		/**
 		 * Set the fidelity. This determines how large of an error that is tolerated, in pixels. 
@@ -26746,12 +26737,11 @@ namespace SimplygonSDK
 		virtual	void SetOnScreenErrorTolerance( unsigned int value ) = 0;
 
 		/**
-		 * Get the fidelity. This determines how large of an error that is tolerated, in pixels. 
-		 * Valid range is 1-50. Since this setting is based around the absolute worst-case 
-		 * scenario, you can usually get good results at relatively high tolerances. 
-		 * @return the current silhouette fidelity 
+		 * Set the onscreen size (px) of the output utility mesh. This will determine triangle 
+		 * count and quality. 
+		 * @param value the desired silhouette fidelity 
 		 */
-		virtual	unsigned int GetOnScreenErrorTolerance(  ) = 0;
+		virtual	void SetOnScreenSize( unsigned int value ) = 0;
 
 		/**
 		 * Get the the onscreen size (px) of the output utility mesh. This will determine triangle 
@@ -26818,6 +26808,21 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Sets the path to one of the images to be compared. Both images needs to be of the 
+		 * same type and size for this to work. This can be used instead of setting the images 
+		 * from the "SetImage" function, and will only be used if the "SetImage" function was 
+		 * never used. 
+		 */
+		virtual	void SetImagePathBeforeImg( const char * value ) = 0;
+
+		/**
+		 * Returns the size of the largest problem-areas. Preferably this value should be not 
+		 * much larger than the 1-2 range, or the model should probably be further away from 
+		 * the camera to get a good looking LOD-switch. 
+		 */
+		virtual	float GetMaxPixelError(  ) = 0;
+
+		/**
 		 * Sets the export-path for the resulting comparison. Can be used to get a visual feedback 
 		 * of the results of the comparison. 
 		 */
@@ -26876,26 +26881,11 @@ namespace SimplygonSDK
 		virtual	void SetImages( IImageData *beforeImg , IImageData *afterImg ) = 0;
 
 		/**
-		 * Returns the size of the largest problem-areas. Preferably this value should be not 
-		 * much larger than the 1-2 range, or the model should probably be further away from 
-		 * the camera to get a good looking LOD-switch. 
-		 */
-		virtual	float GetMaxPixelError(  ) = 0;
-
-		/**
 		 * Returns the sum of all pixels that are in a "high-problem" area. Used together with 
 		 * the TotalMaskCoverage value, this can let you know how large the problem-areas are 
 		 * compared to the size of the model. 
 		 */
 		virtual	unsigned int GetHighlightAreaCoverage(  ) = 0;
-
-		/**
-		 * Sets the path to one of the images to be compared. Both images needs to be of the 
-		 * same type and size for this to work. This can be used instead of setting the images 
-		 * from the "SetImage" function, and will only be used if the "SetImage" function was 
-		 * never used. 
-		 */
-		virtual	void SetImagePathBeforeImg( const char * value ) = 0;
 
 		/**
 		 * Sets the path to the other of the images to be compared. Both images needs to be 
@@ -26906,12 +26896,11 @@ namespace SimplygonSDK
 		virtual	void SetImagePathAfterImg( const char * value ) = 0;
 
 		/**
-		 * Returns the number of pixels that either the before- or the after-masks covers. 
-		 * Can be good to know when looking at the TotalPixelError and HighlightAreaCoverage 
-		 * numbers, to get a feel for the big the error of the image is relative to how big 
-		 * the measured area actually was. 
+		 * Sets the export-path for the most heavily impacted areas of the comparison. Can 
+		 * be used to get a visual feedback of the results of the comparison, to see the highlighted 
+		 * "problem areas". 
 		 */
-		virtual	unsigned int GetTotalMaskCoverage(  ) = 0;
+		virtual	void SetDiffHighlightsExportPath( const char * value ) = 0;
 
 		/**
 		 * Returns the image for the most heavily impacted areas of the comparison. Can be 
@@ -26921,11 +26910,12 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IImageData> GetDiffHighlights(  ) = 0;
 
 		/**
-		 * Sets the export-path for the most heavily impacted areas of the comparison. Can 
-		 * be used to get a visual feedback of the results of the comparison, to see the highlighted 
-		 * "problem areas". 
+		 * Returns the number of pixels that either the before- or the after-masks covers. 
+		 * Can be good to know when looking at the TotalPixelError and HighlightAreaCoverage 
+		 * numbers, to get a feel for the big the error of the image is relative to how big 
+		 * the measured area actually was. 
 		 */
-		virtual	void SetDiffHighlightsExportPath( const char * value ) = 0;
+		virtual	unsigned int GetTotalMaskCoverage(  ) = 0;
 
 	};
 
@@ -26988,6 +26978,18 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * The recommended height calculated in CalculateRecommendedTextureSize() 
+		 * @return the recommended height 
+		 */
+		virtual	unsigned int GetRecommendedHeight(  ) = 0;
+
+		/**
+		 * Get the current automatic texture size multiplier. 
+		 * @return the current multiplier 
+		 */
+		virtual	real GetRecommendedTextureSizeMultiplier(  ) = 0;
+
+		/**
 		 * If automatic_texture_size is enabled, then force the texture sizes to be a power 
 		 * of 2 
 		 * @param value the desired flag 
@@ -26995,10 +26997,10 @@ namespace SimplygonSDK
 		virtual	void SetForcePower2Texture( bool value ) = 0;
 
 		/**
-		 * Get the current automatic texture size multiplier. 
-		 * @return the current multiplier 
+		 * The recommended width calculated in CalculateRecommendedTextureSize() 
+		 * @return the recommended width 
 		 */
-		virtual	real GetRecommendedTextureSizeMultiplier(  ) = 0;
+		virtual	unsigned int GetRecommendedWidth(  ) = 0;
 
 		/**
 		 * Calculates the recommended UV size based on the surface area of the geometry and 
@@ -27030,18 +27032,6 @@ namespace SimplygonSDK
 		 * @param value the desired multiplier 
 		 */
 		virtual	void SetRecommendedTextureSizeMultiplier( real value ) = 0;
-
-		/**
-		 * The recommended width calculated in CalculateRecommendedTextureSize() 
-		 * @return the recommended width 
-		 */
-		virtual	unsigned int GetRecommendedWidth(  ) = 0;
-
-		/**
-		 * The recommended height calculated in CalculateRecommendedTextureSize() 
-		 * @return the recommended height 
-		 */
-		virtual	unsigned int GetRecommendedHeight(  ) = 0;
 
 	};
 
@@ -27108,6 +27098,21 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set the geometry data object to run the part removal on. If a scene is set, this 
+		 * parameter is ignored by the reducer. 
+		 * @param value is the geometry data to be used for processing 
+		 */
+		virtual	void SetGeometry( IGeometryData *value ) = 0;
+
+		/**
+		 * Get the UsePerMaterialSizeThresholds flag. If true, the global SizeThreshold value 
+		 * will be ignored and the per-material values in the PerMaterialSizeThresholds will 
+		 * be used instead. 
+		 * @return the current value of UsePerMaterialSizeThresholds 
+		 */
+		virtual	bool GetUsePerMaterialSizeThresholds(  ) = 0;
+
+		/**
 		 * Get the per-material threshold array. These thresholds are mapped per material ID 
 		 * in the geometrydata object if UsePerMaterialSizeThresholds is true. The size and 
 		 * values in this array needs to be set up by the user, and material IDs that fall 
@@ -27117,11 +27122,11 @@ namespace SimplygonSDK
 		virtual	CountedPointer<IRealArray> GetPerMaterialSizeThresholds(  ) = 0;
 
 		/**
-		 * Set the geometry data object to run the part removal on. If a scene is set, this 
+		 * Get the geometry data object to run the part removal on. If a scene is set, this 
 		 * parameter is ignored by the reducer. 
-		 * @param value is the geometry data to be used for processing 
+		 * @return the geometry data to be used for processing 
 		 */
-		virtual	void SetGeometry( IGeometryData *value ) = 0;
+		virtual	CountedPointer<IGeometryData> GetGeometry(  ) = 0;
 
 		/**
 		 * Runs the part removal processing 
@@ -27142,13 +27147,6 @@ namespace SimplygonSDK
 		 * @return value is the scene data to be used for processing 
 		 */
 		virtual	CountedPointer<IScene> GetScene(  ) = 0;
-
-		/**
-		 * Get the geometry data object to run the part removal on. If a scene is set, this 
-		 * parameter is ignored by the reducer. 
-		 * @return the geometry data to be used for processing 
-		 */
-		virtual	CountedPointer<IGeometryData> GetGeometry(  ) = 0;
 
 		/**
 		 * Set the scene object to run the part removal on. 
@@ -27172,14 +27170,6 @@ namespace SimplygonSDK
 		 * @param value is the new value of UsePerMaterialSizeThresholds 
 		 */
 		virtual	void SetUsePerMaterialSizeThresholds( bool value ) = 0;
-
-		/**
-		 * Get the UsePerMaterialSizeThresholds flag. If true, the global SizeThreshold value 
-		 * will be ignored and the per-material values in the PerMaterialSizeThresholds will 
-		 * be used instead. 
-		 * @return the current value of UsePerMaterialSizeThresholds 
-		 */
-		virtual	bool GetUsePerMaterialSizeThresholds(  ) = 0;
 
 	};
 
@@ -27241,6 +27231,18 @@ namespace SimplygonSDK
 			return NULL;
 			}
 		/**
+		 * Set/Get the OnlyObjectBoundary flag, if set, only vertices that are on the boundary 
+		 * between two different objects are considered for the welding. 
+		 */
+		virtual	bool GetOnlyObjectBoundaryFlag(  ) = 0;
+
+		/**
+		 * Set the scene 
+		 * @param the input scene 
+		 */
+		virtual	void SetScene( IScene *value ) = 0;
+
+		/**
 		 * Set/Get the OnlyBorder flag, if set, only vertices that are on the border (as reported 
 		 * by the VertexBorder boolean field) are considered for the welding 
 		 */
@@ -27276,10 +27278,10 @@ namespace SimplygonSDK
 		virtual	void SetWeldDist( real value ) = 0;
 
 		/**
-		 * Set the scene 
-		 * @param the input scene 
+		 * Get the scene 
+		 * @return the input scene 
 		 */
-		virtual	void SetScene( IScene *value ) = 0;
+		virtual	CountedPointer<IScene> GetScene(  ) = 0;
 
 		/**
 		 * If IgnoreVertexLocks is true, then also vertices that are locked may be welded. 
@@ -27334,22 +27336,10 @@ namespace SimplygonSDK
 		virtual	void SetOnlyObjectBoundaryFlag( bool value ) = 0;
 
 		/**
-		 * Set/Get the OnlyObjectBoundary flag, if set, only vertices that are on the boundary 
-		 * between two different objects are considered for the welding. 
-		 */
-		virtual	bool GetOnlyObjectBoundaryFlag(  ) = 0;
-
-		/**
 		 * UpdateExtents. If true, the welder will call CalculateExtents on the geometry before 
 		 * welding. 
 		 */
 		virtual	void SetUpdateExtents( bool value ) = 0;
-
-		/**
-		 * Get the scene 
-		 * @return the input scene 
-		 */
-		virtual	CountedPointer<IScene> GetScene(  ) = 0;
 
 		/**
 		 * Set the ID of the SelectionSet containing the meshes to weld If the ID is -1, all 
@@ -27433,6 +27423,18 @@ namespace SimplygonSDK
 		 * Set/Get the OnlyWithinMaterial flag. If set, only vertices that are within the same 
 		 * material are welded. Vertices on material borders are locked. 
 		 */
+		virtual	bool GetOnlyWithinMaterialFlag(  ) = 0;
+
+		/**
+		 * Get the scene 
+		 * @return the input scene 
+		 */
+		virtual	CountedPointer<IScene> GetScene(  ) = 0;
+
+		/**
+		 * Set/Get the OnlyWithinMaterial flag. If set, only vertices that are within the same 
+		 * material are welded. Vertices on material borders are locked. 
+		 */
 		virtual	void SetOnlyWithinMaterialFlag( bool value ) = 0;
 
 		/**
@@ -27482,31 +27484,19 @@ namespace SimplygonSDK
 		virtual	bool GetOnlyObjectBoundaryFlag(  ) = 0;
 
 		/**
-		 * Set/Get the OnlyWithinMaterial flag. If set, only vertices that are within the same 
-		 * material are welded. Vertices on material borders are locked. 
-		 */
-		virtual	bool GetOnlyWithinMaterialFlag(  ) = 0;
-
-		/**
-		 * Get the scene 
-		 * @return the input scene 
-		 */
-		virtual	CountedPointer<IScene> GetScene(  ) = 0;
-
-		/**
 		 * Removes the t-junctions in the geometry data 
 		 */
 		virtual	void RemoveTJunctions( IGeometryData *geom ) = 0;
 
 		/**
-		 * Set/Get the distance, below which, the t-junctions will be welded 
-		 */
-		virtual	void SetWeldDist( real value ) = 0;
-
-		/**
 		 * Removes the t-junctions in the set scene, processing each sub-geometry individually. 
 		 */
 		virtual	void RemoveTJunctions(  ) = 0;
+
+		/**
+		 * Set/Get the distance, below which, the t-junctions will be welded 
+		 */
+		virtual	void SetWeldDist( real value ) = 0;
 
 		/**
 		 * Set/Get the distance, below which, the t-junctions will be welded 
@@ -28561,7 +28551,7 @@ namespace SimplygonSDK
 	 */
 	inline const rchar *GetInterfaceVersionHash()
 		{
-		return "DC03F6DD6CA014F7A3D0F77433FEC45285413C0B14566A37977655EE4E34A2A2";
+		return "D29EAC2CD2413D2AD41C8D0AD9F09CEC1B51B8B7EF93783EE05DC9662E4494CF";
 		}
 
 	/**
@@ -28570,7 +28560,7 @@ namespace SimplygonSDK
 	 */
 	inline const rchar *GetHeaderVersion()
 		{
-		return "8.2.352.28";
+		return "8.2.358.2";
 		}
 
 };
@@ -28578,6 +28568,4 @@ namespace SimplygonSDK
 #ifdef _WIN32
 #pragma warning( pop )
 #endif
-
-#endif//__WIN32
 #endif//__SimplygonSDK_h__

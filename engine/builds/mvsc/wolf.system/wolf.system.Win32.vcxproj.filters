@@ -37,6 +37,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\zone.c">
       <Filter>msgpack\src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\w_process.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />

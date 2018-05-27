@@ -18,6 +18,8 @@
 
 #endif
 
+#include <w_process.h>
+
 using namespace wolf;
 using namespace wolf::system;
 using namespace wolf::framework;
@@ -54,6 +56,9 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	w_game(pContentPath, pLogPath, pAppName)
 {
 	using namespace wolf;
+
+	auto _process_info = w_process::create_process(L"C:\\Windows\\System32\\Notepad.exe", L"NOTEPAD.EXE C:\\test_stream\\test.txt", 1000);
+	w_process::kill_process(_process_info);
 
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = true;

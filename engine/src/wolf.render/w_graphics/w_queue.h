@@ -7,6 +7,10 @@
 	Comment          :
 */
 
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifndef __W_QUEUE_H__
 #define __W_QUEUE_H__
 

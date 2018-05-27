@@ -243,6 +243,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui.h" />
+    <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui_internal.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\CullingThreadpool.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\FrameRecorder.h" />
     <ClInclude Include="..\..\..\..\src\wolf.render\w_framework\masked_occlusion_culling\MaskedOcclusionCulling.h" />

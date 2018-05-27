@@ -6,6 +6,11 @@
 	Description		 : Command buffers
 	Comment          : 
 */
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifndef __W_COMMAND_BUFFERS_H__
 #define __W_COMMAND_BUFFERS_H__
 

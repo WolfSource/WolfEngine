@@ -15,93 +15,36 @@
 #define __W_PROCESS_H__
 
 #include "w_system_export.h"
-#include <Windows.h>
-#include <tlhelp32.h>//for checking process
-#include <psapi.h>//list all processes
+#include "w_std.h"
 
 namespace wolf
 {
 	namespace system
 	{
+		struct w_process_info
+		{
+#ifdef __WIN32
+			PROCESS_INFORMATION info;
+#endif
+		};
+
 		class w_process
 		{
 		public:
-			static void print_process_name_ID(DWORD pProcessID)
-			{
-				TCHAR szProcessName[MAX_PATH] = TEXT("<unknown>");
-
-				// Get a handle to the process.
-				HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pProcessID);
-
-				// Get the process name.
-				if (NULL != hProcess)
-				{
-					HMODULE hMod;
-					DWORD cbNeeded;
-
-					if (EnumProcessModules(hProcess, &hMod, sizeof(hMod),
-						&cbNeeded))
-					{
-						GetModuleBaseName(hProcess, hMod, szProcessName, sizeof(szProcessName) / sizeof(TCHAR));
-					}
-				}
-
-				// Print the process name and identifier.
-				//_tprintf(TEXT("%s  (PID: %u)\n"), szProcessName, pProcessID);
-
-				// Release the handle to the process.
-				CloseHandle(hProcess);
-			}
-
-			static void enum_all_processes()
-			{
-				DWORD aProcesses[1024], cbNeeded, cProcesses;
-				unsigned int i;
-
-				if (!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded)) return;
-
-				// Calculate how many process identifiers were returned.
-				cProcesses = cbNeeded / sizeof(DWORD);
-
-				// Print the name and process identifier for each process.
-
-				for (i = 0; i < cProcesses; i++)
-				{
-					if (aProcesses[i] != 0)
-					{
-						print_process_name_ID(aProcesses[i]);
-					}
-				}
-			}
-
-			static bool is_two_instance_of_process_running(const wchar_t* pProcessName)
-			{
-				bool _ye = false;
-				BYTE _exists = 0;
-				PROCESSENTRY32 _entry;
-				_entry.dwSize = sizeof(PROCESSENTRY32);
-
-				HANDLE _snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
-
-				if (Process32First(_snapshot, &_entry))
-				{
-					while (Process32Next(_snapshot, &_entry))
-					{
-						if (!_wcsicmp(_entry.szExeFile, pProcessName))
-						{
-							_exists++;
-							if (_exists > 1)
-							{
-								_ye = true;
-								break;
-							}
-						}
-					}
-				}
-				CloseHandle(_snapshot);
-
-				return _ye;
-			}
+			//print process name based on proces ID
+			WSYS_EXP static void print_process_name_ID(_In_ const unsigned long& pProcessID);
+			//enumurate all processes
+			WSYS_EXP static const std::wstring enum_all_processes();
+			//check whether two instances of same process is running
+			WSYS_EXP static bool check_for_number_of_running_instances_from_process(_In_z_ const wchar_t* pProcessName,
+				_In_ size_t pNumberOfRunningInstnacesToBeChecked = 1);
+			//create a process
+			WSYS_EXP static w_process_info* create_process(
+				_In_z_ const wchar_t* pPathtoProcess, 
+				_In_z_ const wchar_t* pCmdsArg,
+				_In_  const unsigned long pWaitAfterRunningProcess = 0);
+			//kill a process
+			WSYS_EXP static bool kill_process(_In_ w_process_info* pProcessInfo);
 		};
 	}
 }

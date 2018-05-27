@@ -1,6 +1,4 @@
-﻿#ifdef __WIN32
-
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h> 
 #include <string>
 #include <vector>
@@ -1180,4 +1178,3 @@ namespace SimplygonSDK
 	// end of namespace
 	};
 
-#endif //__WIN32

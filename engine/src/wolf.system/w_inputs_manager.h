@@ -15,7 +15,12 @@
 #define __W_INPUT_H__
 
 #ifdef __WIN32
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <Windows.h>
+
 #else
 #include "w_point.h"
 #endif

@@ -151,6 +151,9 @@
     <ClInclude Include="..\..\..\..\src\wolf.render\w_graphics\w_memory_allocator.h">
       <Filter>w_graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\wolf.render\imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="w_framework">

@@ -6,6 +6,9 @@
 	Description		 : The w_masked_occlusion_culling
 	Comment          :
 */
+#if _MSC_VER > 1000
+#pragma once
+#endif
 
 #ifndef __W_MASKED_OCCLUSION_CULLING_H__
 #define __W_MASKED_OCCLUSION_CULLING_H__

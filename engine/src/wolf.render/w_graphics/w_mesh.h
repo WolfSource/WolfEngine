@@ -6,6 +6,11 @@
 	Description		 : Render a mesh
 	Comment          : 
 */
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
 #ifndef __W_MESH_H__
 #define __W_MESH_H__
 

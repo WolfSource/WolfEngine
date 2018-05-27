@@ -6,7 +6,10 @@
 #define __W_LUA_H__
 
 #ifdef WIN32
-#pragma comment(lib, "luajit-static.lib")
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <Windows.h>
 #endif
 

@@ -6,6 +6,9 @@
 	Description		 : render to texture
 	Comment          : 
 */
+#if _MSC_VER > 1000
+#pragma once
+#endif
 
 #ifndef __W_RENDER_TARGET_H__
 #define __W_RENDER_TARGET_H__

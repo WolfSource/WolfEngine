@@ -6,6 +6,9 @@
 	Description		 : create render pass
 	Comment          :
 */
+#if _MSC_VER > 1000
+#pragma once
+#endif
 
 #ifndef __W_RENDER_PASS_H__
 #define __W_RENDER_PASS_H__

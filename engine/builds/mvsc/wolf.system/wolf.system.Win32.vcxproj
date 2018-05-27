@@ -46,6 +46,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_memory.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_network.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_object.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_process.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_system_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -630,7 +631,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x64/debug;$(SolutionDir)/../../dependencies/nanomsg/lib/windows/x64/debug/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>advapi32.lib;ws2_32.lib;mswsock.lib;nanomsg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;mswsock.lib;nanomsg.lib;luajit-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -653,7 +654,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)/../../dependencies/luaJIT/lib/windows/x64/release;$(SolutionDir)/../../dependencies/nanomsg/lib/windows/x64/release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>No</GenerateDebugInformation>
-      <AdditionalDependencies>advapi32.lib;ws2_32.lib;mswsock.lib;nanomsg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib;advapi32.lib;ws2_32.lib;mswsock.lib;nanomsg.lib;luajit-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AssemblyDebug>false</AssemblyDebug>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>

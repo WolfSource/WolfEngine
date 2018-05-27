@@ -477,7 +477,7 @@ namespace wolf
 
             ULONG release()
             {
-                ImGui::Shutdown();
+                //ImGui::Shutdown();
 
 				SAFE_RELEASE(this->_vertex_buffer);
 				SAFE_RELEASE(this->_index_buffer);
