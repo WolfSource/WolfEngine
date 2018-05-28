@@ -800,8 +800,10 @@
       <Filter>msgpack</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extension.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\spdlog\spdlog.h" />
     <ClInclude Include="..\..\..\src\wolf.system\wolf_version.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\spdlog\spdlog.h">
+      <Filter>spdlog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -845,6 +847,9 @@
     </Filter>
     <Filter Include="msgpack\src">
       <UniqueIdentifier>{477f98ff-0deb-4a65-9dce-be7996ebf9a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="spdlog">
+      <UniqueIdentifier>{6e6e72db-9eb4-485e-985b-d9fd33a53203}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

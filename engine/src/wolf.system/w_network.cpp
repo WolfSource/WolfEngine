@@ -50,7 +50,7 @@ namespace wolf
 				this->_socket = nn_socket(pDomain, pProtocol);
 				if (this->_socket < 0)
 				{
-					V(W_FAILED, "creating socket", _trace_info, 3);
+					V(W_FAILED, w_log_type::W_ERROR, "creating socket. trace info: {}", _trace_info);
 					return W_FAILED;
 				}
                 
@@ -66,7 +66,7 @@ namespace wolf
 					//on bind, which used for server
 					if (nn_bind(this->_socket, pURL) < 0)
 					{
-						V(W_FAILED, "binding to " + std::string(pURL), _trace_info, 3);
+						V(W_FAILED, w_log_type::W_ERROR, "binding to {}. trace info: {}", pURL, _trace_info);
 						return W_FAILED;
 					}
 					break;
@@ -74,7 +74,7 @@ namespace wolf
 					//on conneect, which used for client
 					if (nn_connect(this->_socket, pURL) < 0)
 					{
-						V(W_FAILED, "connecting to " + std::string(pURL), _trace_info, 3);
+						V(W_FAILED, w_log_type::W_ERROR, "connecting to {}. trace info: {}", pURL, _trace_info);
 						return W_FAILED;
 					}
 					break;
@@ -86,7 +86,7 @@ namespace wolf
 				{
 					if (nn_connect(this->_socket, con) < 0)
 					{
-						V(W_FAILED, "connecting to " + std::string(con), _trace_info, 3);
+						V(W_FAILED, w_log_type::W_ERROR, "connecting to {}. trace info: {}", con, _trace_info);
 						return W_FAILED;
 					}
 				}
@@ -109,8 +109,8 @@ namespace wolf
 					pSocketOption->option_value,
 					pSocketOption->option_value_length) < 0)
                 {
-                    V(W_FAILED, "setting socket option. Level: " + std::to_string(pSocketOption->socket_level) +
-                      " Option:" + std::to_string(pSocketOption->option), _trace_info, 3);
+					V(W_FAILED, w_log_type::W_ERROR, "setting socket option. level: {} option: {} . trace info: {}",
+						pSocketOption->socket_level, pSocketOption->option, _trace_info);
                     return W_FAILED;
                 }
                 return W_PASSED;
@@ -185,7 +185,7 @@ W_RESULT w_network::setup_two_way_server(
 	}
 	else
 	{
-		V(W_FAILED, "allocating memory for socket option", _trace_info, 3);
+		V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace_info: {}", _trace_info);
 	}
 	auto _hr = this->_pimp->initialize(
 		pURL, 
@@ -220,7 +220,7 @@ W_RESULT w_network::setup_two_way_client(
 	}
 	else
 	{
-		V(W_FAILED, "allocating memory for socket option", _trace_info, 3);
+		V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace info: {} ", _trace_info);
 	}
 
 	auto _hr = this->_pimp->initialize(
@@ -269,7 +269,7 @@ W_RESULT w_network::setup_broadcast_subscriptore(
 	}
 	else
 	{
-		V(W_FAILED, "allocating memory for socket option", _trace_info, 3);
+		V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace info: {}", _trace_info);
 	}
 
 	auto _hr = this->_pimp->initialize(
@@ -334,7 +334,7 @@ W_RESULT w_network::setup_bus_node(
 	}
 	else
 	{
-		V(W_FAILED, "allocating memory for socket option", _trace_info, 3);
+		V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace info: {}", _trace_info);
 	}
 
 	auto _hr = this->_pimp->initialize(
@@ -358,7 +358,7 @@ ULONG w_network::free_buffer(_In_z_ char* pBuffer)
 	const std::string _trace_info = "w_network::free_buffer";
 	if (nn_freemsg(pBuffer) < 0)
 	{
-		V(W_FAILED, "free buffer", _trace_info, 3);
+		V(W_FAILED, w_log_type::W_ERROR, "free buffer. trace info: {}", _trace_info);
 		return W_FAILED;
 	}
 	return W_PASSED;

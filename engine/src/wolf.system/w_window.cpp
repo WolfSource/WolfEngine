@@ -53,20 +53,22 @@ static LRESULT CALLBACK MsgProc(HWND pHwnd, UINT pMessage, WPARAM pWParam, LPARA
 	return DefWindowProc(pHwnd, pMessage, pWParam, pLParam);
 }
 
-HRESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction)
+W_RESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction)
 {
     using namespace wolf;
+
+	auto _trace_info = this->name + "::initialize";
 
     auto _iter = windows_frame_time_in_sec.find((uint32_t)this->_id);
     if (_iter == windows_frame_time_in_sec.end())
     {
         windows_frame_time_in_sec[(uint32_t)this->_id] = 0.0f;
     }
-    else
-    {
-        _id = -1;
-        logger.error("Window with following ID " + std::to_string(this->_id) + " already registered. You can not get the frame time of it");
-    }
+	else
+	{
+		_id = -1;
+		logger.error("Window with following ID: {} already registered. You can not get the frame time of it", this->_id);
+	}
 
 	//Unregister all
 	this->_hInstance = NULL;
@@ -144,8 +146,8 @@ HRESULT w_window::initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> 
 		NULL);
 	if (!this->_hwnd)
 	{
-		V(S_FALSE, L"creating window handle", this->name, 3, true);
-		return S_FALSE;
+		V(W_FAILED, w_log_type::W_ERROR, true, "creating window handle. trace info: {}", _trace_info);
+		return W_FAILED;
 	}
 	
 	this->_hdc = GetDC(this->_hwnd);

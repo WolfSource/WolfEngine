@@ -120,7 +120,7 @@ namespace wolf
 						//						}
 					}
 				}
-				logger.error(L"Type not supported for " + pAssetPath);
+				logger.error(L"Type not supported for {}", pAssetPath);
 				return nullptr;
 			}
 
@@ -139,9 +139,9 @@ namespace wolf
                 if (!_file || _file.bad())
                 {
 #if defined(__WIN32) || defined(__UWP)
-                    logger.error(L"Error on creating saving wolf scene file on following path: " + _path);
+                    logger.error(L"Error on creating saving wolf scene file on following path: {}", _path);
 #else
-                    logger.error("Error on creating saving wolf scene file on following path: " + _path);
+                    logger.error("Error on creating saving wolf scene file on following path: {}", _path);
 #endif
                     _file.close();
                     return W_FAILED;
@@ -167,9 +167,9 @@ namespace wolf
                 if (!_file || _file.bad())
                 {
 #if defined(__WIN32) || defined(__UWP)
-                    logger.error(L"Error on opening wolf scene file from following path: " + _path);
+                    logger.error(L"Error on opening wolf scene file from following path: {}", _path);
 #else
-                    logger.error("Error on opening wolf scene file from following path: " + _path);
+                    logger.error("Error on opening wolf scene file from following path: {}", _path);
 #endif
                     _file.close();
                     return W_FAILED;

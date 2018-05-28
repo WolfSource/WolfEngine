@@ -301,8 +301,8 @@ W_RESULT w_graphics_device::capture(
 		&_format_properties);
 	if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
 	{
-		logger.warning("Blitting feature not supported from optimal tiled image for graphics device: " +
-			this->device_info->get_device_name() + " ID:" + std::to_string(this->device_info->get_device_id()) + " and following format: " + std::to_string(pSourceImageFormat));
+		logger.warning("Blitting feature not supported from optimal tiled image for graphics device: {} and following format: {}",
+			get_info(), pSourceImageFormat);
 		_bliting_supported = false;
 	}
 	if (_bliting_supported)
@@ -310,8 +310,8 @@ W_RESULT w_graphics_device::capture(
 		// Check for whether blitting is supported for linear image
 		if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
 		{
-			logger.warning("Blitting feature not supported from linear tiled image for graphics device: " +
-				this->device_info->get_device_name() + " ID:" + std::to_string(this->device_info->get_device_id()) + " and following format: " + std::to_string(pSourceImageFormat));
+			logger.warning("Blitting feature not supported from linear tiled image for graphics device: {} and following format: {}",
+				get_info(), pSourceImageFormat);
 			_bliting_supported = false;
 		}
 	}
@@ -1226,28 +1226,28 @@ static VkBool32 DebugMessageCallback(
     // Error that may result in undefined behaviour
     if (pFlags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
-        logger.error("[Vulkan Debugger] Flag: ERROR - Message code: " + std::to_string(pMsgCode) + " - Message: " + std::string(pMsg));
+		logger.error("[Vulkan Debugger] Flag: ERROR - Message code: {} - Message: {}", pMsgCode, pMsg);
     }
     // Warnings may hint at unexpected / non-spec API usage
     if (pFlags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
     {
-        logger.warning("[Vulkan Debugger] Flag: WARNING - Message code: " + std::to_string(pMsgCode) + " - Message: " + std::string(pMsg));
+        logger.warning("[Vulkan Debugger] Flag: WARNING - Message code: {} - Message: {}", pMsgCode, pMsg);
     }
     // May indicate sub-optimal usage of the API
     if (pFlags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
     {
-        logger.write("[Vulkan Debugger] Flag: PERFORMANCE - Message code: " + std::to_string(pMsgCode) + " - Message: " + std::string(pMsg));
+        logger.write("[Vulkan Debugger] Flag: PERFORMANCE - Message code: {} - Message: {}", pMsgCode, pMsg);
     }
     // Informal messages that may become handy during debugging
     if (pFlags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
     {
-        logger.user("[Vulkan Debugger] Flag: INFO - Message code: " + std::to_string(pMsgCode) + " - Message: " + std::string(pMsg));
+		logger.write("[Vulkan Debugger] Flag: INFO - Message code: {} - Message: {}", pMsgCode, pMsg);
     }
     // Diagnostic info from the Vulkan loader and layers
     // Usually not helpful in terms of API usage, but may help to debug layer and loader problems 
     if (pFlags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
     {
-        logger.write("[Vulkan Debugger] Flag: DEBUG - Message code: " + std::to_string(pMsgCode) + " - Message: " + std::string(pMsg));
+		logger.write("[Vulkan Debugger] Flag: DEBUG - Message code: {} - Message: {}", pMsgCode, pMsg);
     }
 
     // The return value of this callback controls wether the Vulkan call that caused
@@ -1609,12 +1609,9 @@ namespace wolf
 				auto _vk_minor = VK_VERSION_MINOR(VK_API_VERSION_1_1);
 				auto _vk_patch = VK_VERSION_PATCH(VK_HEADER_VERSION);
 
-				std::string _msg;
-				_msg += "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n";
-				_msg += "\t\t\t\t\tVulkan API version: " +
-					std::to_string(_vk_major) + "." +
-					std::to_string(_vk_minor) + "." +
-					std::to_string(_vk_patch) + "\r\n";
+				std::ostringstream _msg;
+				_msg << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++\r\n";
+				_msg << "\t\t\t\t\tVulkan API version: " << _vk_major << "." << _vk_minor << "." << _vk_patch << "\r\n";
 
 				//first find number of Vulkan instances
 				uint32_t _instance_layer_count;
@@ -1634,9 +1631,12 @@ namespace wolf
 				if (_hr)
 				{
 					//write the buffer to output before exiting
-					logger.write(_msg);
+					logger.write(_msg.str().c_str());
+					_msg.str("");
 					_msg.clear();
+					
 					logger.error("error on enumerating instance extension properties.");
+
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -1644,14 +1644,13 @@ namespace wolf
 				auto _extensions_available = new VkExtensionProperties[_extension_count];
 				vkEnumerateInstanceExtensionProperties(nullptr, &_extension_count, _extensions_available);
 
-				_msg += "\t\t\t\t\tVulkan extension(s) available:";
+				_msg << "\t\t\t\t\tVulkan extension(s) available:";
 				for (size_t i = 0; i < _extension_count; ++i)
 				{
-					_msg += "\r\n\t\t\t\t\t\t" + std::string(_extensions_available[i].extensionName);
+					_msg << "\r\n\t\t\t\t\t\t" << _extensions_available[i].extensionName;
 				}
 
 				//Vulkan instance object
-
 				VkApplicationInfo _app_info = {};
 				_app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 				_app_info.pApplicationName = "Wolf.Engine";
@@ -1721,15 +1720,15 @@ namespace wolf
                 //create Vulkan instance
                 _hr = vkCreateInstance(&_instance_create_info, nullptr, &w_graphics_device::vk_instance);
                 _vk_instance_enabled_extensions.clear();
-                if (_hr)
-                {
-                    logger.write(_msg);
-                    _msg.clear();
-                    logger.error("error on creating Vulkan instance.");
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
-
+				if (_hr)
+				{
+					logger.write(_msg.str().c_str());
+					_msg.str("");
+					_msg.clear();
+					logger.error("error on creating Vulkan instance.");
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 
 #if !defined(__APPLE__) && !defined(__iOS__)
                 if (this->_config.debug_gpu)
@@ -1759,7 +1758,6 @@ namespace wolf
                 }
 #endif
 
-
 				//Enumerate physical devices
 				uint32_t _gpu_count = 0;
 
@@ -1770,14 +1768,15 @@ namespace wolf
 				if (_gpu_count == 0)
 				{
 					//write the buffer to output before exiting
-					logger.write(_msg);
+					logger.write(_msg.str().c_str());
+					_msg.str("");
 					_msg.clear();
 					logger.error("GPU count. No GPU found.");
 					release();
 					std::exit(EXIT_FAILURE);
 				}
 
-				_msg += "\r\n\t\t\t\t\tGPU(s) founded:\r\n";
+				_msg << "\r\n\t\t\t\t\tGPU(s) founded:\r\n";
 
 				auto _gpus = new VkPhysicalDevice[_gpu_count];
 
@@ -1788,146 +1787,145 @@ namespace wolf
 					auto _device_properties = new (std::nothrow) VkPhysicalDeviceProperties();
 					if (!_device_properties)
 					{
-						_msg += "Error on allocating memory for device properties";
-						logger.write(_msg);
+						_msg << "Error on allocating memory for device properties";
+						logger.write(_msg.str().c_str());
+						_msg.str("");
 						_msg.clear();
 						release();
 						std::exit(EXIT_FAILURE);
 					}
 					vkGetPhysicalDeviceProperties(_gpus[i], _device_properties);
 					
-					_msg += "\t\t\t\t\t\tDevice Name: " + std::string(_device_properties->deviceName) + "\r\n";
-					_msg += "\t\t\t\t\t\tDevice ID: " + std::to_string(_device_properties->deviceID) + "\r\n";
-					_msg += "\t\t\t\t\t\tDevice Vendor: " + std::to_string(_device_properties->vendorID) + "\r\n";
-					_msg += "\t\t\t\t\t\tAPI Version: " + std::to_string(_device_properties->apiVersion >> 22) + "." +
-						std::to_string((_device_properties->apiVersion >> 12) & 0x3ff) + "." +
-						std::to_string(_device_properties->apiVersion & 0xfff) + "\r\n";
-					_msg += "\t\t\t\t\t\tDriver Version: " + std::to_string(_device_properties->driverVersion) + "\r\n";
-					_msg += "\t\t\t\t\t\tDevice Type: ";
+					_msg << "\t\t\t\t\t\tDevice Name: " << _device_properties->deviceName << "\r\n" << 
+						"\t\t\t\t\t\tDevice ID: " << _device_properties->deviceID << "\r\n" << 
+						"\t\t\t\t\t\tDevice Vendor: " << _device_properties->vendorID << "\r\n" << 
+					    "\t\t\t\t\t\tAPI Version: " << (_device_properties->apiVersion >> 22) << "." << 
+						((_device_properties->apiVersion >> 12) & 0x3ff) << "." << (_device_properties->apiVersion & 0xfff) << "\r\n" <<
+						"\t\t\t\t\t\tDriver Version: " << (_device_properties->driverVersion) << "\r\n\t\t\t\t\t\tDevice Type: ";
 
 					switch (_device_properties->deviceType)
 					{
 					case VK_PHYSICAL_DEVICE_TYPE_OTHER:
-						_msg += "VK_PHYSICAL_DEVICE_TYPE_OTHER";
+						_msg << "VK_PHYSICAL_DEVICE_TYPE_OTHER";
 						break;
 					case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
-						_msg += "VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU";
+						_msg << "VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU";
 						break;
 					case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
-						_msg += "VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU";
+						_msg << "VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU";
 						break;
 					case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
-						_msg += "VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU";
+						_msg << "VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU";
 						break;
 					case VK_PHYSICAL_DEVICE_TYPE_CPU:
-						_msg += "VK_PHYSICAL_DEVICE_TYPE_CPU";
+						_msg << "VK_PHYSICAL_DEVICE_TYPE_CPU";
 						break;
 					case VK_PHYSICAL_DEVICE_TYPE_RANGE_SIZE:
-						_msg += "VK_PHYSICAL_DEVICE_TYPE_RANGE_SIZE";
+						_msg << "VK_PHYSICAL_DEVICE_TYPE_RANGE_SIZE";
 						break;
 					case VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM:
-						_msg += "VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM";
+						_msg << "VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM";
 						break;
 					}
 
-					_msg += "\r\n\t\t\t\t\t\tPhysical Device Limits:";
-					_msg += "\r\n\t\t\t\t\t\t\tbufferImageGranularity: " + std::to_string(_device_properties->limits.bufferImageGranularity);
-					_msg += "\r\n\t\t\t\t\t\t\tdiscreteQueuePriorities: " + std::to_string(_device_properties->limits.discreteQueuePriorities);
-					_msg += "\r\n\t\t\t\t\t\t\tframebufferColorSampleCounts: " + std::to_string(_device_properties->limits.framebufferColorSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tframebufferDepthSampleCounts: " + std::to_string(_device_properties->limits.framebufferDepthSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tframebufferNoAttachmentsSampleCounts: " + std::to_string(_device_properties->limits.framebufferNoAttachmentsSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tframebufferStencilSampleCounts: " + std::to_string(_device_properties->limits.framebufferStencilSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tlineWidthGranularity: " + std::to_string(_device_properties->limits.lineWidthGranularity);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxBoundDescriptorSets: " + std::to_string(_device_properties->limits.maxBoundDescriptorSets);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxClipDistances: " + std::to_string(_device_properties->limits.maxClipDistances);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxColorAttachments: " + std::to_string(_device_properties->limits.maxColorAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxCombinedClipAndCullDistances: " + std::to_string(_device_properties->limits.maxCombinedClipAndCullDistances);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxComputeSharedMemorySize: " + std::to_string(_device_properties->limits.maxComputeSharedMemorySize);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxComputeWorkGroupInvocations: " + std::to_string(_device_properties->limits.maxComputeWorkGroupInvocations);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxCullDistances: " + std::to_string(_device_properties->limits.maxCullDistances);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetInputAttachments: " + std::to_string(_device_properties->limits.maxDescriptorSetInputAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetSampledImages: " + std::to_string(_device_properties->limits.maxDescriptorSetSampledImages);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetSamplers: " + std::to_string(_device_properties->limits.maxDescriptorSetSamplers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffers: " + std::to_string(_device_properties->limits.maxDescriptorSetStorageBuffers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffersDynamic: " + std::to_string(_device_properties->limits.maxDescriptorSetStorageBuffersDynamic);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDrawIndexedIndexValue: " + std::to_string(_device_properties->limits.maxDrawIndexedIndexValue);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxDrawIndirectCount: " + std::to_string(_device_properties->limits.maxDrawIndirectCount);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentCombinedOutputResources: " + std::to_string(_device_properties->limits.maxFragmentCombinedOutputResources);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentDualSrcAttachments: " + std::to_string(_device_properties->limits.maxFragmentDualSrcAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentInputComponents: " + std::to_string(_device_properties->limits.maxFragmentInputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFragmentOutputAttachments: " + std::to_string(_device_properties->limits.maxFragmentOutputAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFramebufferWidth: " + std::to_string(_device_properties->limits.maxFramebufferWidth);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFramebufferHeight: " + std::to_string(_device_properties->limits.maxFramebufferHeight);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxFramebufferLayers: " + std::to_string(_device_properties->limits.maxFramebufferLayers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryInputComponents: " + std::to_string(_device_properties->limits.maxGeometryInputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryOutputComponents: " + std::to_string(_device_properties->limits.maxGeometryOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryOutputVertices: " + std::to_string(_device_properties->limits.maxGeometryOutputVertices);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryShaderInvocations: " + std::to_string(_device_properties->limits.maxGeometryShaderInvocations);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxGeometryTotalOutputComponents: " + std::to_string(_device_properties->limits.maxGeometryTotalOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageArrayLayers: " + std::to_string(_device_properties->limits.maxImageArrayLayers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimension1D: " + std::to_string(_device_properties->limits.maxImageDimension1D);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimension2D: " + std::to_string(_device_properties->limits.maxImageDimension2D);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimension3D: " + std::to_string(_device_properties->limits.maxImageDimension3D);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxImageDimensionCube: " + std::to_string(_device_properties->limits.maxImageDimensionCube);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxInterpolationOffset: " + std::to_string(_device_properties->limits.maxInterpolationOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxMemoryAllocationCount: " + std::to_string(_device_properties->limits.maxMemoryAllocationCount);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorInputAttachments: " + std::to_string(_device_properties->limits.maxPerStageDescriptorInputAttachments);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSampledImages: " + std::to_string(_device_properties->limits.maxPerStageDescriptorSampledImages);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSamplers: " + std::to_string(_device_properties->limits.maxPerStageDescriptorSamplers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageBuffers: " + std::to_string(_device_properties->limits.maxPerStageDescriptorStorageBuffers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageImages: " + std::to_string(_device_properties->limits.maxPerStageDescriptorStorageImages);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorUniformBuffers: " + std::to_string(_device_properties->limits.maxPerStageDescriptorUniformBuffers);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPerStageResources: " + std::to_string(_device_properties->limits.maxPerStageResources);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxPushConstantsSize: " + std::to_string(_device_properties->limits.maxPushConstantsSize);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxSampleMaskWords: " + std::to_string(_device_properties->limits.maxSampleMaskWords);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxSamplerAllocationCount: " + std::to_string(_device_properties->limits.maxSamplerAllocationCount);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxSamplerAnisotropy: " + std::to_string(_device_properties->limits.maxSamplerAnisotropy);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxSamplerLodBias: " + std::to_string(_device_properties->limits.maxSamplerLodBias);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxStorageBufferRange: " + std::to_string(_device_properties->limits.maxStorageBufferRange);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlPerPatchOutputComponents: " + std::to_string(_device_properties->limits.maxTessellationControlPerPatchOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexInputComponents: " + std::to_string(_device_properties->limits.maxTessellationControlPerVertexInputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexOutputComponents: " + std::to_string(_device_properties->limits.maxTessellationControlPerVertexOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationControlTotalOutputComponents: " + std::to_string(_device_properties->limits.maxTessellationControlTotalOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationInputComponents: " + std::to_string(_device_properties->limits.maxTessellationEvaluationInputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationOutputComponents: " + std::to_string(_device_properties->limits.maxTessellationEvaluationOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationGenerationLevel: " + std::to_string(_device_properties->limits.maxTessellationGenerationLevel);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTessellationPatchSize: " + std::to_string(_device_properties->limits.maxTessellationPatchSize);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTexelBufferElements: " + std::to_string(_device_properties->limits.maxTexelBufferElements);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTexelGatherOffset: " + std::to_string(_device_properties->limits.maxTexelGatherOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxTexelOffset: " + std::to_string(_device_properties->limits.maxTexelOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxUniformBufferRange: " + std::to_string(_device_properties->limits.maxUniformBufferRange);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputAttributeOffset: " + std::to_string(_device_properties->limits.maxVertexInputAttributeOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputAttributes: " + std::to_string(_device_properties->limits.maxVertexInputAttributes);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputBindingStride: " + std::to_string(_device_properties->limits.maxVertexInputBindingStride);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexInputBindings: " + std::to_string(_device_properties->limits.maxVertexInputBindings);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxVertexOutputComponents: " + std::to_string(_device_properties->limits.maxVertexOutputComponents);
-					_msg += "\r\n\t\t\t\t\t\t\tmaxViewports: " + std::to_string(_device_properties->limits.maxViewports);
-					_msg += "\r\n\t\t\t\t\t\t\tminInterpolationOffset: " + std::to_string(_device_properties->limits.minInterpolationOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tminMemoryMapAlignment: " + std::to_string(_device_properties->limits.minMemoryMapAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tminStorageBufferOffsetAlignment: " + std::to_string(_device_properties->limits.minStorageBufferOffsetAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tminTexelBufferOffsetAlignment: " + std::to_string(_device_properties->limits.minTexelBufferOffsetAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tminTexelGatherOffset: " + std::to_string(_device_properties->limits.minTexelGatherOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tminTexelOffset: " + std::to_string(_device_properties->limits.minTexelOffset);
-					_msg += "\r\n\t\t\t\t\t\t\tminUniformBufferOffsetAlignment: " + std::to_string(_device_properties->limits.minUniformBufferOffsetAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tmipmapPrecisionBits: " + std::to_string(_device_properties->limits.mipmapPrecisionBits);
-					_msg += "\r\n\t\t\t\t\t\t\tnonCoherentAtomSize: " + std::to_string(_device_properties->limits.nonCoherentAtomSize);
-					_msg += "\r\n\t\t\t\t\t\t\toptimalBufferCopyOffsetAlignment: " + std::to_string(_device_properties->limits.optimalBufferCopyOffsetAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\toptimalBufferCopyRowPitchAlignment: " + std::to_string(_device_properties->limits.optimalBufferCopyRowPitchAlignment);
-					_msg += "\r\n\t\t\t\t\t\t\tpointSizeGranularity: " + std::to_string(_device_properties->limits.pointSizeGranularity);
-					_msg += "\r\n\t\t\t\t\t\t\tsampledImageColorSampleCounts: " + std::to_string(_device_properties->limits.sampledImageColorSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tsampledImageDepthSampleCounts: " + std::to_string(_device_properties->limits.sampledImageDepthSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tsampledImageIntegerSampleCounts: " + std::to_string(_device_properties->limits.sampledImageIntegerSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tsampledImageStencilSampleCounts: " + std::to_string(_device_properties->limits.sampledImageStencilSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tsparseAddressSpaceSize: " + std::to_string(_device_properties->limits.sparseAddressSpaceSize);
-					_msg += "\r\n\t\t\t\t\t\t\tstandardSampleLocations: " + std::to_string(_device_properties->limits.standardSampleLocations);
-					_msg += "\r\n\t\t\t\t\t\t\tstorageImageSampleCounts: " + std::to_string(_device_properties->limits.storageImageSampleCounts);
-					_msg += "\r\n\t\t\t\t\t\t\tstrictLines: " + std::to_string(_device_properties->limits.strictLines);
-					_msg += "\r\n\t\t\t\t\t\t\tsubPixelInterpolationOffsetBits: " + std::to_string(_device_properties->limits.subPixelInterpolationOffsetBits);
-					_msg += "\r\n\t\t\t\t\t\t\tsubPixelPrecisionBits: " + std::to_string(_device_properties->limits.subPixelPrecisionBits);
-					_msg += "\r\n\t\t\t\t\t\t\tsubTexelPrecisionBits: " + std::to_string(_device_properties->limits.subTexelPrecisionBits);
-					_msg += "\r\n\t\t\t\t\t\t\ttimestampComputeAndGraphics: " + std::to_string(_device_properties->limits.timestampComputeAndGraphics);
-					_msg += "\r\n\t\t\t\t\t\t\ttimestampPeriod: " + std::to_string(_device_properties->limits.timestampPeriod);
-					_msg += "\r\n\t\t\t\t\t\t\tviewportSubPixelBits: " + std::to_string(_device_properties->limits.viewportSubPixelBits);
+					_msg << "\r\n\t\t\t\t\t\tPhysical Device Limits:" << 
+					"\r\n\t\t\t\t\t\t\tbufferImageGranularity: " << _device_properties->limits.bufferImageGranularity << 
+					"\r\n\t\t\t\t\t\t\tdiscreteQueuePriorities: " << _device_properties->limits.discreteQueuePriorities << 
+					"\r\n\t\t\t\t\t\t\tframebufferColorSampleCounts: " << _device_properties->limits.framebufferColorSampleCounts <<
+					"\r\n\t\t\t\t\t\t\tframebufferDepthSampleCounts: " << _device_properties->limits.framebufferDepthSampleCounts << 
+					"\r\n\t\t\t\t\t\t\tframebufferNoAttachmentsSampleCounts: " << _device_properties->limits.framebufferNoAttachmentsSampleCounts << 
+					"\r\n\t\t\t\t\t\t\tframebufferStencilSampleCounts: " << _device_properties->limits.framebufferStencilSampleCounts << 
+					"\r\n\t\t\t\t\t\t\tlineWidthGranularity: " << _device_properties->limits.lineWidthGranularity << 
+					"\r\n\t\t\t\t\t\t\tmaxBoundDescriptorSets: " << _device_properties->limits.maxBoundDescriptorSets << 
+					"\r\n\t\t\t\t\t\t\tmaxClipDistances: " << _device_properties->limits.maxClipDistances <<
+					"\r\n\t\t\t\t\t\t\tmaxColorAttachments: " << _device_properties->limits.maxColorAttachments << 
+					"\r\n\t\t\t\t\t\t\tmaxCombinedClipAndCullDistances: " << _device_properties->limits.maxCombinedClipAndCullDistances << 
+					"\r\n\t\t\t\t\t\t\tmaxComputeSharedMemorySize: " << _device_properties->limits.maxComputeSharedMemorySize << 
+					"\r\n\t\t\t\t\t\t\tmaxComputeWorkGroupInvocations: " << _device_properties->limits.maxComputeWorkGroupInvocations <<
+					"\r\n\t\t\t\t\t\t\tmaxCullDistances: " << _device_properties->limits.maxCullDistances <<
+					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetInputAttachments: " << _device_properties->limits.maxDescriptorSetInputAttachments <<
+					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetSampledImages: " << _device_properties->limits.maxDescriptorSetSampledImages <<
+					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetSamplers: " << _device_properties->limits.maxDescriptorSetSamplers <<
+					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffers: " << _device_properties->limits.maxDescriptorSetStorageBuffers <<
+					"\r\n\t\t\t\t\t\t\tmaxDescriptorSetStorageBuffersDynamic: " << _device_properties->limits.maxDescriptorSetStorageBuffersDynamic <<
+					"\r\n\t\t\t\t\t\t\tmaxDrawIndexedIndexValue: " << _device_properties->limits.maxDrawIndexedIndexValue <<
+					"\r\n\t\t\t\t\t\t\tmaxDrawIndirectCount: " << _device_properties->limits.maxDrawIndirectCount <<
+					"\r\n\t\t\t\t\t\t\tmaxFragmentCombinedOutputResources: " << _device_properties->limits.maxFragmentCombinedOutputResources <<
+					"\r\n\t\t\t\t\t\t\tmaxFragmentDualSrcAttachments: " << _device_properties->limits.maxFragmentDualSrcAttachments <<
+					"\r\n\t\t\t\t\t\t\tmaxFragmentInputComponents: " << _device_properties->limits.maxFragmentInputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxFragmentOutputAttachments: " << _device_properties->limits.maxFragmentOutputAttachments <<
+					"\r\n\t\t\t\t\t\t\tmaxFramebufferWidth: " << _device_properties->limits.maxFramebufferWidth <<
+					"\r\n\t\t\t\t\t\t\tmaxFramebufferHeight: " << _device_properties->limits.maxFramebufferHeight <<
+					"\r\n\t\t\t\t\t\t\tmaxFramebufferLayers: " << _device_properties->limits.maxFramebufferLayers <<
+					"\r\n\t\t\t\t\t\t\tmaxGeometryInputComponents: " << _device_properties->limits.maxGeometryInputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxGeometryOutputComponents: " << _device_properties->limits.maxGeometryOutputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxGeometryOutputVertices: " << _device_properties->limits.maxGeometryOutputVertices <<
+					"\r\n\t\t\t\t\t\t\tmaxGeometryShaderInvocations: " << _device_properties->limits.maxGeometryShaderInvocations <<
+					"\r\n\t\t\t\t\t\t\tmaxGeometryTotalOutputComponents: " << _device_properties->limits.maxGeometryTotalOutputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxImageArrayLayers: " << _device_properties->limits.maxImageArrayLayers <<
+					"\r\n\t\t\t\t\t\t\tmaxImageDimension1D: " << _device_properties->limits.maxImageDimension1D <<
+					"\r\n\t\t\t\t\t\t\tmaxImageDimension2D: " << _device_properties->limits.maxImageDimension2D <<
+					"\r\n\t\t\t\t\t\t\tmaxImageDimension3D: " << _device_properties->limits.maxImageDimension3D <<
+					"\r\n\t\t\t\t\t\t\tmaxImageDimensionCube: " << _device_properties->limits.maxImageDimensionCube <<
+					"\r\n\t\t\t\t\t\t\tmaxInterpolationOffset: " << _device_properties->limits.maxInterpolationOffset <<
+					"\r\n\t\t\t\t\t\t\tmaxMemoryAllocationCount: " << _device_properties->limits.maxMemoryAllocationCount <<
+					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorInputAttachments: " << _device_properties->limits.maxPerStageDescriptorInputAttachments <<
+					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSampledImages: " << _device_properties->limits.maxPerStageDescriptorSampledImages <<
+					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorSamplers: " << _device_properties->limits.maxPerStageDescriptorSamplers <<
+					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageBuffers: " << _device_properties->limits.maxPerStageDescriptorStorageBuffers <<
+					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorStorageImages: " << _device_properties->limits.maxPerStageDescriptorStorageImages <<
+					"\r\n\t\t\t\t\t\t\tmaxPerStageDescriptorUniformBuffers: " << _device_properties->limits.maxPerStageDescriptorUniformBuffers <<
+					"\r\n\t\t\t\t\t\t\tmaxPerStageResources: " << _device_properties->limits.maxPerStageResources <<
+					"\r\n\t\t\t\t\t\t\tmaxPushConstantsSize: " << _device_properties->limits.maxPushConstantsSize <<
+					"\r\n\t\t\t\t\t\t\tmaxSampleMaskWords: " << _device_properties->limits.maxSampleMaskWords <<
+					"\r\n\t\t\t\t\t\t\tmaxSamplerAllocationCount: " << _device_properties->limits.maxSamplerAllocationCount <<
+					"\r\n\t\t\t\t\t\t\tmaxSamplerAnisotropy: " << _device_properties->limits.maxSamplerAnisotropy <<
+					"\r\n\t\t\t\t\t\t\tmaxSamplerLodBias: " << _device_properties->limits.maxSamplerLodBias <<
+					"\r\n\t\t\t\t\t\t\tmaxStorageBufferRange: " << _device_properties->limits.maxStorageBufferRange <<
+					"\r\n\t\t\t\t\t\t\tmaxTessellationControlPerPatchOutputComponents: " << _device_properties->limits.maxTessellationControlPerPatchOutputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexInputComponents: " << _device_properties->limits.maxTessellationControlPerVertexInputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxTessellationControlPerVertexOutputComponents: " << _device_properties->limits.maxTessellationControlPerVertexOutputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxTessellationControlTotalOutputComponents: " << _device_properties->limits.maxTessellationControlTotalOutputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationInputComponents: " << _device_properties->limits.maxTessellationEvaluationInputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxTessellationEvaluationOutputComponents: " << _device_properties->limits.maxTessellationEvaluationOutputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxTessellationGenerationLevel: " << _device_properties->limits.maxTessellationGenerationLevel <<
+					"\r\n\t\t\t\t\t\t\tmaxTessellationPatchSize: " << _device_properties->limits.maxTessellationPatchSize <<
+					"\r\n\t\t\t\t\t\t\tmaxTexelBufferElements: " << _device_properties->limits.maxTexelBufferElements <<
+					"\r\n\t\t\t\t\t\t\tmaxTexelGatherOffset: " << _device_properties->limits.maxTexelGatherOffset <<
+					"\r\n\t\t\t\t\t\t\tmaxTexelOffset: " << _device_properties->limits.maxTexelOffset <<
+					"\r\n\t\t\t\t\t\t\tmaxUniformBufferRange: " << _device_properties->limits.maxUniformBufferRange <<
+					"\r\n\t\t\t\t\t\t\tmaxVertexInputAttributeOffset: " << _device_properties->limits.maxVertexInputAttributeOffset <<
+					"\r\n\t\t\t\t\t\t\tmaxVertexInputAttributes: " << _device_properties->limits.maxVertexInputAttributes <<
+					"\r\n\t\t\t\t\t\t\tmaxVertexInputBindingStride: " << _device_properties->limits.maxVertexInputBindingStride <<
+					"\r\n\t\t\t\t\t\t\tmaxVertexInputBindings: " << _device_properties->limits.maxVertexInputBindings <<
+					"\r\n\t\t\t\t\t\t\tmaxVertexOutputComponents: " << _device_properties->limits.maxVertexOutputComponents <<
+					"\r\n\t\t\t\t\t\t\tmaxViewports: " << _device_properties->limits.maxViewports <<
+					"\r\n\t\t\t\t\t\t\tminInterpolationOffset: " << _device_properties->limits.minInterpolationOffset <<
+					"\r\n\t\t\t\t\t\t\tminMemoryMapAlignment: " << _device_properties->limits.minMemoryMapAlignment <<
+					"\r\n\t\t\t\t\t\t\tminStorageBufferOffsetAlignment: " << _device_properties->limits.minStorageBufferOffsetAlignment <<
+					"\r\n\t\t\t\t\t\t\tminTexelBufferOffsetAlignment: " << _device_properties->limits.minTexelBufferOffsetAlignment <<
+					"\r\n\t\t\t\t\t\t\tminTexelGatherOffset: " << _device_properties->limits.minTexelGatherOffset <<
+					"\r\n\t\t\t\t\t\t\tminTexelOffset: " << _device_properties->limits.minTexelOffset <<
+					"\r\n\t\t\t\t\t\t\tminUniformBufferOffsetAlignment: " << _device_properties->limits.minUniformBufferOffsetAlignment <<
+					"\r\n\t\t\t\t\t\t\tmipmapPrecisionBits: " << _device_properties->limits.mipmapPrecisionBits <<
+					"\r\n\t\t\t\t\t\t\tnonCoherentAtomSize: " << _device_properties->limits.nonCoherentAtomSize <<
+					"\r\n\t\t\t\t\t\t\toptimalBufferCopyOffsetAlignment: " << _device_properties->limits.optimalBufferCopyOffsetAlignment <<
+					"\r\n\t\t\t\t\t\t\toptimalBufferCopyRowPitchAlignment: " << _device_properties->limits.optimalBufferCopyRowPitchAlignment <<
+					"\r\n\t\t\t\t\t\t\tpointSizeGranularity: " << _device_properties->limits.pointSizeGranularity <<
+					"\r\n\t\t\t\t\t\t\tsampledImageColorSampleCounts: " << _device_properties->limits.sampledImageColorSampleCounts <<
+					"\r\n\t\t\t\t\t\t\tsampledImageDepthSampleCounts: " << _device_properties->limits.sampledImageDepthSampleCounts <<
+					"\r\n\t\t\t\t\t\t\tsampledImageIntegerSampleCounts: " << _device_properties->limits.sampledImageIntegerSampleCounts <<
+					"\r\n\t\t\t\t\t\t\tsampledImageStencilSampleCounts: " << _device_properties->limits.sampledImageStencilSampleCounts <<
+					"\r\n\t\t\t\t\t\t\tsparseAddressSpaceSize: " << _device_properties->limits.sparseAddressSpaceSize <<
+					"\r\n\t\t\t\t\t\t\tstandardSampleLocations: " << _device_properties->limits.standardSampleLocations <<
+					"\r\n\t\t\t\t\t\t\tstorageImageSampleCounts: " << _device_properties->limits.storageImageSampleCounts <<
+					"\r\n\t\t\t\t\t\t\tstrictLines: " << _device_properties->limits.strictLines <<
+					"\r\n\t\t\t\t\t\t\tsubPixelInterpolationOffsetBits: " << _device_properties->limits.subPixelInterpolationOffsetBits <<
+					"\r\n\t\t\t\t\t\t\tsubPixelPrecisionBits: " << _device_properties->limits.subPixelPrecisionBits <<
+					"\r\n\t\t\t\t\t\t\tsubTexelPrecisionBits: " << _device_properties->limits.subTexelPrecisionBits <<
+					"\r\n\t\t\t\t\t\t\ttimestampComputeAndGraphics: " << _device_properties->limits.timestampComputeAndGraphics <<
+					"\r\n\t\t\t\t\t\t\ttimestampPeriod: " << _device_properties->limits.timestampPeriod <<
+					"\r\n\t\t\t\t\t\t\tviewportSubPixelBits: " << _device_properties->limits.viewportSubPixelBits;
 
 					//create a shared graphics device for this GPU
 					auto _gDevice = std::make_shared<w_graphics_device>();
@@ -1936,7 +1934,8 @@ namespace wolf
 					auto _device_info = new (std::nothrow) w_device_info();
 					if (!_device_info)
 					{
-						logger.write(_msg);
+						logger.write(_msg.str().c_str());
+						_msg.str("");
 						_msg.clear();
 						logger.error("could not find allocate memory for device_info.");
 						release();
@@ -1962,47 +1961,48 @@ namespace wolf
 
 					for (size_t j = 0; j < _gDevice->vk_physical_device_memory_properties.memoryHeapCount; ++j)
 					{
-						_msg += "\r\n\t\t\t\t\t\t\tmemoryHeapSize: " + std::to_string(_gDevice->vk_physical_device_memory_properties.memoryHeaps[j].size);
+						_msg << "\r\n\t\t\t\t\t\t\tmemoryHeapSize: "  << _gDevice->vk_physical_device_memory_properties.memoryHeaps[j].size;
 						switch (_gDevice->vk_physical_device_memory_properties.memoryHeaps[j].flags)
 						{
 						case VK_MEMORY_HEAP_DEVICE_LOCAL_BIT:
-							_msg += "\r\n\t\t\t\t\t\t\tmemoryHeapFlag: VK_MEMORY_HEAP_DEVICE_LOCAL_BIT";
+							_msg << "\r\n\t\t\t\t\t\t\tmemoryHeapFlag: VK_MEMORY_HEAP_DEVICE_LOCAL_BIT";
 							break;
 						case VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM:
-							_msg += "\r\n\t\t\t\t\t\t\tmemoryHeapFlag: VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM";
+							_msg << "\r\n\t\t\t\t\t\t\tmemoryHeapFlag: VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM";
 							break;
 						}
 					}
 
 					for (size_t j = 0; j < _gDevice->vk_physical_device_memory_properties.memoryTypeCount; ++j)
 					{
-						_msg += "\r\n\t\t\t\t\t\t\tmemoryTypeHeapIndex: " +
-							std::to_string(_gDevice->vk_physical_device_memory_properties.memoryTypes[j].heapIndex);
+						_msg << "\r\n\t\t\t\t\t\t\tmemoryTypeHeapIndex: " <<
+							_gDevice->vk_physical_device_memory_properties.memoryTypes[j].heapIndex;
 						switch (_gDevice->vk_physical_device_memory_properties.memoryTypes[j].propertyFlags)
 						{
 						case VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT:
-							_msg += "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT";
+							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT";
 							break;
 						case VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT:
-							_msg += "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT";
+							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT";
 							break;
 						case VK_MEMORY_PROPERTY_HOST_COHERENT_BIT:
-							_msg += "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_COHERENT_BIT";
+							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_COHERENT_BIT";
 							break;
 						case VK_MEMORY_PROPERTY_HOST_CACHED_BIT:
-							_msg += "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_CACHED_BIT";
+							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_HOST_CACHED_BIT";
 							break;
 						case VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT:
-							_msg += "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT";
+							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT";
 							break;
 						case VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM:
-							_msg += "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM";
+							_msg << "\r\n\t\t\t\t\t\t\t\tmemoryTypeFlag: VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM";
 							break;
 						}
 					}
 
 					//write buffer to output
-					logger.write(_msg);
+					logger.write(_msg.str().c_str());
+					_msg.str("");
 					_msg.clear();
 
 					//get queue family from default GPU
@@ -2014,7 +2014,8 @@ namespace wolf
 
 					if (_queue_family_property_count == 0)
 					{
-						logger.write(_msg);
+						logger.write(_msg.str().c_str());
+						_msg.str("");
 						_msg.clear();
 						logger.error("could not find queue family for default GPU.");
 						release();
@@ -2030,26 +2031,26 @@ namespace wolf
 
 
 					bool _queue_graphics_bit_found = false;
-                    for (size_t j = 0; j < _queue_family_property_count; ++j)
-                    {
-                        _msg += "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
-                        if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-                        {
-                            _queue_graphics_bit_found = true;
-                            _gDevice->vk_graphics_queue.index = static_cast<uint32_t>(j);
-                            _msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_GRAPHICS_BIT supported.";
-                            break;
-                        }
-                    }
+					for (size_t j = 0; j < _queue_family_property_count; ++j)
+					{
+						_msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " << j;
+						if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+						{
+							_queue_graphics_bit_found = true;
+							_gDevice->vk_graphics_queue.index = static_cast<uint32_t>(j);
+							_msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_GRAPHICS_BIT supported.";
+							break;
+						}
+					}
 
                     for (size_t j = 0; j < _queue_family_property_count; ++j)
                     {
-                        _msg += "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
+                        _msg << "\r\n\t\t\t\t\t\t_queue_family_properties: "  << j;
                         if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_COMPUTE_BIT)
                         {
                             _queue_graphics_bit_found = true;
                             _gDevice->vk_compute_queue.index = static_cast<uint32_t>(j);
-                            _msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_COMPUTE_BIT supported.";
+                            _msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_COMPUTE_BIT supported.";
                             break;
                         }
                     }
@@ -2057,12 +2058,12 @@ namespace wolf
 
                     for (size_t j = 0; j < _queue_family_property_count; ++j)
                     {
-                        _msg += "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
+                        _msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " << j;
                         if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_TRANSFER_BIT)
                         {
                             _queue_graphics_bit_found = true;
                             _gDevice->vk_transfer_queue.index = static_cast<uint32_t>(j);
-                            _msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_TRANSFER_BIT supported.";
+                            _msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_TRANSFER_BIT supported.";
                             break;
                         }
                     }
@@ -2070,22 +2071,24 @@ namespace wolf
 
                     for (size_t j = 0; j < _queue_family_property_count; ++j)
                     {
-                        _msg += "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
+                        _msg << "\r\n\t\t\t\t\t\t_queue_family_properties: " + std::to_string(j);
                         if (_gDevice->vk_queue_family_properties[j].queueFlags & VK_QUEUE_SPARSE_BINDING_BIT)
                         {
                             _queue_graphics_bit_found = true;
                             _gDevice->vk_sparse_queue.index = static_cast<uint32_t>(j);
-                            _msg += "\r\n\t\t\t\t\t\t\tVK_QUEUE_SPARSE_BINDING_BIT supported.";
+                            _msg << "\r\n\t\t\t\t\t\t\tVK_QUEUE_SPARSE_BINDING_BIT supported.";
                             break;
                         }
                     }
 
-					logger.write(_msg);
+					logger.write(_msg.str().c_str());
+					_msg.str("");
 					_msg.clear();
 					if (!_queue_graphics_bit_found || _queue_family_property_count == 0)
 					{
 						//write the buffer to output before exiting
-						logger.write(_msg);
+						logger.write(_msg.str().c_str());
+						_msg.str("");
 						_msg.clear();
 						logger.error("could not find queue family with VK_QUEUE_GRAPHICS_BIT for default GPU.");
 						release();
@@ -2121,7 +2124,8 @@ namespace wolf
 					_hr = vkCreateDevice(_gpus[i], &_create_device_info, nullptr, &_gDevice->vk_device);
 					if (_hr)
 					{
-						logger.write(_msg);
+						logger.write(_msg.str().c_str());
+						_msg.str("");
 						_msg.clear();
 						logger.error("error on creating Vulkan device.");
 						release();
@@ -2140,13 +2144,13 @@ namespace wolf
                                                    &_command_pool_info,
                                                    nullptr,
                                                    &_gDevice->vk_command_allocator_pool);
-                    if (_hr)
-                    {
-                        logger.error("error on creating vulkan command pool for graphics device: " +
-                                     std::string(_device_properties->deviceName) + " ID:" + std::to_string(_device_properties->deviceID));
-                        release();
-                        std::exit(EXIT_FAILURE);
-                    }
+					if (_hr)
+					{
+						logger.error("error on creating vulkan command pool for graphics device:{} with device ID: {}",
+							_device_properties->deviceName, _device_properties->deviceID);
+						release();
+						std::exit(EXIT_FAILURE);
+					}
 
 
 					if (!this->_config.off_screen_mode)
@@ -2197,14 +2201,15 @@ namespace wolf
                                 &surface_create_info,
                                 nullptr,
                                 &_out_window.vk_presentation_surface);
-                            if (_hr)
-                            {
-                                logger.write(_msg);
-                                _msg.clear();
-                                logger.error("error on creating win32 surface for Vulkan.");
-                                release();
-                                std::exit(EXIT_FAILURE);
-                            }
+							if (_hr)
+							{
+								logger.write(_msg.str().c_str());
+								_msg.str("");
+								_msg.clear();
+								logger.error("error on creating win32 surface for Vulkan.");
+								release();
+								std::exit(EXIT_FAILURE);
+							}
 
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
                             VkXcbSurfaceCreateInfoKHR _surface_create_info =
@@ -2221,8 +2226,9 @@ namespace wolf
                                 &_out_window.vk_presentation_surface);
                             if (_hr)
                             {
-                                logger.write(_msg);
-                                _msg.clear();
+                                logger.write(_msg.str().c_str());
+								_msg.str("");
+								_msg.clear();
                                 logger.error("error on creating xcb surface for Vulkan.");
                                 release();
                                 std::exit(EXIT_FAILURE);
@@ -2240,8 +2246,9 @@ namespace wolf
                                 &surface_create_info, nullptr, &Vulkan.PresentationSurface);
                             if (_hr)
                             {
-                                logger.write(_msg);
-                                _msg.clear();
+                                logger.write(_msg.str().c_str());
+								_msg.str("");
+								_msg.clear();
                                 logger.error("error on creating xlib surface for Vulkan.");
                                 release();
                                 std::exit(EXIT_FAILURE);
@@ -2259,8 +2266,9 @@ namespace wolf
                                 &_out_window.vk_presentation_surface);
                             if (_hr)
                             {
-                                logger.write(_msg);
-                                _msg.clear();
+                                logger.write(_msg.str().c_str());
+								_msg.str("");
+								_msg.clear();
                                 logger.error("error on creating android surface for Vulkan.");
                                 release();
                                 std::exit(EXIT_FAILURE);
@@ -2278,8 +2286,9 @@ namespace wolf
                                 &_out_window.vk_presentation_surface);
                             if (_hr)
                             {
-                                logger.write(_msg);
-                                _msg.clear();
+								logger.write(_msg.str().c_str());
+								_msg.str("");
+								_msg.clear();
                                 logger.error("error on creating iOS surface for Vulkan.");
                                 release();
                                 std::exit(EXIT_FAILURE);
@@ -2296,8 +2305,9 @@ namespace wolf
                                 &_out_window.vk_presentation_surface);
                             if (_hr)
                             {
-                                logger.write(_msg);
-                                _msg.clear();
+								logger.write(_msg.str().c_str());
+								_msg.str("");
+								_msg.clear();
                                 logger.error("error on creating macOS surface for Vulkan.");
                                 release();
                                 std::exit(EXIT_FAILURE);
@@ -2437,55 +2447,6 @@ namespace wolf
 				}
 				else
 				{
-#pragma region NO NEED ANYMORE
-					//float _numerator = 0;
-					//float _denominator = 1;
-
-					////if this window does not need v-sync, then it is important to get the refresh rate of displays
-					//if (!_output_presentation_window->v_sync)
-					//{
-					//	//we need to get the numerator and denominator of display monitors
-					//	UINT _num_modes = 0;
-					//	_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
-					//		DXGI_ENUM_MODES_INTERLACED,
-					//		&_num_modes,
-					//		NULL);
-					//	if (SUCCEEDED(_hr))
-					//	{
-					//		std::vector<DXGI_MODE_DESC> _display_modes(_num_modes);
-					//		_hr = pGDevice->dx_dxgi_outputs->GetDisplayModeList(_output_presentation_window->dx_swap_chain_selected_format,
-					//			DXGI_ENUM_MODES_INTERLACED,
-					//			&_num_modes,
-					//			_display_modes.data());
-					//		if (SUCCEEDED(_hr))
-					//		{
-					//			for (size_t i = 0; i < _num_modes; ++i)
-					//			{
-					//				if (_output_presentation_window->height == _display_modes[i].Height &&
-					//					_output_presentation_window->width == _display_modes[i].Width)
-					//				{
-					//					auto _refresh_rate = _display_modes[i].RefreshRate;
-					//					_numerator = _refresh_rate.Numerator;
-					//					_denominator = _refresh_rate.Denominator;
-					//				}
-					//			}
-					//		}
-					//		else
-					//		{
-					//			logger.warning(L"Could not get display modes list for graphics device: " + _device_name +
-					//				L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					//		}
-					//		_display_modes.clear();
-					//	}
-					//	else
-					//	{
-					//		logger.warning(L"Could not get number of display modes list for graphics device: " + _device_name +
-					//			L" and presentation window: " + std::to_wstring(pOutputPresentationWindowIndex));
-					//	}
-
-					//}
-#pragma endregion
-
 					// Disable full screen with ALT+Enter
 					_hr = w_graphics_device::dx_dxgi_factory->MakeWindowAssociation(_output_presentation_window->hwnd, DXGI_MWA_NO_ALT_ENTER);
 					V(_hr, L"disabling ALT+Enter for presentation window: " + std::to_wstring(pOutputPresentationWindowIndex),
@@ -2792,7 +2753,7 @@ namespace wolf
 				}
 
 				V(pGDevice->vk_present_queue.index == UINT32_MAX ? W_FAILED : W_PASSED,
-					L"could not find queue family which supports presentation for graphics device: " +
+					L"could not find queue family which supports presentation for graphics device: {}" +
 					std::wstring(_device_name.begin(), _device_name.end()) + L" ID:" + std::to_wstring(_device_id),
 					this->_name, 2);
 
@@ -2804,8 +2765,8 @@ namespace wolf
 					NULL);
 				if (_hr)
 				{
-					logger.error("could not get number of physical device surface formats for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("could not get number of physical device surface formats for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2818,8 +2779,8 @@ namespace wolf
 					_output_presentation_window->vk_surface_formats.data());
 				if (_hr)
 				{
-					logger.error("could not get physical device surface formats for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("could not get physical device surface formats for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2849,10 +2810,9 @@ namespace wolf
 					//use the default one
 					if (!_find_format)
 					{
-						logger.error("preferred swap chain format \'" + 
-							std::to_string(_output_presentation_window->vk_swap_chain_selected_format.format) + 
-							"\' not found for graphics device: " +
-							_device_name + " ID:" + std::to_string(_device_id));
+						logger.error("preferred swap chain format \'{}\' not found for graphics device: {}", 
+							_output_presentation_window->vk_swap_chain_selected_format.format,  
+							pGDevice->get_info());
 
 						_output_presentation_window->vk_swap_chain_selected_format = _output_presentation_window->vk_surface_formats[0];
 					}
@@ -2864,8 +2824,8 @@ namespace wolf
 					&_surface_capabilities);
 				if (_hr == -3)
 				{
-					logger.error("error on create vulkan surface capabilities for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on create vulkan surface capabilities for graphics device: {}",
+						pGDevice->get_info());
 
 					//manually create _surface_capabilities
 					_surface_capabilities.currentExtent.width = _output_presentation_window->width;
@@ -2932,8 +2892,8 @@ namespace wolf
 
 				if (_desired_number_of_swapchain_images == 0)
 				{
-					logger.error("The images count of surface capabilities and swap chain is zero, for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("The images count of surface capabilities and swap chain is zero, for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -2941,17 +2901,16 @@ namespace wolf
 				{
 					if (_output_presentation_window->double_buffering)
 					{
-						logger.warning("Double buffering for swap chain forced by user, for graphics device: " +
-							_device_name + " ID:" + std::to_string(_device_id));
+						logger.warning("Double buffering for swap chain forced by user, for graphics device: {}",
+							pGDevice->get_info());
 						_desired_number_of_swapchain_images = 2;
 					}
 				}
 
-				logger.user(
-					"Desired number of swapchain image(s) is " +
-					std::to_string(_desired_number_of_swapchain_images) +
-					", for graphics device: " +
-					_device_name + " ID:" + std::to_string(_device_id));
+				logger.write(
+					"Desired number of swapchain image(s) is {} for graphics device: {}",
+					_desired_number_of_swapchain_images,
+					pGDevice->get_info());
 
 				//Find a supported composite alpha format
 				VkCompositeAlphaFlagBitsKHR _composite_alpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
@@ -2998,8 +2957,8 @@ namespace wolf
 					&_present_mode_count, nullptr);
 				if (_hr)
 				{
-					logger.error("error on getting vulkan present mode(s) count for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on getting vulkan present mode(s) count for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3012,16 +2971,16 @@ namespace wolf
 					_avaiable_present_modes.data());
 				if (_hr)
 				{
-					logger.error("error on getting vulkan present mode(s) for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on getting vulkan present mode(s) for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
 
 				if (_avaiable_present_modes.size() == 0)
 				{
-					logger.error("no avaiable present mode founded for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("no avaiable present mode founded for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3126,8 +3085,7 @@ namespace wolf
 					&_output_presentation_window->vk_swap_chain);
 				if (_hr || !_output_presentation_window->vk_swap_chain)
 				{
-					logger.error("error on creating swap chain for vulkan for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on creating swap chain for vulkan for graphics device: {}", pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3140,8 +3098,8 @@ namespace wolf
 					nullptr);
 				if (_hr || _swap_chain_image_count == UINT32_MAX)
 				{
-					logger.error("error on getting total available image counts of swap chain for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on getting total available image counts of swap chain for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3153,8 +3111,8 @@ namespace wolf
 					_swap_chain_images.data());
 				if (_hr)
 				{
-					logger.error("error on getting total available images of swap chain for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on getting total available images of swap chain for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3188,8 +3146,8 @@ namespace wolf
                         &_image_view.view);
                     if (_hr)
                     {
-                        logger.error("error on creating image view total available images of swap chain for graphics device: " +
-                            _device_name + " ID:" + std::to_string(_device_id));
+                        logger.error("error on creating image view total available images of swap chain for graphics device: {}",
+							pGDevice->get_info());
                         release();
                         std::exit(EXIT_FAILURE);
                     }
@@ -3210,8 +3168,8 @@ namespace wolf
 					VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 				if (_depth_format == VkFormat::VK_FORMAT_UNDEFINED)
 				{
-					logger.error("Depth format not supported for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("Depth format not supported for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3249,8 +3207,8 @@ namespace wolf
 					&_output_presentation_window->depth_buffer_image_view.image);
 				if (_hr)
 				{
-					logger.error("error on creating depth buffer for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on creating depth buffer for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3269,8 +3227,8 @@ namespace wolf
 					&_mem_alloc.memoryTypeIndex);
 				if (_hr)
 				{
-					logger.error("error on determining the type of memory required from memory properties for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on determining the type of memory required from memory properties for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3282,8 +3240,8 @@ namespace wolf
 					&_output_presentation_window->depth_buffer_memory);
 				if (_hr)
 				{
-					logger.error("error on allocating memory for depth buffer image for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on allocating memory for depth buffer image for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3295,8 +3253,8 @@ namespace wolf
 					0);
 				if (_hr)
 				{
-					logger.error("error on binding to memory for depth buffer image for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on binding to memory for depth buffer image for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3325,12 +3283,11 @@ namespace wolf
 					&_output_presentation_window->depth_buffer_image_view.view);
 				if (_hr)
 				{
-					logger.error("error on creating image view for depth buffer image for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on creating image view for depth buffer image for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
-
 
 				_output_presentation_window->depth_buffer_image_view.width = _output_presentation_window->width;
 				_output_presentation_window->depth_buffer_image_view.height = _output_presentation_window->height;
@@ -3430,15 +3387,15 @@ namespace wolf
                 //create semaphores fro this graphics device
                 if (_output_presentation_window->swap_chain_image_is_available_semaphore.initialize(pGDevice) == W_FAILED)
                 {
-                    logger.error("error on creating image_is_available semaphore for graphics device: " +
-                                 _device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on creating image_is_available semaphore for graphics device: {}",
+						pGDevice->get_info());
                     release();
                     std::exit(EXIT_FAILURE);
                 }
                 if (_output_presentation_window->rendering_done_semaphore.initialize(pGDevice) == W_FAILED)
                 {
-					logger.error("error on creating rendering_is_done semaphore for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id));
+					logger.error("error on creating rendering_is_done semaphore for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3458,8 +3415,8 @@ namespace wolf
                 _output_window->objs_between_cpu_gpu = new (std::nothrow) w_output_presentation_window::shared_objs_between_cpu_gpu();
                 if (!_output_window->objs_between_cpu_gpu)
                 {
-                    logger.error("error on allocating memory for shared objects between CPU and GPU for graphics device: " +
-                        _device_name + " ID:" + std::to_string(_device_id) );
+                    logger.error("error on allocating memory for shared objects between CPU and GPU for graphics device: {}",
+						pGDevice->get_info());
                     release();
                     std::exit(EXIT_FAILURE);
                 }
@@ -3475,8 +3432,9 @@ namespace wolf
                     &_format_properties);
                 if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
                 {
-                    logger.warning("Blitting feature not supported from optimal tiled image for graphics device: " +
-                        _device_name + " ID:" + std::to_string(_device_id) + " and following format: " + std::to_string(_src_format));
+					logger.warning("Blitting feature not supported from optimal tiled image for graphics device: {} and following format: {}",
+						pGDevice->get_info(),
+						_src_format);
                     _output_window->bliting_supported_by_swap_chain = false;
                 }
                 if (_output_window->bliting_supported_by_swap_chain)
@@ -3484,8 +3442,9 @@ namespace wolf
                     // Check for whether blitting is supported for linear image
                     if (!(_format_properties.linearTilingFeatures & VK_FORMAT_FEATURE_BLIT_DST_BIT))
                     {
-                        logger.warning("Blitting feature not supported from linear tiled image for graphics device: " +
-                            _device_name + " ID:" + std::to_string(_device_id) + " and following format: " + std::to_string(_src_format));
+						logger.warning("Blitting feature not supported from linear tiled image for graphics device: {} and following format: {}",
+							pGDevice->get_info(),
+							_src_format);
                         _output_window->bliting_supported_by_swap_chain = false;
                     }
                 }
@@ -3511,13 +3470,13 @@ namespace wolf
                     &_image_create_info,
                     nullptr,
                     &_objs_ptr->destination_image);
-                if (_hr)
-                {
-                    logger.error("error on creating destination image for graphics device: " +
-                        _device_name + " ID:" + std::to_string(_device_id) );
-                    release();
-                    std::exit(EXIT_FAILURE);
-                }
+				if (_hr)
+				{
+					logger.error("error on creating destination image for graphics device: {}",
+						pGDevice->get_info());
+					release();
+					std::exit(EXIT_FAILURE);
+				}
 
                 //get memory requirements
                 VkMemoryRequirements _mem_requirements;
@@ -3541,8 +3500,8 @@ namespace wolf
                 _hr = vkAllocateMemory(pGDevice->vk_device, &_mem_alloc_info, nullptr, &_objs_ptr->destination_image_memory);
                 if (_hr)
                 {
-                    logger.error("error on creating destination image for graphics device: " +
-                        _device_name + " ID:" + std::to_string(_device_id) );
+					logger.error("error on creating destination image for graphics device: {}",
+						pGDevice->get_info());
                     release();
                     std::exit(EXIT_FAILURE);
                 }
@@ -3556,8 +3515,8 @@ namespace wolf
                 _hr = vkAllocateCommandBuffers(pGDevice->vk_device, &_copy_cmd_buf_allocate_info, &_objs_ptr->copy_command_buffer);
                 if (_hr)
                 {
-                    logger.error("error on allocating buffer for copy command buffer for graphics device: " +
-                        _device_name + " ID:" + std::to_string(_device_id) );
+                    logger.error("error on allocating buffer for copy command buffer for graphics device: {}",
+						pGDevice->get_info());
                     release();
                     std::exit(EXIT_FAILURE);
                 }
@@ -3566,8 +3525,8 @@ namespace wolf
 				_hr = vkBindImageMemory(pGDevice->vk_device, _objs_ptr->destination_image, _objs_ptr->destination_image_memory, 0);
 				if (_hr)
 				{
-					logger.error("binding to destination image  for graphics device: " +
-						_device_name + " ID:" + std::to_string(_device_id) );
+					logger.error("binding to destination image  for graphics device: {}",
+						pGDevice->get_info());
 					release();
 					std::exit(EXIT_FAILURE);
 				}
@@ -3874,13 +3833,12 @@ W_RESULT w_graphics_device_manager::prepare()
             VK_NULL_HANDLE,
             &_output_window->swap_chain_image_index);
 
-        if (_hr != VK_SUCCESS && _hr != VK_SUBOPTIMAL_KHR)
-        {
-            logger.error("error acquiring image of graphics device's swap chain : " +
-                std::to_string(i) );
-            release();
-            std::exit(EXIT_FAILURE);
-        }
+		if (_hr != VK_SUCCESS && _hr != VK_SUBOPTIMAL_KHR)
+		{
+			logger.error("error acquiring image of graphics device's swap chain : {}", i);
+			release();
+			std::exit(EXIT_FAILURE);
+		}
 #endif
     }
 
@@ -3957,8 +3915,7 @@ W_RESULT w_graphics_device_manager::present()
                 return W_FAILED;
             }
 
-            logger.error("error on presenting queue of graphics device: " +
-                _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()));
+            logger.error("error on presenting queue of graphics device: {}", _gDevice->get_info());
             release();
             std::exit(EXIT_FAILURE);
         }
@@ -3966,8 +3923,7 @@ W_RESULT w_graphics_device_manager::present()
         _hr = vkQueueWaitIdle(_gDevice->vk_present_queue.queue);
         if (_hr)
         {
-            logger.error("error on wait idle queue of graphics device: " +
-                _gDevice->device_info->get_device_name() );
+            logger.error("error on wait idle queue of graphics device: {}", _gDevice->get_info());
             release();
             std::exit(EXIT_FAILURE);
         }

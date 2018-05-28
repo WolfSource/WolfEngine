@@ -184,118 +184,89 @@ namespace wolf
 				this->_log_file->flush();
 			}
 
+#pragma region write
             //Write an output message
 			void write(_In_z_ const char* fmt)
 			{
-				//this->_log_file->info(fmt);
-
-//#ifndef MinSizeRel
-//
-//#if defined(__WIN32) || defined(__UWP)
-//				OutputDebugStringA(fmt);
-//#elif defined(__linux) || defined(__APPLE__)
-//				std::cout << fmt;
-//#elif defined(__ANDROID)
-//				LOGI(fmt);
-//#endif
-//
-//#endif
+				this->_log_file->info(fmt);
 			}
 
 			//Write an output message
 			void write(_In_z_ const wchar_t* fmt)
 			{
-				//this->_log_file->info(fmt);
-
-//#if defined(__WIN32) || defined(__UWP)
-//				OutputDebugStringW(fmt);
-//#elif defined(__linux) || defined(__APPLE__)
-//				std::wcout << fmt;
-//#elif defined(__ANDROID)
-//				LOGI(fmt);
-//#endif
+				this->_log_file->info(fmt);
 			}
 
 			//Write an output message
 			template<typename... w_args>
-			void write(_In_z_ const char* fmt, _In_ const w_args &... args)
+			void write(_In_z_ const char* fmt, _In_ const w_args&... args)
 			{
-				//this->_log_file->info(fmt, args...);
-
-//#ifndef MinSizeRel
-//				std::string _str = format(fmt, args);
-//#if defined(__WIN32) || defined(__UWP)
-//				OutputDebugStringA(_str.c_str());
-//#elif defined(__linux) || defined(__APPLE__)
-//				std::cout << _str.c_str();
-//#elif defined(__ANDROID)
-//				LOGI(_str.c_str());
-//#endif
-
-//#endif//MinSizeRel 
-
+				this->_log_file->info(fmt, args...);
 			}
 
 			//Write an output message
 			template<typename... w_args>
-			void write(_In_z_ const wchar_t* fmt, _In_ const w_args &... args)
+			void write(_In_z_ const wchar_t* fmt, _In_ const w_args&... args)
 			{
-				//this->_log_file->info(fmt, args...);
-
-//#if defined(__WIN32) || defined(__UWP)
-//				OutputDebugStringW(fmt);
-//#elif defined(__linux) || defined(__APPLE__)
-//				std::wcout << fmt;
-//#elif defined(__ANDROID)
-//				LOGI(fmt);
-//#endif
+				this->_log_file->info(fmt, args...);
 			}
+#pragma endregion
 
-			//Write an output message
+#pragma region warning
+			//Write a warning message
 			void warning(_In_z_ const char* fmt)
 			{
-//				this->_log_file->warn(fmt);
-//
-//#if defined(__WIN32) || defined(__UWP)
-//				OutputDebugStringA(fmt);
-//#elif defined(__linux) || defined(__APPLE__)
-//				std::cout << fmt;
-//#elif defined(__ANDROID)
-//				LOGI(fmt);
-//#endif
+				this->_log_file->warn(fmt);
 			}
 
-			//Write an output message
+			//Write a warning message
 			void warning(_In_z_ const wchar_t* fmt)
 			{
-//				this->_log_file->warn(fmt);
-//
-//#if defined(__WIN32) || defined(__UWP)
-//				OutputDebugStringW(fmt);
-//#elif defined(__linux) || defined(__APPLE__)
-//				std::wcout << fmt;
-//#elif defined(__ANDROID)
-//				LOGI(fmt);
-//#endif
+				this->_log_file->warn(fmt);
 			}
 
-            //Write an output warning message 
-			void warning(_In_z_ const std::string pMsg)
+			//Write a warning message
+			template<typename... w_args>
+			void warning(_In_z_ const char* fmt, _In_ const w_args&... args)
 			{
-
+				this->_log_file->warn(fmt, args...);
 			}
 
-            //Write an output error message 
-			void error(_In_z_ const std::wstring pMsg)
+			//Write a warning message
+			template<typename... w_args>
+			void warning(_In_z_ const wchar_t* fmt, _In_ const w_args&... args)
 			{
-
+				this->_log_file->warn(fmt, args...);
 			}
+#pragma endregion
 
-            //Write an output error message 
-			void error(_In_z_ const std::string pMsg)
+#pragma region error
+			//Write an error message
+			void error(_In_z_ const char* fmt)
 			{
-
+				this->_log_file->error(fmt);
 			}
+
+			//Write an error message
+			void error(_In_z_ const wchar_t* fmt)
+			{
+				this->_log_file->error(fmt);
+			}
+
+			//Write an error message
+			template<typename... w_args>
+			void error(_In_z_ const char* fmt, _In_ const w_args&... args)
+			{
+				this->_log_file->error(fmt, args...);
+			}
+
+			//Write an error message
+			template<typename... w_args>
+			void error(_In_z_ const wchar_t* fmt, _In_ const w_args&... args)
+			{
+				this->_log_file->error(fmt, args...);
+			}
+#pragma endregion
             
 			//Release all resources and close the log file
 			ULONG release()
@@ -335,72 +306,298 @@ namespace wolf
 	extern WSYS_EXP void release_heap_data();
 }
 
-/*
-    Validate W_RESULT and write in to the log file
-    pHR							= Status
-    pMSG						= the log message
-    pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
-    pTerminateAll				= abort appilcation. Strongly not recommended, please make sure release all your resources before aborting Wolf.Engine
-    pCheckForLastDirectXError	= check last error of GPU API
-*/
-inline void V(W_RESULT pHR, std::wstring pMSG = L"Undefined message",
-    std::string pTraceClass = "Undefined trace", unsigned char pLogType = 0,
-    bool pTerminateAll = false)
+enum w_log_type { W_INFO = 0, W_WARNING, W_ERROR };
+
+#pragma region V for wchar_t
+
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_z_	const wchar_t* fmt)
 {
-    using namespace std;
-    using namespace wolf;
+	using namespace std;
+	using namespace wolf;
 
-    if (pHR == W_PASSED) return;
+	if (pResult == W_PASSED) return;
+	wolf::logger.write(fmt);
+}
 
-   // auto _wstr_trace = std::wstring(pTraceClass.begin(), pTraceClass.end());
-   // wstring _errorMsg = pMSG + L" with the following error info : " + L"Trace info " + _wstr_trace + L".";
-    
-    //switch (pLogType)
-    //{
-    //default:
-    //case 0: //SYSTEM
-    //    logger.write(_errorMsg);
-    //    break;
-    //case 1: //USER
-    //    logger.user(_errorMsg);
-    //    break;
-    //case 2: //WARNING:
-    //    logger.warning(_errorMsg);
-    //    break;
-    //case 3: //ERROR:
-    //    logger.error(_errorMsg);
-    //    break;
-    //}
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_z_	const wchar_t* fmt,
+	_In_	const w_args&... args)
+{
+	if (pResult == W_PASSED) return;
+	wolf::logger.write(fmt, args...);
+}
 
-    if (pTerminateAll)
-    {
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_z_	const wchar_t* fmt)
+{
+	if (pResult == W_PASSED) return;
+
+	switch (pLogType)
+	{
+	default:
+	case w_log_type::W_INFO:
+		wolf::logger.write(fmt);
+		break;
+	case w_log_type::W_WARNING:
+		wolf::logger.warning(fmt);
+		break;
+	case w_log_type::W_ERROR:
+		wolf::logger.error(fmt);
+		break;
+	}
+}
+
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_z_	const wchar_t* fmt,
+	_In_	const w_args&... args)
+{
+	if (pResult == W_PASSED) return;
+
+	switch (pLogType)
+	{
+	default:
+	case w_log_type::W_INFO:
+		wolf::logger.write(fmt, args...);
+		break;
+	case w_log_type::W_WARNING:
+		wolf::logger.warning(fmt, args...);
+		break;
+	case w_log_type::W_ERROR:
+		wolf::logger.error(fmt, args...);
+		break;
+	}
+}
+
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_	bool pTerminateProgram,
+	_In_z_	const wchar_t* fmt)
+{
+	using namespace std;
+	using namespace wolf;
+
+	if (pResult == W_PASSED) return;
+
+	switch (pLogType)
+	{
+	default:
+	case w_log_type::W_INFO:
+		logger.write(fmt);
+		break;
+	case w_log_type::W_WARNING:
+		logger.warning(fmt);
+		break;
+	case w_log_type::W_ERROR:
+		logger.error(fmt);
+		break;
+	}
+
+	if (pTerminateProgram)
+	{
 		release_heap_data();
-        std::exit(EXIT_FAILURE);
-    }
+		std::exit(EXIT_FAILURE);
+	}
 }
 
-inline void V(int pHR, std::wstring pMSG = L"Undefined Error",
-    std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
-    bool pExitNow = false)
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_	bool pTerminateProgram,
+	_In_z_	const wchar_t* fmt,
+	_In_	const w_args&... args)
 {
-    V(pHR == 0 ? W_PASSED : W_FAILED, pMSG, pTraceClass, pLogType, pExitNow);
+	using namespace std;
+	using namespace wolf;
+
+	if (pResult == W_PASSED) return;
+
+	switch (pLogType)
+	{
+	default:
+	case w_log_type::W_INFO:
+		logger.write(fmt, args...);
+		break;
+	case w_log_type::W_WARNING:
+		logger.warning(fmt, args...);
+		break;
+	case w_log_type::W_ERROR:
+		logger.error(fmt, args...);
+		break;
+	}
+
+	if (pTerminateProgram)
+	{
+		release_heap_data();
+		std::exit(EXIT_FAILURE);
+	}
 }
 
-/*
-    Validate W_RESULT and write in to the log file
-    pHR						= Status
-    pMSG						= the log message
-    pLogType					= 0: SYSTEM, 1: USER, 2: WARNING, 3: ERROR
-    pExitNow					= abort application
-    pCheckForLastDirectXError	= check last error of GPU API
-*/
-inline void V(W_RESULT pHR, std::string pMSG = "Undefined Error",
-    std::string pTraceClass = "Undefined Trace", unsigned char pLogType = 0,
-    bool pExitNow = false)
+#pragma endregion
+
+#pragma region V for char
+
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_z_	const char* fmt)
 {
-    auto _msg = std::wstring(pMSG.begin(), pMSG.end());
-    V(pHR, _msg, pTraceClass, pLogType, pExitNow);
-    _msg.clear();
+	using namespace std;
+	using namespace wolf;
+
+	if (pResult == W_PASSED) return;
+	wolf::logger.write(fmt);
 }
+
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_z_	const char* fmt,
+	_In_	const w_args&... args)
+{
+	if (pResult == W_PASSED) return;
+	wolf::logger.write(fmt, args...);
+}
+
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_z_	const char* fmt)
+{
+	if (pResult == W_PASSED) return;
+
+	switch (pLogType)
+	{
+	default:
+	case w_log_type::W_INFO:
+		wolf::logger.write(fmt);
+		break;
+	case w_log_type::W_WARNING:
+		wolf::logger.warning(fmt);
+		break;
+	case w_log_type::W_ERROR:
+		wolf::logger.error(fmt);
+		break;
+	}
+}
+
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_z_	const char* fmt,
+	_In_	const w_args&... args)
+{
+	if (pResult == W_PASSED) return;
+
+	switch (pLogType)
+	{
+	default:
+	case w_log_type::W_INFO:
+		wolf::logger.write(fmt, args...);
+		break;
+	case w_log_type::W_WARNING:
+		wolf::logger.warning(fmt, args...);
+		break;
+	case w_log_type::W_ERROR:
+		wolf::logger.error(fmt, args...);
+		break;
+	}
+}
+
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_	bool pTerminateProgram,
+	_In_z_	const char* fmt)
+{
+	using namespace std;
+	using namespace wolf;
+
+	if (pResult == W_PASSED) return;
+
+	switch (pLogType)
+	{
+	default:
+	case w_log_type::W_INFO:
+		logger.write(fmt);
+		break;
+	case w_log_type::W_WARNING:
+		logger.warning(fmt);
+		break;
+	case w_log_type::W_ERROR:
+		logger.error(fmt);
+		break;
+	}
+
+	if (pTerminateProgram)
+	{
+		release_heap_data();
+		std::exit(EXIT_FAILURE);
+	}
+}
+
+//Validate W_RESULT and write in to the log file
+template<typename... w_args>
+inline void V(
+	_In_	W_RESULT pResult,
+	_In_	w_log_type pLogType,
+	_In_	bool pTerminateProgram,
+	_In_z_	const char* fmt,
+	_In_	const w_args&... args)
+{
+	using namespace std;
+	using namespace wolf;
+
+	if (pResult == W_PASSED) return;
+
+	switch (pLogType)
+	{
+	default:
+	case w_log_type::W_INFO:
+		logger.write(fmt, args...);
+		break;
+	case w_log_type::W_WARNING:
+		logger.warning(fmt, args...);
+		break;
+	case w_log_type::W_ERROR:
+		logger.error(fmt, args...);
+		break;
+	}
+
+	if (pTerminateProgram)
+	{
+		release_heap_data();
+		std::exit(EXIT_FAILURE);
+	}
+}
+
+#pragma endregion
 
 #endif //__W_LOGGER_H__

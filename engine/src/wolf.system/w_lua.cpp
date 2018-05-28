@@ -14,7 +14,7 @@ void w_lua::_VL(int pHR)
 	if (pHR)
 	{
 		_last_error = "lua: " + std::string(lua_tostring(_lua, -1));
-		V(W_FAILED, _last_error, "w_lua", 3);
+		V(W_FAILED, w_log_type::W_WARNING, "{}. trace info: {}", _last_error, "w_lua");
 		lua_pop(_lua, 1);
 	}
 }
@@ -58,7 +58,7 @@ void w_lua::_incompatible_type_for_variable(const char* pVariableName, const cha
 	}
 
 	_last_error = _msg;
-	V(W_FAILED, _last_error, "w_lua", 2);
+	V(W_FAILED, w_log_type::W_WARNING, "{}. trace info: {}", _last_error, "w_lua");
 }
 
 W_RESULT w_lua::load_file(const wchar_t* pPath)

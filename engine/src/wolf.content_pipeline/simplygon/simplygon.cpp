@@ -25,7 +25,7 @@ public:
 			*((int*)pEventParameterBlock) = 1;
 			// output the progress update
 
-			wolf::logger.write(L"Simplygon's job procceded: %" + std::to_wstring(val));
+			wolf::logger.write(L"Simplygon's job procceded: %{}" ,val);
 		}
 	}
 }; //_progress_observer;

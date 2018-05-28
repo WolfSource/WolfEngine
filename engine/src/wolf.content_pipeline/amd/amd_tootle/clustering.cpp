@@ -203,7 +203,7 @@ static int MoveFaces(Mesh& mesh, std::vector<int>& seeds, std::vector<int>& clus
     }
 
     fMaxDist = cost[f];
-    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Max: " + std::to_string(fMaxDist) + "f, Avg: " + std::to_string(fAvgDist) + "f");
+	logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Max: {} f, Avg: {} f", fMaxDist, fAvgDist);
 
     int lowvisi = nvis;
 
@@ -514,7 +514,7 @@ ClusterResult Cluster(Soup* soup, UINT& nClusters, std::vector<int>& cluster)
         }
     }
 
-    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Final # of clusters: " + std::to_string(nClusters));
+    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Final # of clusters: {}" , nClusters);
     return CLUSTER_OK;
 }
 

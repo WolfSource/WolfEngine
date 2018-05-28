@@ -189,7 +189,7 @@ namespace wolf
 				}
 				else
 				{
-					logger.error(L"Format not supported yet for following file: " + _path);
+					logger.error(L"Format not supported yet for following file: {}", _path);
 					return W_FAILED;
 				}
 				
@@ -945,10 +945,9 @@ namespace wolf
                     &_format_properties);
 				if (!(_format_properties.optimalTilingFeatures & VK_FORMAT_FEATURE_BLIT_SRC_BIT))
 				{
-					logger.warning("Blitting feature not supported from optimal tiled image for graphics device: " +
-						this->_gDevice->device_info->get_device_name() +
-						" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()) +
-						" and following format: " + std::to_string(_format));
+					logger.warning("Blitting feature not supported from optimal tiled image for graphics device: {} and following format: {}",
+						this->_gDevice->get_info(),
+						_format);
 					_bliting_supported = false;
 				}
 				//if (_bliting_supported)
@@ -1304,7 +1303,7 @@ namespace wolf
 				auto _ptr = (uint8_t*)this->_staging_buffer.map();
 				for (size_t i = 0; i < this->_image_view.width * this->_image_view.height; i++)
 				{
-					logger.write(std::to_string(_ptr[i]));
+					logger.write("{}", _ptr[i]);
 				}
 
 				this->_staging_buffer.unmap();
@@ -1798,7 +1797,7 @@ W_RESULT w_texture::load_to_shared_textures(_In_ const std::shared_ptr<w_graphic
     auto _texture = new (std::nothrow) w_texture();
     if (!_texture)
     {
-        logger.error(L"Could not perform allocation for shared texture: " + pPath);
+        logger.error(L"Could not perform allocation for shared texture: {}", pPath);
         return W_FAILED;
     }
 

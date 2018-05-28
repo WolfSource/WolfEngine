@@ -53,13 +53,19 @@ namespace wolf
 				//Get frequency
 				if (!QueryPerformanceFrequency(&this->_frequency))
 				{
-					V(W_FAILED, "query performance frequency (on constructor)", this->_name, 3, true);
+					V(W_FAILED, 
+						w_log_type::W_ERROR, 
+						true, 
+						"query performance frequency (on constructor). trace info: {}", this->_name);
 				}
 
 				//Get performance
 				if (!QueryPerformanceCounter(&this->_last_time))
 				{
-					V(W_FAILED, "query performance frequency (on constructor)", this->_name, 3, true);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						true,
+						"query performance frequency (on constructor). trace info: {}", this->_name);
 				}
 
 				// Initialize max delta to 1/10 of a second.
@@ -145,7 +151,7 @@ namespace wolf
 #if defined(__WIN32) || defined(__UWP)
 				if (this->_frequency.QuadPart == 0)
 				{
-					logger.write(L"Division by Zero for frequency of CPU");
+					logger.write(L"Division by Zero for frequency of CPU. trace info: {}", this->_name);
 				}
 				else
 				{
@@ -212,7 +218,7 @@ namespace wolf
 #if defined(__WIN32) || defined(__UWP)
 					if (_one_sec == 0)
 					{
-						logger.write(L"Division by Zero for frequency of CPU");
+						logger.write(L"Division by Zero for frequency of CPU. trace info: {}", this->_name);
 					}
 					else
 					{
@@ -243,7 +249,10 @@ namespace wolf
 				LARGE_INTEGER _time;
 				if (!QueryPerformanceCounter(&_time))
 				{
-					V(W_FAILED, "query performance on _get_time method of w_game_time", this->_name, 3, true);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						true,
+						"query performance on _get_time method of w_game_time. trace info: {}", this->_name);
 				}
 				return _time;
 			}

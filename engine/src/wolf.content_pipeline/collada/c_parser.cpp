@@ -1793,7 +1793,7 @@ void c_parser::_create_model(
         _transform.transform = _node_ptr->transform;
 
 //#ifdef DEBUG
-        logger.write("creating model " + _node_ptr->c_name);
+        logger.write("creating model {}", _node_ptr->c_name);
 //#endif
 
 //        auto _model = w_cpipeline_model::create_model(

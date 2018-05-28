@@ -188,7 +188,7 @@ public:
 
 #ifdef __WIN32
 	//Initialize 
-	WSYS_EXP HRESULT initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction);
+	WSYS_EXP W_RESULT initialize(std::function<HRESULT(HWND, UINT, WPARAM, LPARAM)> pMsgProcFunction);
 #elif defined(__linux)
         //Initialize 
 	WSYS_EXP W_RESULT initialize();

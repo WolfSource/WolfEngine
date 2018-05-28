@@ -66,7 +66,7 @@ Mesh::ComputeVV(void)
     }
 
     time.stop();
-    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Done in " + std::to_string(time.get_seconds()) + "s");
+    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Done in {} sec", time.get_seconds());
 
     return 1;
 }
@@ -74,29 +74,29 @@ Mesh::ComputeVV(void)
 inline int
 Mesh::ComputeVT(VTArray& vtOut)
 {
-    using namespace wolf;
+	using namespace wolf;
 
-    system::w_timer time;
-    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Finding vertex faces");
+	system::w_timer time;
+	logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Finding vertex faces");
 
-    time.start();
-    // get all faces that use each vertex
-    vtOut.resize (v ().size ());
+	time.start();
+	// get all faces that use each vertex
+	vtOut.resize(v().size());
 
-    for (int f = 0; f < static_cast<int>(t().size()); f++)
-    {
-        Soup::Triangle& face = t(f);
+	for (int f = 0; f < static_cast<int>(t().size()); f++)
+	{
+		Soup::Triangle& face = t(f);
 
-        for (int i = 0; i < 3; i++)
-        {
-            vtOut[face[i]].push_back (f);
-        }
-    }
+		for (int i = 0; i < 3; i++)
+		{
+			vtOut[face[i]].push_back(f);
+		}
+	}
 
-    time.stop();
-    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Done in " + std::to_string(time.get_seconds()) + "s");
+	time.stop();
+	logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Done in {} sec", time.get_seconds());
 
-    return 1;
+	return 1;
 }
 
 
@@ -142,7 +142,7 @@ Mesh::ComputeAE(const VTArray& vt)
         }
     }
     time.stop();
-    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Done in " + std::to_string(time.get_seconds()) + "s");
+    logger.write("[AMD TOOTLE Debugger] Flag: DEBUG - Message : Done in {} sec", time.get_seconds());
 
     return 1;
 }

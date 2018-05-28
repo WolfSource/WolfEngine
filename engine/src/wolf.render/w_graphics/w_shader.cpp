@@ -41,18 +41,18 @@ namespace wolf
                     if(_file_state == -1)
                     {
 #if defined(__WIN32) || defined(__UWP)
-						logger.error(L"Shader on following path: " + _path + L" not exists.");
+						logger.error(L"Shader on following path: {} not exists.", _path);
 #else
-						logger.error("Shader on following path: " + _path + " not exists.");
+						logger.error("Shader on following path: {} not exists.", _path);
 #endif
                         return W_FAILED;
                     }
                     if(_file_state == -2)
                     {
 #if defined(__WIN32) || defined(__UWP)
-						logger.error(L"Shader on following path: " + _path + L" exists but could not open.");
+						logger.error(L"Shader on following path: {} exists but could not open.", _path);
 #else
-						logger.error("Shader on following path: " + _path + " exists but could not open.");
+						logger.error("Shader on following path: {} exists but could not open.", _path);
 #endif
                         return W_FAILED;
                     }
@@ -603,8 +603,7 @@ namespace wolf
                         _compute_layout_bindings.size() ? 2 : 1);
                     if (_hr == W_FAILED)
                     {
-                        logger.error("Error on creating shader descriptor pool for mesh: " +
-                            this->_name);
+                        logger.error("Error on creating shader descriptor pool for mesh: {}", this->_name);
                         return W_FAILED;
                     }
                 }
@@ -617,8 +616,7 @@ namespace wolf
                         this->_descriptor_set_layout.handle);
                     if (_hr == W_FAILED)
                     {
-                        logger.error("Error on creating shader descriptor pool for mesh: " +
-                            this->_name);
+                        logger.error("Error on creating shader descriptor pool for mesh: {}", this->_name);
                         return W_FAILED;
                     }
                 }
@@ -630,8 +628,7 @@ namespace wolf
                         this->_compute_descriptor_set_layout.handle);
                     if (_hr == W_FAILED)
                     {
-                        logger.error("Error on creating shader descriptor pool for mesh: " +
-                            this->_name);
+                        logger.error("Error on creating shader descriptor pool for mesh: {}", this->_name);
                         return W_FAILED;
                     }
                 }
@@ -784,7 +781,7 @@ W_RESULT w_shader::load_shader(_In_ const std::shared_ptr<w_graphics_device>& pG
     _shader = new (std::nothrow) w_shader();
     if (!_shader)
     {
-        logger.error("Could not perform allocation for shared shader name: " + pName);
+        logger.error("Could not perform allocation for shared shader name: {}", pName);
         return W_FAILED;
     }
 

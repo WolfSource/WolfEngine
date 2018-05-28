@@ -148,14 +148,7 @@ w_process_info* w_process::create_process(
 	}
 	else
 	{
-		auto _error_code = GetLastError();
-
-		std::wstringstream _out;
-		_out << pPathtoProcess << L" could not run with arg " << pCmdsArg << ". Error code is " << _error_code << "\0";
-		logger.error(_out.str());
-
-		_out.str(L"");
-		_out.clear();
+		logger.error(L"Process ID: {} could not run with arg {} . Error code : {}", pPathtoProcess, pCmdsArg, GetLastError());
 		return nullptr;
 	}
 }
@@ -163,37 +156,20 @@ w_process_info* w_process::create_process(
 bool w_process::kill_process(_In_ w_process_info* pProcessInfo)
 {
 	if (!pProcessInfo) return false;
-
-	std::wstringstream _msg;
-
-
+	
 	if (!TerminateProcess(pProcessInfo->info.hProcess, 0))
 	{
-		_msg << L"Error on killing process id: " << pProcessInfo->info.dwProcessId;
-
-		logger.error(_msg.str());
-
-		_msg.str(L"");
-		_msg.clear();
-
+		logger.error(L"Error on killing process id: {}", pProcessInfo->info.dwProcessId);
 		return false;
 	}
 
 	if (!CloseHandle(pProcessInfo->info.hThread))
 	{
-		_msg << L"Error on closing thread id: " << pProcessInfo->info.dwThreadId << L" for process id: " << pProcessInfo->info.dwProcessId;
-		logger.error(_msg.str());
-
-		_msg.str(L"");
-		_msg.clear();
+		logger.error("Error on closing thread id: {} for process id: {}", pProcessInfo->info.dwThreadId, pProcessInfo->info.dwProcessId);
 	}
 	if (!CloseHandle(pProcessInfo->info.hProcess))
 	{
-		_msg << L"Error on closing process id: " << pProcessInfo->info.dwProcessId;
-		logger.error(_msg.str());
-
-		_msg.str(L"");
-		_msg.clear();
+		logger.error("Error on closing process id: {}", pProcessInfo->info.dwProcessId);
 		return false;
 	}
 
