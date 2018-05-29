@@ -87,10 +87,7 @@ namespace wolf
                     _In_ const bool& pInvertNormals,
                     _In_ const bool& pFind_LODs_ConvexHulls_Boundaries);
 				void			                            _clear_all_resources();
-
-				static const char*	                        _trace_class_name;
-
-
+				
                 //static variables which are necessary for parsing collada file 
                 std::vector<c_bone*>			            sBones;
                 std::vector<c_node*>			            sNodes;

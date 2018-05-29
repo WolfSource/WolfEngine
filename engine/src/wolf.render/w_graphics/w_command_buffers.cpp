@@ -22,6 +22,8 @@ namespace wolf
                 _In_ const bool& pCreateCommandPool,
                 _In_ const w_queue* pCommandPoolQueue)
             {
+				const char* _trace_info = (this->_name + "::load").c_str();
+
                 if (pCreateCommandPool)
                 {
                     VkCommandPoolCreateInfo _command_pool_info = {};
@@ -36,11 +38,11 @@ namespace wolf
                         &this->_command_pool);
                     if (_hr)
                     {
-                        V(W_FAILED, "creating vulkan command pool for graphics device :" + 
-                            this->_gDevice->device_info->get_device_name() +
-                            " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
-                            this->_name, 3,
-                            false);
+                        V(W_FAILED, 
+							w_log_type::W_ERROR,
+							"creating vulkan command pool for graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 
                         return W_FAILED;
                     }
@@ -89,11 +91,11 @@ namespace wolf
 					this->_commands.clear();
 					_cmds.clear();
 
-                    V(W_FAILED, "creating vulkan command buffers for graphics device :" + 
-                        this->_gDevice->device_info->get_device_name() +
-                      " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
-                      this->_name, 3,
-                      false);
+                    V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"creating vulkan command buffers for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
                     
                     return W_FAILED;
                 }
@@ -110,11 +112,13 @@ namespace wolf
 			{
 				if (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
 
+				const char* _trace_info = (this->_name + "::begin").c_str();
+
 				//prepare data for recording command buffers
 				const VkCommandBufferBeginInfo _command_buffer_begin_info =
 				{
-					VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,        //Type;
-					nullptr,                                            //Next
+					VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,        // Type;
+					nullptr,                                            // Next
 					(VkCommandBufferUsageFlags)pFlags,					// Flags
 					nullptr,
 				};
@@ -122,41 +126,51 @@ namespace wolf
 				auto _hr = vkBeginCommandBuffer(this->_commands.at(pCommandBufferIndex).handle, &_command_buffer_begin_info);
 				if (_hr != VK_SUCCESS)
 				{
-					V(W_FAILED, L"begining command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-						L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
-						this->_name, 3,
-						false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"begining command buffer for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
 				return W_PASSED;
 			}
                         
-            W_RESULT end(_In_ const size_t& pCommandBufferIndex)
-            {
-                if  (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
-                
-                auto _hr = vkEndCommandBuffer(this->_commands.at(pCommandBufferIndex).handle);
-                V(_hr, L"ending command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-                  L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
-                  this->_name, 3,
-                  false);
-                return _hr == VK_SUCCESS ? W_PASSED : W_FAILED;
-            }
+			W_RESULT end(_In_ const size_t& pCommandBufferIndex)
+			{
+				if (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
+
+				const char* _trace_info = (this->_name + "::end").c_str();
+
+				auto _hr = vkEndCommandBuffer(this->_commands.at(pCommandBufferIndex).handle);
+				if (_hr != VK_SUCCESS)
+				{
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"ending command buffer for graphics device: {}. trace info: {}:",
+						this->_gDevice->get_info(),
+						_trace_info);
+				}
+				return W_PASSED;
+			}
             
             W_RESULT flush(_In_ const size_t& pCommandBufferIndex)
             {
                 if  (pCommandBufferIndex >= this->_commands.size()) return W_FAILED;
                 
+				const char* _trace_info = (this->_name + "::end").c_str();
+
                 auto _cmd = this->_commands.at(pCommandBufferIndex);
                 
                 auto _hr = vkEndCommandBuffer(_cmd.handle);
                 if (_hr)
                 {
-                    V(W_FAILED, L"ending command buffer buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-                      L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
-                      this->_name, 3,
-                      false);
+                    V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"ending command buffer buffer for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
                     
                     return W_FAILED;
                 }
@@ -173,28 +187,30 @@ namespace wolf
                     
                 VkFence _fence;
                 _hr = vkCreateFence(this->_gDevice->vk_device, &_fence_create_info, nullptr, &_fence);
-                if (_hr)
-                {
-                    V(W_FAILED, L"creating fence for command buffer for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-                      L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
-                      this->_name, 3,
-                      false);
-                    return W_FAILED;
-                }
+				if (_hr)
+				{
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"creating fence for command buffer for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
+					return W_FAILED;
+				}
                 
                 // Submit to the queue
                 _hr = vkQueueSubmit(this->_gDevice->vk_present_queue.queue,
                                     1,
                                     &_submit_info,
                                     _fence);
-                if (_hr)
-                {
-                    V(W_FAILED, L"submiting queue for graphics device :" + wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-                      L" ID: " + std::to_wstring(this->_gDevice->device_info->get_device_id()),
-                      this->_name, 3,
-                      false);
-                    return W_FAILED;
-                }
+				if (_hr)
+				{
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"submiting queue for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
+					return W_FAILED;
+				}
                     
                 // Wait for the fence to signal that command buffer has finished executing
                 _hr = vkWaitForFences(this->_gDevice->vk_device,
@@ -363,12 +379,18 @@ W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_grap
 
 	if (!this->drawing_commands.size())
 	{
-		V(W_FAILED, "empty indirect drawing commands", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"empty indirect drawing commands. trace info: {}",
+			_trace_info);
 		return W_FAILED;
 	}
 	if (pDrawCount > this->drawing_commands.size())
 	{
-		V(W_FAILED, "draw count is greater than indirect drawing commands", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"draw count is greater than indirect drawing commands. trace info: {}",
+			_trace_info);
 		return W_FAILED;
 	}
 
@@ -384,7 +406,7 @@ W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_grap
 	//	V(W_FAILED, "loading staging buffer of indirect_draw_commands", _trace_info, 3);
 	//	return W_FAILED;
 	//}
-    
+
 	if (_staging_buffer.allocate(
 		pGDevice,
 		_size,
@@ -392,19 +414,28 @@ W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_grap
 		w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "loading staging buffer of indirect_draw_commands", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading staging buffer of indirect_draw_commands. trace info: {}",
+			_trace_info);
 		return W_FAILED;
 	}
 
 	if (_staging_buffer.bind() == W_FAILED)
 	{
-		V(W_FAILED, "binding to staging buffer of indirect_draw_commands", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"binding to staging buffer of indirect_draw_commands. trace info: {}",
+			_trace_info);
 		return W_FAILED;
 	}
 
 	if (_staging_buffer.set_data(this->drawing_commands.data()) == W_FAILED)
 	{
-		V(W_FAILED, "setting data for staging buffer of indirect_draw_commands", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"setting data for staging buffer of indirect_draw_commands. trace info: {}",
+			_trace_info);
 		return W_FAILED;
 	}
 
@@ -416,20 +447,29 @@ W_RESULT w_indirect_draws_command_buffer::load(_In_ const std::shared_ptr<w_grap
 		w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "loading staging buffer of indirect_commands_buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading staging buffer of indirect_commands_buffer. trace info: {}",
+			_trace_info);
 		return W_FAILED;
 	}
 
 	//bind indircet buffer
 	if (this->buffer.bind() == W_FAILED)
 	{
-		V(W_FAILED, "binding to staging buffer of indirect_commands_buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"binding to staging buffer of indirect_commands_buffer. trace info: {}",
+			_trace_info);
 		return W_FAILED;
 	}
 
 	if (_staging_buffer.copy_to(this->buffer) == W_FAILED)
 	{
-		V(W_FAILED, "copy staging buffer to device buffer of indirect_commands_buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"copy staging buffer to device buffer of indirect_commands_buffer. trace info: {}",
+			_trace_info);
 		return W_FAILED;
 	}
 

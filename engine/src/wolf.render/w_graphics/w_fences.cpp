@@ -29,7 +29,10 @@ W_RESULT w_fences::initialize(_In_ const std::shared_ptr<w_graphics_device>& pGD
                       nullptr,
                       &_fence))
         {
-            V(W_FAILED, "creating fence", "w_fence", 3, false);
+            V(W_FAILED, 
+				w_log_type::W_ERROR,
+				"creating fence. trace info: {}", 
+				"w_fence::initialize");
             _hr = W_FAILED;
         }
         else

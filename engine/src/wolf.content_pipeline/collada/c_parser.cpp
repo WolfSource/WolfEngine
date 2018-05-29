@@ -8,8 +8,6 @@ using namespace wolf::system;
 using namespace wolf::content_pipeline;
 using namespace wolf::content_pipeline::collada;
 
-const char* c_parser::_trace_class_name = "w_collada_parser";
-
 W_RESULT c_parser::parse_collada_from_file(
     _In_z_ const std::wstring& pFilePath, 
     _Inout_ w_cpipeline_scene* pScene,
@@ -46,7 +44,7 @@ W_RESULT c_parser::parse_collada_from_file(
 	catch (...)
 	{
 		_hr = W_FAILED;
-        V(_hr, L"Could not parse collada file on following path : " + pFilePath, _trace_class_name, 3);
+        V(_hr, w_log_type::W_ERROR, L"Could not parse collada file on following path : {}. trace info: {}", pFilePath, L"::w_collada_parser");
 	}
 
 	_hr = _process_xml_node(_doc.first_node());

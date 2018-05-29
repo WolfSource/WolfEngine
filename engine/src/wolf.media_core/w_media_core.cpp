@@ -80,6 +80,8 @@ namespace wolf
 
             W_RESULT open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame)
             {
+				const auto _trace_info = this->_name + "::open_media";
+
                 if (pMediaPath.empty()) return W_FAILED;
 
                 release_media();
@@ -99,7 +101,7 @@ namespace wolf
                     this->_media_full_path = wolf::system::convert::to_utf8(pMediaPath).c_str();
 
                     //Output the message
-                    logger.write(L"Media from following path {} is going to decode", pMediaPath);
+                    logger.write(L"Media from following path {} is going to decode. trace info", pMediaPath);
                     
 					W_RESULT hr = W_PASSED;
                     // Open video file
@@ -110,21 +112,19 @@ namespace wolf
                     if (avformat_open_input(&_av_format_ctx, this->_media_full_path.c_str(), NULL, NULL) != 0)
                     {
                         hr = W_FAILED;
-                        V(hr, L"openning file", this->_name);
+                        V(hr, "openning file. trace info: {}", _trace_info);
                         release_media();
                         return hr;
                     }
 
                     // Retrieve stream information
-                    if (avformat_find_stream_info(_av_format_ctx, NULL) < 0)
-                    {
-                        hr = W_FAILED;
-                        V(hr, L"finding file stream information", this->_name);
-                        release_media();
-                        return hr;
-                    }
-
-
+					if (avformat_find_stream_info(_av_format_ctx, NULL) < 0)
+					{
+						hr = W_FAILED;
+						V(hr, "finding file stream information. trace info: {}", _trace_info);
+						release_media();
+						return hr;
+					}
 
 #ifdef _DEBUG
                     // Dump information about file onto standard error
@@ -142,18 +142,19 @@ namespace wolf
                     {
                         hr = W_FAILED;
 						_has_video_stream = false;
-                        V(hr, L"finding stream of video, media file does not have any video frame", this->_name);
+                        V(hr, "finding stream of video, media file does not have any video frame. trace info: {}", _trace_info);
                     }
                     if (this->_audio_stream_index <= -1)
                     {
                         hr = W_FAILED;
 						_has_audio_stream = false;
-                        V(hr, L"finding stream of audio, media file does not have any audio frame", this->_name);
+                        V(hr, "finding stream of audio, media file does not have any audio frame. trace info: {}", _trace_info);
                     }
 
                     if (!_has_video_stream && !_has_audio_stream)
                     {
-                        logger.write("File {} did not load", this->_media_full_path);
+						hr = W_FAILED;
+						V(hr, "File {} did not load. trace info: {}", this->_media_full_path, _trace_info);
                         release_media();
                         return W_FAILED;
                     }
@@ -192,7 +193,7 @@ namespace wolf
                         &pSource);
                     if (FAILED(hr) || objectType == MF_OBJECT_TYPE::MF_OBJECT_INVALID || pSource == nullptr)
                     {
-                        logger.error(L"Invalid object type, creating object from source for source resolver");
+                        logger.error(L"Invalid object type, creating object from source for source resolver.");
                         release_media();
                         return W_FAILED;
                     }
@@ -200,26 +201,26 @@ namespace wolf
                     hr = (W_RESULT)pSource.Get()->QueryInterface(IID_PPV_ARGS(&source));
                     if (FAILED(hr))
                     {
-                        logger.write(L"Query interface for media source");
+                        logger.write(L"Query interface for media source.");
                     }
 
                     Microsoft::WRL::ComPtr<IMFPresentationDescriptor> pPD = nullptr;
                     hr = (W_RESULT)source->CreatePresentationDescriptor(&pPD);
                     if (FAILED(hr))
                     {
-                        logger.write(L"creating presentation descriptor");
+                        logger.write(L"creating presentation descriptor.");
                     }
-                    auto pDuration = new MFTIME(0);
-                    pPD->GetUINT64(MF_PD_DURATION, (UINT64*)pDuration);
-                    auto duration = (LONG)(*pDuration / (MF_ONE_SEC / MF_ONE_MSEC));
-                    pDuration = nullptr;
+                    auto _duration_mftime = new MFTIME(0);
+                    pPD->GetUINT64(MF_PD_DURATION, (UINT64*)_duration_mftime);
+                    auto _duration = (LONG)(*_duration_mftime / (MF_ONE_SEC / MF_ONE_MSEC));
+					_duration_mftime = nullptr;
 
                     //Release 
                     COMPTR_RELEASE(pPD);
                     COMPTR_RELEASE(pSource);
                     COMPTR_RELEASE(sourceResolver);
 
-                    this->_duration_time = w_time_span::from_milliseconds(duration);
+                    this->_duration_time = w_time_span::from_milliseconds(_duration);
 #else
                     auto _duration_seconds = static_cast<double>(this->_video_codec.avStream->duration) / AV_TIME_BASE;
                     this->_duration_time = w_time_span::from_seconds(_duration_seconds);
@@ -258,7 +259,7 @@ namespace wolf
                         if (_video_codec.avCodec == NULL)
                         {
                             hr = W_FAILED;
-                            V(hr, L"unsupported codec for video", this->_name);
+                            V(hr, "unsupported codec for video. trace info: {}.", _trace_info);
                             release_media();
                             return hr;
                         }
@@ -267,7 +268,7 @@ namespace wolf
                         if (avcodec_open2(_video_codec.avCodecCtx, _video_codec.avCodec, NULL) < 0)
                         {
                             hr = W_FAILED;
-                            V(hr, L"could not open video codec", this->_name);
+                            V(hr, "could not open video codec. trace info: {}", _trace_info);
                             release_media();
                             return hr;
                         }
@@ -310,7 +311,7 @@ namespace wolf
 						if (_audio_codec.avCodec == NULL)
 						{
 							hr = W_FAILED;
-							V(hr, L"unsupported codec for audio", this->_name);
+							V(hr, "unsupported codec for audio. trace info: {}", _trace_info);
 							release_media();
 							return hr;
 						}
@@ -318,7 +319,7 @@ namespace wolf
 						if (avcodec_open2(_audio_codec.avCodecCtx, _audio_codec.avCodec, NULL) < 0)
 						{
 							hr = W_FAILED;
-							V(hr, L"could not open audio codec", this->_name);
+							V(hr, "could not open audio codec. trace info: {}", _trace_info);
 							release_media();
 							return hr;
 						}
@@ -393,19 +394,18 @@ namespace wolf
                     pOnFillingVideoFrameBuffer,
                     pOnConnectionLost]() -> W_RESULT
                 {
-                    const std::string _trace_info = this->_name + "open_stream_server";
+                    const std::string _trace_info = this->_name + "::open_stream_server";
 
                     //create output context
                     avformat_alloc_output_context2(&this->_stream_output_ctx, NULL, pFormatName, pURL);
                     if (!this->_stream_output_ctx)
                     {
-                        V(W_FAILED, L"allocating output context for streaming", _trace_info, 3);
+                        V(W_FAILED, w_log_type::W_ERROR, "allocating output context for streaming. trace info: {}", _trace_info);
                         return W_FAILED;
                     }
                     if (!this->_stream_output_ctx->oformat)
                     {
-                        V(W_FAILED, L"creating output streaming format : " + system::convert::string_to_wstring(pFormatName),
-                            _trace_info, 3);
+						V(W_FAILED, w_log_type::W_ERROR, "creating output streaming format: {}. trace info: {}", pFormatName, _trace_info);
                         _release_stream_server();
                         return W_FAILED;
                     }
@@ -414,9 +414,8 @@ namespace wolf
                     auto _stream_video_codec = avcodec_find_encoder(pCodecID);
                     if (!_stream_video_codec)
                     {
-                        V(W_FAILED, L"finding encoder for codec id: " +
-                            system::convert::string_to_wstring(avcodec_get_name(pCodecID)),
-                            _trace_info, 3);
+                        V(W_FAILED, w_log_type::W_ERROR, "finding encoder for codec id: {}. trace info: {}",
+							avcodec_get_name(pCodecID), _trace_info);
                         _release_stream_server();
                         return W_FAILED;
                     }
@@ -425,7 +424,7 @@ namespace wolf
                         this->_stream = avformat_new_stream(this->_stream_output_ctx, _stream_video_codec);
                         if (!this->_stream)
                         {
-                            V(W_FAILED, L"allocating stream", _trace_info, 3);
+                            V(W_FAILED, w_log_type::W_ERROR, "allocating stream. trace info: {}", _trace_info);
                             _release_stream_server();
                             return W_FAILED;
                         }
@@ -460,7 +459,7 @@ namespace wolf
                     //open the codec
                     if (avcodec_open2(this->_stream->codec, _stream_video_codec, &_av_dic))
                     {
-                        V(W_FAILED, L"opening video codec", _trace_info, 3);
+                        V(W_FAILED, w_log_type::W_ERROR, "opening video codec. trace info: {}", _trace_info);
                         _release_stream_server();
                         return W_FAILED;
                     }
@@ -470,7 +469,7 @@ namespace wolf
                         this->_stream_frame = av_frame_alloc();
                         if (!this->_stream_frame)
                         {
-                            V(W_FAILED, L"allocating video stream frame", _trace_info, 3);
+                            V(W_FAILED, w_log_type::W_ERROR, "allocating video stream frame. trace info: {}", _trace_info);
                             _release_stream_server();
                             return W_FAILED;
                         }
@@ -486,7 +485,8 @@ namespace wolf
                             //Allocate the encoded raw picture.
                             if (avpicture_alloc(&_stream_dst_picture, this->_stream->codec->pix_fmt, _width, _height) < 0)
                             {
-                                V(W_FAILED, L"allocating video stream picture", _trace_info, 3);
+                                V(W_FAILED, w_log_type::W_ERROR, 
+									"allocating video stream picture. trace info: {}", _trace_info);
                                 _release_stream_server();
                                 return W_FAILED;
                             }
@@ -500,7 +500,7 @@ namespace wolf
 
                     if (avformat_write_header(this->_stream_output_ctx, NULL) != 0)
                     {
-                        V(W_FAILED, L"connecting to server " + system::convert::string_to_wstring(pURL), _trace_info, 3);
+                        V(W_FAILED, w_log_type::W_ERROR, "connecting to server {}. trace info: {}", pURL, _trace_info);
                         _release_stream_server();
                         return W_FAILED;
                     }
@@ -538,7 +538,7 @@ namespace wolf
                             this->_stream_frame->pts = _frame_info.index;
                             if (avcodec_encode_video2(this->_stream->codec, &_packet, this->_stream_frame, &_got_packet) < 0)
                             {
-                                V(W_FAILED, "encoding video frame", _trace_info, 3);
+                                V(W_FAILED, w_log_type::W_ERROR, "encoding video frame. trace info: {}", _trace_info);
                             }
                             else
                             {
@@ -552,7 +552,7 @@ namespace wolf
                                         AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
                                     if (av_write_frame(this->_stream_output_ctx, &_packet) < 0)
                                     {
-                                        V(W_FAILED, "while writing video frame", _trace_info, 3);
+                                        V(W_FAILED, w_log_type::W_ERROR, "writing video frame. trace info: {}", _trace_info);
                                     }
                                 }
                             }
@@ -563,7 +563,7 @@ namespace wolf
                             _frame_info.frame_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_frame_time).count();
                             if (_frame_info.frame_duration > _frame_max_delay_in_ms)
                             {
-                                V(W_FAILED, "streaming delay is greater than max frame delay", _trace_info, 3);
+                                V(W_FAILED, w_log_type::W_ERROR, "streaming delay is greater than max frame delay. trace info: {}", _trace_info);
                                 break;
                             }
                             else
@@ -664,6 +664,8 @@ namespace wolf
 					uint32_t pDownSamplingScale,
 					bool pBGRA_or_RGBA)
 			{
+				const std::string _trace_info = this->_name + "::write_video_frame_to_buffer";
+
 				W_RESULT _hr = W_PASSED;
 
 				auto _width = get_video_frame_width();
@@ -680,7 +682,7 @@ namespace wolf
 						if (_result < 0)
 						{
 							_hr = W_FAILED;
-							V(_hr, L"decoding video frame", this->_name);
+							V(_hr, w_log_type::W_ERROR, "decoding video frame. trace info: {}", _trace_info);
 							return _hr;
 						}
 
@@ -732,7 +734,7 @@ namespace wolf
 							NULL,
 							NULL);
 
-						bool _hr = false;
+						W_RESULT _hr = W_FAILED;
 						uint8_t* _frame = nullptr;
 						size_t _write_size_in_bytes = 0;
 						if (_need_down_sampling)
@@ -771,7 +773,7 @@ namespace wolf
 						if (_write_size_in_bytes > _memory_chuck_size_in_bytes)
 						{
 							_hr = W_FAILED;
-							V(_hr, L"size of frame bytes is greater than size of memory pool", this->_name);
+							V(_hr, "size of frame bytes is greater than size of memory pool. trace info: {}", _trace_info);
 							break;
 						}
 
@@ -1306,12 +1308,14 @@ namespace wolf
             {
                 if (this->_audio_stream_index <= -1) return W_PASSED;
 
+				const std::string _trace_info = this->_name + "::_copy_audio_frame_to";
+
                 int frameFinished = 0;
                 auto result = avcodec_decode_audio4(this->_audio_codec.avCodecCtx, this->_audio_codec.avFrame, &frameFinished, _av_packet);
                 if (result < 0)
                 {
                     auto hr = W_FAILED;
-                    V(hr, L"decoding audio frame", this->_name);
+                    V(hr, "decoding audio frame. trace info: {}", _trace_info);
                     return hr;
                 }
 

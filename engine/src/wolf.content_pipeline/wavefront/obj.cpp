@@ -46,7 +46,10 @@ void obj::write(
 		auto _vertex = &(pVerticesData[_index]);
 		if (!_vertex)
 		{
-			V(W_FAILED, "vertex does not have memory", _trace_info, 3);
+			V(W_FAILED, 
+				w_log_type::W_ERROR, 
+				"vertex does not have memory. trace info: {}", 
+				_trace_info);
 			continue;
 		}
 		//vertex position in first thread
@@ -161,7 +164,12 @@ W_RESULT obj::read(
 	bool _hr = tinyobj::LoadObj(&attrib, &shapes, nullptr, &_err, pInputFilePath.c_str());
 	if (!_hr)
 	{
-		V(W_FAILED, "error on loading object model: " + pInputFilePath + " with followinf error info: " + _err, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"error on loading object model: {} with followinf error info: {}. trace info: {}",
+			pInputFilePath,
+			_err,
+			_trace_info);
 		return W_FAILED;
 	}
 

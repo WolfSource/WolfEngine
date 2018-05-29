@@ -19,13 +19,13 @@ public:
 		if (pEventId == SimplygonSDK::SG_EVENT_PROGRESS)
 		{
 			// get the progress in percent
-			int val = *((int*)pEventParameterBlock);
+			int _val = *((int*)pEventParameterBlock);
 			// tell the process to continue
 			// this is required by the progress event
 			*((int*)pEventParameterBlock) = 1;
 			// output the progress update
 
-			wolf::logger.write(L"Simplygon's job procceded: %{}" ,val);
+			wolf::logger.write("Simplygon's job procceded: %{}" , _val);
 		}
 	}
 }; //_progress_observer;
@@ -63,15 +63,13 @@ W_RESULT simplygon::initialize(_In_z_ const std::wstring& pSimplygonSDKPath)
 	int _init_val = SimplygonSDK::Initialize(&simplygon::iSimplygonSDK);
 	if (_init_val != SimplygonSDK::SG_ERROR_NOERROR)
 	{
-		char _str[2048];
-#ifdef __WIN32
-		sprintf_s(
-#else
-		sprintf(
-#endif
-			_str, "Failed to initialize simplygon.\n\tError: %d\n\tError string:%s\n", _init_val, SimplygonSDK::GetError(_init_val));
-
-		V(W_FAILED, _str, "simplygon::initialize", 3);
+		const wchar_t* _e_code = SimplygonSDK::GetError(_init_val);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			L"Failed to initialize simplygon.\n\tError: {}\n\tError string:{}\n.trace info: {}", 
+			_init_val, 
+			_e_code,
+			L"simplygon::initialize");
 
 		simplygon::is_initialized = false;
 		return W_FAILED;
@@ -86,7 +84,7 @@ W_RESULT simplygon::remeshing(
 	_In_	SimplygonSDK::CountedPointer<SimplygonSDK::IScene>& pInScene,
 	_In_z_	const TangentSpaceMethod& pTangentSpaceMethod)
 {
-	const std::string _trace_info = "simplygon::remeshing";
+	const char* _trace_info = "simplygon::remeshing";
 
 	bool _error = false;
 
@@ -99,20 +97,15 @@ W_RESULT simplygon::remeshing(
 
 	iSimplygonSDK->SetGlobalSetting("Remesh", pTangentSpaceMethod);
 
-	char _name[1024];
-#ifdef __WIN32
-	sprintf_s(
-#else
-	sprintf(
-#endif
-		_name, "%s", pInScene->GetName().GetText());
-
-	std::string _name_str(_name);
-
+	auto _name_str = pInScene->GetName().GetText();
 	if (!pInScene)
 	{
 		_error = true;
-		V(W_FAILED, "getting object scene for model: " + _name_str, _trace_info, 3);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			"getting object scene for model: {}. trace info: {}", 
+			_name_str,
+			_trace_info);
 		goto exit_func;
 	}
 	//Create a copy of the original scene on which we will run the reduction
@@ -120,7 +113,11 @@ W_RESULT simplygon::remeshing(
 	if (!pOutScene)
 	{
 		_error = true;
-		V(W_FAILED, "getting deep copy from object scene for model: " + _name_str, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"getting deep copy from object scene for model: {}. trace info: {}",
+			_name_str,
+			_trace_info);
 		goto exit_func;
 	}
 
@@ -129,7 +126,11 @@ W_RESULT simplygon::remeshing(
 	if (!_processor)
 	{
 		_error = true;
-		V(W_FAILED, "error on CreateReductionProcessor for model: " + _name_str, _trace_info, 3);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			"error on CreateReductionProcessor for model: {}. trace info: {}",
+			_name_str, 
+			_trace_info);
 		goto exit_func;
 	}
 
@@ -140,7 +141,11 @@ W_RESULT simplygon::remeshing(
 	if (!_settings)
 	{
 		_error = true;
-		V(W_FAILED, "error on GetReductionSettings for model: " + _name_str, _trace_info, 3);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			"error on GetReductionSettings for model: {}. trace info: {}",
+			_name_str, 
+			_trace_info);
 		goto exit_func;
 	}
 	_settings->SetDataCreationPreferences(SG_DATACREATIONPREFERENCES_PREFER_OPTIMIZED_RESULT);
@@ -167,7 +172,11 @@ W_RESULT simplygon::remeshing(
 	if (!_repair_settings)
 	{
 		_error = true;
-		V(W_FAILED, "error on GetRepairSettings for model: " + _name_str, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"error on GetRepairSettings for model: {}. trace info: {}",
+			_name_str,
+			_trace_info);
 		goto exit_func;
 	}
 	_repair_settings->SetTjuncDist(0.0f);
@@ -179,7 +188,11 @@ W_RESULT simplygon::remeshing(
 	if (!_normal_settings)
 	{
 		_error = true;
-		V(W_FAILED, "error on GetNormalCalculationSettings for model: " + _name_str, _trace_info, 3);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			"error on GetNormalCalculationSettings for model: {}. trace info: {}",
+			_name_str, 
+			_trace_info);
 		goto exit_func;
 	}
 
@@ -221,29 +234,37 @@ W_RESULT simplygon::obj_writer(
 	_In_z_ const std::wstring& pObjPath,
 	_In_ CountedPointer<IScene>& pScene)
 {
-	const std::string _trace_info = "simplygon::obj_writer";
+	const char* _trace_info = "simplygon::obj_writer";
 
 	bool _error = false;
 	CountedPointer<IWavefrontExporter> _obj_writer = NULL;
 
-	std::string _out_path = wolf::system::convert::wstring_to_string(pObjPath);
+	auto _out_path = wolf::system::convert::wstring_to_string(pObjPath).c_str();
 
 	//Create an .obj exporter to save our result
 	_obj_writer = iSimplygonSDK->CreateWavefrontExporter();
 	if (!_obj_writer)
 	{
 		_error = true;
-		V(W_FAILED, "CreateWavefrontExporter for model " + _out_path, _trace_info, 3);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			"CreateWavefrontExporter for model {}. trace info: {}",
+			_out_path, 
+			_trace_info);
 		goto exit_func;
 	}
 
 	// Do the actual exporting
-	_obj_writer->SetExportFilePath(_out_path.c_str());
+	_obj_writer->SetExportFilePath(_out_path);
 	_obj_writer->SetScene(pScene);
 	if (!_obj_writer->RunExport())
 	{
 		_error = true;
-		V(W_FAILED, "Running export for model " + _out_path, _trace_info, 3);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			"Running export for model {}. trace info: {}",
+			_out_path, 
+			_trace_info);
 		goto exit_func;
 	}
 
@@ -258,7 +279,7 @@ W_RESULT simplygon::obj_reader(
 	_In_z_ const std::wstring& pObjPath,
 	_Inout_ CountedPointer<IScene>& pScene)
 {
-	const std::string _trace_info = "simplygon::obj_reader";
+	const char* _trace_info = "simplygon::obj_reader";
 
 	bool _error = false;
 	CountedPointer<IWavefrontImporter> _obj_reader = NULL;
@@ -269,7 +290,11 @@ W_RESULT simplygon::obj_reader(
 	if (!_obj_reader)
 	{
 		_error = true;
-		V(W_FAILED, "Creating object importer for model " + _obj_path, _trace_info, 3);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			"Creating object importer for model {}. trace info: {}",
+			_obj_path, 
+			_trace_info);
 		goto exit_func;
 	}
 	_obj_reader->SetExtractGroups(false); //This makes the .obj reader import into a single geometry object instead of multiple
@@ -277,7 +302,11 @@ W_RESULT simplygon::obj_reader(
 	if (!_obj_reader->RunImport())
 	{
 		_error = true;
-		V(W_FAILED, "Running import for model " + _obj_path, _trace_info, 3);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			"Running import for model {}. trace info: {}",
+			_obj_path, 
+			_trace_info);
 		goto exit_func;
 	}
 
@@ -286,7 +315,11 @@ W_RESULT simplygon::obj_reader(
 	if (!pScene)
 	{
 		_error = true;
-		V(W_FAILED, "Getting object scene for model " + _obj_path, _trace_info, 3);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			"Getting object scene for model {}. trace info: {}",
+			_obj_path, 
+			_trace_info);
 		goto exit_func;
 	}
 

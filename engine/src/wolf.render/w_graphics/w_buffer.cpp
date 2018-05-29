@@ -30,7 +30,7 @@ namespace wolf
 				_In_ const w_memory_usage_flag& pMemoryFlag,
 				_In_ const bool& pAllocateFromMemoryPool)
 			{
-				const std::string _trace_info = this->_name + "::allocate";
+				const char* _trace_info = (this->_name + "::allocate").c_str();
 
 				this->_gDevice = pGDevice;
 				this->_usage_flags = pUsageFlags;
@@ -61,8 +61,11 @@ namespace wolf
 						this->_memory_allocation_info);
 					if (!this->_memory_allocation)
 					{
-
-						V(W_FAILED, "allocating memory for graphics device: " + this->_gDevice->get_info(), _trace_info, 3);
+						V(W_FAILED, 
+							w_log_type::W_ERROR,
+							"allocating memory for graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(), 
+							_trace_info);
 						return W_FAILED;
 					}
 				}
@@ -97,8 +100,11 @@ namespace wolf
 						&this->_buffer_handle.handle);
 					if (_hr)
 					{
-						V(W_FAILED, "w_buffer", "creating buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
-							" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), 3, false);
+						V(W_FAILED, 
+							w_log_type::W_ERROR,
+							"creating buffer for graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 
@@ -117,8 +123,11 @@ namespace wolf
 						_memory_property_flags,
 						&_mem_index))
 					{
-						V(W_FAILED, "finding memory index of buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
-							" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+						V(W_FAILED,
+							w_log_type::W_ERROR,
+							"finding memory index of buffer for graphics device: {}. trace info; {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 
@@ -135,8 +144,11 @@ namespace wolf
 						&this->_memory_allocation_info.deviceMemory))
 					{
 
-						V(W_FAILED, "Allocating memory of buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
-							" ID: " + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+						V(W_FAILED,
+							w_log_type::W_ERROR,
+							"allocating memory of buffer for graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 
@@ -154,7 +166,7 @@ namespace wolf
             
 			W_RESULT reallocate(_In_ uint32_t& pBufferSizeInBytes)
 			{
-				const std::string _trace_info = this->_name + "::reallocate";
+				const char* _trace_info = (this->_name + "::reallocate").c_str();
 
 				if (!this->_gDevice) return W_FAILED;
 				
@@ -196,27 +208,29 @@ namespace wolf
             
             W_RESULT copy_to(_In_ w_buffer& pDestinationBuffer)
             {
-                const std::string _trace = this->_name + "copy_to";
+                const char* _trace_info = (this->_name + "::copy_to").c_str();
                 
                 //create one command buffer
                 w_command_buffers _copy_command_buffer;
                 auto _hr = _copy_command_buffer.load(this->_gDevice, 1);
-                if (_hr != W_PASSED)
-                {
-                    V(W_FAILED, "loading command buffer " +
-                        _gDevice->get_info(),
-                        _trace,
-                        3);
-                    return _hr;
-                }
+				if (_hr != W_PASSED)
+				{
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"loading command buffer for graphics device: {}. trace info: {}",
+						_gDevice->get_info(),
+						_trace_info);
+					return _hr;
+				}
 
                 _hr = _copy_command_buffer.begin(0);
                 if (_hr != W_PASSED)
                 {
-                    V(W_FAILED, "begining command buffer " +
+                    V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"begining command buffer for graphics device: {}. trace info: {}",
                         _gDevice->get_info(),
-                        _trace,
-                        3);
+						_trace_info);
                     return _hr;
                 }
 
@@ -235,16 +249,16 @@ namespace wolf
                     &_copy_region);
 
                 _hr = _copy_command_buffer.flush(0);
-                if (_hr != W_PASSED)
-                {
+				if (_hr != W_PASSED)
+				{
 					_copy_cmd.handle = nullptr;
-                    V(W_FAILED,
-                        "flushing command buffer of " +
-                        _gDevice->get_info(),
-                        _trace,
-                        3);
-                    return _hr;
-                }
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"flushing command buffer of graphics device: {}. trace info: {}",
+						_gDevice->get_info(),
+						_trace_info);
+					return _hr;
+				}
 
                 _copy_command_buffer.release();
 				_copy_cmd.handle = nullptr;
@@ -254,13 +268,18 @@ namespace wolf
 
 			void* map()
 			{
-				const std::string _trace_info = this->_name + "::map";
+				const char* _trace_info = (this->_name + "::map").c_str();
+
 				if (this->_allocated_from_pool)
 				{
 					if (this->_gDevice->memory_allocator.map(this->_memory_allocation, &this->_map_data) == W_FAILED)
 					{
 						this->_map_data = nullptr;
-						V(W_FAILED, "mapping memory for graphics device: " + this->_gDevice->get_info(), _trace_info, 3);
+						V(W_FAILED,
+							w_log_type::W_ERROR,
+							"mapping memory for graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 						return nullptr;
 					}
 				}
@@ -275,7 +294,11 @@ namespace wolf
 						&this->_map_data))
 					{
 						this->_map_data = nullptr;
-						V(W_FAILED, "mapping memory for graphics device: " + this->_gDevice->get_info(), _trace_info, 3);
+						V(W_FAILED,
+							w_log_type::W_ERROR,
+							"mapping memory for graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 						return nullptr;
 					}
 				}

@@ -23,7 +23,11 @@ W_RESULT w_semaphore::initialize(_In_ const std::shared_ptr<w_graphics_device>& 
                           nullptr,
                           &this->_semaphore))
     {
-        V(W_FAILED, "creating semaphore", "w_semaphore", 3, false);
+        V(W_FAILED, 
+			w_log_type::W_ERROR,
+			"creating semaphore with graphics device: {} . trace info: {}", 
+			pGDevice->get_info(),
+			"w_semaphore::initialize");
         return W_FAILED;
     }
 #else

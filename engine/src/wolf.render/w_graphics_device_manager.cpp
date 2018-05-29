@@ -243,11 +243,10 @@ W_RESULT w_graphics_device::submit(
 	{
 		_hr = W_FAILED;
 		V(_hr,
-			"submiting queue for graphics device " + this->device_info->get_device_name() + 
-			" ID:" + std::to_string(this->device_info->get_device_id()),
-			_trace_info,
-			3,
-			false);
+			w_log_type::W_ERROR,
+			"submiting queue for graphics device: {}. trace info: {}", 
+			this->get_info(),
+			_trace_info);
 		goto submit_clear;
 	}
 
@@ -257,10 +256,10 @@ W_RESULT w_graphics_device::submit(
 		{
 			_hr = W_FAILED;
 			V(_hr,
-				"waiting idle queue for graphics device " + this->get_info(),
-				_trace_info,
-				3,
-				false);
+				w_log_type::W_ERROR,
+				"waiting idle queue for graphics device: {} . trace info: {}",
+				this->get_info(),
+				_trace_info);
 				goto submit_clear;
 		}
 	}
@@ -337,17 +336,16 @@ W_RESULT w_graphics_device::capture(
         &_image_create_info,
         nullptr,
         &_dst_image);
-    if (_hr)
-    {
-        _return_result = W_FAILED;
-        V(_return_result,
-            "creating destination image for graphics device" + this->device_info->get_device_name() +
-            " ID:" + std::to_string(this->device_info->get_device_id()),
-            _trace_info,
-            3,
-            false);
-        goto clean_up;
-    }
+	if (_hr)
+	{
+		_return_result = W_FAILED;
+		V(_return_result,
+			w_log_type::W_ERROR,
+			"creating destination image for graphics device: {}. trace info: {}",
+			this->get_info(),
+			_trace_info);
+		goto clean_up;
+	}
 
 
     {
@@ -374,12 +372,10 @@ W_RESULT w_graphics_device::capture(
         {
             _return_result = W_FAILED;
             V(_return_result,
-                "creating destination image for graphics device" + this->device_info->get_device_name() +
-                " ID:" + std::to_string(this->device_info->get_device_id()),
-                _trace_info,
-                3,
-                false);
-
+				w_log_type::W_ERROR,
+                "creating destination image for graphics device: {}. trace info: {}", 
+				this->get_info(),
+                _trace_info);
             goto clean_up;
         }
     }
@@ -391,12 +387,10 @@ W_RESULT w_graphics_device::capture(
     {
         _return_result = W_FAILED;
         V(_return_result,
-            "binding to destination image for graphics device" + this->device_info->get_device_name() +
-            " ID:" + std::to_string(this->device_info->get_device_id()),
-            _trace_info,
-            3,
-            false);
-
+			w_log_type::W_ERROR,
+            "binding to destination image for graphics graphics device: {}. trace info: {}",
+			this->get_info(),
+            _trace_info);
         goto clean_up;
     }
 
@@ -421,12 +415,10 @@ W_RESULT w_graphics_device::capture(
 		{
 			_return_result = W_FAILED;
 			V(_return_result,
-				"allocating buffer for copy command buffer for" + this->device_info->get_device_name() +
-				" ID:" + std::to_string(this->device_info->get_device_id()),
-				_trace_info,
-				3,
-				false);
-
+				w_log_type::W_ERROR,
+				"allocating buffer for copy command buffer for graphics device: {}. trace info: {}",
+				this->get_info(),
+				_trace_info);
 			goto clean_up;
 		}
 
@@ -439,12 +431,10 @@ W_RESULT w_graphics_device::capture(
 		{
 			_return_result = W_FAILED;
 			V(_return_result,
-				"beginning copy command buffer for" + this->device_info->get_device_name() +
-				" ID:" + std::to_string(this->device_info->get_device_id()),
-				_trace_info,
-				3,
-				false);
-
+				w_log_type::W_ERROR,
+				"beginning copy command buffer for graphics device: {} . trace info: {}",
+				this->get_info(),
+				_trace_info);
 			goto clean_up;
 		}
 
@@ -610,12 +600,10 @@ W_RESULT w_graphics_device::capture(
 		{
 			_return_result = W_FAILED;
 			V(_return_result,
-				"ending copy command buffer for" + this->device_info->get_device_name() +
-				" ID:" + std::to_string(this->device_info->get_device_id()),
-				_trace_info,
-				3,
-				false);
-
+				w_log_type::W_ERROR,
+				"ending copy command buffer for graphics device: {}. trace info: {}",
+				this->get_info(),
+				_trace_info);
 			goto clean_up;
 		}
 		_command_buffer_began = false;
@@ -630,12 +618,10 @@ W_RESULT w_graphics_device::capture(
 		{
 			_return_result = W_FAILED;
 			V(_return_result,
-				"creating fence of copy command buffer for" + this->device_info->get_device_name() +
-				" ID:" + std::to_string(this->device_info->get_device_id()),
-				_trace_info,
-				3,
-				false);
-
+				w_log_type::W_ERROR,
+				"creating fence of copy command buffer for graphics device: {} . trace info: {}",
+				this->get_info(),
+				_trace_info);
 			goto clean_up;
 		}
 
@@ -651,12 +637,9 @@ W_RESULT w_graphics_device::capture(
 		{
 			_return_result = W_FAILED;
 			V(_return_result,
-				"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
-				" ID:" + std::to_string(this->device_info->get_device_id()),
-				_trace_info,
-				3,
-				false);
-
+				"submiting copy command buffer to queue for graphics device: {}. trace info: {}",
+				this->get_info(),
+				_trace_info);
 			goto clean_up;
 		}
 		// Wait for the fence to signal that command buffer has finished executing
@@ -665,12 +648,9 @@ W_RESULT w_graphics_device::capture(
 		{
 			_return_result = W_FAILED;
 			V(_return_result,
-				"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
-				" ID:" + std::to_string(this->device_info->get_device_id()),
-				_trace_info,
-				3,
-				false);
-
+				"submiting copy command buffer to queue for graphics device: {}. trace info: {}",
+				this->get_info(),
+				_trace_info);
 			goto clean_up;
 		}
 
@@ -710,15 +690,13 @@ clean_up:
         if (_command_buffer_began)
         {
             _hr = vkEndCommandBuffer(_copy_cmd);
-            if (_hr)
-            {
-                V(W_FAILED,
-                    "ending copy command buffer for" + this->device_info->get_device_name() +
-                    " ID:" + std::to_string(this->device_info->get_device_id()),
-                    _trace_info,
-                    3,
-                    false);
-            }
+			if (_hr)
+			{
+				V(W_FAILED,
+					"ending copy command buffer for graphics device: {}. trace info: {}",
+					this->get_info(),
+					_trace_info);
+			}
         }
         vkFreeCommandBuffers(
             this->vk_device,
@@ -767,11 +745,10 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 	if (_hr)
 	{
 		V(_return_result,
-			"beginning copy command buffer for graphics device" + this->device_info->get_device_name() +
-			" ID:" + std::to_string(this->device_info->get_device_id()),
-			_trace_info,
-			3,
-			false);
+			w_log_type::W_ERROR,
+			"beginning copy command buffer for graphics device {}. trace info: {}",
+			this->get_info(),
+			_trace_info);
 		goto clean_up;
 	}
 
@@ -926,12 +903,9 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			{
 				_return_result = W_FAILED;
 				V(_return_result,
-					"ending copy command buffer for" + this->device_info->get_device_name() +
-					" ID:" + std::to_string(this->device_info->get_device_id()),
-					_trace_info,
-					3,
-					false);
-
+					"ending copy command buffer for graphics device: {}. trace info: {}",
+					this->get_info(),
+					_trace_info);
 				goto clean_up;
 			}
 			_objs_ptr->command_buffer_began = false;
@@ -946,11 +920,9 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			{
 				_return_result = W_FAILED;
 				V(_return_result,
-					"creating fence of copy command buffer for" + this->device_info->get_device_name() +
-					" ID:" + std::to_string(this->device_info->get_device_id()),
-					_trace_info,
-					3,
-					false);
+					"creating fence of copy command buffer for graphics device: {}. trace info: {}",
+					this->get_info(),
+					_trace_info);
 				goto clean_up;
 			}
 
@@ -966,12 +938,9 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			{
 				_return_result = W_FAILED;
 				V(_return_result,
-					"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
-					" ID:" + std::to_string(this->device_info->get_device_id()),
-					_trace_info,
-					3,
-					false);
-
+					"submiting copy command buffer to queue for graphics device: {}. trace info: {}",
+					this->get_info(),
+					_trace_info);
 				goto clean_up;
 			}
 			// Wait for the fence to signal that command buffer has finished executing
@@ -980,12 +949,9 @@ W_RESULT w_graphics_device::capture_presented_swap_chain_buffer(
 			{
 				_return_result = W_FAILED;
 				V(_return_result,
-					"submiting copy command buffer to queue for" + this->device_info->get_device_name() +
-					" ID:" + std::to_string(this->device_info->get_device_id()),
-					_trace_info,
-					3,
-					false);
-
+					"submiting copy command buffer to queue for graphics device: {}. trace info: {}",
+					this->get_info(),
+					_trace_info);
 				goto clean_up;
 			}
 
@@ -1017,11 +983,9 @@ clean_up:
 		{
 			_return_result = W_FAILED;
 			V(_return_result,
-				"ending copy command buffer for" + this->device_info->get_device_name() +
-				" ID:" + std::to_string(this->device_info->get_device_id()),
-				_trace_info,
-				3,
-				false);
+				"ending copy command buffer for graphics device: {}. trace info: {}",
+				this->get_info(),
+				_trace_info);
 		}
 		_objs_ptr->command_buffer_began = false;
 	}
@@ -1058,8 +1022,8 @@ void w_graphics_device::_clean_swap_chain()
 				if (_hr)
 				{
 					V(W_FAILED,
-						"ending remained copy command buffer between CPU-GPU for" + this->device_info->get_device_name() +
-						" ID:" + std::to_string(this->device_info->get_device_id()),
+						"ending remained copy command buffer between CPU-GPU for graphics device: {}. trace info: {}",
+						this->get_info(),
 						"w_graphics_device::release",
 						3,
 						false);
@@ -2401,6 +2365,8 @@ namespace wolf
 
 			void create_swap_chain(_In_ const std::shared_ptr<w_graphics_device>& pGDevice)
 			{
+				const char* _trace_info = "::create_swap_chain";
+
 #ifdef __DX12__
 				auto _device_name = wolf::system::convert::string_to_wstring(pGDevice->device_name);
 				auto _device_id = pGDevice->device_id;
@@ -2740,9 +2706,11 @@ namespace wolf
 						_vk_presentation_surface,
 						&pGDevice->vk_queue_family_supports_present[j]);
 
-					V(_hr, L"could not get physical device surface support for graphics device: " +
-						std::wstring(_device_name.begin(), _device_name.end()) + L" ID:" + std::to_wstring(_device_id),
-						this->_name, 2);
+					V(_hr == 0 ? W_PASSED : W_FAILED,
+						w_log_type::W_WARNING,
+						"could not get physical device surface support for graphics device: {}. trace info: {}",
+						pGDevice->get_info(),
+						_trace_info);
 
 					if (pGDevice->vk_present_queue.index == UINT32_MAX &&
 						pGDevice->vk_graphics_queue.index != UINT32_MAX &&
@@ -2753,9 +2721,10 @@ namespace wolf
 				}
 
 				V(pGDevice->vk_present_queue.index == UINT32_MAX ? W_FAILED : W_PASSED,
-					L"could not find queue family which supports presentation for graphics device: {}" +
-					std::wstring(_device_name.begin(), _device_name.end()) + L" ID:" + std::to_wstring(_device_id),
-					this->_name, 2);
+					w_log_type::W_WARNING,
+					"could not find queue family which supports presentation for graphics device: {}. trace info: {}",
+					pGDevice->get_info(),
+					_trace_info);
 
 				//get the list of VkFormats that are supported:
 				uint32_t _vk_format_count;
@@ -3628,7 +3597,7 @@ w_graphics_device_manager::w_graphics_device_manager() : _pimp(new w_graphics_de
    
 #if defined(__WIN32) && !defined(__PYTHON__)
     auto _hr = CoInitialize(NULL);
-	V(_hr, L"CoInitialize already been called", _super::name, 3, false);
+	V(_hr == S_OK ? W_PASSED : W_FAILED, L"CoInitialize already been called", _super::name, 3, false);
 #endif
 
 #ifdef __ANDROID

@@ -79,7 +79,11 @@ namespace wolf
 				this->_bounding_box = new (std::nothrow) wolf::system::w_bounding_box();
 				if (!this->_bounding_box)
 				{
-					V(W_FAILED, "allocating memory for w_bounding_box in w_shapes", this->_name, 3, false);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"allocating memory for w_bounding_box in w_shapes. graphics device: {}. trace info: {}", 
+						_gDevice->get_info(),
+						"w_shapes()");
 					return;
 				}
 				std::memcpy(&this->_bounding_box->min[0], &pBoundingBox.min[0], 3 * sizeof(float));
@@ -101,7 +105,11 @@ namespace wolf
 				this->_bounding_sphere = new (std::nothrow) wolf::system::w_bounding_sphere();
 				if (!this->_bounding_sphere)
 				{
-					V(W_FAILED, "allocating memory for _bounding_sphere in w_shapes", this->_name, 3, false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"allocating memory for _bounding_sphere in w_shapes. graphics device: {}. trace info: {}",
+						_gDevice->get_info(),
+						"w_shapes()");
 					return;
 				}
 				std::memcpy(&this->_bounding_sphere->center[0], &pBoundingSphere.center[0], 3 * sizeof(float));
@@ -166,7 +174,11 @@ namespace wolf
 				if (_hr == W_FAILED)
 				{
 					release();
-					V(W_FAILED, "loading mesh", _trace_info, 3, true);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"loading mesh with graphics device: {}. trace info: {}", 
+						pGDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
@@ -177,7 +189,11 @@ namespace wolf
 				if (_hr == W_FAILED)
 				{
 					release();
-					V(W_FAILED, "loading vertex shader", _trace_info, 3, true);
+					V(W_FAILED, 
+						w_log_type::W_WARNING,
+						"loading vertex shader width graphics device: {}. trace info: {}",
+						pGDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
@@ -188,7 +204,11 @@ namespace wolf
 				if (_hr == W_FAILED)
 				{
 					release();
-					V(W_FAILED, "loading fragment shader", _trace_info, 3, true);
+					V(W_FAILED, 
+						w_log_type::W_WARNING,
+						"loading fragment shader. graphics device: {}. trace info: {}",
+						pGDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
@@ -197,14 +217,22 @@ namespace wolf
 				if (_hr == W_FAILED)
 				{
 					release();
-					V(W_FAILED, "loading WorldViewProjection uniform", _trace_info, 3, true);
+					V(W_FAILED, 
+						w_log_type::W_WARNING,
+						"loading WorldViewProjection uniform. graphics device: {}. trace info: {}",  
+						pGDevice->get_info(),
+						_trace_info);
 				}
 				
 				_hr = this->_u1.load(_gDevice);
 				if (_hr == W_FAILED)
 				{
 					release();
-					V(W_FAILED, "loading color uniform", _trace_info, 3, true);
+					V(W_FAILED, 
+						w_log_type::W_WARNING,
+						"loading color uniform. graphics device : {}.trace info : {}",  
+						pGDevice->get_info(),
+						_trace_info);
 				}
 
 				std::vector<w_shader_binding_param> _shader_params;
@@ -226,7 +254,11 @@ namespace wolf
 				if (_hr == W_FAILED)
 				{
 					release();
-					V(W_FAILED, "setting shader binding param", _trace_info, 3, true);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"setting shader binding param. graphics device : {}.trace info : {}",
+						pGDevice->get_info(),
+						_trace_info);
 				}
 
 				//loading pipeline cache
@@ -247,7 +279,11 @@ namespace wolf
 				if (_hr == W_FAILED)
 				{
 					release();
-					V(W_FAILED, "creating solid pipeline", _trace_info, 3, true);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"creating solid pipeline. graphics device : {}.trace info : {}",
+						pGDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
@@ -263,7 +299,11 @@ namespace wolf
 				auto _hr = this->_u0.update();
 				if (_hr == W_FAILED)
 				{
-					V(W_FAILED, "updating uniform WorldViewProjection", _trace_info, 3, false);
+					V(W_FAILED, 
+						w_log_type::W_WARNING,
+						"updating uniform WorldViewProjection. graphics device : {}.trace info : {}",
+						this->_gDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 				return W_PASSED;
@@ -284,7 +324,11 @@ namespace wolf
 				auto _hr = this->_u1.update();
 				if (_hr == W_FAILED)
 				{
-					V(W_FAILED, "updating uniform color", _trace_info, 3, false);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"updating uniform color. graphics device : {}.trace info : {}", 
+						this->_gDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 				return W_PASSED;
@@ -298,7 +342,11 @@ namespace wolf
 
 				if (this->_shape_drawer.draw(pCommandBuffer, nullptr, 0) == W_FAILED)
 				{
-					V(W_FAILED, "drawing shape", _trace_info, 3, false);
+					V(W_FAILED, 
+						w_log_type::W_ERROR, 
+						"drawing shape. graphics device : {}.trace info : {}",
+						this->_gDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 				return W_PASSED;;

@@ -24,13 +24,15 @@ namespace wolf
 				_In_ const std::vector<VkSubpassDescription>* pSubpassDescriptions,
 				_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies)
 			{
-				const std::string _trace_info = this->_name + "::load";
+				const char* _trace_info = (this->_name + "::load").c_str();
 
 				if (!pAttachments.size())
 				{
-					V(W_FAILED, L"attachments not defined for render pass of graphics device: " +
-						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"attachments not defined for render pass of graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
@@ -118,9 +120,11 @@ namespace wolf
 					&this->_render_pass.handle);
 				if (_hr)
 				{
-					V(W_FAILED, L"creating render pass for graphics device: " +
-						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"creating render pass for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
@@ -142,9 +146,11 @@ namespace wolf
 						if (_width != _iter.width || _height != _iter.height)
 						{
 							__hr = W_FAILED;
-							V(__hr, L"width and height of all attachments must be same. creating frame buffers for graphics device: " +
-								wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-								L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+							V(__hr,
+								w_log_type::W_ERROR,
+								"width and height of all attachments must be same. creating frame buffers for graphics device: {}. trace info: {}",
+								this->_gDevice->get_info(),
+								_trace_info);
 							break;
 						}
 					}
@@ -173,8 +179,11 @@ namespace wolf
 					else
 					{
 						__hr = W_FAILED;
-						V(__hr, "creating frame buffer for graphics device: " + this->_gDevice->device_info->get_device_name() +
-							" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+						V(__hr,
+							w_log_type::W_ERROR,
+							"creating frame buffer for graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 						break;
 					}
 					_frame_buffer_attachments.clear();
@@ -196,13 +205,12 @@ namespace wolf
 				if (pFrameBufferIndex >= this->_frame_buffers.size())
 				{
 					V(W_FAILED,
-						"parameter count mismatch, index of frame buffer does not match with index of command buffer for graphics device: " +
-						this->_gDevice->device_info->get_device_name() +
-						" ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
-						_trace_info, 3, false);
+						w_log_type::W_ERROR,
+						"parameter count mismatch, index of frame buffer does not match with index of command buffer for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
 					return;
 				}
-
 
 				std::array<VkClearValue, 2> _clear_values = {};
 				_clear_values[0].color =

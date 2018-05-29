@@ -41,7 +41,7 @@ namespace wolf
 			W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
                 _In_ const bool& pHostVisible = false)
 			{
-                const std::string _trace = this->name + "::update";
+                const char* _trace_info = (this->name + "::update").c_str();
 
                 this->_host_visible = pHostVisible;
 
@@ -62,10 +62,11 @@ namespace wolf
 
                     if (_hr == W_FAILED)
                     {
-                        V(_hr, "loading host visible buffer " +
-                            _gDevice->get_info(),
-                            _trace,
-                            3);
+						V(_hr,
+							w_log_type::W_ERROR,
+							"loading host visible buffer. graphics device: {}. trace info: {}",
+							_gDevice->get_info(),
+							_trace_info);
                         return _hr;
                     }
                 }
@@ -78,10 +79,11 @@ namespace wolf
                     
                     if (_hr == W_FAILED)
                     {
-                        V(_hr, "loading device buffer " +
-                            _gDevice->get_info(),
-                            _trace,
-                            3);
+                        V(_hr, 
+							w_log_type::W_ERROR,
+							"loading device buffer. graphics device: {}. trace info: {}",
+							_gDevice->get_info(),
+							_trace_info);
                         return _hr;
                     }
 
@@ -92,10 +94,11 @@ namespace wolf
 						w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY);
                     if (_hr == W_FAILED)
                     {
-                        V(_hr, "loading staging buffer " +
-                            _gDevice->get_info(),
-                            _trace,
-                            3);
+                        V(_hr, 
+							w_log_type::W_ERROR,
+							"loading staging buffer. graphics device: {}. trace info: {}",
+							_gDevice->get_info(),
+							_trace_info);
                         return _hr;
                     }
 
@@ -125,17 +128,18 @@ namespace wolf
 
             W_RESULT update()
             {
-                const std::string _trace = this->name + "update";
+                const std::string _trace_info = this->name + "update";
 
                 W_RESULT _hr = W_PASSED;
 
                 if (this->_host_visible)
                 {
                     _hr = this->_buffer.set_data(&this->data);
-                    V(_hr, "setting to host visible buffer " +
+                    V(_hr, 
+						w_log_type::W_ERROR,
+						"setting to host visible buffer. graphics device : {}.trace info : {}",
                         _gDevice->get_info(),
-                        _trace,
-                        3);
+                        _trace_info);
                 }
                 else
                 {
@@ -149,20 +153,22 @@ namespace wolf
                     else
                     {
                         _hr = W_FAILED;
-                        V(_hr, "begining command buffer " +
-                            _gDevice->get_info(),
-                            _trace,
-                            3);
+						V(_hr,
+							w_log_type::W_ERROR,
+							"begining command buffer . graphics device : {}.trace info : {}",
+							_gDevice->get_info(),
+							_trace_info);
                     }
                     this->_staging_buffer.unmap();
 
                     if (_hr == W_FAILED) return _hr;
 
                     _hr = this->_staging_buffer.copy_to(this->_buffer);
-                    V(_hr, "copy staging buffer to device buffer " +
-                        _gDevice->get_info(),
-                        _trace,
-                        3);
+					V(_hr,
+						w_log_type::W_ERROR,
+						"copy staging buffer to device buffer . graphics device : {}.trace info : {}",
+						_gDevice->get_info(),
+						_trace_info);
                 }
 
                 return _hr;

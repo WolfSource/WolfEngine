@@ -76,11 +76,19 @@ namespace wolf
                 if(_hr)
                 {
 #if defined(__WIN32) || defined(__UWP)
-					V(W_FAILED, L"creating shader module for shader on following path: " + _path,
-						this->_name, 3, false);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						L"creating shader module for shader on following path: {}. graphics device: {} trace info: {}",
+						_path,
+						_gDevice->get_info(),
+						L"w_shader::load");
 #else
-					V(W_FAILED, "creating shader module for shader on following path: " + _path,
-						this->_name, 3, false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"creating shader module for shader on following path: {}. graphics device: {} trace info: {}",
+						_path,
+						_gDevice->get_info(),
+						"w_shader::load");
 #endif
                     return W_FAILED;
                 }
@@ -350,33 +358,38 @@ namespace wolf
                 }
             }
 
-            W_RESULT _create_descriptor_pool(
-                _In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize, 
-                _In_ const uint32_t& pMaxPoolSets)
-            {
-                VkDescriptorPoolCreateInfo _descriptor_pool_create_info =
-                {
-                    VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,    // Type
-                    nullptr,                                          // Next
-                    0,                                                // Flags
-                    pMaxPoolSets,                                     // MaxSets
-                    static_cast<uint32_t>(pDescriptorPoolSize.size()),// PoolSizeCount
-                    pDescriptorPoolSize.data()                        // PoolSizes
-                };
-                
-                auto _hr = vkCreateDescriptorPool(this->_gDevice->vk_device,
-                                                  &_descriptor_pool_create_info,
-                                                  nullptr,
-                                                  &this->_descriptor_pool);
-                if(_hr)
-                {
-                    V(W_FAILED, "creating descriptor pool for graphics device: " + this->_gDevice->device_info->get_device_name() +
-                      " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-                    return W_FAILED;
-                }
-                
-                return W_PASSED;
-            }
+			W_RESULT _create_descriptor_pool(
+				_In_ const std::vector<VkDescriptorPoolSize> pDescriptorPoolSize,
+				_In_ const uint32_t& pMaxPoolSets)
+			{
+				const char* _trace_info = (this->_name + "_create_descriptor_pool").c_str();
+
+				VkDescriptorPoolCreateInfo _descriptor_pool_create_info =
+				{
+					VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,    // Type
+					nullptr,                                          // Next
+					0,                                                // Flags
+					pMaxPoolSets,                                     // MaxSets
+					static_cast<uint32_t>(pDescriptorPoolSize.size()),// PoolSizeCount
+					pDescriptorPoolSize.data()                        // PoolSizes
+				};
+
+				auto _hr = vkCreateDescriptorPool(this->_gDevice->vk_device,
+					&_descriptor_pool_create_info,
+					nullptr,
+					&this->_descriptor_pool);
+				if (_hr)
+				{
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"creating descriptor pool for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
+					return W_FAILED;
+				}
+
+				return W_PASSED;
+			}
             
             void _create_descriptor_layout_bindings(
                 _In_    const w_shader_binding_param& pParam,
@@ -462,6 +475,8 @@ namespace wolf
                 _Inout_ VkDescriptorSet& pDescriptorSet, 
                 _Inout_ VkDescriptorSetLayout& pDescriptorSetLyout)
             {
+				const char* _trace_info = (this->_name + "_create_descriptor_set_layout_binding").c_str();
+
                 VkDescriptorSetLayoutCreateInfo _descriptor_set_layout_create_info =
                 {
                     VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,        // Type
@@ -475,20 +490,20 @@ namespace wolf
                                                        &_descriptor_set_layout_create_info,
                                                        nullptr,
                                                        &pDescriptorSetLyout);
-                if(_hr)
-                {
-                    V(W_FAILED, "creating descriptor set layout for graphics device :" +
-                        this->_gDevice->device_info->get_device_name() +
-                      " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
-                      this->_name, 3,
-                      false);
-                    
-                    return W_FAILED;
-                }
+				if (_hr)
+				{
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"creating descriptor set layout for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
+
+					return W_FAILED;
+				}
                 
                 if(!this->_descriptor_pool)
                 {
-                    logger.error("Descriptor pool not exists");
+                    logger.error("descriptor pool not exists");
                     return W_FAILED;
                     
                 }
@@ -504,14 +519,15 @@ namespace wolf
                 _hr = vkAllocateDescriptorSets(this->_gDevice->vk_device,
                                                &_descriptor_set_allocate_info,
                                                &pDescriptorSet);
-                if(_hr)
-                {
-                    V(W_FAILED, "creating descriptor set for graphics device :" + this->_gDevice->device_info->get_device_name() +
-                      " ID: " + std::to_string(this->_gDevice->device_info->get_device_id()),
-                      this->_name, 3,
-                      false);
-                    return W_FAILED;
-                }
+				if (_hr)
+				{
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"creating descriptor set for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
+					return W_FAILED;
+				}
                 return W_PASSED;
             }
             

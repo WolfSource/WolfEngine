@@ -73,6 +73,8 @@ namespace wolf
 				_In_ const bool& pPreferredLargeHeapBlockSize,
 				_In_ const bool& pUseCustomCpuAllocation_Callbacks)
 			{
+				this->_device_info = pGDevice->get_info();
+
 				VmaAllocatorCreateInfo _allocator_info = {};
 				_allocator_info.physicalDevice = pGDevice->vk_physical_device;
 				_allocator_info.device = pGDevice->vk_device;
@@ -107,7 +109,11 @@ namespace wolf
 				auto _allocation = new (std::nothrow) VmaAllocation();
 				if (!_allocation)
 				{
-					V(W_FAILED, "allocating memory for VmaAllocation", _trace_info, 3);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"allocating memory for VmaAllocation with graphics device: {}. trace info: {}",
+						this->_device_info.c_str(),
+						_trace_info);
 					return nullptr;
 				}
 
@@ -132,7 +138,11 @@ namespace wolf
 				auto _allocation = new (std::nothrow) VmaAllocation();
 				if (!_allocation)
 				{
-					V(W_FAILED, "allocating memory for VmaAllocation", _trace_info, 3);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"allocating memory for VmaAllocation with graphics device: {}. trace info: {}",
+						this->_device_info.c_str(),
+						_trace_info);
 					return nullptr;
 				}
 
@@ -197,6 +207,7 @@ namespace wolf
 
         private:
             std::string                                         _name;
+			std::string                                         _device_info;
 			VmaAllocator										_allocator;
         };
     }

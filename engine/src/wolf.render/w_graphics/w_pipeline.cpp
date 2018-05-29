@@ -34,35 +34,43 @@ namespace wolf
                 _In_ const w_pipeline_color_blend_attachment_state& pBlendState,
                 _In_ const w_color& pBlendColors)
             {
-				const std::string _trace_info = this->_name + "::load";
+				const char* _trace_info = (this->_name + "::load").c_str();
 
                 this->_gDevice = pGDevice;
 
                 if (pVertexBindingAttributes.declaration == w_vertex_declaration::NOT_DEFINED)
                 {
-					V(W_FAILED, L"vertex type not defined. Graphics device: " +
-						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 2);
+					V(W_FAILED, 
+						w_log_type::W_WARNING,
+						"vertex type not defined for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
                 }
-                if (!pShaderBinding)
-                {
-					V(W_FAILED, L"shader can not be nullptr. Graphics device: " +
-						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
-                    return W_FAILED;
-                }
+				if (!pShaderBinding)
+				{
+					V(W_FAILED,
+						w_log_type::W_WARNING,
+						"shader can not be nullptr. graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
+					return W_FAILED;
+				}
 				if (!pShaderBinding->get_shader_stages())
 				{
-					V(W_FAILED, L"shader stages can not be nullptr. Graphics device: " +
-						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"shader stages can not be nullptr. graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 				if (!pRenderPassBinding)
 				{
-					V(W_FAILED, L"render pass can not be nullptr. Graphics device: " +
-						wolf::system::convert::string_to_wstring(this->_gDevice->device_info->get_device_name()) +
-						L" ID:" + std::to_wstring(this->_gDevice->device_info->get_device_id()), this->_name, 3, false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"render pass can not be nullptr. graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 				
@@ -182,99 +190,107 @@ namespace wolf
                     &this->_pipeline);
                 if (_hr)
                 {
-                    V(W_FAILED, "creating pipeline for graphics device: " +
-                        this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
-                        this->_name, 3, false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"creating pipeline for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
                     return W_FAILED;
                 }
 
                 return W_PASSED;
             }
 
-            W_RESULT load_compute(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
-                _In_ const w_shader* pShaderBinding,
-                _In_ const uint32_t& pSpecializationData,
-                _In_ const std::string& pPipelineCacheName,
-                _In_ const std::vector<w_push_constant_range> pPushConstantRanges)
-            {
-                this->_gDevice = pGDevice;
+			W_RESULT load_compute(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				_In_ const w_shader* pShaderBinding,
+				_In_ const uint32_t& pSpecializationData,
+				_In_ const std::string& pPipelineCacheName,
+				_In_ const std::vector<w_push_constant_range> pPushConstantRanges)
+			{
+				const char* _trace_info = (this->_name + "::load_compute").c_str();
 
-                auto _pipeline_cache = w_pipeline::get_pipeline_cache(pPipelineCacheName);
+				this->_gDevice = pGDevice;
+
+				auto _pipeline_cache = w_pipeline::get_pipeline_cache(pPipelineCacheName);
 
 				//store compute shader descriptor set
 				auto _shader_des_set = pShaderBinding->get_compute_descriptor_set().handle;
 				this->_compute_shader_descriptor_set = _shader_des_set ? _shader_des_set : nullptr;
 
-                std::vector<VkDescriptorSetLayout> _descriptor_set_layouts;
+				std::vector<VkDescriptorSetLayout> _descriptor_set_layouts;
 				auto _shader_descriptor_set_layout = pShaderBinding->get_compute_descriptor_set_layout().handle;
 				if (_shader_descriptor_set_layout)
 				{
 					_descriptor_set_layouts.push_back(_shader_descriptor_set_layout);
 				}
-                auto _push_const_size = static_cast<uint32_t>(pPushConstantRanges.size());
+				auto _push_const_size = static_cast<uint32_t>(pPushConstantRanges.size());
 
-                VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
-                _pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-                _pipeline_layout_create_info.setLayoutCount = static_cast<uint32_t>(_descriptor_set_layouts.size());
-                _pipeline_layout_create_info.pSetLayouts = _descriptor_set_layouts.size() ? _descriptor_set_layouts.data() : nullptr;
-                _pipeline_layout_create_info.pushConstantRangeCount = _push_const_size;
-                _pipeline_layout_create_info.pPushConstantRanges = _push_const_size ? (VkPushConstantRange*)pPushConstantRanges.data() : nullptr;
+				VkPipelineLayoutCreateInfo _pipeline_layout_create_info = {};
+				_pipeline_layout_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+				_pipeline_layout_create_info.setLayoutCount = static_cast<uint32_t>(_descriptor_set_layouts.size());
+				_pipeline_layout_create_info.pSetLayouts = _descriptor_set_layouts.size() ? _descriptor_set_layouts.data() : nullptr;
+				_pipeline_layout_create_info.pushConstantRangeCount = _push_const_size;
+				_pipeline_layout_create_info.pPushConstantRanges = _push_const_size ? (VkPushConstantRange*)pPushConstantRanges.data() : nullptr;
 
-                auto _hr = vkCreatePipelineLayout(
-                    pGDevice->vk_device,
-                    &_pipeline_layout_create_info,
-                    nullptr,
-                    &this->_pipeline_layout);
+				auto _hr = vkCreatePipelineLayout(
+					pGDevice->vk_device,
+					&_pipeline_layout_create_info,
+					nullptr,
+					&this->_pipeline_layout);
 
-                if (_hr)
-                {
-                    V(W_FAILED, "creating compute pipeline layout for graphics device: " +
-                        this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
-                        this->_name, 3, false);
-                    return W_FAILED;
-                }
+				if (_hr)
+				{
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"creating compute pipeline layout for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
+					return W_FAILED;
+				}
 
-                // Create pipeline		
-                VkComputePipelineCreateInfo _compute_pipeline_create_info = {};
-                _compute_pipeline_create_info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-                _compute_pipeline_create_info.layout = this->_pipeline_layout;
-                _compute_pipeline_create_info.flags = 0;
-                _compute_pipeline_create_info.stage = pShaderBinding->get_compute_shader_stage();
+				// Create pipeline		
+				VkComputePipelineCreateInfo _compute_pipeline_create_info = {};
+				_compute_pipeline_create_info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+				_compute_pipeline_create_info.layout = this->_pipeline_layout;
+				_compute_pipeline_create_info.flags = 0;
+				_compute_pipeline_create_info.stage = pShaderBinding->get_compute_shader_stage();
 
-                // Use specialization constants to pass max. level of detail (determined by no. of meshes)
-                VkSpecializationMapEntry specializationEntry{};
-                specializationEntry.constantID = 0;
-                specializationEntry.offset = 0;
-                specializationEntry.size = sizeof(uint32_t);
+				// Use specialization constants to pass max. level of detail (determined by no. of meshes)
+				VkSpecializationMapEntry specializationEntry{};
+				specializationEntry.constantID = 0;
+				specializationEntry.offset = 0;
+				specializationEntry.size = sizeof(uint32_t);
 
-                uint32_t _specialization_data = pSpecializationData;
+				uint32_t _specialization_data = pSpecializationData;
 
-                VkSpecializationInfo _specialization_info;
-                _specialization_info.mapEntryCount = 1;
-                _specialization_info.pMapEntries = &specializationEntry;
-                _specialization_info.dataSize = sizeof(_specialization_data);
-                _specialization_info.pData = &_specialization_data;
+				VkSpecializationInfo _specialization_info;
+				_specialization_info.mapEntryCount = 1;
+				_specialization_info.pMapEntries = &specializationEntry;
+				_specialization_info.dataSize = sizeof(_specialization_data);
+				_specialization_info.pData = &_specialization_data;
 
-                _compute_pipeline_create_info.stage.pSpecializationInfo = &_specialization_info;
+				_compute_pipeline_create_info.stage.pSpecializationInfo = &_specialization_info;
 
-                _hr = vkCreateComputePipelines(
-                    pGDevice->vk_device,
-                    _pipeline_cache,
-                    1,
-                    &_compute_pipeline_create_info,
-                    nullptr,
-                    &this->_pipeline);
+				_hr = vkCreateComputePipelines(
+					pGDevice->vk_device,
+					_pipeline_cache,
+					1,
+					&_compute_pipeline_create_info,
+					nullptr,
+					&this->_pipeline);
 
-                if (_hr)
-                {
-                    V(W_FAILED, "creating compute pipeline for graphics device: " +
-                        this->_gDevice->device_info->get_device_name() + " ID:" + std::to_string(this->_gDevice->device_info->get_device_id()),
-                        this->_name, 3, false);
-                    return W_FAILED;
-                }
+				if (_hr)
+				{
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"creating compute pipeline for graphics device: {}. trace info: {}",
+						this->_gDevice->get_info(),
+						_trace_info);
+					return W_FAILED;
+				}
 
-                return W_PASSED;
-            }
+				return W_PASSED;
+			}
 
 			void bind(_In_ const w_command_buffer& pCommandBuffer, 
 				_In_ const w_pipeline_bind_point& pPipelineBindPoint)
@@ -688,8 +704,11 @@ VkPipelineLayout w_pipeline::create_pipeline_layout(_In_ const std::shared_ptr<w
 		&_pipeline_layout);
 	if (_hr)
 	{
-		V(W_FAILED, "creating pipeline layout for graphics device: " +
-			pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			"creating pipeline layout for graphics device: {}. trace info: {}",
+			pGDevice->get_info(), 
+			"w_pipeline::create_pipeline_layout");
 		return 0;
 	}
 	return _pipeline_layout;
@@ -708,12 +727,16 @@ W_RESULT w_pipeline::create_pipeline_cache(_In_ const std::shared_ptr<w_graphics
     _pipeline_cache_create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
     
     auto _hr = vkCreatePipelineCache(pGDevice->vk_device, &_pipeline_cache_create_info, nullptr, &_pipeline_cache);
-    if (_hr)
-    {
-        V(W_FAILED, "Error on creating pipeline cache with graphics device: " +
-            pGDevice->device_info->get_device_name() + " ID:" + std::to_string(pGDevice->device_info->get_device_id()), "w_pipeline", 3, false);
-        return W_FAILED;
-    }
+	if (_hr)
+	{
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"error on creating pipeline cache with graphics device: {}. trace info: {}",
+			pGDevice->get_info(),
+			"w_pipeline::create_pipeline_cache");
+
+		return W_FAILED;
+	}
 
     w_pipeline_pimp::pipeline_caches[pPipelineCacheName] = _pipeline_cache;
     

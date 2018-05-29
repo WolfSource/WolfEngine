@@ -43,7 +43,11 @@ namespace wolf
 						if (!_texture_buffer)
 						{
 							_hr = W_FAILED;
-							V(_hr, "allocating memory for texture", _trace_info, 3, false);
+							V(_hr, 
+								w_log_type::W_ERROR,
+								"allocating memory for texture for graphics device: {}. trace info: {}", 
+								pGDevice->get_info(),
+								_trace_info);
 							break;
 						}
 
@@ -65,13 +69,21 @@ namespace wolf
 						auto _hr = _texture_buffer->initialize(pGDevice, pViewPort.width, pViewPort.height, false, _attachment.attachment_desc.memory_flag);
 						if (_hr == W_FAILED)
 						{
-							V(W_FAILED, "loading texture", _trace_info, 3, false);
+							V(W_FAILED,
+								w_log_type::W_ERROR,
+								"loading texture with graphics device: {}. trace info: {}",
+								pGDevice->get_info(),
+								_trace_info);
 							break;
 						}
 						_hr = _texture_buffer->load();
 						if (_hr == W_FAILED)
 						{
-							V(W_FAILED, "initializing texture", _trace_info, 3, false);
+							V(W_FAILED, 
+								w_log_type::W_ERROR,
+								"initializing texture graphics device: {}. trace info: {}", 
+								pGDevice->get_info(),
+								_trace_info);
 							break;
 						}
 
@@ -101,7 +113,11 @@ namespace wolf
 				{
 					_frame_buffers.clear();
 					release();
-					V(W_FAILED, "loading render pass", _trace_info, 3, false);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"loading render pass with graphics device: {}. trace info: {}", 
+						pGDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
@@ -126,7 +142,11 @@ namespace wolf
 				auto _cmd_size = pCommandBuffers->get_commands_size();
 				if (_cmd_size != this->_render_pass.get_number_of_frame_buffers())
 				{
-					V(W_FAILED, "parameter count mismatch. Number of command buffers must equal to number of frame buffers", _trace_info, 3, false);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"parameter count mismatch. Number of command buffers must equal to number of frame buffers. graphics device:{} trace info: {}", 
+						this->_gDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 

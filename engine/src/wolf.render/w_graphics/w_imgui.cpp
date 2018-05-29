@@ -127,7 +127,11 @@ namespace wolf
 					_attachments);
 				if (__hr == W_FAILED)
 				{
-					V(W_FAILED, "creating render pass", _trace_info, 3);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"creating render pass with graphics device: {}. trace info: {}",
+						pGDevice->get_info(),
+						_trace_info);
 					release();
 					return W_FAILED;
 				}
@@ -137,7 +141,11 @@ namespace wolf
 				if (__hr == W_FAILED)
 				{
 					release();
-					V(W_FAILED, "creating command buffers", _trace_info, 3);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"creating command buffers with graphics device: {}. trace info: {}", 
+						pGDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
@@ -163,14 +171,22 @@ namespace wolf
 				__hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.vert.spv", w_shader_stage_flag_bits::VERTEX_SHADER);
 				if (__hr != W_PASSED)
 				{
-					V(__hr, "loading vertex shader", _trace_info, 3);
+					V(__hr, 
+						w_log_type::W_ERROR,
+						"loading vertex shader with graphics device: {}. trace info: {}", 
+						pGDevice->get_info(),
+						_trace_info);
 					release();
 					return W_FAILED;
 				}
 				__hr = this->_shader.load(pGDevice, content_path + L"shaders/imgui.frag.spv", w_shader_stage_flag_bits::FRAGMENT_SHADER);
 				if (__hr != W_PASSED)
 				{
-					V(__hr, "loading fragment shader", _trace_info, 3);
+					V(__hr, 
+						w_log_type::W_ERROR,
+						"loading fragment shader with graphics device: {}. trace info: {}",
+						pGDevice->get_info(),
+						_trace_info);
 					release();
 					return W_FAILED;
 				}
@@ -225,7 +241,11 @@ namespace wolf
 				this->_pipeline_layout = w_pipeline::create_pipeline_layout(_gDevice, &_pipeline_layout_create_info);
 				if (!this->_pipeline_layout)
 				{
-					V(W_FAILED, "creating pipeline layout", _trace_info, 3);
+					V(W_FAILED, 
+						w_log_type::W_ERROR, 
+						"creating pipeline layout with graphics device: {}. trace info: {}",
+						pGDevice->get_info(),
+						_trace_info);
 					release();
 					return W_FAILED;
 				}
@@ -375,7 +395,11 @@ namespace wolf
 					&this->_pipeline);
 				if (_hr)
 				{
-					V(W_FAILED, "creating graphics pipeline", _trace_info);
+					V(W_FAILED, 
+						w_log_type::W_ERROR,
+						"creating graphics pipeline with graphics device: {}. trace info: {}", 
+						pGDevice->get_info(),
+						_trace_info);
 					release();
 					return W_FAILED;
 				}
@@ -552,7 +576,11 @@ namespace wolf
 					this->_vertex_buffer = new (std::nothrow) w_buffer();
 					if (!this->_vertex_buffer)
 					{
-						V(W_FAILED, "loading staging vertex buffer", _trace_info, 3);
+						V(W_FAILED, 
+							w_log_type::W_ERROR,
+							"loading staging vertex buffer with graphics device: {}. trace info: {}", 
+							this->_gDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 
@@ -563,7 +591,11 @@ namespace wolf
 						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 						w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY) == W_FAILED)
 					{
-						V(W_FAILED, "allocating staging vertex buffer", _trace_info, 3);
+						V(W_FAILED, 
+							w_log_type::W_ERROR,
+							"allocating staging vertex buffer with graphics device: {}. trace info: {}", 
+							this->_gDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 				}
@@ -573,7 +605,10 @@ namespace wolf
 				{
 					if (this->_vertex_buffer->reallocate(_vertex_buffer_size) == W_FAILED)
 					{
-						V(W_FAILED, "reallocating staging vertex buffer", this->_name);
+						V(W_FAILED, 
+							"reallocating staging vertex buffer with graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 				}
@@ -585,7 +620,11 @@ namespace wolf
 					this->_index_buffer = new (std::nothrow) w_buffer();
 					if (!this->_index_buffer)
 					{
-						V(W_FAILED, "loading staging index buffer", _trace_info, 3);
+						V(W_FAILED, 
+							w_log_type::W_ERROR,
+							"loading staging index buffer with graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 
@@ -596,7 +635,11 @@ namespace wolf
 						VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
 						w_memory_usage_flag::MEMORY_USAGE_CPU_ONLY) == W_FAILED)
 					{
-						V(W_FAILED, "allocating staging index buffer", _trace_info, 3);
+						V(W_FAILED, 
+							w_log_type::W_ERROR,
+							"allocating staging index buffer with graphics device: {}. trace info: {}", 
+							this->_gDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 				}
@@ -606,7 +649,10 @@ namespace wolf
 				{
 					if (this->_index_buffer->reallocate(_index_buffer_size) == W_FAILED)
 					{
-						V(W_FAILED, "reallocating staging index buffer", this->_name);
+						V(W_FAILED, 
+							"reallocating staging index buffer with graphics device: {}. trace info: {}", 
+							this->_gDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 				}
@@ -631,13 +677,19 @@ namespace wolf
 					this->_vertex_buffer->unmap();
 					if (_hr == W_FAILED)
 					{
-						V(_hr, "flushing staging index buffer", this->_name);
+						V(_hr,
+							"flushing staging index buffer with graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 					}
 					_hr = this->_index_buffer->flush();
 					this->_index_buffer->unmap();
 					if (_hr == W_FAILED)
 					{
-						V(_hr, "flushing staging index buffer", this->_name);
+						V(_hr, 
+							"flushing staging index buffer graphics device: {}. trace info: {}",
+							this->_gDevice->get_info(),
+							_trace_info);
 					}
 
 					vtxDst = nullptr;

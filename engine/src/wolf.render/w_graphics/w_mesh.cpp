@@ -145,20 +145,34 @@ namespace wolf
                 _In_ const uint32_t* const pIndicesData,
                 _In_ const uint32_t& pIndicesCount)
             {
+				const char* _trace_info = (this->_name + "").c_str();
+
                 if (!this->_dynamic_buffer)
                 {
-                    V(W_FAILED, "updating none dynamic buffer.", this->_name, 2);
+                    V(W_FAILED, 
+						w_log_type::W_WARNING,
+						"could not update none dynamic buffer for graphics device: {}. trace info: {}",
+						pGDevice->get_info(),
+						_trace_info);
                     return W_FAILED;
                 }
                 if (pVerticesCount != this->_vertices_count ||
                     pIndicesCount != this->_indices_count)
                 {
-                    V(W_FAILED, "size of vertex or index buffer does not match.", this->_name, 2);
+                    V(W_FAILED, 
+						w_log_type::W_WARNING,
+						"size of vertex or index buffer does not match for graphics device: {}. trace info: {}", 
+						pGDevice->get_info(),
+						_trace_info);
                     return W_FAILED;
                 }
 
                 auto _hr = this->_stagings_buffers.vertices.set_data(pVerticesData);
-                V(_hr, "updating staging vertex buffer", this->_name, 3);
+                V(_hr, 
+					w_log_type::W_ERROR,
+					"updating staging vertex buffer for graphics device: {}. trace info: {}", 
+					pGDevice->get_info(),
+					_trace_info);
 
                 //_hr = this->_stagings_buffers.vertices.bind();
                 //V(_hr, "binding to staging vertex buffer", this->_name, 3);
@@ -166,7 +180,11 @@ namespace wolf
                 if (pIndicesCount && pIndicesData)
                 {
                     _hr = this->_stagings_buffers.indices.set_data(pIndicesData);
-                    V(_hr, "updating staging index buffer", this->_name, 3);
+                    V(_hr, 
+						w_log_type::W_ERROR,
+						"updating staging index buffer for graphics device: {}. trace info: {}",
+						pGDevice->get_info(),
+						_trace_info);
 
                     //_hr = this->_stagings_buffers.vertices.bind();
                     //V(_hr, "binding staging index buffer", this->_name, 3);
@@ -174,7 +192,11 @@ namespace wolf
 
 				if (_stagings_buffers.vertices.copy_to(this->_vertex_buffer) == W_FAILED)
 				{
-					V(_hr, "copying staging vertex buffer to gpu vertex buffer", this->_name, 3);
+					V(_hr, 
+						w_log_type::W_ERROR,
+						"copying staging vertex buffer to gpu vertex buffer for graphics device: {}. trace info: {}",
+						pGDevice->get_info(),
+						_trace_info);
 					return W_FAILED;
 				}
 
@@ -183,7 +205,11 @@ namespace wolf
 				{
 					if (_stagings_buffers.indices.copy_to(this->_index_buffer) == W_FAILED)
 					{
-						V(_hr, "copying staging index buffer to gpu index buffer", this->_name, 3);
+						V(_hr, 
+							w_log_type::W_ERROR,
+							"copying staging index buffer to gpu index buffer for graphics device: {}. trace info: {}", 
+							pGDevice->get_info(),
+							_trace_info);
 						return W_FAILED;
 					}
 				}
@@ -416,11 +442,15 @@ namespace wolf
                                    _In_ const w_memory_usage_flag& pMemoryFlag,
                                    _Inout_ w_buffer& pBuffer)
             {
+				const char* _trace_info = (this->_name + "::_create_buffer").c_str();
+
                 if(pBuffer.allocate(this->_gDevice, pBufferSizeInBytes, pBufferUsageFlag, pMemoryFlag))
                 {
-                    V(W_FAILED, "loading memory of buffer for graphics device: " +
-                          _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
-                          this->_name, 3, false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"loading memory of buffer for graphics device: {}. trace info: {}",
+						_gDevice->get_info(),
+						_trace_info);
                     
                     return W_FAILED;
                 }
@@ -431,14 +461,16 @@ namespace wolf
                 if (pMemoryFlag != w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY)
                 {
                     _hr = pBuffer.set_data(pBufferData);
-                    if(_hr == W_FAILED)
-                    {
-                        V(W_FAILED, "setting data to vertex buffer's memory staging for graphics device: " +
-                          _gDevice->device_info->get_device_name() + " ID:" + std::to_string(_gDevice->device_info->get_device_id()),
-                          this->_name, 3, false);
-                    
-                        return W_FAILED;
-                    }
+					if (_hr == W_FAILED)
+					{
+						V(W_FAILED,
+							w_log_type::W_ERROR,
+							"setting data to vertex buffer's memory staging for graphics device: {}. trace info: {}",
+							_gDevice->get_info(),
+							_trace_info);
+
+						return W_FAILED;
+					}
                 }
                 
                 //bind to it

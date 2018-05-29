@@ -41,7 +41,7 @@ typedef int (CALLBACK* LPPOLLLOGSIMPLYGONSDK)( char *destbuffer , int max_length
 
 
 namespace SimplygonSDK
-	{
+{
 
 #ifdef _WIN32
 	template<typename T> void safe_delete_ptr(T*& a) { delete a; a = nullptr; }
@@ -56,128 +56,128 @@ namespace SimplygonSDK
 
 	// critical sections, process-local mutexes
 	class rcriticalsection
-		{
-		private:
-			CRITICAL_SECTION cs;
+	{
+	private:
+		CRITICAL_SECTION cs;
 
-		public:
-			rcriticalsection() { ::InitializeCriticalSection(&cs); }
-			~rcriticalsection() { ::DeleteCriticalSection(&cs); }
+	public:
+		rcriticalsection() { ::InitializeCriticalSection(&cs); }
+		~rcriticalsection() { ::DeleteCriticalSection(&cs); }
 
-			void Enter() { EnterCriticalSection(&cs); }
-			void Leave() { LeaveCriticalSection(&cs); }
-		};
+		void Enter() { EnterCriticalSection(&cs); }
+		void Leave() { LeaveCriticalSection(&cs); }
+	};
 
-	static int GetStringFromRegistry( LPCTSTR keyid , LPCTSTR valueid , LPTSTR dest )
-		{
-		if( dest == NULL )
+	static int GetStringFromRegistry(LPCTSTR keyid, LPCTSTR valueid, LPTSTR dest)
+	{
+		if (dest == NULL)
 			return SimplygonSDK::SG_ERROR_NOERROR;
 
 		HKEY reg_key;
-		if( RegOpenKey( HKEY_LOCAL_MACHINE , keyid , &reg_key ) != ERROR_SUCCESS )
-			return SimplygonSDK::SG_ERROR_NOLICENSE; 
+		if (RegOpenKey(HKEY_LOCAL_MACHINE, keyid, &reg_key) != ERROR_SUCCESS)
+			return SimplygonSDK::SG_ERROR_NOLICENSE;
 
 		// read the value from the key
 		DWORD path_size = MAX_PATH;
-		if( RegQueryValueEx( reg_key , valueid , NULL ,	NULL , (unsigned char *)dest , &path_size ) != ERROR_SUCCESS )
+		if (RegQueryValueEx(reg_key, valueid, NULL, NULL, (unsigned char *)dest, &path_size) != ERROR_SUCCESS)
 			return SimplygonSDK::SG_ERROR_NOLICENSE;
 		dest[path_size] = 0;
 
 		// close the key
-		RegCloseKey( reg_key );
+		RegCloseKey(reg_key);
 		return SimplygonSDK::SG_ERROR_NOERROR;
-		}
+	}
 
-	inline LPTSTR ConstCharPtrToLPTSTR(const char * stringToConvert) 
-		{
-		if( stringToConvert == NULL )
+	inline LPTSTR ConstCharPtrToLPTSTR(const char * stringToConvert)
+	{
+		if (stringToConvert == NULL)
 			return NULL;
-		size_t newsize = strlen(stringToConvert)+1;
+		size_t newsize = strlen(stringToConvert) + 1;
 		LPTSTR returnString = (LPTSTR)malloc(newsize * sizeof(TCHAR));
-		if( returnString == NULL )
+		if (returnString == NULL)
 			return NULL;
 #ifndef _UNICODE
-		memcpy_s( returnString , newsize, stringToConvert , newsize );
+		memcpy_s(returnString, newsize, stringToConvert, newsize);
 #else
 		size_t convertedChars = 0;
 		mbstowcs_s(&convertedChars, returnString, newsize, stringToConvert, _TRUNCATE);
 #endif // _UNICODE
 		return returnString;
-		}
+	}
 
-	inline const char* LPCTSTRToConstCharPtr(LPCTSTR stringToConvert) 
-		{
-		if ( stringToConvert == NULL )
+	inline const char* LPCTSTRToConstCharPtr(LPCTSTR stringToConvert)
+	{
+		if (stringToConvert == NULL)
 			return NULL;
 #ifndef _UNICODE
 		size_t wlen = _tcslen(stringToConvert);
-		char* standardChar = (char*)malloc((wlen+1) * sizeof(char)); 
-		if(standardChar == NULL)
+		char* standardChar = (char*)malloc((wlen + 1) * sizeof(char));
+		if (standardChar == NULL)
 			return NULL;
-		memcpy_s(standardChar, wlen,stringToConvert,wlen);
+		memcpy_s(standardChar, wlen, stringToConvert, wlen);
 		standardChar[wlen] = 0;
 		return standardChar;
 #else
-		size_t wlen = _tcslen(stringToConvert)+1;
-		char* standardChar = (char*)malloc(wlen * sizeof(char)); 
+		size_t wlen = _tcslen(stringToConvert) + 1;
+		char* standardChar = (char*)malloc(wlen * sizeof(char));
 		size_t convertedChars = 0;
-		wcstombs_s(&convertedChars, standardChar, wlen, stringToConvert,_TRUNCATE);
+		wcstombs_s(&convertedChars, standardChar, wlen, stringToConvert, _TRUNCATE);
 		return standardChar;
 #endif
-		}
+	}
 
-	static bool FileExists( LPCTSTR path )
+	static bool FileExists(LPCTSTR path)
+	{
+		DWORD v = ::GetFileAttributes(path);
+		if (v == INVALID_FILE_ATTRIBUTES)
 		{
-		DWORD v = ::GetFileAttributes( path );
-		if( v == INVALID_FILE_ATTRIBUTES )
-			{
 			return false;
-			}
-		return true;
 		}
+		return true;
+	}
 
 
 	static std::basic_string<TCHAR> GetInstallationPath()
-		{
+	{
 		TCHAR InstallationPath[MAX_PATH];
 #ifdef SAAS
 		// get the installation path string from the registry
-		if( GetStringFromRegistry( _T("Software\\DonyaLabs\\SimplygonSDKCloud") , _T("InstallationPath") , InstallationPath ) != 0 )
-			{
+		if (GetStringFromRegistry(_T("Software\\DonyaLabs\\SimplygonSDKCloud"), _T("InstallationPath"), InstallationPath) != 0)
+		{
 			return std::basic_string<TCHAR>(_T(""));
-			}
+		}
 #else
-		if( GetStringFromRegistry( _T("Software\\DonyaLabs\\SimplygonSDK") , _T("InstallationPath") , InstallationPath ) != 0 )
-			{
+		if (GetStringFromRegistry(_T("Software\\DonyaLabs\\SimplygonSDK"), _T("InstallationPath"), InstallationPath) != 0)
+		{
 			return std::basic_string<TCHAR>(_T(""));
-			}
+		}
 
 #endif
 
 		size_t t = _tcslen(InstallationPath);
-		if( InstallationPath[t] != _T('\\') )
-			{
+		if (InstallationPath[t] != _T('\\'))
+		{
 			InstallationPath[t] = _T('\\');
-			InstallationPath[t+1] = _T('\0');
-			}
+			InstallationPath[t + 1] = _T('\0');
+		}
 
 		// append a backslash
 		return InstallationPath;
-		}
+	}
 
 	static std::basic_string<TCHAR> GetCommonAppPath()
-		{
+	{
 		TCHAR AppDataPath[MAX_PATH];
 
 		// Get the common appdata path
-		if( SHGetFolderPath( NULL, CSIDL_COMMON_APPDATA, NULL, 0, AppDataPath ) != 0 )
-			{
+		if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, AppDataPath) != 0)
+		{
 			return std::basic_string<TCHAR>(_T(""));
-			}
+		}
 
 		// append the path to Simplygon SDK
 		return std::basic_string<TCHAR>(AppDataPath) + _T("\\DonyaLabs\\SimplygonSDK\\");
-		}
+	}
 
 	static std::basic_string<TCHAR> GetAppDataPath()
 		{
@@ -1117,64 +1117,64 @@ namespace SimplygonSDK
 		}
 
 #ifdef _WIN32
-	int PollLog( LPTSTR dest , int max_len_dest )
-		{
+	int PollLog(LPTSTR dest, int max_len_dest)
+	{
 #if _MSC_VER >= 1400
-		if( dest == nullptr || max_len_dest == 0 || PollLogSimplygonSDKPtr == nullptr )
-			{
+		if (dest == nullptr || max_len_dest == 0 || PollLogSimplygonSDKPtr == nullptr)
+		{
 			return 0;
-			}
+		}
 #else
-		if( dest == NULL || max_len_dest == 0 || PollLogSimplygonSDKPtr == NULL )
-			{
+		if (dest == NULL || max_len_dest == 0 || PollLogSimplygonSDKPtr == NULL)
+		{
 			return 0;
-			}
+		}
 #endif
 		int sz;
 
 #ifdef UNICODE
 		char *tmp = new char[max_len_dest];
-		PollLogSimplygonSDKPtr(tmp,max_len_dest);
+		PollLogSimplygonSDKPtr(tmp, max_len_dest);
 		size_t cnv_sz;
-		mbstowcs_s( 
+		mbstowcs_s(
 			&cnv_sz,
 			dest,
 			max_len_dest,
 			tmp,
 			_TRUNCATE
-			);
-		delete [] tmp;
+		);
+		delete[] tmp;
 		sz = (int)cnv_sz;
 #else
-		sz = PollLogSimplygonSDKPtr(dest,max_len_dest);
+		sz = PollLogSimplygonSDKPtr(dest, max_len_dest);
 #endif//UNICODE	
 
 		return sz;
-		}
+	}
 
-	int RunLicenseWizard( LPCTSTR batch_file )
-		{
+	int RunLicenseWizard(LPCTSTR batch_file)
+	{
 		// find process
-		std::basic_string<TCHAR> path = FindNamedProcess( _T("LicenseApplication.exe") );
-		if( path.empty() )
-			{
+		std::basic_string<TCHAR> path = FindNamedProcess(_T("LicenseApplication.exe"));
+		if (path.empty())
+		{
 			return SG_ERROR_FILENOTFOUND;
-			}
+		}
 
 		// run process
 		HANDLE hProcess;
-		bool succ = ExecuteProcess(path.c_str(),batch_file,&hProcess);
-		if( !succ )
-			{
+		bool succ = ExecuteProcess(path.c_str(), batch_file, &hProcess);
+		if (!succ)
+		{
 			return SG_ERROR_LOADFAILED;
-			}
+		}
 
 		// wait for it to end
 		return WaitForProcess(hProcess);
-		}
+	}
 
 #endif //_WIN32
 
 	// end of namespace
-	};
+};
 
