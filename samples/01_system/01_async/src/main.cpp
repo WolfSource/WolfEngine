@@ -20,7 +20,7 @@ WOLF_MAIN()
     logger.initialize(L"01_async", wolf::system::io::get_current_directoryW());
 
     //log to output file
-    logger.write(L"Wolf initialized");
+    logger.write("Wolf initialized");
 
     //execute async task in standard c++
     w_task::execute_async([]()-> W_RESULT
@@ -75,10 +75,7 @@ WOLF_MAIN()
     w_task::wait();
 
     logger.write("all done");
-
-    //output a message to the log file
-    logger.write(L"shutting down Wolf");
-
+	
     //release logger
     logger.release();
 

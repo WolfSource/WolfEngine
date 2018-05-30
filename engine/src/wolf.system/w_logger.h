@@ -163,11 +163,10 @@ namespace wolf
 				}
 
 				this->_log_file->info(
-					L"{\n\t\"Project\": \"Wolf Engine(http://WolfSource.io). "\
-					L"Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\". "\
-					L"\"Contact\"\ : \"Contact@WolfSource.io\n");
-				this->_log_file->info(L"\t\"Version\": {}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
-
+					"Project: \"Wolf Engine(http://WolfSource.io). "\
+					"Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\". "\
+					"Contact: \"Contact@WolfSource.io\" "\
+					"Version: {}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
 				if (pFlushJustOnError)
 				{
 					this->_log_file->flush_on(spdlog::level::level_enum::err);

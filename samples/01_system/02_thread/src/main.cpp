@@ -34,13 +34,13 @@ WOLF_MAIN()
         _thread_pool.add_job_for_thread(i, [i]()
         {
             auto _sleep_time = 1000 + i * 1000;
-            logger.write("thread with id: " + std::to_string(w_thread::get_current_thread_id()) +
-                " just started and is going to sleep for: " + std::to_string(_sleep_time));
+            logger.write("thread with id: {} just started and is going to sleep for: {}",
+				w_thread::get_current_thread_id(), _sleep_time);
             w_thread::sleep_current_thread(_sleep_time);
         });
     }
 
-    logger.write("main thread with id: " + std::to_string(w_thread::get_current_thread_id()) + " is going to sleep for 5(s).");
+    logger.write("main thread with id: {} is going to sleep for 5(s).", w_thread::get_current_thread_id());
     w_thread::sleep_current_thread(5000);
     logger.write("main thread waked up.");
 
@@ -49,10 +49,7 @@ WOLF_MAIN()
 
     logger.write("releasing thread pool");
     _thread_pool.release();
-
-    //output a message to the log file
-    logger.write(L"shutting down Wolf");
-
+	
     //release logger
     logger.release();
 

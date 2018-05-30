@@ -16,7 +16,7 @@ using namespace wolf::system;
 
 WOLF_MAIN()
 {
-    logger.initialize(L"04_timer", wolf::system::io::get_current_directoryW() + L"/Logs/");
+    logger.initialize(L"04_timer", wolf::system::io::get_current_directoryW());
 
     //log to output file
     logger.write(L"Wolf initialized");
@@ -35,11 +35,7 @@ WOLF_MAIN()
     io::write_text_file("test.txt", "this is test from 04-timer");
     
     auto _time = _timer.get_seconds();
-    
-    char _buffer[256];
-	w_sprintf(_buffer, "writing file took: %f (s)", _time);
-    logger.write(_buffer);
-        
+    logger.write("writing file took: {} (s)", _time);
     _timer.reset();
        
     //start callback timer
@@ -57,9 +53,6 @@ WOLF_MAIN()
 
     //wait for 2s to execute last timer's job
     w_thread::sleep_current_thread(2000);
-
-    //output a message to the log file
-    logger.write(L"shutting down Wolf");
 
     //release logger
     logger.release();

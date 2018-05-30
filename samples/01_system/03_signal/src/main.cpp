@@ -58,11 +58,11 @@ WOLF_MAIN()
         {
             _last_recieved = pArg;
         };
-        while (_last_recieved.id != 0)
-        {
-            w_thread::sleep_current_thread(1000);
-            logger.write("last message recieved: "  + _last_recieved.message);
-        }
+		while (_last_recieved.id != 0)
+		{
+			w_thread::sleep_current_thread(1000);
+			logger.write("last message recieved: {}", _last_recieved.message);
+		}
     });
 
     //wait for both thread 
@@ -73,10 +73,7 @@ WOLF_MAIN()
     logger.write("releasing threads");
     _thread_sender.release();
     _thread_reciever.release();
-
-    //output a message to the log file
-    logger.write(L"shutting down Wolf");
-
+	
     //release logger
     logger.release();
 

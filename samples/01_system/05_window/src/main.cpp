@@ -82,9 +82,6 @@ WOLF_MAIN()
 	std::function<void(void)> _f = std::bind(&loop);
 	sWindow->run(_f);
 
-    //output a message to the log file
-    logger.write(L"shutting down Wolf");
-
 	//release all
 	release();
 

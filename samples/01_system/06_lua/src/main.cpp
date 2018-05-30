@@ -78,11 +78,9 @@ WOLF_MAIN()
     }
     else
     {
-        logger.write(L"could not find lua script from following path: " + _path);
-        logger.write("lua last error: " + std::string(w_lua::get_last_error()));
+        logger.write(L"could not find lua script from following path: {}", _path);
+        logger.write("lua last error: {}", w_lua::get_last_error());
     }
-
-    logger.write(L"shutting down Wolf");
 
     _path.clear();
     w_lua::release();

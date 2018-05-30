@@ -101,9 +101,6 @@ WOLF_MAIN()
             logger.write(L"failed to save xml");
     }
     
-    
-    logger.write(L"shutting down Wolf");
-
     logger.release();
 
 	return EXIT_SUCCESS;
