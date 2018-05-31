@@ -23,7 +23,7 @@ WOLF_MAIN()
     w_signal<void(const int&)> on_connection_established;
     on_connection_established += [](const int& pSocketID)
     {
-        logger.write("pusher launched with socket ID: " + std::to_string(pSocketID));
+        logger.write("pusher launched with socket ID: {}", pSocketID);
         
         const char* _msg = "Hello, I'm pusher!";
         auto _len = strlen(_msg) + 1;//1 for "\0" end of message

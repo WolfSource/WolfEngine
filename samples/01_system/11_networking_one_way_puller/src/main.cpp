@@ -23,14 +23,14 @@ WOLF_MAIN()
     w_signal<void(const int&)> on_bind_established;
 	on_bind_established += [](const int& pSocketID)
     {
-        logger.write("puller launched with socket ID: " + std::to_string(pSocketID));
+        logger.write("puller launched with socket ID: {}", pSocketID);
         
         char* _buffer = nullptr;
         while (1)
         {
             if(w_network::receive(pSocketID, &_buffer) >= 0)
             {
-                logger.write("Roger that, puller received: " + std::string(_buffer));
+                logger.write("Roger that, puller received: {}", _buffer);
                 break;
             }
         }

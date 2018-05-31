@@ -78,7 +78,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"creating render pass. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//create semaphore create info
@@ -86,7 +89,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"creating draw semaphore. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//Fence for render sync
@@ -94,7 +100,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw fence", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"creating draw fence. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//create two primary command buffers for clearing screen
@@ -103,7 +112,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"creating draw command buffers. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 #ifdef WIN32
@@ -119,7 +131,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading vertex shader", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"loading vertex shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//loading fragment shader
@@ -129,7 +144,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading fragment shader", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"loading fragment shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//just we need vertex position color
@@ -153,7 +171,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating pipeline", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"creating pipeline. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -194,7 +215,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading mesh", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"loading mesh. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	_build_draw_command_buffers();
@@ -225,7 +249,9 @@ W_RESULT scene::_build_draw_command_buffers()
 				_hr = this->_mesh.draw(_cmd, nullptr, 0, false);
 				if (_hr == W_FAILED)
 				{
-					V(W_FAILED, "drawing mesh", _trace_info, 3, false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"drawing mesh. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 				}
 			}
 			this->_draw_render_pass.end(_cmd);
@@ -271,7 +297,10 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"submiting queue for drawing gui. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	// Wait for fence to signal that all command buffers are ready

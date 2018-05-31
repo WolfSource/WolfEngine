@@ -58,7 +58,7 @@ WOLF_MAIN()
 	auto _parse = &_doc.Parse<rapidjson::kParseStopWhenDoneFlag>(_buffer);
     if (_parse->HasParseError())
     {
-        logger.error("error on parsing json. error code: " + std::to_string(_parse->GetParseError()));
+        logger.error("error on parsing json. error code: {}", _parse->GetParseError());
     }
     else
     {

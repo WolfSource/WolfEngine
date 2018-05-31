@@ -23,7 +23,7 @@ WOLF_MAIN()
     w_signal<void(const int&)> on_bind_established;
 	on_bind_established += [](const int& pSocketID)
     {
-        logger.write("publisher server launched with socket ID: " + std::to_string(pSocketID));
+        logger.write("publisher server launched with socket ID: {}", pSocketID);
         
 		while (1)
 		{
@@ -31,7 +31,7 @@ WOLF_MAIN()
 			std::string _msg = "message " + w_time_span::now().to_string();
 			if (w_network::send(pSocketID, _msg.c_str(), _msg.size()) >= 0)
 			{
-				logger.write("message \'" + _msg + "\' published.");
+				logger.write("message \'{}\' published.", _msg);
 			}
 			_msg.clear();
 

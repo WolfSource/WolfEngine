@@ -23,7 +23,7 @@ WOLF_MAIN()
     w_signal<void(const int&)> on_connect_established;
 	on_connect_established += [](const int& pSocketID)
     {
-        logger.write("client connected to publisher server with socket ID: " + std::to_string(pSocketID));
+        logger.write("client connected to publisher server with socket ID: {}", pSocketID);
         
 		while (1)
 		{
@@ -36,7 +36,7 @@ WOLF_MAIN()
 				_rcv_msg.resize(_rcv_len);
 				memcpy(&_rcv_msg[0], _rcv_buffer, _rcv_len);
 
-				logger.write("message \'" + _rcv_msg + "\' received");
+				logger.write("message \'{}\' received", _rcv_msg);
 
 				_rcv_msg.clear();
 			}

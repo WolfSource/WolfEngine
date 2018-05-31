@@ -23,7 +23,7 @@ WOLF_MAIN()
     w_signal<void(const int&)> on_bind_established;
 	on_bind_established += [](const int& pSocketID)
     {
-        logger.write("two way server launched with socket ID: " + std::to_string(pSocketID));
+        logger.write("two way server launched with socket ID: {}", pSocketID);
         
 		while (true)
 		{
@@ -36,7 +36,7 @@ WOLF_MAIN()
 				_rcv_msg.resize(_rcv_len);
 				memcpy(&_rcv_msg[0], _rcv_buffer, _rcv_len);
 
-				logger.write("message \'" + _rcv_msg + "\' received");
+				logger.write("message \'{}\' received", _rcv_msg);
 
 				_rcv_msg.clear();
 			}
@@ -53,7 +53,7 @@ WOLF_MAIN()
 			std::string _msg = "message "  + w_time_span::now().to_string();
 			if (w_network::send(pSocketID, _msg.c_str(), _msg.size()) >= 0)
 			{
-				logger.write("message \'" + _msg + "\' sent.");
+				logger.write("message \'{}\' sent", _msg);
 			}
 			_msg.clear();
 		}

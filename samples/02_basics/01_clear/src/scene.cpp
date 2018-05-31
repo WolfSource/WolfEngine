@@ -78,7 +78,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			true, 
+			"creating render pass. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
     //create semaphore create info
@@ -86,14 +89,20 @@ void scene::load()
     if (_hr == W_FAILED)
     {
         release();
-        V(W_FAILED, "creating semaphore for draw command buffer", _trace_info, 3, true);
+        V(W_FAILED, 
+			w_log_type::W_ERROR, 
+			true, 
+			"creating semaphore for draw command buffer. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
     }
     
     _hr = this->_draw_fence.initialize(_gDevice);
     if (_hr == W_FAILED)
     {
         release();
-        V(W_FAILED, "creating fence for draw command buffer", _trace_info, 3, true);
+        V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"creating fence for draw command buffer. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
     }
     
     //create two primary command buffers for clearing screen
@@ -102,7 +111,10 @@ void scene::load()
     if (_hr == W_FAILED)
     {
         release();
-        V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
+        V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"creating draw command buffers. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
     }
     
     _build_draw_command_buffers();
@@ -142,7 +154,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
         w_game::update(pGameTime);
     });
 
-	wolf::logger.write(std::to_string(pGameTime.get_frames_per_second()));
+	wolf::logger.write("fps: {}", pGameTime.get_frames_per_second());
 }
 
 W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
@@ -173,7 +185,10 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
+		V(W_FAILED, 
+			w_log_type::W_ERROR,
+			true,
+			"submiting queue for drawing gui. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	// Wait for fence to signal that all command buffers are ready
 	this->_draw_fence.wait();

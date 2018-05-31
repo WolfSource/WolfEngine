@@ -34,7 +34,7 @@ WOLF_MAIN()
     //output them
     for (size_t i = 0; i < _length; ++i)
     {
-        logger.write(std::to_string(_f[i]));
+        logger.write("{}", _f[i]);
     }
 
     //re-allocate larger memory with new data type
@@ -58,7 +58,7 @@ WOLF_MAIN()
     //output new data
     for (size_t i = 0; i < _length; ++i)
     {
-        logger.write(std::to_string(_new_f[i].number));
+        logger.write("{}", _new_f[i].number);
         logger.write(_new_f[i].name);
     }
     

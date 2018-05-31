@@ -21,7 +21,7 @@ static void release()
 {
 	UNIQUE_RELEASE(sWindow);
 	UNIQUE_RELEASE(sScene);
-	release_shared_data_over_all_instances();
+	release_heap_data();
 }
 
 WOLF_MAIN()
@@ -132,8 +132,7 @@ WOLF_MAIN()
 
     //release all
     _windows_info.clear();
-	//output a message to the log file
-	logger.write(L"Shutting down Wolf");
+
 	release();
 
     //exit

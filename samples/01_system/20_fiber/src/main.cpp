@@ -28,44 +28,44 @@ inline void fn( std::string const& pStr, int pSize)
 {
     for ( int i = 0; i < pSize; ++i)
     {
-        logger.write(std::to_string(i) + " : " + pStr);
+        logger.write("{} : {}", i, pStr);
         boost::this_fiber::yield();
     }
 }
 
-inline void fn1( boost::fibers::barrier& b)
+inline void fn1(boost::fibers::barrier& b)
 {
-    auto _id = boost::this_fiber::get_id();
+	auto _id = boost::this_fiber::get_id();
 	ostringstream _buffer;
 	_buffer << _id;
 	auto _id_str = _buffer.str();
 	_buffer.clear();
 
-    logger.write("fiber " + _id_str + ": fn1 entered");
-    
-    ++value1;
-    logger.write("fiber " + _id_str + ": incremented value1:" + std::to_string(value1));
-    boost::this_fiber::yield();
-    
-    logger.write("current thread id of fn1: " + std::to_string(w_thread::get_current_thread_id()));
-    
-    logger.write("fiber " + _id_str  + ": waits for barrier");
-    b.wait();
-    logger.write("fiber " + _id_str + ": passed barrier");
-    
-    ++value1;
-    logger.write("fiber " + _id_str + ": incremented value1:" + std::to_string(value1));
-    boost::this_fiber::yield();
-    
-    ++value1;
-    logger.write("fiber " + _id_str + ": incremented value1:" + std::to_string(value1));
-    boost::this_fiber::yield();
-    
-    ++value1;
-    logger.write("fiber " + _id_str + ": incremented value1:" + std::to_string(value1));
-    boost::this_fiber::yield();
-    
-    logger.write("fiber " + _id_str + ": fn1 returns");
+	logger.write("fiber {} fn1 entered", _id_str);
+
+	++value1;
+	logger.write("fiber {}: incremented value1: {} .", _id_str, value1);
+	boost::this_fiber::yield();
+
+	logger.write("current thread id of fn1: {} .", w_thread::get_current_thread_id());
+
+	logger.write("fiber {} waits for barrier.", _id_str);
+	b.wait();
+	logger.write("fiber {} passed barrier.", _id_str);
+
+	++value1;
+	logger.write("fiber {} incremented value1: {}", _id_str, value1);
+	boost::this_fiber::yield();
+
+	++value1;
+	logger.write("fiber {} incremented value1: {}", _id_str, value1);
+	boost::this_fiber::yield();
+
+	++value1;
+	logger.write("fiber {} incremented value1: {}", _id_str, value1);
+	boost::this_fiber::yield();
+
+	logger.write("fiber {} fn1 returns", _id_str);
 }
 
 inline void fn2( boost::fibers::barrier & b)
@@ -76,31 +76,31 @@ inline void fn2( boost::fibers::barrier & b)
 	auto _id_str = _buffer.str();
 	_buffer.clear();
 
-    logger.write("fiber " + _id_str + ": fn2 entered");
+    logger.write("fiber {} fn2 entered", _id_str);
     
     ++value2;
-    logger.write("fiber " + _id_str + ": incremented value2:" + std::to_string(value2));
+	logger.write("fiber {} incremented value2: {}", _id_str, value2);
     boost::this_fiber::yield();
     
     ++value2;
-    logger.write("fiber " + _id_str + ": incremented value2:" + std::to_string(value2));
+    logger.write("fiber {} incremented value2: {}", _id_str, value2);
     boost::this_fiber::yield();
     
     ++value2;
-    logger.write("fiber " + _id_str + ": incremented value2:" + std::to_string(value2));
+    logger.write("fiber {} incremented value2: {}", _id_str, value2);
     boost::this_fiber::yield();
     
-    logger.write("current thread id of fn2: " + std::to_string(w_thread::get_current_thread_id()));
+    logger.write("current thread id of fn2: {}", w_thread::get_current_thread_id());
     
-    logger.write("fiber " + _id_str + ": waits for barrier");
+    logger.write("fiber {} waits for barrier", _id_str);
     b.wait();
-    logger.write("fiber " + _id_str + ": passed barrier");
+    logger.write("fiber {} passed barrier", _id_str);
     
     ++value2;
-    logger.write("fiber " + _id_str + ": incremented value2:" + std::to_string(value2));
+    logger.write("fiber {} incremented value2: ", _id_str, value2);
     boost::this_fiber::yield();
     
-    logger.write("fiber " + _id_str + ": fn2 returns");
+    logger.write("fiber {} fn2 returns", _id_str);
 }
 
 void whatevah(char me)
@@ -109,9 +109,7 @@ void whatevah(char me)
     {
         auto _my_thread = w_thread::get_current_thread_id();
         {
-            std::ostringstream _buffer;
-            _buffer << "fiber " << me << " started on thread " << _my_thread;
-            logger.write(_buffer.str());
+            logger.write("fiber {} started on thread {}", me, _my_thread);
         }
         for ( unsigned i = 0; i < 10; ++i)//loop ten times
         {
@@ -121,9 +119,7 @@ void whatevah(char me)
             {
                 //test if fiber was migrated to another thread
                 _my_thread = _new_thread;
-                std::ostringstream _buffer;
-                _buffer << "fiber " << me << " switched to thread " << _my_thread;
-                logger.write(_buffer.str());
+				logger.write("fiber {} switched to thread {}", me, _my_thread);
             }
         }
     }
@@ -142,9 +138,7 @@ void whatevah(char me)
 
 void thread_func( boost::fibers::barrier* b)
 {
-    std::ostringstream _buffer;
-    _buffer << "thread started " << w_thread::get_current_thread_id();
-    logger.write(_buffer.str());
+	logger.write("thread started {}", w_thread::get_current_thread_id());
     boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
     /*
         Install the scheduling algorithm `boost::fibers::algo::shared_work`
@@ -175,14 +169,14 @@ void simple_test()
 		auto _id_str = _buffer.str();
 		_buffer.clear();
 
-		logger.write("fiber id (f1): " + _id_str);
+		logger.write("fiber id (f1): {}", _id_str);
 		_f1.join();
 		logger.write("done");
 	}
-    catch (std::exception const& e)
-    {
-        logger.write("exception happended: " + std::string(e.what()));
-    }
+	catch (std::exception const& e)
+	{
+		logger.write("exception happended: {}", e.what());
+	}
     catch (...)
     {
         logger.write("unhandled exception happended for simple test");
@@ -204,7 +198,7 @@ void barrier_sync_test()
     }
     catch ( std::exception const& e)
     {
-        logger.write("exception happended for barrier test: " + std::string(e.what()));
+        logger.write("exception happended for barrier test: {}", e.what());
     }
     catch (...)
     {
@@ -214,12 +208,9 @@ void barrier_sync_test()
 
 void work_sharing()
 {
-    std::ostringstream _buffer;
-    _buffer << "main thread started " << w_thread::get_current_thread_id();
-    logger.write(_buffer.str());
-    
-    
-    boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work >();
+    logger.write("main thread started {}", w_thread::get_current_thread_id());
+      
+    boost::fibers::use_scheduling_algorithm< boost::fibers::algo::shared_work>();
     /*
         Install the scheduling algorithm `boost::fibers::algo::shared_work` in the main thread
         too, so each new fiber gets launched into the shared pool.
@@ -291,13 +282,8 @@ WOLF_MAIN()
     work_sharing();
     _timer.stop();
     
-    std::ostringstream _buffer;
-    _buffer << "time is: " << _timer.get_milliseconds();
-    logger.write(_buffer.str());
+    logger.write("time is: {}", _timer.get_milliseconds());
     
-    //output a message to the log file
-    logger.write(L"shutting down Wolf");
-
     //release logger
     logger.release();
 
