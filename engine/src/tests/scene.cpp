@@ -57,9 +57,6 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 {
 	using namespace wolf;
 
-	auto _process_info = w_process::create_process(L"C:\\Windows\\System32\\Notepad.exe", L"NOTEPAD.EXE C:\\test_stream\\test.txt", 1000);
-	w_process::kill_process(_process_info);
-
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = true;
 	_config.off_screen_mode = false;
@@ -261,6 +258,7 @@ void scene::load()
     //}
 
 #ifdef __WIN32
+
     w_task::execute_async([]() -> W_RESULT
     {
         recieveIO();
@@ -274,16 +272,16 @@ void scene::load()
     {
         if (_frames)
         {
-            std::call_once(_once, [&]()
-            {
-                ctx = sws_getContext(
-                    W, H,
-                    AV_PIX_FMT_RGBA, W, H,
-                    AV_PIX_FMT_YUV420P, 0, 0, 0, 0);
-            });
+            //std::call_once(_once, [&]()
+            //{
+            //    ctx = sws_getContext(
+            //        W, H,
+            //        AV_PIX_FMT_RGBA, W, H,
+            //        AV_PIX_FMT_YUV420P, 0, 0, 0, 0);
+            //});
 
-            int _line_size[1] = { 4 * W }; // RGBA stride
-            sws_scale(ctx, &_frames, _line_size, 0, H, pFrameInfo.picture->data, pFrameInfo.picture->linesize);
+            //int _line_size[1] = { 4 * W }; // RGBA stride
+            //sws_scale(ctx, &_frames, _line_size, 0, H, pFrameInfo.picture->data, pFrameInfo.picture->linesize);
         }
     };
     _connection_lost += [](const char* pURL)->void
@@ -292,17 +290,29 @@ void scene::load()
     };
 
     w_media_core::register_all(true);
-    _media_core.open_stream_server_async(
-        "rtsp://172.16.4.207:8554/live.sdp",//"rtsp://172.16.5.11:8554/live.sdp",
-        "rtsp", 
-        AV_CODEC_ID_H265,
-        60,
-        AV_PIX_FMT_YUV420P,
-        W,
-        H,
-        _connection_established,
-        _filling_stream_frame_buffer,
-        _connection_lost);
+
+	_media_core.open_stream_client_async("rtsp://127.0.0.1:8554/live.sdp",
+		"rtsp",
+		AV_CODEC_ID_H264,
+		60,
+		AV_PIX_FMT_YUV420P,
+		W,
+		H,
+		_connection_established,
+		_filling_stream_frame_buffer,
+		_connection_lost);
+
+    //_media_core.open_stream_server_async(
+    //    "rtsp://172.16.4.207:8554/live.sdp",//"rtsp://172.16.5.11:8554/live.sdp",
+    //    "rtsp", 
+    //    AV_CODEC_ID_H264,
+    //    60,
+    //    AV_PIX_FMT_YUV420P,
+    //    W,
+    //    H,
+    //    _connection_established,
+    //    _filling_stream_frame_buffer,
+    //    _connection_lost);
 #endif
     
     defer(nullptr, [&](...)
@@ -382,12 +392,12 @@ void scene::load()
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
-	w_imgui::load(
+	/*w_imgui::load(
 		_gDevice,
 		_output_window,
 		this->_viewport,
 		this->_viewport_scissor,
-		nullptr);
+		nullptr);*/
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
