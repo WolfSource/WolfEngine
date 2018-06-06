@@ -6,8 +6,8 @@ using namespace wolf;
 using namespace wolf::system;
 using namespace wolf::graphics;
 
-scene::scene(_In_z_ const std::wstring& pRunningDirectory, _In_z_ const std::wstring& pAppName) :
-    w_game(pRunningDirectory, pAppName)
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
+    w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = false;
@@ -79,7 +79,10 @@ void scene::load()
 		if (_hr == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "creating render pass", _trace_info, 3, true);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"creating render pass. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 		}
 
 		//create semaphore
@@ -87,7 +90,10 @@ void scene::load()
 		if (_hr == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"creating draw semaphore. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 		}
 
 		//Fence for syncing
@@ -95,7 +101,10 @@ void scene::load()
 		if (_hr == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "creating draw fence", _trace_info, 3, true);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"creating draw fence. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 		}
 
 		//create two primary command buffers for clearing screen
@@ -104,7 +113,10 @@ void scene::load()
 		if (_hr == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"creating draw command buffers. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 		}
 
 		_build_draw_command_buffers(i);
@@ -175,7 +187,11 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 			&this->_draw_fence[i],
 			false) == W_FAILED)
 		{
-			V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
+			release();
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"submiting queue for drawing. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 		}
 		this->_draw_fence[i].wait();
 	}

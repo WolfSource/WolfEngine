@@ -512,6 +512,7 @@
     <Text Include="..\..\..\src\wolf.system\glm\version.txt" />
     <Text Include="..\..\..\src\wolf.system\rapidjson\license.txt" />
     <Text Include="..\..\..\src\wolf.system\rapidxml\license.txt" />
+    <Text Include="..\..\..\src\wolf.system\spdlog\version.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

@@ -40,7 +40,11 @@ W_RESULT model::initialize()
 	size_t _meshes_count = _meshes.size();
 	if (!_meshes_count)
 	{
-		V(W_FAILED, "model " + this->model_name + " does not have any mesh", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"model {} does not have any mesh: graphics device: {} . trace info: {}",
+			this->model_name, this->gDevice->get_info(), _trace_info);
+
 		return W_FAILED;
 	}
 	//prepare vertices and indices

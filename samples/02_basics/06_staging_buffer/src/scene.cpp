@@ -371,6 +371,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
+		release();
 		V(W_FAILED, 
 			w_log_type::W_ERROR,
 			true,

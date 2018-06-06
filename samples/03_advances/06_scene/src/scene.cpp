@@ -139,7 +139,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating render pass. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//create semaphore
@@ -147,7 +150,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw semaphore. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//Fence for syncing
@@ -155,7 +161,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw fence", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw fence. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -173,7 +182,10 @@ void scene::load()
 		if (_hr == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "initializing icon", _trace_info, 3, true);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"initializing icon. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 		}
 
 		_hr = _gui_icons->load_texture_2D_from_file(wolf::content_path +
@@ -181,7 +193,10 @@ void scene::load()
 		if (_hr == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "loading icon", _trace_info, 3, true);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"loading icon. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 		}
 	}
 
@@ -201,7 +216,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw command buffers. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -270,7 +288,10 @@ void scene::load()
 
 			if (!_model)
 			{
-				V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
+				V(W_FAILED,
+					w_log_type::W_WARNING,
+					"allocating memory for model: {}. graphics device: {} . trace info: {}", _m->get_name(), _gDevice->get_info(), _trace_info);
+
 				continue;
 			}
 
@@ -282,7 +303,9 @@ void scene::load()
 				this->_draw_render_pass);
 			if (_hr == W_FAILED)
 			{
-				V(W_FAILED, "loading model: " + _m->get_name(), _trace_info, 2);
+				V(W_FAILED,
+					w_log_type::W_WARNING,
+					"loading model: {}. graphics device: {} . trace info: {}", _m->get_name(), _gDevice->get_info(), _trace_info);
 				continue;
 			}
 
@@ -417,7 +440,11 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"submiting queue for drawing. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	this->_draw_fence.wait();
 
@@ -490,7 +517,7 @@ void scene::_show_floating_debug_window()
 		return;
 	}
 
-	ImGui::Text("Press \"Esc\" to exit\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
+	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec);
@@ -686,7 +713,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 					//The Ref
 					ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
 					auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
-					if (ImGui::IsMouseDoubleClicked(0))
+					if (ImGui::IsItemClicked(1))
 					{
 						//on double click, focus on object
 						this->_first_camera.focus(_b_sphere);
@@ -703,7 +730,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 					for (auto& _ins : _model->get_instances())
 					{
 						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
-                        if (ImGui::IsMouseDoubleClicked(0))
+                        if (ImGui::IsItemClicked(1))
 						{
 							//on double click, focus on object
 							_b_sphere.center[0] = _ins.position[0];

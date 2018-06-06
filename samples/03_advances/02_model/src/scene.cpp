@@ -89,24 +89,33 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating render pass. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
     //create semaphore
     _hr = this->_draw_semaphore.initialize(_gDevice);
-    if (_hr == W_FAILED)
-    {
-        release();
-        V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
-    }
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw semaphore. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
 
     //Fence for syncing
     _hr = this->_draw_fence.initialize(_gDevice);
-    if (_hr == W_FAILED)
-    {
-        release();
-        V(W_FAILED, "creating draw fence", _trace_info, 3, true);
-    }
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw fence. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
 
     //load imgui
     w_imgui::load(
@@ -119,11 +128,14 @@ void scene::load()
     //create two primary command buffers for clearing screen
     auto _swap_chain_image_size = _output_window->swap_chain_image_views.size();
     _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
-    if (_hr == W_FAILED)
-    {
-        release();
-        V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
-    }
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw command buffers. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
 	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
@@ -142,7 +154,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading vertex shader", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading vertex shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//loading fragment shader
@@ -152,7 +167,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading fragment shader", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading fragment shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//load vertex shader uniform
@@ -160,7 +178,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading vertex shader uniform", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading vertex shader uniform. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	std::vector<w_shader_binding_param> _shader_params;
@@ -176,7 +197,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "setting shader binding param", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"setting shader binding param. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//loading pipeline cache
@@ -200,7 +224,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating pipeline", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating pipeline. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//load collada scene
@@ -260,12 +287,16 @@ void scene::load()
 						_indices.data(),
 						_indices.size()) == W_FAILED)
 					{
-						V(W_FAILED, "loading mesh", _trace_info);
+						V(W_FAILED,
+							w_log_type::W_ERROR,
+							"loading mesh. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 					}
 				}
 				else
 				{
-					V(W_FAILED, "allocating memory of mesh", _trace_info);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"allocating memory for mesh. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 				}
 
 				//create shape
@@ -275,14 +306,21 @@ void scene::load()
 					_hr = this->_shape_bounding_box->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 					if (_hr == W_FAILED)
 					{
-						SAFE_RELEASE(this->_shape_bounding_box);
-						V(W_FAILED, "loading _shape_bounding_box", _trace_info, 3, true);
+						release();
+						V(W_FAILED,
+							w_log_type::W_ERROR,
+							true,
+							"loading _shape_bounding_box. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 					}
 				}
 				else
 				{
 					this->_shape_bounding_box = nullptr;
-					V(W_FAILED, "allocating memory for _shape_bounding_box", _trace_info, 3, true);
+					release();
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						true,
+						"allocating memory for _shape_bounding_box. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 				}
 
 				//clear resources
@@ -390,7 +428,9 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _hr = this->_u0.update();
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "updating uniform WorldViewProjection", _trace_info, 3, false);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"updating uniform WorldViewProjection. trace info: {}", _trace_info);
 	}
 
 	if (sShowBoundingBox && this->_shape_bounding_box)
@@ -438,7 +478,11 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"submiting queue for drawing. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	this->_draw_fence.wait();
 

@@ -21,7 +21,7 @@ static void release()
 {
 	UNIQUE_RELEASE(sWindow);
 	UNIQUE_RELEASE(sScene);
-	release_shared_data_over_all_instances();
+	release_heap_data();
 }
 
 WOLF_MAIN()

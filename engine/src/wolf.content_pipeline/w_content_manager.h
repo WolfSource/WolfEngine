@@ -49,7 +49,7 @@ namespace wolf
 #endif
 				if (_file_exists == W_FAILED)
 				{
-					logger.error(L"File asset not available on following path : " + pAssetPath);
+					logger.error(L"File asset not available on following path : {}", pAssetPath.c_str());
 					return nullptr;
 				}
 

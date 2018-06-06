@@ -48,6 +48,8 @@ namespace wolf
 				this->_images_texture = pIconTexture;
 				this->_media_player_texture = pStagingMediaTexture ? *pStagingMediaTexture : nullptr;
 
+				this->_imgui_cntx = ImGui::CreateContext();
+				
 #pragma region Set Style
 				//Color scheme
 				ImGuiStyle& style = ImGui::GetStyle();
@@ -501,8 +503,11 @@ namespace wolf
 
             ULONG release()
             {
-                //ImGui::Shutdown();
-
+				if (this->_imgui_cntx)
+				{
+					ImGui::DestroyContext(this->_imgui_cntx);
+				}
+				
 				SAFE_RELEASE(this->_vertex_buffer);
 				SAFE_RELEASE(this->_index_buffer);
 
@@ -831,7 +836,7 @@ namespace wolf
             w_texture*                                              _images_texture;
             w_texture*                                              _media_player_texture;
             w_point_t                                               _screen_size;
-
+			ImGuiContext*											_imgui_cntx;
             struct push_constant_block
             {
                 float scale[2];

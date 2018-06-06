@@ -1350,6 +1350,9 @@
     <Text Include="..\..\..\src\wolf.system\rapidxml\license.txt">
       <Filter>rapidxml</Filter>
     </Text>
+    <Text Include="..\..\..\src\wolf.system\spdlog\version.txt">
+      <Filter>spdlog</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />

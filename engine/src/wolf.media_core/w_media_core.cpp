@@ -3,9 +3,9 @@
 #include <cmath>
 #include <iomanip>      // For std::hex
 #include <codecvt>      // For Unicode conversions
-#include <w_task.h>
 #include <w_thread.h>
-#include "w_std.h"
+#include <w_std.h>
+#include <w_game_time.h>
 
 #ifdef __WIN32
 
@@ -369,272 +369,7 @@ namespace wolf
                 return W_PASSED;
             }
 
-            void open_stream_server_async(
-                _In_z_ const char* pURL,
-                _In_z_ const char* pFormatName,
-                _In_ const AVCodecID& pCodecID,
-                _In_ const int64_t& pFrameRate,
-                _In_ const AVPixelFormat& pPixelFormat,
-                _In_ const uint32_t& pWidth,
-                _In_ const uint32_t& pHeight,
-                _In_ system::w_signal<void(const w_media_core::w_stream_connection_info&)>& pOnConnectionEstablished,
-                _In_ system::w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
-                _In_ system::w_signal<void(const char*)>& pOnConnectionLost)
-            {
-                w_task::execute_async(
-                    [this, 
-                    pURL, 
-                    pFormatName, 
-                    pCodecID, 
-                    pFrameRate, 
-                    pPixelFormat,
-                    pWidth,
-                    pHeight,
-                    pOnConnectionEstablished,
-                    pOnFillingVideoFrameBuffer,
-                    pOnConnectionLost]() -> W_RESULT
-                {
-                    const std::string _trace_info = this->_name + "::open_stream_server_async";
-
-                    //create output context
-                    avformat_alloc_output_context2(&this->_stream_out_ctx, NULL, pFormatName, pURL);
-                    if (!this->_stream_out_ctx)
-                    {
-                        V(W_FAILED, w_log_type::W_ERROR, 
-							"allocating output context for output streaming {}. trace info: {}", pURL, _trace_info);
-                        return W_FAILED;
-                    }
-                    if (!this->_stream_out_ctx->oformat)
-                    {
-						V(W_FAILED, w_log_type::W_ERROR, 
-							"creating output streaming {} format: {}. trace info: {}", pURL, pFormatName, _trace_info);
-						release_output_stream_server();
-                        return W_FAILED;
-                    }
-
-                    //find the encoder
-                    auto _stream_video_codec = avcodec_find_encoder(pCodecID);
-                    if (!_stream_video_codec)
-                    {
-                        V(W_FAILED, w_log_type::W_ERROR, 
-							"finding encoder for codec id: {} for output stream {}. trace info: {}",
-							avcodec_get_name(pCodecID), pURL, _trace_info);
-						release_output_stream_server();
-                        return W_FAILED;
-                    }
-                    else
-                    {
-                        this->_stream_out = avformat_new_stream(this->_stream_out_ctx, _stream_video_codec);
-                        if (!this->_stream_out)
-                        {
-                            V(W_FAILED, w_log_type::W_ERROR, 
-								"allocating output stream {}. trace info: {}", pURL, _trace_info);
-							release_output_stream_server();
-                            return W_FAILED;
-                        }
-                        else
-                        {
-                            this->_stream_out->id = this->_stream_out_ctx->nb_streams - 1;
-                            this->_stream_out->time_base.den = this->_stream_out->pts.den = 90000;
-                            this->_stream_out->time_base.num = this->_stream_out->pts.num = 1;
-
-                            auto _bit_rate = 5000 * 1000; //5000 kbps * 1000
-
-                            this->_stream_out->codec->codec_id = pCodecID;
-                            this->_stream_out->codec->bit_rate = _bit_rate;
-                            this->_stream_out->codec->bit_rate_tolerance = _bit_rate;
-                            this->_stream_out->codec->rc_max_rate = _bit_rate;
-                            this->_stream_out->codec->width = static_cast<int>(pWidth);
-                            this->_stream_out->codec->height = static_cast<int>(pHeight);
-                            this->_stream_out->codec->time_base.den = pFrameRate;
-                            this->_stream_out->codec->time_base.num = 1;
-                            this->_stream_out->codec->gop_size = 12; //emit one intra frame every twelve frames at most
-                            this->_stream_out->codec->pix_fmt = pPixelFormat;
-                        }
-                    }
-
-                    AVDictionary* _av_dic = NULL; // "create" an empty dictionary
-                    //av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
-                    av_dict_set(&_av_dic, "rtsp_transport", "udp", 0); // add an entry
-                    av_dict_set(&_av_dic, "timeout", "-1", 0); // add an entry
-
-                    AVPicture  _stream_dst_picture = {};
-                    //now open video stream 
-                    if (avcodec_open2(this->_stream_out->codec, _stream_video_codec, &_av_dic))
-                    {
-                        V(W_FAILED, w_log_type::W_ERROR, 
-							"opening video codec for output stream {}. trace info: {}", pURL, _trace_info);
-						release_output_stream_server();
-                        return W_FAILED;
-                    }
-                    else
-                    {
-                        //allocate and init a re-usable frame */
-                        this->_stream_out_frame = av_frame_alloc();
-                        if (!this->_stream_out_frame)
-                        {
-                            V(W_FAILED, w_log_type::W_ERROR, 
-								"allocating video stream frame for output stream {} . trace info: {}", pURL, _trace_info);
-							release_output_stream_server();
-                            return W_FAILED;
-                        }
-                        else
-                        {
-                            auto _width = this->_stream_out->codec->width;
-                            auto _height = this->_stream_out->codec->height;
-
-                            this->_stream_out_frame->format = this->_stream_out->codec->pix_fmt;
-                            this->_stream_out_frame->width = _width;
-                            this->_stream_out_frame->height = _height;
-
-                            //Allocate the encoded raw picture.
-                            if (avpicture_alloc(&_stream_dst_picture, this->_stream_out->codec->pix_fmt, _width, _height) < 0)
-                            {
-                                V(W_FAILED, w_log_type::W_ERROR, 
-									"allocating video stream picture for output stream {} . trace info: {}", pURL, _trace_info);
-								release_output_stream_server();
-                                return W_FAILED;
-                            }
-                            else
-                            {
-                                //copy data and linesize picture pointers to frame
-                                *((AVPicture*)this->_stream_out_frame) = _stream_dst_picture;
-                            }
-                        }
-                    }
-
-                    if (avformat_write_header(this->_stream_out_ctx, NULL) != 0)
-                    {
-                        V(W_FAILED, w_log_type::W_ERROR, 
-							"connecting to output stream server {}. trace info: {}", pURL, _trace_info);
-						release_output_stream_server();
-                        return W_FAILED;
-                    }
-
-					auto _w = static_cast<uint32_t>(this->_stream_out->codec->width);
-					auto _h = static_cast<uint32_t>(this->_stream_out->codec->height);
-
-					auto _sws_ctx = sws_getContext(
-						_w, _h,
-						AV_PIX_FMT_RGB24, _w, _h,
-						pPixelFormat, 0, 0, 0, 0);
-					if (!_sws_ctx)
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"getting sws context for output stream server {}. trace info: {}", pURL, _trace_info);
-						release_output_stream_server();
-						return W_FAILED;
-					}
-
-					//on connection established
-                    w_media_core::w_stream_connection_info _con_info;
-                    _con_info.url = pURL;
-                    _con_info.context = this->_stream_out_ctx;
-                    _con_info.stream = this->_stream_out;
-                    
-                    w_media_core::w_stream_frame_info _frame_info = {};
-					_frame_info.stride = 3;
-					_frame_info.width = _w;
-                    _frame_info.height = _h;
-					_frame_info.pixels = (uint8_t*)malloc(_frame_info.width * _frame_info.height * _frame_info.stride * sizeof(uint8_t));
-
-					int _line_size[1] = { _frame_info.stride * _w };
-
-                    int _got_packet = 0;
-                    AVPacket _packet = { 0 };
-					//init packet
-					av_init_packet(&_packet);
-
-                    pOnConnectionEstablished.emit(_con_info);
-                    {
-                        auto _start_send_time = std::chrono::system_clock::now();
-                        while (this->_stream_out)
-                        {
-                            auto _start_frame_time = std::chrono::system_clock::now();
-
-#pragma region Preparing Packets
-                            _frame_info.index++;
-
-                            pOnFillingVideoFrameBuffer.emit(_frame_info);
-
-							//convert pixels to output stream format
-							sws_scale(
-								_sws_ctx,
-								&_frame_info.pixels,
-								_line_size,
-								0,
-								_h,
-								_stream_dst_picture.data,
-								_stream_dst_picture.linesize);
-
-                            //encode the image
-                            this->_stream_out_frame->pts = _frame_info.index;
-                            if (avcodec_encode_video2(
-								this->_stream_out->codec, 
-								&_packet, 
-								this->_stream_out_frame, 
-								&_got_packet) < 0)
-                            {
-                                V(W_FAILED, w_log_type::W_ERROR, 
-									"encoding video frame for output stream {}. trace info: {}", pURL, _trace_info);
-                            }
-                            else
-                            {
-                                if (_got_packet)
-                                {
-                                    _packet.stream_index = this->_stream_out->index;
-                                    _packet.pts = av_rescale_q_rnd(
-                                        _packet.pts,
-                                        this->_stream_out->codec->time_base,
-                                        this->_stream_out->time_base,
-                                        AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
-                                    if (av_write_frame(this->_stream_out_ctx, &_packet) < 0)
-                                    {
-                                        V(W_FAILED, w_log_type::W_ERROR, 
-											"writing video frame for output stream {}. trace info: {}", pURL, _trace_info);
-                                    }
-                                }
-                            }
-#pragma endregion
-
-                            auto _now = std::chrono::system_clock::now();
-                            _frame_info.stream_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_send_time).count();
-                            _frame_info.frame_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_frame_time).count();
-                            if (_frame_info.frame_duration > _frame_max_delay_in_ms)
-                            {
-                                V(W_FAILED, w_log_type::W_ERROR, 
-									"streaming delay is greater than max frame delay for output stream server {}. trace info: {}", pURL, _trace_info);
-                                break;
-                            }
-                            else
-                            {
-                                std::this_thread::sleep_for(std::chrono::milliseconds((long)(1000.0 / (double)pFrameRate - (double)_frame_info.frame_duration)));
-                            }
-
-                            //prepare packet
-                            av_free_packet(&_packet);
-							av_init_packet(&_packet);
-                        }
-                    }
-
-					//free pixels
-					if (_frame_info.pixels)
-					{
-						free(_frame_info.pixels);
-						_frame_info.pixels = nullptr;
-					}
-                    //free dst picture
-                    av_free(_stream_dst_picture.data[0]);
-                    //release stream server resources
-					release_output_stream_server();
-                    //on connection lost
-                    pOnConnectionLost.emit(pURL);
-
-                    return W_PASSED;
-                });
-            }
-
-			void open_stream_client_async(
+			W_RESULT open_stream_server(
 				_In_z_ const char* pURL,
 				_In_z_ const char* pFormatName,
 				_In_ const AVCodecID& pCodecID,
@@ -642,308 +377,552 @@ namespace wolf
 				_In_ const AVPixelFormat& pPixelFormat,
 				_In_ const uint32_t& pWidth,
 				_In_ const uint32_t& pHeight,
-				_In_ system::w_signal<void(const w_media_core::w_stream_connection_info&)>& pOnConnectionEstablished,
-				_In_ system::w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
-				_In_ system::w_signal<void(const char*)>& pOnConnectionLost)
+				_In_ w_signal<void(const w_media_core::w_stream_connection_info&)>& pOnConnectionEstablished,
+				_In_ w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
+				_In_ w_signal<void(const char*)>& pOnConnectionClosed)
 			{
-				w_task::execute_async(
-					[this,
-					pURL,
-					pFormatName,
-					pCodecID,
-					pFrameRate,
-					pPixelFormat,
-					pWidth,
-					pHeight,
-					pOnConnectionEstablished,
-					pOnGettingStreamVideoFrame,
-					pOnConnectionLost]() -> W_RESULT
+				const std::string _trace_info = this->_name + "::open_stream_server_async";
+
+				//create output context
+				avformat_alloc_output_context2(&this->_stream_out_ctx, NULL, pFormatName, pURL);
+				if (!this->_stream_out_ctx)
 				{
-					const std::string _trace_info = this->_name + "::open_stream_client_async";
+					V(W_FAILED, w_log_type::W_ERROR,
+						"allocating output context for output streaming {}. trace info: {}", pURL, _trace_info);
+					return W_FAILED;
+				}
+				if (!this->_stream_out_ctx->oformat)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"creating output streaming {} format: {}. trace info: {}", pURL, pFormatName, _trace_info);
+					release_output_stream_server();
+					return W_FAILED;
+				}
 
-					std::string _fromat_str(pFormatName);
-					std::transform(_fromat_str.begin(), _fromat_str.end(), _fromat_str.begin(), ::tolower);
-
-					AVDictionary* _av_dic = NULL;//"create" an empty dictionary
-					if (_fromat_str == "rtsp")
-					{
-						av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
-					}
-					
-					AVFormatContext* _stream_in_format_ctx = avformat_alloc_context();
-					//create an input context
-					if (avformat_open_input(&_stream_in_format_ctx, pURL, NULL, &_av_dic) != 0)
-					{
-						V(W_FAILED, w_log_type::W_ERROR, 
-							"openning context for input stream {}. trace info: {}", pURL, _trace_info);
-						return W_FAILED;
-					}
-
-					if (!_stream_in_format_ctx)
-					{
-						V(W_FAILED, w_log_type::W_ERROR, 
-							"allocating context for input stream {}. trace info: {}", pURL, _trace_info);
-						return W_FAILED;
-					}
-					
-					if (avformat_find_stream_info(_stream_in_format_ctx, NULL) < 0)
+				//find the encoder
+				auto _stream_video_codec = avcodec_find_encoder(pCodecID);
+				if (!_stream_video_codec)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"finding encoder for codec id: {} for output stream {}. trace info: {}",
+						avcodec_get_name(pCodecID), pURL, _trace_info);
+					release_output_stream_server();
+					return W_FAILED;
+				}
+				else
+				{
+					this->_stream_out = avformat_new_stream(this->_stream_out_ctx, _stream_video_codec);
+					if (!this->_stream_out)
 					{
 						V(W_FAILED, w_log_type::W_ERROR,
-							"could not find input stream {} format: {}. trace info: {}", pURL, pFormatName, _trace_info);
-						avformat_free_context(_stream_in_format_ctx);
+							"allocating output stream {}. trace info: {}", pURL, _trace_info);
+						release_output_stream_server();
 						return W_FAILED;
 					}
-
-					int _video_stream_index = -1;
-					//search video stream
-					for (size_t i = 0; i < _stream_in_format_ctx->nb_streams; ++i)
+					else
 					{
-						if (_stream_in_format_ctx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+						this->_stream_out->id = this->_stream_out_ctx->nb_streams - 1;
+						this->_stream_out->time_base.den = this->_stream_out->pts.den = 90000;
+						this->_stream_out->time_base.num = this->_stream_out->pts.num = 1;
+
+						auto _bit_rate = 5000 * 1000; //5000 kbps * 1000
+
+						this->_stream_out->codec->codec_id = pCodecID;
+						this->_stream_out->codec->bit_rate = _bit_rate;
+						this->_stream_out->codec->bit_rate_tolerance = _bit_rate;
+						this->_stream_out->codec->rc_max_rate = _bit_rate;
+						this->_stream_out->codec->width = static_cast<int>(pWidth);
+						this->_stream_out->codec->height = static_cast<int>(pHeight);
+						this->_stream_out->codec->time_base.den = pFrameRate;
+						this->_stream_out->codec->time_base.num = 1;
+						this->_stream_out->codec->gop_size = 12; //emit one intra frame every twelve frames at most
+						this->_stream_out->codec->pix_fmt = pPixelFormat;
+					}
+				}
+
+				AVDictionary* _av_dic = NULL; // "create" an empty dictionary
+				//av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
+				av_dict_set(&_av_dic, "rtsp_transport", "udp", 0); // add an entry
+				av_dict_set(&_av_dic, "timeout", "-1", 0); // add an entry
+
+				AVPicture  _stream_dst_picture = {};
+				//now open video stream 
+				if (avcodec_open2(this->_stream_out->codec, _stream_video_codec, &_av_dic))
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"opening video codec for output stream {}. trace info: {}", pURL, _trace_info);
+					release_output_stream_server();
+					return W_FAILED;
+				}
+				else
+				{
+					//allocate and init a re-usable frame */
+					this->_stream_out_frame = av_frame_alloc();
+					if (!this->_stream_out_frame)
+					{
+						V(W_FAILED, w_log_type::W_ERROR,
+							"allocating video stream frame for output stream {} . trace info: {}", pURL, _trace_info);
+						release_output_stream_server();
+						return W_FAILED;
+					}
+					else
+					{
+						auto _width = this->_stream_out->codec->width;
+						auto _height = this->_stream_out->codec->height;
+
+						this->_stream_out_frame->format = this->_stream_out->codec->pix_fmt;
+						this->_stream_out_frame->width = _width;
+						this->_stream_out_frame->height = _height;
+
+						//Allocate the encoded raw picture.
+						if (avpicture_alloc(&_stream_dst_picture, this->_stream_out->codec->pix_fmt, _width, _height) < 0)
 						{
-							_video_stream_index = i;
-							break;
+							V(W_FAILED, w_log_type::W_ERROR,
+								"allocating video stream picture for output stream {} . trace info: {}", pURL, _trace_info);
+							release_output_stream_server();
+							return W_FAILED;
+						}
+						else
+						{
+							//copy data and linesize picture pointers to frame
+							*((AVPicture*)this->_stream_out_frame) = _stream_dst_picture;
 						}
 					}
+				}
 
-					//open input stream frame 
-					auto _stream_in_frame_ctx = avformat_alloc_context();
-					if (!_stream_in_frame_ctx)
+				if (avformat_write_header(this->_stream_out_ctx, NULL) != 0)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"connecting to output stream server {}. trace info: {}", pURL, _trace_info);
+					release_output_stream_server();
+					return W_FAILED;
+				}
+
+				auto _w = static_cast<uint32_t>(this->_stream_out->codec->width);
+				auto _h = static_cast<uint32_t>(this->_stream_out->codec->height);
+
+				auto _sws_ctx = sws_getContext(
+					_w, _h,
+					AV_PIX_FMT_RGB24, _w, _h,
+					pPixelFormat, 0, 0, 0, 0);
+				if (!_sws_ctx)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"getting sws context for output stream server {}. trace info: {}", pURL, _trace_info);
+					release_output_stream_server();
+					return W_FAILED;
+				}
+
+				//on connection established
+				w_media_core::w_stream_connection_info _con_info;
+				_con_info.url = pURL;
+				_con_info.context = this->_stream_out_ctx;
+				_con_info.stream = this->_stream_out;
+
+				w_media_core::w_stream_frame_info _frame_info = {};
+				_frame_info.stride = 3;
+				_frame_info.width = _w;
+				_frame_info.height = _h;
+				_frame_info.pixels = (uint8_t*)malloc(_frame_info.width * _frame_info.height * _frame_info.stride * sizeof(uint8_t));
+
+				int _line_size[1] = { _frame_info.stride * _w };
+
+				int _got_packet = 0;
+				AVPacket _packet = { 0 };
+				//init packet
+				av_init_packet(&_packet);
+
+				pOnConnectionEstablished.emit(_con_info);
+				{
+					auto _start_send_time = std::chrono::system_clock::now();
+					while (this->_stream_out)
 					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"allocating context for input stream: {}. trace info: {}", pURL, _trace_info);
-						avformat_free_context(_stream_in_format_ctx);
-						return W_FAILED;
-					}
+						auto _start_frame_time = std::chrono::system_clock::now();
 
-					//start reading packets from stream
-					av_read_play(_stream_in_format_ctx);
+#pragma region Preparing Packets
+						_frame_info.index++;
 
-					AVCodec* _codec = NULL;
-					_codec = avcodec_find_decoder(pCodecID);
-					if (!_codec) 
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"could not find decoder for codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
-						avformat_free_context(_stream_in_format_ctx);
-						avformat_free_context(_stream_in_frame_ctx);
-						return W_FAILED;
-					}
+						pOnFillingVideoFrameBuffer.emit(_frame_info);
 
-					// Add this to allocate the context by codec
-					auto _codec_ctx = avcodec_alloc_context3(_codec);
-					if (!_codec_ctx)
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"allocating context for codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
-						avformat_free_context(_stream_in_format_ctx);
-						avformat_free_context(_stream_in_frame_ctx);
-						return W_FAILED;
-					}
+						//convert pixels to output stream format
+						sws_scale(
+							_sws_ctx,
+							&_frame_info.pixels,
+							_line_size,
+							0,
+							_h,
+							_stream_dst_picture.data,
+							_stream_dst_picture.linesize);
 
-					if (avcodec_get_context_defaults3(_codec_ctx, _codec) < 0)
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"getting context for codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
-						avcodec_free_context(&_codec_ctx);
-						avformat_free_context(_stream_in_format_ctx);
-						avformat_free_context(_stream_in_frame_ctx);
-						return W_FAILED;
-					}
-
-					if (avcodec_copy_context(_codec_ctx,
-						_stream_in_format_ctx->streams[_video_stream_index]->codec) < 0)
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"copying context for codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
-						avcodec_free_context(&_codec_ctx);
-						avformat_free_context(_stream_in_format_ctx);
-						avformat_free_context(_stream_in_frame_ctx);
-						return W_FAILED;
-					}
-
-					if (avcodec_open2(_codec_ctx, _codec, NULL) < 0)
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"opening codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
-						avcodec_free_context(&_codec_ctx);
-						avformat_free_context(_stream_in_format_ctx);
-						avformat_free_context(_stream_in_frame_ctx);
-						return W_FAILED;
-					}
-
-					auto _stream_in = avformat_new_stream(
-						_stream_in_frame_ctx,
-						_stream_in_format_ctx->streams[_video_stream_index]->codec->codec);
-					if (!_stream_in)
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"creating stream for {}. trace info: {}", pURL, _trace_info);
-						avcodec_free_context(&_codec_ctx);
-						avformat_free_context(_stream_in_format_ctx);
-						avformat_free_context(_stream_in_frame_ctx);
-						return W_FAILED;
-					}
-					
-					if (avcodec_copy_context(
-						_stream_in->codec,
-						_stream_in_format_ctx->streams[_video_stream_index]->codec) < 0)
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"codec copy context for stream for {}. trace info: {}", pURL, _trace_info);
-						avcodec_close(_stream_in->codec);
-						avcodec_free_context(&_codec_ctx);
-						avformat_free_context(_stream_in_format_ctx);
-						avformat_free_context(_stream_in_frame_ctx);
-						return W_FAILED;
-					}
-					
-					_stream_in->sample_aspect_ratio = _stream_in_format_ctx->streams[_video_stream_index]->codec->sample_aspect_ratio;
-
-					SwsContext* _img_convert_ctx = sws_getContext(
-						_codec_ctx->width, 
-						_codec_ctx->height,
-						_codec_ctx->pix_fmt, 
-						_codec_ctx->width, 
-						_codec_ctx->height, 
-						AV_PIX_FMT_RGB24,
-						SWS_BICUBIC, 
-						NULL, 
-						NULL, 
-						NULL);
-					if (!_img_convert_ctx)
-					{
-						V(W_FAILED, w_log_type::W_ERROR,
-							"getting sws context. input stream: {}. trace info: {}", pURL, _trace_info);
-						avcodec_close(_stream_in->codec);
-						avcodec_free_context(&_codec_ctx);
-						avformat_free_context(_stream_in_format_ctx);
-						avformat_free_context(_stream_in_frame_ctx);
-						return W_FAILED;
-					}
-
-					//on connection established
-					w_media_core::w_stream_connection_info _con_info;
-					_con_info.url = pURL;
-					_con_info.context = _stream_in_format_ctx;
-					_con_info.stream = _stream_in;
-
-					w_media_core::w_stream_frame_info _frame_info = {};
-					_frame_info.stride = 3;//RGB
-					_frame_info.width = static_cast<uint32_t>(_codec_ctx->width);
-					_frame_info.height = static_cast<uint32_t>(_codec_ctx->height);
-					 
-					int _size = avpicture_get_size(
-						pPixelFormat,
-						_codec_ctx->width,
-						_codec_ctx->height);
-
-					uint8_t* _picture_buffer = (uint8_t*)(av_malloc(_size));
-					AVFrame* _picture = av_frame_alloc();
-					AVFrame* _picture_rgb = av_frame_alloc();
-					int _size2 = avpicture_get_size(
-						AV_PIX_FMT_RGB24, 
-						_codec_ctx->width,
-						_codec_ctx->height);
-
-					_frame_info.pixels = (uint8_t*)(av_malloc(_size2));
-					avpicture_fill(
-						(AVPicture*)_picture, 
-						_picture_buffer,
-						pPixelFormat,
-						_codec_ctx->width, 
-						_codec_ctx->height);
-
-					avpicture_fill(
-						(AVPicture*)_picture_rgb, 
-						_frame_info.pixels,
-						AV_PIX_FMT_RGB24,
-						_codec_ctx->width, 
-						_codec_ctx->height);
-
-
-					int _got_packet = 0;
-					AVPacket _packet = { 0 };
-					av_init_packet(&_packet);
-
-					pOnConnectionEstablished.emit(_con_info);
-					{
-						//auto _start_received_time = std::chrono::system_clock::now();
-						while (_stream_in)
+						//encode the image
+						this->_stream_out_frame->pts = _frame_info.index;
+						if (avcodec_encode_video2(
+							this->_stream_out->codec,
+							&_packet,
+							this->_stream_out_frame,
+							&_got_packet) < 0)
 						{
-							if (av_read_frame(_stream_in_format_ctx, &_packet) >= 0)
+							V(W_FAILED, w_log_type::W_ERROR,
+								"encoding video frame for output stream {}. trace info: {}", pURL, _trace_info);
+						}
+						else
+						{
+							if (_got_packet)
 							{
-								if (_packet.stream_index == _video_stream_index)
+								_packet.stream_index = this->_stream_out->index;
+								_packet.pts = av_rescale_q_rnd(
+									_packet.pts,
+									this->_stream_out->codec->time_base,
+									this->_stream_out->time_base,
+									AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+								if (av_write_frame(this->_stream_out_ctx, &_packet) < 0)
 								{
-									//auto _start_frame_time = std::chrono::system_clock::now();
-									_frame_info.index++;
-
-									sws_scale(
-										_img_convert_ctx, 
-										_picture->data, 
-										_picture->linesize, 
-										0,
-										_codec_ctx->height, 
-										_picture_rgb->data, 
-										_picture_rgb->linesize);
-
-									/*auto _now = std::chrono::system_clock::now();
-									_frame_info.stream_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_received_time).count();
-									_frame_info.frame_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_frame_time).count();
-									if (_frame_info.frame_duration > _frame_max_delay_in_ms)
-									{
-										V(W_FAILED, w_log_type::W_ERROR,
-											"streaming delay is greater than max frame delay for output stream server {}. trace info: {}", pURL, _trace_info);
-										break;
-									}
-									else
-									{
-										std::this_thread::sleep_for(std::chrono::milliseconds((long)(1000.0 / (double)pFrameRate - (double)_frame_info.frame_duration)));
-									}*/
-
-									pOnGettingStreamVideoFrame.emit(_frame_info);
+									V(W_FAILED, w_log_type::W_ERROR,
+										"writing video frame for output stream {}. trace info: {}", pURL, _trace_info);
 								}
-
-								//prepare packet
-								av_free_packet(&_packet);
-								av_init_packet(&_packet);
 							}
 						}
-					}
-					//on connection lost
-					pOnConnectionLost.emit(pURL);
+#pragma endregion
 
-					//free pixels				
-					av_free(_picture);
-					av_free(_picture_rgb);
+						auto _now = std::chrono::system_clock::now();
+						_frame_info.stream_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_send_time).count();
+						_frame_info.frame_duration = std::chrono::duration_cast<std::chrono::milliseconds>(_now - _start_frame_time).count();
+						if (_frame_info.frame_duration > _frame_max_delay_in_ms)
+						{
+							V(W_FAILED, w_log_type::W_ERROR,
+								"streaming delay is greater than max frame delay for output stream server {}. trace info: {}", pURL, _trace_info);
+							break;
+						}
+						else
+						{
+							std::this_thread::sleep_for(std::chrono::milliseconds((long)(1000.0 / (double)pFrameRate - (double)_frame_info.frame_duration)));
+						}
 
-					if (_picture_buffer)
-					{
-						free(_picture_buffer);
-						_picture_buffer = nullptr;
+						//prepare packet
+						av_free_packet(&_packet);
+						av_init_packet(&_packet);
 					}
-					if (_frame_info.pixels)
-					{
-						free(_frame_info.pixels);
-						_frame_info.pixels = nullptr;
-					}
+				}
 
-					if (_codec_ctx)
-					{
-						avcodec_free_context(&_codec_ctx);
-					}
-					av_read_pause(_stream_in_format_ctx);
-					if (_stream_in)
-					{
-						avcodec_close(_stream_in->codec);
-					}
-					if (_stream_in_frame_ctx)
-					{
-						avio_close(_stream_in_frame_ctx->pb);
-						avformat_free_context(_stream_in_frame_ctx);
-					}
+				//free pixels
+				if (_frame_info.pixels)
+				{
+					free(_frame_info.pixels);
+					_frame_info.pixels = nullptr;
+				}
+				//free dst picture
+				av_free(_stream_dst_picture.data[0]);
+				//release stream server resources
+				release_output_stream_server();
+				//on connection lost
+				pOnConnectionClosed.emit(pURL);
 
-					return W_PASSED;
-				});
+				return W_PASSED;
+			}
+
+			W_RESULT open_stream_client(
+				_In_z_ const char* pURL,
+				_In_z_ const char* pFormatName,
+				_In_ const AVCodecID& pCodecID,
+				_In_ const AVPixelFormat& pPixelFormat,
+				_In_ const uint32_t& pWidth,
+				_In_ const uint32_t& pHeight,
+				_In_ const long long& pTimeOut,
+				_In_ w_signal<void(const w_media_core::w_stream_connection_info&)>& pOnConnectionEstablished,
+				_In_ w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
+				_In_ w_signal<void(const char*)>& pOnConnectionLost,
+				_In_ w_signal<void(const char*)>& pOnConnectionClosed)
+			{
+				const std::string _trace_info = this->_name + "::open_stream_client_async";
+
+				std::string _fromat_str(pFormatName);
+				std::transform(_fromat_str.begin(), _fromat_str.end(), _fromat_str.begin(), ::tolower);
+
+				AVDictionary* _av_dic = NULL;//"create" an empty dictionary
+				if (_fromat_str == "rtsp")
+				{
+					av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
+				}
+
+				AVFormatContext* _stream_in_format_ctx = avformat_alloc_context();
+				//create an input context
+				if (avformat_open_input(&_stream_in_format_ctx, pURL, NULL, &_av_dic) != 0)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"openning context for input stream {}. trace info: {}", pURL, _trace_info);
+					return W_FAILED;
+				}
+
+				if (!_stream_in_format_ctx)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"allocating context for input stream {}. trace info: {}", pURL, _trace_info);
+					return W_FAILED;
+				}
+
+				if (avformat_find_stream_info(_stream_in_format_ctx, NULL) < 0)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"could not find input stream {} format: {}. trace info: {}", pURL, pFormatName, _trace_info);
+					avformat_free_context(_stream_in_format_ctx);
+					return W_FAILED;
+				}
+
+				int _video_stream_index = -1;
+				//search video stream
+				for (size_t i = 0; i < _stream_in_format_ctx->nb_streams; ++i)
+				{
+					if (_stream_in_format_ctx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+					{
+						_video_stream_index = i;
+						break;
+					}
+				}
+
+				//open input stream frame 
+				auto _stream_in_frame_ctx = avformat_alloc_context();
+				if (!_stream_in_frame_ctx)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"allocating context for input stream: {}. trace info: {}", pURL, _trace_info);
+					avformat_free_context(_stream_in_format_ctx);
+					return W_FAILED;
+				}
+
+				//start reading packets from stream
+				av_read_play(_stream_in_format_ctx);
+
+				AVCodec* _codec = NULL;
+				_codec = avcodec_find_decoder(pCodecID);
+				if (!_codec)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"could not find decoder for codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
+					avformat_free_context(_stream_in_format_ctx);
+					avformat_free_context(_stream_in_frame_ctx);
+					return W_FAILED;
+				}
+
+				// Add this to allocate the context by codec
+				auto _codec_ctx = avcodec_alloc_context3(_codec);
+				if (!_codec_ctx)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"allocating context for codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
+					avformat_free_context(_stream_in_format_ctx);
+					avformat_free_context(_stream_in_frame_ctx);
+					return W_FAILED;
+				}
+
+				if (avcodec_get_context_defaults3(_codec_ctx, _codec) < 0)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"getting context for codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
+					avcodec_free_context(&_codec_ctx);
+					avformat_free_context(_stream_in_format_ctx);
+					avformat_free_context(_stream_in_frame_ctx);
+					return W_FAILED;
+				}
+
+				if (avcodec_copy_context(_codec_ctx,
+					_stream_in_format_ctx->streams[_video_stream_index]->codec) < 0)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"copying context for codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
+					avcodec_free_context(&_codec_ctx);
+					avformat_free_context(_stream_in_format_ctx);
+					avformat_free_context(_stream_in_frame_ctx);
+					return W_FAILED;
+				}
+
+				if (avcodec_open2(_codec_ctx, _codec, NULL) < 0)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"opening codec {}. input stream: {}. trace info: {}", pCodecID, pURL, _trace_info);
+					avcodec_free_context(&_codec_ctx);
+					avformat_free_context(_stream_in_format_ctx);
+					avformat_free_context(_stream_in_frame_ctx);
+					return W_FAILED;
+				}
+
+				auto _stream_in = avformat_new_stream(
+					_stream_in_frame_ctx,
+					_stream_in_format_ctx->streams[_video_stream_index]->codec->codec);
+				if (!_stream_in)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"creating stream for {}. trace info: {}", pURL, _trace_info);
+					avcodec_free_context(&_codec_ctx);
+					avformat_free_context(_stream_in_format_ctx);
+					avformat_free_context(_stream_in_frame_ctx);
+					return W_FAILED;
+				}
+
+				if (avcodec_copy_context(
+					_stream_in->codec,
+					_stream_in_format_ctx->streams[_video_stream_index]->codec) < 0)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"codec copy context for stream for {}. trace info: {}", pURL, _trace_info);
+					avcodec_close(_stream_in->codec);
+					avcodec_free_context(&_codec_ctx);
+					avformat_free_context(_stream_in_format_ctx);
+					avformat_free_context(_stream_in_frame_ctx);
+					return W_FAILED;
+				}
+
+				_stream_in->sample_aspect_ratio = _stream_in_format_ctx->streams[_video_stream_index]->codec->sample_aspect_ratio;
+
+				SwsContext* _img_convert_ctx = sws_getContext(
+					_codec_ctx->width,
+					_codec_ctx->height,
+					_codec_ctx->pix_fmt,
+					_codec_ctx->width,
+					_codec_ctx->height,
+					AV_PIX_FMT_RGB24,
+					SWS_BICUBIC,
+					NULL,
+					NULL,
+					NULL);
+				if (!_img_convert_ctx)
+				{
+					V(W_FAILED, w_log_type::W_ERROR,
+						"getting sws context. input stream: {}. trace info: {}", pURL, _trace_info);
+					avcodec_close(_stream_in->codec);
+					avcodec_free_context(&_codec_ctx);
+					avformat_free_context(_stream_in_format_ctx);
+					avformat_free_context(_stream_in_frame_ctx);
+					return W_FAILED;
+				}
+
+				//on connection established
+				w_media_core::w_stream_connection_info _con_info;
+				_con_info.url = pURL;
+				_con_info.context = _stream_in_format_ctx;
+				_con_info.stream = _stream_in;
+
+				w_media_core::w_stream_frame_info _frame_info = {};
+				_frame_info.stride = 3;//RGB
+				_frame_info.width = static_cast<uint32_t>(_codec_ctx->width);
+				_frame_info.height = static_cast<uint32_t>(_codec_ctx->height);
+
+				int _size_stream_format = avpicture_get_size(
+					pPixelFormat,
+					_codec_ctx->width,
+					_codec_ctx->height);
+
+				uint8_t* _picture_buffer = (uint8_t*)(av_malloc(_size_stream_format));
+				AVFrame* _picture = av_frame_alloc();
+				AVFrame* _picture_rgb = av_frame_alloc();
+				int _size_rgb = avpicture_get_size(
+					AV_PIX_FMT_RGB24,
+					_codec_ctx->width,
+					_codec_ctx->height);
+
+				auto _picture_rgb_buffer = (uint8_t*)(av_malloc(_size_rgb));
+				avpicture_fill(
+					(AVPicture*)_picture,
+					_picture_buffer,
+					pPixelFormat,
+					_codec_ctx->width,
+					_codec_ctx->height);
+
+				avpicture_fill(
+					(AVPicture*)_picture_rgb,
+					_picture_rgb_buffer,
+					AV_PIX_FMT_RGB24,
+					_codec_ctx->width,
+					_codec_ctx->height);
+
+				int _got_packet = 0, _check = 0;;
+				AVPacket _packet = { 0 };
+				av_init_packet(&_packet);
+
+				long long _time_out = pTimeOut;
+				w_game_time _is_stream_live;
+				_is_stream_live.set_target_elapsed_seconds(1);
+				_is_stream_live.set_fixed_time_step(true);
+
+				bool _connected = false;
+				bool _exit = false;
+				while (!_exit)
+				{
+					if (av_read_frame(_stream_in_format_ctx, &_packet) >= 0)
+					{
+						if (!_connected)
+						{
+							_connected = true;
+							_is_stream_live.reset();
+							_time_out = pTimeOut;
+
+							pOnConnectionEstablished.emit(_con_info);
+						}
+						if (_packet.stream_index == _video_stream_index)
+						{
+							_check = 0;
+							_packet.stream_index = _stream_in->id;
+
+							if (avcodec_decode_video2(_codec_ctx, _picture, &_check, &_packet) > 0)
+							{
+								_frame_info.index++;
+
+								sws_scale(
+									_img_convert_ctx,
+									_picture->data,
+									_picture->linesize,
+									0,
+									_codec_ctx->height,
+									_picture_rgb->data,
+									_picture_rgb->linesize);
+
+								_frame_info.pixels = _picture_rgb->data[0];
+								pOnGettingStreamVideoFrame.emit(_frame_info);
+							}
+						}
+
+						//prepare packet
+						av_free_packet(&_packet);
+						av_init_packet(&_packet);
+					}
+					else
+					{
+						//on connection lost
+						_connected = false;
+						pOnConnectionLost.emit(pURL);
+
+						_is_stream_live.tick([&]()
+						{
+							_time_out -= _is_stream_live.get_elapsed_seconds() * 1000.000f;
+							if (_time_out <= 0)
+							{
+								_exit = true;
+							}
+						});
+					}
+				}
+				//on connection lost
+				pOnConnectionClosed.emit(pURL);
+
+				//free pixels				
+				av_free(_picture);
+				av_free(_picture_rgb);
+
+				if (_codec_ctx)
+				{
+					avcodec_free_context(&_codec_ctx);
+				}
+				av_read_pause(_stream_in_format_ctx);
+				if (_stream_in)
+				{
+					avcodec_close(_stream_in->codec);
+				}
+				if (_stream_in_frame_ctx)
+				{
+					avio_close(_stream_in_frame_ctx->pb);
+					avformat_free_context(_stream_in_frame_ctx);
+				}
+
+				return W_PASSED;
 			}
 
             int64_t time_to_frame(_In_ int64_t pMilliSecond)
@@ -1816,7 +1795,7 @@ W_RESULT w_media_core::open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t p
     return this->_pimp ? this->_pimp->open_media(pMediaPath, pSeekToFrame) : W_FAILED;
 }
 
-void w_media_core::open_stream_server_async(
+void w_media_core::open_stream_server(
     _In_z_ const char* pURL,
     _In_z_ const char* pFormatName,
     _In_ const AVCodecID& pCodecID,
@@ -1824,13 +1803,13 @@ void w_media_core::open_stream_server_async(
     _In_ const AVPixelFormat& pPixelFormat,
     _In_ const uint32_t& pWidth,
     _In_ const uint32_t& pHeight,
-    _In_ system::w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
-    _In_ system::w_signal<void(const w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
-    _In_ system::w_signal<void(const char*)>& pOnConnectionLost)
+    _In_ w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
+    _In_ w_signal<void(const w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
+    _In_ w_signal<void(const char*)>& pOnConnectionLost)
 {
     if (this->_pimp)
     {
-        this->_pimp->open_stream_server_async(
+        this->_pimp->open_stream_server(
             pURL,
             pFormatName,
             pCodecID,
@@ -1844,31 +1823,33 @@ void w_media_core::open_stream_server_async(
     }
 }
 
-void w_media_core::open_stream_client_async(
+void w_media_core::open_stream_client(
 	_In_z_ const char* pURL,
 	_In_z_ const char* pFormatName,
 	_In_ const AVCodecID& pCodecID,
-	_In_ const int64_t& pFrameRate,
 	_In_ const AVPixelFormat& pPixelFormat,
 	_In_ const uint32_t& pWidth,
 	_In_ const uint32_t& pHeight,
-	_In_ system::w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
-	_In_ system::w_signal<void(const w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
-	_In_ system::w_signal<void(const char*)>& pOnConnectionLost)
+	_In_ const long long& pTimeOut,
+	_In_ w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
+	_In_ w_signal<void(const w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
+	_In_ w_signal<void(const char*)>& pOnConnectionLost,
+	_In_ w_signal<void(const char*)>& pOnConnectionClosed)
 {
 	if (this->_pimp)
 	{
-		this->_pimp->open_stream_client_async(
+		this->_pimp->open_stream_client(
 			pURL,
 			pFormatName,
 			pCodecID,
-			pFrameRate,
 			pPixelFormat,
 			pWidth,
 			pHeight,
+			pTimeOut,
 			pOnConnectionEstablished,
 			pOnGettingStreamVideoFrame,
-			pOnConnectionLost);
+			pOnConnectionLost,
+			pOnConnectionClosed);
 	}
 }
 

@@ -19,7 +19,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
     w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -86,7 +86,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating render pass. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
     //create semaphore
@@ -94,16 +97,22 @@ void scene::load()
     if (_hr == W_FAILED)
     {
         release();
-        V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw semaphore. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
     }
 
     //Fence for syncing
     _hr = this->_draw_fence.initialize(_gDevice);
-    if (_hr == W_FAILED)
-    {
-        release();
-        V(W_FAILED, "creating draw fence", _trace_info, 3, true);
-    }
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw fence. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
 
     //load imgui
     w_imgui::load(
@@ -116,11 +125,14 @@ void scene::load()
     //create two primary command buffers for clearing screen
     auto _swap_chain_image_size = _output_window->swap_chain_image_views.size();
     _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
-    if (_hr == W_FAILED)
-    {
-        release();
-        V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
-    }
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw command buffers. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
 	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
@@ -129,13 +141,19 @@ void scene::load()
 	if (!this->_shape_coordinate_axis)
 	{
 		release();
-		V(W_FAILED, "allocating memory for shape coordinate axis", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape coordinate axis. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading shape coordinate axis", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading shape coordinate axis. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -180,7 +198,6 @@ W_RESULT scene::_build_draw_command_buffers()
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 {
 	if (w_game::exiting) return;
-	const std::string _trace_info = this->name + "::update";
 
     sFPS = pGameTime.get_frames_per_second();
     sElapsedTimeInSec = pGameTime.get_elapsed_seconds();
@@ -241,7 +258,11 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"submiting queue for drawing. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	this->_draw_fence.wait();
 

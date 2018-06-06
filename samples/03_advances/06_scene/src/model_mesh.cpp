@@ -52,7 +52,10 @@ public:
 		size_t _meshes_count = _meshes.size();
 		if (!_meshes_count)
 		{
-			V(W_FAILED, "model " + this->_model_name + " does not have any mesh", _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_WARNING,
+				"model {} does not have any mesh. graphics device: {} . trace info: {}", 
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 		//prepare vertices and indices
@@ -76,7 +79,10 @@ public:
 		this->_mesh = new (std::nothrow) w_mesh();
 		if (!this->_mesh)
 		{
-			V(W_FAILED, "allocating memory for w_mesh for model: " + this->_model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_WARNING,
+				"allocating memory for w_mesh for model: {} . graphics device: {} . trace info: {}",
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			_batch_vertices.clear();
 			_batch_indices.clear();
 			return W_FAILED;
@@ -93,7 +99,7 @@ public:
 		{
 			//set the default texture
 			this->_textures.push_back(w_texture::default_texture);
-			wolf::logger.warning("default texture will be used for model: " + this->_model_name);
+			wolf::logger.warning("default texture will be used for model: {}", this->_model_name);
 			_mesh->set_texture(this->_textures[0]);
 		}
 
@@ -115,7 +121,10 @@ public:
 
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "loading mesh for model: " + this->_model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_WARNING,
+				"loading mesh for model: {} . graphics device: {} . trace info: {}", 
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 
@@ -185,7 +194,10 @@ public:
 
 				if (_hr == W_FAILED)
 				{
-					V(W_FAILED, "creating instance buffer for model: " + this->_model_name, _trace_info, 2);
+					V(W_FAILED,
+						w_log_type::W_WARNING,
+						"creating instance buffer for model: {} . graphics device: {} . trace info: {}",
+						this->_model_name, _gDevice->get_info(), _trace_info);
 					return W_FAILED;
 				}
 			}
@@ -196,7 +208,10 @@ public:
 #pragma region create shader module
 		if (_create_shader_module(pVertexShaderPath, pFragmentShaderPath) == W_FAILED)
 		{
-			V(W_FAILED, "creating shader for model: " + this->_model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"creating shader for model: {} . graphics device: {} . trace info: {}", 
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 #pragma endregion
@@ -204,7 +219,10 @@ public:
 #pragma region create pipeline
 		if (_create_pipeline(pPipelineCacheName, pRenderPass) == W_FAILED)
 		{
-			V(W_FAILED, "creating pipeline for model: " + this->_model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"creating pipeline for model: {} . graphics device: {} . trace info: {}", 
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 #pragma endregion
@@ -273,7 +291,10 @@ public:
 			auto _hr = this->_instance_u0.update();
 			if (_hr == W_FAILED)
 			{
-				V(W_FAILED, "updating instance uniform ViewProjection for model: " + this->_model_name, _trace_info, 3);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"updating instance uniform ViewProjection for model: {} . graphics device: {} . trace info: {}", 
+					this->_model_name, _gDevice->get_info(), _trace_info);
 			}
 		}
 		else
@@ -288,7 +309,10 @@ public:
 			auto _hr = this->_basic_u0.update();
 			if (_hr == W_FAILED)
 			{
-				V(W_FAILED, "updating basic uniform ViewProjection for model: " + this->_model_name, _trace_info, 3);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"updating basic uniform ViewProjection for model: {} . graphics device: {} . trace info: {}",
+					this->_model_name, _gDevice->get_info(), _trace_info);
 			}
 		}
 	}
@@ -301,7 +325,10 @@ public:
 		auto _hr = this->_u1.update();
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "updating u1 uniform for model: " + this->_model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"updating u1 uniform for model: {} . graphics device: {} . trace info: {}",
+				this->_model_name, _gDevice->get_info(), _trace_info);
 		}
 	}
 
@@ -866,7 +893,11 @@ private:
 				}
 				else
 				{
-					V(W_FAILED, "loading texture\'" + _path + "\'", _trace_info);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"loading texture\"{}\" for model: {} . graphics device: {} . trace info: {}",
+						_path, this->_model_name, _gDevice->get_info(), _trace_info);
+
 					_problem = true;
 					//release texture
 					SAFE_DELETE(_texture);
@@ -874,7 +905,10 @@ private:
 			}
 			else
 			{
-				V(W_FAILED, "allocating memory for w_texture\'" + _path + "\'", _trace_info);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"allocating memory of texture\"{}\" for model: {} . graphics device: {} . trace info: {}",
+					_path, this->_model_name, _gDevice->get_info(), _trace_info);
 				_problem = true;
 			}
 		}
@@ -896,7 +930,10 @@ private:
 
 		if (_staging_buffers.set_data(pData.data()) == W_FAILED)
 		{
-			V(W_FAILED, "setting data to staging buffer of vertex_instance_buffer", _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"setting data to staging buffer of vertex_instance_buffer for model: {} . graphics device: {} . trace info: {}",
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 
@@ -906,7 +943,10 @@ private:
 			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 		{
-			V(W_FAILED, "loading device buffer of vertex_instance_buffer", _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"loading device buffer of vertex_instance_buffer for model: {} . graphics device: {} . trace info: {}",
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 
@@ -917,7 +957,10 @@ private:
 		//}
 		if (_staging_buffers.copy_to(this->_instances_buffer) == W_FAILED)
 		{
-			V(W_FAILED, "copying to device buffer of vertex_instance_buffer", _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"copying to device buffer of vertex_instance_buffer for model: {} . graphics device: {} . trace info: {}",
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 		_staging_buffers.release();
@@ -938,7 +981,10 @@ private:
 		if (_hr == W_FAILED)
 		{
 			this->_shader.release();
-			V(W_FAILED, "loading vertex shader for model: " + this->_model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"loading vertex shader for model: {} . graphics device: {} . trace info: {}",
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 
@@ -949,7 +995,10 @@ private:
 		if (_hr == W_FAILED)
 		{
 			this->_shader.release();
-			V(W_FAILED, "loading fragment shader for model: " + this->_model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"loading fragment shader for model: {} . graphics device: {} . trace info: {}",
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 
@@ -967,7 +1016,10 @@ private:
 			if (_hr == W_FAILED)
 			{
 				this->_shader.release();
-				V(W_FAILED, "loading vertex shader instance uniform for model: " + this->_model_name, _trace_info, 2);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"loading vertex shader instance uniform for model: {} . graphics device: {} . trace info: {}",
+					this->_model_name, _gDevice->get_info(), _trace_info);
 				return W_FAILED;
 			}
 			_shader_param.buffer_info = this->_instance_u0.get_descriptor_info();
@@ -978,7 +1030,10 @@ private:
 			if (_hr == W_FAILED)
 			{
 				this->_shader.release();
-				V(W_FAILED, "loading vertex shader basic uniform for model: " + this->_model_name, _trace_info, 2);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"loading vertex shader basic uniform for model: {} . graphics device: {} . trace info: {}",
+					this->_model_name, _gDevice->get_info(), _trace_info);
 				return W_FAILED;
 			}
 			_shader_param.buffer_info = this->_basic_u0.get_descriptor_info();
@@ -997,7 +1052,10 @@ private:
 		if (_hr == W_FAILED)
 		{
 			this->_shader.release();
-			V(W_FAILED, "loading fragment shader uniform for model: " + this->_model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"loading fragment shader uniform for model: {} . graphics device: {} . trace info: {}",
+				this->_model_name, _gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 		_shader_param.index = 2;
@@ -1011,7 +1069,10 @@ private:
 		if (_hr == W_FAILED)
 		{
 			this->_shader.release();
-			V(W_FAILED, "setting shader binding param for model: " + this->_model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"setting shader binding param for model: {} . graphics device: {} . trace info: {}",
+				this->_model_name, _gDevice->get_info(), _trace_info);
 		}
 		_shader_params.clear();
 

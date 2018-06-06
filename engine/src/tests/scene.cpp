@@ -291,17 +291,6 @@ void scene::load()
 
     w_media_core::register_all(true);
 
-	_media_core.open_stream_client_async("rtsp://127.0.0.1:8554/live.sdp",
-		"rtsp",
-		AV_CODEC_ID_H264,
-		60,
-		AV_PIX_FMT_YUV420P,
-		W,
-		H,
-		_connection_established,
-		_filling_stream_frame_buffer,
-		_connection_lost);
-
     //_media_core.open_stream_server_async(
     //    "rtsp://172.16.4.207:8554/live.sdp",//"rtsp://172.16.5.11:8554/live.sdp",
     //    "rtsp", 

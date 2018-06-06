@@ -34,7 +34,7 @@ static void release()
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	UNIQUE_RELEASE(sScene);
-	release_shared_data_over_all_instances();
+	release_heap_data();
 }
 
 //Entry point of program 
@@ -75,7 +75,18 @@ WOLF_MAIN()
 
 	//Initialize scene & window
 	auto _running_dir = wolf::system::io::get_current_directoryW();
-	sScene = make_unique<scene>(_running_dir, L"wolf.vulkan.sample");
+	std::wstring _content_path;
+#if defined(__WIN32) || defined(__UWP)
+	_content_path = _running_dir + L"../../../../content/";
+#elif defined(__APPLE__)
+	_content_path = _running_dir + L"/../../../../../content/";
+#elif defined(__linux)
+	error
+#elif defined(__ANDROID)
+	error
+#endif
+
+	sScene = make_unique<scene>(_content_path, _running_dir, L"wolf.vulkan.sample");
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
@@ -182,8 +193,7 @@ WOLF_MAIN()
 
 	//release all
 	_windows_info.clear();
-	//output a message to the log file
-	logger.write(L"Shutting down Wolf");
+
 	release();
 
 	//exit

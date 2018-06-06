@@ -69,7 +69,7 @@ namespace wolf
             struct w_stream_frame_info
             {
 				uint8_t*		pixels = nullptr;
-				int				stride = 3;
+				uint32_t		stride = 3;
                 uint32_t        width = 0;
                 uint32_t        height = 0;
                 long long       index = 0;
@@ -91,7 +91,7 @@ namespace wolf
             WMC_EXP W_RESULT open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t pSeekToFrame = 0);
 
             /*
-                Open a stream server in async mode
+                Open a stream server
                 This function will wait for client to make a connection
                 For testing, use ffplay, e.g. ./ffplay -rtsp_flags listen -i rtsp://127.0.0.1:8554/live.sdp
                 @param pURL, the connection url
@@ -105,7 +105,7 @@ namespace wolf
                 @param pOnFillingVideoFrameBuffer, rised for each filling video frame buffer. The argument is w_stream_frame_info
                 @param pOnConnectionLost, rised when connection lost. The argument is w_stream_connection_info
             */
-            WMC_EXP void open_stream_server_async(
+            WMC_EXP void open_stream_server(
                 _In_z_ const char* pURL,
                 _In_z_ const char* pFormatName,
                 _In_ const AVCodecID& pCodecID,
@@ -118,13 +118,12 @@ namespace wolf
                 _In_ system::w_signal<void(const char*)>& pOnConnectionLost);
 
 			/*
-				Open a stream client in async mode
+				Open a stream client
 				This function will wait for client to make a connection
 				For testing, use ffplay, e.g. ./ffplay -rtsp_flags listen -i rtsp://127.0.0.1:8554/live.sdp
 				@param pURL, the connection url
 				@param pFormatName, format of streaming, e.g. "rtsp", "udp"
 				@param pCodecID, codec of streaming, e.g. "AV_CODEC_ID_H264"
-				@param pFrameRate, streaming frame rate, e.g. "25", "60"
 				@param pPixelFormat, streaming pixel format, e.g. "AV_PIX_FMT_YUV420P"
 				@param pWidth, frame width
 				@param pHeight, frame height
@@ -132,17 +131,18 @@ namespace wolf
 				@param pOnGettingStreamVideoFrame, rised for each filling video frame buffer. The argument is w_stream_frame_info
 				@param pOnConnectionLost, rised when connection lost. The argument is w_stream_connection_info
 			*/
-			WMC_EXP void open_stream_client_async(
+			WMC_EXP void open_stream_client(
 				_In_z_ const char* pURL,
 				_In_z_ const char* pFormatName,
 				_In_ const AVCodecID& pCodecID,
-				_In_ const int64_t& pFrameRate,
 				_In_ const AVPixelFormat& pPixelFormat,
 				_In_ const uint32_t& pWidth,
 				_In_ const uint32_t& pHeight,
+				_In_ const long long& pTimeOut,
 				_In_ system::w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
 				_In_ system::w_signal<void(const w_stream_frame_info&)>& pOnGettingStreamVideoFrame,
-				_In_ system::w_signal<void(const char*)>& pOnConnectionLost);
+				_In_ system::w_signal<void(const char*)>& pOnConnectionLost,
+				_In_ system::w_signal<void(const char*)>& pOnConnectionClosed);
 
 			//Convert specific milliseconds to frame number
             WMC_EXP int64_t time_to_frame(int64_t pMilliSecond);

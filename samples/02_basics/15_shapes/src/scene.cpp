@@ -15,7 +15,7 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
     w_game(pContentPath, pLogPath, pAppName)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = true;
+	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
 
 	w_game::set_fixed_time_step(false);
@@ -82,23 +82,32 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating render pass. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
     //create semaphore
     _hr = this->_draw_semaphore.initialize(_gDevice);
-    if (_hr == W_FAILED)
-    {
-        release();
-        V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
-    }
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw semaphore. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
 
     //Fence for syncing
     _hr = this->_draw_fence.initialize(_gDevice);
     if (_hr == W_FAILED)
     {
         release();
-        V(W_FAILED, "creating draw fence", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw fence. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
     }
 
 	//load imgui
@@ -112,11 +121,14 @@ void scene::load()
     //create two primary command buffers for clearing screen
     auto _swap_chain_image_size = _output_window->swap_chain_image_views.size();
     _hr = this->_draw_command_buffers.load(_gDevice, _swap_chain_image_size);
-    if (_hr == W_FAILED)
-    {
-        release();
-        V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
-    }
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw command buffers. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
 	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
@@ -130,13 +142,19 @@ void scene::load()
 	if (!this->_shape_line)
 	{
 		release();
-		V(W_FAILED, "allocating memory for shape(line)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape(line). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	_hr = this->_shape_line->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading shape(line)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading shape(line). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//Add Triangle
@@ -148,13 +166,19 @@ void scene::load()
 	if (!this->_shape_triangle)
 	{
 		release();
-		V(W_FAILED, "allocating memory for shape(triangle)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape(triangle). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	_hr = this->_shape_triangle->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading shape(triangle)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading shape(triangle). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//Add Circle
@@ -167,13 +191,19 @@ void scene::load()
 	if (!this->_shape_circle)
 	{
 		release();
-		V(W_FAILED, "allocating memory for shape(circle)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape(circle). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	_hr = this->_shape_circle->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading shape(circle)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading shape(circle). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//Add Bounding Box
@@ -191,13 +221,19 @@ void scene::load()
 	if (!this->_shape_box)
 	{
 		release();
-		V(W_FAILED, "allocating memory for shape(box)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape(box). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	_hr = this->_shape_box->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading shape(box)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading shape(box). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
 	//Add Bounding Sphere
@@ -214,13 +250,19 @@ void scene::load()
 	if (!this->_shape_sphere)
 	{
 		release();
-		V(W_FAILED, "allocating memory for shape(sphere)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape(sphere). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	_hr = this->_shape_sphere->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading shape(sphere)", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading shape(sphere). graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -341,7 +383,11 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"submiting queue for drawing. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 	this->_draw_fence.wait();
 
