@@ -1635,7 +1635,10 @@ W_RESULT model_mesh::_create_shader_modules(
 		std::wstring _compute_shader_path;
 		if (_prepare_cs_path_uniform_based_on_local_size(_shader_param, _compute_shader_path) == W_FAILED)
 		{
-			V(W_FAILED, "getting compute shader uniform and filename path for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"getting compute shader uniform and filename path for model: {}. graphics device: {} . trace info: {}",
+				this->model_name, this->gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 		_shader_params.push_back(_shader_param);
@@ -1666,7 +1669,10 @@ W_RESULT model_mesh::_create_shader_modules(
 			false,
 			&this->_shader) == W_FAILED)
 		{
-			V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading shader module for model: {}. graphics device: {} . trace info: {}",
+				this->model_name, this->gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 	}
@@ -1686,7 +1692,10 @@ W_RESULT model_mesh::_create_shader_modules(
 			false,
 			&this->_shader) == W_FAILED)
 		{
-			V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading shader module for model: {}. graphics device: {} . trace info: {}",
+				this->model_name, this->gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 	}
@@ -1694,7 +1703,10 @@ W_RESULT model_mesh::_create_shader_modules(
 	_hr = this->_shader->set_shader_binding_params(_shader_params);
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "setting shader binding param for model: " + this->model_name, _trace_info, 3);
+		V(_hr,
+			w_log_type::W_ERROR,
+			"setting shader binding param for model: {}. graphics device: {} . trace info: {}",
+			this->model_name, this->gDevice->get_info(), _trace_info);
 		return W_FAILED;
 	}
 	_shader_params.clear();
@@ -1717,7 +1729,10 @@ W_RESULT model_mesh::_create_pipelines(
 		{ pRenderPass.get_viewport() },
 		{ pRenderPass.get_viewport_scissor() }) == W_FAILED)
 	{
-		V(W_FAILED, "loading drawing pipeline for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading drawing pipeline for model: {}. graphics device: {} . trace info: {}",
+			this->model_name, this->gDevice->get_info(), _trace_info);
 		return W_FAILED;
 	}
 
@@ -1730,7 +1745,10 @@ W_RESULT model_mesh::_create_pipelines(
 			5,
 			pComputePipelineCacheName) == W_FAILED)
 		{
-			V(W_FAILED, "loading computing pipeline for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"loading computing pipeline for model: {}. graphics device: {} . trace info: {}",
+				this->model_name, this->gDevice->get_info(), _trace_info);
 			return W_FAILED;
 		}
 	}
@@ -1881,7 +1899,10 @@ void model_mesh::set_view_projection_position(
 		auto _hr = this->_instance_u0.update();
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "updating instance uniform ViewProjection for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"updating instance uniform ViewProjection for model: {}. graphics device: {} . trace info: {}",
+				this->model_name, this->gDevice->get_info(), _trace_info);
 		}
 	}
 	else
@@ -1898,7 +1919,10 @@ void model_mesh::set_view_projection_position(
 		auto _hr = this->_basic_u0.update();
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "updating basic uniform ViewProjection for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"updating basic uniform ViewProjection for model: {}. graphics device: {} . trace info: {}",
+				this->model_name, this->gDevice->get_info(), _trace_info);
 		}
 	}
 }
@@ -1911,7 +1935,10 @@ void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
 	auto _hr = this->_u2.update();
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "updating uniform u2(cmds) for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"updating uniform u2(cmds) for model: {}. graphics device: {} . trace info: {}",
+			this->model_name, this->gDevice->get_info(), _trace_info);
 	}
 }
 

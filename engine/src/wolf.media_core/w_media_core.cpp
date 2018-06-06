@@ -369,6 +369,7 @@ namespace wolf
 
 			W_RESULT open_stream_server(
 				_In_z_ const char* pURL,
+				_In_z_ const char* pProtocol,
 				_In_z_ const char* pFormatName,
 				_In_ const AVCodecID& pCodecID,
 				_In_ const int64_t& pFrameRate,
@@ -439,8 +440,7 @@ namespace wolf
 				}
 
 				AVDictionary* _av_dic = NULL; // "create" an empty dictionary
-				//av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
-				//av_dict_set(&_av_dic, "rtsp_transport", "udp", 0); // add an entry
+				av_dict_set(&_av_dic, "rtsp_transport", pProtocol, 0); // add an entry
 				av_dict_set(&_av_dic, "timeout", "-1", 0); // add an entry
 
 				AVPicture  _stream_dst_picture = {};
@@ -620,6 +620,7 @@ namespace wolf
 
 			W_RESULT open_stream_client(
 				_In_z_ const char* pURL,
+				_In_z_ const char* pProtocol,
 				_In_z_ const char* pFormatName,
 				_In_ const AVCodecID& pCodecID,
 				_In_ const AVPixelFormat& pPixelFormat,
@@ -640,6 +641,7 @@ namespace wolf
 				if (_fromat_str == "rtsp")
 				{
 					av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
+					av_dict_set(&_av_dic, "rtsp_transport", pProtocol, 0); // add an entry
 				}
 
 				AVFormatContext* _stream_in_format_ctx = avformat_alloc_context();
@@ -1795,6 +1797,7 @@ W_RESULT w_media_core::open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t p
 
 W_RESULT w_media_core::open_stream_server(
 	_In_z_ const char* pURL,
+	_In_z_ const char* pProtocol,
 	_In_z_ const char* pFormatName,
 	_In_ const AVCodecID& pCodecID,
 	_In_ const int64_t& pFrameRate,
@@ -1809,6 +1812,7 @@ W_RESULT w_media_core::open_stream_server(
 
 	return this->_pimp->open_stream_server(
 		pURL,
+		pProtocol,
 		pFormatName,
 		pCodecID,
 		pFrameRate,
@@ -1822,6 +1826,7 @@ W_RESULT w_media_core::open_stream_server(
 
 W_RESULT w_media_core::open_stream_client(
 	_In_z_ const char* pURL,
+	_In_z_ const char* pProtocol,
 	_In_z_ const char* pFormatName,
 	_In_ const AVCodecID& pCodecID,
 	_In_ const AVPixelFormat& pPixelFormat,
@@ -1837,6 +1842,7 @@ W_RESULT w_media_core::open_stream_client(
 
 	return this->_pimp->open_stream_client(
 		pURL,
+		pProtocol,
 		pFormatName,
 		pCodecID,
 		pPixelFormat,

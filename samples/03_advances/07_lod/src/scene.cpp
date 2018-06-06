@@ -286,7 +286,9 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 
 				if (!_model)
 				{
-					V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
+					V(W_FAILED, 
+						w_log_type::W_WARNING,
+						"allocating memory for model: {}. trace info: {}", _m->get_name(), _trace_info);
 					continue;
 				}
 
@@ -294,7 +296,9 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 				_hr = _model->initialize();
 				if (_hr == W_FAILED)
 				{
-					V(W_FAILED, "initializing model: " + _m->get_name(), _trace_info, 2);
+					V(W_FAILED,
+						w_log_type::W_WARNING,
+						"initializing model: {}. trace info: {}", _m->get_name(), _trace_info);
 					continue;
 				}
 				else
@@ -308,7 +312,9 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 						this->_draw_render_pass);
 					if (_hr == W_FAILED)
 					{
-						V(W_FAILED, "loading model: " + _m->get_name(), _trace_info, 2);
+						V(W_FAILED,
+							w_log_type::W_WARNING,
+							"loading model: {}. trace info: {}", _m->get_name(), _trace_info);
 						continue;
 					}
 				}
@@ -631,7 +637,7 @@ void scene::_show_floating_debug_window()
 		return;
 	}
 
-	ImGui::Text("Press \"Esc\" to exit\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
+	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec);
@@ -950,7 +956,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 						//The Ref
 						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
 						auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
-						if (ImGui::IsMouseDoubleClicked(0))
+						if (ImGui::IsItemClicked(1))
 						{
 							this->_current_selected_model = _model;
 
@@ -972,7 +978,7 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 						for (auto& _ins : _model->get_instances())
 						{
 							ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
-							if (ImGui::IsMouseDoubleClicked(0))
+							if (ImGui::IsItemClicked(1))
 							{
 								//on right click, focus on object
 								_b_sphere.center[0] = _ins.position[0];

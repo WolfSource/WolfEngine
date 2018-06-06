@@ -95,6 +95,7 @@ namespace wolf
                 This function will wait for client to make a connection
                 For testing, use ffplay, e.g. ./ffplay -rtsp_flags listen -i rtsp://127.0.0.1:8554/live.sdp
                 @param pURL, the connection url
+				@param pProtocol, "tcp" or "udp"
                 @param pFormatName, format of streaming, e.g. "rtsp", "udp"
                 @param pCodecID, codec of streaming, e.g. "AV_CODEC_ID_H264"
                 @param pFrameRate, streaming frame rate, e.g. "25", "60"
@@ -107,6 +108,7 @@ namespace wolf
             */
             WMC_EXP W_RESULT open_stream_server(
                 _In_z_ const char* pURL,
+				_In_z_ const char* pProtocol,
                 _In_z_ const char* pFormatName,
                 _In_ const AVCodecID& pCodecID,
                 _In_ const int64_t& pFrameRate,
@@ -122,6 +124,7 @@ namespace wolf
 				This function will wait for client to make a connection
 				For testing, use ffplay, e.g. ./ffplay -rtsp_flags listen -i rtsp://127.0.0.1:8554/live.sdp
 				@param pURL, the connection url
+				@param pProtocol, "tcp" or "udp"
 				@param pFormatName, format of streaming, e.g. "rtsp", "udp"
 				@param pCodecID, codec of streaming, e.g. "AV_CODEC_ID_H264"
 				@param pPixelFormat, streaming pixel format, e.g. "AV_PIX_FMT_YUV420P"
@@ -133,6 +136,7 @@ namespace wolf
 			*/
 			WMC_EXP W_RESULT open_stream_client(
 				_In_z_ const char* pURL,
+				_In_z_ const char* pProtocol,
 				_In_z_ const char* pFormatName,
 				_In_ const AVCodecID& pCodecID,
 				_In_ const AVPixelFormat& pPixelFormat,
