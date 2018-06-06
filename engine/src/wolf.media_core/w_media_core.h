@@ -105,7 +105,7 @@ namespace wolf
                 @param pOnFillingVideoFrameBuffer, rised for each filling video frame buffer. The argument is w_stream_frame_info
                 @param pOnConnectionLost, rised when connection lost. The argument is w_stream_connection_info
             */
-            WMC_EXP void open_stream_server(
+            WMC_EXP W_RESULT open_stream_server(
                 _In_z_ const char* pURL,
                 _In_z_ const char* pFormatName,
                 _In_ const AVCodecID& pCodecID,
@@ -131,7 +131,7 @@ namespace wolf
 				@param pOnGettingStreamVideoFrame, rised for each filling video frame buffer. The argument is w_stream_frame_info
 				@param pOnConnectionLost, rised when connection lost. The argument is w_stream_connection_info
 			*/
-			WMC_EXP void open_stream_client(
+			WMC_EXP W_RESULT open_stream_client(
 				_In_z_ const char* pURL,
 				_In_z_ const char* pFormatName,
 				_In_ const AVCodecID& pCodecID,

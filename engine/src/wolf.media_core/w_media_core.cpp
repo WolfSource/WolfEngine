@@ -64,8 +64,6 @@ namespace wolf
 				_stream_out_frame(nullptr),
                 _frame_max_delay_in_ms(1000)
             {
-                this->_name = "w_ffmpeg";
-
                 std::memset(&this->_video_codec, 0, sizeof(w_codec));
                 std::memset(&this->_audio_codec, 0, sizeof(w_codec));
 
@@ -442,7 +440,7 @@ namespace wolf
 
 				AVDictionary* _av_dic = NULL; // "create" an empty dictionary
 				//av_dict_set(&_av_dic, "rtsp_flags", "listen", 0); // add an entry
-				av_dict_set(&_av_dic, "rtsp_transport", "udp", 0); // add an entry
+				//av_dict_set(&_av_dic, "rtsp_transport", "udp", 0); // add an entry
 				av_dict_set(&_av_dic, "timeout", "-1", 0); // add an entry
 
 				AVPicture  _stream_dst_picture = {};
@@ -490,7 +488,7 @@ namespace wolf
 					}
 				}
 
-				if (avformat_write_header(this->_stream_out_ctx, NULL) != 0)
+				if (avformat_write_header(this->_stream_out_ctx, NULL) < 0)
 				{
 					V(W_FAILED, w_log_type::W_ERROR,
 						"connecting to output stream server {}. trace info: {}", pURL, _trace_info);
@@ -646,7 +644,7 @@ namespace wolf
 
 				AVFormatContext* _stream_in_format_ctx = avformat_alloc_context();
 				//create an input context
-				if (avformat_open_input(&_stream_in_format_ctx, pURL, NULL, &_av_dic) != 0)
+				if (avformat_open_input(&_stream_in_format_ctx, pURL, NULL, &_av_dic) < 0)
 				{
 					V(W_FAILED, w_log_type::W_ERROR,
 						"openning context for input stream {}. trace info: {}", pURL, _trace_info);
@@ -1795,35 +1793,34 @@ W_RESULT w_media_core::open_media(_In_z_ std::wstring pMediaPath, _In_ int64_t p
     return this->_pimp ? this->_pimp->open_media(pMediaPath, pSeekToFrame) : W_FAILED;
 }
 
-void w_media_core::open_stream_server(
-    _In_z_ const char* pURL,
-    _In_z_ const char* pFormatName,
-    _In_ const AVCodecID& pCodecID,
-    _In_ const int64_t& pFrameRate,
-    _In_ const AVPixelFormat& pPixelFormat,
-    _In_ const uint32_t& pWidth,
-    _In_ const uint32_t& pHeight,
-    _In_ w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
-    _In_ w_signal<void(const w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
-    _In_ w_signal<void(const char*)>& pOnConnectionLost)
+W_RESULT w_media_core::open_stream_server(
+	_In_z_ const char* pURL,
+	_In_z_ const char* pFormatName,
+	_In_ const AVCodecID& pCodecID,
+	_In_ const int64_t& pFrameRate,
+	_In_ const AVPixelFormat& pPixelFormat,
+	_In_ const uint32_t& pWidth,
+	_In_ const uint32_t& pHeight,
+	_In_ w_signal<void(const w_stream_connection_info&)>& pOnConnectionEstablished,
+	_In_ w_signal<void(const w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
+	_In_ w_signal<void(const char*)>& pOnConnectionLost)
 {
-    if (this->_pimp)
-    {
-        this->_pimp->open_stream_server(
-            pURL,
-            pFormatName,
-            pCodecID,
-            pFrameRate,
-            pPixelFormat,
-            pWidth,
-            pHeight,
-            pOnConnectionEstablished,
-            pOnFillingVideoFrameBuffer,
-            pOnConnectionLost);
-    }
+	if (!this->_pimp) return W_FAILED;
+
+	return this->_pimp->open_stream_server(
+		pURL,
+		pFormatName,
+		pCodecID,
+		pFrameRate,
+		pPixelFormat,
+		pWidth,
+		pHeight,
+		pOnConnectionEstablished,
+		pOnFillingVideoFrameBuffer,
+		pOnConnectionLost);
 }
 
-void w_media_core::open_stream_client(
+W_RESULT w_media_core::open_stream_client(
 	_In_z_ const char* pURL,
 	_In_z_ const char* pFormatName,
 	_In_ const AVCodecID& pCodecID,
@@ -1836,21 +1833,20 @@ void w_media_core::open_stream_client(
 	_In_ w_signal<void(const char*)>& pOnConnectionLost,
 	_In_ w_signal<void(const char*)>& pOnConnectionClosed)
 {
-	if (this->_pimp)
-	{
-		this->_pimp->open_stream_client(
-			pURL,
-			pFormatName,
-			pCodecID,
-			pPixelFormat,
-			pWidth,
-			pHeight,
-			pTimeOut,
-			pOnConnectionEstablished,
-			pOnGettingStreamVideoFrame,
-			pOnConnectionLost,
-			pOnConnectionClosed);
-	}
+	if (!this->_pimp) return W_FAILED;
+
+	return this->_pimp->open_stream_client(
+		pURL,
+		pFormatName,
+		pCodecID,
+		pPixelFormat,
+		pWidth,
+		pHeight,
+		pTimeOut,
+		pOnConnectionEstablished,
+		pOnGettingStreamVideoFrame,
+		pOnConnectionLost,
+		pOnConnectionClosed);
 }
 
 int64_t w_media_core::time_to_frame(int64_t pMilliSecond)
