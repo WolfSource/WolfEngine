@@ -119,6 +119,7 @@ bool w_process::check_for_number_of_running_instances_from_process(_In_z_ const 
 w_process_info* w_process::create_process(
 	_In_z_ const wchar_t* pPathtoProcess, 
 	_In_z_ const wchar_t* pCmdsArg, 
+	_In_z_ const wchar_t* pCurrentDirectoryPath,
 	_In_  const unsigned long pWaitAfterRunningProcess)
 {
 	STARTUPINFO _startup_info;
@@ -135,7 +136,7 @@ w_process_info* w_process::create_process(
 		FALSE,
 		0,
 		NULL,
-		NULL,
+		pCurrentDirectoryPath,
 		&_startup_info,
 		&_process_info))
 	{
