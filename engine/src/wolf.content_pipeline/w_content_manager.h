@@ -78,46 +78,12 @@ namespace wolf
 					else
 					{
 						return assimp::w_assimp::load(
-                                                      pAssetPath,
-                                                      pOptimizeMeshUsingAMDTootle
+							pAssetPath,
+							pOptimizeMeshUsingAMDTootle
 #ifdef __WIN32
-                                                      ,pGenerateLODUsingSimplygon
+							, pGenerateLODUsingSimplygon
 #endif
-                                                      );
-
-
-
-
-
-
-
-						//						if (_extension == L".dae")
-						//						{
-						//							//load scene from collada file
-						//							auto _scene = new w_cpipeline_scene();
-						//							_scene->set_name(_name);
-						//
-						//							collada::c_parser _parser;
-						//							auto _hr = _parser.parse_collada_from_file(pAssetPath,
-						//								_scene,
-						//								true,
-						//#ifdef __WIN32
-						//								true,
-						//#endif
-						//								true,
-						//								true);
-						//
-						//							_extension.clear();
-						//							_name.clear();
-						//							_type.clear();
-						//
-						//							if (_hr == W_PASSED)
-						//							{
-						//								return _scene;
-						//							}
-						//
-						//							SAFE_RELEASE(_scene);
-						//						}
+						);
 					}
 				}
 				logger.error(L"Type not supported for {}", pAssetPath);

@@ -134,8 +134,8 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\simplygon.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDK.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\SimplygonSDKLoader.h" />
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\tiny_obj_loader.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\tiny_obj_loader.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_camera.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_content_manager.h" />
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_cpipeline_export.h" />

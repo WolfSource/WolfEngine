@@ -79,12 +79,12 @@ W_RESULT simplygon::initialize(_In_z_ const std::wstring& pSimplygonSDKPath)
 	return W_PASSED;
 }
 
-W_RESULT simplygon::remeshing(
-	_Inout_ SimplygonSDK::CountedPointer<SimplygonSDK::IScene>& pOutScene,
-	_In_	SimplygonSDK::CountedPointer<SimplygonSDK::IScene>& pInScene,
-	_In_z_	const TangentSpaceMethod& pTangentSpaceMethod)
+W_RESULT simplygon::generate_lod(
+		_Inout_ SimplygonSDK::CountedPointer<SimplygonSDK::IScene>& pOutScene,
+		_In_ SimplygonSDK::CountedPointer<SimplygonSDK::IScene>& pInScene,
+		_In_z_ const SimplygonSDK::TangentSpaceMethod& pTangentSpaceMethod)
 {
-	const char* _trace_info = "simplygon::remeshing";
+	const char* _trace_info = "simplygon::generate_lod";
 
 	bool _error = false;
 
@@ -205,12 +205,6 @@ W_RESULT simplygon::remeshing(
 
 	//Run the simplygon process
 	_processor->RunProcessing();
-
-	//test
-	//if (obj_writer(L"C:\\Wolf\\A.obj", pOutScene) == W_FAILED)
-	//{
-	//	logger.error("EEEEEEE");
-	//}
 
 exit_func:
 

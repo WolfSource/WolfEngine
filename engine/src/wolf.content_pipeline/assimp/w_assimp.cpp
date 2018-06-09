@@ -2,6 +2,7 @@
 #include "w_assimp.h"
 
 #include <assimp/Importer.hpp>
+#include <assimp/Exporter.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
@@ -87,105 +88,213 @@ static void _iterate_node(_In_ const aiNode* pNode,
 #pragma region SIMPLYGON OPTIMIZING
 
 #ifdef __WIN32
-static void _generate_simpolygon_lod()
+
+static W_RESULT _generate_simpolygon_lod(_In_ aiMesh* pMesh)
 {
-//    bool _simplygon_initialized = W_PASSED;
-//            simplygon_mutex.lock();
-//            {
-//                std::call_once(do_init_simplygon_once_over_time, []()
-//                {
-//                    std::wstring _simplygon_sdk;
-//#ifdef _DEBUG
-//                    //get simplygon SDK from dependencies\\simplygon
-//                    _simplygon_sdk = wolf::system::io::get_current_directoryW() + L"..\\..\\..\\..\\engine\\dependencies\\simplygon\\";
-//#else
-//                    //make sure copy simplygon sdk to execute directory
-//                    _simplygon_sdk = wolf::system::io::get_current_directoryW();
-//#endif
-//                    if (simplygon::initialize(_simplygon_sdk) == W_FAILED)
-//                    {
-//                        V(W_FAILED, "initializing simplygon SDK", "w_cpipeline_model::create_model", 3);
-//                    }
-//                });
-//            }
-//            simplygon_mutex.unlock();
-//
-//            if (simplygon::is_initialized)
-//            {
-//                auto _obj_name = system::convert::string_to_wstring(pGeometry.name);
-//                auto _obj_path_w = wolf::system::io::get_current_directoryW() + L"/" + _obj_name + L".obj";
-//                auto _obj_path = wolf::system::convert::wstring_to_string(_obj_path_w);
-//                auto _obj_remeshed_path_w = wolf::system::io::get_current_directoryW() + L"/" + _obj_name + L"_remeshed.obj";
-//                auto _obj_remeshed_mtl_path = wolf::system::io::get_current_directory() + "/" + pGeometry.name + "_remeshed.mtl";
-//                auto _obj_remeshed_path = wolf::system::convert::wstring_to_string(_obj_remeshed_path_w);
-//
-//                wavefront::obj::write(_vertices_data, _indices_data, _obj_path);
-//
-//                //Create a original simplygon scene from current vertices and indices
-//                auto _original_scene = simplygon::iSimplygonSDK->CreateScene();
-//                if (_original_scene)
-//                {
-//                    if (simplygon::obj_reader(_obj_path_w, _original_scene) == W_PASSED)
-//                    {
-//                        //call simplygon for remeshing this scene and copy results to remesh scene
-//                        auto _remesh_scene = simplygon::iSimplygonSDK->CreateScene();
-//                        if (_remesh_scene)
-//                        {
-//                            if (simplygon::remeshing(_remesh_scene, _original_scene) == W_PASSED)
-//                            {
-//                                if (simplygon::obj_writer(_obj_remeshed_path_w.c_str(), _remesh_scene) == W_PASSED)
-//                                {
-//                                    //delete mtl file before loading obj file
-//                                    system::io::delete_file(_obj_remeshed_mtl_path.c_str());
-//                                    if (wavefront::obj::read(
-//                                        _vertices_data,
-//                                        _indices_data,
-//                                        _vertices_positions,
-//                                        _obj_remeshed_path) == W_FAILED)
-//                                    {
-//                                        V(W_FAILED, "error on wavefront::obj::read " + pGeometry.name, _trace_info, 3);
-//                                    }
-//                                }
-//                                else
-//                                {
-//                                    V(W_FAILED, "error on simplygon::obj_writer " + pGeometry.name, _trace_info, 3);
-//                                }
-//                            }
-//                            else
-//                            {
-//                                V(W_FAILED, "error on simplygon::remeshing " + pGeometry.name , _trace_info, 3);
-//                            }
-//                        }
-//                        else
-//                        {
-//                            V(W_FAILED, "could not create remesh simplygon object scene for model: " + pGeometry.name, _trace_info, 3);
-//                        }
-//                    }
-//                    else
-//                    {
-//                        V(W_FAILED, "error on simplygon::create_obj_scene_from_data for model: " + pGeometry.name, _trace_info, 3);
-//                    }
-//                }
-//                else
-//                {
-//                    V(W_FAILED, "could not allocate memory for remesh simplygon object scene for model: " + pGeometry.name, _trace_info, 3);
-//                }
-//
-//                system::io::delete_file(_obj_path.c_str());
-//                system::io::delete_file(_obj_remeshed_path.c_str());
-//
-//                _obj_path.clear();
-//                _obj_path_w.clear();
-//
-//                _obj_name.clear();
-//                _obj_remeshed_path.clear();
-//                _obj_remeshed_path_w.clear();
-//                _obj_remeshed_mtl_path.clear();
-//            }
-//            else
-//            {
-//                V(W_FAILED, "could not initialize simplygon", _trace_info, 3);
-//            }
+	if (!simplygon::is_initialized || !pMesh) return W_FAILED;
+
+	//get name of mesh
+	auto _mesh_name = pMesh->mName.C_Str();
+
+	auto _assimp_exporter = new Assimp::Exporter();
+	if (!_assimp_exporter)
+	{
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"allocating memory for Assimp::Exporter {}. trace info: _generate_simpolygon_lod", _mesh_name);
+		return W_FAILED;
+	}
+
+	//create assimp scene from this model for saving as LOD
+	auto _src_model_scene = new aiScene();
+
+	//copy material
+	_src_model_scene->mMaterials = new aiMaterial*[1];
+	_src_model_scene->mMaterials[0] = nullptr;
+	_src_model_scene->mNumMaterials = 1;
+	_src_model_scene->mMaterials[0] = new aiMaterial();
+
+	//copy mesh
+	_src_model_scene->mMeshes = new aiMesh*[1];
+	_src_model_scene->mMeshes[0] = nullptr;
+	_src_model_scene->mNumMeshes = 1;
+
+	_src_model_scene->mMeshes[0] = new aiMesh();
+	//make a copy from mesh
+	std::memcpy(_src_model_scene->mMeshes[0], pMesh, sizeof(aiMesh));
+
+	_src_model_scene->mRootNode = new aiNode();
+	_src_model_scene->mRootNode->mMeshes = new unsigned int[1];
+	_src_model_scene->mRootNode->mNumMeshes = 1;
+	_src_model_scene->mRootNode->mMeshes[0] = 0;
+
+	//now store this mesh a single obj file
+	auto _current_dir = wolf::system::io::get_current_directory();
+	auto _obj_path = _current_dir + "/" + _src_model_scene->mMeshes[0]->mName.C_Str() + ".obj";
+
+	std::string _export_format_desc_id = "";
+	auto _export_format_count = _assimp_exporter->GetExportFormatCount();
+	//find obj
+	for (size_t i = 0; i < _export_format_count; ++i)
+	{
+		auto _desc = _assimp_exporter->GetExportFormatDescription(i);
+		if (strcmp(_desc->fileExtension, "obj") == 0)
+		{
+			_export_format_desc_id = _desc->id;
+			break;
+		}
+	}
+
+	auto _hr = aiReturn::aiReturn_FAILURE;
+	if (_export_format_desc_id.empty())
+	{
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			".obj exporter not found for assimp. trace info: _generate_simpolygon_lod");
+	}
+	else
+	{
+		_hr = _assimp_exporter->Export(
+			_src_model_scene,
+			_export_format_desc_id,
+			_obj_path.c_str());
+	}
+
+	//release resources
+	_export_format_desc_id.clear();
+	SAFE_DELETE_ARRAY(_src_model_scene->mMeshes);
+	SAFE_DELETE(_src_model_scene->mRootNode);
+	SAFE_DELETE(_src_model_scene);
+	SAFE_DELETE(_assimp_exporter);
+
+	if (_hr)
+	{
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"Error for exporting {}_lod with assimp. trace info: _generate_simpolygon_lod", _mesh_name);
+		return W_FAILED;
+	}
+
+	//Create a original simplygon scene from exported obj
+	auto _original_scene = simplygon::iSimplygonSDK->CreateScene();
+	if (!_original_scene)
+	{
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"could not allocate memory of source simplygon object scene for model: {}. trace info: _generate_simpolygon_lod", _mesh_name);
+		return W_FAILED;
+	}
+
+	auto _src_obj_path_w = wolf::system::convert::string_to_wstring(_obj_path);
+	if (simplygon::obj_reader(_src_obj_path_w, _original_scene))
+	{
+		//release original scene
+		_original_scene->Release();
+		_original_scene = nullptr;
+
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"simplygon could not read obj {} for generating lod. trace info: _generate_simpolygon_lod", _obj_path);
+		return W_FAILED;
+	}
+
+	//create output simplygon scene for storing lod
+	auto _lod_scene = simplygon::iSimplygonSDK->CreateScene();
+	if (!_lod_scene)
+	{
+		//release simplygon scenes
+		_original_scene->Release();
+		_original_scene = nullptr;
+
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"could not allocate memory of lod simplygon object scene for model: {}. trace info: _generate_simpolygon_lod",
+			_mesh_name);
+		return W_FAILED;
+	}
+
+	//generate lod
+	if (simplygon::generate_lod(_lod_scene, _original_scene))
+	{
+		//release simplygon scenes
+		_original_scene->Release();
+		_original_scene = nullptr;
+
+		_lod_scene->Release();
+		_lod_scene = nullptr;
+
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"could generate lod for model: {}. trace info: _generate_simpolygon_lod",
+			_mesh_name);
+		return W_FAILED;
+	}
+	auto _base_lod_path = _current_dir + "/" + _mesh_name;
+	auto _obj_lod_path = _base_lod_path + "_lod.obj";
+	auto _mtl_lod_path = _base_lod_path + "_lod.mtl";
+
+	auto _lod_path_w = wolf::system::convert::string_to_wstring(_obj_lod_path);
+
+	//save lod as obj file
+	if (simplygon::obj_writer(_lod_path_w.c_str(), _lod_scene))
+	{
+		//release simplygon scenes
+		_original_scene->Release();
+		_original_scene = nullptr;
+
+		_lod_scene->Release();
+		_lod_scene = nullptr;
+
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"could write lod obj to file for model: {}. trace info: _generate_simpolygon_lod",
+			_mesh_name);
+		return W_FAILED;
+	}
+
+	//delete mtl file before loading obj file
+	if (system::io::delete_file(_mtl_lod_path.c_str()))
+	{
+		V(W_FAILED, w_log_type::W_WARNING, "could not delete file {}. trace info: _generate_simpolygon_lod", _mtl_lod_path);
+	}
+
+	W_RESULT __hr = W_PASSED;
+	std::vector<w_vertex_struct> _lod_vertices_data;
+	std::vector<uint32_t> _lod_indices_data;
+	if (wavefront::obj::read(
+		_lod_vertices_data,
+		_lod_indices_data,
+		_obj_lod_path))
+	{
+		__hr = W_FAILED;
+		V(__hr, w_log_type::W_WARNING, "could not read obj lod file {}. trace info: _generate_simpolygon_lod", _obj_lod_path);
+	}
+
+	//delete 
+	if (system::io::delete_file(_obj_path.c_str()))
+	{
+		V(W_FAILED, w_log_type::W_WARNING, "could not delete file {}. trace info: _generate_simpolygon_lod", _obj_path);
+	}
+	if (system::io::delete_file(_obj_lod_path.c_str()))
+	{
+		V(W_FAILED, w_log_type::W_WARNING, "could not delete file {}. trace info: _generate_simpolygon_lod", _obj_lod_path);
+	}
+
+	//clear all resources
+	_obj_path.clear();
+	_base_lod_path.clear();
+	_obj_lod_path.clear();
+	_mtl_lod_path.clear();
+	_src_obj_path_w.clear();
+
+	//release simplygon scenes
+	_original_scene->Release();
+	_original_scene = nullptr;
+
+	_lod_scene->Release();
+	_lod_scene = nullptr;
+
+	return W_PASSED;
 }
 
 #endif
@@ -217,6 +326,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 		| aiProcess_MakeLeftHanded				// make left hand coordinate system
     ;
     
+	//first read 3d model file
 	auto _path = wolf::system::convert::wstring_to_string(pAssetPath);
 	auto _scene = _assimp_importer.ReadFile(_path.c_str(), _assimp_flags);
 	if (_scene)
@@ -227,10 +337,11 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
             return nullptr;
         }
         
-        
+		//convert scene model
         auto _scene_name = std::string(_scene->mRootNode->mName.C_Str());
         std::transform(_scene_name.begin(), _scene_name.end(), _scene_name.begin(), ::tolower);
-        
+		
+		//set the coordinate system
         w_coordinate_system _coordinate_system = w_coordinate_system::LEFT_HANDED;
         glm::vec3 _coordinate_system_up_vector = glm::vec3(0, 1, 0);
         if (_scene_name == "maxscene")
@@ -239,10 +350,11 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
             _coordinate_system_up_vector.x = 0; _coordinate_system_up_vector.y = 0; _coordinate_system_up_vector.z =1;
         }
         
+		//create wolf scene
         auto _w_scene = new w_cpipeline_scene(_coordinate_system, _coordinate_system_up_vector);
         _w_scene->set_name(_scene_name);
         
-        //add cameras
+        //load cameras
 		if (_scene->HasCameras())
 		{
             for (size_t i = 0; i < _scene->mNumCameras; ++i)
@@ -271,111 +383,136 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 //
 //        }
         
-        //add meshes
+        //load model meshes
         std::vector<w_cpipeline_mesh*> _model_meshes;
-        std::vector<float> _vertices_positions;
-        if (_scene->HasMeshes())
-        {
-            for (size_t i = 0; i < _scene->mNumMeshes; ++i)
-            {
-                //clear vertex positions
-                _vertices_positions.clear();
-                
-                auto _a_mesh = _scene->mMeshes[i];
-                if (_a_mesh)
-                {
-                    glm::vec3 _min_vertex;
-                    glm::vec3 _max_vertex;
-                    
-                    auto _w_mesh = new w_cpipeline_mesh();
-                    //create vertices
-                    for (size_t j = 0; j < _a_mesh->mNumVertices; ++j)
-                    {
-                        w_vertex_struct _w_vertex;
-                        
-                        auto _pos = _a_mesh->mVertices[j];
-                        auto _normal = _a_mesh->mNormals[j];
-                        auto _uv = _a_mesh->mTextureCoords[0][j];
-                        
-                        if(_coordinate_system == w_coordinate_system::RIGHT_HANDED)
-                        {
-                            _w_vertex.position[0] = _pos.x;
-                            if (_coordinate_system_up_vector.z == 1)
-                            {
-                                _w_vertex.position[1] = -_pos.z;
-                                _w_vertex.position[2] = _pos.y;
-                            }
-                            else
-                            {
-                                _w_vertex.position[1] = _pos.y;
-                                _w_vertex.position[2] = _pos.z;
-                            }
-                        }
-                        else
-                        {
-                            _w_vertex.position[0] = _pos.x;
-                            _w_vertex.position[1] = _pos.y;
-                            _w_vertex.position[2] = _pos.z;
-                        }
-                        
-                        _w_vertex.normal[0] = _normal.x;
-                        _w_vertex.normal[1] = _normal.y;
-                        _w_vertex.normal[2] = _normal.z;
-                        
-                        _w_vertex.uv[0] = _uv.x;
-                        _w_vertex.uv[1] = _uv.y;
-                        
-                        //add to vertices
-                        _w_mesh->vertices.push_back(_w_vertex);
-                        
-                        if (pOptimizeMeshUsingAMDTootle)
-                        {
-                            //store vertex positions
-                            _vertices_positions.push_back(_w_vertex.position[0]);
-                            _vertices_positions.push_back(_w_vertex.position[1]);
-                            _vertices_positions.push_back(_w_vertex.position[2]);
-                        }
-                        
-                        //check for minimum and maximum vertices for bounding boxes
-                        _min_vertex.x = std::min(_w_vertex.position[0], _min_vertex.x);
-                        _min_vertex.y = std::min(_w_vertex.position[1], _min_vertex.y);
-                        _min_vertex.z = std::min(_w_vertex.position[2], _min_vertex.z);
-                        
-                        _max_vertex.x = std::max(_w_vertex.position[0], _max_vertex.x);
-                        _max_vertex.y = std::max(_w_vertex.position[1], _max_vertex.y);
-                        _max_vertex.z = std::max(_w_vertex.position[2], _max_vertex.z);
-                    }
-                    
-                    // generate indices
-                    for (size_t f = 0; f < _a_mesh->mNumFaces; ++f)
-                    {
-                        for (size_t k = 0; k < 3; ++k)
-                        {
-                            _w_mesh->indices.push_back(_a_mesh->mFaces[f].mIndices[k]);
-                        }
-                    }
-                    
-                    //copy min and max to bounding box
-                    std::memcpy(&_w_mesh->bounding_box.min[0], &_min_vertex[0], 3 * sizeof(float));
-                    std::memcpy(&_w_mesh->bounding_box.max[0], &_max_vertex[0], 3 * sizeof(float));
-                    
+        
+		//std::vector<float> _vertices_positions;//we will use it for amd tootle
+		if (_scene->HasMeshes())
+		{
+			for (size_t i = 0; i < _scene->mNumMeshes; ++i)
+			{
+				//clear vertex positions
+				//_vertices_positions.clear();
+
+				//get each assimp meshe
+				auto _a_mesh = _scene->mMeshes[i];
+				if (_a_mesh)
+				{
+					glm::vec3 _min_vertex;
+					glm::vec3 _max_vertex;
+
+					//copy assimp mesh information to wolf mesh information
+					auto _w_mesh = new w_cpipeline_mesh();
+					for (size_t j = 0; j < _a_mesh->mNumVertices; ++j)
+					{
+						//create wolf vertex structure
+						w_vertex_struct _w_vertex;
+
+						//TODO: we need to support skinned model in next version
+
+						//modify vertices for right handed coordinate system
+						if (_coordinate_system == w_coordinate_system::RIGHT_HANDED)
+						{
+							if (_coordinate_system_up_vector.z == 1)
+							{
+								std::swap(_a_mesh->mVertices[j].z, _a_mesh->mVertices[j].y);
+								_a_mesh->mVertices[j].y *= -1;
+							}
+						}
+
+						auto _pos = _a_mesh->mVertices[j];
+						auto _normal = _a_mesh->mNormals[j];
+						auto _uv = _a_mesh->mTextureCoords[0][j];
+
+						//copy mesh
+						_w_vertex.position[0] = _pos.x;
+						_w_vertex.position[1] = _pos.y;
+						_w_vertex.position[2] = _pos.z;
+
+						//get normal
+						_w_vertex.normal[0] = _normal.x;
+						_w_vertex.normal[1] = _normal.y;
+						_w_vertex.normal[2] = _normal.z;
+
+						//get uv
+						_w_vertex.uv[0] = _uv.x;
+						_w_vertex.uv[1] = _uv.y;
+
+						//add to vertices
+						_w_mesh->vertices.push_back(_w_vertex);
+
+						//if (pOptimizeMeshUsingAMDTootle)
+						//{
+						//	//store vertex positions
+						//	_vertices_positions.push_back(_w_vertex.position[0]);
+						//	_vertices_positions.push_back(_w_vertex.position[1]);
+						//	_vertices_positions.push_back(_w_vertex.position[2]);
+						//}
+
+						//check for minimum and maximum vertices for bounding boxes
+						_min_vertex.x = std::min(_w_vertex.position[0], _min_vertex.x);
+						_min_vertex.y = std::min(_w_vertex.position[1], _min_vertex.y);
+						_min_vertex.z = std::min(_w_vertex.position[2], _min_vertex.z);
+
+						_max_vertex.x = std::max(_w_vertex.position[0], _max_vertex.x);
+						_max_vertex.y = std::max(_w_vertex.position[1], _max_vertex.y);
+						_max_vertex.z = std::max(_w_vertex.position[2], _max_vertex.z);
+					}
+
+					// generate indices
+					for (size_t f = 0; f < _a_mesh->mNumFaces; ++f)
+					{
+						for (size_t k = 0; k < 3; ++k)
+						{
+							_w_mesh->indices.push_back(_a_mesh->mFaces[f].mIndices[k]);
+						}
+					}
+
+					//copy min and max to bounding box
+					std::memcpy(&_w_mesh->bounding_box.min[0], &_min_vertex[0], 3 * sizeof(float));
+					std::memcpy(&_w_mesh->bounding_box.max[0], &_max_vertex[0], 3 * sizeof(float));
+
 #ifdef __WIN32
-                    if (pGenerateLODUsingSimplygon)
-                    {
-                        
-                    }
+					if (pGenerateLODUsingSimplygon)
+					{
+						//first initialize simpolygon 
+						simplygon_mutex.lock();
+						{
+							std::call_once(do_init_simplygon_once_over_time, []()
+							{
+								std::wstring _simplygon_sdk;
+#ifdef _DEBUG
+								//get simplygon SDK from dependencies\\simplygon
+								_simplygon_sdk = wolf::system::io::get_current_directoryW() + L"..\\..\\..\\..\\engine\\dependencies\\simplygon\\";
+#else
+								//make sure copy simplygon sdk to execute directory
+								_simplygon_sdk = wolf::system::io::get_current_directoryW();
 #endif
-                    
-                    //apply amd tootle to it
-                    if (pOptimizeMeshUsingAMDTootle)
-                    {
-                        //amd::tootle::apply(_w_mesh->vertices, _vertices_positions, _w_mesh->indices);
-                    }
-                    
-                    _model_meshes.push_back(_w_mesh);
-                }
-            }
-        }
+								if (simplygon::initialize(_simplygon_sdk) == W_FAILED)
+								{
+									V(W_FAILED,
+										w_log_type::W_ERROR,
+										"could not initialize simplygon SDK. trace infor : {}", "w_cpipeline_model::_generate_simpolygon_lod");
+								}
+							});
+						}
+						simplygon_mutex.unlock();
+
+						//we will create automatic LOD for the model
+						_generate_simpolygon_lod(_a_mesh);
+					}
+#endif
+					//apply amd tootle to it
+					//if (pOptimizeMeshUsingAMDTootle)
+					//{
+						//amd::tootle::apply(_w_mesh->vertices, _vertices_positions, _w_mesh->indices);
+					//}
+
+					//add this mesh to others
+					_model_meshes.push_back(_w_mesh);
+				}
+			}
+		}
 
         //finally iterate over all nodes to find models and instances
         _iterate_node(_scene->mRootNode, _model_meshes, &_w_scene);

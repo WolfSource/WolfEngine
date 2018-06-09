@@ -1,4 +1,5 @@
 # ToDos
+- Dynamic lod creator
 - Forward+
 - DirectX 12
 - Realtime Raytracing

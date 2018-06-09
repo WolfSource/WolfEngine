@@ -27,6 +27,10 @@ int main()
 	_content_path_dir += "/../../../../../content/";
 #endif // WIN32
 
+	logger.initialize(L"05_convert_to_wscene.Win32", wolf::system::convert::string_to_wstring(_content_path_dir));
+	//log to output file
+	logger.write(L"Wolf initialized");
+
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -50,27 +54,33 @@ int main()
 		if (_scene)
 		{
 			printf("start converting: %s\r\n", _c_str);
+			logger.write("start converting: {}", _c_str);
 			std::vector<w_cpipeline_scene> _scene_packs = { *_scene };
             
             auto _out_path = wolf::system::convert::string_to_wstring(_dir + _base_name + ".wscene");
 			if (w_content_manager::save_wolf_scenes_to_file(_scene_packs, _out_path) == W_PASSED)
 			{
 				printf("scene %s converted\r\n", _c_str);
+				logger.write("scene {} converted", _c_str);
 			}
 			else
 			{
 				printf("error on converting %s\r\n", _c_str);
+				logger.write("error on converting {}", _c_str);
 			}
 			_scene->release();
 		}
 		else
 		{
 			printf("file %s not exists\r\n", _c_str);
+			logger.write("file {} not exists", _c_str);
 		}
 	}
 	w_content_manager::release();	
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    return 0;
+	release_heap_data();
+
+    return EXIT_SUCCESS;
 }

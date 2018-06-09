@@ -34,7 +34,7 @@ namespace wolf
 				static W_RESULT read(
 					_Inout_ std::vector<w_vertex_struct>& pVerticesData,
 					_Inout_ std::vector<uint32_t>& pIndicesData,
-					_Inout_ std::vector<float>& pJustVertexPosition,
+					//_Inout_ std::vector<float>& pJustVertexPosition,
 					_In_z_ const std::string& pInputFilePath);
 			};
 		}

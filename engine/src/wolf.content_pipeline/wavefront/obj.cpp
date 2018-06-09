@@ -151,7 +151,7 @@ void obj::write(
 W_RESULT obj::read(
 	_Inout_ std::vector<w_vertex_struct>& pVerticesData,
 	_Inout_ std::vector<uint32_t>& pIndicesData,
-	_Inout_ std::vector<float>& pJustVertexPosition,
+	//_Inout_ std::vector<float>& pJustVertexPosition,
 	_In_z_ const std::string& pInputFilePath)
 {
 	const std::string _trace_info = "w_wavefront_obj::read";
@@ -175,7 +175,7 @@ W_RESULT obj::read(
 
 	pVerticesData.clear();
 	pIndicesData.clear();
-	pJustVertexPosition.clear();
+	//pJustVertexPosition.clear();
 
 	for (size_t s = 0; s < shapes.size(); s++)
 	{
@@ -215,9 +215,9 @@ W_RESULT obj::read(
 				pVerticesData.push_back(_vertex);
 				pIndicesData.push_back(index_offset + v);
 
-				pJustVertexPosition.push_back(_vx);
+				/*pJustVertexPosition.push_back(_vx);
 				pJustVertexPosition.push_back(_vy);
-				pJustVertexPosition.push_back(_vz);
+				pJustVertexPosition.push_back(_vz);*/
 			}
 			index_offset += fv;
 

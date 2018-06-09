@@ -28,11 +28,11 @@
     <Filter Include="simplygon">
       <UniqueIdentifier>{78b9f695-2f46-42b2-ab35-475e61b3bd76}</UniqueIdentifier>
     </Filter>
-    <Filter Include="wavefront">
-      <UniqueIdentifier>{44ef1afd-efd4-4b45-a1ff-2baf706db0b2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="assimp">
       <UniqueIdentifier>{926c8109-6f81-4553-97d0-5b293c9a4a0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wavefront">
+      <UniqueIdentifier>{d4994f3b-9761-4258-b60d-0758dd98eb18}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -145,13 +145,13 @@
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\simplygon\simplygon.cpp">
       <Filter>simplygon</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.cpp">
-      <Filter>wavefront</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.cpp">
       <Filter>assimp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.content_pipeline\w_camera.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.cpp">
+      <Filter>wavefront</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\collada\c_bone.h">
@@ -344,16 +344,16 @@
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\simplygon\simplygon.h">
       <Filter>simplygon</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\tiny_obj_loader.h">
-      <Filter>wavefront</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.h">
-      <Filter>wavefront</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\assimp\w_assimp.h">
       <Filter>assimp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.content_pipeline\w_camera.h" />
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\obj.h">
+      <Filter>wavefront</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.content_pipeline\wavefront\tiny_obj_loader.h">
+      <Filter>wavefront</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\src\wolf.content_pipeline\directXmesh\DirectXMesh.inl">

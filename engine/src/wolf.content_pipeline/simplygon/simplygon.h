@@ -22,7 +22,7 @@ namespace simplygon
 
 	W_RESULT initialize(_In_z_ const std::wstring& pSimplygonSDKPath);
 
-	W_RESULT remeshing(
+	W_RESULT generate_lod(
 		_Inout_ SimplygonSDK::CountedPointer<SimplygonSDK::IScene>& pOutScene,
 		_In_ SimplygonSDK::CountedPointer<SimplygonSDK::IScene>& pInScene,
 		_In_z_ const SimplygonSDK::TangentSpaceMethod& pTangentSpaceMethod = SimplygonSDK::TangentSpaceMethod::SG_TANGENTSPACEMETHOD_ORTHONORMAL);
