@@ -380,7 +380,7 @@ namespace wolf
 				_In_ w_signal<void(const w_media_core::w_stream_frame_info&)>& pOnFillingVideoFrameBuffer,
 				_In_ w_signal<void(const char*)>& pOnConnectionClosed)
 			{
-				const std::string _trace_info = this->_name + "::open_stream_server_async";
+				const std::string _trace_info = this->_name + "::open_stream_server";
 
 				//create output context
 				avformat_alloc_output_context2(&this->_stream_out_ctx, NULL, pFormatName, pURL);
@@ -632,7 +632,7 @@ namespace wolf
 				_In_ w_signal<void(const char*)>& pOnConnectionLost,
 				_In_ w_signal<void(const char*)>& pOnConnectionClosed)
 			{
-				const std::string _trace_info = this->_name + "::open_stream_client_async";
+				const std::string _trace_info = this->_name + "::open_stream_client";
 
 				std::string _fromat_str(pFormatName);
 				std::transform(_fromat_str.begin(), _fromat_str.end(), _fromat_str.begin(), ::tolower);
