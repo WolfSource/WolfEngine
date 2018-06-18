@@ -48,10 +48,10 @@ WOLF_MAIN()
 	auto _new_f = static_cast<my_struct*>(_memory.re_alloc(_length * sizeof(my_struct)));
 	if (_new_f)
 	{
-		for (size_t i = 0; i < _length; ++i)
+		for (int i = 0; i < _length; ++i)
 		{
 			_new_f[i].number = 100 + i;
-			w_sprintf(_new_f[i].name, "Ryan %d", i);
+			w_sprintf(_new_f[i].name, 256, "Ryan %d", i);
 		}
 	}
 

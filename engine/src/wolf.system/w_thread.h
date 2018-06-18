@@ -62,9 +62,9 @@ namespace wolf
                 Sleep(pMilliSecond);
             }
 #else
-            WSYS_EXP static std::thread::id get_current_thread_id()
+            WSYS_EXP static size_t get_current_thread_id()
             {
-                return std::this_thread::get_id();
+                return std::hash<std::thread::id>{}(std::this_thread::get_id());
             }
             WSYS_EXP static void sleep_current_thread(_In_ const long long& pMilliSeconds)
             {

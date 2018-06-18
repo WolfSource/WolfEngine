@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C326D181EA5539000AEC380 /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C326D151EA5539000AEC380 /* libtbb_debug.dylib */; };
-		2C326D191EA5539000AEC380 /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */; };
-		2C326D1A1EA5539000AEC380 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */; };
 		2CB495C01E6469BC000B94F6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BD1E6469BC000B94F6 /* main.cpp */; };
 		2CB495C11E6469BC000B94F6 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BE1E6469BC000B94F6 /* pch.cpp */; };
 /* End PBXBuildFile section */
@@ -27,9 +24,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2C326D151EA5539000AEC380 /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbb_debug.dylib; sourceTree = "<group>"; };
-		2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
-		2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
 		2C8C83711E61CA6800A33C70 /* 01_async */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 01_async; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CB495BD1E6469BC000B94F6 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/main.cpp; sourceTree = "<group>"; };
 		2CB495BE1E6469BC000B94F6 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../src/pch.cpp; sourceTree = "<group>"; };
@@ -41,9 +35,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C326D181EA5539000AEC380 /* libtbb_debug.dylib in Frameworks */,
-				2C326D191EA5539000AEC380 /* libtbbmalloc_debug.dylib in Frameworks */,
-				2C326D1A1EA5539000AEC380 /* libwolf.system.macOS.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,9 +63,6 @@
 		2CDCB30E1E64CF1F00DC0699 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2C326D151EA5539000AEC380 /* libtbb_debug.dylib */,
-				2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */,
-				2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -248,16 +236,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../../bin/osx/Build/Products/Debug/";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../src/pch.h";
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../../engine/src/wolf.system",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
-				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../engine/src/wolf.system";
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -269,16 +251,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/lib",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../../../../bin/osx/Build/Products/Debug/";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../../src/pch.h";
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../../../engine/src/wolf.system",
-					"$(SRCROOT)/../../../../../engine/dependencies/tbb/oss/osx/include",
-				);
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../engine/src/wolf.system";
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";

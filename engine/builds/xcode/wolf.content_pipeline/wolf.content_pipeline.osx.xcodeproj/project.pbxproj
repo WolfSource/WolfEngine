@@ -23,7 +23,10 @@
 		2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */; };
 		2C4CCB271EB0F81100E0A422 /* w_cpipeline_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */; };
 		2C4CCB2D1EB0F81100E0A422 /* w_vertex_declaration.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */; };
-		2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */; };
+		2C4CCB2F1EB1045E00E0A422 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB2E1EB1045E00E0A422 /* libwolf.system.osx.dylib */; };
+		2C6858F220D851DC0096C33B /* obj.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C6858EF20D851DC0096C33B /* obj.h */; };
+		2C6858F320D851DC0096C33B /* obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C6858F020D851DC0096C33B /* obj.cpp */; };
+		2C6858F420D851DC0096C33B /* tiny_obj_loader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C6858F120D851DC0096C33B /* tiny_obj_loader.h */; };
 		2C736BC31ECA1EE400624CC7 /* w_cpipeline_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */; };
 		2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */; };
 		2C736BC51ECA1EE400624CC7 /* w_cpipeline_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */; };
@@ -101,9 +104,6 @@
 		2CE0DABC20AB68E2003BC362 /* w_assimp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE0DABA20AB68E2003BC362 /* w_assimp.h */; };
 		2CE0DACA20AC1ACE003BC362 /* w_camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE0DAC820AC1ACE003BC362 /* w_camera.h */; };
 		2CE0DACB20AC1ACE003BC362 /* w_camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CE0DAC920AC1ACE003BC362 /* w_camera.cpp */; };
-		2CF12DAD20715BD500B94F96 /* obj.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF12DAA20715BD500B94F96 /* obj.h */; };
-		2CF12DAE20715BD500B94F96 /* obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CF12DAB20715BD500B94F96 /* obj.cpp */; };
-		2CF12DAF20715BD500B94F96 /* tiny_obj_loader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CF12DAC20715BD500B94F96 /* tiny_obj_loader.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -123,7 +123,10 @@
 		2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_content_manager.h; path = ../../../src/wolf.content_pipeline/w_content_manager.h; sourceTree = "<group>"; };
 		2C4CCB1C1EB0F81100E0A422 /* w_cpipeline_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_export.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_export.h; sourceTree = "<group>"; };
 		2C4CCB221EB0F81100E0A422 /* w_vertex_declaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vertex_declaration.h; path = ../../../src/wolf.content_pipeline/w_vertex_declaration.h; sourceTree = "<group>"; };
-		2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
+		2C4CCB2E1EB1045E00E0A422 /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.osx.dylib; path = ../../../../bin/osx/Build/Products/Debug/libwolf.system.osx.dylib; sourceTree = "<group>"; };
+		2C6858EF20D851DC0096C33B /* obj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = obj.h; path = ../../../src/wolf.content_pipeline/wavefront/obj.h; sourceTree = "<group>"; };
+		2C6858F020D851DC0096C33B /* obj.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = obj.cpp; path = ../../../src/wolf.content_pipeline/wavefront/obj.cpp; sourceTree = "<group>"; };
+		2C6858F120D851DC0096C33B /* tiny_obj_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tiny_obj_loader.h; path = ../../../src/wolf.content_pipeline/wavefront/tiny_obj_loader.h; sourceTree = "<group>"; };
 		2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_model.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_model.cpp; sourceTree = "<group>"; };
 		2C736BC01ECA1EE400624CC7 /* w_cpipeline_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_model.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_model.h; sourceTree = "<group>"; };
 		2C736BC11ECA1EE400624CC7 /* w_cpipeline_scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_scene.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_scene.cpp; sourceTree = "<group>"; };
@@ -196,17 +199,12 @@
 		2C8D5B491F4F8AC1000BCB87 /* viewpoints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = viewpoints.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/viewpoints.h; sourceTree = "<group>"; };
 		2C8D5B4A1F4F8AC1000BCB87 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = window.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/window.h; sourceTree = "<group>"; };
 		2C8D5B5F1F4F8AF2000BCB87 /* tootlelib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tootlelib.h; path = ../../../src/wolf.content_pipeline/amd/amd_tootle/include/tootlelib.h; sourceTree = "<group>"; };
-		2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.content_pipeline.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.content_pipeline.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE0DAB920AB68E1003BC362 /* w_assimp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_assimp.cpp; path = ../../../src/wolf.content_pipeline/assimp/w_assimp.cpp; sourceTree = "<group>"; };
 		2CE0DABA20AB68E2003BC362 /* w_assimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_assimp.h; path = ../../../src/wolf.content_pipeline/assimp/w_assimp.h; sourceTree = "<group>"; };
 		2CE0DABD20ABF014003BC362 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../dependencies/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
-		2CE0DAC120AC08A2003BC362 /* libassimp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libassimp.a; path = ../../../dependencies/assimp/lib/osx/debug/libassimp.a; sourceTree = "<group>"; };
-		2CE0DAC320AC0A66003BC362 /* libIrrXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIrrXML.a; path = ../../../dependencies/assimp/lib/osx/debug/libIrrXML.a; sourceTree = "<group>"; };
 		2CE0DAC820AC1ACE003BC362 /* w_camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_camera.h; path = ../../../src/wolf.content_pipeline/w_camera.h; sourceTree = "<group>"; };
 		2CE0DAC920AC1ACE003BC362 /* w_camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_camera.cpp; path = ../../../src/wolf.content_pipeline/w_camera.cpp; sourceTree = "<group>"; };
-		2CF12DAA20715BD500B94F96 /* obj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = obj.h; path = ../../../../src/wolf.content_pipeline/wavefront/obj.h; sourceTree = "<group>"; };
-		2CF12DAB20715BD500B94F96 /* obj.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = obj.cpp; path = ../../../../src/wolf.content_pipeline/wavefront/obj.cpp; sourceTree = "<group>"; };
-		2CF12DAC20715BD500B94F96 /* tiny_obj_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tiny_obj_loader.h; path = ../../../../src/wolf.content_pipeline/wavefront/tiny_obj_loader.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,7 +213,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C766E6620B33F60000C66F4 /* libassimp.4.1.0.dylib in Frameworks */,
-				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.macOS.dylib in Frameworks */,
+				2C4CCB2F1EB1045E00E0A422 /* libwolf.system.osx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +235,16 @@
 				2C4CCB071EB0F54400E0A422 /* c_skin.h */,
 			);
 			name = collada;
+			sourceTree = "<group>";
+		};
+		2C6858EE20D851B70096C33B /* wavefront */ = {
+			isa = PBXGroup;
+			children = (
+				2C6858F020D851DC0096C33B /* obj.cpp */,
+				2C6858EF20D851DC0096C33B /* obj.h */,
+				2C6858F120D851DC0096C33B /* tiny_obj_loader.h */,
+			);
+			name = wavefront;
 			sourceTree = "<group>";
 		};
 		2C8D5ABF1F4F8506000BCB87 /* amd */ = {
@@ -360,7 +368,7 @@
 				2CE0DAB820AB68C7003BC362 /* assimp */,
 				2C8D5ABF1F4F8506000BCB87 /* amd */,
 				2C4CCAFB1EB0F50D00E0A422 /* collada */,
-				2CF12DA920715BAE00B94F96 /* wavefront */,
+				2C6858EE20D851B70096C33B /* wavefront */,
 				2CE0DAC920AC1ACE003BC362 /* w_camera.cpp */,
 				2CE0DAC820AC1ACE003BC362 /* w_camera.h */,
 				2C736BBF1ECA1EE400624CC7 /* w_cpipeline_model.cpp */,
@@ -381,7 +389,7 @@
 		2CD617241E59DA3E006FC5DC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */,
+				2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.osx.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -395,23 +403,11 @@
 			name = assimp;
 			sourceTree = "<group>";
 		};
-		2CF12DA920715BAE00B94F96 /* wavefront */ = {
-			isa = PBXGroup;
-			children = (
-				2CF12DAB20715BD500B94F96 /* obj.cpp */,
-				2CF12DAA20715BD500B94F96 /* obj.h */,
-				2CF12DAC20715BD500B94F96 /* tiny_obj_loader.h */,
-			);
-			path = wavefront;
-			sourceTree = "<group>";
-		};
 		2CFA170D1E674C850041A83F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2CE0DAC320AC0A66003BC362 /* libIrrXML.a */,
-				2CE0DAC120AC08A2003BC362 /* libassimp.a */,
 				2CE0DABD20ABF014003BC362 /* libassimp.4.1.0.dylib */,
-				2C4CCB2E1EB1045E00E0A422 /* libwolf.system.macOS.dylib */,
+				2C4CCB2E1EB1045E00E0A422 /* libwolf.system.osx.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -435,6 +431,7 @@
 				2C8D5B511F4F8AC1000BCB87 /* scalar.h in Headers */,
 				2C736BC41ECA1EE400624CC7 /* w_cpipeline_model.h in Headers */,
 				2C8D5B261F4F89B2000BCB87 /* cloud.h in Headers */,
+				2C6858F420D851DC0096C33B /* tiny_obj_loader.h in Headers */,
 				2C8D5B571F4F8AC2000BCB87 /* Stripifier.h in Headers */,
 				2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */,
 				2C8D5B551F4F8AC2000BCB87 /* souptomesh.h in Headers */,
@@ -453,13 +450,13 @@
 				2C8D5AFD1F4F8641000BCB87 /* JRTTriangleIntersection.h in Headers */,
 				2C8D5B0C1F4F8656000BCB87 /* JMLVec2.h in Headers */,
 				2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */,
+				2C6858F220D851DC0096C33B /* obj.h in Headers */,
 				2C4CCB121EB0F54400E0A422 /* c_parser.h in Headers */,
 				2C8D5B371F4F89B2000BCB87 /* heap.h in Headers */,
 				2C8D5B5B1F4F8AC2000BCB87 /* vector.h in Headers */,
 				2C8D5B251F4F89B2000BCB87 /* bbox.h in Headers */,
 				2C8D5B4C1F4F8AC1000BCB87 /* mesh.h in Headers */,
 				2C8D5B5C1F4F8AC2000BCB87 /* viewpoints.h in Headers */,
-				2CF12DAD20715BD500B94F96 /* obj.h in Headers */,
 				2C8D5B601F4F8AF2000BCB87 /* tootlelib.h in Headers */,
 				2C736BC61ECA1EE400624CC7 /* w_cpipeline_scene.h in Headers */,
 				2C8D5B0D1F4F8656000BCB87 /* JMLVec3.h in Headers */,
@@ -479,7 +476,6 @@
 				2C8D5B0A1F4F8656000BCB87 /* JMLScalar.h in Headers */,
 				2C8D5AE61F4F8641000BCB87 /* JRTBoundingBox.h in Headers */,
 				2C4CCB0F1EB0F54400E0A422 /* c_node.h in Headers */,
-				2CF12DAF20715BD500B94F96 /* tiny_obj_loader.h in Headers */,
 				2C8D5B5A1F4F8AC2000BCB87 /* triorder.h in Headers */,
 				2C8D5AED1F4F8641000BCB87 /* JRTCoreUtils.h in Headers */,
 				2C8D5B5D1F4F8AC2000BCB87 /* window.h in Headers */,
@@ -490,9 +486,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		2CD617221E59DA3E006FC5DC /* wolf.content_pipeline.macOS */ = {
+		2CD617221E59DA3E006FC5DC /* wolf.content_pipeline.osx */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "wolf.content_pipeline.macOS" */;
+			buildConfigurationList = 2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "wolf.content_pipeline.osx" */;
 			buildPhases = (
 				2CD6171F1E59DA3E006FC5DC /* Sources */,
 				2CD617201E59DA3E006FC5DC /* Frameworks */,
@@ -502,9 +498,9 @@
 			);
 			dependencies = (
 			);
-			name = wolf.content_pipeline.macOS;
+			name = wolf.content_pipeline.osx;
 			productName = wolf.content_pipeline;
-			productReference = 2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.macOS.dylib */;
+			productReference = 2CD617231E59DA3E006FC5DC /* libwolf.content_pipeline.osx.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -523,7 +519,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.content_pipeline.macOS" */;
+			buildConfigurationList = 2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.content_pipeline.osx" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -535,7 +531,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2CD617221E59DA3E006FC5DC /* wolf.content_pipeline.macOS */,
+				2CD617221E59DA3E006FC5DC /* wolf.content_pipeline.osx */,
 			);
 		};
 /* End PBXProject section */
@@ -545,7 +541,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CF12DAE20715BD500B94F96 /* obj.cpp in Sources */,
 				2C8D5AFA1F4F8641000BCB87 /* JRTPPMImage.cpp in Sources */,
 				2C8D5AFC1F4F8641000BCB87 /* JRTTriangleIntersection.cpp in Sources */,
 				2C8D5ACA1F4F861C000BCB87 /* TootleRaytracer.cpp in Sources */,
@@ -569,6 +564,7 @@
 				2C8D5AEA1F4F8641000BCB87 /* JRTCore.cpp in Sources */,
 				2C8D5B311F4F89B2000BCB87 /* fit.cpp in Sources */,
 				2C8D5B361F4F89B2000BCB87 /* heap.cpp in Sources */,
+				2C6858F320D851DC0096C33B /* obj.cpp in Sources */,
 				2C8D5B541F4F8AC1000BCB87 /* souptomesh.cpp in Sources */,
 				2C4CCB0E1EB0F54400E0A422 /* c_node.cpp in Sources */,
 				2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */,
@@ -692,6 +688,7 @@
 		2CD6172F1E59DA3E006FC5DC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -728,6 +725,7 @@
 		2CD617301E59DA3E006FC5DC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -750,7 +748,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.content_pipeline.macOS" */ = {
+		2CD6171E1E59DA3E006FC5DC /* Build configuration list for PBXProject "wolf.content_pipeline.osx" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2CD6172C1E59DA3E006FC5DC /* Debug */,
@@ -759,7 +757,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "wolf.content_pipeline.macOS" */ = {
+		2CD6172E1E59DA3E006FC5DC /* Build configuration list for PBXNativeTarget "wolf.content_pipeline.osx" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2CD6172F1E59DA3E006FC5DC /* Debug */,

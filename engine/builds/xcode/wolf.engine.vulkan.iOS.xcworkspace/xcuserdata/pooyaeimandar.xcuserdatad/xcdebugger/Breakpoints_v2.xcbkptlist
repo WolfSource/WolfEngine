@@ -125,7 +125,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "969"
             endingLineNumber = "969"
-            landmarkName = "enumerate_devices(_Inout_ std::vector&lt;std::shared_ptr&lt;w_graphics_device&gt;&gt;&amp; pGraphicsDevices, _In_ wolf::system::w_signal&lt;void(w_graphics_device_manager::w_device_features_extensions&amp;)&gt;* pOnDeviceFeaturesFetched)"
+            landmarkName = "w_graphics_device::capture_presented_swap_chain_buffer( _In_ wolf::system::w_signal&lt;void(const w_point_t, uint8_t*)&gt;&amp; pOnPixelsDataCaptured)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -141,7 +141,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "729"
             endingLineNumber = "729"
-            landmarkName = "enumerate_devices(_Inout_ std::vector&lt;std::shared_ptr&lt;w_graphics_device&gt;&gt;&amp; pGraphicsDevices, _In_ wolf::system::w_signal&lt;void(w_graphics_device_manager::w_device_features_extensions&amp;)&gt;* pOnDeviceFeaturesFetched)"
+            landmarkName = "w_graphics_device::capture_presented_swap_chain_buffer( _In_ wolf::system::w_signal&lt;void(const w_point_t, uint8_t*)&gt;&amp; pOnPixelsDataCaptured)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

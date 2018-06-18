@@ -1,0 +1,425 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C3C81A21EB7B7CE00E3906E /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C3C81A01EB7B7CE00E3906E /* pch.cpp */; };
+		2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.osx.dylib */; };
+		2C620FB11E618052005DFB10 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C620FB01E618052005DFB10 /* libc++.tbd */; };
+		2C620FB31E61805A005DFB10 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C620FB21E61805A005DFB10 /* QuartzCore.framework */; };
+		2C620FB51E618061005DFB10 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C620FB41E618061005DFB10 /* Metal.framework */; };
+		2C6858F620D8520F0096C33B /* libwolf.media_core.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6858F520D8520F0096C33B /* libwolf.media_core.osx.dylib */; };
+		2C6858F820D8520F0096C33B /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C6858F720D8520F0096C33B /* libwolf.system.osx.dylib */; };
+		2C6858FB20D852D90096C33B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C6858F920D852D90096C33B /* Main.storyboard */; };
+		2C7079951EAB6D7D003784A2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C70798F1EAB6D7D003784A2 /* AppDelegate.m */; };
+		2C7079961EAB6D7D003784A2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079901EAB6D7D003784A2 /* main.m */; };
+		2C7079971EAB6D7D003784A2 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079911EAB6D7D003784A2 /* scene.cpp */; };
+		2C7079981EAB6D7D003784A2 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2C7079941EAB6D7D003784A2 /* ViewController.mm */; };
+		2C736BB71ECA1E6A00624CC7 /* basic.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB31ECA1E6A00624CC7 /* basic.frag */; };
+		2C736BB81ECA1E6A00624CC7 /* basic.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB41ECA1E6A00624CC7 /* basic.vert */; };
+		2C736BB91ECA1E6A00624CC7 /* static_instancing_y_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */; };
+		2C736BBA1ECA1E6A00624CC7 /* static_instancing_z_up.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */; };
+		2C766E6820B33FAD000C66F4 /* vulkan.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C766E6720B33FAD000C66F4 /* vulkan.framework */; };
+		2C766E6A20B33FCD000C66F4 /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C766E6920B33FCD000C66F4 /* libassimp.4.1.0.dylib */; };
+		2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */; };
+		2CDF24922037223700BD3DE5 /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF24902037223700BD3DE5 /* Base.lproj */; };
+		2CDF24932037223700BD3DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF24912037223700BD3DE5 /* Assets.xcassets */; };
+		2CE21C421E89678F00EEE579 /* libwolf.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C401E89678F00EEE579 /* libwolf.vulkan.osx.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2C3C81A01EB7B7CE00E3906E /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../../../src/tests/pch.cpp; sourceTree = "<group>"; };
+		2C3C81A11EB7B7CE00E3906E /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../../../src/tests/pch.h; sourceTree = "<group>"; };
+		2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.content_pipeline.osx.dylib; sourceTree = "<group>"; };
+		2C620F881E617F81005DFB10 /* test_vulkan_osx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = test_vulkan_osx.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C620F991E617F81005DFB10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = test_vulkan_osx/Info.plist; sourceTree = "<group>"; };
+		2C620FB01E618052005DFB10 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		2C620FB21E61805A005DFB10 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		2C620FB41E618061005DFB10 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		2C6858F520D8520F0096C33B /* libwolf.media_core.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libwolf.media_core.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C6858F720D8520F0096C33B /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C6858FA20D852D90096C33B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = test_vulkan_osx/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2C70798E1EAB6D7D003784A2 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../src/tests/AppDelegate.h; sourceTree = "<group>"; };
+		2C70798F1EAB6D7D003784A2 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../src/tests/AppDelegate.m; sourceTree = "<group>"; };
+		2C7079901EAB6D7D003784A2 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../src/tests/main.m; sourceTree = "<group>"; };
+		2C7079911EAB6D7D003784A2 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../../../src/tests/scene.cpp; sourceTree = "<group>"; };
+		2C7079921EAB6D7D003784A2 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = ../../../../src/tests/scene.h; sourceTree = "<group>"; };
+		2C7079931EAB6D7D003784A2 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../src/tests/ViewController.h; sourceTree = "<group>"; };
+		2C7079941EAB6D7D003784A2 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../src/tests/ViewController.mm; sourceTree = "<group>"; };
+		2C736BB31ECA1E6A00624CC7 /* basic.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.frag; path = ../../../../../content/shaders/basic.frag; sourceTree = "<group>"; };
+		2C736BB41ECA1E6A00624CC7 /* basic.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = basic.vert; path = ../../../../../content/shaders/basic.vert; sourceTree = "<group>"; };
+		2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = static_instancing_y_up.vert; path = ../../../../../content/shaders/static_instancing_y_up.vert; sourceTree = "<group>"; };
+		2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = static_instancing_z_up.vert; path = ../../../../../content/shaders/static_instancing_z_up.vert; sourceTree = "<group>"; };
+		2C766E6720B33FAD000C66F4 /* vulkan.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vulkan.framework; path = ../../../../dependencies/vulkan/macOS/macOS/Frameworks/vulkan.framework; sourceTree = "<group>"; };
+		2C766E6920B33FCD000C66F4 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../../dependencies/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
+		2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
+		2CDF24902037223700BD3DE5 /* Base.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Base.lproj; path = test_vulkan_osx/Base.lproj; sourceTree = "<group>"; };
+		2CDF24912037223700BD3DE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = test_vulkan_osx/Assets.xcassets; sourceTree = "<group>"; };
+		2CE21C401E89678F00EEE579 /* libwolf.vulkan.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.vulkan.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.vulkan.osx.dylib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2C620F851E617F81005DFB10 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C6858F620D8520F0096C33B /* libwolf.media_core.osx.dylib in Frameworks */,
+				2C6858F820D8520F0096C33B /* libwolf.system.osx.dylib in Frameworks */,
+				2C766E6A20B33FCD000C66F4 /* libassimp.4.1.0.dylib in Frameworks */,
+				2C766E6820B33FAD000C66F4 /* vulkan.framework in Frameworks */,
+				2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */,
+				2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.osx.dylib in Frameworks */,
+				2CE21C421E89678F00EEE579 /* libwolf.vulkan.osx.dylib in Frameworks */,
+				2C620FB51E618061005DFB10 /* Metal.framework in Frameworks */,
+				2C620FB31E61805A005DFB10 /* QuartzCore.framework in Frameworks */,
+				2C620FB11E618052005DFB10 /* libc++.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2C4CCAF51EB0E5EC00E0A422 /* content */ = {
+			isa = PBXGroup;
+			children = (
+				2C4CCAF61EB0E5F700E0A422 /* shaders */,
+			);
+			name = content;
+			sourceTree = "<group>";
+		};
+		2C4CCAF61EB0E5F700E0A422 /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				2C736BB31ECA1E6A00624CC7 /* basic.frag */,
+				2C736BB41ECA1E6A00624CC7 /* basic.vert */,
+				2C736BB51ECA1E6A00624CC7 /* static_instancing_y_up.vert */,
+				2C736BB61ECA1E6A00624CC7 /* static_instancing_z_up.vert */,
+			);
+			name = shaders;
+			sourceTree = "<group>";
+		};
+		2C620F7F1E617F81005DFB10 = {
+			isa = PBXGroup;
+			children = (
+				2C4CCAF51EB0E5EC00E0A422 /* content */,
+				2C3C81A01EB7B7CE00E3906E /* pch.cpp */,
+				2C3C81A11EB7B7CE00E3906E /* pch.h */,
+				2C70798E1EAB6D7D003784A2 /* AppDelegate.h */,
+				2C70798F1EAB6D7D003784A2 /* AppDelegate.m */,
+				2C7079901EAB6D7D003784A2 /* main.m */,
+				2C7079911EAB6D7D003784A2 /* scene.cpp */,
+				2C7079921EAB6D7D003784A2 /* scene.h */,
+				2C7079931EAB6D7D003784A2 /* ViewController.h */,
+				2C7079941EAB6D7D003784A2 /* ViewController.mm */,
+				2C620F991E617F81005DFB10 /* Info.plist */,
+				2C6858F920D852D90096C33B /* Main.storyboard */,
+				2CDF24912037223700BD3DE5 /* Assets.xcassets */,
+				2CDF24902037223700BD3DE5 /* Base.lproj */,
+				2C620F891E617F81005DFB10 /* Products */,
+				2C620FAB1E61804B005DFB10 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2C620F891E617F81005DFB10 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2C620F881E617F81005DFB10 /* test_vulkan_osx.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2C620FAB1E61804B005DFB10 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2C6858F520D8520F0096C33B /* libwolf.media_core.osx.dylib */,
+				2C6858F720D8520F0096C33B /* libwolf.system.osx.dylib */,
+				2C766E6920B33FCD000C66F4 /* libassimp.4.1.0.dylib */,
+				2C766E6720B33FAD000C66F4 /* vulkan.framework */,
+				2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */,
+				2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.osx.dylib */,
+				2CE21C401E89678F00EEE579 /* libwolf.vulkan.osx.dylib */,
+				2C620FB41E618061005DFB10 /* Metal.framework */,
+				2C620FB21E61805A005DFB10 /* QuartzCore.framework */,
+				2C620FB01E618052005DFB10 /* libc++.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2C620F871E617F81005DFB10 /* test_vulkan_osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2C620F9C1E617F81005DFB10 /* Build configuration list for PBXNativeTarget "test_vulkan_osx" */;
+			buildPhases = (
+				2C620F841E617F81005DFB10 /* Sources */,
+				2C620F851E617F81005DFB10 /* Frameworks */,
+				2C620F861E617F81005DFB10 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = test_vulkan_osx;
+			productName = test_vulkan_osx;
+			productReference = 2C620F881E617F81005DFB10 /* test_vulkan_osx.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2C620F801E617F81005DFB10 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0900;
+				ORGANIZATIONNAME = WolfSource.io;
+				TargetAttributes = {
+					2C620F871E617F81005DFB10 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = J2WEUYPJ98;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2C620F831E617F81005DFB10 /* Build configuration list for PBXProject "test_vulkan_osx" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2C620F7F1E617F81005DFB10;
+			productRefGroup = 2C620F891E617F81005DFB10 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2C620F871E617F81005DFB10 /* test_vulkan_osx */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2C620F861E617F81005DFB10 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C6858FB20D852D90096C33B /* Main.storyboard in Resources */,
+				2C736BB71ECA1E6A00624CC7 /* basic.frag in Resources */,
+				2C736BB91ECA1E6A00624CC7 /* static_instancing_y_up.vert in Resources */,
+				2C736BBA1ECA1E6A00624CC7 /* static_instancing_z_up.vert in Resources */,
+				2CDF24932037223700BD3DE5 /* Assets.xcassets in Resources */,
+				2CDF24922037223700BD3DE5 /* Base.lproj in Resources */,
+				2C736BB81ECA1E6A00624CC7 /* basic.vert in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2C620F841E617F81005DFB10 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C3C81A21EB7B7CE00E3906E /* pch.cpp in Sources */,
+				2C7079961EAB6D7D003784A2 /* main.m in Sources */,
+				2C7079951EAB6D7D003784A2 /* AppDelegate.m in Sources */,
+				2C7079981EAB6D7D003784A2 /* ViewController.mm in Sources */,
+				2C7079971EAB6D7D003784A2 /* scene.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2C6858F920D852D90096C33B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2C6858FA20D852D90096C33B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2C620F9A1E617F81005DFB10 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					__VULKAN__,
+					MSGPACK_USE_CPP03,
+					MSGPACK_DISABLE_LEGACY_NIL,
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2C620F9B1E617F81005DFB10 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2C620F9D1E617F81005DFB10 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				FRAMEWORK_SEARCH_PATHS = "";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../../dependencies/vulkan/macOS/macOS/Frameworks",
+					"$(SRCROOT)/../../../../dependencies/assimp/lib/osx/debug/",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				HEADER_SEARCH_PATHS = "";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../../dependencies/vulkan/macOS/macOS/include",
+					"$(SRCROOT)/../../../../src/wolf.system",
+					"$(SRCROOT)/../../../../src/wolf.render",
+					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
+				);
+				INFOPLIST_FILE = test_vulkan_osx/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/assimp/lib/osx/debug/";
+				PRODUCT_BUNDLE_IDENTIFIER = "WolfSource.io.test-vulkan-osx";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				"VALID_ARCHS[sdk=*]" = x86_64;
+			};
+			name = Debug;
+		};
+		2C620F9E1E617F81005DFB10 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = test_vulkan_osx/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "WolfSource.io.test-vulkan-osx";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				"VALID_ARCHS[sdk=*]" = x86_64;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2C620F831E617F81005DFB10 /* Build configuration list for PBXProject "test_vulkan_osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C620F9A1E617F81005DFB10 /* Debug */,
+				2C620F9B1E617F81005DFB10 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2C620F9C1E617F81005DFB10 /* Build configuration list for PBXNativeTarget "test_vulkan_osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C620F9D1E617F81005DFB10 /* Debug */,
+				2C620F9E1E617F81005DFB10 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2C620F801E617F81005DFB10 /* Project object */;
+}
