@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workspace
    version = "1.0">
+   <Group
+      location = "container:"
+      name = "documents">
+      <FileRef
+         location = "group:../../../CHANGE_LOG.md">
+      </FileRef>
+   </Group>
    <FileRef
       location = "group:tests/test_vulkan_osx/test_vulkan_osx.xcodeproj">
    </FileRef>
