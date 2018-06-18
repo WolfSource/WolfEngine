@@ -222,6 +222,7 @@
 		2C94BC271FEE5C62007338F7 /* w_network.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C94BC251FEE5C62007338F7 /* w_network.h */; };
 		2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C94BC281FF1A0E9007338F7 /* libnanomsg.a */; };
 		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
+		2CD790D220D43DB300E14B50 /* spdlog.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CD790D120D43DB300E14B50 /* spdlog.h */; };
 		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
 		2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF71E64307D005E0F45 /* w_convert.h */; };
 		2CE5BB121E64307D005E0F45 /* w_game_time.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF91E64307D005E0F45 /* w_game_time.h */; };
@@ -678,6 +679,7 @@
 		2C94BC281FF1A0E9007338F7 /* libnanomsg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnanomsg.a; path = ../../../dependencies/nanomsg/lib/osx/debug/libnanomsg.a; sourceTree = "<group>"; };
 		2C98996B1E9B512F002FE161 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../src/wolf.system/stb_image.h; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.macOS.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CD790D120D43DB300E14B50 /* spdlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spdlog.h; path = ../../../src/wolf.system/spdlog/spdlog.h; sourceTree = "<group>"; };
 		2CE5BAF61E64307D005E0F45 /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
 		2CE5BAF71E64307D005E0F45 /* w_convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_convert.h; path = ../../../src/wolf.system/w_convert.h; sourceTree = "<group>"; };
 		2CE5BAF91E64307D005E0F45 /* w_game_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game_time.h; path = ../../../src/wolf.system/w_game_time.h; sourceTree = "<group>"; };
@@ -1197,6 +1199,7 @@
 				2CF128272071407900B94F96 /* msgpack */,
 				2CFD40F11F51FF9300BF9A65 /* rapidjson */,
 				2C7BC43E1F51A2FB009F0C6E /* rapidxml */,
+				2CD790D020D43D8B00E14B50 /* spdlog */,
 				2C49134F2064E312006036E4 /* glm_extension.h */,
 				2CF54B1F205BBAC3000B80E3 /* w_aligned_malloc.cpp */,
 				2CF54B20205BBAC3000B80E3 /* w_aligned_malloc.h */,
@@ -1255,6 +1258,14 @@
 				2CD617231E59DA3E006FC5DC /* libwolf.system.macOS.dylib */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2CD790D020D43D8B00E14B50 /* spdlog */ = {
+			isa = PBXGroup;
+			children = (
+				2CD790D120D43DB300E14B50 /* spdlog.h */,
+			);
+			name = spdlog;
 			sourceTree = "<group>";
 		};
 		2CF128272071407900B94F96 /* msgpack */ = {
@@ -1593,6 +1604,7 @@
 				2C65235D1FD4B0930030A053 /* quaternion.hpp in Headers */,
 				2C6523AE1FD4B0B40030A053 /* vec1.hpp in Headers */,
 				2C65234C1FD4B0930030A053 /* projection.hpp in Headers */,
+				2CD790D220D43DB300E14B50 /* spdlog.h in Headers */,
 				2C6521D41FD4AF7D0030A053 /* texture.hpp in Headers */,
 				2C6522581FD4AFD50030A053 /* func_trigonometric.hpp in Headers */,
 				2CFD411B1F52009200BF9A65 /* en.h in Headers */,

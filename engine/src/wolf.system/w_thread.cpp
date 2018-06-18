@@ -180,7 +180,7 @@ namespace wolf
                     this->_critical_section.unlock();
                     this->_thread_handle.join();
                     
-                    logger.write("thread with id: " + std::to_string(_thread_id) + " destroyed");
+                    logger.write("thread with id: {}  destroyed", _thread_id);
                 }
 #endif
                 return 0;

@@ -6,8 +6,8 @@
 *.ipch
 *.res
 *.enc
-/bin/Build/
-/bin/x64/
+/bin/win32/
+/bin/osx/
 /docs/extra/
 /samples/.vs/*
 /engine/builds/mvsc/.vs/*

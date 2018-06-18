@@ -523,7 +523,7 @@ namespace wolf
 				_frame_info.height = _h;
 				_frame_info.pixels = (uint8_t*)malloc(_frame_info.width * _frame_info.height * _frame_info.stride * sizeof(uint8_t));
 
-				int _line_size[1] = { _frame_info.stride * _w };
+				int _line_size[1] = { (int)_frame_info.stride * (int)_w };
 
 				int _got_packet = 0;
 				AVPacket _packet = { 0 };
