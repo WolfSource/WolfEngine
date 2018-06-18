@@ -1,5 +1,6 @@
 # ToDos
-- Dynamic lod creator
+- Dynamic lod creator for lod sample
+- gpu culling
 - Forward+
 - DirectX 12
 - Realtime Raytracing
