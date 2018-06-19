@@ -12,6 +12,7 @@
 
 #include "w_cpipeline_export.h"
 #include <w_object.h>
+#include <msgpack.hpp>
 #include <map>
 #include <glm/matrix.hpp>
 #include <glm/gtx/compatibility.hpp>//for int4

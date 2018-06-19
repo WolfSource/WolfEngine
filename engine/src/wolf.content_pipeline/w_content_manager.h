@@ -15,7 +15,7 @@
 #include <w_io.h>
 //#include "collada/c_parser.h"
 //#include "w_cpipeline_scene.h"
-#include <msgpack/msgpack.hpp>
+#include <msgpack.hpp>
 #include "simplygon/simplygon.h"
 #include <assimp/w_assimp.h>
 

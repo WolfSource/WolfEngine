@@ -166,7 +166,7 @@ namespace wolf
             
 			W_RESULT reallocate(_In_ uint32_t& pBufferSizeInBytes)
 			{
-				const char* _trace_info = (this->_name + "::reallocate").c_str();
+				//const char* _trace_info = (this->_name + "::reallocate").c_str();
 
 				if (!this->_gDevice) return W_FAILED;
 				

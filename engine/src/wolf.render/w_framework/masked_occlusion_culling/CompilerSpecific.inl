@@ -57,6 +57,7 @@
 	#include <immintrin.h>
 	#include <new>
 
+//ADDED for WOLF
 #ifdef __APPLE__
     #include <w_aligned_malloc.h>
 #endif
@@ -71,7 +72,7 @@
 		return idx;
 	}
 
-	FORCE_INLINE void* aligned_alloc(size_t alignment, size_t size)
+	FORCE_INLINE void *aligned_alloc(size_t alignment, size_t size)
 	{
 #ifdef __APPLE__
         return aligned_malloc(size, alignment);

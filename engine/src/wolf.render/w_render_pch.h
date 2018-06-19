@@ -27,8 +27,6 @@
 #endif
 
 #ifdef __DX12__
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #include <DirectXMath.h>

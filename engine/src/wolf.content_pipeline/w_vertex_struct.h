@@ -10,7 +10,7 @@
 #ifndef __W_VERTEX_STRUCT_H__
 #define __W_VERTEX_STRUCT_H__
 
-#include <msgpack/msgpack.hpp>
+#include <msgpack.hpp>
 #include <vector>
 
 namespace wolf

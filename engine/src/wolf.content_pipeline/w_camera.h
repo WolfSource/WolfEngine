@@ -17,7 +17,7 @@
 #include <glm/matrix.hpp>
 #include <glm/vec3.hpp>
 #include <w_bounding.h>
-#include <msgpack/msgpack.hpp>
+#include <msgpack.hpp>
 
 
 namespace wolf

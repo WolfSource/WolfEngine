@@ -67,13 +67,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C6858F620D8520F0096C33B /* libwolf.media_core.osx.dylib in Frameworks */,
-				2C6858F820D8520F0096C33B /* libwolf.system.osx.dylib in Frameworks */,
 				2C766E6A20B33FCD000C66F4 /* libassimp.4.1.0.dylib in Frameworks */,
 				2C766E6820B33FAD000C66F4 /* vulkan.framework in Frameworks */,
 				2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */,
 				2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.osx.dylib in Frameworks */,
 				2CE21C421E89678F00EEE579 /* libwolf.vulkan.osx.dylib in Frameworks */,
+				2C6858F620D8520F0096C33B /* libwolf.media_core.osx.dylib in Frameworks */,
+				2C6858F820D8520F0096C33B /* libwolf.system.osx.dylib in Frameworks */,
 				2C620FB51E618061005DFB10 /* Metal.framework in Frameworks */,
 				2C620FB31E61805A005DFB10 /* QuartzCore.framework in Frameworks */,
 				2C620FB11E618052005DFB10 /* libc++.tbd in Frameworks */,
@@ -175,7 +175,7 @@
 		2C620F801E617F81005DFB10 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = WolfSource.io;
 				TargetAttributes = {
 					2C620F871E617F81005DFB10 = {
@@ -260,6 +260,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -267,6 +268,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -317,6 +319,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -324,6 +327,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -372,9 +376,9 @@
 					"$(SRCROOT)/../../../../src/wolf.content_pipeline",
 				);
 				INFOPLIST_FILE = test_vulkan_osx/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/assimp/lib/osx/debug/";
-				PRODUCT_BUNDLE_IDENTIFIER = "WolfSource.io.test-vulkan-osx";
+				PRODUCT_BUNDLE_IDENTIFIER = wolf.engine.vulkan.osx.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"VALID_ARCHS[sdk=*]" = x86_64;
 			};
@@ -391,8 +395,8 @@
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = test_vulkan_osx/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "WolfSource.io.test-vulkan-osx";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = wolf.engine.vulkan.osx.test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"VALID_ARCHS[sdk=*]" = x86_64;
 			};

@@ -1,6 +1,5 @@
 #import "ViewController.h"
 #import <QuartzCore/CAMetalLayer.h>
-//#include <MoltenVK/mvk_datatypes.h>
 
 #include <wolf.h>
 #include <w_window.h>
@@ -37,6 +36,7 @@ void init_window(struct w_window_info& pInfo)
         sScene->release();
         delete sScene;
     }
+    wolf::release_heap_data();
     CVDisplayLinkRelease(sDisplayLink);
 }
 
@@ -56,7 +56,7 @@ void init_window(struct w_window_info& pInfo)
     
     sScene = new scene(wolf::system::convert::string_to_wstring(_content_path),
                        wolf::system::convert::string_to_wstring(_root_dir),
-                       L"wolf.vulkan.sample");
+                       L"wolf.vulkan.osx.sample");
     
     //initialize the information of window
     w_window_info _window_info;

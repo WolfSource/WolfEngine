@@ -4,7 +4,7 @@
 	Website			 : http://WolfSource.io
 	Name			 : w_masked_occlusion_culling.h
 	Description		 : The w_masked_occlusion_culling
-	Comment          :
+	Comment          : //avx512 must build with "-march=skylake-avx512" flag and avx2 must build with "-mavx2 -mfma" flag
 */
 #if _MSC_VER > 1000
 #pragma once

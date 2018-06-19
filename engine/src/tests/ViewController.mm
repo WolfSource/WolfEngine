@@ -51,10 +51,10 @@ void init_window(struct w_window_info& pInfo)
     std::wstring _content_path = _running_dir + L"/../../../../../content/";
     
 #if defined __APPLE__
-    sScene = new scene(_content_path, _running_dir , L"test.wolf.engine.metal.macOS");
+    sScene = new scene(_content_path, _running_dir , L"test.wolf.engine.vulkan.osx");
 #elif defined __iOS__
     sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String,
-                       "test.wolf.engine.metal.iOS");
+                       "test.wolf.engine.vulkan.iOS");
 #endif
     
     //pass the view to the sample code

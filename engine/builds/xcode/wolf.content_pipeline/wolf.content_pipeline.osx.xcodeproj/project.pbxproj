@@ -8,16 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2C4913522064E33B006036E4 /* w_vertex_struct.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4913512064E33B006036E4 /* w_vertex_struct.h */; };
-		2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFC1EB0F54400E0A422 /* c_animation.h */; };
-		2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */; };
-		2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFE1EB0F54400E0A422 /* c_bone.h */; };
-		2C4CCB0B1EB0F54400E0A422 /* c_extra.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCAFF1EB0F54400E0A422 /* c_extra.h */; };
-		2C4CCB0E1EB0F54400E0A422 /* c_node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB021EB0F54400E0A422 /* c_node.cpp */; };
-		2C4CCB0F1EB0F54400E0A422 /* c_node.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB031EB0F54400E0A422 /* c_node.h */; };
-		2C4CCB101EB0F54400E0A422 /* c_obj.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB041EB0F54400E0A422 /* c_obj.h */; };
-		2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB051EB0F54400E0A422 /* c_parser.cpp */; };
-		2C4CCB121EB0F54400E0A422 /* c_parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB061EB0F54400E0A422 /* c_parser.h */; };
-		2C4CCB131EB0F54400E0A422 /* c_skin.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB071EB0F54400E0A422 /* c_skin.h */; };
 		2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */; };
 		2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */; };
 		2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */; };
@@ -108,16 +98,6 @@
 
 /* Begin PBXFileReference section */
 		2C4913512064E33B006036E4 /* w_vertex_struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_vertex_struct.h; path = ../../../src/wolf.content_pipeline/w_vertex_struct.h; sourceTree = "<group>"; };
-		2C4CCAFC1EB0F54400E0A422 /* c_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_animation.h; path = ../../../src/wolf.content_pipeline/collada/c_animation.h; sourceTree = "<group>"; };
-		2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_bone.cpp; path = ../../../src/wolf.content_pipeline/collada/c_bone.cpp; sourceTree = "<group>"; };
-		2C4CCAFE1EB0F54400E0A422 /* c_bone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_bone.h; path = ../../../src/wolf.content_pipeline/collada/c_bone.h; sourceTree = "<group>"; };
-		2C4CCAFF1EB0F54400E0A422 /* c_extra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_extra.h; path = ../../../src/wolf.content_pipeline/collada/c_extra.h; sourceTree = "<group>"; };
-		2C4CCB021EB0F54400E0A422 /* c_node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_node.cpp; path = ../../../src/wolf.content_pipeline/collada/c_node.cpp; sourceTree = "<group>"; };
-		2C4CCB031EB0F54400E0A422 /* c_node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_node.h; path = ../../../src/wolf.content_pipeline/collada/c_node.h; sourceTree = "<group>"; };
-		2C4CCB041EB0F54400E0A422 /* c_obj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_obj.h; path = ../../../src/wolf.content_pipeline/collada/c_obj.h; sourceTree = "<group>"; };
-		2C4CCB051EB0F54400E0A422 /* c_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = c_parser.cpp; path = ../../../src/wolf.content_pipeline/collada/c_parser.cpp; sourceTree = "<group>"; };
-		2C4CCB061EB0F54400E0A422 /* c_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_parser.h; path = ../../../src/wolf.content_pipeline/collada/c_parser.h; sourceTree = "<group>"; };
-		2C4CCB071EB0F54400E0A422 /* c_skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = c_skin.h; path = ../../../src/wolf.content_pipeline/collada/c_skin.h; sourceTree = "<group>"; };
 		2C4CCB141EB0F59500E0A422 /* w_cpipeline_pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_cpipeline_pch.cpp; path = ../../../src/wolf.content_pipeline/w_cpipeline_pch.cpp; sourceTree = "<group>"; };
 		2C4CCB151EB0F59500E0A422 /* w_cpipeline_pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_cpipeline_pch.h; path = ../../../src/wolf.content_pipeline/w_cpipeline_pch.h; sourceTree = "<group>"; };
 		2C4CCB1B1EB0F81100E0A422 /* w_content_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_content_manager.h; path = ../../../src/wolf.content_pipeline/w_content_manager.h; sourceTree = "<group>"; };
@@ -220,23 +200,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2C4CCAFB1EB0F50D00E0A422 /* collada */ = {
-			isa = PBXGroup;
-			children = (
-				2C4CCAFC1EB0F54400E0A422 /* c_animation.h */,
-				2C4CCAFD1EB0F54400E0A422 /* c_bone.cpp */,
-				2C4CCAFE1EB0F54400E0A422 /* c_bone.h */,
-				2C4CCAFF1EB0F54400E0A422 /* c_extra.h */,
-				2C4CCB021EB0F54400E0A422 /* c_node.cpp */,
-				2C4CCB031EB0F54400E0A422 /* c_node.h */,
-				2C4CCB041EB0F54400E0A422 /* c_obj.h */,
-				2C4CCB051EB0F54400E0A422 /* c_parser.cpp */,
-				2C4CCB061EB0F54400E0A422 /* c_parser.h */,
-				2C4CCB071EB0F54400E0A422 /* c_skin.h */,
-			);
-			name = collada;
-			sourceTree = "<group>";
-		};
 		2C6858EE20D851B70096C33B /* wavefront */ = {
 			isa = PBXGroup;
 			children = (
@@ -367,7 +330,6 @@
 			children = (
 				2CE0DAB820AB68C7003BC362 /* assimp */,
 				2C8D5ABF1F4F8506000BCB87 /* amd */,
-				2C4CCAFB1EB0F50D00E0A422 /* collada */,
 				2C6858EE20D851B70096C33B /* wavefront */,
 				2CE0DAC920AC1ACE003BC362 /* w_camera.cpp */,
 				2CE0DAC820AC1ACE003BC362 /* w_camera.h */,
@@ -435,9 +397,7 @@
 				2C8D5B571F4F8AC2000BCB87 /* Stripifier.h in Headers */,
 				2C4CCB171EB0F59500E0A422 /* w_cpipeline_pch.h in Headers */,
 				2C8D5B551F4F8AC2000BCB87 /* souptomesh.h in Headers */,
-				2C4CCB101EB0F54400E0A422 /* c_obj.h in Headers */,
 				2C8D5AF51F4F8641000BCB87 /* JRTKDTreeBuilder.h in Headers */,
-				2C4CCB0A1EB0F54400E0A422 /* c_bone.h in Headers */,
 				2C8D5B291F4F89B2000BCB87 /* color.h in Headers */,
 				2C4913522064E33B006036E4 /* w_vertex_struct.h in Headers */,
 				2C8D5AEB1F4F8641000BCB87 /* JRTCore.h in Headers */,
@@ -445,13 +405,10 @@
 				2C8D5ACB1F4F861C000BCB87 /* TootleRaytracer.h in Headers */,
 				2C8D5B281F4F89B2000BCB87 /* clustering.h in Headers */,
 				2C8D5AFB1F4F8641000BCB87 /* JRTPPMImage.h in Headers */,
-				2C4CCB0B1EB0F54400E0A422 /* c_extra.h in Headers */,
 				2C8D5B4D1F4F8AC1000BCB87 /* option.h in Headers */,
 				2C8D5AFD1F4F8641000BCB87 /* JRTTriangleIntersection.h in Headers */,
 				2C8D5B0C1F4F8656000BCB87 /* JMLVec2.h in Headers */,
-				2C4CCB081EB0F54400E0A422 /* c_animation.h in Headers */,
 				2C6858F220D851DC0096C33B /* obj.h in Headers */,
-				2C4CCB121EB0F54400E0A422 /* c_parser.h in Headers */,
 				2C8D5B371F4F89B2000BCB87 /* heap.h in Headers */,
 				2C8D5B5B1F4F8AC2000BCB87 /* vector.h in Headers */,
 				2C8D5B251F4F89B2000BCB87 /* bbox.h in Headers */,
@@ -461,7 +418,6 @@
 				2C736BC61ECA1EE400624CC7 /* w_cpipeline_scene.h in Headers */,
 				2C8D5B0D1F4F8656000BCB87 /* JMLVec3.h in Headers */,
 				2C8D5AE81F4F8641000BCB87 /* JRTCamera.h in Headers */,
-				2C4CCB131EB0F54400E0A422 /* c_skin.h in Headers */,
 				2C4CCB261EB0F81100E0A422 /* w_content_manager.h in Headers */,
 				2C8D5AEF1F4F8641000BCB87 /* JRTH2KDTreeBuilder.h in Headers */,
 				2C8D5AF71F4F8641000BCB87 /* JRTMesh.h in Headers */,
@@ -475,7 +431,6 @@
 				2C8D5B531F4F8AC1000BCB87 /* soup.h in Headers */,
 				2C8D5B0A1F4F8656000BCB87 /* JMLScalar.h in Headers */,
 				2C8D5AE61F4F8641000BCB87 /* JRTBoundingBox.h in Headers */,
-				2C4CCB0F1EB0F54400E0A422 /* c_node.h in Headers */,
 				2C8D5B5A1F4F8AC2000BCB87 /* triorder.h in Headers */,
 				2C8D5AED1F4F8641000BCB87 /* JRTCoreUtils.h in Headers */,
 				2C8D5B5D1F4F8AC2000BCB87 /* window.h in Headers */,
@@ -544,7 +499,6 @@
 				2C8D5AFA1F4F8641000BCB87 /* JRTPPMImage.cpp in Sources */,
 				2C8D5AFC1F4F8641000BCB87 /* JRTTriangleIntersection.cpp in Sources */,
 				2C8D5ACA1F4F861C000BCB87 /* TootleRaytracer.cpp in Sources */,
-				2C4CCB111EB0F54400E0A422 /* c_parser.cpp in Sources */,
 				2CE0DABB20AB68E2003BC362 /* w_assimp.cpp in Sources */,
 				2C8D5AC31F4F8549000BCB87 /* amd_tootle.cpp in Sources */,
 				2C8D5AF21F4F8641000BCB87 /* JRTKDTree.cpp in Sources */,
@@ -566,9 +520,7 @@
 				2C8D5B361F4F89B2000BCB87 /* heap.cpp in Sources */,
 				2C6858F320D851DC0096C33B /* obj.cpp in Sources */,
 				2C8D5B541F4F8AC1000BCB87 /* souptomesh.cpp in Sources */,
-				2C4CCB0E1EB0F54400E0A422 /* c_node.cpp in Sources */,
 				2C4CCB161EB0F59500E0A422 /* w_cpipeline_pch.cpp in Sources */,
-				2C4CCB091EB0F54400E0A422 /* c_bone.cpp in Sources */,
 				2C8D5AE51F4F8641000BCB87 /* JRTBoundingBox.cpp in Sources */,
 				2C8D5B521F4F8AC1000BCB87 /* soup.cpp in Sources */,
 				2C8D5B4E1F4F8AC1000BCB87 /* overdraw.cpp in Sources */,
@@ -695,6 +647,7 @@
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/assimp/lib/osx/debug/";
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -731,6 +684,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

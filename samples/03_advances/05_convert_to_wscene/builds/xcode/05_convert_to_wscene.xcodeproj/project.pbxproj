@@ -248,7 +248,7 @@
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
-					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
+					"$(SRCROOT)/../../../../../bin/osx/Build/Products/Debug/",
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;

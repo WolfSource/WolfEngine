@@ -47,7 +47,7 @@
 #include <sys/stat.h>
 
 //on visual studio or a compiler used c++17(except xcode)
-#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L)
+#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L && !defined(__APPLE__))
 #include <filesystem>
 #endif
 
@@ -545,7 +545,8 @@ namespace wolf
 				return _str.substr(0, _str.size() - _ext.size());
 			}
 
-#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L)
+            //c++17 xcode not supported filesyste.h
+#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L && !defined(__APPLE__))
             inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
             {
                 pPaths.clear();
@@ -564,7 +565,7 @@ namespace wolf
 					pPaths.push_back(wolf::system::convert::wstring_to_string(_file_name.path()));
 				}
 			}
-#elif defined(__APPLE__)
+#else
             //temporary because std::filesystem not supported by xcode yet
             inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
             {

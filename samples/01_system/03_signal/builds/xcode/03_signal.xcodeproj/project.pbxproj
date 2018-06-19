@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C326D181EA5539000AEC380 /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C326D151EA5539000AEC380 /* libtbb_debug.dylib */; };
-		2C326D191EA5539000AEC380 /* libtbbmalloc_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */; };
-		2C326D1A1EA5539000AEC380 /* libwolf.system.macOS.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */; };
+		2C68590120D856730096C33B /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68590020D856730096C33B /* libwolf.system.osx.dylib */; };
 		2CB495C01E6469BC000B94F6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BD1E6469BC000B94F6 /* main.cpp */; };
 		2CB495C11E6469BC000B94F6 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB495BE1E6469BC000B94F6 /* pch.cpp */; };
 /* End PBXBuildFile section */
@@ -30,6 +28,7 @@
 		2C326D151EA5539000AEC380 /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbb_debug.dylib; sourceTree = "<group>"; };
 		2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbbmalloc_debug.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libtbbmalloc_debug.dylib; sourceTree = "<group>"; };
 		2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
+		2C68590020D856730096C33B /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.system.osx.dylib; sourceTree = "<group>"; };
 		2C8C83711E61CA6800A33C70 /* 03_signal */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 03_signal; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CB495BD1E6469BC000B94F6 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/main.cpp; sourceTree = "<group>"; };
 		2CB495BE1E6469BC000B94F6 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../src/pch.cpp; sourceTree = "<group>"; };
@@ -41,9 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C326D181EA5539000AEC380 /* libtbb_debug.dylib in Frameworks */,
-				2C326D191EA5539000AEC380 /* libtbbmalloc_debug.dylib in Frameworks */,
-				2C326D1A1EA5539000AEC380 /* libwolf.system.macOS.dylib in Frameworks */,
+				2C68590120D856730096C33B /* libwolf.system.osx.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +69,7 @@
 		2CDCB30E1E64CF1F00DC0699 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C68590020D856730096C33B /* libwolf.system.osx.dylib */,
 				2C326D151EA5539000AEC380 /* libtbb_debug.dylib */,
 				2C326D161EA5539000AEC380 /* libtbbmalloc_debug.dylib */,
 				2C326D171EA5539000AEC380 /* libwolf.system.macOS.dylib */,
@@ -247,6 +245,7 @@
 		2C8C83791E61CA6800A33C70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",
@@ -268,6 +267,7 @@
 		2C8C837A1E61CA6800A33C70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/../../../../../bin/Build/macOS/Products/Debug/",

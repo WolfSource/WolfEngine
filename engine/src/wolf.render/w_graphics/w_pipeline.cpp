@@ -1,6 +1,6 @@
 #include "w_render_pch.h"
 #include "w_pipeline.h"
-#include <w_cpipeline_model.h>
+//#include <w_cpipeline_model.h>
 
 namespace wolf
 {
@@ -404,8 +404,6 @@ namespace wolf
                 _Out_ VkPipelineInputAssemblyStateCreateInfo** pInputAssemblyStateCreateInfo,
                 _Out_ VkPipelineDynamicStateCreateInfo** pDynamicStateCreateInfo)
             {
-                W_RESULT _hr = W_PASSED;
-
                 using namespace wolf::content_pipeline;
 
                 auto _vertex_binding_descriptions = new std::vector<VkVertexInputBindingDescription>();

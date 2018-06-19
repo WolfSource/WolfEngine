@@ -10,8 +10,6 @@
 
 using namespace wolf::graphics;
 
-static int64_t  g_Time = 0;
-
 namespace wolf
 {
     namespace graphics
