@@ -161,11 +161,15 @@ namespace wolf
 
 
                 //destroy descriptor pool
-                vkDestroyDescriptorPool(this->_gDevice->vk_device,
-                    this->_descriptor_pool,
-                    nullptr);
-                this->_descriptor_pool = 0;
-
+                if (this->_descriptor_pool)
+                {
+                    vkDestroyDescriptorPool(
+                        this->_gDevice->vk_device,
+                        this->_descriptor_pool,
+                        nullptr);
+                    this->_descriptor_pool = 0;
+                }
+                
 				if (this->_entry_point_name)
 				{
 					free(this->_entry_point_name);
