@@ -36,7 +36,7 @@ tar -zxvf ./vulkan/macOS.tar.gz -C ./vulkan/
 echo "start building Wolf"
 case "$OSTYPE" in
   darwin*)  
-            xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.macOS.xcworkspace -scheme test_vulkan_macOS -sdk macosx10.13 -configuration Debug 
+            xcodebuild clean build -workspace ../../engine/builds/xcode/wolf.engine.vulkan.osx.xcworkspace -scheme test_vulkan_osx -sdk macosx10.13 -configuration Debug 
             ;; 
   linux*)   echo "LINUX" ;;
   *)        echo "OS: $OSTYPE" ;;
