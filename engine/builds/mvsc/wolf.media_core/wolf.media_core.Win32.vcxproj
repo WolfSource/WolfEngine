@@ -89,7 +89,7 @@
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/Win32/</OutDir>
+    <OutDir>$(SolutionDir)/../../../bin/win32/$(Platform)/$(Configuration)/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/Win32/</OutDir>

@@ -45,6 +45,7 @@ namespace wolf
 				_In_ w_socket_options* pSocketOption,
 				_In_ std::initializer_list<const char*> pConnectURLs = {})
             {
+				
 				const std::string _trace_info = this->_name + "::setup_one_way_puller";
 
 				this->_socket = nn_socket(pDomain, pProtocol);
@@ -71,7 +72,7 @@ namespace wolf
 					}
 					break;
 				case w_socket_connection_type::CONNECT:
-					//on conneect, which used for client
+					//on connect, which used for client
 					if (nn_connect(this->_socket, pURL) < 0)
 					{
 						V(W_FAILED, w_log_type::W_ERROR, "connecting to {}. trace info: {}", pURL, _trace_info);
@@ -98,23 +99,23 @@ namespace wolf
             
             //http://nanomsg.org/v0.1/nn_setsockopt.3.html
 			W_RESULT set_socket_option(_In_ w_socket_options* pSocketOption)
-            {
+			{
 				if (!pSocketOption) return W_FAILED;
-				
-                const std::string _trace_info = this->_name + "::set_socket_option";
-                if(nn_setsockopt(
-					this->_socket, 
-					pSocketOption->socket_level, 
+
+				const std::string _trace_info = this->_name + "::set_socket_option";
+				if (nn_setsockopt(
+					this->_socket,
+					pSocketOption->socket_level,
 					pSocketOption->option,
 					pSocketOption->option_value,
 					pSocketOption->option_value_length) < 0)
-                {
+				{
 					V(W_FAILED, w_log_type::W_ERROR, "setting socket option. level: {} option: {} . trace info: {}",
 						pSocketOption->socket_level, pSocketOption->option, _trace_info);
-                    return W_FAILED;
-                }
-                return W_PASSED;
-            }
+					return W_FAILED;
+				}
+				return W_PASSED;
+			}
             
             int release()
             {
@@ -387,3 +388,4 @@ int w_network::receive(_In_ const int& pSocketID, _In_opt_z_ char** pBuffer)
 {
     return nn_recv(pSocketID, pBuffer, NN_MSG, 0);
 }
+

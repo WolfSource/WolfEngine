@@ -22,21 +22,6 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_network.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_aligned_malloc.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\objectc.c">
-      <Filter>msgpack\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\unpack.c">
-      <Filter>msgpack\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\version.c">
-      <Filter>msgpack\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\vrefbuffer.c">
-      <Filter>msgpack\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\zone.c">
-      <Filter>msgpack\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\w_process.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -793,17 +778,12 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_network.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_aligned_malloc.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.h">
-      <Filter>msgpack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.hpp">
-      <Filter>msgpack</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\glm_extension.h" />
     <ClInclude Include="..\..\..\src\wolf.system\wolf_version.h" />
     <ClInclude Include="..\..\..\src\wolf.system\spdlog\spdlog.h">
       <Filter>spdlog</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -841,12 +821,6 @@
     </Filter>
     <Filter Include="gli\core">
       <UniqueIdentifier>{b1fa6346-6a07-4efb-831a-5f80393dce33}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="msgpack">
-      <UniqueIdentifier>{8b7e5154-9e5d-4e9d-a115-57396a807a79}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="msgpack\src">
-      <UniqueIdentifier>{477f98ff-0deb-4a65-9dce-be7996ebf9a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="spdlog">
       <UniqueIdentifier>{6e6e72db-9eb4-485e-985b-d9fd33a53203}</UniqueIdentifier>
@@ -1329,9 +1303,6 @@
     </None>
     <None Include="..\..\..\src\wolf.system\gli\core\view.inl">
       <Filter>gli\core</Filter>
-    </None>
-    <None Include="..\..\..\src\wolf.system\msgpack\ChangeLog">
-      <Filter>msgpack</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -21,21 +21,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\glm\detail\glm.cpp" />
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\objectc.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\unpack.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\version.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\vrefbuffer.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\msgpack\src\zone.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\wolf.system\w_aligned_malloc.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_cpu.cpp" />
@@ -264,8 +249,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\vec4.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm_extension.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.h" />
-    <ClInclude Include="..\..\..\src\wolf.system\msgpack\msgpack.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\msgpack.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\rapidjson\allocators.h" />
     <ClInclude Include="..\..\..\src\wolf.system\rapidjson\document.h" />
     <ClInclude Include="..\..\..\src\wolf.system\rapidjson\encodedstream.h" />
@@ -504,7 +488,6 @@
     <None Include="..\..\..\src\wolf.system\glm\gtx\vector_angle.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\vector_query.inl" />
     <None Include="..\..\..\src\wolf.system\glm\gtx\wrap.inl" />
-    <None Include="..\..\..\src\wolf.system\msgpack\ChangeLog" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\src\wolf.system\gli\version.txt" />
@@ -574,7 +557,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.dll</TargetExt>
-    <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/Win32/</OutDir>
+    <OutDir>$(SolutionDir)/../../../bin/win32/$(Platform)/$(Configuration)/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)/../../../bin/$(Platform)/$(Configuration)/Win32/</OutDir>

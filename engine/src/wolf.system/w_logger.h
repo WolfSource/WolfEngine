@@ -123,7 +123,8 @@ namespace wolf
 			bool initialize(
 				_In_z_ const std::wstring& pAppName,
 				_In_z_ const std::wstring& pLogPath,
-				_In_ const bool& pFlushJustOnError = false)
+				_In_ const bool& pFlushJustOnError = false,
+				_In_ const bool& pEnable_stdout = false)
 			{
 #ifdef __WIN32
 				auto _log_directory = pLogPath + L"\\Log\\";
@@ -149,11 +150,13 @@ namespace wolf
 				std::vector<spdlog::sink_ptr> sinks;
 
 				sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>(_log_file_path));
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(MinSizeRel)
 				sinks.push_back(std::make_shared<spdlog::sinks::msvc_sink_mt>());
-#else
-				sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
 #endif
+				if (pEnable_stdout)
+				{
+					sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+				}
 
 				this->_log_file = std::make_shared<spdlog::logger>(
 					wolf::system::convert::wstring_to_string(pAppName), begin(sinks), end(sinks));
