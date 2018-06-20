@@ -149,7 +149,7 @@ w_process_info* w_process::create_process(
 	}
 	else
 	{
-		logger.error(L"Process ID: {} could not run with arg {} . Error code : {}", pPathtoProcess, pCmdsArg, GetLastError());
+		logger.error(L"Process ID: \"{}\" could not run with arg \"{}\" . Error code : \"{}\"", pPathtoProcess, pCmdsArg, GetLastError());
 		return nullptr;
 	}
 }
