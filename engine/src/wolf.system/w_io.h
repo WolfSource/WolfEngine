@@ -46,10 +46,10 @@
 #include <iterator>
 #include <sys/stat.h>
 
-//on visual studio or a compiler used c++17(except xcode)
-#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L && !defined(__APPLE__))
-#include <filesystem>
-#endif
+//TODO: add when standard c++ support it
+//#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L)
+//#include <filesystem>
+//#endif
 
 #ifndef _MSC_VER
 #include <dirent.h>
@@ -513,7 +513,7 @@ namespace wolf
 					? L"" : pPath.substr(_index));
 			}
 
-			//Get file name
+			// pick off only filename.extension
 			inline std::string get_file_name(_In_z_ std::string pPath)
 			{
 				auto _str1 = get_parent_directory(pPath.c_str());
@@ -521,7 +521,7 @@ namespace wolf
 				return pPath.substr(_str1.size() + 1, pPath.size() - _str1.size());
 			}
 
-			//Get file name
+			// pick off only filename.extension
 			inline std::wstring get_file_nameW(_In_z_ std::wstring pPath)
 			{
 				auto _str1 = get_parent_directoryW(pPath.c_str());
@@ -529,7 +529,7 @@ namespace wolf
 				return pPath.substr(_str1.size() + 1, pPath.size() - _str1.size());
 			}
 
-			// pick off stem (base name) in filename before dot
+			// pick off stem (base name) in filename before dot without extension
 			inline std::string  get_base_file_name(_In_z_ std::string pPath)
 			{
 				auto _str = get_file_name(pPath);
@@ -537,7 +537,7 @@ namespace wolf
 				return _str.substr(0, _str.size() - _ext.size());
 			}
 
-			// pick off stem (base name) in filename before dot
+			//pick off stem (base name) in filename before dot without extension
 			inline std::wstring  get_base_file_nameW(_In_z_ std::wstring pPath)
 			{
 				auto _str = get_file_nameW(pPath);
@@ -545,28 +545,28 @@ namespace wolf
 				return _str.substr(0, _str.size() - _ext.size());
 			}
 
-            //c++17 xcode not supported filesyste.h
-#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L && !defined(__APPLE__))
-            inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
-            {
-                pPaths.clear();
-                
-                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
-                {
-                    pPaths.push_back(_file_name.path());
-                }
-            }
-			inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
-			{
-				pPaths.clear();
+            //TODO: use filesyste.h when it became standard
+//#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L && !defined(__APPLE__))
+//            inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
+//            {
+//                pPaths.clear();
+//
+//                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+//                {
+//                    pPaths.push_back(_file_name.path());
+//                }
+//            }
+//            inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
+//            {
+//                pPaths.clear();
+//
+//                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+//                {
+//                    pPaths.push_back(wolf::system::convert::wstring_to_string(_file_name.path()));
+//                }
+//            }
+//#endif
 
-				for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
-				{
-					pPaths.push_back(wolf::system::convert::wstring_to_string(_file_name.path()));
-				}
-			}
-#else
-            //temporary because std::filesystem not supported by xcode yet
             inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
             {
                 pPaths.clear();
@@ -578,14 +578,12 @@ namespace wolf
                 {
                     while ((_ent = readdir(_dir)) != NULL)
                     {
-                        pPaths.push_back(pDirectoryPath + L"/" + wolf::system::convert::string_to_wstring(_ent->d_name));
+                        pPaths.push_back(wolf::system::convert::string_to_wstring(_ent->d_name));
                     }
                     closedir(_dir);
                 }
             }
-#endif
 
-#ifndef _MSC_VER
             inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
             {
                 pPaths.clear();
@@ -601,7 +599,6 @@ namespace wolf
                     closedir(_dir);
                 }
             }
-#endif
 			
 			/*
 				Read text file from root path
