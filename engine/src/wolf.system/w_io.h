@@ -46,10 +46,9 @@
 #include <iterator>
 #include <sys/stat.h>
 
-//TODO: add when standard c++ support it
-//#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L)
-//#include <filesystem>
-//#endif
+#if defined(_WIN32) && defined(_MSC_VER)
+#include <filesystem>
+#endif
 
 #ifndef _MSC_VER
 #include <dirent.h>
@@ -545,27 +544,28 @@ namespace wolf
 				return _str.substr(0, _str.size() - _ext.size());
 			}
 
-            //TODO: use filesyste.h when it became standard
-//#if (defined(_WIN32) && defined(_MSC_VER)) || (__cplusplus >= 201703L && !defined(__APPLE__))
-//            inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
-//            {
-//                pPaths.clear();
-//
-//                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
-//                {
-//                    pPaths.push_back(_file_name.path());
-//                }
-//            }
-//            inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
-//            {
-//                pPaths.clear();
-//
-//                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
-//                {
-//                    pPaths.push_back(wolf::system::convert::wstring_to_string(_file_name.path()));
-//                }
-//            }
-//#endif
+#if defined(_WIN32) && defined(_MSC_VER)// || (__cplusplus >= 201703L && !defined(__APPLE__))
+            inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
+            {
+                pPaths.clear();
+
+                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+                {
+                    pPaths.push_back(get_base_file_nameW(_file_name.path()));
+                }
+            }
+            inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
+            {
+                pPaths.clear();
+
+				std::string _name;
+                for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
+                {
+					_name = wolf::system::convert::wstring_to_string(_file_name.path());
+                    pPaths.push_back(get_base_file_name(_name));
+                }
+            }
+#else
 
             inline void get_files_folders_in_directoryW(_In_z_ const std::wstring& pDirectoryPath, _Inout_ std::vector<std::wstring>& pPaths)
             {
@@ -599,7 +599,7 @@ namespace wolf
                     closedir(_dir);
                 }
             }
-			
+#endif
 			/*
 				Read text file from root path
 				pState indicates to state of file and the permission status, the first integer value means :
