@@ -2,6 +2,7 @@
 #include "w_network.h"
 
 #include <nanomsg/nn.h>
+#include <nanomsg/reqrep.h>
 #include <nanomsg/pipeline.h>
 #include <nanomsg/pair.h>
 #include <nanomsg/pubsub.h>
@@ -45,8 +46,7 @@ namespace wolf
 				_In_ w_socket_options* pSocketOption,
 				_In_ std::initializer_list<const char*> pConnectURLs = {})
             {
-				
-				const std::string _trace_info = this->_name + "::setup_one_way_puller";
+				const std::string _trace_info = this->_name + "::initialize";
 
 				this->_socket = nn_socket(pDomain, pProtocol);
 				if (this->_socket < 0)
@@ -138,6 +138,32 @@ w_network::w_network() : _pimp(new w_network_pimp())
 w_network::~w_network()
 {
     release();
+}
+
+W_RESULT w_network::setup_request_reply_client(
+	_In_z_ const char* pURL,
+	_In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
+{
+	if (!this->_pimp) return W_FAILED;
+	return this->_pimp->initialize(
+		pURL,
+		AF_SP, NN_REQ,
+		w_network_pimp::w_socket_connection_type::CONNECT,
+		pOnConnectionEstablishedCallback,
+		nullptr);
+}
+
+W_RESULT w_network::setup_request_reply_server(
+	_In_z_ const char* pURL,
+	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
+{
+	if (!this->_pimp) return W_FAILED;
+	return this->_pimp->initialize(
+		pURL,
+		AF_SP, NN_REP,
+		w_network_pimp::w_socket_connection_type::BIND,
+		pOnBindEstablishedCallback,
+		nullptr);
 }
 
 W_RESULT w_network::setup_one_way_pusher(

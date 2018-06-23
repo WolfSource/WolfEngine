@@ -130,7 +130,7 @@ namespace wolf
 			bool initialize(_In_ const w_logger_config& pConfig)
 			{
 #ifdef __WIN32
-				auto _log_directory = pLogPath + L"\\Log\\";
+				auto _log_directory = pConfig.log_path + L"\\Log\\";
 				auto _log_directory_cstr = _log_directory.c_str();
 				//if directory of log is not existed
 				if (io::get_is_directoryW(_log_directory_cstr) != W_PASSED)

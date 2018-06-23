@@ -114,6 +114,13 @@ namespace wolf
             WSYS_EXP w_network();
             WSYS_EXP ~w_network();
 
+			WSYS_EXP W_RESULT setup_request_reply_client(
+				_In_z_ const char* pURL,
+				_In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
+
+			WSYS_EXP W_RESULT setup_request_reply_server(
+				_In_z_ const char* pURL,
+				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
             
             WSYS_EXP W_RESULT setup_one_way_pusher(
                 _In_z_ const char* pURL, 

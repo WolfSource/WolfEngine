@@ -62,7 +62,7 @@
          location = "group:01_system/19_networking_bus_node1/builds/xcode/19_networking_bus_node1.xcodeproj">
       </FileRef>
       <FileRef
-         location = "group:01_system/20_fiber/builds/xcode/20_fiber.xcodeproj">
+         location = "group:01_system/22_fiber/builds/xcode/22_fiber.xcodeproj">
       </FileRef>
    </Group>
    <Group

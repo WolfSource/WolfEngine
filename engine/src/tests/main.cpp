@@ -69,7 +69,13 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
     auto _running_dir = wolf::system::io::get_current_directoryW();
 	std::wstring _content_path = _running_dir + L"../../../../content/";
 
-	sScene = make_unique<scene>(_content_path, _running_dir,  L"wolf.engine.vulkan.test");
+	wolf::system::w_logger_config _log_config;
+	_log_config.app_name = L"wolf.engine.vulkan.test";
+	_log_config.log_path = _running_dir;
+	_log_config.flush_log_only_on_error = false;
+	_log_config.log_to_std_out = true;
+
+	sScene = make_unique<scene>(_content_path, _log_config);
 	sWindow->run([&_windows_info]()->void
     {
         sScene->run(_windows_info);

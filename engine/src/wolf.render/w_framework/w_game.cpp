@@ -3,6 +3,7 @@
 #include <future>
 
 using namespace std;
+using namespace wolf;
 //using namespace wolf::graphics;
 using namespace wolf::framework;
 
