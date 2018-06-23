@@ -379,7 +379,7 @@ W_RESULT w_network::setup_bus_node(
 	return _hr;
 }
 
-ULONG w_network::free_buffer(_In_z_ char* pBuffer)
+W_RESULT w_network::free_buffer(_In_z_ char* pBuffer)
 {
 	if (!pBuffer) return W_PASSED;
 	const std::string _trace_info = "w_network::free_buffer";

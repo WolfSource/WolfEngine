@@ -182,7 +182,7 @@ namespace wolf
             WSYS_EXP static int receive(_In_ const int& pSocketID, _Inout_z_ char** pBuffer);
 
 			//free message buffer
-			WSYS_EXP static ULONG free_buffer(_In_z_ char* pBuffer);
+			WSYS_EXP static W_RESULT free_buffer(_In_z_ char* pBuffer);
 
 			//get last error
 			WSYS_EXP static w_network_error get_last_error();
