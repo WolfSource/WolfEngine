@@ -266,8 +266,16 @@ void work_sharing()
 
 WOLF_MAIN()
 {
+    w_logger_config _log_config;
+    _log_config.app_name = L"20_fiber";
+    _log_config.log_path = wolf::system::io::get_current_directoryW();
+#ifdef __WIN32
+    _log_config.log_to_std_out = false;
+#else
+    _log_config.log_to_std_out = true;
+#endif
     //initialize logger, and log in to the output debug window of visual studio(just for windows) and Log folder inside running directory
-    logger.initialize(L"20_fiber", wolf::system::io::get_current_directoryW());
+    logger.initialize(_log_config);
     
     //log to output file
     logger.write(L"Wolf initialized");

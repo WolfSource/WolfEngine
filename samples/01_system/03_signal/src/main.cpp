@@ -16,7 +16,15 @@ using namespace wolf::system;
 
 WOLF_MAIN()
 {
-    logger.initialize(L"03_signal", wolf::system::io::get_current_directoryW());
+    w_logger_config _log_config;
+    _log_config.app_name = L"03_signal";
+    _log_config.log_path = wolf::system::io::get_current_directoryW();
+#ifdef __WIN32
+    _log_config.log_to_std_out = false;
+#else
+    _log_config.log_to_std_out = true;
+#endif
+    logger.initialize(_log_config);
     //log to output file
     logger.write(L"Wolf initialized");
 

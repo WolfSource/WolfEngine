@@ -14,6 +14,7 @@ Notable new features:
 - system::w_logger optimized and integrated with spdlog 
 - framework::w_media_core optimized for streaming
 
+
 # 1.63.1.0 (2018-04-19)
 
 A major release with many compatibility-breaking changes.

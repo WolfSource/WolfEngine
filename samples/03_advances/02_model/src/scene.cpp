@@ -15,8 +15,8 @@ static float sTotalTimeTimeInSec = 0;
 static bool sShowBoundingBox = true;
 static bool sReBuild = true;
 
-scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
-    w_game(pContentPath, pLogPath, pAppName)
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
+    w_game(pContentPath, pLogConfig)
 {
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = false;

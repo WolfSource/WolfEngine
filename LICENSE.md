@@ -17,6 +17,12 @@
 
 ## Third Party Licenses
 <p>The following sets forth attribution notices for third party software that may be contained in portions of the Wolf Engine. Thanks for the open source community for all of their contributions.</p>
+
+<p>Sponza Model</p>
+<pre>the <a href="http://hdri.cgtechniques.com/~sponza/files/" target="_blank">Sponza</a> in folder "content/sponza/ " modeled by Marko Dabrovic (CIS565 simplified version)
+copyright: Marko Dabrovic / cgtechniques.com 2002 and the textures optimized by Hamed MehrAli Dehnavi
+</pre>
+
 <p><b>boost.python</b></p>
 <pre>
 Boost Software License - Version 1.0 - August 17th, 2003

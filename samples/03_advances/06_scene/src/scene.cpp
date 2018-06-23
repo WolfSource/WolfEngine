@@ -45,14 +45,15 @@ static float sTotalTimeTimeInSec = 0;
 
 static std::once_flag _once_flag;
 
-scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
-	w_game(pContentPath, pLogPath, pAppName),
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
+	w_game(pContentPath, pLogConfig),
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	_current_selected_model(nullptr),
 	_show_all_instances_colors(false),
-	_rebuild_command_buffer(true)
+	_rebuild_command_buffer(true),
+    _index_of_selected_mesh(0)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 {
@@ -480,6 +481,7 @@ ULONG scene::release()
 		SAFE_RELEASE(_m);
 	}
 	this->_current_selected_model = nullptr;
+    this->_index_of_selected_mesh = 0;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -502,9 +504,14 @@ void scene::_show_floating_debug_window()
 	_style.WindowPadding = ImVec2(5, 0);
 	_style.ItemSpacing = ImVec2(0, 2);
 
+    auto _orange_color = Colors::Orange;
 	_style.Colors[ImGuiCol_Text] = Colors::White;
 	_style.Colors[ImGuiCol_WindowBg] = Colors::LightBlue;
-	
+    _style.Colors[ImGuiCol_Button] = _orange_color;
+    _orange_color.w = 0.7f;
+    _style.Colors[ImGuiCol_ButtonHovered] = _orange_color;
+    _style.Colors[ImGuiCol_ButtonActive] = Colors::LightBlue;
+    
 	ImGuiWindowFlags  _window_flags = 0;;
 	ImGui::SetNextWindowSize(ImVec2(400, 350), ImGuiSetCond_FirstUseEver);
 
@@ -516,33 +523,66 @@ void scene::_show_floating_debug_window()
 		ImGui::End();
 		return;
 	}
-
-	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
+    
+    //get name of selected mesh
+    std::string _selected_mesh_name = "";
+    if(this->_current_selected_model)
+    {
+        if(this->_index_of_selected_mesh)
+        {
+            auto _index = this->_index_of_selected_mesh - 1;
+            //this is instance
+            auto _instances = this->_current_selected_model->get_instances();
+            if ( _index >= 0 && _index < _instances.size())
+            {
+                _selected_mesh_name = _instances[_index].name;
+            }
+        }
+        else
+        {
+            //this is ref mesh
+            _selected_mesh_name = this->_current_selected_model->get_model_name();
+        }
+    }
+    
+    ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nSelected Mesh:%s\r\n",
 		sFPS,
 		sElapsedTimeInSec,
-		sTotalTimeTimeInSec);
-
-	if (ImGui::Checkbox("Show all", &this->_show_all))
-	{
-		for (auto _m : this->_models)
-		{
-			if (!_m) continue;
-			_m->set_visible(this->_show_all);
-		}
-		this->_rebuild_command_buffer = true;
-	}
-
-	if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
-	{
-		for (auto _m : this->_models)
-		{
-			if (!_m) continue;
-			_m->set_enable_instances_colors(this->_show_all_instances_colors);
-		}
-	}
+		sTotalTimeTimeInSec,
+        _selected_mesh_name.c_str());
 
 	if (this->_current_selected_model)
 	{
+        if (ImGui::Button("Focus"))
+        {
+            auto _b_sphere = w_bounding_sphere::create_from_bounding_box(this->_current_selected_model->get_global_bounding_box());
+            
+            if (this->_index_of_selected_mesh)
+            {
+                //this is instance
+                auto _index = this->_index_of_selected_mesh - 1;
+                auto _instances = this->_current_selected_model->get_instances();
+                if ( _index >= 0 && _index < _instances.size())
+                {
+                    auto _ins = &_instances[_index];
+                    if (_ins)
+                    {
+                        _b_sphere.center[0] = _ins->position[0];
+                        _b_sphere.center[1] = _ins->position[1];
+                        _b_sphere.center[2] = _ins->position[2];
+                    
+                        this->_first_camera.focus(_b_sphere);
+                        this->_force_update_camera = true;
+                    }
+                }
+            }
+            else
+            {
+                this->_first_camera.focus(_b_sphere);
+                this->_force_update_camera = true;
+            }
+        }
+        
 		auto _checked = this->_current_selected_model->get_enable_instances_colors();
 		if (ImGui::Checkbox("Show instances colors", &_checked))
 		{
@@ -555,7 +595,24 @@ void scene::_show_floating_debug_window()
 			this->_rebuild_command_buffer = true;
 		}
 	}
-
+    if (ImGui::Checkbox("Show all", &this->_show_all))
+    {
+        for (auto _m : this->_models)
+        {
+            if (!_m) continue;
+            _m->set_visible(this->_show_all);
+        }
+        this->_rebuild_command_buffer = true;
+    }
+    
+    if (ImGui::Checkbox("Show all instances colors", &this->_show_all_instances_colors))
+    {
+        for (auto _m : this->_models)
+        {
+            if (!_m) continue;
+            _m->set_enable_instances_colors(this->_show_all_instances_colors);
+        }
+    }
 	ImGui::End();
 
 	return;
@@ -713,33 +770,50 @@ scene::widget_info scene::_show_search_widget(_In_ scene::widget_info* pRelatedW
 					//The Ref
 					ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, "Ref model");
 					auto _b_sphere = w_bounding_sphere::create_from_bounding_box(_model->get_global_bounding_box());
+                    //on right click select and focus on it
 					if (ImGui::IsItemClicked(1))
 					{
-						//on double click, focus on object
 						this->_first_camera.focus(_b_sphere);
 						this->_force_update_camera = true;
 
+                        //select the ref model
 						this->_current_selected_model = _model;
+                        this->_index_of_selected_mesh = 0;
 					}
+                    //on left click, change debug window also select the ref model
 					else if (ImGui::IsItemClicked(0))
 					{
-						//on left click, change debug window
 						this->_current_selected_model = _model;
+                        this->_index_of_selected_mesh = 0;
 					}
 					//create sub tree nodes for all instances of models
-					for (auto& _ins : _model->get_instances())
+                    auto _instances = _model->get_instances();
+                    for (int i = 0; i < _instances.size(); ++i)
 					{
-						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins.name.c_str());
+                        auto _ins = &_instances[i];
+                        if (!_ins) continue;
+                        
+						ImGui::TreeNodeEx((void*)(intptr_t)i, _node_flags, _ins->name.c_str());
+                         //on right click select and focus on it
                         if (ImGui::IsItemClicked(1))
 						{
+                            this->_current_selected_model = _model;
+                            this->_index_of_selected_mesh = i + 1;
+                            
 							//on double click, focus on object
-							_b_sphere.center[0] = _ins.position[0];
-							_b_sphere.center[1] = _ins.position[1];
-							_b_sphere.center[2] = _ins.position[2];
+							_b_sphere.center[0] = _ins->position[0];
+							_b_sphere.center[1] = _ins->position[1];
+							_b_sphere.center[2] = _ins->position[2];
 
 							this->_first_camera.focus(_b_sphere);
 							this->_force_update_camera = true;
 						}
+                        //on left click, pick it
+                        else if (ImGui::IsItemClicked(0))
+                        {
+                            this->_current_selected_model = _model;
+                            this->_index_of_selected_mesh = i + 1;
+                        }
 					}
 					ImGui::PopStyleColor();
 					ImGui::TreePop();

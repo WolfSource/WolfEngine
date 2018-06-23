@@ -50,8 +50,14 @@ void init_window(struct w_window_info& pInfo)
     auto _running_dir = wolf::system::io::get_current_directoryW();
     std::wstring _content_path = _running_dir + L"/../../../../../content/";
     
+    wolf::system::w_logger_config _log_config;
+    _log_config.app_name = L"test.wolf.engine.vulkan.osx";
+    _log_config.log_path = _running_dir;
+    _log_config.flush_log_only_on_error = false;
+    _log_config.log_to_std_out = true;
+    
 #if defined __APPLE__
-    sScene = new scene(_content_path, _running_dir , L"test.wolf.engine.vulkan.osx");
+    sScene = new scene(_content_path, _log_config);
 #elif defined __iOS__
     sScene = new scene([NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String,
                        "test.wolf.engine.vulkan.iOS");

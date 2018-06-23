@@ -52,8 +52,8 @@ static std::atomic<int> MousePosX = 0;
 static std::atomic<int> MousePosY = 0;
 #endif
 
-scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
-	w_game(pContentPath, pLogPath, pAppName)
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
+	w_game(pContentPath, pLogConfig)
 {
 	using namespace wolf;
 

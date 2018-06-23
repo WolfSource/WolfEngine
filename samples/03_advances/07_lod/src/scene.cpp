@@ -41,8 +41,8 @@ static float sTotalTimeTimeInSec = 0;
 
 static std::once_flag _once_flag;
 
-scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
-	w_game(pContentPath, pLogPath, pAppName),
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
+	w_game(pContentPath, pLogConfig),
 	_current_selected_model(nullptr),
 	_show_all_instances_colors(false),
 	_rebuild_command_buffer(true),

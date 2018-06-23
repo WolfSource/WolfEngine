@@ -6,9 +6,9 @@ using namespace std;
 //using namespace wolf::graphics;
 using namespace wolf::framework;
 
-w_game::w_game(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
+w_game::w_game(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	exiting(false),
-    _app_name(pAppName)
+    _app_name(pLogConfig.app_name)
 {
 	_super::set_class_name("w_game");
 	content_path = pContentPath;
@@ -20,7 +20,7 @@ w_game::w_game(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstrin
 #ifdef __UWP
         logger.initialize(pAppName);
 #else
-        logger.initialize(pAppName, pLogPath);
+        logger.initialize(pLogConfig);
 #endif
     }
 }

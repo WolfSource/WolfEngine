@@ -54,9 +54,12 @@ void init_window(struct w_window_info& pInfo)
     std::string _root_dir = [NSBundle.mainBundle.resourcePath stringByAppendingString: @"/"].UTF8String + std::string("../../../");
     std::string _content_path = _root_dir +  "/../../../../../content/";
     
-    sScene = new scene(wolf::system::convert::string_to_wstring(_content_path),
-                       wolf::system::convert::string_to_wstring(_root_dir),
-                       L"wolf.vulkan.osx.sample");
+    w_logger_config _log_config;
+    _log_config.app_name = L"wolf.vulkan.osx.sample";
+    _log_config.log_path = wolf::system::convert::string_to_wstring(_root_dir);
+    _log_config.log_to_std_out = true;
+
+    sScene = new scene(wolf::system::convert::string_to_wstring(_content_path), _log_config);
     
     //initialize the information of window
     w_window_info _window_info;

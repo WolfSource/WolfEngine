@@ -17,8 +17,8 @@ static float sPushConstantColorEdit[4] = { 0.4f, 0.7f, 0.0f, 1.0f };
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
-    w_game(pContentPath, pLogPath, pAppName)
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
+    w_game(pContentPath, pLogConfig)
 {
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = false;

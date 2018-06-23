@@ -52,6 +52,13 @@ namespace wolf
 {
     namespace system
     {
+        struct w_logger_config
+        {
+            std::wstring app_name;
+            std::wstring log_path;
+            bool flush_log_only_on_error = false;
+            bool log_to_std_out = true;
+        };
         class w_logger
         {
         public:
@@ -120,11 +127,7 @@ namespace wolf
 				return true;
 			}
 #else
-			bool initialize(
-				_In_z_ const std::wstring& pAppName,
-				_In_z_ const std::wstring& pLogPath,
-				_In_ const bool& pFlushJustOnError = false,
-				_In_ const bool& pEnable_stdout = false)
+			bool initialize(_In_ const w_logger_config& pConfig)
 			{
 #ifdef __WIN32
 				auto _log_directory = pLogPath + L"\\Log\\";
@@ -137,7 +140,7 @@ namespace wolf
 				}
 				auto _log_file_path = _log_directory + io::get_unique_nameW() + L".wLog";
 #else
-				auto _log_directory = wolf::system::convert::wstring_to_string(pLogPath) + "/Log/";
+				auto _log_directory = wolf::system::convert::wstring_to_string(pConfig.log_path) + "/Log/";
 				auto _log_directory_cstr = _log_directory.c_str();
 				//if directory of log is not existed
 				if (io::get_is_directory(_log_directory_cstr) != W_PASSED)
@@ -153,13 +156,13 @@ namespace wolf
 #if defined(_MSC_VER) && !defined(MinSizeRel)
 				sinks.push_back(std::make_shared<spdlog::sinks::msvc_sink_mt>());
 #endif
-				if (pEnable_stdout)
+				if (pConfig.log_to_std_out)
 				{
 					sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
 				}
 
 				this->_log_file = std::make_shared<spdlog::logger>(
-					wolf::system::convert::wstring_to_string(pAppName), begin(sinks), end(sinks));
+					wolf::system::convert::wstring_to_string(pConfig.app_name), begin(sinks), end(sinks));
 				if (!this->_log_file)
 				{
 					return false;
@@ -170,7 +173,7 @@ namespace wolf
 					"Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\". "\
 					"Contact: \"Contact@WolfSource.io\" "\
 					"Version: {}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
-				if (pFlushJustOnError)
+				if (pConfig.flush_log_only_on_error)
 				{
 					this->_log_file->flush_on(spdlog::level::level_enum::err);
 				}

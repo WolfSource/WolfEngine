@@ -66,7 +66,6 @@
 		2C28033E1E61C73600048A80 = {
 			isa = PBXGroup;
 			children = (
-				2CE0DAB720AB6495003BC362 /* 03-advances */,
 				2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */,
 				2CB69EDD1F62E1BF0068D1E6 /* scene.h */,
 				2CB69ED71F62DDF60068D1E6 /* ViewController.h */,
@@ -115,14 +114,6 @@
 				2CB69EE01F62E53C0068D1E6 /* MoltenVK.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		2CE0DAB720AB6495003BC362 /* 03-advances */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "03-advances";
-			path = ../../../..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

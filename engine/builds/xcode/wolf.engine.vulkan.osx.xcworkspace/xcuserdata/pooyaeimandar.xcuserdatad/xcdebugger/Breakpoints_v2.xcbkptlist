@@ -76,9 +76,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "297"
-            endingLineNumber = "297"
-            landmarkName = "release()"
-            landmarkType = "7">
+            endingLineNumber = "297">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -895,29 +893,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../src/wolf.render/w_framework/w_game.cpp"
-            timestampString = "542924852.759581"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "123"
-            endingLineNumber = "123"
-            landmarkName = "w_game::release()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "../../src/tests/scene.cpp"
             timestampString = "551104436.958914"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "60"
             endingLineNumber = "60"
-            landmarkName = "scene::scene(_In_z_ const std::wstring&amp; pContentPath, _In_z_ const std::wstring&amp; pLogPath, _In_z_ const std::wstring&amp; pAppName)"
+            landmarkName = "scene::scene(_In_z_ const std::wstring&amp; pContentPath, _In_ const system::w_logger_config&amp; pLogConfig)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

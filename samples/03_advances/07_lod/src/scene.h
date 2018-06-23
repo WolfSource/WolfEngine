@@ -27,7 +27,7 @@
 class scene : public wolf::framework::w_game
 {
 public:
-	scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName);
+	scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig);
 	virtual ~scene();
 
 	/*

@@ -26,7 +26,7 @@ namespace wolf
 		class w_game : public wolf::graphics::w_graphics_device_manager
 		{
 		public:
-            W_EXP w_game(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName = L"Wolf.Engine");
+            W_EXP w_game(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig);
             
 			W_EXP virtual ~w_game();
 

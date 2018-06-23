@@ -17,8 +17,15 @@ using namespace wolf::system;
 //Entry point of program 
 WOLF_MAIN()
 {
-    const wchar_t* _name = L"18_networking_bus_node0";
-    logger.initialize(_name, wolf::system::io::get_current_directoryW());
+    w_logger_config _log_config;
+    _log_config.app_name = L"18_networking_bus_node0";
+    _log_config.log_path = wolf::system::io::get_current_directoryW();
+#ifdef __WIN32
+    _log_config.log_to_std_out = false;
+#else
+    _log_config.log_to_std_out = true;
+#endif
+    logger.initialize(_log_config);
     
     w_signal<void(const int&)> on_bind_established;
 	on_bind_established += [](const int& pSocketID)
