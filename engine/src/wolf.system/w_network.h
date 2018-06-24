@@ -162,7 +162,6 @@ namespace wolf
 				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
 				_In_ std::initializer_list<const char*> pConnectURLs);
 
-
             WSYS_EXP ULONG release();
 
             /*

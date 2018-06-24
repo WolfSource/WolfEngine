@@ -75,6 +75,8 @@ namespace wolf
 
 #endif //__WIN32 || __UWP
 
+#if __cplusplus < 201703L
+			//TODO: fix these for c++17 
             // convert UTF-8 string to wstring
             inline std::wstring from_utf8(const std::string& pStr)
             {
@@ -88,7 +90,7 @@ namespace wolf
                 std::wstring_convert<std::codecvt_utf16<wchar_t>> _convert;
                 return _convert.from_bytes(pStr);
             }
-            
+
             // convert wstring to UTF-8 string
             inline std::string to_utf8(const std::wstring& pStr)
             {
@@ -102,7 +104,7 @@ namespace wolf
                 std::wstring_convert<std::codecvt_utf16<wchar_t>> _convert;
                 return _convert.to_bytes(pStr);
             }
-            
+#endif
 			inline int to_hex(const std::string& pStr)
 			{
 				std::stringstream _ss;

@@ -784,6 +784,7 @@
       <Filter>spdlog</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\msgpack.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\asio.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
