@@ -86,7 +86,15 @@ WOLF_MAIN()
 	error
 #endif
 
-	sScene = make_unique<scene>(_content_path, _running_dir, L"wolf.vulkan.sample");
+	wolf::system::w_logger_config _log_config;
+	_log_config.app_name = L"wolf.vulkan.sample";
+	_log_config.log_path = wolf::system::io::get_current_directoryW();
+#ifdef __WIN32
+	_log_config.log_to_std_out = false;
+#else
+	_log_config.log_to_std_out = true;
+#endif
+	sScene = make_unique<scene>(_content_path, _log_config);
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project

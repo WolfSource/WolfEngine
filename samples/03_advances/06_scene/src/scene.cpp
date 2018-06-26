@@ -637,6 +637,12 @@ scene::widget_info scene::_show_left_widget_controller()
 	_style.ChildBorderSize = 0;
 #pragma endregion
 
+	_style.Colors[ImGuiCol_Button] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ButtonHovered] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ButtonActive] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ImageButtonActive] = Colors::White;
+	_style.Colors[ImGuiCol_ImageButtonHovered] = Colors::Orange;
+
 	ImGuiWindowFlags _window_flags = 0;
 	_window_flags |= ImGuiWindowFlags_NoTitleBar;
 	_window_flags |= ImGuiWindowFlags_NoResize;
@@ -889,6 +895,12 @@ scene::widget_info scene::_show_explorer()
 	_window_flags |= ImGuiWindowFlags_NoMove;
 	_window_flags |= ImGuiWindowFlags_NoScrollbar;
 	_window_flags |= ImGuiWindowFlags_NoCollapse;
+
+	_style.Colors[ImGuiCol_Button] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ButtonHovered] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ButtonActive] = Colors::Transparent;
+	_style.Colors[ImGuiCol_ImageButtonActive] = Colors::White;
+	_style.Colors[ImGuiCol_ImageButtonHovered] = Colors::Orange;
 
 	ImGui::SetNextWindowSize(sLeftWidgetControllerSize, ImGuiCond_Always);
 	ImGui::SetNextWindowPos(_w_i.pos);

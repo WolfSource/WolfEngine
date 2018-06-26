@@ -20,16 +20,20 @@ using namespace wolf::content_pipeline;
 int main()
 {
 	//set content path directory
-	auto _content_path_dir = wolf::system::io::get_current_directoryW();
+	auto _current_path_dir = wolf::system::io::get_current_directoryW();
 #ifdef WIN32
-	_content_path_dir += L"/../../../../content/";
+	auto _content_path_dir = _current_path_dir + L"/../../../../content/";
 #elif defined(__APPLE__)
-	_content_path_dir += L"/../../../../../content/";
+	auto _content_path_dir = _current_path_dir + L"/../../../../../content/";
 #endif // WIN32
 
-    const bool _flush_just_on_error = false;
-    const bool _log_to_std_out = true;
-    logger.initialize(L"05_convert_to_wscene.Win32", _content_path_dir, _flush_just_on_error, _log_to_std_out);
+ 
+	wolf::system::w_logger_config _log_config;
+	_log_config.app_name = L"05_convert_to_wscene.Win32";
+	_log_config.log_path = _current_path_dir;
+	_log_config.log_to_std_out = true;
+
+    logger.initialize(_log_config);
 	//log to output file
 	logger.write(L"wolf initialized");
 

@@ -92,7 +92,15 @@ WOLF_MAIN()
 #endif
 
 	const uint32_t _width = 1280, _height = 720;
-	sScene = make_unique<scene>(_content_path, _running_dir, L"wolf.vulkan.sample");
+	wolf::system::w_logger_config _log_config;
+	_log_config.app_name = L"wolf.vulkan.sample";
+	_log_config.log_path = wolf::system::io::get_current_directoryW();
+#ifdef __WIN32
+	_log_config.log_to_std_out = false;
+#else
+	_log_config.log_to_std_out = true;
+#endif
+	sScene = make_unique<scene>(_content_path, _log_config);
     sWindow = make_unique<w_window>();
 	sWindow->set_width(_width);
 	sWindow->set_height(_height);
