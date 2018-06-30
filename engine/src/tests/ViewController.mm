@@ -14,10 +14,10 @@
 static NSView*                                      sSampleView;
 static CVDisplayLinkRef                             sDisplayLink;
 static scene*                                       sScene;
-static std::map<int, w_window_info>    sWindowInfo;
+static std::map<int, w_present_info>    sWindowInfo;
 
 //called from c++
-void init_window(struct w_window_info& pInfo)
+void init_window(struct w_present_info& pInfo)
 {
     sSampleView.bounds = CGRectMake(0, 0, pInfo.width, pInfo.height);
     pInfo.window = (void*)CFBridgingRetain(sSampleView);
@@ -67,7 +67,7 @@ void init_window(struct w_window_info& pInfo)
     sSampleView = self.view;
     
     //run the vulkan sample
-    w_window_info _window_info;
+    w_present_info _window_info;
     _window_info.width = 800;
     _window_info.height = 600;
     _window_info.swap_chain_format = 38;//VK_FORMAT_R8G8B8A8_SNORM
