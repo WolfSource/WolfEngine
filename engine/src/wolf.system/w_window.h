@@ -115,8 +115,8 @@ struct w_enumerate_screens
 
 };
 
-//Store the information of window
-struct w_window_info
+//store the information of presentation
+struct w_present_info
 {
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
 
@@ -152,9 +152,26 @@ struct w_window_info
     
     //BGRA8Unorm for DirectX12 is "87" and for VULKAN is 44
 	uint32_t			swap_chain_format = 44;
+    //set whether cpu can access to swap chain buffer, this flag does not have any effect when using embree as render platform
     bool                cpu_access_swap_chain_buffer = false;
+    //set use double buffering, this flag does not have any effect when using embree as render platform
 	bool				double_buffering = true;
 
+    /*
+        following render platforms available:
+        vulkan : https://www.khronos.org/vulkan/
+        embree : https://embree.github.io/
+     */
+    std::string         platform;
+    /*
+     on target machine which has multiple graphics devices, you can
+     select preferred graphics device associated to this window, calling the function
+     w_graphics_device_manager::query_for_available_graphic_devices will help to get all graphics devices
+     */
+    size_t              preferred_graphics_device_index;
+    //title of window
+    std::string         title;
+    
 #ifdef __PYTHON__
 
     void py_set_win_id(boost::python::object pWinID)
