@@ -11,8 +11,8 @@
 		2CB0F6A520E3FEDE007C4553 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB0F6A220E3FEDE007C4553 /* pch.cpp */; };
 		2CB0F6A820E3FF8E007C4553 /* libwolf.embree.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB0F6A720E3FF8E007C4553 /* libwolf.embree.osx.dylib */; };
 		2CB0F6AA20E3FF8E007C4553 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB0F6A920E3FF8E007C4553 /* libwolf.system.osx.dylib */; };
-		2CB0F6AC20E3FFA0007C4553 /* libembree3.3.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB0F6AB20E3FFA0007C4553 /* libembree3.3.2.0.dylib */; };
 		2CB0F6B820E505D6007C4553 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB0F6B720E505D6007C4553 /* scene.cpp */; };
+		2CB0F6BA20E76E62007C4553 /* libembree3.3.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB0F6B920E76E62007C4553 /* libembree3.3.2.0.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +37,7 @@
 		2CB0F6AB20E3FFA0007C4553 /* libembree3.3.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libembree3.3.2.0.dylib; path = ../../../../dependencies/embree/lib/osx/debug/libembree3.3.2.0.dylib; sourceTree = "<group>"; };
 		2CB0F6B620E505D6007C4553 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = ../../../../src/tests/embree/scene.h; sourceTree = "<group>"; };
 		2CB0F6B720E505D6007C4553 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../../../src/tests/embree/scene.cpp; sourceTree = "<group>"; };
+		2CB0F6B920E76E62007C4553 /* libembree3.3.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libembree3.3.2.0.dylib; path = ../../../../dependencies/embree/lib/osx/libembree3.3.2.0.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,7 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CB0F6AC20E3FFA0007C4553 /* libembree3.3.2.0.dylib in Frameworks */,
+				2CB0F6BA20E76E62007C4553 /* libembree3.3.2.0.dylib in Frameworks */,
 				2CB0F6A820E3FF8E007C4553 /* libwolf.embree.osx.dylib in Frameworks */,
 				2CB0F6AA20E3FF8E007C4553 /* libwolf.system.osx.dylib in Frameworks */,
 			);
@@ -78,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				2CB0F6AB20E3FFA0007C4553 /* libembree3.3.2.0.dylib */,
+				2CB0F6B920E76E62007C4553 /* libembree3.3.2.0.dylib */,
 				2CB0F6A720E3FF8E007C4553 /* libwolf.embree.osx.dylib */,
 				2CB0F6A920E3FF8E007C4553 /* libwolf.system.osx.dylib */,
 			);
@@ -264,7 +266,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/embree/lib/osx/debug/";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/embree/lib/osx/";
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -276,7 +278,7 @@
 					"$(SRCROOT)/../../../../src/wolf.render/embree/",
 					"$(SRCROOT)/../../../../dependencies/embree/include",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/embree/lib/osx/debug/";
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/embree/lib/osx/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
