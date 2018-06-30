@@ -1,3 +1,4 @@
+#ifdef __
 #include "w_render_pch.h"
 #include "w_game.h"
 #include <future>

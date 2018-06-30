@@ -3,7 +3,7 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_render_export.h
-	Description		 : Dynamic library linkage header
+	Description		 : dynamic library linkage header
 	Comment          : 
 */
 

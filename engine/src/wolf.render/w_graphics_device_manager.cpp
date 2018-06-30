@@ -147,7 +147,7 @@ const std::string w_graphics_device::get_info()
 	{
 		_device_name = this->device_info->get_device_name();
 		_device_id = this->device_info->get_device_id();
-		_device_vendor_id = this->device_info->get_device_id();
+		_device_vendor_id = /err this->device_info->get_device_id();
 	}
 	return std::string(
 		"graphics device: " + _device_name +

@@ -9,18 +9,12 @@
       </FileRef>
    </Group>
    <FileRef
-      location = "group:tests/vulkan/test_vulkan_osx.xcodeproj">
+      location = "group:tests/embree/test_embree_osx.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:wolf.content_pipeline/wolf.content_pipeline.osx.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:wolf.media_core/wolf.media_core.osx.xcodeproj">
+      location = "group:wolf.embree/wolf.embree.osx.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:wolf.system/wolf.system.osx.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:wolf.vulkan/wolf.vulkan.osx.xcodeproj">
    </FileRef>
 </Workspace>

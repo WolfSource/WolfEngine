@@ -22,7 +22,7 @@
 #include "w_system_export.h"
 #include "w_std.h"
 
-enum LOAD_STATE { NOTLOADED, LOADING, LOADED };
+enum LOAD_STATE { NOTLOADED, LOADING, LOADED, ERROR };
 
 namespace wolf
 {

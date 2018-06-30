@@ -223,6 +223,8 @@
 		2C94BC271FEE5C62007338F7 /* w_network.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C94BC251FEE5C62007338F7 /* w_network.h */; };
 		2C94BC291FF1A0E9007338F7 /* libnanomsg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C94BC281FF1A0E9007338F7 /* libnanomsg.a */; };
 		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
+		2CB0F68620E3C027007C4553 /* wolf_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB0F68420E3C026007C4553 /* wolf_version.h */; };
+		2CB0F68720E3C027007C4553 /* asio.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2CB0F68520E3C027007C4553 /* asio.hpp */; };
 		2CD790D220D43DB300E14B50 /* spdlog.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CD790D120D43DB300E14B50 /* spdlog.h */; };
 		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
 		2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF71E64307D005E0F45 /* w_convert.h */; };
@@ -668,6 +670,8 @@
 		2C94BC251FEE5C62007338F7 /* w_network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_network.h; path = ../../../src/wolf.system/w_network.h; sourceTree = "<group>"; };
 		2C94BC281FF1A0E9007338F7 /* libnanomsg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libnanomsg.a; path = ../../../dependencies/nanomsg/lib/osx/debug/libnanomsg.a; sourceTree = "<group>"; };
 		2C98996B1E9B512F002FE161 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../src/wolf.system/stb_image.h; sourceTree = "<group>"; };
+		2CB0F68420E3C026007C4553 /* wolf_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wolf_version.h; path = ../../../src/wolf.system/wolf_version.h; sourceTree = "<group>"; };
+		2CB0F68520E3C027007C4553 /* asio.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = asio.hpp; path = ../../../src/wolf.system/asio.hpp; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD790D120D43DB300E14B50 /* spdlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spdlog.h; path = ../../../src/wolf.system/spdlog/spdlog.h; sourceTree = "<group>"; };
 		2CE5BAF61E64307D005E0F45 /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
@@ -1181,6 +1185,8 @@
 				2CFD40F11F51FF9300BF9A65 /* rapidjson */,
 				2C7BC43E1F51A2FB009F0C6E /* rapidxml */,
 				2CD790D020D43D8B00E14B50 /* spdlog */,
+				2CB0F68520E3C027007C4553 /* asio.hpp */,
+				2CB0F68420E3C026007C4553 /* wolf_version.h */,
 				2C49134F2064E312006036E4 /* glm_extension.h */,
 				2C68597320D91B170096C33B /* msgpack.hpp */,
 				2CF54B1F205BBAC3000B80E3 /* w_aligned_malloc.cpp */,
@@ -1434,6 +1440,7 @@
 				2C6521F21FD4AF7D0030A053 /* sampler_cube.hpp in Headers */,
 				2CFD41351F5200D500BF9A65 /* swap.h in Headers */,
 				2C6523461FD4B0930030A053 /* euler_angles.hpp in Headers */,
+				2CB0F68620E3C027007C4553 /* wolf_version.h in Headers */,
 				2C6523B41FD4B0B40030A053 /* matrix_inverse.hpp in Headers */,
 				2C65228A1FD4AFFC0030A053 /* mat2x2.hpp in Headers */,
 				2CFFAD3D1FCEAE490020A112 /* stb_image_write.h in Headers */,
@@ -1489,6 +1496,7 @@
 				2C6523451FD4B0930030A053 /* raw_data.hpp in Headers */,
 				2C7BC4461F51A320009F0C6E /* rapidxml.hpp in Headers */,
 				2CE5BB211E64307D005E0F45 /* w_timer_callback.h in Headers */,
+				2CB0F68720E3C027007C4553 /* asio.hpp in Headers */,
 				2C6523C41FD4B0D70030A053 /* packing.h in Headers */,
 				2C6522851FD4AFFC0030A053 /* glm.hpp in Headers */,
 				2CFD410E1F52007B00BF9A65 /* memorystream.h in Headers */,
@@ -1777,13 +1785,14 @@
 		2CD6172F1E59DA3E006FC5DC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -1813,13 +1822,14 @@
 		2CD617301E59DA3E006FC5DC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				DEVELOPMENT_TEAM = J2WEUYPJ98;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "";
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;

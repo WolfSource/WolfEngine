@@ -3,7 +3,7 @@
 	Source			 : Please direct any bug to https://github.com/PooyaEimandar/Wolf.Engine/issues
 	Website			 : http://WolfSource.io
 	Name			 : w_render_pch.h
-	Description		 : Pre-Compiled header of Wolf.DirectX
+	Description		 : pre-compiled header
 	Comment          :
 */
 

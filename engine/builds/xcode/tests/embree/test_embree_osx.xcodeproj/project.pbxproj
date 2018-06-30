@@ -1,0 +1,319 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2CB0F6A420E3FEDE007C4553 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB0F6A120E3FEDE007C4553 /* main.cpp */; };
+		2CB0F6A520E3FEDE007C4553 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB0F6A220E3FEDE007C4553 /* pch.cpp */; };
+		2CB0F6A820E3FF8E007C4553 /* libwolf.embree.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB0F6A720E3FF8E007C4553 /* libwolf.embree.osx.dylib */; };
+		2CB0F6AA20E3FF8E007C4553 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB0F6A920E3FF8E007C4553 /* libwolf.system.osx.dylib */; };
+		2CB0F6AC20E3FFA0007C4553 /* libembree3.3.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB0F6AB20E3FFA0007C4553 /* libembree3.3.2.0.dylib */; };
+		2CB0F6B820E505D6007C4553 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB0F6B720E505D6007C4553 /* scene.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2CB0F69520E3FE7D007C4553 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2CB0F69720E3FE7D007C4553 /* test_embree_osx */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_embree_osx; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CB0F6A120E3FEDE007C4553 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../../src/tests/embree/main.cpp; sourceTree = "<group>"; };
+		2CB0F6A220E3FEDE007C4553 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../../../src/tests/embree/pch.cpp; sourceTree = "<group>"; };
+		2CB0F6A320E3FEDE007C4553 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../../../src/tests/embree/pch.h; sourceTree = "<group>"; };
+		2CB0F6A720E3FF8E007C4553 /* libwolf.embree.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libwolf.embree.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CB0F6A920E3FF8E007C4553 /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CB0F6AB20E3FFA0007C4553 /* libembree3.3.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libembree3.3.2.0.dylib; path = ../../../../dependencies/embree/lib/osx/debug/libembree3.3.2.0.dylib; sourceTree = "<group>"; };
+		2CB0F6B620E505D6007C4553 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = ../../../../src/tests/embree/scene.h; sourceTree = "<group>"; };
+		2CB0F6B720E505D6007C4553 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../../../src/tests/embree/scene.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2CB0F69420E3FE7D007C4553 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CB0F6AC20E3FFA0007C4553 /* libembree3.3.2.0.dylib in Frameworks */,
+				2CB0F6A820E3FF8E007C4553 /* libwolf.embree.osx.dylib in Frameworks */,
+				2CB0F6AA20E3FF8E007C4553 /* libwolf.system.osx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2CB0F68E20E3FE7D007C4553 = {
+			isa = PBXGroup;
+			children = (
+				2CB0F6B720E505D6007C4553 /* scene.cpp */,
+				2CB0F6B620E505D6007C4553 /* scene.h */,
+				2CB0F6A120E3FEDE007C4553 /* main.cpp */,
+				2CB0F6A220E3FEDE007C4553 /* pch.cpp */,
+				2CB0F6A320E3FEDE007C4553 /* pch.h */,
+				2CB0F69820E3FE7D007C4553 /* Products */,
+				2CB0F6A620E3FF8E007C4553 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		2CB0F69820E3FE7D007C4553 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2CB0F69720E3FE7D007C4553 /* test_embree_osx */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2CB0F6A620E3FF8E007C4553 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2CB0F6AB20E3FFA0007C4553 /* libembree3.3.2.0.dylib */,
+				2CB0F6A720E3FF8E007C4553 /* libwolf.embree.osx.dylib */,
+				2CB0F6A920E3FF8E007C4553 /* libwolf.system.osx.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2CB0F69620E3FE7D007C4553 /* test_embree_osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2CB0F69E20E3FE7D007C4553 /* Build configuration list for PBXNativeTarget "test_embree_osx" */;
+			buildPhases = (
+				2CB0F69320E3FE7D007C4553 /* Sources */,
+				2CB0F69420E3FE7D007C4553 /* Frameworks */,
+				2CB0F69520E3FE7D007C4553 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = test_embree_osx;
+			productName = test_embree_osx;
+			productReference = 2CB0F69720E3FE7D007C4553 /* test_embree_osx */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2CB0F68F20E3FE7D007C4553 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0940;
+				ORGANIZATIONNAME = WolfSource.io;
+				TargetAttributes = {
+					2CB0F69620E3FE7D007C4553 = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
+				};
+			};
+			buildConfigurationList = 2CB0F69220E3FE7D007C4553 /* Build configuration list for PBXProject "test_embree_osx" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2CB0F68E20E3FE7D007C4553;
+			productRefGroup = 2CB0F69820E3FE7D007C4553 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2CB0F69620E3FE7D007C4553 /* test_embree_osx */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2CB0F69320E3FE7D007C4553 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CB0F6A420E3FEDE007C4553 /* main.cpp in Sources */,
+				2CB0F6B820E505D6007C4553 /* scene.cpp in Sources */,
+				2CB0F6A520E3FEDE007C4553 /* pch.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2CB0F69C20E3FE7D007C4553 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2CB0F69D20E3FE7D007C4553 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2CB0F69F20E3FE7D007C4553 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/embree/lib/osx/debug/";
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					__APPLE__,
+					"$(inherited)",
+				);
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../../src/wolf.system",
+					"$(SRCROOT)/../../../../src/wolf.render/embree/",
+					"$(SRCROOT)/../../../../dependencies/embree/include",
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../../dependencies/embree/lib/osx/debug/";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2CB0F6A020E3FE7D007C4553 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = J2WEUYPJ98;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2CB0F69220E3FE7D007C4553 /* Build configuration list for PBXProject "test_embree_osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CB0F69C20E3FE7D007C4553 /* Debug */,
+				2CB0F69D20E3FE7D007C4553 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2CB0F69E20E3FE7D007C4553 /* Build configuration list for PBXNativeTarget "test_embree_osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CB0F69F20E3FE7D007C4553 /* Debug */,
+				2CB0F6A020E3FE7D007C4553 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2CB0F68F20E3FE7D007C4553 /* Project object */;
+}
