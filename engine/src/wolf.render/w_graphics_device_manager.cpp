@@ -147,7 +147,7 @@ const std::string w_graphics_device::get_info()
 	{
 		_device_name = this->device_info->get_device_name();
 		_device_id = this->device_info->get_device_id();
-		_device_vendor_id = /err this->device_info->get_device_id();
+		_device_vendor_id = this->device_info->get_device_vendor_id();
 	}
 	return std::string(
 		"graphics device: " + _device_name +
@@ -3292,7 +3292,7 @@ namespace wolf
 
 #pragma region Getters
 
-			std::map<int, w_window_info> get_output_windows_info() const
+			std::map<int, w_present_info> get_output_windows_info() const
 			{
 				return this->_windows_info;
 			}
@@ -3311,7 +3311,7 @@ namespace wolf
 				this->_config = pConfig;
 			}
 
-			void set_output_windows_info(_In_ std::map<int, w_window_info> pOutputWindowsInfo)
+			void set_output_windows_info(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
 			{
 				this->_windows_info = pOutputWindowsInfo;
 			}
@@ -3583,7 +3583,7 @@ namespace wolf
 			}
 #endif
 			w_graphics_device_manager_configs					_config;
-            std::map<int, w_window_info>                        _windows_info;
+            std::map<int, w_present_info>                        _windows_info;
             std::string                                         _name;;
         };
     }
@@ -3610,7 +3610,7 @@ w_graphics_device_manager::~w_graphics_device_manager()
 	release();
 }
 
-void w_graphics_device_manager::initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo)
+void w_graphics_device_manager::initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
 {
     //store information of windows for the first time
     this->_pimp->set_output_windows_info(pOutputWindowsInfo);

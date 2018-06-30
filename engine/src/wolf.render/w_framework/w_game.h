@@ -31,7 +31,7 @@ namespace wolf
 			W_EXP virtual ~w_game();
 
 			//This will run the main loop cycle of the game
-			W_EXP bool run(_In_ std::map<int, w_window_info>& pOutputWindowsInfo);
+			W_EXP bool run(_In_ std::map<int, w_present_info>& pOutputWindowsInfo);
 			W_EXP void exit();
 
 			//Release all resources
@@ -58,7 +58,7 @@ namespace wolf
 				Allows the game to perform any initialization before starting to run.
 				Note that Log file will be created inside this function
 			*/
-			W_EXP virtual void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) override;
+			W_EXP virtual void initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo) override;
 
 			//Load game assets
 			W_EXP virtual void load() = 0;

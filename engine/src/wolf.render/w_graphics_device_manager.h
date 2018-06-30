@@ -328,7 +328,7 @@ namespace wolf
 
 			/*
 				capture last presented swap chain image buffer's data and save to the D-RAM and make it accessable by CPU,
-				make sure set true to w_window_info::cpu_access_swap_chain_buffer flag before creating graphics device
+				make sure set true to w_present_info::cpu_access_swap_chain_buffer flag before creating graphics device
 				@return W_PASSED means function did succesfully and W_FAILED means function failed
 			*/
             W_EXP W_RESULT capture_presented_swap_chain_buffer(_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
@@ -507,7 +507,7 @@ namespace wolf
             W_EXP virtual ~w_graphics_device_manager();
                         
 			//Initialize graphics devices
-			W_EXP virtual void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) = 0;
+			W_EXP virtual void initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo) = 0;
 
 			//Called when corresponding window resized
 			W_EXP virtual void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow);

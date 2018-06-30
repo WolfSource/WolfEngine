@@ -31,7 +31,7 @@ w_game::~w_game()
 {
 }
 
-void w_game::initialize(_In_ map<int, w_window_info> pOutputWindowsInfo)
+void w_game::initialize(_In_ map<int, w_present_info> pOutputWindowsInfo)
 {	
 	w_graphics_device_manager::initialize(pOutputWindowsInfo);
 }
@@ -77,7 +77,7 @@ W_RESULT w_game::render(_In_ const wolf::system::w_game_time& pGameTime)
     return w_graphics_device_manager::present();
 }
 
-bool w_game::run(_In_ map<int, w_window_info>& pOutputWindowsInfo)
+bool w_game::run(_In_ map<int, w_present_info>& pOutputWindowsInfo)
 {
 	if (this->load_state == LOAD_STATE::NOTLOADED)
 	{

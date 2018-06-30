@@ -5,7 +5,7 @@
 	Name			 : w_window.h
 	Description		 : The class responsible for creating window in OS
                                    In linux, make sure run "sudo apt-get install libxcb1-dev"
-                                   In OSX, we do not need w_window class, all we need is w_window_info
+                                   In OSX, we do not need w_window class, all we need is w_present_info
 	Comment          :
 */
 

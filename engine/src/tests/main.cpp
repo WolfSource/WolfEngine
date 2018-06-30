@@ -52,7 +52,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
 	sWindow->initialize(_msg_proc_func);
 
 	//run the vulkan sample
-	w_window_info _window_info;
+	w_present_info _window_info;
 	_window_info.width = sWindow->get_width();
 	_window_info.height = sWindow->get_height();
 	_window_info.hwnd = sWindow->get_HWND();
@@ -62,7 +62,7 @@ int WINAPI WinMain(HINSTANCE pHInstance, HINSTANCE pPrevHInstance, PSTR pSTR, in
     _window_info.cpu_access_swap_chain_buffer = true;
 
 	//call init_window from objective-c and get the pointer to the window
-	std::map<int, w_window_info> _windows_info;
+	std::map<int, w_present_info> _windows_info;
 	_windows_info.insert({ 0, _window_info });
 
 	//Initialize and content path and logPath
