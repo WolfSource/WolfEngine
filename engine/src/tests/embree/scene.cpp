@@ -31,6 +31,8 @@ void scene::load()
     
     auto _device = this->_gDevice->get_device();
     
+    //add cube
+    
     //create a triangulated cube with 12 triangles and 8 vertices
     RTCGeometry _mesh = rtcNewGeometry(_device, RTC_GEOMETRY_TYPE_TRIANGLE);
     
@@ -87,6 +89,26 @@ void scene::load()
     unsigned int _geom_id = rtcAttachGeometry(this->_rtc_scene, _mesh);
     rtcReleaseGeometry(_mesh);
     
+    //add ground
+    _mesh = rtcNewGeometry (_device, RTC_GEOMETRY_TYPE_TRIANGLE);
+    
+    /* set vertices */
+    _vertices = (vertex*) rtcSetNewGeometryBuffer(_mesh, RTC_BUFFER_TYPE_VERTEX, 0, RTC_FORMAT_FLOAT3, sizeof(vertex), 4);
+    _vertices[0].x = -10; _vertices[0].y = -2; _vertices[0].z = -10;
+    _vertices[1].x = -10; _vertices[1].y = -2; _vertices[1].z = +10;
+    _vertices[2].x = +10; _vertices[2].y = -2; _vertices[2].z = -10;
+    _vertices[3].x = +10; _vertices[3].y = -2; _vertices[3].z = +10;
+    
+    /* set triangles */
+    _triangles = (triangle*) rtcSetNewGeometryBuffer(_mesh, RTC_BUFFER_TYPE_INDEX,0,RTC_FORMAT_UINT3, sizeof(triangle), 2);
+    _triangles[0].v0 = 0; _triangles[0].v1 = 1; _triangles[0].v2 = 2;
+    _triangles[1].v0 = 1; _triangles[1].v1 = 3; _triangles[1].v2 = 2;
+    
+    rtcCommitGeometry(_mesh);
+    _geom_id = rtcAttachGeometry(this->_rtc_scene, _mesh);
+    rtcReleaseGeometry(_mesh);
+    
+    rtcCommitScene(this->_rtc_scene);
 }
 
 void scene::update(_In_ const wolf::system::w_game_time& pGameTime)

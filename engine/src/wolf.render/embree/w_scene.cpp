@@ -80,7 +80,7 @@ bool w_scene::run(_In_ w_present_info& pPresentInfos)
             }
             else
             {
-                this->load_state = LOAD_STATE::ERROR;
+                this->load_state = LOAD_STATE::ERROR_HAPPENED;
             }
 		});
 		const std::chrono::milliseconds _milli_sec(16);

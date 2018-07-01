@@ -17,6 +17,29 @@
 		2CB0F68920E3D54B007C4553 /* libembree3.3.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB0F68820E3D54B007C4553 /* libembree3.3.2.0.dylib */; };
 		2CB0F6B420E4030A007C4553 /* w_scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB0F6B220E4030A007C4553 /* w_scene.cpp */; };
 		2CB0F6B520E4030A007C4553 /* w_scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB0F6B320E4030A007C4553 /* w_scene.h */; };
+		2CBBBB5720E7EC370083887F /* libtbb_debug.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CBBBB5620E7EC370083887F /* libtbb_debug.dylib */; };
+		2CBBBBFD20E7F2530083887F /* vec3ba.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBE720E7F2510083887F /* vec3ba.h */; };
+		2CBBBBFE20E7F2530083887F /* vec3ia.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBE820E7F2510083887F /* vec3ia.h */; };
+		2CBBBBFF20E7F2530083887F /* linearspace3.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBE920E7F2510083887F /* linearspace3.h */; };
+		2CBBBC0020E7F2530083887F /* vec3fa.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBEA20E7F2510083887F /* vec3fa.h */; };
+		2CBBBC0120E7F2530083887F /* col3.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBEB20E7F2510083887F /* col3.h */; };
+		2CBBBC0220E7F2530083887F /* quaternion.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBEC20E7F2510083887F /* quaternion.h */; };
+		2CBBBC0320E7F2530083887F /* vec2.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBED20E7F2510083887F /* vec2.h */; };
+		2CBBBC0420E7F2530083887F /* color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBEE20E7F2510083887F /* color.h */; };
+		2CBBBC0520E7F2530083887F /* linearspace2.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBEF20E7F2510083887F /* linearspace2.h */; };
+		2CBBBC0620E7F2530083887F /* lbbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBF020E7F2520083887F /* lbbox.h */; };
+		2CBBBC0720E7F2530083887F /* vec3.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBF120E7F2520083887F /* vec3.h */; };
+		2CBBBC0820E7F2530083887F /* affinespace.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBF220E7F2520083887F /* affinespace.h */; };
+		2CBBBC0920E7F2530083887F /* vec2fa.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBF320E7F2520083887F /* vec2fa.h */; };
+		2CBBBC0A20E7F2530083887F /* col4.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBF420E7F2520083887F /* col4.h */; };
+		2CBBBC0B20E7F2530083887F /* constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBF520E7F2520083887F /* constants.h */; };
+		2CBBBC0C20E7F2530083887F /* math.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBF620E7F2520083887F /* math.h */; };
+		2CBBBC0D20E7F2530083887F /* obbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBF720E7F2520083887F /* obbox.h */; };
+		2CBBBC0E20E7F2530083887F /* constants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CBBBBF820E7F2520083887F /* constants.cpp */; };
+		2CBBBC0F20E7F2530083887F /* bbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBF920E7F2520083887F /* bbox.h */; };
+		2CBBBC1020E7F2530083887F /* interval.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBFA20E7F2520083887F /* interval.h */; };
+		2CBBBC1120E7F2530083887F /* range.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBFB20E7F2520083887F /* range.h */; };
+		2CBBBC1220E7F2530083887F /* vec4.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CBBBBFC20E7F2520083887F /* vec4.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +56,29 @@
 		2CB0F68820E3D54B007C4553 /* libembree3.3.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libembree3.3.2.0.dylib; path = ../../../dependencies/embree/lib/osx/debug/libembree3.3.2.0.dylib; sourceTree = "<group>"; };
 		2CB0F6B220E4030A007C4553 /* w_scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_scene.cpp; path = ../../../src/wolf.render/embree/w_scene.cpp; sourceTree = "<group>"; };
 		2CB0F6B320E4030A007C4553 /* w_scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_scene.h; path = ../../../src/wolf.render/embree/w_scene.h; sourceTree = "<group>"; };
+		2CBBBB5620E7EC370083887F /* libtbb_debug.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb_debug.dylib; path = ../../../dependencies/tbb/oss/osx/lib/libtbb_debug.dylib; sourceTree = "<group>"; };
+		2CBBBBE720E7F2510083887F /* vec3ba.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vec3ba.h; path = ../../../src/wolf.render/embree/common/math/vec3ba.h; sourceTree = "<group>"; };
+		2CBBBBE820E7F2510083887F /* vec3ia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vec3ia.h; path = ../../../src/wolf.render/embree/common/math/vec3ia.h; sourceTree = "<group>"; };
+		2CBBBBE920E7F2510083887F /* linearspace3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = linearspace3.h; path = ../../../src/wolf.render/embree/common/math/linearspace3.h; sourceTree = "<group>"; };
+		2CBBBBEA20E7F2510083887F /* vec3fa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vec3fa.h; path = ../../../src/wolf.render/embree/common/math/vec3fa.h; sourceTree = "<group>"; };
+		2CBBBBEB20E7F2510083887F /* col3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = col3.h; path = ../../../src/wolf.render/embree/common/math/col3.h; sourceTree = "<group>"; };
+		2CBBBBEC20E7F2510083887F /* quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quaternion.h; path = ../../../src/wolf.render/embree/common/math/quaternion.h; sourceTree = "<group>"; };
+		2CBBBBED20E7F2510083887F /* vec2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vec2.h; path = ../../../src/wolf.render/embree/common/math/vec2.h; sourceTree = "<group>"; };
+		2CBBBBEE20E7F2510083887F /* color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = color.h; path = ../../../src/wolf.render/embree/common/math/color.h; sourceTree = "<group>"; };
+		2CBBBBEF20E7F2510083887F /* linearspace2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = linearspace2.h; path = ../../../src/wolf.render/embree/common/math/linearspace2.h; sourceTree = "<group>"; };
+		2CBBBBF020E7F2520083887F /* lbbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lbbox.h; path = ../../../src/wolf.render/embree/common/math/lbbox.h; sourceTree = "<group>"; };
+		2CBBBBF120E7F2520083887F /* vec3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vec3.h; path = ../../../src/wolf.render/embree/common/math/vec3.h; sourceTree = "<group>"; };
+		2CBBBBF220E7F2520083887F /* affinespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = affinespace.h; path = ../../../src/wolf.render/embree/common/math/affinespace.h; sourceTree = "<group>"; };
+		2CBBBBF320E7F2520083887F /* vec2fa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vec2fa.h; path = ../../../src/wolf.render/embree/common/math/vec2fa.h; sourceTree = "<group>"; };
+		2CBBBBF420E7F2520083887F /* col4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = col4.h; path = ../../../src/wolf.render/embree/common/math/col4.h; sourceTree = "<group>"; };
+		2CBBBBF520E7F2520083887F /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = constants.h; path = ../../../src/wolf.render/embree/common/math/constants.h; sourceTree = "<group>"; };
+		2CBBBBF620E7F2520083887F /* math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = math.h; path = ../../../src/wolf.render/embree/common/math/math.h; sourceTree = "<group>"; };
+		2CBBBBF720E7F2520083887F /* obbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = obbox.h; path = ../../../src/wolf.render/embree/common/math/obbox.h; sourceTree = "<group>"; };
+		2CBBBBF820E7F2520083887F /* constants.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = constants.cpp; path = ../../../src/wolf.render/embree/common/math/constants.cpp; sourceTree = "<group>"; };
+		2CBBBBF920E7F2520083887F /* bbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bbox.h; path = ../../../src/wolf.render/embree/common/math/bbox.h; sourceTree = "<group>"; };
+		2CBBBBFA20E7F2520083887F /* interval.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interval.h; path = ../../../src/wolf.render/embree/common/math/interval.h; sourceTree = "<group>"; };
+		2CBBBBFB20E7F2520083887F /* range.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = range.h; path = ../../../src/wolf.render/embree/common/math/range.h; sourceTree = "<group>"; };
+		2CBBBBFC20E7F2520083887F /* vec4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vec4.h; path = ../../../src/wolf.render/embree/common/math/vec4.h; sourceTree = "<group>"; };
 		2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -41,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CBBBB5720E7EC370083887F /* libtbb_debug.dylib in Frameworks */,
 				2CB0F68920E3D54B007C4553 /* libembree3.3.2.0.dylib in Frameworks */,
 				2C7079991EACE6F2003784A2 /* libwolf.system.osx.dylib in Frameworks */,
 				2C860FA41E5F1E80000E71B5 /* libc++.tbd in Frameworks */,
@@ -53,6 +100,7 @@
 		2C69E9A01E5EC2CB00F15C44 = {
 			isa = PBXGroup;
 			children = (
+				2CBBBBE620E7F2380083887F /* math */,
 				2CB0F6B220E4030A007C4553 /* w_scene.cpp */,
 				2CB0F6B320E4030A007C4553 /* w_scene.h */,
 				2CB0F67E20E2AC74007C4553 /* w_embree_export.h */,
@@ -76,6 +124,7 @@
 		2C860FA01E5F1E5B000E71B5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CBBBB5620E7EC370083887F /* libtbb_debug.dylib */,
 				2CB0F68820E3D54B007C4553 /* libembree3.3.2.0.dylib */,
 				2C766E6B20B343C4000C66F4 /* libassimp.4.1.0.dylib */,
 				2CCE632C1FD5E6EF00EC0BB5 /* IOSurface.framework */,
@@ -86,6 +135,35 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		2CBBBBE620E7F2380083887F /* math */ = {
+			isa = PBXGroup;
+			children = (
+				2CBBBBF220E7F2520083887F /* affinespace.h */,
+				2CBBBBF920E7F2520083887F /* bbox.h */,
+				2CBBBBEB20E7F2510083887F /* col3.h */,
+				2CBBBBF420E7F2520083887F /* col4.h */,
+				2CBBBBEE20E7F2510083887F /* color.h */,
+				2CBBBBF820E7F2520083887F /* constants.cpp */,
+				2CBBBBF520E7F2520083887F /* constants.h */,
+				2CBBBBFA20E7F2520083887F /* interval.h */,
+				2CBBBBF020E7F2520083887F /* lbbox.h */,
+				2CBBBBEF20E7F2510083887F /* linearspace2.h */,
+				2CBBBBE920E7F2510083887F /* linearspace3.h */,
+				2CBBBBF620E7F2520083887F /* math.h */,
+				2CBBBBF720E7F2520083887F /* obbox.h */,
+				2CBBBBEC20E7F2510083887F /* quaternion.h */,
+				2CBBBBFB20E7F2520083887F /* range.h */,
+				2CBBBBED20E7F2510083887F /* vec2.h */,
+				2CBBBBF320E7F2520083887F /* vec2fa.h */,
+				2CBBBBF120E7F2520083887F /* vec3.h */,
+				2CBBBBE720E7F2510083887F /* vec3ba.h */,
+				2CBBBBEA20E7F2510083887F /* vec3fa.h */,
+				2CBBBBE820E7F2510083887F /* vec3ia.h */,
+				2CBBBBFC20E7F2520083887F /* vec4.h */,
+			);
+			name = math;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -93,10 +171,31 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CBBBC0420E7F2530083887F /* color.h in Headers */,
 				2CB0F68020E2AC75007C4553 /* w_embree_export.h in Headers */,
+				2CBBBBFF20E7F2530083887F /* linearspace3.h in Headers */,
+				2CBBBC0120E7F2530083887F /* col3.h in Headers */,
+				2CBBBC0620E7F2530083887F /* lbbox.h in Headers */,
 				2CB0F68120E2AC75007C4553 /* w_graphic_device_manager.h in Headers */,
+				2CBBBC0D20E7F2530083887F /* obbox.h in Headers */,
+				2CBBBC0220E7F2530083887F /* quaternion.h in Headers */,
 				2CB0F67D20E2AA21007C4553 /* w_embree_pch.h in Headers */,
+				2CBBBC0B20E7F2530083887F /* constants.h in Headers */,
+				2CBBBC0820E7F2530083887F /* affinespace.h in Headers */,
+				2CBBBC0C20E7F2530083887F /* math.h in Headers */,
+				2CBBBC0320E7F2530083887F /* vec2.h in Headers */,
 				2CB0F6B520E4030A007C4553 /* w_scene.h in Headers */,
+				2CBBBC0720E7F2530083887F /* vec3.h in Headers */,
+				2CBBBBFD20E7F2530083887F /* vec3ba.h in Headers */,
+				2CBBBC0520E7F2530083887F /* linearspace2.h in Headers */,
+				2CBBBC0F20E7F2530083887F /* bbox.h in Headers */,
+				2CBBBC1120E7F2530083887F /* range.h in Headers */,
+				2CBBBC0920E7F2530083887F /* vec2fa.h in Headers */,
+				2CBBBC1220E7F2530083887F /* vec4.h in Headers */,
+				2CBBBC0020E7F2530083887F /* vec3fa.h in Headers */,
+				2CBBBC0A20E7F2530083887F /* col4.h in Headers */,
+				2CBBBC1020E7F2530083887F /* interval.h in Headers */,
+				2CBBBBFE20E7F2530083887F /* vec3ia.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,6 +260,7 @@
 				2CB0F68320E3AD0D007C4553 /* w_graphic_device_manager.cpp in Sources */,
 				2CB0F67C20E2AA21007C4553 /* w_embree_pch.cpp in Sources */,
 				2CB0F6B420E4030A007C4553 /* w_scene.cpp in Sources */,
+				2CBBBC0E20E7F2530083887F /* constants.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,7 +385,10 @@
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
 				FRAMEWORK_SEARCH_PATHS = "";
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/embree/lib/osx/";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../../dependencies/embree/lib/osx/",
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/lib/",
+				);
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_ENABLE_CPP_EXCEPTIONS = YES;
 				GCC_ENABLE_CPP_RTTI = YES;
@@ -307,10 +410,17 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../../src/wolf.system",
 					"$(SRCROOT)/../../../src/wolf.render/embree/",
-					"$(SRCROOT)/../../../dependencies/embree/include",
+					"$(SRCROOT)/../../../dependencies/embree/include/",
+					"$(SRCROOT)/../../../dependencies/tbb/oss/osx/include/",
 				);
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(SRCROOT)/../../../dependencies/embree/lib/osx/";
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = (
+					"-msse2",
+					"-Wall",
+					"-Wformat",
+					"-Wformat-security",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "";
 				"VALID_ARCHS[sdk=*]" = x86_64;
