@@ -56,7 +56,8 @@ namespace wolf
         {
             std::wstring app_name;
             std::wstring log_path;
-            bool flush_log_only_on_error = false;
+			//false means flush will be called always, true means flush level is warn
+            bool flush_level = false;
             bool log_to_std_out = true;
         };
         class w_logger
@@ -173,10 +174,17 @@ namespace wolf
 					"Copyright(c) Pooya Eimandar(http://PooyaEimandar.com). All rights reserved.\". "\
 					"Contact: \"Contact@WolfSource.io\" "\
 					"Version: {}.{}.{}.{}", WOLF_MAJOR_VERSION, WOLF_MINOR_VERSION, WOLF_PATCH_VERSION, WOLF_DEBUG_VERSION);
-				if (pConfig.flush_log_only_on_error)
+				
+				if (pConfig.flush_level)
 				{
-					this->_log_file->flush_on(spdlog::level::level_enum::err);
+					this->_log_file->set_level(spdlog::level::level_enum::warn);
+					this->_log_file->flush_on(spdlog::level::level_enum::warn);
 				}
+				else
+				{
+					this->_log_file->flush_on(spdlog::level::level_enum::off);
+				}
+				
 				this->_opened = true;
 				return true;
 			}

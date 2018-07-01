@@ -51,7 +51,7 @@ namespace wolf
 				this->_socket = nn_socket(pDomain, pProtocol);
 				if (this->_socket < 0)
 				{
-					V(W_FAILED, w_log_type::W_ERROR, "creating socket. trace info: {}", _trace_info);
+					V(W_FAILED, w_log_type::W_ERROR, "creating socket. error: {}, trace info: {}", w_network::get_last_error(), _trace_info);
 					return W_FAILED;
 				}
                 
@@ -67,7 +67,7 @@ namespace wolf
 					//on bind, which used for server
 					if (nn_bind(this->_socket, pURL) < 0)
 					{
-						V(W_FAILED, w_log_type::W_ERROR, "binding to {}. trace info: {}", pURL, _trace_info);
+						V(W_FAILED, w_log_type::W_ERROR, "binding to {}. error: {}, trace info: {}", pURL, w_network::get_last_error(), _trace_info);
 						return W_FAILED;
 					}
 					break;
@@ -75,7 +75,7 @@ namespace wolf
 					//on connect, which used for client
 					if (nn_connect(this->_socket, pURL) < 0)
 					{
-						V(W_FAILED, w_log_type::W_ERROR, "connecting to {}. trace info: {}", pURL, _trace_info);
+						V(W_FAILED, w_log_type::W_ERROR, "connecting to {}. error: {}, trace info: {}", pURL, w_network::get_last_error(), _trace_info);
 						return W_FAILED;
 					}
 					break;
@@ -87,7 +87,7 @@ namespace wolf
 				{
 					if (nn_connect(this->_socket, con) < 0)
 					{
-						V(W_FAILED, w_log_type::W_ERROR, "connecting to {}. trace info: {}", con, _trace_info);
+						V(W_FAILED, w_log_type::W_ERROR, "connecting to {}. error: {}, trace info: {}", con, w_network::get_last_error(), _trace_info);
 						return W_FAILED;
 					}
 				}
@@ -110,8 +110,8 @@ namespace wolf
 					pSocketOption->option_value,
 					pSocketOption->option_value_length) < 0)
 				{
-					V(W_FAILED, w_log_type::W_ERROR, "setting socket option. level: {} option: {} . trace info: {}",
-						pSocketOption->socket_level, pSocketOption->option, _trace_info);
+					V(W_FAILED, w_log_type::W_ERROR, "setting socket option. level: {} option: {} . error: {}, trace info: {}",
+						pSocketOption->socket_level, pSocketOption->option, w_network::get_last_error(), _trace_info);
 					return W_FAILED;
 				}
 				return W_PASSED;
