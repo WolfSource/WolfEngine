@@ -11,8 +11,37 @@ using namespace wolf::system;
 
 static std::wstringstream ProcessesList;
 
-void w_process::print_process_name_ID(_In_ const unsigned long& pProcessID)
+W_RESULT w_process::kill_process_by_ID(_In_ const unsigned long& pProcessID)
 {
+	W_RESULT _hr = W_PASSED;
+
+#ifdef __WIN32
+
+	// Get a handle to the process.
+	HANDLE _hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pProcessID);
+
+	// Get the process name.
+	if (_hProcess != NULL)
+	{
+		if (!TerminateProcess(_hProcess, 0))
+		{
+			logger.error(L"Error on killing process id: {}", pProcessID);
+			_hr = W_FAILED;
+		}
+	}
+
+	// Release the handle to the process.
+	CloseHandle(_hProcess);
+#else
+
+#endif
+
+	return _hr;
+}
+
+std::wstring w_process::get_process_name_by_ID(_In_ const unsigned long& pProcessID)
+{
+	std::wstring _name;
 #ifdef __WIN32
 	TCHAR szProcessName[MAX_PATH] = TEXT("<unknown>");
 
@@ -32,15 +61,15 @@ void w_process::print_process_name_ID(_In_ const unsigned long& pProcessID)
 		}
 	}
 
-	// Print the process name and identifier.
-	ProcessesList << szProcessName  << L" " << pProcessID << "\n";
-
+	_name = szProcessName;
+	
 	// Release the handle to the process.
 	CloseHandle(hProcess);
 #else
 
-
 #endif
+
+	return _name;
 }
 
 const std::wstring w_process::enum_all_processes()
@@ -59,11 +88,14 @@ const std::wstring w_process::enum_all_processes()
 	ProcessesList.clear();
 	ProcessesList << L"Process Name : Process ID\n";
 
+	std::wstring _process_name;
 	for (i = 0; i < cProcesses; i++)
 	{
 		if (aProcesses[i] != 0)
 		{
-			print_process_name_ID(aProcesses[i]);
+			_process_name = get_process_name_by_ID(aProcesses[i]);
+			// Print the process name and identifier.
+			ProcessesList << _process_name << L" " << aProcesses[i] << "\n";
 		}
 	}
 
@@ -175,6 +207,46 @@ bool w_process::kill_process(_In_ w_process_info* pProcessInfo)
 	}
 
 	return true;
+}
+
+bool w_process::kill_all_processes(std::initializer_list<const wchar_t*> pProcessNames)
+{
+	W_RESULT _hr = W_PASSED;
+
+#ifdef __WIN32
+	DWORD aProcesses[1024], cbNeeded, cProcesses;
+	unsigned int i, j;
+
+	if (!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded)) return L"";
+
+	// Calculate how many process identifiers were returned.
+	cProcesses = cbNeeded / sizeof(DWORD);
+
+	DWORD _process_id = 0;
+	std::wstring _process_name;
+	for (i = 0; i < cProcesses; i++)
+	{
+		_process_id = aProcesses[i];
+		if (_process_id != 0)
+		{
+			_process_name = get_process_name_by_ID(_process_id);
+			for (auto _name : pProcessNames)
+			{
+				if (wcscmp(_process_name.c_str(), _name) == 0)
+				{
+					if (kill_process_by_ID(_process_id) == W_FAILED)
+					{
+						_hr = W_FAILED;
+					}
+				}
+			}
+
+		}
+	}
+
+#endif
+
+	return _hr == W_PASSED;
 }
 
 #endif

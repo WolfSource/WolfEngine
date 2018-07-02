@@ -31,8 +31,10 @@ namespace wolf
 		class w_process
 		{
 		public:
+			//kill process by proces ID
+			WSYS_EXP static W_RESULT kill_process_by_ID(_In_ const unsigned long& pProcessID);
 			//print process name based on proces ID
-			WSYS_EXP static void print_process_name_ID(_In_ const unsigned long& pProcessID);
+			WSYS_EXP static std::wstring get_process_name_by_ID(_In_ const unsigned long& pProcessID);
 			//enumurate all processes
 			WSYS_EXP static const std::wstring enum_all_processes();
 			//check whether two instances of same process is running
@@ -46,6 +48,8 @@ namespace wolf
 				_In_  const unsigned long pWaitAfterRunningProcess = 0);
 			//kill a process
 			WSYS_EXP static bool kill_process(_In_ w_process_info* pProcessInfo);
+			//kill all process by name
+			WSYS_EXP static bool kill_all_processes(_In_z_ std::initializer_list<const wchar_t*> pProcessNames);
 		};
 	}
 }

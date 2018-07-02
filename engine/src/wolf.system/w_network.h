@@ -120,25 +120,30 @@ namespace wolf
 
 			WSYS_EXP W_RESULT setup_request_reply_server(
 				_In_z_ const char* pURL,
+				_In_ int pReceiveTimeOut,
 				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
             
             WSYS_EXP W_RESULT setup_one_way_pusher(
                 _In_z_ const char* pURL, 
-                _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
+                _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback,
+				_In_ int pSendTimeOut = 0);
 
             WSYS_EXP W_RESULT setup_one_way_puller(
 				_In_z_ const char* pURL,
-				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
+				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
+				_In_ int pReceiveTimeOut = 0);
 
             WSYS_EXP W_RESULT setup_two_way_server(
                 _In_z_ const char* pURL,
-                _In_ int pReceiveTime,
-                _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
+                _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
+				_In_ int pSendTimeOut = 0, 
+				_In_ int pReceiveTimeOut = 0);
 
             WSYS_EXP W_RESULT setup_two_way_client(
                 _In_z_ const char* pURL,
-                _In_ int pReceiveTime,
-                _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback);
+                _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback,
+				_In_ int pSendTimeOut,
+				_In_ int pReceiveTimeOut);
             
             WSYS_EXP W_RESULT setup_broadcast_publisher(
                 _In_z_ const char* pURL,
@@ -158,7 +163,6 @@ namespace wolf
 
 			WSYS_EXP W_RESULT setup_bus_node(
 				_In_z_ const char* pBindURL,
-				_In_ int pReceiveTime,
 				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
 				_In_ std::initializer_list<const char*> pConnectURLs);
 

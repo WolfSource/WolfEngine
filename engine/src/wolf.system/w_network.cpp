@@ -43,7 +43,8 @@ namespace wolf
                 _In_ const int& pProtocol,
                 _In_ uint8_t pConnectionType,
 				_In_ w_signal<void(const int& pSocketID)> pOnConnectOrBindEstablished,
-				_In_ w_socket_options* pSocketOption,
+				_In_ w_socket_options* pSocketSendOption = nullptr,
+				_In_ w_socket_options* pSocketRecieveOption = nullptr,
 				_In_ std::initializer_list<const char*> pConnectURLs = {})
             {
 				const std::string _trace_info = this->_name + "::initialize";
@@ -55,10 +56,14 @@ namespace wolf
 					return W_FAILED;
 				}
                 
-				//set socket option
-				if (pSocketOption)
+				//set socket send option
+				if (pSocketSendOption)
 				{
-					set_socket_option(pSocketOption);
+					set_socket_option(pSocketSendOption);
+				}
+				if (pSocketRecieveOption)
+				{
+					set_socket_option(pSocketRecieveOption);
 				}
 
 				switch (pConnectionType)
@@ -155,99 +160,223 @@ W_RESULT w_network::setup_request_reply_client(
 
 W_RESULT w_network::setup_request_reply_server(
 	_In_z_ const char* pURL,
+	_In_ int pReceiveTimeOut,
 	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
 {
 	if (!this->_pimp) return W_FAILED;
-	return this->_pimp->initialize(
-		pURL,
-		AF_SP, NN_REP,
-		w_network_pimp::w_socket_connection_type::BIND,
-		pOnBindEstablishedCallback,
-		nullptr);
-}
 
-W_RESULT w_network::setup_one_way_pusher(
-    _In_z_ const char* pURL,
-	_In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
-{
-    if (!this->_pimp) return W_FAILED;
-    return this->_pimp->initialize(
-		pURL, 
-		AF_SP, NN_PUSH, 
-		w_network_pimp::w_socket_connection_type::CONNECT, 
-		pOnConnectionEstablishedCallback, 
-		nullptr);
-}
-
-W_RESULT w_network::setup_one_way_puller(
-	_In_z_ const char* pURL,
-	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
-{
-    if (!this->_pimp) return W_FAILED;
-    return this->_pimp->initialize(
-		pURL, 
-		AF_SP, 
-		NN_PULL, 
-		w_network_pimp::w_socket_connection_type::BIND, 
-		pOnBindEstablishedCallback, 
-		nullptr);
-}
-
-W_RESULT w_network::setup_two_way_server(
-    _In_z_ const char* pURL,
-    _In_ int pReceiveTime,
-    _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
-{
-    if (!this->_pimp) return W_FAILED;
-	
-	const std::string _trace_info = "w_network::setup_two_way_server";
+	const std::string _trace_info = "w_network::setup_request_reply_server";
 
 	auto _socket_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
 	if (_socket_options)
 	{
 		_socket_options->socket_level = NN_SOL_SOCKET;
 		_socket_options->option = NN_RCVTIMEO;
-		_socket_options->option_value = &pReceiveTime;
-		_socket_options->option_value_length = sizeof(pReceiveTime);
+		_socket_options->option_value = &pReceiveTimeOut;
+		_socket_options->option_value_length = sizeof(pReceiveTimeOut);
 	}
 	else
 	{
-		V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace_info: {}", _trace_info);
+		V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace info: {}", _trace_info);
 	}
+	
+	return this->_pimp->initialize(
+		pURL,
+		AF_SP, NN_REP,
+		w_network_pimp::w_socket_connection_type::BIND,
+		pOnBindEstablishedCallback,
+		_socket_options);
+}
+
+W_RESULT w_network::setup_one_way_pusher(
+	_In_z_ const char* pURL,
+	_In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback,
+	_In_ int pSendTimeOut)
+{
+	if (!this->_pimp) return W_FAILED;
+
+	const std::string _trace_info = "w_network::setup_one_way_pusher";
+
+	w_network_pimp::w_socket_options* _socket_send_options = nullptr;
+	if (pSendTimeOut)
+	{
+		_socket_send_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
+		if (_socket_send_options)
+		{
+			_socket_send_options->socket_level = NN_SOL_SOCKET;
+			_socket_send_options->option = NN_SNDTIMEO;
+			_socket_send_options->option_value = &pSendTimeOut;
+			_socket_send_options->option_value_length = sizeof(pSendTimeOut);
+		}
+		else
+		{
+			V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace info: {}", _trace_info);
+		}
+	}
+
+	auto _hr = this->_pimp->initialize(
+		pURL,
+		AF_SP, NN_PUSH,
+		w_network_pimp::w_socket_connection_type::CONNECT,
+		pOnConnectionEstablishedCallback,
+		_socket_send_options,
+		nullptr);
+
+	if (_socket_send_options)
+	{
+		free(_socket_send_options);
+	}
+
+	return _hr;
+}
+
+W_RESULT w_network::setup_one_way_puller(
+	_In_z_ const char* pURL,
+	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
+	_In_ int pReceiveTimeOut)
+{
+    if (!this->_pimp) return W_FAILED;
+
+	const std::string _trace_info = "w_network::setup_one_way_puller";
+
+	w_network_pimp::w_socket_options* _socket_receive_options = nullptr;
+	if (pReceiveTimeOut)
+	{
+		_socket_receive_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
+		if (_socket_receive_options)
+		{
+			_socket_receive_options->socket_level = NN_SOL_SOCKET;
+			_socket_receive_options->option = NN_RCVTIMEO;
+			_socket_receive_options->option_value = &pReceiveTimeOut;
+			_socket_receive_options->option_value_length = sizeof(pReceiveTimeOut);
+		}
+		else
+		{
+			V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace info: {}", _trace_info);
+		}
+	}
+
+    auto _hr = this->_pimp->initialize(
+		pURL, 
+		AF_SP, 
+		NN_PULL, 
+		w_network_pimp::w_socket_connection_type::BIND, 
+		pOnBindEstablishedCallback,
+		nullptr,
+		_socket_receive_options);
+
+	if (_socket_receive_options)
+	{
+		free(_socket_receive_options);
+	}
+
+	return _hr;
+}
+
+W_RESULT w_network::setup_two_way_server(
+    _In_z_ const char* pURL,
+    _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
+	_In_ int pSendTimeOut,
+	_In_ int pReceiveTimeOut)
+{
+    if (!this->_pimp) return W_FAILED;
+	
+	const std::string _trace_info = "w_network::setup_two_way_server";
+
+	w_network_pimp::w_socket_options* _socket_send_options = nullptr;
+	w_network_pimp::w_socket_options* _socket_receive_options = nullptr;
+	if (pSendTimeOut)
+	{
+		_socket_send_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
+		if (_socket_send_options)
+		{
+			_socket_send_options->socket_level = NN_SOL_SOCKET;
+			_socket_send_options->option = NN_SNDTIMEO;
+			_socket_send_options->option_value = &pSendTimeOut;
+			_socket_send_options->option_value_length = sizeof(pSendTimeOut);
+		}
+		else
+		{
+			V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace_info: {}", _trace_info);
+		}
+	}
+	if (pReceiveTimeOut)
+	{
+		_socket_receive_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
+		if (_socket_receive_options)
+		{
+			_socket_receive_options->socket_level = NN_SOL_SOCKET;
+			_socket_receive_options->option = NN_RCVTIMEO;
+			_socket_receive_options->option_value = &pReceiveTimeOut;
+			_socket_receive_options->option_value_length = sizeof(pReceiveTimeOut);
+		}
+		else
+		{
+			V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace_info: {}", _trace_info);
+		}
+	}
+
 	auto _hr = this->_pimp->initialize(
 		pURL, 
 		AF_SP, 
 		NN_PAIR, 
 		w_network_pimp::w_socket_connection_type::BIND, 
-		pOnBindEstablishedCallback, 
-		_socket_options);
-	if (_socket_options)
+		pOnBindEstablishedCallback,
+		_socket_send_options,
+		_socket_receive_options);
+
+	if (_socket_send_options)
 	{
-		free(_socket_options);
+		free(_socket_send_options);
+	}
+	if (_socket_receive_options)
+	{
+		free(_socket_receive_options);
 	}
     return _hr;
 }
 
 W_RESULT w_network::setup_two_way_client(
     _In_z_ const char* pURL,
-    _In_ int pReceiveTime,
-    _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
+    _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback,
+	_In_ int pSendTimeOut,
+	_In_ int pReceiveTimeOut)
 {
     if (!this->_pimp) return W_FAILED;
 
 	const std::string _trace_info = "w_network::setup_two_way_client";
     
-	auto _socket_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
-	if (_socket_options)
+	w_network_pimp::w_socket_options* _socket_send_options = nullptr;
+	w_network_pimp::w_socket_options* _socket_receive_options = nullptr;
+	if (pSendTimeOut)
 	{
-		_socket_options->socket_level = NN_SOL_SOCKET;
-		_socket_options->option = NN_RCVTIMEO;
-		_socket_options->option_value = &pReceiveTime;
-		_socket_options->option_value_length = sizeof(pReceiveTime);
+		_socket_send_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
+		if (_socket_send_options)
+		{
+			_socket_send_options->socket_level = NN_SOL_SOCKET;
+			_socket_send_options->option = NN_SNDTIMEO;
+			_socket_send_options->option_value = &pSendTimeOut;
+			_socket_send_options->option_value_length = sizeof(pSendTimeOut);
+		}
+		else
+		{
+			V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace_info: {}", _trace_info);
+		}
 	}
-	else
+	if (pReceiveTimeOut)
 	{
-		V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace info: {} ", _trace_info);
+		_socket_receive_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
+		if (_socket_receive_options)
+		{
+			_socket_receive_options->socket_level = NN_SOL_SOCKET;
+			_socket_receive_options->option = NN_RCVTIMEO;
+			_socket_receive_options->option_value = &pReceiveTimeOut;
+			_socket_receive_options->option_value_length = sizeof(pReceiveTimeOut);
+		}
+		else
+		{
+			V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace_info: {}", _trace_info);
+		}
 	}
 
 	auto _hr = this->_pimp->initialize(
@@ -256,61 +385,47 @@ W_RESULT w_network::setup_two_way_client(
 		NN_PAIR, 
 		w_network_pimp::w_socket_connection_type::CONNECT, 
 		pOnConnectionEstablishedCallback, 
-		_socket_options);
-	if (_socket_options)
+		_socket_send_options,
+		_socket_receive_options);
+
+	if (_socket_send_options)
 	{
-		free(_socket_options);
+		free(_socket_send_options);
 	}
+	if (_socket_receive_options)
+	{
+		free(_socket_receive_options);
+	}
+
     return _hr;
 }
 
 W_RESULT w_network::setup_broadcast_publisher(
-    _In_z_ const char* pURL,
-    _In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
+	_In_z_ const char* pURL,
+	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
 {
-    if (!this->_pimp) return W_FAILED;
-    return this->_pimp->initialize(
-		pURL, 
-		AF_SP, 
-		NN_PUB, 
-		w_network_pimp::w_socket_connection_type::BIND, 
-		pOnBindEstablishedCallback, 
-		nullptr);
+	if (!this->_pimp) return W_FAILED;
+
+	return this->_pimp->initialize(
+		pURL,
+		AF_SP,
+		NN_PUB,
+		w_network_pimp::w_socket_connection_type::BIND,
+		pOnBindEstablishedCallback);
 }
 
 W_RESULT w_network::setup_broadcast_subscriptore(
-    _In_z_ const char* pURL,
-    _In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
+	_In_z_ const char* pURL,
+	_In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
 {
-    if (!this->_pimp) return W_FAILED;
-	
-	const std::string _trace_info = "w_network::setup_broadcast_subscriptore";
+	if (!this->_pimp) return W_FAILED;
 
-	auto _socket_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
-	if (_socket_options)
-	{
-		_socket_options->socket_level = NN_SUB;
-		_socket_options->option = NN_SUB_SUBSCRIBE;
-		_socket_options->option_value = (void*)"";
-		_socket_options->option_value_length = 0;
-	}
-	else
-	{
-		V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace info: {}", _trace_info);
-	}
-
-	auto _hr = this->_pimp->initialize(
-		pURL, 
-		AF_SP, 
-		NN_SUB, 
-		w_network_pimp::w_socket_connection_type::CONNECT, 
-		pOnConnectionEstablishedCallback, 
-		_socket_options);
-	if (_socket_options)
-	{
-		free(_socket_options);
-	}
-    return _hr;
+	return this->_pimp->initialize(
+		pURL,
+		AF_SP,
+		NN_SUB,
+		w_network_pimp::w_socket_connection_type::CONNECT,
+		pOnConnectionEstablishedCallback);
 }
 
 W_RESULT w_network::setup_survey_server(
@@ -318,13 +433,13 @@ W_RESULT w_network::setup_survey_server(
 	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback)
 {
 	if (!this->_pimp) return W_FAILED;
+
 	return this->_pimp->initialize(
-		pURL, 
-		AF_SP, 
-		NN_SURVEYOR, 
-		w_network_pimp::w_socket_connection_type::BIND, 
-		pOnBindEstablishedCallback, 
-		nullptr);
+		pURL,
+		AF_SP,
+		NN_SURVEYOR,
+		w_network_pimp::w_socket_connection_type::BIND,
+		pOnBindEstablishedCallback);
 }
 
 W_RESULT w_network::setup_survey_client(
@@ -332,51 +447,31 @@ W_RESULT w_network::setup_survey_client(
 	_In_ w_signal<void(const int& pSocketID)> pOnConnectionEstablishedCallback)
 {
 	if (!this->_pimp) return W_FAILED;
+
 	return this->_pimp->initialize(
 		pURL, 
 		AF_SP, 
 		NN_RESPONDENT, 
 		w_network_pimp::w_socket_connection_type::CONNECT, 
-		pOnConnectionEstablishedCallback, 
-		nullptr);
+		pOnConnectionEstablishedCallback);
 }
 
 W_RESULT w_network::setup_bus_node(
 	_In_z_ const char* pURL,
-	_In_ int pReceiveTime,
 	_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
 	_In_ std::initializer_list<const char*> pConnectURLs)
 {
 	if (!this->_pimp) return W_FAILED;
 
-	const std::string _trace_info = "w_network::setup_bus_node";
-
-	auto _socket_options = (w_network_pimp::w_socket_options*)malloc(sizeof(w_network_pimp::w_socket_options));
-	if (_socket_options)
-	{
-		_socket_options->socket_level = NN_SOL_SOCKET;
-		_socket_options->option = NN_RCVTIMEO;
-		_socket_options->option_value = &pReceiveTime;
-		_socket_options->option_value_length = sizeof(pReceiveTime);
-	}
-	else
-	{
-		V(W_FAILED, w_log_type::W_ERROR, "allocating memory for socket option. trace info: {}", _trace_info);
-	}
-
-	auto _hr = this->_pimp->initialize(
+	return this->_pimp->initialize(
 		pURL, 
 		AF_SP, 
 		NN_BUS, 
 		w_network_pimp::w_socket_connection_type::BIND,
 		pOnBindEstablishedCallback, 
-		_socket_options,
+		nullptr,
+		nullptr,
 		pConnectURLs);
-	if (_socket_options)
-	{
-		free(_socket_options);
-	}
-	return _hr;
 }
 
 W_RESULT w_network::free_buffer(_In_z_ char* pBuffer)
