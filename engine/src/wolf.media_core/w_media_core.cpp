@@ -373,6 +373,7 @@ namespace wolf
 				_In_z_ const char* pFormatName,
 				_In_ const AVCodecID& pCodecID,
 				_In_ const int64_t& pFrameRate,
+				_In_ const int64_t& pBitRate,
 				_In_ const AVPixelFormat& pPixelFormat,
 				_In_ const uint32_t& pWidth,
 				_In_ const uint32_t& pHeight,
@@ -424,12 +425,12 @@ namespace wolf
 						this->_stream_out->time_base.den = this->_stream_out->pts.den = 90000;
 						this->_stream_out->time_base.num = this->_stream_out->pts.num = 1;
 
-						auto _bit_rate = 5000 * 1000; //5000 kbps * 1000
+						//auto _bit_rate = 7500 * 1000; //7500 kbps * 1000
 
 						this->_stream_out->codec->codec_id = pCodecID;
-						this->_stream_out->codec->bit_rate = _bit_rate;
-						this->_stream_out->codec->bit_rate_tolerance = _bit_rate;
-						this->_stream_out->codec->rc_max_rate = _bit_rate;
+						this->_stream_out->codec->bit_rate = pBitRate;
+						this->_stream_out->codec->bit_rate_tolerance = pBitRate;
+						this->_stream_out->codec->rc_max_rate = pBitRate;
 						this->_stream_out->codec->width = static_cast<int>(pWidth);
 						this->_stream_out->codec->height = static_cast<int>(pHeight);
 						this->_stream_out->codec->time_base.den = pFrameRate;
@@ -1801,6 +1802,7 @@ W_RESULT w_media_core::open_stream_server(
 	_In_z_ const char* pFormatName,
 	_In_ const AVCodecID& pCodecID,
 	_In_ const int64_t& pFrameRate,
+	_In_ const int64_t& pBitRate,
 	_In_ const AVPixelFormat& pPixelFormat,
 	_In_ const uint32_t& pWidth,
 	_In_ const uint32_t& pHeight,
@@ -1816,6 +1818,7 @@ W_RESULT w_media_core::open_stream_server(
 		pFormatName,
 		pCodecID,
 		pFrameRate,
+		pBitRate,
 		pPixelFormat,
 		pWidth,
 		pHeight,

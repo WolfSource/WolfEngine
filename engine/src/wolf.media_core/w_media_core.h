@@ -99,6 +99,7 @@ namespace wolf
                 @param pFormatName, format of streaming, e.g. "rtsp", "udp"
                 @param pCodecID, codec of streaming, e.g. "AV_CODEC_ID_H264"
                 @param pFrameRate, streaming frame rate, e.g. "25", "60"
+				@param pBitRate, bitrate, e.g. 7500 * 1000 for 720p (48,50,60 fps) and 5000 * 1000 for 720p (24, 25, 30) https://support.google.com/youtube/answer/1722171?hl=en
                 @param pPixelFormat, streaming pixel format, e.g. "AV_PIX_FMT_YUV420P"
                 @param pWidth, frame width
                 @param pHeight, frame height
@@ -112,6 +113,7 @@ namespace wolf
                 _In_z_ const char* pFormatName,
                 _In_ const AVCodecID& pCodecID,
                 _In_ const int64_t& pFrameRate,
+				_In_ const int64_t& pBitRate,
                 _In_ const AVPixelFormat& pPixelFormat,
                 _In_ const uint32_t& pWidth,
                 _In_ const uint32_t& pHeight,
