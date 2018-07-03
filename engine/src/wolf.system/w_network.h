@@ -120,8 +120,8 @@ namespace wolf
 
 			WSYS_EXP W_RESULT setup_request_reply_server(
 				_In_z_ const char* pURL,
-				_In_ int pReceiveTimeOut,
-				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback);
+				_In_ w_signal<void(const int& pSocketID)> pOnBindEstablishedCallback,
+				_In_ int pReceiveTimeOut = 100);
             
             WSYS_EXP W_RESULT setup_one_way_pusher(
                 _In_z_ const char* pURL, 
