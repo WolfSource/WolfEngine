@@ -73,8 +73,9 @@ namespace wolf
                 uint32_t        width = 0;
                 uint32_t        height = 0;
                 long long       index = 0;
-                long long       stream_duration = 0.0;
-                long long       frame_duration = 0.0;
+                long long       stream_duration = 0;
+                long long       frame_duration = 0;
+				long long		last_dropped_frames = 0;
             };
 
 			//Must be call once before using class

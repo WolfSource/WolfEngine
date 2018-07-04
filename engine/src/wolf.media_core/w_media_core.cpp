@@ -576,8 +576,13 @@ namespace wolf
 									AVRounding(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
 								if (av_write_frame(this->_stream_out_ctx, &_packet) < 0)
 								{
+									_frame_info.last_dropped_frames++;
 									V(W_FAILED, w_log_type::W_ERROR,
 										"writing video frame for output stream {}. trace info: {}", pURL, _trace_info);
+								}
+								else
+								{
+									_frame_info.last_dropped_frames = 0;
 								}
 							}
 						}
