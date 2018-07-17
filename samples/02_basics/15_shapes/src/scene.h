@@ -34,7 +34,7 @@ public:
         Calling Game::Initialize() will enumerate through any components and initialize them as well.
         The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
 	*/
-	void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) override;
+	void initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo) override;
 
 	//The function "Load()" will be called once per game and is the place to load all of your game assets.
 	void load() override;

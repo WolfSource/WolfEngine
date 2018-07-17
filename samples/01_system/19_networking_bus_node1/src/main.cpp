@@ -69,7 +69,6 @@ WOLF_MAIN()
     w_network _survey_server;
 	_survey_server.setup_bus_node(
 		"ipc:///tmp/node1.ipc",
-		100,
 		on_bind_established,
 		{ "ipc:///tmp/node0.ipc" });
     

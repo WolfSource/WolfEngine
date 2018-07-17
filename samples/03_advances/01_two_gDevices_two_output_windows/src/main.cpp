@@ -158,14 +158,14 @@ WOLF_MAIN()
 #endif
 	
 	//create windows info
-	w_window_info _window_0_info;
+	w_present_info _window_0_info;
 	_window_0_info.width = _window_0_width;
 	_window_0_info.height = _window_0_height;
 	_window_0_info.is_full_screen = false;
 	_window_0_info.v_sync = false;
 	_window_0_info.swap_chain_format = 44;//using vulkan as render api
 
-	w_window_info _window_1_info;
+	w_present_info _window_1_info;
 	_window_1_info.width = _window_1_width;
 	_window_1_info.height = _window_1_height;
 	_window_1_info.is_full_screen = false;
@@ -184,7 +184,7 @@ WOLF_MAIN()
 	_window_1_info.xcb_window = sWindow->get_xcb_window(),
 #endif
 
-	std::map<int, w_window_info> _windows_info = 
+	std::map<int, w_present_info> _windows_info =
 	{ 
 		{ 0, _window_0_info  },
 		{ 1, _window_1_info  }

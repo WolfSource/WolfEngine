@@ -113,7 +113,7 @@ WOLF_MAIN()
     sWindow->initialize();
 #endif
     //create window info and add it to the map
-    w_window_info _window_info;
+	w_present_info _window_info;
     _window_info.width = _width;
     _window_info.height = _height;
     _window_info.is_full_screen = false;
@@ -131,7 +131,7 @@ WOLF_MAIN()
 #endif
 
 	//window info for first graphics device
-    std::map<int, w_window_info> _windows_info = { {0, _window_info } };
+    std::map<int, w_present_info> _windows_info = { {0, _window_info } };
     //run the main loop of window
     sWindow->run([&]()->void
     {

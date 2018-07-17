@@ -9,8 +9,8 @@ using namespace wolf::framework;
 using namespace wolf::system;
 using namespace wolf::graphics;
 
-scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
-	w_game(pContentPath, pLogPath, pAppName)
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
+	w_game(pContentPath, pLogConfig)
 {
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = false;
@@ -34,7 +34,7 @@ scene::~scene()
 	release();
 }
 
-void scene::initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo)
+void scene::initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
 {
 	// TODO: Add your pre-initialization logic here
 
@@ -57,8 +57,10 @@ void scene::load()
 	{
 		release();
 		V(W_FAILED,
-			L"opening media from following path " + content_path + L"media/Snow_Monkeys_in_Japan_5K_30sec.MKV",
-			_trace_info, 3, true);
+			w_log_type::W_ERROR,
+			true,
+			L"opening media from following path {}media/Snow_Monkeys_in_Japan_5K_30sec.MKV",
+			content_path);
 	}
 	this->_media_time.set_fixed_time_step(true);
 	this->_media_time.set_target_elapsed_seconds(1.0f / this->_media_core.get_video_frame_rate());
@@ -74,8 +76,9 @@ void scene::load()
 	{
 		release();
 		V(W_FAILED,
-			L"allocating memory for media buffering",
-			_trace_info, 3, true);
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for media buffering. trace infor: {}", _trace_info);
 	}
 
 	w_point_t _screen_size;
@@ -115,7 +118,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating render pass. trace info: {}", _trace_info);
 	}
 
 	//create semaphore create info
@@ -123,7 +129,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw semaphore. trace info: {}", _trace_info);
 	}
 
 	//Fence for render sync
@@ -131,7 +140,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw fence", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw fence. trace info: {}", _trace_info);
 	}
 
 	//create two primary command buffers for clearing screen
@@ -140,7 +152,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw command buffers. trace info: {}", _trace_info);
 	}
 
 #ifdef WIN32
@@ -156,7 +171,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading vertex shader", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading vertex shader. trace info: {}", _trace_info);
 	}
 
 	//loading fragment shader
@@ -166,7 +184,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading fragment shader", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading fragment shader. trace info: {}", _trace_info);
 	}
 
 	//load texture as staging buffer
@@ -178,14 +199,20 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading staging texture", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading staging texture. trace info: {}", _trace_info);
 	}
 	//load texture from memory
 	_hr = this->_texture.load_texture_from_memory_color(w_color::CYAN());
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "initializing staging texture buffer", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"initializing staging texture buffer. trace info: {}", _trace_info);
 	}
 
 	//just we need vertex position color
@@ -203,7 +230,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "setting shader binding param", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"setting shader binding param. trace info: {}", _trace_info);
 	}
 
 	//loading pipeline cache
@@ -251,7 +281,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading mesh", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading mesh. trace info: {}", _trace_info);
 	}
 
 	_build_draw_command_buffers();
@@ -331,7 +364,9 @@ W_RESULT scene::_build_draw_command_buffers()
 				_hr = this->_mesh.draw(_cmd, nullptr, 0, false);
 				if (_hr == W_FAILED)
 				{
-					V(W_FAILED, "drawing mesh", _trace_info, 3, false);
+					V(W_FAILED,
+						w_log_type::W_ERROR,
+						"drawing mesh. trace info: {}", _trace_info);
 				}
 			}
 			this->_draw_render_pass.end(_cmd);
@@ -402,7 +437,10 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "submiting queue for drawing gui", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"submiting queue for drawing gui. trace info: {}", _trace_info);
 	}
 	// Wait for fence to signal that all command buffers are ready
 	this->_draw_fence.wait();

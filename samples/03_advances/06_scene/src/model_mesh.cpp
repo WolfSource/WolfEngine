@@ -183,7 +183,7 @@ public:
 						}
 						else if (_dec == w_vertex_attribute::W_SCALE)
 						{
-							_instances_data.push_back(1.0f);// _ins.scale[0]);
+							_instances_data.push_back(_ins.scale[0]);
 						}
 					}
 				}
@@ -884,7 +884,7 @@ private:
 			{
 				if (w_texture::load_to_shared_textures(
 					this->_gDevice,
-					wolf::content_path + L"models/sponza/sponza/" + 
+					wolf::content_path + L"models/sponza/" + 
 					wolf::system::convert::string_to_wstring(_path),
 					false,
 					&_texture) == W_PASSED)

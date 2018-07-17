@@ -377,7 +377,25 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
                 }
             }
 		}
-        
+
+		std::vector<std::string> _texture_paths;
+		if (_scene->HasMaterials())
+		{
+			aiString _texture_path;
+			const auto _texture_index = 0;
+			for (size_t i = 0; i < _scene->mNumMaterials; ++i)
+			{
+				auto _mat = _scene->mMaterials[i];
+				if (!_mat) continue;
+
+				_mat->GetTexture(
+					aiTextureType_DIFFUSE,
+					_texture_index,
+					&_texture_path);
+				_texture_paths.push_back(_texture_path.C_Str());
+			}
+		}
+
 //        if (_scene->HasLight())
 //        {
 //
@@ -420,23 +438,43 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 							}
 						}
 
-						auto _pos = _a_mesh->mVertices[j];
-						auto _normal = _a_mesh->mNormals[j];
-						auto _uv = _a_mesh->mTextureCoords[0][j];
+						//does not have any vertex
+						if (!_a_mesh->mVertices)
+						{
+							logger.error("{} does have any vertex information", _scene_name);
+							break;
+						}
 
-						//copy mesh
+						auto _pos = _a_mesh->mVertices[j];
 						_w_vertex.position[0] = _pos.x;
 						_w_vertex.position[1] = _pos.y;
 						_w_vertex.position[2] = _pos.z;
+						
+						if (_a_mesh->mNormals)
+						{
+							//get normal
+							auto _normal = _a_mesh->mNormals[j];
+							_w_vertex.normal[0] = _normal.x;
+							_w_vertex.normal[1] = _normal.y;
+							_w_vertex.normal[2] = _normal.z;
+						}
+						else
+						{
+							logger.warning("{} does have any vertex information");
+						}
 
-						//get normal
-						_w_vertex.normal[0] = _normal.x;
-						_w_vertex.normal[1] = _normal.y;
-						_w_vertex.normal[2] = _normal.z;
-
-						//get uv
-						_w_vertex.uv[0] = _uv.x;
-						_w_vertex.uv[1] = _uv.y;
+						//copy mesh
+						if (_a_mesh->mTextureCoords && _a_mesh->mTextureCoords[0])
+						{
+							//get uv
+							auto _uv = _a_mesh->mTextureCoords[0][j];
+							_w_vertex.uv[0] = _uv.x;
+							_w_vertex.uv[1] = _uv.y;
+						}
+						else
+						{
+							logger.warning("{} does have any vertex information");
+						}
 
 						//add to vertices
 						_w_mesh->vertices.push_back(_w_vertex);
@@ -457,6 +495,12 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 						_max_vertex.x = std::max(_w_vertex.position[0], _max_vertex.x);
 						_max_vertex.y = std::max(_w_vertex.position[1], _max_vertex.y);
 						_max_vertex.z = std::max(_w_vertex.position[2], _max_vertex.z);
+
+						if (_a_mesh->mMaterialIndex >= 0 &&
+							_a_mesh->mMaterialIndex < _texture_paths.size())
+						{
+							_w_mesh->textures_path = _texture_paths[_a_mesh->mMaterialIndex];
+						}
 					}
 
 					// generate indices

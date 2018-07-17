@@ -72,7 +72,7 @@ scene::~scene()
 	release();
 }
 
-void scene::initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo)
+void scene::initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
 {
 	//Add your pre-initialization logic here
 	w_game::initialize(pOutputWindowsInfo);
@@ -251,7 +251,7 @@ void scene::load()
 	}
 
 	//load collada scene
-	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.wscene");
+	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.DAE");//wscene
 	if (_scene)
 	{
 		//get first camera

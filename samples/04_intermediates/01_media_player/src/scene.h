@@ -37,7 +37,7 @@
 class scene : public wolf::framework::w_game
 {
 public:
-	scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName);
+	scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig);
 	virtual ~scene();
 
 	/*
@@ -45,7 +45,7 @@ public:
 		Calling Game::Initialize() will enumerate through any components and initialize them as well.
 		The parameter pOutputWindowsInfo represents the information of output window(s) of this game.
 	*/
-	void initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo) override;
+	void initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo) override;
 
 	//The function "Load()" will be called once per game and is the place to load all of your game assets.
 	void load() override;

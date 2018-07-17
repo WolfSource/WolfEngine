@@ -551,7 +551,7 @@ namespace wolf
 
                 for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
                 {
-                    pPaths.push_back(get_base_file_nameW(_file_name.path()));
+                    pPaths.push_back(get_file_nameW(_file_name.path()));
                 }
             }
             inline void get_files_folders_in_directory(_In_z_ const std::string& pDirectoryPath, _Inout_ std::vector<std::string>& pPaths)
@@ -562,7 +562,7 @@ namespace wolf
                 for (auto& _file_name : std::experimental::filesystem::directory_iterator(pDirectoryPath))
                 {
 					_name = wolf::system::convert::wstring_to_string(_file_name.path());
-                    pPaths.push_back(get_base_file_name(_name));
+                    pPaths.push_back(get_file_name(_name));
                 }
             }
 #else

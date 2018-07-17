@@ -67,7 +67,7 @@ WOLF_MAIN()
     };
     
     w_network _puller;
-    _puller.setup_two_way_client("tcp://127.0.0.1:1235", 100, on_bind_established);
+    _puller.setup_two_way_client("tcp://127.0.0.1:1235", on_bind_established, 100, 100);
         
     _puller.release();
     logger.release();

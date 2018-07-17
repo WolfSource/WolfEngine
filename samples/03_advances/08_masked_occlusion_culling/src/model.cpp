@@ -43,7 +43,9 @@ W_RESULT model::initialize()
 	size_t _meshes_count = _meshes.size();
 	if (!_meshes_count)
 	{
-		V(W_FAILED, "model " + this->model_name + " does not have any mesh", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"model: {} does not have any mesh. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	//prepare vertices and indices
@@ -226,12 +228,16 @@ bool model::check_is_in_sight(_In_ wolf::framework::w_first_person_camera* pCame
 
 	if (!pCamera)
 	{
-		V(W_FAILED, "camera not avaiable", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"camera not avaiable. trace info: {}", _trace_info);
 		return false;
 	}
 	if (!this->sub_meshes_bounding_box.size())
 	{
-		V(W_FAILED, "sub mesh bounding sphere not avaiable for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"sub mesh bounding sphere not avaiable for model: {}. trace info: {}", this->model_name, _trace_info);
 		return false;
 	}
 
@@ -292,7 +298,9 @@ W_RESULT model::pre_update(
 		}
 		else
 		{
-			V(W_FAILED, "rendering to masked occlusion culling buffer for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"rendering to masked occlusion culling buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 		}
 	}
 
@@ -338,7 +346,9 @@ W_RESULT model::pre_update(
 			}
 			else
 			{
-				V(W_FAILED, "rendering instance to masked occlusion culling buffer for model: " + this->model_name, _trace_info, 3);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"rendering instance to masked occlusion culling buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 			}
 		}
 	}

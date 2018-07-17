@@ -42,8 +42,8 @@ static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
 
-scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring& pLogPath, _In_z_ const std::wstring& pAppName) :
-	w_game(pContentPath, pLogPath, pAppName),
+scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
+	w_game(pContentPath, pLogConfig),
 	_current_selected_model(nullptr),
 	_show_all_instances_colors(false),
 	_rebuild_command_buffer(true),
@@ -73,7 +73,10 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_z_ const std::wstring&
 	auto _number_of_threads = 1;// w_thread::get_number_of_hardware_thread_contexts();
 	if (this->_masked_occlusion_culling.initialize(_number_of_threads, true) == W_FAILED)
 	{
-		V(W_FAILED, "initializing masked occlusion culling", "scene::scene", 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"initializing masked occlusion culling.");
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -111,7 +114,7 @@ scene::~scene()
 	release();
 }
 
-void scene::initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo)
+void scene::initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
 {
 	//Add your pre-initialization logic here
 	w_game::initialize(pOutputWindowsInfo);
@@ -170,17 +173,26 @@ void scene::load()
 		{
 			if (this->_masked_occlusion_culling_debug_frame->load_texture_from_memory_all_channels_same(255) == W_FAILED)
 			{
-				V(W_FAILED, "loading texture for masked occlusion culling debug frame", _trace_info, 2);
+				V(W_FAILED,
+					w_log_type::W_WARNING,
+					false,
+					"loading texture for masked occlusion culling debug frame. trace info: {}", _trace_info);
 			}
 		}
 		else
 		{
-			V(W_FAILED, "initializing texture memory for masked occlusion culling debug frame", _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_WARNING,
+				false,
+				"initializing texture memory for masked occlusion culling debug frame. trace info: {}", _trace_info);
 		}
 	}
 	else
 	{
-		V(W_FAILED, "allocating memory for texture of masked occlusion culling debug frame", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			false,
+			"allocating memory for texture of masked occlusion culling debug frame. trace info: {}", _trace_info);
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -204,7 +216,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating render pass", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating render pass. trace info: {}", _trace_info);
 	}
 
 	//create semaphore
@@ -212,7 +227,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw semaphore", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw semaphore. trace info: {}", _trace_info);
 	}
 
 	//fence for syncing
@@ -220,7 +238,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw fence", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw fence. trace info: {}", _trace_info);
 	}
 
 	//load gui icon
@@ -235,7 +256,10 @@ void scene::load()
 		if (_hr == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "initializing icon", _trace_info, 3, true);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"initializing icon. trace info: {}", _trace_info);
 		}
 
 		_hr = _gui_icons->load_texture_2D_from_file(wolf::content_path +
@@ -243,7 +267,10 @@ void scene::load()
 		if (_hr == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "loading icon", _trace_info, 3, true);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"loading icon. trace info: {}", _trace_info);
 		}
 	}
 
@@ -267,7 +294,10 @@ void scene::load()
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "creating draw command buffers", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"creating draw command buffers. trace info: {}", _trace_info);
 	}
 
 	//read all wscene(s) from content folder
@@ -280,12 +310,18 @@ void scene::load()
 		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "loading shape coordinate axis", _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"loading shape coordinate axis. trace info: {}", _trace_info);
 		}
 	}
 	else
 	{
-		V(W_FAILED, "allocating memory for shape coordinate axis", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape coordinate axis. trace info: {}", _trace_info);
 	}
 }
 
@@ -375,7 +411,10 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 
 				if (!_model)
 				{
-					V(W_FAILED, "allocating memory for model: " + _m->get_name(), _trace_info, 2);
+					V(W_FAILED, 
+						w_log_type::W_WARNING,
+						false,
+						"allocating memory for model: {}. trace info: {}", _m->get_name(), _trace_info);
 					continue;
 				}
 
@@ -383,7 +422,10 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 				_hr = _model->initialize();
 				if (_hr == W_FAILED)
 				{
-					V(W_FAILED, "initializing model: " + _m->get_name(), _trace_info, 2);
+					V(W_FAILED,
+						w_log_type::W_WARNING,
+						false,
+						"initializing model: {}. trace info: {}", _m->get_name(), _trace_info);
 					continue;
 				}
 				else
@@ -397,7 +439,10 @@ W_RESULT scene::_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPa
 						this->_draw_render_pass);
 					if (_hr == W_FAILED)
 					{
-						V(W_FAILED, "loading model: " + _m->get_name(), _trace_info, 2);
+						V(W_FAILED,
+							w_log_type::W_WARNING,
+							false,
+							"loading model: {}. trace info: {}", _m->get_name(), _trace_info);
 						continue;
 					}
 				}
@@ -614,7 +659,9 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 					{
 						if (this->_masked_occlusion_culling_debug_frame->copy_data_to_texture_2D(_moc_debug_depth_frame) == W_FAILED)
 						{
-							V(W_FAILED, "copying data to texture of masked occlusion culling debug frame", _trace_info, 2);
+							V(W_FAILED,
+								w_log_type::W_WARNING,
+								"copying data to texture of masked occlusion culling debug frame. trace info: {}", _trace_info);
 						}
 					}
 				}
@@ -627,7 +674,9 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		auto _wvp = this->_first_camera.get_projection_view() * _world;
 		if (this->_shape_coordinate_axis->update(_wvp) == W_FAILED)
 		{
-			V(W_FAILED, "loading shape coordinate axis", _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"loading shape coordinate axis. trace info: {}", _trace_info);
 		}
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -704,7 +753,10 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		&this->_draw_fence,
 		false) == W_FAILED)
 	{
-		V(W_FAILED, "submiting queue for drawing", _trace_info, 3, true);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"submiting queue for drawing. trace info: {}", _trace_info);
 	}
 
 	this->_draw_fence.wait();
@@ -726,7 +778,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		this->_capture = false;
 		if (_gDevice->capture_presented_swap_chain_buffer(this->on_pixels_captured_signal) == W_FAILED)
 		{
-			V(W_FAILED, "capturing graphics device", _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"capturing graphics device. trace info: {}", _trace_info);
 			return W_FAILED;
 		}
 	}

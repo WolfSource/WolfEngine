@@ -34,7 +34,7 @@ scene::~scene()
 	release();
 }
 
-void scene::initialize(_In_ std::map<int, w_window_info> pOutputWindowsInfo)
+void scene::initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
 {
 	// TODO: Add your pre-initialization logic here
 

@@ -45,7 +45,9 @@ W_RESULT model_mesh::load(
 	if (!this->_mesh)
 	{
 		release();
-		V(W_FAILED, "allocating memory for w_mesh for model: " + this->model_name, _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"allocating memory for w_mesh for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	_mesh->set_vertex_binding_attributes(this->vertex_binding_attributes);
@@ -60,7 +62,7 @@ W_RESULT model_mesh::load(
 	{
 		//set the default texture
 		this->_textures.push_back(w_texture::default_texture);
-		logger.warning("default texture will be used for model: " + this->model_name);
+		logger.warning("default texture will be used for model: {}", this->model_name);
 		_mesh->set_texture(this->_textures[0]);
 	}
 
@@ -83,7 +85,9 @@ W_RESULT model_mesh::load(
 	if (_hr == W_FAILED)
 	{
 		release();
-		V(W_FAILED, "loading mesh for model: " + this->model_name, _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"loading mesh for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -121,14 +125,18 @@ W_RESULT model_mesh::load(
 		if (this->_cs.semaphore.initialize(this->gDevice) == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "initializing compute semaphore for model: " + this->model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_WARNING,
+				"initializing compute semaphore for model: {}. trace info: {}", this->model_name, _trace_info);
 			return W_FAILED;
 		}
 		//build compute command buffer
 		if (_build_compute_command_buffer() == W_FAILED)
 		{
 			release();
-			V(W_FAILED, "building compute command buffer for model: " + this->model_name, _trace_info, 2);
+			V(W_FAILED,
+				w_log_type::W_WARNING,
+				"building compute command buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 			return W_FAILED;
 		}
 	}
@@ -144,13 +152,17 @@ W_RESULT model_mesh::load(
 	this->_u1.data.bounding_sphere_radius = _get_first_model_bsphere.radius;
 	if (this->_u1.update() == W_FAILED)
 	{
-		V(W_FAILED, "updating uniform u1(mipmaps) for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"updating uniform u1(mipmaps) for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
 	if (_create_bounding_box_shapes(pRenderPass) == W_FAILED)
 	{
-		V(W_FAILED, "creaing shapes and bounding boxes for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"creaing shapes and bounding boxes for model: {}. trace info: {}", this->model_name, _trace_info);
 	}
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -174,7 +186,9 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 		true,
 		&gDevice->vk_compute_queue) == W_FAILED)
 	{
-		V(W_FAILED, "creating compute command buffer for " + this->model_name, _trace_info);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"creating compute command buffer for: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -206,7 +220,9 @@ W_RESULT model_mesh::_build_compute_command_buffer()
 		if (this->_cs.pipeline.bind(_cmd, w_pipeline_bind_point::COMPUTE) == W_FAILED)
 		{
 			this->_cs.command_buffers.end(0);
-			V(W_FAILED, "binding compute command buffer for " + this->model_name, _trace_info);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"binding compute command buffer for: {}. trace info: {}", this->model_name, _trace_info);
 			return W_FAILED;
 		}
 
@@ -364,7 +380,9 @@ W_RESULT model_mesh::submit_compute_shader()
 
 	if (_hr == W_FAILED)
 	{
-		V(_hr, "updating compute shader's unifrom for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"updating compute shader's unifrom for model: {}. trace info: {}", this->model_name, _trace_info);
 	}
 
 	auto _cmd = this->_cs.command_buffers.get_command_at(0);
@@ -379,7 +397,9 @@ W_RESULT model_mesh::submit_compute_shader()
 		false) == W_FAILED)
 	{
 		_hr = W_FAILED;
-		V(_hr, "submiting compute shader queue for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"submiting compute shader queue for model: {}. trace info: {}", this->model_name, _trace_info);
 	}
 
 	return _hr;
@@ -439,7 +459,9 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 		}
 		else
 		{
-			V(W_FAILED, "drawing model, lod info is out of range for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"drawing model, lod info is out of range for model: {}. trace info: {}", this->model_name, _trace_info);
 			return W_FAILED;
 		}
 	}
@@ -447,7 +469,9 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 	bool _error = false;
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "drawing model for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"drawing model for model: {}. trace info: {}", this->model_name, _trace_info);
 		_error = true;
 	}
 
@@ -458,7 +482,9 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer, _In_ cons
 		{
 			if (_shape->draw(pCommandBuffer) == W_FAILED)
 			{
-				V(W_FAILED, "drawing shape for model: " + this->model_name, _trace_info, 3);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"drawing shape for model: {}. trace info: {}", this->model_name, _trace_info);
 				_error = true;
 			}
 		}
@@ -998,7 +1024,9 @@ W_RESULT model_mesh::_load_textures()
 			}
 			else
 			{
-				V(W_FAILED, "loading texture\'" + _path + "\'", _trace_info);
+				V(W_FAILED,
+					w_log_type::W_ERROR,
+					"loading texture\'{}\' trace info: {}", _path, _trace_info);
 				_problem = true;
 				//release texture
 				SAFE_DELETE(_texture);
@@ -1006,7 +1034,9 @@ W_RESULT model_mesh::_load_textures()
 		}
 		else
 		{
-			V(W_FAILED, "allocating memory for w_texture\'" + _path + "\'", _trace_info);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"allocating memory for w_texture\'{}\' trace info: {}", _path, _trace_info);
 			_problem = true;
 		}
 	}
@@ -1039,7 +1069,9 @@ W_RESULT model_mesh::_create_buffers()
 	//load indirect draws
 	if (this->indirect_draws.load(this->gDevice, _draw_counts) == W_FAILED)
 	{
-		V(W_FAILED, "loading indirect draws command buffer for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading indirect draws command buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -1126,13 +1158,17 @@ W_RESULT model_mesh::_create_instance_buffers()
 	auto _buffer_size = static_cast<uint32_t>(_draw_counts * sizeof(vertex_instance_data));
 	if (_staging_buffers[0].allocate_as_staging(this->gDevice, _buffer_size) == W_FAILED)
 	{
-		V(W_FAILED, "loading staging buffer of vertex instances buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading staging buffer of vertex instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
 	if (_staging_buffers[0].set_data(_vertex_instances_data.data()) == W_FAILED)
 	{
-		V(W_FAILED, "setting data to staging buffer of vertex instances buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"setting data to staging buffer of vertex instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (this->_instances_buffer.allocate(
@@ -1141,13 +1177,17 @@ W_RESULT model_mesh::_create_instance_buffers()
 		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 		w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 	{
-		V(W_FAILED, "loading device buffer of vertex instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"loading device buffer of vertex instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
 	if (_staging_buffers[0].copy_to(this->_instances_buffer) == W_FAILED)
 	{
-		V(W_FAILED, "copying to device buffer of vertex instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"copying to device buffer of vertex instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	//release buffer
@@ -1158,12 +1198,16 @@ W_RESULT model_mesh::_create_instance_buffers()
 	_buffer_size = _draw_counts * sizeof(compute_instance_data);
 	if (_staging_buffers[1].allocate_as_staging(this->gDevice, _buffer_size) == W_FAILED)
 	{
-		V(W_FAILED, "loading staging buffer of compute instances buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading staging buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (_staging_buffers[1].set_data(_compute_instances_data.data()) == W_FAILED)
 	{
-		V(W_FAILED, "setting data to staging buffer of compute instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"setting data to staging buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (this->_cs.instances_buffer.allocate(
@@ -1172,12 +1216,16 @@ W_RESULT model_mesh::_create_instance_buffers()
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 		w_memory_usage_flag::MEMORY_USAGE_GPU_ONLY) == W_FAILED)
 	{
-		V(W_FAILED, "loading device buffer of compute instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"loading device buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (_staging_buffers[1].copy_to(_cs.instances_buffer) == W_FAILED)
 	{
-		V(W_FAILED, "copying to device buffer of compute instances buffer", _trace_info, 2);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"copying to device buffer of compute instances buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	_staging_buffers[1].release();
@@ -1202,12 +1250,16 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 	auto _size = static_cast<uint32_t>(this->lods_info.size() * sizeof(lod_info));
 	if (_staging_buffer.allocate_as_staging(this->gDevice, _size) == W_FAILED)
 	{
-		V(W_FAILED, "loading staging buffer for lod levels buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading staging buffer for lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (_staging_buffer.set_data(this->lods_info.data()))
 	{
-		V(W_FAILED, "setting data to staging buffer of lod levels buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"setting data to staging buffer of lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (this->_cs.lod_levels_buffer.allocate(
@@ -1216,12 +1268,16 @@ W_RESULT model_mesh::_create_lod_levels_buffer()
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 		w_memory_usage_flag::MEMORY_USAGE_GPU_TO_CPU) == W_FAILED)
 	{
-		V(W_FAILED, "loading data to staging buffer of lod levels buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading data to staging buffer of lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 	if (_staging_buffer.copy_to(this->_cs.lod_levels_buffer) == W_FAILED)
 	{
-		V(W_FAILED, "copy staging buffer to device buffer of lod levels buffer", _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"copy staging buffer to device buffer of lod levels buffer. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -1244,7 +1300,9 @@ W_RESULT model_mesh::_create_cs_out_buffer()
 		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 		w_memory_usage_flag::MEMORY_USAGE_GPU_TO_CPU) == W_FAILED)
 	{
-		V(W_FAILED, "loading compute shader stage output buffer for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading compute shader stage output buffer for model: {}. trace info: {}", this->model_name, _trace_info);
 		return W_FAILED;
 	}
 
@@ -1265,15 +1323,23 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 	{
 	default:
 		_hr = W_FAILED;
-		V(_hr, "batch_local_size " + std::to_string(this->_cs.batch_local_size) +
-			" not supported for model: " + this->model_name, _trace_info);
+		V(_hr,
+			w_log_type::W_ERROR,
+			"batch_local_size:{} not supported for model: {} . trace info: {}", 
+			this->_cs.batch_local_size, 
+			this->model_name, 
+			_trace_info);
 	case 2:
 		this->visibilities.resize(1);
 		this->_cs.unifrom_x2 = new w_uniform<compute_unifrom_x2>();
 		if (this->_cs.unifrom_x2->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x2 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x2 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1286,7 +1352,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x4->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x4 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x4 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1299,7 +1369,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x8->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x8 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x8 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1312,7 +1386,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x16->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x16 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x16 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1325,7 +1403,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x32->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x32 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x32 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1338,7 +1420,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x64->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader unifrom_x64 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x64 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1351,7 +1437,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x128->load(this->gDevice) == W_FAILED)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader uniform_x128 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x128 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1364,7 +1454,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x256->load(this->gDevice) == S_FALSE)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader uniform_x256 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x256 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1377,7 +1471,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x512->load(this->gDevice) == S_FALSE)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader uniform_x512 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x512 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1390,7 +1488,11 @@ W_RESULT model_mesh::_prepare_cs_path_uniform_based_on_local_size(
 		if (this->_cs.unifrom_x1024->load(this->gDevice) == S_FALSE)
 		{
 			_hr = W_FAILED;
-			V(_hr, "loading compute shader uniform_x512 for " + this->model_name, _trace_info);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading compute shader unifrom_x1024 for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 		else
 		{
@@ -1423,7 +1525,11 @@ W_RESULT model_mesh::_create_shader_modules(
 		_hr = this->_instance_u0.load(this->gDevice);
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "loading vertex shader instance uniform for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading vertex shader instance uniform for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 		_shader_param.buffer_info = this->_instance_u0.get_descriptor_info();
@@ -1433,7 +1539,11 @@ W_RESULT model_mesh::_create_shader_modules(
 		_hr = this->_basic_u0.load(this->gDevice);
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "loading vertex shader basic uniform for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading vertex shader basic uniform for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 		_shader_param.buffer_info = this->_basic_u0.get_descriptor_info();
@@ -1444,7 +1554,11 @@ W_RESULT model_mesh::_create_shader_modules(
 	_hr = this->_u1.load(this->gDevice);
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "loading vertex shader uniform 1 for model: " + this->model_name, _trace_info, 3);
+		V(_hr,
+			w_log_type::W_ERROR,
+			"loading vertex shader uniform 1 for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
 	}
 	_shader_param.index = 1;
@@ -1464,7 +1578,11 @@ W_RESULT model_mesh::_create_shader_modules(
 	_hr = this->_u2.load(this->gDevice);
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "loading fragment shader uniform 2 for model: " + this->model_name, _trace_info, 3);
+		V(_hr,
+			w_log_type::W_ERROR,
+			"loading fragment shader uniform 2 for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
 	}
 	if (this->_is_sky)
@@ -1473,7 +1591,11 @@ W_RESULT model_mesh::_create_shader_modules(
 		auto _hr = this->_u2.update();
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "updating uniform u2(cmds) for sky: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"updating uniform u2(cmds) for sky: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 	}
 	_shader_param.index = 3;
@@ -1505,7 +1627,11 @@ W_RESULT model_mesh::_create_shader_modules(
 		std::wstring _compute_shader_path;
 		if (_prepare_cs_path_uniform_based_on_local_size(_shader_param, _compute_shader_path) == W_FAILED)
 		{
-			V(W_FAILED, "getting compute shader uniform and filename path for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"getting compute shader uniform and filename path for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 		_shader_params.push_back(_shader_param);
@@ -1536,7 +1662,11 @@ W_RESULT model_mesh::_create_shader_modules(
 			false,
 			&this->_shader) == W_FAILED)
 		{
-			V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading shader module for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 	}
@@ -1556,7 +1686,11 @@ W_RESULT model_mesh::_create_shader_modules(
 			false,
 			&this->_shader) == W_FAILED)
 		{
-			V(W_FAILED, "loading shader module for model: " + this->model_name, _trace_info, 3);
+			V(_hr,
+				w_log_type::W_ERROR,
+				"loading shader module for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 	}
@@ -1564,7 +1698,11 @@ W_RESULT model_mesh::_create_shader_modules(
 	_hr = this->_shader->set_shader_binding_params(_shader_params);
 	if (_hr == W_FAILED)
 	{
-		V(W_FAILED, "setting shader binding param for model: " + this->model_name, _trace_info, 3);
+		V(_hr,
+			w_log_type::W_ERROR,
+			"setting shader binding param for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
 	}
 	_shader_params.clear();
@@ -1588,7 +1726,11 @@ W_RESULT model_mesh::_create_pipelines(
 		{ pRenderPass.get_viewport_scissor() },
 		pComputePipelineCacheName) == W_FAILED)
 	{
-		V(W_FAILED, "loading drawing pipeline for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading drawing pipeline for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
 	}
 
@@ -1608,7 +1750,11 @@ W_RESULT model_mesh::_create_pipelines(
 		0,//Disable tessellation stage
 		_rasterization_states) == W_FAILED)
 	{
-		V(W_FAILED, "loading drawing wireframe pipeline for model: " + this->model_name, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading drawing wireframe pipeline for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return W_FAILED;
 	}
 
@@ -1621,7 +1767,11 @@ W_RESULT model_mesh::_create_pipelines(
 			5,
 			pComputePipelineCacheName) == W_FAILED)
 		{
-			V(W_FAILED, "loading computing pipeline for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"loading computing pipeline for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 			return W_FAILED;
 		}
 	}
@@ -1709,8 +1859,11 @@ w_shapes* model_mesh::_create_shape(
 	auto _shape_box = new (std::nothrow) w_shapes(pBoundingBox, pColor);
 	if (!_shape_box)
 	{
-		V(W_FAILED, "allocating memory for shape(box) for mode: " + this->model_name
-			, _trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"allocating memory for shape(box) for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return nullptr;
 	}
 
@@ -1720,8 +1873,11 @@ w_shapes* model_mesh::_create_shape(
 		pRenderPass.get_viewport(),
 		pRenderPass.get_viewport_scissor()) == W_FAILED)
 	{
-		V(W_FAILED, "loading shape(box) for model: " + this->model_name,
-			_trace_info, 3);
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading shape(box) for model: {}. trace info: {}",
+			this->model_name,
+			_trace_info);
 		return nullptr;
 	}
 	return _shape_box;
@@ -1880,7 +2036,11 @@ void model_mesh::set_view_projection_position(
 		auto _hr = this->_instance_u0.update();
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "updating instance uniform ViewProjection for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"updating instance uniform ViewProjection for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 	}
 	else
@@ -1897,7 +2057,11 @@ void model_mesh::set_view_projection_position(
 		auto _hr = this->_basic_u0.update();
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "updating basic uniform ViewProjection for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"updating basic uniform ViewProjection for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 	}
 
@@ -1921,7 +2085,11 @@ void model_mesh::set_enable_instances_colors(_In_ const bool& pEnable)
 		auto _hr = this->_u2.update();
 		if (_hr == W_FAILED)
 		{
-			V(W_FAILED, "updating uniform u2(cmds) for model: " + this->model_name, _trace_info, 3);
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				"updating uniform u2(cmds) for model: {}. trace info: {}",
+				this->model_name,
+				_trace_info);
 		}
 	}
 }
