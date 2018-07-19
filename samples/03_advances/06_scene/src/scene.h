@@ -27,6 +27,7 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 #include <w_framework/w_first_person_camera.h>
 #include "model_mesh.h"
+#include <w_graphics/w_shapes.h>
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -104,6 +105,7 @@ private:
 	model_mesh*														_current_selected_model;
     //zero means ref model and none zero is index of instances
     int                                                             _index_of_selected_mesh;
+	wolf::graphics::w_shapes*										_shape_coordinate_axis;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

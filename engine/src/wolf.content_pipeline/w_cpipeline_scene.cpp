@@ -5,17 +5,8 @@ using namespace std;
 using namespace wolf::system;
 using namespace wolf::content_pipeline;
 
-w_cpipeline_scene::w_cpipeline_scene() : _coordinate_system(false)//false means 0 or LEFT_HANDED
+w_cpipeline_scene::w_cpipeline_scene()
 {
-    this->_coordinate_system_up_vector[0] = 0; this->_coordinate_system_up_vector[1] = 1; this->_coordinate_system_up_vector[2] = 0;
-}
-
-w_cpipeline_scene::w_cpipeline_scene(_In_ const w_coordinate_system& pSourceFileCoordinateSystem, _In_ const glm::vec3& pSourceFileUpVector)
-{
-    this->_coordinate_system = static_cast<bool>(pSourceFileCoordinateSystem);
-    this->_coordinate_system_up_vector[0] = pSourceFileUpVector.x;
-    this->_coordinate_system_up_vector[1] = pSourceFileUpVector.y;
-    this->_coordinate_system_up_vector[2] = pSourceFileUpVector.z;
 }
 
 w_cpipeline_scene::~w_cpipeline_scene()

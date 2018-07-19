@@ -41,12 +41,29 @@ public:
 		this->_model_name = _c_model->get_name();
 		this->_transform = _c_model->get_transform();
 
+
 		std::vector<w_cpipeline_mesh*> _meshes;
 
 		//get all meshes
 		_c_model->get_meshes(_meshes);
 		//get all instances
 		_c_model->get_instances(this->_instnaces_transforms);
+		
+#pragma region collada from 3DMax 
+
+		//3DMax is right handed Zup
+		this->_transform.rotation[0] += glm::radians(90.0f);
+		std::swap(this->_transform.position[1], this->_transform.position[2]);
+		this->_transform.position[1] *= -1.0f;
+
+		for (auto& _ins : this->_instnaces_transforms)
+		{
+			_ins.rotation[0] += glm::radians(90.0f);
+			std::swap(_ins.position[1], _ins.position[2]);
+			_ins.position[1] *= -1.0f;
+		}
+
+#pragma endregion 
 
 		//get size of mesh
 		size_t _meshes_count = _meshes.size();

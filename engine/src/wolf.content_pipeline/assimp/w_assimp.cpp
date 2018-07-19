@@ -26,63 +26,63 @@ using namespace wolf::system;
 using namespace wolf::content_pipeline;
 
 static void _iterate_node(_In_ const aiNode* pNode,
-                          _In_ std::vector<w_cpipeline_mesh*>& pModelMeshes,
-                          _Inout_ w_cpipeline_scene** pScene)
+	_In_ std::vector<w_cpipeline_mesh*>& pModelMeshes,
+	_Inout_ w_cpipeline_scene** pScene)
 {
-    if(!pNode) return;
-    
-    if(pNode->mNumMeshes)
-    {
-        auto _scene = *pScene;
-        std::vector<w_cpipeline_model*> _models;
-        for (size_t i = 0; i < pNode->mNumMeshes; ++i)
-        {
-            auto _mesh_index = pNode->mMeshes[i];
-            
-            aiVector3t<float> _scaling, _rotation, _position;
-            pNode->mTransformation.Decompose(_scaling, _rotation, _position);
-            
-            _models.clear();
-            _scene->get_models_by_id(_mesh_index, _models);
-            if (_models.size())
-            {
-                //if we already created a model, so add an instnace for it
-                w_instance_info _instance;
-                _instance.name = pNode->mName.C_Str();
-                _instance.position[0] = _position.x; _instance.position[1] = _position.y; _instance.position[2] = _position.z;
-                _instance.rotation[0] = _rotation.x; _instance.rotation[1] = _rotation.y; _instance.rotation[2] = _rotation.z;
-                _instance.scale[0] = _scaling.x; _instance.scale[1] = _scaling.y; _instance.scale[2] = _scaling.z;
-                
-                //add to first one
-                _models[0]->add_instance(_instance);
-            }
-            else
-            {
-                //set transform
-                w_transform_info _transform;
-                _transform.position[0] = _position.x; _transform.position[1] = _position.y; _transform.position[2] = _position.z;
-                _transform.rotation[0] = _rotation.x; _transform.rotation[1] = _rotation.y; _transform.rotation[2] = _rotation.z;
-                _transform.scale[0] = _scaling.x; _transform.scale[1] = _scaling.y; _transform.scale[2] = _scaling.z;
-                
-                //could not find in models, we need to create a model
-                std::vector<w_cpipeline_mesh*> _meshes = { pModelMeshes[_mesh_index] };
-                
-                auto _model = new w_cpipeline_model(_meshes);
-                if (pNode->mParent)
-                {
-                    _model->set_name(pNode->mParent->mName.C_Str());
-                }
-                _model->set_id(_mesh_index);
-                _model->set_transform(_transform);
-                _scene->add_model(_model);
-            }
-        }
-    }
-    
-    for (size_t i = 0 ; i < pNode->mNumChildren; ++i)
-    {
-        _iterate_node(pNode->mChildren[i], pModelMeshes, pScene);
-    }
+	if (!pNode) return;
+
+	if (pNode->mNumMeshes)
+	{
+		auto _scene = *pScene;
+		std::vector<w_cpipeline_model*> _models;
+		for (size_t i = 0; i < pNode->mNumMeshes; ++i)
+		{
+			auto _mesh_index = pNode->mMeshes[i];
+
+			aiVector3t<float> _scaling, _rotation, _position;
+			pNode->mTransformation.Decompose(_scaling, _rotation, _position);
+
+			_models.clear();
+			_scene->get_models_by_id(_mesh_index, _models);
+			if (_models.size())
+			{
+				//if we already created a model, so add an instnace for it
+				w_instance_info _instance;
+				_instance.name = pNode->mName.C_Str();
+				_instance.position[0] = _position.x; _instance.position[1] = _position.y; _instance.position[2] = _position.z;
+				_instance.rotation[0] = _rotation.x; _instance.rotation[1] = _rotation.y; _instance.rotation[2] = _rotation.z;
+				_instance.scale[0] = _scaling.x; _instance.scale[1] = _scaling.y; _instance.scale[2] = _scaling.z;
+
+				//add to first one
+				_models[0]->add_instance(_instance);
+			}
+			else
+			{
+				//set transform
+				w_transform_info _transform;
+				_transform.position[0] = _position.x; _transform.position[1] = _position.y; _transform.position[2] = _position.z;
+				_transform.rotation[0] = _rotation.x; _transform.rotation[1] = _rotation.y; _transform.rotation[2] = _rotation.z;
+				_transform.scale[0] = _scaling.x; _transform.scale[1] = _scaling.y; _transform.scale[2] = _scaling.z;
+
+				//could not find in models, we need to create a model
+				std::vector<w_cpipeline_mesh*> _meshes = { pModelMeshes[_mesh_index] };
+
+				auto _model = new w_cpipeline_model(_meshes);
+				if (pNode->mParent)
+				{
+					_model->set_name(pNode->mParent->mName.C_Str());
+				}
+				_model->set_id(_mesh_index);
+				_model->set_transform(_transform);
+				_scene->add_model(_model);
+			}
+		}
+	}
+
+	for (size_t i = 0; i < pNode->mNumChildren; ++i)
+	{
+		_iterate_node(pNode->mChildren[i], pModelMeshes, pScene);
+	}
 }
 
 #pragma region SIMPLYGON OPTIMIZING
@@ -338,22 +338,14 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
         }
         
 		//convert scene model
-        auto _scene_name = std::string(_scene->mRootNode->mName.C_Str());
-        std::transform(_scene_name.begin(), _scene_name.end(), _scene_name.begin(), ::tolower);
-		
-		//set the coordinate system
-        w_coordinate_system _coordinate_system = w_coordinate_system::LEFT_HANDED;
-        glm::vec3 _coordinate_system_up_vector = glm::vec3(0, 1, 0);
-        if (_scene_name == "maxscene")
-        {
-            _coordinate_system = w_coordinate_system::RIGHT_HANDED;
-            _coordinate_system_up_vector.x = 0; _coordinate_system_up_vector.y = 0; _coordinate_system_up_vector.z =1;
-        }
-        
+		auto _scene_name = wolf::system::io::get_file_name(_path);
+		auto _root_name = std::string(_scene->mRootNode->mName.C_Str());
+
 		//create wolf scene
-        auto _w_scene = new w_cpipeline_scene(_coordinate_system, _coordinate_system_up_vector);
+        auto _w_scene = new w_cpipeline_scene();
         _w_scene->set_name(_scene_name);
-        
+		_w_scene->set_root_name(_root_name);
+
         //load cameras
 		if (_scene->HasCameras())
 		{
@@ -392,7 +384,10 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 					aiTextureType_DIFFUSE,
 					_texture_index,
 					&_texture_path);
-				_texture_paths.push_back(_texture_path.C_Str());
+				if (strcmp(_texture_path.C_Str(), ""))
+				{
+					_texture_paths.push_back(_texture_path.C_Str());
+				}
 			}
 		}
 
@@ -429,14 +424,14 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 						//TODO: we need to support skinned model in next version
 
 						//modify vertices for right handed coordinate system
-						if (_coordinate_system == w_coordinate_system::RIGHT_HANDED)
-						{
-							if (_coordinate_system_up_vector.z == 1)
-							{
-								std::swap(_a_mesh->mVertices[j].z, _a_mesh->mVertices[j].y);
-								_a_mesh->mVertices[j].y *= -1;
-							}
-						}
+						//if (_coordinate_system == w_coordinate_system::RIGHT_HANDED)
+						//{
+						//	if (_coordinate_system_up_vector.z == 1)
+						//	{
+						//		std::swap(_a_mesh->mVertices[j].z, _a_mesh->mVertices[j].y);
+						//		_a_mesh->mVertices[j].y *= -1;
+						//	}
+						//}
 
 						//does not have any vertex
 						if (!_a_mesh->mVertices)

@@ -251,12 +251,12 @@ void scene::load()
 	}
 
 	//load collada scene
-	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.DAE");//wscene
+	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::content_path + L"models/sponza/sponza.wscene");
 	if (_scene)
 	{
 		//get first camera
 		_scene->get_first_camera(this->_first_camera);
-		float _near_plan = 0.1f, far_plan = 10000;
+		float _near_plan = 0.1f, far_plan = 100000;
 
 		this->_first_camera.set_near_plan(_near_plan);
 		this->_first_camera.set_far_plan(far_plan);
@@ -317,6 +317,28 @@ void scene::load()
 		_cmodels.clear();
 		_scene->release();
 	}
+
+	//create coordinate system
+	this->_shape_coordinate_axis = new (std::nothrow) w_shapes(w_color::LIME());
+	if (this->_shape_coordinate_axis)
+	{
+		_hr = this->_shape_coordinate_axis->load(_gDevice, this->_draw_render_pass, this->_viewport, this->_viewport_scissor);
+		if (_hr == W_FAILED)
+		{
+			V(W_FAILED,
+				w_log_type::W_ERROR,
+				true,
+				"loading shape coordinate axis. trace info: {}", _trace_info);
+		}
+	}
+	else
+	{
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"allocating memory for shape coordinate axis. trace info: {}", _trace_info);
+	}
+
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
@@ -347,6 +369,8 @@ W_RESULT scene::_build_draw_command_buffers()
 				{
 					_model->draw(_cmd, false);
 				}
+				//draw coordinate system
+				this->_shape_coordinate_axis->draw(_cmd);
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 			}
@@ -403,6 +427,16 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 	{
 		_build_draw_command_buffers();
 		this->_rebuild_command_buffer = false;
+	}
+
+	//update shape coordinate
+	auto _world = glm::mat4(1) * glm::scale(glm::vec3(20.0f));
+	auto _wvp = this->_first_camera.get_projection_view() * _world;
+	if (this->_shape_coordinate_axis->update(_wvp) == W_FAILED)
+	{
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			"loading shape coordinate axis. trace info: {}", _trace_info);
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -482,6 +516,8 @@ ULONG scene::release()
 	}
 	this->_current_selected_model = nullptr;
     this->_index_of_selected_mesh = 0;
+
+	SAFE_RELEASE(this->_shape_coordinate_axis);
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
