@@ -28560,7 +28560,7 @@ namespace SimplygonSDK
 	 */
 	inline const rchar *GetHeaderVersion()
 		{
-		return "8.2.358.2";
+		return "8.2.359.20";
 		}
 
 };
