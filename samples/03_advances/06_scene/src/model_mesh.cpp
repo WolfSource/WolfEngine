@@ -896,13 +896,18 @@ private:
 		bool _problem = false;
 		for (auto& _path : this->_textures_paths)
 		{
+            //load texture from sponza folder
+            auto _file_path = wolf::system::io::get_file_name(_path);
+            auto _index =  _file_path.find("_");
+            auto _texture_name = _file_path.substr(_index + 1, _file_path.size() - _index);
+            
 			auto _texture = new (std::nothrow) w_texture();
 			if (_texture)
 			{
 				if (w_texture::load_to_shared_textures(
 					this->_gDevice,
-					wolf::content_path + L"models/sponza/" + 
-					wolf::system::convert::string_to_wstring(_path),
+					wolf::content_path + L"models/sponza/sponza/" +
+					wolf::system::convert::string_to_wstring(_texture_name),
 					false,
 					&_texture) == W_PASSED)
 				{
