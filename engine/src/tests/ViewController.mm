@@ -53,7 +53,7 @@ void init_window(struct w_present_info& pInfo)
     wolf::system::w_logger_config _log_config;
     _log_config.app_name = L"test.wolf.engine.vulkan.osx";
     _log_config.log_path = _running_dir;
-    _log_config.flush_log_only_on_error = false;
+    _log_config.flush_level = false;
     _log_config.log_to_std_out = true;
     
 #if defined __APPLE__

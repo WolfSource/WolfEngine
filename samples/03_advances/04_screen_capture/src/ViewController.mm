@@ -13,13 +13,13 @@ using namespace wolf::system;
 static NSView*                                      sSampleView;
 static CVDisplayLinkRef                             sDisplayLink;
 static scene*                                       sScene;
-static std::map<int, w_window_info>                 sWindowInfo;
+static std::map<int, w_present_info>                sPresentInfo;
 static NSRect                                       sWindowRect;
 static int                                          sScreenWidth;
 static int                                          sScreenHeight;
 
 //called from c++
-void init_window(struct w_window_info& pInfo)
+void init_window(struct w_present_info& pInfo)
 {
     sSampleView.bounds = CGRectMake(0, 0, pInfo.width, pInfo.height);
     pInfo.window = (void*)CFBridgingRetain(sSampleView);
@@ -62,15 +62,15 @@ void init_window(struct w_window_info& pInfo)
     sScene = new scene(wolf::system::convert::string_to_wstring(_content_path), _log_config);
     
     //initialize the information of window
-    w_window_info _window_info;
-    _window_info.width = 800;
-    _window_info.height = 600;
-    _window_info.window = nullptr;
-    _window_info.cpu_access_swap_chain_buffer = true;
+    w_present_info _present_info;
+    _present_info.width = 800;
+    _present_info.height = 600;
+    _present_info.window = nullptr;
+    _present_info.cpu_access_swap_chain_buffer = true;
     
     //call init_window from objective-c and get the pointer to the window
-    init_window(_window_info);
-    sWindowInfo.insert( { 0, _window_info  } ) ;
+    init_window(_present_info);
+    sPresentInfo.insert( { 0, _present_info  } ) ;
     
     CVDisplayLinkCreateWithActiveCGDisplays(&sDisplayLink);
     CVDisplayLinkSetOutputCallback(sDisplayLink, &DisplayLinkCallback, nullptr);
@@ -102,7 +102,7 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef pDisplayLink,
                                     CVOptionFlags* pFlagsOut,
                                     void* pScene)
 {
-    sScene->run(sWindowInfo);
+    sScene->run(sPresentInfo);
     return kCVReturnSuccess;
 }
 

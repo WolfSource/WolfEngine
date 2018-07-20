@@ -4,7 +4,7 @@
 - Forward+
 - DirectX 12
 - Realtime Raytracing
-- DEBUG, RELEASE, MinSizeRelease(does not have assimp)
+- DEBUG, RELEASE, MinSizeRelease(does not have assimp and just use wscene files)
 
 
 # 1.65.0.0 (2018-06-04)
