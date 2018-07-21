@@ -68,10 +68,7 @@ static void _iterate_node(_In_ const aiNode* pNode,
 				std::vector<w_cpipeline_mesh*> _meshes = { pModelMeshes[_mesh_index] };
 
 				auto _model = new w_cpipeline_model(_meshes);
-				if (pNode->mParent)
-				{
-					_model->set_name(pNode->mParent->mName.C_Str());
-				}
+				_model->set_name(pModelMeshes[_mesh_index]->name);
 				_model->set_id(_mesh_index);
 				_model->set_transform(_transform);
 				_scene->add_model(_model);
@@ -444,7 +441,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 						_w_vertex.position[0] = _pos.x;
 						_w_vertex.position[1] = _pos.y;
 						_w_vertex.position[2] = _pos.z;
-						
+
 						if (_a_mesh->mNormals)
 						{
 							//get normal
@@ -548,6 +545,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 					//}
 
 					//add this mesh to others
+					_w_mesh->name = _a_mesh->mName.C_Str();
 					_model_meshes.push_back(_w_mesh);
 				}
 			}

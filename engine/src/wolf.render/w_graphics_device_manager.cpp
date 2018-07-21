@@ -2,9 +2,9 @@
 #include "w_graphics_device_manager.h"
 #include <w_logger.h>
 #include <w_convert.h>
-#include "w_graphics/w_command_buffers.h"
-#include "w_graphics/w_texture.h"
-#include "w_graphics/w_shader.h"
+#include "vulkan/w_command_buffers.h"
+#include "vulkan/w_texture.h"
+#include "vulkan/w_shader.h"
 #include <signal.h>
 
 static std::once_flag _graphics_device_static_constructor;
@@ -17,7 +17,7 @@ static std::once_flag _graphics_device_static_constructor;
 
 using namespace std;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 
 
 #define NUM_SAMPLES     VK_SAMPLE_COUNT_1_BIT
@@ -1226,8 +1226,10 @@ static VkBool32 DebugMessageCallback(
 
 namespace wolf
 {
-    namespace graphics
+    namespace render
     {
+		namespace vulkan
+		{
 		class w_graphics_device_manager_pimp
 		{
 		public:
@@ -3585,8 +3587,9 @@ namespace wolf
 			w_graphics_device_manager_configs					_config;
             std::map<int, w_present_info>                        _windows_info;
             std::string                                         _name;;
-        };
+		};
     }
+	}
 }
 
 #pragma endregion

@@ -18,7 +18,7 @@
 
 #ifndef W_EXP
 
-	#ifdef __WOLF_RENDER__
+	#ifdef __WOLF_RENDER_VULKAN__
 		#define W_EXP __declspec(dllexport)
 	#else
 		#define W_EXP __declspec(dllimport)

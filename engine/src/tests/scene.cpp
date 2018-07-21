@@ -4,7 +4,7 @@
 using namespace wolf;
 using namespace wolf::system;
 using namespace wolf::framework;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig)

@@ -4,14 +4,11 @@
     <ClCompile Include="..\..\..\..\common\main.cpp" />
     <ClCompile Include="..\..\..\..\common\pch.cpp" />
     <ClCompile Include="..\..\src\scene.cpp" />
-    <ClCompile Include="..\..\src\model_mesh.cpp" />
-    <ClCompile Include="..\..\src\model.cpp" />
+    <ClCompile Include="..\..\..\06_scene\src\model_mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\common\pch.h" />
     <ClInclude Include="..\..\src\scene.h" />
-    <ClInclude Include="..\..\src\model_mesh.h" />
-    <ClInclude Include="..\..\src\model.h" />
-    <ClInclude Include="..\..\src\compute_stage.h" />
+    <ClInclude Include="..\..\..\06_scene\src\model_mesh.h" />
   </ItemGroup>
 </Project>

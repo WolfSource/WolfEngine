@@ -168,6 +168,7 @@ namespace wolf
 
 		WCP_EXP struct w_cpipeline_mesh
 		{
+			std::string							name;
 			//posX, posY, posZ
 			std::vector<w_vertex_struct>		vertices;
 			w_vector_uint32_t					indices;

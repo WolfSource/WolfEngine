@@ -23,7 +23,7 @@ namespace wolf
 	namespace framework
 	{
 		//Provides basic graphics device initialization, load game assets, game logic and rendering code.
-		class w_game : public wolf::graphics::w_graphics_device_manager
+		class w_game : public wolf::render::vulkan::w_graphics_device_manager
 		{
 		public:
             W_EXP w_game(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig);
@@ -70,7 +70,7 @@ namespace wolf
 
 			bool													exiting;
 		private:
-			typedef	 wolf::graphics::w_graphics_device_manager      _super;
+			typedef	 wolf::render::vulkan::w_graphics_device_manager      _super;
 			wolf::system::w_game_time                               _game_time;
 			std::wstring                                            _app_name;
 
