@@ -30,14 +30,17 @@ void init_window(struct w_present_info& pInfo)
 
 + (void)Release
 {
+    //release display link
+    CVDisplayLinkRelease(sDisplayLink);
+    //release scene
     if (sScene)
     {
         sScene->exit();
         sScene->release();
         delete sScene;
     }
+    //release shared data stored in heap
     wolf::release_heap_data();
-    CVDisplayLinkRelease(sDisplayLink);
 }
 
 //since this is a single-view app, initialize game during view loading.

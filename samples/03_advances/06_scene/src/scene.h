@@ -25,9 +25,9 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
+#include <w_graphics/w_shapes.h>
 #include <w_framework/w_first_person_camera.h>
 #include "model_mesh.h"
-#include <w_graphics/w_shapes.h>
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 

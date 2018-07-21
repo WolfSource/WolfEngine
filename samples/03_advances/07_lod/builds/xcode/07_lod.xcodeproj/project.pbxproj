@@ -358,7 +358,6 @@
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(PROJECT_DIR)/../../src",
 					"$(PROJECT_DIR)/../../../../common",
-					"$(SRCROOT)/../../../../../engine/dependencies/msgpack/include/",
 					"$(SRCROOT)/../../../../../engine/dependencies/vulkan/macOS/macOS/include",
 					"$(SRCROOT)/../../../../../engine/src/wolf.system",
 					"$(SRCROOT)/../../../../../engine/src/wolf.content_pipeline",

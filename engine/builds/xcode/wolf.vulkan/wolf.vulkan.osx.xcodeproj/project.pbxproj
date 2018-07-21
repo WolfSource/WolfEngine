@@ -41,6 +41,8 @@
 		2C68599020D92D1B0096C33B /* FrameRecorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68598720D92D1B0096C33B /* FrameRecorder.cpp */; };
 		2C68599120D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68598920D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp */; settings = {COMPILER_FLAGS = "-mavx2 -mfma"; }; };
 		2C68599320D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C68599220D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp */; settings = {COMPILER_FLAGS = "-mavx2 -mfma"; }; };
+		2C6E469821026206009BF7F5 /* w_occlusion_query.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C6E469621026206009BF7F5 /* w_occlusion_query.h */; };
+		2C6E469921026206009BF7F5 /* w_occlusion_query.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C6E469721026206009BF7F5 /* w_occlusion_query.cpp */; };
 		2C7079991EACE6F2003784A2 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CD32E1E8A8DBB0090EE0A /* libwolf.system.osx.dylib */; };
 		2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C736BC71ECB710900624CC7 /* w_uniform.h */; };
 		2C766E6C20B343C4000C66F4 /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C766E6B20B343C4000C66F4 /* libassimp.4.1.0.dylib */; };
@@ -111,6 +113,8 @@
 		2C68598920D92D1B0096C33B /* MaskedOcclusionCullingAVX2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaskedOcclusionCullingAVX2.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingAVX2.cpp; sourceTree = "<group>"; };
 		2C68599220D92F400096C33B /* MaskedOcclusionCullingAVX512.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaskedOcclusionCullingAVX512.cpp; path = ../../../src/wolf.render/w_framework/masked_occlusion_culling/MaskedOcclusionCullingAVX512.cpp; sourceTree = "<group>"; };
 		2C69E9A91E5EC2CB00F15C44 /* libwolf.vulkan.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.vulkan.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C6E469621026206009BF7F5 /* w_occlusion_query.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_occlusion_query.h; path = ../../../src/wolf.render/w_graphics/w_occlusion_query.h; sourceTree = "<group>"; };
+		2C6E469721026206009BF7F5 /* w_occlusion_query.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_occlusion_query.cpp; path = ../../../src/wolf.render/w_graphics/w_occlusion_query.cpp; sourceTree = "<group>"; };
 		2C736BC71ECB710900624CC7 /* w_uniform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_uniform.h; path = ../../../src/wolf.render/w_graphics/w_uniform.h; sourceTree = "<group>"; };
 		2C766E6B20B343C4000C66F4 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../dependencies/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
 		2C7F0DA41EAD348600F0C700 /* w_render_pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_render_pass.cpp; path = ../../../src/wolf.render/w_graphics/w_render_pass.cpp; sourceTree = "<group>"; };
@@ -168,6 +172,8 @@
 				2C0F36A4200A6BFF001CB2DF /* w_shapes.h */,
 				2CFFAC6D1FCEAA400020A112 /* w_command_buffers.cpp */,
 				2CFFAC691FCEAA3F0020A112 /* w_command_buffers.h */,
+				2C6E469721026206009BF7F5 /* w_occlusion_query.cpp */,
+				2C6E469621026206009BF7F5 /* w_occlusion_query.h */,
 				2CFFAC6C1FCEAA400020A112 /* w_render_target.cpp */,
 				2CFFAC671FCEAA3F0020A112 /* w_render_target.h */,
 				2C598C661FA268730055D215 /* w_queue.cpp */,
@@ -292,6 +298,7 @@
 				2C38D9531E79646D00EE8595 /* w_render_pch.h in Headers */,
 				2C9899661E97EA74002FE161 /* w_mesh.h in Headers */,
 				2C736BC81ECB710900624CC7 /* w_uniform.h in Headers */,
+				2C6E469821026206009BF7F5 /* w_occlusion_query.h in Headers */,
 				2C410E6C1EAE111A003F2E84 /* w_pipeline.h in Headers */,
 				2C598C691FA268740055D215 /* w_queue.h in Headers */,
 				2C9E7FD020A4D72200B9D492 /* w_memory_allocator.h in Headers */,
@@ -390,6 +397,7 @@
 				2C598C681FA268740055D215 /* w_queue.cpp in Sources */,
 				2C68597D20D92CE30096C33B /* w_masked_occlusion_culling.cpp in Sources */,
 				2C68598E20D92D1B0096C33B /* CullingThreadpool.cpp in Sources */,
+				2C6E469921026206009BF7F5 /* w_occlusion_query.cpp in Sources */,
 				2C98996F1E9B51D6002FE161 /* w_texture.cpp in Sources */,
 				2C8D5B6D1F4F98D1000BCB87 /* w_imgui.cpp in Sources */,
 				2CFFAC741FCEAA400020A112 /* w_command_buffers.cpp in Sources */,

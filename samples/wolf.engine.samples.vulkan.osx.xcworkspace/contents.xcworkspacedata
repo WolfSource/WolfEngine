@@ -138,5 +138,8 @@
       <FileRef
          location = "group:03_advances/07_lod/builds/xcode/07_lod.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:03_advances/08_hardware_occlusion_culling/builds/xcode/08_hardware_occlusion_culling.xcodeproj">
+      </FileRef>
    </Group>
 </Workspace>

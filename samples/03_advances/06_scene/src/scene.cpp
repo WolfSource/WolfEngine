@@ -18,7 +18,7 @@ static ImTextureID sTexID = (void*)("#i");
 static float sWindowWidth = 0;
 static float sWindowHeight = 0;
 static float sUXAnimationSpeed = 1.2f;
-typedef enum collapse_states
+enum collapse_states
 {
 	openned = 0,
 	openning,
@@ -952,7 +952,7 @@ scene::widget_info scene::_show_explorer()
 	ImGui::SameLine(0.0f, 0.0f);
 
 	ImVec2 _icon_size(_w_i.size.y - 2.0f, _w_i.size.y - 2.0f);
-	ImGui::SetWindowPos(ImVec2(80.0f, _w_i.pos.y + 1));
+	ImGui::SetWindowPos(ImVec2(10.0f, _w_i.pos.y + 1));//was 80
 	if (ImGui::ImageButton(sTexID, _icon_size, ImVec2(0, 0), ImVec2(0.1, 0.1), -1.0f, ImVec4(0, 0, 0, 0), Colors::Black))
 	{
 		sLeftWidgetCollapseState = collapse_states::collapsing;

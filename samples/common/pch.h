@@ -20,7 +20,6 @@
 namespace shared
 {
 	extern std::wstring	scene_content_path;
-    extern int total_indirect_draw_calls;
 }
 
 #endif
