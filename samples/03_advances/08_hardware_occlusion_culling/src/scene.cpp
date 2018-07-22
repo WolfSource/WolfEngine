@@ -42,6 +42,7 @@ static std::once_flag _once_flag;
 
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig),
+	_query_results(nullptr),
 	_current_selected_model(nullptr),
 	_rebuild_command_buffer(true),
 	_index_of_selected_mesh(0)
@@ -226,7 +227,8 @@ void scene::load()
 	}
 
 	//load collada scene
-	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::system::io::get_current_directoryW() + L"/../../../../samples/03_advances/08_hardware_occlusion_culling/src/content/models/test_oculling.wscene");
+	auto _scene = w_content_manager::load<w_cpipeline_scene>(wolf::system::io::get_current_directoryW() + 
+		L"/../../../../samples/03_advances/08_hardware_occlusion_culling/src/content/models/test_oculling.wscene");
 	if (_scene)
 	{
 		//get first camera
@@ -313,6 +315,13 @@ void scene::load()
 			true,
 			"allocating memory for shape coordinate axis. trace info: {}", _trace_info);
 	}
+
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	this->_gpu_occlusion_query.initialize(_gDevice, 1);
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 }
 
 W_RESULT scene::_build_draw_command_buffers()
@@ -326,6 +335,9 @@ W_RESULT scene::_build_draw_command_buffers()
 		this->_draw_command_buffers.begin(i);
 		{
 			auto _cmd = this->_draw_command_buffers.get_command_at(i);
+
+			this->_gpu_occlusion_query.reset(_cmd);
+
 			this->_draw_render_pass.begin(
 				i,
 				_cmd,
@@ -334,9 +346,17 @@ W_RESULT scene::_build_draw_command_buffers()
 				0.0f);
 			{
 				//draw all models
-				for (auto _model : this->_models)
+				for (uint32_t i = 0; i < this->_models.size(); ++i)
 				{
-					_model->draw(_cmd, false);
+					if (i == 1)
+					{
+						_gpu_occlusion_query.begin_query(_cmd, 0);
+					}
+					this->_models[i]->draw(_cmd, false);
+					if (i == 1)
+					{
+						_gpu_occlusion_query.end_query(_cmd, 0);
+					}
 				}
 				//draw coordinate system
 				this->_shape_coordinate_axis->draw(_cmd);
@@ -385,6 +405,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		{
 			_model->set_view_projection(this->_first_camera.get_view(), this->_first_camera.get_projection());
 		}
+		_rebuild_command_buffer = true;
 	}
 
 	if (this->_rebuild_command_buffer)
@@ -416,6 +437,9 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	auto _output_window = &(_gDevice->output_presentation_window);
 	auto _frame_index = _output_window->swap_chain_image_index;
 
+	size_t _number_of_query_results = 0;
+	this->_query_results = this->_gpu_occlusion_query.wait_for_query_results(_number_of_query_results);
+	
 	w_imgui::render();
 
 	auto _draw_cmd = this->_draw_command_buffers.get_command_at(_frame_index);
@@ -534,11 +558,12 @@ void scene::_show_floating_debug_window()
 		}
 	}
 
-	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nSelected Mesh:%s\r\n",
+	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nSelected Mesh:%s\r\nSphere Occlusion State: %d",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec,
-		_selected_mesh_name.c_str());
+		_selected_mesh_name.c_str(),
+		this->_query_results ? this->_query_results[0] : 0);
 
 	if (this->_current_selected_model)
 	{

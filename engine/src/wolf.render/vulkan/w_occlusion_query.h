@@ -35,17 +35,18 @@ namespace wolf
 					_In_ const uint32_t& pQuerySize);
 
 				//wait for results of query
-				W_VK_EXP void wait_for_query_results();
+				W_VK_EXP uint64_t* wait_for_query_results(_Inout_ size_t& pNumberOfResults);
 				//get results of query with availability bit
-				W_VK_EXP void get_available_query_results();
+				W_VK_EXP uint64_t* get_available_query_results(_Inout_ size_t& pNumberOfResults);
 				//get results of query with partial bit
-				W_VK_EXP void get_partial_query_results();
+				W_VK_EXP uint64_t* get_partial_query_results(_Inout_ size_t& pNumberOfResults);
+
 				//reset query
 				W_VK_EXP void reset(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pFirstQuery = 0);
 				//begin query
-				W_VK_EXP void begin_query(_In_ const w_command_buffer& pCommandBuffer);
+				W_VK_EXP void begin_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex);
 				//end query
-				W_VK_EXP void end_query(_In_ const w_command_buffer& pCommandBuffer);
+				W_VK_EXP void end_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex);
 
 				//release occlusion query
 				W_VK_EXP ULONG release() override;

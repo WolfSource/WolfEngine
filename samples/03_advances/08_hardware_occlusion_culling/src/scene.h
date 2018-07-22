@@ -100,7 +100,8 @@ private:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	wolf::render::vulkan::w_occlusion_query								_occlusion_query;
+	wolf::render::vulkan::w_occlusion_query								_gpu_occlusion_query;
+	uint64_t*															_query_results;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

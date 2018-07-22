@@ -32,19 +32,25 @@ namespace wolf
 					return W_PASSED;
 				}
 
-				void wait_for_query_results()
+				uint64_t* wait_for_query_results(_Inout_ size_t& pNumberOfResults)
 				{
+					pNumberOfResults = this->_passed_samples.size();
 					get_query_pool_results(VK_QUERY_RESULT_WAIT_BIT);
+					return get_passed_samples_data();
 				}
 
-				void get_available_query_results()
+				uint64_t* get_available_query_results(_Inout_ size_t& pNumberOfResults)
 				{
+					pNumberOfResults = this->_passed_samples.size();
 					get_query_pool_results(VK_QUERY_RESULT_WITH_AVAILABILITY_BIT);
+					return get_passed_samples_data();
 				}
 
-				void get_partial_query_results()
+				uint64_t* get_partial_query_results(_Inout_ size_t& pNumberOfResults)
 				{
+					pNumberOfResults = this->_passed_samples.size();
 					get_query_pool_results(VK_QUERY_RESULT_PARTIAL_BIT);
+					return get_passed_samples_data();
 				}
 
 				void reset(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pFirstQuery)
@@ -56,14 +62,14 @@ namespace wolf
 						static_cast<uint32_t>(this->_passed_samples.size()));
 				}
 
-				void begin_query(_In_ const w_command_buffer& pCommandBuffer)
+				void begin_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex)
 				{
-					vkCmdBeginQuery(pCommandBuffer.handle, this->_query_pool, 0, 0);
+					vkCmdBeginQuery(pCommandBuffer.handle, this->_query_pool, pQueryIndex, 0);
 				}
 
-				void end_query(_In_ const w_command_buffer& pCommandBuffer)
+				void end_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex)
 				{
-					vkCmdEndQuery(pCommandBuffer.handle, this->_query_pool, 0);
+					vkCmdEndQuery(pCommandBuffer.handle, this->_query_pool, pQueryIndex);
 				}
 
 				ULONG release()
@@ -80,12 +86,7 @@ namespace wolf
 				{
 					return this->_passed_samples.size() ? &this->_passed_samples[0] : nullptr;
 				}
-
-				size_t	get_number_of_passed_samples()
-				{
-					return this->_passed_samples.size();
-				}
-
+				
 #pragma endregion
 
 			private:
@@ -130,22 +131,26 @@ W_RESULT w_occlusion_query::initialize(
 	return this->_pimp ? this->_pimp->initialize(pGDevice, pQuerySize) : W_FAILED;
 }
 
-void w_occlusion_query::wait_for_query_results()
+
+uint64_t* w_occlusion_query::wait_for_query_results(_Inout_ size_t& pNumberOfResults)
 {
-	if (!this->_pimp) return;
-	this->_pimp->wait_for_query_results();
+	if (this->_pimp) return this->_pimp->wait_for_query_results(pNumberOfResults);
+	pNumberOfResults = 0;
+	return nullptr;
 }
 
-void w_occlusion_query::get_available_query_results()
+uint64_t* w_occlusion_query::get_available_query_results(_Inout_ size_t& pNumberOfResults)
 {
-	if (!this->_pimp) return;
-	this->_pimp->get_available_query_results();
+	if (this->_pimp) return this->_pimp->get_available_query_results(pNumberOfResults);
+	pNumberOfResults = 0;
+	return nullptr;
 }
 
-void w_occlusion_query::get_partial_query_results()
+uint64_t* w_occlusion_query::get_partial_query_results(_Inout_ size_t& pNumberOfResults)
 {
-	if (!this->_pimp) return;
-	this->_pimp->get_partial_query_results();
+	if (this->_pimp) return this->_pimp->get_partial_query_results(pNumberOfResults);
+	pNumberOfResults = 0;
+	return nullptr;
 }
 
 void w_occlusion_query::reset(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pFirstQuery)
@@ -154,16 +159,16 @@ void w_occlusion_query::reset(_In_ const w_command_buffer& pCommandBuffer, _In_ 
 	this->_pimp->reset(pCommandBuffer, pFirstQuery);
 }
 
-void w_occlusion_query::begin_query(_In_ const w_command_buffer& pCommandBuffer)
+void w_occlusion_query::begin_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex)
 {
 	if (!this->_pimp) return;
-	this->_pimp->begin_query(pCommandBuffer);
+	this->_pimp->begin_query(pCommandBuffer, pQueryIndex);
 }
 
-void w_occlusion_query::end_query(_In_ const w_command_buffer& pCommandBuffer)
+void w_occlusion_query::end_query(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pQueryIndex)
 {
 	if (!this->_pimp) return;
-	this->_pimp->end_query(pCommandBuffer);
+	this->_pimp->end_query(pCommandBuffer, pQueryIndex);
 }
 
 ULONG w_occlusion_query::release()
