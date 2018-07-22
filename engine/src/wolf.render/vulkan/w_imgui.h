@@ -48,7 +48,7 @@ namespace wolf
 				//    }
 				//};
 
-				static W_EXP W_RESULT load(
+				static W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<wolf::render::vulkan::w_graphics_device>& pGDevice,
 					_In_ const w_output_presentation_window* pOutputPresentationWindow,
 					_In_ const w_viewport& pViewport,
@@ -58,22 +58,22 @@ namespace wolf
 					_In_ const char* pFontPath = nullptr,
 					_In_ const float& pFontPixelSize = 15.0f);
 
-				static W_EXP void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pGuiWorkFlow);
-				static W_EXP void render();
-				static W_EXP ULONG release();
+				static W_VK_EXP void new_frame(_In_ const float& pDeltaTime, _In_ const std::function<void(void)>& pGuiWorkFlow);
+				static W_VK_EXP void render();
+				static W_VK_EXP ULONG release();
 
 #pragma region Getters
 
-				static W_EXP uint32_t get_width();
-				static W_EXP uint32_t get_height();
-				static W_EXP w_command_buffer get_command_buffer_at(_In_ const uint32_t pFrameIndex);
+				static W_VK_EXP uint32_t get_width();
+				static W_VK_EXP uint32_t get_height();
+				static W_VK_EXP w_command_buffer get_command_buffer_at(_In_ const uint32_t pFrameIndex);
 
 #pragma endregion
 
 #pragma region Setters
 
-				static W_EXP void set_width(_In_ const uint32_t& pWidth);
-				static W_EXP void set_height(_In_ const uint32_t& pHeight);
+				static W_VK_EXP void set_width(_In_ const uint32_t& pWidth);
+				static W_VK_EXP void set_height(_In_ const uint32_t& pHeight);
 
 #pragma endregion
 

@@ -8,7 +8,7 @@
 using namespace std;
 using namespace wolf;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
 static uint32_t sFPS = 0;
@@ -318,7 +318,7 @@ void scene::load()
 				}
 
 				//create mesh
-				this->_mesh = new (std::nothrow) wolf::graphics::w_mesh();
+				this->_mesh = new (std::nothrow) w_mesh();
 				if (_mesh)
 				{
 					auto _v_size = static_cast<uint32_t>(_vertices.size());

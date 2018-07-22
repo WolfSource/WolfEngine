@@ -5,7 +5,7 @@
 using namespace std;
 using namespace wolf;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project

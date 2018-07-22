@@ -4,7 +4,7 @@
 using namespace std;
 using namespace wolf;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 
 static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;
@@ -223,7 +223,7 @@ void scene::load()
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     
 	//create wireframe pipeline
-    auto _rasterization_states = wolf::graphics::w_graphics_device::defaults_states::pipelines::rasterization_create_info;
+    auto _rasterization_states = w_graphics_device::defaults_states::pipelines::rasterization_create_info;
     _rasterization_states.set_polygon_mode(w_polygon_mode::LINE);
     
 	_hr = this->_wireframe_pipeline.load(_gDevice,

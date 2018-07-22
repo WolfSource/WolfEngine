@@ -628,7 +628,7 @@ W_RESULT w_pipeline::load(
 }
 
 //load pipeline for compute stage
-W_EXP W_RESULT w_pipeline::load_compute(
+W_VK_EXP W_RESULT w_pipeline::load_compute(
 	_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 	_In_ const w_shader* pShaderBinding,
 	_In_ const uint32_t& pSpecializationData,

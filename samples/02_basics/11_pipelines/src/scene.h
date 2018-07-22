@@ -15,14 +15,14 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_semaphore.h>
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_mesh.h>
-#include <w_graphics/w_texture.h>
-#include <w_graphics/w_imgui.h>
+#include <vulkan/w_command_buffers.h>
+#include <vulkan/w_render_pass.h>
+#include <vulkan/w_semaphore.h>
+#include <vulkan/w_shader.h>
+#include <vulkan/w_pipeline.h>
+#include <vulkan/w_mesh.h>
+#include <vulkan/w_texture.h>
+#include <vulkan/w_imgui.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -59,28 +59,28 @@ private:
 	W_RESULT _build_draw_command_buffers();
     bool     _update_gui();
 
-	wolf::graphics::w_viewport                                      _viewport;
-	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
+	wolf::render::vulkan::w_viewport										_viewport;
+	wolf::render::vulkan::w_viewport_scissor								_viewport_scissor;
 
-	wolf::graphics::w_command_buffers                               _draw_command_buffers;
-	wolf::graphics::w_render_pass                                   _draw_render_pass;
+	wolf::render::vulkan::w_command_buffers									_draw_command_buffers;
+	wolf::render::vulkan::w_render_pass										_draw_render_pass;
 
-	wolf::graphics::w_fences                                        _draw_fence;
-	wolf::graphics::w_semaphore                                     _draw_semaphore;
+	wolf::render::vulkan::w_fences											_draw_fence;
+	wolf::render::vulkan::w_semaphore										_draw_semaphore;
 
-	wolf::graphics::w_shader                                        _shader;
+	wolf::render::vulkan::w_shader											_shader;
     
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    bool                                                            _show_wireframe;
-	wolf::graphics::w_pipeline                                      _solid_pipeline;
-    wolf::graphics::w_pipeline                                      _wireframe_pipeline;
+    bool																	_show_wireframe;
+	wolf::render::vulkan::w_pipeline										_solid_pipeline;
+    wolf::render::vulkan::w_pipeline										_wireframe_pipeline;
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    wolf::graphics::w_mesh											_mesh;
-    wolf::graphics::w_texture										_texture;
+    wolf::render::vulkan::w_mesh											_mesh;
+    wolf::render::vulkan::w_texture											_texture;
 };
 
 #endif

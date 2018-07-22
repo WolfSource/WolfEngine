@@ -16,12 +16,12 @@
 
 #if defined(__WIN32) || defined(__UWP)
 
-#ifndef W_EXP
+#ifndef W_VK_EXP
 
 	#ifdef __WOLF_RENDER_VULKAN__
-		#define W_EXP __declspec(dllexport)
+		#define W_VK_EXP __declspec(dllexport)
 	#else
-		#define W_EXP __declspec(dllimport)
+		#define W_VK_EXP __declspec(dllimport)
 	#endif
 
 #endif
@@ -29,8 +29,8 @@
 
 #elif defined(__ANDROID) || defined(__linux) || defined(__IOS__) || defined(__APPLE__)
 
-#ifndef W_EXP
-#define W_EXP //dump
+#ifndef W_VK_EXP
+#define W_VK_EXP //dump
 #endif
 
 #endif

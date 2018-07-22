@@ -30,7 +30,7 @@ namespace wolf
 #endif
 				uint32_t       index = UINT32_MAX;
 
-				W_EXP ULONG release();
+				W_VK_EXP ULONG release();
 			};
 		}
 	}

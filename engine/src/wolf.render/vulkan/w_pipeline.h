@@ -28,10 +28,10 @@ namespace wolf
 			class w_pipeline : public system::w_object
 			{
 			public:
-				W_EXP w_pipeline();
-				W_EXP virtual ~w_pipeline();
+				W_VK_EXP w_pipeline();
+				W_VK_EXP virtual ~w_pipeline();
 
-				W_EXP W_RESULT load(
+				W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
 					_In_ const w_primitive_topology pPrimitiveTopology,
@@ -49,7 +49,7 @@ namespace wolf
 					_In_ const w_color& pBlendColors = w_color::TRANSPARENT_());
 
 				//load pipeline for compute stage
-				W_EXP W_RESULT load_compute(
+				W_VK_EXP W_RESULT load_compute(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const w_shader* pShaderBinding,
 					_In_ const uint32_t& pSpecializationData,
@@ -57,23 +57,23 @@ namespace wolf
 					_In_ const std::vector<w_push_constant_range> pPushConstantRanges = {});
 
 				//bind to pipeline
-				W_EXP W_RESULT bind(_In_ const w_command_buffer& pCommandBuffer,
+				W_VK_EXP W_RESULT bind(_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const w_pipeline_bind_point& pPipelineBindPoint);
 
 				//release all resources
-				W_EXP virtual ULONG release() override;
+				W_VK_EXP virtual ULONG release() override;
 
 
 #pragma region Getters
 
-				W_EXP const VkPipeline get_handle() const;
-				W_EXP const VkPipelineLayout get_layout_handle() const;
+				W_VK_EXP const VkPipeline get_handle() const;
+				W_VK_EXP const VkPipelineLayout get_layout_handle() const;
 
 #pragma endregion
 
 #pragma region Setters
 
-				W_EXP void set_push_constant_buffer(
+				W_VK_EXP void set_push_constant_buffer(
 					_In_ const w_command_buffer&		 pCommandBuffer,
 					_In_ const w_shader_stage_flag_bits& pStageFlags,
 					_In_ const uint32_t&				 pOffset,
@@ -82,14 +82,14 @@ namespace wolf
 
 #pragma endregion
 
-				W_EXP static VkPipelineLayout create_pipeline_layout(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				W_VK_EXP static VkPipelineLayout create_pipeline_layout(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const VkPipelineLayoutCreateInfo* const pPipelineLayoutCreateInfo);
 				//create pipeline cache
-				W_EXP static W_RESULT create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				W_VK_EXP static W_RESULT create_pipeline_cache(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_z_ const std::string& pPipelineCacheName);
-				W_EXP static VkPipelineCache get_pipeline_cache(_In_z_ const std::string& pPipelineCacheName);
+				W_VK_EXP static VkPipelineCache get_pipeline_cache(_In_z_ const std::string& pPipelineCacheName);
 				//release all pipeline caches
-				W_EXP static ULONG release_all_pipeline_caches(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
+				W_VK_EXP static ULONG release_all_pipeline_caches(_In_ const std::shared_ptr<w_graphics_device>& pGDevice);
 
 #ifdef __PYTHON__
 

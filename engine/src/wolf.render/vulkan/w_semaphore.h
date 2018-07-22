@@ -27,11 +27,11 @@ namespace wolf
 			struct w_semaphore
 			{
 				//get pointer to semaphore
-				W_EXP VkSemaphore* get();
+				W_VK_EXP VkSemaphore* get();
 				//initialize semaphore
-				W_EXP W_RESULT initialize(const std::shared_ptr<wolf::render::vulkan::w_graphics_device>& pGDevice);
+				W_VK_EXP W_RESULT initialize(const std::shared_ptr<wolf::render::vulkan::w_graphics_device>& pGDevice);
 				//release resources of semaphore
-				W_EXP ULONG release();
+				W_VK_EXP ULONG release();
 
 #ifdef __PYTHON__
 				W_RESULT py_initialize(_In_ boost::shared_ptr<w_graphics_device>& pGDevice)

@@ -279,20 +279,20 @@ namespace wolf
 			{
 				friend class w_graphics_device_manager;
 			public:
-				W_EXP w_graphics_device();
+				W_VK_EXP w_graphics_device();
 
 				//get graphics device information
-				W_EXP const std::string get_info();
+				W_VK_EXP const std::string get_info();
 				//get number of swap chains
-				W_EXP const size_t get_number_of_swap_chains();
+				W_VK_EXP const size_t get_number_of_swap_chains();
 
 				//release all resources
-				W_EXP ULONG release();
+				W_VK_EXP ULONG release();
 
 				w_output_presentation_window               output_presentation_window;
 
 				//draw primitive(s) and instances using vertex & index buffer
-				W_EXP W_RESULT draw(
+				W_VK_EXP W_RESULT draw(
 					_In_ const w_command_buffer&	pCommandBuffer,
 					_In_ const uint32_t&			pVertexCount,
 					_In_ const uint32_t&			pInstanceCount,
@@ -300,7 +300,7 @@ namespace wolf
 					_In_ const uint32_t&			pFirstInstance);
 
 				//submit command buffer
-				W_EXP W_RESULT submit(
+				W_VK_EXP W_RESULT submit(
 					_In_ const std::vector<const w_command_buffer*>&	pCommandBuffers,
 					_In_ const w_queue&									pQueue,
 					_In_ const std::vector<w_pipeline_stage_flag_bits>&	pWaitDstStageMask,
@@ -320,7 +320,7 @@ namespace wolf
 					@param pOnPixelsDataCaptured, raised when pixels just mapped to RAM and become accessable by CPU. (inputs are: const w_point_t Width_Height, const uint8_t* Pixels and outsput is void)
 					@return W_PASSED means function did succesfully and W_FAILED means function failed
 				*/
-				W_EXP W_RESULT capture(
+				W_VK_EXP W_RESULT capture(
 					_In_ VkImage pSourceImage,
 					_In_ VkFormat pSourceImageFormat,
 					_In_ VkImageLayout pSourceImageLayout,
@@ -333,7 +333,7 @@ namespace wolf
 					make sure set true to w_present_info::cpu_access_swap_chain_buffer flag before creating graphics device
 					@return W_PASSED means function did succesfully and W_FAILED means function failed
 				*/
-				W_EXP W_RESULT capture_presented_swap_chain_buffer(_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
+				W_VK_EXP W_RESULT capture_presented_swap_chain_buffer(_In_ wolf::system::w_signal<void(const w_point_t, uint8_t*)>& pOnPixelsDataCaptured);
 
 				w_device_info*												device_info = nullptr;
 
@@ -372,21 +372,21 @@ namespace wolf
 				//static pipeline defaults
 				struct defaults_states
 				{
-					W_EXP static std::vector<VkSubpassDependency>                   vk_default_subpass_dependencies;
+					W_VK_EXP static std::vector<VkSubpassDependency>                   vk_default_subpass_dependencies;
 
 					struct pipelines
 					{
-						W_EXP static w_pipeline_layout_create_info                  layout_create_info;
-						W_EXP static w_pipeline_vertex_input_state_create_info      vertex_input_create_info;
-						W_EXP static w_pipeline_input_assembly_state_create_info    input_assembly_create_info;
-						W_EXP static w_pipeline_rasterization_state_create_info     rasterization_create_info;
-						W_EXP static w_pipeline_multisample_state_create_info       multisample_create_info;
+						W_VK_EXP static w_pipeline_layout_create_info                  layout_create_info;
+						W_VK_EXP static w_pipeline_vertex_input_state_create_info      vertex_input_create_info;
+						W_VK_EXP static w_pipeline_input_assembly_state_create_info    input_assembly_create_info;
+						W_VK_EXP static w_pipeline_rasterization_state_create_info     rasterization_create_info;
+						W_VK_EXP static w_pipeline_multisample_state_create_info       multisample_create_info;
 					};
 
 					struct blend_states
 					{
-						W_EXP static w_pipeline_color_blend_attachment_state        none;
-						W_EXP static w_pipeline_color_blend_attachment_state        premulitplied_alpha;
+						W_VK_EXP static w_pipeline_color_blend_attachment_state        none;
+						W_VK_EXP static w_pipeline_color_blend_attachment_state        premulitplied_alpha;
 					};
 				};
 
@@ -505,64 +505,64 @@ namespace wolf
 			class w_graphics_device_manager : public system::w_object
 			{
 			public:
-				W_EXP w_graphics_device_manager();
-				W_EXP virtual ~w_graphics_device_manager();
+				W_VK_EXP w_graphics_device_manager();
+				W_VK_EXP virtual ~w_graphics_device_manager();
 
 				//Initialize graphics devices
-				W_EXP virtual void initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo) = 0;
+				W_VK_EXP virtual void initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo) = 0;
 
 				//Called when corresponding window resized
-				W_EXP virtual void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow);
+				W_VK_EXP virtual void on_window_resized(_In_ const uint32_t& pGraphicsDeviceIndex, _In_ const w_point& pNewSizeOfWindow);
 				//Called when any graphics device lost
-				W_EXP virtual void on_device_lost();
+				W_VK_EXP virtual void on_device_lost();
 				//Called when the APP suspends. It provides a hint to the driver that the APP is entering an idle state and that temporary buffers can be reclaimed for use by other apps.
-				W_EXP virtual void on_suspend();
+				W_VK_EXP virtual void on_suspend();
 				//Prepare frame on all graphics devices
-				W_EXP virtual W_RESULT prepare();
+				W_VK_EXP virtual W_RESULT prepare();
 				//Present on all graphics devices
-				W_EXP virtual W_RESULT present();
+				W_VK_EXP virtual W_RESULT present();
 				//Release all resources
-				W_EXP ULONG release() override;
+				W_VK_EXP ULONG release() override;
 
 
 				//convert DPIs to pixels
-				W_EXP static const float convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI);
+				W_VK_EXP static const float convert_dips_to_pixels(_In_ float pDIPS, _In_ float pDPI);
 
 				system::w_signal<void(w_device_info**)> on_device_info_fetched;
 
 #pragma region Getters
 				//Get the graphics device
-				W_EXP std::shared_ptr<w_graphics_device> get_graphics_device(_In_ const size_t& pGraphicsDeviceIndex) const;
+				W_VK_EXP std::shared_ptr<w_graphics_device> get_graphics_device(_In_ const size_t& pGraphicsDeviceIndex) const;
 				//Get number of available graphics devices
-				W_EXP const size_t get_number_of_graphics_devices() const;
+				W_VK_EXP const size_t get_number_of_graphics_devices() const;
 
 				//#ifdef __DX11__
 				//            //Get DPI
-				//            W_EXP const DirectX::XMFLOAT2 get_dpi() const;
+				//            W_VK_EXP const DirectX::XMFLOAT2 get_dpi() const;
 				//            //Get pixels to inches
-				//            W_EXP const DirectX::XMFLOAT2 get_pixels_to_inches(_In_ float pX, _In_ float pY) const;
+				//            W_VK_EXP const DirectX::XMFLOAT2 get_pixels_to_inches(_In_ float pX, _In_ float pY) const;
 				//#endif
 
 #pragma endregion
 
 #pragma region Setters
-				W_EXP void set_graphics_device_manager_configs(_In_ const w_graphics_device_manager_configs& pConfig);
+				W_VK_EXP void set_graphics_device_manager_configs(_In_ const w_graphics_device_manager_configs& pConfig);
 #pragma endregion
 
 
 #ifdef __VULKAN__
-				W_EXP static VkResult memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
+				W_VK_EXP static VkResult memory_type_from_properties(VkPhysicalDeviceMemoryProperties pMemoryProperties,
 					uint32_t pTypeBits,
 					uint32_t pRequirementsFlags,
 					uint32_t* pTypeIndex);
 
-				W_EXP static VkFormat find_supported_format(
+				W_VK_EXP static VkFormat find_supported_format(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const std::vector<VkFormat>& pFormatCandidates,
 					_In_ VkImageTiling pImageTiling,
 					_In_ VkFormatFeatureFlags pFormatFeatureFlags);
 
-				W_EXP static void set_src_dst_masks_of_image_barrier(_Inout_ VkImageMemoryBarrier& pImageMemoryBarrier);
+				W_VK_EXP static void set_src_dst_masks_of_image_barrier(_Inout_ VkImageMemoryBarrier& pImageMemoryBarrier);
 #endif
 
 			protected:

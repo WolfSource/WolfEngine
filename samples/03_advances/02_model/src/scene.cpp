@@ -6,7 +6,7 @@
 using namespace std;
 using namespace wolf;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
 static uint32_t sFPS = 0;
@@ -242,6 +242,26 @@ void scene::load()
 			//load first model
 			if (_model)
 			{
+				auto _t = &_model->get_transform();
+
+#pragma region collada from 3DMax 
+
+				//3DMax is right handed Zup
+				_t->rotation[0] += glm::radians(90.0f);
+				std::swap(_t->position[1], _t->position[2]);
+				_t->position[1] *= -1.0f;
+				
+#pragma endregion 
+
+				//store position and rotation of model
+				this->_position.x = _t->position[0];
+				this->_position.y = _t->position[1];
+				this->_position.z = _t->position[2];
+
+				this->_rotation.x = _t->rotation[0];
+				this->_rotation.y = _t->rotation[1];
+				this->_rotation.z = _t->rotation[2];
+
 				std::vector<w_cpipeline_mesh*> _meshes;
 				_model->get_meshes(_meshes);
 
@@ -272,7 +292,7 @@ void scene::load()
 				}
 
 				//create mesh
-				this->_mesh = new (std::nothrow) wolf::graphics::w_mesh();
+				this->_mesh = new (std::nothrow) w_mesh();
 				if (_mesh)
 				{
 					auto _v_size = static_cast<uint32_t>(_vertices.size());
@@ -326,13 +346,6 @@ void scene::load()
 				//clear resources
 				_vertices.clear();
 				_indices.clear();
-
-				//store position and rotation of model into bounding box
-				auto _t = _model->get_transform();
-				_position.x = _t.position[0];
-				_position.y = _t.position[1];
-				_position.z = _t.position[2];
-
 
 				auto _b_sphere = w_bounding_sphere::create_from_bounding_box(this->_mesh_bounding_box);
                 this->_distance_from_eye = _b_sphere.radius;
@@ -414,7 +427,7 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
 		_position.y, 
 		_position.z);
 
-	auto _world = glm::mat4(1);//identity
+	auto _world = glm::translate(this->_position) * glm::rotate(_rotation) * glm::scale(glm::vec3(1.0f));
 	auto _view = glm::lookAtRH(_eye, _look_at, _up);
 	auto _projection = glm::perspectiveRH(
 		45.0f * glm::pi<float>() / 180.0f,

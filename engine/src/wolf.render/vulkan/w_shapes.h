@@ -33,20 +33,20 @@ namespace wolf
 			{
 			public:
 				//create line shape 
-				W_EXP w_shapes(
+				W_VK_EXP w_shapes(
 					_In_ const glm::vec3& pA,
 					_In_ const glm::vec3& pB,
 					_In_ const w_color& pColor);
 
 				//create triangle shape 
-				W_EXP w_shapes(
+				W_VK_EXP w_shapes(
 					_In_ const glm::vec3& pA,
 					_In_ const glm::vec3& pB,
 					_In_ const glm::vec3& pC,
 					_In_ const w_color& pColor);
 
 				//create circle shape 
-				W_EXP w_shapes(
+				W_VK_EXP w_shapes(
 					_In_ const glm::vec3& pCenter,
 					_In_ const float& pRadius,
 					_In_ const w_color& pColor,
@@ -54,56 +54,56 @@ namespace wolf
 					_In_ const uint32_t& pResolution = 30);
 
 				//create bounding box shape 
-				W_EXP w_shapes(
+				W_VK_EXP w_shapes(
 					_In_ const wolf::system::w_bounding_box& pBoundingBox,
 					_In_ const w_color& pColor);
 
 				//create bounding sphere shape 
-				W_EXP w_shapes(
+				W_VK_EXP w_shapes(
 					_In_ const wolf::system::w_bounding_sphere& pBoundingSphere,
 					_In_ const w_color& pColor,
 					_In_ const uint32_t& pResolution = 30);
 
 				//create coordinate system axis
-				W_EXP w_shapes(_In_ const w_color& pColor);
+				W_VK_EXP w_shapes(_In_ const w_color& pColor);
 
 				//destructor of w_shapes
-				W_EXP virtual ~w_shapes();
+				W_VK_EXP virtual ~w_shapes();
 
 				//load shapes render
-				W_EXP W_RESULT load(
+				W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const w_render_pass& pRenderPass,
 					_In_ const w_viewport& pViewport,
 					_In_ const w_viewport_scissor& pViewportScissor);
 
 				//update uniform of shape
-				W_EXP W_RESULT update(_In_ const glm::mat4& pWorldViewProjection);
+				W_VK_EXP W_RESULT update(_In_ const glm::mat4& pWorldViewProjection);
 
 				//draw shape
-				W_EXP W_RESULT draw(_In_ const w_command_buffer& pCommandBuffer);
+				W_VK_EXP W_RESULT draw(_In_ const w_command_buffer& pCommandBuffer);
 
-				W_EXP ULONG release();
+				W_VK_EXP ULONG release();
 
 
 #ifdef __PYTHON__
 
-				W_EXP w_shapes()
+				W_VK_EXP w_shapes()
 				{
 				}
 
-				W_EXP w_shapes(
+				W_VK_EXP w_shapes(
 					_In_ const glm::w_vec3& pA,
 					_In_ const glm::w_vec3& pB,
 					_In_ const w_color& pColor);
 
-				W_EXP w_shapes(
+				W_VK_EXP w_shapes(
 					_In_ const glm::w_vec3& pA,
 					_In_ const glm::w_vec3& pB,
 					_In_ const glm::w_vec3& pC,
 					_In_ const w_color& pColor);
 
-				W_EXP w_shapes(
+				W_VK_EXP w_shapes(
 					_In_ const glm::w_vec3& pCenter,
 					_In_ const float& pRadius,
 					_In_ const w_color& pColor,

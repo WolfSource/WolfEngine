@@ -15,18 +15,18 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_semaphore.h>
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_mesh.h>
-#include <w_graphics/w_uniform.h>
+#include <vulkan/w_command_buffers.h>
+#include <vulkan/w_render_pass.h>
+#include <vulkan/w_semaphore.h>
+#include <vulkan/w_shader.h>
+#include <vulkan/w_pipeline.h>
+#include <vulkan/w_mesh.h>
+#include <vulkan/w_uniform.h>
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-#include <w_graphics/w_render_target.h>
+#include <vulkan/w_render_target.h>
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -64,38 +64,38 @@ public:
 private:
 	W_RESULT _build_draw_command_buffers();
 
-	wolf::graphics::w_viewport                                      _viewport;
-	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
+	wolf::render::vulkan::w_viewport										_viewport;
+	wolf::render::vulkan::w_viewport_scissor								_viewport_scissor;
 
-	wolf::graphics::w_command_buffers                               _draw_command_buffers;
-	wolf::graphics::w_render_pass                                   _draw_render_pass;
+	wolf::render::vulkan::w_command_buffers									_draw_command_buffers;
+	wolf::render::vulkan::w_render_pass										_draw_render_pass;
 	
-	wolf::graphics::w_fences                                        _draw_fence;
-	wolf::graphics::w_semaphore                                     _draw_semaphore;
+	wolf::render::vulkan::w_fences											_draw_fence;
+	wolf::render::vulkan::w_semaphore										_draw_semaphore;
 
-	wolf::graphics::w_shader                                        _shader;
-	wolf::graphics::w_pipeline                                      _pipeline;
+	wolf::render::vulkan::w_shader											_shader;
+	wolf::render::vulkan::w_pipeline										_pipeline;
 
-    wolf::graphics::w_mesh											_mesh;
+    wolf::render::vulkan::w_mesh											_mesh;
 
 	struct u0
 	{
 		glm::mat4 wvp;
 	};
-	wolf::graphics::w_uniform<u0>                                   _u0;
+	wolf::render::vulkan::w_uniform<u0>										_u0;
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//render targets
-	wolf::graphics::w_render_target                                 _rt;
+	wolf::render::vulkan::w_render_target									_rt;
 	//render target command buffer
-	wolf::graphics::w_command_buffers                               _rt_command_buffer;
+	wolf::render::vulkan::w_command_buffers									_rt_command_buffer;
 	//render target fence
-	wolf::graphics::w_fences                                        _rt_fence;
+	wolf::render::vulkan::w_fences											_rt_fence;
 	//render target semaphore
-	wolf::graphics::w_semaphore                                     _rt_semaphore;
+	wolf::render::vulkan::w_semaphore										_rt_semaphore;
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++

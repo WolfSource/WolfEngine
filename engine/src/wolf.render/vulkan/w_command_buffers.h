@@ -35,8 +35,8 @@ namespace wolf
 			class w_command_buffers : public system::w_object
 			{
 			public:
-				W_EXP w_command_buffers();
-				W_EXP ~w_command_buffers();
+				W_VK_EXP w_command_buffers();
+				W_VK_EXP ~w_command_buffers();
 
 				/*
 					pGDevice = graphices device,
@@ -45,7 +45,7 @@ namespace wolf
 					pCreateCommandPool = create seperated command pool,
 					pCommandPoolQueue = if pCreateCommandPool set true, then use this w_queue_index for creating command pool
 				*/
-				W_EXP W_RESULT load(
+				W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const size_t& pCount,
 					_In_ const w_command_buffer_level& pLevel = w_command_buffer_level::PRIMARY,
@@ -53,26 +53,26 @@ namespace wolf
 					_In_ const w_queue* pCommandPoolQueue = nullptr);
 
 				//begin command buffer
-				W_EXP W_RESULT begin(_In_ const size_t& pCommandBufferIndex,
+				W_VK_EXP W_RESULT begin(_In_ const size_t& pCommandBufferIndex,
 					_In_ const uint32_t pFlags = w_command_buffer_usage_flag_bits::SIMULTANEOUS_USE_BIT);
 
 				//end command buffer
-				W_EXP W_RESULT end(_In_ const size_t& pCommandBufferIndex);
+				W_VK_EXP W_RESULT end(_In_ const size_t& pCommandBufferIndex);
 
 				//Flushing the command buffer will also submit it to the queue and uses a fence to ensure that command has been executed before returning
-				W_EXP W_RESULT flush(_In_ const size_t& pCommandBufferIndex);
+				W_VK_EXP W_RESULT flush(_In_ const size_t& pCommandBufferIndex);
 
 				//Flushing all command buffers will also submit these commands buffers to the queue and uses a fence to ensure that all commands have been executed before returning
-				W_EXP W_RESULT flush_all();
+				W_VK_EXP W_RESULT flush_all();
 
 				//release all resources
-				W_EXP ULONG release() override;
+				W_VK_EXP ULONG release() override;
 
 #pragma region Getters
 
-				W_EXP const w_command_buffer* get_commands() const;
-				W_EXP const w_command_buffer get_command_at(_In_ const size_t& pIndex) const;
-				W_EXP const size_t get_commands_size() const;
+				W_VK_EXP const w_command_buffer* get_commands() const;
+				W_VK_EXP const w_command_buffer get_command_at(_In_ const size_t& pIndex) const;
+				W_VK_EXP const size_t get_commands_size() const;
 
 #pragma endregion
 
@@ -116,7 +116,7 @@ namespace wolf
 				wolf::render::vulkan::w_buffer								buffer;
 				std::vector<w_draw_indexed_indirect_command>            drawing_commands;
 
-				W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t& pDrawCount);
+				W_VK_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice, _In_ const uint32_t& pDrawCount);
 			};
 		}
 	}

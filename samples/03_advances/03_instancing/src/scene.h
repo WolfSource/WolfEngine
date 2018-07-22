@@ -15,19 +15,19 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_semaphore.h>
-#include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_imgui.h>
+#include <vulkan/w_command_buffers.h>
+#include <vulkan/w_render_pass.h>
+#include <vulkan/w_semaphore.h>
+#include <vulkan/w_pipeline.h>
+#include <vulkan/w_shader.h>
+#include <vulkan/w_imgui.h>
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-#include <w_graphics/w_mesh.h>
-#include <w_graphics/w_buffer.h>
-#include <w_graphics/w_uniform.h>
+#include <vulkan/w_mesh.h>
+#include <vulkan/w_buffer.h>
+#include <vulkan/w_uniform.h>
 #include <glm/mat4x4.hpp>
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -67,20 +67,20 @@ private:
 	W_RESULT _build_draw_command_buffers();
     bool	_update_gui();
 
-	wolf::graphics::w_viewport                                      _viewport;
-	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
+	wolf::render::vulkan::w_viewport                                    _viewport;
+	wolf::render::vulkan::w_viewport_scissor                            _viewport_scissor;
 	
-	wolf::graphics::w_command_buffers                               _draw_command_buffers;
-	wolf::graphics::w_render_pass                                   _draw_render_pass;
+	wolf::render::vulkan::w_command_buffers                             _draw_command_buffers;
+	wolf::render::vulkan::w_render_pass                                 _draw_render_pass;
 
-	wolf::graphics::w_fences                                        _draw_fence;
-	wolf::graphics::w_semaphore                                     _draw_semaphore;
+	wolf::render::vulkan::w_fences                                      _draw_fence;
+	wolf::render::vulkan::w_semaphore                                   _draw_semaphore;
     
-	wolf::graphics::w_shader                                        _shader;
-	wolf::graphics::w_pipeline                                      _pipeline;
+	wolf::render::vulkan::w_shader                                      _shader;
+	wolf::render::vulkan::w_pipeline                                    _pipeline;
 
-	float															_distance_from_eye;
-	glm::vec3														_position;
+	float																_distance_from_eye;
+	glm::vec3															_position;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -90,14 +90,14 @@ private:
 		glm::vec3   rot;
 		float		scale;
 	};
-	wolf::graphics::w_mesh*											_mesh;
-	wolf::graphics::w_buffer										_instances_buffer;
+	wolf::render::vulkan::w_mesh*										_mesh;
+	wolf::render::vulkan::w_buffer										_instances_buffer;
 	struct u0
 	{
 		glm::mat4 view;
 		glm::mat4 projection;
 	};
-	wolf::graphics::w_uniform<u0>                                   _u0;
+	wolf::render::vulkan::w_uniform<u0>									_u0;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

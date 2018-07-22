@@ -15,20 +15,20 @@ Comment          : Read more information about this sample on http://wolfsource.
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_semaphore.h>
-#include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_imgui.h>
-#include <w_graphics/w_shapes.h>
+#include <vulkan/w_command_buffers.h>
+#include <vulkan/w_render_pass.h>
+#include <vulkan/w_semaphore.h>
+#include <vulkan/w_pipeline.h>
+#include <vulkan/w_shader.h>
+#include <vulkan/w_imgui.h>
+#include <vulkan/w_shapes.h>
 #include <w_framework/w_first_person_camera.h>
 #include "model_mesh.h"
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-#include <w_graphics/w_occlusion_query.h>
+#include <vulkan/w_occlusion_query.h>
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -78,29 +78,29 @@ private:
 	widget_info	_show_explorer();
 	bool    	_update_gui();
 	
-	wolf::graphics::w_viewport                                      _viewport;
-	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
+	wolf::render::vulkan::w_viewport                                    _viewport;
+	wolf::render::vulkan::w_viewport_scissor                            _viewport_scissor;
 
-	wolf::graphics::w_command_buffers                               _draw_command_buffers;
-	wolf::graphics::w_render_pass                                   _draw_render_pass;
+	wolf::render::vulkan::w_command_buffers                             _draw_command_buffers;
+	wolf::render::vulkan::w_render_pass                                 _draw_render_pass;
 
-	wolf::graphics::w_fences                                        _draw_fence;
-	wolf::graphics::w_semaphore                                     _draw_semaphore;
+	wolf::render::vulkan::w_fences                                      _draw_fence;
+	wolf::render::vulkan::w_semaphore                                   _draw_semaphore;
 	
-	bool															_rebuild_command_buffer;
-	bool															_force_update_camera;
-	wolf::framework::w_first_person_camera							_first_camera;
-	std::vector<model_mesh*>										_models;
+	bool																_rebuild_command_buffer;
+	bool																_force_update_camera;
+	wolf::framework::w_first_person_camera								_first_camera;
+	std::vector<model_mesh*>											_models;
 
-	model_mesh*														_current_selected_model;
+	model_mesh*															_current_selected_model;
 	//zero means ref model and none zero is index of instances
-	int                                                             _index_of_selected_mesh;
-	wolf::graphics::w_shapes*										_shape_coordinate_axis;
+	int																	_index_of_selected_mesh;
+	wolf::render::vulkan::w_shapes*										_shape_coordinate_axis;
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	wolf::graphics::w_occlusion_query								_occlusion_query;
+	wolf::render::vulkan::w_occlusion_query								_occlusion_query;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

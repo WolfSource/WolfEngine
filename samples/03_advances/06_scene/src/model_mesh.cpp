@@ -4,12 +4,12 @@
 
 #include "pch.h"
 #include "model_mesh.h"
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_uniform.h>
+#include <vulkan/w_shader.h>
+#include <vulkan/w_pipeline.h>
+#include <vulkan/w_uniform.h>
 
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
 class model_mesh_pimp
@@ -1122,8 +1122,8 @@ private:
 	w_transform_info						_transform;
 	std::vector<w_instance_info>			_instnaces_transforms;
 
-	wolf::graphics::w_shader                _shader;
-	wolf::graphics::w_pipeline              _pipeline;
+	w_shader								_shader;
+	w_pipeline								_pipeline;
 
 #pragma region Mesh Data	
 	//vertex binding attributes
@@ -1148,14 +1148,14 @@ private:
 		glm::mat4							view;
 		glm::mat4							projection;
 	};
-	wolf::graphics::w_uniform<basic_u0>		_basic_u0;
+	w_uniform<basic_u0>						_basic_u0;
 
 	struct instance_u0
 	{
 		glm::mat4							view;
 		glm::mat4							projection;
 	};
-	wolf::graphics::w_uniform<instance_u0>  _instance_u0;
+	w_uniform<instance_u0>					_instance_u0;
 
 	struct u1
 	{
@@ -1164,7 +1164,7 @@ private:
 		float								padding_1 = 0.0f;
 		float								padding_2 = 0.0f;
 	};
-	wolf::graphics::w_uniform<u1>			_u1;
+	w_uniform<u1>							_u1;
 
 	bool									_visible;
 };

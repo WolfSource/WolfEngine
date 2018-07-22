@@ -58,40 +58,40 @@ namespace wolf
 			class w_shader : public system::w_object
 			{
 			public:
-				W_EXP w_shader();
-				W_EXP virtual ~w_shader();
+				W_VK_EXP w_shader();
+				W_VK_EXP virtual ~w_shader();
 
 				//load shader from binary file
-				W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				W_VK_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_z_ const std::wstring& pShaderBinaryPath,
 					_In_ const w_shader_stage_flag_bits& pShaderStage,
 					_In_z_ const std::string& pMainFunctionName = "main");
 
 				//release all resources
-				W_EXP virtual ULONG release() override;
+				W_VK_EXP virtual ULONG release() override;
 
 #pragma region Getters
 
-				W_EXP const std::vector<w_shader_binding_param> get_shader_binding_params() const;
-				W_EXP const std::vector<w_pipeline_shader_stage_create_info>* get_shader_stages() const;
-				W_EXP const w_pipeline_shader_stage_create_info get_compute_shader_stage() const;
+				W_VK_EXP const std::vector<w_shader_binding_param> get_shader_binding_params() const;
+				W_VK_EXP const std::vector<w_pipeline_shader_stage_create_info>* get_shader_stages() const;
+				W_VK_EXP const w_pipeline_shader_stage_create_info get_compute_shader_stage() const;
 
-				W_EXP const w_descriptor_set get_descriptor_set() const;
-				W_EXP const w_descriptor_set get_compute_descriptor_set() const;
+				W_VK_EXP const w_descriptor_set get_descriptor_set() const;
+				W_VK_EXP const w_descriptor_set get_compute_descriptor_set() const;
 
-				W_EXP const w_descriptor_set_layout get_descriptor_set_layout() const;
-				W_EXP const w_descriptor_set_layout get_compute_descriptor_set_layout() const;
+				W_VK_EXP const w_descriptor_set_layout get_descriptor_set_layout() const;
+				W_VK_EXP const w_descriptor_set_layout get_compute_descriptor_set_layout() const;
 
 #pragma endregion
 
 #pragma region Setters
 
 				//set and update shader binding params
-				W_EXP W_RESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
+				W_VK_EXP W_RESULT set_shader_binding_params(_In_ std::vector<w_shader_binding_param> pShaderBindingParams);
 
 #pragma endregion
 
-				W_EXP static W_RESULT load_shader(
+				W_VK_EXP static W_RESULT load_shader(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_z_ const std::string& pName,
 					_In_z_ const std::wstring& pVertexShaderPath,
@@ -105,8 +105,8 @@ namespace wolf
 					_Inout_ w_shader** pShader,
 					_In_z_ const std::string& pMainFunctionName = "main");
 
-				W_EXP static w_shader* get_shader_from_shared(_In_z_ const std::string& pName);
-				W_EXP static ULONG release_shared_shaders();
+				W_VK_EXP static w_shader* get_shader_from_shared(_In_z_ const std::string& pName);
+				W_VK_EXP static ULONG release_shared_shaders();
 
 #ifdef __PYTHON__
 

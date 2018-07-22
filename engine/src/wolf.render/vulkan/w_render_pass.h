@@ -26,11 +26,11 @@ namespace wolf
 			class w_render_pass : public system::w_object
 			{
 			public:
-				W_EXP w_render_pass();
-				W_EXP virtual ~w_render_pass();
+				W_VK_EXP w_render_pass();
+				W_VK_EXP virtual ~w_render_pass();
 
 				//load render pass which contains frame buffers
-				W_EXP W_RESULT load(
+				W_VK_EXP W_RESULT load(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const w_viewport& pViewPort,
 					_In_ const w_viewport_scissor& pViewPortScissor,
@@ -39,7 +39,7 @@ namespace wolf
 					_In_ const std::vector<VkSubpassDependency>* pSubpassDependencies = nullptr);
 
 				//begin render pass
-				W_EXP void begin(
+				W_VK_EXP void begin(
 					_In_ const uint32_t& pFrameBufferIndex,
 					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const w_color& pClearColor,
@@ -48,26 +48,26 @@ namespace wolf
 					_In_ const VkSubpassContents& pSubpassContents = VK_SUBPASS_CONTENTS_INLINE);
 
 				//end render pass
-				W_EXP void end(_In_ const w_command_buffer& pCommandBuffer);
+				W_VK_EXP void end(_In_ const w_command_buffer& pCommandBuffer);
 
 				//release all resources
-				W_EXP virtual ULONG release() override;
+				W_VK_EXP virtual ULONG release() override;
 
 
 #pragma region Getters
 
-				W_EXP const w_render_pass_handle get_handle() const;
-				W_EXP w_viewport get_viewport() const;
-				W_EXP w_viewport_scissor get_viewport_scissor() const;
-				W_EXP const size_t get_number_of_frame_buffers() const;
-				W_EXP const bool get_depth_stencil_enabled() const;
+				W_VK_EXP const w_render_pass_handle get_handle() const;
+				W_VK_EXP w_viewport get_viewport() const;
+				W_VK_EXP w_viewport_scissor get_viewport_scissor() const;
+				W_VK_EXP const size_t get_number_of_frame_buffers() const;
+				W_VK_EXP const bool get_depth_stencil_enabled() const;
 
 #pragma endregion
 
 #pragma region Setters
 
-				W_EXP void set_viewport(_In_ const w_viewport& pViewPort);
-				W_EXP void set_viewport_scissor(_In_ const w_viewport_scissor& pViewPortScissor);
+				W_VK_EXP void set_viewport(_In_ const w_viewport& pViewPort);
+				W_VK_EXP void set_viewport_scissor(_In_ const w_viewport_scissor& pViewPortScissor);
 
 #pragma endregion
 

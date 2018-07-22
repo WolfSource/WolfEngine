@@ -246,11 +246,11 @@ namespace wolf
 			class w_mesh : public system::w_object
 			{
 			public:
-				W_EXP w_mesh();
-				W_EXP virtual ~w_mesh();
+				W_VK_EXP w_mesh();
+				W_VK_EXP virtual ~w_mesh();
 
 				//load mesh
-				W_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				W_VK_EXP W_RESULT load(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const void* const pVerticesData,
 					_In_ const uint32_t&  pVerticesSizeInBytes,
 					_In_ const uint32_t& pVerticesCount,
@@ -259,7 +259,7 @@ namespace wolf
 					_In_ const bool& pUseDynamicBuffer = false);
 
 				//update data of vertices and indices
-				W_EXP W_RESULT update_dynamic_buffer(
+				W_VK_EXP W_RESULT update_dynamic_buffer(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const void* const pVerticesData,
 					_In_ const uint32_t& pVerticesSize,
@@ -280,7 +280,7 @@ namespace wolf
 					@param pVertexCount, The count of vertices for drawing without indexed buffer
 					@param pFirstVertex, The first vertex of vertex buffer for drawing without indexed buffer
 				*/
-				W_EXP W_RESULT draw(
+				W_VK_EXP W_RESULT draw(
 					_In_ const w_command_buffer& pCommandBuffer,
 					_In_ const w_buffer_handle* pInstanceHandle,
 					_In_ const uint32_t& pInstancesCount,
@@ -293,23 +293,23 @@ namespace wolf
 					_In_ const uint32_t& pFirstVertex = 0);
 
 				//release all resources
-				W_EXP virtual ULONG release() override;
+				W_VK_EXP virtual ULONG release() override;
 
 #pragma region Getters
 
-				W_EXP w_buffer_handle                                           get_vertex_buffer_handle() const;
-				W_EXP w_buffer_handle                                           get_index_buffer_handle() const;
-				W_EXP const uint32_t                                            get_vertices_count() const;
-				W_EXP const uint32_t                                            get_indices_count() const;
-				W_EXP w_texture*                                                get_texture() const;
-				W_EXP const w_vertex_binding_attributes                         get_vertex_binding_attributes() const;
+				W_VK_EXP w_buffer_handle                                           get_vertex_buffer_handle() const;
+				W_VK_EXP w_buffer_handle                                           get_index_buffer_handle() const;
+				W_VK_EXP const uint32_t                                            get_vertices_count() const;
+				W_VK_EXP const uint32_t                                            get_indices_count() const;
+				W_VK_EXP w_texture*                                                get_texture() const;
+				W_VK_EXP const w_vertex_binding_attributes                         get_vertex_binding_attributes() const;
 
 #pragma endregion
 
 #pragma region Setters
 
-				W_EXP void set_texture(_In_ w_texture* pTexture);
-				W_EXP void set_vertex_binding_attributes(_In_ const w_vertex_binding_attributes& pVertexBindingAttributes);
+				W_VK_EXP void set_texture(_In_ w_texture* pTexture);
+				W_VK_EXP void set_vertex_binding_attributes(_In_ const w_vertex_binding_attributes& pVertexBindingAttributes);
 
 #pragma endregion	
 

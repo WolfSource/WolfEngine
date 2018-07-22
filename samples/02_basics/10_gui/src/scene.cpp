@@ -3,14 +3,14 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //The following codes have been added for this project
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-#include <w_graphics/w_imgui.h>
+#include <vulkan/w_imgui.h>
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 using namespace std;
 using namespace wolf;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 
 static uint32_t sFPS = 0;
 static float sElapsedTimeInSec = 0;

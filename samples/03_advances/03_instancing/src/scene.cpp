@@ -8,7 +8,7 @@
 using namespace std;
 using namespace wolf;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
 static uint32_t sFPS = 0;
@@ -258,6 +258,12 @@ void scene::load()
 			//load first model
 			if (_model)
 			{
+				auto _t = &_model->get_transform();
+
+				this->_position.x = _t->position[0];
+				this->_position.y = _t->position[1];
+				this->_position.z = _t->position[2];
+				
 				std::vector<w_cpipeline_mesh*> _meshes;
 				_model->get_meshes(_meshes);
 
@@ -295,7 +301,7 @@ void scene::load()
 				}
 
 				//create mesh
-				this->_mesh = new (std::nothrow) wolf::graphics::w_mesh();
+				this->_mesh = new (std::nothrow) w_mesh();
 				if (_mesh)
 				{
 					auto _v_size = static_cast<uint32_t>(_vertices.size());
@@ -326,12 +332,6 @@ void scene::load()
 				_vertices.clear();
 				_indices.clear();
 
-				//store position and rotation of model into bounding box
-				auto _t = _model->get_transform();
-				_position.x = _t.position[0];
-				_position.y = _t.position[1];
-				_position.z = _t.position[2];
-
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//The following codes have been added for this project
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -339,23 +339,23 @@ void scene::load()
 				std::vector<vertex_instance_data> _vertex_instances_data(NUM_INSTANCES);
 				
 				//first one is ref model
-				_vertex_instances_data[0].pos[0] = _t.position[0];
-				_vertex_instances_data[0].pos[1] = _t.position[1];
-				_vertex_instances_data[0].pos[2] = _t.position[2];
+				_vertex_instances_data[0].pos[0] = _t->position[0];
+				_vertex_instances_data[0].pos[1] = _t->position[1];
+				_vertex_instances_data[0].pos[2] = _t->position[2];
 
-				_vertex_instances_data[0].rot[0] = _t.rotation[0];
-				_vertex_instances_data[0].rot[1] = _t.rotation[1];
-				_vertex_instances_data[0].rot[2] = _t.rotation[2];
+				_vertex_instances_data[0].rot[0] = _t->rotation[0];
+				_vertex_instances_data[0].rot[1] = _t->rotation[1];
+				_vertex_instances_data[0].rot[2] = _t->rotation[2];
 
 				_vertex_instances_data[0].scale = 1.0f;
 
 				for (size_t i = 1; i < NUM_INSTANCES; ++i)
 				{
-					_vertex_instances_data[i].pos[0] = _t.position[0] + (i + 1) * 20 * std::cos(i);
-					_vertex_instances_data[i].pos[1] = _t.position[1];
-					_vertex_instances_data[i].pos[2] = _t.position[2] + (i + 1) * 20 * std::sin(i);
+					_vertex_instances_data[i].pos[0] = _t->position[0] + (i + 1) * 20 * std::cos(i);
+					_vertex_instances_data[i].pos[1] = _t->position[1];
+					_vertex_instances_data[i].pos[2] = _t->position[2] + (i + 1) * 20 * std::sin(i);
 
-					_vertex_instances_data[i].rot[0] = 0.0f;
+					_vertex_instances_data[i].rot[0] = 0.0f;//90 degree in radian
 					_vertex_instances_data[i].rot[1] = 0.0f;
 					_vertex_instances_data[i].rot[2] = 0.0f;
 
@@ -372,11 +372,6 @@ void scene::load()
 						true,
 						"loading staging buffer of vertex_instance_buffer. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 				}
-				//if (_staging_buffers.bind() == W_FAILED)
-				//{
-				//	release();
-				//	V(W_FAILED, "binding to staging buffer of vertex_instance_buffer", _trace_info, 3, true);
-				//}
 
 				if (_staging_buffers.set_data(_vertex_instances_data.data()) == W_FAILED)
 				{

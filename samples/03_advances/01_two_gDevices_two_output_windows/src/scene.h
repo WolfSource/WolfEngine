@@ -15,10 +15,10 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_semaphore.h>
-#include <w_graphics/w_pipeline.h>
+#include <vulkan/w_command_buffers.h>
+#include <vulkan/w_render_pass.h>
+#include <vulkan/w_semaphore.h>
+#include <vulkan/w_pipeline.h>
 
 class scene : public wolf::framework::w_game
 {
@@ -58,14 +58,14 @@ private:
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	wolf::graphics::w_viewport                                      _viewport[2];
-	wolf::graphics::w_viewport_scissor                              _viewport_scissor[2];
+	wolf::render::vulkan::w_viewport                                      _viewport[2];
+	wolf::render::vulkan::w_viewport_scissor                              _viewport_scissor[2];
 	
-	wolf::graphics::w_command_buffers                               _draw_command_buffers[2];
-	wolf::graphics::w_render_pass                                   _draw_render_pass[2];
+	wolf::render::vulkan::w_command_buffers                               _draw_command_buffers[2];
+	wolf::render::vulkan::w_render_pass                                   _draw_render_pass[2];
 	
-	wolf::graphics::w_fences                                        _draw_fence[2];
-	wolf::graphics::w_semaphore                                     _draw_semaphore[2];
+	wolf::render::vulkan::w_fences                                        _draw_fence[2];
+	wolf::render::vulkan::w_semaphore                                     _draw_semaphore[2];
     
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++

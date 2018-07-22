@@ -26,29 +26,29 @@ namespace wolf
 			class w_occlusion_query : public system::w_object
 			{
 			public:
-				w_occlusion_query();
-				virtual ~w_occlusion_query();
+				W_VK_EXP w_occlusion_query();
+				W_VK_EXP virtual ~w_occlusion_query();
 
 				//initialize occlusion query
-				W_EXP W_RESULT initialize(
+				W_VK_EXP W_RESULT initialize(
 					_In_ const std::shared_ptr<wolf::render::vulkan::w_graphics_device>& pGDevice,
 					_In_ const uint32_t& pQuerySize);
 
 				//wait for results of query
-				void wait_for_query_results();
+				W_VK_EXP void wait_for_query_results();
 				//get results of query with availability bit
-				void get_available_query_results();
+				W_VK_EXP void get_available_query_results();
 				//get results of query with partial bit
-				void get_partial_query_results();
+				W_VK_EXP void get_partial_query_results();
 				//reset query
-				void reset(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pFirstQuery = 0);
+				W_VK_EXP void reset(_In_ const w_command_buffer& pCommandBuffer, _In_ const uint32_t& pFirstQuery = 0);
 				//begin query
-				void begin_query(_In_ const w_command_buffer& pCommandBuffer);
+				W_VK_EXP void begin_query(_In_ const w_command_buffer& pCommandBuffer);
 				//end query
-				void end_query(_In_ const w_command_buffer& pCommandBuffer);
+				W_VK_EXP void end_query(_In_ const w_command_buffer& pCommandBuffer);
 
 				//release occlusion query
-				W_EXP ULONG release() override;
+				W_VK_EXP ULONG release() override;
 			private:
 				typedef system::w_object                        _super;
 				w_occlusion_query_pimp*                         _pimp;

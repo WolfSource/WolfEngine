@@ -79,23 +79,23 @@ namespace wolf
 			class w_memory_allocator : public system::w_object
 			{
 			public:
-				W_EXP w_memory_allocator();
-				W_EXP ~w_memory_allocator();
+				W_VK_EXP w_memory_allocator();
+				W_VK_EXP ~w_memory_allocator();
 
-				W_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				W_VK_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const bool& pPreferredLargeHeapBlockSize = false,
 					_In_ const bool& pUseCustomCpuAllocation_Callbacks = false);
-				W_EXP VmaAllocation* allocate_buffer(_In_ VkBufferCreateInfo pCreateInfo, _In_ const w_memory_usage_flag& pMemoryUsage,
+				W_VK_EXP VmaAllocation* allocate_buffer(_In_ VkBufferCreateInfo pCreateInfo, _In_ const w_memory_usage_flag& pMemoryUsage,
 					_Inout_ VkBuffer& pBufferHandle, _Inout_ VmaAllocationInfo& pAllocInfo);
-				W_EXP VmaAllocation* allocate_image(_In_ VkImageCreateInfo pCreateInfo, _In_ const w_memory_usage_flag& pMemoryUsage,
+				W_VK_EXP VmaAllocation* allocate_image(_In_ VkImageCreateInfo pCreateInfo, _In_ const w_memory_usage_flag& pMemoryUsage,
 					_Inout_ VkImage& pImageHandle, _Inout_ VmaAllocationInfo& pAllocInfo);
-				W_EXP void free_buffer(_In_ VmaAllocation* pAllocation, _Inout_ VkBuffer& pBufferHandle);
-				W_EXP void free_image(_In_ VmaAllocation* pAllocation, _Inout_ VkImage& pImageHandle);
-				W_EXP W_RESULT bind(_In_ VmaAllocation* pAllocation, _Inout_ VkBuffer& pBufferHandle);
-				W_EXP W_RESULT bind(_In_ VmaAllocation* pAllocation, _Inout_ VkImage& pImageHandle);
-				W_EXP W_RESULT map(_In_ VmaAllocation* pAllocation, _Inout_ void** pMappedDate);
-				W_EXP void unmap(_In_ VmaAllocation* pAllocation);
-				W_EXP ULONG release();
+				W_VK_EXP void free_buffer(_In_ VmaAllocation* pAllocation, _Inout_ VkBuffer& pBufferHandle);
+				W_VK_EXP void free_image(_In_ VmaAllocation* pAllocation, _Inout_ VkImage& pImageHandle);
+				W_VK_EXP W_RESULT bind(_In_ VmaAllocation* pAllocation, _Inout_ VkBuffer& pBufferHandle);
+				W_VK_EXP W_RESULT bind(_In_ VmaAllocation* pAllocation, _Inout_ VkImage& pImageHandle);
+				W_VK_EXP W_RESULT map(_In_ VmaAllocation* pAllocation, _Inout_ void** pMappedDate);
+				W_VK_EXP void unmap(_In_ VmaAllocation* pAllocation);
+				W_VK_EXP ULONG release();
 
 #pragma region Getters
 				VkMemoryPropertyFlags get_memory_property_flags(_In_ VmaAllocationInfo& pAllocInfo) const;

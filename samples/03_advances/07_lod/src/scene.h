@@ -15,12 +15,12 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_semaphore.h>
-#include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_imgui.h>
+#include <vulkan/w_command_buffers.h>
+#include <vulkan/w_render_pass.h>
+#include <vulkan/w_semaphore.h>
+#include <vulkan/w_pipeline.h>
+#include <vulkan/w_shader.h>
+#include <vulkan/w_imgui.h>
 #include <w_framework/w_first_person_camera.h>
 #include "model.h"
 
@@ -71,39 +71,39 @@ private:
 	widget_info	_show_explorer();
 	bool    	_update_gui();
 	
-	wolf::graphics::w_viewport                                      _viewport;
-	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
+	wolf::render::vulkan::w_viewport										_viewport;
+	wolf::render::vulkan::w_viewport_scissor								_viewport_scissor;
 
-	wolf::graphics::w_command_buffers                               _draw_command_buffers;
-	wolf::graphics::w_render_pass                                   _draw_render_pass;
+	wolf::render::vulkan::w_command_buffers									_draw_command_buffers;
+	wolf::render::vulkan::w_render_pass										_draw_render_pass;
 
-	wolf::graphics::w_fences                                        _draw_fence;
-	wolf::graphics::w_semaphore                                     _draw_semaphore;
+	wolf::render::vulkan::w_fences											_draw_fence;
+	wolf::render::vulkan::w_semaphore										_draw_semaphore;
 
-	bool															_rebuild_command_buffer;
-	bool															_force_update_camera;
-	wolf::framework::w_first_person_camera							_first_camera;
-	std::vector<model*>												_models;
+	bool																	_rebuild_command_buffer;
+	bool																	_force_update_camera;
+	wolf::framework::w_first_person_camera									_first_camera;
+	std::vector<model*>														_models;
 
-	bool															_show_all;
-	bool															_show_all_instances_colors;
-	model*															_current_selected_model;
+	bool																	_show_all;
+	bool																	_show_all_instances_colors;
+	model*																	_current_selected_model;
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	bool															_show_lods;
-	bool															_searching;
-	std::vector<model*>												_searched_models;
+	bool																	_show_lods;
+	bool																	_searching;
+	std::vector<model*>														_searched_models;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	
-	bool															_has_camera_animation;
-	bool															_play_camera_anim;
-	long															_current_camera_time;
-	wolf::system::w_game_time										_camera_time;
-	std::vector<glm::vec3>											_camera_anim_positions;
-	std::vector<glm::vec3>											_camera_anim_targets;
+	bool																	_has_camera_animation;
+	bool																	_play_camera_anim;
+	long																	_current_camera_time;
+	wolf::system::w_game_time												_camera_time;
+	std::vector<glm::vec3>													_camera_anim_positions;
+	std::vector<glm::vec3>													_camera_anim_targets;
 };
 
 #endif

@@ -48,10 +48,10 @@ namespace wolf
 			class w_texture : public system::w_object
 			{
 			public:
-				W_EXP w_texture();
-				W_EXP virtual ~w_texture();
+				W_VK_EXP w_texture();
+				W_VK_EXP virtual ~w_texture();
 
-				W_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
+				W_VK_EXP W_RESULT initialize(_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_ const uint32_t& pWidth = 32,
 					_In_ const uint32_t& pHeight = 32,
 					_In_ const bool& pGenerateMipMapsLevels = false,
@@ -59,36 +59,36 @@ namespace wolf
 					_In_ const uint32_t pMemoryPropertyFlags = w_memory_property_flag_bits::DEVICE_LOCAL_BIT);
 
 				//Load texture
-				W_EXP W_RESULT load();
+				W_VK_EXP W_RESULT load();
 
 				//Load texture from file
-				W_EXP W_RESULT load_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
+				W_VK_EXP W_RESULT load_texture_2D_from_file(_In_z_ std::wstring pPath, _In_ bool pIsAbsolutePath = false);
 				//Load texture from memory in the format of RGBA
-				W_EXP W_RESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData);
+				W_VK_EXP W_RESULT load_texture_from_memory_rgba(_In_ uint8_t* pRGBAData);
 				//Load texture from memory in the format of RGB
-				W_EXP W_RESULT load_texture_from_memory_rgb(_In_ uint8_t* pRGBData);
+				W_VK_EXP W_RESULT load_texture_from_memory_rgb(_In_ uint8_t* pRGBData);
 				//Load texture from memory, all channels will have same byte
-				W_EXP W_RESULT load_texture_from_memory_all_channels_same(_In_ uint8_t pData);
+				W_VK_EXP W_RESULT load_texture_from_memory_all_channels_same(_In_ uint8_t pData);
 				//Load texture from w_color
-				W_EXP W_RESULT load_texture_from_memory_color(_In_ w_color pColor);
+				W_VK_EXP W_RESULT load_texture_from_memory_color(_In_ w_color pColor);
 				/*
 					copy data to texture
 					if this is a staging buffer, do not use this function because it will cause memory leaks,
 					instead use "get_pointer_to_staging_data" function
 				*/
-				W_EXP W_RESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA);
+				W_VK_EXP W_RESULT copy_data_to_texture_2D(_In_ const uint8_t* pRGBA);
 
 				//read texture's data
-				W_EXP void* read_data_of_texture();
+				W_VK_EXP void* read_data_of_texture();
 
 				//flush staging buffer
-				W_EXP W_RESULT flush_staging_data();
+				W_VK_EXP W_RESULT flush_staging_data();
 
 				//release all resources
-				W_EXP virtual ULONG release() override;
+				W_VK_EXP virtual ULONG release() override;
 
 				//load texture and store it into the shared
-				W_EXP static W_RESULT load_to_shared_textures(
+				W_VK_EXP static W_RESULT load_to_shared_textures(
 					_In_ const std::shared_ptr<w_graphics_device>& pGDevice,
 					_In_z_ const std::wstring& pPath,
 					_In_z_ const bool& pGenerateMipMaps,
@@ -102,7 +102,7 @@ namespace wolf
 					@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 					@param pStrideInBytes, stride of pixel's structure inf bytes
 				*/
-				W_EXP static W_RESULT save_png_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pStrideInBytes = 4 * sizeof(uint8_t));
+				W_VK_EXP static W_RESULT save_png_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pStrideInBytes = 4 * sizeof(uint8_t));
 				/*
 					save bmp image file
 					@param pFilePath, path of file
@@ -110,7 +110,7 @@ namespace wolf
 					@param pData, pointer to rgba data
 					@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				*/
-				W_EXP static W_RESULT save_bmp_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount);
+				W_VK_EXP static W_RESULT save_bmp_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount);
 				/*
 					save tga image file
 					@param pFilePath, path of file
@@ -119,7 +119,7 @@ namespace wolf
 					@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 					@param pQuality, Quality(1 - 100)
 				*/
-				W_EXP static W_RESULT save_tga_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount);
+				W_VK_EXP static W_RESULT save_tga_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount);
 				/*
 					save hdr image file
 					@param pFilePath, path of file
@@ -127,7 +127,7 @@ namespace wolf
 					@param pData, pointer to rgba data
 					@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 				*/
-				W_EXP static W_RESULT save_hdr_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData, _In_ int pCompCount);
+				W_VK_EXP static W_RESULT save_hdr_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const float* pData, _In_ int pCompCount);
 				/*
 					save jpg image file
 					@param pFilePath, path of file
@@ -136,50 +136,50 @@ namespace wolf
 					@param pCompCount, number of channels(RGBA = 4, RGB = 3)
 					@param pQuality, Quality(1 - 100)
 				*/
-				W_EXP static W_RESULT save_jpg_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pQuality);
+				W_VK_EXP static W_RESULT save_jpg_to_file(_In_z_ const char* pFilePath, _In_ uint32_t pWidth, _In_ uint32_t pHeight, _In_ const void* pData, _In_ int pCompCount, _In_ int pQuality);
 
 				//release all shared textures
-				W_EXP ULONG static release_shared_textures();
+				W_VK_EXP ULONG static release_shared_textures();
 
 #pragma region Getters
 
 				//get width of image
-				W_EXP const uint32_t get_width() const;
+				W_VK_EXP const uint32_t get_width() const;
 				//get height of image
-				W_EXP const uint32_t get_height() const;
+				W_VK_EXP const uint32_t get_height() const;
 				//get image usage
-				W_EXP const uint32_t get_usage_flags() const;
+				W_VK_EXP const uint32_t get_usage_flags() const;
 				//get sampler of image
-				W_EXP w_sampler get_sampler(_In_ const w_sampler_type& pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
+				W_VK_EXP w_sampler get_sampler(_In_ const w_sampler_type& pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
 				//get image and view resources
-				W_EXP w_image_view get_image_view() const;
+				W_VK_EXP w_image_view get_image_view() const;
 				//get image type
-				W_EXP w_image_type get_image_type() const;
+				W_VK_EXP w_image_type get_image_type() const;
 				//get image view type
-				W_EXP w_image_view_type get_image_view_type() const;
+				W_VK_EXP w_image_view_type get_image_view_type() const;
 				//get image format
-				W_EXP w_format get_format() const;
+				W_VK_EXP w_format get_format() const;
 				//get write descriptor image info
-				W_EXP const w_descriptor_image_info get_descriptor_info(_In_ const w_sampler_type& pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
+				W_VK_EXP const w_descriptor_image_info get_descriptor_info(_In_ const w_sampler_type& pSamplerType = w_sampler_type::NO_MIPMAP_AND_NO_ANISOTROPY) const;
 				//get number of mip maps levels
-				W_EXP const uint32_t get_mip_maps_level() const;
+				W_VK_EXP const uint32_t get_mip_maps_level() const;
 
 #pragma endregion
 
 #pragma region Setters
 
 				//set image format
-				W_EXP void set_format(_In_ w_format pFormat);
+				W_VK_EXP void set_format(_In_ w_format pFormat);
 				//set image usage
-				W_EXP void set_usage_flags(_In_ uint32_t pUsage);
+				W_VK_EXP void set_usage_flags(_In_ uint32_t pUsage);
 				//set buffer type
-				W_EXP void set_buffer_type(_In_ w_texture_buffer_type pBufferType);
+				W_VK_EXP void set_buffer_type(_In_ w_texture_buffer_type pBufferType);
 				//set image view type
-				W_EXP void set_view_type(_In_ w_image_view_type pViewType);
+				W_VK_EXP void set_view_type(_In_ w_image_view_type pViewType);
 
 #pragma region
 
-				W_EXP static w_texture*                               default_texture;
+				W_VK_EXP static w_texture*                               default_texture;
 
 #ifdef __PYTHON__
 

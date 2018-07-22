@@ -25,29 +25,29 @@ namespace wolf
 		class w_masked_occlusion_culling : public system::w_object
 		{
 		public:
-			W_EXP w_masked_occlusion_culling();
-			W_EXP ~w_masked_occlusion_culling();
+			W_VK_EXP w_masked_occlusion_culling();
+			W_VK_EXP ~w_masked_occlusion_culling();
 
-			W_EXP W_RESULT initialize(_In_ const uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging);
-			W_EXP W_RESULT suspend_threads();
-			W_EXP W_RESULT wake_threads();
-			W_EXP W_RESULT clear_buffer();
+			W_VK_EXP W_RESULT initialize(_In_ const uint32_t& pNumberOfWorkerThreads, _In_ const bool& pEnableDebugging);
+			W_VK_EXP W_RESULT suspend_threads();
+			W_VK_EXP W_RESULT wake_threads();
+			W_VK_EXP W_RESULT clear_buffer();
 			
-			W_EXP W_RESULT render_triangles_async(
+			W_VK_EXP W_RESULT render_triangles_async(
 				_In_ const float* pVertices,
 				_In_ const unsigned int* pTriangles,
 				_In_ const int& pNumberOfTriangles,
 				_In_ const MaskedOcclusionCulling::BackfaceWinding& pBackFaceWinding = MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW,
 				_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
 
-			W_EXP MaskedOcclusionCulling::CullingResult test_triangles_async(
+			W_VK_EXP MaskedOcclusionCulling::CullingResult test_triangles_async(
 				_In_ const float* pVertices,
 				_In_ const unsigned int* pTriangles,
 				_In_ const int& pNumberOfTriangles,
 				_In_ const MaskedOcclusionCulling::BackfaceWinding& pBackFaceWinding = MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW,
 				_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
 
-			W_EXP W_RESULT render_triangles(
+			W_VK_EXP W_RESULT render_triangles(
 				_In_ const float* pVertices,
 				_In_ const unsigned int* pTriangles,
 				_In_ const int& pNumberOfTriangles,
@@ -55,7 +55,7 @@ namespace wolf
 				_In_ const MaskedOcclusionCulling::BackfaceWinding& pBackFaceWinding = MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW,
 				_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
 			
-			W_EXP MaskedOcclusionCulling::CullingResult test_triangles(
+			W_VK_EXP MaskedOcclusionCulling::CullingResult test_triangles(
 				_In_ const float* pVertices,
 				_In_ const unsigned int* pTriangles,
 				_In_ const int& pNumberOfTriangles,
@@ -63,23 +63,23 @@ namespace wolf
 				_In_ const MaskedOcclusionCulling::BackfaceWinding& pBackFaceWinding = MaskedOcclusionCulling::BackfaceWinding::BACKFACE_CCW,
 				_In_ const MaskedOcclusionCulling::ClipPlanes& pClipPlaneMask = MaskedOcclusionCulling::CLIP_PLANE_ALL);
 
-			W_EXP W_RESULT flush();
+			W_VK_EXP W_RESULT flush();
 
-			W_EXP ULONG release() override;
+			W_VK_EXP ULONG release() override;
 
 #pragma region Getters
 
-			W_EXP uint8_t* get_debug_frame(_In_ bool pFlipY);
+			W_VK_EXP uint8_t* get_debug_frame(_In_ bool pFlipY);
 
 #pragma endregion
 
 #pragma region Setters
 
-			W_EXP void		set_number_of_worker_threads(_In_ uint32_t& pNumberOfWorkerThreads);
-			W_EXP void		set_multi_threaded(_In_ const bool& pValue);
-			W_EXP W_RESULT	set_near_clip(_In_ const float& pValue);
-			W_EXP W_RESULT	set_resolution(_In_ const float& pWidth, _In_ const float& pHeight);
-			W_EXP void		set_matrix(_In_ const float* pModelToClipMatrix);
+			W_VK_EXP void		set_number_of_worker_threads(_In_ uint32_t& pNumberOfWorkerThreads);
+			W_VK_EXP void		set_multi_threaded(_In_ const bool& pValue);
+			W_VK_EXP W_RESULT	set_near_clip(_In_ const float& pValue);
+			W_VK_EXP W_RESULT	set_resolution(_In_ const float& pWidth, _In_ const float& pHeight);
+			W_VK_EXP void		set_matrix(_In_ const float* pModelToClipMatrix);
 
 #pragma endregion
 
