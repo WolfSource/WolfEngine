@@ -3,7 +3,7 @@
 
 using namespace wolf;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
 model_mesh::model_mesh(
@@ -1010,13 +1010,17 @@ W_RESULT model_mesh::_load_textures()
 	bool _problem = false;
 	for (auto& _path : this->textures_paths)
 	{
+		auto _file_path = wolf::system::io::get_file_name(_path);
+		auto _index = _file_path.find("_");
+		auto _texture_name = _file_path.substr(_index + 1, _file_path.size() - _index);
+
 		auto _texture = new (std::nothrow) w_texture();
 		if (_texture)
 		{
 			if (w_texture::load_to_shared_textures(
 				this->gDevice,
 				wolf::content_path + L"models/sponza/sponza/" +
-				wolf::system::convert::string_to_wstring(_path),
+				wolf::system::convert::string_to_wstring(_texture_name),
 				true,
 				&_texture) == W_PASSED)
 			{
@@ -1734,7 +1738,7 @@ W_RESULT model_mesh::_create_pipelines(
 		return W_FAILED;
 	}
 
-	auto _rasterization_states = wolf::graphics::w_graphics_device::defaults_states::pipelines::rasterization_create_info;
+	auto _rasterization_states = w_graphics_device::defaults_states::pipelines::rasterization_create_info;
 	_rasterization_states.set_polygon_mode(w_polygon_mode::LINE);
 	if (this->_wireframe_pipeline.load(
 		this->gDevice,
@@ -1779,7 +1783,7 @@ W_RESULT model_mesh::_create_pipelines(
 	return W_PASSED;
 }
 
-W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const wolf::graphics::w_render_pass& pRenderPass)
+W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const w_render_pass& pRenderPass)
 {
 	const std::string _trace_info = this->_name + "_create_bounding_box_shapes";
 
@@ -1849,7 +1853,7 @@ W_RESULT model_mesh::_create_bounding_box_shapes(_In_ const wolf::graphics::w_re
 }
 
 w_shapes* model_mesh::_create_shape(
-	_In_ const wolf::graphics::w_render_pass& pRenderPass,
+	_In_ const w_render_pass& pRenderPass,
 	_In_ const w_bounding_box& pBoundingBox,
 	_In_ w_color& pColor)
 {

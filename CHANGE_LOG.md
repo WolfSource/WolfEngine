@@ -1,6 +1,5 @@
 # ToDos
 - Dynamic lod creator for lod sample
-- gpu culling
 - Forward+
 - DirectX 12
 - Realtime Raytracing
@@ -13,6 +12,7 @@ A major release with many compatibility-breaking changes.
 Notable new features:
 - system::w_logger optimized and integrated with spdlog 
 - framework::w_media_core optimized for streaming
+- gpu occlusion culling has been added
 
 
 # 1.63.1.0 (2018-04-19)

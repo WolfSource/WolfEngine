@@ -102,6 +102,7 @@ private:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	wolf::render::vulkan::w_occlusion_query								_gpu_occlusion_query;
 	uint64_t*															_query_results;
+	size_t																_number_of_query_results;
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 };

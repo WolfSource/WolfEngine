@@ -15,12 +15,12 @@
 #define __SCENE_H__
 
 #include <w_framework/w_game.h>
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_render_pass.h>
-#include <w_graphics/w_semaphore.h>
-#include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_shader.h>
-#include <w_graphics/w_imgui.h>
+#include <vulkan/w_command_buffers.h>
+#include <vulkan/w_render_pass.h>
+#include <vulkan/w_semaphore.h>
+#include <vulkan/w_pipeline.h>
+#include <vulkan/w_shader.h>
+#include <vulkan/w_imgui.h>
 #include <w_framework/w_first_person_camera.h>
 #include "model.h"
 
@@ -71,7 +71,7 @@ private:
 		ImVec2	pos;
 	};
 
-	W_RESULT	_load_scenes_from_folder(_In_z_ const std::wstring& pDirectoryPath);
+	W_RESULT	_load_scene();
 	W_RESULT	_build_draw_command_buffers();
 	
 	void		_show_floating_debug_window();
@@ -81,14 +81,14 @@ private:
 	widget_info	_show_explorer();
 	bool    	_update_gui();
 
-	wolf::graphics::w_viewport                                      _viewport;
-	wolf::graphics::w_viewport_scissor                              _viewport_scissor;
+	wolf::render::vulkan::w_viewport                                _viewport;
+	wolf::render::vulkan::w_viewport_scissor                        _viewport_scissor;
 
-	wolf::graphics::w_command_buffers                               _draw_command_buffers;
-	wolf::graphics::w_render_pass                                   _draw_render_pass;
+	wolf::render::vulkan::w_command_buffers                         _draw_command_buffers;
+	wolf::render::vulkan::w_render_pass                             _draw_render_pass;
 
-	wolf::graphics::w_fences                                        _draw_fence;
-	wolf::graphics::w_semaphore                                     _draw_semaphore;
+	wolf::render::vulkan::w_fences                                  _draw_fence;
+	wolf::render::vulkan::w_semaphore                               _draw_semaphore;
 
 	bool															_rebuild_command_buffer;
 	bool															_force_update_camera;
@@ -105,17 +105,17 @@ private:
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
-	std::vector<wolf::graphics::w_pipeline_stage_flag_bits>			_wait_dst_stage_mask;
+	std::vector<wolf::render::vulkan::w_pipeline_stage_flag_bits>	_wait_dst_stage_mask;
 	bool															_searching;
 	bool															_show_moc_debug;
 	wolf::framework::w_masked_occlusion_culling						_masked_occlusion_culling;
-	wolf::graphics::w_texture*										_masked_occlusion_culling_debug_frame;
+	wolf::render::vulkan::w_texture*								_masked_occlusion_culling_debug_frame;
 	long															_visible_meshes;
 	tbb::concurrent_vector<model*>									_visible_models;
 	std::vector<model*>												_drawable_models;
 	std::vector<model*>												_searched_models;
 
-	wolf::graphics::w_shapes*										_shape_coordinate_axis;
+	wolf::render::vulkan::w_shapes*									_shape_coordinate_axis;
 
 	bool															_has_camera_animation;
 	bool															_play_camera_anim;

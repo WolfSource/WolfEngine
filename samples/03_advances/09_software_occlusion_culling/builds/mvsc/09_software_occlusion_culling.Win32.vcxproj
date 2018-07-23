@@ -36,10 +36,10 @@
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{890325E2-798E-47D8-9E36-23BB40ADFB30}</ProjectGuid>
+    <ProjectGuid>{13B2EC3B-DB17-4287-B669-E47F2FF97519}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>_08_masked_occlusion_culling</RootNamespace>
-    <ProjectName>08_masked_occlusion_culling.Win32</ProjectName>
+    <RootNamespace>_09_software_occlusion_culling</RootNamespace>
+    <ProjectName>09_software_occlusion_culling.Win32</ProjectName>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -137,7 +137,7 @@
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration);$(SolutionDir)/../engine/dependencies/vulkan/lib/windows/x64;$(SolutionDir)/../engine/dependencies/tbb/oss/windows/lib/intel64/vc14</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wolf.system.win32.lib;wolf.content_pipeline.win32.lib;wolf.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wolf.system.win32.lib;wolf.content_pipeline.win32.lib;wolf.render.vulkan.win32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>../../../../../manifest.manifest</AdditionalManifestFiles>

@@ -3,7 +3,7 @@
 #include <tbb/parallel_for.h>
 
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
 model::model(
@@ -38,6 +38,22 @@ W_RESULT model::initialize()
 
 	//get all meshes
 	this->c_model->get_meshes(_meshes);
+
+#pragma region collada from 3DMax 
+
+	//3DMax is right handed Zup
+	this->transform.rotation[0] += glm::radians(90.0f);
+	std::swap(this->transform.position[1], this->transform.position[2]);
+	this->transform.position[1] *= -1.0f;
+
+	for (auto& _ins : this->instances_transforms)
+	{
+		_ins.rotation[0] += glm::radians(90.0f);
+		std::swap(_ins.position[1], _ins.position[2]);
+		_ins.position[1] *= -1.0f;
+	}
+
+#pragma endregion 
 
 	//get size of mesh
 	size_t _meshes_count = _meshes.size();

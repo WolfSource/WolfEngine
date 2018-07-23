@@ -26,10 +26,8 @@ namespace wolf
 					VkQueryPoolCreateInfo _query_pool_info = {};
 					_query_pool_info.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
 					_query_pool_info.queryType = VK_QUERY_TYPE_OCCLUSION;
-					_query_pool_info.queryCount = 2;
-					vkCreateQueryPool(pGDevice->vk_device, &_query_pool_info, NULL, &this->_query_pool);
-
-					return W_PASSED;
+					_query_pool_info.queryCount = pQuerySize;
+					return vkCreateQueryPool(pGDevice->vk_device, &_query_pool_info, NULL, &this->_query_pool) == VkResult::VK_SUCCESS ? W_PASSED : W_FAILED;
 				}
 
 				uint64_t* wait_for_query_results(_Inout_ size_t& pNumberOfResults)
@@ -74,6 +72,7 @@ namespace wolf
 
 				ULONG release()
 				{
+					vkDestroyQueryPool(this->_gDevice->vk_device, this->_query_pool, nullptr);
 					this->_passed_samples.clear();
 					this->_gDevice = nullptr;
 

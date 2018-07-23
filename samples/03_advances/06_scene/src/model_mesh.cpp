@@ -1112,7 +1112,8 @@ private:
 			&pRenderPass,
 			&this->_shader,
 			{ pRenderPass.get_viewport() },
-			{ pRenderPass.get_viewport_scissor() });
+			{ pRenderPass.get_viewport_scissor() },
+			pPipelineCacheName);
 	}
 
 	std::shared_ptr<w_graphics_device> 		_gDevice;

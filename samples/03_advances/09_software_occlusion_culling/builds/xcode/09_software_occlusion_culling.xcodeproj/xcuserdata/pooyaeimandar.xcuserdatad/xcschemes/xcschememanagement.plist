@@ -4,12 +4,12 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>08_masked_occlusion_culling.xcscheme</key>
+		<key>09_software_occlusion_culling.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
-		<key>08_masked_occlusion_culling.xcscheme</key>
+		<key>09_software_occlusion_culling.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>

@@ -107,6 +107,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wolf_scene.Win32", "wolf_sc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_hardware_occlusion_culling.Win32", "03_advances\08_hardware_occlusion_culling\builds\mvsc\08_hardware_occlusion_culling.Win32.vcxproj", "{890325E2-798E-47D8-9E36-23BB40ADFB30}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09_software_occlusion_culling.Win32", "03_advances\09_software_occlusion_culling\builds\mvsc\09_software_occlusion_culling.Win32.vcxproj", "{13B2EC3B-DB17-4287-B669-E47F2FF97519}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_documents", "_documents", "{3BA73419-1184-457B-BC3F-09E060442C1F}"
+	ProjectSection(SolutionItems) = preProject
+		..\CHANGE_LOG.md = ..\CHANGE_LOG.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -499,6 +506,14 @@ Global
 		{890325E2-798E-47D8-9E36-23BB40ADFB30}.Release|x64.Build.0 = Release|x64
 		{890325E2-798E-47D8-9E36-23BB40ADFB30}.Release|x86.ActiveCfg = Release|Win32
 		{890325E2-798E-47D8-9E36-23BB40ADFB30}.Release|x86.Build.0 = Release|Win32
+		{13B2EC3B-DB17-4287-B669-E47F2FF97519}.Debug|x64.ActiveCfg = Debug|x64
+		{13B2EC3B-DB17-4287-B669-E47F2FF97519}.Debug|x64.Build.0 = Debug|x64
+		{13B2EC3B-DB17-4287-B669-E47F2FF97519}.Debug|x86.ActiveCfg = Debug|Win32
+		{13B2EC3B-DB17-4287-B669-E47F2FF97519}.Debug|x86.Build.0 = Debug|Win32
+		{13B2EC3B-DB17-4287-B669-E47F2FF97519}.Release|x64.ActiveCfg = Release|x64
+		{13B2EC3B-DB17-4287-B669-E47F2FF97519}.Release|x64.Build.0 = Release|x64
+		{13B2EC3B-DB17-4287-B669-E47F2FF97519}.Release|x86.ActiveCfg = Release|Win32
+		{13B2EC3B-DB17-4287-B669-E47F2FF97519}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -551,6 +566,7 @@ Global
 		{90C0809A-4566-425E-891F-FD19F65A60E2} = {7741F09D-E859-412C-A94D-5F25017E6F20}
 		{2F0FA337-2831-43D7-B4F7-823D0AC15490} = {7741F09D-E859-412C-A94D-5F25017E6F20}
 		{890325E2-798E-47D8-9E36-23BB40ADFB30} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
+		{13B2EC3B-DB17-4287-B669-E47F2FF97519} = {FEC82C93-8086-48FD-9D5C-A3D8DE346008}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {38023155-92FA-450F-B105-E00D9588C53D}
