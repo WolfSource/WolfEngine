@@ -18,7 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2C4CD2FF1E8A72B60090EE0A /* libwolf.vulkan.iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwolf.vulkan.iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C4CD2FF1E8A72B60090EE0A /* libwolf.render.vulkan.iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwolf.render.vulkan.iOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C4CD3191E8A73470090EE0A /* w_game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_game.cpp; path = ../../../src/wolf.render/w_game.cpp; sourceTree = "<group>"; };
 		2C4CD31A1E8A73470090EE0A /* w_game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_game.h; path = ../../../src/wolf.render/w_game.h; sourceTree = "<group>"; };
 		2C4CD31B1E8A73470090EE0A /* w_graphics_device_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = w_graphics_device_manager.cpp; path = ../../../src/wolf.render/w_graphics_device_manager.cpp; sourceTree = "<group>"; };
@@ -58,7 +58,7 @@
 		2C4CD3001E8A72B60090EE0A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2C4CD2FF1E8A72B60090EE0A /* libwolf.vulkan.iOS.a */,
+				2C4CD2FF1E8A72B60090EE0A /* libwolf.render.vulkan.iOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,9 +80,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		2C4CD2FE1E8A72B60090EE0A /* wolf.vulkan.iOS */ = {
+		2C4CD2FE1E8A72B60090EE0A /* wolf.render.vulkan.iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2C4CD30A1E8A72B60090EE0A /* Build configuration list for PBXNativeTarget "wolf.vulkan.iOS" */;
+			buildConfigurationList = 2C4CD30A1E8A72B60090EE0A /* Build configuration list for PBXNativeTarget "wolf.render.vulkan.iOS" */;
 			buildPhases = (
 				2C4CD2FB1E8A72B60090EE0A /* Sources */,
 				2C4CD2FC1E8A72B60090EE0A /* Frameworks */,
@@ -92,9 +92,9 @@
 			);
 			dependencies = (
 			);
-			name = wolf.vulkan.iOS;
-			productName = wolf.vulkan.iOS;
-			productReference = 2C4CD2FF1E8A72B60090EE0A /* libwolf.vulkan.iOS.a */;
+			name = wolf.render.vulkan.iOS;
+			productName = wolf.render.vulkan.iOS;
+			productReference = 2C4CD2FF1E8A72B60090EE0A /* libwolf.render.vulkan.iOS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -113,7 +113,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2C4CD2FA1E8A72B60090EE0A /* Build configuration list for PBXProject "wolf.vulkan.iOS" */;
+			buildConfigurationList = 2C4CD2FA1E8A72B60090EE0A /* Build configuration list for PBXProject "wolf.render.vulkan.iOS" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -125,7 +125,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2C4CD2FE1E8A72B60090EE0A /* wolf.vulkan.iOS */,
+				2C4CD2FE1E8A72B60090EE0A /* wolf.render.vulkan.iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -285,7 +285,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2C4CD2FA1E8A72B60090EE0A /* Build configuration list for PBXProject "wolf.vulkan.iOS" */ = {
+		2C4CD2FA1E8A72B60090EE0A /* Build configuration list for PBXProject "wolf.render.vulkan.iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C4CD3081E8A72B60090EE0A /* Debug */,
@@ -294,7 +294,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2C4CD30A1E8A72B60090EE0A /* Build configuration list for PBXNativeTarget "wolf.vulkan.iOS" */ = {
+		2C4CD30A1E8A72B60090EE0A /* Build configuration list for PBXNativeTarget "wolf.render.vulkan.iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C4CD30B1E8A72B60090EE0A /* Debug */,

@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		2C0DCBE320D97D5E00567394 /* libwolf.content_pipeline.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0DCBE020D97D5E00567394 /* libwolf.content_pipeline.osx.dylib */; };
-		2C0DCBE420D97D5E00567394 /* libwolf.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0DCBE120D97D5E00567394 /* libwolf.vulkan.osx.dylib */; };
 		2C0DCBE520D97D5E00567394 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0DCBE220D97D5E00567394 /* libwolf.system.osx.dylib */; };
 		2C13839F1F5096DE00D5283B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C13839E1F5096DE00D5283B /* main.m */; };
 		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
+		2C1E3FAA21087AE20072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C1E3FA921087AE20072D5D3 /* libwolf.render.vulkan.osx.dylib */; };
 		2C4639531EA55A3700A16595 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639511EA55A3700A16595 /* Assets.xcassets */; };
 		2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639551EA55A6C00A16595 /* Main.storyboard */; };
 		2CB69EDB1F62DDF60068D1E6 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69ED81F62DDF60068D1E6 /* ViewController.mm */; };
@@ -30,6 +30,7 @@
 		2C13839E1F5096DE00D5283B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../../common/main.m; sourceTree = "<group>"; };
 		2C1383A01F50971300D5283B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../common/AppDelegate.h; sourceTree = "<group>"; };
 		2C1383A11F50971300D5283B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../common/AppDelegate.m; sourceTree = "<group>"; };
+		2C1E3FA921087AE20072D5D3 /* libwolf.render.vulkan.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.render.vulkan.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.render.vulkan.osx.dylib; sourceTree = "<group>"; };
 		2C2803471E61C73600048A80 /* 03_instancing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 03_instancing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 03_instancing/Assets.xcassets; sourceTree = "<group>"; };
 		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 03_instancing/Info.plist; sourceTree = "<group>"; };
@@ -55,12 +56,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C0DCBE320D97D5E00567394 /* libwolf.content_pipeline.osx.dylib in Frameworks */,
-				2C0DCBE420D97D5E00567394 /* libwolf.vulkan.osx.dylib in Frameworks */,
 				2C0DCBE520D97D5E00567394 /* libwolf.system.osx.dylib in Frameworks */,
+				2C0DCBE320D97D5E00567394 /* libwolf.content_pipeline.osx.dylib in Frameworks */,
+				2C1E3FAA21087AE20072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */,
 				2CE0DAC020AC0663003BC362 /* libassimp.4.1.0.dylib in Frameworks */,
-				2CF54B41205C5327000B80E3 /* vulkan.framework in Frameworks */,
 				2CB69EE71F62E56D0068D1E6 /* libc++.tbd in Frameworks */,
+				2CF54B41205C5327000B80E3 /* vulkan.framework in Frameworks */,
 				2CB69EE51F62E5510068D1E6 /* Metal.framework in Frameworks */,
 				2CB69EE31F62E5470068D1E6 /* QuartzCore.framework in Frameworks */,
 			);
@@ -107,6 +108,7 @@
 		2CB69EDF1F62E53B0068D1E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C1E3FA921087AE20072D5D3 /* libwolf.render.vulkan.osx.dylib */,
 				2C0DCBE020D97D5E00567394 /* libwolf.content_pipeline.osx.dylib */,
 				2C0DCBE220D97D5E00567394 /* libwolf.system.osx.dylib */,
 				2C0DCBE120D97D5E00567394 /* libwolf.vulkan.osx.dylib */,

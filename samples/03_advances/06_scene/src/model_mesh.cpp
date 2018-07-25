@@ -22,7 +22,8 @@ public:
 		_name("model"),
 		_mesh(nullptr),
 		_c_model(pContentPipelineModel),
-		_visible(true)
+		_visible(true),
+        _transform(nullptr)
 	{
 	}
 
@@ -52,9 +53,9 @@ public:
 #pragma region collada from 3DMax 
 
 		//3DMax is right handed Zup
-		this->_transform.rotation[0] += glm::radians(90.0f);
-		std::swap(this->_transform.position[1], this->_transform.position[2]);
-		this->_transform.position[1] *= -1.0f;
+		this->_transform->rotation[0] += glm::radians(90.0f);
+		std::swap(this->_transform->position[1], this->_transform->position[2]);
+		this->_transform->position[1] *= -1.0f;
 
 		for (auto& _ins : this->_instnaces_transforms)
 		{
@@ -162,21 +163,21 @@ public:
 				{
 					if (_dec == w_vertex_attribute::W_POS)
 					{
-						_instances_data.push_back(this->_transform.position[0]);
-						_instances_data.push_back(this->_transform.position[1]);
-						_instances_data.push_back(this->_transform.position[2]);
+						_instances_data.push_back(this->_transform->position[0]);
+						_instances_data.push_back(this->_transform->position[1]);
+						_instances_data.push_back(this->_transform->position[2]);
 						_size_of_instance_struct += 12;
 					}
 					if (_dec == w_vertex_attribute::W_ROT)
 					{
-						_instances_data.push_back(this->_transform.rotation[0]);
-						_instances_data.push_back(this->_transform.rotation[1]);
-						_instances_data.push_back(this->_transform.rotation[2]);
+						_instances_data.push_back(this->_transform->rotation[0]);
+						_instances_data.push_back(this->_transform->rotation[1]);
+						_instances_data.push_back(this->_transform->rotation[2]);
 						_size_of_instance_struct += 12;
 					}
 					else if (_dec == w_vertex_attribute::W_SCALE)
 					{
-						_instances_data.push_back(this->_transform.scale[0]);
+						_instances_data.push_back(this->_transform->scale[0]);
 						_size_of_instance_struct += 4;
 					}
 				}
@@ -365,17 +366,17 @@ public:
 
 	glm::vec3 get_position() const
 	{
-		return glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
+		return glm::vec3(this->_transform->position[0], this->_transform->position[1], this->_transform->position[2]);
 	}
 
 	glm::vec3 get_rotation() const
 	{
-		return glm::vec3(this->_transform.rotation[0], this->_transform.rotation[1], this->_transform.rotation[2]);
+		return glm::vec3(this->_transform->rotation[0], this->_transform->rotation[1], this->_transform->rotation[2]);
 	}
 
 	glm::vec3 get_scale() const
 	{
-		return glm::vec3(this->_transform.scale[0], this->_transform.scale[1], this->_transform.scale[2]);
+		return glm::vec3(this->_transform->scale[0], this->_transform->scale[1], this->_transform->scale[2]);
 	}
 
 	std::vector<w_instance_info> get_instances() const
@@ -1120,7 +1121,7 @@ private:
 	std::string                             _name;
 	std::string								_model_name;
 	
-	w_transform_info						_transform;
+	w_transform_info*						_transform;
 	std::vector<w_instance_info>			_instnaces_transforms;
 
 	w_shader								_shader;

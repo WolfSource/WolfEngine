@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
+		2C1E3F922108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C1E3F912108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib */; };
 		2C2B08F61FD1E11D0036E134 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B08F51FD1E11D0036E134 /* Assets.xcassets */; };
 		2C2B08FA1FD1E13F0036E134 /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B08F91FD1E13F0036E134 /* Base.lproj */; };
 		2C2B08FC1FD1E15D0036E134 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C2B08FB1FD1E15D0036E134 /* main.m */; };
@@ -15,7 +16,6 @@
 		2C2B09041FD1E43F0036E134 /* shader.vert in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B09021FD1E43F0036E134 /* shader.vert */; };
 		2C2B09051FD1E43F0036E134 /* shader.frag in Resources */ = {isa = PBXBuildFile; fileRef = 2C2B09031FD1E43F0036E134 /* shader.frag */; };
 		2C4639571EA55A6C00A16595 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C4639551EA55A6C00A16595 /* Main.storyboard */; };
-		2C68593820D85EFA0096C33B /* libwolf.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68593620D85EF90096C33B /* libwolf.vulkan.osx.dylib */; };
 		2C68593920D85EFA0096C33B /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C68593720D85EF90096C33B /* libwolf.system.osx.dylib */; };
 		2CB69EDB1F62DDF60068D1E6 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69ED81F62DDF60068D1E6 /* ViewController.mm */; };
 		2CB69EDE1F62E1BF0068D1E6 /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */; };
@@ -28,6 +28,7 @@
 /* Begin PBXFileReference section */
 		2C1383A01F50971300D5283B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../common/AppDelegate.h; sourceTree = "<group>"; };
 		2C1383A11F50971300D5283B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../../../common/AppDelegate.m; sourceTree = "<group>"; };
+		2C1E3F912108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.render.vulkan.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.render.vulkan.osx.dylib; sourceTree = "<group>"; };
 		2C2803471E61C73600048A80 /* 06_staging_buffer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 06_staging_buffer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C2B08F51FD1E11D0036E134 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 06_staging_buffer/Assets.xcassets; sourceTree = "<group>"; };
 		2C2B08F71FD1E12D0036E134 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 06_staging_buffer/Info.plist; sourceTree = "<group>"; };
@@ -61,11 +62,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C68593820D85EFA0096C33B /* libwolf.vulkan.osx.dylib in Frameworks */,
 				2C68593920D85EFA0096C33B /* libwolf.system.osx.dylib in Frameworks */,
-				2CF54B2E205BE5AF000B80E3 /* vulkan.framework in Frameworks */,
+				2C1E3F922108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */,
 				2C2B08FF1FD1E3B30036E134 /* libtbb_debug.dylib in Frameworks */,
 				2CB69EE71F62E56D0068D1E6 /* libc++.tbd in Frameworks */,
+				2CF54B2E205BE5AF000B80E3 /* vulkan.framework in Frameworks */,
 				2CB69EE51F62E5510068D1E6 /* Metal.framework in Frameworks */,
 				2CB69EE31F62E5470068D1E6 /* QuartzCore.framework in Frameworks */,
 			);
@@ -130,6 +131,7 @@
 		2CB69EDF1F62E53B0068D1E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C1E3F912108769E0072D5D3 /* libwolf.render.vulkan.osx.dylib */,
 				2C68593720D85EF90096C33B /* libwolf.system.osx.dylib */,
 				2C68593620D85EF90096C33B /* libwolf.vulkan.osx.dylib */,
 				2CDA01C320525FC1005A0309 /* vulkan.framework */,

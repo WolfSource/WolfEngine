@@ -22,7 +22,8 @@ public:
 		_name("model"),
 		_mesh(nullptr),
 		_draw_lod(false),
-		_c_model(pContentPipelineModel)
+		_c_model(pContentPipelineModel),
+        _transform(nullptr)
 	{
 	}
 
@@ -49,9 +50,9 @@ public:
 #pragma region collada from 3DMax 
 
 		//3DMax is right handed Zup
-		this->_transform.rotation[0] += glm::radians(90.0f);
-		std::swap(this->_transform.position[1], this->_transform.position[2]);
-		this->_transform.position[1] *= -1.0f;
+		this->_transform->rotation[0] += glm::radians(90.0f);
+		std::swap(this->_transform->position[1], this->_transform->position[2]);
+		this->_transform->position[1] *= -1.0f;
 
 #pragma endregion 
 
@@ -251,17 +252,17 @@ public:
 
 	glm::vec3 get_position() const
 	{
-		return glm::vec3(this->_transform.position[0], this->_transform.position[1], this->_transform.position[2]);
+		return glm::vec3(this->_transform->position[0], this->_transform->position[1], this->_transform->position[2]);
 	}
 
 	glm::vec3 get_rotation() const
 	{
-		return glm::vec3(this->_transform.rotation[0], this->_transform.rotation[1], this->_transform.rotation[2]);
+		return glm::vec3(this->_transform->rotation[0], this->_transform->rotation[1], this->_transform->rotation[2]);
 	}
 
 	glm::vec3 get_scale() const
 	{
-		return glm::vec3(this->_transform.scale[0], this->_transform.scale[1], this->_transform.scale[2]);
+		return glm::vec3(this->_transform->scale[0], this->_transform->scale[1], this->_transform->scale[2]);
 	}
 
 	w_bounding_box get_global_bounding_box() const
@@ -409,7 +410,7 @@ private:
 	std::string                             _name;
 	std::string								_model_name;
 	
-	w_transform_info						_transform;
+	w_transform_info*						_transform;
 	
 	w_shader								_shader;
 	w_pipeline								_pipeline;

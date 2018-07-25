@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C4CD2FE1E8A72B60090EE0A"
-               BuildableName = "libwolf.vulkan.iOS.a"
-               BlueprintName = "wolf.vulkan.iOS"
-               ReferencedContainer = "container:wolf.vulkan.iOS.xcodeproj">
+               BuildableName = "libwolf.render.vulkan.iOS.a"
+               BlueprintName = "wolf.render.vulkan.iOS"
+               ReferencedContainer = "container:wolf.render.vulkan.iOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C4CD2431E8A5D390090EE0A"
-               BuildableName = "wolf_vulkan_metal_iOS.app"
-               BlueprintName = "wolf_vulkan_metal_iOS"
-               ReferencedContainer = "container:../tests/wolf_vulkan_metal_iOS/wolf_vulkan_metal_iOS.xcodeproj">
+               BuildableName = "wolf_render.vulkan_iOS.app"
+               BlueprintName = "wolf_render.vulkan_iOS"
+               ReferencedContainer = "container:../tests/wolf_render.vulkan_iOS/wolf_vulkan_metal_iOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C4CD2FE1E8A72B60090EE0A"
-            BuildableName = "libwolf.vulkan.iOS.a"
-            BlueprintName = "wolf.vulkan.iOS"
-            ReferencedContainer = "container:wolf.vulkan.iOS.xcodeproj">
+            BuildableName = "libwolf.render.vulkan.iOS.a"
+            BlueprintName = "wolf.render.vulkan.iOS"
+            ReferencedContainer = "container:wolf.render.vulkan.iOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -83,9 +83,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C4CD2FE1E8A72B60090EE0A"
-            BuildableName = "libwolf.vulkan.iOS.a"
-            BlueprintName = "wolf.vulkan.iOS"
-            ReferencedContainer = "container:wolf.vulkan.iOS.xcodeproj">
+            BuildableName = "libwolf.render.vulkan.iOS.a"
+            BlueprintName = "wolf.render.vulkan.iOS"
+            ReferencedContainer = "container:wolf.render.vulkan.iOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -101,9 +101,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C4CD2FE1E8A72B60090EE0A"
-            BuildableName = "libwolf.vulkan.iOS.a"
-            BlueprintName = "wolf.vulkan.iOS"
-            ReferencedContainer = "container:wolf.vulkan.iOS.xcodeproj">
+            BuildableName = "libwolf.render.vulkan.iOS.a"
+            BlueprintName = "wolf.render.vulkan.iOS"
+            ReferencedContainer = "container:wolf.render.vulkan.iOS.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

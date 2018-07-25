@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C69E9A81E5EC2CB00F15C44"
-               BuildableName = "libwolf.vulkan.osx.dylib"
-               BlueprintName = "wolf.vulkan.osx"
-               ReferencedContainer = "container:wolf.vulkan.osx.xcodeproj">
+               BuildableName = "libwolf.render.vulkan.osx.dylib"
+               BlueprintName = "wolf.render.vulkan.osx"
+               ReferencedContainer = "container:wolf.render.vulkan.osx.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C69E9A81E5EC2CB00F15C44"
-            BuildableName = "libwolf.vulkan.osx.dylib"
-            BlueprintName = "wolf.vulkan.osx"
-            ReferencedContainer = "container:wolf.vulkan.osx.xcodeproj">
+            BuildableName = "libwolf.render.vulkan.osx.dylib"
+            BlueprintName = "wolf.render.vulkan.osx"
+            ReferencedContainer = "container:wolf.render.vulkan.osx.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <EnvironmentVariables>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C69E9A81E5EC2CB00F15C44"
-            BuildableName = "libwolf.vulkan.osx.dylib"
-            BlueprintName = "wolf.vulkan.osx"
-            ReferencedContainer = "container:wolf.vulkan.osx.xcodeproj">
+            BuildableName = "libwolf.render.vulkan.osx.dylib"
+            BlueprintName = "wolf.render.vulkan.osx"
+            ReferencedContainer = "container:wolf.render.vulkan.osx.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

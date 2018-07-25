@@ -21,6 +21,6 @@
       location = "group:wolf.system/wolf.system.osx.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:wolf.vulkan/wolf.vulkan.osx.xcodeproj">
+      location = "group:wolf.vulkan/wolf.render.vulkan.osx.xcodeproj">
    </FileRef>
 </Workspace>

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C1E3F86210871000072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C1E3F85210871000072D5D3 /* libwolf.render.vulkan.osx.dylib */; };
 		2C3C81A21EB7B7CE00E3906E /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2C3C81A01EB7B7CE00E3906E /* pch.cpp */; };
 		2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.osx.dylib */; };
 		2C620FB11E618052005DFB10 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C620FB01E618052005DFB10 /* libc++.tbd */; };
@@ -28,10 +29,10 @@
 		2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCE632D1FD5E70700EC0BB5 /* IOSurface.framework */; };
 		2CDF24922037223700BD3DE5 /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF24902037223700BD3DE5 /* Base.lproj */; };
 		2CDF24932037223700BD3DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CDF24912037223700BD3DE5 /* Assets.xcassets */; };
-		2CE21C421E89678F00EEE579 /* libwolf.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE21C401E89678F00EEE579 /* libwolf.vulkan.osx.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2C1E3F85210871000072D5D3 /* libwolf.render.vulkan.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.render.vulkan.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.render.vulkan.osx.dylib; sourceTree = "<group>"; };
 		2C3C81A01EB7B7CE00E3906E /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../../../../src/tests/pch.cpp; sourceTree = "<group>"; };
 		2C3C81A11EB7B7CE00E3906E /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pch.h; path = ../../../../src/tests/pch.h; sourceTree = "<group>"; };
 		2C4CCB301EB1056000E0A422 /* libwolf.content_pipeline.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.content_pipeline.osx.dylib; sourceTree = "<group>"; };
@@ -67,11 +68,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C1E3F86210871000072D5D3 /* libwolf.render.vulkan.osx.dylib in Frameworks */,
 				2C766E6A20B33FCD000C66F4 /* libassimp.4.1.0.dylib in Frameworks */,
 				2C766E6820B33FAD000C66F4 /* vulkan.framework in Frameworks */,
 				2CCE632F1FD5E73F00EC0BB5 /* IOSurface.framework in Frameworks */,
 				2C61A6B61EC0DF5100C0AB3E /* libwolf.content_pipeline.osx.dylib in Frameworks */,
-				2CE21C421E89678F00EEE579 /* libwolf.vulkan.osx.dylib in Frameworks */,
 				2C6858F620D8520F0096C33B /* libwolf.media_core.osx.dylib in Frameworks */,
 				2C6858F820D8520F0096C33B /* libwolf.system.osx.dylib in Frameworks */,
 				2C620FB51E618061005DFB10 /* Metal.framework in Frameworks */,
@@ -135,6 +136,7 @@
 		2C620FAB1E61804B005DFB10 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C1E3F85210871000072D5D3 /* libwolf.render.vulkan.osx.dylib */,
 				2C6858F520D8520F0096C33B /* libwolf.media_core.osx.dylib */,
 				2C6858F720D8520F0096C33B /* libwolf.system.osx.dylib */,
 				2C766E6920B33FCD000C66F4 /* libassimp.4.1.0.dylib */,

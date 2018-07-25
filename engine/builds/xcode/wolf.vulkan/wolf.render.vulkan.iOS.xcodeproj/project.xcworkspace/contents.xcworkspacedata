@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:wolf.vulkan.iOS.xcodeproj">
+      location = "self:wolf.render.vulkan.iOS.xcodeproj">
    </FileRef>
 </Workspace>

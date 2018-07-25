@@ -258,7 +258,7 @@ void scene::load()
 			//load first model
 			if (_model)
 			{
-				auto _t = &_model->get_transform();
+				auto _t = _model->get_transform();
 
 				this->_position.x = _t->position[0];
 				this->_position.y = _t->position[1];

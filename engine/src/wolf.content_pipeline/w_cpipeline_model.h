@@ -222,7 +222,8 @@ namespace wolf
             WCP_EXP int get_id() const                                              { return this->_id; }
             WCP_EXP bool get_is_all_sub_meshes_use_same_texture() const             { return this->_all_sub_meshes_use_same_texture;}
             WCP_EXP std::string get_instance_geometry_name()                        { return this->_instanced_geo_name; }
-			WCP_EXP w_transform_info get_transform() const							{ return this->_transform; }
+            //get pointer to transform structure
+			WCP_EXP w_transform_info* get_transform()   						    { return &(this->_transform); }
             WCP_EXP size_t get_instances_count() const                              { return this->_instances_info.size(); }
             WCP_EXP w_instance_info* get_instance_at(_In_ const size_t& pIndex);
             WCP_EXP void get_instances(_Inout_ std::vector<w_instance_info>& pInstances);

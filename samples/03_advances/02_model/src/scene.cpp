@@ -242,7 +242,7 @@ void scene::load()
 			//load first model
 			if (_model)
 			{
-				auto _t = &_model->get_transform();
+				auto _t = _model->get_transform();
 
 #pragma region collada from 3DMax 
 

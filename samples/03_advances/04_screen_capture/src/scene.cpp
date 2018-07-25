@@ -351,9 +351,9 @@ void scene::load()
 
 				//store position and rotation of model into bounding box
 				auto _t = _model->get_transform();
-				_position.x = _t.position[0];
-				_position.y = _t.position[1];
-				_position.z = _t.position[2];
+				_position.x = _t->position[0];
+				_position.y = _t->position[1];
+				_position.z = _t->position[2];
 
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++
 				//The following codes have been added for this project
@@ -362,21 +362,21 @@ void scene::load()
 				std::vector<vertex_instance_data> _vertex_instances_data(NUM_INSTANCES);
 				
 				//first one is ref model
-				_vertex_instances_data[0].pos[0] = _t.position[0];
-				_vertex_instances_data[0].pos[1] = _t.position[1];
-				_vertex_instances_data[0].pos[2] = _t.position[2];
+				_vertex_instances_data[0].pos[0] = _t->position[0];
+				_vertex_instances_data[0].pos[1] = _t->position[1];
+				_vertex_instances_data[0].pos[2] = _t->position[2];
 
-				_vertex_instances_data[0].rot[0] = _t.rotation[0];
-				_vertex_instances_data[0].rot[1] = _t.rotation[1];
-				_vertex_instances_data[0].rot[2] = _t.rotation[2];
+				_vertex_instances_data[0].rot[0] = _t->rotation[0];
+				_vertex_instances_data[0].rot[1] = _t->rotation[1];
+				_vertex_instances_data[0].rot[2] = _t->rotation[2];
 
 				_vertex_instances_data[0].scale = 1.0f;
 
 				for (size_t i = 1; i < NUM_INSTANCES; ++i)
 				{
-					_vertex_instances_data[i].pos[0] = _t.position[0] + (i + 1) * 20 * std::cos(i);
-					_vertex_instances_data[i].pos[1] = _t.position[1];
-					_vertex_instances_data[i].pos[2] = _t.position[2] + (i + 1) * 20 * std::sin(i);
+					_vertex_instances_data[i].pos[0] = _t->position[0] + (i + 1) * 20 * std::cos(i);
+					_vertex_instances_data[i].pos[1] = _t->position[1];
+					_vertex_instances_data[i].pos[2] = _t->position[2] + (i + 1) * 20 * std::sin(i);
 
 					_vertex_instances_data[i].rot[0] = 0.0f;
 					_vertex_instances_data[i].rot[1] = 0.0f;
