@@ -128,7 +128,7 @@
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/dependencies/boost/lib/windows/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)/../bin/win32/$(Platform)/$(Configuration)/;$(SolutionDir)/../engine/dependencies/boost/lib/windows</AdditionalLibraryDirectories>
       <AdditionalDependencies>wolf.system.win32.lib;libboost_fiber-vc141-mt-gd-x64-1_67.lib;libboost_context-vc141-mt-gd-x64-1_67.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

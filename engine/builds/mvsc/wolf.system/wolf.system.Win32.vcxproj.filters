@@ -23,6 +23,19 @@
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_aligned_malloc.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_process.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4frame.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4hc.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\lz4\xxhash.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\wolf.system\w_compress.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
@@ -800,6 +813,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\lz4\xxhash.h">
       <Filter>lz4</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\w_compress.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

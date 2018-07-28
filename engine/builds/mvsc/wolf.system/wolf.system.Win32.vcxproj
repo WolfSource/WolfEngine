@@ -21,8 +21,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\wolf.system\dllmain.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\glm\detail\glm.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4frame.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\lz4\lz4hc.c" />
+    <ClCompile Include="..\..\..\src\wolf.system\lz4\xxhash.c" />
     <ClCompile Include="..\..\..\src\wolf.system\w_aligned_malloc.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_bounding.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_compress.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_cpu.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_inputs_manager.cpp" />
     <ClCompile Include="..\..\..\src\wolf.system\w_linear_allocator.cpp" />
@@ -304,6 +309,7 @@
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_bounding.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_color.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_compress.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_convert.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_cpu.h" />
     <ClInclude Include="..\..\..\src\wolf.system\w_memory_pool.h" />
@@ -606,7 +612,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)/../../src/wolf.system;$(SolutionDir)/../../dependencies/luaJIT/include;$(SolutionDir)/../../dependencies/nanomsg/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDLL;__WIN32;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;ASIO_STANDALONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDLL;__WIN32;__WOLF_SYSTEM__;GLM_FORCE_DEPTH_ZERO_TO_ONE;ASIO_STANDALONE;NN_HAVE_WINDOWS;NN_STATIC_LIB;NN_HAVE_CONDVAR=1;NN_MAX_SOCKETS=512;__LUA__;LZ4_DLL_EXPORT=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
