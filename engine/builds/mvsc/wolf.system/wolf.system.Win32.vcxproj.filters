@@ -785,6 +785,21 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\msgpack.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\asio.hpp" />
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4frame.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4frame_static.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4hc.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\xxhash.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">
@@ -825,6 +840,9 @@
     </Filter>
     <Filter Include="spdlog">
       <UniqueIdentifier>{6e6e72db-9eb4-485e-985b-d9fd33a53203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lz4">
+      <UniqueIdentifier>{a1acc8b0-e651-47b6-96b5-9e39cdbc75d3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

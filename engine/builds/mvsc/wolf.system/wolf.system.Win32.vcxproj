@@ -250,6 +250,11 @@
     <ClInclude Include="..\..\..\src\wolf.system\glm\vec4.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm\vector_relational.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\glm_extension.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4frame.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4frame_static.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\lz4hc.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\lz4\xxhash.h" />
     <ClInclude Include="..\..\..\src\wolf.system\msgpack.hpp" />
     <ClInclude Include="..\..\..\src\wolf.system\rapidjson\allocators.h" />
     <ClInclude Include="..\..\..\src\wolf.system\rapidjson\document.h" />
