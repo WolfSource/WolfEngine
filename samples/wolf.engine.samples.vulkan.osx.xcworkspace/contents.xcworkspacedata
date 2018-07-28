@@ -64,6 +64,9 @@
       <FileRef
          location = "group:01_system/22_fiber/builds/xcode/22_fiber.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:01_system/23_compressing/builds/xcode/23_compressing.xcodeproj">
+      </FileRef>
    </Group>
    <Group
       location = "container:"
@@ -140,6 +143,9 @@
       </FileRef>
       <FileRef
          location = "group:03_advances/08_hardware_occlusion_culling/builds/xcode/08_hardware_occlusion_culling.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:03_advances/09_software_occlusion_culling/builds/xcode/09_software_occlusion_culling.xcodeproj">
       </FileRef>
    </Group>
 </Workspace>

@@ -225,6 +225,15 @@
 		2C98996C1E9B512F002FE161 /* stb_image.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C98996B1E9B512F002FE161 /* stb_image.h */; };
 		2CB0F68620E3C027007C4553 /* wolf_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CB0F68420E3C026007C4553 /* wolf_version.h */; };
 		2CB0F68720E3C027007C4553 /* asio.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2CB0F68520E3C027007C4553 /* asio.hpp */; };
+		2CCBE4B7210B192B002BD243 /* lz4frame_static.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCBE4AE210B192A002BD243 /* lz4frame_static.h */; };
+		2CCBE4B8210B192B002BD243 /* lz4hc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCBE4AF210B192A002BD243 /* lz4hc.h */; };
+		2CCBE4B9210B192B002BD243 /* lz4frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCBE4B0210B192A002BD243 /* lz4frame.c */; };
+		2CCBE4BA210B192B002BD243 /* xxhash.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCBE4B1210B192B002BD243 /* xxhash.h */; };
+		2CCBE4BB210B192B002BD243 /* lz4frame.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCBE4B2210B192B002BD243 /* lz4frame.h */; };
+		2CCBE4BC210B192B002BD243 /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCBE4B3210B192B002BD243 /* lz4.c */; };
+		2CCBE4BD210B192B002BD243 /* lz4.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCBE4B4210B192B002BD243 /* lz4.h */; };
+		2CCBE4BE210B192B002BD243 /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCBE4B5210B192B002BD243 /* lz4hc.c */; };
+		2CCBE4BF210B192B002BD243 /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCBE4B6210B192B002BD243 /* xxhash.c */; };
 		2CD790D220D43DB300E14B50 /* spdlog.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CD790D120D43DB300E14B50 /* spdlog.h */; };
 		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
 		2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF71E64307D005E0F45 /* w_convert.h */; };
@@ -672,6 +681,15 @@
 		2C98996B1E9B512F002FE161 /* stb_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stb_image.h; path = ../../../src/wolf.system/stb_image.h; sourceTree = "<group>"; };
 		2CB0F68420E3C026007C4553 /* wolf_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wolf_version.h; path = ../../../src/wolf.system/wolf_version.h; sourceTree = "<group>"; };
 		2CB0F68520E3C027007C4553 /* asio.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = asio.hpp; path = ../../../src/wolf.system/asio.hpp; sourceTree = "<group>"; };
+		2CCBE4AE210B192A002BD243 /* lz4frame_static.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4frame_static.h; path = ../../../src/wolf.system/lz4/lz4frame_static.h; sourceTree = "<group>"; };
+		2CCBE4AF210B192A002BD243 /* lz4hc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4hc.h; path = ../../../src/wolf.system/lz4/lz4hc.h; sourceTree = "<group>"; };
+		2CCBE4B0210B192A002BD243 /* lz4frame.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4frame.c; path = ../../../src/wolf.system/lz4/lz4frame.c; sourceTree = "<group>"; };
+		2CCBE4B1210B192B002BD243 /* xxhash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xxhash.h; path = ../../../src/wolf.system/lz4/xxhash.h; sourceTree = "<group>"; };
+		2CCBE4B2210B192B002BD243 /* lz4frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4frame.h; path = ../../../src/wolf.system/lz4/lz4frame.h; sourceTree = "<group>"; };
+		2CCBE4B3210B192B002BD243 /* lz4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4.c; path = ../../../src/wolf.system/lz4/lz4.c; sourceTree = "<group>"; };
+		2CCBE4B4210B192B002BD243 /* lz4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4.h; path = ../../../src/wolf.system/lz4/lz4.h; sourceTree = "<group>"; };
+		2CCBE4B5210B192B002BD243 /* lz4hc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4hc.c; path = ../../../src/wolf.system/lz4/lz4hc.c; sourceTree = "<group>"; };
+		2CCBE4B6210B192B002BD243 /* xxhash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xxhash.c; path = ../../../src/wolf.system/lz4/xxhash.c; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD790D120D43DB300E14B50 /* spdlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spdlog.h; path = ../../../src/wolf.system/spdlog/spdlog.h; sourceTree = "<group>"; };
 		2CE5BAF61E64307D005E0F45 /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
@@ -1177,9 +1195,26 @@
 			name = rapidxml;
 			sourceTree = "<group>";
 		};
+		2CCBE4AD210B1765002BD243 /* lz4 */ = {
+			isa = PBXGroup;
+			children = (
+				2CCBE4B3210B192B002BD243 /* lz4.c */,
+				2CCBE4B4210B192B002BD243 /* lz4.h */,
+				2CCBE4AE210B192A002BD243 /* lz4frame_static.h */,
+				2CCBE4B0210B192A002BD243 /* lz4frame.c */,
+				2CCBE4B2210B192B002BD243 /* lz4frame.h */,
+				2CCBE4B5210B192B002BD243 /* lz4hc.c */,
+				2CCBE4AF210B192A002BD243 /* lz4hc.h */,
+				2CCBE4B6210B192B002BD243 /* xxhash.c */,
+				2CCBE4B1210B192B002BD243 /* xxhash.h */,
+			);
+			name = lz4;
+			sourceTree = "<group>";
+		};
 		2CD6171A1E59DA3E006FC5DC = {
 			isa = PBXGroup;
 			children = (
+				2CCBE4AD210B1765002BD243 /* lz4 */,
 				2C65215B1FD4AF2F0030A053 /* gli */,
 				2C6521F41FD4AFA20030A053 /* glm */,
 				2CFD40F11F51FF9300BF9A65 /* rapidjson */,
@@ -1408,6 +1443,7 @@
 				2C6523411FD4B0930030A053 /* extend.hpp in Headers */,
 				2C6523AB1FD4B0B40030A053 /* matrix_integer.hpp in Headers */,
 				2C6522891FD4AFFC0030A053 /* integer.hpp in Headers */,
+				2CCBE4B7210B192B002BD243 /* lz4frame_static.h in Headers */,
 				2CE5BB181E64307D005E0F45 /* w_object.h in Headers */,
 				2C65223E1FD4AFD50030A053 /* type_mat2x4.hpp in Headers */,
 				2C6523AF1FD4B0B40030A053 /* type_aligned.hpp in Headers */,
@@ -1426,6 +1462,7 @@
 				2C6521E71FD4AF7D0030A053 /* load_ktx.hpp in Headers */,
 				2C65225D1FD4AFD50030A053 /* type_mat4x4.hpp in Headers */,
 				2C6523B21FD4B0B40030A053 /* bitfield.hpp in Headers */,
+				2CCBE4BD210B192B002BD243 /* lz4.h in Headers */,
 				2C6523491FD4B0930030A053 /* rotate_normalized_axis.hpp in Headers */,
 				2C6522511FD4AFD50030A053 /* func_common.hpp in Headers */,
 				2C6521CF1FD4AF7D0030A053 /* save_kmg.hpp in Headers */,
@@ -1489,6 +1526,7 @@
 				2C65225B1FD4AFD50030A053 /* _swizzle.hpp in Headers */,
 				2C6523C11FD4B0D70030A053 /* geometric.h in Headers */,
 				2C6522451FD4AFD50030A053 /* type_float.hpp in Headers */,
+				2CCBE4B8210B192B002BD243 /* lz4hc.h in Headers */,
 				2C65224A1FD4AFD50030A053 /* type_mat2x3.hpp in Headers */,
 				2CE5BB191E64307D005E0F45 /* w_std.h in Headers */,
 				2C6522541FD4AFD50030A053 /* type_gentype.hpp in Headers */,
@@ -1586,6 +1624,8 @@
 				2C6523A31FD4B0B40030A053 /* quaternion.hpp in Headers */,
 				2C65235B1FD4B0930030A053 /* matrix_cross_product.hpp in Headers */,
 				2C6523B51FD4B0B40030A053 /* reciprocal.hpp in Headers */,
+				2CCBE4BA210B192B002BD243 /* xxhash.h in Headers */,
+				2CCBE4BB210B192B002BD243 /* lz4frame.h in Headers */,
 				2C6523A51FD4B0B40030A053 /* type_precision.hpp in Headers */,
 				2CFD41141F52007B00BF9A65 /* schema.h in Headers */,
 				2C6522421FD4AFD50030A053 /* func_exponential.hpp in Headers */,
@@ -1665,14 +1705,18 @@
 				2CEE640E1F48E147003177C0 /* w_thread.cpp in Sources */,
 				2CEE64101F48E147003177C0 /* wolf.cpp in Sources */,
 				2CE5BB1D1E64307D005E0F45 /* w_task.cpp in Sources */,
+				2CCBE4BC210B192B002BD243 /* lz4.c in Sources */,
 				2CF54B21205BBAC3000B80E3 /* w_aligned_malloc.cpp in Sources */,
 				2CE5BB171E64307D005E0F45 /* w_object.cpp in Sources */,
 				2CE5BB151E64307D005E0F45 /* w_logger.cpp in Sources */,
+				2CCBE4BE210B192B002BD243 /* lz4hc.c in Sources */,
+				2CCBE4B9210B192B002BD243 /* lz4frame.c in Sources */,
 				2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */,
 				2C0F36AB200BC74C001CB2DF /* w_bounding.cpp in Sources */,
 				2CE5BB1B1E64307D005E0F45 /* w_system_pch.cpp in Sources */,
 				2C65225A1FD4AFD50030A053 /* glm.cpp in Sources */,
 				2CEE64141F48EEFB003177C0 /* w_inputs_manager.cpp in Sources */,
+				2CCBE4BF210B192B002BD243 /* xxhash.c in Sources */,
 				2CE5BB1F1E64307D005E0F45 /* w_time_span.cpp in Sources */,
 				2CE5BB251E64307D005E0F45 /* w_xml.cpp in Sources */,
 			);
