@@ -14,10 +14,6 @@
 /engine/dependencies/*
 !/engine/dependencies/*.zip
 
-# Prerequisites 
-*.c
-*.c++ 
-
 # Compiled Object files
 *.slo
 *.lo
