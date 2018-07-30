@@ -35,7 +35,7 @@
     <ClCompile Include="..\..\..\src\wolf.system\lz4\xxhash.c">
       <Filter>lz4</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\wolf.system\w_compress.cpp" />
+    <ClCompile Include="..\..\..\src\wolf.system\w_compress.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\wolf.system\w_allocator.h" />
@@ -814,6 +814,7 @@
       <Filter>lz4</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\wolf.system\w_compress.h" />
+    <ClInclude Include="..\..\..\src\wolf.system\w_compress.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rapidxml">

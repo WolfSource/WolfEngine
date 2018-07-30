@@ -14,28 +14,24 @@
 #ifndef __W_COMPRESS_H__
 #define __W_COMPRESS_H__
 
+#if defined (__cplusplus)
+extern "C" {
+#endif
+
 #include "w_system_export.h"
-#include <lz4/lz4.h>
-#include <lz4/lz4frame.h>
+#include <stdio.h>
+	
+	typedef struct {
+		int error;
+		unsigned long long size_in;
+		unsigned long long size_out;
+	} w_compress_result;
 
-namespace wolf
-{
-	namespace system
-	{
-		typedef struct
-		{
-			int error;
-			unsigned long long size_in;
-			unsigned long long size_out;
-		} w_compress_result;
-
-		class w_compress
-		{
-		public:
-			WSYS_EXP static w_compress_result compress_file(_In_ FILE* pFileStreamIn, _Inout_ FILE* pCompressedFileOut);
-			WSYS_EXP static w_compress_result decompress_file(_In_ FILE* pCompressedFileIn, _Inout_ FILE* pFileStreamOut);
-		};
-	}
+	WSYS_EXP w_compress_result compress_file_c(FILE* pFileStreamIn, FILE* pCompressedFileOut, _Inout_ char* pErrorLog);
+	//WSYS_EXP w_compress_result decompress_file_c(FILE* pCompressedFileIn, FILE* pFileStreamOut, char* pErrorLog);
+	
+#if defined (__cplusplus)
 }
+#endif
 
 #endif //__W_COMPRESS_H__
