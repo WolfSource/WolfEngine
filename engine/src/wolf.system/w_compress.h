@@ -21,14 +21,29 @@ extern "C" {
 #include "w_system_export.h"
 #include <stdio.h>
 	
-	typedef struct {
-		int error;
-		unsigned long long size_in;
-		unsigned long long size_out;
+	typedef enum
+	{ 
+		W_COMPRESS_DEFAULT, 
+		W_COMPRESS_FAST
+	}
+	w_compress_mode;
+
+	typedef struct 
+	{
+		size_t				size_in;
+		size_t				size_out;
+		char*				data;
 	} w_compress_result;
 
-	WSYS_EXP w_compress_result compress_file_c(FILE* pFileStreamIn, FILE* pCompressedFileOut, _Inout_ char* pErrorLog);
-	//WSYS_EXP w_compress_result decompress_file_c(FILE* pCompressedFileIn, FILE* pFileStreamOut, char* pErrorLog);
+	WSYS_EXP int compress_buffer_c(
+		/*_In_*/	char* pSrcBuffer,
+		/*_In_*/	w_compress_mode pMode,
+		/*_In_*/	int pAcceleration,
+		/*_Inout_*/	w_compress_result* pCompressInfo,
+		/*_Inout_*/ char* pErrorLog);
+
+	/*WSYS_EXP w_compress_result compress_file_c(FILE* pFileStreamIn, FILE* pCompressedFileOut, _Inout_ char* pErrorLog);
+	WSYS_EXP w_compress_result decompress_file_c(FILE* pCompressedFileIn, FILE* pFileStreamOut, _Inout_ char* pErrorLog);*/
 	
 #if defined (__cplusplus)
 }

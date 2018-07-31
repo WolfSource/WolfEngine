@@ -10,20 +10,29 @@ using namespace wolf::render::vulkan;
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const system::w_logger_config& pLogConfig) :
 	w_game(pContentPath, pLogConfig)
 {
-	FILE* const _ifile = fopen("C:/Users/nano byte/Desktop/v.mp4", "rb");
-	FILE* const _ofile = fopen("C:/Users/nano byte/Desktop/v_com.mp4", "wb");
 
-	auto _err_log = (char*)malloc(256 * sizeof(char));
-	auto _result = compress_file_c(_ifile, _ofile, _err_log);
-	if (_result.error)
-	{
-		logger.error(_err_log);
-	}
-	free(_err_log);
+	char* _src = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+	int _compressed_size = 0;
+
+	w_compress_result _result;
+	_result.size_in = strlen(_src) + 1;
+
+	wolf::system::w_compress::compress_buffer(_src, &_result);
+
+	logger.write("A");
 	
-	fclose(_ifile);
-	fclose(_ofile);
+	//{
+	//	FILE* const _ifile = fopen("C:/Users/nano byte/Desktop/v.mp4", "rb");
+	//	FILE* const _ofile = fopen("C:/Users/nano byte/Desktop/v_com.mp4", "wb");
+	//	_result = wolf::system::w_compress::compress_file(_ifile, _ofile);
+	//}
 
+	//if (!_result.error)
+	//{
+	//	FILE* const _ifile = fopen("C:/Users/nano byte/Desktop/v_com.mp4", "rb");
+	//	FILE* const _ofile = fopen("C:/Users/nano byte/Desktop/v_decom.mp4", "wb");
+	//	_result = wolf::system::w_compress::decompress_file(_ifile, _ofile);
+	//}
 	//w_compress::compress_file(_ifile, _ofile);
 }
 
