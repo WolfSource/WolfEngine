@@ -177,13 +177,18 @@ namespace wolf
 			std::string							textures_path;
 			wolf::system::w_bounding_box		bounding_box;
 
+			std::vector<w_vertex_struct>		lod_1_vertices;
+			w_vector_uint32_t					lod_1_indices;
+
 			void release()
 			{
 				this->vertices.clear();
 				this->indices.clear();
+				this->lod_1_vertices.clear();
+				this->lod_1_indices.clear();
 			}
 
-			MSGPACK_DEFINE(vertices, indices, textures_path, bounding_box);
+			MSGPACK_DEFINE(vertices, indices, textures_path, bounding_box, lod_1_vertices, lod_1_indices);
 
 #ifdef __PYTHON__
 

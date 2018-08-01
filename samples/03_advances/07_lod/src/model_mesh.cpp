@@ -3,13 +3,14 @@
 
 using namespace wolf;
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
 model_mesh::model_mesh(
 	_In_ w_cpipeline_model* pContentPipelineModel,
 	_In_ w_vertex_binding_attributes pVertexBindingAttributes) :
 	vertex_binding_attributes(pVertexBindingAttributes),
+	transform(nullptr),
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -428,22 +429,13 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 	if (get_instances_count())
 	{
 		auto _instance_buffer_handle = this->_instances_buffer.get_buffer_handle();
-        
-        shared::total_indirect_draw_calls += this->indirect_draws.drawing_commands.size();
-        if (shared::total_indirect_draw_calls < this->gDevice->device_info->device_properties->limits.maxDrawIndirectCount)
-        {
-            return this->_mesh->draw(pCommandBuffer,
-                                     &_instance_buffer_handle,
-                                     static_cast<uint32_t>(this->instnaces_transforms.size()),
-                                     0,
-                                     &this->indirect_draws);
-        }
-        else
-        {
-            logger.error("maximum draw calls reached");
-            return W_FAILED;
-        }
-    }
+
+		return this->_mesh->draw(pCommandBuffer,
+			&_instance_buffer_handle,
+			static_cast<uint32_t>(this->instnaces_transforms.size()),
+			0,
+			&this->indirect_draws);
+	}
 	else
 	{
 		if (this->_selected_lod_index < this->lods_info.size())
@@ -984,13 +976,17 @@ W_RESULT model_mesh::_load_textures()
 	bool _problem = false;
 	for (auto& _path : this->textures_paths)
 	{
+		auto _file_path = wolf::system::io::get_file_name(_path);
+		auto _index = _file_path.find("_");
+		auto _texture_name = _file_path.substr(_index + 1, _file_path.size() - _index);
+
 		auto _texture = new (std::nothrow) w_texture();
 		if (_texture)
 		{
 			if (w_texture::load_to_shared_textures(
 				this->gDevice,
 				wolf::content_path + L"models/sponza/sponza/" +
-				wolf::system::convert::string_to_wstring(_path),
+				wolf::system::convert::string_to_wstring(_texture_name),
 				true,
 				&_texture) == W_PASSED)
 			{
@@ -1097,18 +1093,18 @@ W_RESULT model_mesh::_create_instance_buffers()
 
 	//first one is ref model
 	int _index = 0;
-	_vertex_instances_data[_index].pos[0] = this->transform.position[0];
-	_vertex_instances_data[_index].pos[1] = this->transform.position[1];
-	_vertex_instances_data[_index].pos[2] = this->transform.position[2];
+	_vertex_instances_data[_index].pos[0] = this->transform->position[0];
+	_vertex_instances_data[_index].pos[1] = this->transform->position[1];
+	_vertex_instances_data[_index].pos[2] = this->transform->position[2];
 
-	_vertex_instances_data[_index].rot[0] = this->transform.rotation[0];
-	_vertex_instances_data[_index].rot[1] = this->transform.rotation[1];
-	_vertex_instances_data[_index].rot[2] = this->transform.rotation[2];
+	_vertex_instances_data[_index].rot[0] = this->transform->rotation[0];
+	_vertex_instances_data[_index].rot[1] = this->transform->rotation[1];
+	_vertex_instances_data[_index].rot[2] = this->transform->rotation[2];
 
 	_compute_instances_data[_index].pos = glm::vec4(
-		this->transform.position[0],
-		this->transform.position[1],
-		this->transform.position[2],
+		this->transform->position[0],
+		this->transform->position[1],
+		this->transform->position[2],
 		1.0f);
 
 	_index++;
@@ -1810,17 +1806,17 @@ std::string model_mesh::get_model_name() const
 
 glm::vec3 model_mesh::get_position() const
 {
-	return glm::vec3(this->transform.position[0], this->transform.position[1], this->transform.position[2]);
+	return glm::vec3(this->transform->position[0], this->transform->position[1], this->transform->position[2]);
 }
 
 glm::vec3 model_mesh::get_rotation() const
 {
-	return glm::vec3(this->transform.rotation[0], this->transform.rotation[1], this->transform.rotation[2]);
+	return glm::vec3(this->transform->rotation[0], this->transform->rotation[1], this->transform->rotation[2]);
 }
 
 glm::vec3 model_mesh::get_scale() const
 {
-	return glm::vec3(this->transform.scale[0], this->transform.scale[1], this->transform.scale[2]);
+	return glm::vec3(this->transform->scale[0], this->transform->scale[1], this->transform->scale[2]);
 }
 
 std::vector<w_instance_info> model_mesh::get_instances() const

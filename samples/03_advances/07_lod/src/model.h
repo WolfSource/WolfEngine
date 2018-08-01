@@ -25,7 +25,7 @@ class model : public model_mesh
 public:
 	model(
 		_In_ wolf::content_pipeline::w_cpipeline_model* pContentPipelineModel,
-		_In_ wolf::graphics::w_vertex_binding_attributes pVertexBindingAttributes);
+		_In_ wolf::render::vulkan::w_vertex_binding_attributes pVertexBindingAttributes);
 
 	virtual ~model();
 

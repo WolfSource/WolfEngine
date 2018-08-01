@@ -233,7 +233,7 @@ W_RESULT simplygon::obj_writer(
 	bool _error = false;
 	CountedPointer<IWavefrontExporter> _obj_writer = NULL;
 
-	auto _out_path = wolf::system::convert::wstring_to_string(pObjPath).c_str();
+	auto _out_path = wolf::system::convert::wstring_to_string(pObjPath);
 
 	//Create an .obj exporter to save our result
 	_obj_writer = iSimplygonSDK->CreateWavefrontExporter();
@@ -249,7 +249,7 @@ W_RESULT simplygon::obj_writer(
 	}
 
 	// Do the actual exporting
-	_obj_writer->SetExportFilePath(_out_path);
+	_obj_writer->SetExportFilePath(_out_path.c_str());
 	_obj_writer->SetScene(pScene);
 	if (!_obj_writer->RunExport())
 	{

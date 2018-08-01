@@ -5,7 +5,7 @@
 #include "model.h"
 
 using namespace wolf::system;
-using namespace wolf::graphics;
+using namespace wolf::render::vulkan;
 using namespace wolf::content_pipeline;
 
 model::model(
@@ -19,6 +19,22 @@ model::model(
 		this->transform = this->c_model->get_transform();
 		//get all instances
 		this->c_model->get_instances(this->instnaces_transforms);
+
+#pragma region collada from 3DMax 
+
+		//3DMax is right handed Zup
+		this->transform->rotation[0] += glm::radians(90.0f);
+		std::swap(this->transform->position[1], this->transform->position[2]);
+		this->transform->position[1] *= -1.0f;
+
+		for (auto& _ins : this->instnaces_transforms)
+		{
+			_ins.rotation[0] += glm::radians(90.0f);
+			std::swap(_ins.position[1], _ins.position[2]);
+			_ins.position[1] *= -1.0f;
+		}
+
+#pragma endregion 
 	}
 }
 

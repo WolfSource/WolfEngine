@@ -86,7 +86,10 @@ static void _iterate_node(_In_ const aiNode* pNode,
 
 #ifdef __WIN32
 
-static W_RESULT _generate_simpolygon_lod(_In_ aiMesh* pMesh)
+static W_RESULT _generate_simpolygon_lod(
+	_In_ aiMesh* pMesh,
+	_Inout_ std::vector<w_vertex_struct>& pLodVerticesData,
+	_Inout_ std::vector<uint32_t>& pLodIndicesData)
 {
 	if (!simplygon::is_initialized || !pMesh) return W_FAILED;
 
@@ -233,7 +236,7 @@ static W_RESULT _generate_simpolygon_lod(_In_ aiMesh* pMesh)
 	auto _lod_path_w = wolf::system::convert::string_to_wstring(_obj_lod_path);
 
 	//save lod as obj file
-	if (simplygon::obj_writer(_lod_path_w.c_str(), _lod_scene))
+	if (simplygon::obj_writer(_lod_path_w, _lod_scene))
 	{
 		//release simplygon scenes
 		_original_scene->Release();
@@ -252,29 +255,43 @@ static W_RESULT _generate_simpolygon_lod(_In_ aiMesh* pMesh)
 	//delete mtl file before loading obj file
 	if (system::io::delete_file(_mtl_lod_path.c_str()))
 	{
-		V(W_FAILED, w_log_type::W_WARNING, "could not delete file {}. trace info: _generate_simpolygon_lod", _mtl_lod_path);
+		V(W_FAILED, 
+			w_log_type::W_WARNING, 
+			"could not delete file {}. trace info: _generate_simpolygon_lod", 
+			_mtl_lod_path);
 	}
 
 	W_RESULT __hr = W_PASSED;
-	std::vector<w_vertex_struct> _lod_vertices_data;
-	std::vector<uint32_t> _lod_indices_data;
+
+	pLodVerticesData.clear();
+	pLodIndicesData.clear();
+
 	if (wavefront::obj::read(
-		_lod_vertices_data,
-		_lod_indices_data,
+		pLodVerticesData,
+		pLodIndicesData,
 		_obj_lod_path))
 	{
 		__hr = W_FAILED;
-		V(__hr, w_log_type::W_WARNING, "could not read obj lod file {}. trace info: _generate_simpolygon_lod", _obj_lod_path);
+		V(__hr,
+			w_log_type::W_WARNING,
+			"could not read obj lod file {}. trace info: _generate_simpolygon_lod",
+			_obj_lod_path);
 	}
 
 	//delete 
 	if (system::io::delete_file(_obj_path.c_str()))
 	{
-		V(W_FAILED, w_log_type::W_WARNING, "could not delete file {}. trace info: _generate_simpolygon_lod", _obj_path);
+		V(W_FAILED, 
+			w_log_type::W_WARNING, 
+			"could not delete file {}. trace info: _generate_simpolygon_lod", 
+			_obj_path);
 	}
 	if (system::io::delete_file(_obj_lod_path.c_str()))
 	{
-		V(W_FAILED, w_log_type::W_WARNING, "could not delete file {}. trace info: _generate_simpolygon_lod", _obj_lod_path);
+		V(W_FAILED,
+			w_log_type::W_WARNING,
+			"could not delete file {}. trace info: _generate_simpolygon_lod",
+			_obj_lod_path);
 	}
 
 	//clear all resources
@@ -452,7 +469,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 						}
 						else
 						{
-							logger.warning("{} does have any vertex information");
+							logger.warning("{} does have any vertex information", _scene_name);
 						}
 
 						//copy mesh
@@ -465,7 +482,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 						}
 						else
 						{
-							logger.warning("{} does have any vertex information");
+							logger.warning("{} does have any vertex information", _scene_name);
 						}
 
 						//add to vertices
@@ -528,14 +545,23 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 								{
 									V(W_FAILED,
 										w_log_type::W_ERROR,
-										"could not initialize simplygon SDK. trace infor : {}", "w_cpipeline_model::_generate_simpolygon_lod");
+										"could not initialize simplygon SDK. trace infor : w_cpipeline_model::_generate_simpolygon_lod");
 								}
 							});
 						}
 						simplygon_mutex.unlock();
 
 						//we will create automatic LOD for the model
-						_generate_simpolygon_lod(_a_mesh);
+
+						if (_generate_simpolygon_lod(_a_mesh, _w_mesh->lod_1_vertices, _w_mesh->lod_1_indices))
+						{
+							V(W_FAILED,
+								w_log_type::W_ERROR,
+								"could not create first LOD for model {}. trace infor : w_cpipeline_model::_generate_simpolygon_lod",
+								_scene_name);
+							_w_mesh->lod_1_vertices.clear();
+							_w_mesh->lod_1_indices.clear();
+						}
 					}
 #endif
 					//apply amd tootle to it

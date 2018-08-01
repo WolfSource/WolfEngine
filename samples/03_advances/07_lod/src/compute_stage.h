@@ -18,10 +18,10 @@
 #ifndef __W_COMPUTE_STAGE_H__
 #define __W_COMPUTE_STAGE_H__
 
-#include "w_graphics_device_manager.h"
-#include <w_graphics/w_command_buffers.h>
-#include <w_graphics/w_pipeline.h>
-#include <w_graphics/w_uniform.h>
+#include <w_graphics_device_manager.h>
+#include <vulkan/w_command_buffers.h>
+#include <vulkan/w_pipeline.h>
+#include <vulkan/w_uniform.h>
 
 #define MAX_LOD_LEVEL 1
 
@@ -137,24 +137,24 @@ struct compute_stage
 {
 	uint32_t                                                batch_local_size = 1;
 
-	wolf::graphics::w_uniform<compute_unifrom_x1>*          unifrom_x1 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x2>*          unifrom_x2 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x4>*          unifrom_x4 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x8>*          unifrom_x8 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x16>*         unifrom_x16 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x32>*         unifrom_x32 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x64>*         unifrom_x64 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x128>*        unifrom_x128 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x256>*        unifrom_x256 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x512>*        unifrom_x512 = nullptr;
-	wolf::graphics::w_uniform<compute_unifrom_x1024>*       unifrom_x1024 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x1>*          unifrom_x1 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x2>*          unifrom_x2 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x4>*          unifrom_x4 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x8>*          unifrom_x8 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x16>*         unifrom_x16 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x32>*         unifrom_x32 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x64>*         unifrom_x64 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x128>*        unifrom_x128 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x256>*        unifrom_x256 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x512>*        unifrom_x512 = nullptr;
+	wolf::render::vulkan::w_uniform<compute_unifrom_x1024>*       unifrom_x1024 = nullptr;
 
-	wolf::graphics::w_buffer                                instances_buffer;
-	wolf::graphics::w_buffer                                lod_levels_buffer;
+	wolf::render::vulkan::w_buffer                                instances_buffer;
+	wolf::render::vulkan::w_buffer                                lod_levels_buffer;
 
-	wolf::graphics::w_pipeline                              pipeline;
-	wolf::graphics::w_command_buffers                       command_buffers;
-	wolf::graphics::w_semaphore                             semaphore;
+	wolf::render::vulkan::w_pipeline                              pipeline;
+	wolf::render::vulkan::w_command_buffers                       command_buffers;
+	wolf::render::vulkan::w_semaphore                             semaphore;
 
 	void release()
 	{
