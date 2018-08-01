@@ -234,6 +234,9 @@
 		2CCBE4BD210B192B002BD243 /* lz4.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCBE4B4210B192B002BD243 /* lz4.h */; };
 		2CCBE4BE210B192B002BD243 /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCBE4B5210B192B002BD243 /* lz4hc.c */; };
 		2CCBE4BF210B192B002BD243 /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCBE4B6210B192B002BD243 /* xxhash.c */; };
+		2CCBE4C321122DED002BD243 /* w_compress.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 2CCBE4C021122DEC002BD243 /* w_compress.hpp */; };
+		2CCBE4C421122DED002BD243 /* w_compress.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CCBE4C121122DEC002BD243 /* w_compress.h */; };
+		2CCBE4C521122DED002BD243 /* w_compress.c in Sources */ = {isa = PBXBuildFile; fileRef = 2CCBE4C221122DEC002BD243 /* w_compress.c */; };
 		2CD790D220D43DB300E14B50 /* spdlog.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CD790D120D43DB300E14B50 /* spdlog.h */; };
 		2CE5BB0F1E64307D005E0F45 /* w_color.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF61E64307D005E0F45 /* w_color.h */; };
 		2CE5BB101E64307D005E0F45 /* w_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 2CE5BAF71E64307D005E0F45 /* w_convert.h */; };
@@ -690,6 +693,9 @@
 		2CCBE4B4210B192B002BD243 /* lz4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4.h; path = ../../../src/wolf.system/lz4/lz4.h; sourceTree = "<group>"; };
 		2CCBE4B5210B192B002BD243 /* lz4hc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4hc.c; path = ../../../src/wolf.system/lz4/lz4hc.c; sourceTree = "<group>"; };
 		2CCBE4B6210B192B002BD243 /* xxhash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xxhash.c; path = ../../../src/wolf.system/lz4/xxhash.c; sourceTree = "<group>"; };
+		2CCBE4C021122DEC002BD243 /* w_compress.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = w_compress.hpp; path = ../../../src/wolf.system/w_compress.hpp; sourceTree = "<group>"; };
+		2CCBE4C121122DEC002BD243 /* w_compress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_compress.h; path = ../../../src/wolf.system/w_compress.h; sourceTree = "<group>"; };
+		2CCBE4C221122DEC002BD243 /* w_compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = w_compress.c; path = ../../../src/wolf.system/w_compress.c; sourceTree = "<group>"; };
 		2CD617231E59DA3E006FC5DC /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libwolf.system.osx.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD790D120D43DB300E14B50 /* spdlog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spdlog.h; path = ../../../src/wolf.system/spdlog/spdlog.h; sourceTree = "<group>"; };
 		2CE5BAF61E64307D005E0F45 /* w_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = w_color.h; path = ../../../src/wolf.system/w_color.h; sourceTree = "<group>"; };
@@ -1229,6 +1235,9 @@
 				2C0F36A9200BC74C001CB2DF /* w_bounding.cpp */,
 				2C0F36A8200BC74C001CB2DF /* w_bounding.h */,
 				2CE5BAF61E64307D005E0F45 /* w_color.h */,
+				2CCBE4C221122DEC002BD243 /* w_compress.c */,
+				2CCBE4C121122DEC002BD243 /* w_compress.h */,
+				2CCBE4C021122DEC002BD243 /* w_compress.hpp */,
 				2CFFAD3C1FCEAE480020A112 /* stb_image_write.h */,
 				2CEE64121F48EEFB003177C0 /* w_inputs_manager.cpp */,
 				2CEE64131F48EEFB003177C0 /* w_inputs_manager.h */,
@@ -1396,6 +1405,7 @@
 				2CE5BB131E64307D005E0F45 /* w_io.h in Headers */,
 				2CFD410A1F52007B00BF9A65 /* filewritestream.h in Headers */,
 				2C6521E51FD4AF7D0030A053 /* view.hpp in Headers */,
+				2CCBE4C421122DED002BD243 /* w_compress.h in Headers */,
 				2C6522601FD4AFD50030A053 /* _swizzle_func.hpp in Headers */,
 				2C94BC271FEE5C62007338F7 /* w_network.h in Headers */,
 				2C6521EB1FD4AF7D0030A053 /* generate_mipmaps.hpp in Headers */,
@@ -1557,6 +1567,7 @@
 				2C65223F1FD4AFD50030A053 /* type_half.hpp in Headers */,
 				2C6521EA1FD4AF7D0030A053 /* transform.hpp in Headers */,
 				2C65234A1FD4B0930030A053 /* fast_square_root.hpp in Headers */,
+				2CCBE4C321122DED002BD243 /* w_compress.hpp in Headers */,
 				2C65235F1FD4B0930030A053 /* scalar_multiplication.hpp in Headers */,
 				2C6521D31FD4AF7D0030A053 /* sampler_cube_array.hpp in Headers */,
 				2C65219D1FD4AF5B0030A053 /* mipmaps_compute.hpp in Headers */,
@@ -1713,6 +1724,7 @@
 				2CCBE4B9210B192B002BD243 /* lz4frame.c in Sources */,
 				2C94BC261FEE5C62007338F7 /* w_network.cpp in Sources */,
 				2C0F36AB200BC74C001CB2DF /* w_bounding.cpp in Sources */,
+				2CCBE4C521122DED002BD243 /* w_compress.c in Sources */,
 				2CE5BB1B1E64307D005E0F45 /* w_system_pch.cpp in Sources */,
 				2C65225A1FD4AFD50030A053 /* glm.cpp in Sources */,
 				2CEE64141F48EEFB003177C0 /* w_inputs_manager.cpp in Sources */,
