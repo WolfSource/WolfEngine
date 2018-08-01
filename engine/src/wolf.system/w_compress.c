@@ -7,19 +7,16 @@
 #define IN_CHUNK_SIZE  (16 * 1024)
 
 int compress_buffer_c(
-	/*_In_*/	char* pSrcBuffer,
+	/*_In_*/	const char* pSrcBuffer,
 	/*_In_*/	w_compress_mode pMode,
 	/*_In_*/	int pAcceleration,
 	/*_Inout_*/	w_compress_result* pCompressInfo,
 	/*_Inout_*/ char* pErrorLog)
 {
-	if (!pCompressInfo || !pSrcBuffer || pCompressInfo->size_in == 0)
-	{
-		return 1;
-	}
-		
-	const int _max_dst_size = LZ4_compressBound(pCompressInfo->size_in);
+	if (!pCompressInfo || !pSrcBuffer || pCompressInfo->size_in == 0) return 1;
+	
 	//allocate size for compressed data
+	const int _max_dst_size = LZ4_compressBound(pCompressInfo->size_in);
 	pCompressInfo->data = malloc(_max_dst_size);
 	if (!pCompressInfo->data)
 	{
@@ -63,4 +60,41 @@ int compress_buffer_c(
 			"could not compress. trace_info: w_compress::compress_buffer_c");
 		return 1;
 	}
+}
+
+int decompress_buffer_c(
+	/*_In_*/	const char* pCompressedBuffer,
+	/*_Inout_*/	w_compress_result* pDecompressInfo,
+	/*_Inout_*/ char* pErrorLog)
+{
+	if (!pCompressedBuffer || pDecompressInfo->size_in == 0) return 1;
+
+	//allocate memory for decompress
+	size_t _destination_capacity = pDecompressInfo->size_in * 2;
+	pDecompressInfo->data = (char*)malloc(_destination_capacity);
+	if (!pDecompressInfo->data)
+	{
+		snprintf(
+			pErrorLog,
+			strlen(pErrorLog),
+			"allocate buffer for decompressed buffer. trace_info: w_compress::decompress_buffer_c");
+		return 1;
+	}
+
+	const int _decompressed_size = LZ4_decompress_safe(
+		pCompressedBuffer,
+		pDecompressInfo->data,
+		pDecompressInfo->size_in,
+		_destination_capacity);
+	if (_decompressed_size <= 0)
+	{
+		snprintf(
+			pErrorLog,
+			strlen(pErrorLog),
+			"decompress size must be greater than zero. trace_info: w_compress::decompress_buffer_c");
+		free(pDecompressInfo->data);
+		pDecompressInfo->data = NULL;
+	}
+
+	return 0;
 }

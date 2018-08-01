@@ -25,12 +25,12 @@ namespace wolf
 		struct w_compress
 		{
 			static W_RESULT compress_buffer(
-				_In_		char* pSrcBuffer,
+				_In_		const char* pSrcBuffer,
 				_Inout_		w_compress_result* pCompressResult,
 				_In_		w_compress_mode pMode = w_compress_mode::W_COMPRESS_DEFAULT,
 				_In_		int pAcceleration = 1.0)
 			{
-				if (!pCompressResult) return W_RESULT::W_INVALIDARG;
+				if (!pCompressResult || !pSrcBuffer) return W_RESULT::W_INVALIDARG;
 
 				W_RESULT _result = W_PASSED;
 
@@ -40,6 +40,28 @@ namespace wolf
 					pMode,
 					pAcceleration,
 					pCompressResult,
+					_err_log))
+				{
+					logger.error(_err_log);
+					_result = W_FAILED;
+				}
+				free(_err_log);
+
+				return _result;
+			}
+
+			static W_RESULT decompress_buffer(
+				_In_	char* pCompressedBuffer,
+				_Inout_	w_compress_result* pDecompressInfo)
+			{
+				if (!pDecompressInfo || !pCompressedBuffer) return W_RESULT::W_INVALIDARG;
+
+				W_RESULT _result = W_PASSED;
+
+				auto _err_log = (char*)malloc(256 * sizeof(char));
+				if (decompress_buffer_c(
+					pCompressedBuffer,
+					pDecompressInfo,
 					_err_log))
 				{
 					logger.error(_err_log);

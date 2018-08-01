@@ -9,7 +9,7 @@
 
 #include "pch.h"
 #include <w_timer.h>
-#include <w_compress.h>
+#include <w_compress.hpp>
 
 //namespaces
 using namespace wolf;
@@ -29,26 +29,50 @@ WOLF_MAIN()
     logger.initialize(_log_config);
     
     //log to output file
-    logger.write(L"Wolf initialized");
+    logger.write("Wolf initialized");
     
-  //  logger.write("Compressing using LZ4 version: {}", LZ4_versionNumber());
-    
-    
-    w_timer _timer;
-    _timer.start();
-    
-    //compress a file
-    FILE* const _ifile = fopen("/Users/pooyaeimandar/Desktop/H.mp4", "rb");
-    FILE* const _ofile = fopen("/Users/pooyaeimandar/Desktop/H_com.mp4", "wb");
+	const char* _src = "When I was young, there was an amazing publication called The Whole Earth Catalog, " \
+		"which was one of the bibles of my generation...It was sort of like Google in paperback form, " \
+		"35 years before Google came along: it was idealistic, and overflowing with neat tools and " \
+		"great notions...(publisher) Stewart (Brand) and his team put out several issues of The Whole Earth Catalog, " \
+		"and then when it had run its course, they put out a final issue. It was the mid-1970s, and I was your age. " \
+		"On the back cover of their final issue was a photograph of an early morning country road, the kind you might find yourself " \
+		"hitchhiking on if you were so adventurous. Beneath it were the words: \"Stay Hungry.Stay Foolish.\" " \
+		"It was their farewell message as they signed off...And I have always wished that for myself. " \
+		"And now, as you graduate to begin a new, I wish that for you. " \
+		"Stay Hungry. Stay Foolish.";
 
-    //compressResult_t const ret = compress_file(_ifile, _ofile);
+#pragma region compress
+	w_compress_result _compress_result;
+	_compress_result.size_in = strlen(_src) + 1; //1 for '\0
+    
+	w_timer _timer;
 
-    fclose(_ifile);
-    fclose(_ofile);
-    
-    _timer.stop();
-    
-    logger.write("time is: {}", _timer.get_milliseconds() / 1000.000f);
+	_timer.start();
+	if (w_compress::compress_buffer(_src, &_compress_result) != W_PASSED)
+	{
+		logger.error("could not compress buffer");
+		return EXIT_FAILURE;
+	}
+	_timer.stop();
+
+	logger.write("compress time: {}ms", _timer.get_milliseconds());
+#pragma endregion
+
+#pragma region decompress
+	w_compress_result _decompress_result;
+	_decompress_result.size_in = _compress_result.size_out;
+
+	_timer.start();
+	if (w_compress::decompress_buffer(_compress_result.data, &_decompress_result) != W_PASSED)
+	{
+		logger.error("could not decompress buffer");
+		return EXIT_FAILURE;
+	}
+	_timer.stop();
+
+	logger.write("decompress time: {}ms", _timer.get_milliseconds());
+#pragma endregion
     
     //release logger
     logger.release();
