@@ -30,7 +30,6 @@
 		2C4639511EA55A3700A16595 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = 01_clear/Assets.xcassets; sourceTree = "<group>"; };
 		2C4639521EA55A3700A16595 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = 01_clear/Info.plist; sourceTree = "<group>"; };
 		2C4639561EA55A6C00A16595 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = 01_clear/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		2C68592220D85B480096C33B /* libwolf.vulkan.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.vulkan.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.vulkan.osx.dylib; sourceTree = "<group>"; };
 		2C68592320D85B480096C33B /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.system.osx.dylib; sourceTree = "<group>"; };
 		2C68596820D90F760096C33B /* libwolf.content_pipeline.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.content_pipeline.osx.dylib; sourceTree = "<group>"; };
 		2C68596A20D90FD60096C33B /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = ../../src/scene.h; sourceTree = "<group>"; };
@@ -102,7 +101,6 @@
 				2C1E3F87210872BF0072D5D3 /* libwolf.render.vulkan.osx.dylib */,
 				2C68596820D90F760096C33B /* libwolf.content_pipeline.osx.dylib */,
 				2C68592320D85B480096C33B /* libwolf.system.osx.dylib */,
-				2C68592220D85B480096C33B /* libwolf.vulkan.osx.dylib */,
 				2CF54B23205BE539000B80E3 /* vulkan.framework */,
 				2CCE63301FD5E75F00EC0BB5 /* IOSurface.framework */,
 				2CB69EE61F62E56D0068D1E6 /* libc++.tbd */,

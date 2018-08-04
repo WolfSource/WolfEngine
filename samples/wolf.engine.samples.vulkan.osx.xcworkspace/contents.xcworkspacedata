@@ -119,6 +119,9 @@
       <FileRef
          location = "group:02_basics/16_coordinate_system/builds/xcode/16_coordinate_system.xcodeproj">
       </FileRef>
+      <FileRef
+         location = "group:02_basics/20_tessellation/builds/xcode/20_tessellation.xcodeproj">
+      </FileRef>
    </Group>
    <Group
       location = "container:"
