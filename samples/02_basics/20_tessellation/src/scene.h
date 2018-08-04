@@ -74,7 +74,6 @@ private:
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
 	wolf::render::vulkan::w_pipeline										_triangle_tessellation_pipeline;
-    wolf::render::vulkan::w_pipeline										_quad_tessellation_pipeline;
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     

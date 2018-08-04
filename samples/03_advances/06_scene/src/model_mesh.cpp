@@ -907,7 +907,7 @@ private:
 			{
 				if (w_texture::load_to_shared_textures(
 					this->_gDevice,
-					wolf::content_path + L"models/sponza/sponza/" +
+					wolf::content_path + L"models/sponza/textures/" +
 					wolf::system::convert::string_to_wstring(_texture_name),
 					false,
 					&_texture) == W_PASSED)

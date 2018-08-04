@@ -16,7 +16,6 @@ scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w
 	w_graphics_device_manager_configs _config;
 	_config.debug_gpu = false;
 	w_game::set_graphics_device_manager_configs(_config);
-
     w_game::set_fixed_time_step(false);
 }
 
@@ -28,8 +27,18 @@ scene::~scene()
 
 void scene::initialize(_In_ std::map<int, w_present_info> pOutputWindowsInfo)
 {
-	// TODO: Add your pre-initialization logic here
-
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	this->on_device_info_fetched += [](w_device_info** pDeviceInfo) -> void 
+	{
+		if (pDeviceInfo && *pDeviceInfo)
+		{
+			(*pDeviceInfo)->device_features->tessellationShader = 1;
+		}
+	};
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	w_game::initialize(pOutputWindowsInfo);
 }
 
@@ -129,10 +138,11 @@ void scene::load()
 			"creating draw command buffers. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
+	//load basic shader 
 #ifdef WIN32
-	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../samples/02_basics/20_tessellation/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../samples/02_basics/05_texture/src/content/";
 #elif defined(__APPLE__)
-	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/02_basics/20_tessellation/src/content/";
+	auto _content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/02_basics/05_texture/src/content/";
 #endif // WIN32
 
 	//loading vertex shaders
@@ -161,9 +171,19 @@ void scene::load()
 			"loading fragment shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
     
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#ifdef WIN32
+	_content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../samples/02_basics/20_tessellation/src/content/";
+#elif defined(__APPLE__)
+	_content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/02_basics/20_tessellation/src/content/";
+#endif // WIN32
+
     //loading triangle tesselation evaluation shader
     _hr = this->_shader.load(_gDevice,
-                             _content_path_dir + L"shaders/tri.tese.spv",
+                             _content_path_dir + L"shaders/tri_pass_through.tese.spv",
                              w_shader_stage_flag_bits::TESSELATION_EVALUATION);
     if (_hr == W_FAILED)
     {
@@ -176,7 +196,7 @@ void scene::load()
     
     //loading triangle tesselation evaluation shader
     _hr = this->_shader.load(_gDevice,
-                             _content_path_dir + L"shaders/tri.tesc.spv",
+                             _content_path_dir + L"shaders/tri_pass_through.tesc.spv",
                              w_shader_stage_flag_bits::TESSELATION_CONTROL);
     if (_hr == W_FAILED)
     {
@@ -236,18 +256,14 @@ void scene::load()
 		logger.error("could not create pipeline cache");
 		_pipeline_cache_name.clear();
 	}
-    
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //The following codes have been added for this project
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
+        
 	//enable wireframe
     auto _rasterization_states = w_graphics_device::defaults_states::pipelines::rasterization_create_info;
     _rasterization_states.set_polygon_mode(w_polygon_mode::LINE);
     
-	_hr = this->_wireframe_pipeline.load(_gDevice,
+	_hr = this->_triangle_tessellation_pipeline.load(_gDevice,
 		this->_mesh.get_vertex_binding_attributes(),
-		w_primitive_topology::TRIANGLE_LIST,
+		w_primitive_topology::PATCH_LIST,
 		&this->_draw_render_pass,
 		&this->_shader,
 		{ this->_viewport },
@@ -255,7 +271,7 @@ void scene::load()
 		"pipeline_cache",
 		{},
 		{},
-		1,//Enable tessellation stage
+		3,//Enable tessellation - Tesselalation Pach Control Point
 		_rasterization_states);
 	if (_hr == W_FAILED)
 	{
@@ -265,50 +281,22 @@ void scene::load()
 			true,
 			"creating tesselation pipeline. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-    
-    _rasterization_states.polygonMode = VkPolygonMode::VK_POLYGON_MODE_FILL;
-
-	_hr = this->_solid_pipeline.load(_gDevice,
-		this->_mesh.get_vertex_binding_attributes(),
-		w_primitive_topology::TRIANGLE_LIST,
-		&this->_draw_render_pass,
-		&this->_shader,
-		{ this->_viewport },
-		{ this->_viewport_scissor },
-		"pipeline_cache",
-		{},
-		{},
-		0,//Disable tessellation stage
-		_rasterization_states);
-	if (_hr == W_FAILED)
-	{
-		release();
-		V(W_FAILED,
-			w_log_type::W_ERROR,
-			true,
-			"creating solid pipeline. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
-	}
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     
 	std::vector<float> _vertex_data =
 	{
-		-0.7f, -0.7f,	0.0f,		//pos0
+		 0.0f, -0.7f,	0.0f,		//pos0
 		 0.0f,  0.0f,               //uv0
 		-0.7f,  0.7f,	0.0f,		//pos1
 		 0.0f,  1.0f,               //uv1
 		 0.7f,  0.7f,	0.0f,		//pos2
 		 1.0f,  1.0f,           	//uv2
-         0.7f, -0.7f,	0.0f,		//pos3
-         1.0f,  0.0f,               //uv3
 	};
 
     std::vector<uint32_t> _index_data =
     {
         0,
-        1,
-        3,
-        3,
         1,
         2
     };
@@ -352,20 +340,8 @@ W_RESULT scene::_build_draw_command_buffers()
 				1.0f,
 				0.0f);
 			{
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				//The following codes have been added for this project
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				if (_show_wireframe)
-				{
-					this->_wireframe_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
-				}
-				else
-				{
-					this->_solid_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
-				}
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				//++++++++++++++++++++++++++++++++++++++++++++++++++++
-				_hr = this->_mesh.draw(_cmd, nullptr, 0, false);
+				this->_triangle_tessellation_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
+				_hr = this->_mesh.draw(_cmd, nullptr, 0, 0);
 				if (_hr == W_FAILED)
 				{
 					V(W_FAILED,
@@ -393,26 +369,6 @@ void scene::update(_In_ const wolf::system::w_game_time& pGameTime)
     {
         _update_gui();
     });
-
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //The following codes have been added for this project
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //Press W key to switch between wireframe and solid mode
-	short _w_key_code;
-#ifdef __WIN32
-	_w_key_code = 87;
-#else
-	_w_key_code = 13;
-#endif
-    auto _keys = wolf::inputs_manager.is_keys_released({ _w_key_code });
-    if (_keys.size() && _keys[0])
-    {
-        //change pipeline
-        this->_show_wireframe = !this->_show_wireframe;
-        _build_draw_command_buffers();
-    }
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++
     
 	w_game::update(pGameTime);
 }
@@ -485,10 +441,8 @@ ULONG scene::release()
     w_imgui::release();
 
 	this->_shader.release();
-
-    this->_wireframe_pipeline.release();
-    this->_solid_pipeline.release();
-
+    this->_triangle_tessellation_pipeline.release();
+    
 	this->_mesh.release();
     this->_texture.release();
 
@@ -518,7 +472,7 @@ bool scene::_update_gui()
         return false;
     }
 
-    ImGui::Text("Press Esc to exit\r\nPrees \"W\" to toggle wireframe.\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
+    ImGui::Text("Press Esc to exit\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
         sFPS,
         sElapsedTimeInSec,
         sTotalTimeTimeInSec,

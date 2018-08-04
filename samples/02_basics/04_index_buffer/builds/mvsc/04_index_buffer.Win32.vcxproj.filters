@@ -18,10 +18,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\src\content\shaders\shader.frag">
+    <None Include="..\..\..\03_vertex_buffer\src\content\shaders\shader.frag">
       <Filter>content\shaders</Filter>
     </None>
-    <None Include="..\..\src\content\shaders\shader.vert">
+    <None Include="..\..\..\03_vertex_buffer\src\content\shaders\shader.vert">
       <Filter>content\shaders</Filter>
     </None>
   </ItemGroup>

@@ -30,8 +30,14 @@
     <ClInclude Include="..\..\..\..\common\pch.h" />
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\05_texture\src\content\shaders\shader.frag" />
+    <None Include="..\..\..\05_texture\src\content\shaders\shader.vert" />
+    <None Include="..\..\src\content\shaders\tri_pass_through.tesc" />
+    <None Include="..\..\src\content\shaders\tri_pass_through.tese" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CBAC9BBD-3BEB-4F6C-9EE0-FB099894EC9D}</ProjectGuid>
+    <ProjectGuid>{E50BF560-F2B7-49FE-A25F-4B1250C87705}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>_20_tessellation</RootNamespace>
     <ProjectName>20_tessellation.Win32</ProjectName>

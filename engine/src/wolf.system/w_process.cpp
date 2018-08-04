@@ -215,7 +215,7 @@ bool w_process::kill_all_processes(std::initializer_list<const wchar_t*> pProces
 
 #ifdef __WIN32
 	DWORD aProcesses[1024], cbNeeded, cProcesses;
-	unsigned int i, j;
+	unsigned int i;
 
 	if (!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded)) return L"";
 

@@ -31,8 +31,8 @@
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\src\content\shaders\shader.frag" />
-    <None Include="..\..\src\content\shaders\shader.vert" />
+    <None Include="..\..\..\03_vertex_buffer\src\content\shaders\shader.frag" />
+    <None Include="..\..\..\03_vertex_buffer\src\content\shaders\shader.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{25A5E3FB-975E-46EE-9E1B-3D132E95ADD5}</ProjectGuid>

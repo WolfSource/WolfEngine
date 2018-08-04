@@ -9,4 +9,26 @@
     <ClInclude Include="..\..\..\..\common\pch.h" />
     <ClInclude Include="..\..\src\scene.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="content">
+      <UniqueIdentifier>{b97fc056-0abc-4abc-9cb1-9252be2a4c74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="content\shaders">
+      <UniqueIdentifier>{ef9cf00d-014f-479d-b122-0415d9c81c77}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\05_texture\src\content\shaders\shader.frag">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\..\05_texture\src\content\shaders\shader.vert">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\tri_pass_through.tesc">
+      <Filter>content\shaders</Filter>
+    </None>
+    <None Include="..\..\src\content\shaders\tri_pass_through.tese">
+      <Filter>content\shaders</Filter>
+    </None>
+  </ItemGroup>
 </Project>

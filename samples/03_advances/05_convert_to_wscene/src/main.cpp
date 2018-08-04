@@ -70,7 +70,7 @@ int main()
 		}
 		else
 		{
-			logger.write(L"file {} not exists", _file_name);
+			logger.write(L"file {} not exists or not supported", _file_name);
 		}
 	}
 	w_content_manager::release();	
