@@ -22,6 +22,7 @@
 #include <vulkan/w_pipeline.h>
 #include <vulkan/w_mesh.h>
 #include <vulkan/w_texture.h>
+#include <vulkan/w_uniform.h>
 #include <vulkan/w_imgui.h>
 
 class scene : public wolf::framework::w_game
@@ -73,7 +74,14 @@ private:
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //The following codes have been added for this project
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
+	bool																	_rebuild_command_buffer;
 	wolf::render::vulkan::w_pipeline										_triangle_tessellation_pipeline;
+	float																	_tes_inner_value;
+	struct u0
+	{
+		glm::mat4 wvp;
+	};
+	wolf::render::vulkan::w_uniform<u0>                                   _u0;
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     //++++++++++++++++++++++++++++++++++++++++++++++++++++
     

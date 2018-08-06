@@ -103,13 +103,13 @@ namespace wolf
 						}
 					}
 
-					if (_stagings_buffers.vertices.copy_to(this->_vertex_buffer) == W_FAILED)
+					if (this->_stagings_buffers.vertices.copy_to(this->_vertex_buffer) == W_FAILED)
 					{
 						return W_FAILED;
 					}
 					if (!_there_is_no_index_buffer)
 					{
-						if (_stagings_buffers.indices.copy_to(this->_index_buffer) == W_FAILED)
+						if (this->_stagings_buffers.indices.copy_to(this->_index_buffer) == W_FAILED)
 						{
 							return W_FAILED;
 						}

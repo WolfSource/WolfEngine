@@ -39,7 +39,7 @@ namespace wolf
 					this->_memory_flag = pMemoryFlag;
 					this->_allocated_from_pool = pAllocateFromMemoryPool;
 
-					if (pAllocateFromMemoryPool)
+					if (this->_allocated_from_pool)
 					{
 						pBufferSizeInBytes = static_cast<uint32_t>(std::round_up(pBufferSizeInBytes, 4));
 
@@ -240,6 +240,11 @@ namespace wolf
 					_copy_region.srcOffset = 0;// get_offset();
 					_copy_region.dstOffset = 0;// pDestinationBuffer.get_offset();
 					_copy_region.size = this->_used_memory_size;
+
+
+					//bind();
+					//pDestinationBuffer.bind();
+
 
 					auto _copy_cmd = _copy_command_buffer.get_command_at(0);
 					auto _dest_buffer = pDestinationBuffer.get_buffer_handle();

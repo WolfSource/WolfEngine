@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "scene.h"
+#include <glm_extension.h>
 
 using namespace std;
 using namespace wolf;
@@ -11,10 +12,12 @@ static float sElapsedTimeInSec = 0;
 static float sTotalTimeTimeInSec = 0;
 
 scene::scene(_In_z_ const std::wstring& pContentPath, _In_ const wolf::system::w_logger_config& pLogConfig) :
-	w_game(pContentPath, pLogConfig)
+	w_game(pContentPath, pLogConfig),
+	_rebuild_command_buffer(true),
+	_tes_inner_value(2.0f)
 {
 	w_graphics_device_manager_configs _config;
-	_config.debug_gpu = false;
+	_config.debug_gpu = true;
 	w_game::set_graphics_device_manager_configs(_config);
     w_game::set_fixed_time_step(false);
 }
@@ -118,7 +121,7 @@ void scene::load()
 			"creating draw fence. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
-    //load imgui
+	//load imgui
 	w_imgui::load(
 		_gDevice,
 		_output_window,
@@ -170,7 +173,7 @@ void scene::load()
 			true,
 			"loading fragment shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-    
+
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -181,44 +184,45 @@ void scene::load()
 	_content_path_dir = wolf::system::io::get_current_directoryW() + L"/../../../../../samples/02_basics/20_tessellation/src/content/";
 #endif // WIN32
 
-    //loading triangle tesselation evaluation shader
-    _hr = this->_shader.load(_gDevice,
-                             _content_path_dir + L"shaders/tri_pass_through.tese.spv",
-                             w_shader_stage_flag_bits::TESSELATION_EVALUATION);
-    if (_hr == W_FAILED)
-    {
-        release();
-        V(W_FAILED,
-          w_log_type::W_ERROR,
-          true,
-          "loading fragment shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
-    }
-    
-    //loading triangle tesselation evaluation shader
-    _hr = this->_shader.load(_gDevice,
-                             _content_path_dir + L"shaders/tri_pass_through.tesc.spv",
-                             w_shader_stage_flag_bits::TESSELATION_CONTROL);
-    if (_hr == W_FAILED)
-    {
-        release();
-        V(W_FAILED,
-          w_log_type::W_ERROR,
-          true,
-          "loading fragment shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
-    }
 
-    //load texture
-    _hr = this->_texture.initialize(_gDevice);
-    if (_hr == W_FAILED)
-    {
-        release();
+	//loading triangle tesselation control shader
+	_hr = this->_shader.load(_gDevice,
+		_content_path_dir + L"shaders/tri_pass_through.tesc.spv",
+		w_shader_stage_flag_bits::TESSELATION_CONTROL);
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading fragment shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
+
+	//loading triangle tesselation evaluation shader
+	_hr = this->_shader.load(_gDevice,
+		_content_path_dir + L"shaders/tri_pass_through.tese.spv",
+		w_shader_stage_flag_bits::TESSELATION_EVALUATION);
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading fragment shader. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
+
+	//load texture
+	_hr = this->_texture.initialize(_gDevice);
+	if (_hr == W_FAILED)
+	{
+		release();
 		V(W_FAILED,
 			w_log_type::W_ERROR,
 			true,
 			"loading texture. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
-    }
-    //load texture from file
-    _hr = this->_texture.load_texture_2D_from_file(content_path + L"../Logo.jpg", true);
+	}
+	//load texture from file
+	_hr = this->_texture.load_texture_2D_from_file(content_path + L"../Logo.jpg", true);
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -228,18 +232,62 @@ void scene::load()
 			"loading Logo.jpg texture. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
 
+	//load uniform for tessellation
+	_hr = this->_u0.load(_gDevice);
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"loading tessellation control shader uniform. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
+	}
+
+	//update uniform's data
+	auto _eye = glm::vec3(0.0f, 1.0f, -4.0f);
+	auto _up = glm::vec3(0, 1, 0);
+	auto _look_at = glm::vec3(0, 0, 0);
+
+	//todo: load camera for this section
+	auto _world = glm::mat4(1);
+	auto _view = glm::lookAtRH(_eye, _look_at, _up);
+	auto _projection = glm::perspectiveRH(
+		45.0f * glm::pi<float>() / 180.0f,
+		this->_viewport.width / this->_viewport.height,
+		0.1f,
+		100.0f);
+
+	this->_u0.data.wvp = _projection * _view * _world;
+	_hr = this->_u0.update();
+	if (_hr == W_FAILED)
+	{
+		release();
+		V(W_FAILED,
+			w_log_type::W_ERROR,
+			true,
+			"updating tessellation evaluation uniform. trace info: {}", _trace_info);
+	}
+
 	//just we need vertex position color
 	this->_mesh.set_vertex_binding_attributes(w_vertex_declaration::VERTEX_POSITION_UV);
-    w_shader_binding_param _shader_param;
-    _shader_param.index = 0;
-    _shader_param.type = w_shader_binding_type::SAMPLER2D;
-    _shader_param.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
-    _shader_param.image_info = this->_texture.get_descriptor_info();
+	
+	w_shader_binding_param _shader_param_0;
+	_shader_param_0.index = 0;
+	_shader_param_0.type = w_shader_binding_type::SAMPLER2D;
+	_shader_param_0.stage = w_shader_stage_flag_bits::FRAGMENT_SHADER;
+	_shader_param_0.image_info = this->_texture.get_descriptor_info();
 
-    _hr = this->_shader.set_shader_binding_params(
-    {
-        _shader_param
-    });
+	w_shader_binding_param _shader_param_1;
+	_shader_param_1.index = 1;
+	_shader_param_1.type = w_shader_binding_type::UNIFORM;
+	_shader_param_1.stage = w_shader_stage_flag_bits::TESSELATION_EVALUATION;
+	_shader_param_1.buffer_info = this->_u0.get_descriptor_info();
+
+	_hr = this->_shader.set_shader_binding_params(
+		{
+			_shader_param_0,
+			_shader_param_1,
+		});
 	if (_hr == W_FAILED)
 	{
 		release();
@@ -256,11 +304,16 @@ void scene::load()
 		logger.error("could not create pipeline cache");
 		_pipeline_cache_name.clear();
 	}
-        
+
+	w_push_constant_range _push_constants_buffer_range;
+	_push_constants_buffer_range.offset = 0;
+	_push_constants_buffer_range.size = static_cast<uint32_t>(1 * sizeof(float));
+	_push_constants_buffer_range.stageFlags = w_shader_stage_flag_bits::TESSELATION_CONTROL;
+	
 	//enable wireframe
-    auto _rasterization_states = w_graphics_device::defaults_states::pipelines::rasterization_create_info;
-    _rasterization_states.set_polygon_mode(w_polygon_mode::LINE);
-    
+	auto _rasterization_states = w_graphics_device::defaults_states::pipelines::rasterization_create_info;
+	_rasterization_states.set_polygon_mode(w_polygon_mode::LINE);
+
 	_hr = this->_triangle_tessellation_pipeline.load(_gDevice,
 		this->_mesh.get_vertex_binding_attributes(),
 		w_primitive_topology::PATCH_LIST,
@@ -270,8 +323,10 @@ void scene::load()
 		{ this->_viewport_scissor },
 		"pipeline_cache",
 		{},
-		{},
-		3,//Enable tessellation - Tesselalation Pach Control Point
+		{
+			_push_constants_buffer_range
+		},
+		3,//Enable tessellation - Tesselalation Pach Control Points
 		_rasterization_states);
 	if (_hr == W_FAILED)
 	{
@@ -286,11 +341,11 @@ void scene::load()
     
 	std::vector<float> _vertex_data =
 	{
-		 0.0f, -0.7f,	0.0f,		//pos0
+		 0.0f, -1.0f,	0.0f,		//pos0
 		 0.0f,  0.0f,               //uv0
-		-0.7f,  0.7f,	0.0f,		//pos1
+		-1.0f,  1.0f,	0.0f,		//pos1
 		 0.0f,  1.0f,               //uv1
-		 0.7f,  0.7f,	0.0f,		//pos2
+		 1.0f,  1.0f,	0.0f,		//pos2
 		 1.0f,  1.0f,           	//uv2
 	};
 
@@ -300,6 +355,7 @@ void scene::load()
         1,
         2
     };
+
 
     this->_mesh.set_texture(&this->_texture);
 	_hr = this->_mesh.load(_gDevice,
@@ -316,8 +372,6 @@ void scene::load()
 			true,
 			"loading mesh. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);
 	}
-
-	_build_draw_command_buffers();
 }
 
 W_RESULT scene::_build_draw_command_buffers()
@@ -341,6 +395,13 @@ W_RESULT scene::_build_draw_command_buffers()
 				0.0f);
 			{
 				this->_triangle_tessellation_pipeline.bind(_cmd, w_pipeline_bind_point::GRAPHICS);
+				this->_triangle_tessellation_pipeline.set_push_constant_buffer(
+					_cmd,
+					w_shader_stage_flag_bits::TESSELATION_CONTROL,
+					0,
+					static_cast<uint32_t>(1 * sizeof(float)),
+					&_tes_inner_value);
+
 				_hr = this->_mesh.draw(_cmd, nullptr, 0, 0);
 				if (_hr == W_FAILED)
 				{
@@ -378,6 +439,12 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 	if (w_game::exiting) return W_PASSED;
 
 	const std::string _trace_info = this->name + "::render";
+
+	if (this->_rebuild_command_buffer)
+	{
+		_build_draw_command_buffers();
+		this->_rebuild_command_buffer = false;
+	}
 
 	auto _gDevice = this->graphics_devices[0];
 	auto _output_window = &(_gDevice->output_presentation_window);
@@ -429,54 +496,60 @@ void scene::on_device_lost()
 
 ULONG scene::release()
 {
-    if (this->get_is_released()) return 1;
+	if (this->get_is_released()) return 1;
 
-    //release draw's objects
+	//release draw's objects
 	this->_draw_fence.release();
 	this->_draw_semaphore.release();
 
 	this->_draw_command_buffers.release();
 	this->_draw_render_pass.release();
 
-    w_imgui::release();
+	w_imgui::release();
 
 	this->_shader.release();
-    this->_triangle_tessellation_pipeline.release();
-    
+	this->_triangle_tessellation_pipeline.release();
+
 	this->_mesh.release();
-    this->_texture.release();
+	this->_texture.release();
+	this->_u0.release();
 
 	return w_game::release();
 }
 
 bool scene::_update_gui()
 {
-    //Setting Style
-    ImGuiStyle& _style = ImGui::GetStyle();
-    _style.Colors[ImGuiCol_Text].x = 1.0f;
-    _style.Colors[ImGuiCol_Text].y = 1.0f;
-    _style.Colors[ImGuiCol_Text].z = 1.0f;
-    _style.Colors[ImGuiCol_Text].w = 1.0f;
+	//Setting Style
+	ImGuiStyle& _style = ImGui::GetStyle();
+	_style.Colors[ImGuiCol_Text].x = 1.0f;
+	_style.Colors[ImGuiCol_Text].y = 1.0f;
+	_style.Colors[ImGuiCol_Text].z = 1.0f;
+	_style.Colors[ImGuiCol_Text].w = 1.0f;
 
-    _style.Colors[ImGuiCol_WindowBg].x = 0.0f;
-    _style.Colors[ImGuiCol_WindowBg].y = 0.4f;
-    _style.Colors[ImGuiCol_WindowBg].z = 1.0f;
-    _style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+	_style.Colors[ImGuiCol_WindowBg].x = 0.0f;
+	_style.Colors[ImGuiCol_WindowBg].y = 0.4f;
+	_style.Colors[ImGuiCol_WindowBg].z = 1.0f;
+	_style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 
-    ImGuiWindowFlags  _window_flags = 0;;
-    ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiSetCond_FirstUseEver);
-    bool _is_open = true;
-    if (!ImGui::Begin("Wolf.Engine", &_is_open, _window_flags))
-    {
-        ImGui::End();
-        return false;
-    }
+	ImGuiWindowFlags  _window_flags = 0;;
+	ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiSetCond_FirstUseEver);
+	bool _is_open = true;
+	if (!ImGui::Begin("Wolf.Engine", &_is_open, _window_flags))
+	{
+		ImGui::End();
+		return false;
+	}
 
-    ImGui::Text("Press Esc to exit\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
-        sFPS,
-        sElapsedTimeInSec,
-        sTotalTimeTimeInSec,
-        wolf::inputs_manager.mouse.pos_x, wolf::inputs_manager.mouse.pos_y);
+	ImGui::Text("Press Esc to exit\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nMouse Position:%d,%d\r\n",
+		sFPS,
+		sElapsedTimeInSec,
+		sTotalTimeTimeInSec,
+		wolf::inputs_manager.mouse.pos_x, wolf::inputs_manager.mouse.pos_y);
+
+	if (ImGui::InputFloat("Inner Tessellation Level", &this->_tes_inner_value, 0.25f, 2.5f, 2.0f))
+	{
+		this->_rebuild_command_buffer = true;
+	}
     ImGui::End();
 
     return true;

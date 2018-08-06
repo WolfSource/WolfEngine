@@ -218,10 +218,15 @@ void scene::load()
 		_pipeline_cache_name.clear();
 	}
 
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//The following codes have been added for this project
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 	w_push_constant_range _push_constants_buffer_range;
 	_push_constants_buffer_range.offset = 0;
 	_push_constants_buffer_range.size = static_cast<uint32_t>(4 * sizeof(float));
 	_push_constants_buffer_range.stageFlags = w_shader_stage_flag_bits::VERTEX_SHADER;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	_hr = this->_pipeline.load(_gDevice,
 		this->_mesh.get_vertex_binding_attributes(),
