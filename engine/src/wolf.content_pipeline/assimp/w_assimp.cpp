@@ -25,11 +25,15 @@ using namespace wolf;
 using namespace wolf::system;
 using namespace wolf::content_pipeline;
 
-static void _iterate_node(_In_ const aiNode* pNode,
-	_In_ std::vector<w_cpipeline_mesh*>& pModelMeshes,
-	_Inout_ w_cpipeline_scene** pScene)
+static void _iterate_node(
+	_In_ const aiNode* pRootNode,
+	_In_ const aiNode* pNode,
+	_In_ const std::vector<w_cpipeline_mesh*>& pModelMeshes,
+	_Inout_ w_cpipeline_scene** pScene,
+	_Inout_ std::vector<w_cpipeline_model*>& pLODs,
+	_Inout_ std::vector<w_cpipeline_model*>& pCHs)
 {
-	if (!pNode) return;
+	if (!pRootNode || !pNode) return;
 
 	if (pNode->mNumMeshes)
 	{
@@ -58,6 +62,8 @@ static void _iterate_node(_In_ const aiNode* pNode,
 			}
 			else
 			{
+				auto _name = pModelMeshes[_mesh_index]->name;
+
 				//set transform
 				w_transform_info _transform;
 				_transform.position[0] = _position.x; _transform.position[1] = _position.y; _transform.position[2] = _position.z;
@@ -68,17 +74,30 @@ static void _iterate_node(_In_ const aiNode* pNode,
 				std::vector<w_cpipeline_mesh*> _meshes = { pModelMeshes[_mesh_index] };
 
 				auto _model = new w_cpipeline_model(_meshes);
-				_model->set_name(pModelMeshes[_mesh_index]->name);
+				_model->set_name(_name);
 				_model->set_id(_mesh_index);
 				_model->set_transform(_transform);
-				_scene->add_model(_model);
+
+				std::transform(_name.begin(), _name.end(), _name.begin(), ::tolower);
+				if (_name.find("-lod") != std::string::npos)
+				{
+					pLODs.push_back(_model);
+				}
+				else if (_name.find("-ch") != std::string::npos)
+				{
+					pCHs.push_back(_model);
+				}
+				else
+				{
+					_scene->add_model(_model);
+				}
 			}
 		}
 	}
 
 	for (size_t i = 0; i < pNode->mNumChildren; ++i)
 	{
-		_iterate_node(pNode->mChildren[i], pModelMeshes, pScene);
+		_iterate_node(pRootNode, pNode->mChildren[i], pModelMeshes, pScene, pLODs, pCHs);
 	}
 }
 
@@ -87,6 +106,7 @@ static void _iterate_node(_In_ const aiNode* pNode,
 #ifdef __WIN32
 
 static W_RESULT _generate_simpolygon_lod(
+	_In_ const aiScene* pSrcScene,
 	_In_ aiMesh* pMesh,
 	_Inout_ std::vector<w_vertex_struct>& pLodVerticesData,
 	_Inout_ std::vector<uint32_t>& pLodIndicesData)
@@ -108,20 +128,29 @@ static W_RESULT _generate_simpolygon_lod(
 	//create assimp scene from this model for saving as LOD
 	auto _src_model_scene = new aiScene();
 
-	//copy material
+	//make a copy from src scene material
 	_src_model_scene->mMaterials = new aiMaterial*[1];
-	_src_model_scene->mMaterials[0] = nullptr;
-	_src_model_scene->mNumMaterials = 1;
 	_src_model_scene->mMaterials[0] = new aiMaterial();
+	_src_model_scene->mNumMaterials = 1;
+	std::memcpy(_src_model_scene->mMaterials[0], pSrcScene->mMaterials[pMesh->mMaterialIndex], sizeof(aiMaterial));
+
+
+	_src_model_scene->mMaterials[0]->mNumProperties = 0;
+	_src_model_scene->mMaterials[0]->mProperties = nullptr;
 
 	//copy mesh
 	_src_model_scene->mMeshes = new aiMesh*[1];
-	_src_model_scene->mMeshes[0] = nullptr;
 	_src_model_scene->mNumMeshes = 1;
-
 	_src_model_scene->mMeshes[0] = new aiMesh();
+
 	//make a copy from mesh
 	std::memcpy(_src_model_scene->mMeshes[0], pMesh, sizeof(aiMesh));
+	
+	//make sure set material index to 0 if needed
+	if (_src_model_scene->mMeshes[0]->mMaterialIndex > 0)
+	{
+		_src_model_scene->mMeshes[0]->mMaterialIndex = 0;
+	}
 
 	_src_model_scene->mRootNode = new aiNode();
 	_src_model_scene->mRootNode->mMeshes = new unsigned int[1];
@@ -130,7 +159,7 @@ static W_RESULT _generate_simpolygon_lod(
 
 	//now store this mesh a single obj file
 	auto _current_dir = wolf::system::io::get_current_directory();
-	auto _obj_path = _current_dir + "/" + _src_model_scene->mMeshes[0]->mName.C_Str() + ".obj";
+	auto _obj_path = _current_dir + _src_model_scene->mMeshes[0]->mName.C_Str() + ".obj";
 
 	std::string _export_format_desc_id = "";
 	auto _export_format_count = _assimp_exporter->GetExportFormatCount();
@@ -524,46 +553,45 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 					//copy min and max to bounding box
 					std::memcpy(&_w_mesh->bounding_box.min[0], &_min_vertex[0], 3 * sizeof(float));
 					std::memcpy(&_w_mesh->bounding_box.max[0], &_max_vertex[0], 3 * sizeof(float));
-
-#ifdef __WIN32
-					if (pGenerateLODUsingSimplygon)
-					{
-						//first initialize simpolygon 
-						simplygon_mutex.lock();
-						{
-							std::call_once(do_init_simplygon_once_over_time, []()
-							{
-								std::wstring _simplygon_sdk;
-#ifdef _DEBUG
-								//get simplygon SDK from dependencies\\simplygon
-								_simplygon_sdk = wolf::system::io::get_current_directoryW() + L"..\\..\\..\\..\\engine\\dependencies\\simplygon\\";
-#else
-								//make sure copy simplygon sdk to execute directory
-								_simplygon_sdk = wolf::system::io::get_current_directoryW();
-#endif
-								if (simplygon::initialize(_simplygon_sdk) == W_FAILED)
-								{
-									V(W_FAILED,
-										w_log_type::W_ERROR,
-										"could not initialize simplygon SDK. trace infor : w_cpipeline_model::_generate_simpolygon_lod");
-								}
-							});
-						}
-						simplygon_mutex.unlock();
-
-						//we will create automatic LOD for the model
-
-						if (_generate_simpolygon_lod(_a_mesh, _w_mesh->lod_1_vertices, _w_mesh->lod_1_indices))
-						{
-							V(W_FAILED,
-								w_log_type::W_ERROR,
-								"could not create first LOD for model {}. trace infor : w_cpipeline_model::_generate_simpolygon_lod",
-								_scene_name);
-							_w_mesh->lod_1_vertices.clear();
-							_w_mesh->lod_1_indices.clear();
-						}
-					}
-#endif
+//#ifdef __WIN32
+//					if (pGenerateLODUsingSimplygon)
+//					{
+//						//first initialize simpolygon 
+//						simplygon_mutex.lock();
+//						{
+//							std::call_once(do_init_simplygon_once_over_time, []()
+//							{
+//								std::wstring _simplygon_sdk;
+//#ifdef _DEBUG
+//								//get simplygon SDK from dependencies\\simplygon
+//								_simplygon_sdk = wolf::system::io::get_current_directoryW() + L"..\\..\\..\\..\\engine\\dependencies\\simplygon\\";
+//#else
+//								//make sure copy simplygon sdk to execute directory
+//								_simplygon_sdk = wolf::system::io::get_current_directoryW();
+//#endif
+//								if (simplygon::initialize(_simplygon_sdk) == W_FAILED)
+//								{
+//									V(W_FAILED,
+//										w_log_type::W_ERROR,
+//										"could not initialize simplygon SDK. trace infor : w_cpipeline_model::_generate_simpolygon_lod");
+//								}
+//							});
+//						}
+//						simplygon_mutex.unlock();
+//
+//						//we will create automatic LOD for the model
+//
+//						if (_generate_simpolygon_lod(_scene, _a_mesh, _w_mesh->lod_1_vertices, _w_mesh->lod_1_indices))
+//						{
+//							V(W_FAILED,
+//								w_log_type::W_ERROR,
+//								"could not create first LOD for model {}. trace infor : w_cpipeline_model::_generate_simpolygon_lod",
+//								_scene_name);
+//							_w_mesh->lod_1_vertices.clear();
+//							_w_mesh->lod_1_indices.clear();
+//						}
+//					}
+//#endif
 					//apply amd tootle to it
 					//if (pOptimizeMeshUsingAMDTootle)
 					//{
@@ -577,9 +605,89 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 			}
 		}
 
-        //finally iterate over all nodes to find models and instances
-        _iterate_node(_scene->mRootNode, _model_meshes, &_w_scene);
+        //finally iterate over all nodes to find models and instances, LODs and CHs
+		std::vector<w_cpipeline_model*> _LODs;
+		std::vector<w_cpipeline_model*> _CHs;
+
+        _iterate_node(
+			_scene->mRootNode, 
+			_scene->mRootNode, 
+			_model_meshes, 
+			&_w_scene,
+			_LODs,
+			_CHs);
         
+		//now we need assign LODs and CH to models, if model does not have LOD, we need to generate it with simpolygon (in Windows)
+		std::vector<w_cpipeline_model*> _models;
+		_w_scene->get_all_models(_models);
+
+		std::vector<std::string> _splits;
+		for (auto _model : _models)
+		{
+			auto _name = _model->get_name();
+
+			wolf::system::convert::split_string(_name, "_", _splits);
+			if (_splits.size() > 0)
+			{
+				auto _design_name = _splits[0];
+
+				_splits.clear();
+				wolf::system::convert::split_string(_design_name, "-", _splits);
+				if (_splits.size())
+				{
+					_design_name = _splits[0];
+				}
+
+				int _i = 0;
+				_LODs.erase(std::remove_if(_LODs.begin(), _LODs.end(),
+					[&](_In_ w_cpipeline_model* pIter)
+				{
+					auto __name = pIter->get_name();
+					if (wolf::system::convert::has_string_start_with(__name, _design_name))
+					{
+						_model->add_lods({ pIter });
+						return true;
+					}
+
+					return false;
+
+				}), _LODs.end());
+
+				//_CHs.erase(std::remove_if(_CHs.begin(), _CHs.end(),
+				//	[_design_name, _models, &_index_chs](_In_ w_cpipeline_model* pIter)
+				//{
+				//	auto __name = pIter->get_name();
+				//	if (wolf::system::convert::has_string_start_with(__name, _design_name))
+				//	{
+				//		_index_chs.push_back(pIter);
+				//		return true;
+				//	}
+
+				//	return false;
+
+				//}), _CHs.end());
+			}
+
+			_splits.clear();
+		}
+
+		_LODs.clear();
+		_CHs.clear();
+		_models.clear();
+
+		//if (_bounds.size())
+		//{
+		//	//sort boundaries
+		//	std::sort(_bounds.begin(), _bounds.end(), [](_In_ w_bounding_sphere* a, _In_ w_bounding_sphere* b)
+		//	{
+		//		return a->radius < b->radius;
+		//	});
+
+		//	pScene->add_boundaries(_bounds);
+		//	_bounds.clear();
+		//}
+
+
         return _w_scene;
     }
 
