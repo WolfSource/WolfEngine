@@ -186,7 +186,7 @@ W_RESULT scene::render(_In_ const wolf::system::w_game_time& pGameTime)
 		false) == W_FAILED)
 	{
 		release();
-		V(W_FAILED, 
+		V(W_FAILED,
 			w_log_type::W_ERROR,
 			true,
 			"submiting queue for drawing gui. graphics device: {} . trace info: {}", _gDevice->get_info(), _trace_info);

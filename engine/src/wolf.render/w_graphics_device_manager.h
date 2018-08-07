@@ -183,7 +183,6 @@ namespace wolf
 #endif
 
 				bool									        v_sync = true;
-				bool									        force_to_disable_v_sync = false;
 				bool                                            cpu_access_to_swapchain_buffer = false;
 				bool											double_buffering = true;
 

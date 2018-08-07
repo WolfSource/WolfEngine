@@ -1078,10 +1078,12 @@ namespace wolf
 
 						w_graphics_device_manager::set_src_dst_masks_of_image_barrier(_source_image_memory_barrier);
 
+						//AccessMask from	0								to	VK_ACCESS_TRANSFER_WRITE_BIT
+						//StageMask  from	VK_PIPELINE_STAGE_TRANSFER_BIT	to	VK_PIPELINE_STAGE_HOST_BIT(VK_PIPELINE_STAGE_TRANSFER_BIT)
 						vkCmdPipelineBarrier(
 							_cmd.handle,
 							VK_PIPELINE_STAGE_TRANSFER_BIT,
-							VK_PIPELINE_STAGE_HOST_BIT,
+							VK_PIPELINE_STAGE_TRANSFER_BIT,//VK_PIPELINE_STAGE_HOST_BIT
 							0,
 							0, nullptr,
 							0, nullptr,
@@ -1112,7 +1114,7 @@ namespace wolf
 
 						vkCmdPipelineBarrier(
 							_cmd.handle,
-							VK_PIPELINE_STAGE_HOST_BIT,
+							VK_PIPELINE_STAGE_TRANSFER_BIT,//VK_PIPELINE_STAGE_HOST_BIT
 							VK_PIPELINE_STAGE_TRANSFER_BIT,
 							0,
 							0, nullptr,
@@ -1952,9 +1954,10 @@ ULONG w_texture::release()
 
 ULONG w_texture::release_shared_textures()
 {
+	SAFE_RELEASE(default_texture);
+
     if (!_shared.size()) return 1;
 
-	SAFE_RELEASE(default_texture);
     for (auto _pair : _shared)
     {
         SAFE_RELEASE(_pair.second);

@@ -31,9 +31,9 @@ static std::unique_ptr<scene> sScene;
 
 static void release()
 {
+	release_heap_data();
 	UNIQUE_RELEASE(sWindow);
 	UNIQUE_RELEASE(sScene);
-	release_heap_data();
 }
 
 WOLF_MAIN()
@@ -130,7 +130,6 @@ WOLF_MAIN()
     _window_info.height = _height;
     _window_info.is_full_screen = false;
     _window_info.v_sync = false;
-	_window_info.force_to_disable_v_sync = true;//force to disable vsync just for debugging
 	_window_info.swap_chain_format = 44;//VK_FORMAT_B8G8R8A8_UNORM in vulkan api
 	_window_info.cpu_access_swap_chain_buffer = false;
 	

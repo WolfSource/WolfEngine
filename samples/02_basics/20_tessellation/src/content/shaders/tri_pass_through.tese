@@ -12,7 +12,7 @@ layout (triangles) in;
 
 layout (location = 0) in vec2 i_uv[];
 
-layout (location = 1) out vec2 o_uv;
+layout (location = 0) out vec2 o_uv;
 
 void main(void)
 {

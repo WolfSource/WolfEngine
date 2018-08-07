@@ -1147,6 +1147,7 @@ ULONG w_graphics_device::release()
     this->vk_present_queue.release();
     this->vk_compute_queue.release();
     this->vk_transfer_queue.release();
+	this->vk_sparse_queue.release();
 
     //destroy command pool
     vkDestroyCommandPool(this->vk_device,
@@ -1158,7 +1159,7 @@ ULONG w_graphics_device::release()
 
     //release vulkan resources
     vkDestroyDevice(this->vk_device, nullptr);
-
+	
 #endif
 
     return 1;
@@ -2135,7 +2136,6 @@ namespace wolf
                             _out_window.cpu_access_to_swapchain_buffer = _window.cpu_access_swap_chain_buffer;
 							_out_window.double_buffering = _window.double_buffering;
 							_out_window.v_sync = _window.v_sync;
-							_out_window.force_to_disable_v_sync = _window.force_to_disable_v_sync;
 
 #if defined(__WIN32) || defined(__linux) || defined(__APPLE__) || defined(__ANDROID)
 							
@@ -2998,15 +2998,7 @@ namespace wolf
 					_desired_present_modes.push_back(VK_PRESENT_MODE_IMMEDIATE_KHR);
 				}
 
-				VkPresentModeKHR _present_mode;
-				if (_output_presentation_window->force_to_disable_v_sync)
-				{
-					_present_mode = VK_PRESENT_MODE_IMMEDIATE_KHR;
-				}
-				else
-				{
-					_present_mode = _select_present_mode(_desired_present_modes, _avaiable_present_modes);
-				}
+				auto _present_mode = _select_present_mode(_desired_present_modes, _avaiable_present_modes);
 				
 				VkSwapchainCreateInfoKHR _swap_chain_create_info = {};
 				_swap_chain_create_info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
