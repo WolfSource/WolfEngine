@@ -465,34 +465,503 @@ W_RESULT model_mesh::draw(_In_ const w_command_buffer& pCommandBuffer)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+void model_mesh::_store_indices_vertices_to_batch(
+	_In_ const wolf::render::vulkan::w_vertex_binding_attributes& pVertexBindingAttributes,
+	_In_ const float& pTextureUVIndex,
+	_In_ const std::vector<w_vertex_struct>& pVertices,
+	_In_ const std::vector<uint32_t>& pIndices,
+	_Inout_ std::vector<float>& pBatchVertices,
+	_Inout_ std::vector<uint32_t>& pBatchIndices,
+	_Inout_ uint32_t& pBaseVertexOffset)
+{
+	uint32_t i = 0;
+
+#pragma region store index buffer
+	for (i = 0; i < pIndices.size(); ++i)
+	{
+		pBatchIndices.push_back(pBaseVertexOffset + pIndices[i]);
+	}
+#pragma endregion
+
+#pragma region store vertex buffer
+	i = 0;
+	auto _vertex_dec = pVertexBindingAttributes.binding_attributes.find(0);
+	switch (pVertexBindingAttributes.declaration)
+	{
+	default:
+		//user defined, we need to find vertex declaration
+		if (_vertex_dec != pVertexBindingAttributes.binding_attributes.end())
+		{
+			for (auto& _data : pVertices)
+			{
+				for (auto _dec : _vertex_dec->second)
+				{
+					if (_dec == w_vertex_attribute::W_TEXTURE_INDEX)
+					{
+						pBatchVertices.push_back(pTextureUVIndex);
+					}
+					if (_dec == w_vertex_attribute::W_UV)
+					{
+						pBatchVertices.push_back(_data.uv[0]);
+						pBatchVertices.push_back(1 - _data.uv[1]);
+					}
+					else if (_dec == w_vertex_attribute::W_POS)
+					{
+						pBatchVertices.push_back(_data.position[0]);
+						pBatchVertices.push_back(_data.position[1]);
+						pBatchVertices.push_back(_data.position[2]);
+					}
+					else if (_dec == w_vertex_attribute::W_NORM)
+					{
+						pBatchVertices.push_back(_data.normal[0]);
+						pBatchVertices.push_back(_data.normal[1]);
+						pBatchVertices.push_back(_data.normal[2]);
+					}
+					else if (_dec == w_vertex_attribute::W_TANGENT)
+					{
+						pBatchVertices.push_back(_data.tangent[0]);
+						pBatchVertices.push_back(_data.tangent[1]);
+						pBatchVertices.push_back(_data.tangent[2]);
+					}
+					else if (_dec == w_vertex_attribute::W_BINORMAL)
+					{
+						pBatchVertices.push_back(_data.binormal[0]);
+						pBatchVertices.push_back(_data.binormal[1]);
+						pBatchVertices.push_back(_data.binormal[2]);
+					}
+					else if (_dec == w_vertex_attribute::W_COLOR)
+					{
+						pBatchVertices.push_back(_data.color[0]);
+						pBatchVertices.push_back(_data.color[1]);
+						pBatchVertices.push_back(_data.color[2]);
+						pBatchVertices.push_back(_data.color[3]);
+					}
+					else if (_dec == w_vertex_attribute::W_BLEND_WEIGHT)
+					{
+						pBatchVertices.push_back(_data.blend_weight[0]);
+						pBatchVertices.push_back(_data.blend_weight[1]);
+						pBatchVertices.push_back(_data.blend_weight[2]);
+						pBatchVertices.push_back(_data.blend_weight[3]);
+					}
+					else if (_dec == w_vertex_attribute::W_BLEND_INDICES)
+					{
+						pBatchVertices.push_back(_data.blend_indices[0]);
+						pBatchVertices.push_back(_data.blend_indices[1]);
+						pBatchVertices.push_back(_data.blend_indices[2]);
+						pBatchVertices.push_back(_data.blend_indices[3]);
+					}
+				}
+				pBaseVertexOffset++;
+			}
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_COLOR:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _color = _data.color;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//color
+			pBatchVertices.push_back(_color[0]);
+			pBatchVertices.push_back(_color[1]);
+			pBatchVertices.push_back(_color[2]);
+			pBatchVertices.push_back(_color[3]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_UV:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _uv = _data.uv;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_UV_INDEX:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _uv = _data.uv;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _uv = _data.uv;
+			auto _color = _data.color;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			//color
+			pBatchVertices.push_back(_color[0]);
+			pBatchVertices.push_back(_color[1]);
+			pBatchVertices.push_back(_color[2]);
+			pBatchVertices.push_back(_color[3]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_UV_INDEX_COLOR:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _uv = _data.uv;
+			auto _color = _data.color;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+
+			//color
+			pBatchVertices.push_back(_color[0]);
+			pBatchVertices.push_back(_color[1]);
+			pBatchVertices.push_back(_color[2]);
+			pBatchVertices.push_back(_color[3]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_COLOR:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _color = _data.color;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//color
+			pBatchVertices.push_back(_color[0]);
+			pBatchVertices.push_back(_color[1]);
+			pBatchVertices.push_back(_color[2]);
+			pBatchVertices.push_back(_color[3]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+			auto _tangent = _data.tangent;
+			auto _binormal = _data.binormal;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			//tangent
+			pBatchVertices.push_back(_tangent[0]);
+			pBatchVertices.push_back(_tangent[1]);
+			pBatchVertices.push_back(_tangent[2]);
+
+			//binormal
+			pBatchVertices.push_back(_binormal[0]);
+			pBatchVertices.push_back(_binormal[1]);
+			pBatchVertices.push_back(_binormal[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+			auto _tangent = _data.tangent;
+			auto _binormal = _data.binormal;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+			//tangent
+			pBatchVertices.push_back(_tangent[0]);
+			pBatchVertices.push_back(_tangent[1]);
+			pBatchVertices.push_back(_tangent[2]);
+
+			//binormal
+			pBatchVertices.push_back(_binormal[0]);
+			pBatchVertices.push_back(_binormal[1]);
+			pBatchVertices.push_back(_binormal[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+			auto _tangent = _data.tangent;
+			auto _binormal = _data.binormal;
+			auto _blend_weight = _data.blend_weight;
+			auto _blend_indices = _data.blend_indices;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+
+			//tangent
+			pBatchVertices.push_back(_tangent[0]);
+			pBatchVertices.push_back(_tangent[1]);
+			pBatchVertices.push_back(_tangent[2]);
+
+			//binormal
+			pBatchVertices.push_back(_binormal[0]);
+			pBatchVertices.push_back(_binormal[1]);
+			pBatchVertices.push_back(_binormal[2]);
+
+			//blend_weight
+			pBatchVertices.push_back(_blend_weight[0]);
+			pBatchVertices.push_back(_blend_weight[1]);
+			pBatchVertices.push_back(_blend_weight[2]);
+
+			//blend_indices
+			pBatchVertices.push_back(_blend_indices[0]);
+			pBatchVertices.push_back(_blend_indices[1]);
+			pBatchVertices.push_back(_blend_indices[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
+		for (auto& _data : pVertices)
+		{
+			auto _pos = _data.position;
+			auto _nor = _data.normal;
+			auto _uv = _data.uv;
+			auto _tangent = _data.tangent;
+			auto _binormal = _data.binormal;
+			auto _blend_weight = _data.blend_weight;
+			auto _blend_indices = _data.blend_indices;
+
+			//position
+			pBatchVertices.push_back(_pos[0]);
+			pBatchVertices.push_back(_pos[1]);
+			pBatchVertices.push_back(_pos[2]);
+
+			//normal
+			pBatchVertices.push_back(_nor[0]);
+			pBatchVertices.push_back(_nor[1]);
+			pBatchVertices.push_back(_nor[2]);
+
+			//uv
+			pBatchVertices.push_back(_uv[0]);
+			pBatchVertices.push_back(_uv[1]);
+			pBatchVertices.push_back(pTextureUVIndex);
+
+			//tangent
+			pBatchVertices.push_back(_tangent[0]);
+			pBatchVertices.push_back(_tangent[1]);
+			pBatchVertices.push_back(_tangent[2]);
+
+			//binormal
+			pBatchVertices.push_back(_binormal[0]);
+			pBatchVertices.push_back(_binormal[1]);
+			pBatchVertices.push_back(_binormal[2]);
+
+			//blend_weight
+			pBatchVertices.push_back(_blend_weight[0]);
+			pBatchVertices.push_back(_blend_weight[1]);
+			pBatchVertices.push_back(_blend_weight[2]);
+
+			//blend_indices
+			pBatchVertices.push_back(_blend_indices[0]);
+			pBatchVertices.push_back(_blend_indices[1]);
+			pBatchVertices.push_back(_blend_indices[2]);
+
+			pBaseVertexOffset++;
+		}
+		break;
+	};
+#pragma endregion
+}
+
 void model_mesh::_store_to_batch(
 	_In_ const std::vector<w_cpipeline_mesh*>& pModelMeshes,
 	_In_ const w_vertex_binding_attributes& pVertexBindingAttributes,
-	_Inout_ uint32_t& pBaseVertex,
+	_In_ const uint32_t& pLodDistance,
+	_Inout_ uint32_t& pBaseVertexOffset,
 	_Inout_ std::vector<float>& pBatchVertices,
 	_Inout_ std::vector<uint32_t>& pBatchIndices,
+	_Inout_ std::vector<lod_info>& pLODInfos,
 	_Inout_ w_bounding_box* pMergedBoundingBox,
 	_Inout_ std::vector<w_bounding_box>* pSubMeshBoundingBoxes,
 	_Inout_ std::vector<std::string>* pTexturePathsToBeLoad)
 {
+	auto _meshes_count = pModelMeshes.size();
+
 	int _texture_index = 0;
 	std::map<std::string, int> _textures_index;
-	for (auto& _mesh_data : pModelMeshes)
+
+	std::vector<int> _texture_uv_indices;
+	_texture_uv_indices.resize(_meshes_count);
+	
+	for (size_t i = 0; i <  _meshes_count; ++i)
 	{
+		auto _mesh_data = pModelMeshes[i];
 		//check for finding uv index
-		int _texture_uv_index = 0;
 		if (pTexturePathsToBeLoad)
 		{
 			auto _find = _textures_index.find(_mesh_data->textures_path);
 			if (_textures_index.empty() && _find == _textures_index.end())
 			{
-				_texture_uv_index = _texture_index;
+				_texture_uv_indices[i] = _texture_index;
 				_textures_index.insert({ _mesh_data->textures_path, _texture_index++ });
 				pTexturePathsToBeLoad->push_back(_mesh_data->textures_path);
 			}
 			else
 			{
-				_texture_uv_index = _find->second;
+				_texture_uv_indices[i] = _find->second;
 			}
 		}
 
@@ -506,459 +975,50 @@ void model_mesh::_store_to_batch(
 			pSubMeshBoundingBoxes->push_back(_mesh_data->bounding_box);
 		}
 
-		uint32_t _vertex_offset = 0, _instance_vertex_offset = 0, i = 0;
-
-#pragma region store index buffer
-		for (i = 0; i < _mesh_data->indices.size(); ++i)
-		{
-			pBatchIndices.push_back(pBaseVertex + _mesh_data->indices[i]);
-		}
-#pragma endregion
-
-#pragma region store vertex buffer
-		i = 0;
-		auto _vertex_dec = pVertexBindingAttributes.binding_attributes.find(0);
-		switch (pVertexBindingAttributes.declaration)
-		{
-		default:
-			//user defined, we need to find vertex declaration
-			if (_vertex_dec != pVertexBindingAttributes.binding_attributes.end())
-			{
-				for (auto& _data : _mesh_data->vertices)
-				{
-					for (auto _dec : _vertex_dec->second)
-					{
-						if (_dec == w_vertex_attribute::W_TEXTURE_INDEX)
-						{
-							pBatchVertices.push_back(_texture_uv_index);
-						}
-						if (_dec == w_vertex_attribute::W_UV)
-						{
-							pBatchVertices.push_back(_data.uv[0]);
-							pBatchVertices.push_back(1 - _data.uv[1]);
-						}
-						else if (_dec == w_vertex_attribute::W_POS)
-						{
-							pBatchVertices.push_back(_data.position[0]);
-							pBatchVertices.push_back(_data.position[1]);
-							pBatchVertices.push_back(_data.position[2]);
-						}
-						else if (_dec == w_vertex_attribute::W_NORM)
-						{
-							pBatchVertices.push_back(_data.normal[0]);
-							pBatchVertices.push_back(_data.normal[1]);
-							pBatchVertices.push_back(_data.normal[2]);
-						}
-						else if (_dec == w_vertex_attribute::W_TANGENT)
-						{
-							pBatchVertices.push_back(_data.tangent[0]);
-							pBatchVertices.push_back(_data.tangent[1]);
-							pBatchVertices.push_back(_data.tangent[2]);
-						}
-						else if (_dec == w_vertex_attribute::W_BINORMAL)
-						{
-							pBatchVertices.push_back(_data.binormal[0]);
-							pBatchVertices.push_back(_data.binormal[1]);
-							pBatchVertices.push_back(_data.binormal[2]);
-						}
-						else if (_dec == w_vertex_attribute::W_COLOR)
-						{
-							pBatchVertices.push_back(_data.color[0]);
-							pBatchVertices.push_back(_data.color[1]);
-							pBatchVertices.push_back(_data.color[2]);
-							pBatchVertices.push_back(_data.color[3]);
-						}
-						else if (_dec == w_vertex_attribute::W_BLEND_WEIGHT)
-						{
-							pBatchVertices.push_back(_data.blend_weight[0]);
-							pBatchVertices.push_back(_data.blend_weight[1]);
-							pBatchVertices.push_back(_data.blend_weight[2]);
-							pBatchVertices.push_back(_data.blend_weight[3]);
-						}
-						else if (_dec == w_vertex_attribute::W_BLEND_INDICES)
-						{
-							pBatchVertices.push_back(_data.blend_indices[0]);
-							pBatchVertices.push_back(_data.blend_indices[1]);
-							pBatchVertices.push_back(_data.blend_indices[2]);
-							pBatchVertices.push_back(_data.blend_indices[3]);
-						}
-					}
-					pBaseVertex++;
-				}
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_COLOR:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _color = _data.color;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//color
-				pBatchVertices.push_back(_color[0]);
-				pBatchVertices.push_back(_color[1]);
-				pBatchVertices.push_back(_color[2]);
-				pBatchVertices.push_back(_color[3]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_UV:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _uv = _data.uv;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_UV_INDEX:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _uv = _data.uv;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_UV_COLOR:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _uv = _data.uv;
-				auto _color = _data.color;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				//color
-				pBatchVertices.push_back(_color[0]);
-				pBatchVertices.push_back(_color[1]);
-				pBatchVertices.push_back(_color[2]);
-				pBatchVertices.push_back(_color[3]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_UV_INDEX_COLOR:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _uv = _data.uv;
-				auto _color = _data.color;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-
-				//color
-				pBatchVertices.push_back(_color[0]);
-				pBatchVertices.push_back(_color[1]);
-				pBatchVertices.push_back(_color[2]);
-				pBatchVertices.push_back(_color[3]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_COLOR:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _color = _data.color;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//color
-				pBatchVertices.push_back(_color[0]);
-				pBatchVertices.push_back(_color[1]);
-				pBatchVertices.push_back(_color[2]);
-				pBatchVertices.push_back(_color[3]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-				auto _tangent = _data.tangent;
-				auto _binormal = _data.binormal;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				//tangent
-				pBatchVertices.push_back(_tangent[0]);
-				pBatchVertices.push_back(_tangent[1]);
-				pBatchVertices.push_back(_tangent[2]);
-
-				//binormal
-				pBatchVertices.push_back(_binormal[0]);
-				pBatchVertices.push_back(_binormal[1]);
-				pBatchVertices.push_back(_binormal[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-				auto _tangent = _data.tangent;
-				auto _binormal = _data.binormal;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-				//tangent
-				pBatchVertices.push_back(_tangent[0]);
-				pBatchVertices.push_back(_tangent[1]);
-				pBatchVertices.push_back(_tangent[2]);
-
-				//binormal
-				pBatchVertices.push_back(_binormal[0]);
-				pBatchVertices.push_back(_binormal[1]);
-				pBatchVertices.push_back(_binormal[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-				auto _tangent = _data.tangent;
-				auto _binormal = _data.binormal;
-				auto _blend_weight = _data.blend_weight;
-				auto _blend_indices = _data.blend_indices;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-
-				//tangent
-				pBatchVertices.push_back(_tangent[0]);
-				pBatchVertices.push_back(_tangent[1]);
-				pBatchVertices.push_back(_tangent[2]);
-
-				//binormal
-				pBatchVertices.push_back(_binormal[0]);
-				pBatchVertices.push_back(_binormal[1]);
-				pBatchVertices.push_back(_binormal[2]);
-
-				//blend_weight
-				pBatchVertices.push_back(_blend_weight[0]);
-				pBatchVertices.push_back(_blend_weight[1]);
-				pBatchVertices.push_back(_blend_weight[2]);
-
-				//blend_indices
-				pBatchVertices.push_back(_blend_indices[0]);
-				pBatchVertices.push_back(_blend_indices[1]);
-				pBatchVertices.push_back(_blend_indices[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		case w_vertex_declaration::VERTEX_POSITION_NORMAL_UV_INDEX_TANGENT_BINORMAL_BLEND_WEIGHT_BLEND_INDICES:
-			for (auto& _data : _mesh_data->vertices)
-			{
-				auto _pos = _data.position;
-				auto _nor = _data.normal;
-				auto _uv = _data.uv;
-				auto _tangent = _data.tangent;
-				auto _binormal = _data.binormal;
-				auto _blend_weight = _data.blend_weight;
-				auto _blend_indices = _data.blend_indices;
-
-				//position
-				pBatchVertices.push_back(_pos[0]);
-				pBatchVertices.push_back(_pos[1]);
-				pBatchVertices.push_back(_pos[2]);
-
-				//normal
-				pBatchVertices.push_back(_nor[0]);
-				pBatchVertices.push_back(_nor[1]);
-				pBatchVertices.push_back(_nor[2]);
-
-				//uv
-				pBatchVertices.push_back(_uv[0]);
-				pBatchVertices.push_back(_uv[1]);
-				pBatchVertices.push_back(_texture_uv_index);
-
-				//tangent
-				pBatchVertices.push_back(_tangent[0]);
-				pBatchVertices.push_back(_tangent[1]);
-				pBatchVertices.push_back(_tangent[2]);
-
-				//binormal
-				pBatchVertices.push_back(_binormal[0]);
-				pBatchVertices.push_back(_binormal[1]);
-				pBatchVertices.push_back(_binormal[2]);
-
-				//blend_weight
-				pBatchVertices.push_back(_blend_weight[0]);
-				pBatchVertices.push_back(_blend_weight[1]);
-				pBatchVertices.push_back(_blend_weight[2]);
-
-				//blend_indices
-				pBatchVertices.push_back(_blend_indices[0]);
-				pBatchVertices.push_back(_blend_indices[1]);
-				pBatchVertices.push_back(_blend_indices[2]);
-
-				pBaseVertex++;
-			}
-			break;
-		};
-#pragma endregion
-
+		_store_indices_vertices_to_batch(
+			pVertexBindingAttributes,
+			_texture_uv_indices[i],
+			_mesh_data->vertices,
+			_mesh_data->indices,
+			pBatchVertices,
+			pBatchIndices,
+			pBaseVertexOffset);
 	}
+
+	//now store the lods
+	float _lod_distance_index = 1.0f;
+	
+	lod_info _first_lod_info;
+	_first_lod_info.first_index = 0;
+	_first_lod_info.index_count = pBatchIndices.size();// Index count for this LOD
+	_first_lod_info.distance = _lod_distance_index * pLodDistance;
+	pLODInfos.push_back(_first_lod_info);
+
+	for (size_t i = 0; i < _meshes_count; ++i)
+	{
+		auto _mesh_data = pModelMeshes[i];
+
+		_store_indices_vertices_to_batch(
+			pVertexBindingAttributes,
+			_texture_uv_indices[i],
+			_mesh_data->lod_1_vertices,
+			_mesh_data->lod_1_indices,
+			pBatchVertices,
+			pBatchIndices,
+			pBaseVertexOffset);
+	}
+
+	_lod_distance_index++;
+
+	lod_info _second_lod_info;
+	_second_lod_info.first_index = _first_lod_info.index_count;
+	_second_lod_info.index_count = pBatchIndices.size() - _first_lod_info.index_count;
+	_second_lod_info.distance = _lod_distance_index * pLodDistance;
+	pLODInfos.push_back(_second_lod_info);
+
+	//clear resources
 	_textures_index.clear();
+	_texture_uv_indices.clear();
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -985,7 +1045,7 @@ W_RESULT model_mesh::_load_textures()
 		{
 			if (w_texture::load_to_shared_textures(
 				this->gDevice,
-				wolf::content_path + L"models/sponza/sponza/" +
+				wolf::content_path + L"models/sponza/textures/" +
 				wolf::system::convert::string_to_wstring(_texture_name),
 				true,
 				&_texture) == W_PASSED)

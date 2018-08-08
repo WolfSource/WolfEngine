@@ -581,7 +581,7 @@ void scene::_show_floating_debug_window()
         }
     }
     
-    ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nSelected Mesh:%s\r\n",
+    ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nSelected Mesh:%s\r\nReferences have red Color\r\nInstances have green Color\r\n",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec,

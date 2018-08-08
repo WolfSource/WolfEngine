@@ -67,57 +67,19 @@ W_RESULT model::initialize()
 	uint32_t _base_vertex_offset = 0;
 
 	//store the indices and vertices of mesh to batches
+	const uint32_t _lod_distance_offset = 700;
 	_store_to_batch(
 		_meshes,
 		this->vertex_binding_attributes,
+		_lod_distance_offset,
 		_base_vertex_offset,
 		this->tmp_batch_vertices,
 		this->tmp_batch_indices,
+		this->lods_info,
 		&this->merged_bounding_box,
 		&this->sub_meshes_bounding_box,
 		&this->textures_paths);
 
-	uint32_t _lod_distance_index = 1;
-	const uint32_t _lod_distance_offset = 700;
-	lod_info _lod_info;
-
-	if (_meshes.size())
-	{
-		//add first lod
-		_lod_info.first_index = 0;// this->tmp_batch_indices.size();// First index for this LOD
-		_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
-		_lod_info.distance = _lod_distance_index * _lod_distance_offset;
-		_lod_distance_index++;
-
-		this->lods_info.push_back(_lod_info);
-	}
-
-	//append all lods to _batch_vertices and _batch_indices
-	std::vector<w_cpipeline_model*> _lods;
-	this->c_model->get_lods(_lods);
-	for (auto _lod_model : _lods)
-	{
-		_meshes.clear();
-		_lod_model->get_meshes(_meshes);
-		if (_meshes.size())
-		{
-			_lod_info.first_index = this->tmp_batch_indices.size();// First index for this LOD
-			_lod_info.index_count = _meshes[0]->indices.size();// Index count for this LOD
-			_lod_info.distance = _lod_distance_index * _lod_distance_offset;
-			_lod_distance_index++;
-
-			this->lods_info.push_back(_lod_info);
-
-			_store_to_batch(
-				_meshes,
-				this->vertex_binding_attributes,
-				_base_vertex_offset,
-				this->tmp_batch_vertices,
-				this->tmp_batch_indices);
-		}
-	}
-
-	_lods.clear();
 	_meshes.clear();
 
 	return W_PASSED;

@@ -215,8 +215,8 @@ namespace wolf
 			WCP_EXP virtual ~w_cpipeline_model();
 
             WCP_EXP void add_instance(_In_ const w_instance_info& pValue);
-			WCP_EXP void add_lods(_In_ const std::vector<w_cpipeline_model*>& pLODs);
-			WCP_EXP void add_convex_hulls(_In_ const std::vector<w_cpipeline_model*>& pCHs);
+			WCP_EXP void add_lods(_In_ const std::vector<w_cpipeline_mesh*>& pLODs);
+			//WCP_EXP void add_convex_hulls(_In_ const std::vector<w_cpipeline_model*>& pCHs);
 
 			WCP_EXP void update_world();
 			WCP_EXP void release();
@@ -234,19 +234,19 @@ namespace wolf
             WCP_EXP void get_instances(_Inout_ std::vector<w_instance_info>& pInstances);
             WCP_EXP size_t get_meshes_count();
             WCP_EXP void get_meshes(_Inout_ std::vector<w_cpipeline_mesh*>& pMeshes);
-            WCP_EXP void get_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs);
-			WCP_EXP size_t get_lods_count();
-			WCP_EXP w_cpipeline_model* get_lod_at(_In_ size_t& pIndex);
+            //WCP_EXP void get_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs);
+			//WCP_EXP size_t get_lods_count();
+			//WCP_EXP w_cpipeline_mesh* get_lod_at(_In_ size_t& pIndex);
             /*
                 convex hulls use for masked occulusion culling.
                 These convex hulls exported from 3D modeling software same as following name: modelname-ch[index]
             */
-            WCP_EXP void get_convex_hulls(_Inout_ std::vector<w_cpipeline_model*>& pCHs);
+			//WCP_EXP void get_convex_hulls(_Inout_ std::vector<w_cpipeline_model*>& pCHs);
             
 			//bounding boxe of mesh
             WCP_EXP wolf::system::w_bounding_box* get_bounding_box(_In_ const size_t& pIndex);
-            WCP_EXP size_t get_convex_hulls_count();
-            WCP_EXP w_cpipeline_model* get_convex_hull_at(_In_ size_t pIndex);
+            //WCP_EXP size_t get_convex_hulls_count();
+            //WCP_EXP w_cpipeline_model* get_convex_hull_at(_In_ size_t pIndex);
 
 #pragma endregion
 
@@ -278,7 +278,7 @@ namespace wolf
 //                _In_ const bool& pZUp,
 //                _In_ const bool& pInvertNormal);
 
-            MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _lods, _convex_hulls, _bounding_box, _meshes);
+            MSGPACK_DEFINE(_name, _instanced_geo_name, _transform, _instances_info, _bounding_box, _meshes);
 
 
 #ifdef __PYTHON__
@@ -375,8 +375,8 @@ namespace wolf
 			float													_overlapping_start_time;
 			std::vector<collada::c_bone*>							_temp_skeleton;
             w_transform_info										_transform;
-            std::vector<w_cpipeline_model>                          _lods;
-            std::vector<w_cpipeline_model>                          _convex_hulls;
+            //std::vector<w_cpipeline_model>                          _lods;
+            //std::vector<w_cpipeline_model>                          _convex_hulls;
 			std::vector<w_instance_info>							_instances_info;
 			wolf::system::w_bounding_box                            _bounding_box;
 

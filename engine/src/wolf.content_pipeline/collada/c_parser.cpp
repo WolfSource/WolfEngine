@@ -1435,7 +1435,7 @@ W_RESULT c_parser::_create_scene(
                 _convex_hulls.push_back(_m);
             }
 
-            if (_lods_models.size())
+            /*if (_lods_models.size())
             {
                 _models[_index]->add_lods(_lods_models);
                 _lods_models.clear();
@@ -1445,7 +1445,7 @@ W_RESULT c_parser::_create_scene(
             {
                 _models[_index]->add_convex_hulls(_convex_hulls);
                 _convex_hulls.clear();
-            }
+            }*/
 
             _splits.clear();
         }

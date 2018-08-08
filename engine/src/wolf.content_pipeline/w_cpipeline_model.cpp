@@ -486,21 +486,21 @@ void w_cpipeline_model::add_instance(_In_ const w_instance_info& pValue)
     this->_instances_info.push_back(pValue);
 }
 
-void w_cpipeline_model::add_lods(_In_ const std::vector<w_cpipeline_model*>& pLODs)
-{
-	for (auto _lod : pLODs)
-	{
-		this->_lods.push_back(*_lod);
-	}
-}
+//void w_cpipeline_model::add_lods(_In_ const std::vector<w_cpipeline_mesh*>& pLODs)
+//{
+//	for (auto _lod : pLODs)
+//	{
+//		this->_lods.push_back(*_lod);
+//	}
+//}
 
-void w_cpipeline_model::add_convex_hulls(_In_ const std::vector<w_cpipeline_model*>& pCHs)
-{
-	for (auto _ch : pCHs)
-	{
-		this->_convex_hulls.push_back(*_ch);
-	}
-}
+//void w_cpipeline_model::add_convex_hulls(_In_ const std::vector<w_cpipeline_model*>& pCHs)
+//{
+//	for (auto _ch : pCHs)
+//	{
+//		this->_convex_hulls.push_back(*_ch);
+//	}
+//}
 
 void w_cpipeline_model::update_world()
 {
@@ -579,52 +579,42 @@ void w_cpipeline_model::get_meshes(_Inout_ std::vector<w_cpipeline_mesh*>& pMesh
     }
 }
 
-void w_cpipeline_model::get_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs)
-{
-    auto _size = this->_lods.size();
-    if (!_size) return;
+//void w_cpipeline_model::get_lods(_Inout_ std::vector<w_cpipeline_model*>& pLODs)
+//{
+//    auto _size = this->_lods.size();
+//    if (!_size) return;
+//
+//    for (size_t i = 0; i < _size; ++i)
+//    {
+//        pLODs.push_back(&this->_lods[i]);
+//    }
+//}
 
-    for (size_t i = 0; i < _size; ++i)
-    {
-        pLODs.push_back(&this->_lods[i]);
-    }
-}
-
-void w_cpipeline_model::get_convex_hulls(_Inout_ std::vector<w_cpipeline_model*>& pCHs)
-{
-    auto _size = this->_convex_hulls.size();
-    if (!_size) return;
-
-    for (size_t i = 0; i < _size; ++i)
-    {
-        pCHs.push_back(&this->_convex_hulls[i]);
-    }
-}
+//void w_cpipeline_model::get_convex_hulls(_Inout_ std::vector<w_cpipeline_model*>& pCHs)
+//{
+//    auto _size = this->_convex_hulls.size();
+//    if (!_size) return;
+//
+//    for (size_t i = 0; i < _size; ++i)
+//    {
+//        pCHs.push_back(&this->_convex_hulls[i]);
+//    }
+//}
 
 w_bounding_box* w_cpipeline_model::get_bounding_box(_In_ const size_t& pIndex)
 {
     return pIndex < this->_meshes.size() ? &this->_meshes[pIndex].bounding_box : nullptr;
 }
 
-size_t w_cpipeline_model::get_lods_count()
-{
-    return this->_lods.size();
-}
+//size_t w_cpipeline_model::get_convex_hulls_count()
+//{
+//    return this->_convex_hulls.size();
+//}
 
-w_cpipeline_model* w_cpipeline_model::get_lod_at(_In_ size_t& pIndex)
-{
-    return pIndex < this->_lods.size() ? &this->_lods[pIndex] : nullptr;
-}
-
-size_t w_cpipeline_model::get_convex_hulls_count()
-{
-    return this->_convex_hulls.size();
-}
-
-w_cpipeline_model* w_cpipeline_model::get_convex_hull_at(_In_ size_t pIndex)
-{
-    return pIndex < this->_convex_hulls.size() ? &this->_convex_hulls[pIndex] : nullptr;
-}
+//w_cpipeline_model* w_cpipeline_model::get_convex_hull_at(_In_ size_t pIndex)
+//{
+//    return pIndex < this->_convex_hulls.size() ? &this->_convex_hulls[pIndex] : nullptr;
+//}
 
 #pragma endregion
 

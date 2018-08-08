@@ -30,8 +30,8 @@ static void _iterate_node(
 	_In_ const aiNode* pNode,
 	_In_ const std::vector<w_cpipeline_mesh*>& pModelMeshes,
 	_Inout_ w_cpipeline_scene** pScene,
-	_Inout_ std::vector<w_cpipeline_model*>& pLODs,
-	_Inout_ std::vector<w_cpipeline_model*>& pCHs)
+	_Inout_ std::vector<w_cpipeline_model*>& pLODs)
+	//_Inout_ std::vector<w_cpipeline_model*>& pCHs)
 {
 	if (!pRootNode || !pNode) return;
 
@@ -83,10 +83,6 @@ static void _iterate_node(
 				{
 					pLODs.push_back(_model);
 				}
-				else if (_name.find("-ch") != std::string::npos)
-				{
-					pCHs.push_back(_model);
-				}
 				else
 				{
 					_scene->add_model(_model);
@@ -97,7 +93,7 @@ static void _iterate_node(
 
 	for (size_t i = 0; i < pNode->mNumChildren; ++i)
 	{
-		_iterate_node(pRootNode, pNode->mChildren[i], pModelMeshes, pScene, pLODs, pCHs);
+		_iterate_node(pRootNode, pNode->mChildren[i], pModelMeshes, pScene, pLODs);// , pCHs);
 	}
 }
 
@@ -106,104 +102,16 @@ static void _iterate_node(
 #ifdef __WIN32
 
 static W_RESULT _generate_simpolygon_lod(
-	_In_ const aiScene* pSrcScene,
-	_In_ aiMesh* pMesh,
-	_Inout_ std::vector<w_vertex_struct>& pLodVerticesData,
-	_Inout_ std::vector<uint32_t>& pLodIndicesData)
+	_In_ w_cpipeline_mesh* pMesh)
 {
 	if (!simplygon::is_initialized || !pMesh) return W_FAILED;
 
-	//get name of mesh
-	auto _mesh_name = pMesh->mName.C_Str();
-
-	auto _assimp_exporter = new Assimp::Exporter();
-	if (!_assimp_exporter)
-	{
-		V(W_FAILED,
-			w_log_type::W_ERROR,
-			"allocating memory for Assimp::Exporter {}. trace info: _generate_simpolygon_lod", _mesh_name);
-		return W_FAILED;
-	}
-
-	//create assimp scene from this model for saving as LOD
-	auto _src_model_scene = new aiScene();
-
-	//make a copy from src scene material
-	_src_model_scene->mMaterials = new aiMaterial*[1];
-	_src_model_scene->mMaterials[0] = new aiMaterial();
-	_src_model_scene->mNumMaterials = 1;
-	std::memcpy(_src_model_scene->mMaterials[0], pSrcScene->mMaterials[pMesh->mMaterialIndex], sizeof(aiMaterial));
-
-
-	_src_model_scene->mMaterials[0]->mNumProperties = 0;
-	_src_model_scene->mMaterials[0]->mProperties = nullptr;
-
-	//copy mesh
-	_src_model_scene->mMeshes = new aiMesh*[1];
-	_src_model_scene->mNumMeshes = 1;
-	_src_model_scene->mMeshes[0] = new aiMesh();
-
-	//make a copy from mesh
-	std::memcpy(_src_model_scene->mMeshes[0], pMesh, sizeof(aiMesh));
-	
-	//make sure set material index to 0 if needed
-	if (_src_model_scene->mMeshes[0]->mMaterialIndex > 0)
-	{
-		_src_model_scene->mMeshes[0]->mMaterialIndex = 0;
-	}
-
-	_src_model_scene->mRootNode = new aiNode();
-	_src_model_scene->mRootNode->mMeshes = new unsigned int[1];
-	_src_model_scene->mRootNode->mNumMeshes = 1;
-	_src_model_scene->mRootNode->mMeshes[0] = 0;
-
 	//now store this mesh a single obj file
+	auto _mesh_name = pMesh->name;
 	auto _current_dir = wolf::system::io::get_current_directory();
-	auto _obj_path = _current_dir + _src_model_scene->mMeshes[0]->mName.C_Str() + ".obj";
-
-	std::string _export_format_desc_id = "";
-	auto _export_format_count = _assimp_exporter->GetExportFormatCount();
-	//find obj
-	for (size_t i = 0; i < _export_format_count; ++i)
-	{
-		auto _desc = _assimp_exporter->GetExportFormatDescription(i);
-		if (strcmp(_desc->fileExtension, "obj") == 0)
-		{
-			_export_format_desc_id = _desc->id;
-			break;
-		}
-	}
-
-	auto _hr = aiReturn::aiReturn_FAILURE;
-	if (_export_format_desc_id.empty())
-	{
-		V(W_FAILED,
-			w_log_type::W_ERROR,
-			".obj exporter not found for assimp. trace info: _generate_simpolygon_lod");
-	}
-	else
-	{
-		_hr = _assimp_exporter->Export(
-			_src_model_scene,
-			_export_format_desc_id,
-			_obj_path.c_str());
-	}
-
-	//release resources
-	_export_format_desc_id.clear();
-	SAFE_DELETE_ARRAY(_src_model_scene->mMeshes);
-	SAFE_DELETE(_src_model_scene->mRootNode);
-	SAFE_DELETE(_src_model_scene);
-	SAFE_DELETE(_assimp_exporter);
-
-	if (_hr)
-	{
-		V(W_FAILED,
-			w_log_type::W_ERROR,
-			"Error for exporting {}_lod with assimp. trace info: _generate_simpolygon_lod", _mesh_name);
-		return W_FAILED;
-	}
-
+	auto _obj_path = _current_dir + pMesh->name + ".obj";
+	content_pipeline::wavefront::obj::write(pMesh->vertices, pMesh->indices, _obj_path);
+	
 	//Create a original simplygon scene from exported obj
 	auto _original_scene = simplygon::iSimplygonSDK->CreateScene();
 	if (!_original_scene)
@@ -292,12 +200,9 @@ static W_RESULT _generate_simpolygon_lod(
 
 	W_RESULT __hr = W_PASSED;
 
-	pLodVerticesData.clear();
-	pLodIndicesData.clear();
-
 	if (wavefront::obj::read(
-		pLodVerticesData,
-		pLodIndicesData,
+		pMesh->lod_1_vertices,
+		pMesh->lod_1_indices,
 		_obj_lod_path))
 	{
 		__hr = W_FAILED;
@@ -553,45 +458,7 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 					//copy min and max to bounding box
 					std::memcpy(&_w_mesh->bounding_box.min[0], &_min_vertex[0], 3 * sizeof(float));
 					std::memcpy(&_w_mesh->bounding_box.max[0], &_max_vertex[0], 3 * sizeof(float));
-//#ifdef __WIN32
-//					if (pGenerateLODUsingSimplygon)
-//					{
-//						//first initialize simpolygon 
-//						simplygon_mutex.lock();
-//						{
-//							std::call_once(do_init_simplygon_once_over_time, []()
-//							{
-//								std::wstring _simplygon_sdk;
-//#ifdef _DEBUG
-//								//get simplygon SDK from dependencies\\simplygon
-//								_simplygon_sdk = wolf::system::io::get_current_directoryW() + L"..\\..\\..\\..\\engine\\dependencies\\simplygon\\";
-//#else
-//								//make sure copy simplygon sdk to execute directory
-//								_simplygon_sdk = wolf::system::io::get_current_directoryW();
-//#endif
-//								if (simplygon::initialize(_simplygon_sdk) == W_FAILED)
-//								{
-//									V(W_FAILED,
-//										w_log_type::W_ERROR,
-//										"could not initialize simplygon SDK. trace infor : w_cpipeline_model::_generate_simpolygon_lod");
-//								}
-//							});
-//						}
-//						simplygon_mutex.unlock();
-//
-//						//we will create automatic LOD for the model
-//
-//						if (_generate_simpolygon_lod(_scene, _a_mesh, _w_mesh->lod_1_vertices, _w_mesh->lod_1_indices))
-//						{
-//							V(W_FAILED,
-//								w_log_type::W_ERROR,
-//								"could not create first LOD for model {}. trace infor : w_cpipeline_model::_generate_simpolygon_lod",
-//								_scene_name);
-//							_w_mesh->lod_1_vertices.clear();
-//							_w_mesh->lod_1_indices.clear();
-//						}
-//					}
-//#endif
+
 					//apply amd tootle to it
 					//if (pOptimizeMeshUsingAMDTootle)
 					//{
@@ -607,15 +474,14 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 
         //finally iterate over all nodes to find models and instances, LODs and CHs
 		std::vector<w_cpipeline_model*> _LODs;
-		std::vector<w_cpipeline_model*> _CHs;
+		//std::vector<w_cpipeline_model*> _CHs;
 
-        _iterate_node(
-			_scene->mRootNode, 
-			_scene->mRootNode, 
-			_model_meshes, 
+		_iterate_node(
+			_scene->mRootNode,
+			_scene->mRootNode,
+			_model_meshes,
 			&_w_scene,
-			_LODs,
-			_CHs);
+			_LODs);
         
 		//now we need assign LODs and CH to models, if model does not have LOD, we need to generate it with simpolygon (in Windows)
 		std::vector<w_cpipeline_model*> _models;
@@ -645,7 +511,18 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 					auto __name = pIter->get_name();
 					if (wolf::system::convert::has_string_start_with(__name, _design_name))
 					{
-						_model->add_lods({ pIter });
+						std::vector<w_cpipeline_mesh*> _meshes;
+						_model->get_meshes(_meshes);
+
+						std::vector<w_cpipeline_mesh*> _lod_meshes;
+						pIter->get_meshes(_lod_meshes);
+
+						if (_meshes.size() && _lod_meshes.size())
+						{
+							//copy lod vertices & indices
+							_lod_meshes[0]->lod_1_vertices.swap(_meshes[0]->lod_1_vertices);
+							_lod_meshes[0]->lod_1_indices.swap(_meshes[0]->lod_1_indices);
+						}
 						return true;
 					}
 
@@ -666,13 +543,84 @@ w_cpipeline_scene* w_assimp::load(_In_z_ const std::wstring& pAssetPath,
 				//	return false;
 
 				//}), _CHs.end());
+
+#ifdef __WIN32
+				if (pGenerateLODUsingSimplygon)
+				{
+					//we will create automatic LOD for each mesh
+					auto _number_of_meshes = _model->get_meshes_count();
+					if (_number_of_meshes)
+					{
+						//first initialize simpolygon 
+						simplygon_mutex.lock();
+						{
+							std::call_once(do_init_simplygon_once_over_time, []()
+							{
+								std::wstring _simplygon_sdk;
+#ifdef _DEBUG
+								//get simplygon SDK from dependencies\\simplygon
+								_simplygon_sdk = wolf::system::io::get_current_directoryW() + L"..\\..\\..\\..\\engine\\dependencies\\simplygon\\";
+#else
+								//make sure copy simplygon sdk to execute directory
+								_simplygon_sdk = wolf::system::io::get_current_directoryW();
+#endif
+								if (simplygon::initialize(_simplygon_sdk) == W_FAILED)
+								{
+									V(W_FAILED,
+										w_log_type::W_ERROR,
+										"could not initialize simplygon SDK. trace infor : w_assimp::load");
+								}
+							});
+						}
+						simplygon_mutex.unlock();
+
+						std::vector<w_cpipeline_mesh*> _meshes;
+						_model->get_meshes(_meshes);
+						for (size_t i = 0; i < _number_of_meshes; ++i)
+						{
+							auto _mesh = _meshes[i];
+
+							//if already has lod then continue
+							if (_mesh->lod_1_vertices.size()) continue;
+
+							if (_mesh->vertices.size() <= 8)
+							{
+								//do not allow to create LOD for a model with 8 vertices
+
+								auto _indices_size = _mesh->indices.size();
+								auto _vertices_size = _mesh->vertices.size();
+
+								_mesh->lod_1_indices.resize(_indices_size);
+								_mesh->lod_1_vertices.resize(_vertices_size);
+
+								std::copy(_mesh->indices.begin(), _mesh->indices.end(), _mesh->lod_1_indices.begin());
+								std::copy(_mesh->vertices.begin(), _mesh->vertices.end(), _mesh->lod_1_vertices.begin());
+							}
+							else
+							{
+								//generate lod for it
+								if (_generate_simpolygon_lod(_mesh))
+								{
+									V(W_FAILED,
+										w_log_type::W_ERROR,
+										"could not generate LOD for model {}, mesh {}. trace infor : w_assimp::load",
+										_name,
+										_mesh->name);
+									_mesh->lod_1_vertices.clear();
+									_mesh->lod_1_indices.clear();
+								}
+							}
+						}
+					}
+				}
+#endif
 			}
 
 			_splits.clear();
 		}
 
 		_LODs.clear();
-		_CHs.clear();
+		//_CHs.clear();
 		_models.clear();
 
 		//if (_bounds.size())

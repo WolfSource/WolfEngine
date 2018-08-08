@@ -602,7 +602,7 @@ void scene::_show_floating_debug_window()
 		return;
 	}
 
-	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\n",
+	ImGui::Text("Press \"Esc\" to exit\r\nRight click on name of mesh to focus\r\nMovments:Q,Z,W,A,S,D and Mouse Left Button\r\nFPS:%d\r\nFrameTime:%f\r\nTotalTime:%f\r\nReferences have red Color\r\nInstances have green Color\r\n",
 		sFPS,
 		sElapsedTimeInSec,
 		sTotalTimeTimeInSec);

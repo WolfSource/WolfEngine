@@ -53,12 +53,14 @@ public:
 #pragma region collada from 3DMax 
 
 		//3DMax is right handed Zup
+		this->_transform->rotation[0] *= -1.0f;
 		this->_transform->rotation[0] += glm::radians(90.0f);
 		std::swap(this->_transform->position[1], this->_transform->position[2]);
 		this->_transform->position[1] *= -1.0f;
 
 		for (auto& _ins : this->_instnaces_transforms)
 		{
+			_ins.rotation[0] *= -1.0f;
 			_ins.rotation[0] += glm::radians(90.0f);
 			std::swap(_ins.position[1], _ins.position[2]);
 			_ins.position[1] *= -1.0f;

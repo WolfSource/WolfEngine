@@ -105,12 +105,31 @@ public:
 	//The following codes have been added for this project
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++
 protected:
+	struct lod_info
+	{
+		uint32_t													first_index;
+		uint32_t													index_count;
+		float														distance;
+		float														_padding;
+	};
+
+	static void _store_indices_vertices_to_batch(
+		_In_ const wolf::render::vulkan::w_vertex_binding_attributes& pVertexBindingAttributes,
+		_In_ const float& pTextureUVIndex,
+		_In_ const std::vector<wolf::content_pipeline::w_vertex_struct>& pVertices,
+		_In_ const std::vector<uint32_t>& pIndices,
+		_Inout_ std::vector<float>& pBatchVertices,
+		_Inout_ std::vector<uint32_t>& pBatchIndices,
+		_Inout_ uint32_t& pBaseVertexOffset);
+
 	static void _store_to_batch(
 		_In_ const std::vector<wolf::content_pipeline::w_cpipeline_mesh*>& pModelMeshes,
 		_In_ const wolf::render::vulkan::w_vertex_binding_attributes& pVertexBindingAttributes,
-		_Inout_ uint32_t& pBaseVertex,
+		_In_ const uint32_t& pLodDistance,
+		_Inout_ uint32_t& pBaseVertexOffset,
 		_Inout_ std::vector<float>& pBatchVertices,
 		_Inout_ std::vector<uint32_t>& pBatchIndices,
+		_Inout_ std::vector<lod_info>& pLODInfos,
 		_Inout_ wolf::system::w_bounding_box* pMergedBoundingBox = nullptr,
 		_Inout_ std::vector<wolf::system::w_bounding_box>* pSubMeshBoundingBoxes = nullptr,
 		_Inout_ std::vector<std::string>* pTexturePathsToBeLoad = nullptr);
@@ -134,13 +153,6 @@ protected:
 
 	wolf::render::vulkan::w_vertex_binding_attributes				vertex_binding_attributes;
 
-	struct lod_info
-	{
-		uint32_t													first_index;
-		uint32_t													index_count;
-		float														distance;
-		float														_padding;
-	};
 	std::vector<lod_info>											lods_info;
 
 	bool															global_visiblity;
