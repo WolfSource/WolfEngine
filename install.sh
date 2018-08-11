@@ -31,8 +31,6 @@ for i in "${!keys[@]}"; do
    fi
 done
 
-tar -zxvf ./vulkan/macOS.tar.gz -C ./vulkan/
-
 echo "start building Wolf"
 case "$OSTYPE" in
   darwin*)  
