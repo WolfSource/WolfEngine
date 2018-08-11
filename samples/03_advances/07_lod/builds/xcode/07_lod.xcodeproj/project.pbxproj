@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2C0DCBF920D97E2500567394 /* libwolf.content_pipeline.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0DCBF620D97E2500567394 /* libwolf.content_pipeline.osx.dylib */; };
-		2C0DCBFA20D97E2500567394 /* libwolf.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0DCBF720D97E2500567394 /* libwolf.vulkan.osx.dylib */; };
 		2C0DCBFB20D97E2500567394 /* libwolf.system.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0DCBF820D97E2500567394 /* libwolf.system.osx.dylib */; };
 		2C13839F1F5096DE00D5283B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C13839E1F5096DE00D5283B /* main.m */; };
 		2C1383A21F50971300D5283B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1383A11F50971300D5283B /* AppDelegate.m */; };
@@ -19,6 +18,7 @@
 		2CB69EE31F62E5470068D1E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE21F62E5470068D1E6 /* QuartzCore.framework */; };
 		2CB69EE51F62E5510068D1E6 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE41F62E5510068D1E6 /* Metal.framework */; };
 		2CB69EE71F62E56D0068D1E6 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB69EE61F62E56D0068D1E6 /* libc++.tbd */; };
+		2CDF8529211ED48600FC50C8 /* libwolf.render.vulkan.osx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CDF8528211ED48600FC50C8 /* libwolf.render.vulkan.osx.dylib */; };
 		2CE0DAC020AC0663003BC362 /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE0DABF20AC0663003BC362 /* libassimp.4.1.0.dylib */; };
 		2CEEABAF20AEC7FE001B4100 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEABAE20AEC7FE001B4100 /* ViewController.mm */; };
 		2CEEABB220AEC8B7001B4100 /* model_mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CEEABB120AEC8B7001B4100 /* model_mesh.cpp */; };
@@ -28,7 +28,6 @@
 
 /* Begin PBXFileReference section */
 		2C0DCBF620D97E2500567394 /* libwolf.content_pipeline.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.content_pipeline.osx.dylib; sourceTree = "<group>"; };
-		2C0DCBF720D97E2500567394 /* libwolf.vulkan.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.vulkan.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.vulkan.osx.dylib; sourceTree = "<group>"; };
 		2C0DCBF820D97E2500567394 /* libwolf.system.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.system.osx.dylib; sourceTree = "<group>"; };
 		2C13839E1F5096DE00D5283B /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../../../../common/main.m; sourceTree = "<group>"; };
 		2C1383A01F50971300D5283B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../../../common/AppDelegate.h; sourceTree = "<group>"; };
@@ -42,14 +41,11 @@
 		2C7C90F120AF17EC0053A0B3 /* compute_stage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = compute_stage.h; path = ../../src/compute_stage.h; sourceTree = "<group>"; };
 		2CB69EDC1F62E1BF0068D1E6 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = ../../src/scene.cpp; sourceTree = "<group>"; };
 		2CB69EDD1F62E1BF0068D1E6 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = ../../src/scene.h; sourceTree = "<group>"; };
-		2CB69EE01F62E53C0068D1E6 /* MoltenVK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoltenVK.framework; path = ../../../../../engine/dependencies/vulkan/Mac/Molten/MoltenVK/macOS/MoltenVK.framework; sourceTree = "<group>"; };
 		2CB69EE21F62E5470068D1E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2CB69EE41F62E5510068D1E6 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		2CB69EE61F62E56D0068D1E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
-		2CB69EE81F62E80D0068D1E6 /* libwolf.content_pipeline.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.content_pipeline.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.content_pipeline.macOS.dylib; sourceTree = "<group>"; };
-		2CB69EE91F62E80D0068D1E6 /* libwolf.system.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.system.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.system.macOS.dylib; sourceTree = "<group>"; };
-		2CB69EEA1F62E80D0068D1E6 /* libwolf.vulkan.macOS.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.vulkan.macOS.dylib; path = ../../../../../bin/Build/macOS/Products/Debug/libwolf.vulkan.macOS.dylib; sourceTree = "<group>"; };
 		2CCE633A1FD5E7AF00EC0BB5 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
+		2CDF8528211ED48600FC50C8 /* libwolf.render.vulkan.osx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwolf.render.vulkan.osx.dylib; path = ../../../../../bin/osx/Build/Products/Debug/libwolf.render.vulkan.osx.dylib; sourceTree = "<group>"; };
 		2CE0DABF20AC0663003BC362 /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../../../engine/dependencies/assimp/lib/osx/debug/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
 		2CEEABAD20AEC7FE001B4100 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../../../../common/ViewController.h; sourceTree = "<group>"; };
 		2CEEABAE20AEC7FE001B4100 /* ViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ViewController.mm; path = ../../../../common/ViewController.mm; sourceTree = "<group>"; };
@@ -65,8 +61,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CDF8529211ED48600FC50C8 /* libwolf.render.vulkan.osx.dylib in Frameworks */,
 				2C0DCBF920D97E2500567394 /* libwolf.content_pipeline.osx.dylib in Frameworks */,
-				2C0DCBFA20D97E2500567394 /* libwolf.vulkan.osx.dylib in Frameworks */,
 				2C0DCBFB20D97E2500567394 /* libwolf.system.osx.dylib in Frameworks */,
 				2CE0DAC020AC0663003BC362 /* libassimp.4.1.0.dylib in Frameworks */,
 				2CF54B41205C5327000B80E3 /* vulkan.framework in Frameworks */,
@@ -124,19 +120,15 @@
 		2CB69EDF1F62E53B0068D1E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CDF8528211ED48600FC50C8 /* libwolf.render.vulkan.osx.dylib */,
 				2C0DCBF620D97E2500567394 /* libwolf.content_pipeline.osx.dylib */,
 				2C0DCBF820D97E2500567394 /* libwolf.system.osx.dylib */,
-				2C0DCBF720D97E2500567394 /* libwolf.vulkan.osx.dylib */,
 				2CE0DABF20AC0663003BC362 /* libassimp.4.1.0.dylib */,
 				2CF54B40205C5326000B80E3 /* vulkan.framework */,
 				2CCE633A1FD5E7AF00EC0BB5 /* IOSurface.framework */,
-				2CB69EE81F62E80D0068D1E6 /* libwolf.content_pipeline.macOS.dylib */,
-				2CB69EE91F62E80D0068D1E6 /* libwolf.system.macOS.dylib */,
-				2CB69EEA1F62E80D0068D1E6 /* libwolf.vulkan.macOS.dylib */,
 				2CB69EE61F62E56D0068D1E6 /* libc++.tbd */,
 				2CB69EE41F62E5510068D1E6 /* Metal.framework */,
 				2CB69EE21F62E5470068D1E6 /* QuartzCore.framework */,
-				2CB69EE01F62E53C0068D1E6 /* MoltenVK.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
