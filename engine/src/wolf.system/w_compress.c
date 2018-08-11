@@ -1,4 +1,4 @@
-﻿#include "w_compress.h"
+#include "w_compress.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +8,7 @@
 
 int compress_buffer_c(
 	/*_In_*/	const char* pSrcBuffer,
-	/*_In_*/	w_com_mode pMode,
+	/*_In_*/	w_compress_mode pMode,
 	/*_In_*/	int pAcceleration,
 	/*_Inout_*/	w_compress_result* pCompressInfo,
 	/*_Inout_*/ char* pErrorLog)
@@ -64,7 +64,6 @@ int compress_buffer_c(
 
 int decompress_buffer_c(
 	/*_In_*/	const char* pCompressedBuffer,
-	/*_In_*/	w_com_mode pMode,
 	/*_Inout_*/	w_compress_result* pDecompressInfo,
 	/*_Inout_*/ char* pErrorLog)
 {
@@ -82,29 +81,16 @@ int decompress_buffer_c(
 		return 1;
 	}
 
-	int _decompressed_size;
+	int _decompressed_size = -1;
 	int _number_of_try = 10;
 	
 	while (_number_of_try > 0)
 	{
-		_decompressed_size = -1;
-		if (pMode == W_FAST)
-		{
-			_decompressed_size = LZ4_decompress_fast(
+		_decompressed_size = LZ4_decompress_safe(
 				pCompressedBuffer,
 				&pDecompressInfo->data[0],
-				pDecompressInfo->size_in,
+				(int)pDecompressInfo->size_in,
 				_destination_capacity);
-		}
-		else
-		{
-			_decompressed_size = LZ4_decompress_safe(
-				pCompressedBuffer,
-				&pDecompressInfo->data[0],
-				pDecompressInfo->size_in,
-				_destination_capacity);
-		}
-
 		if (_decompressed_size >= 0)
 		{
 			break;

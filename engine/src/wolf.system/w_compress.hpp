@@ -27,7 +27,7 @@ namespace wolf
 			static W_RESULT compress_buffer(
 				_In_		const char* pSrcBuffer,
 				_Inout_		w_compress_result* pCompressResult,
-				_In_		w_com_mode pMode = w_com_mode::W_DEFAULT,
+				_In_		w_compress_mode pMode = w_compress_mode::W_DEFAULT,
 				_In_		int pAcceleration = 1.0)
 			{
 				if (!pCompressResult || !pSrcBuffer) return W_RESULT::W_INVALIDARG;
@@ -52,8 +52,7 @@ namespace wolf
 
 			static W_RESULT decompress_buffer(
 				_In_	const char* pCompressedBuffer,
-				_Inout_	w_compress_result* pDecompressInfo,
-				_In_	w_com_mode pMode = w_com_mode::W_DEFAULT)
+				_Inout_	w_compress_result* pDecompressInfo)
 			{
 				if (!pDecompressInfo || !pCompressedBuffer) return W_RESULT::W_INVALIDARG;
 
@@ -62,7 +61,6 @@ namespace wolf
 				auto _err_log = (char*)malloc(256 * sizeof(char));
 				if (decompress_buffer_c(
 					pCompressedBuffer,
-					pMode,
 					pDecompressInfo,
 					_err_log))
 				{

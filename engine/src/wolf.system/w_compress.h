@@ -26,7 +26,7 @@ extern "C" {
 		W_DEFAULT, 
 		W_FAST
 	}
-	w_com_mode;
+	w_compress_mode;
 
 	typedef struct 
 	{
@@ -37,14 +37,13 @@ extern "C" {
 
 	WSYS_EXP int compress_buffer_c(
 		/*_In_*/	const char* pSrcBuffer,
-		/*_In_*/	w_com_mode pMode,
+		/*_In_*/	w_compress_mode pMode,
 		/*_In_*/	int pAcceleration,
 		/*_Inout_*/	w_compress_result* pCompressInfo,
 		/*_Inout_*/ char* pErrorLog);
 
 	WSYS_EXP int decompress_buffer_c(
 		/*_In_*/	const char* pCompressedBuffer,
-		/*_In_*/	w_com_mode pMode,
 		/*_Inout_*/	w_compress_result* pDecompressInfo,
 		/*_Inout_*/ char* pErrorLog);
 
