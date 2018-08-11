@@ -13,6 +13,8 @@
 /engine/builds/mvsc/.vs/*
 /engine/dependencies/*
 !/engine/dependencies/*.zip
+!/engine/dependencies/vulkan.zip.001
+!/engine/dependencies/vulkan.zip.002
 
 # Compiled Object files
 *.slo

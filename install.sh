@@ -9,8 +9,7 @@ boost
 ffmpeg 
 luaJIT 
 nanomsg 
-tbb 
-vulkan)
+tbb)
 
 values=(
 version.txt
@@ -18,8 +17,7 @@ builds.txt
 version.txt 
 version.txt  
 COPYING 
-version.txt 
-SPIRVExtension.vsix)
+version.txt)
 
 for i in "${!keys[@]}"; do
    echo "uncompressing ${keys[$i]}.zip"
@@ -30,6 +28,18 @@ for i in "${!keys[@]}"; do
      echo "${keys[$i]} verified successfully"
    fi
 done
+
+echo "uncompressing vulkan.zip"
+cat vulkan.zip.001 > vulkan.zip 
+cat vulkan.zip.002 >> vulkan.zip
+unzip -q "vulkan.zip" 
+if [ ! -f ./vulkan/SPIRVExtension.vsix ]; then
+  echo "could not find vulkan/SPIRVExtension.vsix"
+else
+  echo "vulkan verified successfully"
+fi
+
+tar -zxvf ./vulkan/macOS.tar.gz -C ./vulkan/
 
 echo "start building Wolf"
 case "$OSTYPE" in

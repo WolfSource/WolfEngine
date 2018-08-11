@@ -4,8 +4,8 @@ setlocal
 echo make wolf's dependencies ready
 cd ./engine/dependencies/
 
-set keys=assimp boost ffmpeg luaJIT nanomsg tbb vulkan simplygon
-set values=version.txt builds.txt version.txt version.txt COPYING version.txt SPIRVExtension.vsix SimplygonSDKRuntimeReleasex64.dll
+set keys=assimp boost ffmpeg luaJIT nanomsg tbb simplygon
+set values=version.txt builds.txt version.txt version.txt COPYING version.txt SimplygonSDKRuntimeReleasex64.dll
 
 set i=0
 (for %%k in (%keys%) do (
@@ -17,6 +17,15 @@ set i=0
        echo %%k verified successfully
    )
 ))
+
+echo uncompressing vulkan.zip
+   type vulkan.zip.001 vulkan.zip.002 > vulkan.zip
+   PowerShell Expand-Archive -Path "vulkan.zip" "./"
+   if exist vulkan/SPIRVExtension.vsix (
+       echo could not find vulkan/SPIRVExtension.vsix
+   ) else (
+       echo vulkan verified successfully
+   )
 
 
 
