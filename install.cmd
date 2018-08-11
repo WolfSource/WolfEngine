@@ -22,9 +22,9 @@ echo uncompressing vulkan.zip
    type vulkan.zip.001 vulkan.zip.002 > vulkan.zip
    PowerShell Expand-Archive -Path "vulkan.zip" "./"
    if exist vulkan/SPIRVExtension.vsix (
-       echo could not find vulkan/SPIRVExtension.vsix
-   ) else (
        echo vulkan verified successfully
+   ) else (
+       echo could not find vulkan/SPIRVExtension.vsix
    )
 
 
